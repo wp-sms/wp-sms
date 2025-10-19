@@ -80,6 +80,9 @@ class Settings
             add_filter('pre_update_option_' . $this->setting_name, array($this, 'check_license_key'), 10, 2);
         }
 
+        if (isset($_POST['submit']) && isset($_REQUEST['option_page']) && $_POST['option_page'] == 'wpsms_settings' && strpos(wp_get_referer(), 'tab=gateway')) {
+            add_filter('pre_update_option_wpsms_settings', [$this, 'updateGateWayVersion'], 10, 2);
+        }
     }
 
     /**
@@ -2776,5 +2779,28 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
         // Return the final title string
         return $title;
+    }
+
+    /**
+     * Updates the gateway version inside the plugin settings array before saving.
+     *
+     * @param array $newValue The new settings array that will be saved into the database.
+     * @param array $oldValue The previous settings array stored in the database.
+     *
+     * @return array The modified settings array including the updated `gateway_version` key.
+     */
+    public function updateGateWayVersion($newValue, $oldValue)
+    {
+        global $sms;
+
+        if (is_null($sms) && function_exists('wp_sms_initial_gateway')) {
+            $sms = wp_sms_initial_gateway();
+        }
+
+        $currentVer = (isset($sms->version) && $sms->version !== '') ? (string)$sms->version : '1.0';
+
+        $newValue['gateway_version'] = $currentVer;
+
+        return $newValue;
     }
 }

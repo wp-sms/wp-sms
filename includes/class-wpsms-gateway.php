@@ -423,7 +423,6 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         if (empty($gateway_name)) {
             $sms = new $class_name();
 
-            self::setupGatewayVersioning($sms, '');
             return $sms;
         }
 
@@ -434,7 +433,6 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         } else {
             $sms = new $class_name();
 
-            self::setupGatewayVersioning($sms, $gateway_name);
             return $sms;
         }
 
@@ -1518,14 +1516,10 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         $gw         = $gatewayName ?: 'unknown';
         $currentVer = (isset($sms->version) && $sms->version !== '') ? (string)$sms->version : '1.0';
 
-        Option::updateOption('gateway_version', $currentVer);
+        $storedVer      = Option::getOption('gateway_version');
+        $versionChanged = ($storedVer !== null && $storedVer !== $currentVer);
 
-        $notConfigured   = empty($gatewayName) || $gatewayName === 'default';
-        $credentialIssue = self::hasCredentialIssue($sms);
-
-        $needsNotice = ($notConfigured || $credentialIssue);
-
-        if ($needsNotice) {
+        if ($versionChanged) {
             $settingsLink = admin_url('admin.php?page=wp-sms-settings&tab=gateway');
 
             $message = sprintf(
@@ -1541,48 +1535,5 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
             NoticeManager::getInstance()->registerNotice($id, wp_kses_post($message), true, false);
         }
-    }
-
-    /**
-     * Check if the SMS gateway credentials are missing or invalid.
-     *
-     * Determines whether required gateway credential fields (such as username, password, API key, or sender ID)
-     * are empty, null, false, or zero. Returns true if any credential issue is detected.
-     *
-     * @param object $sms The SMS gateway instance containing credential properties.
-     * @return bool True if credentials are missing or invalid, false if all credentials are properly set.
-     */
-    protected static function hasCredentialIssue($sms)
-    {
-        $fieldsToCheck = [];
-
-        if (!empty($sms->gatewayFields) && is_array($sms->gatewayFields)) {
-            foreach ($sms->gatewayFields as $key => $meta) {
-                if (property_exists($sms, $key) && $sms->{$key} !== false) {
-                    $fieldsToCheck[] = $sms->{$key};
-                }
-            }
-        } else {
-            $fieldsToCheck[] = $sms->username ?? null;
-            $fieldsToCheck[] = $sms->password ?? null;
-
-            if (!empty($sms->has_key)) {
-                $fieldsToCheck[] = $sms->has_key;
-            }
-
-            $fieldsToCheck[] = $sms->from ?? null;
-        }
-
-        if (empty($fieldsToCheck)) {
-            return true;
-        }
-
-        foreach ($fieldsToCheck as $val) {
-            if ($val === '' || $val === null || $val === false || $val === 0 || $val === '0') {
-                return true;
-            }
-        }
-
-        return false;
     }
 }
