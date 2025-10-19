@@ -6,6 +6,7 @@
 - **Fix:** PHP 8.1+ compatibility: avoid "Automatic conversion of false to array" warning.
 - **Fix:** Delay anonymous data opt-in notice to 7 days after plugin activation.
 - **Enhancement:** Refactored the MeliPayamak gateway for improved reliability.
+- **New:** Display admin notice when the gateway version changes, required fields are missing, or the gateway is not configured.
 - **Enhancement:** Improved Kavenegar gateway to support sending template-based SMS messages with variable placeholders.
 
 = v7.0.3 - 2025-09-17 =

@@ -5,6 +5,7 @@ namespace WP_SMS;
 use Exception;
 use WP_SMS\Components\Logger;
 use WP_SMS\Components\RemoteRequest;
+use WP_SMS\Notice\NoticeManager;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -420,7 +421,9 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
         // Using default gateway if does not set gateway in the setting
         if (empty($gateway_name)) {
-            return new $class_name();
+            $sms = new $class_name();
+
+            return $sms;
         }
 
         if (is_file(WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $gateway_name . '.php')) {
@@ -428,7 +431,9 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         } elseif (is_file(WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.php')) {
             include_once(WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.php');
         } else {
-            return new $class_name();
+            $sms = new $class_name();
+
+            return $sms;
         }
 
         // Create object from the gateway class
@@ -461,6 +466,9 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 $sms->from = trim(Option::getOption('gateway_sender_id'));
             }
         }
+
+        // Handle versioning
+        self::setupGatewayVersioning($sms, $gateway_name);
 
         // Show gateway help configuration in gateway page
         if ($sms->help) {
@@ -1490,5 +1498,42 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         }
 
         return null;
+    }
+
+    /**
+     * Handle gateway versioning and display admin notice if configuration requires attention.
+     *
+     * Compares the current gateway version with the stored version in options.
+     * Displays an admin notice if the gateway is not configured, credentials are invalid,
+     * or the gateway version has changed.
+     *
+     * @param object $sms The SMS gateway instance.
+     * @param string $gatewayName The current gateway name.
+     * @return void
+     */
+    protected static function setupGatewayVersioning($sms, $gatewayName)
+    {
+        $gw         = $gatewayName ?: 'unknown';
+        $currentVer = (isset($sms->version) && $sms->version !== '') ? (string)$sms->version : '1.0';
+
+        $storedVer      = Option::getOption('gateway_version');
+        $versionChanged = ($storedVer !== null && $storedVer !== $currentVer);
+
+        if ($versionChanged) {
+            $settingsLink = admin_url('admin.php?page=wp-sms-settings&tab=gateway');
+
+            $message = sprintf(
+                __('SMS gateway setup requires your attention. <a href="%1$s">Review and update your gateway settings</a> to ensure SMS messages are sent successfully.', 'wp-sms'),
+                esc_url($settingsLink)
+            );
+
+            $id = sprintf(
+                'gateway_attention_%s_%s',
+                sanitize_key($gw),
+                sanitize_key(str_replace('.', '_', $currentVer))
+            );
+
+            NoticeManager::getInstance()->registerNotice($id, wp_kses_post($message), true, false);
+        }
     }
 }
