@@ -8,7 +8,7 @@ import { getReportConfig } from '@/services/reports/get-report-config'
 import { getReportData } from '@/services/reports/get-report-data'
 
 import { ActivityFilters } from './-components/activity-filters'
-import { DeliveryQualityWidget } from './-components/delivery-quality-widget'
+import { DeliveryQuality } from './-components/delivery-quality'
 import { FunnelWidget } from './-components/funnel-widget'
 import { GeoHeatmapWidget } from './-components/geo-heatmap-widget'
 import { Kpi } from './-components/kpi'
@@ -81,7 +81,7 @@ function RouteComponent() {
           return <MethodMix label={widget.label} data={reportData.method_mix} />
         }
         if (widget.id === 'delivery_quality' && reportData.delivery_quality) {
-          return <DeliveryQualityWidget label={widget.label} data={reportData.delivery_quality} />
+          return <DeliveryQuality label={widget.label} data={reportData.delivery_quality} />
         }
         break
 
