@@ -12,7 +12,7 @@ import { DeliveryQualityWidget } from './-components/delivery-quality-widget'
 import { FunnelWidget } from './-components/funnel-widget'
 import { GeoHeatmapWidget } from './-components/geo-heatmap-widget'
 import { Kpi } from './-components/kpi'
-import { MethodMixWidget } from './-components/method-mix-widget'
+import { MethodMix } from './-components/method-mix'
 import { VolumeChartWidget } from './-components/volume-chart-widget'
 
 export const Route = createFileRoute('/otp/_layout/activity')({
@@ -78,7 +78,7 @@ function RouteComponent() {
           return <VolumeChartWidget label={widget.label} data={reportData.volume_over_time} />
         }
         if (widget.id === 'method_mix' && reportData.method_mix) {
-          return <MethodMixWidget label={widget.label} data={reportData.method_mix} />
+          return <MethodMix label={widget.label} data={reportData.method_mix} />
         }
         if (widget.id === 'delivery_quality' && reportData.delivery_quality) {
           return <DeliveryQualityWidget label={widget.label} data={reportData.delivery_quality} />
