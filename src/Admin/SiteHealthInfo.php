@@ -5,7 +5,6 @@ namespace WP_SMS\Admin;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Gateway;
-use WP_SMS\Option as WPSmsOptionsManager;
 use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Option;
 
@@ -37,7 +36,7 @@ class SiteHealthInfo
         $pluginHandler = new PluginHandler();
 
         $yesNo = function ($value) {
-            return $value ? __('Enabled', 'wp-sms') : __('Disabled', 'wp-sms');
+            return $value ? esc_html__('Enabled', 'wp-sms') : esc_html__('Disabled', 'wp-sms');
         };
 
         $yesNoDebug = function ($value) {
@@ -59,84 +58,84 @@ class SiteHealthInfo
 
         $ver                        = defined('WP_SMS_VERSION') ? WP_SMS_VERSION : 'N/A';
         $settings['plugin_version'] = array(
-            'label' => __('Plugin Version', 'wp-sms'),
-            'value' => $ver === 'N/A' ? __('N/A', 'wp-sms') : $ver,
+            'label' => esc_html__('Plugin Version', 'wp-sms'),
+            'value' => $ver === 'N/A' ? esc_html__('N/A', 'wp-sms') : $ver,
             'debug' => $ver === 'N/A' ? 'N/A' : $ver,
         );
 
         $dbv                    = get_option('wp_sms_db_version', 'Not Set');
         $settings['db_version'] = array(
-            'label' => __('Database Version', 'wp-sms'),
-            'value' => $dbv === 'Not Set' ? __('Not Set', 'wp-sms') : $dbv,
+            'label' => esc_html__('Database Version', 'wp-sms'),
+            'value' => $dbv === 'Not Set' ? esc_html__('Not Set', 'wp-sms') : $dbv,
             'debug' => $dbv === 'Not Set' ? 'Not Set' : $dbv,
         );
 
         $mfsRaw                          = $raw('add_mobile_field', 'Not Set');
-        $mfsVal                          = $mfsRaw === 'Not Set' ? __('Not Set', 'wp-sms') : $toCamelCase($mfsRaw);
+        $mfsVal                          = $mfsRaw === 'Not Set' ? esc_html__('Not Set', 'wp-sms') : $toCamelCase($mfsRaw);
         $mfsDbg                          = $mfsRaw === 'Not Set' ? 'Not Set' : $toCamelCase($mfsRaw);
         $settings['mobile_field_source'] = array(
-            'label' => __('Mobile Number Field Source', 'wp-sms'),
+            'label' => esc_html__('Mobile Number Field Source', 'wp-sms'),
             'value' => $mfsVal,
             'debug' => $mfsDbg,
         );
 
         $mandatoryRaw                       = $raw('optional_mobile_field');
-        $mandatoryVal                       = ($mandatoryRaw === '0') ? __('Required', 'wp-sms') : __('Optional', 'wp-sms');
+        $mandatoryVal                       = ($mandatoryRaw === '0') ? esc_html__('Required', 'wp-sms') : esc_html__('Optional', 'wp-sms');
         $mandatoryDbg                       = ($mandatoryRaw === '0') ? 'Required' : 'Optional';
         $settings['mobile_field_mandatory'] = array(
-            'label' => __('Mobile Field Mandatory Status', 'wp-sms'),
+            'label' => esc_html__('Mobile Field Mandatory Status', 'wp-sms'),
             'value' => $mandatoryVal,
             'debug' => $mandatoryDbg,
         );
 
-        $onlyCountriesRaw           = (array)$raw('international_mobile_only_countries');
-        $onlyCountriesVal           = $onlyCountriesRaw ? implode(', ', $onlyCountriesRaw) : __('Not Set', 'wp-sms');
-        $onlyCountriesDbg           = $onlyCountriesRaw ? implode(', ', $onlyCountriesRaw) : 'Not Set';
+        $onlyCountriesRaw           = array_filter((array)$raw('international_mobile_only_countries'));
+        $onlyCountriesVal           = !empty($onlyCountriesRaw) ? implode(', ', $onlyCountriesRaw) : esc_html__('Not Set', 'wp-sms');
+        $onlyCountriesDbg           = !empty($onlyCountriesRaw) ? implode(', ', $onlyCountriesRaw) : 'Not Set';
         $settings['only_countries'] = array(
-            'label' => __('Only Countries', 'wp-sms'),
+            'label' => esc_html__('Only Countries', 'wp-sms'),
             'value' => $onlyCountriesVal,
             'debug' => $onlyCountriesDbg,
         );
 
-        $prefCountriesRaw                = (array)$raw('international_mobile_preferred_countries');
-        $prefCountriesVal                = $prefCountriesRaw ? implode(', ', $prefCountriesRaw) : __('Not Set', 'wp-sms');
-        $prefCountriesDbg                = $prefCountriesRaw ? implode(', ', $prefCountriesRaw) : 'Not Set';
+        $prefCountriesRaw                = array_filter((array)$raw('international_mobile_preferred_countries'));
+        $prefCountriesVal                = !empty($prefCountriesRaw) ? implode(', ', $prefCountriesRaw) : esc_html__('Not Set', 'wp-sms');
+        $prefCountriesDbg                = !empty($prefCountriesRaw) ? implode(', ', $prefCountriesRaw) : 'Not Set';
         $settings['preferred_countries'] = array(
-            'label' => __('Preferred Countries', 'wp-sms'),
+            'label' => esc_html__('Preferred Countries', 'wp-sms'),
             'value' => $prefCountriesVal,
             'debug' => $prefCountriesDbg,
         );
 
         $gwNameRaw                = $raw('gateway_name', 'Not Configured');
-        $gwNameVal                = $gwNameRaw === 'Not Configured' ? __('Not Configured', 'wp-sms') : $toCamelCase($gwNameRaw);
+        $gwNameVal                = $gwNameRaw === 'Not Configured' ? esc_html__('Not Configured', 'wp-sms') : $toCamelCase($gwNameRaw);
         $gwNameDbg                = $gwNameRaw === 'Not Configured' ? 'Not Configured' : $toCamelCase($gwNameRaw);
         $settings['gateway_name'] = array(
-            'label' => __('SMS Gateway Name', 'wp-sms'),
+            'label' => esc_html__('SMS Gateway Name', 'wp-sms'),
             'value' => $gwNameVal,
             'debug' => $gwNameDbg,
         );
 
         $gwStatusRaw                = Gateway::status(true);
         $settings['gateway_status'] = array(
-            'label' => __('SMS Gateway Status', 'wp-sms'),
-            'value' => $gwStatusRaw ? __('Active', 'wp-sms') : __('Inactive', 'wp-sms'),
+            'label' => esc_html__('SMS Gateway Status', 'wp-sms'),
+            'value' => $gwStatusRaw ? esc_html__('Active', 'wp-sms') : esc_html__('Inactive', 'wp-sms'),
             'debug' => $gwStatusRaw ? 'Active' : 'Inactive',
         );
 
         $settings['incoming_message'] = array(
-            'label' => __('SMS Gateway Incoming Message', 'wp-sms'),
+            'label' => esc_html__('SMS Gateway Incoming Message', 'wp-sms'),
             'value' => $yesNo($sms->supportIncoming),
             'debug' => $yesNoDebug($sms->supportIncoming),
         );
 
         $settings['send_bulk_sms'] = array(
-            'label' => __('SMS Gateway Send Bulk SMS', 'wp-sms'),
+            'label' => esc_html__('SMS Gateway Send Bulk SMS', 'wp-sms'),
             'value' => $yesNo($sms->bulk_send),
             'debug' => $yesNoDebug($sms->bulk_send),
         );
 
         $settings['send_mms'] = array(
-            'label' => __('SMS Gateway Send MMS', 'wp-sms'),
+            'label' => esc_html__('SMS Gateway Send MMS', 'wp-sms'),
             'value' => $yesNo($sms->supportMedia),
             'debug' => $yesNoDebug($sms->supportMedia),
         );
@@ -154,25 +153,25 @@ class SiteHealthInfo
         );
 
         $deliveryKey   = $raw('sms_delivery_method', 'not_set');
-        $deliveryLabel = $deliveryOptions[$deliveryKey] ?? __('Not Set', 'wp-sms');
+        $deliveryLabel = $deliveryOptions[$deliveryKey] ?? esc_html__('Not Set', 'wp-sms');
         $deliveryDebug = $deliveryOptionsDebug[$deliveryKey] ?? 'Not Set';
 
         $settings['delivery_method'] = array(
-            'label' => __('SMS Gateway Delivery Method', 'wp-sms'),
+            'label' => esc_html__('SMS Gateway Delivery Method', 'wp-sms'),
             'value' => $deliveryLabel,
             'debug' => $deliveryDebug,
         );
 
         $sendUnicodeRaw                = $raw('send_unicode');
         $settings['unicode_messaging'] = array(
-            'label' => __('SMS Gateway Unicode Messaging', 'wp-sms'),
+            'label' => esc_html__('SMS Gateway Unicode Messaging', 'wp-sms'),
             'value' => $yesNo($sendUnicodeRaw),
             'debug' => $yesNoDebug($sendUnicodeRaw),
         );
 
         $cleanNumbersRaw               = $raw('clean_numbers');
         $settings['number_formatting'] = array(
-            'label' => __('SMS Gateway Number Formatting', 'wp-sms'),
+            'label' => esc_html__('SMS Gateway Number Formatting', 'wp-sms'),
             'value' => $yesNo($cleanNumbersRaw),
             'debug' => $yesNoDebug($cleanNumbersRaw),
         );
@@ -188,7 +187,7 @@ class SiteHealthInfo
         }
 
         $settings['restrict_to_local'] = array(
-            'label' => __('SMS Gateway Restrict to Local Numbers', 'wp-sms'),
+            'label' => esc_html__('SMS Gateway Restrict to Local Numbers', 'wp-sms'),
             'value' => $restrictTextVal,
             'debug' => $restrictTextDbg,
         );
@@ -196,77 +195,77 @@ class SiteHealthInfo
 
         $newsletterGroupsRaw          = $raw('newsletter_form_groups');
         $settings['group_visibility'] = array(
-            'label' => __('SMS Newsletter Group Visibility in Form', 'wp-sms'),
+            'label' => esc_html__('SMS Newsletter Group Visibility in Form', 'wp-sms'),
             'value' => $yesNo($newsletterGroupsRaw),
             'debug' => $yesNoDebug($newsletterGroupsRaw),
         );
 
         $newsletterMultipleRaw       = $raw('newsletter_form_multiple_select');
         $settings['group_selection'] = array(
-            'label' => __('SMS Newsletter Group Selection', 'wp-sms'),
+            'label' => esc_html__('SMS Newsletter Group Selection', 'wp-sms'),
             'value' => $yesNo($newsletterMultipleRaw),
             'debug' => $yesNoDebug($newsletterMultipleRaw),
         );
 
         $newsletterVerifyRaw                   = $raw('newsletter_form_verify');
         $settings['subscription_confirmation'] = array(
-            'label' => __('SMS Newsletter Subscription Confirmation', 'wp-sms'),
+            'label' => esc_html__('SMS Newsletter Subscription Confirmation', 'wp-sms'),
             'value' => $yesNo($newsletterVerifyRaw),
             'debug' => $yesNoDebug($newsletterVerifyRaw),
         );
 
         $chatboxBtnRaw              = $raw('chatbox_message_button');
         $settings['message_button'] = array(
-            'label' => __('Message Button Status', 'wp-sms'),
+            'label' => esc_html__('Message Button Status', 'wp-sms'),
             'value' => $yesNo($chatboxBtnRaw),
             'debug' => $yesNoDebug($chatboxBtnRaw),
         );
 
         $reportStatsRaw                  = $raw('report_wpsms_statistics');
         $settings['performance_reports'] = array(
-            'label' => __('SMS Performance Reports', 'wp-sms'),
+            'label' => esc_html__('SMS Performance Reports', 'wp-sms'),
             'value' => $yesNo($reportStatsRaw),
             'debug' => $yesNoDebug($reportStatsRaw),
         );
 
         $shortUrlRaw              = $raw('short_url_status');
         $settings['shorten_urls'] = array(
-            'label' => __('Shorten URLs', 'wp-sms'),
+            'label' => esc_html__('Shorten URLs', 'wp-sms'),
             'value' => $yesNo($shortUrlRaw),
             'debug' => $yesNoDebug($shortUrlRaw),
         );
 
         $recaptchaRaw          = $raw('g_recaptcha_status');
         $settings['recaptcha'] = array(
-            'label' => __('Google reCAPTCHA Integration', 'wp-sms'),
+            'label' => esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
             'value' => $yesNo($recaptchaRaw),
             'debug' => $yesNoDebug($recaptchaRaw),
         );
 
-        $loginSmsRaw                = WPSmsOptionsManager::getOption('login_sms', \true);
+        $loginSmsRaw                = Option::getOption('login_sms', \true);
         $settings['login_with_sms'] = array(
-            'label' => __('Login With SMS', 'wp-sms'),
+            'label' => esc_html__('Login With SMS', 'wp-sms'),
             'value' => $yesNo($loginSmsRaw),
             'debug' => $yesNoDebug($loginSmsRaw),
         );
 
-        $twoFactorRaw           = WPSmsOptionsManager::getOption('mobile_verify', \true);
+        $twoFactorRaw           = Option::getOption('mobile_verify', \true);
         $settings['two_factor'] = array(
-            'label' => __('Two-Factor Authentication with SMS', 'wp-sms'),
+            'label' => esc_html__('Two-Factor Authentication with SMS', 'wp-sms'),
             'value' => $yesNo($twoFactorRaw),
             'debug' => $yesNoDebug($twoFactorRaw),
         );
 
-        $autoRegisterRaw                    = WPSmsOptionsManager::getOption('register_sms', \true);
+        $autoRegisterRaw                    = Option::getOption('register_sms', \true);
         $settings['auto_register_on_login'] = array(
-            'label' => __('Create User on SMS Login', 'wp-sms'),
+            'label' => esc_html__('Create User on SMS Login', 'wp-sms'),
             'value' => $yesNo($autoRegisterRaw),
             'debug' => $yesNoDebug($autoRegisterRaw),
         );
 
         $cf7MetaboxRaw           = $raw('cf7_metabox');
         $settings['cf7_metabox'] = array(
-            'label' => __('Contact Form 7 Metabox', 'wp-sms'),
+            'label' => esc_html__('Contact Form 7 Metabox', 'wp-sms'),
             'value' => $yesNo($cf7MetaboxRaw),
             'debug' => $yesNoDebug($cf7MetaboxRaw),
         );
@@ -279,7 +278,7 @@ class SiteHealthInfo
     {
         $pluginHandler = new PluginHandler();
         $yesNo         = function ($val) {
-            return in_array($val, [true, '1', 1, 'yes'], true) ? __('Enabled', 'wp-sms') : __('Disabled', 'wp-sms');
+            return in_array($val, [true, '1', 1, 'yes'], true) ? esc_html__('Enabled', 'wp-sms') : esc_html__('Disabled', 'wp-sms');
         };
         $yesNoDebug    = function ($val) {
             return in_array($val, [true, '1', 1, 'yes'], true) ? 'Enabled' : 'Disabled';
@@ -289,8 +288,8 @@ class SiteHealthInfo
         // Gravity Forms
         if (class_exists('RGFormsModel') && LicenseHelper::isPluginLicensedAndActive()) {
             $settings['gravityforms_integration'] = [
-                'label' => __('Gravity Forms Integration', 'wp-sms'),
-                'value' => __('Enabled', 'wp-sms'),
+                'label' => esc_html__('Gravity Forms Integration', 'wp-sms'),
+                'value' => esc_html__('Enabled', 'wp-sms'),
                 'debug' => 'Enabled',
             ];
         }
@@ -298,8 +297,8 @@ class SiteHealthInfo
         // Quform
         if (class_exists('Quform_Repository') && LicenseHelper::isPluginLicensedAndActive()) {
             $settings['quform_integration'] = [
-                'label' => __('Quform Integration', 'wp-sms'),
-                'value' => __('Enabled', 'wp-sms'),
+                'label' => esc_html__('Quform Integration', 'wp-sms'),
+                'value' => esc_html__('Enabled', 'wp-sms'),
                 'debug' => 'Enabled',
             ];
         }
@@ -307,28 +306,28 @@ class SiteHealthInfo
         // EDD
         if (class_exists('Easy_Digital_Downloads') && LicenseHelper::isPluginLicensedAndActive()) {
             $settings['edd_integration'] = [
-                'label' => __('EDD Integration', 'wp-sms'),
-                'value' => __('Enabled', 'wp-sms'),
+                'label' => esc_html__('EDD Integration', 'wp-sms'),
+                'value' => esc_html__('Enabled', 'wp-sms'),
                 'debug' => 'Enabled',
             ];
 
-            $eddMobileFieldRaw            = WPSmsOptionsManager::getOption('edd_mobile_field', true);
+            $eddMobileFieldRaw            = Option::getOption('edd_mobile_field', true);
             $settings['edd_mobile_field'] = [
-                'label' => __('EDD Mobile Field', 'wp-sms'),
+                'label' => esc_html__('EDD Mobile Field', 'wp-sms'),
                 'value' => $yesNo($eddMobileFieldRaw),
                 'debug' => $yesNoDebug($eddMobileFieldRaw),
             ];
 
-            $eddNotifyOrderRaw            = WPSmsOptionsManager::getOption('edd_notify_order_enable', true);
+            $eddNotifyOrderRaw            = Option::getOption('edd_notify_order_enable', true);
             $settings['edd_notify_order'] = [
-                'label' => __('EDD New Order Notifications', 'wp-sms'),
+                'label' => esc_html__('EDD New Order Notifications', 'wp-sms'),
                 'value' => $yesNo($eddNotifyOrderRaw),
                 'debug' => $yesNoDebug($eddNotifyOrderRaw),
             ];
 
-            $eddNotifyCustomerRaw            = WPSmsOptionsManager::getOption('edd_notify_customer_enable', true);
+            $eddNotifyCustomerRaw            = Option::getOption('edd_notify_customer_enable', true);
             $settings['edd_notify_customer'] = [
-                'label' => __('EDD Customer Notifications', 'wp-sms'),
+                'label' => esc_html__('EDD Customer Notifications', 'wp-sms'),
                 'value' => $yesNo($eddNotifyCustomerRaw),
                 'debug' => $yesNoDebug($eddNotifyCustomerRaw),
             ];
@@ -337,42 +336,42 @@ class SiteHealthInfo
         // Job Manager
         if (class_exists('WP_Job_Manager') && LicenseHelper::isPluginLicensedAndActive()) {
             $settings['job_manager_integration'] = [
-                'label' => __('WP Job Manager Integration', 'wp-sms'),
-                'value' => __('Enabled', 'wp-sms'),
+                'label' => esc_html__('WP Job Manager Integration', 'wp-sms'),
+                'value' => esc_html__('Enabled', 'wp-sms'),
                 'debug' => 'Enabled',
             ];
 
-            $jobMobileFieldRaw            = WPSmsOptionsManager::getOption('job_mobile_field', true);
+            $jobMobileFieldRaw            = Option::getOption('job_mobile_field', true);
             $settings['job_mobile_field'] = [
-                'label' => __('Job Mobile Field', 'wp-sms'),
+                'label' => esc_html__('Job Mobile Field', 'wp-sms'),
                 'value' => $yesNo($jobMobileFieldRaw),
                 'debug' => $yesNoDebug($jobMobileFieldRaw),
             ];
 
-            $jobDisplayMobileRaw            = WPSmsOptionsManager::getOption('job_display_mobile_number', true);
+            $jobDisplayMobileRaw            = Option::getOption('job_display_mobile_number', true);
             $settings['job_display_mobile'] = [
-                'label' => __('Display Mobile Number', 'wp-sms'),
+                'label' => esc_html__('Display Mobile Number', 'wp-sms'),
                 'value' => $yesNo($jobDisplayMobileRaw),
                 'debug' => $yesNoDebug($jobDisplayMobileRaw),
             ];
 
-            $jobNotifyStatusRaw                   = WPSmsOptionsManager::getOption('job_notify_status', true);
+            $jobNotifyStatusRaw                   = Option::getOption('job_notify_status', true);
             $settings['job_new_job_notification'] = [
-                'label' => __('New Job Notification', 'wp-sms'),
+                'label' => esc_html__('New Job Notification', 'wp-sms'),
                 'value' => $yesNo($jobNotifyStatusRaw),
                 'debug' => $yesNoDebug($jobNotifyStatusRaw),
             ];
 
-            $jobNotifyReceiverRaw                  = WPSmsOptionsManager::getOption('job_notify_receiver', true);
+            $jobNotifyReceiverRaw                  = Option::getOption('job_notify_receiver', true);
             $settings['job_notification_receiver'] = [
-                'label' => __('Job Notification Receiver', 'wp-sms'),
+                'label' => esc_html__('Job Notification Receiver', 'wp-sms'),
                 'value' => $jobNotifyReceiverRaw,
                 'debug' => $jobNotifyReceiverRaw,
             ];
 
-            $jobEmployerNotifRaw                   = WPSmsOptionsManager::getOption('job_notify_employer_status', true);
+            $jobEmployerNotifRaw                   = Option::getOption('job_notify_employer_status', true);
             $settings['job_employer_notification'] = [
-                'label' => __('Employer Notification', 'wp-sms'),
+                'label' => esc_html__('Employer Notification', 'wp-sms'),
                 'value' => $yesNo($jobEmployerNotifRaw),
                 'debug' => $yesNoDebug($jobEmployerNotifRaw),
             ];
@@ -381,42 +380,42 @@ class SiteHealthInfo
         // Awesome Support
         if (class_exists('Awesome_Support') && LicenseHelper::isPluginLicensedAndActive()) {
             $settings['awesome_support_integration'] = [
-                'label' => __('Awesome Support Integration', 'wp-sms'),
-                'value' => __('Enabled', 'wp-sms'),
+                'label' => esc_html__('Awesome Support Integration', 'wp-sms'),
+                'value' => esc_html__('Enabled', 'wp-sms'),
                 'debug' => 'Enabled',
             ];
 
-            $asOpenRaw                              = WPSmsOptionsManager::getOption('as_notify_open_ticket_status', true);
+            $asOpenRaw                              = Option::getOption('as_notify_open_ticket_status', true);
             $settings['as_new_ticket_notification'] = [
-                'label' => __('New Ticket Notification', 'wp-sms'),
+                'label' => esc_html__('New Ticket Notification', 'wp-sms'),
                 'value' => $yesNo($asOpenRaw),
                 'debug' => $yesNoDebug($asOpenRaw),
             ];
 
-            $asAdminReplyRaw                         = WPSmsOptionsManager::getOption('as_notify_admin_reply_ticket_status', true);
+            $asAdminReplyRaw                         = Option::getOption('as_notify_admin_reply_ticket_status', true);
             $settings['as_admin_reply_notification'] = [
-                'label' => __('Admin Reply Notification', 'wp-sms'),
+                'label' => esc_html__('Admin Reply Notification', 'wp-sms'),
                 'value' => $yesNo($asAdminReplyRaw),
                 'debug' => $yesNoDebug($asAdminReplyRaw),
             ];
 
-            $asUserReplyRaw                         = WPSmsOptionsManager::getOption('as_notify_user_reply_ticket_status', true);
+            $asUserReplyRaw                         = Option::getOption('as_notify_user_reply_ticket_status', true);
             $settings['as_user_reply_notification'] = [
-                'label' => __('User Reply Notification', 'wp-sms'),
+                'label' => esc_html__('User Reply Notification', 'wp-sms'),
                 'value' => $yesNo($asUserReplyRaw),
                 'debug' => $yesNoDebug($asUserReplyRaw),
             ];
 
-            $asUpdateRaw                               = WPSmsOptionsManager::getOption('as_notify_update_ticket_status', true);
+            $asUpdateRaw                               = Option::getOption('as_notify_update_ticket_status', true);
             $settings['as_status_update_notification'] = [
-                'label' => __('Status Update Notification', 'wp-sms'),
+                'label' => esc_html__('Status Update Notification', 'wp-sms'),
                 'value' => $yesNo($asUpdateRaw),
                 'debug' => $yesNoDebug($asUpdateRaw),
             ];
 
-            $asCloseRaw                               = WPSmsOptionsManager::getOption('as_notify_close_ticket_status', true);
+            $asCloseRaw                               = Option::getOption('as_notify_close_ticket_status', true);
             $settings['as_ticket_close_notification'] = [
-                'label' => __('Ticket Close Notification', 'wp-sms'),
+                'label' => esc_html__('Ticket Close Notification', 'wp-sms'),
                 'value' => $yesNo($asCloseRaw),
                 'debug' => $yesNoDebug($asCloseRaw),
             ];
@@ -425,14 +424,14 @@ class SiteHealthInfo
         // Ultimate Member
         if (function_exists('um_user') && LicenseHelper::isPluginLicensedAndActive()) {
             $settings['ultimate_member_integration'] = [
-                'label' => __('Ultimate Member Integration', 'wp-sms'),
-                'value' => __('Enabled', 'wp-sms'),
+                'label' => esc_html__('Ultimate Member Integration', 'wp-sms'),
+                'value' => esc_html__('Enabled', 'wp-sms'),
                 'debug' => 'Enabled',
             ];
 
-            $umApprovalRaw                        = WPSmsOptionsManager::getOption('um_send_sms_after_approval', true);
+            $umApprovalRaw                        = Option::getOption('um_send_sms_after_approval', true);
             $settings['um_approval_notification'] = [
-                'label' => __('Ultimate Member User Approval Notification', 'wp-sms'),
+                'label' => esc_html__('Ultimate Member User Approval Notification', 'wp-sms'),
                 'value' => $yesNo($umApprovalRaw),
                 'debug' => $yesNoDebug($umApprovalRaw),
             ];
@@ -441,14 +440,14 @@ class SiteHealthInfo
         // Formidable Forms
         if (function_exists('is_plugin_active') && is_plugin_active('formidable/formidable.php')) {
             $settings['formidable_integration'] = [
-                'label' => __('Formidable Integration', 'wp-sms'),
-                'value' => __('Enabled', 'wp-sms'),
+                'label' => esc_html__('Formidable Integration', 'wp-sms'),
+                'value' => esc_html__('Enabled', 'wp-sms'),
                 'debug' => 'Enabled',
             ];
 
-            $formidableMetaboxRaw           = WPSmsOptionsManager::getOption('formidable_metabox');
+            $formidableMetaboxRaw           = Option::getOption('formidable_metabox');
             $settings['formidable_metabox'] = [
-                'label' => __('Formidable Metabox', 'wp-sms'),
+                'label' => esc_html__('Formidable Metabox', 'wp-sms'),
                 'value' => $yesNo($formidableMetaboxRaw),
                 'debug' => $yesNoDebug($formidableMetaboxRaw),
             ];
@@ -457,8 +456,8 @@ class SiteHealthInfo
         // Forminator
         if (class_exists('Forminator') && LicenseHelper::isPluginLicensedAndActive()) {
             $settings['forminator_integration'] = [
-                'label' => __('Forminator Integration', 'wp-sms'),
-                'value' => __('Enabled', 'wp-sms'),
+                'label' => esc_html__('Forminator Integration', 'wp-sms'),
+                'value' => esc_html__('Enabled', 'wp-sms'),
                 'debug' => 'Enabled',
             ];
         }
@@ -466,42 +465,42 @@ class SiteHealthInfo
         // BuddyPress
         if (function_exists('buddypress') && LicenseHelper::isPluginLicensedAndActive()) {
             $settings['buddypress_integration'] = [
-                'label' => __('BuddyPress Integration', 'wp-sms'),
-                'value' => __('Enabled', 'wp-sms'),
+                'label' => esc_html__('BuddyPress Integration', 'wp-sms'),
+                'value' => esc_html__('Enabled', 'wp-sms'),
                 'debug' => 'Enabled',
             ];
 
-            $bpWelcomeRaw               = WPSmsOptionsManager::getOption('bp_welcome_notification_enable', true);
+            $bpWelcomeRaw               = Option::getOption('bp_welcome_notification_enable', true);
             $settings['bp_welcome_sms'] = [
-                'label' => __('BuddyPress Welcome SMS', 'wp-sms'),
+                'label' => esc_html__('BuddyPress Welcome SMS', 'wp-sms'),
                 'value' => $yesNo($bpWelcomeRaw),
                 'debug' => $yesNoDebug($bpWelcomeRaw),
             ];
 
-            $bpMentionRaw                        = WPSmsOptionsManager::getOption('bp_mention_enable', true);
+            $bpMentionRaw                        = Option::getOption('bp_mention_enable', true);
             $settings['bp_mention_notification'] = [
-                'label' => __('BuddyPress Mention Alerts', 'wp-sms'),
+                'label' => esc_html__('BuddyPress Mention Alerts', 'wp-sms'),
                 'value' => $yesNo($bpMentionRaw),
                 'debug' => $yesNoDebug($bpMentionRaw),
             ];
 
-            $bpPmRaw                                     = WPSmsOptionsManager::getOption('bp_private_message_enable', true);
+            $bpPmRaw                                     = Option::getOption('bp_private_message_enable', true);
             $settings['bp_private_message_notification'] = [
-                'label' => __('BuddyPress Private Messages', 'wp-sms'),
+                'label' => esc_html__('BuddyPress Private Messages', 'wp-sms'),
                 'value' => $yesNo($bpPmRaw),
                 'debug' => $yesNoDebug($bpPmRaw),
             ];
 
-            $bpActReplyRaw                              = WPSmsOptionsManager::getOption('bp_comments_activity_enable', true);
+            $bpActReplyRaw                              = Option::getOption('bp_comments_activity_enable', true);
             $settings['bp_activity_reply_notification'] = [
-                'label' => __('BuddyPress Activity Replies', 'wp-sms'),
+                'label' => esc_html__('BuddyPress Activity Replies', 'wp-sms'),
                 'value' => $yesNo($bpActReplyRaw),
                 'debug' => $yesNoDebug($bpActReplyRaw),
             ];
 
-            $bpCmtReplyRaw                             = WPSmsOptionsManager::getOption('bp_comments_reply_enable', true);
+            $bpCmtReplyRaw                             = Option::getOption('bp_comments_reply_enable', true);
             $settings['bp_comment_reply_notification'] = [
-                'label' => __('BuddyPress Comment Replies', 'wp-sms'),
+                'label' => esc_html__('BuddyPress Comment Replies', 'wp-sms'),
                 'value' => $yesNo($bpCmtReplyRaw),
                 'debug' => $yesNoDebug($bpCmtReplyRaw),
             ];
@@ -510,71 +509,71 @@ class SiteHealthInfo
         // WooCommerce
         if (class_exists('WooCommerce') && LicenseHelper::isPluginLicensedAndActive()) {
             $settings['woocommerce_integration'] = [
-                'label' => __('WooCommerce Integration', 'wp-sms'),
-                'value' => __('Enabled', 'wp-sms'),
+                'label' => esc_html__('WooCommerce Integration', 'wp-sms'),
+                'value' => esc_html__('Enabled', 'wp-sms'),
                 'debug' => 'Enabled',
             ];
 
-            $wcMetaBoxRaw            = WPSmsOptionsManager::getOption('wc_meta_box_enable', true);
+            $wcMetaBoxRaw            = Option::getOption('wc_meta_box_enable', true);
             $settings['wc_meta_box'] = [
-                'label' => __('WooCommerce Order Meta Box', 'wp-sms'),
+                'label' => esc_html__('WooCommerce Order Meta Box', 'wp-sms'),
                 'value' => $yesNo($wcMetaBoxRaw),
                 'debug' => $yesNoDebug($wcMetaBoxRaw),
             ];
 
-            $wcNotifyProductRaw            = WPSmsOptionsManager::getOption('wc_notify_product_enable', true);
+            $wcNotifyProductRaw            = Option::getOption('wc_notify_product_enable', true);
             $settings['wc_notify_product'] = [
-                'label' => __('WooCommerce New Product Notification', 'wp-sms'),
+                'label' => esc_html__('WooCommerce New Product Notification', 'wp-sms'),
                 'value' => $yesNo($wcNotifyProductRaw),
                 'debug' => $yesNoDebug($wcNotifyProductRaw),
             ];
 
-            $wcNotifyOrderRaw            = WPSmsOptionsManager::getOption('wc_notify_order_enable', true);
+            $wcNotifyOrderRaw            = Option::getOption('wc_notify_order_enable', true);
             $settings['wc_notify_order'] = [
-                'label' => __('WooCommerce New Order Notification', 'wp-sms'),
+                'label' => esc_html__('WooCommerce New Order Notification', 'wp-sms'),
                 'value' => $yesNo($wcNotifyOrderRaw),
                 'debug' => $yesNoDebug($wcNotifyOrderRaw),
             ];
 
-            $wcNotifyCustomerRaw            = WPSmsOptionsManager::getOption('wc_notify_customer_enable', true);
+            $wcNotifyCustomerRaw            = Option::getOption('wc_notify_customer_enable', true);
             $settings['wc_notify_customer'] = [
-                'label' => __('WooCommerce Customer Order Notification', 'wp-sms'),
+                'label' => esc_html__('WooCommerce Customer Order Notification', 'wp-sms'),
                 'value' => $yesNo($wcNotifyCustomerRaw),
                 'debug' => $yesNoDebug($wcNotifyCustomerRaw),
             ];
 
-            $wcNotifyStockRaw            = WPSmsOptionsManager::getOption('wc_notify_stock_enable', true);
+            $wcNotifyStockRaw            = Option::getOption('wc_notify_stock_enable', true);
             $settings['wc_notify_stock'] = [
-                'label' => __('WooCommerce Low Stock Notification', 'wp-sms'),
+                'label' => esc_html__('WooCommerce Low Stock Notification', 'wp-sms'),
                 'value' => $yesNo($wcNotifyStockRaw),
                 'debug' => $yesNoDebug($wcNotifyStockRaw),
             ];
 
-            $wcCheckoutConfirmRaw                 = WPSmsOptionsManager::getOption('wc_checkout_confirmation_checkbox_enabled', true);
+            $wcCheckoutConfirmRaw                 = Option::getOption('wc_checkout_confirmation_checkbox_enabled', true);
             $settings['wc_checkout_confirmation'] = [
-                'label' => __('WooCommerce Checkout Confirmation Checkbox', 'wp-sms'),
+                'label' => esc_html__('WooCommerce Checkout Confirmation Checkbox', 'wp-sms'),
                 'value' => $yesNo($wcCheckoutConfirmRaw),
                 'debug' => $yesNoDebug($wcCheckoutConfirmRaw),
             ];
 
-            $wcNotifyStatusRaw            = WPSmsOptionsManager::getOption('wc_notify_status_enable', true);
+            $wcNotifyStatusRaw            = Option::getOption('wc_notify_status_enable', true);
             $settings['wc_notify_status'] = [
-                'label' => __('WooCommerce Order Status Notification', 'wp-sms'),
+                'label' => esc_html__('WooCommerce Order Status Notification', 'wp-sms'),
                 'value' => $yesNo($wcNotifyStatusRaw),
                 'debug' => $yesNoDebug($wcNotifyStatusRaw),
             ];
 
-            $wcNotifyByStatusRaw             = WPSmsOptionsManager::getOption('wc_notify_by_status_enable', true);
+            $wcNotifyByStatusRaw             = Option::getOption('wc_notify_by_status_enable', true);
             $settings['wc_notify_by_status'] = [
-                'label' => __('WooCommerce Specific Order Status Notification', 'wp-sms'),
+                'label' => esc_html__('WooCommerce Specific Order Status Notification', 'wp-sms'),
                 'value' => $yesNo($wcNotifyByStatusRaw),
                 'debug' => $yesNoDebug($wcNotifyByStatusRaw),
             ];
 
-            $statusContent                      = WPSmsOptionsManager::getOption('wc_notify_by_status_content', true);
+            $statusContent                      = Option::getOption('wc_notify_by_status_content', true);
             $statusCount                        = is_array($statusContent) ? count($statusContent) : 0;
             $settings['wc_notify_status_count'] = [
-                'label' => __('WooCommerce Configured Status Notifications', 'wp-sms'),
+                'label' => esc_html__('WooCommerce Configured Status Notifications', 'wp-sms'),
                 'value' => $statusCount,
                 'debug' => (string)$statusCount,
             ];
@@ -609,99 +608,217 @@ class SiteHealthInfo
         return $settings;
     }
 
+    /**
+     * Format duration array (days, hours, minutes) into human readable string.
+     *
+     * @param mixed $raw
+     * @return array ['value' => string, 'debug' => string]
+     */
+    private function formatDurationValue($raw)
+    {
+        if (!is_array($raw)) {
+            return array('value' => esc_html__('Not Set', 'wp-sms'), 'debug' => 'Not Set');
+        }
+
+        $partsVal = array();
+        $partsDbg = array();
+
+        $append = function ($key, $singular, $plural) use ($raw, &$partsVal, &$partsDbg) {
+            if (!empty($raw[$key]) && $raw[$key] !== '0') {
+                $n          = (int)$raw[$key];
+                $partsVal[] = $raw[$key] . ' ' . _n($singular, $plural, $n, 'wp-sms');
+                $partsDbg[] = $raw[$key] . ' ' . ($n === 1 ? $singular : $plural);
+            }
+        };
+
+        $append('days', 'day', 'days');
+        $append('hours', 'hour', 'hours');
+        $append('minutes', 'minute', 'minutes');
+
+        if (empty($partsVal)) {
+            return array('value' => esc_html__('Not Set', 'wp-sms'), 'debug' => 'Not Set');
+        }
+
+        return array(
+            'value' => implode(', ', $partsVal),
+            'debug' => implode(', ', $partsDbg),
+        );
+    }
+
     private function getWooProSettings()
     {
         $woo = function ($key, $default = null) {
             return \WPSmsWooPro\Core\Helper::getOption($key, $default);
         };
 
-        $wooProFields = array(
-            'cart_abandonment_recovery_status'                    => __('WooPro: Cart Abandonment Recovery', 'wp-sms'),
-            'cart_abandonment_threshold'                          => __('WooPro: Cart abandonment threshold', 'wp-sms'),
-            'cart_overwrite_number_during_checkout'               => __('WooPro: Cart abandonment Overwrite mobile number', 'wp-sms'),
-            'cart_create_coupon'                                  => __('WooPro: Cart abandonment Create coupon', 'wp-sms'),
-            'cart_abandonment_send_sms_time_interval'             => __('WooPro: Cart abandonment Send sms after', 'wp-sms'),
-            'login_with_sms_status'                               => __('WooPro: Show Button in Login Page', 'wp-sms'),
-            'login_with_sms_forgot_status'                        => __('WooPro: Show Button in Forgot Password Page', 'wp-sms'),
-            'reset_password_status'                               => __('WooPro: Enable SMS Password Reset', 'wp-sms'),
-            'checkout_confirmation_checkbox_enabled'              => __('WooPro: Confirmation Checkbox', 'wp-sms'),
-            'checkout_mobile_verification_enabled'                => __('WooPro: Enable Mobile Verification', 'wp-sms'),
-            'register_user_via_sms_status'                        => __('WooPro: Automatic Registration via SMS', 'wp-sms'),
-            'checkout_mobile_verification_skip_logged_in_enabled' => __('WooPro: Skip Verification for Logged-In Users', 'wp-sms'),
-            'checkout_mobile_verification_countries_whitelist'    => __('WooPro: Required Countries for Mobile Verification', 'wp-sms'),
+        $labels = array(
+            'cart_abandonment_recovery_status'                    => esc_html__('WooPro: Cart Abandonment Recovery', 'wp-sms'),
+            'cart_abandonment_threshold'                          => esc_html__('WooPro: Cart abandonment threshold', 'wp-sms'),
+            'cart_overwrite_number_during_checkout'               => esc_html__('WooPro: Cart abandonment Overwrite mobile number', 'wp-sms'),
+            'cart_create_coupon'                                  => esc_html__('WooPro: Cart abandonment Create coupon', 'wp-sms'),
+            'cart_abandonment_send_sms_time_interval'             => esc_html__('WooPro: Cart abandonment Send sms after', 'wp-sms'),
+            'login_with_sms_status'                               => esc_html__('WooPro: Show Button in Login Page', 'wp-sms'),
+            'login_with_sms_forgot_status'                        => esc_html__('WooPro: Show Button in Forgot Password Page', 'wp-sms'),
+            'reset_password_status'                               => esc_html__('WooPro: Enable SMS Password Reset', 'wp-sms'),
+            'checkout_confirmation_checkbox_enabled'              => esc_html__('WooPro: Confirmation Checkbox', 'wp-sms'),
+            'checkout_mobile_verification_enabled'                => esc_html__('WooPro: Enable Mobile Verification', 'wp-sms'),
+            'register_user_via_sms_status'                        => esc_html__('WooPro: Automatic Registration via SMS', 'wp-sms'),
+            'checkout_mobile_verification_skip_logged_in_enabled' => esc_html__('WooPro: Skip Verification for Logged-In Users', 'wp-sms'),
+            'checkout_mobile_verification_countries_whitelist'    => esc_html__('WooPro: Required Countries for Mobile Verification', 'wp-sms'),
         );
 
-        foreach ($wooProFields as $key => $label) {
-            $raw   = $woo($key);
-            $value = '';
-            $debug = '';
+        $yesVals = array(true, '1', 1, 'yes');
+        $noVals  = array(false, '0', 0, 'no');
 
-            if ($key === 'register_user_via_sms_status' || $key === 'checkout_mobile_verification_skip_logged_in_enabled') {
-                $value = in_array($raw, array(true, '1', 1, 'yes'), true)
-                    ? __('Enabled', 'wp-sms')
-                    : __('Disabled', 'wp-sms');
-                $debug = in_array($raw, array(true, '1', 1, 'yes'), true) ? 'Enabled' : 'Disabled';
-
-            } elseif ($key === 'checkout_mobile_verification_countries_whitelist') {
-                $value = is_array($raw) && !empty($raw)
-                    ? implode(', ', $raw)
-                    : __('Not Set', 'wp-sms');
-                $debug = is_array($raw) && !empty($raw)
-                    ? implode(', ', $raw)
-                    : 'Not Set';
-
-            } else if ($key === 'cart_overwrite_number_during_checkout') {
-                $value = ($raw === 'skip')
-                    ? __('Do not update', 'wp-sms')
-                    : __('Update phone number', 'wp-sms');
-                $debug = ($raw === 'skip') ? 'Do not update' : 'Update phone number';
-
-            } elseif (in_array($key, array('cart_abandonment_threshold', 'cart_abandonment_send_sms_time_interval'), true)) {
-                if (is_array($raw)) {
-                    $partsVal = array();
-                    $partsDbg = array();
-                    if (!empty($raw['days']) && $raw['days'] !== '0') {
-                        $partsVal[] = $raw['days'] . ' ' . _n('day', 'days', (int)$raw['days'], 'wp-sms');
-                        $partsDbg[] = $raw['days'] . ' ' . ((int)$raw['days'] === 1 ? 'day' : 'days');
-                    }
-                    if (!empty($raw['hours']) && $raw['hours'] !== '0') {
-                        $partsVal[] = $raw['hours'] . ' ' . _n('hour', 'hours', (int)$raw['hours'], 'wp-sms');
-                        $partsDbg[] = $raw['hours'] . ' ' . ((int)$raw['hours'] === 1 ? 'hour' : 'hours');
-                    }
-                    if (!empty($raw['minutes']) && $raw['minutes'] !== '0') {
-                        $partsVal[] = $raw['minutes'] . ' ' . _n('minute', 'minutes', (int)$raw['minutes'], 'wp-sms');
-                        $partsDbg[] = $raw['minutes'] . ' ' . ((int)$raw['minutes'] === 1 ? 'minute' : 'minutes');
-                    }
-                    $value = $partsVal ? implode(', ', $partsVal) : __('Not Set', 'wp-sms');
-                    $debug = $partsDbg ? implode(', ', $partsDbg) : 'Not Set';
-                } else {
-                    $value = __('Not Set', 'wp-sms');
-                    $debug = 'Not Set';
-                }
-
-            } elseif (in_array($raw, array(true, '1', 1, 'yes'), true)) {
-                $value = __('Enabled', 'wp-sms');
-                $debug = 'Enabled';
-
-            } elseif (in_array($raw, array(false, '0', 0, 'no'), true)) {
-                $value = __('Disabled', 'wp-sms');
-                $debug = 'Disabled';
-
-            } elseif ($raw === null || $raw === '') {
-                $value = __('Not Set', 'wp-sms');
-                $debug = 'Not Set';
-
-            } else {
-                $value = (string)$raw;
-                $debug = (string)$raw;
+        $formatGeneric = function ($raw) use ($yesVals, $noVals) {
+            if (in_array($raw, $yesVals, true)) {
+                return array('value' => esc_html__('Enabled', 'wp-sms'), 'debug' => 'Enabled');
             }
+            if (in_array($raw, $noVals, true)) {
+                return array('value' => esc_html__('Disabled', 'wp-sms'), 'debug' => 'Disabled');
+            }
+            if ($raw === null || $raw === '') {
+                return array('value' => esc_html__('Not Set', 'wp-sms'), 'debug' => 'Not Set');
+            }
+            $str = (string)$raw;
+            return array('value' => $str, 'debug' => $str);
+        };
 
-            $settings['woo_' . $key] = array(
-                'label' => $label,
-                'value' => $value,
-                'debug' => $debug,
-            );
-        }
+        $settings = array();
+
+        // cart_abandonment_recovery_status (generic)
+        $raw = $woo('cart_abandonment_recovery_status');
+        $res = $formatGeneric($raw);
+        $settings['woo_cart_abandonment_recovery_status'] = array(
+            'label' => $labels['cart_abandonment_recovery_status'],
+            'value' => $res['value'],
+            'debug' => $res['debug'],
+        );
+
+        // cart_abandonment_threshold (duration)
+        $raw = $woo('cart_abandonment_threshold');
+        $res = $this->formatDurationValue($raw);
+        $settings['woo_cart_abandonment_threshold'] = array(
+            'label' => $labels['cart_abandonment_threshold'],
+            'value' => $res['value'],
+            'debug' => $res['debug'],
+        );
+
+        // cart_overwrite_number_during_checkout (special)
+        $raw  = $woo('cart_overwrite_number_during_checkout');
+        $skip = ($raw === 'skip');
+        $res  = array(
+            'value' => $skip ? esc_html__('Do not update', 'wp-sms') : esc_html__('Update phone number', 'wp-sms'),
+            'debug' => $skip ? 'Do not update' : 'Update phone number',
+        );
+        $settings['woo_cart_overwrite_number_during_checkout'] = array(
+            'label' => $labels['cart_overwrite_number_during_checkout'],
+            'value' => $res['value'],
+            'debug' => $res['debug'],
+        );
+
+        // cart_create_coupon (generic)
+        $raw = $woo('cart_create_coupon');
+        $res = $formatGeneric($raw);
+        $settings['woo_cart_create_coupon'] = array(
+            'label' => $labels['cart_create_coupon'],
+            'value' => $res['value'],
+            'debug' => $res['debug'],
+        );
+
+        // cart_abandonment_send_sms_time_interval (duration)
+        $raw = $woo('cart_abandonment_send_sms_time_interval');
+        $res = $this->formatDurationValue($raw);
+        $settings['woo_cart_abandonment_send_sms_time_interval'] = array(
+            'label' => $labels['cart_abandonment_send_sms_time_interval'],
+            'value' => $res['value'],
+            'debug' => $res['debug'],
+        );
+
+        // login_with_sms_status (generic)
+        $raw = $woo('login_with_sms_status');
+        $res = $formatGeneric($raw);
+        $settings['woo_login_with_sms_status'] = array(
+            'label' => $labels['login_with_sms_status'],
+            'value' => $res['value'],
+            'debug' => $res['debug'],
+        );
+
+        // login_with_sms_forgot_status (generic)
+        $raw = $woo('login_with_sms_forgot_status');
+        $res = $formatGeneric($raw);
+        $settings['woo_login_with_sms_forgot_status'] = array(
+            'label' => $labels['login_with_sms_forgot_status'],
+            'value' => $res['value'],
+            'debug' => $res['debug'],
+        );
+
+        // reset_password_status (generic)
+        $raw = $woo('reset_password_status');
+        $res = $formatGeneric($raw);
+        $settings['woo_reset_password_status'] = array(
+            'label' => $labels['reset_password_status'],
+            'value' => $res['value'],
+            'debug' => $res['debug'],
+        );
+
+        // checkout_confirmation_checkbox_enabled (generic)
+        $raw = $woo('checkout_confirmation_checkbox_enabled');
+        $res = $formatGeneric($raw);
+        $settings['woo_checkout_confirmation_checkbox_enabled'] = array(
+            'label' => $labels['checkout_confirmation_checkbox_enabled'],
+            'value' => $res['value'],
+            'debug' => $res['debug'],
+        );
+
+        // checkout_mobile_verification_enabled (generic)
+        $raw = $woo('checkout_mobile_verification_enabled');
+        $res = $formatGeneric($raw);
+        $settings['woo_checkout_mobile_verification_enabled'] = array(
+            'label' => $labels['checkout_mobile_verification_enabled'],
+            'value' => $res['value'],
+            'debug' => $res['debug'],
+        );
+
+        // register_user_via_sms_status (enabled/disabled only)
+        $raw     = $woo('register_user_via_sms_status');
+        $enabled = in_array($raw, $yesVals, true);
+        $res     = array(
+            'value' => $enabled ? esc_html__('Enabled', 'wp-sms') : esc_html__('Disabled', 'wp-sms'),
+            'debug' => $enabled ? 'Enabled' : 'Disabled',
+        );
+        $settings['woo_register_user_via_sms_status'] = array(
+            'label' => $labels['register_user_via_sms_status'],
+            'value' => $res['value'],
+            'debug' => $res['debug'],
+        );
+
+        // checkout_mobile_verification_skip_logged_in_enabled (enabled/disabled only)
+        $raw     = $woo('checkout_mobile_verification_skip_logged_in_enabled');
+        $enabled = in_array($raw, $yesVals, true);
+        $res     = array(
+            'value' => $enabled ? esc_html__('Enabled', 'wp-sms') : esc_html__('Disabled', 'wp-sms'),
+            'debug' => $enabled ? 'Enabled' : 'Disabled',
+        );
+        $settings['woo_checkout_mobile_verification_skip_logged_in_enabled'] = array(
+            'label' => $labels['checkout_mobile_verification_skip_logged_in_enabled'],
+            'value' => $res['value'],
+            'debug' => $res['debug'],
+        );
+
+        // checkout_mobile_verification_countries_whitelist (list or Not Set)
+        $raw    = $woo('checkout_mobile_verification_countries_whitelist');
+        $has    = is_array($raw) && !empty($raw);
+        $joined = $has ? implode(', ', $raw) : null;
+        $res    = array(
+            'value' => $has ? $joined : esc_html__('Not Set', 'wp-sms'),
+            'debug' => $has ? $joined : 'Not Set',
+        );
+        $settings['woo_checkout_mobile_verification_countries_whitelist'] = array(
+            'label' => $labels['checkout_mobile_verification_countries_whitelist'],
+            'value' => $res['value'],
+            'debug' => $res['debug'],
+        );
 
         return $settings;
     }
@@ -717,41 +834,41 @@ class SiteHealthInfo
 
         $options = array(
             // === Booking Calendar ===
-            'booking_calendar_notif_admin_new_booking'              => __('Booking Calendar: Admin New Booking Notification', 'wp-sms'),
-            'booking_calendar_notif_customer_new_booking'           => __('Booking Calendar: Customer New Booking Notification', 'wp-sms'),
-            'booking_calendar_notif_customer_booking_approved'      => __('Booking Calendar: Booking Approved Notification', 'wp-sms'),
-            'booking_calendar_notif_customer_booking_cancelled'     => __('Booking Calendar: Booking Cancelled Notification', 'wp-sms'),
+            'booking_calendar_notif_admin_new_booking'              => esc_html__('Booking Calendar: Admin New Booking Notification', 'wp-sms'),
+            'booking_calendar_notif_customer_new_booking'           => esc_html__('Booking Calendar: Customer New Booking Notification', 'wp-sms'),
+            'booking_calendar_notif_customer_booking_approved'      => esc_html__('Booking Calendar: Booking Approved Notification', 'wp-sms'),
+            'booking_calendar_notif_customer_booking_cancelled'     => esc_html__('Booking Calendar: Booking Cancelled Notification', 'wp-sms'),
 
             // === BookingPress ===
-            'bookingpress_notif_admin_approved_appointment'         => __('BookingPress: Admin Approved Appointment', 'wp-sms'),
-            'bookingpress_notif_customer_approved_appointment'      => __('BookingPress: Customer Approved Appointment', 'wp-sms'),
-            'bookingpress_notif_admin_pending_appointment'          => __('BookingPress: Admin Pending Appointment', 'wp-sms'),
-            'bookingpress_notif_customer_pending_appointment'       => __('BookingPress: Customer Pending Appointment', 'wp-sms'),
-            'bookingpress_notif_admin_rejected_appointment'         => __('BookingPress: Admin Rejected Appointment', 'wp-sms'),
-            'bookingpress_notif_customer_rejected_appointment'      => __('BookingPress: Customer Rejected Appointment', 'wp-sms'),
-            'bookingpress_notif_admin_cancelled_appointment'        => __('BookingPress: Admin Cancelled Appointment', 'wp-sms'),
-            'bookingpress_notif_customer_cancelled_appointment'     => __('BookingPress: Customer Cancelled Appointment', 'wp-sms'),
+            'bookingpress_notif_admin_approved_appointment'         => esc_html__('BookingPress: Admin Approved Appointment', 'wp-sms'),
+            'bookingpress_notif_customer_approved_appointment'      => esc_html__('BookingPress: Customer Approved Appointment', 'wp-sms'),
+            'bookingpress_notif_admin_pending_appointment'          => esc_html__('BookingPress: Admin Pending Appointment', 'wp-sms'),
+            'bookingpress_notif_customer_pending_appointment'       => esc_html__('BookingPress: Customer Pending Appointment', 'wp-sms'),
+            'bookingpress_notif_admin_rejected_appointment'         => esc_html__('BookingPress: Admin Rejected Appointment', 'wp-sms'),
+            'bookingpress_notif_customer_rejected_appointment'      => esc_html__('BookingPress: Customer Rejected Appointment', 'wp-sms'),
+            'bookingpress_notif_admin_cancelled_appointment'        => esc_html__('BookingPress: Admin Cancelled Appointment', 'wp-sms'),
+            'bookingpress_notif_customer_cancelled_appointment'     => esc_html__('BookingPress: Customer Cancelled Appointment', 'wp-sms'),
 
             // === Woo Appointments ===
-            'woo_appointments_notif_admin_new_appointment'          => __('Woo Appointments: Admin New Appointment', 'wp-sms'),
-            'woo_appointments_notif_admin_cancelled_appointment'    => __('Woo Appointments: Admin Cancelled Appointment', 'wp-sms'),
-            'woo_appointments_notif_customer_cancelled_appointment' => __('Woo Appointments: Customer Cancelled Appointment', 'wp-sms'),
-            'woo_appointments_notif_admin_rescheduled_appointment'  => __('Woo Appointments: Admin Rescheduled Appointment', 'wp-sms'),
-            'woo_appointments_notif_customer_confirmed_appointment' => __('Woo Appointments: Customer Confirmed Appointment', 'wp-sms'),
+            'woo_appointments_notif_admin_new_appointment'          => esc_html__('Woo Appointments: Admin New Appointment', 'wp-sms'),
+            'woo_appointments_notif_admin_cancelled_appointment'    => esc_html__('Woo Appointments: Admin Cancelled Appointment', 'wp-sms'),
+            'woo_appointments_notif_customer_cancelled_appointment' => esc_html__('Woo Appointments: Customer Cancelled Appointment', 'wp-sms'),
+            'woo_appointments_notif_admin_rescheduled_appointment'  => esc_html__('Woo Appointments: Admin Rescheduled Appointment', 'wp-sms'),
+            'woo_appointments_notif_customer_confirmed_appointment' => esc_html__('Woo Appointments: Customer Confirmed Appointment', 'wp-sms'),
 
             // === Woo Bookings ===
-            'woo_bookings_notif_admin_new_booking'                  => __('Woo Bookings: Admin New Booking', 'wp-sms'),
-            'woo_bookings_notif_admin_cancelled_booking'            => __('Woo Bookings: Admin Cancelled Booking', 'wp-sms'),
-            'woo_bookings_notif_customer_cancelled_booking'         => __('Woo Bookings: Customer Cancelled Booking', 'wp-sms'),
-            'woo_bookings_notif_customer_confirmed_booking'         => __('Woo Bookings: Customer Confirmed Booking', 'wp-sms'),
+            'woo_bookings_notif_admin_new_booking'                  => esc_html__('Woo Bookings: Admin New Booking', 'wp-sms'),
+            'woo_bookings_notif_admin_cancelled_booking'            => esc_html__('Woo Bookings: Admin Cancelled Booking', 'wp-sms'),
+            'woo_bookings_notif_customer_cancelled_booking'         => esc_html__('Woo Bookings: Customer Cancelled Booking', 'wp-sms'),
+            'woo_bookings_notif_customer_confirmed_booking'         => esc_html__('Woo Bookings: Customer Confirmed Booking', 'wp-sms'),
         );
 
         foreach ($options as $key => $label) {
             $raw      = OptionUtil::get($key);
             $isToggle = (is_bool($raw) || $raw === '0' || $raw === '1');
             $value    = $isToggle
-                ? ($raw ? __('Enabled', 'wp-sms') : __('Disabled', 'wp-sms'))
-                : (is_string($raw) ? $raw : __('Not Set', 'wp-sms'));
+                ? ($raw ? esc_html__('Enabled', 'wp-sms') : esc_html__('Disabled', 'wp-sms'))
+                : (is_string($raw) ? $raw : esc_html__('Not Set', 'wp-sms'));
             $debug    = $isToggle
                 ? ($raw ? 'Enabled' : 'Disabled')
                 : (is_string($raw) ? $raw : 'Not Set');
@@ -777,23 +894,23 @@ class SiteHealthInfo
 
         $options = [
             // FluentCRM
-            'fluent_crm_notif_contact_subscribed'    => __('FluentCRM: Contact Subscribed Notification', 'wp-sms'),
-            'fluent_crm_notif_contact_unsubscribed'  => __('FluentCRM: Contact Unsubscribed Notification', 'wp-sms'),
-            'fluent_crm_notif_contact_pending'       => __('FluentCRM: Contact Pending Notification', 'wp-sms'),
+            'fluent_crm_notif_contact_subscribed'    => esc_html__('FluentCRM: Contact Subscribed Notification', 'wp-sms'),
+            'fluent_crm_notif_contact_unsubscribed'  => esc_html__('FluentCRM: Contact Unsubscribed Notification', 'wp-sms'),
+            'fluent_crm_notif_contact_pending'       => esc_html__('FluentCRM: Contact Pending Notification', 'wp-sms'),
 
             // Fluent Support
-            'fluent_support_notif_ticket_created'    => __('Fluent Support: Ticket Created', 'wp-sms-fluent-integrations'),
-            'fluent_support_notif_customer_response' => __('Fluent Support: Customer Response', 'wp-sms-fluent-integrations'),
-            'fluent_support_notif_agent_assigned'    => __('Fluent Support: Agent Assigned', 'wp-sms-fluent-integrations'),
-            'fluent_support_notif_ticket_closed'     => __('Fluent Support: Ticket Closed', 'wp-sms-fluent-integrations'),
+            'fluent_support_notif_ticket_created'    => esc_html__('Fluent Support: Ticket Created', 'wp-sms'),
+            'fluent_support_notif_customer_response' => esc_html__('Fluent Support: Customer Response', 'wp-sms'),
+            'fluent_support_notif_agent_assigned'    => esc_html__('Fluent Support: Agent Assigned', 'wp-sms'),
+            'fluent_support_notif_ticket_closed'     => esc_html__('Fluent Support: Ticket Closed', 'wp-sms'),
         ];
 
         foreach ($options as $key => $label) {
-            $raw      = \WP_SMS\Utils\OptionUtil::get($key);
+            $raw      = OptionUtil::get($key);
             $isToggle = (is_bool($raw) || $raw === '0' || $raw === '1');
             $value    = $isToggle
-                ? ($raw ? __('Enabled', 'wp-sms') : __('Disabled', 'wp-sms'))
-                : (is_string($raw) ? $raw : __('Not Set', 'wp-sms'));
+                ? ($raw ? esc_html__('Enabled', 'wp-sms') : esc_html__('Disabled', 'wp-sms'))
+                : (is_string($raw) ? $raw : esc_html__('Not Set', 'wp-sms'));
             $debug    = $isToggle
                 ? ($raw ? 'Enabled' : 'Disabled')
                 : (is_string($raw) ? $raw : 'Not Set');
@@ -819,25 +936,25 @@ class SiteHealthInfo
 
         $options = [
             // Paid Memberships Pro
-            'pmpro_notif_user_registered'       => __('Paid Memberships Pro: User Registered Notification', 'wp-sms'),
-            'pmpro_notif_membership_confirmed'  => __('Paid Memberships Pro: Membership Confirmed Notification', 'wp-sms'),
-            'pmpro_notif_membership_cancelled'  => __('Paid Memberships Pro: Membership Cancelled Notification', 'wp-sms'),
-            'pmpro_notif_membership_expired'    => __('Paid Memberships Pro: Membership Expired Notification', 'wp-sms'),
+            'pmpro_notif_user_registered'       => esc_html__('Paid Memberships Pro: User Registered Notification', 'wp-sms'),
+            'pmpro_notif_membership_confirmed'  => esc_html__('Paid Memberships Pro: Membership Confirmed Notification', 'wp-sms'),
+            'pmpro_notif_membership_cancelled'  => esc_html__('Paid Memberships Pro: Membership Cancelled Notification', 'wp-sms'),
+            'pmpro_notif_membership_expired'    => esc_html__('Paid Memberships Pro: Membership Expired Notification', 'wp-sms'),
 
             // Simple Membership
-            'sm_notif_admin_user_registered'    => __('Simple Membership: Admin Notified on User Registration', 'wp-sms'),
-            'sm_notif_membership_level_updated' => __('Simple Membership: Membership Level Updated', 'wp-sms'),
-            'sm_notif_membership_expired'       => __('Simple Membership: Membership Expired', 'wp-sms'),
-            'sm_notif_membership_cancelled'     => __('Simple Membership: Membership Cancelled', 'wp-sms'),
-            'sm_notif_admin_payment_recieved'   => __('Simple Membership: Payment Received (Admin)', 'wp-sms'),
+            'sm_notif_admin_user_registered'    => esc_html__('Simple Membership: Admin Notified on User Registration', 'wp-sms'),
+            'sm_notif_membership_level_updated' => esc_html__('Simple Membership: Membership Level Updated', 'wp-sms'),
+            'sm_notif_membership_expired'       => esc_html__('Simple Membership: Membership Expired', 'wp-sms'),
+            'sm_notif_membership_cancelled'     => esc_html__('Simple Membership: Membership Cancelled', 'wp-sms'),
+            'sm_notif_admin_payment_recieved'   => esc_html__('Simple Membership: Payment Received (Admin)', 'wp-sms'),
         ];
 
         foreach ($options as $key => $label) {
-            $raw      = \WP_SMS\Utils\OptionUtil::get($key);
+            $raw      = OptionUtil::get($key);
             $isToggle = (is_bool($raw) || $raw === '0' || $raw === '1');
             $value    = $isToggle
-                ? ($raw ? __('Enabled', 'wp-sms') : __('Disabled', 'wp-sms'))
-                : (is_string($raw) ? $raw : __('Not Set', 'wp-sms'));
+                ? ($raw ? esc_html__('Enabled', 'wp-sms') : esc_html__('Disabled', 'wp-sms'))
+                : (is_string($raw) ? $raw : esc_html__('Not Set', 'wp-sms'));
             $debug    = $isToggle
                 ? ($raw ? 'Enabled' : 'Disabled')
                 : (is_string($raw) ? $raw : 'Not Set');
@@ -862,16 +979,16 @@ class SiteHealthInfo
         $settings = [];
 
         $options = [
-            'notif_new_inbox_message' => __('Two-Way: Forward Incoming SMS to Admin', 'wp-sms'),
-            'email_new_inbox_message' => __('Two-Way: Forward Incoming SMS to Email', 'wp-sms'),
+            'notif_new_inbox_message' => esc_html__('Two-Way: Forward Incoming SMS to Admin', 'wp-sms'),
+            'email_new_inbox_message' => esc_html__('Two-Way: Forward Incoming SMS to Email', 'wp-sms'),
         ];
 
         foreach ($options as $key => $label) {
-            $raw      = \WP_SMS\Utils\OptionUtil::get($key);
+            $raw      = OptionUtil::get($key);
             $isToggle = (is_bool($raw) || $raw === '0' || $raw === '1');
             $value    = $isToggle
-                ? ($raw ? __('Enabled', 'wp-sms') : __('Disabled', 'wp-sms'))
-                : (is_string($raw) ? $raw : __('Not Set', 'wp-sms'));
+                ? ($raw ? esc_html__('Enabled', 'wp-sms') : esc_html__('Disabled', 'wp-sms'))
+                : (is_string($raw) ? $raw : esc_html__('Not Set', 'wp-sms'));
             $debug    = $isToggle
                 ? ($raw ? 'Enabled' : 'Disabled')
                 : (is_string($raw) ? $raw : 'Not Set');
