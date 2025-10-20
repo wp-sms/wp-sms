@@ -59,6 +59,8 @@ class smses extends Gateway
 
     public $api_base_url;
 
+    public $documentUrl = 'https://wp-sms-pro.com/resources/smses-gateway-configuration/';
+
     /**
      * Constructor.
      */
