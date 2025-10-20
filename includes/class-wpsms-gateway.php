@@ -364,6 +364,13 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     public static $get_response;
 
     /**
+     * Define gateway version
+     *
+     * @var string $version
+     */
+    public $version = '1.0';
+
+    /**
      * An array to hold message variables.
      *
      * @var array
@@ -1526,13 +1533,13 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
      * or the gateway version has changed.
      *
      * @param object $sms The SMS gateway instance.
-     * @param string $gatewayName The current gateway name.
+     * @param string $gateway The current gateway name.
      * @return void
      */
-    protected static function setupGatewayVersioning($sms, $gatewayName)
+    protected static function setupGatewayVersioning($sms, $gateway)
     {
-        $gw         = $gatewayName ?: 'unknown';
-        $currentVer = (isset($sms->version) && $sms->version !== '') ? (string)$sms->version : '1.0';
+        $gw         = $gateway ?: 'unknown';
+        $currentVer = $sms->version;
 
         $storedVer      = Option::getOption('gateway_version');
         $versionChanged = ($storedVer !== null && $storedVer !== $currentVer);
