@@ -13,7 +13,7 @@ class smses extends Gateway
      *
      * @var string
      */
-    private $wsdl_link = "bulk/";
+    private $wsdl_link = "";
 
     /**
      * Pricing page URL.
@@ -57,9 +57,9 @@ class smses extends Gateway
      */
     public $supportIncoming = true;
 
-    public $api_base_url;
-
     public $documentUrl = 'https://wp-sms-pro.com/resources/smses-gateway-configuration/';
+
+    public $gateway_api_base_url;
 
     /**
      * Constructor.
@@ -70,26 +70,31 @@ class smses extends Gateway
 
         $this->help          = 'Destination number in international format (e.g., 34600000000).';
         $this->gatewayFields = [
-            'username'     => [
+            'gateway_api_base_url' => [
+                'id'      => 'gateway_api_base_url',
+                'name'    => __('API Base URL', 'wp-sms'),
+                'type'    => 'select',
+                'options' => [
+                    'https://api-cpaas.sms.es/'    => __('https://api-cpaas.sms.es', 'wp-sms'),
+                    'https://194.0.137.110:42161/' => __('https://194.0.137.110:42161', 'wp-sms'),
+                ],
+                'desc'    => __('Select the base URL for the SMS Gateway API.', 'wp-sms')
+            ],
+            'username'             => [
                 'id'   => 'gateway_username',
                 'name' => 'API Username',
                 'desc' => 'Enter your API Username.',
             ],
-            'password'     => [
+            'password'             => [
                 'id'   => 'gateway_password',
                 'name' => 'API Password',
                 'desc' => 'Enter your API Password.',
             ],
-            'from'         => [
+            'from'                 => [
                 'id'   => 'gateway_sender_id',
                 'name' => 'Sender ID',
                 'desc' => '(alphanumeric or numeric depending on regulations).',
             ],
-            'api_base_url' => [
-                'id'   => 'gateway_api_base_url',
-                'name' => 'API BASE URL',
-                'desc' => 'API Base URL.',
-            ]
         ];
     }
 
@@ -102,10 +107,6 @@ class smses extends Gateway
     {
         if (empty($this->username) || empty($this->password)) {
             return new WP_Error('missing-credentials', __('API Username and API Password are required.', 'wp-sms'));
-        }
-
-        if (empty($this->api_base_url)) {
-            return new WP_Error('missing-api-base-url', __('API Base URL is required.', 'wp-sms'));
         }
 
         // Filters for customization.
@@ -185,14 +186,9 @@ class smses extends Gateway
      */
     private function sendSimpleSMS()
     {
-        $receivers = $this->to;
-        $resultMap = [];
-
-        // Build base URL safely: no accidental double slashes.
-        $base       = rtrim((string)$this->api_base_url, "/");
-        $path       = trim((string)$this->wsdl_link, "/");
-        $apiBaseUrl = $base . "/" . $path . "/";
-        $endpoint   = $apiBaseUrl . 'sendsms';
+        $receivers  = $this->to;
+        $resultMap  = [];
+        $apiBaseUrl = !empty($this->gateway_api_base_url) ? $this->gateway_api_base_url : 'https://194.0.137.110:42161/';
 
         foreach ($receivers as $receiver) {
             $body = [
@@ -211,14 +207,15 @@ class smses extends Gateway
             }
 
             $params = [
-                'headers' => [
+                'headers'   => [
                     'Accept'       => 'application/json',
                     'Content-Type' => 'application/json',
                 ],
-                'body'    => json_encode($body),
+                'body'      => json_encode($body),
+                'sslverify' => false,
             ];
 
-            $response = $this->request('POST', $endpoint, [], $params, false);
+            $response = $this->request('POST', $apiBaseUrl . 'bulk/sendsms ', [], $params, false);
 
             // Normalize into the requested per-recipient shape
             if (is_wp_error($response)) {
