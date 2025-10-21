@@ -83,17 +83,17 @@ class smses extends Gateway
             'username'             => [
                 'id'   => 'gateway_username',
                 'name' => 'Username',
-                'desc' => 'Enter your Username.',
+                'desc' => 'sms.es API username (System ID).',
             ],
             'password'             => [
                 'id'   => 'gateway_password',
                 'name' => 'Password',
-                'desc' => 'Enter your Password.',
+                'desc' => 'sms.es API password.',
             ],
             'from'                 => [
                 'id'   => 'gateway_sender_id',
                 'name' => 'Sender ID',
-                'desc' => '(alphanumeric or numeric depending on regulations).',
+                'desc' => 'Alphanumeric or numeric sender (subject to local regulations).',
             ],
         ];
     }
