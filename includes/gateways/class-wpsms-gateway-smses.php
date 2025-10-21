@@ -13,7 +13,7 @@ class smses extends Gateway
      *
      * @var string
      */
-    private $wsdl_link = "";
+    private $wsdl_link = "https://194.0.137.110:42161/";
 
     /**
      * Pricing page URL.
@@ -75,8 +75,8 @@ class smses extends Gateway
                 'name'    => __('API Base URL', 'wp-sms'),
                 'type'    => 'select',
                 'options' => [
-                    'https://api-cpaas.sms.es/'    => __('https://api-cpaas.sms.es', 'wp-sms'),
-                    'https://194.0.137.110:42161/' => __('https://194.0.137.110:42161', 'wp-sms'),
+                    'https://api-cpaas.sms.es/'    => 'https://api-cpaas.sms.es',
+                    'https://194.0.137.110:42161/' => 'https://194.0.137.110:42161',
                 ],
                 'desc'    => __('Select the base URL for the SMS Gateway API.', 'wp-sms')
             ],
@@ -188,7 +188,7 @@ class smses extends Gateway
     {
         $receivers  = $this->to;
         $resultMap  = [];
-        $apiBaseUrl = !empty($this->gateway_api_base_url) ? $this->gateway_api_base_url : 'https://194.0.137.110:42161/';
+        $apiBaseUrl = !empty($this->gateway_api_base_url) ? $this->gateway_api_base_url : $this->wsdl_link;
 
         foreach ($receivers as $receiver) {
             $body = [
