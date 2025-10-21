@@ -101,7 +101,7 @@ class smses extends Gateway
     /**
      * Send SMS message.
      *
-     * @return array|WP_Error Response object on success, WP_Error on failure.
+     * @return object|WP_Error Response object on success, WP_Error on failure.
      */
     public function SendSMS()
     {
@@ -117,52 +117,14 @@ class smses extends Gateway
         try {
             $response = $this->sendSimpleSMS();
 
-            $successCount = 0;
-            $failCount    = 0;
-            $successNums  = [];
-            $failedNums   = [];
-
-            foreach ($response as $number => $result) {
-                if (($result['status'] ?? '') === 'success') {
-                    $successCount++;
-                    $successNums[] = $number;
-                } else {
-                    $failCount++;
-                    $failedNums[] = $number;
-                }
+            if (is_array($response) && isset($response['results']) && is_array($response['results'])) {
+                return $this->handleTemplateSendResponseOrThrow($response);
             }
 
-            // Build readable lists
-            $successList = $successNums ? implode(', ', $successNums) : 'None';
-            $failedList  = $failedNums ? implode(', ', $failedNums) : 'None';
-
-            // Prepare summary message
-            $summary = sprintf(
-                "SMS Summary:\nSuccess: %d\nFailed: %d\nSuccess Numbers: %s\nFailed Numbers: %s",
-                $successCount,
-                $failCount,
-                $successList,
-                $failedList
-            );
-
-            // Throw exception if any failed
-            if ($failCount > 0) {
-                $errorMsg = sprintf(
-                    __('%d SMS message(s) failed to send. Failed numbers: %s', 'wp-sms'),
-                    $failCount,
-                    $failedList
-                );
-                throw new Exception($errorMsg);
-            }
-
-            // Log summary and details
-            $this->log($this->from, $this->msg, $this->to, $summary);
-
-            // All succeeded
-            return $response;
-
+            throw new Exception(esc_html__('Unexpected send response.', 'wp-sms'));
         } catch (Exception $e) {
             $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
             return new WP_Error('send-sms-error', $e->getMessage());
         }
     }
@@ -180,14 +142,15 @@ class smses extends Gateway
     /**
      * Send a simple SMS message.
      *
-     * @return array API response object.
-     * @throws Exception If request fails.
+     * @return array
      */
     private function sendSimpleSMS()
     {
         $receivers  = $this->to;
-        $resultMap  = [];
         $apiBaseUrl = !empty($this->gateway_api_base_url) ? $this->gateway_api_base_url : $this->wsdl_link;
+        $results    = [];
+        $successes  = 0;
+        $failures   = 0;
 
         foreach ($receivers as $receiver) {
             $body = [
@@ -214,47 +177,130 @@ class smses extends Gateway
                 'sslverify' => false,
             ];
 
-            $response = $this->request('POST', $apiBaseUrl . 'bulk/sendsms ', [], $params, false);
+            $resp = $this->request('POST', $apiBaseUrl . 'bulk/sendsms', [], $params, false);
 
-            // Normalize into the requested per-recipient shape
-            if (is_wp_error($response)) {
-                $resultMap[$receiver] = [
+            if (is_wp_error($resp)) {
+                $failures++;
+                $message = $resp->get_error_message();
+
+                $results[] = [
+                    'to'        => $receiver,
+                    'status'    => 'error',
+                    'errorType' => 'wp_error',
+                    'message'   => $resp->get_error_message(),
+                    'raw'       => null,
+                ];
+
+                $this->log($this->from, $this->msg, $receiver, $message, 'error');
+                continue;
+            }
+
+            if (!empty($resp->error)) {
+                $failures++;
+                $errorCode = isset($resp->error->code) ? (int)$resp->error->code : null;
+                $errorMsg  = isset($resp->error->message) ? (string)$resp->error->message : __('Unknown error', 'wp-sms');
+
+                $results[] = [
+                    'to'           => $receiver,
                     'status'       => 'error',
-                    'errorMessage' => $response->get_error_message(),
+                    'errorCode'    => $errorCode,
+                    'errorMessage' => $errorMsg,
+                    'raw'          => $resp,
                 ];
+
+                $this->log($this->from, $this->msg, $receiver, $errorMsg, 'error');
                 continue;
             }
 
-            // API-level error from your sample log:
-            if (!empty($response->error)) {
-                $resultMap[$receiver] = [
-                    'status'       => 'error',
-                    'errorCode'    => isset($response->error->code) ? (int)$response->error->code : null,
-                    'errorMessage' => isset($response->error->message) ? (string)$response->error->message : __('Unknown error', 'wp-sms'),
-                ];
-                continue;
-            }
-
-            // Success shape: { "msgId":"<uuid>", "numParts":1 }
-            if (isset($response->msgId)) {
-                $resultMap[$receiver] = [
-                    'status'   => 'success',
-                    'msgId'    => (string)$response->msgId,
-                    'numParts' => (int)($response->numParts ?? 1),
-                ];
-
-                do_action('wp_sms_send', $response);
-
-                continue;
-            }
-
-            // Fallback/unknown response
-            $resultMap[$receiver] = [
-                'status'       => 'error',
-                'errorMessage' => __('Unexpected API response.', 'wp-sms'),
+            $successes++;
+            $results[] = [
+                'to'     => $receiver,
+                'status' => 'ok',
+                'raw'    => $resp,
             ];
+            $this->log($this->from, $this->msg, $receiver, sprintf('Message sent. msgId=%s', $resp->msgId));
         }
 
-        return $resultMap;
+        $status = $failures == 0 ? 1 : ($successes > 0 ? 206 : 0);
+
+        return [
+            'status'  => $status,
+            'summary' => ['success' => $successes, 'failure' => $failures],
+            'results' => $results,
+        ];
+    }
+
+    /**
+     * Handle and log template (batch) send response.
+     * Throws Exception on partial/full failure with comma-separated failed numbers.
+     *
+     * @param array $response
+     * @return object  Casted object on full success
+     * @throws Exception
+     */
+    private function handleTemplateSendResponseOrThrow($response)
+    {
+        if (!isset($response['results']) || !is_array($response['results'])) {
+            throw new Exception(esc_html__('Invalid template response payload.', 'wp-sms'));
+        }
+
+        $successCount   = 0;
+        $failCount      = 0;
+        $successNumbers = [];
+        $failedNumbers  = [];
+
+        foreach ($response['results'] as $item) {
+            $toOne = $item['to'] ?? $this->to;
+
+            if (($item['status'] ?? '') == 'ok') {
+                $successCount++;
+                if (is_array($toOne)) {
+                    $successNumbers = array_merge($successNumbers, $toOne);
+                } else {
+                    $successNumbers[] = $toOne;
+                }
+            } else {
+                $failCount++;
+                if (is_array($toOne)) {
+                    $failedNumbers = array_merge($failedNumbers, $toOne);
+                } else {
+                    $failedNumbers[] = $toOne;
+                }
+            }
+        }
+
+        $successList = $successNumbers ? implode(', ', $successNumbers) : esc_html__('None', 'wp-sms');
+        $failedList  = $failedNumbers ? implode(', ', $failedNumbers) : esc_html__('None', 'wp-sms');
+
+        $summary = sprintf(
+            "SMS Summary:\nSuccess: %d\nFailed: %d\nSuccess Numbers: %s\nFailed Numbers: %s",
+            $successCount,
+            $failCount,
+            $successList,
+            $failedList
+        );
+
+        $status = $response['status'] ?? 0;
+
+        if ($status == 1) {
+            $obj = (object)$response;
+
+            $this->log($this->from, $this->msg, $this->to, $summary);
+
+            /**
+             * Fires after an SMS is sent.
+             *
+             * @param object $response API response object.
+             */
+            do_action('wp_sms_send', $obj);
+
+            return $obj;
+        }
+
+        if ($status == 206) {
+            throw new Exception($summary);
+        }
+
+        throw new Exception($summary);
     }
 }
