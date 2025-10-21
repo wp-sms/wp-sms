@@ -82,13 +82,13 @@ class smses extends Gateway
             ],
             'username'             => [
                 'id'   => 'gateway_username',
-                'name' => 'API Username',
-                'desc' => 'Enter your API Username.',
+                'name' => 'Username',
+                'desc' => 'Enter your Username.',
             ],
             'password'             => [
                 'id'   => 'gateway_password',
-                'name' => 'API Password',
-                'desc' => 'Enter your API Password.',
+                'name' => 'Password',
+                'desc' => 'Enter your Password.',
             ],
             'from'                 => [
                 'id'   => 'gateway_sender_id',
@@ -174,7 +174,6 @@ class smses extends Gateway
      */
     public function GetCredit()
     {
-
         return null;
     }
 
