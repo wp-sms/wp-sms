@@ -10,7 +10,7 @@ import { getReportData } from '@/services/reports/get-report-data'
 import { ActivityFilters } from './-components/activity-filters'
 import { DeliveryQuality } from './-components/delivery-quality'
 import { FunnelWidget } from './-components/funnel-widget'
-import { GeoHeatmapWidget } from './-components/geo-heatmap-widget'
+import { GeoHeatmap } from './-components/geo-heatmap'
 import { Kpi } from './-components/kpi'
 import { MethodMix } from './-components/method-mix'
 import { VolumeChartWidget } from './-components/volume-chart-widget'
@@ -44,6 +44,8 @@ function RouteComponent() {
     setFilterValues({})
     setAppliedFilters({})
   }
+
+  console.log({ map: reportData?.geo_heatmap })
 
   const renderWidget = (widget: (typeof reportConfig.data.widgets)[0]) => {
     if (!reportData) {
@@ -87,7 +89,7 @@ function RouteComponent() {
 
       case 'map':
         if (widget.id === 'geo_heatmap' && reportData.geo_heatmap) {
-          return <GeoHeatmapWidget label={widget.label} data={reportData.geo_heatmap} />
+          return <GeoHeatmap label={widget.label} data={reportData.geo_heatmap} />
         }
         break
     }
