@@ -174,7 +174,7 @@ class smses extends Gateway
      */
     public function GetCredit()
     {
-        return null;
+        return 'N/A';
     }
 
     /**
