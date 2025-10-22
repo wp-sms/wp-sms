@@ -92,7 +92,7 @@ class Notification
         $output = [];
 
         foreach ($this->variables as $key => $value) {
-            if (is_string($value) && str_starts_with($value, 'get')) {
+            if (is_string($value) && substr($value, 0, 3) === 'get') {
                 $value = substr($value, 3);
                 $value = preg_replace('/([A-Z])/', ' $1', $value);
                 $value = trim($value);
