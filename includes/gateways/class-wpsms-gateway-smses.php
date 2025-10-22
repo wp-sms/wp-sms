@@ -82,18 +82,18 @@ class smses extends Gateway
             ],
             'username'             => [
                 'id'   => 'gateway_username',
-                'name' => 'Username',
-                'desc' => 'sms.es API username (System ID).',
+                'name' => __('Username', 'wp-sms'),
+                'desc' => __('sms.es API username (System ID).', 'wp-sms'),
             ],
             'password'             => [
                 'id'   => 'gateway_password',
-                'name' => 'Password',
-                'desc' => 'sms.es API password.',
+                'name' => __('Password', 'wp-sms'),
+                'desc' => __('sms.es API password.', 'wp-sms'),
             ],
             'from'                 => [
                 'id'   => 'gateway_sender_id',
-                'name' => 'Sender ID',
-                'desc' => 'Alphanumeric or numeric sender (subject to local regulations).',
+                'name' => __('Sender ID', 'wp-sms'),
+                'desc' => __('Alphanumeric or numeric sender (subject to local regulations).', 'wp-sms'),
             ],
         ];
     }
@@ -118,13 +118,11 @@ class smses extends Gateway
             $response = $this->sendSimpleSMS();
 
             if (is_array($response) && isset($response['results']) && is_array($response['results'])) {
-                return $this->handleTemplateSendResponseOrThrow($response);
+                return $this->handleSendResponseOrThrow($response);
             }
 
-            throw new Exception(esc_html__('Unexpected send response.', 'wp-sms'));
+            throw new Exception(__('Unexpected send response.', 'wp-sms'));
         } catch (Exception $e) {
-            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
-
             return new WP_Error('send-sms-error', $e->getMessage());
         }
     }
@@ -238,10 +236,10 @@ class smses extends Gateway
      * @return object  Casted object on full success
      * @throws Exception
      */
-    private function handleTemplateSendResponseOrThrow($response)
+    private function handleSendResponseOrThrow($response)
     {
         if (!isset($response['results']) || !is_array($response['results'])) {
-            throw new Exception(esc_html__('Invalid template response payload.', 'wp-sms'));
+            throw new Exception(__('Invalid template response payload.', 'wp-sms'));
         }
 
         $successCount   = 0;
@@ -250,42 +248,30 @@ class smses extends Gateway
         $failedNumbers  = [];
 
         foreach ($response['results'] as $item) {
-            $toOne = $item['to'] ?? $this->to;
-
-            if (($item['status'] ?? '') == 'ok') {
+            if ($item['status'] == 'ok') {
                 $successCount++;
-                if (is_array($toOne)) {
-                    $successNumbers = array_merge($successNumbers, $toOne);
-                } else {
-                    $successNumbers[] = $toOne;
-                }
+                $successNumbers[] = $item['to'];
             } else {
                 $failCount++;
-                if (is_array($toOne)) {
-                    $failedNumbers = array_merge($failedNumbers, $toOne);
-                } else {
-                    $failedNumbers[] = $toOne;
-                }
+                $failedNumbers[] = $item['to'];
             }
         }
 
-        $successList = $successNumbers ? implode(', ', $successNumbers) : esc_html__('None', 'wp-sms');
-        $failedList  = $failedNumbers ? implode(', ', $failedNumbers) : esc_html__('None', 'wp-sms');
+        $successList = $successNumbers ? implode(', ', $successNumbers) : __('None', 'wp-sms');
+        $failedList  = $failedNumbers ? implode(', ', $failedNumbers) : __('None', 'wp-sms');
 
         $summary = sprintf(
-            "SMS Summary:\nSuccess: %d\nFailed: %d\nSuccess Numbers: %s\nFailed Numbers: %s",
+            __("SMS Summary: Success: %d, Failed: %d, Success Numbers: %s, Failed Numbers: %s", 'wp-sms'),
             $successCount,
             $failCount,
             $successList,
             $failedList
         );
 
-        $status = $response['status'] ?? 0;
+        $status = $response['status'];
 
         if ($status == 1) {
             $obj = (object)$response;
-
-            $this->log($this->from, $this->msg, $this->to, $summary);
 
             /**
              * Fires after an SMS is sent.
