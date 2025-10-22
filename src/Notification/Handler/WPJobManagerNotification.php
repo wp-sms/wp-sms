@@ -24,7 +24,7 @@ class WPJobManagerNotification extends Notification
         '%job_description%' => 'getJobDescription',
         '%job_location%'    => 'getJobLocation',
         '%job_type%'        => 'getJobType',
-        '%job_mobile'       => 'getJobMobile',
+        '%job_mobile%'      => 'getJobMobile',
         '%company_name%'    => 'getCompanyName',
         '%website%'         => 'getWebsite',
     ];
