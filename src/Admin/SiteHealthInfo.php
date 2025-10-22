@@ -296,16 +296,18 @@ class SiteHealthInfo
 
             $gfForms   = \RGFormsModel::get_forms(null, 'title');
             $formsData = [];
+
             if (!empty($gfForms)) {
                 foreach ($gfForms as $form) {
                     $formsData[(int)$form->id] = $form->title;
                 }
             }
+
             $pattern = '/^gf_notify_enable_form_(\d+)$/';
             $forms   = $this->getActiveFormsByPattern($pattern, $formsData, $options);
 
             $settings['gravityforms_sms_enabled_forms'] = [
-                'label' => esc_html__('SMS Notifications Gravity Forms', 'wp-sms'),
+                'label' => esc_html__('SMS Notifications Gravityforms', 'wp-sms'),
                 'value' => $forms['value'],
                 'debug' => $forms['debug'],
             ];
@@ -317,6 +319,25 @@ class SiteHealthInfo
                 'label' => esc_html__('Quform Integration', 'wp-sms'),
                 'value' => esc_html__('Enabled', 'wp-sms'),
                 'debug' => 'Enabled',
+            ];
+
+            $quformRepository = new \Quform_Repository();
+            $quforms          = $quformRepository->allForms();
+            $formsData        = [];
+
+            if (!empty($quforms)) {
+                foreach ($quforms as $form) {
+                    $formsData[(int)$form['id']] = $form['name'];
+                }
+            }
+
+            $pattern = '/^qf_notify_enable_form_(\d+)$/';
+            $forms   = $this->getActiveFormsByPattern($pattern, $formsData, $options);
+
+            $settings['quform_sms_enabled_forms'] = [
+                'label' => esc_html__('SMS Notifications Quforms', 'wp-sms'),
+                'value' => $forms['value'],
+                'debug' => $forms['debug'],
             ];
         }
 
@@ -377,13 +398,6 @@ class SiteHealthInfo
                 'label' => esc_html__('New Job Notification', 'wp-sms'),
                 'value' => $yesNo($jobNotifyStatusRaw),
                 'debug' => $yesNoDebug($jobNotifyStatusRaw),
-            ];
-
-            $jobNotifyReceiverRaw                  = Option::getOption('job_notify_receiver', true);
-            $settings['job_notification_receiver'] = [
-                'label' => esc_html__('Job Notification Receiver', 'wp-sms'),
-                'value' => $jobNotifyReceiverRaw,
-                'debug' => $jobNotifyReceiverRaw,
             ];
 
             $jobEmployerNotifRaw                   = Option::getOption('job_notify_employer_status', true);
@@ -476,6 +490,25 @@ class SiteHealthInfo
                 'label' => esc_html__('Forminator Integration', 'wp-sms'),
                 'value' => esc_html__('Enabled', 'wp-sms'),
                 'debug' => 'Enabled',
+            ];
+
+            $forminatorForms = \Forminator_API::get_forms(null, 1, 20, "publish");
+            $formsData       = [];
+
+            if (!empty($forminatorForms)) {
+                foreach ($forminatorForms as $form) {
+                    $formsData[(int)$form->id] = $form->name;
+                }
+            }
+
+            $options = Option::getOptions();
+            $pattern = '/^forminator_notify_enable_form_(\d+)$/';
+            $forms   = $this->getActiveFormsByPattern($pattern, $formsData, $options);
+
+            $settings['forminator_sms_enabled_forms'] = [
+                'label' => esc_html__('SMS Notifications Forminator forms', 'wp-sms'),
+                'value' => $forms['value'],
+                'debug' => $forms['debug'],
             ];
         }
 
@@ -1029,12 +1062,8 @@ class SiteHealthInfo
      *
      * @return array
      */
-    private function getActiveFormsByPattern($keyPattern, $formsData, $options = null)
+    private function getActiveFormsByPattern($keyPattern, $formsData, $options)
     {
-        if ($options === null) {
-            $options = Option::getOptions(true);
-        }
-
         $options = (array)$options;
         $keys    = preg_grep($keyPattern, array_keys($options)) ?: [];
         $titles  = [];
