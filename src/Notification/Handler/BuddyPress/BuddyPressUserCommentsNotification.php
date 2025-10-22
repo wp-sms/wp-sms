@@ -72,7 +72,11 @@ class BuddyPressUserCommentsNotification extends Notification
      */
     public function getReceiverUserDisplayName()
     {
+        if (!$this->activity) {
+            return null;
+        }
+        
         $userReceiver = get_userdata($this->activity->user_id);
-        return $userReceiver->display_name ?? null;
+        return ($userReceiver && isset($userReceiver->display_name)) ? $userReceiver->display_name : null;
     }
 }
