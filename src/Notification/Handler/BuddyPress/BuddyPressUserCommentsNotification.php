@@ -43,8 +43,12 @@ class BuddyPressUserCommentsNotification extends Notification
      */
     public function getPostedUserDisplayName()
     {
+        if (!$this->comment) {
+            return null;
+        }
+        
         $userPosted = get_userdata($this->comment->user_id);
-        return $userPosted->display_name ?? null;
+        return ($userPosted && isset($userPosted->display_name)) ? $userPosted->display_name : null;
     }
 
     /**
