@@ -6,11 +6,10 @@ use WP_SMS\Notification\Notification;
 
 class BuddyPressUserCommentsNotification extends Notification
 {
-    /**
-     * BuddyPress user comment data array.
-     * @var array
-     */
-    protected $bpData;
+
+    protected $activity;
+
+    protected $comment;
 
     /**
      * Template variables and their corresponding getter methods.
@@ -25,12 +24,16 @@ class BuddyPressUserCommentsNotification extends Notification
 
     /**
      * BuddyPressUserCommentsNotification constructor.
-     *
-     * @param array $bpData BuddyPress user comment data.
      */
-    public function __construct($bpData)
+    public function __construct($activity = false, $comment_id = false)
     {
-        $this->bpData = $bpData;
+        if ($activity) {
+            $this->activity = $activity;
+        }
+        
+        if ($comment_id) {
+            $this->comment = new \BP_Activity_Activity($comment_id);
+        }
     }
 
     /**
@@ -40,7 +43,8 @@ class BuddyPressUserCommentsNotification extends Notification
      */
     public function getPostedUserDisplayName()
     {
-        return $this->bpData['posted_user_display_name'] ?? null;
+        $userPosted = get_userdata($this->comment->user_id);
+        return $userPosted->display_name ?? null;
     }
 
     /**
@@ -50,7 +54,7 @@ class BuddyPressUserCommentsNotification extends Notification
      */
     public function getComment()
     {
-        return $this->bpData['comment'] ?? null;
+        return $this->comment->content ?? null;
     }
 
     /**
@@ -60,6 +64,7 @@ class BuddyPressUserCommentsNotification extends Notification
      */
     public function getReceiverUserDisplayName()
     {
-        return $this->bpData['receiver_user_display_name'] ?? null;
+        $userReceiver = get_userdata($this->activity->user_id);
+        return $userReceiver->display_name ?? null;
     }
 }

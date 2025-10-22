@@ -203,9 +203,9 @@ class NotificationFactory
     /**
      * @return BuddyPressUserCommentsNotification
      */
-    public static function getBuddyPressUserComments($bpData = [])
+    public static function getBuddyPressUserComments($activity = false, $comment_id = false)
     {
-        return new BuddyPressUserCommentsNotification($bpData);
+        return new BuddyPressUserCommentsNotification($activity, $comment_id);
     }
 
     /**
