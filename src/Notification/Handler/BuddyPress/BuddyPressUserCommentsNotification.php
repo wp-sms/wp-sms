@@ -25,14 +25,14 @@ class BuddyPressUserCommentsNotification extends Notification
     /**
      * BuddyPressUserCommentsNotification constructor.
      */
-    public function __construct($activity = false, $comment_id = false)
+    public function __construct($activity = false, $commentId = false)
     {
         if ($activity) {
             $this->activity = $activity;
         }
-        
-        if ($comment_id) {
-            $this->comment = new \BP_Activity_Activity($comment_id);
+
+        if ($commentId) {
+            $this->comment = new \BP_Activity_Activity($commentId);
         }
     }
 
