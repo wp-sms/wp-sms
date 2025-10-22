@@ -79,6 +79,11 @@ class melipayamak extends Gateway
     public $documentUrl = "https://www.melipayamak.com/lab/wordpress-sending-sms-plugin-wp-smsn/";
 
     /**
+     * Gateway version.
+     */
+    public $version = '1.1';
+
+    /**
      * Constructor.
      */
     public function __construct()
