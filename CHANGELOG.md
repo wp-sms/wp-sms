@@ -1,13 +1,14 @@
-= v7.x.x - 2025-x-x =
-- **Enhancement:** Refactored the FARAZSMS gateway for improved reliability.
-- New: Support SMSALA gateway in WP SMS Pro.
-- **Fix:** Disabled caching to prevent duplicate responses for similar messages.
+= v7.0.4 - 2025-10-25 =
+- **New:** Support SMSALA gateway in WP SMS Pro.
+- **New:** Support SMS.es gateway.
+- **New:** Display admin notice when the gateway version changes, required fields are missing, or the gateway is not configured.
 - **Enhancement:** Added support for Service-Line SMS.ir template-based messaging.
+- **Enhancement:** Refactored the MeliPayamak gateway for improved reliability.
+- **Enhancement:** Improved Kavenegar gateway to support sending template-based SMS messages with variable placeholders.
+- **Enhancement:** Refactored the FARAZSMS gateway for improved reliability.
+- **Fix:** Disabled caching to prevent duplicate responses for similar messages.
 - **Fix:** PHP 8.1+ compatibility: avoid "Automatic conversion of false to array" warning.
 - **Fix:** Delay anonymous data opt-in notice to 7 days after plugin activation.
-- **Enhancement:** Refactored the MeliPayamak gateway for improved reliability.
-- **New:** Display admin notice when the gateway version changes, required fields are missing, or the gateway is not configured.
-- **Enhancement:** Improved Kavenegar gateway to support sending template-based SMS messages with variable placeholders.
 - **Fix:** Mask sensitive message variables (`code`, `otp`, `post_password`, `coupon_code`) in message before logging when `WP_DEBUG` is disabled.
 
 = v7.0.3 - 2025-09-17 =
