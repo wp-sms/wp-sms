@@ -9,7 +9,7 @@ import { getReportData } from '@/services/reports/get-report-data'
 
 import { ActivityFilters } from './-components/activity-filters'
 import { DeliveryQuality } from './-components/delivery-quality'
-import { FunnelWidget } from './-components/funnel-widget'
+import { Funnel } from './-components/funnel'
 import { GeoHeatmap } from './-components/geo-heatmap'
 import { Kpi } from './-components/kpi'
 import { MethodMix } from './-components/method-mix'
@@ -45,8 +45,6 @@ function RouteComponent() {
     setAppliedFilters({})
   }
 
-  console.log({ map: reportData?.geo_heatmap })
-
   const renderWidget = (widget: (typeof reportConfig.data.widgets)[0]) => {
     if (!reportData) {
       return (
@@ -70,8 +68,7 @@ function RouteComponent() {
 
       case 'funnel':
         if (reportData.journey_funnels) {
-          const funnelType = widget.id === 'login_funnel' ? 'loginFunnel' : 'registrationFunnel'
-          return <FunnelWidget label={widget.label} data={reportData.journey_funnels} funnelType={funnelType} />
+          return <Funnel label={widget.label} data={reportData.journey_funnels} />
         }
         break
 
