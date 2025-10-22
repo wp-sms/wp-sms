@@ -284,6 +284,7 @@ class SiteHealthInfo
             return in_array($val, [true, '1', 1, 'yes'], true) ? 'Enabled' : 'Disabled';
         };
         $settings      = [];
+        $options       = Option::getOptions(true);
 
         // Gravity Forms
         if (class_exists('RGFormsModel') && LicenseHelper::isPluginLicensedAndActive()) {
@@ -291,6 +292,22 @@ class SiteHealthInfo
                 'label' => esc_html__('Gravity Forms Integration', 'wp-sms'),
                 'value' => esc_html__('Enabled', 'wp-sms'),
                 'debug' => 'Enabled',
+            ];
+
+            $gfForms   = \RGFormsModel::get_forms(null, 'title');
+            $formsData = [];
+            if (!empty($gfForms)) {
+                foreach ($gfForms as $form) {
+                    $formsData[(int)$form->id] = $form->title;
+                }
+            }
+            $pattern = '/^gf_notify_enable_form_(\d+)$/';
+            $forms   = $this->getActiveFormsByPattern($pattern, $formsData, $options);
+
+            $settings['gravityforms_sms_enabled_forms'] = [
+                'label' => esc_html__('SMS Notifications Gravity Forms', 'wp-sms'),
+                'value' => $forms['value'],
+                'debug' => $forms['debug'],
             ];
         }
 
@@ -687,8 +704,8 @@ class SiteHealthInfo
         $settings = array();
 
         // cart_abandonment_recovery_status (generic)
-        $raw = $woo('cart_abandonment_recovery_status');
-        $res = $formatGeneric($raw);
+        $raw                                              = $woo('cart_abandonment_recovery_status');
+        $res                                              = $formatGeneric($raw);
         $settings['woo_cart_abandonment_recovery_status'] = array(
             'label' => $labels['cart_abandonment_recovery_status'],
             'value' => $res['value'],
@@ -696,8 +713,8 @@ class SiteHealthInfo
         );
 
         // cart_abandonment_threshold (duration)
-        $raw = $woo('cart_abandonment_threshold');
-        $res = $this->formatDurationValue($raw);
+        $raw                                        = $woo('cart_abandonment_threshold');
+        $res                                        = $this->formatDurationValue($raw);
         $settings['woo_cart_abandonment_threshold'] = array(
             'label' => $labels['cart_abandonment_threshold'],
             'value' => $res['value'],
@@ -705,9 +722,9 @@ class SiteHealthInfo
         );
 
         // cart_overwrite_number_during_checkout (special)
-        $raw  = $woo('cart_overwrite_number_during_checkout');
-        $skip = ($raw === 'skip');
-        $res  = array(
+        $raw                                                   = $woo('cart_overwrite_number_during_checkout');
+        $skip                                                  = ($raw === 'skip');
+        $res                                                   = array(
             'value' => $skip ? esc_html__('Do not update', 'wp-sms') : esc_html__('Update phone number', 'wp-sms'),
             'debug' => $skip ? 'Do not update' : 'Update phone number',
         );
@@ -718,8 +735,8 @@ class SiteHealthInfo
         );
 
         // cart_create_coupon (generic)
-        $raw = $woo('cart_create_coupon');
-        $res = $formatGeneric($raw);
+        $raw                                = $woo('cart_create_coupon');
+        $res                                = $formatGeneric($raw);
         $settings['woo_cart_create_coupon'] = array(
             'label' => $labels['cart_create_coupon'],
             'value' => $res['value'],
@@ -727,8 +744,8 @@ class SiteHealthInfo
         );
 
         // cart_abandonment_send_sms_time_interval (duration)
-        $raw = $woo('cart_abandonment_send_sms_time_interval');
-        $res = $this->formatDurationValue($raw);
+        $raw                                                     = $woo('cart_abandonment_send_sms_time_interval');
+        $res                                                     = $this->formatDurationValue($raw);
         $settings['woo_cart_abandonment_send_sms_time_interval'] = array(
             'label' => $labels['cart_abandonment_send_sms_time_interval'],
             'value' => $res['value'],
@@ -736,8 +753,8 @@ class SiteHealthInfo
         );
 
         // login_with_sms_status (generic)
-        $raw = $woo('login_with_sms_status');
-        $res = $formatGeneric($raw);
+        $raw                                   = $woo('login_with_sms_status');
+        $res                                   = $formatGeneric($raw);
         $settings['woo_login_with_sms_status'] = array(
             'label' => $labels['login_with_sms_status'],
             'value' => $res['value'],
@@ -745,8 +762,8 @@ class SiteHealthInfo
         );
 
         // login_with_sms_forgot_status (generic)
-        $raw = $woo('login_with_sms_forgot_status');
-        $res = $formatGeneric($raw);
+        $raw                                          = $woo('login_with_sms_forgot_status');
+        $res                                          = $formatGeneric($raw);
         $settings['woo_login_with_sms_forgot_status'] = array(
             'label' => $labels['login_with_sms_forgot_status'],
             'value' => $res['value'],
@@ -754,8 +771,8 @@ class SiteHealthInfo
         );
 
         // reset_password_status (generic)
-        $raw = $woo('reset_password_status');
-        $res = $formatGeneric($raw);
+        $raw                                   = $woo('reset_password_status');
+        $res                                   = $formatGeneric($raw);
         $settings['woo_reset_password_status'] = array(
             'label' => $labels['reset_password_status'],
             'value' => $res['value'],
@@ -763,8 +780,8 @@ class SiteHealthInfo
         );
 
         // checkout_confirmation_checkbox_enabled (generic)
-        $raw = $woo('checkout_confirmation_checkbox_enabled');
-        $res = $formatGeneric($raw);
+        $raw                                                    = $woo('checkout_confirmation_checkbox_enabled');
+        $res                                                    = $formatGeneric($raw);
         $settings['woo_checkout_confirmation_checkbox_enabled'] = array(
             'label' => $labels['checkout_confirmation_checkbox_enabled'],
             'value' => $res['value'],
@@ -772,8 +789,8 @@ class SiteHealthInfo
         );
 
         // checkout_mobile_verification_enabled (generic)
-        $raw = $woo('checkout_mobile_verification_enabled');
-        $res = $formatGeneric($raw);
+        $raw                                                  = $woo('checkout_mobile_verification_enabled');
+        $res                                                  = $formatGeneric($raw);
         $settings['woo_checkout_mobile_verification_enabled'] = array(
             'label' => $labels['checkout_mobile_verification_enabled'],
             'value' => $res['value'],
@@ -781,9 +798,9 @@ class SiteHealthInfo
         );
 
         // register_user_via_sms_status (enabled/disabled only)
-        $raw     = $woo('register_user_via_sms_status');
-        $enabled = in_array($raw, $yesVals, true);
-        $res     = array(
+        $raw                                          = $woo('register_user_via_sms_status');
+        $enabled                                      = in_array($raw, $yesVals, true);
+        $res                                          = array(
             'value' => $enabled ? esc_html__('Enabled', 'wp-sms') : esc_html__('Disabled', 'wp-sms'),
             'debug' => $enabled ? 'Enabled' : 'Disabled',
         );
@@ -794,9 +811,9 @@ class SiteHealthInfo
         );
 
         // checkout_mobile_verification_skip_logged_in_enabled (enabled/disabled only)
-        $raw     = $woo('checkout_mobile_verification_skip_logged_in_enabled');
-        $enabled = in_array($raw, $yesVals, true);
-        $res     = array(
+        $raw                                                                 = $woo('checkout_mobile_verification_skip_logged_in_enabled');
+        $enabled                                                             = in_array($raw, $yesVals, true);
+        $res                                                                 = array(
             'value' => $enabled ? esc_html__('Enabled', 'wp-sms') : esc_html__('Disabled', 'wp-sms'),
             'debug' => $enabled ? 'Enabled' : 'Disabled',
         );
@@ -807,10 +824,10 @@ class SiteHealthInfo
         );
 
         // checkout_mobile_verification_countries_whitelist (list or Not Set)
-        $raw    = $woo('checkout_mobile_verification_countries_whitelist');
-        $has    = is_array($raw) && !empty($raw);
-        $joined = $has ? implode(', ', $raw) : null;
-        $res    = array(
+        $raw                                                              = $woo('checkout_mobile_verification_countries_whitelist');
+        $has                                                              = is_array($raw) && !empty($raw);
+        $joined                                                           = $has ? implode(', ', $raw) : null;
+        $res                                                              = array(
             'value' => $has ? $joined : esc_html__('Not Set', 'wp-sms'),
             'debug' => $has ? $joined : 'Not Set',
         );
@@ -1001,5 +1018,55 @@ class SiteHealthInfo
         }
 
         return $settings;
+    }
+
+    /**
+     * Retrieve a list of active forms.
+     *
+     * @param string $keyPattern
+     * @param array $formsData
+     * @param array|null $options
+     *
+     * @return array
+     */
+    private function getActiveFormsByPattern($keyPattern, $formsData, $options = null)
+    {
+        if ($options === null) {
+            $options = Option::getOptions(true);
+        }
+
+        $options = (array)$options;
+        $keys    = preg_grep($keyPattern, array_keys($options)) ?: [];
+        $titles  = [];
+
+        foreach ($keys as $key) {
+            $rawVal = $options[$key] ?? null;
+
+            if (!in_array($rawVal, array(true, '1', 1, 'yes', 'on'), true)) {
+                continue;
+            }
+
+            $id = 0;
+            if (preg_match($keyPattern, $key, $m) && isset($m[1])) {
+                $id = (int)$m[1];
+            }
+
+            $title = $formsData[$id] ?? '';
+            if ($title === '') {
+                continue;
+            }
+
+            $titles[] = trim($title);
+        }
+
+        $titles = array_unique($titles);
+
+        $value = !empty($titles) ? implode(', ', $titles) : esc_html__('Not Set', 'wp-sms');
+        $debug = !empty($titles) ? implode(', ', $titles) : 'Not Set';
+
+        return array(
+            'value' => $value,
+            'debug' => $debug,
+        );
     }
 }
