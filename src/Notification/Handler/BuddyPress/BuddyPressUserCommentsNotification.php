@@ -54,6 +54,10 @@ class BuddyPressUserCommentsNotification extends Notification
      */
     public function getComment()
     {
+        if (!$this->comment) {
+            return null;
+        }
+        
         return $this->comment->content ?? null;
     }
 
