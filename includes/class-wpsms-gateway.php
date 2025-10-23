@@ -5,6 +5,7 @@ namespace WP_SMS;
 use Exception;
 use WP_SMS\Components\Logger;
 use WP_SMS\Components\RemoteRequest;
+use WP_SMS\Notice\NoticeManager;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -19,7 +20,7 @@ class Gateway
      * Set pro gateways
      */
     public static $proGateways = array(
-        'global'         => array(
+        'global'               => array(
             'twilio'         => 'twilio.com',
             'plivo'          => 'plivo.com',
             'clickatell'     => 'clickatell.com',
@@ -96,103 +97,106 @@ class Gateway
             'cloudtalk'      => 'cloudtalk.io',
             'threema'        => 'threema.ch'
         ),
-        'united states'  => array(
+        'united states'        => array(
             'telnyx' => 'telnyx.com',
         ),
-        'germany'        => array(
+        'germany'              => array(
             'gtxmessaging' => 'gtx-messaging.com',
         ),
-        'united kingdom' => array(
+        'united kingdom'       => array(
             'firetext' => 'firetext.co.uk',
         ),
-        'french'         => array(
+        'french'               => array(
             'linkmobilityFr' => 'linkmobility.fr',
         ),
-        'africa'         => array(
+        'africa'               => array(
             'jusibe'      => 'jusibe.com',
             'montymobile' => 'montymobile.com',
             'hubtel'      => 'hubtel.com',
         ),
-        'romania'        => array(
+        'romania'              => array(
             'sendsms'  => 'sendsms.ro',
             'smschef'  => 'smschef.com',
             'nobelsms' => 'nobelsms.com',
         ),
-        'arabic'         => array(
+        'arabic'               => array(
             'kwtsms'      => 'kwtsms.com',
             'taqnyat'     => 'taqnyat.sa',
             'mobishastra' => 'mobishastra.com',
             'brqsms'      => 'brqsms.com',
         ),
-        'bangladesh'     => array(
+        'bangladesh'           => array(
             'esmsbd'    => 'esms.com.bd',
             'bulksmsbd' => 'bulksmsbd.com',
             'btssms'    => 'btssms.com',
             'greenweb'  => 'greenweb.com.bd',
             'revesms'   => 'smpp.ajuratech.com',
         ),
-        'china'          => array(
+        'china'                => array(
             'juhe' => 'juhe.cn'
         ),
-        'palestine'      => array(
+        'palestine'            => array(
             'htd' => 'htd.ps',
         ),
-        'pakistan'       => array(
+        'pakistan'             => array(
             'sendpk' => 'sendpk.com',
         ),
-        'uzbakistan'     => array(
+        'uzbakistan'           => array(
             'eskiz' => 'eskiz.uz',
         ),
-        'india'          => array(
+        'india'                => array(
             'bulksmsgateway'   => 'bulksmsgateway.in',
             'bulksmshyderabad' => 'bulksmshyderabad.co.in',
             'smsbharti'        => 'smsbharti.com'
         ),
-        'srilanka'       => array(
+        'srilanka'             => array(
             'notify' => 'notify.lk'
         ),
-        'poland'         => array(
+        'poland'               => array(
             'smseagle' => 'smseagle.eu'
         ),
-        'australia'      => array(
+        'australia'            => array(
             'smsbroadcast' => 'smsbroadcast.com.au',
             'textteam'     => 'textteam.com.au',
             'messagemedia' => 'messagemedia.com/au',
             'smscentral'   => 'smscentral.com.au',
         ),
-        'russia'         => array(
-            'sigmasms'   => 'sigmasms.ru',
-            'turbosms'   => 'turbosms.ua',
+        'russia'               => array(
+            'sigmasms' => 'sigmasms.ru',
+            'turbosms' => 'turbosms.ua',
         ),
-        'malaysia'       => array(
+        'malaysia'             => array(
             'klasiksms' => 'klasiksms.com',
         ),
-        'mexico'         => array(
+        'mexico'               => array(
             'smsmasivos' => 'smsmasivos.com.mx',
         ),
-        'iran'           => array(
+        'iran'                 => array(
             'mehrafraz' => 'mehrafraz.com/fa',
         ),
-        'indonesia'      => array(
+        'indonesia'            => array(
             'nusasms' => 'nusasms.com',
             'smsviro' => 'smsviro.com',
         ),
-        'taiwan'         => array(
+        'taiwan'               => array(
             'mitake'  => 'mitake.com.tw',
             'every8d' => 'teamplus.tech',
         ),
-        'thailand'       => array(
+        'thailand'             => array(
             'mailbit' => 'mailbit.co.th',
         ),
-        'south korea'    => array(
+        'south korea'          => array(
             'nhncloud' => 'nhncloud.com/kr',
         ),
-        'morocco'        => array(
+        'morocco'              => array(
             'bulksmsMa' => 'bulksms.ma'
         ),
-        'philippine'     => array(
+        'philippine'           => array(
             'semaphore' => 'semaphore.co',
         ),
+        'united arab emirates' => [
+            'smsala' => 'smsala'
+        ]
     );
 
     /**
@@ -359,6 +363,20 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
      */
     public static $get_response;
 
+    /**
+     * Define gateway version
+     *
+     * @var string $version
+     */
+    public $version = '1.0';
+
+    /**
+     * An array to hold message variables.
+     *
+     * @var array
+     */
+    public $messageVariables = [];
+
     public function __construct()
     {
         global $wpdb;
@@ -410,7 +428,9 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
         // Using default gateway if does not set gateway in the setting
         if (empty($gateway_name)) {
-            return new $class_name();
+            $sms = new $class_name();
+
+            return $sms;
         }
 
         if (is_file(WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $gateway_name . '.php')) {
@@ -418,7 +438,9 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         } elseif (is_file(WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.php')) {
             include_once(WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.php');
         } else {
-            return new $class_name();
+            $sms = new $class_name();
+
+            return $sms;
         }
 
         // Create object from the gateway class
@@ -451,6 +473,9 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 $sms->from = trim(Option::getOption('gateway_sender_id'));
             }
         }
+
+        // Handle versioning
+        self::setupGatewayVersioning($sms, $gateway_name);
 
         // Show gateway help configuration in gateway page
         if ($sms->help) {
@@ -520,6 +545,24 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
      */
     public function log($sender, $message, $to, $response, $status = 'success', $media = array())
     {
+        /**
+         * @note In production mode (when WP_DEBUG is disabled or not defined),
+         *       this block masks sensitive message variables such as `code`, `otp`,
+         *       `post_password`, and `coupon_code` before logging.
+         *       This prevents sensitive information from being written to logs.
+         */
+        if (!defined('WP_DEBUG') || WP_DEBUG === false) {
+            $keysToMask = ['code', 'otp', 'post_password', 'coupon_code'];
+
+            if (is_array($this->messageVariables) && !empty($this->messageVariables)) {
+                array_walk($this->messageVariables, function ($value, $key) use (&$message, $keysToMask) {
+                    if (in_array($key, $keysToMask) && !empty($value) && strpos($message, $value) !== false) {
+                        $message = str_replace($value, '***', $message);
+                    }
+                });
+            }
+        }
+
         return Logger::logOutbox($sender, $message, $to, $response, $status, $media);
     }
 
@@ -704,6 +747,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'smsgatewayat' => 'sms-gateway.at',
             ),
             'spain'                => array(
+                'smses'      => 'sms.es',
                 'altiria'    => 'altiria.com',
                 'afilnet'    => 'afilnet.com',
                 'labsmobile' => 'labsmobile.com',
@@ -763,32 +807,36 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'fast2sms'                => 'fast2sms.com'
             ),
             'iran'                 => array(
-                'iransmspanel'  => 'iransmspanel.ir',
+                'sms'           => 'sms.ir',
+                'farazsms'      => 'farazsms.com',
+                'melipayamak'   => 'melipayamak.ir',
+                'kavenegar'     => 'kavenegar.com',
                 'markazpayamak' => 'markazpayamak.ir',
-                'adpdigital'    => 'adpdigital.com',
-                'hostiran'      => 'hostiran.net',
-                'sunwaysms'     => 'sunwaysms.com',
                 'farapayamak'   => 'farapayamak.com',
-                'smsclick'      => 'smsclick.ir',
+                'adpdigital'    => 'adpdigital.com',
+                'iransmspanel'  => 'iransmspanel.ir',
+                'sunwaysms'     => 'sunwaysms.com',
                 'persiansms'    => 'persiansms.com',
+                'smsclick'      => 'smsclick.ir',
                 'smscall'       => 'smscall.ir',
                 'paaz'          => 'paaz.ir',
                 'textsms'       => 'textsms.ir',
                 'loginpanel'    => 'loginpanel.ir',
                 'nasrpayam'     => 'nasrPayam.ir',
                 'smsbartar'     => 'sms-bartar.com',
+                'hostiran'      => 'hostiran.net',
                 'payamresan'    => 'payam-resan.com',
                 'mdpanel'       => 'ippanel.com',
                 'payameroz'     => 'payameroz.ir',
                 'mediana'       => 'mediana.ir',
                 'aradsms'       => 'arad-sms.ir',
-                'sms'           => 'sms.ir',
                 'novin1sms'     => 'novin1sms.ir',
                 'smstoos'       => 'smstoos.ir',
                 'ssmss'         => 'ssmss.ir',
                 'idehpayam'     => 'idehpayam.com',
                 'smsmelli'      => 'smsmelli.com',
                 'smsban'        => 'smsban.ir',
+                'matinsms'      => 'MatinSMS.ir',
                 'afe'           => 'afe.ir',
                 'asanak'        => 'asanak.ir',
                 '_0098sms'      => '0098sms.com',
@@ -805,18 +853,14 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'parsasms'      => 'parsasms.com',
                 'smsline'       => 'smsline.ir',
                 'parsgreen'     => 'api.ir',
-                'kavenegar'     => 'kavenegar.com',
                 '_18sms'        => '18sms.ir',
                 'sabanovin'     => 'sabanovin.com',
                 'candoosms'     => 'candoosms.com',
                 'hirosms'       => 'hiro-sms.com',
                 'onlinepanel'   => 'onlinepanel.ir',
                 'rayansmspanel' => 'rayansmspanel.ir',
-                'farazsms'      => 'farazsms.com',
                 'raygansms'     => 'raygansms.com',
                 'signalads'     => 'signalads.com',
-                'matinsms'      => 'MatinSMS.ir',
-                'melipayamak'   => 'melipayamak.ir',
             ),
             'arabic'               => array(
                 'msegat'       => 'msegat.com',
@@ -1091,7 +1135,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     {
         $request = new RemoteRequest($method, $url, $arguments, $params);
 
-        return $request->execute($throwFailedHttpCodeResponse);
+        return $request->execute($throwFailedHttpCodeResponse, false);
     }
 
     /**
@@ -1480,5 +1524,42 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         }
 
         return null;
+    }
+
+    /**
+     * Handle gateway versioning and display admin notice if configuration requires attention.
+     *
+     * Compares the current gateway version with the stored version in options.
+     * Displays an admin notice if the gateway is not configured, credentials are invalid,
+     * or the gateway version has changed.
+     *
+     * @param object $sms The SMS gateway instance.
+     * @param string $gateway The current gateway name.
+     * @return void
+     */
+    protected static function setupGatewayVersioning($sms, $gateway)
+    {
+        $gw         = $gateway ?: 'unknown';
+        $currentVer = $sms->version;
+
+        $storedVer      = Option::getOption('gateway_version');
+        $versionChanged = ($storedVer !== null && $storedVer !== $currentVer);
+
+        if ($versionChanged) {
+            $settingsLink = admin_url('admin.php?page=wp-sms-settings&tab=gateway');
+
+            $message = sprintf(
+                __('SMS gateway setup requires your attention. <a href="%1$s">Review and update your gateway settings</a> to ensure SMS messages are sent successfully.', 'wp-sms'),
+                esc_url($settingsLink)
+            );
+
+            $id = sprintf(
+                'gateway_attention_%s_%s',
+                sanitize_key($gw),
+                sanitize_key(str_replace('.', '_', $currentVer))
+            );
+
+            NoticeManager::getInstance()->registerNotice($id, wp_kses_post($message), true, false);
+        }
     }
 }

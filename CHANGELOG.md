@@ -1,7 +1,18 @@
-= v7.1 - 2025-**-** =
-- **New**: Adding notification system to receive important updates and promotions.
-- **Enhancement**: Set Min PHP version to 7.2
-- **Enhancement**: Database manager
+= v7.0.4 - 2025-10-25 =
+- **New:** Added support for the SMS.es gateway.
+- **New:** Display an admin notice when the gateway version changes, required fields are missing, or the gateway is not configured.
+- **Enhancement:** Added support for Service-Line SMS.ir template-based messaging.
+- **Enhancement:** Refactored the MeliPayamak gateway for better stability and reliability.
+- **Enhancement:** Improved Kavenegar gateway to support template-based SMS messages with variable placeholders.
+- **Enhancement:** Refactored the FARAZSMS gateway for improved reliability.
+- **Fix:** Disabled caching to prevent duplicate responses for identical messages.
+- **Fix:** Ensured PHP 8.1+ compatibility by avoiding "Automatic conversion of false to array" warnings.
+- **Fix:** Delayed the anonymous data opt-in notice to appear 7 days after plugin activation.
+- **Fix:** Masked sensitive variables (`code`, `otp`, `post_password`, `coupon_code`) in logs when `WP_DEBUG` is disabled.
+
+= v7.0.3 - 2025-09-17 =
+- **Enhancement:** Improved Send SMS page performance by loading recipients via AJAX instead of on initial render.
+- **Enhancement:** Prevented sending emails to users who registered with only a phone number.
 
 = v7.0.2 - 2025-08-18 =
 - **New:** License keys can now be set via `wp-config.php` using constants like `WP_SMS_LICENSE` and are automatically validated on init.
