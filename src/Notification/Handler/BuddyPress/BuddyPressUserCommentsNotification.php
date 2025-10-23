@@ -43,8 +43,12 @@ class BuddyPressUserCommentsNotification extends Notification
      */
     public function getPostedUserDisplayName()
     {
+        if (!$this->comment) {
+            return null;
+        }
+        
         $userPosted = get_userdata($this->comment->user_id);
-        return $userPosted->display_name ?? null;
+        return ($userPosted && isset($userPosted->display_name)) ? $userPosted->display_name : null;
     }
 
     /**
@@ -54,6 +58,10 @@ class BuddyPressUserCommentsNotification extends Notification
      */
     public function getComment()
     {
+        if (!$this->comment) {
+            return null;
+        }
+        
         return $this->comment->content ?? null;
     }
 
@@ -64,7 +72,11 @@ class BuddyPressUserCommentsNotification extends Notification
      */
     public function getReceiverUserDisplayName()
     {
+        if (!$this->activity) {
+            return null;
+        }
+        
         $userReceiver = get_userdata($this->activity->user_id);
-        return $userReceiver->display_name ?? null;
+        return ($userReceiver && isset($userReceiver->display_name)) ? $userReceiver->display_name : null;
     }
 }
