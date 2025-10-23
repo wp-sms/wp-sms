@@ -159,16 +159,15 @@ class smses extends Gateway
         }
 
         if ($errors) {
-            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+            $this->log($this->from, $this->msg, $this->to, $errors, 'error');
 
-            return new WP_Error(
-                'send-sms-error',
-                sprintf(
-                    '%d message(s) failed to send: %s',
-                    count($errors),
-                    implode(', ', array_keys($errors))
-                )
+            $errorsMessage = sprintf(
+                '%d message(s) failed to send: %s',
+                count($errors),
+                implode(', ', array_keys($errors))
             );
+
+            return new WP_Error('send-sms-error', $errorsMessage);
         }
 
         /**
