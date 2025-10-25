@@ -75,7 +75,6 @@ class smses extends Gateway
                 'name'    => __('API Base URL', 'wp-sms'),
                 'type'    => 'select',
                 'options' => [
-                    'https://api-cpaas.sms.es/'    => 'https://api-cpaas.sms.es',
                     'https://194.0.137.110:42161/' => 'https://194.0.137.110:42161',
                 ],
                 'desc'    => __('Select the base URL for the SMS Gateway API.', 'wp-sms')
