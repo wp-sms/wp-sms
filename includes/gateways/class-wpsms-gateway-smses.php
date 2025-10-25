@@ -184,7 +184,7 @@ class smses extends Gateway
     /**
      * Get account credit balance.
      *
-     * @return null
+     * @return string
      */
     public function GetCredit()
     {
