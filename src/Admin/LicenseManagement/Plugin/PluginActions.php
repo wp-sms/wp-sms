@@ -3,7 +3,6 @@
 namespace WP_SMS\Admin\LicenseManagement\Plugin;
 
 use Exception;
-use WP_SMS\User\UserHelper;
 use WP_SMS\Utils\Request;
 use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
@@ -22,7 +21,6 @@ class PluginActions
 
     public function registerAjaxCallbacks()
     {
-        $list   = [];
         $list[] = [
             'class'  => $this,
             'action' => 'check_license'
@@ -46,9 +44,11 @@ class PluginActions
             $callback = $action . '_action_callback';
             $isPublic = isset($item['public']) && $item['public'] == true ? true : false;
 
-            if (method_exists($class, $callback)) {
+            // If callback exists in the class, register the action
+            if (!empty($class) && method_exists($class, $callback)) {
                 add_action('wp_ajax_wp_sms_' . $action, [$class, $callback]);
 
+                // Register the AJAX callback publicly
                 if ($isPublic) {
                     add_action('wp_ajax_nopriv_wp_sms_' . $action, [$class, $callback]);
                 }
@@ -85,10 +85,6 @@ class PluginActions
     public function download_plugin_action_callback()
     {
         check_ajax_referer('wp_rest', 'wps_nonce');
-
-        if (!UserHelper::hasCapability('install_plugins')) {
-            wp_send_json_error(__('You are not allowed to install plugins.', 'wp-sms'), 403);
-        }
 
         try {
             $licenseKey = Request::has('license_key') ? wp_unslash(Request::get('license_key')) : false;
@@ -161,10 +157,6 @@ class PluginActions
     public function activate_plugin_action_callback()
     {
         check_ajax_referer('wp_rest', 'wps_nonce');
-
-        if (UserHelper::hasCapability('activate_plugins')) {
-            wp_send_json_error(__('You are not allowed to activate plugins.', 'wp-sms'), 403);
-        }
 
         try {
             $pluginSlug = Request::has('plugin_slug') ? wp_unslash(Request::get('plugin_slug')) : false;

@@ -7,7 +7,6 @@ use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Services\Database\DatabaseFactory;
 use WP_SMS\Services\Database\Schema\Manager;
 
-
 /**
  * Handles database table operations, including creation, inspection,
  * and deletion of tables.
@@ -19,10 +18,7 @@ use WP_SMS\Services\Database\Schema\Manager;
 class TableHandler
 {
     /**
-     * Create all database tables if they do not already exist.
-     *
-     * This method iterates through all known table names, inspects each table,
-     * and creates it if it is missing using the predefined schema.
+     * Create all database tables and add missing columns if they don't exist.
      *
      * @return void
      * @throws \RuntimeException If a table creation or inspection fails.
@@ -54,14 +50,17 @@ class TableHandler
 
         if (Install::isFresh()) {
             Option::saveOptionGroup('migrated', true, 'db');
-            Option::saveOptionGroup('manual_migration_tasks', [], 'db');
-            Option::saveOptionGroup('auto_migration_tasks', [], 'db');
             Option::saveOptionGroup('version', WP_SMS_VERSION, 'db');
             return;
         }
 
         Option::saveOptionGroup('migrated', false, 'db');
         Option::saveOptionGroup('migration_status_detail', null, 'db');
+        Option::saveOptionGroup('completed', false, 'queue_background_process');
+        Option::saveOptionGroup('status', null, 'queue_background_process');
+
+        $ajaxMigrationOption = Option::getOptionGroup('ajax_background_process', 'jobs', []);
+        $ajaxIsDone          = Option::getOptionGroup('ajax_background_process', 'is_done', false);
 
         $dismissedNotices = get_option('wp_sms_dismissed_notices', []);
 

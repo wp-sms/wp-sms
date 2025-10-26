@@ -1,8 +1,5 @@
 <?php
 
-use WP_SMS\BackgroundProcess\Async\DataMigrationProcess;
-use WP_SMS\Admin\AdminManager;
-use WP_SMS\Admin\AnonymizedUsageData\AnonymizedUsageDataManager;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\OnBoarding\StepFactory;
 use WP_SMS\Admin\OnBoarding\WizardManager;
@@ -14,18 +11,18 @@ use WP_SMS\Blocks\BlockAssetsManager;
 use WP_SMS\Controller\ControllerManager;
 use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Services\CronJobs\CronJobManager;
-use WP_SMS\Services\Database\Managers\MigrationHandler;
 use WP_SMS\Services\Formidable\FormidableManager;
 use WP_SMS\Services\Forminator\ForminatorManager;
 use WP_SMS\Services\Hooks\HooksManager;
 use WP_SMS\Services\MessageButton\MessageButtonManager;
-use WP_SMS\Services\Notification\NotificationManager;
-use WP_SMS\Services\WooCommerce\WooCommerceCheckout;
 use WP_SMS\Services\Subscriber\SubscriberManager;
+use WP_SMS\Services\WooCommerce\WooCommerceCheckout;
 use WP_SMS\Shortcode\ShortcodeManager;
 use WP_SMS\User\MobileFieldManager;
 use WP_SMS\Webhook\WebhookManager;
 use WP_SMS\Widget\WidgetsManager;
+use WP_SMS\Services\Database\Migrations\Queue\QueueManager;
+use WP_SMS\Services\Database\Migrations\BackgroundProcess\BackgroundProcessManager;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -69,15 +66,26 @@ class WP_SMS
 
         register_activation_hook(WP_SMS_DIR . 'wp-sms.php', array($this, 'activate'));
         register_deactivation_hook(WP_SMS_DIR . 'wp-sms.php', array($this, 'deactivate'));
+
+        add_action('init', array($this, 'upgrade'));
     }
 
     /**
-     * Install And Upgrade plugin
+     * Install plugin
      */
     public function activate($network_wide)
     {
         $class = new \WP_SMS\Install();
         $class->install($network_wide);
+    }
+
+    /**
+     * Upgrade plugin
+     */
+    public function upgrade()
+    {
+        $class = new \WP_SMS\Install();
+        $class->upgrade();
     }
 
     /**
@@ -112,7 +120,6 @@ class WP_SMS
 
         $this->includes();
         $this->setupBackgroundProcess();
-        MigrationHandler::init();
 
     }
 
@@ -142,7 +149,6 @@ class WP_SMS
     {
         $this->registerBackgroundProcess(RemoteRequestAsync::class, 'remote_request_async');
         $this->registerBackgroundProcess(RemoteRequestQueue::class, 'remote_request_queue');
-        $this->registerBackgroundProcess(DataMigrationProcess::class, 'data_migration_process');
         $this->registerBackgroundProcess(SchemaMigrationProcess::class, 'schema_migration_process');
         $this->registerBackgroundProcess(TableOperationProcess::class, 'table_operations_process');
 
@@ -210,8 +216,6 @@ class WP_SMS
 
     /**
      * Includes plugin files
-     *
-     * @param Not param
      */
     public function includes()
     {
@@ -250,6 +254,8 @@ class WP_SMS
         \WP_SMS\Utils\MenuUtil::init();
         (new SubscriberManager())->init();
 
+        new BackgroundProcessManager();
+
         if (is_admin()) {
             // Admin legacy classes.
             $this->include('includes/admin/settings/class-wpsms-settings.php');
@@ -263,9 +269,7 @@ class WP_SMS
 
             WidgetsManager::init();
             NoticeManager::getInstance();
-
             $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
-            $adminManager             = new AdminManager();
 
             add_action('init', function () {
                 $wizard = new WizardManager(__('WPSMS OnBoarding Process', 'wp-sms'), 'wp-sms-onboarding');
@@ -279,6 +283,7 @@ class WP_SMS
                 $wizard->setup();
             });
 
+            new QueueManager();
         }
 
         if (!is_admin()) {
@@ -286,17 +291,13 @@ class WP_SMS
             $this->include('includes/class-front.php');
         }
 
-        new HooksManager();
-        new NotificationManager();
+        new  HooksManager();
 
         // API class.
         $this->include('includes/api/v1/class-wpsms-api-newsletter.php');
         $this->include('includes/api/v1/class-wpsms-api-send.php');
         $this->include('includes/api/v1/class-wpsms-api-webhook.php');
         $this->include('includes/api/v1/class-wpsms-api-credit.php');
-
-        // Anonymous Data sharing
-        $anonymizedUsageDataManager = new AnonymizedUsageDataManager();
     }
 
     /**

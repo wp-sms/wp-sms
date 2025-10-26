@@ -31,7 +31,7 @@
             <?php endif; ?>
             <?php if (!$notification->getDismiss()): ?>
                 <a href="#" class="wpsms-notification-sidebar__dismiss" data-notification-id="<?php echo esc_attr($notification->getID()); ?>">
-                    <?php echo esc_html__('Dismiss', 'wp-statistics'); ?>
+                    <?php echo esc_html__('Dismiss', 'wp-sms'); ?>
                 </a>
             <?php endif; ?>
         </div>

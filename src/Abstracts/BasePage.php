@@ -2,7 +2,6 @@
 
 namespace WP_SMS\Abstracts;
 
-use WP_SMS\Menus;
 use WP_SMS\Components\Singleton;
 
 abstract class BasePage extends Singleton

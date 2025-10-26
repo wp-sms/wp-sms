@@ -28,6 +28,9 @@ module.exports = {
         ],
         onboarding: [
             './assets/src/scripts/onboarding.js',
+        ],
+        backgroundProcessTracker: [
+            './assets/src/scripts/background-process-tracker.js',
         ]
     },
     output: {

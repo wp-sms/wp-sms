@@ -73,4 +73,75 @@ class Option
 
         update_option($setting_name, $options);
     }
+
+    public static function deleteOptionGroup($key, $group)
+    {
+        $settingName = "wpsms_{$group}";
+        $options     = get_option($settingName, []);
+
+        // Check if the key exists in the array.
+        if (array_key_exists($key, $options)) {
+            // Remove the key from the array.
+            unset($options[$key]);
+
+            // Write the updated array back to the database.
+            update_option($settingName, $options);
+        }
+    }
+
+    public static function saveOptionGroup($key, $value, $group)
+    {
+        $settingName = "wpsms_{$group}";
+        $options     = get_option($settingName, []);
+
+        // Backward compatibility.
+        if (!is_array($options)) {
+            $options = array();
+        }
+
+        // Store the value in the array.
+        $options[$key] = $value;
+
+        // Write the array to the database.
+        update_option($settingName, $options);
+    }
+
+    public static function addOptionGroup($key, $value, $group)
+    {
+        $settingName = "wpsms_{$group}";
+        $options     = get_option($settingName, []);
+
+        // Backward compatibility.
+        if (!is_array($options)) {
+            $options = array();
+        }
+
+        // Store the value in the array.
+        $options[$key] = $value;
+
+        // Write the array to the database.
+        add_option($settingName, $options);
+    }
+
+    public static function getOptionGroup($group, $key = null, $default = null)
+    {
+        $settingName = "wpsms_{$group}";
+        $options     = get_option($settingName);
+
+        if (!isset($options) || !is_array($options)) {
+            $options = array();
+        }
+
+        if (is_null($key)) {
+            $result = $options;
+        } else {
+            if (!array_key_exists($key, $options)) {
+                $result = !is_null($default) ? $default : false;
+            } else {
+                $result = $options[$key];
+            }
+        }
+
+        return apply_filters("wp_sms_option_{$settingName}", $result);
+    }
 }

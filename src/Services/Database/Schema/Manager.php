@@ -18,7 +18,7 @@ class Manager
     private static $tablesSchema = [
         'subscribes'       => [
             'columns'     => [
-                'ID'            => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'ID'            => 'INT(10) NOT NULL AUTO_INCREMENT',
                 'date'          => 'DATETIME',
                 'name'          => 'VARCHAR(250)',
                 'mobile'        => 'VARCHAR(20) NOT NULL',
@@ -33,7 +33,7 @@ class Manager
         ],
         'subscribes_group' => [
             'columns'     => [
-                'ID'   => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'ID'   => 'INT(10) NOT NULL AUTO_INCREMENT',
                 'name' => 'VARCHAR(250)',
             ],
             'constraints' => [
@@ -42,46 +42,45 @@ class Manager
         ],
         'send'             => [
             'columns'     => [
-                'ID'        => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
+                'ID'        => 'INT(10) NOT NULL AUTO_INCREMENT',
                 'date'      => 'DATETIME',
                 'sender'    => 'VARCHAR(20) NOT NULL',
                 'message'   => 'TEXT NOT NULL',
                 'recipient' => 'TEXT NOT NULL',
+                'media'     => 'TEXT NULL',
                 'response'  => 'TEXT NOT NULL',
-                'status'    => "VARCHAR(10) NOT NULL",
+                'status'    => 'VARCHAR(10) NOT NULL',
             ],
             'constraints' => [
                 'PRIMARY KEY (ID)'
             ],
         ],
-        'numbers'          => [
+        'otp'              => [
             'columns'     => [
-                'id'               => 'BIGINT(20) NOT NULL AUTO_INCREMENT',
-                'number'           => 'VARCHAR(20) NOT NULL UNIQUE',
-                'country_code'     => 'VARCHAR(10) NOT NULL',
-                'first_name'       => 'VARCHAR(50)',
-                'last_name'        => 'VARCHAR(50)',
-                'display_name'     => 'VARCHAR(100)',
-                'user_id'          => 'BIGINT(20) NOT NULL',
-                'status'           => "ENUM('active', 'pending', 'deactivated') NOT NULL DEFAULT 'pending'",
-                'unsubscribed'     => 'BOOLEAN NOT NULL DEFAULT FALSE',
-                'verified'         => 'BOOLEAN NOT NULL DEFAULT FALSE',
-                'source'           => 'VARCHAR(255)',
-                'meta'             => 'TEXT',
-                'secondary_number' => 'VARCHAR(20) DEFAULT NULL',
-                'last_sent_at'     => 'DATETIME DEFAULT NULL',
-                'success_count'    => 'INT(11) NOT NULL DEFAULT 0',
-                'fail_count'       => 'INT(11) NOT NULL DEFAULT 0',
-                'opt_in_date'      => 'DATETIME DEFAULT NULL',
-                'opt_out_at'       => 'DATETIME DEFAULT NULL',
-                'created_at'       => 'DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP',
-                'updated_at'       => 'DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'
+                'ID'           => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
+                'phone_number' => 'VARCHAR(20) NOT NULL',
+                'agent'        => 'VARCHAR(255) NOT NULL',
+                'code'         => 'CHAR(32) NOT NULL',
+                'created_at'   => 'INT UNSIGNED NOT NULL',
             ],
             'constraints' => [
-                'PRIMARY KEY (id)',
-                'KEY user_id (user_id)'
+                'PRIMARY KEY (ID)'
             ],
-        ]
+        ],
+        'otp_attempts'     => [
+            'columns'     => [
+                'ID'           => 'BIGINT UNSIGNED NOT NULL AUTO_INCREMENT',
+                'phone_number' => 'VARCHAR(20) NOT NULL',
+                'agent'        => 'VARCHAR(255) NOT NULL',
+                'code'         => 'VARCHAR(255) NOT NULL',
+                'result'       => 'TINYINT(1) NOT NULL',
+                'time'         => 'INT UNSIGNED NOT NULL',
+            ],
+            'constraints' => [
+                'PRIMARY KEY (ID)',
+                'KEY (phone_number)'
+            ],
+        ],
     ];
 
     /**

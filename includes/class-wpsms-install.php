@@ -4,6 +4,8 @@ namespace WP_SMS;
 
 use WP_SMS\Services\Database\Managers\TableHandler;
 use WP_SMS\Utils\OptionUtil as Option;
+use WP_SMS\Services\Database\Managers\SchemaMaintainer;
+use WP_SMS\Services\Database\Migrations\Schema\SchemaManager;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -16,29 +18,7 @@ class Install
 
     public function __construct()
     {
-        add_action('init', array($this, 'initializeSettingOnUpgrade'));
-    }
-
-    public function initializeSettingOnUpgrade()
-    {
-        $currentSettingsVersion = get_option('wp_sms_settings_version');
-        $targetSettingsVersion  = WP_SMS_VERSION;
-
-        $initializedSettings = get_option('wp_sms_initialized_settings', array());
-
-        if (version_compare($currentSettingsVersion, $targetSettingsVersion, '<')) {
-
-            if (!in_array('plugin_notifications', $initializedSettings)) {
-                if (\WP_SMS\Option::getOption('plugin_notifications') == false) {
-                    \WP_SMS\Option::updateOption('plugin_notifications', true);
-                }
-
-                $initializedSettings[] = 'plugin_notifications';
-            }
-
-            update_option('wp_sms_settings_version', $targetSettingsVersion);
-            update_option('wp_sms_initialized_settings', $initializedSettings);
-        }
+        add_action('delete_blog', [$this, 'onSiteDelete'], 10, 2);
     }
 
     /**
@@ -52,10 +32,14 @@ class Install
 
         if (empty($version)) {
             update_option('wp_sms_is_fresh', true);
-            return;
+        } else {
+            update_option('wp_sms_is_fresh', false);
         }
 
-        update_option('wp_sms_is_fresh', false);
+        $installationTime = get_option('wp_sms_installation_time');
+        if (empty($installationTime)) {
+            update_option('wp_sms_installation_time', time());
+        }
     }
 
     /**
@@ -93,15 +77,8 @@ class Install
         require_once WP_SMS_DIR . 'src/Services/Database/Managers/TableHandler.php';
 
         global $wp_sms_db_version, $wpdb;
-
-        add_option('wp_sms_db_version', WP_SMS_VERSION);
-
         // Delete notification new wp_version option
         delete_option('wp_notification_new_wp_version');
-
-        if (is_admin()) {
-            self::upgrade();
-        }
 
         if (is_multisite() && $network_wide) {
             $blog_ids = $wpdb->get_col("SELECT `blog_id` FROM $wpdb->blogs");
@@ -118,6 +95,7 @@ class Install
         }
 
         $this->markBackgroundProcessAsInitiated();
+        add_option('wp_sms_db_version', WP_SMS_VERSION);
     }
 
     private function markBackgroundProcessAsInitiated()
@@ -135,6 +113,30 @@ class Install
      * Upgrade plugin requirements if needed
      */
     public function upgrade()
+    {
+        if (is_multisite()) {
+            $site_ids = get_sites(['fields' => 'ids']);
+            foreach ($site_ids as $site_id) {
+                switch_to_blog($site_id);
+                $this->runUpgradeForCurrentSite();
+                restore_current_blog();
+            }
+        } else {
+            $this->runUpgradeForCurrentSite();
+        }
+    }
+
+    /**
+     * Run upgrade routine for the current site context.
+     *
+     * This method checks the current database version and applies
+     * schema updates, table modifications, and new column additions.
+     * It is designed to be safely used in a multisite environment
+     * with switch_to_blog().
+     *
+     * @return void
+     */
+    private function runUpgradeForCurrentSite()
     {
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
@@ -213,6 +215,8 @@ class Install
             $this->checkIsFresh();
 
             TableHandler::createAllTables();
+            SchemaManager::init();
+            SchemaMaintainer::repair(true);
 
             update_option('wp_sms_db_version', WP_SMS_VERSION);
         }
@@ -224,6 +228,33 @@ class Install
             $wpdb->query("ALTER TABLE `{$outboxTable}` ADD `media` TEXT NULL AFTER `recipient`");
         }
     }
+
+    /**
+     * Handle site deletion in multisite: drop plugin tables
+     *
+     * @param int $blog_id
+     * @param bool $drop Whether to drop tables (true by default)
+     */
+    public static function onSiteDelete($blog_id, $drop = true)
+    {
+        if (!$drop || !is_multisite()) {
+            return;
+        }
+
+        switch_to_blog($blog_id);
+
+        try {
+            TableHandler::dropAllTables();
+        } catch (\Exception $e) {
+            WPSms()::log(
+                sprintf(__('WP SMS cleanup failed for site %d: %s', 'wp-sms'), $blog_id, $e->getMessage()),
+                'error'
+            );
+        }
+
+        restore_current_blog();
+    }
+
 
     /**
      * Create sms_otp table

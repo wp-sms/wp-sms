@@ -3,7 +3,7 @@
 namespace WP_SMS\BackgroundProcess\Async;
 
 use WP_SMS\Utils\OptionUtil as Option;
-use WP_SMS\Service\Database\DatabaseFactory;
+use WP_SMS\Services\Database\DatabaseFactory;
 use WP_SMS\Library\BackgroundProcessing\WP_Background_Process;
 
 class TableOperationProcess extends WP_Background_Process
