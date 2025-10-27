@@ -8,7 +8,7 @@ const WPSmsAjaxBackgroundProcessTracker = {
     currentProcess: null,
 
     init: function () {
-        this.currentProcess = Wp_Sms_Background_Process_Data.current_process;
+        this.currentProcess = Wp_Sms_Async_Background_Process_Data.current_process;
 
         if (! this.currentProcess) {
             return;
@@ -49,7 +49,7 @@ const WPSmsAjaxBackgroundProcessTracker = {
             method: 'POST',
             data: {
                 action: 'wp_sms_async_background_process',
-                wpsms_nonce: Wp_sms_Async_Background_Process_Data.rest_api_nonce,
+                wpsms_nonce: Wp_Sms_Async_Background_Process_Data.rest_api_nonce,
                 current_process: self.currentProcess
             },
             success: function (response) {
@@ -70,8 +70,14 @@ const WPSmsAjaxBackgroundProcessTracker = {
         if (this.migrationNotice.length) {
             this.migrationNotice.closest('.notice').removeClass('notice-info').addClass('notice-success');
 
+            let message = Wp_Sms_Async_Background_Process_Data.completed_message;
+
+            if (Wp_Sms_Async_Background_Process_Data?.job_completed_message) {
+                message = Wp_Sms_Async_Background_Process_Data.job_completed_message;
+            }
+
             this.migrationNotice.html(`
-                <p><strong>WP Sms: Background process completed successfully.</strong></p>
+                <p><strong>${message}</strong></p>
             `);
         }
 

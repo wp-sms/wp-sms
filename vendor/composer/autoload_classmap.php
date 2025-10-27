@@ -137,6 +137,7 @@ return array(
     'WP_SMS\\Services\\Database\\Migrations\\BackgroundProcess\\BackgroundProcessActions' => $baseDir . '/src/Services/Database/Migrations/BackgroundProcess/BackgroundProcessActions.php',
     'WP_SMS\\Services\\Database\\Migrations\\BackgroundProcess\\BackgroundProcessFactory' => $baseDir . '/src/Services/Database/Migrations/BackgroundProcess/BackgroundProcessFactory.php',
     'WP_SMS\\Services\\Database\\Migrations\\BackgroundProcess\\BackgroundProcessManager' => $baseDir . '/src/Services/Database/Migrations/BackgroundProcess/BackgroundProcessManager.php',
+    'WP_SMS\\Services\\Database\\Migrations\\BackgroundProcess\\Jobs\\TestBackgroundProcess' => $baseDir . '/src/Services/Database/Migrations/BackgroundProcess/Jobs/TestBackgroundProcess.php',
     'WP_SMS\\Services\\Database\\Migrations\\Queue\\QueueFactory' => $baseDir . '/src/Services/Database/Migrations/Queue/QueueFactory.php',
     'WP_SMS\\Services\\Database\\Migrations\\Queue\\QueueManager' => $baseDir . '/src/Services/Database/Migrations/Queue/QueueManager.php',
     'WP_SMS\\Services\\Database\\Migrations\\Queue\\QueueMigration' => $baseDir . '/src/Services/Database/Migrations/Queue/QueueMigration.php',

@@ -6,6 +6,7 @@ use WP_SMS\Abstracts\BaseMigrationManager;
 use WP_SMS\Admin\NoticeHandler\Notice;
 use WP_SMS\Utils\MenuUtil as Menus;
 use WP_SMS\Utils\Request;
+use WP_SMS\Services\Database\Migrations\BackgroundProcess\Jobs\TestBackgroundProcess;
 
 class BackgroundProcessManager extends BaseMigrationManager
 {
@@ -22,6 +23,7 @@ class BackgroundProcessManager extends BaseMigrationManager
      * @var array<string, string>
      */
     private $backgroundProcesses = [
+        'wpsms_test_background_process' => TestBackgroundProcess::class
     ];
 
     /**
@@ -29,8 +31,7 @@ class BackgroundProcessManager extends BaseMigrationManager
      *
      * @var array<string> Array of migration keys.
      */
-    private $dataMirations = [
-    ];
+    private $dataMirations = [];
 
     /**
      * The key of the currently running background process.
@@ -161,6 +162,7 @@ class BackgroundProcessManager extends BaseMigrationManager
         }
 
         foreach ($this->backgroundProcess as $key => $instance) {
+
             if (!is_object($instance)) {
                 continue;
             }
