@@ -13,21 +13,15 @@ class MenuUtil
      * @var array
      */
     public static $pages = [
-        'overview'           => 'overview',
-        'exclusions'         => 'exclusions',
-        'referrals'          => 'referrals',
-        'optimization'       => 'optimization',
-        'settings'           => 'settings',
-        'plugins'            => 'plugins',
-        'author-analytics'   => 'author-analytics',
-        'privacy-audit'      => 'privacy-audit',
-        'geographic'         => 'geographic',
-        'content-analytics'  => 'content-analytics',
-        'devices'            => 'devices',
-        'category-analytics' => 'category-analytics',
-        'pages'              => 'pages',
-        'visitors'           => 'visitors',
-        'add-ons'            => 'add-ons',
+        'wp-sms'              => 'wp-sms',
+        'outbox'              => 'outbox',
+        'inbox'               => 'inbox',
+        'subscribers'         => 'subscribers',
+        'subscribers-group'   => 'subscribers-group',
+        'subscribers-privacy' => 'subscribers-privacy',
+        'settings'            => 'settings',
+        'integrations'        => 'integrations',
+        'add-ons'             => 'add-ons',
     ];
 
     /**
@@ -56,8 +50,8 @@ class MenuUtil
         foreach (self::getMenuList() as $key => $menu) {
 
             //Check Default variable
-            $method     = 'log';
-            $name       = $menu['title'];
+            $method = 'log';
+            $name   = $menu['title'];
 
             if (array_key_exists('cap', $menu)) {
                 $capability = $menu['cap'];
@@ -170,9 +164,19 @@ class MenuUtil
      */
     public static function getPageKeyFromSlug(string $pageSlug)
     {
-        $menuSlugParts = explode('[slug]', self::$admin_menu_slug);
-        preg_match('/(?<=' . $menuSlugParts[0] . ').*?(?=' . $menuSlugParts[1] . ')/', $pageSlug, $pageName);
-        return $pageName; // Use $pageName[0] to access the key
+        // If it's a top-level menu (exactly 'wp-sms'), then return it directly
+        if ($pageSlug === self::$parentSlug) {
+            return [$pageSlug];
+        }
+
+        // If it starts with "wp-sms-" then remove that prefix and return the rest
+        if (str_starts_with($pageSlug, self::$parentSlug . '-')) {
+            $key = substr($pageSlug, strlen(self::$parentSlug . '-'));
+            return [$key];
+        }
+
+        // Otherwise, it’s already a short slug (e.g. 'add-ons')
+        return [$pageSlug];
     }
 
     /**
@@ -219,6 +223,10 @@ class MenuUtil
      */
     public static function getPageSlug(string $pageSlug): string
     {
+        if ($pageSlug === self::$parentSlug) {
+            return $pageSlug;
+        }
+
         return str_ireplace('[slug]', $pageSlug, self::$admin_menu_slug);
     }
 
@@ -241,7 +249,7 @@ class MenuUtil
     public static function getCurrentPage()
     {
         $currentPage = Request::get('page');
-        $pagesList   = self::getMenuList();
+        $pagesList   = array_merge(self::getHardcodedMenuList(), self::getMenuList());
 
         if (!$currentPage) {
             return false;
@@ -255,5 +263,86 @@ class MenuUtil
         });
 
         return reset($filteredPages);
+    }
+
+    /**
+     *
+     */
+    public static function getHardcodedMenuList(): array
+    {
+        return [
+            [
+                'title'    => esc_html__('Send SMS', 'wp-sms'),
+                'name'     => esc_html__('SMS', 'wp-sms'),
+                'cap'      => 'wpsms_sendsms',
+                'page_url' => 'wp-sms',
+                'callback' => '',
+                'icon'     => 'dashicons-email-alt',
+                'priority' => 1,
+            ],
+            [
+                'sub'      => 'wp-sms',
+                'title'    => esc_html__('Outbox', 'wp-sms'),
+                'name'     => esc_html__('Outbox', 'wp-sms'),
+                'cap'      => 'wpsms_outbox',
+                'page_url' => 'outbox',
+                'callback' => '',
+                'priority' => 2,
+            ],
+            [
+                'sub'      => 'wp-sms',
+                'title'    => esc_html__('Inbox', 'wp-sms'),
+                'name'     => esc_html__('Inbox', 'wp-sms'),
+                'cap'      => 'wpsms_inbox',
+                'page_url' => 'inbox',
+                'callback' => '',
+                'priority' => 3,
+            ],
+            [
+                'sub'      => 'wp-sms',
+                'title'    => esc_html__('Subscribers', 'wp-sms'),
+                'name'     => esc_html__('Subscribers', 'wp-sms'),
+                'cap'      => 'wpsms_subscribers',
+                'page_url' => 'subscribers',
+                'callback' => '',
+                'priority' => 4,
+            ],
+            [
+                'sub'      => 'wp-sms',
+                'title'    => esc_html__('Groups', 'wp-sms'),
+                'name'     => esc_html__('Groups', 'wp-sms'),
+                'cap'      => 'wpsms_subscribers',
+                'page_url' => 'subscribers-group',
+                'callback' => '',
+                'priority' => 5,
+            ],
+            [
+                'sub'      => 'wp-sms',
+                'title'    => esc_html__('Privacy', 'wp-sms'),
+                'name'     => esc_html__('Privacy', 'wp-sms'),
+                'cap'      => 'wpsms_setting',
+                'page_url' => 'subscribers-privacy',
+                'callback' => '',
+                'priority' => 6,
+            ],
+            [
+                'sub'      => 'wp-sms',
+                'title'    => esc_html__('Settings', 'wp-sms'),
+                'name'     => esc_html__('Settings', 'wp-sms'),
+                'cap'      => 'wpsms_setting',
+                'page_url' => 'settings',
+                'callback' => '',
+                'priority' => 7,
+            ],
+            [
+                'sub'      => 'wp-sms',
+                'title'    => esc_html__('Integrations', 'wp-sms'),
+                'name'     => esc_html__('Integrations', 'wp-sms'),
+                'cap'      => 'wpsms_setting',
+                'page_url' => 'integrations',
+                'callback' => '',
+                'priority' => 8,
+            ],
+        ];
     }
 }

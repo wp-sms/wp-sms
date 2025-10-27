@@ -91,7 +91,7 @@ class TestBackgroundProcess extends BaseBackgroundProcess
         $this->clearTotalAndProcessed();
 
         if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log('[WP_Sms TestBackgroundProcess] COMPLETE ✅');
+            error_log('[WP_Sms TestBackgroundProcess] COMPLETE.');
         }
     }
 
@@ -103,6 +103,10 @@ class TestBackgroundProcess extends BaseBackgroundProcess
      */
     public function initialNotice($force = false)
     {
+        if ($this->isInitiated() || $this->is_active()) {
+            return;
+        }
+
         $actionUrl = $this->getActionUrl($force);
 
         $message = sprintf(

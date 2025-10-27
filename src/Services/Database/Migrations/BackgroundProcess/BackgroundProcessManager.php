@@ -23,7 +23,7 @@ class BackgroundProcessManager extends BaseMigrationManager
      * @var array<string, string>
      */
     private $backgroundProcesses = [
-        'wpsms_test_background_process' => TestBackgroundProcess::class
+        'test_background_process' => TestBackgroundProcess::class
     ];
 
     /**
