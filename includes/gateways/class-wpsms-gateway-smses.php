@@ -146,7 +146,7 @@ class smses extends Gateway
 
                 $response = $this->request('POST', $apiBaseUrl . 'bulk/sendsms', [], $params);
 
-                if (($response->error)) {
+                if (isset($response->error)) {
                     throw new Exception($response->error->message);
                 }
 
