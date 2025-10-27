@@ -72,7 +72,7 @@ class SettingAdminPage
         // Enqueue CSS files
         if (!empty($this->manifestMainCss)) {
             foreach ($this->manifestMainCss as $index => $cssFile) {
-                wp_enqueue_style('wp-sms-settings-' . $index, WP_SMS_FRONTEND_BUILD_URL . $cssFile, [], WP_SMS_VERSION);
+                wp_enqueue_style('wp-sms-settings-' . $index, WP_SMS_FRONTEND_BUILD_URL . $cssFile, [], null);
             }
         }
 
@@ -80,7 +80,7 @@ class SettingAdminPage
             // Get all registered assets
             $assets = isset($GLOBALS['wp_sms_assets']) ? $GLOBALS['wp_sms_assets'] : [];
 
-            ?>
+?>
             <script type="text/javascript">
                 window.WP_SMS_DATA = <?php echo json_encode([
                                             'nonce'   => wp_create_nonce('wp_rest'),
@@ -95,7 +95,7 @@ class SettingAdminPage
 
         // Enqueue JS file
         if (!empty($this->manifestMainJs)) {
-            wp_enqueue_script_module('wp-sms-settings', WP_SMS_FRONTEND_BUILD_URL . $this->manifestMainJs, [], WP_SMS_VERSION);
+            wp_enqueue_script_module('wp-sms-settings', WP_SMS_FRONTEND_BUILD_URL . $this->manifestMainJs, [], null);
 
             // Localize script data
             wp_localize_script(

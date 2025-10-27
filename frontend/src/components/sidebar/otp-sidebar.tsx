@@ -74,8 +74,8 @@ export const OTPSidebar = () => {
                 </button>
               </div>
             ) : (
-              <SidebarMenuButton size="lg" className="hover:bg-transparent hover:text-inherit justify-between">
-                <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 px-2">
+                <div className="flex items-center gap-2 flex-1">
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-primary text-sidebar-primary-foreground">
                     <MessageSquare className="size-4" />
                   </div>
@@ -93,7 +93,7 @@ export const OTPSidebar = () => {
                   <PanelLeftClose className="h-4 w-4" />
                   <span className="sr-only">Toggle Sidebar</span>
                 </Button>
-              </SidebarMenuButton>
+              </div>
             )}
           </SidebarMenuItem>
         </SidebarMenu>
@@ -130,16 +130,16 @@ export const OTPSidebar = () => {
             {state === 'collapsed' ? (
               <div className="flex flex-col items-center gap-2">
                 <ThemeToggle />
-                <SidebarMenuButton tooltip="Plugin Version 2.1.0">
+                <SidebarMenuButton tooltip="Plugin Version 7.2">
                   <Settings />
-                  <span>Plugin Version -</span>
+                  <span>Plugin Version 7.2</span>
                 </SidebarMenuButton>
               </div>
             ) : (
               <div className="flex items-center justify-between w-full">
                 <SidebarMenuButton tooltip={undefined}>
                   <Settings />
-                  <span>Plugin Version -</span>
+                  <span>Plugin Version 7.2</span>
                 </SidebarMenuButton>
                 <ThemeToggle />
               </div>

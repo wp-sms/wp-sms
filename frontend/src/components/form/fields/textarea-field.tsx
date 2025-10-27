@@ -20,7 +20,6 @@ export const TextareaField = ({ schema }: TextareaFieldProps) => {
       <Textarea
         id={schema.key}
         placeholder={schema.placeholder}
-        defaultValue={String(schema.default || '')}
         value={String(field.state.value || '')}
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.value)}
