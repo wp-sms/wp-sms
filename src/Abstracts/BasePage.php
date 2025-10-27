@@ -10,7 +10,7 @@ abstract class BasePage extends Singleton
 
     public function __construct()
     {
-            $this->init();
+        $this->init();
     }
 
     protected function init()
