@@ -8,6 +8,7 @@ use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Utils\PluginHelper;
+use WP_SMS\Utils\Request;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -214,7 +215,13 @@ class Settings
         parse_str($_POST['_wp_http_referer'], $referrer);
 
         $settings = $this->get_registered_settings();
-        $tab      = isset($referrer['tab']) ? $referrer['tab'] : 'general';
+        if (!empty($referrer['tab'])) {
+            $tab = $referrer['tab'];
+        } elseif (Request::has('wpsms_active_tab')) {
+            $tab = Request::get('wpsms_active_tab');
+        } else {
+            $tab = 'general';
+        }
 
         $input = $input ? $input : array();
         // Handle unchecked checkboxes: if checkbox wasn't submitted, user unchecked it
@@ -2682,7 +2689,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 settings_fields($this->setting_name);
                 do_settings_fields("{$this->setting_name}_{$this->active_tab}", "{$this->setting_name}_{$this->active_tab}"); ?>
             </table>
-
+            <input type="hidden" name="wpsms_active_tab" value="<?php echo esc_attr($this->active_tab); ?>">
             <?php
             if (!$this->contentRestricted) {
                 submit_button();
