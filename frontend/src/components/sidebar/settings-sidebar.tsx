@@ -31,6 +31,8 @@ export const SettingsSidebar = () => {
   const currentPath = location.pathname
   const { state, toggleSidebar } = useSidebar()
 
+  const pluginVersion = 7.2
+
   return (
     <Sidebar variant="sidebar" collapsible="icon" className="border-r border-border">
       <SidebarHeader>
@@ -173,22 +175,22 @@ export const SettingsSidebar = () => {
         )}
       </SidebarContent>
 
-      <SidebarFooter className="sticky bottom-0">
+      <SidebarFooter className="sticky bottom-0 bg-sidebar">
         <SidebarMenu>
           <SidebarMenuItem>
             {state === 'collapsed' ? (
               <div className="flex flex-col items-center gap-2">
                 <ThemeToggle />
-                <SidebarMenuButton tooltip="Plugin Version 7.2">
+                <SidebarMenuButton tooltip={`Plugin Version ${pluginVersion}`}>
                   <Settings />
-                  <span>Plugin Version 7.2</span>
+                  <span>Plugin Version {pluginVersion}</span>
                 </SidebarMenuButton>
               </div>
             ) : (
               <div className="flex items-center justify-between w-full">
                 <SidebarMenuButton tooltip={undefined}>
                   <Settings />
-                  <span>Plugin Version 7.2</span>
+                  <span>Plugin Version {pluginVersion}</span>
                 </SidebarMenuButton>
                 <ThemeToggle />
               </div>
