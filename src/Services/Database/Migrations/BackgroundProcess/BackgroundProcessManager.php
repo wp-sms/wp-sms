@@ -6,7 +6,6 @@ use WP_SMS\Abstracts\BaseMigrationManager;
 use WP_SMS\Admin\NoticeHandler\Notice;
 use WP_SMS\Utils\MenuUtil as Menus;
 use WP_SMS\Utils\Request;
-use WP_SMS\Services\Database\Migrations\BackgroundProcess\Jobs\TestBackgroundProcess;
 use WP_SMS\Traits\AjaxUtilityTrait;
 use WP_SMS\Components\Ajax;
 use Exception;
@@ -27,9 +26,7 @@ class BackgroundProcessManager extends BaseMigrationManager
      *
      * @var array<string, string>
      */
-    private $backgroundProcesses = [
-        'test_background_process' => TestBackgroundProcess::class
-    ];
+    private $backgroundProcesses = [];
 
     /**
      * List of available data migration keys.
