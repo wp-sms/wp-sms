@@ -119,7 +119,7 @@ export const Chatbox = ({ settings }: ChatboxProps) => {
 
   return (
     <div
-      className={cn('fixed bottom-8 flex items-center justify-center gap-2 z-[9999] font-sans', positionClasses)}
+      className={cn('fixed bottom-20 flex items-center justify-center gap-2 z-[9999] font-sans', positionClasses)}
       style={{ fontSize: '16px' }}
     >
       {/* Chatbox Button */}
@@ -169,7 +169,7 @@ export const Chatbox = ({ settings }: ChatboxProps) => {
         className={cn(
           'fixed w-[382px] max-w-[90%] bg-gray-50 dark:bg-gray-950 rounded-lg border border-gray-200 dark:border-gray-800 transition-opacity duration-300 overflow-hidden',
           chatbox_button_position === 'bottom_right' ? 'right-4' : 'left-4',
-          'bottom-24',
+          'bottom-36',
           isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none',
           chatbox_animation_effect && animationClasses[chatbox_animation_effect as 'fade' | 'slide']
         )}
@@ -238,12 +238,8 @@ export const Chatbox = ({ settings }: ChatboxProps) => {
                       </div>
                       <div>
                         <ul className="p-0 m-0 list-none flex flex-col gap-1">
-                          <li className="text-sm leading-[16.41px] break-words font-normal">
-                            {member.member_role}
-                          </li>
-                          <li className="text-base leading-[18.75px] capitalize font-bold">
-                            {member.member_name}
-                          </li>
+                          <li className="text-sm leading-[16.41px] break-words font-normal">{member.member_role}</li>
+                          <li className="text-base leading-[18.75px] capitalize font-bold">{member.member_name}</li>
                           <li className="flex items-center gap-1 text-xs leading-[14.06px]">
                             <span className="inline-block w-3 h-3 rounded-full border-2 border-teal-100 bg-teal-500" />
                             <span>{member.member_availability}</span>
@@ -260,9 +256,7 @@ export const Chatbox = ({ settings }: ChatboxProps) => {
             {chatbox_links_enabled && chatbox_links && chatbox_links.length > 0 && (
               <div className="border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 rounded-lg overflow-hidden">
                 <ul className="p-0 m-0 flex flex-col gap-1 list-none">
-                  <li className="p-3 text-gray-700 dark:text-gray-300 text-sm font-bold">
-                    {chatbox_links_title}
-                  </li>
+                  <li className="p-3 text-gray-700 dark:text-gray-300 text-sm font-bold">{chatbox_links_title}</li>
                   {chatbox_links.map((link, index) => {
                     if (!link.link_title) return null
 
