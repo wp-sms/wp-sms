@@ -8,6 +8,7 @@ use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Utils\PluginHelper;
+use WP_SMS\Utils\Request;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -214,9 +215,34 @@ class Settings
         parse_str($_POST['_wp_http_referer'], $referrer);
 
         $settings = $this->get_registered_settings();
-        $tab      = isset($referrer['tab']) ? $referrer['tab'] : 'general';
+        if (!empty($referrer['tab'])) {
+            $tab = $referrer['tab'];
+        } elseif (Request::has('wpsms_active_tab')) {
+            $tab = Request::get('wpsms_active_tab');
+        } else {
+            $tab = 'general';
+        }
 
         $input = $input ? $input : array();
+        // Handle unchecked checkboxes: if checkbox wasn't submitted, user unchecked it
+        if (!empty($settings[$tab])) {
+            foreach ($settings[$tab] as $s_key => $field) {
+
+                // Support numeric keys (legacy)
+                if (is_numeric($s_key)) {
+                    $s_key = $field['id'];
+                }
+
+                $type = isset($field['type']) ? $field['type'] : false;
+
+                if ($type === 'checkbox') {
+                    // If checkbox key not in POST, user unchecked it — mark as empty so it will be unset later
+                    if (!array_key_exists($s_key, $input)) {
+                        $input[$s_key] = '';
+                    }
+                }
+            }
+        }
         $input = apply_filters("{$this->setting_name}_{$tab}_sanitize", $input);
 
         // Loop through each setting being saved and pass it through a sanitization filter
@@ -235,25 +261,46 @@ class Settings
             $input[$key] = apply_filters("{$this->setting_name}_sanitize", $value, $key);
         }
 
+        // Merge our new settings with the existing
+        $output = array_merge($this->options, $input);
 
-        // Loop through the whitelist and unset any that are empty for the tab being saved
         if (!empty($settings[$tab])) {
-            foreach ($settings[$tab] as $key => $value) {
-                // settings used to have numeric keys, now they have keys that match the option ID. This ensures both methods work
-                if (is_numeric($key)) {
-                    $key = $value['id'];
+            foreach ($settings[$tab] as $field_key => $field) {
+                if (is_numeric($field_key)) {
+                    $field_key = $field['id'];
                 }
 
-                if (empty($input[$key])) {
-                    unset($this->options[$key]);
+                $type = isset($field['type']) ? $field['type'] : false;
+
+                if ($type === 'checkbox') {
+                    $wasSubmitted = array_key_exists($field_key, $input);
+
+                    if (!$wasSubmitted) {
+                        unset($output[$field_key]);
+                        continue;
+                    }
+
+                    if (empty($input[$field_key])) {
+                        unset($output[$field_key]);
+                        continue;
+                    }
+
+                    $output[$field_key] = $input[$field_key];
+                } else {
+                    if (array_key_exists($field_key, $input) && $input[$field_key] === '') {
+                        unset($output[$field_key]);
+                    }
                 }
             }
         }
 
-        // Merge our new settings with the existing
-        $output = array_merge($this->options, $input);
-
-        add_settings_error('wpsms-notices', '', esc_html__('Settings updated', 'wp-sms'), 'updated');
+        add_settings_error(
+            'wpsms-notices',
+            '',
+            esc_html__('Settings Successfully Saved.', 'wp-sms'),
+            'notice-success wpsms-admin-notice'
+        );
+        $this->options = $output;
         return $output;
     }
 
@@ -2542,7 +2589,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 ?>
             </div>
             <div class="wp-header-end"></div>
-            <?php echo settings_errors('wpsms-notices'); ?>
+            <?php settings_errors('wpsms-notices'); ?>
             <div class="wpsms-wrap__main">
                 <div class="wpsms-tab-group">
                     <ul class="wpsms-tab">
@@ -2642,7 +2689,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 settings_fields($this->setting_name);
                 do_settings_fields("{$this->setting_name}_{$this->active_tab}", "{$this->setting_name}_{$this->active_tab}"); ?>
             </table>
-
+            <input type="hidden" name="wpsms_active_tab" value="<?php echo esc_attr($this->active_tab); ?>">
             <?php
             if (!$this->contentRestricted) {
                 submit_button();
