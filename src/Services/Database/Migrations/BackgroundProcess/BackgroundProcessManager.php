@@ -7,9 +7,14 @@ use WP_SMS\Admin\NoticeHandler\Notice;
 use WP_SMS\Utils\MenuUtil as Menus;
 use WP_SMS\Utils\Request;
 use WP_SMS\Services\Database\Migrations\BackgroundProcess\Jobs\TestBackgroundProcess;
+use WP_SMS\Traits\AjaxUtilityTrait;
+use WP_SMS\Components\Ajax;
+use Exception;
 
 class BackgroundProcessManager extends BaseMigrationManager
 {
+    use AjaxUtilityTrait;
+
     /**
      * The background process instances.
      *
@@ -72,14 +77,8 @@ class BackgroundProcessManager extends BaseMigrationManager
 
         add_action('admin_init', [$this, 'showProgressNotices']);
         add_action('admin_enqueue_scripts', [$this, 'registerScript']);
-        add_filter('admin_init', [$this, 'registerAjaxCallbacks']);
+        Ajax::register('async_background_process', [$this, 'asyncBackgroundProcess'], false);
         add_action('admin_post_' . self::BACKGROUND_PROCESS_ACTION, [$this, 'handleBackgroundProcessAction']);
-    }
-
-    public function registerAjaxCallbacks()
-    {
-        $backgroundProcess = new BackgroundProcessActions($this);
-        $backgroundProcess->register();
     }
 
     /**
@@ -242,6 +241,48 @@ class BackgroundProcessManager extends BaseMigrationManager
                 'job_completed_message' => $this->successNotice
             ]
         );
+    }
+
+    /**
+     * Handle asynchronous background process status.
+     *
+     * @return void
+     *
+     * @throws Exception If verification or processing fails.
+     */
+    public function asyncBackgroundProcess()
+    {
+        try {
+            $this->verifyAjaxRequest();
+            $this->checkAdminReferrer('wp_rest', 'wpsms_nonce');
+            $this->checkCapability('manage_options');
+
+            $this->currentProcess = Request::get('current_process');
+
+            $currentJob = $this->getBackgroundProcess($this->currentProcess);
+
+            if (empty($this->currentProcess)) {
+                Ajax::success([
+                    'completed' => true,
+                ]);
+            }
+
+            if (BackgroundProcessFactory::isProcessDone($this->currentProcess)) {
+                Ajax::success([
+                    'completed' => true,
+                ]);
+            }
+
+            $total     = $currentJob->getTotal();
+            $processed = $currentJob->getProcessed();
+
+            Ajax::success([
+                'percentage' => empty($processed) ? 0 : (int)floor(($processed / $total) * 100),
+                'processed'  => $currentJob->getProcessed(),
+            ]);
+        } catch (Exception $e) {
+            Ajax::error($e->getMessage(), null, $e->getCode());
+        }
     }
 
     /**

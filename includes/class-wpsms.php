@@ -7,7 +7,6 @@ use WP_SMS\Admin\OnBoarding\StepFactory;
 use WP_SMS\Admin\OnBoarding\WizardManager;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Async\SchemaMigrationProcess;
-use WP_SMS\BackgroundProcess\Async\TableOperationProcess;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
 use WP_SMS\Blocks\BlockAssetsManager;
 use WP_SMS\Controller\ControllerManager;
@@ -153,8 +152,6 @@ class WP_SMS
         $this->registerBackgroundProcess(RemoteRequestAsync::class, 'remote_request_async');
         $this->registerBackgroundProcess(RemoteRequestQueue::class, 'remote_request_queue');
         $this->registerBackgroundProcess(SchemaMigrationProcess::class, 'schema_migration_process');
-        $this->registerBackgroundProcess(TableOperationProcess::class, 'table_operations_process');
-
     }
 
     /**
