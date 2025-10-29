@@ -39,7 +39,7 @@ export const SettingsSidebar = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             {state === 'collapsed' ? (
-              <div className="flex justify-center p-2">
+              <div className="flex justify-center px-2">
                 <button
                   onClick={toggleSidebar}
                   className="group flex aspect-square size-10 items-center justify-center rounded-lg bg-gradient-primary text-sidebar-primary-foreground hover:bg-gradient-primary/80 transition-all duration-200 cursor-pointer"
