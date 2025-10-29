@@ -21,7 +21,7 @@ trait MigrationAccess
      * Validates whether the current admin page and user have access to handle migration-related functionality.
      *
      * This method performs security checks to ensure that:
-     * - The current user has the sufficient perimissions
+     * - The current user has the sufficient permissions
      * - The current page is a WP SMS plugin page
      *
      * @return bool True if the context is valid for migration operations, false otherwise
