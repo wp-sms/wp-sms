@@ -11,6 +11,7 @@
 - **Fix:** Masked sensitive variables (`code`, `otp`, `post_password`, `coupon_code`) in logs when `WP_DEBUG` is disabled.
 - **Fix:** Fixed issues on the Integrations > Contact Form 7 page where saving changes cleared Settings > General values, the Status field didn't update correctly, and no notification was shown after saving.
 - **Fix:** Fixed SMS Credit link in Dashboard "At a Glance" widget to correctly redirect to gateway settings tab.
+- **Fix:** Properly save SMS gateway version during onboarding to prevent false “setup requires attention” warnings.Properly save SMS gateway version during onboarding to prevent false “setup requires attention” warnings.
 
 = v7.0.3 - 2025-09-17 =
 - **Enhancement:** Improved Send SMS page performance by loading recipients via AJAX instead of on initial render.  
