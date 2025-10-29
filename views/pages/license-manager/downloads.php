@@ -54,7 +54,7 @@ if (!empty($data['licensed_addons'])) {
                     <?php esc_html_e('Activate Add-Ons', 'wp-sms'); ?>
                 </a>
             <?php } else { ?>
-                <a class="wpsms-postbox-addon-button js-addon-download-button disabled">
+                <a class="wpsms-postbox-addon-button js-addon-download-button disabled" aria-disabled="true">
                     <?php esc_html_e('Download & Install Selected Add-Ons', 'wp-sms'); ?>
                 </a>
             <?php } ?>

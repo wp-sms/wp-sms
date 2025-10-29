@@ -38,7 +38,7 @@ if (!defined('ABSPATH') || empty($addOn)) {
             </div>
         <?php elseif ($addOn->isInstalled() && !$addOn->isActivated()) : ?>
             <div class="wpsms-postbox-addon__buttons">
-                <a class="wpsms-postbox-addon__button button-activate-addon js-addon-active-plugin-btn" data-slug="<?php echo esc_attr($addOn->getSlug()); ?>" title="<?php esc_html_e('Activate', 'wp-sms'); ?>"><?php esc_html_e('Activate', 'wp-sms'); ?></a>
+                <a class="wpsms-postbox-addon__button button-activate-addon js-addon-active-plugin-btn" data-slug="<?php echo esc_attr($addOn->getSlug()); ?>"><?php esc_html_e('Activate', 'wp-sms'); ?></a>
             </div>
         <?php endif; ?>
 

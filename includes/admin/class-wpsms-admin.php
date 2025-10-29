@@ -47,10 +47,11 @@ class Admin
         $screen = get_current_screen();
         if (stristr($screen->id, 'wp-sms') or $screen->base == 'post' or $screen->id == 'edit-wpsms-command' or $screen->id == 'edit-sms-campaign') {
             $text = sprintf(
-                __('Please rate <strong>WP SMS</strong> <a href="%2$s" title="%3$s" target="_blank">★★★★★</a> on <a href="%2$s" target="_blank">WordPress.org</a> to help us spread the word. Thank you!', 'wp-sms'),
-                esc_html__('WP SMS', 'wp-sms'),
+                __('Please rate <strong>WP SMS</strong> <a href="%s" aria-label="%s" title="%s" target="_blank">★★★★★ %s</a> to help us spread the word. Thank you!', 'wp-sms'),
                 'https://wordpress.org/support/plugin/wp-sms/reviews/?filter=5#new-post',
-                esc_html__('Rate WP SMS', 'wp-sms')
+                esc_attr__('Rate WP SMS with five stars on WordPress.org', 'wp-sms'),
+                esc_attr__('Rate WP SMS', 'wp-sms'),
+                esc_html__('on WordPress.org', 'wp-sms')
             );
         }
         return $text;
