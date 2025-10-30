@@ -21,7 +21,7 @@ class Admin
         $this->options   = Option::getOptions();
 
         $this->init();
-        $this->initFeedback();
+        //$this->initFeedback();
 
         // Add Actions
         add_action('admin_enqueue_scripts', array($this, 'admin_assets'));
