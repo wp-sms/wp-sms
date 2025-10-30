@@ -322,4 +322,9 @@ class PluginDecorator
 
         return version_compare($this->getVersion(), $installedPlugin['Version'], '>');
     }
+
+    public function getUtmCampaign()
+    {
+        return str_replace('wp-sms-', '', $this->getSlug());
+    }
 }
