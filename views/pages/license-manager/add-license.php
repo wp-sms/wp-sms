@@ -11,13 +11,13 @@
             <div class="wpsms-addon__step__active-license">
                 <!--   Add wpsms-danger or wpsms-warning class to input-->
                 <input type="text" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" aria-label="License">
-                <button class="wpsms-postbox-addon-button js-addon-active-license disabled" aria-disabled="true"><?php esc_html_e('Activate License', 'wp-sms'); ?></button>
+                <button class="wpsms-postbox-addon-button js-addon-active-license disabled" disabled aria-disabled="true"><?php esc_html_e('Activate License', 'wp-sms'); ?></button>
             </div>
         </div>
         <div class="wpsms-addon__step__faq">
             <ul>
                 <li>
-                    <a href="https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=install-addon" target="_blank" aria-label="Buy Premium Now"><?php esc_html_e('Buy All-in-One Now', 'wp-sms'); ?></a>
+                    <a href="https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=install-addon" target="_blank" aria-label="Buy All-in-One Now"><?php esc_html_e('Buy All-in-One Now', 'wp-sms'); ?></a>
                 </li>
                 <li>
                     <a href="https://wp-sms-pro.com/resources/finding-and-entering-your-license-key/?utm_source=wp-sms&utm_medium=link&utm_campaign=install-addon"  aria-label="I bought Premium, where is my license key?"
