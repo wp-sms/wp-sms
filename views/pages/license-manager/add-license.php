@@ -11,7 +11,7 @@
             <div class="wpsms-addon__step__active-license">
                 <!--   Add wpsms-danger or wpsms-warning class to input-->
                 <input type="text" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" aria-label="License">
-                <button class="wpsms-postbox-addon-button js-addon-active-license disabled"><?php esc_html_e('Activate License', 'wp-sms'); ?></button>
+                <button class="wpsms-postbox-addon-button js-addon-active-license disabled" aria-disabled="true"><?php esc_html_e('Activate License', 'wp-sms'); ?></button>
             </div>
         </div>
         <div class="wpsms-addon__step__faq">

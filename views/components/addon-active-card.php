@@ -51,13 +51,13 @@ if (!defined('ABSPATH') || empty($addOn)) {
                     <li><a target="_blank" href="<?php echo esc_url($addOn->getSettingsUrl()); ?>" class="wpsms-addon--submenu wpsms-addon--submenu__settings"><?php esc_html_e('Settings', 'wp-sms'); ?></a></li>
                 <?php endif; ?>
                 <?php if (!empty($addOn->getProductUrl())) : ?>
-                    <li><a href="<?php echo esc_url($addOn->getProductUrl()); ?>?utm_source=wp-sms&utm_medium=link&utm_campaign=dp" class="wpsms-addon--submenu" target="_blank"><?php esc_html_e('Add-On Details', 'wp-sms'); ?></a></li>
+                    <li><a href="<?php echo esc_url($addOn->getProductUrl()); ?>?utm_source=wp-sms&utm_medium=link&utm_campaign=<?php echo rawurlencode($addOn->getUtmCampaign()); ?>" class="wpsms-addon--submenu" target="_blank"><?php esc_html_e('Add-On Details', 'wp-sms'); ?></a></li>
                 <?php endif; ?>
                 <?php if (!empty($addOn->getChangelogUrl())) : ?>
-                    <li><a href="<?php echo esc_url($addOn->getChangelogUrl()); ?>&utm_source=wp-sms&utm_medium=link&utm_campaign=dp" class="wpsms-addon--submenu" target="_blank"><?php esc_html_e('Changelog', 'wp-sms'); ?></a></li>
+                    <li><a href="<?php echo esc_url($addOn->getChangelogUrl()); ?>&utm_source=wp-sms&utm_medium=link&utm_campaign=<?php echo rawurlencode($addOn->getUtmCampaign()); ?>" class="wpsms-addon--submenu" target="_blank"><?php esc_html_e('Changelog', 'wp-sms'); ?></a></li>
                 <?php endif; ?>
                 <?php if (!empty($addOn->getDocumentationUrl())) : ?>
-                    <li><a href="<?php echo esc_url($addOn->getDocumentationUrl()); ?>?utm_source=wp-sms&utm_medium=link&utm_campaign=dp" class="wpsms-addon--submenu" target="_blank"><?php esc_html_e('Documentation', 'wp-sms'); ?></a></li>
+                    <li><a href="<?php echo esc_url($addOn->getDocumentationUrl()); ?>?utm_source=wp-sms&utm_medium=link&utm_campaign=<?php echo rawurlencode($addOn->getUtmCampaign()); ?>" class="wpsms-addon--submenu" target="_blank"><?php esc_html_e('Documentation', 'wp-sms'); ?></a></li>
                 <?php endif; ?>
             </ul>
         </div>
