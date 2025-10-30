@@ -157,8 +157,15 @@ class smses extends Gateway
             }
         }
 
+        // Log successful messages separately
+        if ($success) {
+            $this->log($this->from, $this->msg, array_keys($success), $success);
+            do_action('wp_sms_send', $success);
+        }
+
+        // Log failed messages separately
         if ($errors) {
-            $this->log($this->from, $this->msg, $this->to, $errors, 'error');
+            $this->log($this->from, $this->msg, array_keys($errors), $errors, 'error');
 
             $errorsMessage = sprintf(
                 '%d message(s) failed to send: %s',
@@ -166,17 +173,8 @@ class smses extends Gateway
                 implode(', ', array_keys($errors))
             );
 
-            return new WP_Error('send-sms-error', $errorsMessage);
+            return new \WP_Error('send-sms-error', $errorsMessage);
         }
-
-        /**
-         * Fires after an SMS is sent.
-         *
-         * @param object $response API response object.
-         */
-        do_action('wp_sms_send', $success);
-
-        $this->log($this->from, $this->msg, $this->to, $success);
 
         return $success;
     }
