@@ -209,14 +209,14 @@ $has_valid_license       = LicenseHelper::isPluginLicensedAndActive();
                     <?php else:
                         $current_gateway = \WP_SMS\Option::getOption('gateway_name');
                         $slug       = str_replace(['-', ' '], '', $gateway->slug);
-
+                        
                         if (!\WP_SMS\Gateway::gatewayExists($slug)) {
                             continue;
                         }
 
                         $selected = ($current_gateway === $slug) ? 'checked' : '';
                         ?>
-                        <tr class="gateway-row  <?php echo !empty($badges) ? 'c-table-gateway__row--with-badge' : ''; ?>" data-countries="<?php echo esc_attr(strtolower($country_list)); ?>" data-regions="<?php echo esc_attr(strtolower($region)); ?>">
+                        <tr class="gateway-row <?php echo !empty($badges) ? 'c-table-gateway__row--with-badge' : ''; ?>" data-countries="<?php echo esc_attr(strtolower($country_list)); ?>" data-regions="<?php echo esc_attr(strtolower($region)); ?>">
                             <td>
                                 <div class="c-table-gateway__info">
                                     <input <?php echo esc_attr($selected); ?> value="<?php echo esc_attr($slug); ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">
