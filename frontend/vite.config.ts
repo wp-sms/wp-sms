@@ -5,6 +5,9 @@ import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
+// @ts-expect-error - PostCSS plugin without types
+import postcssImportantPlugin from './postcss-important-plugin.js'
+
 export default defineConfig({
   base: './',
   plugins: [
@@ -18,6 +21,9 @@ export default defineConfig({
   css: {
     modules: {
       localsConvention: 'camelCase',
+    },
+    postcss: {
+      plugins: [postcssImportantPlugin()],
     },
   },
   resolve: {
