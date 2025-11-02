@@ -20,7 +20,7 @@
                     <a href="https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=install-addon" target="_blank" aria-label="Buy All-in-One Now"><?php esc_html_e('Buy All-in-One Now', 'wp-sms'); ?></a>
                 </li>
                 <li>
-                    <a href="https://wp-sms-pro.com/resources/finding-and-entering-your-license-key/?utm_source=wp-sms&utm_medium=link&utm_campaign=install-addon"  aria-label="I bought Premium, where is my license key?"
+                    <a href="https://wp-sms-pro.com/resources/finding-and-entering-your-license-key/?utm_source=wp-sms&utm_medium=link&utm_campaign=install-addon"  aria-label="I bought All-in-One, where is my license key?"
                        target="_blank"><?php esc_html_e('I bought All-in-One, where is my license key?', 'wp-sms'); ?></a>
                 </li>
                 <li>
