@@ -43,7 +43,6 @@ if (!defined('ABSPATH') || empty($addOn)) {
         <?php endif; ?>
 
 
-
         <div class="wpsms-addon--actions <?php echo !$addOn->isInstalled() ? 'wpsms-hide' : ''; ?>">
             <span class="wpsms-addon--actions--show-more js-addon-show-more"></span>
             <ul class="wpsms-addon--submenus">
@@ -52,9 +51,7 @@ if (!defined('ABSPATH') || empty($addOn)) {
                 <?php endif; ?>
                 <?php if (!empty($addOn->getProductUrl())) : ?>
                     <li><a href="<?php echo esc_url($addOn->getProductUrl()); ?>?utm_source=wp-sms&utm_medium=link&utm_campaign=<?php echo rawurlencode($addOn->getUtmCampaign()); ?>" class="wpsms-addon--submenu" target="_blank"><?php esc_html_e('Add-On Details', 'wp-sms'); ?></a></li>
-                <?php endif; ?>
-                <?php if (!empty($addOn->getChangelogUrl())) : ?>
-                    <li><a href="<?php echo esc_url($addOn->getChangelogUrl()); ?>&utm_source=wp-sms&utm_medium=link&utm_campaign=<?php echo rawurlencode($addOn->getUtmCampaign()); ?>" class="wpsms-addon--submenu" target="_blank"><?php esc_html_e('Changelog', 'wp-sms'); ?></a></li>
+                    <li><a href="<?php echo esc_url($addOn->getProductUrl()); ?>?utm_source=wp-sms&utm_medium=link&utm_campaign=<?php echo rawurlencode($addOn->getUtmCampaign()); ?>#changelog" class="wpsms-addon--submenu" target="_blank"><?php esc_html_e('Changelog', 'wp-sms'); ?></a></li>
                 <?php endif; ?>
                 <?php if (!empty($addOn->getDocumentationUrl())) : ?>
                     <li><a href="<?php echo esc_url($addOn->getDocumentationUrl()); ?>?utm_source=wp-sms&utm_medium=link&utm_campaign=<?php echo rawurlencode($addOn->getUtmCampaign()); ?>" class="wpsms-addon--submenu" target="_blank"><?php esc_html_e('Documentation', 'wp-sms'); ?></a></li>
