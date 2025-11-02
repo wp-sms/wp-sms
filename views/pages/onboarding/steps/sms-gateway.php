@@ -188,9 +188,9 @@ $has_valid_license       = LicenseHelper::isPluginLicensedAndActive();
                                         endforeach;
                                     endif;
                                     ?>
-                                    <span class="c-table-gateway__badge c-table-gateway__badge--red">
+                                    <a title="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
                                         <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
-                                    </span>
+                                    </a>
                                 </div>
                             </td>
                             <td class="u-text-center">
