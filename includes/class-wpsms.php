@@ -8,6 +8,7 @@ use WP_SMS\Admin\OnBoarding\WizardManager;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
 use WP_SMS\Blocks\BlockAssetsManager;
+use WP_SMS\Components\Logger;
 use WP_SMS\Controller\ControllerManager;
 use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Services\CronJobs\CronJobManager;
@@ -15,8 +16,8 @@ use WP_SMS\Services\Formidable\FormidableManager;
 use WP_SMS\Services\Forminator\ForminatorManager;
 use WP_SMS\Services\Hooks\HooksManager;
 use WP_SMS\Services\MessageButton\MessageButtonManager;
-use WP_SMS\Services\WooCommerce\WooCommerceCheckout;
 use WP_SMS\Services\Subscriber\SubscriberManager;
+use WP_SMS\Services\WooCommerce\WooCommerceCheckout;
 use WP_SMS\Shortcode\ShortcodeManager;
 use WP_SMS\User\MobileFieldManager;
 use WP_SMS\Webhook\WebhookManager;
@@ -109,20 +110,12 @@ class WP_SMS
      * @param string $message The message to be logged.
      * @param string $level The log level (e.g., 'info', 'warning', 'error'). Default is 'info'.
      * @uses error_log
+     * @deprecated Use \WP_SMS\Components\Logger::log instead.
      */
     public static function log($message, $level = 'info')
     {
-        if (is_array($message)) {
-            $message = wp_json_encode($message);
-        }
-
-        $log_level = strtoupper($level);
-
-
-        // Log when debug is enabled
-        if (defined('WP_DEBUG') && WP_DEBUG) {
-            error_log(sprintf('[WP SMS] [%s]: %s', $log_level, $message));
-        }
+        _deprecated_function(__METHOD__, '7.0.4', 'WP_SMS\Components\Logger::log()');
+        Logger::log($message, $level);
     }
 
     private function setupBackgroundProcess()

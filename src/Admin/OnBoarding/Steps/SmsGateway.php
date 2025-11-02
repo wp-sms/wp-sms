@@ -32,9 +32,7 @@ class SmsGateway extends StepAbstract
         try {
             do {
                 $request = new RemoteRequest('get', "https://wp-sms-pro.com/wp-json/wp/v2/gateway?per_page=100&page={$page}");
-
                 $response = $request->execute(true, true, self::CACHE_DURATION);
-
 
                 if (is_array($response) && !empty($response)) {
                     $gateways = array_merge($gateways, $response);
@@ -42,6 +40,7 @@ class SmsGateway extends StepAbstract
                 } else {
                     break;
                 }
+
             } while (count($response) === 100);
         } catch (Exception $e) {
             error_log(sprintf(__('Error fetching pages: %s', 'wp-sms'), $e->getMessage()));

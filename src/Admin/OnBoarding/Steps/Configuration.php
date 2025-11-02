@@ -35,6 +35,9 @@ class Configuration extends StepAbstract
         $this->setData('fields', $sms->gatewayFields);
         $this->setData('help', $sms->help);
         $this->setData('doc_url', $sms->documentUrl);
+
+        $currentVer = (isset($this->sms->version) && $this->sms->version !== '') ? (string)$this->sms->version : '1.0';
+        Option::updateOption('gateway_version', $currentVer);
     }
 
     public function getSlug()

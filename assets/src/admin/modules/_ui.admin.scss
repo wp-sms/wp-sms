@@ -1616,11 +1616,11 @@
       width: 16px;
       height: 16px;
       border-radius: 250px;
-      background: #E5E5E5;
+      background: #eeeff1;
       font-size: 11px;
       font-weight: 700;
       line-height: 12.89px;
-      color: #A3A3A3;
+      color: #444f5c;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1636,7 +1636,7 @@
 
     &.current {
       .wpsms-step-link__badge {
-        background: #F97316;
+        background: #9a3412;
         color: #FFFFFF;
         font-size: 11px;
         line-height: 12.89px;
@@ -1661,8 +1661,9 @@
       }
 
       .wpsms-step-link__badge {
-        background-color: #058860;
-        color: transparent;
+        background-color: #165e2e;
+        color: rgb(206 255 222);
+        font-size: 0;
         background-repeat: no-repeat;
         background-position: center;
         background-image: url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjEwIiBoZWlnaHQ9IjEwIiB2aWV3Qm94PSIwIDAgMTAgMTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik00LjE2NjU0IDYuMzIyMzVMNy45OTY3MSAyLjQ5MjE5TDguNTg1OTYgMy4wODE0NEw0LjE2NjU0IDcuNTAwODVMMS41MTQ4OSA0Ljg0OTIyTDIuMTA0MTUgNC4yNTk5N0w0LjE2NjU0IDYuMzIyMzVaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K");
@@ -1670,7 +1671,7 @@
       }
 
       .wpsms-step-link__title {
-        color: #058860;
+        color: #165e2e;
       }
     }
   }
@@ -1692,7 +1693,6 @@
 
 .wpsms-addon__step__desc {
   color: #404040;
-  font-family: Roboto;
   font-weight: 400;
   font-size: 14px;
   line-height: 16.41px;
@@ -2847,6 +2847,10 @@
         margin-top: 16px;
       }
 
+      .wpsms-alert--warning{
+        display: none;
+      }
+
 
       .wpsms-addon__step__active-license {
         display: flex;
@@ -3063,7 +3067,7 @@
           }
 
           &__desc {
-            color: #717274;
+            color: #525354;
             font-size: 13px;
             font-weight: 400;
             line-height: 22px;
@@ -3241,8 +3245,9 @@
     background: #1961401A;
   }
 
+
   &--installed {
-    color: #058860;
+    color: #196140;
     background: transparent;
   }
 
@@ -3596,7 +3601,7 @@
 
       &.js-addon-active-plugin-btn, &.button-retry-addon-download {
         background: #FFF7ED;
-        color: #EA580C;
+        color: #9a3412;
         padding: 2px 6px;
 
         &.is-activating {
@@ -3717,7 +3722,7 @@
     }
 
     &__review-btn {
-      background: #f6585e;
+      background: #ad1f23;
       padding: 8px 23px;
       gap: 6px;
       border-radius: 4px;

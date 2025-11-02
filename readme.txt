@@ -1,15 +1,15 @@
 ﻿=== WP SMS – Ultimate SMS & MMS Notifications, OTP, 2FA, and WooCommerce & Forms Integrations ===
 Contributors: veronalabs, mostafa.s1990, kashani
 Donate link: https://wp-sms-pro.com/donate
-Tags: sms, mms, otp, 2fa, notification, woocommerce, forms, twilio, whatsapp
+Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sms
 Requires at least: 4.1
 Tested up to: 6.8
 Requires PHP: 5.6
-Stable tag: 7.0.3
+Stable tag: 7.0.4
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Send SMS/MMS, OTP, and 2FA directly from WordPress using 300+ gateways like Twilio, WhatsApp, and Plivo. Power up WooCommerce, forms, and memberships with instant SMS alerts.
+Send SMS/MMS, OTP & 2FA messages, WooCommerce updates, and bulk campaigns with 300+ gateways and plugin integrations.
 
 == Description ==
 ### 🚀 The most complete SMS solution for WordPress
@@ -118,6 +118,18 @@ All premium features + all add-ons in one package.
 - New Onboarding, Add-on Manager, and All-in-One package.
 
 == Changelog ==
+= v7.0.4 - 2025-11-02 =
+- **New:** Added support for the SMS.es gateway.
+- **New:** Display an admin notice when the gateway version changes, required fields are missing, or the gateway is not configured.
+- **Enhancement:** Added support for Service-Line SMS.ir template-based messaging.
+- **Enhancement:** Refactored the MeliPayamak gateway for better stability and reliability.
+- **Enhancement:** Improved Kavenegar gateway to support template-based SMS messages with variable placeholders.
+- **Enhancement:** Refactored the FARAZSMS gateway for improved reliability.
+- **Fix:** Disabled caching to prevent duplicate responses for identical messages.
+- **Fix:** Ensured PHP 8.1+ compatibility by avoiding "Automatic conversion of false to array" warnings.
+- **Fix:** Delayed the anonymous data opt-in notice to appear 7 days after plugin activation.
+- **Fix:** Masked sensitive variables (`code`, `otp`, `post_password`, `coupon_code`) in logs when `WP_DEBUG` is disabled.
+
 = v7.0.3 - 2025-09-17 =
 - **Enhancement:** Improved Send SMS page performance by loading recipients via AJAX instead of on initial render.
 - **Enhancement:** Prevented sending emails to users who registered with only a phone number.
