@@ -1,4 +1,4 @@
-= v7.0.4 - 2025-10-25 =
+= v7.0.4 - 2025-11-02 =
 - **New:** Added support for the SMS.es gateway.
 - **New:** Display an admin notice when the gateway version changes, required fields are missing, or the gateway is not configured.
 - **Enhancement:** Added support for Service-Line SMS.ir template-based messaging.
