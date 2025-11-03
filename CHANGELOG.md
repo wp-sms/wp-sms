@@ -1,3 +1,6 @@
+= v7.x.x - 2025-x-x =
+- **Enhancement:** Repositioned “All-in-One Required” label to the beginning of the PRO gateway onboarding table for better visibility and alignment.
+
 = v7.0.4 - 2025-11-02 =
 - **New:** Added support for the SMS.es gateway.
 - **New:** Display an admin notice when the gateway version changes, required fields are missing, or the gateway is not configured.
@@ -12,7 +15,6 @@
 - **Fix:** Fixed issues on the Integrations > Contact Form 7 page where saving changes cleared Settings > General values, the Status field didn't update correctly, and no notification was shown after saving.
 - **Fix:** Fixed SMS Credit link in Dashboard "At a Glance" widget to correctly redirect to gateway settings tab.
 - **Fix:** Properly save SMS gateway version during onboarding to prevent false “setup requires attention” warnings.
-- **Enhancement:** Repositioned “All-in-One Required” label to the beginning of the PRO gateway onboarding table for better visibility and alignment.
 
 = v7.0.3 - 2025-09-17 =
 - **Enhancement:** Improved Send SMS page performance by loading recipients via AJAX instead of on initial render.  
