@@ -1,4 +1,5 @@
 = v7.x.x - 2025-x-x =
+- **Fix:** Fixed incorrect changelog URL links in add-ons.
 - **Enhancement:** Repositioned “All-in-One Required” label to the beginning of the PRO gateway onboarding table for better visibility and alignment.
 
 = v7.0.4 - 2025-11-02 =
