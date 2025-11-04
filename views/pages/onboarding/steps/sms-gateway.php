@@ -188,6 +188,9 @@ $has_valid_license       = LicenseHelper::isPluginLicensedAndActive();
                                         endforeach;
                                     endif;
                                     ?>
+                                    <a title="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
+                                        <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
+                                    </a>
                                 </div>
                             </td>
                             <td class="u-text-center">
@@ -200,23 +203,18 @@ $has_valid_license       = LicenseHelper::isPluginLicensedAndActive();
                             </td>
                             <td class="u-text-center"><span class="text-ellipsis"><?php echo esc_html($country_list); ?></span></td>
                             <td class="u-text-center"><span class="text-ellipsis"><?php echo esc_html($region); ?></span></td>
-                            <td class="u-text-center">
-                                <a title="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" target="_blank" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" class="c-table__availability c-table__availability--pro">
-                                    <?php esc_html_e('All-in-One Required', 'wp-sms'); ?>
-                                </a>
-                            </td>
                         </tr>
                     <?php else:
                         $current_gateway = \WP_SMS\Option::getOption('gateway_name');
                         $slug       = str_replace(['-', ' '], '', $gateway->slug);
-
+                        
                         if (!\WP_SMS\Gateway::gatewayExists($slug)) {
                             continue;
                         }
 
                         $selected = ($current_gateway === $slug) ? 'checked' : '';
                         ?>
-                        <tr class="gateway-row  <?php echo !empty($badges) ? 'c-table-gateway__row--with-badge' : ''; ?>" data-countries="<?php echo esc_attr(strtolower($country_list)); ?>" data-regions="<?php echo esc_attr(strtolower($region)); ?>">
+                        <tr class="gateway-row <?php echo !empty($badges) ? 'c-table-gateway__row--with-badge' : ''; ?>" data-countries="<?php echo esc_attr(strtolower($country_list)); ?>" data-regions="<?php echo esc_attr(strtolower($region)); ?>">
                             <td>
                                 <div class="c-table-gateway__info">
                                     <input <?php echo esc_attr($selected); ?> value="<?php echo esc_attr($slug); ?>" id="gateway-name-<?php echo esc_attr($gateway->id); ?>" name="name" type="radio">

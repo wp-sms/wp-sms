@@ -32,8 +32,8 @@
                                 foreach ($get_group_result as $items): ?>
                                     <option value="<?php echo esc_attr($items->ID); ?>" <?php if (isset($cf7_options['groups']) && in_array($items->ID, $cf7_options['groups'])) echo 'selected'; ?>>
                                         <?php
-                                            // translators: %s: Group name
-                                            echo sprintf(esc_html__('Group %s', 'wp-sms'), esc_attr($items->name));
+                                        // translators: %s: Group name
+                                        echo sprintf(esc_html__('Group %s', 'wp-sms'), esc_attr($items->name));
                                         ?>
                                     </option>
                                 <?php
@@ -50,8 +50,8 @@
                 <td>
                     <textarea class="large-text" rows="4" cols="100" name="wpcf7-sms[message]" id="wpcf7-sms-message"><?php echo isset($cf7_options['message']) ? esc_html($cf7_options['message']) : ''; ?></textarea>
                     <p class="description"><b><?php esc_html_e('Note: ', 'wp-sms') ?></b><?php esc_html_e('Use %% Instead of [], for example: ', 'wp-sms'); ?> <code>%your-mobile%</code><br>
-                        <?php esc_html_e('You can also use the following contact form 7 tags in the message body:', 'wp-sms'); ?>
-                        <code>%_site_title%</code> <code>%_site_url%</code> <code>%_post_name%</code> <code>%_post_url%</code> <code>%_post_title%</code> <code>%_post_id%</code>
+                        <?php esc_html_e('You can also use the following contact form 7 tags in the message body →', 'wp-sms'); ?>
+                        <?php echo wp_kses_post($message_variables_text); ?>
                     </p>
                 </td>
             </tr>
@@ -75,8 +75,8 @@
                 <td>
                     <textarea class="large-text" rows="4" cols="100" name="wpcf7-sms-form[message]" id="wpcf7-sms-message-form"><?php echo isset($cf7_options_field['message']) ? esc_html($cf7_options_field['message']) : ''; ?></textarea>
                     <p class="description"><b><?php esc_html_e('Note: ', 'wp-sms') ?></b> <?php esc_html_e('Use %% Instead of [], for example: ', 'wp-sms'); ?><code>%your-mobile%</code><br>
-                        <?php esc_html_e('You can also use the following contact form 7 tags in the message body:', 'wp-sms'); ?>
-                        <code>%_site_title%</code> <code>%_site_url%</code> <code>%_post_name%</code> <code>%_post_url%</code> <code>%_post_title%</code> <code>%_post_id%</code>
+                        <?php esc_html_e('You can also use the following contact form 7 tags in the message body →', 'wp-sms'); ?>
+                        <?php echo wp_kses_post($message_variables_text); ?>
                     </p>
                 </td>
             </tr>

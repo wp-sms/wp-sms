@@ -9,6 +9,7 @@ use WP_SMS\Services\WooCommerce\WooCommerceCheckout;
 
 class WooCommerceOrderNotification extends Notification
 {
+    protected $wooData;
     protected $order;
 
     protected $variables = [
@@ -35,8 +36,10 @@ class WooCommerceOrderNotification extends Notification
         '%order_item_meta_{key-name}%'  => 'getItemMeta',
     ];
 
-    public function __construct($orderId = false)
+    public function __construct($orderId = false, $wooData = [])
     {
+        $this->wooData = $wooData;
+
         if ($orderId) {
             $this->order = wc_get_order($orderId);
             $optInStatus = $this->order->get_meta(WooCommerceCheckout::FIELD_ORDER_NOTIFICATION);
@@ -172,7 +175,7 @@ class WooCommerceOrderNotification extends Notification
 
     public function getStatus()
     {
-        return wc_get_order_status_name($this->order->get_status());
+        return !empty($this->wooData['status']) ? $this->wooData['status'] : wc_get_order_status_name($this->order->get_status());
     }
 
     public function getShippingMethod()

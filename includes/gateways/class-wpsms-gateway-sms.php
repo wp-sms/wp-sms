@@ -72,6 +72,11 @@ class sms extends Gateway
     public $api_key;
 
     /**
+     * Gateway version.
+     */
+    public $version = '1.1';
+
+    /**
      * Constructor.
      */
     public function __construct()

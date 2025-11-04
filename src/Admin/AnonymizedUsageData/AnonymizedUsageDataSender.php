@@ -3,6 +3,7 @@
 namespace WP_SMS\Admin\AnonymizedUsageData;
 
 use Exception;
+use WP_SMS\Components\Logger;
 use WP_SMS\Components\RemoteRequest;
 
 class AnonymizedUsageDataSender
@@ -56,19 +57,19 @@ class AnonymizedUsageDataSender
             $decoded = json_decode($responseBody, true);
 
             if (json_last_error() !== JSON_ERROR_NONE || !is_array($decoded)) {
-                WPSms()->log('Unexpected response format: ' . substr($responseBody, 0, 300), 'error');
+                Logger::log('Unexpected response format: ' . substr($responseBody, 0, 300), 'error');
                 return false;
             }
 
             // Check a specific "success" field in response JSON
             if (isset($decoded['status']) && $decoded['status'] !== 'success') {
-                WPSms()->log('API returned failure status: ' . $responseBody, 'error');
+                Logger::log('API returned failure status: ' . $responseBody, 'error');
                 return false;
             }
 
             return true;
         } catch (Exception $e) {
-            WPSms()->log($e->getMessage(), 'error');
+            Logger::log($e->getMessage(), 'error');
             return false;
         }
     }
