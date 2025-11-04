@@ -1,10 +1,22 @@
 = v7.x.x - 2025-x-x =
-- **Enhancement:** Refactored the FARAZSMS gateway for improved reliability.
-- New: Support SMSALA gateway in WP SMS Pro.
-- **Fix:** Disabled caching to prevent duplicate responses for similar messages.
-- **Enhancement:** Added support for Service-Line SMS.ir template-based messaging.
-- **Fix:** PHP 8.1+ compatibility: avoid "Automatic conversion of false to array" warning.
+- **Fix:** Fixed incorrect changelog URL links in add-ons.
+- **Enhancement:** Repositioned “All-in-One Required” label to the beginning of the PRO gateway onboarding table for better visibility and alignment.
 - **Enhancement:** Added more plugin information to the Site Health Info section for easier diagnostics.
+- 
+= v7.0.4 - 2025-11-02 =
+- **New:** Added support for the SMS.es gateway.
+- **New:** Display an admin notice when the gateway version changes, required fields are missing, or the gateway is not configured.
+- **Enhancement:** Added support for Service-Line SMS.ir template-based messaging.
+- **Enhancement:** Refactored the MeliPayamak gateway for better stability and reliability.
+- **Enhancement:** Improved Kavenegar gateway to support template-based SMS messages with variable placeholders.
+- **Enhancement:** Refactored the FARAZSMS gateway for improved reliability.
+- **Fix:** Disabled caching to prevent duplicate responses for identical messages.
+- **Fix:** Ensured PHP 8.1+ compatibility by avoiding "Automatic conversion of false to array" warnings.
+- **Fix:** Delayed the anonymous data opt-in notice to appear 7 days after plugin activation.
+- **Fix:** Masked sensitive variables (`code`, `otp`, `post_password`, `coupon_code`) in logs when `WP_DEBUG` is disabled.
+- **Fix:** Fixed issues on the Integrations > Contact Form 7 page where saving changes cleared Settings > General values, the Status field didn't update correctly, and no notification was shown after saving.
+- **Fix:** Fixed SMS Credit link in Dashboard "At a Glance" widget to correctly redirect to gateway settings tab.
+- **Fix:** Properly save SMS gateway version during onboarding to prevent false “setup requires attention” warnings.
 
 = v7.0.3 - 2025-09-17 =
 - **Enhancement:** Improved Send SMS page performance by loading recipients via AJAX instead of on initial render.  
