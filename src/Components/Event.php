@@ -1,6 +1,7 @@
 <?php
+
 namespace WP_SMS\Components;
-namespace WP_SMS\Components;
+
 class Event
 {
     /**

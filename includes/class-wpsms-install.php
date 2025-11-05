@@ -4,6 +4,8 @@ namespace WP_SMS;
 
 use WP_SMS\Services\Database\Managers\TableHandler;
 use WP_SMS\Utils\OptionUtil as Option;
+use WP_SMS\Components\Event;
+use WP_SMS\Components\DateTime;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -34,6 +36,38 @@ class Install
                 }
 
                 $initializedSettings[] = 'plugin_notifications';
+            }
+
+            if (!in_array('store_outbox_messages', $initializedSettings)) {
+                if (\WP_SMS\Option::getOption('store_outbox_messages') == false) {
+                    \WP_SMS\Option::updateOption('store_outbox_messages', 1);
+                }
+
+                $initializedSettings[] = 'store_outbox_messages';
+            }
+
+            if (!in_array('outbox_retention_days', $initializedSettings)) {
+                if (\WP_SMS\Option::getOption('outbox_retention_days') == false) {
+                    \WP_SMS\Option::updateOption('outbox_retention_days', 90);
+                }
+
+                $initializedSettings[] = 'outbox_retention_days';
+            }
+
+            if (!in_array('store_inbox_messages', $initializedSettings)) {
+                if (\WP_SMS\Option::getOption('store_inbox_messages') == false) {
+                    \WP_SMS\Option::updateOption('store_inbox_messages', 1);
+                }
+
+                $initializedSettings[] = 'store_inbox_messages';
+            }
+
+            if (!in_array('inbox_retention_days', $initializedSettings)) {
+                if (\WP_SMS\Option::getOption('inbox_retention_days') == false) {
+                    \WP_SMS\Option::updateOption('inbox_retention_days', 90);
+                }
+
+                $initializedSettings[] = 'inbox_retention_days';
             }
 
             update_option('wp_sms_settings_version', $targetSettingsVersion);
