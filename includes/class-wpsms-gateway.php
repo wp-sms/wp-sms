@@ -840,7 +840,6 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'afe'           => 'afe.ir',
                 'asanak'        => 'asanak.ir',
                 '_0098sms'      => '0098sms.com',
-                'spadbs'        => 'spadsms.ir',
                 'bandarsms'     => 'bandarit.ir',
                 'chapargah'     => 'chapargah.ir',
                 'ismsie'        => 'isms.ir',
