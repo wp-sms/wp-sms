@@ -1,3 +1,6 @@
+= v7.1 - 2025-x-x =
+- **New:** Added settings for message storage and retention in Outbox and Inbox under "Message Storage & Cleanup".
+
 = v7.0.4 - 2025-10-25 =
 - **New:** Added support for the SMS.es gateway.
 - **New:** Display an admin notice when the gateway version changes, required fields are missing, or the gateway is not configured.
