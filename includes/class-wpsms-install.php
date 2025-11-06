@@ -39,7 +39,7 @@ class Install
             }
 
             if (!in_array('store_outbox_messages', $initializedSettings)) {
-                if (\WP_SMS\Option::getOption('store_outbox_messages') == false) {
+                if (\WP_SMS\Option::getOption('store_outbox_messages') === '') {
                     \WP_SMS\Option::updateOption('store_outbox_messages', 1);
                 }
 
@@ -47,7 +47,7 @@ class Install
             }
 
             if (!in_array('outbox_retention_days', $initializedSettings)) {
-                if (\WP_SMS\Option::getOption('outbox_retention_days') == false) {
+                if (\WP_SMS\Option::getOption('outbox_retention_days') === '') {
                     \WP_SMS\Option::updateOption('outbox_retention_days', 90);
                 }
 
@@ -55,7 +55,7 @@ class Install
             }
 
             if (!in_array('store_inbox_messages', $initializedSettings)) {
-                if (\WP_SMS\Option::getOption('store_inbox_messages') == false) {
+                if (\WP_SMS\Option::getOption('store_inbox_messages') === '') {
                     \WP_SMS\Option::updateOption('store_inbox_messages', 1);
                 }
 
@@ -63,7 +63,7 @@ class Install
             }
 
             if (!in_array('inbox_retention_days', $initializedSettings)) {
-                if (\WP_SMS\Option::getOption('inbox_retention_days') == false) {
+                if (\WP_SMS\Option::getOption('inbox_retention_days') === '') {
                     \WP_SMS\Option::updateOption('inbox_retention_days', 90);
                 }
 
