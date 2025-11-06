@@ -20,9 +20,9 @@ class KavenegarGatewayTest extends WP_UnitTestCase
             ->onlyMethods(['request', 'log'])
             ->getMock();
 
-        $this->gateway->apiKey = 'DUMMY_KEY';
-        $this->gateway->from   = '5000';
-        $this->gateway->msg    = 'Test Message';
+        $this->gateway->has_key = 'DUMMY_KEY';
+        $this->gateway->from    = '5000';
+        $this->gateway->msg     = 'Test Message';
     }
 
     private function makeResponse($status = 200, $message = 'OK', $entries = [])

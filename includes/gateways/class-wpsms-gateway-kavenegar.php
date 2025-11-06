@@ -65,13 +65,6 @@ class kavenegar extends Gateway
     public $templateId = null;
 
     /**
-     * Gateway API key.
-     *
-     * @var string
-     */
-    public $apiKey;
-
-    /**
      * Gateway version.
      */
     public $version = '1.1';
@@ -98,8 +91,6 @@ class kavenegar extends Gateway
                 'desc' => __('Enter your gateway API key.', 'wp-sms'),
             ],
         ];
-
-        $this->apiKey = !empty($this->options['gateway_key']) ? $this->options['gateway_key'] : '';
 
         $this->help = <<<HTML
 <div dir="rtl">
@@ -146,7 +137,7 @@ HTML;
      */
     private function buildUrl($method, $scope = 'sms')
     {
-        $key = rawurlencode(trim($this->apiKey));
+        $key = rawurlencode(trim($this->has_key));
         $svc = rawurlencode($scope);
         $mtd = rawurlencode($method);
 
@@ -178,7 +169,7 @@ HTML;
      */
     public function SendSMS()
     {
-        if (empty($this->apiKey)) {
+        if (empty($this->has_key)) {
             return new WP_Error('missing-api-key', __('API Key is required.', 'wp-sms'));
         }
 
@@ -235,7 +226,7 @@ HTML;
      */
     public function GetCredit()
     {
-        if (empty($this->apiKey)) {
+        if (empty($this->has_key)) {
             return new WP_Error('missing-api-key', __('API Key is required.', 'wp-sms'));
         }
 
