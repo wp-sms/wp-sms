@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Components;
 
+use WP_SMS\Option;
+
 class Logger
 {
     /**
@@ -27,16 +29,20 @@ class Logger
             $to = [$to];
         }
 
-        global $wpdb;
-        $result = $wpdb->insert($wpdb->prefix . "sms_send", array(
-            'date'      => WP_SMS_CURRENT_DATE,
-            'sender'    => $sender,
-            'message'   => $message,
-            'recipient' => implode(',', $to),
-            'response'  => var_export($response, true),
-            'media'     => serialize($media),
-            'status'    => $status,
-        ));
+        $result = '';
+        $store  = Option::getOption('store_outbox_messages');
+        if ($store) {
+            global $wpdb;
+            $result = $wpdb->insert($wpdb->prefix . "sms_send", array(
+                'date'      => WP_SMS_CURRENT_DATE,
+                'sender'    => $sender,
+                'message'   => $message,
+                'recipient' => implode(',', $to),
+                'response'  => var_export($response, true),
+                'media'     => serialize($media),
+                'status'    => $status,
+            ));
+        }
 
         /**
          * Fire after send sms
