@@ -127,6 +127,13 @@
     //Initiate Color Picker
     if ($('.wpsms-color-picker').length) {
         $('.wpsms-color-picker').wpColorPicker();
+        document.querySelectorAll('.iris-square-value .iris-square-handle').forEach(function(el) {
+            const span = document.createElement('span');
+            span.className = 'screen_reader_text';
+            span.textContent = 'color picker';
+            el.after(span);
+
+        });
     }
     ;
 
