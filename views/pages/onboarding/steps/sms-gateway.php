@@ -158,7 +158,7 @@ $has_valid_license       = LicenseHelper::isPluginLicensedAndActive();
                     ?>
 
                     <?php if ($is_pro_gateway && (!$has_valid_license || !$is_pro_plugin_activated)): ?>
-                        <tr class="disabled even <?php echo !empty($badges) ? 'c-table-gateway__row--with-badge' : ''; ?>" role="row">
+                        <tr class="disabled even <?php echo !empty($badges) ? 'c-table-gateway__row--with-badge' : ''; ?>" role="row" data-countries="<?php echo esc_attr(strtolower($country_list)); ?>" data-regions="<?php echo esc_attr(strtolower($region)); ?>">
                             <td>
                                 <div class="c-table-gateway__info">
                                    <span data-tooltip="<?php echo esc_attr__('All-in-One Required', 'wp-sms'); ?>" data-tooltip-font-size="12px">

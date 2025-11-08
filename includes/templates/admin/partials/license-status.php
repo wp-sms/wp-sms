@@ -13,7 +13,7 @@ if (apply_filters('wp_sms_enable_upgrade_to_bundle', true)) :
     </div>
 <?php else : ?>
     <div class="license-status license-status--valid">
-        <a class="upgrade" href="<?php echo esc_url(WP_SMS_SITE . '/product-category/add-ons?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>">
+        <a target="_blank" class="upgrade" href="<?php echo esc_url(WP_SMS_SITE . '/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>">
                 <span>
                     <?php echo sprintf(esc_html__('License: %1$s/%2$s', 'wp-sms'), count(PluginHelper::getLicensedPlugins()), count(PluginHelper::$plugins)); ?>
                     <span><?php esc_html_e('Upgrade', 'wp-sms'); ?></span>
