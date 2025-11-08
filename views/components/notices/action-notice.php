@@ -3,7 +3,7 @@
         <?php echo esc_html($notice['message']['title'] ?? 'Default Title'); ?>
         <?php if ($notice['is_dismissible']) : ?>
             <?php if ($dismissUrl) : ?>
-                <a href="<?php echo esc_url($dismissUrl); ?>" class="notice--dismiss"></a>
+                <a href="<?php echo esc_url($dismissUrl); ?>" class="notice--dismiss"><span class="screen-reader-text"><?php echo esc_html__('Dismiss', 'wp-sms') ?></span></a>
             <?php endif; ?>
         <?php endif; ?>
     </h2>
