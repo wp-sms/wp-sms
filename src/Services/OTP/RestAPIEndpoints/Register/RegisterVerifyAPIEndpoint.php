@@ -17,16 +17,16 @@ class RegisterVerifyAPIEndpoint extends RestAPIEndpointsAbstract
     {
         register_rest_route('wpsms/v1', '/register/verify', [
             'methods'             => WP_REST_Server::CREATABLE,
-            'callback'            => [$this, 'verifyRegister'],
+            'callback'            => [$this, 'handleRequest'],
             'permission_callback' => '__return_true',
-            'args'                => $this->getVerifyRegisterArgs(),
+            'args'                => $this->getArgs(),
         ]);
     }
 
     /**
-     * Add Magic Link support: either otp_code OR magic_token must be provided.
+     * Get endpoint arguments with WordPress validation
      */
-    private function getVerifyRegisterArgs(): array
+    private function getArgs(): array
     {
         return [
             'flow_id' => [
@@ -34,6 +34,13 @@ class RegisterVerifyAPIEndpoint extends RestAPIEndpointsAbstract
                 'type'              => 'string',
                 'description'       => 'Flow ID from the registration process',
                 'sanitize_callback' => 'sanitize_text_field',
+            ],
+            'action' => [
+                'required'          => false,
+                'type'              => 'string',
+                'description'       => 'Action to perform: "verify" or "skip"',
+                'sanitize_callback' => 'sanitize_text_field',
+                'default'           => 'verify',
             ],
             'otp_code' => [
                 'required'          => false,
@@ -50,226 +57,268 @@ class RegisterVerifyAPIEndpoint extends RestAPIEndpointsAbstract
         ];
     }
 
-    /** ======================= Public entry (pipeline) ======================= */
-    public function verifyRegister(WP_REST_Request $request)
+    /**
+     * Main request handler - clean entry point
+     */
+    public function handleRequest(WP_REST_Request $request)
     {
         try {
-            $ctx = $this->initContext($request);
+            // Extract request data
+            $flowId = (string) $request->get_param('flow_id');
+            $action = (string) $request->get_param('action');
+            $otpCode = (string) $request->get_param('otp_code');
+            $magicToken = (string) $request->get_param('magic_token');
+            $ip = $this->getClientIp($request);
 
-            $this->enforceRateLimit($ctx);
-            $this->resolvePendingUser($ctx);
-            $this->ensureUserIsPending($ctx);
+            // Default action to verify
+            $action = empty($action) ? 'verify' : strtolower($action);
 
-            $this->determineVerificationMethod($ctx);   // decides otp vs magic
-            $this->validateCodeOrTokenProvided($ctx);
+            // Rate limiting
+            $rateLimitCheck = $this->checkRateLimits($flowId, $ip, 'register_verify');
+            if (is_wp_error($rateLimitCheck)) {
+                return $rateLimitCheck;
+            }
 
-            $this->performVerification($ctx);           // validate via service
-            $this->markIdentifierVerified($ctx);        // sets identifier as verified
+            // Get user by flow ID
+            $user = UserHelper::getUserByFlowId($flowId);
+            if (!$user) {
+                return $this->createErrorResponse(
+                    'user_not_found',
+                    __('No pending user found for this flow', 'wp-sms'),
+                    404
+                );
+            }
 
-            $this->evaluateCompletionStatus($ctx);      // all required verified?
-            $this->logAndCounters($ctx);
+            // Get current identifier from meta
+            $identifier = get_user_meta($user->ID, 'wpsms_identifier', true);
+            if (empty($identifier)) {
+                return $this->createErrorResponse(
+                    'identifier_not_found',
+                    __('No identifier found for this flow. Please restart verification.', 'wp-sms'),
+                    400
+                );
+            }
 
-            return $this->buildSuccessResponse($ctx);
+            // Get identifier type
+            $identifierType = UserHelper::getIdentifierType($identifier);
+
+            // Ensure user is still pending
+            if (!UserHelper::isPendingUser($user->ID)) {
+                return $this->createErrorResponse(
+                    'already_verified',
+                    __('User has already been verified', 'wp-sms'),
+                    409
+                );
+            }
+
+            // Handle skip action
+            if ($action === 'skip') {
+                return $this->handleSkip($user->ID, $flowId, $identifierType, $ip);
+            }
+
+            // Handle verify action (default)
+            return $this->handleVerify($user, $flowId, $identifier, $identifierType, $otpCode, $magicToken, $ip);
 
         } catch (\Exception $e) {
-            // Convert thrown exceptions to standard error response
             return $this->handleException($e, 'verifyRegister');
         }
     }
 
-    /** ======================= Stage 0: Context ======================= */
-    private function initContext(WP_REST_Request $request): array
+    /**
+     * Handle skip action
+     */
+    private function handleSkip(int $userId, string $flowId, string $identifierType, string $ip): WP_REST_Response
     {
-        $flowId     = (string) $request->get_param('flow_id');
-        $otpCode    = (string) $request->get_param('otp_code');
-        $magicToken = (string) $request->get_param('magic_token');
-        $ip         = $this->getClientIp($request);
+        // Check if this identifier type can be skipped (not required)
+        $requiredChannels = ChannelSettingsHelper::getRequiredChannels();
+        if (isset($requiredChannels[$identifierType]) && $requiredChannels[$identifierType]['required']) {
+            return $this->createErrorResponse(
+                'cannot_skip_required',
+                __('This identifier type is required and cannot be skipped', 'wp-sms'),
+                400
+            );
+        }
 
-        return [
-            'req' => [
-                'ip'          => $ip,
-                'flow_id'     => $flowId,
-                'otp_code'    => $otpCode,
-                'magic_token' => $magicToken,
-            ],
-            'user' => [
-                'wp'          => null,
-                'identifier'  => null,   // current identifier to verify
-            ],
-            'verify' => [
-                'method'      => null,   // 'otp' | 'magic'
-                'channel_used'=> null,
-                'result'      => null,   // raw result if needed later
-            ],
-            'required' => [
-                'channels'    => [],     // ChannelSettingsHelper::getRequiredChannels()
-                'next'        => null,
-                'all_verified'=> false,
-            ],
-            'response' => [
-                'status'      => null,   // 'verified' | 'partial_verified'
-                'next_step'   => null,   // 'complete' | 'verify_next'
-                'message'     => null,
-            ],
-            'services' => [
-                'magic'       => null,
-            ],
-        ];
+        // Mark identifier as skipped
+        $markSuccess = UserHelper::markIdentifierSkipped($userId, $identifierType);
+        if (!$markSuccess) {
+            return $this->createErrorResponse(
+                'skip_mark_failed',
+                __('Failed to mark identifier as skipped', 'wp-sms'),
+                500
+            );
+        }
+
+        // Evaluate completion status
+        $completionData = $this->evaluateCompletionStatus($userId);
+        
+        // Log event and increment rate limits
+        $this->logAuthEvent($flowId, 'register_skip', 'allow', $identifierType, $ip);
+        $this->incrementRateLimits($flowId, $ip, 'register_verify');
+
+        // Build response
+        return $this->buildResponse($userId, $flowId, 'skip', $completionData);
     }
 
-    /** ======================= Stage 1: Rate limit ======================= */
-    private function enforceRateLimit(array &$ctx): void
+    /**
+     * Handle verify action
+     */
+    private function handleVerify($user, string $flowId, string $identifier, string $identifierType, string $otpCode, string $magicToken, string $ip): WP_REST_Response
     {
-        $rr = $this->checkRateLimits($ctx['req']['flow_id'], $ctx['req']['ip'], 'register_verify');
-        if (is_wp_error($rr)) {
-            // Re-wrap as exception with same HTTP status code (default 429)
-            $code = 429;
-            if (method_exists($rr, 'get_error_data')) {
-                $data = $rr->get_error_data();
-                if (is_array($data) && isset($data['status'])) {
-                    $code = (int) $data['status'];
-                }
-            }
-            throw new \Exception($rr->get_error_message(), $code);
+        // Determine verification method
+        $verificationMethod = $this->determineVerificationMethod($otpCode, $magicToken);
+        
+        // Validate that required code/token is provided
+        if ($verificationMethod === 'otp' && empty($otpCode)) {
+            return $this->createErrorResponse(
+                'otp_code_required',
+                __('OTP code is required', 'wp-sms'),
+                400
+            );
         }
+        
+        if ($verificationMethod === 'magic' && empty($magicToken)) {
+            return $this->createErrorResponse(
+                'magic_token_required',
+                __('Magic token is required', 'wp-sms'),
+                400
+            );
+        }
+
+        // Perform verification
+        $verificationSuccess = $this->performVerification($flowId, $verificationMethod, $otpCode, $magicToken);
+        if (!$verificationSuccess) {
+            // Increment rate limits on failure
+            $this->incrementRateLimits($flowId, $ip, 'register_verify');
+            return $this->createErrorResponse(
+                'verification_failed',
+                __('Invalid or expired verification code/link', 'wp-sms'),
+                400
+            );
+        }
+
+        // Mark identifier as verified
+        $markSuccess = UserHelper::markIdentifierVerified($user->ID, $identifier);
+        if (!$markSuccess) {
+            return $this->createErrorResponse(
+                'verification_mark_failed',
+                __('Failed to mark identifier as verified', 'wp-sms'),
+                500
+            );
+        }
+
+        // Evaluate completion status
+        $completionData = $this->evaluateCompletionStatus($user->ID);
+        
+        // Log event and increment rate limits
+        $this->logAuthEvent($flowId, 'register_verify', 'allow', $verificationMethod, $ip);
+        $this->incrementRateLimits($flowId, $ip, 'register_verify');
+
+        // Build response
+        return $this->buildResponse($user->ID, $flowId, $verificationMethod, $completionData);
     }
 
-    /** ======================= Stage 2: Resolve pending user ======================= */
-    private function resolvePendingUser(array &$ctx): void
-    {
-        $user = UserHelper::getUserByFlowId($ctx['req']['flow_id']);
-        if (!$user) {
-            throw new \Exception(__('No pending user found for this flow', 'wp-sms'), 404);
-        }
-        $ctx['user']['wp'] = $user;
-
-        // Read current identifier from meta (kept from your original flow)
-        $ctx['user']['identifier'] = get_user_meta($user->ID, 'wpsms_identifier', true);
-        if (empty($ctx['user']['identifier'])) {
-            // If not found, fail explicitly; frontend should restart identification step.
-            throw new \Exception(__('No identifier found for this flow. Please restart verification.', 'wp-sms'), 400);
-        }
-    }
-
-    /** ======================= Stage 3: Ensure user still pending ======================= */
-    private function ensureUserIsPending(array &$ctx): void
-    {
-        if (!UserHelper::isPendingUser($ctx['user']['wp']->ID)) {
-            throw new \Exception(__('User has already been verified', 'wp-sms'), 409);
-        }
-    }
-
-    /** ======================= Stage 4: Determine verification method ======================= */
-    private function determineVerificationMethod(array &$ctx): void
+    /**
+     * Determine verification method based on provided parameters
+     */
+    private function determineVerificationMethod(string $otpCode, string $magicToken): string
     {
         // If magic token provided, prefer magic; else OTP
-        if (!empty($ctx['req']['magic_token'])) {
-            $ctx['verify']['method'] = 'magic';
-            $ctx['services']['magic'] = new MagicLinkService();
-            return;
-        }
-        $ctx['verify']['method'] = 'otp';
+        return (!empty($magicToken)) ? 'magic' : 'otp';
     }
 
-    /** ======================= Stage 5: Validate inputs presence ======================= */
-    private function validateCodeOrTokenProvided(array &$ctx): void
+    /**
+     * Perform verification based on method
+     *
+     * @return bool True if verification successful, false otherwise
+     */
+    private function performVerification(string $flowId, string $method, string $otpCode, string $magicToken): bool
     {
-        if ($ctx['verify']['method'] === 'otp' && empty($ctx['req']['otp_code'])) {
-            throw new \Exception(__('OTP code is required', 'wp-sms'), 400);
-        }
-        if ($ctx['verify']['method'] === 'magic' && empty($ctx['req']['magic_token'])) {
-            throw new \Exception(__('Magic token is required', 'wp-sms'), 400);
-        }
-    }
-
-    /** ======================= Stage 6: Perform verification ======================= */
-    private function performVerification(array &$ctx): void
-    {
-        $verificationSuccess = false;
-
-        if ($ctx['verify']['method'] === 'magic') {
-            // Validate magic token against flow; service should check expiry & ownership
-            $verificationSuccess = $ctx['services']['magic']->validate($ctx['req']['flow_id'], $ctx['req']['magic_token']);
-            $ctx['verify']['channel_used'] = 'magic';
+        if ($method === 'magic') {
+            $magicService = new MagicLinkService();
+            $result = $magicService->validate($flowId, $magicToken);
+            // validate() returns token string on success, null on failure
+            return !empty($result);
         } else {
-            // OTP verification
-            $verificationSuccess = $this->otpService->validate($ctx['req']['flow_id'], $ctx['req']['otp_code']);
-            $ctx['verify']['channel_used'] = 'otp';
-        }
-
-        if (!$verificationSuccess) {
-            // On failure: increment limiter and raise 400
-            $this->incrementRateLimits($ctx['req']['flow_id'], $ctx['req']['ip'], 'register_verify');
-            throw new \Exception(__('Invalid or expired verification code/link', 'wp-sms'), 400);
+            $result = $this->otpService->validate($flowId, $otpCode);
+            // validate() returns code string on success, null on failure
+            return !empty($result);
         }
     }
 
-    /** ======================= Stage 7: Mark current identifier verified ======================= */
-    private function markIdentifierVerified(array &$ctx): void
+    /**
+     * Evaluate completion status and activate user if needed
+     */
+    private function evaluateCompletionStatus(int $userId): array
     {
-        $markVerifiedSuccess = UserHelper::markIdentifierVerified($ctx['user']['wp']->ID, $ctx['user']['identifier']);
-        if (!$markVerifiedSuccess) {
-            throw new \Exception(__('Failed to mark identifier as verified', 'wp-sms'), 500);
-        }
-    }
-
-    /** ======================= Stage 8: Evaluate completion (are all required verified?) ======================= */
-    private function evaluateCompletionStatus(array &$ctx): void
-    {
-        $required = ChannelSettingsHelper::getRequiredChannels();
-        $ctx['required']['channels'] = $required;
-
-        $allVerified = UserHelper::areAllRequiredIdentifiersVerified($ctx['user']['wp']->ID, $required);
-        $ctx['required']['all_verified'] = (bool) $allVerified;
+        $requiredChannels = ChannelSettingsHelper::getRequiredChannels();
+        $allVerified = UserHelper::areAllRequiredIdentifiersVerified($userId, $requiredChannels);
 
         if ($allVerified) {
-            $activated = UserHelper::activateUser($ctx['user']['wp']->ID);
+            // Activate user
+            $activated = UserHelper::activateUser($userId);
             if (!$activated) {
                 throw new \Exception(__('Failed to activate user', 'wp-sms'), 500);
             }
-            $ctx['response']['status']    = 'verified';
-            $ctx['response']['next_step'] = 'complete';
-            $ctx['response']['message']   = __('Registration completed successfully', 'wp-sms');
-            $ctx['required']['next']      = null;
-            return;
+
+            return [
+                'status' => 'verified',
+                'next_step' => 'complete',
+                'message' => __('Registration completed successfully', 'wp-sms'),
+                'next_required_identifier' => null,
+            ];
+        } else {
+            // More identifiers required
+            $nextRequired = UserHelper::getNextRequiredIdentifier($userId, $requiredChannels);
+            return [
+                'status' => 'partial_verified',
+                'next_step' => 'verify_next',
+                'message' => __('Identifier verified. Additional verification required.', 'wp-sms'),
+                'next_required_identifier' => $nextRequired,
+            ];
         }
-
-        // More identifiers still required
-        $next = UserHelper::getNextRequiredIdentifier($ctx['user']['wp']->ID, $required);
-        $ctx['required']['next']      = $next;
-        $ctx['response']['status']    = 'partial_verified';
-        $ctx['response']['next_step'] = 'verify_next';
-        $ctx['response']['message']   = __('Identifier verified. Additional verification required.', 'wp-sms');
     }
 
-    /** ======================= Stage 9: Logging + counters ======================= */
-    private function logAndCounters(array &$ctx): void
+    /**
+     * Build success response
+     */
+    private function buildResponse(int $userId, string $flowId, string $verificationMethod, array $completionData): WP_REST_Response
     {
-        $this->logAuthEvent(
-            $ctx['req']['flow_id'],
-            'register_verify',
-            'allow',
-            $ctx['verify']['channel_used'],
-            $ctx['req']['ip']
-        );
-        $this->incrementRateLimits($ctx['req']['flow_id'], $ctx['req']['ip'], 'register_verify');
-    }
-
-    /** ======================= Stage 10: Response ======================= */
-    private function buildSuccessResponse(array $ctx)
-    {
-        $verifiedIdentifiers = UserHelper::getVerifiedIdentifiers($ctx['user']['wp']->ID);
+        $verifiedIdentifiers = UserHelper::getVerifiedIdentifiers($userId);
+        $skippedIdentifiers = UserHelper::getSkippedIdentifiers($userId);
+        
+        // Get user object
+        $user = get_user_by('id', $userId);
 
         $data = [
-            'user_id'                 => $ctx['user']['wp']->ID,
-            'flow_id'                 => $ctx['req']['flow_id'],
-            'status'                  => $ctx['response']['status'],
-            'next_step'               => $ctx['response']['next_step'], // 'complete' | 'verify_next'
-            'next_required_identifier'=> $ctx['required']['next'],
-            'verified_identifiers'    => $verifiedIdentifiers,
-            'verified_via'            => $ctx['verify']['channel_used'], // 'otp' | 'magic'
+            'user_id' => $userId,
+            'flow_id' => $flowId,
+            'status' => $completionData['status'],
+            'next_step' => $completionData['next_step'],
+            'next_required_identifier' => $completionData['next_required_identifier'],
+            'verified_identifiers' => $verifiedIdentifiers,
+            'skipped_identifiers' => $skippedIdentifiers,
+            'verified_via' => $verificationMethod,
+            'registration_complete' => $completionData['status'] === 'complete',
         ];
+        
+        // Add redirect URL if registration is complete
+        if ($completionData['status'] === 'complete' && $user) {
+            // Check if auto-login after registration is enabled
+            if (RedirectHelper::isAutoLoginAfterRegisterEnabled()) {
+                // Log the user into WordPress
+                wp_clear_auth_cookie();
+                wp_set_current_user($user->ID);
+                wp_set_auth_cookie($user->ID, true);
+                
+                // Fire WordPress login action
+                do_action('wp_login', $user->user_login, $user);
+            }
+            
+            $redirectUrl = RedirectHelper::getRegisterRedirectUrl($user);
+            $data['redirect_url'] = $redirectUrl;
+        }
 
-        return $this->createSuccessResponse($data, $ctx['response']['message']);
+        return $this->createSuccessResponse($data, $completionData['message']);
     }
 }

@@ -14,7 +14,7 @@ export default defineConfig({
       input: {
         //js
         admin: resolve(__dirname, 'legacy/js/admin.js'),
-        frontend: resolve(__dirname, 'legacy/scripts/blocks.js'),
+        'blocks': resolve(__dirname, 'legacy/scripts/blocks.js'),
 
         //css
         'admin-bar-styles': resolve(__dirname, 'legacy/css/admin-bar.css'),
@@ -29,6 +29,11 @@ export default defineConfig({
         'admin-styles': resolve(__dirname, 'legacy/admin/admin.scss'),
         'front-styles': resolve(__dirname, 'legacy/scss/front-styles.scss'),
         'mail-styles': resolve(__dirname, 'legacy/scss/mail.scss'),
+        'auth-form-styles': resolve(__dirname, 'legacy/css/auth-form.css'),
+
+
+        'auth-form': resolve(__dirname, 'legacy/js/auth-form.js'),
+        'auth-modal': resolve(__dirname, 'legacy/js/auth-modal.js'),
       },
       output: {
         entryFileNames: '[name].js',

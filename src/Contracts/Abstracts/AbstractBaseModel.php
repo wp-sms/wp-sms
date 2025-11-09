@@ -3,6 +3,7 @@
 namespace WP_SMS\Contracts\Abstracts;
 
 use wpdb;
+use WP_SMS\Utils\QueryBuilder;
 
 /**
  * BaseModel provides simple DB operations for models.
@@ -136,7 +137,7 @@ abstract class AbstractBaseModel
         $sql = "SELECT * FROM {$this->table} WHERE ";
         $conditions = [];
         $values = [];
-        
+
         foreach ($where as $column => $value) {
             if ($value === null) {
                 $conditions[] = "`{$column}` IS NULL";
@@ -145,13 +146,13 @@ abstract class AbstractBaseModel
                 $values[] = $value;
             }
         }
-        
+
         $sql .= implode(' AND ', $conditions);
         $sql .= ' LIMIT 1';
         if (!empty($values)) {
             $sql = $this->db->prepare($sql, ...$values);
         }
-        
+
         $result = $this->db->get_row($sql, ARRAY_A);
         return $result ?: null;
     }
@@ -163,11 +164,11 @@ abstract class AbstractBaseModel
     {
         $sql = "SELECT * FROM {$this->table}";
         $values = [];
-        
+
         if (!empty($where)) {
             $sql .= " WHERE ";
             $conditions = [];
-            
+
             foreach ($where as $column => $value) {
                 if ($value === null) {
                     $conditions[] = "`{$column}` IS NULL";
@@ -176,22 +177,22 @@ abstract class AbstractBaseModel
                     $values[] = $value;
                 }
             }
-            
+
             $sql .= implode(' AND ', $conditions);
         }
-        
+
         if ($orderBy) {
             $sql .= " ORDER BY {$orderBy}";
         }
-        
+
         if ($limit > 0) {
             $sql .= " LIMIT {$limit}";
         }
-        
+
         if (!empty($values)) {
             $sql = $this->db->prepare($sql, ...$values);
         }
-        
+
         return $this->db->get_results($sql, ARRAY_A) ?: [];
     }
 
@@ -216,5 +217,35 @@ abstract class AbstractBaseModel
     public static function exists(array $where): bool
     {
         return static::find($where) !== null;
+    }
+
+    /**
+     * Advanced query builder for complex filtering and pagination.
+     * 
+     * @return QueryBuilder
+     */
+    public static function query()
+    {
+        return new QueryBuilder(new static());
+    }
+
+    /**
+     * Get the wpdb instance.
+     * 
+     * @return wpdb
+     */
+    public function getDb()
+    {
+        return $this->db;
+    }
+
+    /**
+     * Get the table name.
+     * 
+     * @return string
+     */
+    public function getTable()
+    {
+        return $this->table;
     }
 }

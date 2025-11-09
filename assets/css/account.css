@@ -1,0 +1,624 @@
+/**
+ * WP-SMS Account Management Styles
+ * 
+ * CSS Variables for theming
+ * RTL Support
+ * WCAG 2.1 AA compliant
+ */
+
+:root {
+    /* Colors */
+    --wpsms-color-primary: #3b82f6;
+    --wpsms-color-primary-hover: #2563eb;
+    --wpsms-color-success: #10b981;
+    --wpsms-color-warning: #f59e0b;
+    --wpsms-color-danger: #ef4444;
+    --wpsms-color-info: #0ea5e9;
+    
+    /* Neutrals */
+    --wpsms-color-text: #1f2937;
+    --wpsms-color-text-secondary: #6b7280;
+    --wpsms-color-border: #e5e7eb;
+    --wpsms-color-bg: #ffffff;
+    --wpsms-color-bg-secondary: #f9fafb;
+    --wpsms-color-bg-hover: #f3f4f6;
+    
+    /* Spacing */
+    --wpsms-spacing-xs: 0.25rem;
+    --wpsms-spacing-sm: 0.5rem;
+    --wpsms-spacing-md: 1rem;
+    --wpsms-spacing-lg: 1.5rem;
+    --wpsms-spacing-xl: 2rem;
+    
+    /* Border Radius */
+    --wpsms-radius-sm: 0.25rem;
+    --wpsms-radius-md: 0.375rem;
+    --wpsms-radius-lg: 0.5rem;
+    
+    /* Shadows */
+    --wpsms-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --wpsms-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --wpsms-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    
+    /* Typography */
+    --wpsms-font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --wpsms-font-size-sm: 0.875rem;
+    --wpsms-font-size-base: 1rem;
+    --wpsms-font-size-lg: 1.125rem;
+    --wpsms-font-size-xl: 1.25rem;
+    
+    /* Transitions */
+    --wpsms-transition: all 0.2s ease;
+}
+
+/* Dark Mode Support */
+[data-theme="dark"] {
+    --wpsms-color-text: #f9fafb;
+    --wpsms-color-text-secondary: #d1d5db;
+    --wpsms-color-border: #374151;
+    --wpsms-color-bg: #1f2937;
+    --wpsms-color-bg-secondary: #111827;
+    --wpsms-color-bg-hover: #374151;
+}
+
+/* ==================== Container ==================== */
+
+.wpsms-account-container {
+    font-family: var(--wpsms-font-family);
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--wpsms-spacing-lg);
+}
+
+/* ==================== Tabs ==================== */
+
+.wpsms-account-tabs {
+    display: flex;
+    gap: var(--wpsms-spacing-sm);
+    border-bottom: 2px solid var(--wpsms-color-border);
+    margin-bottom: var(--wpsms-spacing-xl);
+}
+
+.wpsms-tab-button {
+    display: flex;
+    align-items: center;
+    gap: var(--wpsms-spacing-sm);
+    padding: var(--wpsms-spacing-md) var(--wpsms-spacing-lg);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    cursor: pointer;
+    font-size: var(--wpsms-font-size-base);
+    color: var(--wpsms-color-text-secondary);
+    transition: var(--wpsms-transition);
+}
+
+.wpsms-tab-button:hover {
+    color: var(--wpsms-color-text);
+    background: var(--wpsms-color-bg-hover);
+}
+
+.wpsms-tab-button.wpsms-tab-active {
+    color: var(--wpsms-color-primary);
+    border-bottom-color: var(--wpsms-color-primary);
+}
+
+.wpsms-tab-icon {
+    font-size: var(--wpsms-font-size-lg);
+}
+
+.wpsms-tab-panel {
+    display: none;
+}
+
+.wpsms-tab-panel.wpsms-tab-panel-active {
+    display: block;
+}
+
+/* ==================== Form Styles ==================== */
+
+.wpsms-form-section {
+    margin-bottom: var(--wpsms-spacing-xl);
+}
+
+.wpsms-form-section h3 {
+    font-size: var(--wpsms-font-size-lg);
+    margin-bottom: var(--wpsms-spacing-md);
+    color: var(--wpsms-color-text);
+}
+
+.wpsms-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--wpsms-spacing-md);
+}
+
+@media (max-width: 640px) {
+    .wpsms-form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.wpsms-form-field {
+    margin-bottom: var(--wpsms-spacing-md);
+}
+
+.wpsms-form-field label {
+    display: block;
+    margin-bottom: var(--wpsms-spacing-sm);
+    font-weight: 500;
+    color: var(--wpsms-color-text);
+    font-size: var(--wpsms-font-size-sm);
+}
+
+.wpsms-input {
+    width: 100%;
+    padding: 0.625rem 0.75rem;
+    border: 1px solid var(--wpsms-color-border);
+    border-radius: var(--wpsms-radius-md);
+    font-size: var(--wpsms-font-size-base);
+    color: var(--wpsms-color-text);
+    background: var(--wpsms-color-bg);
+    transition: var(--wpsms-transition);
+}
+
+.wpsms-input:focus {
+    outline: none;
+    border-color: var(--wpsms-color-primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.wpsms-input:disabled {
+    background: var(--wpsms-color-bg-secondary);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.wpsms-input-code {
+    font-family: 'Courier New', monospace;
+    font-size: var(--wpsms-font-size-xl);
+    letter-spacing: 0.5em;
+    text-align: center;
+    max-width: 200px;
+}
+
+.wpsms-input-group {
+    display: flex;
+    gap: var(--wpsms-spacing-sm);
+    align-items: center;
+}
+
+.wpsms-field-hint {
+    margin-top: var(--wpsms-spacing-xs);
+    font-size: var(--wpsms-font-size-sm);
+    color: var(--wpsms-color-text-secondary);
+}
+
+/* ==================== Buttons ==================== */
+
+.wpsms-btn {
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: var(--wpsms-radius-md);
+    font-size: var(--wpsms-font-size-base);
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--wpsms-transition);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--wpsms-spacing-sm);
+}
+
+.wpsms-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.wpsms-btn-primary {
+    background: var(--wpsms-color-primary);
+    color: white;
+}
+
+.wpsms-btn-primary:hover:not(:disabled) {
+    background: var(--wpsms-color-primary-hover);
+}
+
+.wpsms-btn-secondary {
+    background: var(--wpsms-color-bg-secondary);
+    color: var(--wpsms-color-text);
+    border: 1px solid var(--wpsms-color-border);
+}
+
+.wpsms-btn-secondary:hover:not(:disabled) {
+    background: var(--wpsms-color-bg-hover);
+}
+
+.wpsms-btn-danger {
+    background: var(--wpsms-color-danger);
+    color: white;
+}
+
+.wpsms-btn-danger:hover:not(:disabled) {
+    background: #dc2626;
+}
+
+.wpsms-btn-sm {
+    padding: 0.375rem 0.875rem;
+    font-size: var(--wpsms-font-size-sm);
+}
+
+.wpsms-form-actions {
+    display: flex;
+    gap: var(--wpsms-spacing-md);
+    margin-top: var(--wpsms-spacing-lg);
+}
+
+/* ==================== Badges ==================== */
+
+.wpsms-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: var(--wpsms-font-size-sm);
+    font-weight: 500;
+}
+
+.wpsms-badge-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--wpsms-color-success);
+}
+
+.wpsms-badge-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--wpsms-color-warning);
+}
+
+.wpsms-badge-coming-soon {
+    background: rgba(107, 114, 128, 0.1);
+    color: var(--wpsms-color-text-secondary);
+}
+
+.wpsms-verified-badge {
+    white-space: nowrap;
+}
+
+/* ==================== Status Banner ==================== */
+
+.wpsms-status-banner {
+    display: flex;
+    gap: var(--wpsms-spacing-md);
+    padding: var(--wpsms-spacing-lg);
+    border-radius: var(--wpsms-radius-lg);
+    margin-bottom: var(--wpsms-spacing-xl);
+}
+
+.wpsms-status-banner.wpsms-status-success {
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.wpsms-status-banner.wpsms-status-warning {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.wpsms-status-banner.wpsms-status-info {
+    background: rgba(14, 165, 233, 0.1);
+    border: 1px solid rgba(14, 165, 233, 0.2);
+}
+
+.wpsms-status-icon::before {
+    content: '🛡️';
+    font-size: var(--wpsms-font-size-xl);
+}
+
+.wpsms-status-text strong {
+    display: block;
+    margin-bottom: var(--wpsms-spacing-xs);
+}
+
+/* ==================== Factor Cards ==================== */
+
+.wpsms-factor-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--wpsms-spacing-lg);
+    border: 1px solid var(--wpsms-color-border);
+    border-radius: var(--wpsms-radius-lg);
+    margin-bottom: var(--wpsms-spacing-md);
+    background: var(--wpsms-color-bg);
+}
+
+.wpsms-factor-card:hover {
+    box-shadow: var(--wpsms-shadow-sm);
+}
+
+.wpsms-factor-info {
+    display: flex;
+    gap: var(--wpsms-spacing-md);
+    align-items: center;
+    flex: 1;
+}
+
+.wpsms-factor-icon {
+    font-size: 2rem;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--wpsms-color-bg-secondary);
+    border-radius: var(--wpsms-radius-md);
+}
+
+.wpsms-factor-card h4 {
+    margin: 0 0 var(--wpsms-spacing-xs) 0;
+    font-size: var(--wpsms-font-size-base);
+    color: var(--wpsms-color-text);
+}
+
+.wpsms-factor-card p {
+    margin: 0;
+    font-size: var(--wpsms-font-size-sm);
+    color: var(--wpsms-color-text-secondary);
+}
+
+.wpsms-factor-meta {
+    display: flex;
+    gap: var(--wpsms-spacing-sm);
+    align-items: center;
+}
+
+.wpsms-factor-disabled {
+    opacity: 0.6;
+}
+
+/* ==================== Modal ==================== */
+
+.wpsms-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--wpsms-spacing-lg);
+}
+
+.wpsms-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.wpsms-modal-content {
+    position: relative;
+    background: var(--wpsms-color-bg);
+    border-radius: var(--wpsms-radius-lg);
+    box-shadow: var(--wpsms-shadow-lg);
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.wpsms-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--wpsms-spacing-lg);
+    border-bottom: 1px solid var(--wpsms-color-border);
+}
+
+.wpsms-modal-header h3 {
+    margin: 0;
+    font-size: var(--wpsms-font-size-lg);
+}
+
+.wpsms-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--wpsms-color-text-secondary);
+    line-height: 1;
+    padding: 0;
+    width: 2rem;
+    height: 2rem;
+}
+
+.wpsms-modal-close:hover {
+    color: var(--wpsms-color-text);
+}
+
+.wpsms-modal-body {
+    padding: var(--wpsms-spacing-lg);
+}
+
+/* ==================== States ==================== */
+
+.wpsms-loading {
+    text-align: center;
+    padding: var(--wpsms-spacing-xl);
+}
+
+.wpsms-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--wpsms-color-border);
+    border-top-color: var(--wpsms-color-primary);
+    border-radius: 50%;
+    animation: wpsms-spin 0.8s linear infinite;
+    margin: 0 auto var(--wpsms-spacing-md);
+}
+
+@keyframes wpsms-spin {
+    to { transform: rotate(360deg); }
+}
+
+.wpsms-error {
+    padding: var(--wpsms-spacing-lg);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: var(--wpsms-radius-lg);
+    color: var(--wpsms-color-danger);
+    text-align: center;
+}
+
+.wpsms-empty-state {
+    text-align: center;
+    padding: var(--wpsms-spacing-xl);
+    color: var(--wpsms-color-text-secondary);
+}
+
+.wpsms-info-text {
+    padding: var(--wpsms-spacing-md);
+    background: var(--wpsms-color-bg-secondary);
+    border-radius: var(--wpsms-radius-md);
+    margin-bottom: var(--wpsms-spacing-md);
+    font-size: var(--wpsms-font-size-sm);
+}
+
+/* ==================== Toast Notifications ==================== */
+
+.wpsms-toast-container {
+    position: fixed;
+    top: var(--wpsms-spacing-lg);
+    right: var(--wpsms-spacing-lg);
+    z-index: 10001;
+}
+
+.wpsms-toast {
+    padding: var(--wpsms-spacing-md) var(--wpsms-spacing-lg);
+    border-radius: var(--wpsms-radius-md);
+    box-shadow: var(--wpsms-shadow-lg);
+    margin-bottom: var(--wpsms-spacing-sm);
+    min-width: 250px;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: var(--wpsms-transition);
+}
+
+.wpsms-toast.wpsms-toast-show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.wpsms-toast-success {
+    background: var(--wpsms-color-success);
+    color: white;
+}
+
+.wpsms-toast-error {
+    background: var(--wpsms-color-danger);
+    color: white;
+}
+
+.wpsms-toast-info {
+    background: var(--wpsms-color-info);
+    color: white;
+}
+
+/* ==================== Section Headers ==================== */
+
+.wpsms-section-header {
+    margin-bottom: var(--wpsms-spacing-lg);
+}
+
+.wpsms-section-header h2 {
+    margin: 0 0 var(--wpsms-spacing-sm) 0;
+    font-size: var(--wpsms-font-size-xl);
+    color: var(--wpsms-color-text);
+}
+
+.wpsms-section-description {
+    margin: 0;
+    color: var(--wpsms-color-text-secondary);
+    font-size: var(--wpsms-font-size-sm);
+}
+
+/* ==================== RTL Support ==================== */
+
+[dir="rtl"] .wpsms-account-tabs,
+[dir="rtl"] .wpsms-form-row,
+[dir="rtl"] .wpsms-factor-info,
+[dir="rtl"] .wpsms-form-actions {
+    direction: rtl;
+}
+
+[dir="rtl"] .wpsms-toast-container {
+    right: auto;
+    left: var(--wpsms-spacing-lg);
+}
+
+[dir="rtl"] .wpsms-input-code {
+    direction: ltr; /* Keep codes LTR */
+}
+
+/* ==================== Accessibility ==================== */
+
+.wpsms-btn:focus,
+.wpsms-input:focus,
+.wpsms-tab-button:focus {
+    outline: 2px solid var(--wpsms-color-primary);
+    outline-offset: 2px;
+}
+
+/* Screen reader only */
+.wpsms-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* ==================== Responsive ==================== */
+
+@media (max-width: 640px) {
+    .wpsms-account-container {
+        padding: var(--wpsms-spacing-md);
+    }
+
+    .wpsms-tab-label {
+        display: none;
+    }
+
+    .wpsms-factor-card {
+        flex-direction: column;
+        gap: var(--wpsms-spacing-md);
+        align-items: stretch;
+    }
+
+    .wpsms-factor-card button {
+        width: 100%;
+    }
+
+    .wpsms-modal-content {
+        margin: var(--wpsms-spacing-md);
+    }
+}
+
+/* ==================== Print Styles ==================== */
+
+@media print {
+    .wpsms-btn,
+    .wpsms-toast-container,
+    .wpsms-modal {
+        display: none !important;
+    }
+}
+

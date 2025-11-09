@@ -1,0 +1,23 @@
+import { keepPreviousData, queryOptions } from '@tanstack/react-query'
+
+import { clientRequest } from '@/lib/client-request'
+
+export function getLogData(params: GetLogDataParams) {
+  const { slug, ...otherParams } = params
+
+  return queryOptions({
+    queryKey: ['log-data', params],
+    queryFn: async () => {
+      const url = `/logs/${slug}/data`
+      return clientRequest.get<GetLogDataResponse>(url, {
+        params: {
+          page: otherParams.page,
+          perPage: otherParams.perPage,
+          ...(otherParams.sorts ? { sorts: JSON.stringify(otherParams.sorts) } : {}),
+          ...(otherParams.filters ? { filters: JSON.stringify(otherParams.filters) } : {}),
+        },
+      })
+    },
+    placeholderData: keepPreviousData,
+  })
+}

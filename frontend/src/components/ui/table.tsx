@@ -70,4 +70,4 @@ function TableCaption({ className, ...props }: React.ComponentProps<'caption'>) 
   )
 }
 
-export { Table, TableBody, TableCaption,TableCell, TableFooter, TableHead, TableHeader, TableRow }
+export { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow }

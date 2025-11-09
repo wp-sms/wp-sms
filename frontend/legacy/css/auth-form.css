@@ -1,596 +1,725 @@
 /**
- * WP-SMS Authentication Form Styles
- * 
- * Provides styling for authentication forms, tabs, and modal overlays.
+ * WP-SMS Authentication Form - Modern Minimal Style
+ * Version: 3.0.0
+ * Design: Desktop-first, Modern Minimal, Smooth Transitions
  */
 
-/* Base container */
+/* ==========================================================================
+   RESET & BASE
+   ========================================================================== */
+
+.wpsms-auth * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 .wpsms-auth {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-    line-height: 1.6;
-    color: #333;
-    max-width: 480px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: #1a1a1a;
+    max-width: 440px;
     margin: 0 auto;
 }
 
-/* Form container */
+/* ==========================================================================
+   FORM CONTAINER
+   ========================================================================== */
+
 .wpsms-auth-form {
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 48px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    border: 1px solid #f0f0f0;
+    position: relative;
     overflow: hidden;
 }
 
-/* Tabs */
+/* ==========================================================================
+   TABS (Login/Register)
+   ========================================================================== */
+
 .wpsms-auth-form__tabs {
     display: flex;
-    border-bottom: 1px solid #e1e5e9;
+    gap: 8px;
+    margin-bottom: 32px;
+    padding: 4px;
     background: #f8f9fa;
+    border-radius: 8px;
 }
 
 .wpsms-auth-form__tab {
     flex: 1;
-    padding: 16px 24px;
-    background: none;
+    padding: 12px 24px;
+    background: transparent;
     border: none;
-    cursor: pointer;
-    font-size: 16px;
+    border-radius: 6px;
+    font-size: 15px;
     font-weight: 500;
-    color: #6c757d;
-    transition: all 0.2s ease;
-    border-bottom: 3px solid transparent;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
 }
 
 .wpsms-auth-form__tab:hover {
-    background: #e9ecef;
-    color: #495057;
+    color: #374151;
 }
 
 .wpsms-auth-form__tab.active {
-    color: #007cba;
-    border-bottom-color: #007cba;
-    background: #fff;
+    background: #ffffff;
+    color: #1a1a1a;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
-/* Method switcher */
+/* ==========================================================================
+   METHOD SWITCHER (OTP/Magic/Password)
+   ========================================================================== */
+
 .wpsms-auth-form__methods {
     display: flex;
-    background: #f8f9fa;
-    border-bottom: 1px solid #e1e5e9;
-    padding: 8px;
-    gap: 4px;
+    gap: 8px;
+    margin-bottom: 32px;
 }
 
 .wpsms-auth-form__method {
     flex: 1;
-    padding: 8px 16px;
-    background: #fff;
-    border: 1px solid #dee2e6;
-    border-radius: 6px;
-    cursor: pointer;
+    padding: 10px 16px;
+    background: #ffffff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
     font-size: 14px;
     font-weight: 500;
-    color: #6c757d;
-    transition: all 0.2s ease;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: center;
 }
 
 .wpsms-auth-form__method:hover {
-    border-color: #007cba;
-    color: #007cba;
+    border-color: #d1d5db;
+    color: #374151;
 }
 
 .wpsms-auth-form__method.active {
-    background: #007cba;
-    border-color: #007cba;
-    color: #fff;
+    background: #1a1a1a;
+    border-color: #1a1a1a;
+    color: #ffffff;
 }
 
-/* Forms container */
-.wpsms-auth-form__forms {
-    padding: 24px;
+/* ==========================================================================
+   CONTENT AREA
+   ========================================================================== */
+
+.wpsms-auth-form__content {
+    position: relative;
+    min-height: 200px;
 }
 
-/* Individual forms */
+/* Smooth fade transitions */
+.wpsms-auth-form__content > * {
+    animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ==========================================================================
+   FORM ELEMENTS
+   ========================================================================== */
+
 .wpsms-auth-form__form {
-    display: none;
-}
-
-.wpsms-auth-form__form.active {
     display: block;
 }
 
-/* Form fields */
 .wpsms-auth-form__field {
-    margin-bottom: 20px;
+    margin-bottom: 24px;
 }
 
 .wpsms-auth-form__label {
     display: block;
     margin-bottom: 8px;
-    font-weight: 500;
-    color: #495057;
     font-size: 14px;
+    font-weight: 500;
+    color: #374151;
 }
 
 .wpsms-auth-form__input {
     width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #e1e5e9;
-    border-radius: 6px;
-    font-size: 16px;
-    transition: border-color 0.2s ease;
-    box-sizing: border-box;
+    padding: 14px 16px;
+    font-size: 15px;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #1a1a1a;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+}
+
+.wpsms-auth-form__input::placeholder {
+    color: #9ca3af;
+}
+
+.wpsms-auth-form__input:hover {
+    border-color: #d1d5db;
 }
 
 .wpsms-auth-form__input:focus {
-    outline: none;
-    border-color: #007cba;
-    box-shadow: 0 0 0 3px rgba(0, 124, 186, 0.1);
-}
-
-.wpsms-auth-form__input.error {
-    border-color: #dc3545;
+    border-color: #1a1a1a;
+    box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.05);
 }
 
 .wpsms-auth-form__input:disabled {
-    background: #f8f9fa;
+    background: #f9fafb;
+    color: #9ca3af;
     cursor: not-allowed;
 }
 
-/* OTP inputs */
-.wpsms-auth-form__otp-inputs {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin-top: 12px;
+.wpsms-auth-form__input.error {
+    border-color: #ef4444;
 }
 
-.wpsms-auth-form__otp-input {
-    width: 48px;
-    height: 48px;
+/* Code Input (OTP) */
+.wpsms-auth-form__input--code {
     text-align: center;
-    font-size: 18px;
+    font-size: 24px;
     font-weight: 600;
-    border: 2px solid #e1e5e9;
-    border-radius: 6px;
-    transition: border-color 0.2s ease;
+    letter-spacing: 0.25em;
+    font-family: 'Courier New', monospace;
 }
 
-.wpsms-auth-form__otp-input:focus {
-    outline: none;
-    border-color: #007cba;
-    box-shadow: 0 0 0 3px rgba(0, 124, 186, 0.1);
+/* ==========================================================================
+   BUTTONS
+   ========================================================================== */
+
+.wpsms-auth-form__button {
+    width: 100%;
+    padding: 14px 24px;
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 }
 
-/* Resend button */
-.wpsms-auth-form__resend {
-    text-align: center;
-    margin-top: 16px;
+.wpsms-auth-form__button--primary {
+    background: #1a1a1a;
+    color: #ffffff;
 }
 
-.wpsms-auth-form__resend-btn {
+.wpsms-auth-form__button--primary:hover:not(:disabled) {
+    background: #000000;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(26, 26, 26, 0.15);
+}
+
+.wpsms-auth-form__button--primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.wpsms-auth-form__button--secondary {
+    background: #ffffff;
+    color: #1a1a1a;
+    border: 1.5px solid #e5e7eb;
+}
+
+.wpsms-auth-form__button--secondary:hover:not(:disabled) {
+    background: #f9fafb;
+    border-color: #d1d5db;
+}
+
+.wpsms-auth-form__button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.wpsms-auth-form__button-group {
+    display: flex;
+    gap: 12px;
+}
+
+.wpsms-auth-form__button-group .wpsms-auth-form__button {
+    flex: 1;
+}
+
+/* Link Buttons */
+.wpsms-auth-form__link {
     background: none;
     border: none;
-    color: #007cba;
-    cursor: pointer;
+    color: #6b7280;
     font-size: 14px;
-    text-decoration: underline;
     padding: 8px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-}
-
-.wpsms-auth-form__resend-btn:hover:not(:disabled) {
-    background: rgba(0, 124, 186, 0.1);
-}
-
-.wpsms-auth-form__resend-btn:disabled {
-    color: #6c757d;
-    cursor: not-allowed;
+    cursor: pointer;
+    transition: color 0.3s ease;
     text-decoration: none;
 }
 
-/* Form actions */
-.wpsms-auth-form__actions {
-    margin-top: 24px;
+.wpsms-auth-form__link:hover:not(:disabled) {
+    color: #1a1a1a;
+    text-decoration: underline;
 }
 
-.wpsms-auth-form__submit {
-    width: 100%;
-    padding: 14px 24px;
-    background: #007cba;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.wpsms-auth-form__submit:hover:not(:disabled) {
-    background: #005a87;
-}
-
-.wpsms-auth-form__submit:disabled {
-    background: #6c757d;
+.wpsms-auth-form__link:disabled {
+    opacity: 0.5;
     cursor: not-allowed;
 }
 
-/* Status messages */
-.wpsms-auth-form__status {
-    margin-top: 20px;
-}
+/* ==========================================================================
+   MESSAGES
+   ========================================================================== */
 
 .wpsms-auth-form__message {
-    padding: 12px 16px;
-    border-radius: 6px;
+    padding: 14px 16px;
+    border-radius: 8px;
     font-size: 14px;
-    font-weight: 500;
+    margin-bottom: 24px;
+    line-height: 1.6;
+    animation: slideDown 0.3s ease;
 }
 
-.wpsms-auth-form__message--success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-.wpsms-auth-form__message--error {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .wpsms-auth-form__message--info {
-    background: #d1ecf1;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
+    background: #f0f9ff;
+    color: #0c4a6e;
+    border: 1px solid #bae6fd;
 }
 
-/* Field errors */
-.wpsms-auth-form__field-error {
-    color: #dc3545;
-    font-size: 12px;
-    margin-top: 4px;
-    font-weight: 500;
+.wpsms-auth-form__message--warning {
+    background: #fffbeb;
+    color: #92400e;
+    border: 1px solid #fde68a;
 }
 
-/* Magic link status */
-.wpsms-auth-form__magic-status {
-    background: #e7f3ff;
-    border: 1px solid #b3d9ff;
-    border-radius: 6px;
-    padding: 16px;
-    margin-top: 16px;
-    text-align: center;
+.wpsms-auth-form__message--success {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
 }
 
-.wpsms-auth-form__message {
-    margin: 0;
-    color: #005a87;
-    font-weight: 500;
+.wpsms-auth-form__message--error {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
 }
 
-/* Modal styles */
-.wpsms-auth-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999999;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    padding: 20px;
-}
+/* ==========================================================================
+   STATUS BAR
+   ========================================================================== */
 
-.wpsms-auth-modal-overlay--visible {
-    opacity: 1;
-    visibility: visible;
-}
-
-.wpsms-auth-modal {
-    background: #fff;
+.wpsms-auth-form__status {
+    margin-top: 24px;
+    padding: 12px 16px;
     border-radius: 8px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    max-width: 90vw;
-    max-height: 90vh;
-    overflow: hidden;
-    transform: scale(0.9);
-    transition: transform 0.3s ease;
+    font-size: 14px;
+    text-align: center;
+    min-height: 20px;
+    transition: all 0.3s ease;
 }
 
-.wpsms-auth-modal--visible {
-    transform: scale(1);
+.wpsms-auth-form__status:empty {
+    display: none;
 }
 
-.wpsms-auth-modal__header {
+.wpsms-auth-form__status--success {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.wpsms-auth-form__status--error {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+
+/* ==========================================================================
+   ACTIONS & FOOTER
+   ========================================================================== */
+
+.wpsms-auth-form__actions {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 20px 24px;
-    border-bottom: 1px solid #e1e5e9;
-    background: #f8f9fa;
-}
-
-.wpsms-auth-modal__title {
-    margin: 0;
-    font-size: 20px;
-    font-weight: 600;
-    color: #495057;
-}
-
-.wpsms-auth-modal__close {
-    background: none;
-    border: none;
-    font-size: 24px;
-    color: #6c757d;
-    cursor: pointer;
-    padding: 4px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-    width: 32px;
-    height: 32px;
-    display: flex;
     align-items: center;
-    justify-content: center;
+    margin-top: 20px;
+    gap: 16px;
 }
 
-.wpsms-auth-modal__close:hover {
-    background: #e9ecef;
-    color: #495057;
-}
-
-.wpsms-auth-modal__body {
-    padding: 24px;
-    max-height: 70vh;
-    overflow-y: auto;
-}
-
-/* Page template styles */
-.wpsms-auth-page {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.wpsms-auth-page__container {
-    width: 100%;
-    max-width: 480px;
-}
-
-.wpsms-auth-page__content {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    padding: 40px;
+.wpsms-auth-form__footer {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #f0f0f0;
     text-align: center;
 }
 
-.wpsms-auth-page__title {
-    margin: 0 0 16px 0;
-    font-size: 28px;
-    font-weight: 700;
-    color: #1a202c;
+/* ==========================================================================
+   MFA FACTORS
+   ========================================================================== */
+
+.wpsms-auth-form__factors {
+    display: grid;
+    gap: 12px;
 }
 
-.wpsms-auth-page__description {
-    margin: 0 0 32px 0;
-    color: #718096;
-    font-size: 16px;
-    line-height: 1.6;
+.wpsms-auth-form__factor {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: #ffffff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 100%;
+    text-align: left;
 }
 
-.wpsms-auth-page__footer {
-    margin-top: 32px;
-    padding-top: 24px;
-    border-top: 1px solid #e2e8f0;
+.wpsms-auth-form__factor:hover {
+    border-color: #1a1a1a;
+    background: #fafafa;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.wpsms-auth-page__footer p {
-    margin: 0;
-    color: #718096;
-    font-size: 14px;
+.wpsms-auth-form__factor-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9fafb;
+    border-radius: 8px;
+    font-size: 20px;
 }
 
-.wpsms-auth-page__footer a {
-    color: #007cba;
-    text-decoration: none;
+.wpsms-auth-form__factor-label {
+    flex: 1;
+    font-size: 15px;
     font-weight: 500;
+    color: #1a1a1a;
 }
 
-.wpsms-auth-page__footer a:hover {
-    text-decoration: underline;
+/* ==========================================================================
+   COMPLETION STATE
+   ========================================================================== */
+
+.wpsms-auth-form__complete {
+    text-align: center;
+    padding: 48px 24px;
 }
 
-/* Responsive design */
-@media (max-width: 768px) {
-    .wpsms-auth {
-        max-width: 100%;
-        margin: 0 16px;
+.wpsms-auth-form__complete-icon {
+    width: 72px;
+    height: 72px;
+    margin: 0 auto 24px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    font-size: 36px;
+    line-height: 72px;
+    border-radius: 50%;
+    animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
     }
-    
-    .wpsms-auth-form__forms {
-        padding: 20px;
+    to {
+        transform: scale(1);
+        opacity: 1;
     }
-    
+}
+
+.wpsms-auth-form__complete-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
+
+.wpsms-auth-form__complete-message {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* ==========================================================================
+   LOADING STATES
+   ========================================================================== */
+
+.wpsms-auth-form__spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   MOBILE RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 640px) {
+    .wpsms-auth-form {
+        padding: 32px 24px;
+        border-radius: 0;
+        box-shadow: none;
+        border-left: none;
+        border-right: none;
+    }
+
     .wpsms-auth-form__tabs {
-        flex-direction: column;
+        margin-bottom: 24px;
     }
-    
+
     .wpsms-auth-form__tab {
-        border-bottom: none;
-        border-right: 3px solid transparent;
+        padding: 10px 16px;
+        font-size: 14px;
     }
-    
-    .wpsms-auth-form__tab.active {
-        border-right-color: #007cba;
-        border-bottom-color: transparent;
-    }
-    
+
     .wpsms-auth-form__methods {
         flex-direction: column;
-        gap: 8px;
     }
-    
-    .wpsms-auth-form__otp-inputs {
-        gap: 6px;
+
+    .wpsms-auth-form__button-group {
+        flex-direction: column;
     }
-    
-    .wpsms-auth-form__otp-input {
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
-    }
-    
-    .wpsms-auth-modal {
-        max-width: 95vw;
-        margin: 20px;
-    }
-    
-    .wpsms-auth-modal__header {
-        padding: 16px 20px;
-    }
-    
-    .wpsms-auth-modal__body {
-        padding: 20px;
-    }
-    
-    .wpsms-auth-page {
-        padding: 20px;
-    }
-    
-    .wpsms-auth-page__content {
-        padding: 32px 24px;
-    }
-    
-    .wpsms-auth-page__title {
-        font-size: 24px;
+
+    .wpsms-auth-form__actions {
+        flex-direction: column;
+        align-items: stretch;
     }
 }
 
-@media (max-width: 480px) {
-    .wpsms-auth-form__forms {
-        padding: 16px;
-    }
-    
-    .wpsms-auth-form__input {
-        padding: 10px 14px;
-        font-size: 16px; /* Prevent zoom on iOS */
-    }
-    
-    .wpsms-auth-form__submit {
-        padding: 12px 20px;
-    }
-    
-    .wpsms-auth-modal__header {
-        padding: 12px 16px;
-    }
-    
-    .wpsms-auth-modal__body {
-        padding: 16px;
-    }
-    
-    .wpsms-auth-page__content {
-        padding: 24px 20px;
-    }
+/* ==========================================================================
+   SMOOTH TRANSITIONS
+   ========================================================================== */
+
+.wpsms-auth-form__content {
+    transition: opacity 0.3s ease;
 }
 
-/* Dark mode support (placeholder) */
+.wpsms-auth-form__content.transitioning {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   FOCUS STATES & ACCESSIBILITY
+   ========================================================================== */
+
+.wpsms-auth-form__button:focus-visible,
+.wpsms-auth-form__input:focus-visible,
+.wpsms-auth-form__tab:focus-visible,
+.wpsms-auth-form__method:focus-visible,
+.wpsms-auth-form__factor:focus-visible,
+.wpsms-auth-form__link:focus-visible {
+    outline: 2px solid #1a1a1a;
+    outline-offset: 2px;
+}
+
+/* ==========================================================================
+   RTL SUPPORT
+   ========================================================================== */
+
+[dir="rtl"] .wpsms-auth-form__factor {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .wpsms-auth-form__actions {
+    flex-direction: row-reverse;
+}
+
+[dir="rtl"] .wpsms-auth-form__spinner {
+    margin-right: 0;
+    margin-left: 8px;
+}
+
+/* ==========================================================================
+   DARK MODE (Optional - Auto-detect)
+   ========================================================================== */
+
 @media (prefers-color-scheme: dark) {
     .wpsms-auth {
-        color: #e2e8f0;
+        color: #f3f4f6;
     }
-    
+
     .wpsms-auth-form {
-        background: #1a202c;
-        color: #e2e8f0;
+        background: #1f2937;
+        border-color: #374151;
     }
-    
-    .wpsms-auth-form__input {
-        background: #2d3748;
-        border-color: #4a5568;
-        color: #e2e8f0;
-    }
-    
-    .wpsms-auth-form__input:focus {
-        border-color: #63b3ed;
-        box-shadow: 0 0 0 3px rgba(99, 179, 237, 0.1);
-    }
-    
+
     .wpsms-auth-form__tabs {
-        background: #2d3748;
-        border-bottom-color: #4a5568;
+        background: #111827;
     }
-    
+
     .wpsms-auth-form__tab {
-        color: #a0aec0;
+        color: #9ca3af;
     }
-    
+
     .wpsms-auth-form__tab:hover {
-        background: #4a5568;
-        color: #e2e8f0;
+        color: #d1d5db;
     }
-    
+
     .wpsms-auth-form__tab.active {
-        background: #1a202c;
-        color: #63b3ed;
+        background: #374151;
+        color: #f3f4f6;
     }
-    
-    .wpsms-auth-form__methods {
-        background: #2d3748;
-        border-bottom-color: #4a5568;
-    }
-    
+
     .wpsms-auth-form__method {
-        background: #1a202c;
-        border-color: #4a5568;
-        color: #a0aec0;
+        background: #111827;
+        border-color: #374151;
+        color: #9ca3af;
     }
-    
+
     .wpsms-auth-form__method:hover {
-        border-color: #63b3ed;
-        color: #63b3ed;
+        border-color: #4b5563;
+        color: #d1d5db;
     }
-    
+
     .wpsms-auth-form__method.active {
-        background: #63b3ed;
-        border-color: #63b3ed;
-        color: #1a202c;
+        background: #f3f4f6;
+        border-color: #f3f4f6;
+        color: #1a1a1a;
     }
-}
 
-/* High contrast mode support */
-@media (prefers-contrast: high) {
+    .wpsms-auth-form__label {
+        color: #d1d5db;
+    }
+
     .wpsms-auth-form__input {
-        border-width: 3px;
+        background: #111827;
+        border-color: #374151;
+        color: #f3f4f6;
     }
-    
-    .wpsms-auth-form__submit {
-        border: 3px solid #000;
+
+    .wpsms-auth-form__input:hover {
+        border-color: #4b5563;
     }
-    
-    .wpsms-auth-form__tab.active {
-        border-bottom-width: 4px;
+
+    .wpsms-auth-form__input:focus {
+        border-color: #f3f4f6;
+        box-shadow: 0 0 0 3px rgba(243, 244, 246, 0.1);
+    }
+
+    .wpsms-auth-form__input:disabled {
+        background: #0f1419;
+    }
+
+    .wpsms-auth-form__button--primary {
+        background: #f3f4f6;
+        color: #1a1a1a;
+    }
+
+    .wpsms-auth-form__button--primary:hover:not(:disabled) {
+        background: #ffffff;
+    }
+
+    .wpsms-auth-form__button--secondary {
+        background: #111827;
+        border-color: #374151;
+        color: #f3f4f6;
+    }
+
+    .wpsms-auth-form__button--secondary:hover:not(:disabled) {
+        background: #1f2937;
+    }
+
+    .wpsms-auth-form__factor {
+        background: #111827;
+        border-color: #374151;
+    }
+
+    .wpsms-auth-form__factor:hover {
+        border-color: #f3f4f6;
+        background: #1f2937;
+    }
+
+    .wpsms-auth-form__factor-icon {
+        background: #374151;
+    }
+
+    .wpsms-auth-form__factor-label {
+        color: #f3f4f6;
+    }
+
+    .wpsms-auth-form__footer {
+        border-top-color: #374151;
+    }
+
+    .wpsms-auth-form__link {
+        color: #9ca3af;
+    }
+
+    .wpsms-auth-form__link:hover:not(:disabled) {
+        color: #f3f4f6;
+    }
+
+    .wpsms-auth-form__message--info {
+        background: #1e3a5f;
+        color: #93c5fd;
+        border-color: #3b82f6;
+    }
+
+    .wpsms-auth-form__complete-title,
+    .wpsms-auth-form__complete-message {
+        color: #f3f4f6;
     }
 }
 
-/* Reduced motion support */
+/* ==========================================================================
+   REDUCED MOTION
+   ========================================================================== */
+
 @media (prefers-reduced-motion: reduce) {
-    .wpsms-auth-form__input,
-    .wpsms-auth-form__submit,
-    .wpsms-auth-form__tab,
-    .wpsms-auth-form__method,
-    .wpsms-auth-modal,
-    .wpsms-auth-modal-overlay {
-        transition: none;
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ==========================================================================
+   PRINT STYLES
+   ========================================================================== */
+
+@media print {
+    .wpsms-auth-form {
+        box-shadow: none;
+        border: 1px solid #000;
     }
 }

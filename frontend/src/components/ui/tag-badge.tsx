@@ -1,4 +1,4 @@
-import { AlertTriangle, Beaker, Clock,Crown, Sparkles, TestTube } from 'lucide-react'
+import { AlertTriangle, Beaker, Clock, Crown, Sparkles, TestTube } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 

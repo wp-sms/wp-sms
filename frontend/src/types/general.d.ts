@@ -1,6 +1,7 @@
 type SettingGroupName =
   | 'otp-channel' // this group name is hidden by default
   | 'otp-branding' // this group name is hidden by default
+  | 'otp-settings' // this group name is hidden by default
   | 'general'
   | 'gateway'
   | 'message_button'
