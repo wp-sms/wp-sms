@@ -57,7 +57,7 @@ class EmailService
         $attachments = $message['attachments'] ?? [];
 
         $settings = self::getSettings();
-        $enabled  = (bool)apply_filters('wp_sms_email_enabled', !empty($settings['delivery_enabled']), $message);
+        $enabled  = true;//(bool)apply_filters('wp_sms_email_enabled', !empty($settings['delivery_enabled']), $message);
 
         if (!$enabled) {
             self::logAttempt([

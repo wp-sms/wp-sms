@@ -73,10 +73,10 @@ class SmsChannel implements DeliveryChannelInterface
         do_action('wpsms_sms_before_send', $to, $message, $context);
 
         //TODO: Implement actual SMS sending
-        // $result = Sms::send([
-        //     'to'  => $to,
-        //     'msg' => $message,
-        // ]);
+        $result = Sms::send([
+            'to'  => $to,
+            'msg' => $message,
+        ]);
         
         // For now, just log the message
         error_log("SMS sent to {$to}: {$message}");

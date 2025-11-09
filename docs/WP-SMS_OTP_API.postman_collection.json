@@ -1,0 +1,805 @@
+{
+	"info": {
+		"_postman_id": "wp-sms-otp-api-v2",
+		"name": "WP-SMS OTP Service API",
+		"description": "Complete API collection for WP-SMS OTP Service including registration, login, MFA, account management, and password reset endpoints.\n\n**Version:** 2.2.0\n**Base URL:** {{base_url}}\n**Authentication:** WordPress REST API Nonce",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Registration Flow",
+			"item": [
+				{
+					"name": "1. Register Init",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/register/init",
+							"host": ["{{base_url}}"],
+							"path": ["register", "init"]
+						},
+						"description": "Get channel settings and registration policies"
+					},
+					"response": []
+				},
+				{
+					"name": "2. Register Start",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"identifier\": \"user@example.com\",\n  \"auth_method\": \"otp\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/register/start",
+							"host": ["{{base_url}}"],
+							"path": ["register", "start"]
+						},
+						"description": "Start registration with email or phone number"
+					},
+					"response": []
+				},
+				{
+					"name": "3. Register Verify",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"flow_id\": \"{{flow_id}}\",\n  \"identifier\": \"user@example.com\",\n  \"code\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/register/verify",
+							"host": ["{{base_url}}"],
+							"path": ["register", "verify"]
+						},
+						"description": "Verify OTP code or magic link token"
+					},
+					"response": []
+				},
+				{
+					"name": "4. Register Verify - Skip Optional",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"flow_id\": \"{{flow_id}}\",\n  \"identifier_type\": \"phone\",\n  \"action\": \"skip\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/register/verify",
+							"host": ["{{base_url}}"],
+							"path": ["register", "verify"]
+						},
+						"description": "Skip optional identifier during registration"
+					},
+					"response": []
+				},
+				{
+					"name": "5. Register Add Identifier",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"flow_id\": \"{{flow_id}}\",\n  \"identifier\": \"+1234567890\",\n  \"auth_method\": \"otp\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/register/add-identifier",
+							"host": ["{{base_url}}"],
+							"path": ["register", "add-identifier"]
+						},
+						"description": "Add additional identifier (phone/email) during registration"
+					},
+					"response": []
+				}
+			],
+			"description": "Multi-step registration flow with OTP/Magic Link verification"
+		},
+		{
+			"name": "Login Flow",
+			"item": [
+				{
+					"name": "1. Login Init",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/login/init",
+							"host": ["{{base_url}}"],
+							"path": ["login", "init"]
+						},
+						"description": "Get login configuration and available channels"
+					},
+					"response": []
+				},
+				{
+					"name": "2. Login Start",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"identifier\": \"user@example.com\",\n  \"auth_method\": \"otp\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login/start",
+							"host": ["{{base_url}}"],
+							"path": ["login", "start"]
+						},
+						"description": "Start login with email or phone number"
+					},
+					"response": []
+				},
+				{
+					"name": "3. Login Verify",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"flow_id\": \"{{flow_id}}\",\n  \"identifier\": \"user@example.com\",\n  \"code\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login/verify",
+							"host": ["{{base_url}}"],
+							"path": ["login", "verify"]
+						},
+						"description": "Verify OTP code for primary authentication"
+					},
+					"response": []
+				},
+				{
+					"name": "4. Login MFA Challenge",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"flow_id\": \"{{flow_id}}\",\n  \"factor\": \"email\",\n  \"auth_method\": \"otp\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login/mfa-challenge",
+							"host": ["{{base_url}}"],
+							"path": ["login", "mfa-challenge"]
+						},
+						"description": "Send MFA challenge to selected factor"
+					},
+					"response": []
+				},
+				{
+					"name": "5. Login MFA Verify",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"flow_id\": \"{{mfa_flow_id}}\",\n  \"code\": \"654321\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login/mfa-verify",
+							"host": ["{{base_url}}"],
+							"path": ["login", "mfa-verify"]
+						},
+						"description": "Verify MFA code and complete login"
+					},
+					"response": []
+				}
+			],
+			"description": "Multi-step login flow with optional MFA"
+		},
+		{
+			"name": "Account Management",
+			"item": [
+				{
+					"name": "Get Account Info",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/account/me",
+							"host": ["{{base_url}}"],
+							"path": ["account", "me"]
+						},
+						"description": "Get current user's account information and verified identifiers"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Email - Start",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"newemail@example.com\",\n  \"auth_method\": \"otp\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/account/email/update",
+							"host": ["{{base_url}}"],
+							"path": ["account", "email", "update"]
+						},
+						"description": "Start email update process"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Email - Verify",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"flow_id\": \"{{flow_id}}\",\n  \"code\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/account/email/verify",
+							"host": ["{{base_url}}"],
+							"path": ["account", "email", "verify"]
+						},
+						"description": "Verify new email with OTP code"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Phone - Start",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"phone\": \"+1234567890\",\n  \"auth_method\": \"otp\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/account/phone/update",
+							"host": ["{{base_url}}"],
+							"path": ["account", "phone", "update"]
+						},
+						"description": "Start phone update process"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Phone - Verify",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"flow_id\": \"{{flow_id}}\",\n  \"code\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/account/phone/verify",
+							"host": ["{{base_url}}"],
+							"path": ["account", "phone", "verify"]
+						},
+						"description": "Verify new phone with OTP code"
+					},
+					"response": []
+				}
+			],
+			"description": "User account management endpoints for updating email and phone"
+		},
+		{
+			"name": "MFA Management",
+			"item": [
+				{
+					"name": "Get MFA Factors",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/mfa/factors",
+							"host": ["{{base_url}}"],
+							"path": ["mfa", "factors"]
+						},
+						"description": "Get available and enrolled MFA factors for current user"
+					},
+					"response": []
+				},
+				{
+					"name": "Enable Email MFA - Start",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"auth_method\": \"otp\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/mfa/email/enable",
+							"host": ["{{base_url}}"],
+							"path": ["mfa", "email", "enable"]
+						},
+						"description": "Start enabling email MFA"
+					},
+					"response": []
+				},
+				{
+					"name": "Enable Email MFA - Verify",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"flow_id\": \"{{flow_id}}\",\n  \"code\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/mfa/email/verify",
+							"host": ["{{base_url}}"],
+							"path": ["mfa", "email", "verify"]
+						},
+						"description": "Verify and enable email MFA"
+					},
+					"response": []
+				},
+				{
+					"name": "Disable Email MFA",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{base_url}}/mfa/email/disable",
+							"host": ["{{base_url}}"],
+							"path": ["mfa", "email", "disable"]
+						},
+						"description": "Disable email MFA"
+					},
+					"response": []
+				},
+				{
+					"name": "Enable Phone MFA - Start",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"auth_method\": \"otp\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/mfa/phone/enable",
+							"host": ["{{base_url}}"],
+							"path": ["mfa", "phone", "enable"]
+						},
+						"description": "Start enabling phone MFA"
+					},
+					"response": []
+				},
+				{
+					"name": "Enable Phone MFA - Verify",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"flow_id\": \"{{flow_id}}\",\n  \"code\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/mfa/phone/verify",
+							"host": ["{{base_url}}"],
+							"path": ["mfa", "phone", "verify"]
+						},
+						"description": "Verify and enable phone MFA"
+					},
+					"response": []
+				},
+				{
+					"name": "Disable Phone MFA",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{base_url}}/mfa/phone/disable",
+							"host": ["{{base_url}}"],
+							"path": ["mfa", "phone", "disable"]
+						},
+						"description": "Disable phone MFA"
+					},
+					"response": []
+				}
+			],
+			"description": "MFA factor enrollment and management"
+		},
+		{
+			"name": "Password Reset",
+			"item": [
+				{
+					"name": "1. Reset Init",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"identifier\": \"user@example.com\",\n  \"auth_method\": \"otp\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/password-reset/init",
+							"host": ["{{base_url}}"],
+							"path": ["password-reset", "init"]
+						},
+						"description": "Initiate password reset by sending OTP/Magic Link"
+					},
+					"response": []
+				},
+				{
+					"name": "2. Reset Verify",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"flow_id\": \"{{flow_id}}\",\n  \"code\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/password-reset/verify",
+							"host": ["{{base_url}}"],
+							"path": ["password-reset", "verify"]
+						},
+						"description": "Verify OTP code or magic link token"
+					},
+					"response": []
+				},
+				{
+					"name": "3. Reset Complete",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X-WP-Nonce",
+								"value": "{{wp_nonce}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reset_token\": \"{{reset_token}}\",\n  \"new_password\": \"NewSecure123!\",\n  \"confirm_password\": \"NewSecure123!\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/password-reset/complete",
+							"host": ["{{base_url}}"],
+							"path": ["password-reset", "complete"]
+						},
+						"description": "Set new password and complete reset"
+					},
+					"response": []
+				}
+			],
+			"description": "Secure password reset flow with OTP/Magic Link verification"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-generate flow_id if not set",
+					"if (!pm.collectionVariables.get('flow_id')) {",
+					"    pm.collectionVariables.set('flow_id', 'flow_' + Date.now());",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-extract flow_id from response",
+					"if (pm.response.code === 200) {",
+					"    try {",
+					"        const jsonData = pm.response.json();",
+					"        ",
+					"        // Extract flow_id",
+					"        if (jsonData.flow_id) {",
+					"            pm.collectionVariables.set('flow_id', jsonData.flow_id);",
+					"        }",
+					"        if (jsonData.data && jsonData.data.flow_id) {",
+					"            pm.collectionVariables.set('flow_id', jsonData.data.flow_id);",
+					"        }",
+					"        ",
+					"        // Extract mfa_flow_id",
+					"        if (jsonData.data && jsonData.data.mfa_flow_id) {",
+					"            pm.collectionVariables.set('mfa_flow_id', jsonData.data.mfa_flow_id);",
+					"        }",
+					"        ",
+					"        // Extract reset_token",
+					"        if (jsonData.data && jsonData.data.reset_token) {",
+					"            pm.collectionVariables.set('reset_token', jsonData.data.reset_token);",
+					"        }",
+					"    } catch (e) {",
+					"        console.log('Could not parse response');",
+					"    }",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://yoursite.com/wp-json/wpsms/v1",
+			"type": "string"
+		},
+		{
+			"key": "wp_nonce",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "flow_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "mfa_flow_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "reset_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+

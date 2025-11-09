@@ -10,6 +10,7 @@ use WP_SMS\Services\OTP\Models\AuthEventModel;
 use WP_SMS\Services\OTP\Security\RateLimiter;
 use WP_SMS\Utils\DateUtils;
 use WP_SMS\Services\OTP\Helpers\ChannelSettingsHelper;
+use WP_SMS\Services\OTP\Helpers\WhitelistHelper;
 
 abstract class RestAPIEndpointsAbstract
 {
@@ -85,8 +86,13 @@ abstract class RestAPIEndpointsAbstract
      * @param string $action
      * @return bool|WP_Error
      */
-    protected function checkRateLimits(string $identifier, string $ip, string $action = 'default'): bool|WP_Error
+    protected function checkRateLimits(string $identifier, string $ip, string $action = 'default')
     {
+        // Check if IP is whitelisted and should bypass rate limiting
+        if (WhitelistHelper::shouldBypassRateLimit($ip)) {
+            return true;
+        }
+
         $rateKeyIdentifier = $action . ':identifier:' . md5($identifier);
         $rateKeyIp = $action . ':ip:' . md5($ip);
 
@@ -107,6 +113,11 @@ abstract class RestAPIEndpointsAbstract
      */
     protected function incrementRateLimits(string $identifier, string $ip, string $action = 'default'): void
     {
+        // Skip incrementing if IP is whitelisted and should bypass rate limiting
+        if (WhitelistHelper::shouldBypassRateLimit($ip)) {
+            return;
+        }
+
         $rateKeyIdentifier = $action . ':identifier:' . md5($identifier);
         $rateKeyIp = $action . ':ip:' . md5($ip);
 
@@ -129,6 +140,16 @@ abstract class RestAPIEndpointsAbstract
     protected function logAuthEvent(string $flowId, string $eventType, string $result, string $channel, string $ip, ?int $attempts = null, array $additionalData = []): void
     {
         try {
+            // Check if IP is whitelisted
+            $isWhitelisted = WhitelistHelper::isWhitelisted($ip);
+            
+            // Add whitelist info to additional data
+            if ($isWhitelisted && WhitelistHelper::shouldLogBypasses()) {
+                $additionalData['whitelisted'] = true;
+                $additionalData['bypass_rate_limit'] = WhitelistHelper::shouldBypassRateLimit($ip);
+                $additionalData['bypass_mfa'] = WhitelistHelper::shouldBypassMfa($ip);
+            }
+
             $data = [
                 'event_id' => wp_generate_uuid4(),
                 'flow_id' => $flowId,
@@ -291,7 +312,7 @@ abstract class RestAPIEndpointsAbstract
      * @param WP_REST_Request $request
      * @return array|WP_Error
      */
-    protected function extractAndValidateIdentifier(WP_REST_Request $request): array|WP_Error
+    protected function extractAndValidateIdentifier(WP_REST_Request $request)
     {
         $phone = $request->get_param('phone');
         $email = $request->get_param('email');
@@ -320,6 +341,28 @@ abstract class RestAPIEndpointsAbstract
             'phone' => $phone,
             'email' => $email
         ];
+    }
+
+    /**
+     * Check if IP should bypass MFA requirements
+     *
+     * @param string $ip
+     * @return bool
+     */
+    protected function shouldBypassMfa(string $ip): bool
+    {
+        return WhitelistHelper::shouldBypassMfa($ip);
+    }
+
+    /**
+     * Check if IP is whitelisted
+     *
+     * @param string $ip
+     * @return bool
+     */
+    protected function isWhitelisted(string $ip): bool
+    {
+        return WhitelistHelper::isWhitelisted($ip);
     }
 
     /**

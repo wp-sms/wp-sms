@@ -249,4 +249,165 @@ class ChannelSettingsHelper
 
         return $requiredChannels;
     }
+
+    /**
+     * Get all optional channels (enabled but not required)
+     *
+     * @return array
+     */
+    public static function getOptionalChannels()
+    {
+        $channels = self::getChannelsData();
+        $optionalChannels = [];
+
+        foreach ($channels as $name => $config) {
+            if (isset($config['enabled']) && $config['enabled'] && (!isset($config['required']) || !$config['required'])) {
+                $optionalChannels[$name] = $config;
+            }
+        }
+
+        return $optionalChannels;
+    }
+
+    /**
+     * Get MFA channel configuration
+     *
+     * @return array
+     */
+    public static function getMfaChannelsData()
+    {
+        return [
+            'email' => self::getMfaEmailChannelData(),
+            'phone' => self::getMfaPhoneChannelData(),
+            'totp' => self::getMfaTotpChannelData(),
+            'biometric' => self::getMfaBiometricChannelData(),
+        ];
+    }
+
+    /**
+     * Get MFA email channel configuration
+     *
+     * @return array
+     */
+    public static function getMfaEmailChannelData()
+    {
+        $enabled = (bool) Option::getOption('otp_mfa_channel_email', false, false);
+        $allowOtp = $enabled && in_array('otp', (array) Option::getOption('otp_mfa_channel_email_verification_method', false, ['otp']));
+        $allowMagic = $enabled && in_array('link', (array) Option::getOption('otp_mfa_channel_email_verification_method', false, ['otp']));
+        $otpDigits = (int) Option::getOption('otp_mfa_channel_email_otp_digits', false, 6);
+        $expirySeconds = (int) Option::getOption('otp_mfa_channel_email_expiry_seconds', false, 300);
+        $required = (bool) Option::getOption('otp_mfa_channel_email_required', false, false);
+
+        return [
+            'enabled' => $enabled,
+            'required' => $required,
+            'allow_otp' => $allowOtp,
+            'allow_magic' => $allowMagic,
+            'otp_digits' => $otpDigits,
+            'expiry_seconds' => $expirySeconds,
+        ];
+    }
+
+    /**
+     * Get MFA phone channel configuration
+     *
+     * @return array
+     */
+    public static function getMfaPhoneChannelData()
+    {
+        $enabled = (bool) Option::getOption('otp_mfa_channel_phone', false, false);
+        $allowOtp = $enabled && in_array('otp', (array) Option::getOption('otp_mfa_channel_phone_verification_method', false, ['otp']));
+        $allowMagic = $enabled && in_array('link', (array) Option::getOption('otp_mfa_channel_phone_verification_method', false, ['otp']));
+        $otpDigits = (int) Option::getOption('otp_mfa_channel_phone_otp_digits', false, 6);
+        $expirySeconds = (int) Option::getOption('otp_mfa_channel_phone_expiry_seconds', false, 300);
+        $sms = (bool) Option::getOption('otp_mfa_channel_phone_sms', false, true);
+        $whatsapp = (bool) Option::getOption('otp_mfa_channel_phone_whatsapp', false, false);
+        $required = (bool) Option::getOption('otp_mfa_channel_phone_required', false, false);
+
+        return [
+            'enabled' => $enabled,
+            'required' => $required,
+            'allow_otp' => $allowOtp,
+            'allow_magic' => $allowMagic,
+            'otp_digits' => $otpDigits,
+            'expiry_seconds' => $expirySeconds,
+            'sms' => $sms,
+            'whatsapp' => $whatsapp,
+        ];
+    }
+
+    /**
+     * Get MFA TOTP channel configuration
+     *
+     * @return array
+     */
+    public static function getMfaTotpChannelData()
+    {
+        $enabled = (bool) Option::getOption('otp_mfa_channel_totp', false, false);
+        $issuer = Option::getOption('otp_mfa_channel_totp_issuer', false, get_bloginfo('name'));
+        $digits = (int) Option::getOption('otp_mfa_channel_totp_digits', false, 6);
+        $period = (int) Option::getOption('otp_mfa_channel_totp_period', false, 30);
+        $required = (bool) Option::getOption('otp_mfa_channel_totp_required', false, false);
+
+        return [
+            'enabled' => $enabled,
+            'required' => $required,
+            'issuer' => $issuer,
+            'digits' => $digits,
+            'period' => $period,
+        ];
+    }
+
+    /**
+     * Get MFA biometric channel configuration
+     *
+     * @return array
+     */
+    public static function getMfaBiometricChannelData()
+    {
+        $enabled = (bool) Option::getOption('otp_mfa_channel_biometric', false, false);
+        $attestation = Option::getOption('otp_mfa_channel_biometric_attestation', false, 'none');
+        $userVerification = Option::getOption('otp_mfa_channel_biometric_user_verification', false, 'required');
+        $required = (bool) Option::getOption('otp_mfa_channel_biometric_required', false, false);
+
+        return [
+            'enabled' => $enabled,
+            'required' => $required,
+            'attestation' => $attestation,
+            'user_verification' => $userVerification,
+        ];
+    }
+
+    /**
+     * Get specific MFA channel data by name
+     *
+     * @param string $channelName
+     * @return array|null
+     */
+    public static function getMfaChannelData($channelName)
+    {
+        $channels = self::getMfaChannelsData();
+        
+        return isset($channels[$channelName]) ? $channels[$channelName] : null;
+    }
+
+    /**
+     * Get all enabled MFA channels
+     *
+     * @return array
+     */
+    public static function getEnabledMfaChannels()
+    {
+        $channels = self::getMfaChannelsData();
+        $enabledChannels = [];
+
+        foreach ($channels as $name => $config) {
+            if (isset($config['enabled']) && $config['enabled']) {
+                $enabledChannels[$name] = $config;
+            }
+        }
+
+        return $enabledChannels;
+    }
 }
+

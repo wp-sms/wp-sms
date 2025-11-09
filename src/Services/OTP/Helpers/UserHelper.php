@@ -60,7 +60,6 @@ class UserHelper
 
         // Create the user
         $userId = wp_insert_user($userData);
-        
         if (is_wp_error($userId)) {
             return false;
         }
@@ -435,5 +434,57 @@ class UserHelper
         }
         
         return 'unknown';
+    }
+
+    /**
+     * Mark an identifier as skipped for a user
+     */
+    public static function markIdentifierSkipped(int $userId, string $identifierType): bool
+    {
+        $user = get_user_by('id', $userId);
+        if (!$user) {
+            return false;
+        }
+
+        $skippedIdentifiers = get_user_meta($userId, 'wpsms_skipped_identifiers', true) ?: [];
+        
+        // Add the skipped identifier
+        $skippedIdentifiers[$identifierType] = [
+            'skipped_at' => current_time('mysql'),
+        ];
+
+        $updated = update_user_meta($userId, 'wpsms_skipped_identifiers', $skippedIdentifiers);
+        
+        if ($updated) {
+            do_action('wpsms_identifier_skipped', $user, $identifierType);
+        }
+
+        return $updated !== false;
+    }
+
+    /**
+     * Get skipped identifiers for a user
+     */
+    public static function getSkippedIdentifiers(int $userId): array
+    {
+        return get_user_meta($userId, 'wpsms_skipped_identifiers', true) ?: [];
+    }
+
+    /**
+     * Check if all required channels are completed (verified) or if we can activate with verified + skipped optional
+     */
+    public static function canActivateUser(int $userId): bool
+    {
+        $requiredChannels = \WP_SMS\Services\OTP\Helpers\ChannelSettingsHelper::getRequiredChannels();
+        $verifiedIdentifiers = self::getVerifiedIdentifiers($userId);
+        
+        // Check if all required are verified
+        foreach ($requiredChannels as $channel => $settings) {
+            if ($settings['required'] && !isset($verifiedIdentifiers[$channel])) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 }

@@ -11,6 +11,21 @@ use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterInitApiEndpoints;
 use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterStartAPIEndpoint;
 use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterVerifyAPIEndpoint;
 use WP_SMS\Services\OTP\RestAPIEndpoints\Register\RegisterAddIdentifierAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\Login\LoginInitApiEndpoints;
+use WP_SMS\Services\OTP\RestAPIEndpoints\Login\LoginStartAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\Login\LoginVerifyAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\Login\LoginMfaChallengeAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\Login\LoginMfaVerifyAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\Account\AccountMeAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\Account\AccountEmailAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\Account\AccountPhoneAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\MFA\MfaFactorsAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\MFA\MfaEmailAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\MFA\MfaPhoneAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\PasswordReset\PasswordResetInitAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\PasswordReset\PasswordResetVerifyAPIEndpoint;
+use WP_SMS\Services\OTP\RestAPIEndpoints\PasswordReset\PasswordResetCompleteAPIEndpoint;
+use WP_SMS\Services\OTP\Shortcodes\AccountShortcodes;
 
 class OTPManager extends AbstractService
 {
@@ -33,11 +48,36 @@ class OTPManager extends AbstractService
             // Authentication Components
             new AuthAssets(),
             new AuthShortcodes(),
+            new AccountShortcodes(),
             new AuthTemplates(),
+            
+            // Register API Endpoints
             new RegisterInitApiEndpoints(),
             new RegisterStartAPIEndpoint(),
             new RegisterVerifyAPIEndpoint(),
             new RegisterAddIdentifierAPIEndpoint(),
+            
+            // Login API Endpoints
+            new LoginInitApiEndpoints(),
+            new LoginStartAPIEndpoint(),
+            new LoginVerifyAPIEndpoint(),
+            new LoginMfaChallengeAPIEndpoint(),
+            new LoginMfaVerifyAPIEndpoint(),
+            
+            // Account API Endpoints
+            new AccountMeAPIEndpoint(),
+            new AccountEmailAPIEndpoint(),
+            new AccountPhoneAPIEndpoint(),
+            
+            // MFA API Endpoints
+            new MfaFactorsAPIEndpoint(),
+            new MfaEmailAPIEndpoint(),
+            new MfaPhoneAPIEndpoint(),
+            
+            // Password Reset API Endpoints
+            new PasswordResetInitAPIEndpoint(),
+            new PasswordResetVerifyAPIEndpoint(),
+            new PasswordResetCompleteAPIEndpoint(),
         ];
 
         foreach ($services as $service) {

@@ -2,7 +2,7 @@
 
 namespace WP_SMS\Services\OTP\Shortcodes;
 
-use WP_SMS\Services\OTP\OTPChannelHelper;
+use WP_SMS\Services\OTP\Helpers\ChannelSettingsHelper;
 
 /**
  * Authentication Shortcodes
@@ -34,6 +34,7 @@ class AuthShortcodes
         add_shortcode('wpsms_login_form', [$this, 'renderLoginForm']);
         add_shortcode('wpsms_register_form', [$this, 'renderRegisterForm']);
         add_shortcode('wpsms_auth_form', [$this, 'renderAuthForm']);
+        add_shortcode('wpsms_password_reset_form', [$this, 'renderPasswordResetForm']);
     }
 
     /**
@@ -153,12 +154,11 @@ class AuthShortcodes
      */
     protected function getEnabledFields(): array
     {
-        // Get enabled fields from OTP channel settings
+        $channels = ChannelSettingsHelper::getChannelsData();
+        
         $fields = [
-            'username' => OTPChannelHelper::isChannelEnabled('username'),
-            'email' => OTPChannelHelper::isChannelEnabled('email'),
-            'phone' => OTPChannelHelper::isChannelEnabled('phone'),
-            'password' => OTPChannelHelper::isChannelEnabled('password'),
+            'email' => isset($channels['email']['enabled']) && $channels['email']['enabled'],
+            'phone' => isset($channels['phone']['enabled']) && $channels['phone']['enabled'],
         ];
 
         return apply_filters('wpsms_auth_allowed_fields', $fields, []);
@@ -169,12 +169,7 @@ class AuthShortcodes
      */
     protected function getChannelSettings(): array
     {
-        return [
-            'username' => OTPChannelHelper::getChannelSettings('username'),
-            'password' => OTPChannelHelper::getChannelSettings('password'),
-            'phone' => OTPChannelHelper::getChannelSettings('phone'),
-            'email' => OTPChannelHelper::getChannelSettings('email'),
-        ];
+        return ChannelSettingsHelper::getAllChannelSettings();
     }
 
     /**
@@ -182,6 +177,21 @@ class AuthShortcodes
      */
     protected function getMfaChannels(): array
     {
-        return OTPChannelHelper::getMfaChannels();
+        return ChannelSettingsHelper::getMfaChannelsData();
+    }
+
+    /**
+     * Render password reset form shortcode
+     */
+    public function renderPasswordResetForm($atts): string
+    {
+        $atts = shortcode_atts([
+            'redirect' => '/',
+            'methods' => 'otp,magic',
+            'class' => '',
+        ], $atts, 'wpsms_password_reset_form');
+
+        $this->enqueueAssets();
+        return $this->renderContainer($atts, 'password_reset');
     }
 }
