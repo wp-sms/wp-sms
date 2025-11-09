@@ -25,6 +25,7 @@ use WP_SMS\Webhook\WebhookManager;
 use WP_SMS\Widget\WidgetsManager;
 use WP_SMS\Services\Database\Migrations\Queue\QueueManager;
 use WP_SMS\Services\Database\Migrations\BackgroundProcess\BackgroundProcessManager;
+use WP_SMS\Core\CoreFactory;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -68,8 +69,6 @@ class WP_SMS
 
         register_activation_hook(WP_SMS_DIR . 'wp-sms.php', array($this, 'activate'));
         register_deactivation_hook(WP_SMS_DIR . 'wp-sms.php', array($this, 'deactivate'));
-
-        add_action('init', array($this, 'upgrade'));
     }
 
     /**
@@ -79,15 +78,6 @@ class WP_SMS
     {
         $class = new \WP_SMS\Install();
         $class->install($network_wide);
-    }
-
-    /**
-     * Upgrade plugin
-     */
-    public function upgrade()
-    {
-        $class = new \WP_SMS\Install();
-        $class->upgrade();
     }
 
     /**
@@ -253,6 +243,8 @@ class WP_SMS
         (new ShortcodeManager())->init();
         \WP_SMS\Utils\MenuUtil::init();
         (new SubscriberManager())->init();
+
+        CoreFactory::updater();
 
         new BackgroundProcessManager();
 

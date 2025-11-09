@@ -60,7 +60,7 @@ class SiteHealthInfo
 
         $settings['db_version'] = array(
             'label' => __('Database Version', 'wp-sms'),
-            'value' => get_option('wp_sms_db_version', 'Not Set'),
+            'value' => OptionUtil::getOptionGroup('db', 'version', '0.0.0'),
         );
 
         $settings['mobile_field_source'] = array(

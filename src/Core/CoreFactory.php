@@ -2,8 +2,20 @@
 
 namespace WP_SMS\Core;
 
+use WP_SMS\Core\Operations\Updater;
+
 class CoreFactory
 {
+    /**
+     * Create and return the updater service.
+     *
+     * @return Updater Updater service instance.
+     */
+    public static function updater()
+    {
+        return new Updater();
+    }
+    
     /**
      * Check whether the plugin is marked as a fresh install.
      *

@@ -39,18 +39,7 @@ class OptionUtil
     public static function defaultOptions()
     {
         return [
-            'enable_notifications'       => true,
-            'default_country_code'       => '+1',
-            'sms_provider'               => 'twilio',
-            'api_key'                    => '',
-            'api_secret'                 => '',
-            'send_sms_to_admin'          => true,
-            'admin_phone_number'         => '',
-            'enable_otp'                 => true,
-            'otp_expiry_time'            => 5, // minutes
-            'otp_message_template'       => 'Your OTP is {{OTP}}',
-            'user_registration_sms'      => false,
-            'user_registration_template' => 'Welcome, {{USER_NAME}}!',
+            'plugin_notifications' => 1,
         ];
     }
 
