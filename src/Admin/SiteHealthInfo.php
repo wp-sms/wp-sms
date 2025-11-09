@@ -65,7 +65,7 @@ class SiteHealthInfo
             'value' => $mobileFieldSource,
         ];
 
-        $isRequired                        = $raw('optional_mobile_field') === '0';
+        $isRequired                        = $raw('optional_mobile_field') !== 'optional';
         $settings['optional_mobile_field'] = [
             'label' => esc_html__('Mobile Field Mandatory Status', 'wp-sms'),
             'value' => $isRequired ? esc_html__('Required', 'wp-sms') : esc_html__('Optional', 'wp-sms'),
