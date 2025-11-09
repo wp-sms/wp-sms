@@ -41,6 +41,9 @@ class OnBoardingTestGateway extends AjaxControllerAbstract
 
         foreach ($fields as $key => $field) {
             Option::updateOption($field['id'], $this->get($field['id']));
+
+            $newValue          = Option::getOption($field['id']);
+            $this->sms->{$key} = $newValue;
         }
 
         try {

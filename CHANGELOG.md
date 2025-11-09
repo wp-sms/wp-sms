@@ -2,6 +2,7 @@
 - **Fix:** Fixed incorrect changelog URL links in add-ons.
 - **Enhancement:** Repositioned “All-in-One Required” label to the beginning of the PRO gateway onboarding table for better visibility and alignment.
 - **Enhancement:** Added more plugin information to the Site Health Info section for easier diagnostics.
+- **Fix:** Fixed connection status display issue and relocated the Connection Status section below the Gateway Guide for improved UI/UX.
 
 = v7.0.4 - 2025-11-02 =
 - **New:** Added support for the SMS.es gateway.

@@ -65,13 +65,6 @@ class farazsms extends Gateway
     public $template_id = null;
 
     /**
-     * Gateway API key.
-     *
-     * @var string
-     */
-    public $api_key;
-
-    /**
      * Gateway version.
      */
     public $version = '1.1';
@@ -113,8 +106,6 @@ class farazsms extends Gateway
   <li>نام متغیرها باید دقیقاً یکسان باشند؛ مانند <code>%billing_first_name%</code> و <code>%order_id%</code>.</li>
   <li>اگر <code style='direction: rtl'>|کد</code> نگذارید، پیام به‌صورت <em>ارسال معمولی</em> فرستاده می‌شود.</li>
 </ul></div>";
-
-        $this->api_key = !empty($this->options['gateway_key']) ? $this->options['gateway_key'] : '';
     }
 
     /**
@@ -142,7 +133,7 @@ class farazsms extends Gateway
      */
     public function SendSMS()
     {
-        if (empty($this->api_key)) {
+        if (empty($this->has_key)) {
             return new WP_Error('missing-api-key', __('API Key is required.', 'wp-sms'));
         }
 
@@ -202,7 +193,7 @@ class farazsms extends Gateway
                 'headers' => [
                     'Accept'       => 'application/json',
                     'Content-Type' => 'application/json',
-                    'Api-Key'      => $this->api_key,
+                    'Api-Key'      => $this->has_key,
                 ],
             ];
 
@@ -238,7 +229,7 @@ class farazsms extends Gateway
             'headers' => [
                 'Accept'       => 'application/json',
                 'Content-Type' => 'application/json',
-                'Api-Key'      => $this->api_key,
+                'Api-Key'      => $this->has_key,
             ],
             'body'    => json_encode($body),
         ];
@@ -272,7 +263,7 @@ class farazsms extends Gateway
             'headers' => [
                 'Accept'       => 'application/json',
                 'Content-Type' => 'application/json',
-                'Api-Key'      => $this->api_key,
+                'Api-Key'      => $this->has_key,
             ],
             'body'    => wp_json_encode($body),
         ];

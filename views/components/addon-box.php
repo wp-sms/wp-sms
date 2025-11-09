@@ -13,14 +13,12 @@ if (!defined('ABSPATH') || empty($addOn)) {
     <div>
         <div class="wpsms-postbox-addon__item--info">
             <div class="wpsms-postbox-addon__item--info__img">
-                <a href="<?php echo esc_url($addOn->getProductUrl()); ?>?utm_source=wp-sms&utm_medium=link&utm_campaign=install-addon" target="_blank">
-                    <img src="<?php echo esc_url($addOn->getIcon()); ?>" alt="<?php echo esc_html($addOn->getName()); ?>"/>
-                </a>
-            </div>
+                <img src="<?php echo esc_url($addOn->getIcon()); ?>" alt="<?php echo esc_html($addOn->getName()); ?>"/>
+             </div>
             <div class="wpsms-postbox-addon__item--info__text">
                 <div class="wpsms-postbox-addon__item--info__title">
                     <a href="<?php echo esc_url($addOn->getProductUrl()); ?>?utm_source=wp-sms&utm_medium=link&utm_campaign=install-addon" target="_blank">
-                        <?php echo esc_html($addOn->getName()) ?><span class="wpsms-postbox-addon__version">v<?php echo esc_html($addOn->getVersion()) ?></span>
+                        <?php echo esc_html($addOn->getName()) ?><span aria-hidden="true" class="wpsms-postbox-addon__version">v<?php echo esc_html($addOn->getVersion()) ?></span>
                     </a>
                     <?php if (!empty($addOn->getLabel())) : ?>
                         <span class="wpsms-postbox-addon__label wpsms-postbox-addon__label--<?php echo esc_attr($addOn->getLabelClass()); ?>"><?php echo esc_html($addOn->getLabel()); ?></span>
@@ -39,7 +37,7 @@ if (!defined('ABSPATH') || empty($addOn)) {
             <span class="wpsms-postbox-addon__status wpsms-postbox-addon__status--<?php echo esc_attr($addOn->getStatusClass()); ?> "><?php echo esc_html($addOn->getStatusLabel()); ?></span>
             <div class="wpsms-postbox-addon__buttons">
                 <?php if ($addOn->isInstalled() && !$addOn->isActivated()) : ?>
-                    <a class="wpsms-postbox-addon__button js-addon-active-plugin-btn" data-slug="<?php echo esc_attr($addOn->getSlug()); ?>" title="<?php esc_html_e('Activate', 'wp-sms'); ?>"><?php esc_html_e('Activate', 'wp-sms'); ?></a>
+                    <a class="wpsms-postbox-addon__button js-addon-active-plugin-btn" data-slug="<?php echo esc_attr($addOn->getSlug()); ?>"><?php esc_html_e('Activate', 'wp-sms'); ?></a>
                 <?php endif; ?>
                 <?php if ($addOn->isInstalled()) : ?>
                     <a class="wpsms-postbox-addon__button js-wpsms-addon-license-button"><?php esc_html_e('License', 'wp-sms'); ?></a>
@@ -65,7 +63,7 @@ if (!defined('ABSPATH') || empty($addOn)) {
     </div>
     <div class="wpsms-addon__item__license js-wpsms-addon-license">
         <div class="wpsms-addon__item__update_license">
-            <input data-addon-slug="<?php echo esc_attr($addOn->getSlug()) ?>" type="text" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" value="<?php echo esc_attr($addOn->getLicenseKey()) ?>">
+            <input aria-label="License Key" data-addon-slug="<?php echo esc_attr($addOn->getSlug()) ?>" type="text" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" value="<?php echo esc_attr($addOn->getLicenseKey()) ?>">
             <button><?php esc_html_e('Update License', 'wp-sms'); ?></button>
         </div>
         <?php if (isset($alert_text)) : ?>
