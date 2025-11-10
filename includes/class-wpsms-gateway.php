@@ -860,6 +860,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'rayansmspanel' => 'rayansmspanel.ir',
                 'raygansms'     => 'raygansms.com',
                 'signalads'     => 'signalads.com',
+                'smshooshmand'  => 'smshooshmand.com',
             ),
             'arabic'               => array(
                 'msegat'       => 'msegat.com',
