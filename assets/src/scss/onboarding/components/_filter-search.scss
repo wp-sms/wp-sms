@@ -45,7 +45,6 @@
     &:focus-visible,
     &:focus,
     &:active {
-      outline: 0;
       border: 1px solid $grey-color-5 !important;
     }
   }
@@ -93,12 +92,6 @@
       font-size: 14px!important;
       font-weight: 400;
       line-height: 16.41px;
-    }
-    &:focus-visible,
-    &:focus,
-    &:active {
-      outline: 0;
-      box-shadow: none;
     }
     &::placeholder {
       line-height: 12px;

@@ -129,8 +129,6 @@
 
     &:focus {
       border: 1px solid #f88e40;
-      box-shadow: none;
-      outline: none;
     }
   }
 
@@ -202,11 +200,6 @@ input.wpsms-type-unsubscribe {
 
         &::before {
           content: "";
-        }
-
-        &:focus {
-          box-shadow: none;
-          outline: none;
         }
 
         &::selection {

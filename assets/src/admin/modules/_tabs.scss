@@ -95,10 +95,6 @@
   //padding-bottom: 17px;
 }
 
-.wpsms-tab li a:focus {
-  outline: 0 !important;
-  box-shadow: none !important;
-}
 
 .wpsms-tab li > span {
   position: absolute;
@@ -474,10 +470,6 @@ tr.tr-header td {
         height: 16px;
         display: inline-flex;
         background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTguNzgwMzIgOC4wMDA0N0w1LjQ4MDQ3IDQuNzAwNjJMNi40MjMyOCAzLjc1NzgxTDEwLjY2NTkgOC4wMDA0N0w2LjQyMzI4IDEyLjI0MzFMNS40ODA0NyAxMS4zMDAzTDguNzgwMzIgOC4wMDA0N1oiIGZpbGw9IiNGQUZBRkEiLz4KPC9zdmc+Cg==") center center no-repeat;
-      }
-
-      &:focus {
-        box-shadow: none;
       }
 
       &:hover {

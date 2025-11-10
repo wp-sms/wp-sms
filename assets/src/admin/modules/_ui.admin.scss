@@ -934,11 +934,6 @@
   max-width: calc(100% - 45px);
 }
 
-.wpsms-wrap input[type="checkbox"]:focus {
-  box-shadow: none !important;
-  outline: unset !important;
-}
-
 .wpsms-wrap,
 .chosen-container-multi .chosen-choices {
   input[type="text"],
@@ -1182,8 +1177,6 @@
     white-space: nowrap;
 
     &:focus, &:hover {
-      box-shadow: none !important;
-      outline: none !important;
       background-color: #eeeff1;
     }
   }
@@ -1809,11 +1802,6 @@
       box-shadow: none !important;
       outline: none !important;
     }
-
-    &:focus, &:active {
-      box-shadow: none !important;
-      outline: none !important;
-    }
   }
 }
 
@@ -2029,11 +2017,6 @@
       background: #F3F3F5;
     }
 
-    &:focus {
-      box-shadow: none !important;
-      outline: none !important;
-    }
-
     &.integrations::after {
       content: '';
       width: 80%;
@@ -2125,10 +2108,6 @@
     max-width: 80px;
     min-height: unset !important;
 
-    &:focus-visible {
-      outline: none !important;
-    }
-
     .select2-selection__rendered {
       padding-left: 0 !important;
       padding-right: 11px !important;
@@ -2136,10 +2115,6 @@
       font-size: 13px;
       color: #0c0c0d !important;
       outline: none !important;
-
-      &:focus-visible {
-        outline: none !important;
-      }
 
       .rtl & {
         padding-left: 11px !important;
@@ -2505,11 +2480,6 @@
             height: 24px;
             outline: none !important;
             box-shadow: none !important;
-
-            &:focus {
-              outline: none !important;
-              box-shadow: none !important;
-            }
           }
         }
 
@@ -2603,12 +2573,6 @@
             &.wpsms-warning {
               border: 1px solid #F6C42F !important;
               box-shadow: 0 0 0 3px #EE8B4433;
-              outline: 2px solid rgba(0, 0, 0, 0);
-            }
-
-            &:focus, &:active {
-              border: 1px solid #262626 !important;
-              box-shadow: 0 0 0 3px #E5E5E5;
               outline: 2px solid rgba(0, 0, 0, 0);
             }
           }
@@ -2886,12 +2850,6 @@
           &.wpsms-warning {
             border: 1px solid #EE8B44 !important;
             box-shadow: 0 0 0 3px #EE8B4433;
-            outline: 2px solid rgba(0, 0, 0, 0);
-          }
-
-          &:focus, &:active {
-            border: 1px solid #262626 !important;
-            box-shadow: 0 0 0 3px #E5E5E5;
             outline: 2px solid rgba(0, 0, 0, 0);
           }
         }
@@ -3927,5 +3885,17 @@ a.wpsms-addon__download_active-all {
   }
 }
 
+.screen-reader-text {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  visibility: hidden;
+}
 
 @import "add-ons/badge";
