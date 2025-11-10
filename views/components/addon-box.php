@@ -44,7 +44,7 @@ if (!defined('ABSPATH') || empty($addOn)) {
                 <?php endif; ?>
             </div>
             <div class="wpsms-addon--actions">
-                <span tabindex="0" class="wpsms-addon--actions--show-more js-addon-show-more"></span>
+                <button tabindex="0" class="wpsms-addon--actions--show-more js-addon-show-more"></button>
                 <ul class="wpsms-addon--submenus">
                     <?php if ($addOn->isActivated() && !empty($addOn->getSettingsUrl())) : ?>
                         <li><a href="<?php echo esc_url($addOn->getSettingsUrl()); ?>" class="wpsms-addon--submenu wpsms-addon--submenu__settings" target="_blank"><span><?php esc_html_e('Settings', 'wp-sms'); ?></span></a></li>

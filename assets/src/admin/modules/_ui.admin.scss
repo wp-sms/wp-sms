@@ -3378,7 +3378,7 @@
       }
 
 
-      span.wpsms-addon--actions--show-more {
+      button.wpsms-addon--actions--show-more {
         position: relative;
         display: block;
         cursor: pointer;
@@ -3390,6 +3390,7 @@
         background-size: 15px;
         background-color: #F5F5F5;
         border-radius: 4px;
+        border:none;
 
         &:hover {
           background-color: #E5E5E5;
@@ -3397,7 +3398,7 @@
       }
 
       &.active {
-        span.wpsms-addon--actions--show-more, span.wpsms-addon--actions--show:hover {
+        button.wpsms-addon--actions--show-more, span.wpsms-addon--actions--show:hover {
           background-color: #12121B;
           background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIHZpZXdCb3g9IjAgMCAxNSAxNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTcuNSAxLjg3NUM2LjgxMjUgMS44NzUgNi4yNSAyLjQzNzUgNi4yNSAzLjEyNUM2LjI1IDMuODEyNSA2LjgxMjUgNC4zNzUgNy41IDQuMzc1QzguMTg3NSA0LjM3NSA4Ljc1IDMuODEyNSA4Ljc1IDMuMTI1QzguNzUgMi40Mzc1IDguMTg3NSAxLjg3NSA3LjUgMS44NzVaTTcuNSAxMC42MjVDNi44MTI1IDEwLjYyNSA2LjI1IDExLjE4NzUgNi4yNSAxMS44NzVDNi4yNSAxMi41NjI1IDYuODEyNSAxMy4xMjUgNy41IDEzLjEyNUM4LjE4NzUgMTMuMTI1IDguNzUgMTIuNTYyNSA4Ljc1IDExLjg3NUM4Ljc1IDExLjE4NzUgOC4xODc1IDEwLjYyNSA3LjUgMTAuNjI1Wk03LjUgNi4yNUM2LjgxMjUgNi4yNSA2LjI1IDYuODEyNSA2LjI1IDcuNUM2LjI1IDguMTg3NSA2LjgxMjUgOC43NSA3LjUgOC43NUM4LjE4NzUgOC43NSA4Ljc1IDguMTg3NSA4Ljc1IDcuNUM4Ljc1IDYuODEyNSA4LjE4NzUgNi4yNSA3LjUgNi4yNVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=");
         }
