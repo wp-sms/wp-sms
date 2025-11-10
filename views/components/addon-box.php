@@ -37,14 +37,14 @@ if (!defined('ABSPATH') || empty($addOn)) {
             <span class="wpsms-postbox-addon__status wpsms-postbox-addon__status--<?php echo esc_attr($addOn->getStatusClass()); ?> "><?php echo esc_html($addOn->getStatusLabel()); ?></span>
             <div class="wpsms-postbox-addon__buttons">
                 <?php if ($addOn->isInstalled() && !$addOn->isActivated()) : ?>
-                    <a class="wpsms-postbox-addon__button js-addon-active-plugin-btn" data-slug="<?php echo esc_attr($addOn->getSlug()); ?>"><?php esc_html_e('Activate', 'wp-sms'); ?></a>
+                    <button class="wpsms-postbox-addon__button js-addon-active-plugin-btn" data-slug="<?php echo esc_attr($addOn->getSlug()); ?>"><?php esc_html_e('Activate', 'wp-sms'); ?></button>
                 <?php endif; ?>
                 <?php if ($addOn->isInstalled()) : ?>
-                    <a class="wpsms-postbox-addon__button js-wpsms-addon-license-button"><?php esc_html_e('License', 'wp-sms'); ?></a>
+                    <button class="wpsms-postbox-addon__button js-wpsms-addon-license-button"><?php esc_html_e('License', 'wp-sms'); ?></button>
                 <?php endif; ?>
             </div>
             <div class="wpsms-addon--actions">
-                <span class="wpsms-addon--actions--show-more js-addon-show-more"></span>
+                <span tabindex="0" class="wpsms-addon--actions--show-more js-addon-show-more"></span>
                 <ul class="wpsms-addon--submenus">
                     <?php if ($addOn->isActivated() && !empty($addOn->getSettingsUrl())) : ?>
                         <li><a href="<?php echo esc_url($addOn->getSettingsUrl()); ?>" class="wpsms-addon--submenu wpsms-addon--submenu__settings" target="_blank"><span><?php esc_html_e('Settings', 'wp-sms'); ?></span></a></li>
