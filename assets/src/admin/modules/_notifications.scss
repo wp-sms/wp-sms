@@ -1,4 +1,4 @@
-body.admin-bar .wp-sms-notification-sidebar {
+body.admin-bar .wpsms-notification-sidebar {
   top: 32px;
   height: calc(100% - 32px);
   @media(max-width: 1029px) {
@@ -7,7 +7,7 @@ body.admin-bar .wp-sms-notification-sidebar {
   }
 }
 
-.wp-sms-notification-sidebar {
+.wpsms-notification-sidebar {
   position: fixed;
   top: 0;
   right: 0;
@@ -19,7 +19,7 @@ body.admin-bar .wp-sms-notification-sidebar {
   &.is-active {
     pointer-events: auto;
 
-    .wp-sms-notification-sidebar__menu {
+    .wpsms-notification-sidebar__menu {
       visibility: visible;
       transform: translateX(0);
       opacity: 1;
@@ -90,7 +90,7 @@ body.admin-bar .wp-sms-notification-sidebar {
   &__no-card {
     border-bottom: none!important;
 
-    .wp-sms-notification-sidebar__card-body {
+    .wpsms-notification-sidebar__card-body {
       padding-top: 68px;
       display: flex;
       align-items: center;
@@ -180,7 +180,7 @@ body.admin-bar .wp-sms-notification-sidebar {
     }
   }
 
-  a.wp-sms-notification-sidebar__dismiss-all {
+  a.wpsms-notification-sidebar__dismiss-all {
     color: #565759;
     font-size: 14px;
     font-weight: 400;
@@ -220,7 +220,7 @@ body.admin-bar .wp-sms-notification-sidebar {
 
   &__cards {
     &--dismissed {
-      .wp-sms-notification-sidebar__dismiss {
+      .wpsms-notification-sidebar__dismiss {
         display: none;
       }
     }
@@ -237,34 +237,34 @@ body.admin-bar .wp-sms-notification-sidebar {
       border-bottom: 0;
     }
 
-    &.wp-sms-notification-sidebar__success {
+    &.wpsms-notification-sidebar__success {
       background: #DFF7DF;
 
-      .wp-sms-notification-sidebar__card-icon span {
+      .wpsms-notification-sidebar__card-icon span {
         background-color: #C6E7C6 !important;
       }
     }
 
-    &.wp-sms-notification-sidebar__danger {
+    &.wpsms-notification-sidebar__danger {
       background: #FFEDED;
 
-      .wp-sms-notification-sidebar__card-icon span {
+      .wpsms-notification-sidebar__card-icon span {
         background-color: #F9DBDB !important;
       }
     }
 
-    &.wp-sms-notification-sidebar__info {
+    &.wpsms-notification-sidebar__info {
       background: #E2F5FF;
 
-      .wp-sms-notification-sidebar__card-icon span {
+      .wpsms-notification-sidebar__card-icon span {
         background-color: #C8E7F7 !important;
       }
     }
 
-    &.wp-sms-notification-sidebar__warning {
+    &.wpsms-notification-sidebar__warning {
       background: #FFFFD9;
 
-      .wp-sms-notification-sidebar__card-icon span {
+      .wpsms-notification-sidebar__card-icon span {
         background-color: #F5F5B6 !important;
       }
     }
@@ -356,7 +356,7 @@ body.admin-bar .wp-sms-notification-sidebar {
     flex-wrap: wrap;
   }
 
-  a.wp-sms-notification-sidebar__button {
+  a.wpsms-notification-sidebar__button {
     padding: 7.5px 16px;
     border-radius: 4px;
     background: #F6F6FF;
@@ -376,7 +376,7 @@ body.admin-bar .wp-sms-notification-sidebar {
 
   }
 
-  a.wp-sms-notification-sidebar__dismiss {
+  a.wpsms-notification-sidebar__dismiss {
     color: #747578;
     font-size: 13px;
     font-weight: 400;

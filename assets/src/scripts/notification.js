@@ -1,27 +1,27 @@
 jQuery(document).ready(function () {
-    const wpsmsNotificationButtons = document.querySelectorAll('.js-wp-sms-open-notification');
-    const wpsmsSidebar = document.querySelector('.wp-sms-notification-sidebar');
-    const wpsmsOverlay = document.querySelector('.wp-sms-notification-sidebar__overlay');
+    const wpsmsNotificationButtons = document.querySelectorAll('.js-wpsms-open-notification');
+    const wpsmsSidebar = document.querySelector('.wpsms-notification-sidebar');
+    const wpsmsOverlay = document.querySelector('.wpsms-notification-sidebar__overlay');
     const body = document.body;
-    const tabs = document.querySelectorAll('.wp-sms-notification-sidebar__tab');
-    const wpsmsCloseNotificationMenu = document.querySelector('.wp-sms-notification-sidebar__close');
-    const tabPanes = document.querySelectorAll('.wp-sms-notification-sidebar__tab-pane');
-    const dismissAllBtn = document.querySelector(".wp-sms-notification-sidebar__dismiss-all");
+    const tabs = document.querySelectorAll('.wpsms-notification-sidebar__tab');
+    const wpsmsCloseNotificationMenu = document.querySelector('.wpsms-notification-sidebar__close');
+    const tabPanes = document.querySelectorAll('.wpsms-notification-sidebar__tab-pane');
+    const dismissAllBtn = document.querySelector(".wpsms-notification-sidebar__dismiss-all");
 
     // Toggle notification menu
     if (tabs.length > 0 && tabPanes.length > 0) {
         tabs.forEach(function (tab) {
             tab.addEventListener('click', function () {
                 tabs.forEach(function (t) {
-                    t.classList.remove('wp-sms-notification-sidebar__tab--active');
+                    t.classList.remove('wpsms-notification-sidebar__tab--active');
                 });
                 tabPanes.forEach(function (pane) {
-                    pane.classList.remove('wp-sms-notification-sidebar__tab-pane--active');
+                    pane.classList.remove('wpsms-notification-sidebar__tab-pane--active');
                 });
 
                 const targetTab = tab.getAttribute('data-tab');
-                tab.classList.add('wp-sms-notification-sidebar__tab--active');
-                document.getElementById(targetTab).classList.add('wp-sms-notification-sidebar__tab-pane--active');
+                tab.classList.add('wpsms-notification-sidebar__tab--active');
+                document.getElementById(targetTab).classList.add('wpsms-notification-sidebar__tab-pane--active');
             });
         });
     }
@@ -36,7 +36,7 @@ jQuery(document).ready(function () {
                 wpsmsSidebar.classList.toggle('is-active');
                 wpsmsOverlay.classList.toggle('is-active');
                 setTimeout(() => {
-                    body.classList.toggle('wp-sms-no-scroll');
+                    body.classList.toggle('wpsms-no-scroll');
                 }, 250);
             });
         });
@@ -45,21 +45,21 @@ jQuery(document).ready(function () {
             wpsmsSidebar.classList.remove('is-active');
             wpsmsOverlay.classList.remove('is-active');
             setTimeout(() => {
-                body.classList.remove('wp-sms-no-scroll');
+                body.classList.remove('wpsms-no-scroll');
             }, 250);
         });
         if (wpsmsCloseNotificationMenu) {
             wpsmsCloseNotificationMenu.addEventListener('click', function () {
                 wpsmsSidebar.classList.remove('is-active');
                 wpsmsOverlay.classList.remove('is-active');
-                body.classList.remove('wp-sms-no-scroll');
+                body.classList.remove('wpsms-no-scroll');
             });
         }
 
     }
 
     const updateDismissAllVisibility = () => {
-        const activeTab = document.querySelector(".wp-sms-notification-sidebar__tab--active");
+        const activeTab = document.querySelector(".wpsms-notification-sidebar__tab--active");
         if (!activeTab) {
             return;
         }
@@ -68,7 +68,7 @@ jQuery(document).ready(function () {
             if (dismissAllBtn) dismissAllBtn.style.display = "none";
         } else {
             const activeCards = document.querySelectorAll(
-                ".wp-sms-notification-sidebar__cards--active .wp-sms-notification-sidebar__card:not(.wp-sms-notification-sidebar__no-card)"
+                ".wpsms-notification-sidebar__cards--active .wpsms-notification-sidebar__card:not(.wpsms-notification-sidebar__no-card)"
             );
             const hasNotifications = activeCards.length > 0;
             if (dismissAllBtn) dismissAllBtn.style.display = hasNotifications ? "inline-flex" : "none";
@@ -76,15 +76,15 @@ jQuery(document).ready(function () {
     };
 
     const checkEmptyNotifications = () => {
-        let notificationsHasItems = jQuery('.wp-sms-notifications--has-items');
-        let helpNotification = jQuery('.wp-sms-help__notification');
-        let activeCards = jQuery('.wp-sms-notification-sidebar__tab-pane--active .wp-sms-notification-sidebar__card:not(.wp-sms-notification-sidebar__no-card)');
-        let noCardMessages = jQuery('.wp-sms-notification-sidebar__tab-pane--active .wp-sms-notification-sidebar__no-card');
+        let notificationsHasItems = jQuery('.wpsms-notifications--has-items');
+        let helpNotification = jQuery('.wpsms-help__notification');
+        let activeCards = jQuery('.wpsms-notification-sidebar__tab-pane--active .wpsms-notification-sidebar__card:not(.wpsms-notification-sidebar__no-card)');
+        let noCardMessages = jQuery('.wpsms-notification-sidebar__tab-pane--active .wpsms-notification-sidebar__no-card');
         let noCardMessage = noCardMessages.first();
         if (activeCards.length === 0) {
             noCardMessage.css('display', 'flex');
             helpNotification.hide();
-            notificationsHasItems.removeClass('wp-sms-notifications--has-items');
+            notificationsHasItems.removeClass('wpsms-notifications--has-items');
         } else {
             noCardMessage.hide();
         }
@@ -95,8 +95,8 @@ jQuery(document).ready(function () {
 
     tabs.forEach(tab => {
         tab.addEventListener("click", function () {
-            tabs.forEach(t => t.classList.remove("wp-sms-notification-sidebar__tab--active"));
-            this.classList.add("wp-sms-notification-sidebar__tab--active");
+            tabs.forEach(t => t.classList.remove("wpsms-notification-sidebar__tab--active"));
+            this.classList.add("wpsms-notification-sidebar__tab--active");
             updateDismissAllVisibility();
             checkEmptyNotifications();
         });
@@ -105,25 +105,24 @@ jQuery(document).ready(function () {
     updateDismissAllVisibility();
     checkEmptyNotifications();
 
-    jQuery(document).on('click', "a.wp-sms-notification-sidebar__dismiss, a.wp-sms-notification-sidebar__dismiss-all", function (e) {
+    jQuery(document).on('click', "a.wpsms-notification-sidebar__dismiss, a.wpsms-notification-sidebar__dismiss-all", function (e) {
         e.preventDefault();
         let $this = jQuery(this);
         let notificationId = '';
 
-        if ($this.hasClass('wp-sms-notification-sidebar__dismiss')) {
+        if ($this.hasClass('wpsms-notification-sidebar__dismiss')) {
             notificationId = $this.data('notification-id');
         }
 
-        if ($this.hasClass('wp-sms-notification-sidebar__dismiss-all')) {
+        if ($this.hasClass('wpsms-notification-sidebar__dismiss-all')) {
             notificationId = 'all';
         }
 
-
         if (notificationId === 'all') {
-            jQuery('.wp-sms-notification-sidebar__cards--active .wp-sms-notification-sidebar__card:not(.wp-sms-notification-sidebar__no-card)').each(function () {
+            jQuery('.wpsms-notification-sidebar__cards--active .wpsms-notification-sidebar__card:not(.wpsms-notification-sidebar__no-card)').each(function () {
                 let $card = jQuery(this);
 
-                jQuery('.wp-sms-notification-sidebar__cards--dismissed').prepend($card.clone().hide().fadeIn(300));
+                jQuery('.wpsms-notification-sidebar__cards--dismissed').prepend($card.clone().hide().fadeIn(300));
 
                 $card.fadeOut(300, function () {
                     jQuery(this).remove();
@@ -131,9 +130,9 @@ jQuery(document).ready(function () {
                 });
             });
         } else {
-            let $card = $this.closest('.wp-sms-notification-sidebar__card');
+            let $card = $this.closest('.wpsms-notification-sidebar__card');
 
-            jQuery('.wp-sms-notification-sidebar__cards--dismissed').prepend($card.clone().hide().fadeIn(300));
+            jQuery('.wpsms-notification-sidebar__cards--dismissed').prepend($card.clone().hide().fadeIn(300));
 
             $card.fadeOut(300, function () {
                 jQuery(this).remove();
@@ -143,7 +142,7 @@ jQuery(document).ready(function () {
         }
         updateDismissAllVisibility();
 
-        jQuery('.wp-sms-notification-sidebar__cards--dismissed .wp-sms-notification-sidebar__no-card').remove();
+        jQuery('.wpsms-notification-sidebar__cards--dismissed .wpsms-notification-sidebar__no-card').remove();
 
         let params = {
             'wpsms_nonce': wpsms_global.rest_api_nonce,

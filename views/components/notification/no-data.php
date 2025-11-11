@@ -1,5 +1,5 @@
-<div class="wp-sms-notification-sidebar__card wp-sms-notification-sidebar__no-card">
-    <div class="wp-sms-notification-sidebar__card-body">
+<div class="wpsms-notification-sidebar__card wpsms-notification-sidebar__no-card">
+    <div class="wpsms-notification-sidebar__card-body">
         <svg width="37" height="37" viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M27.7802 17.2238V18.1917C27.7802 19.1322 28.181 20.5659 28.6435 21.3676L30.4164 24.3122C31.4339 26.008 30.6168 28.2126 28.7514 28.8292C22.1068 31.0492 14.9381 31.0492 8.29351 28.8292C6.28934 28.1509 5.53393 26.1313 6.62851 24.3122L8.40143 21.3676C8.87934 20.5659 9.28018 19.1322 9.28018 18.1917V13.7363C9.28018 8.63341 13.4273 4.48633 18.5302 4.48633C21.7261 4.48633 24.5571 6.12898 26.2203 8.6117" stroke="#56585A" stroke-width="1.59483" stroke-miterlimit="10" stroke-linecap="round"/>
             <path d="M21.3829 4.93273C20.905 4.79398 20.4116 4.68607 19.9029 4.6244C18.4229 4.4394 17.0045 4.54732 15.6787 4.93273C16.1258 3.7919 17.2358 2.99023 18.5308 2.99023C19.8258 2.99023 20.9358 3.7919 21.3829 4.93273Z" stroke="#56585A" stroke-width="1.59483" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/>
@@ -9,8 +9,8 @@
                 fill="#56585A"/>
         </svg>
 
-        <h2 class="wp-sms-notification-sidebar__card-content"><?php esc_html_e('You’re up to date!', 'wp-sms'); ?></h2>
-        <p class="wp-sms-notification-sidebar__card-content">
+        <h2 class="wpsms-notification-sidebar__card-content"><?php esc_html_e('You’re up to date!', 'wp-sms'); ?></h2>
+        <p class="wpsms-notification-sidebar__card-content">
             <?php
             printf(
             /* translators: %s: notification tab name */

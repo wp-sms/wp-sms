@@ -60,7 +60,7 @@ $displayNotifications    = Option::getOption('display_notifications');
         } ?>"></a>
         <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank" title="<?php esc_html_e('Help Center', 'wp-sms'); ?>" class="support"></a>
         <?php if ($displayNotifications): ?>
-            <a href="#" title="<?php esc_html_e('Notifications', 'wp-sms'); ?>" class="wp-sms-notifications js-wp-sms-open-notification <?php echo $hasUpdatedNotifications ? esc_attr('wp-sms-notifications--has-items') : ''; ?>"></a>
+            <a href="#" title="<?php esc_html_e('Notifications', 'wp-sms'); ?>" class="wpsms-notifications js-wpsms-open-notification <?php echo $hasUpdatedNotifications ? esc_attr('wpsms-notifications--has-items') : ''; ?>"></a>
         <?php endif; ?>
         <div class="wpsms-mobile-menu">
             <input type="checkbox" id="wpsms-menu-toggle" class="hamburger-menu">
@@ -79,7 +79,7 @@ $displayNotifications    = Option::getOption('display_notifications');
                 echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-settings', 'link_text' => __('Settings', 'wp-sms'), 'icon_class' => 'settings', 'badge_count' => null]);
                 ?>
                 <?php if ($displayNotifications): ?>
-                    <a class="wp-sms-notifications js-wp-sms-open-notification <?php echo $hasUpdatedNotifications ? esc_attr('wp-sms-notifications--has-items') : ''; ?>">
+                    <a class="wpsms-notifications js-wpsms-open-notification <?php echo $hasUpdatedNotifications ? esc_attr('wpsms-notifications--has-items') : ''; ?>">
                         <span class="icon"></span><span><?php esc_html_e('Notifications', 'wp-sms'); ?></span>
                     </a>
                 <?php endif; ?>

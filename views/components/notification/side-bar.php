@@ -3,18 +3,18 @@
 use WP_SMS\Components\View;
 
 ?>
-<div class="wp-sms-notification-sidebar">
-    <div class="wp-sms-notification-sidebar__menu">
-        <div class="wp-sms-notification-sidebar__header">
+<div class="wpsms-notification-sidebar">
+    <div class="wpsms-notification-sidebar__menu">
+        <div class="wpsms-notification-sidebar__header">
             <div>
-                <h2 class="wp-sms-notification-sidebar__title"><?php esc_html_e('Notifications', 'wp-sms'); ?></h2>
-                <span class="wp-sms-notification-sidebar__close"></span>
+                <h2 class="wpsms-notification-sidebar__title"><?php esc_html_e('Notifications', 'wp-sms'); ?></h2>
+                <span class="wpsms-notification-sidebar__close"></span>
             </div>
             <div>
-                <ul class="wp-sms-notification-sidebar__tabs">
-                    <li class="wp-sms-notification-sidebar__tab wp-sms-notification-sidebar__tab--active"
+                <ul class="wpsms-notification-sidebar__tabs">
+                    <li class="wpsms-notification-sidebar__tab wpsms-notification-sidebar__tab--active"
                         data-tab="tab-1"><?php esc_html_e('Inbox', 'wp-sms'); ?></li>
-                    <li class="wp-sms-notification-sidebar__tab"
+                    <li class="wpsms-notification-sidebar__tab"
                         data-tab="tab-2"><?php esc_html_e('Dismissed', 'wp-sms'); ?></li>
                 </ul>
 
@@ -30,14 +30,14 @@ use WP_SMS\Components\View;
                     ?>
                     <?php if ($hasNotifications) : ?>
                         <a href="#"
-                           class="wp-sms-notification-sidebar__dismiss-all"><?php esc_html_e('Dismiss all', 'wp-sms'); ?></a>
+                           class="wpsms-notification-sidebar__dismiss-all"><?php esc_html_e('Dismiss all', 'wp-sms'); ?></a>
                     <?php endif; ?>
                 <?php endif; ?>
             </div>
         </div>
-        <div class="wp-sms-notification-sidebar__content">
-            <div class="wp-sms-notification-sidebar__tab-pane wp-sms-notification-sidebar__tab-pane--active" id="tab-1">
-                <div class="wp-sms-notification-sidebar__cards wp-sms-notification-sidebar__cards--active">
+        <div class="wpsms-notification-sidebar__content">
+            <div class="wpsms-notification-sidebar__tab-pane wpsms-notification-sidebar__tab-pane--active" id="tab-1">
+                <div class="wpsms-notification-sidebar__cards wpsms-notification-sidebar__cards--active">
                     <?php
                     $hasNotifications = false;
                     if (!empty($notifications)) :
@@ -54,8 +54,8 @@ use WP_SMS\Components\View;
                     ?>
                 </div>
             </div>
-            <div class="wp-sms-notification-sidebar__tab-pane" id="tab-2">
-                <div class="wp-sms-notification-sidebar__cards wp-sms-notification-sidebar__cards--dismissed">
+            <div class="wpsms-notification-sidebar__tab-pane" id="tab-2">
+                <div class="wpsms-notification-sidebar__cards wpsms-notification-sidebar__cards--dismissed">
                     <?php
                     $hasDismissed = false;
                     if (!empty($notifications)) :
@@ -74,5 +74,5 @@ use WP_SMS\Components\View;
             </div>
         </div>
     </div>
-    <div class="wp-sms-notification-sidebar__overlay"></div>
+    <div class="wpsms-notification-sidebar__overlay"></div>
 </div>
