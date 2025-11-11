@@ -15,7 +15,7 @@
         </div>
         <?php if ($notification->getDescription()): ?>
             <div class="wpsms-notification-sidebar__card-content">
-                <?php echo wp_kses_post($notification->getDescription()); ?>
+                <?php echo $notification->getDescription(); ?>
             </div>
         <?php endif; ?>
         <div class="wpsms-notification-sidebar__card-actions">
