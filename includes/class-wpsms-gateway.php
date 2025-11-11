@@ -53,7 +53,7 @@ class Gateway
             'textlocal'      => 'textlocal.in',
             'ismartsms'      => 'ismartsms.net',
             'ooredoosms'     => 'ooredoo-sms.com',
-            'txtlocal'       => 'txtlocal - textlocal.com',
+            'txtlocal'       => 'textlocal.com',
             'qsms'           => 'qsms.com.au',
             'hoiio'          => 'hoiio.com',
             'textmagic'      => 'textmagic.com',
