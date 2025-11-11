@@ -746,4 +746,16 @@ class Helper
         $countryCode = TimeZone::getCountry($timezone);
         return $countryCode;
     }
+
+    /**
+     * Filters an array by keeping only the keys specified in the second argument.
+     *
+     * @param array $array The array to be filtered.
+     * @param array $keys The keys to keep in the array.
+     * @return array The filtered array.
+     */
+    public static function filterArrayByKeys($array, $keys)
+    {
+        return array_intersect_key($array, array_flip($keys));
+    }
 }
