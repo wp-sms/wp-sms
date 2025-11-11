@@ -18,6 +18,7 @@ module.exports = {
             './assets/src/scripts/chart.min.js',
             './assets/src/scripts/modal-handler.js',
             './assets/src/scripts/option-updater.js',
+            './assets/src/scripts/notification.js'
         ],
         frontend: [
             './assets/src/scripts/blocks.js',

@@ -200,6 +200,23 @@
   .support {
     background: url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB2aWV3Qm94PSIwIDAgMjAgMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik05Ljk5OTY3IDE5LjE2NjhDNC45MzcwNiAxOS4xNjY4IDAuODMzMDA4IDE1LjA2MjcgMC44MzMwMDggMTAuMDAwMkMwLjgzMzAwOCA0LjkzNzU1IDQuOTM3MDYgMC44MzM0OTYgOS45OTk2NyAwLjgzMzQ5NkMxNS4wNjIyIDAuODMzNDk2IDE5LjE2NjMgNC45Mzc1NSAxOS4xNjYzIDEwLjAwMDJDMTkuMTY2MyAxNS4wNjI3IDE1LjA2MjIgMTkuMTY2OCA5Ljk5OTY3IDE5LjE2NjhaTTkuOTk5NjcgMTcuMzMzNUMxNC4wNDk4IDE3LjMzMzUgMTcuMzMzIDE0LjA1MDMgMTcuMzMzIDEwLjAwMDJDMTcuMzMzIDUuOTUwMDcgMTQuMDQ5OCAyLjY2NjgzIDkuOTk5NjcgMi42NjY4M0M1Ljk0OTU4IDIuNjY2ODMgMi42NjYzNCA1Ljk1MDA3IDIuNjY2MzQgMTAuMDAwMkMyLjY2NjM0IDE0LjA1MDMgNS45NDk1OCAxNy4zMzM1IDkuOTk5NjcgMTcuMzMzNVpNOS4wODMwMSAxMi43NTAySDEwLjkxNjNWMTQuNTgzNUg5LjA4MzAxVjEyLjc1MDJaTTEwLjkxNjMgMTEuMjQyM1YxMS44MzM1SDkuMDgzMDFWMTAuNDU4NUM5LjA4MzAxIDkuOTUyMjIgOS40OTM0IDkuNTQxODMgOS45OTk2NyA5LjU0MTgzQzEwLjc1OSA5LjU0MTgzIDExLjM3NDcgOC45MjYyIDExLjM3NDcgOC4xNjY4M0MxMS4zNzQ3IDcuNDA3NDQgMTAuNzU5IDYuNzkxODMgOS45OTk2NyA2Ljc5MTgzQzkuMzMyNjIgNi43OTE4MyA4Ljc3NjQ3IDcuMjY2ODcgOC42NTEwNyA3Ljg5NzEyTDYuODUzMDQgNy41Mzc1QzcuMTQ1NTEgNi4wNjY5MiA4LjQ0MzE3IDQuOTU4NSA5Ljk5OTY3IDQuOTU4NUMxMS43NzE2IDQuOTU4NSAxMy4yMDggNi4zOTQ5MSAxMy4yMDggOC4xNjY4M0MxMy4yMDggOS42MjAyIDEyLjI0MTYgMTAuODQ3OSAxMC45MTYzIDExLjI0MjNaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K") center center/100% no-repeat;
   }
+
+  .wp-sms-notifications {
+    width: 19px;
+    height: 19px;
+    transition: 0.3s all ease-out;
+    opacity: 70%;
+    background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkiIGhlaWdodD0iMTkiIHZpZXdCb3g9IjAgMCAxOSAxOSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGc+CjxwYXRoIGQ9Ik0xNS4zNDMgNy42ODczOVY3LjEyOTU5QzE1LjM0MyA0LjA2NjgzIDEyLjk1MDkgMS41ODM5OCAxMCAxLjU4Mzk4QzcuMDQ5MTEgMS41ODM5OCA0LjY1Njk0IDQuMDY2ODMgNC42NTY5NCA3LjEyOTU5VjcuNjg3MzlDNC42NTY5NCA4LjM1Njg1IDQuNDY2MDMgOS4wMTEyNCA0LjEwODI2IDkuNTY4MjZMMy4yMzE1NCAxMC45MzMyQzIuNDMwNzMgMTIuMTc5OSAzLjA0MjA4IDEzLjg3NDUgNC40MzQ4NyAxNC4yNjg4QzguMDc4NDIgMTUuMzAwMiAxMS45MjE2IDE1LjMwMDIgMTUuNTY1MSAxNC4yNjg4QzE2Ljk1OCAxMy44NzQ1IDE3LjU2OTMgMTIuMTc5OSAxNi43Njg0IDEwLjkzMzJMMTUuODkxNyA5LjU2ODI2QzE1LjUzNCA5LjAxMTI0IDE1LjM0MyA4LjM1Njg1IDE1LjM0MyA3LjY4NzM5WiIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KPHBhdGggZD0iTTYuNDM3NSAxNS4wNDFDNi45NTYwNyAxNi40MjQ3IDguMzU1MjggMTcuNDE2IDEwIDE3LjQxNkMxMS42NDQ3IDE3LjQxNiAxMy4wNDQgMTYuNDI0NyAxMy41NjI1IDE1LjA0MSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L2c+Cjwvc3ZnPgo=") center center/100% no-repeat;
+    cursor: pointer;
+
+    &--has-items{
+      background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkiIGhlaWdodD0iMTkiIHZpZXdCb3g9IjAgMCAxOSAxOSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGc+CjxwYXRoIGQ9Ik05LjUgMS41ODM5OEMxMi40NTA5IDEuNTgzOTggMTQuODQzIDQuMDY2ODMgMTQuODQzIDcuMTI5NTlWNy42ODczOUMxNC44NDMgOC4zNTY4NSAxNS4wMzQgOS4wMTEyNCAxNS4zOTE3IDkuNTY4MjZMMTYuMjY4NCAxMC45MzMyQzE3LjA2OTMgMTIuMTc5OSAxNi40NTggMTMuODc0NSAxNS4wNjUxIDE0LjI2ODhDMTEuNDIxNiAxNS4zMDAyIDcuNTc4NDIgMTUuMzAwMiAzLjkzNDg3IDE0LjI2ODhDMi41NDIwOCAxMy44NzQ1IDEuOTMwNzMgMTIuMTc5OSAyLjczMTU0IDEwLjkzMzJMMy42MDgyNiA5LjU2ODI2QzMuOTY2MDMgOS4wMTEyNCA0LjE1Njk0IDguMzU2ODUgNC4xNTY5NCA3LjY4NzM5VjcuMTI5NTkiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMS41Ii8+CjxwYXRoIGQ9Ik01LjkzNzUgMTUuMDQxQzYuNDU2MDcgMTYuNDI0NyA3Ljg1NTI4IDE3LjQxNiA5LjUgMTcuNDE2QzExLjE0NDcgMTcuNDE2IDEyLjU0NCAxNi40MjQ3IDEzLjA2MjUgMTUuMDQxIiBzdHJva2U9IndoaXRlIiBzdHJva2Utd2lkdGg9IjEuNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+CjxjaXJjbGUgY3g9IjUuNSIgY3k9IjIuNSIgcj0iMi41IiBmaWxsPSIjRkYzQTNBIi8+CjwvZz4KPC9zdmc+Cg==") center center/100% no-repeat;
+    }
+
+    &:hover, &.active {
+      opacity: 1;
+    }
+  }
 }
 
 .rtl .wpsms-header-items-side {
@@ -408,6 +425,18 @@ body.rtl #feedback-bird-app {
         }
       }
 
+      &.wp-sms-notifications {
+        .icon {
+          background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkiIGhlaWdodD0iMTkiIHZpZXdCb3g9IjAgMCAxOSAxOSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgPgo8cGF0aCBkPSJNMTUuMzQzIDcuNjg3MzlWNy4xMjk1OUMxNS4zNDMgNC4wNjY4MyAxMi45NTA5IDEuNTgzOTggMTAgMS41ODM5OEM3LjA0OTExIDEuNTgzOTggNC42NTY5NCA0LjA2NjgzIDQuNjU2OTQgNy4xMjk1OVY3LjY4NzM5QzQuNjU2OTQgOC4zNTY4NSA0LjQ2NjAzIDkuMDExMjQgNC4xMDgyNiA5LjU2ODI2TDMuMjMxNTQgMTAuOTMzMkMyLjQzMDczIDEyLjE3OTkgMy4wNDIwOCAxMy44NzQ1IDQuNDM0ODcgMTQuMjY4OEM4LjA3ODQyIDE1LjMwMDIgMTEuOTIxNiAxNS4zMDAyIDE1LjU2NTEgMTQuMjY4OEMxNi45NTggMTMuODc0NSAxNy41NjkzIDEyLjE3OTkgMTYuNzY4NCAxMC45MzMyTDE1Ljg5MTcgOS41NjgyNkMxNS41MzQgOS4wMTEyNCAxNS4zNDMgOC4zNTY4NSAxNS4zNDMgNy42ODczOVoiIHN0cm9rZT0iIzI5MkQzMiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KPHBhdGggZD0iTTYuNDM3NSAxNS4wNDFDNi45NTYwNyAxNi40MjQ3IDguMzU1MjggMTcuNDE2IDEwIDE3LjQxNkMxMS42NDQ3IDE3LjQxNiAxMy4wNDQgMTYuNDI0NyAxMy41NjI1IDE1LjA0MSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIxLjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPgo8L2c+Cjwvc3ZnPgo=");
+        }
+
+        &.wp-sms-notifications--has-items {
+          .icon {
+            background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkiIGhlaWdodD0iMTkiIHZpZXdCb3g9IjAgMCAxOSAxOSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGc+CjxwYXRoIGQ9Ik05LjUgMS41ODM5OEMxMi40NTA5IDEuNTgzOTggMTQuODQzIDQuMDY2ODMgMTQuODQzIDcuMTI5NTlWNy42ODczOUMxNC44NDMgOC4zNTY4NSAxNS4wMzQgOS4wMTEyNCAxNS4zOTE3IDkuNTY4MjZMMTYuMjY4NCAxMC45MzMyQzE3LjA2OTMgMTIuMTc5OSAxNi40NTggMTMuODc0NSAxNS4wNjUxIDE0LjI2ODhDMTEuNDIxNiAxNS4zMDAyIDcuNTc4NDIgMTUuMzAwMiAzLjkzNDg3IDE0LjI2ODhDMi41NDIwOCAxMy44NzQ1IDEuOTMwNzMgMTIuMTc5OSAyLjczMTU0IDEwLjkzMzJMMy42MDgyNiA5LjU2ODI2QzMuOTY2MDMgOS4wMTEyNCA0LjE1Njk0IDguMzU2ODUgNC4xNTY5NCA3LjY4NzM5VjcuMTI5NTkiIHN0cm9rZT0iIzI5MmQzMiIgc3Ryb2tlLXdpZHRoPSIxLjUiLz4KPHBhdGggZD0iTTUuOTM3NSAxNS4wNDFDNi40NTYwNyAxNi40MjQ3IDcuODU1MjggMTcuNDE2IDkuNSAxNy40MTZDMTEuMTQ0NyAxNy40MTYgMTIuNTQ0IDE2LjQyNDcgMTMuMDYyNSAxNS4wNDEiIHN0cm9rZT0id2hpdGUiIHN0cm9rZS13aWR0aD0iMS41IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPGNpcmNsZSBjeD0iNS41IiBjeT0iMi41IiByPSIyLjUiIGZpbGw9IiNGRjNBM0EiLz4KPC9nPgo8L3N2Zz4K");
+          }
+        }
+      }
+
       #feedback-bird-app .c-fbb-btn--default {
         background: none !important;
       }
@@ -515,7 +544,7 @@ body.rtl #screen-meta-links {
 .rtl .wpsms-header-banner {
   justify-content: flex-start;
   margin-left: 0 !important;
- }
+}
 
 .wpsms-header-banner .license-status {
   transition: 0.3s all ease-out;
@@ -615,207 +644,206 @@ body.rtl #screen-meta-links {
 }
 
 .wpsms-header-banner .license-status--free {
-  a.upgrade:before , span:first-child {
+  a.upgrade:before, span:first-child {
     opacity: 70%;
   }
 
   a:hover {
-    span:first-child ,&.upgrade:before {
+    span:first-child, &.upgrade:before {
       opacity: 1 !important;
     }
   }
 }
 
-  .wpsms-header-banner .license-status a::after {
-    content: "";
-    margin-left: 3px;
-    width: 5.94px;
-    height: 9.72px;
-    opacity: 0.7;
-    background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNiIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDYgMTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0zLjgzODYxIDQuOTk5OEwwLjA1NDY4NzUgMS4yMTU4OEwxLjEzNTgxIDAuMTM0NzY2TDYuMDAwODIgNC45OTk4TDEuMTM1ODEgOS44NjQ3N0wwLjA1NDY4NzUgOC43ODM2NkwzLjgzODYxIDQuOTk5OFoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=") center center/100% no-repeat;
-    transition: 0.2s;
+.wpsms-header-banner .license-status a::after {
+  content: "";
+  margin-left: 3px;
+  width: 5.94px;
+  height: 9.72px;
+  opacity: 0.7;
+  background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNiIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDYgMTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0zLjgzODYxIDQuOTk5OEwwLjA1NDY4NzUgMS4yMTU4OEwxLjEzNTgxIDAuMTM0NzY2TDYuMDAwODIgNC45OTk4TDEuMTM1ODEgOS44NjQ3N0wwLjA1NDY4NzUgOC43ODM2NkwzLjgzODYxIDQuOTk5OFoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=") center center/100% no-repeat;
+  transition: 0.2s;
 
-    .rtl &{
-      margin-left:0;
-      margin-right: 3px;
-      transform: rotate(180deg)
-    }
+  .rtl & {
+    margin-left: 0;
+    margin-right: 3px;
+    transform: rotate(180deg)
+  }
+}
+
+.wpsms-header-banner .license-status a:before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  transition: 0.2s;
+  background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOSAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEzLjUxMjggMC40NTYwNTVMMTQuNTU2OSAyLjQxMzcxTDE2LjUxNDUgMy40NTc3OUwxNC41NTY5IDQuNTAxODdMMTMuNTEyOCA2LjQ1OTUzTDEyLjQ2ODcgNC41MDE4N0wxMC41MTExIDMuNDU3NzlMMTIuNDY4NyAyLjQxMzcxTDEzLjUxMjggMC40NTYwNTVaTTYuMzg3OCAyLjkzMDAxTDguNDk4OSA2Ljg4ODM1TDEyLjQ1NzIgOC45OTk0NEw4LjQ5ODkgMTEuMTEwNkw2LjM4NzggMTUuMDY4OUw0LjI3NjY5IDExLjExMDZMMC4zMTgzNTkgOC45OTk0NEw0LjI3NjY5IDYuODg4MzVMNi4zODc4IDIuOTMwMDFaTTE1LjYyMzkgMTIuNDMwMUwxNC4zMDQ1IDkuOTU2MDlMMTIuOTg1IDEyLjQzMDFMMTAuNTExMSAxMy43NDk0TDEyLjk4NSAxNS4wNjg5TDE0LjMwNDUgMTcuNTQyOUwxNS42MjM5IDE1LjA2ODlMMTguMDk3OSAxMy43NDk0TDE1LjYyMzkgMTIuNDMwMVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=) center center no-repeat
+}
+
+.wpsms-header-banner .license-status a.upgrade {
+  padding: 6px 12px 6px 6px;
+  box-shadow: none !important;
+  outline: none !important;
+  box-sizing: border-box;
+  height: 26px;
+  position: relative;
+
+  .rtl & {
+    padding: 6px 6px 6px 12px;
+  }
+}
+
+.wpsms-header-banner .license-status a.upgrade span span {
+  opacity: 70%;
+  margin-left: 12px;
+  font-size: 12px;
+  line-height: 14.5px;
+  text-transform: uppercase;
+}
+
+
+.rtl .wpsms-wrap__top h1, .rtl .wpsms-wrap__top h2 {
+  margin-right: 0;
+  margin-left: 16px;
+}
+
+.rtl .wpsms-header-banner .license-status a::before {
+  margin-left: 6px;
+  margin-right: 0;
+}
+
+.rtl .wpsms-header-banner .license-status a.upgrade span span {
+  margin-left: unset;
+  margin-right: 12px;
+}
+
+.rtl .wpsms-header-banner .license-status {
+  left: 20px;
+  right: auto;
+}
+
+.rtl .wpsms-header-banner .wpsms-header-logo {
+  margin-left: 50px;
+  margin-right: 0 !important;
+}
+
+.rtl .wpsms-header-banner .wpsms-header-items-flex a span {
+  margin-left: 5px;
+  margin-right: 0;
+}
+
+.wpsms-wrap .tablenav .bulkactions {
+  margin-bottom: 10px;
+}
+
+.wpsms-wrap .tablenav .bulkactions select {
+  font-size: 14px;
+  line-height: 2;
+  color: #2c3338;
+  border-color: #8c8f94 !important;
+  box-shadow: none;
+  border-radius: 3px;
+  padding: 0 24px 0 8px !important;
+  min-height: 30px;
+  max-width: 25rem;
+  -webkit-appearance: none;
+  background-size: 16px 16px;
+  cursor: pointer;
+  vertical-align: middle;
+
+  &:focus {
+    border-color: #2271b1 !important;
+    color: #0a4b78 !important;
+    box-shadow: 0 0 0 1px #2271b1 !important;
   }
 
-  .wpsms-header-banner .license-status  a:before{
-    content: "";
-    width: 14px;
-    height: 14px;
-    margin-right: 6px;
-    transition: 0.2s;
-    background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOSAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEzLjUxMjggMC40NTYwNTVMMTQuNTU2OSAyLjQxMzcxTDE2LjUxNDUgMy40NTc3OUwxNC41NTY5IDQuNTAxODdMMTMuNTEyOCA2LjQ1OTUzTDEyLjQ2ODcgNC41MDE4N0wxMC41MTExIDMuNDU3NzlMMTIuNDY4NyAyLjQxMzcxTDEzLjUxMjggMC40NTYwNTVaTTYuMzg3OCAyLjkzMDAxTDguNDk4OSA2Ljg4ODM1TDEyLjQ1NzIgOC45OTk0NEw4LjQ5ODkgMTEuMTEwNkw2LjM4NzggMTUuMDY4OUw0LjI3NjY5IDExLjExMDZMMC4zMTgzNTkgOC45OTk0NEw0LjI3NjY5IDYuODg4MzVMNi4zODc4IDIuOTMwMDFaTTE1LjYyMzkgMTIuNDMwMUwxNC4zMDQ1IDkuOTU2MDlMMTIuOTg1IDEyLjQzMDFMMTAuNTExMSAxMy43NDk0TDEyLjk4NSAxNS4wNjg5TDE0LjMwNDUgMTcuNTQyOUwxNS42MjM5IDE1LjA2ODlMMTguMDk3OSAxMy43NDk0TDE1LjYyMzkgMTIuNDMwMVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=) center center no-repeat
-   }
-
-  .wpsms-header-banner .license-status a.upgrade {
-    padding: 6px 12px 6px 6px;
-    box-shadow: none !important;
-    outline: none !important;
-    box-sizing: border-box;
-    height: 26px;
-    position: relative;
-
-    .rtl &{
-      padding: 6px 6px 6px 12px;
-    }
+  &:hover {
+    color: #2271b1 !important;
   }
 
-  .wpsms-header-banner .license-status a.upgrade span span {
-    opacity: 70%;
-    margin-left: 12px;
-    font-size: 12px;
-    line-height: 14.5px;
-    text-transform: uppercase;
+  .rtl & {
+    padding: 0 8px 0 24px !important;
   }
+}
 
+.sms_page_wp-sms-subscribers-privacy .inside .description {
+  margin-top: 5px !important;
+  display: block;
+}
 
+.sms_page_wp-sms-subscribers-privacy .postbox,
+.wpsms-wrap .postbox {
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+  border-radius: 2px;
+  border: none !important;
+}
 
-  .rtl .wpsms-wrap__top h1, .rtl .wpsms-wrap__top h2 {
-    margin-right: 0;
-    margin-left: 16px;
+.sms_page_wp-sms-subscribers-privacy .postbox-header,
+.wpsms-wrap .postbox-header {
+  border-bottom: 1px solid #e7e7e7 !important;
+}
+
+.sms_page_wp-sms-subscribers-privacy.postbox-header h2,
+.wpsms-wrap .postbox-header h2 {
+  padding: 15px 12px !important;
+}
+
+.sms_page_wp-sms-subscribers-privacy .privacy_page {
+  margin: 0 !important;
+}
+
+.wpsms-wrap .notice .notice-dismiss {
+  margin: 9px;
+  text-decoration: none;
+}
+
+.wpsms-wrap .notice .notice-dismiss::before {
+  font-size: 20px;
+}
+
+.wpsms-wrap .description {
+  color: #737373;
+  font-size: 10px;
+  margin-top: 4px;
+  line-height: 22px;
+}
+
+.wpsms-wrap .description code {
+  border-radius: 16px;
+  font-size: 12px;
+  padding: 2px 7px;
+}
+
+.wpsms-wrap .postbox table tr td,
+.wpsms-wrap .postbox table tr th {
+  padding: 20px 10px;
+}
+
+#TB_ajaxContent {
+  height: min-content !important;
+}
+
+.wps-block {
+  display: block;
+}
+
+.wps-multiselect-label {
+  margin: 5px;
+}
+
+td.response.column-response p {
+  white-space: pre-wrap;
+}
+
+.thickbox-description {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+  text-align: justify;
+}
+
+.wp-sms-popup-messages {
+  p {
+    padding: 10px 0 !important;
   }
-
-  .rtl .wpsms-header-banner .license-status a::before {
-    margin-left: 6px;
-    margin-right: 0;
-  }
-
-  .rtl .wpsms-header-banner .license-status a.upgrade span span {
-    margin-left: unset;
-    margin-right: 12px;
-  }
-
-  .rtl .wpsms-header-banner .license-status {
-    left: 20px;
-    right: auto;
-  }
-
-  .rtl .wpsms-header-banner .wpsms-header-logo {
-    margin-left: 50px;
-    margin-right: 0 !important;
-  }
-
-  .rtl .wpsms-header-banner .wpsms-header-items-flex a span {
-    margin-left: 5px;
-    margin-right: 0;
-  }
-
-  .wpsms-wrap .tablenav .bulkactions {
-    margin-bottom: 10px;
-  }
-
-  .wpsms-wrap .tablenav .bulkactions select {
-    font-size: 14px;
-    line-height: 2;
-    color: #2c3338;
-    border-color: #8c8f94 !important;
-    box-shadow: none;
-    border-radius: 3px;
-    padding: 0 24px 0 8px !important;
-    min-height: 30px;
-    max-width: 25rem;
-    -webkit-appearance: none;
-    background-size: 16px 16px;
-    cursor: pointer;
-    vertical-align: middle;
-
-    &:focus {
-      border-color: #2271b1 !important;
-      color: #0a4b78 !important;
-      box-shadow: 0 0 0 1px #2271b1 !important;
-    }
-
-    &:hover {
-      color: #2271b1 !important;
-    }
-
-    .rtl &{
-      padding: 0 8px 0 24px !important;
-    }
-  }
-
-  .sms_page_wp-sms-subscribers-privacy .inside .description {
-    margin-top: 5px !important;
-    display: block;
-  }
-
-  .sms_page_wp-sms-subscribers-privacy .postbox,
-  .wpsms-wrap .postbox {
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
-    border-radius: 2px;
-    border: none !important;
-  }
-
-  .sms_page_wp-sms-subscribers-privacy .postbox-header,
-  .wpsms-wrap .postbox-header {
-    border-bottom: 1px solid #e7e7e7 !important;
-  }
-
-  .sms_page_wp-sms-subscribers-privacy.postbox-header h2,
-  .wpsms-wrap .postbox-header h2 {
-    padding: 15px 12px !important;
-  }
-
-  .sms_page_wp-sms-subscribers-privacy .privacy_page {
-    margin: 0 !important;
-  }
-
-  .wpsms-wrap .notice .notice-dismiss {
-    margin: 9px;
-    text-decoration: none;
-  }
-
-  .wpsms-wrap .notice .notice-dismiss::before {
-    font-size: 20px;
-  }
-
-  .wpsms-wrap .description {
-    color: #737373;
-    font-size: 10px;
-    margin-top: 4px;
-    line-height: 22px;
-  }
-
-  .wpsms-wrap .description code {
-    border-radius: 16px;
-    font-size: 12px;
-    padding: 2px 7px;
-  }
-
-  .wpsms-wrap .postbox table tr td,
-  .wpsms-wrap .postbox table tr th {
-    padding: 20px 10px;
-  }
-
-  #TB_ajaxContent {
-    height: min-content !important;
-  }
-
-  .wps-block {
-    display: block;
-  }
-
-  .wps-multiselect-label {
-    margin: 5px;
-  }
-
-  td.response.column-response p {
-    white-space: pre-wrap;
-  }
-
-  .thickbox-description {
-    padding-top: 0 !important;
-    margin-top: 0 !important;
-    text-align: justify;
-  }
-
-  .wp-sms-popup-messages {
-    p {
-      padding: 10px 0 !important;
-    }
-  }
+}
 

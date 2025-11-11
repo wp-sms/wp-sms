@@ -6,6 +6,9 @@ use WP_SMS\Admin\LicenseManagement\LicenseMigration;
 use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Version;
 use WP_SMS\Admin\ModalHandler\Modal;
+use WP_SMS\Option;
+use WP_SMS\Admin\Notification\NotificationFactory;
+use WP_SMS\Components\View;
 
 $option = get_option('wpsms_settings');
 // Create tab url and active class for licenses tab
@@ -34,6 +37,9 @@ foreach ($addons as $option_key => $status) {
 $apiCommunicator  = new ApiCommunicator();
 $licenseMigration = new LicenseMigration($apiCommunicator);
 $licenseMigration->migrateOldLicenses();
+
+$hasUpdatedNotifications = NotificationFactory::hasUpdatedNotifications();
+$displayNotifications    = Option::getOption('display_notifications');
 ?>
 <div class="wpsms-header-banner <?php echo $isPremium ? 'wpsms-header-banner__aio' : '' ?>">
     <div class="wpsms-header-logo"></div>
@@ -53,6 +59,9 @@ $licenseMigration->migrateOldLicenses();
             echo 'active';
         } ?>"></a>
         <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank" title="<?php esc_html_e('Help Center', 'wp-sms'); ?>" class="support"></a>
+        <?php if ($displayNotifications): ?>
+            <a href="#" title="<?php esc_html_e('Notifications', 'wp-sms'); ?>" class="wp-sms-notifications js-wp-sms-open-notification <?php echo $hasUpdatedNotifications ? esc_attr('wp-sms-notifications--has-items') : ''; ?>"></a>
+        <?php endif; ?>
         <div class="wpsms-mobile-menu">
             <input type="checkbox" id="wpsms-menu-toggle" class="hamburger-menu">
             <label for="wpsms-menu-toggle" class="hamburger-menu-container">
@@ -69,6 +78,11 @@ $licenseMigration->migrateOldLicenses();
                 echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-integrations', 'link_text' => __('Integrations', 'wp-sms'), 'icon_class' => 'integrations', 'badge_count' => null]);
                 echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-settings', 'link_text' => __('Settings', 'wp-sms'), 'icon_class' => 'settings', 'badge_count' => null]);
                 ?>
+                <?php if ($displayNotifications): ?>
+                    <a class="wp-sms-notifications js-wp-sms-open-notification <?php echo $hasUpdatedNotifications ? esc_attr('wp-sms-notifications--has-items') : ''; ?>">
+                        <span class="icon"></span><span><?php esc_html_e('Notifications', 'wp-sms'); ?></span>
+                    </a>
+                <?php endif; ?>
                 <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank" title="<?php esc_html_e('Help Center', 'wp-sms'); ?>" class="help">
                     <span class="icon"></span>
                     <?php esc_html_e('Help Center', 'wp-sms'); ?>
@@ -80,7 +94,11 @@ $licenseMigration->migrateOldLicenses();
         </div>
     </div>
 </div>
-
+<?php
+if ($displayNotifications) {
+    View::load("components/notification/side-bar", ['notifications' => NotificationFactory::getAllNotifications()]);
+}
+?>
 <?php
 add_action('admin_footer', function () {
     if (MenuUtil::isInPluginPage()) {
