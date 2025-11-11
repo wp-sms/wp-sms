@@ -117,10 +117,10 @@ class NotificationDecorator
     {
         $backgroundColors = [
             'inherit' => '',
-            'danger'  => 'wp-sms-notification-sidebar__danger',
-            'info'    => 'wp-sms-notification-sidebar__info',
-            'warning' => 'wp-sms-notification-sidebar__warning',
-            'success' => 'wp-sms-notification-sidebar__success'
+            'danger'  => 'wpsms-notification-sidebar__danger',
+            'info'    => 'wpsms-notification-sidebar__info',
+            'warning' => 'wpsms-notification-sidebar__warning',
+            'success' => 'wpsms-notification-sidebar__success'
         ];
 
         return $backgroundColors[$this->notification->background_color] ?? null;
