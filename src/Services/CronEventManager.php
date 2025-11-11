@@ -14,7 +14,7 @@ class CronEventManager
      */
     public function __construct()
     {
-        Event::schedule('wp_sms_daily_cron_hook', DateTime::get('tomorrow midnight', 'U'), 'daily', [$this, 'handleDailyTasks']);
+        Event::schedule('wp_sms_daily_cron_hook', time(), 'daily', [$this, 'handleDailyTasks']);
     }
 
     /**
