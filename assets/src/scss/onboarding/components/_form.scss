@@ -52,13 +52,6 @@
   input:not(input[type="submit"]):not(input[type="radio"]):not(input[type="checkbox"]),
   .select2-container--default .select2-selection--single {
      border-radius: 4px;
-
-    &:focus-visible,
-    &:focus,
-    &:active {
-      outline: 0;
-      box-shadow: none;
-     }
   }
 
   .select2-container--default .select2-selection--single {
@@ -112,10 +105,6 @@
     border: 1px solid $grey-color-5;
     outline: 0;
     border-radius: 4px;
-    &:focus{
-      outline: none;
-      box-shadow: none;
-    }
   }
 
   input:not(input[type="submit"]) {
@@ -124,7 +113,6 @@
     &:focus-visible,
     &:focus,
     &:active {
-      outline: 0;
       border: 1px solid $grey-color-1;
     }
   }
@@ -338,11 +326,6 @@
       .rtl &{
         transform: rotate(180deg);
       }
-    }
-
-    &:focus{
-      outline: none;
-      box-shadow: none;
     }
 
     &:hover{

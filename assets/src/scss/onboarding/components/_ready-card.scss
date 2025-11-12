@@ -95,10 +95,6 @@ a.c-readycard__title{
       filter: none;
     }
   }
-  &:focus{
-    outline: none;
-    box-shadow: none;
-  }
 }
 
 .c-readycard__desc {
@@ -139,11 +135,6 @@ a.c-readycard__title{
   }
   &:hover{
     background: #fdd8cf
-  }
-
-  &:focus{
-    box-shadow: none;
-    outline: none;
   }
 }
 

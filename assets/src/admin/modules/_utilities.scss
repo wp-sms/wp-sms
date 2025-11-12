@@ -9,7 +9,7 @@
 
 .wpsms-time {
   clear: both;
-  color: #a4a2a2;
+  color: #717070;
   display: block;
   font-size: 10px;
 }
@@ -53,8 +53,6 @@
   }
 
   &:focus {
-    box-shadow: none;
-    outline: none;
     background: #FED7AA;
   }
 }
@@ -322,11 +320,6 @@
 
     &.active, &:hover {
       background: #F3F3F5;
-    }
-
-    &:focus {
-      box-shadow: none !important;
-      outline: none !important;
     }
 
     &.integrations::after {

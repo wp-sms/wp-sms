@@ -101,10 +101,6 @@
       filter: brightness(20);
     }
   }
-  &:focus , &:active{
-    outline: none;
-    box-shadow: none;
-  }
 }
 
 .c-proplan__features {

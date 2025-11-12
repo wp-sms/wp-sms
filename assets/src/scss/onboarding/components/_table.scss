@@ -96,10 +96,6 @@
         align-items: center;
         line-height: 100%;
 
-        a:focus {
-          box-shadow: none;
-        }
-
         svg {
           width: 12px;
           min-width: 12px;
@@ -109,11 +105,6 @@
           .rtl & {
             transform: rotateY(180deg);
           }
-        }
-
-        &:focus, &:active {
-          box-shadow: none;
-          outline: none;
         }
       }
     }
@@ -391,8 +382,6 @@
 
     &:focus {
       color: $primary-orange;
-      box-shadow: none;
-      outline: none;
     }
 
     &:hover {

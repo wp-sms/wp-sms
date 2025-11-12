@@ -128,9 +128,10 @@ class Settings
             }
 
             foreach ($settings as $option) {
-                $name     = isset($option['name']) ? $option['name'] : '';
-                $optionId = $option['id'];
-                $readonly = (isset($option['readonly']) && $option['readonly'] == true) ? 'wpsms-pro-feature' : '';
+                $name          = isset($option['name']) ? $option['name'] : '';
+                $optionId      = $option['id'];
+                $readonly      = (isset($option['readonly']) && $option['readonly'] == true) ? 'wpsms-pro-feature' : '';
+                $has_label_for = in_array($option['type'], ['text', 'select', 'textarea', 'number']);
 
                 add_settings_field(
                     "$this->setting_name[$optionId]",
@@ -149,7 +150,7 @@ class Settings
                         'std'         => isset($option['std']) ? $option['std'] : '',
                         'doc'         => isset($option['doc']) ? $option['doc'] : '',
                         'class'       => isset($option['className']) ? $option['className'] . " tr-{$option['type']} {$readonly} " : "tr-{$option['type']} {$readonly} ",
-                        'label_for'   => true,
+                        'label_for'   => $has_label_for ? esc_attr($this->setting_name) . '[' . esc_attr($optionId) . ']' : null,
                         'attributes'  => isset($option['attributes']) ? $option['attributes'] : [],
                     )
                 );
@@ -1240,12 +1241,13 @@ class Settings
                     'desc'      => esc_html__('Sync the old mobile numbers which registered before enabling the previous option in Ultimate Member.', 'wp-sms')
                 ),
                 'bp_mobile_field_id'                       => array(
-                    'id'        => 'bp_mobile_field_id',
-                    'name'      => esc_html__('Select the Existing Field', 'wp-sms'),
-                    'type'      => 'advancedselect',
-                    'options'   => $buddyPressProfileFields,
-                    'className' => 'js-wpsms-show_if_add_mobile_field_equal_use_buddypress_mobile_field',
-                    'desc'      => esc_html__('Select the BuddyPress field', 'wp-sms')
+                    'id'         => 'bp_mobile_field_id',
+                    'name'       => esc_html__('Select the Existing Field', 'wp-sms'),
+                    'type'       => 'advancedselect',
+                    'options'    => $buddyPressProfileFields,
+                    'className'  => 'js-wpsms-show_if_add_mobile_field_equal_use_buddypress_mobile_field',
+                    'desc'       => esc_html__('Select the BuddyPress field', 'wp-sms'),
+                    'attributes' => ['aria-label' => esc_html__('Select the BuddyPress field', 'wp-sms')],
                 ),
                 'bp_sync_fields'                           => array(
                     'id'        => 'bp_sync_fields',
@@ -1300,7 +1302,7 @@ class Settings
                     'className'  => 'js-wpsms-show_if_international_mobile_disabled',
                     'desc'       => esc_html__('If the user\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global / Local)\'.', 'wp-sms'),
                     'options'    => array_merge(['0' => esc_html__('No country code (Global / Local)', 'wp-sms')], wp_sms_countries()->getCountriesMerged()),
-                    'attributes' => ['class' => 'js-wpsms-select2'],
+                    'attributes' => ['class' => 'js-wpsms-select2', 'aria-label' => esc_html__('Country Code Prefix', 'wp-sms')],
                 ),
                 'mobile_terms_minimum'                     => array(
                     'id'        => 'mobile_terms_minimum',
@@ -2368,7 +2370,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html     = sprintf('<select id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
+        $html     = sprintf('<select id="' . esc_attr($this->setting_name) . '[%1$s]" aria-label="' . esc_attr($this->setting_name) . '[%1$s][]" name="' . esc_attr($this->setting_name) . '[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
         $selected = '';
 
         foreach ($args['options'] as $k => $name) :
@@ -2397,7 +2399,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-        $html     = sprintf('<select id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
+        $html     = sprintf('<select id="' . esc_attr($this->setting_name) . '[%1$s]" aria-label="' . esc_attr($this->setting_name) . '[%1$s][]" name="' . esc_attr($this->setting_name) . '[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
         $selected = '';
 
         foreach ($args['options'] as $option => $country) :
@@ -2425,7 +2427,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         }
 
         $class_name = 'js-wpsms-select2';
-        $html       = sprintf('<select class="%1$s" id="' . esc_attr($this->setting_name) . '[%2$s]" name="' . esc_attr($this->setting_name) . '[%2$s]">', esc_attr($class_name), esc_attr($args['id']));
+        $html       = sprintf('<select class="%1$s" id="' . esc_attr($this->setting_name) . '[%2$s]"  aria-label="' . esc_attr($this->setting_name) . '[%2$s]" name="' . esc_attr($this->setting_name) . '[%2$s]">', esc_attr($class_name), esc_attr($args['id']));
 
         foreach ($args['options'] as $key => $v) {
             $html .= sprintf('<optgroup data-options="" label="%1$s">', ucfirst(str_replace('_', ' ', $key)));
@@ -2458,8 +2460,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             $value = isset($args['std']) ? $args['std'] : '';
         }
 
-//        $class_name = 'js-wpsms-select2';
-        $html     = sprintf('<select id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s][]" multiple="true" class="js-wpsms-select2"/>', esc_attr($args['id']));
+        $html     = sprintf('<select id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s][]" multiple="true" aria-label="' . esc_attr($this->setting_name) . '[%1$s][]" class="js-wpsms-select2"/>', esc_attr($args['id']));
         $selected = '';
 
         foreach ($args['options'] as $k => $v) :
@@ -2610,11 +2611,12 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
                             if ($isProTab) {
                                 if (!$this->proIsInstalled || !$this->isPremium) {
-                                    $proLockIcon = '</a><span class="pro-not-installed ' . esc_attr($active) . '"><a data-target="wp-sms-pro" href="' . esc_url(WP_SMS_SITE) . '/pricing"></a></span></li>';
+                                    $proLockIcon = '</a><span class="pro-not-installed ' . esc_attr($active) . '"><a data-target="wp-sms-pro" href="' . esc_url(WP_SMS_SITE) . '/pricing"><span class="screen-reader-text">View pricing for WP SMS</span></a></span></li>';
                                 }
                             }
                             $tabUrl = ($tab_id == 'integrations') ? esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-integrations') : esc_url($tab_url);
-                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($isProTab) . '"><a href="' . $tabUrl . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
+                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($isProTab) . '" aria-disabled="' . ($this->active_tab == $tab_id ? 'false' : 'true') . '">';
+                            echo '<a href="' . $tabUrl . '" class="' . esc_attr($active) . '">';
                             echo esc_html($tab_name);
                             echo '</a>' . $proLockIcon . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                         };
