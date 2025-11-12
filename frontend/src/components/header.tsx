@@ -71,9 +71,6 @@ export function Header() {
           </Link>
         </Button>
       )}
-      <Button variant="ghost" className={linkClasses}>
-        <CircleQuestionMark />
-      </Button>
     </header>
   )
 }

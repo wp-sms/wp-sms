@@ -73,6 +73,13 @@ class LayoutDataProvider implements DataProviderInterface
                 'icon'        => 'Crown',
                 'description' => esc_html__('Upgrade to premium version', 'wp-sms'),
                 'isExternal'  => true,
+            ],
+            [
+                'title'       => '',
+                'url'         => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=header',
+                'icon'        => 'CircleQuestionMark',
+                'description' => esc_html__('Help Text', 'wp-sms'),
+                'isExternal'  => true,
             ]
         ];
 
