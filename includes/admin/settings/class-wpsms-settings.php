@@ -1760,7 +1760,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 ),
                 'display_notifications_header' => array(
                     'id'   => 'display_notifications_header',
-                    'name' => esc_html__('Display Notifications', 'wp-sms'),
+                    'name' => esc_html__('Plugin Notifications', 'wp-sms'),
                     'type' => 'header'
                 ),
                 'display_notifications'        => array(
