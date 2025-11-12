@@ -2,8 +2,6 @@
 
 namespace WP_SMS\Utils;
 
-use WP_SMS\User\UserHelper;
-
 class MenuUtil
 {
     private static $parentSlug = 'wp-sms';
@@ -13,28 +11,16 @@ class MenuUtil
      * @var array
      */
     public static $pages = [
-        'overview'           => 'overview',
-        'exclusions'         => 'exclusions',
-        'referrals'          => 'referrals',
-        'optimization'       => 'optimization',
-        'settings'           => 'settings',
-        'plugins'            => 'plugins',
-        'author-analytics'   => 'author-analytics',
-        'privacy-audit'      => 'privacy-audit',
-        'geographic'         => 'geographic',
-        'content-analytics'  => 'content-analytics',
-        'devices'            => 'devices',
-        'category-analytics' => 'category-analytics',
-        'pages'              => 'pages',
-        'visitors'           => 'visitors',
-        'add-ons'            => 'add-ons',
+        'wp-sms'              => 'wp-sms',
+        'outbox'              => 'outbox',
+        'inbox'               => 'inbox',
+        'subscribers'         => 'subscribers',
+        'subscribers-group'   => 'subscribers-group',
+        'subscribers-privacy' => 'subscribers-privacy',
+        'settings'            => 'settings',
+        'integrations'        => 'integrations',
+        'add-ons'             => 'add-ons',
     ];
-
-    /**
-     * Admin Page Slug Template
-     *
-     * @var string
-     */
 
     /**
      * Initialize the menu registration
@@ -49,13 +35,8 @@ class MenuUtil
      */
     public static function registerMenus()
     {
-        // Get the read/write capabilities.
-        $capability = $menu['cap'] ?? 'manage_options';
-        //Show Admin Menu List
-
         foreach (self::getMenuList() as $key => $menu) {
-
-            //Check Default variable
+            $capability = 'manage_options';
             $method     = 'log';
             $name       = $menu['title'];
 
@@ -95,29 +76,26 @@ class MenuUtil
         }
     }
 
-
-    public static $admin_menu_slug = 'wp-sms-[slug]';
+    /**
+     * Admin Page Slug
+     *
+     * @var string
+     */
+    public static $adminMenuSlug = 'wp-sms-[slug]';
 
     /**
      * Admin Page Load Action Slug
      *
      * @var string
      */
-    public static $load_admin_slug = 'toplevel_page_[slug]';
-
-    /**
-     * Admin Page Load Submenu Action Slug
-     *
-     * @var string
-     */
-    public static $load_admin_submenu_slug = 'sms_page_[slug]';
+    public static $loadAdminSlug = 'toplevel_page_[slug]';
 
     /**
      * Get a List of Admin Pages with Slugs
      *
      * @return array
      */
-    public static function getAdminPageList(): array
+    public static function getAdminPageList()
     {
         $adminList = [];
         foreach (self::$pages as $pageKey => $pageSlug) {
@@ -133,7 +111,7 @@ class MenuUtil
      * @param string $page
      * @return bool
      */
-    public static function isInPage(string $page): bool
+    public static function isInPage($page)
     {
         global $pagenow;
         return is_admin() && $pagenow === 'admin.php' && isset($_REQUEST['page']) && $_REQUEST['page'] === self::getPageSlug($page);
@@ -144,7 +122,7 @@ class MenuUtil
      *
      * @return bool
      */
-    public static function isInPluginPage(): bool
+    public static function isInPluginPage()
     {
         global $pagenow;
 
@@ -168,11 +146,21 @@ class MenuUtil
      * @param string $pageSlug
      * @return mixed
      */
-    public static function getPageKeyFromSlug(string $pageSlug)
+    public static function getPageKeyFromSlug($pageSlug)
     {
-        $menuSlugParts = explode('[slug]', self::$admin_menu_slug);
-        preg_match('/(?<=' . $menuSlugParts[0] . ').*?(?=' . $menuSlugParts[1] . ')/', $pageSlug, $pageName);
-        return $pageName; // Use $pageName[0] to access the key
+        // If it's a top-level menu (exactly 'wp-sms'), then return it directly
+        if ($pageSlug === self::$parentSlug) {
+            return [$pageSlug];
+        }
+
+        // If it starts with "wp-sms-" then remove that prefix and return the rest
+        if (str_starts_with($pageSlug, self::$parentSlug . '-')) {
+            $key = substr($pageSlug, strlen(self::$parentSlug . '-'));
+            return [$key];
+        }
+
+        // Otherwise, it’s already a short slug (e.g. 'add-ons')
+        return [$pageSlug];
     }
 
     /**
@@ -182,7 +170,7 @@ class MenuUtil
      * @param array $args
      * @return string
      */
-    public static function getAdminUrl(?string $page = null, array $args = []): string
+    public static function getAdminUrl($page = null, $args = [])
     {
         if (array_key_exists($page, self::getAdminPageList())) {
             $page = self::getPageSlug($page);
@@ -196,12 +184,9 @@ class MenuUtil
      *
      * @return array
      */
-    public static function getMenuList(): array
+    public static function getMenuList()
     {
-        $manageCap = UserHelper::validateCapability(OptionUtil::get('manage_capability', 'manage_options'));
-
         $list = [];
-
         $list = apply_filters('wp_sms_admin_menu_list', $list);
 
         uasort($list, function ($a, $b) {
@@ -217,9 +202,13 @@ class MenuUtil
      * @param string $pageSlug
      * @return string
      */
-    public static function getPageSlug(string $pageSlug): string
+    public static function getPageSlug($pageSlug)
     {
-        return str_ireplace('[slug]', $pageSlug, self::$admin_menu_slug);
+        if ($pageSlug === self::$parentSlug) {
+            return $pageSlug;
+        }
+
+        return str_ireplace('[slug]', $pageSlug, self::$adminMenuSlug);
     }
 
     /**
@@ -228,9 +217,9 @@ class MenuUtil
      * @param string $pageSlug
      * @return string
      */
-    public static function getActionMenuSlug(string $pageSlug): string
+    public static function getActionMenuSlug($pageSlug)
     {
-        return str_ireplace('[slug]', self::getPageSlug($pageSlug), self::$load_admin_slug);
+        return str_ireplace('[slug]', self::getPageSlug($pageSlug), self::$loadAdminSlug);
     }
 
     /**
@@ -241,7 +230,7 @@ class MenuUtil
     public static function getCurrentPage()
     {
         $currentPage = Request::get('page');
-        $pagesList   = self::getMenuList();
+        $pagesList   = array_merge(self::getHardcodedMenuList(), self::getMenuList());
 
         if (!$currentPage) {
             return false;
@@ -255,5 +244,88 @@ class MenuUtil
         });
 
         return reset($filteredPages);
+    }
+
+    /**
+     * Retrieve the hardcoded list of admin menu items
+     *
+     * @return array
+     */
+    public static function getHardcodedMenuList()
+    {
+        return [
+            [
+                'title'    => esc_html__('Send SMS', 'wp-sms'),
+                'name'     => esc_html__('SMS', 'wp-sms'),
+                'cap'      => 'wpsms_sendsms',
+                'page_url' => 'wp-sms',
+                'callback' => '',
+                'icon'     => 'dashicons-email-alt',
+                'priority' => 1,
+            ],
+            [
+                'sub'      => 'wp-sms',
+                'title'    => esc_html__('Outbox', 'wp-sms'),
+                'name'     => esc_html__('Outbox', 'wp-sms'),
+                'cap'      => 'wpsms_outbox',
+                'page_url' => 'outbox',
+                'callback' => '',
+                'priority' => 2,
+            ],
+            [
+                'sub'      => 'wp-sms',
+                'title'    => esc_html__('Inbox', 'wp-sms'),
+                'name'     => esc_html__('Inbox', 'wp-sms'),
+                'cap'      => 'wpsms_inbox',
+                'page_url' => 'inbox',
+                'callback' => '',
+                'priority' => 3,
+            ],
+            [
+                'sub'      => 'wp-sms',
+                'title'    => esc_html__('Subscribers', 'wp-sms'),
+                'name'     => esc_html__('Subscribers', 'wp-sms'),
+                'cap'      => 'wpsms_subscribers',
+                'page_url' => 'subscribers',
+                'callback' => '',
+                'priority' => 4,
+            ],
+            [
+                'sub'      => 'wp-sms',
+                'title'    => esc_html__('Groups', 'wp-sms'),
+                'name'     => esc_html__('Groups', 'wp-sms'),
+                'cap'      => 'wpsms_subscribers',
+                'page_url' => 'subscribers-group',
+                'callback' => '',
+                'priority' => 5,
+            ],
+            [
+                'sub'      => 'wp-sms',
+                'title'    => esc_html__('Privacy', 'wp-sms'),
+                'name'     => esc_html__('Privacy', 'wp-sms'),
+                'cap'      => 'wpsms_setting',
+                'page_url' => 'subscribers-privacy',
+                'callback' => '',
+                'priority' => 6,
+            ],
+            [
+                'sub'      => 'wp-sms',
+                'title'    => esc_html__('Settings', 'wp-sms'),
+                'name'     => esc_html__('Settings', 'wp-sms'),
+                'cap'      => 'wpsms_setting',
+                'page_url' => 'settings',
+                'callback' => '',
+                'priority' => 7,
+            ],
+            [
+                'sub'      => 'wp-sms',
+                'title'    => esc_html__('Integrations', 'wp-sms'),
+                'name'     => esc_html__('Integrations', 'wp-sms'),
+                'cap'      => 'wpsms_setting',
+                'page_url' => 'integrations',
+                'callback' => '',
+                'priority' => 8,
+            ],
+        ];
     }
 }
