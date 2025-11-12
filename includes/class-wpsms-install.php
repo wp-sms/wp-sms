@@ -158,9 +158,6 @@ class Install
         $subscribersGroupTable = $wpdb->prefix . 'sms_subscribes_group';
 
         if ($installer_wpsms_ver < WP_SMS_VERSION) {
-            // Initialize default plugin options during upgrade.
-            self::initializeDefaultOptions();
-
             // Add response and status for outbox
             $column = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s ",
@@ -225,6 +222,13 @@ class Install
             self::createSmsOtpTable();
             self::createSmsOtpAttemptsTable();
 
+            /**
+             * Initialize default plugin options during upgrade.
+             */
+            if (version_compare($installer_wpsms_ver, '7.1', '<')) {
+                Option::updateOption('display_notifications', 1);
+            }
+
             update_option('wp_sms_db_version', WP_SMS_VERSION);
         }
 
@@ -234,26 +238,6 @@ class Install
         if (!$wpdb->get_var("SHOW COLUMNS FROM `{$outboxTable}` like 'media'")) {
             $wpdb->query("ALTER TABLE `{$outboxTable}` ADD `media` TEXT NULL AFTER `recipient`");
         }
-    }
-
-    /**
-     * Initialize default plugin options during upgrade.
-     *
-     * @return void
-     */
-    private static function initializeDefaultOptions()
-    {
-        $initializedSettings = get_option('wp_sms_initialized_settings', []);
-
-        if (!in_array('display_notifications', $initializedSettings)) {
-            if (Option::getOption('display_notifications') === '') {
-                Option::updateOption('display_notifications', 1);
-            }
-
-            $initializedSettings[] = 'display_notifications';
-        }
-
-        update_option('wp_sms_initialized_settings', $initializedSettings);
     }
 
     /**
