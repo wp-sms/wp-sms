@@ -1,7 +1,9 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { ChevronRight, MessageSquare, PanelLeft, PanelLeftClose, Settings } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
+import { useLayoutData } from '@/hooks/use-layout-data'
+
+import { Button } from './ui/button'
 import {
   Sidebar,
   SidebarContent,
@@ -16,17 +18,14 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from '@/components/ui/sidebar'
+} from './ui/sidebar'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible'
 import { useSidebar } from '@/hooks/use-sidebar'
-import { useLayoutData } from '@/hooks/use-layout-data'
 import { RenderIcon } from '@/lib/render-icon'
+import { ThemeToggle } from './theme-toggle'
 
-import { ThemeToggle } from '../theme-toggle'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible'
-
-export const SettingsSidebar = () => {
-  const { sidebar } = useLayoutData()
-
+export function AppSidebar() {
+  const { sidebar: sidebarData } = useLayoutData()
   const location = useLocation()
   const currentPath = location.pathname
   const { state, toggleSidebar } = useSidebar()
@@ -76,12 +75,12 @@ export const SettingsSidebar = () => {
       </SidebarHeader>
 
       <SidebarContent>
-        {sidebar?.core && (
+        {sidebarData?.core && (
           <SidebarGroup>
             <SidebarGroupLabel>Core Settings</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {Object.entries(sidebar?.core ?? {})?.map(([_, item]) => (
+                {Object.entries(sidebarData?.core ?? {})?.map(([_, item]) => (
                   <SidebarMenuItem key={`core-item-${item?.name}-${item.label}`}>
                     <SidebarMenuButton
                       asChild
@@ -101,12 +100,12 @@ export const SettingsSidebar = () => {
           </SidebarGroup>
         )}
 
-        {sidebar?.addons && (
+        {sidebarData?.addons && (
           <SidebarGroup>
             <SidebarGroupLabel>Addons</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {Object.entries(sidebar?.addons ?? {})?.map(([_, item]) => (
+                {Object.entries(sidebarData?.addons ?? {})?.map(([_, item]) => (
                   <SidebarMenuItem key={`addon-item-${item?.name}-${item.label}`}>
                     <SidebarMenuButton
                       asChild
@@ -126,12 +125,12 @@ export const SettingsSidebar = () => {
           </SidebarGroup>
         )}
 
-        {sidebar?.integrations && state !== 'collapsed' && (
+        {sidebarData?.integrations && state !== 'collapsed' && (
           <SidebarGroup>
             <SidebarGroupLabel>Integrations</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {Object.entries(sidebar?.integrations.children ?? {})?.map(([key, item]) => {
+                {Object.entries(sidebarData?.integrations.children ?? {})?.map(([key, item]) => {
                   return (
                     <Collapsible
                       key={`integrations-item-${item?.label}-${key}`}

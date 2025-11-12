@@ -40,12 +40,6 @@ class GetSchemaEndpoint extends AbstractSettingsEndpoint
             'callback'            => [__CLASS__, 'getNestedGroup'],
             'permission_callback' => [__CLASS__, 'permissions_check'],
         ]);
-
-        register_rest_route('wpsms/v1', '/settings/schema/list', [
-            'methods'             => 'GET',
-            'callback'            => [__CLASS__, 'getGroupList'],
-            'permission_callback' => [__CLASS__, 'permissions_check'],
-        ]);
     }
 
     /**
@@ -117,18 +111,6 @@ class GetSchemaEndpoint extends AbstractSettingsEndpoint
         }
 
         return self::success($data);
-    }
-
-    /**
-     * GET /settings/schema/list
-     * Return list of group names and labels with nested structure.
-     *
-     * @param WP_REST_Request $request
-     * @return \WP_REST_Response
-     */
-    public static function getGroupList(WP_REST_Request $request): \WP_REST_Response
-    {
-        return self::success(SchemaRegistry::instance()->exportGroupList());
     }
 
     /**

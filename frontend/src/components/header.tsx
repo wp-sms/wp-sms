@@ -1,39 +1,25 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { CircleQuestionMark, Crown, Inbox, MessageSquarePlus, Puzzle, Send, Settings } from 'lucide-react'
 
+import { useLayoutData } from '@/hooks/use-layout-data'
+
 import { Button } from './ui/button'
 
-const navItems = [
-  {
-    title: 'Send SMS',
-    href: '/wp-admin/admin.php?page=wp-sms',
-    icon: <MessageSquarePlus />,
-    description: 'Compose and send SMS messages',
-  },
-  {
-    title: 'Inbox',
-    href: '/wp-admin/admin.php?page=wp-sms-inbox',
-    icon: <Inbox />,
-    description: 'View received messages',
-  },
-  {
-    title: 'Outbox',
-    href: '/wp-admin/admin.php?page=wp-sms-outbox',
-    icon: <Send />,
-    description: 'View sent messages',
-  },
-  {
-    title: 'Integrations',
-    href: '/wp-admin/admin.php?page=wp-sms-integrations',
-    icon: <Puzzle />,
-    description: 'Manage third-party integrations',
-  },
-]
+// Icon mapping for dynamic icon rendering
+const iconMap: Record<string, React.ReactNode> = {
+  MessageSquarePlus: <MessageSquarePlus />,
+  Inbox: <Inbox />,
+  Send: <Send />,
+  Puzzle: <Puzzle />,
+  Crown: <Crown />,
+  Settings: <Settings />,
+  CircleQuestionMark: <CircleQuestionMark />,
+}
 
 export function Header() {
   const linkClasses = '!text-white hover:!bg-white/10 hover:!text-white hover:text !no-underline'
-
   const location = useLocation()
+  const { header: headerItems } = useLayoutData()
 
   return (
     <header className="bg-header p-4 flex gap-2">
@@ -50,24 +36,34 @@ export function Header() {
         WP SMS
       </div>
       <ul className="!ms-auto flex gap-1">
-        {navItems.map((item) => (
-          <li key={item.title}>
-            <Button variant="ghost" className={linkClasses} asChild>
-              <a href={item.href}>
-                {item.icon}
-                {item.title}
-              </a>
-            </Button>
-          </li>
-        ))}
-        <li></li>
+        {headerItems.map((item) => {
+          const isUpgrade = item.icon === 'Crown'
+
+          if (item.isExternal) {
+            return (
+              <li key={item.title}>
+                <Button variant={isUpgrade ? 'default' : 'ghost'} className={isUpgrade ? '' : linkClasses} asChild>
+                  <a href={item.url} target="_blank" rel="noopener noreferrer">
+                    {iconMap[item.icon]}
+                    {item.title}
+                  </a>
+                </Button>
+              </li>
+            )
+          }
+
+          return (
+            <li key={item.title}>
+              <Button variant="ghost" className={linkClasses} asChild>
+                <a href={item.url}>
+                  {iconMap[item.icon]}
+                  {item.title}
+                </a>
+              </Button>
+            </li>
+          )
+        })}
       </ul>
-      <Button variant="default" asChild>
-        <a href="https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=header" target="_blank">
-          <Crown />
-          Upgrade
-        </a>
-      </Button>
       {!location.pathname.includes('settings') && (
         <Button asChild variant="ghost" className={linkClasses}>
           <Link to="/settings/$name" params={{ name: 'general' }}>

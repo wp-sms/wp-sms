@@ -22,7 +22,7 @@ class RestEndpointManager
             GetSchemaEndpoint::register();
             GetSettingsEndpoint::register();
             SaveSettingsEndpoint::register();
-            
+
             // Gateways API v1
             GetGatewayFieldsEndpoint::register();
 

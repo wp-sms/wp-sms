@@ -17,15 +17,15 @@ export class WordPressDataService {
   }
 
   public getNonce(): string {
-    return this.data.nonce
+    return this.data.globals.nonce
   }
 
   public getRestUrl(): string {
-    return this.data.restUrl
+    return this.data.globals.restUrl
   }
 
   public getBuildUrl(): string {
-    return this.data.frontend_build_url
+    return this.data.globals.frontend_build_url
   }
 
   public getHeaders(): HeadersInit {
