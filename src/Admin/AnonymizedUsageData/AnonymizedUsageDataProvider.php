@@ -358,7 +358,7 @@ class AnonymizedUsageDataProvider
 
             // Mobile Field Settings
             'addMobileField'                      => OptionUtil::get('add_mobile_field') ?: 'Not Set',
-            'mobileFieldMandatoryStatus'          => OptionUtil::get('optional_mobile_field') === '0' ? 'Required' : 'Optional',
+            'mobileFieldMandatoryStatus'          => OptionUtil::get('optional_mobile_field') !== 'optional' ? 'Required' : 'Optional',
 
             // GDPR Settings
             'gdprCompliance'                      => OptionUtil::get('gdpr_compliance') ? 'Enabled' : 'Disabled',

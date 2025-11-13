@@ -49,7 +49,40 @@
             </p>
         </div>
         <?php endforeach; ?>
-        <div class="gateway-status-container" style="display: none">
+
+        <div class="wpsms-admin-alert wpsms-admin-alert--info">
+            <div class="wpsms-admin-alert--content">
+                <p>
+                    <?php
+                    $output = [];
+
+                    if (!empty($doc_url)) {
+                        $output[] = sprintf(
+                            __('Need More Details? <a href="%1$s" title="%2$s" target="_blank">%2$s</a>', 'wp-sms'),
+                            esc_url($doc_url),
+                            esc_html__('View Instructions for This Gateway', 'wp-sms')
+                        );
+                    }
+
+                    if (!empty($help)) {
+                        $guide_title = '<strong>' . esc_html__('Gateway Guide', 'wp-sms') . '</strong>';
+                        $output[] = $guide_title . '<br>' . wp_kses_post($help);
+                    }
+
+                    if (empty($output)) {
+                        $output[] = sprintf(
+                            __('For additional setup instructions and troubleshooting, visit the <a href="%1$s" target="_blank">WP SMS plugin documentation</a>.', 'wp-sms'),
+                            esc_url(WP_SMS_SITE . '/documentation')
+                        );
+                    }
+
+                    echo implode('<br>', $output);
+                    ?>
+                </p>
+            </div>
+        </div>
+
+        <div class="gateway-status-container u-mt-38" style="display: none">
             <ul class="c-form__result">
                 <span><?php esc_html_e('Connection Status', 'wp-sms'); ?></span>
                 <li class="c-form__result-item u-flex u-content-sp u-align-center u-mb-16">
@@ -88,38 +121,6 @@
                     </span>
                 </li>
             </ul>
-        </div>
-
-        <div class="wpsms-admin-alert wpsms-admin-alert--info u-mt-38">
-            <div class="wpsms-admin-alert--content">
-                <p>
-                    <?php
-                    $output = [];
-
-                    if (!empty($doc_url)) {
-                        $output[] = sprintf(
-                            __('Need More Details? <a href="%1$s" title="%2$s" target="_blank">%2$s</a>', 'wp-sms'),
-                            esc_url($doc_url),
-                            esc_html__('View Instructions for This Gateway', 'wp-sms')
-                        );
-                    }
-
-                    if (!empty($help)) {
-                        $guide_title = '<strong>' . esc_html__('Gateway Guide', 'wp-sms') . '</strong>';
-                        $output[] = $guide_title . '<br>' . wp_kses_post($help);
-                    }
-
-                    if (empty($output)) {
-                        $output[] = sprintf(
-                            __('For additional setup instructions and troubleshooting, visit the <a href="%1$s" target="_blank">WP SMS plugin documentation</a>.', 'wp-sms'),
-                            esc_url(WP_SMS_SITE . '/documentation')
-                        );
-                    }
-
-                    echo implode('<br>', $output);
-                    ?>
-                </p>
-            </div>
         </div>
 
         <div class="c-form__footer u-content-sp u-align-center">
