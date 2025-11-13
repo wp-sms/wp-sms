@@ -8,8 +8,8 @@ import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { useFieldContext } from '@/context/form-context'
-import { WordPressDataService } from '@/lib/data-service'
 import { cn } from '@/lib/utils'
+import { WordPressService } from '@/lib/wordpress-service'
 import type { SchemaField } from '@/types/settings/group-schema'
 
 import { FieldWrapper } from '../field-wrapper'
@@ -40,7 +40,7 @@ export const TelField = ({ schema }: TelFieldProps) => {
   const [phoneNumber, setPhoneNumber] = useState('')
   const [initialized, setInitialized] = useState(false)
 
-  const dataService = WordPressDataService.getInstance()
+  const dataService = WordPressService.getInstance()
 
   useEffect(() => {
     const loadData = async () => {

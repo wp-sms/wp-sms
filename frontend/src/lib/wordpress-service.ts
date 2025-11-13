@@ -1,5 +1,5 @@
-export class WordPressDataService {
-  private static instance: WordPressDataService
+export class WordPressService {
+  private static instance: WordPressService
   private readonly data: NonNullable<typeof window.WP_SMS_DATA>
 
   private constructor() {
@@ -9,11 +9,11 @@ export class WordPressDataService {
     this.data = window.WP_SMS_DATA
   }
 
-  public static getInstance(): WordPressDataService {
-    if (!WordPressDataService.instance) {
-      WordPressDataService.instance = new WordPressDataService()
+  public static getInstance(): WordPressService {
+    if (!WordPressService.instance) {
+      WordPressService.instance = new WordPressService()
     }
-    return WordPressDataService.instance
+    return WordPressService.instance
   }
 
   public getNonce(): string {
@@ -26,6 +26,14 @@ export class WordPressDataService {
 
   public getBuildUrl(): string {
     return this.data.globals.frontend_build_url
+  }
+
+  public getGlobalsData() {
+    return this.data.globals
+  }
+
+  public getLayoutData() {
+    return this.data.layout
   }
 
   public getHeaders(): HeadersInit {

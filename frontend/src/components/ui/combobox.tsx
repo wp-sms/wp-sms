@@ -42,7 +42,7 @@ export function Combobox({
   disabled = false,
 }: ComboboxProps) {
   const [open, setOpen] = useState(false)
-  
+
   const getFirstOptionValue = () => {
     if (options.length === 0) return ''
     const firstOption = options[0]
@@ -56,7 +56,7 @@ export function Combobox({
   const commandListRef = useRef<HTMLDivElement>(null)
 
   const isControlled = controlledValue !== undefined
-  const value = isControlled ? (controlledValue || getFirstOptionValue()) : internalValue
+  const value = isControlled ? controlledValue || getFirstOptionValue() : internalValue
 
   const handleValueChange = (newValue: string) => {
     if (!isControlled) {

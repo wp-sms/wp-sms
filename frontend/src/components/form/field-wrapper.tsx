@@ -24,7 +24,6 @@ export const FieldWrapper = ({
           </Label>
         )}
 
-
         {schema.tag && schema.type !== 'checkbox' && <TagBadge tag={schema.tag} />}
       </div>
 

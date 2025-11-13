@@ -39,4 +39,4 @@ function TabsContent({ className, ...props }: React.ComponentProps<typeof TabsPr
   return <TabsPrimitive.Content data-slot="tabs-content" className={cn('flex-1 outline-none', className)} {...props} />
 }
 
-export { Tabs, TabsContent,TabsList, TabsTrigger }
+export { Tabs, TabsContent, TabsList, TabsTrigger }

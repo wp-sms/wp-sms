@@ -1,7 +1,13 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { ChevronRight, MessageSquare, PanelLeft, PanelLeftClose, Settings } from 'lucide-react'
 
-import { Button } from '@/components/ui/button'
+import { useSidebar } from '@/hooks/use-sidebar'
+import { useWordPressService } from '@/hooks/use-wordpress-service'
+import { RenderIcon } from '@/lib/render-icon'
+
+import { ThemeToggle } from '../theme-toggle'
+import { Button } from '../ui/button'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible'
 import {
   Sidebar,
   SidebarContent,
@@ -16,22 +22,16 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from '@/components/ui/sidebar'
-import { useSidebar } from '@/hooks/use-sidebar'
-import { useLayoutData } from '@/hooks/use-layout-data'
-import { RenderIcon } from '@/lib/render-icon'
+} from '../ui/sidebar'
 
-import { ThemeToggle } from '../theme-toggle'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../ui/collapsible'
-
-export const SettingsSidebar = () => {
-  const { sidebar } = useLayoutData()
-
+export function SettingsSidebar() {
+  const {
+    layout: { sidebar },
+    globals: { pluginVersion },
+  } = useWordPressService()
   const location = useLocation()
   const currentPath = location.pathname
   const { state, toggleSidebar } = useSidebar()
-
-  const pluginVersion = window.WP_SMS_DATA?.globals?.pluginVersion || '7.2'
 
   return (
     <Sidebar variant="sidebar" collapsible="icon" className="border-r border-border">

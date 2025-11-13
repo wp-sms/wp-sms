@@ -1,8 +1,8 @@
 import axios from 'axios'
 
-import { WordPressDataService } from './data-service'
+import { WordPressService } from './wordpress-service'
 
-const dataService = WordPressDataService.getInstance()
+const dataService = WordPressService.getInstance()
 
 const BASE_URL = dataService.getRestUrl()
 const HEADERS = dataService.getHeaders()

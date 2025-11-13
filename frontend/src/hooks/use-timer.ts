@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef,useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 interface UseTimerOptions {
   initialSeconds?: number

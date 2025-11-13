@@ -1,7 +1,7 @@
 import { Link, useLocation } from '@tanstack/react-router'
 import { CircleQuestionMark, Crown, Inbox, MessageSquarePlus, Puzzle, Send, Settings } from 'lucide-react'
 
-import { useLayoutData } from '@/hooks/use-layout-data'
+import { useWordPressService } from '@/hooks/use-wordpress-service'
 
 import { Button } from './ui/button'
 
@@ -19,7 +19,9 @@ const iconMap: Record<string, React.ReactNode> = {
 export function Header() {
   const linkClasses = '!text-white hover:!bg-white/10 hover:!text-white hover:text !no-underline'
   const location = useLocation()
-  const { header: headerItems } = useLayoutData()
+  const {
+    layout: { header },
+  } = useWordPressService()
 
   return (
     <header className="bg-header p-4 flex gap-2">
@@ -36,7 +38,7 @@ export function Header() {
         WP SMS
       </div>
       <ul className="!ms-auto flex gap-1">
-        {headerItems.map((item) => {
+        {header.map((item) => {
           const isUpgrade = item.icon === 'Crown'
 
           if (item.isExternal) {

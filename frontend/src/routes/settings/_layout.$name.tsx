@@ -1,9 +1,10 @@
-import { Suspense } from 'react'
 import { useSuspenseQueries } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
+import { AlertCircle } from 'lucide-react'
 
 import { Chatbox } from '@/components/chatbox/chatbox'
 import { SchemaForm } from '@/components/form/schema-form'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { SettingsSchemaSkeleton } from '@/components/ui/skeleton'
 import { getSchemaByGroup } from '@/services/settings/get-schema-by-group'
 import { getSettingsValuesByGroup } from '@/services/settings/get-settings-values-by-group'
@@ -12,19 +13,27 @@ import type { ChatboxSettings } from '@/types/chatbox'
 
 export const Route = createFileRoute('/settings/_layout/$name')({
   component: RouteComponent,
+  pendingComponent: () => <SettingsSchemaSkeleton />,
+  errorComponent: () => (
+    <Alert>
+      <AlertCircle className="h-4 w-4" />
+      <AlertDescription>Something went wrong!</AlertDescription>
+    </Alert>
+  ),
+  loader: async ({ context, params }) => {
+    const name = params.name as SettingGroupName
+
+    // Prefetch both queries in parallel
+    await Promise.all([
+      context.queryClient.ensureQueryData(getSchemaByGroup({ groupName: name })),
+      context.queryClient.ensureQueryData(getSettingsValuesByGroup({ groupName: name })),
+    ])
+  },
 })
 
 function RouteComponent() {
   const name = Route.useParams().name as SettingGroupName
 
-  return (
-    <Suspense fallback={<SettingsSchemaSkeleton />}>
-      <SettingsContent name={name} />
-    </Suspense>
-  )
-}
-
-function SettingsContent({ name }: { name: SettingGroupName }) {
   const [schemaResult, valuesResult] = useSuspenseQueries({
     queries: [getSchemaByGroup({ groupName: name }), getSettingsValuesByGroup({ groupName: name })],
   })
