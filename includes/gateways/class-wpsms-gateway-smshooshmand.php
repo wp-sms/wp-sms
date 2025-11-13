@@ -17,18 +17,20 @@ class smshooshmand extends \WP_SMS\Gateway
         parent::__construct();
         $this->validateNumber = "09xxxxxxxx";
 
-        if (!class_exists('nusoap_client')) {
-            include_once WP_SMS_DIR . 'includes/libraries/nusoap.class.php';
+        if (class_exists('nusoap_client')) {
+            $this->client = new \nusoap_client($this->wsdl_link, array('trace' => true));
+
+            $this->client->soap_defencoding = 'UTF-8';
+            $this->client->decode_utf8      = true;
         }
-
-        $this->client = new \nusoap_client($this->wsdl_link, array('trace' => true));
-
-        $this->client->soap_defencoding = 'UTF-8';
-        $this->client->decode_utf8      = true;
     }
 
     public function SendSMS()
     {
+        // Check if nusoap_client class exists
+        if (!class_exists('nusoap_client')) {
+            return new \WP_Error('send-sms', __('nusoap_client class does not exist. Please enable it in your server configuration.', 'wp-sms'));
+        }
 
         /**
          * Modify sender number
@@ -100,6 +102,11 @@ class smshooshmand extends \WP_SMS\Gateway
 
     public function GetCredit()
     {
+        // Check if nusoap_client class exists
+        if (!class_exists('nusoap_client')) {
+            return new \WP_Error('account-credit', __('nusoap_client class does not exist. Please enable it in your server configuration.', 'wp-sms'));
+        }
+
         // Check username and password
         if (!$this->username && !$this->password) {
             return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
