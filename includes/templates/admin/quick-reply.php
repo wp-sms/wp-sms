@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div id="wpsms-quick-reply" style="display: none">
     <div class="wpsms-sendsms__overlay">
         <svg class="wpsms-sendsms__overlay__spinner" xmlns="http://www.w3.org/2000/svg" style="margin:auto;background:0 0" width="200" height="200" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" display="block">
@@ -21,7 +22,7 @@
             </tr>
             <tr>
                 <td style="padding-top: 10px;">
-                    <label for="wpsms-quick-reply-message"><?php esc_html_e('Message', 'wp-sms-two-way'); ?></label>
+                    <label for="wpsms-quick-reply-message"><?php esc_html_e('Message', 'wp-sms'); ?></label>
                     <textarea id="wpsms-quick-reply-message" class="js-wpSmsQuickReplyMessage" name="wpsms_quick_reply_message" cols="60" rows="10" wrap="hard" dir="auto" style="width: 100%"></textarea>
                 </td>
             </tr>

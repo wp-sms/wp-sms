@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="wpsms-adminFooter">
     <?php if (apply_filters('wp_sms_enable_footer_logo', true)) { ?>
         <a href="https://veronalabs.com/?utm_source=wp-sms&utm_medium=link&utm_campaign=footer-logo" target="_blank" aria-label="VeronaLabs homepage">

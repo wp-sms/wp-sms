@@ -65,13 +65,6 @@ class kavenegar extends Gateway
     public $templateId = null;
 
     /**
-     * Gateway API key.
-     *
-     * @var string
-     */
-    public $apiKey;
-
-    /**
      * Gateway version.
      */
     public $version = '1.1';
@@ -99,9 +92,7 @@ class kavenegar extends Gateway
             ],
         ];
 
-        $this->apiKey = !empty($this->options['gateway_key']) ? $this->options['gateway_key'] : '';
-
-        $this->help = <<<HTML
+        $this->help = '
 <div dir="rtl">
   <h3>ارسال پیامک با الگو (پترن) — راهنمای تنظیم و استفاده از متغیرها</h3>
   <p>
@@ -123,17 +114,16 @@ class kavenegar extends Gateway
       در افزونه، همان متن را با متغیرهای پلاگین وارد کنید (مثلاً <code>%billing_first_name%</code> و <code>%order_id%</code>) 
       و در انتهای پیامک، پس از علامت «|»، کد الگو را بنویسید.<br>
       نمونه در افزونه:<br>
-      <code style='direction: rtl'>سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.|2343</code>
+      <code style="direction: rtl">سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.|2343</code>
     </li>
   </ol>
   <p><strong>نکات مهم</strong></p>
   <ul>
-    <li>در صورتی که <code style='direction: rtl'>|کد</code> را قرار ندهید، پیام به‌صورت <em>ارسال معمولی</em> (بدون استفاده از پترن) ارسال می‌شود.</li>
+    <li>در صورتی که <code style="direction: rtl">|کد</code> را قرار ندهید، پیام به‌صورت <em>ارسال معمولی</em> (بدون استفاده از پترن) ارسال می‌شود.</li>
     <li>ترتیب متغیرها در پیامک باید دقیقاً مطابق ترتیب <code>token</code>ها در سامانه پیامکی باشد.</li>
     <li>حداکثر پنج متغیر قابل استفاده است: <code>token</code>, <code>token2</code>, <code>token3</code>, <code>token10</code>, <code>token20</code>.</li>
   </ul>
-</div>
-HTML;
+</div>';
     }
 
     /**
@@ -146,7 +136,7 @@ HTML;
      */
     private function buildUrl($method, $scope = 'sms')
     {
-        $key = rawurlencode(trim($this->apiKey));
+        $key = rawurlencode(trim($this->has_key));
         $svc = rawurlencode($scope);
         $mtd = rawurlencode($method);
 
@@ -178,7 +168,7 @@ HTML;
      */
     public function SendSMS()
     {
-        if (empty($this->apiKey)) {
+        if (empty($this->has_key)) {
             return new WP_Error('missing-api-key', __('API Key is required.', 'wp-sms'));
         }
 
@@ -235,7 +225,7 @@ HTML;
      */
     public function GetCredit()
     {
-        if (empty($this->apiKey)) {
+        if (empty($this->has_key)) {
             return new WP_Error('missing-api-key', __('API Key is required.', 'wp-sms'));
         }
 

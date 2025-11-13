@@ -2,10 +2,10 @@
 
 namespace WP_SMS\Gateway;
 
-class sarinapayamak extends \WP_SMS\Gateway
+class iranspk extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "http://api.payamak-panel.com/post/send.asmx?WSDL";
-    public $tariff = "http://www.sarinapayamak.com/";
+    private $wsdl_link = "http://iranspk.ir/post/send.asmx?wsdl";
+    public $tariff = "http://iranspk.ir/";
     public $unitrial = true;
     public $unit;
     public $flash = "disable";
@@ -60,12 +60,6 @@ class sarinapayamak extends \WP_SMS\Gateway
             return $credit;
         }
 
-        $result = array(
-            'from' => $this->from,
-            'to'   => $this->to,
-            'msg'  => $this->msg,
-        );
-
         try {
             $client                 = new \SoapClient($this->wsdl_link);
             $parameters['username'] = $this->username;
@@ -94,8 +88,8 @@ class sarinapayamak extends \WP_SMS\Gateway
 
             return $result;
         } catch (\SoapFault $ex) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $ex->faultstring, 'error');
+            // Log th result
+            $this->log($this->from, $this->msg, $ex->faultstring, 'error');
 
             return new \WP_Error('send-sms', $ex->faultstring);
         }

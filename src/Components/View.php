@@ -23,7 +23,13 @@ class View
                 $viewPath = WP_SMS_DIR . '/views/' . $view . '.php';
 
                 if (!file_exists($viewPath)) {
-                    throw new SystemErrorException(esc_html__("View file not found: {$viewPath}", 'wp-sms'));
+                    throw new SystemErrorException(
+                        sprintf(
+                            /* translators: %s: View file path */
+                            __("View file not found: %s", 'wp-sms'),
+                            $viewPath
+                        )
+                    );
                 }
 
                 if (!empty($args)) {

@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 use WP_SMS\Components\View;
 use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginDecorator;

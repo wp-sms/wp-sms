@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="alignleft actions bulkactions">
     <select name="group_id">
         <option value=""><?php esc_html_e('Filter by group', 'wp-sms'); ?></option>

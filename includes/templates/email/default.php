@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title><?php echo esc_html($email_title); ?></title>

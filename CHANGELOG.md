@@ -1,3 +1,11 @@
+= v7.0.5 - 2025-11-13 =
+- **Enhancement:** Repositioned the "All-in-One Required" label to the top of the PRO gateway onboarding table for better visibility.
+- **Enhancement:** Added more plugin details to the Site Health Info section for easier diagnostics.
+- **Enhancement:** Removed deprecated `utf8_decode()` usage in `nusoap.class.php`.
+- **Enhancement:** Updated libraries and cleaned up assets.
+- **Fix:** Fixed incorrect changelog URL links in add-ons.
+- **Fix:** Fixed connection status display and moved the Connection Status section below the Gateway Guide for improved UI
+
 = v7.0.4 - 2025-11-02 =
 - **New:** Added support for the SMS.es gateway.
 - **New:** Display an admin notice when the gateway version changes, required fields are missing, or the gateway is not configured.

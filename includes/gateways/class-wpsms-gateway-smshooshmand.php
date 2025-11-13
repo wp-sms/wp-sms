@@ -2,11 +2,11 @@
 
 namespace WP_SMS\Gateway;
 
-class smsmelli extends \WP_SMS\Gateway
+class smshooshmand extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "http://smsmelli.com/class/sms/webservice3/server.php?wsdl";
+    private $wsdl_link = "http://smshooshmand.com/class/sms/webservice3/server.php?wsdl";
     private $client = null;
-    public $tariff = "http://smsmelli.com/";
+    public $tariff = "http://smshooshmand.com/";
     public $unitrial = true;
     public $unit;
     public $flash = "enable";
@@ -82,11 +82,19 @@ class smsmelli extends \WP_SMS\Gateway
         if ($result) {
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $result);
+
+            /**
+             * Run hook after send sms.
+             *
+             * @param string $result result output.
+             * @since 2.4
+             *
+             */
             do_action('wp_sms_send', $result);
 
             return $result;
         }
-        // Log the result
+        // Log th result
         $this->log($this->from, $this->msg, $this->to, $result, 'error');
 
         return new \WP_Error('send-sms', $result);

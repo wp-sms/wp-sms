@@ -370,6 +370,11 @@
 
 .iti--inline-dropdown .iti__dropdown-content{
   direction: ltr;
+  .iti__search-input-wrapper{
+    span.iti__search-icon{
+      display: none;
+    }
+  }
 }
 .iti--container{
   width: 449px !important;

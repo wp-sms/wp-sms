@@ -2,11 +2,11 @@
 
 namespace WP_SMS\Gateway;
 
-class smsmelli extends \WP_SMS\Gateway
+class avalpayam extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "http://smsmelli.com/class/sms/webservice3/server.php?wsdl";
+    private $wsdl_link = "http://www.avalpayam.com/class/sms/wssimple/server.php?wsdl";
     private $client = null;
-    public $tariff = "http://smsmelli.com/";
+    public $tariff = "http://avalpayam.com/";
     public $unitrial = true;
     public $unit;
     public $flash = "enable";
@@ -17,20 +17,18 @@ class smsmelli extends \WP_SMS\Gateway
         parent::__construct();
         $this->validateNumber = "09xxxxxxxx";
 
-        if (class_exists('nusoap_client')) {
-            $this->client = new \nusoap_client($this->wsdl_link, array('trace' => true));
-
-            $this->client->soap_defencoding = 'UTF-8';
-            $this->client->decode_utf8      = true;
+        if (!class_exists('nusoap_client')) {
+            include_once WP_SMS_DIR . 'includes/libraries/nusoap.class.php';
         }
+
+        $this->client = new \nusoap_client($this->wsdl_link);
+
+        $this->client->soap_defencoding = 'UTF-8';
+        $this->client->decode_utf8      = true;
     }
 
     public function SendSMS()
     {
-        // Check if nusoap_client class exists
-        if (!class_exists('nusoap_client')) {
-            return new \WP_Error('send-sms', __('nusoap_client class does not exist. Please enable it in your server configuration.', 'wp-sms'));
-        }
 
         /**
          * Modify sender number
@@ -71,40 +69,47 @@ class smsmelli extends \WP_SMS\Gateway
         }
 
         $result = $this->client->call("SendSMS", array(
-            'user'           => $this->username,
-            'pass'           => $this->password,
-            'fromNum'        => $this->from,
-            'toNum'          => $this->to,
-            'messageContent' => $this->msg,
-            'messageType'    => 'normal'
+            'Username'         => $this->username,
+            'Password'         => $this->password,
+            'SenderNumber'     => $this->from,
+            'RecipientNumbers' => $this->to,
+            'Message'          => $this->msg,
+            'Type'             => 'normal'
         ));
 
         if ($result) {
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $result);
+
+            /**
+             * Run hook after send sms.
+             *
+             * @param string $result result output.
+             * @since 2.4
+             *
+             */
             do_action('wp_sms_send', $result);
 
             return $result;
         }
-        // Log the result
+        // Log th result
         $this->log($this->from, $this->msg, $this->to, $result, 'error');
 
         return new \WP_Error('send-sms', $result);
+
     }
 
     public function GetCredit()
     {
-        // Check if nusoap_client class exists
-        if (!class_exists('nusoap_client')) {
-            return new \WP_Error('account-credit', __('nusoap_client class does not exist. Please enable it in your server configuration.', 'wp-sms'));
-        }
-
         // Check username and password
         if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
+            return new \WP_Error('account-credit', esc_html__('API username or API password is not entered.', 'wp-sms'));
         }
 
-        $result = $this->client->call("GetCredit", array('user' => $this->username, 'pass' => $this->password));
+        $result = $this->client->call("GetCredit", array(
+            'Username' => $this->username,
+            'Password' => $this->password
+        ));
 
         return $result;
     }

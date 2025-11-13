@@ -1,20 +1,18 @@
-﻿=== WP SMS – Ultimate SMS & MMS Notifications, OTP, 2FA, and WooCommerce & Forms Integrations ===
+﻿=== WP SMS – SMS & MMS Notifications with OTP and 2FA for WooCommerce ===
 Contributors: veronalabs, mostafa.s1990, kashani
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sms
 Requires at least: 4.1
 Tested up to: 6.8
 Requires PHP: 5.6
-Stable tag: 7.0.4
+Stable tag: 7.0.5
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Send SMS/MMS, OTP & 2FA messages, WooCommerce updates, and bulk campaigns with 300+ gateways and plugin integrations.
+Send SMS/MMS notifications, OTP & 2FA messages, and WooCommerce updates with support for multiple gateways and plugin integrations.
 
 == Description ==
-### 🚀 The most complete SMS solution for WordPress
-
-[WP SMS](https://wp-sms-pro.com/?utm_source=wporg&utm_medium=link&utm_campaign=website) lets you send SMS/MMS notifications, one-time passwords (OTP), and two-factor authentication (2FA) messages straight from WordPress. It supports **300+ gateways** (Twilio, WhatsApp Business API, Clickatell, BulkSMS, Plivo, and more) and integrates with popular plugins like **WooCommerce, GravityForms, Elementor, and Contact Form 7**.
+[WP SMS](https://wp-sms-pro.com/?utm_source=wporg&utm_medium=link&utm_campaign=website) lets you send SMS/MMS notifications, one-time passwords (OTP), and two-factor authentication (2FA) messages straight from WordPress. It supports a wide range of SMS gateways and integrates with popular e-commerce and form builder plugins.
 
 Use WP SMS to:
 - Keep customers updated on WooCommerce orders
@@ -25,32 +23,32 @@ Use WP SMS to:
 
 👉 [Check out the demo](https://demo.wp-sms-pro.com/wp-login.php) | [View screenshots](#screenshots) | [See supported gateways](https://wp-sms-pro.com/gateways?utm_source=wporg&utm_medium=link&utm_campaign=gateways) | [Explore integrations](https://wp-sms-pro.com/integrations?utm_source=wporg&utm_medium=link&utm_campaign=integrations)
 
-## ✨ Top Features
-- **Send SMS/MMS:** Send messages via 300+ gateways, including Twilio, WhatsApp, and Clickatell.
-- **WooCommerce & Forms Ready:** Works with WooCommerce, GravityForms, Contact Form 7, Ninja Forms, Formidable, Elementor, and more.
+## ✨ Key Features
+- **Send SMS/MMS:** Send messages through your choice of supported SMS gateways.
+- **E-Commerce & Form Integration:** Seamlessly integrates with popular e-commerce platforms and form builders.
 - **OTP & 2FA:** Add extra login security with one-time passwords and two-factor authentication.
 - **Mobile Login:** Let users log in with their mobile number.
 - **Admin Alerts:** Get notified when new users register, posts are published, or WordPress updates are available.
 - **Newsletters & Widgets:** Build SMS newsletter forms with shortcodes, widgets, or Gutenberg blocks.
 - **Two-Way SMS (All-in-One):** Receive and reply to SMS messages inside WordPress.
-- **Bulk & Scheduled SMS:** Send to thousands of numbers at once, immediately or on schedule.
-- **Zapier Integration:** Connect WP SMS with 5,000+ apps.
-- **Messaging Button:** Let visitors reach you instantly via SMS, WhatsApp, or Telegram.
+- **Bulk & Scheduled SMS:** Send to multiple recipients at once, immediately or on schedule.
+- **Third-Party Integration:** Connect with external services and automation platforms.
+- **Messaging Button:** Let visitors reach you instantly via messaging channels.
 - **GDPR Compliant:** Built with privacy and compliance in mind.
 
 ## 💎 Upgrade to WP SMS All-in-One
-Unlock the full power of WP SMS with **All-in-One** — the plan that gives you everything in one package.
+Unlock additional features with **All-in-One** — the plan that gives you access to all premium add-ons in one package.
 
 With All-in-One you get:
 - Secure login & registration with OTP & 2FA
 - Scheduled & recurring SMS/MMS
 - Two-way SMS inbox
-- WooCommerce Pro (login, checkout verification, order updates)
-- Membership integrations (Paid Memberships Pro, Simple Membership, etc.)
-- Elementor Form SMS
-- FluentCRM, FluentForms, FluentSupport SMS
-- Booking integrations (BookingPress, WooCommerce Appointments, Booking Calendar)
-- URL shortening with Bitly
+- Enhanced e-commerce features (login, checkout verification, order updates)
+- Membership platform integrations
+- Advanced form builder SMS capabilities
+- Marketing automation integrations
+- Booking system compatibility
+- URL shortening service integration
 - All future add-ons included
 
 👉 [See All-in-One details & compare features](https://wp-sms-pro.com/pricing/?utm_source=wporg&utm_medium=link&utm_campaign=pricing)
@@ -58,6 +56,9 @@ With All-in-One you get:
 ## 🐞 Report Bugs & Security
 - Found a bug? [Open an issue on GitHub](https://github.com/wp-sms/wp-sms/issues/new).
 - Security concerns? Report them via the [Patchstack VDP program](https://patchstack.com/database/wordpress/plugin/wp-sms/vdp).
+
+## 📝 Trademark Notice
+WooCommerce, GravityForms, Elementor, Contact Form 7, Twilio, WhatsApp, Clickatell, BulkSMS, Plivo, Zapier, Bitly, and other product names mentioned are trademarks of their respective owners. WP SMS is not affiliated with, endorsed by, or sponsored by these companies.
 
 == Installation ==
 1. Upload `wp-sms` to `/wp-content/plugins/`
@@ -81,7 +82,7 @@ Yes. It includes tools to manage user data responsibly.
 Yes. It can handle large volumes with asynchronous sending.
 
 = What plugins integrate with WP SMS? =
-WooCommerce, GravityForms, Contact Form 7, BuddyPress, EDD, Elementor, and more. Plus, Zapier connects it to 5,000+ apps.
+WP SMS integrates with popular e-commerce platforms, form builders, membership systems, and marketing automation tools. See the full list of supported integrations on our website.
 
 = How many SMS can I send? =
 Unlimited — your SMS gateway plan determines limits.
@@ -118,6 +119,14 @@ All premium features + all add-ons in one package.
 - New Onboarding, Add-on Manager, and All-in-One package.
 
 == Changelog ==
+= v7.0.5 - 2025-11-13 =
+- **Enhancement:** Repositioned the "All-in-One Required" label to the top of the PRO gateway onboarding table for better visibility.
+- **Enhancement:** Added more plugin details to the Site Health Info section for easier diagnostics.
+- **Enhancement:** Removed deprecated `utf8_decode()` usage in `nusoap.class.php`.
+- **Enhancement:** Updated libraries and cleaned up assets.
+- **Fix:** Fixed incorrect changelog URL links in add-ons.
+- **Fix:** Fixed connection status display and moved the Connection Status section below the Gateway Guide for improved UI
+
 = v7.0.4 - 2025-11-02 =
 - **New:** Added support for the SMS.es gateway.
 - **New:** Display an admin notice when the gateway version changes, required fields are missing, or the gateway is not configured.
