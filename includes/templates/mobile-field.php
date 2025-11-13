@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <table class="form-table">
     <tr>
         <th><label for="wpsms-mobile"><?php esc_html_e('Mobile', 'wp-sms'); ?></label></th>

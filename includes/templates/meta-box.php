@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <table class="form-table send-sms-post">
 
     <!-- Send Message and Receiver Row -->

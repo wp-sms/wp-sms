@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="repeater">
     <div data-repeater-list="wpsms_settings[<?php echo esc_attr($args['id']) ?>]">
         <?php if (is_array($value) && count($value)) : ?>

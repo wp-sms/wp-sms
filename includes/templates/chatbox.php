@@ -1,4 +1,5 @@
 <?php
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
 /** @var \WP_SMS\Services\MessageButton\ChatBoxDecorator $chatbox */
 $general_color      = $chatbox->getTextColor() ? sprintf('color: %s!important;', $chatbox->getTextColor()) : '';
 $general_background = $chatbox->getColor() ? sprintf('background-color: %s;', $chatbox->getColor()) : '';

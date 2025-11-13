@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <li class="tab-zapier">
     <div class="tab-zapier-elements">
         <div>

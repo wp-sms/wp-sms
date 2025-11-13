@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="notice notice-<?php echo esc_attr($notice['class']); ?> wp-sms-notice<?php echo esc_attr($dismissible); ?>">
     <p><?php echo wp_kses_post($notice['message']); ?></p>
     <?php if ($notice['is_dismissible']) : ?>

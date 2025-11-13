@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="c-section__title u-mb-10">
     <span class="c-section__step">
         <?php use WP_SMS\Gateway;
