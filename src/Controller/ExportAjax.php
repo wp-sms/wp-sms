@@ -95,7 +95,7 @@ class ExportAjax extends AjaxControllerAbstract {
 			$csvHelper->array2csv( $file_name, $collection, true );
 
 		} else {
-			wp_send_json_error( __( 'There is no data to export' ), 'wp-sms' );
+            wp_send_json_error(__('There is no data to export', 'wp-sms'), 'wp-sms');
 		}
 	}
 }

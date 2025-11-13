@@ -653,9 +653,9 @@ abstract class WP_Background_Process extends WP_Async_Request {
 		}
 
 		if ( 1 === $interval ) {
-			$display = __( 'Every Minute' );
+            $display = __('Every Minute', 'wp-sms');
 		} else {
-			$display = sprintf( __( 'Every %d Minutes' ), $interval );
+            $display = sprintf(__('Every %d Minutes', 'wp-sms'), $interval);
 		}
 
 		// Adds an "Every NNN Minute(s)" schedule to the existing cron schedules.

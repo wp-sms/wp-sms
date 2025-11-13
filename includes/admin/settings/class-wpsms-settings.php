@@ -413,7 +413,7 @@ class Settings
                     'id'   => 'bp_welcome_notification',
                     'name' => esc_html__('Welcome Notification', 'wp-sms'),
                     'type' => 'header',
-                    'desc' => esc_html__('By enabling this option you can send welcome SMS to new BuddyPress users'),
+                    'desc' => esc_html__('By enabling this option you can send welcome SMS to new BuddyPress users', 'wp-sms'),
                 ),
                 'bp_welcome_notification_enable'  => array(
                     'id'      => 'bp_welcome_notification_enable',
@@ -1414,7 +1414,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 ),
                 'incoming_message'             => array(
                     'id'      => 'incoming_message',
-                    'name'    => esc_html__('Incoming Message'),
+                    'name'    => esc_html__('Incoming Message', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::incoming_message_status(),
                 ),
