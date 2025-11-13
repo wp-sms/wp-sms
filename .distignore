@@ -10,7 +10,6 @@
 .editorconfig
 .gulpfile.js
 codeception.dist.yml
-composer.json
 composer.lock
 LICENSE
 package.json
