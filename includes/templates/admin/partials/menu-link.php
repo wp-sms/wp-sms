@@ -1,4 +1,7 @@
 <?php
+
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 $class = '';
 if (isset($_GET['page']) && $_GET['page'] === $slug) {
     $class = 'active';

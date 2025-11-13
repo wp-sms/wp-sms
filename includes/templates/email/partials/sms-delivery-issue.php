@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <p><?php esc_html_e('WP SMS encountered an issue while sending SMS messages to the following numbers:', 'wp-sms'); ?></p>
 <code><?php echo esc_html(implode(', ', $to)); ?></code>
 

@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="wp-sms-notice wp-sms-notice--warning">
     <div>
         <p class="wp-sms-notice__title"><?php esc_html_e('Notice:', 'wp-sms') ?></p>

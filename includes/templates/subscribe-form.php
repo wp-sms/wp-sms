@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <form class="js-wpSmsSubscribeForm">
     <div class="wpsms-subscribe js-wpSmsSubscribeFormContainer">
         <div class="wpsms-subscribe__overlay js-wpSmsSubscribeOverlay" style="display: none;">

@@ -1,6 +1,4 @@
-<?php 
-
-?>
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="wpsms-wrap__top">
     <?php if (isset($title)): ?>
         <h2 class="wpsms_title <?php echo isset($install_addon_btn_txt) ? 'wpsms_plugins_page-title' : '' ?>">

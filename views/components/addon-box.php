@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 /** @var PluginDecorator $addOn */
 
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginDecorator;
