@@ -21,7 +21,7 @@
             </tr>
             <tr>
                 <td style="padding-top: 10px;">
-                    <label for="wpsms-quick-reply-message"><?php esc_html_e('Message', 'wp-sms-two-way'); ?></label>
+                    <label for="wpsms-quick-reply-message"><?php esc_html_e('Message', 'wp-sms'); ?></label>
                     <textarea id="wpsms-quick-reply-message" class="js-wpSmsQuickReplyMessage" name="wpsms_quick_reply_message" cols="60" rows="10" wrap="hard" dir="auto" style="width: 100%"></textarea>
                 </td>
             </tr>

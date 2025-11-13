@@ -107,7 +107,7 @@ class prosmsdk extends \WP_SMS\Gateway
         try {
             // Check Api key
             if (!$this->has_key or !isset($this->has_key)) {
-                throw new Exception(esc_html__('Api key for this gateway is required.', 'wp-sms-pro'));
+                throw new Exception(esc_html__('Api key for this gateway is required.', 'wp-sms'));
             }
 
             $args = [

@@ -2540,7 +2540,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             esc_attr($size),
             esc_attr($args['id']),
             esc_attr(stripslashes($value)),
-            esc_html__('Upload File', 'wpsms'),
+            esc_html__('Upload File', 'wp-sms'),
             wp_kses_post($args['desc'])
         );
 
