@@ -561,7 +561,7 @@
     }
   }
   .wpsms-header-items-side {
-    & > .license-status, & > .setting, & > .support {
+    & > .license-status, & > .setting, & > .support , & > .wpsms-notifications {
       display: none !important;
     }
   }
