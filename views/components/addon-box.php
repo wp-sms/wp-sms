@@ -6,7 +6,7 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginDecorator;
 
-if (!defined('ABSPATH') || empty($addOn)) {
+if (empty($addOn)) {
     exit;
 }
 
