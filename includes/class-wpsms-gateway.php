@@ -814,7 +814,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'markazpayamak' => 'markazpayamak.ir',
                 'farapayamak'   => 'farapayamak.com',
                 'adpdigital'    => 'adpdigital.com',
-                'iransmspanel'  => 'iransmspanel.ir',
+                'iransmspanel'  => 'persianbulk.com (formerly iransmspanel.ir)',
                 'sunwaysms'     => 'sunwaysms.com',
                 'persiansms'    => 'persiansms.com',
                 'smsclick'      => 'smsclick.ir',
