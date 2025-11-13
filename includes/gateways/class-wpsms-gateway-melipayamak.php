@@ -120,7 +120,7 @@ class melipayamak extends Gateway
             ],
         ];
 
-        $this->help = <<<HTML
+        $this->help = '
 <div dir="rtl">
   <h3>ارسال پیامک با پترن (الگو)</h3>
   <ol>
@@ -132,21 +132,20 @@ class melipayamak extends Gateway
         <li>در <strong>سامانه پیامکی</strong>: متغیرها به ترتیب شماره‌گذاری می‌شوند؛ مانند <code>{0}</code> و <code>{1}</code>.</li>
       </ul>
       مثال متن پیامک:<br>
-      <code style='direction: rtl'>سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.</code><br>
+      <code style="direction: rtl">سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.</code><br>
       <code>سلام {0}، سفارش {1} با موفقیت ثبت شد.</code>
     </li>
     <li>
       <strong>اضافه کردن کد الگو در پلاگین</strong><br>
       بعد از متن پیامک، کد الگو را با علامت «|» اضافه کنید.<br>
-      مثال: <code style='direction: rtl'>سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.|2343</code>
+      مثال: <code style="direction: rtl">سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.|2343</code>
     </li>
   </ol>
   <p><strong>نکات مهم</strong></p>
   <ul>
-    <li>اگر <code style='direction: rtl'>|کد</code> نگذارید، پیام به‌صورت <em>ارسال معمولی</em> فرستاده می‌شود.</li>
+    <li>اگر <code style="direction: rtl">|کد</code> نگذارید، پیام به‌صورت <em>ارسال معمولی</em> فرستاده می‌شود.</li>
   </ul>
-</div>
-HTML;
+</div>';
     }
 
     /**
