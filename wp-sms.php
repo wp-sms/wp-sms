@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WP SMS
  * Plugin URI: https://wp-sms-pro.com/
- * Description: Ultimate SMS & MMS Notifications, 2FA, OTP, and Integrations with WooCommerce, GravityForms, and More
+ * Description: SMS & MMS Notifications, 2FA, OTP, and Integrations with E-Commerce and Form Builders
  * Version: 7.0.5
  * Author: VeronaLabs
  * Author URI: https://veronalabs.com/
