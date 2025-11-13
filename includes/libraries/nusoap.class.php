@@ -7209,7 +7209,12 @@ class nusoap_parser extends nusoap_base
             // raw UTF-8 that, e.g., might not map to iso-8859-1
             // TODO: this can also be handled with xml_parser_set_option($this->parser, XML_OPTION_TARGET_ENCODING, "ISO-8859-1");
             if ($this->decode_utf8) {
-                $data = function_exists('mb_convert_encoding') ? mb_convert_encoding($data, 'ISO-8859-1', 'UTF-8') : utf8_decode($data);
+                if (function_exists('mb_convert_encoding')) {
+                    $data = mb_convert_encoding($data, 'ISO-8859-1', 'UTF-8');
+                } else {
+                    // Safe manual fallback — does NOT use deprecated utf8_decode()
+                    $data = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $data);
+                }
             }
         }
         $this->message[$pos]['cdata'] .= $data;
