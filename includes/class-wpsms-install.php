@@ -2,8 +2,9 @@
 
 namespace WP_SMS;
 
-use WP_SMS\Services\Database\Managers\TableHandler;
-use WP_SMS\Utils\OptionUtil as Option;
+use WP_SMS\BackgroundProcess\Async\QueueMigrationProcess;
+use WP_SMS\Services\Database\Migrations\Queue\QueueFactory;
+use WP_SMS\Settings\Option;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -16,6 +17,7 @@ class Install
 
     public function __construct()
     {
+        add_action('init', [$this, 'upgrade']);
     }
 
     /**
@@ -59,15 +61,6 @@ class Install
     public function install($network_wide)
     {
         require_once WP_SMS_DIR . 'src/Utils/OptionUtil.php';
-        require_once WP_SMS_DIR . 'src/Services/Database/DatabaseManager.php';
-        require_once WP_SMS_DIR . 'src/Services/Database/Managers/TransactionHandler.php';
-        require_once WP_SMS_DIR . 'src/Services/Database/AbstractDatabaseOperation.php';
-        require_once WP_SMS_DIR . 'src/Services/Database/Operations/AbstractTableOperation.php';
-        require_once WP_SMS_DIR . 'src/Services/Database/Operations/Create.php';
-        require_once WP_SMS_DIR . 'src/Services/Database/Operations/Inspect.php';
-        require_once WP_SMS_DIR . 'src/Services/Database/DatabaseFactory.php';
-        require_once WP_SMS_DIR . 'src/Services/Database/Schema/Manager.php';
-        require_once WP_SMS_DIR . 'src/Services/Database/Managers/TableHandler.php';
 
         global $wp_sms_db_version, $wpdb;
 
@@ -77,7 +70,7 @@ class Install
         delete_option('wp_notification_new_wp_version');
 
         if (is_admin()) {
-            self::upgrade();
+            $this->upgrade();
         }
 
         if (is_multisite() && $network_wide) {
@@ -86,26 +79,27 @@ class Install
 
                 switch_to_blog($blog_id);
                 $this->checkIsFresh();
-                TableHandler::createAllTables();
                 restore_current_blog();
             }
         } else {
             $this->checkIsFresh();
-            TableHandler::createAllTables();
         }
 
         $this->markBackgroundProcessAsInitiated();
     }
 
+    /**
+     * Marks the background processes as initiated for fresh installations.
+     *
+     * @return void
+     */
     private function markBackgroundProcessAsInitiated()
     {
         if (!self::isFresh()) {
             return;
         }
 
-        Option::saveOptionGroup('schema_migration_process_started', true, 'jobs');
-        Option::saveOptionGroup('update_source_channel_process_initiated', true, 'jobs');
-        Option::saveOptionGroup('table_operations_process_initiated', true, 'jobs');
+        Option::saveOptionGroup('queue_migration_process', true, 'jobs');
     }
 
     /**
@@ -117,8 +111,8 @@ class Install
 
         global $wpdb;
         $charset_collate       = $wpdb->get_charset_collate();
-        $installer_wpsms_ver   = get_option('wp_sms_db_version');
         $outboxTable           = $wpdb->prefix . 'sms_send';
+        $installer_wpsms_ver   = get_option('wp_sms_db_version');
         $subscribersTable      = $wpdb->prefix . 'sms_subscribes';
         $subscribersGroupTable = $wpdb->prefix . 'sms_subscribes_group';
 
@@ -189,7 +183,8 @@ class Install
 
             $this->checkIsFresh();
 
-            TableHandler::createAllTables();
+            // Trigger queue migration for settings migration
+            $this->triggerQueueMigration();
 
             update_option('wp_sms_db_version', WP_SMS_VERSION);
         }
@@ -200,6 +195,46 @@ class Install
         if (!$wpdb->get_var("SHOW COLUMNS FROM `{$outboxTable}` like 'media'")) {
             $wpdb->query("ALTER TABLE `{$outboxTable}` ADD `media` TEXT NULL AFTER `recipient`");
         }
+    }
+
+    /**
+     * Trigger queue migration process for settings migration.
+     *
+     * This method checks if migrations are needed and dispatches them
+     * to the background queue for processing.
+     *
+     * @return void
+     */
+    private function triggerQueueMigration()
+    {
+        require_once WP_SMS_DIR . 'src/Services/Database/Migrations/Queue/QueueFactory.php';
+        require_once WP_SMS_DIR . 'src/Services/Database/Migrations/Queue/QueueMigration.php';
+        require_once WP_SMS_DIR . 'includes/libraries/wp-background-processing/wp-async-request.php';
+        require_once WP_SMS_DIR . 'includes/libraries/wp-background-processing/wp-background-process.php';
+        require_once WP_SMS_DIR . 'src/BackgroundProcess/Async/QueueMigrationProcess.php';
+
+        // Check if migration is needed
+        if (!QueueFactory::needsMigration()) {
+            return;
+        }
+
+        // Get pending migration steps
+        $pendingSteps = QueueFactory::getPendingMigrationSteps();
+
+        if (empty($pendingSteps)) {
+            return;
+        }
+
+        // Initialize the background process
+        $queueMigrationProcess = new QueueMigrationProcess();
+
+        // Push each pending step to the queue
+        foreach ($pendingSteps as $step) {
+            $queueMigrationProcess->push_to_queue($step);
+        }
+
+        // Save and dispatch the queue
+        $queueMigrationProcess->save()->dispatch();
     }
 
     /**

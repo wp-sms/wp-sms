@@ -57,7 +57,7 @@ class FieldValidator
      * @param Field|null $field
      * @return true|string
      */
-    public static function validateSelect($value, Field $field = null)
+    public static function validateSelect($value, ?Field $field = null)
     {
         if (!$field instanceof Field) {
             return 'Invalid field context for select validation';

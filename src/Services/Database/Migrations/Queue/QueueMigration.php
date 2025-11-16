@@ -1,30 +1,44 @@
 <?php
 
-namespace WP_SMS\Services\Database\Migrations;
+namespace WP_SMS\Services\Database\Migrations\Queue;
 
 use Exception;
 
 /**
- * Manages migrations related to WordPress options.
+ * Queue migration class for handling database migration steps.
+ *
+ * This class extends BaseMigrationOperation to provide specific migration
+ * functionality for queued operations. It handles various setting updates
+ * and data transformations during the migration process.
  */
-class OptionMigration extends AbstractMigrationOperation
+class QueueMigration
 {
     /**
-     * The name of the migration operation.
+     * Array of migration steps with their corresponding method names.
      *
-     * @var string
+     * Each key represents a migration step identifier, and the value
+     * is the corresponding method name to execute for that step.
+     * The methods are called sequentially during the migration process.
+     *
+     * @var array<string, string> Array mapping step names to method names
      */
-    protected $name = 'option';
-
     protected $migrationSteps = [
-        '7.2.0' => [
-            'migrateMainSettings',
-            'migrateProSettings',
-            'migrateTwoWaySettings',
-            'migrateBookingIntegrationsSettings',
-            'migrateFluentIntegrationsSettings'
-        ],
+        'migrateMainSettings'                => 'migrateMainSettings',
+        'migrateProSettings'                 => 'migrateProSettings',
+        'migrateTwoWaySettings'              => 'migrateTwoWaySettings',
+        'migrateBookingIntegrationsSettings' => 'migrateBookingIntegrationsSettings',
+        'migrateFluentIntegrationsSettings'  => 'migrateFluentIntegrationsSettings'
     ];
+
+    /**
+     * Get the list of migration steps.
+     *
+     * @return array<string, string> Array mapping step names to method names
+     */
+    public function getMigrationSteps()
+    {
+        return $this->migrationSteps;
+    }
 
     /**
      * Migrate main plugin settings from wpsms_settings to wp_sms_settings

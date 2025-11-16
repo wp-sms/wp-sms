@@ -1,18 +1,14 @@
 <?php
 
 use WP_SMS\Admin\AdminManager;
-use WP_SMS\BackgroundProcess\Async\DataMigrationProcess;
+use WP_SMS\BackgroundProcess\Async\QueueMigrationProcess;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
-use WP_SMS\BackgroundProcess\Async\SchemaMigrationProcess;
-use WP_SMS\BackgroundProcess\Async\TableOperationProcess;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
 use WP_SMS\Blocks\BlockAssetsManager;
 use WP_SMS\Controller\ControllerManager;
-use WP_SMS\Migrations\MigrationManager;
 use WP_SMS\Notice\NoticeManager;
 use WP_SMS\RestEndpoints\RestEndpointManager;
 use WP_SMS\Services\CronJobs\CronJobManager;
-use WP_SMS\Services\Database\Managers\MigrationHandler;
 use WP_SMS\Services\Formidable\FormidableManager;
 use WP_SMS\Services\Forminator\ForminatorManager;
 use WP_SMS\Services\MessageButton\MessageButtonManager;
@@ -107,8 +103,6 @@ class WP_SMS
 
         $this->includes();
         $this->setupBackgroundProcess();
-        MigrationHandler::init();
-
     }
 
     /**
@@ -118,9 +112,7 @@ class WP_SMS
     {
         $this->registerBackgroundProcess(RemoteRequestAsync::class, 'remote_request_async');
         $this->registerBackgroundProcess(RemoteRequestQueue::class, 'remote_request_queue');
-        $this->registerBackgroundProcess(DataMigrationProcess::class, 'data_migration_process');
-        $this->registerBackgroundProcess(SchemaMigrationProcess::class, 'schema_migration_process');
-        $this->registerBackgroundProcess(TableOperationProcess::class, 'table_operations_process');
+        $this->registerBackgroundProcess(QueueMigrationProcess::class, 'queue_migration_process');
 
     }
 
