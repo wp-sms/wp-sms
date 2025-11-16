@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 use WP_SMS\Admin\NoticeHandler\Notice;
 use WP_SMS\Utils\OptionUtil;
 

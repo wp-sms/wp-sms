@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <form action="" method="post">
     <?php if (isset($subscriber_id)) : ?>
         <input type="hidden" name="ID" value="<?php echo esc_attr($subscriber_id); ?>"/>

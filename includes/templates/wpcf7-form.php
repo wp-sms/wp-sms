@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div id="wpcf7-wpsms" class="contact-form-editor-wpsms">
     <h3><?php esc_html_e('SMS Recipient', 'wp-sms'); ?></h3>
     <fieldset>

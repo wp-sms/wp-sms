@@ -62,7 +62,7 @@ class matinsms extends Gateway
 
         try {
             if (empty($this->has_key)) {
-                throw new Exception(__('The API Key for this gateway is not set', 'wp-sms-pro'));
+                throw new Exception(__('The API Key for this gateway is not set', 'wp-sms'));
             }
 
             $path = $this->get_path('send');
@@ -103,7 +103,7 @@ class matinsms extends Gateway
     {
         try {
             if (empty($this->has_key)) {
-                return new WP_Error('account-credit', __('The API Key for this gateway is not set', 'wp-sms-pro'));
+                return new WP_Error('account-credit', __('The API Key for this gateway is not set', 'wp-sms'));
             }
 
             $path = $this->get_path('info', 'account');

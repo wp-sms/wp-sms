@@ -156,7 +156,7 @@ class custom extends \WP_SMS\Gateway
         try {
             // Check Api key
             if (!$this->api_url) {
-                throw new Exception(esc_html__('Please complete the send SMS API URL.', 'wp-sms-pro'));
+                throw new Exception(esc_html__('Please complete the send SMS API URL.', 'wp-sms'));
             }
 
             return 'Unable to check balance!';

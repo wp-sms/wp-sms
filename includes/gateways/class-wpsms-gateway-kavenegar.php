@@ -92,7 +92,7 @@ class kavenegar extends Gateway
             ],
         ];
 
-        $this->help = <<<HTML
+        $this->help = '
 <div dir="rtl">
   <h3>ارسال پیامک با الگو (پترن) — راهنمای تنظیم و استفاده از متغیرها</h3>
   <p>
@@ -114,17 +114,16 @@ class kavenegar extends Gateway
       در افزونه، همان متن را با متغیرهای پلاگین وارد کنید (مثلاً <code>%billing_first_name%</code> و <code>%order_id%</code>) 
       و در انتهای پیامک، پس از علامت «|»، کد الگو را بنویسید.<br>
       نمونه در افزونه:<br>
-      <code style='direction: rtl'>سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.|2343</code>
+      <code style="direction: rtl">سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.|2343</code>
     </li>
   </ol>
   <p><strong>نکات مهم</strong></p>
   <ul>
-    <li>در صورتی که <code style='direction: rtl'>|کد</code> را قرار ندهید، پیام به‌صورت <em>ارسال معمولی</em> (بدون استفاده از پترن) ارسال می‌شود.</li>
+    <li>در صورتی که <code style="direction: rtl">|کد</code> را قرار ندهید، پیام به‌صورت <em>ارسال معمولی</em> (بدون استفاده از پترن) ارسال می‌شود.</li>
     <li>ترتیب متغیرها در پیامک باید دقیقاً مطابق ترتیب <code>token</code>ها در سامانه پیامکی باشد.</li>
     <li>حداکثر پنج متغیر قابل استفاده است: <code>token</code>, <code>token2</code>, <code>token3</code>, <code>token10</code>, <code>token20</code>.</li>
   </ul>
-</div>
-HTML;
+</div>';
     }
 
     /**

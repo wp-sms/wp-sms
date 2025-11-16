@@ -736,6 +736,10 @@
   }
 }
 
+.wpsms-admin-notice__action{
+  display: flex;
+}
+
 .notice.wpsms-admin-notice {
   padding: 8px 14px;
 
@@ -766,8 +770,8 @@
   }
 
   .button-primary {
-    background: #135e96;
-    border-color: #135e96;
+    background: #f97316;
+    border-color: #f97316;
     color: #fff
   }
 

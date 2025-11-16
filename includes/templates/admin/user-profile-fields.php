@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <h2><?php esc_html_e('SMS', 'wp-sms'); ?></h2>
 <table class="form-table">
     <?php foreach ($fields as $field): ?>

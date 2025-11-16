@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <table class="form-table send-sms-post">
 
     <!-- Send Message and Receiver Row -->
@@ -10,13 +11,13 @@
                 endif; ?>><?php esc_html_e('Please select', 'wp-sms'); ?></option>
                 <option value="subscriber" <?php if (empty($_GET['post']) and $forceToSend) {
                     selected(wp_sms_get_option('notif_publish_new_post_receiver') == 'subscriber');
-                } ?>><?php esc_html_e('Subscribers'); ?></option>
+                } ?>><?php esc_html_e('Subscribers', 'wp-sms'); ?></option>
                 <option value="numbers" <?php if (empty($_GET['post']) and $forceToSend) {
                     selected(wp_sms_get_option('notif_publish_new_post_receiver') == 'numbers');
-                } ?>><?php esc_html_e('Number(s)'); ?></option>
+                } ?>><?php esc_html_e('Number(s)', 'wp-sms'); ?></option>
                 <option value="users" <?php if (empty($_GET['post']) and $forceToSend) {
                     selected(wp_sms_get_option('notif_publish_new_post_receiver') == 'users');
-                } ?>><?php esc_html_e('WordPress Users'); ?></option>
+                } ?>><?php esc_html_e('WordPress Users', 'wp-sms'); ?></option>
             </select>
         </td>
 
