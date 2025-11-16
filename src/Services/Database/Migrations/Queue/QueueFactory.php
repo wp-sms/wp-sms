@@ -3,7 +3,6 @@
 namespace WP_SMS\Services\Database\Migrations\Queue;
 
 use WP_SMS\Install;
-use WP_Statistics;
 use WP_SMS\Settings\Option;
 
 
@@ -231,11 +230,6 @@ class QueueFactory
             $method   = $step['method'];
 
             if (!method_exists($instance, $method)) {
-                // WP_Statistics::log(sprintf(
-                //     'Migration method %s does not exist in class %s',
-                //     $method,
-                //     get_class($instance)
-                // ));
                 return false;
             }
 
@@ -245,11 +239,6 @@ class QueueFactory
 
             return true;
         } catch (\Exception $e) {
-            // WP_Statistics::log(sprintf(
-            //     'Queue migration step failed [%s]: %s',
-            //     $step['identifier'],
-            //     $e->getMessage()
-            // ));
             return false;
         }
     }
