@@ -62,6 +62,10 @@ export default defineConfig({
               src: 'legacy/static/jquery-word-and-character-counter.min.js',
               dest: 'build-legacy',
             },
+            {
+              src: 'legacy/static/intel',
+              dest: 'build-legacy',
+            },
           ],
           hook: 'writeBundle',
         }),
