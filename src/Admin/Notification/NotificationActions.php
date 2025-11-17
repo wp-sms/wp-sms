@@ -31,6 +31,7 @@ class NotificationActions
         try {
             $this->verifyAjaxRequest();
             $this->checkAdminReferrer('wp_rest', 'wpsms_nonce');
+            $this->checkCapability('manage_options');
 
             $rawId = Request::get('notification_id');
 
