@@ -55,7 +55,7 @@ export function SettingsSidebar() {
                   <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-primary text-sidebar-primary-foreground">
                     <MessageSquare className="size-4" />
                   </div>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
+                  <div className="grid flex-1 text-start text-sm leading-tight">
                     <span className="truncate font-semibold">WP SMS Plugin</span>
                     <span className="truncate text-xs">Settings Dashboard</span>
                   </div>
@@ -64,7 +64,7 @@ export function SettingsSidebar() {
                   variant="ghost"
                   size="sm"
                   onClick={toggleSidebar}
-                  className="h-8 w-8 p-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                  className="h-8 w-8 p-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rtl:[&>svg]:scale-x-[-1]"
                 >
                   <PanelLeftClose className="h-4 w-4" />
                   <span className="sr-only">Toggle Sidebar</span>
@@ -145,7 +145,7 @@ export function SettingsSidebar() {
                         <CollapsibleTrigger asChild>
                           <SidebarMenuButton tooltip={item.label}>
                             <span>{item.label}</span>
-                            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                            <ChevronRight className="ms-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90 rtl:rotate-180" />
                           </SidebarMenuButton>
                         </CollapsibleTrigger>
                         <CollapsibleContent>
