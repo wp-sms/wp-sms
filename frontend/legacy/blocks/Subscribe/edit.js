@@ -1,10 +1,6 @@
-import {__} from '@wordpress/i18n';
-import {
-    useBlockProps,
-    InspectorControls,
-} from '@wordpress/block-editor';
-
-import {TextControl, TextareaControl} from '@wordpress/components';
+import { InspectorControls, useBlockProps } from '@wordpress/block-editor'
+import { TextControl, TextareaControl } from '@wordpress/components'
+import { __ } from '@wordpress/i18n'
 
 /**
  * Edit function.
@@ -13,54 +9,39 @@ import {TextControl, TextareaControl} from '@wordpress/components';
  *
  * @return {WPElement} Element to render.
  */
-export default function edit( { className, attributes, setAttributes } ) {
+export default function edit({ className, attributes, setAttributes }) {
+  const { title, description } = attributes
 
-    const { title, description } = attributes;
+  const onChangeTitle = (val) => {
+    setAttributes({
+      title: val,
+    })
+  }
 
-    const onChangeTitle = ( val ) => {
-        setAttributes({
-            title: val,
-        })
-    };
+  const onChangeDescription = (val) => {
+    setAttributes({
+      description: val,
+    })
+  }
 
-    const onChangeDescription = ( val ) => {
-        setAttributes({
-            description: val,
-        })
-    };
+  const TitleTextInput = () => {
+    return <TextControl label={__('Title', 'wp-sms')} value={title} onChange={onChangeTitle} />
+  }
 
-    const TitleTextInput = () => {
-        return (
-            <TextControl
-                label={__('Title', 'wp-sms')}
-                value={title}
-                onChange={ onChangeTitle }
-            />
-        );
-    };
+  const DescriptionTextareaInput = () => {
+    return <TextareaControl label={__('Description', 'wp-sms')} value={description} onChange={onChangeDescription} />
+  }
 
-    const DescriptionTextareaInput = () => {
-        return (
-            <TextareaControl
-                label={__('Description', 'wp-sms')}
-                value={description}
-                onChange={ onChangeDescription }
-            />
-        );
-    };
-
-    return ( [
-        <InspectorControls>
-        </InspectorControls>
-        ,
-        <div {...useBlockProps()}>
-            <div className="wp-sms-block wp-sms-block--subscribe">
-                <h2 className="wp-sms-block__title">Subscribe</h2>
-                <div className="wp-sms-block__main">
-                    {TitleTextInput()}
-                    {DescriptionTextareaInput()}
-                </div>
-            </div>
+  return [
+    <InspectorControls></InspectorControls>,
+    <div {...useBlockProps()}>
+      <div className="wp-sms-block wp-sms-block--subscribe">
+        <h2 className="wp-sms-block__title">Subscribe</h2>
+        <div className="wp-sms-block__main">
+          {TitleTextInput()}
+          {DescriptionTextareaInput()}
         </div>
-    ] );
+      </div>
+    </div>,
+  ]
 }
