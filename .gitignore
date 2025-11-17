@@ -38,7 +38,12 @@ frontend/node_modules
 frontend/build
 frontend/build-legacy
 
-# Build Folder
+# Build Folders (new structure)
+/public/legacy
+/public/react
+/public/blocks
+
+# Old build folder
 /build
 
 #vscode

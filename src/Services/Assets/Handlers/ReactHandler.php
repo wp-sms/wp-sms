@@ -38,7 +38,7 @@ class ReactHandler extends BaseAssets
     public function __construct()
     {
         $this->setContext('react');
-        $this->setAssetDir('frontend/build');
+        $this->setAssetDir('public/react');
 
         add_action('admin_enqueue_scripts', [$this, 'styles'], 10);
         add_action('admin_enqueue_scripts', [$this, 'scripts'], 10);
@@ -160,11 +160,11 @@ class ReactHandler extends BaseAssets
         $manifestContent = file_get_contents($manifestPath);
         $decodedContent  = json_decode($manifestContent, true);
 
-        if (empty($decodedContent['src/main.tsx'])) {
+        if (empty($decodedContent['main.tsx'])) {
             return;
         }
 
-        $this->manifestMainJs  = $decodedContent['src/main.tsx']['file'] ?? '';
-        $this->manifestMainCss = $decodedContent['src/main.tsx']['css'] ?? [];
+        $this->manifestMainJs  = $decodedContent['main.tsx']['file'] ?? '';
+        $this->manifestMainCss = $decodedContent['main.tsx']['css'] ?? [];
     }
 }

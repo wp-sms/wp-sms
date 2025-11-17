@@ -15,7 +15,7 @@ if (!function_exists('get_plugin_data')) {
 define('WP_SMS_URL', plugin_dir_url(dirname(__FILE__)));
 define('WP_SMS_DIR', plugin_dir_path(dirname(__FILE__)));
 
-define('WP_SMS_FRONTEND_BUILD_URL', WP_SMS_URL . 'frontend/build/');
+define('WP_SMS_FRONTEND_BUILD_URL', WP_SMS_URL . 'public/react/');
 
 
 // Set another useful Plugin defines.

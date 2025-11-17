@@ -69,27 +69,7 @@ composer install
 ```
 
 ### Build Assets
-Requirement: Before any build it`s necessary to fix these below versions then use npm
-- npm v6.*
-- node v14.*
-
-Install dependencies
-```bash
-npm install
-```
-
-Build the blocks
-```bash
-npm run build
-```
-
-Build the assets
-```bash
-npm run sass-compile
-```
-```bash
-npm run js-compile
-```
+For detailed build instructions, architecture documentation, and development workflow, see the [Development Guide](/docs/DEVELOPMENT.md).
 # Actions
 Run the following action when sending SMS with this plugin.
 ```sh

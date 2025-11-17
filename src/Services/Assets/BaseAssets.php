@@ -53,7 +53,7 @@ abstract class BaseAssets
      *
      * @var string
      */
-    private $assetDir = 'frontend/build';
+    private $assetDir = 'public/react';
 
     /**
      * Set the asset directory

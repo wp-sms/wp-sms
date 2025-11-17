@@ -16,7 +16,7 @@ class Helper
 {
     public static function getPluginAssetUrl($assetName, $plugin = 'wp-sms')
     {
-        return plugins_url($plugin) . "/frontend/build-legacy/{$assetName}";
+        return plugins_url($plugin) . "/public/legacy/{$assetName}";
     }
 
     public static function getAssetPath($asset)

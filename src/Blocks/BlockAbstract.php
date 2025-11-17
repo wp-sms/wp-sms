@@ -33,7 +33,7 @@ abstract class BlockAbstract
      */
     public function registerBlockType()
     {
-        $blockPath = Helper::getAssetPath("assets/blocks/{$this->blockName}");
+        $blockPath = Helper::getAssetPath("public/blocks/{$this->blockName}");
 
         // Define a base config for all blocks.
         $baseConfig = ['render_callback' => [$this, 'renderCallback']];

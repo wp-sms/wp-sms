@@ -13,7 +13,7 @@ class Countries extends Singleton
      */
     private $countriesMergedBySimilarDialCodes = [];
 
-    private $countriesFileDir = WP_SMS_DIR . 'frontend/public/countries.json';
+    private $countriesFileDir = WP_SMS_DIR . 'public/data/countries.json';
 
     public function __construct()
     {

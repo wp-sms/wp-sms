@@ -15,5 +15,29 @@ composer.lock
 LICENSE
 package.json
 package-lock.json
+pnpm-lock.yaml
 postcss.config.js
+postcss.config.cjs
 README.md
+CONTRIBUTING.md
+CHANGELOG.md
+security.md
+webpack.config.js
+wpml-config.xml
+phpunit.xml.dist
+
+# Source files (dev only - not for distribution)
+/resources
+
+# Build configuration files
+vite.config.legacy.js
+vite.config.react.ts
+tsconfig.json
+tsconfig.app.json
+tsconfig.node.json
+eslint.config.js
+components.json
+postcss-important-plugin.js
+
+# Development documentation
+/docs

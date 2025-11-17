@@ -35,7 +35,7 @@ class GlobalsDataProvider implements DataProviderInterface
             'nonce'                => wp_create_nonce('wp_rest'),
             'restUrl'              => esc_url_raw(rest_url('wpsms/v1/')),
             'pluginVersion'        => WP_SMS_VERSION,
-            'frontend_build_url'   => plugins_url('frontend/build', WP_SMS_DIR . 'wp-sms.php'),
+            'frontend_build_url'   => plugins_url('public/react', WP_SMS_DIR . 'wp-sms.php'),
             'react_starting_point' => '#settings/general',
         ];
 
