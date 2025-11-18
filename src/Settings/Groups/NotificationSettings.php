@@ -9,6 +9,7 @@ use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Section;
 use WP_SMS\Settings\LucideIcons;
+use WP_SMS\Settings\Option;
 use WP_SMS\Settings\Tags;
 
 class NotificationSettings extends AbstractSettingGroup {
@@ -42,14 +43,14 @@ class NotificationSettings extends AbstractSettingGroup {
                         'label' => __('Post Types', 'wp-sms'),
                         'type' => 'multiselect',
                         'show_if' => ['notif_publish_new_post' => true],
-                        'options' => $this->getPostTypes(),
+                        'options' => $this->getPostTypes('notif_publish_new_post_type'),
                         'description' => __('Choose which post types trigger an alert.', 'wp-sms')
                     ]),
                     new Field([
                         'key' => 'notif_publish_new_taxonomy_and_term',
                         'label' => __('Categories and Tags', 'wp-sms'),
                         'type' => 'multiselect',
-                        'options' => $this->getTaxonomiesAndTerms(),
+                        'options' => $this->getTaxonomiesAndTerms(true, 'notif_publish_new_taxonomy_and_term'),
                         'show_if' => ['notif_publish_new_post' => true],
                         'description' => __('Send alerts only when the post matches these terms.', 'wp-sms')
                     ]),
@@ -237,39 +238,92 @@ class NotificationSettings extends AbstractSettingGroup {
         ];
     }
 
-    public function getPostTypes(): array {
+    public function getPostTypes($optionKey = ''): array {
         $postTypes = get_post_types(['show_ui' => 1], 'objects');
         $options = [];
-        
+
+        $savedValues = [];
+        if (! empty($optionKey)) {
+            $savedValues = Option::getOption($optionKey);
+            if (! is_array($savedValues)) {
+                $savedValues = [];
+            }
+        }
+
         foreach ($postTypes as $postType) {
             $options[$postType->name] = $postType->labels->name;
         }
-        
+
+        if (! empty($savedValues)) {
+            foreach ($savedValues as $savedValue) {
+                if (! isset($options[$savedValue])) {
+                    $options[$savedValue] = sprintf(__('%s (Not active)', 'wp-sms'), ucwords(str_replace('_', ' ', $savedValue)));
+                }
+            }
+        }
+
         return $options;
     }
 
-    public function getTaxonomiesAndTerms(): array {
+    public function getTaxonomiesAndTerms($excludeTerms = false, $optionKey = ''): array {
         $taxonomies = get_taxonomies(['public' => true], 'objects');
         $options = [];
-        
+
+        $savedValues = [];
+        if (! empty($optionKey)) {
+            $savedValues = Option::getOption($optionKey);
+            if (! is_array($savedValues)) {
+                $savedValues = [];
+            }
+        }
+
+        if ($excludeTerms) {
+            foreach ($taxonomies as $taxonomy) {
+                $options[$taxonomy->name] = $taxonomy->labels->name;
+            }
+
+            // Add saved values that no longer exist in taxonomies
+            if (! empty($savedValues)) {
+                foreach ($savedValues as $savedValue) {
+                    if (! isset($options[$savedValue])) {
+                        $options[$savedValue] = sprintf(__('%s (Not active)', 'wp-sms'), ucwords(str_replace('_', ' ', $savedValue)));
+                    }
+                }
+            }
+
+            return $options;
+        }
+
         foreach ($taxonomies as $taxonomy) {
             $terms = get_terms([
                 'taxonomy' => $taxonomy->name,
                 'hide_empty' => false,
             ]);
-            
+
             if (!empty($terms) && !is_wp_error($terms)) {
                 $options[$taxonomy->name] = [
                     'label' => $taxonomy->labels->name,
                     'options' => []
                 ];
-                
+
                 foreach ($terms as $term) {
                     $options[$taxonomy->name]['options'][$term->term_id] = $term->name;
                 }
             }
         }
-        
+
+        // Add saved values that no longer exist in taxonomies
+        if (! empty($savedValues)) {
+            foreach ($savedValues as $savedValue) {
+                if (! isset($options[$savedValue])) {
+                    $options[$savedValue] = [
+                        'label' => ucwords(str_replace('_', ' ', $savedValue)) . ' (Not active)',
+                        'options' => []
+                    ];
+                }
+            }
+        }
+
         return $options;
     }
 
