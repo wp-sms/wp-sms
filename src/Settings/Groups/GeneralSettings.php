@@ -152,14 +152,16 @@ class GeneralSettings extends AbstractSettingGroup {
                         'label' => __('Minimum digits', 'wp-sms'),
                         'type' => 'number',
                         'description' => __('Smallest allowed number length. Symbols are ignored.', 'wp-sms'),
-                        'hide_if' => ['international_mobile' => true]
+                        'hide_if' => ['international_mobile' => true],
+                        'min' => 1
                     ]),
                     new Field([
                         'key' => 'mobile_terms_maximum',
                         'label' => __('Maximum digits', 'wp-sms'),
                         'type' => 'number',
                         'description' => __('Largest allowed number length. Symbols are ignored.', 'wp-sms'),
-                        'hide_if' => ['international_mobile' => true]
+                        'hide_if' => ['international_mobile' => true],
+                        'max' => 0
                     ]),
                 ]
             ]),
