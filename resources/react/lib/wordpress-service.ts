@@ -28,6 +28,10 @@ export class WordPressService {
     return this.data.globals.frontend_build_url
   }
 
+  public getJsonPath(): string {
+    return this.data.globals.jsonPath
+  }
+
   public getGlobalsData() {
     return this.data.globals
   }

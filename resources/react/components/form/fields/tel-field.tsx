@@ -46,7 +46,7 @@ export const TelField = ({ schema }: TelFieldProps) => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetch(`${dataService.getBuildUrl()}/countries.json`)
+        const response = await fetch(`${dataService.getJsonPath()}/countries.json`)
         const importedData = (await response.json()) as Country[]
         setJsonData(importedData)
       } catch {

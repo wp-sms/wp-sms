@@ -3,6 +3,7 @@
 namespace WP_SMS\Services\Database\Migrations\Queue;
 
 use Exception;
+use WP_SMS\Components\NumberParser;
 
 /**
  * Queue migration class for handling database migration steps.
@@ -27,7 +28,8 @@ class QueueMigration
         'migrateProSettings'                 => 'migrateProSettings',
         'migrateTwoWaySettings'              => 'migrateTwoWaySettings',
         'migrateBookingIntegrationsSettings' => 'migrateBookingIntegrationsSettings',
-        'migrateFluentIntegrationsSettings'  => 'migrateFluentIntegrationsSettings'
+        'migrateFluentIntegrationsSettings'  => 'migrateFluentIntegrationsSettings',
+        'formatAdminMobileWithCountryCode'       => 'formatAdminMobileWithCountryCode'
     ];
 
     /**
@@ -50,7 +52,7 @@ class QueueMigration
             if (!empty($old_options)) {
                 // Get current new options
                 $new_options = get_option('wp_sms_settings', []);
-                
+
                 // Merge old options with new ones (new options take precedence)
                 $merged_options = array_merge($old_options, $new_options);
                 
@@ -108,7 +110,7 @@ class QueueMigration
                     'admin_mobile_number',
                     'email_new_inbox_message'
                 ];
-                
+
                 foreach ($two_way_option_keys as $key) {
                     if (isset($old_options[$key])) {
                         $two_way_settings[$key] = $old_options[$key];
@@ -314,6 +316,28 @@ class QueueMigration
                     // TODO: Add logging for successful migration
                 }
             }
+        } catch (Exception $e) {
+            $this->setErrorStatus($e->getMessage());
+        }
+    }
+
+    /**
+     * Format admin mobile number with country code prefix.
+     *
+     * This method retrieves the admin mobile number from settings and
+     * normalizes it using the NumberParser to ensure it includes the
+     * proper country code format.
+     */
+    public function formatAdminMobileWithCountryCode()
+    {
+        try {
+            $new_options = get_option('wp_sms_settings', []);
+
+            if (!empty($new_options['admin_mobile_number'])) {
+                $new_options['admin_mobile_number'] = (new NumberParser($new_options['admin_mobile_number']))->getValidNumber();
+            }
+
+            update_option('wp_sms_settings', $new_options);
         } catch (Exception $e) {
             $this->setErrorStatus($e->getMessage());
         }

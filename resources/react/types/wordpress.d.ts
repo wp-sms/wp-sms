@@ -3,6 +3,7 @@ export interface GlobalsData {
   restUrl: string
   pluginVersion: string
   frontend_build_url: string
+  jsonPath: string
   react_starting_point: string
 }
 
