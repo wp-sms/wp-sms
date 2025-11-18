@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n'
 import { useStore } from '@tanstack/react-form'
 import { Settings } from 'lucide-react'
 import { Suspense, useCallback, useEffect, useMemo, useRef } from 'react'
@@ -165,7 +166,7 @@ export const FieldRenderer = withForm({
           return <form.AppField name={schema.key} children={(field) => <field.PasswordField schema={schema} />} />
 
         default:
-          return <div>Unsupported field type: {schema.type}</div>
+          return <div>{sprintf(__('Unsupported field type: %s', 'wp-sms'), schema.type)}</div>
       }
     }
 

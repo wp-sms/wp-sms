@@ -92,9 +92,22 @@ class ReactHandler extends BaseAssets
             return;
         }
 
-        wp_enqueue_script_module($this->getAssetHandle(), $this->getUrl($this->manifestMainJs), [], null);
+        wp_register_script(
+            $this->getAssetHandle(),
+            $this->getUrl($this->manifestMainJs),
+            ['wp-i18n'],
+            $this->getVersion(),
+            true
+        );
+
+        // Add type="module" attribute for ES module support.
+        add_filter('script_loader_tag', [$this, 'addModuleAttribute'], 10, 2);
+
+        wp_enqueue_script($this->getAssetHandle());
+
         $this->printLocalizedData($hook);
-    }
+        $this->loadTranslations();
+    }    
 
     /**
      * Print localized data for React
@@ -134,6 +147,138 @@ class ReactHandler extends BaseAssets
     protected function getLocalizedData($hook)
     {
         return LocalizedDataFactory::react()->getAllData();
+    }
+
+    /**
+     * Add type="module" attribute to script tag
+     *
+     * @param string $tag    The script tag HTML.
+     * @param string $handle The script handle.
+     * @return string Modified script tag.
+     */
+    public function addModuleAttribute($tag, $handle)
+    {
+        if ($handle === $this->getAssetHandle()) {
+            return str_replace(' src', ' type="module" src', $tag);
+        }
+        return $tag;
+    }
+
+    /**
+     * Load translations from .mo file and set locale data for wp.i18n
+     *
+     * Since wp_set_script_translations requires JSON files, we load
+     * translations directly from .mo files and inject them via inline script.
+     *
+     * @return void
+     */
+    private function loadTranslations()
+    {
+        $locale = determine_locale();
+
+        if ('en_US' === $locale) {
+            return;
+        }
+
+        $moFile = $this->findMoFile($locale);
+
+        if (!$moFile || !file_exists($moFile)) {
+            return;
+        }
+
+        $translations = $this->loadMoFile($moFile);
+
+        if (empty($translations)) {
+            return;
+        }
+
+        $jedData = [
+            '' => [
+                'domain' => 'wp-sms',
+                'lang'   => $locale,
+            ],
+        ];
+
+        foreach ($translations as $original => $translated) {
+            if (empty($original)) {
+                continue;
+            }
+            $jedData[$original] = [$translated];
+        }
+
+        $script = sprintf(
+            'window.WP_SMS_TRANSLATIONS = %s;',
+            wp_json_encode($jedData)
+        );
+
+        wp_add_inline_script($this->getAssetHandle(), $script, 'before');
+    }
+
+    /**
+     * Find the .mo file for the given locale
+     *
+     * @param string $locale The locale to find
+     * @return string|null The path to the .mo file or null if not found
+     */
+    private function findMoFile($locale)
+    {
+        // Check multiple locations where translations might be stored
+        $locations = [
+            // Plugin's own languages folder
+            WP_SMS_DIR . "languages/wp-sms-{$locale}.mo",
+            // WordPress global languages folder
+            \WP_LANG_DIR . "/plugins/wp-sms-{$locale}.mo",
+        ];
+
+        foreach ($locations as $path) {
+            if (file_exists($path)) {
+                return $path;
+            }
+        }
+
+        // Check custom translation plugin directories (e.g., Loco Translate, WPML, etc.)
+        $customPaths = glob(\WP_CONTENT_DIR . "/languages/*/plugins/wp-sms-{$locale}.mo");
+        if (!empty($customPaths)) {
+            return $customPaths[0];
+        }
+
+        return null;
+    }
+
+    /**
+     * Load translations from a .mo file
+     *
+     * @param string $moFile Path to the .mo file
+     * @return array Associative array of original => translated strings
+     */
+    private function loadMoFile($moFile)
+    {
+        if (!class_exists('MO')) {
+            require_once \ABSPATH . \WPINC . '/pomo/mo.php';
+        }
+
+        $mo = new \MO();  // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+
+        if (!$mo->import_from_file($moFile)) {
+            return [];
+        }
+
+        $translations = [];
+
+        foreach ($mo->entries as $entry) {
+            if (!empty($entry->singular) && !empty($entry->translations[0])) {
+                $key = $entry->singular;
+
+                // Handle context
+                if (!empty($entry->context)) {
+                    $key = $entry->context . "\x04" . $entry->singular;
+                }
+
+                $translations[$key] = $entry->translations[0];
+            }
+        }
+
+        return $translations;
     }
 
     /**

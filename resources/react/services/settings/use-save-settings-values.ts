@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
@@ -33,11 +34,11 @@ export function useSaveSettingsValues(params: SaveSettingsValuesParams) {
         await invalidateGetSchemaByGroup()
         await invalidateGetSettingsValuesByGroup()
 
-        toast.success('Settings saved successfully')
+        toast.success(__('Settings saved successfully', 'wp-sms'))
       } catch {
-        toast.info('Settings saved but form refresh failed')
+        toast.info(__('Settings saved but form refresh failed', 'wp-sms'))
       }
     },
-    onError: () => toast.error('Something went wrong!'),
+    onError: () => toast.error(__('Something went wrong!', 'wp-sms')),
   })
 }

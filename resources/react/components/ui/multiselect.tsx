@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { CheckIcon, ChevronDown, WandSparkles, XCircle, XIcon } from 'lucide-react'
 import * as React from 'react'
@@ -52,7 +53,7 @@ export const MultiSelect = ({
   onValueChange,
   variant,
   defaultValue = [],
-  placeholder = 'Select options',
+  placeholder = __('Select options', 'wp-sms'),
   animation = 0,
   maxCount = 3,
   modalPopover = false,
@@ -150,7 +151,7 @@ export const MultiSelect = ({
                     )}
                     style={{ animationDuration: `${animation}s` }}
                   >
-                    {`+ ${selectedValues.length - maxCount} more`}
+                    {sprintf(__('+ %s more', 'wp-sms'), selectedValues.length - maxCount)}
                     <XCircle
                       className="ml-2 h-4 w-4 cursor-pointer"
                       onClick={(event) => {
@@ -183,9 +184,9 @@ export const MultiSelect = ({
       </PopoverTrigger>
       <PopoverContent className="w-auto p-0 z-[200]" align="start" onEscapeKeyDown={() => setIsPopoverOpen(false)}>
         <Command>
-          <CommandInput placeholder="Search..." onKeyDown={handleInputKeyDown} />
+          <CommandInput placeholder={__('Search...', 'wp-sms')} onKeyDown={handleInputKeyDown} />
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty>{__('No results found.', 'wp-sms')}</CommandEmpty>
             <CommandGroup>
               <CommandItem key="all" onSelect={toggleAll} className="cursor-pointer">
                 <div
@@ -198,7 +199,7 @@ export const MultiSelect = ({
                 >
                   <CheckIcon className="h-4 w-4" />
                 </div>
-                <span>Select All</span>
+                <span>{__('Select All', 'wp-sms')}</span>
               </CommandItem>
               {options.map((option) => {
                 const isSelected = selectedValues.includes(option.value)
@@ -228,7 +229,7 @@ export const MultiSelect = ({
                 {selectedValues.length > 0 && (
                   <>
                     <CommandItem onSelect={handleClear} className="flex-1 justify-center cursor-pointer">
-                      Clear
+                      {__('Clear', 'wp-sms')}
                     </CommandItem>
                     <Separator orientation="vertical" className="flex min-h-6 h-full" />
                   </>
@@ -237,7 +238,7 @@ export const MultiSelect = ({
                   onSelect={() => setIsPopoverOpen(false)}
                   className="flex-1 justify-center cursor-pointer max-w-full"
                 >
-                  Close
+                  {__('Close', 'wp-sms')}
                 </CommandItem>
               </div>
             </CommandGroup>

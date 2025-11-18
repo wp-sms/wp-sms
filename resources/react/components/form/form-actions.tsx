@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import { Save } from 'lucide-react'
 
 import { useFormContext } from '@/context/form-context'
@@ -17,12 +18,12 @@ export const FormActions = () => {
             variant="secondary"
             onClick={() => form.reset()}
           >
-            Reset
+            {__('Reset', 'wp-sms')}
           </Button>
 
           <Button disabled={!isDirty || form.state.isSubmitting} type="submit">
             <Save />
-            Save Changes
+            {__('Save Changes', 'wp-sms')}
           </Button>
         </div>
       )}

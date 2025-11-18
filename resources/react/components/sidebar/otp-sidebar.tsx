@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n'
 import { Link, useLocation } from '@tanstack/react-router'
 import { MessageSquare, PanelLeft, PanelLeftClose, Settings } from 'lucide-react'
 
@@ -31,33 +32,35 @@ export const OTPSidebar = () => {
       key: 'otp-activity',
       href: '/otp/activity',
       icon: 'Activity',
-      title: 'Activity',
+      title: __('Activity', 'wp-sms'),
     },
     {
       key: 'otp-logs',
       href: '/otp/logs',
       icon: 'Logs',
-      title: 'Logs',
+      title: __('Logs', 'wp-sms'),
     },
     {
       key: 'otp-authentication-channels',
       href: '/otp/authentication-channels',
       icon: 'IdCard',
-      title: 'Authentication Channels',
+      title: __('Authentication Channels', 'wp-sms'),
     },
     {
       key: 'otp-branding',
       href: '/otp/branding',
       icon: 'Puzzle',
-      title: 'Branding',
+      title: __('Branding', 'wp-sms'),
     },
     {
       key: 'otp-settings',
       href: '/otp/settings',
       icon: 'Settings',
-      title: 'Settings',
+      title: __('Settings', 'wp-sms'),
     },
   ]
+
+  const pluginVersionLabel = sprintf(__('Plugin Version %s', 'wp-sms'), pluginVersion)
 
   return (
     <Sidebar variant="sidebar" collapsible="icon" className="border-r border-border">
@@ -69,7 +72,7 @@ export const OTPSidebar = () => {
                 <button
                   onClick={toggleSidebar}
                   className="group flex aspect-square size-10 items-center justify-center rounded-lg bg-gradient-primary text-sidebar-primary-foreground hover:bg-gradient-primary/80 transition-all duration-200 cursor-pointer"
-                  title="Expand sidebar"
+                  title={__('Expand sidebar', 'wp-sms')}
                 >
                   <MessageSquare className="size-5 group-hover:hidden" />
                   <PanelLeft className="size-5 hidden group-hover:block" />
@@ -93,7 +96,7 @@ export const OTPSidebar = () => {
                   className="h-8 w-8 p-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rtl:[&>svg]:scale-x-[-1]"
                 >
                   <PanelLeftClose className="h-4 w-4" />
-                  <span className="sr-only">Toggle Sidebar</span>
+                  <span className="sr-only">{__('Toggle Sidebar', 'wp-sms')}</span>
                 </Button>
               </div>
             )}
@@ -103,7 +106,7 @@ export const OTPSidebar = () => {
 
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Core Settings</SidebarGroupLabel>
+          <SidebarGroupLabel>{__('Core Settings', 'wp-sms')}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {menuItems.map((item) => (
@@ -132,16 +135,16 @@ export const OTPSidebar = () => {
             {state === 'collapsed' ? (
               <div className="flex flex-col items-center gap-2">
                 <ThemeToggle />
-                <SidebarMenuButton tooltip={`Plugin Version ${pluginVersion}`}>
+                <SidebarMenuButton tooltip={pluginVersionLabel}>
                   <Settings />
-                  <span>Plugin Version {pluginVersion}</span>
+                  <span>{pluginVersionLabel}</span>
                 </SidebarMenuButton>
               </div>
             ) : (
               <div className="flex items-center justify-between w-full">
                 <SidebarMenuButton tooltip={undefined}>
                   <Settings />
-                  <span>Plugin Version {pluginVersion}</span>
+                  <span>{pluginVersionLabel}</span>
                 </SidebarMenuButton>
                 <ThemeToggle />
               </div>

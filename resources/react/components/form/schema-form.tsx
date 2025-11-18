@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import { useBlocker } from '@tanstack/react-router'
 import { AlertCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -66,7 +67,7 @@ export const SchemaForm = ({ formSchema, defaultValues, onSubmit, onFieldAction 
       <div className="container mx-auto py-8">
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>No schema data available.</AlertDescription>
+          <AlertDescription>{__('No schema data available.', 'wp-sms')}</AlertDescription>
         </Alert>
       </div>
     )

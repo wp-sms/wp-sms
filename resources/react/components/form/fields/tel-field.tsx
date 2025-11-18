@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import { useStore } from '@tanstack/react-form'
 import parsePhoneNumber from 'libphonenumber-js'
 import { Check } from 'lucide-react'
@@ -121,9 +122,9 @@ export const TelField = ({ schema }: TelFieldProps) => {
 
             <PopoverContent className="p-0">
               <Command value={`${selectedCountryCode}__${selectedCountry?.code}__${selectedCountry?.name}`}>
-                <CommandInput placeholder="Search country..." />
+                <CommandInput placeholder={__('Search country...', 'wp-sms')} />
                 <CommandList>
-                  <CommandEmpty>No country found.</CommandEmpty>
+                  <CommandEmpty>{__('No country found.', 'wp-sms')}</CommandEmpty>
 
                   {jsonData?.map((item) => {
                     const isSelected = selectedCountryCode === item.dialCode
@@ -164,7 +165,7 @@ export const TelField = ({ schema }: TelFieldProps) => {
         <Input
           id={schema.key}
           value={phoneNumber}
-          placeholder="Enter phone number"
+          placeholder={__('Enter phone number', 'wp-sms')}
           className={cn(
             'border-none focus:border-0 focus-visible:border-0 focus-within:!border-0 focus-visible:ring-0 focus-within:ring-0',
             errors.length && 'text-destructive'

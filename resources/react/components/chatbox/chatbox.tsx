@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import { useCallback, useEffect, useState } from 'react'
 
 import { cn } from '@/lib/utils'
@@ -19,8 +20,8 @@ export const Chatbox = ({ settings }: ChatboxProps) => {
   const [isAnimating, setIsAnimating] = useState(false)
 
   const {
-    chatbox_title = 'Chat with Us!',
-    chatbox_button_text = 'Talk to Us',
+    chatbox_title = __('Chat with Us!', 'wp-sms'),
+    chatbox_button_text = __('Talk to Us', 'wp-sms'),
     chatbox_button_position = 'bottom_right',
     chatbox_color = '#F88E40',
     chatbox_text_color = '#FFFFFF',
@@ -31,7 +32,7 @@ export const Chatbox = ({ settings }: ChatboxProps) => {
     chatbox_animation_effect = '',
     chatbox_disable_logo = false,
     chatbox_links_enabled = false,
-    chatbox_links_title = 'Quick Links',
+    chatbox_links_title = __('Quick Links', 'wp-sms'),
     chatbox_team_members = [],
     chatbox_links = [],
   } = settings
@@ -305,7 +306,7 @@ export const Chatbox = ({ settings }: ChatboxProps) => {
 
           {!chatbox_disable_logo && (
             <div className="pt-0 px-4 pb-4 flex uppercase font-semibold text-[9px] leading-[10.5px] tracking-[-0.3px] gap-1 text-gray-600 dark:text-gray-400">
-              Powered By{' '}
+              {__('Powered By', 'wp-sms')}{' '}
               <a
                 href="https://wp-sms-pro.com/?utm_source=msg-btn&utm_medium=referral"
                 target="_blank"

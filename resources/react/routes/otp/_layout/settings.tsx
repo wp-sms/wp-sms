@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n'
 import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/otp/_layout/settings')({
@@ -5,5 +6,5 @@ export const Route = createFileRoute('/otp/_layout/settings')({
 })
 
 function RouteComponent() {
-  return <div>Hello "/otp/_layout/settings"!</div>
+  return <div>{sprintf(__('Hello "%s"!', 'wp-sms'), '/otp/_layout/settings')}</div>
 }

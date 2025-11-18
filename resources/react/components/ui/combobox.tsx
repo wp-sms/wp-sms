@@ -1,5 +1,6 @@
 'use client'
 
+import { __ } from '@wordpress/i18n'
 import { CheckIcon, ChevronDownIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 
@@ -34,9 +35,9 @@ export function Combobox({
   options,
   value: controlledValue,
   onValueChange,
-  placeholder = 'Select option...',
-  searchPlaceholder = 'Search...',
-  emptyMessage = 'No option found.',
+  placeholder = __('Select option...', 'wp-sms'),
+  searchPlaceholder = __('Search...', 'wp-sms'),
+  emptyMessage = __('No option found.', 'wp-sms'),
   buttonClassName,
   contentClassName,
   disabled = false,

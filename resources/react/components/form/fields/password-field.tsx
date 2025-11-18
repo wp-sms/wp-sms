@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import { useStore } from '@tanstack/react-form'
 import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
@@ -43,7 +44,9 @@ export const PasswordField = ({ schema }: PasswordFieldProps) => {
           disabled={schema.readonly}
         >
           {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-          <span className="sr-only">{showPassword ? 'Hide password' : 'Show password'}</span>
+          <span className="sr-only">
+            {showPassword ? __('Hide password', 'wp-sms') : __('Show password', 'wp-sms')}
+          </span>
         </Button>
       </div>
     </FieldWrapper>

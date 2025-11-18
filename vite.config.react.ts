@@ -1,13 +1,11 @@
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { cpSync, existsSync, mkdirSync } from 'fs'
-
 import tailwindcss from '@tailwindcss/vite'
 import { tanstackRouter } from '@tanstack/router-plugin/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-
-// @ts-expect-error - PostCSS plugin without types
+// @ts-ignore - PostCSS plugin without types
 import postcssImportantPlugin from './postcss-important-plugin.js'
 
 const __filename = fileURLToPath(import.meta.url)
@@ -20,7 +18,6 @@ function copyImages() {
     writeBundle() {
       const imagesSourceDir = resolve(__dirname, 'resources/react/images')
       const imagesOutputDir = resolve(__dirname, 'public/react/images')
-
       try {
         if (existsSync(imagesSourceDir)) {
           mkdirSync(imagesOutputDir, { recursive: true })
@@ -28,7 +25,7 @@ function copyImages() {
           console.log('✓ Copied React images')
         }
       } catch (e) {
-        console.error('Failed to copy images:', e.message)
+        console.error('Failed to copy images:', (e as Error).message)
       }
     },
   }
@@ -63,8 +60,13 @@ export default defineConfig(({ mode }) => {
       outDir: resolve(__dirname, 'public/react'),
       emptyOutDir: true,
       manifest: true,
-      minify: mode === 'production',
+      minify: mode === 'production' ? 'terser' : false,
       sourcemap: mode === 'development' ? true : false,
+      terserOptions: mode === 'production' ? {
+        mangle: {
+          reserved: ['__', '_x', '_n', '_nx', 'sprintf', '_c'],
+        },
+      } : undefined,
       rollupOptions: {
         input: {
           main: resolve(reactRoot, 'main.tsx'),
@@ -87,8 +89,7 @@ export default defineConfig(({ mode }) => {
       dedupe: ['react', 'react-dom'],
     },
     optimizeDeps: {
-      include: ['react', 'react-dom', 'lucide-react'],
-      exclude: ['@wordpress/element'],
+      include: ['react', 'react-dom', 'lucide-react', '@wordpress/i18n'],
       force: false,
     },
     server: {

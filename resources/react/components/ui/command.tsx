@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import { Command as CommandPrimitive } from 'cmdk'
 import { SearchIcon } from 'lucide-react'
 import * as React from 'react'
@@ -19,8 +20,8 @@ function Command({ className, ...props }: React.ComponentProps<typeof CommandPri
 }
 
 function CommandDialog({
-  title = 'Command Palette',
-  description = 'Search for a command to run...',
+  title = __('Command Palette', 'wp-sms'),
+  description = __('Search for a command to run...', 'wp-sms'),
   children,
   className,
   showCloseButton = true,

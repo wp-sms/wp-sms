@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import { useSuspenseQueries } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { AlertCircle } from 'lucide-react'
@@ -17,7 +18,7 @@ export const Route = createFileRoute('/settings/_layout/$name')({
   errorComponent: () => (
     <Alert>
       <AlertCircle className="h-4 w-4" />
-      <AlertDescription>Something went wrong!</AlertDescription>
+      <AlertDescription>{__('Something went wrong!', 'wp-sms')}</AlertDescription>
     </Alert>
   ),
   loader: async ({ context, params }) => {

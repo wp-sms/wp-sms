@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n'
 import { Link, useLocation } from '@tanstack/react-router'
 import { ChevronRight, MessageSquare, PanelLeft, PanelLeftClose, Settings } from 'lucide-react'
 
@@ -33,6 +34,8 @@ export function SettingsSidebar() {
   const currentPath = location.pathname
   const { state, toggleSidebar } = useSidebar()
 
+  const pluginVersionLabel = sprintf(__('Plugin Version %s', 'wp-sms'), pluginVersion)
+
   return (
     <Sidebar variant="sidebar" collapsible="icon" className="border-r border-border">
       <SidebarHeader>
@@ -43,7 +46,7 @@ export function SettingsSidebar() {
                 <button
                   onClick={toggleSidebar}
                   className="group flex aspect-square size-10 items-center justify-center rounded-lg bg-gradient-primary text-sidebar-primary-foreground hover:bg-gradient-primary/80 transition-all duration-200 cursor-pointer"
-                  title="Expand sidebar"
+                  title={__('Expand sidebar', 'wp-sms')}
                 >
                   <MessageSquare className="size-5 group-hover:hidden" />
                   <PanelLeft className="size-5 hidden group-hover:block" />
@@ -57,7 +60,7 @@ export function SettingsSidebar() {
                   </div>
                   <div className="grid flex-1 text-start text-sm leading-tight">
                     <span className="truncate font-semibold">WP SMS Plugin</span>
-                    <span className="truncate text-xs">Settings Dashboard</span>
+                    <span className="truncate text-xs">{__('Settings Dashboard', 'wp-sms')}</span>
                   </div>
                 </div>
                 <Button
@@ -67,7 +70,7 @@ export function SettingsSidebar() {
                   className="h-8 w-8 p-0 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rtl:[&>svg]:scale-x-[-1]"
                 >
                   <PanelLeftClose className="h-4 w-4" />
-                  <span className="sr-only">Toggle Sidebar</span>
+                  <span className="sr-only">{__('Toggle Sidebar', 'wp-sms')}</span>
                 </Button>
               </div>
             )}
@@ -78,7 +81,7 @@ export function SettingsSidebar() {
       <SidebarContent>
         {sidebar?.core && (
           <SidebarGroup>
-            <SidebarGroupLabel>Core Settings</SidebarGroupLabel>
+            <SidebarGroupLabel>{__('Core Settings', 'wp-sms')}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {Object.entries(sidebar?.core ?? {})?.map(([_, item]) => (
@@ -103,7 +106,7 @@ export function SettingsSidebar() {
 
         {sidebar?.addons && (
           <SidebarGroup>
-            <SidebarGroupLabel>Addons</SidebarGroupLabel>
+            <SidebarGroupLabel>{__('Addons', 'wp-sms')}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {Object.entries(sidebar?.addons ?? {})?.map(([_, item]) => (
@@ -128,7 +131,7 @@ export function SettingsSidebar() {
 
         {sidebar?.integrations && state !== 'collapsed' && (
           <SidebarGroup>
-            <SidebarGroupLabel>Integrations</SidebarGroupLabel>
+            <SidebarGroupLabel>{__('Integrations', 'wp-sms')}</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
                 {Object.entries(sidebar?.integrations.children ?? {})?.map(([key, item]) => {
@@ -181,16 +184,16 @@ export function SettingsSidebar() {
             {state === 'collapsed' ? (
               <div className="flex flex-col items-center gap-2">
                 <ThemeToggle />
-                <SidebarMenuButton tooltip={`Plugin Version ${pluginVersion}`}>
+                <SidebarMenuButton tooltip={pluginVersionLabel}>
                   <Settings />
-                  <span>Plugin Version {pluginVersion}</span>
+                  <span>{pluginVersionLabel}</span>
                 </SidebarMenuButton>
               </div>
             ) : (
               <div className="flex items-center justify-between w-full">
                 <SidebarMenuButton tooltip={undefined}>
                   <Settings />
-                  <span>Plugin Version {pluginVersion}</span>
+                  <span>{pluginVersionLabel}</span>
                 </SidebarMenuButton>
                 <ThemeToggle />
               </div>

@@ -1,12 +1,14 @@
+import { __ } from '@wordpress/i18n'
+
 // Custom hook for WordPress media uploader
 export function useWordPressMediaUploader() {
   const openMediaUploader = (callback: (url: string) => void) => {
     if (typeof window !== 'undefined' && (window as any).wp && (window as any).wp.media) {
       try {
         const mediaUploader = (window as any).wp.media({
-          title: 'Select Image',
+          title: __('Select Image', 'wp-sms'),
           button: {
-            text: 'Use this image',
+            text: __('Use this image', 'wp-sms'),
           },
           multiple: false,
         })

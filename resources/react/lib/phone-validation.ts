@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import parsePhoneNumber from 'libphonenumber-js'
 
 export type PhoneValidationResult = {
@@ -12,7 +13,7 @@ export const validatePhoneNumber = (phoneNumber: string, countryCode?: string): 
   if (!phoneNumber || phoneNumber.trim() === '') {
     return {
       isValid: false,
-      error: 'Phone number is required',
+      error: __('Phone number is required', 'wp-sms'),
     }
   }
 
@@ -21,7 +22,7 @@ export const validatePhoneNumber = (phoneNumber: string, countryCode?: string): 
   if (cleanValue.length < 7) {
     return {
       isValid: false,
-      error: 'Phone number is too short',
+      error: __('Phone number is too short', 'wp-sms'),
     }
   }
 
@@ -31,21 +32,21 @@ export const validatePhoneNumber = (phoneNumber: string, countryCode?: string): 
     if (!parsedNumber) {
       return {
         isValid: false,
-        error: 'Please enter a valid phone number',
+        error: __('Please enter a valid phone number', 'wp-sms'),
       }
     }
 
     if (!parsedNumber.isValid()) {
       return {
         isValid: false,
-        error: 'Please enter a valid phone number for the selected country',
+        error: __('Please enter a valid phone number for the selected country', 'wp-sms'),
       }
     }
 
     if (parsedNumber.nationalNumber && parsedNumber.nationalNumber.length < 6) {
       return {
         isValid: false,
-        error: 'Phone number is too short for this country',
+        error: __('Phone number is too short for this country', 'wp-sms'),
       }
     }
 
@@ -58,7 +59,7 @@ export const validatePhoneNumber = (phoneNumber: string, countryCode?: string): 
   } catch {
     return {
       isValid: false,
-      error: 'Please enter a valid phone number',
+      error: __('Please enter a valid phone number', 'wp-sms'),
     }
   }
 }

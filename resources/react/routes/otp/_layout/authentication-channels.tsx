@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n'
 import { useSuspenseQuery } from '@tanstack/react-query'
 import { createFileRoute } from '@tanstack/react-router'
 import { AlertCircle, X } from 'lucide-react'
@@ -26,7 +27,7 @@ export const Route = createFileRoute('/otp/_layout/authentication-channels')({
   errorComponent: () => (
     <Alert>
       <AlertCircle className="h-4 w-4" />
-      <AlertDescription>Something went wrong!</AlertDescription>
+      <AlertDescription>{__('Something went wrong!', 'wp-sms')}</AlertDescription>
     </Alert>
   ),
 })
@@ -68,7 +69,11 @@ function RouteComponent() {
       <Drawer open={drawerOpen} onOpenChange={setDrawerOpen} direction="right">
         <DrawerContent className="h-full w-96 mr-0 rounded-none">
           <DrawerHeader className="flex flex-row items-center justify-between">
-            <DrawerTitle>{selectedField ? `${selectedField.label} Settings` : 'Field Settings'}</DrawerTitle>
+            <DrawerTitle>
+              {selectedField
+                ? sprintf(__('%s Settings', 'wp-sms'), selectedField.label)
+                : __('Field Settings', 'wp-sms')}
+            </DrawerTitle>
             <Button variant="ghost" size="sm" onClick={() => setDrawerOpen(false)} className="h-8 w-8 p-0">
               <X className="h-4 w-4" />
             </Button>

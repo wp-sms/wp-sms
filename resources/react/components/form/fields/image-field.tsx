@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import { useStore } from '@tanstack/react-form'
 import { CloudUpload } from 'lucide-react'
 
@@ -22,7 +23,7 @@ export const ImageField = ({ schema }: ImageFieldProps) => {
     <FieldWrapper errors={errors} schema={schema}>
       <Button variant="outline" type="button" onClick={() => openMediaUploader(field.handleChange)}>
         <CloudUpload />
-        {field.state.value ? 'Change Image' : 'Select Image'}
+        {field.state.value ? __('Change Image', 'wp-sms') : __('Select Image', 'wp-sms')}
       </Button>
     </FieldWrapper>
   )

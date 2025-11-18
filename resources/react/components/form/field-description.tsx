@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n'
 import { toast } from 'sonner'
 
 import { useStableCallback } from '@/hooks/use-stable-callback'
@@ -15,7 +16,7 @@ export const FieldDescription = ({ text }: FieldDescriptionProps) => {
       const textToCopy = target.textContent || ''
       try {
         await navigator.clipboard.writeText(textToCopy)
-        toast.success('Code snippet copied to clipboard')
+        toast.success(__('Code snippet copied to clipboard', 'wp-sms'))
       } catch {}
     }
 
