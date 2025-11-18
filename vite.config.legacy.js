@@ -199,6 +199,27 @@ function copyLegacyImages() {
   }
 }
 
+// Custom plugin to fix CSS URL paths
+function fixCssUrlPaths() {
+  return {
+    name: 'fix-css-url-paths',
+    generateBundle(options, bundle) {
+      for (const fileName in bundle) {
+        if (bundle[fileName].type === 'asset' && fileName.endsWith('.css')) {
+          let css = bundle[fileName].source
+          // Fix URL paths that are missing ../ prefix
+          // Replace url(images/ with url(../images/ for files in css/ subdirectory
+          if (fileName.includes('css/')) {
+            css = css.replace(/url\((["']?)images\//g, 'url($1../images/')
+            css = css.replace(/url\((["']?)fonts\//g, 'url($1../fonts/')
+          }
+          bundle[fileName].source = css
+        }
+      }
+    },
+  }
+}
+
 export default defineConfig({
   root: resolve(__dirname, 'resources/legacy'),
   publicDir: false,
@@ -206,6 +227,7 @@ export default defineConfig({
   plugins: [
     cleanOutputDir(),
     jQueryReadyWrapper(),
+    fixCssUrlPaths(),
     copyStaticFiles(),
     copyLegacyCss(),
     copyJsonFiles(),

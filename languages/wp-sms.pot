@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-11-18T06:18:49+00:00\n"
+"POT-Creation-Date: 2025-11-18T07:03:09+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wp-sms\n"
@@ -198,8 +198,7 @@ msgstr ""
 #: includes/templates/header.php:38
 #: includes/templates/header.php:56
 #: public/blocks/SendSms/index.js:1
-#: public/react/assets/main-BH987G-d.js:2
-#: resources/legacy/blocks/SendSms/edit.js:51
+#: public/react/assets/_layout-CUJCMpOW.js:42
 msgid "Settings"
 msgstr ""
 
@@ -210,7 +209,7 @@ msgstr ""
 #: includes/templates/header.php:33
 #: includes/templates/header.php:55
 #: src/Services/LocalizedData/Providers/LayoutDataProvider.php:64
-#: public/react/assets/main-BH987G-d.js:2
+#: public/react/assets/_layout-CtT3yQEy.js:226
 msgid "Integrations"
 msgstr ""
 
@@ -1617,8 +1616,6 @@ msgstr ""
 #: src/Settings/Groups/MessageButtonSettings.php:45
 #: public/blocks/SendSms/index.js:1
 #: public/blocks/Subscribe/index.js:1
-#: resources/legacy/blocks/SendSms/edit.js:102
-#: resources/legacy/blocks/Subscribe/edit.js:35
 msgid "Title"
 msgstr ""
 
@@ -3455,7 +3452,6 @@ msgstr ""
 #: includes/templates/admin/send-sms.php:26
 #: includes/templates/send-sms-form.php:34
 #: public/blocks/SendSms/index.js:1
-#: resources/legacy/blocks/SendSms/edit.js:72
 msgid "Receiver"
 msgstr ""
 
@@ -3765,7 +3761,7 @@ msgid "Manage Groups"
 msgstr ""
 
 #: includes/templates/chatbox.php:112
-#: public/react/assets/main-BH987G-d.js:2
+#: public/react/assets/_layout._name-CFeKnE0W.js:547
 msgid "Powered By"
 msgstr ""
 
@@ -4014,8 +4010,6 @@ msgstr ""
 #: includes/templates/widget.php:7
 #: public/blocks/SendSms/index.js:1
 #: public/blocks/Subscribe/index.js:1
-#: resources/legacy/blocks/SendSms/edit.js:107
-#: resources/legacy/blocks/Subscribe/edit.js:45
 msgid "Description"
 msgstr ""
 
@@ -4046,7 +4040,6 @@ msgstr ""
 #: includes/templates/wpcf7-form.php:26
 #: src/Settings/Groups/NotificationSettings.php:70
 #: public/blocks/SendSms/index.js:1
-#: resources/legacy/blocks/SendSms/edit.js:84
 msgid "Subscriber Group"
 msgstr ""
 
@@ -4318,12 +4311,12 @@ msgid "Help Text"
 msgstr ""
 
 #: src/Services/MessageButton/ChatBoxDecorator.php:23
-#: public/react/assets/main-BH987G-d.js:2
+#: public/react/assets/_layout._name-CFeKnE0W.js:295
 msgid "Chat with Us!"
 msgstr ""
 
 #: src/Services/MessageButton/ChatBoxDecorator.php:28
-#: public/react/assets/main-BH987G-d.js:2
+#: public/react/assets/_layout._name-CFeKnE0W.js:296
 msgid "Talk to Us"
 msgstr ""
 
@@ -4336,7 +4329,7 @@ msgid "Related Articles"
 msgstr ""
 
 #: src/Services/MessageButton/ChatBoxDecorator.php:78
-#: public/react/assets/main-BH987G-d.js:2
+#: public/react/assets/_layout._name-CFeKnE0W.js:307
 msgid "Quick Links"
 msgstr ""
 
@@ -5981,32 +5974,32 @@ msgid "Write your SMS for login alerts. Use the variables below."
 msgstr ""
 
 #: src/Settings/Tags.php:26
-#: public/react/assets/main-BH987G-d.js:2
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4334
 msgid "New"
 msgstr ""
 
 #: src/Settings/Tags.php:31
-#: public/react/assets/main-BH987G-d.js:2
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4335
 msgid "Deprecated"
 msgstr ""
 
 #: src/Settings/Tags.php:36
-#: public/react/assets/main-BH987G-d.js:2
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4336
 msgid "Beta"
 msgstr ""
 
 #: src/Settings/Tags.php:41
-#: public/react/assets/main-BH987G-d.js:2
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4337
 msgid "Pro"
 msgstr ""
 
 #: src/Settings/Tags.php:46
-#: public/react/assets/main-BH987G-d.js:2
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4338
 msgid "Experimental"
 msgstr ""
 
 #: src/Settings/Tags.php:51
-#: public/react/assets/main-BH987G-d.js:2
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4339
 msgid "Coming Soon"
 msgstr ""
 
@@ -6041,253 +6034,264 @@ msgid "Plain"
 msgstr ""
 
 #: public/blocks/SendSms/index.js:1
-#: resources/legacy/blocks/SendSms/edit.js:53
 msgid "Only for logged in users"
 msgstr ""
 
 #: public/blocks/SendSms/index.js:1
-#: resources/legacy/blocks/SendSms/edit.js:59
 msgid "Select Role"
 msgstr ""
 
 #: public/blocks/SendSms/index.js:1
-#: resources/legacy/blocks/SendSms/edit.js:66
 msgid "Max Characters"
 msgstr ""
 
-#: public/react/assets/field-wrapper-jVjW0u3c.js:1
-msgid "Code snippet copied to clipboard"
-msgstr ""
-
-#: public/react/assets/image-field-D6vVO-f_.js:1
-msgid "Select Image"
-msgstr ""
-
-#: public/react/assets/image-field-D6vVO-f_.js:1
-msgid "Use this image"
-msgstr ""
-
-#: public/react/assets/image-field-D6vVO-f_.js:1
-msgid "Change Image"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Toggle theme"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-#: public/react/assets/multiselect-field-LjyKrGMd.js:1
-msgid "Close"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Sidebar"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Displays the mobile sidebar."
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-#, js-format
-msgid "Plugin Version %s"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Expand sidebar"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Settings Dashboard"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Toggle Sidebar"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Core Settings"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Addons"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Activity"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Logs"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Authentication Channels"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Branding"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Configure your settings and preferences"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Reset"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Save Changes"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-#, js-format
-msgid "Unsupported field type: %s"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Leave without saving?"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "You have unsaved changes on this page. If you leave now, your changes will be lost."
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Discard and leave"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Stay on page"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "No schema data available."
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Settings saved successfully"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Settings saved but form refresh failed"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
-msgid "Something went wrong!"
-msgstr ""
-
-#: public/react/assets/main-BH987G-d.js:2
+#: public/react/assets/activity-Cw1-hD-w.js:3
+#: public/react/assets/branding-CHaiIl99.js:3
+#: public/react/assets/logs-ji9dAZ3B.js:3
+#: public/react/assets/settings-BdGFsp0T.js:3
 #, js-format
 msgid "Hello \"%s\"!"
 msgstr ""
 
-#: public/react/assets/main-BH987G-d.js:2
+#: public/react/assets/authentication-channels-DGJF5rGx.js:1638
 #, js-format
 msgid "%s Settings"
 msgstr ""
 
-#: public/react/assets/main-BH987G-d.js:2
+#: public/react/assets/authentication-channels-DGJF5rGx.js:1638
 msgid "Field Settings"
 msgstr ""
 
-#: public/react/assets/multiselect-field-LjyKrGMd.js:1
+#: public/react/assets/authentication-channels-GxqySRT0.js:5
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4863
+#: public/react/assets/_layout._name-CoXXGyKP.js:5
+msgid "Something went wrong!"
+msgstr ""
+
+#: public/react/assets/field-wrapper-DRk8VCG2.js:85
+msgid "Code snippet copied to clipboard"
+msgstr ""
+
+#: public/react/assets/image-field-e0HC1AaM.js:17
+#: public/react/assets/image-field-e0HC1AaM.js:64
+msgid "Select Image"
+msgstr ""
+
+#: public/react/assets/image-field-e0HC1AaM.js:19
+msgid "Use this image"
+msgstr ""
+
+#: public/react/assets/image-field-e0HC1AaM.js:64
+msgid "Change Image"
+msgstr ""
+
+#: public/react/assets/multiselect-field-XFhmYBkD.js:54
 msgid "Select options"
 msgstr ""
 
-#: public/react/assets/multiselect-field-LjyKrGMd.js:1
+#: public/react/assets/multiselect-field-XFhmYBkD.js:146
 #, js-format
 msgid "+ %s more"
 msgstr ""
 
-#: public/react/assets/multiselect-field-LjyKrGMd.js:1
-#: public/react/assets/select-field-BT3trZw_.js:1
+#: public/react/assets/multiselect-field-XFhmYBkD.js:182
+#: public/react/assets/select-field-DdXUUXUH.js:16
 msgid "Search..."
 msgstr ""
 
-#: public/react/assets/multiselect-field-LjyKrGMd.js:1
+#: public/react/assets/multiselect-field-XFhmYBkD.js:184
 msgid "No results found."
 msgstr ""
 
-#: public/react/assets/multiselect-field-LjyKrGMd.js:1
+#: public/react/assets/multiselect-field-XFhmYBkD.js:197
 msgid "Select All"
 msgstr ""
 
-#: public/react/assets/multiselect-field-LjyKrGMd.js:1
+#: public/react/assets/multiselect-field-XFhmYBkD.js:228
 msgid "Clear"
 msgstr ""
 
-#: public/react/assets/repeater-field-BB4UCfy5.js:1
+#: public/react/assets/multiselect-field-XFhmYBkD.js:236
+#: public/react/assets/sidebar-provider-BB4ZXzVd.js:355
+msgid "Close"
+msgstr ""
+
+#: public/react/assets/password-field-MdB7TnWy.js:68
+msgid "Hide password"
+msgstr ""
+
+#: public/react/assets/password-field-MdB7TnWy.js:68
+msgid "Show password"
+msgstr ""
+
+#: public/react/assets/repeater-field-DKtNSaP2.js:36
 msgid "Are you absolutely sure?"
 msgstr ""
 
-#: public/react/assets/repeater-field-BB4UCfy5.js:1
+#: public/react/assets/repeater-field-DKtNSaP2.js:37
 msgid "This action cannot be undone. This will permanently delete your account and remove your data from our servers."
 msgstr ""
 
-#: public/react/assets/repeater-field-BB4UCfy5.js:1
+#: public/react/assets/repeater-field-DKtNSaP2.js:43
 msgid "Cancel"
 msgstr ""
 
-#: public/react/assets/repeater-field-BB4UCfy5.js:1
+#: public/react/assets/repeater-field-DKtNSaP2.js:44
 msgid "Confirm"
 msgstr ""
 
-#: public/react/assets/repeater-field-BB4UCfy5.js:1
+#: public/react/assets/repeater-field-DKtNSaP2.js:115
 #, js-format
 msgid "Item %s"
 msgstr ""
 
-#: public/react/assets/repeater-field-BB4UCfy5.js:1
+#: public/react/assets/repeater-field-DKtNSaP2.js:147
 #, js-format
 msgid "Add %s"
 msgstr ""
 
-#: public/react/assets/repeater-field-BB4UCfy5.js:1
+#: public/react/assets/repeater-field-DKtNSaP2.js:147
 msgid "Item"
 msgstr ""
 
-#: public/react/assets/select-field-BT3trZw_.js:1
+#: public/react/assets/select-field-DdXUUXUH.js:15
 msgid "Select option..."
 msgstr ""
 
-#: public/react/assets/select-field-BT3trZw_.js:1
+#: public/react/assets/select-field-DdXUUXUH.js:17
 msgid "No option found."
 msgstr ""
 
-#: public/react/assets/tel-field-CL4xMdSt.js:1
+#: public/react/assets/sidebar-provider-BB4ZXzVd.js:309
+msgid "Toggle theme"
+msgstr ""
+
+#: public/react/assets/sidebar-provider-BB4ZXzVd.js:959
+msgid "Sidebar"
+msgstr ""
+
+#: public/react/assets/sidebar-provider-BB4ZXzVd.js:960
+msgid "Displays the mobile sidebar."
+msgstr ""
+
+#: public/react/assets/tel-field-DoeCdB6Z.js:2164
 msgid "Search country..."
 msgstr ""
 
-#: public/react/assets/tel-field-CL4xMdSt.js:1
+#: public/react/assets/tel-field-DoeCdB6Z.js:2166
 msgid "No country found."
 msgstr ""
 
-#: public/react/assets/tel-field-CL4xMdSt.js:1
+#: public/react/assets/tel-field-DoeCdB6Z.js:2203
 msgid "Enter phone number"
 msgstr ""
 
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:831
+msgid "Configure your settings and preferences"
+msgstr ""
+
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4232
+msgid "Reset"
+msgstr ""
+
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4237
+msgid "Save Changes"
+msgstr ""
+
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4484
+#, js-format
+msgid "Unsupported field type: %s"
+msgstr ""
+
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4729
+msgid "Leave without saving?"
+msgstr ""
+
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4730
+msgid "You have unsaved changes on this page. If you leave now, your changes will be lost."
+msgstr ""
+
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4736
+msgid "Discard and leave"
+msgstr ""
+
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4737
+msgid "Stay on page"
+msgstr ""
+
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4777
+msgid "No schema data available."
+msgstr ""
+
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4858
+msgid "Settings saved successfully"
+msgstr ""
+
+#: public/react/assets/use-save-settings-values-D1J1wc5L.js:4860
+msgid "Settings saved but form refresh failed"
+msgstr ""
+
+#: public/react/assets/_layout-CtT3yQEy.js:157
+#: public/react/assets/_layout-CUJCMpOW.js:45
+#, js-format
+msgid "Plugin Version %s"
+msgstr ""
+
+#: public/react/assets/_layout-CtT3yQEy.js:164
+#: public/react/assets/_layout-CUJCMpOW.js:52
+msgid "Expand sidebar"
+msgstr ""
+
+#: public/react/assets/_layout-CtT3yQEy.js:175
+msgid "Settings Dashboard"
+msgstr ""
+
+#: public/react/assets/_layout-CtT3yQEy.js:187
+#: public/react/assets/_layout-CUJCMpOW.js:75
+msgid "Toggle Sidebar"
+msgstr ""
+
+#: public/react/assets/_layout-CtT3yQEy.js:194
+#: public/react/assets/_layout-CUJCMpOW.js:81
+msgid "Core Settings"
+msgstr ""
+
+#: public/react/assets/_layout-CtT3yQEy.js:210
+msgid "Addons"
+msgstr ""
+
+#: public/react/assets/_layout-CUJCMpOW.js:18
+msgid "Activity"
+msgstr ""
+
+#: public/react/assets/_layout-CUJCMpOW.js:24
+msgid "Logs"
+msgstr ""
+
+#: public/react/assets/_layout-CUJCMpOW.js:30
+msgid "Authentication Channels"
+msgstr ""
+
+#: public/react/assets/_layout-CUJCMpOW.js:36
+msgid "Branding"
+msgstr ""
+
 #: public/blocks/SendSms/block.json
-#: resources/legacy/blocks/SendSms/block.json
 msgctxt "block title"
 msgid "Send SMS"
 msgstr ""
 
 #: public/blocks/SendSms/block.json
-#: resources/legacy/blocks/SendSms/block.json
 msgctxt "block description"
 msgid "Send SMS form block"
 msgstr ""
 
 #: public/blocks/Subscribe/block.json
-#: resources/legacy/blocks/Subscribe/block.json
 msgctxt "block title"
 msgid "Subscribe"
 msgstr ""
 
 #: public/blocks/Subscribe/block.json
-#: resources/legacy/blocks/Subscribe/block.json
 msgctxt "block description"
 msgid "SMS newsletter subscription form block"
 msgstr ""
