@@ -96,7 +96,7 @@ class ReactHandler extends BaseAssets
             $this->getAssetHandle(),
             $this->getUrl($this->manifestMainJs),
             ['wp-i18n'],
-            $this->getVersion(),
+            null,
             true
         );
 
