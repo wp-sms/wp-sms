@@ -129,8 +129,8 @@ importers:
         specifier: ^8.6.0
         version: 8.6.0(react@19.2.0)
       intl-tel-input:
-        specifier: ^25.12.5
-        version: 25.12.5
+        specifier: 24.8.2
+        version: 24.8.2
       libphonenumber-js:
         specifier: ^1.12.10
         version: 1.12.26
@@ -5483,8 +5483,8 @@ packages:
   intl-messageformat@4.4.0:
     resolution: {integrity: sha512-z+Bj2rS3LZSYU4+sNitdHrwnBhr0wO80ZJSW8EzKDBowwUe3Q/UsvgCGjrwa+HPzoGCLEb9HAjfJgo4j2Sac8w==}
 
-  intl-tel-input@25.12.5:
-    resolution: {integrity: sha512-zat95u/9sM0/xbAzbwEjk98lFhG26CSJ1f8BSoATnF5Pxw5/aiX3JJCQfOp+f44EZFsECF24nuKY/JlTXIwnUw==}
+  intl-tel-input@24.8.2:
+    resolution: {integrity: sha512-ZPmkgUopI94c6H0uBEK8L1bQITMWFf5eFD9SuWZ3cV9NkctDwrtsdjMZOuZdI3giOZfVfvIGaZGbq7UrVpPykA==}
 
   ip-address@10.0.1:
     resolution: {integrity: sha512-NWv9YLW4PoW2B7xtzaS3NCot75m6nK7Icdv0o3lfMceJVRfSoQwqD4wEH5rLwoKJwUiZ/rfpiVBhnaF0FK4HoA==}
@@ -14896,7 +14896,7 @@ snapshots:
     dependencies:
       intl-messageformat-parser: 1.8.1
 
-  intl-tel-input@25.12.5: {}
+  intl-tel-input@24.8.2: {}
 
   ip-address@10.0.1: {}
 
