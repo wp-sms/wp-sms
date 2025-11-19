@@ -161,7 +161,7 @@ class GeneralSettings extends AbstractSettingGroup {
                         'type' => 'number',
                         'description' => __('Largest allowed number length. Symbols are ignored.', 'wp-sms'),
                         'hide_if' => ['international_mobile' => true],
-                        'max' => 0
+                        'min' => 1
                     ]),
                 ]
             ]),
