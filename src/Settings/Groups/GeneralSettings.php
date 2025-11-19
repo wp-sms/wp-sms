@@ -100,8 +100,8 @@ class GeneralSettings extends AbstractSettingGroup {
                     ]),
                     new Field([
                         'key' => 'optional_mobile_field',
-                        'label' => __('Required or optional', 'wp-sms'),
-                        'type' => 'select',
+                        'label' => __('Required', 'wp-sms'),
+                        'type' => 'checkbox',
                         'description' => __('Choose whether users must provide a mobile number.', 'wp-sms'),
                         'options' => [
                             '0' => __('Required', 'wp-sms'),
