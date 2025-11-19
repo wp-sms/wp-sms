@@ -3,7 +3,6 @@
 namespace WP_SMS\Services\Database\Migrations\Queue;
 
 use Exception;
-use WP_SMS\Components\NumberParser;
 
 /**
  * Queue migration class for handling database migration steps.
@@ -29,7 +28,6 @@ class QueueMigration
         'migrateTwoWaySettings'              => 'migrateTwoWaySettings',
         'migrateBookingIntegrationsSettings' => 'migrateBookingIntegrationsSettings',
         'migrateFluentIntegrationsSettings'  => 'migrateFluentIntegrationsSettings',
-        'formatAdminMobileWithCountryCode'       => 'formatAdminMobileWithCountryCode'
     ];
 
     /**
@@ -316,28 +314,6 @@ class QueueMigration
                     // TODO: Add logging for successful migration
                 }
             }
-        } catch (Exception $e) {
-            $this->setErrorStatus($e->getMessage());
-        }
-    }
-
-    /**
-     * Format admin mobile number with country code prefix.
-     *
-     * This method retrieves the admin mobile number from settings and
-     * normalizes it using the NumberParser to ensure it includes the
-     * proper country code format.
-     */
-    public function formatAdminMobileWithCountryCode()
-    {
-        try {
-            $new_options = get_option('wp_sms_settings', []);
-
-            if (!empty($new_options['admin_mobile_number'])) {
-                $new_options['admin_mobile_number'] = (new NumberParser($new_options['admin_mobile_number']))->getValidNumber();
-            }
-
-            update_option('wp_sms_settings', $new_options);
         } catch (Exception $e) {
             $this->setErrorStatus($e->getMessage());
         }
