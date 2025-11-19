@@ -26,7 +26,7 @@ class Gateway
             'clickatell'     => 'clickatell.com',
             'bulksms'        => 'bulksms.com',
             'infobip'        => 'infobip.com',
-            'nexmo'          => 'nexmo.com',
+            'nexmo'          => 'vonage.com (Formerly Nexmo)',
             'clockworksms'   => 'clockworksms.com',
             'messagebird'    => 'messagebird.com',
             'clicksend'      => 'clicksend.com',
