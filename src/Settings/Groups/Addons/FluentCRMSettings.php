@@ -42,6 +42,7 @@ class FluentCRMSettings extends AbstractSettingGroup
                 'id' => 'fluent_crm_integration',
                 'title' => __('Fluent CRM Integration', 'wp-sms-fluent-integrations'),
                 'subtitle' => __('Connect Fluent CRM to enable SMS options.', 'wp-sms-fluent-integrations'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'fluent_crm_not_active_notice',
@@ -59,7 +60,7 @@ class FluentCRMSettings extends AbstractSettingGroup
             'subtitle' => __('Configure SMS notifications for contact subscription', 'wp-sms-fluent-integrations'),
             'fields' => $this->getContactSubscribedFields(),
             'readonly' => !$isPluginActive,
-            'tag' => 'fluentcrm',
+            'tag' => !$isPluginActive ? Tags::FLUENTCRM : '',
             'order' => 1,
         ]);
         $sections[] = new Section([
@@ -68,7 +69,7 @@ class FluentCRMSettings extends AbstractSettingGroup
             'subtitle' => __('Configure SMS notifications for contact unsubscription', 'wp-sms-fluent-integrations'),
             'fields' => $this->getContactUnsubscribedFields(),
             'readonly' => !$isPluginActive,
-            'tag' => 'fluentcrm',
+            'tag' => !$isPluginActive ? Tags::FLUENTCRM : '',
             'order' => 2,
         ]);
         $sections[] = new Section([
@@ -77,7 +78,7 @@ class FluentCRMSettings extends AbstractSettingGroup
             'subtitle' => __('Configure SMS notifications for contact pending subscription', 'wp-sms-fluent-integrations'),
             'fields' => $this->getContactPendingFields(),
             'readonly' => !$isPluginActive,
-            'tag' => 'fluentcrm',
+            'tag' => !$isPluginActive ? Tags::FLUENTCRM : '',
             'order' => 3,
         ]);
 
@@ -117,7 +118,6 @@ class FluentCRMSettings extends AbstractSettingGroup
                 'type' => 'checkbox',
                 'description' => __('By this option you can add SMS notification for contact subscription', 'wp-sms-fluent-integrations'),
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentcrm',
             ]),
             new Field([
                 'key' => 'fluent_crm_notif_contact_subscribed_message',
@@ -126,7 +126,6 @@ class FluentCRMSettings extends AbstractSettingGroup
                 'description' => __('Enter the contents of the SMS message', 'wp-sms-fluent-integrations') . '<br>' . $this->getVariablesHtml($variables),
                 'rows' => 5,
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentcrm',
             ]),
         ];
     }
@@ -154,7 +153,6 @@ class FluentCRMSettings extends AbstractSettingGroup
                 'type' => 'checkbox',
                 'description' => __('By this option you can add SMS notification for contact unsubscription', 'wp-sms-fluent-integrations'),
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentcrm',
             ]),
             new Field([
                 'key' => 'fluent_crm_notif_contact_unsubscribed_message',
@@ -163,7 +161,6 @@ class FluentCRMSettings extends AbstractSettingGroup
                 'description' => __('Enter the contents of the SMS message', 'wp-sms-fluent-integrations') . '<br>' . $this->getVariablesHtml($variables),
                 'rows' => 5,
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentcrm',
             ]),
         ];
     }
@@ -191,7 +188,6 @@ class FluentCRMSettings extends AbstractSettingGroup
                 'type' => 'checkbox',
                 'description' => __('By this option you can add SMS notification for contact pending subscription', 'wp-sms-fluent-integrations'),
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentcrm',
             ]),
             new Field([
                 'key' => 'fluent_crm_notif_contact_pending_message',
@@ -200,7 +196,6 @@ class FluentCRMSettings extends AbstractSettingGroup
                 'description' => __('Enter the contents of the SMS message', 'wp-sms-fluent-integrations') . '<br>' . $this->getVariablesHtml($variables),
                 'rows' => 5,
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentcrm',
             ]),
         ];
     }

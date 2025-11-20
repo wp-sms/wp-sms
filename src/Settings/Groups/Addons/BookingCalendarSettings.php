@@ -42,6 +42,7 @@ class BookingCalendarSettings extends AbstractSettingGroup
                 'id' => 'booking_calendar_integration',
                 'title' => __('Booking Calendar Integration', 'wp-sms-booking-integrations'),
                 'subtitle' => __('Connect Booking Calendar to enable SMS options.', 'wp-sms-booking-integrations'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'booking_calendar_not_active_notice',
@@ -57,19 +58,18 @@ class BookingCalendarSettings extends AbstractSettingGroup
             'id' => 'customer_mobile_field',
             'title' => __('Customer Mobile Field', 'wp-sms-booking-integrations'),
             'subtitle' => __('Configure the mobile field for customer notifications', 'wp-sms-booking-integrations'),
-            'fields' => [
-                new Field([
-                    'key' => 'booking_calendar_notif_customer_mobile_field',
-                    'label' => __('Send to field', 'wp-sms-booking-integrations'),
-                    'type' => 'select',
-                    'options' => $this->getBookingFields(),
-                    'description' => __('Select the field to send the SMS to the customer', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'bookingcalendar',
-                ]),
-            ],
+                'fields' => [
+                    new Field([
+                        'key' => 'booking_calendar_notif_customer_mobile_field',
+                        'label' => __('Send to field', 'wp-sms-booking-integrations'),
+                        'type' => 'select',
+                        'options' => $this->getBookingFields(),
+                        'description' => __('Select the field to send the SMS to the customer', 'wp-sms-booking-integrations'),
+                        'readonly' => !$isPluginActive,
+                    ]),
+                ],
             'readonly' => !$isPluginActive,
-            'tag' => 'bookingcalendar',
+            'tag' => !$isPluginActive ? Tags::BOOKINGCALENDAR : '',
             'order' => 1,
         ]);
         $sections[] = new Section([
@@ -83,7 +83,6 @@ class BookingCalendarSettings extends AbstractSettingGroup
                     'type' => 'checkbox',
                     'description' => __('By this option you can enable SMS notifications to alert the admin when a new booking is created', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingcalendar',
                 ]),
                 new Field([
                     'key' => 'booking_calendar_notif_admin_new_booking_receiver',
@@ -91,7 +90,6 @@ class BookingCalendarSettings extends AbstractSettingGroup
                     'type' => 'text',
                     'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingcalendar',
                 ]),
                 new Field([
                     'key' => 'booking_calendar_notif_admin_new_booking_message',
@@ -99,7 +97,6 @@ class BookingCalendarSettings extends AbstractSettingGroup
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingcalendar',
                 ]),
                 new Field([
                     'key' => 'booking_calendar_notif_customer_new_booking',
@@ -107,7 +104,6 @@ class BookingCalendarSettings extends AbstractSettingGroup
                     'type' => 'checkbox',
                     'description' => __('By this option you can enable SMS notifications to alert the customer when a new booking is created', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingcalendar',
                 ]),
                 new Field([
                     'key' => 'booking_calendar_notif_customer_new_booking_message',
@@ -115,11 +111,10 @@ class BookingCalendarSettings extends AbstractSettingGroup
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingcalendar',
                 ]),
             ],
             'readonly' => !$isPluginActive,
-            'tag' => 'bookingcalendar',
+            'tag' => !$isPluginActive ? Tags::BOOKINGCALENDAR : '',
             'order' => 2,
         ]);
         $sections[] = new Section([
@@ -133,7 +128,6 @@ class BookingCalendarSettings extends AbstractSettingGroup
                     'type' => 'checkbox',
                     'description' => __('By this option you can enable SMS notifications to alert the customer when a booking is approved', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingcalendar',
                 ]),
                 new Field([
                     'key' => 'booking_calendar_notif_customer_booking_approved_message',
@@ -141,11 +135,10 @@ class BookingCalendarSettings extends AbstractSettingGroup
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingcalendar',
                 ]),
             ],
             'readonly' => !$isPluginActive,
-            'tag' => 'bookingcalendar',
+            'tag' => !$isPluginActive ? Tags::BOOKINGCALENDAR : '',
             'order' => 3,
         ]);
         $sections[] = new Section([
@@ -154,24 +147,22 @@ class BookingCalendarSettings extends AbstractSettingGroup
             'subtitle' => __('Configure notifications for cancelled bookings', 'wp-sms-booking-integrations'),
             'fields' => [
                 new Field([
-                    'key' => 'booking_calendar_notif_customer_booking_cancelled',
-                    'label' => __('Status', 'wp-sms-booking-integrations'),
-                    'type' => 'checkbox',
-                    'description' => __('By this option you can enable SMS notifications to alert the customer when a booking is cancelled', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'bookingcalendar',
-                ]),
-                new Field([
-                    'key' => 'booking_calendar_notif_customer_booking_cancelled_message',
-                    'label' => __('Message Body', 'wp-sms-booking-integrations'),
-                    'type' => 'textarea',
-                    'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'bookingcalendar',
-                ]),
-            ],
+                        'key' => 'booking_calendar_notif_customer_booking_cancelled',
+                        'label' => __('Status', 'wp-sms-booking-integrations'),
+                        'type' => 'checkbox',
+                        'description' => __('By this option you can enable SMS notifications to alert the customer when a booking is cancelled', 'wp-sms-booking-integrations'),
+                        'readonly' => !$isPluginActive,
+                    ]),
+                    new Field([
+                        'key' => 'booking_calendar_notif_customer_booking_cancelled_message',
+                        'label' => __('Message Body', 'wp-sms-booking-integrations'),
+                        'type' => 'textarea',
+                        'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
+                        'readonly' => !$isPluginActive,
+                    ]),
+                ],
             'readonly' => !$isPluginActive,
-            'tag' => 'bookingcalendar',
+            'tag' => !$isPluginActive ? Tags::BOOKINGCALENDAR : '',
             'order' => 4,
         ]);
 

@@ -43,6 +43,7 @@ class FluentFormsSettings extends AbstractSettingGroup
                 'id' => 'fluent_forms_integration',
                 'title' => __('Fluent Forms Integration', 'wp-sms-fluent-integrations'),
                 'subtitle' => __('Connect Fluent Forms to enable SMS options.', 'wp-sms-fluent-integrations'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'fluent_forms_not_active_notice',
@@ -64,7 +65,7 @@ class FluentFormsSettings extends AbstractSettingGroup
                     'subtitle' => __('Configure SMS notifications for this form', 'wp-sms-fluent-integrations'),
                     'fields' => $this->getFormFields($formId, $formTitle),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'fluentforms',
+                    'tag' => !$isPluginActive ? Tags::FLUENTFORMS : '',
                     'order' => $formId,
                 ]);
             }
@@ -80,11 +81,10 @@ class FluentFormsSettings extends AbstractSettingGroup
                         'type' => 'html',
                         'description' => __('We could not find any Fluent Forms. Please create forms in Fluent Forms to configure SMS notifications.', 'wp-sms-fluent-integrations'),
                         'readonly' => !$isPluginActive,
-                        'tag' => 'fluentforms',
                     ]),
                 ],
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentforms',
+                'tag' => !$isPluginActive ? Tags::FLUENTFORMS : '',
                 'order' => 1,
             ]);
         }
@@ -122,7 +122,6 @@ class FluentFormsSettings extends AbstractSettingGroup
                 'type' => 'checkbox',
                 'description' => __('By this option you can add SMS notification to a number after form submission', 'wp-sms-fluent-integrations'),
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentforms',
             ]),
             new Field([
                 'key' => 'fluent_forms_notif_after_submission_' . $formId . '_receiver',
@@ -130,7 +129,6 @@ class FluentFormsSettings extends AbstractSettingGroup
                 'type' => 'text',
                 'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-fluent-integrations'),
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentforms',
             ]),
             new Field([
                 'key' => 'fluent_forms_notif_after_submission_' . $formId . '_message',
@@ -139,7 +137,6 @@ class FluentFormsSettings extends AbstractSettingGroup
                 'description' => __('Enter the message body', 'wp-sms-fluent-integrations') . '<br>' . $this->getVariablesHtml($variables),
                 'rows' => 5,
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentforms',
             ]),
             new Field([
                 'key' => 'fluent_forms_notif_field_after_submission_' . $formId,
@@ -156,7 +153,6 @@ class FluentFormsSettings extends AbstractSettingGroup
                 'options' => $formFields,
                 'description' => __('Select the field', 'wp-sms-fluent-integrations'),
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentforms',
             ]),
             new Field([
                 'key' => 'fluent_forms_notif_field_after_submission_' . $formId . '_message',
@@ -165,7 +161,6 @@ class FluentFormsSettings extends AbstractSettingGroup
                 'description' => __('Enter the message body', 'wp-sms-fluent-integrations') . '<br>' . $this->getVariablesHtml($variables),
                 'rows' => 5,
                 'readonly' => !$isPluginActive,
-                'tag' => 'fluentforms',
             ]),
         ];
     }

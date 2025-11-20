@@ -30,6 +30,7 @@ class EasyDigitalDownloadsSettings extends AbstractSettingGroup
                 'id' => 'edd_integration',
                 'title' => __('Easy Digital Downloads Integration', 'wp-sms'),
                 'subtitle' => __('Connect EDD to enable SMS options.', 'wp-sms'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'edd_not_active_notice',

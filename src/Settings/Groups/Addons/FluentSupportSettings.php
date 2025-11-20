@@ -43,6 +43,7 @@ class FluentSupportSettings extends AbstractSettingGroup
                 'id' => 'fluent_support_integration',
                 'title' => __('Fluent Support Integration', 'wp-sms-fluent-integrations'),
                 'subtitle' => __('Connect Fluent Support to enable SMS options.', 'wp-sms-fluent-integrations'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'fluent_support_not_active_notice',
@@ -60,6 +61,7 @@ class FluentSupportSettings extends AbstractSettingGroup
             'subtitle' => __('Configure SMS notifications for ticket creation', 'wp-sms-fluent-integrations'),
             'fields' => $this->getTicketCreatedFields(),
             'readonly' => !$isPluginActive,
+            'tag' => !$isPluginActive ? Tags::FLUENTSUPPORT : '',
             'order' => 1,
         ]);
         $sections[] = new Section([
@@ -68,6 +70,7 @@ class FluentSupportSettings extends AbstractSettingGroup
             'subtitle' => __('Configure SMS notifications for customer responses', 'wp-sms-fluent-integrations'),
             'fields' => $this->getCustomerResponseFields(),
             'readonly' => !$isPluginActive,
+            'tag' => !$isPluginActive ? Tags::FLUENTSUPPORT : '',
             'order' => 2,
         ]);
         $sections[] = new Section([
@@ -76,6 +79,7 @@ class FluentSupportSettings extends AbstractSettingGroup
             'subtitle' => __('Configure SMS notifications for ticket assignment', 'wp-sms-fluent-integrations'),
             'fields' => $this->getAgentAssignedFields(),
             'readonly' => !$isPluginActive,
+            'tag' => !$isPluginActive ? Tags::FLUENTSUPPORT : '',
             'order' => 3,
         ]);
         $sections[] = new Section([
@@ -84,6 +88,7 @@ class FluentSupportSettings extends AbstractSettingGroup
             'subtitle' => __('Configure SMS notifications for ticket closure', 'wp-sms-fluent-integrations'),
             'fields' => $this->getTicketClosedFields(),
             'readonly' => !$isPluginActive,
+            'tag' => !$isPluginActive ? Tags::FLUENTSUPPORT : '',
             'order' => 4,
         ]);
 

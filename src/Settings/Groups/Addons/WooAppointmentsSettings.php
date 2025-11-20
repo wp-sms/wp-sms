@@ -42,6 +42,7 @@ class WooAppointmentsSettings extends AbstractSettingGroup
                 'id' => 'woo_appointments_integration',
                 'title' => __('WooCommerce Appointments Integration', 'wp-sms-booking-integrations'),
                 'subtitle' => __('Connect WooCommerce Appointments to enable SMS options.', 'wp-sms-booking-integrations'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'woo_appointments_not_active_notice',
@@ -64,7 +65,6 @@ class WooAppointmentsSettings extends AbstractSettingGroup
                     'type' => 'checkbox',
                     'description' => __('By this option you can enable SMS notifications to alert the admin when a new appointment is created', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'wooappointments',
                 ]),
                 new Field([
                     'key' => 'woo_appointments_notif_admin_new_appointment_receiver',
@@ -72,7 +72,6 @@ class WooAppointmentsSettings extends AbstractSettingGroup
                     'type' => 'text',
                     'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'wooappointments',
                 ]),
                 new Field([
                     'key' => 'woo_appointments_notif_admin_new_appointment_message',
@@ -80,11 +79,10 @@ class WooAppointmentsSettings extends AbstractSettingGroup
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'wooappointments',
                 ]),
             ],
             'readonly' => !$isPluginActive,
-            'tag' => 'wooappointments',
+            'tag' => !$isPluginActive ? Tags::WOOAPPOINTMENTS : '',
             'order' => 1,
         ]);
         $sections[] = new Section([
@@ -98,7 +96,6 @@ class WooAppointmentsSettings extends AbstractSettingGroup
                     'type' => 'checkbox',
                     'description' => __('By this option you can enable SMS notifications to alert the admin when an appointment is cancelled', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'wooappointments',
                 ]),
                 new Field([
                     'key' => 'woo_appointments_notif_admin_cancelled_appointment_receiver',
@@ -106,7 +103,6 @@ class WooAppointmentsSettings extends AbstractSettingGroup
                     'type' => 'text',
                     'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'wooappointments',
                 ]),
                 new Field([
                     'key' => 'woo_appointments_notif_admin_cancelled_appointment_message',
@@ -114,7 +110,6 @@ class WooAppointmentsSettings extends AbstractSettingGroup
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'wooappointments',
                 ]),
                 new Field([
                     'key' => 'woo_appointments_notif_customer_cancelled_appointment',
@@ -122,7 +117,6 @@ class WooAppointmentsSettings extends AbstractSettingGroup
                     'type' => 'checkbox',
                     'description' => __('By this option you can enable SMS notifications to alert the customer when an appointment is cancelled', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'wooappointments',
                 ]),
                 new Field([
                     'key' => 'woo_appointments_notif_customer_cancelled_appointment_message',
@@ -130,11 +124,10 @@ class WooAppointmentsSettings extends AbstractSettingGroup
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'wooappointments',
                 ]),
             ],
             'readonly' => !$isPluginActive,
-            'tag' => 'wooappointments',
+            'tag' => !$isPluginActive ? Tags::WOOAPPOINTMENTS : '',
             'order' => 2,
         ]);
         $sections[] = new Section([
@@ -148,7 +141,6 @@ class WooAppointmentsSettings extends AbstractSettingGroup
                     'type' => 'checkbox',
                     'description' => __('By this option you can enable SMS notifications to alert the admin when an appointment is rescheduled', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'wooappointments',
                 ]),
                 new Field([
                     'key' => 'woo_appointments_notif_admin_rescheduled_appointment_receiver',
@@ -156,7 +148,6 @@ class WooAppointmentsSettings extends AbstractSettingGroup
                     'type' => 'text',
                     'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'wooappointments',
                 ]),
                 new Field([
                     'key' => 'woo_appointments_notif_admin_rescheduled_appointment_message',
@@ -164,11 +155,10 @@ class WooAppointmentsSettings extends AbstractSettingGroup
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'wooappointments',
                 ]),
             ],
             'readonly' => !$isPluginActive,
-            'tag' => 'wooappointments',
+            'tag' => !$isPluginActive ? Tags::WOOAPPOINTMENTS : '',
             'order' => 3,
         ]);
         $sections[] = new Section([
@@ -182,7 +172,6 @@ class WooAppointmentsSettings extends AbstractSettingGroup
                     'type' => 'checkbox',
                     'description' => __('By this option you can enable SMS notifications to alert the customer when an appointment is confirmed', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'wooappointments',
                 ]),
                 new Field([
                     'key' => 'woo_appointments_notif_customer_confirmed_appointment_message',
@@ -190,11 +179,10 @@ class WooAppointmentsSettings extends AbstractSettingGroup
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'wooappointments',
                 ]),
             ],
             'readonly' => !$isPluginActive,
-            'tag' => 'wooappointments',
+            'tag' => !$isPluginActive ? Tags::WOOAPPOINTMENTS : '',
             'order' => 4,
         ]);
 

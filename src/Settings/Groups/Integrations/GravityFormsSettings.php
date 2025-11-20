@@ -31,6 +31,7 @@ class GravityFormsSettings extends AbstractSettingGroup
                 'id' => 'gravity_forms_not_active',
                 'title' => __('Plugin Status', 'wp-sms'),
                 'subtitle' => __('Gravity Forms Integration Status', 'wp-sms'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'gravity_forms_not_active_notice',

@@ -30,6 +30,7 @@ class WooCommerceSettings extends AbstractSettingGroup
                 'id' => 'woocommerce_integration',
                 'title' => __('WooCommerce Integration', 'wp-sms'),
                 'subtitle' => __('Configure SMS notifications for WooCommerce activities', 'wp-sms'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'woocommerce_not_active_notice',

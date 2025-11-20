@@ -42,6 +42,7 @@ class WooBookingsSettings extends AbstractSettingGroup
                 'id' => 'woo_bookings_integration',
                 'title' => __('WooCommerce Bookings Integration', 'wp-sms-booking-integrations'),
                 'subtitle' => __('Connect WooCommerce Bookings to enable SMS options.', 'wp-sms-booking-integrations'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'woo_bookings_not_active_notice',
@@ -63,28 +64,25 @@ class WooBookingsSettings extends AbstractSettingGroup
                     'label' => __('Status', 'wp-sms-booking-integrations'),
                     'type' => 'checkbox',
                     'description' => __('By this option you can enable SMS notifications to alert the admin when a new booking is created', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'woobookings',
+                    'readonly' => !$isPluginActive
                 ]),
                 new Field([
                     'key' => 'woo_bookings_notif_admin_new_booking_receiver',
                     'label' => __('Phone number(s)', 'wp-sms-booking-integrations'),
                     'type' => 'text',
                     'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'woobookings',
+                    'readonly' => !$isPluginActive
                 ]),
                 new Field([
                     'key' => 'woo_bookings_notif_admin_new_booking_message',
                     'label' => __('Message Body', 'wp-sms-booking-integrations'),
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'woobookings',
+                    'readonly' => !$isPluginActive
                 ]),
             ],
             'readonly' => !$isPluginActive,
-            'tag' => 'woobookings',
+            'tag' => !$isPluginActive ? Tags::WOOBOOKINGS : '',
             'order' => 1,
         ]);
         $sections[] = new Section([
@@ -98,43 +96,38 @@ class WooBookingsSettings extends AbstractSettingGroup
                     'type' => 'checkbox',
                     'description' => __('By this option you can enable SMS notifications to alert the admin when an booking is cancelled', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'woobookings',
                 ]),
                 new Field([
                     'key' => 'woo_bookings_notif_admin_cancelled_booking_receiver',
                     'label' => __('Phone number(s)', 'wp-sms-booking-integrations'),
                     'type' => 'text',
                     'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'woobookings',
+                    'readonly' => !$isPluginActive
                 ]),
                 new Field([
                     'key' => 'woo_bookings_notif_admin_cancelled_booking_message',
                     'label' => __('Message Body', 'wp-sms-booking-integrations'),
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'woobookings',
+                    'readonly' => !$isPluginActive
                 ]),
                 new Field([
                     'key' => 'woo_bookings_notif_customer_cancelled_booking',
                     'label' => __('Customer Notification Status', 'wp-sms-booking-integrations'),
                     'type' => 'checkbox',
                     'description' => __('By this option you can enable SMS notifications to alert the customer when an booking is cancelled', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'woobookings',
+                    'readonly' => !$isPluginActive
                 ]),
                 new Field([
                     'key' => 'woo_bookings_notif_customer_cancelled_booking_message',
                     'label' => __('Message Body', 'wp-sms-booking-integrations'),
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'woobookings',
+                    'readonly' => !$isPluginActive
                 ]),
             ],
             'readonly' => !$isPluginActive,
-            'tag' => 'woobookings',
+            'tag' => !$isPluginActive ? Tags::WOOBOOKINGS : '',
             'order' => 2,
         ]);
         $sections[] = new Section([
@@ -148,7 +141,6 @@ class WooBookingsSettings extends AbstractSettingGroup
                     'type' => 'checkbox',
                     'description' => __('By this option you can enable SMS notifications to alert the customer when an booking is confirmed', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'woobookings',
                 ]),
                 new Field([
                     'key' => 'woo_bookings_notif_customer_confirmed_booking_message',
@@ -156,11 +148,10 @@ class WooBookingsSettings extends AbstractSettingGroup
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'woobookings',
                 ]),
             ],
             'readonly' => !$isPluginActive,
-            'tag' => 'woobookings',
+            'tag' => !$isPluginActive ? Tags::WOOBOOKINGS : '',
             'order' => 3,
         ]);
 

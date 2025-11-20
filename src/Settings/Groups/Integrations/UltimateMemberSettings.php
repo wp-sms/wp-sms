@@ -31,6 +31,7 @@ class UltimateMemberSettings extends AbstractSettingGroup
                 'type' => 'notice',
                 'title' => __('Integration inactive', 'wp-sms'),
                 'subtitle' => __('Activate the Ultimate Member plugin to use these settings.', 'wp-sms'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'ultimate_member_not_active_notice',

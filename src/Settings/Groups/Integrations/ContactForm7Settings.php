@@ -29,6 +29,7 @@ class ContactForm7Settings extends AbstractSettingGroup
                 'id' => 'contact_form7_not_active',
                 'title' => __('Plugin Status', 'wp-sms'),
                 'subtitle' => __('Contact Form 7 Integration Status', 'wp-sms'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'contact_form7_not_active_notice',

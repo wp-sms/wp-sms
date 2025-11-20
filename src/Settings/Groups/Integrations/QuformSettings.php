@@ -31,6 +31,7 @@ class QuformSettings extends AbstractSettingGroup
                 'id' => 'quform_not_active',
                 'title' => __('Quform Integration', 'wp-sms'),
                 'subtitle' => __('Set up SMS notifications for Quform submissions.', 'wp-sms'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'quform_not_active_notice',

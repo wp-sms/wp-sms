@@ -61,6 +61,7 @@ class TwoWaySettings extends AbstractSettingGroup
                 'id' => 'two_way_integration',
                 'title' => __('Two-Way SMS Integration', 'wp-sms-two-way'),
                 'subtitle' => __('Connect Two-Way SMS to enable SMS options.', 'wp-sms-two-way'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'two_way_not_active_notice',
@@ -78,7 +79,7 @@ class TwoWaySettings extends AbstractSettingGroup
             'subtitle' => __('View your gateway status and webhook configuration', 'wp-sms-two-way'),
             'fields' => $this->getGatewayStatusFields(),
             'readonly' => !$isPluginActive,
-            'tag' => 'twoway',
+            'tag' => !$isPluginActive ? Tags::TWOWAY : '',
             'order' => 1,
         ]);
         $sections[] = new Section([
@@ -87,7 +88,7 @@ class TwoWaySettings extends AbstractSettingGroup
             'subtitle' => __('Configure forwarding of incoming SMS messages', 'wp-sms-two-way'),
             'fields' => $this->getMessageForwardingFields(),
             'readonly' => !$isPluginActive,
-            'tag' => 'twoway',
+            'tag' => !$isPluginActive ? Tags::TWOWAY : '',
             'order' => 2,
         ]);
         $sections[] = new Section([
@@ -96,7 +97,7 @@ class TwoWaySettings extends AbstractSettingGroup
             'subtitle' => __('Configure email notifications for incoming SMS messages', 'wp-sms-two-way'),
             'fields' => $this->getEmailNotificationFields(),
             'readonly' => !$isPluginActive,
-            'tag' => 'twoway',
+            'tag' => !$isPluginActive ? Tags::TWOWAY : '',
             'order' => 3,
         ]);
 
@@ -129,7 +130,6 @@ class TwoWaySettings extends AbstractSettingGroup
                 'type' => 'html',
                 'description' => $this->renderCurrentGatewayNameField(),
                 'readonly' => !$isPluginActive,
-                'tag' => 'twoway',
             ]),
             new Field([
                 'key' => 'support_status',
@@ -137,7 +137,6 @@ class TwoWaySettings extends AbstractSettingGroup
                 'type' => 'html',
                 'description' => $this->renderGatewayStatusField(),
                 'readonly' => !$isPluginActive,
-                'tag' => 'twoway',
             ]),
         ];
 
@@ -149,7 +148,6 @@ class TwoWaySettings extends AbstractSettingGroup
                 'type' => 'html',
                 'description' => $this->renderRegisterTypeField(),
                 'readonly' => !$isPluginActive,
-                'tag' => 'twoway',
             ]);
 
             switch ($this->gateway->getRegisterType()) {
@@ -160,7 +158,6 @@ class TwoWaySettings extends AbstractSettingGroup
                         'type' => 'html',
                         'description' => $this->renderRegistrationApiButton(),
                         'readonly' => !$isPluginActive,
-                        'tag' => 'twoway',
                     ]);
                     break;
                 case 'panel':
@@ -170,7 +167,6 @@ class TwoWaySettings extends AbstractSettingGroup
                         'type' => 'html',
                         'description' => $this->renderWebhookUrlField(),
                         'readonly' => !$isPluginActive,
-                        'tag' => 'twoway',
                     ]);
                     if ($this->gateway->getPanelUrl()) {
                         $fields[] = new Field([
@@ -179,7 +175,6 @@ class TwoWaySettings extends AbstractSettingGroup
                             'type' => 'html',
                             'description' => $this->renderRegistrationPanelField(),
                             'readonly' => !$isPluginActive,
-                            'tag' => 'twoway',
                         ]);
                     }
                     break;
@@ -212,7 +207,6 @@ class TwoWaySettings extends AbstractSettingGroup
                 'type' => 'checkbox',
                 'description' => __('Forward incoming messages to the admin mobile number', 'wp-sms-two-way'),
                 'readonly' => !$isPluginActive,
-                'tag' => 'twoway',
             ]),
             new Field([
                 'key' => 'notif_new_inbox_message_template',
@@ -221,7 +215,6 @@ class TwoWaySettings extends AbstractSettingGroup
                 'description' => __('Enter the contents of the sms message.', 'wp-sms') . '<br>' . NotificationFactory::getCustom()->registerVariables($variables)->printVariables(),
                 'rows' => 5,
                 'readonly' => !$isPluginActive,
-                'tag' => 'twoway',
             ]),
         ];
     }
@@ -242,7 +235,6 @@ class TwoWaySettings extends AbstractSettingGroup
                 'type' => 'checkbox',
                 'description' => __('Send incoming messages to the admin email address', 'wp-sms-two-way'),
                 'readonly' => !$isPluginActive,
-                'tag' => 'twoway',
             ]),
         ];
     }

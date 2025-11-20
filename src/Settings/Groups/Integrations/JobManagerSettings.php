@@ -31,6 +31,7 @@ class JobManagerSettings extends AbstractSettingGroup
                 'id' => 'job_manager_not_active',
                 'title' => __('Job Manager not active', 'wp-sms'),
                 'subtitle' => __('Job Manager Integration Status', 'wp-sms'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'job_manager_not_active_notice',

@@ -42,6 +42,7 @@ class BookingPressSettings extends AbstractSettingGroup
                 'id' => 'bookingpress_integration',
                 'title' => __('BookingPress Integration', 'wp-sms-booking-integrations'),
                 'subtitle' => __('Connect BookingPress to enable SMS options.', 'wp-sms-booking-integrations'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'bookingpress_not_active_notice',
@@ -64,7 +65,6 @@ class BookingPressSettings extends AbstractSettingGroup
                     'type' => 'checkbox',
                     'description' => __('By this option you can add SMS notification for appointment approved', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_admin_approved_appointment_receiver',
@@ -72,7 +72,6 @@ class BookingPressSettings extends AbstractSettingGroup
                     'type' => 'text',
                     'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_admin_approved_appointment_message',
@@ -80,7 +79,6 @@ class BookingPressSettings extends AbstractSettingGroup
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_customer_approved_appointment',
@@ -88,7 +86,6 @@ class BookingPressSettings extends AbstractSettingGroup
                     'type' => 'checkbox',
                     'description' => __('By this option you can add SMS notification for appointment approved', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_customer_approved_appointment_message',
@@ -96,11 +93,10 @@ class BookingPressSettings extends AbstractSettingGroup
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
                 ]),
             ],
             'readonly' => !$isPluginActive,
-            'tag' => 'bookingpress',
+            'tag' => !$isPluginActive ? Tags::BOOKINGPRESS : '',
             'order' => 1,
         ]);
         $sections[] = new Section([
@@ -114,7 +110,6 @@ class BookingPressSettings extends AbstractSettingGroup
                     'type' => 'checkbox',
                     'description' => __('By this option you can add SMS notification for pending appointment', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_admin_pending_appointment_receiver',
@@ -122,7 +117,6 @@ class BookingPressSettings extends AbstractSettingGroup
                     'type' => 'text',
                     'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_admin_pending_appointment_message',
@@ -130,7 +124,6 @@ class BookingPressSettings extends AbstractSettingGroup
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_customer_pending_appointment',
@@ -138,7 +131,6 @@ class BookingPressSettings extends AbstractSettingGroup
                     'type' => 'checkbox',
                     'description' => __('By this option you can add SMS notification for pending appointment', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_customer_pending_appointment_message',
@@ -146,11 +138,10 @@ class BookingPressSettings extends AbstractSettingGroup
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
                 ]),
             ],
             'readonly' => !$isPluginActive,
-            'tag' => 'bookingpress',
+            'tag' => !$isPluginActive ? Tags::BOOKINGPRESS : '',
             'order' => 2,
         ]);
         $sections[] = new Section([
@@ -164,43 +155,38 @@ class BookingPressSettings extends AbstractSettingGroup
                     'type' => 'checkbox',
                     'description' => __('By this option you can add SMS notification for appointment rejected', 'wp-sms-booking-integrations'),
                     'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_admin_rejected_appointment_receiver',
                     'label' => __('Phone number(s)', 'wp-sms-booking-integrations'),
                     'type' => 'text',
                     'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
+                    'readonly' => !$isPluginActive
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_admin_rejected_appointment_message',
                     'label' => __('Message Body', 'wp-sms-booking-integrations'),
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
+                    'readonly' => !$isPluginActive
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_customer_rejected_appointment',
                     'label' => __('Customer Notification Status', 'wp-sms-booking-integrations'),
                     'type' => 'checkbox',
                     'description' => __('By this option you can add SMS notification for appointment rejected', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
+                    'readonly' => !$isPluginActive
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_customer_rejected_appointment_message',
                     'label' => __('Message Body', 'wp-sms-booking-integrations'),
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
+                    'readonly' => !$isPluginActive
                 ]),
             ],
             'readonly' => !$isPluginActive,
-            'tag' => 'bookingpress',
+            'tag' => !$isPluginActive ? Tags::BOOKINGPRESS : '',
             'order' => 3,
         ]);
         $sections[] = new Section([
@@ -213,44 +199,39 @@ class BookingPressSettings extends AbstractSettingGroup
                     'label' => __('Admin Notification Status', 'wp-sms-booking-integrations'),
                     'type' => 'checkbox',
                     'description' => __('By this option you can add SMS notification for appointment cancelled', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
+                    'readonly' => !$isPluginActive
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_admin_cancelled_appointment_receiver',
                     'label' => __('Phone number(s)', 'wp-sms-booking-integrations'),
                     'type' => 'text',
                     'description' => __('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
+                    'readonly' => !$isPluginActive
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_admin_cancelled_appointment_message',
                     'label' => __('Message Body', 'wp-sms-booking-integrations'),
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
+                    'readonly' => !$isPluginActive
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_customer_cancelled_appointment',
                     'label' => __('Customer Notification Status', 'wp-sms-booking-integrations'),
                     'type' => 'checkbox',
                     'description' => __('By this option you can add SMS notification for appointment cancelled', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
+                    'readonly' => !$isPluginActive
                 ]),
                 new Field([
                     'key' => 'bookingpress_notif_customer_cancelled_appointment_message',
                     'label' => __('Message Body', 'wp-sms-booking-integrations'),
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message', 'wp-sms-booking-integrations'),
-                    'readonly' => !$isPluginActive,
-                    'tag' => 'bookingpress',
+                    'readonly' => !$isPluginActive
                 ]),
             ],
             'readonly' => !$isPluginActive,
-            'tag' => 'bookingpress',
+            'tag' => !$isPluginActive ? Tags::BOOKINGPRESS : '',
             'order' => 4,
         ]);
 

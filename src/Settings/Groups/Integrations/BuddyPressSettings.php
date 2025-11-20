@@ -30,6 +30,7 @@ class BuddyPressSettings extends AbstractSettingGroup
                 'id' => 'buddypress_integration',
                 'title' => __('BuddyPress Integration', 'wp-sms'),
                 'subtitle' => __('Connect SMS alerts to BuddyPress activities', 'wp-sms'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'buddypress_not_active_notice',

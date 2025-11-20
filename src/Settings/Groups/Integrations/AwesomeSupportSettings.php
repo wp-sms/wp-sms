@@ -30,6 +30,7 @@ class AwesomeSupportSettings extends AbstractSettingGroup
                 'id' => 'awesome_support_integration',
                 'title' => __('Awesome Support integration', 'wp-sms'),
                 'subtitle' => __('Configure SMS notifications for support tickets', 'wp-sms'),
+                'hasInnerNotice' => false,
                 'fields' => [
                     new Field([
                         'key' => 'awesome_support_not_active_notice',
