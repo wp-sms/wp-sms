@@ -1,5 +1,5 @@
-import { __ } from '@wordpress/i18n'
 import { useStore } from '@tanstack/react-form'
+import { __ } from '@wordpress/i18n'
 import parsePhoneNumber from 'libphonenumber-js'
 import { Check } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -8,9 +8,9 @@ import { Button } from '@/components/ui/button'
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { useCountries } from '@/context/countries-context'
 import { useFieldContext } from '@/context/form-context'
 import { cn } from '@/lib/utils'
+import { useCountries } from '@/services/use-countries'
 import type { SchemaField } from '@/types/settings/group-schema'
 
 import { FieldWrapper } from '../field-wrapper'
@@ -200,7 +200,7 @@ export const TelField = ({ schema, form }: TelFieldProps) => {
           value={phoneNumber}
           placeholder={__('Enter phone number', 'wp-sms')}
           className={cn(
-            'border-none focus:border-0 focus-visible:border-0 focus-within:!border-0 focus-visible:ring-0 focus-within:ring-0',
+            'border-none focus:border-0 focus-visible:border-0 focus-within:border-0 focus-visible:ring-0 focus-within:ring-0',
             errors.length && 'text-destructive'
           )}
           onBlur={field.handleBlur}

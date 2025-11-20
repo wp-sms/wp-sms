@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils'
-import { useCountries } from '@/context/countries-context'
+import { useCountries } from '@/services/use-countries'
 
 type CountryFlagProps = {
   countryCode: string
