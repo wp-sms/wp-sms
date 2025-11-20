@@ -2,7 +2,7 @@ import { __ } from '@wordpress/i18n'
 import { useStore } from '@tanstack/react-form'
 import parsePhoneNumber from 'libphonenumber-js'
 import { Check } from 'lucide-react'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
@@ -29,12 +29,28 @@ type Country = {
 
 type TelFieldProps = {
   schema: SchemaField
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  form: any
 }
 
-export const TelField = ({ schema }: TelFieldProps) => {
+/**
+ * Check if a phone number string has a country prefix (starts with +)
+ */
+const hasCountryPrefix = (value: string): boolean => {
+  return value.trim().startsWith('+')
+}
+
+export const TelField = ({ schema, form }: TelFieldProps) => {
   const field = useFieldContext<string>()
 
   const errors = useStore(field.store, (state) => state.meta.errors)
+
+  // Get the international_mobile setting value from the form
+  const isInternationalInputEnabled = useStore(form.baseStore, (state) => {
+    const values = state.values as Record<string, unknown>
+    return Boolean(values.international_mobile)
+  })
+
   const [jsonData, setJsonData] = useState<Country[]>([])
   const [open, setOpen] = useState(false)
   const [selectedCountryCode, setSelectedCountryCode] = useState('+1')
@@ -43,7 +59,27 @@ export const TelField = ({ schema }: TelFieldProps) => {
 
   const dataService = WordPressService.getInstance()
 
+  // Determine if we should show the country picker
+  // Show it only if: international input is enabled AND number has country prefix
+  const shouldShowCountryPicker = useMemo(() => {
+    const fieldValue = field.state.value
+    if (!isInternationalInputEnabled) {
+      return false
+    }
+    // If international input is enabled, only show picker if number has country prefix
+    if (fieldValue && typeof fieldValue === 'string') {
+      return hasCountryPrefix(fieldValue)
+    }
+    // For new/empty values with international input enabled, show the picker
+    return true
+  }, [isInternationalInputEnabled, field.state.value])
+
   useEffect(() => {
+    // Only load country data if we need the country picker
+    if (!shouldShowCountryPicker) {
+      return
+    }
+
     const loadData = async () => {
       try {
         const response = await fetch(`${dataService.getJsonPath()}/countries.json`)
@@ -55,11 +91,13 @@ export const TelField = ({ schema }: TelFieldProps) => {
     }
 
     loadData()
-  }, [dataService])
+  }, [dataService, shouldShowCountryPicker])
 
   useEffect(() => {
     const fieldValue = field.state.value
-    if (fieldValue && typeof fieldValue === 'string' && !initialized && jsonData.length > 0) {
+
+    // Only parse and split the number if we're showing the country picker
+    if (shouldShowCountryPicker && fieldValue && typeof fieldValue === 'string' && !initialized && jsonData.length > 0) {
       try {
         const phoneUtil = parsePhoneNumber(fieldValue)
         if (phoneUtil?.countryCallingCode && phoneUtil?.nationalNumber) {
@@ -71,7 +109,7 @@ export const TelField = ({ schema }: TelFieldProps) => {
         // Handle error silently
       }
     }
-  }, [field.state.value, initialized, jsonData])
+  }, [field.state.value, initialized, jsonData, shouldShowCountryPicker])
 
   const selectedCountry =
     jsonData?.find((item) => item.dialCode === selectedCountryCode) ||
@@ -96,6 +134,34 @@ export const TelField = ({ schema }: TelFieldProps) => {
     [selectedCountryCode, field]
   )
 
+  // If not showing country picker, render a simple text input
+  // The number is displayed and migrated as-is without any modification
+  if (!shouldShowCountryPicker) {
+    return (
+      <FieldWrapper errors={errors} schema={schema}>
+        <Input
+          id={schema.key}
+          value={field.state.value || ''}
+          placeholder={__('Enter phone number', 'wp-sms')}
+          className={cn(
+            'border rounded-lg focus-within:ring-[3px] transition-all duration-300',
+            errors.length
+              ? 'border-destructive focus-within:border-destructive focus-within:ring-destructive/50 text-destructive'
+              : 'border-border focus-within:border-ring focus-within:ring-ring/50'
+          )}
+          onBlur={field.handleBlur}
+          disabled={schema.readonly}
+          aria-invalid={!!errors.length}
+          onChange={(e) => {
+            // Store the value as-is without any modification
+            field.handleChange(e.target.value)
+          }}
+        />
+      </FieldWrapper>
+    )
+  }
+
+  // Show the full country picker with flag
   return (
     <FieldWrapper errors={errors} schema={schema}>
       <div

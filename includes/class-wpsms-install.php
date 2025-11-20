@@ -4,7 +4,6 @@ namespace WP_SMS;
 
 use WP_SMS\BackgroundProcess\Async\QueueMigrationProcess;
 use WP_SMS\Services\Database\Migrations\Queue\QueueFactory;
-use WP_SMS\Settings\Option;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -17,40 +16,107 @@ class Install
 
     public function __construct()
     {
-        add_action('init', [$this, 'upgrade']);
+        add_action('wpmu_new_blog', array($this, 'add_table_on_create_blog'), 10, 1);
+        add_filter('wpmu_drop_tables', array($this, 'remove_table_on_delete_blog'));
+
+        // Upgrade Plugin
+        add_action('plugins_loaded', array($this, 'plugin_upgrades'));
     }
 
     /**
-     * Checks whether the plugin is a fresh installation.
-     *
-     * @return void
+     * Execute a callback on all blogs in a multisite network or the current site.
      */
-    private function checkIsFresh()
+    public static function executeOnSingleOrMultiSite($method)
     {
-        $version = get_option('wp_sms_db_version');
+        global $wpdb;
 
-        if (empty($version)) {
-            update_option('wp_sms_is_fresh', true);
+        if (!method_exists(__CLASS__, $method)) {
             return;
         }
 
-        update_option('wp_sms_is_fresh', false);
+        if (is_multisite()) {
+            $blog_ids = $wpdb->get_col("SELECT blog_id FROM {$wpdb->blogs}");
+            foreach ($blog_ids as $blog_id) {
+                switch_to_blog($blog_id);
+
+                self::checkIsFresh();
+
+                call_user_func(array(__CLASS__, $method));
+
+                restore_current_blog();
+            }
+        } else {
+            self::checkIsFresh();
+            
+            call_user_func(array(__CLASS__, $method));
+        }
     }
 
     /**
-     * Determines if the plugin is marked as freshly installed.
+     * Adding new MYSQL Table in Activation Plugin
      *
-     * @return bool.
+     * @param Not param
      */
-    public static function isFresh()
+    public static function create_table($network_wide)
     {
-        $isFresh = get_option('wp_sms_is_fresh', false);
+        self::executeOnSingleOrMultiSite("table_sql");
+    }
 
-        if ($isFresh) {
-            return true;
+    /**
+     * Table SQL
+     *
+     * @param Not param
+     */
+    public static function table_sql()
+    {
+        global $wpdb;
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
+        $charset_collate = $wpdb->get_charset_collate();
+
+        $table_name = $wpdb->prefix . 'sms_subscribes';
+        if ($wpdb->get_var("show tables like '{$table_name}'") != $table_name) {
+            $create_sms_subscribes = ("CREATE TABLE IF NOT EXISTS {$table_name}(
+            ID int(10) NOT NULL auto_increment,
+            date DATETIME,
+            name VARCHAR(250),
+            mobile VARCHAR(20) NOT NULL,
+            status tinyint(1),
+            activate_key INT(11),
+            custom_fields TEXT NULL,
+            group_ID int(5),
+            PRIMARY KEY(ID)) $charset_collate;");
+
+            dbDelta($create_sms_subscribes);
         }
 
-        return false;
+        $table_name = $wpdb->prefix . 'sms_subscribes_group';
+        if ($wpdb->get_var("show tables like '{$table_name}'") != $table_name) {
+            $create_sms_subscribes_group = ("CREATE TABLE IF NOT EXISTS {$table_name}(
+            ID int(10) NOT NULL auto_increment,
+            name VARCHAR(250),
+            PRIMARY KEY(ID)) $charset_collate");
+
+            dbDelta($create_sms_subscribes_group);
+        }
+
+        $table_name = $wpdb->prefix . 'sms_send';
+        if ($wpdb->get_var("show tables like '{$table_name}'") != $table_name) {
+            $create_sms_send = ("CREATE TABLE IF NOT EXISTS {$table_name}(
+            ID int(10) NOT NULL auto_increment,
+            date DATETIME,
+            sender VARCHAR(20) NOT NULL,
+            message TEXT NOT NULL,
+            recipient TEXT NOT NULL,
+  			response TEXT NOT NULL,
+  			status varchar(10) NOT NULL,
+            PRIMARY KEY(ID)) $charset_collate");
+
+            dbDelta($create_sms_send);
+        }
+
+        self::createSmsOtpTable();
+        self::createSmsOtpAttemptsTable();
     }
 
     /**
@@ -60,59 +126,35 @@ class Install
      */
     public function install($network_wide)
     {
-        require_once WP_SMS_DIR . 'src/Utils/OptionUtil.php';
+        global $wp_sms_db_version;
 
-        global $wp_sms_db_version, $wpdb;
+        self::create_table($network_wide);
 
         add_option('wp_sms_db_version', WP_SMS_VERSION);
 
         // Delete notification new wp_version option
         delete_option('wp_notification_new_wp_version');
-
-        if (is_admin()) {
-            $this->upgrade();
-        }
-
-        if (is_multisite() && $network_wide) {
-            $blog_ids = $wpdb->get_col("SELECT `blog_id` FROM $wpdb->blogs");
-            foreach ($blog_ids as $blog_id) {
-
-                switch_to_blog($blog_id);
-                $this->checkIsFresh();
-                restore_current_blog();
-            }
-        } else {
-            $this->checkIsFresh();
-        }
-
-        $this->markBackgroundProcessAsInitiated();
     }
 
     /**
-     * Marks the background processes as initiated for fresh installations.
-     *
-     * @return void
+     * Plugin Upgrades
      */
-    private function markBackgroundProcessAsInitiated()
+    public static function plugin_upgrades()
     {
-        if (!self::isFresh()) {
-            return;
-        }
-
-        Option::saveOptionGroup('queue_migration_process', true, 'jobs');
+        self::executeOnSingleOrMultiSite("upgrade");
     }
 
     /**
      * Upgrade plugin requirements if needed
      */
-    public function upgrade()
+    public static function upgrade()
     {
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
         global $wpdb;
         $charset_collate       = $wpdb->get_charset_collate();
-        $outboxTable           = $wpdb->prefix . 'sms_send';
         $installer_wpsms_ver   = get_option('wp_sms_db_version');
+        $outboxTable           = $wpdb->prefix . 'sms_send';
         $subscribersTable      = $wpdb->prefix . 'sms_subscribes';
         $subscribersGroupTable = $wpdb->prefix . 'sms_subscribes_group';
 
@@ -181,10 +223,7 @@ class Install
             self::createSmsOtpTable();
             self::createSmsOtpAttemptsTable();
 
-            $this->checkIsFresh();
-
-            // Trigger queue migration for settings migration
-            $this->triggerQueueMigration();
+            self::triggerQueueMigration();
 
             update_option('wp_sms_db_version', WP_SMS_VERSION);
         }
@@ -205,7 +244,7 @@ class Install
      *
      * @return void
      */
-    private function triggerQueueMigration()
+    public static function triggerQueueMigration()
     {
         require_once WP_SMS_DIR . 'src/Services/Database/Migrations/Queue/QueueFactory.php';
         require_once WP_SMS_DIR . 'src/Services/Database/Migrations/Queue/QueueMigration.php';
@@ -235,6 +274,40 @@ class Install
 
         // Save and dispatch the queue
         $queueMigrationProcess->save()->dispatch();
+    }
+
+    /**
+     * Creating Table for New Blog in WordPress
+     *
+     * @param $blog_id
+     */
+    public function add_table_on_create_blog($blog_id)
+    {
+        if (is_plugin_active_for_network('wp-sms/wp-sms.php')) {
+            switch_to_blog($blog_id);
+
+            self::table_sql();
+
+            self::upgrade();
+
+            restore_current_blog();
+        }
+    }
+
+    /**
+     * Remove Table On Delete Blog WordPress
+     *
+     * @param $tables
+     *
+     * @return array
+     */
+    public function remove_table_on_delete_blog($tables)
+    {
+        foreach (array('sms_subscribes', 'sms_subscribes_group', 'sms_send') as $tbl) {
+            $tables[] = $this->tb_prefix . $tbl;
+        }
+
+        return $tables;
     }
 
     /**
@@ -284,6 +357,27 @@ class Install
                 PRIMARY KEY  (ID),
                 KEY (phone_number)) $charset_collate";
             return dbDelta($query);
+        }
+    }
+
+    /**
+     * Checks whether the plugin is a fresh installation.
+     *
+     * @return void
+     */
+    public static function checkIsFresh()
+    {
+        $version = get_option('wp_sms_db_version');
+
+        if (empty($version)) {
+            update_option('wp_sms_is_fresh', true);
+        } else {
+            update_option('wp_sms_is_fresh', false);
+        }
+
+        $installationTime = get_option('wp_sms_installation_time');
+        if (empty($installationTime)) {
+            update_option('wp_sms_installation_time', time());
         }
     }
 }

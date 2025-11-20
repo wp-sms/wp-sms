@@ -82,7 +82,7 @@ class QueueFactory
             return false;
         }
 
-        if (Install::isFresh()) {
+        if (Install::checkIsFresh()) {
             $allStepIdentifiers = array_keys(self::getQueueMigration()->getMigrationSteps());
             self::saveCompletedSteps($allStepIdentifiers);
 

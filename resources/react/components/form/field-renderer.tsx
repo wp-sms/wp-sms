@@ -157,7 +157,7 @@ export const FieldRenderer = withForm({
           )
 
         case 'tel':
-          return <form.AppField name={schema.key} children={(field) => <field.TelField schema={schema} />} />
+          return <form.AppField name={schema.key} children={(field) => <field.TelField schema={schema} form={form} />} />
 
         case 'image':
           return <form.AppField name={schema.key} children={(field) => <field.ImageField schema={schema} />} />
