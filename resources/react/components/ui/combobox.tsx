@@ -8,14 +8,17 @@ import { cn } from '@/lib/utils'
 
 import { Button } from './button'
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from './command'
+import { CountryFlag } from './country-flag'
 import { Popover, PopoverContent, PopoverTrigger } from './popover'
 
 export interface ComboboxOption {
   label: string
   value: string
+  icon?: string
   children?: {
     label: string
     value: string
+    icon?: string
   }[]
 }
 
@@ -66,15 +69,15 @@ export function Combobox({
     onValueChange?.(newValue)
   }
 
-  const findSelectedLabel = () => {
+  const findSelectedOption = () => {
     for (const option of options) {
       if (option.value === value) {
-        return option.label
+        return { label: option.label, icon: option.icon }
       }
       if (option.children) {
         const child = option.children.find((child) => child.value === value)
         if (child) {
-          return child.label
+          return { label: child.label, icon: child.icon }
         }
       }
     }
@@ -118,11 +121,18 @@ export function Combobox({
             aria-expanded={open}
             disabled={disabled}
             className={cn(
-              "border-input cursor-pointer data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 w-full",
+              "border-input cursor-pointer data-placeholder:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 w-full",
               buttonClassName
             )}
           >
-            {value ? findSelectedLabel() : placeholder}
+            {value ? (
+              <span className="flex items-center gap-2">
+                {findSelectedOption()?.icon && <CountryFlag countryCode={findSelectedOption()?.icon || ''} />}
+                {findSelectedOption()?.label}
+              </span>
+            ) : (
+              placeholder
+            )}
             <ChevronDownIcon className="ml-auto size-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
@@ -149,6 +159,7 @@ export function Combobox({
                           <CheckIcon
                             className={cn('mr-2 h-4 w-4', value === child.value ? 'opacity-100' : 'opacity-0')}
                           />
+                          {child.icon && <CountryFlag countryCode={child.icon} className="mr-2" />}
                           {child.label}
                         </CommandItem>
                       ))}
@@ -169,6 +180,7 @@ export function Combobox({
                       }}
                     >
                       <CheckIcon className={cn('mr-2 h-4 w-4', value === option.value ? 'opacity-100' : 'opacity-0')} />
+                      {option.icon && <CountryFlag countryCode={option.icon} className="mr-2" />}
                       {option.label}
                     </CommandItem>
                   </CommandGroup>
