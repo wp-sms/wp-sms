@@ -68,7 +68,7 @@
     WpSmsSelect2.select2(WpSmsSelect2Options);
 
     // Auto submit the gateways form, after changing value
-    $("#wpsms_settings\\[gateway_name\\]").on('change', function () {
+    $("#wp_sms_settings\\[gateway_name\\]").on('change', function () {
         $('input[name="submit"]').click();
     });
 
@@ -190,7 +190,8 @@ class ShowIfEnabled {
     }
 
     initialize() {
-        const elements = document.querySelectorAll('[class^="js-wpsms-show_if_"]');
+        const elements = document.querySelectorAll('[class*="js-wpsms-show_if_"]');
+
         elements.forEach(element => {
             const classListArray = [...element.className.split(' ')];
 
@@ -199,7 +200,8 @@ class ShowIfEnabled {
                 classListArray.forEach(className => {
                     if (className.includes('_enabled') || className.includes('_disabled')) {
                         const id = this.extractId(element);
-                        const checkbox = document.querySelector(`#wpsms_settings\\[${id}\\]`);
+                        const checkbox = document.querySelector(`#wp_sms_settings\\[${id}\\]`);
+
                         if (checkbox) {
                             if (checkbox.checked && className.includes('_enabled')) {
                                 this.toggleDisplay(element);
@@ -213,7 +215,7 @@ class ShowIfEnabled {
                     } else if (className.includes('_equal_')) {
                         const {id, value} = this.extractIdAndValue(className);
                         if (id && value) {
-                            const item = document.querySelector(`#wpsms_settings\\[${id}\\], #wps_pp_settings\\[${id}\\], #${id}`);
+                            const item = document.querySelector(`#wp_sms_settings\\[${id}\\], #wps_pp_settings\\[${id}\\], #${id}`);
                             if (item && item.type === 'select-one') {
                                 if (item.value == value) {
                                     if (!displayed) {
@@ -238,14 +240,14 @@ class ShowIfEnabled {
             classListArray.forEach(className => {
                 if (className.includes('_enabled') || className.includes('_disabled')) {
                     const id = this.extractId(element);
-                    const checkbox = document.querySelector(`#wpsms_settings\\[${id}\\]`);
+                    const checkbox = document.querySelector(`#wp_sms_settings\\[${id}\\]`);
                     if (checkbox) {
                         checkbox.addEventListener('change', toggleElement);
                     }
                 } else if (className.includes('_equal_')) {
                     const {id} = this.extractIdAndValue(className);
                     if (id) {
-                        const item = document.querySelector(`#wpsms_settings\\[${id}\\], #wps_pp_settings\\[${id}\\], #${id}`);
+                        const item = document.querySelector(`#wp_sms_settings\\[${id}\\], #wps_pp_settings\\[${id}\\], #${id}`);
                         if (item && item.type === 'select-one') {
                             item.addEventListener('change', toggleElement);
                         }
@@ -289,16 +291,15 @@ class ShowIfEnabled {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const notices = document.querySelectorAll('.notice');
-    const promotionModal = document.querySelector('.promotion-modal');
-     if (notices.length > 0  && (document.body.classList.contains('post-type-wpsms-command') || document.body.classList.contains('post-type-sms-campaign') || document.body.classList.contains('sms_page_wp-sms') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-settings')) ) {
-        notices.forEach(notice => {
-            notice.classList.remove('inline');
-            if (promotionModal) {
-                notice.style.display = 'none'
-            }
-        })
-    }
-    new ShowIfEnabled();
-});
+// Execute immediately since we're already wrapped in jQuery(document).ready()
+const notices = document.querySelectorAll('.notice');
+const promotionModal = document.querySelector('.promotion-modal');
+if (notices.length > 0  && (document.body.classList.contains('post-type-wpsms-command') || document.body.classList.contains('post-type-sms-campaign') || document.body.classList.contains('sms_page_wp-sms') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-settings')) ) {
+    notices.forEach(notice => {
+        notice.classList.remove('inline');
+        if (promotionModal) {
+            notice.style.display = 'none'
+        }
+    })
+}
+new ShowIfEnabled();
