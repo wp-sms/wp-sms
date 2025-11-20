@@ -145,7 +145,10 @@ class GeneralSettings extends AbstractSettingGroup {
                         'type' => 'select',
                         'description' => __('Used when International input is off. Choose a code to prepend. Select "No country code (Global or local)" for local numbers.', 'wp-sms'),
                         'hide_if' => ['international_mobile' => true],
-                        'options' => array_merge(['0' => __('No country code (Global or local)', 'wp-sms')], wp_sms_countries()->getCountriesMerged())
+                        'options' => array_merge(
+                            ['0' => ['label' => __('No country code (Global or local)', 'wp-sms'), 'icon' => 'global']],
+                            wp_sms_countries()->getCountriesMergedWithIcon()
+                        )
                     ]),
                     new Field([
                         'key' => 'mobile_terms_minimum',

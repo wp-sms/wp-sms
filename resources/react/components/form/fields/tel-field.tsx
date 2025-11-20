@@ -8,24 +8,12 @@ import { Button } from '@/components/ui/button'
 import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from '@/components/ui/command'
 import { Input } from '@/components/ui/input'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { useCountries } from '@/context/countries-context'
 import { useFieldContext } from '@/context/form-context'
 import { cn } from '@/lib/utils'
-import { WordPressService } from '@/lib/wordpress-service'
 import type { SchemaField } from '@/types/settings/group-schema'
 
 import { FieldWrapper } from '../field-wrapper'
-
-type Country = {
-  id: number
-  name: string
-  nativeName: string
-  code: string
-  dialCode: string
-  allDialCodes: string[]
-  emoji: string
-  unicode: string
-  flag: string
-}
 
 type TelFieldProps = {
   schema: SchemaField
@@ -42,6 +30,7 @@ const hasCountryPrefix = (value: string): boolean => {
 
 export const TelField = ({ schema, form }: TelFieldProps) => {
   const field = useFieldContext<string>()
+  const { countries } = useCountries()
 
   const errors = useStore(field.store, (state) => state.meta.errors)
 
@@ -51,13 +40,10 @@ export const TelField = ({ schema, form }: TelFieldProps) => {
     return Boolean(values.international_mobile)
   })
 
-  const [jsonData, setJsonData] = useState<Country[]>([])
   const [open, setOpen] = useState(false)
   const [selectedCountryCode, setSelectedCountryCode] = useState('+1')
   const [phoneNumber, setPhoneNumber] = useState('')
   const [initialized, setInitialized] = useState(false)
-
-  const dataService = WordPressService.getInstance()
 
   // Determine if we should show the country picker
   // Show it only if: international input is enabled AND number has country prefix
@@ -75,29 +61,10 @@ export const TelField = ({ schema, form }: TelFieldProps) => {
   }, [isInternationalInputEnabled, field.state.value])
 
   useEffect(() => {
-    // Only load country data if we need the country picker
-    if (!shouldShowCountryPicker) {
-      return
-    }
-
-    const loadData = async () => {
-      try {
-        const response = await fetch(`${dataService.getJsonPath()}/countries.json`)
-        const importedData = (await response.json()) as Country[]
-        setJsonData(importedData)
-      } catch {
-        // Handle error silently
-      }
-    }
-
-    loadData()
-  }, [dataService, shouldShowCountryPicker])
-
-  useEffect(() => {
     const fieldValue = field.state.value
 
     // Only parse and split the number if we're showing the country picker
-    if (shouldShowCountryPicker && fieldValue && typeof fieldValue === 'string' && !initialized && jsonData.length > 0) {
+    if (shouldShowCountryPicker && fieldValue && typeof fieldValue === 'string' && !initialized && countries.length > 0) {
       try {
         const phoneUtil = parsePhoneNumber(fieldValue)
         if (phoneUtil?.countryCallingCode && phoneUtil?.nationalNumber) {
@@ -109,12 +76,12 @@ export const TelField = ({ schema, form }: TelFieldProps) => {
         // Handle error silently
       }
     }
-  }, [field.state.value, initialized, jsonData, shouldShowCountryPicker])
+  }, [field.state.value, initialized, countries, shouldShowCountryPicker])
 
   const selectedCountry =
-    jsonData?.find((item) => item.dialCode === selectedCountryCode) ||
-    jsonData?.find((item) => item.code === 'US') ||
-    jsonData?.[0]
+    countries?.find((item) => item.dialCode === selectedCountryCode) ||
+    countries?.find((item) => item.code === 'US') ||
+    countries?.[0]
 
   const handleCountryChange = useCallback(
     (dialCode: string) => {
@@ -192,7 +159,7 @@ export const TelField = ({ schema, form }: TelFieldProps) => {
                 <CommandList>
                   <CommandEmpty>{__('No country found.', 'wp-sms')}</CommandEmpty>
 
-                  {jsonData?.map((item) => {
+                  {countries?.map((item) => {
                     const isSelected = selectedCountryCode === item.dialCode
 
                     return (

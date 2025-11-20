@@ -109,6 +109,39 @@ class Countries extends Singleton
     }
 
     /**
+     * Returns countries merged by dial code with icon support.
+     *
+     * @return  array   Format: `['dialCode' => ['label' => 'fullInfo', 'icon' => 'countryCode'], ...]`.
+     */
+    public function getCountriesMergedWithIcon()
+    {
+        $mergedWithIcon = [];
+
+        foreach ($this->countries as $country) {
+            if (empty($country['fullInfo'])) continue;
+
+            // Add the country if its dialCode not exists in the array:
+            if (!array_key_exists($country['dialCode'], $mergedWithIcon)) {
+                $mergedWithIcon[$country['dialCode']] = [
+                    'label' => $country['fullInfo'],
+                    'icon' => strtolower($country['code'] ?? '')
+                ];
+                continue;
+            }
+            // Else, another country with a similar dialCode exists
+
+            $newInfoToAppend = $country['name'];
+            if ($country['name'] !== $country['nativeName'])
+                $newInfoToAppend .= " ({$country['nativeName']})";
+
+            // Add new country's name and nativeName before the ending parentheses:
+            $mergedWithIcon[$country['dialCode']]['label'] = str_replace('(+', "& $newInfoToAppend (+", $mergedWithIcon[$country['dialCode']]['label']);
+        }
+
+        return $mergedWithIcon;
+    }
+
+    /**
      * Returns country names as an associative array with their dial codes as the key.
      *
      * @return  array   Format: `['dialCode' => 'name', 'dialCode' => 'name', ...]`.

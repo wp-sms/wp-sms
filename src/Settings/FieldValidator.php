@@ -93,6 +93,11 @@ class FieldValidator
 
         foreach ($options as $key => $value) {
             if (is_array($value)) {
+                if (isset($value['icon']) && $value['label']) {
+                    $flattened[$key] = $key;
+                    continue;
+                }
+
                 // Grouped options (advancedselect)
                 $flattened = array_merge($flattened, array_keys($value));
             } else {
