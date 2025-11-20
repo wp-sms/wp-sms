@@ -47,10 +47,11 @@ class Admin
         $screen = get_current_screen();
         if (stristr($screen->id, 'wp-sms') or $screen->base == 'post' or $screen->id == 'edit-wpsms-command' or $screen->id == 'edit-sms-campaign') {
             $text = sprintf(
-                __('Please rate <strong>WP SMS</strong> <a href="%2$s" title="%3$s" target="_blank">★★★★★</a> on <a href="%2$s" target="_blank">WordPress.org</a> to help us spread the word. Thank you!', 'wp-sms'),
-                esc_html__('WP SMS', 'wp-sms'),
+                __('Please rate <strong>WP SMS</strong> <a href="%s" aria-label="%s" title="%s" target="_blank">★★★★★ %s</a> to help us spread the word. Thank you!', 'wp-sms'),
                 'https://wordpress.org/support/plugin/wp-sms/reviews/?filter=5#new-post',
-                esc_html__('Rate WP SMS', 'wp-sms')
+                esc_attr__('Rate WP SMS with five stars on WordPress.org', 'wp-sms'),
+                esc_attr__('Rate WP SMS', 'wp-sms'),
+                esc_html__('on WordPress.org', 'wp-sms')
             );
         }
         return $text;
@@ -132,7 +133,7 @@ class Admin
                 wp_enqueue_style('jquery-flatpickr', WP_SMS_URL . 'assets/css/flatpickr.min.css', [], WP_SMS_VERSION);
                 wp_enqueue_script('jquery-flatpickr', WP_SMS_URL . 'assets/js/flatpickr.min.js', array('jquery'), WP_SMS_VERSION, false);
 
-                wp_enqueue_script('wpsms-repeater', WP_SMS_URL . 'assets/js/jquery.repeater.min.js', [], WP_SMS_VERSION, false);
+                wp_enqueue_script('wpsms-repeater', WP_SMS_URL . 'assets/js/jquery.repeater.min.js', [], '1.2.2', false);
                 // tooltip
                 wp_enqueue_style('wpsms-tooltip', WP_SMS_URL . 'assets/css/tooltipster.bundle.css', [], WP_SMS_VERSION);
                 wp_enqueue_script('wpsms-tooltip', WP_SMS_URL . 'assets/js/tooltipster.bundle.js', [], WP_SMS_VERSION, false);
@@ -343,7 +344,7 @@ class Admin
         echo "<li class='wpsms-subscribe-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-subscribers'>" . sprintf(esc_html__('%s Subscriber', 'wp-sms'), esc_html($subscribe)) . "</a></li>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         if (!is_object($credit)) {
             // translators: %s: SMS credit 
-            echo "<li class='wpsms-credit-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=web-service'>" . sprintf(esc_html__('%s SMS Credit', 'wp-sms'), esc_html($credit)) . "</a></li>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+            echo "<li class='wpsms-credit-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=gateway'>" . sprintf(esc_html__('%s SMS Credit', 'wp-sms'), esc_html($credit)) . "</a></li>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         }
     }
 

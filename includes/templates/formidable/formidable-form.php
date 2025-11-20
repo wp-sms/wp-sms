@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div id="formidable-wpsms" class="contact-form-editor-wpsms">
     <form method="post">
         <input name="submit_action" type="hidden" value="formidable_form_sms_data">

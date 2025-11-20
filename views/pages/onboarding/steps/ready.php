@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 
 $is_pro = LicenseHelper::isPluginLicensedAndActive();

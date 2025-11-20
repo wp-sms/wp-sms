@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="wpsms-tab-content__box" style="min-height: 500px">
     <div class="wp-sms-lock wp-sms-lock__addon">
         <h2 class="wp-sms-lock__title">

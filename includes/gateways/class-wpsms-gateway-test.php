@@ -70,7 +70,23 @@ class test extends \WP_SMS\Gateway
                 ])
             ];
 
-            $response = $this->request('POST', 'https://en75f59b69tp.x.pipedream.net', [], $params);
+            // generate a randomized fake response
+            $response = [
+                'success'    => true,
+                'status'     => 'sent',
+                'message_id' => uniqid('sms_'),
+                'from'       => $this->from,
+                'to'         => $this->to,
+                'recipients' => is_array($this->to) ? count($this->to) : 1,
+                'message'    => $this->msg,
+                'cost'       => sprintf('%.2f USD', wp_rand(5, 500) / 100),
+                'sent_at'    => current_time('mysql'),
+                'error'      => null,
+                'raw'        => [
+                    'params'   => $params,
+                    'debug_id' => wp_rand(100000, 999999),
+                ],
+            ];
 
             //log the result
             $this->log($this->from, $this->msg, $this->to, $response);

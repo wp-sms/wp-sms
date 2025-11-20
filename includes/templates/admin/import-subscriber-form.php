@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div id="wp-sms-import-from" style="display:none;">
 
     <!--Loading Spinner-->

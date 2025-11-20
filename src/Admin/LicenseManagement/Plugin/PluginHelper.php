@@ -5,6 +5,7 @@ namespace WP_SMS\Admin\LicenseManagement\Plugin;
 use Exception;
 use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+use WP_SMS\Components\Logger;
 
 class PluginHelper
 {
@@ -31,7 +32,7 @@ class PluginHelper
             $apiCommunicator = new ApiCommunicator();
             $products        = $apiCommunicator->getProducts();
         } catch (Exception $e) {
-            WPSms()::log($e->getMessage(), 'error');
+            Logger::log($e->getMessage(), 'error');
             $products = [];
         }
 

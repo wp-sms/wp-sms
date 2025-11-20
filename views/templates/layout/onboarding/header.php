@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div id="main" class="wpsms-onboarding" role="content">
 
     <section class="c-section--logo u-text-center">

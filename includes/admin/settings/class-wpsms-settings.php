@@ -8,6 +8,7 @@ use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Utils\PluginHelper;
+use WP_SMS\Utils\Request;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -59,7 +60,7 @@ class Settings
     public function __construct()
     {
         $this->setting_name      = $this->getCurrentOptionName();
-        $this->isPremium = LicenseHelper::isPluginLicenseValid();
+        $this->isPremium         = LicenseHelper::isPluginLicenseValid();
         $this->proIsInstalled    = PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
         $this->wooProIsInstalled = PluginHelper::isPluginInstalled('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
 
@@ -80,6 +81,9 @@ class Settings
             add_filter('pre_update_option_' . $this->setting_name, array($this, 'check_license_key'), 10, 2);
         }
 
+        if (isset($_POST['submit']) && isset($_REQUEST['option_page']) && $_POST['option_page'] == 'wpsms_settings' && strpos(wp_get_referer(), 'tab=gateway')) {
+            add_filter('pre_update_option_wpsms_settings', [$this, 'updateGateWayVersion'], 10, 2);
+        }
     }
 
     /**
@@ -211,9 +215,34 @@ class Settings
         parse_str($_POST['_wp_http_referer'], $referrer);
 
         $settings = $this->get_registered_settings();
-        $tab      = isset($referrer['tab']) ? $referrer['tab'] : 'general';
+        if (!empty($referrer['tab'])) {
+            $tab = $referrer['tab'];
+        } elseif (Request::has('wpsms_active_tab')) {
+            $tab = Request::get('wpsms_active_tab');
+        } else {
+            $tab = 'general';
+        }
 
         $input = $input ? $input : array();
+        // Handle unchecked checkboxes: if checkbox wasn't submitted, user unchecked it
+        if (!empty($settings[$tab])) {
+            foreach ($settings[$tab] as $s_key => $field) {
+
+                // Support numeric keys (legacy)
+                if (is_numeric($s_key)) {
+                    $s_key = $field['id'];
+                }
+
+                $type = isset($field['type']) ? $field['type'] : false;
+
+                if ($type === 'checkbox') {
+                    // If checkbox key not in POST, user unchecked it — mark as empty so it will be unset later
+                    if (!array_key_exists($s_key, $input)) {
+                        $input[$s_key] = '';
+                    }
+                }
+            }
+        }
         $input = apply_filters("{$this->setting_name}_{$tab}_sanitize", $input);
 
         // Loop through each setting being saved and pass it through a sanitization filter
@@ -232,25 +261,46 @@ class Settings
             $input[$key] = apply_filters("{$this->setting_name}_sanitize", $value, $key);
         }
 
+        // Merge our new settings with the existing
+        $output = array_merge($this->options, $input);
 
-        // Loop through the whitelist and unset any that are empty for the tab being saved
         if (!empty($settings[$tab])) {
-            foreach ($settings[$tab] as $key => $value) {
-                // settings used to have numeric keys, now they have keys that match the option ID. This ensures both methods work
-                if (is_numeric($key)) {
-                    $key = $value['id'];
+            foreach ($settings[$tab] as $field_key => $field) {
+                if (is_numeric($field_key)) {
+                    $field_key = $field['id'];
                 }
 
-                if (empty($input[$key])) {
-                    unset($this->options[$key]);
+                $type = isset($field['type']) ? $field['type'] : false;
+
+                if ($type === 'checkbox') {
+                    $wasSubmitted = array_key_exists($field_key, $input);
+
+                    if (!$wasSubmitted) {
+                        unset($output[$field_key]);
+                        continue;
+                    }
+
+                    if (empty($input[$field_key])) {
+                        unset($output[$field_key]);
+                        continue;
+                    }
+
+                    $output[$field_key] = $input[$field_key];
+                } else {
+                    if (array_key_exists($field_key, $input) && $input[$field_key] === '') {
+                        unset($output[$field_key]);
+                    }
                 }
             }
         }
 
-        // Merge our new settings with the existing
-        $output = array_merge($this->options, $input);
-
-        add_settings_error('wpsms-notices', '', esc_html__('Settings updated', 'wp-sms'), 'updated');
+        add_settings_error(
+            'wpsms-notices',
+            '',
+            esc_html__('Settings Successfully Saved.', 'wp-sms'),
+            'notice-success wpsms-admin-notice'
+        );
+        $this->options = $output;
         return $output;
     }
 
@@ -363,7 +413,7 @@ class Settings
                     'id'   => 'bp_welcome_notification',
                     'name' => esc_html__('Welcome Notification', 'wp-sms'),
                     'type' => 'header',
-                    'desc' => esc_html__('By enabling this option you can send welcome SMS to new BuddyPress users'),
+                    'desc' => esc_html__('By enabling this option you can send welcome SMS to new BuddyPress users', 'wp-sms'),
                 ),
                 'bp_welcome_notification_enable'  => array(
                     'id'      => 'bp_welcome_notification_enable',
@@ -376,14 +426,7 @@ class Settings
                     'id'   => 'bp_welcome_notification_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: User login, %2$s: User email, %3$s: User display name
-                            esc_html__('User login: %1$s, User email: %2$s, User display name: %3$s', 'wp-sms'),
-                            '<code>%user_login%</code>',
-                            '<code>%user_email%</code>',
-                            '<code>%display_name%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getBuddyPressWelcome()->printVariables()
                 ),
                 'mentions'                        => array(
                     'id'   => 'mentions',
@@ -401,16 +444,7 @@ class Settings
                     'id'   => 'bp_mention_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Display name, %2$s: Profile link, %3$s: Time, %4$s: Message, %5$s: Receiver display name
-                            esc_html__('Posted user display name: %1$s, User profile permalink: %2$s, Time: %3$s, Message: %4$s, Receiver user display name: %5$s', 'wp-sms'),
-                            '<code>%posted_user_display_name%</code>',
-                            '<code>%primary_link%</code>',
-                            '<code>%time%</code>',
-                            '<code>%message%</code>',
-                            '<code>%receiver_user_display_name%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getBuddyPressMention()->printVariables()
                 ),
                 'private_message'                 => array(
                     'id'   => 'private_message',
@@ -428,15 +462,7 @@ class Settings
                     'id'   => 'bp_private_message_content',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Sender name, %2$s: Subject, %3$s: Message, %4$s: Message URL
-                            esc_html__('Sender display name: %1$s, Subject: %2$s, Message: %3$s, Message URL: %4$s', 'wp-sms'),
-                            '<code>%sender_display_name%</code>',
-                            '<code>%subject%</code>',
-                            '<code>%message%</code>',
-                            '<code>%message_url%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getBuddyPressPrivateMessage()->printVariables()
                 ),
                 'comments_activity'               => array(
                     'id'   => 'comments_activity',
@@ -454,14 +480,7 @@ class Settings
                     'id'   => 'bp_comments_activity_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
-                            esc_html__('Posted user display name: %1$s, Comment content: %2$s, Receiver user display name: %3$s', 'wp-sms'),
-                            '<code>%posted_user_display_name%</code>',
-                            '<code>%comment%</code>',
-                            '<code>%receiver_user_display_name%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getBuddyPressUserComments()->printVariables()
                 ),
                 'comments'                        => array(
                     'id'   => 'comments',
@@ -479,14 +498,7 @@ class Settings
                     'id'   => 'bp_comments_reply_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Display name, %2$s: Comment, %3$s: Receiver name
-                            esc_html__('Posted user display name: %1$s, Comment content: %2$s, Receiver user display name: %3$s', 'wp-sms'),
-                            '<code>%posted_user_display_name%</code>',
-                            '<code>%comment%</code>',
-                            '<code>%receiver_user_display_name%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getBuddyPressUserComments()->printVariables()
                 )
             );
         } else {
@@ -737,14 +749,7 @@ class Settings
                     'id'   => 'edd_notify_order_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Email, %2$s: First name, %3$s: Last name
-                            esc_html__('Email: %1$s, First name: %2$s, Last name: %3$s', 'wp-sms'),
-                            '<code>%edd_email%</code>',
-                            '<code>%edd_first%</code>',
-                            '<code>%edd_last%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getEasyDigitalDownloads()->printVariables()
                 ),
                 'edd_notify_customer'         => array(
                     'id'   => 'edd_notify_customer',
@@ -762,14 +767,7 @@ class Settings
                     'id'   => 'edd_notify_customer_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Email, %2$s: First name, %3$s: Last name
-                            esc_html__('Email: %1$s, First name: %2$s, Last name: %3$s', 'wp-sms'),
-                            '<code>%edd_email%</code>',
-                            '<code>%edd_first%</code>',
-                            '<code>%edd_last%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getEasyDigitalDownloads()->printVariables()
                 )
             );
         } else {
@@ -845,19 +843,7 @@ class Settings
                     'id'   => 'job_notify_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
-                            esc_html__('Job ID: %1$s, Job Title: %2$s, Job Description: %3$s, Job Location: %4$s, Job Type: %5$s, Company Mobile: %6$s, Company Name: %7$s, Company Website: %8$s', 'wp-sms'),
-                            '<code>%job_id%</code>',
-                            '<code>%job_title%</code>',
-                            '<code>%job_description%</code>',
-                            '<code>%job_location%</code>',
-                            '<code>%job_type%</code>',
-                            '<code>%job_mobile%</code>',
-                            '<code>%company_name%</code>',
-                            '<code>%website%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWPJobManager()->printVariables()
                 ),
                 'job_notify_employer'             => array(
                     'id'   => 'job_notify_employer',
@@ -875,19 +861,7 @@ class Settings
                     'id'   => 'job_notify_employer_message',
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Job ID, %2$s: Job Title, %3$s: Job Description, %4$s: Job Location, %5$s: Job Type, %6$s: Company Mobile, %7$s: Company Name, %8$s: Company Website
-                            esc_html__('Job ID: %1$s, Job Title: %2$s, Job Description: %3$s, Job Location: %4$s, Job Type: %5$s, Company Mobile: %6$s, Company Name: %7$s, Company Website: %8$s', 'wp-sms'),
-                            '<code>%job_id%</code>',
-                            '<code>%job_title%</code>',
-                            '<code>%job_description%</code>',
-                            '<code>%job_location%</code>',
-                            '<code>%job_type%</code>',
-                            '<code>%job_mobile%</code>',
-                            '<code>%company_name%</code>',
-                            '<code>%website%</code>'
-                        )
+                    'desc' => esc_html__('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getWPJobManager()->printVariables()
                 )
             );
         } else {
@@ -1006,8 +980,7 @@ class Settings
 
         // Get Gravityforms
         if (class_exists('RGFormsModel')) {
-            $forms       = \RGFormsModel::get_forms(null, 'title');
-            $more_fields = '';
+            $forms = \RGFormsModel::get_forms(null, 'title');
 
             if (empty($forms)) {
                 $gf_forms['gf_notify_form'] = array(
@@ -1020,14 +993,12 @@ class Settings
 
             foreach ($forms as $form) {
                 $form_fields = Gravityforms::get_field($form->id);
+                $variables   = [];
 
                 if (is_array($form_fields) && count($form_fields)) {
-                    $more_fields = ', ';
-                    foreach ($form_fields as $key => $value) {
-                        $more_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
+                    foreach ($form_fields as $key => $label) {
+                        $variables["field-{$key}"] = $label;
                     }
-
-                    $more_fields = rtrim($more_fields, ', ');
                 }
 
                 $gf_forms['gf_notify_form_' . $form->id]          = array(
@@ -1055,16 +1026,7 @@ class Settings
                     'id'   => 'gf_notify_message_form_' . $form->id,
                     'name' => esc_html__('Message body', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
-                        sprintf(
-                        // translators: %1$s: Form title, %2$s: IP address, %3$s: Form url, %4$s: User agent, %5$s: Content form
-                            esc_html__('Form name: %1$s, IP: %2$s, Form url: %3$s, User agent: %4$s, Content form: %5$s', 'wp-sms'),
-                            '<code>%title%</code>',
-                            '<code>%ip%</code>',
-                            '<code>%source_url%</code>',
-                            '<code>%user_agent%</code>',
-                            '<code>%content%</code>'
-                        ) . $more_fields
+                    'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' . NotificationFactory::getGravityForms($variables)->printVariables()
                 );
 
                 if (Gravityforms::get_field($form->id)) {
@@ -1085,16 +1047,7 @@ class Settings
                         'id'   => 'gf_notify_message_field_form_' . $form->id,
                         'name' => esc_html__('Message body', 'wp-sms'),
                         'type' => 'textarea',
-                        'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
-                            sprintf(
-                            // translators: %1$s: Form title, %2$s: IP address, %3$s: Form url, %4$s: User agent, %5$s: Content form
-                                esc_html__('Form name: %1$s, IP: %2$s, Form url: %3$s, User agent: %4$s, Content form: %5$s', 'wp-sms'),
-                                '<code>%title%</code>',
-                                '<code>%ip%</code>',
-                                '<code>%source_url%</code>',
-                                '<code>%user_agent%</code>',
-                                '<code>%content%</code>'
-                            ) . $more_fields
+                        'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' . NotificationFactory::getGravityForms($variables)->printVariables()
                     );
                 }
             }
@@ -1143,13 +1096,13 @@ class Settings
 
             if ($forms) {
                 foreach ($forms as $form):
-                    $form_fields    = Quform::get_fields($form['id']);
-                    $more_qf_fields = ', ';
+                    $form_fields = Quform::get_fields($form['id']);
+                    $variables   = [];
+
                     if (is_array($form_fields) && count($form_fields)) {
                         foreach ($form_fields as $key => $value) {
-                            $more_qf_fields .= "Field {$value}: <code>%field-{$key}%</code>, ";
+                            $variables["field-{$key}"] = $value;
                         }
-                        $more_qf_fields = rtrim($more_qf_fields, ', ');
                     }
 
                     $qf_forms['qf_notify_form_' . $form['id']]          = array(
@@ -1177,15 +1130,7 @@ class Settings
                         'id'   => 'qf_notify_message_form_' . $form['id'],
                         'name' => esc_html__('Message body', 'wp-sms'),
                         'type' => 'textarea',
-                        'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
-                            sprintf(
-                            // translators: %1$s: Form name, %2$s: Form URL, %3$s: Referring URL, %4$s: Form content
-                                esc_html__('Form name: %1$s, Form url: %2$s, Referring url: %3$s, Form content: %4$s', 'wp-sms'),
-                                '<code>%post_title%</code>',
-                                '<code>%form_url%</code>',
-                                '<code>%referring_url%</code>',
-                                '<code>%content%</code>'
-                            ) . $more_qf_fields
+                        'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' . NotificationFactory::getQuform($variables)->printVariables()
                     );
 
                     if ($form['elements']) {
@@ -1206,15 +1151,7 @@ class Settings
                             'id'   => 'qf_notify_message_field_form_' . $form['id'],
                             'name' => esc_html__('Message body', 'wp-sms'),
                             'type' => 'textarea',
-                            'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' .
-                                sprintf(
-                                // translators: %1$s: Form name, %2$s: Form URL, %3$s: Referring URL, %4$s: Form content
-                                    esc_html__('Form name: %1$s, Form url: %2$s, Referring url: %3$s, Form content: %4$s', 'wp-sms'),
-                                    '<code>%post_title%</code>',
-                                    '<code>%form_url%</code>',
-                                    '<code>%referring_url%</code>',
-                                    '<code>%content%</code>'
-                                ) . $more_qf_fields
+                            'desc' => esc_html__('Enter your message content.', 'wp-sms') . '<br>' . NotificationFactory::getQuform($variables)->printVariables()
                         );
                     }
                 endforeach;
@@ -1477,7 +1414,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 ),
                 'incoming_message'             => array(
                     'id'      => 'incoming_message',
-                    'name'    => esc_html__('Incoming Message'),
+                    'name'    => esc_html__('Incoming Message', 'wp-sms'),
                     'type'    => 'html',
                     'options' => Gateway::incoming_message_status(),
                 ),
@@ -1831,14 +1768,14 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type'     => 'checkbox',
                     'options'  => $options,
                     'desc'     => __('Converts all URLs to shortened versions using <a href="https://bitly.com/" target="_blank">Bitly.com</a>.', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium) 
+                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium)
                 ),
                 'short_url_api_token'          => array(
                     'id'       => 'short_url_api_token',
                     'name'     => esc_html__('Bitly API Key', 'wp-sms'),
                     'type'     => 'text',
                     'desc'     => __('Enter your Bitly API key here. Obtain it from <a href="https://app.bitly.com/settings/api/" target="_blank">Bitly API Settings</a>.', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium) 
+                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium)
                 ),
                 'webhooks'                     => array(
                     'id'   => 'webhooks',
@@ -1867,22 +1804,22 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type' => 'textarea',
                     'desc' => __('Define the Webhook URL for the "<a href="https://wp-sms-pro.com/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Two-Way SMS</a>" add-on that handles incoming SMS messages. Only secure HTTPS URLs are accepted.', 'wp-sms') . '<br><br /><i>' . esc_html__('Please provide each Webhook URL on a separate line if you\'re setting up more than one.', 'wp-sms') . '</i>',
                 ),
-                'share_anonymous_data_header'         => array(
+                'share_anonymous_data_header'  => array(
                     'id'   => 'share_anonymous_data_header',
                     'name' => esc_html__('Anonymous Usage Data', 'wp-sms'),
                     'type' => 'header',
                 ),
-                'share_anonymous_data'           => array(
-                    'id'       => 'share_anonymous_data',
-                    'name'     => esc_html__('Share Anonymous Data', 'wp-sms'),
-                    'type'     => 'checkbox',
-                    'options'  => $options,
-                    'desc'     => __('Sends non-personal, anonymized data to help us improve WP SMS. No personal or identifying information is collected or shared. <a href="https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Learn More</a>.', 'wp-sms'),
+                'share_anonymous_data'         => array(
+                    'id'      => 'share_anonymous_data',
+                    'name'    => esc_html__('Share Anonymous Data', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => __('Sends non-personal, anonymized data to help us improve WP SMS. No personal or identifying information is collected or shared. <a href="https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Learn More</a>.', 'wp-sms'),
                 ),
                 'g_recaptcha'                  => array(
                     'id'   => 'g_recaptcha',
                     'name' => $this->renderOptionHeader(
-                        // Locked if neither Pro nor Woo Pro installed, or only Pro installed without license
+                    // Locked if neither Pro nor Woo Pro installed, or only Pro installed without license
                         (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium) ? esc_html__('Google reCAPTCHA Integration', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openAioModal" data-target="wp-sms-pro" title="Available with the Pro or WooCommerce Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
                         esc_html__('Enhance your system\'s security by activating Google reCAPTCHA. This tool prevents spam and abuse by ensuring that only genuine users can initiate request-SMS actions. Upon activation, every SMS request will be secured with reCAPTCHA verification.', 'wp-sms')
                     ),
@@ -2603,7 +2540,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             esc_attr($size),
             esc_attr($args['id']),
             esc_attr(stripslashes($value)),
-            esc_html__('Upload File', 'wpsms'),
+            esc_html__('Upload File', 'wp-sms'),
             wp_kses_post($args['desc'])
         );
 
@@ -2632,7 +2569,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     public function render_settings($default = "general", $args = array())
     {
         $this->active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : $default;
-        $this->contentRestricted = in_array($this->active_tab, $this->proTabs) && (!$this->proIsInstalled || !$this->isPremium) ;
+        $this->contentRestricted = in_array($this->active_tab, $this->proTabs) && (!$this->proIsInstalled || !$this->isPremium);
         $args                    = wp_parse_args($args, [
             'setting'  => true,
             'template' => '' //must be a callable function
@@ -2652,7 +2589,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 ?>
             </div>
             <div class="wp-header-end"></div>
-            <?php echo settings_errors('wpsms-notices'); ?>
+            <?php settings_errors('wpsms-notices'); ?>
             <div class="wpsms-wrap__main">
                 <div class="wpsms-tab-group">
                     <ul class="wpsms-tab">
@@ -2752,7 +2689,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 settings_fields($this->setting_name);
                 do_settings_fields("{$this->setting_name}_{$this->active_tab}", "{$this->setting_name}_{$this->active_tab}"); ?>
             </table>
-
+            <input type="hidden" name="wpsms_active_tab" value="<?php echo esc_attr($this->active_tab); ?>">
             <?php
             if (!$this->contentRestricted) {
                 submit_button();
@@ -2889,5 +2826,28 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
         // Return the final title string
         return $title;
+    }
+
+    /**
+     * Updates the gateway version inside the plugin settings array before saving.
+     *
+     * @param array $newValue The new settings array that will be saved into the database.
+     * @param array $oldValue The previous settings array stored in the database.
+     *
+     * @return array The modified settings array including the updated `gateway_version` key.
+     */
+    public function updateGateWayVersion($newValue, $oldValue)
+    {
+        global $sms;
+
+        if (is_null($sms) && function_exists('wp_sms_initial_gateway')) {
+            $sms = wp_sms_initial_gateway();
+        }
+
+        $currentVer = (isset($sms->version) && $sms->version !== '') ? (string)$sms->version : '1.0';
+
+        $newValue['gateway_version'] = $currentVer;
+
+        return $newValue;
     }
 }

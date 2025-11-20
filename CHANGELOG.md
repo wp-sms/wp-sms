@@ -1,3 +1,33 @@
+= v7.0.x =
+- **Fix:** Fixed SCSS Compilation Error in mail.css
+
+= v7.0.5 - 2025-11-13 =
+- **Enhancement:** Repositioned the "All-in-One Required" label to the top of the PRO gateway onboarding table for better visibility.
+- **Enhancement:** Added more plugin details to the Site Health Info section for easier diagnostics.
+- **Enhancement:** Removed deprecated `utf8_decode()` usage in `nusoap.class.php`.
+- **Enhancement:** Updated libraries and cleaned up assets.
+- **Fix:** Fixed incorrect changelog URL links in add-ons.
+- **Fix:** Fixed connection status display and moved the Connection Status section below the Gateway Guide for improved UI
+
+= v7.0.4 - 2025-11-02 =
+- **New:** Added support for the SMS.es gateway.
+- **New:** Display an admin notice when the gateway version changes, required fields are missing, or the gateway is not configured.
+- **Enhancement:** Added support for Service-Line SMS.ir template-based messaging.
+- **Enhancement:** Refactored the MeliPayamak gateway for better stability and reliability.
+- **Enhancement:** Improved Kavenegar gateway to support template-based SMS messages with variable placeholders.
+- **Enhancement:** Refactored the FARAZSMS gateway for improved reliability.
+- **Fix:** Disabled caching to prevent duplicate responses for identical messages.
+- **Fix:** Ensured PHP 8.1+ compatibility by avoiding "Automatic conversion of false to array" warnings.
+- **Fix:** Delayed the anonymous data opt-in notice to appear 7 days after plugin activation.
+- **Fix:** Masked sensitive variables (`code`, `otp`, `post_password`, `coupon_code`) in logs when `WP_DEBUG` is disabled.
+- **Fix:** Fixed issues on the Integrations > Contact Form 7 page where saving changes cleared Settings > General values, the Status field didn't update correctly, and no notification was shown after saving.
+- **Fix:** Fixed SMS Credit link in Dashboard "At a Glance" widget to correctly redirect to gateway settings tab.
+- **Fix:** Properly save SMS gateway version during onboarding to prevent false “setup requires attention” warnings.
+
+= v7.0.3 - 2025-09-17 =
+- **Enhancement:** Improved Send SMS page performance by loading recipients via AJAX instead of on initial render.  
+- **Enhancement:** Prevented sending emails to users who registered with only a phone number.
+
 = v7.0.2 - 2025-08-18 =
 - **New:** License keys can now be set via `wp-config.php` using constants like `WP_SMS_LICENSE` and are automatically validated on init.
 - **New:** Added plugin information to the Site Health Info section for easier diagnostics.
@@ -11,8 +41,6 @@
 - **Fix:** Only send SMS notifications for published posts matching selected taxonomy term IDs.
 - **Enhancement:** Added user capability checks to AJAX actions in the license manager to restrict access to authorized roles only.
 - **Enhancement:** Removed deprecated SMS gateways: smss, bearsms, mobtexting, waapi, livesms, ozioma, smsgateway, zipwhip, whatsappapi, asr3sms, smsdone, micron, sms_s, tcisms, aradpayamak, dot4all.
-- **Enhancement:** Improve send-sms page performance by loading recipients via AJAX instead of during initial page render.
-- **New:** Block new user email for phone-registered users.
 
 = v7.0 - 2025-07-09 =
 - **New:** Introduced an Onboarding Process to simplify gateway integration.

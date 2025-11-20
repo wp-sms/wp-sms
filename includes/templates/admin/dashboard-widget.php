@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class='wp-sms-widgets stats-widget'>
     <div class="controls">
         <select class='sms-direction'>

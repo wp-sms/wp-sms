@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <!--    Graphical Report    -->
 <div class="graphical-reports">
     <h4>

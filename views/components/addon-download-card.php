@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 /** @var PluginDecorator $addOn */
 
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginDecorator;
@@ -18,7 +20,7 @@ if (!defined('ABSPATH') || empty($addOn)) {
             <div class="wpsms-addon__download__item--info__title">
                 <?php echo esc_html($addOn->getName()); ?>
                 <?php if (!empty($addOn->getProductUrl())) : ?>
-                    <a target="_blank" href="<?php echo esc_html($addOn->getProductUrl()); ?>?utm_source=wp-sms&utm_medium=link&utm_campaign=dp" class="wpsms-postbox-addon__read-more" title="<?php esc_html_e('Learn More', 'wp-sms'); ?>">
+                    <a target="_blank" href="<?php echo esc_html($addOn->getProductUrl()); ?>?utm_source=wp-sms&utm_medium=link&utm_campaign=<?php echo rawurlencode($addOn->getUtmCampaign()); ?>" aria-label="Learn More" class="wpsms-postbox-addon__read-more">
                         <?php esc_html_e('Learn More', 'wp-sms'); ?>
                     </a>
                 <?php endif; ?>
@@ -40,7 +42,7 @@ if (!defined('ABSPATH') || empty($addOn)) {
         <?php endif; ?>
 
         <?php if ($included && (!$addOn->isInstalled() || $addOn->isUpdateAvailable())) : ?>
-            <span> <input type="checkbox" class="js-wpsms-addon-check-box" name="addon-select" data-slug="<?php echo esc_attr($addOn->getSlug()); ?>"></span>
+            <span> <input type="checkbox" aria-label="Select to download and install addon" class="js-wpsms-addon-check-box" name="addon-select" data-slug="<?php echo esc_attr($addOn->getSlug()); ?>"></span>
         <?php endif; ?>
     </div>
 </div>

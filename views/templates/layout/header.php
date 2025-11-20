@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="wrap wpsms-wrap">
 
     <?php use WP_SMS\Helper;

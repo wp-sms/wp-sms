@@ -16,7 +16,7 @@ abstract class AbstractNotice
     public function action()
     {
         if (isset($_GET['wpsms_dismiss_notice']) && wp_verify_nonce($_GET['security'], 'wp_sms_notice')) {
-            $notices_options                                = get_option($this->staticNoticeOption);
+            $notices_options                                = get_option($this->staticNoticeOption, []);
             $notices_options[$_GET['wpsms_dismiss_notice']] = true;
 
             update_option($this->staticNoticeOption, $notices_options);

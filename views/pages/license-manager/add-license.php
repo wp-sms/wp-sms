@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="wpsms-wrap__main">
     <div class="wp-header-end"></div>
 
@@ -10,24 +11,26 @@
         <div class="wpsms-addon__step__license">
             <div class="wpsms-addon__step__active-license">
                 <!--   Add wpsms-danger or wpsms-warning class to input-->
-                <input type="text" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx">
-                <button class="wpsms-postbox-addon-button js-addon-active-license disabled"><?php esc_html_e('Activate License', 'wp-sms'); ?></button>
+                <input type="text" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" aria-label="License">
+                <button class="wpsms-postbox-addon-button js-addon-active-license disabled" aria-disabled="true"><?php esc_html_e('Activate License', 'wp-sms'); ?></button>
             </div>
         </div>
         <div class="wpsms-addon__step__faq">
             <ul>
                 <li>
-                    <a href="https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=install-addon" target="_blank" title="<?php esc_html_e('Buy All-in-One Now', 'wp-sms'); ?>"><?php esc_html_e('Buy All-in-One Now', 'wp-sms'); ?></a>
+                    <a href="https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=install-addon" target="_blank" aria-label="Buy All-in-One Now"><?php esc_html_e('Buy All-in-One Now', 'wp-sms'); ?></a>
                 </li>
                 <li>
-                    <a href="https://wp-sms-pro.com/resources/finding-and-entering-your-license-key" target="_blank" title="<?php esc_html_e('I bought All-in-One, where is my license key?', 'wp-sms'); ?>"><?php esc_html_e('I bought All-in-One, where is my license key?', 'wp-sms'); ?></a>
+                    <a href="https://wp-sms-pro.com/resources/finding-and-entering-your-license-key/?utm_source=wp-sms&utm_medium=link&utm_campaign=install-addon"  aria-label="I bought All-in-One, where is my license key?"
+                       target="_blank"><?php esc_html_e('I bought All-in-One, where is my license key?', 'wp-sms'); ?></a>
                 </li>
                 <li>
-                    <a href="https://wp-sms-pro.com/contact-us" target="_blank" title="<?php esc_html_e('Have questions or trouble activating your license?', 'wp-sms'); ?>"><?php esc_html_e('Have a question or trouble with your license?', 'wp-sms'); ?></a>
+                    <a href="https://wp-sms-pro.com/contact-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=install-addon" aria-label="Have questions or trouble activating your license?"
+                       target="_blank"><?php esc_html_e('Have a question or trouble with your license?', 'wp-sms'); ?></a>
                 </li>
             </ul>
         </div>
-        <a class="wpsms-addon__step__back-to-addons" href="<?php echo esc_url(admin_url('admin.php?page=wp-sms-add-ons')) ?>" title="<?php esc_html_e('Back to Add-Ons', 'wp-sms'); ?>"><?php esc_html_e('Back to Add-Ons', 'wp-sms'); ?></a>
+        <a class="wpsms-addon__step__back-to-addons" aria-label="Back to Add-ons"  href="<?php echo esc_url(admin_url('admin.php?page=wp-sms-add-ons')) ?>"><?php esc_html_e('Back to Add-Ons', 'wp-sms'); ?></a>
 
     </div>
 </div>

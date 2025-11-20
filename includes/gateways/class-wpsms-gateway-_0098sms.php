@@ -105,6 +105,10 @@ class _0098sms extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', esc_html__('API username or API password is not entered.', 'wp-sms'));
         }
 
+        if (!class_exists('SoapClient')) {
+            return new \WP_Error('required-class', esc_html__('Class SoapClient not found. please enable php_soap in your php.', 'wp-sms'));
+        }
+
         try {
             $sms_client = new \SoapClient($this->wsdl_link, array('encoding' => 'UTF-8'));
 

@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 </div>
 </section>
 <section class="c-section--nextstep u-text-center">
