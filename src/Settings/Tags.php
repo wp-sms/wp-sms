@@ -11,6 +11,7 @@ class Tags
     public const DEPRECATED = 'deprecated';
     public const BETA = 'beta';
     public const PRO = 'pro';
+    public const WOOCOMMERCE = 'woocommerce';
     public const EXPERIMENTAL = 'experimental';
     public const COMING_SOON = 'coming-soon';
 
@@ -41,6 +42,11 @@ class Tags
                 'label' => __('Pro', 'wp-sms'),
                 'color' => 'purple',
                 'icon' => 'Crown'
+            ],
+            self::WOOCOMMERCE => [
+                'label' => __('WooCommerce', 'wp-sms'),
+                'color' => 'pink',
+                'icon' => 'ShoppingCart'
             ],
             self::EXPERIMENTAL => [
                 'label' => __('Experimental', 'wp-sms'),

@@ -11,7 +11,7 @@ class Section
     public $title;
     public $subtitle;
     public $helpUrl;
-    public $tag;
+    public $tag; // string|array|null - Single tag string, array of tags, or null
     public $order;
     public $fields;
     public $readonly;
