@@ -54,7 +54,7 @@ class ReactHandler extends BaseAssets
         // Get Current Screen ID
         $screenId = $this->getScreenId();
 
-        if ('sms_page_wp-sms-new-settings' !== $screenId) {
+        if (strpos($screenId, 'wp-sms-new-settings') === false) {
             return;
         }
 
@@ -80,7 +80,7 @@ class ReactHandler extends BaseAssets
         // Get Current Screen ID
         $screenId = $this->getScreenId();
 
-        if ('sms_page_wp-sms-new-settings' !== $screenId) {
+        if (strpos($screenId, 'wp-sms-new-settings') === false) {
             return;
         }
 
