@@ -1,3 +1,6 @@
+= v7.0.x =
+- **Fix:** Fixed SCSS Compilation Error in mail.css
+
 = v7.0.5 - 2025-11-13 =
 - **Enhancement:** Repositioned the "All-in-One Required" label to the top of the PRO gateway onboarding table for better visibility.
 - **Enhancement:** Added more plugin details to the Site Health Info section for easier diagnostics.
