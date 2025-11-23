@@ -461,7 +461,7 @@ New styles for new version of the page
 
       &::after {
         content: "";
-        background: url("../images/icons/next-step-outline.png") no-repeat center center / contain;
+        background: #fff url("../images/icons/next-step-outline.png") no-repeat center center / contain;
         width: 18px;
         height: 18px;
         position: absolute;
@@ -474,8 +474,8 @@ New styles for new version of the page
 
       &.passed::after,
       &.active::after {
-        background: url("../images/icons/next-step-fill.png") no-repeat center center / contain;
-      }
+        background: #fff url("../images/icons/next-step-fill.png") no-repeat center center / contain;
+       }
 
       &.active {
         color: $brand-orange;
