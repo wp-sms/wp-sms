@@ -54,7 +54,7 @@ class EasyDigitalDownloadsSettings extends AbstractSettingGroup
                     'label' => __('Phone field at checkout', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Add a phone number field to the checkout page so customers can receive order updates.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ])
             ]
         ]);
@@ -69,14 +69,14 @@ class EasyDigitalDownloadsSettings extends AbstractSettingGroup
                     'label' => __('Enable admin SMS', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send an SMS to your team when a payment is marked Complete.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'edd_notify_order_receiver',
                     'label' => __('Recipient numbers', 'wp-sms'),
                     'type' => 'text',
                     'description' => __('Enter one or more phone numbers in international format. Separate numbers with commas. Example: +49 1512345678, +98 9120000000', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'edd_notify_order_message',
@@ -90,14 +90,14 @@ class EasyDigitalDownloadsSettings extends AbstractSettingGroup
                                 '<code>%edd_last%</code>',
                                 '<code>%edd_email%</code>'
                             ),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'edd_notify_customer_enable',
                     'label' => __('Enable customer SMS', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send an SMS to the customer when a payment is marked Complete.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'edd_notify_customer_message',
@@ -110,7 +110,7 @@ class EasyDigitalDownloadsSettings extends AbstractSettingGroup
                                 '<code>%edd_first%</code>',
                                 '<code>%edd_email%</code>'
                             ),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);

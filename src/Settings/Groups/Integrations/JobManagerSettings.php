@@ -56,14 +56,14 @@ class JobManagerSettings extends AbstractSettingGroup
                         'label' => __('Add phone number field', 'wp-sms'),
                         'type' => 'checkbox',
                         'description' => __('Add a phone number field to the Post a Job form.', 'wp-sms'),
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'job_display_mobile_number',
                         'label' => __('Show phone number on job page', 'wp-sms'),
                         'type' => 'checkbox',
                         'description' => __('Display the submitted phone number on the single job page.', 'wp-sms'),
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                 ]
             ]),
@@ -78,7 +78,7 @@ class JobManagerSettings extends AbstractSettingGroup
                         'label' => __('Send SMS on new submission', 'wp-sms'),
                         'type' => 'checkbox',
                         'description' => __('Send an SMS when a job is submitted.', 'wp-sms'),
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'job_notify_receiver',
@@ -89,7 +89,7 @@ class JobManagerSettings extends AbstractSettingGroup
                             'number' => __('Custom number(s)', 'wp-sms')
                         ],
                         'description' => __('Choose who should receive the SMS.', 'wp-sms'),
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'job_notify_receiver_subscribers',
@@ -98,7 +98,7 @@ class JobManagerSettings extends AbstractSettingGroup
                         'options' => $this->getSubscribeGroups(),
                         'description' => __('Select the subscriber group that should receive these alerts.', 'wp-sms'),
                         'show_if' => ['job_notify_receiver' => 'subscriber'],
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'job_notify_receiver_numbers',
@@ -106,14 +106,14 @@ class JobManagerSettings extends AbstractSettingGroup
                         'type' => 'text',
                         'description' => __('Enter one or more phone numbers separated by commas. Example: +49 170 1234567, +1 415 555 0101.', 'wp-sms'),
                         'show_if' => ['job_notify_receiver' => 'number'],
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'job_notify_message',
                         'label' => __('Message text', 'wp-sms'),
                         'type' => 'textarea',
                         'description' => __('Write the SMS content. Available tags: %job_id%, %job_title%, %job_description%, %job_location%, %job_type%, %job_mobile%, %company_name%, %website%.', 'wp-sms'),
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                 ]
             ]),
@@ -128,14 +128,14 @@ class JobManagerSettings extends AbstractSettingGroup
                         'label' => __('Send SMS on approval', 'wp-sms'),
                         'type' => 'checkbox',
                         'description' => __('Send an SMS to the employer when the job is approved.', 'wp-sms'),
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'job_notify_employer_message',
                         'label' => __('Message text', 'wp-sms'),
                         'type' => 'textarea',
                         'description' => __('Write the SMS content. Available tags: %job_id%, %job_title%, %job_description%, %job_location%, %job_type%, %job_mobile%, %company_name%, %website%.', 'wp-sms'),
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                 ]
             ]),

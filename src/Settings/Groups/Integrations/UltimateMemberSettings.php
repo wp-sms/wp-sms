@@ -56,14 +56,14 @@ class UltimateMemberSettings extends AbstractSettingGroup
                     'label' => __('Send SMS on approval', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('When enabled, a text message is sent after the user is approved.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'um_message_body',
                     'label' => __('Message template', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Write the SMS content. You can use the variables shown below. Keep it short for SMS.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables(),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);

@@ -54,14 +54,14 @@ class BuddyPressSettings extends AbstractSettingGroup
                     'label' => __('Enable', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send an SMS to users when they register in BuddyPress.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'bp_welcome_notification_message',
                     'label' => __('SMS Template', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Write the SMS text. You can use placeholders: %user_login%, %user_email%, %display_name%.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);
@@ -76,14 +76,14 @@ class BuddyPressSettings extends AbstractSettingGroup
                     'label' => __('Enable', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send an SMS when a user is mentioned, for example @admin.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'bp_mention_message',
                     'label' => __('SMS Template', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Write the SMS text. You can use placeholders: %posted_user_display_name%, %primary_link%, %time%, %message%, %receiver_user_display_name%.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);
@@ -98,14 +98,14 @@ class BuddyPressSettings extends AbstractSettingGroup
                     'label' => __('Enable', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send an SMS when a user receives a private message.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'bp_private_message_content',
                     'label' => __('SMS Template', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Write the SMS text. You can use placeholders: %sender_display_name%, %subject%, %message%, %message_url%.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);
@@ -120,14 +120,14 @@ class BuddyPressSettings extends AbstractSettingGroup
                     'label' => __('Enable', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send an SMS when a user receives a reply on an activity update.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'bp_comments_activity_message',
                     'label' => __('SMS Template', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Write the SMS text. You can use placeholders: %posted_user_display_name%, %comment%, %receiver_user_display_name%.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);
@@ -142,14 +142,14 @@ class BuddyPressSettings extends AbstractSettingGroup
                     'label' => __('Enable', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send an SMS when a user receives a reply on a comment.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'bp_comments_reply_message',
                     'label' => __('SMS Template', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Write the SMS text. You can use placeholders: %posted_user_display_name%, %comment%, %receiver_user_display_name%.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);

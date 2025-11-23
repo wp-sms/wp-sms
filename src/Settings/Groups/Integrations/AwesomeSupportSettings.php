@@ -54,14 +54,14 @@ class AwesomeSupportSettings extends AbstractSettingGroup
                     'label' => __('Enable', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send an SMS to admin recipients when a new ticket is created.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'as_notify_open_ticket_message',
                     'label' => __('Message', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Write the SMS sent to admins. Available placeholders: {printVariables}', 'wp-sms') . '<br>' . NotificationFactory::getAwesomeSupportTicket()->printVariables(),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ])
             ]
         ]);
@@ -76,14 +76,14 @@ class AwesomeSupportSettings extends AbstractSettingGroup
                     'label' => __('Send SMS', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send SMS to admin when the user replied the ticket.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'as_notify_admin_reply_ticket_message',
                     'label' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getAwesomeSupportTicket()->printVariables(),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);
@@ -98,14 +98,14 @@ class AwesomeSupportSettings extends AbstractSettingGroup
                     'label' => __('Send SMS', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send SMS to user when the admin replied the ticket. Please make sure the "Add Mobile number field" option is enabled in the Settings > Features', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'as_notify_user_reply_ticket_message',
                     'label' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getAwesomeSupportTicket()->printVariables(),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);
@@ -120,14 +120,14 @@ class AwesomeSupportSettings extends AbstractSettingGroup
                     'label' => __('Send SMS', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send SMS to user when the ticket status updates', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'as_notify_update_ticket_message',
                     'label' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getAwesomeSupportTicket()->printVariables(),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);
@@ -142,14 +142,14 @@ class AwesomeSupportSettings extends AbstractSettingGroup
                     'label' => __('Send SMS', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send SMS to user when the ticket is closed', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'as_notify_close_ticket_message',
                     'label' => __('Message body', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Enter the contents of the SMS message.', 'wp-sms') . '<br>' . NotificationFactory::getAwesomeSupportTicket()->printVariables(),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);
