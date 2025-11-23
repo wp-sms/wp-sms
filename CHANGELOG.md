@@ -1,4 +1,4 @@
-= v7.0.7 - 2025-11-23 =
+= v7.0.8 - 2025-11-23 =
 - **Enhancement:** Repositioned the "All-in-One Required" label to the top of the PRO gateway onboarding table for better visibility.
 - **Enhancement:** Added more plugin details to the Site Health Info section for easier diagnostics.
 - **Enhancement:** Removed deprecated `utf8_decode()` usage in `nusoap.class.php`.
