@@ -43,7 +43,7 @@ class FluentSupportSettings extends AbstractSettingGroup
                 'id' => 'fluent_support_integration',
                 'title' => __('Fluent Support Integration', 'wp-sms-fluent-integrations'),
                 'subtitle' => __('Connect Fluent Support to enable SMS options.', 'wp-sms-fluent-integrations'),
-                'hasInnerNotice' => false,
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'fluent_support_not_active_notice',

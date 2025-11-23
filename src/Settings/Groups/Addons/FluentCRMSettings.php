@@ -42,7 +42,7 @@ class FluentCRMSettings extends AbstractSettingGroup
                 'id' => 'fluent_crm_integration',
                 'title' => __('Fluent CRM Integration', 'wp-sms-fluent-integrations'),
                 'subtitle' => __('Connect Fluent CRM to enable SMS options.', 'wp-sms-fluent-integrations'),
-                'hasInnerNotice' => false,
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'fluent_crm_not_active_notice',

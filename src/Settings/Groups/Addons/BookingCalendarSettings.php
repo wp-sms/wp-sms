@@ -42,7 +42,7 @@ class BookingCalendarSettings extends AbstractSettingGroup
                 'id' => 'booking_calendar_integration',
                 'title' => __('Booking Calendar Integration', 'wp-sms-booking-integrations'),
                 'subtitle' => __('Connect Booking Calendar to enable SMS options.', 'wp-sms-booking-integrations'),
-                'hasInnerNotice' => false,
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'booking_calendar_not_active_notice',

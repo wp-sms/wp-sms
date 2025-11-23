@@ -42,7 +42,7 @@ class BookingPressSettings extends AbstractSettingGroup
                 'id' => 'bookingpress_integration',
                 'title' => __('BookingPress Integration', 'wp-sms-booking-integrations'),
                 'subtitle' => __('Connect BookingPress to enable SMS options.', 'wp-sms-booking-integrations'),
-                'hasInnerNotice' => false,
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'bookingpress_not_active_notice',

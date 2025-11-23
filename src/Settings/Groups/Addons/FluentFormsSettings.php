@@ -43,7 +43,7 @@ class FluentFormsSettings extends AbstractSettingGroup
                 'id' => 'fluent_forms_integration',
                 'title' => __('Fluent Forms Integration', 'wp-sms-fluent-integrations'),
                 'subtitle' => __('Connect Fluent Forms to enable SMS options.', 'wp-sms-fluent-integrations'),
-                'hasInnerNotice' => false,
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'fluent_forms_not_active_notice',

@@ -6,6 +6,7 @@ use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
 use WP_SMS\Settings\LucideIcons;
+use WP_SMS\Settings\Tags;
 
 class JobManagerSettings extends AbstractSettingGroup
 {
@@ -31,7 +32,7 @@ class JobManagerSettings extends AbstractSettingGroup
                 'id' => 'job_manager_not_active',
                 'title' => __('Job Manager not active', 'wp-sms'),
                 'subtitle' => __('Job Manager Integration Status', 'wp-sms'),
-                'hasInnerNotice' => false,
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'job_manager_not_active_notice',
@@ -48,6 +49,7 @@ class JobManagerSettings extends AbstractSettingGroup
                 'id' => 'mobile_field_configuration',
                 'title' => __('Job form & display', 'wp-sms'),
                 'subtitle' => __('Add a phone number field to the Post a Job form and optionally show it on the job page.', 'wp-sms'),
+                'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
                 'fields' => [
                     new Field([
                         'key' => 'job_mobile_field',
@@ -69,6 +71,7 @@ class JobManagerSettings extends AbstractSettingGroup
                 'id' => 'new_job_notification',
                 'title' => __('New job alerts', 'wp-sms'),
                 'subtitle' => __('Send an SMS when a new job is submitted.', 'wp-sms'),
+                'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
                 'fields' => [
                     new Field([
                         'key' => 'job_notify_status',
@@ -118,6 +121,7 @@ class JobManagerSettings extends AbstractSettingGroup
                 'id' => 'employer_notification',
                 'title' => __('Employer alert', 'wp-sms'),
                 'subtitle' => __('Send an SMS to the employer when their job is approved.', 'wp-sms'),
+                'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
                 'fields' => [
                     new Field([
                         'key' => 'job_notify_employer_status',

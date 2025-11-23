@@ -42,7 +42,7 @@ class WooBookingsSettings extends AbstractSettingGroup
                 'id' => 'woo_bookings_integration',
                 'title' => __('WooCommerce Bookings Integration', 'wp-sms-booking-integrations'),
                 'subtitle' => __('Connect WooCommerce Bookings to enable SMS options.', 'wp-sms-booking-integrations'),
-                'hasInnerNotice' => false,
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'woo_bookings_not_active_notice',

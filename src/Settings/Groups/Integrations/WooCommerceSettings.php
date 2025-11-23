@@ -6,6 +6,7 @@ use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
 use WP_SMS\Notification\NotificationFactory;
+use WP_SMS\Settings\Tags;
 
 class WooCommerceSettings extends AbstractSettingGroup
 {
@@ -30,7 +31,7 @@ class WooCommerceSettings extends AbstractSettingGroup
                 'id' => 'woocommerce_integration',
                 'title' => __('WooCommerce Integration', 'wp-sms'),
                 'subtitle' => __('Configure SMS notifications for WooCommerce activities', 'wp-sms'),
-                'hasInnerNotice' => false,
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'woocommerce_not_active_notice',
@@ -46,6 +47,7 @@ class WooCommerceSettings extends AbstractSettingGroup
             'id' => 'order_meta_box',
             'title' => __('Order SMS Box', 'wp-sms'),
             'subtitle' => __('Show a "Send SMS" box on the WooCommerce order screen', 'wp-sms'),
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'wc_meta_box_enable',
@@ -61,6 +63,7 @@ class WooCommerceSettings extends AbstractSettingGroup
             'title' => __('New Product Published', 'wp-sms'),
             'subtitle' => __('Send an SMS when a product is published', 'wp-sms'),
             'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'wc_notify_product_enable',
@@ -112,6 +115,7 @@ class WooCommerceSettings extends AbstractSettingGroup
             'title' => __('New Order Alert (Admin)', 'wp-sms'),
             'subtitle' => __('Send an SMS to your team when a new order is placed', 'wp-sms'),
             'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'wc_notify_order_enable',
@@ -141,6 +145,7 @@ class WooCommerceSettings extends AbstractSettingGroup
             'title' => __('Order Placed (Customer)', 'wp-sms'),
             'subtitle' => __('Send a confirmation SMS to customers after checkout', 'wp-sms'),
             'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'wc_notify_customer_enable',
@@ -163,6 +168,7 @@ class WooCommerceSettings extends AbstractSettingGroup
             'title' => __('Low Stock Alert (Admin)', 'wp-sms'),
             'subtitle' => __('Notify your team when stock is low', 'wp-sms'),
             'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'wc_notify_stock_enable',
@@ -191,6 +197,7 @@ class WooCommerceSettings extends AbstractSettingGroup
             'id' => 'checkout_confirmation_checkbox',
             'title' => __('Checkout Opt-in Checkbox', 'wp-sms'),
             'subtitle' => __('Show a consent checkbox on checkout', 'wp-sms'),
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'wc_checkout_confirmation_checkbox_enabled',
@@ -206,6 +213,7 @@ class WooCommerceSettings extends AbstractSettingGroup
             'title' => __('Order Status Updates', 'wp-sms'),
             'subtitle' => __('Send SMS updates when the order status changes', 'wp-sms'),
             'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'wc_notify_status_enable',

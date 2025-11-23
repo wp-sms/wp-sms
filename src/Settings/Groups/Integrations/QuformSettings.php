@@ -7,6 +7,7 @@ use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
 use WP_SMS\Settings\LucideIcons;
 use WP_SMS\Quform;
+use WP_SMS\Settings\Tags;
 
 class QuformSettings extends AbstractSettingGroup
 {
@@ -31,7 +32,7 @@ class QuformSettings extends AbstractSettingGroup
                 'id' => 'quform_not_active',
                 'title' => __('Quform Integration', 'wp-sms'),
                 'subtitle' => __('Set up SMS notifications for Quform submissions.', 'wp-sms'),
-                'hasInnerNotice' => false,
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'quform_not_active_notice',
@@ -158,6 +159,7 @@ class QuformSettings extends AbstractSettingGroup
                 'title' => __('Notifications for "Sample Form"', 'wp-sms'),
                 'subtitle' => __('Send an SMS when the "Sample Form" form is submitted.', 'wp-sms'),
                 'help_url' => WP_SMS_SITE . '/resources/integrate-wp-sms-pro-with-quform/',
+                'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
                 'fields' => [
                     new Field([
                         'key' => 'qf_notify_enable_form_sample',

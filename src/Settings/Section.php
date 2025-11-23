@@ -16,7 +16,7 @@ class Section
     public $fields;
     public $readonly;
     public $layout; // 'default', '2-column', '3-column'
-    public $hasInnerNotice;
+    public $hasNotice;
 
     public function __construct(array $args)
     {
@@ -29,7 +29,7 @@ class Section
         $this->fields = $args['fields'] ?? [];
         $this->readonly = $args['readonly'] ?? false;
         $this->layout = $args['layout'] ?? 'default';
-        $this->hasInnerNotice = $args['hasInnerNotice'] ?? true;
+        $this->hasNotice = $args['hasNotice'] ?? false;
     }
 
     /**
@@ -49,7 +49,7 @@ class Section
             'fields' => array_map(fn($field) => $field->toArray(), $this->fields),
             'readonly' => $this->readonly,
             'layout' => $this->layout,
-            'hasInnerNotice' => $this->hasInnerNotice,
+            'hasNotice' => $this->hasNotice,
         ];
     }
 

@@ -61,7 +61,7 @@ class TwoWaySettings extends AbstractSettingGroup
                 'id' => 'two_way_integration',
                 'title' => __('Two-Way SMS Integration', 'wp-sms-two-way'),
                 'subtitle' => __('Connect Two-Way SMS to enable SMS options.', 'wp-sms-two-way'),
-                'hasInnerNotice' => false,
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'two_way_not_active_notice',

@@ -6,6 +6,7 @@ use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
 use WP_SMS\Gravityforms;
+use WP_SMS\Settings\Tags;
 
 class GravityFormsSettings extends AbstractSettingGroup
 {
@@ -31,7 +32,7 @@ class GravityFormsSettings extends AbstractSettingGroup
                 'id' => 'gravity_forms_not_active',
                 'title' => __('Plugin Status', 'wp-sms'),
                 'subtitle' => __('Gravity Forms Integration Status', 'wp-sms'),
-                'hasInnerNotice' => false,
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'gravity_forms_not_active_notice',
@@ -157,6 +158,7 @@ class GravityFormsSettings extends AbstractSettingGroup
                 'title' => __('Form notifications (Sample Form)', 'wp-sms'),
                 'subtitle' => __('Send an SMS when this form is submitted.', 'wp-sms'),
                 'help_url' => WP_SMS_SITE . '/resources/integrate-wp-sms-pro-with-gravity-forms/',
+                'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
                 'fields' => [
                     new Field([
                         'key' => 'gf_notify_enable_form_sample',

@@ -6,6 +6,7 @@ use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
 use WP_SMS\Settings\LucideIcons;
+use WP_SMS\Settings\Tags;
 
 class BuddyPressSettings extends AbstractSettingGroup
 {
@@ -30,7 +31,7 @@ class BuddyPressSettings extends AbstractSettingGroup
                 'id' => 'buddypress_integration',
                 'title' => __('BuddyPress Integration', 'wp-sms'),
                 'subtitle' => __('Connect SMS alerts to BuddyPress activities', 'wp-sms'),
-                'hasInnerNotice' => false,
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'buddypress_not_active_notice',
@@ -46,6 +47,7 @@ class BuddyPressSettings extends AbstractSettingGroup
             'id' => 'welcome_notification',
             'title' => __('Welcome Notification', 'wp-sms'),
             'subtitle' => __('Send a welcome SMS to new BuddyPress users', 'wp-sms'),
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'bp_welcome_notification_enable',
@@ -67,6 +69,7 @@ class BuddyPressSettings extends AbstractSettingGroup
             'id' => 'mention_notification',
             'title' => __('Mention Notification', 'wp-sms'),
             'subtitle' => __('Alert users when they are mentioned', 'wp-sms'),
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'bp_mention_enable',
@@ -88,6 +91,7 @@ class BuddyPressSettings extends AbstractSettingGroup
             'id' => 'private_message_notification',
             'title' => __('Private Message Notification', 'wp-sms'),
             'subtitle' => __('Alert users about new private messages', 'wp-sms'),
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'bp_private_message_enable',
@@ -109,6 +113,7 @@ class BuddyPressSettings extends AbstractSettingGroup
             'id' => 'user_activity_comments',
             'title' => __('Activity Replies', 'wp-sms'),
             'subtitle' => __('Notify users when someone replies to their activity', 'wp-sms'),
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'bp_comments_activity_enable',
@@ -130,6 +135,7 @@ class BuddyPressSettings extends AbstractSettingGroup
             'id' => 'user_reply_comments',
             'title' => __('Comment Replies', 'wp-sms'),
             'subtitle' => __('Notify users when someone replies to their comment', 'wp-sms'),
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'bp_comments_reply_enable',

@@ -42,7 +42,7 @@ class WooAppointmentsSettings extends AbstractSettingGroup
                 'id' => 'woo_appointments_integration',
                 'title' => __('WooCommerce Appointments Integration', 'wp-sms-booking-integrations'),
                 'subtitle' => __('Connect WooCommerce Appointments to enable SMS options.', 'wp-sms-booking-integrations'),
-                'hasInnerNotice' => false,
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'woo_appointments_not_active_notice',
