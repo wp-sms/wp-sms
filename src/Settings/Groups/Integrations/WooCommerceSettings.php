@@ -6,6 +6,7 @@ use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
 use WP_SMS\Notification\NotificationFactory;
+use WP_SMS\Settings\Tags;
 
 class WooCommerceSettings extends AbstractSettingGroup
 {
@@ -30,6 +31,7 @@ class WooCommerceSettings extends AbstractSettingGroup
                 'id' => 'woocommerce_integration',
                 'title' => __('WooCommerce Integration', 'wp-sms'),
                 'subtitle' => __('Configure SMS notifications for WooCommerce activities', 'wp-sms'),
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'woocommerce_not_active_notice',
@@ -45,28 +47,31 @@ class WooCommerceSettings extends AbstractSettingGroup
             'id' => 'order_meta_box',
             'title' => __('Order SMS Box', 'wp-sms'),
             'subtitle' => __('Show a "Send SMS" box on the WooCommerce order screen', 'wp-sms'),
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'wc_meta_box_enable',
                     'label' => __('Enable', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Show a Send SMS box on order pages to message the customer or any number. The customer mobile field must be set. If it is not set, this box will be hidden.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);
+
         $sections[] = new Section([
             'id' => 'new_product_notification',
             'title' => __('New Product Published', 'wp-sms'),
             'subtitle' => __('Send an SMS when a product is published', 'wp-sms'),
             'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'wc_notify_product_enable',
                     'label' => __('Send SMS', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send an SMS when a new product is published.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'wc_notify_product_receiver',
@@ -77,7 +82,7 @@ class WooCommerceSettings extends AbstractSettingGroup
                         'users' => __('WordPress users', 'wp-sms')
                     ],
                     'description' => __('Choose who should receive this SMS.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'wc_notify_product_cat',
@@ -86,7 +91,7 @@ class WooCommerceSettings extends AbstractSettingGroup
                     'options' => $this->getSubscribeGroups(),
                     'description' => __('If you selected Subscribers, choose the group to send to.', 'wp-sms'),
                     'show_if' => ['wc_notify_product_receiver' => 'subscriber'],
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'wc_notify_product_roles',
@@ -95,14 +100,14 @@ class WooCommerceSettings extends AbstractSettingGroup
                     'options' => $this->getRoles(),
                     'description' => __('Select which user roles will receive the SMS.', 'wp-sms'),
                     'show_if' => ['wc_notify_product_receiver' => 'users'],
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'wc_notify_product_message',
                     'label' => __('Message', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Write your SMS. Variables are available below.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceProduct()->printVariables(),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);
@@ -111,27 +116,28 @@ class WooCommerceSettings extends AbstractSettingGroup
             'title' => __('New Order Alert (Admin)', 'wp-sms'),
             'subtitle' => __('Send an SMS to your team when a new order is placed', 'wp-sms'),
             'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'wc_notify_order_enable',
                     'label' => __('Send SMS', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send an SMS when a new order is submitted.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'wc_notify_order_receiver',
                     'label' => __('Phone numbers', 'wp-sms'),
                     'type' => 'text',
                     'description' => __('Enter one or more numbers. Separate numbers with commas. Use international format when possible.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'wc_notify_order_message',
                     'label' => __('Message', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Write your SMS. Variables are available below.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceOrder()->printVariables(),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);
@@ -140,20 +146,21 @@ class WooCommerceSettings extends AbstractSettingGroup
             'title' => __('Order Placed (Customer)', 'wp-sms'),
             'subtitle' => __('Send a confirmation SMS to customers after checkout', 'wp-sms'),
             'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'wc_notify_customer_enable',
                     'label' => __('Send SMS', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send an SMS to the customer when an order is placed.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'wc_notify_customer_message',
                     'label' => __('Message', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Write your SMS. Variables are available below.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceOrder()->printVariables(),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);
@@ -162,27 +169,28 @@ class WooCommerceSettings extends AbstractSettingGroup
             'title' => __('Low Stock Alert (Admin)', 'wp-sms'),
             'subtitle' => __('Notify your team when stock is low', 'wp-sms'),
             'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'wc_notify_stock_enable',
                     'label' => __('Send SMS', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send an SMS when stock reaches the low stock threshold.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'wc_notify_stock_receiver',
                     'label' => __('Phone numbers', 'wp-sms'),
                     'type' => 'text',
                     'description' => __('Enter one or more numbers. Separate with commas.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'wc_notify_stock_message',
                     'label' => __('Message', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Write your SMS. Variables are available below.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceProduct()->printVariables(),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);
@@ -190,13 +198,14 @@ class WooCommerceSettings extends AbstractSettingGroup
             'id' => 'checkout_confirmation_checkbox',
             'title' => __('Checkout Opt-in Checkbox', 'wp-sms'),
             'subtitle' => __('Show a consent checkbox on checkout', 'wp-sms'),
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'wc_checkout_confirmation_checkbox_enabled',
                     'label' => __('Enable', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Show a checkbox at checkout so customers can confirm they want to receive SMS updates.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);
@@ -205,20 +214,21 @@ class WooCommerceSettings extends AbstractSettingGroup
             'title' => __('Order Status Updates', 'wp-sms'),
             'subtitle' => __('Send SMS updates when the order status changes', 'wp-sms'),
             'help_url' => WP_SMS_SITE . '/resources/woocommerce-sms-variables-and-order-meta/',
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'wc_notify_status_enable',
                     'label' => __('Send SMS', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('Send an SMS to the customer when the order status changes.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'wc_notify_status_message',
                     'label' => __('Fallback message', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Used if no per-status message is defined. Variables are available below.', 'wp-sms') . '<br>' . NotificationFactory::getWooCommerceOrder()->printVariables(),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'wc_notify_by_status_content',
@@ -239,7 +249,7 @@ class WooCommerceSettings extends AbstractSettingGroup
                         'variables' => NotificationFactory::getWooCommerceOrder()->printVariables()
                     ],
                     'repeatable' => true,
-                    'readonly' => !$isPluginActive,
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled(),
                     'field_groups' => [
                         new \WP_SMS\Settings\FieldGroup([
                             'key' => 'order_status_message_group',

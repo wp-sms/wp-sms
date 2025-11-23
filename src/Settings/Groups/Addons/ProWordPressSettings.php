@@ -6,6 +6,7 @@ use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
 use WP_SMS\Settings\LucideIcons;
+use WP_SMS\Settings\Tags;
 
 class ProWordPressSettings extends AbstractSettingGroup
 {
@@ -31,12 +32,14 @@ class ProWordPressSettings extends AbstractSettingGroup
                 'id' => 'login_with_sms',
                 'title' => __('Login With SMS', 'wp-sms'),
                 'subtitle' => __('Allow users to log in with a verification code sent via SMS.', 'wp-sms'),
+                'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
                 'fields' => [
                     new Field([
                         'key'         => 'login_sms',
                         'type'        => 'checkbox',
                         'label'       => __('Status', 'wp-sms'),
                         'description' => __('Allows users to log in with a verification code sent via SMS.', 'wp-sms'),
+                        'readonly' => !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key'         => 'login_sms_message',
@@ -44,6 +47,7 @@ class ProWordPressSettings extends AbstractSettingGroup
                         'label'       => __('Message body', 'wp-sms'),
                         'show_if' => ['login_sms' => true],
                         'description' => __('SMS message format for login. Placeholders: <code>%code%</code>, <code>%user_name%</code>, <code>%full_name%</code>, <code>%site_name%</code>, <code>%site_url%</code>', 'wp-sms'),
+                        'readonly' => !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key'         => 'register_sms',
@@ -51,6 +55,7 @@ class ProWordPressSettings extends AbstractSettingGroup
                         'label'       => __('User Account Creation on Login', 'wp-sms'),
                         'description' => __('Automatically register user if logging in via SMS and account does not exist.', 'wp-sms'),
                         'show_if' => ['login_sms' => true],
+                        'readonly' => !$this->proIsInstalled()
                     ]),
                 ]
             ]),
@@ -58,12 +63,14 @@ class ProWordPressSettings extends AbstractSettingGroup
                 'id' => 'two_factor_authentication',
                 'title' => __('Two-Factor Authentication with SMS', 'wp-sms'),
                 'subtitle' => __('Enable SMS verification as part of the login process.', 'wp-sms'),
+                'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
                 'fields' => [
                     new Field([
                         'key'         => 'mobile_verify',
                         'type'        => 'checkbox',
                         'label'       => __('Status', 'wp-sms'),
                         'description' => __('Enable SMS verification as part of the login process.', 'wp-sms'),
+                        'readonly' => !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key'         => 'mobile_verify_method',
@@ -75,6 +82,7 @@ class ProWordPressSettings extends AbstractSettingGroup
                             'optional'  => __('Optional - Users can enable/disable it in their profile', 'wp-sms'),
                             'force_all' => __('Enable for All Users', 'wp-sms'),
                         ],
+                        'readonly' => !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key'         => 'mobile_verify_message',
@@ -82,6 +90,7 @@ class ProWordPressSettings extends AbstractSettingGroup
                         'label'       => __('Message Content', 'wp-sms'),
                         'description' => __('SMS format for 2FA. Placeholders: <code>%otp%</code>, <code>%user_name%</code>, <code>%first_name%</code>, <code>%last_name%</code>', 'wp-sms'),
                         'show_if' => ['mobile_verify' => true],
+                        'readonly' => !$this->proIsInstalled()
                     ]),
                 ]
             ]),

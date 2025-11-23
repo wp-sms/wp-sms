@@ -11,8 +11,17 @@ class Tags
     public const DEPRECATED = 'deprecated';
     public const BETA = 'beta';
     public const PRO = 'pro';
+    public const WOOCOMMERCE = 'woocommerce';
     public const EXPERIMENTAL = 'experimental';
     public const COMING_SOON = 'coming-soon';
+    public const TWOWAY = 'twoway';
+    public const FLUENTCRM = 'fluentcrm';
+    public const FLUENTFORMS = 'fluentforms';
+    public const FLUENTSUPPORT = 'fluentsupport';
+    public const BOOKINGCALENDAR = 'bookingcalendar';
+    public const WOOAPPOINTMENTS = 'wooappointments';
+    public const WOOBOOKINGS = 'woobookings';
+    public const BOOKINGPRESS = 'bookingpress';
 
     /**
      * Get predefined tags with their styles
@@ -42,6 +51,11 @@ class Tags
                 'color' => 'purple',
                 'icon' => 'Crown'
             ],
+            self::WOOCOMMERCE => [
+                'label' => __('WooCommerce', 'wp-sms'),
+                'color' => 'pink',
+                'icon' => 'ShoppingCart'
+            ],
             self::EXPERIMENTAL => [
                 'label' => __('Experimental', 'wp-sms'),
                 'color' => 'orange',
@@ -51,6 +65,46 @@ class Tags
                 'label' => __('Coming Soon', 'wp-sms'),
                 'color' => 'blue',
                 'icon' => 'Clock'
+            ],
+            self::TWOWAY => [
+                'label' => __('Two-Way', 'wp-sms'),
+                'color' => 'blue',
+                'icon' => 'MessageCircle'
+            ],
+            self::FLUENTCRM => [
+                'label' => __('FluentCRM', 'wp-sms'),
+                'color' => 'indigo',
+                'icon' => 'Users'
+            ],
+            self::FLUENTFORMS => [
+                'label' => __('Fluent Forms', 'wp-sms'),
+                'color' => 'teal',
+                'icon' => 'FileText'
+            ],
+            self::FLUENTSUPPORT => [
+                'label' => __('Fluent Support', 'wp-sms'),
+                'color' => 'cyan',
+                'icon' => 'HelpCircle'
+            ],
+            self::BOOKINGCALENDAR => [
+                'label' => __('Booking Calendar', 'wp-sms'),
+                'color' => 'cyan',
+                'icon' => 'Calendar'
+            ],
+            self::WOOAPPOINTMENTS => [
+                'label' => __('WooCommerce Appointments', 'wp-sms'),
+                'color' => 'cyan',
+                'icon' => 'Calendar'
+            ],
+            self::WOOBOOKINGS => [
+                'label' => __('WooCommerce Bookings', 'wp-sms'),
+                'color' => 'cyan',
+                'icon' => 'Calendar'
+            ],
+            self::BOOKINGPRESS => [
+                'label' => __('BookingPress', 'wp-sms'),
+                'color' => 'cyan',
+                'icon' => 'Calendar'
             ]
         ];
     }

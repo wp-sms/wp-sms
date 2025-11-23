@@ -92,6 +92,7 @@ type SchemaSection = {
   subtitle: string
   tag: string | null
   title: string
+  hasInnerNotice: boolean
 }
 
 type GroupSchema = {

@@ -7,6 +7,7 @@ use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
 use WP_SMS\Settings\LucideIcons;
 use WP_SMS\Quform;
+use WP_SMS\Settings\Tags;
 
 class QuformSettings extends AbstractSettingGroup
 {
@@ -31,6 +32,7 @@ class QuformSettings extends AbstractSettingGroup
                 'id' => 'quform_not_active',
                 'title' => __('Quform Integration', 'wp-sms'),
                 'subtitle' => __('Set up SMS notifications for Quform submissions.', 'wp-sms'),
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'quform_not_active_notice',
@@ -79,7 +81,7 @@ class QuformSettings extends AbstractSettingGroup
                             'key' => 'qf_notify_enable_form_' . $form['id'],
                             'label' => __('Send to fixed numbers', 'wp-sms'),
                             'type' => 'checkbox',
-                            'readonly' => !$isPluginActive
+                            'readonly' => !$isPluginActive || !$this->proIsInstalled()
                         ]),
                         new Field([
                             'key' => 'qf_notify_receiver_form_' . $form['id'],
@@ -87,7 +89,7 @@ class QuformSettings extends AbstractSettingGroup
                             'type' => 'text',
                             'description' => __('Enter one or more mobile numbers. Separate with a comma. Example: +49 1512345678, +98 9123456789', 'wp-sms'),
                             'show_if' => ['qf_notify_enable_form_' . $form['id'] => true],
-                            'readonly' => !$isPluginActive
+                            'readonly' => !$isPluginActive || !$this->proIsInstalled()
                         ]),
                         new Field([
                             'key' => 'qf_notify_message_form_' . $form['id'],
@@ -105,7 +107,7 @@ class QuformSettings extends AbstractSettingGroup
                                 __('Example:', 'wp-sms') . '<br>' .
                                 __('New submission on %post_title% — %content%', 'wp-sms'),
                             'show_if' => ['qf_notify_enable_form_' . $form['id'] => true],
-                            'readonly' => !$isPluginActive
+                            'readonly' => !$isPluginActive || !$this->proIsInstalled()
                         ])
                     ]
                 ]);
@@ -117,7 +119,7 @@ class QuformSettings extends AbstractSettingGroup
                             'key' => 'qf_notify_enable_field_form_' . $form['id'],
                             'label' => __('Send to number from a form field', 'wp-sms'),
                             'type' => 'checkbox',
-                            'readonly' => !$isPluginActive
+                            'readonly' => !$isPluginActive || !$this->proIsInstalled()
                         ]),
                         new Field([
                             'key' => 'qf_notify_receiver_field_form_' . $form['id'],
@@ -126,7 +128,7 @@ class QuformSettings extends AbstractSettingGroup
                             'options' => $formFields,
                             'description' => __('Choose the field that contains the phone number.', 'wp-sms'),
                             'show_if' => ['qf_notify_enable_field_form_' . $form['id'] => true],
-                            'readonly' => !$isPluginActive
+                            'readonly' => !$isPluginActive || !$this->proIsInstalled()
                         ]),
                         new Field([
                             'key' => 'qf_notify_message_field_form_' . $form['id'],
@@ -143,7 +145,7 @@ class QuformSettings extends AbstractSettingGroup
                                 ) . $moreQfFields . '<br><br>' .
                                 __('Tip: Make sure the selected field stores a valid phone number.', 'wp-sms'),
                             'show_if' => ['qf_notify_enable_field_form_' . $form['id'] => true],
-                            'readonly' => !$isPluginActive
+                            'readonly' => !$isPluginActive || !$this->proIsInstalled()
                         ])
                     ];
                     
@@ -157,12 +159,13 @@ class QuformSettings extends AbstractSettingGroup
                 'title' => __('Notifications for "Sample Form"', 'wp-sms'),
                 'subtitle' => __('Send an SMS when the "Sample Form" form is submitted.', 'wp-sms'),
                 'help_url' => WP_SMS_SITE . '/resources/integrate-wp-sms-pro-with-quform/',
+                'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
                 'fields' => [
                     new Field([
                         'key' => 'qf_notify_enable_form_sample',
                         'label' => __('Send to fixed numbers', 'wp-sms'),
                         'type' => 'checkbox',
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'qf_notify_receiver_form_sample',
@@ -170,7 +173,7 @@ class QuformSettings extends AbstractSettingGroup
                         'type' => 'text',
                         'description' => __('Enter one or more mobile numbers. Separate with a comma. Example: +49 1512345678, +98 9123456789', 'wp-sms'),
                         'show_if' => ['qf_notify_enable_form_sample' => true],
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'qf_notify_message_form_sample',
@@ -188,13 +191,13 @@ class QuformSettings extends AbstractSettingGroup
                             __('Example:', 'wp-sms') . '<br>' .
                             __('New submission on %post_title% — %content%', 'wp-sms'),
                         'show_if' => ['qf_notify_enable_form_sample' => true],
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'qf_notify_enable_field_form_sample',
                         'label' => __('Send to number from a form field', 'wp-sms'),
                         'type' => 'checkbox',
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'qf_notify_receiver_field_form_sample',
@@ -203,7 +206,7 @@ class QuformSettings extends AbstractSettingGroup
                         'options' => [],
                         'description' => __('Choose the field that contains the phone number.', 'wp-sms'),
                         'show_if' => ['qf_notify_enable_field_form_sample' => true],
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'qf_notify_message_field_form_sample',
@@ -220,7 +223,7 @@ class QuformSettings extends AbstractSettingGroup
                             ) . '<br><br>' .
                             __('Tip: Make sure the selected field stores a valid phone number.', 'wp-sms'),
                         'show_if' => ['qf_notify_enable_field_form_sample' => true],
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ])
                 ]
             ]);

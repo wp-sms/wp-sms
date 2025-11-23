@@ -101,7 +101,7 @@ class AdvancedSettings extends AbstractSettingGroup
                 'id' => 'google_recaptcha_integration',
                 'title' => __('Google reCAPTCHA Integration', 'wp-sms'),
                 'subtitle' => __('Protect request-SMS actions from spam', 'wp-sms'),
-                'tag' => (!$this->proIsInstalled() && !$this->wooProIsInstalled()) ? Tags::PRO : null,
+                'tag' => $this->getRecaptchaTags(),
                 'fields' => [
                     new Field([
                         'key' => 'g_recaptcha_status',
@@ -140,5 +140,25 @@ class AdvancedSettings extends AbstractSettingGroup
             $allFields = array_merge($allFields, $section->getFields());
         }
         return $allFields;
+    }
+
+    /**
+     * Get tags for reCAPTCHA section based on installed plugins
+     *
+     * @return array|null
+     */
+    private function getRecaptchaTags(): ?array
+    {
+        $tags = [];
+
+        if (!$this->proIsInstalled()) {
+            $tags[] = Tags::PRO;
+        }
+
+        if (!$this->wooProIsInstalled()) {
+            $tags[] = Tags::WOOCOMMERCE;
+        }
+
+        return !empty($tags) ? $tags : null;
     }
 } 

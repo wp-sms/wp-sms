@@ -6,6 +6,7 @@ use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
 use WP_SMS\Gravityforms;
+use WP_SMS\Settings\Tags;
 
 class GravityFormsSettings extends AbstractSettingGroup
 {
@@ -31,6 +32,7 @@ class GravityFormsSettings extends AbstractSettingGroup
                 'id' => 'gravity_forms_not_active',
                 'title' => __('Plugin Status', 'wp-sms'),
                 'subtitle' => __('Gravity Forms Integration Status', 'wp-sms'),
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'gravity_forms_not_active_notice',
@@ -79,7 +81,7 @@ class GravityFormsSettings extends AbstractSettingGroup
                             'key' => 'gf_notify_enable_form_' . $form->id,
                             'label' => __('Send to fixed number(s)', 'wp-sms'),
                             'type' => 'checkbox',
-                            'readonly' => !$isPluginActive
+                            'readonly' => !$isPluginActive || !$this->proIsInstalled()
                         ]),
                         new Field([
                             'key' => 'gf_notify_receiver_form_' . $form->id,
@@ -87,7 +89,7 @@ class GravityFormsSettings extends AbstractSettingGroup
                             'type' => 'text',
                             'description' => __('Enter one or more numbers separated by commas. Use the international format where possible. Example: +491701234567, +989121234567', 'wp-sms'),
                             'show_if' => ['gf_notify_enable_form_' . $form->id => true],
-                            'readonly' => !$isPluginActive
+                            'readonly' => !$isPluginActive || !$this->proIsInstalled()
                         ]),
                         new Field([
                             'key' => 'gf_notify_message_form_' . $form->id,
@@ -104,7 +106,7 @@ class GravityFormsSettings extends AbstractSettingGroup
                                     '<code>%content%</code>'
                                 ) . $moreFields,
                             'show_if' => ['gf_notify_enable_form_' . $form->id => true],
-                            'readonly' => !$isPluginActive
+                            'readonly' => !$isPluginActive || !$this->proIsInstalled()
                         ])
                     ]
                 ]);
@@ -116,7 +118,7 @@ class GravityFormsSettings extends AbstractSettingGroup
                             'key' => 'gf_notify_enable_field_form_' . $form->id,
                             'label' => __('Send to phone field', 'wp-sms'),
                             'type' => 'checkbox',
-                            'readonly' => !$isPluginActive
+                            'readonly' => !$isPluginActive || !$this->proIsInstalled()
                         ]),
                         new Field([
                             'key' => 'gf_notify_receiver_field_form_' . $form->id,
@@ -125,7 +127,7 @@ class GravityFormsSettings extends AbstractSettingGroup
                             'options' => $formFields,
                             'description' => __('Choose the field that contains the recipient phone number.', 'wp-sms'),
                             'show_if' => ['gf_notify_enable_field_form_' . $form->id => true],
-                            'readonly' => !$isPluginActive
+                            'readonly' => !$isPluginActive || !$this->proIsInstalled()
                         ]),
                         new Field([
                             'key' => 'gf_notify_message_field_form_' . $form->id,
@@ -142,7 +144,7 @@ class GravityFormsSettings extends AbstractSettingGroup
                                     '<code>%content%</code>'
                                 ) . $moreFields,
                             'show_if' => ['gf_notify_enable_field_form_' . $form->id => true],
-                            'readonly' => !$isPluginActive
+                            'readonly' => !$isPluginActive || !$this->proIsInstalled()
                         ])
                     ];
                     
@@ -156,12 +158,13 @@ class GravityFormsSettings extends AbstractSettingGroup
                 'title' => __('Form notifications (Sample Form)', 'wp-sms'),
                 'subtitle' => __('Send an SMS when this form is submitted.', 'wp-sms'),
                 'help_url' => WP_SMS_SITE . '/resources/integrate-wp-sms-pro-with-gravity-forms/',
+                'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
                 'fields' => [
                     new Field([
                         'key' => 'gf_notify_enable_form_sample',
                         'label' => __('Send to fixed number(s)', 'wp-sms'),
                         'type' => 'checkbox',
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'gf_notify_receiver_form_sample',
@@ -169,7 +172,7 @@ class GravityFormsSettings extends AbstractSettingGroup
                         'type' => 'text',
                         'description' => __('Enter one or more numbers separated by commas. Use the international format where possible. Example: +491701234567, +989121234567', 'wp-sms'),
                         'show_if' => ['gf_notify_enable_form_sample' => true],
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'gf_notify_message_form_sample',
@@ -186,13 +189,13 @@ class GravityFormsSettings extends AbstractSettingGroup
                                 '<code>%content%</code>'
                             ),
                         'show_if' => ['gf_notify_enable_form_sample' => true],
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'gf_notify_enable_field_form_sample',
                         'label' => __('Send to phone field', 'wp-sms'),
                         'type' => 'checkbox',
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'gf_notify_receiver_field_form_sample',
@@ -201,7 +204,7 @@ class GravityFormsSettings extends AbstractSettingGroup
                         'options' => [],
                         'description' => __('Choose the field that contains the recipient phone number.', 'wp-sms'),
                         'show_if' => ['gf_notify_enable_field_form_sample' => true],
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ]),
                     new Field([
                         'key' => 'gf_notify_message_field_form_sample',
@@ -218,7 +221,7 @@ class GravityFormsSettings extends AbstractSettingGroup
                                 '<code>%content%</code>'
                             ),
                         'show_if' => ['gf_notify_enable_field_form_sample' => true],
-                        'readonly' => !$isPluginActive
+                        'readonly' => !$isPluginActive || !$this->proIsInstalled()
                     ])
                 ]
             ]);

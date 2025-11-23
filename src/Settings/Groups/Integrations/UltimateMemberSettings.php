@@ -6,6 +6,7 @@ use WP_SMS\Settings\Abstracts\AbstractSettingGroup;
 use WP_SMS\Settings\Field;
 use WP_SMS\Settings\Section;
 use WP_SMS\Notification\NotificationFactory;
+use WP_SMS\Settings\Tags;
 
 class UltimateMemberSettings extends AbstractSettingGroup
 {
@@ -31,6 +32,7 @@ class UltimateMemberSettings extends AbstractSettingGroup
                 'type' => 'notice',
                 'title' => __('Integration inactive', 'wp-sms'),
                 'subtitle' => __('Activate the Ultimate Member plugin to use these settings.', 'wp-sms'),
+                'hasNotice' => true,
                 'fields' => [
                     new Field([
                         'key' => 'ultimate_member_not_active_notice',
@@ -47,20 +49,21 @@ class UltimateMemberSettings extends AbstractSettingGroup
             'title' => __('User approval SMS', 'wp-sms'),
             'subtitle' => __('Send an SMS to the user after their account is approved in Ultimate Member.', 'wp-sms'),
             'help_url' => WP_SMS_SITE . '/resources/ultimate-member-and-wp-sms-integration/',
+            'tag' => !$this->proIsInstalled() ? Tags::PRO : null,
             'fields' => [
                 new Field([
                     'key' => 'um_send_sms_after_approval',
                     'label' => __('Send SMS on approval', 'wp-sms'),
                     'type' => 'checkbox',
                     'description' => __('When enabled, a text message is sent after the user is approved.', 'wp-sms'),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
                 new Field([
                     'key' => 'um_message_body',
                     'label' => __('Message template', 'wp-sms'),
                     'type' => 'textarea',
                     'description' => __('Write the SMS content. You can use the variables shown below. Keep it short for SMS.', 'wp-sms') . '<br>' . NotificationFactory::getUser()->printVariables(),
-                    'readonly' => !$isPluginActive
+                    'readonly' => !$isPluginActive || !$this->proIsInstalled()
                 ]),
             ]
         ]);
