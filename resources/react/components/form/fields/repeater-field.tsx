@@ -98,9 +98,7 @@ export const RepeaterField = ({ form, schema }: RepeaterFieldProps) => {
               <div className="flex justify-between items-center">
                 <div className="flex items-center gap-x-2">
                   <Grip size={20} className="text-foreground" />
-                  <p className="text-base font-medium text-foreground">
-                    {sprintf(__('Item %s', 'wp-sms'), idx + 1)}
-                  </p>
+                  <p className="text-base font-medium text-foreground">{sprintf(__('Item %s', 'wp-sms'), idx + 1)}</p>
                 </div>
 
                 <div className="flex items-center gap-x-2">
@@ -145,9 +143,7 @@ export const RepeaterField = ({ form, schema }: RepeaterFieldProps) => {
           className="flex items-center justify-center gap-x-1 w-full"
         >
           <Plus size={18} />
-          <span>
-            {sprintf(__('Add %s', 'wp-sms'), schema.fieldGroups?.[0]?.label || __('Item', 'wp-sms'))}
-          </span>
+          <span>{sprintf(__('Add %s', 'wp-sms'), schema.fieldGroups?.[0]?.label || __('Item', 'wp-sms'))}</span>
         </Button>
       </div>
     </FieldWrapper>

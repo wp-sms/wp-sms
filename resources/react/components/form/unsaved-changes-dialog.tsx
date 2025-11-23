@@ -24,10 +24,7 @@ export const UnsavedChangesDialog = ({ open, onStay, onDiscard }: UnsavedChanges
         <AlertDialogHeader>
           <AlertDialogTitle>{__('Leave without saving?', 'wp-sms')}</AlertDialogTitle>
           <AlertDialogDescription>
-            {__(
-              'You have unsaved changes on this page. If you leave now, your changes will be lost.',
-              'wp-sms'
-            )}
+            {__('You have unsaved changes on this page. If you leave now, your changes will be lost.', 'wp-sms')}
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

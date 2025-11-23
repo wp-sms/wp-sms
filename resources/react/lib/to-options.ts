@@ -1,6 +1,6 @@
 import type { FieldOption } from '@/types/settings/group-schema'
 
-type Options = FieldOption | ({ value: string; label: string; icon?: string } | { [key: string]: string })[]
+type Options = FieldOption | (string | { value: string; label: string; icon?: string } | { [key: string]: string })[]
 
 export function toOptions(
   data: Options
@@ -21,7 +21,7 @@ export function toOptions(
         return {
           value: key,
           label: objValue.label,
-          icon: objValue.icon,
+          ...(objValue.icon && { icon: objValue.icon }),
         }
       }
 
@@ -35,7 +35,7 @@ export function toOptions(
             return {
               value: k,
               label: childValue.label,
-              icon: childValue.icon,
+              ...(childValue.icon && { icon: childValue.icon }),
             }
           }
           return {
@@ -60,14 +60,23 @@ export function toOptions(
   // Handle array format
   if (Array.isArray(data)) {
     return data?.map((opt) => {
+      // Handle string array items
+      if (typeof opt === 'string') {
+        return {
+          value: opt,
+          label: opt,
+        }
+      }
+
+      // Handle object array items
       const optionValue = opt.value || Object.keys(opt)[0]
       const optionLabel = opt.label || Object.values(opt)[0]
-      const optionIcon = 'icon' in opt ? opt.icon : undefined
+      const optionIcon = 'icon' in opt ? (opt as { icon?: string }).icon : undefined
 
       return {
         value: optionValue,
         label: optionLabel,
-        icon: optionIcon,
+        ...(optionIcon && { icon: optionIcon }),
       }
     })
   }

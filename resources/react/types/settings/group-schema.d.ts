@@ -10,7 +10,7 @@ type GetGroupSchemaParams = {
 }
 
 type FieldOption = {
-  [key: string]: string | { [key: string]: string }
+  [key: string]: string | { label: string; icon?: string } | { [key: string]: string }
 }
 
 type SchemaFieldType =
@@ -90,9 +90,9 @@ type SchemaSection = {
   order: number
   readOnly: boolean
   subtitle: string
-  tag: string | null
+  tag: string | string[] | null
   title: string
-  hasInnerNotice: boolean
+  hasNotice: boolean
 }
 
 type GroupSchema = {

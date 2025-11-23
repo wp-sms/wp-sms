@@ -9,6 +9,7 @@ import type { SchemaField } from '@/types/settings/group-schema'
 import { shouldShowField } from '@/utils/conditional-field-logic'
 
 import { Button } from '../ui/button'
+import { Skeleton } from '../ui/skeleton'
 
 interface FieldRendererProps {
   schema: SchemaField
@@ -103,6 +104,16 @@ const ConditionalRenderer = ({ form, schema, children }: ConditionalRendererProp
   return <>{children}</>
 }
 
+const FieldSkeleton = () => {
+  return (
+    <div className="flex flex-col gap-y-1.5 w-full">
+      <Skeleton className="h-4 w-40 rounded-sm" />
+      <Skeleton className="h-9 w-full rounded-md" />
+      <Skeleton className="h-3.5 w-64 rounded-sm" />
+    </div>
+  )
+}
+
 export const FieldRenderer = withForm({
   props: {
     schema: {} as SchemaField,
@@ -157,7 +168,9 @@ export const FieldRenderer = withForm({
           )
 
         case 'tel':
-          return <form.AppField name={schema.key} children={(field) => <field.TelField schema={schema} form={form} />} />
+          return (
+            <form.AppField name={schema.key} children={(field) => <field.TelField schema={schema} form={form} />} />
+          )
 
         case 'image':
           return <form.AppField name={schema.key} children={(field) => <field.ImageField schema={schema} />} />
@@ -174,7 +187,7 @@ export const FieldRenderer = withForm({
       <ConditionalRenderer form={form} schema={schema}>
         <AutoSaveWrapper form={form} schema={schema} onSubmit={onSubmit}>
           <div className="flex items-center gap-2">
-            <Suspense>
+            <Suspense fallback={<FieldSkeleton />}>
               <div className="flex-1">{renderFieldContent()}</div>
               {hasSubFields && onOpenSubFields && (
                 <Button

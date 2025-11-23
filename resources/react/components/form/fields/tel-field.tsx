@@ -64,7 +64,13 @@ export const TelField = ({ schema, form }: TelFieldProps) => {
     const fieldValue = field.state.value
 
     // Only parse and split the number if we're showing the country picker
-    if (shouldShowCountryPicker && fieldValue && typeof fieldValue === 'string' && !initialized && countries.length > 0) {
+    if (
+      shouldShowCountryPicker &&
+      fieldValue &&
+      typeof fieldValue === 'string' &&
+      !initialized &&
+      countries.length > 0
+    ) {
       try {
         const phoneUtil = parsePhoneNumber(fieldValue)
         if (phoneUtil?.countryCallingCode && phoneUtil?.nationalNumber) {

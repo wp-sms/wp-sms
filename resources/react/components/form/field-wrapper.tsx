@@ -19,7 +19,10 @@ export const FieldWrapper = ({
     <div className={clsx('flex flex-col gap-1.5', schema.readonly && 'opacity-70')}>
       <div className="flex items-center gap-2">
         {schema.type !== 'checkbox' && (
-          <Label className={clsx(!!errors.length && 'text-destructive')} htmlFor={schema.key}>
+          <Label
+            className={clsx(!!errors.length && 'text-destructive', schema.readonly && 'opacity-50')}
+            htmlFor={schema.key}
+          >
             {schema.label}
           </Label>
         )}

@@ -21,7 +21,9 @@
     "watch": "npm run dev:legacy",
     "watch:legacy": "vite build --config vite.config.legacy.js --watch",
     "watch:react": "vite build --config vite.config.react.ts --watch",
-    "preview:react": "vite preview --config vite.config.react.ts"
+    "preview:react": "vite preview --config vite.config.react.ts",
+    "format:react": "prettier --write \"resources/react/**/*.{ts,tsx,js,jsx,json,css,scss,md}\" --config .prettierrc",
+    "format:react:check": "prettier --check \"resources/react/**/*.{ts,tsx,js,jsx,json,css,scss,md}\" --config .prettierrc"
   },
   "keywords": [],
   "author": "",

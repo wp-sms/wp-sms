@@ -1,5 +1,5 @@
-import { __ } from '@wordpress/i18n'
 import { useBlocker } from '@tanstack/react-router'
+import { __ } from '@wordpress/i18n'
 import { AlertCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
@@ -85,28 +85,34 @@ export const SchemaForm = ({ formSchema, defaultValues, onSubmit, onFieldAction 
       >
         <GroupTitle label={formSchema.label || ''} />
 
-        {formSchema.sections.map((section, index) => (
-          <Card key={`${section?.id}-${index}`} className="flex flex-col gap-y-8">
-            <CardHeader>
-              <CardTitle>
-                {section.title}
-                {section.tag && <TagBadge className="ms-2" tag={section.tag} />}
-              </CardTitle>
-              {section.subtitle && <CardDescription>{section.subtitle}</CardDescription>}
-            </CardHeader>
-            <CardContent className="flex flex-col gap-y-8">
-              {section.fields?.map((field) => (
-                <FieldRenderer
-                  key={field.key}
-                  form={form}
-                  schema={field}
-                  onOpenSubFields={onFieldAction}
-                  onSubmit={onSubmit}
-                />
-              ))}
-            </CardContent>
-          </Card>
-        ))}
+        {formSchema.sections.map((section, index) => {
+          if (section.hasNotice && section.fields[0]) {
+            return <FieldRenderer key={section.fields[0].key} form={form} schema={section.fields[0]} />
+          }
+
+          return (
+            <Card key={`${section?.id}-${index}`} className="flex flex-col gap-y-8">
+              <CardHeader>
+                <CardTitle>
+                  {section.title}
+                  {section.tag && <TagBadge className="ms-2" tag={section.tag} />}
+                </CardTitle>
+                {section.subtitle && <CardDescription>{section.subtitle}</CardDescription>}
+              </CardHeader>
+              <CardContent className="flex flex-col gap-y-8">
+                {section.fields?.map((field) => (
+                  <FieldRenderer
+                    key={field.key}
+                    form={form}
+                    schema={field}
+                    onOpenSubFields={onFieldAction}
+                    onSubmit={onSubmit}
+                  />
+                ))}
+              </CardContent>
+            </Card>
+          )
+        })}
 
         <form.AppForm>
           <form.FormActions />

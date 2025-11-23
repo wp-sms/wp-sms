@@ -1,5 +1,18 @@
 import { __ } from '@wordpress/i18n'
-import { AlertTriangle, Beaker, Calendar, Clock, Crown, FileText, HelpCircle, MessageCircle, ShoppingCart, Sparkles, TestTube, Users } from 'lucide-react'
+import {
+  AlertTriangle,
+  Beaker,
+  Calendar,
+  Clock,
+  Crown,
+  FileText,
+  HelpCircle,
+  MessageCircle,
+  ShoppingCart,
+  Sparkles,
+  TestTube,
+  Users,
+} from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 
@@ -21,7 +34,11 @@ const tagConfig = {
   fluentforms: { label: __('Fluent Forms', 'wp-sms'), color: 'bg-teal-100 text-teal-800', icon: FileText },
   fluentsupport: { label: __('Fluent Support', 'wp-sms'), color: 'bg-cyan-100 text-cyan-800', icon: HelpCircle },
   bookingcalendar: { label: __('Booking Calendar', 'wp-sms'), color: 'bg-cyan-100 text-cyan-800', icon: Calendar },
-  wooappointments: { label: __('WooCommerce Appointments', 'wp-sms'), color: 'bg-cyan-100 text-cyan-800', icon: Calendar },
+  wooappointments: {
+    label: __('WooCommerce Appointments', 'wp-sms'),
+    color: 'bg-cyan-100 text-cyan-800',
+    icon: Calendar,
+  },
   woobookings: { label: __('WooCommerce Bookings', 'wp-sms'), color: 'bg-cyan-100 text-cyan-800', icon: Calendar },
   bookingpress: { label: __('BookingPress', 'wp-sms'), color: 'bg-cyan-100 text-cyan-800', icon: Calendar },
 }
