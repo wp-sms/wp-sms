@@ -461,7 +461,7 @@ New styles for new version of the page
 
       &::after {
         content: "";
-        background: #fff url("../images/icons/next-step-outline.png") no-repeat center center / contain;
+        background: #fff url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjE5IiBoZWlnaHQ9IjE5IiB2aWV3Qm94PSIwIDAgMTkgMTkiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0xMi44Njc0IDYuODg0MDFMOC4wMzQ4OSAxMS43MTY2TDUuNzM0MzggOS40MTYwOCIgc3Ryb2tlPSIjRjM3MjMxIiBzdHJva2Utd2lkdGg9IjEuNiIgc3Ryb2tlLW1pdGVybGltaXQ9IjEwIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPHBhdGggZD0iTTE3LjgwMDggOS4zMDAwNUMxNy44MDA4IDEzLjk5NDUgMTMuOTk1MiAxNy44IDkuMzAwNzggMTcuOEM0LjYwNjM3IDE3LjggMC44MDA3ODEgMTMuOTk0NSAwLjgwMDc4MSA5LjMwMDA1QzAuODAwNzgxIDQuNjA1NjQgNC42MDYzNyAwLjgwMDA0OSA5LjMwMDc4IDAuODAwMDQ5QzEzLjk5NTIgMC44MDAwNDkgMTcuODAwOCA0LjYwNTY0IDE3LjgwMDggOS4zMDAwNVoiIHN0cm9rZT0iI0YzNzIzMSIgc3Ryb2tlLXdpZHRoPSIxLjYiIHN0cm9rZS1taXRlcmxpbWl0PSIxMCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjwvc3ZnPgo=") no-repeat center center / contain;
         width: 18px;
         height: 18px;
         position: absolute;
@@ -474,7 +474,7 @@ New styles for new version of the page
 
       &.passed::after,
       &.active::after {
-        background: #fff url("../images/icons/next-step-fill.png") no-repeat center center / contain;
+        background: #fff url("data:image/svg+xml;base64,Cjxzdmcgd2lkdGg9IjE4IiBoZWlnaHQ9IjE4IiB2aWV3Qm94PSIwIDAgMTggMTgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik05IDBDNC4wMzc1OSAwIDAgNC4wMzc1OSAwIDlDMCAxMy45NjI0IDQuMDM3NTkgMTggOSAxOEMxMy45NjI0IDE4IDE4IDEzLjk2MjQgMTggOUMxOCA0LjAzNzU5IDEzLjk2MjQgMCA5IDBaTTE0LjAzMDEgNi42MzE1OEw4LjI3ODIgMTIuMzM4M0M3LjkzOTg1IDEyLjY3NjcgNy4zOTg1IDEyLjY5OTIgNy4wMzc1OSAxMi4zNjA5TDMuOTkyNDggOS41ODY0N0MzLjYzMTU4IDkuMjQ4MTIgMy42MDkwMiA4LjY4NDIxIDMuOTI0ODEgOC4zMjMzMUM0LjI2MzE2IDcuOTYyNDEgNC44MjcwNyA3LjkzOTg1IDUuMTg3OTcgOC4yNzgyTDcuNjAxNSAxMC40ODg3TDEyLjc0NDQgNS4zNDU4NkMxMy4xMDUzIDQuOTg0OTYgMTMuNjY5MiA0Ljk4NDk2IDE0LjAzMDEgNS4zNDU4NkMxNC4zOTEgNS43MDY3NyAxNC4zOTEgNi4yNzA2OCAxNC4wMzAxIDYuNjMxNThaIiBmaWxsPSIjRjI2QzJEIi8+Cjwvc3ZnPgo=") no-repeat center center / contain;
        }
 
       &.active {
