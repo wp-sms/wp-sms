@@ -126,6 +126,7 @@ All premium features + all add-ons in one package.
 - **Enhancement:** Updated libraries and cleaned up assets.
 - **Fix:** Fixed incorrect changelog URL links in add-ons.
 - **Fix:** Fixed connection status display and moved the Connection Status section below the Gateway Guide for improved UI
+- **Fix:** Fixed SCSS Compilation Error in mail.css
 
 = v7.0.4 - 2025-11-02 =
 - **New:** Added support for the SMS.es gateway.
