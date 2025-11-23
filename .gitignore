@@ -39,9 +39,8 @@ frontend/build
 frontend/build-legacy
 
 # Build Folders (new structure)
-/public/legacy
-/public/react
-/public/blocks
+public/*
+!public/.gitkeep
 
 # Old build folder
 /build
