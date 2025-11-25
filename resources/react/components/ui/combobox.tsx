@@ -58,6 +58,8 @@ export function Combobox({
 
   const [internalValue, setInternalValue] = useState(getFirstOptionValue())
   const commandListRef = useRef<HTMLDivElement>(null)
+  const triggerRef = useRef<HTMLButtonElement>(null)
+  const [triggerWidth, setTriggerWidth] = useState<number | undefined>(undefined)
 
   const isControlled = controlledValue !== undefined
   const value = isControlled ? controlledValue || getFirstOptionValue() : internalValue
@@ -83,6 +85,12 @@ export function Combobox({
     }
     return null
   }
+
+  useEffect(() => {
+    if (triggerRef.current) {
+      setTriggerWidth(triggerRef.current.offsetWidth)
+    }
+  }, [open])
 
   useEffect(() => {
     if (open && value) {
@@ -116,6 +124,7 @@ export function Combobox({
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
+            ref={triggerRef}
             variant="outline"
             role="combobox"
             aria-expanded={open}
@@ -136,8 +145,36 @@ export function Combobox({
             <ChevronDownIcon className="ml-auto size-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent align="start" className={cn('w-full p-0', contentClassName)}>
-          <Command defaultValue={value}>
+        <PopoverContent
+          align="start"
+          className={cn('p-0', contentClassName)}
+          style={{ width: triggerWidth ? `${triggerWidth}px` : undefined }}
+        >
+          <Command
+            defaultValue={value}
+            filter={(value, search) => {
+              // Find the option by value
+              const findOption = (val: string): ComboboxOption | null => {
+                for (const opt of options) {
+                  if (opt.value === val) return opt
+                  if (opt.children) {
+                    const child = opt.children.find((c) => c.value === val)
+                    if (child) return child
+                  }
+                }
+                return null
+              }
+
+              const option = findOption(value)
+              if (!option) return 0
+
+              // Case-insensitive substring match on label
+              const label = option.label.toLowerCase()
+              const searchLower = search.toLowerCase()
+
+              return label.includes(searchLower) ? 1 : 0
+            }}
+          >
             {options.length > 10 && <CommandInput placeholder={searchPlaceholder} />}
             <CommandList ref={commandListRef}>
               <CommandEmpty>{emptyMessage}</CommandEmpty>
@@ -149,6 +186,7 @@ export function Combobox({
                         <CommandItem
                           key={`group-combobox-item-${child.value}-${j}`}
                           value={child.value}
+                          keywords={[child.label]}
                           data-combobox-value={child.value}
                           onSelect={(currentValue) => {
                             const newValue = currentValue === value ? '' : currentValue
@@ -172,6 +210,7 @@ export function Combobox({
                     <CommandItem
                       key={`combobox-item-${option.value}-${index}`}
                       value={option.value}
+                      keywords={[option.label]}
                       data-combobox-value={option.value}
                       onSelect={(currentValue) => {
                         const newValue = currentValue === value ? '' : currentValue
