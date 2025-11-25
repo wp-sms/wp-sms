@@ -31,7 +31,7 @@ class Logger
             $to = [$to];
         }
 
-        $result = '';
+        $result = null;
         $store  = Option::getOption('store_outbox_messages');
 
         if ($store) {
