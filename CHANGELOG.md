@@ -1,6 +1,7 @@
 = v7.1 - 2025-11-x =
 - **New:** Introduced Notifications to receive important updates and promotions.
 - **Enhancement:** Updated PHP requirement to version 7.2.
+- **New:** Added settings for message storage and retention in Outbox and Inbox under "Message Storage & Cleanup".
 
 = v7.0.5 - 2025-11-13 =
 - **Enhancement:** Repositioned the "All-in-One Required" label to the top of the PRO gateway onboarding table for better visibility.

@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Components;
 
+use WP_SMS\Option;
+
 class Logger
 {
     /**
@@ -15,6 +17,8 @@ class Logger
      */
     public static function logOutbox($sender, $message, $to, $response, $status = 'success', $media = array())
     {
+        global $wpdb;
+
         /**
          * Backward compatibility
          * @todo Remove this if the length of the sender is increased in database
@@ -27,16 +31,20 @@ class Logger
             $to = [$to];
         }
 
-        global $wpdb;
-        $result = $wpdb->insert($wpdb->prefix . "sms_send", array(
-            'date'      => WP_SMS_CURRENT_DATE,
-            'sender'    => $sender,
-            'message'   => $message,
-            'recipient' => implode(',', $to),
-            'response'  => var_export($response, true),
-            'media'     => serialize($media),
-            'status'    => $status,
-        ));
+        $result = '';
+        $store  = Option::getOption('store_outbox_messages');
+
+        if ($store) {
+            $result = $wpdb->insert($wpdb->prefix . "sms_send", array(
+                'date'      => WP_SMS_CURRENT_DATE,
+                'sender'    => $sender,
+                'message'   => $message,
+                'recipient' => implode(',', $to),
+                'response'  => var_export($response, true),
+                'media'     => serialize($media),
+                'status'    => $status,
+            ));
+        }
 
         /**
          * Fire after send sms

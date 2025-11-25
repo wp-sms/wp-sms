@@ -24,6 +24,7 @@ class Uninstall
             'wp_sms_check_update_licenses_status',
             'wp_sms_admin_email_report',
             'wp_sms_daily_cron_hook',
+            'wp_sms_midnight_cron_hook',
         );
 
         foreach ($wpSmsCronEvents as $event) {
