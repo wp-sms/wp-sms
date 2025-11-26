@@ -2,14 +2,14 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WSMS (formerly WP SMS) 7.0.7\n"
+"Project-Id-Version: WSMS (formerly WP SMS) 7.0.9\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-sms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-11-23T06:25:38+00:00\n"
+"POT-Creation-Date: 2025-11-26T16:36:07+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wp-sms\n"
@@ -39,374 +39,382 @@ msgstr ""
 msgid "https://veronalabs.com/"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:50
-#: src/Admin/AdminManager.php:55
-#, php-format
-msgid "Please rate <strong>WP SMS</strong> <a href=\"%s\" aria-label=\"%s\" title=\"%s\" target=\"_blank\">★★★★★ %s</a> to help us spread the word. Thank you!"
-msgstr ""
-
+#. translators: 1: URL to review page 2: aria-label text 3: title text 4: link text
 #: includes/admin/class-wpsms-admin.php:52
-#: src/Admin/AdminManager.php:57
-msgid "Rate WP SMS with five stars on WordPress.org"
-msgstr ""
-
-#: includes/admin/class-wpsms-admin.php:53
 #: src/Admin/AdminManager.php:58
-msgid "Rate WP SMS"
+#, php-format
+msgid "Please rate <strong>WP SMS</strong> <a href=\"%1$s\" aria-label=\"%2$s\" title=\"%3$s\" target=\"_blank\">%4$s</a> to help us spread the word. Thank you!"
 msgstr ""
 
 #: includes/admin/class-wpsms-admin.php:54
-#: src/Admin/AdminManager.php:59
+#: src/Admin/AdminManager.php:60
+msgid "Rate WP SMS with five stars on WordPress.org"
+msgstr ""
+
+#: includes/admin/class-wpsms-admin.php:55
+#: src/Admin/AdminManager.php:61
+msgid "Rate WP SMS"
+msgstr ""
+
+#: includes/admin/class-wpsms-admin.php:56
+#: src/Admin/AdminManager.php:62
 msgid "on WordPress.org"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:68
-#: src/Admin/AdminManager.php:73
+#: includes/admin/class-wpsms-admin.php:70
+#: src/Admin/AdminManager.php:76
 msgid "WordPress"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:189
+#: includes/admin/class-wpsms-admin.php:71
+#: includes/templates/chatbox.php:114
+#: src/Admin/SiteHealthInfo.php:25
+#: src/Blocks/BlockAssetsManager.php:48
+msgid "WP SMS"
+msgstr ""
+
+#: includes/admin/class-wpsms-admin.php:191
 msgid "Send SMS?"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:190
+#: includes/admin/class-wpsms-admin.php:192
 msgid "The SMS will be sent if the <b>Note to the customer</b> is selected."
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:193
+#: includes/admin/class-wpsms-admin.php:195
 msgid "Edit Subscriber"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:194
+#: includes/admin/class-wpsms-admin.php:196
 msgid "Edit Group"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:201
+#: includes/admin/class-wpsms-admin.php:203
 msgid "characters"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:232
+#: includes/admin/class-wpsms-admin.php:234
 msgid "View Details"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:233
+#: includes/admin/class-wpsms-admin.php:235
 msgid "Reload"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:234
+#: includes/admin/class-wpsms-admin.php:236
 msgid "Online Visitors"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:235
+#: includes/admin/class-wpsms-admin.php:237
 msgid "Realtime"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:236
-#: includes/admin/class-wpsms-admin.php:262
+#: includes/admin/class-wpsms-admin.php:238
+#: includes/admin/class-wpsms-admin.php:264
 msgid "Visitors"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:237
-#: includes/admin/class-wpsms-admin.php:272
+#: includes/admin/class-wpsms-admin.php:239
+#: includes/admin/class-wpsms-admin.php:274
 msgid "Views"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:238
+#: includes/admin/class-wpsms-admin.php:240
 msgid "Today"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:239
+#: includes/admin/class-wpsms-admin.php:241
 msgid "Yesterday"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:240
-#: includes/admin/class-wpsms-admin.php:246
+#: includes/admin/class-wpsms-admin.php:242
+#: includes/admin/class-wpsms-admin.php:248
 #: includes/templates/admin/dashboard-widget.php:9
 msgid "Last 7 days"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:241
+#: includes/admin/class-wpsms-admin.php:243
 msgid "This week"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:242
+#: includes/admin/class-wpsms-admin.php:244
 msgid "Last week"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:243
-#: includes/admin/class-wpsms-admin.php:247
+#: includes/admin/class-wpsms-admin.php:245
+#: includes/admin/class-wpsms-admin.php:249
 #: includes/templates/admin/dashboard-widget.php:10
 msgid "Last 30 days"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:244
+#: includes/admin/class-wpsms-admin.php:246
 msgid "This month"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:245
+#: includes/admin/class-wpsms-admin.php:247
 msgid "Last month"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:248
+#: includes/admin/class-wpsms-admin.php:250
 msgid "Last 60 days"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:249
+#: includes/admin/class-wpsms-admin.php:251
 msgid "Last 90 days"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:250
+#: includes/admin/class-wpsms-admin.php:252
 msgid "Last 6 months"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:251
+#: includes/admin/class-wpsms-admin.php:253
 msgid "Last 12 months"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:252
+#: includes/admin/class-wpsms-admin.php:254
 msgid "This year (Jan-Today)"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:253
+#: includes/admin/class-wpsms-admin.php:255
 msgid "Last year"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:254
+#: includes/admin/class-wpsms-admin.php:256
 #: includes/templates/email/partials/report-data.php:61
 #: includes/templates/email/partials/report-data.php:90
 #: includes/templates/email/partials/report-data.php:115
 msgid "Total"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:255
+#: includes/admin/class-wpsms-admin.php:257
 msgid "Daily Total"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:256
-#: includes/admin/outbox/class-wpsms-outbox.php:126
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:129
+#: includes/admin/class-wpsms-admin.php:258
+#: includes/admin/outbox/class-wpsms-outbox.php:127
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:130
 msgid "Date"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:257
+#: includes/admin/class-wpsms-admin.php:259
 msgid "Time"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:258
+#: includes/admin/class-wpsms-admin.php:260
 msgid "Browsers"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:259
+#: includes/admin/class-wpsms-admin.php:261
 msgid "#"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:260
+#: includes/admin/class-wpsms-admin.php:262
 msgid "Country Flag"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:261
+#: includes/admin/class-wpsms-admin.php:263
 msgid "Country"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:263
+#: includes/admin/class-wpsms-admin.php:265
 #: includes/templates/admin/group-form.php:9
 msgid "ID"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:264
+#: includes/admin/class-wpsms-admin.php:266
 msgid "Page"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:265
+#: includes/admin/class-wpsms-admin.php:267
 msgid "Page Link"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:266
+#: includes/admin/class-wpsms-admin.php:268
 msgid "Domain Address"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:267
+#: includes/admin/class-wpsms-admin.php:269
 msgid "Search Term"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:268
+#: includes/admin/class-wpsms-admin.php:270
 msgid "Visitor's Browser"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:269
+#: includes/admin/class-wpsms-admin.php:271
 msgid "Visitor's City"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:270
+#: includes/admin/class-wpsms-admin.php:272
 msgid "IP Address/Hash"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:271
+#: includes/admin/class-wpsms-admin.php:273
 msgid "Referring Site"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:273
+#: includes/admin/class-wpsms-admin.php:275
 msgid "User Agent"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:274
+#: includes/admin/class-wpsms-admin.php:276
 msgid "Operating System"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:275
+#: includes/admin/class-wpsms-admin.php:277
 msgid "Browser/OS Version"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:276
+#: includes/admin/class-wpsms-admin.php:278
 msgid "Visited Page"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:277
+#: includes/admin/class-wpsms-admin.php:279
 msgid "Your WP SMS settings are privacy-compliant."
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:278
+#: includes/admin/class-wpsms-admin.php:280
 msgid "Your WP SMS settings are not privacy-compliant. Please update your settings."
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:279
+#: includes/admin/class-wpsms-admin.php:281
 msgid "No recent data available."
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:280
+#: includes/admin/class-wpsms-admin.php:282
 msgid "Published"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:281
+#: includes/admin/class-wpsms-admin.php:283
 msgid "Author"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:282
+#: includes/admin/class-wpsms-admin.php:284
 msgid "View Detailed Analytics"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:283
+#: includes/admin/class-wpsms-admin.php:285
 msgid "Enable Now"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:284
+#: includes/admin/class-wpsms-admin.php:286
 msgid "Receive Weekly Email Reports"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:285
+#: includes/admin/class-wpsms-admin.php:287
 msgid "Close"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:286
+#: includes/admin/class-wpsms-admin.php:288
 msgid "Previous period"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:287
+#: includes/admin/class-wpsms-admin.php:289
 msgid "View Content"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:288
+#: includes/admin/class-wpsms-admin.php:290
 msgid "Downloading"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:289
-#: src/Admin/LicenseManagement/Plugin/PluginDecorator.php:157
+#: includes/admin/class-wpsms-admin.php:291
+#: src/Admin/LicenseManagement/Plugin/PluginDecorator.php:159
 #: views/components/addon-active-card.php:28
 msgid "Activated"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:290
+#: includes/admin/class-wpsms-admin.php:292
 #: includes/admin/settings/class-wpsms-settings.php:2239
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:96
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:97
 #: includes/class-wpsms-gateway.php:975
 #: includes/templates/admin/subscriber-form.php:57
 #: includes/templates/admin/subscriber-form.php:60
 #: includes/templates/email/partials/report-data.php:74
-#: src/Admin/SiteHealthInfo.php:106
-#: src/Controller/OnBoardingTestGateway.php:63
+#: src/Admin/SiteHealthInfo.php:108
+#: src/Controller/OnBoardingTestGateway.php:65
 msgid "Active"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:291
+#: includes/admin/class-wpsms-admin.php:293
 msgid "Activating"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:292
+#: includes/admin/class-wpsms-admin.php:294
 #: views/components/addon-download-card.php:39
 msgid "Already installed"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:293
+#: includes/admin/class-wpsms-admin.php:295
 msgid "Installed"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:294
-#: includes/admin/outbox/class-wpsms-outbox.php:79
+#: includes/admin/class-wpsms-admin.php:296
+#: includes/admin/outbox/class-wpsms-outbox.php:80
 #: includes/templates/email/partials/report-data.php:107
-#: src/Widget/Widgets/StatsWidget.php:148
+#: src/Widget/Widgets/StatsWidget.php:150
 #: views/components/addon-active-card.php:26
 msgid "Failed"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:295
+#: includes/admin/class-wpsms-admin.php:297
 #: views/components/addon-active-card.php:34
 msgid "Retry"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:296
+#: includes/admin/class-wpsms-admin.php:298
 msgid "Redirecting... Please wait"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:297
+#: includes/admin/class-wpsms-admin.php:299
 #: views/components/addon-box.php:69
 msgid "Update License"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:298
+#: includes/admin/class-wpsms-admin.php:300
 msgid "Please select the group(s) ..."
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:299
+#: includes/admin/class-wpsms-admin.php:301
 msgid "No results found"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:300
+#: includes/admin/class-wpsms-admin.php:302
 msgid "Please fix the highlighted field(s) below."
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:301
+#: includes/admin/class-wpsms-admin.php:303
 msgid "Search ..."
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:302
+#: includes/admin/class-wpsms-admin.php:304
 msgid "Users have the mobile number."
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:329
-#: includes/admin/class-wpsms-admin.php:362
+#: includes/admin/class-wpsms-admin.php:331
+#: includes/admin/class-wpsms-admin.php:364
 #: includes/class-front.php:80
 #: includes/class-wpsms-gateway.php:491
-#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:48
+#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:50
 #: includes/templates/admin/fields/field-team-member-repeater.php:42
 #: includes/templates/admin/fields/field-team-member-repeater.php:86
 #: includes/templates/admin/user-profile-fields.php:2
-#: src/Utils/MenuUtil.php:259
+#: src/Utils/MenuUtil.php:261
 msgid "SMS"
 msgstr ""
 
 #. translators: %s: Number of subscribers
-#: includes/admin/class-wpsms-admin.php:344
+#: includes/admin/class-wpsms-admin.php:346
 #, php-format
 msgid "%s Subscriber"
 msgstr ""
 
 #. translators: %s: SMS credit
-#: includes/admin/class-wpsms-admin.php:347
+#: includes/admin/class-wpsms-admin.php:349
 #, php-format
 msgid "%s SMS Credit"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:363
+#: includes/admin/class-wpsms-admin.php:365
 #: includes/admin/settings/class-wpsms-settings.php:438
 #: includes/admin/settings/class-wpsms-settings.php:456
 #: includes/admin/settings/class-wpsms-settings.php:474
@@ -428,111 +436,111 @@ msgstr ""
 #: includes/admin/settings/class-wpsms-settings.php:959
 #: includes/templates/admin/order-view-metabox.php:37
 #: includes/templates/admin/send-sms.php:23
-#: includes/templates/admin/send-sms.php:264
+#: includes/templates/admin/send-sms.php:268
 #: includes/templates/header.php:46
 #: includes/templates/send-sms-form.php:23
-#: src/Services/WooCommerce/OrderViewManager.php:25
-#: src/Utils/MenuUtil.php:258
+#: src/Services/WooCommerce/OrderViewManager.php:27
+#: src/Utils/MenuUtil.php:260
 msgid "Send SMS"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:365
+#: includes/admin/class-wpsms-admin.php:367
 #: includes/templates/header.php:48
 #: includes/templates/header.php:70
-#: src/Utils/MenuUtil.php:268
-#: src/Utils/MenuUtil.php:269
+#: src/Utils/MenuUtil.php:270
+#: src/Utils/MenuUtil.php:271
 msgid "Outbox"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:366
+#: includes/admin/class-wpsms-admin.php:368
 #: includes/templates/header.php:47
-#: src/Utils/MenuUtil.php:277
-#: src/Utils/MenuUtil.php:278
+#: src/Utils/MenuUtil.php:279
+#: src/Utils/MenuUtil.php:280
 msgid "Inbox"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:368
+#: includes/admin/class-wpsms-admin.php:370
 #: includes/admin/settings/class-wpsms-settings.php:1891
 #: includes/templates/admin/send-sms.php:47
 #: includes/templates/admin/subscribers.php:12
 #: includes/templates/meta-box.php:14
-#: src/Utils/MenuUtil.php:286
-#: src/Utils/MenuUtil.php:287
+#: src/Utils/MenuUtil.php:288
+#: src/Utils/MenuUtil.php:289
 msgid "Subscribers"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:369
+#: includes/admin/class-wpsms-admin.php:371
 #: includes/templates/admin/groups.php:10
-#: src/Utils/MenuUtil.php:295
-#: src/Utils/MenuUtil.php:296
+#: src/Utils/MenuUtil.php:297
+#: src/Utils/MenuUtil.php:298
 msgid "Groups"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:373
+#: includes/admin/class-wpsms-admin.php:375
 #: includes/admin/privacy/class-wpsms-privacy.php:22
-#: src/Utils/MenuUtil.php:304
-#: src/Utils/MenuUtil.php:305
+#: src/Utils/MenuUtil.php:306
+#: src/Utils/MenuUtil.php:307
 msgid "Privacy"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:376
-#: includes/admin/class-wpsms-admin.php:377
+#: includes/admin/class-wpsms-admin.php:378
+#: includes/admin/class-wpsms-admin.php:379
 #: includes/templates/header.php:54
 #: includes/templates/header.php:72
-#: src/Services/Hooks/HooksManager.php:33
-#: src/Utils/MenuUtil.php:313
-#: src/Utils/MenuUtil.php:314
+#: src/Services/Hooks/HooksManager.php:35
+#: src/Utils/MenuUtil.php:315
+#: src/Utils/MenuUtil.php:316
 #: views/components/addon-active-card.php:47
 #: views/components/addon-box.php:52
-#: views/templates/header.php:37
-#: views/templates/header.php:63
+#: views/templates/header.php:39
+#: views/templates/header.php:70
 #: assets/blocks/SendSms/index.js:1
 #: assets/src/blocks/SendSms/edit.js:51
 msgid "Settings"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:379
 #: includes/admin/class-wpsms-admin.php:381
+#: includes/admin/class-wpsms-admin.php:383
 #: includes/admin/settings/class-wpsms-settings.php:185
 #: includes/templates/header.php:49
 #: includes/templates/header.php:71
-#: src/Utils/MenuUtil.php:322
-#: src/Utils/MenuUtil.php:323
+#: src/Utils/MenuUtil.php:324
+#: src/Utils/MenuUtil.php:325
 #: views/pages/onboarding/steps/ready.php:48
 msgid "Integrations"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:473
-#: includes/admin/class-wpsms-admin.php:488
-#: includes/admin/class-wpsms-admin.php:503
-#: includes/admin/class-wpsms-admin.php:519
+#: includes/admin/class-wpsms-admin.php:475
+#: includes/admin/class-wpsms-admin.php:495
+#: includes/admin/class-wpsms-admin.php:510
+#: includes/admin/class-wpsms-admin.php:530
 msgid "Number of items per page"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:550
-#: includes/admin/class-wpsms-admin.php:551
+#: includes/admin/class-wpsms-admin.php:564
+#: includes/admin/class-wpsms-admin.php:565
 msgid "Click here to rate and review this plugin on WordPress.org"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:550
+#: includes/admin/class-wpsms-admin.php:564
 msgid "Rate this plugin"
 msgstr ""
 
-#: includes/admin/class-wpsms-admin.php:551
+#: includes/admin/class-wpsms-admin.php:565
 msgid "Subscribe to our Email Newsletter"
 msgstr ""
 
-#: includes/admin/groups/class-wpsms-groups-table.php:75
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:77
+#: includes/admin/groups/class-wpsms-groups-table.php:76
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:78
 msgid "Edit"
 msgstr ""
 
-#: includes/admin/groups/class-wpsms-groups-table.php:83
-#: includes/admin/groups/class-wpsms-groups-table.php:134
-#: includes/admin/outbox/class-wpsms-outbox.php:95
-#: includes/admin/outbox/class-wpsms-outbox.php:151
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:78
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:159
+#: includes/admin/groups/class-wpsms-groups-table.php:84
+#: includes/admin/groups/class-wpsms-groups-table.php:135
+#: includes/admin/outbox/class-wpsms-outbox.php:96
+#: includes/admin/outbox/class-wpsms-outbox.php:152
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:79
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:160
 #: includes/templates/admin/fields/field-resource-link-repeater.php:20
 #: includes/templates/admin/fields/field-resource-link-repeater.php:36
 #: includes/templates/admin/fields/field-team-member-repeater.php:52
@@ -543,12 +551,12 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
-#: includes/admin/groups/class-wpsms-groups-table.php:113
+#: includes/admin/groups/class-wpsms-groups-table.php:114
 msgid "Group ID"
 msgstr ""
 
-#: includes/admin/groups/class-wpsms-groups-table.php:114
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:126
+#: includes/admin/groups/class-wpsms-groups-table.php:115
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:127
 #: includes/templates/admin/group-form.php:6
 #: includes/templates/admin/group-form.php:7
 #: includes/templates/admin/subscriber-form.php:10
@@ -556,85 +564,85 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: includes/admin/groups/class-wpsms-groups-table.php:115
+#: includes/admin/groups/class-wpsms-groups-table.php:116
 msgid "Total subscribers"
 msgstr ""
 
-#: includes/admin/groups/class-wpsms-groups-table.php:160
-#: includes/admin/groups/class-wpsms-groups-table.php:179
+#: includes/admin/groups/class-wpsms-groups-table.php:166
+#: includes/admin/groups/class-wpsms-groups-table.php:185
 #: includes/admin/groups/class-wpsms-groups.php:26
 #: includes/admin/groups/class-wpsms-groups.php:40
-#: includes/admin/outbox/class-wpsms-outbox.php:174
-#: includes/admin/outbox/class-wpsms-outbox.php:192
-#: includes/admin/outbox/class-wpsms-outbox.php:209
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:195
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:211
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:224
+#: includes/admin/outbox/class-wpsms-outbox.php:181
+#: includes/admin/outbox/class-wpsms-outbox.php:199
+#: includes/admin/outbox/class-wpsms-outbox.php:216
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:202
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:218
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:231
 #: includes/admin/subscribers/class-wpsms-subscribers.php:41
 #: includes/admin/subscribers/class-wpsms-subscribers.php:60
 #: includes/class-wpsms-newsletter.php:67
-#: src/Controller/AjaxControllerAbstract.php:39
+#: src/Controller/AjaxControllerAbstract.php:41
 msgid "Access denied."
 msgstr ""
 
-#: includes/admin/groups/class-wpsms-groups-table.php:171
-#: includes/admin/outbox/class-wpsms-outbox.php:184
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:205
+#: includes/admin/groups/class-wpsms-groups-table.php:177
+#: includes/admin/outbox/class-wpsms-outbox.php:191
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:212
 msgid "Items removed."
 msgstr ""
 
-#: includes/admin/groups/class-wpsms-groups-table.php:188
-#: includes/admin/outbox/class-wpsms-outbox.php:200
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:219
+#: includes/admin/groups/class-wpsms-groups-table.php:194
+#: includes/admin/outbox/class-wpsms-outbox.php:207
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:226
 msgid "Item removed."
 msgstr ""
 
 #. translators: %1$s: Date, %2$s: Time
-#: includes/admin/outbox/class-wpsms-outbox.php:46
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:60
+#: includes/admin/outbox/class-wpsms-outbox.php:47
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:61
 #, php-format
 msgid "%1$s <span class=\"wpsms-time\">%2$s</span>"
 msgstr ""
 
-#: includes/admin/outbox/class-wpsms-outbox.php:52
+#: includes/admin/outbox/class-wpsms-outbox.php:53
 msgid "View more..."
 msgstr ""
 
-#: includes/admin/outbox/class-wpsms-outbox.php:79
+#: includes/admin/outbox/class-wpsms-outbox.php:80
 msgid "Success"
 msgstr ""
 
-#: includes/admin/outbox/class-wpsms-outbox.php:82
+#: includes/admin/outbox/class-wpsms-outbox.php:83
 #: includes/templates/email/partials/sms-delivery-issue.php:8
 msgid "API Response"
 msgstr ""
 
-#: includes/admin/outbox/class-wpsms-outbox.php:94
+#: includes/admin/outbox/class-wpsms-outbox.php:95
 msgid "Resend"
 msgstr ""
 
-#: includes/admin/outbox/class-wpsms-outbox.php:125
-#: includes/gateways/class-wpsms-gateway-octopush.php:42
+#: includes/admin/outbox/class-wpsms-outbox.php:126
+#: includes/gateways/class-wpsms-gateway-octopush.php:44
 msgid "Sender"
 msgstr ""
 
-#: includes/admin/outbox/class-wpsms-outbox.php:127
+#: includes/admin/outbox/class-wpsms-outbox.php:128
 #: includes/templates/admin/order-view-metabox.php:22
 #: includes/templates/admin/quick-reply.php:25
-#: includes/templates/admin/send-sms.php:150
+#: includes/templates/admin/send-sms.php:154
 #: includes/templates/send-sms-form.php:28
 msgid "Message"
 msgstr ""
 
-#: includes/admin/outbox/class-wpsms-outbox.php:128
+#: includes/admin/outbox/class-wpsms-outbox.php:129
 msgid "Recipient"
 msgstr ""
 
-#: includes/admin/outbox/class-wpsms-outbox.php:129
+#: includes/admin/outbox/class-wpsms-outbox.php:130
 msgid "Media"
 msgstr ""
 
-#: includes/admin/outbox/class-wpsms-outbox.php:130
+#: includes/admin/outbox/class-wpsms-outbox.php:131
 #: includes/admin/settings/class-wpsms-settings.php:344
 #: includes/admin/settings/class-wpsms-settings.php:378
 #: includes/admin/settings/class-wpsms-settings.php:420
@@ -649,15 +657,15 @@ msgstr ""
 #: includes/admin/settings/class-wpsms-settings.php:2031
 #: includes/admin/settings/class-wpsms-settings.php:2053
 #: includes/admin/settings/class-wpsms-settings.php:2086
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:131
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:132
 #: includes/templates/admin/subscriber-form.php:54
 #: includes/templates/email/partials/report-data.php:48
-#: src/Services/Formidable/FormidableManager.php:47
-#: views/pages/onboarding/steps/configuration.php:90
+#: src/Services/Formidable/FormidableManager.php:49
+#: views/pages/onboarding/steps/configuration.php:93
 msgid "Status"
 msgstr ""
 
-#: includes/admin/outbox/class-wpsms-outbox.php:224
+#: includes/admin/outbox/class-wpsms-outbox.php:231
 msgid "The SMS sent successfully."
 msgstr ""
 
@@ -709,12 +717,12 @@ msgid "Ultimate Member"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:174
-#: src/Services/Report/EmailReportGenerator.php:118
+#: src/Services/Report/EmailReportGenerator.php:120
 msgid "General"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:175
-#: src/Admin/OnBoarding/Steps/SmsGateway.php:59
+#: src/Admin/OnBoarding/Steps/SmsGateway.php:62
 msgid "SMS Gateway"
 msgstr ""
 
@@ -761,7 +769,7 @@ msgid "All"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:339
-#: src/Admin/SiteHealthInfo.php:216
+#: src/Admin/SiteHealthInfo.php:218
 msgid "Login With SMS"
 msgstr ""
 
@@ -799,8 +807,8 @@ msgstr ""
 #: includes/templates/meta-box.php:80
 #: includes/templates/wpcf7-form.php:50
 #: includes/templates/wpcf7-form.php:74
-#: src/Services/Forminator/ForminatorManager.php:64
-#: src/Services/Forminator/ForminatorManager.php:88
+#: src/Services/Forminator/ForminatorManager.php:66
+#: src/Services/Forminator/ForminatorManager.php:90
 msgid "Message body"
 msgstr ""
 
@@ -823,7 +831,7 @@ msgid "If a user logs in with SMS and does not have an existing account, a new a
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:373
-#: src/Admin/SiteHealthInfo.php:223
+#: src/Admin/SiteHealthInfo.php:225
 msgid "Two-Factor Authentication with SMS"
 msgstr ""
 
@@ -938,8 +946,8 @@ msgstr ""
 #: includes/admin/settings/class-wpsms-settings.php:1057
 #: includes/admin/settings/class-wpsms-settings.php:1086
 #: includes/admin/settings/class-wpsms-settings.php:1169
-#: src/Services/Formidable/FormidableManager.php:55
-#: src/Services/Forminator/ForminatorManager.php:100
+#: src/Services/Formidable/FormidableManager.php:57
+#: src/Services/Forminator/ForminatorManager.php:102
 msgid "Not active"
 msgstr ""
 
@@ -1204,7 +1212,7 @@ msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:988
 #: includes/admin/settings/class-wpsms-settings.php:1161
-#: src/Services/Forminator/ForminatorManager.php:33
+#: src/Services/Forminator/ForminatorManager.php:35
 msgid "No data"
 msgstr ""
 
@@ -1215,7 +1223,7 @@ msgstr ""
 #. translators: %s: Form title
 #. translators: %s: Form name
 #: includes/admin/settings/class-wpsms-settings.php:1007
-#: src/Services/Forminator/ForminatorManager.php:44
+#: src/Services/Forminator/ForminatorManager.php:46
 #, php-format
 msgid "Form notifications (%s)"
 msgstr ""
@@ -1224,26 +1232,26 @@ msgstr ""
 #. translators: %s: Form name
 #: includes/admin/settings/class-wpsms-settings.php:1010
 #: includes/admin/settings/class-wpsms-settings.php:1114
-#: src/Services/Forminator/ForminatorManager.php:47
+#: src/Services/Forminator/ForminatorManager.php:49
 #, php-format
 msgid "By enabling this option you can send SMS notification once the %s form is submitted"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1015
 #: includes/admin/settings/class-wpsms-settings.php:1119
-#: src/Services/Forminator/ForminatorManager.php:52
+#: src/Services/Forminator/ForminatorManager.php:54
 msgid "Send SMS to a number"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1021
 #: includes/admin/settings/class-wpsms-settings.php:1125
-#: src/Services/Forminator/ForminatorManager.php:58
+#: src/Services/Forminator/ForminatorManager.php:60
 msgid "Phone number(s)"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1023
 #: includes/admin/settings/class-wpsms-settings.php:1127
-#: src/Services/Forminator/ForminatorManager.php:60
+#: src/Services/Forminator/ForminatorManager.php:62
 msgid "Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma."
 msgstr ""
 
@@ -1251,26 +1259,26 @@ msgstr ""
 #: includes/admin/settings/class-wpsms-settings.php:1050
 #: includes/admin/settings/class-wpsms-settings.php:1133
 #: includes/admin/settings/class-wpsms-settings.php:1154
-#: src/Services/Forminator/ForminatorManager.php:66
-#: src/Services/Forminator/ForminatorManager.php:90
+#: src/Services/Forminator/ForminatorManager.php:68
+#: src/Services/Forminator/ForminatorManager.php:92
 msgid "Enter your message content."
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1035
 #: includes/admin/settings/class-wpsms-settings.php:1139
-#: src/Services/Forminator/ForminatorManager.php:75
+#: src/Services/Forminator/ForminatorManager.php:77
 msgid "Send SMS to field"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1041
 #: includes/admin/settings/class-wpsms-settings.php:1145
-#: src/Services/Forminator/ForminatorManager.php:81
+#: src/Services/Forminator/ForminatorManager.php:83
 msgid "A field of the form"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1044
 #: includes/admin/settings/class-wpsms-settings.php:1148
-#: src/Services/Forminator/ForminatorManager.php:84
+#: src/Services/Forminator/ForminatorManager.php:86
 msgid "Select the field of your form."
 msgstr ""
 
@@ -1313,7 +1321,7 @@ msgid "Administrator Notifications"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1201
-#: views/pages/onboarding/steps/getting-started.php:24
+#: views/pages/onboarding/steps/getting-started.php:26
 msgid "Admin Mobile Number"
 msgstr ""
 
@@ -1326,7 +1334,7 @@ msgid "Mobile Field Configuration"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1212
-#: src/Admin/SiteHealthInfo.php:64
+#: src/Admin/SiteHealthInfo.php:66
 msgid "Mobile Number Field Source"
 msgstr ""
 
@@ -1376,17 +1384,17 @@ msgid "Sync and compatibility the BuddyPress mobile numbers with plugin."
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1259
-#: src/Admin/SiteHealthInfo.php:70
+#: src/Admin/SiteHealthInfo.php:72
 msgid "Mobile Field Mandatory Status"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1262
-#: src/Admin/SiteHealthInfo.php:71
+#: src/Admin/SiteHealthInfo.php:73
 msgid "Required"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1263
-#: src/Admin/SiteHealthInfo.php:71
+#: src/Admin/SiteHealthInfo.php:73
 msgid "Optional"
 msgstr ""
 
@@ -1403,7 +1411,7 @@ msgid "Enter a sample format for the mobile number that users will see. Example:
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1275
-#: src/Admin/SiteHealthInfo.php:77
+#: src/Admin/SiteHealthInfo.php:79
 msgid "International Number Input"
 msgstr ""
 
@@ -1412,7 +1420,7 @@ msgid "Add a flag dropdown for international format support in the mobile number
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1282
-#: src/Admin/SiteHealthInfo.php:84
+#: src/Admin/SiteHealthInfo.php:86
 msgid "Only Countries"
 msgstr ""
 
@@ -1421,7 +1429,7 @@ msgid "In the dropdown, display only the countries you specify."
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1290
-#: src/Admin/SiteHealthInfo.php:91
+#: src/Admin/SiteHealthInfo.php:93
 msgid "Preferred Countries"
 msgstr ""
 
@@ -1487,12 +1495,12 @@ msgid "Select your preferred SMS Gateway to send messages."
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1355
-#: views/pages/onboarding/steps/configuration.php:69
+#: views/pages/onboarding/steps/configuration.php:71
 msgid "Gateway Guide"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1361
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:98
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:100
 msgid "API Username"
 msgstr ""
 
@@ -1505,7 +1513,7 @@ msgid "Enter the username provided by your SMS gateway."
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1368
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:103
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:105
 msgid "API Password"
 msgstr ""
 
@@ -1524,18 +1532,18 @@ msgid ""
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1382
-#: includes/gateways/class-wpsms-gateway-farazsms.php:88
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:42
-#: includes/gateways/class-wpsms-gateway-kavenegar.php:90
-#: includes/gateways/class-wpsms-gateway-octopush.php:37
-#: includes/gateways/class-wpsms-gateway-sms.php:88
-#: includes/gateways/class-wpsms-gateway-smsozone.php:27
+#: includes/gateways/class-wpsms-gateway-farazsms.php:90
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:44
+#: includes/gateways/class-wpsms-gateway-kavenegar.php:92
+#: includes/gateways/class-wpsms-gateway-octopush.php:39
+#: includes/gateways/class-wpsms-gateway-sms.php:90
+#: includes/gateways/class-wpsms-gateway-smsozone.php:29
 msgid "API Key"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1384
-#: includes/gateways/class-wpsms-gateway-prosms.php:33
-#: includes/gateways/class-wpsms-gateway-prosmsdk.php:33
+#: includes/gateways/class-wpsms-gateway-prosms.php:34
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:34
 msgid "Enter API key of gateway"
 msgstr ""
 
@@ -1842,10 +1850,10 @@ msgid "Animation Effect"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1695
-#: includes/gateways/class-wpsms-gateway-kavenegar.php:388
-#: includes/gateways/class-wpsms-gateway-kavenegar.php:389
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:540
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:541
+#: includes/gateways/class-wpsms-gateway-kavenegar.php:390
+#: includes/gateways/class-wpsms-gateway-kavenegar.php:391
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:542
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:543
 msgid "None"
 msgstr ""
 
@@ -1898,7 +1906,7 @@ msgid "Administrative Reporting"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1748
-#: src/Admin/SiteHealthInfo.php:195
+#: src/Admin/SiteHealthInfo.php:197
 msgid "SMS Performance Reports"
 msgstr ""
 
@@ -1923,7 +1931,7 @@ msgid "<span class=\"wpsms-tooltip is-pro js-wp-sms-openAioModal\" data-target=\
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1767
-#: src/Admin/SiteHealthInfo.php:202
+#: src/Admin/SiteHealthInfo.php:204
 msgid "Shorten URLs"
 msgstr ""
 
@@ -1988,7 +1996,7 @@ msgid "Sends non-personal, anonymized data to help us improve WP SMS. No persona
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:1823
-#: src/Admin/SiteHealthInfo.php:209
+#: src/Admin/SiteHealthInfo.php:211
 msgid "Google reCAPTCHA Integration"
 msgstr ""
 
@@ -2227,12 +2235,12 @@ msgid "Format the SMS message sent upon user login. Utilize placeholders to incl
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:2079
-#: src/Services/Formidable/FormidableManager.php:40
+#: src/Services/Formidable/FormidableManager.php:42
 msgid "SMS Notification Metabox"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:2082
-#: src/Services/Formidable/FormidableManager.php:43
+#: src/Services/Formidable/FormidableManager.php:45
 msgid "By this option you can add SMS notification tools in all edit forms."
 msgstr ""
 
@@ -2287,51 +2295,51 @@ msgstr ""
 msgid "ADD-ONS"
 msgstr ""
 
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:96
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:97
 #: includes/class-wpsms-gateway.php:960
 #: includes/class-wpsms-gateway.php:987
-#: src/Admin/LicenseManagement/Plugin/PluginDecorator.php:155
-#: src/Admin/SiteHealthInfo.php:106
+#: src/Admin/LicenseManagement/Plugin/PluginDecorator.php:157
+#: src/Admin/SiteHealthInfo.php:108
 msgid "Inactive"
 msgstr ""
 
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:127
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:128
 #: includes/templates/admin/subscriber-form.php:16
 #: includes/templates/mobile-field.php:4
-#: src/User/MobileFieldHandler/WordPressMobileFieldHandler.php:53
+#: src/User/MobileFieldHandler/WordPressMobileFieldHandler.php:55
 msgid "Mobile"
 msgstr ""
 
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:128
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:129
 #: includes/templates/admin/subscriber-form.php:25
 #: includes/templates/admin/subscriber-form.php:45
 #: includes/templates/email/partials/report-data.php:72
 msgid "Group"
 msgstr ""
 
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:130
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:131
 msgid "Activate code"
 msgstr ""
 
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:132
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:133
 msgid "Custom Fields"
 msgstr ""
 
 #. translators: %s: Group name
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:165
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:166
 #, php-format
 msgid "Move to «%s»"
 msgstr ""
 
 #. translators: %s: Group name
-#: includes/admin/subscribers/class-wpsms-subscribers-table.php:238
+#: includes/admin/subscribers/class-wpsms-subscribers-table.php:245
 #, php-format
 msgid "Items moved to «%s» group."
 msgstr ""
 
 #: includes/api/v1/class-wpsms-api-newsletter.php:129
 #: includes/api/v1/class-wpsms-api-newsletter.php:186
-#: src/Controller/PublicSubscribeAjax.php:27
+#: src/Controller/PublicSubscribeAjax.php:29
 msgid "Please select a specific group."
 msgstr ""
 
@@ -2346,8 +2354,8 @@ msgid "Your mobile number has been successfully unsubscribed."
 msgstr ""
 
 #: includes/api/v1/class-wpsms-api-newsletter.php:229
-#: src/Controller/PublicVerifySubscribeAjax.php:38
-#: src/Services/Subscriber/SubscriberUtil.php:89
+#: src/Controller/PublicVerifySubscribeAjax.php:40
+#: src/Services/Subscriber/SubscriberUtil.php:91
 msgid "Your mobile number has been successfully subscribed."
 msgstr ""
 
@@ -2426,7 +2434,7 @@ msgid "Credit"
 msgstr ""
 
 #: includes/class-wpsms-gateway.php:677
-#: src/Services/Hooks/HooksManager.php:58
+#: src/Services/Hooks/HooksManager.php:60
 msgid "Please select your gateway"
 msgstr ""
 
@@ -2435,7 +2443,7 @@ msgid "Custom Gateway"
 msgstr ""
 
 #: includes/class-wpsms-gateway.php:924
-#: src/Admin/OnBoarding/Steps/Configuration.php:72
+#: src/Admin/OnBoarding/Steps/Configuration.php:74
 msgid "Test Gateway"
 msgstr ""
 
@@ -2447,14 +2455,14 @@ msgstr ""
 
 #. translators: %1$s: Helpful tip, %2$s: Gateway documentation URL
 #: includes/class-wpsms-gateway.php:1012
-#: src/Admin/SiteHealthInfo.php:51
+#: src/Admin/SiteHealthInfo.php:53
 msgid "N/A"
 msgstr ""
 
 #: includes/class-wpsms-gateway.php:1038
 #: includes/class-wpsms-gateway.php:1060
 #: includes/class-wpsms-gateway.php:1080
-#: views/pages/onboarding/steps/sms-gateway.php:259
+#: views/pages/onboarding/steps/sms-gateway.php:261
 msgid "Available"
 msgstr ""
 
@@ -2478,13 +2486,14 @@ msgstr ""
 msgid "Check SMS gateway configuration"
 msgstr ""
 
-#: includes/class-wpsms-gateway.php:1560
+#. translators: %1$s: URL to gateway settings page
+#: includes/class-wpsms-gateway.php:1561
 #, php-format
 msgid "SMS gateway setup requires your attention. <a href=\"%1$s\">Review and update your gateway settings</a> to ensure SMS messages are sent successfully."
 msgstr ""
 
 #: includes/class-wpsms-integrations.php:33
-#: src/Services/Formidable/FormidableManager.php:67
+#: src/Services/Formidable/FormidableManager.php:69
 msgid "SMS Notifications"
 msgstr ""
 
@@ -2508,69 +2517,71 @@ msgstr ""
 msgid "Failed to add subscriber, please deactivate and then activate WP SMS and then try again."
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:255
+#: includes/class-wpsms-newsletter.php:259
 msgid "Mobile number is required!"
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:280
+#: includes/class-wpsms-newsletter.php:284
 msgid "The mobile number does not exist in the specified group(s)!"
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:290
+#: includes/class-wpsms-newsletter.php:294
 msgid "Successfully canceled the subscription!"
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:310
+#: includes/class-wpsms-newsletter.php:314
 msgid "The fields must be valued."
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:345
+#: includes/class-wpsms-newsletter.php:349
 msgid "Subscriber successfully updated."
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:347
+#: includes/class-wpsms-newsletter.php:351
 msgid "No change has been occurred."
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:448
+#: includes/class-wpsms-newsletter.php:455
 msgid "Name is empty!"
 msgstr ""
 
+#. translators: 1: Group name
 #. translators: %s: Group name
-#: includes/class-wpsms-newsletter.php:459
-#: includes/class-wpsms-newsletter.php:521
-#: includes/class-wpsms-newsletter.php:551
+#: includes/class-wpsms-newsletter.php:467
+#: includes/class-wpsms-newsletter.php:531
+#: includes/class-wpsms-newsletter.php:561
 #, php-format
 msgid "Group Name \"%s\" exists!"
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:486
+#: includes/class-wpsms-newsletter.php:496
 msgid "Group successfully added."
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:546
+#: includes/class-wpsms-newsletter.php:556
 msgid "Group successfully updated."
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:695
+#: includes/class-wpsms-newsletter.php:707
 msgid "Invalid group_id format!"
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:765
+#: includes/class-wpsms-newsletter.php:781
 msgid "Invalid mobile number format!"
 msgstr ""
 
-#: includes/class-wpsms-newsletter.php:793
-#: src/Blocks/SendSmsBlock.php:51
+#: includes/class-wpsms-newsletter.php:814
+#: src/Blocks/SendSmsBlock.php:53
 msgid "No Group"
 msgstr ""
 
-#: includes/class-wpsms-notifications.php:74
+#. translators: %s: WordPress version number
+#: includes/class-wpsms-notifications.php:75
 #, php-format
 msgid "WordPress %s is available! Please update now"
 msgstr ""
 
-#: includes/class-wpsms-notifications.php:237
+#: includes/class-wpsms-notifications.php:238
 msgid "SMS Notification"
 msgstr ""
 
@@ -2583,800 +2594,813 @@ msgstr ""
 msgid "Phone Number"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-adpdigital.php:94
-#: includes/gateways/class-wpsms-gateway-adspanel.php:116
-#: includes/gateways/class-wpsms-gateway-afe.php:107
-#: includes/gateways/class-wpsms-gateway-bulutfon.php:74
-#: includes/gateways/class-wpsms-gateway-comilio.php:109
-#: includes/gateways/class-wpsms-gateway-firstpayamak.php:91
-#: includes/gateways/class-wpsms-gateway-fortytwo.php:126
-#: includes/gateways/class-wpsms-gateway-hirosms.php:104
-#: includes/gateways/class-wpsms-gateway-hostiran.php:127
-#: includes/gateways/class-wpsms-gateway-iransmspanel.php:205
-#: includes/gateways/class-wpsms-gateway-jahanpayamak.php:113
-#: includes/gateways/class-wpsms-gateway-jawalbsms.php:108
-#: includes/gateways/class-wpsms-gateway-novin1sms.php:96
-#: includes/gateways/class-wpsms-gateway-onlinepanel.php:108
-#: includes/gateways/class-wpsms-gateway-payamakaria.php:102
-#: includes/gateways/class-wpsms-gateway-payamakpanel.php:102
-#: includes/gateways/class-wpsms-gateway-payamresan.php:92
-#: includes/gateways/class-wpsms-gateway-persiansms.php:103
-#: includes/gateways/class-wpsms-gateway-reachinteractive.php:167
-#: includes/gateways/class-wpsms-gateway-safasms.php:127
-#: includes/gateways/class-wpsms-gateway-shreesms.php:91
-#: includes/gateways/class-wpsms-gateway-sms77.php:92
-#: includes/gateways/class-wpsms-gateway-smsban.php:103
-#: includes/gateways/class-wpsms-gateway-smsbartar.php:93
-#: includes/gateways/class-wpsms-gateway-smsclick.php:101
-#: includes/gateways/class-wpsms-gateway-smsgatewaycenter.php:100
-#: includes/gateways/class-wpsms-gateway-smshosting.php:123
-#: includes/gateways/class-wpsms-gateway-smsline.php:93
-#: includes/gateways/class-wpsms-gateway-smsservice.php:100
-#: includes/gateways/class-wpsms-gateway-torpedos.php:121
-#: includes/gateways/class-wpsms-gateway-tripadasmsbox.php:117
-#: includes/gateways/class-wpsms-gateway-tsms.php:93
-#: includes/gateways/class-wpsms-gateway-zain.php:113
-#: includes/gateways/class-wpsms-gateway-_textplode.php:111
+#: includes/gateways/class-wpsms-gateway-adpdigital.php:96
+#: includes/gateways/class-wpsms-gateway-adspanel.php:118
+#: includes/gateways/class-wpsms-gateway-afe.php:109
+#: includes/gateways/class-wpsms-gateway-bulutfon.php:76
+#: includes/gateways/class-wpsms-gateway-comilio.php:111
+#: includes/gateways/class-wpsms-gateway-firstpayamak.php:93
+#: includes/gateways/class-wpsms-gateway-fortytwo.php:128
+#: includes/gateways/class-wpsms-gateway-hirosms.php:106
+#: includes/gateways/class-wpsms-gateway-hostiran.php:129
+#: includes/gateways/class-wpsms-gateway-iransmspanel.php:207
+#: includes/gateways/class-wpsms-gateway-jahanpayamak.php:115
+#: includes/gateways/class-wpsms-gateway-jawalbsms.php:110
+#: includes/gateways/class-wpsms-gateway-novin1sms.php:98
+#: includes/gateways/class-wpsms-gateway-onlinepanel.php:110
+#: includes/gateways/class-wpsms-gateway-payamakaria.php:104
+#: includes/gateways/class-wpsms-gateway-payamakpanel.php:104
+#: includes/gateways/class-wpsms-gateway-payamresan.php:94
+#: includes/gateways/class-wpsms-gateway-persiansms.php:105
+#: includes/gateways/class-wpsms-gateway-reachinteractive.php:169
+#: includes/gateways/class-wpsms-gateway-safasms.php:129
+#: includes/gateways/class-wpsms-gateway-shreesms.php:93
+#: includes/gateways/class-wpsms-gateway-sms77.php:94
+#: includes/gateways/class-wpsms-gateway-smsban.php:105
+#: includes/gateways/class-wpsms-gateway-smsbartar.php:95
+#: includes/gateways/class-wpsms-gateway-smsclick.php:103
+#: includes/gateways/class-wpsms-gateway-smsgatewaycenter.php:102
+#: includes/gateways/class-wpsms-gateway-smshosting.php:125
+#: includes/gateways/class-wpsms-gateway-smsline.php:95
+#: includes/gateways/class-wpsms-gateway-smsservice.php:102
+#: includes/gateways/class-wpsms-gateway-torpedos.php:123
+#: includes/gateways/class-wpsms-gateway-tripadasmsbox.php:119
+#: includes/gateways/class-wpsms-gateway-tsms.php:95
+#: includes/gateways/class-wpsms-gateway-zain.php:115
+#: includes/gateways/class-wpsms-gateway-_textplode.php:125
 msgid "Username and Password are required."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-adspanel.php:31
-#: includes/gateways/class-wpsms-gateway-adspanel.php:111
-#: includes/gateways/class-wpsms-gateway-bandarsms.php:32
-#: includes/gateways/class-wpsms-gateway-bandarsms.php:108
-#: includes/gateways/class-wpsms-gateway-candoosms.php:24
-#: includes/gateways/class-wpsms-gateway-candoosms.php:111
-#: includes/gateways/class-wpsms-gateway-mdpanel.php:32
-#: includes/gateways/class-wpsms-gateway-mdpanel.php:108
-#: includes/gateways/class-wpsms-gateway-mydnspanel.php:31
-#: includes/gateways/class-wpsms-gateway-mydnspanel.php:111
-#: includes/gateways/class-wpsms-gateway-nasrpayam.php:32
-#: includes/gateways/class-wpsms-gateway-nasrpayam.php:108
-#: includes/gateways/class-wpsms-gateway-smshooshmand.php:32
-#: includes/gateways/class-wpsms-gateway-smshooshmand.php:107
-#: includes/gateways/class-wpsms-gateway-smsmelli.php:32
-#: includes/gateways/class-wpsms-gateway-smsmelli.php:99
+#: includes/gateways/class-wpsms-gateway-adspanel.php:33
+#: includes/gateways/class-wpsms-gateway-adspanel.php:113
+#: includes/gateways/class-wpsms-gateway-bandarsms.php:34
+#: includes/gateways/class-wpsms-gateway-bandarsms.php:110
+#: includes/gateways/class-wpsms-gateway-candoosms.php:26
+#: includes/gateways/class-wpsms-gateway-candoosms.php:113
+#: includes/gateways/class-wpsms-gateway-mdpanel.php:34
+#: includes/gateways/class-wpsms-gateway-mdpanel.php:110
+#: includes/gateways/class-wpsms-gateway-mydnspanel.php:33
+#: includes/gateways/class-wpsms-gateway-mydnspanel.php:113
+#: includes/gateways/class-wpsms-gateway-nasrpayam.php:34
+#: includes/gateways/class-wpsms-gateway-nasrpayam.php:110
+#: includes/gateways/class-wpsms-gateway-smshooshmand.php:34
+#: includes/gateways/class-wpsms-gateway-smshooshmand.php:109
+#: includes/gateways/class-wpsms-gateway-smsmelli.php:34
+#: includes/gateways/class-wpsms-gateway-smsmelli.php:101
 msgid "nusoap_client class does not exist. Please enable it in your server configuration."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-afe.php:111
-#: includes/gateways/class-wpsms-gateway-aradsms.php:104
-#: includes/gateways/class-wpsms-gateway-arkapayamak.php:112
-#: includes/gateways/class-wpsms-gateway-bestit.php:119
-#: includes/gateways/class-wpsms-gateway-chapargah.php:106
-#: includes/gateways/class-wpsms-gateway-farapayamak.php:106
-#: includes/gateways/class-wpsms-gateway-firstpayamak.php:95
-#: includes/gateways/class-wpsms-gateway-hirosms.php:108
-#: includes/gateways/class-wpsms-gateway-idehpayam.php:108
-#: includes/gateways/class-wpsms-gateway-imencms.php:103
-#: includes/gateways/class-wpsms-gateway-iransmspanel.php:209
-#: includes/gateways/class-wpsms-gateway-iranspk.php:106
-#: includes/gateways/class-wpsms-gateway-jahanpayamak.php:117
-#: includes/gateways/class-wpsms-gateway-labsmobile.php:119
-#: includes/gateways/class-wpsms-gateway-loginpanel.php:107
-#: includes/gateways/class-wpsms-gateway-markazpayamak.php:106
-#: includes/gateways/class-wpsms-gateway-mediana.php:23
-#: includes/gateways/class-wpsms-gateway-novin1sms.php:100
-#: includes/gateways/class-wpsms-gateway-onlinepanel.php:112
-#: includes/gateways/class-wpsms-gateway-paaz.php:106
-#: includes/gateways/class-wpsms-gateway-parsasms.php:102
-#: includes/gateways/class-wpsms-gateway-parsgreen.php:119
-#: includes/gateways/class-wpsms-gateway-payamakaria.php:106
-#: includes/gateways/class-wpsms-gateway-payamakpanel.php:106
-#: includes/gateways/class-wpsms-gateway-payameroz.php:106
-#: includes/gateways/class-wpsms-gateway-persiansms.php:107
-#: includes/gateways/class-wpsms-gateway-rayansmspanel.php:106
-#: includes/gateways/class-wpsms-gateway-razpayamak.php:105
-#: includes/gateways/class-wpsms-gateway-smsban.php:107
-#: includes/gateways/class-wpsms-gateway-smsbartar.php:97
-#: includes/gateways/class-wpsms-gateway-smscall.php:96
-#: includes/gateways/class-wpsms-gateway-smsclick.php:105
-#: includes/gateways/class-wpsms-gateway-smsline.php:97
-#: includes/gateways/class-wpsms-gateway-smstoos.php:106
-#: includes/gateways/class-wpsms-gateway-ssmss.php:100
-#: includes/gateways/class-wpsms-gateway-textsms.php:100
-#: includes/gateways/class-wpsms-gateway-tsms.php:97
-#: includes/gateways/class-wpsms-gateway-websmscy.php:107
-#: includes/gateways/class-wpsms-gateway-_0098sms.php:109
+#: includes/gateways/class-wpsms-gateway-afe.php:113
+#: includes/gateways/class-wpsms-gateway-aradsms.php:106
+#: includes/gateways/class-wpsms-gateway-arkapayamak.php:114
+#: includes/gateways/class-wpsms-gateway-bestit.php:121
+#: includes/gateways/class-wpsms-gateway-chapargah.php:108
+#: includes/gateways/class-wpsms-gateway-farapayamak.php:108
+#: includes/gateways/class-wpsms-gateway-firstpayamak.php:97
+#: includes/gateways/class-wpsms-gateway-hirosms.php:110
+#: includes/gateways/class-wpsms-gateway-idehpayam.php:110
+#: includes/gateways/class-wpsms-gateway-imencms.php:105
+#: includes/gateways/class-wpsms-gateway-iransmspanel.php:211
+#: includes/gateways/class-wpsms-gateway-iranspk.php:108
+#: includes/gateways/class-wpsms-gateway-jahanpayamak.php:119
+#: includes/gateways/class-wpsms-gateway-labsmobile.php:121
+#: includes/gateways/class-wpsms-gateway-loginpanel.php:109
+#: includes/gateways/class-wpsms-gateway-markazpayamak.php:108
+#: includes/gateways/class-wpsms-gateway-mediana.php:25
+#: includes/gateways/class-wpsms-gateway-novin1sms.php:102
+#: includes/gateways/class-wpsms-gateway-onlinepanel.php:114
+#: includes/gateways/class-wpsms-gateway-paaz.php:108
+#: includes/gateways/class-wpsms-gateway-parsasms.php:104
+#: includes/gateways/class-wpsms-gateway-parsgreen.php:121
+#: includes/gateways/class-wpsms-gateway-payamakaria.php:108
+#: includes/gateways/class-wpsms-gateway-payamakpanel.php:108
+#: includes/gateways/class-wpsms-gateway-payameroz.php:108
+#: includes/gateways/class-wpsms-gateway-persiansms.php:109
+#: includes/gateways/class-wpsms-gateway-rayansmspanel.php:108
+#: includes/gateways/class-wpsms-gateway-razpayamak.php:107
+#: includes/gateways/class-wpsms-gateway-smsban.php:109
+#: includes/gateways/class-wpsms-gateway-smsbartar.php:99
+#: includes/gateways/class-wpsms-gateway-smscall.php:98
+#: includes/gateways/class-wpsms-gateway-smsclick.php:107
+#: includes/gateways/class-wpsms-gateway-smsline.php:99
+#: includes/gateways/class-wpsms-gateway-smstoos.php:108
+#: includes/gateways/class-wpsms-gateway-ssmss.php:102
+#: includes/gateways/class-wpsms-gateway-textsms.php:102
+#: includes/gateways/class-wpsms-gateway-tsms.php:99
+#: includes/gateways/class-wpsms-gateway-websmscy.php:124
+#: includes/gateways/class-wpsms-gateway-_0098sms.php:111
 msgid "Class SoapClient not found. please enable php_soap in your php."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-afilnet.php:115
-#: includes/gateways/class-wpsms-gateway-aradsms.php:100
-#: includes/gateways/class-wpsms-gateway-arkapayamak.php:108
-#: includes/gateways/class-wpsms-gateway-aruba.php:108
-#: includes/gateways/class-wpsms-gateway-asanak.php:100
-#: includes/gateways/class-wpsms-gateway-avalpayam.php:106
-#: includes/gateways/class-wpsms-gateway-bandarsms.php:113
-#: includes/gateways/class-wpsms-gateway-bestit.php:115
-#: includes/gateways/class-wpsms-gateway-callifony.php:106
-#: includes/gateways/class-wpsms-gateway-candoosms.php:116
-#: includes/gateways/class-wpsms-gateway-chapargah.php:102
-#: includes/gateways/class-wpsms-gateway-eazismspro.php:150
-#: includes/gateways/class-wpsms-gateway-eurosms.php:143
-#: includes/gateways/class-wpsms-gateway-experttexting.php:154
-#: includes/gateways/class-wpsms-gateway-farapayamak.php:102
-#: includes/gateways/class-wpsms-gateway-idehpayam.php:104
-#: includes/gateways/class-wpsms-gateway-imencms.php:99
-#: includes/gateways/class-wpsms-gateway-instantalerts.php:96
-#: includes/gateways/class-wpsms-gateway-iranspk.php:102
-#: includes/gateways/class-wpsms-gateway-ismsie.php:93
-#: includes/gateways/class-wpsms-gateway-labsmobile.php:115
-#: includes/gateways/class-wpsms-gateway-loginpanel.php:103
-#: includes/gateways/class-wpsms-gateway-markazpayamak.php:102
-#: includes/gateways/class-wpsms-gateway-mdpanel.php:113
-#: includes/gateways/class-wpsms-gateway-mediana.php:107
-#: includes/gateways/class-wpsms-gateway-mensatek.php:98
-#: includes/gateways/class-wpsms-gateway-mobiledotnet.php:106
-#: includes/gateways/class-wpsms-gateway-mtarget.php:129
-#: includes/gateways/class-wpsms-gateway-mydnspanel.php:116
-#: includes/gateways/class-wpsms-gateway-nasrpayam.php:113
-#: includes/gateways/class-wpsms-gateway-paaz.php:102
-#: includes/gateways/class-wpsms-gateway-parsasms.php:98
-#: includes/gateways/class-wpsms-gateway-parsgreen.php:115
-#: includes/gateways/class-wpsms-gateway-payameroz.php:102
-#: includes/gateways/class-wpsms-gateway-rayansmspanel.php:102
-#: includes/gateways/class-wpsms-gateway-raygansms.php:112
-#: includes/gateways/class-wpsms-gateway-razpayamak.php:101
-#: includes/gateways/class-wpsms-gateway-smsc.php:110
-#: includes/gateways/class-wpsms-gateway-smscall.php:92
-#: includes/gateways/class-wpsms-gateway-smsgatewayat.php:92
-#: includes/gateways/class-wpsms-gateway-smshooshmand.php:112
-#: includes/gateways/class-wpsms-gateway-smsmelli.php:104
-#: includes/gateways/class-wpsms-gateway-smssolutions.php:134
-#: includes/gateways/class-wpsms-gateway-smstoos.php:102
-#: includes/gateways/class-wpsms-gateway-sonoratecnologia.php:117
-#: includes/gateways/class-wpsms-gateway-spirius.php:105
-#: includes/gateways/class-wpsms-gateway-ssmss.php:96
-#: includes/gateways/class-wpsms-gateway-sunwaysms.php:129
-#: includes/gateways/class-wpsms-gateway-textanywhere.php:227
-#: includes/gateways/class-wpsms-gateway-textsms.php:96
-#: includes/gateways/class-wpsms-gateway-unisender.php:113
-#: includes/gateways/class-wpsms-gateway-websmscy.php:103
-#: includes/gateways/class-wpsms-gateway-_0098sms.php:105
+#: includes/gateways/class-wpsms-gateway-afilnet.php:117
+#: includes/gateways/class-wpsms-gateway-aradsms.php:102
+#: includes/gateways/class-wpsms-gateway-arkapayamak.php:110
+#: includes/gateways/class-wpsms-gateway-aruba.php:110
+#: includes/gateways/class-wpsms-gateway-asanak.php:102
+#: includes/gateways/class-wpsms-gateway-avalpayam.php:108
+#: includes/gateways/class-wpsms-gateway-bandarsms.php:115
+#: includes/gateways/class-wpsms-gateway-bestit.php:117
+#: includes/gateways/class-wpsms-gateway-callifony.php:108
+#: includes/gateways/class-wpsms-gateway-candoosms.php:118
+#: includes/gateways/class-wpsms-gateway-chapargah.php:104
+#: includes/gateways/class-wpsms-gateway-eazismspro.php:147
+#: includes/gateways/class-wpsms-gateway-eurosms.php:145
+#: includes/gateways/class-wpsms-gateway-experttexting.php:156
+#: includes/gateways/class-wpsms-gateway-farapayamak.php:104
+#: includes/gateways/class-wpsms-gateway-idehpayam.php:106
+#: includes/gateways/class-wpsms-gateway-imencms.php:101
+#: includes/gateways/class-wpsms-gateway-instantalerts.php:98
+#: includes/gateways/class-wpsms-gateway-iranspk.php:104
+#: includes/gateways/class-wpsms-gateway-ismsie.php:95
+#: includes/gateways/class-wpsms-gateway-labsmobile.php:117
+#: includes/gateways/class-wpsms-gateway-loginpanel.php:105
+#: includes/gateways/class-wpsms-gateway-markazpayamak.php:104
+#: includes/gateways/class-wpsms-gateway-mdpanel.php:115
+#: includes/gateways/class-wpsms-gateway-mediana.php:109
+#: includes/gateways/class-wpsms-gateway-mensatek.php:100
+#: includes/gateways/class-wpsms-gateway-mobiledotnet.php:108
+#: includes/gateways/class-wpsms-gateway-mtarget.php:131
+#: includes/gateways/class-wpsms-gateway-mydnspanel.php:118
+#: includes/gateways/class-wpsms-gateway-nasrpayam.php:115
+#: includes/gateways/class-wpsms-gateway-paaz.php:104
+#: includes/gateways/class-wpsms-gateway-parsasms.php:100
+#: includes/gateways/class-wpsms-gateway-parsgreen.php:117
+#: includes/gateways/class-wpsms-gateway-payameroz.php:104
+#: includes/gateways/class-wpsms-gateway-rayansmspanel.php:104
+#: includes/gateways/class-wpsms-gateway-raygansms.php:114
+#: includes/gateways/class-wpsms-gateway-razpayamak.php:103
+#: includes/gateways/class-wpsms-gateway-smsc.php:112
+#: includes/gateways/class-wpsms-gateway-smscall.php:94
+#: includes/gateways/class-wpsms-gateway-smsgatewayat.php:94
+#: includes/gateways/class-wpsms-gateway-smshooshmand.php:114
+#: includes/gateways/class-wpsms-gateway-smsmelli.php:106
+#: includes/gateways/class-wpsms-gateway-smssolutions.php:136
+#: includes/gateways/class-wpsms-gateway-smstoos.php:104
+#: includes/gateways/class-wpsms-gateway-sonoratecnologia.php:119
+#: includes/gateways/class-wpsms-gateway-spirius.php:107
+#: includes/gateways/class-wpsms-gateway-ssmss.php:98
+#: includes/gateways/class-wpsms-gateway-sunwaysms.php:131
+#: includes/gateways/class-wpsms-gateway-textanywhere.php:229
+#: includes/gateways/class-wpsms-gateway-textsms.php:98
+#: includes/gateways/class-wpsms-gateway-unisender.php:115
+#: includes/gateways/class-wpsms-gateway-websmscy.php:120
+#: includes/gateways/class-wpsms-gateway-_0098sms.php:107
 msgid "API username or API password is not entered."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-afilnet.php:129
+#: includes/gateways/class-wpsms-gateway-afilnet.php:131
 msgid "Server API Unavailable"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-africastalking.php:120
+#: includes/gateways/class-wpsms-gateway-africastalking.php:122
 msgid "Username and API key are required."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-aobox.php:127
-#: includes/gateways/class-wpsms-gateway-hostpinnacle.php:133
+#: includes/gateways/class-wpsms-gateway-aobox.php:129
+#: includes/gateways/class-wpsms-gateway-hostpinnacle.php:135
 msgid "The username/password for this gateway is not set."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-aspsms.php:132
-#: includes/gateways/class-wpsms-gateway-cellsynt.php:133
+#: includes/gateways/class-wpsms-gateway-aspsms.php:134
+#: includes/gateways/class-wpsms-gateway-cellsynt.php:135
 msgid "The username/password for this gateway is not set"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-bulkgate.php:164
+#: includes/gateways/class-wpsms-gateway-bulkgate.php:165
 msgid "Application id and Application token for this gateway are require."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-cellsynt.php:39
+#: includes/gateways/class-wpsms-gateway-cellsynt.php:41
 msgid "Originator Type"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-cellsynt.php:40
+#: includes/gateways/class-wpsms-gateway-cellsynt.php:42
 msgid "Please select originator type."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-cellsynt.php:43
+#: includes/gateways/class-wpsms-gateway-cellsynt.php:45
 msgid "Alpha"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-cellsynt.php:44
+#: includes/gateways/class-wpsms-gateway-cellsynt.php:46
 msgid "Numeric"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-cellsynt.php:45
+#: includes/gateways/class-wpsms-gateway-cellsynt.php:47
 msgid "Shortcode"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-cheapglobalsms.php:139
-#: includes/gateways/class-wpsms-gateway-jusibe.php:115
-#: includes/gateways/class-wpsms-gateway-onewaysms.php:158
-#: includes/gateways/class-wpsms-gateway-_ebulksms.php:114
+#: includes/gateways/class-wpsms-gateway-cheapglobalsms.php:141
+#: includes/gateways/class-wpsms-gateway-jusibe.php:117
+#: includes/gateways/class-wpsms-gateway-onewaysms.php:160
+#: includes/gateways/class-wpsms-gateway-_ebulksms.php:116
 msgid "The Username/Password for this gateway is not set"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-cpsms.php:112
-#: includes/gateways/class-wpsms-gateway-suresms.php:101
-#: includes/gateways/class-wpsms-gateway-verimor.php:102
+#: includes/gateways/class-wpsms-gateway-cpsms.php:114
+#: includes/gateways/class-wpsms-gateway-suresms.php:103
+#: includes/gateways/class-wpsms-gateway-verimor.php:104
 msgid "The Username/API Key for this gateway is not set"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-custom.php:28
+#: includes/gateways/class-wpsms-gateway-custom.php:30
 msgid "Send SMS API URL"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-custom.php:29
+#: includes/gateways/class-wpsms-gateway-custom.php:31
 msgid "Enter the Send SMS URL for the SMS gateway API where the SMS requests will be sent. This URL is provided by the SMS gateway service."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-custom.php:33
+#: includes/gateways/class-wpsms-gateway-custom.php:35
 msgid "HTTP Headers"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-custom.php:34
+#: includes/gateways/class-wpsms-gateway-custom.php:36
 msgid "Specify any HTTP headers required for API requests. Headers often include authentication details and content specifications. Each parameter should be on a new line. For example: Content-Type:application/json;charset=UTF-8"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-custom.php:39
+#: includes/gateways/class-wpsms-gateway-custom.php:41
 msgid "HTTP Parameters"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-custom.php:40
+#: includes/gateways/class-wpsms-gateway-custom.php:42
 msgid "List the parameters required by the API for sending SMS messages. These often include fields like the sender, recipient, and message content. Replace {from}, {to}, and {message} with actual values when making a request. Each parameter should be on a new line. For example: receptor:{to}"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-custom.php:46
+#: includes/gateways/class-wpsms-gateway-custom.php:48
 msgid "Choose 'Yes' to send the HTTP parameters as body data in a POST request. Select 'No' if parameters are sent directly in the URL."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-custom.php:56
+#: includes/gateways/class-wpsms-gateway-custom.php:58
 msgid "Select 'Yes' to encode the SMS message content to ensure compatibility with the gateway. Encoding may be necessary for special characters or binary data"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-custom.php:65
-#: includes/gateways/class-wpsms-gateway-custom.php:66
-#: includes/gateways/class-wpsms-gateway-prosms.php:27
+#: includes/gateways/class-wpsms-gateway-custom.php:67
+#: includes/gateways/class-wpsms-gateway-custom.php:68
 #: includes/gateways/class-wpsms-gateway-prosms.php:28
-#: includes/gateways/class-wpsms-gateway-prosmsdk.php:27
+#: includes/gateways/class-wpsms-gateway-prosms.php:29
 #: includes/gateways/class-wpsms-gateway-prosmsdk.php:28
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:29
 msgid "Sender Name"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-custom.php:159
+#: includes/gateways/class-wpsms-gateway-custom.php:161
 msgid "Please complete the send SMS API URL."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-deewan.php:132
-#: includes/gateways/class-wpsms-gateway-_1s2u.php:144
+#: includes/gateways/class-wpsms-gateway-deewan.php:134
+#: includes/gateways/class-wpsms-gateway-_1s2u.php:145
 msgid "Username and password are required."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-default.php:32
+#: includes/gateways/class-wpsms-gateway-default.php:34
 msgid "The SMS gateway in the plugin is not configured yet."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-dexatel.php:102
+#: includes/gateways/class-wpsms-gateway-dexatel.php:104
 msgid "API key is not entered."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-directsend.php:150
+#: includes/gateways/class-wpsms-gateway-directsend.php:152
 msgid "The Username/API key for this gateway is not set."
-msgstr ""
-
-#: includes/gateways/class-wpsms-gateway-farazsms.php:82
-#: includes/gateways/class-wpsms-gateway-kavenegar.php:84
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:108
-#: includes/gateways/class-wpsms-gateway-sms.php:82
-msgid "Sender Number"
-msgstr ""
-
-#: includes/gateways/class-wpsms-gateway-farazsms.php:83
-#: includes/gateways/class-wpsms-gateway-sms.php:83
-msgid "e.g., 50002178584000"
 msgstr ""
 
 #: includes/gateways/class-wpsms-gateway-farazsms.php:84
 #: includes/gateways/class-wpsms-gateway-kavenegar.php:86
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:110
 #: includes/gateways/class-wpsms-gateway-sms.php:84
+msgid "Sender Number"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-farazsms.php:85
+#: includes/gateways/class-wpsms-gateway-sms.php:85
+msgid "e.g., 50002178584000"
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-farazsms.php:86
+#: includes/gateways/class-wpsms-gateway-kavenegar.php:88
+#: includes/gateways/class-wpsms-gateway-sms.php:86
 msgid "Number or sender ID shown on recipient’s device."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-farazsms.php:89
-#: includes/gateways/class-wpsms-gateway-kavenegar.php:91
-#: includes/gateways/class-wpsms-gateway-sms.php:89
+#: includes/gateways/class-wpsms-gateway-farazsms.php:91
+#: includes/gateways/class-wpsms-gateway-kavenegar.php:93
+#: includes/gateways/class-wpsms-gateway-sms.php:91
 msgid "Enter your gateway API key."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-farazsms.php:137
-#: includes/gateways/class-wpsms-gateway-kavenegar.php:172
-#: includes/gateways/class-wpsms-gateway-kavenegar.php:229
-#: includes/gateways/class-wpsms-gateway-sms.php:137
+#: includes/gateways/class-wpsms-gateway-farazsms.php:139
+#: includes/gateways/class-wpsms-gateway-kavenegar.php:174
+#: includes/gateways/class-wpsms-gateway-kavenegar.php:231
+#: includes/gateways/class-wpsms-gateway-sms.php:139
 msgid "API Key is required."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-farazsms.php:165
-#: includes/gateways/class-wpsms-gateway-sms.php:166
+#: includes/gateways/class-wpsms-gateway-farazsms.php:167
+#: includes/gateways/class-wpsms-gateway-sms.php:168
 msgid "Failed to send SMS."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-farazsms.php:251
-#: includes/gateways/class-wpsms-gateway-kavenegar.php:274
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:312
-#: includes/gateways/class-wpsms-gateway-sms.php:253
+#: includes/gateways/class-wpsms-gateway-farazsms.php:253
+#: includes/gateways/class-wpsms-gateway-kavenegar.php:276
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:314
+#: includes/gateways/class-wpsms-gateway-sms.php:255
 msgid "Message does not contain valid template placeholders."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:25
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:27
 msgid "Enter number without country code."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:26
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:28
 msgid "For <b>DLT</b> messages, send variables and message id in this format: <b>var1|var2|message_id</b>. <br> For <b>DLT Manual</b> messages, send message and template id in the same way. e.g. <b>message|template_id</b>"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:31
-#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:45
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:33
+#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:47
 msgid "Route"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:32
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:34
 msgid "Please select SMS route."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:35
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:37
 msgid "DLT SMS"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:36
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:38
 msgid "DLT Manual SMS"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:37
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:39
 msgid "Quick SMS"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:43
-#: includes/gateways/class-wpsms-gateway-smsozone.php:28
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:45
+#: includes/gateways/class-wpsms-gateway-smsozone.php:30
 msgid "Enter API key of gateway."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:47
-#: includes/gateways/class-wpsms-gateway-smsozone.php:32
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:49
+#: includes/gateways/class-wpsms-gateway-smsozone.php:34
 msgid "Approved Sender ID"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:48
-#: includes/gateways/class-wpsms-gateway-smsozone.php:33
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:50
+#: includes/gateways/class-wpsms-gateway-smsozone.php:35
 msgid "Enter sender ID of gateway."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:53
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:55
 msgid "Entity ID"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-fast2sms.php:54
+#: includes/gateways/class-wpsms-gateway-fast2sms.php:56
 msgid "Enter your Registered Entity ID."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-globalvoice.php:127
+#: includes/gateways/class-wpsms-gateway-globalvoice.php:129
 msgid "Token is not entered."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-kavenegar.php:85
+#: includes/gateways/class-wpsms-gateway-kavenegar.php:87
 msgid "e.g., 0018018949161"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-kavenegar.php:278
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:316
+#: includes/gateways/class-wpsms-gateway-kavenegar.php:280
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:318
 msgid "Template ID is missing."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-kavenegar.php:360
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:512
+#: includes/gateways/class-wpsms-gateway-kavenegar.php:362
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:514
 msgid "Invalid template response payload."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-liveall.php:123
+#: includes/gateways/class-wpsms-gateway-liveall.php:125
 msgid "The API Token for this gateway is not set."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-matinsms.php:65
-#: includes/gateways/class-wpsms-gateway-matinsms.php:106
-#: includes/gateways/class-wpsms-gateway-msegat.php:151
-#: includes/gateways/class-wpsms-gateway-nesssolution.php:114
-#: includes/gateways/class-wpsms-gateway-primotexto.php:150
-#: includes/gateways/class-wpsms-gateway-sabanovin.php:109
-#: includes/gateways/class-wpsms-gateway-smsbox.php:151
-#: includes/gateways/class-wpsms-gateway-_18sms.php:96
+#: includes/gateways/class-wpsms-gateway-matinsms.php:67
+#: includes/gateways/class-wpsms-gateway-matinsms.php:108
+#: includes/gateways/class-wpsms-gateway-msegat.php:153
+#: includes/gateways/class-wpsms-gateway-nesssolution.php:116
+#: includes/gateways/class-wpsms-gateway-primotexto.php:152
+#: includes/gateways/class-wpsms-gateway-sabanovin.php:111
+#: includes/gateways/class-wpsms-gateway-smsbox.php:153
+#: includes/gateways/class-wpsms-gateway-_18sms.php:98
 msgid "The API Key for this gateway is not set"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:99
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:101
 msgid "Enter the API username provided by your SMS gateway."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:104
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:106
 msgid "Enter the API password provided by your SMS gateway."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:109
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:111
 msgid "Enter the sender number or sender ID registered with your SMS gateway."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:113
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:115
 msgid "Backup sender 1 (optional)"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:114
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:116
 msgid "Optional: support sender number used with Smart SMS."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:118
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:120
 msgid "Backup sender 2 (optional)"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:119
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:121
 msgid "Optional: secondary support sender used with Smart SMS."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:177
-#: includes/gateways/class-wpsms-gateway-smses.php:108
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:179
+#: includes/gateways/class-wpsms-gateway-smses.php:110
 msgid "API Username and API Password are required."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:258
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:260
 msgid "Invalid response from SMS service."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:396
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:398
 msgid "نام کاربری یا رمز عبور اشتباه می باشد."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:399
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:401
 msgid "اعتبار کافی نمی باشد."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:402
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:404
 msgid "محدودیت در ارسال روزانه."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:405
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:407
 msgid "محدودیت در حجم ارسال."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:408
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:410
 msgid "شماره فرستنده معتبر نمی باشد."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:411
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:413
 msgid "سامانه در حال بروزرسانی می باشد."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:414
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:416
 msgid "متن حاوی کلمه فیلتر شده می باشد."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:417
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:419
 msgid "ارسال از خطوط عمومی از طریق وب سرویس امکان پذیر نمی باشد."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:420
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:422
 msgid "کاربر مورد نظر فعال نمی باشد."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:423
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:425
 msgid "ارسال نشده."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:426
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:428
 msgid "مدارک کاربر کامل نمی باشد."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:429
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:431
 msgid "متن حاوی لینک می باشد."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:432
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:434
 msgid "ارسال به بیش از 1 شماره همراه بدون درج \"لغو11\" ممکن نیست."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:435
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:437
 msgid "شماره گیرنده ای یافت نشد."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:438
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:440
 msgid "متن پیامک خالی می باشد."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:441
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:443
 msgid "شماره گیرنده نامعتبر است."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:444
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:446
 msgid "در REST به معنای وجود شماره در لیست سیاه مخابرات می‌باشد."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:447
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:449
 msgid "در میان متغییر های ارسالی ، لینک وجود دارد."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:450
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:452
 msgid "خطایی در شماره فرستنده رخ داده است با پشتیبانی تماس بگیرید."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:453
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:455
 msgid "خطای داخلی رخ داده است با پشتیبانی تماس بگیرید."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:456
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:458
 msgid "متن ارسالی باتوجه به متغیرهای مشخص شده در متن پیشفرض همخوانی ندارد."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:459
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:461
 msgid "کد متن ارسالی صحیح نمی‌باشد و یا توسط مدیر سامانه تأیید نشده است."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:462
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:464
 msgid "خط ارسالی در سیستم تعریف نشده است، با پشتیبانی سامانه تماس بگیرید."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:465
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:467
 msgid "محدودیت تعداد شماره، محدودیت هربار ارسال یک شماره موبایل می‌باشد."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:468
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:470
 msgid "دسترسی برای استفاده از این وبسرویس غیرفعال است. با پشتیبانی تماس بگیرید."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-melipayamak.php:471
+#: includes/gateways/class-wpsms-gateway-melipayamak.php:473
 msgid "خطای ناشناخته‌ای رخ داده است."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-msegat.php:146
+#: includes/gateways/class-wpsms-gateway-msegat.php:148
 msgid "The Username for this gateway is not set"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-mtarget.php:30
+#: includes/gateways/class-wpsms-gateway-mtarget.php:32
 msgid "Number of the recipient with country code (+44...) or in international format (0044 ...)"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-octopush.php:32
+#: includes/gateways/class-wpsms-gateway-octopush.php:34
 msgid "API Login"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-octopush.php:33
+#: includes/gateways/class-wpsms-gateway-octopush.php:35
 msgid "Enter your API Login - Username (Email address)"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-octopush.php:38
+#: includes/gateways/class-wpsms-gateway-octopush.php:40
 msgid "Enter your API KEY"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-octopush.php:43
+#: includes/gateways/class-wpsms-gateway-octopush.php:45
 msgid "Enter Sender Name"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-octopush.php:128
+#: includes/gateways/class-wpsms-gateway-octopush.php:130
 msgid "API Login or API Key is not set."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-oxemis.php:117
+#: includes/gateways/class-wpsms-gateway-oxemis.php:119
 msgid "The API Key and API Password are required."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-prosms.php:21
+#: includes/gateways/class-wpsms-gateway-prosms.php:22
 msgid "46*********"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-prosms.php:23
-#: includes/gateways/class-wpsms-gateway-prosmsdk.php:23
+#: includes/gateways/class-wpsms-gateway-prosms.php:24
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:24
 msgid "Note: that you need to get every 'Sender Name' approved before you can use it as 'Sender Name'. You can do it by going to your gateway account then go to this path : Account setting > SENDER NAME > Add"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-prosms.php:32
-#: includes/gateways/class-wpsms-gateway-prosmsdk.php:32
+#: includes/gateways/class-wpsms-gateway-prosms.php:33
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:33
 msgid "API Iey"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-prosms.php:111
-#: includes/gateways/class-wpsms-gateway-prosmsdk.php:110
+#: includes/gateways/class-wpsms-gateway-prosms.php:112
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:111
 msgid "Api key for this gateway is required."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-prosmsdk.php:21
+#: includes/gateways/class-wpsms-gateway-prosmsdk.php:22
 msgid "45*********"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-revesms.php:134
+#: includes/gateways/class-wpsms-gateway-revesms.php:136
 msgid "The API Key/Secret Key for this gateway is not set."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-sendapp.php:109
+#: includes/gateways/class-wpsms-gateway-sendapp.php:111
 msgid "The API Key required."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-sendappWhatsApp.php:93
+#: includes/gateways/class-wpsms-gateway-sendappWhatsApp.php:95
 msgid "The API Key Key for this gateway is not set."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-signalads.php:115
+#: includes/gateways/class-wpsms-gateway-signalads.php:117
 msgid "The API Key is required."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-slinteractive.php:102
+#: includes/gateways/class-wpsms-gateway-slinteractive.php:104
 msgid "API username or API Key is not entered."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smartsmsgateway.php:120
+#: includes/gateways/class-wpsms-gateway-smartsmsgateway.php:122
 msgid "The Username/Password for this gateway is not set."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smsapi.php:121
+#: includes/gateways/class-wpsms-gateway-smsapi.php:123
 msgid "API Token is required."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smses.php:75
+#: includes/gateways/class-wpsms-gateway-smses.php:77
 msgid "API Base URL"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smses.php:80
+#: includes/gateways/class-wpsms-gateway-smses.php:82
 msgid "Select the base URL for the SMS Gateway API."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smses.php:84
+#: includes/gateways/class-wpsms-gateway-smses.php:86
 msgid "Username"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smses.php:85
+#: includes/gateways/class-wpsms-gateway-smses.php:87
 msgid "sms.es API username (System ID)."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smses.php:89
+#: includes/gateways/class-wpsms-gateway-smses.php:91
 msgid "Password"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smses.php:90
+#: includes/gateways/class-wpsms-gateway-smses.php:92
 msgid "sms.es API password."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smses.php:94
+#: includes/gateways/class-wpsms-gateway-smses.php:96
 msgid "Sender ID"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smses.php:95
+#: includes/gateways/class-wpsms-gateway-smses.php:97
 msgid "Alphanumeric or numeric sender (subject to local regulations)."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smsgatewayhub.php:49
-#: includes/gateways/class-wpsms-gateway-smsozone.php:47
+#: includes/gateways/class-wpsms-gateway-smsgatewayhub.php:51
+#: includes/gateways/class-wpsms-gateway-smsozone.php:49
 msgid "SMS Channel"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smsgatewayhub.php:50
-#: includes/gateways/class-wpsms-gateway-smsozone.php:48
+#: includes/gateways/class-wpsms-gateway-smsgatewayhub.php:52
+#: includes/gateways/class-wpsms-gateway-smsozone.php:50
 msgid "Please select SMS channel."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smsgatewayhub.php:53
-#: includes/gateways/class-wpsms-gateway-smsozone.php:51
+#: includes/gateways/class-wpsms-gateway-smsgatewayhub.php:55
+#: includes/gateways/class-wpsms-gateway-smsozone.php:53
 msgid "Transactional"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smsgatewayhub.php:54
-#: includes/gateways/class-wpsms-gateway-smsozone.php:52
+#: includes/gateways/class-wpsms-gateway-smsgatewayhub.php:56
+#: includes/gateways/class-wpsms-gateway-smsozone.php:54
 msgid "Promotional"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smsglobal.php:144
+#: includes/gateways/class-wpsms-gateway-smsglobal.php:146
 msgid "The API Key or API Secret for this gateway is not set"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smsozone.php:37
+#: includes/gateways/class-wpsms-gateway-smsozone.php:39
 msgid "Registered DLT Template ID"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smsozone.php:38
+#: includes/gateways/class-wpsms-gateway-smsozone.php:40
 msgid "Enter your Registered DLT Template ID."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smsozone.php:42
+#: includes/gateways/class-wpsms-gateway-smsozone.php:44
 msgid "DLT Entity ID"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-smsozone.php:43
+#: includes/gateways/class-wpsms-gateway-smsozone.php:45
 msgid "Enter your Registered Entity ID. This field is optional."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-textanywhere.php:195
+#: includes/gateways/class-wpsms-gateway-textanywhere.php:197
 msgid "Username and API password are required."
 msgstr ""
 
 #. translators: %s: Function name
-#: includes/gateways/class-wpsms-gateway-textanywhere.php:239
+#: includes/gateways/class-wpsms-gateway-textanywhere.php:241
 #, php-format
 msgid "The <code>%s</code> function is not active in your server."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-textanywhere.php:322
+#: includes/gateways/class-wpsms-gateway-textanywhere.php:324
 msgid "Invalid get token response "
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:24
+#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:26
 msgid "<b>SMS Route</b>: Please follow this format in your messages: <pre>message|template_id</pre><br><b>WhatsApp Route</b>: Please follow this format in your messages: <pre>var1:var2:var3:var4|template_name</pre>"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:49
+#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:51
 #: includes/templates/admin/fields/field-team-member-repeater.php:38
 #: includes/templates/admin/fields/field-team-member-repeater.php:82
-#: views/pages/onboarding/steps/configuration.php:118
-#: views/pages/onboarding/steps/sms-gateway.php:106
+#: views/pages/onboarding/steps/configuration.php:121
+#: views/pages/onboarding/steps/sms-gateway.php:108
 msgid "WhatsApp"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:51
+#: includes/gateways/class-wpsms-gateway-tubelightcommunications.php:53
 msgid "Please select the route."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-uwaziimobile.php:125
+#: includes/gateways/class-wpsms-gateway-uwaziimobile.php:127
 msgid "The username/password is not entered."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-uwaziimobile.php:131
+#: includes/gateways/class-wpsms-gateway-uwaziimobile.php:133
 msgid "There is a problem with the username and password provided."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-_1s2u.php:190
+#: includes/gateways/class-wpsms-gateway-websmscy.php:54
+#: includes/gateways/class-wpsms-gateway-websmscy.php:58
+#: includes/gateways/class-wpsms-gateway-websmscy.php:114
+msgid "The Websmscy class could not be found. Please ensure the Websmscy library or plugin is properly loaded."
+msgstr ""
+
+#: includes/gateways/class-wpsms-gateway-_1s2u.php:191
 msgid "Service Not Available or Down Temporary"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-_1s2u.php:194
+#: includes/gateways/class-wpsms-gateway-_1s2u.php:195
 msgid "Invalid username/password."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-_1s2u.php:198
+#: includes/gateways/class-wpsms-gateway-_1s2u.php:199
 msgid "Invalid server"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-_1s2u.php:202
+#: includes/gateways/class-wpsms-gateway-_1s2u.php:203
 msgid "Username not provided."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-_1s2u.php:206
+#: includes/gateways/class-wpsms-gateway-_1s2u.php:207
 msgid "Password not provided."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-_1s2u.php:211
+#: includes/gateways/class-wpsms-gateway-_1s2u.php:212
 msgid "Insufficient Credits"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-_1s2u.php:215
+#: includes/gateways/class-wpsms-gateway-_1s2u.php:216
 msgid "Invalid Sender ID"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-_1s2u.php:219
+#: includes/gateways/class-wpsms-gateway-_1s2u.php:220
 msgid "Mobile number not provided."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-_1s2u.php:223
+#: includes/gateways/class-wpsms-gateway-_1s2u.php:224
 msgid "Invalid mobile number"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-_1s2u.php:227
+#: includes/gateways/class-wpsms-gateway-_1s2u.php:228
 msgid "Network not supported."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-_1s2u.php:231
+#: includes/gateways/class-wpsms-gateway-_1s2u.php:232
 msgid "Invalid message."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-_1s2u.php:235
+#: includes/gateways/class-wpsms-gateway-_1s2u.php:236
 msgid "Invalid quantity specified."
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-_1s2u.php:239
+#: includes/gateways/class-wpsms-gateway-_1s2u.php:240
 msgid "Network not supported"
 msgstr ""
 
-#: includes/gateways/class-wpsms-gateway-_1s2u.php:243
+#: includes/gateways/class-wpsms-gateway-_1s2u.php:244
 msgid "Something's wrong. Please contact the SMS gateway provider support team."
 msgstr ""
 
-#: includes/libraries/wp-background-processing/wp-background-process.php:656
-msgid "Every Minute"
+#: includes/gateways/class-wpsms-gateway-_textplode.php:46
+#: includes/gateways/class-wpsms-gateway-_textplode.php:50
+#: includes/gateways/class-wpsms-gateway-_textplode.php:119
+msgid "The Textplode class could not be found. Please ensure the Textplode library or plugin is properly loaded."
 msgstr ""
 
 #: includes/libraries/wp-background-processing/wp-background-process.php:658
+msgid "Every Minute"
+msgstr ""
+
+#. translators: %d: number of minutes
+#: includes/libraries/wp-background-processing/wp-background-process.php:661
 #, php-format
 msgid "Every %d Minutes"
 msgstr ""
@@ -3447,7 +3471,7 @@ msgstr ""
 
 #: includes/templates/admin/fields/field-resource-link-repeater.php:13
 #: includes/templates/admin/fields/field-resource-link-repeater.php:29
-#: src/Services/MessageButton/ChatBoxDecorator.php:153
+#: src/Services/MessageButton/ChatBoxDecorator.php:155
 msgid "Troubleshooting Common Issues"
 msgstr ""
 
@@ -3462,7 +3486,7 @@ msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:17
 #: includes/templates/admin/fields/field-team-member-repeater.php:61
-#: src/Services/MessageButton/ChatBoxDecorator.php:95
+#: src/Services/MessageButton/ChatBoxDecorator.php:97
 msgid "Emily Brown"
 msgstr ""
 
@@ -3473,7 +3497,7 @@ msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:21
 #: includes/templates/admin/fields/field-team-member-repeater.php:65
-#: src/Services/MessageButton/ChatBoxDecorator.php:98
+#: src/Services/MessageButton/ChatBoxDecorator.php:100
 msgid "Marketing Manager"
 msgstr ""
 
@@ -3499,7 +3523,7 @@ msgstr ""
 
 #: includes/templates/admin/fields/field-team-member-repeater.php:32
 #: includes/templates/admin/fields/field-team-member-repeater.php:76
-#: src/Services/MessageButton/ChatBoxDecorator.php:101
+#: src/Services/MessageButton/ChatBoxDecorator.php:103
 msgid "Available 10AM-5PM PST"
 msgstr ""
 
@@ -3688,7 +3712,7 @@ msgid "Receiver"
 msgstr ""
 
 #: includes/templates/admin/order-view-metabox.php:23
-#: includes/templates/admin/send-sms.php:151
+#: includes/templates/admin/send-sms.php:155
 msgid "Write your SMS message here ..."
 msgstr ""
 
@@ -3698,7 +3722,7 @@ msgstr ""
 
 #: includes/templates/admin/order-view-metabox.php:53
 #: includes/templates/admin/send-sms.php:26
-#: includes/templates/admin/send-sms.php:251
+#: includes/templates/admin/send-sms.php:255
 msgid "Content"
 msgstr ""
 
@@ -3714,14 +3738,18 @@ msgstr ""
 msgid "UPGRADE TO ALL-IN-ONE"
 msgstr ""
 
-#: includes/templates/admin/partials/license-status.php:21
+#. translators: 1: number of licensed plugins 2: total number of plugins
+#: includes/templates/admin/partials/license-status.php:23
+#: views/templates/header.php:31
+#: views/templates/header.php:93
 #, php-format
 msgid "License: %1$s/%2$s"
 msgstr ""
 
-#: includes/templates/admin/partials/license-status.php:22
-#: views/templates/header.php:29
-#: views/templates/header.php:83
+#. translators: 1: number of licensed plugins 2: total number of plugins
+#: includes/templates/admin/partials/license-status.php:24
+#: views/templates/header.php:31
+#: views/templates/header.php:93
 msgid "Upgrade"
 msgstr ""
 
@@ -3777,7 +3805,7 @@ msgid "Send"
 msgstr ""
 
 #: includes/templates/admin/send-sms.php:38
-#: includes/templates/admin/send-sms.php:247
+#: includes/templates/admin/send-sms.php:251
 msgid "From"
 msgstr ""
 
@@ -3846,138 +3874,140 @@ msgstr ""
 msgid "Customers have the mobile number."
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:114
+#. translators: %s: number of customers
+#: includes/templates/admin/send-sms.php:116
 #, php-format
 msgid "<b>%s</b> Customers have the mobile number."
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:118
+#: includes/templates/admin/send-sms.php:120
 msgid "Users have the mobile number in their profile."
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:120
+#. translators: %s: number of users
+#: includes/templates/admin/send-sms.php:124
 #, php-format
 msgid "<b>%s</b> Users have the mobile number in their profile."
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:127
+#: includes/templates/admin/send-sms.php:131
 msgid "Write Numbers"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:131
+#: includes/templates/admin/send-sms.php:135
 msgid "Separate the numbers with comma (,) or enter in each lines."
 msgstr ""
 
 #. translators: %s: Gateway description
-#: includes/templates/admin/send-sms.php:137
+#: includes/templates/admin/send-sms.php:141
 #, php-format
 msgid "Gateway description: %s"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:145
+#: includes/templates/admin/send-sms.php:149
 msgid "This gateway doesn't support the bulk SMS and will use the first number while sending a group of numbers."
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:155
+#: includes/templates/admin/send-sms.php:159
 msgid "Choice MMS media"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:158
+#: includes/templates/admin/send-sms.php:162
 msgid "Upload image"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:161
+#: includes/templates/admin/send-sms.php:165
 msgid "Remove image"
 msgstr ""
 
 #. translators: %s: Supported gateways link
-#: includes/templates/admin/send-sms.php:167
+#: includes/templates/admin/send-sms.php:171
 #, php-format
 msgid "This gateway doesn't support the MMS, <a href=\"%s\" target=\"_blank\">click here</a> to see which gateways support it."
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:178
+#: includes/templates/admin/send-sms.php:182
 msgid "Scheduled message?"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:180
-#: views/components/lock-sections/active-addon.php:13
+#: includes/templates/admin/send-sms.php:184
+#: views/components/lock-sections/active-addon.php:17
 msgid "All-in-One"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:184
+#: includes/templates/admin/send-sms.php:188
 msgid "Set date"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:186
+#: includes/templates/admin/send-sms.php:190
 msgid "Site's time zone"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:191
+#: includes/templates/admin/send-sms.php:195
 msgid "Repeat?"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:195
+#: includes/templates/admin/send-sms.php:199
 msgid "Repeat every"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:199
+#: includes/templates/admin/send-sms.php:203
 msgid "Day"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:200
+#: includes/templates/admin/send-sms.php:204
 msgid "Week"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:201
+#: includes/templates/admin/send-sms.php:205
 msgid "Month"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:202
+#: includes/templates/admin/send-sms.php:206
 msgid "Year"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:209
+#: includes/templates/admin/send-sms.php:213
 msgid "End on"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:214
+#: includes/templates/admin/send-sms.php:218
 msgid "Repeat Forever"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:220
+#: includes/templates/admin/send-sms.php:224
 msgid "Send as a Flash"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:225
+#: includes/templates/admin/send-sms.php:229
 msgid "Yes"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:229
+#: includes/templates/admin/send-sms.php:233
 msgid "No"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:234
+#: includes/templates/admin/send-sms.php:238
 msgid "A message that appears on the recipient's mobile screen directly. The recipient does not need to go to the mobile phone inbox to read the message, nor is the message allocated to the SMS inbox."
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:254
+#: includes/templates/admin/send-sms.php:258
 msgid "Still empty!"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:258
+#: includes/templates/admin/send-sms.php:262
 msgid "Receivers"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:263
+#: includes/templates/admin/send-sms.php:267
 msgid "Send Again"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:267
+#: includes/templates/admin/send-sms.php:271
 msgid "Prev"
 msgstr ""
 
-#: includes/templates/admin/send-sms.php:268
+#: includes/templates/admin/send-sms.php:272
 msgid "Next"
 msgstr ""
 
@@ -4008,12 +4038,6 @@ msgstr ""
 
 #: includes/templates/chatbox.php:113
 msgid "Powered By"
-msgstr ""
-
-#: includes/templates/chatbox.php:114
-#: src/Admin/SiteHealthInfo.php:23
-#: src/Blocks/BlockAssetsManager.php:46
-msgid "WP SMS"
 msgstr ""
 
 #: includes/templates/email/default.php:30
@@ -4091,7 +4115,7 @@ msgid "Type"
 msgstr ""
 
 #: includes/templates/email/partials/report-data.php:111
-#: src/Widget/Widgets/StatsWidget.php:147
+#: src/Widget/Widgets/StatsWidget.php:149
 msgid "Successful"
 msgstr ""
 
@@ -4138,14 +4162,14 @@ msgstr ""
 #: includes/templates/header.php:57
 #: includes/templates/header.php:74
 #: includes/templates/header.php:76
-#: views/templates/header.php:41
-#: views/templates/header.php:68
-#: views/templates/header.php:70
+#: views/templates/header.php:43
+#: views/templates/header.php:76
+#: views/templates/header.php:78
 msgid "Help Center"
 msgstr ""
 
 #: includes/templates/header.php:66
-#: views/templates/header.php:51
+#: views/templates/header.php:53
 msgid "Menu"
 msgstr ""
 
@@ -4176,11 +4200,11 @@ msgid "Short codes"
 msgstr ""
 
 #: includes/templates/mobile-field-register.php:3
-#: src/Blocks/WooMobileField.php:20
-#: src/Blocks/WooMobileField.php:21
-#: src/User/MobileFieldHandler/WooCommerceAddMobileFieldHandler.php:123
-#: src/User/MobileFieldHandler/WooCommerceAddMobileFieldHandler.php:141
-#: src/User/MobileFieldHandler/WooCommerceAddMobileFieldHandler.php:173
+#: src/Blocks/WooMobileField.php:22
+#: src/Blocks/WooMobileField.php:23
+#: src/User/MobileFieldHandler/WooCommerceAddMobileFieldHandler.php:125
+#: src/User/MobileFieldHandler/WooCommerceAddMobileFieldHandler.php:143
+#: src/User/MobileFieldHandler/WooCommerceAddMobileFieldHandler.php:175
 msgid "Mobile Number"
 msgstr ""
 
@@ -4209,7 +4233,7 @@ msgid "Send Message"
 msgstr ""
 
 #: includes/templates/subscribe-form.php:12
-#: src/Shortcode/SubscriberShortcode.php:17
+#: src/Shortcode/SubscriberShortcode.php:19
 msgid "Subscribe SMS"
 msgstr ""
 
@@ -4325,1271 +4349,1302 @@ msgstr ""
 msgid "Read more"
 msgstr ""
 
-#: src/Abstracts/BaseTabView.php:18
-#: src/Admin/LicenseManagement/Abstracts/BaseTabView.php:18
+#: src/Abstracts/BaseTabView.php:20
+#: src/Admin/LicenseManagement/Abstracts/BaseTabView.php:20
 msgid "Invalid tab provided."
 msgstr ""
 
-#: src/Abstracts/MultiViewPage.php:45
-#: src/Admin/LicenseManagement/Abstracts/MultiViewPage.php:45
+#: src/Abstracts/MultiViewPage.php:47
+#: src/Admin/LicenseManagement/Abstracts/MultiViewPage.php:47
 msgid "View is not valid."
 msgstr ""
 
-#: src/Abstracts/MultiViewPage.php:51
-#: src/Admin/LicenseManagement/Abstracts/MultiViewPage.php:51
+#. translators: %s: class name
+#: src/Abstracts/MultiViewPage.php:54
+#: src/Admin/LicenseManagement/Abstracts/MultiViewPage.php:54
 #, php-format
 msgid "render method is not defined within %s class."
 msgstr ""
 
-#: src/Admin/AjaxOptionUpdater.php:40
+#: src/Admin/AjaxOptionUpdater.php:42
 msgid "You are not allowed to update settings."
 msgstr ""
 
-#: src/Admin/AjaxOptionUpdater.php:54
+#: src/Admin/AjaxOptionUpdater.php:56
 msgid "Update option success."
 msgstr ""
 
-#: src/Admin/AnonymizedUsageData/AnonymizedUsageDataManager.php:37
+#: src/Admin/AnonymizedUsageData/AnonymizedUsageDataManager.php:39
 msgid "Every 2 Months"
 msgstr ""
 
-#: src/Admin/LicenseManagement/ApiCommunicator.php:31
+#. translators: %s: API URL
+#: src/Admin/LicenseManagement/ApiCommunicator.php:34
 #, php-format
 msgid "No products were found. The API returned an empty response from the following URL: %s"
 msgstr ""
 
 #. translators: %s: Error message.
-#: src/Admin/LicenseManagement/ApiCommunicator.php:38
+#: src/Admin/LicenseManagement/ApiCommunicator.php:41
 #, php-format
 msgid "Unable to retrieve product list from the remote server, %s. Please check the remote server connection or your remote work configuration."
 msgstr ""
 
-#: src/Admin/LicenseManagement/ApiCommunicator.php:102
+#: src/Admin/LicenseManagement/ApiCommunicator.php:105
 msgid "License key is not valid. Please enter a valid license and try again."
 msgstr ""
 
-#: src/Admin/LicenseManagement/ApiCommunicator.php:115
+#: src/Admin/LicenseManagement/ApiCommunicator.php:118
 msgid "Invalid license response!"
 msgstr ""
 
-#: src/Admin/LicenseManagement/ApiCommunicator.php:121
+#: src/Admin/LicenseManagement/ApiCommunicator.php:124
 msgid "Unknown error!"
 msgstr ""
 
-#: src/Admin/LicenseManagement/ApiCommunicator.php:143
+#. translators: %s: Add-On name
+#: src/Admin/LicenseManagement/ApiCommunicator.php:147
 #, php-format
 msgid "The license is not related to the requested Add-On <b>%s</b>."
 msgstr ""
 
-#: src/Admin/LicenseManagement/LicenseManagementManager.php:106
+#. translators: %s: error message
+#: src/Admin/LicenseManagement/LicenseManagementManager.php:108
 #, php-format
 msgid "Failed to validate license: %s"
 msgstr ""
 
-#: src/Admin/LicenseManagement/LicenseManagementManager.php:121
-#: src/Admin/LicenseManagement/LicenseManagementManager.php:122
-#: src/Admin/LicenseManagement/Views/TabsView.php:147
-#: src/Admin/LicenseManagement/Views/TabsView.php:169
+#: src/Admin/LicenseManagement/LicenseManagementManager.php:123
+#: src/Admin/LicenseManagement/LicenseManagementManager.php:124
+#: src/Admin/LicenseManagement/Views/TabsView.php:149
+#: src/Admin/LicenseManagement/Views/TabsView.php:171
 #: views/pages/license-manager/add-ons.php:10
-#: views/templates/header.php:56
+#: views/templates/header.php:59
 msgid "Add-Ons"
 msgstr ""
 
-#: src/Admin/LicenseManagement/LicenseManagementManager.php:190
-#, php-format
-msgid "Plugin data not found for: %s"
-msgstr ""
-
-#: src/Admin/LicenseManagement/LicenseManagerDataProvider.php:39
+#: src/Admin/LicenseManagement/LicenseManagerDataProvider.php:41
 msgid "Failed to retrieve the list of available add-ons. Please try again later."
 msgstr ""
 
-#: src/Admin/LicenseManagement/LicenseMigration.php:120
+#. translators: 1: Add-on slug 2: error message
+#: src/Admin/LicenseManagement/LicenseMigration.php:123
 #, php-format
-msgid "Failed to migrate license for %s: %s"
+msgid "Failed to migrate license for %1$s: %2$s"
 msgstr ""
 
-#: src/Admin/LicenseManagement/Plugin/PluginActions.php:68
-#: src/Admin/LicenseManagement/Plugin/PluginActions.php:110
-#: src/Controller/LicenseManagerAjax.php:55
-#: src/Controller/LicenseManagerAjax.php:93
-msgid "License key is missing."
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginActions.php:74
-#: src/Controller/LicenseManagerAjax.php:61
-msgid "You're All Set! Your License is Successfully Activated!"
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginActions.php:90
-#: src/Controller/LicenseManagerAjax.php:73
-msgid "You are not allowed to install plugins."
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginActions.php:98
-#: src/Controller/LicenseManagerAjax.php:81
-msgid "Plugin installation is not permitted on this sub-site. Please contact your network administrator to install the plugin across the entire network."
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginActions.php:102
-#: src/Admin/LicenseManagement/Plugin/PluginActions.php:145
-#: src/Admin/LicenseManagement/Plugin/PluginActions.php:173
-#: src/Controller/LicenseManagerAjax.php:85
-#: src/Controller/LicenseManagerAjax.php:118
-#: src/Controller/LicenseManagerAjax.php:142
-msgid "Plugin slug is missing."
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginActions.php:115
-#: src/Controller/LicenseManagerAjax.php:98
-msgid "Download URL not found!"
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginActions.php:122
-#: src/Controller/LicenseManagerAjax.php:104
-msgid "Plugin downloaded and installed successfully."
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginActions.php:166
-#: src/Controller/LicenseManagerAjax.php:135
-msgid "You are not allowed to activate plugins."
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginActions.php:179
-#: src/Controller/LicenseManagerAjax.php:153
-msgid "Plugin activated successfully."
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginDecorator.php:149
-#: views/components/modals/all-in-one/step-details.php:102
-msgid "Not Installed"
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginDecorator.php:151
-msgid "Needs License"
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginDecorator.php:153
-msgid "License Expired"
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginDecorator.php:159
-msgid "Unknown"
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:24
-msgid "Download URL is empty!"
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:28
-msgid "You do not have permission to install plugins."
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:44
-#, php-format
-msgid "Failed to download the plugin: %s"
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:52
-#, php-format
-msgid "Failed to download the plugin. HTTP Status: %d. Response: %s"
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:67
-#, php-format
-msgid "Failed to install the plugin: %s"
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:122
-#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:150
-#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:170
-msgid "Plugin is not installed!"
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:126
-msgid "Plugin already active."
-msgstr ""
-
-#. translators: %s: Error message.
-#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:132
-#, php-format
-msgid "Failed to activate the plugin: %s"
-msgstr ""
-
-#: src/Admin/LicenseManagement/Plugin/PluginUpdater.php:162
+#. translators: %s: plugin name
+#: src/Admin/LicenseManagement/Plugin/AddonUpdater.php:160
 #, php-format
 msgid "Automatic updates are disabled for the <b>%s</b>."
 msgstr ""
 
-#: src/Admin/LicenseManagement/Plugin/PluginUpdater.php:165
+#. translators: %s: URL to license page
+#: src/Admin/LicenseManagement/Plugin/AddonUpdater.php:164
 #, php-format
 msgid "To unlock automatic updates, please <a href=\"%s\">activate your license</a>."
 msgstr ""
 
-#: src/Admin/LicenseManagement/Views/TabsView.php:48
+#: src/Admin/LicenseManagement/Plugin/PluginActions.php:70
+#: src/Admin/LicenseManagement/Plugin/PluginActions.php:112
+#: src/Controller/LicenseManagerAjax.php:57
+#: src/Controller/LicenseManagerAjax.php:95
+msgid "License key is missing."
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginActions.php:76
+#: src/Controller/LicenseManagerAjax.php:63
+msgid "You're All Set! Your License is Successfully Activated!"
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginActions.php:92
+#: src/Controller/LicenseManagerAjax.php:75
+msgid "You are not allowed to install plugins."
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginActions.php:100
+#: src/Controller/LicenseManagerAjax.php:83
+msgid "Plugin installation is not permitted on this sub-site. Please contact your network administrator to install the plugin across the entire network."
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginActions.php:104
+#: src/Admin/LicenseManagement/Plugin/PluginActions.php:147
+#: src/Admin/LicenseManagement/Plugin/PluginActions.php:175
+#: src/Controller/LicenseManagerAjax.php:87
+#: src/Controller/LicenseManagerAjax.php:120
+#: src/Controller/LicenseManagerAjax.php:144
+msgid "Plugin slug is missing."
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginActions.php:117
+#: src/Controller/LicenseManagerAjax.php:100
+msgid "Download URL not found!"
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginActions.php:124
+#: src/Controller/LicenseManagerAjax.php:106
+msgid "Plugin downloaded and installed successfully."
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginActions.php:168
+#: src/Controller/LicenseManagerAjax.php:137
+msgid "You are not allowed to activate plugins."
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginActions.php:181
+#: src/Controller/LicenseManagerAjax.php:155
+msgid "Plugin activated successfully."
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginDecorator.php:151
+#: views/components/modals/all-in-one/step-details.php:102
+msgid "Not Installed"
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginDecorator.php:153
+msgid "Needs License"
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginDecorator.php:155
+msgid "License Expired"
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginDecorator.php:161
+msgid "Unknown"
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:29
+msgid "Download URL is empty!"
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:33
+msgid "You do not have permission to install plugins."
+msgstr ""
+
+#. translators: %s: error message
+#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:50
+#, php-format
+msgid "Failed to download the plugin: %s"
+msgstr ""
+
+#. translators: 1: HTTP status code 2: API response
+#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:59
+#, php-format
+msgid "Failed to download the plugin. HTTP Status: %1$d. Response: %2$s"
+msgstr ""
+
+#. translators: %s: error message
+#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:75
+#, php-format
+msgid "Failed to install the plugin: %s"
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:130
+#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:158
+#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:178
+msgid "Plugin is not installed!"
+msgstr ""
+
+#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:134
+msgid "Plugin already active."
+msgstr ""
+
+#. translators: %s: Error message.
+#: src/Admin/LicenseManagement/Plugin/PluginHandler.php:140
+#, php-format
+msgid "Failed to activate the plugin: %s"
+msgstr ""
+
+#: src/Admin/LicenseManagement/Views/TabsView.php:50
 msgid "You do not have permission to access this page."
 msgstr ""
 
-#: src/Admin/LicenseManagement/Views/TabsView.php:140
+#: src/Admin/LicenseManagement/Views/TabsView.php:142
 msgid "License Manager"
 msgstr ""
 
-#: src/Admin/LicenseManagement/Views/TabsView.php:152
+#: src/Admin/LicenseManagement/Views/TabsView.php:154
 msgid "Add Your License"
 msgstr ""
 
-#: src/Admin/LicenseManagement/Views/TabsView.php:157
+#: src/Admin/LicenseManagement/Views/TabsView.php:159
 msgid "Download Add-Ons"
 msgstr ""
 
-#: src/Admin/LicenseManagement/Views/TabsView.php:162
+#: src/Admin/LicenseManagement/Views/TabsView.php:164
 msgid "Get Started"
 msgstr ""
 
-#: src/Admin/LicenseManagement/Views/TabsView.php:172
+#: src/Admin/LicenseManagement/Views/TabsView.php:174
 #: views/pages/license-manager/add-ons.php:11
 msgid "Install Add-On"
 msgstr ""
 
-#: src/Admin/OnBoarding/Steps/Configuration.php:50
+#: src/Admin/OnBoarding/Steps/Configuration.php:52
 msgid "Configuration"
 msgstr ""
 
-#: src/Admin/OnBoarding/Steps/GettingStarted.php:57
+#: src/Admin/OnBoarding/Steps/GettingStarted.php:59
 msgid "Getting Started"
 msgstr ""
 
-#: src/Admin/OnBoarding/Steps/Pro.php:21
+#: src/Admin/OnBoarding/Steps/Pro.php:23
 msgid "WP SMS All-in-One"
 msgstr ""
 
-#: src/Admin/OnBoarding/Steps/Ready.php:21
+#: src/Admin/OnBoarding/Steps/Ready.php:23
 msgid "Ready"
 msgstr ""
 
-#: src/Admin/OnBoarding/Steps/SmsGateway.php:46
+#. translators: %s: error message
+#: src/Admin/OnBoarding/Steps/SmsGateway.php:49
 #, php-format
 msgid "Error fetching pages: %s"
 msgstr ""
 
-#: src/Admin/OnBoarding/Steps/TestSetup.php:31
-#: views/pages/onboarding/steps/test-setup.php:8
+#: src/Admin/OnBoarding/Steps/TestSetup.php:33
+#: views/pages/onboarding/steps/test-setup.php:10
 msgid "Test Your Setup"
 msgstr ""
 
-#: src/Admin/OnBoarding/Steps/TestSetup.php:57
+#: src/Admin/OnBoarding/Steps/TestSetup.php:59
 msgid "Yes, I received it!"
 msgstr ""
 
-#: src/Admin/OnBoarding/Steps/TestSetup.php:60
+#: src/Admin/OnBoarding/Steps/TestSetup.php:62
 msgid "No, I didn't receive it."
 msgstr ""
 
-#: src/Admin/OnBoarding/WizardManager.php:78
-#, php-format
-msgid "<span>%s<span style=\"display: flex;align-items: center;gap: 6px;margin-top: 8px\" class=\"wpsms-admin-notice__action\">%s %s</span></span>"
-msgstr ""
-
-#: src/Admin/OnBoarding/WizardManager.php:79
+#: src/Admin/OnBoarding/WizardManager.php:81
 msgid "WP SMS is now active! Before sending any messages, please configure your gateway and complete the setup process."
 msgstr ""
 
-#: src/Admin/OnBoarding/WizardManager.php:80
+#: src/Admin/OnBoarding/WizardManager.php:82
 msgid "Launch Setup Wizard"
 msgstr ""
 
-#: src/Admin/OnBoarding/WizardManager.php:81
+#: src/Admin/OnBoarding/WizardManager.php:83
 #: views/components/notices/action-notice.php:22
 msgid "Dismiss"
 msgstr ""
 
-#: src/Admin/OnBoarding/WizardManager.php:140
+#. translators: %s: step title
+#: src/Admin/OnBoarding/WizardManager.php:143
 #, php-format
 msgid "WP SMS Onboarding Process: %s"
 msgstr ""
 
-#: src/Admin/OnBoarding/WizardManager.php:222
+#: src/Admin/OnBoarding/WizardManager.php:225
 #: views/pages/license-manager/downloads.php:53
 msgid "Back"
 msgstr ""
 
-#: src/Admin/OnBoarding/WizardManager.php:226
+#: src/Admin/OnBoarding/WizardManager.php:229
 msgid "Continue"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:24
+#: src/Admin/SiteHealthInfo.php:26
 msgid "This section provides debug information about your WP SMS plugin settings."
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:37
-#: src/Admin/SiteHealthInfo.php:250
-#: src/Admin/SiteHealthInfo.php:261
-#: src/Admin/SiteHealthInfo.php:287
-#: src/Admin/SiteHealthInfo.php:314
-#: src/Admin/SiteHealthInfo.php:343
-#: src/Admin/SiteHealthInfo.php:379
-#: src/Admin/SiteHealthInfo.php:422
-#: src/Admin/SiteHealthInfo.php:437
-#: src/Admin/SiteHealthInfo.php:452
-#: src/Admin/SiteHealthInfo.php:479
-#: src/Admin/SiteHealthInfo.php:522
-#: src/Admin/SiteHealthInfo.php:682
-#: src/Admin/SiteHealthInfo.php:770
-#: src/Admin/SiteHealthInfo.php:778
-#: src/Admin/SiteHealthInfo.php:832
-#: src/Admin/SiteHealthInfo.php:871
-#: src/Admin/SiteHealthInfo.php:908
-#: src/Admin/SiteHealthInfo.php:938
-#: src/Services/WooCommerce/WooCommerceCheckout.php:43
+#: src/Admin/SiteHealthInfo.php:39
+#: src/Admin/SiteHealthInfo.php:252
+#: src/Admin/SiteHealthInfo.php:263
+#: src/Admin/SiteHealthInfo.php:289
+#: src/Admin/SiteHealthInfo.php:316
+#: src/Admin/SiteHealthInfo.php:345
+#: src/Admin/SiteHealthInfo.php:381
+#: src/Admin/SiteHealthInfo.php:424
+#: src/Admin/SiteHealthInfo.php:439
+#: src/Admin/SiteHealthInfo.php:454
+#: src/Admin/SiteHealthInfo.php:481
+#: src/Admin/SiteHealthInfo.php:524
+#: src/Admin/SiteHealthInfo.php:711
+#: src/Admin/SiteHealthInfo.php:799
+#: src/Admin/SiteHealthInfo.php:807
+#: src/Admin/SiteHealthInfo.php:861
+#: src/Admin/SiteHealthInfo.php:900
+#: src/Admin/SiteHealthInfo.php:937
+#: src/Admin/SiteHealthInfo.php:967
+#: src/Services/WooCommerce/WooCommerceCheckout.php:45
 msgid "Enabled"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:37
-#: src/Admin/SiteHealthInfo.php:250
-#: src/Admin/SiteHealthInfo.php:685
-#: src/Admin/SiteHealthInfo.php:770
-#: src/Admin/SiteHealthInfo.php:778
-#: src/Admin/SiteHealthInfo.php:832
-#: src/Admin/SiteHealthInfo.php:871
-#: src/Admin/SiteHealthInfo.php:908
-#: src/Admin/SiteHealthInfo.php:938
-#: src/Services/WooCommerce/WooCommerceCheckout.php:45
+#: src/Admin/SiteHealthInfo.php:39
+#: src/Admin/SiteHealthInfo.php:252
+#: src/Admin/SiteHealthInfo.php:714
+#: src/Admin/SiteHealthInfo.php:799
+#: src/Admin/SiteHealthInfo.php:807
+#: src/Admin/SiteHealthInfo.php:861
+#: src/Admin/SiteHealthInfo.php:900
+#: src/Admin/SiteHealthInfo.php:937
+#: src/Admin/SiteHealthInfo.php:967
+#: src/Services/WooCommerce/WooCommerceCheckout.php:47
 msgid "Disabled"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:50
+#: src/Admin/SiteHealthInfo.php:52
 msgid "Plugin Version"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:57
+#: src/Admin/SiteHealthInfo.php:59
 msgid "Database Version"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:58
-#: src/Admin/SiteHealthInfo.php:85
-#: src/Admin/SiteHealthInfo.php:92
-#: src/Admin/SiteHealthInfo.php:99
-#: src/Admin/SiteHealthInfo.php:131
-#: src/Admin/SiteHealthInfo.php:627
-#: src/Admin/SiteHealthInfo.php:646
-#: src/Admin/SiteHealthInfo.php:688
-#: src/Admin/SiteHealthInfo.php:787
-#: src/Admin/SiteHealthInfo.php:835
-#: src/Admin/SiteHealthInfo.php:871
-#: src/Admin/SiteHealthInfo.php:908
-#: src/Admin/SiteHealthInfo.php:938
-#: src/Admin/SiteHealthInfo.php:988
+#: src/Admin/SiteHealthInfo.php:60
+#: src/Admin/SiteHealthInfo.php:87
+#: src/Admin/SiteHealthInfo.php:94
+#: src/Admin/SiteHealthInfo.php:101
+#: src/Admin/SiteHealthInfo.php:133
+#: src/Admin/SiteHealthInfo.php:630
+#: src/Admin/SiteHealthInfo.php:673
+#: src/Admin/SiteHealthInfo.php:717
+#: src/Admin/SiteHealthInfo.php:816
+#: src/Admin/SiteHealthInfo.php:864
+#: src/Admin/SiteHealthInfo.php:900
+#: src/Admin/SiteHealthInfo.php:937
+#: src/Admin/SiteHealthInfo.php:967
+#: src/Admin/SiteHealthInfo.php:1017
 msgid "Not Set"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:98
+#: src/Admin/SiteHealthInfo.php:100
 msgid "SMS Gateway Name"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:105
+#: src/Admin/SiteHealthInfo.php:107
 msgid "SMS Gateway Status"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:111
+#: src/Admin/SiteHealthInfo.php:113
 msgid "SMS Gateway Incoming Message"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:117
+#: src/Admin/SiteHealthInfo.php:119
 msgid "SMS Gateway Send Bulk SMS"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:123
+#: src/Admin/SiteHealthInfo.php:125
 msgid "SMS Gateway Send MMS"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:130
+#: src/Admin/SiteHealthInfo.php:132
 msgid "SMS Gateway Delivery Method"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:137
+#: src/Admin/SiteHealthInfo.php:139
 msgid "SMS Gateway Unicode Messaging"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:144
+#: src/Admin/SiteHealthInfo.php:146
 msgid "SMS Gateway Number Formatting"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:153
+#: src/Admin/SiteHealthInfo.php:155
 msgid "SMS Gateway Restrict to Local Numbers"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:160
+#: src/Admin/SiteHealthInfo.php:162
 msgid "SMS Gateway Allowed Countries for SMS"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:167
+#: src/Admin/SiteHealthInfo.php:169
 msgid "SMS Newsletter Group Visibility in Form"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:174
+#: src/Admin/SiteHealthInfo.php:176
 msgid "SMS Newsletter Group Selection"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:181
+#: src/Admin/SiteHealthInfo.php:183
 msgid "SMS Newsletter Subscription Confirmation"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:188
+#: src/Admin/SiteHealthInfo.php:190
 msgid "Message Button Status"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:230
+#: src/Admin/SiteHealthInfo.php:232
 msgid "Create User on SMS Login"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:237
+#: src/Admin/SiteHealthInfo.php:239
 msgid "Contact Form 7 Metabox"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:260
+#: src/Admin/SiteHealthInfo.php:262
 msgid "Gravity Forms Integration"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:278
+#: src/Admin/SiteHealthInfo.php:280
 msgid "SMS Notifications Gravityforms"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:286
+#: src/Admin/SiteHealthInfo.php:288
 msgid "Quform Integration"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:305
+#: src/Admin/SiteHealthInfo.php:307
 msgid "SMS Notifications Quforms"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:313
+#: src/Admin/SiteHealthInfo.php:315
 msgid "EDD Integration"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:320
+#: src/Admin/SiteHealthInfo.php:322
 msgid "EDD Mobile Field"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:327
+#: src/Admin/SiteHealthInfo.php:329
 msgid "EDD New Order Notifications"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:334
+#: src/Admin/SiteHealthInfo.php:336
 msgid "EDD Customer Notifications"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:342
+#: src/Admin/SiteHealthInfo.php:344
 msgid "WP Job Manager Integration"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:349
+#: src/Admin/SiteHealthInfo.php:351
 msgid "Job Mobile Field"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:356
+#: src/Admin/SiteHealthInfo.php:358
 msgid "Display Mobile Number"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:363
+#: src/Admin/SiteHealthInfo.php:365
 msgid "New Job Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:370
+#: src/Admin/SiteHealthInfo.php:372
 msgid "Employer Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:378
+#: src/Admin/SiteHealthInfo.php:380
 msgid "Awesome Support Integration"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:385
+#: src/Admin/SiteHealthInfo.php:387
 msgid "New Ticket Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:392
+#: src/Admin/SiteHealthInfo.php:394
 msgid "Admin Reply Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:399
+#: src/Admin/SiteHealthInfo.php:401
 msgid "User Reply Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:406
+#: src/Admin/SiteHealthInfo.php:408
 msgid "Status Update Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:413
+#: src/Admin/SiteHealthInfo.php:415
 msgid "Ticket Close Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:421
+#: src/Admin/SiteHealthInfo.php:423
 msgid "Ultimate Member Integration"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:428
+#: src/Admin/SiteHealthInfo.php:430
 msgid "Ultimate Member User Approval Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:436
+#: src/Admin/SiteHealthInfo.php:438
 msgid "Formidable Integration"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:443
+#: src/Admin/SiteHealthInfo.php:445
 msgid "Formidable Metabox"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:451
+#: src/Admin/SiteHealthInfo.php:453
 msgid "Forminator Integration"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:470
+#: src/Admin/SiteHealthInfo.php:472
 msgid "SMS Notifications Forminator forms"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:478
+#: src/Admin/SiteHealthInfo.php:480
 msgid "BuddyPress Integration"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:485
+#: src/Admin/SiteHealthInfo.php:487
 msgid "BuddyPress Welcome SMS"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:492
+#: src/Admin/SiteHealthInfo.php:494
 msgid "BuddyPress Mention Alerts"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:499
+#: src/Admin/SiteHealthInfo.php:501
 msgid "BuddyPress Private Messages"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:506
+#: src/Admin/SiteHealthInfo.php:508
 msgid "BuddyPress Activity Replies"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:513
+#: src/Admin/SiteHealthInfo.php:515
 msgid "BuddyPress Comment Replies"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:521
+#: src/Admin/SiteHealthInfo.php:523
 msgid "WooCommerce Integration"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:528
+#: src/Admin/SiteHealthInfo.php:530
 msgid "WooCommerce Order Meta Box"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:535
+#: src/Admin/SiteHealthInfo.php:537
 msgid "WooCommerce New Product Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:542
+#: src/Admin/SiteHealthInfo.php:544
 msgid "WooCommerce New Order Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:549
+#: src/Admin/SiteHealthInfo.php:551
 msgid "WooCommerce Customer Order Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:556
+#: src/Admin/SiteHealthInfo.php:558
 msgid "WooCommerce Low Stock Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:563
+#: src/Admin/SiteHealthInfo.php:565
 msgid "WooCommerce Checkout Confirmation Checkbox"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:570
+#: src/Admin/SiteHealthInfo.php:572
 msgid "WooCommerce Order Status Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:577
+#: src/Admin/SiteHealthInfo.php:579
 msgid "WooCommerce Specific Order Status Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:585
+#: src/Admin/SiteHealthInfo.php:587
 msgid "WooCommerce Configured Status Notifications"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:662
+#. translators: %s: number of days
+#: src/Admin/SiteHealthInfo.php:643
+#, php-format
+msgid "%s day"
+msgid_plural "%s days"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of hours
+#: src/Admin/SiteHealthInfo.php:654
+#, php-format
+msgid "%s hour"
+msgid_plural "%s hours"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %s: number of minutes
+#: src/Admin/SiteHealthInfo.php:665
+#, php-format
+msgid "%s minute"
+msgid_plural "%s minutes"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Admin/SiteHealthInfo.php:691
 msgid "WooPro: Cart Abandonment Recovery"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:663
+#: src/Admin/SiteHealthInfo.php:692
 msgid "WooPro: Cart abandonment threshold"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:664
+#: src/Admin/SiteHealthInfo.php:693
 msgid "WooPro: Cart abandonment Overwrite mobile number"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:665
+#: src/Admin/SiteHealthInfo.php:694
 msgid "WooPro: Cart abandonment Create coupon"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:666
+#: src/Admin/SiteHealthInfo.php:695
 msgid "WooPro: Cart abandonment Send sms after"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:667
+#: src/Admin/SiteHealthInfo.php:696
 msgid "WooPro: Show Button in Login Page"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:668
+#: src/Admin/SiteHealthInfo.php:697
 msgid "WooPro: Show Button in Forgot Password Page"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:669
+#: src/Admin/SiteHealthInfo.php:698
 msgid "WooPro: Enable SMS Password Reset"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:670
+#: src/Admin/SiteHealthInfo.php:699
 msgid "WooPro: Confirmation Checkbox"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:671
+#: src/Admin/SiteHealthInfo.php:700
 msgid "WooPro: Enable Mobile Verification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:672
+#: src/Admin/SiteHealthInfo.php:701
 msgid "WooPro: Automatic Registration via SMS"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:673
+#: src/Admin/SiteHealthInfo.php:702
 msgid "WooPro: Skip Verification for Logged-In Users"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:674
+#: src/Admin/SiteHealthInfo.php:703
 msgid "WooPro: Required Countries for Mobile Verification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:713
+#: src/Admin/SiteHealthInfo.php:742
 msgid "Do not update"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:713
+#: src/Admin/SiteHealthInfo.php:742
 msgid "Update phone number"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:804
+#: src/Admin/SiteHealthInfo.php:833
 msgid "Booking Calendar: Admin New Booking Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:805
+#: src/Admin/SiteHealthInfo.php:834
 msgid "Booking Calendar: Customer New Booking Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:806
+#: src/Admin/SiteHealthInfo.php:835
 msgid "Booking Calendar: Booking Approved Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:807
+#: src/Admin/SiteHealthInfo.php:836
 msgid "Booking Calendar: Booking Cancelled Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:808
+#: src/Admin/SiteHealthInfo.php:837
 msgid "BookingPress: Admin Approved Appointment"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:809
+#: src/Admin/SiteHealthInfo.php:838
 msgid "BookingPress: Customer Approved Appointment"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:810
+#: src/Admin/SiteHealthInfo.php:839
 msgid "BookingPress: Admin Pending Appointment"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:811
+#: src/Admin/SiteHealthInfo.php:840
 msgid "BookingPress: Customer Pending Appointment"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:812
+#: src/Admin/SiteHealthInfo.php:841
 msgid "BookingPress: Admin Rejected Appointment"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:813
+#: src/Admin/SiteHealthInfo.php:842
 msgid "BookingPress: Customer Rejected Appointment"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:814
+#: src/Admin/SiteHealthInfo.php:843
 msgid "BookingPress: Admin Cancelled Appointment"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:815
+#: src/Admin/SiteHealthInfo.php:844
 msgid "BookingPress: Customer Cancelled Appointment"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:816
+#: src/Admin/SiteHealthInfo.php:845
 msgid "Woo Appointments: Admin New Appointment"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:817
+#: src/Admin/SiteHealthInfo.php:846
 msgid "Woo Appointments: Admin Cancelled Appointment"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:818
+#: src/Admin/SiteHealthInfo.php:847
 msgid "Woo Appointments: Customer Cancelled Appointment"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:819
+#: src/Admin/SiteHealthInfo.php:848
 msgid "Woo Appointments: Admin Rescheduled Appointment"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:820
+#: src/Admin/SiteHealthInfo.php:849
 msgid "Woo Appointments: Customer Confirmed Appointment"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:821
+#: src/Admin/SiteHealthInfo.php:850
 msgid "Woo Bookings: Admin New Booking"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:822
+#: src/Admin/SiteHealthInfo.php:851
 msgid "Woo Bookings: Admin Cancelled Booking"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:823
+#: src/Admin/SiteHealthInfo.php:852
 msgid "Woo Bookings: Customer Cancelled Booking"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:824
+#: src/Admin/SiteHealthInfo.php:853
 msgid "Woo Bookings: Customer Confirmed Booking"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:859
+#: src/Admin/SiteHealthInfo.php:888
 msgid "FluentCRM: Contact Subscribed Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:860
+#: src/Admin/SiteHealthInfo.php:889
 msgid "FluentCRM: Contact Unsubscribed Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:861
+#: src/Admin/SiteHealthInfo.php:890
 msgid "FluentCRM: Contact Pending Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:862
+#: src/Admin/SiteHealthInfo.php:891
 msgid "Fluent Support: Ticket Created"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:863
+#: src/Admin/SiteHealthInfo.php:892
 msgid "Fluent Support: Customer Response"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:864
+#: src/Admin/SiteHealthInfo.php:893
 msgid "Fluent Support: Agent Assigned"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:865
+#: src/Admin/SiteHealthInfo.php:894
 msgid "Fluent Support: Ticket Closed"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:894
+#: src/Admin/SiteHealthInfo.php:923
 msgid "Paid Memberships Pro: User Registered Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:895
+#: src/Admin/SiteHealthInfo.php:924
 msgid "Paid Memberships Pro: Membership Confirmed Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:896
+#: src/Admin/SiteHealthInfo.php:925
 msgid "Paid Memberships Pro: Membership Cancelled Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:897
+#: src/Admin/SiteHealthInfo.php:926
 msgid "Paid Memberships Pro: Membership Expired Notification"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:898
+#: src/Admin/SiteHealthInfo.php:927
 msgid "Simple Membership: Admin Notified on User Registration"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:899
+#: src/Admin/SiteHealthInfo.php:928
 msgid "Simple Membership: Membership Level Updated"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:900
+#: src/Admin/SiteHealthInfo.php:929
 msgid "Simple Membership: Membership Expired"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:901
+#: src/Admin/SiteHealthInfo.php:930
 msgid "Simple Membership: Membership Cancelled"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:902
+#: src/Admin/SiteHealthInfo.php:931
 msgid "Simple Membership: Payment Received (Admin)"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:931
+#: src/Admin/SiteHealthInfo.php:960
 msgid "Two-Way: Forward Incoming SMS to Admin"
 msgstr ""
 
-#: src/Admin/SiteHealthInfo.php:932
+#: src/Admin/SiteHealthInfo.php:961
 msgid "Two-Way: Forward Incoming SMS to Email"
 msgstr ""
 
-#: src/BackgroundProcess/SmsDispatcher.php:88
+#: src/BackgroundProcess/SmsDispatcher.php:90
 msgid "SMS delivery is in progress as a background task; please review the Outbox for updates."
 msgstr ""
 
-#: src/Blocks/BlockAssetsManager.php:21
+#: src/Blocks/BlockAssetsManager.php:23
 msgid "WP SMS: The \"register_block_type\" function is not supported in this version of WordPress."
 msgstr ""
 
 #. translators: %s: Class name
-#: src/Blocks/BlockAssetsManager.php:32
+#: src/Blocks/BlockAssetsManager.php:34
 #, php-format
 msgid "WP SMS: Widget encountered an error, class %s could not be loaded."
 msgstr ""
 
-#: src/Blocks/SendSmsBlock.php:40
+#: src/Blocks/SendSmsBlock.php:42
 msgid "All Roles"
 msgstr ""
 
-#: src/Blocks/SendSmsBlock.php:51
+#: src/Blocks/SendSmsBlock.php:53
 msgid "Select a group"
 msgstr ""
 
-#: src/Blocks/WooSmsOptInBlock.php:21
+#: src/Blocks/WooSmsOptInBlock.php:23
 msgid "Status Update SMS Notifications"
 msgstr ""
 
-#: src/Blocks/WooSmsOptInBlock.php:22
-#: src/Services/WooCommerce/WooCommerceCheckout.php:60
+#: src/Blocks/WooSmsOptInBlock.php:24
+#: src/Services/WooCommerce/WooCommerceCheckout.php:62
 msgid "I would like to get notification about any change in my order via SMS."
 msgstr ""
 
-#: src/Components/Event.php:127
+#: src/Components/Event.php:129
 msgid "Daily"
 msgstr ""
 
-#: src/Components/Event.php:134
+#: src/Components/Event.php:136
 msgid "Weekly"
 msgstr ""
 
-#: src/Components/Event.php:141
+#: src/Components/Event.php:143
 msgid "Bi-Weekly"
 msgstr ""
 
-#: src/Components/Event.php:148
+#: src/Components/Event.php:150
 msgid "Monthly"
 msgstr ""
 
-#: src/Components/NumberParser.php:44
+#: src/Components/NumberParser.php:46
 msgid "Invalid Mobile Number."
 msgstr ""
 
-#: src/Components/NumberParser.php:49
+#: src/Components/NumberParser.php:51
 msgid "The mobile number doesn't contain the country code."
 msgstr ""
 
-#: src/Components/NumberParser.php:54
+#: src/Components/NumberParser.php:56
 msgid "The mobile number length is invalid."
 msgstr ""
 
-#: src/Components/NumberParser.php:60
+#: src/Components/NumberParser.php:62
 msgid "The mobile number is not valid for your country."
 msgstr ""
 
-#: src/Components/NumberParser.php:251
+#: src/Components/NumberParser.php:253
 msgid "This user mobile field is invalid."
 msgstr ""
 
 #. translators: %s: Response message
 #. translators: %s: Error message
-#: src/Components/RemoteRequest.php:126
-#: src/Webhook/WebhookAbstract.php:76
+#: src/Components/RemoteRequest.php:128
+#: src/Webhook/WebhookAbstract.php:78
 #, php-format
 msgid "Failed to get success response, %s"
 msgstr ""
 
-#: src/Components/Sms.php:52
+#: src/Components/Sms.php:54
 msgid "Mobile number not found, please make sure the mobile field in settings page is configured."
 msgstr ""
 
-#: src/Components/Sms.php:57
+#: src/Components/Sms.php:59
 msgid "Message content cannot be empty. Please provide a valid SMS message."
 msgstr ""
 
 #. translators: %s: View file path
-#: src/Components/View.php:29
+#: src/Components/View.php:31
 #, php-format
 msgid "View file not found: %s"
 msgstr ""
 
 #. translators: %s: Field name
 #. translators: %s: field name
-#: src/Controller/AjaxControllerAbstract.php:47
-#: src/Controller/RecipientCountsAjax.php:45
+#: src/Controller/AjaxControllerAbstract.php:49
+#: src/Controller/RecipientCountsAjax.php:47
 #, php-format
 msgid "Field %s is required."
 msgstr ""
 
 #. translators: %s: Class name
-#: src/Controller/AjaxControllerAbstract.php:95
+#: src/Controller/AjaxControllerAbstract.php:97
 #, php-format
 msgid "Public property %s not provided"
 msgstr ""
 
-#: src/Controller/ExportAjax.php:98
+#: src/Controller/ExportAjax.php:100
 msgid "There is no data to export"
 msgstr ""
 
-#: src/Controller/ImportSubscriberCsv.php:42
+#: src/Controller/ImportSubscriberCsv.php:44
 msgid "There is no file to import. Please try again to upload the file."
 msgstr ""
 
-#: src/Controller/ImportSubscriberCsv.php:88
+#: src/Controller/ImportSubscriberCsv.php:90
 msgid "The group ID is not valid"
 msgstr ""
 
-#: src/Controller/LicenseManagerAjax.php:44
-#: src/Controller/OnBoardingTestGateway.php:34
+#: src/Controller/LicenseManagerAjax.php:46
+#: src/Controller/OnBoardingTestGateway.php:36
 msgid "Invalid action."
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:63
+#: src/Controller/OnBoardingTestGateway.php:65
 msgid "Deactivated!"
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:65
+#: src/Controller/OnBoardingTestGateway.php:67
 msgid "Your SMS gateway is successfully connected and ready to send messages."
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:66
+#: src/Controller/OnBoardingTestGateway.php:68
 msgid "There’s an issue connecting to your SMS gateway. Please double-check your credentials and settings."
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:71
+#: src/Controller/OnBoardingTestGateway.php:73
 msgid "Your current credit or balance in the gateway account."
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:75
-#: src/Controller/OnBoardingTestGateway.php:82
-#: src/Controller/OnBoardingTestGateway.php:89
+#: src/Controller/OnBoardingTestGateway.php:77
+#: src/Controller/OnBoardingTestGateway.php:84
+#: src/Controller/OnBoardingTestGateway.php:91
 msgid "Supported"
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:75
-#: src/Controller/OnBoardingTestGateway.php:82
-#: src/Controller/OnBoardingTestGateway.php:89
+#: src/Controller/OnBoardingTestGateway.php:77
+#: src/Controller/OnBoardingTestGateway.php:84
+#: src/Controller/OnBoardingTestGateway.php:91
 msgid "Not Supported!"
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:77
+#: src/Controller/OnBoardingTestGateway.php:79
 msgid "Your gateway can receive inbound messages on the configured number."
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:78
+#: src/Controller/OnBoardingTestGateway.php:80
 msgid "The gateway you’ve selected does not support receiving inbound messages. If you need this feature, pick a different gateway."
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:84
+#: src/Controller/OnBoardingTestGateway.php:86
 msgid "You can send messages to large groups of recipients (mass or marketing campaigns)."
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:85
+#: src/Controller/OnBoardingTestGateway.php:87
 msgid "Bulk messaging isn’t available with this gateway. Choose a provider that offers mass-sending capabilities if needed."
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:91
+#: src/Controller/OnBoardingTestGateway.php:93
 msgid "WhatsApp Messaging is enabled for your gateway."
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:92
+#: src/Controller/OnBoardingTestGateway.php:94
 msgid "This gateway does not support WhatsApp messaging. If you require this feature, please switch to a compatible gateway."
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:106
+#: src/Controller/OnBoardingTestGateway.php:108
 msgid "This is a test from WP SMS onboarding process."
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:115
+#: src/Controller/OnBoardingTestGateway.php:117
 msgid "Did you receive the test SMS?"
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:116
+#: src/Controller/OnBoardingTestGateway.php:118
 msgid "Please check your device to confirm whether you received the message."
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:125
+#: src/Controller/OnBoardingTestGateway.php:127
 msgid "Failed to send test SMS."
 msgstr ""
 
-#: src/Controller/OnBoardingTestGateway.php:130
+#: src/Controller/OnBoardingTestGateway.php:132
 msgid "Error sending test SMS: "
 msgstr ""
 
-#: src/Controller/PrivacyDataAjax.php:29
+#: src/Controller/PrivacyDataAjax.php:31
 msgid "Sorry, you do not have permission to perform this action!"
 msgstr ""
 
-#: src/Controller/PrivacyDataAjax.php:34
+#: src/Controller/PrivacyDataAjax.php:36
 msgid "Please enter the mobile number!"
 msgstr ""
 
-#: src/Controller/PrivacyDataAjax.php:51
+#: src/Controller/PrivacyDataAjax.php:53
 msgid "User with % s mobile number is removed completely!"
 msgstr ""
 
-#: src/Controller/PrivacyDataAjax.php:112
+#: src/Controller/PrivacyDataAjax.php:114
 msgid "User with this mobile number was not found!"
 msgstr ""
 
-#: src/Controller/PrivacyDataAjax.php:147
+#: src/Controller/PrivacyDataAjax.php:149
 msgid "The CSV file generated successfully!"
 msgstr ""
 
-#: src/Controller/PublicUnsubscribeAjax.php:35
+#: src/Controller/PublicUnsubscribeAjax.php:37
 msgid "The provided mobile number is not subscribed."
 msgstr ""
 
-#: src/Controller/PublicUnsubscribeAjax.php:49
+#: src/Controller/PublicUnsubscribeAjax.php:51
 msgid "This mobile number is not subscribed to the selected group(s)."
 msgstr ""
 
-#: src/Controller/PublicUnsubscribeAjax.php:69
+#: src/Controller/PublicUnsubscribeAjax.php:71
 msgid "You have successfully unsubscribed from the newsletter."
 msgstr ""
 
-#: src/Controller/RecipientCountsAjax.php:71
+#: src/Controller/RecipientCountsAjax.php:73
 msgid "Invalid type."
 msgstr ""
 
-#: src/Controller/UploadSubscriberCsv.php:31
+#: src/Controller/UploadSubscriberCsv.php:33
 msgid "Choose a *.csv file, first."
 msgstr ""
 
-#: src/Controller/UploadSubscriberCsv.php:36
+#: src/Controller/UploadSubscriberCsv.php:38
 msgid "Only *.csv files are allowed."
 msgstr ""
 
-#: src/Controller/UploadSubscriberCsv.php:43
+#: src/Controller/UploadSubscriberCsv.php:45
 msgid "The uploaded file doesn't contain any data."
 msgstr ""
 
-#: src/Controller/UploadSubscriberCsv.php:85
+#: src/Controller/UploadSubscriberCsv.php:87
 msgid "File uploaded successfully."
 msgstr ""
 
-#: src/Exceptions/SystemErrorException.php:11
+#. translators: %s: error message
+#: src/Exceptions/SystemErrorException.php:14
 #, php-format
 msgid "System error: %s"
 msgstr ""
 
-#: src/Helper.php:456
-#: src/Helper.php:460
+#: src/Helper.php:458
+#: src/Helper.php:462
 msgid "This mobile is already registered, please choose another one."
 msgstr ""
 
-#: src/Notice/NoticeManager.php:81
+#: src/Notice/NoticeManager.php:83
 msgid "You need to configure the Mobile field option in General settings to send SMS to customers."
 msgstr ""
 
-#: src/Notice/NoticeManager.php:85
+#: src/Notice/NoticeManager.php:87
 msgid "You need to configure the Mobile field option to use login with SMS functionality."
 msgstr ""
 
-#: src/Notice/NoticeManager.php:91
+#. translators: %s: current PHP version
+#: src/Notice/NoticeManager.php:94
 #, php-format
 msgid ""
 "\n"
 "            <strong>WP SMS notice – PHP upgrade required</strong><br>\n"
-"            Your site is running PHP %s. upcoming WP SMS 7.1 requires PHP 7.2 or higher. \n"
-"            Please upgrade your server’s PHP version before installing the update. \n"
+"            Your site is running PHP %s. upcoming WP SMS 7.1 requires PHP 7.2 or higher.\n"
+"            Please upgrade your server's PHP version before installing the update.\n"
 "            <a href=\"https://wp-sms-pro.com/33155/version-7-1/\" target=\"_blank\">More details</a>.\n"
 "        "
 msgstr ""
 
 #. translators: %s: Newsletter link
-#: src/Notice/NoticeManager.php:104
+#: src/Notice/NoticeManager.php:107
 #, php-format
 msgid "Stay informed and receive exclusive offers, <a href=\"%s\" target=\"_blank\">Subscribe to our newsletter here</a>!"
 msgstr ""
 
 #. translators: %s: Phone numbers
-#: src/Notification/Handler/WooCommerceOrderNotification.php:57
+#: src/Notification/Handler/WooCommerceOrderNotification.php:59
 #, php-format
 msgid "Successfully send SMS notification to %s"
 msgstr ""
 
 #. translators: %1$s: Phone number, %2$s: Error message
-#: src/Notification/Handler/WooCommerceOrderNotification.php:65
+#: src/Notification/Handler/WooCommerceOrderNotification.php:67
 #, php-format
 msgid "Failed to send SMS notification to %1$s. Error: %2$s"
 msgstr ""
 
-#: src/Notification/Notification.php:48
+#: src/Notification/Notification.php:50
 msgid "This number has opted out of receiving SMS notifications."
 msgstr ""
 
-#: src/Services/Formidable/FormidableManager.php:17
+#: src/Services/Formidable/FormidableManager.php:19
 msgid "Formidable"
 msgstr ""
 
-#: src/Services/Formidable/FormidableManager.php:50
+#: src/Services/Formidable/FormidableManager.php:52
 msgid "This option adds SMS Notification tab in the Settings forms."
 msgstr ""
 
-#: src/Services/Formidable/FormidableManager.php:57
+#: src/Services/Formidable/FormidableManager.php:59
 msgid "Formidable plugin should be enable to run this tab"
 msgstr ""
 
-#: src/Services/Forminator/ForminatorManager.php:13
+#: src/Services/Forminator/ForminatorManager.php:15
 msgid "Forminator"
 msgstr ""
 
-#: src/Services/Forminator/ForminatorManager.php:35
+#: src/Services/Forminator/ForminatorManager.php:37
 msgid "There is no form available on Forminator plugin, please first add your forms."
 msgstr ""
 
-#: src/Services/Forminator/ForminatorManager.php:102
+#: src/Services/Forminator/ForminatorManager.php:104
 msgid "Forminator plugin should be enable to run this tab"
 msgstr ""
 
-#: src/Services/Hooks/HooksManager.php:37
+#: src/Services/Hooks/HooksManager.php:39
 msgid "Get All-in-One"
 msgstr ""
 
-#: src/Services/MessageButton/ChatBoxDecorator.php:23
+#: src/Services/MessageButton/ChatBoxDecorator.php:25
 msgid "Chat with Us!"
 msgstr ""
 
-#: src/Services/MessageButton/ChatBoxDecorator.php:28
+#: src/Services/MessageButton/ChatBoxDecorator.php:30
 msgid "Talk to Us"
 msgstr ""
 
-#: src/Services/MessageButton/ChatBoxDecorator.php:33
+#: src/Services/MessageButton/ChatBoxDecorator.php:35
 msgid "Chat with us on WhatsApp for instant support!"
 msgstr ""
 
-#: src/Services/MessageButton/ChatBoxDecorator.php:43
+#: src/Services/MessageButton/ChatBoxDecorator.php:45
 msgid "Related Articles"
 msgstr ""
 
-#: src/Services/MessageButton/ChatBoxDecorator.php:78
+#: src/Services/MessageButton/ChatBoxDecorator.php:80
 msgid "Quick Links"
 msgstr ""
 
 #. translators: %s: Site name
-#: src/Services/Report/EmailReportGenerator.php:51
+#: src/Services/Report/EmailReportGenerator.php:53
 #, php-format
 msgid "%s - SMS Report"
 msgstr ""
 
-#: src/Services/Report/EmailReportGenerator.php:58
+#: src/Services/Report/EmailReportGenerator.php:60
 msgid "SMS Report"
 msgstr ""
 
-#: src/Services/Subscriber/SubscriberUtil.php:27
-#: src/Services/Subscriber/SubscriberUtil.php:105
+#: src/Services/Subscriber/SubscriberUtil.php:29
+#: src/Services/Subscriber/SubscriberUtil.php:107
 msgid "Name and Mobile Number are required!"
 msgstr ""
 
-#: src/Services/Subscriber/SubscriberUtil.php:59
+#: src/Services/Subscriber/SubscriberUtil.php:61
 msgid "Service provider is not available for send activate key to your mobile. Please contact with site."
 msgstr ""
 
 #. translators: %s: Activation code
-#: src/Services/Subscriber/SubscriberUtil.php:74
+#: src/Services/Subscriber/SubscriberUtil.php:76
 #, php-format
 msgid "Your activation code: %s"
 msgstr ""
 
-#: src/Services/Subscriber/SubscriberUtil.php:77
+#: src/Services/Subscriber/SubscriberUtil.php:79
 msgid "To activate your subscription, the activation has been sent to your number."
 msgstr ""
 
-#: src/Services/Subscriber/SubscriberUtil.php:134
+#: src/Services/Subscriber/SubscriberUtil.php:136
 msgid "The required parameters must be valued!"
 msgstr ""
 
-#: src/Services/Subscriber/SubscriberUtil.php:155
+#: src/Services/Subscriber/SubscriberUtil.php:157
 msgid "Activation code is wrong!"
 msgstr ""
 
-#: src/Services/Subscriber/SubscriberUtil.php:169
+#: src/Services/Subscriber/SubscriberUtil.php:171
 msgid "Your subscription done successfully!"
 msgstr ""
 
-#: src/Services/Subscriber/SubscriberUtil.php:173
+#: src/Services/Subscriber/SubscriberUtil.php:175
 msgid "Not found the number!"
 msgstr ""
 
-#: src/Services/WooCommerce/WooCommerceCheckout.php:40
+#: src/Services/WooCommerce/WooCommerceCheckout.php:42
 msgid "Status Update SMS Notifications:"
 msgstr ""
 
-#: src/SmsOtp/Generator.php:121
+#: src/SmsOtp/Generator.php:123
 msgid "Provided $length argument must be between 4 and 10."
 msgstr ""
 
-#: src/SmsOtp/Generator.php:159
+#: src/SmsOtp/Generator.php:161
 msgid "OTPs generated for this number has reached its limit, please try some other time."
 msgstr ""
 
-#: src/SmsOtp/Verifier.php:173
+#: src/SmsOtp/Verifier.php:175
 msgid "Too many verification attempts, please try some other time."
 msgstr ""
 
-#: src/User/MobileFieldHandler/AbstractFieldHandler.php:60
-#: src/User/MobileFieldHandler/WooCommerceAddMobileFieldHandler.php:91
-#: src/User/MobileFieldHandler/WordPressMobileFieldHandler.php:85
+#: src/User/MobileFieldHandler/AbstractFieldHandler.php:62
+#: src/User/MobileFieldHandler/WooCommerceAddMobileFieldHandler.php:93
+#: src/User/MobileFieldHandler/WordPressMobileFieldHandler.php:87
 msgid "<strong>ERROR</strong>: You must enter the mobile number."
 msgstr ""
 
-#: src/User/MobileFieldHandler/WooCommerceAddMobileFieldHandler.php:124
+#: src/User/MobileFieldHandler/WooCommerceAddMobileFieldHandler.php:126
 msgid "Mobile Number for getting SMS notification"
 msgstr ""
 
-#: src/User/RegisterUserViaPhone.php:37
+#: src/User/RegisterUserViaPhone.php:39
 msgid "Another user with this phone number already exists."
 msgstr ""
 
-#: src/Utils/AdminHelper.php:26
+#: src/Utils/AdminHelper.php:28
 msgid "Invalid date request."
 msgstr ""
 
-#: src/Utils/TimeZone.php:237
+#. translators: 1: number of hours 2: number of minutes
+#: src/Utils/TimeZone.php:240
 #, php-format
 msgid "%1$d hour %2$d minute ago"
 msgid_plural "%1$d hours %2$d minutes ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Utils/TimeZone.php:251
+#. translators: %d: number of hours
+#: src/Utils/TimeZone.php:255
 #, php-format
 msgid "%d hour ago"
 msgid_plural "%d hours ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Utils/TimeZone.php:263
+#. translators: %d: number of minutes
+#: src/Utils/TimeZone.php:268
 #, php-format
 msgid "%d minute ago"
 msgid_plural "%d minutes ago"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Utils/Validator.php:23
+#: src/Utils/Validator.php:25
 msgid "The :attribute field is required."
 msgstr ""
 
-#: src/Utils/Validator.php:24
+#: src/Utils/Validator.php:26
 msgid "The :attribute must be a valid email address."
 msgstr ""
 
-#: src/Utils/Validator.php:25
+#: src/Utils/Validator.php:27
 msgid "The :attribute must be at least :min characters."
 msgstr ""
 
-#: src/Utils/Validator.php:26
+#: src/Utils/Validator.php:28
 msgid "The :attribute may not be greater than :max characters."
 msgstr ""
 
-#: src/Utils/Validator.php:27
+#: src/Utils/Validator.php:29
 msgid "The :attribute must be a number."
 msgstr ""
 
-#: src/Widget/Widgets/StatsWidget.php:149
+#: src/Widget/Widgets/StatsWidget.php:151
 msgid "Plain"
 msgstr ""
 
@@ -5621,27 +5676,30 @@ msgstr ""
 msgid "Not included"
 msgstr ""
 
-#: views/components/lock-sections/active-addon.php:5
+#. translators: %s: add-on name
+#: views/components/lock-sections/active-addon.php:7
 #, php-format
 msgid "You Already Own %s!"
 msgstr ""
 
-#: views/components/lock-sections/active-addon.php:12
+#. translators: %s: license type (All-in-One)
+#: views/components/lock-sections/active-addon.php:16
 #, php-format
-msgid "Your %s licence includes this add-on, but it isn’t {installed / activated} yet. Click below to finish setup and start using its features."
+msgid "Your %s licence includes this add-on, but it isn't installed/activated yet. Click below to finish setup and start using its features."
 msgstr ""
 
-#: views/components/lock-sections/active-addon.php:21
+#: views/components/lock-sections/active-addon.php:25
 #: views/components/modals/all-in-one/step-details.php:137
 msgid "Go to Add-Ons Page"
 msgstr ""
 
-#: views/components/lock-sections/active-addon.php:27
+#. translators: %s: setup guide link
+#: views/components/lock-sections/active-addon.php:32
 #, php-format
 msgid "Need a hand? %s"
 msgstr ""
 
-#: views/components/lock-sections/active-addon.php:28
+#: views/components/lock-sections/active-addon.php:33
 msgid "See the setup guide"
 msgstr ""
 
@@ -5649,7 +5707,8 @@ msgstr ""
 msgid "Notice:"
 msgstr ""
 
-#: views/components/lock-sections/notice-inactive-license-addon.php:8
+#. translators: %s: URL to license activation page
+#: views/components/lock-sections/notice-inactive-license-addon.php:9
 #, php-format
 msgid ""
 "This add-on does not have an active license, which means it cannot receive updates, including important security updates.\r\n"
@@ -5728,25 +5787,27 @@ msgstr ""
 msgid "14-day money-back guarantee. Instant download & updates."
 msgstr ""
 
-#: views/components/modals/all-in-one/step-content.php:39
+#. translators: 1: add-on name 2: activate text
+#: views/components/modals/all-in-one/step-content.php:41
 #, php-format
-msgid "Your license includes the %s, but it’s not installed yet. Go to the Add-Ons page to install and %s it, so you can start using all its features."
+msgid "Your license includes the %1$s, but it's not installed yet. Go to the Add-Ons page to install and %2$s it, so you can start using all its features."
 msgstr ""
 
-#: views/components/modals/all-in-one/step-content.php:41
+#: views/components/modals/all-in-one/step-content.php:43
 msgid "activate"
 msgstr ""
 
-#: views/components/modals/all-in-one/step-content.php:50
+#. translators: 1: license status text 2: link to license page
+#: views/components/modals/all-in-one/step-content.php:54
 #, php-format
-msgid "This add-on does %s, which means it cannot receive updates, including important security updates. For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license. Activate your license %s."
+msgid "This add-on does %1$s, which means it cannot receive updates, including important security updates. For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license. Activate your license %2$s."
 msgstr ""
 
-#: views/components/modals/all-in-one/step-content.php:51
+#: views/components/modals/all-in-one/step-content.php:55
 msgid "not have an active license"
 msgstr ""
 
-#: views/components/modals/all-in-one/step-content.php:52
+#: views/components/modals/all-in-one/step-content.php:56
 msgid "here"
 msgstr ""
 
@@ -5755,15 +5816,15 @@ msgid "WP SMS All-in-One "
 msgstr ""
 
 #: views/components/modals/all-in-one/step-details.php:27
-msgid "<p>All-in-One includes Pro, WooCommerce Pro, Two-Way, and more. Send better SMS, handle two-way messaging, secure logins, and manage everything in one place.</p>"
+msgid "All-in-One includes Pro, WooCommerce Pro, Two-Way, and more. Send better SMS, handle two-way messaging, secure logins, and manage everything in one place."
 msgstr ""
 
 #: views/components/modals/all-in-one/step-details.php:28
-msgid "<p>You already have the complete bundle! Enjoy every premium feature and integration with no extra steps. Thanks for your support—have fun exploring everything!</p>"
+msgid "You already have the complete bundle! Enjoy every premium feature and integration with no extra steps. Thanks for your support—have fun exploring everything!"
 msgstr ""
 
 #: views/components/modals/all-in-one/step-details.php:29
-msgid "<p>Looks like you have a few premium features active. Upgrade to All‑in‑One to unlock every tool and integration. Get the most out of WP SMS and boost your site’s performance.</p>"
+msgid "Looks like you have a few premium features active. Upgrade to All‑in‑One to unlock every tool and integration. Get the most out of WP SMS and boost your site's performance."
 msgstr ""
 
 #: views/components/modals/all-in-one/step-details.php:35
@@ -5851,7 +5912,7 @@ msgstr ""
 #: views/components/modals/all-in-one/step-details.php:122
 #: views/components/modals/all-in-one/step-details.php:135
 #: views/components/modals/all-in-one/step-details.php:144
-#: views/pages/onboarding/steps/update-all-in-one.php:104
+#: views/pages/onboarding/steps/update-all-in-one.php:108
 msgid "Maybe Later"
 msgstr ""
 
@@ -5971,71 +6032,74 @@ msgstr ""
 msgid "No, take me to the Send SMS page"
 msgstr ""
 
-#: views/pages/onboarding/steps/configuration.php:6
-#: views/pages/onboarding/steps/getting-started.php:4
-#: views/pages/onboarding/steps/sms-gateway.php:15
-#: views/pages/onboarding/steps/test-setup.php:4
-#: views/pages/onboarding/steps/update-all-in-one.php:3
+#. translators: 1: current step number 2: total number of steps
+#: views/pages/onboarding/steps/configuration.php:7
+#: views/pages/onboarding/steps/getting-started.php:6
+#: views/pages/onboarding/steps/sms-gateway.php:17
+#: views/pages/onboarding/steps/test-setup.php:6
+#: views/pages/onboarding/steps/update-all-in-one.php:5
 #, php-format
-msgid "Step %d of %d"
+msgid "Step %1$d of %2$d"
 msgstr ""
 
-#: views/pages/onboarding/steps/configuration.php:10
+#: views/pages/onboarding/steps/configuration.php:11
 msgid "Set Up Your SMS Gateway"
 msgstr ""
 
-#: views/pages/onboarding/steps/configuration.php:13
+#: views/pages/onboarding/steps/configuration.php:14
 msgid "Now that you’ve chosen your SMS gateway. This step connects your WordPress site directly to the gateway so you can start sending messages. If you’re unsure where to find these details, check the gateway’s documentation or contact their support."
 msgstr ""
 
-#: views/pages/onboarding/steps/configuration.php:62
+#. translators: 1: documentation URL 2: link title
+#: views/pages/onboarding/steps/configuration.php:64
 #, php-format
 msgid "Need More Details? <a href=\"%1$s\" title=\"%2$s\" target=\"_blank\">%2$s</a>"
 msgstr ""
 
-#: views/pages/onboarding/steps/configuration.php:64
+#: views/pages/onboarding/steps/configuration.php:66
 msgid "View Instructions for This Gateway"
 msgstr ""
 
-#: views/pages/onboarding/steps/configuration.php:75
+#. translators: %1$s: documentation URL
+#: views/pages/onboarding/steps/configuration.php:78
 #, php-format
 msgid "For additional setup instructions and troubleshooting, visit the <a href=\"%1$s\" target=\"_blank\">WP SMS plugin documentation</a>."
 msgstr ""
 
-#: views/pages/onboarding/steps/configuration.php:88
+#: views/pages/onboarding/steps/configuration.php:91
 msgid "Connection Status"
 msgstr ""
 
-#: views/pages/onboarding/steps/configuration.php:97
+#: views/pages/onboarding/steps/configuration.php:100
 msgid "Balance"
 msgstr ""
 
-#: views/pages/onboarding/steps/configuration.php:104
+#: views/pages/onboarding/steps/configuration.php:107
 msgid "Incoming message"
 msgstr ""
 
-#: views/pages/onboarding/steps/configuration.php:111
-#: views/pages/onboarding/steps/sms-gateway.php:100
+#: views/pages/onboarding/steps/configuration.php:114
+#: views/pages/onboarding/steps/sms-gateway.php:102
 msgid "Bulk SMS"
 msgstr ""
 
-#: views/pages/onboarding/steps/getting-started.php:8
+#: views/pages/onboarding/steps/getting-started.php:10
 msgid "Welcome to WP SMS!"
 msgstr ""
 
-#: views/pages/onboarding/steps/getting-started.php:11
+#: views/pages/onboarding/steps/getting-started.php:13
 msgid "Set up SMS functionality for your WordPress site in just a few steps."
 msgstr ""
 
-#: views/pages/onboarding/steps/getting-started.php:17
+#: views/pages/onboarding/steps/getting-started.php:19
 msgid "Get Notifications Where You Need Them"
 msgstr ""
 
-#: views/pages/onboarding/steps/getting-started.php:29
+#: views/pages/onboarding/steps/getting-started.php:31
 msgid "Select your country and enter your mobile number. This number will be used for important notifications and alerts, so make sure it’s correct."
 msgstr ""
 
-#: views/pages/onboarding/steps/getting-started.php:32
+#: views/pages/onboarding/steps/getting-started.php:34
 msgid "Enter the full international format, including the country code (for example, “+1” for the United States).This is the number where you’ll receive management and alert notifications."
 msgstr ""
 
@@ -6096,9 +6160,9 @@ msgstr ""
 #: views/pages/onboarding/steps/ready.php:243
 #: views/pages/onboarding/steps/ready.php:261
 #: views/pages/onboarding/steps/ready.php:262
-#: views/pages/onboarding/steps/sms-gateway.php:166
-#: views/pages/onboarding/steps/sms-gateway.php:193
-#: views/pages/onboarding/steps/sms-gateway.php:194
+#: views/pages/onboarding/steps/sms-gateway.php:168
+#: views/pages/onboarding/steps/sms-gateway.php:195
+#: views/pages/onboarding/steps/sms-gateway.php:196
 msgid "All-in-One Required"
 msgstr ""
 
@@ -6165,184 +6229,186 @@ msgstr ""
 msgid "Maximize your business potential with data analytics."
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:17
+#: views/pages/onboarding/steps/sms-gateway.php:19
 msgid "Choose Your SMS Gateway"
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:19
+#: views/pages/onboarding/steps/sms-gateway.php:21
 msgid "Connect with your audience through text messaging by selecting a gateway that fits your needs. WP SMS supports over 350 gateways worldwide, ensuring you can send messages reliably—no matter where your customers are."
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:26
+#: views/pages/onboarding/steps/sms-gateway.php:28
 msgid "Search by Gateway Name"
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:29
+#: views/pages/onboarding/steps/sms-gateway.php:31
 msgid "Type to search..."
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:34
-#: views/pages/onboarding/steps/sms-gateway.php:112
+#: views/pages/onboarding/steps/sms-gateway.php:36
+#: views/pages/onboarding/steps/sms-gateway.php:114
 msgid "Origin Country"
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:68
+#: views/pages/onboarding/steps/sms-gateway.php:70
 msgid "All origins"
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:71
+#: views/pages/onboarding/steps/sms-gateway.php:73
 msgid "Regions"
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:79
+#: views/pages/onboarding/steps/sms-gateway.php:81
 msgid "Countries"
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:94
+#: views/pages/onboarding/steps/sms-gateway.php:96
 msgid "Gateway"
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:95
+#: views/pages/onboarding/steps/sms-gateway.php:97
 msgid "The name of the SMS provider."
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:101
+#: views/pages/onboarding/steps/sms-gateway.php:103
 msgid " Indicates if this gateway supports sending high-volume SMS to multiple recipients simultaneously."
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:107
+#: views/pages/onboarding/steps/sms-gateway.php:109
 msgid "Indicates if this gateway supports sending WhatsApp messages."
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:113
+#: views/pages/onboarding/steps/sms-gateway.php:115
 msgid "Country where the gateway is headquartered or primarily licensed."
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:118
+#: views/pages/onboarding/steps/sms-gateway.php:120
 msgid "Gateway Access"
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:119
+#: views/pages/onboarding/steps/sms-gateway.php:121
 msgid "Shows whether this gateway is included in your current plan or requires All-in-One for full functionality."
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:269
+#: views/pages/onboarding/steps/sms-gateway.php:271
 msgid "Don’t have SMS gateway?"
 msgstr ""
 
-#: views/pages/onboarding/steps/sms-gateway.php:271
+#: views/pages/onboarding/steps/sms-gateway.php:273
 msgid "Check out our recommended SMS gateways for optimized service."
 msgstr ""
 
-#: views/pages/onboarding/steps/test-setup.php:13
+#. translators: 1: introduction text 2: button text 3: closing text
+#: views/pages/onboarding/steps/test-setup.php:16
 #, php-format
 msgid "%1$s <b>%2$s</b> %3$s!"
 msgstr ""
 
-#: views/pages/onboarding/steps/test-setup.php:14
-msgid "Before moving forward, let’s make sure your SMS gateway is working correctly. Click"
+#: views/pages/onboarding/steps/test-setup.php:17
+msgid "Before moving forward, let's make sure your SMS gateway is working correctly. Click"
 msgstr ""
 
-#: views/pages/onboarding/steps/test-setup.php:15
-#: views/pages/onboarding/steps/test-setup.php:37
+#: views/pages/onboarding/steps/test-setup.php:18
+#: views/pages/onboarding/steps/test-setup.php:40
 msgid "Send Test SMS"
 msgstr ""
 
-#: views/pages/onboarding/steps/test-setup.php:16
-msgid "to send a message to the administrator’s phone number you provided. Once you receive it, you’re good to go"
+#: views/pages/onboarding/steps/test-setup.php:19
+msgid "to send a message to the administrator's phone number you provided. Once you receive it, you're good to go"
 msgstr ""
 
-#: views/pages/onboarding/steps/test-setup.php:26
+#: views/pages/onboarding/steps/test-setup.php:29
 msgid "A test message will be sent to the phone number you provided earlier. Please check your device for the message."
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:5
+#: views/pages/onboarding/steps/update-all-in-one.php:7
 msgid "Level Up Your WP SMS Experience"
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:7
+#: views/pages/onboarding/steps/update-all-in-one.php:9
 msgid "You already enjoy WP SMS free—now unlock its full potential with WP SMS All‑in‑One. Get every premium add‑on, expanded gateway support, advanced WooCommerce notifications, membership integrations, and much more in a single plan."
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:17
+#: views/pages/onboarding/steps/update-all-in-one.php:19
 msgid "All-in-One Plan"
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:21
+#. translators: %s: price amount
+#: views/pages/onboarding/steps/update-all-in-one.php:25
 #, php-format
 msgid "From <strong>$%s</strong> per Year"
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:24
-#: views/pages/onboarding/steps/update-all-in-one.php:25
+#: views/pages/onboarding/steps/update-all-in-one.php:28
+#: views/pages/onboarding/steps/update-all-in-one.php:29
 msgid "Buy now"
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:27
+#: views/pages/onboarding/steps/update-all-in-one.php:31
 msgid "14-day money-back"
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:27
+#: views/pages/onboarding/steps/update-all-in-one.php:31
 msgid "guarantee on all plans."
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:31
+#: views/pages/onboarding/steps/update-all-in-one.php:35
 msgid "What You’ll Unlock:"
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:37
+#: views/pages/onboarding/steps/update-all-in-one.php:41
 msgid "300+ Supported Gateways"
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:38
+#: views/pages/onboarding/steps/update-all-in-one.php:42
 msgid "Reach customers globally with reliable SMS delivery."
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:46
+#: views/pages/onboarding/steps/update-all-in-one.php:50
 msgid "Advanced WooCommerce"
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:47
+#: views/pages/onboarding/steps/update-all-in-one.php:51
 msgid "Cart abandonment recovery, detailed order alerts, and instant SMS from your Edit Order screen."
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:57
+#: views/pages/onboarding/steps/update-all-in-one.php:61
 msgid "Two‑Way Messaging"
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:58
+#: views/pages/onboarding/steps/update-all-in-one.php:62
 msgid "Receive replies directly in WordPress and let customers manage orders via text commands."
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:66
+#: views/pages/onboarding/steps/update-all-in-one.php:70
 msgid "Membership & Booking Integrations"
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:67
+#: views/pages/onboarding/steps/update-all-in-one.php:71
 msgid "Automate sign‑up confirmations, cancellations, and booking reminders."
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:75
+#: views/pages/onboarding/steps/update-all-in-one.php:79
 msgid "Scheduled & Repeating SMS"
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:76
+#: views/pages/onboarding/steps/update-all-in-one.php:80
 msgid "Pre‑plan messages or run recurring campaigns to stay top of mind."
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:84
+#: views/pages/onboarding/steps/update-all-in-one.php:88
 msgid "2FA & Mobile Login"
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:85
+#: views/pages/onboarding/steps/update-all-in-one.php:89
 msgid "Secure your site with SMS‑based two‑factor authentication and phone‑number logins."
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:95
+#: views/pages/onboarding/steps/update-all-in-one.php:99
 msgid "1 Year Updates & Support"
 msgstr ""
 
-#: views/pages/onboarding/steps/update-all-in-one.php:96
+#: views/pages/onboarding/steps/update-all-in-one.php:100
 msgid "Get dedicated help and new features as soon as they launch."
 msgstr ""
 
@@ -6350,30 +6416,24 @@ msgstr ""
 msgid "Upgrade To All-in-One"
 msgstr ""
 
-#: views/templates/header.php:29
-#: views/templates/header.php:83
-#, php-format
-msgid "License: %s/%s"
-msgstr ""
-
-#: views/templates/header.php:34
-#: views/templates/header.php:64
+#: views/templates/header.php:36
+#: views/templates/header.php:72
 msgid "Optimization"
 msgstr ""
 
-#: views/templates/header.php:59
+#: views/templates/header.php:63
 msgid "Top Pages"
 msgstr ""
 
-#: views/templates/header.php:60
+#: views/templates/header.php:65
 msgid "Content Analytics"
 msgstr ""
 
-#: views/templates/header.php:61
+#: views/templates/header.php:67
 msgid "Author Analytics"
 msgstr ""
 
-#: views/templates/header.php:79
+#: views/templates/header.php:87
 msgid "Upgrade To Premium"
 msgstr ""
 
