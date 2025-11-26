@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class _18sms extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://18sms.ir/webservice/rest";

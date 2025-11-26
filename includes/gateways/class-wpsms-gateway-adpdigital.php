@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class adpdigital extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://ws.adpdigital.com/url/";

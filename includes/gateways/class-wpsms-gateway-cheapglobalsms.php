@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class cheapglobalsms extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://cheapglobalsms.com/api_v1";

@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class idehpayam extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://87.107.124.66/webservice/send.php?wsdl";

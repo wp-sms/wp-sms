@@ -15,6 +15,7 @@
   OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  
 */
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 class AfricasTalkingGatewayException extends Exception
 {

@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class payamakaria extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://api.payamak-panel.com/post/send.asmx?WSDL";
