@@ -24,9 +24,9 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
         <div class="wp-sms-aio-step__content">
             <?php
 
-            $defaultDescription = __('<p>All-in-One includes Pro, WooCommerce Pro, Two-Way, and more. Send better SMS, handle two-way messaging, secure logins, and manage everything in one place.</p>', 'wp-sms');
-            $premiumDescription = __('<p>You already have the complete bundle! Enjoy every premium feature and integration with no extra steps. Thanks for your support—have fun exploring everything!</p>', 'wp-sms');
-            $licenseDescription = __('<p>Looks like you have a few premium features active. Upgrade to All‑in‑One to unlock every tool and integration. Get the most out of WP SMS and boost your site’s performance.</p>', 'wp-sms');
+            $defaultDescription = '<p>' . __('All-in-One includes Pro, WooCommerce Pro, Two-Way, and more. Send better SMS, handle two-way messaging, secure logins, and manage everything in one place.', 'wp-sms') . '</p>';
+            $premiumDescription = '<p>' . __('You already have the complete bundle! Enjoy every premium feature and integration with no extra steps. Thanks for your support—have fun exploring everything!', 'wp-sms') . '</p>';
+            $licenseDescription = '<p>' . __('Looks like you have a few premium features active. Upgrade to All‑in‑One to unlock every tool and integration. Get the most out of WP SMS and boost your site\'s performance.', 'wp-sms') . '</p>';
 
             $data = [
                 'step_name'   => 'first-step',
