@@ -1,5 +1,7 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+
 require_once('account.class.php');
 require_once('activity.class.php');
 require_once('blacklist.class.php');
