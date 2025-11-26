@@ -5,7 +5,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 6.8
 Requires PHP: 5.6
-Stable tag: 7.0.8
+Stable tag: 7.0.9
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -140,6 +140,9 @@ All premium features + all add-ons in one package.
 - New Onboarding, Add-on Manager, and All-in-One package.
 
 == Changelog ==
+= v7.0.9 - 2025-11-26 =
+- **Enhancement:** Minor improvements.
+
 = v7.0.8 - 2025-11-23 =
 - **Enhancement:** Repositioned the "All-in-One Required" label to the top of the PRO gateway onboarding table for better visibility.
 - **Enhancement:** Added more plugin details to the Site Health Info section for easier diagnostics.
