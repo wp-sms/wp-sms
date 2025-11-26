@@ -1,6 +1,8 @@
 <?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="c-section__title">
-    <span class="c-section__step"><?php echo esc_html(sprintf(__('Step %1$d of %2$d', 'wp-sms'), $index, $total_steps));
+    <span class="c-section__step"><?php
+        /* translators: 1: current step number 2: total number of steps */
+        echo esc_html(sprintf(__('Step %1$d of %2$d', 'wp-sms'), $index, $total_steps));
         ?></span>
     <h1 class="u-m-0"><?php esc_html_e('Level Up Your WP SMS Experience', 'wp-sms'); ?></h1>
     <p class="u-m-0">
@@ -18,7 +20,9 @@
                     </div>
 
                     <p class="c-proplan__price u-text-center">
-                        <?php printf(__('From <strong>$%s</strong> per Year', 'wp-sms'), '59'); ?>
+                        <?php
+                        /* translators: %s: price amount */
+                        printf(__('From <strong>$%s</strong> per Year', 'wp-sms'), '59'); ?>
                     </p>
                     <div>
                         <a class="c-btn c-btn--ghost c-btn--proplan" title="<?php esc_attr_e('Buy now', 'wp-sms'); ?>" href="<?php echo esc_url('https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=onboarding'); ?>" target="_blank">

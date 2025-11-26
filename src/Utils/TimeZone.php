@@ -234,6 +234,7 @@ class TimeZone
             if ($minutes > 0) {
                 return sprintf(
                     esc_html(
+                        /* translators: 1: number of hours 2: number of minutes */
                         _n(
                             '%1$d hour %2$d minute ago',
                             '%1$d hours %2$d minutes ago',
@@ -248,6 +249,7 @@ class TimeZone
 
             return sprintf(
                 esc_html(
+                    /* translators: %d: number of hours */
                     _n(
                         '%d hour ago',
                         '%d hours ago',
@@ -260,6 +262,7 @@ class TimeZone
         }
         return sprintf(
             esc_html(
+                /* translators: %d: number of minutes */
                 _n(
                     '%d minute ago',
                     '%d minutes ago',

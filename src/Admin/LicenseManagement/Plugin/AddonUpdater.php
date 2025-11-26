@@ -154,9 +154,12 @@ class AddonUpdater
                 <td colspan='<?php echo esc_attr($colspan); ?>' class='plugin-update'>
                     <div class='notice inline notice-warning notice-alt'>
                         <p>
-                            <?php echo sprintf(__('Automatic updates are disabled for the <b>%s</b>.', 'wp-sms'), esc_html($pluginData['Name'])); ?>
+                            <?php
+                            /* translators: %s: plugin name */
+                            echo sprintf(__('Automatic updates are disabled for the <b>%s</b>.', 'wp-sms'), esc_html($pluginData['Name'])); ?>
                             <?php
                             $licensePageUrl = MenuUtil::getAdminUrl('plugins', ['tab' => 'add-license']); // Updated to use MenuUtil
+                            /* translators: %s: URL to license page */
                             echo sprintf(__('To unlock automatic updates, please <a href="%s">activate your license</a>.', 'wp-sms'), esc_url($licensePageUrl));
                             ?>
                         </p>

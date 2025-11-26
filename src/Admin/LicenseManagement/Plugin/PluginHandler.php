@@ -44,6 +44,7 @@ class PluginHandler
         ]);
 
         if (is_wp_error($response)) {
+            /* translators: %s: error message */
             throw new Exception(sprintf(__('Failed to download the plugin: %s', 'wp-sms'), $response->get_error_message()));
         }
 
@@ -52,6 +53,7 @@ class PluginHandler
 
         if ($response_code != 200) {
             $error_message = sprintf(
+                /* translators: 1: HTTP status code 2: API response */
                 __('Failed to download the plugin. HTTP Status: %1$d. Response: %2$s', 'wp-sms'),
                 $response_code,
                 wp_remote_retrieve_body($response) // Show API response for debugging
@@ -67,6 +69,7 @@ class PluginHandler
         @unlink($temp_file);
 
         if (is_wp_error($installResult)) {
+            /* translators: %s: error message */
             throw new Exception(sprintf(__('Failed to install the plugin: %s', 'wp-sms'), $installResult->get_error_message()));
         }
 

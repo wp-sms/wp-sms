@@ -43,6 +43,7 @@ class SmsGateway extends StepAbstract
 
             } while (count($response) === 100);
         } catch (Exception $e) {
+            /* translators: %s: error message */
             error_log(sprintf(__('Error fetching pages: %s', 'wp-sms'), $e->getMessage()));
         }
 

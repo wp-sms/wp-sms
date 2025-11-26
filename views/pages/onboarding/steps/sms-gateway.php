@@ -12,7 +12,9 @@ $has_valid_license       = LicenseHelper::isPluginLicensedAndActive();
 ?>
 
 <div class="c-section__title">
-    <span class="c-section__step"><?php echo esc_html(sprintf(__('Step %1$d of %2$d', 'wp-sms'), $index, $total_steps));
+    <span class="c-section__step"><?php
+        /* translators: 1: current step number 2: total number of steps */
+        echo esc_html(sprintf(__('Step %1$d of %2$d', 'wp-sms'), $index, $total_steps));
         ?></span>
     <h1 class="u-m-0"><?php esc_html_e('Choose Your SMS Gateway', 'wp-sms'); ?></h1>
     <p class="u-m-0">

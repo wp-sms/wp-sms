@@ -102,6 +102,7 @@ class LicenseManagementManager
                 NoticeManager::getInstance()->registerNotice(
                     'license_validation',
                     sprintf(
+                        /* translators: %s: error message */
                         wp_kses_post(__('Failed to validate license: %s', 'wp-sms')),
                         wp_kses_post($e->getMessage())
                     ),

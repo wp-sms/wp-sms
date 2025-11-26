@@ -35,7 +35,9 @@ if ($step_name !== 'first-step') {
         <?php if ($hasLicense && !$isInstalled) : ?>
             <div class="wp-sms-aio-step__notice">
                 <div>
-                    <?php printf(
+                    <?php
+                    printf(
+                        /* translators: 1: add-on name 2: activate text */
                         __('Your license includes the %1$s, but it\'s not installed yet. Go to the Add-Ons page to install and %2$s it, so you can start using all its features.', 'wp-sms'),
                         '<b>' . esc_attr($addon_name) . '</b>',
                         '<b>' . __('activate', 'wp-sms') . '</b>'
@@ -46,7 +48,9 @@ if ($step_name !== 'first-step') {
         <?php if (!$hasLicense && $isActive) : ?>
             <div class="wp-sms-aio-step__notice wp-sms-aio-step__notice--warning">
                 <div>
-                    <?php printf(
+                    <?php
+                    printf(
+                        /* translators: 1: license status text 2: link to license page */
                         __('This add-on does %1$s, which means it cannot receive updates, including important security updates. For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license. Activate your license %2$s.', 'wp-sms'),
                         '<b>' . __('not have an active license', 'wp-sms') . '</b>',
                         '<a href="' . esc_url(admin_url('admin.php?page=wp-sms-add-ons')) . '">' . __('here', 'wp-sms') . '</a>'
