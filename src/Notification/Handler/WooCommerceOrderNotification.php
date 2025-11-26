@@ -7,6 +7,8 @@ use WC_Order_Item;
 use WP_SMS\Notification\Notification;
 use WP_SMS\Services\WooCommerce\WooCommerceCheckout;
 
+if (!defined('ABSPATH')) exit;
+
 class WooCommerceOrderNotification extends Notification
 {
     protected $wooData;

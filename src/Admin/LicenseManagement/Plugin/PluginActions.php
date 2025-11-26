@@ -9,6 +9,8 @@ use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 
+if (!defined('ABSPATH')) exit;
+
 class PluginActions
 {
     private $apiCommunicator;

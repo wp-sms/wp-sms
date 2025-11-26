@@ -6,6 +6,8 @@ use Exception;
 use WP_SMS\Components\View;
 use WP_SMS\Utils\OptionUtil as Option;
 
+if (!defined('ABSPATH')) exit;
+
 class Modal
 {
     const MODAL_OPTION_KEY = 'user_modals';

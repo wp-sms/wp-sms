@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Components;
 
+if (!defined('ABSPATH')) exit;
+
 /**
  * Simple singleton that will be extended in other classes.
  */

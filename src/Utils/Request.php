@@ -4,6 +4,8 @@ namespace WP_SMS\Utils;
 
 use WP_SMS\Helper;
 
+if (!defined('ABSPATH')) exit;
+
 
 class Request
 {

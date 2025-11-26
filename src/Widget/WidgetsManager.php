@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Widget;
 
+if (!defined('ABSPATH')) exit;
+
 class WidgetsManager
 {
     /**

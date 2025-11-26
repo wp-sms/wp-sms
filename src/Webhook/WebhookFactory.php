@@ -4,6 +4,8 @@ namespace WP_SMS\Webhook;
 
 use WP_SMS\Option;
 
+if (!defined('ABSPATH')) exit;
+
 /**
  * Class WebhookFactory
  *

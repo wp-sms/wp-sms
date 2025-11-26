@@ -5,6 +5,8 @@ namespace WP_SMS\User\MobileFieldHandler;
 use WP_SMS\Helper;
 use WP_SMS\Option;
 
+if (!defined('ABSPATH')) exit;
+
 class WordPressMobileFieldHandler extends AbstractFieldHandler
 {
     public function register()

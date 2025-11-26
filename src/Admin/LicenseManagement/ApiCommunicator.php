@@ -8,6 +8,8 @@ use WP_SMS\Exceptions\LicenseException;
 use WP_SMS\Utils\AdminHelper;
 use WP_SMS\Traits\TransientCacheTrait;
 
+if (!defined('ABSPATH')) exit;
+
 class ApiCommunicator
 {
     use TransientCacheTrait;
@@ -28,6 +30,7 @@ class ApiCommunicator
 
             if (empty($plugins) || !is_array($plugins)) {
                 throw new Exception(
+                    /* translators: %s: API URL */
                     sprintf(__('No products were found. The API returned an empty response from the following URL: %s', 'wp-sms'), "{$this->apiUrl}/product/list")
                 );
             }
@@ -140,6 +143,7 @@ class ApiCommunicator
             $productSlugs = array_column($licenseData->products, 'slug');
 
             if (!in_array($product, $productSlugs, true)) {
+                /* translators: %s: Add-On name */
                 throw new LicenseException(sprintf(__('The license is not related to the requested Add-On <b>%s</b>.', 'wp-sms'), $product));
             }
         }

@@ -7,6 +7,8 @@ use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Components\Logger;
 
+if (!defined('ABSPATH')) exit;
+
 class PluginHelper
 {
     /**

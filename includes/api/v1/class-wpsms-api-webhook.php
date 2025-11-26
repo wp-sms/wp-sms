@@ -9,6 +9,8 @@ use WP_REST_Server;
 use WP_SMS\RestApi;
 use WP_SMS\Webhook\WebhookFactory;
 
+if (!defined('ABSPATH')) exit;
+
 /**
  * Class Webhook
  */

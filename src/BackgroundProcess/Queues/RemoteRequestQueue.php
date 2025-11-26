@@ -5,6 +5,8 @@ namespace WP_SMS\BackgroundProcess\Queues;
 use WP_SMS\Components\Sms;
 use WP_SMS\Library\BackgroundProcessing\WP_Background_Process;
 
+if (!defined('ABSPATH')) exit;
+
 /**
  * Class RemoteRequestQueue
  *

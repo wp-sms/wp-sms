@@ -111,13 +111,17 @@
 
                 <p class="field-description wpsms-value wpsms-wc-users" style="display: none;" data-text="<?php esc_attr_e('Customers have the mobile number.', 'wp-sms'); ?>">
                     <span id="wc-customers-count" data-type="wc_customers">
-                        <?php echo sprintf(__('<b>%s</b> Customers have the mobile number.', 'wp-sms'), '0'); ?>
+                        <?php
+                        /* translators: %s: number of customers */
+                        echo sprintf(__('<b>%s</b> Customers have the mobile number.', 'wp-sms'), '0'); ?>
                     </span>
                 </p>
 
                 <p class="field-description wpsms-value wpsms-bp-users" style="display: none;" data-text="<?php esc_attr_e('Users have the mobile number in their profile.', 'wp-sms'); ?>">
                     <span id="bp-users-count" data-type="bp_members">
-                        <?php echo sprintf(__('<b>%s</b> Users have the mobile number in their profile.', 'wp-sms'), '0'); ?>
+                        <?php
+                        /* translators: %s: number of users */
+                        echo sprintf(__('<b>%s</b> Users have the mobile number in their profile.', 'wp-sms'), '0'); ?>
                     </span>
                 </p>
 

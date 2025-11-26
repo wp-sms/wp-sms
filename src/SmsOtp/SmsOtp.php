@@ -7,6 +7,8 @@ use WP_SMS\DynamicResponse\Response;
 use DateTime;
 use DateInterval;
 
+if (!defined('ABSPATH')) exit;
+
 final class SmsOtp
 {
     /**

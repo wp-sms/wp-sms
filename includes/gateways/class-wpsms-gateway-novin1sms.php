@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class novin1sms extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://www.novin1sms.ir/webservice/smsService.php?wsdl";

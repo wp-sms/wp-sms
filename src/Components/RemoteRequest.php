@@ -6,6 +6,8 @@ use Exception;
 use WP_SMS\Helper;
 use WP_SMS\Traits\TransientCacheTrait;
 
+if (!defined('ABSPATH')) exit;
+
 class RemoteRequest
 {
     use TransientCacheTrait;

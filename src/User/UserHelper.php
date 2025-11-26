@@ -2,6 +2,8 @@
 
 namespace WP_SMS\User;
 
+if (!defined('ABSPATH')) exit;
+
 class UserHelper
 {
     /**

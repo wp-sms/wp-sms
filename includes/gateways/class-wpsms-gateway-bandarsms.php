@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class bandarsms extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://bandarsms.ir/class/sms/wssimple/server.php?wsdl";

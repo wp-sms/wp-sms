@@ -8,6 +8,8 @@ use WP_SMS\Newsletter;
 use WP_SMS\Option;
 use WP_SMS\Services\Subscriber\SubscriberUtil;
 
+if (!defined('ABSPATH')) exit;
+
 class PublicUnsubscribeAjax extends AjaxControllerAbstract
 {
     protected $action = 'wp_sms_unsubscribe';

@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Blocks;
 
+if (!defined('ABSPATH')) exit;
+
 class BlockAssetsManager
 {
     private $blocks = [

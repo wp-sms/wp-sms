@@ -4,6 +4,8 @@ namespace WP_SMS\Utils;
 
 use WP_SMS\Option;
 
+if (!defined('ABSPATH')) exit;
+
 class PluginHelper
 {
     /**

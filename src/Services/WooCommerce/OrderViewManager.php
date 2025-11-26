@@ -5,6 +5,8 @@ namespace WP_SMS\Services\WooCommerce;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Helper;
 
+if (!defined('ABSPATH')) exit;
+
 class OrderViewManager
 {
     public const FIELD_MOBILE = 'wpsmswoopro_mobile';

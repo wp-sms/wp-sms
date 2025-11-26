@@ -2,9 +2,10 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 use Exception;
 use WP_Error;
-
 class _1s2u extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://api.1s2u.io";

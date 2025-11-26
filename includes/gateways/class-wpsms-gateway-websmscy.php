@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class websmscy extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://www.websms.com.cy/webservices/websms.wsdl";
@@ -16,7 +18,6 @@ class websmscy extends \WP_SMS\Gateway
         parent::__construct();
         $this->validateNumber = "Phone numbers must be in the 9XXXXXXX format beginning with 99, 96 or 97";
         @ini_set("soap.wsdl_cache_enabled", "0");
-        include_once('libraries/websmscy/soapClient.class.php');
     }
 
     public function SendSMS()
@@ -49,6 +50,15 @@ class websmscy extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
+        if (!class_exists('WebsmsClient')) {
+            $this->log($this->from, $this->msg, $this->to, __('The Websmscy class could not be found. Please ensure the Websmscy library or plugin is properly loaded.', 'wp-sms'), 'error');
+
+            return new \WP_Error(
+                'websmscy-missing',
+                __('The Websmscy class could not be found. Please ensure the Websmscy library or plugin is properly loaded.', 'wp-sms')
+            );
+        }
+
         // Get the credit.
         $credit = $this->GetCredit();
 
@@ -62,8 +72,8 @@ class websmscy extends \WP_SMS\Gateway
 
         $cfg = array(
             'wsdl_file' => $this->wsdl_link,
-            'username'  => $this->username,
-            'password'  => $this->password,
+            'username' => $this->username,
+            'password' => $this->password,
         );
 
         $ws = new \WebsmsClient($cfg);
@@ -98,6 +108,13 @@ class websmscy extends \WP_SMS\Gateway
 
     public function GetCredit()
     {
+        if (!class_exists('WebsmsClient')) {
+            return new \WP_Error(
+                'websmscy-missing',
+                __('The Websmscy class could not be found. Please ensure the Websmscy library or plugin is properly loaded.', 'wp-sms')
+            );
+        }
+
         // Check username and password
         if (!$this->username && !$this->password) {
             return new \WP_Error('account-credit', __('API username or API password is not entered.', 'wp-sms'));
@@ -109,12 +126,12 @@ class websmscy extends \WP_SMS\Gateway
 
         $cfg = array(
             'wsdl_file' => $this->wsdl_link,
-            'username'  => $this->username,
-            'password'  => $this->password,
+            'username' => $this->username,
+            'password' => $this->password,
         );
 
         try {
-            $ws      = new \WebsmsClient($cfg);
+            $ws = new \WebsmsClient($cfg);
             $credits = $ws->getCredits();
 
             return $credits;

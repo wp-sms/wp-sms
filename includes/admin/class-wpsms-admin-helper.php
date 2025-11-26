@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Admin;
 
+if (!defined('ABSPATH')) exit;
+
 /**
  * @deprecated This class is deprecated and the methods moved to main Helper
  * So we keep this file for just for backward compatibility and will be removed on future.

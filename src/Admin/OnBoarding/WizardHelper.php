@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Admin\OnBoarding;
 
+if (!defined('ABSPATH')) exit;
+
 class WizardHelper
 {
     public static function slugToClassName($slug)

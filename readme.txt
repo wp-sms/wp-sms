@@ -5,7 +5,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 6.8
 Requires PHP: 5.6
-Stable tag: 7.0.8
+Stable tag: 7.0.9
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -68,6 +68,27 @@ WooCommerce, GravityForms, Elementor, Contact Form 7, Twilio, WhatsApp, Clickate
 
 📺 [Video Installation Guide](https://www.youtube.com/watch?v=uZVs8DXu_XM)
 
+== Source Code and Build Instructions ==
+
+**Note:** The plugin works out of the box - no build steps required for regular users. This section is for
+developers who want to modify or contribute to the source code.
+
+= Source Locations =
+
+All source code for minified JavaScript and CSS is included in the plugin:
+
+* JavaScript source: `assets/src/scripts/` → compiled to `assets/js/`
+* Gutenberg blocks: `assets/src/blocks/` → compiled to `assets/blocks/`
+* SCSS source: `assets/src/scss/` → compiled to `assets/css/`
+
+= Third-Party Libraries =
+
+[Chart.js](https://github.com/chartjs/Chart.js), [DataTables](https://github.com/DataTables/DataTables), [flatpickr](https://github.com/flatpickr/flatpickr), [intlTelInput](https://github.com/jackocnr/intl-tel-input), [jquery.repeater](https://github.com/DubFriend/jquery.repeater), [jQuery Word and Character Counter](https://github.com/qwertypants/jQuery-Word-and-Character-Counter-Plugin), [Select2](https://github.com/select2/select2), [Tooltipster](https://github.com/calebjacob/tooltipster)
+
+= Repository =
+
+Full source code: [github.com/wp-sms/wp-sms](https://github.com/wp-sms/wp-sms)
+
 == Frequently Asked Questions ==
 = Who should use WSMS? =
 Any WordPress site that wants to enhance communication with users, customers, or subscribers via SMS. Perfect for businesses, bloggers, and e-commerce stores.
@@ -119,6 +140,9 @@ All premium features + all add-ons in one package.
 - New Onboarding, Add-on Manager, and All-in-One package.
 
 == Changelog ==
+= v7.0.9 - 2025-11-26 =
+- **Enhancement:** Minor improvements.
+
 = v7.0.8 - 2025-11-23 =
 - **Enhancement:** Repositioned the "All-in-One Required" label to the top of the PRO gateway onboarding table for better visibility.
 - **Enhancement:** Added more plugin details to the Site Health Info section for easier diagnostics.

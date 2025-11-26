@@ -6,6 +6,8 @@ use Exception;
 use WP_SMS\Helper;
 use WP_SMS\Newsletter;
 
+if (!defined('ABSPATH')) exit;
+
 class SubscriberFormAjax extends AjaxControllerAbstract {
 	protected $action = 'wp_sms_edit_subscriber';
 

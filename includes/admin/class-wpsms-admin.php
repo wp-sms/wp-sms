@@ -5,6 +5,8 @@ namespace WP_SMS;
 use WP_SMS\Controller\LicenseManagerAjax;
 use WP_SMS\Utils\Request;
 
+if (!defined('ABSPATH')) exit;
+
 class Admin
 {
     public $sms;
@@ -29,7 +31,6 @@ class Admin
         add_action('admin_bar_menu', array($this, 'admin_bar'), 40);
         add_action('dashboard_glance_items', array($this, 'dashboard_glance'));
         add_action('admin_menu', array($this, 'admin_menu'));
-        add_action('init', array($this, 'do_output_buffer'));
 
         // Add Filters
         add_filter('plugin_row_meta', array($this, 'meta_links'), 0, 2);
@@ -47,8 +48,9 @@ class Admin
         $screen = get_current_screen();
         if (stristr($screen->id, 'wp-sms') or $screen->base == 'post' or $screen->id == 'edit-wpsms-command' or $screen->id == 'edit-sms-campaign') {
             $text = sprintf(
-                __('Please rate <strong>WP SMS</strong> <a href="%s" aria-label="%s" title="%s" target="_blank">★★★★★ %s</a> to help us spread the word. Thank you!', 'wp-sms'),
-                'https://wordpress.org/support/plugin/wp-sms/reviews/?filter=5#new-post',
+                /* translators: 1: URL to review page 2: aria-label text 3: title text 4: link text */
+                __('Please rate <strong>WP SMS</strong> <a href="%1$s" aria-label="%2$s" title="%3$s" target="_blank">%4$s</a> to help us spread the word. Thank you!', 'wp-sms'),
+                'https://wordpress.org/support/plugin/wp-sms/reviews/',
                 esc_attr__('Rate WP SMS with five stars on WordPress.org', 'wp-sms'),
                 esc_attr__('Rate WP SMS', 'wp-sms'),
                 esc_html__('on WordPress.org', 'wp-sms')
@@ -66,7 +68,7 @@ class Admin
             $plugin_version = $plugin_data['Version'];
             $content        = sprintf('<p id="footer-upgrade" class="alignright">%s | %s %s</p>',
                 esc_html__('WordPress', 'wp-sms') . ' ' . esc_html($wp_version),
-                esc_html($plugin_data['Name']),
+                esc_html(__('WP SMS', 'wp-sms')),
                 esc_html($plugin_version)
             );
         }
@@ -343,7 +345,7 @@ class Admin
         // translators: %s: Number of subscribers
         echo "<li class='wpsms-subscribe-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-subscribers'>" . sprintf(esc_html__('%s Subscriber', 'wp-sms'), esc_html($subscribe)) . "</a></li>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         if (!is_object($credit)) {
-            // translators: %s: SMS credit 
+            // translators: %s: SMS credit
             echo "<li class='wpsms-credit-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=gateway'>" . sprintf(esc_html__('%s SMS Credit', 'wp-sms'), esc_html($credit)) . "</a></li>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         }
     }
@@ -474,6 +476,11 @@ class Admin
             'default' => 20,
             'option'  => 'wp_sms_outbox_per_page',
         ));
+
+        // Process bulk actions early before any output is sent
+        require_once WP_SMS_DIR . 'includes/admin/outbox/class-wpsms-outbox.php';
+        $list_table = new Outbox_List_Table();
+        $list_table->process_bulk_action();
     }
 
     /**
@@ -505,6 +512,10 @@ class Admin
             'option'  => 'wp_sms_subscriber_per_page',
         ));
 
+        // Process bulk actions early before any output is sent
+        require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table.php';
+        $list_table = new Subscribers_List_Table();
+        $list_table->process_bulk_action();
     }
 
     /**
@@ -521,7 +532,10 @@ class Admin
             'option'  => 'wp_sms_group_per_page',
         ));
 
-
+        // Process bulk actions early before any output is sent
+        require_once WP_SMS_DIR . 'includes/admin/groups/class-wpsms-groups-table.php';
+        $list_table = new Subscribers_Groups_List_Table();
+        $list_table->process_bulk_action();
     }
 
     /**
@@ -546,7 +560,7 @@ class Admin
     public function meta_links($links, $file)
     {
         if ($file == 'wp-sms/wp-sms.php') {
-            $rate_url = 'https://wordpress.org/support/view/plugin-reviews/wp-sms/?filter=5#new-post';
+            $rate_url = 'https://wordpress.org/support/view/plugin-reviews/wp-sms/';
             $links[]  = '<a href="' . $rate_url . '" target="_blank" class="wpsms-plugin-meta-link" title="' . esc_html__('Click here to rate and review this plugin on WordPress.org', 'wp-sms') . '">' . esc_html__('Rate this plugin', 'wp-sms') . '</a>';
             $links[]  = '<a href="https://dashboard.mailerlite.com/forms/421827/86962232715379904/share" target="_blank" class="wpsms-plugin-meta-link" title="' . esc_html__('Click here to rate and review this plugin on WordPress.org', 'wp-sms') . '">' . esc_html__('Subscribe to our Email Newsletter', 'wp-sms') . '</a>';
         }
@@ -635,14 +649,6 @@ class Admin
         }
 
         return $classes;
-    }
-
-    public function do_output_buffer()
-    {
-        $tabs = array('wp-sms-subscribers-group', 'wp-sms-subscribers', 'wp-sms-scheduled', 'wp-sms-inbox', 'wp-sms-outbox');
-        if (is_admin() and isset($_GET['page']) and in_array($_GET['page'], $tabs)) {
-            ob_start();
-        }
     }
 }
 

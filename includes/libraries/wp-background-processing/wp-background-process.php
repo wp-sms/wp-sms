@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Library\BackgroundProcessing;
 
+if (!defined('ABSPATH')) exit;
+
 /**
  * WP Background Process
  *
@@ -655,6 +657,7 @@ abstract class WP_Background_Process extends WP_Async_Request {
 		if ( 1 === $interval ) {
             $display = __('Every Minute', 'wp-sms');
 		} else {
+            /* translators: %d: number of minutes */
             $display = sprintf(__('Every %d Minutes', 'wp-sms'), $interval);
 		}
 

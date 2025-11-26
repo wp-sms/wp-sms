@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class smsservice extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://mihansmscenter.com/webservice/?wsdl";
