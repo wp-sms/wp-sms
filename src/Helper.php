@@ -476,16 +476,6 @@ class Helper
     }
 
     /**
-     * @return void
-     */
-    public static function maybeStartSession($readAndClose = true)
-    {
-        if (empty(session_id()) && !headers_sent()) {
-            session_start(array('read_and_close' => $readAndClose));
-        }
-    }
-
-    /**
      * This function adds mobile country code to the mobile number if the mobile country code option is enabled.
      *
      * @param $mobileNumber
