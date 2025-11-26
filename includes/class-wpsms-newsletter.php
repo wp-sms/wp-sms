@@ -463,8 +463,7 @@ class Newsletter
         if ($count) {
             return array(
                 'result'  => 'error',
-                // translators: %s: Group name
-                'message' => sprintf(
+                'message' => sprintf( /* translators: 1: Group name */
                     esc_html__('Group Name "%s" exists!', 'wp-sms'),
                     esc_html($name)
                 ),
