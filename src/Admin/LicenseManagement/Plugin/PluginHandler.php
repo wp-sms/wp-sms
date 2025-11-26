@@ -5,12 +5,15 @@ namespace WP_SMS\Admin\LicenseManagement\Plugin;
 use Exception;
 
 /**
- * Helper class that handles plugin download, install, etc.
+ * Plugin handler for WP SMS add-ons operations.
+ *
+ * Manages add-on operations including download, installation,
+ * activation, deactivation of add-ons based on user requests.
  */
 class PluginHandler
 {
     /**
-     * Downloads and installs the plugin.
+     * Downloads and installs the add-ons.
      *
      * @param string $pluginUrl
      *
@@ -72,7 +75,7 @@ class PluginHandler
 
 
     /**
-     * Returns plugin file path.
+     * Returns WP SMS add-on file path.
      *
      * @param string $pluginSlug
      *
@@ -84,7 +87,7 @@ class PluginHandler
     }
 
     /**
-     * Checks if the plugin is installed?
+     * Checks if the WP SMS add-on is installed?
      *
      * @param string $pluginSlug
      *
@@ -96,7 +99,7 @@ class PluginHandler
     }
 
     /**
-     * Checks if the plugin is active?
+     * Checks if the WP SMS add-on is active?
      *
      * @param string $pluginSlug
      *
@@ -108,7 +111,7 @@ class PluginHandler
     }
 
     /**
-     * Activates the plugin.
+     * Activates the WP SMS add-on.
      *
      * @param string $pluginSlug
      *
@@ -136,7 +139,7 @@ class PluginHandler
     }
 
     /**
-     * Deactivates the plugin.
+     * Deactivates the WP SMS add-on.
      *
      * @param string $pluginSlug
      *
@@ -156,7 +159,7 @@ class PluginHandler
     }
 
     /**
-     * Returns plugin's full metadata.
+     * Returns WP SMS add-on's full metadata.
      *
      * @param string $pluginSlug
      *
