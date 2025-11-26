@@ -68,6 +68,27 @@ WooCommerce, GravityForms, Elementor, Contact Form 7, Twilio, WhatsApp, Clickate
 
 📺 [Video Installation Guide](https://www.youtube.com/watch?v=uZVs8DXu_XM)
 
+== Source Code and Build Instructions ==
+
+**Note:** The plugin works out of the box - no build steps required for regular users. This section is for
+developers who want to modify or contribute to the source code.
+
+= Source Locations =
+
+All source code for minified JavaScript and CSS is included in the plugin:
+
+* JavaScript source: `assets/src/scripts/` → compiled to `assets/js/`
+* Gutenberg blocks: `assets/src/blocks/` → compiled to `assets/blocks/`
+* SCSS source: `assets/src/scss/` → compiled to `assets/css/`
+
+= Third-Party Libraries =
+
+[Chart.js](https://github.com/chartjs/Chart.js), [DataTables](https://github.com/DataTables/DataTables), [flatpickr](https://github.com/flatpickr/flatpickr), [intlTelInput](https://github.com/jackocnr/intl-tel-input), [jquery.repeater](https://github.com/DubFriend/jquery.repeater), [jQuery Word and Character Counter](https://github.com/qwertypants/jQuery-Word-and-Character-Counter-Plugin), [Select2](https://github.com/select2/select2), [Tooltipster](https://github.com/calebjacob/tooltipster)
+
+= Repository =
+
+Full source code: [github.com/wp-sms/wp-sms](https://github.com/wp-sms/wp-sms)
+
 == Frequently Asked Questions ==
 = Who should use WSMS? =
 Any WordPress site that wants to enhance communication with users, customers, or subscribers via SMS. Perfect for businesses, bloggers, and e-commerce stores.
