@@ -6,9 +6,11 @@ use WP_SMS\Option;
 use WP_SMS\Helper;
 use WP_Error;
 
+if (!defined('ABSPATH')) exit;
+
 abstract class AbstractFieldHandler
 {
-    
+
     abstract public function register();
 
     abstract public function getMobileNumberByUserId($userId);
@@ -16,11 +18,11 @@ abstract class AbstractFieldHandler
     abstract public function getUserMobileFieldName();
 
     /**
-     * Validate phone number upon being saved in profile page 
+     * Validate phone number upon being saved in profile page
      *
      * @return $check
     */
-    public function profilePhoneValidation($check, $objectId, $metaKey, $metaValue, $prevValue) 
+    public function profilePhoneValidation($check, $objectId, $metaKey, $metaValue, $prevValue)
     {
         if ($this->getUserMobileFieldName() == $metaKey) {
             $phoneNumber = $metaValue;
@@ -38,12 +40,12 @@ abstract class AbstractFieldHandler
                 if (is_wp_error($validity)) return false;
             }
         }
-        
+
         return $check;
     }
 
     /**
-     * Handle the mobile field validation errors on user profile page 
+     * Handle the mobile field validation errors on user profile page
      *
      * @param $errors
      * @param $update

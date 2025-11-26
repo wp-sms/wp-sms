@@ -6,6 +6,8 @@ use WP_SMS\Helper;
 use WP_SMS\Option;
 use WP_SMS\Version;
 
+if (!defined('ABSPATH')) exit;
+
 class EmailReportGenerator
 {
     public $lastWeek;
@@ -15,7 +17,7 @@ class EmailReportGenerator
     {
         global $wpdb;
 
-        $this->lastWeek = date('Y-m-d H:i:s', strtotime('-1 week')); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date	
+        $this->lastWeek = date('Y-m-d H:i:s', strtotime('-1 week')); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
         $this->db       = $wpdb;
     }
 

@@ -5,6 +5,8 @@ namespace WP_SMS\Abstracts;
 use WP_SMS\Menus;
 use WP_SMS\Components\Singleton;
 
+if (!defined('ABSPATH')) exit;
+
 abstract class BasePage extends Singleton
 {
     protected $pageSlug;

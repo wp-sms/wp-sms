@@ -4,6 +4,8 @@ namespace WP_SMS\Notification\Handler\BuddyPress;
 
 use WP_SMS\Notification\Notification;
 
+if (!defined('ABSPATH')) exit;
+
 class BuddyPressMentionNotification extends Notification
 {
     /**

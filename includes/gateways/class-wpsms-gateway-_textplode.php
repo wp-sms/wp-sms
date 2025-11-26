@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class _textplode extends \WP_SMS\Gateway
 {
     private $wsdl_link = "";
@@ -18,14 +20,10 @@ class _textplode extends \WP_SMS\Gateway
 
         // Enable api key
         $this->has_key = true;
-
-        // Include library
-        include('libraries/textplode/textplode.class.php');
     }
 
     public function SendSMS()
     {
-
         /**
          * Modify sender number
          *
@@ -43,6 +41,15 @@ class _textplode extends \WP_SMS\Gateway
          *
          */
         $this->to = apply_filters('wp_sms_to', $this->to);
+
+        if (!class_exists('Textplode')) {
+            $this->log($this->from, $this->msg, $this->to, __('The Textplode class could not be found. Please ensure the Textplode library or plugin is properly loaded.', 'wp-sms'), 'error');
+
+            return new \WP_Error(
+                'textplode-missing',
+                __('The Textplode class could not be found. Please ensure the Textplode library or plugin is properly loaded.', 'wp-sms')
+            );
+        }
 
         // Get the credit.
         $credit = $this->GetCredit();
@@ -106,6 +113,13 @@ class _textplode extends \WP_SMS\Gateway
 
     public function GetCredit()
     {
+        if (!class_exists('Textplode')) {
+            return new \WP_Error(
+                'textplode-missing',
+                __('The Textplode class could not be found. Please ensure the Textplode library or plugin is properly loaded.', 'wp-sms')
+            );
+        }
+
         // Check username and password
         if (!$this->username && !$this->password) {
             return new \WP_Error('account-credit', esc_html__('Username and Password are required.', 'wp-sms'));

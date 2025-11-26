@@ -7,6 +7,8 @@ use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Utils\Request;
 use Exception;
 
+if (!defined('ABSPATH')) exit;
+
 abstract class MultiViewPage extends BasePage
 {
     protected $defaultView;
@@ -48,6 +50,7 @@ abstract class MultiViewPage extends BasePage
             // Check if the class does not have render method, throw exception
             if (!method_exists($views[$currentView], 'render')) {
                 throw new SystemErrorException(
+                    /* translators: %s: class name */
                     sprintf(esc_html__('render method is not defined within %s class.', 'wp-sms'), $currentView)
                 );
             }

@@ -4,6 +4,8 @@ namespace WP_SMS\Components;
 
 use ErrorException;
 
+if (!defined('ABSPATH')) exit;
+
 class DateTime
 {
     public static $defaultDateFormat = 'Y-m-d';

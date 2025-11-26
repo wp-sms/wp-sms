@@ -7,6 +7,8 @@ use WP_SMS\Admin\NoticeHandler\Notice;
 use WP_SMS\Components\Ajax;
 use WP_SMS\SMS_Send;
 
+if (!defined('ABSPATH')) exit;
+
 class AdminManager
 {
     public function __construct()
@@ -52,8 +54,9 @@ class AdminManager
 
         if (apply_filters('wp_sms_enable_footer_text', true) && stripos($screen->id, 'wps_') !== false) {
             $text = sprintf(
-                __('Please rate <strong>WP SMS</strong> <a href="%s" aria-label="%s" title="%s" target="_blank">★★★★★ %s</a> to help us spread the word. Thank you!', 'wp-sms'),
-                'https://wordpress.org/support/plugin/wp-sms/reviews/?filter=5#new-post',
+                /* translators: 1: URL to review page 2: aria-label text 3: title text 4: link text */
+                __('Please rate <strong>WP SMS</strong> <a href="%1$s" aria-label="%2$s" title="%3$s" target="_blank">%4$s</a> to help us spread the word. Thank you!', 'wp-sms'),
+                'https://wordpress.org/support/plugin/wp-sms/reviews/',
                 esc_attr__('Rate WP SMS with five stars on WordPress.org', 'wp-sms'),
                 esc_attr__('Rate WP SMS', 'wp-sms'),
                 esc_html__('on WordPress.org', 'wp-sms')

@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Controller;
 
+if (!defined('ABSPATH')) exit;
+
 abstract class AjaxControllerAbstract
 {
     protected $action;

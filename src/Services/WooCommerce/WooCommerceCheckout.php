@@ -6,6 +6,8 @@ use WP_SMS\Blocks\WooSmsOptInBlock;
 use WP_SMS\Helper;
 use WP_SMS\Option;
 
+if (!defined('ABSPATH')) exit;
+
 class WooCommerceCheckout
 {
     const FIELD_ORDER_NOTIFICATION = 'wpsms_woocommerce_order_notification';

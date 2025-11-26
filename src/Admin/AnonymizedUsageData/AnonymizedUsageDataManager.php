@@ -5,6 +5,8 @@ namespace WP_SMS\Admin\AnonymizedUsageData;
 use WP_SMS\Components\Event;
 use WP_SMS\Utils\OptionUtil as Option;
 
+if (!defined('ABSPATH')) exit;
+
 class AnonymizedUsageDataManager
 {
     /**

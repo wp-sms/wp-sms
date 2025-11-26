@@ -7,6 +7,8 @@ use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Utils\PluginHelper;
 use WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit;
+
 class HooksManager
 {
     public function __construct()

@@ -5,6 +5,8 @@ namespace WP_SMS\Controller;
 use Exception;
 use WP_SMS\Helper;
 
+if (!defined('ABSPATH')) exit;
+
 class GroupFormAjax extends AjaxControllerAbstract {
 	protected $action = 'wp_sms_edit_group';
 

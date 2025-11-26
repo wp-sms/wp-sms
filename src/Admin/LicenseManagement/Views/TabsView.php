@@ -14,6 +14,8 @@ use WP_SMS\Utils\AdminHelper;
 use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Utils\Request;
 
+if (!defined('ABSPATH')) exit;
+
 class TabsView extends BaseTabView
 {
     protected $defaultTab = 'add-ons';

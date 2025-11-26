@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Blocks;
 
+if (!defined('ABSPATH')) exit;
+
 class WooMobileField extends WooBlockAbstract
 {
     protected $blockName = 'wpsms/mobile';

@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class jusibe extends \WP_SMS\Gateway
 {
     public $wsdl_link = 'https://api.jusibe.com/sms/v1';

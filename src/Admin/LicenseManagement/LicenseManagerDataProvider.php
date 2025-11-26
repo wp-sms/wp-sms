@@ -6,6 +6,8 @@ use WP_SMS\Exceptions\SystemErrorException;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHelper;
 use WP_SMS\Utils\Request;
 
+if (!defined('ABSPATH')) exit;
+
 class LicenseManagerDataProvider
 {
     protected $args;

@@ -19,7 +19,7 @@
         <table>
             <tr>
                 <td>
-                    <p> <?php _e('The data will be exported to a <code>*.csv</code> file.', 'wp-sms'); ?> </p>
+                    <p> <?php echo wp_kses_post(__('The data will be exported to a <code>*.csv</code> file.', 'wp-sms')); ?> </p>
                 </td>
             </tr>
 

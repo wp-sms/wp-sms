@@ -6,6 +6,8 @@ use WP_SMS\Install;
 use DateTime;
 use DateInterval;
 
+if (!defined('ABSPATH')) exit;
+
 final class Verifier
 {
     /**

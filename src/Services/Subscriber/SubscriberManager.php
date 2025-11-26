@@ -5,6 +5,8 @@ namespace WP_SMS\Services\Subscriber;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Option;
 
+if (!defined('ABSPATH')) exit;
+
 class SubscriberManager
 {
     public function init()

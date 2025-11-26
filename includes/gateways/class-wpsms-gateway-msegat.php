@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class msegat extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://www.msegat.com/gw/";

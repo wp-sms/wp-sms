@@ -4,6 +4,8 @@ namespace WP_SMS\Notification\Handler;
 
 use WP_SMS\Notification\Notification;
 
+if (!defined('ABSPATH')) exit;
+
 class AwesomeSupportTicketNotification extends Notification
 {
     protected $ticket;

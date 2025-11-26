@@ -4,6 +4,8 @@ namespace WP_SMS\Notification;
 
 use WP_Error;
 
+if (!defined('ABSPATH')) exit;
+
 class Notification
 {
     protected $variables = [];

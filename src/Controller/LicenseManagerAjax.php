@@ -10,6 +10,8 @@ use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\User\UserHelper;
 use WP_SMS\Utils\Request;
 
+if (!defined('ABSPATH')) exit;
+
 class LicenseManagerAjax extends AjaxControllerAbstract
 {
     protected $action = 'wp_sms_license_manager';

@@ -4,13 +4,18 @@ namespace WP_SMS\Admin\LicenseManagement\Plugin;
 
 use Exception;
 
+if (!defined('ABSPATH')) exit;
+
 /**
- * Helper class that handles plugin download, install, etc.
+ * Plugin handler for WP SMS add-ons operations.
+ *
+ * Manages add-on operations including download, installation,
+ * activation, deactivation of add-ons based on user requests.
  */
 class PluginHandler
 {
     /**
-     * Downloads and installs the plugin.
+     * Downloads and installs the add-ons.
      *
      * @param string $pluginUrl
      *
@@ -41,6 +46,7 @@ class PluginHandler
         ]);
 
         if (is_wp_error($response)) {
+            /* translators: %s: error message */
             throw new Exception(sprintf(__('Failed to download the plugin: %s', 'wp-sms'), $response->get_error_message()));
         }
 
@@ -49,7 +55,8 @@ class PluginHandler
 
         if ($response_code != 200) {
             $error_message = sprintf(
-                __('Failed to download the plugin. HTTP Status: %d. Response: %s', 'wp-sms'),
+                /* translators: 1: HTTP status code 2: API response */
+                __('Failed to download the plugin. HTTP Status: %1$d. Response: %2$s', 'wp-sms'),
                 $response_code,
                 wp_remote_retrieve_body($response) // Show API response for debugging
             );
@@ -64,6 +71,7 @@ class PluginHandler
         @unlink($temp_file);
 
         if (is_wp_error($installResult)) {
+            /* translators: %s: error message */
             throw new Exception(sprintf(__('Failed to install the plugin: %s', 'wp-sms'), $installResult->get_error_message()));
         }
 
@@ -72,7 +80,7 @@ class PluginHandler
 
 
     /**
-     * Returns plugin file path.
+     * Returns WP SMS add-on file path.
      *
      * @param string $pluginSlug
      *
@@ -84,7 +92,7 @@ class PluginHandler
     }
 
     /**
-     * Checks if the plugin is installed?
+     * Checks if the WP SMS add-on is installed?
      *
      * @param string $pluginSlug
      *
@@ -96,7 +104,7 @@ class PluginHandler
     }
 
     /**
-     * Checks if the plugin is active?
+     * Checks if the WP SMS add-on is active?
      *
      * @param string $pluginSlug
      *
@@ -108,7 +116,7 @@ class PluginHandler
     }
 
     /**
-     * Activates the plugin.
+     * Activates the WP SMS add-on.
      *
      * @param string $pluginSlug
      *
@@ -136,7 +144,7 @@ class PluginHandler
     }
 
     /**
-     * Deactivates the plugin.
+     * Deactivates the WP SMS add-on.
      *
      * @param string $pluginSlug
      *
@@ -156,7 +164,7 @@ class PluginHandler
     }
 
     /**
-     * Returns plugin's full metadata.
+     * Returns WP SMS add-on's full metadata.
      *
      * @param string $pluginSlug
      *
