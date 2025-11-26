@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class iranspk extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://iranspk.ir/post/send.asmx?wsdl";

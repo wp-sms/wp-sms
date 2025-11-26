@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class avalpayam extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://www.avalpayam.com/class/sms/wssimple/server.php?wsdl";

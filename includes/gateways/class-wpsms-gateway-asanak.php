@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class asanak extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://panel.asanak.ir/webservice/v1rest/sendsms";

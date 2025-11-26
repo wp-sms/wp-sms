@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class mdpanel extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://188.0.240.110/class/sms/wssimple/server.php?wsdl";

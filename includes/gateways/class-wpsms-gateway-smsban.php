@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class smsban extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://smsban.ir/API/SendSMS.asmx?WSDL";

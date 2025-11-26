@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class sunwaysms extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://sms.sunwaysms.com/smsws/";

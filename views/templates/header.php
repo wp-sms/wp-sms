@@ -55,14 +55,20 @@ $isPremium = LicenseHelper::isPremiumLicenseAvailable() ? true : false;
             <div class="wpsms-mobileMenuContent">
                 <?php
                 if (!$isPremium && apply_filters('wp_sms_enable_header_addons_menu', true)) {
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     echo AdminHelper::getTemplate('layout/partials/menu-link', ['slug' => 'wps_plugins_page', 'link_text' => __('Add-Ons', 'wp-sms'), 'icon_class' => 'addons', 'badge_count' => null], true);
                 }
                 if ($isPremium) {
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     echo AdminHelper::getTemplate('layout/partials/menu-link', ['slug' => 'wps_pages_page', 'link_text' => __('Top Pages', 'wp-sms'), 'icon_class' => 'top-pages', 'badge_count' => null], true);
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     echo AdminHelper::getTemplate('layout/partials/menu-link', ['slug' => 'wps_content-analytics_page', 'link_text' => __('Content Analytics', 'wp-sms'), 'icon_class' => 'content-analytics', 'badge_count' => null], true);
+                    // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                     echo AdminHelper::getTemplate('layout/partials/menu-link', ['slug' => 'wps_author-analytics_page', 'link_text' => __('Author Analytics', 'wp-sms'), 'icon_class' => 'author-analytics', 'badge_count' => null], true);
                 }
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 echo AdminHelper::getTemplate('layout/partials/menu-link', ['slug' => 'wps_settings_page', 'link_text' => __('Settings', 'wp-sms'), 'icon_class' => 'settings', 'badge_count' => null], true);
+                // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                 echo AdminHelper::getTemplate('layout/partials/menu-link', ['slug' => 'wps_optimization_page', 'link_text' => __('Optimization', 'wp-sms'), 'icon_class' => 'optimization', 'badge_count' => null], true);
                 ?>
                 <?php if (apply_filters('wp_sms_enable_help_icon', true)) { ?>

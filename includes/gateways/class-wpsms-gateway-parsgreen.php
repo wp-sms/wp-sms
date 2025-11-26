@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class parsgreen extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://login.parsgreen.com/Api/SendSMS.asmx?WSDL";
