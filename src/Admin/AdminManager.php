@@ -53,7 +53,7 @@ class AdminManager
         if (apply_filters('wp_sms_enable_footer_text', true) && stripos($screen->id, 'wps_') !== false) {
             $text = sprintf(
                 __('Please rate <strong>WP SMS</strong> <a href="%s" aria-label="%s" title="%s" target="_blank">★★★★★ %s</a> to help us spread the word. Thank you!', 'wp-sms'),
-                'https://wordpress.org/support/plugin/wp-sms/reviews/?filter=5#new-post',
+                'https://wordpress.org/support/plugin/wp-sms/reviews/',
                 esc_attr__('Rate WP SMS with five stars on WordPress.org', 'wp-sms'),
                 esc_attr__('Rate WP SMS', 'wp-sms'),
                 esc_html__('on WordPress.org', 'wp-sms')
