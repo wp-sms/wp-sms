@@ -25,6 +25,7 @@ class Version
     private static function maybe_deprecated_function($method, $replacement)
     {
         if (version_compare(PHP_VERSION, '7.0.0', '<')) {
+            // phpcs:ignore WordPress.Security.EscapeOutput
             _deprecated_function($method, '7.0.0', $replacement);
         }
     }

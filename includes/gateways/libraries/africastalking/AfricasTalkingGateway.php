@@ -84,7 +84,8 @@ class AfricasTalkingGateway
                 if (in_array($key, $allowedKeys) && strlen($value) > 0) {
                     $params[$key] = $value;
                 } else {
-                    throw new AfricasTalkingGatewayException("Invalid key in options array: [$key]");
+                    // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
+                    throw new AfricasTalkingGatewayException(sprintf( 'Invalid key in options array: [%s]', $key ));
                 }
             }
         }
@@ -100,9 +101,11 @@ class AfricasTalkingGateway
                 return $responseObject->SMSMessageData->Recipients;
             }
 
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new AfricasTalkingGatewayException($responseObject->SMSMessageData->Message);
         }
 
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
         throw new AfricasTalkingGatewayException($this->_responseBody);
     }
 
@@ -120,6 +123,7 @@ class AfricasTalkingGateway
             return $responseObject->SMSMessageData->Messages;
         }
 
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
         throw new AfricasTalkingGatewayException($this->_responseBody);
     }
 
@@ -145,6 +149,7 @@ class AfricasTalkingGateway
         $this->executePOST();
 
         if ($this->_responseInfo['http_code'] != self::HTTP_CODE_CREATED) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new AfricasTalkingGatewayException($this->_responseBody);
         }
 
@@ -170,6 +175,7 @@ class AfricasTalkingGateway
         $this->executePOST();
 
         if ($this->_responseInfo['http_code'] != self::HTTP_CODE_CREATED) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new AfricasTalkingGatewayException($this->_responseBody);
         }
 
@@ -190,6 +196,7 @@ class AfricasTalkingGateway
             return $responseObject->responses;
         }
 
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
         throw new AfricasTalkingGatewayException($this->_responseBody);
     }
 
@@ -216,8 +223,10 @@ class AfricasTalkingGateway
             if (strtoupper(trim($responseObject->errorMessage)) == "NONE") {
                 return $responseObject->entries;
             }
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new AfricasTalkingGatewayException($responseObject->errorMessage);
         } else {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new AfricasTalkingGatewayException($this->_responseBody);
         }
     }
@@ -239,9 +248,10 @@ class AfricasTalkingGateway
             if (strtoupper(trim($responseObject->errorMessage)) == "NONE") {
                 return $responseObject->entries;
             }
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new AfricasTalkingGatewayException($responseObject->ErrorMessage);
         }
-
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
         throw new AfricasTalkingGatewayException($this->_responseBody);
     }
 
@@ -260,9 +270,11 @@ class AfricasTalkingGateway
 
         if (($responseObject = json_decode($this->_responseBody)) !== null) {
             if (strtoupper(trim($responseObject->errorMessage)) != "NONE") {
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 throw new AfricasTalkingGatewayException($responseObject->errorMessage);
             }
         } else {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new AfricasTalkingGatewayException($this->_responseBody);
         }
     }
@@ -285,10 +297,10 @@ class AfricasTalkingGateway
             if (count($responseObject->responses) > 0) {
                 return $responseObject->responses;
             }
-
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new AfricasTalkingGatewayException($responseObject->errorMessage);
         }
-
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
         throw new AfricasTalkingGatewayException($this->_responseBody);
     }
 
@@ -317,9 +329,11 @@ class AfricasTalkingGateway
             if ($response->status == "PendingConfirmation") {
                 return $response->transactionId;
             } else {
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 throw new AfricasTalkingGatewayException($response->description);
             }
         }
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
         throw new AfricasTalkingGatewayException($this->_responseBody);
     }
 
@@ -342,23 +356,28 @@ class AfricasTalkingGateway
             if (count($entries) > 0) {
                 return $entries;
             } else {
+                // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
                 throw new AfricasTalkingGatewayException($response->errorMessage);
             }
         }
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
         throw new AfricasTalkingGatewayException($this->_responseBody);
     }
 
     public function mobilePaymentB2BRequest($productName_, $providerData_, $currencyCode_, $amount_, $metadata_)
     {
         if (!isset($providerData_['provider']) || strlen($providerData_['provider']) == 0) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new AfricasTalkingGatewayException("Missing field provider");
         }
 
         if (!isset($providerData_['destinationChannel']) || strlen($providerData_['destinationChannel']) == 0) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new AfricasTalkingGatewayException("Missing field destinationChannel");
         }
 
         if (!isset($providerData_['transferType']) || strlen($providerData_['transferType']) == 0) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new AfricasTalkingGatewayException("Missing field transferType");
         }
 
@@ -382,6 +401,7 @@ class AfricasTalkingGateway
 
             return $response;
         }
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
         throw new AfricasTalkingGatewayException($this->_responseBody);
     }
 
@@ -398,6 +418,7 @@ class AfricasTalkingGateway
             return $responseObject->UserData;
         }
 
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
         throw new AfricasTalkingGatewayException($this->_responseBody);
     }
 

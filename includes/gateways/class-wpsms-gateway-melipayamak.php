@@ -93,28 +93,28 @@ class melipayamak extends Gateway
         $this->validateNumber = "09xxxxxxxx";
 
         $this->gatewayFields = [
-            'username'         => [
-                'id'   => 'gateway_username',
+            'username' => [
+                'id' => 'gateway_username',
                 'name' => esc_html__('API Username', 'wp-sms'),
                 'desc' => esc_html__('Enter the API username provided by your SMS gateway.', 'wp-sms'),
             ],
-            'password'         => [
-                'id'   => 'gateway_password',
+            'password' => [
+                'id' => 'gateway_password',
                 'name' => esc_html__('API Password', 'wp-sms'),
                 'desc' => esc_html__('Enter the API password provided by your SMS gateway.', 'wp-sms'),
             ],
-            'from'             => [
-                'id'   => 'gateway_sender_id',
+            'from' => [
+                'id' => 'gateway_sender_id',
                 'name' => esc_html__('Sender Number', 'wp-sms'),
                 'desc' => esc_html__('Enter the sender number or sender ID registered with your SMS gateway.', 'wp-sms'),
             ],
             'from_support_one' => [
-                'id'   => 'gateway_support_1_sender_id',
+                'id' => 'gateway_support_1_sender_id',
                 'name' => esc_html__('Backup sender 1 (optional)', 'wp-sms'),
                 'desc' => esc_html__('Optional: support sender number used with Smart SMS.', 'wp-sms'),
             ],
             'from_support_two' => [
-                'id'   => 'gateway_support_2_sender_id',
+                'id' => 'gateway_support_2_sender_id',
                 'name' => esc_html__('Backup sender 2 (optional)', 'wp-sms'),
                 'desc' => esc_html__('Optional: secondary support sender used with Smart SMS.', 'wp-sms'),
             ],
@@ -181,8 +181,8 @@ class melipayamak extends Gateway
 
         // Filters for customization.
         $this->from = apply_filters('wp_sms_from', $this->from);
-        $this->to   = apply_filters('wp_sms_to', $this->to);
-        $this->msg  = apply_filters('wp_sms_msg', $this->msg);
+        $this->to = apply_filters('wp_sms_to', $this->to);
+        $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
         try {
             if (!empty($this->template_id) && !empty($this->messageVariables)) {
@@ -242,7 +242,7 @@ class melipayamak extends Gateway
                 'headers' => [
                     'Content-Type' => 'application/x-www-form-urlencoded',
                 ],
-                'body'    => $body,
+                'body' => $body,
             ];
 
             $response = $this->request('POST', $this->wsdl_link . 'SendSMS/GetCredit', [], $params, false);
@@ -269,14 +269,14 @@ class melipayamak extends Gateway
      */
     private function sendSimpleSMS()
     {
-        $recipients          = $this->to;
+        $recipients = $this->to;
         $recipientsFormatted = count($recipients) > 1 ? implode(',', $recipients) : $recipients[0];
-        $body                = [
+        $body = [
             'username' => $this->username,
             'password' => $this->password,
-            'from'     => $this->from,
-            'to'       => $recipientsFormatted,
-            'text'     => $this->msg,
+            'from' => $this->from,
+            'to' => $recipientsFormatted,
+            'text' => $this->msg,
         ];
 
         if ($this->isflash) {
@@ -295,7 +295,7 @@ class melipayamak extends Gateway
             'headers' => [
                 'Content-Type' => 'application/x-www-form-urlencoded',
             ],
-            'body'    => $body,
+            'body' => $body,
         ];
 
         return $this->request('POST', $this->wsdl_link . 'SmartSMS/Send', [], $params, false);
@@ -317,25 +317,25 @@ class melipayamak extends Gateway
         }
 
         $messageValues = array_values($this->messageVariables);
-        $textPayload   = implode(';', $messageValues);
+        $textPayload = implode(';', $messageValues);
 
-        $results   = [];
+        $results = [];
         $successes = 0;
-        $failures  = 0;
+        $failures = 0;
 
         foreach ($this->to as $receiver) {
-            $body   = [
+            $body = [
                 'username' => $this->username,
                 'password' => $this->password,
-                'text'     => $textPayload,
-                'to'       => $receiver,
-                'bodyId'   => (int)$this->template_id,
+                'text' => $textPayload,
+                'to' => $receiver,
+                'bodyId' => (int)$this->template_id,
             ];
             $params = [
                 'headers' => [
                     'Content-Type' => 'application/x-www-form-urlencoded',
                 ],
-                'body'    => $body,
+                'body' => $body,
             ];
 
             $resp = $this->request('POST', $this->wsdl_link . 'SendSMS/BaseServiceNumber', [], $params, false);
@@ -343,11 +343,11 @@ class melipayamak extends Gateway
             if (is_wp_error($resp)) {
                 $failures++;
                 $results[] = [
-                    'to'        => $receiver,
-                    'status'    => 'error',
+                    'to' => $receiver,
+                    'status' => 'error',
                     'errorType' => 'wp_error',
-                    'message'   => $resp->get_error_message(),
-                    'raw'       => null,
+                    'message' => $resp->get_error_message(),
+                    'raw' => null,
                 ];
                 continue;
             }
@@ -357,20 +357,20 @@ class melipayamak extends Gateway
             if (!$parseSendResultByValue['ok']) {
                 $failures++;
                 $results[] = [
-                    'to'      => $receiver,
-                    'status'  => 'error',
-                    'code'    => $parseSendResultByValue['code'] ?? 'unknown',
+                    'to' => $receiver,
+                    'status' => 'error',
+                    'code' => $parseSendResultByValue['code'] ?? 'unknown',
                     'message' => $this->getErrorMessage($parseSendResultByValue['code']),
-                    'raw'     => $resp,
+                    'raw' => $resp,
                 ];
                 continue;
             }
 
             $successes++;
             $results[] = [
-                'to'     => $receiver,
+                'to' => $receiver,
                 'status' => 'ok',
-                'raw'    => $resp,
+                'raw' => $resp,
             ];
         }
 
@@ -378,8 +378,8 @@ class melipayamak extends Gateway
 
         return [
             'RetStatus' => $retStatus,
-            'Summary'   => ['success' => $successes, 'failure' => $failures],
-            'Results'   => $results,
+            'Summary' => ['success' => $successes, 'failure' => $failures],
+            'Results' => $results,
         ];
     }
 
@@ -512,10 +512,10 @@ class melipayamak extends Gateway
             throw new Exception(esc_html__('Invalid template response payload.', 'wp-sms'));
         }
 
-        $successCount   = 0;
-        $failCount      = 0;
+        $successCount = 0;
+        $failCount = 0;
         $successNumbers = [];
-        $failedNumbers  = [];
+        $failedNumbers = [];
 
         foreach ($response['Results'] as $item) {
             $toOne = $item['to'] ?? $this->to;
@@ -538,7 +538,7 @@ class melipayamak extends Gateway
         }
 
         $successList = $successNumbers ? implode(', ', $successNumbers) : esc_html__('None', 'wp-sms');
-        $failedList  = $failedNumbers ? implode(', ', $failedNumbers) : esc_html__('None', 'wp-sms');
+        $failedList = $failedNumbers ? implode(', ', $failedNumbers) : esc_html__('None', 'wp-sms');
 
         $summary = sprintf(
             "SMS Summary:\nSuccess: %d\nFailed: %d\nSuccess Numbers: %s\nFailed Numbers: %s",
@@ -566,9 +566,11 @@ class melipayamak extends Gateway
         }
 
         if ($ret == 206) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new Exception($summary);
         }
 
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
         throw new Exception($summary);
     }
 }

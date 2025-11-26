@@ -79,14 +79,14 @@ class kavenegar extends Gateway
         $this->validateNumber = "The correct formats for the recipient's phone number are as follows: 09121234567, 00989121234567, +989121234567, 9121234567";
 
         $this->gatewayFields = [
-            'from'    => [
-                'id'           => 'gateway_sender_id',
-                'name'         => __('Sender Number', 'wp-sms'),
+            'from' => [
+                'id' => 'gateway_sender_id',
+                'name' => __('Sender Number', 'wp-sms'),
                 'place_holder' => __('e.g., 0018018949161', 'wp-sms'),
-                'desc'         => __('Number or sender ID shown on recipient’s device.', 'wp-sms'),
+                'desc' => __('Number or sender ID shown on recipient’s device.', 'wp-sms'),
             ],
             'has_key' => [
-                'id'   => 'gateway_key',
+                'id' => 'gateway_key',
                 'name' => __('API Key', 'wp-sms'),
                 'desc' => __('Enter your gateway API key.', 'wp-sms'),
             ],
@@ -174,8 +174,8 @@ class kavenegar extends Gateway
 
         // Filters for customization.
         $this->from = apply_filters('wp_sms_from', $this->from);
-        $this->to   = apply_filters('wp_sms_to', $this->to);
-        $this->msg  = apply_filters('wp_sms_msg', $this->msg);
+        $this->to = apply_filters('wp_sms_to', $this->to);
+        $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
         $this->setTemplateIdAndMessageBody();
 
@@ -252,7 +252,7 @@ class kavenegar extends Gateway
     {
         $params = [
             'receptor' => implode(",", $this->to),
-            'message'  => rawurlencode($this->msg),
+            'message' => rawurlencode($this->msg),
         ];
 
         if (!empty($this->from)) {
@@ -278,7 +278,7 @@ class kavenegar extends Gateway
             return new WP_Error('invalid-template-id', esc_html__('Template ID is missing.', 'wp-sms'));
         }
 
-        $tokens        = ['token', 'token2', 'token3', 'token10', 'token20'];
+        $tokens = ['token', 'token2', 'token3', 'token10', 'token20'];
         $messageValues = array_values($this->messageVariables);
 
         $count = min(count($tokens), count($messageValues));
@@ -296,12 +296,12 @@ class kavenegar extends Gateway
 
         $paramsBase = ['template' => $this->templateId] + $tokenParams;
 
-        $results   = [];
+        $results = [];
         $successes = 0;
-        $failures  = 0;
+        $failures = 0;
 
         foreach ($this->to as $receptor) {
-            $params             = $paramsBase;
+            $params = $paramsBase;
             $params['receptor'] = $receptor;
 
             $resp = $this->request('GET', $this->buildUrl('lookup', 'verify'), $params);
@@ -309,11 +309,11 @@ class kavenegar extends Gateway
             if (is_wp_error($resp)) {
                 $failures++;
                 $results[] = [
-                    'to'        => $receptor,
-                    'status'    => 'error',
+                    'to' => $receptor,
+                    'status' => 'error',
                     'errorType' => 'wp_error',
-                    'message'   => $resp->get_error_message(),
-                    'raw'       => null,
+                    'message' => $resp->get_error_message(),
+                    'raw' => null,
                 ];
                 continue;
             }
@@ -321,26 +321,26 @@ class kavenegar extends Gateway
             if ($resp->return->status != 200) {
                 $failures++;
                 $results[] = [
-                    'to'      => $receptor,
-                    'status'  => 'error',
+                    'to' => $receptor,
+                    'status' => 'error',
                     'message' => $resp->return->message,
-                    'raw'     => $resp,
+                    'raw' => $resp,
                 ];
                 continue;
             }
 
             $successes++;
             $results[] = [
-                'to'     => $receptor,
+                'to' => $receptor,
                 'status' => 'ok',
-                'raw'    => $resp,
+                'raw' => $resp,
             ];
         }
 
         $status = $failures == 0 ? 1 : ($successes > 0 ? 206 : 0);
 
         return [
-            'status'  => $status,
+            'status' => $status,
             'summary' => ['success' => $successes, 'failure' => $failures],
             'results' => $results,
         ];
@@ -360,10 +360,10 @@ class kavenegar extends Gateway
             throw new Exception(esc_html__('Invalid template response payload.', 'wp-sms'));
         }
 
-        $successCount   = 0;
-        $failCount      = 0;
+        $successCount = 0;
+        $failCount = 0;
         $successNumbers = [];
-        $failedNumbers  = [];
+        $failedNumbers = [];
 
         foreach ($response['results'] as $item) {
             $toOne = $item['to'] ?? $this->to;
@@ -386,7 +386,7 @@ class kavenegar extends Gateway
         }
 
         $successList = $successNumbers ? implode(', ', $successNumbers) : esc_html__('None', 'wp-sms');
-        $failedList  = $failedNumbers ? implode(', ', $failedNumbers) : esc_html__('None', 'wp-sms');
+        $failedList = $failedNumbers ? implode(', ', $failedNumbers) : esc_html__('None', 'wp-sms');
 
         $summary = sprintf(
             "SMS Summary:\nSuccess: %d\nFailed: %d\nSuccess Numbers: %s\nFailed Numbers: %s",
@@ -414,9 +414,11 @@ class kavenegar extends Gateway
         }
 
         if ($status == 206) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
             throw new Exception($summary);
         }
 
+        // phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped
         throw new Exception($summary);
     }
 }
