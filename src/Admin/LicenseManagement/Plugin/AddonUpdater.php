@@ -7,18 +7,18 @@ use stdClass;
 use WP_SMS;
 use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
+use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
 /**
- * Class PluginUpdater
+ * Class AddonUpdater
  *
  * Handles updating WP SMS add-ons by fetching the latest version information from a remote API
- * and integrating it with the WordPress plugin update system.
  */
-class PluginUpdater
+class AddonUpdater
 {
     private $pluginSlug;
     private $pluginVersion;
@@ -38,16 +38,11 @@ class PluginUpdater
         $this->pluginVersion  = $pluginVersion;
         $this->licenseKey     = $licenseKey;
         $this->pluginFilePath = $this->pluginSlug . '/' . $this->pluginSlug . '.php';
-    }
 
-    /**
-     * Hooks to check for updates and add necessary filters and actions.
-     */
-    public function handle()
-    {
-        add_filter('plugins_api', [$this, 'pluginsApiInfo'], 20, 3);
-        add_filter('pre_set_site_transient_update_plugins', [$this, 'checkForUpdate']);
-        add_action('upgrader_process_complete', [$this, 'clearCache'], 10, 2);
+        // If no license key is provided, attempt to retrieve it using the LicenseHelper.
+        if (!$this->licenseKey) {
+            $this->licenseKey = LicenseHelper::getPluginLicense($this->pluginSlug);
+        }
     }
 
     public function handleLicenseNotice()
@@ -56,7 +51,7 @@ class PluginUpdater
     }
 
     /**
-     * Handle the plugins_api call.
+     * Handle the wp-sms add-ons api call.
      *
      * @param mixed $res
      * @param string $action
@@ -81,7 +76,7 @@ class PluginUpdater
     }
 
     /**
-     * Fetch version info from the API.
+     * Fetch version info of wp-sms add-ons from the API.
      *
      * @return object|false
      */
@@ -113,7 +108,7 @@ class PluginUpdater
     }
 
     /**
-     * Check for updates by comparing versions.
+     * Check for wp-sms add-ons updates by comparing versions.
      *
      * @param object $transient
      * @return object
@@ -140,7 +135,7 @@ class PluginUpdater
     }
 
     /**
-     * Show a license notice if needed.
+     * Show a license notice for wp-sms add-ons if needed.
      *
      * @param string $pluginFile
      * @param array $pluginData
