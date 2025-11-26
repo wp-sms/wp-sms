@@ -66,7 +66,7 @@ class Admin
             $plugin_version = $plugin_data['Version'];
             $content        = sprintf('<p id="footer-upgrade" class="alignright">%s | %s %s</p>',
                 esc_html__('WordPress', 'wp-sms') . ' ' . esc_html($wp_version),
-                esc_html($plugin_data['Name']),
+                esc_html(__('WP SMS', 'wp-sms')),
                 esc_html($plugin_version)
             );
         }
