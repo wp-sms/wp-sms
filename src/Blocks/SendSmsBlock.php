@@ -4,6 +4,8 @@ namespace WP_SMS\Blocks;
 
 use WP_SMS\Newsletter;
 
+if (!defined('ABSPATH')) exit;
+
 class SendSmsBlock extends BlockAbstract
 {
     protected $blockName = 'SendSms';

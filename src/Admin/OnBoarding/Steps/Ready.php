@@ -4,6 +4,8 @@ namespace WP_SMS\Admin\OnBoarding\Steps;
 
 use WP_SMS\Admin\OnBoarding\StepAbstract;
 
+if (!defined('ABSPATH')) exit;
+
 class Ready extends StepAbstract
 {
     protected function initialize()

@@ -7,6 +7,8 @@ use WP_Error;
 use WP_SMS\Components\NumberParser;
 use WP_SMS\Utils\OptionUtil;
 
+if (!defined('ABSPATH')) exit;
+
 /**
  * Class WP_SMS
  * @package WP_SMS
@@ -580,7 +582,7 @@ class Helper
         // Get the default country code without leading + sign
         $countryCode = substr(Option::getOption('mobile_county_code'), 1);
 
-        // Check if the number starts with + sign 
+        // Check if the number starts with + sign
         /*if (strpos($number, '+') === 0) {
             // Remove the + sign from the beginning of each number
             $number = substr($number, 1);

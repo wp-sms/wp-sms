@@ -9,6 +9,8 @@ use DateTime;
 use DateInterval;
 use DatePeriod;
 
+if (!defined('ABSPATH')) exit;
+
 class StatsWidget extends AbstractWidget
 {
     protected $id = 'wp-sms-stats-widget';

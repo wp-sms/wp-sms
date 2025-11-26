@@ -7,6 +7,8 @@ use WP_SMS\Components\NumberParser;
 use WP_SMS\Helper;
 use WP_SMS\Option;
 
+if (!defined('ABSPATH')) exit;
+
 class WooCommerceAddMobileFieldHandler extends AbstractFieldHandler
 {
     public function register()

@@ -5,6 +5,8 @@ namespace WP_SMS;
 use WP_SMS\Controller\LicenseManagerAjax;
 use WP_SMS\Utils\Request;
 
+if (!defined('ABSPATH')) exit;
+
 class Admin
 {
     public $sms;
@@ -343,7 +345,7 @@ class Admin
         // translators: %s: Number of subscribers
         echo "<li class='wpsms-subscribe-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-subscribers'>" . sprintf(esc_html__('%s Subscriber', 'wp-sms'), esc_html($subscribe)) . "</a></li>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         if (!is_object($credit)) {
-            // translators: %s: SMS credit 
+            // translators: %s: SMS credit
             echo "<li class='wpsms-credit-count'><a href='" . WP_SMS_ADMIN_URL . "admin.php?page=wp-sms-settings&tab=gateway'>" . sprintf(esc_html__('%s SMS Credit', 'wp-sms'), esc_html($credit)) . "</a></li>"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
         }
     }

@@ -12,6 +12,8 @@ use WP_SMS\Exceptions\LicenseException;
 use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Utils\Request;
 
+if (!defined('ABSPATH')) exit;
+
 class LicenseManagementManager
 {
     private $apiCommunicator;

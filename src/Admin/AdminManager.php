@@ -7,6 +7,8 @@ use WP_SMS\Admin\NoticeHandler\Notice;
 use WP_SMS\Components\Ajax;
 use WP_SMS\SMS_Send;
 
+if (!defined('ABSPATH')) exit;
+
 class AdminManager
 {
     public function __construct()

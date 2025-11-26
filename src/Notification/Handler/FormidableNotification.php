@@ -5,6 +5,8 @@ namespace WP_SMS\Notification\Handler;
 use WP_SMS\Notification\Notification;
 use WP_SMS\Services\Formidable\Formidable;
 
+if (!defined('ABSPATH')) exit;
+
 class FormidableNotification extends Notification
 {
 

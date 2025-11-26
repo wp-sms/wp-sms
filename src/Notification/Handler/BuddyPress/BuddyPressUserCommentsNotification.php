@@ -4,6 +4,8 @@ namespace WP_SMS\Notification\Handler\BuddyPress;
 
 use WP_SMS\Notification\Notification;
 
+if (!defined('ABSPATH')) exit;
+
 class BuddyPressUserCommentsNotification extends Notification
 {
 
@@ -46,7 +48,7 @@ class BuddyPressUserCommentsNotification extends Notification
         if (!$this->comment) {
             return null;
         }
-        
+
         $userPosted = get_userdata($this->comment->user_id);
         return ($userPosted && isset($userPosted->display_name)) ? $userPosted->display_name : null;
     }
@@ -61,7 +63,7 @@ class BuddyPressUserCommentsNotification extends Notification
         if (!$this->comment) {
             return null;
         }
-        
+
         return $this->comment->content ?? null;
     }
 
@@ -75,7 +77,7 @@ class BuddyPressUserCommentsNotification extends Notification
         if (!$this->activity) {
             return null;
         }
-        
+
         $userReceiver = get_userdata($this->activity->user_id);
         return ($userReceiver && isset($userReceiver->display_name)) ? $userReceiver->display_name : null;
     }

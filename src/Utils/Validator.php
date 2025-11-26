@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Utils;
 
+if (!defined('ABSPATH')) exit;
+
 class Validator
 {
     protected $data;

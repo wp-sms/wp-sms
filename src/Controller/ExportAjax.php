@@ -5,6 +5,8 @@ namespace WP_SMS\Controller;
 use Exception;
 use WP_SMS\Utils\CsvHelper;
 
+if (!defined('ABSPATH')) exit;
+
 class ExportAjax extends AjaxControllerAbstract {
 	protected $action = 'wp_sms_export';
 

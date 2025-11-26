@@ -8,6 +8,8 @@ use WP_SMS\Gateway;
 use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Option;
 
+if (!defined('ABSPATH')) exit;
+
 class SiteHealthInfo
 {
     const DEBUG_INFO_SLUG = 'wp_sms';

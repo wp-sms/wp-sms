@@ -5,6 +5,8 @@ namespace WP_SMS\Admin\LicenseManagement;
 use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Notice\NoticeManager;
 
+if (!defined('ABSPATH')) exit;
+
 class LicenseMigration
 {
     private $apiCommunicator;

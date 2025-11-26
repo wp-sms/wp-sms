@@ -4,6 +4,8 @@ namespace WP_SMS\Services\MessageButton;
 
 use WP_SMS\Helper;
 
+if (!defined('ABSPATH')) exit;
+
 class ChatBox
 {
     /**

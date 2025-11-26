@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Controller;
 
+if (!defined('ABSPATH')) exit;
+
 class ControllerManager
 {
     public function init()

@@ -7,6 +7,8 @@ use WP_SMS\Components\Sms;
 use WP_SMS\Option;
 use WP_SMS\Utils\Request;
 
+if (!defined('ABSPATH')) exit;
+
 class TestSetup extends StepAbstract
 {
     private $sms;

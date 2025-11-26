@@ -8,6 +8,8 @@ use WP_SMS\Exceptions\LicenseException;
 use WP_SMS\Utils\AdminHelper;
 use WP_SMS\Traits\TransientCacheTrait;
 
+if (!defined('ABSPATH')) exit;
+
 class ApiCommunicator
 {
     use TransientCacheTrait;

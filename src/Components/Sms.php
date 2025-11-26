@@ -5,6 +5,8 @@ namespace WP_SMS\Components;
 use WP_Error;
 use WP_SMS\Helper;
 
+if (!defined('ABSPATH')) exit;
+
 /**
  * Class Sms
  *

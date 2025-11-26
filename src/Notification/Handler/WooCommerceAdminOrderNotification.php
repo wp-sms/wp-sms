@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Notification\Handler;
 
+if (!defined('ABSPATH')) exit;
+
 class WooCommerceAdminOrderNotification extends WooCommerceOrderNotification
 {
     protected $order;

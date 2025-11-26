@@ -5,6 +5,8 @@ namespace WP_SMS\Notification\Handler;
 use WP_SMS\Notification\Notification;
 use WP_SMS\Services\Forminator\Forminator;
 
+if (!defined('ABSPATH')) exit;
+
 class ForminatorNotification extends Notification
 {
 
@@ -40,8 +42,8 @@ class ForminatorNotification extends Notification
     }
 
     /**
-     * __call method handles dynamic methods fields for which come from the form itself 
-     * e.g: field-email 
+     * __call method handles dynamic methods fields for which come from the form itself
+     * e.g: field-email
      *
      * @param [type] $method
      * @param [type] $args

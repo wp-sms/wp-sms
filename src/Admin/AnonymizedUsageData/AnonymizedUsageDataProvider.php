@@ -11,6 +11,8 @@ use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Components\DBUtil as DB;
 
+if (!defined('ABSPATH')) exit;
+
 class AnonymizedUsageDataProvider
 {
     /**

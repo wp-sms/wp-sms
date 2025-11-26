@@ -7,6 +7,8 @@ use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Utils\Request;
 use Exception;
 
+if (!defined('ABSPATH')) exit;
+
 abstract class MultiViewPage extends BasePage
 {
     protected $defaultView;

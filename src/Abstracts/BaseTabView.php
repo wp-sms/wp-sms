@@ -5,6 +5,8 @@ namespace WP_SMS\Abstracts;
 use WP_SMS\Exceptions\SystemErrorException;
 use WP_SMS\Utils\Request;
 
+if (!defined('ABSPATH')) exit;
+
 abstract class BaseTabView extends BaseView
 {
     protected $defaultTab;

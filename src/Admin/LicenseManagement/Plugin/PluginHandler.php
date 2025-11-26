@@ -4,6 +4,8 @@ namespace WP_SMS\Admin\LicenseManagement\Plugin;
 
 use Exception;
 
+if (!defined('ABSPATH')) exit;
+
 /**
  * Plugin handler for WP SMS add-ons operations.
  *

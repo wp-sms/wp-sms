@@ -8,6 +8,8 @@ use WP_SMS\User\UserHelper;
 use WP_SMS\Utils\Request;
 use WP_SMS\Notice\NoticeManager;
 
+if (!defined('ABSPATH')) exit;
+
 class WizardManager
 {
     private $steps = array();

@@ -8,6 +8,8 @@ use WP_SMS\Components\View;
 use WP_SMS\Option;
 use WP_SMS\Helper;
 
+if (!defined('ABSPATH')) exit;
+
 class NoticeManager extends AbstractNotice
 {
     protected static $instance = null;

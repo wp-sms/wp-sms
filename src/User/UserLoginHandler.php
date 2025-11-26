@@ -4,6 +4,8 @@ namespace WP_SMS\User;
 
 use WP_SMS\Helper;
 
+if (!defined('ABSPATH')) exit;
+
 class UserLoginHandler
 {
     private $user;
