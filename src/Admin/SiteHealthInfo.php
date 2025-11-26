@@ -638,7 +638,7 @@ class SiteHealthInfo
             $n          = (int)$raw['days'];
             $partsVal[] = sprintf(
             /* translators: %s: number of days */
-                _n('%s day', '%s days', $n, 'wp-ssms'),
+                _n('%s day', '%s days', $n, 'wp-sms'),
                 $raw['days']
             );
             $partsDbg[] = $raw['days'] . ' ' . ($n === 1 ? 'day' : 'days');
