@@ -47,7 +47,9 @@ class AddonUpdater
 
     public function handleLicenseNotice()
     {
-        add_action("after_plugin_row_{$this->pluginFilePath}", [$this, 'showLicenseNotice'], 10, 2);
+        if (!$this->requestUpdateInfo()) {
+            add_action("after_plugin_row_{$this->pluginFilePath}", [$this, 'showLicenseNotice'], 10, 2);
+        }
     }
 
     /**
@@ -142,32 +144,30 @@ class AddonUpdater
      */
     public function showLicenseNotice($pluginFile, $pluginData)
     {
-        if (!$this->requestUpdateInfo()) {
-            $screen  = get_current_screen();
-            $columns = get_column_headers($screen);
-            $colspan = is_countable($columns) ? count($columns) : 3;
+        $screen  = get_current_screen();
+        $columns = get_column_headers($screen);
+        $colspan = is_countable($columns) ? count($columns) : 3;
 
-            $isActive = is_plugin_active($this->pluginFilePath);
+        $isActive = is_plugin_active($this->pluginFilePath);
 
-            ?>
-            <tr class='license-error-tr plugin-update-tr update <?php echo $isActive ? 'active' : ''; ?>' data-plugin='<?php echo esc_attr($this->pluginFilePath); ?>'>
-                <td colspan='<?php echo esc_attr($colspan); ?>' class='plugin-update'>
-                    <div class='notice inline notice-warning notice-alt'>
-                        <p>
-                            <?php
-                            /* translators: %s: plugin name */
-                            echo sprintf(__('Automatic updates are disabled for the <b>%s</b>.', 'wp-sms'), esc_html($pluginData['Name'])); ?>
-                            <?php
-                            $licensePageUrl = MenuUtil::getAdminUrl('plugins', ['tab' => 'add-license']); // Updated to use MenuUtil
-                            /* translators: %s: URL to license page */
-                            echo sprintf(__('To unlock automatic updates, please <a href="%s">activate your license</a>.', 'wp-sms'), esc_url($licensePageUrl));
-                            ?>
-                        </p>
-                    </div>
-                </td>
-            </tr>
-            <?php
-        }
+        ?>
+        <tr class='license-error-tr plugin-update-tr update <?php echo $isActive ? 'active' : ''; ?>' data-plugin='<?php echo esc_attr($this->pluginFilePath); ?>'>
+            <td colspan='<?php echo esc_attr($colspan); ?>' class='plugin-update'>
+                <div class='notice inline notice-warning notice-alt'>
+                    <p>
+                        <?php
+                        /* translators: %s: plugin name */
+                        echo sprintf(__('Automatic updates are disabled for the <b>%s</b>.', 'wp-sms'), esc_html($pluginData['Name'])); ?>
+                        <?php
+                        $licensePageUrl = MenuUtil::getAdminUrl('plugins', ['tab' => 'add-license']); // Updated to use MenuUtil
+                        /* translators: %s: URL to license page */
+                        echo sprintf(__('To unlock automatic updates, please <a href="%s">activate your license</a>.', 'wp-sms'), esc_url($licensePageUrl));
+                        ?>
+                    </p>
+                </div>
+            </td>
+        </tr>
+        <?php
     }
 
     /**
