@@ -476,6 +476,11 @@ class Admin
             'default' => 20,
             'option'  => 'wp_sms_outbox_per_page',
         ));
+
+        // Process bulk actions early before any output is sent
+        require_once WP_SMS_DIR . 'includes/admin/outbox/class-wpsms-outbox.php';
+        $list_table = new Outbox_List_Table();
+        $list_table->process_bulk_action();
     }
 
     /**
@@ -507,6 +512,10 @@ class Admin
             'option'  => 'wp_sms_subscriber_per_page',
         ));
 
+        // Process bulk actions early before any output is sent
+        require_once WP_SMS_DIR . 'includes/admin/subscribers/class-wpsms-subscribers-table.php';
+        $list_table = new Subscribers_List_Table();
+        $list_table->process_bulk_action();
     }
 
     /**
@@ -523,7 +532,10 @@ class Admin
             'option'  => 'wp_sms_group_per_page',
         ));
 
-
+        // Process bulk actions early before any output is sent
+        require_once WP_SMS_DIR . 'includes/admin/groups/class-wpsms-groups-table.php';
+        $list_table = new Subscribers_Groups_List_Table();
+        $list_table->process_bulk_action();
     }
 
     /**

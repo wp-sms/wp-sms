@@ -19,6 +19,7 @@ class Outbox_List_Table extends \WP_List_Table
     protected $count;
     protected $adminUrl;
     var $data;
+    protected $bulk_actions_processed = false;
 
     function __construct()
     {
@@ -156,6 +157,12 @@ class Outbox_List_Table extends \WP_List_Table
 
     function process_bulk_action()
     {
+        // Skip if bulk actions have already been processed
+        if ($this->bulk_actions_processed) {
+            return;
+        }
+        $this->bulk_actions_processed = true;
+
         $nonce = isset($_GET['_wpnonce']) ? $_GET['_wpnonce'] : false;
 
         //Detect when a bulk action is being triggered...
