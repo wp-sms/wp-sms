@@ -1,7 +1,7 @@
 <?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="c-section__title">
     <span class="c-section__step">
-        <?php echo esc_html(sprintf(__('Step %d of %d', 'wp-sms'), $index, $total_steps));
+        <?php echo esc_html(sprintf(__('Step %1$d of %2$d', 'wp-sms'), $index, $total_steps));
         ?>
     </span>
     <h1 class="u-m-0">

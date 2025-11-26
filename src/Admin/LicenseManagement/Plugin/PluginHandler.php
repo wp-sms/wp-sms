@@ -52,7 +52,7 @@ class PluginHandler
 
         if ($response_code != 200) {
             $error_message = sprintf(
-                __('Failed to download the plugin. HTTP Status: %d. Response: %s', 'wp-sms'),
+                __('Failed to download the plugin. HTTP Status: %1$d. Response: %2$s', 'wp-sms'),
                 $response_code,
                 wp_remote_retrieve_body($response) // Show API response for debugging
             );
