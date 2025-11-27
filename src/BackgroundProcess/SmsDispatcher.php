@@ -5,6 +5,8 @@ namespace WP_SMS\BackgroundProcess;
 use WP_SMS\Components\Sms;
 use WP_SMS\Option;
 
+if (!defined('ABSPATH')) exit;
+
 /**
  * Class SmsDispatcher
  *

@@ -5,6 +5,8 @@ namespace WP_SMS\Admin\LicenseManagement;
 use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Notice\NoticeManager;
 
+if (!defined('ABSPATH')) exit;
+
 class LicenseMigration
 {
     private $apiCommunicator;
@@ -117,7 +119,8 @@ class LicenseMigration
             $this->apiCommunicator->validateLicense($licenseKey, $addonSlug);
         } catch (\Exception $e) {
             $notice = NoticeManager::getInstance();
-            $notice->registerNotice('license_migration', sprintf(__('Failed to migrate license for %s: %s', 'wp-sms'), $addonSlug, $e->getMessage()));
+            /* translators: 1: Add-on slug 2: error message */
+            $notice->registerNotice('license_migration', sprintf(__('Failed to migrate license for %1$s: %2$s', 'wp-sms'), $addonSlug, $e->getMessage()));
             return false;
         }
 

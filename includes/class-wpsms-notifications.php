@@ -71,6 +71,7 @@ class Notifications
             if (!get_option('wp_last_send_notification')) {
                 $receiver     = [Option::getOption('admin_mobile_number')];
                 $message_body = sprintf(
+                    /* translators: %s: WordPress version number */
                     esc_html__('WordPress %s is available! Please update now', 'wp-sms'),
                     $update[1]->current
                 );

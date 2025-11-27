@@ -4,6 +4,8 @@ namespace WP_SMS\Utils;
 
 use WP_SMS\Utils\TimeZone;
 
+if (!defined('ABSPATH')) exit;
+
 class AdminHelper
 {
 

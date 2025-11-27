@@ -5,6 +5,8 @@ namespace WP_SMS\Admin\NoticeHandler;
 use WP_SMS\Components\View;
 use WP_SMS\Utils\Request;
 
+if (!defined('ABSPATH')) exit;
+
 class Notice
 {
     private static $adminNotices = array();

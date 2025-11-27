@@ -6,6 +6,8 @@ use Forminator_API;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Option;
 
+if (!defined('ABSPATH')) exit;
+
 class Forminator
 {
     private $data;

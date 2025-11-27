@@ -1,7 +1,9 @@
 <?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="c-section__title">
     <span class="c-section__step">
-        <?php echo esc_html(sprintf(__('Step %d of %d', 'wp-sms'), $index, $total_steps));
+        <?php
+        /* translators: 1: current step number 2: total number of steps */
+        echo esc_html(sprintf(__('Step %1$d of %2$d', 'wp-sms'), $index, $total_steps));
         ?>
     </span>
     <h1 class="u-m-0">
@@ -10,10 +12,11 @@
     <p class="u-m-0">
         <?php
         echo sprintf(
+            /* translators: 1: introduction text 2: button text 3: closing text */
             __('%1$s <b>%2$s</b> %3$s!', 'wp-sms'),
-            esc_html__('Before moving forward, let’s make sure your SMS gateway is working correctly. Click', 'wp-sms'),
+            esc_html__('Before moving forward, let\'s make sure your SMS gateway is working correctly. Click', 'wp-sms'),
             esc_html__('Send Test SMS', 'wp-sms'),
-            esc_html__('to send a message to the administrator’s phone number you provided. Once you receive it, you’re good to go', 'wp-sms')
+            esc_html__('to send a message to the administrator\'s phone number you provided. Once you receive it, you\'re good to go', 'wp-sms')
         );
         ?>
     </p>

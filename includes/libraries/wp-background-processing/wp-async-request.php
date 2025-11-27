@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Library\BackgroundProcessing;
 
+if (!defined('ABSPATH')) exit;
+
 /**
  * WP Async Request
  *

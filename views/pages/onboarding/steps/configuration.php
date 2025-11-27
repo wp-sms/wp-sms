@@ -3,7 +3,8 @@
     <span class="c-section__step">
         <?php use WP_SMS\Gateway;
 
-        echo esc_html(sprintf(__('Step %d of %d', 'wp-sms'), $index, $total_steps));
+        /* translators: 1: current step number 2: total number of steps */
+        echo esc_html(sprintf(__('Step %1$d of %2$d', 'wp-sms'), $index, $total_steps));
         ?>
     </span>
     <h1 class="u-m-0">
@@ -59,6 +60,7 @@
 
                     if (!empty($doc_url)) {
                         $output[] = sprintf(
+                            /* translators: 1: documentation URL 2: link title */
                             __('Need More Details? <a href="%1$s" title="%2$s" target="_blank">%2$s</a>', 'wp-sms'),
                             esc_url($doc_url),
                             esc_html__('View Instructions for This Gateway', 'wp-sms')
@@ -72,6 +74,7 @@
 
                     if (empty($output)) {
                         $output[] = sprintf(
+                            /* translators: %1$s: documentation URL */
                             __('For additional setup instructions and troubleshooting, visit the <a href="%1$s" target="_blank">WP SMS plugin documentation</a>.', 'wp-sms'),
                             esc_url(WP_SMS_SITE . '/documentation')
                         );

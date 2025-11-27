@@ -8,6 +8,8 @@ use WP_SMS\Gateway;
 use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Option;
 
+if (!defined('ABSPATH')) exit;
+
 class SiteHealthInfo
 {
     const DEBUG_INFO_SLUG = 'wp_sms';
@@ -45,14 +47,14 @@ class SiteHealthInfo
             return OptionUtil::get($key, $default);
         };
 
-        $version                        = defined('WP_SMS_VERSION') ? WP_SMS_VERSION : 'N/A';
+        $version                    = defined('WP_SMS_VERSION') ? WP_SMS_VERSION : 'N/A';
         $settings['plugin_version'] = array(
             'label' => esc_html__('Plugin Version', 'wp-sms'),
             'value' => $version === 'N/A' ? esc_html__('N/A', 'wp-sms') : $version,
             'debug' => $version === 'N/A' ? 'N/A' : $version,
         );
 
-        $dbVersion                    = get_option('wp_sms_db_version', 'Not Set');
+        $dbVersion              = get_option('wp_sms_db_version', 'Not Set');
         $settings['db_version'] = array(
             'label' => esc_html__('Database Version', 'wp-sms'),
             'value' => $dbVersion === 'Not Set' ? esc_html__('Not Set', 'wp-sms') : $dbVersion,
@@ -624,26 +626,53 @@ class SiteHealthInfo
     private function formatDurationValue($raw)
     {
         if (!is_array($raw)) {
-            return array('value' => esc_html__('Not Set', 'wp-sms'), 'debug' => 'Not Set');
+            return array(
+                'value' => esc_html__('Not Set', 'wp-sms'),
+                'debug' => 'Not Set'
+            );
         }
 
         $partsVal = array();
         $partsDbg = array();
 
-        $append = function ($key, $singular, $plural) use ($raw, &$partsVal, &$partsDbg) {
-            if (!empty($raw[$key]) && $raw[$key] !== '0') {
-                $n          = (int)$raw[$key];
-                $partsVal[] = $raw[$key] . ' ' . _n($singular, $plural, $n, 'wp-sms');
-                $partsDbg[] = $raw[$key] . ' ' . ($n === 1 ? $singular : $plural);
-            }
-        };
+        // Days
+        if (!empty($raw['days']) && $raw['days'] !== '0') {
+            $n          = (int)$raw['days'];
+            $partsVal[] = sprintf(
+            /* translators: %s: number of days */
+                _n('%s day', '%s days', $n, 'wp-sms'),
+                $raw['days']
+            );
+            $partsDbg[] = $raw['days'] . ' ' . ($n === 1 ? 'day' : 'days');
+        }
 
-        $append('days', 'day', 'days');
-        $append('hours', 'hour', 'hours');
-        $append('minutes', 'minute', 'minutes');
+        // Hours
+        if (!empty($raw['hours']) && $raw['hours'] !== '0') {
+            $n          = (int)$raw['hours'];
+            $partsVal[] = sprintf(
+            /* translators: %s: number of hours */
+                _n('%s hour', '%s hours', $n, 'wp-sms'),
+                $raw['hours']
+            );
+            $partsDbg[] = $raw['hours'] . ' ' . ($n === 1 ? 'hour' : 'hours');
+        }
+
+        // Minutes
+        if (!empty($raw['minutes']) && $raw['minutes'] !== '0') {
+            $n          = (int)$raw['minutes'];
+            $partsVal[] = sprintf(
+            /* translators: %s: number of minutes */
+                _n('%s minute', '%s minutes', $n, 'wp-sms'),
+                $raw['minutes']
+            );
+            $partsDbg[] = $raw['minutes'] . ' ' . ($n === 1 ? 'minute' : 'minutes');
+        }
 
         if (empty($partsVal)) {
-            return array('value' => esc_html__('Not Set', 'wp-sms'), 'debug' => 'Not Set');
+            return array(
+                'value' => esc_html__('Not Set', 'wp-sms'),
+                'debug' => 'Not Set'
+            );
         }
 
         return array(

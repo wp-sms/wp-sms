@@ -5,6 +5,8 @@ namespace WP_SMS\Services\Forminator;
 use Forminator_API;
 use WP_SMS\Notification\NotificationFactory;
 
+if (!defined('ABSPATH')) exit;
+
 class ForminatorManager
 {
     public function init()

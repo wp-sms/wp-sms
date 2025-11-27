@@ -7,6 +7,8 @@ use WP_SMS\Helper;
 use WP_SMS\Newsletter;
 use WP_SMS\Utils\CsvHelper;
 
+if (!defined('ABSPATH')) exit;
+
 class ImportSubscriberCsv extends AjaxControllerAbstract
 {
     protected $action = 'wp_sms_import_subscriber';

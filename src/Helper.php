@@ -8,6 +8,8 @@ use WP_SMS\Components\NumberParser;
 use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Utils\TimeZone;
 
+if (!defined('ABSPATH')) exit;
+
 /**
  * Class WP_SMS
  * @package WP_SMS
@@ -477,16 +479,6 @@ class Helper
     }
 
     /**
-     * @return void
-     */
-    public static function maybeStartSession($readAndClose = true)
-    {
-        if (empty(session_id()) && !headers_sent()) {
-            session_start(array('read_and_close' => $readAndClose));
-        }
-    }
-
-    /**
      * This function adds mobile country code to the mobile number if the mobile country code option is enabled.
      *
      * @param $mobileNumber
@@ -591,7 +583,7 @@ class Helper
         // Get the default country code without leading + sign
         $countryCode = substr(Option::getOption('mobile_county_code'), 1);
 
-        // Check if the number starts with + sign 
+        // Check if the number starts with + sign
         /*if (strpos($number, '+') === 0) {
             // Remove the + sign from the beginning of each number
             $number = substr($number, 1);

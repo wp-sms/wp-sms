@@ -6,6 +6,8 @@ use Exception;
 use WP_SMS\Helper;
 use WP_SMS\Utils\CsvHelper;
 
+if (!defined('ABSPATH')) exit;
+
 class UploadSubscriberCsv extends AjaxControllerAbstract
 {
     protected $action = 'wp_sms_upload_subscriber_csv';

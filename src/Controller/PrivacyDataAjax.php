@@ -4,6 +4,8 @@ namespace WP_SMS\Controller;
 
 use WP_SMS\Helper;
 
+if (!defined('ABSPATH')) exit;
+
 class PrivacyDataAjax extends AjaxControllerAbstract
 {
     protected $action = 'wp_sms_privacy_data';

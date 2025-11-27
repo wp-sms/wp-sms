@@ -27,6 +27,8 @@ use WP_SMS\Notification\Handler\QuformNotification;
 use WP_SMS\Notification\Handler\EasyDigitalDownloadsNotification;
 use WP_SMS\Notification\Handler\WPJobManagerNotification;
 
+if (!defined('ABSPATH')) exit;
+
 class NotificationFactory
 {
     public static function getHandler($handlerName = false, $handlerId = false)
