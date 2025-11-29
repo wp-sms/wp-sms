@@ -4,8 +4,8 @@ Donate link: https://wp-sms-pro.com/donate
 Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sms
 Requires at least: 4.1
 Tested up to: 6.8
-Requires PHP: 5.6
-Stable tag: 7.0.9
+Requires PHP: 7.2
+Stable tag: 7.1
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -140,6 +140,10 @@ All premium features + all add-ons in one package.
 - New Onboarding, Add-on Manager, and All-in-One package.
 
 == Changelog ==
+= v7.1 - 2025-11-x =
+- **New:** Introduced Notifications to receive important updates and promotions.
+- **Enhancement:** Updated PHP requirement to version 7.2.
+
 = v7.0.9 - 2025-11-26 =
 - **Enhancement:** Minor improvements.
 
