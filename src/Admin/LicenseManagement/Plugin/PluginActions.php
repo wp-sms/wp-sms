@@ -37,10 +37,6 @@ class PluginActions
             'class'  => $this,
             'action' => 'check_plugin'
         ];
-        $list[] = [
-            'class'  => $this,
-            'action' => 'activate_plugin'
-        ];
 
         foreach ($list as $item) {
             $class    = $item['class'];
@@ -160,32 +156,4 @@ class PluginActions
         exit;
     }
 
-    public function activate_plugin_action_callback()
-    {
-        check_ajax_referer('wp_rest', 'wps_nonce');
-
-        if (UserHelper::hasCapability('activate_plugins')) {
-            wp_send_json_error(__('You are not allowed to activate plugins.', 'wp-sms'), 403);
-        }
-
-        try {
-            $pluginSlug = Request::has('plugin_slug') ? wp_unslash(Request::get('plugin_slug')) : false;
-
-            if (!$pluginSlug) {
-                throw new Exception(__('Plugin slug is missing.', 'wp-sms'));
-            }
-
-            $this->pluginHandler->activatePlugin($pluginSlug);
-
-            wp_send_json_success([
-                'message' => __('Plugin activated successfully.', 'wp-sms'),
-            ]);
-        } catch (Exception $e) {
-            wp_send_json_error([
-                'message' => $e->getMessage(),
-            ]);
-        }
-
-        exit;
-    }
 }
