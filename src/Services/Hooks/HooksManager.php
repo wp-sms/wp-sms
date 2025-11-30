@@ -49,8 +49,14 @@ class HooksManager
      */
     public function addProGateways($gateways)
     {
-        // Set pro gateways to load in the list as Global.
-        $gateways = array_merge_recursive($gateways, Gateway::$proGateways);
+        // Merge pro gateways into existing gateways, without duplicates
+        foreach (Gateway::$proGateways as $country => $gatewayList) {
+            foreach ($gatewayList as $key => $value) {
+                if (!isset($gateways[$country][$key])) {
+                    $gateways[$country][$key] = $value;
+                }
+            }
+        }
 
         // Fix the first array key value
         unset($gateways['']);
