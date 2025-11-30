@@ -357,8 +357,7 @@ class Admin
     {
         $hook_suffix = array();
 
-        $unreadMessagesCount = method_exists(\WPSmsTwoWay\Models\IncomingMessage::class, 'countOfUnreadMessages') ? \WPSmsTwoWay\Models\IncomingMessage::countOfUnreadMessages() : null;
-        $unreadMessagesCount = apply_filters('wp_sms_unread_messages_count', $unreadMessagesCount);
+        $unreadMessagesCount = apply_filters('wp_sms_unread_messages_count', 0);
         $notificationBubble  = $unreadMessagesCount ? sprintf(' <span class="awaiting-mod">%d</span>', $unreadMessagesCount) : '';
 
         add_menu_page(esc_html__('SMS', 'wp-sms'), esc_html__('SMS', 'wp-sms') . $notificationBubble, 'wpsms_sendsms', 'wp-sms', array($this, 'send_sms_callback'), 'dashicons-email-alt');
