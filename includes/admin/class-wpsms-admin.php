@@ -48,7 +48,7 @@ class Admin
         $screen = get_current_screen();
         if (stristr($screen->id, 'wp-sms') or $screen->base == 'post' or $screen->id == 'edit-wpsms-command' or $screen->id == 'edit-sms-campaign') {
             $text = sprintf(
-                /* translators: 1: URL to review page 2: aria-label text 3: title text 4: link text */
+            /* translators: 1: URL to review page 2: aria-label text 3: title text 4: link text */
                 __('Please rate <strong>WP SMS</strong> <a href="%1$s" aria-label="%2$s" title="%3$s" target="_blank">%4$s</a> to help us spread the word. Thank you!', 'wp-sms'),
                 'https://wordpress.org/support/plugin/wp-sms/reviews/',
                 esc_attr__('Rate WP SMS with five stars on WordPress.org', 'wp-sms'),
@@ -358,6 +358,7 @@ class Admin
         $hook_suffix = array();
 
         $unreadMessagesCount = method_exists(\WPSmsTwoWay\Models\IncomingMessage::class, 'countOfUnreadMessages') ? \WPSmsTwoWay\Models\IncomingMessage::countOfUnreadMessages() : null;
+        $unreadMessagesCount = apply_filters('wp_sms_unread_messages_count', $unreadMessagesCount);
         $notificationBubble  = $unreadMessagesCount ? sprintf(' <span class="awaiting-mod">%d</span>', $unreadMessagesCount) : '';
 
         add_menu_page(esc_html__('SMS', 'wp-sms'), esc_html__('SMS', 'wp-sms') . $notificationBubble, 'wpsms_sendsms', 'wp-sms', array($this, 'send_sms_callback'), 'dashicons-email-alt');
