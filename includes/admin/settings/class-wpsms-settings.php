@@ -2421,15 +2421,18 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             $html .= sprintf('<optgroup data-options="" label="%1$s">', ucfirst(str_replace('_', ' ', $key)));
 
             foreach ($v as $option => $name) {
-                $disabled = '';
+                $options = apply_filters('wp_sms_gateway_select_item_options', [
+                    'option'   => $option,
+                    'name'     => $name,
+                    'selected' => $option == $value ,
+                    'disabled' => array_column(Gateway::$proGateways, $option) ? true : false,
+                ]);
 
-                if (!$this->proIsInstalled && array_column(Gateway::$proGateways, $option)) {
-                    $disabled = ' disabled';
-                    $name     .= '<span> ' . esc_html__('- (All-in-One Required)', 'wp-sms') . '</span>';
+                if ($options['disabled']) {
+                    $options['name'] .= '<span> ' . esc_html__('- (All-in-One Required)', 'wp-sms') . '</span>';
                 }
 
-                $selected = selected($option, $value, false);
-                $html     .= sprintf('<option value="%1$s" %2$s %3$s>%4$s</option>', esc_attr($option), esc_attr($selected), esc_attr($disabled), ucfirst($name));
+                $html .= sprintf('<option value="%1$s" %2$s %3$s>%4$s</option>', esc_attr($options['option']), selected($options['selected'], true, false), disabled($options['disabled'], true, false), ucfirst($options['name']));
             }
 
             $html .= '</optgroup>';
