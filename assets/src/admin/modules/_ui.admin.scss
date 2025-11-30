@@ -2358,7 +2358,7 @@
 
   @media(max-width: 768px) {
     width: 100%;
-    margin: 0 !important;
+    margin: 10px 0 0 !important;
     box-sizing: border-box;
     justify-content: center;
   }
@@ -2477,6 +2477,8 @@
             gap: 8px;
             align-items: self-start;
             height: calc(100% - 32px);
+            left: 60px;
+            justify-content: flex-end;
           }
         }
       }
@@ -2484,7 +2486,7 @@
 
       &--info {
         display: flex;
-        gap: 16px;
+        gap: 12px;
 
         &__img {
           background: #F5F5F5;
@@ -2531,8 +2533,8 @@
             display: flex;
             gap: 4px;
             align-items: center;
-            white-space: nowrap;
-          }
+            flex-wrap: wrap;
+           }
 
           color: #0C0C0D;
           font-size: 15px;
@@ -2543,6 +2545,12 @@
           align-items: center;
           gap: 8px;
           flex-wrap: wrap;
+          justify-content: flex-start;
+          max-width: calc(100% - 250px);
+
+          @media(max-width: 768px){
+            max-width: 100%;
+          }
 
           span.wpsms-postbox-addon__version {
             color: #747578;
@@ -3208,7 +3216,7 @@
 }
 
 .wpsms-postbox-addon__label {
-  font-size: 10px;
+  font-size:8px;
   font-weight: 500;
   line-height: 11.72px;
   letter-spacing: 0.07em;
@@ -3561,8 +3569,10 @@
 
     .wpsms-postbox-addon__buttons {
       display: flex;
-      gap: 12px;
+      gap: 6px;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .wpsms-postbox-addon__button {
