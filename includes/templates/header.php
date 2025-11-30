@@ -5,6 +5,7 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\LicenseManagement\LicenseMigration;
+use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Version;
 use WP_SMS\Admin\ModalHandler\Modal;
@@ -36,6 +37,9 @@ foreach ($addons as $option_key => $status) {
 $apiCommunicator  = new ApiCommunicator();
 $licenseMigration = new LicenseMigration($apiCommunicator);
 $licenseMigration->migrateOldLicenses();
+
+$pluginHandler = new PluginHandler();
+$isTwoWay      = $pluginHandler->isPluginActive('wp-sms-two-way');
 ?>
 <div class="wpsms-header-banner <?php echo $isPremium ? 'wpsms-header-banner__aio' : '' ?>">
     <div class="wpsms-header-logo"></div>
@@ -44,7 +48,9 @@ $licenseMigration->migrateOldLicenses();
         <?php
         $unreadMessagesCount = method_exists(\WPSmsTwoWay\Models\IncomingMessage::class, 'countOfUnreadMessages') ? \WPSmsTwoWay\Models\IncomingMessage::countOfUnreadMessages() : 0;
         echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms', 'link_text' => __('Send SMS', 'wp-sms'), 'icon_class' => 'send-sms', 'badge_count' => null]);
-        echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-inbox', 'link_text' => __('Inbox', 'wp-sms'), 'icon_class' => 'inbox', 'badge_count' => $unreadMessagesCount]);
+        if ($isTwoWay) :
+            echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-inbox', 'link_text' => __('Inbox', 'wp-sms'), 'icon_class' => 'inbox', 'badge_count' => $unreadMessagesCount]);
+        endif;
         echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-outbox', 'link_text' => __('Outbox', 'wp-sms'), 'icon_class' => 'outbox', 'badge_count' => null]);
         echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-integrations', 'link_text' => __('Integrations', 'wp-sms'), 'icon_class' => 'integrations', 'badge_count' => null]);
         ?>
