@@ -14,10 +14,7 @@ class HooksManager
     public function __construct()
     {
         add_filter('plugin_action_links_' . plugin_basename(WP_SMS_DIR . 'wp-sms.php'), [$this, 'addActionLinks']);
-
-        if (!PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php')) {
-            add_filter('wpsms_gateway_list', [$this, 'addProGateways']);
-        }
+        add_filter('wpsms_gateway_list', [$this, 'addProGateways']);
     }
 
     /**

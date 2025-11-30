@@ -26,9 +26,9 @@ class ApiCommunicator
     {
         try {
             $remoteRequest = new RemoteRequest('GET', "{$this->apiUrl}/product/list");
-            $plugins       = $remoteRequest->execute(false, true, WEEK_IN_SECONDS);
+            $addons       = $remoteRequest->execute(false, true, WEEK_IN_SECONDS);
 
-            if (empty($plugins) || !is_array($plugins)) {
+            if (empty($addons) || !is_array($addons)) {
                 throw new Exception(
                     /* translators: %s: API URL */
                     sprintf(__('No products were found. The API returned an empty response from the following URL: %s', 'wp-sms'), "{$this->apiUrl}/product/list")
@@ -42,46 +42,46 @@ class ApiCommunicator
             );
         }
 
-        return $plugins;
+        return $addons;
     }
 
     /**
-     * Get the download link for the specified plugin using the license key.
+     * Get the download link for the specified add-on using the license key.
      *
      * @param string $licenseKey
-     * @param string $pluginSlug
+     * @param string $addonSlug
      *
      * @return string|null The download URL if found, null otherwise
      * @throws Exception if the API call fails
      */
-    public function getDownloadUrl($licenseKey, $pluginSlug)
+    public function getDownloadUrl($licenseKey, $addonSlug)
     {
         $remoteRequest = new RemoteRequest('GET', "{$this->apiUrl}/product/download", [
             'license_key' => $licenseKey,
             'domain'      => home_url(),
-            'plugin_slug' => $pluginSlug,
+            'plugin_slug' => $addonSlug,
         ]);
 
         return $remoteRequest->execute(true, true, DAY_IN_SECONDS);
     }
 
     /**
-     * Get the download URL for a specific plugin slug from the license status.
+     * Get the download URL for a specific addon slug from the license status.
      *
      * @param string $licenseKey
-     * @param string $pluginSlug
+     * @param string $addonSlug
      *
      * @return string|null The download URL if found, null otherwise
      * @throws Exception
      */
-    public function getDownloadUrlFromLicense($licenseKey, $pluginSlug)
+    public function getDownloadUrlFromLicense($licenseKey, $addonSlug)
     {
         // Validate the license and get the licensed products
-        $licenseStatus = $this->validateLicense($licenseKey, $pluginSlug);
+        $licenseStatus = $this->validateLicense($licenseKey, $addonSlug);
 
         // Search for the download URL in the licensed products
         foreach ($licenseStatus->products as $product) {
-            if ($product->slug === $pluginSlug) {
+            if ($product->slug === $addonSlug) {
                 return isset($product->download_url) ? $product->download_url : null;
             }
         }
