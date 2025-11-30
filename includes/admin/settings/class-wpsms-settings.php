@@ -181,17 +181,7 @@ class Settings
             /*
              * Pro Pack tabs
              */
-            'pro_wordpress'  => esc_html__('2FA & Login', 'wp-sms'),
             'integrations'   => esc_html__('Integrations', 'wp-sms'),
-            // 'pro_buddypress'       => esc_html__('BuddyPress', 'wp-sms'),
-            // 'pro_woocommerce'      => esc_html__('WooCommerce', 'wp-sms'),
-            // 'pro_gravity_forms'    => esc_html__('Gravity Forms', 'wp-sms'),
-            // 'pro_quform'           => esc_html__('Quform', 'wp-sms'),
-            // 'pro_edd'              => esc_html__('Easy Digital Downloads', 'wp-sms'),
-            // 'pro_wp_job_manager'   => esc_html__('WP Job Manager', 'wp-sms'),
-            // 'pro_awesome_support'  => esc_html__('Awesome Support', 'wp-sms'),
-            // 'pro_ultimate_members' => esc_html__('Ultimate Member', 'wp-sms')
-
         );
 
         return apply_filters('wp_sms_registered_tabs', $tabs);
@@ -2645,8 +2635,14 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
                         ?>
 
-                        <?php if (isset($_GET['page']) and in_array($_GET['page'], ['wp-sms-integrations'])) {
-                            echo \WP_SMS\Helper::loadTemplate('zapier-section.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                        <?php if (isset($_GET['page']) && $_GET['page'] === 'wp-sms-integrations') {
+                            /**
+                             * Hook: wp_sms_integrations_box
+                             *
+                             * Fires inside the integrations page.
+                             * Allows WP SMS Pro (or other extensions) to output HTML.
+                             */
+                            echo wp_kses_post(apply_filters('wp_sms_integrations_box', ''));
                         } ?>
                     </ul>
 
