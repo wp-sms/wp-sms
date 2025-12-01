@@ -50,17 +50,21 @@
                         </option>
                         <option value="users" id="wp_users"><?php esc_html_e('WordPress\'s Users', 'wp-sms'); ?>
                         </option>
-                        <option value="wc-customers" data-target="wp-sms-pro" class="<?php if (!$proIsActive) {
-                            echo 'js-wp-sms-openAioModal';
-                        } ?>" data-target="" id="wc_users" <?php disabled(!$proIsActive); ?>>
-                            <span data-target="wp-sms-pro" class="js-wp-sms-openAioModal"><?php esc_html_e('WooCommerce\'s Customers', 'wp-sms'); ?></span>
-                        </option>
-                        <option value="bp-users" data-target="wp-sms-pro" class="<?php if (!$proIsActive) {
-                            echo 'js-wp-sms-openAioModal';
-                        } ?>" id="bp_users" <?php disabled(!$proIsActive); ?>>
-                            <?php esc_html_e('BuddyPress\'s Users', 'wp-sms'); ?>
-                        </option>
+
+                        <?php if (apply_filters('wp_sms_send_to_wc_customers_option', false)) : ?>
+                            <option value="wc-customers" data-target="" id="wc_users">
+                                <span data-target="wp-sms-pro" class="js-wp-sms-openAioModal"><?php esc_html_e('WooCommerce\'s Customers', 'wp-sms'); ?></span>
+                            </option>
+                        <?php endif; ?>
+
+                        <?php if (apply_filters('wp_sms_send_to_bp_users_option', false)) : ?>
+                            <option value="bp-users" id="bp_users">
+                                <?php esc_html_e('BuddyPress\'s Users', 'wp-sms'); ?>
+                            </option>
+                        <?php endif; ?>
+
                         <?php do_action('wp_sms_form_send_to_select_option', $smsObject, $proIsActive); ?>
+
                         <option value="numbers" id="wp_tellephone"><?php esc_html_e('Number(s)', 'wp-sms'); ?>
                         </option>
                     </select>
@@ -176,13 +180,14 @@
                     </div>
                 </div>
 
-                <div class="schedule-field pro-field wpsms-sendsms__form-filed">
-                    <div class="field">
-                        <input type="checkbox" id="schedule_status" name="schedule_status" <?php echo !$proIsActive ? 'disabled' : ''; ?> />
-                        <label for="schedule_status"><?php esc_html_e('Scheduled message?', 'wp-sms'); ?></label>
+                <?php if (apply_filters('wp_sms_send_scheduled_message_option', false)) : ?>
+                    <div class="schedule-field pro-field wpsms-sendsms__form-filed">
+                        <div class="field">
+                            <input type="checkbox" id="schedule_status" name="schedule_status" />
+                            <label for="schedule_status"><?php esc_html_e('Scheduled message?', 'wp-sms'); ?></label>
+                        </div>
                     </div>
-                    <a style="<?php echo $proIsActive ? 'display:none;' : ''; ?>" data-target="wp-sms-pro" class="pro not-pro js-wp-sms-openAioModal"><span class="icon"></span><?php esc_html_e('All-in-One', 'wp-sms'); ?></a>
-                </div>
+                <?php endif; ?>
 
                 <div class="set-date-field wpsms-sendsms__form-filed">
                     <label for="datepicker"><?php esc_html_e('Set date', 'wp-sms'); ?></label>
@@ -190,10 +195,12 @@
                     <p class="field-description"><?php echo esc_html__("Site's time zone", 'wp-sms') . ': ' . esc_html(wp_timezone_string()); ?></p>
                 </div>
 
-                <div class="repeat-field wpsms-sendsms__form-filed">
-                    <input type="checkbox" id="wpsms_repeat_status" name="repeat_status" <?php echo !$proIsActive ? 'disabled' : ''; ?> />
-                    <label for="wpsms_repeat_status"><?php esc_html_e('Repeat?', 'wp-sms'); ?></label>
-                </div>
+                <?php if (apply_filters('wp_sms_send_repeated_message_option', false)) : ?>
+                    <div class="repeat-field wpsms-sendsms__form-filed">
+                        <input type="checkbox" id="wpsms_repeat_status" name="repeat_status" />
+                        <label for="wpsms_repeat_status"><?php esc_html_e('Repeat?', 'wp-sms'); ?></label>
+                    </div>
+                <?php endif; ?>
 
                 <div class="repeat-every-field wpsms-sendsms__form-filed">
                     <label for="repeat-interval"><?php esc_html_e('Repeat every', 'wp-sms'); ?></label>
