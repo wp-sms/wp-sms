@@ -48,7 +48,7 @@ class Admin
         $screen = get_current_screen();
         if (stristr($screen->id, 'wp-sms') or $screen->base == 'post' or $screen->id == 'edit-wpsms-command' or $screen->id == 'edit-sms-campaign') {
             $text = sprintf(
-                /* translators: 1: URL to review page 2: aria-label text 3: title text 4: link text */
+            /* translators: 1: URL to review page 2: aria-label text 3: title text 4: link text */
                 __('Please rate <strong>WP SMS</strong> <a href="%1$s" aria-label="%2$s" title="%3$s" target="_blank">%4$s</a> to help us spread the word. Thank you!', 'wp-sms'),
                 'https://wordpress.org/support/plugin/wp-sms/reviews/',
                 esc_attr__('Rate WP SMS with five stars on WordPress.org', 'wp-sms'),
@@ -357,15 +357,13 @@ class Admin
     {
         $hook_suffix = array();
 
-        // Incoming messages notification bubble
-        $unreadMessagesCount = method_exists(\WPSmsTwoWay\Models\IncomingMessage::class, 'countOfUnreadMessages') ? \WPSmsTwoWay\Models\IncomingMessage::countOfUnreadMessages() : null;
+        $unreadMessagesCount = apply_filters('wp_sms_unread_messages_count', 0);
         $notificationBubble  = $unreadMessagesCount ? sprintf(' <span class="awaiting-mod">%d</span>', $unreadMessagesCount) : '';
 
         add_menu_page(esc_html__('SMS', 'wp-sms'), esc_html__('SMS', 'wp-sms') . $notificationBubble, 'wpsms_sendsms', 'wp-sms', array($this, 'send_sms_callback'), 'dashicons-email-alt');
         $hook_suffix['send_sms'] = add_submenu_page('wp-sms', esc_html__('Send SMS', 'wp-sms'), esc_html__('Send SMS', 'wp-sms'), 'wpsms_sendsms', 'wp-sms', array($this, 'send_sms_callback'), 1);
 
         $hook_suffix['outbox'] = add_submenu_page('wp-sms', esc_html__('Outbox', 'wp-sms'), esc_html__('Outbox', 'wp-sms'), 'wpsms_outbox', 'wp-sms-outbox', array($this, 'outbox_callback'), 2);
-        $hook_suffix['inbox']  = add_submenu_page('wp-sms', esc_html__('Inbox', 'wp-sms'), esc_html__('Inbox', 'wp-sms') . $notificationBubble, 'wpsms_inbox', 'wp-sms-inbox', array($this, 'inbox_callback'), 3);
 
         $hook_suffix['subscribers'] = add_submenu_page('wp-sms', esc_html__('Subscribers', 'wp-sms'), esc_html__('Subscribers', 'wp-sms'), 'wpsms_subscribers', 'wp-sms-subscribers', array($this, 'subscribers_callback'), 4);
         $hook_suffix['groups']      = add_submenu_page('wp-sms', esc_html__('Groups', 'wp-sms'), esc_html__('Groups', 'wp-sms'), 'wpsms_subscribers', 'wp-sms-subscribers-group', array($this, 'groups_callback'), 5);
@@ -413,15 +411,6 @@ class Admin
     public function outbox_callback()
     {
         $page = new Outbox();
-        $page->render_page();
-    }
-
-    /**
-     *  Callback inbox page.
-     */
-    public function inbox_callback()
-    {
-        $page = new Inbox();
         $page->render_page();
     }
 
