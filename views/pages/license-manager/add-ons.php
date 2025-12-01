@@ -7,9 +7,7 @@ use WP_SMS\Components\View;
 
 View::load('components/page-header',[
     'link'  => "#",
-    'title' => esc_html__('Add-Ons', 'wp-sms'),
-   'install_addon_btn_txt' => esc_html__('Install Add-On', 'wp-sms'),
-    'install_addon_btn_link' => admin_url('admin.php?page=wp-sms-add-ons&tab=add-license'),
+    'title' => esc_html__('Add-Ons', 'wp-sms')
 ]);
 ?>
 <div class="postbox-container wpsms-postbox-addon-container">

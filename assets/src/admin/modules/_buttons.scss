@@ -54,6 +54,10 @@
     border-color: #8c8f94;
     color: #2271b1;
 
+    @media (max-width: 600px) {
+      font-size: 12px;
+    }
+
     &:hover{
       background: #f0f0f1;
       border-color: #0a4b78;
