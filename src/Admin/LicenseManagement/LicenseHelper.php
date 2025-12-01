@@ -178,32 +178,13 @@ class LicenseHelper
     /**
      * Checks all stored licenses to see if they are valid or not.
      *
+     * @deprecated License validation is now handled by the Pro plugin.
      * @return void
      */
     public static function checkLicensesStatus()
     {
-        $apiCommunicator = new ApiCommunicator();
-        $licenses        = LicenseHelper::getLicenses('all');
-
-        foreach ($licenses as $key => $data) {
-            try {
-                $licenseData = $apiCommunicator->validateLicense($key);
-                LicenseHelper::storeLicense($key, $licenseData);
-            } catch (LicenseException $e) {
-                // If status is empty, do nothing (probably server error, or connection issue)
-                if (!$e->getStatus()) return;
-
-                // If license is expired, update the status
-                if ($e->getStatus() === 'license_expired') {
-                    $data['status'] = $e->getStatus();
-                    LicenseHelper::updateLicense($key, $data);
-                    return;
-                }
-
-                // If license is invalid, remove the license
-                LicenseHelper::removeLicense($key);
-            }
-        }
+        // License validation is now handled by the Pro plugin
+        return;
     }
 
     /**

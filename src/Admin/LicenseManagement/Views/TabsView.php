@@ -4,7 +4,6 @@ namespace WP_SMS\Admin\LicenseManagement\Views;
 
 use Exception;
 use WP_SMS\Admin\LicenseManagement\Abstracts\BaseTabView;
-use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\LicenseManagement\LicenseManagerDataProvider;
 use WP_SMS\Components\View;
@@ -23,14 +22,10 @@ class TabsView extends BaseTabView
         'add-ons'
     ];
 
-    private $apiCommunicator;
-
     public function __construct()
     {
-        $this->dataProvider    = new LicenseManagerDataProvider();
-        $this->apiCommunicator = new ApiCommunicator();
+        $this->dataProvider = new LicenseManagerDataProvider();
         $this->checkUserAccess();
-        $this->handleUrlLicenseValidation();
         $this->checkLicensesStatus();
 
         parent::__construct();
@@ -55,20 +50,6 @@ class TabsView extends BaseTabView
     {
         if ($this->isTab('add-ons')) {
             LicenseHelper::checkLicensesStatus();
-        }
-    }
-
-    /**
-     * Validate the license key sent via URL
-     *
-     * @return void
-     */
-    private function handleUrlLicenseValidation()
-    {
-        $license = Request::get('license_key');
-
-        if (!empty($license)) {
-            $this->apiCommunicator->validateLicense($license);
         }
     }
 

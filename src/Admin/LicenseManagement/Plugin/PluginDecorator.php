@@ -2,12 +2,8 @@
 
 namespace WP_SMS\Admin\LicenseManagement\Plugin;
 
-namespace WP_SMS\Admin\LicenseManagement\Plugin;
-
 use Exception;
-use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Utils\MenuUtil;
 
 if (!defined('ABSPATH')) exit;
@@ -16,13 +12,11 @@ class PluginDecorator
 {
     private $plugin;
     private $pluginHandler;
-    private $apiCommunicator;
 
     public function __construct($plugin)
     {
-        $this->apiCommunicator = new ApiCommunicator();
-        $this->pluginHandler   = new PluginHandler();
-        $this->plugin          = $plugin;
+        $this->pluginHandler = new PluginHandler();
+        $this->plugin        = $plugin;
     }
 
     public function getId()
@@ -189,10 +183,16 @@ class PluginDecorator
         return $this->pluginHandler->isPluginActive($this->getSlug());
     }
 
+    /**
+     * Get the download URL for the add-on.
+     *
+     * @deprecated Download functionality is now handled by the Pro plugin.
+     * @return null
+     */
     public function getDownloadUrl()
     {
-        $downloadUrl = $this->apiCommunicator->getDownloadUrlFromLicense($this->getLicenseKey(), $this->getSlug());
-        return $downloadUrl ?? null;
+        // Download functionality is now handled by the Pro plugin
+        return null;
     }
 
     public function getLicenseKey()

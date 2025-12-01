@@ -3,32 +3,22 @@
 namespace WP_SMS\Admin\LicenseManagement\Plugin;
 
 use Exception;
-use WP_SMS\User\UserHelper;
 use WP_SMS\Utils\Request;
-use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 
 if (!defined('ABSPATH')) exit;
 
 class PluginActions
 {
-    private $apiCommunicator;
     private $pluginHandler;
 
     public function __construct()
     {
-        $this->apiCommunicator = new ApiCommunicator();
-        $this->pluginHandler   = new PluginHandler();
+        $this->pluginHandler = new PluginHandler();
     }
 
     public function registerAjaxCallbacks()
     {
         $list   = [];
-        $list[] = [
-            'class'  => $this,
-            'action' => 'check_license'
-        ];
         $list[] = [
             'class'  => $this,
             'action' => 'check_plugin'
@@ -48,32 +38,6 @@ class PluginActions
                 }
             }
         }
-    }
-
-    public function check_license_action_callback()
-    {
-        check_ajax_referer('wp_rest', 'wps_nonce');
-
-        try {
-            $licenseKey = Request::has('license_key') ? wp_unslash(Request::get('license_key')) : false;
-            $addOn      = Request::get('addon_slug');
-
-            if (!$licenseKey) {
-                throw new Exception(__('License key is missing.', 'wp-sms'));
-            }
-
-            $this->apiCommunicator->validateLicense($licenseKey, $addOn);
-
-            wp_send_json_success([
-                'message' => __('You\'re All Set! Your License is Successfully Activated!', 'wp-sms'),
-            ]);
-        } catch (Exception $e) {
-            wp_send_json_error([
-                'message' => $e->getMessage(),
-            ]);
-        }
-
-        exit;
     }
 
     /**
