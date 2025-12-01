@@ -2588,6 +2588,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                                 'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=integrations',
                                 'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
                                 'title'     => sprintf(
+                                    /* translators: %s: Plugin name (WP SMS All-in-One) */
                                     esc_html__('Full integration support is available in %s, including WooCommerce, BuddyPress, Gravity Forms and more.', 'wp-sms'),
                                     '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
                                 )
@@ -2595,6 +2596,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                                 'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings',
                                 'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
                                 'title'     => sprintf(
+                                    /* translators: %s: Plugin name (WP SMS All-in-One) */
                                     esc_html__('Some settings are only available in %s, including extended field support, syncing options, and more advanced configuration.', 'wp-sms'),
                                     '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
                                 )
