@@ -36,7 +36,6 @@ class Settings
 
     private $isPremium;
     private $proIsInstalled;
-    private $wooProIsInstalled;
 
     private $active_tab;
     private $contentRestricted;
@@ -62,7 +61,6 @@ class Settings
         $this->setting_name      = $this->getCurrentOptionName();
         $this->isPremium         = LicenseHelper::isPluginLicenseValid();
         $this->proIsInstalled    = PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
-        $this->wooProIsInstalled = PluginHelper::isPluginInstalled('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
 
         $this->get_settings();
         $this->options = get_option($this->setting_name);
