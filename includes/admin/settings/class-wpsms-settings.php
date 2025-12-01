@@ -1749,8 +1749,11 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 ),
                 'short_url'                    => array(
                     'id'   => 'short_url',
-                    'name' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium) ? esc_html__('URL Shortening via Bitly', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openAioModal" data-target="wp-sms-pro" title="Available with the Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('URL Shortening via Bitly', 'wp-sms'),
+                    'name' => esc_html__('URL Shortening via Bitly', 'wp-sms'),
                     'type' => 'header',
+                    'desc' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium)
+                        ? __('<p>Some settings are only available in WP SMS All in One, including extended field support, syncing options, and more advanced configuration. <a href="https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Upgrade to unlock everything.</a></p>', 'wp-sms')
+                        : '',
                 ),
                 'short_url_status'             => array(
                     'id'       => 'short_url_status',
@@ -1808,12 +1811,11 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 ),
                 'g_recaptcha'                  => array(
                     'id'   => 'g_recaptcha',
-                    'name' => $this->renderOptionHeader(
-                    // Locked if neither Pro nor Woo Pro installed, or only Pro installed without license
-                        (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium) ? esc_html__('Google reCAPTCHA Integration', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openAioModal" data-target="wp-sms-pro" title="Available with the Pro or WooCommerce Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
-                        esc_html__('Enhance your system\'s security by activating Google reCAPTCHA. This tool prevents spam and abuse by ensuring that only genuine users can initiate request-SMS actions. Upon activation, every SMS request will be secured with reCAPTCHA verification.', 'wp-sms')
-                    ),
+                    'name' => $this->renderOptionHeader(esc_html__('Google reCAPTCHA Integration', 'wp-sms'), esc_html__('Enhance your system\'s security by activating Google reCAPTCHA. This tool prevents spam and abuse by ensuring that only genuine users can initiate request-SMS actions. Upon activation, every SMS request will be secured with reCAPTCHA verification.', 'wp-sms')),
                     'type' => 'header',
+                    'desc' => (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium)
+                        ? __('<p>Some settings are only available in WP SMS All in One, including extended field support, syncing options, and more advanced configuration. <a href="https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Upgrade to unlock everything.</a></p>', 'wp-sms')
+                        : '',
                 ),
                 'g_recaptcha_status'           => array(
                     'id'       => 'g_recaptcha_status',
@@ -2424,7 +2426,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 $options = apply_filters('wp_sms_gateway_select_item_options', [
                     'option'   => $option,
                     'name'     => $name,
-                    'selected' => $option == $value ,
+                    'selected' => $option == $value,
                     'disabled' => array_column(Gateway::$proGateways, $option) ? true : false,
                 ]);
 
