@@ -35,7 +35,6 @@ class LicenseManagementManager
         // Initialize the necessary components.
         $this->initActionCallbacks();
 
-        add_action('init', [$this, 'constLicenseValidation']);
         add_action('admin_init', [$this, 'showPluginActivationNotice']);
         add_filter('wp_sms_enable_upgrade_to_bundle', [$this, 'showUpgradeToBundle']);
         add_filter('wp_sms_admin_menu_list', [$this, 'addMenuItem']);
@@ -65,56 +64,6 @@ class LicenseManagementManager
     {
         Assets::script('license-manager', 'js/licenseManager.min.js', ['jquery'], [], true);
     }
-
-    /**
-     * Validates licenses for active plugins using constants defined in wp-config.php.
-     *
-     * This method loops through a list of expected plugin license constants,
-     * and for each active plugin with a defined constant and available license key,
-     * it triggers license validation via the API communicator.
-     *
-     * @return void
-     *
-     * @throws Exception if the API call fails
-     */
-    public function constLicenseValidation(): void
-    {
-        if (!defined('WP_SMS_LICENSE')) {
-            return;
-        }
-
-        $licenses = WP_SMS_LICENSE;
-
-        if (is_string($licenses)) {
-            $licenses = array_map('sanitize_text_field', explode(',', $licenses));
-        } elseif (is_array($licenses)) {
-            $licenses = array_map('sanitize_text_field', $licenses);
-        } else {
-            return;
-        }
-
-        foreach ($licenses as $license) {
-            if (LicenseHelper::getLicenseInfo($license)) {
-                continue; // License is already stored, skip validation
-            }
-
-            try {
-                $this->apiCommunicator->validateLicense($license);
-            } catch (LicenseException $e) {
-                NoticeManager::getInstance()->registerNotice(
-                    'license_validation',
-                    sprintf(
-                        /* translators: %s: error message */
-                        wp_kses_post(__('Failed to validate license: %s', 'wp-sms')),
-                        wp_kses_post($e->getMessage())
-                    ),
-                    true
-                );
-                return;
-            }
-        }
-    }
-
 
     public function addMenuItem($items)
     {
