@@ -6,8 +6,6 @@ use Forminator_API;
 use WP_SMS\Components\View;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-use WP_SMS\Utils\PluginHelper;
 use WP_SMS\Utils\Request;
 
 if (!defined('ABSPATH')) {
@@ -23,10 +21,7 @@ class Settings
         'pro'  => 'wps_pp_settings'
     ];
     private $pluginIntegrationsTabs = [];
-    private $hasAdvancedFeatures;
-    private $isEnhancedPluginInstalled;
     private $active_tab;
-    private $contentRestricted;
 
     /**
      * @return string
@@ -48,9 +43,7 @@ class Settings
     {
         $this->applyPluginIntegrationsFilter();
 
-        $this->setting_name              = $this->getCurrentOptionName();
-        $this->hasAdvancedFeatures       = LicenseHelper::isPluginLicenseValid();
-        $this->isEnhancedPluginInstalled = PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
+        $this->setting_name = $this->getCurrentOptionName();
 
         $this->get_settings();
         $this->options = get_option($this->setting_name);
@@ -2508,9 +2501,8 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
      */
     public function render_settings($default = "general", $args = array())
     {
-        $this->active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : $default;
-        $this->contentRestricted = in_array($this->active_tab, $this->pluginIntegrationsTabs) && (!$this->isEnhancedPluginInstalled || !$this->hasAdvancedFeatures);
-        $args                    = wp_parse_args($args, [
+        $this->active_tab = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : $default;
+        $args             = wp_parse_args($args, [
             'setting'  => true,
             'template' => '' //must be a callable function
         ]);
@@ -2546,17 +2538,11 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
                             $active            = $this->active_tab == $tab_id ? 'active' : '';
                             $isIntegrationsTab = in_array($tab_id, $this->pluginIntegrationsTabs) ? ' is-pro-tab' : '';
-                            $lockIcon          = '';
 
-                            if ($isIntegrationsTab) {
-                                if (!$this->isEnhancedPluginInstalled || !$this->hasAdvancedFeatures) {
-                                    $lockIcon = '</a><span class="pro-not-installed ' . esc_attr($active) . '"><a data-target="wp-sms-pro" href="' . esc_url(WP_SMS_SITE) . '/pricing"></a></span></li>';
-                                }
-                            }
                             $tabUrl = ($tab_id == 'integrations') ? esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-integrations') : esc_url($tab_url);
                             echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($isIntegrationsTab) . '"><a href="' . esc_url($tabUrl) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
                             echo esc_html($tab_name);
-                            echo '</a>' . $lockIcon . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                            echo '</a></li>';
                         };
 
                         foreach ($this->get_tabs() as $tab_id => $tab_name) {
@@ -2614,7 +2600,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     </ul>
 
 
-                    <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
+                    <div class="wpsms-tab-content <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
                         <?php
                         if (strpos($this->active_tab, 'addon_') !== false) {
                             do_action("wp_sms_{$this->active_tab}_before_content_render");
@@ -2656,10 +2642,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 do_settings_fields("{$this->setting_name}_{$this->active_tab}", "{$this->setting_name}_{$this->active_tab}"); ?>
             </table>
             <input type="hidden" name="wpsms_active_tab" value="<?php echo esc_attr($this->active_tab); ?>">
-            <?php
-            if (!$this->contentRestricted) {
-                submit_button();
-            } ?>
+            <?php submit_button(); ?>
         </form>
         <?php
     }
