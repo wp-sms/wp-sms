@@ -22,22 +22,9 @@ class Settings
         'main' => 'wpsms_settings',
         'pro'  => 'wps_pp_settings'
     ];
-    private $proTabs = [
-        'pro_wordpress',
-        'pro_buddypress',
-        'pro_woocommerce',
-        'pro_gravity_forms',
-        'pro_quform',
-        'pro_edd',
-        'pro_wp_job_manager',
-        'pro_awesome_support',
-        'pro_ultimate_members'
-    ];
-
-    private $isPremium;
-    private $proIsInstalled;
-    private $wooProIsInstalled;
-
+    private $pluginIntegrationsTabs = [];
+    private $hasAdvancedFeatures;
+    private $isEnhancedPluginInstalled;
     private $active_tab;
     private $contentRestricted;
 
@@ -46,7 +33,7 @@ class Settings
      */
     private function getCurrentOptionName()
     {
-        if (isset($_REQUEST['tab']) && in_array($_REQUEST['tab'], $this->proTabs)) {
+        if (isset($_REQUEST['tab']) && in_array($_REQUEST['tab'], $this->pluginIntegrationsTabs)) {
             return $this->optionNames['pro'];
         }
 
@@ -59,10 +46,11 @@ class Settings
 
     public function __construct()
     {
-        $this->setting_name      = $this->getCurrentOptionName();
-        $this->isPremium         = LicenseHelper::isPluginLicenseValid();
-        $this->proIsInstalled    = PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
-        $this->wooProIsInstalled = PluginHelper::isPluginInstalled('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
+        $this->applyPluginIntegrationsFilter();
+
+        $this->setting_name              = $this->getCurrentOptionName();
+        $this->hasAdvancedFeatures       = LicenseHelper::isPluginLicenseValid();
+        $this->isEnhancedPluginInstalled = PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
 
         $this->get_settings();
         $this->options = get_option($this->setting_name);
@@ -84,6 +72,16 @@ class Settings
         if (isset($_POST['submit']) && isset($_REQUEST['option_page']) && $_POST['option_page'] == 'wpsms_settings' && strpos(wp_get_referer(), 'tab=gateway')) {
             add_filter('pre_update_option_wpsms_settings', [$this, 'updateGateWayVersion'], 10, 2);
         }
+    }
+
+    /**
+     * Applies a filter to modify the list of plugin integration tabs.
+     *
+     * @return void
+     */
+    private function applyPluginIntegrationsFilter()
+    {
+        $this->pluginIntegrationsTabs = apply_filters('plugin_integrations_tabs', $this->pluginIntegrationsTabs);
     }
 
     /**
@@ -2511,7 +2509,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     public function render_settings($default = "general", $args = array())
     {
         $this->active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : $default;
-        $this->contentRestricted = in_array($this->active_tab, $this->proTabs) && (!$this->proIsInstalled || !$this->isPremium);
+        $this->contentRestricted = in_array($this->active_tab, $this->pluginIntegrationsTabs) && (!$this->isEnhancedPluginInstalled || !$this->hasAdvancedFeatures);
         $args                    = wp_parse_args($args, [
             'setting'  => true,
             'template' => '' //must be a callable function
@@ -2546,19 +2544,19 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                                 'tab'              => $tab_id
                             ));
 
-                            $active      = $this->active_tab == $tab_id ? 'active' : '';
-                            $isProTab    = in_array($tab_id, $this->proTabs) ? ' is-pro-tab' : '';
-                            $proLockIcon = '';
+                            $active            = $this->active_tab == $tab_id ? 'active' : '';
+                            $isIntegrationsTab = in_array($tab_id, $this->pluginIntegrationsTabs) ? ' is-pro-tab' : '';
+                            $lockIcon          = '';
 
-                            if ($isProTab) {
-                                if (!$this->proIsInstalled || !$this->isPremium) {
-                                    $proLockIcon = '</a><span class="pro-not-installed ' . esc_attr($active) . '"><a data-target="wp-sms-pro" href="' . esc_url(WP_SMS_SITE) . '/pricing"></a></span></li>';
+                            if ($isIntegrationsTab) {
+                                if (!$this->isEnhancedPluginInstalled || !$this->hasAdvancedFeatures) {
+                                    $lockIcon = '</a><span class="pro-not-installed ' . esc_attr($active) . '"><a data-target="wp-sms-pro" href="' . esc_url(WP_SMS_SITE) . '/pricing"></a></span></li>';
                                 }
                             }
                             $tabUrl = ($tab_id == 'integrations') ? esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-integrations') : esc_url($tab_url);
-                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($isProTab) . '"><a href="' . esc_url($tabUrl) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
+                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($isIntegrationsTab) . '"><a href="' . esc_url($tabUrl) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
                             echo esc_html($tab_name);
-                            echo '</a>' . $proLockIcon . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                            echo '</a>' . $lockIcon . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                         };
 
                         foreach ($this->get_tabs() as $tab_id => $tab_name) {
