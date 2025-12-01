@@ -7,14 +7,14 @@ namespace Composer\Autoload;
 class ComposerStaticInit733a70b4860a09d7313bbae4cba3d940
 {
     public static $prefixLengthsPsr4 = array (
-        'W' => 
+        'W' =>
         array (
             'WP_SMS\\' => 7,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'WP_SMS\\' => 
+        'WP_SMS\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
@@ -41,7 +41,6 @@ class ComposerStaticInit733a70b4860a09d7313bbae4cba3d940
         'WP_SMS\\Admin\\LicenseManagement\\LicenseManagerDataProvider' => __DIR__ . '/../..' . '/src/Admin/LicenseManagement/LicenseManagerDataProvider.php',
         'WP_SMS\\Admin\\LicenseManagement\\LicenseManagerPage' => __DIR__ . '/../..' . '/src/Admin/LicenseManagement/LicenseManagerPage.php',
         'WP_SMS\\Admin\\LicenseManagement\\LicenseMigration' => __DIR__ . '/../..' . '/src/Admin/LicenseManagement/LicenseMigration.php',
-        'WP_SMS\\Admin\\LicenseManagement\\Plugin\\AddonUpdater' => __DIR__ . '/../..' . '/src/Admin/LicenseManagement/Plugin/AddonUpdater.php',
         'WP_SMS\\Admin\\LicenseManagement\\Plugin\\PluginActions' => __DIR__ . '/../..' . '/src/Admin/LicenseManagement/Plugin/PluginActions.php',
         'WP_SMS\\Admin\\LicenseManagement\\Plugin\\PluginDecorator' => __DIR__ . '/../..' . '/src/Admin/LicenseManagement/Plugin/PluginDecorator.php',
         'WP_SMS\\Admin\\LicenseManagement\\Plugin\\PluginHandler' => __DIR__ . '/../..' . '/src/Admin/LicenseManagement/Plugin/PluginHandler.php',
