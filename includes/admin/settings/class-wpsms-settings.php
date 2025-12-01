@@ -1747,26 +1747,6 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'options' => $options,
                     'desc'    => esc_html__('Notifies the admin email upon SMS transmission failures.', 'wp-sms')
                 ),
-                'short_url'                    => array(
-                    'id'   => 'short_url',
-                    'name' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium) ? esc_html__('URL Shortening via Bitly', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openAioModal" data-target="wp-sms-pro" title="Available with the Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('URL Shortening via Bitly', 'wp-sms'),
-                    'type' => 'header',
-                ),
-                'short_url_status'             => array(
-                    'id'       => 'short_url_status',
-                    'name'     => esc_html__('Shorten URLs', 'wp-sms'),
-                    'type'     => 'checkbox',
-                    'options'  => $options,
-                    'desc'     => __('Converts all URLs to shortened versions using <a href="https://bitly.com/" target="_blank">Bitly.com</a>.', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium)
-                ),
-                'short_url_api_token'          => array(
-                    'id'       => 'short_url_api_token',
-                    'name'     => esc_html__('Bitly API Key', 'wp-sms'),
-                    'type'     => 'text',
-                    'desc'     => __('Enter your Bitly API key here. Obtain it from <a href="https://app.bitly.com/settings/api/" target="_blank">Bitly API Settings</a>.', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium)
-                ),
                 'webhooks'                     => array(
                     'id'   => 'webhooks',
                     'name' => $this->renderOptionHeader(
@@ -1805,37 +1785,6 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Sends non-personal, anonymized data to help us improve WP SMS. No personal or identifying information is collected or shared. <a href="https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Learn More</a>.', 'wp-sms'),
-                ),
-                'g_recaptcha'                  => array(
-                    'id'   => 'g_recaptcha',
-                    'name' => $this->renderOptionHeader(
-                    // Locked if neither Pro nor Woo Pro installed, or only Pro installed without license
-                        (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium) ? esc_html__('Google reCAPTCHA Integration', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openAioModal" data-target="wp-sms-pro" title="Available with the Pro or WooCommerce Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
-                        esc_html__('Enhance your system\'s security by activating Google reCAPTCHA. This tool prevents spam and abuse by ensuring that only genuine users can initiate request-SMS actions. Upon activation, every SMS request will be secured with reCAPTCHA verification.', 'wp-sms')
-                    ),
-                    'type' => 'header',
-                ),
-                'g_recaptcha_status'           => array(
-                    'id'       => 'g_recaptcha_status',
-                    'name'     => esc_html__('Activate', 'wp-sms'),
-                    'type'     => 'checkbox',
-                    'options'  => $options,
-                    'desc'     => esc_html__('Use Google reCAPTCHA for your SMS requests.', 'wp-sms'),
-                    'readonly' => (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium)
-                ),
-                'g_recaptcha_site_key'         => array(
-                    'id'       => 'g_recaptcha_site_key',
-                    'name'     => esc_html__('Site Key', 'wp-sms'),
-                    'type'     => 'text',
-                    'desc'     => esc_html__('Enter your unique site key provided by Google reCAPTCHA. This public key is used in the HTML code of your site to display the reCAPTCHA widget. ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin" target="_blank">Get your site key</a>.',
-                    'readonly' => (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium)
-                ),
-                'g_recaptcha_secret_key'       => array(
-                    'id'       => 'g_recaptcha_secret_key',
-                    'name'     => esc_html__('Secret Key', 'wp-sms'),
-                    'type'     => 'text',
-                    'desc'     => esc_html__('Insert your secret key here. This private key is used for communication between your server and the reCAPTCHA server. ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin" target="_blank">Access your secret key</a>.' . '<br />' . esc_html__('Remember, both keys are necessary and should be kept confidential. The site key can be included in your web pages, but the secret key should never be exposed publicly.', 'wp-sms'),
-                    'readonly' => (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium)
                 ),
             )),
 
@@ -2424,7 +2373,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 $options = apply_filters('wp_sms_gateway_select_item_options', [
                     'option'   => $option,
                     'name'     => $name,
-                    'selected' => $option == $value ,
+                    'selected' => $option == $value,
                     'disabled' => array_column(Gateway::$proGateways, $option) ? true : false,
                 ]);
 
