@@ -46,7 +46,7 @@ class ApiCommunicator
     }
 
     /**
-     * Get the download link for the specified add-on using the license key.
+     * Get the product info for the specified add-on
      *
      * @param string $licenseKey
      * @param string $addonSlug
@@ -54,7 +54,7 @@ class ApiCommunicator
      * @return string|null The download URL if found, null otherwise
      * @throws Exception if the API call fails
      */
-    public function getDownloadUrl($licenseKey, $addonSlug)
+    public function getProductInfo($licenseKey, $addonSlug)
     {
         $remoteRequest = new RemoteRequest('GET', "{$this->apiUrl}/product/download", [
             'license_key' => $licenseKey,
@@ -63,30 +63,6 @@ class ApiCommunicator
         ]);
 
         return $remoteRequest->execute(true, true, DAY_IN_SECONDS);
-    }
-
-    /**
-     * Get the download URL for a specific addon slug from the license status.
-     *
-     * @param string $licenseKey
-     * @param string $addonSlug
-     *
-     * @return string|null The download URL if found, null otherwise
-     * @throws Exception
-     */
-    public function getDownloadUrlFromLicense($licenseKey, $addonSlug)
-    {
-        // Validate the license and get the licensed products
-        $licenseStatus = $this->validateLicense($licenseKey, $addonSlug);
-
-        // Search for the download URL in the licensed products
-        foreach ($licenseStatus->products as $product) {
-            if ($product->slug === $addonSlug) {
-                return isset($product->download_url) ? $product->download_url : null;
-            }
-        }
-
-        return null;
     }
 
     /**
