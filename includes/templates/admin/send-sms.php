@@ -287,7 +287,7 @@ use WP_SMS\Components\View;
             <?php if (apply_filters('wp_sms_enable_upgrade_to_bundle', true)) :
                 View::load("components/objects/notice-all-in-one", [
                     'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=send-sms',
-                    'link-text' => esc_html__('Upgrade to unlock all features.', 'wp-sms'),
+                    'link_text' => esc_html__('Upgrade to unlock all features.', 'wp-sms'),
                     'title'     => sprintf(
                         esc_html__('Some sending options are available only in %s, like scheduled SMS, sending to WooCommerce customers and BuddyPress members, plus more integrations.', 'wp-sms'),
                         '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'

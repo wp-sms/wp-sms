@@ -2650,23 +2650,23 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                         <li>
                             <?php
 
-                                $is_integrations_page = isset($_GET['page']) && $_GET['page'] === 'wp-sms-integrations';
-                                $notice_config = $is_integrations_page ? [
-                                    'link'      => 'https://wp-sms-pro.com/integrations/?utm_source=wp-sms&utm_medium=link&utm_campaign=integrations',
-                                    'link-text' => esc_html__('Upgrade to unlock all features', 'wp-sms'),
-                                    'title'     => sprintf(
-                                        esc_html__('Full integration support is available in %s, including WooCommerce, BuddyPress, Gravity Forms and more.', 'wp-sms'),
-                                        '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
-                                    )
-                                ] : [
-                                    'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings',
-                                    'link-text' => esc_html__('Upgrade to unlock all features.', 'wp-sms'),
-                                    'title'     => sprintf(
-                                        esc_html__('Full integration support is available in %s, including WooCommerce, BuddyPress, Gravity Forms and more.', 'wp-sms'),
-                                        '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
-                                    )
-                                ];
-                                View::load("components/objects/notice-all-in-one", $notice_config);
+                            $is_integrations_page = isset($_GET['page']) && $_GET['page'] === 'wp-sms-integrations';
+                            $notice_config        = $is_integrations_page ? [
+                                'link'      => 'https://wp-sms-pro.com/integrations/?utm_source=wp-sms&utm_medium=link&utm_campaign=integrations',
+                                'link_text' => esc_html__('Upgrade to unlock all features.', 'wp-sms'),
+                                'title'     => sprintf(
+                                    esc_html__('Full integration support is available in %s, including WooCommerce, BuddyPress, Gravity Forms and more.', 'wp-sms'),
+                                    '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
+                                )
+                            ] : [
+                                'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings',
+                                'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
+                                'title'     => sprintf(
+                                    esc_html__('Some settings are only available in %s, including extended field support, syncing options, and more advanced configuration.', 'wp-sms'),
+                                    '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
+                                )
+                            ];
+                            View::load("components/objects/notice-all-in-one", $notice_config);
                             ?>
                         </li>
                     </ul>
