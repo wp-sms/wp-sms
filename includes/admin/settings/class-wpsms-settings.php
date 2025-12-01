@@ -2637,12 +2637,12 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
                         <?php if (isset($_GET['page']) && $_GET['page'] === 'wp-sms-integrations') {
                             /**
-                             * Hook: wp_sms_integrations_box
+                             * Hook: wp_sms_settings_integrations_box
                              *
                              * Fires inside the integrations page.
                              * Allows WP SMS Pro (or other extensions) to output HTML.
                              */
-                            echo wp_kses_post(apply_filters('wp_sms_integrations_box', ''));
+                            echo wp_kses_post(apply_filters('wp_sms_settings_integrations_box', ''));
                         } ?>
                     </ul>
 
