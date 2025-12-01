@@ -53,7 +53,7 @@
 
                         <?php if (apply_filters('wp_sms_send_to_wc_customers_option', false)) : ?>
                             <option value="wc-customers" data-target="" id="wc_users">
-                                <span data-target="wp-sms-pro" class="js-wp-sms-openAioModal"><?php esc_html_e('WooCommerce\'s Customers', 'wp-sms'); ?></span>
+                                <span><?php esc_html_e('WooCommerce\'s Customers', 'wp-sms'); ?></span>
                             </option>
                         <?php endif; ?>
 
