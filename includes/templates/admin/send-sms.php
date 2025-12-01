@@ -1,3 +1,8 @@
+<?php
+
+use WP_SMS\Components\View;
+
+?>
 <?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="wrap wpsms-wrap">
     <?php echo \WP_SMS\Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
@@ -183,7 +188,7 @@
                 <?php if (apply_filters('wp_sms_send_scheduled_message_option', false)) : ?>
                     <div class="schedule-field pro-field wpsms-sendsms__form-filed">
                         <div class="field">
-                            <input type="checkbox" id="schedule_status" name="schedule_status" />
+                            <input type="checkbox" id="schedule_status" name="schedule_status"/>
                             <label for="schedule_status"><?php esc_html_e('Scheduled message?', 'wp-sms'); ?></label>
                         </div>
                     </div>
@@ -197,7 +202,7 @@
 
                 <?php if (apply_filters('wp_sms_send_repeated_message_option', false)) : ?>
                     <div class="repeat-field wpsms-sendsms__form-filed">
-                        <input type="checkbox" id="wpsms_repeat_status" name="repeat_status" />
+                        <input type="checkbox" id="wpsms_repeat_status" name="repeat_status"/>
                         <label for="wpsms_repeat_status"><?php esc_html_e('Repeat?', 'wp-sms'); ?></label>
                     </div>
                 <?php endif; ?>
@@ -278,6 +283,16 @@
                 <div class="previous-button"><span></span><?php esc_html_e('Prev', 'wp-sms') ?></div>
                 <div class="next-button"><?php esc_html_e('Next', 'wp-sms') ?><span></span></div>
             </div>
+
+            <?php if (apply_filters('wp_sms_enable_upgrade_to_bundle', true)) :
+                View::load("components/objects/notice-all-in-one", [
+                    'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=send-sms',
+                    'link-text' => esc_html__('Upgrade to unlock all features.', 'wp-sms'),
+                    'title'     => sprintf(
+                        esc_html__('Some sending options are available only in %s, like scheduled SMS, sending to WooCommerce customers and BuddyPress members, plus more integrations.', 'wp-sms'),
+                        '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
+                    )]);
+            endif; ?>
         </div>
     </div>
 </div>
