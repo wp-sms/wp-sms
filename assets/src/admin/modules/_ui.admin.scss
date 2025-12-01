@@ -3961,20 +3961,20 @@ a.wpsms-addon__download_active-all {
       font-size: 14px;
       line-height: 20px;
       color: #4F4F4F;
+    }
 
-      a {
-        padding: 0;
-        margin: 0;
-        color: #404BF2;
-        opacity: 1;
-        text-decoration: underline;
-        font-size: 14px;
-        font-weight: 400;
-        line-height: 20px;
+    a {
+      padding: 0;
+      margin: 0;
+      color: #404BF2;
+      opacity: 1;
+      text-decoration: underline;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
 
-        &:hover {
-          color: #4F4F4F;
-        }
+      &:hover {
+        color: #4F4F4F;
       }
     }
   }
