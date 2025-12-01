@@ -1,3 +1,8 @@
+= v7.0.10 - 2025-12-01 =
+- **Enhancement:** Refactored plugin architecture for better add-on extensibility.
+- **Enhancement:** Added new filters and hooks for developers.
+- **Fix:** Minor bug fixes and improvements.
+
 = v7.0.9 - 2025-11-26 =
 - **Enhancement:** Minor improvements.
 
