@@ -197,7 +197,10 @@ class Gateway
         ),
         'united arab emirates' => [
             'smsala' => 'smsala'
-        ]
+        ],
+        'turkey' => [
+          'netgsmtr' => 'netgsm.com.tr'
+        ],
     );
 
     /**
