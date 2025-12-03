@@ -4,6 +4,8 @@ namespace WP_SMS\Blocks;
 
 use WP_SMS;
 
+if (!defined('ABSPATH')) exit;
+
 class SubscribeBlock extends BlockAbstract
 {
     protected $blockName = 'Subscribe';

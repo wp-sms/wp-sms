@@ -6,6 +6,8 @@ use Exception;
 use WP_SMS\Components\Logger;
 use WP_SMS\Components\RemoteRequest;
 
+if (!defined('ABSPATH')) exit;
+
 class AnonymizedUsageDataSender
 {
     /**

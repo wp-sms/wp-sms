@@ -7,15 +7,14 @@ use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Utils\PluginHelper;
 use WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit;
+
 class HooksManager
 {
     public function __construct()
     {
         add_filter('plugin_action_links_' . plugin_basename(WP_SMS_DIR . 'wp-sms.php'), [$this, 'addActionLinks']);
-
-        if (!PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php')) {
-            add_filter('wpsms_gateway_list', [$this, 'addProGateways']);
-        }
+        add_filter('wpsms_gateway_list', [$this, 'addProGateways']);
     }
 
     /**
@@ -50,8 +49,14 @@ class HooksManager
      */
     public function addProGateways($gateways)
     {
-        // Set pro gateways to load in the list as Global.
-        $gateways = array_merge_recursive($gateways, Gateway::$proGateways);
+        // Merge pro gateways into existing gateways, without duplicates
+        foreach (Gateway::$proGateways as $country => $gatewayList) {
+            foreach ($gatewayList as $key => $value) {
+                if (!isset($gateways[$country][$key])) {
+                    $gateways[$country][$key] = $value;
+                }
+            }
+        }
 
         // Fix the first array key value
         unset($gateways['']);

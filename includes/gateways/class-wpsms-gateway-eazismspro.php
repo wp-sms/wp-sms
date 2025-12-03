@@ -2,10 +2,7 @@
 
 namespace WP_SMS\Gateway;
 
-if (!defined('ABSPATH')) {
-    exit;
-} // Exit if accessed directly
-
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 class eazismspro extends \WP_SMS\Gateway
 {

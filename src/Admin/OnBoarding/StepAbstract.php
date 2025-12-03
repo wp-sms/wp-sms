@@ -6,6 +6,8 @@ use WP_SMS\Components\View;
 use WP_SMS\Utils\Request;
 use WP_SMS\Utils\Validator;
 
+if (!defined('ABSPATH')) exit;
+
 abstract class StepAbstract
 {
     public $title;

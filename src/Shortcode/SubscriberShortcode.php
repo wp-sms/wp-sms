@@ -4,6 +4,8 @@ namespace WP_SMS\Shortcode;
 
 use WP_SMS\Newsletter;
 
+if (!defined('ABSPATH')) exit;
+
 class SubscriberShortcode
 {
     public function register()

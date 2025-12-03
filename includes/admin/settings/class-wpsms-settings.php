@@ -6,8 +6,6 @@ use Forminator_API;
 use WP_SMS\Components\View;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-use WP_SMS\Utils\PluginHelper;
 use WP_SMS\Utils\Request;
 
 if (!defined('ABSPATH')) {
@@ -22,31 +20,15 @@ class Settings
         'main' => 'wpsms_settings',
         'pro'  => 'wps_pp_settings'
     ];
-    private $proTabs = [
-        'pro_wordpress',
-        'pro_buddypress',
-        'pro_woocommerce',
-        'pro_gravity_forms',
-        'pro_quform',
-        'pro_edd',
-        'pro_wp_job_manager',
-        'pro_awesome_support',
-        'pro_ultimate_members'
-    ];
-
-    private $isPremium;
-    private $proIsInstalled;
-    private $wooProIsInstalled;
-
+    private $pluginIntegrationsTabs = [];
     private $active_tab;
-    private $contentRestricted;
 
     /**
      * @return string
      */
     private function getCurrentOptionName()
     {
-        if (isset($_REQUEST['tab']) && in_array($_REQUEST['tab'], $this->proTabs)) {
+        if (isset($_REQUEST['tab']) && in_array($_REQUEST['tab'], $this->pluginIntegrationsTabs)) {
             return $this->optionNames['pro'];
         }
 
@@ -59,10 +41,9 @@ class Settings
 
     public function __construct()
     {
-        $this->setting_name      = $this->getCurrentOptionName();
-        $this->isPremium         = LicenseHelper::isPluginLicenseValid();
-        $this->proIsInstalled    = PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
-        $this->wooProIsInstalled = PluginHelper::isPluginInstalled('wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php');
+        $this->applyPluginIntegrationsFilter();
+
+        $this->setting_name = $this->getCurrentOptionName();
 
         $this->get_settings();
         $this->options = get_option($this->setting_name);
@@ -84,6 +65,16 @@ class Settings
         if (isset($_POST['submit']) && isset($_REQUEST['option_page']) && $_POST['option_page'] == 'wpsms_settings' && strpos(wp_get_referer(), 'tab=gateway')) {
             add_filter('pre_update_option_wpsms_settings', [$this, 'updateGateWayVersion'], 10, 2);
         }
+    }
+
+    /**
+     * Applies a filter to modify the list of plugin integration tabs.
+     *
+     * @return void
+     */
+    private function applyPluginIntegrationsFilter()
+    {
+        $this->pluginIntegrationsTabs = apply_filters('plugin_integrations_tabs', $this->pluginIntegrationsTabs);
     }
 
     /**
@@ -181,17 +172,7 @@ class Settings
             /*
              * Pro Pack tabs
              */
-            'pro_wordpress'  => esc_html__('2FA & Login', 'wp-sms'),
             'integrations'   => esc_html__('Integrations', 'wp-sms'),
-            // 'pro_buddypress'       => esc_html__('BuddyPress', 'wp-sms'),
-            // 'pro_woocommerce'      => esc_html__('WooCommerce', 'wp-sms'),
-            // 'pro_gravity_forms'    => esc_html__('Gravity Forms', 'wp-sms'),
-            // 'pro_quform'           => esc_html__('Quform', 'wp-sms'),
-            // 'pro_edd'              => esc_html__('Easy Digital Downloads', 'wp-sms'),
-            // 'pro_wp_job_manager'   => esc_html__('WP Job Manager', 'wp-sms'),
-            // 'pro_awesome_support'  => esc_html__('Awesome Support', 'wp-sms'),
-            // 'pro_ultimate_members' => esc_html__('Ultimate Member', 'wp-sms')
-
         );
 
         return apply_filters('wp_sms_registered_tabs', $tabs);
@@ -1757,26 +1738,6 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'options' => $options,
                     'desc'    => esc_html__('Notifies the admin email upon SMS transmission failures.', 'wp-sms')
                 ),
-                'short_url'                    => array(
-                    'id'   => 'short_url',
-                    'name' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium) ? esc_html__('URL Shortening via Bitly', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openAioModal" data-target="wp-sms-pro" title="Available with the Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('URL Shortening via Bitly', 'wp-sms'),
-                    'type' => 'header',
-                ),
-                'short_url_status'             => array(
-                    'id'       => 'short_url_status',
-                    'name'     => esc_html__('Shorten URLs', 'wp-sms'),
-                    'type'     => 'checkbox',
-                    'options'  => $options,
-                    'desc'     => __('Converts all URLs to shortened versions using <a href="https://bitly.com/" target="_blank">Bitly.com</a>.', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium)
-                ),
-                'short_url_api_token'          => array(
-                    'id'       => 'short_url_api_token',
-                    'name'     => esc_html__('Bitly API Key', 'wp-sms'),
-                    'type'     => 'text',
-                    'desc'     => __('Enter your Bitly API key here. Obtain it from <a href="https://app.bitly.com/settings/api/" target="_blank">Bitly API Settings</a>.', 'wp-sms'),
-                    'readonly' => !$this->proIsInstalled || ($this->proIsInstalled && !$this->isPremium)
-                ),
                 'webhooks'                     => array(
                     'id'   => 'webhooks',
                     'name' => $this->renderOptionHeader(
@@ -1815,37 +1776,6 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type'    => 'checkbox',
                     'options' => $options,
                     'desc'    => __('Sends non-personal, anonymized data to help us improve WP SMS. No personal or identifying information is collected or shared. <a href="https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Learn More</a>.', 'wp-sms'),
-                ),
-                'g_recaptcha'                  => array(
-                    'id'   => 'g_recaptcha',
-                    'name' => $this->renderOptionHeader(
-                    // Locked if neither Pro nor Woo Pro installed, or only Pro installed without license
-                        (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium) ? esc_html__('Google reCAPTCHA Integration', 'wp-sms') . '&nbsp;' . __('<span class="wpsms-tooltip is-pro js-wp-sms-openAioModal" data-target="wp-sms-pro" title="Available with the Pro or WooCommerce Pro add-on."><i class="wpsms-tooltip-icon"></i></span>', 'wp-sms') : esc_html__('Google reCAPTCHA Integration', 'wp-sms'),
-                        esc_html__('Enhance your system\'s security by activating Google reCAPTCHA. This tool prevents spam and abuse by ensuring that only genuine users can initiate request-SMS actions. Upon activation, every SMS request will be secured with reCAPTCHA verification.', 'wp-sms')
-                    ),
-                    'type' => 'header',
-                ),
-                'g_recaptcha_status'           => array(
-                    'id'       => 'g_recaptcha_status',
-                    'name'     => esc_html__('Activate', 'wp-sms'),
-                    'type'     => 'checkbox',
-                    'options'  => $options,
-                    'desc'     => esc_html__('Use Google reCAPTCHA for your SMS requests.', 'wp-sms'),
-                    'readonly' => (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium)
-                ),
-                'g_recaptcha_site_key'         => array(
-                    'id'       => 'g_recaptcha_site_key',
-                    'name'     => esc_html__('Site Key', 'wp-sms'),
-                    'type'     => 'text',
-                    'desc'     => esc_html__('Enter your unique site key provided by Google reCAPTCHA. This public key is used in the HTML code of your site to display the reCAPTCHA widget. ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin" target="_blank">Get your site key</a>.',
-                    'readonly' => (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium)
-                ),
-                'g_recaptcha_secret_key'       => array(
-                    'id'       => 'g_recaptcha_secret_key',
-                    'name'     => esc_html__('Secret Key', 'wp-sms'),
-                    'type'     => 'text',
-                    'desc'     => esc_html__('Insert your secret key here. This private key is used for communication between your server and the reCAPTCHA server. ', 'wp-sms') . '<a href="https://www.google.com/recaptcha/admin" target="_blank">Access your secret key</a>.' . '<br />' . esc_html__('Remember, both keys are necessary and should be kept confidential. The site key can be included in your web pages, but the secret key should never be exposed publicly.', 'wp-sms'),
-                    'readonly' => (!$this->proIsInstalled && !$this->wooProIsInstalled) || ($this->proIsInstalled && !$this->wooProIsInstalled && !$this->isPremium)
                 ),
             )),
 
@@ -2431,15 +2361,18 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             $html .= sprintf('<optgroup data-options="" label="%1$s">', ucfirst(str_replace('_', ' ', $key)));
 
             foreach ($v as $option => $name) {
-                $disabled = '';
+                $options = apply_filters('wp_sms_gateway_select_item_options', [
+                    'option'   => $option,
+                    'name'     => $name,
+                    'selected' => $option == $value,
+                    'disabled' => array_column(Gateway::$proGateways, $option) ? true : false,
+                ]);
 
-                if (!$this->proIsInstalled && array_column(Gateway::$proGateways, $option)) {
-                    $disabled = ' disabled';
-                    $name     .= '<span> ' . esc_html__('- (All-in-One Required)', 'wp-sms') . '</span>';
+                if ($options['disabled']) {
+                    $options['name'] .= '<span> ' . esc_html__('- (All-in-One Required)', 'wp-sms') . '</span>';
                 }
 
-                $selected = selected($option, $value, false);
-                $html     .= sprintf('<option value="%1$s" %2$s %3$s>%4$s</option>', esc_attr($option), esc_attr($selected), esc_attr($disabled), ucfirst($name));
+                $html .= sprintf('<option value="%1$s" %2$s %3$s>%4$s</option>', esc_attr($options['option']), selected($options['selected'], true, false), disabled($options['disabled'], true, false), ucfirst($options['name']));
             }
 
             $html .= '</optgroup>';
@@ -2568,9 +2501,8 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
      */
     public function render_settings($default = "general", $args = array())
     {
-        $this->active_tab        = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : $default;
-        $this->contentRestricted = in_array($this->active_tab, $this->proTabs) && (!$this->proIsInstalled || !$this->isPremium);
-        $args                    = wp_parse_args($args, [
+        $this->active_tab = isset($_GET['tab']) && array_key_exists($_GET['tab'], $this->get_tabs()) ? sanitize_text_field($_GET['tab']) : $default;
+        $args             = wp_parse_args($args, [
             'setting'  => true,
             'template' => '' //must be a callable function
         ]);
@@ -2604,19 +2536,13 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                                 'tab'              => $tab_id
                             ));
 
-                            $active      = $this->active_tab == $tab_id ? 'active' : '';
-                            $isProTab    = in_array($tab_id, $this->proTabs) ? ' is-pro-tab' : '';
-                            $proLockIcon = '';
+                            $active            = $this->active_tab == $tab_id ? 'active' : '';
+                            $isIntegrationsTab = in_array($tab_id, $this->pluginIntegrationsTabs) ? ' is-pro-tab' : '';
 
-                            if ($isProTab) {
-                                if (!$this->proIsInstalled || !$this->isPremium) {
-                                    $proLockIcon = '</a><span class="pro-not-installed ' . esc_attr($active) . '"><a data-target="wp-sms-pro" href="' . esc_url(WP_SMS_SITE) . '/pricing"></a></span></li>';
-                                }
-                            }
                             $tabUrl = ($tab_id == 'integrations') ? esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-integrations') : esc_url($tab_url);
-                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($isProTab) . '"><a href="' . $tabUrl . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
+                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($isIntegrationsTab) . '"><a href="' . esc_url($tabUrl) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
                             echo esc_html($tab_name);
-                            echo '</a>' . $proLockIcon . '</li>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                            echo '</a></li>';
                         };
 
                         foreach ($this->get_tabs() as $tab_id => $tab_name) {
@@ -2641,14 +2567,40 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                         }
 
                         ?>
+                        <li>
+                            <?php
+                            $isIntegrationsPage = isset($_GET['page']) && $_GET['page'] === 'wp-sms-integrations';
+                            $noticeConfig       = $isIntegrationsPage ? [
+                                'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=integrations',
+                                'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
+                                'title'     => sprintf(
+                                    /* translators: %s: Plugin name (WP SMS All-in-One) */
+                                    esc_html__('Full integration support is available in %s, including WooCommerce, BuddyPress, Gravity Forms and more.', 'wp-sms'),
+                                    '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
+                                )
+                            ] : [
+                                'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings',
+                                'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
+                                'title'     => sprintf(
+                                    /* translators: %s: Plugin name (WP SMS All-in-One) */
+                                    esc_html__('Some settings are only available in %s, including extended field support, syncing options, and more advanced configuration.', 'wp-sms'),
+                                    '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
+                                )
+                            ];
 
-                        <?php if (isset($_GET['page']) and in_array($_GET['page'], ['wp-sms-integrations'])) {
-                            echo \WP_SMS\Helper::loadTemplate('zapier-section.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                        } ?>
+                            /**
+                             * Hook: wp_sms_settings_integrations_box
+                             *
+                             * Fires inside the integrations page.
+                             * Allows WP SMS Pro (or other extensions) to output HTML.
+                             */
+                            echo wp_kses_post(apply_filters('wp_sms_settings_integrations_box', View::load("components/objects/notice-all-in-one", $noticeConfig, true)));
+                            ?>
+                        </li>
                     </ul>
 
 
-                    <div class="wpsms-tab-content<?php echo esc_attr($this->contentRestricted) ? ' pro-not-installed' : ''; ?> <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
+                    <div class="wpsms-tab-content <?php echo esc_attr($this->active_tab) . '_settings_tab' ?>">
                         <?php
                         if (strpos($this->active_tab, 'addon_') !== false) {
                             do_action("wp_sms_{$this->active_tab}_before_content_render");
@@ -2690,10 +2642,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 do_settings_fields("{$this->setting_name}_{$this->active_tab}", "{$this->setting_name}_{$this->active_tab}"); ?>
             </table>
             <input type="hidden" name="wpsms_active_tab" value="<?php echo esc_attr($this->active_tab); ?>">
-            <?php
-            if (!$this->contentRestricted) {
-                submit_button();
-            } ?>
+            <?php submit_button(); ?>
         </form>
         <?php
     }

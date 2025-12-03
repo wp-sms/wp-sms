@@ -5,6 +5,8 @@ namespace WP_SMS\Controller;
 use Exception;
 use WP_SMS\Services\Subscriber\SubscriberUtil;
 
+if (!defined('ABSPATH')) exit;
+
 class PublicVerifySubscribeAjax extends AjaxControllerAbstract
 {
     protected $action = 'wp_sms_verify_subscribe';

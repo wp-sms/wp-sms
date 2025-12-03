@@ -126,11 +126,12 @@ class Gateway
             'brqsms'      => 'brqsms.com',
         ),
         'bangladesh'           => array(
-            'esmsbd'    => 'esms.com.bd',
-            'bulksmsbd' => 'bulksmsbd.com',
-            'btssms'    => 'btssms.com',
-            'greenweb'  => 'greenweb.com.bd',
-            'revesms'   => 'smpp.ajuratech.com',
+            'esmsbd'      => 'esms.com.bd',
+            'bulksmsbd'   => 'bulksmsbd.com',
+            'btssms'      => 'btssms.com',
+            'greenweb'    => 'greenweb.com.bd',
+            'revesms'     => 'smpp.ajuratech.com',
+            'sslwireless' => 'sslwireless.com',
         ),
         'china'                => array(
             'juhe' => 'juhe.cn'
@@ -1560,6 +1561,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             $settingsLink = admin_url('admin.php?page=wp-sms-settings&tab=gateway');
 
             $message = sprintf(
+                /* translators: %1$s: URL to gateway settings page */
                 __('SMS gateway setup requires your attention. <a href="%1$s">Review and update your gateway settings</a> to ensure SMS messages are sent successfully.', 'wp-sms'),
                 esc_url($settingsLink)
             );

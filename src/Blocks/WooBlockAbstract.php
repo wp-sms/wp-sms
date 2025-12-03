@@ -5,6 +5,8 @@ namespace WP_SMS\Blocks;
 use Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface;
 use WP_SMS\Helper;
 
+if (!defined('ABSPATH')) exit;
+
 class WooBlockAbstract
 {
 

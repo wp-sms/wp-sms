@@ -18,6 +18,7 @@ class Subscribers_List_Table extends \WP_List_Table
     protected $count;
     protected $adminUrl;
     var $data;
+    protected $bulk_actions_processed = false;
 
     public function __construct()
     {
@@ -170,6 +171,12 @@ class Subscribers_List_Table extends \WP_List_Table
 
     public function process_bulk_action()
     {
+        // Skip if bulk actions have already been processed
+        if ($this->bulk_actions_processed) {
+            return;
+        }
+        $this->bulk_actions_processed = true;
+
         $current_action = $this->current_action();
         // Detect when a bulk action is being triggered
 

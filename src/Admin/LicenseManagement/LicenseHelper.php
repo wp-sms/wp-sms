@@ -6,6 +6,8 @@ use Exception;
 use WP_SMS\Exceptions\LicenseException;
 use WP_SMS\Utils\OptionUtil;
 
+if (!defined('ABSPATH')) exit;
+
 class LicenseHelper
 {
     const LICENSE_OPTION_KEY = 'licenses';

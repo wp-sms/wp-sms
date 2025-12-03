@@ -6,6 +6,8 @@ use WP_Error;
 use WP_SMS\Helper;
 use WP_SMS\Option;
 
+if (!defined('ABSPATH')) exit;
+
 /**
  * A utility class for validating and normalizing phone numbers.
  */
@@ -198,7 +200,7 @@ class NumberParser
             ) {
                 return $this->rawPhoneNumber;
             }
-           
+
             return $phoneNumber;
         }
 

@@ -5,6 +5,8 @@ namespace WP_SMS\Components;
 use Exception;
 use WP_SMS\Exceptions\SystemErrorException;
 
+if (!defined('ABSPATH')) exit;
+
 class View
 {
     /**

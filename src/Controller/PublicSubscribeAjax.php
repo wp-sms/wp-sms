@@ -6,6 +6,8 @@ use Exception;
 use WP_SMS\Option;
 use WP_SMS\Services\Subscriber\SubscriberUtil;
 
+if (!defined('ABSPATH')) exit;
+
 class PublicSubscribeAjax extends AjaxControllerAbstract
 {
     protected $action = 'wp_sms_subscribe';

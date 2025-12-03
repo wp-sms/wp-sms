@@ -8,6 +8,8 @@ use WP_SMS\Components\Ajax;
 use WP_SMS\Utils\OptionUtil as Option;
 use Exception;
 
+if (!defined('ABSPATH')) exit;
+
 class AjaxOptionUpdater
 {
     /**

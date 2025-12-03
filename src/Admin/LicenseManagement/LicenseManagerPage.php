@@ -5,6 +5,8 @@ namespace WP_SMS\Admin\LicenseManagement;
 use WP_SMS\Admin\LicenseManagement\Abstracts\MultiViewPage;
 use WP_SMS\Admin\LicenseManagement\Views\TabsView;
 
+if (!defined('ABSPATH')) exit;
+
 class LicenseManagerPage extends MultiViewPage
 {
     protected $pageSlug    = 'add-ons';

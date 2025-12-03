@@ -14,14 +14,13 @@ use WP_SMS\Utils\AdminHelper;
 use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Utils\Request;
 
+if (!defined('ABSPATH')) exit;
+
 class TabsView extends BaseTabView
 {
     protected $defaultTab = 'add-ons';
     protected $tabs = [
-        'add-ons',
-        'add-license',
-        'downloads',
-        'get-started',
+        'add-ons'
     ];
 
     private $apiCommunicator;
@@ -105,26 +104,6 @@ class TabsView extends BaseTabView
         return $this->dataProvider->getAddOnsData();
     }
 
-    /**
-     * Returns data for "Download Add-ons" tab.
-     *
-     * @return array
-     */
-    public function getDownloadsData()
-    {
-        return $this->dataProvider->getDownloadsData();
-    }
-
-    /**
-     * Returns data for "Get Started" tab.
-     *
-     * @return array
-     */
-    public function getGetStartedData()
-    {
-        return $this->dataProvider->getGetStartedData();
-    }
-
     public function render()
     {
         try {
@@ -146,22 +125,7 @@ class TabsView extends BaseTabView
                         'link'  => MenuUtil::getAdminUrl('add-ons', ['tab' => 'add-ons']),
                         'title' => esc_html__('Add-Ons', 'wp-sms'),
                         'class' => $this->isTab('add-ons') ? 'current' : '',
-                    ],
-                    [
-                        'link'  => MenuUtil::getAdminUrl('add-ons', ['tab' => 'add-license']),
-                        'title' => esc_html__('Add Your License', 'wp-sms'),
-                        'class' => $this->isTab('add-license') ? 'current' : '',
-                    ],
-                    [
-                        'link'  => MenuUtil::getAdminUrl('add-ons', array_merge(['tab' => 'downloads'], $urlParams)),
-                        'title' => esc_html__('Download Add-Ons', 'wp-sms'),
-                        'class' => $this->isTab('downloads') ? 'current' : '',
-                    ],
-                    [
-                        'link'  => MenuUtil::getAdminUrl('add-ons', array_merge(['tab' => 'get-started'], $urlParams)),
-                        'title' => esc_html__('Get Started', 'wp-sms'),
-                        'class' => $this->isTab('get-started') ? 'current' : '',
-                    ],
+                    ]
                 ]
             ];
 

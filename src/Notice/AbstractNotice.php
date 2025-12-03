@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Notice;
 
+if (!defined('ABSPATH')) exit;
+
 abstract class AbstractNotice
 {
     protected $notices = [];

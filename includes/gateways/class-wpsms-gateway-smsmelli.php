@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class smsmelli extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://smsmelli.com/class/sms/webservice3/server.php?wsdl";
