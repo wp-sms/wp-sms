@@ -183,8 +183,6 @@
   .setting, .support {
     width: 19px;
     height: 19px;
-    outline: none !important;
-    box-shadow: none !important;
     transition: 0.3s all ease-out;
     opacity: 70%;
 
@@ -309,11 +307,6 @@ body.rtl #feedback-bird-app {
         span.icon {
           opacity: 1;
         }
-      }
-
-      &:focus {
-        box-shadow: none !important;
-        outline: none;
       }
 
       span {

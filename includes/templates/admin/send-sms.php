@@ -77,9 +77,9 @@ use WP_SMS\Components\View;
 
 
                 <div class="wpsms-value wpsms-group wpsms-group-field">
-                    <label><?php esc_html_e('Select Group', 'wp-sms'); ?></label>
+                    <label for="wpsms_groups"><?php esc_html_e('Select Group', 'wp-sms'); ?></label>
                     <?php if (count($get_group_result)) : ?>
-                        <select name="wpsms_groups[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php esc_html_e('Please select the Group', 'wp-sms'); ?>">
+                        <select id="wpsms_groups" name="wpsms_groups[]" multiple="true" class="js-wpsms-select2" data-placeholder="<?php esc_html_e('Please select the Group', 'wp-sms'); ?>">
                             <?php foreach ($get_group_result as $items): ?>
                                 <option value="<?php echo esc_attr($items->ID); ?>">
                                     <?php

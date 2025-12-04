@@ -27,7 +27,7 @@
                 <th scope="row"><label for="wpcf7-sms-recipient-subscriber"><?php esc_html_e('Subscriber Group', 'wp-sms'); ?>:</label></th>
                 <td>
                     <div class="wpsms-value wpsms-group">
-                        <select name="wpcf7-sms[groups][]" multiple="multiple" class="js-wpsms-select2" data-placeholder="<?php esc_html_e('Please select the Group', 'wp-sms'); ?>">
+                        <select id="wpcf7-sms-recipient-subscriber" name="wpcf7-sms[groups][]" multiple="multiple" class="js-wpsms-select2" data-placeholder="<?php esc_html_e('Please select the Group', 'wp-sms'); ?>">
                             <?php
                             if (isset($get_group_result)):
                                 foreach ($get_group_result as $items): ?>

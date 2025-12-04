@@ -71,7 +71,7 @@
             </tr>
             <tr id="wp-sms-group-name" class="js-wpSmsGroupName" style="display: none">
                 <td>
-                    <input type="text" id="wp-sms-select-group-name" class="js-wpSmsSelectGroupName">
+                    <input type="text" aria-label="<?php esc_attr_e('Group Name', 'wp-sms'); ?>" id="wp-sms-select-group-name" class="js-wpSmsSelectGroupName">
                 </td>
             </tr>
             </tbody>

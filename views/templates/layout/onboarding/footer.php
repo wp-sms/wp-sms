@@ -12,10 +12,10 @@
         </a>
     <?php
     elseif ($is_first): ?>
-        <a class="c-link" href="<?php echo esc_url($skip_setup_url); ?>" title="<?php esc_attr_e('Skip the setup wizard', 'wp-sms'); ?>"><?php esc_html_e('Skip the setup wizard', 'wp-sms'); ?></a>
+        <a class="c-link" href="<?php echo esc_url($skip_setup_url); ?>" ><?php esc_html_e('Skip the setup wizard', 'wp-sms'); ?></a>
     <?php
     else : ?>
-        <a class="c-link" href="<?php echo esc_url($next); ?>" title="<?php esc_attr_e('Skip this step', 'wp-sms'); ?>"><?php esc_html_e('Skip this step', 'wp-sms'); ?></a>
+        <a class="c-link" href="<?php echo esc_url($next); ?>"><?php esc_html_e('Skip this step', 'wp-sms'); ?></a>
 
     <?php endif;
     ?>

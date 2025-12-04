@@ -29,18 +29,11 @@
   }
 }
 .wpsms-onboarding , .toplevel_page_wp-sms{
-
-  a:focus{
-    box-shadow: none;
-  }
-
   .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable{
   background: #F7F7F7!important;
   color:#282828 ;
   }
-  *:focus-visible {
-    outline: none!important;
-  }
+
   .select2-dropdown{
     border-color: $grey-color-5;
   }
@@ -48,10 +41,5 @@
     font-size: 14px;
     border: none!important;
     border-color: $grey-color-5;
-
-    &:focus , &:active{
-      outline: none;
-      box-shadow: none;
-    }
   }
 }

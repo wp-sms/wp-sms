@@ -3,7 +3,7 @@
     <p><?php echo wp_kses_post($message); ?></p>
     <?php if ($dismiss) : ?>
         <a href="<?php echo esc_url($link); ?>" class="notice-dismiss">
-            <span class="screen-reader-text">Dismiss this notice.</span>
+            <span class="screen-reader-text"><?php echo esc_html__('Dismiss this notice.', 'wp-sms'); ?></span>
         </a>
     <?php endif; ?>
 </div>
