@@ -58,8 +58,8 @@ $isTwoWay      = $pluginHandler->isPluginActive('wp-sms-two-way');
     <div class="wpsms-header-items-side">
         <?php echo \WP_SMS\Helper::loadTemplate('admin/partials/license-status.php', ['addons' => $addons, 'tab_url' => $tab_url]); ?>
         <a href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-settings'); ?>" class="setting <?php if (isset($_GET['page']) && $_GET['page'] === 'wp-sms-settings') {
-            echo 'active';} ?>" aria-label="Setting"></a>
-        <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" aria-label="Support" target="_blank" class="support"></a>
+            echo 'active';} ?>" aria-label="<?php esc_attr_e('Setting', 'wp-sms'); ?>"></a>
+        <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" aria-label="<?php esc_attr_e('Support', 'wp-sms'); ?>" target="_blank" class="support"></a>
         <div class="wpsms-mobile-menu">
             <input type="checkbox" id="wpsms-menu-toggle" class="hamburger-menu">
             <label for="wpsms-menu-toggle" class="hamburger-menu-container">
