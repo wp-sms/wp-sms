@@ -114,14 +114,14 @@ class ghasedak extends Gateway
     متن قالب و متغیرها باید دقیقاً همان چیزی باشند که در افزونه می‌نویسید.<br>
     <code style='direction: rtl'>سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.</code>
   </li>
-  <li><strong>در افزونه همان متن را بنویسید و کد قالب را با «|» بعد از متن پیامک اضافه کنید</strong><br>
-    <code style='direction: rtl'>سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.|2343</code>
+  <li><strong>در افزونه همان متن را بنویسید و نام قالب را با «|» بعد از متن پیامک اضافه کنید</strong><br>
+    <code style='direction: rtl'>سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.|Ghasedak</code>
   </li>
 </ol>
 <p><strong>نکات مهم</strong></p>
 <ul>
   <li>نام متغیرها باید دقیقاً یکسان باشند؛ مانند <code>%billing_first_name%</code> و <code>%order_id%</code>.</li>
-  <li>اگر <code style='direction: rtl'>|کد</code> نگذارید، پیام به‌صورت <em>ارسال معمولی</em> فرستاده می‌شود.</li>
+  <li>اگر <code style='direction: rtl'>|نام قالب</code> نگذارید، پیام به‌صورت <em>ارسال معمولی</em> فرستاده می‌شود.</li>
   <li>در سامانه قدیم هم از دستور العمل ذکر شده استفاده کنید.</li>
 </ul></div>";
     }
@@ -441,7 +441,7 @@ class ghasedak extends Gateway
      *
      * @return void
      */
-    public function setTemplateIdAndMessageBody()
+    private function setTemplateIdAndMessageBody()
     {
         $templateData = $this->getTemplateIdAndMessageBody();
 
