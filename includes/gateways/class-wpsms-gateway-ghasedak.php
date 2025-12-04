@@ -412,7 +412,7 @@ class ghasedak extends Gateway
 
         return [
             'receptor' => $receptors,
-            'type'     => 'string',
+            'type'     => '1',
             'template' => (string)$this->template_id,
             'allparam' => $allparam,
         ];
