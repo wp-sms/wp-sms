@@ -45,7 +45,7 @@ if (empty($addOn)) {
                 <?php endif; ?>
             </div>
             <div class="wpsms-addon--actions">
-                <button tabindex="0"  class="wpsms-addon--actions--show-more js-addon-show-more"></button>
+                <button tabindex="0"  class="wpsms-addon--actions--show-more js-addon-show-more"><span class="screen-reader-text"><?php echo esc_html__('Show more', 'wp-sms'); ?></span></button>
                 <ul class="wpsms-addon--submenus">
                     <?php if ($addOn->isActivated() && !empty($addOn->getSettingsUrl())) : ?>
                         <li><a href="<?php echo esc_url($addOn->getSettingsUrl()); ?>" class="wpsms-addon--submenu wpsms-addon--submenu__settings" target="_blank"><span><?php esc_html_e('Settings', 'wp-sms'); ?></span></a></li>
