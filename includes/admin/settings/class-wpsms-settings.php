@@ -2539,10 +2539,11 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                             ));
 
                             $active            = $this->active_tab == $tab_id ? 'active' : '';
+                            $ariaDisabled      = $this->active_tab != $tab_id ? ' aria-disabled="true"' : '';
                             $isIntegrationsTab = in_array($tab_id, $this->pluginIntegrationsTabs) ? ' is-pro-tab' : '';
 
                             $tabUrl = ($tab_id == 'integrations') ? esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-integrations') : esc_url($tab_url);
-                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($isIntegrationsTab) . '"><a href="' . esc_url($tabUrl) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '">';
+                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($isIntegrationsTab) . '"><a href="' . esc_url($tabUrl) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '"' . $ariaDisabled . '>';
                             echo esc_html($tab_name);
                             echo '</a></li>';
                         };
