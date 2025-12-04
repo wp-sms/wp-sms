@@ -10,14 +10,14 @@
                 <div class="repeater-item" data-repeater-item>
                     <div style="display: block; width: 100%; margin-bottom: 15px; border-bottom: 1px solid #ccc; overflow: hidden;">
                         <div style="display: block; width: 48%; float: left; margin-bottom: 15px;">
-                            <input placeholder="<?php esc_html_e('Troubleshooting Common Issues', 'wp-sms') ?>" type="text" name="chatbox_link_title" style="display: block; width: 99%;" value="<?php echo esc_attr($chatbox_link_title) ?>" />
+                            <input aria-label="Add titles and URLs for your resource links" placeholder="<?php esc_html_e('Troubleshooting Common Issues', 'wp-sms') ?>" type="text" name="chatbox_link_title" style="display: block; width: 99%;" value="<?php echo esc_attr($chatbox_link_title) ?>" />
                             <p class="description"><?php esc_html_e('Add titles and URLs for your resource links, e.g., \'FAQs\' or \'Contact Us\'', 'wp-sms') ?></p>
                         </div>
                         <div style="display: block; width: 48%; float: right; margin-bottom: 15px;">
-                            <input placeholder="<?php echo esc_url(site_url('troubleshooting')); ?>" type="text" name="chatbox_link_url" style="display: block; width: 99%;" value="<?php echo esc_url($chatbox_link_url) ?>" />
+                            <input aria-label="Chatbox link url" placeholder="<?php echo esc_url(site_url('troubleshooting')); ?>" type="text" name="chatbox_link_url" style="display: block; width: 99%;" value="<?php echo esc_url($chatbox_link_url) ?>" />
                         </div>
                         <div>
-                            <input type="button" value="<?php esc_html_e('Delete', 'wp-sms') ?>" class="button" style="margin-bottom: 15px;" data-repeater-delete/>
+                            <input aria-label="Delete" type="button" value="<?php esc_html_e('Delete', 'wp-sms') ?>" class="button" style="margin-bottom: 15px;" data-repeater-delete/>
                         </div>
                     </div>
                 </div>
@@ -26,14 +26,14 @@
             <div class="repeater-item" data-repeater-item>
                 <div style="display: block; width: 100%; margin-bottom: 15px; border-bottom: 1px solid #ccc; overflow: hidden;">
                     <div style="display: block; width: 48%; float: left; margin-bottom: 15px;">
-                        <input placeholder="<?php esc_html_e('Troubleshooting Common Issues', 'wp-sms') ?>" type="text" name="chatbox_link_title" style="display: block; width: 99%;" />
+                        <input aria-label="Add titles and URLs for your resource links" placeholder="<?php esc_html_e('Troubleshooting Common Issues', 'wp-sms') ?>" type="text" name="chatbox_link_title" style="display: block; width: 99%;" />
                         <p class="description"><?php esc_html_e('Add titles and URLs for your resource links, e.g., \'FAQs\' or \'Contact Us\'', 'wp-sms') ?></p>
                     </div>
                     <div style="display: block; width: 48%; float: right; margin-bottom: 15px;">
-                        <input placeholder="<?php echo esc_url(site_url('troubleshooting')); ?>" type="text" name="chatbox_link_url" style="display: block; width: 99%;" />
+                        <input aria-label="Chatbox link url" placeholder="<?php echo esc_url(site_url('troubleshooting')); ?>" type="text" name="chatbox_link_url" style="display: block; width: 99%;" />
                     </div>
                     <div>
-                        <input type="button" value="<?php esc_html_e('Delete', 'wp-sms') ?>" class="button" style="margin-bottom: 15px;" data-repeater-delete/>
+                        <input aria-label="Delete" type="button" value="<?php esc_html_e('Delete', 'wp-sms') ?>" class="button" style="margin-bottom: 15px;" data-repeater-delete/>
                     </div>
                 </div>
             </div>
