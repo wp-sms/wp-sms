@@ -7,14 +7,14 @@ namespace Composer\Autoload;
 class ComposerStaticInit733a70b4860a09d7313bbae4cba3d940
 {
     public static $prefixLengthsPsr4 = array (
-        'W' =>
+        'W' => 
         array (
             'WP_SMS\\' => 7,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'WP_SMS\\' =>
+        'WP_SMS\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),

@@ -1,3 +1,6 @@
+= v7.x.x - 2025-x-x =
+- **New:** Added support for the Ghasedak.me gateway.
+
 = v7.0.10 - 2025-12-01 =
 - **Enhancement:** Refactored plugin architecture for better add-on extensibility.
 - **Enhancement:** Added new filters and hooks for developers.
