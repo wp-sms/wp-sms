@@ -2,7 +2,7 @@
 <div id="main" class="wpsms-onboarding" role="content">
 
     <section class="c-section--logo u-text-center">
-        <img alt="<?php esc_attr_e('Logo', 'wp-sms'); ?>" src="<?php echo esc_url(WP_SMS_URL . 'assets/images/logo.svg'); ?>"/>
+        <img alt="<?php esc_attr_e('WP SMS Logo', 'wp-sms'); ?>" src="<?php echo esc_url(WP_SMS_URL . 'assets/images/logo.svg'); ?>"/>
         <a href="<?php echo esc_url($skip_setup_url); ?>" class="c-section--exit"><?php esc_attr_e('Exit Setup', 'wp-sms'); ?></a>
     </section>
 
@@ -19,7 +19,7 @@
                                 $title = isset($step['title']) ? esc_html($step['title']) : '';
 
                                 echo '<li class="' . esc_attr($isActive) . '">';
-                                echo '<span></span><a href="' . esc_url($url) . '" title="' . esc_attr($title) . '">' . esc_html($title) . '</a>';
+                                echo '<span></span><a href="' . esc_url($url) . '">' . esc_html($title) . '</a>';
                                 echo '</li>';
                             }
                         }
