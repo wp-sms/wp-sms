@@ -111,11 +111,14 @@ class Outbox_List_Table extends \WP_List_Table
     function column_cb($item)
     {
         return sprintf(
-            '<input type="checkbox" name="%1$s[]" value="%2$s" />',
+            '<label class="screen-reader-text" for="cb-select-%2$s">%3$s</label><input type="checkbox" name="%1$s[]" value="%2$s" id="cb-select-%2$s" />',
             /*$1%s*/
             $this->_args['singular'],  //Let's simply repurpose the table's singular label ("movie")
             /*$2%s*/
-            $item['ID']                //The value of the checkbox should be the record's id
+            $item['ID'],               //The value of the checkbox should be the record's id
+            /*$3%s*/
+            /* translators: %s: Sender name */
+            sprintf(esc_html__('Select %s', 'wp-sms'), esc_html($item['sender']))
         );
     }
 
