@@ -1,7 +1,8 @@
 = v7.1 - 2025-11-x =
 - **New:** Introduced Notifications to receive important updates and promotions.
 - **Enhancement:** Updated PHP requirement to version 7.2.
-
+- **Enhancement:** Tested up to v6.9
+  
 = v7.0.9 - 2025-11-26 =
 - **Enhancement:** Minor improvements.
 
