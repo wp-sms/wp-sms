@@ -94,8 +94,8 @@ class ghasedak extends Gateway
                 'name'    => __('API Type', 'wp-sms'),
                 'type'    => 'select',
                 'options' => [
-                    'ghasedak.me'     => __('سامانه جدید', 'wp-sms'),
-                    'ghasedaksms.com' => __('سامانه قدیم', 'wp-sms'),
+                    'ghasedak.me'     => 'سامانه جدید',
+                    'ghasedaksms.com' => 'سامانه قدیم',
                 ],
             ],
             'from'     => [
