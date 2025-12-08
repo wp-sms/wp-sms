@@ -129,24 +129,8 @@
 
     &:focus {
       border: 1px solid #f88e40;
-      box-shadow: none;
-      outline: none;
-    }
+     }
   }
-
-  // .wpsms-subscribe__field__triangle {
-  //   width: 0;
-  //   height: 0;
-  //   border-bottom: 0;
-  //   border-top: 9px solid #f88e40;
-  //   border-left: 7px solid rgba(255, 255, 255, 0);
-  //   border-right: 7px solid rgba(255, 255, 255, 0);
-  //   position: absolute;
-  //   right: 14px;
-  //   top: 50%;
-  //   transform: translateY(-50%);
-  //   border-radius: 5px;
-  // }
 
   select {
     color: black;
@@ -202,11 +186,6 @@ input.wpsms-type-unsubscribe {
 
         &::before {
           content: "";
-        }
-
-        &:focus {
-          box-shadow: none;
-          outline: none;
         }
 
         &::selection {

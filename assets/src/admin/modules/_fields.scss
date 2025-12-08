@@ -5,11 +5,6 @@
   height: 28px;
 }
 
-.wpsms-wrap input[type="checkbox"]:focus {
-  box-shadow: none !important;
-  outline: unset !important;
-}
-
 .wpsms-wrap input[type="text"], .wpsms-wrap input[type="number"], .wpsms-wrap select {
   padding: 12px 16px;
   font-weight: normal;
@@ -49,13 +44,6 @@
       }
     }
   }
-}
-
-.wpsms-wrap input[type="text"]:focus, .wpsms-wrap input[type="number"]:focus, .wpsms-wrap select:focus {
-  box-shadow: 0 0 0 1px #F88E40;
-  border-color: #F88E40 !important;
-  outline: 2px solid transparent;
-  color: #000;
 }
 
 .wpsms-wrap select:hover, .wpsms-wrap select:hover option {
@@ -112,7 +100,6 @@
 .wpsms-wrap .search-box input[type="search"]:focus {
   border-color: #2271b1;
   box-shadow: 0 0 0 1px #2271b1;
-  outline: 2px solid transparent;
 }
 
 .sms_page_wp-sms-subscribers-privacy .inside input[type="text"], .sms_page_wp-sms-subscribers-privacy .inside input[type="tel"] {
@@ -125,14 +112,6 @@
   border-radius: 2px;
   height: 45px !important;
 }
-
-
-.sms_page_wp-sms-subscribers-privacy input[type="tel"]:focus {
-  box-shadow: 0 0 0 1px #F88E40;
-  border-color: #F88E40 !important;
-  outline: 2px solid transparent;
-}
-
 
 .wpsms-wrap input[type="radio"] {
   background: #fff;
@@ -154,10 +133,8 @@
 }
 
 .wpsms-wrap input[type="radio"]:focus, .wpsms-wrap input[type="radio"]:hover {
-  box-shadow: none;
-  border-color: #F88E40 !important;
-  outline: none;
-}
+   border-color: #F88E40 !important;
+ }
 
 .wpsms-wrap input[type="radio"]:checked::before {
   background-color: #fff !important;
@@ -192,13 +169,6 @@
 }
 
 .wpsms-input:hover {
-  color: #000 !important;
-}
-
-
-.wpsms-input:focus {
-  outline: #F88E40 !important;
-  box-shadow: 0 0 0 1px #F88E40 !important;
   color: #000 !important;
 }
 
@@ -249,14 +219,6 @@
   border-color: #F88E40;
 }
 
-.wpsms-wrap textarea:not(.select2-selection textarea):focus {
-  border-color: #F88E40 !important;
-  outline: #F88E40 !important;
-  box-shadow: 0 0 0 1px #F88E40 !important;
-  color: #000 !important;
-}
-
-
 .wpsms-wrap {
   .select2 {
     .select2-search__field {
@@ -268,14 +230,8 @@
 
     .select2-selection {
       border-color: #5b5b5b;
-      border-radius: 2px;
+      border-radius: 4px;
       padding: 6px 2px;
-      font-family: 'Segoe UI', Arial;
-
-      &:focus-within {
-        border-color: #F88E40 !important;
-        box-shadow: 0 0 0 1px #F88E40 !important;
-      }
     }
 
     textarea {
@@ -283,12 +239,6 @@
 
       &::placeholder {
         color: #2c3338;
-      }
-
-      &:focus {
-        border-color: transparent !important;
-        outline: transparent !important;
-        box-shadow: 0 0 0 1px transparent !important;
       }
     }
 

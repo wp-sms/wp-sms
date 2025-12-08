@@ -27,7 +27,6 @@ return array(
     'WP_SMS\\Admin\\LicenseManagement\\LicenseManagerDataProvider' => $baseDir . '/src/Admin/LicenseManagement/LicenseManagerDataProvider.php',
     'WP_SMS\\Admin\\LicenseManagement\\LicenseManagerPage' => $baseDir . '/src/Admin/LicenseManagement/LicenseManagerPage.php',
     'WP_SMS\\Admin\\LicenseManagement\\LicenseMigration' => $baseDir . '/src/Admin/LicenseManagement/LicenseMigration.php',
-    'WP_SMS\\Admin\\LicenseManagement\\Plugin\\AddonUpdater' => $baseDir . '/src/Admin/LicenseManagement/Plugin/AddonUpdater.php',
     'WP_SMS\\Admin\\LicenseManagement\\Plugin\\PluginActions' => $baseDir . '/src/Admin/LicenseManagement/Plugin/PluginActions.php',
     'WP_SMS\\Admin\\LicenseManagement\\Plugin\\PluginDecorator' => $baseDir . '/src/Admin/LicenseManagement/Plugin/PluginDecorator.php',
     'WP_SMS\\Admin\\LicenseManagement\\Plugin\\PluginHandler' => $baseDir . '/src/Admin/LicenseManagement/Plugin/PluginHandler.php',

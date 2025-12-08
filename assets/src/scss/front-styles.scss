@@ -178,10 +178,6 @@
       background: #EF771F;
       text-decoration: none;
     }
-
-    &:focus {
-      outline: none;
-    }
   }
 
   .wpsms-sendSmsForm__fieldContainer {
@@ -216,8 +212,6 @@
 
       &:focus {
         border: 1px solid #f88e40;
-        box-shadow: none;
-        outline: none;
         background-color: #ededed;
       }
 

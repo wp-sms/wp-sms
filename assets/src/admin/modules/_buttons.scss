@@ -54,6 +54,10 @@
     border-color: #8c8f94;
     color: #2271b1;
 
+    @media (max-width: 600px) {
+      font-size: 12px;
+    }
+
     &:hover{
       background: #f0f0f1;
       border-color: #0a4b78;
@@ -80,8 +84,8 @@
   padding: 15px 24px;
   border-radius: 2px;
   transition: 0.2s;
-  background: #F88E40;
-  border-color: #F88E40;
+  background: #C2410C;
+  border-color: #C2410C;
   color: #fff !important;
 }
 
@@ -93,16 +97,14 @@
 
 .wpsms-wrap .button-primary:hover,
 .wp-sms-widgets .button-primary:hover {
-  background-color: #EF771F;
-  border-color: #EF771F;
+  background-color: #9a3412;
+  border-color: #9a3412;
 }
 
 .wpsms-wrap .button-primary:focus,
 .wp-sms-widgets .button-primary:focus {
-  background-color: #EF771F;
-  border-color: #EF771F;
-  box-shadow: 0 0 0 1px #EF771F;
-  outline: 2px solid transparent;
+  background-color: #9a3412;
+  border-color: #9a3412;
 }
 
 .wpsms-wrap .tablenav .bulkactions .button {
@@ -167,7 +169,6 @@
   background: #EF771F;
   border-color: #EF771F;
   box-shadow: 0 0 0 1px #F88E40;
-  outline: 2px solid transparent;
 }
 
 
