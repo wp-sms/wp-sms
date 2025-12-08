@@ -2,6 +2,10 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) {
+    exit;
+} // Exit if accessed directly
+
 use Exception;
 use WP_Error;
 use WP_SMS\Gateway;
@@ -93,7 +97,6 @@ class ghasedak extends Gateway
                     'ghasedak.me'     => __('سامانه جدید', 'wp-sms'),
                     'ghasedaksms.com' => __('سامانه قدیم', 'wp-sms'),
                 ],
-                'desc'    => __('', 'wp-sms'),
             ],
             'from'     => [
                 'id'           => 'gateway_sender_id',
