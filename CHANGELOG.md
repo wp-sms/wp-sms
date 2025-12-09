@@ -1,5 +1,6 @@
 = v7.x.x - 2025-x-x =
 - **New:** Added the Netgsm.com.tr (Turkey) gateway to Pro gateways
+- **New:** Added support for the Ghasedak.me gateway.
 
 = v7.0.10 - 2025-12-01 =
 - **Enhancement:** Refactored plugin architecture for better add-on extensibility.
