@@ -26,7 +26,7 @@
                 <?php esc_html_e('Admin Mobile Number', 'wp-sms'); ?> <span class="u-text-red">*</span>
             </label>
             <input class="wp-sms-input-iti-tel regular-text" value="<?php echo esc_attr($current_tel_raw); ?>" name="tel" id="tel" type="tel"/>
-            <input name="code" id="wp-sms-country-code-field" class="wpsms-hide" type="text"/>
+            <input aria-label="<?php esc_attr_e('Country Code', 'wp-sms'); ?>" name="code" id="wp-sms-country-code-field" class="wpsms-hide" type="text"/>
             <p class="c-form__description valid">
                 <?php esc_html_e("Select your country and enter your mobile number. This number will be used for important notifications and alerts, so make sure it’s correct.", 'wp-sms'); ?>
             </p>
