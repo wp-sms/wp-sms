@@ -1,4 +1,4 @@
-﻿=== WSMS (formerly WP SMS) – SMS & MMS Notifications with OTP and 2FA for WooCommerce ===
+=== WSMS (formerly WP SMS) – SMS & MMS Notifications with OTP and 2FA for WooCommerce ===
 Contributors: veronalabs, mostafa.s1990, kashani
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sms
@@ -140,10 +140,15 @@ All premium features + all add-ons in one package.
 - New Onboarding, Add-on Manager, and All-in-One package.
 
 == Changelog ==
-= v7.1 - 2025-11-x =
+= v7.1 - 2025-x-x =
 - **New:** Introduced Notifications to receive important updates and promotions.
 - **Enhancement:** Updated PHP requirement to version 7.2.
 - **Enhancement:** Tested up to v6.9
+
+= v7.0.10 - 2025-12-01 =
+- **Enhancement:** Refactored plugin architecture for better add-on extensibility.
+- **Enhancement:** Added new filters and hooks for developers.
+- **Fix:** Minor bug fixes and improvements.
 
 = v7.0.9 - 2025-11-26 =
 - **Enhancement:** Minor improvements.

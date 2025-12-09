@@ -189,12 +189,6 @@ class PluginDecorator
         return $this->pluginHandler->isPluginActive($this->getSlug());
     }
 
-    public function getDownloadUrl()
-    {
-        $downloadUrl = $this->apiCommunicator->getDownloadUrlFromLicense($this->getLicenseKey(), $this->getSlug());
-        return $downloadUrl ?? null;
-    }
-
     public function getLicenseKey()
     {
         return LicenseHelper::getPluginLicense($this->getSlug());

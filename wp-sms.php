@@ -55,6 +55,4 @@ function WPSms()
     return WP_SMS::get_instance();
 }
 
-
 WPSms();
-

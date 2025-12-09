@@ -15,71 +15,6 @@ if (!defined('ABSPATH')) exit;
 class PluginHandler
 {
     /**
-     * Downloads and installs the add-ons.
-     *
-     * @param string $pluginUrl
-     *
-     * @return mixed
-     *
-     * @throws Exception
-     */
-    public function downloadAndInstallPlugin($pluginUrl)
-    {
-        if (empty($pluginUrl)) {
-            throw new Exception(__('Download URL is empty!', 'wp-sms'));
-        }
-
-        if (!current_user_can('install_plugins')) {
-            throw new Exception(__('You do not have permission to install plugins.', 'wp-sms'));
-        }
-
-        require_once ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
-        require_once ABSPATH . 'wp-admin/includes/plugin-install.php';
-        require_once ABSPATH . 'wp-admin/includes/file.php';
-
-        $headers = [];
-        $response = wp_remote_get($pluginUrl, [
-            'timeout'  => 300,
-            'stream'   => true,
-            'filename' => $temp_file = wp_tempnam($pluginUrl),
-            'headers'  => $headers,
-        ]);
-
-        if (is_wp_error($response)) {
-            /* translators: %s: error message */
-            throw new Exception(sprintf(__('Failed to download the plugin: %s', 'wp-sms'), $response->get_error_message()));
-        }
-
-        // Check if we got a valid response
-        $response_code = wp_remote_retrieve_response_code($response);
-
-        if ($response_code != 200) {
-            $error_message = sprintf(
-                /* translators: 1: HTTP status code 2: API response */
-                __('Failed to download the plugin. HTTP Status: %1$d. Response: %2$s', 'wp-sms'),
-                $response_code,
-                wp_remote_retrieve_body($response) // Show API response for debugging
-            );
-            throw new Exception($error_message);
-        }
-
-        // Use the temporary file for installation
-        $pluginUpgrader = new \Plugin_Upgrader(new \Automatic_Upgrader_Skin());
-        $installResult  = $pluginUpgrader->install($temp_file, ['overwrite_package' => true]);
-
-        // Cleanup downloaded file
-        @unlink($temp_file);
-
-        if (is_wp_error($installResult)) {
-            /* translators: %s: error message */
-            throw new Exception(sprintf(__('Failed to install the plugin: %s', 'wp-sms'), $installResult->get_error_message()));
-        }
-
-        return $installResult;
-    }
-
-
-    /**
      * Returns WP SMS add-on file path.
      *
      * @param string $pluginSlug
@@ -113,54 +48,6 @@ class PluginHandler
     public function isPluginActive($pluginSlug)
     {
         return $this->isPluginInstalled($pluginSlug) && is_plugin_active(plugin_basename($this->getPluginFile($pluginSlug)));
-    }
-
-    /**
-     * Activates the WP SMS add-on.
-     *
-     * @param string $pluginSlug
-     *
-     * @return bool
-     *
-     * @throws Exception
-     */
-    public function activatePlugin($pluginSlug)
-    {
-        if (!$this->isPluginInstalled($pluginSlug)) {
-            throw new Exception(__('Plugin is not installed!', 'wp-sms'));
-        }
-
-        if ($this->isPluginActive($pluginSlug)) {
-            throw new Exception(__('Plugin already active.', 'wp-sms'));
-        }
-
-        $activateResult = activate_plugin($this->getPluginFile($pluginSlug));
-        if (is_wp_error($activateResult)) {
-            // translators: %s: Error message.
-            throw new Exception(sprintf(__('Failed to activate the plugin: %s', 'wp-sms'), $activateResult->get_error_message()));
-        }
-
-        return true;
-    }
-
-    /**
-     * Deactivates the WP SMS add-on.
-     *
-     * @param string $pluginSlug
-     *
-     * @return bool
-     *
-     * @throws Exception
-     */
-    public function deactivatePlugin($pluginSlug)
-    {
-        if (!$this->isPluginInstalled($pluginSlug)) {
-            throw new Exception(__('Plugin is not installed!', 'wp-sms'));
-        }
-
-        deactivate_plugins($this->getPluginFile($pluginSlug));
-
-        return true;
     }
 
     /**
