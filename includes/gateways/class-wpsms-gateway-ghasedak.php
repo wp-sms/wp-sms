@@ -97,6 +97,7 @@ class ghasedak extends Gateway
                     'ghasedak.me'     => 'سامانه جدید',
                     'ghasedaksms.com' => 'سامانه قدیم',
                 ],
+                'desc'    => '',
             ],
             'from'     => [
                 'id'           => 'gateway_sender_id',
@@ -121,12 +122,19 @@ class ghasedak extends Gateway
     <code style='direction: rtl'>سلام %billing_first_name%، سفارش %order_id% با موفقیت ثبت شد.|Ghasedak</code>
   </li>
 </ol>
+
 <p><strong>نکات مهم</strong></p>
 <ul>
   <li>نام متغیرها باید دقیقاً یکسان باشند؛ مانند <code>%billing_first_name%</code> و <code>%order_id%</code>.</li>
   <li>اگر <code style='direction: rtl'>|نام قالب</code> نگذارید، پیام به‌صورت <em>ارسال معمولی</em> فرستاده می‌شود.</li>
-  <li>در سامانه قدیم هم از دستور العمل ذکر شده استفاده کنید.</li>
-</ul></div>";
+  <li>در سامانه قدیم هم از دستورالعمل ذکر شده استفاده کنید.</li>
+
+  <br>
+  <li><strong>سامانه جدید (ghasedak.me):</strong> وارد کردن IP برای ارسال پیامک <strong>الزامی</strong> است.<br>هنگام ایجاد API Key آی پی سرور و یا هاست خود را وارد کنید.</li>
+
+  <li><strong>سامانه قدیم (ghasedaksms.com):</strong> وارد کردن IP <strong>الزامی نیست</strong>.<br>برای وارد کردن آی پی به پنل کاربری / تنظیمات / تنظیمات اکانت / امنیتی مراجعه کنید.</li>
+</ul>
+</div>";
     }
 
     /**
@@ -176,6 +184,11 @@ class ghasedak extends Gateway
 
             if (is_wp_error($response)) {
                 throw new Exception($response->get_error_message());
+            }
+
+            $errorMessage = $this->getErrorMessageOldApi($response);
+            if ($errorMessage !== null) {
+                throw new Exception($errorMessage);
             }
 
             if (isset($response->isSuccess) && !$response->isSuccess) {
@@ -455,5 +468,100 @@ class ghasedak extends Gateway
         if (!empty($templateData['message'])) {
             $this->msg = $templateData['message'];
         }
+    }
+
+    /**
+     * Converts legacy Ghasedak API error codes into human-readable messages.
+     *
+     * @param object $response
+     *
+     * @return string|null
+     */
+    private function getErrorMessageOldApi($response)
+    {
+        if (empty($response->data) || !is_array($response->data)) {
+            return null;
+        }
+
+        $failed  = [];
+        $success = [];
+
+        foreach ($response->data as $key => $errorCode) {
+            $mobile = isset($this->to[$key]) ? $this->to[$key] : $key;
+
+            if ($errorCode > 1000) {
+                $success[] = $mobile;
+                continue;
+            }
+
+            switch ($errorCode) {
+                case 1:
+                    $message = 'نام کاربری یا رمز عبور معتبر نمی باشد.';
+                    break;
+                case 2:
+                    $message = 'آرایه ها خالی می باشد.';
+                    break;
+                case 3:
+                    $message = 'طول آرایه بیشتر از 100 می باشد.';
+                    break;
+                case 4:
+                    $message = 'طول آرایه ی فرستنده و گیرنده و متن پیام با یکدیگر تطابق ندارد.';
+                    break;
+                case 5:
+                    $message = 'امکان گرفتن پیام جدید وجود ندارد.';
+                    break;
+                case 6:
+                    $message = "- حساب کاربری غیر فعال می باشد.\n"
+                        . "- نام کاربری و یا رمز عبور خود را به درستی وارد نمی کنید.\n"
+                        . "- در صورتی که به تازگی وب سرویس را فعال کرده اید رمز عبور وب سرویس خود را مجدد ست کنید.";
+                    break;
+                case 7:
+                    $message = 'امکان دسترسی به خط مورد نظر وجود ندارد';
+                    break;
+                case 8:
+                    $message = 'شماره گیرنده نامعتبر است.';
+                    break;
+                case 9:
+                    $message = 'حساب اعتبار ریالی مورد نیاز را دارا نمی باشد.';
+                    break;
+                case 10:
+                    $message = 'خطایی در سیستم رخ داده است، دوباره سعی کنید.';
+                    break;
+                case 11:
+                    $message = 'IP نامعتبر می باشد.';
+                    break;
+                case 20:
+                    $message = 'شماره مخاطب فیلتر شده می باشد.';
+                    break;
+                case 21:
+                    $message = 'ارتباط با سرویس دهنده قطع می باشد.';
+                    break;
+                default:
+                    $message = 'خطای ناشناخته‌ای رخ داده است.';
+                    break;
+            }
+
+            $failed[$mobile] = $message;
+        }
+
+        if (empty($failed)) {
+            return null;
+        }
+
+        $lines = ['گزارش وضعیت ارسال پیامک:'];
+
+        if (!empty($success)) {
+            $lines[] = "موفق:";
+            foreach ($success as $mobile) {
+                $lines[] = "{$mobile}";
+            }
+        }
+
+        $lines[] = "ناموفق:";
+        foreach ($failed as $mobile => $msg) {
+            $lines[] = "{$mobile}: {$msg}";
+        }
+
+        return implode("\n", $lines);
     }
 }
