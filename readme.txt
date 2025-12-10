@@ -1,4 +1,4 @@
-=== WSMS (formerly WP SMS) – SMS & MMS Notifications with OTP and 2FA for WooCommerce ===
+﻿=== WSMS (formerly WP SMS) – SMS & MMS Notifications with OTP and 2FA for WooCommerce ===
 Contributors: veronalabs, mostafa.s1990, kashani
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sms
@@ -14,7 +14,7 @@ Send SMS/MMS notifications, OTP & 2FA messages, and WooCommerce updates with sup
 == Description ==
 [WSMS](https://wp-sms-pro.com/?utm_source=wporg&utm_medium=link&utm_campaign=website) lets you send SMS/MMS notifications, one-time passwords (OTP), and two-factor authentication (2FA) messages straight from WordPress. It supports a wide range of SMS gateways and integrates with popular e-commerce and form builder plugins.
 
-Use WSMS to:
+**Use WSMS to:**
 - Keep customers updated on WooCommerce orders
 - Collect subscribers with SMS newsletter forms
 - Secure logins with OTP & 2FA
@@ -39,7 +39,7 @@ Use WSMS to:
 ## 💎 Upgrade to WSMS All-in-One
 Unlock additional features with **All-in-One** — the plan that gives you access to all premium add-ons in one package.
 
-With All-in-One you get:
+**With All-in-One you get:**
 - Secure login & registration with OTP & 2FA
 - Scheduled & recurring SMS/MMS
 - Two-way SMS inbox
@@ -72,8 +72,6 @@ WooCommerce, GravityForms, Elementor, Contact Form 7, Twilio, WhatsApp, Clickate
 
 **Note:** The plugin works out of the box - no build steps required for regular users. This section is for
 developers who want to modify or contribute to the source code.
-
-= Source Locations =
 
 All source code for minified JavaScript and CSS is included in the plugin:
 
@@ -140,8 +138,9 @@ All premium features + all add-ons in one package.
 - New Onboarding, Add-on Manager, and All-in-One package.
 
 == Changelog ==
-= v7.1 - 2025-x-x =
+= v7.1 - 2025-12-14 =
 - **New:** Introduced Notifications to receive important updates and promotions.
+- **New:** Added support for the Ghasedak.me gateway.
 - **Enhancement:** Updated PHP requirement to version 7.2.
 - **Enhancement:** Tested up to v6.9
 
