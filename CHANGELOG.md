@@ -1,4 +1,5 @@
 = v7.x.x - 2025-x-x =
+- **Enhancement:** Update Textplode gateway
 - **New:** Added the Netgsm.com.tr (Turkey) gateway to Pro gateways
 - **New:** Added support for the Ghasedak.me gateway.
 
