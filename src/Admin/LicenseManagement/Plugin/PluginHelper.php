@@ -15,10 +15,13 @@ class PluginHelper
      * Hard-coded list of all plugins, useful when we don't want to request the API.
      */
     public static $plugins = [
-        'wp-sms-pro'             => 'WP SMS Pro',
-        'wp-sms-woocommerce-pro' => 'WooCommerce Pro',
-        'wp-sms-two-way'         => 'Two-Way',
-        'wp-sms-integration'     => 'Even More Integrations',
+        'wp-sms-pro'                     => 'Pro Pack',
+        'wp-sms-woocommerce-pro'         => 'WooCommerce Pro',
+        'wp-sms-two-way'                 => 'Two-Way',
+        'wp-sms-booking-integrations'    => 'Booking Integrations',
+        'wp-sms-elementor-form'          => 'Elementor Form',
+        'wp-sms-fluent-integrations'     => 'Fluent Integrations',
+        'wp-sms-membership-integrations' => 'Membership Integrations',
     ];
 
     /**

@@ -6,6 +6,7 @@ use WC_Blocks_Utils;
 use WP_Error;
 use WP_SMS\Components\NumberParser;
 use WP_SMS\Utils\OptionUtil;
+use WP_SMS\Utils\TimeZone;
 
 if (!defined('ABSPATH')) exit;
 
@@ -724,5 +725,29 @@ class Helper
         }
 
         return $default_manage_cap;
+    }
+
+    /**
+     * Retrieve the country code associated with the site's configured timezone.
+     *
+     * @return string|null
+     */
+    public static function getTimezoneCountry()
+    {
+        $timezone    = get_option('timezone_string');
+        $countryCode = TimeZone::getCountry($timezone);
+        return $countryCode;
+    }
+
+    /**
+     * Filters an array by keeping only the keys specified in the second argument.
+     *
+     * @param array $array The array to be filtered.
+     * @param array $keys The keys to keep in the array.
+     * @return array The filtered array.
+     */
+    public static function filterArrayByKeys($array, $keys)
+    {
+        return array_intersect_key($array, array_flip($keys));
     }
 }
