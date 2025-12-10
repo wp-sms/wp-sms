@@ -1,5 +1,7 @@
 = v7.1 - 2025-x-x =
 - **New:** Introduced Notifications to receive important updates and promotions.
+- **New:** Added the Netgsm.com.tr (Turkey) gateway to Pro gateways
+- **New:** Added support for the Ghasedak.me gateway.
 - **Enhancement:** Updated PHP requirement to version 7.2.
 - **Enhancement:** Tested up to v6.9
 
