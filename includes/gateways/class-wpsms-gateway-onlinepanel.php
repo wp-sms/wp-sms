@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class onlinepanel extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://87.107.121.52/post/send.asmx?WSDL";

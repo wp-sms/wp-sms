@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Components;
 
+if (!defined('ABSPATH')) exit;
+
 use WP_SMS\Option;
 
 class Logger

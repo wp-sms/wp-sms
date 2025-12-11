@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 use WP_SMS\Gateway;
 
 class Default_Gateway extends Gateway

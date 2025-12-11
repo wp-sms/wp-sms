@@ -14,7 +14,7 @@
         <tr>
             <td>
                 <label for="wp_subscribe_mobile" class="wp_sms_subscribers_label"><?php esc_html_e('Mobile', 'wp-sms'); ?></label>
-                <?php wp_sms_render_mobile_field(array('name' => 'wp_subscribe_mobile', 'class' => array('wp_sms_subscribers_input_text'), 'value' => isset($subscriber->mobile) ? esc_attr($subscriber->mobile) : '')); ?>
+                <?php wp_sms_render_mobile_field(array('id' => 'wp_subscribe_mobile','name' => 'wp_subscribe_mobile', 'class' => array('wp_sms_subscribers_input_text'), 'value' => isset($subscriber->mobile) ? esc_attr($subscriber->mobile) : '')); ?>
             </td>
         </tr>
         <?php

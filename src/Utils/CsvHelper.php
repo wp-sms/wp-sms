@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Utils;
 
+if (!defined('ABSPATH')) exit;
+
 class CsvHelper
 {
     /**
@@ -30,7 +32,7 @@ class CsvHelper
             }
             fputcsv($file_data, $line);
         }
-        fclose($file_data); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose	
+        fclose($file_data); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
         exit;
     }
 }

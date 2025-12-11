@@ -5,6 +5,8 @@ namespace WP_SMS\Admin\OnBoarding\Steps;
 use WP_SMS\Admin\OnBoarding\StepAbstract;
 use WP_SMS\Option;
 
+if (!defined('ABSPATH')) exit;
+
 class GettingStarted extends StepAbstract
 {
     const COUNTRY_DEFAULT_VALUE = 'global';

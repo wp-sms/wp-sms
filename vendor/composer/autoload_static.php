@@ -7,14 +7,14 @@ namespace Composer\Autoload;
 class ComposerStaticInit733a70b4860a09d7313bbae4cba3d940
 {
     public static $prefixLengthsPsr4 = array (
-        'W' => 
+        'W' =>
         array (
             'WP_SMS\\' => 7,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'WP_SMS\\' => 
+        'WP_SMS\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
@@ -46,7 +46,6 @@ class ComposerStaticInit733a70b4860a09d7313bbae4cba3d940
         'WP_SMS\\Admin\\LicenseManagement\\Plugin\\PluginDecorator' => __DIR__ . '/../..' . '/src/Admin/LicenseManagement/Plugin/PluginDecorator.php',
         'WP_SMS\\Admin\\LicenseManagement\\Plugin\\PluginHandler' => __DIR__ . '/../..' . '/src/Admin/LicenseManagement/Plugin/PluginHandler.php',
         'WP_SMS\\Admin\\LicenseManagement\\Plugin\\PluginHelper' => __DIR__ . '/../..' . '/src/Admin/LicenseManagement/Plugin/PluginHelper.php',
-        'WP_SMS\\Admin\\LicenseManagement\\Plugin\\PluginUpdater' => __DIR__ . '/../..' . '/src/Admin/LicenseManagement/Plugin/PluginUpdater.php',
         'WP_SMS\\Admin\\LicenseManagement\\Views\\TabsView' => __DIR__ . '/../..' . '/src/Admin/LicenseManagement/Views/TabsView.php',
         'WP_SMS\\Admin\\ModalHandler\\Modal' => __DIR__ . '/../..' . '/src/Admin/ModalHandler/Modal.php',
         'WP_SMS\\Admin\\NoticeHandler\\GeneralNotices' => __DIR__ . '/../..' . '/src/Admin/NoticeHandler/GeneralNotices.php',

@@ -5,6 +5,8 @@ namespace WP_SMS\Controller;
 use WP_SMS\Helper;
 use WP_SMS\Traits\TransientCacheTrait;
 
+if (!defined('ABSPATH')) exit;
+
 class RecipientCountsAjax extends AjaxControllerAbstract
 {
     use TransientCacheTrait;

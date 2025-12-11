@@ -127,8 +127,13 @@
     //Initiate Color Picker
     if ($('.wpsms-color-picker').length) {
         $('.wpsms-color-picker').wpColorPicker();
+        document.querySelectorAll('.iris-square-value .iris-square-handle').forEach(function(el) {
+            const span = document.createElement('span');
+            span.className = 'screen-reader-text';
+            span.textContent = 'color picker';
+            el.after(span);
+        });
     }
-    ;
 
     if ($('.repeater').length) {
         $('.repeater').repeater({
@@ -384,30 +389,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     new ShowIfEnabled();
 });
-
-/**
- * FeedbackBird position
- * */
-function moveFeedbackBird() {
-    let windowWidth = window.outerWidth || document.documentElement.clientWidth;
-    const feedbackBird = document.getElementById('feedback-bird-app');
-    const feedbackBirdTitle = document.querySelector('.c-fbb-widget__header__title');
-    const license = document.querySelector('.wpsms-menu-content .wpsms-license');
-    const support = document.querySelector('.wpsms-header-items-side');
-    if (feedbackBird && (document.body.classList.contains('post-type-wpsms-command') || document.body.classList.contains('sms_page_wp-sms') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment') || document.body.classList.contains('sms-woo-pro_page_wp-sms-woo-pro-settings'))) {
-        if (windowWidth <= 1030) {
-            const cutDiv = feedbackBird.parentNode.removeChild(feedbackBird);
-            if(license) license.parentNode.insertBefore(cutDiv, license);
-        } else {
-            if (support) {
-                const cutDiv = feedbackBird.parentNode.removeChild(feedbackBird);
-                if(support) support.appendChild(cutDiv);
-            }
-        }
-        feedbackBird.style.display = 'block';
-        feedbackBird.setAttribute('title', feedbackBirdTitle.innerHTML);
-    }
-}
-
-window.onload = moveFeedbackBird;
-window.addEventListener('resize', moveFeedbackBird);

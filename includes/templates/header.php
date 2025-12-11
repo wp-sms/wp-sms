@@ -5,6 +5,7 @@ if (!defined('ABSPATH')) exit; // Exit if accessed directly
 use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\LicenseManagement\LicenseMigration;
+use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Version;
 use WP_SMS\Admin\ModalHandler\Modal;
@@ -42,6 +43,9 @@ $licenseMigration->migrateOldLicenses();
 
 $hasUpdatedNotifications = NotificationFactory::hasUpdatedNotifications();
 $displayNotifications    = Option::getOption('display_notifications');
+
+$pluginHandler = new PluginHandler();
+$isTwoWay      = $pluginHandler->isPluginActive('wp-sms-two-way');
 ?>
 <div class="wpsms-header-banner <?php echo $isPremium ? 'wpsms-header-banner__aio' : '' ?>">
     <div class="wpsms-header-logo"></div>
@@ -50,20 +54,21 @@ $displayNotifications    = Option::getOption('display_notifications');
         <?php
         $unreadMessagesCount = method_exists(\WPSmsTwoWay\Models\IncomingMessage::class, 'countOfUnreadMessages') ? \WPSmsTwoWay\Models\IncomingMessage::countOfUnreadMessages() : 0;
         echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms', 'link_text' => __('Send SMS', 'wp-sms'), 'icon_class' => 'send-sms', 'badge_count' => null]);
-        echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-inbox', 'link_text' => __('Inbox', 'wp-sms'), 'icon_class' => 'inbox', 'badge_count' => $unreadMessagesCount]);
+        if ($isTwoWay) :
+            echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-inbox', 'link_text' => __('Inbox', 'wp-sms'), 'icon_class' => 'inbox', 'badge_count' => $unreadMessagesCount]);
+        endif;
         echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-outbox', 'link_text' => __('Outbox', 'wp-sms'), 'icon_class' => 'outbox', 'badge_count' => null]);
         echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-integrations', 'link_text' => __('Integrations', 'wp-sms'), 'icon_class' => 'integrations', 'badge_count' => null]);
         ?>
     </div>
     <div class="wpsms-header-items-side">
         <?php echo \WP_SMS\Helper::loadTemplate('admin/partials/license-status.php', ['addons' => $addons, 'tab_url' => $tab_url]); ?>
-        <a href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-settings'); ?>" title="<?php esc_html_e('Settings', 'wp-sms'); ?>" class="setting <?php if (isset($_GET['page']) && $_GET['page'] === 'wp-sms-settings') {
-            echo 'active';
-        } ?>"></a>
-        <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank" title="<?php esc_html_e('Help Center', 'wp-sms'); ?>" class="support"></a>
         <?php if ($displayNotifications): ?>
             <a href="#" title="<?php esc_html_e('Notifications', 'wp-sms'); ?>" class="wpsms-notifications js-wpsms-open-notification <?php echo $hasUpdatedNotifications ? esc_attr('wpsms-notifications--has-items') : ''; ?>"></a>
         <?php endif; ?>
+        <a href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-settings'); ?>" class="setting <?php if (isset($_GET['page']) && $_GET['page'] === 'wp-sms-settings') {
+            echo 'active';} ?>" aria-label="<?php esc_attr_e('Setting', 'wp-sms'); ?>"></a>
+        <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" aria-label="<?php esc_attr_e('Support', 'wp-sms'); ?>" target="_blank" class="support"></a>
         <div class="wpsms-mobile-menu">
             <input type="checkbox" id="wpsms-menu-toggle" class="hamburger-menu">
             <label for="wpsms-menu-toggle" class="hamburger-menu-container">

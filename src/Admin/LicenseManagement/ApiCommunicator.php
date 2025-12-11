@@ -8,6 +8,8 @@ use WP_SMS\Exceptions\LicenseException;
 use WP_SMS\Utils\AdminHelper;
 use WP_SMS\Traits\TransientCacheTrait;
 
+if (!defined('ABSPATH')) exit;
+
 class ApiCommunicator
 {
     use TransientCacheTrait;
@@ -24,10 +26,11 @@ class ApiCommunicator
     {
         try {
             $remoteRequest = new RemoteRequest('GET', "{$this->apiUrl}/product/list");
-            $plugins       = $remoteRequest->execute(false, true, WEEK_IN_SECONDS);
+            $addons       = $remoteRequest->execute(false, true, WEEK_IN_SECONDS);
 
-            if (empty($plugins) || !is_array($plugins)) {
+            if (empty($addons) || !is_array($addons)) {
                 throw new Exception(
+                    /* translators: %s: API URL */
                     sprintf(__('No products were found. The API returned an empty response from the following URL: %s', 'wp-sms'), "{$this->apiUrl}/product/list")
                 );
             }
@@ -39,51 +42,27 @@ class ApiCommunicator
             );
         }
 
-        return $plugins;
+        return $addons;
     }
 
     /**
-     * Get the download link for the specified plugin using the license key.
+     * Get the product info for the specified add-on
      *
      * @param string $licenseKey
-     * @param string $pluginSlug
+     * @param string $addonSlug
      *
      * @return string|null The download URL if found, null otherwise
      * @throws Exception if the API call fails
      */
-    public function getDownloadUrl($licenseKey, $pluginSlug)
+    public function getProductInfo($licenseKey, $addonSlug)
     {
         $remoteRequest = new RemoteRequest('GET', "{$this->apiUrl}/product/download", [
             'license_key' => $licenseKey,
             'domain'      => home_url(),
-            'plugin_slug' => $pluginSlug,
+            'plugin_slug' => $addonSlug,
         ]);
 
         return $remoteRequest->execute(true, true, DAY_IN_SECONDS);
-    }
-
-    /**
-     * Get the download URL for a specific plugin slug from the license status.
-     *
-     * @param string $licenseKey
-     * @param string $pluginSlug
-     *
-     * @return string|null The download URL if found, null otherwise
-     * @throws Exception
-     */
-    public function getDownloadUrlFromLicense($licenseKey, $pluginSlug)
-    {
-        // Validate the license and get the licensed products
-        $licenseStatus = $this->validateLicense($licenseKey, $pluginSlug);
-
-        // Search for the download URL in the licensed products
-        foreach ($licenseStatus->products as $product) {
-            if ($product->slug === $pluginSlug) {
-                return isset($product->download_url) ? $product->download_url : null;
-            }
-        }
-
-        return null;
     }
 
     /**
@@ -140,6 +119,7 @@ class ApiCommunicator
             $productSlugs = array_column($licenseData->products, 'slug');
 
             if (!in_array($product, $productSlugs, true)) {
+                /* translators: %s: Add-On name */
                 throw new LicenseException(sprintf(__('The license is not related to the requested Add-On <b>%s</b>.', 'wp-sms'), $product));
             }
         }

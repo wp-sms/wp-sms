@@ -31,7 +31,6 @@ return array(
     'WP_SMS\\Admin\\LicenseManagement\\Plugin\\PluginDecorator' => $baseDir . '/src/Admin/LicenseManagement/Plugin/PluginDecorator.php',
     'WP_SMS\\Admin\\LicenseManagement\\Plugin\\PluginHandler' => $baseDir . '/src/Admin/LicenseManagement/Plugin/PluginHandler.php',
     'WP_SMS\\Admin\\LicenseManagement\\Plugin\\PluginHelper' => $baseDir . '/src/Admin/LicenseManagement/Plugin/PluginHelper.php',
-    'WP_SMS\\Admin\\LicenseManagement\\Plugin\\PluginUpdater' => $baseDir . '/src/Admin/LicenseManagement/Plugin/PluginUpdater.php',
     'WP_SMS\\Admin\\LicenseManagement\\Views\\TabsView' => $baseDir . '/src/Admin/LicenseManagement/Views/TabsView.php',
     'WP_SMS\\Admin\\ModalHandler\\Modal' => $baseDir . '/src/Admin/ModalHandler/Modal.php',
     'WP_SMS\\Admin\\NoticeHandler\\GeneralNotices' => $baseDir . '/src/Admin/NoticeHandler/GeneralNotices.php',

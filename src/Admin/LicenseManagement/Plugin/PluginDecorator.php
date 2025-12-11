@@ -10,6 +10,8 @@ use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Utils\MenuUtil;
 
+if (!defined('ABSPATH')) exit;
+
 class PluginDecorator
 {
     private $plugin;
@@ -185,12 +187,6 @@ class PluginDecorator
     public function isActivated()
     {
         return $this->pluginHandler->isPluginActive($this->getSlug());
-    }
-
-    public function getDownloadUrl()
-    {
-        $downloadUrl = $this->apiCommunicator->getDownloadUrlFromLicense($this->getLicenseKey(), $this->getSlug());
-        return $downloadUrl ?? null;
     }
 
     public function getLicenseKey()

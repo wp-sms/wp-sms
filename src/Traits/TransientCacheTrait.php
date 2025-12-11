@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Traits;
 
+if (!defined('ABSPATH')) exit;
+
 /**
  * Trait to handle caching logic.
  * @doc https://github.com/wp-sms/wp-sms/wiki/TransientCacheTrait.md

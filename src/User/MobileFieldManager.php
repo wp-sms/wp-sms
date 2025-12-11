@@ -4,6 +4,8 @@ namespace WP_SMS\User;
 
 use WP_SMS\Option;
 
+if (!defined('ABSPATH')) exit;
+
 class MobileFieldManager
 {
     private $mobileFieldHandler = [

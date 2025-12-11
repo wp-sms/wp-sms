@@ -4,6 +4,8 @@ namespace WP_SMS\Exceptions;
 
 use Exception;
 
+if (!defined('ABSPATH')) exit;
+
 class LicenseException extends Exception
 {
     private $status;

@@ -4,6 +4,8 @@ namespace WP_SMS\Services\MessageButton;
 
 use WP_SMS\Option;
 
+if (!defined('ABSPATH')) exit;
+
 class ChatBoxDecorator
 {
     private function getData($key, $default = false)

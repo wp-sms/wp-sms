@@ -179,13 +179,16 @@ class Newsletter
         $results   = [];
         $metaValue = Helper::prepareMobileNumberQuery($number);
 
-        // Prepare each value in $metaValue
-        foreach ($metaValue as &$value) {
-            $value = $wpdb->prepare('%s', $value);
+        if (!is_array($metaValue)) {
+            $metaValue = [$metaValue];
         }
 
-        $placeholders    = implode(', ', $metaValue);
-        $exactMatchQuery = "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ({$placeholders})";
+        $placeholders = implode(', ', array_fill(0, count($metaValue), '%s'));
+
+        $exactMatchQuery = $wpdb->prepare(
+            "SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE mobile IN ($placeholders)",
+            $metaValue
+        );
 
         if ($single) {
             $result = $wpdb->get_row($exactMatchQuery);
@@ -200,7 +203,8 @@ class Newsletter
 
             $normalizedMatchQuery = $wpdb->prepare(
                 "SELECT * FROM `{$wpdb->prefix}sms_subscribes` 
-             WHERE REPLACE(REPLACE(REPLACE(mobile, '-', ''), ' ', ''), '+', '') IN ($placeholders)"
+     WHERE REPLACE(REPLACE(REPLACE(mobile, '-', ''), ' ', ''), '+', '') IN ($placeholders)",
+                $metaValue
             );
 
             $normalizedMatches = $wpdb->get_results($normalizedMatchQuery);
@@ -380,16 +384,19 @@ class Newsletter
     public static function getGroups($groupIds = null)
     {
         global $wpdb;
-        $where = '';
 
-        if ($groupIds && is_array($groupIds)) {
-            $placeholders       = implode(', ', array_fill(0, count($groupIds), '%d'));
-            $prepared_group_ids = $wpdb->prepare($placeholders, $groupIds);
-            $where              .= "`ID` IN ({$prepared_group_ids}) ";
+        if (empty($groupIds) || !is_array($groupIds)) {
+            $sql = "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`";
+            return $wpdb->get_results($sql);
         }
 
-        $where = $where ? "WHERE {$where}" : '';
-        $sql   = "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`" . $where;
+        $groupIds = array_map('absint', $groupIds);
+        $placeholders = implode(', ', array_fill(0, count($groupIds), '%d'));
+
+        $sql = $wpdb->prepare(
+            "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group` WHERE `ID` IN ($placeholders)",
+            $groupIds
+        );
 
         return $wpdb->get_results($sql);
     }
@@ -450,13 +457,16 @@ class Newsletter
         }
 
         $table   = $wpdb->prefix . 'sms_subscribes_group';
-        $prepare = $wpdb->prepare("SELECT COUNT(ID) FROM {$table} WHERE `name` = %s", $name);
-        $count   = $wpdb->get_var($prepare);
+        $count = $wpdb->get_var(
+            $wpdb->prepare("SELECT COUNT(ID) FROM {$table} WHERE `name` = %s", $name)
+        );
         if ($count) {
             return array(
                 'result'  => 'error',
-                // translators: %s: Group name
-                'message' => sprintf(esc_html__('Group Name "%s" exists!', 'wp-sms'), $name)
+                'message' => sprintf( /* translators: 1: Group name */
+                    esc_html__('Group Name "%s" exists!', 'wp-sms'),
+                    esc_html($name)
+                ),
             );
         } else {
             $result   = $wpdb->insert(
@@ -566,10 +576,10 @@ class Newsletter
         global $wpdb;
         $where = '';
 
-        if ($group_ids) {
-            $placeholders       = implode(', ', array_fill(0, count($group_ids), '%d'));
-            $prepared_group_ids = $wpdb->prepare($placeholders, $group_ids);
-            $where              .= "`group_ID` IN ({$prepared_group_ids}) ";
+        if ($group_ids && is_array($group_ids)) {
+            $group_ids = array_map('absint', $group_ids);
+            $placeholders = implode(', ', array_fill(0, count($group_ids), '%d'));
+            $where .= $wpdb->prepare("`group_ID` IN ($placeholders) ", $group_ids);
         }
 
         if ($only_active) {
@@ -592,8 +602,10 @@ class Newsletter
         $query  = "SELECT {$select} FROM {$wpdb->prefix}sms_subscribes{$where}";
 
         if (count($columns) > 1) {
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             return $wpdb->get_results($query);
         } else {
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
             return $wpdb->get_col($query);
         }
     }
@@ -730,21 +742,25 @@ class Newsletter
         $mobile_placeholders = implode(', ', array_fill(0, count($mobile_variations), '%s'));
         $group_placeholders  = implode(', ', array_fill(0, count($group_ids), '%d'));
 
-        $sql = "SELECT COUNT(*) FROM {$wpdb->prefix}sms_subscribes WHERE mobile IN ($mobile_placeholders) AND group_ID IN ($group_placeholders)";
+        $sql_base = "SELECT COUNT(*) FROM {$wpdb->prefix}sms_subscribes 
+    WHERE mobile IN ($mobile_placeholders) 
+    AND group_ID IN ($group_placeholders)";
 
-        // Add active status condition if needed
         if ($only_active) {
-            $sql .= " AND status = %d";
+            $count = $wpdb->get_var(
+                $wpdb->prepare(
+                    $sql_base . " AND status = %d",
+                    array_merge($mobile_variations, $group_ids, array(1))
+                )
+            );
+        } else {
+            $count = $wpdb->get_var(
+                $wpdb->prepare(
+                    $sql_base,
+                    array_merge($mobile_variations, $group_ids)
+                )
+            );
         }
-
-        // Prepare and execute the query
-        $params = array_merge($mobile_variations, $group_ids);
-        if ($only_active) {
-            $params[] = 1;
-        }
-
-        $prepared_sql = $wpdb->prepare($sql, $params);
-        $count        = $wpdb->get_var($prepared_sql);
 
         return $count > 0;
     }
@@ -766,22 +782,27 @@ class Newsletter
         }
 
         $mobile_placeholders = implode(', ', array_fill(0, count($mobile_variations), '%s'));
-        $sql                 = "SELECT s.group_ID, g.name 
-            FROM {$wpdb->prefix}sms_subscribes s
-            LEFT JOIN {$wpdb->prefix}sms_subscribes_group g ON s.group_ID = g.ID
-            WHERE s.mobile IN ($mobile_placeholders)";
+
+        $sql_base = "SELECT s.group_ID, g.name 
+    FROM {$wpdb->prefix}sms_subscribes s
+    LEFT JOIN {$wpdb->prefix}sms_subscribes_group g ON s.group_ID = g.ID
+    WHERE s.mobile IN ($mobile_placeholders)";
 
         if ($only_active) {
-            $sql .= " AND s.status = %d";
+            $results = $wpdb->get_results(
+                $wpdb->prepare(
+                    $sql_base . " AND s.status = %d",
+                    array_merge($mobile_variations, array(1))
+                )
+            );
+        } else {
+            $results = $wpdb->get_results(
+                $wpdb->prepare(
+                    $sql_base,
+                    $mobile_variations
+                )
+            );
         }
-
-        $params = $mobile_variations;
-        if ($only_active) {
-            $params[] = 1;
-        }
-
-        $prepared_sql = $wpdb->prepare($sql, $params);
-        $results      = $wpdb->get_results($prepared_sql);
 
         $groups = [];
 
@@ -798,7 +819,6 @@ class Newsletter
 
         return $groups;
     }
-
 }
 
 new Newsletter();

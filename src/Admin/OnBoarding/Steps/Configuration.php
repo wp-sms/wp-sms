@@ -7,6 +7,8 @@ use WP_SMS\Admin\OnBoarding\WizardManager;
 use WP_SMS\Gateway;
 use WP_SMS\Option;
 
+if (!defined('ABSPATH')) exit;
+
 class Configuration extends StepAbstract
 {
     protected $sms;

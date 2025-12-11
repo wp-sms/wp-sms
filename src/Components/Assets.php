@@ -4,6 +4,8 @@ namespace WP_SMS\Components;
 
 use WP_SMS\Helper;
 
+if (!defined('ABSPATH')) exit;
+
 class Assets
 {
     /**

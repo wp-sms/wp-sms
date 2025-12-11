@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class onewaysms extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://gateway.onewaysms.com.my:10001/";

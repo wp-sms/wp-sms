@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class spirius extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://get.spiricom.spirius.com:55001/cgi-bin/";

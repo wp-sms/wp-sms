@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class smscall extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://webservice.smscall.ir/index.php?wsdl";

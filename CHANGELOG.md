@@ -1,15 +1,26 @@
-= v7.1 - 2025-11-x =
+= v7.1 - 2025-12-14 =
 - **New:** Introduced Notifications to receive important updates and promotions.
+- **New:** Added support for the Ghasedak.me gateway.
 - **Enhancement:** Updated PHP requirement to version 7.2.
+- **Enhancement:** Tested up to v6.9
 - **New:** Added settings for message storage and retention in Outbox and Inbox under "Message Storage & Cleanup".
 
-= v7.0.5 - 2025-11-13 =
+= v7.0.10 - 2025-12-01 =
+- **Enhancement:** Refactored plugin architecture for better add-on extensibility.
+- **Enhancement:** Added new filters and hooks for developers.
+- **Fix:** Minor bug fixes and improvements.
+
+= v7.0.9 - 2025-11-26 =
+- **Enhancement:** Minor improvements.
+
+= v7.0.8 - 2025-11-23 =
 - **Enhancement:** Repositioned the "All-in-One Required" label to the top of the PRO gateway onboarding table for better visibility.
 - **Enhancement:** Added more plugin details to the Site Health Info section for easier diagnostics.
 - **Enhancement:** Removed deprecated `utf8_decode()` usage in `nusoap.class.php`.
 - **Enhancement:** Updated libraries and cleaned up assets.
 - **Fix:** Fixed incorrect changelog URL links in add-ons.
 - **Fix:** Fixed connection status display and moved the Connection Status section below the Gateway Guide for improved UI
+- **Fix:** Fixed SCSS Compilation Error in mail.css
 
 = v7.0.4 - 2025-11-02 =
 - **New:** Added support for the SMS.es gateway.

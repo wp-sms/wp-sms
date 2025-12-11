@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Shortcode;
 
+if (!defined('ABSPATH')) exit;
+
 class ShortcodeManager
 {
     private $shortcodes = [

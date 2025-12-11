@@ -27,7 +27,9 @@ if (empty($addOn)) {
                     <?php endif; ?>
 
                     <?php if ($addOn->isLicenseValid() && $addOn->isUpdateAvailable()) : ?>
-                        <span class="wpsms-postbox-addon__label wpsms-postbox-addon__label--updated"><?php esc_html_e('Update Available', 'wp-sms'); ?></span>
+                        <a href="<?php echo esc_url(admin_url('plugins.php')); ?>">
+                            <span class="wpsms-postbox-addon__label wpsms-postbox-addon__label--updated"><?php esc_html_e('Update Available', 'wp-sms'); ?></span>
+                        </a>
                     <?php endif; ?>
                 </div>
                 <p class="wpsms-postbox-addon__item--info__desc">
@@ -38,15 +40,12 @@ if (empty($addOn)) {
         <div class="wpsms-postbox-addon__item--actions">
             <span class="wpsms-postbox-addon__status wpsms-postbox-addon__status--<?php echo esc_attr($addOn->getStatusClass()); ?> "><?php echo esc_html($addOn->getStatusLabel()); ?></span>
             <div class="wpsms-postbox-addon__buttons">
-                <?php if ($addOn->isInstalled() && !$addOn->isActivated()) : ?>
-                    <a class="wpsms-postbox-addon__button js-addon-active-plugin-btn" data-slug="<?php echo esc_attr($addOn->getSlug()); ?>"><?php esc_html_e('Activate', 'wp-sms'); ?></a>
-                <?php endif; ?>
                 <?php if ($addOn->isInstalled()) : ?>
-                    <a class="wpsms-postbox-addon__button js-wpsms-addon-license-button"><?php esc_html_e('License', 'wp-sms'); ?></a>
+                    <button  class="wpsms-postbox-addon__button js-wpsms-addon-license-button"><?php esc_html_e('License', 'wp-sms'); ?></button >
                 <?php endif; ?>
             </div>
             <div class="wpsms-addon--actions">
-                <span class="wpsms-addon--actions--show-more js-addon-show-more"></span>
+                <button tabindex="0"  class="wpsms-addon--actions--show-more js-addon-show-more"><span class="screen-reader-text"><?php echo esc_html__('Show more', 'wp-sms'); ?></span></button>
                 <ul class="wpsms-addon--submenus">
                     <?php if ($addOn->isActivated() && !empty($addOn->getSettingsUrl())) : ?>
                         <li><a href="<?php echo esc_url($addOn->getSettingsUrl()); ?>" class="wpsms-addon--submenu wpsms-addon--submenu__settings" target="_blank"><span><?php esc_html_e('Settings', 'wp-sms'); ?></span></a></li>

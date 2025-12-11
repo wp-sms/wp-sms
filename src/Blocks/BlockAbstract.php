@@ -5,6 +5,8 @@ namespace WP_SMS\Blocks;
 use WP_Block;
 use WP_SMS\Helper;
 
+if (!defined('ABSPATH')) exit;
+
 abstract class BlockAbstract
 {
     /**

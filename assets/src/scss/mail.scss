@@ -1,6 +1,5 @@
 .mail-body {
   margin: 0;
-  padding: 0;
   box-sizing: border-box;
   text-decoration: none;
   font-family: Inter, Arial, Helvetica, sans-serif;
@@ -337,11 +336,11 @@
     }
   }
 
-  @media screen and(min-width: 450px) and(max-width: 580px) {
+  @media screen and (min-width: 450px) and (max-width: 580px) {
     padding: 100px 10px;
   }
 
-  @media screen and(max-width: 450px) {
+  @media screen and (max-width: 450px) {
     padding: 50px 10px;
 
     .main-section {

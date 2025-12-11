@@ -7,6 +7,8 @@ use WP_SMS\Utils\Request;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Traits\TransientCacheTrait;
 
+if (!defined('ABSPATH')) exit;
+
 class GeneralNotices
 {
     use TransientCacheTrait;

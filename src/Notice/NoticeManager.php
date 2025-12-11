@@ -8,6 +8,8 @@ use WP_SMS\Components\View;
 use WP_SMS\Option;
 use WP_SMS\Helper;
 
+if (!defined('ABSPATH')) exit;
+
 class NoticeManager extends AbstractNotice
 {
     protected static $instance = null;
@@ -88,10 +90,11 @@ class NoticeManager extends AbstractNotice
         if (version_compare(PHP_VERSION, '7.2', '<')) {
             $current_version = PHP_VERSION;
             $message         = sprintf(
+                /* translators: %s: current PHP version */
                 __('
             <strong>WP SMS notice – PHP upgrade required</strong><br>
-            Your site is running PHP %s. upcoming WP SMS 7.1 requires PHP 7.2 or higher. 
-            Please upgrade your server’s PHP version before installing the update. 
+            Your site is running PHP %s. upcoming WP SMS 7.1 requires PHP 7.2 or higher.
+            Please upgrade your server\'s PHP version before installing the update.
             <a href="https://wp-sms-pro.com/33155/version-7-1/" target="_blank">More details</a>.
         ', 'wp-sms'),
                 esc_html($current_version)

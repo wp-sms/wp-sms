@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Gateway;
 
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
+
 class cellsynt extends \WP_SMS\Gateway
 {
     private $wsdl_link = "https://se-1.cellsynt.net/sms.php";
