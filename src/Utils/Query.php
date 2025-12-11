@@ -167,7 +167,7 @@ class Query
         if ($dbTable) {
             return $dbTable;
         }
-        
+
         return isset($this->db->tables('global')[$table])
             ? $this->db->tables('global')[$table]
             : "{$this->db->prefix}{$table}";
@@ -442,6 +442,12 @@ class Query
      */
     public function join($table, $first, $operator, $second, $type = 'INNER')
     {
+        $allowedOperators = ['=', '!=', '<', '>', '<=', '>='];
+        if (!in_array($operator, $allowedOperators, true)) {
+            throw new InvalidArgumentException("Unsupported join operator: $operator");
+        }
+
+        $type                = in_array(strtoupper($type), ['INNER', 'LEFT', 'RIGHT', 'OUTER'], true) ? strtoupper($type) : 'INNER';
         $table               = $this->getTable($table);
         $this->joinClauses[] = "$type JOIN $table ON $first $operator $second";
         return $this;
@@ -454,6 +460,8 @@ class Query
      */
     public function orderBy($field, $direction = 'ASC')
     {
+        $direction         = strtoupper($direction) === 'DESC' ? 'DESC' : 'ASC';
+        $field             = preg_replace('/[^a-zA-Z0-9_.]/', '', $field);
         $this->orderClause = "ORDER BY $field $direction";
         return $this;
     }
@@ -464,6 +472,7 @@ class Query
      */
     public function groupBy($field)
     {
+        $field               = preg_replace('/[^a-zA-Z0-9_.]/', '', $field);
         $this->groupByClause = "GROUP BY $field";
         return $this;
     }
@@ -475,6 +484,8 @@ class Query
      */
     public function limit($limit, $offset = null)
     {
+        $limit             = absint($limit);
+        $offset            = $offset !== null ? absint($offset) : null;
         $this->limitClause = "LIMIT $limit" . ($offset ? " OFFSET $offset" : '');
         return $this;
     }
