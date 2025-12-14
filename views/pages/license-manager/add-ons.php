@@ -40,3 +40,4 @@ View::load('components/page-header',[
         <?php endif; ?>
     </div>
 </div>
+</div>
