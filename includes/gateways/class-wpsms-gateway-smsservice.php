@@ -102,7 +102,10 @@ class smsservice extends \WP_SMS\Gateway
                 return $result;
             }
 
-            throw SmsGatewayException::gatewayError(wp_json_encode($result));
+            // Log th result
+            $this->log($this->from, $this->msg, $this->to, $result, 'error');
+
+            throw SmsGatewayException::gatewayError(wp_json_encode($result, JSON_UNESCAPED_UNICODE));
         } catch (SmsGatewayException $e) {
             $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
             return new \WP_Error('gateway-error', $e->getMessage());

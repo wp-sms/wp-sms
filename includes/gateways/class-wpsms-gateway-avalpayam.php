@@ -101,7 +101,7 @@ class avalpayam extends \WP_SMS\Gateway
             // Log th result
             $this->log($this->from, $this->msg, $this->to, $result, 'error');
 
-            return new \WP_Error('send-sms', $result);
+            throw SmsGatewayException::gatewayError(wp_json_encode($result, JSON_UNESCAPED_UNICODE));
 
         } catch (SmsGatewayException $e) {
             $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
