@@ -109,6 +109,6 @@ class LicenseManagementManager
      */
     public function showUpgradeToBundle()
     {
-        return !LicenseHelper::isPremiumLicenseAvailable();
+        return !(LicenseHelper::isPremiumLicenseAvailable() || LicenseHelper::isPluginLicenseValid());
     }
 }
