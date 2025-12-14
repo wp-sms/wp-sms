@@ -4,6 +4,7 @@
 - **Enhancement:** Updated PHP requirement to version 7.2.
 - **Enhancement:** Tested up to v6.9
 - **New:** Added settings for message storage and retention in Outbox and Inbox under "Message Storage & Cleanup".
+- **Enhancement:** Improve error handling when PHP SoapClient is unavailable in gateways.
 
 = v7.0.10 - 2025-12-01 =
 - **Enhancement:** Refactored plugin architecture for better add-on extensibility.
