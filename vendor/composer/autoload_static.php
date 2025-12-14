@@ -7,14 +7,14 @@ namespace Composer\Autoload;
 class ComposerStaticInit733a70b4860a09d7313bbae4cba3d940
 {
     public static $prefixLengthsPsr4 = array (
-        'W' =>
+        'W' => 
         array (
             'WP_SMS\\' => 7,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'WP_SMS\\' =>
+        'WP_SMS\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
@@ -107,6 +107,7 @@ class ComposerStaticInit733a70b4860a09d7313bbae4cba3d940
         'WP_SMS\\Decorators\\NotificationDecorator' => __DIR__ . '/../..' . '/src/Decorators/NotificationDecorator.php',
         'WP_SMS\\Exceptions\\InvalidArgumentException' => __DIR__ . '/../..' . '/src/Exceptions/InvalidArgumentException.php',
         'WP_SMS\\Exceptions\\LicenseException' => __DIR__ . '/../..' . '/src/Exceptions/LicenseException.php',
+        'WP_SMS\\Exceptions\\SmsGatewayException' => __DIR__ . '/../..' . '/src/Exceptions/SmsGatewayException.php',
         'WP_SMS\\Exceptions\\SystemErrorException' => __DIR__ . '/../..' . '/src/Exceptions/SystemErrorException.php',
         'WP_SMS\\Helper' => __DIR__ . '/../..' . '/src/Helper.php',
         'WP_SMS\\Notice\\AbstractNotice' => __DIR__ . '/../..' . '/src/Notice/AbstractNotice.php',

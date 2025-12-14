@@ -92,6 +92,7 @@ return array(
     'WP_SMS\\Decorators\\NotificationDecorator' => $baseDir . '/src/Decorators/NotificationDecorator.php',
     'WP_SMS\\Exceptions\\InvalidArgumentException' => $baseDir . '/src/Exceptions/InvalidArgumentException.php',
     'WP_SMS\\Exceptions\\LicenseException' => $baseDir . '/src/Exceptions/LicenseException.php',
+    'WP_SMS\\Exceptions\\SmsGatewayException' => $baseDir . '/src/Exceptions/SmsGatewayException.php',
     'WP_SMS\\Exceptions\\SystemErrorException' => $baseDir . '/src/Exceptions/SystemErrorException.php',
     'WP_SMS\\Helper' => $baseDir . '/src/Helper.php',
     'WP_SMS\\Notice\\AbstractNotice' => $baseDir . '/src/Notice/AbstractNotice.php',
