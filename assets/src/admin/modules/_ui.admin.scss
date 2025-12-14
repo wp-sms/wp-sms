@@ -3957,6 +3957,15 @@ a.wpsms-addon__download_active-all {
     width: 524px;
     margin-left: -62px;
 
+    .rtl &{
+      margin-left: 0;
+      margin-right: -62px;
+
+      @media(max-width: 700px){
+        margin-right: 0;
+      }
+    }
+
     @media(max-width: 700px){
       max-width: 100%;
       margin-left: 0;
