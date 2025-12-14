@@ -3,6 +3,7 @@
 - **New:** Added support for the Ghasedak.me gateway.
 - **Enhancement:** Updated PHP requirement to version 7.2.
 - **Enhancement:** Tested up to v6.9
+- **New:** Added settings for message storage and retention in Outbox and Inbox under "Message Storage & Cleanup".
 
 = v7.0.10 - 2025-12-01 =
 - **Enhancement:** Refactored plugin architecture for better add-on extensibility.

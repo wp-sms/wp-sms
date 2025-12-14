@@ -96,6 +96,10 @@ class Settings
                 'notify_errors_to_admin_email' => 1,
                 'report_wpsms_statistics'      => 1,
                 'display_notifications'        => 1,
+                'store_outbox_messages'        => 1,
+                'outbox_retention_days'        => 90,
+                'store_inbox_messages'         => 1,
+                'inbox_retention_days'         => 90,
             ));
         }
 
@@ -302,6 +306,14 @@ class Settings
             'enable'  => esc_html__('Enable', 'wp-sms'),
             'disable' => esc_html__('Disable', 'wp-sms')
         );
+
+        $retentionOptions = [
+            30  => __('30 days', 'wp-sms'),
+            90  => __('90 days', 'wp-sms'),
+            180 => __('180 days', 'wp-sms'),
+            365 => __('365 days', 'wp-sms'),
+            0   => __('Keep forever', 'wp-sms'),
+        ];
 
         /*
          * Pro Pack fields
@@ -907,6 +919,26 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'options' => $options,
                     'desc'    => __('Sends non-personal, anonymized data to help us improve WP SMS. No personal or identifying information is collected or shared. <a href="https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Learn More</a>.', 'wp-sms'),
                 ),
+                'store_outbox_messages_header' => [
+                    'id'   => 'store_outbox_messages_header',
+                    'name' => esc_html__('Message Storage & Cleanup', 'wp-sms'),
+                    'type' => 'header',
+                ],
+                'store_outbox_messages'        => [
+                    'id'      => 'store_outbox_messages',
+                    'name'    => esc_html__('Store Outbox Messages', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => esc_html__('If disabled, new SMS will not be logged in the Outbox.', 'wp-sms'),
+                ],
+                'outbox_retention_days'        => [
+                    'id'        => 'outbox_retention_days',
+                    'name'      => esc_html__('Delete Outbox Messages Older Than', 'wp-sms'),
+                    'type'      => 'select',
+                    'className' => 'js-wpsms-show_if_store_outbox_messages_enabled',
+                    'options'   => $retentionOptions,
+                    'desc'      => esc_html__('Runs daily at 00:00 (site time). Choose how long to retain Outbox messages.', 'wp-sms')
+                ],
             )),
 
             /**
