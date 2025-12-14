@@ -1758,32 +1758,28 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                         ?>
                         <li>
                             <?php
-                            $isIntegrationsPage = isset($_GET['page']) && $_GET['page'] === 'wp-sms-integrations';
-                            $noticeConfig       = $isIntegrationsPage ? [
-                                'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=integrations',
-                                'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
-                                'title'     => sprintf(
-                                /* translators: %s: Plugin name (WP SMS All-in-One) */
-                                    esc_html__('Full integration support is available in %s, including WooCommerce, BuddyPress, Gravity Forms and more.', 'wp-sms'),
-                                    '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
-                                )
-                            ] : [
-                                'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings',
-                                'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
-                                'title'     => sprintf(
-                                /* translators: %s: Plugin name (WP SMS All-in-One) */
-                                    esc_html__('Some settings are only available in %s, including extended field support, syncing options, and more advanced configuration.', 'wp-sms'),
-                                    '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
-                                )
-                            ];
+                            if (apply_filters('wp_sms_enable_upgrade_to_bundle', true)) :
+                                $isIntegrationsPage = isset($_GET['page']) && $_GET['page'] === 'wp-sms-integrations';
+                                $noticeConfig       = $isIntegrationsPage ? [
+                                    'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=integrations',
+                                    'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
+                                    'title'     => sprintf(
+                                    /* translators: %s: Plugin name (WP SMS All-in-One) */
+                                        esc_html__('Full integration support is available in %s, including WooCommerce, BuddyPress, Gravity Forms and more.', 'wp-sms'),
+                                        '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
+                                    )
+                                ] : [
+                                    'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings',
+                                    'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
+                                    'title'     => sprintf(
+                                    /* translators: %s: Plugin name (WP SMS All-in-One) */
+                                        esc_html__('Some settings are only available in %s, including extended field support, syncing options, and more advanced configuration.', 'wp-sms'),
+                                        '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
+                                    )
+                                ];
 
-                            /**
-                             * Hook: wp_sms_settings_integrations_box
-                             *
-                             * Fires inside the integrations page.
-                             * Allows WP SMS Pro (or other extensions) to output HTML.
-                             */
-                            echo wp_kses_post(apply_filters('wp_sms_settings_integrations_box', View::load("components/objects/notice-all-in-one", $noticeConfig, true)));
+                                View::load("components/objects/notice-all-in-one", $noticeConfig);
+                            endif;
                             ?>
                         </li>
                     </ul>
