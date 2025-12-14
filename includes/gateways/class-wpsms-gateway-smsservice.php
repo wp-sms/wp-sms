@@ -12,19 +12,40 @@ class smsservice extends \WP_SMS\Gateway
     public $unit;
     public $flash = "enable";
     public $isflash = false;
+    private $soapAvailable = false;
 
     public function __construct()
     {
         parent::__construct();
         $this->validateNumber = "09xxxxxxxx";
 
-        if (!class_exists('nusoap_client')) {
-            include_once WP_SMS_DIR . 'includes/libraries/nusoap.class.php';
+        if (!class_exists('\SoapClient')) {
+            $this->soapAvailable = false;
+        } else {
+            $this->soapAvailable = true;
         }
     }
 
     public function SendSMS()
     {
+        if (!$this->soapAvailable) {
+            $error = new \WP_Error(
+                'soap-missing',
+                __('PHP SoapClient is not available. SMS gateway is disabled.', 'wp-sms')
+            );
+
+            $this->log($this->from, $this->msg, $this->to, $error->get_error_message(), 'error');
+
+            return $error;
+        }
+
+        if (!$this->username || !$this->password) {
+            $error = new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
+
+            $this->log($this->from, $this->msg, $this->to, $error->get_error_message(), 'error');
+
+            return $error;
+        }
 
         /**
          * Modify sender number
@@ -53,28 +74,34 @@ class smsservice extends \WP_SMS\Gateway
          */
         $this->msg = apply_filters('wp_sms_msg', $this->msg);
 
-        // Get the credit.
-        $credit = $this->GetCredit();
+        try {
+            $client = new \SoapClient($this->wsdl_link, [
+                'encoding'   => 'UTF-8',
+                'exceptions' => true,
+                'trace'      => true,
+            ]);
 
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
+            $result = $client->__soapCall('multiSend', [[
+                'username' => $this->username,
+                'password' => $this->password,
+                'to'       => $this->to,
+                'from'     => $this->from,
+                'message'  => $this->msg,
+            ]]);
 
-            return $credit;
+            $status = null;
+            if (is_array($result) && isset($result['status'])) {
+                $status = (int)$result['status'];
+            } elseif (is_object($result) && isset($result->status)) {
+                $status = (int)$result->status;
+            }
+        } catch (\SoapFault $e) {
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new \WP_Error('soap-error', $e->getMessage());
         }
 
-        $client = new \nusoap_client($this->wsdl_link, 'wsdl');
-        $client->decodeUTF8(false);
-        $result = $client->call('multiSend', array(
-            'username' => $this->username,
-            'password' => $this->password,
-            'to'       => $this->to,
-            'from'     => $this->from,
-            'message'  => $this->msg
-        ));
-
-        if ($result['status'] === 0) {
+        if ($status === 0) {
             // Log the result
             $this->log($this->from, $this->msg, $this->to, $result);
 
@@ -97,18 +124,33 @@ class smsservice extends \WP_SMS\Gateway
 
     public function GetCredit()
     {
+        if (empty($this->soapAvailable)) {
+            return new \WP_Error(
+                'soap-missing',
+                __('PHP SoapClient is not available.', 'wp-sms')
+            );
+        }
+
         // Check username and password
-        if (!$this->username && !$this->password) {
+        if (!$this->username || !$this->password) {
             return new \WP_Error('account-credit', __('Username and Password are required.', 'wp-sms'));
         }
 
-        $client = new \nusoap_client($this->wsdl_link, 'wsdl');
-        $client->decodeUTF8(false);
-        $result = $client->call('accountInfo', array(
-            'username' => $this->username,
-            'password' => $this->password
-        ));
+        try {
+            $client = new \SoapClient($this->wsdl_link, [
+                'encoding'   => 'UTF-8',
+                'exceptions' => true,
+            ]);
 
-        return (int)$result['balance'];
+            $result = $client->__soapCall('accountInfo', [[
+                'username' => $this->username,
+                'password' => $this->password,
+            ]]);
+
+            return (int)($result->balance ?? 0);
+
+        } catch (\SoapFault $e) {
+            return new \WP_Error('soap-error', $e->getMessage());
+        }
     }
 }
