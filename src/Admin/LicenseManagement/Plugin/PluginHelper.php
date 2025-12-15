@@ -18,10 +18,10 @@ class PluginHelper
         'wp-sms-pro'                     => 'Pro Pack',
         'wp-sms-woocommerce-pro'         => 'WooCommerce Pro',
         'wp-sms-two-way'                 => 'Two-Way',
-        'wp-sms-booking-integrations'    => 'Booking Integrations',
         'wp-sms-elementor-form'          => 'Elementor Form',
-        'wp-sms-fluent-integrations'     => 'Fluent Integrations',
         'wp-sms-membership-integrations' => 'Membership Integrations',
+        'wp-sms-booking-integrations'    => 'Booking Integrations',
+        'wp-sms-fluent-integrations'     => 'Fluent Integrations',
     ];
 
     /**
