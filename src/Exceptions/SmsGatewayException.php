@@ -28,6 +28,7 @@ class SmsGatewayException extends Exception
     {
         return new self(
             sprintf(
+            /* translators: %s: SMS gateway endpoint */
                 __('Failed to connect to SMS gateway endpoint: %s.', 'wp-sms'),
                 $endpoint
             ),
@@ -39,6 +40,7 @@ class SmsGatewayException extends Exception
     {
         return new self(
             sprintf(
+            /* translators: %s: SMS gateway error */
                 __('SMS gateway returned an error: %s.', 'wp-sms'),
                 $message
             ),
@@ -58,6 +60,7 @@ class SmsGatewayException extends Exception
     {
         return new self(
             sprintf(
+            /* translators: %s: SMS gateway feature name */
                 __('SMS gateway does not support the feature: %s.', 'wp-sms'),
                 $feature
             ),
