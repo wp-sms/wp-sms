@@ -49,6 +49,7 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
                 'addon_name'  => esc_html__('WSMS Pro', 'wp-sms'),
                 'step_title'  => esc_html__('Key SMS Tools for Your Site', 'wp-sms'),
                 'description' => sprintf(
+                    /* translators: %s: URL to the WSMS Pro product page */
                     __('WSMS Pro offers phone logins, two-factor authentication, scheduled and repeating messages, shorter Bitly URLs, and a Gutenberg block. It also integrates with WooCommerce, BuddyPress, Quform, Gravity Forms, Easy Digital Downloads, WP Job Manager, and WP Awesome Support. <a target="_blank" href="%s">Learn more</a>', 'wp-sms'),
                     esc_url(WP_SMS_SITE . '/product/wp-sms-pro/?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-aio')
                 )
@@ -60,6 +61,7 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
                 'addon_name'  => esc_html__('WSMS WooCommerce Pro', 'wp-sms'),
                 'step_title'  => esc_html__('Advanced WooCommerce SMS Features', 'wp-sms'),
                 'description' => sprintf(
+                    /* translators: %s: URL to the WSMS WooCommerce Pro product page */
                     __('WooCommerce Pro boosts sales and support with SMS campaigns, abandoned cart reminders, phone verification at checkout, SMS login and registration, and local shipping notifications. <a target="_blank" href="%s">Learn more</a>', 'wp-sms'),
                     esc_url(WP_SMS_SITE . '/product/wp-sms-woocommerce-pro/?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-aio')
                 )
@@ -71,6 +73,7 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
                 'addon_name'  => esc_html__('WSMS Two-Way', 'wp-sms'),
                 'step_title'  => esc_html__('Send and Receive Messages', 'wp-sms'),
                 'description' => sprintf(
+                    /* translators: %s: URL to the WSMS Two-Way product page */
                     __('Two-Way lets you view incoming texts in your dashboard, set keywords to trigger replies, allow customers to update orders via SMS, and let subscribers join or leave newsletters by texting. <a target="_blank" href="%s">Learn more</a>', 'wp-sms'),
                     esc_url(WP_SMS_SITE . '/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-aio')
                 )
@@ -82,6 +85,7 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
                 'addon_name'  => esc_html__('WSMS Elementor Form', 'wp-sms'),
                 'step_title'  => esc_html__('Elementor Form SMS Alerts', 'wp-sms'),
                 'description' => sprintf(
+                    /* translators: %s: URL to the WSMS Elementor Form product page */
                     __('Link your Elementor Pro forms to WSMS and send text message alerts to you and your users whenever a form is submitted. <a target="_blank" href="%s">Learn more</a>', 'wp-sms'),
                     esc_url(WP_SMS_SITE . '/product/wp-sms-elementor-form/?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-aio')
                 )
@@ -93,6 +97,7 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
                 'addon_name'  => esc_html__('WSMS Membership Integrations', 'wp-sms'),
                 'step_title'  => esc_html__('Keep Members Informed', 'wp-sms'),
                 'description' => sprintf(
+                    /* translators: %s: URL to the WSMS Membership Integrations product page */
                     __('Send automatic text messages whenever important membership events happen, like new signups, payment confirmations, or membership cancellations, so everyone stays in the loop. <a target="_blank" href="%s">Learn more</a>', 'wp-sms'),
                     esc_url(WP_SMS_SITE . '/product/wp-sms-membership-integrations/?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-aio')
                 )
@@ -104,6 +109,7 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
                 'addon_name'  => esc_html__('WSMS Booking Integrations', 'wp-sms'),
                 'step_title'  => esc_html__('Booking SMS Notifications', 'wp-sms'),
                 'description' => sprintf(
+                    /* translators: %s: URL to the WSMS Booking Integrations product page */
                     __('Send SMS messages whenever important booking events happen. Automatically notify users for new, approved, canceled, or rescheduled appointments. <a target="_blank" href="%s">Learn more</a>', 'wp-sms'),
                     esc_url(WP_SMS_SITE . '/product/wp-sms-booking-integrations/?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-aio')
                 )
@@ -115,6 +121,7 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
                 'addon_name'  => esc_html__('WSMS Fluent Integrations', 'wp-sms'),
                 'step_title'  => esc_html__('Connect with Fluent', 'wp-sms'),
                 'description' => sprintf(
+                    /* translators: %s: URL to the WSMS Fluent Integrations product page */
                     __('Connect WSMS with Fluent CRM, Fluent Forms, and Fluent Support. Get real-time SMS notifications for new subscribers, form submissions, or support tickets. <a target="_blank" href="%s">Learn more</a>', 'wp-sms'),
                     esc_url(WP_SMS_SITE . '/product/wp-sms-fluent-integrations/?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-aio')
                 )
