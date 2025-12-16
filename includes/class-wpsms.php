@@ -22,6 +22,8 @@ use WP_SMS\Shortcode\ShortcodeManager;
 use WP_SMS\User\MobileFieldManager;
 use WP_SMS\Webhook\WebhookManager;
 use WP_SMS\Widget\WidgetsManager;
+use WP_SMS\Admin\Notification\NotificationManager;
+use WP_SMS\Services\CronEventManager;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -205,6 +207,8 @@ class WP_SMS
         \WP_SMS\Utils\MenuUtil::init();
         (new SubscriberManager())->init();
 
+        $notificationManager = new NotificationManager();
+
         if (is_admin()) {
             // Admin legacy classes.
             $this->include('includes/admin/settings/class-wpsms-settings.php');
@@ -241,6 +245,8 @@ class WP_SMS
         }
 
         new  HooksManager();
+
+        $cronEventManager = new CronEventManager();
 
         // API class.
         $this->include('includes/api/v1/class-wpsms-api-newsletter.php');

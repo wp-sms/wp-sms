@@ -3,7 +3,7 @@
  * Plugin Name: WSMS (formerly WP SMS)
  * Plugin URI: https://wp-sms-pro.com/
  * Description: SMS & MMS Notifications, 2FA, OTP, and Integrations with E-Commerce and Form Builders
- * Version: 7.0.10
+ * Version: 7.1
  * Author: VeronaLabs
  * Author URI: https://veronalabs.com/
  * Text Domain: wp-sms
@@ -12,7 +12,7 @@
  * License: GPL-2.0+
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires at least: 4.1
- * Requires PHP: 5.6
+ * Requires PHP: 7.2
  */
 
 if (!defined('ABSPATH')) {
@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) {
 include_once __DIR__ . '/includes/defines.php';
 
 // Set the plugin version
-define('WP_SMS_VERSION', '7.0.10');
+define('WP_SMS_VERSION', '7.1');
 
 /**
  * Load plugin Special Functions
@@ -55,6 +55,4 @@ function WPSms()
     return WP_SMS::get_instance();
 }
 
-
 WPSms();
-

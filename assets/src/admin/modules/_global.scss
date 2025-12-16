@@ -186,8 +186,6 @@
       &:focus,
       &:active {
         border: 2px solid #C2410C33 !important;
-        box-shadow: none;
-        outline: none;
       }
     }
 
@@ -235,15 +233,11 @@
 
       &:focus, &:active {
         border: 2px solid #C2410C33;
-        box-shadow: none;
-        outline: none;
       }
     }
 
     .iti__search-input {
       border: none;
-      outline: none;
-      box-shadow: none;
     }
 
 
@@ -301,11 +295,6 @@
 
       &:hover {
         opacity: 0.7;
-      }
-
-      &:focus, &:active {
-        box-shadow: none;
-        outline: none;
       }
     }
 
@@ -561,7 +550,7 @@
     }
   }
   .wpsms-header-items-side {
-    & > .license-status, & > .setting, & > .support {
+    & > .license-status, & > .setting, & > .support , & > .wpsms-notifications {
       display: none !important;
     }
   }

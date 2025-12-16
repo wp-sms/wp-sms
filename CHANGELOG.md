@@ -1,3 +1,11 @@
+= v7.1 - 2025-12-16 =
+- **New:** Introduced Notifications to receive important updates and promotions.
+- **New:** Added support for the Ghasedak.me gateway.
+- **New:** Added settings for message storage and retention in Outbox and Inbox under "Message Storage & Cleanup".
+- **Enhancement:** Updated PHP requirement to version 7.2.
+- **Enhancement:** Tested up to v6.9
+- **Enhancement:** Improve error handling when PHP SoapClient is unavailable in gateways.
+
 = v7.0.10 - 2025-12-01 =
 - **Enhancement:** Refactored plugin architecture for better add-on extensibility.
 - **Enhancement:** Added new filters and hooks for developers.

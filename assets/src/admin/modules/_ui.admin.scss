@@ -771,9 +771,14 @@
   }
 
   .button-primary {
-    background: #f97316;
-    border-color: #f97316;
-    color: #fff
+    background: #C2410C!important;
+    border-color: #C2410C!important;
+    color: #fff;
+
+    &:hover{
+      background: #9a3412!important;
+      border-color: #9a3412!important;
+    }
   }
 
   &.wpsms-admin-notice__dismissible {
@@ -925,23 +930,18 @@
   padding: 8px 16px;
   border-radius: 4px;
   transition: 0.2s;
-  background: #F97316;
-  border-color: #F97316;
+  background: #C2410C;
+  border-color: #C2410C;
   color: #fff !important;
 
   &:hover {
-    background: #C2410C;
-    border-color: #C2410C;
+    background: #9a3412;
+    border-color: #9a3412;
   }
 }
 
 .wpsms-wrap textarea{
   max-width: calc(100% - 45px);
-}
-
-.wpsms-wrap input[type="checkbox"]:focus {
-  box-shadow: none !important;
-  outline: unset !important;
 }
 
 .wpsms-wrap,
@@ -956,7 +956,7 @@
     line-height: 20px;
     border: 1px solid #5b5b5b !important;
     box-sizing: border-box;
-    border-radius: 2px;
+    border-radius: 4px;
   }
 
   select {
@@ -1109,6 +1109,7 @@
 
 .wpsms-wrap td .description {
   margin-top: 12px !important;
+  font-size:12px;
   color: #5b5b5b;
 }
 
@@ -1186,8 +1187,6 @@
     white-space: nowrap;
 
     &:focus, &:hover {
-      box-shadow: none !important;
-      outline: none !important;
       background-color: #eeeff1;
     }
   }
@@ -1667,7 +1666,7 @@
 
       .wpsms-step-link__badge {
         background-color: #165e2e;
-        color: rgb(206 255 222);
+        color: rgb(206, 255, 222);
         font-size: 0;
         background-repeat: no-repeat;
         background-position: center;
@@ -1810,11 +1809,6 @@
 
     &:hover {
       opacity: 1;
-      box-shadow: none !important;
-      outline: none !important;
-    }
-
-    &:focus, &:active {
       box-shadow: none !important;
       outline: none !important;
     }
@@ -2033,11 +2027,6 @@
       background: #F3F3F5;
     }
 
-    &:focus {
-      box-shadow: none !important;
-      outline: none !important;
-    }
-
     &.integrations::after {
       content: '';
       width: 80%;
@@ -2129,10 +2118,6 @@
     max-width: 80px;
     min-height: unset !important;
 
-    &:focus-visible {
-      outline: none !important;
-    }
-
     .select2-selection__rendered {
       padding-left: 0 !important;
       padding-right: 11px !important;
@@ -2140,10 +2125,6 @@
       font-size: 13px;
       color: #0c0c0d !important;
       outline: none !important;
-
-      &:focus-visible {
-        outline: none !important;
-      }
 
       .rtl & {
         padding-left: 11px !important;
@@ -2509,11 +2490,6 @@
             height: 24px;
             outline: none !important;
             box-shadow: none !important;
-
-            &:focus {
-              outline: none !important;
-              box-shadow: none !important;
-            }
           }
         }
 
@@ -2533,6 +2509,7 @@
             gap: 4px;
             align-items: center;
             white-space: nowrap;
+            flex-wrap: wrap;
           }
 
           color: #0C0C0D;
@@ -2607,12 +2584,6 @@
             &.wpsms-warning {
               border: 1px solid #F6C42F !important;
               box-shadow: 0 0 0 3px #EE8B4433;
-              outline: 2px solid rgba(0, 0, 0, 0);
-            }
-
-            &:focus, &:active {
-              border: 1px solid #262626 !important;
-              box-shadow: 0 0 0 3px #E5E5E5;
               outline: 2px solid rgba(0, 0, 0, 0);
             }
           }
@@ -2890,12 +2861,6 @@
           &.wpsms-warning {
             border: 1px solid #EE8B44 !important;
             box-shadow: 0 0 0 3px #EE8B4433;
-            outline: 2px solid rgba(0, 0, 0, 0);
-          }
-
-          &:focus, &:active {
-            border: 1px solid #262626 !important;
-            box-shadow: 0 0 0 3px #E5E5E5;
             outline: 2px solid rgba(0, 0, 0, 0);
           }
         }
@@ -3424,7 +3389,7 @@
       }
 
 
-      span.wpsms-addon--actions--show-more {
+      button.wpsms-addon--actions--show-more {
         position: relative;
         display: block;
         cursor: pointer;
@@ -3436,6 +3401,7 @@
         background-size: 15px;
         background-color: #F5F5F5;
         border-radius: 4px;
+        border:none;
 
         &:hover {
           background-color: #E5E5E5;
@@ -3443,7 +3409,7 @@
       }
 
       &.active {
-        span.wpsms-addon--actions--show-more, span.wpsms-addon--actions--show:hover {
+        button.wpsms-addon--actions--show-more, span.wpsms-addon--actions--show:hover {
           background-color: #12121B;
           background-image: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUiIGhlaWdodD0iMTUiIHZpZXdCb3g9IjAgMCAxNSAxNSIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTcuNSAxLjg3NUM2LjgxMjUgMS44NzUgNi4yNSAyLjQzNzUgNi4yNSAzLjEyNUM2LjI1IDMuODEyNSA2LjgxMjUgNC4zNzUgNy41IDQuMzc1QzguMTg3NSA0LjM3NSA4Ljc1IDMuODEyNSA4Ljc1IDMuMTI1QzguNzUgMi40Mzc1IDguMTg3NSAxLjg3NSA3LjUgMS44NzVaTTcuNSAxMC42MjVDNi44MTI1IDEwLjYyNSA2LjI1IDExLjE4NzUgNi4yNSAxMS44NzVDNi4yNSAxMi41NjI1IDYuODEyNSAxMy4xMjUgNy41IDEzLjEyNUM4LjE4NzUgMTMuMTI1IDguNzUgMTIuNTYyNSA4Ljc1IDExLjg3NUM4Ljc1IDExLjE4NzUgOC4xODc1IDEwLjYyNSA3LjUgMTAuNjI1Wk03LjUgNi4yNUM2LjgxMjUgNi4yNSA2LjI1IDYuODEyNSA2LjI1IDcuNUM2LjI1IDguMTg3NSA2LjgxMjUgOC43NSA3LjUgOC43NUM4LjE4NzUgOC43NSA4Ljc1IDguMTg3NSA4Ljc1IDcuNUM4Ljc1IDYuODEyNSA4LjE4NzUgNi4yNSA3LjUgNi4yNVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=");
         }
@@ -3991,6 +3957,15 @@ a.wpsms-addon__download_active-all {
     width: 524px;
     margin-left: -62px;
 
+    .rtl &{
+      margin-left: 0;
+      margin-right: -62px;
+
+      @media(max-width: 700px){
+        margin-right: 0;
+      }
+    }
+
     @media(max-width: 700px){
       max-width: 100%;
       margin-left: 0;
@@ -4014,6 +3989,18 @@ a.wpsms-addon__download_active-all {
       }
     }
   }
+}
+.screen-reader-text {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  visibility: hidden;
 }
 
 @import "add-ons/badge";

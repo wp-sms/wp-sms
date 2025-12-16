@@ -9,6 +9,9 @@ use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Version;
 use WP_SMS\Admin\ModalHandler\Modal;
+use WP_SMS\Option;
+use WP_SMS\Admin\Notification\NotificationFactory;
+use WP_SMS\Components\View;
 
 $option = get_option('wpsms_settings');
 // Create tab url and active class for licenses tab
@@ -38,6 +41,9 @@ $apiCommunicator  = new ApiCommunicator();
 $licenseMigration = new LicenseMigration($apiCommunicator);
 $licenseMigration->migrateOldLicenses();
 
+$hasUpdatedNotifications = NotificationFactory::hasUpdatedNotifications();
+$displayNotifications    = Option::getOption('display_notifications');
+
 $pluginHandler = new PluginHandler();
 $isTwoWay      = $pluginHandler->isPluginActive('wp-sms-two-way');
 ?>
@@ -57,10 +63,12 @@ $isTwoWay      = $pluginHandler->isPluginActive('wp-sms-two-way');
     </div>
     <div class="wpsms-header-items-side">
         <?php echo \WP_SMS\Helper::loadTemplate('admin/partials/license-status.php', ['addons' => $addons, 'tab_url' => $tab_url]); ?>
-        <a href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-settings'); ?>" title="<?php esc_html_e('Settings', 'wp-sms'); ?>" class="setting <?php if (isset($_GET['page']) && $_GET['page'] === 'wp-sms-settings') {
-            echo 'active';
-        } ?>"></a>
-        <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank" title="<?php esc_html_e('Help Center', 'wp-sms'); ?>" class="support"></a>
+        <?php if ($displayNotifications): ?>
+            <a href="#" title="<?php esc_html_e('Notifications', 'wp-sms'); ?>" class="wpsms-notifications js-wpsms-open-notification <?php echo $hasUpdatedNotifications ? esc_attr('wpsms-notifications--has-items') : ''; ?>"></a>
+        <?php endif; ?>
+        <a href="<?php echo esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-settings'); ?>" class="setting <?php if (isset($_GET['page']) && $_GET['page'] === 'wp-sms-settings') {
+            echo 'active';} ?>" aria-label="<?php esc_attr_e('Setting', 'wp-sms'); ?>"></a>
+        <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" aria-label="<?php esc_attr_e('Support', 'wp-sms'); ?>" target="_blank" class="support"></a>
         <div class="wpsms-mobile-menu">
             <input type="checkbox" id="wpsms-menu-toggle" class="hamburger-menu">
             <label for="wpsms-menu-toggle" class="hamburger-menu-container">
@@ -77,6 +85,11 @@ $isTwoWay      = $pluginHandler->isPluginActive('wp-sms-two-way');
                 echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-integrations', 'link_text' => __('Integrations', 'wp-sms'), 'icon_class' => 'integrations', 'badge_count' => null]);
                 echo \WP_SMS\Helper::loadTemplate('admin/partials/menu-link.php', ['slug' => 'wp-sms-settings', 'link_text' => __('Settings', 'wp-sms'), 'icon_class' => 'settings', 'badge_count' => null]);
                 ?>
+                <?php if ($displayNotifications): ?>
+                    <a class="wpsms-notifications js-wpsms-open-notification <?php echo $hasUpdatedNotifications ? esc_attr('wpsms-notifications--has-items') : ''; ?>">
+                        <span class="icon"></span><span><?php esc_html_e('Notifications', 'wp-sms'); ?></span>
+                    </a>
+                <?php endif; ?>
                 <a href="<?php echo esc_url(WP_SMS_SITE . '/support?utm_source=wp-sms&utm_medium=link&utm_campaign=header'); ?>" target="_blank" title="<?php esc_html_e('Help Center', 'wp-sms'); ?>" class="help">
                     <span class="icon"></span>
                     <?php esc_html_e('Help Center', 'wp-sms'); ?>
@@ -88,7 +101,11 @@ $isTwoWay      = $pluginHandler->isPluginActive('wp-sms-two-way');
         </div>
     </div>
 </div>
-
+<?php
+if ($displayNotifications) {
+    View::load("components/notification/side-bar", ['notifications' => NotificationFactory::getAllNotifications()]);
+}
+?>
 <?php
 add_action('admin_footer', function () {
     if (MenuUtil::isInPluginPage()) {

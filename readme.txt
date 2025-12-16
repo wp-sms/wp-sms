@@ -3,9 +3,9 @@ Contributors: veronalabs, mostafa.s1990, kashani
 Donate link: https://wp-sms-pro.com/donate
 Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sms
 Requires at least: 4.1
-Tested up to: 6.8
-Requires PHP: 5.6
-Stable tag: 7.0.10
+Tested up to: 6.9
+Requires PHP: 7.2
+Stable tag: 7.1
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,7 +14,7 @@ Send SMS/MMS notifications, OTP & 2FA messages, and WooCommerce updates with sup
 == Description ==
 [WSMS](https://wp-sms-pro.com/?utm_source=wporg&utm_medium=link&utm_campaign=website) lets you send SMS/MMS notifications, one-time passwords (OTP), and two-factor authentication (2FA) messages straight from WordPress. It supports a wide range of SMS gateways and integrates with popular e-commerce and form builder plugins.
 
-Use WSMS to:
+**Use WSMS to:**
 - Keep customers updated on WooCommerce orders
 - Collect subscribers with SMS newsletter forms
 - Secure logins with OTP & 2FA
@@ -39,7 +39,7 @@ Use WSMS to:
 ## 💎 Upgrade to WSMS All-in-One
 Unlock additional features with **All-in-One** — the plan that gives you access to all premium add-ons in one package.
 
-With All-in-One you get:
+**With All-in-One you get:**
 - Secure login & registration with OTP & 2FA
 - Scheduled & recurring SMS/MMS
 - Two-way SMS inbox
@@ -72,8 +72,6 @@ WooCommerce, GravityForms, Elementor, Contact Form 7, Twilio, WhatsApp, Clickate
 
 **Note:** The plugin works out of the box - no build steps required for regular users. This section is for
 developers who want to modify or contribute to the source code.
-
-= Source Locations =
 
 All source code for minified JavaScript and CSS is included in the plugin:
 
@@ -140,6 +138,14 @@ All premium features + all add-ons in one package.
 - New Onboarding, Add-on Manager, and All-in-One package.
 
 == Changelog ==
+= v7.1 - 2025-12-16 =
+- **New:** Introduced Notifications to receive important updates and promotions.
+- **New:** Added support for the Ghasedak.me gateway.
+- **New:** Added settings for message storage and retention in Outbox and Inbox under "Message Storage & Cleanup".
+- **Enhancement:** Updated PHP requirement to version 7.2.
+- **Enhancement:** Tested up to v6.9
+- **Enhancement:** Improve error handling when PHP SoapClient is unavailable in gateways.
+
 = v7.0.10 - 2025-12-01 =
 - **Enhancement:** Refactored plugin architecture for better add-on extensibility.
 - **Enhancement:** Added new filters and hooks for developers.
