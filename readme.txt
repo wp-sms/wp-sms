@@ -15,6 +15,7 @@ Send SMS/MMS notifications, OTP & 2FA messages, and WooCommerce updates with sup
 [WSMS](https://wp-sms-pro.com/?utm_source=wporg&utm_medium=link&utm_campaign=website) lets you send SMS/MMS notifications, one-time passwords (OTP), and two-factor authentication (2FA) messages straight from WordPress. It supports a wide range of SMS gateways and integrates with popular e-commerce and form builder plugins.
 
 **Use WSMS to:**
+
 - Keep customers updated on WooCommerce orders
 - Collect subscribers with SMS newsletter forms
 - Secure logins with OTP & 2FA
@@ -40,6 +41,7 @@ Send SMS/MMS notifications, OTP & 2FA messages, and WooCommerce updates with sup
 Unlock additional features with **All-in-One** — the plan that gives you access to all premium add-ons in one package.
 
 **With All-in-One you get:**
+
 - Secure login & registration with OTP & 2FA
 - Scheduled & recurring SMS/MMS
 - Two-way SMS inbox
