@@ -145,5 +145,6 @@ All premium features + all add-ons in one package.
 - **Enhancement:** Updated PHP requirement to version 7.2.
 - **Enhancement:** Tested up to v6.9
 - **Enhancement:** Improve error handling when PHP SoapClient is unavailable in gateways.
+- **Fix:** Fixed privacy data deletion not removing subscribers from database due to incorrect phone number handling and query format issues.
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).
