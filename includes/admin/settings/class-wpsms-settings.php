@@ -1758,7 +1758,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                         ?>
                         <li>
                             <?php
-                            if (apply_filters('wp_sms_enable_upgrade_to_bundle', true)) :
+                            if (apply_filters('wp_sms_enable_upgrade_notice', true)) :
                                 $isIntegrationsPage = isset($_GET['page']) && $_GET['page'] === 'wp-sms-integrations';
                                 $noticeConfig       = $isIntegrationsPage ? [
                                     'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=integrations',
