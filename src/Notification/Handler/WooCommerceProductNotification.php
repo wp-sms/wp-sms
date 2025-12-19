@@ -35,7 +35,7 @@ class WooCommerceProductNotification extends Notification
 
     public function getTitle()
     {
-        return $this->product->get_name();
+        return $this->product->get_title();
     }
 
     public function getName()
