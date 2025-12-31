@@ -3,11 +3,19 @@
 namespace WP_SMS;
 
 use WP_SMS\Option;
+use WP_SMS\Services\Database\Managers\TableHandler;
+use WP_SMS\Services\Database\Managers\SchemaMaintainer;
+use WP_SMS\Services\Database\Migrations\Schema\SchemaManager;
 
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
 
+/**
+ * Legacy Install class.
+ *
+ * @deprecated 7.2 Use WP_SMS\Core\CoreFactory instead.
+ */
 class Install
 {
     const TABLE_OTP          = 'sms_otp';
@@ -15,10 +23,13 @@ class Install
 
     public function __construct()
     {
+        // Note: These hooks are now handled by Core\Operations\Loader
+        // Keeping for backward compatibility
         add_action('wpmu_new_blog', array($this, 'add_table_on_create_blog'), 10, 1);
         add_filter('wpmu_drop_tables', array($this, 'remove_table_on_delete_blog'));
 
-        // Upgrade Plugin
+        // Note: Upgrades are now handled by Core\Operations\Updater
+        // Keeping for backward compatibility
         add_action('plugins_loaded', array($this, 'plugin_upgrades'));
     }
 
@@ -62,11 +73,30 @@ class Install
     }
 
     /**
-     * Table SQL
+     * Table SQL - Creates all plugin tables using the new Database Manager system.
      *
-     * @param Not param
+     * Falls back to legacy table creation if the new system fails.
+     *
+     * @return void
      */
     public static function table_sql()
+    {
+        try {
+            // Use the new TableHandler to create all tables
+            TableHandler::createAllTables();
+        } catch (\Exception $e) {
+            // Fallback to legacy table creation if new system fails
+            error_log('[WP SMS] Database Manager failed, using legacy table creation: ' . $e->getMessage());
+            self::legacyTableSql();
+        }
+    }
+
+    /**
+     * Legacy table creation method - kept as fallback.
+     *
+     * @return void
+     */
+    private static function legacyTableSql()
     {
         global $wpdb;
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -129,7 +159,7 @@ class Install
 
         self::create_table($network_wide);
 
-        add_option('wp_sms_db_version', WP_SMS_VERSION);
+        Option::updateInGroup('version', WP_SMS_VERSION, Option::DB_GROUP);
 
         // Delete notification new wp_version option
         delete_option('wp_notification_new_wp_version');
@@ -144,15 +174,68 @@ class Install
     }
 
     /**
-     * Upgrade plugin requirements if needed
+     * Upgrade plugin requirements if needed.
+     *
+     * Uses the new Schema Migration system with fallback to legacy upgrade.
+     *
+     * @return void
      */
     public static function upgrade()
+    {
+        $installer_wpsms_ver = Option::getFromGroup('version', Option::DB_GROUP);
+
+        if ($installer_wpsms_ver < WP_SMS_VERSION) {
+            try {
+                // Use the new Schema Migration system
+                SchemaManager::init();
+
+                // Use SchemaMaintainer to check and repair any schema issues
+                $checkResults = SchemaMaintainer::check(true);
+                if ($checkResults['status'] !== 'success') {
+                    SchemaMaintainer::repair(true);
+                }
+
+                // Run legacy upgrade for non-schema migrations (settings, etc.)
+                self::legacyUpgrade();
+
+            } catch (\Exception $e) {
+                // Fallback to legacy upgrade if new system fails
+                error_log('[WP SMS] Schema Migration failed, using legacy upgrade: ' . $e->getMessage());
+                self::legacyUpgrade();
+            }
+        }
+
+        // Always run these checks regardless of version
+        self::ensureMediaColumn();
+    }
+
+    /**
+     * Ensures the media column exists in the send table.
+     *
+     * @return void
+     */
+    private static function ensureMediaColumn()
+    {
+        global $wpdb;
+        $outboxTable = $wpdb->prefix . 'sms_send';
+
+        if (!$wpdb->get_var("SHOW COLUMNS FROM `{$outboxTable}` like 'media'")) {
+            $wpdb->query("ALTER TABLE `{$outboxTable}` ADD `media` TEXT NULL AFTER `recipient`");
+        }
+    }
+
+    /**
+     * Legacy upgrade method - handles non-schema migrations and kept as fallback.
+     *
+     * @return void
+     */
+    private static function legacyUpgrade()
     {
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
         global $wpdb;
         $charset_collate       = $wpdb->get_charset_collate();
-        $installer_wpsms_ver   = get_option('wp_sms_db_version');
+        $installer_wpsms_ver   = Option::getFromGroup('version', Option::DB_GROUP);
         $outboxTable           = $wpdb->prefix . 'sms_send';
         $subscribersTable      = $wpdb->prefix . 'sms_subscribes';
         $subscribersGroupTable = $wpdb->prefix . 'sms_subscribes_group';
@@ -184,7 +267,7 @@ class Install
                 'message'
             ));
 
-            if ($result->COLLATION_NAME != $wpdb->collate) {
+            if ($result && $result->COLLATION_NAME != $wpdb->collate) {
                 $wpdb->query("ALTER TABLE {$outboxTable} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}");
             }
 
@@ -196,7 +279,7 @@ class Install
                 'name'
             ));
 
-            if ($result->COLLATION_NAME != $wpdb->collate) {
+            if ($result && $result->COLLATION_NAME != $wpdb->collate) {
                 $wpdb->query("ALTER TABLE {$subscribersTable} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}");
             }
 
@@ -208,7 +291,7 @@ class Install
                 'name'
             ));
 
-            if ($result->COLLATION_NAME != $wpdb->collate) {
+            if ($result && $result->COLLATION_NAME != $wpdb->collate) {
                 $wpdb->query("ALTER TABLE {$subscribersGroupTable} CONVERT TO CHARACTER SET {$wpdb->charset} COLLATE {$wpdb->collate}");
             }
 
@@ -233,14 +316,7 @@ class Install
                 Option::updateOption('inbox_retention_days', 90);
             }
 
-            update_option('wp_sms_db_version', WP_SMS_VERSION);
-        }
-
-        /**
-         * Add media column in send table
-         */
-        if (!$wpdb->get_var("SHOW COLUMNS FROM `{$outboxTable}` like 'media'")) {
-            $wpdb->query("ALTER TABLE `{$outboxTable}` ADD `media` TEXT NULL AFTER `recipient`");
+            Option::updateInGroup('version', WP_SMS_VERSION, Option::DB_GROUP);
         }
     }
 
@@ -271,8 +347,10 @@ class Install
      */
     public function remove_table_on_delete_blog($tables)
     {
-        foreach (array('sms_subscribes', 'sms_subscribes_group', 'sms_send') as $tbl) {
-            $tables[] = $this->tb_prefix . $tbl;
+        global $wpdb;
+
+        foreach (array('sms_subscribes', 'sms_subscribes_group', 'sms_send', 'sms_otp', 'sms_otp_attempts') as $tbl) {
+            $tables[] = $wpdb->prefix . $tbl;
         }
 
         return $tables;
@@ -335,17 +413,17 @@ class Install
      */
     private static function checkIsFresh()
     {
-        $version = get_option('wp_sms_db_version');
+        $version = Option::getFromGroup('version', Option::DB_GROUP);
 
         if (empty($version)) {
-            update_option('wp_sms_is_fresh', true);
+            Option::updateInGroup('is_fresh', true, Option::DB_GROUP);
         } else {
-            update_option('wp_sms_is_fresh', false);
+            Option::updateInGroup('is_fresh', false, Option::DB_GROUP);
         }
 
-        $installationTime = get_option('wp_sms_installation_time');
+        $installationTime = Option::getFromGroup('installation_time', Option::DB_GROUP);
         if (empty($installationTime)) {
-            update_option('wp_sms_installation_time', time());
+            Option::updateInGroup('installation_time', time(), Option::DB_GROUP);
         }
     }
 }
