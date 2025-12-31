@@ -11,13 +11,16 @@ import {
   Save,
   X,
   Send,
+  LayoutGrid,
+  List,
+  MoreHorizontal,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { DataTable } from '@/components/ui/data-table'
 import { QuickAddForm } from '@/components/shared/QuickAddForm'
-import { Tip, EmptyStateAction } from '@/components/ui/ux-helpers'
+import { Tip } from '@/components/ui/ux-helpers'
 import {
   Dialog,
   DialogContent,
@@ -47,6 +50,7 @@ export default function Groups() {
   const [deleteGroup, setDeleteGroup] = useState(null)
   const [notification, setNotification] = useState(null)
   const [isAddingQuick, setIsAddingQuick] = useState(false)
+  const [viewMode, setViewMode] = useState('list') // 'list' or 'grid'
 
   // Inline edit state
   const [inlineEditId, setInlineEditId] = useState(null)
@@ -242,6 +246,80 @@ export default function Groups() {
   // Calculate total subscribers
   const totalSubscribers = groups.reduce((sum, g) => sum + (g.subscriber_count || 0), 0)
 
+  // Empty state
+  if (!isLoading && groups.length === 0) {
+    return (
+      <div className="wsms-space-y-6 wsms-stagger-children">
+        {/* Notification */}
+        {notification && (
+          <div
+            className={cn(
+              'wsms-flex wsms-items-center wsms-gap-3 wsms-p-4 wsms-rounded-lg wsms-border',
+              'wsms-animate-in wsms-fade-in wsms-slide-in-from-top-2 wsms-duration-300',
+              notification.type === 'success'
+                ? 'wsms-bg-emerald-500/10 wsms-border-emerald-500/20 wsms-text-emerald-700 dark:wsms-text-emerald-400'
+                : 'wsms-bg-red-500/10 wsms-border-red-500/20 wsms-text-red-700 dark:wsms-text-red-400'
+            )}
+          >
+            {notification.type === 'success' ? (
+              <CheckCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
+            ) : (
+              <AlertCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
+            )}
+            <p className="wsms-text-[13px] wsms-font-medium">{notification.message}</p>
+          </div>
+        )}
+
+        {/* Empty State - Full Width Centered */}
+        <Card className="wsms-border-dashed">
+          <CardContent className="wsms-py-16">
+            <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center wsms-max-w-md wsms-mx-auto">
+              <div className="wsms-flex wsms-h-16 wsms-w-16 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary/10 wsms-mb-6">
+                <FolderOpen className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
+              </div>
+              <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
+                Create your first group
+              </h3>
+              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
+                Groups help you organize subscribers for targeted messaging.
+                Segment your audience by interest, location, or any criteria that matters to your communication.
+              </p>
+
+              {/* Inline Create Form */}
+              <div className="wsms-w-full wsms-max-w-sm">
+                <QuickAddForm
+                  placeholder="Enter group name..."
+                  buttonLabel="Create Group"
+                  onSubmit={handleQuickAdd}
+                  isLoading={isAddingQuick}
+                  validate={(value) => {
+                    if (value.length < 2) return 'Group name must be at least 2 characters'
+                    if (value.length > 50) return 'Group name must be less than 50 characters'
+                    return null
+                  }}
+                />
+              </div>
+
+              {/* Feature hints */}
+              <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4 wsms-mt-8 wsms-pt-6 wsms-border-t wsms-border-border wsms-w-full">
+                <div className="wsms-text-left wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
+                  <Users className="wsms-h-4 wsms-w-4 wsms-text-primary wsms-mb-2" />
+                  <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">Targeted Messaging</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground">Send SMS to specific groups only</p>
+                </div>
+                <div className="wsms-text-left wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
+                  <LayoutGrid className="wsms-h-4 wsms-w-4 wsms-text-primary wsms-mb-2" />
+                  <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">Easy Organization</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground">Manage subscribers efficiently</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
       {/* Notification */}
@@ -264,86 +342,207 @@ export default function Groups() {
         </div>
       )}
 
-      {/* First-time helper */}
-      {groups.length === 0 && !isLoading && (
-        <Tip>
-          <strong>Organize your audience with Groups!</strong> Create groups to segment subscribers by interest, location, or any criteria.
-          This makes it easy to send targeted messages to the right people.
-        </Tip>
-      )}
+      {/* Header Bar with Stats and Actions */}
+      <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4">
+        {/* Left: Stats */}
+        <div className="wsms-flex wsms-items-center wsms-gap-6">
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10">
+              <FolderOpen className="wsms-h-5 wsms-w-5 wsms-text-primary" />
+            </div>
+            <div>
+              <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{pagination.total}</p>
+              <p className="wsms-text-[11px] wsms-text-muted-foreground">Groups</p>
+            </div>
+          </div>
+          <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-success/10">
+              <Users className="wsms-h-5 wsms-w-5 wsms-text-success" />
+            </div>
+            <div>
+              <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{totalSubscribers}</p>
+              <p className="wsms-text-[11px] wsms-text-muted-foreground">Total Subscribers</p>
+            </div>
+          </div>
+        </div>
 
-      {/* Stats Cards - only show when there are groups */}
-      {groups.length > 0 && (
-        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
-          <Card className="wsms-py-4 wsms-stat-card wsms-card-hover">
-            <CardContent className="wsms-py-0 wsms-text-center">
-              <p className="wsms-text-2xl wsms-font-bold wsms-text-foreground wsms-count-animate">{pagination.total}</p>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Total Groups</p>
-            </CardContent>
-          </Card>
-          <Card className="wsms-py-4 wsms-stat-card wsms-stat-card-success wsms-card-hover">
-            <CardContent className="wsms-py-0 wsms-text-center">
-              <p className="wsms-text-2xl wsms-font-bold wsms-text-success wsms-count-animate">{totalSubscribers}</p>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Total Subscribers</p>
-            </CardContent>
-          </Card>
+        {/* Right: View Toggle */}
+        <div className="wsms-flex wsms-items-center wsms-gap-2">
+          <div className="wsms-flex wsms-items-center wsms-rounded-lg wsms-border wsms-border-border wsms-p-1">
+            <button
+              onClick={() => setViewMode('list')}
+              className={cn(
+                'wsms-p-1.5 wsms-rounded-md wsms-transition-colors',
+                viewMode === 'list' ? 'wsms-bg-muted wsms-text-foreground' : 'wsms-text-muted-foreground hover:wsms-text-foreground'
+              )}
+            >
+              <List className="wsms-h-4 wsms-w-4" />
+            </button>
+            <button
+              onClick={() => setViewMode('grid')}
+              className={cn(
+                'wsms-p-1.5 wsms-rounded-md wsms-transition-colors',
+                viewMode === 'grid' ? 'wsms-bg-muted wsms-text-foreground' : 'wsms-text-muted-foreground hover:wsms-text-foreground'
+              )}
+            >
+              <LayoutGrid className="wsms-h-4 wsms-w-4" />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Add - Inline style */}
+      <Card>
+        <CardContent className="wsms-py-4">
+          <div className="wsms-flex wsms-items-center wsms-gap-4">
+            <Plus className="wsms-h-5 wsms-w-5 wsms-text-primary wsms-shrink-0" />
+            <div className="wsms-flex-1">
+              <QuickAddForm
+                placeholder="Enter group name to create..."
+                buttonLabel="Create Group"
+                onSubmit={handleQuickAdd}
+                isLoading={isAddingQuick}
+                validate={(value) => {
+                  if (value.length < 2) return 'Group name must be at least 2 characters'
+                  if (value.length > 50) return 'Group name must be less than 50 characters'
+                  return null
+                }}
+              />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Content - List or Grid View */}
+      {viewMode === 'list' ? (
+        <Card>
+          <CardContent className="wsms-p-0">
+            <DataTable
+              columns={columns}
+              data={groups}
+              loading={isLoading}
+              pagination={{
+                total: pagination.total,
+                page: pagination.current_page,
+                perPage: pagination.per_page,
+                onPageChange: handlePageChange,
+              }}
+              rowActions={rowActions}
+              emptyMessage="No groups found"
+              emptyIcon={FolderOpen}
+            />
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="wsms-grid wsms-grid-cols-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4 wsms-gap-4">
+          {groups.map((group) => (
+            <Card
+              key={group.id}
+              className="wsms-card-hover wsms-group wsms-relative wsms-overflow-hidden"
+            >
+              <CardContent className="wsms-py-4">
+                {inlineEditId === group.id ? (
+                  <div className="wsms-space-y-3">
+                    <Input
+                      value={inlineEditValue}
+                      onChange={(e) => setInlineEditValue(e.target.value)}
+                      onKeyDown={handleInlineEditKeyDown}
+                      autoFocus
+                      className="wsms-h-8"
+                    />
+                    <div className="wsms-flex wsms-gap-2">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="wsms-flex-1 wsms-h-7"
+                        onClick={handleInlineEditCancel}
+                      >
+                        <X className="wsms-h-3 wsms-w-3 wsms-mr-1" />
+                        Cancel
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="wsms-flex-1 wsms-h-7"
+                        onClick={handleInlineEditSave}
+                      >
+                        <Save className="wsms-h-3 wsms-w-3 wsms-mr-1" />
+                        Save
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    {/* Actions - appears on hover */}
+                    <div className="wsms-absolute wsms-top-2 wsms-right-2 wsms-opacity-0 group-hover:wsms-opacity-100 wsms-transition-opacity">
+                      <div className="wsms-flex wsms-gap-1">
+                        <button
+                          onClick={() => handleInlineEditStart(group)}
+                          className="wsms-p-1.5 wsms-rounded-md wsms-bg-muted/80 wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors"
+                        >
+                          <Edit className="wsms-h-3.5 wsms-w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => setDeleteGroup(group)}
+                          className="wsms-p-1.5 wsms-rounded-md wsms-bg-muted/80 wsms-text-muted-foreground hover:wsms-text-destructive wsms-transition-colors"
+                        >
+                          <Trash2 className="wsms-h-3.5 wsms-w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="wsms-flex wsms-items-start wsms-gap-3">
+                      <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10 wsms-shrink-0">
+                        <FolderOpen className="wsms-h-5 wsms-w-5 wsms-text-primary" />
+                      </div>
+                      <div className="wsms-min-w-0">
+                        <button
+                          onClick={() => handleInlineEditStart(group)}
+                          className="wsms-text-[13px] wsms-font-medium wsms-text-foreground hover:wsms-text-primary wsms-text-left wsms-transition-colors wsms-truncate wsms-block wsms-w-full"
+                        >
+                          {group.name}
+                        </button>
+                        <div className="wsms-flex wsms-items-center wsms-gap-1 wsms-mt-1">
+                          <Users className="wsms-h-3 wsms-w-3 wsms-text-muted-foreground" />
+                          <span className="wsms-text-[12px] wsms-text-muted-foreground">
+                            {group.subscriber_count || 0} subscribers
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          ))}
         </div>
       )}
 
-      {/* Quick Add */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Plus className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            Create New Group
-          </CardTitle>
-          <CardDescription>
-            Groups help you organize subscribers for targeted messaging
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <QuickAddForm
-            placeholder="Enter group name..."
-            buttonLabel="Create Group"
-            onSubmit={handleQuickAdd}
-            isLoading={isAddingQuick}
-            validate={(value) => {
-              if (value.length < 2) return 'Group name must be at least 2 characters'
-              if (value.length > 50) return 'Group name must be less than 50 characters'
-              return null
-            }}
-          />
-        </CardContent>
-      </Card>
-
-      {/* Data Table */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <FolderOpen className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            All Groups
-          </CardTitle>
-          <CardDescription>
-            Click on a group name to edit it inline
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="wsms-p-0 wsms-border-t wsms-border-border">
-          <DataTable
-            columns={columns}
-            data={groups}
-            loading={isLoading}
-            pagination={{
-              total: pagination.total,
-              page: pagination.current_page,
-              perPage: pagination.per_page,
-              onPageChange: handlePageChange,
-            }}
-            rowActions={rowActions}
-            emptyMessage="No groups found. Create your first group above."
-            emptyIcon={FolderOpen}
-          />
-        </CardContent>
-      </Card>
+      {/* Pagination for grid view */}
+      {viewMode === 'grid' && pagination.total_pages > 1 && (
+        <div className="wsms-flex wsms-justify-center wsms-gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(pagination.current_page - 1)}
+            disabled={pagination.current_page === 1}
+          >
+            Previous
+          </Button>
+          <span className="wsms-flex wsms-items-center wsms-px-3 wsms-text-[12px] wsms-text-muted-foreground">
+            Page {pagination.current_page} of {pagination.total_pages}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePageChange(pagination.current_page + 1)}
+            disabled={pagination.current_page === pagination.total_pages}
+          >
+            Next
+          </Button>
+        </div>
+      )}
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={!!deleteGroup} onOpenChange={() => setDeleteGroup(null)}>

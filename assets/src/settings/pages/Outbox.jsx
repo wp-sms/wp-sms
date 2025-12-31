@@ -16,6 +16,9 @@ import {
   Download,
   Image,
   MessageSquare,
+  Clock,
+  TrendingUp,
+  TrendingDown,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -23,6 +26,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { DataTable } from '@/components/ui/data-table'
 import { StatusBadge } from '@/components/shared/StatusBadge'
+import { Tip } from '@/components/ui/ux-helpers'
 import {
   Dialog,
   DialogContent,
@@ -202,6 +206,9 @@ export default function Outbox() {
     }
   }, [notification])
 
+  // Calculate success rate
+  const successRate = stats.total > 0 ? Math.round((stats.success / stats.total) * 100) : 0
+
   // Table columns
   const columns = [
     {
@@ -209,9 +216,12 @@ export default function Outbox() {
       label: 'Date',
       sortable: true,
       render: (row) => (
-        <span className="wsms-text-[12px] wsms-text-muted-foreground">
-          {formatDate(row.date, { hour: '2-digit', minute: '2-digit' })}
-        </span>
+        <div className="wsms-flex wsms-items-center wsms-gap-2">
+          <Clock className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
+          <span className="wsms-text-[12px] wsms-text-muted-foreground">
+            {formatDate(row.date, { hour: '2-digit', minute: '2-digit' })}
+          </span>
+        </div>
       ),
     },
     {
@@ -234,7 +244,7 @@ export default function Outbox() {
       key: 'message',
       label: 'Message',
       render: (row) => (
-        <p className="wsms-text-[12px] wsms-text-foreground wsms-line-clamp-2 wsms-max-w-xs">
+        <p className="wsms-text-[12px] wsms-text-foreground wsms-line-clamp-2 wsms-max-w-md">
           {row.message}
         </p>
       ),
@@ -246,7 +256,6 @@ export default function Outbox() {
         if (!row.media) {
           return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
         }
-        // Handle media as URL or comma-separated URLs
         const mediaUrls = typeof row.media === 'string' ? row.media.split(',').map(url => url.trim()) : []
         return (
           <div className="wsms-flex wsms-items-center wsms-gap-1">
@@ -292,7 +301,6 @@ export default function Outbox() {
       label: 'Quick Reply',
       icon: MessageSquare,
       onClick: (row) => {
-        // Extract first number from recipient if multiple
         const recipient = row.recipient?.split(',')[0]?.trim() || row.recipient
         setQuickReplyTo(recipient)
         setQuickReplyMessage('')
@@ -326,6 +334,35 @@ export default function Outbox() {
     },
   ]
 
+  // Empty state
+  const hasNoMessages = !isLoading && messages.length === 0 && !search && statusFilter === 'all'
+
+  if (hasNoMessages) {
+    return (
+      <div className="wsms-space-y-6 wsms-stagger-children">
+        <Card className="wsms-border-dashed">
+          <CardContent className="wsms-py-16">
+            <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center wsms-max-w-md wsms-mx-auto">
+              <div className="wsms-flex wsms-h-16 wsms-w-16 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary/10 wsms-mb-6">
+                <Inbox className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
+              </div>
+              <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
+                No messages yet
+              </h3>
+              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
+                When you send SMS messages, they will appear here.
+                You can track delivery status, resend failed messages, and export your history.
+              </p>
+              <Tip variant="info">
+                Go to <strong>Send SMS</strong> to send your first message!
+              </Tip>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
       {/* Notification */}
@@ -348,47 +385,108 @@ export default function Outbox() {
         </div>
       )}
 
-      {/* Stats Cards */}
-      <div className="wsms-grid wsms-grid-cols-3 wsms-gap-4">
-        <Card className="wsms-py-4 wsms-stat-card wsms-card-hover">
-          <CardContent className="wsms-py-0 wsms-text-center">
-            <p className="wsms-text-2xl wsms-font-bold wsms-text-foreground wsms-count-animate">{stats.total}</p>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Total Messages</p>
-          </CardContent>
-        </Card>
-        <Card className="wsms-py-4 wsms-stat-card wsms-stat-card-success wsms-card-hover">
-          <CardContent className="wsms-py-0 wsms-text-center">
-            <p className="wsms-text-2xl wsms-font-bold wsms-text-success wsms-count-animate">{stats.success}</p>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Sent</p>
-          </CardContent>
-        </Card>
-        <Card className="wsms-py-4 wsms-stat-card wsms-stat-card-destructive wsms-card-hover">
-          <CardContent className="wsms-py-0 wsms-text-center">
-            <p className="wsms-text-2xl wsms-font-bold wsms-text-destructive wsms-count-animate">{stats.failed}</p>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Failed</p>
-          </CardContent>
-        </Card>
+      {/* Stats Header Bar - Full Width */}
+      <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
+        <div className="wsms-flex wsms-items-center wsms-gap-8">
+          {/* Total */}
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10">
+              <Inbox className="wsms-h-5 wsms-w-5 wsms-text-primary" />
+            </div>
+            <div>
+              <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
+              <p className="wsms-text-[11px] wsms-text-muted-foreground">Total Messages</p>
+            </div>
+          </div>
+
+          <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
+
+          {/* Sent */}
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-success/10">
+              <CheckCircle className="wsms-h-5 wsms-w-5 wsms-text-success" />
+            </div>
+            <div>
+              <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.success}</p>
+              <p className="wsms-text-[11px] wsms-text-muted-foreground">Sent</p>
+            </div>
+          </div>
+
+          <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
+
+          {/* Failed */}
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-destructive/10">
+              <XCircle className="wsms-h-5 wsms-w-5 wsms-text-destructive" />
+            </div>
+            <div>
+              <p className="wsms-text-xl wsms-font-bold wsms-text-destructive">{stats.failed}</p>
+              <p className="wsms-text-[11px] wsms-text-muted-foreground">Failed</p>
+            </div>
+          </div>
+
+          <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
+
+          {/* Success Rate */}
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            <div className={cn(
+              'wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg',
+              successRate >= 90 ? 'wsms-bg-success/10' : successRate >= 70 ? 'wsms-bg-amber-500/10' : 'wsms-bg-destructive/10'
+            )}>
+              {successRate >= 90 ? (
+                <TrendingUp className="wsms-h-5 wsms-w-5 wsms-text-success" />
+              ) : successRate >= 70 ? (
+                <TrendingUp className="wsms-h-5 wsms-w-5 wsms-text-amber-500" />
+              ) : (
+                <TrendingDown className="wsms-h-5 wsms-w-5 wsms-text-destructive" />
+              )}
+            </div>
+            <div>
+              <p className={cn(
+                'wsms-text-xl wsms-font-bold',
+                successRate >= 90 ? 'wsms-text-success' : successRate >= 70 ? 'wsms-text-amber-500' : 'wsms-text-destructive'
+              )}>
+                {successRate}%
+              </p>
+              <p className="wsms-text-[11px] wsms-text-muted-foreground">Success Rate</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Export Button */}
+        <Button variant="outline" onClick={handleExport} disabled={isExporting}>
+          {isExporting ? (
+            <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
+          ) : (
+            <>
+              <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+              Export
+            </>
+          )}
+        </Button>
       </div>
 
-      {/* Filters */}
+      {/* Filters - Full Width */}
       <Card>
         <CardContent className="wsms-py-4">
-          <div className="wsms-flex wsms-flex-wrap wsms-gap-3">
-            <div className="wsms-flex-1 wsms-min-w-[200px]">
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            {/* Search */}
+            <div className="wsms-flex-1 wsms-max-w-md">
               <div className="wsms-relative">
                 <Search className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
                 <Input
                   type="text"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search messages..."
+                  placeholder="Search messages or recipients..."
                   className="wsms-pl-9"
                 />
               </div>
             </div>
+
+            {/* Status Filter */}
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="wsms-w-[140px]">
-                <Filter className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+              <SelectTrigger className="wsms-w-[130px]">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -397,40 +495,34 @@ export default function Outbox() {
                 <SelectItem value="failed">Failed</SelectItem>
               </SelectContent>
             </Select>
-            <div className="wsms-flex wsms-items-center wsms-gap-2">
+
+            {/* Date Range */}
+            <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-ml-auto">
               <Calendar className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
               <Input
                 type="date"
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                className="wsms-w-[140px]"
+                className="wsms-w-[130px]"
               />
-              <span className="wsms-text-muted-foreground">to</span>
+              <span className="wsms-text-muted-foreground wsms-text-[12px]">to</span>
               <Input
                 type="date"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                className="wsms-w-[140px]"
+                className="wsms-w-[130px]"
               />
             </div>
-            <Button variant="outline" onClick={() => fetchMessages(1)}>
-              <RefreshCw className="wsms-h-4 wsms-w-4" />
-            </Button>
-            <Button variant="outline" onClick={handleExport} disabled={isExporting}>
-              {isExporting ? (
-                <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
-              ) : (
-                <>
-                  <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-                  Export
-                </>
-              )}
+
+            {/* Refresh */}
+            <Button variant="outline" size="icon" onClick={() => fetchMessages(1)}>
+              <RefreshCw className={cn('wsms-h-4 wsms-w-4', isLoading && 'wsms-animate-spin')} />
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Data Table */}
+      {/* Data Table - Full Width */}
       <Card>
         <CardContent className="wsms-p-0">
           <DataTable
@@ -456,7 +548,7 @@ export default function Outbox() {
             }}
             rowActions={rowActions}
             bulkActions={bulkActions}
-            emptyMessage="No messages found"
+            emptyMessage="No messages match your filters"
             emptyIcon={Inbox}
           />
         </CardContent>
@@ -466,7 +558,10 @@ export default function Outbox() {
       <Dialog open={!!viewMessage} onOpenChange={() => setViewMessage(null)}>
         <DialogContent size="lg">
           <DialogHeader>
-            <DialogTitle>Message Details</DialogTitle>
+            <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              Message Details
+            </DialogTitle>
             <DialogDescription>
               Sent on {viewMessage && formatDate(viewMessage.date, { hour: '2-digit', minute: '2-digit' })}
             </DialogDescription>
@@ -474,38 +569,53 @@ export default function Outbox() {
           <DialogBody>
             {viewMessage && (
               <div className="wsms-space-y-4">
-                <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
-                  <div>
+                {/* Status and Recipients Row */}
+                <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-p-4 wsms-rounded-lg wsms-bg-muted/30">
+                  <div className="wsms-flex-1">
                     <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Status</p>
                     <StatusBadge variant={viewMessage.status === 'success' ? 'success' : 'failed'}>
                       {viewMessage.status === 'success' ? 'Sent' : 'Failed'}
                     </StatusBadge>
                   </div>
-                  <div>
+                  <div className="wsms-w-px wsms-h-8 wsms-bg-border" />
+                  <div className="wsms-flex-1">
                     <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Recipients</p>
                     <p className="wsms-text-[13px] wsms-font-medium">{viewMessage.recipient_count}</p>
                   </div>
+                  {viewMessage.sender && (
+                    <>
+                      <div className="wsms-w-px wsms-h-8 wsms-bg-border" />
+                      <div className="wsms-flex-1">
+                        <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Sender</p>
+                        <p className="wsms-text-[13px] wsms-font-medium">{viewMessage.sender}</p>
+                      </div>
+                    </>
+                  )}
                 </div>
+
+                {/* Recipient(s) */}
                 <div>
                   <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Recipient(s)</p>
-                  <p className="wsms-text-[13px] wsms-break-all">{viewMessage.recipient}</p>
+                  <p className="wsms-text-[13px] wsms-break-all wsms-font-mono wsms-p-2 wsms-rounded wsms-bg-muted/30">
+                    {viewMessage.recipient}
+                  </p>
                 </div>
-                {viewMessage.sender && (
-                  <div>
-                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Sender</p>
-                    <p className="wsms-text-[13px]">{viewMessage.sender}</p>
-                  </div>
-                )}
+
+                {/* Message */}
                 <div>
                   <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Message</p>
-                  <div className="wsms-p-3 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
+                  <div className="wsms-p-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
                     <p className="wsms-text-[13px] wsms-whitespace-pre-wrap">{viewMessage.message}</p>
                   </div>
                 </div>
+
+                {/* Gateway Response */}
                 {viewMessage.response && (
                   <div>
                     <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Gateway Response</p>
-                    <p className="wsms-text-[12px] wsms-text-muted-foreground">{viewMessage.response}</p>
+                    <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-font-mono wsms-p-2 wsms-rounded wsms-bg-muted/30">
+                      {viewMessage.response}
+                    </p>
                   </div>
                 )}
               </div>
@@ -542,7 +652,7 @@ export default function Outbox() {
                 <Input
                   value={quickReplyTo || ''}
                   readOnly
-                  className="wsms-bg-muted/50"
+                  className="wsms-bg-muted/50 wsms-font-mono"
                 />
               </div>
               <div className="wsms-space-y-2">

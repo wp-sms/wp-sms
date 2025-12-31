@@ -17,6 +17,8 @@ import {
   FolderOpen,
   Globe,
   Send,
+  UserCheck,
+  UserX,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -26,6 +28,7 @@ import { DataTable } from '@/components/ui/data-table'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { QuickAddForm } from '@/components/shared/QuickAddForm'
 import { ImportExportDialog } from '@/components/shared/ImportExportDialog'
+import { Tip } from '@/components/ui/ux-helpers'
 import {
   Dialog,
   DialogContent,
@@ -240,7 +243,6 @@ export default function Subscribers() {
       status: statusFilter !== 'all' ? statusFilter : undefined,
     })
 
-    // Download CSV
     const csvContent = result.data.map((row) => row.join(',')).join('\n')
     const blob = new Blob([csvContent], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
@@ -373,7 +375,6 @@ export default function Subscribers() {
         </StatusBadge>
       ),
     },
-    // Activate Code column - only shown when verification is enabled
     ...(showActivateCode
       ? [
           {
@@ -444,6 +445,62 @@ export default function Subscribers() {
     },
   ]
 
+  // Empty state
+  const hasNoSubscribers = !isLoading && subscribers.length === 0 && !search && groupFilter === 'all' && statusFilter === 'all'
+
+  if (hasNoSubscribers) {
+    return (
+      <div className="wsms-space-y-6 wsms-stagger-children">
+        <Card className="wsms-border-dashed">
+          <CardContent className="wsms-py-16">
+            <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center wsms-max-w-md wsms-mx-auto">
+              <div className="wsms-flex wsms-h-16 wsms-w-16 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary/10 wsms-mb-6">
+                <Users className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
+              </div>
+              <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
+                No subscribers yet
+              </h3>
+              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
+                Start building your SMS audience. Add subscribers manually, import from CSV, or let users subscribe through your website forms.
+              </p>
+
+              {/* Quick Add */}
+              <div className="wsms-w-full wsms-max-w-sm wsms-mb-6">
+                <QuickAddForm
+                  placeholder="Enter phone number..."
+                  buttonLabel="Add Subscriber"
+                  onSubmit={handleQuickAdd}
+                  isLoading={isAddingQuick}
+                />
+              </div>
+
+              {/* Import option */}
+              <Button variant="outline" onClick={() => setShowImportDialog(true)}>
+                <Upload className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                Import from CSV
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Import Dialog */}
+        <ImportExportDialog
+          open={showImportDialog}
+          onOpenChange={setShowImportDialog}
+          mode="import"
+          title="Import Subscribers"
+          description="Upload a CSV file with subscriber data"
+          onImport={handleImport}
+          importFields={[
+            { name: 'name', label: 'Name', required: false },
+            { name: 'mobile', label: 'Mobile', required: true },
+            { name: 'group_id', label: 'Group ID', required: false },
+          ]}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
       {/* Notification */}
@@ -466,114 +523,145 @@ export default function Subscribers() {
         </div>
       )}
 
-      {/* Stats Cards */}
-      <div className="wsms-grid wsms-grid-cols-3 wsms-gap-4">
-        <Card className="wsms-py-4 wsms-stat-card wsms-card-hover">
-          <CardContent className="wsms-py-0 wsms-text-center">
-            <p className="wsms-text-2xl wsms-font-bold wsms-text-foreground wsms-count-animate">{stats.total}</p>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Total Subscribers</p>
-          </CardContent>
-        </Card>
-        <Card className="wsms-py-4 wsms-stat-card wsms-stat-card-success wsms-card-hover">
-          <CardContent className="wsms-py-0 wsms-text-center">
-            <p className="wsms-text-2xl wsms-font-bold wsms-text-success wsms-count-animate">{stats.active}</p>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Active</p>
-          </CardContent>
-        </Card>
-        <Card className="wsms-py-4 wsms-stat-card wsms-stat-card-warning wsms-card-hover">
-          <CardContent className="wsms-py-0 wsms-text-center">
-            <p className="wsms-text-2xl wsms-font-bold wsms-text-muted-foreground wsms-count-animate">{stats.inactive}</p>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Inactive</p>
-          </CardContent>
-        </Card>
+      {/* Stats Header Bar */}
+      <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
+        <div className="wsms-flex wsms-items-center wsms-gap-8">
+          {/* Total */}
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10">
+              <Users className="wsms-h-5 wsms-w-5 wsms-text-primary" />
+            </div>
+            <div>
+              <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
+              <p className="wsms-text-[11px] wsms-text-muted-foreground">Total</p>
+            </div>
+          </div>
+
+          <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
+
+          {/* Active */}
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-success/10">
+              <UserCheck className="wsms-h-5 wsms-w-5 wsms-text-success" />
+            </div>
+            <div>
+              <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.active}</p>
+              <p className="wsms-text-[11px] wsms-text-muted-foreground">Active</p>
+            </div>
+          </div>
+
+          <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
+
+          {/* Inactive */}
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-muted">
+              <UserX className="wsms-h-5 wsms-w-5 wsms-text-muted-foreground" />
+            </div>
+            <div>
+              <p className="wsms-text-xl wsms-font-bold wsms-text-muted-foreground">{stats.inactive}</p>
+              <p className="wsms-text-[11px] wsms-text-muted-foreground">Inactive</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Import/Export */}
+        <div className="wsms-flex wsms-items-center wsms-gap-2">
+          <Button variant="outline" size="sm" onClick={() => setShowImportDialog(true)}>
+            <Upload className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+            Import
+          </Button>
+          <Button variant="outline" size="sm" onClick={handleExport}>
+            <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+            Export
+          </Button>
+        </div>
       </div>
 
-      {/* Quick Add */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <UserPlus className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            Quick Add Subscriber
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <QuickAddForm
-            placeholder="Enter phone number..."
-            buttonLabel="Add"
-            onSubmit={handleQuickAdd}
-            isLoading={isAddingQuick}
-          />
-        </CardContent>
-      </Card>
-
-      {/* Filters */}
-      <Card>
-        <CardContent className="wsms-py-4">
-          <div className="wsms-flex wsms-flex-wrap wsms-gap-3">
-            <div className="wsms-flex-1 wsms-min-w-[200px]">
-              <div className="wsms-relative">
-                <Search className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-                <Input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search subscribers..."
-                  className="wsms-pl-9"
+      {/* Quick Add + Filters Row */}
+      <div className="wsms-grid wsms-grid-cols-1 lg:wsms-grid-cols-3 wsms-gap-4">
+        {/* Quick Add */}
+        <Card>
+          <CardContent className="wsms-py-4">
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <UserPlus className="wsms-h-5 wsms-w-5 wsms-text-primary wsms-shrink-0" />
+              <div className="wsms-flex-1">
+                <QuickAddForm
+                  placeholder="Enter phone number..."
+                  buttonLabel="Add"
+                  onSubmit={handleQuickAdd}
+                  isLoading={isAddingQuick}
                 />
               </div>
             </div>
-            <Select value={groupFilter} onValueChange={setGroupFilter}>
-              <SelectTrigger className="wsms-w-[160px]">
-                <SelectValue placeholder="All Groups" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Groups</SelectItem>
-                {groups.map((group) => (
-                  <SelectItem key={group.id} value={group.id.toString()}>
-                    {group.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="wsms-w-[140px]">
-                <SelectValue placeholder="All Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
-            {countries.length > 0 && (
-              <Select value={countryFilter} onValueChange={setCountryFilter}>
-                <SelectTrigger className="wsms-w-[160px]">
-                  <div className="wsms-flex wsms-items-center wsms-gap-2">
-                    <Globe className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-                    <SelectValue placeholder="All Countries" />
-                  </div>
+          </CardContent>
+        </Card>
+
+        {/* Filters */}
+        <Card className="lg:wsms-col-span-2">
+          <CardContent className="wsms-py-4">
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              {/* Search */}
+              <div className="wsms-flex-1">
+                <div className="wsms-relative">
+                  <Search className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+                  <Input
+                    type="text"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    placeholder="Search subscribers..."
+                    className="wsms-pl-9"
+                  />
+                </div>
+              </div>
+
+              {/* Group Filter */}
+              <Select value={groupFilter} onValueChange={setGroupFilter}>
+                <SelectTrigger className="wsms-w-[140px]">
+                  <SelectValue placeholder="All Groups" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Countries</SelectItem>
-                  {countries.map((country) => (
-                    <SelectItem key={country.code} value={country.code}>
-                      {country.name}
+                  <SelectItem value="all">All Groups</SelectItem>
+                  {groups.map((group) => (
+                    <SelectItem key={group.id} value={group.id.toString()}>
+                      {group.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-            )}
-            <Button variant="outline" onClick={() => setShowImportDialog(true)}>
-              <Upload className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-              Import
-            </Button>
-            <Button variant="outline" onClick={handleExport}>
-              <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-              Export
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+
+              {/* Status Filter */}
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <SelectTrigger className="wsms-w-[120px]">
+                  <SelectValue placeholder="All Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {/* Country Filter */}
+              {countries.length > 0 && (
+                <Select value={countryFilter} onValueChange={setCountryFilter}>
+                  <SelectTrigger className="wsms-w-[140px]">
+                    <Globe className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-text-muted-foreground" />
+                    <SelectValue placeholder="All Countries" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Countries</SelectItem>
+                    {countries.map((country) => (
+                      <SelectItem key={country.code} value={country.code}>
+                        {country.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Data Table */}
       <Card>
@@ -601,7 +689,7 @@ export default function Subscribers() {
             }}
             rowActions={rowActions}
             bulkActions={bulkActions}
-            emptyMessage="No subscribers found"
+            emptyMessage="No subscribers match your filters"
             emptyIcon={Users}
           />
         </CardContent>
@@ -611,7 +699,10 @@ export default function Subscribers() {
       <Dialog open={!!editSubscriber} onOpenChange={() => setEditSubscriber(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Edit Subscriber</DialogTitle>
+            <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <Edit className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              Edit Subscriber
+            </DialogTitle>
             <DialogDescription>Update subscriber information</DialogDescription>
           </DialogHeader>
           <DialogBody>
@@ -630,41 +721,44 @@ export default function Subscribers() {
                   value={formData.mobile}
                   onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
                   placeholder="+1234567890"
+                  className="wsms-font-mono"
                 />
               </div>
-              <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium">Group</label>
-                <Select
-                  value={formData.group_id}
-                  onValueChange={(v) => setFormData({ ...formData, group_id: v })}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select group" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">No Group</SelectItem>
-                    {groups.map((group) => (
-                      <SelectItem key={group.id} value={group.id.toString()}>
-                        {group.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium">Status</label>
-                <Select
-                  value={formData.status}
-                  onValueChange={(v) => setFormData({ ...formData, status: v })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="1">Active</SelectItem>
-                    <SelectItem value="0">Inactive</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
+                <div className="wsms-space-y-2">
+                  <label className="wsms-text-[12px] wsms-font-medium">Group</label>
+                  <Select
+                    value={formData.group_id}
+                    onValueChange={(v) => setFormData({ ...formData, group_id: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select group" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="">No Group</SelectItem>
+                      {groups.map((group) => (
+                        <SelectItem key={group.id} value={group.id.toString()}>
+                          {group.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="wsms-space-y-2">
+                  <label className="wsms-text-[12px] wsms-font-medium">Status</label>
+                  <Select
+                    value={formData.status}
+                    onValueChange={(v) => setFormData({ ...formData, status: v })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">Active</SelectItem>
+                      <SelectItem value="0">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
           </DialogBody>
