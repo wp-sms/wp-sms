@@ -87,8 +87,12 @@ export default function SendSms() {
 
   // Validation
   const smsInfo = calculateSmsInfo(message)
-  const isValid = message.trim().length > 0 && totalManualRecipients > 0
-  const canSend = isValid && !isSending
+  const hasMessage = message.trim().length > 0
+  const hasSelections = totalManualRecipients > 0
+  const hasActualRecipients = recipientCount > 0
+  const isValid = hasMessage && hasSelections
+  // Only allow send if we have actual recipients (not just selections of empty groups)
+  const canSend = hasMessage && hasActualRecipients && !isSending && !isLoadingCount
 
   // Handle preview button click
   const handlePreview = useCallback(() => {
@@ -368,11 +372,13 @@ export default function SendSms() {
 
           {/* Right: Validation + Button */}
           <div className="wsms-flex wsms-items-center wsms-gap-4">
-            {!isValid && (
+            {!canSend && (
               <p className="wsms-text-[12px] wsms-text-amber-600">
-                {totalManualRecipients === 0 && message.trim() && 'Add recipients'}
-                {totalManualRecipients > 0 && !message.trim() && 'Enter a message'}
-                {totalManualRecipients === 0 && !message.trim() && 'Add message and recipients'}
+                {!hasMessage && !hasSelections && 'Add message and recipients'}
+                {!hasMessage && hasSelections && 'Enter a message'}
+                {hasMessage && !hasSelections && 'Add recipients'}
+                {hasMessage && hasSelections && !hasActualRecipients && !isLoadingCount && 'Selected groups/roles have no subscribers'}
+                {isLoadingCount && 'Checking recipients...'}
               </p>
             )}
             <Button
@@ -380,7 +386,11 @@ export default function SendSms() {
               disabled={!canSend}
               className="wsms-gap-2"
             >
-              <Eye className="wsms-h-4 wsms-w-4" />
+              {isLoadingCount ? (
+                <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
+              ) : (
+                <Eye className="wsms-h-4 wsms-w-4" />
+              )}
               Review & Send
             </Button>
           </div>
