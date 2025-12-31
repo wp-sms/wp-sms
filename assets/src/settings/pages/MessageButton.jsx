@@ -42,11 +42,13 @@ export default function MessageButton() {
 
   const isEnabled = messageButton === '1'
 
-  // Hide chatbox on initial page load
+  // Ensure chatbox is hidden when leaving this page
   useEffect(() => {
-    const chatbox = document.querySelector('.wpsms-chatbox')
-    if (chatbox) {
-      chatbox.style.display = 'none'
+    return () => {
+      const chatbox = document.querySelector('.wpsms-chatbox')
+      if (chatbox) {
+        chatbox.classList.remove('wpsms-chatbox--visible')
+      }
     }
   }, [])
 
@@ -54,20 +56,7 @@ export default function MessageButton() {
   const handlePreviewClick = useCallback(() => {
     const chatbox = document.querySelector('.wpsms-chatbox')
     if (chatbox) {
-      if (chatbox.style.display === 'none' || !chatbox.style.display) {
-        chatbox.style.display = 'block'
-        // Add fade-in effect
-        chatbox.style.opacity = '0'
-        chatbox.style.transition = 'opacity 0.3s ease'
-        setTimeout(() => {
-          chatbox.style.opacity = '1'
-        }, 10)
-      } else {
-        chatbox.style.opacity = '0'
-        setTimeout(() => {
-          chatbox.style.display = 'none'
-        }, 300)
-      }
+      chatbox.classList.toggle('wpsms-chatbox--visible')
     }
   }, [])
 

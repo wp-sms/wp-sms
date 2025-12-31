@@ -79,6 +79,9 @@ class NewSettingsPage extends Singleton
             #wpfooter { display: none !important; }
             #wpbody-content { padding: 0 !important; }
             #wpcontent { padding: 0 !important; }
+            /* Hide chatbox by default - React Preview button will toggle it */
+            .wpsms-chatbox { display: none !important; }
+            .wpsms-chatbox.wpsms-chatbox--visible { display: block !important; }
         </style>';
         echo '<div id="wpsms-settings-root" class="wpsms-settings-app"></div>';
     }
