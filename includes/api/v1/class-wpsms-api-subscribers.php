@@ -364,7 +364,7 @@ class SubscribersApi extends RestApi
         }
 
         // Check if subscriber exists
-        $existing = Newsletter::getSubscriberByNumber($mobile);
+        $existing = Newsletter::getSubscriberByMobile($mobile);
         if ($existing) {
             return self::response(__('A subscriber with this phone number already exists', 'wp-sms'), 400);
         }

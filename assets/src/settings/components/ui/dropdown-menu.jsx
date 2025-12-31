@@ -49,8 +49,23 @@ const DropdownMenuSubContent = React.forwardRef(
 )
 DropdownMenuSubContent.displayName = DropdownMenuPrimitive.SubContent.displayName
 
+const dropdownContentStyles = {
+  backgroundColor: '#ffffff',
+  border: '1px solid #e5e7eb',
+  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+  borderRadius: '8px',
+  padding: '6px',
+  minWidth: '140px',
+  zIndex: 999999,
+  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  fontSize: '13px',
+  lineHeight: '1.5',
+  color: '#374151',
+  outline: 'none',
+}
+
 const DropdownMenuContent = React.forwardRef(
-  ({ className, sideOffset = 4, ...props }, ref) => (
+  ({ className, sideOffset = 4, style, ...props }, ref) => (
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.Content
         ref={ref}
@@ -59,15 +74,7 @@ const DropdownMenuContent = React.forwardRef(
           'wsms-z-[99999] wsms-min-w-[140px] wsms-overflow-hidden wsms-rounded-lg wsms-p-1.5 wsms-shadow-lg',
           className
         )}
-        style={{
-          backgroundColor: '#ffffff',
-          border: '1px solid #e5e7eb',
-          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
-          borderRadius: '8px',
-          padding: '6px',
-          minWidth: '140px',
-          zIndex: 999999,
-        }}
+        style={{ ...dropdownContentStyles, ...style }}
         {...props}
       />
     </DropdownMenuPrimitive.Portal>
@@ -75,8 +82,27 @@ const DropdownMenuContent = React.forwardRef(
 )
 DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName
 
+const dropdownItemBaseStyles = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  padding: '8px 10px',
+  borderRadius: '6px',
+  fontSize: '13px',
+  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  lineHeight: '1.5',
+  color: '#374151',
+  cursor: 'pointer',
+  transition: 'background-color 0.15s ease',
+  outline: 'none',
+  border: 'none',
+  width: '100%',
+  textAlign: 'left',
+  textDecoration: 'none',
+}
+
 const DropdownMenuItem = React.forwardRef(
-  ({ className, inset, ...props }, ref) => {
+  ({ className, inset, style, ...props }, ref) => {
     const [isHovered, setIsHovered] = React.useState(false)
     return (
       <DropdownMenuPrimitive.Item
@@ -88,16 +114,9 @@ const DropdownMenuItem = React.forwardRef(
           className
         )}
         style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '8px 10px',
-          borderRadius: '6px',
-          fontSize: '13px',
-          color: '#374151',
-          cursor: 'pointer',
+          ...dropdownItemBaseStyles,
           backgroundColor: isHovered ? '#f3f4f6' : 'transparent',
-          transition: 'background-color 0.15s ease',
+          ...style,
         }}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}

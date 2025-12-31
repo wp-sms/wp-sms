@@ -753,14 +753,14 @@ export default function Subscribers() {
                 <div className="wsms-space-y-2">
                   <label className="wsms-text-[12px] wsms-font-medium">Group</label>
                   <Select
-                    value={formData.group_id}
-                    onValueChange={(v) => setFormData({ ...formData, group_id: v })}
+                    value={formData.group_id || 'none'}
+                    onValueChange={(v) => setFormData({ ...formData, group_id: v === 'none' ? '' : v })}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select group" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">No Group</SelectItem>
+                      <SelectItem value="none">No Group</SelectItem>
                       {groups.map((group) => (
                         <SelectItem key={group.id} value={group.id.toString()}>
                           {group.name}

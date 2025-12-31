@@ -242,6 +242,7 @@ class UnifiedAdminPage extends Singleton
             'proSettings'   => $this->maskSensitiveSettings(Option::getOptions(true)),
             'addons'        => $this->getActiveAddons(),
             'gateways'      => Gateway::gateway(),
+            'gateway'       => $this->getGatewayCapabilities(),
             'adminUrl'      => admin_url(),
             'siteUrl'       => site_url(),
             'version'       => WP_SMS_VERSION,
@@ -339,6 +340,84 @@ class UnifiedAdminPage extends Singleton
             }
         }
         return null;
+    }
+
+    /**
+     * Get active gateway capabilities
+     *
+     * @return array
+     */
+    private function getGatewayCapabilities()
+    {
+        try {
+            global $sms;
+
+            // Initialize gateway if not already done
+            if (!$sms || !is_object($sms)) {
+                if (function_exists('wp_sms_initial_gateway')) {
+                    $sms = wp_sms_initial_gateway();
+                }
+            }
+
+            if (!$sms || !is_object($sms)) {
+                return [
+                    'flash'          => '',
+                    'supportMedia'   => false,
+                    'bulk_send'      => false,
+                    'validateNumber' => '',
+                    'from'           => '',
+                    'gatewayFields'  => [],
+                    'help'           => '',
+                    'documentUrl'    => '',
+                ];
+            }
+
+            // Build gateway fields array
+            $gatewayFields = [];
+            if (!empty($sms->gatewayFields) && is_array($sms->gatewayFields)) {
+                foreach ($sms->gatewayFields as $key => $field) {
+                    if (!is_array($field)) {
+                        continue;
+                    }
+                    $gatewayFields[$key] = [
+                        'id'          => $field['id'] ?? '',
+                        'name'        => $field['name'] ?? '',
+                        'desc'        => $field['desc'] ?? '',
+                        'placeholder' => $field['place_holder'] ?? '',
+                        'type'        => $field['type'] ?? 'text',
+                        'options'     => $field['options'] ?? [],
+                    ];
+                }
+            }
+
+            // Sanitize help text
+            $help = '';
+            if (!empty($sms->help) && $sms->help !== false) {
+                $help = wp_kses_post($sms->help);
+            }
+
+            return [
+                'flash'          => $sms->flash ?? '',
+                'supportMedia'   => $sms->supportMedia ?? false,
+                'bulk_send'      => $sms->bulk_send ?? false,
+                'validateNumber' => $sms->validateNumber ?? '',
+                'from'           => $sms->from ?? '',
+                'gatewayFields'  => $gatewayFields,
+                'help'           => $help,
+                'documentUrl'    => is_string($sms->documentUrl ?? '') ? ($sms->documentUrl ?? '') : '',
+            ];
+        } catch (\Exception $e) {
+            return [
+                'flash'          => '',
+                'supportMedia'   => false,
+                'bulk_send'      => false,
+                'validateNumber' => '',
+                'from'           => '',
+                'gatewayFields'  => [],
+                'help'           => '',
+                'documentUrl'    => '',
+            ];
+        }
     }
 
     /**

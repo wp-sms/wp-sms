@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap } from 'lucide-react'
+import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap, BookOpen, ExternalLink } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -12,15 +12,16 @@ import { useToast } from '@/components/ui/toaster'
 import { getWpSettings, cn } from '@/lib/utils'
 
 export default function Gateway() {
-  const { testGatewayConnection } = useSettings()
+  const { testGatewayConnection, getSetting, updateSetting } = useSettings()
   const { toast } = useToast()
-  const { gateways = {}, countries = {} } = getWpSettings()
+  const { gateways = {}, countries = {}, gateway: gatewayCapabilities = {} } = getWpSettings()
+
+  // Get dynamic gateway fields and help from capabilities
+  const gatewayFields = gatewayCapabilities.gatewayFields || {}
+  const gatewayHelp = gatewayCapabilities.help || ''
+  const gatewayDocumentUrl = gatewayCapabilities.documentUrl || ''
 
   const [gatewayName, setGatewayName] = useSetting('gateway_name', '')
-  const [gatewayUsername, setGatewayUsername] = useSetting('gateway_username', '')
-  const [gatewayPassword, setGatewayPassword] = useSetting('gateway_password', '')
-  const [gatewayKey, setGatewayKey] = useSetting('gateway_key', '')
-  const [gatewaySenderId, setGatewaySenderId] = useSetting('gateway_sender_id', '')
 
   const [deliveryMethod, setDeliveryMethod] = useSetting('sms_delivery_method', 'api_direct_send')
   const [sendUnicode, setSendUnicode] = useSetting('send_unicode', '')
@@ -157,8 +158,49 @@ export default function Gateway() {
         </CardContent>
       </Card>
 
+      {/* Notice when gateway selected but no credentials fields (new gateway not saved yet) */}
+      {gatewayName && Object.keys(gatewayFields).length === 0 && (
+        <Tip variant="info">
+          Save your changes to configure credentials for <strong>{gatewayName}</strong>. The credential fields will appear after saving.
+        </Tip>
+      )}
+
+      {/* Gateway Guide */}
+      {gatewayName && (gatewayHelp || gatewayDocumentUrl) && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <BookOpen className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              Gateway Guide
+            </CardTitle>
+            <CardDescription>Setup instructions for {gatewayName}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="wsms-space-y-3">
+              {gatewayHelp && (
+                <div
+                  className="wsms-text-[13px] wsms-text-foreground [&_a]:wsms-text-primary [&_a]:wsms-underline [&_a]:hover:wsms-text-primary/80"
+                  dangerouslySetInnerHTML={{ __html: gatewayHelp }}
+                />
+              )}
+              {gatewayDocumentUrl && (
+                <a
+                  href={gatewayDocumentUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px] wsms-text-primary hover:wsms-text-primary/80 wsms-font-medium"
+                >
+                  <ExternalLink className="wsms-h-3.5 wsms-w-3.5" />
+                  View Full Documentation
+                </a>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Gateway Credentials */}
-      {gatewayName && (
+      {gatewayName && Object.keys(gatewayFields).length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
@@ -168,37 +210,43 @@ export default function Gateway() {
             <CardDescription>API credentials for {gatewayName}</CardDescription>
           </CardHeader>
           <CardContent className="wsms-space-y-4">
-            <Tip variant="info" dismissible>
-              Find your API credentials in your gateway provider's dashboard. Not all fields may be required — check your gateway's documentation.
-            </Tip>
-
             <div className="wsms-grid wsms-grid-cols-1 wsms-gap-4 md:wsms-grid-cols-2">
-              <InputField
-                label="API Username"
-                value={gatewayUsername}
-                onChange={(e) => setGatewayUsername(e.target.value)}
-                placeholder="Your gateway account username"
-              />
-              <InputField
-                label="API Password"
-                type="password"
-                value={gatewayPassword}
-                onChange={(e) => setGatewayPassword(e.target.value)}
-                placeholder="Your gateway account password"
-              />
-              <InputField
-                label="API Key"
-                value={gatewayKey}
-                onChange={(e) => setGatewayKey(e.target.value)}
-                placeholder="Your gateway API key or token"
-              />
-              <InputField
-                label="Sender ID"
-                description="The name recipients see as the sender. Must be approved by your gateway."
-                value={gatewaySenderId}
-                onChange={(e) => setGatewaySenderId(e.target.value)}
-                placeholder="e.g., MyBrand"
-              />
+              {Object.entries(gatewayFields).map(([key, field]) => {
+                const fieldValue = getSetting(field.id, '')
+                const isPassword = key === 'password' || field.id.includes('password')
+
+                // Handle select fields
+                if (field.type === 'select' && field.options) {
+                  const options = Object.entries(field.options).map(([value, label]) => ({
+                    value,
+                    label,
+                  }))
+                  return (
+                    <SelectField
+                      key={field.id}
+                      label={field.name}
+                      description={field.desc}
+                      value={fieldValue}
+                      onValueChange={(value) => updateSetting(field.id, value)}
+                      placeholder={field.placeholder || `Select ${field.name}`}
+                      options={options}
+                    />
+                  )
+                }
+
+                // Handle text/password fields
+                return (
+                  <InputField
+                    key={field.id}
+                    label={field.name}
+                    description={field.desc}
+                    type={isPassword ? 'password' : 'text'}
+                    value={fieldValue}
+                    onChange={(e) => updateSetting(field.id, e.target.value)}
+                    placeholder={field.placeholder || ''}
+                  />
+                )
+              })}
             </div>
 
             <div className="wsms-flex wsms-items-center wsms-justify-between wsms-pt-4 wsms-border-t wsms-border-border">

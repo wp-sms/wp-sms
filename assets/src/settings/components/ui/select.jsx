@@ -24,16 +24,28 @@ const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) 
 ))
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
 
-const SelectContent = React.forwardRef(({ className, children, position = 'popper', ...props }, ref) => (
-  <SelectPrimitive.Portal container={document.getElementById('wpsms-settings-root')}>
+const selectContentStyles = {
+  zIndex: 9999999,
+  backgroundColor: '#ffffff',
+  border: '1px solid #e5e5e5',
+  borderRadius: '6px',
+  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  fontSize: '13px',
+  color: '#1f2937',
+}
+
+const SelectContent = React.forwardRef(({ className, children, position = 'popper', style, ...props }, ref) => (
+  <SelectPrimitive.Portal>
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        'wsms-relative wsms-z-50 wsms-max-h-80 wsms-min-w-[8rem] wsms-overflow-hidden wsms-rounded wsms-border wsms-border-border wsms-bg-popover wsms-text-popover-foreground wsms-shadow-md',
+        'wsms-relative wsms-max-h-80 wsms-min-w-[8rem] wsms-overflow-hidden wsms-rounded wsms-shadow-md',
         position === 'popper' && 'wsms-translate-y-1',
         className
       )}
       position={position}
+      style={{ ...selectContentStyles, ...style }}
       {...props}
     >
       <SelectPrimitive.Viewport
@@ -58,23 +70,48 @@ const SelectLabel = React.forwardRef(({ className, ...props }, ref) => (
 ))
 SelectLabel.displayName = SelectPrimitive.Label.displayName
 
-const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => (
-  <SelectPrimitive.Item
-    ref={ref}
-    className={cn(
-      'wsms-relative wsms-flex wsms-w-full wsms-cursor-pointer wsms-select-none wsms-items-center wsms-rounded wsms-py-1.5 wsms-pl-7 wsms-pr-2 wsms-text-[13px] wsms-outline-none focus:wsms-bg-accent data-[disabled]:wsms-pointer-events-none data-[disabled]:wsms-opacity-50',
-      className
-    )}
-    {...props}
-  >
-    <span className="wsms-absolute wsms-left-2 wsms-flex wsms-h-3.5 wsms-w-3.5 wsms-items-center wsms-justify-center">
-      <SelectPrimitive.ItemIndicator>
-        <Check className="wsms-h-3 wsms-w-3 wsms-text-primary" />
-      </SelectPrimitive.ItemIndicator>
-    </span>
-    <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
-  </SelectPrimitive.Item>
-))
+const selectItemBaseStyles = {
+  display: 'flex',
+  alignItems: 'center',
+  width: '100%',
+  padding: '6px 8px 6px 28px',
+  borderRadius: '4px',
+  fontSize: '13px',
+  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  color: '#1f2937',
+  cursor: 'pointer',
+  outline: 'none',
+  position: 'relative',
+  transition: 'background-color 0.15s ease',
+}
+
+const SelectItem = React.forwardRef(({ className, children, style, ...props }, ref) => {
+  const [isHovered, setIsHovered] = React.useState(false)
+  return (
+    <SelectPrimitive.Item
+      ref={ref}
+      className={cn(
+        'wsms-relative wsms-flex wsms-w-full wsms-cursor-pointer wsms-select-none wsms-items-center wsms-rounded wsms-py-1.5 wsms-pl-7 wsms-pr-2 wsms-text-[13px] wsms-outline-none data-[disabled]:wsms-pointer-events-none data-[disabled]:wsms-opacity-50',
+        className
+      )}
+      style={{
+        ...selectItemBaseStyles,
+        backgroundColor: isHovered ? '#f3f4f6' : 'transparent',
+        ...style,
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      {...props}
+    >
+      <span style={{ position: 'absolute', left: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '14px', height: '14px' }}>
+        <SelectPrimitive.ItemIndicator>
+          <Check style={{ width: '12px', height: '12px', color: '#f97316' }} />
+        </SelectPrimitive.ItemIndicator>
+      </span>
+      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+    </SelectPrimitive.Item>
+  )
+})
 SelectItem.displayName = SelectPrimitive.Item.displayName
 
 const SelectSeparator = React.forwardRef(({ className, ...props }, ref) => (
