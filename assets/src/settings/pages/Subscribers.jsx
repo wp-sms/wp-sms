@@ -5,14 +5,12 @@ import {
   Trash2,
   Edit,
   Search,
-  Filter,
   Download,
   Upload,
   CheckCircle,
   XCircle,
   AlertCircle,
   Loader2,
-  MoreHorizontal,
   MessageSquare,
   FolderOpen,
   Globe,
@@ -543,43 +541,43 @@ export default function Subscribers() {
         </div>
       )}
 
-      {/* Stats Header Bar */}
-      <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
-        <div className="wsms-flex wsms-items-center wsms-gap-8">
+      {/* Stats & Actions Header */}
+      <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
+        <div className="wsms-flex wsms-items-center wsms-gap-6 lg:wsms-gap-8">
           {/* Total */}
-          <div className="wsms-flex wsms-items-center wsms-gap-3">
-            <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10">
-              <Users className="wsms-h-5 wsms-w-5 wsms-text-primary" />
+          <div className="wsms-flex wsms-items-center wsms-gap-2.5">
+            <div className="wsms-flex wsms-h-9 wsms-w-9 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10">
+              <Users className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             </div>
             <div>
-              <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground">Total</p>
+              <p className="wsms-text-lg wsms-font-bold wsms-text-foreground wsms-leading-none">{stats.total}</p>
+              <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-0.5">Total</p>
             </div>
           </div>
 
-          <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
+          <div className="wsms-w-px wsms-h-8 wsms-bg-border wsms-hidden sm:wsms-block" />
 
           {/* Active */}
-          <div className="wsms-flex wsms-items-center wsms-gap-3">
-            <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-success/10">
-              <UserCheck className="wsms-h-5 wsms-w-5 wsms-text-success" />
+          <div className="wsms-flex wsms-items-center wsms-gap-2.5">
+            <div className="wsms-flex wsms-h-9 wsms-w-9 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-success/10">
+              <UserCheck className="wsms-h-4 wsms-w-4 wsms-text-success" />
             </div>
             <div>
-              <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.active}</p>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground">Active</p>
+              <p className="wsms-text-lg wsms-font-bold wsms-text-success wsms-leading-none">{stats.active}</p>
+              <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-0.5">Active</p>
             </div>
           </div>
 
-          <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
+          <div className="wsms-w-px wsms-h-8 wsms-bg-border wsms-hidden sm:wsms-block" />
 
           {/* Inactive */}
-          <div className="wsms-flex wsms-items-center wsms-gap-3">
-            <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-muted">
-              <UserX className="wsms-h-5 wsms-w-5 wsms-text-muted-foreground" />
+          <div className="wsms-flex wsms-items-center wsms-gap-2.5">
+            <div className="wsms-flex wsms-h-9 wsms-w-9 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-muted">
+              <UserX className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
             </div>
             <div>
-              <p className="wsms-text-xl wsms-font-bold wsms-text-muted-foreground">{stats.inactive}</p>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground">Inactive</p>
+              <p className="wsms-text-lg wsms-font-bold wsms-text-muted-foreground wsms-leading-none">{stats.inactive}</p>
+              <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-0.5">Inactive</p>
             </div>
           </div>
         </div>
@@ -597,44 +595,25 @@ export default function Subscribers() {
         </div>
       </div>
 
-      {/* Quick Add + Filters Row */}
-      <div className="wsms-grid wsms-grid-cols-1 lg:wsms-grid-cols-3 wsms-gap-4">
-        {/* Quick Add */}
-        <Card>
-          <CardContent className="wsms-py-4">
-            <div className="wsms-flex wsms-items-center wsms-gap-3">
-              <UserPlus className="wsms-h-5 wsms-w-5 wsms-text-primary wsms-shrink-0" />
-              <div className="wsms-flex-1">
-                <QuickAddForm
-                  placeholder="Enter phone number..."
-                  buttonLabel="Add"
-                  onSubmit={handleQuickAdd}
-                  isLoading={isAddingQuick}
+      {/* Toolbar: Search + Filters + Add */}
+      <Card>
+        <CardContent className="wsms-py-3">
+          <div className="wsms-flex wsms-flex-col wsms-gap-3">
+            {/* Main toolbar row */}
+            <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-3">
+              {/* Search */}
+              <div className="wsms-relative wsms-flex-1 wsms-min-w-[200px]">
+                <Search className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+                <Input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search subscribers..."
+                  className="wsms-pl-9 wsms-w-full"
                 />
               </div>
-            </div>
-          </CardContent>
-        </Card>
 
-        {/* Filters */}
-        <Card className="lg:wsms-col-span-2">
-          <CardContent className="wsms-py-4">
-            <div className="wsms-flex wsms-items-center wsms-gap-3">
-              {/* Search */}
-              <div className="wsms-flex-1">
-                <div className="wsms-relative">
-                  <Search className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-                  <Input
-                    type="text"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Search subscribers..."
-                    className="wsms-pl-9"
-                  />
-                </div>
-              </div>
-
-              {/* Group Filter */}
+              {/* Filters */}
               <Select value={groupFilter} onValueChange={setGroupFilter}>
                 <SelectTrigger className="wsms-w-[140px]">
                   <SelectValue placeholder="All Groups" />
@@ -649,10 +628,9 @@ export default function Subscribers() {
                 </SelectContent>
               </Select>
 
-              {/* Status Filter */}
               <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="wsms-w-[120px]">
-                  <SelectValue placeholder="All Status" />
+                  <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
@@ -661,12 +639,11 @@ export default function Subscribers() {
                 </SelectContent>
               </Select>
 
-              {/* Country Filter */}
               {countries.length > 0 && (
                 <Select value={countryFilter} onValueChange={setCountryFilter}>
-                  <SelectTrigger className="wsms-w-[140px]">
-                    <Globe className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-text-muted-foreground" />
-                    <SelectValue placeholder="All Countries" />
+                  <SelectTrigger className="wsms-w-[150px]">
+                    <Globe className="wsms-h-4 wsms-w-4 wsms-mr-1.5 wsms-text-muted-foreground wsms-shrink-0" />
+                    <SelectValue placeholder="Country" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Countries</SelectItem>
@@ -682,10 +659,50 @@ export default function Subscribers() {
                   </SelectContent>
                 </Select>
               )}
+
+              {/* Divider */}
+              <div className="wsms-w-px wsms-h-6 wsms-bg-border wsms-hidden lg:wsms-block" />
+
+              {/* Quick Add inline */}
+              <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-flex-1 lg:wsms-flex-none lg:wsms-w-auto">
+                <Input
+                  type="text"
+                  placeholder="+1234567890"
+                  className="wsms-w-full lg:wsms-w-[160px] wsms-font-mono wsms-text-[13px]"
+                  id="quick-add-input"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && e.target.value.trim()) {
+                      handleQuickAdd(e.target.value.trim())
+                      e.target.value = ''
+                    }
+                  }}
+                />
+                <Button
+                  size="sm"
+                  disabled={isAddingQuick}
+                  onClick={() => {
+                    const input = document.getElementById('quick-add-input')
+                    if (input?.value?.trim()) {
+                      handleQuickAdd(input.value.trim())
+                      input.value = ''
+                    }
+                  }}
+                  className="wsms-shrink-0"
+                >
+                  {isAddingQuick ? (
+                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
+                  ) : (
+                    <>
+                      <UserPlus className="wsms-h-4 wsms-w-4 lg:wsms-mr-1.5" />
+                      <span className="wsms-hidden lg:wsms-inline">Add</span>
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
-          </CardContent>
-        </Card>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Data Table */}
       <Card>
