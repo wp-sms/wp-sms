@@ -65,6 +65,28 @@ class SendSmsApi extends \WP_SMS\RestApi
             )
         ));
 
+        // Quick send endpoint for new settings UI
+        register_rest_route($this->namespace . '/v1', '/send/quick', array(
+            array(
+                'methods'             => \WP_REST_Server::CREATABLE,
+                'callback'            => array($this, 'quickSendCallback'),
+                'permission_callback' => function () {
+                    return current_user_can('wpsms_sendsms');
+                },
+            )
+        ));
+
+        // Recipient count endpoint for new settings UI
+        register_rest_route($this->namespace . '/v1', '/send/count', array(
+            array(
+                'methods'             => \WP_REST_Server::CREATABLE,
+                'callback'            => array($this, 'getRecipientCountCallback'),
+                'permission_callback' => function () {
+                    return current_user_can('wpsms_sendsms');
+                },
+            )
+        ));
+
         // @todo, this can be moved to a separate class
         register_rest_route($this->namespace . '/v1', '/outbox', array(
             array(
@@ -312,6 +334,138 @@ class SendSmsApi extends \WP_SMS\RestApi
         $query = "SELECT * FROM `{$this->tb_prefix}sms_send`";
 
         return $this->db->get_results($query, ARRAY_A);
+    }
+
+    /**
+     * Quick send callback for new settings UI
+     * Simplified send endpoint that accepts groups, roles, and numbers directly
+     *
+     * @param WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function quickSendCallback(WP_REST_Request $request)
+    {
+        try {
+            $recipients = $request->get_param('recipients');
+            $message = $request->get_param('message');
+            $flash = $request->get_param('flash') ?? false;
+            $mediaUrl = $request->get_param('media_url') ?? '';
+            $from = $request->get_param('from') ?? '';
+
+            if (empty($message)) {
+                throw new Exception(esc_html__('The message body can not be empty.', 'wp-sms'));
+            }
+
+            $recipientNumbers = [];
+
+            // Get numbers from groups (subscribers)
+            if (!empty($recipients['groups']) && is_array($recipients['groups'])) {
+                $groupNumbers = Newsletter::getSubscribers($recipients['groups'], true);
+                $recipientNumbers = array_merge($recipientNumbers, $groupNumbers);
+            }
+
+            // Get numbers from roles
+            if (!empty($recipients['roles']) && is_array($recipients['roles'])) {
+                foreach ($recipients['roles'] as $roleId) {
+                    $roleNumbers = Helper::getUsersMobileNumbers(array($roleId));
+                    $recipientNumbers = array_merge($recipientNumbers, $roleNumbers);
+                }
+            }
+
+            // Add direct numbers
+            if (!empty($recipients['numbers']) && is_array($recipients['numbers'])) {
+                $recipientNumbers = array_merge($recipientNumbers, $recipients['numbers']);
+            }
+
+            // Remove duplicates
+            $recipientNumbers = array_unique($recipientNumbers);
+
+            if (count($recipientNumbers) === 0) {
+                throw new Exception(esc_html__('Could not find any mobile numbers.', 'wp-sms'));
+            }
+
+            // Make URLs shorter
+            $message = Helper::makeUrlsShorter($message);
+
+            // Get sender
+            $sender = !empty($from) ? $from : Gateway::from();
+
+            // Prepare media URLs
+            $mediaUrls = !empty($mediaUrl) ? [$mediaUrl] : [];
+
+            // Send SMS
+            $notification = NotificationFactory::getHandler(null, null);
+            $response = $notification->send(
+                $message,
+                $recipientNumbers,
+                $mediaUrls,
+                $flash,
+                $sender
+            );
+
+            if (is_wp_error($response)) {
+                throw new Exception($response->get_error_message());
+            }
+
+            return self::response(esc_html__('Successfully sent SMS!', 'wp-sms'), 200, [
+                'recipient_count' => count($recipientNumbers),
+                'credit' => Gateway::credit()
+            ]);
+        } catch (\Throwable $e) {
+            return self::response($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get recipient count for new settings UI
+     *
+     * @param WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function getRecipientCountCallback(WP_REST_Request $request)
+    {
+        try {
+            $recipients = $request->get_param('recipients');
+            $counts = [
+                'groups' => 0,
+                'roles' => 0,
+                'numbers' => 0,
+                'total' => 0
+            ];
+
+            $allNumbers = [];
+
+            // Count from groups (subscribers)
+            if (!empty($recipients['groups']) && is_array($recipients['groups'])) {
+                $groupNumbers = Newsletter::getSubscribers($recipients['groups'], true);
+                $counts['groups'] = count($groupNumbers);
+                $allNumbers = array_merge($allNumbers, $groupNumbers);
+            }
+
+            // Count from roles
+            if (!empty($recipients['roles']) && is_array($recipients['roles'])) {
+                $roleNumbers = [];
+                foreach ($recipients['roles'] as $roleId) {
+                    $numbers = Helper::getUsersMobileNumbers(array($roleId));
+                    $roleNumbers = array_merge($roleNumbers, $numbers);
+                }
+                $counts['roles'] = count($roleNumbers);
+                $allNumbers = array_merge($allNumbers, $roleNumbers);
+            }
+
+            // Count direct numbers
+            if (!empty($recipients['numbers']) && is_array($recipients['numbers'])) {
+                $counts['numbers'] = count($recipients['numbers']);
+                $allNumbers = array_merge($allNumbers, $recipients['numbers']);
+            }
+
+            // Total unique count
+            $counts['total'] = count(array_unique($allNumbers));
+
+            return self::response('', 200, $counts);
+        } catch (\Throwable $e) {
+            return self::response($e->getMessage(), 400);
+        }
     }
 }
 
