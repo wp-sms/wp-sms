@@ -2,12 +2,6 @@ import React, { useState } from 'react'
 import { useTheme } from '@/context/ThemeContext'
 import Logo from './Logo'
 import { Menu, Bell, Moon, Sun, Sparkles, ExternalLink } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  TooltipProvider,
-} from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { NotificationSidebar } from '@/components/notifications'
 import { useNotifications } from '@/hooks/useNotifications'
@@ -120,27 +114,20 @@ function NotificationBell() {
 
   return (
     <>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              onClick={handleOpenSidebar}
-              className={cn(
-                'wsms-relative wsms-flex wsms-h-8 wsms-w-8 wsms-items-center wsms-justify-center wsms-rounded-md',
-                'wsms-text-muted-foreground wsms-transition-colors',
-                'hover:wsms-bg-accent hover:wsms-text-foreground'
-              )}
-              aria-label="Notifications"
-            >
-              <Bell className="wsms-h-[18px] wsms-w-[18px]" strokeWidth={1.75} />
-              {hasUnread && (
-                <span className="wsms-absolute wsms-top-1 wsms-right-1 wsms-h-2 wsms-w-2 wsms-rounded-full wsms-bg-primary wsms-animate-pulse" />
-              )}
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>Notifications</TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
+      <button
+        onClick={handleOpenSidebar}
+        className={cn(
+          'wsms-relative wsms-flex wsms-h-8 wsms-w-8 wsms-items-center wsms-justify-center wsms-rounded-md',
+          'wsms-text-muted-foreground wsms-transition-colors',
+          'hover:wsms-bg-accent hover:wsms-text-foreground'
+        )}
+        aria-label="Notifications"
+      >
+        <Bell className="wsms-h-[18px] wsms-w-[18px]" strokeWidth={1.75} />
+        {hasUnread && (
+          <span className="wsms-absolute wsms-top-1 wsms-right-1 wsms-h-2 wsms-w-2 wsms-rounded-full wsms-bg-primary wsms-animate-pulse" />
+        )}
+      </button>
 
       <NotificationSidebar
         isOpen={isSidebarOpen}
@@ -162,30 +149,21 @@ function ThemeToggle() {
   const { theme, toggleTheme } = useTheme()
 
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <button
-            onClick={toggleTheme}
-            className={cn(
-              'wsms-flex wsms-h-8 wsms-w-8 wsms-items-center wsms-justify-center wsms-rounded-md',
-              'wsms-text-muted-foreground wsms-transition-colors',
-              'hover:wsms-bg-accent hover:wsms-text-foreground'
-            )}
-            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
-          >
-            {theme === 'light' ? (
-              <Moon className="wsms-h-[18px] wsms-w-[18px]" strokeWidth={1.75} />
-            ) : (
-              <Sun className="wsms-h-[18px] wsms-w-[18px]" strokeWidth={1.75} />
-            )}
-          </button>
-        </TooltipTrigger>
-        <TooltipContent>
-          {theme === 'light' ? 'Dark mode' : 'Light mode'}
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <button
+      onClick={toggleTheme}
+      className={cn(
+        'wsms-flex wsms-h-8 wsms-w-8 wsms-items-center wsms-justify-center wsms-rounded-md',
+        'wsms-text-muted-foreground wsms-transition-colors',
+        'hover:wsms-bg-accent hover:wsms-text-foreground'
+      )}
+      aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+    >
+      {theme === 'light' ? (
+        <Moon className="wsms-h-[18px] wsms-w-[18px]" strokeWidth={1.75} />
+      ) : (
+        <Sun className="wsms-h-[18px] wsms-w-[18px]" strokeWidth={1.75} />
+      )}
+    </button>
   )
 }
 
