@@ -71,6 +71,12 @@ const AppShell = memo(function AppShell() {
 
   return (
     <div className="wsms-settings-app">
+      {/* Header - Full width at top */}
+      <Header
+        onMenuClick={() => setMobileMenuOpen(true)}
+        showMenuButton={isMobile}
+      />
+
       <div className="wsms-settings-wrapper">
         {/* Mobile overlay */}
         {isMobile && mobileMenuOpen && (
@@ -93,11 +99,6 @@ const AppShell = memo(function AppShell() {
 
         {/* Main content */}
         <div className="wsms-main">
-          <Header
-            onMenuClick={() => setMobileMenuOpen(true)}
-            showMenuButton={isMobile}
-          />
-
           <main className="wsms-content wsms-scrollbar-thin">
             <div className="wsms-content-inner">
               {isLoading ? (

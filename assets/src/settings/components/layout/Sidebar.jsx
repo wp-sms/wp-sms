@@ -160,7 +160,6 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions }) {
 export default function Sidebar({ onClose, showClose }) {
   const { currentPage, setCurrentPage } = useSettings()
   const version = window.wpSmsSettings?.version || '7.0'
-  const isProActive = window.wpSmsSettings?.addons?.pro
   const { gdprEnabled } = getWpSettings()
 
   // Conditions object for filtering
@@ -176,34 +175,17 @@ export default function Sidebar({ onClose, showClose }) {
 
   return (
     <div className="wsms-flex wsms-flex-col wsms-h-full wsms-min-h-0 wsms-bg-card">
-      {/* Header */}
-      <div className="wsms-flex wsms-items-center wsms-justify-between wsms-h-14 wsms-min-h-14 wsms-px-5 wsms-border-b wsms-border-border">
-        <div className="wsms-flex wsms-items-center wsms-gap-3">
-          <div className="wsms-flex wsms-h-9 wsms-w-9 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary wsms-text-primary-foreground wsms-shadow-sm">
-            <Radio className="wsms-h-5 wsms-w-5" strokeWidth={1.5} />
-          </div>
-          <div className="wsms-flex wsms-flex-col">
-            <div className="wsms-flex wsms-items-center wsms-gap-2">
-              <span className="wsms-text-[15px] wsms-font-semibold wsms-text-foreground">
-                WP SMS
-              </span>
-              {isProActive && (
-                <span className="wsms-text-[9px] wsms-font-bold wsms-uppercase wsms-px-1.5 wsms-py-0.5 wsms-rounded wsms-bg-gradient-to-r wsms-from-primary wsms-to-orange-400 wsms-text-white">
-                  Pro
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
-        {showClose && (
+      {/* Mobile close button */}
+      {showClose && (
+        <div className="wsms-flex wsms-justify-end wsms-p-3 wsms-border-b wsms-border-border">
           <button
             onClick={onClose}
             className="wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-md hover:wsms-bg-accent wsms-text-muted-foreground wsms-transition-colors"
           >
             <X className="wsms-h-4 wsms-w-4" />
           </button>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Navigation */}
       <nav className="wsms-flex-1 wsms-min-h-0 wsms-overflow-y-auto wsms-px-3 wsms-py-4 wsms-scrollbar-thin">
