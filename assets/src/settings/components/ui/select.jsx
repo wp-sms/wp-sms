@@ -33,6 +33,8 @@ const selectContentStyles = {
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   fontSize: '13px',
   color: '#1f2937',
+  maxHeight: '300px',
+  overflow: 'hidden',
 }
 
 const SelectContent = React.forwardRef(({ className, children, position = 'popper', style, ...props }, ref) => (
@@ -40,7 +42,7 @@ const SelectContent = React.forwardRef(({ className, children, position = 'poppe
     <SelectPrimitive.Content
       ref={ref}
       className={cn(
-        'wsms-relative wsms-max-h-80 wsms-min-w-[8rem] wsms-overflow-hidden wsms-rounded wsms-shadow-md',
+        'wsms-relative wsms-min-w-[8rem] wsms-rounded wsms-shadow-md',
         position === 'popper' && 'wsms-translate-y-1',
         className
       )}
@@ -53,6 +55,7 @@ const SelectContent = React.forwardRef(({ className, children, position = 'poppe
           'wsms-p-1',
           position === 'popper' && 'wsms-w-full wsms-min-w-[var(--radix-select-trigger-width)]'
         )}
+        style={{ maxHeight: '280px', overflowY: 'auto' }}
       >
         {children}
       </SelectPrimitive.Viewport>
