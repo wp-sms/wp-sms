@@ -43,3 +43,6 @@ nbproject
 # Testing
 /tests/logs
 .phpunit.result.cache
+
+# Claude Code
+.mcp.json
