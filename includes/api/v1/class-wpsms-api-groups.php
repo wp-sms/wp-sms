@@ -117,8 +117,13 @@ class GroupsApi extends RestApi
         }
 
         return self::response(__('Groups retrieved successfully', 'wp-sms'), 200, [
-            'items' => $formatted,
-            'total' => count($formatted),
+            'items'      => $formatted,
+            'pagination' => [
+                'total'        => count($formatted),
+                'total_pages'  => 1,
+                'current_page' => 1,
+                'per_page'     => count($formatted),
+            ],
         ]);
     }
 
