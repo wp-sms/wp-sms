@@ -144,7 +144,7 @@
 
 .wsms-settings-wrapper {
   display: flex;
-  height: calc(100vh - 32px);
+  height: calc(100vh - 32px - 56px); /* Subtract WP admin bar + header height */
   overflow: hidden;
 }
 
@@ -478,4 +478,98 @@
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* ============================================
+   Notification Sidebar
+   ============================================ */
+
+/* Body scroll lock when notification sidebar is open */
+body.wsms-notification-sidebar-open {
+  overflow: hidden !important;
+  padding-right: var(--scrollbar-width, 0);
+}
+
+/* Ensure sidebar overlays WordPress admin elements */
+.wsms-notification-sidebar-open #wpcontent,
+.wsms-notification-sidebar-open #wpfooter {
+  position: relative;
+}
+
+/* Notification card animation on entry */
+@keyframes wsms-notification-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.wsms-animate-in {
+  animation: wsms-notification-slide-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Notification card prose styling */
+.wsms-prose a {
+  color: hsl(var(--primary));
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.wsms-prose a:hover {
+  text-decoration: underline;
+  color: hsl(var(--primary) / 0.8);
+}
+
+.wsms-prose p {
+  margin: 0;
+}
+
+.wsms-prose p + p {
+  margin-top: 0.5rem;
+}
+
+.wsms-prose ul,
+.wsms-prose ol {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+}
+
+.wsms-prose li {
+  margin: 0.25rem 0;
+}
+
+.wsms-prose strong {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.wsms-prose code {
+  font-size: 0.85em;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  background: hsl(var(--muted));
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* Notification card hover lift effect */
+.wsms-notification-card-lift {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wsms-notification-card-lift:hover {
+  transform: translateY(-1px);
+}
+
+/* Smooth backdrop blur for modern browsers */
+@supports (backdrop-filter: blur(4px)) {
+  .wsms-backdrop-blur {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
 }
