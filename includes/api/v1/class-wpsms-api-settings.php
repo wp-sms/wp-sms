@@ -368,22 +368,80 @@ class SettingsApi extends RestApi
     private function sanitizeSettings($settings)
     {
         $sanitized = [];
+        $addonFieldTypes = $this->getAddonFieldTypes();
 
         foreach ($settings as $key => $value) {
-            $key = sanitize_key($key);
+            $sanitizedKey = sanitize_key($key);
 
-            if (is_array($value)) {
-                $sanitized[$key] = $this->sanitizeSettings($value);
+            // Check if this is an add-on field with a specific type
+            if (isset($addonFieldTypes[$sanitizedKey])) {
+                $sanitized[$sanitizedKey] = $this->sanitizeAddonField($value, $addonFieldTypes[$sanitizedKey]);
+            } elseif (is_array($value)) {
+                $sanitized[$sanitizedKey] = $this->sanitizeSettings($value);
             } elseif (is_bool($value)) {
-                $sanitized[$key] = $value;
+                $sanitized[$sanitizedKey] = $value;
             } elseif (is_numeric($value)) {
-                $sanitized[$key] = $value;
+                $sanitized[$sanitizedKey] = $value;
             } else {
-                $sanitized[$key] = sanitize_text_field($value);
+                $sanitized[$sanitizedKey] = sanitize_text_field($value);
             }
         }
 
         return $sanitized;
+    }
+
+    /**
+     * Sanitize an add-on field based on its type
+     *
+     * @param mixed $value Field value
+     * @param string $type Field type from schema
+     * @return mixed Sanitized value
+     */
+    private function sanitizeAddonField($value, $type)
+    {
+        switch ($type) {
+            case 'switch':
+            case 'checkbox':
+                return filter_var($value, FILTER_VALIDATE_BOOLEAN);
+
+            case 'number':
+                return is_numeric($value) ? floatval($value) : 0;
+
+            case 'multi-select':
+                if (!is_array($value)) {
+                    return [];
+                }
+                return array_map('sanitize_text_field', $value);
+
+            case 'repeater':
+                if (!is_array($value)) {
+                    return [];
+                }
+                // Recursively sanitize each item in the repeater
+                return array_map(function ($item) {
+                    if (!is_array($item)) {
+                        return [];
+                    }
+                    $sanitizedItem = [];
+                    foreach ($item as $itemKey => $itemValue) {
+                        $sanitizedItem[sanitize_key($itemKey)] = is_array($itemValue)
+                            ? array_map('sanitize_text_field', $itemValue)
+                            : sanitize_text_field($itemValue);
+                    }
+                    return $sanitizedItem;
+                }, $value);
+
+            case 'textarea':
+                return sanitize_textarea_field($value);
+
+            case 'password':
+            case 'text':
+            case 'select':
+            default:
+                return is_array($value)
+                    ? array_map('sanitize_text_field', $value)
+                    : sanitize_text_field($value);
+        }
     }
 
     /**
@@ -450,12 +508,15 @@ class SettingsApi extends RestApi
     {
         $errors = [];
 
+        // Merge core validation rules with add-on validation rules
+        $allRules = array_merge($this->validationRules, $this->getAddonValidationRules());
+
         foreach ($settings as $key => $value) {
-            if (!isset($this->validationRules[$key])) {
+            if (!isset($allRules[$key])) {
                 continue;
             }
 
-            $rule = $this->validationRules[$key];
+            $rule = $allRules[$key];
             $error = $this->validateField($key, $value, $rule);
 
             if ($error) {
@@ -470,6 +531,64 @@ class SettingsApi extends RestApi
     }
 
     /**
+     * Get validation rules from add-on settings schemas
+     *
+     * Extracts validation rules defined by add-ons via the wpsms_addon_settings_schema filter.
+     *
+     * @return array Validation rules keyed by field ID
+     */
+    private function getAddonValidationRules()
+    {
+        $schemas = apply_filters('wpsms_addon_settings_schema', []);
+        $rules = [];
+
+        foreach ($schemas as $schema) {
+            if (empty($schema['fields']) || !is_array($schema['fields'])) {
+                continue;
+            }
+
+            foreach ($schema['fields'] as $field) {
+                if (empty($field['id']) || empty($field['validation'])) {
+                    continue;
+                }
+
+                $rules[$field['id']] = $field['validation'];
+            }
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Get field types from add-on settings schemas
+     *
+     * Used for type-specific sanitization of add-on settings.
+     *
+     * @return array Field types keyed by field ID
+     */
+    private function getAddonFieldTypes()
+    {
+        $schemas = apply_filters('wpsms_addon_settings_schema', []);
+        $types = [];
+
+        foreach ($schemas as $schema) {
+            if (empty($schema['fields']) || !is_array($schema['fields'])) {
+                continue;
+            }
+
+            foreach ($schema['fields'] as $field) {
+                if (empty($field['id']) || empty($field['type'])) {
+                    continue;
+                }
+
+                $types[$field['id']] = $field['type'];
+            }
+        }
+
+        return $types;
+    }
+
+    /**
      * Validate a single field based on its rule
      *
      * @param string $key Field name
@@ -479,24 +598,115 @@ class SettingsApi extends RestApi
      */
     private function validateField($key, $value, $rule)
     {
-        // Skip validation for empty values (they're optional)
-        if (empty($value)) {
+        // Check if this is a core validation rule (has 'type' key)
+        if (isset($rule['type'])) {
+            // Skip validation for empty values (they're optional)
+            if (empty($value)) {
+                return null;
+            }
+
+            switch ($rule['type']) {
+                case 'gateway':
+                    return $this->validateGateway($value);
+
+                case 'phone':
+                    return $this->validatePhone($value);
+
+                case 'url':
+                    return $this->validateUrl($value);
+
+                default:
+                    return null;
+            }
+        }
+
+        // Handle add-on validation rules
+        return $this->validateAddonFieldRules($value, $rule);
+    }
+
+    /**
+     * Validate a field against add-on validation rules
+     *
+     * @param mixed $value Field value
+     * @param array $rules Validation rules from add-on schema
+     * @return string|null Error message or null if valid
+     */
+    private function validateAddonFieldRules($value, $rules)
+    {
+        // Required check
+        if (!empty($rules['required']) && empty($value) && $value !== 0 && $value !== '0') {
+            return __('This field is required', 'wp-sms');
+        }
+
+        // Skip other validations for empty values
+        if (empty($value) && $value !== 0 && $value !== '0') {
             return null;
         }
 
-        switch ($rule['type']) {
-            case 'gateway':
-                return $this->validateGateway($value);
+        // String length validations
+        if (is_string($value)) {
+            $length = mb_strlen($value);
 
-            case 'phone':
-                return $this->validatePhone($value);
+            if (isset($rules['minLength']) && $length < $rules['minLength']) {
+                return sprintf(
+                    __('Value must be at least %d characters', 'wp-sms'),
+                    $rules['minLength']
+                );
+            }
 
-            case 'url':
-                return $this->validateUrl($value);
+            if (isset($rules['maxLength']) && $length > $rules['maxLength']) {
+                return sprintf(
+                    __('Value must not exceed %d characters', 'wp-sms'),
+                    $rules['maxLength']
+                );
+            }
 
-            default:
-                return null;
+            // Pattern validation
+            if (isset($rules['pattern'])) {
+                $pattern = '/' . $rules['pattern'] . '/';
+                if (!preg_match($pattern, $value)) {
+                    return __('Value does not match the required format', 'wp-sms');
+                }
+            }
         }
+
+        // Numeric validations
+        if (is_numeric($value)) {
+            $numericValue = floatval($value);
+
+            if (isset($rules['min']) && $numericValue < $rules['min']) {
+                return sprintf(
+                    __('Value must be at least %s', 'wp-sms'),
+                    $rules['min']
+                );
+            }
+
+            if (isset($rules['max']) && $numericValue > $rules['max']) {
+                return sprintf(
+                    __('Value must not exceed %s', 'wp-sms'),
+                    $rules['max']
+                );
+            }
+        }
+
+        // Type-specific validations
+        if (isset($rules['type'])) {
+            switch ($rules['type']) {
+                case 'phone':
+                    return $this->validatePhone($value);
+
+                case 'email':
+                    if (!is_email($value)) {
+                        return __('Invalid email address', 'wp-sms');
+                    }
+                    break;
+
+                case 'url':
+                    return $this->validateUrl($value);
+            }
+        }
+
+        return null;
     }
 
     /**

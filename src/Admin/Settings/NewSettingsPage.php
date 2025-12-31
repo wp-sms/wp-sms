@@ -235,23 +235,344 @@ class NewSettingsPage extends Singleton
     private function getLocalizedData()
     {
         return [
-            'apiUrl'      => rest_url('wpsms/v1/'),
-            'nonce'       => wp_create_nonce('wp_rest'),
-            'settings'    => $this->maskSensitiveSettings(Option::getOptions()),
-            'proSettings' => $this->maskSensitiveSettings(Option::getOptions(true)),
-            'addons'      => $this->getActiveAddons(),
-            'gateways'    => Gateway::gateway(),
-            'adminUrl'    => admin_url(),
-            'siteUrl'     => site_url(),
-            'version'     => WP_SMS_VERSION,
-            'i18n'        => $this->getTranslations(),
+            'apiUrl'        => rest_url('wpsms/v1/'),
+            'nonce'         => wp_create_nonce('wp_rest'),
+            'settings'      => $this->maskSensitiveSettings(Option::getOptions()),
+            'proSettings'   => $this->maskSensitiveSettings(Option::getOptions(true)),
+            'addons'        => $this->getActiveAddons(),
+            'gateways'      => Gateway::gateway(),
+            'adminUrl'      => admin_url(),
+            'siteUrl'       => site_url(),
+            'version'       => WP_SMS_VERSION,
+            'i18n'          => $this->getTranslations(),
             // Dynamic data for multi-select fields
-            'countries'   => $this->getCountries(),
-            'postTypes'   => $this->getPostTypes(),
-            'taxonomies'  => $this->getTaxonomiesWithTerms(),
-            'roles'       => $this->getUserRoles(),
-            'groups'      => $this->getNewsletterGroups(),
+            'countries'     => $this->getCountries(),
+            'postTypes'     => $this->getPostTypes(),
+            'taxonomies'    => $this->getTaxonomiesWithTerms(),
+            'roles'         => $this->getUserRoles(),
+            'groups'        => $this->getNewsletterGroups(),
+            // Add-on settings schema for dynamic rendering
+            'addonSettings' => $this->getAddonSettingsSchema(),
         ];
+    }
+
+    /**
+     * Allowed field types for add-on settings
+     *
+     * @var array
+     */
+    private $allowedFieldTypes = [
+        'text',
+        'textarea',
+        'number',
+        'select',
+        'multi-select',
+        'switch',
+        'checkbox',
+        'repeater',
+        'password',
+    ];
+
+    /**
+     * Allowed target pages for add-on settings
+     *
+     * @var array
+     */
+    private $allowedPages = [
+        'overview',
+        'gateway',
+        'phone',
+        'message-button',
+        'notifications',
+        'newsletter',
+        'integrations',
+        'advanced',
+    ];
+
+    /**
+     * Get add-on settings schema from filter
+     *
+     * Allows add-ons to register their settings via the wpsms_addon_settings_schema filter.
+     * The schema defines fields, sections, and their locations in the settings UI.
+     *
+     * @return array Validated add-on settings schemas
+     */
+    private function getAddonSettingsSchema()
+    {
+        /**
+         * Filter to register add-on settings schema
+         *
+         * Add-ons can use this filter to register their settings fields for the React settings page.
+         *
+         * @param array $schemas Empty array to be populated by add-ons
+         *
+         * @example
+         * add_filter('wpsms_addon_settings_schema', function($schemas) {
+         *     $schemas['my-addon'] = [
+         *         'name' => 'My Add-on',
+         *         'version' => '1.0.0',
+         *         'sections' => [...],
+         *         'fields' => [...],
+         *     ];
+         *     return $schemas;
+         * });
+         */
+        $schemas = apply_filters('wpsms_addon_settings_schema', []);
+
+        return $this->validateAddonSchemas($schemas);
+    }
+
+    /**
+     * Validate and sanitize add-on schemas
+     *
+     * Ensures all add-on schemas follow the expected format and removes invalid entries.
+     *
+     * @param array $schemas Raw schemas from filter
+     * @return array Validated and sanitized schemas
+     */
+    private function validateAddonSchemas($schemas)
+    {
+        if (!is_array($schemas)) {
+            return [];
+        }
+
+        $validated = [];
+
+        foreach ($schemas as $addonSlug => $schema) {
+            if (!is_array($schema) || empty($schema['fields'])) {
+                continue;
+            }
+
+            $validatedFields = [];
+            foreach ($schema['fields'] as $field) {
+                $validatedField = $this->validateAddonField($field);
+                if ($validatedField) {
+                    $validatedFields[] = $validatedField;
+                }
+            }
+
+            if (empty($validatedFields)) {
+                continue;
+            }
+
+            $validatedSections = [];
+            if (!empty($schema['sections']) && is_array($schema['sections'])) {
+                foreach ($schema['sections'] as $section) {
+                    $validatedSection = $this->validateAddonSection($section);
+                    if ($validatedSection) {
+                        $validatedSections[] = $validatedSection;
+                    }
+                }
+            }
+
+            $validated[sanitize_key($addonSlug)] = [
+                'name'     => sanitize_text_field($schema['name'] ?? $addonSlug),
+                'version'  => sanitize_text_field($schema['version'] ?? '1.0.0'),
+                'sections' => $validatedSections,
+                'fields'   => $validatedFields,
+                'data'     => $schema['data'] ?? [],
+            ];
+        }
+
+        return $validated;
+    }
+
+    /**
+     * Validate a single add-on field
+     *
+     * @param array $field Field configuration
+     * @return array|null Validated field or null if invalid
+     */
+    private function validateAddonField($field)
+    {
+        // Required properties
+        if (empty($field['id']) || empty($field['type']) || empty($field['target'])) {
+            return null;
+        }
+
+        // Validate field type
+        if (!in_array($field['type'], $this->allowedFieldTypes, true)) {
+            return null;
+        }
+
+        // Validate target page
+        if (empty($field['target']['page']) || !in_array($field['target']['page'], $this->allowedPages, true)) {
+            return null;
+        }
+
+        // Build validated field
+        $validated = [
+            'id'          => sanitize_key($field['id']),
+            'type'        => $field['type'],
+            'label'       => sanitize_text_field($field['label'] ?? ''),
+            'description' => wp_kses_post($field['description'] ?? ''),
+            'default'     => $field['default'] ?? null,
+            'isPro'       => !empty($field['isPro']),
+            'target'      => [
+                'page'     => $field['target']['page'],
+                'section'  => sanitize_key($field['target']['section'] ?? ''),
+                'priority' => absint($field['target']['priority'] ?? 100),
+            ],
+        ];
+
+        // Optional properties
+        if (!empty($field['placeholder'])) {
+            $validated['placeholder'] = sanitize_text_field($field['placeholder']);
+        }
+
+        if (!empty($field['required'])) {
+            $validated['required'] = true;
+        }
+
+        if (!empty($field['disabled'])) {
+            $validated['disabled'] = true;
+        }
+
+        // Type-specific properties
+        if (!empty($field['options']) && is_array($field['options'])) {
+            $validated['options'] = array_map(function ($option) {
+                return [
+                    'value' => sanitize_text_field($option['value'] ?? ''),
+                    'label' => sanitize_text_field($option['label'] ?? ''),
+                ];
+            }, $field['options']);
+        }
+
+        if (!empty($field['rows']) && $field['type'] === 'textarea') {
+            $validated['rows'] = absint($field['rows']);
+        }
+
+        if (!empty($field['fields']) && $field['type'] === 'repeater') {
+            $validated['fields'] = $this->validateRepeaterFields($field['fields']);
+        }
+
+        if (!empty($field['maxItems']) && $field['type'] === 'repeater') {
+            $validated['maxItems'] = absint($field['maxItems']);
+        }
+
+        if (!empty($field['addLabel'])) {
+            $validated['addLabel'] = sanitize_text_field($field['addLabel']);
+        }
+
+        // Conditional display
+        if (!empty($field['conditions']) && is_array($field['conditions'])) {
+            $validated['conditions'] = $this->validateConditions($field['conditions']);
+        }
+
+        // Validation rules
+        if (!empty($field['validation']) && is_array($field['validation'])) {
+            $validated['validation'] = $this->validateValidationRules($field['validation']);
+        }
+
+        return $validated;
+    }
+
+    /**
+     * Validate add-on section
+     *
+     * @param array $section Section configuration
+     * @return array|null Validated section or null if invalid
+     */
+    private function validateAddonSection($section)
+    {
+        if (empty($section['id']) || empty($section['title']) || empty($section['page'])) {
+            return null;
+        }
+
+        if (!in_array($section['page'], $this->allowedPages, true)) {
+            return null;
+        }
+
+        return [
+            'id'          => sanitize_key($section['id']),
+            'title'       => sanitize_text_field($section['title']),
+            'description' => wp_kses_post($section['description'] ?? ''),
+            'icon'        => sanitize_text_field($section['icon'] ?? ''),
+            'page'        => $section['page'],
+            'priority'    => absint($section['priority'] ?? 100),
+        ];
+    }
+
+    /**
+     * Validate repeater sub-fields
+     *
+     * @param array $fields Repeater field definitions
+     * @return array Validated fields
+     */
+    private function validateRepeaterFields($fields)
+    {
+        $validated = [];
+        foreach ($fields as $field) {
+            if (empty($field['name']) || empty($field['type'])) {
+                continue;
+            }
+            $validated[] = [
+                'name'        => sanitize_key($field['name']),
+                'label'       => sanitize_text_field($field['label'] ?? ''),
+                'type'        => sanitize_text_field($field['type']),
+                'placeholder' => sanitize_text_field($field['placeholder'] ?? ''),
+            ];
+        }
+        return $validated;
+    }
+
+    /**
+     * Validate conditional display rules
+     *
+     * @param array $conditions Condition definitions
+     * @return array Validated conditions
+     */
+    private function validateConditions($conditions)
+    {
+        $allowedOperators = ['==', '!=', 'contains', 'empty', 'notEmpty'];
+        $validated = [];
+
+        foreach ($conditions as $condition) {
+            if (empty($condition['field'])) {
+                continue;
+            }
+
+            $operator = $condition['operator'] ?? '==';
+            if (!in_array($operator, $allowedOperators, true)) {
+                $operator = '==';
+            }
+
+            $validated[] = [
+                'field'    => sanitize_key($condition['field']),
+                'operator' => $operator,
+                'value'    => $condition['value'] ?? null,
+            ];
+        }
+
+        return $validated;
+    }
+
+    /**
+     * Validate validation rules
+     *
+     * @param array $rules Validation rule definitions
+     * @return array Validated rules
+     */
+    private function validateValidationRules($rules)
+    {
+        $validated = [];
+        $allowedRules = ['required', 'minLength', 'maxLength', 'min', 'max', 'pattern', 'type'];
+
+        foreach ($allowedRules as $rule) {
+            if (isset($rules[$rule])) {
+                if (in_array($rule, ['minLength', 'maxLength', 'min', 'max'], true)) {
+                    $validated[$rule] = is_numeric($rules[$rule]) ? floatval($rules[$rule]) : null;
+                } elseif ($rule === 'required') {
+                    $validated[$rule] = (bool) $rules[$rule];
+                } elseif ($rule === 'pattern' || $rule === 'type') {
+                    $validated[$rule] = sanitize_text_field($rules[$rule]);
+                }
+            }
+        }
+
+        return array_filter($validated, function ($v) {
+            return $v !== null;
+        });
     }
 
     /**

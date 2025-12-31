@@ -3,10 +3,19 @@ import { Puzzle, FileText, CheckCircle } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { useSetting } from '@/context/SettingsContext'
+import { useAddonSettings, useAddonFieldsForSection } from '@/hooks/useAddonSettings'
+import { AddonSection, AddonFieldsInjection } from '@/components/ui/AddonSection'
+import { DynamicField } from '@/components/ui/DynamicField'
 
 export default function Integrations() {
   // Contact Form 7
   const [cf7Metabox, setCf7Metabox] = useSetting('cf7_metabox', '')
+
+  // Get add-on settings for this page
+  const { sections: addonSections, fieldsBySection, standaloneFields } = useAddonSettings('integrations')
+
+  // Get add-on fields that should be injected into built-in sections
+  const cf7AddonFields = useAddonFieldsForSection('integrations', 'contact-form-7')
 
   const integrations = [
     {
@@ -70,10 +79,37 @@ export default function Integrations() {
                   onCheckedChange={(checked) => integration.setValue(checked ? '1' : '')}
                 />
               </div>
+              {/* Inject add-on fields for this integration */}
+              {integration.id === 'contact-form-7' && cf7AddonFields.length > 0 && (
+                <AddonFieldsInjection fields={cf7AddonFields} />
+              )}
             </div>
           ))}
         </CardContent>
       </Card>
+
+      {/* Add-on Defined Sections */}
+      {addonSections.map((section) => (
+        <AddonSection
+          key={section.id}
+          section={section}
+          fields={fieldsBySection[section.id] || []}
+        />
+      ))}
+
+      {/* Standalone Add-on Fields (fields without a section) */}
+      {standaloneFields.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Additional Add-on Settings</CardTitle>
+          </CardHeader>
+          <CardContent className="wsms-space-y-4">
+            {standaloneFields.map((field) => (
+              <DynamicField key={field.id} field={field} />
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Other Supported Plugins */}
       <Card>

@@ -7,8 +7,13 @@ import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useSetting } from '@/context/SettingsContext'
+import { useAddonSettings } from '@/hooks/useAddonSettings'
+import { AddonSection } from '@/components/ui/AddonSection'
+import { DynamicField } from '@/components/ui/DynamicField'
 
 export default function Advanced() {
+  // Get add-on settings for this page
+  const { sections: addonSections, fieldsBySection, standaloneFields } = useAddonSettings('advanced')
   // Webhooks
   const [webhookOutgoing, setWebhookOutgoing] = useSetting('new_sms_webhook', '')
   const [webhookSubscriber, setWebhookSubscriber] = useSetting('new_subscriber_webhook', '')
@@ -234,6 +239,29 @@ export default function Advanced() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Add-on Defined Sections */}
+      {addonSections.map((section) => (
+        <AddonSection
+          key={section.id}
+          section={section}
+          fields={fieldsBySection[section.id] || []}
+        />
+      ))}
+
+      {/* Standalone Add-on Fields */}
+      {standaloneFields.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Additional Add-on Settings</CardTitle>
+          </CardHeader>
+          <CardContent className="wsms-space-y-4">
+            {standaloneFields.map((field) => (
+              <DynamicField key={field.id} field={field} />
+            ))}
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

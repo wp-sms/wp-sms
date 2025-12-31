@@ -67,6 +67,7 @@ export function getWpSettings() {
     settings: {},
     proSettings: {},
     addons: {},
+    addonSettings: {},
     gateways: {},
     countries: {},
     groups: {},

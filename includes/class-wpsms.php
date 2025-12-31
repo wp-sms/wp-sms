@@ -221,6 +221,9 @@ class WP_SMS
             $this->include('includes/admin/send/class-wpsms-send.php');
             $this->include('includes/admin/add-ons/class-add-ons.php');
 
+            // Sample add-on settings for testing - remove in production
+            $this->include('includes/admin/add-ons/sample-addon-settings.php');
+
             WidgetsManager::init();
             NoticeManager::getInstance();
             $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
