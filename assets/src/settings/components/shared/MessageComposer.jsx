@@ -34,7 +34,7 @@ function calculateSmsInfo(text) {
       characters: 0,
       segments: 0,
       remaining: GSM_SINGLE_LIMIT,
-      encoding: 'GSM-7',
+      encoding: 'Standard',
       isUnicode: false,
       limit: GSM_SINGLE_LIMIT,
     }
@@ -68,7 +68,7 @@ function calculateSmsInfo(text) {
     characters: charCount,
     segments,
     remaining,
-    encoding: isUnicode ? 'Unicode' : 'GSM-7',
+    encoding: isUnicode ? 'Unicode' : 'Standard',
     isUnicode,
     limit: charCount <= singleLimit ? singleLimit : multiLimit,
   }

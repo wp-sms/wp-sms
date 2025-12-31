@@ -9,7 +9,7 @@ describe('calculateSmsInfo', () => {
     expect(info.characters).toBe(0)
     expect(info.segments).toBe(0)
     expect(info.remaining).toBe(160)
-    expect(info.encoding).toBe('GSM-7')
+    expect(info.encoding).toBe('Standard')
     expect(info.isUnicode).toBe(false)
   })
 
@@ -19,7 +19,7 @@ describe('calculateSmsInfo', () => {
     expect(info.characters).toBe(11)
     expect(info.segments).toBe(1)
     expect(info.remaining).toBe(149)
-    expect(info.encoding).toBe('GSM-7')
+    expect(info.encoding).toBe('Standard')
     expect(info.isUnicode).toBe(false)
   })
 
@@ -30,7 +30,7 @@ describe('calculateSmsInfo', () => {
     expect(info.characters).toBe(160)
     expect(info.segments).toBe(1)
     expect(info.remaining).toBe(0)
-    expect(info.encoding).toBe('GSM-7')
+    expect(info.encoding).toBe('Standard')
   })
 
   test('calculates correctly for multi-segment GSM message', () => {
@@ -39,7 +39,7 @@ describe('calculateSmsInfo', () => {
 
     expect(info.characters).toBe(161)
     expect(info.segments).toBe(2)
-    expect(info.encoding).toBe('GSM-7')
+    expect(info.encoding).toBe('Standard')
   })
 
   test('calculates correctly for three segment message', () => {
@@ -48,7 +48,7 @@ describe('calculateSmsInfo', () => {
 
     expect(info.characters).toBe(307)
     expect(info.segments).toBe(3)
-    expect(info.encoding).toBe('GSM-7')
+    expect(info.encoding).toBe('Standard')
   })
 
   test('detects Unicode characters', () => {
@@ -74,7 +74,7 @@ describe('calculateSmsInfo', () => {
 
     // 'Price: ' = 7, '€' = 2, '100' = 3 => 12 characters
     expect(info.characters).toBe(12)
-    expect(info.encoding).toBe('GSM-7')
+    expect(info.encoding).toBe('Standard')
     expect(info.isUnicode).toBe(false)
   })
 
@@ -113,10 +113,10 @@ describe('MessageComposer', () => {
     expect(screen.getByText('2 segments')).toBeInTheDocument()
   })
 
-  test('displays GSM-7 encoding badge for ASCII text', () => {
+  test('displays Standard encoding badge for ASCII text', () => {
     render(<MessageComposer value="Hello" />)
 
-    expect(screen.getByText('GSM-7')).toBeInTheDocument()
+    expect(screen.getByText('Standard')).toBeInTheDocument()
   })
 
   test('displays Unicode encoding badge for non-ASCII text', () => {
