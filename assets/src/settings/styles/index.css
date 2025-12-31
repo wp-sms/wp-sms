@@ -1,0 +1,253 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   WP SMS Settings - Clean Minimal Orange Theme
+   ============================================ */
+
+:root {
+  /* Light theme - Warm orange palette with refined grays */
+  --background: 30 10% 98%;
+  --foreground: 20 10% 12%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 20 10% 12%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 10% 12%;
+
+  /* Orange primary - vibrant but professional */
+  --primary: 24 95% 50%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 30 8% 95%;
+  --secondary-foreground: 20 10% 12%;
+
+  --muted: 30 8% 95%;
+  --muted-foreground: 20 6% 40%;
+
+  --accent: 30 12% 93%;
+  --accent-foreground: 20 10% 12%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 142 71% 40%;
+  --success-foreground: 0 0% 100%;
+
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 0%;
+
+  /* Improved border contrast - darker for visibility */
+  --border: 20 8% 75%;
+  --input: 20 8% 75%;
+  --ring: 24 95% 50%;
+
+  --radius: 6px;
+
+  /* Sidebar width */
+  --sidebar-width: 240px;
+}
+
+[data-theme="dark"] {
+  --background: 20 8% 8%;
+  --foreground: 30 10% 93%;
+
+  --card: 20 6% 11%;
+  --card-foreground: 30 10% 93%;
+
+  --popover: 20 6% 12%;
+  --popover-foreground: 30 10% 93%;
+
+  --primary: 24 95% 55%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 20 5% 16%;
+  --secondary-foreground: 30 10% 93%;
+
+  --muted: 20 5% 16%;
+  --muted-foreground: 20 5% 55%;
+
+  --accent: 20 6% 20%;
+  --accent-foreground: 30 10% 93%;
+
+  --destructive: 0 62% 50%;
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 142 60% 45%;
+  --success-foreground: 0 0% 100%;
+
+  /* Improved border contrast for dark mode */
+  --border: 20 6% 28%;
+  --input: 20 6% 28%;
+  --ring: 24 95% 55%;
+}
+
+/* ============================================
+   Base Styles - Clean and minimal
+   ============================================ */
+
+#wpsms-settings-root {
+  position: relative;
+}
+
+.wpsms-settings-app,
+.wsms-settings-app {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+}
+
+.wpsms-settings-app *,
+.wpsms-settings-app *::before,
+.wpsms-settings-app *::after,
+.wsms-settings-app *,
+.wsms-settings-app *::before,
+.wsms-settings-app *::after {
+  box-sizing: border-box;
+}
+
+/*
+ * Minimal Reset for WordPress Admin Compatibility
+ * Only reset properties that WordPress admin styles override incorrectly.
+ * Let Tailwind handle all visual styling (padding, backgrounds, borders, etc.)
+ */
+
+/* Typography reset - only margin and font inheritance */
+#wpsms-settings-root h1,
+#wpsms-settings-root h2,
+#wpsms-settings-root h3,
+#wpsms-settings-root h4,
+#wpsms-settings-root p {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Form elements - font inheritance only */
+#wpsms-settings-root input,
+#wpsms-settings-root select,
+#wpsms-settings-root textarea,
+#wpsms-settings-root button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* ============================================
+   Layout - WordPress Admin Integration
+   ============================================ */
+
+.wsms-settings-wrapper {
+  display: flex;
+  height: calc(100vh - 32px);
+  overflow: hidden;
+}
+
+.wsms-sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  flex-shrink: 0;
+  border-right: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.wsms-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: hsl(var(--muted));
+  overflow: hidden;
+}
+
+.wsms-content {
+  flex: 1;
+  padding: 24px;
+  padding-left: 32px;
+  overflow-y: auto;
+}
+
+.wsms-content-inner {
+  max-width: 720px;
+}
+
+/* ============================================
+   Scrollbar - Minimal
+   ============================================ */
+
+@layer utilities {
+  .wsms-scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  .wsms-scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .wsms-scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .wsms-scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 3px;
+  }
+
+  .wsms-scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.4);
+  }
+}
+
+/* ============================================
+   Animations - Subtle
+   ============================================ */
+
+@keyframes wsms-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes wsms-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.wsms-animate-in {
+  animation: wsms-fade-in 0.2s ease-out forwards;
+}
+
+.wsms-animate-slide-up {
+  animation: wsms-slide-up 0.25s ease-out forwards;
+}
+
+/* ============================================
+   Screen reader utility
+   ============================================ */
+
+.wsms-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

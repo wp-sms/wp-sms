@@ -1,0 +1,93 @@
+import React from 'react'
+import { Save, X, Loader2, Check } from 'lucide-react'
+import { Button } from '../ui/button'
+import { useSettings } from '@/context/SettingsContext'
+import { useToast } from '../ui/toaster'
+import { cn } from '@/lib/utils'
+
+export default function FloatingSaveBar() {
+  const { hasChanges, isSaving, saveSettings, resetChanges } = useSettings()
+  const { toast } = useToast()
+  const [saveSuccess, setSaveSuccess] = React.useState(false)
+
+  const handleSave = async () => {
+    const result = await saveSettings()
+
+    if (result.success) {
+      setSaveSuccess(true)
+      toast({
+        title: 'Settings saved',
+        variant: 'success',
+      })
+      setTimeout(() => setSaveSuccess(false), 2000)
+    } else {
+      toast({
+        title: 'Error saving settings',
+        description: result.error || 'Please try again.',
+        variant: 'destructive',
+      })
+    }
+  }
+
+  const handleDiscard = () => {
+    resetChanges()
+    toast({
+      title: 'Changes discarded',
+    })
+  }
+
+  if (!hasChanges && !saveSuccess) {
+    return null
+  }
+
+  return (
+    <div className="wsms-border-t wsms-border-border wsms-bg-card wsms-px-6 wsms-py-3 wsms-shrink-0">
+      <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4">
+        <div className="wsms-flex wsms-items-center wsms-gap-2">
+          {saveSuccess ? (
+            <>
+              <Check className="wsms-h-4 wsms-w-4 wsms-text-success" />
+              <span className="wsms-text-[13px] wsms-text-success wsms-font-medium">Saved</span>
+            </>
+          ) : (
+            <span className="wsms-text-[13px] wsms-text-muted-foreground">
+              You have unsaved changes
+            </span>
+          )}
+        </div>
+
+        {!saveSuccess && (
+          <div className="wsms-flex wsms-items-center wsms-gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleDiscard}
+              disabled={isSaving}
+            >
+              <X className="wsms-h-4 wsms-w-4 wsms-mr-1" />
+              Discard
+            </Button>
+
+            <Button
+              size="sm"
+              onClick={handleSave}
+              disabled={isSaving}
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1 wsms-animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="wsms-h-4 wsms-w-4 wsms-mr-1" />
+                  Save Changes
+                </>
+              )}
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

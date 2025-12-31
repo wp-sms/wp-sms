@@ -5,6 +5,7 @@ use WP_SMS\Admin\AnonymizedUsageData\AnonymizedUsageDataManager;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\OnBoarding\StepFactory;
 use WP_SMS\Admin\OnBoarding\WizardManager;
+use WP_SMS\Admin\Settings\NewSettingsPage;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
 use WP_SMS\Blocks\BlockAssetsManager;
@@ -225,6 +226,9 @@ class WP_SMS
             $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
             $adminManager             = new AdminManager();
 
+            // Initialize new settings page
+            NewSettingsPage::getInstance()->init();
+
             add_action('init', function () {
                 $wizard = new WizardManager(__('WPSMS OnBoarding Process', 'wp-sms'), 'wp-sms-onboarding');
                 $wizard->add(StepFactory::create('GettingStarted', $wizard));
@@ -253,6 +257,7 @@ class WP_SMS
         $this->include('includes/api/v1/class-wpsms-api-send.php');
         $this->include('includes/api/v1/class-wpsms-api-webhook.php');
         $this->include('includes/api/v1/class-wpsms-api-credit.php');
+        $this->include('includes/api/v1/class-wpsms-api-settings.php');
 
         // Anonymous Data sharing
         $anonymizedUsageDataManager = new AnonymizedUsageDataManager();

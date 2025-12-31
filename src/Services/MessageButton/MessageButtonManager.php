@@ -27,9 +27,20 @@ class MessageButtonManager
 
     public function initAdminPreview()
     {
+        // Old settings page
         if (isset($_GET['page']) && $_GET['page'] == 'wp-sms-settings' && isset($_GET['tab']) && $_GET['tab'] == 'message_button') {
             add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
             add_action('admin_footer', [$this, 'renderChatBox']);
+        }
+
+        // New settings page
+        if (isset($_GET['page']) && strpos($_GET['page'], 'new-settings') !== false) {
+            $tab = isset($_GET['tab']) ? $_GET['tab'] : '';
+            // Show on message-button tab or when no tab is set (for initial load before React takes over)
+            if ($tab === 'message-button' || $tab === '') {
+                add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
+                add_action('admin_footer', [$this, 'renderChatBox']);
+            }
         }
     }
 
