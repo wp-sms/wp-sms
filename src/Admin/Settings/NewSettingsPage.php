@@ -241,6 +241,7 @@ class NewSettingsPage extends Singleton
             'proSettings'   => $this->maskSensitiveSettings(Option::getOptions(true)),
             'addons'        => $this->getActiveAddons(),
             'gateways'      => Gateway::gateway(),
+            'gateway'       => $this->getGatewayCapabilities(),
             'adminUrl'      => admin_url(),
             'siteUrl'       => site_url(),
             'version'       => WP_SMS_VERSION,
@@ -573,6 +574,31 @@ class NewSettingsPage extends Singleton
         return array_filter($validated, function ($v) {
             return $v !== null;
         });
+    }
+
+    /**
+     * Get active gateway capabilities
+     *
+     * Retrieves the current gateway's properties like flash SMS support,
+     * media support, bulk send capability, and validation requirements.
+     *
+     * @return array Gateway capabilities
+     */
+    private function getGatewayCapabilities()
+    {
+        global $sms;
+
+        if (!$sms || !is_object($sms)) {
+            return [];
+        }
+
+        return [
+            'flash'          => $sms->flash ?? '',
+            'supportMedia'   => $sms->supportMedia ?? false,
+            'bulk_send'      => $sms->bulk_send ?? false,
+            'validateNumber' => $sms->validateNumber ?? '',
+            'from'           => $sms->from ?? '',
+        ];
     }
 
     /**
