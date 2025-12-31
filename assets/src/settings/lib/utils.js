@@ -132,3 +132,4 @@ export function deepMerge(target, source) {
 function isObject(item) {
   return item && typeof item === 'object' && !Array.isArray(item)
 }
+

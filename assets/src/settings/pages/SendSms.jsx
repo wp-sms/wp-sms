@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils'
 export default function SendSms() {
   const { setCurrentPage } = useSettings()
 
-  // Get gateway sender from settings
+  // Get gateway capabilities (static, from page load)
   const defaultSender = window.wpSmsSettings?.gateway?.from || ''
   const gatewaySupportsFlash = window.wpSmsSettings?.gateway?.flash === 'enable'
   const gatewaySupportsMedia = window.wpSmsSettings?.gateway?.supportMedia || false
@@ -35,6 +35,7 @@ export default function SendSms() {
   const [isSending, setIsSending] = useState(false)
   const [notification, setNotification] = useState(null)
   const [credit, setCredit] = useState(null)
+  const [creditSupported, setCreditSupported] = useState(true)
   const [recipientCount, setRecipientCount] = useState(0)
   const [isLoadingCount, setIsLoadingCount] = useState(false)
   const [showAdvanced, setShowAdvanced] = useState(false)
@@ -78,8 +79,10 @@ export default function SendSms() {
       try {
         const result = await smsApi.getCredit()
         setCredit(result.credit)
+        setCreditSupported(result.creditSupported)
       } catch (error) {
         console.error('Failed to fetch credit:', error)
+        setCreditSupported(false)
       }
     }
     fetchCredit()
@@ -91,8 +94,8 @@ export default function SendSms() {
   const hasSelections = totalManualRecipients > 0
   const hasActualRecipients = recipientCount > 0
   const isValid = hasMessage && hasSelections
-  // Only allow send if we have actual recipients (not just selections of empty groups)
-  const canSend = hasMessage && hasActualRecipients && !isSending && !isLoadingCount
+  // Allow send if gateway is configured, has message and actual recipients
+  const canSend = gatewayConfigured && hasMessage && hasActualRecipients && !isSending && !isLoadingCount
 
   // Handle preview button click
   const handlePreview = useCallback(() => {
@@ -201,7 +204,7 @@ export default function SendSms() {
                 <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">{gatewayName}</p>
               </div>
             </div>
-            {credit !== null && (
+            {creditSupported && credit !== null && (
               <>
                 <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
                 <div className="wsms-flex wsms-items-center wsms-gap-2">
@@ -374,10 +377,11 @@ export default function SendSms() {
           <div className="wsms-flex wsms-items-center wsms-gap-4">
             {!canSend && (
               <p className="wsms-text-[12px] wsms-text-amber-600">
-                {!hasMessage && !hasSelections && 'Add message and recipients'}
-                {!hasMessage && hasSelections && 'Enter a message'}
-                {hasMessage && !hasSelections && 'Add recipients'}
-                {hasMessage && hasSelections && !hasActualRecipients && !isLoadingCount && 'Selected groups/roles have no subscribers'}
+                {!gatewayConfigured && 'Configure gateway first'}
+                {gatewayConfigured && !hasMessage && !hasSelections && 'Add message and recipients'}
+                {gatewayConfigured && !hasMessage && hasSelections && 'Enter a message'}
+                {gatewayConfigured && hasMessage && !hasSelections && 'Add recipients'}
+                {gatewayConfigured && hasMessage && hasSelections && !hasActualRecipients && !isLoadingCount && 'Selected groups/roles have no subscribers'}
                 {isLoadingCount && 'Checking recipients...'}
               </p>
             )}

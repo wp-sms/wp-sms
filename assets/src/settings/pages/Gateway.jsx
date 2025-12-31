@@ -33,6 +33,8 @@ export default function Gateway() {
 
   const [searchQuery, setSearchQuery] = useState('')
   const [testing, setTesting] = useState(false)
+  const [connectionTested, setConnectionTested] = useState(false)
+  const [connectionSuccess, setConnectionSuccess] = useState(false)
 
   const gatewayList = useMemo(() => {
     const list = []
@@ -68,12 +70,16 @@ export default function Gateway() {
     setTesting(true)
     try {
       const result = await testGatewayConnection()
+      setConnectionTested(true)
+      setConnectionSuccess(result.success)
       toast({
         title: result.success ? 'Connection Successful' : 'Connection Failed',
         description: result.success ? `Credit: ${result.credit}` : result.error,
         variant: result.success ? 'success' : 'destructive',
       })
     } catch (error) {
+      setConnectionTested(true)
+      setConnectionSuccess(false)
       toast({ title: 'Error', description: error.message, variant: 'destructive' })
     }
     setTesting(false)
@@ -215,6 +221,25 @@ export default function Gateway() {
                 </span>
               </div>
             </div>
+
+            {/* Test connection status */}
+            {!connectionTested && (
+              <Tip variant="info">
+                Click <strong>Test Connection</strong> to verify your gateway credentials are working correctly.
+              </Tip>
+            )}
+
+            {connectionTested && connectionSuccess && (
+              <Tip variant="success">
+                Gateway connection verified successfully. You're ready to send SMS!
+              </Tip>
+            )}
+
+            {connectionTested && !connectionSuccess && (
+              <Tip variant="warning">
+                Connection test failed. Please check your credentials and try again.
+              </Tip>
+            )}
           </CardContent>
         </Card>
       )}

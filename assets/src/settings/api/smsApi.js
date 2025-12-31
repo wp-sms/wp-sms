@@ -67,7 +67,7 @@ export const smsApi = {
 
   /**
    * Get SMS credit balance
-   * @returns {Promise<object>} Credit info
+   * @returns {Promise<object>} Credit info with support status
    */
   async getCredit() {
     try {
@@ -75,11 +75,12 @@ export const smsApi = {
       // The credit endpoint returns data directly, not nested in data
       return {
         credit: response.credit ?? response.data?.credit ?? null,
+        creditSupported: response.creditSupported ?? response.data?.creditSupported ?? true,
         gateway: response.gateway ?? response.data?.gateway ?? null,
       }
     } catch (error) {
       console.error('Failed to get credit:', error)
-      return { credit: null, gateway: null }
+      return { credit: null, creditSupported: false, gateway: null }
     }
   },
 

@@ -235,25 +235,25 @@ class NewSettingsPage extends Singleton
     private function getLocalizedData()
     {
         return [
-            'apiUrl'        => rest_url('wpsms/v1/'),
-            'nonce'         => wp_create_nonce('wp_rest'),
-            'settings'      => $this->maskSensitiveSettings(Option::getOptions()),
-            'proSettings'   => $this->maskSensitiveSettings(Option::getOptions(true)),
-            'addons'        => $this->getActiveAddons(),
-            'gateways'      => Gateway::gateway(),
-            'gateway'       => $this->getGatewayCapabilities(),
-            'adminUrl'      => admin_url(),
-            'siteUrl'       => site_url(),
-            'version'       => WP_SMS_VERSION,
-            'i18n'          => $this->getTranslations(),
+            'apiUrl'           => rest_url('wpsms/v1/'),
+            'nonce'            => wp_create_nonce('wp_rest'),
+            'settings'         => $this->maskSensitiveSettings(Option::getOptions()),
+            'proSettings'      => $this->maskSensitiveSettings(Option::getOptions(true)),
+            'addons'           => $this->getActiveAddons(),
+            'gateways'         => Gateway::gateway(),
+            'gateway'          => $this->getGatewayCapabilities(),
+            'adminUrl'         => admin_url(),
+            'siteUrl'          => site_url(),
+            'version'          => WP_SMS_VERSION,
+            'i18n'             => $this->getTranslations(),
             // Dynamic data for multi-select fields
-            'countries'     => $this->getCountries(),
-            'postTypes'     => $this->getPostTypes(),
-            'taxonomies'    => $this->getTaxonomiesWithTerms(),
-            'roles'         => $this->getUserRoles(),
-            'groups'        => $this->getNewsletterGroups(),
+            'countries'        => $this->getCountries(),
+            'postTypes'        => $this->getPostTypes(),
+            'taxonomies'       => $this->getTaxonomiesWithTerms(),
+            'roles'            => $this->getUserRoles(),
+            'groups'           => $this->getNewsletterGroups(),
             // Add-on settings schema for dynamic rendering
-            'addonSettings' => $this->getAddonSettingsSchema(),
+            'addonSettings'    => $this->getAddonSettingsSchema(),
         ];
     }
 
