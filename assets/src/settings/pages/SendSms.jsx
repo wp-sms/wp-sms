@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Send, Zap, Image, Users, CheckCircle, AlertCircle, Loader2, CreditCard, User, Radio, MessageSquare, Hash, Clock } from 'lucide-react'
+import { Send, Zap, Image, Users, CheckCircle, AlertCircle, Loader2, CreditCard, User, Radio, MessageSquare, Hash, Clock, Eye, ChevronDown, ChevronUp } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { Input } from '@/components/ui/input'
 import { RecipientSelector } from '@/components/shared/RecipientSelector'
 import { MessageComposer, calculateSmsInfo } from '@/components/shared/MessageComposer'
+import { SmsPreviewDialog } from '@/components/shared/SmsPreviewDialog'
 import { Tip } from '@/components/ui/ux-helpers'
 import { smsApi } from '@/api/smsApi'
 import { useSettings } from '@/context/SettingsContext'
@@ -37,6 +38,7 @@ export default function SendSms() {
   const [recipientCount, setRecipientCount] = useState(0)
   const [isLoadingCount, setIsLoadingCount] = useState(false)
   const [showAdvanced, setShowAdvanced] = useState(false)
+  const [showPreviewDialog, setShowPreviewDialog] = useState(false)
 
   // Calculate recipient count
   const totalManualRecipients =
@@ -88,8 +90,15 @@ export default function SendSms() {
   const isValid = message.trim().length > 0 && totalManualRecipients > 0
   const canSend = isValid && !isSending
 
-  // Handle send
-  const handleSend = useCallback(async () => {
+  // Handle preview button click
+  const handlePreview = useCallback(() => {
+    if (canSend) {
+      setShowPreviewDialog(true)
+    }
+  }, [canSend])
+
+  // Handle confirmed send
+  const handleConfirmedSend = useCallback(async () => {
     if (!canSend) return
 
     setIsSending(true)
@@ -104,6 +113,7 @@ export default function SendSms() {
         mediaUrl: mediaUrl || undefined,
       })
 
+      setShowPreviewDialog(false)
       setNotification({
         type: 'success',
         message: `Message sent successfully to ${result.recipientCount || recipientCount} recipient(s)`,
@@ -121,6 +131,7 @@ export default function SendSms() {
       setFlashSms(false)
       setMediaUrl('')
     } catch (error) {
+      setShowPreviewDialog(false)
       setNotification({
         type: 'error',
         message: error.message || 'Failed to send message',
@@ -157,7 +168,7 @@ export default function SendSms() {
       {notification && (
         <div
           className={cn(
-            'wsms-flex wsms-items-center wsms-gap-3 wsms-p-4 wsms-rounded-lg wsms-border',
+            'wsms-flex wsms-items-center wsms-gap-3 wsms-p-4 wsms-rounded-xl wsms-border',
             'wsms-animate-in wsms-fade-in wsms-slide-in-from-top-2 wsms-duration-300',
             notification.type === 'success'
               ? 'wsms-bg-emerald-500/10 wsms-border-emerald-500/20 wsms-text-emerald-700 dark:wsms-text-emerald-400'
@@ -175,197 +186,188 @@ export default function SendSms() {
 
       {/* Status Bar - Full Width */}
       {gatewayConfigured && (
-        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-4 wsms-py-3 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
+        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-3.5 wsms-rounded-xl wsms-bg-gradient-to-r wsms-from-muted/50 wsms-to-muted/30 wsms-border wsms-border-border">
           <div className="wsms-flex wsms-items-center wsms-gap-6">
             <div className="wsms-flex wsms-items-center wsms-gap-2">
-              <Radio className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              <span className="wsms-text-[12px] wsms-text-muted-foreground">Gateway:</span>
-              <span className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">{gatewayName}</span>
+              <div className="wsms-flex wsms-items-center wsms-justify-center wsms-w-8 wsms-h-8 wsms-rounded-lg wsms-bg-primary/10">
+                <Radio className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              </div>
+              <div>
+                <span className="wsms-text-[10px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Gateway</span>
+                <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">{gatewayName}</p>
+              </div>
             </div>
             {credit !== null && (
-              <div className="wsms-flex wsms-items-center wsms-gap-2">
-                <CreditCard className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-                <span className="wsms-text-[12px] wsms-text-muted-foreground">Credit:</span>
-                <span className="wsms-text-[12px] wsms-font-semibold wsms-text-foreground">{credit}</span>
-              </div>
+              <>
+                <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
+                <div className="wsms-flex wsms-items-center wsms-gap-2">
+                  <div className="wsms-flex wsms-items-center wsms-justify-center wsms-w-8 wsms-h-8 wsms-rounded-lg wsms-bg-emerald-500/10">
+                    <CreditCard className="wsms-h-4 wsms-w-4 wsms-text-emerald-600" />
+                  </div>
+                  <div>
+                    <span className="wsms-text-[10px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Credit</span>
+                    <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">{credit}</p>
+                  </div>
+                </div>
+              </>
             )}
           </div>
           {gatewayValidation && (
             <div className="wsms-text-[11px] wsms-text-muted-foreground">
-              Format: <code className="wsms-px-1 wsms-py-0.5 wsms-rounded wsms-bg-muted">{gatewayValidation}</code>
+              Format: <code className="wsms-px-1.5 wsms-py-0.5 wsms-rounded-md wsms-bg-muted wsms-font-mono">{gatewayValidation}</code>
             </div>
           )}
         </div>
       )}
 
-      {/* Main Compose Area - Full Width Card */}
-      <Card className="wsms-overflow-hidden">
-        <div className="wsms-grid lg:wsms-grid-cols-5">
-          {/* Left: Message Compose - Takes 3 columns */}
-          <div className="lg:wsms-col-span-3 wsms-border-r wsms-border-border">
-            <CardHeader className="wsms-border-b wsms-border-border wsms-bg-muted/20">
-              <div className="wsms-flex wsms-items-center wsms-justify-between">
-                <div className="wsms-flex wsms-items-center wsms-gap-2">
-                  <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                  <CardTitle className="wsms-text-base">Compose Message</CardTitle>
-                </div>
-                {/* Sender ID inline */}
-                <div className="wsms-flex wsms-items-center wsms-gap-2">
-                  <User className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-                  <Input
-                    type="text"
-                    value={senderId}
-                    onChange={(e) => setSenderId(e.target.value)}
-                    placeholder="Sender ID"
-                    maxLength={18}
-                    className="wsms-w-36 wsms-h-8 wsms-text-[12px]"
-                  />
-                </div>
+      {/* Two Column Layout - Aligned Heights */}
+      <div className="wsms-grid lg:wsms-grid-cols-2 wsms-gap-6 wsms-items-start">
+        {/* Left Column: Message Compose */}
+        <Card className="wsms-overflow-hidden">
+          <CardHeader className="wsms-border-b wsms-border-border wsms-bg-muted/20 wsms-py-3">
+            <div className="wsms-flex wsms-items-center wsms-justify-between">
+              <div className="wsms-flex wsms-items-center wsms-gap-2">
+                <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+                <CardTitle className="wsms-text-sm">Compose Message</CardTitle>
               </div>
-            </CardHeader>
-            <CardContent className="wsms-p-0">
-              {/* Message Composer - Full Width */}
-              <div className="wsms-p-4">
-                <MessageComposer
-                  value={message}
-                  onChange={setMessage}
-                  placeholder="Type your message here..."
-                  rows={8}
-                  maxSegments={10}
+              {/* Sender ID inline */}
+              <div className="wsms-flex wsms-items-center wsms-gap-2">
+                <User className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+                <Input
+                  type="text"
+                  value={senderId}
+                  onChange={(e) => setSenderId(e.target.value)}
+                  placeholder="Sender ID"
+                  maxLength={18}
+                  className="wsms-w-32 wsms-h-7 wsms-text-[12px]"
                 />
               </div>
+            </div>
+          </CardHeader>
+          <CardContent className="wsms-p-4">
+            {/* Message Composer */}
+            <MessageComposer
+              value={message}
+              onChange={setMessage}
+              placeholder="Type your message here..."
+              rows={8}
+              maxSegments={10}
+            />
 
-              {/* Message Options Bar */}
-              <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-4 wsms-py-3 wsms-border-t wsms-border-border wsms-bg-muted/20">
-                <div className="wsms-flex wsms-items-center wsms-gap-4">
-                  {/* Flash SMS */}
-                  {gatewaySupportsFlash && (
-                    <label className="wsms-flex wsms-items-center wsms-gap-2 wsms-cursor-pointer">
-                      <Switch
-                        checked={flashSms}
-                        onCheckedChange={setFlashSms}
-                        className="wsms-scale-90"
-                      />
-                      <span className="wsms-text-[12px] wsms-text-muted-foreground">
-                        <Zap className="wsms-h-3 wsms-w-3 wsms-inline wsms-mr-1 wsms-text-amber-500" />
-                        Flash SMS
-                      </span>
-                    </label>
-                  )}
-
-                  {/* MMS Toggle */}
-                  {gatewaySupportsMedia && (
-                    <button
-                      onClick={() => setShowAdvanced(!showAdvanced)}
-                      className={cn(
-                        'wsms-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-transition-colors',
-                        showAdvanced ? 'wsms-text-primary' : 'wsms-text-muted-foreground hover:wsms-text-foreground'
-                      )}
-                    >
-                      <Image className="wsms-h-3 wsms-w-3" />
-                      Add Media
-                    </button>
-                  )}
-                </div>
-
-                {/* Message Stats */}
-                <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-text-[11px] wsms-text-muted-foreground">
-                  <span className="wsms-flex wsms-items-center wsms-gap-1">
-                    <Hash className="wsms-h-3 wsms-w-3" />
-                    {smsInfo.length} chars
-                  </span>
-                  <span>|</span>
-                  <span>{smsInfo.segments} segment{smsInfo.segments !== 1 ? 's' : ''}</span>
-                  <span>|</span>
-                  <span>{smsInfo.encoding}</span>
-                </div>
-              </div>
-
-              {/* Media URL Input - Collapsible */}
-              {showAdvanced && gatewaySupportsMedia && (
-                <div className="wsms-px-4 wsms-py-3 wsms-border-t wsms-border-border wsms-bg-muted/10">
-                  <div className="wsms-flex wsms-items-center wsms-gap-3">
-                    <Image className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-                    <Input
-                      type="url"
-                      value={mediaUrl}
-                      onChange={(e) => setMediaUrl(e.target.value)}
-                      placeholder="https://example.com/image.jpg"
-                      className="wsms-flex-1"
+            {/* Options Row - Only show if gateway supports options */}
+            {(gatewaySupportsFlash || gatewaySupportsMedia) && (
+              <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-mt-3 wsms-pt-3 wsms-border-t wsms-border-border">
+                {/* Flash SMS */}
+                {gatewaySupportsFlash && (
+                  <label className="wsms-flex wsms-items-center wsms-gap-2 wsms-cursor-pointer">
+                    <Switch
+                      checked={flashSms}
+                      onCheckedChange={setFlashSms}
+                      className="wsms-scale-90"
                     />
-                  </div>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mt-2 wsms-ml-7">
-                    Add an image or media URL for MMS (if supported by gateway)
-                  </p>
-                </div>
-              )}
-            </CardContent>
-          </div>
+                    <span className="wsms-text-[12px] wsms-text-muted-foreground">
+                      <Zap className="wsms-h-3 wsms-w-3 wsms-inline wsms-mr-1 wsms-text-amber-500" />
+                      Flash
+                    </span>
+                  </label>
+                )}
 
-          {/* Right: Recipients - Takes 2 columns */}
-          <div className="lg:wsms-col-span-2">
-            <CardHeader className="wsms-border-b wsms-border-border wsms-bg-muted/20">
-              <div className="wsms-flex wsms-items-center wsms-gap-2">
-                <Users className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                <CardTitle className="wsms-text-base">Recipients</CardTitle>
-                {recipientCount > 0 && (
-                  <span className="wsms-ml-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[11px] wsms-font-medium">
-                    {isLoadingCount ? (
-                      <Loader2 className="wsms-h-3 wsms-w-3 wsms-animate-spin" />
-                    ) : (
-                      recipientCount
+                {/* MMS Toggle */}
+                {gatewaySupportsMedia && (
+                  <button
+                    onClick={() => setShowAdvanced(!showAdvanced)}
+                    className={cn(
+                      'wsms-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-transition-colors',
+                      showAdvanced
+                        ? 'wsms-text-primary'
+                        : 'wsms-text-muted-foreground hover:wsms-text-foreground'
                     )}
-                  </span>
+                  >
+                    <Image className="wsms-h-3.5 wsms-w-3.5" />
+                    Media
+                  </button>
                 )}
               </div>
-            </CardHeader>
-            <CardContent className="wsms-p-4">
-              <RecipientSelector
-                value={recipients}
-                onChange={setRecipients}
-              />
+            )}
 
-              {/* Warnings */}
-              {!gatewaySupportsBulk && recipients.groups.length > 0 && (
-                <div className="wsms-mt-4 wsms-p-3 wsms-rounded-lg wsms-bg-amber-500/10 wsms-border wsms-border-amber-500/20">
-                  <p className="wsms-text-[11px] wsms-text-amber-700 dark:wsms-text-amber-400">
-                    ⚠️ This gateway doesn't support bulk SMS. Only the first number will receive the message.
-                  </p>
-                </div>
+            {/* Media URL Input - Collapsible */}
+            {showAdvanced && gatewaySupportsMedia && (
+              <div className="wsms-mt-3">
+                <Input
+                  type="url"
+                  value={mediaUrl}
+                  onChange={(e) => setMediaUrl(e.target.value)}
+                  placeholder="Media URL (https://...)"
+                  className="wsms-text-[12px]"
+                />
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Right Column: Recipients */}
+        <Card className="wsms-overflow-hidden">
+          <CardHeader className="wsms-border-b wsms-border-border wsms-bg-muted/20 wsms-py-3">
+            <div className="wsms-flex wsms-items-center wsms-gap-2">
+              <Users className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              <CardTitle className="wsms-text-sm">Recipients</CardTitle>
+              {recipientCount > 0 && (
+                <span className="wsms-ml-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary wsms-text-primary-foreground wsms-text-[11px] wsms-font-medium">
+                  {isLoadingCount ? (
+                    <Loader2 className="wsms-h-3 wsms-w-3 wsms-animate-spin" />
+                  ) : (
+                    recipientCount
+                  )}
+                </span>
               )}
-            </CardContent>
-          </div>
-        </div>
+            </div>
+          </CardHeader>
+          <CardContent className="wsms-p-4">
+            <RecipientSelector
+              value={recipients}
+              onChange={setRecipients}
+            />
 
-        {/* Bottom Action Bar - Full Width */}
-        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-6 wsms-px-6 wsms-py-4 wsms-border-t wsms-border-border wsms-bg-muted/30">
+            {/* Warnings */}
+            {!gatewaySupportsBulk && recipients.groups.length > 0 && (
+              <div className="wsms-mt-3 wsms-p-2.5 wsms-rounded-lg wsms-bg-amber-500/10 wsms-border wsms-border-amber-500/20">
+                <p className="wsms-text-[11px] wsms-text-amber-700 dark:wsms-text-amber-400">
+                  This gateway doesn't support bulk SMS. Only the first number will receive the message.
+                </p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Bottom Action Bar */}
+      <Card className="wsms-overflow-hidden">
+        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-3">
           {/* Left: Summary Stats */}
-          <div className="wsms-flex wsms-items-center wsms-gap-6">
-            <div className="wsms-text-center">
-              <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">
-                {isLoadingCount ? (
-                  <Loader2 className="wsms-h-5 wsms-w-5 wsms-animate-spin wsms-mx-auto" />
-                ) : (
-                  recipientCount
-                )}
-              </p>
-              <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Recipients</p>
+          <div className="wsms-flex wsms-items-center wsms-gap-5 wsms-text-[13px]">
+            <div className="wsms-flex wsms-items-center wsms-gap-2">
+              <Users className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+              <span className="wsms-text-muted-foreground">Recipients:</span>
+              <span className="wsms-font-semibold wsms-text-foreground">
+                {isLoadingCount ? '...' : recipientCount}
+              </span>
             </div>
-            <div className="wsms-w-px wsms-h-8 wsms-bg-border" />
-            <div className="wsms-text-center">
-              <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{smsInfo.segments}</p>
-              <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Segments</p>
+            <div className="wsms-w-px wsms-h-4 wsms-bg-border" />
+            <div className="wsms-flex wsms-items-center wsms-gap-2">
+              <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+              <span className="wsms-text-muted-foreground">Segments:</span>
+              <span className="wsms-font-semibold wsms-text-foreground">{smsInfo.segments}</span>
             </div>
-            <div className="wsms-w-px wsms-h-8 wsms-bg-border" />
-            <div className="wsms-text-center">
-              <p className="wsms-text-xl wsms-font-bold wsms-text-primary">{recipientCount * smsInfo.segments}</p>
-              <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Total SMS</p>
+            <div className="wsms-w-px wsms-h-4 wsms-bg-border" />
+            <div className="wsms-flex wsms-items-center wsms-gap-2">
+              <Send className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              <span className="wsms-text-muted-foreground">Total:</span>
+              <span className="wsms-font-bold wsms-text-primary">{recipientCount * smsInfo.segments}</span>
             </div>
           </div>
 
-          {/* Right: Validation + Send Button */}
+          {/* Right: Validation + Button */}
           <div className="wsms-flex wsms-items-center wsms-gap-4">
-            {/* Validation Messages */}
             {!isValid && (
               <p className="wsms-text-[12px] wsms-text-amber-600">
                 {totalManualRecipients === 0 && message.trim() && 'Add recipients'}
@@ -373,29 +375,32 @@ export default function SendSms() {
                 {totalManualRecipients === 0 && !message.trim() && 'Add message and recipients'}
               </p>
             )}
-
-            {/* Send Button */}
             <Button
-              onClick={handleSend}
+              onClick={handlePreview}
               disabled={!canSend}
-              size="lg"
-              className="wsms-min-w-[160px] wsms-h-11"
+              className="wsms-gap-2"
             >
-              {isSending ? (
-                <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
-                  Sending...
-                </>
-              ) : (
-                <>
-                  <Send className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-                  Send Message
-                </>
-              )}
+              <Eye className="wsms-h-4 wsms-w-4" />
+              Review & Send
             </Button>
           </div>
         </div>
       </Card>
+
+      {/* Preview Dialog */}
+      <SmsPreviewDialog
+        open={showPreviewDialog}
+        onOpenChange={setShowPreviewDialog}
+        message={message}
+        senderId={senderId || 'WP SMS'}
+        recipients={recipients}
+        recipientCount={recipientCount}
+        smsInfo={smsInfo}
+        isFlash={flashSms}
+        hasMedia={!!mediaUrl}
+        onConfirm={handleConfirmedSend}
+        isSending={isSending}
+      />
     </div>
   )
 }
