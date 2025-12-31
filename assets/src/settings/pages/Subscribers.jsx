@@ -73,6 +73,10 @@ export default function Subscribers() {
   const [notification, setNotification] = useState(null)
   const [isAddingQuick, setIsAddingQuick] = useState(false)
 
+  // Quick add form state
+  const [quickAddName, setQuickAddName] = useState('')
+  const [quickAddPhone, setQuickAddPhone] = useState('')
+
   // Form state for edit dialog
   const [formData, setFormData] = useState({ name: '', mobile: '', group_id: '', status: '1' })
   const [isSaving, setIsSaving] = useState(false)
@@ -141,19 +145,22 @@ export default function Subscribers() {
   }
 
   // Handle quick add
-  const handleQuickAdd = async (mobile) => {
+  const handleQuickAdd = async (name, mobile) => {
+    if (!mobile?.trim()) return
     setIsAddingQuick(true)
     try {
       await subscribersApi.createSubscriber({
-        name: '',
-        mobile,
+        name: name?.trim() || '',
+        mobile: mobile.trim(),
         group_id: groupFilter !== 'all' ? parseInt(groupFilter) : undefined,
         status: '1',
       })
       setNotification({ type: 'success', message: 'Subscriber added successfully' })
+      setQuickAddName('')
+      setQuickAddPhone('')
       fetchSubscribers(1)
     } catch (error) {
-      throw error
+      setNotification({ type: 'error', message: error.message || 'Failed to add subscriber' })
     } finally {
       setIsAddingQuick(false)
     }
@@ -487,7 +494,7 @@ export default function Subscribers() {
                 <QuickAddForm
                   placeholder="Enter phone number..."
                   buttonLabel="Add Subscriber"
-                  onSubmit={handleQuickAdd}
+                  onSubmit={(phone) => handleQuickAdd('', phone)}
                   isLoading={isAddingQuick}
                 />
               </div>
@@ -595,111 +602,125 @@ export default function Subscribers() {
         </div>
       </div>
 
-      {/* Toolbar: Search + Filters + Add */}
+      {/* Toolbar */}
       <Card>
-        <CardContent className="wsms-py-3">
-          <div className="wsms-flex wsms-flex-col wsms-gap-3">
-            {/* Main toolbar row */}
-            <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-3">
-              {/* Search */}
-              <div className="wsms-relative wsms-flex-1 wsms-min-w-[200px]">
-                <Search className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-                <Input
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search subscribers..."
-                  className="wsms-pl-9 wsms-w-full"
-                />
-              </div>
-
-              {/* Filters */}
-              <Select value={groupFilter} onValueChange={setGroupFilter}>
-                <SelectTrigger className="wsms-w-[140px]">
-                  <SelectValue placeholder="All Groups" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Groups</SelectItem>
-                  {groups.map((group) => (
-                    <SelectItem key={group.id} value={group.id.toString()}>
-                      {group.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="wsms-w-[120px]">
-                  <SelectValue placeholder="Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
-                </SelectContent>
-              </Select>
-
-              {countries.length > 0 && (
-                <Select value={countryFilter} onValueChange={setCountryFilter}>
-                  <SelectTrigger className="wsms-w-[150px]">
-                    <Globe className="wsms-h-4 wsms-w-4 wsms-mr-1.5 wsms-text-muted-foreground wsms-shrink-0" />
-                    <SelectValue placeholder="Country" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Countries</SelectItem>
-                    {countries
-                      .filter((country, index, self) =>
-                        index === self.findIndex((c) => c.code === country.code)
-                      )
-                      .map((country) => (
-                        <SelectItem key={country.code} value={country.code}>
-                          {country.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-              )}
-
-              {/* Divider */}
-              <div className="wsms-w-px wsms-h-6 wsms-bg-border wsms-hidden lg:wsms-block" />
-
-              {/* Quick Add inline */}
-              <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-flex-1 lg:wsms-flex-none lg:wsms-w-auto">
-                <Input
-                  type="text"
-                  placeholder="+1234567890"
-                  className="wsms-w-full lg:wsms-w-[160px] wsms-font-mono wsms-text-[13px]"
-                  id="quick-add-input"
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && e.target.value.trim()) {
-                      handleQuickAdd(e.target.value.trim())
-                      e.target.value = ''
-                    }
-                  }}
-                />
-                <Button
-                  size="sm"
-                  disabled={isAddingQuick}
-                  onClick={() => {
-                    const input = document.getElementById('quick-add-input')
-                    if (input?.value?.trim()) {
-                      handleQuickAdd(input.value.trim())
-                      input.value = ''
-                    }
-                  }}
-                  className="wsms-shrink-0"
-                >
-                  {isAddingQuick ? (
-                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
-                  ) : (
-                    <>
-                      <UserPlus className="wsms-h-4 wsms-w-4 lg:wsms-mr-1.5" />
-                      <span className="wsms-hidden lg:wsms-inline">Add</span>
-                    </>
-                  )}
-                </Button>
-              </div>
+        <CardContent className="wsms-p-0">
+          {/* Row 1: Search + Filters - all inline */}
+          <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-3 wsms-pb-2.5">
+            {/* Search */}
+            <div className="wsms-relative wsms-w-[220px] wsms-shrink-0">
+              <Search className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" />
+              <Input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search..."
+                className="wsms-pl-8 wsms-h-9"
+              />
             </div>
+
+            {/* Filters inline */}
+            <Select value={groupFilter} onValueChange={setGroupFilter}>
+              <SelectTrigger className="wsms-h-9 wsms-w-[120px] wsms-text-[12px]">
+                <SelectValue placeholder="All Groups" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Groups</SelectItem>
+                {groups.map((group) => (
+                  <SelectItem key={group.id} value={group.id.toString()}>
+                    {group.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="wsms-h-9 wsms-w-[100px] wsms-text-[12px]">
+                <SelectValue placeholder="Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Status</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
+
+            {countries.length > 0 && (
+              <Select value={countryFilter} onValueChange={setCountryFilter}>
+                <SelectTrigger className="wsms-h-9 wsms-w-[130px] wsms-text-[12px]">
+                  <Globe className="wsms-h-3.5 wsms-w-3.5 wsms-mr-1 wsms-text-muted-foreground wsms-shrink-0" />
+                  <SelectValue placeholder="Country" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Countries</SelectItem>
+                  {countries
+                    .filter((country, index, self) =>
+                      index === self.findIndex((c) => c.code === country.code)
+                    )
+                    .map((country) => (
+                      <SelectItem key={country.code} value={country.code}>
+                        {country.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            )}
+          </div>
+
+          {/* Divider */}
+          <div className="wsms-border-t wsms-border-border" />
+
+          {/* Row 2: Quick Add */}
+          <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-p-3 wsms-pt-2.5 wsms-bg-muted/30">
+            <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide wsms-shrink-0">
+              <UserPlus className="wsms-h-3.5 wsms-w-3.5" />
+              <span>Quick Add</span>
+            </div>
+
+            {/* Name field (optional) */}
+            <Input
+              type="text"
+              value={quickAddName}
+              onChange={(e) => setQuickAddName(e.target.value)}
+              placeholder="Name (optional)"
+              className="wsms-h-9 wsms-w-[160px] wsms-text-[13px]"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && quickAddPhone.trim()) {
+                  handleQuickAdd(quickAddName, quickAddPhone)
+                }
+              }}
+            />
+
+            {/* Phone field (required) */}
+            <Input
+              type="tel"
+              value={quickAddPhone}
+              onChange={(e) => setQuickAddPhone(e.target.value)}
+              placeholder="+1234567890"
+              className="wsms-h-9 wsms-w-[160px] wsms-font-mono wsms-text-[13px]"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && quickAddPhone.trim()) {
+                  handleQuickAdd(quickAddName, quickAddPhone)
+                }
+              }}
+            />
+
+            {/* Add button */}
+            <Button
+              size="sm"
+              disabled={isAddingQuick || !quickAddPhone.trim()}
+              onClick={() => handleQuickAdd(quickAddName, quickAddPhone)}
+              className="wsms-h-9 wsms-px-4 wsms-shrink-0"
+            >
+              {isAddingQuick ? (
+                <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
+              ) : (
+                <>
+                  <UserPlus className="wsms-h-4 wsms-w-4 wsms-mr-1.5" />
+                  Add
+                </>
+              )}
+            </Button>
           </div>
         </CardContent>
       </Card>

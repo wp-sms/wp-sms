@@ -176,7 +176,12 @@
 }
 
 .wsms-content-inner {
-  max-width: 720px;
+  max-width: 960px;
+}
+
+/* Data-heavy pages need more width */
+.wsms-content-inner.wsms-content-wide {
+  max-width: 1200px;
 }
 
 /* ============================================
