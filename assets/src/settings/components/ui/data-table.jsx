@@ -16,7 +16,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Skeleton } from '@/components/ui/skeleton'
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu'
 
 // Debounce hook
 function useDebounce(value, delay) {
@@ -85,38 +90,30 @@ function BulkActionsDropdown({ actions, selectedCount, onAction }) {
   if (!actions || actions.length === 0) return null
 
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="wsms-gap-1.5">
           <span>Actions</span>
           <span className="wsms-flex wsms-h-5 wsms-min-w-5 wsms-items-center wsms-justify-center wsms-rounded wsms-bg-primary/10 wsms-px-1.5 wsms-text-[11px] wsms-font-semibold wsms-text-primary">
             {selectedCount}
           </span>
         </Button>
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          className="wsms-z-50 wsms-min-w-[140px] wsms-overflow-hidden wsms-rounded-md wsms-border wsms-border-border wsms-bg-card wsms-p-1 wsms-shadow-lg"
-          sideOffset={5}
-        >
-          {actions.map((action, index) => (
-            <DropdownMenu.Item
-              key={index}
-              className={cn(
-                'wsms-relative wsms-flex wsms-cursor-pointer wsms-select-none wsms-items-center wsms-rounded-sm wsms-px-2.5 wsms-py-1.5 wsms-text-[13px] wsms-outline-none wsms-transition-colors',
-                'focus:wsms-bg-accent focus:wsms-text-accent-foreground',
-                'data-[disabled]:wsms-pointer-events-none data-[disabled]:wsms-opacity-50',
-                action.variant === 'destructive' && 'wsms-text-destructive focus:wsms-bg-destructive/10'
-              )}
-              onClick={() => onAction(action)}
-            >
-              {action.icon && <action.icon className="wsms-mr-2 wsms-h-4 wsms-w-4" />}
-              {action.label}
-            </DropdownMenu.Item>
-          ))}
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" sideOffset={5}>
+        {actions.map((action, index) => (
+          <DropdownMenuItem
+            key={index}
+            className={cn(
+              action.variant === 'destructive' && 'wsms-text-destructive focus:wsms-bg-destructive/10'
+            )}
+            onClick={() => onAction(action)}
+          >
+            {action.icon && <action.icon className="wsms-mr-2 wsms-h-4 wsms-w-4" />}
+            {action.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
@@ -125,37 +122,28 @@ function RowActionsDropdown({ actions, row }) {
   if (!actions || actions.length === 0) return null
 
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger asChild>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="wsms-h-8 wsms-w-8">
           <MoreHorizontal className="wsms-h-4 wsms-w-4" />
           <span className="wsms-sr-only">Open menu</span>
         </Button>
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          className="wsms-z-50 wsms-min-w-[140px] wsms-overflow-hidden wsms-rounded-md wsms-border wsms-border-border wsms-bg-card wsms-p-1 wsms-shadow-lg"
-          sideOffset={5}
-          align="end"
-        >
-          {actions.map((action, index) => (
-            <DropdownMenu.Item
-              key={index}
-              className={cn(
-                'wsms-relative wsms-flex wsms-cursor-pointer wsms-select-none wsms-items-center wsms-rounded-sm wsms-px-2.5 wsms-py-1.5 wsms-text-[13px] wsms-outline-none wsms-transition-colors',
-                'focus:wsms-bg-accent focus:wsms-text-accent-foreground',
-                'data-[disabled]:wsms-pointer-events-none data-[disabled]:wsms-opacity-50',
-                action.variant === 'destructive' && 'wsms-text-destructive focus:wsms-bg-destructive/10'
-              )}
-              onClick={() => action.onClick(row)}
-            >
-              {action.icon && <action.icon className="wsms-mr-2 wsms-h-4 wsms-w-4" />}
-              {action.label}
-            </DropdownMenu.Item>
-          ))}
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" sideOffset={5}>
+        {actions.map((action, index) => (
+          <DropdownMenuItem
+            key={index}
+            className={cn(
+              action.variant === 'destructive' && 'wsms-text-destructive focus:wsms-bg-destructive/10'
+            )}
+            onClick={() => action.onClick(row)}
+          >
+            {action.icon && <action.icon className="wsms-mr-2 wsms-h-4 wsms-w-4" />}
+            {action.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
