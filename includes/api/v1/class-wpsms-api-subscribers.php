@@ -306,6 +306,15 @@ class SubscribersApi extends RestApi
             ];
         }, $items ?: []);
 
+        // Get stats (total, active, inactive counts - unfiltered)
+        $stats_total = (int) $this->db->get_var(
+            "SELECT COUNT(*) FROM {$this->tb_prefix}sms_subscribes"
+        );
+        $stats_active = (int) $this->db->get_var(
+            "SELECT COUNT(*) FROM {$this->tb_prefix}sms_subscribes WHERE status = '1'"
+        );
+        $stats_inactive = $stats_total - $stats_active;
+
         return self::response(__('Subscribers retrieved successfully', 'wp-sms'), 200, [
             'items'      => $formatted,
             'pagination' => [
@@ -313,6 +322,11 @@ class SubscribersApi extends RestApi
                 'total_pages' => ceil($total / $per_page),
                 'current_page' => $page,
                 'per_page'    => $per_page,
+            ],
+            'stats'      => [
+                'total'    => $stats_total,
+                'active'   => $stats_active,
+                'inactive' => $stats_inactive,
             ],
         ]);
     }
