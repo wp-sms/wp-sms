@@ -56,14 +56,18 @@ const DropdownMenuContent = React.forwardRef(
         ref={ref}
         sideOffset={sideOffset}
         className={cn(
-          'wsms-z-[99999] wsms-min-w-[8rem] wsms-overflow-hidden wsms-rounded-md wsms-border wsms-border-border wsms-bg-popover wsms-p-1 wsms-text-popover-foreground wsms-shadow-md',
-          'data-[state=open]:wsms-animate-in data-[state=closed]:wsms-animate-out',
-          'data-[state=closed]:wsms-fade-out-0 data-[state=open]:wsms-fade-in-0',
-          'data-[state=closed]:wsms-zoom-out-95 data-[state=open]:wsms-zoom-in-95',
-          'data-[side=bottom]:wsms-slide-in-from-top-2 data-[side=left]:wsms-slide-in-from-right-2',
-          'data-[side=right]:wsms-slide-in-from-left-2 data-[side=top]:wsms-slide-in-from-bottom-2',
+          'wsms-z-[99999] wsms-min-w-[140px] wsms-overflow-hidden wsms-rounded-lg wsms-p-1.5 wsms-shadow-lg',
           className
         )}
+        style={{
+          backgroundColor: '#ffffff',
+          border: '1px solid #e5e7eb',
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+          borderRadius: '8px',
+          padding: '6px',
+          minWidth: '140px',
+          zIndex: 999999,
+        }}
         {...props}
       />
     </DropdownMenuPrimitive.Portal>
@@ -72,19 +76,35 @@ const DropdownMenuContent = React.forwardRef(
 DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName
 
 const DropdownMenuItem = React.forwardRef(
-  ({ className, inset, ...props }, ref) => (
-    <DropdownMenuPrimitive.Item
-      ref={ref}
-      className={cn(
-        'wsms-relative wsms-flex wsms-cursor-pointer wsms-select-none wsms-items-center wsms-rounded-sm wsms-px-2 wsms-py-1.5 wsms-text-[13px] wsms-outline-none wsms-transition-colors',
-        'focus:wsms-bg-accent focus:wsms-text-accent-foreground',
-        'data-[disabled]:wsms-pointer-events-none data-[disabled]:wsms-opacity-50',
-        inset && 'wsms-pl-8',
-        className
-      )}
-      {...props}
-    />
-  )
+  ({ className, inset, ...props }, ref) => {
+    const [isHovered, setIsHovered] = React.useState(false)
+    return (
+      <DropdownMenuPrimitive.Item
+        ref={ref}
+        className={cn(
+          'wsms-relative wsms-flex wsms-cursor-pointer wsms-select-none wsms-items-center wsms-gap-2 wsms-rounded-md wsms-outline-none wsms-transition-colors',
+          'data-[disabled]:wsms-pointer-events-none data-[disabled]:wsms-opacity-50',
+          inset && 'wsms-pl-8',
+          className
+        )}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '8px 10px',
+          borderRadius: '6px',
+          fontSize: '13px',
+          color: '#374151',
+          cursor: 'pointer',
+          backgroundColor: isHovered ? '#f3f4f6' : 'transparent',
+          transition: 'background-color 0.15s ease',
+        }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        {...props}
+      />
+    )
+  }
 )
 DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName
 

@@ -73,14 +73,14 @@ function TableSkeleton({ columns, rows = 5, hasSelection }) {
   )
 }
 
-// Empty state component
+// Empty state component with enhanced styling
 function EmptyState({ icon: Icon = Inbox, message = 'No items found' }) {
   return (
-    <div className="wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-py-12 wsms-px-4">
-      <div className="wsms-flex wsms-h-14 wsms-w-14 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-muted/50 wsms-mb-4">
-        <Icon className="wsms-h-6 wsms-w-6 wsms-text-muted-foreground/70" strokeWidth={1.5} />
+    <div className="wsms-empty-state wsms-animate-scale-in">
+      <div className="wsms-empty-state-icon">
+        <Icon strokeWidth={1.5} />
       </div>
-      <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-text-center">{message}</p>
+      <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-text-center wsms-max-w-[280px]">{message}</p>
     </div>
   )
 }
@@ -103,12 +103,10 @@ function BulkActionsDropdown({ actions, selectedCount, onAction }) {
         {actions.map((action, index) => (
           <DropdownMenuItem
             key={index}
-            className={cn(
-              action.variant === 'destructive' && 'wsms-text-destructive focus:wsms-bg-destructive/10'
-            )}
             onClick={() => onAction(action)}
+            style={action.variant === 'destructive' ? { color: '#dc2626' } : undefined}
           >
-            {action.icon && <action.icon className="wsms-mr-2 wsms-h-4 wsms-w-4" />}
+            {action.icon && <action.icon style={{ marginRight: '8px', width: '16px', height: '16px' }} />}
             {action.label}
           </DropdownMenuItem>
         ))}
@@ -133,12 +131,10 @@ function RowActionsDropdown({ actions, row }) {
         {actions.map((action, index) => (
           <DropdownMenuItem
             key={index}
-            className={cn(
-              action.variant === 'destructive' && 'wsms-text-destructive focus:wsms-bg-destructive/10'
-            )}
             onClick={() => action.onClick(row)}
+            style={action.variant === 'destructive' ? { color: '#dc2626' } : undefined}
           >
-            {action.icon && <action.icon className="wsms-mr-2 wsms-h-4 wsms-w-4" />}
+            {action.icon && <action.icon style={{ marginRight: '8px', width: '16px', height: '16px' }} />}
             {action.label}
           </DropdownMenuItem>
         ))}

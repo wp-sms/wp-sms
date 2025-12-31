@@ -1,11 +1,12 @@
 import React, { useState, useMemo } from 'react'
-import { Search, CheckCircle, Radio, Send, Loader2 } from 'lucide-react'
+import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { InputField, SelectField, SwitchField } from '@/components/ui/form-field'
 import { MultiSelect } from '@/components/ui/multi-select'
+import { Tip, CollapsibleSection, HelpLink, SectionDivider } from '@/components/ui/ux-helpers'
 import { useSettings, useSetting } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
 import { getWpSettings, cn } from '@/lib/utils'
@@ -79,11 +80,22 @@ export default function Gateway() {
   }
 
   return (
-    <div className="wsms-space-y-4">
+    <div className="wsms-space-y-4 wsms-stagger-children">
+      {/* Helpful tip for new users */}
+      {!gatewayName && (
+        <Tip>
+          <strong>Need help choosing a gateway?</strong> Consider factors like coverage area, pricing, and API features.
+          Most gateways offer free trial credits to test before committing.
+        </Tip>
+      )}
+
       {/* Gateway Selection */}
       <Card>
         <CardHeader>
-          <CardTitle>SMS Gateway</CardTitle>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <Radio className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+            SMS Gateway
+          </CardTitle>
           <CardDescription>Select your SMS service provider. Configure credentials below after selecting.</CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
@@ -143,10 +155,17 @@ export default function Gateway() {
       {gatewayName && (
         <Card>
           <CardHeader>
-            <CardTitle>Credentials</CardTitle>
+            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <Shield className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              Credentials
+            </CardTitle>
             <CardDescription>API credentials for {gatewayName}</CardDescription>
           </CardHeader>
           <CardContent className="wsms-space-y-4">
+            <Tip variant="info" dismissible>
+              Find your API credentials in your gateway provider's dashboard. Not all fields may be required — check your gateway's documentation.
+            </Tip>
+
             <div className="wsms-grid wsms-grid-cols-1 wsms-gap-4 md:wsms-grid-cols-2">
               <InputField
                 label="API Username"
@@ -176,23 +195,25 @@ export default function Gateway() {
               />
             </div>
 
-            <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-pt-4 wsms-border-t wsms-border-border">
-              <Button size="sm" onClick={handleTestConnection} disabled={testing}>
-                {testing ? (
-                  <>
-                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1 wsms-animate-spin" />
-                    Testing...
-                  </>
-                ) : (
-                  <>
-                    <Send className="wsms-h-4 wsms-w-4 wsms-mr-1" />
-                    Test Connection
-                  </>
-                )}
-              </Button>
-              <span className="wsms-text-[12px] wsms-text-muted-foreground">
-                Verify credentials
-              </span>
+            <div className="wsms-flex wsms-items-center wsms-justify-between wsms-pt-4 wsms-border-t wsms-border-border">
+              <div className="wsms-flex wsms-items-center wsms-gap-3">
+                <Button size="sm" onClick={handleTestConnection} disabled={testing}>
+                  {testing ? (
+                    <>
+                      <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1 wsms-animate-spin" />
+                      Testing...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="wsms-h-4 wsms-w-4 wsms-mr-1" />
+                      Test Connection
+                    </>
+                  )}
+                </Button>
+                <span className="wsms-text-[12px] wsms-text-muted-foreground">
+                  Verify your credentials are working
+                </span>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -201,7 +222,13 @@ export default function Gateway() {
       {/* Delivery Settings */}
       <Card>
         <CardHeader>
-          <CardTitle>Delivery Settings</CardTitle>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <Zap className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+            Delivery Settings
+          </CardTitle>
+          <CardDescription>
+            Configure how messages are processed and delivered
+          </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <SelectField
@@ -217,7 +244,15 @@ export default function Gateway() {
             ]}
           />
 
-          <div className="wsms-divide-y wsms-divide-border wsms-border-t wsms-border-border">
+          {deliveryMethod === 'api_queued_send' && (
+            <Tip variant="info">
+              Queue mode requires a cron job to process messages. Configure WP-Cron or set up a real cron job for reliable delivery.
+            </Tip>
+          )}
+
+          <SectionDivider>Message Formatting</SectionDivider>
+
+          <div className="wsms-divide-y wsms-divide-border wsms-rounded-lg wsms-border wsms-border-border wsms-overflow-hidden">
             <SwitchField
               label="Enable Unicode"
               description="Required for non-Latin characters (Arabic, Chinese, emoji). May reduce characters per SMS."
@@ -230,29 +265,37 @@ export default function Gateway() {
               checked={cleanNumbers === '1'}
               onCheckedChange={(checked) => setCleanNumbers(checked ? '1' : '')}
             />
-            <SwitchField
-              label="Restrict to Specific Countries"
-              description="Only send SMS to phone numbers from selected countries."
-              checked={localNumbersOnly === '1'}
-              onCheckedChange={(checked) => setLocalNumbersOnly(checked ? '1' : '')}
-            />
           </div>
 
-          {localNumbersOnly === '1' && (
-            <div className="wsms-space-y-2 wsms-pt-4 wsms-border-t wsms-border-border">
-              <Label>Allowed Countries</Label>
-              <MultiSelect
-                options={countries}
-                value={localNumbersCountries}
-                onValueChange={setLocalNumbersCountries}
-                placeholder="Select countries..."
-                searchPlaceholder="Search countries..."
+          <CollapsibleSection
+            title="Country Restrictions"
+            description="Limit SMS delivery to specific countries"
+          >
+            <div className="wsms-space-y-4">
+              <SwitchField
+                label="Restrict to Specific Countries"
+                description="Only send SMS to phone numbers from selected countries."
+                checked={localNumbersOnly === '1'}
+                onCheckedChange={(checked) => setLocalNumbersOnly(checked ? '1' : '')}
               />
-              <p className="wsms-text-xs wsms-text-muted-foreground">
-                SMS will only be sent to numbers from these countries.
-              </p>
+
+              {localNumbersOnly === '1' && (
+                <div className="wsms-space-y-2">
+                  <Label>Allowed Countries</Label>
+                  <MultiSelect
+                    options={countries}
+                    value={localNumbersCountries}
+                    onValueChange={setLocalNumbersCountries}
+                    placeholder="Select countries..."
+                    searchPlaceholder="Search countries..."
+                  />
+                  <p className="wsms-text-xs wsms-text-muted-foreground">
+                    SMS will only be sent to numbers from these countries.
+                  </p>
+                </div>
+              )}
             </div>
-          )}
+          </CollapsibleSection>
         </CardContent>
       </Card>
 

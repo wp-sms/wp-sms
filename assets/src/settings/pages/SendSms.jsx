@@ -1,21 +1,26 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Send, Zap, Image, Users, CheckCircle, AlertCircle, Loader2, CreditCard, User } from 'lucide-react'
+import { Send, Zap, Image, Users, CheckCircle, AlertCircle, Loader2, CreditCard, User, Radio } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { Input } from '@/components/ui/input'
 import { RecipientSelector } from '@/components/shared/RecipientSelector'
 import { MessageComposer, calculateSmsInfo } from '@/components/shared/MessageComposer'
+import { Tip, ValidationMessage } from '@/components/ui/ux-helpers'
 import { smsApi } from '@/api/smsApi'
+import { useSettings } from '@/context/SettingsContext'
 import { cn } from '@/lib/utils'
 
 export default function SendSms() {
+  const { setCurrentPage } = useSettings()
+
   // Get gateway sender from settings
   const defaultSender = window.wpSmsSettings?.gateway?.from || ''
   const gatewaySupportsFlash = window.wpSmsSettings?.gateway?.flash === 'enable'
   const gatewaySupportsMedia = window.wpSmsSettings?.gateway?.supportMedia || false
   const gatewayValidation = window.wpSmsSettings?.gateway?.validateNumber || ''
   const gatewaySupportsBulk = window.wpSmsSettings?.gateway?.bulk_send !== false
+  const gatewayConfigured = !!window.wpSmsSettings?.settings?.gateway_name
 
   // Form state
   const [senderId, setSenderId] = useState(defaultSender)
@@ -132,7 +137,20 @@ export default function SendSms() {
   }, [notification])
 
   return (
-    <div className="wsms-space-y-6">
+    <div className="wsms-space-y-6 wsms-stagger-children">
+      {/* Gateway not configured warning */}
+      {!gatewayConfigured && (
+        <Tip variant="warning">
+          <strong>No SMS gateway configured.</strong> You need to set up a gateway before you can send messages.{' '}
+          <button
+            onClick={() => setCurrentPage('gateway')}
+            className="wsms-underline wsms-font-medium"
+          >
+            Configure Gateway →
+          </button>
+        </Tip>
+      )}
+
       {/* Notification */}
       {notification && (
         <div

@@ -13,9 +13,12 @@ import {
   Send,
   Loader2,
   ExternalLink,
+  Zap,
+  BookOpen,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { SetupProgress, Tip, FeatureHighlight } from '@/components/ui/ux-helpers'
 import { useSettings, useSetting } from '@/context/SettingsContext'
 import { getWpSettings, cn } from '@/lib/utils'
 
@@ -124,20 +127,57 @@ export default function Overview() {
 
   const isProActive = window.wpSmsSettings?.addons?.pro
 
+  // Setup steps for new users
+  const setupSteps = [
+    {
+      title: 'Configure SMS Gateway',
+      description: gatewayName ? `Connected to ${gatewayName}` : 'Select your SMS provider',
+      completed: !!gatewayName,
+      onClick: () => setCurrentPage('gateway'),
+    },
+    {
+      title: 'Set Admin Mobile Number',
+      description: adminMobile || 'Add your phone for test messages',
+      completed: !!adminMobile,
+      onClick: () => setCurrentPage('phone'),
+    },
+    {
+      title: 'Test Your Connection',
+      description: gatewayStatus.status === 'connected' ? 'Gateway is working' : 'Verify credentials work',
+      completed: gatewayStatus.status === 'connected',
+      onClick: testConnection,
+    },
+  ]
+
+  const isNewUser = !gatewayName
+  const setupComplete = setupSteps.every((s) => s.completed)
+
   return (
-    <div className="wsms-space-y-4">
-      {/* Welcome message for new users */}
-      {!gatewayName && (
-        <Card className="wsms-border-primary/30 wsms-bg-primary/5">
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4">
-            <span className="wsms-text-[13px]">
-              Welcome to WP SMS! Configure your gateway to start sending messages.
-            </span>
-            <Button size="sm" onClick={() => setCurrentPage('gateway')}>
-              Get Started
-            </Button>
-          </div>
+    <div className="wsms-space-y-4 wsms-stagger-children">
+      {/* Setup Progress for new users */}
+      {isNewUser && (
+        <Card>
+          <CardHeader>
+            <div className="wsms-flex wsms-items-center wsms-gap-2">
+              <Zap className="wsms-h-5 wsms-w-5 wsms-text-primary" />
+              <CardTitle>Welcome to WP SMS!</CardTitle>
+            </div>
+            <CardDescription>
+              Complete these steps to start sending SMS messages from your WordPress site.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <SetupProgress steps={setupSteps} />
+          </CardContent>
         </Card>
+      )}
+
+      {/* Success message when setup is complete */}
+      {setupComplete && !isNewUser && (
+        <Tip variant="success" dismissible>
+          <strong>You're all set!</strong> Your SMS gateway is configured and ready to send messages.
+          Head to <button onClick={() => setCurrentPage('send-sms')} className="wsms-underline wsms-font-medium">Send SMS</button> to send your first message.
+        </Tip>
       )}
 
       {/* Gateway Status */}

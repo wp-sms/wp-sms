@@ -10,12 +10,14 @@ import {
   Loader2,
   Save,
   X,
+  Send,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { DataTable } from '@/components/ui/data-table'
 import { QuickAddForm } from '@/components/shared/QuickAddForm'
+import { Tip, EmptyStateAction } from '@/components/ui/ux-helpers'
 import {
   Dialog,
   DialogContent,
@@ -241,7 +243,7 @@ export default function Groups() {
   const totalSubscribers = groups.reduce((sum, g) => sum + (g.subscriber_count || 0), 0)
 
   return (
-    <div className="wsms-space-y-6">
+    <div className="wsms-space-y-6 wsms-stagger-children">
       {/* Notification */}
       {notification && (
         <div
@@ -262,21 +264,31 @@ export default function Groups() {
         </div>
       )}
 
-      {/* Stats Cards */}
-      <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
-        <Card className="wsms-py-4">
-          <CardContent className="wsms-py-0 wsms-text-center">
-            <p className="wsms-text-2xl wsms-font-bold wsms-text-foreground">{pagination.total}</p>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground">Total Groups</p>
-          </CardContent>
-        </Card>
-        <Card className="wsms-py-4">
-          <CardContent className="wsms-py-0 wsms-text-center">
-            <p className="wsms-text-2xl wsms-font-bold wsms-text-primary">{totalSubscribers}</p>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground">Total Subscribers</p>
-          </CardContent>
-        </Card>
-      </div>
+      {/* First-time helper */}
+      {groups.length === 0 && !isLoading && (
+        <Tip>
+          <strong>Organize your audience with Groups!</strong> Create groups to segment subscribers by interest, location, or any criteria.
+          This makes it easy to send targeted messages to the right people.
+        </Tip>
+      )}
+
+      {/* Stats Cards - only show when there are groups */}
+      {groups.length > 0 && (
+        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
+          <Card className="wsms-py-4 wsms-stat-card wsms-card-hover">
+            <CardContent className="wsms-py-0 wsms-text-center">
+              <p className="wsms-text-2xl wsms-font-bold wsms-text-foreground wsms-count-animate">{pagination.total}</p>
+              <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Total Groups</p>
+            </CardContent>
+          </Card>
+          <Card className="wsms-py-4 wsms-stat-card wsms-stat-card-success wsms-card-hover">
+            <CardContent className="wsms-py-0 wsms-text-center">
+              <p className="wsms-text-2xl wsms-font-bold wsms-text-success wsms-count-animate">{totalSubscribers}</p>
+              <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Total Subscribers</p>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Quick Add */}
       <Card>

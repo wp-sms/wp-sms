@@ -327,7 +327,7 @@ export default function Outbox() {
   ]
 
   return (
-    <div className="wsms-space-y-6">
+    <div className="wsms-space-y-6 wsms-stagger-children">
       {/* Notification */}
       {notification && (
         <div
@@ -350,22 +350,22 @@ export default function Outbox() {
 
       {/* Stats Cards */}
       <div className="wsms-grid wsms-grid-cols-3 wsms-gap-4">
-        <Card className="wsms-py-4">
+        <Card className="wsms-py-4 wsms-stat-card wsms-card-hover">
           <CardContent className="wsms-py-0 wsms-text-center">
-            <p className="wsms-text-2xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground">Total Messages</p>
+            <p className="wsms-text-2xl wsms-font-bold wsms-text-foreground wsms-count-animate">{stats.total}</p>
+            <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Total Messages</p>
           </CardContent>
         </Card>
-        <Card className="wsms-py-4">
+        <Card className="wsms-py-4 wsms-stat-card wsms-stat-card-success wsms-card-hover">
           <CardContent className="wsms-py-0 wsms-text-center">
-            <p className="wsms-text-2xl wsms-font-bold wsms-text-emerald-600">{stats.success}</p>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground">Sent</p>
+            <p className="wsms-text-2xl wsms-font-bold wsms-text-success wsms-count-animate">{stats.success}</p>
+            <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Sent</p>
           </CardContent>
         </Card>
-        <Card className="wsms-py-4">
+        <Card className="wsms-py-4 wsms-stat-card wsms-stat-card-destructive wsms-card-hover">
           <CardContent className="wsms-py-0 wsms-text-center">
-            <p className="wsms-text-2xl wsms-font-bold wsms-text-red-600">{stats.failed}</p>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground">Failed</p>
+            <p className="wsms-text-2xl wsms-font-bold wsms-text-destructive wsms-count-animate">{stats.failed}</p>
+            <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Failed</p>
           </CardContent>
         </Card>
       </div>

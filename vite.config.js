@@ -33,12 +33,16 @@ export default defineConfig(({ command }) => ({
     port: 3000,
     cors: true,
     origin: 'http://localhost:3000',
-    host: true,
+    host: '0.0.0.0',
     strictPort: true,
     hmr: {
       host: 'localhost',
       port: 3000,
-      protocol: 'ws'
+      protocol: 'ws',
+      clientPort: 3000
+    },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
     }
   },
   define: {

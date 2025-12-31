@@ -100,7 +100,7 @@ export default function Notifications() {
   const [notifUserLoginRoles, setNotifUserLoginRoles] = useSetting('notif_user_login_roles', [])
 
   return (
-    <div className="wsms-space-y-6">
+    <div className="wsms-space-y-6 wsms-stagger-children">
       {/* New Post Alerts */}
       <NotificationSection
         icon={FileText}

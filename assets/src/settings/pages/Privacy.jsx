@@ -145,7 +145,7 @@ export default function Privacy() {
   }
 
   return (
-    <div className="wsms-space-y-6">
+    <div className="wsms-space-y-6 wsms-stagger-children">
       {/* Notification */}
       {notification && (
         <div

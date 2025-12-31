@@ -445,7 +445,7 @@ export default function Subscribers() {
   ]
 
   return (
-    <div className="wsms-space-y-6">
+    <div className="wsms-space-y-6 wsms-stagger-children">
       {/* Notification */}
       {notification && (
         <div
@@ -468,22 +468,22 @@ export default function Subscribers() {
 
       {/* Stats Cards */}
       <div className="wsms-grid wsms-grid-cols-3 wsms-gap-4">
-        <Card className="wsms-py-4">
+        <Card className="wsms-py-4 wsms-stat-card wsms-card-hover">
           <CardContent className="wsms-py-0 wsms-text-center">
-            <p className="wsms-text-2xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground">Total Subscribers</p>
+            <p className="wsms-text-2xl wsms-font-bold wsms-text-foreground wsms-count-animate">{stats.total}</p>
+            <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Total Subscribers</p>
           </CardContent>
         </Card>
-        <Card className="wsms-py-4">
+        <Card className="wsms-py-4 wsms-stat-card wsms-stat-card-success wsms-card-hover">
           <CardContent className="wsms-py-0 wsms-text-center">
-            <p className="wsms-text-2xl wsms-font-bold wsms-text-emerald-600">{stats.active}</p>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground">Active</p>
+            <p className="wsms-text-2xl wsms-font-bold wsms-text-success wsms-count-animate">{stats.active}</p>
+            <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Active</p>
           </CardContent>
         </Card>
-        <Card className="wsms-py-4">
+        <Card className="wsms-py-4 wsms-stat-card wsms-stat-card-warning wsms-card-hover">
           <CardContent className="wsms-py-0 wsms-text-center">
-            <p className="wsms-text-2xl wsms-font-bold wsms-text-gray-500">{stats.inactive}</p>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground">Inactive</p>
+            <p className="wsms-text-2xl wsms-font-bold wsms-text-muted-foreground wsms-count-animate">{stats.inactive}</p>
+            <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Inactive</p>
           </CardContent>
         </Card>
       </div>

@@ -209,7 +209,7 @@
 }
 
 /* ============================================
-   Animations - Subtle
+   Animations - Refined & Polished
    ============================================ */
 
 @keyframes wsms-fade-in {
@@ -228,12 +228,240 @@
   }
 }
 
+@keyframes wsms-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes wsms-pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes wsms-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
 .wsms-animate-in {
   animation: wsms-fade-in 0.2s ease-out forwards;
 }
 
 .wsms-animate-slide-up {
   animation: wsms-slide-up 0.25s ease-out forwards;
+}
+
+.wsms-animate-scale-in {
+  animation: wsms-scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Staggered children animations for page loads */
+.wsms-stagger-children > * {
+  opacity: 0;
+  animation: wsms-slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.wsms-stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.wsms-stagger-children > *:nth-child(2) { animation-delay: 50ms; }
+.wsms-stagger-children > *:nth-child(3) { animation-delay: 100ms; }
+.wsms-stagger-children > *:nth-child(4) { animation-delay: 150ms; }
+.wsms-stagger-children > *:nth-child(5) { animation-delay: 200ms; }
+.wsms-stagger-children > *:nth-child(6) { animation-delay: 250ms; }
+.wsms-stagger-children > *:nth-child(7) { animation-delay: 300ms; }
+.wsms-stagger-children > *:nth-child(8) { animation-delay: 350ms; }
+
+/* Smooth hover transitions for cards */
+.wsms-card-hover {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wsms-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.1);
+}
+
+/* Button press effect */
+.wsms-btn-press:active {
+  transform: scale(0.97);
+}
+
+/* Loading shimmer effect */
+.wsms-shimmer {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 0%,
+    hsl(var(--muted-foreground) / 0.1) 50%,
+    hsl(var(--muted)) 100%
+  );
+  background-size: 200% 100%;
+  animation: wsms-shimmer 1.5s infinite;
+}
+
+/* ============================================
+   Enhanced Stats Cards
+   ============================================ */
+
+.wsms-stat-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.wsms-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary) / 0.5));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.wsms-stat-card:hover::before {
+  opacity: 1;
+}
+
+.wsms-stat-card-success::before {
+  background: linear-gradient(90deg, hsl(var(--success)), hsl(var(--success) / 0.5));
+  opacity: 1;
+}
+
+.wsms-stat-card-warning::before {
+  background: linear-gradient(90deg, hsl(var(--warning)), hsl(var(--warning) / 0.5));
+  opacity: 1;
+}
+
+.wsms-stat-card-destructive::before {
+  background: linear-gradient(90deg, hsl(var(--destructive)), hsl(var(--destructive) / 0.5));
+  opacity: 1;
+}
+
+/* ============================================
+   Enhanced Empty States
+   ============================================ */
+
+.wsms-empty-state {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.wsms-empty-state-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, hsl(var(--muted)), hsl(var(--muted) / 0.5));
+  margin-bottom: 16px;
+}
+
+.wsms-empty-state-icon svg {
+  width: 28px;
+  height: 28px;
+  color: hsl(var(--muted-foreground));
+  stroke-width: 1.5;
+}
+
+/* ============================================
+   Focus Ring Improvements
+   ============================================ */
+
+.wsms-focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--background)),
+              0 0 0 4px hsl(var(--ring));
+}
+
+/* ============================================
+   Gradient Text Accent
+   ============================================ */
+
+.wsms-gradient-text {
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.7));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   Section Dividers
+   ============================================ */
+
+.wsms-section-divider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.wsms-section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, hsl(var(--border)), transparent);
+}
+
+/* ============================================
+   Interactive List Items
+   ============================================ */
+
+.wsms-list-item {
+  position: relative;
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.wsms-list-item:hover {
+  background-color: hsl(var(--accent));
+}
+
+.wsms-list-item:active {
+  transform: scale(0.99);
+}
+
+.wsms-list-item-selected {
+  background-color: hsl(var(--primary) / 0.08);
+  border-left: 3px solid hsl(var(--primary));
+}
+
+/* ============================================
+   Number Counter Animation
+   ============================================ */
+
+@keyframes wsms-count-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.wsms-count-animate {
+  animation: wsms-count-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* ============================================
