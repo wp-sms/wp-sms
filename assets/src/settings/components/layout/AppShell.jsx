@@ -10,6 +10,13 @@ import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 // Lazy load page components for code splitting
+// Messaging pages
+const SendSms = lazy(() => import('@/pages/SendSms'))
+const Outbox = lazy(() => import('@/pages/Outbox'))
+// Subscriber pages
+const Subscribers = lazy(() => import('@/pages/Subscribers'))
+const Groups = lazy(() => import('@/pages/Groups'))
+// Settings pages
 const Overview = lazy(() => import('@/pages/Overview'))
 const Gateway = lazy(() => import('@/pages/Gateway'))
 const PhoneConfig = lazy(() => import('@/pages/PhoneConfig'))
@@ -18,8 +25,17 @@ const Notifications = lazy(() => import('@/pages/Notifications'))
 const Newsletter = lazy(() => import('@/pages/Newsletter'))
 const Integrations = lazy(() => import('@/pages/Integrations'))
 const Advanced = lazy(() => import('@/pages/Advanced'))
+// Privacy page
+const Privacy = lazy(() => import('@/pages/Privacy'))
 
 const pages = {
+  // Messaging
+  'send-sms': SendSms,
+  outbox: Outbox,
+  // Subscribers
+  subscribers: Subscribers,
+  groups: Groups,
+  // Settings
   overview: Overview,
   gateway: Gateway,
   phone: PhoneConfig,
@@ -28,6 +44,8 @@ const pages = {
   newsletter: Newsletter,
   integrations: Integrations,
   advanced: Advanced,
+  // Privacy
+  privacy: Privacy,
 }
 
 // Memoized loading skeleton

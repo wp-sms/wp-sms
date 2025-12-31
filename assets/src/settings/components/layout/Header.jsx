@@ -4,6 +4,13 @@ import ThemeToggle from './ThemeToggle'
 import { Menu } from 'lucide-react'
 
 const pageTitles = {
+  // Messaging
+  'send-sms': 'Send SMS',
+  outbox: 'Outbox',
+  // Subscribers
+  subscribers: 'Subscribers',
+  groups: 'Groups',
+  // Settings
   overview: 'Overview',
   gateway: 'SMS Gateway',
   phone: 'Phone Configuration',
@@ -12,9 +19,18 @@ const pageTitles = {
   newsletter: 'Newsletter',
   integrations: 'Integrations',
   advanced: 'Advanced Settings',
+  // Privacy
+  privacy: 'Privacy',
 }
 
 const pageDescriptions = {
+  // Messaging
+  'send-sms': 'Send SMS messages to subscribers, roles, or phone numbers',
+  outbox: 'View and manage sent messages',
+  // Subscribers
+  subscribers: 'Manage your SMS subscribers',
+  groups: 'Organize subscribers into groups',
+  // Settings
   overview: 'Dashboard and quick stats',
   gateway: 'Configure your SMS gateway and credentials',
   phone: 'Admin mobile number settings',
@@ -23,6 +39,8 @@ const pageDescriptions = {
   newsletter: 'SMS subscriber management',
   integrations: 'Third-party plugin integrations',
   advanced: 'Advanced configuration options',
+  // Privacy
+  privacy: 'GDPR data export and deletion',
 }
 
 export default function Header({ onMenuClick, showMenuButton }) {

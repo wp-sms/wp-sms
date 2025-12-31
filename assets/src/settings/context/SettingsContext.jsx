@@ -5,6 +5,13 @@ import { settingsApi } from '../api/settingsApi'
 
 // Valid page IDs for URL validation
 const VALID_PAGES = [
+  // Messaging
+  'send-sms',
+  'outbox',
+  // Subscribers
+  'subscribers',
+  'groups',
+  // Settings
   'overview',
   'gateway',
   'phone',
@@ -13,6 +20,8 @@ const VALID_PAGES = [
   'newsletter',
   'integrations',
   'advanced',
+  // Privacy
+  'privacy',
 ]
 
 // Get initial page from URL query params

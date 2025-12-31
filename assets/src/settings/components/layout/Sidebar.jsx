@@ -10,11 +10,26 @@ import {
   Settings,
   ExternalLink,
   X,
+  Send,
+  Inbox,
+  FolderOpen,
+  Shield,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSettings } from '@/context/SettingsContext'
+import { getWpSettings } from '@/lib/utils'
 
 const navigation = [
+  // Messaging Section
+  { type: 'label', label: 'Messaging' },
+  { id: 'send-sms', label: 'Send SMS', icon: Send },
+  { id: 'outbox', label: 'Outbox', icon: Inbox },
+  // Subscribers Section
+  { type: 'label', label: 'Subscribers' },
+  { id: 'subscribers', label: 'Subscribers', icon: Users },
+  { id: 'groups', label: 'Groups', icon: FolderOpen },
+  // Settings Section
+  { type: 'label', label: 'Settings' },
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
   { id: 'gateway', label: 'Gateway', icon: Radio },
   { id: 'phone', label: 'Phone', icon: Phone },
@@ -23,6 +38,9 @@ const navigation = [
   { id: 'newsletter', label: 'Newsletter', icon: Users },
   { id: 'integrations', label: 'Integrations', icon: Puzzle },
   { id: 'advanced', label: 'Advanced', icon: Settings },
+  // Privacy Section (conditional)
+  { type: 'label', label: 'Privacy', condition: 'gdprEnabled' },
+  { id: 'privacy', label: 'Privacy', icon: Shield, condition: 'gdprEnabled' },
 ]
 
 const links = [
@@ -48,10 +66,29 @@ function NavItem({ item, isActive, onClick }) {
   )
 }
 
+// Section label component
+function SectionLabel({ label }) {
+  return (
+    <div className="wsms-px-3 wsms-pt-4 wsms-pb-1">
+      <span className="wsms-text-[10px] wsms-font-semibold wsms-uppercase wsms-tracking-wider wsms-text-muted-foreground">
+        {label}
+      </span>
+    </div>
+  )
+}
+
 export default function Sidebar({ onClose, showClose }) {
   const { currentPage, setCurrentPage } = useSettings()
   const version = window.wpSmsSettings?.version || '7.0'
   const isProActive = window.wpSmsSettings?.addons?.pro
+  const { gdprEnabled } = getWpSettings()
+
+  // Filter navigation items based on conditions
+  const filteredNavigation = navigation.filter((item) => {
+    if (!item.condition) return true
+    if (item.condition === 'gdprEnabled') return gdprEnabled
+    return true
+  })
 
   return (
     <div className="wsms-flex wsms-flex-col wsms-h-full wsms-min-h-0">
@@ -81,16 +118,21 @@ export default function Sidebar({ onClose, showClose }) {
       </div>
 
       {/* Navigation */}
-      <nav className="wsms-flex-1 wsms-min-h-0 wsms-overflow-y-auto wsms-px-3 wsms-py-3 wsms-scrollbar-thin">
-        <div className="wsms-space-y-1">
-          {navigation.map((item) => (
-            <NavItem
-              key={item.id}
-              item={item}
-              isActive={currentPage === item.id}
-              onClick={() => setCurrentPage(item.id)}
-            />
-          ))}
+      <nav className="wsms-flex-1 wsms-min-h-0 wsms-overflow-y-auto wsms-px-3 wsms-py-1 wsms-scrollbar-thin">
+        <div className="wsms-space-y-0.5">
+          {filteredNavigation.map((item, index) => {
+            if (item.type === 'label') {
+              return <SectionLabel key={`label-${item.label}`} label={item.label} />
+            }
+            return (
+              <NavItem
+                key={item.id}
+                item={item}
+                isActive={currentPage === item.id}
+                onClick={() => setCurrentPage(item.id)}
+              />
+            )
+          })}
         </div>
       </nav>
 

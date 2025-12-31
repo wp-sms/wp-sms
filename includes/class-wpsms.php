@@ -6,6 +6,7 @@ use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\OnBoarding\StepFactory;
 use WP_SMS\Admin\OnBoarding\WizardManager;
 use WP_SMS\Admin\Settings\NewSettingsPage;
+use WP_SMS\Admin\UnifiedAdminPage;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
 use WP_SMS\Blocks\BlockAssetsManager;
@@ -232,6 +233,9 @@ class WP_SMS
             // Initialize new settings page
             NewSettingsPage::getInstance()->init();
 
+            // Initialize unified admin page (beta)
+            UnifiedAdminPage::getInstance()->init();
+
             add_action('init', function () {
                 $wizard = new WizardManager(__('WPSMS OnBoarding Process', 'wp-sms'), 'wp-sms-onboarding');
                 $wizard->add(StepFactory::create('GettingStarted', $wizard));
@@ -261,6 +265,12 @@ class WP_SMS
         $this->include('includes/api/v1/class-wpsms-api-webhook.php');
         $this->include('includes/api/v1/class-wpsms-api-credit.php');
         $this->include('includes/api/v1/class-wpsms-api-settings.php');
+
+        // Unified admin API endpoints
+        $this->include('includes/api/v1/class-wpsms-api-subscribers.php');
+        $this->include('includes/api/v1/class-wpsms-api-groups.php');
+        $this->include('includes/api/v1/class-wpsms-api-outbox.php');
+        $this->include('includes/api/v1/class-wpsms-api-privacy.php');
 
         // Anonymous Data sharing
         $anonymizedUsageDataManager = new AnonymizedUsageDataManager();
