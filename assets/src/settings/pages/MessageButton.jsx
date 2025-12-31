@@ -91,7 +91,7 @@ export default function MessageButton() {
             <div>
               <p className="wsms-font-medium">Enable Message Button</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Switch on to display the Message Button on your site
+                Show a floating chat button on your website for visitor inquiries.
               </p>
             </div>
             <Switch
@@ -102,15 +102,15 @@ export default function MessageButton() {
 
           {isEnabled && (
             <div className="wsms-space-y-2">
-              <Label htmlFor="chatboxTitle">Chatbox Title</Label>
+              <Label htmlFor="chatboxTitle">Chat Window Title</Label>
               <Input
                 id="chatboxTitle"
                 value={chatboxTitle}
                 onChange={(e) => setChatboxTitle(e.target.value)}
-                placeholder="e.g., Chat with Us!"
+                placeholder="How can we help?"
               />
               <p className="wsms-text-xs wsms-text-muted-foreground">
-                Main title for your chatbox.
+                Heading shown when the chat window opens.
               </p>
             </div>
           )}
@@ -129,15 +129,15 @@ export default function MessageButton() {
             </CardHeader>
             <CardContent className="wsms-space-y-4">
               <div className="wsms-space-y-2">
-                <Label htmlFor="buttonText">Button Text</Label>
+                <Label htmlFor="buttonText">Button Label</Label>
                 <Input
                   id="buttonText"
                   value={buttonText}
                   onChange={(e) => setButtonText(e.target.value)}
-                  placeholder="e.g., Talk to Us"
+                  placeholder="Chat with us"
                 />
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  The message displayed on the chat button.
+                  Text shown on the floating button.
                 </p>
               </div>
 
@@ -153,12 +153,12 @@ export default function MessageButton() {
                   </SelectContent>
                 </Select>
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Choose where the chat button appears on your site.
+                  Where the button appears on screen.
                 </p>
               </div>
 
               <div className="wsms-space-y-2">
-                <Label>Animation Effect</Label>
+                <Label>Open Animation</Label>
                 <Select
                   value={animationEffect || 'none'}
                   onValueChange={(val) => setAnimationEffect(val === 'none' ? '' : val)}
@@ -173,7 +173,7 @@ export default function MessageButton() {
                   </SelectContent>
                 </Select>
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Choose an effect for the chatbox's entry.
+                  How the chat window appears when opened.
                 </p>
               </div>
             </CardContent>
@@ -193,7 +193,7 @@ export default function MessageButton() {
             <CardContent className="wsms-space-y-4">
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
                 <div className="wsms-space-y-2">
-                  <Label htmlFor="chatboxColor">Chatbox Color</Label>
+                  <Label htmlFor="chatboxColor">Primary Color</Label>
                   <div className="wsms-flex wsms-gap-2">
                     <Input
                       id="chatboxColor"
@@ -209,7 +209,7 @@ export default function MessageButton() {
                     />
                   </div>
                   <p className="wsms-text-xs wsms-text-muted-foreground">
-                    Background color for button and header.
+                    Background color for the button and chat header.
                   </p>
                 </div>
 
@@ -230,7 +230,7 @@ export default function MessageButton() {
                     />
                   </div>
                   <p className="wsms-text-xs wsms-text-muted-foreground">
-                    Color for button and header text.
+                    Text color for the button and header.
                   </p>
                 </div>
               </div>
@@ -247,13 +247,16 @@ export default function MessageButton() {
             </CardHeader>
             <CardContent className="wsms-space-y-4">
               <div className="wsms-space-y-2">
-                <Label htmlFor="footerText">Footer Text</Label>
+                <Label htmlFor="footerText">Footer Message</Label>
                 <Input
                   id="footerText"
                   value={footerText}
                   onChange={(e) => setFooterText(e.target.value)}
-                  placeholder="e.g., Chat with us on WhatsApp for instant support!"
+                  placeholder="We typically reply within minutes"
                 />
+                <p className="wsms-text-xs wsms-text-muted-foreground">
+                  Optional message shown at the bottom of the chat window.
+                </p>
               </div>
 
               <div className="wsms-space-y-2">
@@ -276,12 +279,12 @@ export default function MessageButton() {
 
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
                 <div className="wsms-space-y-2">
-                  <Label htmlFor="footerLinkTitle">Footer Link Title</Label>
+                  <Label htmlFor="footerLinkTitle">Footer Link Text</Label>
                   <Input
                     id="footerLinkTitle"
                     value={footerLinkTitle}
                     onChange={(e) => setFooterLinkTitle(e.target.value)}
-                    placeholder="e.g., Related Articles"
+                    placeholder="View FAQ"
                   />
                 </div>
                 <div className="wsms-space-y-2">
@@ -290,16 +293,16 @@ export default function MessageButton() {
                     id="footerLinkUrl"
                     value={footerLinkUrl}
                     onChange={(e) => setFooterLinkUrl(e.target.value)}
-                    placeholder="https://example.com/help"
+                    placeholder="https://yoursite.com/help"
                   />
                 </div>
               </div>
 
               <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
                 <div>
-                  <p className="wsms-font-medium">Disable WP SMS Logo</p>
+                  <p className="wsms-font-medium">Hide WP SMS Branding</p>
                   <p className="wsms-text-sm wsms-text-muted-foreground">
-                    Hide the WP SMS logo in the chatbox footer
+                    Remove the "Powered by WP SMS" text from the footer.
                   </p>
                 </div>
                 <Switch
@@ -315,10 +318,10 @@ export default function MessageButton() {
             <CardHeader>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <Users className="wsms-h-5 wsms-w-5" />
-                Team Members
+                Support Team
               </CardTitle>
               <CardDescription>
-                Add support team member profiles to the chatbox
+                Add team members that visitors can contact directly.
               </CardDescription>
             </CardHeader>
             <CardContent className="wsms-space-y-4">
@@ -326,14 +329,14 @@ export default function MessageButton() {
                 value={teamMembers}
                 onValueChange={setTeamMembers}
                 fields={[
-                  { name: 'name', label: 'Name', type: 'text', placeholder: 'John Doe' },
-                  { name: 'role', label: 'Role', type: 'text', placeholder: 'Support Agent' },
-                  { name: 'phone', label: 'Phone', type: 'tel', placeholder: '+1234567890' },
-                  { name: 'avatar', label: 'Avatar URL', type: 'url', placeholder: 'https://example.com/avatar.jpg' },
+                  { name: 'name', label: 'Name', type: 'text', placeholder: 'Jane Smith' },
+                  { name: 'role', label: 'Role', type: 'text', placeholder: 'Customer Support' },
+                  { name: 'phone', label: 'Phone', type: 'tel', placeholder: '+1 555 123 4567' },
+                  { name: 'avatar', label: 'Avatar URL', type: 'url', placeholder: 'https://...' },
                 ]}
                 addLabel="Add Team Member"
                 maxItems={5}
-                emptyMessage="No team members added. Add members to display in the chatbox."
+                emptyMessage="No team members added yet."
               />
             </CardContent>
           </Card>
@@ -343,7 +346,7 @@ export default function MessageButton() {
             <CardHeader>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <Link className="wsms-h-5 wsms-w-5" />
-                Informational Links
+                Quick Links
               </CardTitle>
               <CardDescription>
                 Add helpful resource links to the chatbox
@@ -352,9 +355,9 @@ export default function MessageButton() {
             <CardContent className="wsms-space-y-4">
               <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
                 <div>
-                  <p className="wsms-font-medium">Enable Resource Links</p>
+                  <p className="wsms-font-medium">Show Quick Links</p>
                   <p className="wsms-text-sm wsms-text-muted-foreground">
-                    Show resource links section in the chatbox
+                    Display helpful links in the chat window.
                   </p>
                 </div>
                 <Switch
@@ -366,16 +369,13 @@ export default function MessageButton() {
               {linksEnabled === '1' && (
                 <>
                   <div className="wsms-space-y-2">
-                    <Label htmlFor="linksTitle">Section Title</Label>
+                    <Label htmlFor="linksTitle">Links Section Title</Label>
                     <Input
                       id="linksTitle"
                       value={linksTitle}
                       onChange={(e) => setLinksTitle(e.target.value)}
-                      placeholder="e.g., Quick Links"
+                      placeholder="Helpful Resources"
                     />
-                    <p className="wsms-text-xs wsms-text-muted-foreground">
-                      The heading for your resource links.
-                    </p>
                   </div>
 
                   <div className="wsms-space-y-2">
@@ -389,7 +389,7 @@ export default function MessageButton() {
                       ]}
                       addLabel="Add Link"
                       maxItems={10}
-                      emptyMessage="No links added yet."
+                      emptyMessage="No links added. Add links to help visitors find answers quickly."
                     />
                   </div>
                 </>

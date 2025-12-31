@@ -104,13 +104,13 @@ export default function Notifications() {
       {/* New Post Alerts */}
       <NotificationSection
         icon={FileText}
-        title="New Post Alerts"
-        description="Send SMS notifications when new content is published"
+        title="New Content Notifications"
+        description="Send SMS when you publish new posts or pages."
         enabled={notifNewPost === '1'}
         onToggle={(checked) => setNotifNewPost(checked ? '1' : '')}
       >
         <div className="wsms-space-y-2">
-          <Label>Post Types</Label>
+          <Label>Content Types</Label>
           <MultiSelect
             options={postTypes}
             value={notifNewPostTypes}
@@ -119,12 +119,12 @@ export default function Notifications() {
             searchPlaceholder="Search post types..."
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Specify which types of content trigger notifications.
+            Which content types trigger notifications.
           </p>
         </div>
 
         <div className="wsms-space-y-2">
-          <Label>Taxonomies & Terms</Label>
+          <Label>Categories & Tags</Label>
           <MultiSelect
             options={taxonomyOptions}
             value={notifNewPostTaxonomies}
@@ -133,30 +133,30 @@ export default function Notifications() {
             searchPlaceholder="Search categories, tags..."
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Choose categories or tags to associate with alerts.
+            Only notify for content in these categories or with these tags. Leave empty for all.
           </p>
         </div>
 
         <div className="wsms-space-y-2">
-          <Label>Notification Recipients</Label>
+          <Label>Send To</Label>
           <Select value={notifNewPostReceiver} onValueChange={setNotifNewPostReceiver}>
             <SelectTrigger>
               <SelectValue placeholder="Select recipients" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="subscriber">Subscribers</SelectItem>
-              <SelectItem value="numbers">Individual Numbers</SelectItem>
+              <SelectItem value="numbers">Phone Numbers</SelectItem>
               <SelectItem value="users">User Roles</SelectItem>
             </SelectContent>
           </Select>
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Select who receives notifications for new posts.
+            Who should receive these notifications.
           </p>
         </div>
 
         {notifNewPostReceiver === 'subscriber' && (
           <div className="wsms-space-y-2">
-            <Label>Subscribe Group</Label>
+            <Label>Subscriber Group</Label>
             <Select value={notifNewPostGroup} onValueChange={setNotifNewPostGroup}>
               <SelectTrigger>
                 <SelectValue placeholder="Select group" />
@@ -175,15 +175,15 @@ export default function Notifications() {
 
         {notifNewPostReceiver === 'numbers' && (
           <div className="wsms-space-y-2">
-            <Label htmlFor="postNumbers">Individual Numbers</Label>
+            <Label htmlFor="postNumbers">Phone Numbers</Label>
             <Input
               id="postNumbers"
               value={notifNewPostNumbers}
               onChange={(e) => setNotifNewPostNumbers(e.target.value)}
-              placeholder="+1234567890, +0987654321"
+              placeholder="+1 555 111 2222, +1 555 333 4444"
             />
             <p className="wsms-text-xs wsms-text-muted-foreground">
-              Enter mobile numbers separated by commas.
+              Enter phone numbers, separated by commas.
             </p>
           </div>
         )}
@@ -199,16 +199,16 @@ export default function Notifications() {
               searchPlaceholder="Search roles..."
             />
             <p className="wsms-text-xs wsms-text-muted-foreground">
-              Assign SMS alerts to specific WordPress user roles.
+              Notify users with these roles.
             </p>
           </div>
         )}
 
         <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
           <div>
-            <p className="wsms-font-medium">Force Send</p>
+            <p className="wsms-font-medium">Auto-send</p>
             <p className="wsms-text-sm wsms-text-muted-foreground">
-              Send notifications without confirmation during publishing
+              Send automatically when publishing (no confirmation prompt).
             </p>
           </div>
           <Switch
@@ -219,9 +219,9 @@ export default function Notifications() {
 
         <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
           <div>
-            <p className="wsms-font-medium">Send MMS</p>
+            <p className="wsms-font-medium">Include Featured Image</p>
             <p className="wsms-text-sm wsms-text-muted-foreground">
-              Send the featured image as MMS (if supported by your gateway)
+              Send as MMS with the post's featured image (if gateway supports MMS).
             </p>
           </div>
           <Switch
@@ -231,7 +231,7 @@ export default function Notifications() {
         </div>
 
         <div className="wsms-space-y-2">
-          <Label htmlFor="postTemplate">Message Body</Label>
+          <Label htmlFor="postTemplate">Message Template</Label>
           <Textarea
             id="postTemplate"
             value={notifNewPostTemplate}
@@ -240,12 +240,12 @@ export default function Notifications() {
             rows={3}
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Variables: %post_title%, %post_url%, %post_date%, %post_content%, %post_author%
+            Available variables: %post_title%, %post_url%, %post_date%, %post_content%, %post_author%
           </p>
         </div>
 
         <div className="wsms-space-y-2">
-          <Label htmlFor="wordCount">Post Content Words Limit</Label>
+          <Label htmlFor="wordCount">Content Word Limit</Label>
           <Input
             id="wordCount"
             type="number"
@@ -254,7 +254,7 @@ export default function Notifications() {
             placeholder="10"
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Maximum word count for post excerpts in notifications.
+            Maximum words to include from post content in %post_content%.
           </p>
         </div>
       </NotificationSection>
@@ -262,13 +262,13 @@ export default function Notifications() {
       {/* Post Author Notification */}
       <NotificationSection
         icon={FileText}
-        title="Post Author Notification"
-        description="Notify authors when their content is published"
+        title="Author Notifications"
+        description="Notify post authors when their content is published."
         enabled={notifPostAuthor === '1'}
         onToggle={(checked) => setNotifPostAuthor(checked ? '1' : '')}
       >
         <div className="wsms-space-y-2">
-          <Label>Post Types</Label>
+          <Label>Content Types</Label>
           <MultiSelect
             options={postTypes}
             value={notifPostAuthorPostTypes}
@@ -277,12 +277,12 @@ export default function Notifications() {
             searchPlaceholder="Search post types..."
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Define which content types trigger author notifications.
+            Which content types trigger author notifications.
           </p>
         </div>
 
         <div className="wsms-space-y-2">
-          <Label htmlFor="authorTemplate">Message Body</Label>
+          <Label htmlFor="authorTemplate">Message Template</Label>
           <Textarea
             id="authorTemplate"
             value={notifPostAuthorTemplate}
@@ -299,8 +299,8 @@ export default function Notifications() {
       {/* WordPress Update */}
       <NotificationSection
         icon={RefreshCw}
-        title="WordPress Update Notification"
-        description="Get notified about new WordPress releases"
+        title="WordPress Updates"
+        description="Get SMS alerts when a new WordPress version is available."
         enabled={notifWpVersion === '1'}
         onToggle={(checked) => setNotifWpVersion(checked ? '1' : '')}
       />
@@ -308,13 +308,13 @@ export default function Notifications() {
       {/* New User Registration */}
       <NotificationSection
         icon={UserPlus}
-        title="New User Registration"
-        description="Send SMS when a new user registers on your site"
+        title="New User Alerts"
+        description="Send SMS when someone registers on your site."
         enabled={notifNewUser === '1'}
         onToggle={(checked) => setNotifNewUser(checked ? '1' : '')}
       >
         <div className="wsms-space-y-2">
-          <Label htmlFor="userAdminTemplate">Message Body for Admin</Label>
+          <Label htmlFor="userAdminTemplate">Admin Notification</Label>
           <Textarea
             id="userAdminTemplate"
             value={notifNewUserAdminTemplate}
@@ -323,12 +323,12 @@ export default function Notifications() {
             rows={3}
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            SMS sent to the Admin Mobile Number. Variables: %user_login%, %user_email%, %user_firstname%, %user_lastname%, %date_register%
+            Sent to admin. Variables: %user_login%, %user_email%, %user_firstname%, %user_lastname%, %date_register%
           </p>
         </div>
 
         <div className="wsms-space-y-2">
-          <Label htmlFor="userTemplate">Message Body for User</Label>
+          <Label htmlFor="userTemplate">Welcome Message</Label>
           <Textarea
             id="userTemplate"
             value={notifNewUserTemplate}
@@ -337,7 +337,7 @@ export default function Notifications() {
             rows={3}
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            SMS sent to the new user. Variables: %user_login%, %user_email%, %user_firstname%, %user_lastname%, %date_register%
+            Sent to new user. Variables: %user_login%, %user_email%, %user_firstname%, %user_lastname%, %date_register%
           </p>
         </div>
       </NotificationSection>
@@ -345,13 +345,13 @@ export default function Notifications() {
       {/* New Comment */}
       <NotificationSection
         icon={MessageCircle}
-        title="New Comment Notification"
-        description="Receive SMS alerts when a new comment is posted"
+        title="New Comment Alerts"
+        description="Get SMS when someone comments on your content."
         enabled={notifNewComment === '1'}
         onToggle={(checked) => setNotifNewComment(checked ? '1' : '')}
       >
         <div className="wsms-space-y-2">
-          <Label htmlFor="commentTemplate">Message Body</Label>
+          <Label htmlFor="commentTemplate">Message Template</Label>
           <Textarea
             id="commentTemplate"
             value={notifNewCommentTemplate}
@@ -368,13 +368,13 @@ export default function Notifications() {
       {/* User Login */}
       <NotificationSection
         icon={LogIn}
-        title="User Login Notification"
-        description="Get notified when users log into your site"
+        title="Login Alerts"
+        description="Get SMS when users log into your site."
         enabled={notifUserLogin === '1'}
         onToggle={(checked) => setNotifUserLogin(checked ? '1' : '')}
       >
         <div className="wsms-space-y-2">
-          <Label>User Roles</Label>
+          <Label>Monitor Roles</Label>
           <MultiSelect
             options={roles}
             value={notifUserLoginRoles}
@@ -383,12 +383,12 @@ export default function Notifications() {
             searchPlaceholder="Search roles..."
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Choose user roles that trigger login notifications.
+            Only notify when users with these roles log in.
           </p>
         </div>
 
         <div className="wsms-space-y-2">
-          <Label htmlFor="loginTemplate">Message Body</Label>
+          <Label htmlFor="loginTemplate">Message Template</Label>
           <Textarea
             id="loginTemplate"
             value={notifUserLoginTemplate}

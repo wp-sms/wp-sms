@@ -12,8 +12,8 @@ export default function Integrations() {
     {
       id: 'contact-form-7',
       name: 'Contact Form 7',
-      description: 'Add SMS notification options to Contact Form 7 forms',
-      helpText: 'When enabled, an SMS notification tab will appear in the Contact Form 7 editor allowing you to send SMS when forms are submitted.',
+      description: 'Send SMS notifications when Contact Form 7 forms are submitted.',
+      helpText: 'Adds an "SMS Notification" tab to the Contact Form 7 editor.',
       settingKey: 'cf7_metabox',
       value: cf7Metabox,
       setValue: setCf7Metabox,

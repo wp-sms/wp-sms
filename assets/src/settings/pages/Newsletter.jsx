@@ -49,9 +49,9 @@ export default function Newsletter() {
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Group Visibility in Form</p>
+              <p className="wsms-font-medium">Show Groups in Form</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Show available groups on the subscription form
+                Let subscribers choose which groups to join.
               </p>
             </div>
             <Switch
@@ -63,24 +63,24 @@ export default function Newsletter() {
           {showGroups && (
             <>
               <div className="wsms-space-y-2">
-                <Label>Displayed Groups</Label>
+                <Label>Available Groups</Label>
                 <MultiSelect
                   options={groups}
                   value={specifiedGroups}
                   onValueChange={setSpecifiedGroups}
-                  placeholder="All groups (no restriction)"
+                  placeholder="All groups"
                   searchPlaceholder="Search groups..."
                 />
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Choose which groups appear on the subscription form. Leave empty to show all groups.
+                  Which groups subscribers can choose from. Leave empty for all groups.
                 </p>
               </div>
 
               <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
                 <div>
-                  <p className="wsms-font-medium">Multiple Group Selection</p>
+                  <p className="wsms-font-medium">Allow Multiple Groups</p>
                   <p className="wsms-text-sm wsms-text-muted-foreground">
-                    Allow subscribers to join multiple groups from the form
+                    Let subscribers join more than one group at a time.
                   </p>
                 </div>
                 <Switch
@@ -90,7 +90,7 @@ export default function Newsletter() {
               </div>
 
               <div className="wsms-space-y-2">
-                <Label>Default Group for New Subscribers</Label>
+                <Label>Default Group</Label>
                 <Select value={defaultGroup} onValueChange={setDefaultGroup}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a group" />
@@ -105,7 +105,7 @@ export default function Newsletter() {
                   </SelectContent>
                 </Select>
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Set a group that all new subscribers will join by default.
+                  Automatically add new subscribers to this group.
                 </p>
               </div>
             </>
@@ -113,9 +113,9 @@ export default function Newsletter() {
 
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Subscription Confirmation</p>
+              <p className="wsms-font-medium">Require SMS Verification</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Subscribers must enter a code received by SMS to complete subscription
+                Subscribers must verify their phone number via SMS code.
               </p>
             </div>
             <Switch
@@ -131,7 +131,7 @@ export default function Newsletter() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Mail className="wsms-h-5 wsms-w-5" />
-            Welcome SMS Setup
+            Welcome SMS
           </CardTitle>
           <CardDescription>
             Set up automatic SMS messages for new subscribers
@@ -140,9 +140,9 @@ export default function Newsletter() {
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Send Welcome SMS</p>
+              <p className="wsms-font-medium">Send Welcome Message</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Sends a welcome SMS to new subscribers when they sign up
+                Automatically send a welcome SMS to new subscribers.
               </p>
             </div>
             <Switch
@@ -153,7 +153,7 @@ export default function Newsletter() {
 
           {welcomeEnabled === '1' && (
             <div className="wsms-space-y-2">
-              <Label htmlFor="welcomeText">Welcome Message Content</Label>
+              <Label htmlFor="welcomeText">Welcome Message</Label>
               <Textarea
                 id="welcomeText"
                 value={welcomeText}
@@ -162,7 +162,7 @@ export default function Newsletter() {
                 rows={3}
               />
               <p className="wsms-text-xs wsms-text-muted-foreground">
-                Available variables: %subscriber_name%, %subscriber_mobile%, %group_name%, %subscribe_date%
+                Variables: %subscriber_name%, %subscriber_mobile%, %group_name%, %subscribe_date%
               </p>
             </div>
           )}
@@ -174,7 +174,7 @@ export default function Newsletter() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Palette className="wsms-h-5 wsms-w-5" />
-            Appearance Customization
+            Form Appearance
           </CardTitle>
           <CardDescription>
             Customize the look of your subscription form
@@ -183,9 +183,9 @@ export default function Newsletter() {
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Disable Default Form Styling</p>
+              <p className="wsms-font-medium">Disable Default Styles</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Remove the plugin's default styling from the subscription form
+                Remove plugin CSS to use your own form styling.
               </p>
             </div>
             <Switch
@@ -202,15 +202,15 @@ export default function Newsletter() {
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <Shield className="wsms-h-5 wsms-w-5" />
-              Data Protection Settings
+              GDPR Settings
             </CardTitle>
             <CardDescription>
-              Set up how you comply with data protection regulations
+              Configure privacy consent for newsletter subscriptions
             </CardDescription>
           </CardHeader>
           <CardContent className="wsms-space-y-4">
             <div className="wsms-space-y-2">
-              <Label htmlFor="gdprText">Consent Text</Label>
+              <Label htmlFor="gdprText">Consent Message</Label>
               <Textarea
                 id="gdprText"
                 value={gdprText}
@@ -219,12 +219,12 @@ export default function Newsletter() {
                 rows={3}
               />
               <p className="wsms-text-xs wsms-text-muted-foreground">
-                Provide a clear message that informs subscribers how their data will be used.
+                Privacy consent text shown to subscribers. Required for GDPR compliance.
               </p>
             </div>
 
             <div className="wsms-space-y-2">
-              <Label>Checkbox Default</Label>
+              <Label>Checkbox Default State</Label>
               <Select value={gdprCheckbox} onValueChange={setGdprCheckbox}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select default state" />
@@ -235,7 +235,7 @@ export default function Newsletter() {
                 </SelectContent>
               </Select>
               <p className="wsms-text-xs wsms-text-muted-foreground">
-                Leave unchecked by default to comply with privacy laws requiring explicit consent.
+                Must be unchecked by default for GDPR compliance.
               </p>
             </div>
           </CardContent>

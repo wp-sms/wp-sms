@@ -45,17 +45,17 @@ export default function PhoneConfig() {
             Administrator Notifications
           </CardTitle>
           <CardDescription>
-            Mobile number where the administrator will receive notifications
+            Receives system notifications (new users, comments, errors).
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-space-y-2">
-            <Label htmlFor="adminMobile">Admin Mobile Number</Label>
+            <Label htmlFor="adminMobile">Admin Phone Number</Label>
             <Input
               id="adminMobile"
               value={adminMobile}
               onChange={(e) => setAdminMobile(e.target.value)}
-              placeholder="+1234567890"
+              placeholder="+1 555 123 4567"
             />
             <p className="wsms-text-xs wsms-text-muted-foreground">
               Enter the full phone number including country code.
@@ -69,54 +69,48 @@ export default function PhoneConfig() {
         <CardHeader>
           <CardTitle>Mobile Field Configuration</CardTitle>
           <CardDescription>
-            Configure how user mobile numbers are collected and stored
+            Choose where to collect mobile numbers from users.
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-space-y-2">
-            <Label>Mobile Number Field Source</Label>
+            <Label>Collect Phone Numbers From</Label>
             <Select value={addMobileField} onValueChange={setAddMobileField}>
               <SelectTrigger>
                 <SelectValue placeholder="Select source" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="disable">Disable</SelectItem>
-                <SelectItem value="add_mobile_field_in_profile">Insert a mobile number field into user profiles</SelectItem>
-                <SelectItem value="add_mobile_field_in_wc_billing">Add a mobile number field to WooCommerce billing</SelectItem>
-                <SelectItem value="use_phone_field_in_wc_billing">Use the existing WooCommerce billing phone field</SelectItem>
+                <SelectItem value="disable">Don't collect — No mobile field</SelectItem>
+                <SelectItem value="add_mobile_field_in_profile">User profile — Add field to WordPress user profiles</SelectItem>
+                <SelectItem value="add_mobile_field_in_wc_billing">WooCommerce billing (new field) — Add dedicated mobile field</SelectItem>
+                <SelectItem value="use_phone_field_in_wc_billing">WooCommerce billing (existing) — Use existing phone field</SelectItem>
               </SelectContent>
             </Select>
-            <p className="wsms-text-xs wsms-text-muted-foreground">
-              Create a new mobile number field or use an existing phone field.
-            </p>
           </div>
 
           <div className="wsms-space-y-2">
-            <Label>Mobile Field Mandatory Status</Label>
+            <Label>Field Requirement</Label>
             <Select value={optionalMobileField} onValueChange={setOptionalMobileField}>
               <SelectTrigger>
-                <SelectValue placeholder="Select status" />
+                <SelectValue placeholder="Select requirement" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="0">Required</SelectItem>
-                <SelectItem value="optional">Optional</SelectItem>
+                <SelectItem value="0">Required — Users must enter a mobile number</SelectItem>
+                <SelectItem value="optional">Optional — Users can skip this field</SelectItem>
               </SelectContent>
             </Select>
-            <p className="wsms-text-xs wsms-text-muted-foreground">
-              Set the mobile number field as optional or required.
-            </p>
           </div>
 
           <div className="wsms-space-y-2">
-            <Label htmlFor="placeholder">Mobile Field Placeholder</Label>
+            <Label htmlFor="placeholder">Placeholder Text</Label>
             <Input
               id="placeholder"
               value={mobilePlaceholder}
               onChange={(e) => setMobilePlaceholder(e.target.value)}
-              placeholder="e.g., +1234567890"
+              placeholder="e.g., +1 555 000 0000"
             />
             <p className="wsms-text-xs wsms-text-muted-foreground">
-              Enter a sample format for the mobile number that users will see.
+              Example format shown in the empty field.
             </p>
           </div>
         </CardContent>
@@ -127,18 +121,18 @@ export default function PhoneConfig() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Globe className="wsms-h-5 wsms-w-5" />
-            International Number Input
+            International Phone Input
           </CardTitle>
           <CardDescription>
-            Configure international phone number input settings
+            Show a country flag selector for international phone number formatting.
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Enable International Input</p>
+              <p className="wsms-font-medium">International Phone Input</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Add a flag dropdown for international format support in the mobile number input field.
+                Show a country flag selector for international phone number formatting.
               </p>
             </div>
             <Switch
@@ -150,16 +144,16 @@ export default function PhoneConfig() {
           {isInternationalEnabled && (
             <>
               <div className="wsms-space-y-2">
-                <Label>Restricted Countries</Label>
+                <Label>Limit Countries</Label>
                 <MultiSelect
                   options={countries}
                   value={onlyCountries}
                   onValueChange={setOnlyCountries}
-                  placeholder="All countries (no restriction)"
+                  placeholder="All countries"
                   searchPlaceholder="Search countries..."
                 />
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Display only the countries you specify in the dropdown. Leave empty to show all countries.
+                  Only show these countries in the dropdown. Leave empty to show all.
                 </p>
               </div>
 
@@ -169,11 +163,11 @@ export default function PhoneConfig() {
                   options={countries}
                   value={preferredCountries}
                   onValueChange={setPreferredCountries}
-                  placeholder="No preferred countries"
+                  placeholder="None selected"
                   searchPlaceholder="Search countries..."
                 />
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Specify countries to appear at the top of the dropdown list for quick selection.
+                  Show these countries at the top of the dropdown for quick access.
                 </p>
               </div>
             </>
@@ -182,13 +176,13 @@ export default function PhoneConfig() {
           {!isInternationalEnabled && (
             <>
               <div className="wsms-space-y-2">
-                <Label>Country Code Prefix</Label>
+                <Label>Default Country Code</Label>
                 <Select value={countryCode} onValueChange={setCountryCode}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select country code" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0">No country code (Global / Local)</SelectItem>
+                    <SelectItem value="0">None — Don't add country code</SelectItem>
                     {countries && Object.entries(countries).map(([code, country]) => (
                       <SelectItem key={code} value={code}>
                         {typeof country === 'object' ? country.name : country}
@@ -197,35 +191,35 @@ export default function PhoneConfig() {
                   </SelectContent>
                 </Select>
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  If the user's mobile number requires a country code, select it from the list.
+                  Automatically prepend this country code to all phone numbers.
                 </p>
               </div>
 
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
                 <div className="wsms-space-y-2">
-                  <Label htmlFor="minLength">Minimum Length</Label>
+                  <Label htmlFor="minLength">Minimum Digits</Label>
                   <Input
                     id="minLength"
                     type="number"
                     value={minLength}
                     onChange={(e) => setMinLength(e.target.value)}
-                    placeholder="e.g., 10"
+                    placeholder="10"
                   />
                   <p className="wsms-text-xs wsms-text-muted-foreground">
-                    Shortest allowed mobile number.
+                    Minimum number of digits required (excluding country code).
                   </p>
                 </div>
                 <div className="wsms-space-y-2">
-                  <Label htmlFor="maxLength">Maximum Length</Label>
+                  <Label htmlFor="maxLength">Maximum Digits</Label>
                   <Input
                     id="maxLength"
                     type="number"
                     value={maxLength}
                     onChange={(e) => setMaxLength(e.target.value)}
-                    placeholder="e.g., 15"
+                    placeholder="15"
                   />
                   <p className="wsms-text-xs wsms-text-muted-foreground">
-                    Longest allowed mobile number.
+                    Maximum number of digits allowed (excluding country code).
                   </p>
                 </div>
               </div>
@@ -239,18 +233,18 @@ export default function PhoneConfig() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Shield className="wsms-h-5 wsms-w-5" />
-            Data Protection Settings
+            Data Protection
           </CardTitle>
           <CardDescription>
-            Enhance user privacy with GDPR-focused settings
+            Privacy and GDPR compliance settings.
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">GDPR Compliance Enhancements</p>
+              <p className="wsms-font-medium">GDPR Compliance</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Enables user data export and deletion via mobile number and adds a consent checkbox for SMS newsletter subscriptions.
+                Enable data export/deletion by mobile number and add SMS consent checkbox to forms.
               </p>
             </div>
             <Switch

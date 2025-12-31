@@ -34,10 +34,10 @@ export default function Advanced() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Webhook className="wsms-h-5 wsms-w-5" />
-            Webhooks Configuration
+            Webhooks
           </CardTitle>
           <CardDescription>
-            Set up Webhook URLs to integrate with external services
+            Integrate with external services via webhook notifications
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
@@ -47,25 +47,25 @@ export default function Advanced() {
               id="webhookOutgoing"
               value={webhookOutgoing}
               onChange={(e) => setWebhookOutgoing(e.target.value)}
-              placeholder="https://your-webhook-url.com/outgoing"
+              placeholder="https://your-app.com/webhooks/sms-sent"
               rows={2}
             />
             <p className="wsms-text-xs wsms-text-muted-foreground">
-              Configure the Webhook URL for notifications after an SMS dispatch. Enter each URL on a separate line.
+              Called after each SMS is sent. Enter one URL per line.
             </p>
           </div>
 
           <div className="wsms-space-y-2">
-            <Label htmlFor="webhookSubscriber">Subscriber Registration Webhook</Label>
+            <Label htmlFor="webhookSubscriber">New Subscriber Webhook</Label>
             <Textarea
               id="webhookSubscriber"
               value={webhookSubscriber}
               onChange={(e) => setWebhookSubscriber(e.target.value)}
-              placeholder="https://your-webhook-url.com/subscriber"
+              placeholder="https://your-app.com/webhooks/new-subscriber"
               rows={2}
             />
             <p className="wsms-text-xs wsms-text-muted-foreground">
-              Provide the Webhook URL triggered when a new subscriber registers.
+              Called when someone subscribes to your SMS newsletter.
             </p>
           </div>
 
@@ -75,11 +75,11 @@ export default function Advanced() {
               id="webhookIncoming"
               value={webhookIncoming}
               onChange={(e) => setWebhookIncoming(e.target.value)}
-              placeholder="https://your-webhook-url.com/incoming"
+              placeholder="https://your-app.com/webhooks/sms-received"
               rows={2}
             />
             <p className="wsms-text-xs wsms-text-muted-foreground">
-              Define the Webhook URL for handling incoming SMS messages. Requires the Two-Way SMS add-on.
+              Called when you receive an SMS reply. Requires Two-Way SMS add-on.
             </p>
           </div>
         </CardContent>
@@ -90,18 +90,18 @@ export default function Advanced() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Database className="wsms-h-5 wsms-w-5" />
-            Message Storage & Cleanup
+            Message Storage
           </CardTitle>
           <CardDescription>
-            Configure how long to keep message data
+            Configure message logging and automatic cleanup
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Store Outbox Messages</p>
+              <p className="wsms-font-medium">Log Sent Messages</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                If disabled, new SMS will not be logged in the Outbox
+                Save all sent SMS messages in the Outbox for tracking.
               </p>
             </div>
             <Switch
@@ -112,21 +112,21 @@ export default function Advanced() {
 
           {storeOutbox === '1' && (
             <div className="wsms-space-y-2">
-              <Label>Delete Outbox Messages Older Than</Label>
+              <Label>Auto-delete Sent Messages</Label>
               <Select value={outboxRetention} onValueChange={setOutboxRetention}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select retention period" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="30">30 days</SelectItem>
-                  <SelectItem value="90">90 days</SelectItem>
-                  <SelectItem value="180">180 days</SelectItem>
-                  <SelectItem value="365">365 days</SelectItem>
+                  <SelectItem value="30">After 30 days</SelectItem>
+                  <SelectItem value="90">After 90 days</SelectItem>
+                  <SelectItem value="180">After 180 days</SelectItem>
+                  <SelectItem value="365">After 365 days</SelectItem>
                   <SelectItem value="0">Keep forever</SelectItem>
                 </SelectContent>
               </Select>
               <p className="wsms-text-xs wsms-text-muted-foreground">
-                Runs daily at 00:00 (site time). Choose how long to retain Outbox messages.
+                Automatically remove old messages from the Outbox.
               </p>
             </div>
           )}
@@ -134,9 +134,9 @@ export default function Advanced() {
           <div className="wsms-border-t wsms-border-border wsms-pt-4 wsms-mt-4">
             <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
               <div>
-                <p className="wsms-font-medium">Store Inbox Messages</p>
+                <p className="wsms-font-medium">Log Received Messages</p>
                 <p className="wsms-text-sm wsms-text-muted-foreground">
-                  If disabled, incoming SMS will not be logged in the Inbox
+                  Save incoming SMS messages in the Inbox.
                 </p>
               </div>
               <Switch
@@ -147,21 +147,21 @@ export default function Advanced() {
 
             {storeInbox === '1' && (
               <div className="wsms-space-y-2 wsms-mt-4">
-                <Label>Delete Inbox Messages Older Than</Label>
+                <Label>Auto-delete Received Messages</Label>
                 <Select value={inboxRetention} onValueChange={setInboxRetention}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select retention period" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="30">30 days</SelectItem>
-                    <SelectItem value="90">90 days</SelectItem>
-                    <SelectItem value="180">180 days</SelectItem>
-                    <SelectItem value="365">365 days</SelectItem>
+                    <SelectItem value="30">After 30 days</SelectItem>
+                    <SelectItem value="90">After 90 days</SelectItem>
+                    <SelectItem value="180">After 180 days</SelectItem>
+                    <SelectItem value="365">After 365 days</SelectItem>
                     <SelectItem value="0">Keep forever</SelectItem>
                   </SelectContent>
                 </Select>
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Runs daily at 00:00 (site time). Choose how long to retain Inbox messages.
+                  Automatically remove old messages from the Inbox.
                 </p>
               </div>
             )}
@@ -174,18 +174,18 @@ export default function Advanced() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Bell className="wsms-h-5 wsms-w-5" />
-            Administrative Reporting
+            Admin Notifications
           </CardTitle>
           <CardDescription>
-            Configure plugin notifications and reporting options
+            Configure email reports and plugin notifications
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">SMS Performance Reports</p>
+              <p className="wsms-font-medium">Weekly Statistics Email</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Sends weekly SMS performance statistics to the admin email
+                Receive weekly SMS usage reports via email.
               </p>
             </div>
             <Switch
@@ -196,9 +196,9 @@ export default function Advanced() {
 
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">SMS Transmission Error Alerts</p>
+              <p className="wsms-font-medium">Error Notifications</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Notifies the admin email upon SMS transmission failures
+                Email admin when SMS sending fails.
               </p>
             </div>
             <Switch
@@ -209,9 +209,9 @@ export default function Advanced() {
 
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">WP SMS Notifications</p>
+              <p className="wsms-font-medium">Plugin Notifications</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Display important notifications about new versions, feature updates, and special offers
+                Show update notices and announcements in the admin area.
               </p>
             </div>
             <Switch
@@ -222,9 +222,9 @@ export default function Advanced() {
 
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Share Anonymous Data</p>
+              <p className="wsms-font-medium">Usage Analytics</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Send non-personal, anonymized data to help improve WP SMS
+                Share anonymous usage data to help improve WP SMS.
               </p>
             </div>
             <Switch

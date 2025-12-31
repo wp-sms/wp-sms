@@ -83,8 +83,8 @@ export default function Gateway() {
       {/* Gateway Selection */}
       <Card>
         <CardHeader>
-          <CardTitle>Select Gateway</CardTitle>
-          <CardDescription>Choose from {gatewayList.length}+ providers</CardDescription>
+          <CardTitle>SMS Gateway</CardTitle>
+          <CardDescription>Select your SMS service provider. Configure credentials below after selecting.</CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-relative">
@@ -152,26 +152,27 @@ export default function Gateway() {
                 label="API Username"
                 value={gatewayUsername}
                 onChange={(e) => setGatewayUsername(e.target.value)}
-                placeholder="Enter username"
+                placeholder="Your gateway account username"
               />
               <InputField
                 label="API Password"
                 type="password"
                 value={gatewayPassword}
                 onChange={(e) => setGatewayPassword(e.target.value)}
-                placeholder="Enter password"
+                placeholder="Your gateway account password"
               />
               <InputField
                 label="API Key"
                 value={gatewayKey}
                 onChange={(e) => setGatewayKey(e.target.value)}
-                placeholder="Enter API key"
+                placeholder="Your gateway API key or token"
               />
               <InputField
                 label="Sender ID"
+                description="The name recipients see as the sender. Must be approved by your gateway."
                 value={gatewaySenderId}
                 onChange={(e) => setGatewaySenderId(e.target.value)}
-                placeholder="e.g., MyCompany"
+                placeholder="e.g., MyBrand"
               />
             </div>
 
@@ -205,32 +206,33 @@ export default function Gateway() {
         <CardContent className="wsms-space-y-4">
           <SelectField
             label="Delivery Method"
+            description="How SMS messages are processed and sent."
             value={deliveryMethod}
             onValueChange={setDeliveryMethod}
             placeholder="Select method"
             options={[
-              { value: 'api_direct_send', label: 'Send Instantly' },
-              { value: 'api_async_send', label: 'Scheduled Delivery' },
-              { value: 'api_queued_send', label: 'Batch Queue' },
+              { value: 'api_direct_send', label: 'Instant — Send immediately when triggered' },
+              { value: 'api_async_send', label: 'Background — Process in background (reduces page load time)' },
+              { value: 'api_queued_send', label: 'Queue — Add to queue for batch processing' },
             ]}
           />
 
           <div className="wsms-divide-y wsms-divide-border wsms-border-t wsms-border-border">
             <SwitchField
-              label="Unicode Messaging"
-              description="Support non-Latin characters"
+              label="Enable Unicode"
+              description="Required for non-Latin characters (Arabic, Chinese, emoji). May reduce characters per SMS."
               checked={sendUnicode === '1'}
               onCheckedChange={(checked) => setSendUnicode(checked ? '1' : '')}
             />
             <SwitchField
-              label="Clean Numbers"
-              description="Remove spaces from phone numbers"
+              label="Auto-format Numbers"
+              description="Automatically remove spaces and special characters from phone numbers before sending."
               checked={cleanNumbers === '1'}
               onCheckedChange={(checked) => setCleanNumbers(checked ? '1' : '')}
             />
             <SwitchField
-              label="Local Numbers Only"
-              description="Restrict to same-country numbers"
+              label="Restrict to Specific Countries"
+              description="Only send SMS to phone numbers from selected countries."
               checked={localNumbersOnly === '1'}
               onCheckedChange={(checked) => setLocalNumbersOnly(checked ? '1' : '')}
             />
@@ -243,11 +245,11 @@ export default function Gateway() {
                 options={countries}
                 value={localNumbersCountries}
                 onValueChange={setLocalNumbersCountries}
-                placeholder="Select allowed countries..."
+                placeholder="Select countries..."
                 searchPlaceholder="Search countries..."
               />
               <p className="wsms-text-xs wsms-text-muted-foreground">
-                Specify countries allowed for SMS delivery. Only listed countries will receive messages.
+                SMS will only be sent to numbers from these countries.
               </p>
             </div>
           )}
@@ -262,14 +264,14 @@ export default function Gateway() {
         <CardContent>
           <div className="wsms-divide-y wsms-divide-border">
             <SwitchField
-              label="Show in Admin Menu"
-              description="Display credit balance in menu"
+              label="Show Credit in Menu"
+              description="Display your SMS credit balance in the WordPress admin menu bar."
               checked={creditInMenu === '1'}
               onCheckedChange={(checked) => setCreditInMenu(checked ? '1' : '')}
             />
             <SwitchField
-              label="Show on SMS Page"
-              description="Display credit on send page"
+              label="Show Credit on Send Page"
+              description="Display your remaining SMS credits when composing messages."
               checked={creditInSendSms === '1'}
               onCheckedChange={(checked) => setCreditInSendSms(checked ? '1' : '')}
             />
