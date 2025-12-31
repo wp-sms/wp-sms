@@ -60,6 +60,7 @@ const DialogContent = React.forwardRef(
         {children}
         {showClose && (
           <DialogPrimitive.Close
+            aria-label="Close dialog"
             style={{
               position: 'absolute',
               right: '12px',
@@ -84,7 +85,7 @@ const DialogContent = React.forwardRef(
               e.currentTarget.style.color = '#9ca3af'
             }}
           >
-            <X style={{ width: '18px', height: '18px' }} />
+            <X style={{ width: '18px', height: '18px' }} aria-hidden="true" />
           </DialogPrimitive.Close>
         )}
       </DialogPrimitive.Content>

@@ -197,13 +197,14 @@ export default function Header({ onMenuClick, showMenuButton }) {
         {showMenuButton && (
           <button
             onClick={onMenuClick}
+            aria-label="Open navigation menu"
             className={cn(
               'wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-md',
               'wsms-text-muted-foreground wsms-transition-colors',
               'hover:wsms-bg-accent hover:wsms-text-foreground'
             )}
           >
-            <Menu className="wsms-h-5 wsms-w-5" />
+            <Menu className="wsms-h-5 wsms-w-5" aria-hidden="true" />
           </button>
         )}
         <Logo className="wsms-h-8" />

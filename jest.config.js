@@ -19,7 +19,7 @@ module.exports = {
   ],
   coverageDirectory: 'coverage',
   coverageReporters: ['text', 'lcov', 'html'],
-  testPathIgnorePatterns: ['/node_modules/', '/assets/dist/'],
+  testPathIgnorePatterns: ['/node_modules/', '/assets/dist/', 'testing-utils.js'],
   transformIgnorePatterns: [
     '/node_modules/(?!(@radix-ui|lucide-react)/)',
   ],

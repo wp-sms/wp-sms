@@ -58,11 +58,18 @@ export default function FloatingSaveBar() {
   return (
     <div className="wsms-border-t wsms-border-border wsms-bg-card wsms-px-6 wsms-py-3 wsms-shrink-0">
       <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4">
-        <div className="wsms-flex wsms-items-center wsms-gap-2">
+        <div
+          className="wsms-flex wsms-items-center wsms-gap-2"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
           {saveSuccess ? (
             <>
-              <Check className="wsms-h-4 wsms-w-4 wsms-text-success" />
-              <span className="wsms-text-[13px] wsms-text-success wsms-font-medium">Saved</span>
+              <Check className="wsms-h-4 wsms-w-4 wsms-text-success" aria-hidden="true" />
+              <span className="wsms-text-[13px] wsms-text-success wsms-font-medium">
+                Settings saved successfully
+              </span>
             </>
           ) : (
             <span className="wsms-text-[13px] wsms-text-muted-foreground">
@@ -79,7 +86,7 @@ export default function FloatingSaveBar() {
               onClick={handleDiscard}
               disabled={isSaving}
             >
-              <X className="wsms-h-4 wsms-w-4 wsms-mr-1" />
+              <X className="wsms-h-4 wsms-w-4 wsms-mr-1" aria-hidden="true" />
               Discard
             </Button>
 
@@ -87,15 +94,16 @@ export default function FloatingSaveBar() {
               size="sm"
               onClick={handleSave}
               disabled={isSaving}
+              aria-busy={isSaving}
             >
               {isSaving ? (
                 <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1 wsms-animate-spin" />
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1 wsms-animate-spin" aria-hidden="true" />
                   Saving...
                 </>
               ) : (
                 <>
-                  <Save className="wsms-h-4 wsms-w-4 wsms-mr-1" />
+                  <Save className="wsms-h-4 wsms-w-4 wsms-mr-1" aria-hidden="true" />
                   Save Changes
                 </>
               )}

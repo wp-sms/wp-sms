@@ -127,8 +127,8 @@ const MessageComposer = React.forwardRef(
             <span className={cn(
               'wsms-px-1.5 wsms-py-0.5 wsms-rounded wsms-text-[10px] wsms-font-medium',
               smsInfo.isUnicode
-                ? 'wsms-bg-amber-500/10 wsms-text-amber-600'
-                : 'wsms-bg-emerald-500/10 wsms-text-emerald-600'
+                ? 'wsms-bg-amber-100 wsms-text-amber-800 dark:wsms-bg-amber-900/40 dark:wsms-text-amber-200'
+                : 'wsms-bg-emerald-100 wsms-text-emerald-800 dark:wsms-bg-emerald-900/40 dark:wsms-text-emerald-200'
             )}>
               {smsInfo.encoding}
             </span>
@@ -137,18 +137,18 @@ const MessageComposer = React.forwardRef(
 
         {/* Warning messages */}
         {showUnicodeWarning && (
-          <div className="wsms-flex wsms-items-start wsms-gap-2 wsms-p-2.5 wsms-rounded-md wsms-bg-amber-500/10 wsms-border wsms-border-amber-500/20">
-            <AlertTriangle className="wsms-h-4 wsms-w-4 wsms-text-amber-600 wsms-shrink-0 wsms-mt-0.5" />
-            <p className="wsms-text-[12px] wsms-text-amber-700 dark:wsms-text-amber-400">
+          <div className="wsms-flex wsms-items-start wsms-gap-2 wsms-p-2.5 wsms-rounded-md wsms-bg-amber-50 wsms-border wsms-border-amber-200 dark:wsms-bg-amber-900/30 dark:wsms-border-amber-800">
+            <AlertTriangle className="wsms-h-4 wsms-w-4 wsms-text-amber-700 dark:wsms-text-amber-300 wsms-shrink-0 wsms-mt-0.5" aria-hidden="true" />
+            <p className="wsms-text-[12px] wsms-text-amber-800 dark:wsms-text-amber-200">
               Your message contains Unicode characters. This reduces the character limit per segment from 160 to 70 characters.
             </p>
           </div>
         )}
 
         {isOverLimit && (
-          <div className="wsms-flex wsms-items-start wsms-gap-2 wsms-p-2.5 wsms-rounded-md wsms-bg-red-500/10 wsms-border wsms-border-red-500/20">
-            <AlertTriangle className="wsms-h-4 wsms-w-4 wsms-text-red-600 wsms-shrink-0 wsms-mt-0.5" />
-            <p className="wsms-text-[12px] wsms-text-red-700 dark:wsms-text-red-400">
+          <div className="wsms-flex wsms-items-start wsms-gap-2 wsms-p-2.5 wsms-rounded-md wsms-bg-red-50 wsms-border wsms-border-red-200 dark:wsms-bg-red-900/30 dark:wsms-border-red-800" role="alert">
+            <AlertTriangle className="wsms-h-4 wsms-w-4 wsms-text-red-700 dark:wsms-text-red-300 wsms-shrink-0 wsms-mt-0.5" aria-hidden="true" />
+            <p className="wsms-text-[12px] wsms-text-red-800 dark:wsms-text-red-200">
               Message exceeds maximum of {maxSegments} segments. Please shorten your message.
             </p>
           </div>

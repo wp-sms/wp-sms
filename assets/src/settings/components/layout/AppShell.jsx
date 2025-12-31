@@ -71,6 +71,14 @@ const AppShell = memo(function AppShell() {
 
   return (
     <div className="wsms-settings-app">
+      {/* Skip to content link for keyboard navigation */}
+      <a
+        href="#main-content"
+        className="wsms-sr-only focus:wsms-not-sr-only focus:wsms-fixed focus:wsms-top-2 focus:wsms-left-2 focus:wsms-z-[100] focus:wsms-bg-primary focus:wsms-text-primary-foreground focus:wsms-px-4 focus:wsms-py-2 focus:wsms-rounded-md focus:wsms-shadow-lg focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-ring"
+      >
+        Skip to main content
+      </a>
+
       {/* Header - Full width at top */}
       <Header
         onMenuClick={() => setMobileMenuOpen(true)}
@@ -99,7 +107,7 @@ const AppShell = memo(function AppShell() {
 
         {/* Main content */}
         <div className="wsms-main">
-          <main className="wsms-content wsms-scrollbar-thin">
+          <main id="main-content" className="wsms-content wsms-scrollbar-thin" tabIndex={-1}>
             <div className="wsms-content-inner">
               {isLoading ? (
                 <LoadingSkeleton />

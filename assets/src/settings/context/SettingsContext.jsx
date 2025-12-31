@@ -255,19 +255,35 @@ export function SettingsProvider({ children }) {
     }
   }, [])
 
-  const value = {
-    ...state,
-    updateSetting,
-    updateProSetting,
-    updateSettingsBatch,
-    saveSettings,
-    resetChanges,
-    setCurrentPage,
-    getSetting,
-    getProSetting,
-    isAddonActive,
-    testGatewayConnection,
-  }
+  // Memoize context value to prevent unnecessary re-renders
+  const value = useMemo(
+    () => ({
+      ...state,
+      updateSetting,
+      updateProSetting,
+      updateSettingsBatch,
+      saveSettings,
+      resetChanges,
+      setCurrentPage,
+      getSetting,
+      getProSetting,
+      isAddonActive,
+      testGatewayConnection,
+    }),
+    [
+      state,
+      updateSetting,
+      updateProSetting,
+      updateSettingsBatch,
+      saveSettings,
+      resetChanges,
+      setCurrentPage,
+      getSetting,
+      getProSetting,
+      isAddonActive,
+      testGatewayConnection,
+    ]
+  )
 
   return (
     <SettingsContext.Provider value={value}>

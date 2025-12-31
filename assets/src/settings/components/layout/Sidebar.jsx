@@ -180,9 +180,10 @@ export default function Sidebar({ onClose, showClose }) {
         <div className="wsms-flex wsms-justify-end wsms-p-3 wsms-border-b wsms-border-border">
           <button
             onClick={onClose}
+            aria-label="Close navigation menu"
             className="wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-md hover:wsms-bg-accent wsms-text-muted-foreground wsms-transition-colors"
           >
-            <X className="wsms-h-4 wsms-w-4" />
+            <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
           </button>
         </div>
       )}

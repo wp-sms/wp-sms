@@ -170,23 +170,26 @@ class ApiClient {
    * GET request
    * @param {string} endpoint - API endpoint
    * @param {object} params - Query parameters
+   * @param {object} options - Additional options (e.g., timeout)
    * @returns {Promise<object>} Response data
    */
-  async get(endpoint, params = {}) {
+  async get(endpoint, params = {}, options = {}) {
     const queryString = this.buildQueryString(params)
-    return this.request(`${endpoint}${queryString}`, { method: 'GET' })
+    return this.request(`${endpoint}${queryString}`, { method: 'GET', ...options })
   }
 
   /**
    * POST request
    * @param {string} endpoint - API endpoint
    * @param {object} data - Request body
+   * @param {object} options - Additional options (e.g., timeout)
    * @returns {Promise<object>} Response data
    */
-  async post(endpoint, data) {
+  async post(endpoint, data, options = {}) {
     return this.request(endpoint, {
       method: 'POST',
       body: JSON.stringify(data),
+      ...options,
     })
   }
 
@@ -194,22 +197,25 @@ class ApiClient {
    * PUT request
    * @param {string} endpoint - API endpoint
    * @param {object} data - Request body
+   * @param {object} options - Additional options (e.g., timeout)
    * @returns {Promise<object>} Response data
    */
-  async put(endpoint, data) {
+  async put(endpoint, data, options = {}) {
     return this.request(endpoint, {
       method: 'PUT',
       body: JSON.stringify(data),
+      ...options,
     })
   }
 
   /**
    * DELETE request
    * @param {string} endpoint - API endpoint
+   * @param {object} options - Additional options (e.g., timeout)
    * @returns {Promise<object>} Response data
    */
-  async delete(endpoint) {
-    return this.request(endpoint, { method: 'DELETE' })
+  async delete(endpoint, options = {}) {
+    return this.request(endpoint, { method: 'DELETE', ...options })
   }
 
   /**
@@ -229,4 +235,11 @@ class ApiClient {
 
 // Export singleton instance
 export const apiClient = new ApiClient()
+
+// Export class for testing and extension
+export { ApiClient }
+
+// Export constants for use by other modules
+export { DEFAULT_TIMEOUT, MAX_RETRIES, RETRY_DELAY }
+
 export default apiClient

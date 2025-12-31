@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import {
   Inbox,
   RefreshCw,
@@ -6,21 +6,17 @@ import {
   Send,
   Search,
   Calendar,
-  Filter,
   Eye,
-  MoreHorizontal,
   CheckCircle,
   XCircle,
   Loader2,
   AlertCircle,
   Download,
-  Image,
   MessageSquare,
-  Clock,
   TrendingUp,
   TrendingDown,
 } from 'lucide-react'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -39,148 +35,124 @@ import {
 import { outboxApi } from '@/api/outboxApi'
 import { smsApi } from '@/api/smsApi'
 import { cn, formatDate } from '@/lib/utils'
+import { useDataTable } from '@/hooks/useDataTable'
+import { useNotificationToast } from '@/hooks/useNotificationToast'
+import { useFilters } from '@/hooks/useFilters'
+import { outboxColumns, getOutboxRowActions, getOutboxBulkActions } from '@/lib/tableColumns'
 
 export default function Outbox() {
-  // Data state
-  const [messages, setMessages] = useState([])
-  const [pagination, setPagination] = useState({
-    total: 0,
-    total_pages: 1,
-    current_page: 1,
-    per_page: 20,
+  // Use custom hooks for state management
+  const notification = useNotificationToast()
+
+  const filters = useFilters(
+    { search: '', status: 'all', date_from: '', date_to: '' },
+    { debounceMs: 500 }
+  )
+
+  // Fetch function for the data table
+  const fetchMessages = useCallback(
+    async (params) => {
+      const result = await outboxApi.getMessages({
+        ...params,
+        search: filters.debouncedFilters.search || undefined,
+        status: filters.debouncedFilters.status !== 'all' ? filters.debouncedFilters.status : undefined,
+        date_from: filters.debouncedFilters.date_from || undefined,
+        date_to: filters.debouncedFilters.date_to || undefined,
+      })
+      return result
+    },
+    [filters.debouncedFilters]
+  )
+
+  const table = useDataTable({
+    fetchFn: fetchMessages,
+    initialPerPage: 20,
   })
-  const [stats, setStats] = useState({ total: 0, success: 0, failed: 0 })
 
-  // Filter state
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
-  const [dateFrom, setDateFrom] = useState('')
-  const [dateTo, setDateTo] = useState('')
+  // Re-fetch when filters change
+  React.useEffect(() => {
+    if (table.initialLoadDone) {
+      table.fetch({ page: 1 })
+    }
+  }, [filters.debouncedFilters]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // UI state
-  const [isLoading, setIsLoading] = useState(true)
-  const [initialLoadDone, setInitialLoadDone] = useState(false)
-  const [selectedIds, setSelectedIds] = useState([])
+  // Dialog states
   const [viewMessage, setViewMessage] = useState(null)
-  const [notification, setNotification] = useState(null)
-  const [actionLoading, setActionLoading] = useState(null)
-  const [isExporting, setIsExporting] = useState(false)
   const [quickReplyTo, setQuickReplyTo] = useState(null)
   const [quickReplyMessage, setQuickReplyMessage] = useState('')
   const [isSendingReply, setIsSendingReply] = useState(false)
+  const [actionLoading, setActionLoading] = useState(null)
+  const [isExporting, setIsExporting] = useState(false)
 
-  // Fetch messages
-  const fetchMessages = useCallback(async (page = 1) => {
-    setIsLoading(true)
-    try {
-      const result = await outboxApi.getMessages({
-        page,
-        per_page: pagination.per_page,
-        search: search || undefined,
-        status: statusFilter !== 'all' ? statusFilter : undefined,
-        date_from: dateFrom || undefined,
-        date_to: dateTo || undefined,
-      })
-      setMessages(result.items)
-      setPagination(result.pagination)
-      setStats(result.stats)
-    } catch (error) {
-      setNotification({ type: 'error', message: error.message })
-    } finally {
-      setIsLoading(false)
-      setInitialLoadDone(true)
-    }
-  }, [search, statusFilter, dateFrom, dateTo, pagination.per_page])
+  // Handlers
+  const handleDelete = useCallback(
+    async (id) => {
+      setActionLoading(id)
+      try {
+        await outboxApi.deleteMessage(id)
+        notification.showSuccess('Message deleted successfully')
+        table.refresh()
+      } catch (error) {
+        notification.showFromError(error)
+      } finally {
+        setActionLoading(null)
+      }
+    },
+    [notification, table]
+  )
 
-  // Initial fetch
-  useEffect(() => {
-    fetchMessages()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  const handleResend = useCallback(
+    async (id) => {
+      setActionLoading(id)
+      try {
+        await outboxApi.resendMessage(id)
+        notification.showSuccess('Message resent successfully')
+        table.refresh()
+      } catch (error) {
+        notification.showFromError(error)
+      } finally {
+        setActionLoading(null)
+      }
+    },
+    [notification, table]
+  )
 
-  // Handle search with debounce
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchMessages(1)
-    }, 500)
-    return () => clearTimeout(timer)
-  }, [search, statusFilter, dateFrom, dateTo]) // eslint-disable-line react-hooks/exhaustive-deps
+  const handleBulkAction = useCallback(
+    async (action) => {
+      if (table.selectedIds.length === 0) return
 
-  // Handle page change
-  const handlePageChange = (page) => {
-    fetchMessages(page)
-  }
+      try {
+        const result = await outboxApi.bulkAction(action, table.selectedIds)
+        notification.showSuccess(
+          `${result.affected} message(s) ${action === 'delete' ? 'deleted' : 'resent'} successfully`
+        )
+        table.clearSelection()
+        table.fetch({ page: 1 })
+      } catch (error) {
+        notification.showFromError(error)
+      }
+    },
+    [notification, table]
+  )
 
-  // Handle delete
-  const handleDelete = async (id) => {
-    setActionLoading(id)
-    try {
-      await outboxApi.deleteMessage(id)
-      setNotification({ type: 'success', message: 'Message deleted successfully' })
-      fetchMessages(pagination.current_page)
-    } catch (error) {
-      setNotification({ type: 'error', message: error.message })
-    } finally {
-      setActionLoading(null)
-    }
-  }
-
-  // Handle resend
-  const handleResend = async (id) => {
-    setActionLoading(id)
-    try {
-      await outboxApi.resendMessage(id)
-      setNotification({ type: 'success', message: 'Message resent successfully' })
-      fetchMessages(pagination.current_page)
-    } catch (error) {
-      setNotification({ type: 'error', message: error.message })
-    } finally {
-      setActionLoading(null)
-    }
-  }
-
-  // Handle bulk actions
-  const handleBulkAction = async (action) => {
-    if (selectedIds.length === 0) return
-
-    setIsLoading(true)
-    try {
-      const result = await outboxApi.bulkAction(action, selectedIds)
-      setNotification({
-        type: 'success',
-        message: `${result.affected} message(s) ${action === 'delete' ? 'deleted' : 'resent'} successfully`,
-      })
-      setSelectedIds([])
-      fetchMessages(1)
-    } catch (error) {
-      setNotification({ type: 'error', message: error.message })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  // Handle export
-  const handleExport = async () => {
+  const handleExport = useCallback(async () => {
     setIsExporting(true)
     try {
       const result = await outboxApi.exportCsv({
-        status: statusFilter !== 'all' ? statusFilter : undefined,
-        date_from: dateFrom || undefined,
-        date_to: dateTo || undefined,
+        status: filters.debouncedFilters.status !== 'all' ? filters.debouncedFilters.status : undefined,
+        date_from: filters.debouncedFilters.date_from || undefined,
+        date_to: filters.debouncedFilters.date_to || undefined,
       })
       outboxApi.downloadCsv(result.data, result.filename)
-      setNotification({
-        type: 'success',
-        message: `Exported ${result.count} messages successfully`,
-      })
+      notification.showSuccess(`Exported ${result.count} messages successfully`)
     } catch (error) {
-      setNotification({ type: 'error', message: error.message })
+      notification.showFromError(error)
     } finally {
       setIsExporting(false)
     }
-  }
+  }, [notification, filters.debouncedFilters])
 
-  // Handle quick reply
-  const handleQuickReply = async () => {
+  const handleQuickReply = useCallback(async () => {
     if (!quickReplyTo || !quickReplyMessage.trim()) return
 
     setIsSendingReply(true)
@@ -189,160 +161,48 @@ export default function Outbox() {
         message: quickReplyMessage,
         recipients: { groups: [], roles: [], numbers: [quickReplyTo] },
       })
-      setNotification({ type: 'success', message: 'Reply sent successfully' })
+      notification.showSuccess('Reply sent successfully')
       setQuickReplyTo(null)
       setQuickReplyMessage('')
-      fetchMessages(pagination.current_page)
+      table.refresh()
     } catch (error) {
-      setNotification({ type: 'error', message: error.message })
+      notification.showFromError(error)
     } finally {
       setIsSendingReply(false)
     }
-  }
+  }, [quickReplyTo, quickReplyMessage, notification, table])
 
-  // Clear notification
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => setNotification(null), 5000)
-      return () => clearTimeout(timer)
-    }
-  }, [notification])
+  // Memoized row and bulk actions
+  const rowActions = useMemo(
+    () =>
+      getOutboxRowActions({
+        onView: (row) => setViewMessage(row),
+        onQuickReply: (row) => {
+          const recipient = row.recipient?.split(',')[0]?.trim() || row.recipient
+          setQuickReplyTo(recipient)
+          setQuickReplyMessage('')
+        },
+        onResend: (row) => handleResend(row.id),
+        onDelete: (row) => handleDelete(row.id),
+      }),
+    [handleResend, handleDelete]
+  )
+
+  const bulkActions = useMemo(
+    () =>
+      getOutboxBulkActions({
+        onDelete: () => handleBulkAction('delete'),
+        onResend: () => handleBulkAction('resend'),
+      }),
+    [handleBulkAction]
+  )
 
   // Calculate success rate
+  const stats = table.stats || { total: 0, success: 0, failed: 0 }
   const successRate = stats.total > 0 ? Math.round((stats.success / stats.total) * 100) : 0
 
-  // Table columns
-  const columns = [
-    {
-      id: 'date',
-      accessorKey: 'date',
-      header: 'Date',
-      sortable: true,
-      cell: ({ row }) => (
-        <div className="wsms-flex wsms-items-center wsms-gap-2">
-          <Clock className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
-          <span className="wsms-text-[12px] wsms-text-muted-foreground">
-            {formatDate(row.date, { hour: '2-digit', minute: '2-digit' })}
-          </span>
-        </div>
-      ),
-    },
-    {
-      id: 'recipient',
-      accessorKey: 'recipient',
-      header: 'Recipient',
-      cell: ({ row }) => (
-        <div className="wsms-space-y-0.5">
-          <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
-            {row.recipient_count > 1 ? `${row.recipient_count} recipients` : row.recipient}
-          </span>
-          {row.sender && (
-            <p className="wsms-text-[11px] wsms-text-muted-foreground">
-              From: {row.sender}
-            </p>
-          )}
-        </div>
-      ),
-    },
-    {
-      id: 'message',
-      accessorKey: 'message',
-      header: 'Message',
-      cell: ({ row }) => (
-        <p className="wsms-text-[12px] wsms-text-foreground wsms-line-clamp-2 wsms-max-w-md">
-          {row.message}
-        </p>
-      ),
-    },
-    {
-      id: 'media',
-      accessorKey: 'media',
-      header: 'Media',
-      cell: ({ row }) => {
-        if (!row.media) {
-          return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
-        }
-        const mediaUrls = typeof row.media === 'string' ? row.media.split(',').map(url => url.trim()) : []
-        return (
-          <div className="wsms-flex wsms-items-center wsms-gap-1">
-            {mediaUrls.slice(0, 2).map((url, idx) => (
-              <a
-                key={idx}
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="wsms-flex wsms-items-center wsms-gap-1 wsms-px-2 wsms-py-1 wsms-rounded wsms-bg-muted/50 wsms-text-[11px] wsms-text-primary hover:wsms-bg-muted"
-              >
-                <Image className="wsms-h-3 wsms-w-3" />
-              </a>
-            ))}
-            {mediaUrls.length > 2 && (
-              <span className="wsms-text-[11px] wsms-text-muted-foreground">
-                +{mediaUrls.length - 2}
-              </span>
-            )}
-          </div>
-        )
-      },
-    },
-    {
-      id: 'status',
-      accessorKey: 'status',
-      header: 'Status',
-      cell: ({ row }) => (
-        <StatusBadge variant={row.status === 'success' ? 'success' : 'failed'}>
-          {row.status === 'success' ? 'Sent' : 'Failed'}
-        </StatusBadge>
-      ),
-    },
-  ]
-
-  // Row actions
-  const rowActions = [
-    {
-      label: 'View Details',
-      icon: Eye,
-      onClick: (row) => setViewMessage(row),
-    },
-    {
-      label: 'Quick Reply',
-      icon: MessageSquare,
-      onClick: (row) => {
-        const recipient = row.recipient?.split(',')[0]?.trim() || row.recipient
-        setQuickReplyTo(recipient)
-        setQuickReplyMessage('')
-      },
-    },
-    {
-      label: 'Resend',
-      icon: Send,
-      onClick: (row) => handleResend(row.id),
-    },
-    {
-      label: 'Delete',
-      icon: Trash2,
-      onClick: (row) => handleDelete(row.id),
-      variant: 'destructive',
-    },
-  ]
-
-  // Bulk actions
-  const bulkActions = [
-    {
-      label: 'Delete Selected',
-      icon: Trash2,
-      onClick: () => handleBulkAction('delete'),
-      variant: 'destructive',
-    },
-    {
-      label: 'Resend Selected',
-      icon: RefreshCw,
-      onClick: () => handleBulkAction('resend'),
-    },
-  ]
-
-  // Show skeleton during initial load to prevent flash
-  if (!initialLoadDone) {
+  // Loading skeleton
+  if (!table.initialLoadDone) {
     return (
       <div className="wsms-space-y-6">
         <div className="wsms-h-24 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
@@ -353,7 +213,8 @@ export default function Outbox() {
   }
 
   // Empty state
-  const hasNoMessages = messages.length === 0 && !search && statusFilter === 'all'
+  const hasNoMessages =
+    table.data.length === 0 && !filters.filters.search && filters.filters.status === 'all'
 
   if (hasNoMessages) {
     return (
@@ -368,8 +229,8 @@ export default function Outbox() {
                 No messages yet
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-                When you send SMS messages, they will appear here.
-                You can track delivery status, resend failed messages, and export your history.
+                When you send SMS messages, they will appear here. You can track delivery status,
+                resend failed messages, and export your history.
               </p>
               <Tip variant="info">
                 Go to <strong>Send SMS</strong> to send your first message!
@@ -384,32 +245,33 @@ export default function Outbox() {
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
       {/* Notification */}
-      {notification && (
+      {notification.hasNotification && (
         <div
           className={cn(
             'wsms-flex wsms-items-center wsms-gap-3 wsms-p-4 wsms-rounded-lg wsms-border',
             'wsms-animate-in wsms-fade-in wsms-slide-in-from-top-2 wsms-duration-300',
-            notification.type === 'success'
-              ? 'wsms-bg-emerald-500/10 wsms-border-emerald-500/20 wsms-text-emerald-700 dark:wsms-text-emerald-400'
-              : 'wsms-bg-red-500/10 wsms-border-red-500/20 wsms-text-red-700 dark:wsms-text-red-400'
+            notification.isSuccess
+              ? 'wsms-bg-emerald-50 wsms-border-emerald-200 wsms-text-emerald-800 dark:wsms-bg-emerald-900/30 dark:wsms-border-emerald-800 dark:wsms-text-emerald-200'
+              : 'wsms-bg-red-50 wsms-border-red-200 wsms-text-red-800 dark:wsms-bg-red-900/30 dark:wsms-border-red-800 dark:wsms-text-red-200'
           )}
+          role="alert"
         >
-          {notification.type === 'success' ? (
-            <CheckCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
+          {notification.isSuccess ? (
+            <CheckCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" aria-hidden="true" />
           ) : (
-            <AlertCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
+            <AlertCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" aria-hidden="true" />
           )}
-          <p className="wsms-text-[13px] wsms-font-medium">{notification.message}</p>
+          <p className="wsms-text-[13px] wsms-font-medium">{notification.notification?.message}</p>
         </div>
       )}
 
-      {/* Stats Header Bar - Full Width */}
+      {/* Stats Header Bar */}
       <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
         <div className="wsms-flex wsms-items-center wsms-gap-8">
           {/* Total */}
           <div className="wsms-flex wsms-items-center wsms-gap-3">
             <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10">
-              <Inbox className="wsms-h-5 wsms-w-5 wsms-text-primary" />
+              <Inbox className="wsms-h-5 wsms-w-5 wsms-text-primary" aria-hidden="true" />
             </div>
             <div>
               <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
@@ -417,12 +279,12 @@ export default function Outbox() {
             </div>
           </div>
 
-          <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
+          <div className="wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
 
           {/* Sent */}
           <div className="wsms-flex wsms-items-center wsms-gap-3">
             <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-success/10">
-              <CheckCircle className="wsms-h-5 wsms-w-5 wsms-text-success" />
+              <CheckCircle className="wsms-h-5 wsms-w-5 wsms-text-success" aria-hidden="true" />
             </div>
             <div>
               <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.success}</p>
@@ -430,12 +292,12 @@ export default function Outbox() {
             </div>
           </div>
 
-          <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
+          <div className="wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
 
           {/* Failed */}
           <div className="wsms-flex wsms-items-center wsms-gap-3">
             <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-destructive/10">
-              <XCircle className="wsms-h-5 wsms-w-5 wsms-text-destructive" />
+              <XCircle className="wsms-h-5 wsms-w-5 wsms-text-destructive" aria-hidden="true" />
             </div>
             <div>
               <p className="wsms-text-xl wsms-font-bold wsms-text-destructive">{stats.failed}</p>
@@ -443,27 +305,45 @@ export default function Outbox() {
             </div>
           </div>
 
-          <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
+          <div className="wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
 
           {/* Success Rate */}
           <div className="wsms-flex wsms-items-center wsms-gap-3">
-            <div className={cn(
-              'wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg',
-              successRate >= 90 ? 'wsms-bg-success/10' : successRate >= 70 ? 'wsms-bg-amber-500/10' : 'wsms-bg-destructive/10'
-            )}>
-              {successRate >= 90 ? (
-                <TrendingUp className="wsms-h-5 wsms-w-5 wsms-text-success" />
-              ) : successRate >= 70 ? (
-                <TrendingUp className="wsms-h-5 wsms-w-5 wsms-text-amber-500" />
+            <div
+              className={cn(
+                'wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg',
+                successRate >= 90
+                  ? 'wsms-bg-success/10'
+                  : successRate >= 70
+                    ? 'wsms-bg-amber-100 dark:wsms-bg-amber-900/30'
+                    : 'wsms-bg-destructive/10'
+              )}
+            >
+              {successRate >= 70 ? (
+                <TrendingUp
+                  className={cn(
+                    'wsms-h-5 wsms-w-5',
+                    successRate >= 90
+                      ? 'wsms-text-success'
+                      : 'wsms-text-amber-600 dark:wsms-text-amber-400'
+                  )}
+                  aria-hidden="true"
+                />
               ) : (
-                <TrendingDown className="wsms-h-5 wsms-w-5 wsms-text-destructive" />
+                <TrendingDown className="wsms-h-5 wsms-w-5 wsms-text-destructive" aria-hidden="true" />
               )}
             </div>
             <div>
-              <p className={cn(
-                'wsms-text-xl wsms-font-bold',
-                successRate >= 90 ? 'wsms-text-success' : successRate >= 70 ? 'wsms-text-amber-500' : 'wsms-text-destructive'
-              )}>
+              <p
+                className={cn(
+                  'wsms-text-xl wsms-font-bold',
+                  successRate >= 90
+                    ? 'wsms-text-success'
+                    : successRate >= 70
+                      ? 'wsms-text-amber-600 dark:wsms-text-amber-400'
+                      : 'wsms-text-destructive'
+                )}
+              >
                 {successRate}%
               </p>
               <p className="wsms-text-[11px] wsms-text-muted-foreground">Success Rate</p>
@@ -474,37 +354,44 @@ export default function Outbox() {
         {/* Export Button */}
         <Button variant="outline" onClick={handleExport} disabled={isExporting}>
           {isExporting ? (
-            <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
+            <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" aria-hidden="true" />
           ) : (
             <>
-              <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+              <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
               Export
             </>
           )}
         </Button>
       </div>
 
-      {/* Filters - Full Width */}
+      {/* Filters */}
       <Card>
         <CardContent className="wsms-py-4">
           <div className="wsms-flex wsms-items-center wsms-gap-3">
             {/* Search */}
             <div className="wsms-flex-1 wsms-max-w-md">
               <div className="wsms-relative">
-                <Search className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+                <Search
+                  className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground"
+                  aria-hidden="true"
+                />
                 <Input
                   type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
+                  value={filters.filters.search}
+                  onChange={(e) => filters.setFilter('search', e.target.value)}
                   placeholder="Search messages or recipients..."
                   className="wsms-pl-9"
+                  aria-label="Search messages"
                 />
               </div>
             </div>
 
             {/* Status Filter */}
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="wsms-w-[130px]">
+            <Select
+              value={filters.filters.status}
+              onValueChange={(value) => filters.setFilter('status', value)}
+            >
+              <SelectTrigger className="wsms-w-[130px]" aria-label="Filter by status">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -516,53 +403,63 @@ export default function Outbox() {
 
             {/* Date Range */}
             <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-ml-auto">
-              <Calendar className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+              <Calendar className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" aria-hidden="true" />
               <Input
                 type="date"
-                value={dateFrom}
-                onChange={(e) => setDateFrom(e.target.value)}
+                value={filters.filters.date_from}
+                onChange={(e) => filters.setFilter('date_from', e.target.value)}
                 className="wsms-w-[130px]"
+                aria-label="From date"
               />
               <span className="wsms-text-muted-foreground wsms-text-[12px]">to</span>
               <Input
                 type="date"
-                value={dateTo}
-                onChange={(e) => setDateTo(e.target.value)}
+                value={filters.filters.date_to}
+                onChange={(e) => filters.setFilter('date_to', e.target.value)}
                 className="wsms-w-[130px]"
+                aria-label="To date"
               />
             </div>
 
             {/* Refresh */}
-            <Button variant="outline" size="icon" onClick={() => fetchMessages(1)}>
-              <RefreshCw className={cn('wsms-h-4 wsms-w-4', isLoading && 'wsms-animate-spin')} />
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => table.fetch({ page: 1 })}
+              aria-label="Refresh messages"
+            >
+              <RefreshCw
+                className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')}
+                aria-hidden="true"
+              />
             </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Data Table - Full Width */}
+      {/* Data Table */}
       <Card>
         <CardContent className="wsms-p-0">
           <DataTable
-            columns={columns}
-            data={messages}
-            loading={isLoading}
+            columns={outboxColumns}
+            data={table.data}
+            loading={table.isLoading}
             pagination={{
-              total: pagination.total,
-              totalPages: pagination.total_pages,
-              page: pagination.current_page,
-              perPage: pagination.per_page,
-              onPageChange: handlePageChange,
+              total: table.pagination.total,
+              totalPages: table.pagination.total_pages,
+              page: table.pagination.current_page,
+              perPage: table.pagination.per_page,
+              onPageChange: table.handlePageChange,
             }}
             selection={{
-              selected: selectedIds,
-              onSelect: (id) => {
-                setSelectedIds((prev) =>
-                  prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-                )
-              },
+              selected: table.selectedIds,
+              onSelect: table.toggleSelection,
               onSelectAll: (checked) => {
-                setSelectedIds(checked ? messages.map((m) => m.id) : [])
+                if (checked) {
+                  table.toggleSelectAll()
+                } else {
+                  table.clearSelection()
+                }
               },
             }}
             rowActions={rowActions}
@@ -578,7 +475,7 @@ export default function Outbox() {
         <DialogContent size="lg">
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
               Message Details
             </DialogTitle>
             <DialogDescription>
@@ -596,14 +493,14 @@ export default function Outbox() {
                       {viewMessage.status === 'success' ? 'Sent' : 'Failed'}
                     </StatusBadge>
                   </div>
-                  <div className="wsms-w-px wsms-h-8 wsms-bg-border" />
+                  <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
                   <div className="wsms-flex-1">
                     <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Recipients</p>
                     <p className="wsms-text-[13px] wsms-font-medium">{viewMessage.recipient_count}</p>
                   </div>
                   {viewMessage.sender && (
                     <>
-                      <div className="wsms-w-px wsms-h-8 wsms-bg-border" />
+                      <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
                       <div className="wsms-flex-1">
                         <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Sender</p>
                         <p className="wsms-text-[13px] wsms-font-medium">{viewMessage.sender}</p>
@@ -631,7 +528,9 @@ export default function Outbox() {
                 {/* Gateway Response */}
                 {viewMessage.response && (
                   <div>
-                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Gateway Response</p>
+                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">
+                      Gateway Response
+                    </p>
                     <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-font-mono wsms-p-2 wsms-rounded wsms-bg-muted/30">
                       {viewMessage.response}
                     </p>
@@ -645,7 +544,7 @@ export default function Outbox() {
               Close
             </Button>
             <Button onClick={() => handleResend(viewMessage?.id)}>
-              <Send className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+              <Send className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
               Resend
             </Button>
           </DialogFooter>
@@ -657,26 +556,30 @@ export default function Outbox() {
         <DialogContent size="sm">
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
               Quick Reply
             </DialogTitle>
-            <DialogDescription>
-              Send a quick reply to this recipient
-            </DialogDescription>
+            <DialogDescription>Send a quick reply to this recipient</DialogDescription>
           </DialogHeader>
           <DialogBody>
             <div className="wsms-space-y-4">
               <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium">To</label>
+                <label htmlFor="quick-reply-to" className="wsms-text-[12px] wsms-font-medium">
+                  To
+                </label>
                 <Input
+                  id="quick-reply-to"
                   value={quickReplyTo || ''}
                   readOnly
                   className="wsms-bg-muted/50 wsms-font-mono"
                 />
               </div>
               <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium">Message</label>
+                <label htmlFor="quick-reply-message" className="wsms-text-[12px] wsms-font-medium">
+                  Message
+                </label>
                 <textarea
+                  id="quick-reply-message"
                   value={quickReplyMessage}
                   onChange={(e) => setQuickReplyMessage(e.target.value)}
                   placeholder="Type your reply message..."
@@ -690,18 +593,15 @@ export default function Outbox() {
             <Button variant="outline" onClick={() => setQuickReplyTo(null)}>
               Cancel
             </Button>
-            <Button
-              onClick={handleQuickReply}
-              disabled={isSendingReply || !quickReplyMessage.trim()}
-            >
+            <Button onClick={handleQuickReply} disabled={isSendingReply || !quickReplyMessage.trim()}>
               {isSendingReply ? (
                 <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" aria-hidden="true" />
                   Sending...
                 </>
               ) : (
                 <>
-                  <Send className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                  <Send className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
                   Send Reply
                 </>
               )}

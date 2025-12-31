@@ -42,7 +42,7 @@ describe('smsApi', () => {
       })
 
       expect(global.fetch).toHaveBeenCalledWith(
-        'http://localhost/wp-json/wpsms/v1/send',
+        'http://localhost/wp-json/wpsms/v1/send/quick',
         expect.objectContaining({
           method: 'POST',
           body: expect.stringContaining('Test message'),
