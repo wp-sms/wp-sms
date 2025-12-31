@@ -162,10 +162,11 @@ export default function Groups() {
   // Table columns
   const columns = [
     {
-      key: 'name',
-      label: 'Group Name',
+      id: 'name',
+      accessorKey: 'name',
+      header: 'Group Name',
       sortable: true,
-      render: (row) => {
+      cell: ({ row }) => {
         if (inlineEditId === row.id) {
           return (
             <div className="wsms-flex wsms-items-center wsms-gap-2">
@@ -207,9 +208,10 @@ export default function Groups() {
       },
     },
     {
-      key: 'subscriber_count',
-      label: 'Subscribers',
-      render: (row) => (
+      id: 'subscriber_count',
+      accessorKey: 'subscriber_count',
+      header: 'Subscribers',
+      cell: ({ row }) => (
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <Users className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
           <span className="wsms-text-[13px] wsms-text-foreground">
