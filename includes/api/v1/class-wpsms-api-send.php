@@ -87,16 +87,7 @@ class SendSmsApi extends \WP_SMS\RestApi
             )
         ));
 
-        // @todo, this can be moved to a separate class
-        register_rest_route($this->namespace . '/v1', '/outbox', array(
-            array(
-                'methods'             => \WP_REST_Server::READABLE,
-                'callback'            => array($this, 'getOutboxCallback'),
-                'permission_callback' => function () {
-                    return current_user_can('wpsms_outbox');
-                },
-            )
-        ));
+        // Note: /outbox endpoint moved to class-wpsms-api-outbox.php
     }
 
     /**
@@ -322,18 +313,6 @@ class SendSmsApi extends \WP_SMS\RestApi
         $recipients = array_unique($recipients);
 
         return apply_filters('wp_sms_api_recipients_numbers', $recipients, $request->get_param('recipients'), $request);
-    }
-
-    /**
-     * @param WP_REST_Request $request
-     * @return array|object|\stdClass[]|null
-     * @todo support pagination and filter
-     */
-    public function getOutboxCallback(WP_REST_Request $request)
-    {
-        $query = "SELECT * FROM `{$this->tb_prefix}sms_send`";
-
-        return $this->db->get_results($query, ARRAY_A);
     }
 
     /**

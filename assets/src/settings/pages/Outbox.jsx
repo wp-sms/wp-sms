@@ -212,6 +212,31 @@ export default function Outbox() {
     )
   }
 
+  // Error state
+  if (table.error) {
+    return (
+      <div className="wsms-space-y-6">
+        <Card className="wsms-border-destructive">
+          <CardContent className="wsms-py-8">
+            <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center">
+              <AlertCircle className="wsms-h-12 wsms-w-12 wsms-text-destructive wsms-mb-4" />
+              <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
+                Failed to load messages
+              </h3>
+              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
+                {table.error}
+              </p>
+              <Button onClick={() => table.fetch({ page: 1 })}>
+                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                Try Again
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   // Empty state
   const hasNoMessages =
     table.data.length === 0 && !filters.filters.search && filters.filters.status === 'all'
@@ -531,9 +556,9 @@ export default function Outbox() {
                     <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">
                       Gateway Response
                     </p>
-                    <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-font-mono wsms-p-2 wsms-rounded wsms-bg-muted/30">
+                    <pre className="wsms-text-[11px] wsms-text-muted-foreground wsms-font-mono wsms-p-3 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border wsms-overflow-x-auto wsms-whitespace-pre-wrap wsms-break-words wsms-max-h-[200px] wsms-overflow-y-auto">
                       {viewMessage.response}
-                    </p>
+                    </pre>
                   </div>
                 )}
               </div>
