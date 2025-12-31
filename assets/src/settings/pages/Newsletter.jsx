@@ -11,7 +11,12 @@ import { useSetting } from '@/context/SettingsContext'
 import { getWpSettings } from '@/lib/utils'
 
 export default function Newsletter() {
-  const { groups = {}, gdprEnabled = false } = getWpSettings()
+  const { groups: rawGroups = [], gdprEnabled = false } = getWpSettings()
+
+  // Transform groups array to format expected by MultiSelect: [{value, label}]
+  const groupOptions = Array.isArray(rawGroups)
+    ? rawGroups.map(g => ({ value: String(g.id), label: g.name }))
+    : []
 
   // Form settings
   const [formGroups, setFormGroups] = useSetting('newsletter_form_groups', '')
@@ -65,7 +70,7 @@ export default function Newsletter() {
               <div className="wsms-space-y-2">
                 <Label>Available Groups</Label>
                 <MultiSelect
-                  options={groups}
+                  options={groupOptions}
                   value={specifiedGroups}
                   onValueChange={setSpecifiedGroups}
                   placeholder="All groups"
@@ -97,9 +102,9 @@ export default function Newsletter() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">All</SelectItem>
-                    {groups && Object.entries(groups).map(([id, name]) => (
-                      <SelectItem key={id} value={String(id)}>
-                        {name}
+                    {Array.isArray(rawGroups) && rawGroups.map((group) => (
+                      <SelectItem key={group.id} value={String(group.id)}>
+                        {group.name}
                       </SelectItem>
                     ))}
                   </SelectContent>

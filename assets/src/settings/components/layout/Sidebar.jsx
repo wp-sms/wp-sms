@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   LayoutDashboard,
   Radio,
@@ -14,33 +14,42 @@ import {
   Inbox,
   FolderOpen,
   Shield,
+  ChevronRight,
+  Cog,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSettings } from '@/context/SettingsContext'
 import { getWpSettings } from '@/lib/utils'
 
+// Navigation structure - flat items + Settings submenu
 const navigation = [
-  // Messaging Section
-  { type: 'label', label: 'Messaging' },
-  { id: 'send-sms', label: 'Send SMS', icon: Send },
-  { id: 'outbox', label: 'Outbox', icon: Inbox },
-  // Subscribers Section
-  { type: 'label', label: 'Subscribers' },
-  { id: 'subscribers', label: 'Subscribers', icon: Users },
-  { id: 'groups', label: 'Groups', icon: FolderOpen },
-  // Settings Section
-  { type: 'label', label: 'Settings' },
-  { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-  { id: 'gateway', label: 'Gateway', icon: Radio },
-  { id: 'phone', label: 'Phone', icon: Phone },
-  { id: 'message-button', label: 'Message Button', icon: MessageSquare },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'newsletter', label: 'Newsletter', icon: Users },
-  { id: 'integrations', label: 'Integrations', icon: Puzzle },
-  { id: 'advanced', label: 'Advanced', icon: Settings },
-  // Privacy Section (conditional)
-  { type: 'label', label: 'Privacy', condition: 'gdprEnabled' },
-  { id: 'privacy', label: 'Privacy', icon: Shield, condition: 'gdprEnabled' },
+  // Direct items
+  { type: 'item', id: 'send-sms', label: 'Send SMS', icon: Send },
+  { type: 'item', id: 'outbox', label: 'Outbox', icon: Inbox },
+  { type: 'item', id: 'subscribers', label: 'Subscribers', icon: Users },
+  { type: 'item', id: 'groups', label: 'Groups', icon: FolderOpen },
+
+  // Settings Section - collapsible with sub-items
+  {
+    type: 'group',
+    id: 'settings',
+    label: 'Settings',
+    icon: Cog,
+    defaultExpanded: false,
+    items: [
+      { id: 'overview', label: 'Overview', icon: LayoutDashboard },
+      { id: 'gateway', label: 'Gateway', icon: Radio },
+      { id: 'phone', label: 'Phone', icon: Phone },
+      { id: 'message-button', label: 'Message Button', icon: MessageSquare },
+      { id: 'notifications', label: 'Notifications', icon: Bell },
+      { id: 'newsletter', label: 'Newsletter', icon: Users },
+      { id: 'integrations', label: 'Integrations', icon: Puzzle },
+      { id: 'advanced', label: 'Advanced', icon: Settings },
+    ],
+  },
+
+  // Privacy (conditional) - direct item
+  { type: 'item', id: 'privacy', label: 'Privacy', icon: Shield, condition: 'gdprEnabled' },
 ]
 
 const links = [
@@ -48,31 +57,102 @@ const links = [
   { label: 'Support', href: 'https://wordpress.org/support/plugin/wp-sms/' },
 ]
 
-function NavItem({ item, isActive, onClick }) {
+// Single nav item (leaf node)
+function NavItem({ item, isActive, onClick, isNested = false }) {
   const Icon = item.icon
   return (
     <button
       onClick={onClick}
       className={cn(
-        'wsms-flex wsms-w-full wsms-items-center wsms-gap-3 wsms-rounded-md wsms-px-3 wsms-py-2.5 wsms-text-[13px] wsms-font-medium wsms-transition-colors wsms-text-left',
+        'wsms-flex wsms-w-full wsms-items-center wsms-gap-3 wsms-rounded-md wsms-text-[13px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-left',
+        isNested ? 'wsms-py-2 wsms-px-3 wsms-pl-10' : 'wsms-px-3 wsms-py-2.5',
         isActive
-          ? 'wsms-bg-primary wsms-text-primary-foreground'
-          : 'wsms-text-foreground/80 hover:wsms-bg-accent hover:wsms-text-foreground'
+          ? 'wsms-bg-primary wsms-text-primary-foreground wsms-shadow-sm'
+          : 'wsms-text-foreground/70 hover:wsms-bg-accent hover:wsms-text-foreground'
       )}
     >
-      <Icon className="wsms-h-[18px] wsms-w-[18px] wsms-shrink-0" strokeWidth={1.5} />
-      <span>{item.label}</span>
+      <Icon
+        className={cn('wsms-h-4 wsms-w-4 wsms-shrink-0', isNested && 'wsms-h-3.5 wsms-w-3.5')}
+        strokeWidth={1.75}
+      />
+      <span className={cn(isNested && 'wsms-text-[12px]')}>{item.label}</span>
     </button>
   )
 }
 
-// Section label component
-function SectionLabel({ label }) {
+// Collapsible group component
+function NavGroup({ group, currentPage, setCurrentPage, conditions }) {
+  // Check if any item in this group is active
+  const hasActiveChild = group.items.some((item) => item.id === currentPage)
+
+  // Initialize expanded state - expanded if has active child or defaultExpanded
+  const [isExpanded, setIsExpanded] = useState(hasActiveChild || group.defaultExpanded || false)
+
+  // Auto-expand when a child becomes active
+  useEffect(() => {
+    if (hasActiveChild && !isExpanded) {
+      setIsExpanded(true)
+    }
+  }, [hasActiveChild])
+
+  // Filter items based on conditions
+  const filteredItems = group.items.filter((item) => {
+    if (!item.condition) return true
+    return conditions[item.condition]
+  })
+
+  // Don't render empty groups
+  if (filteredItems.length === 0) return null
+
+  const Icon = group.icon
+
   return (
-    <div className="wsms-px-3 wsms-pt-4 wsms-pb-1">
-      <span className="wsms-text-[10px] wsms-font-semibold wsms-uppercase wsms-tracking-wider wsms-text-muted-foreground">
-        {label}
-      </span>
+    <div className="wsms-space-y-0.5">
+      {/* Group header - clickable to expand/collapse */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className={cn(
+          'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-px-3 wsms-py-2.5 wsms-text-[13px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-left',
+          hasActiveChild
+            ? 'wsms-text-primary wsms-bg-primary/5'
+            : 'wsms-text-foreground/80 hover:wsms-bg-accent hover:wsms-text-foreground'
+        )}
+      >
+        <div className="wsms-flex wsms-items-center wsms-gap-3">
+          <Icon className="wsms-h-[18px] wsms-w-[18px] wsms-shrink-0" strokeWidth={1.5} />
+          <span>{group.label}</span>
+        </div>
+        <ChevronRight
+          className={cn(
+            'wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-transition-transform wsms-duration-200',
+            isExpanded && 'wsms-rotate-90'
+          )}
+          strokeWidth={1.5}
+        />
+      </button>
+
+      {/* Expandable content with smooth animation */}
+      <div
+        className={cn(
+          'wsms-overflow-hidden wsms-transition-all wsms-duration-200 wsms-ease-out',
+          isExpanded ? 'wsms-max-h-[500px] wsms-opacity-100' : 'wsms-max-h-0 wsms-opacity-0'
+        )}
+      >
+        <div className="wsms-relative wsms-py-1">
+          {/* Subtle connecting line */}
+          <div className="wsms-absolute wsms-left-[22px] wsms-top-2 wsms-bottom-2 wsms-w-px wsms-bg-border/50" />
+
+          {filteredItems.map((item) => (
+            <NavItem
+              key={item.id}
+              item={item}
+              isActive={currentPage === item.id}
+              onClick={() => setCurrentPage(item.id)}
+              isNested={true}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   )
 }
@@ -83,34 +163,42 @@ export default function Sidebar({ onClose, showClose }) {
   const isProActive = window.wpSmsSettings?.addons?.pro
   const { gdprEnabled } = getWpSettings()
 
+  // Conditions object for filtering
+  const conditions = {
+    gdprEnabled,
+  }
+
   // Filter navigation items based on conditions
   const filteredNavigation = navigation.filter((item) => {
     if (!item.condition) return true
-    if (item.condition === 'gdprEnabled') return gdprEnabled
-    return true
+    return conditions[item.condition]
   })
 
   return (
-    <div className="wsms-flex wsms-flex-col wsms-h-full wsms-min-h-0">
+    <div className="wsms-flex wsms-flex-col wsms-h-full wsms-min-h-0 wsms-bg-card">
       {/* Header */}
-      <div className="wsms-flex wsms-items-center wsms-justify-between wsms-h-12 wsms-min-h-12 wsms-px-5 wsms-border-b wsms-border-border">
-        <div className="wsms-flex wsms-items-center wsms-gap-2.5">
-          <div className="wsms-flex wsms-h-8 wsms-w-8 wsms-items-center wsms-justify-center wsms-rounded-md wsms-bg-primary wsms-text-primary-foreground">
-            <Radio className="wsms-h-[18px] wsms-w-[18px]" strokeWidth={1.5} />
+      <div className="wsms-flex wsms-items-center wsms-justify-between wsms-h-14 wsms-min-h-14 wsms-px-5 wsms-border-b wsms-border-border">
+        <div className="wsms-flex wsms-items-center wsms-gap-3">
+          <div className="wsms-flex wsms-h-9 wsms-w-9 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary wsms-text-primary-foreground wsms-shadow-sm">
+            <Radio className="wsms-h-5 wsms-w-5" strokeWidth={1.5} />
           </div>
-          <div className="wsms-flex wsms-items-center wsms-gap-2">
-            <span className="wsms-text-[14px] wsms-font-semibold wsms-text-foreground">WP SMS</span>
-            {isProActive && (
-              <span className="wsms-text-[10px] wsms-font-medium wsms-uppercase wsms-px-1.5 wsms-py-0.5 wsms-rounded wsms-bg-primary/10 wsms-text-primary">
-                Pro
+          <div className="wsms-flex wsms-flex-col">
+            <div className="wsms-flex wsms-items-center wsms-gap-2">
+              <span className="wsms-text-[15px] wsms-font-semibold wsms-text-foreground">
+                WP SMS
               </span>
-            )}
+              {isProActive && (
+                <span className="wsms-text-[9px] wsms-font-bold wsms-uppercase wsms-px-1.5 wsms-py-0.5 wsms-rounded wsms-bg-gradient-to-r wsms-from-primary wsms-to-orange-400 wsms-text-white">
+                  Pro
+                </span>
+              )}
+            </div>
           </div>
         </div>
         {showClose && (
           <button
             onClick={onClose}
-            className="wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-md hover:wsms-bg-accent wsms-text-muted-foreground"
+            className="wsms-flex wsms-items-center wsms-justify-center wsms-h-8 wsms-w-8 wsms-rounded-md hover:wsms-bg-accent wsms-text-muted-foreground wsms-transition-colors"
           >
             <X className="wsms-h-4 wsms-w-4" />
           </button>
@@ -118,13 +206,18 @@ export default function Sidebar({ onClose, showClose }) {
       </div>
 
       {/* Navigation */}
-      <nav className="wsms-flex-1 wsms-min-h-0 wsms-overflow-y-auto wsms-px-3 wsms-py-1 wsms-scrollbar-thin">
-        <div className="wsms-space-y-0.5">
-          {filteredNavigation.map((item, index) => {
-            if (item.type === 'label') {
-              return <SectionLabel key={`label-${item.label}`} label={item.label} />
-            }
-            return (
+      <nav className="wsms-flex-1 wsms-min-h-0 wsms-overflow-y-auto wsms-px-3 wsms-py-4 wsms-scrollbar-thin">
+        <div className="wsms-space-y-1">
+          {filteredNavigation.map((item) =>
+            item.type === 'group' ? (
+              <NavGroup
+                key={item.id}
+                group={item}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                conditions={conditions}
+              />
+            ) : (
               <NavItem
                 key={item.id}
                 item={item}
@@ -132,12 +225,12 @@ export default function Sidebar({ onClose, showClose }) {
                 onClick={() => setCurrentPage(item.id)}
               />
             )
-          })}
+          )}
         </div>
       </nav>
 
       {/* Footer */}
-      <div className="wsms-border-t wsms-border-border wsms-px-3 wsms-py-4 wsms-mt-auto">
+      <div className="wsms-border-t wsms-border-border wsms-px-3 wsms-py-4 wsms-mt-auto wsms-bg-muted/30">
         <div className="wsms-space-y-1 wsms-mb-3">
           {links.map((link) => (
             <a
@@ -152,7 +245,7 @@ export default function Sidebar({ onClose, showClose }) {
             </a>
           ))}
         </div>
-        <div className="wsms-px-3 wsms-text-[11px] wsms-text-muted-foreground">
+        <div className="wsms-px-3 wsms-text-[11px] wsms-text-muted-foreground/70">
           Version {version}
         </div>
       </div>
