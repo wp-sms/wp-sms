@@ -17,6 +17,16 @@ if (!defined('ABSPATH')) {
 class NewSettingsPage extends Singleton
 {
     /**
+     * Sensitive fields that should be masked before sending to frontend
+     *
+     * @var array
+     */
+    private $sensitiveFields = [
+        'gateway_password',
+        'gateway_key',
+    ];
+
+    /**
      * Initialize the settings page
      */
     public function init()
@@ -190,6 +200,31 @@ class NewSettingsPage extends Singleton
     }
 
     /**
+     * Mask sensitive fields in settings array
+     *
+     * Replaces actual values with masked placeholder to prevent
+     * sensitive data from being exposed in the frontend
+     *
+     * @param array $settings
+     * @return array
+     */
+    private function maskSensitiveSettings($settings)
+    {
+        if (!is_array($settings)) {
+            return $settings;
+        }
+
+        foreach ($this->sensitiveFields as $field) {
+            if (isset($settings[$field]) && !empty($settings[$field])) {
+                // Mark as having a value but don't expose the actual value
+                $settings[$field] = '••••••••';
+            }
+        }
+
+        return $settings;
+    }
+
+    /**
      * Get localized data for the React app
      *
      * @return array
@@ -199,8 +234,8 @@ class NewSettingsPage extends Singleton
         return [
             'apiUrl'      => rest_url('wpsms/v1/'),
             'nonce'       => wp_create_nonce('wp_rest'),
-            'settings'    => Option::getOptions(),
-            'proSettings' => Option::getOptions(true),
+            'settings'    => $this->maskSensitiveSettings(Option::getOptions()),
+            'proSettings' => $this->maskSensitiveSettings(Option::getOptions(true)),
             'addons'      => $this->getActiveAddons(),
             'gateways'    => Gateway::gateway(),
             'adminUrl'    => admin_url(),

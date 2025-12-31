@@ -1,6 +1,21 @@
 import { getWpSettings } from '../lib/utils'
 
 /**
+ * Default request timeout in milliseconds
+ */
+const DEFAULT_TIMEOUT = 10000
+
+/**
+ * Maximum retry attempts for network errors
+ */
+const MAX_RETRIES = 3
+
+/**
+ * Delay between retries in milliseconds
+ */
+const RETRY_DELAY = 1000
+
+/**
  * Base API client for settings
  */
 class SettingsApiClient {
@@ -11,12 +26,51 @@ class SettingsApiClient {
   }
 
   /**
-   * Make an API request
+   * Sleep for a given duration
+   * @param {number} ms - Milliseconds to sleep
+   * @returns {Promise<void>}
+   */
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
+  }
+
+  /**
+   * Check if error is a network error that should be retried
+   * @param {Error} error - The error to check
+   * @returns {boolean}
+   */
+  isNetworkError(error) {
+    return (
+      error.name === 'AbortError' ||
+      error.name === 'TypeError' ||
+      error.message.includes('network') ||
+      error.message.includes('fetch')
+    )
+  }
+
+  /**
+   * Safely parse JSON response
+   * @param {Response} response - Fetch response
+   * @returns {Promise<object|null>}
+   */
+  async safeParseJson(response) {
+    try {
+      const text = await response.text()
+      return text ? JSON.parse(text) : null
+    } catch (parseError) {
+      console.warn('Failed to parse JSON response:', parseError)
+      return null
+    }
+  }
+
+  /**
+   * Make an API request with timeout and retry logic
    * @param {string} endpoint - API endpoint
    * @param {object} options - Fetch options
+   * @param {number} retryCount - Current retry attempt
    * @returns {Promise<object>} Response data
    */
-  async request(endpoint, options = {}) {
+  async request(endpoint, options = {}, retryCount = 0) {
     const url = `${this.baseUrl}${endpoint}`
 
     const headers = {
@@ -25,20 +79,33 @@ class SettingsApiClient {
       ...options.headers,
     }
 
+    // Create abort controller for timeout
+    const abortController = new AbortController()
+    const timeoutId = setTimeout(() => abortController.abort(), DEFAULT_TIMEOUT)
+
     const config = {
       ...options,
       headers,
+      signal: abortController.signal,
     }
 
     try {
       const response = await fetch(url, config)
+      clearTimeout(timeoutId)
 
       if (!response.ok) {
-        const error = await response.json()
-        throw new Error(error.error?.message || `HTTP error! status: ${response.status}`)
+        const errorData = await this.safeParseJson(response)
+        const errorMessage = errorData?.error?.message ||
+                            errorData?.message ||
+                            `HTTP error! status: ${response.status}`
+        throw new Error(errorMessage)
       }
 
-      const data = await response.json()
+      const data = await this.safeParseJson(response)
+
+      if (!data) {
+        throw new Error('Empty response from server')
+      }
 
       // Check for API-level errors
       if (data.error && data.error.message) {
@@ -47,8 +114,25 @@ class SettingsApiClient {
 
       return data
     } catch (error) {
+      clearTimeout(timeoutId)
+
+      // Retry on network errors
+      if (this.isNetworkError(error) && retryCount < MAX_RETRIES) {
+        console.warn(`Request failed, retrying (${retryCount + 1}/${MAX_RETRIES})...`)
+        await this.sleep(RETRY_DELAY * (retryCount + 1))
+        return this.request(endpoint, options, retryCount + 1)
+      }
+
+      // Format user-friendly error message
+      let userMessage = error.message
+      if (error.name === 'AbortError') {
+        userMessage = 'Request timed out. Please check your connection and try again.'
+      } else if (this.isNetworkError(error)) {
+        userMessage = 'Network error. Please check your internet connection.'
+      }
+
       console.error('API Error:', error)
-      throw error
+      throw new Error(userMessage)
     }
   }
 

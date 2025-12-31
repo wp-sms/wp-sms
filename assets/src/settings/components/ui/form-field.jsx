@@ -1,4 +1,5 @@
 import * as React from 'react'
+import PropTypes from 'prop-types'
 import { cn } from '@/lib/utils'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -177,6 +178,72 @@ const SelectField = React.forwardRef(
   }
 )
 SelectField.displayName = 'SelectField'
+
+// PropTypes definitions
+FormField.propTypes = {
+  label: PropTypes.string,
+  description: PropTypes.string,
+  error: PropTypes.string,
+  required: PropTypes.bool,
+  className: PropTypes.string,
+  children: PropTypes.element.isRequired,
+}
+
+SwitchField.propTypes = {
+  label: PropTypes.string.isRequired,
+  description: PropTypes.string,
+  checked: PropTypes.bool,
+  onCheckedChange: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+  className: PropTypes.string,
+}
+
+InputField.propTypes = {
+  label: PropTypes.string,
+  description: PropTypes.string,
+  error: PropTypes.string,
+  required: PropTypes.bool,
+  type: PropTypes.string,
+  className: PropTypes.string,
+  inputClassName: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onChange: PropTypes.func,
+  placeholder: PropTypes.string,
+  disabled: PropTypes.bool,
+}
+
+TextareaField.propTypes = {
+  label: PropTypes.string,
+  description: PropTypes.string,
+  error: PropTypes.string,
+  required: PropTypes.bool,
+  className: PropTypes.string,
+  textareaClassName: PropTypes.string,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+  placeholder: PropTypes.string,
+  disabled: PropTypes.bool,
+  rows: PropTypes.number,
+}
+
+const optionShape = PropTypes.shape({
+  value: PropTypes.string.isRequired,
+  label: PropTypes.string.isRequired,
+  disabled: PropTypes.bool,
+})
+
+SelectField.propTypes = {
+  label: PropTypes.string,
+  description: PropTypes.string,
+  error: PropTypes.string,
+  required: PropTypes.bool,
+  placeholder: PropTypes.string,
+  value: PropTypes.string,
+  onValueChange: PropTypes.func.isRequired,
+  options: PropTypes.arrayOf(optionShape),
+  className: PropTypes.string,
+  disabled: PropTypes.bool,
+}
 
 export {
   FormField,

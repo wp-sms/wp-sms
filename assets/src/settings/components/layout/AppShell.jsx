@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, lazy, Suspense, memo } from 'react'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import FloatingSaveBar from './FloatingSaveBar'
@@ -9,14 +9,15 @@ import { SkeletonCard } from '@/components/ui/skeleton'
 import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-import Overview from '@/pages/Overview'
-import Gateway from '@/pages/Gateway'
-import PhoneConfig from '@/pages/PhoneConfig'
-import MessageButton from '@/pages/MessageButton'
-import Notifications from '@/pages/Notifications'
-import Newsletter from '@/pages/Newsletter'
-import Integrations from '@/pages/Integrations'
-import Advanced from '@/pages/Advanced'
+// Lazy load page components for code splitting
+const Overview = lazy(() => import('@/pages/Overview'))
+const Gateway = lazy(() => import('@/pages/Gateway'))
+const PhoneConfig = lazy(() => import('@/pages/PhoneConfig'))
+const MessageButton = lazy(() => import('@/pages/MessageButton'))
+const Notifications = lazy(() => import('@/pages/Notifications'))
+const Newsletter = lazy(() => import('@/pages/Newsletter'))
+const Integrations = lazy(() => import('@/pages/Integrations'))
+const Advanced = lazy(() => import('@/pages/Advanced'))
 
 const pages = {
   overview: Overview,
@@ -29,16 +30,18 @@ const pages = {
   advanced: Advanced,
 }
 
-function LoadingSkeleton() {
+// Memoized loading skeleton
+const LoadingSkeleton = memo(function LoadingSkeleton() {
   return (
     <div className="wsms-space-y-4">
       <SkeletonCard />
       <SkeletonCard />
     </div>
   )
-}
+})
 
-export default function AppShell() {
+// Memoized app shell for performance
+const AppShell = memo(function AppShell() {
   const { currentPage, isLoading } = useSettings()
   const isMobile = useIsMobile()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -82,9 +85,11 @@ export default function AppShell() {
               {isLoading ? (
                 <LoadingSkeleton />
               ) : (
-                <div className="wsms-animate-slide-up">
-                  <CurrentPage />
-                </div>
+                <Suspense fallback={<LoadingSkeleton />}>
+                  <div className="wsms-animate-slide-up">
+                    <CurrentPage />
+                  </div>
+                </Suspense>
               )}
             </div>
           </main>
@@ -94,4 +99,6 @@ export default function AppShell() {
       </div>
     </div>
   )
-}
+})
+
+export default AppShell

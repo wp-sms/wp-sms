@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useReducer, useCallback, useEffect } from 'react'
+import React, { createContext, useContext, useReducer, useCallback, useEffect, useMemo } from 'react'
+import isEqual from 'fast-deep-equal'
 import { getWpSettings, deepMerge } from '../lib/utils'
 import { settingsApi } from '../api/settingsApi'
 
@@ -140,11 +141,6 @@ function settingsReducer(state, action) {
     default:
       return state
   }
-}
-
-// Simple equality check
-function isEqual(obj1, obj2) {
-  return JSON.stringify(obj1) === JSON.stringify(obj2)
 }
 
 // Context
@@ -294,4 +290,65 @@ export function useProSetting(key, defaultValue = '') {
   const value = getProSetting(key, defaultValue)
   const setValue = useCallback((newValue) => updateProSetting(key, newValue), [key, updateProSetting])
   return [value, setValue]
+}
+
+/**
+ * Convenience hook for multiple related settings
+ * Reduces boilerplate when dealing with groups of settings
+ *
+ * @param {string[]} keys - Array of setting keys
+ * @param {object} defaults - Default values for each key
+ * @returns {[object, function]} Values object and batch setter
+ *
+ * @example
+ * const [gateway, setGateway] = useSettingsGroup(
+ *   ['gateway_name', 'gateway_username', 'gateway_password'],
+ *   { gateway_name: '', gateway_username: '', gateway_password: '' }
+ * )
+ * // gateway = { gateway_name: 'twilio', gateway_username: 'user', ... }
+ * // setGateway({ gateway_name: 'nexmo' }) updates just that key
+ */
+export function useSettingsGroup(keys, defaults = {}) {
+  const { getSetting, updateSettingsBatch } = useSettings()
+
+  // Build values object from keys
+  const values = useMemo(() => {
+    const result = {}
+    keys.forEach(key => {
+      result[key] = getSetting(key, defaults[key] ?? '')
+    })
+    return result
+  }, [keys, getSetting, defaults])
+
+  // Batch update function
+  const setValues = useCallback((updates) => {
+    updateSettingsBatch(updates, {})
+  }, [updateSettingsBatch])
+
+  return [values, setValues]
+}
+
+/**
+ * Convenience hook for multiple related pro settings
+ *
+ * @param {string[]} keys - Array of pro setting keys
+ * @param {object} defaults - Default values for each key
+ * @returns {[object, function]} Values object and batch setter
+ */
+export function useProSettingsGroup(keys, defaults = {}) {
+  const { getProSetting, updateSettingsBatch } = useSettings()
+
+  const values = useMemo(() => {
+    const result = {}
+    keys.forEach(key => {
+      result[key] = getProSetting(key, defaults[key] ?? '')
+    })
+    return result
+  }, [keys, getProSetting, defaults])
+
+  const setValues = useCallback((updates) => {
+    updateSettingsBatch({}, updates)
+  }, [updateSettingsBatch])
+
+  return [values, setValues]
 }

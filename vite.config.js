@@ -44,9 +44,17 @@ export default defineConfig(({ command }) => ({
   define: {
     'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
   },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react/jsx-runtime'],
+  },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'assets/src/settings')
-    }
+      '@': path.resolve(__dirname, 'assets/src/settings'),
+      // Ensure single React instance (prevents "useState is null" errors)
+      'react': path.resolve(__dirname, 'node_modules/react'),
+      'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),
+    },
+    // Dedupe React to prevent multiple instances from dependencies
+    dedupe: ['react', 'react-dom']
   }
 }))

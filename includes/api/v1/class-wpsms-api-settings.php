@@ -17,6 +17,41 @@ if (!defined('ABSPATH')) {
 class SettingsApi extends RestApi
 {
     /**
+     * Placeholder value for masked sensitive fields
+     */
+    const MASKED_VALUE = '••••••••';
+
+    /**
+     * Sensitive fields that should be masked in responses
+     *
+     * @var array
+     */
+    private $sensitiveFields = [
+        'gateway_password',
+        'gateway_key',
+    ];
+
+    /**
+     * Validation rules for settings fields
+     *
+     * @var array
+     */
+    private $validationRules = [
+        'gateway_name' => [
+            'type' => 'gateway',
+        ],
+        'admin_mobile_number' => [
+            'type' => 'phone',
+        ],
+        'webhook_outgoing_sms' => [
+            'type' => 'url',
+        ],
+        'notif_publish_new_post_receiver' => [
+            'type' => 'phone',
+        ],
+    ];
+
+    /**
      * Constructor
      */
     public function __construct()
@@ -92,8 +127,8 @@ class SettingsApi extends RestApi
         $proSettings = Option::getOptions(true);
 
         return self::response(__('Settings retrieved successfully', 'wp-sms'), 200, [
-            'settings'    => $settings,
-            'proSettings' => $proSettings,
+            'settings'    => $this->maskSensitiveSettings($settings),
+            'proSettings' => $this->maskSensitiveSettings($proSettings),
         ]);
     }
 
@@ -131,10 +166,43 @@ class SettingsApi extends RestApi
             return self::response(__('No settings data provided', 'wp-sms'), 400);
         }
 
+        $allErrors = [];
+
+        // Validate and update main settings
+        if (isset($data['settings']) && is_array($data['settings'])) {
+            $sanitizedSettings = $this->sanitizeSettings($data['settings']);
+
+            // Validate settings before saving
+            $validation = $this->validateSettings($sanitizedSettings);
+            if (!$validation['valid']) {
+                $allErrors = array_merge($allErrors, $validation['errors']);
+            }
+        }
+
+        // Validate pro settings
+        if (isset($data['proSettings']) && is_array($data['proSettings'])) {
+            $sanitizedProSettings = $this->sanitizeSettings($data['proSettings']);
+
+            // Validate pro settings before saving
+            $proValidation = $this->validateSettings($sanitizedProSettings);
+            if (!$proValidation['valid']) {
+                $allErrors = array_merge($allErrors, $proValidation['errors']);
+            }
+        }
+
+        // Return validation errors if any
+        if (!empty($allErrors)) {
+            return self::response(__('Validation failed', 'wp-sms'), 400, [
+                'errors' => $allErrors,
+            ]);
+        }
+
         // Update main settings
         if (isset($data['settings']) && is_array($data['settings'])) {
             $currentSettings = Option::getOptions();
             $sanitizedSettings = $this->sanitizeSettings($data['settings']);
+            // Preserve existing values for masked sensitive fields
+            $sanitizedSettings = $this->preserveSensitiveFields($sanitizedSettings, $currentSettings);
             $mergedSettings = array_merge($currentSettings, $sanitizedSettings);
             update_option('wpsms_settings', $mergedSettings);
         }
@@ -143,6 +211,8 @@ class SettingsApi extends RestApi
         if (isset($data['proSettings']) && is_array($data['proSettings'])) {
             $currentProSettings = Option::getOptions(true);
             $sanitizedProSettings = $this->sanitizeSettings($data['proSettings']);
+            // Preserve existing values for masked sensitive fields
+            $sanitizedProSettings = $this->preserveSensitiveFields($sanitizedProSettings, $currentProSettings);
             $mergedProSettings = array_merge($currentProSettings, $sanitizedProSettings);
             update_option('wps_pp_settings', $mergedProSettings);
         }
@@ -151,10 +221,76 @@ class SettingsApi extends RestApi
         wp_cache_delete('wpsms_settings', 'options');
         wp_cache_delete('wps_pp_settings', 'options');
 
+        // Fire action for audit logging
+        $this->triggerSettingsUpdatedAction($data, $currentSettings ?? [], $currentProSettings ?? []);
+
         return self::response(__('Settings saved successfully', 'wp-sms'), 200, [
-            'settings'    => Option::getOptions(),
-            'proSettings' => Option::getOptions(true),
+            'settings'    => $this->maskSensitiveSettings(Option::getOptions()),
+            'proSettings' => $this->maskSensitiveSettings(Option::getOptions(true)),
         ]);
+    }
+
+    /**
+     * Trigger action hook for settings audit logging
+     *
+     * Allows plugins to track settings changes for audit purposes
+     *
+     * @param array $newData New settings data from request
+     * @param array $oldSettings Previous main settings
+     * @param array $oldProSettings Previous pro settings
+     */
+    private function triggerSettingsUpdatedAction($newData, $oldSettings, $oldProSettings)
+    {
+        $changedKeys = [];
+        $oldValues = [];
+        $newValues = [];
+
+        // Check main settings changes
+        if (isset($newData['settings']) && is_array($newData['settings'])) {
+            foreach ($newData['settings'] as $key => $value) {
+                $oldValue = $oldSettings[$key] ?? null;
+                // Skip masked values (they weren't actually changed)
+                if ($value === self::MASKED_VALUE) {
+                    continue;
+                }
+                if ($oldValue !== $value) {
+                    $changedKeys[] = $key;
+                    $oldValues[$key] = $oldValue;
+                    $newValues[$key] = $value;
+                }
+            }
+        }
+
+        // Check pro settings changes
+        if (isset($newData['proSettings']) && is_array($newData['proSettings'])) {
+            foreach ($newData['proSettings'] as $key => $value) {
+                $oldValue = $oldProSettings[$key] ?? null;
+                if ($value === self::MASKED_VALUE) {
+                    continue;
+                }
+                if ($oldValue !== $value) {
+                    $changedKeys[] = 'pro_' . $key;
+                    $oldValues['pro_' . $key] = $oldValue;
+                    $newValues['pro_' . $key] = $value;
+                }
+            }
+        }
+
+        // Only fire if there were actual changes
+        if (!empty($changedKeys)) {
+            /**
+             * Action: wpsms_settings_updated
+             *
+             * Fires when settings are updated via the REST API.
+             * Useful for audit logging and tracking configuration changes.
+             *
+             * @param array $changedKeys List of setting keys that changed
+             * @param array $oldValues Previous values (keyed by setting name)
+             * @param array $newValues New values (keyed by setting name)
+             * @param int $userId ID of the user who made the changes
+             */
+            do_action('wpsms_settings_updated', $changedKeys, $oldValues, $newValues, get_current_user_id());
+        }
     }
 
     /**
@@ -248,6 +384,183 @@ class SettingsApi extends RestApi
         }
 
         return $sanitized;
+    }
+
+    /**
+     * Mask sensitive fields in settings array
+     *
+     * Replaces actual values with masked placeholder to prevent
+     * sensitive data from being exposed via the API
+     *
+     * @param array $settings
+     * @return array
+     */
+    private function maskSensitiveSettings($settings)
+    {
+        if (!is_array($settings)) {
+            return $settings;
+        }
+
+        foreach ($this->sensitiveFields as $field) {
+            if (isset($settings[$field]) && !empty($settings[$field])) {
+                $settings[$field] = self::MASKED_VALUE;
+            }
+        }
+
+        return $settings;
+    }
+
+    /**
+     * Preserve existing values for sensitive fields when masked value is received
+     *
+     * When the frontend sends the masked placeholder value, we keep
+     * the existing value instead of overwriting with the placeholder
+     *
+     * @param array $newSettings New settings from request
+     * @param array $currentSettings Current stored settings
+     * @return array Settings with sensitive fields preserved if masked
+     */
+    private function preserveSensitiveFields($newSettings, $currentSettings)
+    {
+        foreach ($this->sensitiveFields as $field) {
+            if (isset($newSettings[$field])) {
+                // If the value is the masked placeholder, keep the existing value
+                if ($newSettings[$field] === self::MASKED_VALUE) {
+                    if (isset($currentSettings[$field])) {
+                        $newSettings[$field] = $currentSettings[$field];
+                    } else {
+                        unset($newSettings[$field]);
+                    }
+                }
+                // If the value is empty, allow clearing the field
+                // Otherwise, the new value will be saved
+            }
+        }
+
+        return $newSettings;
+    }
+
+    /**
+     * Validate settings against defined rules
+     *
+     * @param array $settings Settings to validate
+     * @return array Array with 'valid' boolean and 'errors' array
+     */
+    private function validateSettings($settings)
+    {
+        $errors = [];
+
+        foreach ($settings as $key => $value) {
+            if (!isset($this->validationRules[$key])) {
+                continue;
+            }
+
+            $rule = $this->validationRules[$key];
+            $error = $this->validateField($key, $value, $rule);
+
+            if ($error) {
+                $errors[$key] = $error;
+            }
+        }
+
+        return [
+            'valid'  => empty($errors),
+            'errors' => $errors,
+        ];
+    }
+
+    /**
+     * Validate a single field based on its rule
+     *
+     * @param string $key Field name
+     * @param mixed $value Field value
+     * @param array $rule Validation rule
+     * @return string|null Error message or null if valid
+     */
+    private function validateField($key, $value, $rule)
+    {
+        // Skip validation for empty values (they're optional)
+        if (empty($value)) {
+            return null;
+        }
+
+        switch ($rule['type']) {
+            case 'gateway':
+                return $this->validateGateway($value);
+
+            case 'phone':
+                return $this->validatePhone($value);
+
+            case 'url':
+                return $this->validateUrl($value);
+
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Validate gateway name against available gateways
+     *
+     * @param string $value Gateway name
+     * @return string|null Error message or null if valid
+     */
+    private function validateGateway($value)
+    {
+        $availableGateways = \WP_SMS\Gateway::gateway();
+
+        // Flatten gateway groups to get all gateway keys
+        $allGateways = [];
+        foreach ($availableGateways as $group) {
+            if (is_array($group)) {
+                $allGateways = array_merge($allGateways, array_keys($group));
+            }
+        }
+
+        if (!in_array($value, $allGateways, true)) {
+            return __('Invalid gateway selected', 'wp-sms');
+        }
+
+        return null;
+    }
+
+    /**
+     * Validate phone number format
+     *
+     * @param string $value Phone number
+     * @return string|null Error message or null if valid
+     */
+    private function validatePhone($value)
+    {
+        // Allow + at start, then digits, spaces, dashes, parentheses
+        $pattern = '/^\+?[\d\s\-\(\)]{5,20}$/';
+
+        if (!preg_match($pattern, $value)) {
+            return __('Invalid phone number format', 'wp-sms');
+        }
+
+        return null;
+    }
+
+    /**
+     * Validate URL format
+     *
+     * @param string $value URL
+     * @return string|null Error message or null if valid
+     */
+    private function validateUrl($value)
+    {
+        if (!filter_var($value, FILTER_VALIDATE_URL)) {
+            return __('Invalid URL format', 'wp-sms');
+        }
+
+        // Only allow http and https protocols
+        $parsed = wp_parse_url($value);
+        if (!isset($parsed['scheme']) || !in_array($parsed['scheme'], ['http', 'https'], true)) {
+            return __('URL must use http or https protocol', 'wp-sms');
+        }
+
+        return null;
     }
 }
 

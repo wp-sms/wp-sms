@@ -36,6 +36,7 @@ nbproject
 
 # Build Folder
 /build
+/assets/dist/settings/
 
 #vscode
 .vscode

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { Save, X, Loader2, Check } from 'lucide-react'
 import { Button } from '../ui/button'
 import { useSettings } from '@/context/SettingsContext'
@@ -10,7 +10,7 @@ export default function FloatingSaveBar() {
   const { toast } = useToast()
   const [saveSuccess, setSaveSuccess] = React.useState(false)
 
-  const handleSave = async () => {
+  const handleSave = useCallback(async () => {
     const result = await saveSettings()
 
     if (result.success) {
@@ -27,7 +27,22 @@ export default function FloatingSaveBar() {
         variant: 'destructive',
       })
     }
-  }
+  }, [saveSettings, toast])
+
+  // Keyboard shortcut: Cmd+S (Mac) or Ctrl+S (Windows/Linux) to save
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 's') {
+        event.preventDefault()
+        if (hasChanges && !isSaving) {
+          handleSave()
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [hasChanges, isSaving, handleSave])
 
   const handleDiscard = () => {
     resetChanges()
