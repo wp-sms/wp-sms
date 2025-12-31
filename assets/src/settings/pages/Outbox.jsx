@@ -59,6 +59,7 @@ export default function Outbox() {
 
   // UI state
   const [isLoading, setIsLoading] = useState(true)
+  const [initialLoadDone, setInitialLoadDone] = useState(false)
   const [selectedIds, setSelectedIds] = useState([])
   const [viewMessage, setViewMessage] = useState(null)
   const [notification, setNotification] = useState(null)
@@ -87,6 +88,7 @@ export default function Outbox() {
       setNotification({ type: 'error', message: error.message })
     } finally {
       setIsLoading(false)
+      setInitialLoadDone(true)
     }
   }, [search, statusFilter, dateFrom, dateTo, pagination.per_page])
 
@@ -212,10 +214,11 @@ export default function Outbox() {
   // Table columns
   const columns = [
     {
-      key: 'date',
-      label: 'Date',
+      id: 'date',
+      accessorKey: 'date',
+      header: 'Date',
       sortable: true,
-      render: (row) => (
+      cell: ({ row }) => (
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <Clock className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
           <span className="wsms-text-[12px] wsms-text-muted-foreground">
@@ -225,9 +228,10 @@ export default function Outbox() {
       ),
     },
     {
-      key: 'recipient',
-      label: 'Recipient',
-      render: (row) => (
+      id: 'recipient',
+      accessorKey: 'recipient',
+      header: 'Recipient',
+      cell: ({ row }) => (
         <div className="wsms-space-y-0.5">
           <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
             {row.recipient_count > 1 ? `${row.recipient_count} recipients` : row.recipient}
@@ -241,18 +245,20 @@ export default function Outbox() {
       ),
     },
     {
-      key: 'message',
-      label: 'Message',
-      render: (row) => (
+      id: 'message',
+      accessorKey: 'message',
+      header: 'Message',
+      cell: ({ row }) => (
         <p className="wsms-text-[12px] wsms-text-foreground wsms-line-clamp-2 wsms-max-w-md">
           {row.message}
         </p>
       ),
     },
     {
-      key: 'media',
-      label: 'Media',
-      render: (row) => {
+      id: 'media',
+      accessorKey: 'media',
+      header: 'Media',
+      cell: ({ row }) => {
         if (!row.media) {
           return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
         }
@@ -280,9 +286,10 @@ export default function Outbox() {
       },
     },
     {
-      key: 'status',
-      label: 'Status',
-      render: (row) => (
+      id: 'status',
+      accessorKey: 'status',
+      header: 'Status',
+      cell: ({ row }) => (
         <StatusBadge variant={row.status === 'success' ? 'success' : 'failed'}>
           {row.status === 'success' ? 'Sent' : 'Failed'}
         </StatusBadge>
@@ -334,8 +341,19 @@ export default function Outbox() {
     },
   ]
 
+  // Show skeleton during initial load to prevent flash
+  if (!initialLoadDone) {
+    return (
+      <div className="wsms-space-y-6">
+        <div className="wsms-h-24 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
+        <div className="wsms-h-16 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
+        <div className="wsms-h-64 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
+      </div>
+    )
+  }
+
   // Empty state
-  const hasNoMessages = !isLoading && messages.length === 0 && !search && statusFilter === 'all'
+  const hasNoMessages = messages.length === 0 && !search && statusFilter === 'all'
 
   if (hasNoMessages) {
     return (
@@ -531,6 +549,7 @@ export default function Outbox() {
             loading={isLoading}
             pagination={{
               total: pagination.total,
+              totalPages: pagination.total_pages,
               page: pagination.current_page,
               perPage: pagination.per_page,
               onPageChange: handlePageChange,

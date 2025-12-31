@@ -67,6 +67,7 @@ export default function Subscribers() {
 
   // UI state
   const [isLoading, setIsLoading] = useState(true)
+  const [initialLoadDone, setInitialLoadDone] = useState(false)
   const [selectedIds, setSelectedIds] = useState([])
   const [editSubscriber, setEditSubscriber] = useState(null)
   const [showImportDialog, setShowImportDialog] = useState(false)
@@ -119,6 +120,7 @@ export default function Subscribers() {
       setNotification({ type: 'error', message: error.message })
     } finally {
       setIsLoading(false)
+      setInitialLoadDone(true)
     }
   }, [search, groupFilter, statusFilter, countryFilter, pagination.per_page])
 
@@ -310,38 +312,42 @@ export default function Subscribers() {
   // Table columns
   const columns = [
     {
-      key: 'name',
-      label: 'Name',
+      id: 'name',
+      accessorKey: 'name',
+      header: 'Name',
       sortable: true,
-      render: (row) => (
+      cell: ({ row }) => (
         <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
           {row.name || '—'}
         </span>
       ),
     },
     {
-      key: 'mobile',
-      label: 'Mobile',
+      id: 'mobile',
+      accessorKey: 'mobile',
+      header: 'Mobile',
       sortable: true,
-      render: (row) => (
+      cell: ({ row }) => (
         <span className="wsms-text-[13px] wsms-font-mono wsms-text-foreground">
           {row.mobile}
         </span>
       ),
     },
     {
-      key: 'group',
-      label: 'Group',
-      render: (row) => (
+      id: 'group',
+      accessorKey: 'group_name',
+      header: 'Group',
+      cell: ({ row }) => (
         <span className="wsms-text-[12px] wsms-text-muted-foreground">
           {row.group_name || '—'}
         </span>
       ),
     },
     {
-      key: 'custom_fields',
-      label: 'Custom Fields',
-      render: (row) => {
+      id: 'custom_fields',
+      accessorKey: 'custom_fields',
+      header: 'Custom Fields',
+      cell: ({ row }) => {
         if (!row.custom_fields || Object.keys(row.custom_fields).length === 0) {
           return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
         }
@@ -367,9 +373,10 @@ export default function Subscribers() {
       },
     },
     {
-      key: 'status',
-      label: 'Status',
-      render: (row) => (
+      id: 'status',
+      accessorKey: 'status',
+      header: 'Status',
+      cell: ({ row }) => (
         <StatusBadge variant={row.status === '1' ? 'active' : 'inactive'}>
           {row.status === '1' ? 'Active' : 'Inactive'}
         </StatusBadge>
@@ -378,9 +385,10 @@ export default function Subscribers() {
     ...(showActivateCode
       ? [
           {
-            key: 'activate_key',
-            label: 'Activate Code',
-            render: (row) => (
+            id: 'activate_key',
+            accessorKey: 'activate_key',
+            header: 'Activate Code',
+            cell: ({ row }) => (
               <span className="wsms-text-[12px] wsms-font-mono wsms-text-muted-foreground">
                 {row.activate_key || '—'}
               </span>
@@ -389,10 +397,11 @@ export default function Subscribers() {
         ]
       : []),
     {
-      key: 'date',
-      label: 'Subscribed',
+      id: 'date',
+      accessorKey: 'date',
+      header: 'Subscribed',
       sortable: true,
-      render: (row) => (
+      cell: ({ row }) => (
         <span className="wsms-text-[12px] wsms-text-muted-foreground">
           {formatDate(row.date)}
         </span>
@@ -445,8 +454,19 @@ export default function Subscribers() {
     },
   ]
 
+  // Show skeleton during initial load to prevent flash
+  if (!initialLoadDone) {
+    return (
+      <div className="wsms-space-y-6">
+        <div className="wsms-h-24 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
+        <div className="wsms-h-16 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
+        <div className="wsms-h-64 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
+      </div>
+    )
+  }
+
   // Empty state
-  const hasNoSubscribers = !isLoading && subscribers.length === 0 && !search && groupFilter === 'all' && statusFilter === 'all'
+  const hasNoSubscribers = subscribers.length === 0 && !search && groupFilter === 'all' && statusFilter === 'all'
 
   if (hasNoSubscribers) {
     return (
@@ -650,11 +670,15 @@ export default function Subscribers() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Countries</SelectItem>
-                    {countries.map((country) => (
-                      <SelectItem key={country.code} value={country.code}>
-                        {country.name}
-                      </SelectItem>
-                    ))}
+                    {countries
+                      .filter((country, index, self) =>
+                        index === self.findIndex((c) => c.code === country.code)
+                      )
+                      .map((country) => (
+                        <SelectItem key={country.code} value={country.code}>
+                          {country.name}
+                        </SelectItem>
+                      ))}
                   </SelectContent>
                 </Select>
               )}
@@ -672,6 +696,7 @@ export default function Subscribers() {
             loading={isLoading}
             pagination={{
               total: pagination.total,
+              totalPages: pagination.total_pages,
               page: pagination.current_page,
               perPage: pagination.per_page,
               onPageChange: handlePageChange,

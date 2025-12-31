@@ -45,6 +45,7 @@ export default function Groups() {
 
   // UI state
   const [isLoading, setIsLoading] = useState(true)
+  const [initialLoadDone, setInitialLoadDone] = useState(false)
   const [selectedIds, setSelectedIds] = useState([])
   const [editGroup, setEditGroup] = useState(null)
   const [deleteGroup, setDeleteGroup] = useState(null)
@@ -75,6 +76,7 @@ export default function Groups() {
       setNotification({ type: 'error', message: error.message })
     } finally {
       setIsLoading(false)
+      setInitialLoadDone(true)
     }
   }, [pagination.per_page])
 
@@ -246,8 +248,19 @@ export default function Groups() {
   // Calculate total subscribers
   const totalSubscribers = groups.reduce((sum, g) => sum + (g.subscriber_count || 0), 0)
 
+  // Show skeleton during initial load to prevent flash
+  if (!initialLoadDone) {
+    return (
+      <div className="wsms-space-y-6">
+        <div className="wsms-h-20 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
+        <div className="wsms-h-16 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
+        <div className="wsms-h-48 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
+      </div>
+    )
+  }
+
   // Empty state
-  if (!isLoading && groups.length === 0) {
+  if (groups.length === 0) {
     return (
       <div className="wsms-space-y-6 wsms-stagger-children">
         {/* Notification */}
@@ -424,6 +437,7 @@ export default function Groups() {
               loading={isLoading}
               pagination={{
                 total: pagination.total,
+                totalPages: pagination.total_pages,
                 page: pagination.current_page,
                 perPage: pagination.per_page,
                 onPageChange: handlePageChange,
