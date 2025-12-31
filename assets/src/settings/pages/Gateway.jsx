@@ -9,7 +9,7 @@ import { MultiSelect } from '@/components/ui/multi-select'
 import { Tip, CollapsibleSection, HelpLink, SectionDivider } from '@/components/ui/ux-helpers'
 import { useSettings, useSetting } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
-import { getWpSettings, cn } from '@/lib/utils'
+import { getWpSettings, cn, getGatewayDisplayName } from '@/lib/utils'
 
 export default function Gateway() {
   const { testGatewayConnection, getSetting, updateSetting } = useSettings()
@@ -152,7 +152,7 @@ export default function Gateway() {
 
           {gatewayName && (
             <p className="wsms-text-[12px] wsms-text-muted-foreground">
-              Selected: <span className="wsms-font-medium wsms-text-foreground">{gatewayName}</span>
+              Selected: <span className="wsms-font-medium wsms-text-foreground">{getGatewayDisplayName(gatewayName, gateways)}</span>
             </p>
           )}
         </CardContent>

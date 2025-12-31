@@ -10,7 +10,7 @@ import { SmsPreviewDialog } from '@/components/shared/SmsPreviewDialog'
 import { Tip } from '@/components/ui/ux-helpers'
 import { smsApi } from '@/api/smsApi'
 import { useSettings } from '@/context/SettingsContext'
-import { cn } from '@/lib/utils'
+import { cn, getGatewayDisplayName } from '@/lib/utils'
 
 export default function SendSms() {
   const { setCurrentPage } = useSettings()
@@ -22,7 +22,9 @@ export default function SendSms() {
   const gatewayValidation = window.wpSmsSettings?.gateway?.validateNumber || ''
   const gatewaySupportsBulk = window.wpSmsSettings?.gateway?.bulk_send !== false
   const gatewayConfigured = !!window.wpSmsSettings?.settings?.gateway_name
-  const gatewayName = window.wpSmsSettings?.settings?.gateway_name || ''
+  const gatewayKey = window.wpSmsSettings?.settings?.gateway_name || ''
+  const allGateways = window.wpSmsSettings?.gateways || {}
+  const gatewayName = getGatewayDisplayName(gatewayKey, allGateways)
 
   // Form state
   const [senderId, setSenderId] = useState(defaultSender)

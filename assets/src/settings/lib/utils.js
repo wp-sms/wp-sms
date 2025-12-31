@@ -133,3 +133,22 @@ function isObject(item) {
   return item && typeof item === 'object' && !Array.isArray(item)
 }
 
+/**
+ * Get the display name for a gateway key
+ * @param {string} gatewayKey - The gateway key (e.g., 'sms', 'kavenegar')
+ * @param {object} gateways - The gateways object from wpSmsSettings (nested by region)
+ * @returns {string} Display name (e.g., 'sms.ir') or the key if not found
+ */
+export function getGatewayDisplayName(gatewayKey, gateways) {
+  if (!gatewayKey || !gateways) return gatewayKey || ''
+
+  // Search through all regions to find the gateway
+  for (const region of Object.values(gateways)) {
+    if (typeof region === 'object' && region[gatewayKey]) {
+      return region[gatewayKey]
+    }
+  }
+
+  return gatewayKey // Fallback to key if not found
+}
+

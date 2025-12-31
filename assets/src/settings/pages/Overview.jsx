@@ -20,7 +20,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Button } from '@/components/ui/button'
 import { SetupProgress, Tip, FeatureHighlight } from '@/components/ui/ux-helpers'
 import { useSettings, useSetting } from '@/context/SettingsContext'
-import { getWpSettings, cn } from '@/lib/utils'
+import { getWpSettings, cn, getGatewayDisplayName } from '@/lib/utils'
 
 function StatusRow({ icon: Icon, title, value, status, onClick }) {
   return (
@@ -69,7 +69,8 @@ export default function Overview() {
   const { setCurrentPage, testGatewayConnection } = useSettings()
   const { gateways = {} } = getWpSettings()
 
-  const [gatewayName] = useSetting('gateway_name', '')
+  const [gatewayKey] = useSetting('gateway_name', '')
+  const gatewayName = getGatewayDisplayName(gatewayKey, gateways)
   const [adminMobile] = useSetting('admin_mobile_number', '')
   const [messageButton] = useSetting('chatbox_message_button', '')
 
@@ -98,8 +99,8 @@ export default function Overview() {
     {
       title: 'SMS Gateway',
       icon: Radio,
-      value: gatewayName || 'Not configured',
-      status: gatewayName ? 'configured' : 'pending',
+      value: gatewayKey ? gatewayName : 'Not configured',
+      status: gatewayKey ? 'configured' : 'pending',
       page: 'gateway',
     },
     {
@@ -131,8 +132,8 @@ export default function Overview() {
   const setupSteps = [
     {
       title: 'Configure SMS Gateway',
-      description: gatewayName ? `Connected to ${gatewayName}` : 'Select your SMS provider',
-      completed: !!gatewayName,
+      description: gatewayKey ? `Connected to ${gatewayName}` : 'Select your SMS provider',
+      completed: !!gatewayKey,
       onClick: () => setCurrentPage('gateway'),
     },
     {
@@ -149,7 +150,7 @@ export default function Overview() {
     },
   ]
 
-  const isNewUser = !gatewayName
+  const isNewUser = !gatewayKey
   const setupComplete = setupSteps.every((s) => s.completed)
 
   return (
@@ -191,16 +192,16 @@ export default function Overview() {
             <div className="wsms-flex wsms-items-center wsms-gap-3">
               <div className={cn(
                 'wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded',
-                gatewayName ? 'wsms-bg-primary wsms-text-primary-foreground' : 'wsms-bg-muted'
+                gatewayKey ? 'wsms-bg-primary wsms-text-primary-foreground' : 'wsms-bg-muted'
               )}>
                 <Radio className="wsms-h-5 wsms-w-5" strokeWidth={1.5} />
               </div>
               <div>
                 <p className="wsms-text-[13px] wsms-font-semibold">
-                  {gatewayName || 'No Gateway Selected'}
+                  {gatewayKey ? gatewayName : 'No Gateway Selected'}
                 </p>
                 <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-mt-0.5">
-                  {gatewayName ? (
+                  {gatewayKey ? (
                     gatewayStatus.status === 'connected' ? (
                       <>
                         <span className="wsms-h-2 wsms-w-2 wsms-rounded-full wsms-bg-success" />
@@ -228,7 +229,7 @@ export default function Overview() {
               </div>
             </div>
 
-            {gatewayName && (
+            {gatewayKey && (
               <Button
                 variant="outline"
                 size="sm"
