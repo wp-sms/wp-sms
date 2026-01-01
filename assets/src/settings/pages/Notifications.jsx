@@ -5,8 +5,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Textarea } from '@/components/ui/textarea'
 import { MultiSelect } from '@/components/ui/multi-select'
+import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
 import { useSetting } from '@/context/SettingsContext'
 import { getWpSettings } from '@/lib/utils'
 
@@ -234,16 +234,14 @@ export default function Notifications() {
 
         <div className="wsms-space-y-2">
           <Label htmlFor="postTemplate">Message Template</Label>
-          <Textarea
+          <TemplateTextarea
             id="postTemplate"
             value={notifNewPostTemplate}
-            onChange={(e) => setNotifNewPostTemplate(e.target.value)}
+            onChange={setNotifNewPostTemplate}
             placeholder="New post: %post_title% - Read more: %post_url%"
             rows={3}
+            variables={['%post_title%', '%post_url%', '%post_date%', '%post_content%', '%post_author%']}
           />
-          <p className="wsms-text-xs wsms-text-muted-foreground">
-            Available variables: %post_title%, %post_url%, %post_date%, %post_content%, %post_author%
-          </p>
         </div>
 
         <div className="wsms-space-y-2">
@@ -285,16 +283,14 @@ export default function Notifications() {
 
         <div className="wsms-space-y-2">
           <Label htmlFor="authorTemplate">Message Template</Label>
-          <Textarea
+          <TemplateTextarea
             id="authorTemplate"
             value={notifPostAuthorTemplate}
-            onChange={(e) => setNotifPostAuthorTemplate(e.target.value)}
+            onChange={setNotifPostAuthorTemplate}
             placeholder="Your post '%post_title%' has been published!"
             rows={3}
+            variables={['%post_title%', '%post_url%', '%post_date%', '%post_content%']}
           />
-          <p className="wsms-text-xs wsms-text-muted-foreground">
-            Variables: %post_title%, %post_url%, %post_date%, %post_content%
-          </p>
         </div>
       </NotificationSection>
 
@@ -317,29 +313,31 @@ export default function Notifications() {
       >
         <div className="wsms-space-y-2">
           <Label htmlFor="userAdminTemplate">Admin Notification</Label>
-          <Textarea
+          <TemplateTextarea
             id="userAdminTemplate"
             value={notifNewUserAdminTemplate}
-            onChange={(e) => setNotifNewUserAdminTemplate(e.target.value)}
+            onChange={setNotifNewUserAdminTemplate}
             placeholder="New user registered: %user_login% (%user_email%)"
             rows={3}
+            variables={['%user_login%', '%user_email%', '%user_firstname%', '%user_lastname%', '%date_register%']}
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Sent to admin. Variables: %user_login%, %user_email%, %user_firstname%, %user_lastname%, %date_register%
+            Sent to admin.
           </p>
         </div>
 
         <div className="wsms-space-y-2">
           <Label htmlFor="userTemplate">Welcome Message</Label>
-          <Textarea
+          <TemplateTextarea
             id="userTemplate"
             value={notifNewUserTemplate}
-            onChange={(e) => setNotifNewUserTemplate(e.target.value)}
+            onChange={setNotifNewUserTemplate}
             placeholder="Welcome %user_firstname%! Your account has been created."
             rows={3}
+            variables={['%user_login%', '%user_email%', '%user_firstname%', '%user_lastname%', '%date_register%']}
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Sent to new user. Variables: %user_login%, %user_email%, %user_firstname%, %user_lastname%, %date_register%
+            Sent to new user.
           </p>
         </div>
       </NotificationSection>
@@ -354,16 +352,14 @@ export default function Notifications() {
       >
         <div className="wsms-space-y-2">
           <Label htmlFor="commentTemplate">Message Template</Label>
-          <Textarea
+          <TemplateTextarea
             id="commentTemplate"
             value={notifNewCommentTemplate}
-            onChange={(e) => setNotifNewCommentTemplate(e.target.value)}
+            onChange={setNotifNewCommentTemplate}
             placeholder="New comment on '%comment_post_title%' by %comment_author%"
             rows={3}
+            variables={['%comment_author%', '%comment_author_email%', '%comment_content%', '%comment_post_title%', '%comment_post_url%', '%comment_date%']}
           />
-          <p className="wsms-text-xs wsms-text-muted-foreground">
-            Variables: %comment_author%, %comment_author_email%, %comment_content%, %comment_post_title%, %comment_post_url%, %comment_date%
-          </p>
         </div>
       </NotificationSection>
 
@@ -391,16 +387,14 @@ export default function Notifications() {
 
         <div className="wsms-space-y-2">
           <Label htmlFor="loginTemplate">Message Template</Label>
-          <Textarea
+          <TemplateTextarea
             id="loginTemplate"
             value={notifUserLoginTemplate}
-            onChange={(e) => setNotifUserLoginTemplate(e.target.value)}
+            onChange={setNotifUserLoginTemplate}
             placeholder="User %user_login% logged in at %date_login%"
             rows={3}
+            variables={['%user_login%', '%user_email%', '%user_firstname%', '%user_lastname%', '%date_login%']}
           />
-          <p className="wsms-text-xs wsms-text-muted-foreground">
-            Variables: %user_login%, %user_email%, %user_firstname%, %user_lastname%, %date_login%
-          </p>
         </div>
       </NotificationSection>
     </div>
