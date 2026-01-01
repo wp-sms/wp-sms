@@ -176,7 +176,7 @@ class NewSettingsPage extends Singleton
      */
     private function enqueueDevelopmentAssets()
     {
-        $viteDevServerUrl = 'http://localhost:3000';
+        $viteDevServerUrl = 'http://localhost:5177';
         $localizedData = $this->getLocalizedData();
 
         // Inject localized data and Vite scripts directly in footer

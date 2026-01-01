@@ -79,16 +79,16 @@ export default defineConfig(({ command, mode }) => ({
     },
   },
   server: {
-    port: 3000,
+    port: 5177,
     cors: true,
-    origin: 'http://localhost:3000',
+    origin: 'http://localhost:5177',
     host: '0.0.0.0',
     strictPort: true,
     hmr: {
       host: 'localhost',
-      port: 3000,
+      port: 5177,
       protocol: 'ws',
-      clientPort: 3000
+      clientPort: 5177
     },
     headers: {
       'Access-Control-Allow-Origin': '*',
