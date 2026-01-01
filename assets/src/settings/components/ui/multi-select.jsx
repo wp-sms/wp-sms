@@ -189,7 +189,7 @@ const MultiSelect = React.forwardRef(
         </Button>
 
         {open && (
-          <div className="wsms-absolute wsms-z-50 wsms-mt-1 wsms-w-full wsms-rounded wsms-border wsms-border-border wsms-bg-popover wsms-shadow-md">
+          <div className="wsms-absolute wsms-z-[9999] wsms-mt-1 wsms-w-full wsms-rounded wsms-border wsms-border-border wsms-bg-popover wsms-shadow-md">
             {/* Search input */}
             <div className="wsms-p-2 wsms-border-b wsms-border-border">
               <div className="wsms-relative">

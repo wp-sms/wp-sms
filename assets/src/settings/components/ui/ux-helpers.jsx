@@ -271,10 +271,13 @@ export function CollapsibleSection({
   const [isOpen, setIsOpen] = React.useState(defaultOpen)
 
   return (
-    <div className={cn('wsms-border wsms-border-border wsms-rounded-lg wsms-overflow-hidden', className)}>
+    <div className={cn('wsms-border wsms-border-border wsms-rounded-lg', className)}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="wsms-flex wsms-items-center wsms-justify-between wsms-w-full wsms-px-4 wsms-py-3 wsms-bg-muted/30 hover:wsms-bg-muted/50 wsms-transition-colors wsms-text-left"
+        className={cn(
+          'wsms-flex wsms-items-center wsms-justify-between wsms-w-full wsms-px-4 wsms-py-3 wsms-bg-muted/30 hover:wsms-bg-muted/50 wsms-transition-colors wsms-text-left',
+          !isOpen && 'wsms-rounded-lg'
+        )}
       >
         <div>
           <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">{title}</span>

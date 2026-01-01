@@ -293,7 +293,7 @@ export default function Gateway() {
       )}
 
       {/* Delivery Settings */}
-      <Card>
+      <Card className="wsms-relative wsms-z-10">
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Zap className="wsms-h-4 wsms-w-4 wsms-text-primary" />
