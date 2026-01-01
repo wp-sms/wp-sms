@@ -255,6 +255,8 @@ class UnifiedAdminPage extends Singleton
             'groups'        => $this->getNewsletterGroups(),
             // Add-on settings schema for dynamic rendering
             'addonSettings' => $this->getAddonSettingsSchema(),
+            // Third-party plugin status for integrations
+            'thirdPartyPlugins' => $this->getThirdPartyPluginStatus(),
             // Extended data for unified admin pages
             'stats'         => $this->getStats(),
             'capabilities'  => $this->getUserCapabilities(),
@@ -603,6 +605,94 @@ class UnifiedAdminPage extends Singleton
         }
 
         return $active;
+    }
+
+    /**
+     * Get third-party plugin status for integrations page
+     *
+     * Checks whether integration-related plugins are installed and active.
+     *
+     * @return array Plugin status information
+     */
+    private function getThirdPartyPluginStatus()
+    {
+        $plugins = [
+            'contact-form-7' => [
+                'file'       => 'contact-form-7/wp-contact-form-7.php',
+                'name'       => 'Contact Form 7',
+                'wpOrgSlug'  => 'contact-form-7',
+            ],
+            'woocommerce' => [
+                'file'       => 'woocommerce/woocommerce.php',
+                'name'       => 'WooCommerce',
+                'wpOrgSlug'  => 'woocommerce',
+            ],
+            'gravity-forms' => [
+                'file'       => 'gravityforms/gravityforms.php',
+                'name'       => 'Gravity Forms',
+                'wpOrgSlug'  => null,
+                'externalUrl' => 'https://www.gravityforms.com/',
+            ],
+            'formidable' => [
+                'file'       => 'formidable/formidable.php',
+                'name'       => 'Formidable Forms',
+                'wpOrgSlug'  => 'formidable',
+            ],
+            'forminator' => [
+                'file'       => 'forminator/forminator.php',
+                'name'       => 'Forminator',
+                'wpOrgSlug'  => 'forminator',
+            ],
+            'elementor' => [
+                'file'       => 'elementor/elementor.php',
+                'name'       => 'Elementor',
+                'wpOrgSlug'  => 'elementor',
+            ],
+            'elementor-pro' => [
+                'file'       => 'elementor-pro/elementor-pro.php',
+                'name'       => 'Elementor Pro',
+                'wpOrgSlug'  => null,
+                'externalUrl' => 'https://elementor.com/pro/',
+            ],
+        ];
+
+        $result = [];
+        $installedPlugins = get_plugins();
+
+        foreach ($plugins as $key => $plugin) {
+            $isInstalled = isset($installedPlugins[$plugin['file']]);
+            $isActive = is_plugin_active($plugin['file']);
+
+            // Determine status
+            if ($isActive) {
+                $status = 'active';
+            } elseif ($isInstalled) {
+                $status = 'inactive';
+            } else {
+                $status = 'not_installed';
+            }
+
+            // Build action URL based on status
+            $actionUrl = '';
+            if ($status === 'inactive') {
+                $actionUrl = admin_url('plugins.php');
+            } elseif ($status === 'not_installed') {
+                if (!empty($plugin['wpOrgSlug'])) {
+                    $actionUrl = admin_url('plugin-install.php?s=' . urlencode($plugin['name']) . '&tab=search&type=term');
+                } elseif (!empty($plugin['externalUrl'])) {
+                    $actionUrl = $plugin['externalUrl'];
+                }
+            }
+
+            $result[$key] = [
+                'name'      => $plugin['name'],
+                'status'    => $status,
+                'actionUrl' => $actionUrl,
+                'isExternal' => !empty($plugin['externalUrl']) && $status === 'not_installed',
+            ];
+        }
+
+        return $result;
     }
 
     /**
