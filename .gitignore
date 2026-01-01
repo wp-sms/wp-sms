@@ -45,5 +45,13 @@ nbproject
 /tests/logs
 .phpunit.result.cache
 
+# E2E Testing (Playwright)
+/e2e-report/
+/e2e-results/
+/e2e/.auth/
+.env.e2e
+/playwright-report/
+/test-results/
+
 # Claude Code
 .mcp.json
