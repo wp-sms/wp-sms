@@ -76,7 +76,7 @@ function TableSkeleton({ columns, rows = 5, hasSelection }) {
 // Empty state component with enhanced styling
 function EmptyState({ icon: Icon = Inbox, message = 'No items found' }) {
   return (
-    <div className="wsms-empty-state wsms-animate-scale-in">
+    <div className="wsms-empty-state">
       <div className="wsms-empty-state-icon">
         <Icon strokeWidth={1.5} />
       </div>

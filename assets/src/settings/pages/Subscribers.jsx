@@ -40,36 +40,67 @@ import { subscribersApi } from '@/api/subscribersApi'
 import { groupsApi } from '@/api/groupsApi'
 import { smsApi } from '@/api/smsApi'
 import { cn, formatDate, getWpSettings } from '@/lib/utils'
+import { useDataTable } from '@/hooks/useDataTable'
+import { useFilters } from '@/hooks/useFilters'
 
 export default function Subscribers() {
-  // Data state
-  const [subscribers, setSubscribers] = useState([])
-  const [groups, setGroups] = useState([])
-  const [pagination, setPagination] = useState({
-    total: 0,
-    total_pages: 1,
-    current_page: 1,
-    per_page: 20,
-  })
-  const [stats, setStats] = useState({ total: 0, active: 0, inactive: 0 })
-
   // Get countries from settings
   const { countries = [] } = getWpSettings()
   const showActivateCode = window.wpSmsSettings?.newsletter_form_verify || false
 
-  // Filter state
-  const [search, setSearch] = useState('')
-  const [groupFilter, setGroupFilter] = useState('all')
-  const [statusFilter, setStatusFilter] = useState('all')
-  const [countryFilter, setCountryFilter] = useState('all')
+  // Groups state (fetched separately)
+  const [groups, setGroups] = useState([])
+
+  // Use filters hook for search and filters with debounce
+  const filters = useFilters(
+    { search: '', group_id: 'all', status: 'all', country_code: 'all' },
+    { debounceMs: 500 }
+  )
+
+  // Fetch function for the data table
+  const fetchSubscribers = useCallback(
+    async (params) => {
+      const result = await subscribersApi.getSubscribers({
+        ...params,
+        search: filters.debouncedFilters.search || undefined,
+        group_id: filters.debouncedFilters.group_id !== 'all' ? filters.debouncedFilters.group_id : undefined,
+        status: filters.debouncedFilters.status !== 'all' ? filters.debouncedFilters.status : undefined,
+        country_code: filters.debouncedFilters.country_code !== 'all' ? filters.debouncedFilters.country_code : undefined,
+      })
+      return result
+    },
+    [filters.debouncedFilters]
+  )
+
+  // Use data table hook
+  const table = useDataTable({
+    fetchFn: fetchSubscribers,
+    initialPerPage: 20,
+  })
+
+  // Re-fetch when filters change (only after initial load)
+  useEffect(() => {
+    if (table.initialLoadDone) {
+      table.fetch({ page: 1 })
+    }
+  }, [filters.debouncedFilters]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Fetch groups
+  useEffect(() => {
+    const fetchGroups = async () => {
+      try {
+        const result = await groupsApi.getGroupsList()
+        setGroups(result)
+      } catch (error) {
+        console.error('Failed to fetch groups:', error)
+      }
+    }
+    fetchGroups()
+  }, [])
 
   // UI state
-  const [isLoading, setIsLoading] = useState(true)
-  const [initialLoadDone, setInitialLoadDone] = useState(false)
-  const [selectedIds, setSelectedIds] = useState([])
   const [editSubscriber, setEditSubscriber] = useState(null)
   const [showImportDialog, setShowImportDialog] = useState(false)
-  const [showExportDialog, setShowExportDialog] = useState(false)
   const [notification, setNotification] = useState(null)
   const [isAddingQuick, setIsAddingQuick] = useState(false)
 
@@ -90,58 +121,12 @@ export default function Subscribers() {
   const [showMoveToGroup, setShowMoveToGroup] = useState(false)
   const [moveToGroupId, setMoveToGroupId] = useState('')
 
-  // Fetch groups
-  useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        const result = await groupsApi.getGroupsList()
-        setGroups(result)
-      } catch (error) {
-        console.error('Failed to fetch groups:', error)
-      }
-    }
-    fetchGroups()
-  }, [])
-
-  // Fetch subscribers
-  const fetchSubscribers = useCallback(async (page = 1) => {
-    setIsLoading(true)
-    try {
-      const result = await subscribersApi.getSubscribers({
-        page,
-        per_page: pagination.per_page,
-        search: search || undefined,
-        group_id: groupFilter !== 'all' ? groupFilter : undefined,
-        status: statusFilter !== 'all' ? statusFilter : undefined,
-        country_code: countryFilter !== 'all' ? countryFilter : undefined,
-      })
-      setSubscribers(result.items)
-      setPagination(result.pagination)
-      setStats(result.stats)
-    } catch (error) {
-      setNotification({ type: 'error', message: error.message })
-    } finally {
-      setIsLoading(false)
-      setInitialLoadDone(true)
-    }
-  }, [search, groupFilter, statusFilter, countryFilter, pagination.per_page])
-
-  // Initial fetch
-  useEffect(() => {
-    fetchSubscribers()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Handle search with debounce
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchSubscribers(1)
-    }, 500)
-    return () => clearTimeout(timer)
-  }, [search, groupFilter, statusFilter, countryFilter]) // eslint-disable-line react-hooks/exhaustive-deps
+  // Aliases for easier access
+  const stats = table.stats || { total: 0, active: 0, inactive: 0 }
 
   // Handle page change
   const handlePageChange = (page) => {
-    fetchSubscribers(page)
+    table.fetch({ page })
   }
 
   // Handle quick add
@@ -152,13 +137,13 @@ export default function Subscribers() {
       await subscribersApi.createSubscriber({
         name: name?.trim() || '',
         mobile: mobile.trim(),
-        group_id: groupFilter !== 'all' ? parseInt(groupFilter) : undefined,
+        group_id: filters.filters.group_id !== 'all' ? parseInt(filters.filters.group_id) : undefined,
         status: '1',
       })
       setNotification({ type: 'success', message: 'Subscriber added successfully' })
       setQuickAddName('')
       setQuickAddPhone('')
-      fetchSubscribers(1)
+      table.fetch({ page: 1 })
     } catch (error) {
       setNotification({ type: 'error', message: error.message || 'Failed to add subscriber' })
     } finally {
@@ -191,7 +176,7 @@ export default function Subscribers() {
         setNotification({ type: 'success', message: 'Subscriber updated successfully' })
       }
       setEditSubscriber(null)
-      fetchSubscribers(pagination.current_page)
+      table.refresh()
     } catch (error) {
       setNotification({ type: 'error', message: error.message })
     } finally {
@@ -204,7 +189,7 @@ export default function Subscribers() {
     try {
       await subscribersApi.deleteSubscriber(id)
       setNotification({ type: 'success', message: 'Subscriber deleted successfully' })
-      fetchSubscribers(pagination.current_page)
+      table.refresh()
     } catch (error) {
       setNotification({ type: 'error', message: error.message })
     }
@@ -212,42 +197,39 @@ export default function Subscribers() {
 
   // Handle bulk actions
   const handleBulkAction = async (action, params = {}) => {
-    if (selectedIds.length === 0) return
+    if (table.selectedIds.length === 0) return
 
-    setIsLoading(true)
     try {
-      const result = await subscribersApi.bulkAction(action, selectedIds, params)
+      const result = await subscribersApi.bulkAction(action, table.selectedIds, params)
       setNotification({
         type: 'success',
         message: `${result.affected} subscriber(s) updated successfully`,
       })
-      setSelectedIds([])
-      fetchSubscribers(1)
+      table.clearSelection()
+      table.fetch({ page: 1 })
     } catch (error) {
       setNotification({ type: 'error', message: error.message })
-    } finally {
-      setIsLoading(false)
     }
   }
 
   // Handle import
   const handleImport = async (file) => {
     const result = await subscribersApi.importCsv(file, {
-      group_id: groupFilter !== 'all' ? parseInt(groupFilter) : undefined,
+      group_id: filters.filters.group_id !== 'all' ? parseInt(filters.filters.group_id) : undefined,
       skip_duplicates: true,
     })
     setNotification({
       type: 'success',
       message: `Imported ${result.imported} subscribers, skipped ${result.skipped}`,
     })
-    fetchSubscribers(1)
+    table.fetch({ page: 1 })
   }
 
   // Handle export
   const handleExport = async () => {
     const result = await subscribersApi.exportCsv({
-      group_id: groupFilter !== 'all' ? groupFilter : undefined,
-      status: statusFilter !== 'all' ? statusFilter : undefined,
+      group_id: filters.filters.group_id !== 'all' ? filters.filters.group_id : undefined,
+      status: filters.filters.status !== 'all' ? filters.filters.status : undefined,
     })
 
     const csvContent = result.data.map((row) => row.join(',')).join('\n')
@@ -284,25 +266,22 @@ export default function Subscribers() {
 
   // Handle move to group
   const handleMoveToGroup = async () => {
-    if (selectedIds.length === 0 || !moveToGroupId) return
+    if (table.selectedIds.length === 0 || !moveToGroupId) return
 
-    setIsLoading(true)
     try {
-      const result = await subscribersApi.bulkAction('move_to_group', selectedIds, {
+      const result = await subscribersApi.bulkAction('move_to_group', table.selectedIds, {
         group_id: parseInt(moveToGroupId),
       })
       setNotification({
         type: 'success',
         message: `${result.affected} subscriber(s) moved to group`,
       })
-      setSelectedIds([])
+      table.clearSelection()
       setShowMoveToGroup(false)
       setMoveToGroupId('')
-      fetchSubscribers(1)
+      table.fetch({ page: 1 })
     } catch (error) {
       setNotification({ type: 'error', message: error.message })
-    } finally {
-      setIsLoading(false)
     }
   }
 
@@ -460,7 +439,7 @@ export default function Subscribers() {
   ]
 
   // Show skeleton during initial load to prevent flash
-  if (!initialLoadDone) {
+  if (!table.initialLoadDone) {
     return (
       <div className="wsms-space-y-6">
         <div className="wsms-h-24 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
@@ -470,8 +449,12 @@ export default function Subscribers() {
     )
   }
 
-  // Empty state
-  const hasNoSubscribers = subscribers.length === 0 && !search && groupFilter === 'all' && statusFilter === 'all'
+  // Empty state - only show when truly no subscribers and no filters applied
+  const hasNoSubscribers = table.data.length === 0 &&
+    !filters.filters.search &&
+    filters.filters.group_id === 'all' &&
+    filters.filters.status === 'all' &&
+    filters.filters.country_code === 'all'
 
   if (hasNoSubscribers) {
     return (
@@ -612,15 +595,15 @@ export default function Subscribers() {
               <Search className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" />
               <Input
                 type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                value={filters.filters.search}
+                onChange={(e) => filters.setFilter('search', e.target.value)}
                 placeholder="Search..."
                 className="wsms-pl-8 wsms-h-9"
               />
             </div>
 
             {/* Filters inline */}
-            <Select value={groupFilter} onValueChange={setGroupFilter}>
+            <Select value={filters.filters.group_id} onValueChange={(v) => filters.setFilter('group_id', v)}>
               <SelectTrigger className="wsms-h-9 wsms-w-[120px] wsms-text-[12px]">
                 <SelectValue placeholder="All Groups" />
               </SelectTrigger>
@@ -634,7 +617,7 @@ export default function Subscribers() {
               </SelectContent>
             </Select>
 
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select value={filters.filters.status} onValueChange={(v) => filters.setFilter('status', v)}>
               <SelectTrigger className="wsms-h-9 wsms-w-[100px] wsms-text-[12px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
@@ -646,7 +629,7 @@ export default function Subscribers() {
             </Select>
 
             {countries.length > 0 && (
-              <Select value={countryFilter} onValueChange={setCountryFilter}>
+              <Select value={filters.filters.country_code} onValueChange={(v) => filters.setFilter('country_code', v)}>
                 <SelectTrigger className="wsms-h-9 wsms-w-[130px] wsms-text-[12px]">
                   <Globe className="wsms-h-3.5 wsms-w-3.5 wsms-mr-1 wsms-text-muted-foreground wsms-shrink-0" />
                   <SelectValue placeholder="Country" />
@@ -730,25 +713,19 @@ export default function Subscribers() {
         <CardContent className="wsms-p-0">
           <DataTable
             columns={columns}
-            data={subscribers}
-            loading={isLoading}
+            data={table.data}
+            loading={table.isLoading}
             pagination={{
-              total: pagination.total,
-              totalPages: pagination.total_pages,
-              page: pagination.current_page,
-              perPage: pagination.per_page,
+              total: table.pagination.total,
+              totalPages: table.pagination.total_pages,
+              page: table.pagination.current_page,
+              perPage: table.pagination.per_page,
               onPageChange: handlePageChange,
             }}
             selection={{
-              selected: selectedIds,
-              onSelect: (id) => {
-                setSelectedIds((prev) =>
-                  prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-                )
-              },
-              onSelectAll: (checked) => {
-                setSelectedIds(checked ? subscribers.map((s) => s.id) : [])
-              },
+              selected: table.selectedIds,
+              onSelect: table.toggleSelection,
+              onSelectAll: table.toggleSelectAll,
             }}
             rowActions={rowActions}
             bulkActions={bulkActions}
@@ -944,7 +921,7 @@ export default function Subscribers() {
               Move to Group
             </DialogTitle>
             <DialogDescription>
-              Move {selectedIds.length} selected subscriber(s) to a group
+              Move {table.selectedIds.length} selected subscriber(s) to a group
             </DialogDescription>
           </DialogHeader>
           <DialogBody>
@@ -966,7 +943,7 @@ export default function Subscribers() {
               </div>
               <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/50 wsms-border wsms-border-border">
                 <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                  This will move {selectedIds.length} subscriber(s) to the selected group.
+                  This will move {table.selectedIds.length} subscriber(s) to the selected group.
                 </p>
               </div>
             </div>
@@ -981,8 +958,8 @@ export default function Subscribers() {
             >
               Cancel
             </Button>
-            <Button onClick={handleMoveToGroup} disabled={isLoading || !moveToGroupId}>
-              {isLoading ? (
+            <Button onClick={handleMoveToGroup} disabled={table.isLoading || !moveToGroupId}>
+              {table.isLoading ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
                   Moving...
