@@ -37,6 +37,7 @@ nbproject
 # Build Folder
 /build
 /assets/dist/settings/
+bundle-analysis.html
 
 #vscode
 .vscode
