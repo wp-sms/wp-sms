@@ -283,7 +283,7 @@ export default function Integrations() {
         <CardHeader>
           <CardTitle>Additional Integrations</CardTitle>
           <CardDescription>
-            Other plugins supported through WP SMS add-ons
+            Other plugins supported through WSMS add-ons
           </CardDescription>
         </CardHeader>
         <CardContent>

@@ -1,7 +1,7 @@
 import React, { memo } from 'react'
 
 /**
- * WP SMS Logo Icon - Geometric parallelogram shapes
+ * WSMS Logo Icon - Geometric parallelogram shapes
  */
 function LogoIcon({ className }) {
   return (

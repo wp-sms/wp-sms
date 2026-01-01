@@ -162,7 +162,7 @@ export default function Overview() {
           <CardHeader>
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <Zap className="wsms-h-5 wsms-w-5 wsms-text-primary" />
-              <CardTitle>Welcome to WP SMS!</CardTitle>
+              <CardTitle>Welcome to WSMS!</CardTitle>
             </div>
             <CardDescription>
               Complete these steps to start sending SMS messages from your WordPress site.
@@ -318,7 +318,7 @@ export default function Overview() {
                 <span className="wsms-text-[10px] wsms-font-medium wsms-uppercase wsms-px-1.5 wsms-py-0.5 wsms-rounded wsms-bg-primary/10 wsms-text-primary">
                   Pro
                 </span>
-                <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">Upgrade to WP SMS Pro</p>
+                <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">Upgrade to WSMS Pro</p>
               </div>
               <p className="wsms-text-[12px] wsms-text-muted-foreground">
                 OTP authentication, WooCommerce integration, and more

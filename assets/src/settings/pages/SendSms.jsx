@@ -409,7 +409,7 @@ export default function SendSms() {
         open={showPreviewDialog}
         onOpenChange={setShowPreviewDialog}
         message={message}
-        senderId={senderId || 'WP SMS'}
+        senderId={senderId || 'WSMS'}
         recipients={recipients}
         recipientCount={recipientCount}
         smsInfo={smsInfo}

@@ -129,7 +129,7 @@ function RatePlugin() {
       rel="noopener noreferrer"
       className="wsms-group wsms-flex wsms-items-center wsms-justify-between wsms-w-full wsms-px-3 wsms-py-1.5 wsms-text-[11px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors wsms-rounded-md hover:wsms-bg-accent"
     >
-      <span>Enjoying WP SMS?</span>
+      <span>Enjoying WSMS?</span>
       <span className="wsms-flex wsms-items-center wsms-gap-0.5">
         {[1, 2, 3, 4, 5].map((star) => (
           <Star

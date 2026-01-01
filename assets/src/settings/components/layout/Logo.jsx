@@ -1,7 +1,7 @@
 import React from 'react'
 
 /**
- * WP SMS Logo component with theme-aware text colors.
+ * WSMS Logo component with theme-aware text colors.
  * - Orange brand icon stays constant (#EB6A26)
  * - Text uses currentColor for light/dark mode support
  * - Use variant="light" for white text (on colored backgrounds)

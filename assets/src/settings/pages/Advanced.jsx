@@ -234,7 +234,7 @@ export default function Advanced() {
             <div>
               <p className="wsms-font-medium">Usage Analytics</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Share anonymous usage data to help improve WP SMS.
+                Share anonymous usage data to help improve WSMS.
               </p>
             </div>
             <Switch

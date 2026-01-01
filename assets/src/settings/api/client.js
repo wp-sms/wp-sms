@@ -16,7 +16,7 @@ const MAX_RETRIES = 3
 const RETRY_DELAY = 1000
 
 /**
- * Base API client for WP-SMS REST API
+ * Base API client for WSMS REST API
  */
 class ApiClient {
   constructor() {

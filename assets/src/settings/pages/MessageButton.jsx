@@ -301,15 +301,15 @@ export default function MessageButton() {
 
               <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
                 <div>
-                  <p className="wsms-font-medium">Hide WP SMS Branding</p>
+                  <p className="wsms-font-medium">Hide WSMS Branding</p>
                   <p className="wsms-text-sm wsms-text-muted-foreground">
-                    Remove the "Powered by WP SMS" text from the footer.
+                    Remove the "Powered by WSMS" text from the footer.
                   </p>
                 </div>
                 <Switch
                   checked={disableLogo === '1'}
                   onCheckedChange={(checked) => setDisableLogo(checked ? '1' : '')}
-                  aria-label="Hide WP SMS branding"
+                  aria-label="Hide WSMS branding"
                 />
               </div>
             </CardContent>
