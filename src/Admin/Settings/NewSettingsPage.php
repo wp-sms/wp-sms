@@ -31,29 +31,8 @@ class NewSettingsPage extends Singleton
      */
     public function init()
     {
-        add_filter('wp_sms_admin_menu_list', [$this, 'registerMenu']);
+        // Assets are enqueued for the main SMS page (wp-sms)
         add_action('admin_enqueue_scripts', [$this, 'enqueueAssets']);
-    }
-
-    /**
-     * Register the menu item
-     *
-     * @param array $list
-     * @return array
-     */
-    public function registerMenu($list)
-    {
-        $list['new-settings'] = [
-            'sub'      => 'wp-sms',
-            'title'    => __('Settings (New)', 'wp-sms'),
-            'name'     => __('Settings (New)', 'wp-sms'),
-            'cap'      => 'wpsms_setting',
-            'page_url' => 'new-settings',
-            'callback' => __CLASS__,
-            'priority' => 9,
-        ];
-
-        return $list;
     }
 
     /**
@@ -93,9 +72,9 @@ class NewSettingsPage extends Singleton
      */
     public function enqueueAssets($hook)
     {
-        if (strpos($hook, 'new-settings') === false) {
-            return;
-        }
+        // This class no longer registers a menu, so assets are not loaded
+        // The UnifiedAdminPage class handles asset loading for the Dashboard
+        return;
 
         $distPath = WP_SMS_DIR . 'assets/dist/settings/';
         $distUrl = WP_SMS_URL . 'assets/dist/settings/';

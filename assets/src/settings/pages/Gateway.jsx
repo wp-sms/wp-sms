@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap, BookOpen, ExternalLink } from 'lucide-react'
+import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap, BookOpen, ExternalLink, XCircle, MessageSquare, Image, Inbox, Users, RotateCcw, Code } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,39 @@ import { Tip, CollapsibleSection, HelpLink, SectionDivider } from '@/components/
 import { useSettings, useSetting } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
 import { getWpSettings, cn, getGatewayDisplayName } from '@/lib/utils'
+
+function CapabilityBadge({ icon: Icon, label, supported }) {
+  return (
+    <div
+      className={cn(
+        'wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-lg wsms-border wsms-px-3 wsms-py-2',
+        supported
+          ? 'wsms-border-success/30 wsms-bg-success/5'
+          : 'wsms-border-border wsms-bg-muted/50'
+      )}
+    >
+      <Icon
+        className={cn(
+          'wsms-h-4 wsms-w-4 wsms-shrink-0',
+          supported ? 'wsms-text-success' : 'wsms-text-muted-foreground'
+        )}
+      />
+      <span
+        className={cn(
+          'wsms-text-[12px] wsms-font-medium',
+          supported ? 'wsms-text-success' : 'wsms-text-muted-foreground'
+        )}
+      >
+        {label}
+      </span>
+      {supported ? (
+        <CheckCircle className="wsms-h-3.5 wsms-w-3.5 wsms-text-success wsms-ml-auto" />
+      ) : (
+        <XCircle className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground wsms-ml-auto" />
+      )}
+    </div>
+  )
+}
 
 export default function Gateway() {
   const { testGatewayConnection, getSetting, updateSetting } = useSettings()
@@ -36,6 +69,7 @@ export default function Gateway() {
   const [testing, setTesting] = useState(false)
   const [connectionTested, setConnectionTested] = useState(false)
   const [connectionSuccess, setConnectionSuccess] = useState(false)
+  const [rawResponse, setRawResponse] = useState(null)
 
   const gatewayList = useMemo(() => {
     const list = []
@@ -73,6 +107,7 @@ export default function Gateway() {
       const result = await testGatewayConnection()
       setConnectionTested(true)
       setConnectionSuccess(result.success)
+      setRawResponse(result.rawResponse || null)
       toast({
         title: result.success ? 'Connection Successful' : 'Connection Failed',
         description: result.success ? `Credit: ${result.credit}` : result.error,
@@ -288,6 +323,65 @@ export default function Gateway() {
                 Connection test failed. Please check your credentials and try again.
               </Tip>
             )}
+
+            {/* Raw API Response */}
+            {connectionTested && rawResponse && (
+              <CollapsibleSection
+                title="API Response"
+                description="Raw response from the gateway for debugging"
+                defaultOpen={false}
+              >
+                <div className="wsms-rounded-lg wsms-bg-muted wsms-p-3 wsms-font-mono wsms-text-[12px] wsms-overflow-x-auto">
+                  <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-mb-2 wsms-text-muted-foreground">
+                    <Code className="wsms-h-3.5 wsms-w-3.5" />
+                    <span>Gateway Response:</span>
+                  </div>
+                  <pre className="wsms-whitespace-pre-wrap wsms-break-all wsms-text-foreground">
+                    {rawResponse}
+                  </pre>
+                </div>
+              </CollapsibleSection>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Gateway Capabilities */}
+      {gatewayName && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <Zap className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              Gateway Capabilities
+            </CardTitle>
+            <CardDescription>Features supported by {getGatewayDisplayName(gatewayName, gateways)}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="wsms-grid wsms-grid-cols-2 wsms-gap-3 md:wsms-grid-cols-4">
+              <CapabilityBadge
+                icon={MessageSquare}
+                label="Flash SMS"
+                supported={gatewayCapabilities.flash === 'enable'}
+              />
+              <CapabilityBadge
+                icon={Users}
+                label="Bulk Send"
+                supported={gatewayCapabilities.bulk_send !== false}
+              />
+              <CapabilityBadge
+                icon={Image}
+                label="MMS"
+                supported={gatewayCapabilities.mms === true || gatewayCapabilities.mms === 'enable'}
+              />
+              <CapabilityBadge
+                icon={Inbox}
+                label="Incoming SMS"
+                supported={gatewayCapabilities.has_key === true || gatewayCapabilities.incoming === true}
+              />
+            </div>
+            <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mt-3">
+              Capabilities depend on your gateway provider and plan. Contact your provider for details.
+            </p>
           </CardContent>
         </Card>
       )}
@@ -397,6 +491,26 @@ export default function Gateway() {
             />
           </div>
         </CardContent>
+      </Card>
+
+      {/* Setup Wizard */}
+      <Card>
+        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4">
+          <div>
+            <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+              Setup Wizard
+            </p>
+            <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">
+              Re-run the guided setup to update your gateway configuration
+            </p>
+          </div>
+          <Button variant="outline" size="sm" asChild>
+            <a href={`${window.wpSmsSettings?.adminUrl || '/wp-admin/'}admin.php?page=wp-sms&path=wp-sms-onboarding`}>
+              <RotateCcw className="wsms-h-4 wsms-w-4 wsms-mr-1" />
+              Re-run Wizard
+            </a>
+          </Button>
+        </div>
       </Card>
     </div>
   )

@@ -1,8 +1,6 @@
 import React from 'react'
-import { MessageSquare, Link, Clock, FileText } from 'lucide-react'
+import { MessageSquare, Link, Clock, FileText, CheckCircle } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { useSetting, useSettings } from '@/context/SettingsContext'
@@ -11,9 +9,12 @@ export default function Messaging() {
   const { isAddonActive } = useSettings()
   const hasPro = isAddonActive('pro')
 
+  // Connect to the store_outbox_messages setting (also in Advanced)
+  const [storeOutbox, setStoreOutbox] = useSetting('store_outbox_messages', '1')
+
   return (
-    <div className="wsms-space-y-6">
-      {/* URL Shortening */}
+    <div className="wsms-space-y-6 wsms-stagger-children">
+      {/* URL Shortening - Informational (always enabled via filter) */}
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
@@ -21,18 +22,18 @@ export default function Messaging() {
             URL Shortening
           </CardTitle>
           <CardDescription>
-            Automatically shorten URLs in your messages to save characters
+            Long URLs in your messages are automatically shortened to save characters
           </CardDescription>
         </CardHeader>
-        <CardContent className="wsms-space-y-4">
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
+        <CardContent>
+          <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-rounded-lg wsms-bg-success/10 wsms-p-4">
+            <CheckCircle className="wsms-h-5 wsms-w-5 wsms-text-success wsms-shrink-0" />
             <div>
-              <p className="wsms-font-medium">Enable URL Shortening</p>
+              <p className="wsms-font-medium wsms-text-success">Enabled</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Automatically shorten long URLs in SMS messages
+                URLs are automatically shortened using the wp_sms_shorturl filter. You can customize the shortening service via hooks.
               </p>
             </div>
-            <Switch />
           </div>
         </CardContent>
       </Card>
@@ -81,15 +82,9 @@ export default function Messaging() {
         <CardContent>
           {hasPro ? (
             <div className="wsms-space-y-4">
-              <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-                <div>
-                  <p className="wsms-font-medium">Enable Message Scheduling</p>
-                  <p className="wsms-text-sm wsms-text-muted-foreground">
-                    Allow scheduling messages for future delivery
-                  </p>
-                </div>
-                <Switch />
-              </div>
+              <p className="wsms-text-sm wsms-text-muted-foreground">
+                Scheduled messages can be configured when composing SMS in the Send SMS page.
+              </p>
             </div>
           ) : (
             <div className="wsms-rounded-lg wsms-bg-muted wsms-p-4 wsms-text-center">
@@ -101,7 +96,7 @@ export default function Messaging() {
         </CardContent>
       </Card>
 
-      {/* Character Counter */}
+      {/* Message Settings */}
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
@@ -115,22 +110,15 @@ export default function Messaging() {
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Show Character Counter</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                Display character count and SMS segment count
-              </p>
-            </div>
-            <Switch defaultChecked />
-          </div>
-
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
               <p className="wsms-font-medium">Store Sent Messages</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Keep a record of all sent messages in the outbox
+                Keep a record of all sent messages in the outbox for tracking and resending
               </p>
             </div>
-            <Switch defaultChecked />
+            <Switch
+              checked={storeOutbox === '1'}
+              onCheckedChange={(checked) => setStoreOutbox(checked ? '1' : '')}
+            />
           </div>
         </CardContent>
       </Card>

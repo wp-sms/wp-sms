@@ -311,15 +311,20 @@ class SettingsApi extends RestApi
             $credit = $sms->GetCredit();
 
             if (is_wp_error($credit)) {
-                return self::response($credit->get_error_message(), 400);
+                return self::response($credit->get_error_message(), 400, [
+                    'rawResponse' => var_export($credit->get_error_message(), true),
+                ]);
             }
 
             return self::response(__('Gateway connection successful', 'wp-sms'), 200, [
-                'credit'  => $credit,
-                'gateway' => Option::getOption('gateway_name'),
+                'credit'      => $credit,
+                'gateway'     => Option::getOption('gateway_name'),
+                'rawResponse' => var_export($credit, true),
             ]);
         } catch (\Exception $e) {
-            return self::response($e->getMessage(), 500);
+            return self::response($e->getMessage(), 500, [
+                'rawResponse' => $e->getMessage(),
+            ]);
         }
     }
 

@@ -28,13 +28,13 @@ const VALID_PAGES = [
 function getInitialPageFromUrl() {
   const params = new URLSearchParams(window.location.search)
   const tab = params.get('tab')
-  return tab && VALID_PAGES.includes(tab) ? tab : 'overview'
+  return tab && VALID_PAGES.includes(tab) ? tab : 'send-sms'
 }
 
 // Update URL with current tab
 function updateUrlTab(page) {
   const url = new URL(window.location.href)
-  if (page === 'overview') {
+  if (page === 'send-sms') {
     url.searchParams.delete('tab')
   } else {
     url.searchParams.set('tab', page)
