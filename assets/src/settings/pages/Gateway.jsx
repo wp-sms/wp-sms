@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react'
-import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap, BookOpen, ExternalLink, XCircle, MessageSquare, Image, Inbox, Users, RotateCcw, Code } from 'lucide-react'
+import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap, BookOpen, ExternalLink, XCircle, RotateCcw, Code, Unplug } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -10,39 +10,6 @@ import { Tip, CollapsibleSection, HelpLink, SectionDivider } from '@/components/
 import { useSettings, useSetting } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
 import { getWpSettings, cn, getGatewayDisplayName } from '@/lib/utils'
-
-function CapabilityBadge({ icon: Icon, label, supported }) {
-  return (
-    <div
-      className={cn(
-        'wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-lg wsms-border wsms-px-3 wsms-py-2',
-        supported
-          ? 'wsms-border-success/30 wsms-bg-success/5'
-          : 'wsms-border-border wsms-bg-muted/50'
-      )}
-    >
-      <Icon
-        className={cn(
-          'wsms-h-4 wsms-w-4 wsms-shrink-0',
-          supported ? 'wsms-text-success' : 'wsms-text-muted-foreground'
-        )}
-      />
-      <span
-        className={cn(
-          'wsms-text-[12px] wsms-font-medium',
-          supported ? 'wsms-text-success' : 'wsms-text-muted-foreground'
-        )}
-      >
-        {label}
-      </span>
-      {supported ? (
-        <CheckCircle className="wsms-h-3.5 wsms-w-3.5 wsms-text-success wsms-ml-auto" />
-      ) : (
-        <XCircle className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground wsms-ml-auto" />
-      )}
-    </div>
-  )
-}
 
 export default function Gateway() {
   const { testGatewayConnection, getSetting, updateSetting } = useSettings()
@@ -70,6 +37,7 @@ export default function Gateway() {
   const [connectionTested, setConnectionTested] = useState(false)
   const [connectionSuccess, setConnectionSuccess] = useState(false)
   const [rawResponse, setRawResponse] = useState(null)
+  const [showDisconnectConfirm, setShowDisconnectConfirm] = useState(false)
 
   const gatewayList = useMemo(() => {
     const list = []
@@ -86,9 +54,14 @@ export default function Gateway() {
   }, [gateways])
 
   const filteredGateways = useMemo(() => {
-    if (!searchQuery) return gatewayList
+    // Filter out empty/placeholder gateways first
+    let list = gatewayList.filter(
+      (g) => g.key && g.key.trim() !== '' && !g.name.toLowerCase().includes('please select')
+    )
+
+    if (!searchQuery) return list
     const query = searchQuery.toLowerCase()
-    return gatewayList.filter(
+    return list.filter(
       (g) => g.name.toLowerCase().includes(query) || g.region.toLowerCase().includes(query)
     )
   }, [gatewayList, searchQuery])
@@ -185,11 +158,115 @@ export default function Gateway() {
             )}
           </div>
 
-          {gatewayName && (
-            <p className="wsms-text-[12px] wsms-text-muted-foreground">
-              Selected: <span className="wsms-font-medium wsms-text-foreground">{getGatewayDisplayName(gatewayName, gateways)}</span>
-            </p>
-          )}
+          {/* Selection Status Bar */}
+          <div className={cn(
+            "wsms-rounded-lg wsms-border wsms-transition-all wsms-duration-200",
+            gatewayName
+              ? "wsms-border-primary/30 wsms-bg-primary/5"
+              : "wsms-border-dashed wsms-border-border wsms-bg-muted/30"
+          )}>
+            {gatewayName ? (
+              <>
+                {/* Selected State */}
+                <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-3 wsms-p-3">
+                  <div className="wsms-flex wsms-items-center wsms-gap-3">
+                    <div className="wsms-flex wsms-h-8 wsms-w-8 wsms-items-center wsms-justify-center wsms-rounded-md wsms-bg-primary/10">
+                      <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+                    </div>
+                    <div>
+                      <p className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
+                        Selected Gateway
+                      </p>
+                      <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">
+                        {getGatewayDisplayName(gatewayName, gateways)}
+                      </p>
+                    </div>
+                  </div>
+                  {!showDisconnectConfirm ? (
+                    <button
+                      onClick={() => setShowDisconnectConfirm(true)}
+                      className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-rounded-md wsms-px-3 wsms-py-1.5 wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground wsms-transition-colors hover:wsms-bg-destructive/10 hover:wsms-text-destructive"
+                    >
+                      <Unplug className="wsms-h-3.5 wsms-w-3.5" />
+                      Disconnect
+                    </button>
+                  ) : (
+                    <div className="wsms-flex wsms-items-center wsms-gap-2">
+                      <span className="wsms-text-[12px] wsms-text-muted-foreground">Are you sure?</span>
+                      <button
+                        onClick={() => {
+                          setGatewayName('')
+                          setShowDisconnectConfirm(false)
+                        }}
+                        className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-bg-destructive wsms-text-destructive-foreground wsms-transition-colors hover:wsms-bg-destructive/90"
+                      >
+                        Disconnect
+                      </button>
+                      <button
+                        onClick={() => setShowDisconnectConfirm(false)}
+                        className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-border wsms-border-border wsms-bg-background wsms-transition-colors hover:wsms-bg-accent"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
+                </div>
+                {/* Inline Capabilities */}
+                <div className="wsms-border-t wsms-border-primary/20 wsms-px-3 wsms-py-2 wsms-bg-primary/[0.02]">
+                  <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-flex-wrap">
+                    <span className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
+                      Capabilities:
+                    </span>
+                    <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-flex-wrap">
+                      <span className={cn(
+                        "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
+                        gatewayCapabilities.flash === 'enable' ? "wsms-text-success" : "wsms-text-muted-foreground/50"
+                      )}>
+                        {gatewayCapabilities.flash === 'enable' ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
+                        Flash SMS
+                      </span>
+                      <span className={cn(
+                        "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
+                        gatewayCapabilities.bulk_send !== false ? "wsms-text-success" : "wsms-text-muted-foreground/50"
+                      )}>
+                        {gatewayCapabilities.bulk_send !== false ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
+                        Bulk Send
+                      </span>
+                      <span className={cn(
+                        "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
+                        gatewayCapabilities.mms === true || gatewayCapabilities.mms === 'enable' ? "wsms-text-success" : "wsms-text-muted-foreground/50"
+                      )}>
+                        {gatewayCapabilities.mms === true || gatewayCapabilities.mms === 'enable' ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
+                        MMS
+                      </span>
+                      <span className={cn(
+                        "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
+                        gatewayCapabilities.has_key === true || gatewayCapabilities.incoming === true ? "wsms-text-success" : "wsms-text-muted-foreground/50"
+                      )}>
+                        {gatewayCapabilities.has_key === true || gatewayCapabilities.incoming === true ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
+                        Incoming SMS
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-p-3">
+                {/* Empty State */}
+                <div className="wsms-flex wsms-h-8 wsms-w-8 wsms-items-center wsms-justify-center wsms-rounded-md wsms-bg-muted">
+                  <Radio className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+                </div>
+                <div>
+                  <p className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
+                    No Gateway Selected
+                  </p>
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                    Choose a provider from the list above
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 
@@ -342,46 +419,6 @@ export default function Gateway() {
                 </div>
               </CollapsibleSection>
             )}
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Gateway Capabilities */}
-      {gatewayName && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <Zap className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              Gateway Capabilities
-            </CardTitle>
-            <CardDescription>Features supported by {getGatewayDisplayName(gatewayName, gateways)}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="wsms-grid wsms-grid-cols-2 wsms-gap-3 md:wsms-grid-cols-4">
-              <CapabilityBadge
-                icon={MessageSquare}
-                label="Flash SMS"
-                supported={gatewayCapabilities.flash === 'enable'}
-              />
-              <CapabilityBadge
-                icon={Users}
-                label="Bulk Send"
-                supported={gatewayCapabilities.bulk_send !== false}
-              />
-              <CapabilityBadge
-                icon={Image}
-                label="MMS"
-                supported={gatewayCapabilities.mms === true || gatewayCapabilities.mms === 'enable'}
-              />
-              <CapabilityBadge
-                icon={Inbox}
-                label="Incoming SMS"
-                supported={gatewayCapabilities.has_key === true || gatewayCapabilities.incoming === true}
-              />
-            </div>
-            <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mt-3">
-              Capabilities depend on your gateway provider and plan. Contact your provider for details.
-            </p>
           </CardContent>
         </Card>
       )}
