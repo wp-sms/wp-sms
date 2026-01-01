@@ -5,7 +5,6 @@ import {
   Trash2,
   Send,
   Search,
-  Calendar,
   Eye,
   CheckCircle,
   XCircle,
@@ -15,6 +14,8 @@ import {
   MessageSquare,
   TrendingUp,
   TrendingDown,
+  CalendarDays,
+  X,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -391,24 +392,22 @@ export default function Outbox() {
 
       {/* Filters */}
       <Card>
-        <CardContent className="wsms-py-4">
-          <div className="wsms-flex wsms-items-center wsms-gap-3">
+        <CardContent className="wsms-p-0">
+          <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-p-3">
             {/* Search */}
-            <div className="wsms-flex-1 wsms-max-w-md">
-              <div className="wsms-relative">
-                <Search
-                  className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground"
-                  aria-hidden="true"
-                />
-                <Input
-                  type="text"
-                  value={filters.filters.search}
-                  onChange={(e) => filters.setFilter('search', e.target.value)}
-                  placeholder="Search messages or recipients..."
-                  className="wsms-pl-9"
-                  aria-label="Search messages"
-                />
-              </div>
+            <div className="wsms-relative wsms-w-[220px] wsms-shrink-0">
+              <Search
+                className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none"
+                aria-hidden="true"
+              />
+              <Input
+                type="text"
+                value={filters.filters.search}
+                onChange={(e) => filters.setFilter('search', e.target.value)}
+                placeholder="Search messages..."
+                className="wsms-pl-8 wsms-h-9"
+                aria-label="Search messages"
+              />
             </div>
 
             {/* Status Filter */}
@@ -416,7 +415,7 @@ export default function Outbox() {
               value={filters.filters.status}
               onValueChange={(value) => filters.setFilter('status', value)}
             >
-              <SelectTrigger className="wsms-w-[130px]" aria-label="Filter by status">
+              <SelectTrigger className="wsms-h-9 wsms-w-[100px] wsms-text-[12px]" aria-label="Filter by status">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -427,37 +426,53 @@ export default function Outbox() {
             </Select>
 
             {/* Date Range */}
-            <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-ml-auto">
-              <Calendar className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" aria-hidden="true" />
+            <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-pl-2 wsms-border-l wsms-border-border">
+              <CalendarDays className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" aria-hidden="true" />
               <Input
                 type="date"
                 value={filters.filters.date_from}
                 onChange={(e) => filters.setFilter('date_from', e.target.value)}
-                className="wsms-w-[130px]"
+                className="wsms-h-9 wsms-w-[130px] wsms-text-[12px]"
                 aria-label="From date"
               />
-              <span className="wsms-text-muted-foreground wsms-text-[12px]">to</span>
+              <span className="wsms-text-muted-foreground wsms-text-[11px]">–</span>
               <Input
                 type="date"
                 value={filters.filters.date_to}
                 onChange={(e) => filters.setFilter('date_to', e.target.value)}
-                className="wsms-w-[130px]"
+                className="wsms-h-9 wsms-w-[130px] wsms-text-[12px]"
                 aria-label="To date"
               />
             </div>
 
-            {/* Refresh */}
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => table.fetch({ page: 1 })}
-              aria-label="Refresh messages"
-            >
-              <RefreshCw
-                className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')}
-                aria-hidden="true"
-              />
-            </Button>
+            {/* Actions */}
+            <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-ml-auto">
+              {/* Clear Filters */}
+              {(filters.filters.search || filters.filters.status !== 'all' || filters.filters.date_from || filters.filters.date_to) && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => filters.resetFilters()}
+                  className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
+                  aria-label="Clear all filters"
+                >
+                  <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
+                </Button>
+              )}
+              {/* Refresh */}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.fetch({ page: 1 })}
+                className="wsms-h-9 wsms-px-2.5"
+                aria-label="Refresh messages"
+              >
+                <RefreshCw
+                  className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')}
+                  aria-hidden="true"
+                />
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
