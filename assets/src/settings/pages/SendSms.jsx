@@ -10,7 +10,7 @@ import { SmsPreviewDialog } from '@/components/shared/SmsPreviewDialog'
 import { Tip } from '@/components/ui/ux-helpers'
 import { smsApi } from '@/api/smsApi'
 import { useSettings } from '@/context/SettingsContext'
-import { cn, getGatewayDisplayName } from '@/lib/utils'
+import { cn, getGatewayDisplayName, __ } from '@/lib/utils'
 
 export default function SendSms() {
   const { setCurrentPage } = useSettings()
@@ -164,12 +164,12 @@ export default function SendSms() {
       {/* Gateway not configured warning */}
       {!gatewayConfigured && (
         <Tip variant="warning">
-          <strong>No SMS gateway configured.</strong> You need to set up a gateway before you can send messages.{' '}
+          <strong>{__('No SMS gateway configured.')}</strong> {__('You need to set up a gateway before you can send messages.')}{' '}
           <button
             onClick={() => setCurrentPage('gateway')}
             className="wsms-underline wsms-font-medium"
           >
-            Configure Gateway →
+            {__('Configure Gateway')} →
           </button>
         </Tip>
       )}
@@ -203,7 +203,7 @@ export default function SendSms() {
                 <Radio className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               </div>
               <div>
-                <span className="wsms-text-[10px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Gateway</span>
+                <span className="wsms-text-[10px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">{__('Gateway')}</span>
                 <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">{gatewayName}</p>
               </div>
             </div>
@@ -215,7 +215,7 @@ export default function SendSms() {
                     <CreditCard className="wsms-h-4 wsms-w-4 wsms-text-emerald-600" />
                   </div>
                   <div>
-                    <span className="wsms-text-[10px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">Credit</span>
+                    <span className="wsms-text-[10px] wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide">{__('Credit')}</span>
                     <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">{credit}</p>
                   </div>
                 </div>
@@ -224,7 +224,7 @@ export default function SendSms() {
           </div>
           {gatewayValidation && (
             <div className="wsms-text-[11px] wsms-text-muted-foreground">
-              Format: <code className="wsms-px-1.5 wsms-py-0.5 wsms-rounded-md wsms-bg-muted wsms-font-mono">{gatewayValidation}</code>
+              {__('Format:')} <code className="wsms-px-1.5 wsms-py-0.5 wsms-rounded-md wsms-bg-muted wsms-font-mono">{gatewayValidation}</code>
             </div>
           )}
         </div>
@@ -238,7 +238,7 @@ export default function SendSms() {
             <div className="wsms-flex wsms-items-center wsms-justify-between">
               <div className="wsms-flex wsms-items-center wsms-gap-2">
                 <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                <CardTitle className="wsms-text-sm">Compose Message</CardTitle>
+                <CardTitle className="wsms-text-sm">{__('Compose Message')}</CardTitle>
               </div>
               {/* Sender ID inline */}
               <div className="wsms-flex wsms-items-center wsms-gap-2">
@@ -247,7 +247,7 @@ export default function SendSms() {
                   type="text"
                   value={senderId}
                   onChange={(e) => setSenderId(e.target.value)}
-                  placeholder="Sender ID"
+                  placeholder={__('Sender ID')}
                   maxLength={18}
                   className="wsms-w-32 wsms-h-7 wsms-text-[12px]"
                 />
@@ -259,7 +259,7 @@ export default function SendSms() {
             <MessageComposer
               value={message}
               onChange={setMessage}
-              placeholder="Type your message here..."
+              placeholder={__('Type your message here...')}
               rows={8}
               maxSegments={10}
             />
@@ -277,7 +277,7 @@ export default function SendSms() {
                     />
                     <span className="wsms-text-[12px] wsms-text-muted-foreground">
                       <Zap className="wsms-h-3 wsms-w-3 wsms-inline wsms-mr-1 wsms-text-amber-500" />
-                      Flash
+                      {__('Flash')}
                     </span>
                   </label>
                 )}
@@ -294,7 +294,7 @@ export default function SendSms() {
                     )}
                   >
                     <Image className="wsms-h-3.5 wsms-w-3.5" />
-                    Media
+                    {__('Media')}
                   </button>
                 )}
               </div>
@@ -307,7 +307,7 @@ export default function SendSms() {
                   type="url"
                   value={mediaUrl}
                   onChange={(e) => setMediaUrl(e.target.value)}
-                  placeholder="Media URL (https://...)"
+                  placeholder={__('Media URL (https://...)')}
                   className="wsms-text-[12px]"
                 />
               </div>
@@ -320,7 +320,7 @@ export default function SendSms() {
           <CardHeader className="wsms-border-b wsms-border-border wsms-bg-muted/20 wsms-py-3">
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <Users className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              <CardTitle className="wsms-text-sm">Recipients</CardTitle>
+              <CardTitle className="wsms-text-sm">{__('Recipients')}</CardTitle>
               {recipientCount > 0 && (
                 <span className="wsms-ml-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary wsms-text-primary-foreground wsms-text-[11px] wsms-font-medium">
                   {isLoadingCount ? (
@@ -342,7 +342,7 @@ export default function SendSms() {
             {!gatewaySupportsBulk && recipients.groups.length > 0 && (
               <div className="wsms-mt-3 wsms-p-2.5 wsms-rounded-lg wsms-bg-amber-500/10 wsms-border wsms-border-amber-500/20">
                 <p className="wsms-text-[11px] wsms-text-amber-700 dark:wsms-text-amber-400">
-                  This gateway doesn't support bulk SMS. Only the first number will receive the message.
+                  {__("This gateway doesn't support bulk SMS. Only the first number will receive the message.")}
                 </p>
               </div>
             )}
@@ -357,7 +357,7 @@ export default function SendSms() {
           <div className="wsms-flex wsms-items-center wsms-gap-5 wsms-text-[13px]">
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <Users className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-              <span className="wsms-text-muted-foreground">Recipients:</span>
+              <span className="wsms-text-muted-foreground">{__('Recipients:')}</span>
               <span className="wsms-font-semibold wsms-text-foreground">
                 {isLoadingCount ? '...' : recipientCount}
               </span>
@@ -365,13 +365,13 @@ export default function SendSms() {
             <div className="wsms-w-px wsms-h-4 wsms-bg-border" />
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-              <span className="wsms-text-muted-foreground">Segments:</span>
+              <span className="wsms-text-muted-foreground">{__('Segments:')}</span>
               <span className="wsms-font-semibold wsms-text-foreground">{smsInfo.segments}</span>
             </div>
             <div className="wsms-w-px wsms-h-4 wsms-bg-border" />
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <Send className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              <span className="wsms-text-muted-foreground">Total:</span>
+              <span className="wsms-text-muted-foreground">{__('Total:')}</span>
               <span className="wsms-font-bold wsms-text-primary">{recipientCount * smsInfo.segments}</span>
             </div>
           </div>
@@ -380,12 +380,12 @@ export default function SendSms() {
           <div className="wsms-flex wsms-items-center wsms-gap-4">
             {!canSend && (
               <p className="wsms-text-[12px] wsms-text-amber-700 dark:wsms-text-amber-500">
-                {!gatewayConfigured && 'Configure gateway first'}
-                {gatewayConfigured && !hasMessage && !hasSelections && 'Add message and recipients'}
-                {gatewayConfigured && !hasMessage && hasSelections && 'Enter a message'}
-                {gatewayConfigured && hasMessage && !hasSelections && 'Add recipients'}
-                {gatewayConfigured && hasMessage && hasSelections && !hasActualRecipients && !isLoadingCount && 'Selected groups/roles have no subscribers'}
-                {isLoadingCount && 'Checking recipients...'}
+                {!gatewayConfigured && __('Configure gateway first')}
+                {gatewayConfigured && !hasMessage && !hasSelections && __('Add message and recipients')}
+                {gatewayConfigured && !hasMessage && hasSelections && __('Enter a message')}
+                {gatewayConfigured && hasMessage && !hasSelections && __('Add recipients')}
+                {gatewayConfigured && hasMessage && hasSelections && !hasActualRecipients && !isLoadingCount && __('Selected groups/roles have no subscribers')}
+                {isLoadingCount && __('Checking recipients...')}
               </p>
             )}
             <Button
@@ -398,7 +398,7 @@ export default function SendSms() {
               ) : (
                 <Eye className="wsms-h-4 wsms-w-4" />
               )}
-              Review & Send
+              {__('Review & Send')}
             </Button>
           </div>
         </div>

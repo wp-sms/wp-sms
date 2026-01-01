@@ -1,4 +1,5 @@
 import React, { memo } from 'react'
+import { __ } from '@/lib/utils'
 
 /**
  * WSMS Logo Icon - Geometric parallelogram shapes
@@ -74,9 +75,9 @@ const BrandingFooter = memo(function BrandingFooter() {
 
       {/* Community message */}
       <p className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-text-muted-foreground/50">
-        <span>Made with</span>
+        <span>{__('Made with')}</span>
         <HeartIcon className="wsms-h-3.5 wsms-w-3.5 wsms-text-rose-400/70" />
-        <span>for the WordPress community</span>
+        <span>{__('for the WordPress community')}</span>
       </p>
     </footer>
   )

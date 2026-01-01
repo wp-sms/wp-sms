@@ -9,7 +9,7 @@ import { MultiSelect } from '@/components/ui/multi-select'
 import { Tip, CollapsibleSection, HelpLink, SectionDivider } from '@/components/ui/ux-helpers'
 import { useSettings, useSetting } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
-import { getWpSettings, cn, getGatewayDisplayName } from '@/lib/utils'
+import { getWpSettings, cn, getGatewayDisplayName, __ } from '@/lib/utils'
 
 export default function Gateway() {
   const { testGatewayConnection, getSetting, updateSetting } = useSettings()
@@ -108,8 +108,7 @@ export default function Gateway() {
       {/* Helpful tip for new users */}
       {!gatewayName && (
         <Tip>
-          <strong>Need help choosing a gateway?</strong> Consider factors like coverage area, pricing, and API features.
-          Most gateways offer free trial credits to test before committing.
+          <strong>{__('Need help choosing a gateway?')}</strong> {__('Consider factors like coverage area, pricing, and API features. Most gateways offer free trial credits to test before committing.')}
         </Tip>
       )}
 
@@ -118,15 +117,15 @@ export default function Gateway() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Radio className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            SMS Gateway
+            {__('SMS Gateway')}
           </CardTitle>
-          <CardDescription>Select your SMS service provider. Configure credentials below after selecting.</CardDescription>
+          <CardDescription>{__('Select your SMS service provider. Configure credentials below after selecting.')}</CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-relative">
             <Search className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms-h-4 wsms-w-4 wsms--translate-y-1/2 wsms-text-muted-foreground" />
             <Input
-              placeholder="Search gateways..."
+              placeholder={__('Search gateways...')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="wsms-pl-9"
@@ -173,7 +172,7 @@ export default function Gateway() {
             ))}
             {Object.keys(groupedGateways).length === 0 && (
               <div className="wsms-py-8 wsms-text-center wsms-text-[12px] wsms-text-muted-foreground">
-                No gateways found
+                {__('No gateways found')}
               </div>
             )}
           </div>
@@ -195,7 +194,7 @@ export default function Gateway() {
                     </div>
                     <div>
                       <p className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
-                        Selected Gateway
+                        {__('Selected Gateway')}
                       </p>
                       <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">
                         {getGatewayDisplayName(gatewayName, gateways)}
@@ -206,7 +205,7 @@ export default function Gateway() {
                     // Switch gateway confirmation
                     <div className="wsms-flex wsms-items-center wsms-gap-2">
                       <span className="wsms-text-[12px] wsms-text-muted-foreground">
-                        Switch to <strong className="wsms-text-foreground">{getGatewayDisplayName(pendingGateway, gateways)}</strong>?
+                        {__('Switch to')} <strong className="wsms-text-foreground">{getGatewayDisplayName(pendingGateway, gateways)}</strong>?
                       </span>
                       <button
                         onClick={() => {
@@ -215,19 +214,19 @@ export default function Gateway() {
                         }}
                         className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-bg-primary wsms-text-primary-foreground wsms-transition-colors hover:wsms-bg-primary/90"
                       >
-                        Switch
+                        {__('Switch')}
                       </button>
                       <button
                         onClick={() => setPendingGateway(null)}
                         className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-border wsms-border-border wsms-bg-background wsms-transition-colors hover:wsms-bg-accent"
                       >
-                        Cancel
+                        {__('Cancel')}
                       </button>
                     </div>
                   ) : showDisconnectConfirm ? (
                     // Disconnect confirmation
                     <div className="wsms-flex wsms-items-center wsms-gap-2">
-                      <span className="wsms-text-[12px] wsms-text-muted-foreground">Are you sure?</span>
+                      <span className="wsms-text-[12px] wsms-text-muted-foreground">{__('Are you sure?')}</span>
                       <button
                         onClick={() => {
                           setGatewayName('')
@@ -235,13 +234,13 @@ export default function Gateway() {
                         }}
                         className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-bg-destructive wsms-text-destructive-foreground wsms-transition-colors hover:wsms-bg-destructive/90"
                       >
-                        Disconnect
+                        {__('Disconnect')}
                       </button>
                       <button
                         onClick={() => setShowDisconnectConfirm(false)}
                         className="wsms-rounded-md wsms-px-2.5 wsms-py-1 wsms-text-[12px] wsms-font-medium wsms-border wsms-border-border wsms-bg-background wsms-transition-colors hover:wsms-bg-accent"
                       >
-                        Cancel
+                        {__('Cancel')}
                       </button>
                     </div>
                   ) : (
@@ -251,7 +250,7 @@ export default function Gateway() {
                       className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-rounded-md wsms-px-3 wsms-py-1.5 wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground wsms-transition-colors hover:wsms-bg-destructive/10 hover:wsms-text-destructive"
                     >
                       <Unplug className="wsms-h-3.5 wsms-w-3.5" />
-                      Disconnect
+                      {__('Disconnect')}
                     </button>
                   )}
                 </div>
@@ -260,13 +259,13 @@ export default function Gateway() {
                   {hasUnsavedGatewayChange ? (
                     // Show save prompt when gateway changed but not saved
                     <p className="wsms-text-[11px] wsms-text-amber-600 dark:wsms-text-amber-400">
-                      Save your changes to see capabilities and configure credentials for this gateway.
+                      {__('Save your changes to see capabilities and configure credentials for this gateway.')}
                     </p>
                   ) : (
                     // Show actual capabilities for saved gateway
                     <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-flex-wrap">
                       <span className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
-                        Capabilities:
+                        {__('Capabilities:')}
                       </span>
                       <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-flex-wrap">
                         <span className={cn(
@@ -274,28 +273,28 @@ export default function Gateway() {
                           gatewayCapabilities.flash === 'enable' ? "wsms-text-success" : "wsms-text-muted-foreground/50"
                         )}>
                           {gatewayCapabilities.flash === 'enable' ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                          Flash SMS
+                          {__('Flash SMS')}
                         </span>
                         <span className={cn(
                           "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
                           gatewayCapabilities.bulk_send !== false ? "wsms-text-success" : "wsms-text-muted-foreground/50"
                         )}>
                           {gatewayCapabilities.bulk_send !== false ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                          Bulk Send
+                          {__('Bulk Send')}
                         </span>
                         <span className={cn(
                           "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
                           gatewayCapabilities.mms === true || gatewayCapabilities.mms === 'enable' ? "wsms-text-success" : "wsms-text-muted-foreground/50"
                         )}>
                           {gatewayCapabilities.mms === true || gatewayCapabilities.mms === 'enable' ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                          MMS
+                          {__('MMS')}
                         </span>
                         <span className={cn(
                           "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
                           gatewayCapabilities.has_key === true || gatewayCapabilities.incoming === true ? "wsms-text-success" : "wsms-text-muted-foreground/50"
                         )}>
                           {gatewayCapabilities.has_key === true || gatewayCapabilities.incoming === true ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                          Incoming SMS
+                          {__('Incoming SMS')}
                         </span>
                       </div>
                     </div>
@@ -310,10 +309,10 @@ export default function Gateway() {
                 </div>
                 <div>
                   <p className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
-                    No Gateway Selected
+                    {__('No Gateway Selected')}
                   </p>
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    Choose a provider from the list above
+                    {__('Choose a provider from the list above')}
                   </p>
                 </div>
               </div>
@@ -328,9 +327,9 @@ export default function Gateway() {
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <BookOpen className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              Gateway Guide
+              {__('Gateway Guide')}
             </CardTitle>
-            <CardDescription>Setup instructions for {getGatewayDisplayName(gatewayName, gateways)}</CardDescription>
+            <CardDescription>{__('Setup instructions for')} {getGatewayDisplayName(gatewayName, gateways)}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="wsms-space-y-3">
@@ -348,7 +347,7 @@ export default function Gateway() {
                   className="wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px] wsms-text-primary hover:wsms-text-primary/80 wsms-font-medium"
                 >
                   <ExternalLink className="wsms-h-3.5 wsms-w-3.5" />
-                  View Full Documentation
+                  {__('View Full Documentation')}
                 </a>
               )}
             </div>
@@ -362,9 +361,9 @@ export default function Gateway() {
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <Shield className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              Credentials
+              {__('Credentials')}
             </CardTitle>
-            <CardDescription>API credentials for {getGatewayDisplayName(gatewayName, gateways)}</CardDescription>
+            <CardDescription>{__('API credentials for')} {getGatewayDisplayName(gatewayName, gateways)}</CardDescription>
           </CardHeader>
           <CardContent className="wsms-space-y-4">
             <div className="wsms-grid wsms-grid-cols-1 wsms-gap-4 md:wsms-grid-cols-2">
@@ -412,17 +411,17 @@ export default function Gateway() {
                   {testing ? (
                     <>
                       <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1 wsms-animate-spin" />
-                      Testing...
+                      {__('Testing...')}
                     </>
                   ) : (
                     <>
                       <Send className="wsms-h-4 wsms-w-4 wsms-mr-1" />
-                      Test Connection
+                      {__('Test Connection')}
                     </>
                   )}
                 </Button>
                 <span className="wsms-text-[12px] wsms-text-muted-foreground">
-                  Verify your credentials are working
+                  {__('Verify your credentials are working')}
                 </span>
               </div>
             </div>
@@ -430,33 +429,33 @@ export default function Gateway() {
             {/* Test connection status */}
             {!connectionTested && (
               <Tip variant="info">
-                Click <strong>Test Connection</strong> to verify your gateway credentials are working correctly.
+                {__('Click')} <strong>{__('Test Connection')}</strong> {__('to verify your gateway credentials are working correctly.')}
               </Tip>
             )}
 
             {connectionTested && connectionSuccess && (
               <Tip variant="success">
-                Gateway connection verified successfully. You're ready to send SMS!
+                {__("Gateway connection verified successfully. You're ready to send SMS!")}
               </Tip>
             )}
 
             {connectionTested && !connectionSuccess && (
               <Tip variant="warning">
-                Connection test failed. Please check your credentials and try again.
+                {__('Connection test failed. Please check your credentials and try again.')}
               </Tip>
             )}
 
             {/* Raw API Response */}
             {connectionTested && rawResponse && (
               <CollapsibleSection
-                title="API Response"
-                description="Raw response from the gateway for debugging"
+                title={__('API Response')}
+                description={__('Raw response from the gateway for debugging')}
                 defaultOpen={false}
               >
                 <div className="wsms-rounded-lg wsms-bg-muted wsms-p-3 wsms-font-mono wsms-text-[12px] wsms-overflow-x-auto">
                   <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-mb-2 wsms-text-muted-foreground">
                     <Code className="wsms-h-3.5 wsms-w-3.5" />
-                    <span>Gateway Response:</span>
+                    <span>{__('Gateway Response:')}</span>
                   </div>
                   <pre className="wsms-whitespace-pre-wrap wsms-break-all wsms-text-foreground">
                     {rawResponse}
@@ -473,45 +472,45 @@ export default function Gateway() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Zap className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            Delivery Settings
+            {__('Delivery Settings')}
           </CardTitle>
           <CardDescription>
-            Configure how messages are processed and delivered
+            {__('Configure how messages are processed and delivered')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <SelectField
-            label="Delivery Method"
-            description="How SMS messages are processed and sent."
+            label={__('Delivery Method')}
+            description={__('How SMS messages are processed and sent.')}
             value={deliveryMethod}
             onValueChange={setDeliveryMethod}
-            placeholder="Select method"
+            placeholder={__('Select method')}
             options={[
-              { value: 'api_direct_send', label: 'Instant — Send immediately when triggered' },
-              { value: 'api_async_send', label: 'Background — Process in background (reduces page load time)' },
-              { value: 'api_queued_send', label: 'Queue — Add to queue for batch processing' },
+              { value: 'api_direct_send', label: __('Instant — Send immediately when triggered') },
+              { value: 'api_async_send', label: __('Background — Process in background (reduces page load time)') },
+              { value: 'api_queued_send', label: __('Queue — Add to queue for batch processing') },
             ]}
           />
 
           {deliveryMethod === 'api_queued_send' && (
             <Tip variant="info">
-              Queue mode requires a cron job to process messages. Configure WP-Cron or set up a real cron job for reliable delivery.
+              {__('Queue mode requires a cron job to process messages. Configure WP-Cron or set up a real cron job for reliable delivery.')}
             </Tip>
           )}
 
-          <SectionDivider>Message Formatting</SectionDivider>
+          <SectionDivider>{__('Message Formatting')}</SectionDivider>
 
           <div className="wsms-divide-y wsms-divide-border wsms-rounded-lg wsms-border wsms-border-border wsms-overflow-hidden">
             <SwitchField
-              label="Enable Unicode"
-              description="Required for non-Latin characters (Arabic, Chinese, emoji). May reduce characters per SMS."
+              label={__('Enable Unicode')}
+              description={__('Required for non-Latin characters (Arabic, Chinese, emoji). May reduce characters per SMS.')}
               checked={sendUnicode === '1'}
               onCheckedChange={(checked) => setSendUnicode(checked ? '1' : '')}
               className="wsms-px-4"
             />
             <SwitchField
-              label="Auto-format Numbers"
-              description="Automatically remove spaces and special characters from phone numbers before sending."
+              label={__('Auto-format Numbers')}
+              description={__('Automatically remove spaces and special characters from phone numbers before sending.')}
               checked={cleanNumbers === '1'}
               onCheckedChange={(checked) => setCleanNumbers(checked ? '1' : '')}
               className="wsms-px-4"
@@ -519,29 +518,29 @@ export default function Gateway() {
           </div>
 
           <CollapsibleSection
-            title="Country Restrictions"
-            description="Limit SMS delivery to specific countries"
+            title={__('Country Restrictions')}
+            description={__('Limit SMS delivery to specific countries')}
           >
             <div className="wsms-space-y-4">
               <SwitchField
-                label="Restrict to Specific Countries"
-                description="Only send SMS to phone numbers from selected countries."
+                label={__('Restrict to Specific Countries')}
+                description={__('Only send SMS to phone numbers from selected countries.')}
                 checked={localNumbersOnly === '1'}
                 onCheckedChange={(checked) => setLocalNumbersOnly(checked ? '1' : '')}
               />
 
               {localNumbersOnly === '1' && (
                 <div className="wsms-space-y-2">
-                  <Label>Allowed Countries</Label>
+                  <Label>{__('Allowed Countries')}</Label>
                   <MultiSelect
                     options={countries}
                     value={localNumbersCountries}
                     onValueChange={setLocalNumbersCountries}
-                    placeholder="Select countries..."
-                    searchPlaceholder="Search countries..."
+                    placeholder={__('Select countries...')}
+                    searchPlaceholder={__('Search countries...')}
                   />
                   <p className="wsms-text-xs wsms-text-muted-foreground">
-                    SMS will only be sent to numbers from these countries.
+                    {__('SMS will only be sent to numbers from these countries.')}
                   </p>
                 </div>
               )}
@@ -553,20 +552,20 @@ export default function Gateway() {
       {/* Credit Display */}
       <Card>
         <CardHeader>
-          <CardTitle>Credit Display</CardTitle>
+          <CardTitle>{__('Credit Display')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="wsms-divide-y wsms-divide-border wsms-rounded-lg wsms-border wsms-border-border wsms-overflow-hidden">
             <SwitchField
-              label="Show Credit in Menu"
-              description="Display your SMS credit balance in the WordPress admin menu bar."
+              label={__('Show Credit in Menu')}
+              description={__('Display your SMS credit balance in the WordPress admin menu bar.')}
               checked={creditInMenu === '1'}
               onCheckedChange={(checked) => setCreditInMenu(checked ? '1' : '')}
               className="wsms-px-4"
             />
             <SwitchField
-              label="Show Credit on Send Page"
-              description="Display your remaining SMS credits when composing messages."
+              label={__('Show Credit on Send Page')}
+              description={__('Display your remaining SMS credits when composing messages.')}
               checked={creditInSendSms === '1'}
               onCheckedChange={(checked) => setCreditInSendSms(checked ? '1' : '')}
               className="wsms-px-4"
@@ -580,16 +579,16 @@ export default function Gateway() {
         <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4">
           <div>
             <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
-              Setup Wizard
+              {__('Setup Wizard')}
             </p>
             <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">
-              Re-run the guided setup to update your gateway configuration
+              {__('Re-run the guided setup to update your gateway configuration')}
             </p>
           </div>
           <Button variant="outline" size="sm" asChild>
             <a href={`${window.wpSmsSettings?.adminUrl || '/wp-admin/'}admin.php?page=wp-sms&path=wp-sms-onboarding`}>
               <RotateCcw className="wsms-h-4 wsms-w-4 wsms-mr-1" />
-              Re-run Wizard
+              {__('Re-run Wizard')}
             </a>
           </Button>
         </div>

@@ -21,7 +21,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Button } from '@/components/ui/button'
 import { SetupProgress, Tip, FeatureHighlight } from '@/components/ui/ux-helpers'
 import { useSettings, useSetting } from '@/context/SettingsContext'
-import { getWpSettings, cn, getGatewayDisplayName } from '@/lib/utils'
+import { getWpSettings, cn, getGatewayDisplayName, __ } from '@/lib/utils'
 
 function StatusRow({ icon: Icon, title, value, status, onClick }) {
   return (
@@ -98,33 +98,33 @@ export default function Overview() {
 
   const configItems = [
     {
-      title: 'SMS Gateway',
+      title: __('SMS Gateway'),
       icon: Radio,
-      value: gatewayKey ? gatewayName : 'Not configured',
+      value: gatewayKey ? gatewayName : __('Not configured'),
       status: gatewayKey ? 'configured' : 'pending',
       page: 'gateway',
     },
     {
-      title: 'Admin Mobile',
+      title: __('Admin Mobile'),
       icon: Phone,
-      value: adminMobile || 'Not set',
+      value: adminMobile || __('Not set'),
       status: adminMobile ? 'configured' : 'pending',
       page: 'phone',
     },
     {
-      title: 'Message Button',
+      title: __('Message Button'),
       icon: MessageSquare,
-      value: messageButton === '1' ? 'Enabled' : 'Disabled',
+      value: messageButton === '1' ? __('Enabled') : __('Disabled'),
       status: messageButton === '1' ? 'configured' : 'pending',
       page: 'message-button',
     },
   ]
 
   const quickLinks = [
-    { title: 'Notifications', icon: Bell, page: 'notifications' },
-    { title: 'Newsletter', icon: Mail, page: 'newsletter' },
-    { title: 'Integrations', icon: Puzzle, page: 'integrations' },
-    { title: 'Advanced', icon: Settings, page: 'advanced' },
+    { title: __('Notifications'), icon: Bell, page: 'notifications' },
+    { title: __('Newsletter'), icon: Mail, page: 'newsletter' },
+    { title: __('Integrations'), icon: Puzzle, page: 'integrations' },
+    { title: __('Advanced'), icon: Settings, page: 'advanced' },
   ]
 
   const isProActive = window.wpSmsSettings?.addons?.pro
@@ -132,20 +132,20 @@ export default function Overview() {
   // Setup steps for new users
   const setupSteps = [
     {
-      title: 'Configure SMS Gateway',
-      description: gatewayKey ? `Connected to ${gatewayName}` : 'Select your SMS provider',
+      title: __('Configure SMS Gateway'),
+      description: gatewayKey ? `${__('Connected to')} ${gatewayName}` : __('Select your SMS provider'),
       completed: !!gatewayKey,
       onClick: () => setCurrentPage('gateway'),
     },
     {
-      title: 'Set Admin Mobile Number',
-      description: adminMobile || 'Add your phone for test messages',
+      title: __('Set Admin Mobile Number'),
+      description: adminMobile || __('Add your phone for test messages'),
       completed: !!adminMobile,
       onClick: () => setCurrentPage('phone'),
     },
     {
-      title: 'Test Your Connection',
-      description: gatewayStatus.status === 'connected' ? 'Gateway is working' : 'Verify credentials work',
+      title: __('Test Your Connection'),
+      description: gatewayStatus.status === 'connected' ? __('Gateway is working') : __('Verify credentials work'),
       completed: gatewayStatus.status === 'connected',
       onClick: testConnection,
     },
@@ -162,10 +162,10 @@ export default function Overview() {
           <CardHeader>
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <Zap className="wsms-h-5 wsms-w-5 wsms-text-primary" />
-              <CardTitle>Welcome to WSMS!</CardTitle>
+              <CardTitle>{__('Welcome to WSMS!')}</CardTitle>
             </div>
             <CardDescription>
-              Complete these steps to start sending SMS messages from your WordPress site.
+              {__('Complete these steps to start sending SMS messages from your WordPress site.')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -177,16 +177,16 @@ export default function Overview() {
       {/* Success message when setup is complete */}
       {setupComplete && !isNewUser && (
         <Tip variant="success" dismissible>
-          <strong>You're all set!</strong> Your SMS gateway is configured and ready to send messages.
-          Head to <button onClick={() => setCurrentPage('send-sms')} className="wsms-underline wsms-font-medium">Send SMS</button> to send your first message.
+          <strong>{__("You're all set!")}</strong> {__('Your SMS gateway is configured and ready to send messages.')}
+          {' '}{__('Head to')} <button onClick={() => setCurrentPage('send-sms')} className="wsms-underline wsms-font-medium">{__('Send SMS')}</button> {__('to send your first message.')}
         </Tip>
       )}
 
       {/* Gateway Status */}
       <Card>
         <CardHeader>
-          <CardTitle>Gateway Status</CardTitle>
-          <CardDescription>Current SMS gateway connection</CardDescription>
+          <CardTitle>{__('Gateway Status')}</CardTitle>
+          <CardDescription>{__('Current SMS gateway connection')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4">
@@ -199,31 +199,31 @@ export default function Overview() {
               </div>
               <div>
                 <p className="wsms-text-[13px] wsms-font-semibold">
-                  {gatewayKey ? gatewayName : 'No Gateway Selected'}
+                  {gatewayKey ? gatewayName : __('No Gateway Selected')}
                 </p>
                 <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-mt-0.5">
                   {gatewayKey ? (
                     gatewayStatus.status === 'connected' ? (
                       <>
                         <span className="wsms-h-2 wsms-w-2 wsms-rounded-full wsms-bg-success" />
-                        <span className="wsms-text-[12px] wsms-text-success">Connected</span>
+                        <span className="wsms-text-[12px] wsms-text-success">{__('Connected')}</span>
                         {gatewayStatus.credit && (
                           <span className="wsms-text-[12px] wsms-text-muted-foreground">
-                            Credit: {gatewayStatus.credit}
+                            {__('Credit:')} {gatewayStatus.credit}
                           </span>
                         )}
                       </>
                     ) : gatewayStatus.status === 'error' ? (
                       <>
                         <AlertCircle className="wsms-h-3 wsms-w-3 wsms-text-destructive" />
-                        <span className="wsms-text-[12px] wsms-text-destructive">Connection failed</span>
+                        <span className="wsms-text-[12px] wsms-text-destructive">{__('Connection failed')}</span>
                       </>
                     ) : (
-                      <span className="wsms-text-[12px] wsms-text-muted-foreground">Click to test</span>
+                      <span className="wsms-text-[12px] wsms-text-muted-foreground">{__('Click to test')}</span>
                     )
                   ) : (
                     <span className="wsms-text-[12px] wsms-text-muted-foreground">
-                      Configure a gateway to send SMS
+                      {__('Configure a gateway to send SMS')}
                     </span>
                   )}
                 </div>
@@ -240,12 +240,12 @@ export default function Overview() {
                 {testing ? (
                   <>
                     <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1 wsms-animate-spin" />
-                    Testing...
+                    {__('Testing...')}
                   </>
                 ) : (
                   <>
                     <Send className="wsms-h-4 wsms-w-4 wsms-mr-1" />
-                    Test
+                    {__('Test')}
                   </>
                 )}
               </Button>
@@ -257,8 +257,8 @@ export default function Overview() {
       {/* Configuration Status */}
       <Card>
         <CardHeader>
-          <CardTitle>Configuration</CardTitle>
-          <CardDescription>Quick access to main settings</CardDescription>
+          <CardTitle>{__('Configuration')}</CardTitle>
+          <CardDescription>{__('Quick access to main settings')}</CardDescription>
         </CardHeader>
         <CardContent className="wsms-p-0">
           <div className="wsms-divide-y wsms-divide-border">
@@ -276,7 +276,7 @@ export default function Overview() {
       {/* Quick Links */}
       <Card>
         <CardHeader>
-          <CardTitle>Quick Links</CardTitle>
+          <CardTitle>{__('Quick Links')}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="wsms-grid wsms-grid-cols-4 wsms-gap-2">
@@ -296,14 +296,14 @@ export default function Overview() {
         <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4">
           <div>
             <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
-              {Object.keys(gateways || {}).length}+ SMS Gateways Available
+              {Object.keys(gateways || {}).length}+ {__('SMS Gateways Available')}
             </p>
             <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">
-              Providers from around the world
+              {__('Providers from around the world')}
             </p>
           </div>
           <Button variant="outline" size="sm" onClick={() => setCurrentPage('gateway')}>
-            Browse
+            {__('Browse')}
             <ArrowRight className="wsms-h-4 wsms-w-4 wsms-ml-1" />
           </Button>
         </div>
@@ -316,17 +316,17 @@ export default function Overview() {
             <div>
               <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-mb-1">
                 <span className="wsms-text-[10px] wsms-font-medium wsms-uppercase wsms-px-1.5 wsms-py-0.5 wsms-rounded wsms-bg-primary/10 wsms-text-primary">
-                  Pro
+                  {__('Pro')}
                 </span>
-                <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">Upgrade to WSMS Pro</p>
+                <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">{__('Upgrade to WSMS Pro')}</p>
               </div>
               <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                OTP authentication, WooCommerce integration, and more
+                {__('OTP authentication, WooCommerce integration, and more')}
               </p>
             </div>
             <Button variant="outline" size="sm" asChild>
               <a href="https://wp-sms-pro.com/" target="_blank" rel="noopener noreferrer">
-                Learn More
+                {__('Learn More')}
                 <ExternalLink className="wsms-h-3 wsms-w-3 wsms-ml-1" />
               </a>
             </Button>

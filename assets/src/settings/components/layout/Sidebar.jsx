@@ -20,45 +20,48 @@ import {
   Star,
   Sparkles,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn, __, getWpSettings } from '@/lib/utils'
 import { useSettings } from '@/context/SettingsContext'
-import { getWpSettings } from '@/lib/utils'
 
-// Navigation structure - flat items + Settings submenu
-const navigation = [
-  // Direct items
-  { type: 'item', id: 'send-sms', label: 'Send SMS', icon: Send },
-  { type: 'item', id: 'outbox', label: 'Outbox', icon: Inbox },
-  { type: 'item', id: 'subscribers', label: 'Subscribers', icon: Users },
-  { type: 'item', id: 'groups', label: 'Groups', icon: FolderOpen },
+// Navigation structure - using function to ensure translations are applied at runtime
+function getNavigation() {
+  return [
+    // Direct items
+    { type: 'item', id: 'send-sms', label: __('Send SMS'), icon: Send },
+    { type: 'item', id: 'outbox', label: __('Outbox'), icon: Inbox },
+    { type: 'item', id: 'subscribers', label: __('Subscribers'), icon: Users },
+    { type: 'item', id: 'groups', label: __('Groups'), icon: FolderOpen },
 
-  // Settings Section - collapsible with sub-items
-  {
-    type: 'group',
-    id: 'settings',
-    label: 'Settings',
-    icon: Cog,
-    defaultExpanded: false,
-    items: [
-      { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-      { id: 'gateway', label: 'Gateway', icon: Radio },
-      { id: 'phone', label: 'Phone', icon: Phone },
-      { id: 'message-button', label: 'Message Button', icon: MessageSquare },
-      { id: 'notifications', label: 'Notifications', icon: Bell },
-      { id: 'newsletter', label: 'Newsletter', icon: Mail },
-      { id: 'integrations', label: 'Integrations', icon: Puzzle },
-      { id: 'advanced', label: 'Advanced', icon: Settings },
-    ],
-  },
+    // Settings Section - collapsible with sub-items
+    {
+      type: 'group',
+      id: 'settings',
+      label: __('Settings'),
+      icon: Cog,
+      defaultExpanded: false,
+      items: [
+        { id: 'overview', label: __('Overview'), icon: LayoutDashboard },
+        { id: 'gateway', label: __('Gateway'), icon: Radio },
+        { id: 'phone', label: __('Phone'), icon: Phone },
+        { id: 'message-button', label: __('Message Button'), icon: MessageSquare },
+        { id: 'notifications', label: __('Notifications'), icon: Bell },
+        { id: 'newsletter', label: __('Newsletter'), icon: Mail },
+        { id: 'integrations', label: __('Integrations'), icon: Puzzle },
+        { id: 'advanced', label: __('Advanced'), icon: Settings },
+      ],
+    },
 
-  // Privacy (conditional) - direct item
-  { type: 'item', id: 'privacy', label: 'Privacy', icon: Shield, condition: 'gdprEnabled' },
-]
+    // Privacy (conditional) - direct item
+    { type: 'item', id: 'privacy', label: __('Privacy'), icon: Shield, condition: 'gdprEnabled' },
+  ]
+}
 
-const links = [
-  { label: 'Documentation', href: 'https://wp-sms-pro.com/documentation/' },
-  { label: 'Support', href: 'https://wordpress.org/support/plugin/wp-sms/' },
-]
+function getLinks() {
+  return [
+    { label: __('Documentation'), href: 'https://wp-sms-pro.com/documentation/' },
+    { label: __('Support'), href: 'https://wordpress.org/support/plugin/wp-sms/' },
+  ]
+}
 
 const footerUrls = {
   changelog: 'https://wp-sms-pro.com/changelog/',
@@ -96,7 +99,7 @@ function GatewayStatus({ isConfigured, onClick }) {
             : 'wsms-text-amber-700 dark:wsms-text-amber-400'
         )}
       >
-        {isConfigured ? 'Gateway Connected' : 'Gateway not configured'}
+        {isConfigured ? __('Gateway Connected') : __('Gateway not configured')}
       </span>
     </button>
   )
@@ -113,7 +116,7 @@ function WhatsNew({ version }) {
     >
       <span className="wsms-flex wsms-items-center wsms-gap-1.5">
         <Sparkles className="wsms-h-3 wsms-w-3 wsms-text-primary/60 group-hover:wsms-text-primary wsms-transition-colors" />
-        <span>What's New</span>
+        <span>{__("What's New")}</span>
       </span>
       <span className="wsms-font-medium wsms-text-muted-foreground/70">v{version}</span>
     </a>
@@ -129,7 +132,7 @@ function RatePlugin() {
       rel="noopener noreferrer"
       className="wsms-group wsms-flex wsms-items-center wsms-justify-between wsms-w-full wsms-px-3 wsms-py-1.5 wsms-text-[11px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors wsms-rounded-md hover:wsms-bg-accent"
     >
-      <span>Enjoying WSMS?</span>
+      <span>{__('Enjoying WSMS?')}</span>
       <span className="wsms-flex wsms-items-center wsms-gap-0.5">
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
@@ -254,6 +257,10 @@ export default function Sidebar({ onClose, showClose }) {
   const conditions = {
     gdprEnabled,
   }
+
+  // Get navigation items with translations applied
+  const navigation = getNavigation()
+  const links = getLinks()
 
   // Filter navigation items based on conditions
   const filteredNavigation = navigation.filter((item) => {
