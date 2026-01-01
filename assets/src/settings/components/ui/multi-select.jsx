@@ -28,6 +28,7 @@ const MultiSelect = React.forwardRef(
       className,
       disabled = false,
       maxDisplayItems = 3,
+      'aria-label': ariaLabel,
     },
     ref
   ) => {
@@ -136,6 +137,7 @@ const MultiSelect = React.forwardRef(
           role="combobox"
           type="button"
           aria-expanded={open}
+          aria-label={ariaLabel || placeholder}
           disabled={disabled}
           onClick={() => !disabled && setOpen(!open)}
           className={cn(
@@ -158,6 +160,7 @@ const MultiSelect = React.forwardRef(
                     type="button"
                     className="wsms-ml-1 wsms-rounded-full wsms-outline-none hover:wsms-bg-secondary-foreground/20"
                     onClick={(e) => handleRemove(selectedValues[index], e)}
+                    aria-label={`Remove ${label}`}
                   >
                     <X className="wsms-h-3 wsms-w-3" />
                   </button>
@@ -175,6 +178,7 @@ const MultiSelect = React.forwardRef(
                 type="button"
                 className="wsms-rounded-full wsms-p-0.5 hover:wsms-bg-accent"
                 onClick={handleClearAll}
+                aria-label="Clear all selections"
               >
                 <X className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
               </button>

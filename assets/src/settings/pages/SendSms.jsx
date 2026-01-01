@@ -379,7 +379,7 @@ export default function SendSms() {
           {/* Right: Validation + Button */}
           <div className="wsms-flex wsms-items-center wsms-gap-4">
             {!canSend && (
-              <p className="wsms-text-[12px] wsms-text-amber-600">
+              <p className="wsms-text-[12px] wsms-text-amber-700 dark:wsms-text-amber-500">
                 {!gatewayConfigured && 'Configure gateway first'}
                 {gatewayConfigured && !hasMessage && !hasSelections && 'Add message and recipients'}
                 {gatewayConfigured && !hasMessage && hasSelections && 'Enter a message'}

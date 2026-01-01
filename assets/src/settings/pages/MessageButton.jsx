@@ -97,6 +97,7 @@ export default function MessageButton() {
             <Switch
               checked={isEnabled}
               onCheckedChange={(checked) => setMessageButton(checked ? '1' : '')}
+              aria-label="Enable message button"
             />
           </div>
 
@@ -144,7 +145,7 @@ export default function MessageButton() {
               <div className="wsms-space-y-2">
                 <Label>Button Position</Label>
                 <Select value={buttonPosition} onValueChange={setButtonPosition}>
-                  <SelectTrigger>
+                  <SelectTrigger aria-label="Button position">
                     <SelectValue placeholder="Select position" />
                   </SelectTrigger>
                   <SelectContent>
@@ -163,7 +164,7 @@ export default function MessageButton() {
                   value={animationEffect || 'none'}
                   onValueChange={(val) => setAnimationEffect(val === 'none' ? '' : val)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger aria-label="Open animation">
                     <SelectValue placeholder="Select animation" />
                   </SelectTrigger>
                   <SelectContent>
@@ -308,6 +309,7 @@ export default function MessageButton() {
                 <Switch
                   checked={disableLogo === '1'}
                   onCheckedChange={(checked) => setDisableLogo(checked ? '1' : '')}
+                  aria-label="Hide WP SMS branding"
                 />
               </div>
             </CardContent>
@@ -363,6 +365,7 @@ export default function MessageButton() {
                 <Switch
                   checked={linksEnabled === '1'}
                   onCheckedChange={(checked) => setLinksEnabled(checked ? '1' : '')}
+                  aria-label="Show quick links"
                 />
               </div>
 

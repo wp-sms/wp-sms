@@ -9,7 +9,7 @@ describe('StatusBadge', () => {
     const badge = screen.getByText('Sent')
     expect(badge).toBeInTheDocument()
     expect(badge).toHaveClass('wsms-bg-emerald-500/10')
-    expect(badge).toHaveClass('wsms-text-emerald-600')
+    expect(badge).toHaveClass('wsms-text-emerald-700')
   })
 
   test('renders with failed variant', () => {
@@ -17,7 +17,7 @@ describe('StatusBadge', () => {
 
     const badge = screen.getByText('Failed')
     expect(badge).toHaveClass('wsms-bg-red-500/10')
-    expect(badge).toHaveClass('wsms-text-red-600')
+    expect(badge).toHaveClass('wsms-text-red-700')
   })
 
   test('renders with pending variant', () => {
@@ -25,7 +25,7 @@ describe('StatusBadge', () => {
 
     const badge = screen.getByText('Pending')
     expect(badge).toHaveClass('wsms-bg-amber-500/10')
-    expect(badge).toHaveClass('wsms-text-amber-600')
+    expect(badge).toHaveClass('wsms-text-amber-700')
   })
 
   test('renders with active variant', () => {
@@ -40,7 +40,7 @@ describe('StatusBadge', () => {
 
     const badge = screen.getByText('Inactive')
     expect(badge).toHaveClass('wsms-bg-gray-500/10')
-    expect(badge).toHaveClass('wsms-text-gray-600')
+    expect(badge).toHaveClass('wsms-text-gray-700')
   })
 
   test('renders with warning variant', () => {
@@ -48,7 +48,7 @@ describe('StatusBadge', () => {
 
     const badge = screen.getByText('Warning')
     expect(badge).toHaveClass('wsms-bg-orange-500/10')
-    expect(badge).toHaveClass('wsms-text-orange-600')
+    expect(badge).toHaveClass('wsms-text-orange-700')
   })
 
   test('renders with small size', () => {

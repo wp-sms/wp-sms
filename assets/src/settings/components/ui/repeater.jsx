@@ -103,6 +103,7 @@ const Repeater = React.forwardRef(
                     onClick={() => handleMoveUp(index)}
                     disabled={disabled || index === 0}
                     className="wsms-h-6 wsms-w-6 wsms-text-muted-foreground hover:wsms-text-foreground disabled:wsms-opacity-30"
+                    aria-label={`Move item ${index + 1} up`}
                   >
                     <ChevronUp className="wsms-h-4 wsms-w-4" />
                   </Button>
@@ -113,6 +114,7 @@ const Repeater = React.forwardRef(
                     onClick={() => handleMoveDown(index)}
                     disabled={disabled || index === items.length - 1}
                     className="wsms-h-6 wsms-w-6 wsms-text-muted-foreground hover:wsms-text-foreground disabled:wsms-opacity-30"
+                    aria-label={`Move item ${index + 1} down`}
                   >
                     <ChevronDown className="wsms-h-4 wsms-w-4" />
                   </Button>
@@ -173,6 +175,7 @@ const Repeater = React.forwardRef(
                   onClick={() => handleRemoveItem(index)}
                   disabled={disabled}
                   className="wsms-h-8 wsms-w-8 wsms-text-muted-foreground hover:wsms-text-destructive hover:wsms-bg-destructive/10"
+                  aria-label={`Remove item ${index + 1}`}
                 >
                   <Trash2 className="wsms-h-4 wsms-w-4" />
                 </Button>

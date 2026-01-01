@@ -17,15 +17,15 @@
   --popover: 0 0% 100%;
   --popover-foreground: 20 10% 12%;
 
-  /* Orange primary - vibrant but professional */
-  --primary: 24 95% 50%;
+  /* Orange primary - darker for WCAG AA contrast with white text (4.5:1) */
+  --primary: 24 95% 38%;
   --primary-foreground: 0 0% 100%;
 
   --secondary: 30 8% 95%;
   --secondary-foreground: 20 10% 12%;
 
   --muted: 30 8% 95%;
-  --muted-foreground: 20 6% 40%;
+  --muted-foreground: 20 6% 35%;
 
   --accent: 30 12% 93%;
   --accent-foreground: 20 10% 12%;
@@ -33,7 +33,7 @@
   --destructive: 0 72% 51%;
   --destructive-foreground: 0 0% 100%;
 
-  --success: 142 71% 40%;
+  --success: 142 71% 32%;
   --success-foreground: 0 0% 100%;
 
   --warning: 38 92% 50%;
@@ -42,7 +42,7 @@
   /* Improved border contrast - darker for visibility */
   --border: 20 8% 75%;
   --input: 20 8% 75%;
-  --ring: 24 95% 50%;
+  --ring: 24 95% 38%;
 
   --radius: 6px;
 
@@ -60,7 +60,7 @@
   --popover: 20 6% 12%;
   --popover-foreground: 30 10% 93%;
 
-  --primary: 24 95% 55%;
+  --primary: 24 95% 45%;
   --primary-foreground: 0 0% 100%;
 
   --secondary: 20 5% 16%;
@@ -75,13 +75,13 @@
   --destructive: 0 62% 50%;
   --destructive-foreground: 0 0% 100%;
 
-  --success: 142 60% 45%;
+  --success: 142 60% 38%;
   --success-foreground: 0 0% 100%;
 
   /* Improved border contrast for dark mode */
   --border: 20 6% 28%;
   --input: 20 6% 28%;
-  --ring: 24 95% 55%;
+  --ring: 24 95% 45%;
 }
 
 /* ============================================

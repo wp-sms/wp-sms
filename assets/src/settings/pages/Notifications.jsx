@@ -31,7 +31,7 @@ function NotificationSection({
               <CardDescription>{description}</CardDescription>
             </div>
           </div>
-          <Switch checked={enabled} onCheckedChange={onToggle} />
+          <Switch checked={enabled} onCheckedChange={onToggle} aria-label={`Enable ${title}`} />
         </div>
       </CardHeader>
       {enabled && children && (
@@ -140,7 +140,7 @@ export default function Notifications() {
         <div className="wsms-space-y-2">
           <Label>Send To</Label>
           <Select value={notifNewPostReceiver} onValueChange={setNotifNewPostReceiver}>
-            <SelectTrigger>
+            <SelectTrigger aria-label="Send to">
               <SelectValue placeholder="Select recipients" />
             </SelectTrigger>
             <SelectContent>
@@ -158,7 +158,7 @@ export default function Notifications() {
           <div className="wsms-space-y-2">
             <Label>Subscriber Group</Label>
             <Select value={notifNewPostGroup} onValueChange={setNotifNewPostGroup}>
-              <SelectTrigger>
+              <SelectTrigger aria-label="Subscriber group">
                 <SelectValue placeholder="Select group" />
               </SelectTrigger>
               <SelectContent>
@@ -214,6 +214,7 @@ export default function Notifications() {
           <Switch
             checked={notifNewPostForce === '1'}
             onCheckedChange={(checked) => setNotifNewPostForce(checked ? '1' : '')}
+            aria-label="Enable auto-send"
           />
         </div>
 
@@ -227,6 +228,7 @@ export default function Notifications() {
           <Switch
             checked={notifNewPostMMS === '1'}
             onCheckedChange={(checked) => setNotifNewPostMMS(checked ? '1' : '')}
+            aria-label="Include featured image"
           />
         </div>
 

@@ -76,7 +76,7 @@ export default function PhoneConfig() {
           <div className="wsms-space-y-2">
             <Label>Collect Phone Numbers From</Label>
             <Select value={addMobileField} onValueChange={setAddMobileField}>
-              <SelectTrigger>
+              <SelectTrigger aria-label="Collect phone numbers from">
                 <SelectValue placeholder="Select source" />
               </SelectTrigger>
               <SelectContent>
@@ -91,7 +91,7 @@ export default function PhoneConfig() {
           <div className="wsms-space-y-2">
             <Label>Field Requirement</Label>
             <Select value={optionalMobileField} onValueChange={setOptionalMobileField}>
-              <SelectTrigger>
+              <SelectTrigger aria-label="Field requirement">
                 <SelectValue placeholder="Select requirement" />
               </SelectTrigger>
               <SelectContent>
@@ -138,6 +138,7 @@ export default function PhoneConfig() {
             <Switch
               checked={isInternationalEnabled}
               onCheckedChange={(checked) => setInternationalMobile(checked ? '1' : '')}
+              aria-label="Enable international phone input"
             />
           </div>
 
@@ -178,7 +179,7 @@ export default function PhoneConfig() {
               <div className="wsms-space-y-2">
                 <Label>Default Country Code</Label>
                 <Select value={countryCode} onValueChange={setCountryCode}>
-                  <SelectTrigger>
+                  <SelectTrigger aria-label="Default country code">
                     <SelectValue placeholder="Select country code" />
                   </SelectTrigger>
                   <SelectContent>
@@ -250,6 +251,7 @@ export default function PhoneConfig() {
             <Switch
               checked={gdprCompliance === '1'}
               onCheckedChange={(checked) => setGdprCompliance(checked ? '1' : '')}
+              aria-label="Enable GDPR compliance"
             />
           </div>
         </CardContent>

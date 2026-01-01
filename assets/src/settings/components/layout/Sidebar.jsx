@@ -228,7 +228,7 @@ export default function Sidebar({ onClose, showClose }) {
             </a>
           ))}
         </div>
-        <div className="wsms-px-3 wsms-text-[11px] wsms-text-muted-foreground/70">
+        <div className="wsms-px-3 wsms-text-[11px] wsms-text-muted-foreground">
           Version {version}
         </div>
       </div>

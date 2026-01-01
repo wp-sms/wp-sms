@@ -190,6 +190,7 @@ export default function Groups() {
                 variant="ghost"
                 className="wsms-h-8 wsms-w-8"
                 onClick={handleInlineEditSave}
+                aria-label="Save group name"
               >
                 <Save className="wsms-h-4 wsms-w-4 wsms-text-emerald-600" />
               </Button>
@@ -198,6 +199,7 @@ export default function Groups() {
                 variant="ghost"
                 className="wsms-h-8 wsms-w-8"
                 onClick={handleInlineEditCancel}
+                aria-label="Cancel editing"
               >
                 <X className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
               </Button>
@@ -389,6 +391,8 @@ export default function Groups() {
                 'wsms-p-1.5 wsms-rounded-md wsms-transition-colors',
                 viewMode === 'list' ? 'wsms-bg-muted wsms-text-foreground' : 'wsms-text-muted-foreground hover:wsms-text-foreground'
               )}
+              aria-label="List view"
+              aria-pressed={viewMode === 'list'}
             >
               <List className="wsms-h-4 wsms-w-4" />
             </button>
@@ -398,6 +402,8 @@ export default function Groups() {
                 'wsms-p-1.5 wsms-rounded-md wsms-transition-colors',
                 viewMode === 'grid' ? 'wsms-bg-muted wsms-text-foreground' : 'wsms-text-muted-foreground hover:wsms-text-foreground'
               )}
+              aria-label="Grid view"
+              aria-pressed={viewMode === 'grid'}
             >
               <LayoutGrid className="wsms-h-4 wsms-w-4" />
             </button>

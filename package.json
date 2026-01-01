@@ -33,12 +33,15 @@
     "e2e:send-sms": "playwright test e2e/tests/send-sms/",
     "e2e:outbox": "playwright test e2e/tests/outbox/",
     "e2e:report": "playwright show-report e2e-report",
-    "e2e:codegen": "playwright codegen http://localhost:8888"
+    "e2e:codegen": "playwright codegen http://localhost:8888",
+    "e2e:a11y": "playwright test --grep @accessibility",
+    "e2e:a11y:local": "dotenv -e .env.e2e.local -- playwright test --grep @accessibility"
   },
   "keywords": [],
   "author": "",
   "license": "GPLv3",
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@babel/core": "^7.0.0",
     "@babel/preset-env": "^7.28.5",
     "@babel/preset-react": "^7.24.1",
@@ -60,6 +63,7 @@
     "concurrently": "^7.5.0",
     "copy-webpack-plugin": "^10.2.4",
     "css-loader": "^7.1.1",
+    "dotenv-cli": "^11.0.0",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
     "mini-css-extract-plugin": "^2.8.1",

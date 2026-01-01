@@ -77,6 +77,7 @@ export default function Integrations() {
                 <Switch
                   checked={integration.value === '1'}
                   onCheckedChange={(checked) => integration.setValue(checked ? '1' : '')}
+                  aria-label={`Enable ${integration.name}`}
                 />
               </div>
               {/* Inject add-on fields for this integration */}

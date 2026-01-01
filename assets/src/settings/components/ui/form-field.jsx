@@ -66,6 +66,7 @@ const SwitchField = React.forwardRef(
           checked={checked}
           onCheckedChange={onCheckedChange}
           disabled={disabled}
+          aria-label={label}
         />
       </div>
     )

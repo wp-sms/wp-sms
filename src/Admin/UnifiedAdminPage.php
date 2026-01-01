@@ -72,7 +72,7 @@ class UnifiedAdminPage extends Singleton
         $list['unified-admin'] = [
             'sub'      => 'wp-sms',
             'title'    => __('Dashboard', 'wp-sms'),
-            'name'     => __('Dashboard', 'wp-sms') . ' <span style="background:#3b82f6;color:white;padding:2px 6px;border-radius:3px;font-size:10px;margin-left:5px;">Beta</span>',
+            'name'     => __('Dashboard', 'wp-sms') . ' <span style="background:#1d4ed8;color:white;padding:2px 6px;border-radius:3px;font-size:10px;margin-left:5px;">Beta</span>',
             'cap'      => 'wpsms_sendsms',
             'page_url' => 'unified-admin',
             'callback' => __CLASS__,

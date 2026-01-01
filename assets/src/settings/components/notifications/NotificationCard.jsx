@@ -90,7 +90,7 @@ export function NotificationCard({ notification, onDismiss, showDismiss = true }
           className={cn(
             'wsms-absolute wsms-top-3 wsms-right-3',
             'wsms-flex wsms-items-center wsms-justify-center wsms-h-6 wsms-w-6 wsms-rounded-md',
-            'wsms-text-muted-foreground/60 wsms-transition-all wsms-duration-200',
+            'wsms-text-muted-foreground wsms-transition-all wsms-duration-200',
             'wsms-opacity-0 group-hover:wsms-opacity-100',
             'hover:wsms-bg-foreground/10 hover:wsms-text-foreground',
             'active:wsms-scale-90',
@@ -130,8 +130,8 @@ export function NotificationCard({ notification, onDismiss, showDismiss = true }
           {/* Timestamp */}
           {activatedAt && (
             <div className="wsms-flex wsms-items-center wsms-gap-1 wsms-mb-2">
-              <Clock className="wsms-h-3 wsms-w-3 wsms-text-muted-foreground/60" strokeWidth={2} />
-              <span className="wsms-text-[11px] wsms-text-muted-foreground/80 wsms-font-medium">
+              <Clock className="wsms-h-3 wsms-w-3 wsms-text-muted-foreground" strokeWidth={2} />
+              <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-font-medium">
                 {activatedAt}
               </span>
             </div>

@@ -188,6 +188,7 @@ function Pagination({
           className="wsms-h-8 wsms-w-8"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
+          aria-label="Go to previous page"
         >
           <ChevronLeft className="wsms-h-4 wsms-w-4" />
         </Button>
@@ -242,6 +243,7 @@ function Pagination({
           className="wsms-h-8 wsms-w-8"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
+          aria-label="Go to next page"
         >
           <ChevronRight className="wsms-h-4 wsms-w-4" />
         </Button>

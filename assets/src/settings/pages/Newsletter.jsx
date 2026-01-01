@@ -62,6 +62,7 @@ export default function Newsletter() {
             <Switch
               checked={showGroups}
               onCheckedChange={(checked) => setFormGroups(checked ? '1' : '')}
+              aria-label="Show groups in form"
             />
           </div>
 
@@ -91,13 +92,14 @@ export default function Newsletter() {
                 <Switch
                   checked={multipleSelect === '1'}
                   onCheckedChange={(checked) => setMultipleSelect(checked ? '1' : '')}
+                  aria-label="Allow multiple groups"
                 />
               </div>
 
               <div className="wsms-space-y-2">
                 <Label>Default Group</Label>
                 <Select value={defaultGroup} onValueChange={setDefaultGroup}>
-                  <SelectTrigger>
+                  <SelectTrigger aria-label="Default group">
                     <SelectValue placeholder="Select a group" />
                   </SelectTrigger>
                   <SelectContent>
@@ -126,6 +128,7 @@ export default function Newsletter() {
             <Switch
               checked={formVerify === '1'}
               onCheckedChange={(checked) => setFormVerify(checked ? '1' : '')}
+              aria-label="Require SMS verification"
             />
           </div>
         </CardContent>
@@ -153,6 +156,7 @@ export default function Newsletter() {
             <Switch
               checked={welcomeEnabled === '1'}
               onCheckedChange={(checked) => setWelcomeEnabled(checked ? '1' : '')}
+              aria-label="Send welcome message"
             />
           </div>
 
@@ -196,6 +200,7 @@ export default function Newsletter() {
             <Switch
               checked={disableStyle === '1'}
               onCheckedChange={(checked) => setDisableStyle(checked ? '1' : '')}
+              aria-label="Disable default styles"
             />
           </div>
         </CardContent>
@@ -231,7 +236,7 @@ export default function Newsletter() {
             <div className="wsms-space-y-2">
               <Label>Checkbox Default State</Label>
               <Select value={gdprCheckbox} onValueChange={setGdprCheckbox}>
-                <SelectTrigger>
+                <SelectTrigger aria-label="GDPR checkbox default state">
                   <SelectValue placeholder="Select default state" />
                 </SelectTrigger>
                 <SelectContent>

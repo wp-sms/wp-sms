@@ -604,7 +604,7 @@ export default function Subscribers() {
 
             {/* Filters inline */}
             <Select value={filters.filters.group_id} onValueChange={(v) => filters.setFilter('group_id', v)}>
-              <SelectTrigger className="wsms-h-9 wsms-w-[120px] wsms-text-[12px]">
+              <SelectTrigger className="wsms-h-9 wsms-w-[120px] wsms-text-[12px]" aria-label="Filter by group">
                 <SelectValue placeholder="All Groups" />
               </SelectTrigger>
               <SelectContent>
@@ -618,7 +618,7 @@ export default function Subscribers() {
             </Select>
 
             <Select value={filters.filters.status} onValueChange={(v) => filters.setFilter('status', v)}>
-              <SelectTrigger className="wsms-h-9 wsms-w-[100px] wsms-text-[12px]">
+              <SelectTrigger className="wsms-h-9 wsms-w-[100px] wsms-text-[12px]" aria-label="Filter by status">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>
               <SelectContent>
@@ -630,7 +630,7 @@ export default function Subscribers() {
 
             {countries.length > 0 && (
               <Select value={filters.filters.country_code} onValueChange={(v) => filters.setFilter('country_code', v)}>
-                <SelectTrigger className="wsms-h-9 wsms-w-[130px] wsms-text-[12px]">
+                <SelectTrigger className="wsms-h-9 wsms-w-[130px] wsms-text-[12px]" aria-label="Filter by country">
                   <Globe className="wsms-h-3.5 wsms-w-3.5 wsms-mr-1 wsms-text-muted-foreground wsms-shrink-0" />
                   <SelectValue placeholder="Country" />
                 </SelectTrigger>

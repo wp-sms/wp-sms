@@ -267,7 +267,7 @@ export function NotificationSidebar({
 
         {/* Footer with subtle branding */}
         <div className="wsms-flex-shrink-0 wsms-px-5 wsms-py-3 wsms-border-t wsms-border-border/50 wsms-bg-card/80">
-          <p className="wsms-text-[11px] wsms-text-muted-foreground/60 wsms-text-center">
+          <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-text-center">
             Stay updated with the latest from WP SMS
           </p>
         </div>

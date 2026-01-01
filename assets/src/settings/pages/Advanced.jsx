@@ -112,6 +112,7 @@ export default function Advanced() {
             <Switch
               checked={storeOutbox === '1'}
               onCheckedChange={(checked) => setStoreOutbox(checked ? '1' : '')}
+              aria-label="Log sent messages"
             />
           </div>
 
@@ -119,7 +120,7 @@ export default function Advanced() {
             <div className="wsms-space-y-2">
               <Label>Auto-delete Sent Messages</Label>
               <Select value={outboxRetention} onValueChange={setOutboxRetention}>
-                <SelectTrigger>
+                <SelectTrigger aria-label="Outbox retention period">
                   <SelectValue placeholder="Select retention period" />
                 </SelectTrigger>
                 <SelectContent>
@@ -147,6 +148,7 @@ export default function Advanced() {
               <Switch
                 checked={storeInbox === '1'}
                 onCheckedChange={(checked) => setStoreInbox(checked ? '1' : '')}
+                aria-label="Log received messages"
               />
             </div>
 
@@ -154,7 +156,7 @@ export default function Advanced() {
               <div className="wsms-space-y-2 wsms-mt-4">
                 <Label>Auto-delete Received Messages</Label>
                 <Select value={inboxRetention} onValueChange={setInboxRetention}>
-                  <SelectTrigger>
+                  <SelectTrigger aria-label="Inbox retention period">
                     <SelectValue placeholder="Select retention period" />
                   </SelectTrigger>
                   <SelectContent>
@@ -196,6 +198,7 @@ export default function Advanced() {
             <Switch
               checked={reportStats === '1'}
               onCheckedChange={(checked) => setReportStats(checked ? '1' : '')}
+              aria-label="Enable weekly statistics email"
             />
           </div>
 
@@ -209,6 +212,7 @@ export default function Advanced() {
             <Switch
               checked={notifyErrors === '1'}
               onCheckedChange={(checked) => setNotifyErrors(checked ? '1' : '')}
+              aria-label="Enable error notifications"
             />
           </div>
 
@@ -222,6 +226,7 @@ export default function Advanced() {
             <Switch
               checked={displayNotifications === '1'}
               onCheckedChange={(checked) => setDisplayNotifications(checked ? '1' : '')}
+              aria-label="Enable plugin notifications"
             />
           </div>
 
@@ -235,6 +240,7 @@ export default function Advanced() {
             <Switch
               checked={shareAnonymousData === '1'}
               onCheckedChange={(checked) => setShareAnonymousData(checked ? '1' : '')}
+              aria-label="Enable usage analytics"
             />
           </div>
         </CardContent>

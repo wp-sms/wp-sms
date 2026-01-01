@@ -8,13 +8,13 @@ const statusBadgeVariants = cva(
   {
     variants: {
       variant: {
-        success: 'wsms-bg-emerald-500/10 wsms-text-emerald-600 dark:wsms-text-emerald-400',
-        failed: 'wsms-bg-red-500/10 wsms-text-red-600 dark:wsms-text-red-400',
-        pending: 'wsms-bg-amber-500/10 wsms-text-amber-600 dark:wsms-text-amber-400',
-        sent: 'wsms-bg-blue-500/10 wsms-text-blue-600 dark:wsms-text-blue-400',
-        inactive: 'wsms-bg-gray-500/10 wsms-text-gray-600 dark:wsms-text-gray-400',
-        active: 'wsms-bg-emerald-500/10 wsms-text-emerald-600 dark:wsms-text-emerald-400',
-        warning: 'wsms-bg-orange-500/10 wsms-text-orange-600 dark:wsms-text-orange-400',
+        success: 'wsms-bg-emerald-500/10 wsms-text-emerald-700 dark:wsms-text-emerald-400',
+        failed: 'wsms-bg-red-500/10 wsms-text-red-700 dark:wsms-text-red-400',
+        pending: 'wsms-bg-amber-500/10 wsms-text-amber-700 dark:wsms-text-amber-400',
+        sent: 'wsms-bg-blue-500/10 wsms-text-blue-700 dark:wsms-text-blue-400',
+        inactive: 'wsms-bg-gray-500/10 wsms-text-gray-700 dark:wsms-text-gray-400',
+        active: 'wsms-bg-emerald-500/10 wsms-text-emerald-700 dark:wsms-text-emerald-400',
+        warning: 'wsms-bg-orange-500/10 wsms-text-orange-700 dark:wsms-text-orange-400',
       },
       size: {
         sm: 'wsms-text-[10px] wsms-px-2 wsms-py-0.5',

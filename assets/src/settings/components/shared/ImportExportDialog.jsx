@@ -185,6 +185,7 @@ const ImportExportDialog = ({
                         e.stopPropagation()
                         clearFile()
                       }}
+                      aria-label="Remove selected file"
                     >
                       <X className="wsms-h-4 wsms-w-4" />
                     </Button>
