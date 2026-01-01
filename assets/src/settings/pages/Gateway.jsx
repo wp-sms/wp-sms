@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap, BookOpen, ExternalLink, XCircle, RotateCcw, Code, Unplug } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -22,6 +22,14 @@ export default function Gateway() {
   const gatewayDocumentUrl = gatewayCapabilities.documentUrl || ''
 
   const [gatewayName, setGatewayName] = useSetting('gateway_name', '')
+
+  // Track the saved gateway (the one capabilities/fields are loaded for)
+  // This is set on initial load and represents what's actually saved in the database
+  const savedGatewayRef = useRef(gatewayName)
+
+  // Detect if user has selected a different gateway but hasn't saved yet
+  // When true, the capabilities/credentials/guide shown are for the OLD gateway
+  const hasUnsavedGatewayChange = gatewayName && gatewayName !== savedGatewayRef.current
 
   const [deliveryMethod, setDeliveryMethod] = useSetting('sms_delivery_method', 'api_direct_send')
   const [sendUnicode, setSendUnicode] = useSetting('send_unicode', '')
@@ -249,41 +257,49 @@ export default function Gateway() {
                 </div>
                 {/* Inline Capabilities */}
                 <div className="wsms-border-t wsms-border-primary/20 wsms-px-3 wsms-py-2 wsms-bg-primary/[0.02]">
-                  <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-flex-wrap">
-                    <span className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
-                      Capabilities:
-                    </span>
-                    <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-flex-wrap">
-                      <span className={cn(
-                        "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
-                        gatewayCapabilities.flash === 'enable' ? "wsms-text-success" : "wsms-text-muted-foreground/50"
-                      )}>
-                        {gatewayCapabilities.flash === 'enable' ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                        Flash SMS
+                  {hasUnsavedGatewayChange ? (
+                    // Show save prompt when gateway changed but not saved
+                    <p className="wsms-text-[11px] wsms-text-amber-600 dark:wsms-text-amber-400">
+                      Save your changes to see capabilities and configure credentials for this gateway.
+                    </p>
+                  ) : (
+                    // Show actual capabilities for saved gateway
+                    <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-flex-wrap">
+                      <span className="wsms-text-[11px] wsms-font-medium wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground">
+                        Capabilities:
                       </span>
-                      <span className={cn(
-                        "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
-                        gatewayCapabilities.bulk_send !== false ? "wsms-text-success" : "wsms-text-muted-foreground/50"
-                      )}>
-                        {gatewayCapabilities.bulk_send !== false ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                        Bulk Send
-                      </span>
-                      <span className={cn(
-                        "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
-                        gatewayCapabilities.mms === true || gatewayCapabilities.mms === 'enable' ? "wsms-text-success" : "wsms-text-muted-foreground/50"
-                      )}>
-                        {gatewayCapabilities.mms === true || gatewayCapabilities.mms === 'enable' ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                        MMS
-                      </span>
-                      <span className={cn(
-                        "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
-                        gatewayCapabilities.has_key === true || gatewayCapabilities.incoming === true ? "wsms-text-success" : "wsms-text-muted-foreground/50"
-                      )}>
-                        {gatewayCapabilities.has_key === true || gatewayCapabilities.incoming === true ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
-                        Incoming SMS
-                      </span>
+                      <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-flex-wrap">
+                        <span className={cn(
+                          "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
+                          gatewayCapabilities.flash === 'enable' ? "wsms-text-success" : "wsms-text-muted-foreground/50"
+                        )}>
+                          {gatewayCapabilities.flash === 'enable' ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
+                          Flash SMS
+                        </span>
+                        <span className={cn(
+                          "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
+                          gatewayCapabilities.bulk_send !== false ? "wsms-text-success" : "wsms-text-muted-foreground/50"
+                        )}>
+                          {gatewayCapabilities.bulk_send !== false ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
+                          Bulk Send
+                        </span>
+                        <span className={cn(
+                          "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
+                          gatewayCapabilities.mms === true || gatewayCapabilities.mms === 'enable' ? "wsms-text-success" : "wsms-text-muted-foreground/50"
+                        )}>
+                          {gatewayCapabilities.mms === true || gatewayCapabilities.mms === 'enable' ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
+                          MMS
+                        </span>
+                        <span className={cn(
+                          "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
+                          gatewayCapabilities.has_key === true || gatewayCapabilities.incoming === true ? "wsms-text-success" : "wsms-text-muted-foreground/50"
+                        )}>
+                          {gatewayCapabilities.has_key === true || gatewayCapabilities.incoming === true ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
+                          Incoming SMS
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </>
             ) : (
@@ -306,22 +322,15 @@ export default function Gateway() {
         </CardContent>
       </Card>
 
-      {/* Notice when gateway selected but no credentials fields (new gateway not saved yet) */}
-      {gatewayName && Object.keys(gatewayFields).length === 0 && (
-        <Tip variant="info">
-          Save your changes to configure credentials for <strong>{gatewayName}</strong>. The credential fields will appear after saving.
-        </Tip>
-      )}
-
-      {/* Gateway Guide */}
-      {gatewayName && (gatewayHelp || gatewayDocumentUrl) && (
+      {/* Gateway Guide - only show for saved gateway */}
+      {gatewayName && !hasUnsavedGatewayChange && (gatewayHelp || gatewayDocumentUrl) && (
         <Card>
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <BookOpen className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               Gateway Guide
             </CardTitle>
-            <CardDescription>Setup instructions for {gatewayName}</CardDescription>
+            <CardDescription>Setup instructions for {getGatewayDisplayName(gatewayName, gateways)}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="wsms-space-y-3">
@@ -347,15 +356,15 @@ export default function Gateway() {
         </Card>
       )}
 
-      {/* Gateway Credentials */}
-      {gatewayName && Object.keys(gatewayFields).length > 0 && (
+      {/* Gateway Credentials - only show for saved gateway */}
+      {gatewayName && !hasUnsavedGatewayChange && Object.keys(gatewayFields).length > 0 && (
         <Card>
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <Shield className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               Credentials
             </CardTitle>
-            <CardDescription>API credentials for {gatewayName}</CardDescription>
+            <CardDescription>API credentials for {getGatewayDisplayName(gatewayName, gateways)}</CardDescription>
           </CardHeader>
           <CardContent className="wsms-space-y-4">
             <div className="wsms-grid wsms-grid-cols-1 wsms-gap-4 md:wsms-grid-cols-2">
