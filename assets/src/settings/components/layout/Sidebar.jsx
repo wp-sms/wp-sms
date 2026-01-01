@@ -71,7 +71,7 @@ function GatewayStatus({ isConfigured, onClick }) {
     <button
       onClick={onClick}
       className={cn(
-        'wsms-flex wsms-w-full wsms-items-center wsms-gap-2.5 wsms-px-3 wsms-py-2.5 wsms-rounded-md wsms-transition-all wsms-text-left',
+        'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-px-3 wsms-py-2 wsms-rounded-md wsms-transition-all wsms-text-left',
         isConfigured
           ? 'wsms-bg-emerald-500/10 hover:wsms-bg-emerald-500/15'
           : 'wsms-bg-amber-500/10 hover:wsms-bg-amber-500/15'
@@ -109,14 +109,13 @@ function WhatsNew({ version }) {
       href={footerUrls.changelog}
       target="_blank"
       rel="noopener noreferrer"
-      className="wsms-group wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[11px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors"
+      className="wsms-group wsms-flex wsms-items-center wsms-justify-between wsms-w-full wsms-px-3 wsms-py-1.5 wsms-text-[11px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors wsms-rounded-md hover:wsms-bg-accent"
     >
-      <span className="wsms-font-medium">v{version}</span>
-      <span className="wsms-text-muted-foreground/50">•</span>
-      <span className="wsms-flex wsms-items-center wsms-gap-1">
+      <span className="wsms-flex wsms-items-center wsms-gap-1.5">
         <Sparkles className="wsms-h-3 wsms-w-3 wsms-text-primary/60 group-hover:wsms-text-primary wsms-transition-colors" />
         <span>What's New</span>
       </span>
+      <span className="wsms-font-medium wsms-text-muted-foreground/70">v{version}</span>
     </a>
   )
 }
@@ -128,18 +127,18 @@ function RatePlugin() {
       href={footerUrls.rate}
       target="_blank"
       rel="noopener noreferrer"
-      className="wsms-group wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors"
+      className="wsms-group wsms-flex wsms-items-center wsms-justify-between wsms-w-full wsms-px-3 wsms-py-1.5 wsms-text-[11px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors wsms-rounded-md hover:wsms-bg-accent"
     >
-      <span className="wsms-flex wsms-items-center">
+      <span>Enjoying WP SMS?</span>
+      <span className="wsms-flex wsms-items-center wsms-gap-0.5">
         {[1, 2, 3, 4, 5].map((star) => (
           <Star
             key={star}
-            className="wsms-h-3 wsms-w-3 wsms-text-amber-400/30 group-hover:wsms-text-amber-400 group-hover:wsms-fill-amber-400 wsms-transition-all wsms-duration-150"
+            className="wsms-h-3 wsms-w-3 wsms-text-amber-400/40 group-hover:wsms-text-amber-400 group-hover:wsms-fill-amber-400 wsms-transition-all wsms-duration-150"
             style={{ transitionDelay: `${star * 40}ms` }}
           />
         ))}
       </span>
-      <span className="wsms-ml-0.5">Rate</span>
     </a>
   )
 }
@@ -304,23 +303,23 @@ export default function Sidebar({ onClose, showClose }) {
       {/* Footer */}
       <div className="wsms-border-t wsms-border-border wsms-mt-auto wsms-bg-muted/30">
         {/* Quick Links */}
-        <div className="wsms-px-3 wsms-pt-3 wsms-pb-2 wsms-space-y-1">
+        <div className="wsms-px-3 wsms-pt-2 wsms-pb-1 wsms-space-y-0.5">
           {links.map((link) => (
             <a
               key={link.label}
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="wsms-flex wsms-items-center wsms-justify-between wsms-px-3 wsms-py-2 wsms-text-[12px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors wsms-rounded-md hover:wsms-bg-accent"
+              className="wsms-flex wsms-items-center wsms-justify-between wsms-px-3 wsms-py-1.5 wsms-text-[11px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors wsms-rounded-md hover:wsms-bg-accent"
             >
               <span>{link.label}</span>
-              <ExternalLink className="wsms-h-3.5 wsms-w-3.5" />
+              <ExternalLink className="wsms-h-3 wsms-w-3" />
             </a>
           ))}
         </div>
 
         {/* Gateway Status */}
-        <div className="wsms-px-3 wsms-py-2">
+        <div className="wsms-px-3 wsms-py-1">
           <GatewayStatus
             isConfigured={isGatewayConfigured}
             onClick={() => setCurrentPage('gateway')}
@@ -328,7 +327,7 @@ export default function Sidebar({ onClose, showClose }) {
         </div>
 
         {/* Version & Rate */}
-        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-px-3 wsms-py-3 wsms-border-t wsms-border-border/50">
+        <div className="wsms-px-3 wsms-py-1.5 wsms-space-y-0.5 wsms-border-t wsms-border-border/50">
           <WhatsNew version={version} />
           <RatePlugin />
         </div>
