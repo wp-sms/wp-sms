@@ -15,6 +15,7 @@ import {
   ExternalLink,
   Zap,
   BookOpen,
+  Mail,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -121,7 +122,7 @@ export default function Overview() {
 
   const quickLinks = [
     { title: 'Notifications', icon: Bell, page: 'notifications' },
-    { title: 'Newsletter', icon: Users, page: 'newsletter' },
+    { title: 'Newsletter', icon: Mail, page: 'newsletter' },
     { title: 'Integrations', icon: Puzzle, page: 'integrations' },
     { title: 'Advanced', icon: Settings, page: 'advanced' },
   ]
