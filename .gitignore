@@ -51,6 +51,7 @@ bundle-analysis.html
 /e2e-results/
 /e2e/.auth/
 .env.e2e
+.env.e2e.local
 /playwright-report/
 /test-results/
 
