@@ -17,6 +17,8 @@ import {
   ChevronRight,
   Cog,
   Mail,
+  Star,
+  Sparkles,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSettings } from '@/context/SettingsContext'
@@ -57,6 +59,90 @@ const links = [
   { label: 'Documentation', href: 'https://wp-sms-pro.com/documentation/' },
   { label: 'Support', href: 'https://wordpress.org/support/plugin/wp-sms/' },
 ]
+
+const footerUrls = {
+  changelog: 'https://wp-sms-pro.com/changelog/',
+  rate: 'https://wordpress.org/support/plugin/wp-sms/reviews/#new-post',
+}
+
+// Gateway status indicator component
+function GatewayStatus({ isConfigured, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        'wsms-flex wsms-w-full wsms-items-center wsms-gap-2.5 wsms-px-3 wsms-py-2.5 wsms-rounded-md wsms-transition-all wsms-text-left',
+        isConfigured
+          ? 'wsms-bg-emerald-500/10 hover:wsms-bg-emerald-500/15'
+          : 'wsms-bg-amber-500/10 hover:wsms-bg-amber-500/15'
+      )}
+    >
+      <span className="wsms-relative wsms-flex wsms-h-2 wsms-w-2">
+        {isConfigured && (
+          <span className="wsms-absolute wsms-inline-flex wsms-h-full wsms-w-full wsms-rounded-full wsms-bg-emerald-500 wsms-opacity-75 wsms-animate-ping" />
+        )}
+        <span
+          className={cn(
+            'wsms-relative wsms-inline-flex wsms-rounded-full wsms-h-2 wsms-w-2',
+            isConfigured ? 'wsms-bg-emerald-500' : 'wsms-bg-amber-500'
+          )}
+        />
+      </span>
+      <span
+        className={cn(
+          'wsms-text-[11px] wsms-font-medium',
+          isConfigured
+            ? 'wsms-text-emerald-700 dark:wsms-text-emerald-400'
+            : 'wsms-text-amber-700 dark:wsms-text-amber-400'
+        )}
+      >
+        {isConfigured ? 'Gateway Connected' : 'Gateway not configured'}
+      </span>
+    </button>
+  )
+}
+
+// What's New component with changelog link
+function WhatsNew({ version }) {
+  return (
+    <a
+      href={footerUrls.changelog}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="wsms-group wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[11px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors"
+    >
+      <span className="wsms-font-medium">v{version}</span>
+      <span className="wsms-text-muted-foreground/50">•</span>
+      <span className="wsms-flex wsms-items-center wsms-gap-1">
+        <Sparkles className="wsms-h-3 wsms-w-3 wsms-text-primary/60 group-hover:wsms-text-primary wsms-transition-colors" />
+        <span>What's New</span>
+      </span>
+    </a>
+  )
+}
+
+// Rate plugin component with animated stars
+function RatePlugin() {
+  return (
+    <a
+      href={footerUrls.rate}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="wsms-group wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors"
+    >
+      <span className="wsms-flex wsms-items-center">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            className="wsms-h-3 wsms-w-3 wsms-text-amber-400/30 group-hover:wsms-text-amber-400 group-hover:wsms-fill-amber-400 wsms-transition-all wsms-duration-150"
+            style={{ transitionDelay: `${star * 40}ms` }}
+          />
+        ))}
+      </span>
+      <span className="wsms-ml-0.5">Rate</span>
+    </a>
+  )
+}
 
 // Single nav item (leaf node)
 function NavItem({ item, isActive, onClick, isNested = false }) {
@@ -159,9 +245,11 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions }) {
 }
 
 export default function Sidebar({ onClose, showClose }) {
-  const { currentPage, setCurrentPage } = useSettings()
+  const { currentPage, setCurrentPage, getSetting } = useSettings()
   const version = window.wpSmsSettings?.version || '7.0'
   const { gdprEnabled } = getWpSettings()
+  const gatewayName = getSetting('gateway_name', '')
+  const isGatewayConfigured = Boolean(gatewayName)
 
   // Conditions object for filtering
   const conditions = {
@@ -214,8 +302,9 @@ export default function Sidebar({ onClose, showClose }) {
       </nav>
 
       {/* Footer */}
-      <div className="wsms-border-t wsms-border-border wsms-px-3 wsms-py-4 wsms-mt-auto wsms-bg-muted/30">
-        <div className="wsms-space-y-1 wsms-mb-3">
+      <div className="wsms-border-t wsms-border-border wsms-mt-auto wsms-bg-muted/30">
+        {/* Quick Links */}
+        <div className="wsms-px-3 wsms-pt-3 wsms-pb-2 wsms-space-y-1">
           {links.map((link) => (
             <a
               key={link.label}
@@ -229,8 +318,19 @@ export default function Sidebar({ onClose, showClose }) {
             </a>
           ))}
         </div>
-        <div className="wsms-px-3 wsms-text-[11px] wsms-text-muted-foreground">
-          Version {version}
+
+        {/* Gateway Status */}
+        <div className="wsms-px-3 wsms-py-2">
+          <GatewayStatus
+            isConfigured={isGatewayConfigured}
+            onClick={() => setCurrentPage('gateway')}
+          />
+        </div>
+
+        {/* Version & Rate */}
+        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-px-3 wsms-py-3 wsms-border-t wsms-border-border/50">
+          <WhatsNew version={version} />
+          <RatePlugin />
         </div>
       </div>
     </div>
