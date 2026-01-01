@@ -2,6 +2,7 @@ import React, { useState, lazy, Suspense, memo } from 'react'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import FloatingSaveBar from './FloatingSaveBar'
+import BrandingFooter from './BrandingFooter'
 import { useSettings } from '@/context/SettingsContext'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Button } from '@/components/ui/button'
@@ -118,6 +119,8 @@ const AppShell = memo(function AppShell() {
                   </div>
                 </Suspense>
               )}
+
+              <BrandingFooter />
             </div>
           </main>
 
