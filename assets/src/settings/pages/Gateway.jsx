@@ -331,12 +331,14 @@ export default function Gateway() {
               description="Required for non-Latin characters (Arabic, Chinese, emoji). May reduce characters per SMS."
               checked={sendUnicode === '1'}
               onCheckedChange={(checked) => setSendUnicode(checked ? '1' : '')}
+              className="wsms-px-4"
             />
             <SwitchField
               label="Auto-format Numbers"
               description="Automatically remove spaces and special characters from phone numbers before sending."
               checked={cleanNumbers === '1'}
               onCheckedChange={(checked) => setCleanNumbers(checked ? '1' : '')}
+              className="wsms-px-4"
             />
           </div>
 
@@ -378,18 +380,20 @@ export default function Gateway() {
           <CardTitle>Credit Display</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="wsms-divide-y wsms-divide-border">
+          <div className="wsms-divide-y wsms-divide-border wsms-rounded-lg wsms-border wsms-border-border wsms-overflow-hidden">
             <SwitchField
               label="Show Credit in Menu"
               description="Display your SMS credit balance in the WordPress admin menu bar."
               checked={creditInMenu === '1'}
               onCheckedChange={(checked) => setCreditInMenu(checked ? '1' : '')}
+              className="wsms-px-4"
             />
             <SwitchField
               label="Show Credit on Send Page"
               description="Display your remaining SMS credits when composing messages."
               checked={creditInSendSms === '1'}
               onCheckedChange={(checked) => setCreditInSendSms(checked ? '1' : '')}
+              className="wsms-px-4"
             />
           </div>
         </CardContent>

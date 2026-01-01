@@ -25,6 +25,7 @@ export default function SendSms() {
   const gatewayKey = window.wpSmsSettings?.settings?.gateway_name || ''
   const allGateways = window.wpSmsSettings?.gateways || {}
   const gatewayName = getGatewayDisplayName(gatewayKey, allGateways)
+  const showCreditOnSendPage = window.wpSmsSettings?.settings?.account_credit_in_sendsms === '1'
 
   // Form state
   const [senderId, setSenderId] = useState(defaultSender)
@@ -206,7 +207,7 @@ export default function SendSms() {
                 <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground">{gatewayName}</p>
               </div>
             </div>
-            {creditSupported && credit !== null && (
+            {showCreditOnSendPage && creditSupported && credit !== null && (
               <>
                 <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
                 <div className="wsms-flex wsms-items-center wsms-gap-2">
