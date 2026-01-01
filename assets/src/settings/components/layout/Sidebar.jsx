@@ -149,22 +149,44 @@ function RatePlugin() {
 // Single nav item (leaf node)
 function NavItem({ item, isActive, onClick, isNested = false }) {
   const Icon = item.icon
+
+  // For nested items, background starts after the line and extends to the right edge
+  if (isNested) {
+    return (
+      <button
+        onClick={onClick}
+        className={cn(
+          'wsms-flex wsms-w-full wsms-items-center wsms-py-0.5 wsms-pr-3 wsms-pl-7 wsms-text-left wsms-transition-colors wsms-duration-150',
+          isActive ? 'wsms-text-primary' : 'wsms-text-foreground/70 hover:wsms-text-foreground'
+        )}
+      >
+        <span
+          className={cn(
+            'wsms-flex wsms-flex-1 wsms-items-center wsms-gap-2.5 wsms-py-1.5 wsms-px-2.5 wsms-rounded-md wsms-transition-colors wsms-duration-150',
+            isActive
+              ? 'wsms-bg-primary/10 wsms-font-semibold'
+              : 'hover:wsms-bg-primary/5'
+          )}
+        >
+          <Icon className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" strokeWidth={1.75} />
+          <span className="wsms-text-[12px] wsms-font-medium">{item.label}</span>
+        </span>
+      </button>
+    )
+  }
+
   return (
     <button
       onClick={onClick}
       className={cn(
-        'wsms-flex wsms-w-full wsms-items-center wsms-gap-3 wsms-rounded-md wsms-text-[13px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-left',
-        isNested ? 'wsms-py-2 wsms-px-3 wsms-pl-10' : 'wsms-px-3 wsms-py-2.5',
+        'wsms-flex wsms-w-full wsms-items-center wsms-gap-3 wsms-rounded-md wsms-text-[13px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-left wsms-px-3 wsms-py-2.5',
         isActive
-          ? 'wsms-bg-primary wsms-text-primary-foreground wsms-shadow-sm'
-          : 'wsms-text-foreground/70 hover:wsms-bg-accent hover:wsms-text-foreground'
+          ? 'wsms-bg-primary/10 wsms-text-primary wsms-font-semibold'
+          : 'wsms-text-foreground/70 hover:wsms-bg-primary/5 hover:wsms-text-foreground wsms-transition-colors wsms-duration-150'
       )}
     >
-      <Icon
-        className={cn('wsms-h-4 wsms-w-4 wsms-shrink-0', isNested && 'wsms-h-3.5 wsms-w-3.5')}
-        strokeWidth={1.75}
-      />
-      <span className={cn(isNested && 'wsms-text-[12px]')}>{item.label}</span>
+      <Icon className="wsms-h-4 wsms-w-4 wsms-shrink-0" strokeWidth={1.75} />
+      <span>{item.label}</span>
     </button>
   )
 }
