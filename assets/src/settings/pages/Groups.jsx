@@ -358,7 +358,7 @@ export default function Groups() {
       )}
 
       {/* Header Bar with Stats and Actions */}
-      <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4">
+      <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-3.5 wsms-rounded-lg wsms-bg-gradient-to-r wsms-from-muted/50 wsms-to-muted/30 wsms-border wsms-border-border">
         {/* Left: Stats */}
         <div className="wsms-flex wsms-items-center wsms-gap-6">
           <div className="wsms-flex wsms-items-center wsms-gap-3">

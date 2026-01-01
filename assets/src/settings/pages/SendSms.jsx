@@ -178,7 +178,7 @@ export default function SendSms() {
       {notification && (
         <div
           className={cn(
-            'wsms-flex wsms-items-center wsms-gap-3 wsms-p-4 wsms-rounded-xl wsms-border',
+            'wsms-flex wsms-items-center wsms-gap-3 wsms-p-4 wsms-rounded-lg wsms-border',
             'wsms-animate-in wsms-fade-in wsms-slide-in-from-top-2 wsms-duration-300',
             notification.type === 'success'
               ? 'wsms-bg-emerald-500/10 wsms-border-emerald-500/20 wsms-text-emerald-700 dark:wsms-text-emerald-400'
@@ -196,7 +196,7 @@ export default function SendSms() {
 
       {/* Status Bar - Full Width */}
       {gatewayConfigured && (
-        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-3.5 wsms-rounded-xl wsms-bg-gradient-to-r wsms-from-muted/50 wsms-to-muted/30 wsms-border wsms-border-border">
+        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-3.5 wsms-rounded-lg wsms-bg-gradient-to-r wsms-from-muted/50 wsms-to-muted/30 wsms-border wsms-border-border">
           <div className="wsms-flex wsms-items-center wsms-gap-6">
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <div className="wsms-flex wsms-items-center wsms-justify-center wsms-w-8 wsms-h-8 wsms-rounded-lg wsms-bg-primary/10">
