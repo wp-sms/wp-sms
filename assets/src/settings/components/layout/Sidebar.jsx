@@ -16,6 +16,7 @@ import {
   Shield,
   ChevronRight,
   Cog,
+  Mail,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useSettings } from '@/context/SettingsContext'
@@ -42,7 +43,7 @@ const navigation = [
       { id: 'phone', label: 'Phone', icon: Phone },
       { id: 'message-button', label: 'Message Button', icon: MessageSquare },
       { id: 'notifications', label: 'Notifications', icon: Bell },
-      { id: 'newsletter', label: 'Newsletter', icon: Users },
+      { id: 'newsletter', label: 'Newsletter', icon: Mail },
       { id: 'integrations', label: 'Integrations', icon: Puzzle },
       { id: 'advanced', label: 'Advanced', icon: Settings },
     ],
