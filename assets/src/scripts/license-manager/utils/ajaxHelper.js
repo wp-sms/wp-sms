@@ -57,7 +57,25 @@ const sendGetRequest = async (data, subAction) => {
                 resolve(response);
             },
             error: function (xhr, status, error) {
-                reject(error);
+                // Try to parse response body for error details
+                let errorResponse = {
+                    success: false,
+                    data: { message: error || 'Network error', code: 'ajax_error' }
+                };
+
+                try {
+                    if (xhr.responseText) {
+                        const parsed = JSON.parse(xhr.responseText);
+                        if (parsed && typeof parsed === 'object') {
+                            errorResponse = parsed;
+                        }
+                    }
+                } catch (e) {
+                    // Keep default error response
+                }
+
+                // Resolve with error response so UI can display the message
+                resolve(errorResponse);
             }
         });
     });
