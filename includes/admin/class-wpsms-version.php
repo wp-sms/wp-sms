@@ -2,10 +2,10 @@
 
 namespace WP_SMS;
 
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Helper;
 use WP_SMS\Services\Hooks\HooksManager;
 use WP_SMS\Utils\PluginHelper;
+use Veronalabs\LicenseClient\LicenseHub;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -32,15 +32,15 @@ class Version
 
     /**
      * Deprecated: Check if Pro pack is enabled
-     * Use LicenseHelper::isPluginLicensedAndActive() instead
+     * Use LicenseHub::isPluginLicensed() && LicenseHub::isPluginActive() instead
      *
-     * @deprecated 7.0.0 Use LicenseHelper::isPluginLicensedAndActive()
+     * @deprecated 7.0.0 Use LicenseHub SDK methods
      */
     public static function pro_is_active($pluginSlug = 'wp-sms-pro/wp-sms-pro.php')
     {
-        self::maybe_deprecated_function(__METHOD__, 'LicenseHelper::isPluginLicensedAndActive()');
+        self::maybe_deprecated_function(__METHOD__, 'LicenseHub::isPluginLicensed() && LicenseHub::isPluginActive()');
         if ($pluginSlug == 'wp-sms-pro/wp-sms-pro.php') $pluginSlug = 'wp-sms-pro';
-        return LicenseHelper::isPluginLicensedAndActive($pluginSlug);
+        return LicenseHub::isPluginLicensed($pluginSlug) && LicenseHub::isPluginActive($pluginSlug);
     }
 
     /**

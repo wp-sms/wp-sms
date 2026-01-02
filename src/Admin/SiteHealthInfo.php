@@ -2,10 +2,10 @@
 
 namespace WP_SMS\Admin;
 
-use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Gateway;
 use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Option;
+use Veronalabs\LicenseClient\LicenseHub;
 
 if (!defined('ABSPATH')) exit;
 
@@ -246,14 +246,13 @@ class SiteHealthInfo
 
     protected function getIntegrationSettings()
     {
-        $pluginHandler = new PluginHandler();
-        $yesNo         = function ($val) {
+        $yesNo     = function ($val) {
             return in_array($val, [true, '1', 1, 'yes'], true) ? esc_html__('Enabled', 'wp-sms') : esc_html__('Disabled', 'wp-sms');
         };
-        $yesNoDebug    = function ($val) {
+        $yesNoDebug = function ($val) {
             return in_array($val, [true, '1', 1, 'yes'], true) ? 'Enabled' : 'Disabled';
         };
-        $settings      = [];
+        $settings  = [];
 
         if (function_exists('is_plugin_active') && is_plugin_active('formidable/formidable.php')) {
             $settings['formidable_integration'] = [
@@ -279,26 +278,26 @@ class SiteHealthInfo
          */
         $settings = apply_filters('wp_sms_site_health_settings', $settings);
 
-        if ($pluginHandler->isPluginActive('wp-sms-woocommerce-pro')) {
+        if (LicenseHub::isPluginActive('wp-sms-woocommerce-pro')) {
             $settings = array_merge($settings, $this->getWooProSettings());
         }
 
-        if ($pluginHandler->isPluginActive('wp-sms-two-way')) {
+        if (LicenseHub::isPluginActive('wp-sms-two-way')) {
             $twoWay   = self::getTwoWayIntegrationSetting() ?? [];
             $settings = array_merge($settings, $twoWay);
         }
 
-        if ($pluginHandler->isPluginActive('wp-sms-fluent-integrations')) {
+        if (LicenseHub::isPluginActive('wp-sms-fluent-integrations')) {
             $fluent   = self::getFluentIntegrationSetting() ?? [];
             $settings = array_merge($settings, $fluent);
         }
 
-        if ($pluginHandler->isPluginActive('wp-sms-membership-integrations')) {
+        if (LicenseHub::isPluginActive('wp-sms-membership-integrations')) {
             $membership = self::getMembershipsIntegrationSetting();
             $settings   = array_merge($settings, $membership);
         }
 
-        if ($pluginHandler->isPluginActive('wp-sms-booking-integrations')) {
+        if (LicenseHub::isPluginActive('wp-sms-booking-integrations')) {
             $booking  = self::getBookingIntegrationSetting();
             $settings = array_merge($settings, $booking);
         }

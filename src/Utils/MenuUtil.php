@@ -61,7 +61,12 @@ class MenuUtil
             $className = $menu['callback'] ?? $baseNamespace . $method . '_page';
             // Now, ensure that the 'view' method exists in the determined class.
             if (method_exists($className, 'view')) {
-                $callback = [$className::instance(), 'view'];
+                // Check if class has instance() method (singleton), otherwise instantiate directly
+                if (method_exists($className, 'instance')) {
+                    $callback = [$className::instance(), 'view'];
+                } else {
+                    $callback = [new $className(), 'view'];
+                }
             } else {
                 continue;
             }

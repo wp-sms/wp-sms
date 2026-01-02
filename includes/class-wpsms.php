@@ -1,8 +1,8 @@
 <?php
 
+use Veronalabs\LicenseClient\LicenseHub;
 use WP_SMS\Admin\AdminManager;
 use WP_SMS\Admin\AnonymizedUsageData\AnonymizedUsageDataManager;
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\OnBoarding\StepFactory;
 use WP_SMS\Admin\OnBoarding\WizardManager;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
@@ -222,8 +222,12 @@ class WP_SMS
 
             WidgetsManager::init();
             NoticeManager::getInstance();
-            $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
-            $adminManager             = new AdminManager();
+            $addOnsManager = new \WP_SMS\AddOns\AddOnsManager();
+
+            // Initialize LicenseHub SDK (auto-registers OAuth callbacks)
+            $this->initLicenseHub();
+
+            $adminManager = new AdminManager();
 
             add_action('init', function () {
                 $wizard = new WizardManager(__('WPSMS OnBoarding Process', 'wp-sms'), 'wp-sms-onboarding');
@@ -231,8 +235,9 @@ class WP_SMS
                 $wizard->add(StepFactory::create('SmsGateway', $wizard));
                 $wizard->add(StepFactory::create('Configuration', $wizard));
                 $wizard->add(StepFactory::create('TestSetup', $wizard));
-                if (!LicenseHelper::isPremiumLicenseAvailable())
+                if (!LicenseHub::isPremium()) {
                     $wizard->add(StepFactory::create('Pro', $wizard));
+                }
                 $wizard->add(StepFactory::create('Ready', $wizard));
                 $wizard->setup();
             });
@@ -304,5 +309,20 @@ class WP_SMS
     public function getRemoteRequestQueue()
     {
         return $this->remoteRequestQueue;
+    }
+
+    /**
+     * Initialize LicenseHub SDK.
+     *
+     * @return void
+     */
+    private function initLicenseHub()
+    {
+        LicenseHub::init([
+            'api_url'      => WP_SMS_LICENSE_HUB_API,
+            'product_slug' => 'wp-sms',
+            'default_page' => 'wp-sms',
+            'pricing_url'  => WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header',
+        ]);
     }
 }

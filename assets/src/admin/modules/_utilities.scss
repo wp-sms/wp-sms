@@ -337,26 +337,13 @@
     padding: 0 16px;
   }
 
-  .license-status {
-    background: #C24225 !important;
+  .wpsms-license-pill {
+    background: rgba(0, 0, 0, 0.2);
   }
 }
 
 #wpsms-menu-toggle, .wpsms-mobile-menu {
   display: none;
-
-  .license-status a {
-    font-weight: 600;
-
-    &:before {
-      width: 19px;
-      height: 19px;
-    }
-
-    &.upgrade {
-      height: 28px;
-    }
-  }
 }
 
 .wp-sms-notice{

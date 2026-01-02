@@ -1,11 +1,8 @@
- <?php
+<?php
 
- if (!defined('ABSPATH')) exit; // Exit if accessed directly
+if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
-
-$pluginHandler = new PluginHandler();
+use Veronalabs\LicenseClient\LicenseHub;
 
 $hasLicense  = false;
 $isActive    = false;
@@ -13,9 +10,9 @@ $isInstalled = false;
 $isPremium   = isset($isPremium) ? $isPremium : false;
 
 if ($step_name !== 'first-step') {
-    $isActive    = $pluginHandler->isPluginActive($step_name);
-    $isInstalled = $pluginHandler->isPluginInstalled($step_name);
-    $hasLicense  = LicenseHelper::isPluginLicenseValid($step_name);
+    $isActive    = LicenseHub::isPluginActive($step_name);
+    $isInstalled = LicenseHub::isPluginInstalled($step_name);
+    $hasLicense  = LicenseHub::isPluginLicensed($step_name);
 }
 ?>
 

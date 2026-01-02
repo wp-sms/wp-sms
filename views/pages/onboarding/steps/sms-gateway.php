@@ -2,12 +2,11 @@
 
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-use WP_SMS\Utils\PluginHelper;
+use Veronalabs\LicenseClient\LicenseHub;
 
 $current_country         = \WP_SMS\Option::getOption('admin_mobile_number_country_prefix');
-$is_pro_plugin_activated = PluginHelper::isPluginInstalled('wp-sms-pro/wp-sms-pro.php');
-$has_valid_license       = LicenseHelper::isPluginLicensedAndActive();
+$is_pro_plugin_activated = LicenseHub::isPluginActive('wp-sms-pro');
+$has_valid_license       = LicenseHub::isPluginLicensed('wp-sms-pro') && LicenseHub::isPluginActive('wp-sms-pro');
 
 ?>
 

@@ -2,10 +2,9 @@
 
 namespace WP_SMS\Services\Hooks;
 
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Utils\MenuUtil;
-use WP_SMS\Utils\PluginHelper;
 use WP_SMS\Gateway;
+use Veronalabs\LicenseClient\LicenseHub;
 
 if (!defined('ABSPATH')) exit;
 
@@ -26,7 +25,7 @@ class HooksManager
      */
     public function addActionLinks($links)
     {
-        $isPremium = (bool) LicenseHelper::isPremiumLicenseAvailable();
+        $isPremium = LicenseHub::isPremium();
 
         $customLinks = [
             '<a href="' . MenuUtil::getAdminUrl('settings') . '">' . esc_html__('Settings', 'wp-sms') . '</a>',

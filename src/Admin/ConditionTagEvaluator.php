@@ -2,11 +2,9 @@
 
 namespace WP_SMS\Admin;
 
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-use WP_SMS\Admin\LicenseManagement\Plugin\PluginHelper;
-use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Helper;
 use WP_SMS\User\UserHelper;
+use Veronalabs\LicenseClient\LicenseHub;
 
 class ConditionTagEvaluator
 {
@@ -24,25 +22,19 @@ class ConditionTagEvaluator
     ];
 
     /**
-     * Plugin handler instance.
+     * Static list of addon slugs for backward compatibility.
      *
-     * @var PluginHandler
+     * @var array
      */
-    private static $pluginHandler;
-
-
-    /**
-     * Initialize the plugin handler.
-     *
-     * @return PluginHandler
-     */
-    private static function getPluginHandler()
-    {
-        if (!self::$pluginHandler) {
-            self::$pluginHandler = new PluginHandler();
-        }
-        return self::$pluginHandler;
-    }
+    private static $addonSlugs = [
+        'wp-sms-pro',
+        'wp-sms-woocommerce-pro',
+        'wp-sms-two-way',
+        'wp-sms-elementor-form',
+        'wp-sms-membership-integrations',
+        'wp-sms-booking-integrations',
+        'wp-sms-fluent-integrations',
+    ];
 
     /**
      * Check if the current user is an administrator.
@@ -61,7 +53,7 @@ class ConditionTagEvaluator
      */
     public static function isPremiumUser()
     {
-        return LicenseHelper::isPremiumLicenseAvailable() ? true : false;
+        return LicenseHub::isPremium();
     }
 
     /**
@@ -71,9 +63,8 @@ class ConditionTagEvaluator
      */
     public static function isFreeVersion()
     {
-        $pluginHandler = self::getPluginHandler();
-        foreach (PluginHelper::$plugins as $plugin => $title) {
-            if ($pluginHandler->isPluginActive($plugin)) {
+        foreach (self::$addonSlugs as $slug) {
+            if (LicenseHub::isPluginActive($slug)) {
                 return false;
             }
         }
@@ -88,9 +79,8 @@ class ConditionTagEvaluator
      */
     public static function hasAddon()
     {
-        $pluginHandler = self::getPluginHandler();
-        foreach (PluginHelper::$plugins as $plugin => $title) {
-            if ($pluginHandler->isPluginActive($plugin)) {
+        foreach (self::$addonSlugs as $slug) {
+            if (LicenseHub::isPluginActive($slug)) {
                 return true;
             }
         }
@@ -105,7 +95,7 @@ class ConditionTagEvaluator
      */
     public static function noPremiumUser()
     {
-        return !LicenseHelper::isPremiumLicenseAvailable() ? true : false;
+        return !self::isPremiumUser();
     }
 
     /**
@@ -116,8 +106,7 @@ class ConditionTagEvaluator
      */
     public static function isAddon($addon)
     {
-        $pluginHandler = self::getPluginHandler();
-        return $pluginHandler->isPluginActive($addon);
+        return LicenseHub::isPluginActive($addon);
     }
 
     /**
@@ -127,8 +116,7 @@ class ConditionTagEvaluator
      */
     public static function noAddon($addon)
     {
-        $pluginHandler = self::getPluginHandler();
-        return !$pluginHandler->isPluginActive($addon);
+        return !LicenseHub::isPluginActive($addon);
     }
 
     /**

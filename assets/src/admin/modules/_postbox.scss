@@ -222,11 +222,6 @@
   right: auto !important;
 }
 
-
-.rtl .wpsms-header-banner .license-status a.upgrade {
-  direction: rtl;
-}
-
 .rtl .wpsms-menu-content {
   left: 0;
   right: auto !important;
@@ -539,31 +534,308 @@ body.rtl #screen-meta-links {
   margin-left: 0 !important;
 }
 
-.wpsms-header-banner .license-status {
-  transition: 0.3s all ease-out;
-  background: #0E0E2233;
-  border-radius: 22px;
-  border: 1px solid #0E0E2233;
-  height: 26px;
+// ==========================================================================
+// License Pill Component - Premium Glass Morphism Design
+// ==========================================================================
+
+.wpsms-license-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  height: 32px;
+  padding: 0 4px 0 10px;
+  border-radius: 20px;
+
+  // Glass morphism effect
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 2px 8px rgba(0, 0, 0, 0.15);
+
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 
   &:hover {
-    span, a {
-      color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.15),
+      0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-1px);
+  }
+
+  // RTL Support
+  .rtl & {
+    padding: 0 10px 0 4px;
+    direction: rtl;
+  }
+
+  // Sparkle Icon
+  &__icon {
+    width: 14px;
+    height: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    flex-shrink: 0;
+    margin-right: 8px;
+    transition: all 0.3s ease;
+
+    .rtl & {
+      margin-right: 0;
+      margin-left: 8px;
     }
 
-    span::before, a.upgrade::after, a::after {
-      filter: brightness(1.5);
+    .wpsms-license-pill:hover & {
+      color: rgba(255, 255, 255, 0.95);
+      transform: scale(1.1) rotate(15deg);
+    }
+  }
+
+  // Content Link (main clickable area)
+  &__content {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    line-height: 1;
+    padding: 6px 4px;
+    transition: color 0.2s ease;
+    white-space: nowrap;
+
+    &:hover,
+    &:focus {
+      color: #fff;
+      text-decoration: none;
+    }
+  }
+
+  // Text elements
+  &__text {
+    color: inherit;
+    text-transform: uppercase;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  &__label {
+    color: rgba(255, 255, 255, 0.65);
+    font-weight: 400;
+  }
+
+  &__count {
+    color: #fff;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__upgrade {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-left: 8px;
+    padding-left: 8px;
+    border-left: 1px solid rgba(255, 255, 255, 0.15);
+    transition: color 0.2s ease;
+
+    .rtl & {
+      margin-left: 0;
+      margin-right: 8px;
+      padding-left: 0;
+      padding-right: 8px;
+      border-left: none;
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .wpsms-license-pill:hover & {
+      color: rgba(255, 255, 255, 0.85);
+    }
+  }
+
+  // Arrow Icon
+  &__arrow {
+    width: 5px;
+    height: 8px;
+    color: rgba(255, 255, 255, 0.5);
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+
+    .rtl & {
+      transform: rotate(180deg);
+    }
+
+    .wpsms-license-pill__content:hover & {
+      color: rgba(255, 255, 255, 0.9);
+      transform: translateX(2px);
+
+      .rtl & {
+        transform: rotate(180deg) translateX(2px);
+      }
+    }
+  }
+
+  // Divider
+  &__divider {
+    width: 1px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.15);
+    margin: 0 2px;
+    flex-shrink: 0;
+  }
+
+  // User/Dashboard Icon Button
+  &__user {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    &:hover,
+    &:focus {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  // State Variations
+  &--free {
+    background: rgba(255, 255, 255, 0.1);
+
+    .wpsms-license-pill__icon {
+      color: rgba(255, 200, 100, 0.8);
+    }
+
+    &:hover .wpsms-license-pill__icon {
+      color: rgba(255, 210, 120, 1);
+    }
+  }
+
+  &--licensed {
+    .wpsms-license-pill__icon {
+      color: rgba(140, 255, 180, 0.7);
+    }
+
+    &:hover .wpsms-license-pill__icon {
+      color: rgba(140, 255, 180, 1);
+    }
+  }
+
+  // Expired License State
+  &--expired {
+    background: rgba(255, 107, 107, 0.15);
+    border-color: rgba(255, 107, 107, 0.3);
+
+    .wpsms-license-pill__icon {
+      color: rgba(255, 140, 140, 0.8);
+    }
+
+    &:hover {
+      background: rgba(255, 107, 107, 0.25);
+      border-color: rgba(255, 107, 107, 0.4);
+
+      .wpsms-license-pill__icon {
+        color: rgba(255, 160, 160, 1);
+      }
+    }
+  }
+
+  // Blocked/Suspended License State
+  &--blocked {
+    background: rgba(255, 165, 0, 0.15);
+    border-color: rgba(255, 165, 0, 0.3);
+
+    .wpsms-license-pill__icon {
+      color: rgba(255, 180, 80, 0.8);
+    }
+
+    &:hover {
+      background: rgba(255, 165, 0, 0.25);
+      border-color: rgba(255, 165, 0, 0.4);
+
+      .wpsms-license-pill__icon {
+        color: rgba(255, 200, 100, 1);
+      }
     }
   }
 }
 
-@media screen and (min-width: 724px) and (max-width: 1100px) {
-  .wpsms-header-banner {
-    .license-status {
-      left: 180px;
-      top: 24px;
-      right: auto;
-      bottom: auto;
+// Mobile Menu Variation
+.wpsms-menu-content,
+.wpsms-mobile-menu {
+  .wpsms-license-pill {
+    background: rgba(0, 0, 0, 0.15);
+    border-color: rgba(255, 255, 255, 0.1);
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.25);
+    }
+  }
+}
+
+// Responsive Adjustments
+@media screen and (max-width: 782px) {
+  .wpsms-license-pill {
+    height: 28px;
+    padding: 0 3px 0 8px;
+
+    .rtl & {
+      padding: 0 8px 0 3px;
+    }
+
+    &__icon {
+      width: 12px;
+      height: 12px;
+      margin-right: 6px;
+
+      .rtl & {
+        margin-right: 0;
+        margin-left: 6px;
+      }
+    }
+
+    &__content {
+      font-size: 11px;
+      gap: 4px;
+      padding: 4px 2px;
+    }
+
+    &__text {
+      font-size: 10px;
+    }
+
+    &__upgrade {
+      display: none;
+    }
+
+    &__user {
+      width: 24px;
+      height: 24px;
+
+      svg {
+        width: 12px;
+        height: 12px;
+      }
+    }
+
+    &__divider {
+      height: 14px;
     }
   }
 }
@@ -605,116 +877,9 @@ body.rtl #screen-meta-links {
   display: block;
 }
 
-.wpsms-header-banner .license-status h3 {
-  margin: 0 0 5px;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 24px;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
-}
-
-.wpsms-header-banner .license-status span,
-.wpsms-header-banner .license-status a {
-  font-size: 12px;
-  color: #FFFFFF;
-  text-decoration: none;
-  transition: 0.2s;
-  display: flex;
-  align-items: center;
-  font-weight: 500;
-  line-height: 16px;
-  white-space: nowrap;
-}
-
-.wpsms-header-banner .license-status:hover {
-  opacity: 1;
-  background: #0E0E224D;
-
-  span:last-child, a.upgrade:after {
-    opacity: 1 !important;
-  }
-}
-
-.wpsms-header-banner .license-status--free {
-  a.upgrade:before, span:first-child {
-    opacity: 70%;
-  }
-
-  a:hover {
-    span:first-child, &.upgrade:before {
-      opacity: 1 !important;
-    }
-  }
-}
-
-.wpsms-header-banner .license-status a::after {
-  content: "";
-  margin-left: 3px;
-  width: 5.94px;
-  height: 9.72px;
-  opacity: 0.7;
-  background: url("data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNiIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDYgMTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxwYXRoIGQ9Ik0zLjgzODYxIDQuOTk5OEwwLjA1NDY4NzUgMS4yMTU4OEwxLjEzNTgxIDAuMTM0NzY2TDYuMDAwODIgNC45OTk4TDEuMTM1ODEgOS44NjQ3N0wwLjA1NDY4NzUgOC43ODM2NkwzLjgzODYxIDQuOTk5OFoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=") center center/100% no-repeat;
-  transition: 0.2s;
-
-  .rtl & {
-    margin-left: 0;
-    margin-right: 3px;
-    transform: rotate(180deg)
-  }
-}
-
-.wpsms-header-banner .license-status a:before {
-  content: "";
-  width: 14px;
-  min-width: 14px;
-  height: 14px;
-  margin-right: 6px;
-  transition: 0.2s;
-  background: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOSAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEzLjUxMjggMC40NTYwNTVMMTQuNTU2OSAyLjQxMzcxTDE2LjUxNDUgMy40NTc3OUwxNC41NTY5IDQuNTAxODdMMTMuNTEyOCA2LjQ1OTUzTDEyLjQ2ODcgNC41MDE4N0wxMC41MTExIDMuNDU3NzlMMTIuNDY4NyAyLjQxMzcxTDEzLjUxMjggMC40NTYwNTVaTTYuMzg3OCAyLjkzMDAxTDguNDk4OSA2Ljg4ODM1TDEyLjQ1NzIgOC45OTk0NEw4LjQ5ODkgMTEuMTEwNkw2LjM4NzggMTUuMDY4OUw0LjI3NjY5IDExLjExMDZMMC4zMTgzNTkgOC45OTk0NEw0LjI3NjY5IDYuODg4MzVMNi4zODc4IDIuOTMwMDFaTTE1LjYyMzkgMTIuNDMwMUwxNC4zMDQ1IDkuOTU2MDlMMTIuOTg1IDEyLjQzMDFMMTAuNTExMSAxMy43NDk0TDEyLjk4NSAxNS4wNjg5TDE0LjMwNDUgMTcuNTQyOUwxNS42MjM5IDE1LjA2ODlMMTguMDk3OSAxMy43NDk0TDE1LjYyMzkgMTIuNDMwMVoiIGZpbGw9IndoaXRlIi8+Cjwvc3ZnPgo=) center center no-repeat;
-  background-size: 14px;
-}
-
-.wpsms-header-banner .license-status a.upgrade {
-  padding: 6px 12px 6px 6px;
-  box-shadow: none !important;
-  outline: none !important;
-  box-sizing: border-box;
-  height: 26px;
-  position: relative;
-
-  .rtl & {
-    padding: 6px 6px 6px 12px;
-  }
-}
-
-.wpsms-header-banner .license-status a.upgrade span span {
-  opacity: 70%;
-  margin-left: 12px;
-  font-size: 12px;
-  line-height: 14.5px;
-  text-transform: uppercase;
-}
-
-
 .rtl .wpsms-wrap__top h1, .rtl .wpsms-wrap__top h2 {
   margin-right: 0;
   margin-left: 16px;
-}
-
-.rtl .wpsms-header-banner .license-status a::before {
-  margin-left: 6px;
-  margin-right: 0;
-}
-
-.rtl .wpsms-header-banner .license-status a.upgrade span span {
-  margin-left: unset;
-  margin-right: 12px;
-}
-
-.rtl .wpsms-header-banner .license-status {
-  left: 20px;
-  right: auto;
 }
 
 .rtl .wpsms-header-banner .wpsms-header-logo {

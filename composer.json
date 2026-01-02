@@ -4,6 +4,18 @@
       "WP_SMS\\": "src/"
     }
   },
+  "repositories": [
+    {
+      "type": "path",
+      "url": "../../../../development/wp-license-client",
+      "options": {
+        "symlink": true
+      }
+    }
+  ],
+  "require": {
+    "veronalabs/wp-license-client": "@dev"
+  },
   "scripts": {
     "test": [
       "PATH=$(composer global config bin-dir --absolute --quiet --testdox):$PATH phpunit"

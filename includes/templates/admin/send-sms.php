@@ -5,7 +5,7 @@ use WP_SMS\Components\View;
 ?>
 <?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div class="wrap wpsms-wrap">
-    <?php echo \WP_SMS\Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+    <?php \WP_SMS\Components\View::load('templates/header'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 
     <div class="wpsms-sendsms">
 

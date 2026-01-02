@@ -2,9 +2,9 @@
 
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+use Veronalabs\LicenseClient\LicenseHub;
 
-$is_pro = LicenseHelper::isPluginLicensedAndActive();
+$is_pro = LicenseHub::isPluginLicensed('wp-sms-pro') && LicenseHub::isPluginActive('wp-sms-pro');
 ?>
 
 <form method="post">

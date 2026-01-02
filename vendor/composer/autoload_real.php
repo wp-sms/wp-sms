@@ -22,6 +22,8 @@ class ComposerAutoloaderInit733a70b4860a09d7313bbae4cba3d940
             return self::$loader;
         }
 
+        require __DIR__ . '/platform_check.php';
+
         spl_autoload_register(array('ComposerAutoloaderInit733a70b4860a09d7313bbae4cba3d940', 'loadClassLoader'), true, true);
         self::$loader = $loader = new \Composer\Autoload\ClassLoader(\dirname(__DIR__));
         spl_autoload_unregister(array('ComposerAutoloaderInit733a70b4860a09d7313bbae4cba3d940', 'loadClassLoader'));
@@ -29,7 +31,6 @@ class ComposerAutoloaderInit733a70b4860a09d7313bbae4cba3d940
         require __DIR__ . '/autoload_static.php';
         call_user_func(\Composer\Autoload\ComposerStaticInit733a70b4860a09d7313bbae4cba3d940::getInitializer($loader));
 
-        $loader->setClassMapAuthoritative(true);
         $loader->register(true);
 
         return $loader;

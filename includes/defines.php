@@ -22,6 +22,10 @@ define('WP_SMS_ADMIN_URL', get_admin_url());
 define('WP_SMS_SITE', 'https://wp-sms-pro.com');
 define('WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/');
 
+// LicenseHub configuration (use local for dev, production URL when deployed)
+define('WP_SMS_LICENSE_HUB_URL', 'http://licensehub.test');
+define('WP_SMS_LICENSE_HUB_API', WP_SMS_LICENSE_HUB_URL . '/api/v1');
+
 if (function_exists('current_datetime')) {
     define('WP_SMS_CURRENT_DATE', current_datetime()->format('Y-m-d H:i:s'));
 } else {

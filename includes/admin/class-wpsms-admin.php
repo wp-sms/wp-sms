@@ -2,7 +2,7 @@
 
 namespace WP_SMS;
 
-use WP_SMS\Controller\LicenseManagerAjax;
+use Veronalabs\LicenseClient\LicenseHub;
 use WP_SMS\Utils\Request;
 
 if (!defined('ABSPATH')) exit;
@@ -93,8 +93,10 @@ class Admin
         $list = array(
             'i18n'           => $this->get_translations(),
             'admin_url'      => admin_url(),
-            'ajax_url'       => LicenseManagerAjax::url(),
-            'rest_api_nonce' => wp_create_nonce('wp_rest')
+            'ajax_url'       => admin_url('admin-ajax.php'),
+            'rest_api_nonce' => wp_create_nonce('wp_rest'),
+            'license_nonce'  => LicenseHub::getAjaxNonce(),
+            'license_prefix' => LicenseHub::getAjaxPrefix(),
         );
 
         if (!empty(Request::get('license_key'))) {

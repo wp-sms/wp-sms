@@ -1,6 +1,6 @@
 <?php if (!defined('ABSPATH')) exit; // Exit if accessed directly ?>
 <div id="wpsms-privacyPage" class="wrap wpsms-wrap privacy_page">
-    <?php echo \WP_SMS\Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+    <?php \WP_SMS\Components\View::load('templates/header'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
     <div class="wp-header-end"></div>
     <div class="wpsms-wrap__main">
         <h1><?php echo esc_html($title); ?></h1>

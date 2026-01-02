@@ -2,11 +2,10 @@
 
 namespace WP_SMS\Notice;
 
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Components\View;
 use WP_SMS\Option;
 use WP_SMS\Helper;
+use Veronalabs\LicenseClient\LicenseHub;
 
 if (!defined('ABSPATH')) exit;
 
@@ -149,14 +148,16 @@ class NoticeManager extends AbstractNotice
      */
     public function displayProNotice()
     {
-        $slug           = 'wp-sms-pro';
-        $plugin_handler = new PluginHandler();
+        $slug = 'wp-sms-pro';
 
-        if (!LicenseHelper::isPluginLicenseValid($slug) && $plugin_handler->isPluginActive($slug)) {
+        $isLicensed = LicenseHub::isPluginLicensed($slug);
+        $isActive   = LicenseHub::isPluginActive($slug);
+
+        if (!$isLicensed && $isActive) {
             View::load("components/lock-sections/notice-inactive-license-addon");
         }
 
-        if (!LicenseHelper::isPluginLicenseValid($slug) && !$plugin_handler->isPluginActive($slug)) {
+        if (!$isLicensed && !$isActive) {
             View::load("components/lock-sections/unlock-all-in-one-addon");
         }
     }
@@ -167,11 +168,7 @@ class NoticeManager extends AbstractNotice
      */
     public function displayWoocommerceProLicenseNotice()
     {
-        $slug = 'wp-sms-woocommerce-pro';
-
-        if (!LicenseHelper::isPluginLicenseValid($slug)) {
-            View::load("components/lock-sections/notice-inactive-license-addon");
-        }
+        $this->displayLicenseNoticeForSlug('wp-sms-woocommerce-pro');
     }
 
     /**
@@ -179,11 +176,7 @@ class NoticeManager extends AbstractNotice
      */
     public function displayTwoLicenseNotice()
     {
-        $slug = 'wp-sms-two-way';
-
-        if (!LicenseHelper::isPluginLicenseValid($slug)) {
-            View::load("components/lock-sections/notice-inactive-license-addon");
-        }
+        $this->displayLicenseNoticeForSlug('wp-sms-two-way');
     }
 
     /**
@@ -191,11 +184,7 @@ class NoticeManager extends AbstractNotice
      */
     public function displayFluentLicenseNotice()
     {
-        $slug = 'wp-sms-fluent-integrations';
-
-        if (!LicenseHelper::isPluginLicenseValid($slug)) {
-            View::load("components/lock-sections/notice-inactive-license-addon");
-        }
+        $this->displayLicenseNoticeForSlug('wp-sms-fluent-integrations');
     }
 
     /**
@@ -203,11 +192,7 @@ class NoticeManager extends AbstractNotice
      */
     public function displayMembershipLicenseNotice()
     {
-        $slug = 'wp-sms-membership-integrations';
-
-        if (!LicenseHelper::isPluginLicenseValid($slug)) {
-            View::load("components/lock-sections/notice-inactive-license-addon");
-        }
+        $this->displayLicenseNoticeForSlug('wp-sms-membership-integrations');
     }
 
     /**
@@ -215,11 +200,16 @@ class NoticeManager extends AbstractNotice
      */
     public function displayBookingLicenseNotice()
     {
-        $slug = 'wp-sms-booking-integrations';
+        $this->displayLicenseNoticeForSlug('wp-sms-booking-integrations');
+    }
 
-        if (!LicenseHelper::isPluginLicenseValid($slug)) {
+    /**
+     * Display license notice for a given addon slug
+     */
+    private function displayLicenseNoticeForSlug($slug)
+    {
+        if (!LicenseHub::isPluginLicensed($slug)) {
             View::load("components/lock-sections/notice-inactive-license-addon");
         }
     }
-
 }

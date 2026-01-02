@@ -1,13 +1,15 @@
 <?php
 namespace WP_SMS;
 
+use WP_SMS\Components\View;
+
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 $groups = Newsletter::getGroups();
 ?>
 
 <div class="wrap wpsms-wrap">
-    <?php echo Helper::loadTemplate('header.php'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+    <?php View::load('templates/header'); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
     <div class="wpsms-wrap__top">
         <h2><?php esc_html_e('Subscribers', 'wp-sms'); ?></h2>
         <div class="wpsms-button-group">

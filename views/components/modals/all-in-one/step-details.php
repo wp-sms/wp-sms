@@ -3,14 +3,21 @@
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
 use WP_SMS\Components\View;
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
-use WP_SMS\Admin\LicenseManagement\Plugin\PluginHelper;
+use Veronalabs\LicenseClient\LicenseHub;
 
-$pluginHandler    = new pluginHandler();
-$installedPlugins = $pluginHandler->getInstalledPlugins();
-$hasLicense       = LicenseHelper::isValidLicenseAvailable();
-$isPremium        = LicenseHelper::isPremiumLicenseAvailable();
+$hasLicense = LicenseHub::hasValidLicense();
+$isPremium  = LicenseHub::isPremium();
+
+// Static list of add-on slugs for sidebar display
+$addonPlugins = [
+    'wp-sms-pro'                     => __('WSMS Pro', 'wp-sms'),
+    'wp-sms-woocommerce-pro'         => __('WSMS WooCommerce Pro', 'wp-sms'),
+    'wp-sms-two-way'                 => __('WSMS Two-Way', 'wp-sms'),
+    'wp-sms-elementor-form'          => __('WSMS Elementor Form', 'wp-sms'),
+    'wp-sms-membership-integrations' => __('WSMS Membership Integrations', 'wp-sms'),
+    'wp-sms-booking-integrations'    => __('WSMS Booking Integrations', 'wp-sms'),
+    'wp-sms-fluent-integrations'     => __('WSMS Fluent Integrations', 'wp-sms'),
+];
 
 ?>
 <div class="wp-sms-aio-step">
@@ -133,26 +140,26 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
             <div>
                 <p><?php esc_html_e('WSMS All-in-One Includes', 'wp-sms'); ?>:</p>
                 <ul class="wp-sms-aio-step__features-list">
-                    <?php foreach (PluginHelper::$plugins as $slug => $title) :
+                    <?php foreach ($addonPlugins as $slug => $title) :
                         $class = '';
 
-                        $isActive    = $pluginHandler->isPluginActive($slug);
-                        $isInstalled = $pluginHandler->isPluginInstalled($slug);
-                        $hasLicense  = LicenseHelper::isPluginLicenseValid($slug);
+                        $isActive       = LicenseHub::isPluginActive($slug);
+                        $isInstalled    = LicenseHub::isPluginInstalled($slug);
+                        $pluginLicensed = LicenseHub::isPluginLicensed($slug);
 
-                        if ($hasLicense && $isActive) {
+                        if ($pluginLicensed && $isActive) {
                             $class = 'activated';
-                        } elseif ($hasLicense && $isInstalled && !$isActive) {
+                        } elseif ($pluginLicensed && $isInstalled && !$isActive) {
                             $class = 'not-active';
-                        } elseif (!$hasLicense && $isActive) {
+                        } elseif (!$pluginLicensed && $isActive) {
                             $class = 'no-license';
                         }
                         ?>
                         <li class="<?php echo esc_attr($class); ?> wp-sms-aio-step__feature js-wp-sms-aioStepFeature" data-modal="<?php echo esc_attr($slug) ?>">
                             <?php echo esc_html($title); ?>
-                            <?php if ($hasLicense && !$isInstalled) : ?>
+                            <?php if ($pluginLicensed && !$isInstalled) : ?>
                                 <span class="wp-sms-aio-step__feature-badge"><?php esc_html_e('Not Installed', 'wp-sms'); ?></span>
-                            <?php elseif ($hasLicense && !$isActive) : ?>
+                            <?php elseif ($pluginLicensed && !$isActive) : ?>
                                 <span class="wp-sms-aio-step__feature-badge"><?php esc_html_e('Not activated', 'wp-sms'); ?></span>
                             <?php endif; ?>
                         </li>
@@ -175,19 +182,19 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
                     <?php endif; ?>
                 </div>
                 <div class="js-wp-sms-aio-steps__head js-wp-sms-aio-steps__side-buttons">
-                    <?php foreach (PluginHelper::$plugins as $slug => $title) :
-                        $isActive = $pluginHandler->isPluginActive($slug);
-                        $isInstalled = $pluginHandler->isPluginInstalled($slug);
-                        $hasLicense = LicenseHelper::isPluginLicenseValid($slug);
+                    <?php foreach ($addonPlugins as $slug => $title) :
+                        $isActive       = LicenseHub::isPluginActive($slug);
+                        $isInstalled    = LicenseHub::isPluginInstalled($slug);
+                        $pluginLicensed = LicenseHub::isPluginLicensed($slug);
                         ?>
                         <div class="wp-sms-aio-step__action-container">
                             <?php if ($slug != 'wp-sms-integration'): ?>
-                                <?php if (!$hasLicense && !$isInstalled) : ?>
+                                <?php if (!$pluginLicensed && !$isInstalled) : ?>
                                     <a href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-aio') ?>" target="_blank" class="wp-sms-aio-step__action-btn wp-sms-aio-step__action-btn--upgrade js-wp-sms-aioModalUpgradeBtn"><?php esc_html_e('Upgrade to All-in-One', 'wp-sms'); ?></a>
                                     <a class="wp-sms-aio-step__action-btn wp-sms-aio-step__action-btn--later js-wp-sms-aioModalClose"><?php esc_html_e('Maybe Later', 'wp-sms'); ?></a>
-                                <?php elseif (($hasLicense && !$isActive) || (!$hasLicense && $isInstalled)) : ?>
+                                <?php elseif (($pluginLicensed && !$isActive) || (!$pluginLicensed && $isInstalled)) : ?>
                                     <a href="<?php echo esc_url(admin_url('admin.php?page=wp-sms-add-ons')) ?>" class="wp-sms-aio-step__action-btn js-wp-sms-aioModalUpgradeBtn wp-sms-aio-step__action-btn--addons"><?php esc_html_e('Go to Add-Ons Page', 'wp-sms'); ?></a>
-                                <?php elseif ($hasLicense && $isActive) : ?>
+                                <?php elseif ($pluginLicensed && $isActive) : ?>
                                     <a class="wp-sms-aio-step__action-btn wp-sms-aio-step__action-btn--upgrade  activated js-wp-sms-aioModalUpgradeBtn"><?php esc_html_e('Add-on Activated', 'wp-sms'); ?></a>
                                 <?php endif; ?>
                             <?php else: ?>

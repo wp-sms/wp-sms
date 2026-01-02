@@ -2,14 +2,13 @@
 
 namespace WP_SMS\Admin\AnonymizedUsageData;
 
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
 use WP_SMS\Gravityforms;
 use WP_SMS\Option as WPSmsOptionsManager;
 use WP_SMS\Quform;
 use WP_SMS\Utils\OptionUtil;
 use WP_SMS\Utils\OptionUtil as Option;
 use WP_SMS\Components\DBUtil as DB;
+use Veronalabs\LicenseClient\LicenseHub;
 
 if (!defined('ABSPATH')) exit;
 
@@ -298,7 +297,7 @@ class AnonymizedUsageDataProvider
     /**
      * Retrieves the status, type, and associated products of all licenses.
      *
-     * This method fetches all licenses using the LicenseHelper and returns an array
+     * This method fetches all licenses using the LicenseHub SDK and returns an array
      * containing the 'status', 'type', and 'products' for each license.
      *
      * @return array An array of license details, where each element contains:
@@ -308,14 +307,17 @@ class AnonymizedUsageDataProvider
      */
     public static function getLicensesInfo()
     {
-        $rawLicenses = LicenseHelper::getLicenses('all');
+        $rawLicenses = LicenseHub::getLocalLicenses('all');
+        if (empty($rawLicenses)) {
+            return [];
+        }
         $licenses    = [];
 
         foreach ($rawLicenses as $k => $v) {
             $licenses[] = [
-                'status'   => $v['status'],
-                'type'     => $v['type'],
-                'products' => $v['products'],
+                'status'   => $v['status'] ?? '',
+                'type'     => $v['type'] ?? '',
+                'products' => $v['products'] ?? [],
             ];
         }
 
@@ -339,23 +341,26 @@ class AnonymizedUsageDataProvider
 
     public static function getSettings()
     {
-        $mainSettings  = self::getMainSettings();
-        $pluginHandler = new PluginHandler();
+        $mainSettings = self::getMainSettings();
+
+        $isActive = function ($slug) {
+            return LicenseHub::isPluginActive($slug);
+        };
 
         $addons = [
-            'wooPro'     => $pluginHandler->isPluginActive('wp-sms-woocommerce-pro')
+            'wooPro'     => $isActive('wp-sms-woocommerce-pro')
                 ? self::getWoocommerceProSetting() ?: []
                 : 'Not Active',
-            'twoWay'     => $pluginHandler->isPluginActive('wp-sms-two-way')
+            'twoWay'     => $isActive('wp-sms-two-way')
                 ? self::getTwoWayIntegrationSetting() ?: []
                 : 'Not Active',
-            'fluent'     => $pluginHandler->isPluginActive('wp-sms-fluent-integrations')
+            'fluent'     => $isActive('wp-sms-fluent-integrations')
                 ? self::getFluentIntegrationSetting() ?: []
                 : 'Not Active',
-            'membership' => $pluginHandler->isPluginActive('wp-sms-membership-integrations')
+            'membership' => $isActive('wp-sms-membership-integrations')
                 ? self::getMembershipsIntegrationSetting()
                 : 'Not Active',
-            'booking'    => $pluginHandler->isPluginActive('wp-sms-booking-integrations')
+            'booking'    => $isActive('wp-sms-booking-integrations')
                 ? self::getBookingIntegrationSetting()
                 : 'Not Active',
         ];

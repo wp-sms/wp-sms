@@ -1,5 +1,46 @@
 {
-    "packages": [],
+    "packages": [
+        {
+            "name": "veronalabs/wp-license-client",
+            "version": "dev-main",
+            "version_normalized": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../../../../development/wp-license-client",
+                "reference": "fed5fad1428fe1dd8e7a1e84188d29c211814d87"
+            },
+            "require": {
+                "php": ">=7.2"
+            },
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-4": {
+                    "Veronalabs\\LicenseClient\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Veronalabs\\LicenseClient\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "VeronaLabs",
+                    "email": "developer@veronalabs.com"
+                }
+            ],
+            "description": "License management client for VeronaLabs WordPress plugins",
+            "transport-options": {
+                "symlink": true,
+                "relative": true
+            },
+            "install-path": "../veronalabs/wp-license-client"
+        }
+    ],
     "dev": true,
     "dev-package-names": []
 }

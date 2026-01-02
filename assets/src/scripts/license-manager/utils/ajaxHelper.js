@@ -1,37 +1,70 @@
 import {getAjaxUrl} from "./utilities";
 
+/**
+ * Get the license nonce from wpsms_global
+ */
+const getLicenseNonce = () => {
+    return wpsms_global.license_nonce || '';
+}
+
+/**
+ * Get the license action prefix (e.g., 'wp_sms')
+ */
+const getLicensePrefix = () => {
+    return wpsms_global.license_prefix || 'wp_sms';
+}
+
+/**
+ * Map old sub_action names to new SDK action names
+ */
+const mapAction = (subAction) => {
+    const prefix = getLicensePrefix();
+    const actionMap = {
+        'check_license': `${prefix}_activate_license`,
+        'activate_license': `${prefix}_activate_license`,
+        'deactivate_license': `${prefix}_deactivate_license`,
+        'validate_license': `${prefix}_validate_license`,
+        'get_license_status': `${prefix}_get_license_status`,
+        'get_addons': `${prefix}_get_addons`,
+        'refresh_licenses': `${prefix}_refresh_licenses`,
+    };
+    return actionMap[subAction] || `${prefix}_${subAction}`;
+}
+
+/**
+ * Send AJAX request using SDK's action format
+ */
 const sendGetRequest = async (data, subAction) => {
-    if (!data.action) {
-        data.action = 'wp_sms_license_manager'
+    // Map sub_action to SDK action
+    if (subAction) {
+        data.action = mapAction(subAction);
+    } else if (data.sub_action) {
+        data.action = mapAction(data.sub_action);
+        delete data.sub_action;
     }
 
-    if (subAction) {
-        data.sub_action = subAction
-    }
+    // Add nonce
+    data.nonce = getLicenseNonce();
 
     return new Promise((resolve, reject) => {
         jQuery.ajax({
             url: getAjaxUrl(),
-            type: 'GET',
+            type: 'POST',
             dataType: 'json',
             data: data,
             timeout: 30000,
-            success: function (data) {
-                if (data.success) {
-                    resolve(data);  // Resolve the Promise with the data
-                } else {
-                    resolve(data);  // Resolve with data, even if not a success
-                }
+            success: function (response) {
+                resolve(response);
             },
             error: function (xhr, status, error) {
-                reject(error);  // Reject the Promise in case of an error
+                reject(error);
             }
         });
     });
 }
 
-const sendPostRequest = (data, subAction) => {
-    console.log('Init');
+const sendPostRequest = async (data, subAction) => {
+    return sendGetRequest(data, subAction);
 }
 
-export {sendGetRequest, sendPostRequest};
+export {sendGetRequest, sendPostRequest, getLicenseNonce, getLicensePrefix};

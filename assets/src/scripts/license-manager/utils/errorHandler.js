@@ -1,5 +1,5 @@
 const errorHandeler = (params, button, data) => {
-    if (params.action === "wp_sms_check_license") {
+    if (params.action === "wp_sms_license_manager" && params.sub_action === "check_license") {
         toggleAlertBox(button);
         const alertDiv = document.createElement('div');
         if (data?.data?.message?.toLowerCase().includes('domain')) {

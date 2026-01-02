@@ -7,4 +7,5 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'WP_SMS\\' => array($baseDir . '/src'),
+    'Veronalabs\\LicenseClient\\' => array($vendorDir . '/veronalabs/wp-license-client/src'),
 );
