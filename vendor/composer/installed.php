@@ -3,7 +3,7 @@
         'name' => '__root__',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '582779042f1352dd714c01121f2e8d5259c432ac',
+        'reference' => '19372ff1b9326083fd266ab5a9cc8b2a47d6ce05',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         '__root__' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '582779042f1352dd714c01121f2e8d5259c432ac',
+            'reference' => '19372ff1b9326083fd266ab5a9cc8b2a47d6ce05',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -22,7 +22,7 @@
         'veronalabs/wp-license-client' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'ced3c18033b38f37071952f33d4851de0c4027c7',
+            'reference' => 'a8aee2cef377fc57e1b63856364fee5f18d7ea7c',
             'type' => 'library',
             'install_path' => __DIR__ . '/../veronalabs/wp-license-client',
             'aliases' => array(),

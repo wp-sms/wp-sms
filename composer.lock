@@ -12,7 +12,7 @@
             "dist": {
                 "type": "path",
                 "url": "../../../../development/wp-license-client",
-                "reference": "ced3c18033b38f37071952f33d4851de0c4027c7"
+                "reference": "a8aee2cef377fc57e1b63856364fee5f18d7ea7c"
             },
             "require": {
                 "php": ">=7.2"
