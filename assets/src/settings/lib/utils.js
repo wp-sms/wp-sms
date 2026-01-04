@@ -58,10 +58,10 @@ export function debounce(func, wait) {
 
 /**
  * Get the WordPress localized settings
- * @returns {object} Settings object
+ * @returns {object} Settings object with features flattened to top level
  */
 export function getWpSettings() {
-  return window.wpSmsSettings || {
+  const wpSettings = window.wpSmsSettings || {
     apiUrl: '/wp-json/wpsms/v1/',
     nonce: '',
     settings: {},
@@ -74,8 +74,21 @@ export function getWpSettings() {
     postTypes: {},
     roles: {},
     taxonomies: {},
-    gdprEnabled: false,
+    features: {},
     i18n: {},
+  }
+
+  // Flatten features to top level for easy access
+  const features = wpSettings.features || {}
+  return {
+    ...wpSettings,
+    gdprEnabled: features.gdprEnabled || false,
+    hasProAddon: features.hasProAddon || features.isProActive || false,
+    twoWayEnabled: features.twoWayEnabled || false,
+    scheduledSms: features.scheduledSms || false,
+    isProActive: features.isProActive || false,
+    isWooActive: features.isWooActive || false,
+    isBuddyPressActive: features.isBuddyPressActive || false,
   }
 }
 

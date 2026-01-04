@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { InputField, TextareaField, SelectField, SwitchField } from './form-field'
+import { InputField, TextareaField, SelectField, SwitchField, FieldDescription } from './form-field'
 import { MultiSelect } from './multi-select'
 import { Repeater } from './repeater'
 import { Label } from './label'
@@ -144,7 +144,7 @@ export function DynamicField({ field }) {
             disabled={field.disabled}
           />
           {field.description && (
-            <p className="wsms-text-[12px] wsms-text-muted-foreground">{field.description}</p>
+            <FieldDescription>{field.description}</FieldDescription>
           )}
         </div>
       )
@@ -189,7 +189,7 @@ export function DynamicField({ field }) {
             disabled={field.disabled}
           />
           {field.description && (
-            <p className="wsms-text-[12px] wsms-text-muted-foreground">{field.description}</p>
+            <FieldDescription>{field.description}</FieldDescription>
           )}
         </div>
       )

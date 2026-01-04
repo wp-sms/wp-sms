@@ -446,12 +446,15 @@ class UnifiedAdminPage extends Singleton
      */
     private function getFeatureFlags()
     {
+        $isProActive = is_plugin_active('wp-sms-pro/wp-sms-pro.php');
+
         return [
-            'gdprEnabled'       => Option::getOption('gdpr_compliance') === '1',
-            'twoWayEnabled'     => is_plugin_active('wp-sms-two-way/wp-sms-two-way.php'),
-            'scheduledSms'      => class_exists('WP_SMS\Pro\Scheduled'),
-            'isProActive'       => is_plugin_active('wp-sms-pro/wp-sms-pro.php'),
-            'isWooActive'       => class_exists('WooCommerce'),
+            'gdprEnabled'        => Option::getOption('gdpr_compliance') === '1',
+            'twoWayEnabled'      => is_plugin_active('wp-sms-two-way/wp-sms-two-way.php'),
+            'scheduledSms'       => class_exists('WP_SMS\Pro\Scheduled'),
+            'isProActive'        => $isProActive,
+            'hasProAddon'        => $isProActive, // Alias for sidebar navigation
+            'isWooActive'        => class_exists('WooCommerce'),
             'isBuddyPressActive' => class_exists('BuddyPress'),
         ];
     }

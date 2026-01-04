@@ -1,5 +1,5 @@
 import React from 'react'
-import { Clock, Image, Eye, MessageSquare, Send, Trash2, RefreshCw, Edit, UserCheck, UserX } from 'lucide-react'
+import { Clock, Image, Eye, MessageSquare, Send, Trash2, RefreshCw, Edit, UserCheck, UserX, Pause, Play, Repeat } from 'lucide-react'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { formatDate } from '@/lib/utils'
 
@@ -351,6 +351,237 @@ export function getSubscriberBulkActions({ onDelete, onActivate, onDeactivate, o
       label: 'Deactivate',
       icon: UserX,
       onClick: onDeactivate,
+    },
+  ]
+}
+
+// ============================================
+// Scheduled SMS columns
+// ============================================
+
+/**
+ * Get scheduled SMS table columns
+ */
+export const scheduledSmsColumns = [
+  createDateColumn({
+    id: 'scheduled_date',
+    accessorKey: 'scheduled_date',
+    header: 'Scheduled Date',
+    showTime: true,
+  }),
+  {
+    id: 'recipient',
+    accessorKey: 'recipient',
+    header: 'Recipient',
+    cell: ({ row }) => (
+      <div className="wsms-space-y-0.5">
+        <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+          {row.recipient_count > 1 ? `${row.recipient_count} recipients` : row.recipient}
+        </span>
+        {row.sender && (
+          <p className="wsms-text-[11px] wsms-text-muted-foreground">From: {row.sender}</p>
+        )}
+      </div>
+    ),
+  },
+  createTextColumn({ id: 'message', accessorKey: 'message', header: 'Message' }),
+  createMediaColumn(),
+  createStatusColumn({
+    statusMap: {
+      pending: { variant: 'warning', label: 'Pending' },
+      sent: { variant: 'success', label: 'Sent' },
+      failed: { variant: 'failed', label: 'Failed' },
+    },
+  }),
+]
+
+/**
+ * Get scheduled SMS row actions
+ * @param {Object} handlers - Action handlers
+ * @returns {Array} Row actions
+ */
+export function getScheduledRowActions({ onView, onEdit, onSendNow, onDelete }) {
+  return [
+    {
+      label: 'View Details',
+      icon: Eye,
+      onClick: onView,
+    },
+    {
+      label: 'Edit',
+      icon: Edit,
+      onClick: onEdit,
+      condition: (row) => row.status === 'pending',
+    },
+    {
+      label: 'Send Now',
+      icon: Send,
+      onClick: onSendNow,
+      condition: (row) => row.status === 'pending',
+    },
+    {
+      label: 'Delete',
+      icon: Trash2,
+      onClick: onDelete,
+      variant: 'destructive',
+    },
+  ]
+}
+
+/**
+ * Get scheduled SMS bulk actions
+ * @param {Object} handlers - Action handlers
+ * @returns {Array} Bulk actions
+ */
+export function getScheduledBulkActions({ onDelete, onSendAll }) {
+  return [
+    {
+      label: 'Delete Selected',
+      icon: Trash2,
+      onClick: onDelete,
+      variant: 'destructive',
+    },
+    {
+      label: 'Send Selected Now',
+      icon: Send,
+      onClick: onSendAll,
+    },
+  ]
+}
+
+// ============================================
+// Repeating Messages columns
+// ============================================
+
+/**
+ * Get repeating messages table columns
+ */
+export const repeatingMessagesColumns = [
+  {
+    id: 'interval',
+    accessorKey: 'interval_value',
+    header: 'Interval',
+    cell: ({ row }) => {
+      const unitLabels = {
+        minute: row.interval_value === 1 ? 'minute' : 'minutes',
+        hour: row.interval_value === 1 ? 'hour' : 'hours',
+        day: row.interval_value === 1 ? 'day' : 'days',
+        week: row.interval_value === 1 ? 'week' : 'weeks',
+        month: row.interval_value === 1 ? 'month' : 'months',
+      }
+      return (
+        <div className="wsms-flex wsms-items-center wsms-gap-2">
+          <Repeat className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" aria-hidden="true" />
+          <span className="wsms-text-[12px] wsms-text-foreground">
+            Every {row.interval_value} {unitLabels[row.interval_unit] || row.interval_unit}
+          </span>
+        </div>
+      )
+    },
+  },
+  createDateColumn({
+    id: 'next_occurrence',
+    accessorKey: 'next_occurrence',
+    header: 'Next Occurrence',
+    showTime: true,
+  }),
+  {
+    id: 'recipient',
+    accessorKey: 'recipient',
+    header: 'Recipient',
+    cell: ({ row }) => (
+      <div className="wsms-space-y-0.5">
+        <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+          {row.recipient_count > 1 ? `${row.recipient_count} recipients` : row.recipient}
+        </span>
+        {row.sender && (
+          <p className="wsms-text-[11px] wsms-text-muted-foreground">From: {row.sender}</p>
+        )}
+      </div>
+    ),
+  },
+  createTextColumn({ id: 'message', accessorKey: 'message', header: 'Message' }),
+  {
+    id: 'occurrences',
+    accessorKey: 'occurrences_sent',
+    header: 'Sent',
+    cell: ({ row }) => (
+      <span className="wsms-text-[12px] wsms-text-muted-foreground">
+        {row.occurrences_sent || 0}
+        {row.max_occurrences ? ` / ${row.max_occurrences}` : ''}
+      </span>
+    ),
+  },
+  createStatusColumn({
+    statusMap: {
+      active: { variant: 'success', label: 'Active' },
+      paused: { variant: 'warning', label: 'Paused' },
+      completed: { variant: 'default', label: 'Completed' },
+    },
+  }),
+]
+
+/**
+ * Get repeating messages row actions
+ * @param {Object} handlers - Action handlers
+ * @returns {Array} Row actions
+ */
+export function getRepeatingRowActions({ onView, onEdit, onPause, onResume, onDelete }) {
+  return [
+    {
+      label: 'View Details',
+      icon: Eye,
+      onClick: onView,
+    },
+    {
+      label: 'Edit',
+      icon: Edit,
+      onClick: onEdit,
+      condition: (row) => row.status !== 'completed',
+    },
+    {
+      label: 'Pause',
+      icon: Pause,
+      onClick: onPause,
+      condition: (row) => row.status === 'active',
+    },
+    {
+      label: 'Resume',
+      icon: Play,
+      onClick: onResume,
+      condition: (row) => row.status === 'paused',
+    },
+    {
+      label: 'Delete',
+      icon: Trash2,
+      onClick: onDelete,
+      variant: 'destructive',
+    },
+  ]
+}
+
+/**
+ * Get repeating messages bulk actions
+ * @param {Object} handlers - Action handlers
+ * @returns {Array} Bulk actions
+ */
+export function getRepeatingBulkActions({ onDelete, onPause, onResume }) {
+  return [
+    {
+      label: 'Delete Selected',
+      icon: Trash2,
+      onClick: onDelete,
+      variant: 'destructive',
+    },
+    {
+      label: 'Pause Selected',
+      icon: Pause,
+      onClick: onPause,
+    },
+    {
+      label: 'Resume Selected',
+      icon: Play,
+      onClick: onResume,
     },
   ]
 }

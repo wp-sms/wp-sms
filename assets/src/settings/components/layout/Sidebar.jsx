@@ -271,13 +271,14 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions }) {
 export default function Sidebar({ onClose, showClose }) {
   const { currentPage, setCurrentPage, getSetting } = useSettings()
   const version = window.wpSmsSettings?.version || '7.0'
-  const { gdprEnabled } = getWpSettings()
+  const { gdprEnabled, hasProAddon } = getWpSettings()
   const gatewayName = getSetting('gateway_name', '')
   const isGatewayConfigured = Boolean(gatewayName)
 
   // Conditions object for filtering
   const conditions = {
     gdprEnabled,
+    hasProAddon,
   }
 
   // Get navigation items with translations applied

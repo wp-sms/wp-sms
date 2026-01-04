@@ -14,6 +14,49 @@ import {
 } from '@/components/ui/select'
 
 /**
+ * FieldDescription - Renders field descriptions with proper HTML support
+ * Safely renders <code> tags as styled code chips
+ */
+const FieldDescription = ({ children, className }) => {
+  if (!children) return null
+
+  // Parse HTML and convert <code> tags to styled spans
+  const renderDescription = (text) => {
+    if (typeof text !== 'string') return text
+
+    // Split by <code> tags and render appropriately
+    const parts = text.split(/(<code>.*?<\/code>)/g)
+
+    return parts.map((part, index) => {
+      // Check if this part is a <code> tag
+      const codeMatch = part.match(/<code>(.*?)<\/code>/)
+      if (codeMatch) {
+        return (
+          <code
+            key={index}
+            className="wsms-px-1.5 wsms-py-0.5 wsms-mx-0.5 wsms-rounded wsms-bg-muted wsms-font-mono wsms-text-[11px] wsms-text-primary wsms-whitespace-nowrap"
+          >
+            {codeMatch[1]}
+          </code>
+        )
+      }
+      return part
+    })
+  }
+
+  return (
+    <p className={cn('wsms-text-[12px] wsms-text-muted-foreground wsms-leading-relaxed', className)}>
+      {renderDescription(children)}
+    </p>
+  )
+}
+
+FieldDescription.propTypes = {
+  children: PropTypes.string,
+  className: PropTypes.string,
+}
+
+/**
  * FormField - A flexible form field wrapper component
  */
 const FormField = React.forwardRef(
@@ -30,7 +73,7 @@ const FormField = React.forwardRef(
         )}
         {React.cloneElement(children, { id, 'aria-invalid': !!error })}
         {description && !error && (
-          <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">{description}</p>
+          <FieldDescription className="wsms-mt-1">{description}</FieldDescription>
         )}
         {error && (
           <p className="wsms-text-[12px] wsms-text-destructive wsms-mt-1">{error}</p>
@@ -59,7 +102,7 @@ const SwitchField = React.forwardRef(
         <div className="wsms-space-y-1 wsms-pr-4">
           <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">{label}</p>
           {description && (
-            <p className="wsms-text-[12px] wsms-text-muted-foreground">{description}</p>
+            <FieldDescription>{description}</FieldDescription>
           )}
         </div>
         <Switch
@@ -97,7 +140,7 @@ const InputField = React.forwardRef(
           {...props}
         />
         {description && !error && (
-          <p className="wsms-text-[12px] wsms-text-muted-foreground">{description}</p>
+          <FieldDescription>{description}</FieldDescription>
         )}
         {error && (
           <p className="wsms-text-[12px] wsms-text-destructive">{error}</p>
@@ -130,7 +173,7 @@ const TextareaField = React.forwardRef(
           {...props}
         />
         {description && !error && (
-          <p className="wsms-text-[12px] wsms-text-muted-foreground">{description}</p>
+          <FieldDescription>{description}</FieldDescription>
         )}
         {error && (
           <p className="wsms-text-[12px] wsms-text-destructive">{error}</p>
@@ -169,7 +212,7 @@ const SelectField = React.forwardRef(
           </SelectContent>
         </Select>
         {description && !error && (
-          <p className="wsms-text-[12px] wsms-text-muted-foreground">{description}</p>
+          <FieldDescription>{description}</FieldDescription>
         )}
         {error && (
           <p className="wsms-text-[12px] wsms-text-destructive">{error}</p>
@@ -252,4 +295,5 @@ export {
   InputField,
   TextareaField,
   SelectField,
+  FieldDescription,
 }

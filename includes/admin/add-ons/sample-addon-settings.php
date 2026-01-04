@@ -243,5 +243,5 @@ function wpsms_sample_twoway_addon_settings($schemas)
 
 // Enable sample add-on settings for testing
 // Comment these lines out or remove this file in production
-add_filter('wpsms_addon_settings_schema', 'wpsms_sample_woocommerce_addon_settings');
-add_filter('wpsms_addon_settings_schema', 'wpsms_sample_twoway_addon_settings');
+// add_filter('wpsms_addon_settings_schema', 'wpsms_sample_woocommerce_addon_settings');
+// add_filter('wpsms_addon_settings_schema', 'wpsms_sample_twoway_addon_settings');

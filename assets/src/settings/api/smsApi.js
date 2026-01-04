@@ -7,6 +7,7 @@ import { apiClient } from './client'
 export const smsApi = {
   /**
    * Send SMS message using quick send endpoint
+   * Supports immediate send, scheduled, and repeating messages
    * @param {object} data - SMS data
    * @param {string} data.message - Message content
    * @param {object} data.recipients - Recipients object
@@ -16,16 +17,38 @@ export const smsApi = {
    * @param {string} data.from - Sender ID (optional)
    * @param {boolean} data.flash - Send as flash SMS
    * @param {string} data.mediaUrl - MMS media URL (optional)
+   * @param {string} data.scheduled - Schedule date/time ISO string (optional, Pro feature)
+   * @param {object} data.repeat - Repeat configuration (optional, Pro feature)
+   * @param {number} data.repeat.interval - Repeat interval value
+   * @param {string} data.repeat.unit - Repeat interval unit (day/week/month/year)
+   * @param {string} data.repeat.endDate - End date ISO string (optional)
+   * @param {boolean} data.repeat.forever - Whether to repeat forever
    * @returns {Promise<object>} Send result
    */
   async send(data) {
-    const response = await apiClient.post('send/quick', {
+    const payload = {
       message: data.message,
       recipients: data.recipients,
       from: data.from || '',
       flash: data.flash || false,
       media_url: data.mediaUrl || '',
-    })
+    }
+
+    // Add scheduling parameters if provided (Pro feature)
+    if (data.scheduled) {
+      payload.schedule = data.scheduled
+    }
+
+    // Add repeat parameters if provided (Pro feature)
+    if (data.repeat) {
+      payload.repeat = {
+        interval: data.repeat.interval || 1,
+        unit: data.repeat.unit || 'day',
+        endDate: data.repeat.forever ? null : (data.repeat.endDate || null),
+      }
+    }
+
+    const response = await apiClient.post('send/quick', payload)
     return {
       success: true,
       message: response.message,

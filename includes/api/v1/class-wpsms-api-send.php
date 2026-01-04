@@ -318,6 +318,7 @@ class SendSmsApi extends \WP_SMS\RestApi
     /**
      * Quick send callback for new settings UI
      * Simplified send endpoint that accepts groups, roles, and numbers directly
+     * Also supports scheduling and repeating messages (Pro feature)
      *
      * @param WP_REST_Request $request
      * @return \WP_REST_Response
@@ -330,6 +331,8 @@ class SendSmsApi extends \WP_SMS\RestApi
             $flash = $request->get_param('flash') ?? false;
             $mediaUrl = $request->get_param('media_url') ?? '';
             $from = $request->get_param('from') ?? '';
+            $schedule = $request->get_param('schedule');
+            $repeat = $request->get_param('repeat');
 
             if (empty($message)) {
                 throw new Exception(esc_html__('The message body can not be empty.', 'wp-sms'));
@@ -372,7 +375,64 @@ class SendSmsApi extends \WP_SMS\RestApi
             // Prepare media URLs
             $mediaUrls = !empty($mediaUrl) ? [$mediaUrl] : [];
 
-            // Send SMS
+            /*
+             * Repeating SMS (Pro feature)
+             */
+            if (!empty($schedule) && !empty($repeat) && class_exists('WP_SMS\Pro\RepeatingMessages')) {
+                $startDate = new DateTime(get_gmt_from_date($schedule));
+                $endDate = !empty($repeat['endDate']) ? (new DateTime(get_gmt_from_date($repeat['endDate']))) : null;
+                $intervalValue = isset($repeat['interval']) ? intval($repeat['interval']) : 1;
+                $intervalUnit = isset($repeat['unit']) ? $repeat['unit'] : 'day';
+
+                if ($startDate->getTimestamp() < time()) {
+                    return self::response(esc_html__('Selected start date must be in future', 'wp-sms'), 400);
+                }
+
+                if (isset($endDate) && $endDate->getTimestamp() < $startDate->getTimestamp()) {
+                    return self::response(esc_html__('Selected end date must be after start date', 'wp-sms'), 400);
+                }
+
+                RepeatingMessages::add(
+                    $startDate,
+                    $endDate,
+                    $intervalValue,
+                    $intervalUnit,
+                    $sender,
+                    $message,
+                    $recipientNumbers,
+                    $mediaUrls
+                );
+
+                return self::response(esc_html__('Repeating SMS is scheduled successfully!', 'wp-sms'), 200, [
+                    'recipient_count' => count($recipientNumbers),
+                    'credit' => Gateway::credit()
+                ]);
+            }
+
+            /**
+             * Scheduled SMS (Pro feature)
+             */
+            if (!empty($schedule) && class_exists('WP_SMS\Pro\Scheduled')) {
+                if ((new DateTime(get_gmt_from_date($schedule)))->getTimestamp() < time()) {
+                    return self::response(esc_html__('Selected start date must be in future', 'wp-sms'), 400);
+                }
+
+                Scheduled::add(
+                    $schedule,
+                    $sender,
+                    $message,
+                    $recipientNumbers,
+                    true,
+                    $mediaUrls
+                );
+
+                return self::response(esc_html__('SMS scheduled successfully!', 'wp-sms'), 200, [
+                    'recipient_count' => count($recipientNumbers),
+                    'credit' => Gateway::credit()
+                ]);
+            }
+
+            // Send SMS immediately
             $notification = NotificationFactory::getHandler(null, null);
             $response = $notification->send(
                 $message,

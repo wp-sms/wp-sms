@@ -1,19 +1,23 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Send, Zap, Image, Users, CheckCircle, AlertCircle, Loader2, CreditCard, User, Radio, MessageSquare, Hash, Clock, Eye, ChevronDown, ChevronUp } from 'lucide-react'
+import { Send, Zap, Image, Users, CheckCircle, AlertCircle, Loader2, CreditCard, User, Radio, MessageSquare, Hash, Clock, Eye, ChevronDown, ChevronUp, CalendarClock, Repeat, Calendar } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
 import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { RecipientSelector } from '@/components/shared/RecipientSelector'
 import { MessageComposer, calculateSmsInfo } from '@/components/shared/MessageComposer'
 import { SmsPreviewDialog } from '@/components/shared/SmsPreviewDialog'
 import { Tip } from '@/components/ui/ux-helpers'
 import { smsApi } from '@/api/smsApi'
 import { useSettings } from '@/context/SettingsContext'
-import { cn, getGatewayDisplayName, __ } from '@/lib/utils'
+import { cn, getGatewayDisplayName, __, getWpSettings } from '@/lib/utils'
 
 export default function SendSms() {
   const { setCurrentPage } = useSettings()
+
+  // Check for Pro add-on
+  const { hasProAddon } = getWpSettings()
 
   // Get gateway capabilities (static, from page load)
   const defaultSender = window.wpSmsSettings?.gateway?.from || ''
@@ -33,6 +37,15 @@ export default function SendSms() {
   const [recipients, setRecipients] = useState({ groups: [], roles: [], numbers: [] })
   const [flashSms, setFlashSms] = useState(false)
   const [mediaUrl, setMediaUrl] = useState('')
+
+  // Scheduling state (Pro feature)
+  const [scheduleEnabled, setScheduleEnabled] = useState(false)
+  const [scheduledDate, setScheduledDate] = useState('')
+  const [repeatEnabled, setRepeatEnabled] = useState(false)
+  const [repeatInterval, setRepeatInterval] = useState(1)
+  const [repeatIntervalUnit, setRepeatIntervalUnit] = useState('day')
+  const [repeatEndDate, setRepeatEndDate] = useState('')
+  const [repeatForever, setRepeatForever] = useState(false)
 
   // UI state
   const [isSending, setIsSending] = useState(false)
@@ -121,6 +134,16 @@ export default function SendSms() {
         from: senderId || undefined,
         flash: flashSms,
         mediaUrl: mediaUrl || undefined,
+        // Scheduling options (Pro feature)
+        ...(scheduleEnabled && {
+          scheduled: scheduledDate,
+          repeat: repeatEnabled ? {
+            interval: repeatInterval,
+            unit: repeatIntervalUnit,
+            endDate: repeatForever ? null : repeatEndDate,
+            forever: repeatForever,
+          } : undefined,
+        }),
       })
 
       setShowPreviewDialog(false)
@@ -140,6 +163,14 @@ export default function SendSms() {
       setSenderId(defaultSender)
       setFlashSms(false)
       setMediaUrl('')
+      // Reset scheduling options
+      setScheduleEnabled(false)
+      setScheduledDate('')
+      setRepeatEnabled(false)
+      setRepeatInterval(1)
+      setRepeatIntervalUnit('day')
+      setRepeatEndDate('')
+      setRepeatForever(false)
     } catch (error) {
       setShowPreviewDialog(false)
       setNotification({
@@ -149,7 +180,7 @@ export default function SendSms() {
     } finally {
       setIsSending(false)
     }
-  }, [canSend, message, recipients, senderId, flashSms, mediaUrl, recipientCount, defaultSender])
+  }, [canSend, message, recipients, senderId, flashSms, mediaUrl, recipientCount, defaultSender, scheduleEnabled, scheduledDate, repeatEnabled, repeatInterval, repeatIntervalUnit, repeatEndDate, repeatForever])
 
   // Clear notification after 5 seconds
   useEffect(() => {
@@ -349,6 +380,143 @@ export default function SendSms() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Scheduling Options - Pro Feature */}
+      {hasProAddon && (
+        <Card className="wsms-overflow-hidden">
+          <CardHeader className="wsms-border-b wsms-border-border wsms-bg-muted/20 wsms-py-3">
+            <div className="wsms-flex wsms-items-center wsms-gap-2">
+              <CalendarClock className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              <CardTitle className="wsms-text-sm">{__('Scheduling Options')}</CardTitle>
+              <span className="wsms-ml-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
+                {__('Pro')}
+              </span>
+            </div>
+          </CardHeader>
+          <CardContent className="wsms-p-4">
+            <div className="wsms-space-y-4">
+              {/* Schedule Toggle */}
+              <div className="wsms-flex wsms-items-center wsms-justify-between wsms-py-2">
+                <div className="wsms-flex wsms-items-center wsms-gap-3">
+                  <Clock className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+                  <div>
+                    <label className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+                      {__('Schedule Message')}
+                    </label>
+                    <p className="wsms-text-[11px] wsms-text-muted-foreground">
+                      {__('Send this message at a specific date and time')}
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  checked={scheduleEnabled}
+                  onCheckedChange={setScheduleEnabled}
+                />
+              </div>
+
+              {/* Schedule Date/Time */}
+              {scheduleEnabled && (
+                <div className="wsms-pl-7 wsms-space-y-4 wsms-border-l-2 wsms-border-primary/20 wsms-ml-2">
+                  <div className="wsms-space-y-1.5">
+                    <label className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">
+                      {__('Schedule Date & Time')}
+                    </label>
+                    <Input
+                      type="datetime-local"
+                      value={scheduledDate}
+                      onChange={(e) => setScheduledDate(e.target.value)}
+                      className="wsms-max-w-xs"
+                      min={new Date().toISOString().slice(0, 16)}
+                    />
+                    <p className="wsms-text-[11px] wsms-text-muted-foreground">
+                      {__('Timezone')}: {Intl.DateTimeFormat().resolvedOptions().timeZone}
+                    </p>
+                  </div>
+
+                  {/* Repeat Toggle */}
+                  <div className="wsms-flex wsms-items-center wsms-justify-between wsms-py-2 wsms-border-t wsms-border-border">
+                    <div className="wsms-flex wsms-items-center wsms-gap-3">
+                      <Repeat className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+                      <div>
+                        <label className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+                          {__('Repeat Message')}
+                        </label>
+                        <p className="wsms-text-[11px] wsms-text-muted-foreground">
+                          {__('Automatically send this message on a recurring schedule')}
+                        </p>
+                      </div>
+                    </div>
+                    <Switch
+                      checked={repeatEnabled}
+                      onCheckedChange={setRepeatEnabled}
+                    />
+                  </div>
+
+                  {/* Repeat Options */}
+                  {repeatEnabled && (
+                    <div className="wsms-space-y-4 wsms-pl-7 wsms-border-l-2 wsms-border-primary/10 wsms-ml-2">
+                      {/* Repeat Interval */}
+                      <div className="wsms-space-y-1.5">
+                        <label className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">
+                          {__('Repeat Every')}
+                        </label>
+                        <div className="wsms-flex wsms-items-center wsms-gap-2">
+                          <Input
+                            type="number"
+                            min={1}
+                            value={repeatInterval}
+                            onChange={(e) => setRepeatInterval(parseInt(e.target.value) || 1)}
+                            className="wsms-w-20"
+                          />
+                          <Select value={repeatIntervalUnit} onValueChange={setRepeatIntervalUnit}>
+                            <SelectTrigger className="wsms-w-32">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="day">{__('Day(s)')}</SelectItem>
+                              <SelectItem value="week">{__('Week(s)')}</SelectItem>
+                              <SelectItem value="month">{__('Month(s)')}</SelectItem>
+                              <SelectItem value="year">{__('Year(s)')}</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      {/* End Date */}
+                      <div className="wsms-space-y-1.5">
+                        <label className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">
+                          {__('End Date')}
+                        </label>
+                        <div className="wsms-flex wsms-items-center wsms-gap-4">
+                          <Input
+                            type="date"
+                            value={repeatEndDate}
+                            onChange={(e) => setRepeatEndDate(e.target.value)}
+                            disabled={repeatForever}
+                            className="wsms-max-w-[160px]"
+                            min={scheduledDate.split('T')[0] || new Date().toISOString().split('T')[0]}
+                          />
+                          <label className="wsms-flex wsms-items-center wsms-gap-2 wsms-cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={repeatForever}
+                              onChange={(e) => setRepeatForever(e.target.checked)}
+                              className="wsms-rounded wsms-border-border wsms-text-primary focus:wsms-ring-primary"
+                            />
+                            <span className="wsms-text-[12px] wsms-text-foreground">
+                              {__('Repeat Forever')}
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Bottom Action Bar */}
       <Card className="wsms-overflow-hidden">
