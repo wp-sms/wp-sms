@@ -22,10 +22,14 @@ const VALID_PAGES = [
   'advanced',
   // Privacy
   'privacy',
-  // Add-ons
+  // Add-ons - WooCommerce Pro
   'woocommerce-pro',
   'cart-abandonment',
   'sms-campaigns',
+  // Add-ons - Two-Way SMS
+  'two-way-inbox',
+  'two-way-commands',
+  'two-way-settings',
 ]
 
 // Get initial page from URL query params

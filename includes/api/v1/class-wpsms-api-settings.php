@@ -315,6 +315,22 @@ class SettingsApi extends RestApi
                 continue;
             }
 
+            /**
+             * Filter to allow add-ons to handle their own save logic.
+             *
+             * If the filter returns true, the default save is skipped for this add-on.
+             * This is useful for add-ons that use legacy storage like wpsms_settings array.
+             *
+             * @param bool  $handled   Whether the add-on handled the save. Default false.
+             * @param array $fields    The field values to save.
+             * @param array $fieldTypes Field type mapping for sanitization reference.
+             */
+            $handled = apply_filters('wpsms_addon_save_settings_' . $addonSlug, false, $fields, $addonFieldTypes);
+
+            if ($handled) {
+                continue;
+            }
+
             foreach ($fields as $optionKey => $value) {
                 $sanitizedKey = sanitize_key($optionKey);
                 $fieldType = $addonFieldTypes[$sanitizedKey] ?? 'text';

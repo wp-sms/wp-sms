@@ -750,6 +750,13 @@ class UnifiedAdminPage extends Singleton
         $values = [];
 
         foreach ($schemas as $addonSlug => $schema) {
+            // Check if addon provides pre-loaded values (for add-ons using legacy storage like wpsms_settings array)
+            // This allows add-ons to read values from their own storage and provide them directly
+            if (!empty($schema['data']['currentValues']) && is_array($schema['data']['currentValues'])) {
+                $values[sanitize_key($addonSlug)] = $schema['data']['currentValues'];
+                continue;
+            }
+
             if (empty($schema['fields']) || !is_array($schema['fields'])) {
                 continue;
             }

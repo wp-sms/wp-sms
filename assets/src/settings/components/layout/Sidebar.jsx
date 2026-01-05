@@ -22,6 +22,8 @@ import {
   ShoppingCart,
   Megaphone,
   RotateCcw,
+  ArrowLeftRight,
+  Terminal,
 } from 'lucide-react'
 import { cn, __, getWpSettings } from '@/lib/utils'
 import { useSettings } from '@/context/SettingsContext'
@@ -58,7 +60,7 @@ function getNavigation() {
     { type: 'item', id: 'privacy', label: __('Privacy'), icon: Shield, condition: 'gdprEnabled' },
 
     // Add-ons separator
-    { type: 'separator', label: __('ADD-ONS'), condition: 'hasWooCommercePro' },
+    { type: 'separator', label: __('ADD-ONS'), condition: 'hasAnyAddon' },
 
     // WooCommerce Pro - top-level collapsible group
     {
@@ -72,6 +74,21 @@ function getNavigation() {
         { id: 'sms-campaigns', label: __('SMS Campaigns'), icon: Megaphone },
         { id: 'cart-abandonment', label: __('Cart Abandonment'), icon: RotateCcw },
         { id: 'woocommerce-pro', label: __('Settings'), icon: Settings },
+      ],
+    },
+
+    // Two-Way SMS - top-level collapsible group
+    {
+      type: 'group',
+      id: 'two-way-group',
+      label: __('Two-Way SMS'),
+      icon: ArrowLeftRight,
+      defaultExpanded: false,
+      condition: 'hasTwoWay',
+      items: [
+        { id: 'two-way-inbox', label: __('Inbox'), icon: Inbox },
+        { id: 'two-way-commands', label: __('Commands'), icon: Terminal },
+        { id: 'two-way-settings', label: __('Settings'), icon: Settings },
       ],
     },
   ]
@@ -411,11 +428,19 @@ export default function Sidebar({ onClose, showClose }) {
   // Check for WooCommerce Pro add-on (key is 'woocommerce' in getActiveAddons())
   const hasWooCommercePro = isAddonActive('woocommerce')
 
+  // Check for Two-Way SMS add-on
+  const hasTwoWay = isAddonActive('two-way')
+
+  // Check if any add-on is active (for showing ADD-ONS separator)
+  const hasAnyAddon = hasWooCommercePro || hasTwoWay
+
   // Conditions object for filtering
   const conditions = {
     gdprEnabled,
     hasProAddon,
     hasWooCommercePro,
+    hasTwoWay,
+    hasAnyAddon,
   }
 
   // Get navigation items with translations applied

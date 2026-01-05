@@ -35,6 +35,10 @@ const Privacy = lazy(() => import('@/pages/Privacy'))
 const WooCommercePro = lazy(() => import('@/pages/WooCommercePro'))
 const CartAbandonment = lazy(() => import('@/pages/CartAbandonment'))
 const SmsCampaigns = lazy(() => import('@/pages/SmsCampaigns'))
+// Add-on pages - Two-Way SMS
+const TwoWayInbox = lazy(() => import('@/pages/TwoWayInbox'))
+const TwoWayCommands = lazy(() => import('@/pages/TwoWayCommands'))
+const TwoWaySettings = lazy(() => import('@/pages/TwoWaySettings'))
 
 const pages = {
   // Messaging
@@ -58,6 +62,10 @@ const pages = {
   'woocommerce-pro': WooCommercePro,
   'cart-abandonment': CartAbandonment,
   'sms-campaigns': SmsCampaigns,
+  // Add-ons - Two-Way SMS
+  'two-way-inbox': TwoWayInbox,
+  'two-way-commands': TwoWayCommands,
+  'two-way-settings': TwoWaySettings,
 }
 
 // Memoized loading skeleton
