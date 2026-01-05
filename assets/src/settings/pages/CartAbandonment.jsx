@@ -17,6 +17,7 @@ import {
   XCircle,
   AlertCircle,
   Loader2,
+  ExternalLink,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -171,8 +172,47 @@ function StatsCard({ icon: Icon, label, value, description, color, isHtml = fals
 }
 
 export default function CartAbandonment() {
-  const { setCurrentPage } = useSettings()
+  const { setCurrentPage, isAddonActive } = useSettings()
   const { toast } = useToast()
+  const hasWooCommercePro = isAddonActive('woocommerce')
+
+  // Show placeholder if WooCommerce Pro add-on is not active
+  if (!hasWooCommercePro) {
+    return (
+      <div className="wsms-space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <RotateCcw className="wsms-h-5 wsms-w-5" />
+              {__('Cart Abandonment')}
+            </CardTitle>
+            <CardDescription>
+              {__('Recover abandoned carts with automated SMS reminders.')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
+              <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
+              <h3 className="wsms-font-medium wsms-mb-2">{__('WooCommerce Pro Add-on Required')}</h3>
+              <p className="wsms-text-sm wsms-text-muted-foreground wsms-mb-4">
+                {__('Install and activate the WP SMS WooCommerce Pro add-on to access Cart Abandonment features.')}
+              </p>
+              <Button variant="outline" asChild>
+                <a
+                  href="https://wp-sms-pro.com/product/wp-sms-woocommerce-pro/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {__('Learn More')}
+                  <ExternalLink className="wsms-ml-2 wsms-h-4 wsms-w-4" />
+                </a>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   // State
   const [isLoading, setIsLoading] = useState(true)

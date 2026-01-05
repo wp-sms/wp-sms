@@ -19,6 +19,7 @@ import {
   X,
   Save,
   Loader2,
+  ExternalLink,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -52,6 +53,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
+import { useSettings } from '@/context/SettingsContext'
 import { __, getWpSettings } from '@/lib/utils'
 
 // WooCommerce Pro API client
@@ -425,6 +427,47 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, onSave, 
 }
 
 export default function SmsCampaigns() {
+  const { isAddonActive } = useSettings()
+  const hasWooCommercePro = isAddonActive('woocommerce')
+
+  // Show placeholder if WooCommerce Pro add-on is not active
+  if (!hasWooCommercePro) {
+    return (
+      <div className="wsms-space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <Megaphone className="wsms-h-5 wsms-w-5" />
+              {__('SMS Campaigns')}
+            </CardTitle>
+            <CardDescription>
+              {__('Create targeted SMS marketing campaigns based on customer behavior.')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
+              <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
+              <h3 className="wsms-font-medium wsms-mb-2">{__('WooCommerce Pro Add-on Required')}</h3>
+              <p className="wsms-text-sm wsms-text-muted-foreground wsms-mb-4">
+                {__('Install and activate the WP SMS WooCommerce Pro add-on to access SMS Campaigns.')}
+              </p>
+              <Button variant="outline" asChild>
+                <a
+                  href="https://wp-sms-pro.com/product/wp-sms-woocommerce-pro/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {__('Learn More')}
+                  <ExternalLink className="wsms-ml-2 wsms-h-4 wsms-w-4" />
+                </a>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   const [campaigns, setCampaigns] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
