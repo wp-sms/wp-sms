@@ -862,7 +862,7 @@ export default function SmsCampaigns() {
             </DialogDescription>
           </DialogHeader>
           {selectedCampaign && (
-            <div className="wsms-space-y-4">
+            <div className="wsms-space-y-4 wsms-px-6">
               <div>
                 <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Status')}</Label>
                 <div className="wsms-mt-1">
