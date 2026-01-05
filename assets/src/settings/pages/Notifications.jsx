@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { MultiSelect } from '@/components/ui/multi-select'
 import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
 import { useSetting } from '@/context/SettingsContext'
-import { getWpSettings } from '@/lib/utils'
+import { getWpSettings, __ } from '@/lib/utils'
 
 function NotificationSection({
   icon: Icon,
@@ -104,65 +104,65 @@ export default function Notifications() {
       {/* New Post Alerts */}
       <NotificationSection
         icon={FileText}
-        title="New Content Notifications"
-        description="Send SMS when you publish new posts or pages."
+        title={__('New Content Notifications')}
+        description={__('Send SMS when you publish new posts or pages.')}
         enabled={notifNewPost === '1'}
         onToggle={(checked) => setNotifNewPost(checked ? '1' : '')}
       >
         <div className="wsms-space-y-2">
-          <Label>Content Types</Label>
+          <Label>{__('Content Types')}</Label>
           <MultiSelect
             options={postTypes}
             value={notifNewPostTypes}
             onValueChange={setNotifNewPostTypes}
-            placeholder="All post types"
-            searchPlaceholder="Search post types..."
+            placeholder={__('All post types')}
+            searchPlaceholder={__('Search post types...')}
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Which content types trigger notifications.
+            {__('Which content types trigger notifications.')}
           </p>
         </div>
 
         <div className="wsms-space-y-2">
-          <Label>Categories & Tags</Label>
+          <Label>{__('Categories & Tags')}</Label>
           <MultiSelect
             options={taxonomyOptions}
             value={notifNewPostTaxonomies}
             onValueChange={setNotifNewPostTaxonomies}
-            placeholder="All taxonomies"
-            searchPlaceholder="Search categories, tags..."
+            placeholder={__('All taxonomies')}
+            searchPlaceholder={__('Search categories, tags...')}
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Only notify for content in these categories or with these tags. Leave empty for all.
+            {__('Only notify for content in these categories or with these tags. Leave empty for all.')}
           </p>
         </div>
 
         <div className="wsms-space-y-2">
-          <Label>Send To</Label>
+          <Label>{__('Send To')}</Label>
           <Select value={notifNewPostReceiver} onValueChange={setNotifNewPostReceiver}>
-            <SelectTrigger aria-label="Send to">
-              <SelectValue placeholder="Select recipients" />
+            <SelectTrigger aria-label={__('Send to')}>
+              <SelectValue placeholder={__('Select recipients')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="subscriber">Subscribers</SelectItem>
-              <SelectItem value="numbers">Phone Numbers</SelectItem>
-              <SelectItem value="users">User Roles</SelectItem>
+              <SelectItem value="subscriber">{__('Subscribers')}</SelectItem>
+              <SelectItem value="numbers">{__('Phone Numbers')}</SelectItem>
+              <SelectItem value="users">{__('User Roles')}</SelectItem>
             </SelectContent>
           </Select>
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Who should receive these notifications.
+            {__('Who should receive these notifications.')}
           </p>
         </div>
 
         {notifNewPostReceiver === 'subscriber' && (
           <div className="wsms-space-y-2">
-            <Label>Subscriber Group</Label>
+            <Label>{__('Subscriber Group')}</Label>
             <Select value={notifNewPostGroup} onValueChange={setNotifNewPostGroup}>
-              <SelectTrigger aria-label="Subscriber group">
-                <SelectValue placeholder="Select group" />
+              <SelectTrigger aria-label={__('Subscriber group')}>
+                <SelectValue placeholder={__('Select group')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="0">All Groups</SelectItem>
+                <SelectItem value="0">{__('All Groups')}</SelectItem>
                 {groups && Object.entries(groups).map(([id, name]) => (
                   <SelectItem key={id} value={String(id)}>
                     {name}
@@ -175,7 +175,7 @@ export default function Notifications() {
 
         {notifNewPostReceiver === 'numbers' && (
           <div className="wsms-space-y-2">
-            <Label htmlFor="postNumbers">Phone Numbers</Label>
+            <Label htmlFor="postNumbers">{__('Phone Numbers')}</Label>
             <Input
               id="postNumbers"
               value={notifNewPostNumbers}
@@ -183,69 +183,69 @@ export default function Notifications() {
               placeholder="+1 555 111 2222, +1 555 333 4444"
             />
             <p className="wsms-text-xs wsms-text-muted-foreground">
-              Enter phone numbers, separated by commas.
+              {__('Enter phone numbers, separated by commas.')}
             </p>
           </div>
         )}
 
         {notifNewPostReceiver === 'users' && (
           <div className="wsms-space-y-2">
-            <Label>User Roles</Label>
+            <Label>{__('User Roles')}</Label>
             <MultiSelect
               options={roles}
               value={notifNewPostUsers}
               onValueChange={setNotifNewPostUsers}
-              placeholder="Select user roles..."
-              searchPlaceholder="Search roles..."
+              placeholder={__('Select user roles...')}
+              searchPlaceholder={__('Search roles...')}
             />
             <p className="wsms-text-xs wsms-text-muted-foreground">
-              Notify users with these roles.
+              {__('Notify users with these roles.')}
             </p>
           </div>
         )}
 
         <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
           <div>
-            <p className="wsms-font-medium">Auto-send</p>
+            <p className="wsms-font-medium">{__('Auto-send')}</p>
             <p className="wsms-text-sm wsms-text-muted-foreground">
-              Send automatically when publishing (no confirmation prompt).
+              {__('Send automatically when publishing (no confirmation prompt).')}
             </p>
           </div>
           <Switch
             checked={notifNewPostForce === '1'}
             onCheckedChange={(checked) => setNotifNewPostForce(checked ? '1' : '')}
-            aria-label="Enable auto-send"
+            aria-label={__('Enable auto-send')}
           />
         </div>
 
         <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
           <div>
-            <p className="wsms-font-medium">Include Featured Image</p>
+            <p className="wsms-font-medium">{__('Include Featured Image')}</p>
             <p className="wsms-text-sm wsms-text-muted-foreground">
-              Send as MMS with the post's featured image (if gateway supports MMS).
+              {__("Send as MMS with the post's featured image (if gateway supports MMS).")}
             </p>
           </div>
           <Switch
             checked={notifNewPostMMS === '1'}
             onCheckedChange={(checked) => setNotifNewPostMMS(checked ? '1' : '')}
-            aria-label="Include featured image"
+            aria-label={__('Include featured image')}
           />
         </div>
 
         <div className="wsms-space-y-2">
-          <Label htmlFor="postTemplate">Message Template</Label>
+          <Label htmlFor="postTemplate">{__('Message Template')}</Label>
           <TemplateTextarea
             id="postTemplate"
             value={notifNewPostTemplate}
             onChange={setNotifNewPostTemplate}
-            placeholder="New post: %post_title% - Read more: %post_url%"
+            placeholder={__('New post: %post_title% - Read more: %post_url%')}
             rows={3}
             variables={['%post_title%', '%post_url%', '%post_date%', '%post_content%', '%post_author%']}
           />
         </div>
 
         <div className="wsms-space-y-2">
-          <Label htmlFor="wordCount">Content Word Limit</Label>
+          <Label htmlFor="wordCount">{__('Content Word Limit')}</Label>
           <Input
             id="wordCount"
             type="number"
@@ -254,7 +254,7 @@ export default function Notifications() {
             placeholder="10"
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Maximum words to include from post content in %post_content%.
+            {__('Maximum words to include from post content in %post_content%.')}
           </p>
         </div>
       </NotificationSection>
@@ -262,32 +262,32 @@ export default function Notifications() {
       {/* Post Author Notification */}
       <NotificationSection
         icon={FileText}
-        title="Author Notifications"
-        description="Notify post authors when their content is published."
+        title={__('Author Notifications')}
+        description={__('Notify post authors when their content is published.')}
         enabled={notifPostAuthor === '1'}
         onToggle={(checked) => setNotifPostAuthor(checked ? '1' : '')}
       >
         <div className="wsms-space-y-2">
-          <Label>Content Types</Label>
+          <Label>{__('Content Types')}</Label>
           <MultiSelect
             options={postTypes}
             value={notifPostAuthorPostTypes}
             onValueChange={setNotifPostAuthorPostTypes}
-            placeholder="All post types"
-            searchPlaceholder="Search post types..."
+            placeholder={__('All post types')}
+            searchPlaceholder={__('Search post types...')}
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Which content types trigger author notifications.
+            {__('Which content types trigger author notifications.')}
           </p>
         </div>
 
         <div className="wsms-space-y-2">
-          <Label htmlFor="authorTemplate">Message Template</Label>
+          <Label htmlFor="authorTemplate">{__('Message Template')}</Label>
           <TemplateTextarea
             id="authorTemplate"
             value={notifPostAuthorTemplate}
             onChange={setNotifPostAuthorTemplate}
-            placeholder="Your post '%post_title%' has been published!"
+            placeholder={__("Your post '%post_title%' has been published!")}
             rows={3}
             variables={['%post_title%', '%post_url%', '%post_date%', '%post_content%']}
           />
@@ -297,8 +297,8 @@ export default function Notifications() {
       {/* WordPress Update */}
       <NotificationSection
         icon={RefreshCw}
-        title="WordPress Updates"
-        description="Get SMS alerts when a new WordPress version is available."
+        title={__('WordPress Updates')}
+        description={__('Get SMS alerts when a new WordPress version is available.')}
         enabled={notifWpVersion === '1'}
         onToggle={(checked) => setNotifWpVersion(checked ? '1' : '')}
       />
@@ -306,38 +306,38 @@ export default function Notifications() {
       {/* New User Registration */}
       <NotificationSection
         icon={UserPlus}
-        title="New User Alerts"
-        description="Send SMS when someone registers on your site."
+        title={__('New User Alerts')}
+        description={__('Send SMS when someone registers on your site.')}
         enabled={notifNewUser === '1'}
         onToggle={(checked) => setNotifNewUser(checked ? '1' : '')}
       >
         <div className="wsms-space-y-2">
-          <Label htmlFor="userAdminTemplate">Admin Notification</Label>
+          <Label htmlFor="userAdminTemplate">{__('Admin Notification')}</Label>
           <TemplateTextarea
             id="userAdminTemplate"
             value={notifNewUserAdminTemplate}
             onChange={setNotifNewUserAdminTemplate}
-            placeholder="New user registered: %user_login% (%user_email%)"
+            placeholder={__('New user registered: %user_login% (%user_email%)')}
             rows={3}
             variables={['%user_login%', '%user_email%', '%user_firstname%', '%user_lastname%', '%date_register%']}
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Sent to admin.
+            {__('Sent to admin.')}
           </p>
         </div>
 
         <div className="wsms-space-y-2">
-          <Label htmlFor="userTemplate">Welcome Message</Label>
+          <Label htmlFor="userTemplate">{__('Welcome Message')}</Label>
           <TemplateTextarea
             id="userTemplate"
             value={notifNewUserTemplate}
             onChange={setNotifNewUserTemplate}
-            placeholder="Welcome %user_firstname%! Your account has been created."
+            placeholder={__('Welcome %user_firstname%! Your account has been created.')}
             rows={3}
             variables={['%user_login%', '%user_email%', '%user_firstname%', '%user_lastname%', '%date_register%']}
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Sent to new user.
+            {__('Sent to new user.')}
           </p>
         </div>
       </NotificationSection>
@@ -345,18 +345,18 @@ export default function Notifications() {
       {/* New Comment */}
       <NotificationSection
         icon={MessageCircle}
-        title="New Comment Alerts"
-        description="Get SMS when someone comments on your content."
+        title={__('New Comment Alerts')}
+        description={__('Get SMS when someone comments on your content.')}
         enabled={notifNewComment === '1'}
         onToggle={(checked) => setNotifNewComment(checked ? '1' : '')}
       >
         <div className="wsms-space-y-2">
-          <Label htmlFor="commentTemplate">Message Template</Label>
+          <Label htmlFor="commentTemplate">{__('Message Template')}</Label>
           <TemplateTextarea
             id="commentTemplate"
             value={notifNewCommentTemplate}
             onChange={setNotifNewCommentTemplate}
-            placeholder="New comment on '%comment_post_title%' by %comment_author%"
+            placeholder={__("New comment on '%comment_post_title%' by %comment_author%")}
             rows={3}
             variables={['%comment_author%', '%comment_author_email%', '%comment_content%', '%comment_post_title%', '%comment_post_url%', '%comment_date%']}
           />
@@ -366,32 +366,32 @@ export default function Notifications() {
       {/* User Login */}
       <NotificationSection
         icon={LogIn}
-        title="Login Alerts"
-        description="Get SMS when users log into your site."
+        title={__('Login Alerts')}
+        description={__('Get SMS when users log into your site.')}
         enabled={notifUserLogin === '1'}
         onToggle={(checked) => setNotifUserLogin(checked ? '1' : '')}
       >
         <div className="wsms-space-y-2">
-          <Label>Monitor Roles</Label>
+          <Label>{__('Monitor Roles')}</Label>
           <MultiSelect
             options={roles}
             value={notifUserLoginRoles}
             onValueChange={setNotifUserLoginRoles}
-            placeholder="All user roles"
-            searchPlaceholder="Search roles..."
+            placeholder={__('All user roles')}
+            searchPlaceholder={__('Search roles...')}
           />
           <p className="wsms-text-xs wsms-text-muted-foreground">
-            Only notify when users with these roles log in.
+            {__('Only notify when users with these roles log in.')}
           </p>
         </div>
 
         <div className="wsms-space-y-2">
-          <Label htmlFor="loginTemplate">Message Template</Label>
+          <Label htmlFor="loginTemplate">{__('Message Template')}</Label>
           <TemplateTextarea
             id="loginTemplate"
             value={notifUserLoginTemplate}
             onChange={setNotifUserLoginTemplate}
-            placeholder="User %user_login% logged in at %date_login%"
+            placeholder={__('User %user_login% logged in at %date_login%')}
             rows={3}
             variables={['%user_login%', '%user_email%', '%user_firstname%', '%user_lastname%', '%date_login%']}
           />

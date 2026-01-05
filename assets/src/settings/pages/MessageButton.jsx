@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Repeater } from '@/components/ui/repeater'
 import { useSetting } from '@/context/SettingsContext'
+import { __ } from '@/lib/utils'
 
 export default function MessageButton() {
   // Message button toggle
@@ -69,10 +70,10 @@ export default function MessageButton() {
             <div>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <MessageSquare className="wsms-h-5 wsms-w-5" />
-                Message Button Configuration
+                {__('Message Button Configuration')}
               </CardTitle>
               <CardDescription>
-                Display a floating message button on your website for quick communication
+                {__('Display a floating message button on your website for quick communication')}
               </CardDescription>
             </div>
             <Button
@@ -82,36 +83,36 @@ export default function MessageButton() {
               className="wsms-flex wsms-items-center wsms-gap-1.5"
             >
               <Eye className="wsms-h-4 wsms-w-4" />
-              Preview
+              {__('Preview')}
             </Button>
           </div>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Enable Message Button</p>
+              <p className="wsms-font-medium">{__('Enable Message Button')}</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Show a floating chat button on your website for visitor inquiries.
+                {__('Show a floating chat button on your website for visitor inquiries.')}
               </p>
             </div>
             <Switch
               checked={isEnabled}
               onCheckedChange={(checked) => setMessageButton(checked ? '1' : '')}
-              aria-label="Enable message button"
+              aria-label={__('Enable message button')}
             />
           </div>
 
           {isEnabled && (
             <div className="wsms-space-y-2">
-              <Label htmlFor="chatboxTitle">Chat Window Title</Label>
+              <Label htmlFor="chatboxTitle">{__('Chat Window Title')}</Label>
               <Input
                 id="chatboxTitle"
                 value={chatboxTitle}
                 onChange={(e) => setChatboxTitle(e.target.value)}
-                placeholder="How can we help?"
+                placeholder={__('How can we help?')}
               />
               <p className="wsms-text-xs wsms-text-muted-foreground">
-                Heading shown when the chat window opens.
+                {__('Heading shown when the chat window opens.')}
               </p>
             </div>
           )}
@@ -123,58 +124,58 @@ export default function MessageButton() {
           {/* Button Appearance */}
           <Card>
             <CardHeader>
-              <CardTitle>Button Appearance</CardTitle>
+              <CardTitle>{__('Button Appearance')}</CardTitle>
               <CardDescription>
-                Customize how the message button looks and where it appears
+                {__('Customize how the message button looks and where it appears')}
               </CardDescription>
             </CardHeader>
             <CardContent className="wsms-space-y-4">
               <div className="wsms-space-y-2">
-                <Label htmlFor="buttonText">Button Label</Label>
+                <Label htmlFor="buttonText">{__('Button Label')}</Label>
                 <Input
                   id="buttonText"
                   value={buttonText}
                   onChange={(e) => setButtonText(e.target.value)}
-                  placeholder="Chat with us"
+                  placeholder={__('Chat with us')}
                 />
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Text shown on the floating button.
+                  {__('Text shown on the floating button.')}
                 </p>
               </div>
 
               <div className="wsms-space-y-2">
-                <Label>Button Position</Label>
+                <Label>{__('Button Position')}</Label>
                 <Select value={buttonPosition} onValueChange={setButtonPosition}>
-                  <SelectTrigger aria-label="Button position">
-                    <SelectValue placeholder="Select position" />
+                  <SelectTrigger aria-label={__('Button position')}>
+                    <SelectValue placeholder={__('Select position')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="bottom_right">Bottom Right</SelectItem>
-                    <SelectItem value="bottom_left">Bottom Left</SelectItem>
+                    <SelectItem value="bottom_right">{__('Bottom Right')}</SelectItem>
+                    <SelectItem value="bottom_left">{__('Bottom Left')}</SelectItem>
                   </SelectContent>
                 </Select>
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Where the button appears on screen.
+                  {__('Where the button appears on screen.')}
                 </p>
               </div>
 
               <div className="wsms-space-y-2">
-                <Label>Open Animation</Label>
+                <Label>{__('Open Animation')}</Label>
                 <Select
                   value={animationEffect || 'none'}
                   onValueChange={(val) => setAnimationEffect(val === 'none' ? '' : val)}
                 >
-                  <SelectTrigger aria-label="Open animation">
-                    <SelectValue placeholder="Select animation" />
+                  <SelectTrigger aria-label={__('Open animation')}>
+                    <SelectValue placeholder={__('Select animation')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="none">None</SelectItem>
-                    <SelectItem value="fade">Fade In</SelectItem>
-                    <SelectItem value="slide">Slide Up</SelectItem>
+                    <SelectItem value="none">{__('None')}</SelectItem>
+                    <SelectItem value="fade">{__('Fade In')}</SelectItem>
+                    <SelectItem value="slide">{__('Slide Up')}</SelectItem>
                   </SelectContent>
                 </Select>
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  How the chat window appears when opened.
+                  {__('How the chat window appears when opened.')}
                 </p>
               </div>
             </CardContent>
@@ -185,16 +186,16 @@ export default function MessageButton() {
             <CardHeader>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <Palette className="wsms-h-5 wsms-w-5" />
-                Colors
+                {__('Colors')}
               </CardTitle>
               <CardDescription>
-                Customize the chatbox color scheme
+                {__('Customize the chatbox color scheme')}
               </CardDescription>
             </CardHeader>
             <CardContent className="wsms-space-y-4">
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
                 <div className="wsms-space-y-2">
-                  <Label htmlFor="chatboxColor">Primary Color</Label>
+                  <Label htmlFor="chatboxColor">{__('Primary Color')}</Label>
                   <div className="wsms-flex wsms-gap-2">
                     <Input
                       id="chatboxColor"
@@ -210,12 +211,12 @@ export default function MessageButton() {
                     />
                   </div>
                   <p className="wsms-text-xs wsms-text-muted-foreground">
-                    Background color for the button and chat header.
+                    {__('Background color for the button and chat header.')}
                   </p>
                 </div>
 
                 <div className="wsms-space-y-2">
-                  <Label htmlFor="chatboxTextColor">Text Color</Label>
+                  <Label htmlFor="chatboxTextColor">{__('Text Color')}</Label>
                   <div className="wsms-flex wsms-gap-2">
                     <Input
                       id="chatboxTextColor"
@@ -231,7 +232,7 @@ export default function MessageButton() {
                     />
                   </div>
                   <p className="wsms-text-xs wsms-text-muted-foreground">
-                    Text color for the button and header.
+                    {__('Text color for the button and header.')}
                   </p>
                 </div>
               </div>
@@ -241,27 +242,27 @@ export default function MessageButton() {
           {/* Footer Settings */}
           <Card>
             <CardHeader>
-              <CardTitle>Footer Settings</CardTitle>
+              <CardTitle>{__('Footer Settings')}</CardTitle>
               <CardDescription>
-                Customize the chatbox footer area
+                {__('Customize the chatbox footer area')}
               </CardDescription>
             </CardHeader>
             <CardContent className="wsms-space-y-4">
               <div className="wsms-space-y-2">
-                <Label htmlFor="footerText">Footer Message</Label>
+                <Label htmlFor="footerText">{__('Footer Message')}</Label>
                 <Input
                   id="footerText"
                   value={footerText}
                   onChange={(e) => setFooterText(e.target.value)}
-                  placeholder="We typically reply within minutes"
+                  placeholder={__('We typically reply within minutes')}
                 />
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Optional message shown at the bottom of the chat window.
+                  {__('Optional message shown at the bottom of the chat window.')}
                 </p>
               </div>
 
               <div className="wsms-space-y-2">
-                <Label htmlFor="footerTextColor">Footer Text Color</Label>
+                <Label htmlFor="footerTextColor">{__('Footer Text Color')}</Label>
                 <div className="wsms-flex wsms-gap-2">
                   <Input
                     id="footerTextColor"
@@ -280,16 +281,16 @@ export default function MessageButton() {
 
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
                 <div className="wsms-space-y-2">
-                  <Label htmlFor="footerLinkTitle">Footer Link Text</Label>
+                  <Label htmlFor="footerLinkTitle">{__('Footer Link Text')}</Label>
                   <Input
                     id="footerLinkTitle"
                     value={footerLinkTitle}
                     onChange={(e) => setFooterLinkTitle(e.target.value)}
-                    placeholder="View FAQ"
+                    placeholder={__('View FAQ')}
                   />
                 </div>
                 <div className="wsms-space-y-2">
-                  <Label htmlFor="footerLinkUrl">Footer Link URL</Label>
+                  <Label htmlFor="footerLinkUrl">{__('Footer Link URL')}</Label>
                   <Input
                     id="footerLinkUrl"
                     value={footerLinkUrl}
@@ -301,15 +302,15 @@ export default function MessageButton() {
 
               <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
                 <div>
-                  <p className="wsms-font-medium">Hide WSMS Branding</p>
+                  <p className="wsms-font-medium">{__('Hide WSMS Branding')}</p>
                   <p className="wsms-text-sm wsms-text-muted-foreground">
-                    Remove the "Powered by WSMS" text from the footer.
+                    {__('Remove the "Powered by WSMS" text from the footer.')}
                   </p>
                 </div>
                 <Switch
                   checked={disableLogo === '1'}
                   onCheckedChange={(checked) => setDisableLogo(checked ? '1' : '')}
-                  aria-label="Hide WSMS branding"
+                  aria-label={__('Hide WSMS branding')}
                 />
               </div>
             </CardContent>
@@ -320,10 +321,10 @@ export default function MessageButton() {
             <CardHeader>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <Users className="wsms-h-5 wsms-w-5" />
-                Support Team
+                {__('Support Team')}
               </CardTitle>
               <CardDescription>
-                Add team members that visitors can contact directly.
+                {__('Add team members that visitors can contact directly.')}
               </CardDescription>
             </CardHeader>
             <CardContent className="wsms-space-y-4">
@@ -331,14 +332,14 @@ export default function MessageButton() {
                 value={teamMembers}
                 onValueChange={setTeamMembers}
                 fields={[
-                  { name: 'name', label: 'Name', type: 'text', placeholder: 'Jane Smith' },
-                  { name: 'role', label: 'Role', type: 'text', placeholder: 'Customer Support' },
-                  { name: 'phone', label: 'Phone', type: 'tel', placeholder: '+1 555 123 4567' },
-                  { name: 'avatar', label: 'Avatar URL', type: 'url', placeholder: 'https://...' },
+                  { name: 'name', label: __('Name'), type: 'text', placeholder: __('Jane Smith') },
+                  { name: 'role', label: __('Role'), type: 'text', placeholder: __('Customer Support') },
+                  { name: 'phone', label: __('Phone'), type: 'tel', placeholder: '+1 555 123 4567' },
+                  { name: 'avatar', label: __('Avatar URL'), type: 'url', placeholder: 'https://...' },
                 ]}
-                addLabel="Add Team Member"
+                addLabel={__('Add Team Member')}
                 maxItems={5}
-                emptyMessage="No team members added yet."
+                emptyMessage={__('No team members added yet.')}
               />
             </CardContent>
           </Card>
@@ -348,51 +349,51 @@ export default function MessageButton() {
             <CardHeader>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <Link className="wsms-h-5 wsms-w-5" />
-                Quick Links
+                {__('Quick Links')}
               </CardTitle>
               <CardDescription>
-                Add helpful resource links to the chatbox
+                {__('Add helpful resource links to the chatbox')}
               </CardDescription>
             </CardHeader>
             <CardContent className="wsms-space-y-4">
               <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
                 <div>
-                  <p className="wsms-font-medium">Show Quick Links</p>
+                  <p className="wsms-font-medium">{__('Show Quick Links')}</p>
                   <p className="wsms-text-sm wsms-text-muted-foreground">
-                    Display helpful links in the chat window.
+                    {__('Display helpful links in the chat window.')}
                   </p>
                 </div>
                 <Switch
                   checked={linksEnabled === '1'}
                   onCheckedChange={(checked) => setLinksEnabled(checked ? '1' : '')}
-                  aria-label="Show quick links"
+                  aria-label={__('Show quick links')}
                 />
               </div>
 
               {linksEnabled === '1' && (
                 <>
                   <div className="wsms-space-y-2">
-                    <Label htmlFor="linksTitle">Links Section Title</Label>
+                    <Label htmlFor="linksTitle">{__('Links Section Title')}</Label>
                     <Input
                       id="linksTitle"
                       value={linksTitle}
                       onChange={(e) => setLinksTitle(e.target.value)}
-                      placeholder="Helpful Resources"
+                      placeholder={__('Helpful Resources')}
                     />
                   </div>
 
                   <div className="wsms-space-y-2">
-                    <Label>Resource Links</Label>
+                    <Label>{__('Resource Links')}</Label>
                     <Repeater
                       value={chatboxLinks}
                       onValueChange={setChatboxLinks}
                       fields={[
-                        { name: 'title', label: 'Title', type: 'text', placeholder: 'FAQ' },
-                        { name: 'url', label: 'URL', type: 'url', placeholder: 'https://example.com/faq' },
+                        { name: 'title', label: __('Title'), type: 'text', placeholder: __('FAQ') },
+                        { name: 'url', label: __('URL'), type: 'url', placeholder: 'https://example.com/faq' },
                       ]}
-                      addLabel="Add Link"
+                      addLabel={__('Add Link')}
                       maxItems={10}
-                      emptyMessage="No links added. Add links to help visitors find answers quickly."
+                      emptyMessage={__('No links added. Add links to help visitors find answers quickly.')}
                     />
                   </div>
                 </>

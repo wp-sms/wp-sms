@@ -1,15 +1,14 @@
 import * as React from 'react'
 import { Users, UserCog, Phone, X, Search, Plus } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn, __, getWpSettings } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
-import { getWpSettings } from '@/lib/utils'
 
 const TABS = [
-  { id: 'groups', label: 'Groups', icon: Users, description: 'Subscriber groups' },
-  { id: 'roles', label: 'Roles', icon: UserCog, description: 'WordPress users' },
-  { id: 'numbers', label: 'Numbers', icon: Phone, description: 'Manual entry' },
+  { id: 'groups', label: __('Groups'), icon: Users, description: __('Subscriber groups') },
+  { id: 'roles', label: __('Roles'), icon: UserCog, description: __('WordPress users') },
+  { id: 'numbers', label: __('Numbers'), icon: Phone, description: __('Manual entry') },
 ]
 
 /**
@@ -165,7 +164,7 @@ const RecipientSelector = React.forwardRef(
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={`Search ${activeTab}...`}
+              placeholder={activeTab === 'groups' ? __('Search groups...') : __('Search roles...')}
               disabled={disabled}
               className="wsms-pl-8 wsms-h-8 wsms-text-[12px]"
             />
@@ -182,7 +181,7 @@ const RecipientSelector = React.forwardRef(
                   <div className="wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-py-8 wsms-text-center">
                     <Users className="wsms-h-8 wsms-w-8 wsms-text-muted-foreground/30 wsms-mb-2" />
                     <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                      {searchQuery ? 'No groups match your search' : 'No subscriber groups available'}
+                      {searchQuery ? __('No groups match your search') : __('No subscriber groups available')}
                     </p>
                   </div>
                 ) : (
@@ -227,7 +226,7 @@ const RecipientSelector = React.forwardRef(
                   <div className="wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-py-8 wsms-text-center">
                     <UserCog className="wsms-h-8 wsms-w-8 wsms-text-muted-foreground/30 wsms-mb-2" />
                     <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                      {searchQuery ? 'No roles match your search' : 'No user roles available'}
+                      {searchQuery ? __('No roles match your search') : __('No user roles available')}
                     </p>
                   </div>
                 ) : (
@@ -270,7 +269,7 @@ const RecipientSelector = React.forwardRef(
                     value={numberInput}
                     onChange={(e) => setNumberInput(e.target.value)}
                     onKeyDown={handleKeyDown}
-                    placeholder="Enter phone number..."
+                    placeholder={__('Enter phone number...')}
                     disabled={disabled}
                     className="wsms-flex-1 wsms-h-8 wsms-text-[12px] wsms-font-mono"
                   />
@@ -285,7 +284,7 @@ const RecipientSelector = React.forwardRef(
                   </Button>
                 </div>
                 <p className="wsms-text-[10px] wsms-text-muted-foreground">
-                  Separate multiple with commas
+                  {__('Separate multiple with commas')}
                 </p>
 
                 {/* Added Numbers */}
@@ -293,7 +292,7 @@ const RecipientSelector = React.forwardRef(
                   <div className="wsms-space-y-2 wsms-pt-2 wsms-border-t wsms-border-border">
                     <div className="wsms-flex wsms-items-center wsms-justify-between">
                       <p className="wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground">
-                        {value.numbers.length} number{value.numbers.length !== 1 ? 's' : ''}
+                        {value.numbers.length} {value.numbers.length !== 1 ? __('numbers') : __('number')}
                       </p>
                       <button
                         type="button"
@@ -301,7 +300,7 @@ const RecipientSelector = React.forwardRef(
                         disabled={disabled}
                         className="wsms-text-[10px] wsms-text-red-600 hover:wsms-text-red-700"
                       >
-                        Clear
+                        {__('Clear')}
                       </button>
                     </div>
                     <div className="wsms-flex wsms-flex-wrap wsms-gap-1.5">
@@ -330,7 +329,7 @@ const RecipientSelector = React.forwardRef(
                   <div className="wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-py-6 wsms-text-center">
                     <Phone className="wsms-h-6 wsms-w-6 wsms-text-muted-foreground/30 wsms-mb-1.5" />
                     <p className="wsms-text-[11px] wsms-text-muted-foreground">
-                      No numbers added
+                      {__('No numbers added')}
                     </p>
                   </div>
                 )}

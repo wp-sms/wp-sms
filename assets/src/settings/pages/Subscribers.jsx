@@ -39,7 +39,7 @@ import {
 import { subscribersApi } from '@/api/subscribersApi'
 import { groupsApi } from '@/api/groupsApi'
 import { smsApi } from '@/api/smsApi'
-import { cn, formatDate, getWpSettings } from '@/lib/utils'
+import { cn, formatDate, getWpSettings, __ } from '@/lib/utils'
 import { useDataTable } from '@/hooks/useDataTable'
 import { useFilters } from '@/hooks/useFilters'
 
@@ -298,7 +298,7 @@ export default function Subscribers() {
     {
       id: 'name',
       accessorKey: 'name',
-      header: 'Name',
+      header: __('Name'),
       sortable: true,
       cell: ({ row }) => (
         <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
@@ -309,7 +309,7 @@ export default function Subscribers() {
     {
       id: 'mobile',
       accessorKey: 'mobile',
-      header: 'Mobile',
+      header: __('Mobile'),
       sortable: true,
       cell: ({ row }) => (
         <span className="wsms-text-[13px] wsms-font-mono wsms-text-foreground">
@@ -320,7 +320,7 @@ export default function Subscribers() {
     {
       id: 'group',
       accessorKey: 'group_name',
-      header: 'Group',
+      header: __('Group'),
       cell: ({ row }) => (
         <span className="wsms-text-[12px] wsms-text-muted-foreground">
           {row.group_name || '—'}
@@ -330,7 +330,7 @@ export default function Subscribers() {
     {
       id: 'custom_fields',
       accessorKey: 'custom_fields',
-      header: 'Custom Fields',
+      header: __('Custom Fields'),
       cell: ({ row }) => {
         if (!row.custom_fields || Object.keys(row.custom_fields).length === 0) {
           return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
@@ -349,7 +349,7 @@ export default function Subscribers() {
             ))}
             {entries.length > 2 && (
               <span className="wsms-text-[10px] wsms-text-muted-foreground">
-                +{entries.length - 2} more
+                +{entries.length - 2} {__('more')}
               </span>
             )}
           </div>
@@ -359,10 +359,10 @@ export default function Subscribers() {
     {
       id: 'status',
       accessorKey: 'status',
-      header: 'Status',
+      header: __('Status'),
       cell: ({ row }) => (
         <StatusBadge variant={row.status === '1' ? 'active' : 'inactive'}>
-          {row.status === '1' ? 'Active' : 'Inactive'}
+          {row.status === '1' ? __('Active') : __('Inactive')}
         </StatusBadge>
       ),
     },
@@ -371,7 +371,7 @@ export default function Subscribers() {
           {
             id: 'activate_key',
             accessorKey: 'activate_key',
-            header: 'Activate Code',
+            header: __('Activate Code'),
             cell: ({ row }) => (
               <span className="wsms-text-[12px] wsms-font-mono wsms-text-muted-foreground">
                 {row.activate_key || '—'}
@@ -383,7 +383,7 @@ export default function Subscribers() {
     {
       id: 'date',
       accessorKey: 'date',
-      header: 'Subscribed',
+      header: __('Subscribed'),
       sortable: true,
       cell: ({ row }) => (
         <span className="wsms-text-[12px] wsms-text-muted-foreground">
@@ -396,17 +396,17 @@ export default function Subscribers() {
   // Row actions
   const rowActions = [
     {
-      label: 'Quick Reply',
+      label: __('Quick Reply'),
       icon: MessageSquare,
       onClick: (row) => setQuickReplyTo(row),
     },
     {
-      label: 'Edit',
+      label: __('Edit'),
       icon: Edit,
       onClick: handleEdit,
     },
     {
-      label: 'Delete',
+      label: __('Delete'),
       icon: Trash2,
       onClick: (row) => handleDelete(row.id),
       variant: 'destructive',
@@ -416,22 +416,22 @@ export default function Subscribers() {
   // Bulk actions
   const bulkActions = [
     {
-      label: 'Move to Group',
+      label: __('Move to Group'),
       icon: FolderOpen,
       onClick: () => setShowMoveToGroup(true),
     },
     {
-      label: 'Activate Selected',
+      label: __('Activate Selected'),
       icon: CheckCircle,
       onClick: () => handleBulkAction('activate'),
     },
     {
-      label: 'Deactivate Selected',
+      label: __('Deactivate Selected'),
       icon: XCircle,
       onClick: () => handleBulkAction('deactivate'),
     },
     {
-      label: 'Delete Selected',
+      label: __('Delete Selected'),
       icon: Trash2,
       onClick: () => handleBulkAction('delete'),
       variant: 'destructive',
@@ -466,17 +466,17 @@ export default function Subscribers() {
                 <Users className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                No subscribers yet
+                {__('No subscribers yet')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-                Start building your SMS audience. Add subscribers manually, import from CSV, or let users subscribe through your website forms.
+                {__('Start building your SMS audience. Add subscribers manually, import from CSV, or let users subscribe through your website forms.')}
               </p>
 
               {/* Quick Add */}
               <div className="wsms-w-full wsms-max-w-sm wsms-mb-6">
                 <QuickAddForm
-                  placeholder="Enter phone number..."
-                  buttonLabel="Add Subscriber"
+                  placeholder={__('Enter phone number...')}
+                  buttonLabel={__('Add Subscriber')}
                   onSubmit={(phone) => handleQuickAdd('', phone)}
                   isLoading={isAddingQuick}
                 />
@@ -485,7 +485,7 @@ export default function Subscribers() {
               {/* Import option */}
               <Button variant="outline" onClick={() => setShowImportDialog(true)}>
                 <Upload className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-                Import from CSV
+                {__('Import from CSV')}
               </Button>
             </div>
           </CardContent>
@@ -541,7 +541,7 @@ export default function Subscribers() {
             </div>
             <div>
               <p className="wsms-text-lg wsms-font-bold wsms-text-foreground wsms-leading-none">{stats.total}</p>
-              <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-0.5">Total</p>
+              <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-0.5">{__('Total')}</p>
             </div>
           </div>
 
@@ -554,7 +554,7 @@ export default function Subscribers() {
             </div>
             <div>
               <p className="wsms-text-lg wsms-font-bold wsms-text-success wsms-leading-none">{stats.active}</p>
-              <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-0.5">Active</p>
+              <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-0.5">{__('Active')}</p>
             </div>
           </div>
 
@@ -567,7 +567,7 @@ export default function Subscribers() {
             </div>
             <div>
               <p className="wsms-text-lg wsms-font-bold wsms-text-muted-foreground wsms-leading-none">{stats.inactive}</p>
-              <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-0.5">Inactive</p>
+              <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-0.5">{__('Inactive')}</p>
             </div>
           </div>
         </div>
@@ -576,11 +576,11 @@ export default function Subscribers() {
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <Button variant="outline" size="sm" onClick={() => setShowImportDialog(true)}>
             <Upload className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-            Import
+            {__('Import')}
           </Button>
           <Button variant="outline" size="sm" onClick={handleExport}>
             <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-            Export
+            {__('Export')}
           </Button>
         </div>
       </div>

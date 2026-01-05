@@ -31,7 +31,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { groupsApi } from '@/api/groupsApi'
-import { cn } from '@/lib/utils'
+import { cn, __ } from '@/lib/utils'
 
 export default function Groups() {
   // Data state
@@ -172,7 +172,7 @@ export default function Groups() {
     {
       id: 'name',
       accessorKey: 'name',
-      header: 'Group Name',
+      header: __('Group Name'),
       sortable: true,
       cell: ({ row }) => {
         if (inlineEditId === row.id) {
@@ -190,7 +190,7 @@ export default function Groups() {
                 variant="ghost"
                 className="wsms-h-8 wsms-w-8"
                 onClick={handleInlineEditSave}
-                aria-label="Save group name"
+                aria-label={__('Save group name')}
               >
                 <Save className="wsms-h-4 wsms-w-4 wsms-text-emerald-600" />
               </Button>
@@ -199,7 +199,7 @@ export default function Groups() {
                 variant="ghost"
                 className="wsms-h-8 wsms-w-8"
                 onClick={handleInlineEditCancel}
-                aria-label="Cancel editing"
+                aria-label={__('Cancel editing')}
               >
                 <X className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
               </Button>
@@ -220,7 +220,7 @@ export default function Groups() {
     {
       id: 'subscriber_count',
       accessorKey: 'subscriber_count',
-      header: 'Subscribers',
+      header: __('Subscribers'),
       cell: ({ row }) => (
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <Users className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
@@ -235,12 +235,12 @@ export default function Groups() {
   // Row actions
   const rowActions = [
     {
-      label: 'Edit',
+      label: __('Edit'),
       icon: Edit,
       onClick: handleInlineEditStart,
     },
     {
-      label: 'Delete',
+      label: __('Delete'),
       icon: Trash2,
       onClick: (row) => setDeleteGroup(row),
       variant: 'destructive',
@@ -293,23 +293,22 @@ export default function Groups() {
                 <FolderOpen className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                Create your first group
+                {__('Create your first group')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-                Groups help you organize subscribers for targeted messaging.
-                Segment your audience by interest, location, or any criteria that matters to your communication.
+                {__('Groups help you organize subscribers for targeted messaging. Segment your audience by interest, location, or any criteria that matters to your communication.')}
               </p>
 
               {/* Inline Create Form */}
               <div className="wsms-w-full wsms-max-w-sm">
                 <QuickAddForm
-                  placeholder="Enter group name..."
-                  buttonLabel="Create Group"
+                  placeholder={__('Enter group name...')}
+                  buttonLabel={__('Create Group')}
                   onSubmit={handleQuickAdd}
                   isLoading={isAddingQuick}
                   validate={(value) => {
-                    if (value.length < 2) return 'Group name must be at least 2 characters'
-                    if (value.length > 50) return 'Group name must be less than 50 characters'
+                    if (value.length < 2) return __('Group name must be at least 2 characters')
+                    if (value.length > 50) return __('Group name must be less than 50 characters')
                     return null
                   }}
                 />
@@ -319,13 +318,13 @@ export default function Groups() {
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4 wsms-mt-8 wsms-pt-6 wsms-border-t wsms-border-border wsms-w-full">
                 <div className="wsms-text-left wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
                   <Users className="wsms-h-4 wsms-w-4 wsms-text-primary wsms-mb-2" />
-                  <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">Targeted Messaging</p>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground">Send SMS to specific groups only</p>
+                  <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">{__('Targeted Messaging')}</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Send SMS to specific groups only')}</p>
                 </div>
                 <div className="wsms-text-left wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
                   <LayoutGrid className="wsms-h-4 wsms-w-4 wsms-text-primary wsms-mb-2" />
-                  <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">Easy Organization</p>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground">Manage subscribers efficiently</p>
+                  <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">{__('Easy Organization')}</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Manage subscribers efficiently')}</p>
                 </div>
               </div>
             </div>
@@ -367,7 +366,7 @@ export default function Groups() {
             </div>
             <div>
               <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{pagination.total}</p>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground">Groups</p>
+              <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Groups')}</p>
             </div>
           </div>
           <div className="wsms-w-px wsms-h-10 wsms-bg-border" />
@@ -377,7 +376,7 @@ export default function Groups() {
             </div>
             <div>
               <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{totalSubscribers}</p>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground">Total Subscribers</p>
+              <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total Subscribers')}</p>
             </div>
           </div>
         </div>
@@ -568,32 +567,32 @@ export default function Groups() {
       <Dialog open={!!deleteGroup} onOpenChange={() => setDeleteGroup(null)}>
         <DialogContent size="sm">
           <DialogHeader>
-            <DialogTitle>Delete Group</DialogTitle>
+            <DialogTitle>{__('Delete Group')}</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete "{deleteGroup?.name}"?
+              {__('Are you sure you want to delete')} "{deleteGroup?.name}"?
             </DialogDescription>
           </DialogHeader>
           <DialogBody>
             <div className="wsms-p-4 wsms-rounded-md wsms-bg-amber-500/10 wsms-border wsms-border-amber-500/20">
               <p className="wsms-text-[12px] wsms-text-amber-700 dark:wsms-text-amber-400">
-                This will remove the group but keep all subscribers. They will become ungrouped.
+                {__('This will remove the group but keep all subscribers. They will become ungrouped.')}
               </p>
             </div>
           </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={() => setDeleteGroup(null)}>
-              Cancel
+              {__('Cancel')}
             </Button>
             <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
               {isDeleting ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
-                  Deleting...
+                  {__('Deleting...')}
                 </>
               ) : (
                 <>
                   <Trash2 className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-                  Delete Group
+                  {__('Delete Group')}
                 </>
               )}
             </Button>
