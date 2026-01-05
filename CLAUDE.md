@@ -197,5 +197,7 @@ Before committing changes, always:
    - Option keys must remain unchanged
    - API endpoints must maintain the same request/response format
    - Database schema changes require migration scripts
-3. **Verify the build**: Run `npm run settings:build` to ensure no build errors
-4. **Warn on risky changes**: If changes are potentially risky (e.g., modifying core functionality, changing database operations, altering API contracts), ask the user for confirmation before committing
+3. **Security review**: Verify all user input is sanitized, all output is escaped, and no SQL injection vulnerabilities exist
+4. **Performance review**: Check for N+1 queries, unnecessary database calls, and inefficient loops
+5. **Verify the build**: Run `npm run settings:build` to ensure no build errors
+6. **Warn on risky changes**: If changes are potentially risky (e.g., modifying core functionality, changing database operations, altering API contracts), ask the user for confirmation before committing
