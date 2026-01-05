@@ -390,7 +390,7 @@ export default function TwoWaySettings() {
                     placeholder={__('New SMS from %sender_number%: %sms_content%')}
                   />
                   <p className="wsms-text-[10px] wsms-text-muted-foreground">
-                    {__('Variables:')} %sender_number%, %sms_content%, %site_name%
+                    {__('Variables:')} %sender_number%, %sms_content%, %site_name%, %user_name%, %subscriber_name%
                   </p>
                 </div>
               )}
