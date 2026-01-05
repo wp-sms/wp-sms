@@ -11,7 +11,7 @@ import {
   MoreHorizontal,
   Inbox,
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn, __ } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -74,13 +74,13 @@ function TableSkeleton({ columns, rows = 5, hasSelection }) {
 }
 
 // Empty state component with enhanced styling
-function EmptyState({ icon: Icon = Inbox, message = 'No items found' }) {
+function EmptyState({ icon: Icon = Inbox, message }) {
   return (
     <div className="wsms-empty-state">
       <div className="wsms-empty-state-icon">
         <Icon strokeWidth={1.5} />
       </div>
-      <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-text-center wsms-max-w-[280px]">{message}</p>
+      <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-text-center wsms-max-w-[280px]">{message || __('No items found')}</p>
     </div>
   )
 }
@@ -93,7 +93,7 @@ function BulkActionsDropdown({ actions, selectedCount, onAction }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="wsms-gap-1.5">
-          <span>Actions</span>
+          <span>{__('Actions')}</span>
           <span className="wsms-flex wsms-h-5 wsms-min-w-5 wsms-items-center wsms-justify-center wsms-rounded wsms-bg-primary/10 wsms-px-1.5 wsms-text-[11px] wsms-font-semibold wsms-text-primary">
             {selectedCount}
           </span>
@@ -124,7 +124,7 @@ function RowActionsDropdown({ actions, row }) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="wsms-h-8 wsms-w-8">
           <MoreHorizontal className="wsms-h-4 wsms-w-4" />
-          <span className="wsms-sr-only">Open menu</span>
+          <span className="wsms-sr-only">{__('Open menu')}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" sideOffset={5}>
@@ -176,9 +176,9 @@ function Pagination({
   return (
     <div className="wsms-flex wsms-flex-col sm:wsms-flex-row wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-4 wsms-py-3 wsms-border-t wsms-border-border wsms-bg-muted/20">
       <p className="wsms-text-[12px] wsms-text-muted-foreground">
-        Showing <span className="wsms-font-medium wsms-text-foreground">{startItem}</span> to{' '}
-        <span className="wsms-font-medium wsms-text-foreground">{endItem}</span> of{' '}
-        <span className="wsms-font-medium wsms-text-foreground">{totalItems}</span> results
+        {__('Showing')} <span className="wsms-font-medium wsms-text-foreground">{startItem}</span> {__('to')}{' '}
+        <span className="wsms-font-medium wsms-text-foreground">{endItem}</span> {__('of')}{' '}
+        <span className="wsms-font-medium wsms-text-foreground">{totalItems}</span> {__('results')}
       </p>
 
       <div className="wsms-flex wsms-items-center wsms-gap-1">
@@ -188,7 +188,7 @@ function Pagination({
           className="wsms-h-8 wsms-w-8"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
-          aria-label="Go to previous page"
+          aria-label={__('Go to previous page')}
         >
           <ChevronLeft className="wsms-h-4 wsms-w-4" />
         </Button>
@@ -243,7 +243,7 @@ function Pagination({
           className="wsms-h-8 wsms-w-8"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
-          aria-label="Go to next page"
+          aria-label={__('Go to next page')}
         >
           <ChevronRight className="wsms-h-4 wsms-w-4" />
         </Button>
@@ -391,7 +391,7 @@ export function DataTable({
                     checked={allSelected}
                     indeterminate={someSelected}
                     onCheckedChange={handleSelectAll}
-                    aria-label="Select all"
+                    aria-label={__('Select all')}
                   />
                 </th>
               )}
@@ -457,7 +457,7 @@ export function DataTable({
                         <Checkbox
                           checked={isSelected}
                           onCheckedChange={(checked) => handleSelectRow(rowId, checked)}
-                          aria-label={`Select row ${rowIndex + 1}`}
+                          aria-label={__('Select row %s').replace('%s', rowIndex + 1)}
                         />
                       </td>
                     )}

@@ -162,3 +162,15 @@ When creating settings for a new add-on:
 - E2E tests use Page Object Model pattern (`e2e/pages/`)
 - E2E requires `.env.e2e` file (copy from `.env.e2e.example`)
 - WordPress test environment runs on port 8888, tests on 8889
+
+## Commit Guidelines
+
+Before committing changes, always:
+
+1. **Review staged changes**: Run `git diff --staged` to review all changes that will be committed
+2. **Check backward compatibility**: Ensure changes don't break existing functionality
+   - Option keys must remain unchanged
+   - API endpoints must maintain the same request/response format
+   - Database schema changes require migration scripts
+3. **Verify the build**: Run `npm run settings:build` to ensure no build errors
+4. **Warn on risky changes**: If changes are potentially risky (e.g., modifying core functionality, changing database operations, altering API contracts), ask the user for confirmation before committing

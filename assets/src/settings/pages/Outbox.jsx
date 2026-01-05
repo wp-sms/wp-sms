@@ -35,7 +35,7 @@ import {
 } from '@/components/ui/dialog'
 import { outboxApi } from '@/api/outboxApi'
 import { smsApi } from '@/api/smsApi'
-import { cn, formatDate } from '@/lib/utils'
+import { cn, formatDate, __ } from '@/lib/utils'
 import { useDataTable } from '@/hooks/useDataTable'
 import { useNotificationToast } from '@/hooks/useNotificationToast'
 import { useFilters } from '@/hooks/useFilters'

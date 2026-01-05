@@ -3,7 +3,7 @@ import { Save, X, Loader2, Check } from 'lucide-react'
 import { Button } from '../ui/button'
 import { useSettings } from '@/context/SettingsContext'
 import { useToast } from '../ui/toaster'
-import { cn } from '@/lib/utils'
+import { cn, __ } from '@/lib/utils'
 
 export default function FloatingSaveBar() {
   const { hasChanges, isSaving, saveSettings, resetChanges } = useSettings()
@@ -16,14 +16,14 @@ export default function FloatingSaveBar() {
     if (result.success) {
       setSaveSuccess(true)
       toast({
-        title: 'Settings saved',
+        title: __('Settings saved'),
         variant: 'success',
       })
       setTimeout(() => setSaveSuccess(false), 2000)
     } else {
       toast({
-        title: 'Error saving settings',
-        description: result.error || 'Please try again.',
+        title: __('Error saving settings'),
+        description: result.error || __('Please try again.'),
         variant: 'destructive',
       })
     }
@@ -47,7 +47,7 @@ export default function FloatingSaveBar() {
   const handleDiscard = () => {
     resetChanges()
     toast({
-      title: 'Changes discarded',
+      title: __('Changes discarded'),
     })
   }
 
@@ -68,12 +68,12 @@ export default function FloatingSaveBar() {
             <>
               <Check className="wsms-h-4 wsms-w-4 wsms-text-success" aria-hidden="true" />
               <span className="wsms-text-[13px] wsms-text-success wsms-font-medium">
-                Settings saved successfully
+                {__('Settings saved successfully')}
               </span>
             </>
           ) : (
             <span className="wsms-text-[13px] wsms-text-muted-foreground">
-              You have unsaved changes
+              {__('You have unsaved changes')}
             </span>
           )}
         </div>
@@ -87,7 +87,7 @@ export default function FloatingSaveBar() {
               disabled={isSaving}
             >
               <X className="wsms-h-4 wsms-w-4 wsms-mr-1" aria-hidden="true" />
-              Discard
+              {__('Discard')}
             </Button>
 
             <Button
@@ -99,12 +99,12 @@ export default function FloatingSaveBar() {
               {isSaving ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1 wsms-animate-spin" aria-hidden="true" />
-                  Saving...
+                  {__('Saving...')}
                 </>
               ) : (
                 <>
                   <Save className="wsms-h-4 wsms-w-4 wsms-mr-1" aria-hidden="true" />
-                  Save Changes
+                  {__('Save Changes')}
                 </>
               )}
             </Button>

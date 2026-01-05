@@ -7,7 +7,7 @@ import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { MultiSelect } from '@/components/ui/multi-select'
 import { useSetting } from '@/context/SettingsContext'
-import { getWpSettings } from '@/lib/utils'
+import { getWpSettings, __ } from '@/lib/utils'
 
 export default function PhoneConfig() {
   const { countries = {} } = getWpSettings()
@@ -42,15 +42,15 @@ export default function PhoneConfig() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Phone className="wsms-h-5 wsms-w-5" />
-            Administrator Notifications
+            {__('Administrator Notifications')}
           </CardTitle>
           <CardDescription>
-            Receives system notifications (new users, comments, errors).
+            {__('Receives system notifications (new users, comments, errors).')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-space-y-2">
-            <Label htmlFor="adminMobile">Admin Phone Number</Label>
+            <Label htmlFor="adminMobile">{__('Admin Phone Number')}</Label>
             <Input
               id="adminMobile"
               value={adminMobile}
@@ -58,7 +58,7 @@ export default function PhoneConfig() {
               placeholder="+1 555 123 4567"
             />
             <p className="wsms-text-xs wsms-text-muted-foreground">
-              Enter the full phone number including country code.
+              {__('Enter the full phone number including country code.')}
             </p>
           </div>
         </CardContent>
@@ -67,50 +67,50 @@ export default function PhoneConfig() {
       {/* Mobile Field Configuration */}
       <Card>
         <CardHeader>
-          <CardTitle>Mobile Field Configuration</CardTitle>
+          <CardTitle>{__('Mobile Field Configuration')}</CardTitle>
           <CardDescription>
-            Choose where to collect mobile numbers from users.
+            {__('Choose where to collect mobile numbers from users.')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-space-y-2">
-            <Label>Collect Phone Numbers From</Label>
+            <Label>{__('Collect Phone Numbers From')}</Label>
             <Select value={addMobileField} onValueChange={setAddMobileField}>
-              <SelectTrigger aria-label="Collect phone numbers from">
-                <SelectValue placeholder="Select source" />
+              <SelectTrigger aria-label={__('Collect phone numbers from')}>
+                <SelectValue placeholder={__('Select source')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="disable">Don't collect — No mobile field</SelectItem>
-                <SelectItem value="add_mobile_field_in_profile">User profile — Add field to WordPress user profiles</SelectItem>
-                <SelectItem value="add_mobile_field_in_wc_billing">WooCommerce billing (new field) — Add dedicated mobile field</SelectItem>
-                <SelectItem value="use_phone_field_in_wc_billing">WooCommerce billing (existing) — Use existing phone field</SelectItem>
+                <SelectItem value="disable">{__("Don't collect — No mobile field")}</SelectItem>
+                <SelectItem value="add_mobile_field_in_profile">{__('User profile — Add field to WordPress user profiles')}</SelectItem>
+                <SelectItem value="add_mobile_field_in_wc_billing">{__('WooCommerce billing (new field) — Add dedicated mobile field')}</SelectItem>
+                <SelectItem value="use_phone_field_in_wc_billing">{__('WooCommerce billing (existing) — Use existing phone field')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="wsms-space-y-2">
-            <Label>Field Requirement</Label>
+            <Label>{__('Field Requirement')}</Label>
             <Select value={optionalMobileField} onValueChange={setOptionalMobileField}>
-              <SelectTrigger aria-label="Field requirement">
-                <SelectValue placeholder="Select requirement" />
+              <SelectTrigger aria-label={__('Field requirement')}>
+                <SelectValue placeholder={__('Select requirement')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="0">Required — Users must enter a mobile number</SelectItem>
-                <SelectItem value="optional">Optional — Users can skip this field</SelectItem>
+                <SelectItem value="0">{__('Required — Users must enter a mobile number')}</SelectItem>
+                <SelectItem value="optional">{__('Optional — Users can skip this field')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="wsms-space-y-2">
-            <Label htmlFor="placeholder">Placeholder Text</Label>
+            <Label htmlFor="placeholder">{__('Placeholder Text')}</Label>
             <Input
               id="placeholder"
               value={mobilePlaceholder}
               onChange={(e) => setMobilePlaceholder(e.target.value)}
-              placeholder="e.g., +1 555 000 0000"
+              placeholder={__('e.g., +1 555 000 0000')}
             />
             <p className="wsms-text-xs wsms-text-muted-foreground">
-              Example format shown in the empty field.
+              {__('Example format shown in the empty field.')}
             </p>
           </div>
         </CardContent>
@@ -121,54 +121,54 @@ export default function PhoneConfig() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Globe className="wsms-h-5 wsms-w-5" />
-            International Phone Input
+            {__('International Phone Input')}
           </CardTitle>
           <CardDescription>
-            Show a country flag selector for international phone number formatting.
+            {__('Show a country flag selector for international phone number formatting.')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">International Phone Input</p>
+              <p className="wsms-font-medium">{__('International Phone Input')}</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Show a country flag selector for international phone number formatting.
+                {__('Show a country flag selector for international phone number formatting.')}
               </p>
             </div>
             <Switch
               checked={isInternationalEnabled}
               onCheckedChange={(checked) => setInternationalMobile(checked ? '1' : '')}
-              aria-label="Enable international phone input"
+              aria-label={__('Enable international phone input')}
             />
           </div>
 
           {isInternationalEnabled && (
             <>
               <div className="wsms-space-y-2">
-                <Label>Limit Countries</Label>
+                <Label>{__('Limit Countries')}</Label>
                 <MultiSelect
                   options={countries}
                   value={onlyCountries}
                   onValueChange={setOnlyCountries}
-                  placeholder="All countries"
-                  searchPlaceholder="Search countries..."
+                  placeholder={__('All countries')}
+                  searchPlaceholder={__('Search countries...')}
                 />
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Only show these countries in the dropdown. Leave empty to show all.
+                  {__('Only show these countries in the dropdown. Leave empty to show all.')}
                 </p>
               </div>
 
               <div className="wsms-space-y-2">
-                <Label>Preferred Countries</Label>
+                <Label>{__('Preferred Countries')}</Label>
                 <MultiSelect
                   options={countries}
                   value={preferredCountries}
                   onValueChange={setPreferredCountries}
-                  placeholder="None selected"
-                  searchPlaceholder="Search countries..."
+                  placeholder={__('None selected')}
+                  searchPlaceholder={__('Search countries...')}
                 />
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Show these countries at the top of the dropdown for quick access.
+                  {__('Show these countries at the top of the dropdown for quick access.')}
                 </p>
               </div>
             </>
@@ -177,13 +177,13 @@ export default function PhoneConfig() {
           {!isInternationalEnabled && (
             <>
               <div className="wsms-space-y-2">
-                <Label>Default Country Code</Label>
+                <Label>{__('Default Country Code')}</Label>
                 <Select value={countryCode} onValueChange={setCountryCode}>
-                  <SelectTrigger aria-label="Default country code">
-                    <SelectValue placeholder="Select country code" />
+                  <SelectTrigger aria-label={__('Default country code')}>
+                    <SelectValue placeholder={__('Select country code')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0">None — Don't add country code</SelectItem>
+                    <SelectItem value="0">{__("None — Don't add country code")}</SelectItem>
                     {countries && Object.entries(countries).map(([code, country]) => (
                       <SelectItem key={code} value={code}>
                         {typeof country === 'object' ? country.name : country}
@@ -192,13 +192,13 @@ export default function PhoneConfig() {
                   </SelectContent>
                 </Select>
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Automatically prepend this country code to all phone numbers.
+                  {__('Automatically prepend this country code to all phone numbers.')}
                 </p>
               </div>
 
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
                 <div className="wsms-space-y-2">
-                  <Label htmlFor="minLength">Minimum Digits</Label>
+                  <Label htmlFor="minLength">{__('Minimum Digits')}</Label>
                   <Input
                     id="minLength"
                     type="number"
@@ -207,11 +207,11 @@ export default function PhoneConfig() {
                     placeholder="10"
                   />
                   <p className="wsms-text-xs wsms-text-muted-foreground">
-                    Minimum number of digits required (excluding country code).
+                    {__('Minimum number of digits required (excluding country code).')}
                   </p>
                 </div>
                 <div className="wsms-space-y-2">
-                  <Label htmlFor="maxLength">Maximum Digits</Label>
+                  <Label htmlFor="maxLength">{__('Maximum Digits')}</Label>
                   <Input
                     id="maxLength"
                     type="number"
@@ -220,7 +220,7 @@ export default function PhoneConfig() {
                     placeholder="15"
                   />
                   <p className="wsms-text-xs wsms-text-muted-foreground">
-                    Maximum number of digits allowed (excluding country code).
+                    {__('Maximum number of digits allowed (excluding country code).')}
                   </p>
                 </div>
               </div>
@@ -234,24 +234,24 @@ export default function PhoneConfig() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Shield className="wsms-h-5 wsms-w-5" />
-            Data Protection
+            {__('Data Protection')}
           </CardTitle>
           <CardDescription>
-            Privacy and GDPR compliance settings.
+            {__('Privacy and GDPR compliance settings.')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">GDPR Compliance</p>
+              <p className="wsms-font-medium">{__('GDPR Compliance')}</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Enable data export/deletion by mobile number and add SMS consent checkbox to forms.
+                {__('Enable data export/deletion by mobile number and add SMS consent checkbox to forms.')}
               </p>
             </div>
             <Switch
               checked={gdprCompliance === '1'}
               onCheckedChange={(checked) => setGdprCompliance(checked ? '1' : '')}
-              aria-label="Enable GDPR compliance"
+              aria-label={__('Enable GDPR compliance')}
             />
           </div>
         </CardContent>
