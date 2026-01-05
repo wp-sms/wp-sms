@@ -163,6 +163,31 @@ When creating settings for a new add-on:
 - E2E requires `.env.e2e` file (copy from `.env.e2e.example`)
 - WordPress test environment runs on port 8888, tests on 8889
 
+## Coding Standards
+
+### Internationalization (i18n)
+All user-facing strings must be translatable:
+- **PHP**: Use `__('string', 'wp-sms')` or `esc_html__('string', 'wp-sms')`
+- **React**: Use `__('string')` from `@/lib/utils` which reads from `wpSmsSettings.i18n`
+
+### Security
+
+**Escape all output** (prevent XSS):
+```php
+esc_html($text);           // For plain text
+esc_attr($attribute);      // For HTML attributes
+esc_url($url);             // For URLs
+wp_kses_post($html);       // For HTML content with allowed tags
+```
+
+**Sanitize all input** (validate/clean user data):
+```php
+sanitize_text_field($input);      // For text input
+sanitize_email($email);           // For email addresses
+absint($number);                  // For positive integers
+sanitize_textarea_field($text);   // For textarea content
+```
+
 ## Commit Guidelines
 
 Before committing changes, always:
