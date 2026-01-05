@@ -38,7 +38,7 @@ const selectContentStyles = {
 }
 
 const SelectContent = React.forwardRef(({ className, children, position = 'popper', style, ...props }, ref) => (
-  <SelectPrimitive.Portal>
+  <SelectPrimitive.Portal container={document.getElementById('wpsms-settings-root')}>
     <SelectPrimitive.Content
       ref={ref}
       className={cn(

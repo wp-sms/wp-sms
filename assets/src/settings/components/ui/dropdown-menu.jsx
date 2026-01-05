@@ -66,7 +66,7 @@ const dropdownContentStyles = {
 
 const DropdownMenuContent = React.forwardRef(
   ({ className, sideOffset = 4, style, ...props }, ref) => (
-    <DropdownMenuPrimitive.Portal>
+    <DropdownMenuPrimitive.Portal container={document.getElementById('wpsms-settings-root')}>
       <DropdownMenuPrimitive.Content
         ref={ref}
         sideOffset={sideOffset}

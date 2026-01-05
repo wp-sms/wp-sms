@@ -184,7 +184,7 @@ class UnifiedAdminPage extends Singleton
             'wpsms-unified-admin',
             $distUrl . $mainEntry['file'],
             [],
-            WP_SMS_VERSION,
+            WP_SMS_VERSION . '.' . filemtime(WP_SMS_DIR . 'assets/dist/settings/' . $mainEntry['file']),
             true
         );
 
@@ -255,6 +255,8 @@ class UnifiedAdminPage extends Singleton
             'groups'        => $this->getNewsletterGroups(),
             // Add-on settings schema for dynamic rendering
             'addonSettings' => $this->getAddonSettingsSchema(),
+            // Add-on option values
+            'addonValues'   => $this->getAddonOptionValues(),
             // Third-party plugin status for integrations
             'thirdPartyPlugins' => $this->getThirdPartyPluginStatus(),
             // Extended data for unified admin pages
@@ -732,6 +734,58 @@ class UnifiedAdminPage extends Singleton
         }
 
         return $validated;
+    }
+
+    /**
+     * Get add-on option values from database
+     *
+     * Loads option values for all registered add-on fields,
+     * converting WooCommerce 'yes'/'no' strings to boolean.
+     *
+     * @return array
+     */
+    private function getAddonOptionValues()
+    {
+        $schemas = apply_filters('wpsms_addon_settings_schema', []);
+        $values = [];
+
+        foreach ($schemas as $addonSlug => $schema) {
+            if (empty($schema['fields']) || !is_array($schema['fields'])) {
+                continue;
+            }
+
+            $addonValues = [];
+            foreach ($schema['fields'] as $field) {
+                if (empty($field['id'])) {
+                    continue;
+                }
+
+                $optionKey = $field['id'];
+                $fieldType = $field['type'] ?? 'text';
+                $default = $field['default'] ?? null;
+
+                $value = get_option($optionKey, $default);
+
+                // Convert 'yes'/'no' to boolean for switch/checkbox fields (WooCommerce compatibility)
+                if (in_array($fieldType, ['switch', 'checkbox'], true)) {
+                    if ($value === 'yes') {
+                        $value = true;
+                    } elseif ($value === 'no' || $value === '' || $value === null) {
+                        $value = false;
+                    } else {
+                        $value = (bool) $value;
+                    }
+                }
+
+                $addonValues[$optionKey] = $value;
+            }
+
+            if (!empty($addonValues)) {
+                $values[sanitize_key($addonSlug)] = $addonValues;
+            }
+        }
+
+        return $values;
     }
 
     /**

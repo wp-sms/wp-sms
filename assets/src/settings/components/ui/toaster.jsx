@@ -1,5 +1,4 @@
-import React, { createContext, useContext, useState, useCallback } from 'react'
-import * as ToastPrimitive from '@radix-ui/react-toast'
+import React, { createContext, useContext, useState, useCallback, useEffect, useRef } from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -14,13 +13,52 @@ export function useToast() {
   return context
 }
 
-// Toast Provider
+// Simple Toast Component (avoiding Radix UI portal issues)
+function Toast({ id, title, description, variant, onDismiss }) {
+  const [isExiting, setIsExiting] = useState(false)
+
+  const handleDismiss = () => {
+    setIsExiting(true)
+    setTimeout(() => onDismiss(id), 150)
+  }
+
+  return (
+    <div
+      className={cn(
+        'wsms-pointer-events-auto wsms-relative wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-space-x-4 wsms-overflow-hidden wsms-rounded-md wsms-border wsms-p-4 wsms-pr-8 wsms-shadow-lg wsms-transition-all wsms-duration-150',
+        isExiting ? 'wsms-opacity-0 wsms-translate-x-2' : 'wsms-opacity-100 wsms-translate-x-0',
+        variant === 'destructive' && 'wsms-border-red-200 wsms-bg-red-50 wsms-text-red-900',
+        variant === 'success' && 'wsms-border-emerald-200 wsms-bg-emerald-50 wsms-text-emerald-900',
+        variant === 'default' && 'wsms-border-border wsms-bg-white wsms-text-foreground'
+      )}
+      style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
+    >
+      <div className="wsms-grid wsms-gap-1">
+        {title && (
+          <div className="wsms-text-sm wsms-font-semibold">{title}</div>
+        )}
+        {description && (
+          <div className="wsms-text-sm wsms-opacity-90">{description}</div>
+        )}
+      </div>
+      <button
+        onClick={handleDismiss}
+        className="wsms-absolute wsms-right-2 wsms-top-2 wsms-rounded-md wsms-p-1 wsms-text-current wsms-opacity-50 hover:wsms-opacity-100 wsms-transition-opacity"
+      >
+        <X className="wsms-h-4 wsms-w-4" />
+      </button>
+    </div>
+  )
+}
+
+// Toast Provider - Simple implementation without Radix UI portals
 export function Toaster({ children }) {
   const [toasts, setToasts] = useState([])
+  const containerRef = useRef(null)
 
   const toast = useCallback(({ title, description, variant = 'default', duration = 5000 }) => {
     const id = Date.now()
-    setToasts((prev) => [...prev, { id, title, description, variant, duration }])
+    setToasts((prev) => [...prev, { id, title, description, variant }])
 
     // Auto-remove after duration
     setTimeout(() => {
@@ -36,41 +74,23 @@ export function Toaster({ children }) {
 
   return (
     <ToastContext.Provider value={{ toast, dismiss }}>
-      <ToastPrimitive.Provider swipeDirection="right">
-        {children}
+      {children}
+      {/* Toast viewport - rendered inline, not as a portal */}
+      <div
+        ref={containerRef}
+        className="wsms-fixed wsms-bottom-4 wsms-right-4 wsms-z-[99999] wsms-flex wsms-flex-col wsms-gap-2 wsms-max-w-[380px] wsms-w-full wsms-pointer-events-none"
+      >
         {toasts.map(({ id, title, description, variant }) => (
-          <ToastPrimitive.Root
+          <Toast
             key={id}
-            className={cn(
-              'wsms-group wsms-pointer-events-auto wsms-relative wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-space-x-4 wsms-overflow-hidden wsms-rounded-md wsms-border wsms-p-6 wsms-pr-8 wsms-shadow-lg wsms-transition-all',
-              'data-[swipe=cancel]:wsms-translate-x-0 data-[swipe=end]:wsms-translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:wsms-translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:wsms-transition-none data-[state=open]:wsms-animate-in data-[state=closed]:wsms-animate-out data-[swipe=end]:wsms-animate-out data-[state=closed]:wsms-fade-out-80 data-[state=closed]:wsms-slide-out-to-right-full data-[state=open]:wsms-slide-in-from-top-full data-[state=open]:sm:wsms-slide-in-from-bottom-full',
-              variant === 'destructive' && 'wsms-border-destructive wsms-bg-destructive wsms-text-destructive-foreground',
-              variant === 'success' && 'wsms-border-success wsms-bg-success wsms-text-success-foreground',
-              variant === 'default' && 'wsms-border wsms-bg-background wsms-text-foreground'
-            )}
-          >
-            <div className="wsms-grid wsms-gap-1">
-              {title && (
-                <ToastPrimitive.Title className="wsms-text-sm wsms-font-semibold">
-                  {title}
-                </ToastPrimitive.Title>
-              )}
-              {description && (
-                <ToastPrimitive.Description className="wsms-text-sm wsms-opacity-90">
-                  {description}
-                </ToastPrimitive.Description>
-              )}
-            </div>
-            <ToastPrimitive.Close
-              className="wsms-absolute wsms-right-2 wsms-top-2 wsms-rounded-md wsms-p-1 wsms-text-foreground/50 wsms-opacity-0 wsms-transition-opacity hover:wsms-text-foreground focus:wsms-opacity-100 focus:wsms-outline-none focus:wsms-ring-2 group-hover:wsms-opacity-100"
-              onClick={() => dismiss(id)}
-            >
-              <X className="wsms-h-4 wsms-w-4" />
-            </ToastPrimitive.Close>
-          </ToastPrimitive.Root>
+            id={id}
+            title={title}
+            description={description}
+            variant={variant}
+            onDismiss={dismiss}
+          />
         ))}
-        <ToastPrimitive.Viewport className="wsms-fixed wsms-bottom-0 wsms-right-0 wsms-z-[100] wsms-flex wsms-max-h-screen wsms-w-full wsms-flex-col-reverse wsms-p-4 sm:wsms-bottom-0 sm:wsms-right-0 sm:wsms-top-auto sm:wsms-flex-col md:wsms-max-w-[420px]" />
-      </ToastPrimitive.Provider>
+      </div>
     </ToastContext.Provider>
   )
 }

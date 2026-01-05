@@ -11,9 +11,7 @@ export default function App() {
       <ThemeProvider>
         <SettingsProvider>
           <Toaster>
-            <ErrorBoundary>
-              <AppShell />
-            </ErrorBoundary>
+            <AppShell />
           </Toaster>
         </SettingsProvider>
       </ThemeProvider>

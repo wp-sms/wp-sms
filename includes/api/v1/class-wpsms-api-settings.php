@@ -217,6 +217,11 @@ class SettingsApi extends RestApi
             update_option('wps_pp_settings', $mergedProSettings);
         }
 
+        // Update add-on settings (individual WordPress options)
+        if (isset($data['addonValues']) && is_array($data['addonValues'])) {
+            $this->updateAddonSettings($data['addonValues']);
+        }
+
         // Clear any cached settings
         wp_cache_delete('wpsms_settings', 'options');
         wp_cache_delete('wps_pp_settings', 'options');
@@ -290,6 +295,46 @@ class SettingsApi extends RestApi
              * @param int $userId ID of the user who made the changes
              */
             do_action('wpsms_settings_updated', $changedKeys, $oldValues, $newValues, get_current_user_id());
+        }
+    }
+
+    /**
+     * Update add-on settings as individual WordPress options
+     *
+     * Handles saving add-on field values to their respective option keys.
+     * Converts booleans to 'yes'/'no' for WooCommerce compatibility.
+     *
+     * @param array $addonValues Add-on values keyed by addon slug
+     */
+    private function updateAddonSettings($addonValues)
+    {
+        $addonFieldTypes = $this->getAddonFieldTypes();
+
+        foreach ($addonValues as $addonSlug => $fields) {
+            if (!is_array($fields)) {
+                continue;
+            }
+
+            foreach ($fields as $optionKey => $value) {
+                $sanitizedKey = sanitize_key($optionKey);
+                $fieldType = $addonFieldTypes[$sanitizedKey] ?? 'text';
+
+                // Convert boolean values to 'yes'/'no' for WooCommerce compatibility
+                if (in_array($fieldType, ['switch', 'checkbox'], true)) {
+                    $value = $value ? 'yes' : 'no';
+                } elseif ($fieldType === 'multi-select' && is_array($value)) {
+                    // Multi-select arrays are saved as-is
+                    $value = array_map('sanitize_text_field', $value);
+                } elseif (is_array($value)) {
+                    // Other arrays (like repeater)
+                    $value = $this->sanitizeAddonField($value, $fieldType);
+                } else {
+                    // Sanitize based on field type
+                    $value = $this->sanitizeAddonField($value, $fieldType);
+                }
+
+                update_option($sanitizedKey, $value);
+            }
         }
     }
 

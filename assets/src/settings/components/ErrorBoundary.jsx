@@ -27,7 +27,10 @@ class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     // Log error to console for debugging
-    console.error('ErrorBoundary caught an error:', error, errorInfo)
+    console.error('ErrorBoundary caught an error:', error)
+    console.error('Error message:', error?.message)
+    console.error('Component stack:', errorInfo?.componentStack)
+    console.error('Error info:', errorInfo)
 
     this.setState({
       error,
@@ -59,8 +62,8 @@ class ErrorBoundary extends React.Component {
               </CardDescription>
             </CardHeader>
             <CardContent className="wsms-space-y-4">
-              {process.env.NODE_ENV === 'development' && this.state.error && (
-                <details className="wsms-bg-muted wsms-p-3 wsms-rounded-md wsms-text-sm">
+              {this.state.error && (
+                <details className="wsms-bg-muted wsms-p-3 wsms-rounded-md wsms-text-sm" open>
                   <summary className="wsms-cursor-pointer wsms-font-medium wsms-mb-2">
                     Error Details
                   </summary>

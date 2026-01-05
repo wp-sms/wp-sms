@@ -124,6 +124,38 @@ wp_sms_send($to, $msg, $isFlash = false, $from = false, $mediaUrls = []);
 
 **Actions**: `wp_sms_send`, `wp_sms_add_subscriber`
 
+## Add-on Settings System
+
+Add-ons (like WP SMS WooCommerce Pro) register their settings for the React dashboard using the `wpsms_addon_settings_schema` filter.
+
+### How It Works
+
+1. **Schema Registration**: Add-ons hook into `wpsms_addon_settings_schema` to provide field definitions
+   ```php
+   // In add-on: src/Admin/ReactSettings/WooCommerceProSettingsSchema.php
+   add_filter('wpsms_addon_settings_schema', [self::class, 'registerSchema']);
+   ```
+
+2. **Data Flow to React**: `UnifiedAdminPage::getLocalizedData()` passes two things:
+   - `addonSettings` - Field schemas (structure, labels, types)
+   - `addonValues` - Actual option values from database
+
+3. **Value Conversion**: WooCommerce stores checkboxes as `'yes'`/`'no'` strings. The `getAddonOptionValues()` method converts these to boolean for React switch components.
+
+### Key Files
+
+- `src/Admin/UnifiedAdminPage.php` - Loads schema + values for React dashboard
+- `assets/src/settings/components/ui/DynamicField.jsx` - Renders fields based on schema
+- `assets/src/settings/context/SettingsContext.jsx` - Manages add-on state (`addonValues`)
+
+### Adding New Add-on Settings
+
+When creating settings for a new add-on:
+1. Create a schema class (see `wp-sms-woocommerce-pro/src/Admin/ReactSettings/WooCommerceProSettingsSchema.php`)
+2. Hook into `wpsms_addon_settings_schema` filter
+3. Each field needs an `addonSlug` property to route values correctly
+4. Use `'yes'`/`'no'` for checkbox defaults if WooCommerce compatibility is needed
+
 ## Testing Notes
 
 - Unit tests in `tests/unit/` - run single test file: `./vendor/bin/phpunit tests/unit/HelperTest.php`

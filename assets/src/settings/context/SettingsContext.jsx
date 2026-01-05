@@ -22,6 +22,10 @@ const VALID_PAGES = [
   'advanced',
   // Privacy
   'privacy',
+  // Add-ons
+  'woocommerce-pro',
+  'cart-abandonment',
+  'sms-campaigns',
 ]
 
 // Get initial page from URL query params
@@ -46,8 +50,10 @@ function updateUrlTab(page) {
 const initialState = {
   settings: {},
   proSettings: {},
+  addonValues: {},
   originalSettings: {},
   originalProSettings: {},
+  originalAddonValues: {},
   isLoading: true,
   isSaving: false,
   hasChanges: false,
@@ -65,6 +71,7 @@ const ACTIONS = {
   LOAD_SETTINGS: 'LOAD_SETTINGS',
   UPDATE_SETTING: 'UPDATE_SETTING',
   UPDATE_PRO_SETTING: 'UPDATE_PRO_SETTING',
+  UPDATE_ADDON_SETTING: 'UPDATE_ADDON_SETTING',
   UPDATE_SETTINGS_BATCH: 'UPDATE_SETTINGS_BATCH',
   SAVE_SUCCESS: 'SAVE_SUCCESS',
   RESET_CHANGES: 'RESET_CHANGES',
@@ -88,8 +95,10 @@ function settingsReducer(state, action) {
         ...state,
         settings: action.payload.settings,
         proSettings: action.payload.proSettings,
+        addonValues: action.payload.addonValues || {},
         originalSettings: { ...action.payload.settings },
         originalProSettings: { ...action.payload.proSettings },
+        originalAddonValues: JSON.parse(JSON.stringify(action.payload.addonValues || {})),
         gateways: action.payload.gateways || state.gateways,
         addons: action.payload.addons || state.addons,
         isLoading: false,
@@ -103,7 +112,8 @@ function settingsReducer(state, action) {
         ...state,
         settings: newSettings,
         hasChanges: !isEqual(newSettings, state.originalSettings) ||
-                    !isEqual(state.proSettings, state.originalProSettings),
+                    !isEqual(state.proSettings, state.originalProSettings) ||
+                    !isEqual(state.addonValues, state.originalAddonValues),
       }
 
     case ACTIONS.UPDATE_PRO_SETTING:
@@ -112,7 +122,26 @@ function settingsReducer(state, action) {
         ...state,
         proSettings: newProSettings,
         hasChanges: !isEqual(state.settings, state.originalSettings) ||
-                    !isEqual(newProSettings, state.originalProSettings),
+                    !isEqual(newProSettings, state.originalProSettings) ||
+                    !isEqual(state.addonValues, state.originalAddonValues),
+      }
+
+    case ACTIONS.UPDATE_ADDON_SETTING:
+      const { addonSlug: slug, key: fieldKey, value: fieldValue } = action.payload
+      const currentAddonValues = state.addonValues || {}
+      const newAddonValues = {
+        ...currentAddonValues,
+        [slug]: {
+          ...(currentAddonValues[slug] || {}),
+          [fieldKey]: fieldValue,
+        },
+      }
+      return {
+        ...state,
+        addonValues: newAddonValues,
+        hasChanges: !isEqual(state.settings, state.originalSettings) ||
+                    !isEqual(state.proSettings, state.originalProSettings) ||
+                    !isEqual(newAddonValues, state.originalAddonValues || {}),
       }
 
     case ACTIONS.UPDATE_SETTINGS_BATCH:
@@ -123,7 +152,8 @@ function settingsReducer(state, action) {
         settings: batchSettings,
         proSettings: batchProSettings,
         hasChanges: !isEqual(batchSettings, state.originalSettings) ||
-                    !isEqual(batchProSettings, state.originalProSettings),
+                    !isEqual(batchProSettings, state.originalProSettings) ||
+                    !isEqual(state.addonValues, state.originalAddonValues),
       }
 
     case ACTIONS.SAVE_SUCCESS:
@@ -131,6 +161,7 @@ function settingsReducer(state, action) {
         ...state,
         originalSettings: { ...state.settings },
         originalProSettings: { ...state.proSettings },
+        originalAddonValues: JSON.parse(JSON.stringify(state.addonValues)),
         isSaving: false,
         hasChanges: false,
         error: null,
@@ -141,6 +172,7 @@ function settingsReducer(state, action) {
         ...state,
         settings: { ...state.originalSettings },
         proSettings: { ...state.originalProSettings },
+        addonValues: JSON.parse(JSON.stringify(state.originalAddonValues)),
         hasChanges: false,
       }
 
@@ -168,6 +200,7 @@ export function SettingsProvider({ children }) {
       payload: {
         settings: wpSettings.settings || {},
         proSettings: wpSettings.proSettings || {},
+        addonValues: wpSettings.addonValues || {},
         gateways: wpSettings.gateways || {},
         addons: wpSettings.addons || {},
       },
@@ -184,6 +217,12 @@ export function SettingsProvider({ children }) {
     dispatch({ type: ACTIONS.UPDATE_PRO_SETTING, payload: { key, value } })
   }, [])
 
+  // Update a single addon setting
+  const updateAddonSetting = useCallback((addonSlug, key, value) => {
+    if (!addonSlug || !key) return
+    dispatch({ type: ACTIONS.UPDATE_ADDON_SETTING, payload: { addonSlug, key, value } })
+  }, [])
+
   // Update multiple settings at once
   const updateSettingsBatch = useCallback((settings = {}, proSettings = {}) => {
     dispatch({ type: ACTIONS.UPDATE_SETTINGS_BATCH, payload: { settings, proSettings } })
@@ -197,6 +236,7 @@ export function SettingsProvider({ children }) {
       await settingsApi.updateSettings({
         settings: state.settings,
         proSettings: state.proSettings,
+        addonValues: state.addonValues,
       })
 
       dispatch({ type: ACTIONS.SAVE_SUCCESS })
@@ -205,7 +245,7 @@ export function SettingsProvider({ children }) {
       dispatch({ type: ACTIONS.SET_ERROR, payload: error.message })
       return { success: false, error: error.message }
     }
-  }, [state.settings, state.proSettings])
+  }, [state.settings, state.proSettings, state.addonValues])
 
   // Reset changes to original
   const resetChanges = useCallback(() => {
@@ -240,6 +280,12 @@ export function SettingsProvider({ children }) {
     return state.proSettings[key] ?? defaultValue
   }, [state.proSettings])
 
+  // Get an addon setting value
+  const getAddonSetting = useCallback((addonSlug, key, defaultValue = '') => {
+    if (!state.addonValues || !addonSlug) return defaultValue
+    return state.addonValues[addonSlug]?.[key] ?? defaultValue
+  }, [state.addonValues])
+
   // Check if an add-on is active
   const isAddonActive = useCallback((addon) => {
     return state.addons[addon] === true
@@ -261,12 +307,14 @@ export function SettingsProvider({ children }) {
       ...state,
       updateSetting,
       updateProSetting,
+      updateAddonSetting,
       updateSettingsBatch,
       saveSettings,
       resetChanges,
       setCurrentPage,
       getSetting,
       getProSetting,
+      getAddonSetting,
       isAddonActive,
       testGatewayConnection,
     }),
@@ -274,12 +322,14 @@ export function SettingsProvider({ children }) {
       state,
       updateSetting,
       updateProSetting,
+      updateAddonSetting,
       updateSettingsBatch,
       saveSettings,
       resetChanges,
       setCurrentPage,
       getSetting,
       getProSetting,
+      getAddonSetting,
       isAddonActive,
       testGatewayConnection,
     ]
@@ -314,6 +364,14 @@ export function useProSetting(key, defaultValue = '') {
   const { getProSetting, updateProSetting } = useSettings()
   const value = getProSetting(key, defaultValue)
   const setValue = useCallback((newValue) => updateProSetting(key, newValue), [key, updateProSetting])
+  return [value, setValue]
+}
+
+// Convenience hook for a specific addon setting
+export function useAddonSetting(addonSlug, key, defaultValue = '') {
+  const { getAddonSetting, updateAddonSetting } = useSettings()
+  const value = getAddonSetting(addonSlug, key, defaultValue)
+  const setValue = useCallback((newValue) => updateAddonSetting(addonSlug, key, newValue), [addonSlug, key, updateAddonSetting])
   return [value, setValue]
 }
 

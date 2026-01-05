@@ -19,6 +19,9 @@ import {
   Mail,
   Star,
   Sparkles,
+  ShoppingCart,
+  Megaphone,
+  RotateCcw,
 } from 'lucide-react'
 import { cn, __, getWpSettings } from '@/lib/utils'
 import { useSettings } from '@/context/SettingsContext'
@@ -53,6 +56,24 @@ function getNavigation() {
 
     // Privacy (conditional) - direct item
     { type: 'item', id: 'privacy', label: __('Privacy'), icon: Shield, condition: 'gdprEnabled' },
+
+    // Add-ons separator
+    { type: 'separator', label: __('ADD-ONS'), condition: 'hasWooCommercePro' },
+
+    // WooCommerce Pro - top-level collapsible group
+    {
+      type: 'group',
+      id: 'woocommerce-pro-group',
+      label: __('WooCommerce Pro'),
+      icon: ShoppingCart,
+      defaultExpanded: false,
+      condition: 'hasWooCommercePro',
+      items: [
+        { id: 'sms-campaigns', label: __('SMS Campaigns'), icon: Megaphone },
+        { id: 'cart-abandonment', label: __('Cart Abandonment'), icon: RotateCcw },
+        { id: 'woocommerce-pro', label: __('Settings'), icon: Settings },
+      ],
+    },
   ]
 }
 
@@ -191,10 +212,92 @@ function NavItem({ item, isActive, onClick, isNested = false }) {
   )
 }
 
+// Nested group component (for add-on subpages within a parent group)
+function NestedNavGroup({ group, currentPage, setCurrentPage }) {
+  // Check if any item in this nested group is active
+  const hasActiveChild = group.items.some((item) => item.id === currentPage)
+
+  // Initialize expanded state - expanded if has active child
+  const [isExpanded, setIsExpanded] = useState(hasActiveChild)
+
+  // Auto-expand when a child becomes active
+  useEffect(() => {
+    if (hasActiveChild && !isExpanded) {
+      setIsExpanded(true)
+    }
+  }, [hasActiveChild])
+
+  const Icon = group.icon
+
+  return (
+    <div className="wsms-pl-7">
+      {/* Nested group header */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className={cn(
+          'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-px-2.5 wsms-py-1.5 wsms-text-[12px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-left',
+          hasActiveChild
+            ? 'wsms-text-primary wsms-bg-primary/10'
+            : 'wsms-text-foreground/70 hover:wsms-bg-primary/5 hover:wsms-text-foreground'
+        )}
+      >
+        <div className="wsms-flex wsms-items-center wsms-gap-2">
+          <Icon className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" strokeWidth={1.75} />
+          <span>{group.label}</span>
+        </div>
+        <ChevronRight
+          className={cn(
+            'wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground wsms-transition-transform wsms-duration-200',
+            isExpanded && 'wsms-rotate-90'
+          )}
+          strokeWidth={1.5}
+        />
+      </button>
+
+      {/* Nested expandable content */}
+      <div
+        className={cn(
+          'wsms-overflow-hidden wsms-transition-all wsms-duration-200 wsms-ease-out',
+          isExpanded ? 'wsms-max-h-[300px] wsms-opacity-100' : 'wsms-max-h-0 wsms-opacity-0'
+        )}
+      >
+        <div className="wsms-relative wsms-py-0.5 wsms-pl-4">
+          {/* Connecting line for nested items */}
+          <div className="wsms-absolute wsms-left-[14px] wsms-top-1 wsms-bottom-1 wsms-w-px wsms-bg-border/40" />
+
+          {group.items.map((item) => {
+            const ItemIcon = item.icon
+            return (
+              <button
+                key={item.id}
+                onClick={() => setCurrentPage(item.id)}
+                className={cn(
+                  'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded-md wsms-px-2 wsms-py-1.5 wsms-text-[11px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-left',
+                  currentPage === item.id
+                    ? 'wsms-text-primary wsms-bg-primary/10'
+                    : 'wsms-text-foreground/60 hover:wsms-bg-primary/5 hover:wsms-text-foreground/80'
+                )}
+              >
+                <ItemIcon className="wsms-h-3 wsms-w-3 wsms-shrink-0" strokeWidth={1.75} />
+                <span>{item.label}</span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // Collapsible group component
 function NavGroup({ group, currentPage, setCurrentPage, conditions }) {
-  // Check if any item in this group is active
-  const hasActiveChild = group.items.some((item) => item.id === currentPage)
+  // Check if any item in this group is active (including nested groups)
+  const hasActiveChild = group.items.some((item) => {
+    if (item.type === 'nested-group') {
+      return item.items.some((nestedItem) => nestedItem.id === currentPage)
+    }
+    return item.id === currentPage
+  })
 
   // Initialize expanded state - expanded if has active child or defaultExpanded
   const [isExpanded, setIsExpanded] = useState(hasActiveChild || group.defaultExpanded || false)
@@ -246,22 +349,52 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions }) {
       <div
         className={cn(
           'wsms-overflow-hidden wsms-transition-all wsms-duration-200 wsms-ease-out',
-          isExpanded ? 'wsms-max-h-[500px] wsms-opacity-100' : 'wsms-max-h-0 wsms-opacity-0'
+          isExpanded ? 'wsms-max-h-[800px] wsms-opacity-100' : 'wsms-max-h-0 wsms-opacity-0'
         )}
       >
         <div className="wsms-relative wsms-py-1">
           {/* Subtle connecting line */}
           <div className="wsms-absolute wsms-left-[22px] wsms-top-2 wsms-bottom-2 wsms-w-px wsms-bg-border/50" />
 
-          {filteredItems.map((item) => (
-            <NavItem
-              key={item.id}
-              item={item}
-              isActive={currentPage === item.id}
-              onClick={() => setCurrentPage(item.id)}
-              isNested={true}
-            />
-          ))}
+          {filteredItems.map((item, index) =>
+            item.type === 'separator' ? (
+              <div
+                key={`separator-${index}`}
+                className="wsms-flex wsms-items-center wsms-gap-2 wsms-px-7 wsms-py-2 wsms-mt-1"
+              >
+                <div className="wsms-flex-1 wsms-h-px wsms-bg-border/60" />
+                <span className="wsms-text-[10px] wsms-font-medium wsms-text-muted-foreground/70 wsms-uppercase wsms-tracking-wider">
+                  {item.label}
+                </span>
+                <div className="wsms-flex-1 wsms-h-px wsms-bg-border/60" />
+              </div>
+            ) : item.type === 'section-header' ? (
+              <div
+                key={`section-header-${index}`}
+                className="wsms-flex wsms-items-center wsms-gap-2 wsms-px-7 wsms-py-2 wsms-mt-1"
+              >
+                {item.icon && <item.icon className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground/70" strokeWidth={1.75} />}
+                <span className="wsms-text-[11px] wsms-font-semibold wsms-text-muted-foreground/80 wsms-uppercase wsms-tracking-wide">
+                  {item.label}
+                </span>
+              </div>
+            ) : item.type === 'nested-group' ? (
+              <NestedNavGroup
+                key={item.id}
+                group={item}
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+              />
+            ) : (
+              <NavItem
+                key={item.id}
+                item={item}
+                isActive={currentPage === item.id}
+                onClick={() => setCurrentPage(item.id)}
+                isNested={true}
+              />
+            )
+          )}
         </div>
       </div>
     </div>
@@ -269,16 +402,20 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions }) {
 }
 
 export default function Sidebar({ onClose, showClose }) {
-  const { currentPage, setCurrentPage, getSetting } = useSettings()
+  const { currentPage, setCurrentPage, getSetting, isAddonActive } = useSettings()
   const version = window.wpSmsSettings?.version || '7.0'
   const { gdprEnabled, hasProAddon } = getWpSettings()
   const gatewayName = getSetting('gateway_name', '')
   const isGatewayConfigured = Boolean(gatewayName)
 
+  // Check for WooCommerce Pro add-on (key is 'woocommerce' in getActiveAddons())
+  const hasWooCommercePro = isAddonActive('woocommerce')
+
   // Conditions object for filtering
   const conditions = {
     gdprEnabled,
     hasProAddon,
+    hasWooCommercePro,
   }
 
   // Get navigation items with translations applied
@@ -309,8 +446,19 @@ export default function Sidebar({ onClose, showClose }) {
       {/* Navigation */}
       <nav className="wsms-flex-1 wsms-min-h-0 wsms-overflow-y-auto wsms-px-3 wsms-py-4 wsms-scrollbar-thin">
         <div className="wsms-space-y-1">
-          {filteredNavigation.map((item) =>
-            item.type === 'group' ? (
+          {filteredNavigation.map((item, index) =>
+            item.type === 'separator' ? (
+              <div
+                key={`separator-${index}`}
+                className="wsms-flex wsms-items-center wsms-gap-2 wsms-px-2 wsms-py-3 wsms-mt-2"
+              >
+                <div className="wsms-flex-1 wsms-h-px wsms-bg-border" />
+                <span className="wsms-text-[10px] wsms-font-semibold wsms-text-muted-foreground/70 wsms-uppercase wsms-tracking-wider">
+                  {item.label}
+                </span>
+                <div className="wsms-flex-1 wsms-h-px wsms-bg-border" />
+              </div>
+            ) : item.type === 'group' ? (
               <NavGroup
                 key={item.id}
                 group={item}

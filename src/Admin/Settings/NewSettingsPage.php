@@ -233,6 +233,7 @@ class NewSettingsPage extends Singleton
             'groups'           => $this->getNewsletterGroups(),
             // Add-on settings schema for dynamic rendering
             'addonSettings'    => $this->getAddonSettingsSchema(),
+            'addonValues'      => $this->getAddonOptionValues(),
             'thirdPartyPlugins' => $this->getThirdPartyPluginStatus(),
         ];
     }
@@ -268,6 +269,9 @@ class NewSettingsPage extends Singleton
         'newsletter',
         'integrations',
         'advanced',
+        'woocommerce-pro',
+        'cart-abandonment',
+        'sms-campaigns',
     ];
 
     /**
@@ -301,6 +305,68 @@ class NewSettingsPage extends Singleton
         $schemas = apply_filters('wpsms_addon_settings_schema', []);
 
         return $this->validateAddonSchemas($schemas);
+    }
+
+    /**
+     * Get addon option values from WordPress options
+     *
+     * Loads option values for all registered addon fields and converts
+     * WooCommerce-style 'yes'/'no' values to booleans for switch fields.
+     *
+     * @return array Addon option values keyed by addon slug
+     */
+    private function getAddonOptionValues()
+    {
+        $schemas = apply_filters('wpsms_addon_settings_schema', []);
+        $values = [];
+
+        foreach ($schemas as $addonSlug => $schema) {
+            if (empty($schema['fields']) || !is_array($schema['fields'])) {
+                continue;
+            }
+
+            $addonValues = [];
+            foreach ($schema['fields'] as $field) {
+                if (empty($field['id'])) {
+                    continue;
+                }
+
+                $optionKey = $field['id'];
+                $fieldType = $field['type'] ?? 'text';
+                $default = $field['default'] ?? null;
+
+                // Get the raw value from WordPress options
+                $value = get_option($optionKey, $default);
+
+                // Convert 'yes'/'no' to boolean for switch/checkbox fields
+                if (in_array($fieldType, ['switch', 'checkbox'], true)) {
+                    if ($value === 'yes') {
+                        $value = true;
+                    } elseif ($value === 'no' || $value === '' || $value === null) {
+                        $value = false;
+                    } else {
+                        // Already a boolean or other value
+                        $value = (bool) $value;
+                    }
+                }
+
+                // Handle multi-select fields that might be stored as serialized arrays
+                if ($fieldType === 'multi-select' && is_string($value)) {
+                    $unserialized = maybe_unserialize($value);
+                    if (is_array($unserialized)) {
+                        $value = $unserialized;
+                    }
+                }
+
+                $addonValues[$optionKey] = $value;
+            }
+
+            if (!empty($addonValues)) {
+                $values[sanitize_key($addonSlug)] = $addonValues;
+            }
+        }
+
+        return $values;
     }
 
     /**
@@ -410,13 +476,19 @@ class NewSettingsPage extends Singleton
         }
 
         // Type-specific properties
-        if (!empty($field['options']) && is_array($field['options'])) {
-            $validated['options'] = array_map(function ($option) {
-                return [
-                    'value' => sanitize_text_field($option['value'] ?? ''),
-                    'label' => sanitize_text_field($option['label'] ?? ''),
-                ];
-            }, $field['options']);
+        if (!empty($field['options'])) {
+            if (is_string($field['options'])) {
+                // String reference to data key (e.g., 'userRoles', 'orderStatuses')
+                $validated['options'] = sanitize_key($field['options']);
+            } elseif (is_array($field['options'])) {
+                // Direct array of options
+                $validated['options'] = array_map(function ($option) {
+                    return [
+                        'value' => sanitize_text_field($option['value'] ?? ''),
+                        'label' => sanitize_text_field($option['label'] ?? ''),
+                    ];
+                }, $field['options']);
+            }
         }
 
         if (!empty($field['rows']) && $field['type'] === 'textarea') {

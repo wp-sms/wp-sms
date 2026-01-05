@@ -3,6 +3,7 @@ import Sidebar from './Sidebar'
 import Header from './Header'
 import FloatingSaveBar from './FloatingSaveBar'
 import BrandingFooter from './BrandingFooter'
+import ErrorBoundary from '@/components/ErrorBoundary'
 import { useSettings } from '@/context/SettingsContext'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Button } from '@/components/ui/button'
@@ -10,15 +11,17 @@ import { SkeletonCard } from '@/components/ui/skeleton'
 import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
-// Lazy load page components for code splitting
+// Import commonly used pages directly to avoid lazy loading context issues
+import SendSms from '@/pages/SendSms'
+import Overview from '@/pages/Overview'
+
+// Lazy load other page components for code splitting
 // Messaging pages
-const SendSms = lazy(() => import('@/pages/SendSms'))
 const Outbox = lazy(() => import('@/pages/Outbox'))
 // Subscriber pages
 const Subscribers = lazy(() => import('@/pages/Subscribers'))
 const Groups = lazy(() => import('@/pages/Groups'))
 // Settings pages
-const Overview = lazy(() => import('@/pages/Overview'))
 const Gateway = lazy(() => import('@/pages/Gateway'))
 const PhoneConfig = lazy(() => import('@/pages/PhoneConfig'))
 const MessageButton = lazy(() => import('@/pages/MessageButton'))
@@ -28,6 +31,10 @@ const Integrations = lazy(() => import('@/pages/Integrations'))
 const Advanced = lazy(() => import('@/pages/Advanced'))
 // Privacy page
 const Privacy = lazy(() => import('@/pages/Privacy'))
+// Add-on pages - WooCommerce Pro
+const WooCommercePro = lazy(() => import('@/pages/WooCommercePro'))
+const CartAbandonment = lazy(() => import('@/pages/CartAbandonment'))
+const SmsCampaigns = lazy(() => import('@/pages/SmsCampaigns'))
 
 const pages = {
   // Messaging
@@ -47,6 +54,10 @@ const pages = {
   advanced: Advanced,
   // Privacy
   privacy: Privacy,
+  // Add-ons - WooCommerce Pro
+  'woocommerce-pro': WooCommercePro,
+  'cart-abandonment': CartAbandonment,
+  'sms-campaigns': SmsCampaigns,
 }
 
 // Memoized loading skeleton
@@ -113,11 +124,13 @@ const AppShell = memo(function AppShell() {
               {isLoading ? (
                 <LoadingSkeleton />
               ) : (
-                <Suspense fallback={<LoadingSkeleton />}>
-                  <div className="wsms-animate-slide-up">
-                    <CurrentPage />
-                  </div>
-                </Suspense>
+                <ErrorBoundary>
+                  <Suspense fallback={<LoadingSkeleton />}>
+                    <div className="wsms-animate-slide-up">
+                      <CurrentPage />
+                    </div>
+                  </Suspense>
+                </ErrorBoundary>
               )}
 
               <BrandingFooter />

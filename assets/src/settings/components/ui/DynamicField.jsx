@@ -1,10 +1,54 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { InputField, TextareaField, SelectField, SwitchField, FieldDescription } from './form-field'
 import { MultiSelect } from './multi-select'
 import { Repeater } from './repeater'
 import { Label } from './label'
-import { useSetting, useProSetting, useSettings } from '@/context/SettingsContext'
+import { useSettings } from '@/context/SettingsContext'
+import { getWpSettings } from '@/lib/utils'
+
+/**
+ * Resolve options reference from add-on data
+ *
+ * When a field's options is a string (e.g., 'userRoles'), this function
+ * looks up the actual options array from the add-on's data object.
+ *
+ * @param {string|Array} options - Options array or string reference
+ * @param {string} addonSlug - The add-on slug to look up data from
+ * @returns {Array} Resolved options array
+ */
+function resolveOptions(options, addonSlug) {
+  // If already an array, return as-is
+  if (Array.isArray(options)) {
+    return options
+  }
+
+  // If not a string reference, return empty array
+  if (typeof options !== 'string') {
+    return []
+  }
+
+  // Look up the reference in add-on data
+  const { addonSettings = {} } = getWpSettings()
+  const addonSchema = addonSettings[addonSlug]
+
+  if (addonSchema?.data && addonSchema.data[options]) {
+    return addonSchema.data[options]
+  }
+
+  // Fallback: check global wpSmsSettings for common data keys
+  const wpSettings = getWpSettings()
+  if (wpSettings[options]) {
+    // Handle WordPress roles format { role_key: 'Role Name' }
+    const data = wpSettings[options]
+    if (typeof data === 'object' && !Array.isArray(data)) {
+      return Object.entries(data).map(([value, label]) => ({ value, label }))
+    }
+    return data
+  }
+
+  return []
+}
 
 /**
  * Evaluate conditional display rules
@@ -12,14 +56,25 @@ import { useSetting, useProSetting, useSettings } from '@/context/SettingsContex
  * @param {Array} conditions - Array of condition objects
  * @param {Object} settings - Current settings values
  * @param {Object} proSettings - Current pro settings values
+ * @param {Object} addonValues - Current addon settings values (keyed by addon slug)
  * @returns {boolean} Whether all conditions are met
  */
-function evaluateConditions(conditions, settings, proSettings) {
+function evaluateConditions(conditions, settings, proSettings, addonValues) {
   if (!conditions || conditions.length === 0) return true
 
   return conditions.every(condition => {
-    // Get value from either settings or proSettings
-    const value = settings[condition.field] ?? proSettings[condition.field]
+    // First check settings, then proSettings, then all addon values
+    let value = settings[condition.field] ?? proSettings[condition.field]
+
+    // If not found in main settings, check addon values
+    if (value === undefined && addonValues) {
+      for (const addonSlug of Object.keys(addonValues)) {
+        if (addonValues[addonSlug]?.[condition.field] !== undefined) {
+          value = addonValues[addonSlug][condition.field]
+          break
+        }
+      }
+    }
 
     switch (condition.operator) {
       case '==':
@@ -48,17 +103,53 @@ function evaluateConditions(conditions, settings, proSettings) {
  * @param {Object} props.field - Field schema definition
  */
 export function DynamicField({ field }) {
-  const { settings, proSettings } = useSettings()
+  const {
+    settings,
+    proSettings,
+    addonValues,
+    getSetting,
+    getProSetting,
+    getAddonSetting,
+    updateSetting,
+    updateProSetting,
+    updateAddonSetting,
+  } = useSettings()
 
-  // Use appropriate hook based on isPro flag
-  const [value, setValue] = field.isPro
-    ? useProSetting(field.id, field.default ?? '')
-    : useSetting(field.id, field.default ?? '')
+  // Validate field has required properties
+  if (!field || !field.id || !field.type) {
+    console.warn('DynamicField: Invalid field configuration', field)
+    return null
+  }
+
+  // Determine which value source to use based on field properties
+  const hasAddonSlug = Boolean(field.addonSlug)
+
+  // Get value from the appropriate source
+  const value = useMemo(() => {
+    if (hasAddonSlug) {
+      return getAddonSetting(field.addonSlug, field.id, field.default ?? '')
+    }
+    if (field.isPro) {
+      return getProSetting(field.id, field.default ?? '')
+    }
+    return getSetting(field.id, field.default ?? '')
+  }, [hasAddonSlug, field.addonSlug, field.id, field.default, field.isPro, getAddonSetting, getProSetting, getSetting])
+
+  // Create setter function based on field source
+  const setValue = useCallback((newValue) => {
+    if (hasAddonSlug) {
+      updateAddonSetting(field.addonSlug, field.id, newValue)
+    } else if (field.isPro) {
+      updateProSetting(field.id, newValue)
+    } else {
+      updateSetting(field.id, newValue)
+    }
+  }, [hasAddonSlug, field.addonSlug, field.id, field.isPro, updateAddonSetting, updateProSetting, updateSetting])
 
   // Evaluate conditions
   const isVisible = useMemo(() => {
-    return evaluateConditions(field.conditions, settings, proSettings)
-  }, [field.conditions, settings, proSettings])
+    return evaluateConditions(field.conditions, settings || {}, proSettings || {}, addonValues || {})
+  }, [field.conditions, settings, proSettings, addonValues])
 
   if (!isVisible) return null
 
@@ -123,7 +214,7 @@ export function DynamicField({ field }) {
           value={value || ''}
           onValueChange={setValue}
           placeholder={field.placeholder || 'Select an option...'}
-          options={field.options || []}
+          options={resolveOptions(field.options, field.addonSlug)}
         />
       )
 
@@ -137,7 +228,7 @@ export function DynamicField({ field }) {
             </Label>
           )}
           <MultiSelect
-            options={field.options || []}
+            options={resolveOptions(field.options, field.addonSlug)}
             value={Array.isArray(value) ? value : []}
             onValueChange={setValue}
             placeholder={field.placeholder || 'Select items...'}
@@ -221,12 +312,16 @@ DynamicField.propTypes = {
     placeholder: PropTypes.string,
     required: PropTypes.bool,
     disabled: PropTypes.bool,
-    options: PropTypes.arrayOf(
-      PropTypes.shape({
-        value: PropTypes.string.isRequired,
-        label: PropTypes.string.isRequired,
-      })
-    ),
+    addonSlug: PropTypes.string, // Add-on slug for resolving data references
+    options: PropTypes.oneOfType([
+      PropTypes.string, // String reference to data key (e.g., 'userRoles')
+      PropTypes.arrayOf(
+        PropTypes.shape({
+          value: PropTypes.string.isRequired,
+          label: PropTypes.string.isRequired,
+        })
+      ),
+    ]),
     fields: PropTypes.array, // For repeater
     maxItems: PropTypes.number, // For repeater
     addLabel: PropTypes.string, // For repeater

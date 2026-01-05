@@ -9,11 +9,9 @@ const init = () => {
 
   if (rootElement) {
     const root = createRoot(rootElement)
-    root.render(
-      <React.StrictMode>
-        <App />
-      </React.StrictMode>
-    )
+    // StrictMode causes double-renders that conflict with Radix UI portals
+    // Only use in development when needed for debugging
+    root.render(<App />)
   }
 }
 
