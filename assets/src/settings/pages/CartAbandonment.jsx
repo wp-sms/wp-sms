@@ -69,7 +69,7 @@ const createWooProClient = () => {
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({}))
-        throw new Error(error.message || 'Request failed')
+        throw new Error(error.message || __('Request failed'))
       }
 
       return response.json()
@@ -89,7 +89,7 @@ const createWooProClient = () => {
 
       if (!response.ok) {
         const error = await response.json().catch(() => ({}))
-        throw new Error(error.message || 'Request failed')
+        throw new Error(error.message || __('Request failed'))
       }
 
       return response.json()

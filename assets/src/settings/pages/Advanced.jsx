@@ -10,6 +10,7 @@ import { useSetting } from '@/context/SettingsContext'
 import { useAddonSettings } from '@/hooks/useAddonSettings'
 import { AddonSection } from '@/components/ui/AddonSection'
 import { DynamicField } from '@/components/ui/DynamicField'
+import { __ } from '@/lib/utils'
 
 export default function Advanced() {
   // Get add-on settings for this page
@@ -39,15 +40,15 @@ export default function Advanced() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Webhook className="wsms-h-5 wsms-w-5" />
-            Webhooks
+            {__('Webhooks')}
           </CardTitle>
           <CardDescription>
-            Integrate with external services via webhook notifications
+            {__('Integrate with external services via webhook notifications')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-space-y-2">
-            <Label htmlFor="webhookOutgoing">Outgoing SMS Webhook</Label>
+            <Label htmlFor="webhookOutgoing">{__('Outgoing SMS Webhook')}</Label>
             <Textarea
               id="webhookOutgoing"
               value={webhookOutgoing}
@@ -56,12 +57,12 @@ export default function Advanced() {
               rows={2}
             />
             <p className="wsms-text-xs wsms-text-muted-foreground">
-              Called after each SMS is sent. Enter one URL per line.
+              {__('Called after each SMS is sent. Enter one URL per line.')}
             </p>
           </div>
 
           <div className="wsms-space-y-2">
-            <Label htmlFor="webhookSubscriber">New Subscriber Webhook</Label>
+            <Label htmlFor="webhookSubscriber">{__('New Subscriber Webhook')}</Label>
             <Textarea
               id="webhookSubscriber"
               value={webhookSubscriber}
@@ -70,12 +71,12 @@ export default function Advanced() {
               rows={2}
             />
             <p className="wsms-text-xs wsms-text-muted-foreground">
-              Called when someone subscribes to your SMS newsletter.
+              {__('Called when someone subscribes to your SMS newsletter.')}
             </p>
           </div>
 
           <div className="wsms-space-y-2">
-            <Label htmlFor="webhookIncoming">Incoming SMS Webhook</Label>
+            <Label htmlFor="webhookIncoming">{__('Incoming SMS Webhook')}</Label>
             <Textarea
               id="webhookIncoming"
               value={webhookIncoming}
@@ -84,7 +85,7 @@ export default function Advanced() {
               rows={2}
             />
             <p className="wsms-text-xs wsms-text-muted-foreground">
-              Called when you receive an SMS reply. Requires Two-Way SMS add-on.
+              {__('Called when you receive an SMS reply. Requires Two-Way SMS add-on.')}
             </p>
           </div>
         </CardContent>
@@ -95,44 +96,44 @@ export default function Advanced() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Database className="wsms-h-5 wsms-w-5" />
-            Message Storage
+            {__('Message Storage')}
           </CardTitle>
           <CardDescription>
-            Configure message logging and automatic cleanup
+            {__('Configure message logging and automatic cleanup')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Log Sent Messages</p>
+              <p className="wsms-font-medium">{__('Log Sent Messages')}</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Save all sent SMS messages in the Outbox for tracking.
+                {__('Save all sent SMS messages in the Outbox for tracking.')}
               </p>
             </div>
             <Switch
               checked={storeOutbox === '1'}
               onCheckedChange={(checked) => setStoreOutbox(checked ? '1' : '')}
-              aria-label="Log sent messages"
+              aria-label={__('Log sent messages')}
             />
           </div>
 
           {storeOutbox === '1' && (
             <div className="wsms-space-y-2">
-              <Label>Auto-delete Sent Messages</Label>
+              <Label>{__('Auto-delete Sent Messages')}</Label>
               <Select value={outboxRetention} onValueChange={setOutboxRetention}>
-                <SelectTrigger aria-label="Outbox retention period">
-                  <SelectValue placeholder="Select retention period" />
+                <SelectTrigger aria-label={__('Outbox retention period')}>
+                  <SelectValue placeholder={__('Select retention period')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="30">After 30 days</SelectItem>
-                  <SelectItem value="90">After 90 days</SelectItem>
-                  <SelectItem value="180">After 180 days</SelectItem>
-                  <SelectItem value="365">After 365 days</SelectItem>
-                  <SelectItem value="0">Keep forever</SelectItem>
+                  <SelectItem value="30">{__('After 30 days')}</SelectItem>
+                  <SelectItem value="90">{__('After 90 days')}</SelectItem>
+                  <SelectItem value="180">{__('After 180 days')}</SelectItem>
+                  <SelectItem value="365">{__('After 365 days')}</SelectItem>
+                  <SelectItem value="0">{__('Keep forever')}</SelectItem>
                 </SelectContent>
               </Select>
               <p className="wsms-text-xs wsms-text-muted-foreground">
-                Automatically remove old messages from the Outbox.
+                {__('Automatically remove old messages from the Outbox.')}
               </p>
             </div>
           )}
@@ -140,35 +141,35 @@ export default function Advanced() {
           <div className="wsms-border-t wsms-border-border wsms-pt-4 wsms-mt-4">
             <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
               <div>
-                <p className="wsms-font-medium">Log Received Messages</p>
+                <p className="wsms-font-medium">{__('Log Received Messages')}</p>
                 <p className="wsms-text-sm wsms-text-muted-foreground">
-                  Save incoming SMS messages in the Inbox.
+                  {__('Save incoming SMS messages in the Inbox.')}
                 </p>
               </div>
               <Switch
                 checked={storeInbox === '1'}
                 onCheckedChange={(checked) => setStoreInbox(checked ? '1' : '')}
-                aria-label="Log received messages"
+                aria-label={__('Log received messages')}
               />
             </div>
 
             {storeInbox === '1' && (
               <div className="wsms-space-y-2 wsms-mt-4">
-                <Label>Auto-delete Received Messages</Label>
+                <Label>{__('Auto-delete Received Messages')}</Label>
                 <Select value={inboxRetention} onValueChange={setInboxRetention}>
-                  <SelectTrigger aria-label="Inbox retention period">
-                    <SelectValue placeholder="Select retention period" />
+                  <SelectTrigger aria-label={__('Inbox retention period')}>
+                    <SelectValue placeholder={__('Select retention period')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="30">After 30 days</SelectItem>
-                    <SelectItem value="90">After 90 days</SelectItem>
-                    <SelectItem value="180">After 180 days</SelectItem>
-                    <SelectItem value="365">After 365 days</SelectItem>
-                    <SelectItem value="0">Keep forever</SelectItem>
+                    <SelectItem value="30">{__('After 30 days')}</SelectItem>
+                    <SelectItem value="90">{__('After 90 days')}</SelectItem>
+                    <SelectItem value="180">{__('After 180 days')}</SelectItem>
+                    <SelectItem value="365">{__('After 365 days')}</SelectItem>
+                    <SelectItem value="0">{__('Keep forever')}</SelectItem>
                   </SelectContent>
                 </Select>
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Automatically remove old messages from the Inbox.
+                  {__('Automatically remove old messages from the Inbox.')}
                 </p>
               </div>
             )}
@@ -181,66 +182,66 @@ export default function Advanced() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Bell className="wsms-h-5 wsms-w-5" />
-            Admin Notifications
+            {__('Admin Notifications')}
           </CardTitle>
           <CardDescription>
-            Configure email reports and plugin notifications
+            {__('Configure email reports and plugin notifications')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Weekly Statistics Email</p>
+              <p className="wsms-font-medium">{__('Weekly Statistics Email')}</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Receive weekly SMS usage reports via email.
+                {__('Receive weekly SMS usage reports via email.')}
               </p>
             </div>
             <Switch
               checked={reportStats === '1'}
               onCheckedChange={(checked) => setReportStats(checked ? '1' : '')}
-              aria-label="Enable weekly statistics email"
+              aria-label={__('Enable weekly statistics email')}
             />
           </div>
 
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Error Notifications</p>
+              <p className="wsms-font-medium">{__('Error Notifications')}</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Email admin when SMS sending fails.
+                {__('Email admin when SMS sending fails.')}
               </p>
             </div>
             <Switch
               checked={notifyErrors === '1'}
               onCheckedChange={(checked) => setNotifyErrors(checked ? '1' : '')}
-              aria-label="Enable error notifications"
+              aria-label={__('Enable error notifications')}
             />
           </div>
 
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Plugin Notifications</p>
+              <p className="wsms-font-medium">{__('Plugin Notifications')}</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Show update notices and announcements in the admin area.
+                {__('Show update notices and announcements in the admin area.')}
               </p>
             </div>
             <Switch
               checked={displayNotifications === '1'}
               onCheckedChange={(checked) => setDisplayNotifications(checked ? '1' : '')}
-              aria-label="Enable plugin notifications"
+              aria-label={__('Enable plugin notifications')}
             />
           </div>
 
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Usage Analytics</p>
+              <p className="wsms-font-medium">{__('Usage Analytics')}</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Share anonymous usage data to help improve WSMS.
+                {__('Share anonymous usage data to help improve WSMS.')}
               </p>
             </div>
             <Switch
               checked={shareAnonymousData === '1'}
               onCheckedChange={(checked) => setShareAnonymousData(checked ? '1' : '')}
-              aria-label="Enable usage analytics"
+              aria-label={__('Enable usage analytics')}
             />
           </div>
         </CardContent>
@@ -259,7 +260,7 @@ export default function Advanced() {
       {standaloneFields.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Additional Add-on Settings</CardTitle>
+            <CardTitle>{__('Additional Add-on Settings')}</CardTitle>
           </CardHeader>
           <CardContent className="wsms-space-y-4">
             {standaloneFields.map((field) => (

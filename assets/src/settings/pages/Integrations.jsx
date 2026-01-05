@@ -8,7 +8,7 @@ import { useSetting } from '@/context/SettingsContext'
 import { useAddonSettings, useAddonFieldsForSection } from '@/hooks/useAddonSettings'
 import { AddonSection, AddonFieldsInjection } from '@/components/ui/AddonSection'
 import { DynamicField } from '@/components/ui/DynamicField'
-import { getWpSettings } from '@/lib/utils'
+import { getWpSettings, __ } from '@/lib/utils'
 
 // Get plugin status from localized data
 const getPluginStatus = (pluginKey) => {
@@ -19,10 +19,10 @@ const getPluginStatus = (pluginKey) => {
 // Status badge component
 const PluginStatusBadge = ({ status }) => {
   const variants = {
-    active: { label: 'Active', className: 'wsms-bg-green-100 wsms-text-green-800 wsms-border-green-200' },
-    inactive: { label: 'Inactive', className: 'wsms-bg-yellow-100 wsms-text-yellow-800 wsms-border-yellow-200' },
-    not_installed: { label: 'Not Installed', className: 'wsms-bg-red-100 wsms-text-red-800 wsms-border-red-200' },
-    unknown: { label: 'Unknown', className: 'wsms-bg-gray-100 wsms-text-gray-800 wsms-border-gray-200' },
+    active: { label: __('Active'), className: 'wsms-bg-green-100 wsms-text-green-800 wsms-border-green-200' },
+    inactive: { label: __('Inactive'), className: 'wsms-bg-yellow-100 wsms-text-yellow-800 wsms-border-yellow-200' },
+    not_installed: { label: __('Not Installed'), className: 'wsms-bg-red-100 wsms-text-red-800 wsms-border-red-200' },
+    unknown: { label: __('Unknown'), className: 'wsms-bg-gray-100 wsms-text-gray-800 wsms-border-gray-200' },
   }
 
   const variant = variants[status] || variants.unknown
@@ -38,7 +38,7 @@ const PluginStatusBadge = ({ status }) => {
 const PluginActionLink = ({ status, actionUrl, isExternal, pluginName }) => {
   if (status === 'active' || !actionUrl) return null
 
-  const label = status === 'inactive' ? 'Activate' : 'Install'
+  const label = status === 'inactive' ? __('Activate') : __('Install')
   const fullLabel = pluginName ? `${label} ${pluginName}` : label
 
   return (
@@ -74,9 +74,9 @@ export default function Integrations() {
     {
       id: 'contact-form-7',
       pluginKey: 'contact-form-7',
-      name: 'Contact Form 7',
-      description: 'Send SMS notifications when Contact Form 7 forms are submitted.',
-      helpText: 'Adds an "SMS Notification" tab to the Contact Form 7 editor.',
+      name: __('Contact Form 7'),
+      description: __('Send SMS notifications when Contact Form 7 forms are submitted.'),
+      helpText: __('Adds an "SMS Notification" tab to the Contact Form 7 editor.'),
       settingKey: 'cf7_metabox',
       value: cf7Metabox,
       setValue: setCf7Metabox,
@@ -91,11 +91,11 @@ export default function Integrations() {
 
   // Form plugins that are automatically supported (no settings needed)
   const supportedPlugins = [
-    { name: 'Gravity Forms', pluginKey: 'gravity-forms', status: 'Automatic support via add-on' },
-    { name: 'Formidable Forms', pluginKey: 'formidable', status: 'Automatic support via add-on' },
-    { name: 'Forminator', pluginKey: 'forminator', status: 'Automatic support via add-on' },
-    { name: 'WooCommerce', pluginKey: 'woocommerce', status: 'Available via WooCommerce add-on' },
-    { name: 'Elementor Forms', pluginKey: 'elementor', status: 'Available via Elementor add-on' },
+    { name: __('Gravity Forms'), pluginKey: 'gravity-forms', status: __('Automatic support via add-on') },
+    { name: __('Formidable Forms'), pluginKey: 'formidable', status: __('Automatic support via add-on') },
+    { name: __('Forminator'), pluginKey: 'forminator', status: __('Automatic support via add-on') },
+    { name: __('WooCommerce'), pluginKey: 'woocommerce', status: __('Available via WooCommerce add-on') },
+    { name: __('Elementor Forms'), pluginKey: 'elementor', status: __('Available via Elementor add-on') },
   ]
 
   // Add plugin status to supported plugins
@@ -153,10 +153,10 @@ export default function Integrations() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Puzzle className="wsms-h-5 wsms-w-5" />
-            Form Plugin Integration
+            {__('Form Plugin Integration')}
           </CardTitle>
           <CardDescription>
-            Configure SMS notifications for form submissions
+            {__('Configure SMS notifications for form submissions')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
@@ -202,7 +202,7 @@ export default function Integrations() {
                       checked={integration.value === '1'}
                       onCheckedChange={(checked) => integration.setValue(checked ? '1' : '')}
                       disabled={isDisabled}
-                      aria-label={`Enable ${integration.name}`}
+                      aria-label={__('Enable') + ' ' + integration.name}
                     />
                   </div>
                 </div>
@@ -241,7 +241,7 @@ export default function Integrations() {
               <CardContent>
                 <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
                   <p className="wsms-text-sm wsms-text-muted-foreground wsms-mb-2">
-                    {pluginInfo.name} is required to use these settings.
+                    {pluginInfo.name} {__('is required to use these settings.')}
                   </p>
                   <PluginActionLink
                     status={pluginInfo.status}
@@ -268,7 +268,7 @@ export default function Integrations() {
       {standaloneFields.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Additional Add-on Settings</CardTitle>
+            <CardTitle>{__('Additional Add-on Settings')}</CardTitle>
           </CardHeader>
           <CardContent className="wsms-space-y-4">
             {standaloneFields.map((field) => (
@@ -281,9 +281,9 @@ export default function Integrations() {
       {/* Other Supported Plugins */}
       <Card>
         <CardHeader>
-          <CardTitle>Additional Integrations</CardTitle>
+          <CardTitle>{__('Additional Integrations')}</CardTitle>
           <CardDescription>
-            Other plugins supported through WSMS add-ons
+            {__('Other plugins supported through WSMS add-ons')}
           </CardDescription>
         </CardHeader>
         <CardContent>

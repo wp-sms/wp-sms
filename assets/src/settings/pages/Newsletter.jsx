@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea'
 import { MultiSelect } from '@/components/ui/multi-select'
 import { useSetting } from '@/context/SettingsContext'
-import { getWpSettings } from '@/lib/utils'
+import { getWpSettings, __ } from '@/lib/utils'
 
 export default function Newsletter() {
   const { groups: rawGroups = [], gdprEnabled = false } = getWpSettings()
@@ -45,65 +45,65 @@ export default function Newsletter() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <FormInput className="wsms-h-5 wsms-w-5" />
-            SMS Newsletter Configuration
+            {__('SMS Newsletter Configuration')}
           </CardTitle>
           <CardDescription>
-            Configure how visitors subscribe to your SMS notifications
+            {__('Configure how visitors subscribe to your SMS notifications')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Show Groups in Form</p>
+              <p className="wsms-font-medium">{__('Show Groups in Form')}</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Let subscribers choose which groups to join.
+                {__('Let subscribers choose which groups to join.')}
               </p>
             </div>
             <Switch
               checked={showGroups}
               onCheckedChange={(checked) => setFormGroups(checked ? '1' : '')}
-              aria-label="Show groups in form"
+              aria-label={__('Show groups in form')}
             />
           </div>
 
           {showGroups && (
             <>
               <div className="wsms-space-y-2">
-                <Label>Available Groups</Label>
+                <Label>{__('Available Groups')}</Label>
                 <MultiSelect
                   options={groupOptions}
                   value={specifiedGroups}
                   onValueChange={setSpecifiedGroups}
-                  placeholder="All groups"
-                  searchPlaceholder="Search groups..."
+                  placeholder={__('All groups')}
+                  searchPlaceholder={__('Search groups...')}
                 />
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Which groups subscribers can choose from. Leave empty for all groups.
+                  {__('Which groups subscribers can choose from. Leave empty for all groups.')}
                 </p>
               </div>
 
               <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
                 <div>
-                  <p className="wsms-font-medium">Allow Multiple Groups</p>
+                  <p className="wsms-font-medium">{__('Allow Multiple Groups')}</p>
                   <p className="wsms-text-sm wsms-text-muted-foreground">
-                    Let subscribers join more than one group at a time.
+                    {__('Let subscribers join more than one group at a time.')}
                   </p>
                 </div>
                 <Switch
                   checked={multipleSelect === '1'}
                   onCheckedChange={(checked) => setMultipleSelect(checked ? '1' : '')}
-                  aria-label="Allow multiple groups"
+                  aria-label={__('Allow multiple groups')}
                 />
               </div>
 
               <div className="wsms-space-y-2">
-                <Label>Default Group</Label>
+                <Label>{__('Default Group')}</Label>
                 <Select value={defaultGroup} onValueChange={setDefaultGroup}>
-                  <SelectTrigger aria-label="Default group">
-                    <SelectValue placeholder="Select a group" />
+                  <SelectTrigger aria-label={__('Default group')}>
+                    <SelectValue placeholder={__('Select a group')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0">All</SelectItem>
+                    <SelectItem value="0">{__('All')}</SelectItem>
                     {Array.isArray(rawGroups) && rawGroups.map((group) => (
                       <SelectItem key={group.id} value={String(group.id)}>
                         {group.name}
@@ -112,7 +112,7 @@ export default function Newsletter() {
                   </SelectContent>
                 </Select>
                 <p className="wsms-text-xs wsms-text-muted-foreground">
-                  Automatically add new subscribers to this group.
+                  {__('Automatically add new subscribers to this group.')}
                 </p>
               </div>
             </>
@@ -120,15 +120,15 @@ export default function Newsletter() {
 
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Require SMS Verification</p>
+              <p className="wsms-font-medium">{__('Require SMS Verification')}</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Subscribers must verify their phone number via SMS code.
+                {__('Subscribers must verify their phone number via SMS code.')}
               </p>
             </div>
             <Switch
               checked={formVerify === '1'}
               onCheckedChange={(checked) => setFormVerify(checked ? '1' : '')}
-              aria-label="Require SMS verification"
+              aria-label={__('Require SMS verification')}
             />
           </div>
         </CardContent>
@@ -139,39 +139,39 @@ export default function Newsletter() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Mail className="wsms-h-5 wsms-w-5" />
-            Welcome SMS
+            {__('Welcome SMS')}
           </CardTitle>
           <CardDescription>
-            Set up automatic SMS messages for new subscribers
+            {__('Set up automatic SMS messages for new subscribers')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Send Welcome Message</p>
+              <p className="wsms-font-medium">{__('Send Welcome Message')}</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Automatically send a welcome SMS to new subscribers.
+                {__('Automatically send a welcome SMS to new subscribers.')}
               </p>
             </div>
             <Switch
               checked={welcomeEnabled === '1'}
               onCheckedChange={(checked) => setWelcomeEnabled(checked ? '1' : '')}
-              aria-label="Send welcome message"
+              aria-label={__('Send welcome message')}
             />
           </div>
 
           {welcomeEnabled === '1' && (
             <div className="wsms-space-y-2">
-              <Label htmlFor="welcomeText">Welcome Message</Label>
+              <Label htmlFor="welcomeText">{__('Welcome Message')}</Label>
               <Textarea
                 id="welcomeText"
                 value={welcomeText}
                 onChange={(e) => setWelcomeText(e.target.value)}
-                placeholder="Welcome to our newsletter! Thanks for subscribing."
+                placeholder={__('Welcome to our newsletter! Thanks for subscribing.')}
                 rows={3}
               />
               <p className="wsms-text-xs wsms-text-muted-foreground">
-                Variables: %subscriber_name%, %subscriber_mobile%, %group_name%, %subscribe_date%
+                {__('Variables:')} %subscriber_name%, %subscriber_mobile%, %group_name%, %subscribe_date%
               </p>
             </div>
           )}
@@ -183,24 +183,24 @@ export default function Newsletter() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Palette className="wsms-h-5 wsms-w-5" />
-            Form Appearance
+            {__('Form Appearance')}
           </CardTitle>
           <CardDescription>
-            Customize the look of your subscription form
+            {__('Customize the look of your subscription form')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Disable Default Styles</p>
+              <p className="wsms-font-medium">{__('Disable Default Styles')}</p>
               <p className="wsms-text-sm wsms-text-muted-foreground">
-                Remove plugin CSS to use your own form styling.
+                {__('Remove plugin CSS to use your own form styling.')}
               </p>
             </div>
             <Switch
               checked={disableStyle === '1'}
               onCheckedChange={(checked) => setDisableStyle(checked ? '1' : '')}
-              aria-label="Disable default styles"
+              aria-label={__('Disable default styles')}
             />
           </div>
         </CardContent>
@@ -212,40 +212,40 @@ export default function Newsletter() {
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <Shield className="wsms-h-5 wsms-w-5" />
-              GDPR Settings
+              {__('GDPR Settings')}
             </CardTitle>
             <CardDescription>
-              Configure privacy consent for newsletter subscriptions
+              {__('Configure privacy consent for newsletter subscriptions')}
             </CardDescription>
           </CardHeader>
           <CardContent className="wsms-space-y-4">
             <div className="wsms-space-y-2">
-              <Label htmlFor="gdprText">Consent Message</Label>
+              <Label htmlFor="gdprText">{__('Consent Message')}</Label>
               <Textarea
                 id="gdprText"
                 value={gdprText}
                 onChange={(e) => setGdprText(e.target.value)}
-                placeholder="I agree to receive SMS notifications and understand that my data will be handled according to the privacy policy."
+                placeholder={__('I agree to receive SMS notifications and understand that my data will be handled according to the privacy policy.')}
                 rows={3}
               />
               <p className="wsms-text-xs wsms-text-muted-foreground">
-                Privacy consent text shown to subscribers. Required for GDPR compliance.
+                {__('Privacy consent text shown to subscribers. Required for GDPR compliance.')}
               </p>
             </div>
 
             <div className="wsms-space-y-2">
-              <Label>Checkbox Default State</Label>
+              <Label>{__('Checkbox Default State')}</Label>
               <Select value={gdprCheckbox} onValueChange={setGdprCheckbox}>
-                <SelectTrigger aria-label="GDPR checkbox default state">
-                  <SelectValue placeholder="Select default state" />
+                <SelectTrigger aria-label={__('GDPR checkbox default state')}>
+                  <SelectValue placeholder={__('Select default state')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="checked">Checked</SelectItem>
-                  <SelectItem value="unchecked">Unchecked</SelectItem>
+                  <SelectItem value="checked">{__('Checked')}</SelectItem>
+                  <SelectItem value="unchecked">{__('Unchecked')}</SelectItem>
                 </SelectContent>
               </Select>
               <p className="wsms-text-xs wsms-text-muted-foreground">
-                Must be unchecked by default for GDPR compliance.
+                {__('Must be unchecked by default for GDPR compliance.')}
               </p>
             </div>
           </CardContent>
@@ -256,7 +256,7 @@ export default function Newsletter() {
         <Card className="wsms-border-amber-200 wsms-bg-amber-50 dark:wsms-border-amber-900 dark:wsms-bg-amber-950/30">
           <CardContent className="wsms-p-4">
             <p className="wsms-text-sm wsms-text-muted-foreground">
-              To enable GDPR settings for newsletters, first enable "GDPR Compliance Enhancements" in the Phone Configuration page.
+              {__('To enable GDPR settings for newsletters, first enable "GDPR Compliance Enhancements" in the Phone Configuration page.')}
             </p>
           </CardContent>
         </Card>
