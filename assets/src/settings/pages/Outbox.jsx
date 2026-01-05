@@ -40,6 +40,7 @@ import { useDataTable } from '@/hooks/useDataTable'
 import { useNotificationToast } from '@/hooks/useNotificationToast'
 import { useFilters } from '@/hooks/useFilters'
 import { outboxColumns, getOutboxRowActions, getOutboxBulkActions } from '@/lib/tableColumns'
+import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 
 export default function Outbox() {
   // Use custom hooks for state management
@@ -202,15 +203,9 @@ export default function Outbox() {
   const stats = table.stats || { total: 0, success: 0, failed: 0 }
   const successRate = stats.total > 0 ? Math.round((stats.success / stats.total) * 100) : 0
 
-  // Loading skeleton
+  // Loading skeleton - show until initial API fetch completes
   if (!table.initialLoadDone) {
-    return (
-      <div className="wsms-space-y-6">
-        <div className="wsms-h-24 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
-        <div className="wsms-h-16 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
-        <div className="wsms-h-64 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
-      </div>
-    )
+    return <PageLoadingSkeleton />
   }
 
   // Error state

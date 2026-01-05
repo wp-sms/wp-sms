@@ -57,7 +57,9 @@ export function useDataTable({
         })
 
         // Ignore stale responses
-        if (currentRequest !== requestRef.current) return
+        if (currentRequest !== requestRef.current) {
+          return
+        }
 
         setData(result.items || [])
         setPagination(result.pagination || pagination)
@@ -192,9 +194,12 @@ export function useDataTable({
   }, [])
 
   // Initial fetch on mount
+  // Use setTimeout(0) to ensure the skeleton renders before fetch starts
+  // This prevents React 18's automatic batching from skipping the loading state
   useEffect(() => {
     if (fetchOnMount) {
-      fetch({ page: 1 })
+      const timer = setTimeout(() => fetch({ page: 1 }), 0)
+      return () => clearTimeout(timer)
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 

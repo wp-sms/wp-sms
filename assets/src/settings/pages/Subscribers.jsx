@@ -42,6 +42,7 @@ import { smsApi } from '@/api/smsApi'
 import { cn, formatDate, getWpSettings, __ } from '@/lib/utils'
 import { useDataTable } from '@/hooks/useDataTable'
 import { useFilters } from '@/hooks/useFilters'
+import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 
 export default function Subscribers() {
   // Get countries from settings
@@ -440,13 +441,7 @@ export default function Subscribers() {
 
   // Show skeleton during initial load to prevent flash
   if (!table.initialLoadDone) {
-    return (
-      <div className="wsms-space-y-6">
-        <div className="wsms-h-24 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
-        <div className="wsms-h-16 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
-        <div className="wsms-h-64 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
-      </div>
-    )
+    return <PageLoadingSkeleton />
   }
 
   // Empty state - only show when truly no subscribers and no filters applied

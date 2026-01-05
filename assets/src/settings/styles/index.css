@@ -217,18 +217,19 @@
    Animations - Refined & Polished
    ============================================ */
 
+/* Fade-in kept for intentional fade effects (e.g., modals, overlays) */
+/* WARNING: Do not apply to main content - content may be invisible if animation fails */
 @keyframes wsms-fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
 
+/* Safe slide-up animation - no opacity change, content always visible */
 @keyframes wsms-slide-up {
   from {
-    opacity: 0;
     transform: translateY(8px);
   }
   to {
-    opacity: 1;
     transform: translateY(0);
   }
 }
@@ -244,14 +245,24 @@
   }
 }
 
+/* Safe stagger animation - no opacity change, content always visible */
+@keyframes wsms-stagger-slide {
+  from {
+    transform: translateY(4px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
 @keyframes wsms-pulse-soft {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.7; }
 }
 
 @keyframes wsms-shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
 }
 
 .wsms-animate-in {
@@ -266,20 +277,27 @@
   animation: wsms-scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Staggered children animations for page loads */
+/* Staggered children animations for page loads (progressive enhancement) */
+/* Content is ALWAYS visible by default - animation is decorative only */
 .wsms-stagger-children > * {
-  opacity: 0;
-  animation: wsms-slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  /* No opacity change - content always visible */
 }
 
-.wsms-stagger-children > *:nth-child(1) { animation-delay: 0ms; }
-.wsms-stagger-children > *:nth-child(2) { animation-delay: 50ms; }
-.wsms-stagger-children > *:nth-child(3) { animation-delay: 100ms; }
-.wsms-stagger-children > *:nth-child(4) { animation-delay: 150ms; }
-.wsms-stagger-children > *:nth-child(5) { animation-delay: 200ms; }
-.wsms-stagger-children > *:nth-child(6) { animation-delay: 250ms; }
-.wsms-stagger-children > *:nth-child(7) { animation-delay: 300ms; }
-.wsms-stagger-children > *:nth-child(8) { animation-delay: 350ms; }
+/* Only apply animation for users who haven't disabled motion */
+@media (prefers-reduced-motion: no-preference) {
+  .wsms-stagger-children > * {
+    animation: wsms-stagger-slide 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .wsms-stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+  .wsms-stagger-children > *:nth-child(2) { animation-delay: 30ms; }
+  .wsms-stagger-children > *:nth-child(3) { animation-delay: 60ms; }
+  .wsms-stagger-children > *:nth-child(4) { animation-delay: 90ms; }
+  .wsms-stagger-children > *:nth-child(5) { animation-delay: 120ms; }
+  .wsms-stagger-children > *:nth-child(6) { animation-delay: 150ms; }
+  .wsms-stagger-children > *:nth-child(7) { animation-delay: 180ms; }
+  .wsms-stagger-children > *:nth-child(8) { animation-delay: 210ms; }
+}
 
 /* Smooth hover transitions for cards */
 .wsms-card-hover {
@@ -297,16 +315,15 @@
   transform: scale(0.97);
 }
 
-/* Loading shimmer effect */
-.wsms-shimmer {
-  background: linear-gradient(
-    90deg,
-    hsl(var(--muted)) 0%,
-    hsl(var(--muted-foreground) / 0.1) 50%,
-    hsl(var(--muted)) 100%
-  );
-  background-size: 200% 100%;
-  animation: wsms-shimmer 1.5s infinite;
+/* Skeleton loading - subtle pulse that matches design system */
+.wsms-skeleton {
+  background-color: hsl(var(--muted));
+  animation: wsms-skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes wsms-skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
 }
 
 /* ============================================

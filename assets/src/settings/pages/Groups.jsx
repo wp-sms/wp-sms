@@ -32,6 +32,7 @@ import {
 } from '@/components/ui/dialog'
 import { groupsApi } from '@/api/groupsApi'
 import { cn, __ } from '@/lib/utils'
+import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 
 export default function Groups() {
   // Data state
@@ -252,13 +253,7 @@ export default function Groups() {
 
   // Show skeleton during initial load to prevent flash
   if (!initialLoadDone) {
-    return (
-      <div className="wsms-space-y-6">
-        <div className="wsms-h-20 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
-        <div className="wsms-h-16 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
-        <div className="wsms-h-48 wsms-rounded-lg wsms-bg-muted/30 wsms-animate-pulse" />
-      </div>
-    )
+    return <PageLoadingSkeleton />
   }
 
   // Empty state

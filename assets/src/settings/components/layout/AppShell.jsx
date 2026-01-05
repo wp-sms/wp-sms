@@ -7,7 +7,7 @@ import ErrorBoundary from '@/components/ErrorBoundary'
 import { useSettings } from '@/context/SettingsContext'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Button } from '@/components/ui/button'
-import { SkeletonCard } from '@/components/ui/skeleton'
+import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -68,14 +68,9 @@ const pages = {
   'two-way-settings': TwoWaySettings,
 }
 
-// Memoized loading skeleton
+// Memoized loading skeleton - uses PageLoadingSkeleton for consistent data table loading
 const LoadingSkeleton = memo(function LoadingSkeleton() {
-  return (
-    <div className="wsms-space-y-4">
-      <SkeletonCard />
-      <SkeletonCard />
-    </div>
-  )
+  return <PageLoadingSkeleton />
 })
 
 // Memoized app shell for performance
@@ -134,9 +129,7 @@ const AppShell = memo(function AppShell() {
               ) : (
                 <ErrorBoundary>
                   <Suspense fallback={<LoadingSkeleton />}>
-                    <div className="wsms-animate-slide-up">
-                      <CurrentPage />
-                    </div>
+                    <CurrentPage />
                   </Suspense>
                 </ErrorBoundary>
               )}
