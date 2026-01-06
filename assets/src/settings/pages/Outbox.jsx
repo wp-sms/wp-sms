@@ -229,9 +229,13 @@ export default function Outbox() {
     )
   }
 
-  // Empty state
+  // Empty state - only show when truly no messages (not when filters return no results)
   const hasNoMessages =
-    table.data.length === 0 && !filters.filters.search && filters.filters.status === 'all'
+    table.data.length === 0 &&
+    !filters.filters.search &&
+    filters.filters.status === 'all' &&
+    !filters.filters.date_from &&
+    !filters.filters.date_to
 
   if (hasNoMessages) {
     return (
