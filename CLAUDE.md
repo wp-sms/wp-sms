@@ -85,6 +85,10 @@ When adding new add-on settings:
 
 ## Commit Guidelines
 
+**Always ask for user approval before committing.** Briefly explain what changed when asking.
+
+**Prefixes**: `feat:` (new feature), `fix:` (bug fix), `refactor:` (code restructure), `docs:` (documentation), `test:` (tests), `chore:` (maintenance)
+
 Before committing:
 1. Run `git diff --staged` to review changes
 2. Run `npm run settings:build` to verify build
