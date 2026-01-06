@@ -104,6 +104,7 @@ export default function Subscribers() {
   // UI state
   const [editSubscriber, setEditSubscriber] = useState(null)
   const [showImportDialog, setShowImportDialog] = useState(false)
+  const [isImporting, setIsImporting] = useState(false)
   const [isAddingQuick, setIsAddingQuick] = useState(false)
 
   // Quick add form state
@@ -216,15 +217,27 @@ export default function Subscribers() {
 
   // Handle import
   const handleImport = async (file) => {
-    const result = await subscribersApi.importCsv(file, {
-      group_id: filters.filters.group_id !== 'all' ? parseInt(filters.filters.group_id) : undefined,
-      skip_duplicates: true,
-    })
-    toast({
-      title: __('Imported %d subscribers, skipped %d').replace('%d', result.imported).replace('%d', result.skipped),
-      variant: 'success',
-    })
-    table.fetch({ page: 1 })
+    setIsImporting(true)
+    try {
+      const result = await subscribersApi.importCsv(file, {
+        group_id: filters.filters.group_id !== 'all' ? parseInt(filters.filters.group_id) : undefined,
+        skip_duplicates: true,
+      })
+      toast({
+        title: __('Imported %d subscribers, skipped %d').replace('%d', result.imported).replace('%d', result.skipped),
+        variant: 'success',
+      })
+      setShowImportDialog(false)
+      table.fetch({ page: 1 })
+    } catch (error) {
+      toast({
+        title: error.message || __('Import failed'),
+        variant: 'destructive',
+      })
+      throw error // Re-throw to let dialog show error state
+    } finally {
+      setIsImporting(false)
+    }
   }
 
   // Handle export
@@ -498,6 +511,7 @@ export default function Subscribers() {
           title="Import Subscribers"
           description="Upload a CSV file with subscriber data"
           onImport={handleImport}
+          isLoading={isImporting}
           importFields={[
             { name: 'name', label: 'Name', required: false },
             { name: 'mobile', label: 'Mobile', required: true },
@@ -673,13 +687,11 @@ export default function Subscribers() {
                 className="wsms-h-9 wsms-px-4 wsms-shrink-0"
               >
                 {isAddingQuick ? (
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" aria-hidden="true" />
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1.5 wsms-animate-spin" aria-hidden="true" />
                 ) : (
-                  <>
-                    <UserPlus className="wsms-h-4 wsms-w-4 wsms-mr-1.5" aria-hidden="true" />
-                    {__('Add')}
-                  </>
+                  <UserPlus className="wsms-h-4 wsms-w-4 wsms-mr-1.5" aria-hidden="true" />
                 )}
+                {__('Add')}
               </Button>
             </div>
           </div>
@@ -806,6 +818,7 @@ export default function Subscribers() {
         title="Import Subscribers"
         description="Upload a CSV file with subscriber data"
         onImport={handleImport}
+        isLoading={isImporting}
         importFields={[
           { name: 'name', label: 'Name', required: false },
           { name: 'mobile', label: 'Mobile', required: true },

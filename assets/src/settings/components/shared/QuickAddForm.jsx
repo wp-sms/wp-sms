@@ -89,13 +89,11 @@ const QuickAddForm = React.forwardRef(
           className="wsms-shrink-0"
         >
           {isLoading ? (
-            <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
+            <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1 wsms-animate-spin" />
           ) : (
-            <>
-              <Plus className="wsms-h-4 wsms-w-4 wsms-mr-1" />
-              {buttonLabel}
-            </>
+            <Plus className="wsms-h-4 wsms-w-4 wsms-mr-1" />
           )}
+          {buttonLabel}
         </Button>
       </form>
     )
