@@ -244,7 +244,7 @@ class SubscribersApi extends RestApi
 
         if ($search) {
             $search_like = '%' . $this->db->esc_like($search) . '%';
-            $where[] = "(name LIKE %s OR mobile LIKE %s)";
+            $where[] = "(s.name LIKE %s OR s.mobile LIKE %s)";
             $params[] = $search_like;
             $params[] = $search_like;
         }
@@ -271,8 +271,8 @@ class SubscribersApi extends RestApi
         ];
         $orderby_col = $orderby_map[$orderby] ?? 'date';
 
-        // Get total count
-        $count_sql = "SELECT COUNT(*) FROM {$this->tb_prefix}sms_subscribes WHERE {$where_sql}";
+        // Get total count (using alias 's' to match WHERE clause)
+        $count_sql = "SELECT COUNT(*) FROM {$this->tb_prefix}sms_subscribes s WHERE {$where_sql}";
         if (!empty($params)) {
             $count_sql = $this->db->prepare($count_sql, $params);
         }

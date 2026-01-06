@@ -433,42 +433,165 @@ class SubscribersApiTest extends WP_UnitTestCase
     }
 
     /**
-     * Test filter subscribers by group
+     * Test filter subscribers by group returns only subscribers in that group
      */
-    public function testFilterSubscribersByGroup()
+    public function testFilterSubscribersByGroupReturnsCorrectResults()
     {
+        // Create a test group
+        global $wpdb;
+        $groupTable = $wpdb->prefix . 'sms_subscribes_group';
+        $wpdb->insert($groupTable, ['name' => 'Test Group Filter']);
+        $groupId = $wpdb->insert_id;
+
+        // Create subscribers in the group
+        $this->createTestSubscriberWithGroup('Group Member 1', $groupId);
+        $this->createTestSubscriberWithGroup('Group Member 2', $groupId);
+
+        // Create subscribers in a different group (or no group)
+        $this->createTestSubscriberWithGroup('Other Group', 0);
+
         $request = new WP_REST_Request('GET', '/wpsms/v1/subscribers');
-        $request->set_param('group_id', 1);
+        $request->set_param('group_id', $groupId);
 
         $response = rest_do_request($request);
+        $data = $response->get_data();
 
         $this->assertEquals(200, $response->get_status());
+
+        // Verify all returned items belong to the specified group
+        foreach ($data['data']['items'] as $item) {
+            $this->assertEquals($groupId, (int)$item['group_id'],
+                "Subscriber {$item['id']} should be in group $groupId but is in group {$item['group_id']}");
+        }
     }
 
     /**
-     * Test filter subscribers by status
+     * Test filter subscribers by status=active returns only active subscribers
      */
-    public function testFilterSubscribersByStatus()
+    public function testFilterSubscribersByStatusActiveReturnsOnlyActive()
     {
+        // Create active subscribers
+        $this->createTestSubscriberWithStatus('Active User 1', '1');
+        $this->createTestSubscriberWithStatus('Active User 2', '1');
+
+        // Create inactive subscribers
+        $this->createTestSubscriberWithStatus('Inactive User', '0');
+
         $request = new WP_REST_Request('GET', '/wpsms/v1/subscribers');
         $request->set_param('status', 'active');
 
         $response = rest_do_request($request);
+        $data = $response->get_data();
 
         $this->assertEquals(200, $response->get_status());
+
+        // Verify all returned items are active
+        foreach ($data['data']['items'] as $item) {
+            $this->assertEquals('1', $item['status'],
+                "Subscriber {$item['id']} should be active (status=1) but has status={$item['status']}");
+        }
     }
 
     /**
-     * Test search subscribers
+     * Test filter subscribers by status=inactive returns only inactive subscribers
      */
-    public function testSearchSubscribers()
+    public function testFilterSubscribersByStatusInactiveReturnsOnlyInactive()
     {
+        // Create active subscribers
+        $this->createTestSubscriberWithStatus('Active User', '1');
+
+        // Create inactive subscribers
+        $this->createTestSubscriberWithStatus('Inactive User 1', '0');
+        $this->createTestSubscriberWithStatus('Inactive User 2', '0');
+
         $request = new WP_REST_Request('GET', '/wpsms/v1/subscribers');
-        $request->set_param('search', 'test');
+        $request->set_param('status', 'inactive');
 
         $response = rest_do_request($request);
+        $data = $response->get_data();
 
         $this->assertEquals(200, $response->get_status());
+
+        // Verify all returned items are inactive
+        foreach ($data['data']['items'] as $item) {
+            $this->assertEquals('0', $item['status'],
+                "Subscriber {$item['id']} should be inactive (status=0) but has status={$item['status']}");
+        }
+    }
+
+    /**
+     * Test search subscribers returns only matching results
+     */
+    public function testSearchSubscribersReturnsMatchingResults()
+    {
+        // Create subscribers with specific names
+        $this->createTestSubscriberWithName('John Doe Searchable');
+        $this->createTestSubscriberWithName('Jane Doe Searchable');
+        $this->createTestSubscriberWithName('Bob Smith');
+
+        $request = new WP_REST_Request('GET', '/wpsms/v1/subscribers');
+        $request->set_param('search', 'Searchable');
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        $this->assertEquals(200, $response->get_status());
+
+        // Verify all returned items match the search term
+        foreach ($data['data']['items'] as $item) {
+            $this->assertStringContainsStringIgnoringCase('Searchable', $item['name'],
+                "Subscriber {$item['id']} name '{$item['name']}' should contain 'Searchable'");
+        }
+    }
+
+    /**
+     * Test search with no matches returns empty results
+     */
+    public function testSearchWithNoMatchesReturnsEmpty()
+    {
+        $request = new WP_REST_Request('GET', '/wpsms/v1/subscribers');
+        $request->set_param('search', 'xyznonexistent99999');
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertEmpty($data['data']['items']);
+        $this->assertEquals(0, $data['data']['pagination']['total']);
+    }
+
+    /**
+     * Test combined filters work together
+     */
+    public function testCombinedFiltersReturnCorrectResults()
+    {
+        // Create a test group
+        global $wpdb;
+        $groupTable = $wpdb->prefix . 'sms_subscribes_group';
+        $wpdb->insert($groupTable, ['name' => 'Combined Test Group']);
+        $groupId = $wpdb->insert_id;
+
+        // Create various combinations
+        $this->createTestSubscriberWithGroupAndStatus('Active In Group', $groupId, '1');
+        $this->createTestSubscriberWithGroupAndStatus('Inactive In Group', $groupId, '0');
+        $this->createTestSubscriberWithGroupAndStatus('Active Other', 0, '1');
+
+        $request = new WP_REST_Request('GET', '/wpsms/v1/subscribers');
+        $request->set_param('group_id', $groupId);
+        $request->set_param('status', 'active');
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        $this->assertEquals(200, $response->get_status());
+
+        // Verify all returned items match BOTH filters
+        foreach ($data['data']['items'] as $item) {
+            $this->assertEquals($groupId, (int)$item['group_id'],
+                "Subscriber should be in group $groupId");
+            $this->assertEquals('1', $item['status'],
+                "Subscriber should be active");
+        }
     }
 
     /**
@@ -532,6 +655,100 @@ class SubscribersApiTest extends WP_UnitTestCase
             'mobile' => $phone,
             'status' => '1',
             'date'   => current_time('mysql'),
+        ]);
+
+        return $result ? $wpdb->insert_id : false;
+    }
+
+    /**
+     * Helper to create a test subscriber with specific name
+     *
+     * @param string $name Subscriber name
+     * @return int|false Subscriber ID or false on failure
+     */
+    private function createTestSubscriberWithName($name)
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . 'sms_subscribes';
+        $phone = '+1' . str_pad(mt_rand(1, 9999999999), 10, '0', STR_PAD_LEFT);
+
+        $result = $wpdb->insert($table, [
+            'name'   => $name,
+            'mobile' => $phone,
+            'status' => '1',
+            'date'   => current_time('mysql'),
+        ]);
+
+        return $result ? $wpdb->insert_id : false;
+    }
+
+    /**
+     * Helper to create a test subscriber with specific status
+     *
+     * @param string $name Subscriber name
+     * @param string $status Status ('1' for active, '0' for inactive)
+     * @return int|false Subscriber ID or false on failure
+     */
+    private function createTestSubscriberWithStatus($name, $status)
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . 'sms_subscribes';
+        $phone = '+1' . str_pad(mt_rand(1, 9999999999), 10, '0', STR_PAD_LEFT);
+
+        $result = $wpdb->insert($table, [
+            'name'   => $name,
+            'mobile' => $phone,
+            'status' => $status,
+            'date'   => current_time('mysql'),
+        ]);
+
+        return $result ? $wpdb->insert_id : false;
+    }
+
+    /**
+     * Helper to create a test subscriber with specific group
+     *
+     * @param string $name Subscriber name
+     * @param int $groupId Group ID
+     * @return int|false Subscriber ID or false on failure
+     */
+    private function createTestSubscriberWithGroup($name, $groupId)
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . 'sms_subscribes';
+        $phone = '+1' . str_pad(mt_rand(1, 9999999999), 10, '0', STR_PAD_LEFT);
+
+        $result = $wpdb->insert($table, [
+            'name'     => $name,
+            'mobile'   => $phone,
+            'status'   => '1',
+            'group_ID' => $groupId,
+            'date'     => current_time('mysql'),
+        ]);
+
+        return $result ? $wpdb->insert_id : false;
+    }
+
+    /**
+     * Helper to create a test subscriber with specific group and status
+     *
+     * @param string $name Subscriber name
+     * @param int $groupId Group ID
+     * @param string $status Status ('1' for active, '0' for inactive)
+     * @return int|false Subscriber ID or false on failure
+     */
+    private function createTestSubscriberWithGroupAndStatus($name, $groupId, $status)
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . 'sms_subscribes';
+        $phone = '+1' . str_pad(mt_rand(1, 9999999999), 10, '0', STR_PAD_LEFT);
+
+        $result = $wpdb->insert($table, [
+            'name'     => $name,
+            'mobile'   => $phone,
+            'status'   => $status,
+            'group_ID' => $groupId,
+            'date'     => current_time('mysql'),
         ]);
 
         return $result ? $wpdb->insert_id : false;
