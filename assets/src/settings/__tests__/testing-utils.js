@@ -25,6 +25,9 @@ export function setupWpSmsSettings(overrides = {}) {
     totalPlugins: 7,
     version: '7.0.0',
     gdprEnabled: false,
+    countries: [],
+    i18n: {},
+    newsletter_form_verify: false,
   }
 
   global.window.wpSmsSettings = {
@@ -33,6 +36,7 @@ export function setupWpSmsSettings(overrides = {}) {
     settings: { ...defaults.settings, ...overrides.settings },
     proSettings: { ...defaults.proSettings, ...overrides.proSettings },
     addons: { ...defaults.addons, ...overrides.addons },
+    i18n: { ...defaults.i18n, ...overrides.i18n },
   }
 
   return global.window.wpSmsSettings
