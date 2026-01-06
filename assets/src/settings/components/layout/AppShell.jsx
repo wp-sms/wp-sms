@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense, memo } from 'react'
+import React, { useState, lazy, Suspense, memo, useEffect } from 'react'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import FloatingSaveBar from './FloatingSaveBar'
@@ -78,7 +78,21 @@ const AppShell = memo(function AppShell() {
   const { currentPage, isLoading } = useSettings()
   const isMobile = useIsMobile()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const CurrentPage = pages[currentPage] || Overview
+
+  // Track visited pages to keep them mounted (preserve state when switching tabs)
+  const [visitedPages, setVisitedPages] = useState(() => new Set([currentPage]))
+
+  // Add current page to visited pages when it changes
+  useEffect(() => {
+    if (currentPage && pages[currentPage]) {
+      setVisitedPages((prev) => {
+        if (prev.has(currentPage)) return prev
+        const next = new Set(prev)
+        next.add(currentPage)
+        return next
+      })
+    }
+  }, [currentPage])
 
   React.useEffect(() => {
     setMobileMenuOpen(false)
@@ -127,11 +141,27 @@ const AppShell = memo(function AppShell() {
               {isLoading ? (
                 <LoadingSkeleton />
               ) : (
-                <ErrorBoundary>
-                  <Suspense fallback={<LoadingSkeleton />}>
-                    <CurrentPage />
-                  </Suspense>
-                </ErrorBoundary>
+                <>
+                  {/* Render all visited pages, hide inactive ones to preserve state */}
+                  {Array.from(visitedPages).map((pageId) => {
+                    const PageComponent = pages[pageId]
+                    if (!PageComponent) return null
+                    const isActive = pageId === currentPage
+                    return (
+                      <div
+                        key={pageId}
+                        style={{ display: isActive ? 'block' : 'none' }}
+                        aria-hidden={!isActive}
+                      >
+                        <ErrorBoundary>
+                          <Suspense fallback={<LoadingSkeleton />}>
+                            <PageComponent />
+                          </Suspense>
+                        </ErrorBoundary>
+                      </div>
+                    )
+                  })}
+                </>
               )}
 
               <BrandingFooter />
