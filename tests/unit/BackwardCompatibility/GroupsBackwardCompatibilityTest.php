@@ -286,16 +286,45 @@ class GroupsBackwardCompatibilityTest extends WPSMSTestCase
 
     /**
      * Test: Bulk delete works on legacy groups
-     *
-     * Note: Bulk delete endpoint is not currently implemented.
-     * Groups can be deleted individually via DELETE /groups/{id}.
      */
     public function testBulkDeleteOnLegacyGroups()
     {
-        $this->markTestSkipped(
-            'Bulk delete endpoint (/groups/bulk) is not implemented in the Groups API. ' .
-            'Groups can be deleted individually via DELETE /groups/{id}.'
-        );
+        // Create multiple legacy groups (without subscribers so they can be deleted)
+        $groupIds = [];
+        for ($i = 0; $i < 3; $i++) {
+            $groupIds[] = $this->createLegacyGroup('Bulk Delete Group ' . $i);
+        }
+
+        // Verify groups exist
+        foreach ($groupIds as $id) {
+            $exists = $this->wpdb->get_var($this->wpdb->prepare(
+                "SELECT COUNT(*) FROM {$this->groupsTable} WHERE ID = %d",
+                $id
+            ));
+            $this->assertEquals(1, $exists, "Group {$id} should exist before bulk delete");
+        }
+
+        // Bulk delete via API
+        $request = $this->createJsonRequest('DELETE', '/wpsms/v1/groups/bulk', [
+            'ids' => $groupIds,
+        ]);
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertArrayHasKey('data', $data);
+        $this->assertArrayHasKey('deleted', $data['data']);
+        $this->assertCount(3, $data['data']['deleted']);
+
+        // Verify groups are deleted
+        foreach ($groupIds as $id) {
+            $exists = $this->wpdb->get_var($this->wpdb->prepare(
+                "SELECT COUNT(*) FROM {$this->groupsTable} WHERE ID = %d",
+                $id
+            ));
+            $this->assertEquals(0, $exists, "Group {$id} should be deleted");
+        }
     }
 
     /**

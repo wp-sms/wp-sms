@@ -52,6 +52,23 @@ class GroupsApi extends RestApi
             ],
         ]);
 
+        // DELETE /groups/bulk - Bulk delete groups
+        register_rest_route($this->namespace . '/v1', '/groups/bulk', [
+            [
+                'methods'             => WP_REST_Server::DELETABLE,
+                'callback'            => [$this, 'bulkDeleteItems'],
+                'permission_callback' => [$this, 'checkPermission'],
+                'args'                => [
+                    'ids' => [
+                        'required'    => true,
+                        'type'        => 'array',
+                        'items'       => ['type' => 'integer'],
+                        'description' => __('Array of group IDs to delete', 'wp-sms'),
+                    ],
+                ],
+            ],
+        ]);
+
         // GET/PUT/DELETE /groups/{id}
         register_rest_route($this->namespace . '/v1', '/groups/(?P<id>\d+)', [
             [
@@ -264,6 +281,74 @@ class GroupsApi extends RestApi
         }
 
         return self::response(__('Group deleted successfully', 'wp-sms'), 200);
+    }
+
+    /**
+     * Bulk delete groups
+     */
+    public function bulkDeleteItems(WP_REST_Request $request)
+    {
+        $ids = $request->get_param('ids');
+
+        if (empty($ids) || !is_array($ids)) {
+            return self::response(__('No group IDs provided', 'wp-sms'), 400);
+        }
+
+        $deleted = [];
+        $failed = [];
+
+        foreach ($ids as $id) {
+            $id = (int) $id;
+
+            $group = Newsletter::getGroup($id);
+            if (!$group) {
+                $failed[] = [
+                    'id'     => $id,
+                    'reason' => __('Group not found', 'wp-sms'),
+                ];
+                continue;
+            }
+
+            // Check if group has subscribers
+            $subscriber_count = Newsletter::getTotal($id);
+            if ($subscriber_count > 0) {
+                $failed[] = [
+                    'id'     => $id,
+                    'reason' => sprintf(
+                        __('Group has %d subscriber(s)', 'wp-sms'),
+                        $subscriber_count
+                    ),
+                ];
+                continue;
+            }
+
+            $result = Newsletter::deleteGroup($id);
+
+            if ($result) {
+                $deleted[] = $id;
+            } else {
+                $failed[] = [
+                    'id'     => $id,
+                    'reason' => __('Failed to delete', 'wp-sms'),
+                ];
+            }
+        }
+
+        if (empty($deleted) && !empty($failed)) {
+            return self::response(__('Failed to delete any groups', 'wp-sms'), 400, [
+                'deleted' => $deleted,
+                'failed'  => $failed,
+            ]);
+        }
+
+        return self::response(
+            sprintf(__('%d group(s) deleted successfully', 'wp-sms'), count($deleted)),
+            200,
+            [
+                'deleted' => $deleted,
+                'failed'  => $failed,
+            ]
+        );
     }
 }
 
