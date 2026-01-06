@@ -527,12 +527,19 @@ export default function SendSms() {
           <div className="wsms-flex wsms-items-center wsms-gap-4">
             {!canSend && (
               <p className="wsms-text-[12px] wsms-text-amber-700 dark:wsms-text-amber-500">
-                {!gatewayConfigured && __('Configure gateway first')}
-                {gatewayConfigured && !hasMessage && !hasSelections && __('Add message and recipients')}
-                {gatewayConfigured && !hasMessage && hasSelections && __('Enter a message')}
-                {gatewayConfigured && hasMessage && !hasSelections && __('Add recipients')}
-                {gatewayConfigured && hasMessage && hasSelections && !hasActualRecipients && !isLoadingCount && __('Selected groups/roles have no subscribers')}
-                {isLoadingCount && __('Checking recipients...')}
+                {isLoadingCount
+                  ? __('Checking recipients...')
+                  : !gatewayConfigured
+                    ? __('Configure gateway first')
+                    : !hasMessage && !hasSelections
+                      ? __('Add message and recipients')
+                      : !hasMessage
+                        ? __('Enter a message')
+                        : !hasSelections
+                          ? __('Add recipients')
+                          : !hasActualRecipients
+                            ? __('Selected groups/roles have no subscribers')
+                            : null}
               </p>
             )}
             <Button
