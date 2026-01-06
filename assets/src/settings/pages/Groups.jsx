@@ -46,9 +46,6 @@ export default function Groups() {
       await groupsApi.deleteGroup(id)
       table.removeItems([id])
     },
-    onSuccess: () => {
-      toast({ title: __('Group deleted successfully'), variant: 'success' })
-    },
     successMessage: __('Group deleted successfully'),
   })
 
@@ -59,6 +56,7 @@ export default function Groups() {
   // Inline edit state
   const [inlineEditId, setInlineEditId] = useState(null)
   const [inlineEditValue, setInlineEditValue] = useState('')
+  const [isInlineEditSaving, setIsInlineEditSaving] = useState(false)
 
   // Handle quick add
   const handleQuickAdd = async (name) => {
@@ -87,6 +85,7 @@ export default function Groups() {
       return
     }
 
+    setIsInlineEditSaving(true)
     try {
       await groupsApi.updateGroup(inlineEditId, { name: inlineEditValue.trim() })
       toast({ title: __('Group updated successfully'), variant: 'success' })
@@ -94,6 +93,8 @@ export default function Groups() {
       table.refresh()
     } catch (error) {
       toast({ title: error.message, variant: 'destructive' })
+    } finally {
+      setIsInlineEditSaving(false)
     }
   }
 
@@ -150,15 +151,21 @@ export default function Groups() {
                 variant="ghost"
                 className="wsms-h-8 wsms-w-8"
                 onClick={handleInlineEditSave}
+                disabled={isInlineEditSaving}
                 aria-label={__('Save group name')}
               >
-                <Save className="wsms-h-4 wsms-w-4 wsms-text-emerald-600" />
+                {isInlineEditSaving ? (
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin wsms-text-emerald-600" />
+                ) : (
+                  <Save className="wsms-h-4 wsms-w-4 wsms-text-emerald-600" />
+                )}
               </Button>
               <Button
                 size="icon"
                 variant="ghost"
                 className="wsms-h-8 wsms-w-8"
                 onClick={handleInlineEditCancel}
+                disabled={isInlineEditSaving}
                 aria-label={__('Cancel editing')}
               >
                 <X className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
@@ -387,17 +394,23 @@ export default function Groups() {
                         variant="ghost"
                         className="wsms-flex-1 wsms-h-7"
                         onClick={handleInlineEditCancel}
+                        disabled={isInlineEditSaving}
                       >
                         <X className="wsms-h-3 wsms-w-3 wsms-mr-1" />
-                        Cancel
+                        {__('Cancel')}
                       </Button>
                       <Button
                         size="sm"
                         className="wsms-flex-1 wsms-h-7"
                         onClick={handleInlineEditSave}
+                        disabled={isInlineEditSaving}
                       >
-                        <Save className="wsms-h-3 wsms-w-3 wsms-mr-1" />
-                        Save
+                        {isInlineEditSaving ? (
+                          <Loader2 className="wsms-h-3 wsms-w-3 wsms-mr-1 wsms-animate-spin" />
+                        ) : (
+                          <Save className="wsms-h-3 wsms-w-3 wsms-mr-1" />
+                        )}
+                        {isInlineEditSaving ? __('Saving...') : __('Save')}
                       </Button>
                     </div>
                   </div>

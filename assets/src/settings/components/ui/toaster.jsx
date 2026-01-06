@@ -78,7 +78,7 @@ export function Toaster({ children }) {
       {/* Toast viewport - rendered inline, not as a portal */}
       <div
         ref={containerRef}
-        className="wsms-fixed wsms-bottom-4 wsms-right-4 wsms-z-[99999] wsms-flex wsms-flex-col wsms-gap-2 wsms-max-w-[380px] wsms-w-full wsms-pointer-events-none"
+        className="wsms-fixed wsms-bottom-4 wsms-right-4 wsms-z-[9999999] wsms-flex wsms-flex-col wsms-gap-2 wsms-max-w-[380px] wsms-w-full wsms-pointer-events-none"
       >
         {toasts.map(({ id, title, description, variant }) => (
           <Toast

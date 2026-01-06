@@ -474,6 +474,12 @@ class SubscribersApi extends RestApi
             if (is_wp_error($mobile)) {
                 return self::response($mobile->get_error_message(), 400);
             }
+
+            // Check if another subscriber already has this phone number
+            $existing = Newsletter::getSubscriberByMobile($mobile);
+            if ($existing && (int) $existing->ID !== $id) {
+                return self::response(__('A subscriber with this phone number already exists', 'wp-sms'), 400);
+            }
         }
 
         // Update subscriber
