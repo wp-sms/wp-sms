@@ -47,6 +47,22 @@ class SmsSendingBackwardCompatibilityTest extends WPSMSTestCase
 
         // Clear outbox
         $this->wpdb->query("DELETE FROM {$this->outboxTable}");
+
+        // Configure test gateway (available when WP_DEBUG is enabled)
+        $this->configureTestGateway();
+    }
+
+    /**
+     * Configure the test gateway for SMS sending tests
+     */
+    private function configureTestGateway(): void
+    {
+        Option::updateOption('gateway_name', 'test');
+        Option::updateOption('gateway_sender_id', 'TestSender');
+        Option::updateOption('store_outbox_messages', true);
+
+        // Reinitialize the global gateway instance
+        $GLOBALS['sms'] = \WP_SMS\Gateway::initial();
     }
 
     /**
@@ -67,58 +83,103 @@ class SmsSendingBackwardCompatibilityTest extends WPSMSTestCase
 
     /**
      * Test: wp_sms_from filter is applied when sending via API
-     *
-     * Note: This test requires a configured gateway. The wp_sms_from filter
-     * is called inside individual gateway implementations during actual send.
      */
     public function testWpSmsFromFilterAppliedViaApi()
     {
-        $this->markTestSkipped(
-            'wp_sms_from filter is called inside gateway implementations. ' .
-            'This test requires a configured and working gateway to actually send SMS.'
-        );
+        $filterCalled = false;
+        $capturedFrom = null;
+
+        add_filter('wp_sms_from', function ($from) use (&$filterCalled, &$capturedFrom) {
+            $filterCalled = true;
+            $capturedFrom = $from;
+            return 'ModifiedSender';
+        });
+
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/send/quick', [
+            'recipients' => ['numbers' => ['+15551234567']],
+            'message'    => 'Test wp_sms_from filter',
+        ]);
+
+        $response = rest_do_request($request);
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertTrue($filterCalled, 'wp_sms_from filter should be called');
+        $this->assertNotNull($capturedFrom, 'Filter should receive sender value');
     }
 
     /**
      * Test: wp_sms_to filter is applied when sending via API
-     *
-     * Note: This test requires a configured gateway. The wp_sms_to filter
-     * is called inside individual gateway implementations during actual send.
      */
     public function testWpSmsToFilterAppliedViaApi()
     {
-        $this->markTestSkipped(
-            'wp_sms_to filter is called inside gateway implementations. ' .
-            'This test requires a configured and working gateway to actually send SMS.'
-        );
+        $filterCalled = false;
+        $capturedTo = null;
+
+        add_filter('wp_sms_to', function ($to) use (&$filterCalled, &$capturedTo) {
+            $filterCalled = true;
+            $capturedTo = $to;
+            return $to;
+        });
+
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/send/quick', [
+            'recipients' => ['numbers' => ['+15551234567']],
+            'message'    => 'Test wp_sms_to filter',
+        ]);
+
+        $response = rest_do_request($request);
+
+        $this->assertTrue($filterCalled, 'wp_sms_to filter should be called');
+        $this->assertIsArray($capturedTo, 'Filter should receive recipients array');
     }
 
     /**
      * Test: wp_sms_msg filter is applied when sending via API
-     *
-     * Note: This test requires a configured gateway. The wp_sms_msg filter
-     * is called inside individual gateway implementations during actual send.
      */
     public function testWpSmsMsgFilterAppliedViaApi()
     {
-        $this->markTestSkipped(
-            'wp_sms_msg filter is called inside gateway implementations. ' .
-            'This test requires a configured and working gateway to actually send SMS.'
-        );
+        $filterCalled = false;
+        $capturedMsg = null;
+
+        add_filter('wp_sms_msg', function ($msg) use (&$filterCalled, &$capturedMsg) {
+            $filterCalled = true;
+            $capturedMsg = $msg;
+            return $msg . ' [modified]';
+        });
+
+        $testMessage = 'Test wp_sms_msg filter';
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/send/quick', [
+            'recipients' => ['numbers' => ['+15551234567']],
+            'message'    => $testMessage,
+        ]);
+
+        $response = rest_do_request($request);
+
+        $this->assertTrue($filterCalled, 'wp_sms_msg filter should be called');
+        $this->assertEquals($testMessage, $capturedMsg, 'Filter should receive original message');
     }
 
     /**
      * Test: wp_sms_send action is fired when sending via API
-     *
-     * Note: This test requires a configured gateway. The wp_sms_send action
-     * is fired inside individual gateway implementations after successful send.
      */
     public function testWpSmsSendActionFiredViaApi()
     {
-        $this->markTestSkipped(
-            'wp_sms_send action is fired inside gateway implementations. ' .
-            'This test requires a configured and working gateway to actually send SMS.'
-        );
+        $actionFired = false;
+        $capturedResponse = null;
+
+        add_action('wp_sms_send', function ($response) use (&$actionFired, &$capturedResponse) {
+            $actionFired = true;
+            $capturedResponse = $response;
+        });
+
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/send/quick', [
+            'recipients' => ['numbers' => ['+15551234567']],
+            'message'    => 'Test wp_sms_send action',
+        ]);
+
+        $response = rest_do_request($request);
+
+        $this->assertTrue($actionFired, 'wp_sms_send action should be fired after sending');
+        $this->assertNotNull($capturedResponse, 'Action should receive response data');
     }
 
     /**
@@ -126,31 +187,53 @@ class SmsSendingBackwardCompatibilityTest extends WPSMSTestCase
      */
     public function testApiUsesSameGatewayAsLegacy()
     {
-        // Set gateway via legacy method
-        Option::updateOption('gateway_name', 'twilio');
-        Option::updateOption('gateway_key', 'test_account_sid');
-        Option::updateOption('gateway_password', 'test_auth_token');
-
-        // Verify settings via API
+        // Test gateway is already set in setUp(), verify it's readable via API
         $request = new WP_REST_Request('GET', '/wpsms/v1/settings');
         $response = rest_do_request($request);
         $data = $response->get_data();
 
         $this->assertEquals(200, $response->get_status());
+        $this->assertEquals('test', $data['data']['settings']['gateway_name']);
+
+        // Now set a different gateway via legacy method and verify API sees it
+        Option::updateOption('gateway_name', 'twilio');
+        Option::updateOption('gateway_key', 'test_account_sid');
+
+        $request = new WP_REST_Request('GET', '/wpsms/v1/settings');
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
         $this->assertEquals('twilio', $data['data']['settings']['gateway_name']);
+
+        // Restore test gateway for other tests
+        $this->configureTestGateway();
     }
 
     /**
      * Test: Message stored in outbox has same format from both interfaces
-     *
-     * Note: This test requires a configured gateway to successfully send SMS
-     * and create an outbox entry.
      */
     public function testOutboxFormatConsistent()
     {
-        $this->markTestSkipped(
-            'This test requires a configured and working gateway to send SMS and create outbox entries.'
-        );
+        $testMessage = 'Outbox format test ' . uniqid();
+        $testRecipient = '+15559876543';
+
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/send/quick', [
+            'recipients' => ['numbers' => [$testRecipient]],
+            'message'    => $testMessage,
+        ]);
+
+        $response = rest_do_request($request);
+
+        // Check outbox entry was created
+        $outboxEntry = $this->wpdb->get_row($this->wpdb->prepare(
+            "SELECT * FROM {$this->outboxTable} WHERE message = %s ORDER BY ID DESC LIMIT 1",
+            $testMessage
+        ));
+
+        $this->assertNotNull($outboxEntry, 'Outbox entry should be created');
+        $this->assertEquals($testMessage, $outboxEntry->message, 'Message should match');
+        $this->assertNotEmpty($outboxEntry->recipient, 'Recipient should be stored');
+        $this->assertNotEmpty($outboxEntry->date, 'Date should be stored');
     }
 
     /**

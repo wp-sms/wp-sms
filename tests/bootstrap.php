@@ -5,6 +5,11 @@
  * @package WP_SMS
  */
 
+// Enable WP_DEBUG to make the test gateway available
+if (!defined('WP_DEBUG')) {
+    define('WP_DEBUG', true);
+}
+
 // Locate the WordPress testing library directory.
 $_tests_dir     = getenv('WP_TESTS_DIR') ?: rtrim(sys_get_temp_dir(), '/\\') . '/wordpress-tests-lib';
 $_wordpress_dir = getenv('WP_TESTS_DIR') ?: rtrim(sys_get_temp_dir(), '/\\') . '/wordpress';

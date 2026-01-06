@@ -54,8 +54,8 @@ class Sms
             return new WP_Error('invalid_mobile_number', __('Mobile number not found, please make sure the mobile field in settings page is configured.', 'wp-sms'));
         }
 
-        // Check if the message is empty
-        if (empty($parameters['msg'])) {
+        // Check if the message is empty (trim whitespace first)
+        if (empty($parameters['msg']) || trim($parameters['msg']) === '') {
             return new WP_Error('empty_message', __('Message content cannot be empty. Please provide a valid SMS message.', 'wp-sms'));
         }
 
