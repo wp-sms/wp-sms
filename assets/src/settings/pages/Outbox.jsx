@@ -2,10 +2,8 @@ import React, { useState, useCallback, useMemo } from 'react'
 import {
   Inbox,
   RefreshCw,
-  Trash2,
   Send,
   Search,
-  Eye,
   CheckCircle,
   XCircle,
   Loader2,
@@ -37,72 +35,34 @@ import {
 import { outboxApi } from '@/api/outboxApi'
 import { smsApi } from '@/api/smsApi'
 import { cn, formatDate, __, downloadCsv } from '@/lib/utils'
-import { useDataTable } from '@/hooks/useDataTable'
+import { useListPage } from '@/hooks/useListPage'
 import { useToast } from '@/components/ui/toaster'
-import { useFilters } from '@/hooks/useFilters'
 import { outboxColumns, getOutboxRowActions, getOutboxBulkActions } from '@/lib/tableColumns'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 
 export default function Outbox() {
-  // Use toast for notifications
   const { toast } = useToast()
 
-  const filters = useFilters(
-    { search: '', status: 'all', date_from: '', date_to: '' },
-    { debounceMs: 500 }
-  )
-
-  // Fetch function for the data table
-  const fetchMessages = useCallback(
-    async (params) => {
-      const result = await outboxApi.getMessages({
-        ...params,
-        search: filters.debouncedFilters.search || undefined,
-        status: filters.debouncedFilters.status !== 'all' ? filters.debouncedFilters.status : undefined,
-        date_from: filters.debouncedFilters.date_from || undefined,
-        date_to: filters.debouncedFilters.date_to || undefined,
-      })
-      return result
+  // Use useListPage for combined filter + table management
+  const { filters, table, handleDelete, handleBulkAction } = useListPage({
+    fetchFn: outboxApi.getMessages,
+    deleteFn: outboxApi.deleteMessage,
+    bulkActionFn: outboxApi.bulkAction,
+    initialFilters: { search: '', status: 'all', date_from: '', date_to: '' },
+    messages: {
+      deleteSuccess: __('Message deleted successfully'),
+      bulkSuccess: __('Action completed successfully'),
     },
-    [filters.debouncedFilters]
-  )
-
-  const table = useDataTable({
-    fetchFn: fetchMessages,
-    initialPerPage: 20,
   })
 
-  // Re-fetch when filters change
-  React.useEffect(() => {
-    if (table.initialLoadDone) {
-      table.fetch({ page: 1 })
-    }
-  }, [filters.debouncedFilters]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Dialog states
+  // Dialog states for view and quick reply
   const [viewMessage, setViewMessage] = useState(null)
   const [quickReplyTo, setQuickReplyTo] = useState(null)
   const [quickReplyMessage, setQuickReplyMessage] = useState('')
   const [isSendingReply, setIsSendingReply] = useState(false)
   const [actionLoading, setActionLoading] = useState(null)
 
-  // Handlers
-  const handleDelete = useCallback(
-    async (id) => {
-      setActionLoading(id)
-      try {
-        await outboxApi.deleteMessage(id)
-        toast({ title: __('Message deleted successfully'), variant: 'success' })
-        table.refresh()
-      } catch (error) {
-        toast({ title: error.message || __('Failed to delete message'), variant: 'destructive' })
-      } finally {
-        setActionLoading(null)
-      }
-    },
-    [toast, table]
-  )
-
+  // Custom handler for resend (not part of useListPage)
   const handleResend = useCallback(
     async (id) => {
       setActionLoading(id)
@@ -119,7 +79,8 @@ export default function Outbox() {
     [toast, table]
   )
 
-  const handleBulkAction = useCallback(
+  // Custom bulk handler to show affected count in message
+  const handleOutboxBulkAction = useCallback(
     async (action) => {
       if (table.selectedIds.length === 0) return
 
@@ -187,10 +148,10 @@ export default function Outbox() {
   const bulkActions = useMemo(
     () =>
       getOutboxBulkActions({
-        onDelete: () => handleBulkAction('delete'),
-        onResend: () => handleBulkAction('resend'),
+        onDelete: () => handleOutboxBulkAction('delete'),
+        onResend: () => handleOutboxBulkAction('resend'),
       }),
-    [handleBulkAction]
+    [handleOutboxBulkAction]
   )
 
   // Calculate success rate based on completed messages (sent + failed), not total
