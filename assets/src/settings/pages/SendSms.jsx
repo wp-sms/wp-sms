@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { RecipientSelector } from '@/components/shared/RecipientSelector'
 import { MessageComposer, calculateSmsInfo } from '@/components/shared/MessageComposer'
 import { SmsPreviewDialog } from '@/components/shared/SmsPreviewDialog'
+import { MediaSelector } from '@/components/shared/MediaSelector'
 import { Tip } from '@/components/ui/ux-helpers'
 import { smsApi } from '@/api/smsApi'
 import { useSettings } from '@/context/SettingsContext'
@@ -310,15 +311,14 @@ export default function SendSms() {
               </div>
             )}
 
-            {/* Media URL Input - Collapsible */}
+            {/* Media Selector - Collapsible */}
             {showAdvanced && gatewaySupportsMedia && (
               <div className="wsms-mt-3">
-                <Input
-                  type="url"
+                <MediaSelector
                   value={mediaUrl}
-                  onChange={(e) => setMediaUrl(e.target.value)}
-                  placeholder={__('Media URL (https://...)')}
-                  className="wsms-text-[12px]"
+                  onChange={setMediaUrl}
+                  allowedTypes={['image']}
+                  buttonText={__('Select Image')}
                 />
               </div>
             )}
