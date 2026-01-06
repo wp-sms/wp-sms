@@ -35,7 +35,7 @@ import {
 } from '@/components/ui/dialog'
 import { outboxApi } from '@/api/outboxApi'
 import { smsApi } from '@/api/smsApi'
-import { cn, formatDate, __ } from '@/lib/utils'
+import { cn, formatDate, __, downloadCsv } from '@/lib/utils'
 import { useDataTable } from '@/hooks/useDataTable'
 import { useToast } from '@/components/ui/toaster'
 import { useFilters } from '@/hooks/useFilters'
@@ -146,7 +146,7 @@ export default function Outbox() {
         date_from: filters.debouncedFilters.date_from || undefined,
         date_to: filters.debouncedFilters.date_to || undefined,
       })
-      outboxApi.downloadCsv(result.data, result.filename)
+      downloadCsv(result.data, result.filename)
       toast({ title: __(`Exported ${result.count} messages successfully`), variant: 'success' })
     } catch (error) {
       toast({ title: error.message || __('Export failed'), variant: 'destructive' })

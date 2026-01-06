@@ -58,23 +58,6 @@ export const privacyApi = {
     }
   },
 
-  /**
-   * Download CSV data as file
-   * @param {string[][]} csvData - CSV data array
-   * @param {string} filename - File name
-   */
-  downloadCsv(csvData, filename) {
-    const csvContent = csvData.map((row) => row.map((cell) => `"${cell}"`).join(',')).join('\n')
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = filename
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-  },
 }
 
 export default privacyApi

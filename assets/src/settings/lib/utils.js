@@ -165,3 +165,48 @@ export function getGatewayDisplayName(gatewayKey, gateways) {
   return gatewayKey // Fallback to key if not found
 }
 
+/**
+ * Escape a value for CSV format
+ * @param {*} value - Value to escape
+ * @returns {string} Escaped CSV value
+ */
+export function escapeCsvValue(value) {
+  if (value === null || value === undefined) {
+    return ''
+  }
+  const str = String(value)
+  // If value contains comma, quote, or newline, wrap in quotes and escape internal quotes
+  if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
+    return '"' + str.replace(/"/g, '""') + '"'
+  }
+  return str
+}
+
+/**
+ * Convert array data to CSV content string
+ * @param {Array} data - Array of rows, each row is an array of cells
+ * @returns {string} CSV content string
+ */
+export function arrayToCsv(data) {
+  return data.map((row) => row.map((cell) => escapeCsvValue(cell)).join(',')).join('\n')
+}
+
+/**
+ * Download data as CSV file
+ * @param {Array} data - Array of rows, each row is an array of cells
+ * @param {string} filename - Output filename
+ */
+export function downloadCsv(data, filename) {
+  const csvContent = arrayToCsv(data)
+  // Add BOM for Excel UTF-8 compatibility
+  const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  URL.revokeObjectURL(url)
+}
+

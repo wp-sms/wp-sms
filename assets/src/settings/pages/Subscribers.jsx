@@ -38,7 +38,7 @@ import {
 import { subscribersApi } from '@/api/subscribersApi'
 import { groupsApi } from '@/api/groupsApi'
 import { smsApi } from '@/api/smsApi'
-import { cn, formatDate, getWpSettings, __ } from '@/lib/utils'
+import { cn, formatDate, getWpSettings, __, downloadCsv } from '@/lib/utils'
 import { useDataTable } from '@/hooks/useDataTable'
 import { useFilters } from '@/hooks/useFilters'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
@@ -235,16 +235,7 @@ export default function Subscribers() {
       status: filters.filters.status !== 'all' ? filters.filters.status : undefined,
     })
 
-    const csvContent = result.data.map((row) => row.join(',')).join('\n')
-    const blob = new Blob([csvContent], { type: 'text/csv' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = result.filename
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
+    downloadCsv(result.data, result.filename)
   }
 
   // Handle quick reply

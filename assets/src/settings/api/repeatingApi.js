@@ -186,24 +186,6 @@ export const repeatingApi = {
       count: response.data?.count || 0,
     }
   },
-
-  /**
-   * Download CSV data as file
-   * @param {Array} data - CSV rows
-   * @param {string} filename - Output filename
-   */
-  downloadCsv(data, filename) {
-    const csvContent = data.map((row) => row.join(',')).join('\n')
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-    link.href = url
-    link.download = filename
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-    URL.revokeObjectURL(url)
-  },
 }
 
 export default repeatingApi

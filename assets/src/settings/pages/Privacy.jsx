@@ -30,7 +30,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { privacyApi } from '@/api/privacyApi'
-import { cn, formatDate, __ } from '@/lib/utils'
+import { cn, formatDate, __, downloadCsv } from '@/lib/utils'
 import { useToast } from '@/components/ui/toaster'
 
 export default function Privacy() {
@@ -78,7 +78,7 @@ export default function Privacy() {
     setIsExporting(true)
     try {
       const result = await privacyApi.exportData(phoneNumber.trim())
-      privacyApi.downloadCsv(result.csvData, result.filename)
+      downloadCsv(result.csvData, result.filename)
       toast({
         title: __(`Exported ${result.count} records successfully`),
         variant: 'success',

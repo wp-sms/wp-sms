@@ -607,10 +607,9 @@ class OutboxApi extends RestApi
                 $item['date'],
                 $item['sender'],
                 $item['recipient'],
-                // Escape quotes and wrap message in quotes to handle commas
-                '"' . str_replace('"', '""', $item['message']) . '"',
+                $item['message'],
                 $itemStatus,
-                '"' . str_replace('"', '""', $item['response'] ?? '') . '"',
+                $item['response'] ?? '',
             ];
         }
 
