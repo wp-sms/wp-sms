@@ -1,4 +1,5 @@
 import { outboxApi } from '../api/outboxApi'
+import { downloadCsv } from '../lib/utils'
 
 describe('outboxApi', () => {
   beforeEach(() => {
@@ -282,7 +283,7 @@ describe('outboxApi', () => {
     })
   })
 
-  describe('downloadCsv', () => {
+  describe('downloadCsv (utility function)', () => {
     test('creates and triggers download', () => {
       // Mock DOM methods
       const mockLink = {
@@ -301,7 +302,7 @@ describe('outboxApi', () => {
         ['1', '+1234567890', 'Test'],
       ]
 
-      outboxApi.downloadCsv(data, 'test-export.csv')
+      downloadCsv(data, 'test-export.csv')
 
       expect(document.createElement).toHaveBeenCalledWith('a')
       expect(mockLink.download).toBe('test-export.csv')
