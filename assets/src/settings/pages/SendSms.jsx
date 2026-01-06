@@ -15,23 +15,25 @@ import { cn, getGatewayDisplayName, __, getWpSettings } from '@/lib/utils'
 import { useToast } from '@/components/ui/toaster'
 
 export default function SendSms() {
-  const { setCurrentPage } = useSettings()
+  const { setCurrentPage, getSetting } = useSettings()
   const { toast } = useToast()
 
   // Check for Pro add-on
   const { hasProAddon } = getWpSettings()
 
   // Get gateway capabilities (static, from page load)
-  const defaultSender = window.wpSmsSettings?.gateway?.from || ''
   const gatewaySupportsFlash = window.wpSmsSettings?.gateway?.flash === 'enable'
   const gatewaySupportsMedia = window.wpSmsSettings?.gateway?.supportMedia || false
   const gatewayValidation = window.wpSmsSettings?.gateway?.validateNumber || ''
   const gatewaySupportsBulk = window.wpSmsSettings?.gateway?.bulk_send !== false
-  const gatewayConfigured = !!window.wpSmsSettings?.settings?.gateway_name
-  const gatewayKey = window.wpSmsSettings?.settings?.gateway_name || ''
   const allGateways = window.wpSmsSettings?.gateways || {}
+
+  // Get settings from context (stays in sync after save)
+  const gatewayKey = getSetting('gateway_name', '')
+  const gatewayConfigured = !!gatewayKey
   const gatewayName = getGatewayDisplayName(gatewayKey, allGateways)
-  const showCreditOnSendPage = window.wpSmsSettings?.settings?.account_credit_in_sendsms === '1'
+  const showCreditOnSendPage = getSetting('account_credit_in_sendsms', '') === '1'
+  const defaultSender = getSetting('gateway_sender_id', window.wpSmsSettings?.gateway?.from || '')
 
   // Form state
   const [senderId, setSenderId] = useState(defaultSender)
@@ -57,6 +59,11 @@ export default function SendSms() {
   const [isLoadingCount, setIsLoadingCount] = useState(false)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [showPreviewDialog, setShowPreviewDialog] = useState(false)
+
+  // Sync sender ID when settings change (e.g., after saving gateway settings)
+  useEffect(() => {
+    setSenderId(defaultSender)
+  }, [defaultSender])
 
   // Calculate recipient count
   const totalManualRecipients =
