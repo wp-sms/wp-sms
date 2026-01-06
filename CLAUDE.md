@@ -163,6 +163,53 @@ When creating settings for a new add-on:
 - E2E requires `.env.e2e` file (copy from `.env.e2e.example`)
 - WordPress test environment runs on port 8888, tests on 8889
 
+## Writing Tests
+
+When implementing new features or modifying existing functionality, write tests for the following:
+
+### When Tests Are Required
+
+1. **REST API endpoints** - All API actions in `includes/api/v1/` must have tests covering:
+   - Successful requests with valid data
+   - Error responses for invalid/missing parameters
+   - Permission/authentication checks
+
+2. **AJAX handlers** - Controllers in `src/Controller/` that handle user-triggered actions
+
+3. **Gateway integrations** - When adding or modifying gateways in `includes/gateways/`
+
+4. **Business logic** - Critical functions in `src/Services/` (e.g., subscriber management, notification sending)
+
+5. **Data validation/sanitization** - Any function that processes user input
+
+### Test File Locations
+
+- **PHP Unit Tests**: `tests/unit/` - Mirror the source structure (e.g., `src/Services/Foo.php` → `tests/unit/Services/FooTest.php`)
+- **JavaScript Tests**: `assets/src/**/__tests__/` - Co-located with source files
+- **E2E Tests**: `e2e/tests/` - For user flow testing
+
+### Test Naming Convention
+
+```php
+// PHP: test + description of behavior
+public function testSendSmsReturnsErrorWhenRecipientEmpty() {}
+public function testSubscriberIsAddedToGroup() {}
+```
+
+```javascript
+// JS: describe block + it/test
+describe('SubscriberForm', () => {
+  it('should validate phone number format', () => {});
+});
+```
+
+### What NOT to Test
+
+- WordPress core functions (assume they work)
+- Simple getters/setters with no logic
+- Third-party library internals
+- UI styling (unless critical to functionality)
+
 ## Coding Standards
 
 ### Internationalization (i18n)
