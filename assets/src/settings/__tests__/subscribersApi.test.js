@@ -182,6 +182,102 @@ describe('subscribersApi', () => {
         })
       ).rejects.toThrow('Phone number already exists')
     })
+
+    test('handles invalid phone number error', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => ({ error: { code: 400, message: 'Invalid Mobile Number.' } }),
+        text: async () => JSON.stringify({ error: { code: 400, message: 'Invalid Mobile Number.' } }),
+      })
+
+      await expect(
+        subscribersApi.createSubscriber({
+          name: 'Test User',
+          mobile: 'invalid-phone',
+        })
+      ).rejects.toThrow('Invalid Mobile Number.')
+    })
+
+    test('handles missing country code error', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => ({ error: { code: 400, message: "The mobile number doesn't contain the country code." } }),
+        text: async () => JSON.stringify({ error: { code: 400, message: "The mobile number doesn't contain the country code." } }),
+      })
+
+      await expect(
+        subscribersApi.createSubscriber({
+          name: 'Test User',
+          mobile: '9123456789', // No + prefix
+        })
+      ).rejects.toThrow("The mobile number doesn't contain the country code.")
+    })
+
+    test('handles invalid phone length error', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => ({ error: { code: 400, message: 'The mobile number length is invalid.' } }),
+        text: async () => JSON.stringify({ error: { code: 400, message: 'The mobile number length is invalid.' } }),
+      })
+
+      await expect(
+        subscribersApi.createSubscriber({
+          name: 'Test User',
+          mobile: '+123', // Too short
+        })
+      ).rejects.toThrow('The mobile number length is invalid.')
+    })
+
+    test('handles invalid country code error', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => ({ error: { code: 400, message: 'The mobile number is not valid for your country.' } }),
+        text: async () => JSON.stringify({ error: { code: 400, message: 'The mobile number is not valid for your country.' } }),
+      })
+
+      await expect(
+        subscribersApi.createSubscriber({
+          name: 'Test User',
+          mobile: '+999123456789', // Invalid country code
+        })
+      ).rejects.toThrow('The mobile number is not valid for your country.')
+    })
+
+    test('handles error with message at root level', async () => {
+      // Some APIs might return error message at root level
+      global.fetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => ({ message: 'Root level error message' }),
+        text: async () => JSON.stringify({ message: 'Root level error message' }),
+      })
+
+      await expect(
+        subscribersApi.createSubscriber({
+          name: 'Test User',
+          mobile: 'invalid',
+        })
+      ).rejects.toThrow('Root level error message')
+    })
+
+    test('handles network timeout error', async () => {
+      const abortError = new Error('The operation was aborted')
+      abortError.name = 'AbortError'
+
+      // Mock fetch to always reject with abort error (covers all retry attempts)
+      global.fetch.mockRejectedValue(abortError)
+
+      await expect(
+        subscribersApi.createSubscriber({
+          name: 'Test User',
+          mobile: '+1234567890',
+        })
+      ).rejects.toThrow('Request timed out')
+    }, 15000) // Extended timeout to account for retries
   })
 
   describe('updateSubscriber', () => {
@@ -215,6 +311,36 @@ describe('subscribersApi', () => {
 
       expect(result.success).toBe(true)
       expect(result.subscriber.name).toBe('Updated Name')
+    })
+
+    test('handles invalid phone number on update', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+        json: async () => ({ error: { code: 400, message: 'Invalid Mobile Number.' } }),
+        text: async () => JSON.stringify({ error: { code: 400, message: 'Invalid Mobile Number.' } }),
+      })
+
+      await expect(
+        subscribersApi.updateSubscriber(1, {
+          mobile: 'invalid-phone',
+        })
+      ).rejects.toThrow('Invalid Mobile Number.')
+    })
+
+    test('handles subscriber not found on update', async () => {
+      global.fetch.mockResolvedValueOnce({
+        ok: false,
+        status: 404,
+        json: async () => ({ error: { code: 404, message: 'Subscriber not found' } }),
+        text: async () => JSON.stringify({ error: { code: 404, message: 'Subscriber not found' } }),
+      })
+
+      await expect(
+        subscribersApi.updateSubscriber(99999, {
+          name: 'New Name',
+        })
+      ).rejects.toThrow('Subscriber not found')
     })
   })
 

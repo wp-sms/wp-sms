@@ -122,22 +122,23 @@ class ApiClient {
       const response = await fetch(url, config)
       clearTimeout(timeoutId)
 
+      const data = await this.safeParseJson(response)
+
       if (!response.ok) {
-        const errorData = await this.safeParseJson(response)
+        // Extract error message from various possible formats
         const errorMessage =
-          errorData?.error?.message ||
-          errorData?.message ||
+          data?.error?.message ||
+          data?.message ||
+          data?.data?.message ||
           `HTTP error! status: ${response.status}`
         throw new Error(errorMessage)
       }
-
-      const data = await this.safeParseJson(response)
 
       if (!data) {
         throw new Error('Empty response from server')
       }
 
-      // Check for API-level errors
+      // Check for API-level errors (when HTTP status is 200 but body contains error)
       if (data.error && data.error.message) {
         throw new Error(data.error.message)
       }

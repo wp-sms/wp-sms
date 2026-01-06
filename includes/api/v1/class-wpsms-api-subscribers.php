@@ -373,8 +373,8 @@ class SubscribersApi extends RestApi
         $numberParser = new NumberParser($mobile);
         $mobile = $numberParser->getValidNumber();
 
-        if (!$mobile) {
-            return self::response(__('Invalid phone number', 'wp-sms'), 400);
+        if (is_wp_error($mobile)) {
+            return self::response($mobile->get_error_message(), 400);
         }
 
         // Check if subscriber exists
@@ -431,8 +431,8 @@ class SubscribersApi extends RestApi
             $numberParser = new NumberParser($mobile);
             $mobile = $numberParser->getValidNumber();
 
-            if (!$mobile) {
-                return self::response(__('Invalid phone number', 'wp-sms'), 400);
+            if (is_wp_error($mobile)) {
+                return self::response($mobile->get_error_message(), 400);
             }
         }
 

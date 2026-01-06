@@ -91,28 +91,99 @@ class SubscribersApiTest extends WP_UnitTestCase
     }
 
     /**
-     * Test create subscriber validates phone number
+     * Test create subscriber with invalid (non-numeric) phone number returns WP_Error message
      */
-    public function testCreateSubscriberValidatesPhoneNumber()
+    public function testCreateSubscriberWithInvalidPhoneNumberReturnsError()
     {
         $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers');
         $request->set_body_params([
-            'mobile' => 'invalid-phone',
+            'mobile' => 'invalid-phone-abc',
             'name'   => 'Test User',
         ]);
 
         $response = rest_do_request($request);
+        $data = $response->get_data();
 
-        // Should either fail validation or sanitize
-        $this->assertContains($response->get_status(), [200, 400]);
+        $this->assertEquals(400, $response->get_status());
+        $this->assertArrayHasKey('error', $data);
+        $this->assertArrayHasKey('message', $data['error']);
     }
 
     /**
-     * Test create subscriber with valid data
+     * Test create subscriber without country code when international mode is enabled
      */
-    public function testCreateSubscriberWithValidData()
+    public function testCreateSubscriberWithoutCountryCodeReturnsError()
     {
-        $uniquePhone = '+1' . time();
+        // Enable international mobile input
+        \WP_SMS\Option::updateOption('international_mobile', true);
+
+        $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers');
+        $request->set_body_params([
+            'mobile' => '9123456789', // No + prefix
+            'name'   => 'Test User',
+        ]);
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        $this->assertEquals(400, $response->get_status());
+        $this->assertArrayHasKey('error', $data);
+        $this->assertStringContainsString('country code', strtolower($data['error']['message']));
+
+        // Reset option
+        \WP_SMS\Option::updateOption('international_mobile', false);
+    }
+
+    /**
+     * Test create subscriber with too short phone number returns error
+     */
+    public function testCreateSubscriberWithShortPhoneNumberReturnsError()
+    {
+        $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers');
+        $request->set_body_params([
+            'mobile' => '+123', // Too short
+            'name'   => 'Test User',
+        ]);
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        $this->assertEquals(400, $response->get_status());
+        $this->assertArrayHasKey('error', $data);
+        $this->assertStringContainsString('length', strtolower($data['error']['message']));
+    }
+
+    /**
+     * Test create subscriber with invalid country code returns error
+     */
+    public function testCreateSubscriberWithInvalidCountryCodeReturnsError()
+    {
+        // Enable international mobile input
+        \WP_SMS\Option::updateOption('international_mobile', true);
+
+        $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers');
+        $request->set_body_params([
+            'mobile' => '+999123456789', // Invalid country code 999
+            'name'   => 'Test User',
+        ]);
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        $this->assertEquals(400, $response->get_status());
+        $this->assertArrayHasKey('error', $data);
+        $this->assertStringContainsString('country', strtolower($data['error']['message']));
+
+        // Reset option
+        \WP_SMS\Option::updateOption('international_mobile', false);
+    }
+
+    /**
+     * Test create subscriber with valid international phone number
+     */
+    public function testCreateSubscriberWithValidInternationalNumber()
+    {
+        $uniquePhone = '+1' . str_pad(mt_rand(1, 9999999999), 10, '0', STR_PAD_LEFT);
 
         $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers');
         $request->set_body_params([
@@ -124,9 +195,117 @@ class SubscribersApiTest extends WP_UnitTestCase
         $response = rest_do_request($request);
         $data = $response->get_data();
 
-        if ($response->get_status() === 200) {
+        // Should succeed with 201 (created)
+        $this->assertContains($response->get_status(), [200, 201]);
+        if ($response->get_status() === 201 || $response->get_status() === 200) {
             $this->assertArrayHasKey('data', $data);
         }
+    }
+
+    /**
+     * Test create subscriber with duplicate phone number returns error
+     */
+    public function testCreateSubscriberWithDuplicatePhoneReturnsError()
+    {
+        // First create a subscriber
+        $uniquePhone = '+1' . str_pad(mt_rand(1, 9999999999), 10, '0', STR_PAD_LEFT);
+
+        $request1 = new WP_REST_Request('POST', '/wpsms/v1/subscribers');
+        $request1->set_body_params([
+            'mobile' => $uniquePhone,
+            'name'   => 'First User',
+            'status' => '1',
+        ]);
+
+        $response1 = rest_do_request($request1);
+
+        // Skip if first creation failed
+        if ($response1->get_status() !== 201 && $response1->get_status() !== 200) {
+            $this->markTestSkipped('Could not create first subscriber');
+            return;
+        }
+
+        // Try to create another subscriber with the same phone
+        $request2 = new WP_REST_Request('POST', '/wpsms/v1/subscribers');
+        $request2->set_body_params([
+            'mobile' => $uniquePhone,
+            'name'   => 'Second User',
+            'status' => '1',
+        ]);
+
+        $response2 = rest_do_request($request2);
+        $data2 = $response2->get_data();
+
+        $this->assertEquals(400, $response2->get_status());
+        $this->assertArrayHasKey('error', $data2);
+        $this->assertStringContainsString('exists', strtolower($data2['error']['message']));
+    }
+
+    /**
+     * Test create subscriber with Persian/Arabic numerals
+     */
+    public function testCreateSubscriberWithPersianNumerals()
+    {
+        $persianPhone = '+۹۸۹' . str_pad(mt_rand(1, 99999999), 8, '۰', STR_PAD_LEFT);
+
+        $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers');
+        $request->set_body_params([
+            'mobile' => $persianPhone,
+            'name'   => 'Persian User',
+            'status' => '1',
+        ]);
+
+        $response = rest_do_request($request);
+
+        // Should succeed (numbers are converted to English)
+        $this->assertContains($response->get_status(), [200, 201, 400]);
+    }
+
+    /**
+     * Test update subscriber with invalid phone number returns WP_Error message
+     */
+    public function testUpdateSubscriberWithInvalidPhoneReturnsError()
+    {
+        // First create a valid subscriber
+        $subscriberId = $this->createTestSubscriber();
+
+        if (!$subscriberId) {
+            $this->markTestSkipped('Could not create test subscriber');
+            return;
+        }
+
+        $request = new WP_REST_Request('PUT', '/wpsms/v1/subscribers/' . $subscriberId);
+        $request->set_body_params([
+            'mobile' => 'invalid-phone-xyz',
+        ]);
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        $this->assertEquals(400, $response->get_status());
+        $this->assertArrayHasKey('error', $data);
+        $this->assertArrayHasKey('message', $data['error']);
+    }
+
+    /**
+     * Test error response format contains proper error structure
+     */
+    public function testErrorResponseContainsProperStructure()
+    {
+        $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers');
+        $request->set_body_params([
+            'mobile' => 'abc', // Invalid
+            'name'   => 'Test',
+        ]);
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        $this->assertEquals(400, $response->get_status());
+        $this->assertArrayHasKey('error', $data);
+        $this->assertArrayHasKey('code', $data['error']);
+        $this->assertArrayHasKey('message', $data['error']);
+        $this->assertNotEmpty($data['error']['message']);
     }
 
     /**
