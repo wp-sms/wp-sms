@@ -270,110 +270,118 @@ export default function Outbox() {
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
       {/* Stats Header Bar */}
-      <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
-        <div className="wsms-flex wsms-items-center wsms-gap-8">
-          {/* Total */}
-          <div className="wsms-flex wsms-items-center wsms-gap-3">
-            <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10">
-              <Inbox className="wsms-h-5 wsms-w-5 wsms-text-primary" aria-hidden="true" />
+      <div className="wsms-px-4 xl:wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
+        {/* Mobile/Tablet: Grid layout, Desktop: Flex layout */}
+        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4 xl:wsms-flex xl:wsms-items-center xl:wsms-justify-between xl:wsms-gap-4">
+          <div className="wsms-contents xl:wsms-flex xl:wsms-items-center xl:wsms-gap-8">
+            {/* Total */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10">
+                <Inbox className="wsms-h-5 wsms-w-5 wsms-text-primary" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-hidden xl:wsms-block">Total Messages</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground xl:wsms-hidden">Total</p>
+              </div>
             </div>
-            <div>
-              <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground">Total Messages</p>
-            </div>
-          </div>
 
-          <div className="wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+            <div className="wsms-hidden xl:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
 
-          {/* Sent */}
-          <div className="wsms-flex wsms-items-center wsms-gap-3">
-            <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-success/10">
-              <CheckCircle className="wsms-h-5 wsms-w-5 wsms-text-success" aria-hidden="true" />
+            {/* Sent */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-success/10">
+                <CheckCircle className="wsms-h-5 wsms-w-5 wsms-text-success" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.success}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">Sent</p>
+              </div>
             </div>
-            <div>
-              <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.success}</p>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground">Sent</p>
-            </div>
-          </div>
 
-          <div className="wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+            <div className="wsms-hidden xl:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
 
-          {/* Failed */}
-          <div className="wsms-flex wsms-items-center wsms-gap-3">
-            <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-destructive/10">
-              <XCircle className="wsms-h-5 wsms-w-5 wsms-text-destructive" aria-hidden="true" />
+            {/* Failed */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-destructive/10">
+                <XCircle className="wsms-h-5 wsms-w-5 wsms-text-destructive" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-destructive">{stats.failed}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">Failed</p>
+              </div>
             </div>
-            <div>
-              <p className="wsms-text-xl wsms-font-bold wsms-text-destructive">{stats.failed}</p>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground">Failed</p>
-            </div>
-          </div>
 
-          <div className="wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+            <div className="wsms-hidden xl:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
 
-          {/* Success Rate */}
-          <div className="wsms-flex wsms-items-center wsms-gap-3">
-            <div
-              className={cn(
-                'wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg',
-                isGoodRate
-                  ? 'wsms-bg-success/10'
-                  : successRate >= 70
-                    ? 'wsms-bg-amber-100 dark:wsms-bg-amber-900/30'
-                    : 'wsms-bg-destructive/10'
-              )}
-            >
-              {isGoodRate || successRate >= 70 ? (
-                <TrendingUp
-                  className={cn(
-                    'wsms-h-5 wsms-w-5',
-                    isGoodRate
-                      ? 'wsms-text-success'
-                      : 'wsms-text-amber-600 dark:wsms-text-amber-400'
-                  )}
-                  aria-hidden="true"
-                />
-              ) : (
-                <TrendingDown className="wsms-h-5 wsms-w-5 wsms-text-destructive" aria-hidden="true" />
-              )}
-            </div>
-            <div>
-              <p
+            {/* Success Rate */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div
                 className={cn(
-                  'wsms-text-xl wsms-font-bold',
+                  'wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg',
                   isGoodRate
-                    ? 'wsms-text-success'
+                    ? 'wsms-bg-success/10'
                     : successRate >= 70
-                      ? 'wsms-text-amber-600 dark:wsms-text-amber-400'
-                      : 'wsms-text-destructive'
+                      ? 'wsms-bg-amber-100 dark:wsms-bg-amber-900/30'
+                      : 'wsms-bg-destructive/10'
                 )}
               >
-                {successRate}%
-              </p>
-              <p className="wsms-text-[11px] wsms-text-muted-foreground">Success Rate</p>
+                {isGoodRate || successRate >= 70 ? (
+                  <TrendingUp
+                    className={cn(
+                      'wsms-h-5 wsms-w-5',
+                      isGoodRate
+                        ? 'wsms-text-success'
+                        : 'wsms-text-amber-600 dark:wsms-text-amber-400'
+                    )}
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <TrendingDown className="wsms-h-5 wsms-w-5 wsms-text-destructive" aria-hidden="true" />
+                )}
+              </div>
+              <div>
+                <p
+                  className={cn(
+                    'wsms-text-xl wsms-font-bold',
+                    isGoodRate
+                      ? 'wsms-text-success'
+                      : successRate >= 70
+                        ? 'wsms-text-amber-600 dark:wsms-text-amber-400'
+                        : 'wsms-text-destructive'
+                  )}
+                >
+                  {successRate}%
+                </p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-hidden xl:wsms-block">Success Rate</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground xl:wsms-hidden">Rate</p>
+              </div>
             </div>
           </div>
-        </div>
 
-        {/* Export Button */}
-        <Button variant="outline" onClick={handleExport} disabled={isExporting}>
-          {isExporting ? (
-            <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" aria-hidden="true" />
-          ) : (
-            <>
-              <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
-              Export
-            </>
-          )}
-        </Button>
+          {/* Export Button */}
+          <div className="wsms-col-span-2 xl:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 xl:wsms-mt-0">
+            <Button variant="outline" onClick={handleExport} disabled={isExporting}>
+              {isExporting ? (
+                <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" aria-hidden="true" />
+              ) : (
+                <>
+                  <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
+                  Export
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
       </div>
 
       {/* Filters */}
       <Card>
-        <CardContent className="wsms-p-0">
-          <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-p-3">
+        <CardContent className="wsms-p-3">
+          {/* Mobile/Tablet: Stacked layout, Desktop: Single row */}
+          <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-3">
             {/* Search */}
-            <div className="wsms-relative wsms-w-[220px] wsms-shrink-0">
+            <div className="wsms-relative wsms-w-full xl:wsms-w-[220px] xl:wsms-shrink-0">
               <Search
                 className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none"
                 aria-hidden="true"
@@ -393,7 +401,7 @@ export default function Outbox() {
               value={filters.filters.status}
               onValueChange={(value) => filters.setFilter('status', value)}
             >
-              <SelectTrigger className="wsms-h-9 wsms-w-[100px] wsms-text-[12px]" aria-label="Filter by status">
+              <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[100px] wsms-text-[12px]" aria-label="Filter by status">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -403,28 +411,32 @@ export default function Outbox() {
               </SelectContent>
             </Select>
 
-            {/* Date Range */}
-            <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-pl-2 wsms-border-l wsms-border-border">
-              <CalendarDays className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" aria-hidden="true" />
-              <Input
-                type="date"
-                value={filters.filters.date_from}
-                onChange={(e) => filters.setFilter('date_from', e.target.value)}
-                className="wsms-h-9 wsms-w-[130px] wsms-text-[12px]"
-                aria-label="From date"
-              />
-              <span className="wsms-text-muted-foreground wsms-text-[11px]">–</span>
-              <Input
-                type="date"
-                value={filters.filters.date_to}
-                onChange={(e) => filters.setFilter('date_to', e.target.value)}
-                className="wsms-h-9 wsms-w-[130px] wsms-text-[12px]"
-                aria-label="To date"
-              />
+            {/* Date Range - grid on mobile/tablet for proper sizing */}
+            <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-2 xl:wsms-pl-2 xl:wsms-border-l xl:wsms-border-border">
+              <div className="wsms-relative wsms-col-span-1">
+                <CalendarDays className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
+                <Input
+                  type="date"
+                  value={filters.filters.date_from}
+                  onChange={(e) => filters.setFilter('date_from', e.target.value)}
+                  className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-pl-8 wsms-text-[12px]"
+                  aria-label="From date"
+                />
+              </div>
+              <div className="wsms-relative wsms-col-span-1">
+                <CalendarDays className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none xl:wsms-hidden" aria-hidden="true" />
+                <Input
+                  type="date"
+                  value={filters.filters.date_to}
+                  onChange={(e) => filters.setFilter('date_to', e.target.value)}
+                  className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-pl-8 xl:wsms-pl-3 wsms-text-[12px]"
+                  aria-label="To date"
+                />
+              </div>
             </div>
 
             {/* Actions */}
-            <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-ml-auto">
+            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ml-auto">
               {/* Clear Filters */}
               {(filters.filters.search || filters.filters.status !== 'all' || filters.filters.date_from || filters.filters.date_to) && (
                 <Button

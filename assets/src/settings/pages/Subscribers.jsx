@@ -521,67 +521,70 @@ export default function Subscribers() {
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
       {/* Stats & Actions Header */}
-      <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
-        <div className="wsms-flex wsms-items-center wsms-gap-6 lg:wsms-gap-8">
-          {/* Total */}
-          <div className="wsms-flex wsms-items-center wsms-gap-2.5">
-            <div className="wsms-flex wsms-h-9 wsms-w-9 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10">
-              <Users className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+      <div className="wsms-px-4 lg:wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
+        {/* Mobile/Tablet: Grid layout, Desktop: Flex layout */}
+        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4 lg:wsms-flex lg:wsms-items-center lg:wsms-justify-between lg:wsms-gap-4">
+          <div className="wsms-contents lg:wsms-flex lg:wsms-items-center lg:wsms-gap-8">
+            {/* Total */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10">
+                <Users className="wsms-h-5 wsms-w-5 wsms-text-primary" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total')}</p>
+              </div>
             </div>
-            <div>
-              <p className="wsms-text-lg wsms-font-bold wsms-text-foreground wsms-leading-none">{stats.total}</p>
-              <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-0.5">{__('Total')}</p>
+
+            <div className="wsms-hidden lg:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+
+            {/* Active */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-success/10">
+                <UserCheck className="wsms-h-5 wsms-w-5 wsms-text-success" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.active}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Active')}</p>
+              </div>
+            </div>
+
+            <div className="wsms-hidden lg:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+
+            {/* Inactive */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-muted">
+                <UserX className="wsms-h-5 wsms-w-5 wsms-text-muted-foreground" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-muted-foreground">{stats.inactive}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Inactive')}</p>
+              </div>
             </div>
           </div>
 
-          <div className="wsms-w-px wsms-h-8 wsms-bg-border wsms-hidden sm:wsms-block" />
-
-          {/* Active */}
-          <div className="wsms-flex wsms-items-center wsms-gap-2.5">
-            <div className="wsms-flex wsms-h-9 wsms-w-9 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-success/10">
-              <UserCheck className="wsms-h-4 wsms-w-4 wsms-text-success" />
-            </div>
-            <div>
-              <p className="wsms-text-lg wsms-font-bold wsms-text-success wsms-leading-none">{stats.active}</p>
-              <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-0.5">{__('Active')}</p>
-            </div>
+          {/* Import/Export */}
+          <div className="wsms-col-span-2 lg:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 lg:wsms-mt-0">
+            <Button variant="outline" onClick={() => setShowImportDialog(true)}>
+              <Upload className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
+              {__('Import')}
+            </Button>
+            <Button variant="outline" onClick={handleExport}>
+              <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
+              {__('Export')}
+            </Button>
           </div>
-
-          <div className="wsms-w-px wsms-h-8 wsms-bg-border wsms-hidden sm:wsms-block" />
-
-          {/* Inactive */}
-          <div className="wsms-flex wsms-items-center wsms-gap-2.5">
-            <div className="wsms-flex wsms-h-9 wsms-w-9 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-muted">
-              <UserX className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-            </div>
-            <div>
-              <p className="wsms-text-lg wsms-font-bold wsms-text-muted-foreground wsms-leading-none">{stats.inactive}</p>
-              <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-0.5">{__('Inactive')}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Import/Export */}
-        <div className="wsms-flex wsms-items-center wsms-gap-2">
-          <Button variant="outline" size="sm" onClick={() => setShowImportDialog(true)}>
-            <Upload className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-            {__('Import')}
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleExport}>
-            <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-            {__('Export')}
-          </Button>
         </div>
       </div>
 
       {/* Toolbar */}
       <Card>
         <CardContent className="wsms-p-0">
-          {/* Row 1: Search + Filters - all inline */}
-          <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-3 wsms-pb-2.5">
+          {/* Row 1: Search + Filters - stacked on mobile/tablet, inline on desktop */}
+          <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-2 wsms-p-3 wsms-pb-2.5">
             {/* Search */}
-            <div className="wsms-relative wsms-w-[220px] wsms-shrink-0">
-              <Search className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" />
+            <div className="wsms-relative wsms-w-full xl:wsms-w-[220px] xl:wsms-shrink-0">
+              <Search className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
               <Input
                 type="text"
                 value={filters.filters.search}
@@ -591,104 +594,108 @@ export default function Subscribers() {
               />
             </div>
 
-            {/* Filters inline */}
-            <Select value={filters.filters.group_id} onValueChange={(v) => filters.setFilter('group_id', v)}>
-              <SelectTrigger className="wsms-h-9 wsms-w-[120px] wsms-text-[12px]" aria-label="Filter by group">
-                <SelectValue placeholder="All Groups" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Groups</SelectItem>
-                {groups.map((group) => (
-                  <SelectItem key={group.id} value={group.id.toString()}>
-                    {group.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={filters.filters.status} onValueChange={(v) => filters.setFilter('status', v)}>
-              <SelectTrigger className="wsms-h-9 wsms-w-[100px] wsms-text-[12px]" aria-label="Filter by status">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="inactive">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
-
-            {countries.length > 0 && (
-              <Select value={filters.filters.country_code} onValueChange={(v) => filters.setFilter('country_code', v)}>
-                <SelectTrigger className="wsms-h-9 wsms-w-[130px] wsms-text-[12px]" aria-label="Filter by country">
-                  <Globe className="wsms-h-3.5 wsms-w-3.5 wsms-mr-1 wsms-text-muted-foreground wsms-shrink-0" />
-                  <SelectValue placeholder="Country" />
+            {/* Filters - grid on mobile/tablet, inline on desktop */}
+            <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-2">
+              <Select value={filters.filters.group_id} onValueChange={(v) => filters.setFilter('group_id', v)}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label="Filter by group">
+                  <SelectValue placeholder="All Groups" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Countries</SelectItem>
-                  {countries
-                    .filter((country, index, self) =>
-                      index === self.findIndex((c) => c.code === country.code)
-                    )
-                    .map((country) => (
-                      <SelectItem key={country.code} value={country.code}>
-                        {country.name}
-                      </SelectItem>
-                    ))}
+                  <SelectItem value="all">All Groups</SelectItem>
+                  {groups.map((group) => (
+                    <SelectItem key={group.id} value={group.id.toString()}>
+                      {group.name}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
-            )}
+
+              <Select value={filters.filters.status} onValueChange={(v) => filters.setFilter('status', v)}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[100px] wsms-text-[12px]" aria-label="Filter by status">
+                  <SelectValue placeholder="Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="inactive">Inactive</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {countries.length > 0 && (
+                <Select value={filters.filters.country_code} onValueChange={(v) => filters.setFilter('country_code', v)}>
+                  <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-text-[12px]" aria-label="Filter by country">
+                    <Globe className="wsms-h-3.5 wsms-w-3.5 wsms-mr-1 wsms-text-muted-foreground wsms-shrink-0" aria-hidden="true" />
+                    <SelectValue placeholder="Country" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Countries</SelectItem>
+                    {countries
+                      .filter((country, index, self) =>
+                        index === self.findIndex((c) => c.code === country.code)
+                      )
+                      .map((country) => (
+                        <SelectItem key={country.code} value={country.code}>
+                          {country.name}
+                        </SelectItem>
+                      ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
           </div>
 
           {/* Divider */}
           <div className="wsms-border-t wsms-border-border" />
 
-          {/* Row 2: Quick Add */}
-          <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-p-3 wsms-pt-2.5 wsms-bg-muted/30">
+          {/* Row 2: Quick Add - stacked on mobile/tablet, inline on desktop */}
+          <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-3 wsms-p-3 wsms-pt-2.5 wsms-bg-muted/30">
             <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide wsms-shrink-0">
-              <UserPlus className="wsms-h-3.5 wsms-w-3.5" />
+              <UserPlus className="wsms-h-3.5 wsms-w-3.5" aria-hidden="true" />
               <span>Quick Add</span>
             </div>
 
-            {/* Name field (optional) */}
-            <Input
-              type="text"
-              value={quickAddName}
-              onChange={(e) => setQuickAddName(e.target.value)}
-              placeholder="Name (optional)"
-              className="wsms-h-9 wsms-w-[160px] wsms-text-[13px]"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && quickAddPhone.trim()) {
-                  handleQuickAdd(quickAddName, quickAddPhone)
-                }
-              }}
-            />
+            {/* Input fields - grid on mobile/tablet, inline on desktop */}
+            <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-3 wsms-flex-1">
+              {/* Name field (optional) */}
+              <Input
+                type="text"
+                value={quickAddName}
+                onChange={(e) => setQuickAddName(e.target.value)}
+                placeholder="Name (optional)"
+                className="wsms-h-9 wsms-w-full xl:wsms-w-[160px] wsms-text-[13px]"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && quickAddPhone.trim()) {
+                    handleQuickAdd(quickAddName, quickAddPhone)
+                  }
+                }}
+              />
 
-            {/* Phone field (required) */}
-            <Input
-              type="tel"
-              value={quickAddPhone}
-              onChange={(e) => setQuickAddPhone(e.target.value)}
-              placeholder="+1234567890"
-              className="wsms-h-9 wsms-w-[160px] wsms-font-mono wsms-text-[13px]"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && quickAddPhone.trim()) {
-                  handleQuickAdd(quickAddName, quickAddPhone)
-                }
-              }}
-            />
+              {/* Phone field (required) */}
+              <Input
+                type="tel"
+                value={quickAddPhone}
+                onChange={(e) => setQuickAddPhone(e.target.value)}
+                placeholder="+1234567890"
+                className="wsms-h-9 wsms-w-full xl:wsms-w-[160px] wsms-font-mono wsms-text-[13px]"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && quickAddPhone.trim()) {
+                    handleQuickAdd(quickAddName, quickAddPhone)
+                  }
+                }}
+              />
+            </div>
 
             {/* Add button */}
             <Button
-              size="sm"
               disabled={isAddingQuick || !quickAddPhone.trim()}
               onClick={() => handleQuickAdd(quickAddName, quickAddPhone)}
-              className="wsms-h-9 wsms-px-4 wsms-shrink-0"
+              className="wsms-h-9 wsms-w-full xl:wsms-w-auto wsms-px-4 wsms-shrink-0"
             >
               {isAddingQuick ? (
-                <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
+                <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" aria-hidden="true" />
               ) : (
                 <>
-                  <UserPlus className="wsms-h-4 wsms-w-4 wsms-mr-1.5" />
+                  <UserPlus className="wsms-h-4 wsms-w-4 wsms-mr-1.5" aria-hidden="true" />
                   Add
                 </>
               )}

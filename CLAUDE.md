@@ -188,6 +188,33 @@ absint($number);                  // For positive integers
 sanitize_textarea_field($text);   // For textarea content
 ```
 
+### Responsive Design (React Settings Pages)
+
+The React settings pages must be fully responsive across all viewport sizes. Use Tailwind CSS mobile-first approach:
+
+**Breakpoints**:
+- Default (no prefix): Mobile styles (< 768px)
+- `lg:` (1024px): Use for sections with fewer elements (e.g., stats header with 3 items)
+- `xl:` (1280px): Use for sections with more elements (e.g., filters with 4+ items, complex toolbars)
+
+**Layout Patterns**:
+```jsx
+// Mobile: stacked, Desktop: horizontal
+<div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center">
+
+// Mobile: 2-column grid, Desktop: inline flex
+<div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center">
+
+// Use wsms-contents for grid children that need to escape container
+<div className="wsms-contents xl:wsms-flex xl:wsms-items-center">
+```
+
+**Guidelines**:
+- Always test at multiple widths: mobile (~375px), tablet (~768px), laptop (~1024px), desktop (~1440px)
+- Ensure no horizontal overflow at any width
+- Use consistent breakpoints across similar sections (Outbox and Subscribers should behave the same)
+- Desktop layouts should preserve the original design; mobile layouts should stack gracefully
+
 ## Commit Guidelines
 
 **Important**: Always commit changes made during your active session before the session ends. Only commit files you modified - do not include changes from other concurrent Claude sessions.
