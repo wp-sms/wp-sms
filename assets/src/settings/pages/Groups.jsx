@@ -5,8 +5,6 @@ import {
   Trash2,
   Edit,
   Users,
-  CheckCircle,
-  AlertCircle,
   Loader2,
   Save,
   X,
@@ -33,6 +31,7 @@ import {
 import { groupsApi } from '@/api/groupsApi'
 import { cn, __ } from '@/lib/utils'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
+import { useToast } from '@/components/ui/toaster'
 
 export default function Groups() {
   // Data state
@@ -44,13 +43,15 @@ export default function Groups() {
     per_page: 20,
   })
 
+  // Toast notification
+  const { toast } = useToast()
+
   // UI state
   const [isLoading, setIsLoading] = useState(true)
   const [initialLoadDone, setInitialLoadDone] = useState(false)
   const [selectedIds, setSelectedIds] = useState([])
   const [editGroup, setEditGroup] = useState(null)
   const [deleteGroup, setDeleteGroup] = useState(null)
-  const [notification, setNotification] = useState(null)
   const [isAddingQuick, setIsAddingQuick] = useState(false)
   const [viewMode, setViewMode] = useState('list') // 'list' or 'grid'
 
@@ -74,7 +75,7 @@ export default function Groups() {
       setGroups(result.items)
       setPagination(result.pagination)
     } catch (error) {
-      setNotification({ type: 'error', message: error.message })
+      toast({ title: error.message, variant: 'destructive' })
     } finally {
       setIsLoading(false)
       setInitialLoadDone(true)
@@ -96,7 +97,7 @@ export default function Groups() {
     setIsAddingQuick(true)
     try {
       await groupsApi.createGroup({ name })
-      setNotification({ type: 'success', message: 'Group created successfully' })
+      toast({ title: __('Group created successfully'), variant: 'success' })
       fetchGroups(1)
     } catch (error) {
       throw error
@@ -120,11 +121,11 @@ export default function Groups() {
 
     try {
       await groupsApi.updateGroup(inlineEditId, { name: inlineEditValue.trim() })
-      setNotification({ type: 'success', message: 'Group updated successfully' })
+      toast({ title: __('Group updated successfully'), variant: 'success' })
       setInlineEditId(null)
       fetchGroups(pagination.current_page)
     } catch (error) {
-      setNotification({ type: 'error', message: error.message })
+      toast({ title: error.message, variant: 'destructive' })
     }
   }
 
@@ -150,23 +151,15 @@ export default function Groups() {
     setIsDeleting(true)
     try {
       await groupsApi.deleteGroup(deleteGroup.id)
-      setNotification({ type: 'success', message: 'Group deleted successfully' })
+      toast({ title: __('Group deleted successfully'), variant: 'success' })
       setDeleteGroup(null)
       fetchGroups(pagination.current_page)
     } catch (error) {
-      setNotification({ type: 'error', message: error.message })
+      toast({ title: error.message, variant: 'destructive' })
     } finally {
       setIsDeleting(false)
     }
   }
-
-  // Clear notification
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => setNotification(null), 5000)
-      return () => clearTimeout(timer)
-    }
-  }, [notification])
 
   // Table columns
   const columns = [
@@ -260,26 +253,6 @@ export default function Groups() {
   if (groups.length === 0) {
     return (
       <div className="wsms-space-y-6 wsms-stagger-children">
-        {/* Notification */}
-        {notification && (
-          <div
-            className={cn(
-              'wsms-flex wsms-items-center wsms-gap-3 wsms-p-4 wsms-rounded-lg wsms-border',
-              'wsms-animate-in wsms-fade-in wsms-slide-in-from-top-2 wsms-duration-300',
-              notification.type === 'success'
-                ? 'wsms-bg-emerald-50 wsms-border-emerald-200 wsms-text-emerald-800 dark:wsms-bg-emerald-900/30 dark:wsms-border-emerald-800 dark:wsms-text-emerald-200'
-                : 'wsms-bg-red-50 wsms-border-red-200 wsms-text-red-800 dark:wsms-bg-red-900/30 dark:wsms-border-red-800 dark:wsms-text-red-200'
-            )}
-          >
-            {notification.type === 'success' ? (
-              <CheckCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
-            ) : (
-              <AlertCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
-            )}
-            <p className="wsms-text-[13px] wsms-font-medium">{notification.message}</p>
-          </div>
-        )}
-
         {/* Empty State - Full Width Centered */}
         <Card className="wsms-border-dashed">
           <CardContent className="wsms-py-16">
@@ -331,26 +304,6 @@ export default function Groups() {
 
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
-      {/* Notification */}
-      {notification && (
-        <div
-          className={cn(
-            'wsms-flex wsms-items-center wsms-gap-3 wsms-p-4 wsms-rounded-lg wsms-border',
-            'wsms-animate-in wsms-fade-in wsms-slide-in-from-top-2 wsms-duration-300',
-            notification.type === 'success'
-              ? 'wsms-bg-emerald-50 wsms-border-emerald-200 wsms-text-emerald-800 dark:wsms-bg-emerald-900/30 dark:wsms-border-emerald-800 dark:wsms-text-emerald-200'
-              : 'wsms-bg-red-50 wsms-border-red-200 wsms-text-red-800 dark:wsms-bg-red-900/30 dark:wsms-border-red-800 dark:wsms-text-red-200'
-          )}
-        >
-          {notification.type === 'success' ? (
-            <CheckCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
-          ) : (
-            <AlertCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
-          )}
-          <p className="wsms-text-[13px] wsms-font-medium">{notification.message}</p>
-        </div>
-      )}
-
       {/* Header Bar with Stats and Actions */}
       <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-3.5 wsms-rounded-lg wsms-bg-gradient-to-r wsms-from-muted/50 wsms-to-muted/30 wsms-border wsms-border-border">
         {/* Left: Stats */}

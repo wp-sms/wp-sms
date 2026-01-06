@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Send, Zap, Image, Users, CheckCircle, AlertCircle, Loader2, CreditCard, User, Radio, MessageSquare, Hash, Clock, Eye, ChevronDown, ChevronUp, CalendarClock, Repeat, Calendar } from 'lucide-react'
+import { Send, Zap, Image, Users, Loader2, CreditCard, User, Radio, MessageSquare, Clock, Eye, CalendarClock, Repeat } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Switch } from '@/components/ui/switch'
@@ -12,9 +12,11 @@ import { Tip } from '@/components/ui/ux-helpers'
 import { smsApi } from '@/api/smsApi'
 import { useSettings } from '@/context/SettingsContext'
 import { cn, getGatewayDisplayName, __, getWpSettings } from '@/lib/utils'
+import { useToast } from '@/components/ui/toaster'
 
 export default function SendSms() {
   const { setCurrentPage } = useSettings()
+  const { toast } = useToast()
 
   // Check for Pro add-on
   const { hasProAddon } = getWpSettings()
@@ -49,7 +51,6 @@ export default function SendSms() {
 
   // UI state
   const [isSending, setIsSending] = useState(false)
-  const [notification, setNotification] = useState(null)
   const [credit, setCredit] = useState(null)
   const [creditSupported, setCreditSupported] = useState(true)
   const [recipientCount, setRecipientCount] = useState(0)
@@ -125,7 +126,6 @@ export default function SendSms() {
     if (!canSend) return
 
     setIsSending(true)
-    setNotification(null)
 
     try {
       const result = await smsApi.send({
@@ -147,9 +147,9 @@ export default function SendSms() {
       })
 
       setShowPreviewDialog(false)
-      setNotification({
-        type: 'success',
-        message: `Message sent successfully to ${result.recipientCount || recipientCount} recipient(s)`,
+      toast({
+        title: __(`Message sent successfully to ${result.recipientCount || recipientCount} recipient(s)`),
+        variant: 'success',
       })
 
       // Update credit
@@ -173,22 +173,14 @@ export default function SendSms() {
       setRepeatForever(false)
     } catch (error) {
       setShowPreviewDialog(false)
-      setNotification({
-        type: 'error',
-        message: error.message || 'Failed to send message',
+      toast({
+        title: error.message || __('Failed to send message'),
+        variant: 'destructive',
       })
     } finally {
       setIsSending(false)
     }
-  }, [canSend, message, recipients, senderId, flashSms, mediaUrl, recipientCount, defaultSender, scheduleEnabled, scheduledDate, repeatEnabled, repeatInterval, repeatIntervalUnit, repeatEndDate, repeatForever])
-
-  // Clear notification after 5 seconds
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => setNotification(null), 5000)
-      return () => clearTimeout(timer)
-    }
-  }, [notification])
+  }, [canSend, message, recipients, senderId, flashSms, mediaUrl, recipientCount, defaultSender, scheduleEnabled, scheduledDate, repeatEnabled, repeatInterval, repeatIntervalUnit, repeatEndDate, repeatForever, toast])
 
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
@@ -203,26 +195,6 @@ export default function SendSms() {
             {__('Configure Gateway')} →
           </button>
         </Tip>
-      )}
-
-      {/* Notification */}
-      {notification && (
-        <div
-          className={cn(
-            'wsms-flex wsms-items-center wsms-gap-3 wsms-p-4 wsms-rounded-lg wsms-border',
-            'wsms-animate-in wsms-fade-in wsms-slide-in-from-top-2 wsms-duration-300',
-            notification.type === 'success'
-              ? 'wsms-bg-emerald-50 wsms-border-emerald-200 wsms-text-emerald-800 dark:wsms-bg-emerald-900/30 dark:wsms-border-emerald-800 dark:wsms-text-emerald-200'
-              : 'wsms-bg-red-50 wsms-border-red-200 wsms-text-red-800 dark:wsms-bg-red-900/30 dark:wsms-border-red-800 dark:wsms-text-red-200'
-          )}
-        >
-          {notification.type === 'success' ? (
-            <CheckCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
-          ) : (
-            <AlertCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
-          )}
-          <p className="wsms-text-[13px] wsms-font-medium">{notification.message}</p>
-        </div>
       )}
 
       {/* Status Bar - Full Width */}

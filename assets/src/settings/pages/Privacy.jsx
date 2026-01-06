@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   Shield,
   Search,
@@ -9,11 +9,9 @@ import {
   MessageSquare,
   Users,
   CheckCircle,
-  AlertCircle,
   AlertTriangle,
   Loader2,
   FileText,
-  Lock,
   Eye,
   Database,
 } from 'lucide-react'
@@ -32,9 +30,12 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { privacyApi } from '@/api/privacyApi'
-import { cn, formatDate } from '@/lib/utils'
+import { cn, formatDate, __ } from '@/lib/utils'
+import { useToast } from '@/components/ui/toaster'
 
 export default function Privacy() {
+  const { toast } = useToast()
+
   // Search state
   const [phoneNumber, setPhoneNumber] = useState('')
   const [searchResults, setSearchResults] = useState(null)
@@ -44,7 +45,6 @@ export default function Privacy() {
   const [isExporting, setIsExporting] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-  const [notification, setNotification] = useState(null)
 
   // Handle search
   const handleSearch = async (e) => {
@@ -53,20 +53,19 @@ export default function Privacy() {
 
     setIsSearching(true)
     setSearchResults(null)
-    setNotification(null)
 
     try {
       const result = await privacyApi.searchData(phoneNumber.trim())
       setSearchResults(result)
 
       if (!result.found) {
-        setNotification({
-          type: 'info',
-          message: 'No data found for this phone number',
+        toast({
+          title: __('No data found for this phone number'),
+          variant: 'default',
         })
       }
     } catch (error) {
-      setNotification({ type: 'error', message: error.message })
+      toast({ title: error.message, variant: 'destructive' })
     } finally {
       setIsSearching(false)
     }
@@ -80,12 +79,12 @@ export default function Privacy() {
     try {
       const result = await privacyApi.exportData(phoneNumber.trim())
       privacyApi.downloadCsv(result.csvData, result.filename)
-      setNotification({
-        type: 'success',
-        message: `Exported ${result.count} records successfully`,
+      toast({
+        title: __(`Exported ${result.count} records successfully`),
+        variant: 'success',
       })
     } catch (error) {
-      setNotification({ type: 'error', message: error.message })
+      toast({ title: error.message, variant: 'destructive' })
     } finally {
       setIsExporting(false)
     }
@@ -98,27 +97,19 @@ export default function Privacy() {
     setIsDeleting(true)
     try {
       const result = await privacyApi.deleteData(phoneNumber.trim(), true)
-      setNotification({
-        type: 'success',
-        message: result.message,
+      toast({
+        title: result.message,
+        variant: 'success',
       })
       setSearchResults(null)
       setPhoneNumber('')
       setShowDeleteConfirm(false)
     } catch (error) {
-      setNotification({ type: 'error', message: error.message })
+      toast({ title: error.message, variant: 'destructive' })
     } finally {
       setIsDeleting(false)
     }
   }
-
-  // Clear notification
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => setNotification(null), 5000)
-      return () => clearTimeout(timer)
-    }
-  }, [notification])
 
   // Get source icon
   const getSourceIcon = (source) => {
@@ -150,30 +141,6 @@ export default function Privacy() {
 
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
-      {/* Notification */}
-      {notification && (
-        <div
-          className={cn(
-            'wsms-flex wsms-items-center wsms-gap-3 wsms-p-4 wsms-rounded-lg wsms-border',
-            'wsms-animate-in wsms-fade-in wsms-slide-in-from-top-2 wsms-duration-300',
-            notification.type === 'success'
-              ? 'wsms-bg-emerald-50 wsms-border-emerald-200 wsms-text-emerald-800 dark:wsms-bg-emerald-900/30 dark:wsms-border-emerald-800 dark:wsms-text-emerald-200'
-              : notification.type === 'info'
-              ? 'wsms-bg-blue-50 wsms-border-blue-200 wsms-text-blue-800 dark:wsms-bg-blue-900/30 dark:wsms-border-blue-800 dark:wsms-text-blue-200'
-              : 'wsms-bg-red-50 wsms-border-red-200 wsms-text-red-800 dark:wsms-bg-red-900/30 dark:wsms-border-red-800 dark:wsms-text-red-200'
-          )}
-        >
-          {notification.type === 'success' ? (
-            <CheckCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
-          ) : notification.type === 'info' ? (
-            <AlertCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
-          ) : (
-            <AlertTriangle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
-          )}
-          <p className="wsms-text-[13px] wsms-font-medium">{notification.message}</p>
-        </div>
-      )}
-
       {/* Hero Section */}
       <div className="wsms-relative wsms-overflow-hidden wsms-rounded-lg wsms-bg-gradient-to-br wsms-from-primary/5 wsms-via-primary/10 wsms-to-transparent wsms-border wsms-border-primary/20">
         <div className="wsms-absolute wsms-top-0 wsms-right-0 wsms-w-32 wsms-h-32 wsms-bg-primary/5 wsms-rounded-full wsms--translate-y-1/2 wsms-translate-x-1/2" />
