@@ -121,6 +121,89 @@ describe('smsApi', () => {
         })
       ).rejects.toThrow('Insufficient credit')
     })
+
+    test('sends to specific users', async () => {
+      const mockResponse = {
+        message: 'Message sent',
+        data: { recipient_count: 3, credit: 97 },
+      }
+
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+        text: async () => JSON.stringify(mockResponse),
+      })
+
+      await smsApi.send({
+        message: 'Message to users',
+        recipients: {
+          groups: [],
+          roles: [],
+          users: [1, 2, 3],
+          numbers: [],
+        },
+      })
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          body: expect.stringContaining('"users":[1,2,3]'),
+        })
+      )
+    })
+
+    test('sends SMS with multiple recipient types combined', async () => {
+      const mockResponse = {
+        message: 'Message sent',
+        data: { recipient_count: 15, credit: 85 },
+      }
+
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+        text: async () => JSON.stringify(mockResponse),
+      })
+
+      await smsApi.send({
+        message: 'Message to all',
+        recipients: {
+          groups: ['1', '2'],
+          roles: ['administrator', 'editor'],
+          users: [1, 5],
+          numbers: ['+1234567890'],
+        },
+      })
+
+      const callBody = JSON.parse(global.fetch.mock.calls[0][1].body)
+      expect(callBody.recipients.groups).toEqual(['1', '2'])
+      expect(callBody.recipients.roles).toEqual(['administrator', 'editor'])
+      expect(callBody.recipients.users).toEqual([1, 5])
+      expect(callBody.recipients.numbers).toEqual(['+1234567890'])
+    })
+
+    test('sends flash SMS with MMS (combined options)', async () => {
+      const mockResponse = {
+        message: 'Message sent',
+        data: { recipient_count: 1, credit: 97 },
+      }
+
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+        text: async () => JSON.stringify(mockResponse),
+      })
+
+      await smsApi.send({
+        message: 'Flash MMS',
+        recipients: { groups: [], roles: [], numbers: ['+1234567890'] },
+        flash: true,
+        mediaUrl: 'https://example.com/image.jpg',
+      })
+
+      const callBody = JSON.parse(global.fetch.mock.calls[0][1].body)
+      expect(callBody.flash).toBe(true)
+      expect(callBody.media_url).toBe('https://example.com/image.jpg')
+    })
   })
 
   describe('getRecipientCount', () => {
@@ -171,6 +254,36 @@ describe('smsApi', () => {
       })
 
       expect(result.total).toBe(0)
+    })
+
+    test('includes users in recipient count', async () => {
+      const mockResponse = {
+        message: 'Success',
+        data: {
+          total: 8,
+          groups: 0,
+          roles: 0,
+          users: 5,
+          numbers: 3,
+        },
+      }
+
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => mockResponse,
+        text: async () => JSON.stringify(mockResponse),
+      })
+
+      const result = await smsApi.getRecipientCount({
+        groups: [],
+        roles: [],
+        users: [1, 2, 3, 4, 5],
+        numbers: ['+1', '+2', '+3'],
+      })
+
+      expect(result.total).toBe(8)
+      expect(result.users).toBe(5)
+      expect(result.numbers).toBe(3)
     })
   })
 
