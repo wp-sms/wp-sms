@@ -119,6 +119,16 @@ function BulkActionsDropdown({ actions, selectedCount, onAction }) {
 function RowActionsDropdown({ actions, row }) {
   if (!actions || actions.length === 0) return null
 
+  // Filter out hidden actions based on row data
+  const visibleActions = actions.filter((action) => {
+    if (typeof action.hidden === 'function') {
+      return !action.hidden(row)
+    }
+    return !action.hidden
+  })
+
+  if (visibleActions.length === 0) return null
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -128,7 +138,7 @@ function RowActionsDropdown({ actions, row }) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" sideOffset={5}>
-        {actions.map((action, index) => (
+        {visibleActions.map((action, index) => (
           <DropdownMenuItem
             key={index}
             onClick={() => action.onClick(row)}

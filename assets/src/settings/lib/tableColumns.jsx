@@ -1,7 +1,7 @@
 import React from 'react'
 import { Clock, Image, Eye, MessageSquare, Send, Trash2, RefreshCw, Edit, UserCheck, UserX, Pause, Play, Repeat } from 'lucide-react'
 import { StatusBadge } from '@/components/shared/StatusBadge'
-import { formatDate, __ } from '@/lib/utils'
+import { formatDate, __, cn } from '@/lib/utils'
 
 /**
  * Factory function to create a date column
@@ -151,16 +151,27 @@ export const outboxColumns = [
     id: 'recipient',
     accessorKey: 'recipient',
     header: __('Recipient'),
-    cell: ({ row }) => (
-      <div className="wsms-space-y-0.5">
-        <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
-          {row.recipient_count > 1 ? `${row.recipient_count} ${__('recipients')}` : row.recipient}
-        </span>
-        {row.sender && (
-          <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('From:')} {row.sender}</p>
-        )}
-      </div>
-    ),
+    cell: ({ row }) => {
+      // Show "-" for empty or invalid recipients
+      const hasRecipient = row.recipient && row.recipient.trim() !== ''
+      const displayRecipient = hasRecipient
+        ? (row.recipient_count > 1 ? `${row.recipient_count} ${__('recipients')}` : row.recipient)
+        : '—'
+
+      return (
+        <div className="wsms-space-y-0.5">
+          <span className={cn(
+            'wsms-text-[13px] wsms-font-medium',
+            hasRecipient ? 'wsms-text-foreground' : 'wsms-text-muted-foreground'
+          )}>
+            {displayRecipient}
+          </span>
+          {row.sender && (
+            <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('From:')} {row.sender}</p>
+          )}
+        </div>
+      )
+    },
   },
   createTextColumn({ id: 'message', accessorKey: 'message', header: __('Message') }),
   createMediaColumn(),
@@ -189,6 +200,8 @@ export function getOutboxRowActions({ onView, onQuickReply, onResend, onDelete }
       label: __('Quick Reply'),
       icon: MessageSquare,
       onClick: onQuickReply,
+      // Hide Quick Reply for failed messages or messages with no valid recipient
+      hidden: (row) => row.status === 'failed' || !row.recipient || row.recipient.trim() === '',
     },
     {
       label: __('Resend'),

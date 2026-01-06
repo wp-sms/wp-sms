@@ -37,14 +37,14 @@ import { outboxApi } from '@/api/outboxApi'
 import { smsApi } from '@/api/smsApi'
 import { cn, formatDate, __ } from '@/lib/utils'
 import { useDataTable } from '@/hooks/useDataTable'
-import { useNotificationToast } from '@/hooks/useNotificationToast'
+import { useToast } from '@/components/ui/toaster'
 import { useFilters } from '@/hooks/useFilters'
 import { outboxColumns, getOutboxRowActions, getOutboxBulkActions } from '@/lib/tableColumns'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 
 export default function Outbox() {
-  // Use custom hooks for state management
-  const notification = useNotificationToast()
+  // Use toast for notifications
+  const { toast } = useToast()
 
   const filters = useFilters(
     { search: '', status: 'all', date_from: '', date_to: '' },
@@ -92,15 +92,15 @@ export default function Outbox() {
       setActionLoading(id)
       try {
         await outboxApi.deleteMessage(id)
-        notification.showSuccess('Message deleted successfully')
+        toast({ title: __('Message deleted successfully'), variant: 'success' })
         table.refresh()
       } catch (error) {
-        notification.showFromError(error)
+        toast({ title: error.message || __('Failed to delete message'), variant: 'destructive' })
       } finally {
         setActionLoading(null)
       }
     },
-    [notification, table]
+    [toast, table]
   )
 
   const handleResend = useCallback(
@@ -108,15 +108,15 @@ export default function Outbox() {
       setActionLoading(id)
       try {
         await outboxApi.resendMessage(id)
-        notification.showSuccess('Message resent successfully')
+        toast({ title: __('Message resent successfully'), variant: 'success' })
         table.refresh()
       } catch (error) {
-        notification.showFromError(error)
+        toast({ title: error.message || __('Failed to resend message'), variant: 'destructive' })
       } finally {
         setActionLoading(null)
       }
     },
-    [notification, table]
+    [toast, table]
   )
 
   const handleBulkAction = useCallback(
@@ -125,16 +125,17 @@ export default function Outbox() {
 
       try {
         const result = await outboxApi.bulkAction(action, table.selectedIds)
-        notification.showSuccess(
-          `${result.affected} message(s) ${action === 'delete' ? 'deleted' : 'resent'} successfully`
-        )
+        toast({
+          title: __(`${result.affected} message(s) ${action === 'delete' ? 'deleted' : 'resent'} successfully`),
+          variant: 'success',
+        })
         table.clearSelection()
         table.fetch({ page: 1 })
       } catch (error) {
-        notification.showFromError(error)
+        toast({ title: error.message || __('Bulk action failed'), variant: 'destructive' })
       }
     },
-    [notification, table]
+    [toast, table]
   )
 
   const handleExport = useCallback(async () => {
@@ -146,13 +147,13 @@ export default function Outbox() {
         date_to: filters.debouncedFilters.date_to || undefined,
       })
       outboxApi.downloadCsv(result.data, result.filename)
-      notification.showSuccess(`Exported ${result.count} messages successfully`)
+      toast({ title: __(`Exported ${result.count} messages successfully`), variant: 'success' })
     } catch (error) {
-      notification.showFromError(error)
+      toast({ title: error.message || __('Export failed'), variant: 'destructive' })
     } finally {
       setIsExporting(false)
     }
-  }, [notification, filters.debouncedFilters])
+  }, [toast, filters.debouncedFilters])
 
   const handleQuickReply = useCallback(async () => {
     if (!quickReplyTo || !quickReplyMessage.trim()) return
@@ -163,16 +164,16 @@ export default function Outbox() {
         message: quickReplyMessage,
         recipients: { groups: [], roles: [], numbers: [quickReplyTo] },
       })
-      notification.showSuccess('Reply sent successfully')
+      toast({ title: __('Reply sent successfully'), variant: 'success' })
       setQuickReplyTo(null)
       setQuickReplyMessage('')
       table.refresh()
     } catch (error) {
-      notification.showFromError(error)
+      toast({ title: error.message || __('Failed to send reply'), variant: 'destructive' })
     } finally {
       setIsSendingReply(false)
     }
-  }, [quickReplyTo, quickReplyMessage, notification, table])
+  }, [quickReplyTo, quickReplyMessage, toast, table])
 
   // Memoized row and bulk actions
   const rowActions = useMemo(
@@ -268,27 +269,6 @@ export default function Outbox() {
 
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
-      {/* Notification */}
-      {notification.hasNotification && (
-        <div
-          className={cn(
-            'wsms-flex wsms-items-center wsms-gap-3 wsms-p-4 wsms-rounded-lg wsms-border',
-            'wsms-animate-in wsms-fade-in wsms-slide-in-from-top-2 wsms-duration-300',
-            notification.isSuccess
-              ? 'wsms-bg-emerald-50 wsms-border-emerald-200 wsms-text-emerald-800 dark:wsms-bg-emerald-900/30 dark:wsms-border-emerald-800 dark:wsms-text-emerald-200'
-              : 'wsms-bg-red-50 wsms-border-red-200 wsms-text-red-800 dark:wsms-bg-red-900/30 dark:wsms-border-red-800 dark:wsms-text-red-200'
-          )}
-          role="alert"
-        >
-          {notification.isSuccess ? (
-            <CheckCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" aria-hidden="true" />
-          ) : (
-            <AlertCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" aria-hidden="true" />
-          )}
-          <p className="wsms-text-[13px] wsms-font-medium">{notification.notification?.message}</p>
-        </div>
-      )}
-
       {/* Stats Header Bar */}
       <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
         <div className="wsms-flex wsms-items-center wsms-gap-8">
