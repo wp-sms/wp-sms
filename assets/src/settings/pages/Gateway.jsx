@@ -284,16 +284,16 @@ export default function Gateway() {
                         </span>
                         <span className={cn(
                           "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
-                          gatewayCapabilities.mms === true || gatewayCapabilities.mms === 'enable' ? "wsms-text-success" : "wsms-text-muted-foreground/50"
+                          gatewayCapabilities.supportMedia === true ? "wsms-text-success" : "wsms-text-muted-foreground/50"
                         )}>
-                          {gatewayCapabilities.mms === true || gatewayCapabilities.mms === 'enable' ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
+                          {gatewayCapabilities.supportMedia === true ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
                           {__('MMS')}
                         </span>
                         <span className={cn(
                           "wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-medium",
-                          gatewayCapabilities.has_key === true || gatewayCapabilities.incoming === true ? "wsms-text-success" : "wsms-text-muted-foreground/50"
+                          gatewayCapabilities.supportIncoming === true ? "wsms-text-success" : "wsms-text-muted-foreground/50"
                         )}>
-                          {gatewayCapabilities.has_key === true || gatewayCapabilities.incoming === true ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
+                          {gatewayCapabilities.supportIncoming === true ? <CheckCircle className="wsms-h-3 wsms-w-3" /> : <XCircle className="wsms-h-3 wsms-w-3" />}
                           {__('Incoming SMS')}
                         </span>
                       </div>

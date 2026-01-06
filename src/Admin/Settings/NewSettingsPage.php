@@ -650,14 +650,15 @@ class NewSettingsPage extends Singleton
 
             if (!$sms || !is_object($sms)) {
                 return [
-                    'flash'          => '',
-                    'supportMedia'   => false,
-                    'bulk_send'      => false,
-                    'validateNumber' => '',
-                    'from'           => '',
-                    'gatewayFields'  => [],
-                    'help'           => '',
-                    'documentUrl'    => '',
+                    'flash'           => '',
+                    'supportMedia'    => false,
+                    'supportIncoming' => false,
+                    'bulk_send'       => false,
+                    'validateNumber'  => '',
+                    'from'            => '',
+                    'gatewayFields'   => [],
+                    'help'            => '',
+                    'documentUrl'     => '',
                 ];
             }
 
@@ -686,26 +687,28 @@ class NewSettingsPage extends Singleton
             }
 
             return [
-                'flash'          => $sms->flash ?? '',
-                'supportMedia'   => $sms->supportMedia ?? false,
-                'bulk_send'      => $sms->bulk_send ?? false,
-                'validateNumber' => $sms->validateNumber ?? '',
-                'from'           => $sms->from ?? '',
-                'gatewayFields'  => $gatewayFields,
-                'help'           => $help,
-                'documentUrl'    => is_string($sms->documentUrl ?? '') ? ($sms->documentUrl ?? '') : '',
+                'flash'           => $sms->flash ?? '',
+                'supportMedia'    => $sms->supportMedia ?? false,
+                'supportIncoming' => $sms->supportIncoming ?? false,
+                'bulk_send'       => $sms->bulk_send ?? false,
+                'validateNumber'  => $sms->validateNumber ?? '',
+                'from'            => $sms->from ?? '',
+                'gatewayFields'   => $gatewayFields,
+                'help'            => $help,
+                'documentUrl'     => is_string($sms->documentUrl ?? '') ? ($sms->documentUrl ?? '') : '',
             ];
         } catch (\Exception $e) {
             return [
-                'flash'          => '',
-                'supportMedia'   => false,
-                'bulk_send'      => false,
-                'validateNumber' => '',
-                'from'           => '',
-                'gatewayFields'  => [],
-                'help'           => '',
-                'documentUrl'    => '',
-                'error'          => $e->getMessage(),
+                'flash'           => '',
+                'supportMedia'    => false,
+                'supportIncoming' => false,
+                'bulk_send'       => false,
+                'validateNumber'  => '',
+                'from'            => '',
+                'gatewayFields'   => [],
+                'help'            => '',
+                'documentUrl'     => '',
+                'error'           => $e->getMessage(),
             ];
         }
     }
