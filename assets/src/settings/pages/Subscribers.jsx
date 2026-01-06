@@ -106,6 +106,7 @@ export default function Subscribers() {
   const [editSubscriber, setEditSubscriber] = useState(null)
   const [showImportDialog, setShowImportDialog] = useState(false)
   const [isAddingQuick, setIsAddingQuick] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
 
   // Quick add form state
   const [quickAddName, setQuickAddName] = useState('')
@@ -230,12 +231,19 @@ export default function Subscribers() {
 
   // Handle export
   const handleExport = async () => {
-    const result = await subscribersApi.exportCsv({
-      group_id: filters.filters.group_id !== 'all' ? filters.filters.group_id : undefined,
-      status: filters.filters.status !== 'all' ? filters.filters.status : undefined,
-    })
-
-    downloadCsv(result.data, result.filename)
+    setIsExporting(true)
+    try {
+      const result = await subscribersApi.exportCsv({
+        group_id: filters.filters.group_id !== 'all' ? filters.filters.group_id : undefined,
+        status: filters.filters.status !== 'all' ? filters.filters.status : undefined,
+      })
+      downloadCsv(result.data, result.filename)
+      toast({ title: __('Exported %d subscribers successfully').replace('%d', result.count || result.data.length - 1), variant: 'success' })
+    } catch (error) {
+      toast({ title: error.message || __('Export failed'), variant: 'destructive' })
+    } finally {
+      setIsExporting(false)
+    }
   }
 
   // Handle quick reply
@@ -560,8 +568,12 @@ export default function Subscribers() {
               <Upload className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
               {__('Import')}
             </Button>
-            <Button variant="outline" onClick={handleExport}>
-              <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
+            <Button variant="outline" onClick={handleExport} disabled={isExporting}>
+              {isExporting ? (
+                <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" aria-hidden="true" />
+              ) : (
+                <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
+              )}
               {__('Export')}
             </Button>
           </div>
