@@ -15,16 +15,14 @@ import {
   UserCheck,
   UserX,
 } from 'lucide-react'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { DataTable } from '@/components/ui/data-table'
 import { StatusBadge } from '@/components/shared/StatusBadge'
-import { QuickAddForm } from '@/components/shared/QuickAddForm'
 import { ImportExportDialog } from '@/components/shared/ImportExportDialog'
 import { ExportButton } from '@/components/shared/ExportButton'
-import { Tip } from '@/components/ui/ux-helpers'
 import {
   Dialog,
   DialogContent,
@@ -37,13 +35,15 @@ import {
 import { subscribersApi } from '@/api/subscribersApi'
 import { groupsApi } from '@/api/groupsApi'
 import { smsApi } from '@/api/smsApi'
-import { cn, formatDate, getWpSettings, __, downloadCsv } from '@/lib/utils'
-import { useDataTable } from '@/hooks/useDataTable'
-import { useFilters } from '@/hooks/useFilters'
+import { formatDate, getWpSettings, __, downloadCsv } from '@/lib/utils'
+import { useListPage } from '@/hooks/useListPage'
+import { useFormDialog } from '@/hooks/useFormDialog'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 import { useToast } from '@/components/ui/toaster'
 
 export default function Subscribers() {
+  const { toast } = useToast()
+
   // Get countries from settings
   const { countries = [] } = getWpSettings()
   const showActivateCode = window.wpSmsSettings?.newsletter_form_verify || false
@@ -51,39 +51,32 @@ export default function Subscribers() {
   // Groups state (fetched separately)
   const [groups, setGroups] = useState([])
 
-  // Use filters hook for search and filters with debounce
-  const filters = useFilters(
-    { search: '', group_id: 'all', status: 'all', country_code: 'all' },
-    { debounceMs: 500 }
-  )
-
-  // Fetch function for the data table
-  const fetchSubscribers = useCallback(
-    async (params) => {
-      const result = await subscribersApi.getSubscribers({
-        ...params,
-        search: filters.debouncedFilters.search || undefined,
-        group_id: filters.debouncedFilters.group_id !== 'all' ? filters.debouncedFilters.group_id : undefined,
-        status: filters.debouncedFilters.status !== 'all' ? filters.debouncedFilters.status : undefined,
-        country_code: filters.debouncedFilters.country_code !== 'all' ? filters.debouncedFilters.country_code : undefined,
-      })
-      return result
+  // Use combined list page hook
+  const { filters, table, handleDelete, handleBulkAction } = useListPage({
+    fetchFn: subscribersApi.getSubscribers,
+    deleteFn: subscribersApi.deleteSubscriber,
+    bulkActionFn: subscribersApi.bulkAction,
+    initialFilters: { search: '', group_id: 'all', status: 'all', country_code: 'all' },
+    messages: {
+      deleteSuccess: __('Subscriber deleted successfully'),
+      bulkSuccess: __('Subscribers updated successfully'),
     },
-    [filters.debouncedFilters]
-  )
-
-  // Use data table hook
-  const table = useDataTable({
-    fetchFn: fetchSubscribers,
-    initialPerPage: 20,
   })
 
-  // Re-fetch when filters change (only after initial load)
-  useEffect(() => {
-    if (table.initialLoadDone) {
-      table.fetch({ page: 1 })
-    }
-  }, [filters.debouncedFilters]) // eslint-disable-line react-hooks/exhaustive-deps
+  // Edit dialog using useFormDialog
+  const editDialog = useFormDialog({
+    saveFn: async (id, data) => {
+      await subscribersApi.updateSubscriber(id, {
+        name: data.name,
+        mobile: data.mobile,
+        group_id: data.group_id ? parseInt(data.group_id) : null,
+        status: data.status,
+      })
+    },
+    initialData: { name: '', mobile: '', group_id: '', status: '1' },
+    onSuccess: () => table.refresh(),
+    successMessage: __('Subscriber updated successfully'),
+  })
 
   // Fetch groups
   useEffect(() => {
@@ -98,11 +91,7 @@ export default function Subscribers() {
     fetchGroups()
   }, [])
 
-  // Toast notification
-  const { toast } = useToast()
-
   // UI state
-  const [editSubscriber, setEditSubscriber] = useState(null)
   const [showImportDialog, setShowImportDialog] = useState(false)
   const [isImporting, setIsImporting] = useState(false)
   const [isAddingQuick, setIsAddingQuick] = useState(false)
@@ -110,10 +99,6 @@ export default function Subscribers() {
   // Quick add form state
   const [quickAddName, setQuickAddName] = useState('')
   const [quickAddPhone, setQuickAddPhone] = useState('')
-
-  // Form state for edit dialog
-  const [formData, setFormData] = useState({ name: '', mobile: '', group_id: '', status: '1' })
-  const [isSaving, setIsSaving] = useState(false)
 
   // Quick reply state
   const [quickReplyTo, setQuickReplyTo] = useState(null)
@@ -126,11 +111,6 @@ export default function Subscribers() {
 
   // Aliases for easier access
   const stats = table.stats || { total: 0, active: 0, inactive: 0 }
-
-  // Handle page change
-  const handlePageChange = (page) => {
-    table.fetch({ page })
-  }
 
   // Handle quick add
   const handleQuickAdd = async (name, mobile) => {
@@ -154,66 +134,16 @@ export default function Subscribers() {
     }
   }
 
-  // Handle edit
-  const handleEdit = (subscriber) => {
-    setFormData({
+  // Handle edit - opens dialog with subscriber data
+  const handleEdit = useCallback((subscriber) => {
+    editDialog.open({
+      id: subscriber.id,
       name: subscriber.name || '',
       mobile: subscriber.mobile || '',
       group_id: subscriber.group_id?.toString() || '',
       status: subscriber.status || '1',
     })
-    setEditSubscriber(subscriber)
-  }
-
-  // Handle save
-  const handleSave = async () => {
-    setIsSaving(true)
-    try {
-      if (editSubscriber) {
-        await subscribersApi.updateSubscriber(editSubscriber.id, {
-          name: formData.name,
-          mobile: formData.mobile,
-          group_id: formData.group_id ? parseInt(formData.group_id) : null,
-          status: formData.status,
-        })
-        toast({ title: __('Subscriber updated successfully'), variant: 'success' })
-      }
-      setEditSubscriber(null)
-      table.refresh()
-    } catch (error) {
-      toast({ title: error.message, variant: 'destructive' })
-    } finally {
-      setIsSaving(false)
-    }
-  }
-
-  // Handle delete
-  const handleDelete = async (id) => {
-    try {
-      await subscribersApi.deleteSubscriber(id)
-      toast({ title: __('Subscriber deleted successfully'), variant: 'success' })
-      table.refresh()
-    } catch (error) {
-      toast({ title: error.message, variant: 'destructive' })
-    }
-  }
-
-  // Handle bulk actions
-  const handleBulkAction = async (action, params = {}) => {
-    if (table.selectedIds.length === 0) return
-
-    try {
-      const result = await subscribersApi.bulkAction(action, table.selectedIds, params)
-      toast({
-        title: __('%d subscriber(s) updated successfully').replace('%d', result.affected),
-        variant: 'success',
-      })
-      table.clearSelection()
-      table.fetch({ page: 1 })
-    } catch (error) {
-      toast({ title: error.message, variant: 'destructive' })
-    }
-  }
+  }, [editDialog])
 
   // Handle import
   const handleImport = async (file) => {
@@ -234,7 +164,7 @@ export default function Subscribers() {
         title: error.message || __('Import failed'),
         variant: 'destructive',
       })
-      throw error // Re-throw to let dialog show error state
+      throw error
     } finally {
       setIsImporting(false)
     }
@@ -436,7 +366,7 @@ export default function Subscribers() {
     },
   ]
 
-  // Show skeleton during initial load to prevent flash
+  // Show skeleton during initial load
   if (!table.initialLoadDone) {
     return <PageLoadingSkeleton />
   }
@@ -451,26 +381,6 @@ export default function Subscribers() {
   if (hasNoSubscribers) {
     return (
       <div className="wsms-space-y-6 wsms-stagger-children">
-        {/* Notification */}
-        {notification && (
-          <div
-            className={cn(
-              'wsms-flex wsms-items-center wsms-gap-3 wsms-p-4 wsms-rounded-lg wsms-border',
-              'wsms-animate-in wsms-fade-in wsms-slide-in-from-top-2 wsms-duration-300',
-              notification.type === 'success'
-                ? 'wsms-bg-emerald-50 wsms-border-emerald-200 wsms-text-emerald-800 dark:wsms-bg-emerald-900/30 dark:wsms-border-emerald-800 dark:wsms-text-emerald-200'
-                : 'wsms-bg-red-50 wsms-border-red-200 wsms-text-red-800 dark:wsms-bg-red-900/30 dark:wsms-border-red-800 dark:wsms-text-red-200'
-            )}
-          >
-            {notification.type === 'success' ? (
-              <CheckCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
-            ) : (
-              <AlertCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
-            )}
-            <p className="wsms-text-[13px] wsms-font-medium">{notification.message}</p>
-          </div>
-        )}
-
         <Card className="wsms-border-dashed">
           <CardContent className="wsms-py-16">
             <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center wsms-max-w-md wsms-mx-auto">
@@ -486,12 +396,30 @@ export default function Subscribers() {
 
               {/* Quick Add */}
               <div className="wsms-w-full wsms-max-w-sm wsms-mb-6">
-                <QuickAddForm
-                  placeholder={__('Enter phone number...')}
-                  buttonLabel={__('Add Subscriber')}
-                  onSubmit={(phone) => handleQuickAdd('', phone)}
-                  isLoading={isAddingQuick}
-                />
+                <div className="wsms-flex wsms-gap-2">
+                  <Input
+                    type="tel"
+                    value={quickAddPhone}
+                    onChange={(e) => setQuickAddPhone(e.target.value)}
+                    placeholder={__('Phone number')}
+                    className="wsms-flex-1"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && quickAddPhone.trim()) {
+                        handleQuickAdd('', quickAddPhone)
+                      }
+                    }}
+                  />
+                  <Button
+                    onClick={() => handleQuickAdd('', quickAddPhone)}
+                    disabled={isAddingQuick || !quickAddPhone.trim()}
+                  >
+                    {isAddingQuick ? (
+                      <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
+                    ) : (
+                      __('Add')
+                    )}
+                  </Button>
+                </div>
               </div>
 
               {/* Import option */}
@@ -526,7 +454,6 @@ export default function Subscribers() {
     <div className="wsms-space-y-6 wsms-stagger-children">
       {/* Stats & Actions Header */}
       <div className="wsms-px-4 lg:wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
-        {/* Mobile/Tablet: Grid layout, Desktop: Flex layout */}
         <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4 lg:wsms-flex lg:wsms-items-center lg:wsms-justify-between lg:wsms-gap-4">
           <div className="wsms-contents lg:wsms-flex lg:wsms-items-center lg:wsms-gap-8">
             {/* Total */}
@@ -710,7 +637,7 @@ export default function Subscribers() {
               totalPages: table.pagination.total_pages,
               page: table.pagination.current_page,
               perPage: table.pagination.per_page,
-              onPageChange: handlePageChange,
+              onPageChange: table.handlePageChange,
             }}
             selection={{
               selected: table.selectedIds,
@@ -726,7 +653,7 @@ export default function Subscribers() {
       </Card>
 
       {/* Edit Dialog */}
-      <Dialog open={!!editSubscriber} onOpenChange={() => setEditSubscriber(null)}>
+      <Dialog open={editDialog.isOpen} onOpenChange={(open) => !open && editDialog.close()}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
@@ -740,16 +667,16 @@ export default function Subscribers() {
               <div className="wsms-space-y-2">
                 <label className="wsms-text-[12px] wsms-font-medium">Name</label>
                 <Input
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  value={editDialog.formData.name}
+                  onChange={(e) => editDialog.updateField('name', e.target.value)}
                   placeholder="Subscriber name"
                 />
               </div>
               <div className="wsms-space-y-2">
                 <label className="wsms-text-[12px] wsms-font-medium">Mobile Number</label>
                 <Input
-                  value={formData.mobile}
-                  onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                  value={editDialog.formData.mobile}
+                  onChange={(e) => editDialog.updateField('mobile', e.target.value)}
                   placeholder="+1234567890"
                   className="wsms-font-mono"
                 />
@@ -758,8 +685,8 @@ export default function Subscribers() {
                 <div className="wsms-space-y-2">
                   <label className="wsms-text-[12px] wsms-font-medium">Group</label>
                   <Select
-                    value={formData.group_id || 'none'}
-                    onValueChange={(v) => setFormData({ ...formData, group_id: v === 'none' ? '' : v })}
+                    value={editDialog.formData.group_id || 'none'}
+                    onValueChange={(v) => editDialog.updateField('group_id', v === 'none' ? '' : v)}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select group" />
@@ -777,8 +704,8 @@ export default function Subscribers() {
                 <div className="wsms-space-y-2">
                   <label className="wsms-text-[12px] wsms-font-medium">Status</label>
                   <Select
-                    value={formData.status}
-                    onValueChange={(v) => setFormData({ ...formData, status: v })}
+                    value={editDialog.formData.status}
+                    onValueChange={(v) => editDialog.updateField('status', v)}
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -793,11 +720,11 @@ export default function Subscribers() {
             </div>
           </DialogBody>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditSubscriber(null)}>
+            <Button variant="outline" onClick={editDialog.close}>
               Cancel
             </Button>
-            <Button onClick={handleSave} disabled={isSaving}>
-              {isSaving ? (
+            <Button onClick={editDialog.save} disabled={editDialog.isSaving}>
+              {editDialog.isSaving ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
                   Saving...
