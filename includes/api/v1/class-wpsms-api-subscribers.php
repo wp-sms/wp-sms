@@ -150,6 +150,10 @@ class SubscribersApi extends RestApi
                 'type' => 'string',
                 'enum' => ['active', 'inactive', 'all'],
             ],
+            'country_code' => [
+                'type'              => 'string',
+                'sanitize_callback' => 'sanitize_text_field',
+            ],
             'orderby' => [
                 'default' => 'date',
                 'type'    => 'string',
@@ -228,13 +232,14 @@ class SubscribersApi extends RestApi
      */
     public function getItems(WP_REST_Request $request)
     {
-        $page     = $request->get_param('page');
-        $per_page = min($request->get_param('per_page'), 100);
-        $search   = $request->get_param('search');
-        $group_id = $request->get_param('group_id');
-        $status   = $request->get_param('status');
-        $orderby  = $request->get_param('orderby') ?: 'date';
-        $order    = strtoupper($request->get_param('order') ?: 'DESC');
+        $page         = $request->get_param('page');
+        $per_page     = min($request->get_param('per_page'), 100);
+        $search       = $request->get_param('search');
+        $group_id     = $request->get_param('group_id');
+        $status       = $request->get_param('status');
+        $country_code = $request->get_param('country_code');
+        $orderby      = $request->get_param('orderby') ?: 'date';
+        $order        = strtoupper($request->get_param('order') ?: 'DESC');
 
         $offset = ($page - 1) * $per_page;
 
@@ -258,6 +263,21 @@ class SubscribersApi extends RestApi
             $status_value = $status === 'active' ? '1' : '0';
             $where[] = "status = %s";
             $params[] = $status_value;
+        }
+
+        // Filter by country code (match dial code prefix in mobile number)
+        if ($country_code && $country_code !== 'all') {
+            $dialCodes = wp_sms_countries()->getAllDialCodesByCode();
+            if (isset($dialCodes[$country_code]) && is_array($dialCodes[$country_code])) {
+                $dialCodeConditions = [];
+                foreach ($dialCodes[$country_code] as $dialCode) {
+                    $dialCodeConditions[] = "s.mobile LIKE %s";
+                    $params[] = $this->db->esc_like($dialCode) . '%';
+                }
+                if (!empty($dialCodeConditions)) {
+                    $where[] = '(' . implode(' OR ', $dialCodeConditions) . ')';
+                }
+            }
         }
 
         $where_sql = implode(' AND ', $where);
