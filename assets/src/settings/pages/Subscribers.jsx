@@ -11,7 +11,6 @@ import {
   Loader2,
   MessageSquare,
   FolderOpen,
-  Globe,
   Send,
   UserCheck,
   UserX,
@@ -544,8 +543,8 @@ export default function Subscribers() {
 
             {/* Inactive */}
             <div className="wsms-flex wsms-items-center wsms-gap-3">
-              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-muted">
-                <UserX className="wsms-h-5 wsms-w-5 wsms-text-muted-foreground" aria-hidden="true" />
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-slate-200 dark:wsms-bg-slate-700">
+                <UserX className="wsms-h-5 wsms-w-5 wsms-text-slate-500 dark:wsms-text-slate-400" aria-hidden="true" />
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-muted-foreground">{stats.inactive}</p>
@@ -614,9 +613,8 @@ export default function Subscribers() {
 
               {countries.length > 0 && (
                 <Select value={filters.filters.country_code} onValueChange={(v) => filters.setFilter('country_code', v)}>
-                  <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-text-[12px]" aria-label="Filter by country">
-                    <Globe className="wsms-h-3.5 wsms-w-3.5 wsms-mr-1 wsms-text-muted-foreground wsms-shrink-0" aria-hidden="true" />
-                    <SelectValue placeholder="Country" />
+                  <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[150px] wsms-text-[12px]" aria-label="Filter by country">
+                    <SelectValue placeholder="All Countries" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Countries</SelectItem>
