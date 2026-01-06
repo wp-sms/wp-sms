@@ -15,6 +15,7 @@ const statusBadgeVariants = cva(
         inactive: 'wsms-bg-gray-500/10 wsms-text-gray-700 dark:wsms-text-gray-400',
         active: 'wsms-bg-emerald-500/10 wsms-text-emerald-700 dark:wsms-text-emerald-400',
         warning: 'wsms-bg-orange-500/10 wsms-text-orange-700 dark:wsms-text-orange-400',
+        default: 'wsms-bg-gray-500/10 wsms-text-gray-700 dark:wsms-text-gray-400',
       },
       size: {
         sm: 'wsms-text-[10px] wsms-px-2 wsms-py-0.5',
@@ -37,6 +38,7 @@ const statusIcons = {
   inactive: Ban,
   active: CheckCircle,
   warning: AlertCircle,
+  default: AlertCircle,
 }
 
 const StatusBadge = React.forwardRef(

@@ -168,6 +168,7 @@ export const outboxColumns = [
     statusMap: {
       success: { variant: 'success', label: __('Sent') },
       failed: { variant: 'failed', label: __('Failed') },
+      error: { variant: 'failed', label: __('Failed') },
     },
   }),
 ]
