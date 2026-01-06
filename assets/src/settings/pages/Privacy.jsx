@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import {
   Shield,
   Search,
-  Download,
   Trash2,
   User,
   Phone,
@@ -19,6 +18,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { StatusBadge } from '@/components/shared/StatusBadge'
+import { ExportButton } from '@/components/shared/ExportButton'
 import { Tip } from '@/components/ui/ux-helpers'
 import {
   Dialog,
@@ -42,7 +42,6 @@ export default function Privacy() {
   const [isSearching, setIsSearching] = useState(false)
 
   // Action state
-  const [isExporting, setIsExporting] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
 
@@ -74,20 +73,9 @@ export default function Privacy() {
   // Handle export
   const handleExport = async () => {
     if (!phoneNumber.trim()) return
-
-    setIsExporting(true)
-    try {
-      const result = await privacyApi.exportData(phoneNumber.trim())
-      downloadCsv(result.csvData, result.filename)
-      toast({
-        title: __(`Exported ${result.count} records successfully`),
-        variant: 'success',
-      })
-    } catch (error) {
-      toast({ title: error.message, variant: 'destructive' })
-    } finally {
-      setIsExporting(false)
-    }
+    const result = await privacyApi.exportData(phoneNumber.trim())
+    downloadCsv(result.csvData, result.filename)
+    return { count: result.count }
   }
 
   // Handle delete
@@ -246,16 +234,11 @@ export default function Privacy() {
                 </div>
                 {/* Action Buttons */}
                 <div className="wsms-flex wsms-items-center wsms-gap-2">
-                  <Button variant="outline" onClick={handleExport} disabled={isExporting}>
-                    {isExporting ? (
-                      <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
-                    ) : (
-                      <>
-                        <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-                        Export CSV
-                      </>
-                    )}
-                  </Button>
+                  <ExportButton
+                    onExport={handleExport}
+                    label={__('Export CSV')}
+                    successMessage={__('Exported %d records successfully')}
+                  />
                   <Button variant="destructive" onClick={() => setShowDeleteConfirm(true)}>
                     <Trash2 className="wsms-h-4 wsms-w-4 wsms-mr-2" />
                     Delete All

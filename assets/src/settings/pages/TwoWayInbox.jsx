@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { Inbox, AlertCircle, ExternalLink, Search, Trash2, Eye, MessageSquare, RefreshCw, CheckCircle, Clock, MailOpen, Filter, Download, XCircle, MinusCircle } from 'lucide-react'
+import { Inbox, AlertCircle, ExternalLink, Search, Trash2, Eye, MessageSquare, RefreshCw, CheckCircle, Clock, MailOpen, Filter, XCircle, MinusCircle } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { useSettings } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
+import { __ } from '@/lib/utils'
 import { inboxApi } from '@/api/twoWayApi'
 import {
   Dialog,
@@ -34,6 +35,7 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
+import { ExportButton } from '@/components/shared/ExportButton'
 
 export default function TwoWayInbox() {
   const { isAddonActive } = useSettings()
@@ -60,7 +62,6 @@ export default function TwoWayInbox() {
   const [isReplying, setIsReplying] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState(null)
   const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false)
-  const [isExporting, setIsExporting] = useState(false)
 
   // Fetch commands for filter
   const fetchCommands = useCallback(async () => {
@@ -214,43 +215,29 @@ export default function TwoWayInbox() {
 
   // Handle export
   const handleExport = async () => {
-    try {
-      setIsExporting(true)
-      const params = {}
+    const params = {}
+    if (search) params.search = search
+    if (statusFilter && statusFilter !== 'all') params.status = statusFilter
+    if (actionStatusFilter && actionStatusFilter !== 'all') params.action_status = actionStatusFilter
+    if (commandFilter && commandFilter !== 'all') params.command_id = commandFilter
 
-      if (search) params.search = search
-      if (statusFilter && statusFilter !== 'all') params.status = statusFilter
-      if (actionStatusFilter && actionStatusFilter !== 'all') params.action_status = actionStatusFilter
-      if (commandFilter && commandFilter !== 'all') params.command_id = commandFilter
+    const response = await inboxApi.exportMessages(params)
 
-      const response = await inboxApi.exportMessages(params)
-
-      if (response.success && response.data?.csv) {
-        // Create a Blob and download
-        const blob = new Blob([response.data.csv], { type: 'text/csv;charset=utf-8;' })
-        const link = document.createElement('a')
-        const url = URL.createObjectURL(blob)
-        link.setAttribute('href', url)
-        link.setAttribute('download', response.data.filename || 'inbox-export.csv')
-        link.style.visibility = 'hidden'
-        document.body.appendChild(link)
-        link.click()
-        document.body.removeChild(link)
-
-        toast({
-          title: 'Success',
-          description: `Exported ${response.data.total} messages`,
-        })
-      }
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to export messages',
-        variant: 'destructive',
-      })
-    } finally {
-      setIsExporting(false)
+    if (response.success && response.data?.csv) {
+      // Create a Blob and download
+      const blob = new Blob(['\ufeff' + response.data.csv], { type: 'text/csv;charset=utf-8;' })
+      const link = document.createElement('a')
+      const url = URL.createObjectURL(blob)
+      link.setAttribute('href', url)
+      link.setAttribute('download', response.data.filename || 'inbox-export.csv')
+      link.style.visibility = 'hidden'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+      return { count: response.data.total }
     }
+    throw new Error('Failed to export messages')
   }
 
   // Handle mark as read
@@ -399,14 +386,10 @@ export default function TwoWayInbox() {
                 >
                   <RefreshCw className="wsms-h-4 wsms-w-4" />
                 </Button>
-                <Button
-                  variant="outline"
-                  onClick={handleExport}
-                  disabled={isExporting}
-                >
-                  <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-                  {isExporting ? 'Exporting...' : 'Export'}
-                </Button>
+                <ExportButton
+                  onExport={handleExport}
+                  successMessage={__('Exported %d messages successfully')}
+                />
               </div>
             </div>
 
