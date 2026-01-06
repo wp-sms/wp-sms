@@ -1,4 +1,4 @@
-import React, { useState, lazy, Suspense, memo, useEffect } from 'react'
+import React, { useState, Suspense, memo, useEffect } from 'react'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import FloatingSaveBar from './FloatingSaveBar'
@@ -10,63 +10,10 @@ import { Button } from '@/components/ui/button'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 import { Menu, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { getPageComponents } from '@/lib/pageRegistry'
 
-// Import commonly used pages directly to avoid lazy loading context issues
-import SendSms from '@/pages/SendSms'
-import Overview from '@/pages/Overview'
-
-// Lazy load other page components for code splitting
-// Messaging pages
-const Outbox = lazy(() => import('@/pages/Outbox'))
-// Subscriber pages
-const Subscribers = lazy(() => import('@/pages/Subscribers'))
-const Groups = lazy(() => import('@/pages/Groups'))
-// Settings pages
-const Gateway = lazy(() => import('@/pages/Gateway'))
-const PhoneConfig = lazy(() => import('@/pages/PhoneConfig'))
-const MessageButton = lazy(() => import('@/pages/MessageButton'))
-const Notifications = lazy(() => import('@/pages/Notifications'))
-const Newsletter = lazy(() => import('@/pages/Newsletter'))
-const Integrations = lazy(() => import('@/pages/Integrations'))
-const Advanced = lazy(() => import('@/pages/Advanced'))
-// Privacy page
-const Privacy = lazy(() => import('@/pages/Privacy'))
-// Add-on pages - WooCommerce Pro
-const WooCommercePro = lazy(() => import('@/pages/WooCommercePro'))
-const CartAbandonment = lazy(() => import('@/pages/CartAbandonment'))
-const SmsCampaigns = lazy(() => import('@/pages/SmsCampaigns'))
-// Add-on pages - Two-Way SMS
-const TwoWayInbox = lazy(() => import('@/pages/TwoWayInbox'))
-const TwoWayCommands = lazy(() => import('@/pages/TwoWayCommands'))
-const TwoWaySettings = lazy(() => import('@/pages/TwoWaySettings'))
-
-const pages = {
-  // Messaging
-  'send-sms': SendSms,
-  outbox: Outbox,
-  // Subscribers
-  subscribers: Subscribers,
-  groups: Groups,
-  // Settings
-  overview: Overview,
-  gateway: Gateway,
-  phone: PhoneConfig,
-  'message-button': MessageButton,
-  notifications: Notifications,
-  newsletter: Newsletter,
-  integrations: Integrations,
-  advanced: Advanced,
-  // Privacy
-  privacy: Privacy,
-  // Add-ons - WooCommerce Pro
-  'woocommerce-pro': WooCommercePro,
-  'cart-abandonment': CartAbandonment,
-  'sms-campaigns': SmsCampaigns,
-  // Add-ons - Two-Way SMS
-  'two-way-inbox': TwoWayInbox,
-  'two-way-commands': TwoWayCommands,
-  'two-way-settings': TwoWaySettings,
-}
+// Get page components from centralized registry
+const pages = getPageComponents()
 
 // Memoized loading skeleton - uses PageLoadingSkeleton for consistent data table loading
 const LoadingSkeleton = memo(function LoadingSkeleton() {

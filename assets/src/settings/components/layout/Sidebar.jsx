@@ -1,98 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import {
-  LayoutDashboard,
-  Radio,
-  Phone,
-  MessageSquare,
-  Bell,
-  Users,
-  Puzzle,
-  Settings,
   ExternalLink,
-  X,
-  Send,
-  Inbox,
-  FolderOpen,
-  Shield,
   ChevronRight,
-  Cog,
-  Mail,
   Star,
   Sparkles,
-  ShoppingCart,
-  Megaphone,
-  RotateCcw,
-  ArrowLeftRight,
-  Terminal,
+  X,
 } from 'lucide-react'
 import { cn, __, getWpSettings } from '@/lib/utils'
 import { useSettings, useSetting } from '@/context/SettingsContext'
-
-// Navigation structure - using function to ensure translations are applied at runtime
-function getNavigation() {
-  return [
-    // Direct items
-    { type: 'item', id: 'send-sms', label: __('Send SMS'), icon: Send },
-    { type: 'item', id: 'outbox', label: __('Outbox'), icon: Inbox },
-    { type: 'item', id: 'subscribers', label: __('Subscribers'), icon: Users },
-    { type: 'item', id: 'groups', label: __('Groups'), icon: FolderOpen },
-
-    // Privacy (conditional) - direct item, above Settings
-    { type: 'item', id: 'privacy', label: __('Privacy'), icon: Shield, condition: 'gdprEnabled' },
-
-    // Settings Section - collapsible with sub-items
-    {
-      type: 'group',
-      id: 'settings',
-      label: __('Settings'),
-      icon: Cog,
-      defaultExpanded: false,
-      items: [
-        { id: 'overview', label: __('Overview'), icon: LayoutDashboard },
-        { id: 'gateway', label: __('Gateway'), icon: Radio },
-        { id: 'phone', label: __('Phone'), icon: Phone },
-        { id: 'message-button', label: __('Message Button'), icon: MessageSquare },
-        { id: 'notifications', label: __('Notifications'), icon: Bell },
-        { id: 'newsletter', label: __('Newsletter'), icon: Mail },
-        { id: 'integrations', label: __('Integrations'), icon: Puzzle },
-        { id: 'advanced', label: __('Advanced'), icon: Settings },
-      ],
-    },
-
-    // Add-ons separator
-    { type: 'separator', label: __('ADD-ONS'), condition: 'hasAnyAddon' },
-
-    // WooCommerce Pro - top-level collapsible group
-    {
-      type: 'group',
-      id: 'woocommerce-pro-group',
-      label: __('WooCommerce Pro'),
-      icon: ShoppingCart,
-      defaultExpanded: false,
-      condition: 'hasWooCommercePro',
-      items: [
-        { id: 'sms-campaigns', label: __('SMS Campaigns'), icon: Megaphone },
-        { id: 'cart-abandonment', label: __('Cart Abandonment'), icon: RotateCcw },
-        { id: 'woocommerce-pro', label: __('Settings'), icon: Settings },
-      ],
-    },
-
-    // Two-Way SMS - top-level collapsible group
-    {
-      type: 'group',
-      id: 'two-way-group',
-      label: __('Two-Way SMS'),
-      icon: ArrowLeftRight,
-      defaultExpanded: false,
-      condition: 'hasTwoWay',
-      items: [
-        { id: 'two-way-inbox', label: __('Inbox'), icon: Inbox },
-        { id: 'two-way-commands', label: __('Commands'), icon: Terminal },
-        { id: 'two-way-settings', label: __('Settings'), icon: Settings },
-      ],
-    },
-  ]
-}
+import { getNavigation } from '@/lib/pageRegistry'
 
 function getLinks() {
   return [

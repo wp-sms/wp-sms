@@ -2,35 +2,7 @@ import React, { createContext, useContext, useReducer, useCallback, useEffect, u
 import isEqual from 'fast-deep-equal'
 import { getWpSettings, deepMerge } from '../lib/utils'
 import { settingsApi } from '../api/settingsApi'
-
-// Valid page IDs for URL validation
-const VALID_PAGES = [
-  // Messaging
-  'send-sms',
-  'outbox',
-  // Subscribers
-  'subscribers',
-  'groups',
-  // Settings
-  'overview',
-  'gateway',
-  'phone',
-  'message-button',
-  'notifications',
-  'newsletter',
-  'integrations',
-  'advanced',
-  // Privacy
-  'privacy',
-  // Add-ons - WooCommerce Pro
-  'woocommerce-pro',
-  'cart-abandonment',
-  'sms-campaigns',
-  // Add-ons - Two-Way SMS
-  'two-way-inbox',
-  'two-way-commands',
-  'two-way-settings',
-]
+import { VALID_PAGES } from '../lib/pageRegistry'
 
 // Get initial page from URL query params
 function getInitialPageFromUrl() {
