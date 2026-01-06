@@ -570,8 +570,8 @@ export default function Subscribers() {
       {/* Toolbar */}
       <Card>
         <CardContent className="wsms-p-0">
-          {/* Row 1: Search + Filters - stacked on mobile/tablet, inline on desktop */}
-          <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-2 wsms-p-3 wsms-pb-2.5">
+          {/* Row 1: Search + Filters */}
+          <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-2 wsms-p-3">
             {/* Search */}
             <div className="wsms-relative wsms-w-full xl:wsms-w-[220px] xl:wsms-shrink-0">
               <Search className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
@@ -579,19 +579,19 @@ export default function Subscribers() {
                 type="text"
                 value={filters.filters.search}
                 onChange={(e) => filters.setFilter('search', e.target.value)}
-                placeholder="Search..."
+                placeholder={__('Search...')}
                 className="wsms-pl-8 wsms-h-9"
               />
             </div>
 
-            {/* Filters - grid on mobile/tablet, inline on desktop */}
+            {/* Filters */}
             <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-2">
               <Select value={filters.filters.group_id} onValueChange={(v) => filters.setFilter('group_id', v)}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label="Filter by group">
-                  <SelectValue placeholder="All Groups" />
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by group')}>
+                  <SelectValue placeholder={__('All Groups')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Groups</SelectItem>
+                  <SelectItem value="all">{__('All Groups')}</SelectItem>
                   {groups.map((group) => (
                     <SelectItem key={group.id} value={group.id.toString()}>
                       {group.name}
@@ -601,23 +601,23 @@ export default function Subscribers() {
               </Select>
 
               <Select value={filters.filters.status} onValueChange={(v) => filters.setFilter('status', v)}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[100px] wsms-text-[12px]" aria-label="Filter by status">
-                  <SelectValue placeholder="Status" />
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[100px] wsms-text-[12px]" aria-label={__('Filter by status')}>
+                  <SelectValue placeholder={__('Status')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="inactive">Inactive</SelectItem>
+                  <SelectItem value="all">{__('All Status')}</SelectItem>
+                  <SelectItem value="active">{__('Active')}</SelectItem>
+                  <SelectItem value="inactive">{__('Inactive')}</SelectItem>
                 </SelectContent>
               </Select>
 
               {countries.length > 0 && (
                 <Select value={filters.filters.country_code} onValueChange={(v) => filters.setFilter('country_code', v)}>
-                  <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[150px] wsms-text-[12px]" aria-label="Filter by country">
-                    <SelectValue placeholder="All Countries" />
+                  <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[150px] wsms-text-[12px]" aria-label={__('Filter by country')}>
+                    <SelectValue placeholder={__('All Countries')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Countries</SelectItem>
+                    <SelectItem value="all">{__('All Countries')}</SelectItem>
                     {countries
                       .filter((country, index, self) =>
                         index === self.findIndex((c) => c.code === country.code)
@@ -633,62 +633,55 @@ export default function Subscribers() {
             </div>
           </div>
 
-          {/* Divider */}
-          <div className="wsms-border-t wsms-border-border" />
+          {/* Separator */}
+          <div className="wsms-border-t wsms-border-dashed wsms-border-border" />
 
-          {/* Row 2: Quick Add - stacked on mobile/tablet, inline on desktop */}
-          <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-3 wsms-p-3 wsms-pt-2.5 wsms-bg-muted/30">
-            <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide wsms-shrink-0">
-              <UserPlus className="wsms-h-3.5 wsms-w-3.5" aria-hidden="true" />
-              <span>Quick Add</span>
-            </div>
+          {/* Row 2: Quick Add */}
+          <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-3 wsms-p-3">
+            <span className="wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide wsms-shrink-0">
+              {__('Quick Add')}
+            </span>
 
-            {/* Input fields - grid on mobile/tablet, inline on desktop */}
-            <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-3 wsms-flex-1">
-              {/* Name field (optional) */}
+            <div className="wsms-flex wsms-flex-1 wsms-items-center wsms-gap-2">
               <Input
                 type="text"
                 value={quickAddName}
                 onChange={(e) => setQuickAddName(e.target.value)}
-                placeholder="Name (optional)"
-                className="wsms-h-9 wsms-w-full xl:wsms-w-[160px] wsms-text-[13px]"
+                placeholder={__('Name (optional)')}
+                className="wsms-h-9 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[160px] wsms-text-[13px]"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && quickAddPhone.trim()) {
                     handleQuickAdd(quickAddName, quickAddPhone)
                   }
                 }}
               />
-
-              {/* Phone field (required) */}
               <Input
                 type="tel"
                 value={quickAddPhone}
                 onChange={(e) => setQuickAddPhone(e.target.value)}
-                placeholder="+1234567890"
-                className="wsms-h-9 wsms-w-full xl:wsms-w-[160px] wsms-font-mono wsms-text-[13px]"
+                placeholder={__('Phone number')}
+                className="wsms-h-9 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[160px] wsms-font-mono wsms-text-[13px]"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && quickAddPhone.trim()) {
                     handleQuickAdd(quickAddName, quickAddPhone)
                   }
                 }}
               />
+              <Button
+                disabled={isAddingQuick || !quickAddPhone.trim()}
+                onClick={() => handleQuickAdd(quickAddName, quickAddPhone)}
+                className="wsms-h-9 wsms-px-4 wsms-shrink-0"
+              >
+                {isAddingQuick ? (
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" aria-hidden="true" />
+                ) : (
+                  <>
+                    <UserPlus className="wsms-h-4 wsms-w-4 wsms-mr-1.5" aria-hidden="true" />
+                    {__('Add')}
+                  </>
+                )}
+              </Button>
             </div>
-
-            {/* Add button */}
-            <Button
-              disabled={isAddingQuick || !quickAddPhone.trim()}
-              onClick={() => handleQuickAdd(quickAddName, quickAddPhone)}
-              className="wsms-h-9 wsms-w-full xl:wsms-w-auto wsms-px-4 wsms-shrink-0"
-            >
-              {isAddingQuick ? (
-                <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" aria-hidden="true" />
-              ) : (
-                <>
-                  <UserPlus className="wsms-h-4 wsms-w-4 wsms-mr-1.5" aria-hidden="true" />
-                  Add
-                </>
-              )}
-            </Button>
           </div>
         </CardContent>
       </Card>
