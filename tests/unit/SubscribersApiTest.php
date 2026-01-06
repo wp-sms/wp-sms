@@ -4,24 +4,19 @@ namespace unit;
 
 use WP_SMS\Api\V1\SubscribersApi;
 use WP_SMS\Newsletter;
-use WP_UnitTestCase;
 use WP_REST_Request;
-use WP_REST_Server;
+
+require_once __DIR__ . '/WPSMSTestCase.php';
 
 /**
  * Tests for Subscribers REST API
  */
-class SubscribersApiTest extends WP_UnitTestCase
+class SubscribersApiTest extends WPSMSTestCase
 {
     /**
      * @var SubscribersApi
      */
     private $subscribersApi;
-
-    /**
-     * @var int
-     */
-    private $adminUserId;
 
     /**
      * @var Newsletter
@@ -35,28 +30,8 @@ class SubscribersApiTest extends WP_UnitTestCase
     {
         parent::setUp();
 
-        // Create admin user
-        $this->adminUserId = self::factory()->user->create([
-            'role' => 'administrator'
-        ]);
-        wp_set_current_user($this->adminUserId);
-
-        // Initialize REST server
-        global $wp_rest_server;
-        $wp_rest_server = new WP_REST_Server();
-        do_action('rest_api_init');
-
         $this->subscribersApi = new SubscribersApi();
         $this->newsletter = new Newsletter();
-    }
-
-    /**
-     * Tear down test environment
-     */
-    public function tearDown(): void
-    {
-        parent::tearDown();
-        wp_set_current_user(0);
     }
 
     /**

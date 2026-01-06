@@ -2,9 +2,10 @@
 
 namespace unit\BackwardCompatibility;
 
-use WP_UnitTestCase;
+use unit\WPSMSTestCase;
 use WP_REST_Request;
-use WP_REST_Server;
+
+require_once dirname(__DIR__) . '/WPSMSTestCase.php';
 
 /**
  * Backward Compatibility Tests for Outbox (Sent Messages)
@@ -12,13 +13,8 @@ use WP_REST_Server;
  * Ensures that sent messages stored via legacy methods work correctly
  * with the new React dashboard, and vice versa.
  */
-class OutboxBackwardCompatibilityTest extends WP_UnitTestCase
+class OutboxBackwardCompatibilityTest extends WPSMSTestCase
 {
-    /**
-     * @var int
-     */
-    private $adminUserId;
-
     /**
      * @var \wpdb
      */
@@ -39,15 +35,6 @@ class OutboxBackwardCompatibilityTest extends WP_UnitTestCase
         global $wpdb;
         $this->wpdb = $wpdb;
         $this->outboxTable = $wpdb->prefix . 'sms_send';
-
-        $this->adminUserId = self::factory()->user->create([
-            'role' => 'administrator'
-        ]);
-        wp_set_current_user($this->adminUserId);
-
-        global $wp_rest_server;
-        $wp_rest_server = new WP_REST_Server();
-        do_action('rest_api_init');
     }
 
     /**
@@ -55,11 +42,9 @@ class OutboxBackwardCompatibilityTest extends WP_UnitTestCase
      */
     public function tearDown(): void
     {
-        parent::tearDown();
-        wp_set_current_user(0);
-
         // Clean up test data
         $this->wpdb->query("DELETE FROM {$this->outboxTable}");
+        parent::tearDown();
     }
 
     /**

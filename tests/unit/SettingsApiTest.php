@@ -4,14 +4,14 @@ namespace unit;
 
 use WP_SMS\Api\V1\SettingsApi;
 use WP_SMS\Option;
-use WP_UnitTestCase;
 use WP_REST_Request;
-use WP_REST_Server;
+
+require_once __DIR__ . '/WPSMSTestCase.php';
 
 /**
  * Tests for Settings REST API
  */
-class SettingsApiTest extends WP_UnitTestCase
+class SettingsApiTest extends WPSMSTestCase
 {
     /**
      * @var SettingsApi
@@ -19,38 +19,12 @@ class SettingsApiTest extends WP_UnitTestCase
     private $settingsApi;
 
     /**
-     * @var int
-     */
-    private $adminUserId;
-
-    /**
      * Set up test environment
      */
     public function setUp(): void
     {
         parent::setUp();
-
-        // Create admin user
-        $this->adminUserId = self::factory()->user->create([
-            'role' => 'administrator'
-        ]);
-        wp_set_current_user($this->adminUserId);
-
-        // Initialize REST server
-        global $wp_rest_server;
-        $wp_rest_server = new WP_REST_Server();
-        do_action('rest_api_init');
-
         $this->settingsApi = new SettingsApi();
-    }
-
-    /**
-     * Tear down test environment
-     */
-    public function tearDown(): void
-    {
-        parent::tearDown();
-        wp_set_current_user(0);
     }
 
     /**
@@ -77,8 +51,7 @@ class SettingsApiTest extends WP_UnitTestCase
     {
         wp_set_current_user(0); // Log out
 
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => ['gateway_name' => 'twilio'],
         ]);
 
@@ -97,8 +70,7 @@ class SettingsApiTest extends WP_UnitTestCase
         ]);
         wp_set_current_user($subscriberId);
 
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => ['gateway_name' => 'twilio'],
         ]);
 
@@ -112,10 +84,7 @@ class SettingsApiTest extends WP_UnitTestCase
      */
     public function testUpdateSettingsSavesCorrectly()
     {
-        $testValue = 'test_value_' . uniqid();
-
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
                 'admin_mobile_number' => '+1234567890',
             ],
@@ -154,8 +123,7 @@ class SettingsApiTest extends WP_UnitTestCase
      */
     public function testSettingsValidationCatchesInvalidUrl()
     {
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
                 'webhook_outgoing_sms' => 'not-a-valid-url',
             ],
@@ -199,8 +167,7 @@ class SettingsApiTest extends WP_UnitTestCase
      */
     public function testSanitizationRemovesDangerousInput()
     {
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
                 'admin_mobile_number' => '<script>alert("xss")</script>+1234567890',
             ],
@@ -223,8 +190,7 @@ class SettingsApiTest extends WP_UnitTestCase
      */
     public function testUpdateMultipleSettingsAtOnce()
     {
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
                 'admin_mobile_number' => '+9876543210',
                 'notif_publish_new_post_enabled' => '1',
@@ -242,8 +208,7 @@ class SettingsApiTest extends WP_UnitTestCase
      */
     public function testEmptySettingsUpdateDoesNotCauseError()
     {
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [],
         ]);
 
@@ -257,8 +222,7 @@ class SettingsApiTest extends WP_UnitTestCase
      */
     public function testSettingsAreCorrectlyTyped()
     {
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
                 'notif_publish_new_post_enabled' => true,
                 'some_number_field' => 42,

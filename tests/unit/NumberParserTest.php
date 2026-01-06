@@ -9,13 +9,11 @@ use WP_UnitTestCase;
 
 class NumberParserTest extends WP_UnitTestCase
 {
-    protected $faker;
+    private static $counter = 0;
 
     protected function setUp(): void
     {
         parent::setUp();
-        // Initialize Faker
-        $this->faker = \Faker\Factory::create();
     }
 
     /**
@@ -23,7 +21,7 @@ class NumberParserTest extends WP_UnitTestCase
      */
     public function testNormalizedNumber()
     {
-        $rawNumber    = $this->faker->numerify('01 2 3-###-678(910)');
+        $rawNumber    = '01 2 3-456-678(910)';
         $numberParser = new NumberParser($rawNumber);
 
         $expectedNormalized = ltrim(preg_replace('/\D/', '', $rawNumber), '0');
@@ -35,7 +33,7 @@ class NumberParserTest extends WP_UnitTestCase
      */
     public function testValidNumericNumber()
     {
-        $validNumber  = $this->faker->numerify('+1##########'); // Generate a valid phone number
+        $validNumber  = '+12025550' . str_pad(++self::$counter, 3, '0', STR_PAD_LEFT);
         $numberParser = new NumberParser($validNumber);
 
         $this->assertEquals($validNumber, $numberParser->getValidNumber());
@@ -46,7 +44,7 @@ class NumberParserTest extends WP_UnitTestCase
      */
     public function testInvalidNonNumericNumber()
     {
-        $invalidNumber = '+hello' . $this->faker->word; // Non-numeric invalid number
+        $invalidNumber = '+helloworld';
         $numberParser  = new NumberParser($invalidNumber);
         $validNumber   = $numberParser->getValidNumber();
 
@@ -59,14 +57,14 @@ class NumberParserTest extends WP_UnitTestCase
      */
     public function testNumberLength()
     {
-        $shortNumber  = $this->faker->numerify('+123'); // Too short
+        $shortNumber  = '+123';
         $numberParser = new NumberParser($shortNumber);
         $validNumber  = $numberParser->getValidNumber();
 
         $this->assertWPError($validNumber);
         $this->assertStringContainsString('invalid_length', $validNumber->get_error_code());
 
-        $validLengthNumber = $this->faker->numerify('+###########'); // Correct length
+        $validLengthNumber = '+12025550199';
         $this->assertTrue($numberParser->isLengthValid($validLengthNumber));
     }
 
@@ -75,14 +73,14 @@ class NumberParserTest extends WP_UnitTestCase
      */
     public function testCountryCodeValidation()
     {
-        $validNumber  = $this->faker->numerify('+817########');
+        $validNumber  = '+81712345678';
         $numberParser = new NumberParser($validNumber);
         $this->assertEquals($validNumber, $numberParser->getValidNumber());
 
         Option::updateOption('international_mobile', true);
 
         // Assume invalid country code
-        $invalidNumber = '+999' . $this->faker->numerify('########');
+        $invalidNumber = '+99912345678';
         $numberParser  = new NumberParser($invalidNumber);
         $validNumber   = $numberParser->getValidNumber();
 
@@ -95,7 +93,7 @@ class NumberParserTest extends WP_UnitTestCase
      */
     public function testDuplicateNumberInUserMeta()
     {
-        $duplicateNumber = $this->faker->numerify('+1##########'); // Generate a valid phone number
+        $duplicateNumber = '+12025551' . str_pad(++self::$counter, 3, '0', STR_PAD_LEFT);
         add_user_meta(1, Helper::getUserMobileFieldName(), $duplicateNumber);
 
         $isDuplicate = NumberParser::isDuplicateInUsermeta($duplicateNumber);

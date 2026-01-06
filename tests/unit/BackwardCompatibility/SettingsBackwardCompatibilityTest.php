@@ -2,11 +2,12 @@
 
 namespace unit\BackwardCompatibility;
 
+use unit\WPSMSTestCase;
 use WP_SMS\Api\V1\SettingsApi;
 use WP_SMS\Option;
-use WP_UnitTestCase;
 use WP_REST_Request;
-use WP_REST_Server;
+
+require_once dirname(__DIR__) . '/WPSMSTestCase.php';
 
 /**
  * Backward Compatibility Tests for Settings
@@ -14,13 +15,8 @@ use WP_REST_Server;
  * Ensures that settings saved via the legacy admin pages work correctly
  * with the new React dashboard, and vice versa.
  */
-class SettingsBackwardCompatibilityTest extends WP_UnitTestCase
+class SettingsBackwardCompatibilityTest extends WPSMSTestCase
 {
-    /**
-     * @var int
-     */
-    private $adminUserId;
-
     /**
      * Legacy settings format - as stored by WordPress Settings API
      * @var array
@@ -55,16 +51,6 @@ class SettingsBackwardCompatibilityTest extends WP_UnitTestCase
     {
         parent::setUp();
 
-        $this->adminUserId = self::factory()->user->create([
-            'role' => 'administrator'
-        ]);
-        wp_set_current_user($this->adminUserId);
-
-        // Initialize REST server
-        global $wp_rest_server;
-        $wp_rest_server = new WP_REST_Server();
-        do_action('rest_api_init');
-
         // Clear settings before each test
         delete_option('wpsms_settings');
         delete_option('wps_pp_settings');
@@ -75,10 +61,9 @@ class SettingsBackwardCompatibilityTest extends WP_UnitTestCase
      */
     public function tearDown(): void
     {
-        parent::tearDown();
-        wp_set_current_user(0);
         delete_option('wpsms_settings');
         delete_option('wps_pp_settings');
+        parent::tearDown();
     }
 
     /**
@@ -136,10 +121,9 @@ class SettingsBackwardCompatibilityTest extends WP_UnitTestCase
      */
     public function testRestApiSettingsReadableViaLegacyOption()
     {
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
-                'gateway_name'        => 'vonage',
+                'gateway_name'        => 'twilio',
                 'gateway_sender_id'   => '+15557777777',
                 'admin_mobile_number' => '+15558888888',
             ],
@@ -153,7 +137,7 @@ class SettingsBackwardCompatibilityTest extends WP_UnitTestCase
         $savedSenderId = Option::getOption('gateway_sender_id');
         $savedAdminMobile = Option::getOption('admin_mobile_number');
 
-        $this->assertEquals('vonage', $savedGateway);
+        $this->assertEquals('twilio', $savedGateway);
         $this->assertEquals('+15557777777', $savedSenderId);
         $this->assertEquals('+15558888888', $savedAdminMobile);
     }
@@ -167,8 +151,7 @@ class SettingsBackwardCompatibilityTest extends WP_UnitTestCase
         update_option('wpsms_settings', $this->legacySettings);
 
         // Update only one setting via API
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
                 'admin_mobile_number' => '+15550000000',
             ],
@@ -245,8 +228,7 @@ class SettingsBackwardCompatibilityTest extends WP_UnitTestCase
      */
     public function testApiBooleanUpdatesCompatibleWithLegacy()
     {
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
                 'notif_publish_new_post_enabled' => true,
             ],
@@ -329,8 +311,7 @@ class SettingsBackwardCompatibilityTest extends WP_UnitTestCase
         update_option('wps_pp_settings', $legacyProSettings);
 
         // Update only one pro setting via API
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'proSettings' => [
                 'setting_b' => 'updated_value_b',
             ],
@@ -359,8 +340,7 @@ class SettingsBackwardCompatibilityTest extends WP_UnitTestCase
         ]);
 
         // Send update with masked values (as React would when user doesn't change them)
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
                 'gateway_key'         => '••••••••',
                 'gateway_password'    => '••••••••',
@@ -384,36 +364,30 @@ class SettingsBackwardCompatibilityTest extends WP_UnitTestCase
      */
     public function testSettingsStructureMatchesLegacyExpectations()
     {
-        // These are the core option keys that legacy code depends on
-        $requiredOptionKeys = [
-            'gateway_name',
-            'gateway_key',
-            'gateway_password',
-            'gateway_sender_id',
-            'admin_mobile_number',
-            'international_mobile',
-            'mobile_county_code',
-            'add_mobile_field',
+        // Save via API with valid values (gateway_name and admin_mobile_number are validated)
+        $settingsToSave = [
+            'gateway_name'        => 'twilio',  // Must be valid gateway
+            'gateway_key'         => 'test_api_key',
+            'gateway_password'    => 'test_password',
+            'gateway_sender_id'   => '+15551234567',
+            'admin_mobile_number' => '+15559876543',  // Must be valid phone
+            'international_mobile' => '1',
+            'mobile_county_code'  => '1',
+            'add_mobile_field'    => 'add_mobile_field',
         ];
 
-        // Save via API
-        $settingsToSave = [];
-        foreach ($requiredOptionKeys as $key) {
-            $settingsToSave[$key] = 'test_value_' . $key;
-        }
-
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => $settingsToSave,
         ]);
 
-        rest_do_request($request);
+        $response = rest_do_request($request);
+        $this->assertEquals(200, $response->get_status(), 'Settings save should succeed');
 
         // Read via legacy method
         $savedOptions = get_option('wpsms_settings');
 
         // All keys should exist in the saved option
-        foreach ($requiredOptionKeys as $key) {
+        foreach (array_keys($settingsToSave) as $key) {
             $this->assertArrayHasKey($key, $savedOptions, "Missing key: {$key}");
         }
     }
@@ -424,8 +398,7 @@ class SettingsBackwardCompatibilityTest extends WP_UnitTestCase
     public function testLegacyOptionUpdateWorksWithApiData()
     {
         // First save via API
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
                 'gateway_name' => 'twilio',
             ],
@@ -524,8 +497,7 @@ class SettingsBackwardCompatibilityTest extends WP_UnitTestCase
         ]);
 
         // Update with new credentials (not masked value)
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
                 'gateway_key'      => 'new_key_123',
                 'gateway_password' => 'new_password_456',
@@ -547,24 +519,24 @@ class SettingsBackwardCompatibilityTest extends WP_UnitTestCase
      */
     public function testCacheClearedAfterApiUpdate()
     {
-        // Save initial value
-        update_option('wpsms_settings', ['gateway_name' => 'initial']);
+        // Save initial value (use valid gateway name)
+        update_option('wpsms_settings', ['gateway_name' => 'twilio']);
 
         // Read to potentially cache
         Option::getOptions();
 
-        // Update via API
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        // Update via API (use different valid gateway)
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
-                'gateway_name' => 'updated',
+                'gateway_name' => 'clickatell',
             ],
         ]);
-        rest_do_request($request);
+        $response = rest_do_request($request);
+        $this->assertEquals(200, $response->get_status(), 'Settings update should succeed');
 
         // Read again - should get updated value, not cached
         $settings = Option::getOptions();
 
-        $this->assertEquals('updated', $settings['gateway_name']);
+        $this->assertEquals('clickatell', $settings['gateway_name']);
     }
 }

@@ -2,10 +2,11 @@
 
 namespace unit\BackwardCompatibility;
 
+use unit\WPSMSTestCase;
 use WP_SMS\Newsletter;
-use WP_UnitTestCase;
 use WP_REST_Request;
-use WP_REST_Server;
+
+require_once dirname(__DIR__) . '/WPSMSTestCase.php';
 
 /**
  * Backward Compatibility Tests for Subscribers
@@ -13,13 +14,8 @@ use WP_REST_Server;
  * Ensures that subscribers created via legacy admin pages work correctly
  * with the new React dashboard, and vice versa.
  */
-class SubscribersBackwardCompatibilityTest extends WP_UnitTestCase
+class SubscribersBackwardCompatibilityTest extends WPSMSTestCase
 {
-    /**
-     * @var int
-     */
-    private $adminUserId;
-
     /**
      * @var Newsletter
      */
@@ -52,15 +48,6 @@ class SubscribersBackwardCompatibilityTest extends WP_UnitTestCase
         $this->subscribersTable = $wpdb->prefix . 'sms_subscribes';
         $this->groupsTable = $wpdb->prefix . 'sms_subscribes_group';
 
-        $this->adminUserId = self::factory()->user->create([
-            'role' => 'administrator'
-        ]);
-        wp_set_current_user($this->adminUserId);
-
-        global $wp_rest_server;
-        $wp_rest_server = new WP_REST_Server();
-        do_action('rest_api_init');
-
         $this->newsletter = new Newsletter();
 
         // Create test group
@@ -72,12 +59,10 @@ class SubscribersBackwardCompatibilityTest extends WP_UnitTestCase
      */
     public function tearDown(): void
     {
-        parent::tearDown();
-        wp_set_current_user(0);
-
         // Clean up test data
         $this->wpdb->query("DELETE FROM {$this->subscribersTable}");
         $this->wpdb->query("DELETE FROM {$this->groupsTable}");
+        parent::tearDown();
     }
 
     /**
@@ -606,10 +591,14 @@ class SubscribersBackwardCompatibilityTest extends WP_UnitTestCase
 
     /**
      * Test: Activation key for double opt-in is preserved
+     *
+     * Note: The activate_key column is INT(11) in the database schema,
+     * so activation keys must be numeric values.
      */
     public function testActivationKeyPreserved()
     {
-        $activateKey = wp_generate_password(32, false);
+        // Use numeric activation key (database column is INT(11))
+        $activateKey = mt_rand(100000000, 999999999);
 
         $subscriberId = $this->createLegacySubscriber([
             'activate_key' => $activateKey,
@@ -622,7 +611,7 @@ class SubscribersBackwardCompatibilityTest extends WP_UnitTestCase
             $subscriberId
         ));
 
-        $this->assertEquals($activateKey, $savedKey);
+        $this->assertEquals($activateKey, (int) $savedKey);
     }
 
     /**

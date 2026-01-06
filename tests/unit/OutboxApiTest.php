@@ -3,52 +3,15 @@
 namespace unit;
 
 use WP_SMS\Api\V1\OutboxApi;
-use WP_UnitTestCase;
 use WP_REST_Request;
-use WP_REST_Server;
+
+require_once __DIR__ . '/WPSMSTestCase.php';
 
 /**
  * Tests for Outbox REST API
  */
-class OutboxApiTest extends WP_UnitTestCase
+class OutboxApiTest extends WPSMSTestCase
 {
-    /**
-     * @var int
-     */
-    private $adminUserId;
-
-    /**
-     * Set up test environment
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        // Create admin user
-        $this->adminUserId = self::factory()->user->create([
-            'role' => 'administrator'
-        ]);
-        wp_set_current_user($this->adminUserId);
-
-        // Grant outbox permission
-        $user = get_user_by('id', $this->adminUserId);
-        $user->add_cap('wpsms_outbox');
-        $user->add_cap('wpsms_sendsms');
-
-        // Initialize REST server
-        global $wp_rest_server;
-        $wp_rest_server = new WP_REST_Server();
-        do_action('rest_api_init');
-    }
-
-    /**
-     * Tear down test environment
-     */
-    public function tearDown(): void
-    {
-        parent::tearDown();
-        wp_set_current_user(0);
-    }
 
     /**
      * Test get outbox returns paginated list

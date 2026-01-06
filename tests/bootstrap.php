@@ -33,9 +33,13 @@ function _manually_load_plugins()
 {
     // Table creation on test environment.
     $network_wide   = is_multisite();
-    $_wordpress_dir = getenv('WP_TESTS_DIR') ?: rtrim(sys_get_temp_dir(), '/\\') . '/wordpress';
 
-    require $_wordpress_dir . '/wp-content/plugins/woocommerce/woocommerce.php';
+    // Load WooCommerce from the actual WordPress installation
+    $woocommerce_path = ABSPATH . 'wp-content/plugins/woocommerce/woocommerce.php';
+    if (file_exists($woocommerce_path)) {
+        require $woocommerce_path;
+    }
+
     require dirname(__FILE__, 2) . '/wp-sms.php';
 
     WP_SMS::get_instance()->activate($network_wide);
@@ -46,7 +50,3 @@ tests_add_filter('muplugins_loaded', '_manually_load_plugins');
 
 // Start up the WordPress testing environment.
 require "{$_tests_dir}/includes/bootstrap.php";
-
-// Global Faker instance (optional, for shared use across tests).
-global $faker;
-$faker = \Faker\Factory::create();

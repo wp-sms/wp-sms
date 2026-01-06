@@ -2,56 +2,19 @@
 
 namespace unit;
 
-use WP_UnitTestCase;
 use WP_REST_Request;
-use WP_REST_Server;
+
+require_once __DIR__ . '/WPSMSTestCase.php';
 
 /**
  * Tests for Send SMS REST API
  */
-class SendSmsApiTest extends WP_UnitTestCase
+class SendSmsApiTest extends WPSMSTestCase
 {
     /**
      * @var int
      */
-    private $adminUserId;
-
-    /**
-     * @var int
-     */
     private $subscriberId;
-
-    /**
-     * Set up test environment
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        // Create admin user
-        $this->adminUserId = self::factory()->user->create([
-            'role' => 'administrator'
-        ]);
-        wp_set_current_user($this->adminUserId);
-
-        // Grant send SMS permission
-        $user = get_user_by('id', $this->adminUserId);
-        $user->add_cap('wpsms_sendsms');
-
-        // Initialize REST server
-        global $wp_rest_server;
-        $wp_rest_server = new WP_REST_Server();
-        do_action('rest_api_init');
-    }
-
-    /**
-     * Tear down test environment
-     */
-    public function tearDown(): void
-    {
-        parent::tearDown();
-        wp_set_current_user(0);
-    }
 
     /**
      * Create a test subscriber group
@@ -458,11 +421,14 @@ class SendSmsApiTest extends WP_UnitTestCase
      */
     public function testRecipientCountIncludesUsers()
     {
-        // Create users with mobile numbers
+        // Get the correct mobile field name used by the plugin
+        $mobileFieldName = \WP_SMS\Helper::getUserMobileFieldName();
+
+        // Create users with mobile numbers using the correct meta key
         $userId1 = self::factory()->user->create(['display_name' => 'User 1']);
         $userId2 = self::factory()->user->create(['display_name' => 'User 2']);
-        update_user_meta($userId1, 'mobile', '+1111111111');
-        update_user_meta($userId2, 'mobile', '+2222222222');
+        update_user_meta($userId1, $mobileFieldName, '+1111111111');
+        update_user_meta($userId2, $mobileFieldName, '+2222222222');
 
         $request = new WP_REST_Request('POST', '/wpsms/v1/send/count');
         $request->set_body(json_encode([

@@ -2,10 +2,11 @@
 
 namespace unit\BackwardCompatibility;
 
+use unit\WPSMSTestCase;
 use WP_SMS\Option;
-use WP_UnitTestCase;
 use WP_REST_Request;
-use WP_REST_Server;
+
+require_once dirname(__DIR__) . '/WPSMSTestCase.php';
 
 /**
  * Backward Compatibility Tests for Add-on Settings
@@ -13,28 +14,14 @@ use WP_REST_Server;
  * Ensures that add-on settings (WooCommerce Pro, etc.) work correctly
  * between legacy format and new React dashboard.
  */
-class AddonsBackwardCompatibilityTest extends WP_UnitTestCase
+class AddonsBackwardCompatibilityTest extends WPSMSTestCase
 {
-    /**
-     * @var int
-     */
-    private $adminUserId;
-
     /**
      * Set up test environment
      */
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->adminUserId = self::factory()->user->create([
-            'role' => 'administrator'
-        ]);
-        wp_set_current_user($this->adminUserId);
-
-        global $wp_rest_server;
-        $wp_rest_server = new WP_REST_Server();
-        do_action('rest_api_init');
 
         // Clear options before each test
         delete_option('wpsms_settings');
@@ -46,14 +33,13 @@ class AddonsBackwardCompatibilityTest extends WP_UnitTestCase
      */
     public function tearDown(): void
     {
-        parent::tearDown();
-        wp_set_current_user(0);
         delete_option('wpsms_settings');
         delete_option('wps_pp_settings');
 
         // Clean up any add-on options we created
         global $wpdb;
         $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE 'wpsms_wc_%'");
+        parent::tearDown();
     }
 
     /**
@@ -144,8 +130,7 @@ class AddonsBackwardCompatibilityTest extends WP_UnitTestCase
         });
 
         // Update via API with boolean true
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'addonValues' => [
                 'woocommerce_pro' => [
                     'wpsms_wc_enable_test' => true,
@@ -251,8 +236,7 @@ class AddonsBackwardCompatibilityTest extends WP_UnitTestCase
         });
 
         // Save multi-select via API
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'addonValues' => [
                 'test_multiselect' => [
                     'wpsms_test_statuses' => ['pending', 'processing'],
@@ -304,8 +288,7 @@ class AddonsBackwardCompatibilityTest extends WP_UnitTestCase
             ['status' => 'completed', 'message' => 'Order completed'],
         ];
 
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'addonValues' => [
                 'test_repeater' => [
                     'wpsms_test_mappings' => $repeaterData,
@@ -344,8 +327,7 @@ class AddonsBackwardCompatibilityTest extends WP_UnitTestCase
         }, 10, 3);
 
         // Save via API
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'addonValues' => [
                 'custom_addon' => [
                     'setting_1' => 'value_1',
@@ -387,8 +369,7 @@ class AddonsBackwardCompatibilityTest extends WP_UnitTestCase
         });
 
         // Try to save invalid phone
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
                 'wpsms_validated_phone' => 'not-a-phone',
             ],
@@ -464,8 +445,7 @@ class AddonsBackwardCompatibilityTest extends WP_UnitTestCase
 
         $messageWithLineBreaks = "Line 1\nLine 2\nLine 3";
 
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'addonValues' => [
                 'textarea_addon' => [
                     'wpsms_message_template' => $messageWithLineBreaks,
@@ -505,8 +485,7 @@ class AddonsBackwardCompatibilityTest extends WP_UnitTestCase
             return $schemas;
         });
 
-        $request = new WP_REST_Request('POST', '/wpsms/v1/settings');
-        $request->set_body_params([
+        $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'addonValues' => [
                 'number_addon' => [
                     'wpsms_retry_count' => 5,
