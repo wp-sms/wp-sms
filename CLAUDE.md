@@ -190,6 +190,8 @@ sanitize_textarea_field($text);   // For textarea content
 
 ## Commit Guidelines
 
+**Important**: Always commit changes made during your active session before the session ends. Only commit files you modified - do not include changes from other concurrent Claude sessions.
+
 Before committing changes, always:
 
 1. **Review staged changes**: Run `git diff --staged` to review all changes that will be committed
