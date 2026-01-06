@@ -9,7 +9,6 @@ import {
   Upload,
   CheckCircle,
   XCircle,
-  AlertCircle,
   Loader2,
   MessageSquare,
   FolderOpen,
@@ -43,6 +42,7 @@ import { cn, formatDate, getWpSettings, __ } from '@/lib/utils'
 import { useDataTable } from '@/hooks/useDataTable'
 import { useFilters } from '@/hooks/useFilters'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
+import { useToast } from '@/components/ui/toaster'
 
 export default function Subscribers() {
   // Get countries from settings
@@ -99,10 +99,12 @@ export default function Subscribers() {
     fetchGroups()
   }, [])
 
+  // Toast notification
+  const { toast } = useToast()
+
   // UI state
   const [editSubscriber, setEditSubscriber] = useState(null)
   const [showImportDialog, setShowImportDialog] = useState(false)
-  const [notification, setNotification] = useState(null)
   const [isAddingQuick, setIsAddingQuick] = useState(false)
 
   // Quick add form state
@@ -141,12 +143,12 @@ export default function Subscribers() {
         group_id: filters.filters.group_id !== 'all' ? parseInt(filters.filters.group_id) : undefined,
         status: '1',
       })
-      setNotification({ type: 'success', message: 'Subscriber added successfully' })
+      toast({ title: __('Subscriber added successfully'), variant: 'success' })
       setQuickAddName('')
       setQuickAddPhone('')
       table.fetch({ page: 1 })
     } catch (error) {
-      setNotification({ type: 'error', message: error.message || 'Failed to add subscriber' })
+      toast({ title: error.message || __('Failed to add subscriber'), variant: 'destructive' })
     } finally {
       setIsAddingQuick(false)
     }
@@ -174,12 +176,12 @@ export default function Subscribers() {
           group_id: formData.group_id ? parseInt(formData.group_id) : null,
           status: formData.status,
         })
-        setNotification({ type: 'success', message: 'Subscriber updated successfully' })
+        toast({ title: __('Subscriber updated successfully'), variant: 'success' })
       }
       setEditSubscriber(null)
       table.refresh()
     } catch (error) {
-      setNotification({ type: 'error', message: error.message })
+      toast({ title: error.message, variant: 'destructive' })
     } finally {
       setIsSaving(false)
     }
@@ -189,10 +191,10 @@ export default function Subscribers() {
   const handleDelete = async (id) => {
     try {
       await subscribersApi.deleteSubscriber(id)
-      setNotification({ type: 'success', message: 'Subscriber deleted successfully' })
+      toast({ title: __('Subscriber deleted successfully'), variant: 'success' })
       table.refresh()
     } catch (error) {
-      setNotification({ type: 'error', message: error.message })
+      toast({ title: error.message, variant: 'destructive' })
     }
   }
 
@@ -202,14 +204,14 @@ export default function Subscribers() {
 
     try {
       const result = await subscribersApi.bulkAction(action, table.selectedIds, params)
-      setNotification({
-        type: 'success',
-        message: `${result.affected} subscriber(s) updated successfully`,
+      toast({
+        title: __('%d subscriber(s) updated successfully').replace('%d', result.affected),
+        variant: 'success',
       })
       table.clearSelection()
       table.fetch({ page: 1 })
     } catch (error) {
-      setNotification({ type: 'error', message: error.message })
+      toast({ title: error.message, variant: 'destructive' })
     }
   }
 
@@ -219,9 +221,9 @@ export default function Subscribers() {
       group_id: filters.filters.group_id !== 'all' ? parseInt(filters.filters.group_id) : undefined,
       skip_duplicates: true,
     })
-    setNotification({
-      type: 'success',
-      message: `Imported ${result.imported} subscribers, skipped ${result.skipped}`,
+    toast({
+      title: __('Imported %d subscribers, skipped %d').replace('%d', result.imported).replace('%d', result.skipped),
+      variant: 'success',
     })
     table.fetch({ page: 1 })
   }
@@ -255,11 +257,11 @@ export default function Subscribers() {
         message: quickReplyMessage,
         recipients: { groups: [], roles: [], numbers: [quickReplyTo.mobile] },
       })
-      setNotification({ type: 'success', message: `Message sent to ${quickReplyTo.mobile}` })
+      toast({ title: __('Message sent to %s').replace('%s', quickReplyTo.mobile), variant: 'success' })
       setQuickReplyTo(null)
       setQuickReplyMessage('')
     } catch (error) {
-      setNotification({ type: 'error', message: error.message || 'Failed to send message' })
+      toast({ title: error.message || __('Failed to send message'), variant: 'destructive' })
     } finally {
       setIsSendingReply(false)
     }
@@ -273,26 +275,18 @@ export default function Subscribers() {
       const result = await subscribersApi.bulkAction('move_to_group', table.selectedIds, {
         group_id: parseInt(moveToGroupId),
       })
-      setNotification({
-        type: 'success',
-        message: `${result.affected} subscriber(s) moved to group`,
+      toast({
+        title: __('%d subscriber(s) moved to group').replace('%d', result.affected),
+        variant: 'success',
       })
       table.clearSelection()
       setShowMoveToGroup(false)
       setMoveToGroupId('')
       table.fetch({ page: 1 })
     } catch (error) {
-      setNotification({ type: 'error', message: error.message })
+      toast({ title: error.message, variant: 'destructive' })
     }
   }
-
-  // Clear notification
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => setNotification(null), 5000)
-      return () => clearTimeout(timer)
-    }
-  }, [notification])
 
   // Table columns
   const columns = [
@@ -526,26 +520,6 @@ export default function Subscribers() {
 
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
-      {/* Notification */}
-      {notification && (
-        <div
-          className={cn(
-            'wsms-flex wsms-items-center wsms-gap-3 wsms-p-4 wsms-rounded-lg wsms-border',
-            'wsms-animate-in wsms-fade-in wsms-slide-in-from-top-2 wsms-duration-300',
-            notification.type === 'success'
-              ? 'wsms-bg-emerald-50 wsms-border-emerald-200 wsms-text-emerald-800 dark:wsms-bg-emerald-900/30 dark:wsms-border-emerald-800 dark:wsms-text-emerald-200'
-              : 'wsms-bg-red-50 wsms-border-red-200 wsms-text-red-800 dark:wsms-bg-red-900/30 dark:wsms-border-red-800 dark:wsms-text-red-200'
-          )}
-        >
-          {notification.type === 'success' ? (
-            <CheckCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
-          ) : (
-            <AlertCircle className="wsms-h-5 wsms-w-5 wsms-shrink-0" />
-          )}
-          <p className="wsms-text-[13px] wsms-font-medium">{notification.message}</p>
-        </div>
-      )}
-
       {/* Stats & Actions Header */}
       <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
         <div className="wsms-flex wsms-items-center wsms-gap-6 lg:wsms-gap-8">
