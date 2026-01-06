@@ -123,11 +123,12 @@ describe('AppShell', () => {
   })
 
   describe('Page Rendering', () => {
-    test('renders Overview page by default', async () => {
+    test('renders Send SMS page by default', async () => {
       renderAppShell()
 
+      // Default page is 'send-sms' as defined in getInitialPageFromUrl()
       await waitFor(() => {
-        expect(screen.getByTestId('page-overview')).toBeInTheDocument()
+        expect(screen.getByTestId('page-send-sms')).toBeInTheDocument()
       })
     })
 
@@ -313,9 +314,9 @@ describe('AppShell', () => {
       // The actual loading is controlled by isLoading from SettingsContext
       renderAppShell()
 
-      // After loading completes, the page should be visible
+      // After loading completes, the default page (Send SMS) should be visible
       await waitFor(() => {
-        expect(screen.getByTestId('page-overview')).toBeInTheDocument()
+        expect(screen.getByTestId('page-send-sms')).toBeInTheDocument()
       })
     })
   })

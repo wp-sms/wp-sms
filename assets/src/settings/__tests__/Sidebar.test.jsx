@@ -125,10 +125,10 @@ describe('Sidebar', () => {
       const outboxItem = screen.getByText('Outbox')
       fireEvent.click(outboxItem)
 
-      // Check that the button gets the active styling (has primary background)
+      // Check that the button gets the active styling (has primary background with opacity)
       await waitFor(() => {
         const button = outboxItem.closest('button')
-        expect(button).toHaveClass('wsms-bg-primary')
+        expect(button).toHaveClass('wsms-bg-primary/10')
       })
     })
 
@@ -146,9 +146,11 @@ describe('Sidebar', () => {
       const gatewayItem = screen.getByText('Gateway')
       fireEvent.click(gatewayItem)
 
+      // For nested items, the inner span gets the active styling
       await waitFor(() => {
         const button = gatewayItem.closest('button')
-        expect(button).toHaveClass('wsms-bg-primary')
+        const activeSpan = button.querySelector('.wsms-bg-primary\\/10')
+        expect(activeSpan).toBeInTheDocument()
       })
     })
   })
@@ -177,7 +179,8 @@ describe('Sidebar', () => {
       setupWpSmsSettings({ version: '7.5.0' })
       renderSidebar()
 
-      expect(screen.getByText(/Version 7/i)).toBeInTheDocument()
+      // WhatsNew component displays version as "v{version}"
+      expect(screen.getByText(/v7\.5\.0/)).toBeInTheDocument()
     })
   })
 

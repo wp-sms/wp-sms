@@ -20,15 +20,32 @@ export function setupWpSmsSettings(overrides = {}) {
     addons: {
       pro: false,
     },
+    features: {
+      gdprEnabled: false,
+      hasProAddon: false,
+      twoWayEnabled: false,
+      scheduledSms: false,
+      isProActive: false,
+      isWooActive: false,
+      isBuddyPressActive: false,
+    },
     licenses: [],
     licensedPluginsCount: 0,
     totalPlugins: 7,
     version: '7.0.0',
-    gdprEnabled: false,
     countries: [],
     i18n: {},
     newsletter_form_verify: false,
   }
+
+  // Extract feature flags from overrides to merge into features
+  const featureFlags = ['gdprEnabled', 'hasProAddon', 'twoWayEnabled', 'scheduledSms', 'isProActive', 'isWooActive', 'isBuddyPressActive']
+  const featureOverrides = {}
+  featureFlags.forEach(flag => {
+    if (flag in overrides) {
+      featureOverrides[flag] = overrides[flag]
+    }
+  })
 
   global.window.wpSmsSettings = {
     ...defaults,
@@ -36,6 +53,7 @@ export function setupWpSmsSettings(overrides = {}) {
     settings: { ...defaults.settings, ...overrides.settings },
     proSettings: { ...defaults.proSettings, ...overrides.proSettings },
     addons: { ...defaults.addons, ...overrides.addons },
+    features: { ...defaults.features, ...overrides.features, ...featureOverrides },
     i18n: { ...defaults.i18n, ...overrides.i18n },
   }
 
