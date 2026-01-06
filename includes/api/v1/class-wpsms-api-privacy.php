@@ -109,8 +109,9 @@ class PrivacyApi extends RestApi
         $mobile = $request->get_param('mobile');
         $number = $this->parseNumber($mobile);
 
-        if (!$number) {
-            return self::response(__('Invalid phone number', 'wp-sms'), 400);
+        if (!$number || is_wp_error($number)) {
+            $message = is_wp_error($number) ? $number->get_error_message() : __('Invalid phone number', 'wp-sms');
+            return self::response($message, 400);
         }
 
         $records = $this->findRecords($number);
@@ -141,14 +142,14 @@ class PrivacyApi extends RestApi
     {
         $records = [];
 
-        // Search in wp_users (user meta)
+        // Search in wp_users (user meta) - exact match
         $users = $this->db->get_results(
             $this->db->prepare(
                 "SELECT u.ID, u.display_name, u.user_email, u.user_registered, um.meta_value as mobile
                  FROM {$this->db->users} u
                  INNER JOIN {$this->db->usermeta} um ON u.ID = um.user_id
-                 WHERE um.meta_key = 'mobile' AND um.meta_value LIKE %s",
-                '%' . $this->db->esc_like($number) . '%'
+                 WHERE um.meta_key = 'mobile' AND um.meta_value = %s",
+                $number
             ),
             ARRAY_A
         );
@@ -164,14 +165,14 @@ class PrivacyApi extends RestApi
             ];
         }
 
-        // Search in sms_subscribes
+        // Search in sms_subscribes - exact match
         $subscribers = $this->db->get_results(
             $this->db->prepare(
                 "SELECT s.*, g.name as group_name
                  FROM {$this->tb_prefix}sms_subscribes s
                  LEFT JOIN {$this->tb_prefix}sms_subscribes_group g ON s.group_ID = g.ID
-                 WHERE s.mobile LIKE %s",
-                '%' . $this->db->esc_like($number) . '%'
+                 WHERE s.mobile = %s",
+                $number
             ),
             ARRAY_A
         );
@@ -188,15 +189,15 @@ class PrivacyApi extends RestApi
             ];
         }
 
-        // Search in sms_send (outbox)
+        // Search in sms_send (outbox) - exact match on recipient or sender
         $messages = $this->db->get_results(
             $this->db->prepare(
                 "SELECT * FROM {$this->tb_prefix}sms_send
-                 WHERE recipient LIKE %s OR sender LIKE %s
+                 WHERE recipient = %s OR sender = %s
                  ORDER BY date DESC
                  LIMIT 50",
-                '%' . $this->db->esc_like($number) . '%',
-                '%' . $this->db->esc_like($number) . '%'
+                $number,
+                $number
             ),
             ARRAY_A
         );
@@ -225,8 +226,9 @@ class PrivacyApi extends RestApi
         $mobile = $request->get_param('mobile');
         $number = $this->parseNumber($mobile);
 
-        if (!$number) {
-            return self::response(__('Invalid phone number', 'wp-sms'), 400);
+        if (!$number || is_wp_error($number)) {
+            $message = is_wp_error($number) ? $number->get_error_message() : __('Invalid phone number', 'wp-sms');
+            return self::response($message, 400);
         }
 
         $records = $this->findRecords($number);
@@ -279,8 +281,9 @@ class PrivacyApi extends RestApi
         $confirm = $request->get_param('confirm');
         $number  = $this->parseNumber($mobile);
 
-        if (!$number) {
-            return self::response(__('Invalid phone number', 'wp-sms'), 400);
+        if (!$number || is_wp_error($number)) {
+            $message = is_wp_error($number) ? $number->get_error_message() : __('Invalid phone number', 'wp-sms');
+            return self::response($message, 400);
         }
 
         if (!$confirm) {
@@ -293,12 +296,12 @@ class PrivacyApi extends RestApi
             'sms_send'        => 0,
         ];
 
-        // Delete from user meta
+        // Delete from user meta - exact match
         $users = $this->db->get_col(
             $this->db->prepare(
                 "SELECT user_id FROM {$this->db->usermeta}
-                 WHERE meta_key = 'mobile' AND meta_value LIKE %s",
-                '%' . $this->db->esc_like($number) . '%'
+                 WHERE meta_key = 'mobile' AND meta_value = %s",
+                $number
             )
         );
 
@@ -309,20 +312,20 @@ class PrivacyApi extends RestApi
             }
         }
 
-        // Delete from subscribers
+        // Delete from subscribers - exact match
         $deleted['sms_subscribes'] = $this->db->query(
             $this->db->prepare(
-                "DELETE FROM {$this->tb_prefix}sms_subscribes WHERE mobile LIKE %s",
-                '%' . $this->db->esc_like($number) . '%'
+                "DELETE FROM {$this->tb_prefix}sms_subscribes WHERE mobile = %s",
+                $number
             )
         );
 
-        // Delete from outbox (as recipient or sender)
+        // Delete from outbox (as recipient or sender) - exact match
         $deleted['sms_send'] = $this->db->query(
             $this->db->prepare(
-                "DELETE FROM {$this->tb_prefix}sms_send WHERE recipient LIKE %s OR sender LIKE %s",
-                '%' . $this->db->esc_like($number) . '%',
-                '%' . $this->db->esc_like($number) . '%'
+                "DELETE FROM {$this->tb_prefix}sms_send WHERE recipient = %s OR sender = %s",
+                $number,
+                $number
             )
         );
 

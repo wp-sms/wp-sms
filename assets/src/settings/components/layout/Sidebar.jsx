@@ -26,7 +26,7 @@ import {
   Terminal,
 } from 'lucide-react'
 import { cn, __, getWpSettings } from '@/lib/utils'
-import { useSettings } from '@/context/SettingsContext'
+import { useSettings, useSetting } from '@/context/SettingsContext'
 
 // Navigation structure - using function to ensure translations are applied at runtime
 function getNavigation() {
@@ -36,6 +36,9 @@ function getNavigation() {
     { type: 'item', id: 'outbox', label: __('Outbox'), icon: Inbox },
     { type: 'item', id: 'subscribers', label: __('Subscribers'), icon: Users },
     { type: 'item', id: 'groups', label: __('Groups'), icon: FolderOpen },
+
+    // Privacy (conditional) - direct item, above Settings
+    { type: 'item', id: 'privacy', label: __('Privacy'), icon: Shield, condition: 'gdprEnabled' },
 
     // Settings Section - collapsible with sub-items
     {
@@ -55,9 +58,6 @@ function getNavigation() {
         { id: 'advanced', label: __('Advanced'), icon: Settings },
       ],
     },
-
-    // Privacy (conditional) - direct item
-    { type: 'item', id: 'privacy', label: __('Privacy'), icon: Shield, condition: 'gdprEnabled' },
 
     // Add-ons separator
     { type: 'separator', label: __('ADD-ONS'), condition: 'hasAnyAddon' },
@@ -419,11 +419,19 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions }) {
 }
 
 export default function Sidebar({ onClose, showClose }) {
-  const { currentPage, setCurrentPage, getSetting, isAddonActive } = useSettings()
+  const { currentPage, setCurrentPage, isAddonActive } = useSettings()
   const version = window.wpSmsSettings?.version || '7.0'
-  const { gdprEnabled, hasProAddon } = getWpSettings()
-  const gatewayName = getSetting('gateway_name', '')
+  const { gdprEnabled: initialGdprEnabled, hasProAddon } = getWpSettings()
+
+  // Use useSetting hook for reactive updates when settings change
+  const [gatewayName] = useSetting('gateway_name', '')
+  const [currentGdprSetting] = useSetting('gdpr_compliance', '')
+
   const isGatewayConfigured = Boolean(gatewayName)
+
+  // Check GDPR from both initial settings AND current settings context
+  // This makes it reactive when user enables GDPR compliance in settings
+  const gdprEnabled = initialGdprEnabled || currentGdprSetting === '1'
 
   // Check for WooCommerce Pro add-on (key is 'woocommerce' in getActiveAddons())
   const hasWooCommercePro = isAddonActive('woocommerce')
