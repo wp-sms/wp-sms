@@ -175,8 +175,10 @@ class OutboxApi extends RestApi
         }
 
         if ($status && $status !== 'all') {
+            // Map 'failed' to 'error' (database uses 'error' for failed messages)
+            $db_status = ($status === 'failed') ? 'error' : $status;
             $where[] = "status = %s";
-            $params[] = $status;
+            $params[] = $db_status;
         }
 
         if ($date_from) {
@@ -225,6 +227,8 @@ class OutboxApi extends RestApi
         // Format items
         $formatted = array_map(function ($item) {
             $recipients = explode(',', $item['recipient']);
+            // Normalize status: database stores 'error', API returns 'failed'
+            $status = ($item['status'] === 'error') ? 'failed' : $item['status'];
             return [
                 'id'              => (int) $item['ID'],
                 'date'            => $item['date'],
@@ -232,7 +236,7 @@ class OutboxApi extends RestApi
                 'recipient'       => $item['recipient'],
                 'recipient_count' => count($recipients),
                 'message'         => $item['message'],
-                'status'          => $item['status'],
+                'status'          => $status,
                 'response'        => $item['response'],
                 'media'           => maybe_unserialize($item['media']) ?: [],
             ];
@@ -270,8 +274,8 @@ class OutboxApi extends RestApi
         }
         $success = (int) $this->db->get_var($success_sql);
 
-        // Failed count
-        $failed_where = $where_sql . " AND status = 'failed'";
+        // Failed count (status is 'error' in database, not 'failed')
+        $failed_where = $where_sql . " AND status = 'error'";
         $failed_sql = "SELECT COUNT(*) FROM {$this->tb_prefix}sms_send WHERE {$failed_where}";
         if (!empty($params)) {
             $failed_sql = $this->db->prepare($failed_sql, $params);
@@ -305,6 +309,8 @@ class OutboxApi extends RestApi
         }
 
         $recipients = explode(',', $item['recipient']);
+        // Normalize status: database stores 'error', API returns 'failed'
+        $status = ($item['status'] === 'error') ? 'failed' : $item['status'];
 
         return self::response(__('Message retrieved successfully', 'wp-sms'), 200, [
             'id'              => (int) $item['ID'],
@@ -314,7 +320,7 @@ class OutboxApi extends RestApi
             'recipients'      => $recipients,
             'recipient_count' => count($recipients),
             'message'         => $item['message'],
-            'status'          => $item['status'],
+            'status'          => $status,
             'response'        => $item['response'],
             'media'           => maybe_unserialize($item['media']) ?: [],
         ]);
