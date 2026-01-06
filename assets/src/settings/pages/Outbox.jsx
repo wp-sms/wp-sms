@@ -10,7 +10,6 @@ import {
   XCircle,
   Loader2,
   AlertCircle,
-  Download,
   MessageSquare,
   TrendingUp,
   TrendingDown,
@@ -23,6 +22,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { DataTable } from '@/components/ui/data-table'
 import { StatusBadge } from '@/components/shared/StatusBadge'
+import { ExportButton } from '@/components/shared/ExportButton'
 import { Tip } from '@/components/ui/ux-helpers'
 import {
   Dialog,
@@ -84,7 +84,6 @@ export default function Outbox() {
   const [quickReplyMessage, setQuickReplyMessage] = useState('')
   const [isSendingReply, setIsSendingReply] = useState(false)
   const [actionLoading, setActionLoading] = useState(null)
-  const [isExporting, setIsExporting] = useState(false)
 
   // Handlers
   const handleDelete = useCallback(
@@ -139,21 +138,14 @@ export default function Outbox() {
   )
 
   const handleExport = useCallback(async () => {
-    setIsExporting(true)
-    try {
-      const result = await outboxApi.exportCsv({
-        status: filters.debouncedFilters.status !== 'all' ? filters.debouncedFilters.status : undefined,
-        date_from: filters.debouncedFilters.date_from || undefined,
-        date_to: filters.debouncedFilters.date_to || undefined,
-      })
-      downloadCsv(result.data, result.filename)
-      toast({ title: __(`Exported ${result.count} messages successfully`), variant: 'success' })
-    } catch (error) {
-      toast({ title: error.message || __('Export failed'), variant: 'destructive' })
-    } finally {
-      setIsExporting(false)
-    }
-  }, [toast, filters.debouncedFilters])
+    const result = await outboxApi.exportCsv({
+      status: filters.debouncedFilters.status !== 'all' ? filters.debouncedFilters.status : undefined,
+      date_from: filters.debouncedFilters.date_from || undefined,
+      date_to: filters.debouncedFilters.date_to || undefined,
+    })
+    downloadCsv(result.data, result.filename)
+    return { count: result.count }
+  }, [filters.debouncedFilters])
 
   const handleQuickReply = useCallback(async () => {
     if (!quickReplyTo || !quickReplyMessage.trim()) return
@@ -361,14 +353,10 @@ export default function Outbox() {
 
           {/* Export Button */}
           <div className="wsms-col-span-2 xl:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 xl:wsms-mt-0">
-            <Button variant="outline" onClick={handleExport} disabled={isExporting}>
-              {isExporting ? (
-                <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" aria-hidden="true" />
-              ) : (
-                <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
-              )}
-              {__('Export')}
-            </Button>
+            <ExportButton
+              onExport={handleExport}
+              successMessage={__('Exported %d messages successfully')}
+            />
           </div>
         </div>
       </div>

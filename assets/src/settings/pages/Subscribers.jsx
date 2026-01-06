@@ -5,7 +5,6 @@ import {
   Trash2,
   Edit,
   Search,
-  Download,
   Upload,
   CheckCircle,
   XCircle,
@@ -25,6 +24,7 @@ import { DataTable } from '@/components/ui/data-table'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { QuickAddForm } from '@/components/shared/QuickAddForm'
 import { ImportExportDialog } from '@/components/shared/ImportExportDialog'
+import { ExportButton } from '@/components/shared/ExportButton'
 import { Tip } from '@/components/ui/ux-helpers'
 import {
   Dialog,
@@ -106,7 +106,6 @@ export default function Subscribers() {
   const [editSubscriber, setEditSubscriber] = useState(null)
   const [showImportDialog, setShowImportDialog] = useState(false)
   const [isAddingQuick, setIsAddingQuick] = useState(false)
-  const [isExporting, setIsExporting] = useState(false)
 
   // Quick add form state
   const [quickAddName, setQuickAddName] = useState('')
@@ -231,19 +230,12 @@ export default function Subscribers() {
 
   // Handle export
   const handleExport = async () => {
-    setIsExporting(true)
-    try {
-      const result = await subscribersApi.exportCsv({
-        group_id: filters.filters.group_id !== 'all' ? filters.filters.group_id : undefined,
-        status: filters.filters.status !== 'all' ? filters.filters.status : undefined,
-      })
-      downloadCsv(result.data, result.filename)
-      toast({ title: __('Exported %d subscribers successfully').replace('%d', result.count || result.data.length - 1), variant: 'success' })
-    } catch (error) {
-      toast({ title: error.message || __('Export failed'), variant: 'destructive' })
-    } finally {
-      setIsExporting(false)
-    }
+    const result = await subscribersApi.exportCsv({
+      group_id: filters.filters.group_id !== 'all' ? filters.filters.group_id : undefined,
+      status: filters.filters.status !== 'all' ? filters.filters.status : undefined,
+    })
+    downloadCsv(result.data, result.filename)
+    return { count: result.count || result.data.length - 1 }
   }
 
   // Handle quick reply
@@ -568,14 +560,10 @@ export default function Subscribers() {
               <Upload className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
               {__('Import')}
             </Button>
-            <Button variant="outline" onClick={handleExport} disabled={isExporting}>
-              {isExporting ? (
-                <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" aria-hidden="true" />
-              ) : (
-                <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
-              )}
-              {__('Export')}
-            </Button>
+            <ExportButton
+              onExport={handleExport}
+              successMessage={__('Exported %d subscribers successfully')}
+            />
           </div>
         </div>
       </div>
