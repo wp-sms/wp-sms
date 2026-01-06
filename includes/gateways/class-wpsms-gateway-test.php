@@ -95,7 +95,7 @@ class test extends \WP_SMS\Gateway
             ];
 
             //log the result
-            $this->log($this->from, $this->msg, $this->to, $response);
+            $this->log($this->from, $this->msg, $this->to, $response, 'success', $this->media);
 
             /**
              * Run hook after send sms.
@@ -109,7 +109,7 @@ class test extends \WP_SMS\Gateway
             return $response;
 
         } catch (\Exception $e) {
-            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error', $this->media);
 
             return new \WP_Error('send-sms', $e->getMessage());
         }

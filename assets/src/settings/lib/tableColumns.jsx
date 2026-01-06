@@ -108,10 +108,20 @@ export function createMediaColumn({
     header,
     cell: ({ row }) => {
       const media = row[accessorKey]
-      if (!media) {
+      if (!media || (Array.isArray(media) && media.length === 0)) {
         return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
       }
-      const mediaUrls = typeof media === 'string' ? media.split(',').map((url) => url.trim()) : []
+      // Handle both array and string formats
+      const mediaUrls = Array.isArray(media)
+        ? media.filter(Boolean)
+        : typeof media === 'string'
+          ? media.split(',').map((url) => url.trim()).filter(Boolean)
+          : []
+
+      if (mediaUrls.length === 0) {
+        return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
+      }
+
       return (
         <div className="wsms-flex wsms-items-center wsms-gap-1">
           {mediaUrls.slice(0, maxVisible).map((url, idx) => (
