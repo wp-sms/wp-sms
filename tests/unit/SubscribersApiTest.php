@@ -753,4 +753,280 @@ class SubscribersApiTest extends WP_UnitTestCase
 
         return $result ? $wpdb->insert_id : false;
     }
+
+    // =====================================================
+    // Import Endpoint Tests
+    // =====================================================
+
+    /**
+     * Test import endpoint requires authentication
+     */
+    public function testImportSubscribersRequiresAuthentication()
+    {
+        wp_set_current_user(0);
+
+        $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers/import');
+
+        $response = rest_do_request($request);
+
+        $this->assertEquals(401, $response->get_status());
+    }
+
+    /**
+     * Test import without file returns error
+     */
+    public function testImportWithoutFileReturnsError()
+    {
+        $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers/import');
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        $this->assertEquals(400, $response->get_status());
+        $this->assertArrayHasKey('error', $data);
+        $this->assertStringContainsStringIgnoringCase('no file', $data['error']['message']);
+    }
+
+    /**
+     * Test import with valid CSV file succeeds
+     */
+    public function testImportWithValidCsvSucceeds()
+    {
+        // Create a temporary CSV file
+        $csvContent = "Name,Mobile\n";
+        $csvContent .= "Import Test 1,+1" . str_pad(mt_rand(1, 9999999999), 10, '0', STR_PAD_LEFT) . "\n";
+        $csvContent .= "Import Test 2,+1" . str_pad(mt_rand(1, 9999999999), 10, '0', STR_PAD_LEFT) . "\n";
+
+        $tempFile = $this->createTempCsvFile($csvContent);
+
+        $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers/import');
+        $request->set_file_params([
+            'file' => [
+                'name'     => 'test-import.csv',
+                'type'     => 'text/csv',
+                'tmp_name' => $tempFile,
+                'error'    => UPLOAD_ERR_OK,
+                'size'     => filesize($tempFile),
+            ],
+        ]);
+        $request->set_param('skip_duplicates', '1');
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        // Clean up
+        @unlink($tempFile);
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertArrayHasKey('data', $data);
+        $this->assertArrayHasKey('imported', $data['data']);
+        $this->assertEquals(2, $data['data']['imported']);
+    }
+
+    /**
+     * Test import skips duplicate phone numbers
+     */
+    public function testImportSkipsDuplicates()
+    {
+        // First create a subscriber
+        $existingPhone = '+1' . str_pad(mt_rand(1, 9999999999), 10, '0', STR_PAD_LEFT);
+        global $wpdb;
+        $wpdb->insert($wpdb->prefix . 'sms_subscribes', [
+            'name'   => 'Existing Subscriber',
+            'mobile' => $existingPhone,
+            'status' => '1',
+            'date'   => current_time('mysql'),
+        ]);
+
+        // Create CSV with the same phone number
+        $newPhone = '+1' . str_pad(mt_rand(1, 9999999999), 10, '0', STR_PAD_LEFT);
+        $csvContent = "Name,Mobile\n";
+        $csvContent .= "Duplicate User,{$existingPhone}\n";
+        $csvContent .= "New User,{$newPhone}\n";
+
+        $tempFile = $this->createTempCsvFile($csvContent);
+
+        $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers/import');
+        $request->set_file_params([
+            'file' => [
+                'name'     => 'test-import.csv',
+                'type'     => 'text/csv',
+                'tmp_name' => $tempFile,
+                'error'    => UPLOAD_ERR_OK,
+                'size'     => filesize($tempFile),
+            ],
+        ]);
+        $request->set_param('skip_duplicates', '1');
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        // Clean up
+        @unlink($tempFile);
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertEquals(1, $data['data']['imported']);
+        $this->assertEquals(1, $data['data']['skipped']);
+    }
+
+    /**
+     * Test import with invalid phone numbers reports errors
+     */
+    public function testImportWithInvalidPhoneNumbersReportsErrors()
+    {
+        $csvContent = "Name,Mobile\n";
+        $csvContent .= "Valid User,+14155551234\n";
+        $csvContent .= "Invalid User,abc123\n";
+        $csvContent .= "Empty Phone,\n";
+
+        $tempFile = $this->createTempCsvFile($csvContent);
+
+        $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers/import');
+        $request->set_file_params([
+            'file' => [
+                'name'     => 'test-import.csv',
+                'type'     => 'text/csv',
+                'tmp_name' => $tempFile,
+                'error'    => UPLOAD_ERR_OK,
+                'size'     => filesize($tempFile),
+            ],
+        ]);
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        // Clean up
+        @unlink($tempFile);
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertGreaterThanOrEqual(1, $data['data']['skipped']);
+        $this->assertNotEmpty($data['data']['errors']);
+    }
+
+    /**
+     * Test import assigns subscribers to specified group
+     */
+    public function testImportAssignsToGroup()
+    {
+        // Create a test group
+        global $wpdb;
+        $wpdb->insert($wpdb->prefix . 'sms_subscribes_group', ['name' => 'Import Test Group']);
+        $groupId = $wpdb->insert_id;
+
+        $phone = '+1' . str_pad(mt_rand(1, 9999999999), 10, '0', STR_PAD_LEFT);
+        $csvContent = "Name,Mobile\n";
+        $csvContent .= "Group Test User,{$phone}\n";
+
+        $tempFile = $this->createTempCsvFile($csvContent);
+
+        $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers/import');
+        $request->set_file_params([
+            'file' => [
+                'name'     => 'test-import.csv',
+                'type'     => 'text/csv',
+                'tmp_name' => $tempFile,
+                'error'    => UPLOAD_ERR_OK,
+                'size'     => filesize($tempFile),
+            ],
+        ]);
+        $request->set_param('group_id', $groupId);
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        // Clean up
+        @unlink($tempFile);
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertEquals(1, $data['data']['imported']);
+
+        // Verify subscriber was added to the correct group
+        $subscriber = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT * FROM {$wpdb->prefix}sms_subscribes WHERE mobile = %s",
+                $phone
+            )
+        );
+
+        $this->assertNotNull($subscriber);
+        $this->assertEquals($groupId, (int)$subscriber->group_ID);
+    }
+
+    /**
+     * Test import handles empty CSV gracefully
+     */
+    public function testImportHandlesEmptyCsv()
+    {
+        $csvContent = "Name,Mobile\n"; // Only header, no data
+
+        $tempFile = $this->createTempCsvFile($csvContent);
+
+        $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers/import');
+        $request->set_file_params([
+            'file' => [
+                'name'     => 'test-import.csv',
+                'type'     => 'text/csv',
+                'tmp_name' => $tempFile,
+                'error'    => UPLOAD_ERR_OK,
+                'size'     => filesize($tempFile),
+            ],
+        ]);
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        // Clean up
+        @unlink($tempFile);
+
+        $this->assertEquals(200, $response->get_status());
+        $this->assertEquals(0, $data['data']['imported']);
+        $this->assertEquals(0, $data['data']['skipped']);
+    }
+
+    /**
+     * Test import with international phone numbers
+     */
+    public function testImportWithInternationalPhoneNumbers()
+    {
+        $csvContent = "Name,Mobile\n";
+        $csvContent .= "US User,+14155551234\n";
+        $csvContent .= "UK User,+442071234567\n";
+        $csvContent .= "German User,+4917612345678\n";
+
+        $tempFile = $this->createTempCsvFile($csvContent);
+
+        $request = new WP_REST_Request('POST', '/wpsms/v1/subscribers/import');
+        $request->set_file_params([
+            'file' => [
+                'name'     => 'test-import.csv',
+                'type'     => 'text/csv',
+                'tmp_name' => $tempFile,
+                'error'    => UPLOAD_ERR_OK,
+                'size'     => filesize($tempFile),
+            ],
+        ]);
+
+        $response = rest_do_request($request);
+        $data = $response->get_data();
+
+        // Clean up
+        @unlink($tempFile);
+
+        $this->assertEquals(200, $response->get_status());
+        // At least some should import successfully
+        $this->assertGreaterThanOrEqual(1, $data['data']['imported']);
+    }
+
+    /**
+     * Helper to create a temporary CSV file
+     *
+     * @param string $content CSV content
+     * @return string Path to temporary file
+     */
+    private function createTempCsvFile($content)
+    {
+        $tempFile = tempnam(sys_get_temp_dir(), 'csv_test_');
+        file_put_contents($tempFile, $content);
+        return $tempFile;
+    }
 }

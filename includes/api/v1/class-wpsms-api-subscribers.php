@@ -111,6 +111,26 @@ class SubscribersApi extends RestApi
                 ],
             ],
         ]);
+
+        // POST /subscribers/import - Import from CSV
+        register_rest_route($this->namespace . '/v1', '/subscribers/import', [
+            [
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => [$this, 'importSubscribers'],
+                'permission_callback' => [$this, 'checkPermission'],
+                'args'                => [
+                    'group_id' => [
+                        'required' => false,
+                        'type'     => 'integer',
+                    ],
+                    'skip_duplicates' => [
+                        'required' => false,
+                        'type'     => 'string',
+                        'default'  => '1',
+                    ],
+                ],
+            ],
+        ]);
     }
 
     /**
@@ -628,6 +648,129 @@ class SubscribersApi extends RestApi
             'csv_data' => $csv_data,
             'count'    => count($subscribers),
         ]);
+    }
+
+    /**
+     * Import subscribers from CSV
+     */
+    public function importSubscribers(WP_REST_Request $request)
+    {
+        $files = $request->get_file_params();
+
+        if (empty($files['file'])) {
+            return self::response(__('No file uploaded', 'wp-sms'), 400);
+        }
+
+        $file = $files['file'];
+
+        // Validate file type
+        $allowed_types = ['text/csv', 'text/plain', 'application/csv', 'application/vnd.ms-excel'];
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mime_type = finfo_file($finfo, $file['tmp_name']);
+        finfo_close($finfo);
+
+        // Also check extension as fallback
+        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+        if (!in_array($mime_type, $allowed_types) && $extension !== 'csv') {
+            return self::response(__('Invalid file type. Please upload a CSV file.', 'wp-sms'), 400);
+        }
+
+        // Parse CSV
+        $handle = fopen($file['tmp_name'], 'r');
+        if ($handle === false) {
+            return self::response(__('Failed to read uploaded file', 'wp-sms'), 500);
+        }
+
+        $group_id = $request->get_param('group_id') ?: 0;
+        $skip_duplicates = $request->get_param('skip_duplicates') === '1';
+
+        $imported = 0;
+        $skipped = 0;
+        $errors = [];
+        $row_num = 0;
+        $header = null;
+
+        while (($row = fgetcsv($handle)) !== false) {
+            $row_num++;
+
+            // First row is header
+            if ($row_num === 1) {
+                $header = array_map('strtolower', array_map('trim', $row));
+                continue;
+            }
+
+            // Skip empty rows
+            if (empty(array_filter($row))) {
+                continue;
+            }
+
+            // Map columns by header or position
+            $name_index = array_search('name', $header);
+            $mobile_index = array_search('mobile', $header);
+
+            // Fallback to position if headers not found
+            if ($mobile_index === false) {
+                $mobile_index = 1; // Second column
+            }
+            if ($name_index === false) {
+                $name_index = 0; // First column
+            }
+
+            $name = isset($row[$name_index]) ? sanitize_text_field(trim($row[$name_index])) : '';
+            $mobile = isset($row[$mobile_index]) ? sanitize_text_field(trim($row[$mobile_index])) : '';
+
+            if (empty($mobile)) {
+                $errors[] = sprintf(__('Row %d: Mobile number is required', 'wp-sms'), $row_num);
+                $skipped++;
+                continue;
+            }
+
+            // Parse phone number
+            $numberParser = new NumberParser($mobile);
+            $parsed_mobile = $numberParser->getValidNumber();
+
+            if (is_wp_error($parsed_mobile)) {
+                $errors[] = sprintf(__('Row %d: %s', 'wp-sms'), $row_num, $parsed_mobile->get_error_message());
+                $skipped++;
+                continue;
+            }
+
+            // Check for duplicates
+            $existing = Newsletter::getSubscriberByMobile($parsed_mobile);
+            if ($existing) {
+                if ($skip_duplicates) {
+                    $skipped++;
+                    continue;
+                } else {
+                    $errors[] = sprintf(__('Row %d: Subscriber already exists', 'wp-sms'), $row_num);
+                    $skipped++;
+                    continue;
+                }
+            }
+
+            // Add subscriber
+            $result = Newsletter::addSubscriber($name, $parsed_mobile, $group_id, '1');
+
+            if ($result) {
+                $imported++;
+            } else {
+                $errors[] = sprintf(__('Row %d: Failed to add subscriber', 'wp-sms'), $row_num);
+                $skipped++;
+            }
+        }
+
+        fclose($handle);
+
+        return self::response(
+            sprintf(__('Import completed: %d imported, %d skipped', 'wp-sms'), $imported, $skipped),
+            200,
+            [
+                'imported' => $imported,
+                'skipped'  => $skipped,
+                'errors'   => array_slice($errors, 0, 10), // Limit errors to first 10
+            ]
+        );
     }
 }
 
