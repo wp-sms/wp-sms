@@ -115,7 +115,7 @@ export function SmsPreviewDialog({
   isSending,
 }) {
   const totalSms = recipientCount * smsInfo.segments
-  const { groups = [], roles = [], numbers = [] } = recipients
+  const { groups = [], roles = [], users = [], numbers = [] } = recipients
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -155,7 +155,7 @@ export function SmsPreviewDialog({
               </div>
 
               {/* Recipient Breakdown */}
-              {(groups.length > 0 || roles.length > 0 || numbers.length > 0) && (
+              {(groups.length > 0 || roles.length > 0 || users.length > 0 || numbers.length > 0) && (
                 <div className="wsms-space-y-2">
                   <p className="wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase">
                     Sending to
@@ -169,6 +169,11 @@ export function SmsPreviewDialog({
                     {roles.length > 0 && (
                       <span className="wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground">
                         {roles.length} role{roles.length !== 1 ? 's' : ''}
+                      </span>
+                    )}
+                    {users.length > 0 && (
+                      <span className="wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground">
+                        {users.length} user{users.length !== 1 ? 's' : ''}
                       </span>
                     )}
                     {numbers.length > 0 && (
