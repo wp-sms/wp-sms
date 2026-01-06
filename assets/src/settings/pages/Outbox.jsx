@@ -13,7 +13,6 @@ import {
   MessageSquare,
   TrendingUp,
   TrendingDown,
-  CalendarDays,
   X,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
@@ -23,6 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { DataTable } from '@/components/ui/data-table'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { ExportButton } from '@/components/shared/ExportButton'
+import { DateRangePicker } from '@/components/shared/DateRangePicker'
 import { Tip } from '@/components/ui/ux-helpers'
 import {
   Dialog,
@@ -397,29 +397,13 @@ export default function Outbox() {
               </SelectContent>
             </Select>
 
-            {/* Date Range - grid on mobile/tablet for proper sizing */}
-            <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-2 xl:wsms-pl-2 xl:wsms-border-l xl:wsms-border-border">
-              <div className="wsms-relative wsms-col-span-1">
-                <CalendarDays className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
-                <Input
-                  type="date"
-                  value={filters.filters.date_from}
-                  onChange={(e) => filters.setFilter('date_from', e.target.value)}
-                  className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-pl-8 wsms-text-[12px]"
-                  aria-label="From date"
-                />
-              </div>
-              <div className="wsms-relative wsms-col-span-1">
-                <CalendarDays className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none xl:wsms-hidden" aria-hidden="true" />
-                <Input
-                  type="date"
-                  value={filters.filters.date_to}
-                  onChange={(e) => filters.setFilter('date_to', e.target.value)}
-                  className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-pl-8 xl:wsms-pl-3 wsms-text-[12px]"
-                  aria-label="To date"
-                />
-              </div>
-            </div>
+            {/* Date Range */}
+            <DateRangePicker
+              from={filters.filters.date_from}
+              to={filters.filters.date_to}
+              onFromChange={(value) => filters.setFilter('date_from', value)}
+              onToChange={(value) => filters.setFilter('date_to', value)}
+            />
 
             {/* Actions */}
             <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ml-auto">
