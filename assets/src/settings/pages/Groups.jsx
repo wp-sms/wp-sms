@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import {
   FolderOpen,
   Plus,
@@ -8,17 +8,14 @@ import {
   Loader2,
   Save,
   X,
-  Send,
   LayoutGrid,
   List,
-  MoreHorizontal,
 } from 'lucide-react'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { DataTable } from '@/components/ui/data-table'
 import { QuickAddForm } from '@/components/shared/QuickAddForm'
-import { Tip } from '@/components/ui/ux-helpers'
 import {
   Dialog,
   DialogContent,
@@ -31,27 +28,31 @@ import {
 import { groupsApi } from '@/api/groupsApi'
 import { cn, __ } from '@/lib/utils'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
+import { useDataTable } from '@/hooks/useDataTable'
+import { useFormDialog } from '@/hooks/useFormDialog'
 import { useToast } from '@/components/ui/toaster'
 
 export default function Groups() {
-  // Data state
-  const [groups, setGroups] = useState([])
-  const [pagination, setPagination] = useState({
-    total: 0,
-    total_pages: 1,
-    current_page: 1,
-    per_page: 20,
-  })
-
-  // Toast notification
   const { toast } = useToast()
 
+  // Data management with useDataTable hook
+  const table = useDataTable({
+    fetchFn: (params) => groupsApi.getGroups(params),
+  })
+
+  // Delete confirmation dialog using useFormDialog
+  const deleteDialog = useFormDialog({
+    saveFn: async (id) => {
+      await groupsApi.deleteGroup(id)
+      table.removeItems([id])
+    },
+    onSuccess: () => {
+      toast({ title: __('Group deleted successfully'), variant: 'success' })
+    },
+    successMessage: __('Group deleted successfully'),
+  })
+
   // UI state
-  const [isLoading, setIsLoading] = useState(true)
-  const [initialLoadDone, setInitialLoadDone] = useState(false)
-  const [selectedIds, setSelectedIds] = useState([])
-  const [editGroup, setEditGroup] = useState(null)
-  const [deleteGroup, setDeleteGroup] = useState(null)
   const [isAddingQuick, setIsAddingQuick] = useState(false)
   const [viewMode, setViewMode] = useState('list') // 'list' or 'grid'
 
@@ -59,46 +60,13 @@ export default function Groups() {
   const [inlineEditId, setInlineEditId] = useState(null)
   const [inlineEditValue, setInlineEditValue] = useState('')
 
-  // Form state for edit dialog
-  const [formData, setFormData] = useState({ name: '' })
-  const [isSaving, setIsSaving] = useState(false)
-  const [isDeleting, setIsDeleting] = useState(false)
-
-  // Fetch groups
-  const fetchGroups = useCallback(async (page = 1) => {
-    setIsLoading(true)
-    try {
-      const result = await groupsApi.getGroups({
-        page,
-        per_page: pagination.per_page,
-      })
-      setGroups(result.items)
-      setPagination(result.pagination)
-    } catch (error) {
-      toast({ title: error.message, variant: 'destructive' })
-    } finally {
-      setIsLoading(false)
-      setInitialLoadDone(true)
-    }
-  }, [pagination.per_page])
-
-  // Initial fetch
-  useEffect(() => {
-    fetchGroups()
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Handle page change
-  const handlePageChange = (page) => {
-    fetchGroups(page)
-  }
-
   // Handle quick add
   const handleQuickAdd = async (name) => {
     setIsAddingQuick(true)
     try {
       await groupsApi.createGroup({ name })
       toast({ title: __('Group created successfully'), variant: 'success' })
-      fetchGroups(1)
+      table.fetch({ page: 1 })
     } catch (error) {
       throw error
     } finally {
@@ -123,7 +91,7 @@ export default function Groups() {
       await groupsApi.updateGroup(inlineEditId, { name: inlineEditValue.trim() })
       toast({ title: __('Group updated successfully'), variant: 'success' })
       setInlineEditId(null)
-      fetchGroups(pagination.current_page)
+      table.refresh()
     } catch (error) {
       toast({ title: error.message, variant: 'destructive' })
     }
@@ -144,20 +112,18 @@ export default function Groups() {
     }
   }
 
-  // Handle delete
-  const handleDelete = async () => {
-    if (!deleteGroup) return
+  // Handle delete click - opens dialog with item
+  const handleDeleteClick = useCallback((group) => {
+    deleteDialog.open(group)
+  }, [deleteDialog])
 
-    setIsDeleting(true)
+  // Handle delete confirm
+  const handleDeleteConfirm = async () => {
+    if (!deleteDialog.item) return
     try {
-      await groupsApi.deleteGroup(deleteGroup.id)
-      toast({ title: __('Group deleted successfully'), variant: 'success' })
-      setDeleteGroup(null)
-      fetchGroups(pagination.current_page)
-    } catch (error) {
-      toast({ title: error.message, variant: 'destructive' })
-    } finally {
-      setIsDeleting(false)
+      await deleteDialog.save()
+    } catch {
+      // Error already handled by useFormDialog
     }
   }
 
@@ -236,24 +202,23 @@ export default function Groups() {
     {
       label: __('Delete'),
       icon: Trash2,
-      onClick: (row) => setDeleteGroup(row),
+      onClick: handleDeleteClick,
       variant: 'destructive',
     },
   ]
 
   // Calculate total subscribers
-  const totalSubscribers = groups.reduce((sum, g) => sum + (g.subscriber_count || 0), 0)
+  const totalSubscribers = table.data.reduce((sum, g) => sum + (g.subscriber_count || 0), 0)
 
-  // Show skeleton during initial load to prevent flash
-  if (!initialLoadDone) {
+  // Show skeleton during initial load
+  if (!table.initialLoadDone) {
     return <PageLoadingSkeleton />
   }
 
   // Empty state
-  if (groups.length === 0) {
+  if (table.data.length === 0 && !table.isLoading) {
     return (
       <div className="wsms-space-y-6 wsms-stagger-children">
-        {/* Empty State - Full Width Centered */}
         <Card className="wsms-border-dashed">
           <CardContent className="wsms-py-16">
             <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center wsms-max-w-md wsms-mx-auto">
@@ -267,7 +232,6 @@ export default function Groups() {
                 {__('Groups help you organize subscribers for targeted messaging. Segment your audience by interest, location, or any criteria that matters to your communication.')}
               </p>
 
-              {/* Inline Create Form */}
               <div className="wsms-w-full wsms-max-w-sm">
                 <QuickAddForm
                   placeholder={__('Enter group name...')}
@@ -282,7 +246,6 @@ export default function Groups() {
                 />
               </div>
 
-              {/* Feature hints */}
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4 wsms-mt-8 wsms-pt-6 wsms-border-t wsms-border-border wsms-w-full">
                 <div className="wsms-text-left wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
                   <Users className="wsms-h-4 wsms-w-4 wsms-text-primary wsms-mb-2" />
@@ -313,7 +276,7 @@ export default function Groups() {
               <FolderOpen className="wsms-h-5 wsms-w-5 wsms-text-primary" />
             </div>
             <div>
-              <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{pagination.total}</p>
+              <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{table.pagination.total}</p>
               <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Groups')}</p>
             </div>
           </div>
@@ -358,7 +321,7 @@ export default function Groups() {
         </div>
       </div>
 
-      {/* Quick Add - Inline style */}
+      {/* Quick Add */}
       <Card>
         <CardContent className="wsms-py-4">
           <div className="wsms-flex wsms-items-center wsms-gap-4">
@@ -386,14 +349,14 @@ export default function Groups() {
           <CardContent className="wsms-p-0">
             <DataTable
               columns={columns}
-              data={groups}
-              loading={isLoading}
+              data={table.data}
+              loading={table.isLoading}
               pagination={{
-                total: pagination.total,
-                totalPages: pagination.total_pages,
-                page: pagination.current_page,
-                perPage: pagination.per_page,
-                onPageChange: handlePageChange,
+                total: table.pagination.total,
+                totalPages: table.pagination.total_pages,
+                page: table.pagination.current_page,
+                perPage: table.pagination.per_page,
+                onPageChange: table.handlePageChange,
               }}
               rowActions={rowActions}
               emptyMessage="No groups found"
@@ -403,7 +366,7 @@ export default function Groups() {
         </Card>
       ) : (
         <div className="wsms-grid wsms-grid-cols-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4 wsms-gap-4">
-          {groups.map((group) => (
+          {table.data.map((group) => (
             <Card
               key={group.id}
               className="wsms-card-hover wsms-group wsms-relative wsms-overflow-hidden"
@@ -450,7 +413,7 @@ export default function Groups() {
                           <Edit className="wsms-h-3.5 wsms-w-3.5" />
                         </button>
                         <button
-                          onClick={() => setDeleteGroup(group)}
+                          onClick={() => handleDeleteClick(group)}
                           className="wsms-p-1.5 wsms-rounded-md wsms-bg-muted/80 wsms-text-muted-foreground hover:wsms-text-destructive wsms-transition-colors"
                         >
                           <Trash2 className="wsms-h-3.5 wsms-w-3.5" />
@@ -487,24 +450,24 @@ export default function Groups() {
       )}
 
       {/* Pagination for grid view */}
-      {viewMode === 'grid' && pagination.total_pages > 1 && (
+      {viewMode === 'grid' && table.pagination.total_pages > 1 && (
         <div className="wsms-flex wsms-justify-center wsms-gap-2">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => handlePageChange(pagination.current_page - 1)}
-            disabled={pagination.current_page === 1}
+            onClick={() => table.handlePageChange(table.pagination.current_page - 1)}
+            disabled={table.pagination.current_page === 1}
           >
             Previous
           </Button>
           <span className="wsms-flex wsms-items-center wsms-px-3 wsms-text-[12px] wsms-text-muted-foreground">
-            Page {pagination.current_page} of {pagination.total_pages}
+            Page {table.pagination.current_page} of {table.pagination.total_pages}
           </span>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => handlePageChange(pagination.current_page + 1)}
-            disabled={pagination.current_page === pagination.total_pages}
+            onClick={() => table.handlePageChange(table.pagination.current_page + 1)}
+            disabled={table.pagination.current_page === table.pagination.total_pages}
           >
             Next
           </Button>
@@ -512,12 +475,12 @@ export default function Groups() {
       )}
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={!!deleteGroup} onOpenChange={() => setDeleteGroup(null)}>
+      <Dialog open={deleteDialog.isOpen} onOpenChange={(open) => !open && deleteDialog.close()}>
         <DialogContent size="sm">
           <DialogHeader>
             <DialogTitle>{__('Delete Group')}</DialogTitle>
             <DialogDescription>
-              {__('Are you sure you want to delete')} "{deleteGroup?.name}"?
+              {__('Are you sure you want to delete')} "{deleteDialog.item?.name}"?
             </DialogDescription>
           </DialogHeader>
           <DialogBody>
@@ -528,11 +491,11 @@ export default function Groups() {
             </div>
           </DialogBody>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteGroup(null)}>
+            <Button variant="outline" onClick={deleteDialog.close}>
               {__('Cancel')}
             </Button>
-            <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
-              {isDeleting ? (
+            <Button variant="destructive" onClick={handleDeleteConfirm} disabled={deleteDialog.isSaving}>
+              {deleteDialog.isSaving ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
                   {__('Deleting...')}
