@@ -82,6 +82,29 @@ class OutboxApi extends RestApi
                 ],
             ],
         ]);
+
+        // GET /outbox/export - Export messages to CSV
+        register_rest_route($this->namespace . '/v1', '/outbox/export', [
+            [
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => [$this, 'exportItems'],
+                'permission_callback' => [$this, 'checkPermission'],
+                'args'                => [
+                    'status' => [
+                        'type' => 'string',
+                        'enum' => ['success', 'failed', 'all'],
+                    ],
+                    'date_from' => [
+                        'type'   => 'string',
+                        'format' => 'date',
+                    ],
+                    'date_to' => [
+                        'type'   => 'string',
+                        'format' => 'date',
+                    ],
+                ],
+            ],
+        ]);
     }
 
     /**
@@ -518,6 +541,86 @@ class OutboxApi extends RestApi
             200,
             $response_data
         );
+    }
+
+    /**
+     * Export outbox messages to CSV format
+     */
+    public function exportItems(WP_REST_Request $request)
+    {
+        $status    = $request->get_param('status');
+        $date_from = $request->get_param('date_from');
+        $date_to   = $request->get_param('date_to');
+
+        // Build WHERE clause
+        $where = ['1=1'];
+        $params = [];
+
+        if ($status && $status !== 'all') {
+            // Map 'failed' to 'error' (database uses 'error' for failed messages)
+            $db_status = ($status === 'failed') ? 'error' : $status;
+            $where[] = "status = %s";
+            $params[] = $db_status;
+        }
+
+        if ($date_from) {
+            $where[] = "DATE(date) >= %s";
+            $params[] = $date_from;
+        }
+
+        if ($date_to) {
+            $where[] = "DATE(date) <= %s";
+            $params[] = $date_to;
+        }
+
+        $where_sql = implode(' AND ', $where);
+
+        // Get all items matching filters (no pagination for export)
+        $query = "SELECT * FROM {$this->tb_prefix}sms_send WHERE {$where_sql} ORDER BY date DESC";
+        if (!empty($params)) {
+            $query = $this->db->prepare($query, $params);
+        }
+
+        $items = $this->db->get_results($query, ARRAY_A);
+
+        // Build CSV data
+        $csvData = [];
+
+        // Header row
+        $csvData[] = [
+            __('ID', 'wp-sms'),
+            __('Date', 'wp-sms'),
+            __('Sender', 'wp-sms'),
+            __('Recipient', 'wp-sms'),
+            __('Message', 'wp-sms'),
+            __('Status', 'wp-sms'),
+            __('Response', 'wp-sms'),
+        ];
+
+        // Data rows
+        foreach ($items ?: [] as $item) {
+            // Normalize status for export
+            $itemStatus = ($item['status'] === 'error') ? __('Failed', 'wp-sms') : __('Sent', 'wp-sms');
+
+            $csvData[] = [
+                $item['ID'],
+                $item['date'],
+                $item['sender'],
+                $item['recipient'],
+                // Escape quotes and wrap message in quotes to handle commas
+                '"' . str_replace('"', '""', $item['message']) . '"',
+                $itemStatus,
+                '"' . str_replace('"', '""', $item['response'] ?? '') . '"',
+            ];
+        }
+
+        $filename = 'outbox-export-' . date('Y-m-d') . '.csv';
+
+        return self::response(__('Export generated successfully', 'wp-sms'), 200, [
+            'data'     => $csvData,
+            'filename' => $filename,
+            'count'    => count($items ?: []),
+        ]);
     }
 }
 
