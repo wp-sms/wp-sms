@@ -176,12 +176,8 @@
 }
 
 .wsms-content-inner {
-  max-width: 960px;
-}
-
-/* Data-heavy pages need more width */
-.wsms-content-inner.wsms-content-wide {
-  max-width: 1200px;
+  /* No max-width - content stretches to fill available space */
+  /* Data tables benefit from full width on large screens */
 }
 
 /* ============================================
