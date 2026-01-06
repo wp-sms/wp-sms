@@ -199,9 +199,12 @@ export default function Outbox() {
     [handleBulkAction]
   )
 
-  // Calculate success rate
+  // Calculate success rate based on completed messages (sent + failed), not total
   const stats = table.stats || { total: 0, success: 0, failed: 0 }
-  const successRate = stats.total > 0 ? Math.round((stats.success / stats.total) * 100) : 0
+  const completedMessages = stats.success + stats.failed
+  const successRate = completedMessages > 0 ? Math.round((stats.success / completedMessages) * 100) : 0
+  // Consider it a good rate if there are no failures or rate is high
+  const isGoodRate = stats.failed === 0 || successRate >= 90
 
   // Loading skeleton - show until initial API fetch completes
   if (!table.initialLoadDone) {
@@ -333,18 +336,18 @@ export default function Outbox() {
             <div
               className={cn(
                 'wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg',
-                successRate >= 90
+                isGoodRate
                   ? 'wsms-bg-success/10'
                   : successRate >= 70
                     ? 'wsms-bg-amber-100 dark:wsms-bg-amber-900/30'
                     : 'wsms-bg-destructive/10'
               )}
             >
-              {successRate >= 70 ? (
+              {isGoodRate || successRate >= 70 ? (
                 <TrendingUp
                   className={cn(
                     'wsms-h-5 wsms-w-5',
-                    successRate >= 90
+                    isGoodRate
                       ? 'wsms-text-success'
                       : 'wsms-text-amber-600 dark:wsms-text-amber-400'
                   )}
@@ -358,7 +361,7 @@ export default function Outbox() {
               <p
                 className={cn(
                   'wsms-text-xl wsms-font-bold',
-                  successRate >= 90
+                  isGoodRate
                     ? 'wsms-text-success'
                     : successRate >= 70
                       ? 'wsms-text-amber-600 dark:wsms-text-amber-400'
@@ -525,7 +528,7 @@ export default function Outbox() {
                   <div className="wsms-flex-1">
                     <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Status</p>
                     <StatusBadge variant={viewMessage.status === 'success' ? 'success' : 'failed'}>
-                      {viewMessage.status === 'success' ? 'Sent' : 'Failed'}
+                      {viewMessage.status === 'success' ? __('Sent') : __('Failed')}
                     </StatusBadge>
                   </div>
                   <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
