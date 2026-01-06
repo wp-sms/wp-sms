@@ -363,13 +363,11 @@ export default function Outbox() {
           <div className="wsms-col-span-2 xl:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 xl:wsms-mt-0">
             <Button variant="outline" onClick={handleExport} disabled={isExporting}>
               {isExporting ? (
-                <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" aria-hidden="true" />
+                <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" aria-hidden="true" />
               ) : (
-                <>
-                  <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
-                  Export
-                </>
+                <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
               )}
+              {__('Export')}
             </Button>
           </div>
         </div>
