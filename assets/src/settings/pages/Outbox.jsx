@@ -14,6 +14,7 @@ import {
   TrendingUp,
   TrendingDown,
   X,
+  Image,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -528,6 +529,33 @@ export default function Outbox() {
                     <p className="wsms-text-[13px] wsms-whitespace-pre-wrap">{viewMessage.message}</p>
                   </div>
                 </div>
+
+                {/* Media (MMS) */}
+                {viewMessage.media && Array.isArray(viewMessage.media) && viewMessage.media.length > 0 && (
+                  <div>
+                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1 wsms-flex wsms-items-center wsms-gap-1">
+                      <Image className="wsms-h-3 wsms-w-3" aria-hidden="true" />
+                      Media
+                    </p>
+                    <div className="wsms-flex wsms-flex-wrap wsms-gap-2">
+                      {viewMessage.media.map((url, idx) => (
+                        <a
+                          key={idx}
+                          href={url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="wsms-block wsms-rounded-lg wsms-overflow-hidden wsms-border wsms-border-border hover:wsms-border-primary wsms-transition-colors"
+                        >
+                          <img
+                            src={url}
+                            alt={`Media ${idx + 1}`}
+                            className="wsms-max-w-[150px] wsms-max-h-[100px] wsms-object-cover"
+                          />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 {/* Gateway Response */}
                 {viewMessage.response && (
