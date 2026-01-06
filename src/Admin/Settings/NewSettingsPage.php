@@ -215,7 +215,10 @@ class NewSettingsPage extends Singleton
     {
         return [
             'apiUrl'           => rest_url('wpsms/v1/'),
+            'ajaxUrl'          => admin_url('admin-ajax.php'),
             'nonce'            => wp_create_nonce('wp_rest'),
+            'ajaxNonce'        => wp_create_nonce('wp_sms_test_gateway'),
+            'pluginUrl'        => WP_SMS_URL,
             'settings'         => $this->maskSensitiveSettings(Option::getOptions()),
             'proSettings'      => $this->maskSensitiveSettings(Option::getOptions(true)),
             'addons'           => $this->getActiveAddons(),
@@ -235,6 +238,26 @@ class NewSettingsPage extends Singleton
             'addonSettings'    => $this->getAddonSettingsSchema(),
             'addonValues'      => $this->getAddonOptionValues(),
             'thirdPartyPlugins' => $this->getThirdPartyPluginStatus(),
+            // Wizard-related data
+            'features'         => $this->getFeatureFlags(),
+        ];
+    }
+
+    /**
+     * Get feature flags for conditional UI rendering
+     *
+     * @return array
+     */
+    private function getFeatureFlags()
+    {
+        // Use same option as legacy wizard for visibility consistency
+        // Legacy option: wp_sms_{slug}_activation_notice_shown where slug = 'wp-sms-onboarding'
+        $activationNoticeShown = get_option('wp_sms_wp-sms-onboarding_activation_notice_shown', false);
+
+        return [
+            'wizardCompleted'       => (bool) $activationNoticeShown,
+            'activationNoticeShown' => (bool) $activationNoticeShown,
+            'isProActive'           => is_plugin_active('wp-sms-pro/wp-sms-pro.php'),
         ];
     }
 

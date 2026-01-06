@@ -585,11 +585,13 @@ export default function Gateway() {
               {__('Re-run the guided setup to update your gateway configuration')}
             </p>
           </div>
-          <Button variant="outline" size="sm" asChild>
-            <a href={`${window.wpSmsSettings?.adminUrl || '/wp-admin/'}admin.php?page=wp-sms&path=wp-sms-onboarding`}>
-              <RotateCcw className="wsms-h-4 wsms-w-4 wsms-mr-1" />
-              {__('Re-run Wizard')}
-            </a>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.wpSmsOpenWizard?.()}
+          >
+            <RotateCcw className="wsms-h-4 wsms-w-4 wsms-mr-1" />
+            {__('Re-run Wizard')}
           </Button>
         </div>
       </Card>

@@ -4,6 +4,7 @@ import { ThemeProvider } from './context/ThemeContext'
 import { Toaster } from './components/ui/toaster'
 import AppShell from './components/layout/AppShell'
 import ErrorBoundary from './components/ErrorBoundary'
+import { SetupWizard } from './components/wizard'
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
         <SettingsProvider>
           <Toaster>
             <AppShell />
+            <SetupWizard />
           </Toaster>
         </SettingsProvider>
       </ThemeProvider>

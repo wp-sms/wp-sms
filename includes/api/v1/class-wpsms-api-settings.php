@@ -103,6 +103,25 @@ class SettingsApi extends RestApi
                 'permission_callback' => [$this, 'checkPermission'],
             ],
         ]);
+
+        // Wizard status
+        register_rest_route($this->namespace . '/v1', '/wizard/status', [
+            [
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => [$this, 'getWizardStatus'],
+                'permission_callback' => [$this, 'checkPermission'],
+            ],
+        ]);
+
+        // Mark wizard complete
+        register_rest_route($this->namespace . '/v1', '/wizard/complete', [
+            [
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => [$this, 'markWizardComplete'],
+                'permission_callback' => [$this, 'checkPermission'],
+            ],
+        ]);
+
     }
 
     /**
@@ -837,6 +856,48 @@ class SettingsApi extends RestApi
         }
 
         return null;
+    }
+
+    /**
+     * Get wizard status
+     *
+     * Uses the same option as legacy wizard: wp_sms_wp-sms-onboarding_activation_notice_shown
+     * This ensures consistent behavior between legacy and React wizards.
+     *
+     * @param WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function getWizardStatus(WP_REST_Request $request)
+    {
+        // Use same option as legacy wizard for visibility consistency
+        $activationNoticeShown = get_option('wp_sms_wp-sms-onboarding_activation_notice_shown', false);
+        $gatewayConfigured = !empty(Option::getOption('gateway_name'));
+
+        return self::response(__('Wizard status retrieved', 'wp-sms'), 200, [
+            'completed'              => (bool) $activationNoticeShown,
+            'activationNoticeShown'  => (bool) $activationNoticeShown,
+            'gatewayConfigured'      => $gatewayConfigured,
+            'showWizard'             => !$activationNoticeShown && !$gatewayConfigured,
+        ]);
+    }
+
+    /**
+     * Mark wizard as complete
+     *
+     * Sets the same option as legacy wizard: wp_sms_wp-sms-onboarding_activation_notice_shown
+     * This ensures the legacy activation notice is also dismissed.
+     *
+     * @param WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function markWizardComplete(WP_REST_Request $request)
+    {
+        // Use same option as legacy wizard
+        update_option('wp_sms_wp-sms-onboarding_activation_notice_shown', true);
+
+        return self::response(__('Wizard marked as complete', 'wp-sms'), 200, [
+            'completed' => true,
+        ]);
     }
 }
 
