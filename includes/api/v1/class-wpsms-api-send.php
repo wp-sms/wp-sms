@@ -87,6 +87,21 @@ class SendSmsApi extends \WP_SMS\RestApi
             )
         ));
 
+        // User search endpoint for recipient selector
+        register_rest_route($this->namespace . '/v1', '/users/search', array(
+            array(
+                'methods'             => \WP_REST_Server::READABLE,
+                'callback'            => array($this, 'searchUsersCallback'),
+                'permission_callback' => function () {
+                    return current_user_can('wpsms_sendsms');
+                },
+                'args'                => [
+                    'search' => ['required' => false, 'type' => 'string'],
+                    'per_page' => ['required' => false, 'type' => 'integer', 'default' => 20],
+                ],
+            )
+        ));
+
         // Note: /outbox endpoint moved to class-wpsms-api-outbox.php
     }
 
@@ -354,6 +369,12 @@ class SendSmsApi extends \WP_SMS\RestApi
                 }
             }
 
+            // Get numbers from specific users
+            if (!empty($recipients['users']) && is_array($recipients['users'])) {
+                $userNumbers = Helper::getUsersMobileNumbers(false, $recipients['users']);
+                $recipientNumbers = array_merge($recipientNumbers, $userNumbers);
+            }
+
             // Add direct numbers
             if (!empty($recipients['numbers']) && is_array($recipients['numbers'])) {
                 $recipientNumbers = array_merge($recipientNumbers, $recipients['numbers']);
@@ -468,6 +489,7 @@ class SendSmsApi extends \WP_SMS\RestApi
             $counts = [
                 'groups' => 0,
                 'roles' => 0,
+                'users' => 0,
                 'numbers' => 0,
                 'total' => 0
             ];
@@ -492,6 +514,13 @@ class SendSmsApi extends \WP_SMS\RestApi
                 $allNumbers = array_merge($allNumbers, $roleNumbers);
             }
 
+            // Count from specific users
+            if (!empty($recipients['users']) && is_array($recipients['users'])) {
+                $userNumbers = Helper::getUsersMobileNumbers(false, $recipients['users']);
+                $counts['users'] = count($userNumbers);
+                $allNumbers = array_merge($allNumbers, $userNumbers);
+            }
+
             // Count direct numbers
             if (!empty($recipients['numbers']) && is_array($recipients['numbers'])) {
                 $counts['numbers'] = count($recipients['numbers']);
@@ -502,6 +531,58 @@ class SendSmsApi extends \WP_SMS\RestApi
             $counts['total'] = count(array_unique($allNumbers));
 
             return self::response('', 200, $counts);
+        } catch (\Throwable $e) {
+            return self::response($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Search users for recipient selector
+     * Returns users with their mobile numbers
+     *
+     * @param WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function searchUsersCallback(WP_REST_Request $request)
+    {
+        try {
+            $search = $request->get_param('search');
+            $perPage = $request->get_param('per_page') ?? 20;
+            $mobileFieldKey = Helper::getUserMobileFieldName();
+
+            $args = [
+                'number' => $perPage,
+                'orderby' => 'display_name',
+                'order' => 'ASC',
+            ];
+
+            // Add search if provided
+            if (!empty($search)) {
+                // Check if search is numeric (user ID search)
+                if (is_numeric($search)) {
+                    $args['include'] = [intval($search)];
+                } else {
+                    $args['search'] = '*' . $search . '*';
+                    $args['search_columns'] = ['user_login', 'user_email', 'display_name', 'user_nicename'];
+                }
+            }
+
+            $userQuery = new \WP_User_Query($args);
+            $users = $userQuery->get_results();
+
+            $results = [];
+            foreach ($users as $user) {
+                $mobile = get_user_meta($user->ID, $mobileFieldKey, true);
+                $results[] = [
+                    'id' => $user->ID,
+                    'name' => $user->display_name,
+                    'email' => $user->user_email,
+                    'mobile' => $mobile ?: null,
+                    'hasMobile' => !empty($mobile),
+                ];
+            }
+
+            return self::response('', 200, ['users' => $results]);
         } catch (\Throwable $e) {
             return self::response($e->getMessage(), 400);
         }

@@ -38,7 +38,7 @@ export default function SendSms() {
   // Form state
   const [senderId, setSenderId] = useState(defaultSender)
   const [message, setMessage] = useState('')
-  const [recipients, setRecipients] = useState({ groups: [], roles: [], numbers: [] })
+  const [recipients, setRecipients] = useState({ groups: [], roles: [], users: [], numbers: [] })
   const [flashSms, setFlashSms] = useState(false)
   const [mediaUrl, setMediaUrl] = useState('')
 
@@ -67,7 +67,7 @@ export default function SendSms() {
 
   // Calculate recipient count
   const totalManualRecipients =
-    recipients.groups.length + recipients.roles.length + recipients.numbers.length
+    recipients.groups.length + recipients.roles.length + (recipients.users?.length || 0) + recipients.numbers.length
 
   // Debounced recipient count fetch
   useEffect(() => {
@@ -77,7 +77,7 @@ export default function SendSms() {
     }
 
     const timer = setTimeout(async () => {
-      if (recipients.groups.length > 0 || recipients.roles.length > 0) {
+      if (recipients.groups.length > 0 || recipients.roles.length > 0 || (recipients.users?.length || 0) > 0) {
         setIsLoadingCount(true)
         try {
           const count = await smsApi.getRecipientCount(recipients)
@@ -166,7 +166,7 @@ export default function SendSms() {
 
       // Reset form
       setMessage('')
-      setRecipients({ groups: [], roles: [], numbers: [] })
+      setRecipients({ groups: [], roles: [], users: [], numbers: [] })
       setSenderId(defaultSender)
       setFlashSms(false)
       setMediaUrl('')

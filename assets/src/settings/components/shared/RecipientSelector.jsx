@@ -1,13 +1,15 @@
 import * as React from 'react'
-import { Users, UserCog, Phone, X, Search, Plus } from 'lucide-react'
+import { Users, UserCog, User, Phone, X, Search, Plus, Loader2 } from 'lucide-react'
 import { cn, __, getWpSettings } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
+import { smsApi } from '@/api/smsApi'
 
 const TABS = [
   { id: 'groups', label: __('Groups'), icon: Users, description: __('Subscriber groups') },
-  { id: 'roles', label: __('Roles'), icon: UserCog, description: __('WordPress users') },
+  { id: 'roles', label: __('Roles'), icon: UserCog, description: __('WordPress roles') },
+  { id: 'users', label: __('Users'), icon: User, description: __('Individual users') },
   { id: 'numbers', label: __('Numbers'), icon: Phone, description: __('Manual entry') },
 ]
 
@@ -19,7 +21,7 @@ const RecipientSelector = React.forwardRef(
   (
     {
       className,
-      value = { groups: [], roles: [], numbers: [] },
+      value = { groups: [], roles: [], users: [], numbers: [] },
       onChange,
       disabled = false,
       ...props
@@ -29,6 +31,10 @@ const RecipientSelector = React.forwardRef(
     const [activeTab, setActiveTab] = React.useState('groups')
     const [numberInput, setNumberInput] = React.useState('')
     const [searchQuery, setSearchQuery] = React.useState('')
+    const [userSearchQuery, setUserSearchQuery] = React.useState('')
+    const [userSearchResults, setUserSearchResults] = React.useState([])
+    const [isSearchingUsers, setIsSearchingUsers] = React.useState(false)
+    const [selectedUserDetails, setSelectedUserDetails] = React.useState({})
     const { groups = [], roles = [] } = getWpSettings()
 
     const handleGroupToggle = (groupId) => {
@@ -44,6 +50,55 @@ const RecipientSelector = React.forwardRef(
         : [...value.roles, roleId]
       onChange?.({ ...value, roles: newRoles })
     }
+
+    const handleUserSelect = (user) => {
+      if (value.users.includes(user.id)) return
+      // Store user details for display
+      setSelectedUserDetails((prev) => ({
+        ...prev,
+        [user.id]: user,
+      }))
+      onChange?.({ ...value, users: [...value.users, user.id] })
+      setUserSearchQuery('')
+      setUserSearchResults([])
+    }
+
+    const handleUserRemove = (userId) => {
+      onChange?.({
+        ...value,
+        users: value.users.filter((id) => id !== userId),
+      })
+    }
+
+    const handleClearAllUsers = () => {
+      onChange?.({ ...value, users: [] })
+    }
+
+    // Debounced user search
+    React.useEffect(() => {
+      if (activeTab !== 'users' || !userSearchQuery.trim()) {
+        setUserSearchResults([])
+        setIsSearchingUsers(false)
+        return
+      }
+
+      // Show loading immediately when user types
+      setIsSearchingUsers(true)
+
+      const timer = setTimeout(async () => {
+        try {
+          const results = await smsApi.searchUsers(userSearchQuery)
+          setUserSearchResults(results)
+        } catch (error) {
+          console.error('User search failed:', error)
+          setUserSearchResults([])
+        } finally {
+          setIsSearchingUsers(false)
+        }
+      }, 300)
+
+      return () => clearTimeout(timer)
+    }, [userSearchQuery, activeTab])
 
     const handleAddNumber = () => {
       const trimmed = numberInput.trim()
@@ -80,7 +135,7 @@ const RecipientSelector = React.forwardRef(
     }
 
     const totalSelected =
-      value.groups.length + value.roles.length + value.numbers.length
+      value.groups.length + value.roles.length + (value.users?.length || 0) + value.numbers.length
 
     // Convert groups object to array if needed
     const groupsArray = Array.isArray(groups)
@@ -103,6 +158,8 @@ const RecipientSelector = React.forwardRef(
     // Clear search when switching tabs
     React.useEffect(() => {
       setSearchQuery('')
+      setUserSearchQuery('')
+      setUserSearchResults([])
     }, [activeTab])
 
     return (
@@ -120,6 +177,8 @@ const RecipientSelector = React.forwardRef(
                 ? value.groups.length
                 : tab.id === 'roles'
                 ? value.roles.length
+                : tab.id === 'users'
+                ? (value.users?.length || 0)
                 : value.numbers.length
             const isActive = activeTab === tab.id
 
@@ -165,6 +224,21 @@ const RecipientSelector = React.forwardRef(
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={activeTab === 'groups' ? __('Search groups...') : __('Search roles...')}
+              disabled={disabled}
+              className="wsms-pl-8 wsms-h-8 wsms-text-[12px]"
+            />
+          </div>
+        )}
+
+        {/* User Search Bar */}
+        {activeTab === 'users' && (
+          <div className="wsms-relative">
+            <Search className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
+            <Input
+              type="text"
+              value={userSearchQuery}
+              onChange={(e) => setUserSearchQuery(e.target.value)}
+              placeholder={__('Search by name, email, or user ID...')}
               disabled={disabled}
               className="wsms-pl-8 wsms-h-8 wsms-text-[12px]"
             />
@@ -254,6 +328,122 @@ const RecipientSelector = React.forwardRef(
                         </label>
                       )
                     })}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Users Tab */}
+            {activeTab === 'users' && (
+              <div className="wsms-p-3 wsms-space-y-3">
+                {/* Search Results */}
+                {userSearchQuery && (
+                  <div className="wsms-space-y-1">
+                    {isSearchingUsers ? (
+                      <div className="wsms-flex wsms-items-center wsms-justify-center wsms-py-4">
+                        <Loader2 className="wsms-h-5 wsms-w-5 wsms-text-muted-foreground wsms-animate-spin" />
+                      </div>
+                    ) : userSearchResults.length === 0 ? (
+                      <div className="wsms-py-4 wsms-text-center">
+                        <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                          {__('No users found')}
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="wsms-space-y-0.5 wsms-max-h-[150px] wsms-overflow-y-auto">
+                        {userSearchResults.map((user) => {
+                          const isAlreadySelected = value.users?.includes(user.id)
+                          return (
+                            <button
+                              key={user.id}
+                              type="button"
+                              onClick={() => handleUserSelect(user)}
+                              disabled={disabled || isAlreadySelected || !user.hasMobile}
+                              className={cn(
+                                'wsms-w-full wsms-flex wsms-items-center wsms-gap-2.5 wsms-px-2.5 wsms-py-2 wsms-rounded-md',
+                                'wsms-text-left wsms-transition-colors',
+                                isAlreadySelected
+                                  ? 'wsms-bg-primary/10 wsms-cursor-not-allowed'
+                                  : !user.hasMobile
+                                  ? 'wsms-opacity-50 wsms-cursor-not-allowed'
+                                  : 'hover:wsms-bg-muted/50 wsms-cursor-pointer'
+                              )}
+                            >
+                              <div className="wsms-flex wsms-items-center wsms-justify-center wsms-w-7 wsms-h-7 wsms-rounded-full wsms-bg-muted">
+                                <User className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
+                              </div>
+                              <div className="wsms-flex-1 wsms-min-w-0">
+                                <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground wsms-truncate">
+                                  {user.name}
+                                  <span className="wsms-text-muted-foreground wsms-font-normal wsms-ml-1">
+                                    #{user.id}
+                                  </span>
+                                </p>
+                                <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-truncate">
+                                  {user.hasMobile ? user.mobile : __('No mobile number')}
+                                </p>
+                              </div>
+                              {isAlreadySelected && (
+                                <span className="wsms-text-[10px] wsms-text-primary wsms-font-medium">
+                                  {__('Selected')}
+                                </span>
+                              )}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Selected Users */}
+                {(value.users?.length || 0) > 0 && (
+                  <div className="wsms-space-y-2 wsms-pt-2 wsms-border-t wsms-border-border">
+                    <div className="wsms-flex wsms-items-center wsms-justify-between">
+                      <p className="wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground">
+                        {value.users.length} {value.users.length !== 1 ? __('users') : __('user')} {__('selected')}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={handleClearAllUsers}
+                        disabled={disabled}
+                        className="wsms-text-[10px] wsms-text-red-600 hover:wsms-text-red-700"
+                      >
+                        {__('Clear')}
+                      </button>
+                    </div>
+                    <div className="wsms-flex wsms-flex-wrap wsms-gap-1.5">
+                      {value.users.map((userId) => {
+                        const userDetails = selectedUserDetails[userId]
+                        return (
+                          <span
+                            key={userId}
+                            className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground"
+                          >
+                            <User className="wsms-h-3 wsms-w-3 wsms-text-muted-foreground" />
+                            {userDetails?.name || `#${userId}`}
+                            <button
+                              type="button"
+                              onClick={() => handleUserRemove(userId)}
+                              disabled={disabled}
+                              className="wsms-p-0.5 wsms-rounded hover:wsms-bg-accent wsms-text-muted-foreground hover:wsms-text-foreground"
+                            >
+                              <X className="wsms-h-3 wsms-w-3" />
+                            </button>
+                          </span>
+                        )
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Empty State */}
+                {!userSearchQuery && (value.users?.length || 0) === 0 && (
+                  <div className="wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-py-6 wsms-text-center">
+                    <User className="wsms-h-6 wsms-w-6 wsms-text-muted-foreground/30 wsms-mb-1.5" />
+                    <p className="wsms-text-[11px] wsms-text-muted-foreground">
+                      {__('Search for users above')}
+                    </p>
                   </div>
                 )}
               </div>

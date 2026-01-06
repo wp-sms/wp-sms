@@ -72,6 +72,7 @@ export const smsApi = {
         total: response.data?.total || 0,
         groups: response.data?.groups || 0,
         roles: response.data?.roles || 0,
+        users: response.data?.users || 0,
         numbers: response.data?.numbers || 0,
       }
     } catch (error) {
@@ -79,10 +80,12 @@ export const smsApi = {
       const numbersCount = recipients.numbers?.length || 0
       const groupsCount = recipients.groups?.length || 0
       const rolesCount = recipients.roles?.length || 0
+      const usersCount = recipients.users?.length || 0
       return {
-        total: numbersCount, // Can't count group/role members locally
+        total: numbersCount + usersCount, // Can't count group/role members locally
         groups: groupsCount,
         roles: rolesCount,
+        users: usersCount,
         numbers: numbersCount,
       }
     }
@@ -125,6 +128,26 @@ export const smsApi = {
         valid: numbers,
         invalid: [],
       }
+    }
+  },
+
+  /**
+   * Search users for recipient selector
+   * @param {string} search - Search query (name, email, or user ID)
+   * @param {number} perPage - Number of results to return
+   * @returns {Promise<object[]>} List of users
+   */
+  async searchUsers(search = '', perPage = 20) {
+    try {
+      const params = new URLSearchParams()
+      if (search) params.append('search', search)
+      params.append('per_page', perPage.toString())
+
+      const response = await apiClient.get(`users/search?${params.toString()}`)
+      return response.data?.users || []
+    } catch (error) {
+      console.error('Failed to search users:', error)
+      return []
     }
   },
 }
