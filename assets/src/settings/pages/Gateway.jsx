@@ -426,25 +426,6 @@ export default function Gateway() {
               </div>
             </div>
 
-            {/* Test connection status */}
-            {!connectionTested && (
-              <Tip variant="info">
-                {__('Click')} <strong>{__('Test Connection')}</strong> {__('to verify your gateway credentials are working correctly.')}
-              </Tip>
-            )}
-
-            {connectionTested && connectionSuccess && (
-              <Tip variant="success">
-                {__("Gateway connection verified successfully. You're ready to send SMS!")}
-              </Tip>
-            )}
-
-            {connectionTested && !connectionSuccess && (
-              <Tip variant="warning">
-                {__('Connection test failed. Please check your credentials and try again.')}
-              </Tip>
-            )}
-
             {/* Raw API Response */}
             {connectionTested && rawResponse && (
               <CollapsibleSection
