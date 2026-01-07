@@ -1,9 +1,8 @@
 import React, { useState, useRef } from 'react'
-import { Puzzle, ChevronDown, ChevronUp, ExternalLink, ShoppingCart, Users, CreditCard, Briefcase, HeadphonesIcon, UserCircle, Mail, ClipboardList, Calendar, Layers, FileInput } from 'lucide-react'
+import { Puzzle, ChevronDown, ChevronUp, ShoppingCart, Users, CreditCard, Briefcase, HeadphonesIcon, UserCircle, Mail, ClipboardList, Calendar, Layers, FileInput } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -24,7 +23,7 @@ const getPluginStatus = (pluginKey) => {
 const PluginStatusBadge = ({ status }) => {
   const variants = {
     active: { label: __('Active'), className: 'wsms-bg-green-100 wsms-text-green-800 wsms-border-green-200' },
-    inactive: { label: __('Inactive'), className: 'wsms-bg-yellow-100 wsms-text-yellow-800 wsms-border-yellow-200' },
+    inactive: { label: __('Inactive'), className: 'wsms-bg-red-50 wsms-text-red-700 wsms-border-red-200' },
     not_installed: { label: __('Not Installed'), className: 'wsms-bg-gray-100 wsms-text-gray-600 wsms-border-gray-200' },
     unknown: { label: __('Unknown'), className: 'wsms-bg-gray-100 wsms-text-gray-800 wsms-border-gray-200' },
   }
@@ -35,32 +34,6 @@ const PluginStatusBadge = ({ status }) => {
     <Badge variant="outline" className={`wsms-text-xs wsms-font-medium ${variant.className}`}>
       {variant.label}
     </Badge>
-  )
-}
-
-// Action link component
-const PluginActionLink = ({ status, actionUrl, isExternal, pluginName }) => {
-  if (status === 'active' || !actionUrl) return null
-
-  const label = status === 'inactive' ? __('Activate') : __('Install')
-  const fullLabel = pluginName ? `${label} ${pluginName}` : label
-
-  return (
-    <Button
-      variant="link"
-      size="sm"
-      className="wsms-h-auto wsms-p-0 wsms-text-xs"
-      asChild
-    >
-      <a
-        href={actionUrl}
-        target={isExternal ? '_blank' : '_self'}
-        rel={isExternal ? 'noopener noreferrer' : undefined}
-      >
-        {fullLabel}
-        {isExternal && <ExternalLink className="wsms-ml-1 wsms-h-3 wsms-w-3" />}
-      </a>
-    </Button>
   )
 }
 
@@ -362,17 +335,7 @@ export default function Integrations() {
               {__('Send SMS notifications when Contact Form 7 forms are submitted')}
             </CardDescription>
           </div>
-          <div className="wsms-flex wsms-items-center wsms-gap-3">
-            <PluginStatusBadge status={cf7Status.status} />
-            {cf7Status.status !== 'active' && (
-              <PluginActionLink
-                status={cf7Status.status}
-                actionUrl={cf7Status.actionUrl}
-                isExternal={cf7Status.isExternal}
-                pluginName="Contact Form 7"
-              />
-            )}
-          </div>
+          <PluginStatusBadge status={cf7Status.status} />
         </CardHeader>
         {cf7Status.status === 'active' && (
           <CardContent className="wsms-border-t wsms-pt-4">
@@ -411,17 +374,7 @@ export default function Integrations() {
               {__('Send SMS notifications when Formidable forms are submitted')}
             </CardDescription>
           </div>
-          <div className="wsms-flex wsms-items-center wsms-gap-3">
-            <PluginStatusBadge status={formidableStatus.status} />
-            {formidableStatus.status !== 'active' && (
-              <PluginActionLink
-                status={formidableStatus.status}
-                actionUrl={formidableStatus.actionUrl}
-                isExternal={formidableStatus.isExternal}
-                pluginName="Formidable Forms"
-              />
-            )}
-          </div>
+          <PluginStatusBadge status={formidableStatus.status} />
         </CardHeader>
         {formidableStatus.status === 'active' && (
           <CardContent className="wsms-border-t wsms-pt-4">
@@ -455,17 +408,7 @@ export default function Integrations() {
               {__('Send SMS notifications when Forminator forms are submitted')}
             </CardDescription>
           </div>
-          <div className="wsms-flex wsms-items-center wsms-gap-3">
-            <PluginStatusBadge status={forminatorStatus.status} />
-            {forminatorStatus.status !== 'active' && (
-              <PluginActionLink
-                status={forminatorStatus.status}
-                actionUrl={forminatorStatus.actionUrl}
-                isExternal={forminatorStatus.isExternal}
-                pluginName="Forminator"
-              />
-            )}
-          </div>
+          <PluginStatusBadge status={forminatorStatus.status} />
         </CardHeader>
         <CardContent className={forminatorStatus.status === 'active' ? 'wsms-border-t wsms-pt-4' : ''}>
           {forminatorStatus.status !== 'active' ? (
@@ -509,15 +452,7 @@ export default function Integrations() {
               </CardHeader>
               <CardContent>
                 <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4">
-                  <div className="wsms-flex wsms-items-center wsms-justify-between">
-                    <PluginStatusBadge status={pluginInfo.status} />
-                    <PluginActionLink
-                      status={pluginInfo.status}
-                      actionUrl={pluginInfo.actionUrl}
-                      isExternal={pluginInfo.isExternal}
-                      pluginName={pluginInfo.name}
-                    />
-                  </div>
+                  <PluginStatusBadge status={pluginInfo.status} />
                 </div>
               </CardContent>
             </Card>
