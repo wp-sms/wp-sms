@@ -148,9 +148,9 @@ export default function Notifications() {
             placeholder={__('Select group')}
             options={[
               { value: '0', label: __('All Groups') },
-              ...Object.entries(groups || {}).map(([id, name]) => ({
+              ...Object.entries(groups || {}).map(([id, group]) => ({
                 value: String(id),
-                label: name,
+                label: typeof group === 'object' ? group.name : group,
               })),
             ]}
           />
