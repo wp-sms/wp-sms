@@ -493,16 +493,32 @@ class UnifiedAdminPage extends Singleton
     }
 
     /**
-     * Get countries list
+     * Get countries list formatted for MultiSelectField
+     *
+     * Returns countries in {value, label} format where value is the dial code
+     * to match the legacy stored format (array of dial codes like ['+1', '+44'])
      *
      * @return array
      */
     private function getCountries()
     {
-        if (function_exists('wp_sms_countries')) {
-            return wp_sms_countries()->getCountries();
+        if (!function_exists('wp_sms_countries')) {
+            return [];
         }
-        return [];
+
+        // Use getCountriesMerged() which returns ['dialCode' => 'fullInfo', ...]
+        // This matches the legacy settings format
+        $countriesMerged = wp_sms_countries()->getCountriesMerged();
+        $result = [];
+
+        foreach ($countriesMerged as $dialCode => $fullInfo) {
+            $result[] = [
+                'value' => $dialCode,
+                'label' => $fullInfo,
+            ];
+        }
+
+        return $result;
     }
 
     /**
@@ -884,7 +900,7 @@ class UnifiedAdminPage extends Singleton
             return [];
         }
 
-        // Use the same validation logic as NewSettingsPage
+        // Validate addon settings schema
         // For brevity, just return sanitized schemas
         $validated = [];
         foreach ($schemas as $addonSlug => $schema) {

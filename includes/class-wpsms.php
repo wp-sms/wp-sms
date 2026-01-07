@@ -5,7 +5,6 @@ use WP_SMS\Admin\AnonymizedUsageData\AnonymizedUsageDataManager;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\OnBoarding\StepFactory;
 use WP_SMS\Admin\OnBoarding\WizardManager;
-use WP_SMS\Admin\Settings\NewSettingsPage;
 use WP_SMS\Admin\UnifiedAdminPage;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
@@ -230,10 +229,7 @@ class WP_SMS
             $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
             $adminManager             = new AdminManager();
 
-            // Initialize new settings page
-            NewSettingsPage::getInstance()->init();
-
-            // Initialize unified admin page (beta)
+            // Initialize unified admin page
             UnifiedAdminPage::getInstance()->init();
 
             add_action('init', function () {
