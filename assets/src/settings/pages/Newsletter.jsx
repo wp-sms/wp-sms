@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { SettingRow, SelectField, MultiSelectField } from '@/components/ui/form-field'
+import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
 import { useSetting } from '@/context/SettingsContext'
 import { getWpSettings, __ } from '@/lib/utils'
 
@@ -41,7 +42,7 @@ export default function Newsletter() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <FormInput className="wsms-h-5 wsms-w-5" />
+            <FormInput className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             {__('SMS Newsletter Configuration')}
           </CardTitle>
           <CardDescription>
@@ -102,7 +103,7 @@ export default function Newsletter() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Mail className="wsms-h-5 wsms-w-5" />
+            <Mail className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             {__('Welcome SMS')}
           </CardTitle>
           <CardDescription>
@@ -120,16 +121,14 @@ export default function Newsletter() {
           {welcomeEnabled === '1' && (
             <div className="wsms-space-y-2">
               <Label htmlFor="welcomeText">{__('Welcome Message')}</Label>
-              <Textarea
+              <TemplateTextarea
                 id="welcomeText"
                 value={welcomeText}
-                onChange={(e) => setWelcomeText(e.target.value)}
+                onChange={setWelcomeText}
                 placeholder={__('Welcome to our newsletter! Thanks for subscribing.')}
                 rows={3}
+                variables={['%subscriber_name%', '%subscriber_mobile%', '%group_name%', '%subscribe_date%']}
               />
-              <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                {__('Variables:')} %subscriber_name%, %subscriber_mobile%, %group_name%, %subscribe_date%
-              </p>
             </div>
           )}
         </CardContent>
@@ -139,7 +138,7 @@ export default function Newsletter() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Palette className="wsms-h-5 wsms-w-5" />
+            <Palette className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             {__('Form Appearance')}
           </CardTitle>
           <CardDescription>
@@ -161,7 +160,7 @@ export default function Newsletter() {
         <Card>
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <Shield className="wsms-h-5 wsms-w-5" />
+              <Shield className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               {__('GDPR Settings')}
             </CardTitle>
             <CardDescription>

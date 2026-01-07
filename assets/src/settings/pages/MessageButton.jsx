@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo } from 'react'
-import { MessageSquare, Palette, Users, Link, Eye } from 'lucide-react'
+import { MessageSquare, Palette, Users, Link, Eye, Layout, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -386,7 +386,7 @@ export default function MessageButton() {
           <div className="wsms-flex wsms-items-start wsms-justify-between">
             <div>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-                <MessageSquare className="wsms-h-5 wsms-w-5" />
+                <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" />
                 {__('Message Button Configuration')}
               </CardTitle>
               <CardDescription>
@@ -429,7 +429,10 @@ export default function MessageButton() {
           {/* Button Appearance */}
           <Card>
             <CardHeader>
-              <CardTitle>{__('Button Appearance')}</CardTitle>
+              <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+                <Layout className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+                {__('Button Appearance')}
+              </CardTitle>
               <CardDescription>
                 {__('Customize how the message button looks and where it appears')}
               </CardDescription>
@@ -474,7 +477,7 @@ export default function MessageButton() {
           <Card>
             <CardHeader>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-                <Palette className="wsms-h-5 wsms-w-5" />
+                <Palette className="wsms-h-4 wsms-w-4 wsms-text-primary" />
                 {__('Colors')}
               </CardTitle>
               <CardDescription>
@@ -531,7 +534,10 @@ export default function MessageButton() {
           {/* Footer Settings */}
           <Card>
             <CardHeader>
-              <CardTitle>{__('Footer Settings')}</CardTitle>
+              <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+                <FileText className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+                {__('Footer Settings')}
+              </CardTitle>
               <CardDescription>
                 {__('Customize the chatbox footer area')}
               </CardDescription>
@@ -591,7 +597,7 @@ export default function MessageButton() {
           <Card>
             <CardHeader>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-                <Users className="wsms-h-5 wsms-w-5" />
+                <Users className="wsms-h-4 wsms-w-4 wsms-text-primary" />
                 {__('Support Team')}
               </CardTitle>
               <CardDescription>
@@ -627,7 +633,7 @@ export default function MessageButton() {
           <Card>
             <CardHeader>
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-                <Link className="wsms-h-5 wsms-w-5" />
+                <Link className="wsms-h-4 wsms-w-4 wsms-text-primary" />
                 {__('Quick Links')}
               </CardTitle>
               <CardDescription>

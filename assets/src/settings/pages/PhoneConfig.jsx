@@ -39,7 +39,7 @@ export default function PhoneConfig() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Phone className="wsms-h-5 wsms-w-5" />
+            <Phone className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             {__('Administrator Notifications')}
           </CardTitle>
           <CardDescription>
@@ -61,7 +61,7 @@ export default function PhoneConfig() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Smartphone className="wsms-h-5 wsms-w-5" />
+            <Smartphone className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             {__('Mobile Field Configuration')}
           </CardTitle>
           <CardDescription>
@@ -111,7 +111,7 @@ export default function PhoneConfig() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Globe className="wsms-h-5 wsms-w-5" />
+            <Globe className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             {__('International Phone Input')}
           </CardTitle>
           <CardDescription>
@@ -199,7 +199,7 @@ export default function PhoneConfig() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Shield className="wsms-h-5 wsms-w-5" />
+            <Shield className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             {__('Data Protection')}
           </CardTitle>
           <CardDescription>

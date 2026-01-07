@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react'
-import { Puzzle, ChevronDown, ChevronUp, ExternalLink, ShoppingCart, Users, CreditCard, Briefcase, HeadphonesIcon, UserCircle, Mail, ClipboardList, Calendar, Layers } from 'lucide-react'
+import { Puzzle, ChevronDown, ChevronUp, ExternalLink, ShoppingCart, Users, CreditCard, Briefcase, HeadphonesIcon, UserCircle, Mail, ClipboardList, Calendar, Layers, FileInput } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
@@ -70,18 +70,16 @@ const getForminatorFormsData = () => {
   return wpSettings.forminatorForms || { isActive: false, forms: [] }
 }
 
-// Clickable variable chip component
+// Clickable variable chip component - matches TemplateTextarea styling
 const VariableChip = ({ variable, onClick }) => (
-  <code
-    role="button"
-    tabIndex={0}
+  <button
+    type="button"
     onClick={() => onClick(variable.key)}
-    onKeyDown={(e) => e.key === 'Enter' && onClick(variable.key)}
-    className="wsms-inline-block wsms-px-2 wsms-py-0.5 wsms-bg-muted wsms-rounded-full wsms-cursor-pointer hover:wsms-bg-muted/70 wsms-transition-colors"
+    className="wsms-inline-flex wsms-items-center wsms-rounded wsms-border wsms-border-border wsms-px-1.5 wsms-py-0.5 wsms-text-[11px] wsms-font-mono wsms-text-muted-foreground wsms-bg-muted/30 hover:wsms-bg-primary/10 hover:wsms-border-primary hover:wsms-text-primary wsms-transition-colors wsms-cursor-pointer focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20"
     title={__('Click to insert')}
   >
     {variable.key}
-  </code>
+  </button>
 )
 
 // Forminator form settings component
@@ -356,7 +354,10 @@ export default function Integrations() {
       <Card className={cf7Status.status !== 'active' ? 'wsms-opacity-75' : ''}>
         <CardHeader className="wsms-flex wsms-flex-row wsms-items-center wsms-justify-between wsms-space-y-0">
           <div>
-            <CardTitle>{__('Contact Form 7')}</CardTitle>
+            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <FileInput className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              {__('Contact Form 7')}
+            </CardTitle>
             <CardDescription className="wsms-mt-1">
               {__('Send SMS notifications when Contact Form 7 forms are submitted')}
             </CardDescription>
@@ -402,7 +403,10 @@ export default function Integrations() {
       <Card className={formidableStatus.status !== 'active' ? 'wsms-opacity-75' : ''}>
         <CardHeader className="wsms-flex wsms-flex-row wsms-items-center wsms-justify-between wsms-space-y-0">
           <div>
-            <CardTitle>{__('Formidable Forms')}</CardTitle>
+            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <FileInput className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              {__('Formidable Forms')}
+            </CardTitle>
             <CardDescription className="wsms-mt-1">
               {__('Send SMS notifications when Formidable forms are submitted')}
             </CardDescription>
@@ -443,7 +447,10 @@ export default function Integrations() {
       <Card className={forminatorStatus.status !== 'active' ? 'wsms-opacity-75' : ''}>
         <CardHeader className="wsms-flex wsms-flex-row wsms-items-center wsms-justify-between wsms-space-y-0">
           <div>
-            <CardTitle>{__('Forminator')}</CardTitle>
+            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <FileInput className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              {__('Forminator')}
+            </CardTitle>
             <CardDescription className="wsms-mt-1">
               {__('Send SMS notifications when Forminator forms are submitted')}
             </CardDescription>
@@ -493,7 +500,7 @@ export default function Integrations() {
             <Card key={section.id} className="wsms-opacity-75">
               <CardHeader>
                 <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-                  <Puzzle className="wsms-h-5 wsms-w-5" />
+                  <Puzzle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
                   {section.title}
                 </CardTitle>
                 {section.description && (
@@ -531,7 +538,7 @@ export default function Integrations() {
         <Card>
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <Puzzle className="wsms-h-5 wsms-w-5" />
+              <Puzzle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               {__('Additional Settings')}
             </CardTitle>
           </CardHeader>
@@ -547,7 +554,7 @@ export default function Integrations() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Puzzle className="wsms-h-5 wsms-w-5" />
+            <Puzzle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             {__('Additional Integrations')}
           </CardTitle>
           <CardDescription>

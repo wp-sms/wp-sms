@@ -18,7 +18,7 @@ export default function Authentication() {
         <Card>
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <Shield className="wsms-h-5 wsms-w-5" />
+              <Shield className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               Authentication & OTP
               <Badge variant="warning">
                 <Diamond className="wsms-mr-1 wsms-h-3 wsms-w-3" />
@@ -60,7 +60,7 @@ export default function Authentication() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Key className="wsms-h-5 wsms-w-5" />
+            <Key className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             OTP Settings
           </CardTitle>
           <CardDescription>
@@ -102,7 +102,7 @@ export default function Authentication() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Smartphone className="wsms-h-5 wsms-w-5" />
+            <Smartphone className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             Phone Verification
           </CardTitle>
           <CardDescription>
@@ -126,7 +126,7 @@ export default function Authentication() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Shield className="wsms-h-5 wsms-w-5" />
+            <Shield className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             Two-Factor Authentication
           </CardTitle>
           <CardDescription>

@@ -37,7 +37,7 @@ export default function Advanced() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Webhook className="wsms-h-5 wsms-w-5" />
+            <Webhook className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             {__('Webhooks')}
           </CardTitle>
           <CardDescription>
@@ -93,7 +93,7 @@ export default function Advanced() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Database className="wsms-h-5 wsms-w-5" />
+            <Database className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             {__('Message Storage')}
           </CardTitle>
           <CardDescription>
@@ -158,7 +158,7 @@ export default function Advanced() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Bell className="wsms-h-5 wsms-w-5" />
+            <Bell className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             {__('Admin Notifications')}
           </CardTitle>
           <CardDescription>

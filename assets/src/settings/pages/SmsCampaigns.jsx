@@ -25,7 +25,6 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
@@ -53,6 +52,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Badge } from '@/components/ui/badge'
+import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
 import { useSettings } from '@/context/SettingsContext'
 import { __, getWpSettings } from '@/lib/utils'
 
@@ -391,16 +391,14 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, onSave, 
       {/* Message Content */}
       <div className="wsms-space-y-2">
         <Label htmlFor="message">{__('Message Content')}</Label>
-        <Textarea
+        <TemplateTextarea
           id="message"
           value={formData.message_content}
-          onChange={(e) => updateField('message_content', e.target.value)}
+          onChange={(value) => updateField('message_content', value)}
           placeholder={__('Enter your SMS message...')}
           rows={4}
+          variables={['%customer_name%', '%order_id%', '%order_status%', '%order_total%', '%product_name%']}
         />
-        <p className="wsms-text-[11px] wsms-text-muted-foreground">
-          {__('Available variables:')} <code>%customer_name%</code>, <code>%order_id%</code>, <code>%order_status%</code>, <code>%order_total%</code>, <code>%product_name%</code>
-        </p>
       </div>
 
       {/* Form Actions */}
@@ -437,7 +435,7 @@ export default function SmsCampaigns() {
         <Card>
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <Megaphone className="wsms-h-5 wsms-w-5" />
+              <Megaphone className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               {__('SMS Campaigns')}
             </CardTitle>
             <CardDescription>

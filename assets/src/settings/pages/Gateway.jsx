@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef } from 'react'
-import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap, BookOpen, ExternalLink, XCircle, RotateCcw, Code, Unplug } from 'lucide-react'
+import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap, BookOpen, ExternalLink, XCircle, RotateCcw, Code, Unplug, Wallet } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -528,7 +528,10 @@ export default function Gateway() {
       {/* Credit Display */}
       <Card>
         <CardHeader>
-          <CardTitle>{__('Credit Display')}</CardTitle>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <Wallet className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+            {__('Credit Display')}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="wsms-divide-y wsms-divide-border wsms-rounded-lg wsms-border wsms-border-border wsms-overflow-hidden">

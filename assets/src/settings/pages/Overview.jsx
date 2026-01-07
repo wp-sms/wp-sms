@@ -14,6 +14,7 @@ import {
   ExternalLink,
   Zap,
   Mail,
+  Link2,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -178,10 +179,10 @@ export default function Overview() {
       {isNewUser && (
         <Card>
           <CardHeader>
-            <div className="wsms-flex wsms-items-center wsms-gap-2">
-              <Zap className="wsms-h-5 wsms-w-5 wsms-text-primary" />
-              <CardTitle>{__('Welcome to WSMS!')}</CardTitle>
-            </div>
+            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <Zap className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              {__('Welcome to WSMS!')}
+            </CardTitle>
             <CardDescription>
               {__('Complete these steps to start sending SMS messages from your WordPress site.')}
             </CardDescription>
@@ -195,7 +196,10 @@ export default function Overview() {
       {/* Gateway Status */}
       <Card>
         <CardHeader>
-          <CardTitle>{__('Gateway Status')}</CardTitle>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <Radio className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+            {__('Gateway Status')}
+          </CardTitle>
           <CardDescription>{__('Current SMS gateway connection')}</CardDescription>
         </CardHeader>
         <CardContent>
@@ -205,7 +209,7 @@ export default function Overview() {
                 'wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded',
                 gatewayKey ? 'wsms-bg-primary wsms-text-primary-foreground' : 'wsms-bg-muted'
               )}>
-                <Radio className="wsms-h-5 wsms-w-5" strokeWidth={1.5} />
+                <Radio className="wsms-h-4 wsms-w-4 wsms-text-primary" strokeWidth={1.5} />
               </div>
               <div>
                 <p className="wsms-text-[13px] wsms-font-semibold">
@@ -267,7 +271,10 @@ export default function Overview() {
       {/* Configuration Status */}
       <Card>
         <CardHeader>
-          <CardTitle>{__('Configuration')}</CardTitle>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <Settings className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+            {__('Configuration')}
+          </CardTitle>
           <CardDescription>{__('Quick access to main settings')}</CardDescription>
         </CardHeader>
         <CardContent className="wsms-p-0">
@@ -286,7 +293,10 @@ export default function Overview() {
       {/* Quick Links */}
       <Card>
         <CardHeader>
-          <CardTitle>{__('Quick Links')}</CardTitle>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <Link2 className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+            {__('Quick Links')}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="wsms-grid wsms-grid-cols-4 wsms-gap-2">

@@ -18,7 +18,7 @@ export default function Messaging() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Link className="wsms-h-5 wsms-w-5" />
+            <Link className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             URL Shortening
           </CardTitle>
           <CardDescription>
@@ -42,7 +42,7 @@ export default function Messaging() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <FileText className="wsms-h-5 wsms-w-5" />
+            <FileText className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             Message Templates
             {!hasPro && <Badge variant="warning">Pro</Badge>}
           </CardTitle>
@@ -71,7 +71,7 @@ export default function Messaging() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Clock className="wsms-h-5 wsms-w-5" />
+            <Clock className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             Scheduled Messages
             {!hasPro && <Badge variant="warning">Pro</Badge>}
           </CardTitle>
@@ -100,7 +100,7 @@ export default function Messaging() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <MessageSquare className="wsms-h-5 wsms-w-5" />
+            <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             Message Settings
           </CardTitle>
           <CardDescription>

@@ -269,7 +269,7 @@ export default function TwoWayCommands() {
         <Card>
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <Terminal className="wsms-h-5 wsms-w-5" />
+              <Terminal className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               Auto-Reply Commands
             </CardTitle>
             <CardDescription>
@@ -500,11 +500,13 @@ export default function TwoWayCommands() {
               />
               {/* Dynamic variables for success response */}
               {successVariables.length > 0 && (
-                <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-1">
+                <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-1.5 wsms-mt-2">
+                  <span className="wsms-text-xs wsms-text-muted-foreground wsms-mr-1">Insert:</span>
                   {successVariables.map(v => (
-                    <code
+                    <button
                       key={v}
-                      className="wsms-px-1.5 wsms-py-0.5 wsms-bg-muted wsms-rounded wsms-text-xs wsms-cursor-pointer hover:wsms-bg-muted/80"
+                      type="button"
+                      className="wsms-inline-flex wsms-items-center wsms-rounded wsms-border wsms-border-border wsms-px-1.5 wsms-py-0.5 wsms-text-[11px] wsms-font-mono wsms-text-muted-foreground wsms-bg-muted/30 hover:wsms-bg-primary/10 hover:wsms-border-primary hover:wsms-text-primary wsms-transition-colors wsms-cursor-pointer focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20"
                       onClick={() => {
                         const newText = formData.response_data.success.text + `{${v}}`
                         setFormData({
@@ -518,7 +520,7 @@ export default function TwoWayCommands() {
                       title="Click to insert"
                     >
                       {`{${v}}`}
-                    </code>
+                    </button>
                   ))}
                 </div>
               )}
@@ -548,11 +550,13 @@ export default function TwoWayCommands() {
               />
               {/* Dynamic variables for failure response */}
               {failureVariables.length > 0 && (
-                <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-1">
+                <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-1.5 wsms-mt-2">
+                  <span className="wsms-text-xs wsms-text-muted-foreground wsms-mr-1">Insert:</span>
                   {failureVariables.map(v => (
-                    <code
+                    <button
                       key={v}
-                      className="wsms-px-1.5 wsms-py-0.5 wsms-bg-muted wsms-rounded wsms-text-xs wsms-cursor-pointer hover:wsms-bg-muted/80"
+                      type="button"
+                      className="wsms-inline-flex wsms-items-center wsms-rounded wsms-border wsms-border-border wsms-px-1.5 wsms-py-0.5 wsms-text-[11px] wsms-font-mono wsms-text-muted-foreground wsms-bg-muted/30 hover:wsms-bg-primary/10 hover:wsms-border-primary hover:wsms-text-primary wsms-transition-colors wsms-cursor-pointer focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20"
                       onClick={() => {
                         const newText = formData.response_data.failure.text + `{${v}}`
                         setFormData({
@@ -566,7 +570,7 @@ export default function TwoWayCommands() {
                       title="Click to insert"
                     >
                       {`{${v}}`}
-                    </code>
+                    </button>
                   ))}
                 </div>
               )}

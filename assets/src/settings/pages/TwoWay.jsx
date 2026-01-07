@@ -15,7 +15,7 @@ export default function TwoWay() {
         <Card>
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <MessageCircle className="wsms-h-5 wsms-w-5" />
+              <MessageCircle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               Two-Way Messaging
               <Badge variant="warning">
                 <Diamond className="wsms-mr-1 wsms-h-3 wsms-w-3" />
@@ -56,7 +56,7 @@ export default function TwoWay() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Inbox className="wsms-h-5 wsms-w-5" />
+            <Inbox className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             Inbox Settings
           </CardTitle>
           <CardDescription>
@@ -74,7 +74,7 @@ export default function TwoWay() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Zap className="wsms-h-5 wsms-w-5" />
+            <Zap className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             Keyword Triggers
           </CardTitle>
           <CardDescription>
@@ -92,7 +92,7 @@ export default function TwoWay() {
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Reply className="wsms-h-5 wsms-w-5" />
+            <Reply className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             Auto-Replies
           </CardTitle>
           <CardDescription>

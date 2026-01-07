@@ -18,8 +18,8 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
+import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
 import {
   Select,
   SelectContent,
@@ -152,7 +152,7 @@ export default function TwoWaySettings() {
         <Card>
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <Settings className="wsms-h-5 wsms-w-5" />
+              <Settings className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               {__('Two-Way SMS Settings')}
             </CardTitle>
             <CardDescription>
@@ -381,17 +381,14 @@ export default function TwoWaySettings() {
                   <Label htmlFor="sms-template" className="wsms-text-[13px] wsms-font-medium">
                     {__('Message Template')}
                   </Label>
-                  <Textarea
+                  <TemplateTextarea
                     id="sms-template"
                     value={smsForwardTemplate || ''}
-                    onChange={(e) => updateAddonSetting('two-way', 'notif_new_inbox_message_template', e.target.value)}
+                    onChange={(value) => updateAddonSetting('two-way', 'notif_new_inbox_message_template', value)}
                     rows={2}
-                    className="wsms-text-xs"
                     placeholder={__('New SMS from %sender_number%: %sms_content%')}
+                    variables={['%sender_number%', '%sms_content%', '%site_name%', '%user_name%', '%subscriber_name%']}
                   />
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    {__('Variables:')} %sender_number%, %sms_content%, %site_name%, %user_name%, %subscriber_name%
-                  </p>
                 </div>
               )}
             </div>

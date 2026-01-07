@@ -32,7 +32,7 @@ export default function WooCommercePro() {
         <Card>
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <ShoppingCart className="wsms-h-5 wsms-w-5" />
+              <ShoppingCart className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               WooCommerce Pro
             </CardTitle>
             <CardDescription>
@@ -70,7 +70,7 @@ export default function WooCommercePro() {
         <Card>
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <ShoppingCart className="wsms-h-5 wsms-w-5" />
+              <ShoppingCart className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               WooCommerce Pro
             </CardTitle>
             <CardDescription>
@@ -105,7 +105,7 @@ export default function WooCommercePro() {
         <Card>
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <ShoppingCart className="wsms-h-5 wsms-w-5" />
+              <ShoppingCart className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               WooCommerce Pro
             </CardTitle>
             <CardDescription>

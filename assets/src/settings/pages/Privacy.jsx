@@ -405,7 +405,7 @@ export default function Privacy() {
         <DialogContent size="sm">
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2 wsms-text-destructive">
-              <AlertTriangle className="wsms-h-5 wsms-w-5" />
+              <AlertTriangle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               Confirm Deletion
             </DialogTitle>
             <DialogDescription>

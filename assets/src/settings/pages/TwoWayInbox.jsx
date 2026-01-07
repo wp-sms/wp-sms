@@ -274,7 +274,7 @@ export default function TwoWayInbox() {
         <Card>
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <Inbox className="wsms-h-5 wsms-w-5" />
+              <Inbox className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               Two-Way SMS Inbox
             </CardTitle>
             <CardDescription>

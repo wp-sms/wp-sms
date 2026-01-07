@@ -149,7 +149,7 @@ function StatsCard({ icon: Icon, label, value, description, color, isHtml = fals
           <div
             className={`wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg ${color}`}
           >
-            <Icon className="wsms-h-5 wsms-w-5" />
+            <Icon className="wsms-h-4 wsms-w-4 wsms-text-primary" />
           </div>
           <div className="wsms-flex-1">
             <p className="wsms-text-[12px] wsms-text-muted-foreground">{label}</p>
@@ -183,7 +183,7 @@ export default function CartAbandonment() {
         <Card>
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <RotateCcw className="wsms-h-5 wsms-w-5" />
+              <RotateCcw className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               {__('Cart Abandonment')}
             </CardTitle>
             <CardDescription>
