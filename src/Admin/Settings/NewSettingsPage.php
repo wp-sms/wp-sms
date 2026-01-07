@@ -256,7 +256,6 @@ class NewSettingsPage extends Singleton
 
         return [
             'wizardCompleted'       => (bool) $activationNoticeShown,
-            'activationNoticeShown' => (bool) $activationNoticeShown,
             'isProActive'           => is_plugin_active('wp-sms-pro/wp-sms-pro.php'),
         ];
     }

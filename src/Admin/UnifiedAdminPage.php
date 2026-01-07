@@ -453,14 +453,19 @@ class UnifiedAdminPage extends Singleton
     {
         $isProActive = is_plugin_active('wp-sms-pro/wp-sms-pro.php');
 
+        // Check if wizard was completed (uses same option as legacy wizard)
+        $activationNoticeShown = get_option('wp_sms_wp-sms-onboarding_activation_notice_shown', false);
+
         return [
-            'gdprEnabled'        => Option::getOption('gdpr_compliance') === '1',
-            'twoWayEnabled'      => is_plugin_active('wp-sms-two-way/wp-sms-two-way.php'),
-            'scheduledSms'       => class_exists('WP_SMS\Pro\Scheduled'),
-            'isProActive'        => $isProActive,
-            'hasProAddon'        => $isProActive, // Alias for sidebar navigation
-            'isWooActive'        => class_exists('WooCommerce'),
-            'isBuddyPressActive' => class_exists('BuddyPress'),
+            'gdprEnabled'           => Option::getOption('gdpr_compliance') === '1',
+            'twoWayEnabled'         => is_plugin_active('wp-sms-two-way/wp-sms-two-way.php'),
+            'scheduledSms'          => class_exists('WP_SMS\Pro\Scheduled'),
+            'isProActive'           => $isProActive,
+            'hasProAddon'           => $isProActive, // Alias for sidebar navigation
+            'isWooActive'           => class_exists('WooCommerce'),
+            'isBuddyPressActive'    => class_exists('BuddyPress'),
+            // Wizard completion flag
+            'wizardCompleted'       => (bool) $activationNoticeShown,
         ];
     }
 

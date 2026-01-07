@@ -28,11 +28,24 @@ import ProStep from './steps/ProStep'
 import ReadyStep from './steps/ReadyStep'
 
 /**
+ * Determine if wizard should auto-open
+ * Computed once at module load to avoid flash/flicker
+ */
+function shouldAutoOpenWizard() {
+  const { settings = {}, features = {} } = getWpSettings()
+  const wizardCompleted = features?.wizardCompleted || false
+  const gatewayConfigured = !!settings?.gateway_name
+  return !wizardCompleted && !gatewayConfigured
+}
+
+/**
  * Full-screen setup wizard modal
  */
 export default function SetupWizard() {
   const { updateSetting, setCurrentPage } = useSettings()
-  const [isOpen, setIsOpen] = useState(false)
+
+  // Initialize with correct value to avoid flash
+  const [isOpen, setIsOpen] = useState(shouldAutoOpenWizard)
   const [currentStep, setCurrentStep] = useState(0)
   const [completedSteps, setCompletedSteps] = useState([])
   const [saving, setSaving] = useState(false)
@@ -67,21 +80,6 @@ export default function SetupWizard() {
 
     return baseSteps
   }, [showProStep])
-
-  // Check if wizard should auto-open
-  // Uses same logic as legacy wizard: show if activation notice not yet shown/dismissed
-  useEffect(() => {
-    const { settings = {}, features = {} } = getWpSettings()
-    // Use activationNoticeShown - same option as legacy wizard (wp_sms_wp-sms-onboarding_activation_notice_shown)
-    const activationNoticeShown = features?.activationNoticeShown || features?.wizardCompleted || false
-    const gatewayConfigured = !!settings?.gateway_name
-
-    // Auto-open if activation notice not shown AND no gateway configured (same as legacy)
-    if (!activationNoticeShown && !gatewayConfigured) {
-      setIsOpen(true)
-    }
-    // Don't pre-fill settings - always start fresh for clean setup experience
-  }, [])
 
   // Expose open function globally for "Re-run Wizard" button
   useEffect(() => {
@@ -276,12 +274,13 @@ export default function SetupWizard() {
   if (!isOpen) return null
 
   return (
-    <DialogPrimitive.Root open={isOpen} onOpenChange={setIsOpen}>
+    <DialogPrimitive.Root open={isOpen} onOpenChange={setIsOpen} modal={false}>
       <DialogPrimitive.Portal container={document.getElementById('wpsms-settings-root')}>
-        {/* Overlay */}
-        <DialogPrimitive.Overlay
+        {/* Overlay - manually handle click to prevent close */}
+        <div
           className="wsms-fixed wsms-inset-0 wsms-bg-black/70 wsms-backdrop-blur-sm"
           style={{ zIndex: 999998 }}
+          onClick={(e) => e.stopPropagation()}
         />
 
         {/* Content */}
