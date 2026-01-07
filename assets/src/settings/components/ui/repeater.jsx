@@ -249,6 +249,7 @@ function RepeaterField({ field, value, onChange, disabled }) {
           disabled={disabled}
           buttonText={buttonText || __('Select Image')}
           allowedTypes={['image']}
+          compact={true}
         />
       )
 

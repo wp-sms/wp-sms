@@ -1,7 +1,17 @@
-import React, { useCallback } from 'react'
-import { Image, X } from 'lucide-react'
+import React, { useCallback, useState } from 'react'
+import { Image, X, ImageOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn, __ } from '@/lib/utils'
+
+/**
+ * Check if URL looks like an image (handles query params)
+ */
+function isImageUrl(url) {
+  if (!url) return false
+  // Remove query params and hash for extension check
+  const cleanUrl = url.split('?')[0].split('#')[0]
+  return /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)$/i.test(cleanUrl)
+}
 
 /**
  * MediaSelector - WordPress Media Library picker
@@ -14,7 +24,10 @@ export function MediaSelector({
   buttonText,
   className,
   disabled = false,
+  compact = false,
 }) {
+  const [imageError, setImageError] = useState(false)
+
   const handleSelect = useCallback(() => {
     if (disabled || typeof wp === 'undefined' || !wp.media) {
       console.warn('WordPress media library not available')
@@ -34,6 +47,7 @@ export function MediaSelector({
 
     mediaUploader.on('select', () => {
       const attachment = mediaUploader.state().get('selection').first().toJSON()
+      setImageError(false)
       onChange?.(attachment.url)
     })
 
@@ -42,21 +56,66 @@ export function MediaSelector({
 
   const handleRemove = useCallback((e) => {
     e.stopPropagation()
+    setImageError(false)
     onChange?.('')
   }, [onChange])
 
-  // Check if value is an image
-  const isImage = value && /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(value)
+  const handleImageError = useCallback(() => {
+    setImageError(true)
+  }, [])
+
+  const isImage = isImageUrl(value)
+
+  // Compact mode for use in repeaters
+  if (compact && value) {
+    return (
+      <div className={cn('wsms-flex wsms-items-center wsms-gap-2', className)}>
+        {isImage && !imageError ? (
+          <img
+            src={value}
+            alt=""
+            onError={handleImageError}
+            className="wsms-h-9 wsms-w-9 wsms-rounded wsms-object-cover wsms-border wsms-border-border"
+          />
+        ) : (
+          <div className="wsms-h-9 wsms-w-9 wsms-rounded wsms-border wsms-border-border wsms-bg-muted wsms-flex wsms-items-center wsms-justify-center">
+            <ImageOff className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+          </div>
+        )}
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={handleSelect}
+          disabled={disabled}
+          className="wsms-h-9 wsms-text-xs"
+        >
+          {__('Change')}
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={handleRemove}
+          disabled={disabled}
+          className="wsms-h-9 wsms-w-9 wsms-p-0 wsms-text-muted-foreground hover:wsms-text-destructive"
+        >
+          <X className="wsms-h-4 wsms-w-4" />
+        </Button>
+      </div>
+    )
+  }
 
   return (
     <div className={cn('wsms-space-y-2', className)}>
       {value ? (
         <div className="wsms-relative wsms-inline-block">
-          {isImage ? (
+          {isImage && !imageError ? (
             <div className="wsms-relative wsms-rounded-lg wsms-overflow-hidden wsms-border wsms-border-border wsms-bg-muted/30">
               <img
                 src={value}
                 alt={__('Selected media')}
+                onError={handleImageError}
                 className="wsms-max-w-[200px] wsms-max-h-[150px] wsms-object-contain"
               />
               <button
@@ -71,9 +130,13 @@ export function MediaSelector({
             </div>
           ) : (
             <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-2 wsms-rounded-lg wsms-border wsms-border-border wsms-bg-muted/30">
-              <Image className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+              {imageError ? (
+                <ImageOff className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+              ) : (
+                <Image className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+              )}
               <span className="wsms-text-[12px] wsms-text-foreground wsms-truncate wsms-max-w-[180px]">
-                {value.split('/').pop()}
+                {value.split('/').pop().split('?')[0]}
               </span>
               <button
                 type="button"

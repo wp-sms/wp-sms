@@ -342,8 +342,8 @@ export default function MessageButton() {
                     { value: 'email', label: __('Email') },
                   ]},
                   { name: 'member_contact_value', label: __('Contact Value'), type: 'text', placeholder: '+1 555 123 4567' },
+                  { name: 'member_photo', label: __('Avatar'), type: 'media', buttonText: __('Select Avatar') },
                   { name: 'member_availability', label: __('Availability'), type: 'text', placeholder: __('Available 9AM-5PM') },
-                  { name: 'member_photo', label: __('Avatar'), type: 'media', buttonText: __('Select Avatar'), colSpan: 2 },
                 ]}
                 addLabel={__('Add Team Member')}
                 maxItems={5}
