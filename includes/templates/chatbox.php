@@ -46,13 +46,14 @@ $footer_color       = $chatbox->getFooterTextColor() ? sprintf('color: %s!import
                     <?php if ($chatbox->fetchTeamMembers()) : ?>
                         <?php foreach ($chatbox->fetchTeamMembers() as $member) : ?>
                             <?php if (empty($member['member_name']) || empty($member['member_role'])) continue; ?>
-    
+                            <?php $avatar_url = !empty($member['member_photo']) ? $member['member_photo'] : WP_SMS_URL . 'assets/images/avatar.png'; ?>
+
                             <a href="<?php echo esc_attr($member['contact_link']) ?>" target="_blank" class="wpsms-chatbox__team">
                                 <div class="wpsms-chatbox__team-avatar">
                                     <span class="wpsms-chatbox__team-icon messenger" style="<?php echo esc_attr($general_background) ?>">
                                     <img src="<?php echo esc_attr($member['contact_link_icon']) ?>"/>
                                     </span>
-                                    <img class="wpsms-chatbox__team-avatar-img" src="<?php echo esc_url($member['member_photo']); ?>" loading="lazy" width="56" height="56" alt="<?php echo esc_attr($member['member_name']); ?>"></div>
+                                    <img class="wpsms-chatbox__team-avatar-img" src="<?php echo esc_url($avatar_url); ?>" loading="lazy" width="56" height="56" alt="<?php echo esc_attr($member['member_name']); ?>"></div>
                                 <div class="wpsms-chatbox__team-info">
                                     <ul class="wpsms-chatbox__team-list">
                                         <li class="wpsms-chatbox__team-item">

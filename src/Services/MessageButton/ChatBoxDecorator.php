@@ -102,7 +102,7 @@ class ChatBoxDecorator
             if ($teamMember['member_availability'] == '') {
                 $teamMember['member_availability'] = __('Available 10AM-5PM PST', 'wp-sms');
             }
-            if ($teamMember['member_photo'] == '') {
+            if (empty($teamMember['member_photo'])) {
                 $teamMember['member_photo'] = WP_SMS_URL . 'assets/images/avatar.png';
             }
             if ($teamMember['member_contact_value'] == '') {
