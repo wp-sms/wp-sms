@@ -127,7 +127,7 @@ export default function Newsletter() {
                 onChange={setWelcomeText}
                 placeholder={__('Welcome to our newsletter! Thanks for subscribing.')}
                 rows={3}
-                variables={['%subscriber_name%', '%subscriber_mobile%', '%group_name%', '%subscribe_date%']}
+                variables={['%subscriber_name%', '%subscriber_mobile%', '%subscriber_status%', '%subscriber_group%', '%subscriber_custom_fields%', '%subscriber_date%', '%unsubscribe_url%']}
               />
             </div>
           )}
