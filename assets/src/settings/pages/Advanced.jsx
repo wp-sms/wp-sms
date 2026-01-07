@@ -21,9 +21,6 @@ export default function Advanced() {
   // Data retention - Outbox
   const [storeOutbox, setStoreOutbox] = useSetting('store_outbox_messages', '1')
   const [outboxRetention, setOutboxRetention] = useSetting('outbox_retention_days', '90')
-  // Data retention - Inbox
-  const [storeInbox, setStoreInbox] = useSetting('store_inbox_messages', '1')
-  const [inboxRetention, setInboxRetention] = useSetting('inbox_retention_days', '90')
 
   // Reporting
   const [reportStats, setReportStats] = useSetting('report_wpsms_statistics', '')
@@ -124,33 +121,6 @@ export default function Advanced() {
               ]}
             />
           )}
-
-          <div className="wsms-border-t wsms-border-border wsms-pt-4 wsms-mt-4">
-            <SettingRow
-              title={__('Log Received Messages')}
-              description={__('Save incoming SMS messages in the Inbox.')}
-              checked={storeInbox === '1'}
-              onCheckedChange={(checked) => setStoreInbox(checked ? '1' : '')}
-            />
-
-            {storeInbox === '1' && (
-              <SelectField
-                label={__('Auto-delete Received Messages')}
-                value={inboxRetention}
-                onValueChange={setInboxRetention}
-                placeholder={__('Select retention period')}
-                description={__('Automatically remove old messages from the Inbox.')}
-                className="wsms-mt-4"
-                options={[
-                  { value: '30', label: __('After 30 days') },
-                  { value: '90', label: __('After 90 days') },
-                  { value: '180', label: __('After 180 days') },
-                  { value: '365', label: __('After 365 days') },
-                  { value: '0', label: __('Keep forever') },
-                ]}
-              />
-            )}
-          </div>
         </CardContent>
       </Card>
 
