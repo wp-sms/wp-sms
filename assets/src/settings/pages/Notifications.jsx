@@ -1,11 +1,9 @@
 import React, { useMemo } from 'react'
 import { Bell, FileText, UserPlus, MessageCircle, LogIn, RefreshCw } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { MultiSelect } from '@/components/ui/multi-select'
+import { Label } from '@/components/ui/label'
+import { InputField, SelectField, MultiSelectField, SettingRow } from '@/components/ui/form-field'
 import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
 import { useSetting } from '@/context/SettingsContext'
 import { getWpSettings, __ } from '@/lib/utils'
@@ -109,128 +107,90 @@ export default function Notifications() {
         enabled={notifNewPost === '1'}
         onToggle={(checked) => setNotifNewPost(checked ? '1' : '')}
       >
-        <div className="wsms-space-y-2">
-          <Label>{__('Content Types')}</Label>
-          <MultiSelect
-            options={postTypes}
-            value={notifNewPostTypes}
-            onValueChange={setNotifNewPostTypes}
-            placeholder={__('All post types')}
-            searchPlaceholder={__('Search post types...')}
-          />
-          <p className="wsms-text-xs wsms-text-muted-foreground">
-            {__('Which content types trigger notifications.')}
-          </p>
-        </div>
+        <MultiSelectField
+          label={__('Content Types')}
+          options={postTypes}
+          value={notifNewPostTypes}
+          onValueChange={setNotifNewPostTypes}
+          placeholder={__('All post types')}
+          searchPlaceholder={__('Search post types...')}
+          description={__('Which content types trigger notifications.')}
+        />
 
-        <div className="wsms-space-y-2">
-          <Label>{__('Categories & Tags')}</Label>
-          <MultiSelect
-            options={taxonomyOptions}
-            value={notifNewPostTaxonomies}
-            onValueChange={setNotifNewPostTaxonomies}
-            placeholder={__('All taxonomies')}
-            searchPlaceholder={__('Search categories, tags...')}
-          />
-          <p className="wsms-text-xs wsms-text-muted-foreground">
-            {__('Only notify for content in these categories or with these tags. Leave empty for all.')}
-          </p>
-        </div>
+        <MultiSelectField
+          label={__('Categories & Tags')}
+          options={taxonomyOptions}
+          value={notifNewPostTaxonomies}
+          onValueChange={setNotifNewPostTaxonomies}
+          placeholder={__('All taxonomies')}
+          searchPlaceholder={__('Search categories, tags...')}
+          description={__('Only notify for content in these categories or with these tags. Leave empty for all.')}
+        />
 
-        <div className="wsms-space-y-2">
-          <Label>{__('Send To')}</Label>
-          <Select value={notifNewPostReceiver} onValueChange={setNotifNewPostReceiver}>
-            <SelectTrigger aria-label={__('Send to')}>
-              <SelectValue placeholder={__('Select recipients')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="subscriber">{__('Subscribers')}</SelectItem>
-              <SelectItem value="numbers">{__('Phone Numbers')}</SelectItem>
-              <SelectItem value="users">{__('User Roles')}</SelectItem>
-            </SelectContent>
-          </Select>
-          <p className="wsms-text-xs wsms-text-muted-foreground">
-            {__('Who should receive these notifications.')}
-          </p>
-        </div>
+        <SelectField
+          label={__('Send To')}
+          value={notifNewPostReceiver}
+          onValueChange={setNotifNewPostReceiver}
+          placeholder={__('Select recipients')}
+          description={__('Who should receive these notifications.')}
+          options={[
+            { value: 'subscriber', label: __('Subscribers') },
+            { value: 'numbers', label: __('Phone Numbers') },
+            { value: 'users', label: __('User Roles') },
+          ]}
+        />
 
         {notifNewPostReceiver === 'subscriber' && (
-          <div className="wsms-space-y-2">
-            <Label>{__('Subscriber Group')}</Label>
-            <Select value={notifNewPostGroup} onValueChange={setNotifNewPostGroup}>
-              <SelectTrigger aria-label={__('Subscriber group')}>
-                <SelectValue placeholder={__('Select group')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="0">{__('All Groups')}</SelectItem>
-                {groups && Object.entries(groups).map(([id, name]) => (
-                  <SelectItem key={id} value={String(id)}>
-                    {name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+          <SelectField
+            label={__('Subscriber Group')}
+            value={notifNewPostGroup}
+            onValueChange={setNotifNewPostGroup}
+            placeholder={__('Select group')}
+            options={[
+              { value: '0', label: __('All Groups') },
+              ...Object.entries(groups || {}).map(([id, name]) => ({
+                value: String(id),
+                label: name,
+              })),
+            ]}
+          />
         )}
 
         {notifNewPostReceiver === 'numbers' && (
-          <div className="wsms-space-y-2">
-            <Label htmlFor="postNumbers">{__('Phone Numbers')}</Label>
-            <Input
-              id="postNumbers"
-              value={notifNewPostNumbers}
-              onChange={(e) => setNotifNewPostNumbers(e.target.value)}
-              placeholder="+1 555 111 2222, +1 555 333 4444"
-            />
-            <p className="wsms-text-xs wsms-text-muted-foreground">
-              {__('Enter phone numbers, separated by commas.')}
-            </p>
-          </div>
+          <InputField
+            label={__('Phone Numbers')}
+            value={notifNewPostNumbers}
+            onChange={(e) => setNotifNewPostNumbers(e.target.value)}
+            placeholder="+1 555 111 2222, +1 555 333 4444"
+            description={__('Enter phone numbers, separated by commas.')}
+          />
         )}
 
         {notifNewPostReceiver === 'users' && (
-          <div className="wsms-space-y-2">
-            <Label>{__('User Roles')}</Label>
-            <MultiSelect
-              options={roles}
-              value={notifNewPostUsers}
-              onValueChange={setNotifNewPostUsers}
-              placeholder={__('Select user roles...')}
-              searchPlaceholder={__('Search roles...')}
-            />
-            <p className="wsms-text-xs wsms-text-muted-foreground">
-              {__('Notify users with these roles.')}
-            </p>
-          </div>
+          <MultiSelectField
+            label={__('User Roles')}
+            options={roles}
+            value={notifNewPostUsers}
+            onValueChange={setNotifNewPostUsers}
+            placeholder={__('Select user roles...')}
+            searchPlaceholder={__('Search roles...')}
+            description={__('Notify users with these roles.')}
+          />
         )}
 
-        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-          <div>
-            <p className="wsms-font-medium">{__('Auto-send')}</p>
-            <p className="wsms-text-sm wsms-text-muted-foreground">
-              {__('Send automatically when publishing (no confirmation prompt).')}
-            </p>
-          </div>
-          <Switch
-            checked={notifNewPostForce === '1'}
-            onCheckedChange={(checked) => setNotifNewPostForce(checked ? '1' : '')}
-            aria-label={__('Enable auto-send')}
-          />
-        </div>
+        <SettingRow
+          title={__('Auto-send')}
+          description={__('Send automatically when publishing (no confirmation prompt).')}
+          checked={notifNewPostForce === '1'}
+          onCheckedChange={(checked) => setNotifNewPostForce(checked ? '1' : '')}
+        />
 
-        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-          <div>
-            <p className="wsms-font-medium">{__('Include Featured Image')}</p>
-            <p className="wsms-text-sm wsms-text-muted-foreground">
-              {__("Send as MMS with the post's featured image (if gateway supports MMS).")}
-            </p>
-          </div>
-          <Switch
-            checked={notifNewPostMMS === '1'}
-            onCheckedChange={(checked) => setNotifNewPostMMS(checked ? '1' : '')}
-            aria-label={__('Include featured image')}
-          />
-        </div>
+        <SettingRow
+          title={__('Include Featured Image')}
+          description={__("Send as MMS with the post's featured image (if gateway supports MMS).")}
+          checked={notifNewPostMMS === '1'}
+          onCheckedChange={(checked) => setNotifNewPostMMS(checked ? '1' : '')}
+        />
 
         <div className="wsms-space-y-2">
           <Label htmlFor="postTemplate">{__('Message Template')}</Label>
@@ -244,19 +204,14 @@ export default function Notifications() {
           />
         </div>
 
-        <div className="wsms-space-y-2">
-          <Label htmlFor="wordCount">{__('Content Word Limit')}</Label>
-          <Input
-            id="wordCount"
-            type="number"
-            value={notifNewPostWordCount}
-            onChange={(e) => setNotifNewPostWordCount(e.target.value)}
-            placeholder="10"
-          />
-          <p className="wsms-text-xs wsms-text-muted-foreground">
-            {__('Maximum words to include from post content in %post_content%.')}
-          </p>
-        </div>
+        <InputField
+          label={__('Content Word Limit')}
+          type="number"
+          value={notifNewPostWordCount}
+          onChange={(e) => setNotifNewPostWordCount(e.target.value)}
+          placeholder="10"
+          description={__('Maximum words to include from post content in %post_content%.')}
+        />
       </NotificationSection>
 
       {/* Post Author Notification */}
@@ -267,19 +222,15 @@ export default function Notifications() {
         enabled={notifPostAuthor === '1'}
         onToggle={(checked) => setNotifPostAuthor(checked ? '1' : '')}
       >
-        <div className="wsms-space-y-2">
-          <Label>{__('Content Types')}</Label>
-          <MultiSelect
-            options={postTypes}
-            value={notifPostAuthorPostTypes}
-            onValueChange={setNotifPostAuthorPostTypes}
-            placeholder={__('All post types')}
-            searchPlaceholder={__('Search post types...')}
-          />
-          <p className="wsms-text-xs wsms-text-muted-foreground">
-            {__('Which content types trigger author notifications.')}
-          </p>
-        </div>
+        <MultiSelectField
+          label={__('Content Types')}
+          options={postTypes}
+          value={notifPostAuthorPostTypes}
+          onValueChange={setNotifPostAuthorPostTypes}
+          placeholder={__('All post types')}
+          searchPlaceholder={__('Search post types...')}
+          description={__('Which content types trigger author notifications.')}
+        />
 
         <div className="wsms-space-y-2">
           <Label htmlFor="authorTemplate">{__('Message Template')}</Label>
@@ -321,7 +272,7 @@ export default function Notifications() {
             rows={3}
             variables={['%user_login%', '%user_email%', '%user_firstname%', '%user_lastname%', '%date_register%']}
           />
-          <p className="wsms-text-xs wsms-text-muted-foreground">
+          <p className="wsms-text-[12px] wsms-text-muted-foreground">
             {__('Sent to admin.')}
           </p>
         </div>
@@ -336,7 +287,7 @@ export default function Notifications() {
             rows={3}
             variables={['%user_login%', '%user_email%', '%user_firstname%', '%user_lastname%', '%date_register%']}
           />
-          <p className="wsms-text-xs wsms-text-muted-foreground">
+          <p className="wsms-text-[12px] wsms-text-muted-foreground">
             {__('Sent to new user.')}
           </p>
         </div>
@@ -371,19 +322,15 @@ export default function Notifications() {
         enabled={notifUserLogin === '1'}
         onToggle={(checked) => setNotifUserLogin(checked ? '1' : '')}
       >
-        <div className="wsms-space-y-2">
-          <Label>{__('Monitor Roles')}</Label>
-          <MultiSelect
-            options={roles}
-            value={notifUserLoginRoles}
-            onValueChange={setNotifUserLoginRoles}
-            placeholder={__('All user roles')}
-            searchPlaceholder={__('Search roles...')}
-          />
-          <p className="wsms-text-xs wsms-text-muted-foreground">
-            {__('Only notify when users with these roles log in.')}
-          </p>
-        </div>
+        <MultiSelectField
+          label={__('Monitor Roles')}
+          options={roles}
+          value={notifUserLoginRoles}
+          onValueChange={setNotifUserLoginRoles}
+          placeholder={__('All user roles')}
+          searchPlaceholder={__('Search roles...')}
+          description={__('Only notify when users with these roles log in.')}
+        />
 
         <div className="wsms-space-y-2">
           <Label htmlFor="loginTemplate">{__('Message Template')}</Label>

@@ -127,7 +127,7 @@ const ForminatorFormSettings = ({ form }) => {
           {hasAnyEnabled && (
             <span className="wsms-h-2 wsms-w-2 wsms-rounded-full wsms-bg-green-500" />
           )}
-          <span className="wsms-font-medium wsms-text-sm">{form.name}</span>
+          <span className="wsms-text-[13px] wsms-font-medium">{form.name}</span>
         </div>
         {isExpanded ? (
           <ChevronUp className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
@@ -142,7 +142,7 @@ const ForminatorFormSettings = ({ form }) => {
             <div className="wsms-flex wsms-items-center wsms-justify-between">
               <div>
                 <Label className="wsms-font-medium">{__('Notify admin')}</Label>
-                <p className="wsms-text-xs wsms-text-muted-foreground wsms-mt-1">
+                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">
                   {__('Send an SMS to your team when someone submits this form')}
                 </p>
               </div>
@@ -162,7 +162,7 @@ const ForminatorFormSettings = ({ form }) => {
                     onChange={(e) => setReceiverForm(e.target.value)}
                     placeholder="+1234567890, +0987654321"
                   />
-                  <p className="wsms-text-xs wsms-text-muted-foreground">
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
                     {__('Multiple numbers can be separated with commas')}
                   </p>
                 </div>
@@ -197,8 +197,8 @@ const ForminatorFormSettings = ({ form }) => {
               <div className="wsms-flex wsms-items-center wsms-justify-between">
                 <div>
                   <Label className="wsms-font-medium">{__('Notify form submitter')}</Label>
-                  <p className="wsms-text-xs wsms-text-muted-foreground wsms-mt-1">
-                    {__('Send a confirmation SMS to the person who submitted the form')}
+                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">
+                  {__('Send a confirmation SMS to the person who submitted the form')}
                   </p>
                 </div>
                 <Switch
@@ -378,8 +378,8 @@ export default function Integrations() {
             <div className="wsms-rounded-lg wsms-border wsms-p-4">
               <div className="wsms-flex wsms-items-center wsms-justify-between">
                 <div>
-                  <h4 className="wsms-text-sm wsms-font-medium">{__('SMS Notification Tab')}</h4>
-                  <p className="wsms-text-sm wsms-text-muted-foreground wsms-mt-1">
+                  <h4 className="wsms-text-[13px] wsms-font-medium">{__('SMS Notification Tab')}</h4>
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">
                     {__('Add an SMS notification settings tab to each Contact Form 7 form editor.')}
                   </p>
                 </div>
@@ -424,8 +424,8 @@ export default function Integrations() {
             <div className="wsms-rounded-lg wsms-border wsms-p-4">
               <div className="wsms-flex wsms-items-center wsms-justify-between">
                 <div>
-                  <h4 className="wsms-text-sm wsms-font-medium">{__('SMS Notification Tab')}</h4>
-                  <p className="wsms-text-sm wsms-text-muted-foreground wsms-mt-1">
+                  <h4 className="wsms-text-[13px] wsms-font-medium">{__('SMS Notification Tab')}</h4>
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">
                     {__('Add an SMS notification settings tab to each Formidable form editor.')}
                   </p>
                 </div>
@@ -463,7 +463,7 @@ export default function Integrations() {
         <CardContent className={forminatorStatus.status === 'active' ? 'wsms-border-t wsms-pt-4' : ''}>
           {forminatorStatus.status !== 'active' ? (
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
-              <p className="wsms-text-sm wsms-text-muted-foreground">
+              <p className="wsms-text-[12px] wsms-text-muted-foreground">
                 {__('Install and activate Forminator to configure SMS notifications.')}
               </p>
             </div>
@@ -475,7 +475,7 @@ export default function Integrations() {
             </div>
           ) : (
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
-              <p className="wsms-text-sm wsms-text-muted-foreground">
+              <p className="wsms-text-[12px] wsms-text-muted-foreground">
                 {__('No forms found. Create a form in Forminator to configure SMS notifications.')}
               </p>
             </div>

@@ -1,8 +1,8 @@
 import React from 'react'
 import { MessageSquare, Link, Clock, FileText, CheckCircle } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
+import { SettingRow } from '@/components/ui/form-field'
 import { useSetting, useSettings } from '@/context/SettingsContext'
 
 export default function Messaging() {
@@ -30,7 +30,7 @@ export default function Messaging() {
             <CheckCircle className="wsms-h-5 wsms-w-5 wsms-text-success wsms-shrink-0" />
             <div>
               <p className="wsms-font-medium wsms-text-success">Enabled</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
+              <p className="wsms-text-[12px] wsms-text-muted-foreground">
                 URLs are automatically shortened using the wp_sms_shorturl filter. You can customize the shortening service via hooks.
               </p>
             </div>
@@ -53,13 +53,13 @@ export default function Messaging() {
         <CardContent>
           {hasPro ? (
             <div className="wsms-space-y-4">
-              <p className="wsms-text-sm wsms-text-muted-foreground">
+              <p className="wsms-text-[12px] wsms-text-muted-foreground">
                 Manage your message templates from the dedicated templates section.
               </p>
             </div>
           ) : (
             <div className="wsms-rounded-lg wsms-bg-muted wsms-p-4 wsms-text-center">
-              <p className="wsms-text-sm wsms-text-muted-foreground">
+              <p className="wsms-text-[12px] wsms-text-muted-foreground">
                 Message templates are available in the Pro version.
               </p>
             </div>
@@ -82,13 +82,13 @@ export default function Messaging() {
         <CardContent>
           {hasPro ? (
             <div className="wsms-space-y-4">
-              <p className="wsms-text-sm wsms-text-muted-foreground">
+              <p className="wsms-text-[12px] wsms-text-muted-foreground">
                 Scheduled messages can be configured when composing SMS in the Send SMS page.
               </p>
             </div>
           ) : (
             <div className="wsms-rounded-lg wsms-bg-muted wsms-p-4 wsms-text-center">
-              <p className="wsms-text-sm wsms-text-muted-foreground">
+              <p className="wsms-text-[12px] wsms-text-muted-foreground">
                 Scheduled messages are available in the Pro version.
               </p>
             </div>
@@ -108,18 +108,12 @@ export default function Messaging() {
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">Store Sent Messages</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                Keep a record of all sent messages in the outbox for tracking and resending
-              </p>
-            </div>
-            <Switch
-              checked={storeOutbox === '1'}
-              onCheckedChange={(checked) => setStoreOutbox(checked ? '1' : '')}
-            />
-          </div>
+          <SettingRow
+            title="Store Sent Messages"
+            description="Keep a record of all sent messages in the outbox for tracking and resending"
+            checked={storeOutbox === '1'}
+            onCheckedChange={(checked) => setStoreOutbox(checked ? '1' : '')}
+          />
         </CardContent>
       </Card>
     </div>

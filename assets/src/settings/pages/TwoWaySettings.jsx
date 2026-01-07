@@ -163,7 +163,7 @@ export default function TwoWaySettings() {
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
               <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
               <h3 className="wsms-font-medium wsms-mb-2">{__('Two-Way SMS Add-on Required')}</h3>
-              <p className="wsms-text-sm wsms-text-muted-foreground wsms-mb-4">
+              <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-4">
                 {__('Install and activate the WP SMS Two-Way add-on to configure these settings.')}
               </p>
               <Button variant="outline" asChild>
@@ -361,10 +361,10 @@ export default function TwoWaySettings() {
             <div className="wsms-space-y-3 wsms-p-4">
               <div className="wsms-flex wsms-items-center wsms-justify-between">
                 <div>
-                  <Label htmlFor="sms-forward" className="wsms-text-sm wsms-font-medium wsms-cursor-pointer">
+                  <Label htmlFor="sms-forward" className="wsms-text-[13px] wsms-font-medium wsms-cursor-pointer">
                     {__('Forward to SMS')}
                   </Label>
-                  <p className="wsms-text-xs wsms-text-muted-foreground wsms-mt-0.5">
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">
                     {__('Send a copy of incoming messages to your admin mobile number')}
                   </p>
                 </div>
@@ -378,7 +378,7 @@ export default function TwoWaySettings() {
               {/* SMS Template - Conditionally shown */}
               {smsForwardEnabled && (
                 <div className="wsms-space-y-2 wsms-pt-2">
-                  <Label htmlFor="sms-template" className="wsms-text-xs wsms-font-medium">
+                  <Label htmlFor="sms-template" className="wsms-text-[13px] wsms-font-medium">
                     {__('Message Template')}
                   </Label>
                   <Textarea
@@ -389,7 +389,7 @@ export default function TwoWaySettings() {
                     className="wsms-text-xs"
                     placeholder={__('New SMS from %sender_number%: %sms_content%')}
                   />
-                  <p className="wsms-text-[10px] wsms-text-muted-foreground">
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
                     {__('Variables:')} %sender_number%, %sms_content%, %site_name%, %user_name%, %subscriber_name%
                   </p>
                 </div>
@@ -399,10 +399,10 @@ export default function TwoWaySettings() {
             {/* Email Forwarding */}
             <div className="wsms-flex wsms-items-center wsms-justify-between wsms-p-4">
               <div>
-                <Label htmlFor="email-forward" className="wsms-text-sm wsms-font-medium wsms-cursor-pointer">
+                <Label htmlFor="email-forward" className="wsms-text-[13px] wsms-font-medium wsms-cursor-pointer">
                   {__('Forward to Email')}
                 </Label>
-                <p className="wsms-text-xs wsms-text-muted-foreground wsms-mt-0.5">
+                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">
                   {__('Send incoming messages to your WordPress admin email')}
                 </p>
               </div>
@@ -442,10 +442,10 @@ export default function TwoWaySettings() {
             {storeMessages && (
               <div className="wsms-flex wsms-items-center wsms-justify-between wsms-p-4">
                 <div>
-                  <Label htmlFor="retention" className="wsms-text-sm wsms-font-medium">
+                  <Label htmlFor="retention" className="wsms-text-[13px] wsms-font-medium">
                     {__('Auto-Delete After')}
                   </Label>
-                  <p className="wsms-text-xs wsms-text-muted-foreground wsms-mt-0.5">
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">
                     {__('Automatically remove old messages to save database space')}
                   </p>
                 </div>

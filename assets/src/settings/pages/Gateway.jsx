@@ -4,8 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { InputField, SelectField, SwitchField } from '@/components/ui/form-field'
-import { MultiSelect } from '@/components/ui/multi-select'
+import { InputField, SelectField, SwitchField, MultiSelectField } from '@/components/ui/form-field'
 import { Tip, CollapsibleSection, HelpLink, SectionDivider } from '@/components/ui/ux-helpers'
 import { useSettings, useSetting } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
@@ -511,19 +510,15 @@ export default function Gateway() {
               />
 
               {localNumbersOnly === '1' && (
-                <div className="wsms-space-y-2">
-                  <Label>{__('Allowed Countries')}</Label>
-                  <MultiSelect
-                    options={countries}
-                    value={localNumbersCountries}
-                    onValueChange={setLocalNumbersCountries}
-                    placeholder={__('Select countries...')}
-                    searchPlaceholder={__('Search countries...')}
-                  />
-                  <p className="wsms-text-xs wsms-text-muted-foreground">
-                    {__('SMS will only be sent to numbers from these countries.')}
-                  </p>
-                </div>
+                <MultiSelectField
+                  label={__('Allowed Countries')}
+                  options={countries}
+                  value={localNumbersCountries}
+                  onValueChange={setLocalNumbersCountries}
+                  placeholder={__('Select countries...')}
+                  searchPlaceholder={__('Search countries...')}
+                  description={__('SMS will only be sent to numbers from these countries.')}
+                />
               )}
             </div>
           </CollapsibleSection>

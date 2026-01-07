@@ -2,10 +2,9 @@ import React from 'react'
 import { Shield, Key, Smartphone, Clock, Diamond } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { InputField, SettingRow } from '@/components/ui/form-field'
 import { useSettings } from '@/context/SettingsContext'
 
 export default function Authentication() {
@@ -70,37 +69,27 @@ export default function Authentication() {
         </CardHeader>
         <CardContent className="wsms-space-y-4">
           <div className="wsms-grid wsms-grid-cols-1 wsms-gap-4 md:wsms-grid-cols-2">
-            <div className="wsms-space-y-2">
-              <Label htmlFor="otpLength">OTP Length</Label>
-              <Input
-                id="otpLength"
-                type="number"
-                placeholder="6"
-                defaultValue="6"
-              />
-              <p className="wsms-text-xs wsms-text-muted-foreground">
-                Number of digits in the OTP code
-              </p>
-            </div>
+            <InputField
+              label="OTP Length"
+              type="number"
+              placeholder="6"
+              defaultValue="6"
+              description="Number of digits in the OTP code"
+            />
 
-            <div className="wsms-space-y-2">
-              <Label htmlFor="otpExpiry">Expiry Time (seconds)</Label>
-              <Input
-                id="otpExpiry"
-                type="number"
-                placeholder="300"
-                defaultValue="300"
-              />
-              <p className="wsms-text-xs wsms-text-muted-foreground">
-                How long until the OTP expires
-              </p>
-            </div>
+            <InputField
+              label="Expiry Time (seconds)"
+              type="number"
+              placeholder="300"
+              defaultValue="300"
+              description="How long until the OTP expires"
+            />
           </div>
 
           <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
             <div>
-              <p className="wsms-font-medium">Resend Cooldown</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
+              <p className="wsms-text-[13px] wsms-font-medium">Resend Cooldown</p>
+              <p className="wsms-text-[12px] wsms-text-muted-foreground">
                 Prevent spam by limiting OTP resend frequency
               </p>
             </div>
@@ -121,25 +110,15 @@ export default function Authentication() {
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">Enable Phone Verification</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                Require phone verification during user registration
-              </p>
-            </div>
-            <Switch />
-          </div>
+          <SettingRow
+            title="Enable Phone Verification"
+            description="Require phone verification during user registration"
+          />
 
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">Verify on Login</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                Require OTP verification when users log in
-              </p>
-            </div>
-            <Switch />
-          </div>
+          <SettingRow
+            title="Verify on Login"
+            description="Require OTP verification when users log in"
+          />
         </CardContent>
       </Card>
 
@@ -155,25 +134,15 @@ export default function Authentication() {
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">Enable 2FA</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                Allow users to enable SMS-based two-factor authentication
-              </p>
-            </div>
-            <Switch />
-          </div>
+          <SettingRow
+            title="Enable 2FA"
+            description="Allow users to enable SMS-based two-factor authentication"
+          />
 
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">Force 2FA for Admins</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                Require 2FA for all administrator accounts
-              </p>
-            </div>
-            <Switch />
-          </div>
+          <SettingRow
+            title="Force 2FA for Admins"
+            description="Require 2FA for all administrator accounts"
+          />
         </CardContent>
       </Card>
     </div>

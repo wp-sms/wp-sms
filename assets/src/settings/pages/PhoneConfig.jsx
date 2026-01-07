@@ -1,11 +1,9 @@
 import React from 'react'
-import { Phone, Globe, Shield } from 'lucide-react'
+import { Phone, Smartphone, Globe, Shield } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { MultiSelect } from '@/components/ui/multi-select'
+import { InputField, MultiSelectField, SettingRow } from '@/components/ui/form-field'
 import { useSetting } from '@/context/SettingsContext'
 import { getWpSettings, __ } from '@/lib/utils'
 
@@ -49,25 +47,23 @@ export default function PhoneConfig() {
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-space-y-2">
-            <Label htmlFor="adminMobile">{__('Admin Phone Number')}</Label>
-            <Input
-              id="adminMobile"
-              value={adminMobile}
-              onChange={(e) => setAdminMobile(e.target.value)}
-              placeholder="+1 555 123 4567"
-            />
-            <p className="wsms-text-xs wsms-text-muted-foreground">
-              {__('Enter the full phone number including country code.')}
-            </p>
-          </div>
+          <InputField
+            label={__('Admin Phone Number')}
+            value={adminMobile}
+            onChange={(e) => setAdminMobile(e.target.value)}
+            placeholder="+1 555 123 4567"
+            description={__('Enter the full phone number including country code.')}
+          />
         </CardContent>
       </Card>
 
       {/* Mobile Field Configuration */}
       <Card>
         <CardHeader>
-          <CardTitle>{__('Mobile Field Configuration')}</CardTitle>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <Smartphone className="wsms-h-5 wsms-w-5" />
+            {__('Mobile Field Configuration')}
+          </CardTitle>
           <CardDescription>
             {__('Choose where to collect mobile numbers from users.')}
           </CardDescription>
@@ -101,18 +97,13 @@ export default function PhoneConfig() {
             </Select>
           </div>
 
-          <div className="wsms-space-y-2">
-            <Label htmlFor="placeholder">{__('Placeholder Text')}</Label>
-            <Input
-              id="placeholder"
-              value={mobilePlaceholder}
-              onChange={(e) => setMobilePlaceholder(e.target.value)}
-              placeholder={__('e.g., +1 555 000 0000')}
-            />
-            <p className="wsms-text-xs wsms-text-muted-foreground">
-              {__('Example format shown in the empty field.')}
-            </p>
-          </div>
+          <InputField
+            label={__('Placeholder Text')}
+            value={mobilePlaceholder}
+            onChange={(e) => setMobilePlaceholder(e.target.value)}
+            placeholder={__('e.g., +1 555 000 0000')}
+            description={__('Example format shown in the empty field.')}
+          />
         </CardContent>
       </Card>
 
@@ -128,49 +119,34 @@ export default function PhoneConfig() {
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">{__('International Phone Input')}</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                {__('Show a country flag selector for international phone number formatting.')}
-              </p>
-            </div>
-            <Switch
-              checked={isInternationalEnabled}
-              onCheckedChange={(checked) => setInternationalMobile(checked ? '1' : '')}
-              aria-label={__('Enable international phone input')}
-            />
-          </div>
+          <SettingRow
+            title={__('International Phone Input')}
+            description={__('Show a country flag selector for international phone number formatting.')}
+            checked={isInternationalEnabled}
+            onCheckedChange={(checked) => setInternationalMobile(checked ? '1' : '')}
+          />
 
           {isInternationalEnabled && (
             <>
-              <div className="wsms-space-y-2">
-                <Label>{__('Limit Countries')}</Label>
-                <MultiSelect
-                  options={countries}
-                  value={onlyCountries}
-                  onValueChange={setOnlyCountries}
-                  placeholder={__('All countries')}
-                  searchPlaceholder={__('Search countries...')}
-                />
-                <p className="wsms-text-xs wsms-text-muted-foreground">
-                  {__('Only show these countries in the dropdown. Leave empty to show all.')}
-                </p>
-              </div>
+              <MultiSelectField
+                label={__('Limit Countries')}
+                options={countries}
+                value={onlyCountries}
+                onValueChange={setOnlyCountries}
+                placeholder={__('All countries')}
+                searchPlaceholder={__('Search countries...')}
+                description={__('Only show these countries in the dropdown. Leave empty to show all.')}
+              />
 
-              <div className="wsms-space-y-2">
-                <Label>{__('Preferred Countries')}</Label>
-                <MultiSelect
-                  options={countries}
-                  value={preferredCountries}
-                  onValueChange={setPreferredCountries}
-                  placeholder={__('None selected')}
-                  searchPlaceholder={__('Search countries...')}
-                />
-                <p className="wsms-text-xs wsms-text-muted-foreground">
-                  {__('Show these countries at the top of the dropdown for quick access.')}
-                </p>
-              </div>
+              <MultiSelectField
+                label={__('Preferred Countries')}
+                options={countries}
+                value={preferredCountries}
+                onValueChange={setPreferredCountries}
+                placeholder={__('None selected')}
+                searchPlaceholder={__('Search countries...')}
+                description={__('Show these countries at the top of the dropdown for quick access.')}
+              />
             </>
           )}
 
@@ -191,38 +167,28 @@ export default function PhoneConfig() {
                     ))}
                   </SelectContent>
                 </Select>
-                <p className="wsms-text-xs wsms-text-muted-foreground">
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">
                   {__('Automatically prepend this country code to all phone numbers.')}
                 </p>
               </div>
 
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
-                <div className="wsms-space-y-2">
-                  <Label htmlFor="minLength">{__('Minimum Digits')}</Label>
-                  <Input
-                    id="minLength"
-                    type="number"
-                    value={minLength}
-                    onChange={(e) => setMinLength(e.target.value)}
-                    placeholder="10"
-                  />
-                  <p className="wsms-text-xs wsms-text-muted-foreground">
-                    {__('Minimum number of digits required (excluding country code).')}
-                  </p>
-                </div>
-                <div className="wsms-space-y-2">
-                  <Label htmlFor="maxLength">{__('Maximum Digits')}</Label>
-                  <Input
-                    id="maxLength"
-                    type="number"
-                    value={maxLength}
-                    onChange={(e) => setMaxLength(e.target.value)}
-                    placeholder="15"
-                  />
-                  <p className="wsms-text-xs wsms-text-muted-foreground">
-                    {__('Maximum number of digits allowed (excluding country code).')}
-                  </p>
-                </div>
+                <InputField
+                  label={__('Minimum Digits')}
+                  type="number"
+                  value={minLength}
+                  onChange={(e) => setMinLength(e.target.value)}
+                  placeholder="10"
+                  description={__('Minimum number of digits required (excluding country code).')}
+                />
+                <InputField
+                  label={__('Maximum Digits')}
+                  type="number"
+                  value={maxLength}
+                  onChange={(e) => setMaxLength(e.target.value)}
+                  placeholder="15"
+                  description={__('Maximum number of digits allowed (excluding country code).')}
+                />
               </div>
             </>
           )}
@@ -241,19 +207,12 @@ export default function PhoneConfig() {
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">{__('GDPR Compliance')}</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                {__('Enable data export/deletion by mobile number and add SMS consent checkbox to forms.')}
-              </p>
-            </div>
-            <Switch
-              checked={gdprCompliance === '1'}
-              onCheckedChange={(checked) => setGdprCompliance(checked ? '1' : '')}
-              aria-label={__('Enable GDPR compliance')}
-            />
-          </div>
+          <SettingRow
+            title={__('GDPR Compliance')}
+            description={__('Enable data export/deletion by mobile number and add SMS consent checkbox to forms.')}
+            checked={gdprCompliance === '1'}
+            onCheckedChange={(checked) => setGdprCompliance(checked ? '1' : '')}
+          />
         </CardContent>
       </Card>
     </div>

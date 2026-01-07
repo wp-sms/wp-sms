@@ -1,12 +1,9 @@
 import React from 'react'
 import { Users, FormInput, Shield, Mail, Palette } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { MultiSelect } from '@/components/ui/multi-select'
+import { SettingRow, SelectField, MultiSelectField } from '@/components/ui/form-field'
 import { useSetting } from '@/context/SettingsContext'
 import { getWpSettings, __ } from '@/lib/utils'
 
@@ -52,85 +49,52 @@ export default function Newsletter() {
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">{__('Show Groups in Form')}</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                {__('Let subscribers choose which groups to join.')}
-              </p>
-            </div>
-            <Switch
-              checked={showGroups}
-              onCheckedChange={(checked) => setFormGroups(checked ? '1' : '')}
-              aria-label={__('Show groups in form')}
-            />
-          </div>
+          <SettingRow
+            title={__('Show Groups in Form')}
+            description={__('Let subscribers choose which groups to join.')}
+            checked={showGroups}
+            onCheckedChange={(checked) => setFormGroups(checked ? '1' : '')}
+          />
 
           {showGroups && (
             <>
-              <div className="wsms-space-y-2">
-                <Label>{__('Available Groups')}</Label>
-                <MultiSelect
-                  options={groupOptions}
-                  value={specifiedGroups}
-                  onValueChange={setSpecifiedGroups}
-                  placeholder={__('All groups')}
-                  searchPlaceholder={__('Search groups...')}
-                />
-                <p className="wsms-text-xs wsms-text-muted-foreground">
-                  {__('Which groups subscribers can choose from. Leave empty for all groups.')}
-                </p>
-              </div>
+              <MultiSelectField
+                label={__('Available Groups')}
+                options={groupOptions}
+                value={specifiedGroups}
+                onValueChange={setSpecifiedGroups}
+                placeholder={__('All groups')}
+                searchPlaceholder={__('Search groups...')}
+                description={__('Which groups subscribers can choose from. Leave empty for all groups.')}
+              />
 
-              <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-                <div>
-                  <p className="wsms-font-medium">{__('Allow Multiple Groups')}</p>
-                  <p className="wsms-text-sm wsms-text-muted-foreground">
-                    {__('Let subscribers join more than one group at a time.')}
-                  </p>
-                </div>
-                <Switch
-                  checked={multipleSelect === '1'}
-                  onCheckedChange={(checked) => setMultipleSelect(checked ? '1' : '')}
-                  aria-label={__('Allow multiple groups')}
-                />
-              </div>
+              <SettingRow
+                title={__('Allow Multiple Groups')}
+                description={__('Let subscribers join more than one group at a time.')}
+                checked={multipleSelect === '1'}
+                onCheckedChange={(checked) => setMultipleSelect(checked ? '1' : '')}
+              />
 
-              <div className="wsms-space-y-2">
-                <Label>{__('Default Group')}</Label>
-                <Select value={defaultGroup} onValueChange={setDefaultGroup}>
-                  <SelectTrigger aria-label={__('Default group')}>
-                    <SelectValue placeholder={__('Select a group')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="0">{__('All')}</SelectItem>
-                    {Array.isArray(rawGroups) && rawGroups.map((group) => (
-                      <SelectItem key={group.id} value={String(group.id)}>
-                        {group.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <p className="wsms-text-xs wsms-text-muted-foreground">
-                  {__('Automatically add new subscribers to this group.')}
-                </p>
-              </div>
+              <SelectField
+                label={__('Default Group')}
+                value={defaultGroup}
+                onValueChange={setDefaultGroup}
+                placeholder={__('Select a group')}
+                description={__('Automatically add new subscribers to this group.')}
+                options={[
+                  { value: '0', label: __('All') },
+                  ...groupOptions,
+                ]}
+              />
             </>
           )}
 
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">{__('Require SMS Verification')}</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                {__('Subscribers must verify their phone number via SMS code.')}
-              </p>
-            </div>
-            <Switch
-              checked={formVerify === '1'}
-              onCheckedChange={(checked) => setFormVerify(checked ? '1' : '')}
-              aria-label={__('Require SMS verification')}
-            />
-          </div>
+          <SettingRow
+            title={__('Require SMS Verification')}
+            description={__('Subscribers must verify their phone number via SMS code.')}
+            checked={formVerify === '1'}
+            onCheckedChange={(checked) => setFormVerify(checked ? '1' : '')}
+          />
         </CardContent>
       </Card>
 
@@ -146,19 +110,12 @@ export default function Newsletter() {
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">{__('Send Welcome Message')}</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                {__('Automatically send a welcome SMS to new subscribers.')}
-              </p>
-            </div>
-            <Switch
-              checked={welcomeEnabled === '1'}
-              onCheckedChange={(checked) => setWelcomeEnabled(checked ? '1' : '')}
-              aria-label={__('Send welcome message')}
-            />
-          </div>
+          <SettingRow
+            title={__('Send Welcome Message')}
+            description={__('Automatically send a welcome SMS to new subscribers.')}
+            checked={welcomeEnabled === '1'}
+            onCheckedChange={(checked) => setWelcomeEnabled(checked ? '1' : '')}
+          />
 
           {welcomeEnabled === '1' && (
             <div className="wsms-space-y-2">
@@ -170,7 +127,7 @@ export default function Newsletter() {
                 placeholder={__('Welcome to our newsletter! Thanks for subscribing.')}
                 rows={3}
               />
-              <p className="wsms-text-xs wsms-text-muted-foreground">
+              <p className="wsms-text-[12px] wsms-text-muted-foreground">
                 {__('Variables:')} %subscriber_name%, %subscriber_mobile%, %group_name%, %subscribe_date%
               </p>
             </div>
@@ -190,19 +147,12 @@ export default function Newsletter() {
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">{__('Disable Default Styles')}</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                {__('Remove plugin CSS to use your own form styling.')}
-              </p>
-            </div>
-            <Switch
-              checked={disableStyle === '1'}
-              onCheckedChange={(checked) => setDisableStyle(checked ? '1' : '')}
-              aria-label={__('Disable default styles')}
-            />
-          </div>
+          <SettingRow
+            title={__('Disable Default Styles')}
+            description={__('Remove plugin CSS to use your own form styling.')}
+            checked={disableStyle === '1'}
+            onCheckedChange={(checked) => setDisableStyle(checked ? '1' : '')}
+          />
         </CardContent>
       </Card>
 
@@ -228,26 +178,22 @@ export default function Newsletter() {
                 placeholder={__('I agree to receive SMS notifications and understand that my data will be handled according to the privacy policy.')}
                 rows={3}
               />
-              <p className="wsms-text-xs wsms-text-muted-foreground">
+              <p className="wsms-text-[12px] wsms-text-muted-foreground">
                 {__('Privacy consent text shown to subscribers. Required for GDPR compliance.')}
               </p>
             </div>
 
-            <div className="wsms-space-y-2">
-              <Label>{__('Checkbox Default State')}</Label>
-              <Select value={gdprCheckbox} onValueChange={setGdprCheckbox}>
-                <SelectTrigger aria-label={__('GDPR checkbox default state')}>
-                  <SelectValue placeholder={__('Select default state')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="checked">{__('Checked')}</SelectItem>
-                  <SelectItem value="unchecked">{__('Unchecked')}</SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="wsms-text-xs wsms-text-muted-foreground">
-                {__('Must be unchecked by default for GDPR compliance.')}
-              </p>
-            </div>
+            <SelectField
+              label={__('Checkbox Default State')}
+              value={gdprCheckbox}
+              onValueChange={setGdprCheckbox}
+              placeholder={__('Select default state')}
+              description={__('Must be unchecked by default for GDPR compliance.')}
+              options={[
+                { value: 'checked', label: __('Checked') },
+                { value: 'unchecked', label: __('Unchecked') },
+              ]}
+            />
           </CardContent>
         </Card>
       )}
@@ -255,7 +201,7 @@ export default function Newsletter() {
       {!gdprEnabled && (
         <Card className="wsms-border-amber-200 wsms-bg-amber-50 dark:wsms-border-amber-900 dark:wsms-bg-amber-950/30">
           <CardContent className="wsms-p-4">
-            <p className="wsms-text-sm wsms-text-muted-foreground">
+            <p className="wsms-text-[12px] wsms-text-muted-foreground">
               {__('To enable GDPR settings for newsletters, first enable "GDPR Compliance Enhancements" in the Phone Configuration page.')}
             </p>
           </CardContent>

@@ -1,11 +1,9 @@
 import React from 'react'
 import { Settings, Webhook, Database, Bell } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { SettingRow, SelectField } from '@/components/ui/form-field'
 import { useSetting } from '@/context/SettingsContext'
 import { useAddonSettings } from '@/hooks/useAddonSettings'
 import { AddonSection } from '@/components/ui/AddonSection'
@@ -56,7 +54,7 @@ export default function Advanced() {
               placeholder="https://your-app.com/webhooks/sms-sent"
               rows={2}
             />
-            <p className="wsms-text-xs wsms-text-muted-foreground">
+            <p className="wsms-text-[12px] wsms-text-muted-foreground">
               {__('Called after each SMS is sent. Enter one URL per line.')}
             </p>
           </div>
@@ -70,7 +68,7 @@ export default function Advanced() {
               placeholder="https://your-app.com/webhooks/new-subscriber"
               rows={2}
             />
-            <p className="wsms-text-xs wsms-text-muted-foreground">
+            <p className="wsms-text-[12px] wsms-text-muted-foreground">
               {__('Called when someone subscribes to your SMS newsletter.')}
             </p>
           </div>
@@ -84,7 +82,7 @@ export default function Advanced() {
               placeholder="https://your-app.com/webhooks/sms-received"
               rows={2}
             />
-            <p className="wsms-text-xs wsms-text-muted-foreground">
+            <p className="wsms-text-[12px] wsms-text-muted-foreground">
               {__('Called when you receive an SMS reply. Requires Two-Way SMS add-on.')}
             </p>
           </div>
@@ -103,75 +101,54 @@ export default function Advanced() {
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">{__('Log Sent Messages')}</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                {__('Save all sent SMS messages in the Outbox for tracking.')}
-              </p>
-            </div>
-            <Switch
-              checked={storeOutbox === '1'}
-              onCheckedChange={(checked) => setStoreOutbox(checked ? '1' : '')}
-              aria-label={__('Log sent messages')}
-            />
-          </div>
+          <SettingRow
+            title={__('Log Sent Messages')}
+            description={__('Save all sent SMS messages in the Outbox for tracking.')}
+            checked={storeOutbox === '1'}
+            onCheckedChange={(checked) => setStoreOutbox(checked ? '1' : '')}
+          />
 
           {storeOutbox === '1' && (
-            <div className="wsms-space-y-2">
-              <Label>{__('Auto-delete Sent Messages')}</Label>
-              <Select value={outboxRetention} onValueChange={setOutboxRetention}>
-                <SelectTrigger aria-label={__('Outbox retention period')}>
-                  <SelectValue placeholder={__('Select retention period')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="30">{__('After 30 days')}</SelectItem>
-                  <SelectItem value="90">{__('After 90 days')}</SelectItem>
-                  <SelectItem value="180">{__('After 180 days')}</SelectItem>
-                  <SelectItem value="365">{__('After 365 days')}</SelectItem>
-                  <SelectItem value="0">{__('Keep forever')}</SelectItem>
-                </SelectContent>
-              </Select>
-              <p className="wsms-text-xs wsms-text-muted-foreground">
-                {__('Automatically remove old messages from the Outbox.')}
-              </p>
-            </div>
+            <SelectField
+              label={__('Auto-delete Sent Messages')}
+              value={outboxRetention}
+              onValueChange={setOutboxRetention}
+              placeholder={__('Select retention period')}
+              description={__('Automatically remove old messages from the Outbox.')}
+              options={[
+                { value: '30', label: __('After 30 days') },
+                { value: '90', label: __('After 90 days') },
+                { value: '180', label: __('After 180 days') },
+                { value: '365', label: __('After 365 days') },
+                { value: '0', label: __('Keep forever') },
+              ]}
+            />
           )}
 
           <div className="wsms-border-t wsms-border-border wsms-pt-4 wsms-mt-4">
-            <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-              <div>
-                <p className="wsms-font-medium">{__('Log Received Messages')}</p>
-                <p className="wsms-text-sm wsms-text-muted-foreground">
-                  {__('Save incoming SMS messages in the Inbox.')}
-                </p>
-              </div>
-              <Switch
-                checked={storeInbox === '1'}
-                onCheckedChange={(checked) => setStoreInbox(checked ? '1' : '')}
-                aria-label={__('Log received messages')}
-              />
-            </div>
+            <SettingRow
+              title={__('Log Received Messages')}
+              description={__('Save incoming SMS messages in the Inbox.')}
+              checked={storeInbox === '1'}
+              onCheckedChange={(checked) => setStoreInbox(checked ? '1' : '')}
+            />
 
             {storeInbox === '1' && (
-              <div className="wsms-space-y-2 wsms-mt-4">
-                <Label>{__('Auto-delete Received Messages')}</Label>
-                <Select value={inboxRetention} onValueChange={setInboxRetention}>
-                  <SelectTrigger aria-label={__('Inbox retention period')}>
-                    <SelectValue placeholder={__('Select retention period')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="30">{__('After 30 days')}</SelectItem>
-                    <SelectItem value="90">{__('After 90 days')}</SelectItem>
-                    <SelectItem value="180">{__('After 180 days')}</SelectItem>
-                    <SelectItem value="365">{__('After 365 days')}</SelectItem>
-                    <SelectItem value="0">{__('Keep forever')}</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="wsms-text-xs wsms-text-muted-foreground">
-                  {__('Automatically remove old messages from the Inbox.')}
-                </p>
-              </div>
+              <SelectField
+                label={__('Auto-delete Received Messages')}
+                value={inboxRetention}
+                onValueChange={setInboxRetention}
+                placeholder={__('Select retention period')}
+                description={__('Automatically remove old messages from the Inbox.')}
+                className="wsms-mt-4"
+                options={[
+                  { value: '30', label: __('After 30 days') },
+                  { value: '90', label: __('After 90 days') },
+                  { value: '180', label: __('After 180 days') },
+                  { value: '365', label: __('After 365 days') },
+                  { value: '0', label: __('Keep forever') },
+                ]}
+              />
             )}
           </div>
         </CardContent>
@@ -189,61 +166,33 @@ export default function Advanced() {
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">{__('Weekly Statistics Email')}</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                {__('Receive weekly SMS usage reports via email.')}
-              </p>
-            </div>
-            <Switch
-              checked={reportStats === '1'}
-              onCheckedChange={(checked) => setReportStats(checked ? '1' : '')}
-              aria-label={__('Enable weekly statistics email')}
-            />
-          </div>
+          <SettingRow
+            title={__('Weekly Statistics Email')}
+            description={__('Receive weekly SMS usage reports via email.')}
+            checked={reportStats === '1'}
+            onCheckedChange={(checked) => setReportStats(checked ? '1' : '')}
+          />
 
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">{__('Error Notifications')}</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                {__('Email admin when SMS sending fails.')}
-              </p>
-            </div>
-            <Switch
-              checked={notifyErrors === '1'}
-              onCheckedChange={(checked) => setNotifyErrors(checked ? '1' : '')}
-              aria-label={__('Enable error notifications')}
-            />
-          </div>
+          <SettingRow
+            title={__('Error Notifications')}
+            description={__('Email admin when SMS sending fails.')}
+            checked={notifyErrors === '1'}
+            onCheckedChange={(checked) => setNotifyErrors(checked ? '1' : '')}
+          />
 
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">{__('Plugin Notifications')}</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                {__('Show update notices and announcements in the admin area.')}
-              </p>
-            </div>
-            <Switch
-              checked={displayNotifications === '1'}
-              onCheckedChange={(checked) => setDisplayNotifications(checked ? '1' : '')}
-              aria-label={__('Enable plugin notifications')}
-            />
-          </div>
+          <SettingRow
+            title={__('Plugin Notifications')}
+            description={__('Show update notices and announcements in the admin area.')}
+            checked={displayNotifications === '1'}
+            onCheckedChange={(checked) => setDisplayNotifications(checked ? '1' : '')}
+          />
 
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">{__('Usage Analytics')}</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                {__('Share anonymous usage data to help improve WSMS.')}
-              </p>
-            </div>
-            <Switch
-              checked={shareAnonymousData === '1'}
-              onCheckedChange={(checked) => setShareAnonymousData(checked ? '1' : '')}
-              aria-label={__('Enable usage analytics')}
-            />
-          </div>
+          <SettingRow
+            title={__('Usage Analytics')}
+            description={__('Share anonymous usage data to help improve WSMS.')}
+            checked={shareAnonymousData === '1'}
+            onCheckedChange={(checked) => setShareAnonymousData(checked ? '1' : '')}
+          />
         </CardContent>
       </Card>
 

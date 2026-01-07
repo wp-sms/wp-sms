@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
+import { MultiSelect } from '@/components/ui/multi-select'
 import {
   Select,
   SelectContent,
@@ -66,7 +67,7 @@ const FormField = React.forwardRef(
     return (
       <div ref={ref} className={cn('wsms-space-y-2', className)} {...props}>
         {label && (
-          <Label htmlFor={id} className={cn('wsms-text-[13px] wsms-font-medium', error && 'wsms-text-destructive')}>
+          <Label htmlFor={id} className={cn(error && 'wsms-text-destructive')}>
             {label}
             {required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
           </Label>
@@ -127,7 +128,7 @@ const InputField = React.forwardRef(
     return (
       <div ref={ref} className={cn('wsms-space-y-2', className)}>
         {label && (
-          <Label htmlFor={id} className={cn('wsms-text-[13px] wsms-font-medium', error && 'wsms-text-destructive')}>
+          <Label htmlFor={id} className={cn(error && 'wsms-text-destructive')}>
             {label}
             {required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
           </Label>
@@ -161,7 +162,7 @@ const TextareaField = React.forwardRef(
     return (
       <div ref={ref} className={cn('wsms-space-y-2', className)}>
         {label && (
-          <Label htmlFor={id} className={cn('wsms-text-[13px] wsms-font-medium', error && 'wsms-text-destructive')}>
+          <Label htmlFor={id} className={cn(error && 'wsms-text-destructive')}>
             {label}
             {required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
           </Label>
@@ -194,7 +195,7 @@ const SelectField = React.forwardRef(
     return (
       <div ref={ref} className={cn('wsms-space-y-2', className)}>
         {label && (
-          <Label htmlFor={id} className={cn('wsms-text-[13px] wsms-font-medium', error && 'wsms-text-destructive')}>
+          <Label htmlFor={id} className={cn(error && 'wsms-text-destructive')}>
             {label}
             {required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
           </Label>
@@ -222,6 +223,76 @@ const SelectField = React.forwardRef(
   }
 )
 SelectField.displayName = 'SelectField'
+
+/**
+ * MultiSelectField - A multi-select dropdown with label, description, and error handling
+ */
+const MultiSelectField = React.forwardRef(
+  ({ label, description, error, required, placeholder, searchPlaceholder, options = [], value = [], onValueChange, className, ...props }, ref) => {
+    const id = React.useId()
+
+    return (
+      <div ref={ref} className={cn('wsms-space-y-2', className)}>
+        {label && (
+          <Label htmlFor={id} className={cn(error && 'wsms-text-destructive')}>
+            {label}
+            {required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
+          </Label>
+        )}
+        <MultiSelect
+          id={id}
+          options={options}
+          value={value}
+          onValueChange={onValueChange}
+          placeholder={placeholder}
+          searchPlaceholder={searchPlaceholder}
+          {...props}
+        />
+        {description && !error && (
+          <FieldDescription>{description}</FieldDescription>
+        )}
+        {error && (
+          <p className="wsms-text-[12px] wsms-text-destructive">{error}</p>
+        )}
+      </div>
+    )
+  }
+)
+MultiSelectField.displayName = 'MultiSelectField'
+
+/**
+ * SettingRow - A bordered row with title, description, and switch toggle
+ * Used for toggle settings that need prominent display
+ */
+const SettingRow = React.forwardRef(
+  ({ title, description, checked, onCheckedChange, disabled, className, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          'wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4',
+          disabled && 'wsms-opacity-50',
+          className
+        )}
+        {...props}
+      >
+        <div className="wsms-space-y-1 wsms-pr-4">
+          <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">{title}</p>
+          {description && (
+            <FieldDescription>{description}</FieldDescription>
+          )}
+        </div>
+        <Switch
+          checked={checked}
+          onCheckedChange={onCheckedChange}
+          disabled={disabled}
+          aria-label={title}
+        />
+      </div>
+    )
+  }
+)
+SettingRow.displayName = 'SettingRow'
 
 // PropTypes definitions
 FormField.propTypes = {
@@ -289,11 +360,39 @@ SelectField.propTypes = {
   disabled: PropTypes.bool,
 }
 
+MultiSelectField.propTypes = {
+  label: PropTypes.string,
+  description: PropTypes.string,
+  error: PropTypes.string,
+  required: PropTypes.bool,
+  placeholder: PropTypes.string,
+  searchPlaceholder: PropTypes.string,
+  options: PropTypes.oneOfType([
+    PropTypes.arrayOf(optionShape),
+    PropTypes.object,
+  ]),
+  value: PropTypes.array,
+  onValueChange: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  disabled: PropTypes.bool,
+}
+
+SettingRow.propTypes = {
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string,
+  checked: PropTypes.bool,
+  onCheckedChange: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+  className: PropTypes.string,
+}
+
 export {
   FormField,
   SwitchField,
   InputField,
   TextareaField,
   SelectField,
+  MultiSelectField,
+  SettingRow,
   FieldDescription,
 }
