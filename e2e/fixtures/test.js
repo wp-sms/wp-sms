@@ -81,12 +81,12 @@ export const test = base.extend({
 
   /**
    * Navigate to a specific tab/page in WP-SMS settings
-   * Note: The React settings page slug is wp-sms-new-settings
+   * Note: The React settings page slug is wp-sms-unified-admin
    */
   navigateTo: async ({ page }, use) => {
     const navigate = async (tab) => {
       const baseUrl = process.env.WP_BASE_URL || 'http://localhost:8888';
-      await page.goto(`${baseUrl}/wp-admin/admin.php?page=wp-sms-new-settings&tab=${tab}`);
+      await page.goto(`${baseUrl}/wp-admin/admin.php?page=wp-sms-unified-admin&tab=${tab}`);
       await page.waitForSelector('#wpsms-settings-root');
       // Wait for initial loading to complete
       await page.waitForTimeout(500);

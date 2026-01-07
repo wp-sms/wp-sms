@@ -14,8 +14,8 @@ export class BasePage {
   constructor(page) {
     this.page = page;
     this.baseUrl = process.env.WP_BASE_URL || 'http://localhost:8888';
-    // The React settings page slug is wp-sms-new-settings
-    this.settingsUrl = `${this.baseUrl}/wp-admin/admin.php?page=wp-sms-new-settings`;
+    // The React settings page slug is wp-sms-unified-admin
+    this.settingsUrl = `${this.baseUrl}/wp-admin/admin.php?page=wp-sms-unified-admin`;
   }
 
   /**

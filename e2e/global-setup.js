@@ -52,7 +52,7 @@ async function verifyPluginActive() {
     await page.waitForLoadState('networkidle');
 
     // Navigate to WP-SMS NEW settings page (React app) to verify plugin is active
-    await page.goto(`${BASE_URL}/wp-admin/admin.php?page=wp-sms-new-settings`);
+    await page.goto(`${BASE_URL}/wp-admin/admin.php?page=wp-sms-unified-admin`);
 
     // Check if settings page loads (React app mounts)
     const settingsRoot = await page.waitForSelector('#wpsms-settings-root', { timeout: 15000 });

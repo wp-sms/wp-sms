@@ -13,6 +13,7 @@ const authFile = path.join(__dirname, '.auth/user.json');
 
 setup('authenticate as admin', async ({ page }) => {
   const baseUrl = process.env.WP_BASE_URL || 'http://localhost:8888';
+  const autoLoginUrl = process.env.WP_AUTO_LOGIN_URL || '';
   const username = process.env.WP_ADMIN_USER || 'admin';
   const password = process.env.WP_ADMIN_PASSWORD || 'password';
 
@@ -22,29 +23,36 @@ setup('authenticate as admin', async ({ page }) => {
     fs.mkdirSync(authDir, { recursive: true });
   }
 
-  console.log(`Authenticating at ${baseUrl} as ${username}...`);
+  // Use auto-login URL if provided (e.g., Local Sites)
+  if (autoLoginUrl) {
+    console.log(`Using auto-login URL: ${autoLoginUrl}`);
+    await page.goto(autoLoginUrl, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await expect(page.locator('#wpadminbar')).toBeVisible({ timeout: 30000 });
+  } else {
+    console.log(`Authenticating at ${baseUrl} as ${username}...`);
 
-  // Navigate to login page
-  await page.goto(`${baseUrl}/wp-login.php`);
-  await page.waitForLoadState('networkidle');
+    // Navigate to login page
+    await page.goto(`${baseUrl}/wp-login.php`);
+    await page.waitForLoadState('networkidle');
 
-  // Check if we're already logged in (redirected to admin)
-  const isLoggedIn = await page.locator('#wpadminbar').isVisible().catch(() => false);
+    // Check if we're already logged in (redirected to admin)
+    const isLoggedIn = await page.locator('#wpadminbar').isVisible().catch(() => false);
 
-  if (!isLoggedIn) {
-    // Check if we're on the login page
-    const loginForm = await page.locator('#user_login').isVisible().catch(() => false);
+    if (!isLoggedIn) {
+      // Check if we're on the login page
+      const loginForm = await page.locator('#user_login').isVisible().catch(() => false);
 
-    if (loginForm) {
-      console.log('Login form detected, logging in...');
-      await page.fill('#user_login', username);
-      await page.fill('#user_pass', password);
-      await page.click('#wp-submit');
-      await expect(page.locator('#wpadminbar')).toBeVisible({ timeout: 15000 });
-    } else {
-      // Navigate to admin
-      await page.goto(`${baseUrl}/wp-admin/`);
-      await page.waitForLoadState('networkidle');
+      if (loginForm) {
+        console.log('Login form detected, logging in...');
+        await page.fill('#user_login', username);
+        await page.fill('#user_pass', password);
+        await page.click('#wp-submit');
+        await expect(page.locator('#wpadminbar')).toBeVisible({ timeout: 15000 });
+      } else {
+        // Navigate to admin
+        await page.goto(`${baseUrl}/wp-admin/`);
+        await page.waitForLoadState('networkidle');
+      }
     }
   }
 

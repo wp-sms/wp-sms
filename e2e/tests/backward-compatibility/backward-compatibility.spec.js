@@ -406,7 +406,7 @@ test.describe('Backward Compatibility - Navigation and URL Parameters', () => {
     const baseUrl = process.env.WP_BASE_URL || 'http://localhost:8888';
 
     // Navigate with tab parameter
-    await page.goto(`${baseUrl}/wp-admin/admin.php?page=wp-sms-new-settings&tab=subscribers`);
+    await page.goto(`${baseUrl}/wp-admin/admin.php?page=wp-sms-unified-admin&tab=subscribers`);
 
     await page.waitForTimeout(1000);
 
@@ -419,7 +419,7 @@ test.describe('Backward Compatibility - Navigation and URL Parameters', () => {
     const baseUrl = process.env.WP_BASE_URL || 'http://localhost:8888';
 
     // Navigate to settings root
-    await page.goto(`${baseUrl}/wp-admin/admin.php?page=wp-sms-new-settings`);
+    await page.goto(`${baseUrl}/wp-admin/admin.php?page=wp-sms-unified-admin`);
 
     await page.waitForTimeout(1000);
 
