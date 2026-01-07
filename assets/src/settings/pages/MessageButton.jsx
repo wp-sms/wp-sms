@@ -35,7 +35,8 @@ function generateContactLink(type, value) {
  */
 function getDefaultAvatarUrl() {
   const wpSettings = getWpSettings()
-  return wpSettings?.pluginUrl ? `${wpSettings.pluginUrl}assets/images/avatar.png` : ''
+  const baseUrl = wpSettings?.pluginUrl || '/wp-content/plugins/wp-sms/'
+  return `${baseUrl}assets/images/avatar.png`
 }
 
 /**
@@ -43,7 +44,8 @@ function getDefaultAvatarUrl() {
  */
 function getContactIconUrl(type) {
   const wpSettings = getWpSettings()
-  return wpSettings?.pluginUrl ? `${wpSettings.pluginUrl}assets/images/chatbox/icon-${type || 'whatsapp'}.svg` : ''
+  const baseUrl = wpSettings?.pluginUrl || '/wp-content/plugins/wp-sms/'
+  return `${baseUrl}assets/images/chatbox/icon-${type || 'whatsapp'}.svg`
 }
 
 export default function MessageButton() {
