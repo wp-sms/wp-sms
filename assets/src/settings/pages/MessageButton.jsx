@@ -90,6 +90,58 @@ export default function MessageButton() {
       const chatbox = document.querySelector('.wpsms-chatbox')
       if (chatbox) {
         chatbox.classList.remove('wpsms-chatbox--visible')
+        const content = chatbox.querySelector('.wpsms-chatbox__content')
+        if (content) {
+          content.classList.remove('open')
+          content.style.display = 'none'
+        }
+      }
+    }
+  }, [])
+
+  // Handle close actions in preview to properly hide content
+  useEffect(() => {
+    const chatbox = document.querySelector('.wpsms-chatbox')
+    if (!chatbox) return
+
+    const closeButton = chatbox.querySelector('.js-wpsms-chatbox__close-button')
+    const chatboxButton = chatbox.querySelector('.js-wpsms-chatbox__button')
+    const content = chatbox.querySelector('.wpsms-chatbox__content')
+
+    const handleClose = (e) => {
+      e.stopPropagation()
+      if (content) {
+        content.classList.remove('open', 'opening')
+        content.style.display = 'none'
+      }
+      document.body.classList.remove('chatbox-open')
+    }
+
+    // Handle chatbox button click (toggles open/close)
+    const handleButtonClick = (e) => {
+      if (content && content.classList.contains('open')) {
+        // Closing - intercept and handle properly
+        e.stopPropagation()
+        content.classList.remove('open', 'opening')
+        content.style.display = 'none'
+        document.body.classList.remove('chatbox-open')
+      }
+      // If not open, let original handler open it
+    }
+
+    if (closeButton) {
+      closeButton.addEventListener('click', handleClose, true)
+    }
+    if (chatboxButton) {
+      chatboxButton.addEventListener('click', handleButtonClick, true)
+    }
+
+    return () => {
+      if (closeButton) {
+        closeButton.removeEventListener('click', handleClose, true)
+      }
+      if (chatboxButton) {
+        chatboxButton.removeEventListener('click', handleButtonClick, true)
       }
     }
   }, [])
