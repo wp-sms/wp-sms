@@ -467,7 +467,7 @@ export default function Gateway() {
             placeholder={__('Select method')}
             options={[
               { value: 'api_direct_send', label: __('Instant — Send immediately when triggered') },
-              { value: 'api_async_send', label: __('Background — Process in background (reduces page load time)') },
+              { value: 'api_async_send', label: __('Scheduled — Process in background (reduces page load time)') },
               { value: 'api_queued_send', label: __('Queue — Add to queue for batch processing') },
             ]}
           />
