@@ -204,6 +204,8 @@ export default function Subscribers() {
       toast({ title: __('Message sent to %s').replace('%s', quickReplyTo.mobile), variant: 'success' })
       setQuickReplyTo(null)
       setQuickReplyMessage('')
+      // Notify Outbox page that SMS was sent
+      window.dispatchEvent(new CustomEvent('wpsms:sms-sent'))
     } catch (error) {
       toast({ title: error.message || __('Failed to send message'), variant: 'destructive' })
     } finally {
