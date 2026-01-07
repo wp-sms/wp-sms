@@ -65,6 +65,8 @@ export default function Groups() {
       await groupsApi.createGroup({ name })
       toast({ title: __('Group created successfully'), variant: 'success' })
       table.fetch({ page: 1 })
+      // Notify other pages (e.g., Subscribers) that groups changed
+      window.dispatchEvent(new CustomEvent('wpsms:groups-changed'))
     } catch (error) {
       throw error
     } finally {
@@ -91,6 +93,8 @@ export default function Groups() {
       toast({ title: __('Group updated successfully'), variant: 'success' })
       setInlineEditId(null)
       table.refresh()
+      // Notify other pages (e.g., Subscribers) that groups changed
+      window.dispatchEvent(new CustomEvent('wpsms:groups-changed'))
     } catch (error) {
       toast({ title: error.message, variant: 'destructive' })
     } finally {
@@ -123,6 +127,8 @@ export default function Groups() {
     if (!deleteDialog.item) return
     try {
       await deleteDialog.save()
+      // Notify other pages (e.g., Subscribers) that groups changed
+      window.dispatchEvent(new CustomEvent('wpsms:groups-changed'))
     } catch {
       // Error already handled by useFormDialog
     }

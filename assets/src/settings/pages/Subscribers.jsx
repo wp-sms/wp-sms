@@ -78,18 +78,29 @@ export default function Subscribers() {
     successMessage: __('Subscriber updated successfully'),
   })
 
-  // Fetch groups
-  useEffect(() => {
-    const fetchGroups = async () => {
-      try {
-        const result = await groupsApi.getGroupsList()
-        setGroups(result)
-      } catch (error) {
-        console.error('Failed to fetch groups:', error)
-      }
+  // Fetch groups function
+  const fetchGroups = useCallback(async () => {
+    try {
+      const result = await groupsApi.getGroupsList()
+      setGroups(result)
+    } catch (error) {
+      console.error('Failed to fetch groups:', error)
     }
-    fetchGroups()
   }, [])
+
+  // Fetch groups on mount
+  useEffect(() => {
+    fetchGroups()
+  }, [fetchGroups])
+
+  // Listen for groups changes from other pages (e.g., Groups page)
+  useEffect(() => {
+    const handleGroupsChanged = () => {
+      fetchGroups()
+    }
+    window.addEventListener('wpsms:groups-changed', handleGroupsChanged)
+    return () => window.removeEventListener('wpsms:groups-changed', handleGroupsChanged)
+  }, [fetchGroups])
 
   // UI state
   const [showImportDialog, setShowImportDialog] = useState(false)
