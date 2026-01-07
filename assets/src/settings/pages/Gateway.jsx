@@ -13,7 +13,7 @@ import { getWpSettings, cn, getGatewayDisplayName, __ } from '@/lib/utils'
 export default function Gateway() {
   const { testGatewayConnection, getSetting, updateSetting } = useSettings()
   const { toast } = useToast()
-  const { gateways = {}, countries = {}, gateway: gatewayCapabilities = {} } = getWpSettings()
+  const { gateways = {}, countriesByDialCode = {}, gateway: gatewayCapabilities = {} } = getWpSettings()
 
   // Get dynamic gateway fields and help from capabilities
   const gatewayFields = gatewayCapabilities.gatewayFields || {}
@@ -512,7 +512,7 @@ export default function Gateway() {
               {localNumbersOnly === '1' && (
                 <MultiSelectField
                   label={__('Allowed Countries')}
-                  options={countries}
+                  options={countriesByDialCode}
                   value={localNumbersCountries}
                   onValueChange={setLocalNumbersCountries}
                   placeholder={__('Select countries...')}

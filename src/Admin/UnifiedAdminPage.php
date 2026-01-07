@@ -248,7 +248,9 @@ class UnifiedAdminPage extends Singleton
             'version'       => WP_SMS_VERSION,
             'i18n'          => $this->getTranslations(),
             // Dynamic data for multi-select fields
-            'countries'     => $this->getCountries(),
+            'countries'     => $this->getCountries(),              // Full country objects for filters
+            'countriesByCode' => $this->getCountriesByCode(),      // ISO codes for countryselect multiselects
+            'countriesByDialCode' => $this->getCountriesByDialCode(), // Dial codes for select/multiselect
             'postTypes'     => $this->getPostTypes(),
             'taxonomies'    => $this->getTaxonomiesWithTerms(),
             'roles'         => $this->getUserRoles(),
@@ -493,12 +495,12 @@ class UnifiedAdminPage extends Singleton
     }
 
     /**
-     * Get countries list formatted for MultiSelectField
+     * Get full countries list as array of objects
      *
-     * Returns countries in {value, label} format where value is the dial code
-     * to match the legacy stored format (array of dial codes like ['+1', '+44'])
+     * Returns the full countries array with all properties (code, name, dialCode, etc.)
+     * for use in Subscribers.jsx filtering and other components.
      *
-     * @return array
+     * @return array Array of country objects with code, name, dialCode, etc.
      */
     private function getCountries()
     {
@@ -506,19 +508,54 @@ class UnifiedAdminPage extends Singleton
             return [];
         }
 
-        // Use getCountriesMerged() which returns ['dialCode' => 'fullInfo', ...]
-        // This matches the legacy settings format
-        $countriesMerged = wp_sms_countries()->getCountriesMerged();
+        // Return full countries array for components that need the full data
+        // (e.g., Subscribers.jsx needs code and name for filtering)
+        return wp_sms_countries()->getCountries();
+    }
+
+    /**
+     * Get countries keyed by ISO code for countryselect multiselects
+     *
+     * Returns countries keyed by ISO country code (e.g., 'US', 'GB')
+     * to match the legacy countryselect_callback which stores country codes.
+     *
+     * @return array Format: ['US' => 'United States', 'GB' => 'United Kingdom', ...]
+     */
+    private function getCountriesByCode()
+    {
+        if (!function_exists('wp_sms_countries')) {
+            return [];
+        }
+
+        // Legacy countryselect_callback uses getCountries() and stores $country['code']
+        $countries = wp_sms_countries()->getCountries();
         $result = [];
 
-        foreach ($countriesMerged as $dialCode => $fullInfo) {
-            $result[] = [
-                'value' => $dialCode,
-                'label' => $fullInfo,
-            ];
+        foreach ($countries as $country) {
+            if (isset($country['code']) && isset($country['name'])) {
+                $result[$country['code']] = $country['name'];
+            }
         }
 
         return $result;
+    }
+
+    /**
+     * Get countries list keyed by dial code for single select fields
+     *
+     * Returns countries keyed by dial code (e.g., '+1', '+44')
+     * to match the legacy mobile_county_code select which uses getCountriesMerged().
+     *
+     * @return array Format: ['+1' => 'United States (+1)', '+44' => 'United Kingdom (+44)', ...]
+     */
+    private function getCountriesByDialCode()
+    {
+        if (!function_exists('wp_sms_countries')) {
+            return [];
+        }
+
+        // Legacy uses getCountriesMerged() which returns ['dialCode' => 'fullInfo', ...]
+        return wp_sms_countries()->getCountriesMerged();
     }
 
     /**

@@ -8,7 +8,7 @@ import { useSetting } from '@/context/SettingsContext'
 import { getWpSettings, __ } from '@/lib/utils'
 
 export default function PhoneConfig() {
-  const { countries = {} } = getWpSettings()
+  const { countriesByCode = {}, countriesByDialCode = {} } = getWpSettings()
 
   // Admin mobile
   const [adminMobile, setAdminMobile] = useSetting('admin_mobile_number', '')
@@ -130,7 +130,7 @@ export default function PhoneConfig() {
             <>
               <MultiSelectField
                 label={__('Limit Countries')}
-                options={countries}
+                options={countriesByCode}
                 value={onlyCountries}
                 onValueChange={setOnlyCountries}
                 placeholder={__('All countries')}
@@ -140,7 +140,7 @@ export default function PhoneConfig() {
 
               <MultiSelectField
                 label={__('Preferred Countries')}
-                options={countries}
+                options={countriesByCode}
                 value={preferredCountries}
                 onValueChange={setPreferredCountries}
                 placeholder={__('None selected')}
@@ -160,9 +160,9 @@ export default function PhoneConfig() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0">{__("None — Don't add country code")}</SelectItem>
-                    {countries && Object.entries(countries).map(([code, country]) => (
-                      <SelectItem key={code} value={code}>
-                        {typeof country === 'object' ? country.name : country}
+                    {countriesByDialCode && Object.entries(countriesByDialCode).map(([dialCode, label]) => (
+                      <SelectItem key={dialCode} value={dialCode}>
+                        {label}
                       </SelectItem>
                     ))}
                   </SelectContent>
