@@ -4,7 +4,6 @@ import {
   Phone,
   MessageSquare,
   Bell,
-  Users,
   Puzzle,
   Settings,
   CheckCircle,
@@ -14,13 +13,13 @@ import {
   Loader2,
   ExternalLink,
   Zap,
-  BookOpen,
   Mail,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { SetupProgress, Tip, FeatureHighlight } from '@/components/ui/ux-helpers'
+import { SetupProgress } from '@/components/ui/ux-helpers'
 import { useSettings, useSetting } from '@/context/SettingsContext'
+import { useToast } from '@/components/ui/toaster'
 import { getWpSettings, cn, getGatewayDisplayName, __ } from '@/lib/utils'
 
 function StatusRow({ icon: Icon, title, value, status, onClick }) {
@@ -68,6 +67,7 @@ function QuickLink({ icon: Icon, title, onClick }) {
 
 export default function Overview() {
   const { setCurrentPage, testGatewayConnection } = useSettings()
+  const { toast } = useToast()
   const { gateways = {} } = getWpSettings()
 
   const [gatewayKey] = useSetting('gateway_name', '')
@@ -87,10 +87,28 @@ export default function Overview() {
         credit: result.credit,
         message: result.error || result.message,
       })
+      if (result.success) {
+        toast({
+          title: __('Connection Successful'),
+          description: result.credit ? `${__('Credit:')} ${result.credit}` : __('Gateway is working correctly'),
+          variant: 'success',
+        })
+      } else {
+        toast({
+          title: __('Connection Failed'),
+          description: result.error || __('Could not connect to gateway'),
+          variant: 'destructive',
+        })
+      }
     } catch (error) {
       setGatewayStatus({
         status: 'error',
         message: error.message,
+      })
+      toast({
+        title: __('Connection Failed'),
+        description: error.message || __('Could not connect to gateway'),
+        variant: 'destructive',
       })
     }
     setTesting(false)
@@ -172,14 +190,6 @@ export default function Overview() {
             <SetupProgress steps={setupSteps} />
           </CardContent>
         </Card>
-      )}
-
-      {/* Success message when setup is complete */}
-      {setupComplete && !isNewUser && (
-        <Tip variant="success" dismissible>
-          <strong>{__("You're all set!")}</strong> {__('Your SMS gateway is configured and ready to send messages.')}
-          {' '}{__('Head to')} <button onClick={() => setCurrentPage('send-sms')} className="wsms-underline wsms-font-medium">{__('Send SMS')}</button> {__('to send your first message.')}
-        </Tip>
       )}
 
       {/* Gateway Status */}
