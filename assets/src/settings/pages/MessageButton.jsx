@@ -334,7 +334,7 @@ export default function MessageButton() {
                 fields={[
                   { name: 'member_name', label: __('Name'), type: 'text', placeholder: __('Jane Smith') },
                   { name: 'member_role', label: __('Role'), type: 'text', placeholder: __('Customer Support') },
-                  { name: 'member_contact_type', label: __('Contact Type'), type: 'select', options: [
+                  { name: 'member_contact_type', label: __('Contact Type'), type: 'select', placeholder: __('Select...'), options: [
                     { value: 'whatsapp', label: 'WhatsApp' },
                     { value: 'telegram', label: 'Telegram' },
                     { value: 'sms', label: 'SMS' },
@@ -342,7 +342,7 @@ export default function MessageButton() {
                     { value: 'email', label: __('Email') },
                   ]},
                   { name: 'member_contact_value', label: __('Contact Value'), type: 'text', placeholder: '+1 555 123 4567' },
-                  { name: 'member_photo', label: __('Avatar'), type: 'media', buttonText: __('Select Avatar') },
+                  { name: 'member_photo', label: __('Avatar URL'), type: 'url', placeholder: 'https://example.com/avatar.jpg' },
                   { name: 'member_availability', label: __('Availability'), type: 'text', placeholder: __('Available 9AM-5PM') },
                 ]}
                 addLabel={__('Add Team Member')}

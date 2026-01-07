@@ -221,8 +221,6 @@ Repeater.displayName = 'Repeater'
 function RepeaterField({ field, value, onChange, disabled }) {
   const { type = 'text', placeholder, options, buttonText } = field
 
-  const baseSelectClass = 'wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-card wsms-px-3 wsms-text-[13px] wsms-shadow-sm focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20 focus:wsms-border-primary disabled:wsms-opacity-50'
-
   switch (type) {
     case 'select':
       return (
@@ -230,7 +228,8 @@ function RepeaterField({ field, value, onChange, disabled }) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
-          className={baseSelectClass}
+          className="wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-card wsms-px-3 wsms-py-1 wsms-text-[13px] wsms-shadow-sm focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20 focus:wsms-border-primary disabled:wsms-opacity-50"
+          style={{ width: '100%', minWidth: 0 }}
         >
           <option value="">{placeholder || __('Select...')}</option>
           {options?.map((opt) => (
