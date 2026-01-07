@@ -1,9 +1,10 @@
 import * as React from 'react'
 import { Plus, Trash2, ChevronUp, ChevronDown } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn, __ } from '@/lib/utils'
 import { Button } from './button'
 import { Input } from './input'
 import { Label } from './label'
+import { MediaSelector } from '@/components/shared/MediaSelector'
 
 /**
  * Repeater component for managing arrays of items with configurable fields
@@ -148,10 +149,16 @@ const Repeater = React.forwardRef(
                       ))}
                     </div>
                   ) : (
-                    // Multiple fields - 2-column grid
+                    // Multiple fields - 2-column grid with colSpan support
                     <div className="wsms-grid wsms-grid-cols-2 wsms-gap-x-3 wsms-gap-y-2">
                       {fields.map((field) => (
-                        <div key={field.name} className="wsms-space-y-1">
+                        <div
+                          key={field.name}
+                          className={cn(
+                            'wsms-space-y-1',
+                            field.colSpan === 2 && 'wsms-col-span-2'
+                          )}
+                        >
                           <Label className="wsms-text-[11px] wsms-text-muted-foreground wsms-font-medium">
                             {field.label}
                           </Label>
@@ -212,7 +219,7 @@ Repeater.displayName = 'Repeater'
  * Individual field renderer for repeater items
  */
 function RepeaterField({ field, value, onChange, disabled }) {
-  const { type = 'text', placeholder, options } = field
+  const { type = 'text', placeholder, options, buttonText } = field
 
   const baseSelectClass = 'wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-card wsms-px-3 wsms-text-[13px] wsms-shadow-sm focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20 focus:wsms-border-primary disabled:wsms-opacity-50'
 
@@ -225,13 +232,24 @@ function RepeaterField({ field, value, onChange, disabled }) {
           disabled={disabled}
           className={baseSelectClass}
         >
-          <option value="">{placeholder || 'Select...'}</option>
+          <option value="">{placeholder || __('Select...')}</option>
           {options?.map((opt) => (
             <option key={opt.value} value={opt.value}>
               {opt.label}
             </option>
           ))}
         </select>
+      )
+
+    case 'media':
+      return (
+        <MediaSelector
+          value={value}
+          onChange={onChange}
+          disabled={disabled}
+          buttonText={buttonText || __('Select Image')}
+          allowedTypes={['image']}
+        />
       )
 
     case 'url':
