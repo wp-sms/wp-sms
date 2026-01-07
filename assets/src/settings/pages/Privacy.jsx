@@ -13,6 +13,7 @@ import {
   FileText,
   Eye,
   Database,
+  FolderOpen,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -89,6 +90,11 @@ export default function Privacy() {
         title: result.message,
         variant: 'success',
       })
+
+      // Notify other pages to refresh their data
+      window.dispatchEvent(new CustomEvent('wpsms:sms-sent')) // Refresh Outbox
+      window.dispatchEvent(new CustomEvent('wpsms:subscribers-changed')) // Refresh Subscribers
+
       setSearchResults(null)
       setPhoneNumber('')
       setShowDeleteConfirm(false)
@@ -117,14 +123,50 @@ export default function Privacy() {
   const getSourceLabel = (source) => {
     switch (source) {
       case 'wp_users':
-        return 'WordPress User'
+        return __('WordPress User')
       case 'sms_subscribes':
-        return 'Newsletter Subscriber'
+        return __('Subscriber')
       case 'sms_send':
-        return 'Sent Message'
+        return __('SMS Message')
       default:
         return source
     }
+  }
+
+  // Get status badge variant based on source and status
+  const getStatusVariant = (source, status) => {
+    if (!status) return null
+
+    // For SMS messages: success/failed
+    if (source === 'sms_send') {
+      return status === 'success' ? 'success' : 'failed'
+    }
+
+    // For subscribers: active/inactive (status is '1' or '0')
+    if (source === 'sms_subscribes') {
+      return status === '1' || status === 'Active' ? 'active' : 'inactive'
+    }
+
+    // For users or other
+    return status === 'Active' || status === '1' ? 'active' : 'inactive'
+  }
+
+  // Get status display text
+  const getStatusText = (source, status) => {
+    if (!status) return null
+
+    // For SMS messages
+    if (source === 'sms_send') {
+      return status === 'success' ? __('Sent') : __('Failed')
+    }
+
+    // For subscribers
+    if (source === 'sms_subscribes') {
+      return status === '1' || status === 'Active' ? __('Active') : __('Inactive')
+    }
+
+    // Default
+    return status
   }
 
   return (
@@ -316,11 +358,15 @@ export default function Privacy() {
                       <div className="wsms-flex-1 wsms-min-w-0">
                         <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-mb-1">
                           <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
-                            {record.display_name || 'Unknown'}
+                            {record.display_name || __('Unknown')}
                           </span>
-                          <StatusBadge variant="pending" size="sm">
-                            {getSourceLabel(record.source)}
-                          </StatusBadge>
+                          {/* Show group badge for subscribers, nothing for SMS (icon is sufficient) */}
+                          {record.source === 'sms_subscribes' && record.group && (
+                            <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-rounded-full wsms-bg-primary/10 wsms-px-2 wsms-py-0.5 wsms-text-[10px] wsms-font-medium wsms-text-primary">
+                              <FolderOpen className="wsms-h-3 wsms-w-3" />
+                              {record.group}
+                            </span>
+                          )}
                         </div>
                         <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-font-mono">
                           {record.mobile}
@@ -330,23 +376,18 @@ export default function Privacy() {
                             {record.message}
                           </p>
                         )}
-                        {record.group && (
-                          <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mt-1">
-                            Group: {record.group}
-                          </p>
-                        )}
                       </div>
                       <div className="wsms-text-right wsms-shrink-0">
                         <p className="wsms-text-[11px] wsms-text-muted-foreground">
                           {formatDate(record.created_at)}
                         </p>
-                        {record.status && (
+                        {record.status && getStatusVariant(record.source, record.status) && (
                           <StatusBadge
-                            variant={record.status === 'Active' ? 'active' : 'inactive'}
+                            variant={getStatusVariant(record.source, record.status)}
                             size="sm"
                             className="wsms-mt-1"
                           >
-                            {record.status}
+                            {getStatusText(record.source, record.status)}
                           </StatusBadge>
                         )}
                       </div>

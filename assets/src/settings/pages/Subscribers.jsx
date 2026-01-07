@@ -102,6 +102,15 @@ export default function Subscribers() {
     return () => window.removeEventListener('wpsms:groups-changed', handleGroupsChanged)
   }, [fetchGroups])
 
+  // Listen for subscribers changes from other pages (e.g., Privacy page delete)
+  useEffect(() => {
+    const handleSubscribersChanged = () => {
+      table.refresh()
+    }
+    window.addEventListener('wpsms:subscribers-changed', handleSubscribersChanged)
+    return () => window.removeEventListener('wpsms:subscribers-changed', handleSubscribersChanged)
+  }, [table])
+
   // UI state
   const [showImportDialog, setShowImportDialog] = useState(false)
   const [isImporting, setIsImporting] = useState(false)
