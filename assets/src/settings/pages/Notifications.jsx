@@ -45,6 +45,7 @@ export default function Notifications() {
   const { postTypes = {}, roles = {}, groups = {}, taxonomies = {} } = getWpSettings()
 
   // Convert taxonomies to a flat options list for MultiSelect
+  // Legacy format stores just term IDs (not taxonomy:termId)
   const taxonomyOptions = useMemo(() => {
     if (!taxonomies) return []
     const options = []
@@ -52,7 +53,7 @@ export default function Notifications() {
       if (taxData.terms) {
         Object.entries(taxData.terms).forEach(([termId, termName]) => {
           options.push({
-            value: `${taxName}:${termId}`,
+            value: termId, // Legacy format: just term ID
             label: `${taxData.label}: ${termName}`,
           })
         })
@@ -200,7 +201,7 @@ export default function Notifications() {
             onChange={setNotifNewPostTemplate}
             placeholder={__('New post: %post_title% - Read more: %post_url%')}
             rows={3}
-            variables={['%post_title%', '%post_url%', '%post_date%', '%post_content%', '%post_author%']}
+            variables={['%post_title%', '%post_content%', '%post_url%', '%post_date%', '%post_thumbnail%', '%post_author%', '%post_author_email%', '%post_status%', '%post_password%', '%post_comment_count%', '%post_post_type%', '%post_id%']}
           />
         </div>
 
@@ -240,7 +241,7 @@ export default function Notifications() {
             onChange={setNotifPostAuthorTemplate}
             placeholder={__("Your post '%post_title%' has been published!")}
             rows={3}
-            variables={['%post_title%', '%post_url%', '%post_date%', '%post_content%']}
+            variables={['%post_title%', '%post_content%', '%post_url%', '%post_date%', '%post_thumbnail%', '%post_author%', '%post_author_email%', '%post_status%', '%post_password%', '%post_comment_count%', '%post_post_type%', '%post_id%']}
           />
         </div>
       </NotificationSection>

@@ -531,8 +531,30 @@ class UnifiedAdminPage extends Singleton
         $postTypes = get_post_types(['show_ui' => true], 'objects');
         $result = [];
 
+        // Exclude list matching legacy settings
+        $exclude = [
+            'attachment',
+            'acf-field',
+            'acf-field-group',
+            'vc4_templates',
+            'vc_grid_item',
+            'acf',
+            'wpcf7_contact_form',
+            'shop_order',
+            'shop_coupon',
+        ];
+
         foreach ($postTypes as $postType) {
-            $result[$postType->name] = $postType->label;
+            if (in_array($postType->name, $exclude)) {
+                continue;
+            }
+            if ($postType->_builtin && !$postType->public) {
+                continue;
+            }
+            // Use legacy format: capability|slug => label
+            // This matches the format stored by legacy settings
+            $key = $postType->cap->publish_posts . '|' . $postType->name;
+            $result[$key] = $postType->label;
         }
 
         return $result;
