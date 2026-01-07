@@ -1,25 +1,22 @@
 import React, { useEffect, useCallback } from 'react'
-import { Save, X, Loader2, Check } from 'lucide-react'
+import { Save, X, Loader2 } from 'lucide-react'
 import { Button } from '../ui/button'
 import { useSettings } from '@/context/SettingsContext'
 import { useToast } from '../ui/toaster'
-import { cn, __ } from '@/lib/utils'
+import { __ } from '@/lib/utils'
 
 export default function FloatingSaveBar() {
   const { hasChanges, isSaving, saveSettings, resetChanges } = useSettings()
   const { toast } = useToast()
-  const [saveSuccess, setSaveSuccess] = React.useState(false)
 
   const handleSave = useCallback(async () => {
     const result = await saveSettings()
 
     if (result.success) {
-      setSaveSuccess(true)
       toast({
         title: __('Settings saved'),
         variant: 'success',
       })
-      setTimeout(() => setSaveSuccess(false), 2000)
     } else {
       toast({
         title: __('Error saving settings'),
@@ -51,7 +48,7 @@ export default function FloatingSaveBar() {
     })
   }
 
-  if (!hasChanges && !saveSuccess) {
+  if (!hasChanges) {
     return null
   }
 
@@ -64,52 +61,41 @@ export default function FloatingSaveBar() {
           aria-live="polite"
           aria-atomic="true"
         >
-          {saveSuccess ? (
-            <>
-              <Check className="wsms-h-4 wsms-w-4 wsms-text-success" aria-hidden="true" />
-              <span className="wsms-text-[13px] wsms-text-success wsms-font-medium">
-                {__('Settings saved successfully')}
-              </span>
-            </>
-          ) : (
-            <span className="wsms-text-[13px] wsms-text-muted-foreground">
-              {__('You have unsaved changes')}
-            </span>
-          )}
+          <span className="wsms-text-[13px] wsms-text-muted-foreground">
+            {__('You have unsaved changes')}
+          </span>
         </div>
 
-        {!saveSuccess && (
-          <div className="wsms-flex wsms-items-center wsms-gap-2">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleDiscard}
-              disabled={isSaving}
-            >
-              <X className="wsms-h-4 wsms-w-4 wsms-mr-1" aria-hidden="true" />
-              {__('Discard')}
-            </Button>
+        <div className="wsms-flex wsms-items-center wsms-gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleDiscard}
+            disabled={isSaving}
+          >
+            <X className="wsms-h-4 wsms-w-4 wsms-mr-1" aria-hidden="true" />
+            {__('Discard')}
+          </Button>
 
-            <Button
-              size="sm"
-              onClick={handleSave}
-              disabled={isSaving}
-              aria-busy={isSaving}
-            >
-              {isSaving ? (
-                <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1 wsms-animate-spin" aria-hidden="true" />
-                  {__('Saving...')}
-                </>
-              ) : (
-                <>
-                  <Save className="wsms-h-4 wsms-w-4 wsms-mr-1" aria-hidden="true" />
-                  {__('Save Changes')}
-                </>
-              )}
-            </Button>
-          </div>
-        )}
+          <Button
+            size="sm"
+            onClick={handleSave}
+            disabled={isSaving}
+            aria-busy={isSaving}
+          >
+            {isSaving ? (
+              <>
+                <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1 wsms-animate-spin" aria-hidden="true" />
+                {__('Saving...')}
+              </>
+            ) : (
+              <>
+                <Save className="wsms-h-4 wsms-w-4 wsms-mr-1" aria-hidden="true" />
+                {__('Save Changes')}
+              </>
+            )}
+          </Button>
+        </div>
       </div>
     </div>
   )
