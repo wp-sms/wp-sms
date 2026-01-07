@@ -136,7 +136,7 @@ const Repeater = React.forwardRef(
                     <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2">
                       {fields.map((field) => (
                         <div key={field.name} className="wsms-space-y-1">
-                          <Label className="wsms-text-[11px] wsms-text-muted-foreground wsms-font-medium">
+                          <Label className="wsms-text-[12px]">
                             {field.label}
                           </Label>
                           <RepeaterField
@@ -159,7 +159,7 @@ const Repeater = React.forwardRef(
                             field.colSpan === 2 && 'wsms-col-span-2'
                           )}
                         >
-                          <Label className="wsms-text-[11px] wsms-text-muted-foreground wsms-font-medium">
+                          <Label className="wsms-text-[12px]">
                             {field.label}
                           </Label>
                           <RepeaterField
@@ -228,7 +228,7 @@ function RepeaterField({ field, value, onChange, disabled }) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
-          className="wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-card wsms-px-3 wsms-text-[13px] wsms-shadow-sm hover:wsms-border-primary/50 focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20 focus:wsms-border-primary disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50 disabled:wsms-bg-muted"
+          className="wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-card wsms-px-3 wsms-text-[13px] wsms-text-foreground wsms-shadow-sm hover:wsms-border-primary/50 focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20 focus:wsms-border-primary disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50 disabled:wsms-bg-muted"
         >
           <option value="">{placeholder || __('Select...')}</option>
           {options?.map((opt) => (

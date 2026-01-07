@@ -11,7 +11,7 @@ const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) 
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      'wsms-flex wsms-h-9 wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-border wsms-border-input wsms-bg-card wsms-px-3 wsms-text-[13px] wsms-shadow-sm hover:wsms-bg-accent/50 focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20 focus:wsms-border-primary disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50 [&>span]:wsms-line-clamp-1',
+      'wsms-flex wsms-h-9 wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-border wsms-border-input wsms-bg-card wsms-px-3 wsms-text-[13px] wsms-text-foreground wsms-shadow-sm hover:wsms-bg-accent/50 focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20 focus:wsms-border-primary disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50 [&>span]:wsms-line-clamp-1',
       className
     )}
     {...props}
@@ -26,13 +26,13 @@ SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
 
 const selectContentStyles = {
   zIndex: 9999999,
-  backgroundColor: '#ffffff',
-  border: '1px solid #e5e5e5',
+  backgroundColor: 'hsl(var(--popover))',
+  border: '1px solid hsl(var(--border))',
   borderRadius: '6px',
   boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
   fontSize: '13px',
-  color: '#1f2937',
+  color: 'hsl(var(--popover-foreground))',
   maxHeight: '300px',
   overflow: 'hidden',
 }
@@ -81,7 +81,7 @@ const selectItemBaseStyles = {
   borderRadius: '4px',
   fontSize: '13px',
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-  color: '#1f2937',
+  color: 'hsl(var(--popover-foreground))',
   cursor: 'pointer',
   outline: 'none',
   position: 'relative',
@@ -99,7 +99,7 @@ const SelectItem = React.forwardRef(({ className, children, style, ...props }, r
       )}
       style={{
         ...selectItemBaseStyles,
-        backgroundColor: isHovered ? '#f3f4f6' : 'transparent',
+        backgroundColor: isHovered ? 'hsl(var(--accent))' : 'transparent',
         ...style,
       }}
       onMouseEnter={() => setIsHovered(true)}
