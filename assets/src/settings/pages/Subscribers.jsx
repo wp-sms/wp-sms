@@ -128,6 +128,7 @@ export default function Subscribers() {
   // Move to group state
   const [showMoveToGroup, setShowMoveToGroup] = useState(false)
   const [moveToGroupId, setMoveToGroupId] = useState('')
+  const [isMovingToGroup, setIsMovingToGroup] = useState(false)
 
   // Bulk action loading state
   const [bulkActionLoading, setBulkActionLoading] = useState(null)
@@ -229,8 +230,9 @@ export default function Subscribers() {
   const handleMoveToGroup = async () => {
     if (table.selectedIds.length === 0 || !moveToGroupId) return
 
+    setIsMovingToGroup(true)
     try {
-      const result = await subscribersApi.bulkAction('move_to_group', table.selectedIds, {
+      const result = await subscribersApi.bulkAction('move', table.selectedIds, {
         group_id: parseInt(moveToGroupId),
       })
       toast({
@@ -243,6 +245,8 @@ export default function Subscribers() {
       table.fetch({ page: 1 })
     } catch (error) {
       toast({ title: error.message, variant: 'destructive' })
+    } finally {
+      setIsMovingToGroup(false)
     }
   }
 
@@ -927,8 +931,8 @@ export default function Subscribers() {
               {groups.length === 0 ? __('Close') : __('Cancel')}
             </Button>
             {groups.length > 0 && (
-              <Button onClick={handleMoveToGroup} disabled={table.isLoading || !moveToGroupId}>
-                {table.isLoading ? (
+              <Button onClick={handleMoveToGroup} disabled={isMovingToGroup || !moveToGroupId}>
+                {isMovingToGroup ? (
                   <>
                     <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
                     {__('Moving...')}
