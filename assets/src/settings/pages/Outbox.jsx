@@ -57,12 +57,16 @@ export default function Outbox() {
     },
   })
 
-  // Refresh data when SMS is sent (listen for custom event from SendSms page)
+  // Track refresh state for showing loading indicator after SMS sent
   const needsRefresh = useRef(false)
+  const isRefreshingAfterSms = useRef(false)
+
+  // Refresh data when SMS is sent (listen for custom event from SendSms page)
   useEffect(() => {
     const handleSmsSent = () => {
       // If we're on outbox, refresh immediately; otherwise flag for later
       if (currentPage === 'outbox') {
+        isRefreshingAfterSms.current = true
         table.refresh()
       } else {
         needsRefresh.current = true
@@ -75,10 +79,18 @@ export default function Outbox() {
   // Refresh when returning to outbox if SMS was sent while away
   useEffect(() => {
     if (currentPage === 'outbox' && needsRefresh.current && table.initialLoadDone) {
+      isRefreshingAfterSms.current = true
       table.refresh()
       needsRefresh.current = false
     }
   }, [currentPage, table.initialLoadDone]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Reset the refresh flag when loading completes
+  useEffect(() => {
+    if (!table.isLoading && isRefreshingAfterSms.current) {
+      isRefreshingAfterSms.current = false
+    }
+  }, [table.isLoading])
 
   // Dialog states for view and quick reply
   const [viewMessage, setViewMessage] = useState(null)
@@ -186,8 +198,8 @@ export default function Outbox() {
   // Consider it a good rate if there are no failures or rate is high
   const isGoodRate = stats.failed === 0 || successRate >= 90
 
-  // Loading skeleton - show until initial API fetch completes
-  if (!table.initialLoadDone) {
+  // Loading skeleton - show until initial API fetch completes or when refreshing after SMS sent
+  if (!table.initialLoadDone || (isRefreshingAfterSms.current && table.isLoading)) {
     return <PageLoadingSkeleton />
   }
 
