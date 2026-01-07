@@ -10,6 +10,7 @@ import {
   Search,
   MoreHorizontal,
   Inbox,
+  Loader2,
 } from 'lucide-react'
 import { cn, __ } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -86,30 +87,44 @@ function EmptyState({ icon: Icon = Inbox, message }) {
 }
 
 // Bulk actions dropdown
-function BulkActionsDropdown({ actions, selectedCount, onAction }) {
+function BulkActionsDropdown({ actions, selectedCount, onAction, loadingAction }) {
   if (!actions || actions.length === 0) return null
+
+  const isAnyLoading = !!loadingAction
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="wsms-gap-1.5">
-          <span>{__('Actions')}</span>
+        <Button variant="outline" size="sm" className="wsms-gap-1.5" disabled={isAnyLoading}>
+          {isAnyLoading ? (
+            <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
+          ) : (
+            <span>{__('Actions')}</span>
+          )}
           <span className="wsms-flex wsms-h-5 wsms-min-w-5 wsms-items-center wsms-justify-center wsms-rounded wsms-bg-primary/10 wsms-px-1.5 wsms-text-[11px] wsms-font-semibold wsms-text-primary">
             {selectedCount}
           </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" sideOffset={5}>
-        {actions.map((action, index) => (
-          <DropdownMenuItem
-            key={index}
-            onClick={() => onAction(action)}
-            style={action.variant === 'destructive' ? { color: '#dc2626' } : undefined}
-          >
-            {action.icon && <action.icon style={{ marginRight: '8px', width: '16px', height: '16px' }} />}
-            {action.label}
-          </DropdownMenuItem>
-        ))}
+        {actions.map((action, index) => {
+          const isLoading = loadingAction === action.label
+          return (
+            <DropdownMenuItem
+              key={index}
+              onClick={() => !isAnyLoading && onAction(action)}
+              disabled={isAnyLoading}
+              style={action.variant === 'destructive' ? { color: '#dc2626' } : undefined}
+            >
+              {isLoading ? (
+                <Loader2 style={{ marginRight: '8px', width: '16px', height: '16px' }} className="wsms-animate-spin" />
+              ) : (
+                action.icon && <action.icon style={{ marginRight: '8px', width: '16px', height: '16px' }} />
+              )}
+              {action.label}
+            </DropdownMenuItem>
+          )
+        })}
       </DropdownMenuContent>
     </DropdownMenu>
   )
@@ -275,6 +290,7 @@ export function DataTable({
   onSort,
   onSearch,
   bulkActions,
+  bulkActionLoading,
   rowActions,
   searchPlaceholder = 'Search...',
   emptyMessage = 'No items found',
@@ -371,6 +387,7 @@ export function DataTable({
                 actions={bulkActions}
                 selectedCount={selectedCount}
                 onAction={handleBulkAction}
+                loadingAction={bulkActionLoading}
               />
             ) : null}
           </div>
@@ -551,6 +568,7 @@ DataTable.propTypes = {
       variant: PropTypes.oneOf(['default', 'destructive']),
     })
   ),
+  bulkActionLoading: PropTypes.string,
   rowActions: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,

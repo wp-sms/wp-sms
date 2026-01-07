@@ -98,6 +98,7 @@ export default function Outbox() {
   const [quickReplyMessage, setQuickReplyMessage] = useState('')
   const [isSendingReply, setIsSendingReply] = useState(false)
   const [actionLoading, setActionLoading] = useState(null)
+  const [bulkActionLoading, setBulkActionLoading] = useState(null)
 
   // Custom handler for resend (not part of useListPage)
   const handleResend = useCallback(
@@ -118,9 +119,10 @@ export default function Outbox() {
 
   // Custom bulk handler to show affected count in message
   const handleOutboxBulkAction = useCallback(
-    async (action) => {
+    async (action, label) => {
       if (table.selectedIds.length === 0) return
 
+      setBulkActionLoading(label)
       try {
         const result = await outboxApi.bulkAction(action, table.selectedIds)
         toast({
@@ -131,6 +133,8 @@ export default function Outbox() {
         table.fetch({ page: 1 })
       } catch (error) {
         toast({ title: error.message || __('Bulk action failed'), variant: 'destructive' })
+      } finally {
+        setBulkActionLoading(null)
       }
     },
     [toast, table]
@@ -185,8 +189,8 @@ export default function Outbox() {
   const bulkActions = useMemo(
     () =>
       getOutboxBulkActions({
-        onDelete: () => handleOutboxBulkAction('delete'),
-        onResend: () => handleOutboxBulkAction('resend'),
+        onDelete: () => handleOutboxBulkAction('delete', __('Delete Selected')),
+        onResend: () => handleOutboxBulkAction('resend', __('Resend Selected')),
       }),
     [handleOutboxBulkAction]
   )
@@ -467,6 +471,7 @@ export default function Outbox() {
             }}
             rowActions={rowActions}
             bulkActions={bulkActions}
+            bulkActionLoading={bulkActionLoading}
             emptyMessage="No messages match your filters"
             emptyIcon={Inbox}
           />

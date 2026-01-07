@@ -129,6 +129,9 @@ export default function Subscribers() {
   const [showMoveToGroup, setShowMoveToGroup] = useState(false)
   const [moveToGroupId, setMoveToGroupId] = useState('')
 
+  // Bulk action loading state
+  const [bulkActionLoading, setBulkActionLoading] = useState(null)
+
   // Aliases for easier access
   const stats = table.stats || { total: 0, active: 0, inactive: 0 }
 
@@ -363,6 +366,16 @@ export default function Subscribers() {
     },
   ]
 
+  // Wrap bulk action with loading state
+  const handleBulkActionWithLoading = async (action, label) => {
+    setBulkActionLoading(label)
+    try {
+      await handleBulkAction(action)
+    } finally {
+      setBulkActionLoading(null)
+    }
+  }
+
   // Bulk actions
   const bulkActions = [
     {
@@ -373,17 +386,17 @@ export default function Subscribers() {
     {
       label: __('Activate Selected'),
       icon: CheckCircle,
-      onClick: () => handleBulkAction('activate'),
+      onClick: () => handleBulkActionWithLoading('activate', __('Activate Selected')),
     },
     {
       label: __('Deactivate Selected'),
       icon: XCircle,
-      onClick: () => handleBulkAction('deactivate'),
+      onClick: () => handleBulkActionWithLoading('deactivate', __('Deactivate Selected')),
     },
     {
       label: __('Delete Selected'),
       icon: Trash2,
-      onClick: () => handleBulkAction('delete'),
+      onClick: () => handleBulkActionWithLoading('delete', __('Delete Selected')),
       variant: 'destructive',
     },
   ]
@@ -668,6 +681,7 @@ export default function Subscribers() {
             }}
             rowActions={rowActions}
             bulkActions={bulkActions}
+            bulkActionLoading={bulkActionLoading}
             emptyMessage="No subscribers match your filters"
             emptyIcon={Users}
           />
@@ -866,26 +880,40 @@ export default function Subscribers() {
           </DialogHeader>
           <DialogBody>
             <div className="wsms-space-y-4">
-              <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium">Select Group</label>
-                <Select value={moveToGroupId} onValueChange={setMoveToGroupId}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Choose a group..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {groups.map((group) => (
-                      <SelectItem key={group.id} value={group.id.toString()}>
-                        {group.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/50 wsms-border wsms-border-border">
-                <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                  This will move {table.selectedIds.length} subscriber(s) to the selected group.
-                </p>
-              </div>
+              {groups.length === 0 ? (
+                <div className="wsms-p-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-dashed wsms-text-center">
+                  <FolderOpen className="wsms-h-8 wsms-w-8 wsms-text-muted-foreground wsms-mx-auto wsms-mb-2" />
+                  <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground wsms-mb-1">
+                    {__('No groups available')}
+                  </p>
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                    {__('Create a group first in the Groups page to organize your subscribers.')}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="wsms-space-y-2">
+                    <label className="wsms-text-[12px] wsms-font-medium">{__('Select Group')}</label>
+                    <Select value={moveToGroupId} onValueChange={setMoveToGroupId}>
+                      <SelectTrigger>
+                        <SelectValue placeholder={__('Choose a group...')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {groups.map((group) => (
+                          <SelectItem key={group.id} value={group.id.toString()}>
+                            {group.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/50 wsms-border wsms-border-border">
+                    <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                      {__('This will move %d subscriber(s) to the selected group.').replace('%d', table.selectedIds.length)}
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
           </DialogBody>
           <DialogFooter>
@@ -896,18 +924,20 @@ export default function Subscribers() {
                 setMoveToGroupId('')
               }}
             >
-              Cancel
+              {groups.length === 0 ? __('Close') : __('Cancel')}
             </Button>
-            <Button onClick={handleMoveToGroup} disabled={table.isLoading || !moveToGroupId}>
-              {table.isLoading ? (
-                <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
-                  Moving...
-                </>
-              ) : (
-                'Move to Group'
-              )}
-            </Button>
+            {groups.length > 0 && (
+              <Button onClick={handleMoveToGroup} disabled={table.isLoading || !moveToGroupId}>
+                {table.isLoading ? (
+                  <>
+                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+                    {__('Moving...')}
+                  </>
+                ) : (
+                  __('Move to Group')
+                )}
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
