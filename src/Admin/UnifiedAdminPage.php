@@ -259,6 +259,8 @@ class UnifiedAdminPage extends Singleton
             'addonValues'   => $this->getAddonOptionValues(),
             // Third-party plugin status for integrations
             'thirdPartyPlugins' => $this->getThirdPartyPluginStatus(),
+            // Forminator forms data for dynamic settings
+            'forminatorForms' => $this->getForminatorFormsData(),
             // Extended data for unified admin pages
             'stats'         => $this->getStats(),
             'capabilities'  => $this->getUserCapabilities(),
@@ -630,21 +632,11 @@ class UnifiedAdminPage extends Singleton
     private function getThirdPartyPluginStatus()
     {
         $plugins = [
+            // Form plugins (free version support)
             'contact-form-7' => [
                 'file'       => 'contact-form-7/wp-contact-form-7.php',
                 'name'       => 'Contact Form 7',
                 'wpOrgSlug'  => 'contact-form-7',
-            ],
-            'woocommerce' => [
-                'file'       => 'woocommerce/woocommerce.php',
-                'name'       => 'WooCommerce',
-                'wpOrgSlug'  => 'woocommerce',
-            ],
-            'gravity-forms' => [
-                'file'       => 'gravityforms/gravityforms.php',
-                'name'       => 'Gravity Forms',
-                'wpOrgSlug'  => null,
-                'externalUrl' => 'https://www.gravityforms.com/',
             ],
             'formidable' => [
                 'file'       => 'formidable/formidable.php',
@@ -656,6 +648,52 @@ class UnifiedAdminPage extends Singleton
                 'name'       => 'Forminator',
                 'wpOrgSlug'  => 'forminator',
             ],
+
+            // WP SMS Pro pack integrations
+            'gravity-forms' => [
+                'file'       => 'gravityforms/gravityforms.php',
+                'name'       => 'Gravity Forms',
+                'wpOrgSlug'  => null,
+                'externalUrl' => 'https://www.gravityforms.com/',
+            ],
+            'quform' => [
+                'file'       => 'quform/quform.php',
+                'name'       => 'Quform',
+                'wpOrgSlug'  => null,
+                'externalUrl' => 'https://www.quform.com/',
+            ],
+            'woocommerce' => [
+                'file'       => 'woocommerce/woocommerce.php',
+                'name'       => 'WooCommerce',
+                'wpOrgSlug'  => 'woocommerce',
+            ],
+            'buddypress' => [
+                'file'       => 'buddypress/bp-loader.php',
+                'name'       => 'BuddyPress',
+                'wpOrgSlug'  => 'buddypress',
+            ],
+            'easy-digital-downloads' => [
+                'file'       => 'easy-digital-downloads/easy-digital-downloads.php',
+                'name'       => 'Easy Digital Downloads',
+                'wpOrgSlug'  => 'easy-digital-downloads',
+            ],
+            'wp-job-manager' => [
+                'file'       => 'wp-job-manager/wp-job-manager.php',
+                'name'       => 'WP Job Manager',
+                'wpOrgSlug'  => 'wp-job-manager',
+            ],
+            'awesome-support' => [
+                'file'       => 'awesome-support/awesome-support.php',
+                'name'       => 'Awesome Support',
+                'wpOrgSlug'  => 'awesome-support',
+            ],
+            'ultimate-member' => [
+                'file'       => 'ultimate-member/ultimate-member.php',
+                'name'       => 'Ultimate Member',
+                'wpOrgSlug'  => 'ultimate-member',
+            ],
+
+            // Separate add-on integrations
             'elementor' => [
                 'file'       => 'elementor/elementor.php',
                 'name'       => 'Elementor',
@@ -666,6 +704,53 @@ class UnifiedAdminPage extends Singleton
                 'name'       => 'Elementor Pro',
                 'wpOrgSlug'  => null,
                 'externalUrl' => 'https://elementor.com/pro/',
+            ],
+            'fluent-crm' => [
+                'file'       => 'fluent-crm/fluent-crm.php',
+                'name'       => 'Fluent CRM',
+                'wpOrgSlug'  => 'fluent-crm',
+            ],
+            'fluentform' => [
+                'file'       => 'fluentform/fluentform.php',
+                'name'       => 'Fluent Forms',
+                'wpOrgSlug'  => 'fluentform',
+            ],
+            'fluent-support' => [
+                'file'       => 'fluent-support/fluent-support.php',
+                'name'       => 'Fluent Support',
+                'wpOrgSlug'  => 'fluent-support',
+            ],
+            'paid-memberships-pro' => [
+                'file'       => 'paid-memberships-pro/paid-memberships-pro.php',
+                'name'       => 'Paid Memberships Pro',
+                'wpOrgSlug'  => 'paid-memberships-pro',
+            ],
+            'simple-membership' => [
+                'file'       => 'simple-membership/simple-wp-membership.php',
+                'name'       => 'Simple Membership',
+                'wpOrgSlug'  => 'simple-membership',
+            ],
+            'bookingpress' => [
+                'file'       => 'bookingpress-appointment-booking/bookingpress-appointment-booking.php',
+                'name'       => 'BookingPress',
+                'wpOrgSlug'  => 'bookingpress-appointment-booking',
+            ],
+            'woocommerce-appointments' => [
+                'file'       => 'woocommerce-appointments/woocommerce-appointments.php',
+                'name'       => 'WooCommerce Appointments',
+                'wpOrgSlug'  => null,
+                'externalUrl' => 'https://woocommerce.com/products/woocommerce-appointments/',
+            ],
+            'woocommerce-bookings' => [
+                'file'       => 'woocommerce-bookings/woocommerce-bookings.php',
+                'name'       => 'WooCommerce Bookings',
+                'wpOrgSlug'  => null,
+                'externalUrl' => 'https://woocommerce.com/products/woocommerce-bookings/',
+            ],
+            'booking' => [
+                'file'       => 'booking/wpdev-booking.php',
+                'name'       => 'Booking Calendar',
+                'wpOrgSlug'  => 'booking',
             ],
         ];
 
@@ -703,6 +788,74 @@ class UnifiedAdminPage extends Singleton
                 'actionUrl' => $actionUrl,
                 'isExternal' => !empty($plugin['externalUrl']) && $status === 'not_installed',
             ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get Forminator forms data for React settings
+     *
+     * Returns forms list with their fields and notification variables
+     * for dynamic rendering in the React integrations page.
+     *
+     * @return array
+     */
+    private function getForminatorFormsData()
+    {
+        $result = [
+            'isActive' => false,
+            'forms'    => [],
+        ];
+
+        if (!class_exists('Forminator') || !class_exists('Forminator_API')) {
+            return $result;
+        }
+
+        $result['isActive'] = true;
+
+        try {
+            $forms = \Forminator_API::get_forms(null, 1, 100, 'publish');
+
+            if (empty($forms)) {
+                return $result;
+            }
+
+            foreach ($forms as $form) {
+                $formId = $form->id;
+                $formFields = [];
+
+                // Get form fields
+                $fields = \Forminator_API::get_form_fields($formId);
+                if (!empty($fields)) {
+                    foreach ($fields as $field) {
+                        $formFields[$field->slug] = $field->raw['field_label'] ?? $field->slug;
+                    }
+                }
+
+                // Get notification variables
+                $variables = [];
+                if (class_exists('WP_SMS\\Notification\\NotificationFactory')) {
+                    $notificationVariables = \WP_SMS\Notification\NotificationFactory::getForminator($formId)->getVariables();
+                    foreach ($notificationVariables as $key => $value) {
+                        preg_match("/(%field-|%)(.+)*\%/", $key, $match);
+                        $label = isset($match[2]) ? $match[2] : $key;
+                        $variables[] = [
+                            'key'   => $key,
+                            'label' => $label,
+                        ];
+                    }
+                }
+
+                $result['forms'][] = [
+                    'id'        => $formId,
+                    'name'      => $form->name,
+                    'fields'    => $formFields,
+                    'variables' => $variables,
+                ];
+            }
+        } catch (\Exception $e) {
+            // Forminator not properly set up, return empty
         }
 
         return $result;
