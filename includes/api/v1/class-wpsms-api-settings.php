@@ -46,9 +46,6 @@ class SettingsApi extends RestApi
         'webhook_outgoing_sms' => [
             'type' => 'url',
         ],
-        'notif_publish_new_post_receiver' => [
-            'type' => 'phone',
-        ],
     ];
 
     /**
