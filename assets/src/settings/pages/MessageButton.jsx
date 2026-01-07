@@ -332,10 +332,18 @@ export default function MessageButton() {
                 value={teamMembers}
                 onValueChange={setTeamMembers}
                 fields={[
-                  { name: 'name', label: __('Name'), type: 'text', placeholder: __('Jane Smith') },
-                  { name: 'role', label: __('Role'), type: 'text', placeholder: __('Customer Support') },
-                  { name: 'phone', label: __('Phone'), type: 'tel', placeholder: '+1 555 123 4567' },
-                  { name: 'avatar', label: __('Avatar URL'), type: 'url', placeholder: 'https://...' },
+                  { name: 'member_name', label: __('Name'), type: 'text', placeholder: __('Jane Smith') },
+                  { name: 'member_role', label: __('Role'), type: 'text', placeholder: __('Customer Support') },
+                  { name: 'member_contact_type', label: __('Contact Type'), type: 'select', options: [
+                    { value: 'whatsapp', label: 'WhatsApp' },
+                    { value: 'telegram', label: 'Telegram' },
+                    { value: 'sms', label: 'SMS' },
+                    { value: 'phone', label: __('Phone Call') },
+                    { value: 'email', label: __('Email') },
+                  ]},
+                  { name: 'member_contact_value', label: __('Contact Value'), type: 'text', placeholder: '+1 555 123 4567' },
+                  { name: 'member_photo', label: __('Avatar URL'), type: 'url', placeholder: 'https://...' },
+                  { name: 'member_availability', label: __('Availability'), type: 'text', placeholder: __('Available 9AM-5PM') },
                 ]}
                 addLabel={__('Add Team Member')}
                 maxItems={5}
@@ -388,8 +396,8 @@ export default function MessageButton() {
                       value={chatboxLinks}
                       onValueChange={setChatboxLinks}
                       fields={[
-                        { name: 'title', label: __('Title'), type: 'text', placeholder: __('FAQ') },
-                        { name: 'url', label: __('URL'), type: 'url', placeholder: 'https://example.com/faq' },
+                        { name: 'chatbox_link_title', label: __('Title'), type: 'text', placeholder: __('FAQ') },
+                        { name: 'chatbox_link_url', label: __('URL'), type: 'url', placeholder: 'https://example.com/faq' },
                       ]}
                       addLabel={__('Add Link')}
                       maxItems={10}
