@@ -160,6 +160,9 @@ export default function SendSms() {
         variant: 'success',
       })
 
+      // Notify other pages (e.g., Outbox) that SMS was sent
+      window.dispatchEvent(new CustomEvent('wpsms:sms-sent'))
+
       // Update credit
       if (result.credit !== undefined) {
         setCredit(result.credit)

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import {
   Inbox,
   RefreshCw,
@@ -37,11 +37,13 @@ import { smsApi } from '@/api/smsApi'
 import { cn, formatDate, __, downloadCsv } from '@/lib/utils'
 import { useListPage } from '@/hooks/useListPage'
 import { useToast } from '@/components/ui/toaster'
+import { useSettings } from '@/context/SettingsContext'
 import { outboxColumns, getOutboxRowActions, getOutboxBulkActions } from '@/lib/tableColumns'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 
 export default function Outbox() {
   const { toast } = useToast()
+  const { currentPage } = useSettings()
 
   // Use useListPage for combined filter + table management
   const { filters, table, handleDelete, handleBulkAction } = useListPage({
@@ -54,6 +56,29 @@ export default function Outbox() {
       bulkSuccess: __('Action completed successfully'),
     },
   })
+
+  // Refresh data when SMS is sent (listen for custom event from SendSms page)
+  const needsRefresh = useRef(false)
+  useEffect(() => {
+    const handleSmsSent = () => {
+      // If we're on outbox, refresh immediately; otherwise flag for later
+      if (currentPage === 'outbox') {
+        table.refresh()
+      } else {
+        needsRefresh.current = true
+      }
+    }
+    window.addEventListener('wpsms:sms-sent', handleSmsSent)
+    return () => window.removeEventListener('wpsms:sms-sent', handleSmsSent)
+  }, [currentPage, table])
+
+  // Refresh when returning to outbox if SMS was sent while away
+  useEffect(() => {
+    if (currentPage === 'outbox' && needsRefresh.current && table.initialLoadDone) {
+      table.refresh()
+      needsRefresh.current = false
+    }
+  }, [currentPage, table.initialLoadDone]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Dialog states for view and quick reply
   const [viewMessage, setViewMessage] = useState(null)
