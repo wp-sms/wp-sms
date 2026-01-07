@@ -79,25 +79,37 @@ export default function MessageButton() {
   // Team members
   const [teamMembers, setTeamMembers] = useSetting('chatbox_team_members', [])
 
-  // Get hasChanges to know when save bar is visible
-  const { hasChanges } = useSettings()
+  // Get hasChanges and currentPage from settings context
+  const { hasChanges, currentPage } = useSettings()
 
   const isEnabled = messageButton === '1'
 
-  // Ensure chatbox is hidden when leaving this page
-  useEffect(() => {
-    return () => {
-      const chatbox = document.querySelector('.wpsms-chatbox')
-      if (chatbox) {
-        chatbox.classList.remove('wpsms-chatbox--visible')
-        const content = chatbox.querySelector('.wpsms-chatbox__content')
-        if (content) {
-          content.classList.remove('open')
-          content.style.display = 'none'
-        }
+  // Helper to hide chatbox completely
+  const hideChatbox = useCallback(() => {
+    const chatbox = document.querySelector('.wpsms-chatbox')
+    if (chatbox) {
+      chatbox.style.display = 'none'
+      chatbox.classList.remove('wpsms-chatbox--visible')
+      const content = chatbox.querySelector('.wpsms-chatbox__content')
+      if (content) {
+        content.classList.remove('open', 'opening')
+        content.style.display = 'none'
       }
+      document.body.classList.remove('chatbox-open')
     }
   }, [])
+
+  // Hide chatbox when not on this page (components stay mounted but hidden)
+  useEffect(() => {
+    if (currentPage !== 'message-button') {
+      hideChatbox()
+    }
+  }, [currentPage, hideChatbox])
+
+  // Hide chatbox initially on mount
+  useEffect(() => {
+    hideChatbox()
+  }, [hideChatbox])
 
   // Handle close actions in preview to properly hide content
   useEffect(() => {
@@ -356,9 +368,15 @@ export default function MessageButton() {
   const handlePreviewClick = useCallback(() => {
     const chatbox = document.querySelector('.wpsms-chatbox')
     if (chatbox) {
-      chatbox.classList.toggle('wpsms-chatbox--visible')
+      const isVisible = chatbox.classList.contains('wpsms-chatbox--visible')
+      if (isVisible) {
+        hideChatbox()
+      } else {
+        chatbox.style.display = ''
+        chatbox.classList.add('wpsms-chatbox--visible')
+      }
     }
-  }, [])
+  }, [hideChatbox])
 
   return (
     <div className="wsms-space-y-6">
