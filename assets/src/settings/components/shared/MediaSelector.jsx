@@ -111,21 +111,33 @@ export function MediaSelector({
       {value ? (
         <div className="wsms-relative wsms-inline-block">
           {isImage && !imageError ? (
-            <div className="wsms-relative wsms-rounded-lg wsms-overflow-hidden wsms-border wsms-border-border wsms-bg-muted/30">
-              <img
-                src={value}
-                alt={__('Selected media')}
-                onError={handleImageError}
-                className="wsms-max-w-[200px] wsms-max-h-[150px] wsms-object-contain"
-              />
+            <div className="wsms-flex wsms-items-center wsms-gap-2">
+              <div className="wsms-relative wsms-rounded wsms-overflow-hidden wsms-border wsms-border-border wsms-bg-muted/30">
+                <img
+                  src={value}
+                  alt={__('Selected media')}
+                  onError={handleImageError}
+                  className="wsms-w-9 wsms-h-9 wsms-object-cover"
+                />
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={handleSelect}
+                disabled={disabled}
+                className="wsms-h-9 wsms-text-xs"
+              >
+                {__('Change')}
+              </Button>
               <button
                 type="button"
                 onClick={handleRemove}
                 disabled={disabled}
-                className="wsms-absolute wsms-top-1 wsms-right-1 wsms-p-1 wsms-rounded-full wsms-bg-destructive wsms-text-destructive-foreground hover:wsms-bg-destructive/90 wsms-transition-colors"
+                className="wsms-p-1.5 wsms-rounded hover:wsms-bg-destructive/10 wsms-text-muted-foreground hover:wsms-text-destructive wsms-transition-colors"
                 aria-label={__('Remove media')}
               >
-                <X className="wsms-h-3 wsms-w-3" />
+                <X className="wsms-h-4 wsms-w-4" />
               </button>
             </div>
           ) : (
