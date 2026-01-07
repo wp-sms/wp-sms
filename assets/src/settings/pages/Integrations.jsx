@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Puzzle, FileText, CheckCircle, AlertCircle, ExternalLink, XCircle, ChevronDown, ChevronUp } from 'lucide-react'
+import React, { useState, useRef } from 'react'
+import { Puzzle, ChevronDown, ChevronUp, ExternalLink, ShoppingCart, Users, CreditCard, Briefcase, HeadphonesIcon, UserCircle, Mail, ClipboardList, Calendar, Layers } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
@@ -25,7 +25,7 @@ const PluginStatusBadge = ({ status }) => {
   const variants = {
     active: { label: __('Active'), className: 'wsms-bg-green-100 wsms-text-green-800 wsms-border-green-200' },
     inactive: { label: __('Inactive'), className: 'wsms-bg-yellow-100 wsms-text-yellow-800 wsms-border-yellow-200' },
-    not_installed: { label: __('Not Installed'), className: 'wsms-bg-red-100 wsms-text-red-800 wsms-border-red-200' },
+    not_installed: { label: __('Not Installed'), className: 'wsms-bg-gray-100 wsms-text-gray-600 wsms-border-gray-200' },
     unknown: { label: __('Unknown'), className: 'wsms-bg-gray-100 wsms-text-gray-800 wsms-border-gray-200' },
   }
 
@@ -90,12 +90,9 @@ const ForminatorFormSettings = ({ form }) => {
   const messageFormRef = useRef(null)
   const messageFieldRef = useRef(null)
 
-  // Settings for sending SMS to a specific number
   const [enableForm, setEnableForm] = useSetting(`forminator_notify_enable_form_${form.id}`, '')
   const [receiverForm, setReceiverForm] = useSetting(`forminator_notify_receiver_form_${form.id}`, '')
   const [messageForm, setMessageForm] = useSetting(`forminator_notify_message_form_${form.id}`, '')
-
-  // Settings for sending SMS to a form field
   const [enableField, setEnableField] = useSetting(`forminator_notify_enable_field_form_${form.id}`, '')
   const [receiverField, setReceiverField] = useSetting(`forminator_notify_receiver_field_form_${form.id}`, '')
   const [messageField, setMessageField] = useSetting(`forminator_notify_message_field_form_${form.id}`, '')
@@ -103,7 +100,6 @@ const ForminatorFormSettings = ({ form }) => {
   const hasFields = form.fields && Object.keys(form.fields).length > 0
   const hasAnyEnabled = enableForm === '1' || enableField === '1'
 
-  // Insert variable at cursor position or append to end
   const insertVariable = (variable, textareaRef, currentValue, setValue) => {
     const textarea = textareaRef.current
     if (textarea) {
@@ -111,7 +107,6 @@ const ForminatorFormSettings = ({ form }) => {
       const end = textarea.selectionEnd
       const newValue = currentValue.substring(0, start) + variable + currentValue.substring(end)
       setValue(newValue)
-      // Set cursor position after inserted text
       setTimeout(() => {
         textarea.focus()
         textarea.setSelectionRange(start + variable.length, start + variable.length)
@@ -123,20 +118,16 @@ const ForminatorFormSettings = ({ form }) => {
 
   return (
     <div className="wsms-rounded-lg wsms-border wsms-overflow-hidden">
-      {/* Form Header - Clickable */}
       <button
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-p-4 wsms-bg-muted/30 hover:wsms-bg-muted/50 wsms-transition-colors wsms-text-left"
+        className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-p-3 wsms-bg-muted/30 hover:wsms-bg-muted/50 wsms-transition-colors wsms-text-left"
       >
         <div className="wsms-flex wsms-items-center wsms-gap-3">
-          <FileText className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-          <span className="wsms-font-medium">{form.name}</span>
           {hasAnyEnabled && (
-            <Badge variant="outline" className="wsms-bg-green-100 wsms-text-green-800 wsms-border-green-200 wsms-text-xs">
-              {__('Active')}
-            </Badge>
+            <span className="wsms-h-2 wsms-w-2 wsms-rounded-full wsms-bg-green-500" />
           )}
+          <span className="wsms-font-medium wsms-text-sm">{form.name}</span>
         </div>
         {isExpanded ? (
           <ChevronUp className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
@@ -145,10 +136,8 @@ const ForminatorFormSettings = ({ form }) => {
         )}
       </button>
 
-      {/* Form Settings - Expandable */}
       {isExpanded && (
         <div className="wsms-p-4 wsms-space-y-6 wsms-border-t">
-          {/* Send SMS to a number section */}
           <div className="wsms-space-y-4">
             <div className="wsms-flex wsms-items-center wsms-justify-between">
               <div>
@@ -184,8 +173,8 @@ const ForminatorFormSettings = ({ form }) => {
                     ref={messageFormRef}
                     value={messageForm}
                     onChange={(e) => setMessageForm(e.target.value)}
-                    rows={4}
-                    placeholder={__('New form submission received from %field-name%...')}
+                    rows={3}
+                    placeholder={__('New form submission received...')}
                   />
                   {form.variables && form.variables.length > 0 && (
                     <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -203,7 +192,6 @@ const ForminatorFormSettings = ({ form }) => {
             )}
           </div>
 
-          {/* Send SMS to form field section */}
           {hasFields && (
             <div className="wsms-space-y-4 wsms-pt-4 wsms-border-t">
               <div className="wsms-flex wsms-items-center wsms-justify-between">
@@ -235,9 +223,6 @@ const ForminatorFormSettings = ({ form }) => {
                         ))}
                       </SelectContent>
                     </Select>
-                    <p className="wsms-text-xs wsms-text-muted-foreground">
-                      {__('Choose the form field that collects the phone number')}
-                    </p>
                   </div>
 
                   <div className="wsms-space-y-2">
@@ -246,8 +231,8 @@ const ForminatorFormSettings = ({ form }) => {
                       ref={messageFieldRef}
                       value={messageField}
                       onChange={(e) => setMessageField(e.target.value)}
-                      rows={4}
-                      placeholder={__('Thank you for your submission, %field-name%!')}
+                      rows={3}
+                      placeholder={__('Thank you for your submission!')}
                     />
                     {form.variables && form.variables.length > 0 && (
                       <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -274,88 +259,19 @@ const ForminatorFormSettings = ({ form }) => {
 export default function Integrations() {
   // Contact Form 7
   const [cf7Metabox, setCf7Metabox] = useSetting('cf7_metabox', '')
+  const cf7Status = getPluginStatus('contact-form-7')
 
   // Formidable Forms
   const [formidableMetabox, setFormidableMetabox] = useSetting('formidable_metabox', '')
+  const formidableStatus = getPluginStatus('formidable')
 
-  // Get Forminator data
+  // Forminator
   const forminatorData = getForminatorFormsData()
-  const forminatorPluginStatus = getPluginStatus('forminator')
+  const forminatorStatus = getPluginStatus('forminator')
 
   // Get add-on settings for this page
   const { sections: addonSections, fieldsBySection, standaloneFields } = useAddonSettings('integrations')
-
-  // Get add-on fields that should be injected into built-in sections
   const cf7AddonFields = useAddonFieldsForSection('integrations', 'contact-form-7')
-
-  const integrations = [
-    {
-      id: 'contact-form-7',
-      pluginKey: 'contact-form-7',
-      name: __('Contact Form 7'),
-      description: __('Send SMS notifications when Contact Form 7 forms are submitted.'),
-      helpText: __('Adds an "SMS Notification" tab to the Contact Form 7 editor.'),
-      settingKey: 'cf7_metabox',
-      value: cf7Metabox,
-      setValue: setCf7Metabox,
-    },
-    {
-      id: 'formidable',
-      pluginKey: 'formidable',
-      name: __('Formidable Forms'),
-      description: __('Send SMS notifications when Formidable forms are submitted.'),
-      helpText: __('Adds an "SMS Notifications" tab in the Formidable form settings.'),
-      settingKey: 'formidable_metabox',
-      value: formidableMetabox,
-      setValue: setFormidableMetabox,
-    },
-  ]
-
-  // Get plugin status for each integration
-  const integrationsWithStatus = integrations.map((integration) => ({
-    ...integration,
-    pluginStatus: getPluginStatus(integration.pluginKey),
-  }))
-
-  // Additional integrations list
-  // Categories:
-  // - "Included in free version" - built into WP SMS core
-  // - "Requires WP SMS Pro" - requires Pro Pack
-  // - "Requires [X] add-on" - requires separate add-on purchase
-  const supportedPlugins = [
-    // Built into free version
-    { name: __('Contact Form 7'), pluginKey: 'contact-form-7', status: __('Included in free version') },
-    { name: __('Formidable Forms'), pluginKey: 'formidable', status: __('Included in free version') },
-    { name: __('Forminator'), pluginKey: 'forminator', status: __('Included in free version') },
-
-    // Requires WP SMS Pro Pack
-    { name: __('Gravity Forms'), pluginKey: 'gravity-forms', status: __('Requires WP SMS Pro') },
-    { name: __('Quform'), pluginKey: 'quform', status: __('Requires WP SMS Pro') },
-    { name: __('WooCommerce'), pluginKey: 'woocommerce', status: __('Requires WP SMS Pro') },
-    { name: __('BuddyPress'), pluginKey: 'buddypress', status: __('Requires WP SMS Pro') },
-    { name: __('Easy Digital Downloads'), pluginKey: 'easy-digital-downloads', status: __('Requires WP SMS Pro') },
-    { name: __('WP Job Manager'), pluginKey: 'wp-job-manager', status: __('Requires WP SMS Pro') },
-    { name: __('Awesome Support'), pluginKey: 'awesome-support', status: __('Requires WP SMS Pro') },
-    { name: __('Ultimate Member'), pluginKey: 'ultimate-member', status: __('Requires WP SMS Pro') },
-
-    // Requires separate add-ons
-    { name: __('Elementor Forms'), pluginKey: 'elementor-pro', status: __('Requires Elementor add-on') },
-    { name: __('Fluent CRM'), pluginKey: 'fluent-crm', status: __('Requires Fluent add-on') },
-    { name: __('Fluent Forms'), pluginKey: 'fluentform', status: __('Requires Fluent add-on') },
-    { name: __('Fluent Support'), pluginKey: 'fluent-support', status: __('Requires Fluent add-on') },
-    { name: __('Paid Memberships Pro'), pluginKey: 'paid-memberships-pro', status: __('Requires Membership add-on') },
-    { name: __('Simple Membership'), pluginKey: 'simple-membership', status: __('Requires Membership add-on') },
-    { name: __('BookingPress'), pluginKey: 'bookingpress', status: __('Requires Booking add-on') },
-    { name: __('WooCommerce Appointments'), pluginKey: 'woocommerce-appointments', status: __('Requires Booking add-on') },
-    { name: __('WooCommerce Bookings'), pluginKey: 'woocommerce-bookings', status: __('Requires Booking add-on') },
-    { name: __('Booking Calendar'), pluginKey: 'booking', status: __('Requires Booking add-on') },
-  ]
-
-  // Add plugin status to supported plugins
-  const supportedPluginsWithStatus = supportedPlugins.map((plugin) => ({
-    ...plugin,
-    pluginStatus: getPluginStatus(plugin.pluginKey),
-  }))
 
   // Map add-on section IDs to required third-party plugins
   const sectionPluginRequirements = {
@@ -391,149 +307,179 @@ export default function Integrations() {
     'booking': 'booking',
   }
 
-  // Check if a section's required plugin is active
   const isSectionPluginActive = (sectionId) => {
     const lowerSectionId = sectionId.toLowerCase()
-
-    // Check each requirement pattern
     for (const [pattern, pluginKey] of Object.entries(sectionPluginRequirements)) {
       if (lowerSectionId.includes(pattern)) {
         const status = getPluginStatus(pluginKey)
         return status.status === 'active'
       }
     }
-
-    // If no matching pattern, assume it's available
     return true
   }
 
-  // Get required plugin info for a section
   const getSectionPluginInfo = (sectionId) => {
     const lowerSectionId = sectionId.toLowerCase()
-
     for (const [pattern, pluginKey] of Object.entries(sectionPluginRequirements)) {
       if (lowerSectionId.includes(pattern)) {
         return getPluginStatus(pluginKey)
       }
     }
-
     return null
   }
 
+  // Additional integrations (Pro/Add-on only, excluding free ones already shown above)
+  const additionalIntegrations = [
+    { name: __('Gravity Forms'), pluginKey: 'gravity-forms', requirement: __('Requires WP SMS Pro'), Icon: ClipboardList },
+    { name: __('Quform'), pluginKey: 'quform', requirement: __('Requires WP SMS Pro'), Icon: ClipboardList },
+    { name: __('WooCommerce'), pluginKey: 'woocommerce', requirement: __('Requires WP SMS Pro'), Icon: ShoppingCart },
+    { name: __('BuddyPress'), pluginKey: 'buddypress', requirement: __('Requires WP SMS Pro'), Icon: Users },
+    { name: __('Easy Digital Downloads'), pluginKey: 'easy-digital-downloads', requirement: __('Requires WP SMS Pro'), Icon: CreditCard },
+    { name: __('WP Job Manager'), pluginKey: 'wp-job-manager', requirement: __('Requires WP SMS Pro'), Icon: Briefcase },
+    { name: __('Awesome Support'), pluginKey: 'awesome-support', requirement: __('Requires WP SMS Pro'), Icon: HeadphonesIcon },
+    { name: __('Ultimate Member'), pluginKey: 'ultimate-member', requirement: __('Requires WP SMS Pro'), Icon: UserCircle },
+    { name: __('Elementor Forms'), pluginKey: 'elementor-pro', requirement: __('Requires Elementor add-on'), Icon: Layers },
+    { name: __('Fluent CRM'), pluginKey: 'fluent-crm', requirement: __('Requires Fluent add-on'), Icon: Mail },
+    { name: __('Fluent Forms'), pluginKey: 'fluentform', requirement: __('Requires Fluent add-on'), Icon: ClipboardList },
+    { name: __('Fluent Support'), pluginKey: 'fluent-support', requirement: __('Requires Fluent add-on'), Icon: HeadphonesIcon },
+    { name: __('Paid Memberships Pro'), pluginKey: 'paid-memberships-pro', requirement: __('Requires Membership add-on'), Icon: CreditCard },
+    { name: __('Simple Membership'), pluginKey: 'simple-membership', requirement: __('Requires Membership add-on'), Icon: UserCircle },
+    { name: __('BookingPress'), pluginKey: 'bookingpress', requirement: __('Requires Booking add-on'), Icon: Calendar },
+    { name: __('WooCommerce Appointments'), pluginKey: 'woocommerce-appointments', requirement: __('Requires Booking add-on'), Icon: Calendar },
+    { name: __('WooCommerce Bookings'), pluginKey: 'woocommerce-bookings', requirement: __('Requires Booking add-on'), Icon: Calendar },
+    { name: __('Booking Calendar'), pluginKey: 'booking', requirement: __('Requires Booking add-on'), Icon: Calendar },
+  ]
+
   return (
     <div className="wsms-space-y-6">
-      {/* Active Integrations */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Puzzle className="wsms-h-5 wsms-w-5" />
-            {__('Form Plugin Integration')}
-          </CardTitle>
-          <CardDescription>
-            {__('Configure SMS notifications for form submissions')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="wsms-space-y-4">
-          {integrationsWithStatus.map((integration) => {
-            const { pluginStatus } = integration
-            const isDisabled = pluginStatus.status !== 'active'
-
-            return (
-              <div
-                key={integration.id}
-                className={`wsms-rounded-lg wsms-border wsms-p-4 ${isDisabled ? 'wsms-opacity-75 wsms-bg-muted/30' : ''}`}
-              >
-                <div className="wsms-flex wsms-items-start wsms-justify-between">
-                  <div className="wsms-flex wsms-items-start wsms-gap-3">
-                    <div className={`wsms-rounded-lg wsms-p-2 ${isDisabled ? 'wsms-bg-muted' : 'wsms-bg-primary/10'}`}>
-                      <FileText className={`wsms-h-5 wsms-w-5 ${isDisabled ? 'wsms-text-muted-foreground' : 'wsms-text-primary'}`} />
-                    </div>
-                    <div>
-                      <div className="wsms-flex wsms-items-center wsms-gap-2">
-                        <h3 className="wsms-font-medium">{integration.name}</h3>
-                        <PluginStatusBadge status={pluginStatus.status} />
-                      </div>
-                      <p className="wsms-mt-1 wsms-text-sm wsms-text-muted-foreground">
-                        {integration.description}
-                      </p>
-                      {!isDisabled && integration.helpText && (
-                        <p className="wsms-mt-2 wsms-text-xs wsms-text-muted-foreground">
-                          {integration.helpText}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="wsms-flex wsms-items-center wsms-gap-3">
-                    {isDisabled && (
-                      <PluginActionLink
-                        status={pluginStatus.status}
-                        actionUrl={pluginStatus.actionUrl}
-                        isExternal={pluginStatus.isExternal}
-                        pluginName={integration.name}
-                      />
-                    )}
-                    <Switch
-                      checked={integration.value === '1'}
-                      onCheckedChange={(checked) => integration.setValue(checked ? '1' : '')}
-                      disabled={isDisabled}
-                      aria-label={__('Enable') + ' ' + integration.name}
-                    />
-                  </div>
-                </div>
-                {/* Inject add-on fields for this integration */}
-                {integration.id === 'contact-form-7' && cf7AddonFields.length > 0 && !isDisabled && (
-                  <AddonFieldsInjection fields={cf7AddonFields} />
-                )}
-              </div>
-            )
-          })}
-
-          {/* Forminator Integration */}
-          <div className={`wsms-rounded-lg wsms-border wsms-p-4 ${forminatorPluginStatus.status !== 'active' ? 'wsms-opacity-75 wsms-bg-muted/30' : ''}`}>
-            <div className="wsms-flex wsms-items-start wsms-justify-between">
-              <div className="wsms-flex wsms-items-start wsms-gap-3">
-                <div className={`wsms-rounded-lg wsms-p-2 ${forminatorPluginStatus.status !== 'active' ? 'wsms-bg-muted' : 'wsms-bg-primary/10'}`}>
-                  <FileText className={`wsms-h-5 wsms-w-5 ${forminatorPluginStatus.status !== 'active' ? 'wsms-text-muted-foreground' : 'wsms-text-primary'}`} />
-                </div>
-                <div>
-                  <div className="wsms-flex wsms-items-center wsms-gap-2">
-                    <h3 className="wsms-font-medium">{__('Forminator')}</h3>
-                    <PluginStatusBadge status={forminatorPluginStatus.status} />
-                  </div>
-                  <p className="wsms-mt-1 wsms-text-sm wsms-text-muted-foreground">
-                    {__('Send SMS notifications when Forminator forms are submitted.')}
-                  </p>
-                </div>
-              </div>
-              {forminatorPluginStatus.status !== 'active' && (
-                <PluginActionLink
-                  status={forminatorPluginStatus.status}
-                  actionUrl={forminatorPluginStatus.actionUrl}
-                  isExternal={forminatorPluginStatus.isExternal}
-                  pluginName="Forminator"
-                />
-              )}
-            </div>
-
-            {/* Forminator per-form settings */}
-            {forminatorPluginStatus.status === 'active' && forminatorData.isActive && (
-              <div className="wsms-mt-4">
-                {forminatorData.forms.length > 0 ? (
-                  <div className="wsms-space-y-3">
-                    {forminatorData.forms.map((form) => (
-                      <ForminatorFormSettings key={form.id} form={form} />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
-                    <p className="wsms-text-sm wsms-text-muted-foreground">
-                      {__('No forms found. Please create a form in Forminator first.')}
-                    </p>
-                  </div>
-                )}
-              </div>
+      {/* Contact Form 7 */}
+      <Card className={cf7Status.status !== 'active' ? 'wsms-opacity-75' : ''}>
+        <CardHeader className="wsms-flex wsms-flex-row wsms-items-center wsms-justify-between wsms-space-y-0">
+          <div>
+            <CardTitle>{__('Contact Form 7')}</CardTitle>
+            <CardDescription className="wsms-mt-1">
+              {__('Send SMS notifications when Contact Form 7 forms are submitted')}
+            </CardDescription>
+          </div>
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            <PluginStatusBadge status={cf7Status.status} />
+            {cf7Status.status !== 'active' && (
+              <PluginActionLink
+                status={cf7Status.status}
+                actionUrl={cf7Status.actionUrl}
+                isExternal={cf7Status.isExternal}
+                pluginName="Contact Form 7"
+              />
             )}
           </div>
+        </CardHeader>
+        {cf7Status.status === 'active' && (
+          <CardContent className="wsms-border-t wsms-pt-4">
+            <div className="wsms-rounded-lg wsms-border wsms-p-4">
+              <div className="wsms-flex wsms-items-center wsms-justify-between">
+                <div>
+                  <h4 className="wsms-text-sm wsms-font-medium">{__('SMS Notification Tab')}</h4>
+                  <p className="wsms-text-sm wsms-text-muted-foreground wsms-mt-1">
+                    {__('Add an SMS notification settings tab to each Contact Form 7 form editor.')}
+                  </p>
+                </div>
+                <Switch
+                  checked={cf7Metabox === '1'}
+                  onCheckedChange={(checked) => setCf7Metabox(checked ? '1' : '')}
+                />
+              </div>
+            </div>
+            {cf7AddonFields.length > 0 && (
+              <div className="wsms-mt-4">
+                <AddonFieldsInjection fields={cf7AddonFields} />
+              </div>
+            )}
+          </CardContent>
+        )}
+      </Card>
+
+      {/* Formidable Forms */}
+      <Card className={formidableStatus.status !== 'active' ? 'wsms-opacity-75' : ''}>
+        <CardHeader className="wsms-flex wsms-flex-row wsms-items-center wsms-justify-between wsms-space-y-0">
+          <div>
+            <CardTitle>{__('Formidable Forms')}</CardTitle>
+            <CardDescription className="wsms-mt-1">
+              {__('Send SMS notifications when Formidable forms are submitted')}
+            </CardDescription>
+          </div>
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            <PluginStatusBadge status={formidableStatus.status} />
+            {formidableStatus.status !== 'active' && (
+              <PluginActionLink
+                status={formidableStatus.status}
+                actionUrl={formidableStatus.actionUrl}
+                isExternal={formidableStatus.isExternal}
+                pluginName="Formidable Forms"
+              />
+            )}
+          </div>
+        </CardHeader>
+        {formidableStatus.status === 'active' && (
+          <CardContent className="wsms-border-t wsms-pt-4">
+            <div className="wsms-rounded-lg wsms-border wsms-p-4">
+              <div className="wsms-flex wsms-items-center wsms-justify-between">
+                <div>
+                  <h4 className="wsms-text-sm wsms-font-medium">{__('SMS Notification Tab')}</h4>
+                  <p className="wsms-text-sm wsms-text-muted-foreground wsms-mt-1">
+                    {__('Add an SMS notification settings tab to each Formidable form editor.')}
+                  </p>
+                </div>
+                <Switch
+                  checked={formidableMetabox === '1'}
+                  onCheckedChange={(checked) => setFormidableMetabox(checked ? '1' : '')}
+                />
+              </div>
+            </div>
+          </CardContent>
+        )}
+      </Card>
+
+      {/* Forminator */}
+      <Card className={forminatorStatus.status !== 'active' ? 'wsms-opacity-75' : ''}>
+        <CardHeader className="wsms-flex wsms-flex-row wsms-items-center wsms-justify-between wsms-space-y-0">
+          <div>
+            <CardTitle>{__('Forminator')}</CardTitle>
+            <CardDescription className="wsms-mt-1">
+              {__('Send SMS notifications when Forminator forms are submitted')}
+            </CardDescription>
+          </div>
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            <PluginStatusBadge status={forminatorStatus.status} />
+            {forminatorStatus.status !== 'active' && (
+              <PluginActionLink
+                status={forminatorStatus.status}
+                actionUrl={forminatorStatus.actionUrl}
+                isExternal={forminatorStatus.isExternal}
+                pluginName="Forminator"
+              />
+            )}
+          </div>
+        </CardHeader>
+        <CardContent className={forminatorStatus.status === 'active' ? 'wsms-border-t wsms-pt-4' : ''}>
+          {forminatorStatus.status !== 'active' ? (
+            <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
+              <p className="wsms-text-sm wsms-text-muted-foreground">
+                {__('Install and activate Forminator to configure SMS notifications.')}
+              </p>
+            </div>
+          ) : forminatorData.isActive && forminatorData.forms.length > 0 ? (
+            <div className="wsms-space-y-2">
+              {forminatorData.forms.map((form) => (
+                <ForminatorFormSettings key={form.id} form={form} />
+              ))}
+            </div>
+          ) : (
+            <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
+              <p className="wsms-text-sm wsms-text-muted-foreground">
+                {__('No forms found. Create a form in Forminator to configure SMS notifications.')}
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -543,33 +489,28 @@ export default function Integrations() {
         const pluginInfo = getSectionPluginInfo(section.id)
 
         if (!isPluginActive && pluginInfo) {
-          // Show disabled version with install/activate prompt
           return (
             <Card key={section.id} className="wsms-opacity-75">
               <CardHeader>
-                <div className="wsms-flex wsms-items-center wsms-justify-between">
-                  <div>
-                    <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-                      {section.title}
-                      <PluginStatusBadge status={pluginInfo.status} />
-                    </CardTitle>
-                    {section.description && (
-                      <CardDescription>{section.description}</CardDescription>
-                    )}
-                  </div>
-                </div>
+                <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+                  <Puzzle className="wsms-h-5 wsms-w-5" />
+                  {section.title}
+                </CardTitle>
+                {section.description && (
+                  <CardDescription>{section.description}</CardDescription>
+                )}
               </CardHeader>
               <CardContent>
-                <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
-                  <p className="wsms-text-sm wsms-text-muted-foreground wsms-mb-2">
-                    {pluginInfo.name} {__('is required to use these settings.')}
-                  </p>
-                  <PluginActionLink
-                    status={pluginInfo.status}
-                    actionUrl={pluginInfo.actionUrl}
-                    isExternal={pluginInfo.isExternal}
-                    pluginName={pluginInfo.name}
-                  />
+                <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4">
+                  <div className="wsms-flex wsms-items-center wsms-justify-between">
+                    <PluginStatusBadge status={pluginInfo.status} />
+                    <PluginActionLink
+                      status={pluginInfo.status}
+                      actionUrl={pluginInfo.actionUrl}
+                      isExternal={pluginInfo.isExternal}
+                      pluginName={pluginInfo.name}
+                    />
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -585,11 +526,14 @@ export default function Integrations() {
         )
       })}
 
-      {/* Standalone Add-on Fields (fields without a section) */}
+      {/* Standalone Add-on Fields */}
       {standaloneFields.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>{__('Additional Add-on Settings')}</CardTitle>
+            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <Puzzle className="wsms-h-5 wsms-w-5" />
+              {__('Additional Settings')}
+            </CardTitle>
           </CardHeader>
           <CardContent className="wsms-space-y-4">
             {standaloneFields.map((field) => (
@@ -599,46 +543,37 @@ export default function Integrations() {
         </Card>
       )}
 
-      {/* Other Supported Plugins */}
+      {/* Additional Integrations */}
       <Card>
         <CardHeader>
-          <CardTitle>{__('Additional Integrations')}</CardTitle>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <Puzzle className="wsms-h-5 wsms-w-5" />
+            {__('Additional Integrations')}
+          </CardTitle>
           <CardDescription>
-            {__('Other plugins supported through WP SMS and its add-ons')}
+            {__('Other plugins supported through WP SMS Pro and add-ons')}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="wsms-space-y-3">
-            {supportedPluginsWithStatus.map((plugin) => {
-              const { pluginStatus } = plugin
-              const isAvailable = pluginStatus.status === 'active'
+          <div className="wsms-grid wsms-grid-cols-1 md:wsms-grid-cols-2 lg:wsms-grid-cols-3 wsms-gap-3">
+            {additionalIntegrations.map((plugin) => {
+              const pluginStatus = getPluginStatus(plugin.pluginKey)
+              const isActive = pluginStatus.status === 'active'
+              const IconComponent = plugin.Icon
 
               return (
                 <div
-                  key={plugin.name}
-                  className={`wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-3 ${!isAvailable ? 'wsms-bg-muted/30' : ''}`}
+                  key={plugin.pluginKey}
+                  className={`wsms-rounded-lg wsms-border wsms-p-3 ${!isActive ? 'wsms-bg-muted/30' : ''}`}
                 >
-                  <div className="wsms-flex wsms-items-center wsms-gap-3">
-                    <FileText className={`wsms-h-4 wsms-w-4 ${isAvailable ? 'wsms-text-primary' : 'wsms-text-muted-foreground'}`} />
-                    <div>
-                      <span className="wsms-font-medium">{plugin.name}</span>
-                      {plugin.note && (
-                        <span className="wsms-block wsms-text-xs wsms-text-muted-foreground">{plugin.note}</span>
-                      )}
+                  <div className="wsms-flex wsms-items-center wsms-justify-between">
+                    <div className="wsms-flex wsms-items-center wsms-gap-2">
+                      <IconComponent className={`wsms-h-4 wsms-w-4 ${isActive ? 'wsms-text-primary' : 'wsms-text-muted-foreground'}`} />
+                      <span className="wsms-font-medium wsms-text-xs">{plugin.name}</span>
                     </div>
                     <PluginStatusBadge status={pluginStatus.status} />
                   </div>
-                  <div className="wsms-flex wsms-items-center wsms-gap-4">
-                    {!isAvailable && pluginStatus.actionUrl && (
-                      <PluginActionLink
-                        status={pluginStatus.status}
-                        actionUrl={pluginStatus.actionUrl}
-                        isExternal={pluginStatus.isExternal}
-                        pluginName=""
-                      />
-                    )}
-                    <span className="wsms-text-sm wsms-text-muted-foreground">{plugin.status}</span>
-                  </div>
+                  <p className="wsms-text-xs wsms-text-muted-foreground wsms-mt-1 wsms-ml-6">{plugin.requirement}</p>
                 </div>
               )
             })}
