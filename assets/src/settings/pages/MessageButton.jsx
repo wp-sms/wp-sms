@@ -1,14 +1,50 @@
-import React, { useCallback, useEffect } from 'react'
-import { MessageSquare, Palette, Users, Link, Sparkles, Eye } from 'lucide-react'
+import React, { useCallback, useEffect, useMemo } from 'react'
+import { MessageSquare, Palette, Users, Link, Eye } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Repeater } from '@/components/ui/repeater'
-import { useSetting } from '@/context/SettingsContext'
-import { __ } from '@/lib/utils'
+import { InputField, SelectField, SettingRow } from '@/components/ui/form-field'
+import { useSetting, useSettings } from '@/context/SettingsContext'
+import { __, getWpSettings } from '@/lib/utils'
+
+/**
+ * Generate contact link based on type
+ */
+function generateContactLink(type, value) {
+  const trimmedValue = (value || '').trim()
+  switch (type) {
+    case 'whatsapp':
+      return `https://wa.me/${trimmedValue}`
+    case 'telegram':
+      return `https://t.me/${trimmedValue}`
+    case 'facebook':
+      return `https://me.me/${trimmedValue}`
+    case 'sms':
+      return `sms:${trimmedValue}`
+    case 'email':
+      return `mailto:${trimmedValue}`
+    default:
+      return `tel:${trimmedValue}`
+  }
+}
+
+/**
+ * Get default avatar URL from WordPress localized data
+ */
+function getDefaultAvatarUrl() {
+  const wpSettings = getWpSettings()
+  return wpSettings?.pluginUrl ? `${wpSettings.pluginUrl}assets/images/avatar.png` : ''
+}
+
+/**
+ * Get contact icon URL
+ */
+function getContactIconUrl(type) {
+  const wpSettings = getWpSettings()
+  return wpSettings?.pluginUrl ? `${wpSettings.pluginUrl}assets/images/chatbox/icon-${type || 'whatsapp'}.svg` : ''
+}
 
 export default function MessageButton() {
   // Message button toggle
@@ -41,6 +77,9 @@ export default function MessageButton() {
   // Team members
   const [teamMembers, setTeamMembers] = useSetting('chatbox_team_members', [])
 
+  // Get hasChanges to know when save bar is visible
+  const { hasChanges } = useSettings()
+
   const isEnabled = messageButton === '1'
 
   // Ensure chatbox is hidden when leaving this page
@@ -52,6 +91,212 @@ export default function MessageButton() {
       }
     }
   }, [])
+
+  // Update chatbox preview whenever settings change
+  useEffect(() => {
+    const chatbox = document.querySelector('.wpsms-chatbox')
+    if (!chatbox) return
+
+    // Move chatbox higher when save bar is visible (hasChanges)
+    // Add smooth transition for the animation
+    chatbox.style.transition = 'bottom 0.3s ease'
+    chatbox.style.bottom = hasChanges ? '80px' : '2rem'
+
+    const chatboxContent = chatbox.querySelector('.wpsms-chatbox__content')
+    if (chatboxContent) {
+      chatboxContent.style.transition = 'bottom 0.3s ease'
+      chatboxContent.style.bottom = hasChanges ? '144px' : '96px'
+    }
+
+    const chatboxArrow = chatbox.querySelector('.wpsms-chatbox__arrow')
+    if (chatboxArrow) {
+      chatboxArrow.style.transition = 'bottom 0.3s ease'
+      chatboxArrow.style.bottom = hasChanges ? '125px' : '77px'
+    }
+
+    // Update button text
+    const buttonTitle = chatbox.querySelector('.wpsms-chatbox__button-title')
+    if (buttonTitle) {
+      buttonTitle.textContent = buttonText || __('Talk to Us')
+    }
+
+    // Update header title
+    const headerTitle = chatbox.querySelector('.wpsms-chatbox__header h2')
+    if (headerTitle) {
+      headerTitle.textContent = chatboxTitle || __('Chat with Us!')
+    }
+
+    // Update colors
+    const primaryColor = chatboxColor || '#00a9c0'
+    const textColor = chatboxTextColor || '#ffffff'
+
+    const button = chatbox.querySelector('.wpsms-chatbox__button')
+    if (button) {
+      button.style.backgroundColor = primaryColor
+      button.style.color = textColor
+    }
+
+    const header = chatbox.querySelector('.wpsms-chatbox__header')
+    if (header) {
+      header.style.backgroundColor = primaryColor
+      header.style.color = textColor
+    }
+
+    // Update SVG fill colors in button
+    const svgPaths = chatbox.querySelectorAll('.wpsms-chatbox__button svg path, .wpsms-chatbox__button svg')
+    svgPaths.forEach(el => {
+      if (el.hasAttribute('fill') && el.getAttribute('fill') !== 'none') {
+        el.setAttribute('fill', textColor)
+      }
+      if (el.hasAttribute('stroke')) {
+        el.setAttribute('stroke', textColor)
+      }
+    })
+
+    // Update position
+    chatbox.classList.remove('wpsms-chatbox--right-side', 'wpsms-chatbox--left-side')
+    chatbox.classList.add(buttonPosition === 'bottom_left' ? 'wpsms-chatbox--left-side' : 'wpsms-chatbox--right-side')
+
+    // Update animation effect
+    const content = chatbox.querySelector('.wpsms-chatbox__content')
+    if (content) {
+      content.classList.remove('wpsms-chatbox__content--fade', 'wpsms-chatbox__content--slide')
+      if (animationEffect) {
+        content.classList.add(`wpsms-chatbox__content--${animationEffect}`)
+      }
+    }
+
+    // Update footer text
+    const footerTextEl = chatbox.querySelector('.wpsms-chatbox__info--text')
+    if (footerTextEl) {
+      // Preserve any existing link
+      const existingLink = footerTextEl.querySelector('a')
+      footerTextEl.textContent = footerText || __('Chat with us on WhatsApp for instant support!')
+
+      // Add footer link if present
+      if (footerLinkUrl && footerLinkTitle) {
+        const link = document.createElement('a')
+        link.href = footerLinkUrl
+        link.textContent = footerLinkTitle
+        footerTextEl.appendChild(document.createTextNode(' '))
+        footerTextEl.appendChild(link)
+      }
+
+      // Update footer text color
+      if (footerTextColor) {
+        footerTextEl.style.color = footerTextColor
+      }
+    }
+
+    // Update team members
+    const teamsContainer = chatbox.querySelector('.wpsms-chatbox__teams')
+    if (teamsContainer) {
+      teamsContainer.innerHTML = ''
+
+      const members = Array.isArray(teamMembers) ? teamMembers : []
+      members.forEach(member => {
+        if (!member.member_name && !member.member_role) return
+
+        const memberName = member.member_name || __('Emily Brown')
+        const memberRole = member.member_role || __('Marketing Manager')
+        const memberAvailability = member.member_availability || __('Available 10AM-5PM PST')
+        const memberPhoto = member.member_photo || getDefaultAvatarUrl()
+        const contactType = member.member_contact_type || 'whatsapp'
+        const contactValue = member.member_contact_value || '+1122334455'
+        const contactLink = generateContactLink(contactType, contactValue)
+        const contactIcon = getContactIconUrl(contactType)
+
+        const teamEl = document.createElement('a')
+        teamEl.href = contactLink
+        teamEl.target = '_blank'
+        teamEl.className = 'wpsms-chatbox__team'
+        teamEl.innerHTML = `
+          <div class="wpsms-chatbox__team-avatar">
+            <span class="wpsms-chatbox__team-icon messenger" style="background-color: ${primaryColor}">
+              <img src="${contactIcon}"/>
+            </span>
+            <img class="wpsms-chatbox__team-avatar-img" src="${memberPhoto}" loading="lazy" width="56" height="56" alt="${memberName}">
+          </div>
+          <div class="wpsms-chatbox__team-info">
+            <ul class="wpsms-chatbox__team-list">
+              <li class="wpsms-chatbox__team-item">${memberRole}</li>
+              <li class="wpsms-chatbox__team-item wpsms-chatbox__team-name">${memberName}</li>
+              <li class="wpsms-chatbox__team-item wpsms-chatbox__team-status">
+                <span class="online dot"></span>
+                <span>${memberAvailability}</span>
+              </li>
+            </ul>
+          </div>
+        `
+        teamsContainer.appendChild(teamEl)
+      })
+    }
+
+    // Update links section
+    const articlesContainer = chatbox.querySelector('.wpsms-chatbox__articles')
+    if (linksEnabled === '1') {
+      if (!articlesContainer) {
+        // Create links section if it doesn't exist
+        const container = chatbox.querySelector('.wpsms-chatbox__container')
+        if (container) {
+          const articlesEl = document.createElement('div')
+          articlesEl.className = 'wpsms-chatbox__articles'
+          articlesEl.innerHTML = `<ul><li class="wpsms-chatbox__articles-header">${linksTitle || __('Quick Links')}</li></ul>`
+          container.appendChild(articlesEl)
+        }
+      } else {
+        // Show and update existing links section
+        articlesContainer.style.display = ''
+        const ul = articlesContainer.querySelector('ul')
+        if (ul) {
+          ul.innerHTML = `<li class="wpsms-chatbox__articles-header">${linksTitle || __('Quick Links')}</li>`
+
+          const links = Array.isArray(chatboxLinks) ? chatboxLinks : []
+          links.forEach(link => {
+            if (!link.chatbox_link_title) return
+
+            const li = document.createElement('li')
+            li.className = 'wpsms-chatbox__article'
+            li.innerHTML = `
+              <a href="${link.chatbox_link_url || '#'}" title="${link.chatbox_link_title}">
+                ${link.chatbox_link_title}
+                <span>
+                  <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 9L1 5L5 1" stroke="#4F7EF6" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+              </a>
+            `
+            ul.appendChild(li)
+          })
+        }
+      }
+    } else if (articlesContainer) {
+      articlesContainer.style.display = 'none'
+    }
+
+    // Update branding visibility
+    const branding = chatbox.querySelector('.wpsms-chatbox__copy-right')
+    if (branding) {
+      branding.style.display = disableLogo === '1' ? 'none' : ''
+    }
+
+  }, [
+    hasChanges,
+    buttonText,
+    chatboxTitle,
+    chatboxColor,
+    chatboxTextColor,
+    buttonPosition,
+    animationEffect,
+    footerText,
+    footerTextColor,
+    footerLinkTitle,
+    footerLinkUrl,
+    teamMembers,
+    linksEnabled,
+    linksTitle,
+    chatboxLinks,
+    disableLogo,
+  ])
 
   // Toggle chatbox preview visibility
   const handlePreviewClick = useCallback(() => {
@@ -88,33 +333,21 @@ export default function MessageButton() {
           </div>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-font-medium">{__('Enable Message Button')}</p>
-              <p className="wsms-text-sm wsms-text-muted-foreground">
-                {__('Show a floating chat button on your website for visitor inquiries.')}
-              </p>
-            </div>
-            <Switch
-              checked={isEnabled}
-              onCheckedChange={(checked) => setMessageButton(checked ? '1' : '')}
-              aria-label={__('Enable message button')}
-            />
-          </div>
+          <SettingRow
+            title={__('Enable Message Button')}
+            description={__('Show a floating chat button on your website for visitor inquiries.')}
+            checked={isEnabled}
+            onCheckedChange={(checked) => setMessageButton(checked ? '1' : '')}
+          />
 
           {isEnabled && (
-            <div className="wsms-space-y-2">
-              <Label htmlFor="chatboxTitle">{__('Chat Window Title')}</Label>
-              <Input
-                id="chatboxTitle"
-                value={chatboxTitle}
-                onChange={(e) => setChatboxTitle(e.target.value)}
-                placeholder={__('How can we help?')}
-              />
-              <p className="wsms-text-xs wsms-text-muted-foreground">
-                {__('Heading shown when the chat window opens.')}
-              </p>
-            </div>
+            <InputField
+              label={__('Chat Window Title')}
+              value={chatboxTitle}
+              onChange={(e) => setChatboxTitle(e.target.value)}
+              placeholder={__('How can we help?')}
+              description={__('Heading shown when the chat window opens.')}
+            />
           )}
         </CardContent>
       </Card>
@@ -130,54 +363,38 @@ export default function MessageButton() {
               </CardDescription>
             </CardHeader>
             <CardContent className="wsms-space-y-4">
-              <div className="wsms-space-y-2">
-                <Label htmlFor="buttonText">{__('Button Label')}</Label>
-                <Input
-                  id="buttonText"
-                  value={buttonText}
-                  onChange={(e) => setButtonText(e.target.value)}
-                  placeholder={__('Chat with us')}
-                />
-                <p className="wsms-text-xs wsms-text-muted-foreground">
-                  {__('Text shown on the floating button.')}
-                </p>
-              </div>
+              <InputField
+                label={__('Button Label')}
+                value={buttonText}
+                onChange={(e) => setButtonText(e.target.value)}
+                placeholder={__('Chat with us')}
+                description={__('Text shown on the floating button.')}
+              />
 
-              <div className="wsms-space-y-2">
-                <Label>{__('Button Position')}</Label>
-                <Select value={buttonPosition} onValueChange={setButtonPosition}>
-                  <SelectTrigger aria-label={__('Button position')}>
-                    <SelectValue placeholder={__('Select position')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="bottom_right">{__('Bottom Right')}</SelectItem>
-                    <SelectItem value="bottom_left">{__('Bottom Left')}</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="wsms-text-xs wsms-text-muted-foreground">
-                  {__('Where the button appears on screen.')}
-                </p>
-              </div>
+              <SelectField
+                label={__('Button Position')}
+                value={buttonPosition}
+                onValueChange={setButtonPosition}
+                placeholder={__('Select position')}
+                description={__('Where the button appears on screen.')}
+                options={[
+                  { value: 'bottom_right', label: __('Bottom Right') },
+                  { value: 'bottom_left', label: __('Bottom Left') },
+                ]}
+              />
 
-              <div className="wsms-space-y-2">
-                <Label>{__('Open Animation')}</Label>
-                <Select
-                  value={animationEffect || 'none'}
-                  onValueChange={(val) => setAnimationEffect(val === 'none' ? '' : val)}
-                >
-                  <SelectTrigger aria-label={__('Open animation')}>
-                    <SelectValue placeholder={__('Select animation')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">{__('None')}</SelectItem>
-                    <SelectItem value="fade">{__('Fade In')}</SelectItem>
-                    <SelectItem value="slide">{__('Slide Up')}</SelectItem>
-                  </SelectContent>
-                </Select>
-                <p className="wsms-text-xs wsms-text-muted-foreground">
-                  {__('How the chat window appears when opened.')}
-                </p>
-              </div>
+              <SelectField
+                label={__('Open Animation')}
+                value={animationEffect || 'none'}
+                onValueChange={(val) => setAnimationEffect(val === 'none' ? '' : val)}
+                placeholder={__('Select animation')}
+                description={__('How the chat window appears when opened.')}
+                options={[
+                  { value: 'none', label: __('None') },
+                  { value: 'fade', label: __('Fade In') },
+                  { value: 'slide', label: __('Slide Up') },
+                ]}
+              />
             </CardContent>
           </Card>
 
@@ -210,7 +427,7 @@ export default function MessageButton() {
                       placeholder="#00a9c0"
                     />
                   </div>
-                  <p className="wsms-text-xs wsms-text-muted-foreground">
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
                     {__('Background color for the button and chat header.')}
                   </p>
                 </div>
@@ -231,7 +448,7 @@ export default function MessageButton() {
                       placeholder="#ffffff"
                     />
                   </div>
-                  <p className="wsms-text-xs wsms-text-muted-foreground">
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
                     {__('Text color for the button and header.')}
                   </p>
                 </div>
@@ -248,18 +465,13 @@ export default function MessageButton() {
               </CardDescription>
             </CardHeader>
             <CardContent className="wsms-space-y-4">
-              <div className="wsms-space-y-2">
-                <Label htmlFor="footerText">{__('Footer Message')}</Label>
-                <Input
-                  id="footerText"
-                  value={footerText}
-                  onChange={(e) => setFooterText(e.target.value)}
-                  placeholder={__('We typically reply within minutes')}
-                />
-                <p className="wsms-text-xs wsms-text-muted-foreground">
-                  {__('Optional message shown at the bottom of the chat window.')}
-                </p>
-              </div>
+              <InputField
+                label={__('Footer Message')}
+                value={footerText}
+                onChange={(e) => setFooterText(e.target.value)}
+                placeholder={__('We typically reply within minutes')}
+                description={__('Optional message shown at the bottom of the chat window.')}
+              />
 
               <div className="wsms-space-y-2">
                 <Label htmlFor="footerTextColor">{__('Footer Text Color')}</Label>
@@ -280,39 +492,26 @@ export default function MessageButton() {
               </div>
 
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
-                <div className="wsms-space-y-2">
-                  <Label htmlFor="footerLinkTitle">{__('Footer Link Text')}</Label>
-                  <Input
-                    id="footerLinkTitle"
-                    value={footerLinkTitle}
-                    onChange={(e) => setFooterLinkTitle(e.target.value)}
-                    placeholder={__('View FAQ')}
-                  />
-                </div>
-                <div className="wsms-space-y-2">
-                  <Label htmlFor="footerLinkUrl">{__('Footer Link URL')}</Label>
-                  <Input
-                    id="footerLinkUrl"
-                    value={footerLinkUrl}
-                    onChange={(e) => setFooterLinkUrl(e.target.value)}
-                    placeholder="https://yoursite.com/help"
-                  />
-                </div>
-              </div>
-
-              <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-                <div>
-                  <p className="wsms-font-medium">{__('Hide WSMS Branding')}</p>
-                  <p className="wsms-text-sm wsms-text-muted-foreground">
-                    {__('Remove the "Powered by WSMS" text from the footer.')}
-                  </p>
-                </div>
-                <Switch
-                  checked={disableLogo === '1'}
-                  onCheckedChange={(checked) => setDisableLogo(checked ? '1' : '')}
-                  aria-label={__('Hide WSMS branding')}
+                <InputField
+                  label={__('Footer Link Text')}
+                  value={footerLinkTitle}
+                  onChange={(e) => setFooterLinkTitle(e.target.value)}
+                  placeholder={__('View FAQ')}
+                />
+                <InputField
+                  label={__('Footer Link URL')}
+                  value={footerLinkUrl}
+                  onChange={(e) => setFooterLinkUrl(e.target.value)}
+                  placeholder="https://yoursite.com/help"
                 />
               </div>
+
+              <SettingRow
+                title={__('Hide WSMS Branding')}
+                description={__('Remove the "Powered by WSMS" text from the footer.')}
+                checked={disableLogo === '1'}
+                onCheckedChange={(checked) => setDisableLogo(checked ? '1' : '')}
+              />
             </CardContent>
           </Card>
 
@@ -342,8 +541,8 @@ export default function MessageButton() {
                     { value: 'email', label: __('Email') },
                   ]},
                   { name: 'member_contact_value', label: __('Contact Value'), type: 'text', placeholder: '+1 555 123 4567' },
-                  { name: 'member_photo', label: __('Avatar URL'), type: 'url', placeholder: 'https://example.com/avatar.jpg' },
                   { name: 'member_availability', label: __('Availability'), type: 'text', placeholder: __('Available 9AM-5PM') },
+                  { name: 'member_photo', label: __('Avatar'), type: 'media', buttonText: __('Select Avatar') },
                 ]}
                 addLabel={__('Add Team Member')}
                 maxItems={5}
@@ -364,31 +563,21 @@ export default function MessageButton() {
               </CardDescription>
             </CardHeader>
             <CardContent className="wsms-space-y-4">
-              <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-                <div>
-                  <p className="wsms-font-medium">{__('Show Quick Links')}</p>
-                  <p className="wsms-text-sm wsms-text-muted-foreground">
-                    {__('Display helpful links in the chat window.')}
-                  </p>
-                </div>
-                <Switch
-                  checked={linksEnabled === '1'}
-                  onCheckedChange={(checked) => setLinksEnabled(checked ? '1' : '')}
-                  aria-label={__('Show quick links')}
-                />
-              </div>
+              <SettingRow
+                title={__('Show Quick Links')}
+                description={__('Display helpful links in the chat window.')}
+                checked={linksEnabled === '1'}
+                onCheckedChange={(checked) => setLinksEnabled(checked ? '1' : '')}
+              />
 
               {linksEnabled === '1' && (
                 <>
-                  <div className="wsms-space-y-2">
-                    <Label htmlFor="linksTitle">{__('Links Section Title')}</Label>
-                    <Input
-                      id="linksTitle"
-                      value={linksTitle}
-                      onChange={(e) => setLinksTitle(e.target.value)}
-                      placeholder={__('Helpful Resources')}
-                    />
-                  </div>
+                  <InputField
+                    label={__('Links Section Title')}
+                    value={linksTitle}
+                    onChange={(e) => setLinksTitle(e.target.value)}
+                    placeholder={__('Helpful Resources')}
+                  />
 
                   <div className="wsms-space-y-2">
                     <Label>{__('Resource Links')}</Label>

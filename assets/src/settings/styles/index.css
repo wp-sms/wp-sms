@@ -92,6 +92,39 @@
   position: relative;
 }
 
+/* Hide WordPress admin footer when settings app is loaded */
+body.sms_page_wp-sms-unified-admin #wpfooter {
+  display: none !important;
+}
+
+/* WordPress admin layout fixes for settings page */
+body.sms_page_wp-sms-unified-admin #wpcontent {
+  padding-left: 0 !important;
+}
+
+body.sms_page_wp-sms-unified-admin #wpbody-content {
+  padding-bottom: 0 !important;
+  float: none !important;
+}
+
+/* Make the settings app container fill available viewport height */
+body.sms_page_wp-sms-unified-admin #wpsms-settings-root {
+  height: calc(100vh - 32px) !important; /* Subtract admin bar height */
+  overflow: hidden !important;
+}
+
+/* Mobile admin bar is taller */
+@media screen and (max-width: 782px) {
+  body.sms_page_wp-sms-unified-admin #wpsms-settings-root {
+    height: calc(100vh - 46px) !important;
+  }
+}
+
+/* When admin bar is not shown */
+body.sms_page_wp-sms-unified-admin.no-admin-bar #wpsms-settings-root {
+  height: 100vh !important;
+}
+
 .wpsms-settings-app,
 .wsms-settings-app {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -142,9 +175,17 @@
    Layout - WordPress Admin Integration
    ============================================ */
 
+.wsms-settings-app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .wsms-settings-wrapper {
   display: flex;
-  height: calc(100vh - 32px - 56px); /* Subtract WP admin bar + header height */
+  flex: 1;
+  min-height: 0; /* Important for flex children to scroll properly */
   overflow: hidden;
 }
 
