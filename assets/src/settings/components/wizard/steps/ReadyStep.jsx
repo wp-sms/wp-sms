@@ -1,5 +1,5 @@
-import React from 'react'
-import { PartyPopper, Send, Bell, Settings, ArrowRight, CheckCircle, Sparkles } from 'lucide-react'
+import React, { useState } from 'react'
+import { PartyPopper, Send, Bell, Settings, ArrowRight, CheckCircle, Sparkles, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { getWpSettings, __ } from '@/lib/utils'
 
@@ -12,6 +12,14 @@ export default function ReadyStep({
   onClose,
 }) {
   const { gateways = {} } = getWpSettings()
+  const [isCompleting, setIsCompleting] = useState(false)
+
+  // Handle complete - wraps onClose with loading state
+  const handleComplete = async (navigateTo = null) => {
+    setIsCompleting(true)
+    await onClose(navigateTo)
+    // Note: page will reload, so no need to reset state
+  }
 
   // Get gateway display name
   const getGatewayDisplayName = () => {
@@ -94,8 +102,9 @@ export default function ReadyStep({
             <button
               key={action.id}
               type="button"
-              onClick={() => onNavigate(action.id)}
-              className={`wsms-w-full wsms-flex wsms-items-center wsms-gap-4 wsms-p-4 wsms-rounded-xl wsms-border wsms-transition-all wsms-shadow-sm hover:wsms-shadow-md ${
+              onClick={() => handleComplete(action.id)}
+              disabled={isCompleting}
+              className={`wsms-w-full wsms-flex wsms-items-center wsms-gap-4 wsms-p-4 wsms-rounded-xl wsms-border wsms-transition-all wsms-shadow-sm hover:wsms-shadow-md disabled:wsms-opacity-50 disabled:wsms-cursor-not-allowed ${
                 action.primary
                   ? 'wsms-border-primary/30 wsms-bg-primary/5 hover:wsms-bg-primary/10'
                   : 'wsms-border-border wsms-bg-card hover:wsms-bg-accent'
@@ -136,8 +145,20 @@ export default function ReadyStep({
 
       {/* Close Button */}
       <div className="wsms-text-center">
-        <Button variant="outline" onClick={() => onClose()} size="lg">
-          {__('Close Setup Wizard')}
+        <Button
+          variant="outline"
+          onClick={() => handleComplete()}
+          size="lg"
+          disabled={isCompleting}
+        >
+          {isCompleting ? (
+            <>
+              <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+              {__('Completing...')}
+            </>
+          ) : (
+            __('Close Setup Wizard')
+          )}
         </Button>
       </div>
     </div>
