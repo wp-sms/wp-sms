@@ -271,7 +271,7 @@ export default function Notifications() {
             onChange={setNotifNewUserAdminTemplate}
             placeholder={__('New user registered: %user_login% (%user_email%)')}
             rows={3}
-            variables={['%user_login%', '%user_email%', '%user_firstname%', '%user_lastname%', '%date_register%']}
+            variables={['%user_id%', '%user_login%', '%user_email%', '%date_register%', '%user_url%', '%display_name%', '%first_name%', '%last_name%', '%user_role%']}
           />
           <p className="wsms-text-[12px] wsms-text-muted-foreground">
             {__('Sent to admin.')}
@@ -284,9 +284,9 @@ export default function Notifications() {
             id="userTemplate"
             value={notifNewUserTemplate}
             onChange={setNotifNewUserTemplate}
-            placeholder={__('Welcome %user_firstname%! Your account has been created.')}
+            placeholder={__('Welcome %first_name%! Your account has been created.')}
             rows={3}
-            variables={['%user_login%', '%user_email%', '%user_firstname%', '%user_lastname%', '%date_register%']}
+            variables={['%user_id%', '%user_login%', '%user_email%', '%date_register%', '%user_url%', '%display_name%', '%first_name%', '%last_name%', '%user_role%']}
           />
           <p className="wsms-text-[12px] wsms-text-muted-foreground">
             {__('Sent to new user.')}
@@ -310,7 +310,7 @@ export default function Notifications() {
             onChange={setNotifNewCommentTemplate}
             placeholder={__("New comment on '%comment_post_title%' by %comment_author%")}
             rows={3}
-            variables={['%comment_author%', '%comment_author_email%', '%comment_content%', '%comment_post_title%', '%comment_post_url%', '%comment_date%']}
+            variables={['%comment_id%', '%comment_author%', '%comment_author_email%', '%comment_author_url%', '%comment_author_IP%', '%comment_date%', '%comment_content%', '%comment_url%', '%comment_post_title%', '%comment_post_url%', '%comment_post_id%']}
           />
         </div>
       </NotificationSection>
@@ -339,9 +339,9 @@ export default function Notifications() {
             id="loginTemplate"
             value={notifUserLoginTemplate}
             onChange={setNotifUserLoginTemplate}
-            placeholder={__('User %user_login% logged in at %date_login%')}
+            placeholder={__('User %user_login% logged in')}
             rows={3}
-            variables={['%user_login%', '%user_email%', '%user_firstname%', '%user_lastname%', '%date_login%']}
+            variables={['%user_id%', '%user_login%', '%user_email%', '%date_register%', '%user_url%', '%display_name%', '%first_name%', '%last_name%', '%user_role%']}
           />
         </div>
       </NotificationSection>
