@@ -192,6 +192,9 @@ const SelectField = React.forwardRef(
   ({ label, description, error, required, placeholder, value, onValueChange, options = [], className, ...props }, ref) => {
     const id = React.useId()
 
+    // Ensure value is always a string (handle legacy array values)
+    const normalizedValue = Array.isArray(value) ? (value[0] || '') : (value ?? '')
+
     return (
       <div ref={ref} className={cn('wsms-space-y-2', className)}>
         {label && (
@@ -200,7 +203,7 @@ const SelectField = React.forwardRef(
             {required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
           </Label>
         )}
-        <Select value={value} onValueChange={onValueChange} {...props}>
+        <Select value={normalizedValue} onValueChange={onValueChange} {...props}>
           <SelectTrigger id={id} className={cn(error && 'wsms-border-destructive')}>
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
