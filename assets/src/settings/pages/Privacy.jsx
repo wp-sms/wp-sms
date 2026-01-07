@@ -187,18 +187,18 @@ export default function Privacy() {
                 Enter a phone number to find all associated data
               </p>
             </div>
-            <div className="wsms-flex wsms-gap-3">
+            <div className="wsms-flex wsms-gap-2">
               <div className="wsms-relative wsms-flex-1">
-                <Phone className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+                <Phone className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" />
                 <Input
                   type="tel"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   placeholder="+1234567890"
-                  className="wsms-pl-9 wsms-h-11 wsms-text-base wsms-font-mono"
+                  className="wsms-pl-8 wsms-h-9 wsms-font-mono"
                 />
               </div>
-              <Button type="submit" disabled={isSearching || !phoneNumber.trim()} className="wsms-h-11 wsms-px-6">
+              <Button type="submit" disabled={isSearching || !phoneNumber.trim()} className="wsms-h-9 wsms-px-4">
                 {isSearching ? (
                   <>
                     <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
