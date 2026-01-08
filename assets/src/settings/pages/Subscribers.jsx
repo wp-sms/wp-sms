@@ -119,6 +119,7 @@ export default function Subscribers() {
   // Quick add form state
   const [quickAddName, setQuickAddName] = useState('')
   const [quickAddPhone, setQuickAddPhone] = useState('')
+  const [quickAddGroup, setQuickAddGroup] = useState('')
 
   // Quick reply state
   const [quickReplyTo, setQuickReplyTo] = useState(null)
@@ -144,12 +145,13 @@ export default function Subscribers() {
       await subscribersApi.createSubscriber({
         name: name?.trim() || '',
         mobile: mobile.trim(),
-        group_id: filters.filters.group_id !== 'all' ? parseInt(filters.filters.group_id) : undefined,
+        group_id: quickAddGroup ? parseInt(quickAddGroup) : undefined,
         status: '1',
       })
       toast({ title: __('Subscriber added successfully'), variant: 'success' })
       setQuickAddName('')
       setQuickAddPhone('')
+      setQuickAddGroup('')
       table.fetch({ page: 1 })
     } catch (error) {
       toast({ title: error.message || __('Failed to add subscriber'), variant: 'destructive' })
@@ -434,7 +436,7 @@ export default function Subscribers() {
               </p>
 
               {/* Quick Add */}
-              <div className="wsms-w-full wsms-max-w-sm wsms-mb-6">
+              <div className="wsms-w-full wsms-max-w-md wsms-mb-6">
                 <div className="wsms-flex wsms-gap-2">
                   <Input
                     type="tel"
@@ -448,6 +450,21 @@ export default function Subscribers() {
                       }
                     }}
                   />
+                  <div className="wsms-w-[120px] wsms-shrink-0">
+                    <Select value={quickAddGroup || 'none'} onValueChange={(v) => setQuickAddGroup(v === 'none' ? '' : v)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder={__('No Group')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">{__('No Group')}</SelectItem>
+                        {groups.map((group) => (
+                          <SelectItem key={group.id} value={String(group.id)}>
+                            {group.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                   <Button
                     onClick={() => handleQuickAdd('', quickAddPhone)}
                     disabled={isAddingQuick || !quickAddPhone.trim()}
@@ -628,7 +645,7 @@ export default function Subscribers() {
                 value={quickAddName}
                 onChange={(e) => setQuickAddName(e.target.value)}
                 placeholder={__('Name (optional)')}
-                className="wsms-h-9 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[160px] wsms-text-[13px]"
+                className="wsms-h-9 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[140px] wsms-text-[13px]"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && quickAddPhone.trim()) {
                     handleQuickAdd(quickAddName, quickAddPhone)
@@ -640,13 +657,28 @@ export default function Subscribers() {
                 value={quickAddPhone}
                 onChange={(e) => setQuickAddPhone(e.target.value)}
                 placeholder={__('Phone number')}
-                className="wsms-h-9 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[160px] wsms-font-mono wsms-text-[13px]"
+                className="wsms-h-9 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[140px] wsms-font-mono wsms-text-[13px]"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && quickAddPhone.trim()) {
                     handleQuickAdd(quickAddName, quickAddPhone)
                   }
                 }}
               />
+              <div className="wsms-w-[120px] wsms-shrink-0">
+                <Select value={quickAddGroup || 'none'} onValueChange={(v) => setQuickAddGroup(v === 'none' ? '' : v)}>
+                  <SelectTrigger className="wsms-h-9 wsms-text-[13px]">
+                    <SelectValue placeholder={__('No Group')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">{__('No Group')}</SelectItem>
+                    {groups.map((group) => (
+                      <SelectItem key={group.id} value={String(group.id)}>
+                        {group.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
               <Button
                 disabled={isAddingQuick || !quickAddPhone.trim()}
                 onClick={() => handleQuickAdd(quickAddName, quickAddPhone)}
