@@ -13,12 +13,15 @@ export const smsApi = {
    * @param {object} data.recipients - Recipients object
    * @param {string[]} data.recipients.groups - Group IDs
    * @param {string[]} data.recipients.roles - User role slugs
+   * @param {string[]} data.recipients.users - User IDs
    * @param {string[]} data.recipients.numbers - Phone numbers
+   * @param {string[]} data.recipients.wooCustomers - WooCommerce customers ['all']
+   * @param {string[]} data.recipients.buddyPressUsers - BuddyPress users ['all']
    * @param {string} data.from - Sender ID (optional)
    * @param {boolean} data.flash - Send as flash SMS
    * @param {string} data.mediaUrl - MMS media URL (optional)
-   * @param {string} data.scheduled - Schedule date/time ISO string (optional, Pro feature)
-   * @param {object} data.repeat - Repeat configuration (optional, Pro feature)
+   * @param {string} data.scheduled - Schedule date/time ISO string (optional)
+   * @param {object} data.repeat - Repeat configuration (optional)
    * @param {number} data.repeat.interval - Repeat interval value
    * @param {string} data.repeat.unit - Repeat interval unit (day/week/month/year)
    * @param {string} data.repeat.endDate - End date ISO string (optional)

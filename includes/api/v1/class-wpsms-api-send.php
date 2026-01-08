@@ -333,7 +333,7 @@ class SendSmsApi extends \WP_SMS\RestApi
     /**
      * Quick send callback for new settings UI
      * Simplified send endpoint that accepts groups, roles, and numbers directly
-     * Also supports scheduling and repeating messages (Pro feature)
+     * Also supports scheduling and repeating messages (add-on)
      *
      * @param WP_REST_Request $request
      * @return \WP_REST_Response
@@ -380,6 +380,22 @@ class SendSmsApi extends \WP_SMS\RestApi
                 $recipientNumbers = array_merge($recipientNumbers, $recipients['numbers']);
             }
 
+            // Get WooCommerce customers (add-on)
+            if (!empty($recipients['wooCustomers']) && class_exists('woocommerce')) {
+                $wooNumbers = Helper::getWooCommerceCustomersNumbers();
+                if (is_array($wooNumbers)) {
+                    $recipientNumbers = array_merge($recipientNumbers, $wooNumbers);
+                }
+            }
+
+            // Get BuddyPress users (add-on)
+            if (!empty($recipients['buddyPressUsers']) && class_exists('BuddyPress') && class_exists('\WP_SMS\Pro\Services\Integration\BuddyPress\BuddyPress')) {
+                $bpNumbers = \WP_SMS\Pro\Services\Integration\BuddyPress\BuddyPress::getTotalMobileNumbers();
+                if (is_array($bpNumbers)) {
+                    $recipientNumbers = array_merge($recipientNumbers, $bpNumbers);
+                }
+            }
+
             // Remove duplicates
             $recipientNumbers = array_unique($recipientNumbers);
 
@@ -397,7 +413,7 @@ class SendSmsApi extends \WP_SMS\RestApi
             $mediaUrls = !empty($mediaUrl) ? [$mediaUrl] : [];
 
             /*
-             * Repeating SMS (Pro feature)
+             * Repeating SMS (add-on)
              */
             if (!empty($schedule) && !empty($repeat) && class_exists('WP_SMS\Pro\RepeatingMessages')) {
                 $startDate = new DateTime(get_gmt_from_date($schedule));
@@ -431,7 +447,7 @@ class SendSmsApi extends \WP_SMS\RestApi
             }
 
             /**
-             * Scheduled SMS (Pro feature)
+             * Scheduled SMS (add-on)
              */
             if (!empty($schedule) && class_exists('WP_SMS\Pro\Scheduled')) {
                 if ((new DateTime(get_gmt_from_date($schedule)))->getTimestamp() < time()) {

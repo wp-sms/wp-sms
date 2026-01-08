@@ -238,6 +238,9 @@ class UnifiedAdminPage extends Singleton
         return [
             'apiUrl'        => rest_url('wpsms/v1/'),
             'nonce'         => wp_create_nonce('wp_rest'),
+            'ajaxUrls'      => [
+                'recipientCounts' => \WP_SMS\Controller\RecipientCountsAjax::url(),
+            ],
             'settings'      => $this->maskSensitiveSettings($this->getSettingsWithDefaults()),
             'proSettings'   => $this->maskSensitiveSettings(Option::getOptions(true)),
             'addons'        => $this->getActiveAddons(),
@@ -267,6 +270,8 @@ class UnifiedAdminPage extends Singleton
             'stats'         => $this->getStats(),
             'capabilities'  => $this->getUserCapabilities(),
             'features'      => $this->getFeatureFlags(),
+            // Additional recipient types for Send SMS page (filterable by add-ons)
+            'additionalRecipientTypes' => $this->getAdditionalRecipientTypes(),
         ];
     }
 
@@ -471,6 +476,31 @@ class UnifiedAdminPage extends Singleton
             // Wizard completion flag
             'wizardCompleted'       => (bool) $activationNoticeShown,
         ];
+    }
+
+    /**
+     * Get additional recipient types for Send SMS page
+     *
+     * This allows add-ons to register additional recipient types like WooCommerce Customers
+     * and BuddyPress Users via the 'wpsms_additional_recipient_types' filter.
+     *
+     * Each type should have:
+     * - id: Unique identifier (e.g., 'wooCustomers', 'buddyPressUsers')
+     * - label: Display label
+     * - icon: Icon name from lucide-react (e.g., 'ShoppingCart', 'UserCircle')
+     * - apiType: The type parameter for the RecipientCountsAjax endpoint (e.g., 'wc-customers', 'bp-users')
+     * - isActive: Whether the required plugin is active
+     *
+     * @return array
+     */
+    private function getAdditionalRecipientTypes()
+    {
+        /**
+         * Filter to register additional recipient types for Send SMS page
+         *
+         * @param array $types Array of recipient type definitions
+         */
+        return apply_filters('wpsms_additional_recipient_types', []);
     }
 
     /**

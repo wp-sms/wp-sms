@@ -60,6 +60,12 @@ When adding new add-on settings:
 2. Include `addonSlug` property on each field
 3. Use `'yes'`/`'no'` for checkbox defaults (WooCommerce compat)
 
+## Additional Recipient Types (Send SMS Page)
+
+**Note:** Avoid "Pro" terminology in main plugin (WordPress.org rules). Use "additional" or similar.
+
+Add-ons register recipient types via `wpsms_additional_recipient_types` filter. Backend support required in `includes/api/v1/class-wpsms-api-send.php`.
+
 ## Testing
 
 **Locations**: `tests/unit/` (PHP), `assets/src/**/__tests__/` (JS), `e2e/tests/` (Playwright)

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Users, UserCog, User, Phone, X, Search, Plus, Loader2 } from 'lucide-react'
+import { Users, UserCog, User, Phone, X, Search, Plus, Loader2, ShoppingCart, UserCircle } from 'lucide-react'
 import { cn, __, getWpSettings } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,9 +13,20 @@ const TABS = [
   { id: 'numbers', label: __('Numbers'), icon: Phone, description: __('Manual entry') },
 ]
 
+// Map icon names from PHP to lucide-react components
+const ICON_MAP = {
+  ShoppingCart,
+  UserCircle,
+  Users,
+  User,
+  UserCog,
+  Phone,
+}
+
 /**
  * RecipientSelector - Enhanced multi-tab selector for SMS recipients
  * Supports selecting groups, user roles, and manual phone numbers
+ * Additional recipient types (like WooCommerce Customers, BuddyPress Users) are added via 'wpsms_additional_recipient_types' filter
  */
 const RecipientSelector = React.forwardRef(
   (
@@ -35,7 +46,9 @@ const RecipientSelector = React.forwardRef(
     const [userSearchResults, setUserSearchResults] = React.useState([])
     const [isSearchingUsers, setIsSearchingUsers] = React.useState(false)
     const [selectedUserDetails, setSelectedUserDetails] = React.useState({})
-    const { groups = [], roles = [] } = getWpSettings()
+    const [additionalTypeCounts, setAdditionalTypeCounts] = React.useState({})
+    const [isLoadingAdditionalCounts, setIsLoadingAdditionalCounts] = React.useState({})
+    const { groups = [], roles = [], additionalRecipientTypes = [] } = getWpSettings()
 
     const handleGroupToggle = (groupId) => {
       const newGroups = value.groups.includes(groupId)
@@ -127,6 +140,53 @@ const RecipientSelector = React.forwardRef(
       onChange?.({ ...value, numbers: [] })
     }
 
+    // Toggle additional recipient types (all-or-nothing selection)
+    const handleAdditionalTypeToggle = (typeId, enabled) => {
+      onChange?.({ ...value, [typeId]: enabled ? ['all'] : [] })
+    }
+
+    // Fetch additional type counts
+    const fetchAdditionalTypeCount = React.useCallback(async (typeId, apiType) => {
+      if (additionalTypeCounts[typeId] !== undefined) return // Already fetched or fetching
+
+      setIsLoadingAdditionalCounts((prev) => ({ ...prev, [typeId]: true }))
+
+      try {
+        // Use the pre-built AJAX URL with proper nonce from wpSmsSettings
+        const baseUrl = getWpSettings().ajaxUrls?.recipientCounts || ''
+        if (!baseUrl) {
+          console.error('RecipientCounts AJAX URL not available')
+          return
+        }
+
+        const url = `${baseUrl}&type=${apiType}`
+        const response = await fetch(url, {
+          method: 'POST',
+          credentials: 'same-origin',
+        })
+        const data = await response.json()
+        if (data.success) {
+          setAdditionalTypeCounts((prev) => ({ ...prev, [typeId]: data.data.count }))
+        }
+      } catch (error) {
+        console.error('Failed to fetch recipient count:', error)
+        setAdditionalTypeCounts((prev) => ({ ...prev, [typeId]: 0 }))
+      } finally {
+        setIsLoadingAdditionalCounts((prev) => ({ ...prev, [typeId]: false }))
+      }
+    }, [additionalTypeCounts])
+
+    // Fetch additional type counts when Groups tab is active
+    React.useEffect(() => {
+      if (activeTab === 'groups' && additionalRecipientTypes.length > 0) {
+        additionalRecipientTypes.forEach((type) => {
+          if (type.isActive && type.apiType) {
+            fetchAdditionalTypeCount(type.id, type.apiType)
+          }
+        })
+      }
+    }, [activeTab, additionalRecipientTypes, fetchAdditionalTypeCount])
+
     const handleKeyDown = (e) => {
       if (e.key === 'Enter' && !e.shiftKey) {
         e.preventDefault()
@@ -134,8 +194,15 @@ const RecipientSelector = React.forwardRef(
       }
     }
 
+    // Calculate count for Groups tab (includes additional types if selected)
+    const additionalTypesSelectedCount = additionalRecipientTypes.reduce((count, type) => {
+      return count + ((value[type.id]?.length || 0) > 0 ? 1 : 0)
+    }, 0)
+    const groupsTabCount = value.groups.length + additionalTypesSelectedCount
+
     const totalSelected =
-      value.groups.length + value.roles.length + (value.users?.length || 0) + value.numbers.length
+      value.groups.length + value.roles.length + (value.users?.length || 0) + value.numbers.length +
+      additionalRecipientTypes.reduce((count, type) => count + (value[type.id]?.length || 0), 0)
 
     // Convert groups object to array if needed
     const groupsArray = Array.isArray(groups)
@@ -153,6 +220,11 @@ const RecipientSelector = React.forwardRef(
     )
     const filteredRoles = rolesArray.filter((role) =>
       role.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+
+    // Filter additional types - only show active ones that match search query
+    const filteredAdditionalTypes = additionalRecipientTypes.filter((type) =>
+      type.isActive && (!searchQuery || type.label.toLowerCase().includes(searchQuery.toLowerCase()))
     )
 
     // Clear search when switching tabs
@@ -174,7 +246,7 @@ const RecipientSelector = React.forwardRef(
             const Icon = tab.icon
             const count =
               tab.id === 'groups'
-                ? value.groups.length
+                ? groupsTabCount
                 : tab.id === 'roles'
                 ? value.roles.length
                 : tab.id === 'users'
@@ -251,43 +323,83 @@ const RecipientSelector = React.forwardRef(
             {/* Groups Tab */}
             {activeTab === 'groups' && (
               <div className="wsms-p-1.5">
-                {filteredGroups.length === 0 ? (
+                <div className="wsms-space-y-0.5">
+                  {/* Subscriber Groups */}
+                  {filteredGroups.map((group) => {
+                    const isSelected = value.groups.includes(group.id)
+                    return (
+                      <label
+                        key={group.id}
+                        className={cn(
+                          'wsms-flex wsms-items-center wsms-gap-2.5 wsms-px-2.5 wsms-py-2 wsms-rounded-md',
+                          'wsms-cursor-pointer wsms-transition-colors',
+                          'hover:wsms-bg-muted/50',
+                          isSelected && 'wsms-bg-primary/5'
+                        )}
+                      >
+                        <Checkbox
+                          checked={isSelected}
+                          onCheckedChange={() => handleGroupToggle(group.id)}
+                          disabled={disabled}
+                        />
+                        <Users className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
+                        <span className="wsms-flex-1 wsms-text-[12px] wsms-text-foreground wsms-truncate">
+                          {group.name}
+                        </span>
+                        {group.count !== undefined && (
+                          <span className="wsms-text-[11px] wsms-text-muted-foreground">
+                            {group.count}
+                          </span>
+                        )}
+                      </label>
+                    )
+                  })}
+
+                  {/* Additional Recipient Types (from filter) */}
+                  {filteredAdditionalTypes.map((type) => {
+                    const Icon = ICON_MAP[type.icon] || Users
+                    const isSelected = (value[type.id]?.length || 0) > 0
+                    const count = additionalTypeCounts[type.id]
+                    const isLoading = isLoadingAdditionalCounts[type.id]
+
+                    return (
+                      <label
+                        key={type.id}
+                        className={cn(
+                          'wsms-flex wsms-items-center wsms-gap-2.5 wsms-px-2.5 wsms-py-2 wsms-rounded-md',
+                          'wsms-cursor-pointer wsms-transition-colors',
+                          'hover:wsms-bg-muted/50',
+                          isSelected && 'wsms-bg-primary/5'
+                        )}
+                      >
+                        <Checkbox
+                          checked={isSelected}
+                          onCheckedChange={(checked) => handleAdditionalTypeToggle(type.id, checked)}
+                          disabled={disabled}
+                        />
+                        <Icon className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
+                        <span className="wsms-flex-1 wsms-text-[12px] wsms-text-foreground wsms-truncate">
+                          {type.label}
+                        </span>
+                        {isLoading ? (
+                          <Loader2 className="wsms-h-3 wsms-w-3 wsms-animate-spin wsms-text-muted-foreground" />
+                        ) : count !== undefined ? (
+                          <span className="wsms-text-[11px] wsms-text-muted-foreground">
+                            {count}
+                          </span>
+                        ) : null}
+                      </label>
+                    )
+                  })}
+                </div>
+
+                {/* Empty State */}
+                {filteredGroups.length === 0 && filteredAdditionalTypes.length === 0 && (
                   <div className="wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-py-8 wsms-text-center">
                     <Users className="wsms-h-8 wsms-w-8 wsms-text-muted-foreground/30 wsms-mb-2" />
                     <p className="wsms-text-[12px] wsms-text-muted-foreground">
                       {searchQuery ? __('No groups match your search') : __('No subscriber groups available')}
                     </p>
-                  </div>
-                ) : (
-                  <div className="wsms-space-y-0.5">
-                    {filteredGroups.map((group) => {
-                      const isSelected = value.groups.includes(group.id)
-                      return (
-                        <label
-                          key={group.id}
-                          className={cn(
-                            'wsms-flex wsms-items-center wsms-gap-2.5 wsms-px-2.5 wsms-py-2 wsms-rounded-md',
-                            'wsms-cursor-pointer wsms-transition-colors',
-                            'hover:wsms-bg-muted/50',
-                            isSelected && 'wsms-bg-primary/5'
-                          )}
-                        >
-                          <Checkbox
-                            checked={isSelected}
-                            onCheckedChange={() => handleGroupToggle(group.id)}
-                            disabled={disabled}
-                          />
-                          <span className="wsms-flex-1 wsms-text-[12px] wsms-text-foreground wsms-truncate">
-                            {group.name}
-                          </span>
-                          {group.count !== undefined && (
-                            <span className="wsms-text-[11px] wsms-text-muted-foreground">
-                              {group.count}
-                            </span>
-                          )}
-                        </label>
-                      )
-                    })}
                   </div>
                 )}
               </div>
