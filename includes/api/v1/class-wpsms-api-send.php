@@ -380,21 +380,8 @@ class SendSmsApi extends \WP_SMS\RestApi
                 $recipientNumbers = array_merge($recipientNumbers, $recipients['numbers']);
             }
 
-            // Get WooCommerce customers (add-on)
-            if (!empty($recipients['wooCustomers']) && class_exists('woocommerce')) {
-                $wooNumbers = Helper::getWooCommerceCustomersNumbers();
-                if (is_array($wooNumbers)) {
-                    $recipientNumbers = array_merge($recipientNumbers, $wooNumbers);
-                }
-            }
-
-            // Get BuddyPress users (add-on)
-            if (!empty($recipients['buddyPressUsers']) && class_exists('BuddyPress') && class_exists('\WP_SMS\Pro\Services\Integration\BuddyPress\BuddyPress')) {
-                $bpNumbers = \WP_SMS\Pro\Services\Integration\BuddyPress\BuddyPress::getTotalMobileNumbers();
-                if (is_array($bpNumbers)) {
-                    $recipientNumbers = array_merge($recipientNumbers, $bpNumbers);
-                }
-            }
+            // Allow add-ons to add recipient numbers (e.g., WooCommerce, BuddyPress)
+            $recipientNumbers = apply_filters('wpsms_api_recipient_numbers', $recipientNumbers, $recipients, []);
 
             // Remove duplicates
             $recipientNumbers = array_unique($recipientNumbers);
@@ -542,6 +529,15 @@ class SendSmsApi extends \WP_SMS\RestApi
                 $counts['numbers'] = count($recipients['numbers']);
                 $allNumbers = array_merge($allNumbers, $recipients['numbers']);
             }
+
+            /**
+             * Filter to add recipient numbers from add-ons (e.g., WooCommerce, BuddyPress)
+             *
+             * @param array $allNumbers Current collected numbers
+             * @param array $recipients Recipients request data
+             * @param array $counts Current counts array (pass by reference via filter)
+             */
+            $allNumbers = apply_filters('wpsms_api_recipient_numbers', $allNumbers, $recipients, $counts);
 
             // Total unique count
             $counts['total'] = count(array_unique($allNumbers));

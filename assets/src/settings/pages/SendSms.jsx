@@ -19,8 +19,8 @@ export default function SendSms() {
   const { setCurrentPage, getSetting } = useSettings()
   const { toast } = useToast()
 
-  // Check for Pro add-on
-  const { hasProAddon } = getWpSettings()
+  // Check for Pro add-on and additional recipient types
+  const { hasProAddon, additionalRecipientTypes = [] } = getWpSettings()
 
   // Get gateway capabilities (static, from page load)
   const gatewaySupportsFlash = window.wpSmsSettings?.gateway?.flash === 'enable'
@@ -66,9 +66,12 @@ export default function SendSms() {
     setSenderId(defaultSender)
   }, [defaultSender])
 
-  // Calculate recipient count
+  // Calculate recipient count (including additional types like WooCommerce, BuddyPress)
+  const additionalRecipientsCount = additionalRecipientTypes.reduce(
+    (count, type) => count + (recipients[type.id]?.length || 0), 0
+  )
   const totalManualRecipients =
-    recipients.groups.length + recipients.roles.length + (recipients.users?.length || 0) + recipients.numbers.length
+    recipients.groups.length + recipients.roles.length + (recipients.users?.length || 0) + recipients.numbers.length + additionalRecipientsCount
 
   // Debounced recipient count fetch
   useEffect(() => {
@@ -78,7 +81,8 @@ export default function SendSms() {
     }
 
     const timer = setTimeout(async () => {
-      if (recipients.groups.length > 0 || recipients.roles.length > 0 || (recipients.users?.length || 0) > 0) {
+      const hasGroupsOrRoles = recipients.groups.length > 0 || recipients.roles.length > 0 || (recipients.users?.length || 0) > 0 || additionalRecipientsCount > 0
+      if (hasGroupsOrRoles) {
         setIsLoadingCount(true)
         try {
           const count = await smsApi.getRecipientCount(recipients)
@@ -96,7 +100,7 @@ export default function SendSms() {
     }, 500)
 
     return () => clearTimeout(timer)
-  }, [recipients, totalManualRecipients])
+  }, [recipients, totalManualRecipients, additionalRecipientsCount])
 
   // Fetch initial credit
   useEffect(() => {
