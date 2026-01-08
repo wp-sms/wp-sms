@@ -70,8 +70,8 @@ class WizardManager
 
         $noticeManager = NoticeManager::getInstance();
 
-        // Generate the setup wizard URL
-        $setup_url = admin_url('admin.php?page=wp-sms&path=' . $this->slug);
+        // Generate the setup wizard URL (React wizard with ?wizard=open parameter)
+        $setup_url = admin_url('admin.php?page=wp-sms-settings&wizard=open');
 
         // Allow 'display' CSS property for inline styles
         add_filter('safe_style_css', [$this, 'allowDisplayStyle']);

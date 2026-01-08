@@ -1510,7 +1510,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'site_url'    => home_url(),
                 'site_name'   => $siteName,
                 'cta_title'   => esc_html__('Check SMS gateway configuration', 'wp-sms'),
-                'cta_link'    => admin_url('admin.php?page=wp-sms-settings&tab=gateway'),
+                'cta_link'    => admin_url('admin.php?page=wp-sms-settings#/gateway'),
             ]);
         }
     }
@@ -1559,7 +1559,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         $versionChanged = ($storedVer !== null && $storedVer !== $currentVer);
 
         if ($versionChanged) {
-            $settingsLink = admin_url('admin.php?page=wp-sms-settings&tab=gateway');
+            $settingsLink = admin_url('admin.php?page=wp-sms-settings#/gateway');
 
             $message = sprintf(
             /* translators: %1$s: URL to gateway settings page */

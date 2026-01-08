@@ -32,6 +32,12 @@ import ReadyStep from './steps/ReadyStep'
  * Computed once at module load to avoid flash/flicker
  */
 function shouldAutoOpenWizard() {
+  // Check for ?wizard=open URL parameter
+  const urlParams = new URLSearchParams(window.location.search)
+  if (urlParams.get('wizard') === 'open') {
+    return true
+  }
+
   const { settings = {}, features = {} } = getWpSettings()
   const wizardCompleted = features?.wizardCompleted || false
   const gatewayConfigured = !!settings?.gateway_name
