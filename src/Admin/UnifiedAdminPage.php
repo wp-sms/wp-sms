@@ -238,7 +238,7 @@ class UnifiedAdminPage extends Singleton
         return [
             'apiUrl'        => rest_url('wpsms/v1/'),
             'nonce'         => wp_create_nonce('wp_rest'),
-            'settings'      => $this->maskSensitiveSettings(Option::getOptions()),
+            'settings'      => $this->maskSensitiveSettings($this->getSettingsWithDefaults()),
             'proSettings'   => $this->maskSensitiveSettings(Option::getOptions(true)),
             'addons'        => $this->getActiveAddons(),
             'gateways'      => Gateway::gateway(),
@@ -471,6 +471,90 @@ class UnifiedAdminPage extends Singleton
             // Wizard completion flag
             'wizardCompleted'       => (bool) $activationNoticeShown,
         ];
+    }
+
+    /**
+     * Get settings with default values applied
+     *
+     * Extracts defaults from the legacy settings registration (get_registered_settings)
+     * and applies them for keys that don't exist in stored settings.
+     * Also normalizes numeric values to strings for consistent React comparison.
+     *
+     * @return array
+     */
+    private function getSettingsWithDefaults()
+    {
+        $storedSettings = Option::getOptions();
+
+        // Get defaults from the registered settings (same source as legacy page)
+        $defaults = $this->getRegisteredDefaults();
+
+        // Apply defaults only for keys that don't exist in stored settings
+        foreach ($defaults as $key => $defaultValue) {
+            if (!array_key_exists($key, $storedSettings)) {
+                $storedSettings[$key] = $defaultValue;
+            }
+        }
+
+        // Normalize all numeric values to strings for consistent React comparison
+        // Legacy PHP may store integer 1, but React expects string '1'
+        foreach ($storedSettings as $key => $value) {
+            if (is_int($value) || is_float($value)) {
+                $storedSettings[$key] = (string) $value;
+            }
+        }
+
+        return $storedSettings;
+    }
+
+    /**
+     * Extract default values from the legacy registered settings
+     *
+     * Reads the 'std' (standard/default) values from class-wpsms-settings.php
+     * to ensure React interface uses the same defaults as the legacy page.
+     *
+     * @return array Key-value pairs of setting IDs and their default values
+     */
+    private function getRegisteredDefaults()
+    {
+        $defaults = [];
+
+        // Instantiate the legacy settings class to get registered settings
+        if (!class_exists('WP_SMS\\Admin\\Settings\\Settings')) {
+            return $defaults;
+        }
+
+        $settingsInstance = new \WP_SMS\Admin\Settings\Settings();
+
+        // Use reflection to call the protected method, or check if it's public
+        if (!method_exists($settingsInstance, 'get_registered_settings')) {
+            return $defaults;
+        }
+
+        $registeredSettings = $settingsInstance->get_registered_settings();
+
+        // Extract 'std' values from all tabs and fields
+        foreach ($registeredSettings as $tab => $fields) {
+            if (!is_array($fields)) {
+                continue;
+            }
+
+            foreach ($fields as $fieldKey => $field) {
+                if (!is_array($field)) {
+                    continue;
+                }
+
+                // Get the field ID (either from 'id' key or the array key itself)
+                $fieldId = isset($field['id']) ? $field['id'] : $fieldKey;
+
+                // If 'std' (default) is set, add it to defaults
+                if (isset($field['std']) && $field['std'] !== '') {
+                    $defaults[$fieldId] = $field['std'];
+                }
+            }
+        }
+
+        return $defaults;
     }
 
     /**
