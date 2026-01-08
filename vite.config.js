@@ -23,7 +23,7 @@ export default defineConfig(({ command, mode }) => ({
       brotliSize: true,
     }),
   ].filter(Boolean),
-  root: 'assets/src/settings',
+  root: 'assets/src/dashboard',
   css: {
     postcss: {
       plugins: [
@@ -32,9 +32,9 @@ export default defineConfig(({ command, mode }) => ({
       ],
     },
   },
-  base: command === 'serve' ? '/' : '/wp-content/plugins/wp-sms/assets/dist/settings/',
+  base: command === 'serve' ? '/' : '/wp-content/plugins/wp-sms/assets/dist/dashboard/',
   build: {
-    outDir: path.resolve(__dirname, 'assets/dist/settings'),
+    outDir: path.resolve(__dirname, 'assets/dist/dashboard'),
     emptyDirBeforeWrite: true,
     manifest: true,
     // Use terser for better minification
@@ -49,11 +49,11 @@ export default defineConfig(({ command, mode }) => ({
       },
     },
     rollupOptions: {
-      input: path.resolve(__dirname, 'assets/src/settings/index.html'),
+      input: path.resolve(__dirname, 'assets/src/dashboard/index.html'),
       output: {
-        entryFileNames: 'assets/settings.js',
-        chunkFileNames: 'assets/settings-[hash].js',
-        assetFileNames: 'assets/settings[extname]',
+        entryFileNames: 'assets/dashboard.js',
+        chunkFileNames: 'assets/dashboard-[hash].js',
+        assetFileNames: 'assets/dashboard[extname]',
         // Manual chunks to reduce chunk count and optimize caching
         manualChunks: {
           // Core React runtime - changes rarely
@@ -102,7 +102,7 @@ export default defineConfig(({ command, mode }) => ({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'assets/src/settings'),
+      '@': path.resolve(__dirname, 'assets/src/dashboard'),
       // Ensure single React instance (prevents "useState is null" errors)
       'react': path.resolve(__dirname, 'node_modules/react'),
       'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),

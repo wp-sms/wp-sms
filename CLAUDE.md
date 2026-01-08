@@ -10,7 +10,7 @@ WP SMS is a WordPress plugin for sending SMS/MMS through 200+ gateways. Integrat
 
 ```bash
 npm install && composer install   # Install dependencies
-npm run settings:build            # Build React settings page
+npm run dashboard:build            # Build React dashboard
 npm run build                     # Build Gutenberg blocks
 npm run sass-compile              # Compile SCSS
 composer test                     # PHPUnit tests
@@ -31,7 +31,7 @@ npm run e2e                       # Run E2E tests (requires Docker)
 - `src/Notification/` - Notification system with `NotificationFactory`
 - `includes/gateways/` - SMS gateway implementations (extend base Gateway class)
 - `includes/api/v1/` - REST API endpoints
-- `assets/src/settings/` - React settings page (Vite, Tailwind, shadcn)
+- `assets/src/dashboard/` - React dashboard (Vite, Tailwind, shadcn)
 - `assets/src/blocks/` - Gutenberg blocks
 
 ### REST API
@@ -97,7 +97,7 @@ Add-ons register recipient types via `wpsms_additional_recipient_types` filter. 
 
 Before committing:
 1. Run `git diff --staged` to review changes
-2. Run `npm run settings:build` to verify build
+2. Run `npm run dashboard:build` to verify build
 3. Check: input sanitized, output escaped, no SQL injection
 4. Warn user before committing risky changes (core functionality, DB operations, API contracts)
 

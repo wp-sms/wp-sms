@@ -137,6 +137,16 @@ export default function Groups() {
   // Table columns
   const columns = [
     {
+      id: 'id',
+      accessorKey: 'id',
+      header: __('ID'),
+      cell: ({ row }) => (
+        <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-font-mono">
+          {row.id}
+        </span>
+      ),
+    },
+    {
       id: 'name',
       accessorKey: 'name',
       header: __('Group Name'),
@@ -440,8 +450,15 @@ export default function Groups() {
                       </div>
                     </div>
 
+                    {/* ID Badge */}
+                    <div className="wsms-absolute wsms-top-2 wsms-left-2">
+                      <span className="wsms-text-[10px] wsms-font-mono wsms-text-muted-foreground wsms-bg-muted/60 wsms-px-1.5 wsms-py-0.5 wsms-rounded">
+                        #{group.id}
+                      </span>
+                    </div>
+
                     {/* Content */}
-                    <div className="wsms-flex wsms-items-start wsms-gap-3">
+                    <div className="wsms-flex wsms-items-start wsms-gap-3 wsms-mt-4">
                       <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10 wsms-shrink-0">
                         <FolderOpen className="wsms-h-5 wsms-w-5 wsms-text-primary" />
                       </div>

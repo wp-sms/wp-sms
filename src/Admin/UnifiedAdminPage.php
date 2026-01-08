@@ -123,8 +123,8 @@ class UnifiedAdminPage extends Singleton
             return;
         }
 
-        $distPath = WP_SMS_DIR . 'assets/dist/settings/';
-        $distUrl = WP_SMS_URL . 'assets/dist/settings/';
+        $distPath = WP_SMS_DIR . 'assets/dist/dashboard/';
+        $distUrl = WP_SMS_URL . 'assets/dist/dashboard/';
 
         // Check for Vite manifest
         $manifestPath = $distPath . '.vite/manifest.json';
@@ -184,7 +184,7 @@ class UnifiedAdminPage extends Singleton
             'wpsms-unified-admin',
             $distUrl . $mainEntry['file'],
             [],
-            WP_SMS_VERSION . '.' . filemtime(WP_SMS_DIR . 'assets/dist/settings/' . $mainEntry['file']),
+            WP_SMS_VERSION . '.' . filemtime(WP_SMS_DIR . 'assets/dist/dashboard/' . $mainEntry['file']),
             true
         );
 
