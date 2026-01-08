@@ -454,7 +454,7 @@ export function DataTable({
             {loading ? (
               <TableSkeleton
                 columns={columns.length + (rowActions ? 1 : 0)}
-                rows={pagination?.perPage || 5}
+                rows={data.length > 0 ? Math.min(data.length, pagination?.perPage || 10) : (pagination?.perPage || 5)}
                 hasSelection={hasSelection}
               />
             ) : data.length === 0 ? (
