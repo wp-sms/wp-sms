@@ -71,7 +71,7 @@ class WizardManager
         $noticeManager = NoticeManager::getInstance();
 
         // Generate the setup wizard URL (React wizard with ?wizard=open parameter)
-        $setup_url = admin_url('admin.php?page=unified-admin&wizard=open');
+        $setup_url = admin_url('admin.php?page=wp-sms-unified-admin&wizard=open');
 
         // Allow 'display' CSS property for inline styles
         add_filter('safe_style_css', [$this, 'allowDisplayStyle']);

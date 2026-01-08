@@ -499,7 +499,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type'    => 'html',
                     'options' => '
                         <div>
-                            <a href="' . admin_url('admin.php?page=wp-sms&path=wp-sms-onboarding') . '" target="_blank" class="button button-primary">' . esc_html__('Re-run Setup Wizard', 'wp-sms') . '</a><br>
+                            <a href="' . admin_url('admin.php?page=wp-sms-unified-admin&wizard=open') . '" class="button button-primary">' . esc_html__('Re-run Setup Wizard', 'wp-sms') . '</a><br>
                         </div>
                     ',
                     'desc'    => esc_html__('Need to debug or update your gateway settings? Relaunch the WP SMS Setup Wizard for a guided, step-by-step process. This will help you verify your credentials, test sending/receiving capabilities, and ensure everything is running smoothly.', 'wp-sms')
