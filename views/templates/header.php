@@ -11,6 +11,8 @@ $hasValidLicense = LicenseHub::hasValidLicense();
 $licensedCount = count(LicenseHub::getLocalLicenses('valid'));
 $totalPlugins = LicenseHub::getTotalProducts();
 $pricingUrl = LicenseHub::getPricingUrl() ?: WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header';
+$userInfo = LicenseHub::getUserInfo();
+$userName = $userInfo['name'] ?? $userInfo['email'] ?? '';
 ?>
 <div class="wrap wpsms-wrap<?php echo isset($class) ? ' ' . esc_attr($class) : ''; ?>">
 
@@ -30,19 +32,27 @@ $pricingUrl = LicenseHub::getPricingUrl() ?: WP_SMS_SITE . '/pricing?utm_source=
                 <?php esc_html_e('Login', 'wp-sms'); ?>
             </a>
         <?php else : ?>
-            <!-- Authenticated: Show License Status + Upgrade + Logout -->
-            <?php if ($hasValidLicense) : ?>
-                <a href="<?php echo esc_url($pricingUrl); ?>" target="_blank" class="wpsms-license-status wpsms-license-status--valid">
-                    <span><?php printf(esc_html__('License: %1$s/%2$s', 'wp-sms'), $licensedCount, $totalPlugins); ?></span>
-                    <?php if ($licensedCount < $totalPlugins) : ?>
-                        <span><?php esc_html_e('Upgrade', 'wp-sms'); ?></span>
-                    <?php endif; ?>
+            <!-- Authenticated: Show User Name + Badge + Upgrade + Logout -->
+            <?php if ($userName) : ?>
+                <span class="wpsms-user-name"><?php echo esc_html($userName); ?></span>
+            <?php endif; ?>
+
+            <?php if ($isPremium) : ?>
+                <span class="wpsms-license-badge wpsms-license-badge--pro">Pro ✨</span>
+            <?php elseif ($hasValidLicense) : ?>
+                <span class="wpsms-license-badge wpsms-license-badge--partial">
+                    <?php printf(esc_html__('%1$s/%2$s Licensed', 'wp-sms'), $licensedCount, $totalPlugins); ?>
+                </span>
+                <a href="<?php echo esc_url($pricingUrl); ?>" target="_blank" class="wpsms-upgrade-link">
+                    <?php esc_html_e('Upgrade', 'wp-sms'); ?>
                 </a>
             <?php else : ?>
-                <a href="<?php echo esc_url($pricingUrl); ?>" target="_blank" class="wpsms-license-status wpsms-license-status--free">
-                    <?php esc_html_e('Upgrade To Premium', 'wp-sms'); ?>
+                <span class="wpsms-license-badge wpsms-license-badge--free">Free 🔓</span>
+                <a href="<?php echo esc_url($pricingUrl); ?>" target="_blank" class="wpsms-upgrade-link">
+                    <?php esc_html_e('Upgrade', 'wp-sms'); ?>
                 </a>
             <?php endif; ?>
+
             <a href="<?php echo esc_url(LicenseHub::getLogoutUrl()); ?>" class="wpsms-logout" title="<?php esc_attr_e('Logout', 'wp-sms'); ?>">
                 <span class="dashicons dashicons-exit"></span>
             </a>
@@ -83,16 +93,19 @@ $pricingUrl = LicenseHub::getPricingUrl() ?: WP_SMS_SITE . '/pricing?utm_source=
                             <?php esc_html_e('Login', 'wp-sms'); ?>
                         </a>
                     <?php else : ?>
-                        <?php if ($hasValidLicense) : ?>
-                            <a href="<?php echo esc_url($pricingUrl); ?>" target="_blank" class="wpsms-license-status wpsms-license-status--valid">
-                                <span><?php printf(esc_html__('License: %1$s/%2$s', 'wp-sms'), $licensedCount, $totalPlugins); ?></span>
-                                <?php if ($licensedCount < $totalPlugins) : ?>
-                                    <span><?php esc_html_e('Upgrade', 'wp-sms'); ?></span>
-                                <?php endif; ?>
+                        <?php if ($isPremium) : ?>
+                            <span class="wpsms-license-badge wpsms-license-badge--pro">Pro ✨</span>
+                        <?php elseif ($hasValidLicense) : ?>
+                            <span class="wpsms-license-badge wpsms-license-badge--partial">
+                                <?php printf(esc_html__('%1$s/%2$s Licensed', 'wp-sms'), $licensedCount, $totalPlugins); ?>
+                            </span>
+                            <a href="<?php echo esc_url($pricingUrl); ?>" target="_blank" class="wpsms-upgrade-link">
+                                <?php esc_html_e('Upgrade', 'wp-sms'); ?>
                             </a>
                         <?php else : ?>
-                            <a href="<?php echo esc_url($pricingUrl); ?>" target="_blank" class="wpsms-license-status wpsms-license-status--free">
-                                <?php esc_html_e('Upgrade To Premium', 'wp-sms'); ?>
+                            <span class="wpsms-license-badge wpsms-license-badge--free">Free 🔓</span>
+                            <a href="<?php echo esc_url($pricingUrl); ?>" target="_blank" class="wpsms-upgrade-link">
+                                <?php esc_html_e('Upgrade', 'wp-sms'); ?>
                             </a>
                         <?php endif; ?>
                         <a href="<?php echo esc_url(LicenseHub::getLogoutUrl()); ?>" class="wpsms-logout">

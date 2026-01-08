@@ -2,6 +2,7 @@
 
 use Veronalabs\LicenseClient\LicenseHub;
 use WP_SMS\Admin\AdminManager;
+use WP_SMS\Admin\License\LicenseManager;
 use WP_SMS\Admin\AnonymizedUsageData\AnonymizedUsageDataManager;
 use WP_SMS\Admin\OnBoarding\StepFactory;
 use WP_SMS\Admin\OnBoarding\WizardManager;
@@ -224,8 +225,8 @@ class WP_SMS
             NoticeManager::getInstance();
             $addOnsManager = new \WP_SMS\AddOns\AddOnsManager();
 
-            // Initialize LicenseHub SDK (auto-registers OAuth callbacks)
-            $this->initLicenseHub();
+            // Initialize LicenseHub SDK (auto-registers OAuth callbacks and i18n)
+            LicenseManager::init();
 
             $adminManager = new AdminManager();
 
@@ -311,18 +312,4 @@ class WP_SMS
         return $this->remoteRequestQueue;
     }
 
-    /**
-     * Initialize LicenseHub SDK.
-     *
-     * @return void
-     */
-    private function initLicenseHub()
-    {
-        LicenseHub::init([
-            'api_url'      => WP_SMS_LICENSE_HUB_API,
-            'product_slug' => 'wp-sms',
-            'default_page' => 'wp-sms',
-            'pricing_url'  => WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header',
-        ]);
-    }
 }
