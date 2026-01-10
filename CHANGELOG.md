@@ -30,6 +30,7 @@
 - **Enhancement:** Refactored the MeliPayamak gateway for better stability and reliability.
 - **Enhancement:** Improved Kavenegar gateway to support template-based SMS messages with variable placeholders.
 - **Enhancement:** Refactored the FARAZSMS gateway for improved reliability.
+- **Enhancement:** Refactored the PersianBulk (iransmspanel) gateway to support bulk SMS and template messaging.
 - **Fix:** Disabled caching to prevent duplicate responses for identical messages.
 - **Fix:** Ensured PHP 8.1+ compatibility by avoiding "Automatic conversion of false to array" warnings.
 - **Fix:** Delayed the anonymous data opt-in notice to appear 7 days after plugin activation.
