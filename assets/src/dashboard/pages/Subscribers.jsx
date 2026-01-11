@@ -78,6 +78,30 @@ export default function Subscribers() {
     successMessage: __('Subscriber updated successfully'),
   })
 
+  // Delete confirmation dialog using useFormDialog
+  const deleteDialog = useFormDialog({
+    saveFn: async (id) => {
+      await subscribersApi.deleteSubscriber(id)
+      table.removeItems([id])
+    },
+    successMessage: __('Subscriber deleted successfully'),
+  })
+
+  // Handle delete click - opens confirmation dialog
+  const handleDeleteClick = useCallback((subscriber) => {
+    deleteDialog.open(subscriber)
+  }, [deleteDialog])
+
+  // Handle delete confirm
+  const handleDeleteConfirm = async () => {
+    if (!deleteDialog.item) return
+    try {
+      await deleteDialog.save()
+    } catch {
+      // Error already handled by useFormDialog
+    }
+  }
+
   // Fetch groups function
   const fetchGroups = useCallback(async () => {
     try {
@@ -166,7 +190,8 @@ export default function Subscribers() {
       id: subscriber.id,
       name: subscriber.name || '',
       mobile: subscriber.mobile || '',
-      group_id: subscriber.group_id?.toString() || '',
+      // Ensure group_id 0 or null/undefined becomes empty string for "No Group"
+      group_id: subscriber.group_id && subscriber.group_id !== '0' ? subscriber.group_id.toString() : '',
       status: subscriber.status || '1',
     })
   }, [editDialog])
@@ -367,7 +392,7 @@ export default function Subscribers() {
     {
       label: __('Delete'),
       icon: Trash2,
-      onClick: (row) => handleDelete(row.id),
+      onClick: handleDeleteClick,
       variant: 'destructive',
     },
   ]
@@ -974,6 +999,50 @@ export default function Subscribers() {
                 )}
               </Button>
             )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialog.isOpen} onOpenChange={(open) => !open && deleteDialog.close()}>
+        <DialogContent size="sm">
+          <DialogHeader>
+            <DialogTitle>{__('Delete Subscriber')}</DialogTitle>
+            <DialogDescription>
+              {__('Are you sure you want to delete this subscriber?')}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogBody>
+            <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
+              <div className="wsms-space-y-1">
+                {deleteDialog.item?.name && (
+                  <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+                    {deleteDialog.item.name}
+                  </p>
+                )}
+                <p className="wsms-text-[13px] wsms-font-mono wsms-text-muted-foreground">
+                  {deleteDialog.item?.mobile}
+                </p>
+              </div>
+            </div>
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="outline" onClick={deleteDialog.close}>
+              {__('Cancel')}
+            </Button>
+            <Button variant="destructive" onClick={handleDeleteConfirm} disabled={deleteDialog.isSaving}>
+              {deleteDialog.isSaving ? (
+                <>
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+                  {__('Deleting...')}
+                </>
+              ) : (
+                <>
+                  <Trash2 className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                  {__('Delete')}
+                </>
+              )}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
