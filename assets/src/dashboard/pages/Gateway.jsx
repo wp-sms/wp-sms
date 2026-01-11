@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { InputField, SelectField, SwitchField, MultiSelectField } from '@/components/ui/form-field'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tip, CollapsibleSection, HelpLink, SectionDivider } from '@/components/ui/ux-helpers'
 import { useSettings, useSetting } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
@@ -40,6 +41,7 @@ export default function Gateway() {
   const [creditInSendSms, setCreditInSendSms] = useSetting('account_credit_in_sendsms', '')
 
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedRegion, setSelectedRegion] = useState('')
   const [testing, setTesting] = useState(false)
   const [connectionTested, setConnectionTested] = useState(false)
   const [connectionSuccess, setConnectionSuccess] = useState(false)
@@ -61,18 +63,43 @@ export default function Gateway() {
     return list
   }, [gateways])
 
+  // Get unique regions for the filter, sorted alphabetically with 'global' first
+  const regions = useMemo(() => {
+    const uniqueRegions = [...new Set(
+      gatewayList
+        .filter((g) => g.key && g.key.trim() !== '' && !g.name.toLowerCase().includes('please select'))
+        .map((g) => g.region)
+    )].filter(Boolean)
+
+    // Sort alphabetically, but keep 'global' first if present
+    return uniqueRegions.sort((a, b) => {
+      if (a.toLowerCase() === 'global') return -1
+      if (b.toLowerCase() === 'global') return 1
+      return a.localeCompare(b)
+    })
+  }, [gatewayList])
+
   const filteredGateways = useMemo(() => {
     // Filter out empty/placeholder gateways first
     let list = gatewayList.filter(
       (g) => g.key && g.key.trim() !== '' && !g.name.toLowerCase().includes('please select')
     )
 
-    if (!searchQuery) return list
-    const query = searchQuery.toLowerCase()
-    return list.filter(
-      (g) => g.name.toLowerCase().includes(query) || g.region.toLowerCase().includes(query)
-    )
-  }, [gatewayList, searchQuery])
+    // Apply region filter
+    if (selectedRegion && selectedRegion !== 'all') {
+      list = list.filter((g) => g.region.toLowerCase() === selectedRegion.toLowerCase())
+    }
+
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase()
+      list = list.filter(
+        (g) => g.name.toLowerCase().includes(query) || g.region.toLowerCase().includes(query)
+      )
+    }
+
+    return list
+  }, [gatewayList, searchQuery, selectedRegion])
 
   const groupedGateways = useMemo(() => {
     return filteredGateways.reduce((acc, gateway) => {
@@ -121,14 +148,34 @@ export default function Gateway() {
           <CardDescription>{__('Select your SMS service provider. Configure credentials below after selecting.')}</CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-relative">
-            <Search className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms-h-4 wsms-w-4 wsms--translate-y-1/2 wsms-text-muted-foreground" />
-            <Input
-              placeholder={__('Search gateways...')}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="wsms-pl-9"
-            />
+          {/* Search and Region Filter */}
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            <div className="wsms-relative wsms-flex-1">
+              <Search className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms-h-4 wsms-w-4 wsms--translate-y-1/2 wsms-text-muted-foreground" />
+              <Input
+                placeholder={__('Search gateways...')}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="wsms-pl-9"
+              />
+            </div>
+
+            {/* Region Filter */}
+            <div className="wsms-w-[180px] wsms-shrink-0">
+              <Select value={selectedRegion} onValueChange={setSelectedRegion}>
+                <SelectTrigger className="wsms-w-full wsms-capitalize">
+                  <SelectValue placeholder={__('All Regions')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{__('All Regions')}</SelectItem>
+                  {regions.map((region) => (
+                    <SelectItem key={region} value={region} className="wsms-capitalize">
+                      {region}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
 
           <div className="wsms-max-h-[280px] wsms-overflow-y-auto wsms-rounded-md wsms-border wsms-border-border wsms-p-4 wsms-scrollbar-thin wsms-bg-muted/30">
