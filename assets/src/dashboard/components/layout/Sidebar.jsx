@@ -7,7 +7,6 @@ import {
   Sparkles,
   X,
   Settings2,
-  Coins,
   RefreshCw,
 } from 'lucide-react'
 import { cn, __, getWpSettings, getGatewayDisplayName } from '@/lib/utils'
@@ -118,10 +117,7 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
           {/* Credit */}
           {creditSupported && (
             <div className="wsms-flex wsms-items-center wsms-justify-between wsms-text-[11px]">
-              <span className="wsms-text-muted-foreground wsms-flex wsms-items-center wsms-gap-1">
-                <Coins className="wsms-h-3 wsms-w-3" />
-                {__('Credit')}
-              </span>
+              <span className="wsms-text-muted-foreground">{__('Credit')}</span>
               <div className="wsms-flex wsms-items-center wsms-gap-1.5">
                 {isLoadingCredit ? (
                   <RefreshCw className="wsms-h-3 wsms-w-3 wsms-animate-spin wsms-text-muted-foreground" />
