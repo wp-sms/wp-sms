@@ -175,24 +175,24 @@ class smsto extends \WP_SMS\Gateway
             return new \WP_Error('account-credit', $response->get_error_message());
         }
 
-        $responseBody   = wp_remote_retrieve_body($response);
-        $responseObject = json_decode($responseBody);
+        /**
+         * The request() method returns decoded JSON directly (stdClass or array),
+         * not the raw WordPress HTTP response.
+         */
+        $responseObject = $response;
 
         /*
-         * Response validity
+         * Response validity - check if we got a valid response object
          */
-        if (wp_remote_retrieve_response_code($response) == '200') {
-
-            if (isset($responseObject->balance)) {
-                return round($responseObject->balance, 2);
-            }
-
-            return new \WP_Error('account-credit', $responseObject->message);
-
-        } else {
-            $errorResponse = isset($responseObject->message) ? $responseObject->message : $responseObject;
-            return new \WP_Error('account-credit', $errorResponse);
+        if (isset($responseObject->balance)) {
+            return round($responseObject->balance, 2);
         }
+
+        if (isset($responseObject->message)) {
+            return new \WP_Error('account-credit', $responseObject->message);
+        }
+
+        return new \WP_Error('account-credit', esc_html__('Invalid response from SMS.to API', 'wp-sms'));
     }
 
     public function CountNumberOfCharacters()
