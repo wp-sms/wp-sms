@@ -14,6 +14,7 @@ import {
   Send,
   UserCheck,
   UserX,
+  RefreshCw,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -36,7 +37,7 @@ import {
 import { subscribersApi } from '@/api/subscribersApi'
 import { groupsApi } from '@/api/groupsApi'
 import { smsApi } from '@/api/smsApi'
-import { formatDate, getWpSettings, __, downloadCsv } from '@/lib/utils'
+import { cn, formatDate, getWpSettings, __, downloadCsv } from '@/lib/utils'
 import { useListPage } from '@/hooks/useListPage'
 import { useFormDialog } from '@/hooks/useFormDialog'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
@@ -654,6 +655,20 @@ export default function Subscribers() {
                 </Select>
               )}
             </div>
+
+            {/* Refresh */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.fetch({ page: 1 })}
+              className="wsms-h-9 wsms-px-2.5 xl:wsms-ml-auto"
+              aria-label={__('Refresh subscribers')}
+            >
+              <RefreshCw
+                className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')}
+                aria-hidden="true"
+              />
+            </Button>
           </div>
 
           {/* Separator */}
