@@ -409,7 +409,7 @@ export function DataTable({
 
       {/* Table */}
       <div className="wsms-overflow-x-auto">
-        <table className="wsms-w-full wsms-border-collapse wsms-table-fixed">
+        <table className="wsms-w-full wsms-border-collapse">
           <thead>
             <tr className="wsms-border-b wsms-border-border wsms-bg-muted/30">
               {hasSelection && (
@@ -497,7 +497,6 @@ export function DataTable({
                         <td
                           key={column.id || column.accessorKey}
                           className={cn('wsms-p-3 wsms-text-[13px] wsms-text-foreground', column.cellClassName)}
-                          style={{ width: column.width }}
                         >
                           {column.cell ? column.cell({ row, value: cellValue }) : cellValue}
                         </td>

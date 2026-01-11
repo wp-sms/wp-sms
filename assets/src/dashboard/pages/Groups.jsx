@@ -169,7 +169,6 @@ export default function Groups() {
       id: 'id',
       accessorKey: 'id',
       header: __('ID'),
-      width: 60,
       cell: ({ row }) => (
         <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-font-mono">
           {row.id}
@@ -181,53 +180,55 @@ export default function Groups() {
       accessorKey: 'name',
       header: __('Group Name'),
       sortable: true,
-      width: '100%',
+      cellClassName: 'wsms-w-full',
       cell: ({ row }) => {
-        if (inlineEditId === row.id) {
-          return (
-            <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-w-full">
-              <Input
-                value={inlineEditValue}
-                onChange={(e) => setInlineEditValue(e.target.value)}
-                onKeyDown={handleInlineEditKeyDown}
-                autoFocus
-                className="wsms-h-7 wsms-flex-1 wsms-min-w-0 wsms-text-[13px]"
-              />
-              <Button
-                size="icon"
-                variant="ghost"
-                className="wsms-h-7 wsms-w-7 wsms-shrink-0"
-                onClick={handleInlineEditSave}
-                disabled={isInlineEditSaving}
-                aria-label={__('Save group name')}
-              >
-                {isInlineEditSaving ? (
-                  <Loader2 className="wsms-h-3.5 wsms-w-3.5 wsms-animate-spin wsms-text-emerald-600" />
-                ) : (
-                  <Save className="wsms-h-3.5 wsms-w-3.5 wsms-text-emerald-600" />
-                )}
-              </Button>
-              <Button
-                size="icon"
-                variant="ghost"
-                className="wsms-h-7 wsms-w-7 wsms-shrink-0"
-                onClick={handleInlineEditCancel}
-                disabled={isInlineEditSaving}
-                aria-label={__('Cancel editing')}
-              >
-                <X className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
-              </Button>
-            </div>
-          )
-        }
-
+        // Wrapper with min-width to prevent layout shift between text and edit modes
+        // Min-width accommodates: input (flexible) + 2 buttons (28px each) + gaps (12px) = ~180px minimum
         return (
-          <button
-            onClick={() => handleInlineEditStart(row)}
-            className="wsms-text-[13px] wsms-font-medium wsms-text-foreground hover:wsms-text-primary wsms-text-left wsms-transition-colors wsms-block wsms-w-full wsms-truncate"
-          >
-            {row.name}
-          </button>
+          <div className="wsms-min-w-[180px]">
+            {inlineEditId === row.id ? (
+              <div className="wsms-flex wsms-items-center wsms-gap-1.5">
+                <Input
+                  value={inlineEditValue}
+                  onChange={(e) => setInlineEditValue(e.target.value)}
+                  onKeyDown={handleInlineEditKeyDown}
+                  autoFocus
+                  className="wsms-h-7 wsms-flex-1 wsms-min-w-0 wsms-text-[13px]"
+                />
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="wsms-h-7 wsms-w-7 wsms-shrink-0"
+                  onClick={handleInlineEditSave}
+                  disabled={isInlineEditSaving}
+                  aria-label={__('Save group name')}
+                >
+                  {isInlineEditSaving ? (
+                    <Loader2 className="wsms-h-3.5 wsms-w-3.5 wsms-animate-spin wsms-text-emerald-600" />
+                  ) : (
+                    <Save className="wsms-h-3.5 wsms-w-3.5 wsms-text-emerald-600" />
+                  )}
+                </Button>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="wsms-h-7 wsms-w-7 wsms-shrink-0"
+                  onClick={handleInlineEditCancel}
+                  disabled={isInlineEditSaving}
+                  aria-label={__('Cancel editing')}
+                >
+                  <X className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
+                </Button>
+              </div>
+            ) : (
+              <button
+                onClick={() => handleInlineEditStart(row)}
+                className="wsms-text-[13px] wsms-font-medium wsms-text-foreground hover:wsms-text-primary wsms-text-left wsms-transition-colors wsms-truncate wsms-block wsms-max-w-full"
+              >
+                {row.name}
+              </button>
+            )}
+          </div>
         )
       },
     },
@@ -235,7 +236,6 @@ export default function Groups() {
       id: 'subscriber_count',
       accessorKey: 'subscriber_count',
       header: __('Subscribers'),
-      width: 120,
       cell: ({ row }) => (
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <Users className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
