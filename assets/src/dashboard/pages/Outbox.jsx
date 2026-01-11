@@ -13,6 +13,7 @@ import {
   TrendingDown,
   X,
   Image,
+  Trash2,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -36,6 +37,7 @@ import { outboxApi } from '@/api/outboxApi'
 import { smsApi } from '@/api/smsApi'
 import { cn, formatDate, __, downloadCsv } from '@/lib/utils'
 import { useListPage } from '@/hooks/useListPage'
+import { useFormDialog } from '@/hooks/useFormDialog'
 import { useToast } from '@/components/ui/toaster'
 import { useSettings } from '@/context/SettingsContext'
 import { outboxColumns, getOutboxRowActions, getOutboxBulkActions } from '@/lib/tableColumns'
@@ -56,6 +58,30 @@ export default function Outbox() {
       bulkSuccess: __('Action completed successfully'),
     },
   })
+
+  // Delete confirmation dialog using useFormDialog
+  const deleteDialog = useFormDialog({
+    saveFn: async (id) => {
+      await outboxApi.deleteMessage(id)
+      table.removeItems([id])
+    },
+    successMessage: __('Message deleted successfully'),
+  })
+
+  // Handle delete click - opens confirmation dialog
+  const handleDeleteClick = useCallback((message) => {
+    deleteDialog.open(message)
+  }, [deleteDialog])
+
+  // Handle delete confirm
+  const handleDeleteConfirm = async () => {
+    if (!deleteDialog.item) return
+    try {
+      await deleteDialog.save()
+    } catch {
+      // Error already handled by useFormDialog
+    }
+  }
 
   // Track refresh state for showing loading indicator after SMS sent
   const needsRefresh = useRef(false)
@@ -194,9 +220,9 @@ export default function Outbox() {
           setQuickReplyMessage('')
         },
         onResend: (row) => handleResend(row.id),
-        onDelete: (row) => handleDelete(row.id),
+        onDelete: handleDeleteClick,
       }),
-    [handleResend, handleDelete]
+    [handleResend, handleDeleteClick]
   )
 
   const bulkActions = useMemo(
@@ -652,6 +678,53 @@ export default function Outbox() {
                 <>
                   <Send className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
                   Send Reply
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteDialog.isOpen} onOpenChange={(open) => !open && deleteDialog.close()}>
+        <DialogContent size="sm">
+          <DialogHeader>
+            <DialogTitle>{__('Delete Message')}</DialogTitle>
+            <DialogDescription>
+              {__('Are you sure you want to delete this message?')}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogBody>
+            <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border wsms-overflow-hidden">
+              <div className="wsms-space-y-2">
+                <div className="wsms-flex wsms-items-start wsms-gap-2">
+                  <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-shrink-0">{__('To')}:</span>
+                  <span className="wsms-text-[13px] wsms-font-mono wsms-text-foreground wsms-break-all wsms-line-clamp-2">
+                    {deleteDialog.item?.recipient}
+                  </span>
+                </div>
+                {deleteDialog.item?.message && (
+                  <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-line-clamp-2">
+                    {deleteDialog.item.message}
+                  </p>
+                )}
+              </div>
+            </div>
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="outline" onClick={deleteDialog.close}>
+              {__('Cancel')}
+            </Button>
+            <Button variant="destructive" onClick={handleDeleteConfirm} disabled={deleteDialog.isSaving}>
+              {deleteDialog.isSaving ? (
+                <>
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+                  {__('Deleting...')}
+                </>
+              ) : (
+                <>
+                  <Trash2 className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                  {__('Delete')}
                 </>
               )}
             </Button>
