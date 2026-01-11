@@ -559,31 +559,29 @@ export default function Gateway() {
             />
           </div>
 
-          <CollapsibleSection
-            title={__('Country Restrictions')}
-            description={__('Limit SMS delivery to specific countries')}
-          >
-            <div className="wsms-space-y-4">
-              <SwitchField
-                label={__('Restrict to Specific Countries')}
-                description={__('Only send SMS to phone numbers from selected countries.')}
-                checked={localNumbersOnly === '1'}
-                onCheckedChange={(checked) => setLocalNumbersOnly(checked ? '1' : '')}
-              />
+          <SectionDivider>{__('Country Restrictions')}</SectionDivider>
 
-              {localNumbersOnly === '1' && (
-                <MultiSelectField
-                  label={__('Allowed Countries')}
-                  options={countriesByDialCode}
-                  value={localNumbersCountries}
-                  onValueChange={setLocalNumbersCountries}
-                  placeholder={__('Select countries...')}
-                  searchPlaceholder={__('Search countries...')}
-                  description={__('SMS will only be sent to numbers from these countries.')}
-                />
-              )}
-            </div>
-          </CollapsibleSection>
+          <div className="wsms-rounded-lg wsms-border wsms-border-border">
+            <SwitchField
+              label={__('Restrict to Specific Countries')}
+              description={__('Only send SMS to phone numbers from selected countries.')}
+              checked={localNumbersOnly === '1'}
+              onCheckedChange={(checked) => setLocalNumbersOnly(checked ? '1' : '')}
+              className="wsms-px-4"
+            />
+          </div>
+
+          {localNumbersOnly === '1' && (
+            <MultiSelectField
+              label={__('Allowed Countries')}
+              options={countriesByDialCode}
+              value={localNumbersCountries}
+              onValueChange={setLocalNumbersCountries}
+              placeholder={__('Select countries...')}
+              searchPlaceholder={__('Search countries...')}
+              description={__('SMS will only be sent to numbers from these countries.')}
+            />
+          )}
         </CardContent>
       </Card>
 
