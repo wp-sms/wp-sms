@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef } from 'react'
+import React, { useState, useMemo, useRef, useEffect } from 'react'
 import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap, BookOpen, ExternalLink, XCircle, RotateCcw, Code, Unplug, Wallet } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -12,7 +12,7 @@ import { useToast } from '@/components/ui/toaster'
 import { getWpSettings, cn, getGatewayDisplayName, __ } from '@/lib/utils'
 
 export default function Gateway() {
-  const { testGatewayConnection, getSetting, updateSetting } = useSettings()
+  const { testGatewayConnection, getSetting, updateSetting, hasChanges, isSaving } = useSettings()
   const { toast } = useToast()
   const { gateways = {}, countriesByDialCode = {}, gateway: gatewayCapabilities = {} } = getWpSettings()
 
@@ -27,9 +27,24 @@ export default function Gateway() {
   // This is set on initial load and represents what's actually saved in the database
   const savedGatewayRef = useRef(gatewayName)
 
+  // Track previous saving state to detect save completion
+  const wasSavingRef = useRef(false)
+
   // Detect if user has selected a different gateway but hasn't saved yet
   // When true, the capabilities/credentials/guide shown are for the OLD gateway
   const hasUnsavedGatewayChange = gatewayName && gatewayName !== savedGatewayRef.current
+
+  // Reload page after gateway switch is saved to load new gateway's configuration fields
+  useEffect(() => {
+    // Detect when save completes (was saving, now not saving, and no changes left)
+    if (wasSavingRef.current && !isSaving && !hasChanges) {
+      // If gateway was changed, reload to get new gateway's capabilities
+      if (gatewayName !== savedGatewayRef.current) {
+        window.location.reload()
+      }
+    }
+    wasSavingRef.current = isSaving
+  }, [isSaving, hasChanges, gatewayName])
 
   const [deliveryMethod, setDeliveryMethod] = useSetting('sms_delivery_method', 'api_direct_send')
   const [sendUnicode, setSendUnicode] = useSetting('send_unicode', '')
