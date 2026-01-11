@@ -43,6 +43,31 @@ import { useFormDialog } from '@/hooks/useFormDialog'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 import { useToast } from '@/components/ui/toaster'
 
+/**
+ * Reusable subscriber import dialog component
+ */
+function SubscriberImportDialog({ open, onOpenChange, onImport, isLoading }) {
+  const importFields = [
+    { name: 'name', label: 'Name', required: false },
+    { name: 'mobile', label: 'Mobile', required: true },
+    { name: 'status', label: 'Status', required: false },
+    { name: 'group_id', label: 'Group ID', required: false },
+  ]
+
+  return (
+    <ImportExportDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      mode="import"
+      title="Import Subscribers"
+      description="Upload a CSV file with subscriber data"
+      onImport={onImport}
+      isLoading={isLoading}
+      importFields={importFields}
+    />
+  )
+}
+
 export default function Subscribers() {
   const { toast } = useToast()
 
@@ -528,20 +553,11 @@ export default function Subscribers() {
         </Card>
 
         {/* Import Dialog */}
-        <ImportExportDialog
+        <SubscriberImportDialog
           open={showImportDialog}
           onOpenChange={setShowImportDialog}
-          mode="import"
-          title="Import Subscribers"
-          description="Upload a CSV file with subscriber data"
           onImport={handleImport}
           isLoading={isImporting}
-          importFields={[
-            { name: 'name', label: 'Name', required: false },
-            { name: 'mobile', label: 'Mobile', required: true },
-            { name: 'status', label: 'Status', required: false },
-            { name: 'group_id', label: 'Group ID', required: false },
-          ]}
         />
       </div>
     )
@@ -866,20 +882,11 @@ export default function Subscribers() {
       </Dialog>
 
       {/* Import Dialog */}
-      <ImportExportDialog
+      <SubscriberImportDialog
         open={showImportDialog}
         onOpenChange={setShowImportDialog}
-        mode="import"
-        title="Import Subscribers"
-        description="Upload a CSV file with subscriber data"
         onImport={handleImport}
         isLoading={isImporting}
-        importFields={[
-          { name: 'name', label: 'Name', required: false },
-          { name: 'mobile', label: 'Mobile', required: true },
-          { name: 'status', label: 'Status', required: false },
-          { name: 'group_id', label: 'Group ID', required: false },
-        ]}
       />
 
       {/* Quick Reply Dialog */}
