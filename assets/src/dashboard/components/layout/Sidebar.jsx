@@ -11,7 +11,7 @@ import {
 } from 'lucide-react'
 import { cn, __, getWpSettings, getGatewayDisplayName } from '@/lib/utils'
 import { smsApi } from '@/api/smsApi'
-import { useSettings, useSetting } from '@/context/SettingsContext'
+import { useSettings, useSetting, useSavedSetting } from '@/context/SettingsContext'
 import { getNavigation } from '@/lib/pageRegistry'
 
 function getLinks() {
@@ -438,13 +438,15 @@ export default function Sidebar({ onClose, showClose }) {
 
   // Use useSetting hook for reactive updates when settings change
   const [gatewayName] = useSetting('gateway_name', '')
-  const [currentGdprSetting] = useSetting('gdpr_compliance', '')
+
+  // Use saved setting for GDPR - only update sidebar when settings are saved
+  const savedGdprSetting = useSavedSetting('gdpr_compliance', '')
 
   const isGatewayConfigured = Boolean(gatewayName)
 
-  // Check GDPR from both initial settings AND current settings context
-  // This makes it reactive when user enables GDPR compliance in settings
-  const gdprEnabled = initialGdprEnabled || currentGdprSetting === '1'
+  // Check GDPR from both initial settings AND saved settings context
+  // This only updates the sidebar when settings are actually saved
+  const gdprEnabled = initialGdprEnabled || savedGdprSetting === '1'
 
   // Check for WooCommerce Pro add-on (key is 'woocommerce' in getActiveAddons())
   const hasWooCommercePro = isAddonActive('woocommerce')

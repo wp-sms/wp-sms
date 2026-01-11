@@ -335,6 +335,13 @@ export function useSetting(key, defaultValue = '') {
   return [value, setValue]
 }
 
+// Hook for getting the saved (original) value of a setting
+// Use this when you need to wait for save before reflecting changes (e.g., sidebar visibility)
+export function useSavedSetting(key, defaultValue = '') {
+  const { originalSettings } = useSettings()
+  return originalSettings[key] ?? defaultValue
+}
+
 // Convenience hook for a specific pro setting
 export function useProSetting(key, defaultValue = '') {
   const { getProSetting, updateProSetting } = useSettings()
