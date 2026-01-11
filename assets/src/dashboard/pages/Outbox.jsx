@@ -100,6 +100,19 @@ export default function Outbox() {
   const [actionLoading, setActionLoading] = useState(null)
   const [bulkActionLoading, setBulkActionLoading] = useState(null)
 
+  // Sorting state
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null })
+
+  // Handle sort
+  const handleSort = useCallback((columnKey, direction) => {
+    setSortConfig({ key: direction ? columnKey : null, direction })
+    table.fetch({
+      page: 1,
+      orderby: direction ? columnKey : undefined,
+      order: direction || undefined,
+    })
+  }, [table])
+
   // Custom handler for resend (not part of useListPage)
   const handleResend = useCallback(
     async (id) => {
@@ -469,6 +482,7 @@ export default function Outbox() {
                 }
               },
             }}
+            onSort={handleSort}
             rowActions={rowActions}
             bulkActions={bulkActions}
             bulkActionLoading={bulkActionLoading}
