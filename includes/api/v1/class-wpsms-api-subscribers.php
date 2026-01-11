@@ -636,22 +636,27 @@ class SubscribersApi extends RestApi
 
         $subscribers = $this->db->get_results($query, ARRAY_A);
 
-        // Format for CSV export
+        // Format for CSV export - matching legacy format
         $csv_data = [];
-        $csv_data[] = ['Name', 'Mobile', 'Group', 'Status', 'Date']; // Header
+        $csv_data[] = ['ID', 'date', 'name', 'mobile', 'status', 'group_ID']; // Header
 
         foreach ($subscribers as $sub) {
             $csv_data[] = [
+                $sub['ID'],
+                $sub['date'],
                 $sub['name'],
                 $sub['mobile'],
-                $sub['group_name'] ?: '',
-                $sub['status'] === '1' ? 'Active' : 'Inactive',
-                $sub['date'],
+                $sub['status'],
+                $sub['group_ID'],
             ];
         }
 
+        // Generate filename matching legacy format
+        $filename = sprintf('wsms-subscribers-%s.csv', gmdate('Y-m-d-H-i-s'));
+
         return self::response(__('Export data ready', 'wp-sms'), 200, [
             'csv_data' => $csv_data,
+            'filename' => $filename,
             'count'    => count($subscribers),
         ]);
     }
