@@ -160,6 +160,19 @@ export default function Subscribers() {
   // Bulk action loading state
   const [bulkActionLoading, setBulkActionLoading] = useState(null)
 
+  // Sorting state
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null })
+
+  // Handle sort
+  const handleSort = useCallback((columnKey, direction) => {
+    setSortConfig({ key: direction ? columnKey : null, direction })
+    table.fetch({
+      page: 1,
+      orderby: direction ? columnKey : undefined,
+      order: direction || undefined,
+    })
+  }, [table])
+
   // Aliases for easier access
   const stats = table.stats || { total: 0, active: 0, inactive: 0 }
 
@@ -756,6 +769,7 @@ export default function Subscribers() {
               onSelect: table.toggleSelection,
               onSelectAll: table.toggleSelectAll,
             }}
+            onSort={handleSort}
             rowActions={rowActions}
             bulkActions={bulkActions}
             bulkActionLoading={bulkActionLoading}
