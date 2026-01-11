@@ -23,6 +23,7 @@ import { DataTable } from '@/components/ui/data-table'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { ImportExportDialog } from '@/components/shared/ImportExportDialog'
 import { ExportButton } from '@/components/shared/ExportButton'
+import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import {
   Dialog,
   DialogContent,
@@ -1004,48 +1005,27 @@ export default function Subscribers() {
       </Dialog>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialog.isOpen} onOpenChange={(open) => !open && deleteDialog.close()}>
-        <DialogContent size="sm">
-          <DialogHeader>
-            <DialogTitle>{__('Delete Subscriber')}</DialogTitle>
-            <DialogDescription>
-              {__('Are you sure you want to delete this subscriber?')}
-            </DialogDescription>
-          </DialogHeader>
-          <DialogBody>
-            <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
-              <div className="wsms-space-y-1">
-                {deleteDialog.item?.name && (
-                  <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
-                    {deleteDialog.item.name}
-                  </p>
-                )}
-                <p className="wsms-text-[13px] wsms-font-mono wsms-text-muted-foreground">
-                  {deleteDialog.item?.mobile}
-                </p>
-              </div>
-            </div>
-          </DialogBody>
-          <DialogFooter>
-            <Button variant="outline" onClick={deleteDialog.close}>
-              {__('Cancel')}
-            </Button>
-            <Button variant="destructive" onClick={handleDeleteConfirm} disabled={deleteDialog.isSaving}>
-              {deleteDialog.isSaving ? (
-                <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
-                  {__('Deleting...')}
-                </>
-              ) : (
-                <>
-                  <Trash2 className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-                  {__('Delete')}
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DeleteConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={deleteDialog.close}
+        onConfirm={handleDeleteConfirm}
+        isSaving={deleteDialog.isSaving}
+        title={__('Delete Subscriber')}
+        description={__('Are you sure you want to delete this subscriber?')}
+      >
+        <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
+          <div className="wsms-space-y-1">
+            {deleteDialog.item?.name && (
+              <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+                {deleteDialog.item.name}
+              </p>
+            )}
+            <p className="wsms-text-[13px] wsms-font-mono wsms-text-muted-foreground">
+              {deleteDialog.item?.mobile}
+            </p>
+          </div>
+        </div>
+      </DeleteConfirmDialog>
     </div>
   )
 }

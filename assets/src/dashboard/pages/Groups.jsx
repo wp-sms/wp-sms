@@ -16,15 +16,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { DataTable } from '@/components/ui/data-table'
 import { QuickAddForm } from '@/components/shared/QuickAddForm'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogBody,
-  DialogFooter,
-} from '@/components/ui/dialog'
+import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { groupsApi } from '@/api/groupsApi'
 import { cn, __ } from '@/lib/utils'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
@@ -544,41 +536,21 @@ export default function Groups() {
       )}
 
       {/* Delete Confirmation Dialog */}
-      <Dialog open={deleteDialog.isOpen} onOpenChange={(open) => !open && deleteDialog.close()}>
-        <DialogContent size="sm">
-          <DialogHeader>
-            <DialogTitle>{__('Delete Group')}</DialogTitle>
-            <DialogDescription>
-              {__('Are you sure you want to delete')} "{deleteDialog.item?.name}"?
-            </DialogDescription>
-          </DialogHeader>
-          <DialogBody>
-            <div className="wsms-p-4 wsms-rounded-md wsms-bg-amber-500/10 wsms-border wsms-border-amber-500/20">
-              <p className="wsms-text-[12px] wsms-text-amber-700 dark:wsms-text-amber-400">
-                {__('This will remove the group but keep all subscribers. They will become ungrouped.')}
-              </p>
-            </div>
-          </DialogBody>
-          <DialogFooter>
-            <Button variant="outline" onClick={deleteDialog.close}>
-              {__('Cancel')}
-            </Button>
-            <Button variant="destructive" onClick={handleDeleteConfirm} disabled={deleteDialog.isSaving}>
-              {deleteDialog.isSaving ? (
-                <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
-                  {__('Deleting...')}
-                </>
-              ) : (
-                <>
-                  <Trash2 className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-                  {__('Delete Group')}
-                </>
-              )}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DeleteConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={deleteDialog.close}
+        onConfirm={handleDeleteConfirm}
+        isSaving={deleteDialog.isSaving}
+        title={__('Delete Group')}
+        description={`${__('Are you sure you want to delete')} "${deleteDialog.item?.name}"?`}
+        confirmLabel={__('Delete Group')}
+      >
+        <div className="wsms-p-4 wsms-rounded-md wsms-bg-amber-500/10 wsms-border wsms-border-amber-500/20">
+          <p className="wsms-text-[12px] wsms-text-amber-700 dark:wsms-text-amber-400">
+            {__('This will remove the group but keep all subscribers. They will become ungrouped.')}
+          </p>
+        </div>
+      </DeleteConfirmDialog>
     </div>
   )
 }
