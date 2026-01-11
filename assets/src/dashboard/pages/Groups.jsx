@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import {
   FolderOpen,
   Plus,
@@ -52,6 +52,35 @@ export default function Groups() {
   // UI state
   const [isAddingQuick, setIsAddingQuick] = useState(false)
   const [viewMode, setViewMode] = useState('list') // 'list' or 'grid'
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null })
+
+  // Handle sort (client-side only)
+  const handleSort = useCallback((columnKey, direction) => {
+    setSortConfig({ key: direction ? columnKey : null, direction })
+  }, [])
+
+  // Sort data client-side
+  const sortedData = useMemo(() => {
+    if (!sortConfig.key || !sortConfig.direction) {
+      return table.data
+    }
+
+    return [...table.data].sort((a, b) => {
+      const aVal = a[sortConfig.key]
+      const bVal = b[sortConfig.key]
+
+      // String comparison for name
+      if (sortConfig.key === 'name') {
+        const comparison = String(aVal).localeCompare(String(bVal), undefined, { sensitivity: 'base' })
+        return sortConfig.direction === 'asc' ? comparison : -comparison
+      }
+
+      // Numeric comparison for other fields
+      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1
+      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1
+      return 0
+    })
+  }, [table.data, sortConfig])
 
   // Inline edit state
   const [inlineEditId, setInlineEditId] = useState(null)
@@ -140,6 +169,7 @@ export default function Groups() {
       id: 'id',
       accessorKey: 'id',
       header: __('ID'),
+      width: 60,
       cell: ({ row }) => (
         <span className="wsms-text-[12px] wsms-text-muted-foreground wsms-font-mono">
           {row.id}
@@ -151,40 +181,41 @@ export default function Groups() {
       accessorKey: 'name',
       header: __('Group Name'),
       sortable: true,
+      width: '100%',
       cell: ({ row }) => {
         if (inlineEditId === row.id) {
           return (
-            <div className="wsms-flex wsms-items-center wsms-gap-2">
+            <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-w-full">
               <Input
                 value={inlineEditValue}
                 onChange={(e) => setInlineEditValue(e.target.value)}
                 onKeyDown={handleInlineEditKeyDown}
                 autoFocus
-                className="wsms-h-8 wsms-w-48"
+                className="wsms-h-7 wsms-flex-1 wsms-min-w-0 wsms-text-[13px]"
               />
               <Button
                 size="icon"
                 variant="ghost"
-                className="wsms-h-8 wsms-w-8"
+                className="wsms-h-7 wsms-w-7 wsms-shrink-0"
                 onClick={handleInlineEditSave}
                 disabled={isInlineEditSaving}
                 aria-label={__('Save group name')}
               >
                 {isInlineEditSaving ? (
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin wsms-text-emerald-600" />
+                  <Loader2 className="wsms-h-3.5 wsms-w-3.5 wsms-animate-spin wsms-text-emerald-600" />
                 ) : (
-                  <Save className="wsms-h-4 wsms-w-4 wsms-text-emerald-600" />
+                  <Save className="wsms-h-3.5 wsms-w-3.5 wsms-text-emerald-600" />
                 )}
               </Button>
               <Button
                 size="icon"
                 variant="ghost"
-                className="wsms-h-8 wsms-w-8"
+                className="wsms-h-7 wsms-w-7 wsms-shrink-0"
                 onClick={handleInlineEditCancel}
                 disabled={isInlineEditSaving}
                 aria-label={__('Cancel editing')}
               >
-                <X className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+                <X className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
               </Button>
             </div>
           )
@@ -193,7 +224,7 @@ export default function Groups() {
         return (
           <button
             onClick={() => handleInlineEditStart(row)}
-            className="wsms-text-[13px] wsms-font-medium wsms-text-foreground hover:wsms-text-primary wsms-text-left wsms-transition-colors"
+            className="wsms-text-[13px] wsms-font-medium wsms-text-foreground hover:wsms-text-primary wsms-text-left wsms-transition-colors wsms-block wsms-w-full wsms-truncate"
           >
             {row.name}
           </button>
@@ -204,6 +235,7 @@ export default function Groups() {
       id: 'subscriber_count',
       accessorKey: 'subscriber_count',
       header: __('Subscribers'),
+      width: 120,
       cell: ({ row }) => (
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <Users className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
@@ -372,7 +404,7 @@ export default function Groups() {
           <CardContent className="wsms-p-0">
             <DataTable
               columns={columns}
-              data={table.data}
+              data={sortedData}
               loading={table.isLoading}
               pagination={{
                 total: table.pagination.total,
@@ -381,6 +413,7 @@ export default function Groups() {
                 perPage: table.pagination.per_page,
                 onPageChange: table.handlePageChange,
               }}
+              onSort={handleSort}
               rowActions={rowActions}
               emptyMessage="No groups found"
               emptyIcon={FolderOpen}
@@ -389,7 +422,7 @@ export default function Groups() {
         </Card>
       ) : (
         <div className="wsms-grid wsms-grid-cols-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4 wsms-gap-4">
-          {table.data.map((group) => (
+          {sortedData.map((group) => (
             <Card
               key={group.id}
               className="wsms-card-hover wsms-group wsms-relative wsms-overflow-hidden"
