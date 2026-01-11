@@ -539,6 +539,7 @@ export default function Subscribers() {
           importFields={[
             { name: 'name', label: 'Name', required: false },
             { name: 'mobile', label: 'Mobile', required: true },
+            { name: 'status', label: 'Status', required: false },
             { name: 'group_id', label: 'Group ID', required: false },
           ]}
         />
@@ -876,6 +877,7 @@ export default function Subscribers() {
         importFields={[
           { name: 'name', label: 'Name', required: false },
           { name: 'mobile', label: 'Mobile', required: true },
+          { name: 'status', label: 'Status', required: false },
           { name: 'group_id', label: 'Group ID', required: false },
         ]}
       />

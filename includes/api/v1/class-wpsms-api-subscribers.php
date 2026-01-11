@@ -719,6 +719,8 @@ class SubscribersApi extends RestApi
             // Map columns by header or position
             $name_index = array_search('name', $header);
             $mobile_index = array_search('mobile', $header);
+            $group_id_index = array_search('group_id', $header);
+            $status_index = array_search('status', $header);
 
             // Fallback to position if headers not found
             if ($mobile_index === false) {
@@ -730,6 +732,18 @@ class SubscribersApi extends RestApi
 
             $name = isset($row[$name_index]) ? sanitize_text_field(trim($row[$name_index])) : '';
             $mobile = isset($row[$mobile_index]) ? sanitize_text_field(trim($row[$mobile_index])) : '';
+
+            // Use group_id from CSV if available, otherwise use request param
+            $row_group_id = $group_id;
+            if ($group_id_index !== false && isset($row[$group_id_index]) && $row[$group_id_index] !== '') {
+                $row_group_id = absint($row[$group_id_index]);
+            }
+
+            // Use status from CSV if available (0 = inactive), otherwise default to active (1)
+            $row_status = '1';
+            if ($status_index !== false && isset($row[$status_index]) && trim($row[$status_index]) === '0') {
+                $row_status = '0';
+            }
 
             if (empty($mobile)) {
                 $errors[] = sprintf(__('Row %d: Mobile number is required', 'wp-sms'), $row_num);
@@ -761,7 +775,7 @@ class SubscribersApi extends RestApi
             }
 
             // Add subscriber
-            $result = Newsletter::addSubscriber($name, $parsed_mobile, $group_id, '1');
+            $result = Newsletter::addSubscriber($name, $parsed_mobile, $row_group_id, $row_status);
 
             if ($result) {
                 $imported++;
