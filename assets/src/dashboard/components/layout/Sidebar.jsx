@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import {
   ExternalLink,
   ChevronRight,
+  ChevronDown,
   Star,
   Sparkles,
   X,
+  Settings2,
+  Coins,
+  RefreshCw,
 } from 'lucide-react'
-import { cn, __, getWpSettings } from '@/lib/utils'
+import { cn, __, getWpSettings, getGatewayDisplayName } from '@/lib/utils'
+import { smsApi } from '@/api/smsApi'
 import { useSettings, useSetting } from '@/context/SettingsContext'
 import { getNavigation } from '@/lib/pageRegistry'
 
@@ -22,40 +27,136 @@ const footerUrls = {
   rate: 'https://wordpress.org/support/plugin/wp-sms/reviews/#new-post',
 }
 
-// Gateway status indicator component
-function GatewayStatus({ isConfigured, onClick }) {
+// Gateway status indicator component with expandable details
+function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const [credit, setCredit] = useState(null)
+  const [creditSupported, setCreditSupported] = useState(true)
+  const [isLoadingCredit, setIsLoadingCredit] = useState(false)
+  const { gateways = {} } = getWpSettings()
+
+  const gatewayDisplayName = getGatewayDisplayName(gatewayKey, gateways)
+
+  const fetchCredit = useCallback(async () => {
+    if (!isConfigured) return
+    setIsLoadingCredit(true)
+    try {
+      const result = await smsApi.getCredit()
+      setCredit(result.credit)
+      setCreditSupported(result.creditSupported !== false)
+    } catch (error) {
+      console.error('Failed to fetch credit:', error)
+      setCredit(null)
+    } finally {
+      setIsLoadingCredit(false)
+    }
+  }, [isConfigured])
+
+  // Fetch credit when expanded for the first time
+  useEffect(() => {
+    if (isExpanded && credit === null && !isLoadingCredit) {
+      fetchCredit()
+    }
+  }, [isExpanded, credit, isLoadingCredit, fetchCredit])
+
+  // If not configured, just show the button that navigates to gateway settings
+  if (!isConfigured) {
+    return (
+      <button
+        onClick={onConfigure}
+        className="wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-px-3 wsms-py-2 wsms-rounded-md wsms-transition-all wsms-text-left wsms-bg-amber-500/10 hover:wsms-bg-amber-500/15"
+      >
+        <span className="wsms-relative wsms-flex wsms-h-2 wsms-w-2">
+          <span className="wsms-relative wsms-inline-flex wsms-rounded-full wsms-h-2 wsms-w-2 wsms-bg-amber-500" />
+        </span>
+        <span className="wsms-text-[11px] wsms-font-medium wsms-text-amber-700 dark:wsms-text-amber-400">
+          {__('Gateway not configured')}
+        </span>
+      </button>
+    )
+  }
+
   return (
-    <button
-      onClick={onClick}
-      className={cn(
-        'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-px-3 wsms-py-2 wsms-rounded-md wsms-transition-all wsms-text-left',
-        isConfigured
-          ? 'wsms-bg-emerald-500/10 hover:wsms-bg-emerald-500/15'
-          : 'wsms-bg-amber-500/10 hover:wsms-bg-amber-500/15'
-      )}
-    >
-      <span className="wsms-relative wsms-flex wsms-h-2 wsms-w-2">
-        {isConfigured && (
-          <span className="wsms-absolute wsms-inline-flex wsms-h-full wsms-w-full wsms-rounded-full wsms-bg-emerald-500 wsms-opacity-75 wsms-animate-ping" />
-        )}
-        <span
+    <div className="wsms-rounded-md wsms-bg-emerald-500/10 wsms-transition-all">
+      {/* Header - clickable to expand/collapse */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-px-3 wsms-py-2 wsms-text-left hover:wsms-bg-emerald-500/15 wsms-rounded-md wsms-transition-colors"
+      >
+        <div className="wsms-flex wsms-items-center wsms-gap-2">
+          <span className="wsms-relative wsms-flex wsms-h-2 wsms-w-2">
+            <span className="wsms-absolute wsms-inline-flex wsms-h-full wsms-w-full wsms-rounded-full wsms-bg-emerald-500 wsms-opacity-75 wsms-animate-ping" />
+            <span className="wsms-relative wsms-inline-flex wsms-rounded-full wsms-h-2 wsms-w-2 wsms-bg-emerald-500" />
+          </span>
+          <span className="wsms-text-[11px] wsms-font-medium wsms-text-emerald-700 dark:wsms-text-emerald-400">
+            {__('Gateway Connected')}
+          </span>
+        </div>
+        <ChevronDown
           className={cn(
-            'wsms-relative wsms-inline-flex wsms-rounded-full wsms-h-2 wsms-w-2',
-            isConfigured ? 'wsms-bg-emerald-500' : 'wsms-bg-amber-500'
+            'wsms-h-3.5 wsms-w-3.5 wsms-text-emerald-600 dark:wsms-text-emerald-400 wsms-transition-transform wsms-duration-200',
+            isExpanded && 'wsms-rotate-180'
           )}
+          strokeWidth={2}
         />
-      </span>
-      <span
+      </button>
+
+      {/* Expandable content */}
+      <div
         className={cn(
-          'wsms-text-[11px] wsms-font-medium',
-          isConfigured
-            ? 'wsms-text-emerald-700 dark:wsms-text-emerald-400'
-            : 'wsms-text-amber-700 dark:wsms-text-amber-400'
+          'wsms-overflow-hidden wsms-transition-all wsms-duration-200 wsms-ease-out',
+          isExpanded ? 'wsms-max-h-[150px] wsms-opacity-100' : 'wsms-max-h-0 wsms-opacity-0'
         )}
       >
-        {isConfigured ? __('Gateway Connected') : __('Gateway not configured')}
-      </span>
-    </button>
+        <div className="wsms-px-3 wsms-pb-2.5 wsms-space-y-2">
+          {/* Gateway name */}
+          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-text-[11px]">
+            <span className="wsms-text-muted-foreground">{__('Gateway')}</span>
+            <span className="wsms-font-medium wsms-text-foreground">{gatewayDisplayName}</span>
+          </div>
+
+          {/* Credit */}
+          {creditSupported && (
+            <div className="wsms-flex wsms-items-center wsms-justify-between wsms-text-[11px]">
+              <span className="wsms-text-muted-foreground wsms-flex wsms-items-center wsms-gap-1">
+                <Coins className="wsms-h-3 wsms-w-3" />
+                {__('Credit')}
+              </span>
+              <div className="wsms-flex wsms-items-center wsms-gap-1.5">
+                {isLoadingCredit ? (
+                  <RefreshCw className="wsms-h-3 wsms-w-3 wsms-animate-spin wsms-text-muted-foreground" />
+                ) : (
+                  <>
+                    <span className="wsms-font-medium wsms-text-foreground">
+                      {credit !== null ? credit : '—'}
+                    </span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        fetchCredit()
+                      }}
+                      className="wsms-p-0.5 wsms-rounded hover:wsms-bg-emerald-500/20 wsms-transition-colors"
+                      title={__('Refresh credit')}
+                    >
+                      <RefreshCw className="wsms-h-3 wsms-w-3 wsms-text-muted-foreground hover:wsms-text-foreground" />
+                    </button>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Configure button */}
+          <button
+            onClick={onConfigure}
+            className="wsms-flex wsms-w-full wsms-items-center wsms-justify-center wsms-gap-1.5 wsms-px-2.5 wsms-py-1.5 wsms-text-[11px] wsms-font-medium wsms-text-emerald-700 dark:wsms-text-emerald-400 wsms-bg-emerald-500/10 hover:wsms-bg-emerald-500/20 wsms-rounded-md wsms-transition-colors"
+          >
+            <Settings2 className="wsms-h-3 wsms-w-3" />
+            {__('Configure')}
+          </button>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -449,7 +550,8 @@ export default function Sidebar({ onClose, showClose }) {
         <div className="wsms-px-3 wsms-py-1">
           <GatewayStatus
             isConfigured={isGatewayConfigured}
-            onClick={() => setCurrentPage('gateway')}
+            gatewayKey={gatewayName}
+            onConfigure={() => setCurrentPage('gateway')}
           />
         </div>
 
