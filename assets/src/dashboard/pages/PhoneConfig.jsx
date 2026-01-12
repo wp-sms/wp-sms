@@ -84,26 +84,30 @@ export default function PhoneConfig() {
             </Select>
           </div>
 
-          <div className="wsms-space-y-2">
-            <Label>{__('Field Requirement')}</Label>
-            <Select value={optionalMobileField} onValueChange={setOptionalMobileField}>
-              <SelectTrigger aria-label={__('Field requirement')}>
-                <SelectValue placeholder={__('Select requirement')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="0">{__('Required — Users must enter a mobile number')}</SelectItem>
-                <SelectItem value="optional">{__('Optional — Users can skip this field')}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {addMobileField !== 'disable' && (
+            <>
+              <div className="wsms-space-y-2">
+                <Label>{__('Field Requirement')}</Label>
+                <Select value={optionalMobileField} onValueChange={setOptionalMobileField}>
+                  <SelectTrigger aria-label={__('Field requirement')}>
+                    <SelectValue placeholder={__('Select requirement')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">{__('Required — Users must enter a mobile number')}</SelectItem>
+                    <SelectItem value="optional">{__('Optional — Users can skip this field')}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-          <InputField
-            label={__('Placeholder Text')}
-            value={mobilePlaceholder}
-            onChange={(e) => setMobilePlaceholder(e.target.value)}
-            placeholder={__('e.g., +1 555 000 0000')}
-            description={__('Example format shown in the empty field.')}
-          />
+              <InputField
+                label={__('Placeholder Text')}
+                value={mobilePlaceholder}
+                onChange={(e) => setMobilePlaceholder(e.target.value)}
+                placeholder={__('e.g., +1 555 000 0000')}
+                description={__('Example format shown in the empty field.')}
+              />
+            </>
+          )}
         </CardContent>
       </Card>
 
