@@ -248,6 +248,7 @@ class UnifiedAdminPage extends Singleton
             'gateway'       => $this->getGatewayCapabilities(),
             'adminUrl'      => admin_url(),
             'siteUrl'       => site_url(),
+            'timezone'      => wp_timezone_string(),
             'version'       => WP_SMS_VERSION,
             'i18n'          => $this->getTranslations(),
             // Dynamic data for multi-select fields

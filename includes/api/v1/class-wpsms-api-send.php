@@ -10,8 +10,6 @@ use WP_SMS\Gateway;
 use WP_SMS\Helper;
 use WP_SMS\Newsletter;
 use WP_SMS\Notification\NotificationFactory;
-use WP_SMS\Pro\Scheduled;
-use WP_SMS\Pro\RepeatingMessages;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -24,6 +22,37 @@ if (!defined('ABSPATH')) {
  */
 class SendSmsApi extends \WP_SMS\RestApi
 {
+    /**
+     * Convert datetime from various formats to MySQL format (YYYY-MM-DD HH:MM:SS)
+     * Handles ISO format from datetime-local input (YYYY-MM-DDTHH:MM) and date-only input (YYYY-MM-DD)
+     *
+     * @param string $datetime Input datetime string
+     * @return string MySQL formatted datetime
+     */
+    private static function toMySQLDatetime($datetime)
+    {
+        if (empty($datetime)) {
+            return '';
+        }
+
+        // Handle date-only input (YYYY-MM-DD) - add default time
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $datetime)) {
+            return $datetime . ' 23:59:59';
+        }
+
+        // Handle ISO format with T separator (YYYY-MM-DDTHH:MM or YYYY-MM-DDTHH:MM:SS)
+        if (strpos($datetime, 'T') !== false) {
+            $datetime = str_replace('T', ' ', $datetime);
+        }
+
+        // Add seconds if missing (HH:MM -> HH:MM:SS)
+        if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $datetime)) {
+            $datetime .= ':00';
+        }
+
+        return $datetime;
+    }
+
     private $sendSmsArguments = [
         'sender'               => array('required' => true, 'type' => 'string'),
         'recipients'           => array('required' => true, 'type' => 'string', 'enum' => ['subscribers', 'users', 'roles', 'wc-customers', 'bp-users', 'numbers']),
@@ -139,7 +168,8 @@ class SendSmsApi extends \WP_SMS\RestApi
             $message = apply_filters('wp_sms_api_message_content', $message, $request->get_params());
 
             /*
-             * Repeating SMS
+             * Repeating SMS (add-on)
+             * Add-ons can hook into 'wpsms_api_repeating_sms_handler' to provide repeating SMS functionality
              */
             if ($request->has_param('schedule') && $request->has_param('repeat')) {
                 $data      = $request->get_param('repeat');
@@ -155,7 +185,10 @@ class SendSmsApi extends \WP_SMS\RestApi
                     return self::response(esc_html__('Selected end date must be after start date', 'wp-sms'), 400);
                 }
 
-                RepeatingMessages::add(
+                /** This filter is documented in includes/api/v1/class-wpsms-api-send.php */
+                $handled = apply_filters(
+                    'wpsms_api_repeating_sms_handler',
+                    false,
                     $startDate,
                     $endDate,
                     $interval['value'],
@@ -166,26 +199,46 @@ class SendSmsApi extends \WP_SMS\RestApi
                     $mediaUrls
                 );
 
-                return self::response(esc_html__('Repeating SMS is scheduled successfully!', 'wp-sms'));
+                if (is_wp_error($handled)) {
+                    return self::response($handled->get_error_message(), 400);
+                }
+
+                if ($handled === true) {
+                    return self::response(esc_html__('Repeating SMS is scheduled successfully!', 'wp-sms'));
+                }
+
+                return self::response(esc_html__('Repeating SMS requires the WP SMS Pro add-on. Please install and activate the add-on to use this feature.', 'wp-sms'), 400);
             }
 
             /**
-             * Scheduled SMS
+             * Scheduled SMS (add-on)
+             * Add-ons can hook into 'wpsms_api_scheduled_sms_handler' to provide scheduled SMS functionality
              */
             if ($request->has_param('schedule')) {
                 if ((new DateTime(get_gmt_from_date($request->get_param('schedule'))))->getTimestamp() < time()) {
                     return self::response(esc_html__('Selected start date must be in future', 'wp-sms'), 400);
                 }
 
-                Scheduled::add(
+                /** This filter is documented in includes/api/v1/class-wpsms-api-send.php */
+                $handled = apply_filters(
+                    'wpsms_api_scheduled_sms_handler',
+                    false,
                     $request->get_param('schedule'),
                     $request->get_param('sender'),
                     $message,
                     $recipientNumbers,
-                    true,
                     $mediaUrls
                 );
-                return self::response('SMS Scheduled Successfully!');
+
+                if (is_wp_error($handled)) {
+                    return self::response($handled->get_error_message(), 400);
+                }
+
+                if ($handled === true) {
+                    return self::response(esc_html__('SMS scheduled successfully!', 'wp-sms'));
+                }
+
+                return self::response(esc_html__('Scheduled SMS requires the WP SMS Pro add-on. Please install and activate the add-on to use this feature.', 'wp-sms'), 400);
             }
 
             /*
@@ -349,6 +402,14 @@ class SendSmsApi extends \WP_SMS\RestApi
             $schedule = $request->get_param('schedule');
             $repeat = $request->get_param('repeat');
 
+            // Convert datetime values to MySQL format (handles ISO format from frontend)
+            if (!empty($schedule)) {
+                $schedule = self::toMySQLDatetime($schedule);
+            }
+            if (!empty($repeat['endDate'])) {
+                $repeat['endDate'] = self::toMySQLDatetime($repeat['endDate']);
+            }
+
             if (empty($message)) {
                 throw new Exception(esc_html__('The message body can not be empty.', 'wp-sms'));
             }
@@ -401,8 +462,9 @@ class SendSmsApi extends \WP_SMS\RestApi
 
             /*
              * Repeating SMS (add-on)
+             * Add-ons can hook into 'wpsms_api_repeating_sms_handler' to provide repeating SMS functionality
              */
-            if (!empty($schedule) && !empty($repeat) && class_exists('WP_SMS\Pro\RepeatingMessages')) {
+            if (!empty($schedule) && !empty($repeat)) {
                 $startDate = new DateTime(get_gmt_from_date($schedule));
                 $endDate = !empty($repeat['endDate']) ? (new DateTime(get_gmt_from_date($repeat['endDate']))) : null;
                 $intervalValue = isset($repeat['interval']) ? intval($repeat['interval']) : 1;
@@ -416,7 +478,23 @@ class SendSmsApi extends \WP_SMS\RestApi
                     return self::response(esc_html__('Selected end date must be after start date', 'wp-sms'), 400);
                 }
 
-                RepeatingMessages::add(
+                /**
+                 * Filter to handle repeating SMS scheduling
+                 * Add-ons should return true if they handled the scheduling, or WP_Error on failure
+                 *
+                 * @param bool|WP_Error $handled Whether the repeating SMS was handled
+                 * @param DateTime $startDate Start date for the schedule
+                 * @param DateTime|null $endDate End date for the schedule (null for forever)
+                 * @param int $intervalValue Interval value (e.g., 1, 2, 3)
+                 * @param string $intervalUnit Interval unit (day, week, month, year)
+                 * @param string $sender Sender ID
+                 * @param string $message Message content
+                 * @param array $recipientNumbers Array of recipient phone numbers
+                 * @param array $mediaUrls Array of media URLs for MMS
+                 */
+                $handled = apply_filters(
+                    'wpsms_api_repeating_sms_handler',
+                    false,
                     $startDate,
                     $endDate,
                     $intervalValue,
@@ -427,33 +505,66 @@ class SendSmsApi extends \WP_SMS\RestApi
                     $mediaUrls
                 );
 
-                return self::response(esc_html__('Repeating SMS is scheduled successfully!', 'wp-sms'), 200, [
-                    'recipient_count' => count($recipientNumbers),
-                    'credit' => Gateway::credit()
-                ]);
+                if (is_wp_error($handled)) {
+                    return self::response($handled->get_error_message(), 400);
+                }
+
+                if ($handled === true) {
+                    return self::response(esc_html__('Repeating SMS is scheduled successfully!', 'wp-sms'), 200, [
+                        'recipient_count' => count($recipientNumbers),
+                        'credit' => Gateway::credit()
+                    ]);
+                }
+
+                // No add-on handled the repeating SMS request
+                return self::response(esc_html__('Repeating SMS requires the WP SMS Pro add-on. Please install and activate the add-on to use this feature.', 'wp-sms'), 400);
             }
 
             /**
              * Scheduled SMS (add-on)
+             * Add-ons can hook into 'wpsms_api_scheduled_sms_handler' to provide scheduled SMS functionality
              */
-            if (!empty($schedule) && class_exists('WP_SMS\Pro\Scheduled')) {
-                if ((new DateTime(get_gmt_from_date($schedule)))->getTimestamp() < time()) {
+            if (!empty($schedule)) {
+                $scheduleDateTime = new DateTime(get_gmt_from_date($schedule));
+
+                if ($scheduleDateTime->getTimestamp() < time()) {
                     return self::response(esc_html__('Selected start date must be in future', 'wp-sms'), 400);
                 }
 
-                Scheduled::add(
+                /**
+                 * Filter to handle scheduled SMS
+                 * Add-ons should return true if they handled the scheduling, or WP_Error on failure
+                 *
+                 * @param bool|WP_Error $handled Whether the scheduled SMS was handled
+                 * @param string $schedule Schedule datetime string
+                 * @param string $sender Sender ID
+                 * @param string $message Message content
+                 * @param array $recipientNumbers Array of recipient phone numbers
+                 * @param array $mediaUrls Array of media URLs for MMS
+                 */
+                $handled = apply_filters(
+                    'wpsms_api_scheduled_sms_handler',
+                    false,
                     $schedule,
                     $sender,
                     $message,
                     $recipientNumbers,
-                    true,
                     $mediaUrls
                 );
 
-                return self::response(esc_html__('SMS scheduled successfully!', 'wp-sms'), 200, [
-                    'recipient_count' => count($recipientNumbers),
-                    'credit' => Gateway::credit()
-                ]);
+                if (is_wp_error($handled)) {
+                    return self::response($handled->get_error_message(), 400);
+                }
+
+                if ($handled === true) {
+                    return self::response(esc_html__('SMS scheduled successfully!', 'wp-sms'), 200, [
+                        'recipient_count' => count($recipientNumbers),
+                        'credit' => Gateway::credit()
+                    ]);
+                }
+
+                // No add-on handled the scheduled SMS request
+                return self::response(esc_html__('Scheduled SMS requires the WP SMS Pro add-on. Please install and activate the add-on to use this feature.', 'wp-sms'), 400);
             }
 
             // Send SMS immediately

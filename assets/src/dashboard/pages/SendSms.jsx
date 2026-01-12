@@ -123,8 +123,12 @@ export default function SendSms() {
   const hasSelections = totalManualRecipients > 0
   const hasActualRecipients = recipientCount > 0
   const isValid = hasMessage && hasSelections
-  // Allow send if gateway is configured, has message and actual recipients
-  const canSend = gatewayConfigured && hasMessage && hasActualRecipients && !isSending && !isLoadingCount
+  // Validate scheduling - require date when scheduling is enabled
+  const isScheduleValid = !scheduleEnabled || (scheduleEnabled && scheduledDate)
+  // Validate repeat end date - require end date when repeat is enabled and not forever
+  const isRepeatValid = !repeatEnabled || repeatForever || (repeatEnabled && repeatEndDate)
+  // Allow send if gateway is configured, has message and actual recipients, and scheduling is valid
+  const canSend = gatewayConfigured && hasMessage && hasActualRecipients && !isSending && !isLoadingCount && isScheduleValid && isRepeatValid
 
   // Handle preview button click
   const handlePreview = useCallback(() => {
@@ -160,7 +164,7 @@ export default function SendSms() {
 
       setShowPreviewDialog(false)
       toast({
-        title: __(`Message sent successfully to ${result.recipientCount || recipientCount} recipient(s)`),
+        title: result.message || __(`Message sent successfully to ${result.recipientCount || recipientCount} recipient(s)`),
         variant: 'success',
       })
 
@@ -375,7 +379,7 @@ export default function SendSms() {
               <CalendarClock className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               <CardTitle className="wsms-text-sm">{__('Scheduling Options')}</CardTitle>
               <span className="wsms-ml-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
-                {__('Pro')}
+                {__('All-in-One')}
               </span>
             </div>
           </CardHeader>
@@ -415,7 +419,7 @@ export default function SendSms() {
                       min={new Date().toISOString().slice(0, 16)}
                     />
                     <p className="wsms-text-[11px] wsms-text-muted-foreground">
-                      {__('Timezone')}: {Intl.DateTimeFormat().resolvedOptions().timeZone}
+                      {__("Site's time zone")}: {window.wpSmsSettings?.timezone || Intl.DateTimeFormat().resolvedOptions().timeZone}
                     </p>
                   </div>
 
@@ -546,7 +550,11 @@ export default function SendSms() {
                           ? __('Add recipients')
                           : !hasActualRecipients
                             ? __('Selected groups/roles have no subscribers')
-                            : null}
+                            : !isScheduleValid
+                              ? __('Select schedule date and time')
+                              : !isRepeatValid
+                                ? __('Select repeat end date')
+                                : null}
               </p>
             )}
             <Button

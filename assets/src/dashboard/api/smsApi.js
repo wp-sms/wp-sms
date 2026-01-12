@@ -38,6 +38,7 @@ export const smsApi = {
     }
 
     // Add scheduling parameters if provided (Pro feature)
+    // Backend handles datetime format conversion
     if (data.scheduled) {
       payload.schedule = data.scheduled
     }
@@ -47,7 +48,7 @@ export const smsApi = {
       payload.repeat = {
         interval: data.repeat.interval || 1,
         unit: data.repeat.unit || 'day',
-        endDate: data.repeat.forever ? null : (data.repeat.endDate || null),
+        endDate: data.repeat.forever ? null : data.repeat.endDate,
       }
     }
 
