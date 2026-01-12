@@ -46,16 +46,23 @@ describe('Sidebar', () => {
       const settingsGroup = screen.getByText('Settings')
       fireEvent.click(settingsGroup)
 
+      // Wait for the expansion animation - items are always in DOM but may have opacity-0
       await waitFor(() => {
-        expect(screen.getByText('Overview')).toBeInTheDocument()
-        expect(screen.getByText('Gateway')).toBeInTheDocument()
-        expect(screen.getByText('Phone')).toBeInTheDocument()
-        expect(screen.getByText('Message Button')).toBeInTheDocument()
-        expect(screen.getByText('Notifications')).toBeInTheDocument()
-        expect(screen.getByText('Newsletter')).toBeInTheDocument()
-        expect(screen.getByText('Integrations')).toBeInTheDocument()
-        expect(screen.getByText('Advanced')).toBeInTheDocument()
+        // Find the expanded container (has max-h-[800px] when expanded)
+        const expandedContent = document.querySelector('.wsms-max-h-\\[800px\\]')
+        expect(expandedContent).toBeInTheDocument()
       })
+
+      // Check that settings items are present in DOM
+      // Use getAllByText for 'Gateway' since it appears in both nav and status component
+      expect(screen.getByText('Overview')).toBeInTheDocument()
+      expect(screen.getAllByText('Gateway').length).toBeGreaterThanOrEqual(1)
+      expect(screen.getByText('Phone')).toBeInTheDocument()
+      expect(screen.getByText('Message Button')).toBeInTheDocument()
+      expect(screen.getByText('Notifications')).toBeInTheDocument()
+      expect(screen.getByText('Newsletter')).toBeInTheDocument()
+      expect(screen.getByText('Integrations')).toBeInTheDocument()
+      expect(screen.getByText('Advanced')).toBeInTheDocument()
     })
 
     test('collapses Settings group when clicked again', async () => {
@@ -138,19 +145,21 @@ describe('Sidebar', () => {
       // Expand Settings
       fireEvent.click(screen.getByText('Settings'))
 
+      // Wait for expansion
       await waitFor(() => {
-        expect(screen.getByText('Gateway')).toBeInTheDocument()
+        const expandedContent = document.querySelector('.wsms-max-h-\\[800px\\]')
+        expect(expandedContent).toBeInTheDocument()
       })
 
-      // Click Gateway
-      const gatewayItem = screen.getByText('Gateway')
-      fireEvent.click(gatewayItem)
+      // Click Overview (use unique text to avoid multiple matches with Gateway)
+      const overviewItem = screen.getByText('Overview')
+      fireEvent.click(overviewItem)
 
-      // For nested items, the inner span gets the active styling
+      // For nested items, check the button gets the active styling
       await waitFor(() => {
-        const button = gatewayItem.closest('button')
-        const activeSpan = button.querySelector('.wsms-bg-primary\\/10')
-        expect(activeSpan).toBeInTheDocument()
+        const button = overviewItem.closest('button')
+        // The active item has text-primary class
+        expect(button).toHaveClass('wsms-text-primary')
       })
     })
   })
