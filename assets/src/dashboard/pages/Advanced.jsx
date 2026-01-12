@@ -1,5 +1,5 @@
 import React from 'react'
-import { Settings, Webhook, Database, Bell } from 'lucide-react'
+import { Webhook, Database, Bell, BarChart3, Megaphone } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -124,15 +124,15 @@ export default function Advanced() {
         </CardContent>
       </Card>
 
-      {/* Notifications & Reporting */}
+      {/* Administrative Reporting */}
       <Card>
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Bell className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Admin Notifications')}
+            <BarChart3 className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+            {__('Administrative Reporting')}
           </CardTitle>
           <CardDescription>
-            {__('Configure email reports and plugin notifications')}
+            {__('Configure email reports about SMS performance and errors')}
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
@@ -149,17 +149,45 @@ export default function Advanced() {
             checked={notifyErrors === '1'}
             onCheckedChange={(checked) => setNotifyErrors(checked ? '1' : '')}
           />
+        </CardContent>
+      </Card>
 
+      {/* Plugin Notifications */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <Bell className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+            {__('Plugin Notifications')}
+          </CardTitle>
+          <CardDescription>
+            {__('Manage plugin update notices and announcements')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="wsms-space-y-4">
           <SettingRow
-            title={__('Plugin Notifications')}
+            title={__('WSMS Notifications')}
             description={__('Show update notices and announcements in the admin area.')}
             checked={displayNotifications === '1'}
             onCheckedChange={(checked) => setDisplayNotifications(checked ? '1' : '')}
           />
+        </CardContent>
+      </Card>
 
+      {/* Anonymous Usage Data */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <Megaphone className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+            {__('Anonymous Usage Data')}
+          </CardTitle>
+          <CardDescription>
+            {__('Help improve WSMS by sharing anonymous usage statistics')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="wsms-space-y-4">
           <SettingRow
-            title={__('Usage Analytics')}
-            description={__('Share anonymous usage data to help improve WSMS.')}
+            title={__('Share Anonymous Data')}
+            description={__('Share non-personal, anonymized data to help improve WSMS.')}
             checked={shareAnonymousData === '1'}
             onCheckedChange={(checked) => setShareAnonymousData(checked ? '1' : '')}
           />
