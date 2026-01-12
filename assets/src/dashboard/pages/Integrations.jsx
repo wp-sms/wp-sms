@@ -301,14 +301,14 @@ export default function Integrations() {
 
   // Additional integrations (Pro/Add-on only, excluding free ones already shown above)
   const additionalIntegrations = [
-    { name: __('Gravity Forms'), pluginKey: 'gravity-forms', requirement: __('Requires WP SMS Pro'), Icon: ClipboardList },
-    { name: __('Quform'), pluginKey: 'quform', requirement: __('Requires WP SMS Pro'), Icon: ClipboardList },
-    { name: __('WooCommerce'), pluginKey: 'woocommerce', requirement: __('Requires WP SMS Pro'), Icon: ShoppingCart },
-    { name: __('BuddyPress'), pluginKey: 'buddypress', requirement: __('Requires WP SMS Pro'), Icon: Users },
-    { name: __('Easy Digital Downloads'), pluginKey: 'easy-digital-downloads', requirement: __('Requires WP SMS Pro'), Icon: CreditCard },
-    { name: __('WP Job Manager'), pluginKey: 'wp-job-manager', requirement: __('Requires WP SMS Pro'), Icon: Briefcase },
-    { name: __('Awesome Support'), pluginKey: 'awesome-support', requirement: __('Requires WP SMS Pro'), Icon: HeadphonesIcon },
-    { name: __('Ultimate Member'), pluginKey: 'ultimate-member', requirement: __('Requires WP SMS Pro'), Icon: UserCircle },
+    { name: __('Gravity Forms'), pluginKey: 'gravity-forms', requirement: __('Requires WSMS Pro'), Icon: ClipboardList },
+    { name: __('Quform'), pluginKey: 'quform', requirement: __('Requires WSMS Pro'), Icon: ClipboardList },
+    { name: __('WooCommerce'), pluginKey: 'woocommerce', requirement: __('Requires WSMS Pro'), Icon: ShoppingCart },
+    { name: __('BuddyPress'), pluginKey: 'buddypress', requirement: __('Requires WSMS Pro'), Icon: Users },
+    { name: __('Easy Digital Downloads'), pluginKey: 'easy-digital-downloads', requirement: __('Requires WSMS Pro'), Icon: CreditCard },
+    { name: __('WP Job Manager'), pluginKey: 'wp-job-manager', requirement: __('Requires WSMS Pro'), Icon: Briefcase },
+    { name: __('Awesome Support'), pluginKey: 'awesome-support', requirement: __('Requires WSMS Pro'), Icon: HeadphonesIcon },
+    { name: __('Ultimate Member'), pluginKey: 'ultimate-member', requirement: __('Requires WSMS Pro'), Icon: UserCircle },
     { name: __('Elementor Forms'), pluginKey: 'elementor-pro', requirement: __('Requires Elementor add-on'), Icon: Layers },
     { name: __('Fluent CRM'), pluginKey: 'fluent-crm', requirement: __('Requires Fluent add-on'), Icon: Mail },
     { name: __('Fluent Forms'), pluginKey: 'fluentform', requirement: __('Requires Fluent add-on'), Icon: ClipboardList },
@@ -493,7 +493,7 @@ export default function Integrations() {
             {__('Additional Integrations')}
           </CardTitle>
           <CardDescription>
-            {__('Other plugins supported through WP SMS Pro and add-ons')}
+            {__('Other plugins supported through WSMS Pro and add-ons')}
           </CardDescription>
         </CardHeader>
         <CardContent>

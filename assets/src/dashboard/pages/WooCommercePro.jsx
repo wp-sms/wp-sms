@@ -44,7 +44,7 @@ export default function WooCommercePro() {
               <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
               <h3 className="wsms-font-medium wsms-mb-2">WooCommerce Pro Add-on Required</h3>
               <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-4">
-                Install and activate the WP SMS WooCommerce Pro add-on to access these features.
+                Install and activate the WSMS WooCommerce Pro add-on to access these features.
               </p>
               <Button variant="outline" asChild>
                 <a

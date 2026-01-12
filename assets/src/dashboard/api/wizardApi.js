@@ -77,7 +77,7 @@ export const wizardApi = {
       recipients: {
         numbers: [adminNumber],
       },
-      message: __('This is a test message from WP SMS setup wizard.'),
+      message: __('This is a test message from WSMS setup wizard.'),
     })
 
     return {

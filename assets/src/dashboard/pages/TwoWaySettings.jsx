@@ -164,7 +164,7 @@ export default function TwoWaySettings() {
               <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
               <h3 className="wsms-font-medium wsms-mb-2">{__('Two-Way SMS Add-on Required')}</h3>
               <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-4">
-                {__('Install and activate the WP SMS Two-Way add-on to configure these settings.')}
+                {__('Install and activate the WSMS Two-Way add-on to configure these settings.')}
               </p>
               <Button variant="outline" asChild>
                 <a

@@ -195,7 +195,7 @@ export default function CartAbandonment() {
               <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
               <h3 className="wsms-font-medium wsms-mb-2">{__('WooCommerce Pro Add-on Required')}</h3>
               <p className="wsms-text-sm wsms-text-muted-foreground wsms-mb-4">
-                {__('Install and activate the WP SMS WooCommerce Pro add-on to access Cart Abandonment features.')}
+                {__('Install and activate the WSMS WooCommerce Pro add-on to access Cart Abandonment features.')}
               </p>
               <Button variant="outline" asChild>
                 <a
