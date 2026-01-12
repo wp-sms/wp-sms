@@ -522,14 +522,14 @@ export default function Gateway() {
         <CardContent className="wsms-space-y-4">
           <SelectField
             label={__('Delivery Method')}
-            description={__('How SMS messages are processed and sent.')}
+            description={__('Select the dispatch method for SMS messages: instant send via API, delayed send at set times, or batch send for large recipient lists. For lists exceeding 20 recipients, batch sending is automatically selected.')}
             value={deliveryMethod}
             onValueChange={setDeliveryMethod}
             placeholder={__('Select method')}
             options={[
-              { value: 'api_direct_send', label: __('Instant — Send immediately when triggered') },
-              { value: 'api_async_send', label: __('Scheduled — Process in background (reduces page load time)') },
-              { value: 'api_queued_send', label: __('Queue — Add to queue for batch processing') },
+              { value: 'api_direct_send', label: __('Send SMS Instantly: Activates immediate dispatch of messages via API upon request.') },
+              { value: 'api_async_send', label: __('Scheduled SMS Delivery: Configures API to send messages at predetermined times.') },
+              { value: 'api_queued_send', label: __('Batch SMS Queue: Lines up messages for grouped sending, enhancing efficiency for bulk dispatch.') },
             ]}
           />
 
