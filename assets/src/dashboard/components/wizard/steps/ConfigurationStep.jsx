@@ -119,6 +119,7 @@ export default function ConfigurationStep({
               {Object.entries(gatewayFields).map(([key, field]) => {
                 const fieldValue = credentials[field.id] || ''
                 const isPassword = key === 'password' || field.id.includes('password') || field.id.includes('key')
+                const isFullWidth = key === 'from' || field.id === 'gateway_sender_id'
 
                 if (field.type === 'select' && field.options) {
                   const options = Object.entries(field.options).map(([value, label]) => ({
@@ -126,28 +127,30 @@ export default function ConfigurationStep({
                     label,
                   }))
                   return (
-                    <SelectField
-                      key={field.id}
-                      label={field.name}
-                      description={field.desc}
-                      value={fieldValue}
-                      onValueChange={(value) => handleFieldChange(field.id, value)}
-                      placeholder={field.placeholder || `Select ${field.name}`}
-                      options={options}
-                    />
+                    <div key={field.id} className={isFullWidth ? 'md:wsms-col-span-2' : ''}>
+                      <SelectField
+                        label={field.name}
+                        description={field.desc}
+                        value={fieldValue}
+                        onValueChange={(value) => handleFieldChange(field.id, value)}
+                        placeholder={field.placeholder || `Select ${field.name}`}
+                        options={options}
+                      />
+                    </div>
                   )
                 }
 
                 return (
-                  <InputField
-                    key={field.id}
-                    label={field.name}
-                    description={field.desc}
-                    type={isPassword ? 'password' : 'text'}
-                    value={fieldValue}
-                    onChange={(e) => handleFieldChange(field.id, e.target.value)}
-                    placeholder={field.placeholder || ''}
-                  />
+                  <div key={field.id} className={isFullWidth ? 'md:wsms-col-span-2' : ''}>
+                    <InputField
+                      label={field.name}
+                      description={field.desc}
+                      type={isPassword ? 'password' : 'text'}
+                      value={fieldValue}
+                      onChange={(e) => handleFieldChange(field.id, e.target.value)}
+                      placeholder={field.placeholder || ''}
+                    />
+                  </div>
                 )
               })}
             </div>
