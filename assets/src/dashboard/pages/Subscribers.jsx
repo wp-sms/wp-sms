@@ -184,6 +184,7 @@ export default function Subscribers() {
 
   // Bulk action loading state
   const [bulkActionLoading, setBulkActionLoading] = useState(null)
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false)
 
   // Sorting state
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null })
@@ -447,6 +448,12 @@ export default function Subscribers() {
     }
   }
 
+  // Handle bulk delete with confirmation
+  const handleBulkDeleteConfirm = useCallback(async () => {
+    setShowBulkDeleteConfirm(false)
+    await handleBulkActionWithLoading('delete', __('Delete Selected'))
+  }, [handleBulkAction]) // eslint-disable-line react-hooks/exhaustive-deps
+
   // Bulk actions
   const bulkActions = [
     {
@@ -467,7 +474,7 @@ export default function Subscribers() {
     {
       label: __('Delete Selected'),
       icon: Trash2,
-      onClick: () => handleBulkActionWithLoading('delete', __('Delete Selected')),
+      onClick: () => setShowBulkDeleteConfirm(true),
       variant: 'destructive',
     },
   ]
@@ -1062,6 +1069,22 @@ export default function Subscribers() {
               {deleteDialog.item?.mobile}
             </p>
           </div>
+        </div>
+      </DeleteConfirmDialog>
+
+      {/* Bulk Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        isOpen={showBulkDeleteConfirm}
+        onClose={() => setShowBulkDeleteConfirm(false)}
+        onConfirm={handleBulkDeleteConfirm}
+        isSaving={bulkActionLoading === __('Delete Selected')}
+        title={__('Delete Subscribers')}
+        description={__('Are you sure you want to delete the selected subscribers?')}
+      >
+        <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
+          <p className="wsms-text-[13px] wsms-text-foreground">
+            {__('%d subscriber(s) will be permanently deleted.').replace('%d', table.selectedIds.length)}
+          </p>
         </div>
       </DeleteConfirmDialog>
     </div>

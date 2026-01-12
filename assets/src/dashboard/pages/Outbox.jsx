@@ -126,6 +126,7 @@ export default function Outbox() {
   const [isSendingReply, setIsSendingReply] = useState(false)
   const [actionLoading, setActionLoading] = useState(null)
   const [bulkActionLoading, setBulkActionLoading] = useState(null)
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false)
 
   // Sorting state
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null })
@@ -226,10 +227,16 @@ export default function Outbox() {
     [handleResend, handleDeleteClick]
   )
 
+  // Handle bulk delete with confirmation
+  const handleBulkDeleteConfirm = useCallback(async () => {
+    setShowBulkDeleteConfirm(false)
+    await handleOutboxBulkAction('delete', __('Delete Selected'))
+  }, [handleOutboxBulkAction])
+
   const bulkActions = useMemo(
     () =>
       getOutboxBulkActions({
-        onDelete: () => handleOutboxBulkAction('delete', __('Delete Selected')),
+        onDelete: () => setShowBulkDeleteConfirm(true),
         onResend: () => handleOutboxBulkAction('resend', __('Resend Selected')),
       }),
     [handleOutboxBulkAction]
@@ -709,6 +716,22 @@ export default function Outbox() {
               </p>
             )}
           </div>
+        </div>
+      </DeleteConfirmDialog>
+
+      {/* Bulk Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        isOpen={showBulkDeleteConfirm}
+        onClose={() => setShowBulkDeleteConfirm(false)}
+        onConfirm={handleBulkDeleteConfirm}
+        isSaving={bulkActionLoading === __('Delete Selected')}
+        title={__('Delete Messages')}
+        description={__('Are you sure you want to delete the selected messages?')}
+      >
+        <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
+          <p className="wsms-text-[13px] wsms-text-foreground">
+            {__('%d message(s) will be permanently deleted.').replace('%d', table.selectedIds.length)}
+          </p>
         </div>
       </DeleteConfirmDialog>
     </div>
