@@ -632,3 +632,56 @@ body.wsms-notification-sidebar-open {
     -webkit-backdrop-filter: blur(4px);
   }
 }
+
+/* ============================================
+   Date/Time Input Styling
+   ============================================ */
+
+/* Style all date/time inputs for consistent cross-browser appearance */
+#wpsms-settings-root input[type="date"],
+#wpsms-settings-root input[type="time"],
+#wpsms-settings-root input[type="datetime-local"] {
+  position: relative;
+  padding-right: 2.5rem; /* Space for the calendar/clock icon */
+}
+
+/* WebKit browsers (Chrome, Safari, Edge) calendar/time picker indicator */
+#wpsms-settings-root input[type="date"]::-webkit-calendar-picker-indicator,
+#wpsms-settings-root input[type="time"]::-webkit-calendar-picker-indicator,
+#wpsms-settings-root input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
+
+#wpsms-settings-root input[type="date"]::-webkit-calendar-picker-indicator:hover,
+#wpsms-settings-root input[type="time"]::-webkit-calendar-picker-indicator:hover,
+#wpsms-settings-root input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Firefox - hide the native clear button and style consistently */
+#wpsms-settings-root input[type="date"]::-moz-clear,
+#wpsms-settings-root input[type="time"]::-moz-clear,
+#wpsms-settings-root input[type="datetime-local"]::-moz-clear {
+  display: none;
+}
+
+/* Ensure the input text doesn't overlap with the icon */
+#wpsms-settings-root input[type="date"]::-webkit-datetime-edit,
+#wpsms-settings-root input[type="time"]::-webkit-datetime-edit,
+#wpsms-settings-root input[type="datetime-local"]::-webkit-datetime-edit {
+  padding-right: 0;
+}
+
+#wpsms-settings-root input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+#wpsms-settings-root input[type="time"]::-webkit-datetime-edit-fields-wrapper,
+#wpsms-settings-root input[type="datetime-local"]::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}
