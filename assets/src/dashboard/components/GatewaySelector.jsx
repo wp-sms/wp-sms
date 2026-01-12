@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { Search, CheckCircle } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { SearchableSelect } from '@/components/ui/searchable-select'
 import { getWpSettings, cn, __ } from '@/lib/utils'
 
 /**
@@ -84,19 +84,18 @@ export default function GatewaySelector({
 
         {/* Region Filter */}
         <div className="wsms-w-[180px] wsms-shrink-0">
-          <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-            <SelectTrigger className="wsms-w-full wsms-capitalize">
-              <SelectValue placeholder={__('All Regions')} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{__('All Regions')}</SelectItem>
-              {regions.map((region) => (
-                <SelectItem key={region} value={region} className="wsms-capitalize">
-                  {region}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <SearchableSelect
+            value={selectedRegion}
+            onValueChange={setSelectedRegion}
+            placeholder={__('All Regions')}
+            searchPlaceholder={__('Search regions...')}
+            options={[
+              { value: 'all', label: __('All Regions') },
+              ...regions.map((region) => ({ value: region, label: region })),
+            ]}
+            triggerClassName="wsms-capitalize"
+            optionClassName="wsms-capitalize"
+          />
         </div>
       </div>
 

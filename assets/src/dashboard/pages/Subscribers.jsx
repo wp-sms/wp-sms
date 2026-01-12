@@ -20,6 +20,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { SearchableSelect } from '@/components/ui/searchable-select'
 import { DataTable } from '@/components/ui/data-table'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { ImportExportDialog } from '@/components/shared/ImportExportDialog'
@@ -669,23 +670,23 @@ export default function Subscribers() {
               </Select>
 
               {countries.length > 0 && (
-                <Select value={filters.filters.country_code} onValueChange={(v) => filters.setFilter('country_code', v)}>
-                  <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[150px] wsms-text-[12px]" aria-label={__('Filter by country')}>
-                    <SelectValue placeholder={__('All Countries')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">{__('All Countries')}</SelectItem>
-                    {countries
-                      .filter((country, index, self) =>
-                        index === self.findIndex((c) => c.code === country.code)
-                      )
-                      .map((country) => (
-                        <SelectItem key={country.code} value={country.code}>
-                          {country.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                <div className="wsms-w-full xl:wsms-w-[180px]">
+                  <SearchableSelect
+                    value={filters.filters.country_code}
+                    onValueChange={(v) => filters.setFilter('country_code', v)}
+                    placeholder={__('All Countries')}
+                    searchPlaceholder={__('Search countries...')}
+                    options={[
+                      { value: 'all', label: __('All Countries') },
+                      ...countries
+                        .filter((country, index, self) =>
+                          index === self.findIndex((c) => c.code === country.code)
+                        )
+                        .map((country) => ({ value: country.code, label: country.name })),
+                    ]}
+                    aria-label={__('Filter by country')}
+                  />
+                </div>
               )}
             </div>
 
