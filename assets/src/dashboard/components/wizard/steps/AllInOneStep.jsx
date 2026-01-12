@@ -4,9 +4,9 @@ import { Button } from '@/components/ui/button'
 import { __ } from '@/lib/utils'
 
 /**
- * Pro upsell step - Promote WP SMS Pro features
+ * All-in-One upsell step - Promote WSMS All-in-One features
  */
-export default function ProStep({ onSkip }) {
+export default function AllInOneStep({ onSkip }) {
   const features = [
     {
       icon: MessageCircle,
@@ -47,7 +47,7 @@ export default function ProStep({ onSkip }) {
           </div>
         </div>
         <h2 className="wsms-text-xl wsms-font-bold wsms-text-foreground wsms-mb-2">
-          {__('Unlock More with Pro')}
+          {__('Unlock More with All-in-One')}
         </h2>
         <p className="wsms-text-[13px] wsms-text-muted-foreground">
           {__('Take your SMS communications to the next level with powerful features.')}
@@ -84,7 +84,7 @@ export default function ProStep({ onSkip }) {
       {/* Benefits List */}
       <div className="wsms-rounded-xl wsms-border wsms-border-amber-200 wsms-bg-amber-50/50 dark:wsms-border-amber-900/30 dark:wsms-bg-amber-950/20 wsms-p-5 wsms-mb-6">
         <h3 className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground wsms-mb-3">
-          {__('All Pro plans include:')}
+          {__('All All-in-One plans include:')}
         </h3>
         <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2">
           {benefits.map((item, index) => (
@@ -110,7 +110,7 @@ export default function ProStep({ onSkip }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            {__('View Pro Plans')}
+            {__('View Plans')}
             <ExternalLink className="wsms-h-4 wsms-w-4 wsms-ml-2" />
           </a>
         </Button>

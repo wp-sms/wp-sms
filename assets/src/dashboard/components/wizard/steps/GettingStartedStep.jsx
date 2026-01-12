@@ -25,7 +25,7 @@ export default function GettingStartedStep({
       {/* Header */}
       <div className="wsms-text-center wsms-mb-6">
         <h2 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-1">
-          {__('Welcome to WP SMS')}
+          {__('Welcome to WSMS')}
         </h2>
         <p className="wsms-text-[12px] wsms-text-muted-foreground">
           {__("Let's get your SMS gateway configured in just a few steps.")}

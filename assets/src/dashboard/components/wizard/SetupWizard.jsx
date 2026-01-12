@@ -24,7 +24,7 @@ import GettingStartedStep from './steps/GettingStartedStep'
 import SmsGatewayStep from './steps/SmsGatewayStep'
 import ConfigurationStep from './steps/ConfigurationStep'
 import TestSetupStep from './steps/TestSetupStep'
-import ProStep from './steps/ProStep'
+import AllInOneStep from './steps/AllInOneStep'
 import ReadyStep from './steps/ReadyStep'
 
 /**
@@ -65,9 +65,9 @@ export default function SetupWizard() {
   const [connectionTested, setConnectionTested] = useState(false)
   const [testSmsSent, setTestSmsSent] = useState(false)
 
-  // Determine if Pro step should be shown
+  // Determine if All-in-One step should be shown
   const { addons = {} } = getWpSettings()
-  const showProStep = !addons.pro
+  const showAllInOneStep = !addons.pro
 
   // Build steps array based on conditions
   const steps = useMemo(() => {
@@ -78,14 +78,14 @@ export default function SetupWizard() {
       { id: 'test-setup', label: __('Test Setup') },
     ]
 
-    if (showProStep) {
-      baseSteps.push({ id: 'pro', label: __('Pro') })
+    if (showAllInOneStep) {
+      baseSteps.push({ id: 'all-in-one', label: __('All-in-One') })
     }
 
     baseSteps.push({ id: 'ready', label: __('Ready') })
 
     return baseSteps
-  }, [showProStep])
+  }, [showAllInOneStep])
 
   // Expose open function globally for "Re-run Wizard" button
   useEffect(() => {
@@ -156,7 +156,7 @@ export default function SetupWizard() {
         return connectionTested
       case 'test-setup':
         return true // Can always skip
-      case 'pro':
+      case 'all-in-one':
         return true // Can always skip
       case 'ready':
         return true
@@ -254,8 +254,8 @@ export default function SetupWizard() {
             onTestComplete={(success) => setTestSmsSent(success)}
           />
         )
-      case 'pro':
-        return <ProStep onSkip={handleNext} />
+      case 'all-in-one':
+        return <AllInOneStep onSkip={handleNext} />
       case 'ready':
         return (
           <ReadyStep
@@ -304,7 +304,7 @@ export default function SetupWizard() {
               <Logo className="wsms-h-8 wsms-w-auto" />
               <div>
                 <h1 className="wsms-text-[15px] wsms-font-semibold wsms-text-foreground">
-                  {__('WP SMS Setup Wizard')}
+                  {__('WSMS Setup Wizard')}
                 </h1>
                 <p className="wsms-text-[11px] wsms-text-muted-foreground">
                   {__('Step')} {currentStep + 1} {__('of')} {steps.length}
@@ -387,7 +387,7 @@ function getStepIcon(stepId) {
     'sms-gateway': Radio,
     configuration: Settings,
     'test-setup': Send,
-    pro: Crown,
+    'all-in-one': Crown,
     ready: PartyPopper,
   }
   return icons[stepId] || Settings

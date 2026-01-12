@@ -10,7 +10,7 @@ const STEPS = [
   { id: 'sms-gateway', label: __('SMS Gateway'), icon: Radio },
   { id: 'configuration', label: __('Configuration'), icon: Settings },
   { id: 'test-setup', label: __('Test Setup'), icon: Send },
-  { id: 'pro', label: __('Pro'), icon: Crown, conditional: true },
+  { id: 'all-in-one', label: __('All-in-One'), icon: Crown, conditional: true },
   { id: 'ready', label: __('Ready'), icon: PartyPopper },
 ]
 
