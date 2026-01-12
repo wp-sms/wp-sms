@@ -51,7 +51,6 @@ const DialogContent = React.forwardRef(
           fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
           fontSize: '14px',
           color: '#1f2937',
-          overflow: 'hidden',
           ...sizeConfig[size],
           ...style,
         }}
@@ -153,14 +152,14 @@ const DialogDescription = React.forwardRef(({ className, style, ...props }, ref)
 ))
 DialogDescription.displayName = DialogPrimitive.Description.displayName
 
-const DialogBody = React.forwardRef(({ className, style, ...props }, ref) => (
+const DialogBody = React.forwardRef(({ className, style, overflow = 'auto', ...props }, ref) => (
   <div
     ref={ref}
     className={cn('wsms-dialog-body', className)}
     style={{
       padding: '20px 24px',
-      overflowY: 'auto',
-      maxHeight: '60vh',
+      overflowY: overflow,
+      maxHeight: overflow === 'auto' ? '60vh' : undefined,
       ...style,
     }}
     {...props}

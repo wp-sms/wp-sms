@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react'
+import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
 import { cn, getWpSettings } from '@/lib/utils'
 
 /**
@@ -13,12 +13,18 @@ export default function PhoneInput({
   placeholder,
   disabled = false,
   initialCountry = 'us',
+  onlyCountries = [],
+  preferredCountries = [],
 }) {
   const inputRef = useRef(null)
   const itiRef = useRef(null)
   const [isLoaded, setIsLoaded] = useState(false)
   const [isValid, setIsValid] = useState(false)
   const [error, setError] = useState('')
+
+  // Memoize country arrays to prevent infinite re-renders
+  const onlyCountriesKey = useMemo(() => JSON.stringify(onlyCountries), [onlyCountries])
+  const preferredCountriesKey = useMemo(() => JSON.stringify(preferredCountries), [preferredCountries])
 
   // Load intlTelInput scripts dynamically
   useEffect(() => {
@@ -33,6 +39,20 @@ export default function PhoneInput({
         link.href = `${baseUrl}assets/css/intlTelInput.min.css`
         document.head.appendChild(link)
       }
+
+      // Add custom styles for intlTelInput
+      if (!document.querySelector('style[data-iti-custom]')) {
+        const style = document.createElement('style')
+        style.setAttribute('data-iti-custom', 'true')
+        style.textContent = `
+          .iti { width: 100%; }
+          .iti__country-list { font-size: 12px; }
+          .iti__country-name, .iti__dial-code { font-size: 12px; }
+          .iti__search-input { font-size: 12px; padding: 6px 8px; }
+        `
+        document.head.appendChild(style)
+      }
+
 
       // Load main script if not already loaded
       if (!window.intlTelInput) {
@@ -55,20 +75,29 @@ export default function PhoneInput({
     loadScripts()
       .then((utilsUrl) => {
         if (inputRef.current && window.intlTelInput && !itiRef.current) {
-          const iti = window.intlTelInput(inputRef.current, {
+          const options = {
             initialCountry: initialCountry,
             autoInsertDialCode: true,
             allowDropdown: true,
             strictMode: true,
             useFullscreenPopup: false,
-            dropdownContainer: document.body,
             nationalMode: false,
             autoPlaceholder: 'polite',
             utilsScript: utilsUrl,
             customPlaceholder: (selectedCountryPlaceholder, selectedCountryData) => {
               return `+${selectedCountryData.dialCode} 555 123 4567`
             },
-          })
+          }
+
+          // Add country restrictions if provided
+          if (onlyCountries.length > 0) {
+            options.onlyCountries = onlyCountries.map(c => c.toLowerCase())
+          }
+          if (preferredCountries.length > 0) {
+            options.preferredCountries = preferredCountries.map(c => c.toLowerCase())
+          }
+
+          const iti = window.intlTelInput(inputRef.current, options)
           itiRef.current = iti
 
           // Set initial value if provided
@@ -92,7 +121,7 @@ export default function PhoneInput({
         itiRef.current = null
       }
     }
-  }, [initialCountry, placeholder])
+  }, [initialCountry, placeholder, onlyCountriesKey, preferredCountriesKey])
 
   // Handle country change
   const handleCountryChange = useCallback(() => {
@@ -163,28 +192,26 @@ export default function PhoneInput({
   }, [isLoaded, handleCountryChange, handleInput])
 
   return (
-    <div className="wsms-space-y-2">
-      <div className={cn('wsms-relative', className)}>
-        <input
-          ref={inputRef}
-          type="tel"
-          dir="ltr"
-          autoComplete="off"
-          disabled={disabled}
-          className={cn(
-            'wsms-flex wsms-h-10 wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-px-3 wsms-py-2 wsms-text-sm wsms-ring-offset-background',
-            'placeholder:wsms-text-muted-foreground',
-            'focus-visible:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-ring focus-visible:wsms-ring-offset-2',
-            'disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50',
-            error && 'wsms-border-destructive',
-            // Extra padding for the country dropdown
-            'wsms-pl-[90px]'
-          )}
-          style={{ paddingLeft: '90px' }}
-        />
-      </div>
+    <div className={cn('wsms-relative', className)}>
+      <input
+        ref={inputRef}
+        type="tel"
+        dir="ltr"
+        autoComplete="off"
+        disabled={disabled}
+        className={cn(
+          'wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-px-3 wsms-py-1 wsms-text-sm wsms-ring-offset-background',
+          'placeholder:wsms-text-muted-foreground',
+          'focus-visible:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-ring focus-visible:wsms-ring-offset-2',
+          'disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50',
+          error && 'wsms-border-destructive',
+          // Extra padding for the country dropdown
+          'wsms-pl-[90px]'
+        )}
+        style={{ paddingLeft: '90px', height: '36px' }}
+      />
       {error && (
-        <p className="wsms-text-[12px] wsms-text-destructive">{error}</p>
+        <p className="wsms-text-[12px] wsms-text-destructive wsms-mt-1">{error}</p>
       )}
     </div>
   )

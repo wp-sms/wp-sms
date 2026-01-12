@@ -37,6 +37,7 @@ import {
 import { subscribersApi } from '@/api/subscribersApi'
 import { groupsApi } from '@/api/groupsApi'
 import { smsApi } from '@/api/smsApi'
+import { InternationalPhoneInput } from '@/components/ui/InternationalPhoneInput'
 import { cn, formatDate, getWpSettings, __, downloadCsv } from '@/lib/utils'
 import { useListPage } from '@/hooks/useListPage'
 import { useFormDialog } from '@/hooks/useFormDialog'
@@ -510,18 +511,13 @@ export default function Subscribers() {
               {/* Quick Add */}
               <div className="wsms-w-full wsms-max-w-md wsms-mb-6">
                 <div className="wsms-flex wsms-gap-2">
-                  <Input
-                    type="tel"
-                    value={quickAddPhone}
-                    onChange={(e) => setQuickAddPhone(e.target.value)}
-                    placeholder={__('Phone number')}
-                    className="wsms-flex-1"
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && quickAddPhone.trim()) {
-                        handleQuickAdd('', quickAddPhone)
-                      }
-                    }}
-                  />
+                  <div className="wsms-flex-1">
+                    <InternationalPhoneInput
+                      value={quickAddPhone}
+                      onChange={setQuickAddPhone}
+                      placeholder={__('Phone number')}
+                    />
+                  </div>
                   <div className="wsms-w-[120px] wsms-shrink-0">
                     <Select value={quickAddGroup || 'none'} onValueChange={(v) => setQuickAddGroup(v === 'none' ? '' : v)}>
                       <SelectTrigger>
@@ -629,7 +625,7 @@ export default function Subscribers() {
       </div>
 
       {/* Toolbar */}
-      <Card>
+      <Card className="wsms-relative wsms-z-10">
         <CardContent className="wsms-p-0">
           {/* Row 1: Search + Filters */}
           <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-2 wsms-p-3">
@@ -730,18 +726,13 @@ export default function Subscribers() {
                   }
                 }}
               />
-              <Input
-                type="tel"
-                value={quickAddPhone}
-                onChange={(e) => setQuickAddPhone(e.target.value)}
-                placeholder={__('Phone number')}
-                className="wsms-h-9 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[140px] wsms-font-mono wsms-text-[13px]"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && quickAddPhone.trim()) {
-                    handleQuickAdd(quickAddName, quickAddPhone)
-                  }
-                }}
-              />
+              <div className="wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[180px]">
+                <InternationalPhoneInput
+                  value={quickAddPhone}
+                  onChange={setQuickAddPhone}
+                  placeholder={__('Phone number')}
+                />
+              </div>
               <div className="wsms-w-[120px] wsms-shrink-0">
                 <Select value={quickAddGroup || 'none'} onValueChange={(v) => setQuickAddGroup(v === 'none' ? '' : v)}>
                   <SelectTrigger className="wsms-h-9 wsms-text-[13px]">
@@ -813,7 +804,7 @@ export default function Subscribers() {
             </DialogTitle>
             <DialogDescription>Update subscriber information</DialogDescription>
           </DialogHeader>
-          <DialogBody>
+          <DialogBody overflow="visible">
             <div className="wsms-space-y-4">
               <div className="wsms-space-y-2">
                 <label className="wsms-text-[12px] wsms-font-medium">Name</label>
@@ -825,11 +816,10 @@ export default function Subscribers() {
               </div>
               <div className="wsms-space-y-2">
                 <label className="wsms-text-[12px] wsms-font-medium">Mobile Number</label>
-                <Input
+                <InternationalPhoneInput
                   value={editDialog.formData.mobile}
-                  onChange={(e) => editDialog.updateField('mobile', e.target.value)}
+                  onChange={(value) => editDialog.updateField('mobile', value)}
                   placeholder="+1234567890"
-                  className="wsms-font-mono"
                 />
               </div>
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">

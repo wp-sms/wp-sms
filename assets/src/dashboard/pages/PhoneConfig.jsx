@@ -4,6 +4,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { InputField, MultiSelectField, SettingRow } from '@/components/ui/form-field'
+import { InternationalPhoneInput } from '@/components/ui/InternationalPhoneInput'
 import { useSetting } from '@/context/SettingsContext'
 import { getWpSettings, __ } from '@/lib/utils'
 
@@ -47,13 +48,18 @@ export default function PhoneConfig() {
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <InputField
-            label={__('Admin Phone Number')}
-            value={adminMobile}
-            onChange={(e) => setAdminMobile(e.target.value)}
-            placeholder="+1 555 123 4567"
-            description={__('Enter the full phone number including country code.')}
-          />
+          <div className="wsms-space-y-2">
+            <Label htmlFor="adminPhone">{__('Admin Phone Number')}</Label>
+            <InternationalPhoneInput
+              id="adminPhone"
+              value={adminMobile}
+              onChange={setAdminMobile}
+              placeholder="+1 555 123 4567"
+            />
+            <p className="wsms-text-[12px] wsms-text-muted-foreground">
+              {__('Enter the full phone number including country code.')}
+            </p>
+          </div>
         </CardContent>
       </Card>
 
