@@ -73,4 +73,26 @@ class Option
 
         update_option($setting_name, $options);
     }
+
+    /**
+     * Delete Option
+     *
+     * @param string $key The option key to delete
+     * @param bool $pro Whether to use pro settings
+     */
+    public static function deleteOption($key, $pro = false)
+    {
+        if ($pro) {
+            $setting_name = 'wps_pp_settings';
+        } else {
+            $setting_name = 'wpsms_settings';
+        }
+
+        $options = self::getOptions($pro);
+
+        if (isset($options[$key])) {
+            unset($options[$key]);
+            update_option($setting_name, $options);
+        }
+    }
 }
