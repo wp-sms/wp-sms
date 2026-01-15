@@ -1,0 +1,33 @@
+name: Notify Gateway Registry
+
+# Triggers gateway-registry sync when gateway files change
+
+on:
+  push:
+    branches: [master, development]
+    paths:
+      - 'includes/gateways/**'
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger gateway-registry sync
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.GATEWAY_REGISTRY_TOKEN }}
+          repository: wp-sms/gateway-registry
+          event-type: wp-sms-${{ github.event_name }}
+          client-payload: '{"branch": "${{ github.ref_name }}", "sha": "${{ github.sha }}"}'
+
+      - name: Summary
+        run: |
+          echo "### 🔔 Gateway Registry Notified" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- Event: ${{ github.event_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Commit: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
