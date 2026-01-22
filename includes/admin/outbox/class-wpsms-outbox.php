@@ -80,7 +80,7 @@ class Outbox_List_Table extends \WP_List_Table
             'label' => ($item['status'] == 'success' ? esc_html__('Success', 'wp-sms') : esc_html__('Failed', 'wp-sms'))
         ));
 
-        return sprintf('%s <details><summary>%s</summary><p>%s</p></details>', $status, esc_html__('API Response', 'wp-sms'), $item['response']);
+        return sprintf('%s <details><summary>%s</summary><p>%s</p></details>', $status, esc_html__('API Response', 'wp-sms'), esc_html($item['response']));
     }
 
     function column_sender($item)
@@ -100,9 +100,9 @@ class Outbox_List_Table extends \WP_List_Table
         return sprintf(
             '%1$s <span style="color:silver">(ID: #%2$s)</span>%3$s',
             /*$1%s*/
-            $item['sender'],
+            esc_html($item['sender']),
             /*$2%s*/
-            $item['ID'],
+            esc_html($item['ID']),
             /*$3%s*/
             $this->row_actions($actions)
         );
@@ -345,8 +345,15 @@ class Outbox_List_Table extends \WP_List_Table
         $page_number = ($this->get_pagenum() - 1) * $this->limit;
         $orderby     = "";
 
-        if (isset($_REQUEST['orderby'])) {
-            $orderby .= "ORDER BY {$this->tb_prefix}sms_send.{$_REQUEST['orderby']} {$_REQUEST['order']}";
+        // Allowed columns for ordering to prevent SQL injection
+        $allowed_columns = array('ID', 'sender', 'date', 'message', 'recipient', 'media', 'status');
+        $allowed_orders  = array('asc', 'desc');
+
+        if (isset($_REQUEST['orderby']) && in_array($_REQUEST['orderby'], $allowed_columns, true)) {
+            $order_direction = isset($_REQUEST['order']) && in_array(strtolower($_REQUEST['order']), $allowed_orders, true)
+                ? strtoupper($_REQUEST['order'])
+                : 'ASC';
+            $orderby .= "ORDER BY {$this->tb_prefix}sms_send.{$_REQUEST['orderby']} {$order_direction}";
         } else {
             $orderby .= "ORDER BY date DESC";
         }
