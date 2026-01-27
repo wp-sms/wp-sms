@@ -263,14 +263,14 @@ export default function Outbox() {
             <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center">
               <AlertCircle className="wsms-h-12 wsms-w-12 wsms-text-destructive wsms-mb-4" />
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                Failed to load messages
+                {__('Failed to load messages')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
                 {table.error}
               </p>
               <Button onClick={() => table.fetch({ page: 1 })}>
                 <RefreshCw className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-                Try Again
+                {__('Try Again')}
               </Button>
             </div>
           </CardContent>
@@ -297,21 +297,20 @@ export default function Outbox() {
                 <Inbox className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                No messages yet
+                {__('No messages yet')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-                When you send SMS messages, they will appear here. You can track delivery status,
-                resend failed messages, and export your history.
+                {__('When you send SMS messages, they will appear here. You can track delivery status, resend failed messages, and export your history.')}
               </p>
               <Tip variant="info">
-                Go to{' '}
+                {__('Go to')}{' '}
                 <button
                   onClick={() => setCurrentPage('send-sms')}
                   className="wsms-underline wsms-font-semibold hover:wsms-text-primary wsms-transition-colors"
                 >
                   {__('Send SMS')}
                 </button>{' '}
-                to send your first message!
+                {__('to send your first message!')}
               </Tip>
             </div>
           </CardContent>
@@ -334,8 +333,8 @@ export default function Outbox() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-hidden xl:wsms-block">Total Messages</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground xl:wsms-hidden">Total</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-hidden xl:wsms-block">{__('Total Messages')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground xl:wsms-hidden">{__('Total')}</p>
               </div>
             </div>
 
@@ -348,7 +347,7 @@ export default function Outbox() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.success}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">Sent</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Sent')}</p>
               </div>
             </div>
 
@@ -361,7 +360,7 @@ export default function Outbox() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-destructive">{stats.failed}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">Failed</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Failed')}</p>
               </div>
             </div>
 
@@ -406,8 +405,8 @@ export default function Outbox() {
                 >
                   {successRate}%
                 </p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-hidden xl:wsms-block">Success Rate</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground xl:wsms-hidden">Rate</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-hidden xl:wsms-block">{__('Success Rate')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground xl:wsms-hidden">{__('Rate')}</p>
               </div>
             </div>
           </div>
@@ -437,9 +436,9 @@ export default function Outbox() {
                 type="text"
                 value={filters.filters.search}
                 onChange={(e) => filters.setFilter('search', e.target.value)}
-                placeholder="Search messages..."
+                placeholder={__('Search messages...')}
                 className="wsms-pl-8 wsms-h-9"
-                aria-label="Search messages"
+                aria-label={__('Search messages')}
               />
             </div>
 
@@ -448,13 +447,13 @@ export default function Outbox() {
               value={filters.filters.status}
               onValueChange={(value) => filters.setFilter('status', value)}
             >
-              <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[100px] wsms-text-[12px]" aria-label="Filter by status">
+              <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[100px] wsms-text-[12px]" aria-label={__('Filter by status')}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="success">Sent</SelectItem>
-                <SelectItem value="failed">Failed</SelectItem>
+                <SelectItem value="all">{__('All Status')}</SelectItem>
+                <SelectItem value="success">{__('Sent')}</SelectItem>
+                <SelectItem value="failed">{__('Failed')}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -475,7 +474,7 @@ export default function Outbox() {
                   size="sm"
                   onClick={() => filters.resetFilters()}
                   className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
-                  aria-label="Clear all filters"
+                  aria-label={__('Clear all filters')}
                 >
                   <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
                 </Button>
@@ -486,7 +485,7 @@ export default function Outbox() {
                 size="sm"
                 onClick={() => table.fetch({ page: 1 })}
                 className="wsms-h-9 wsms-px-2.5"
-                aria-label="Refresh messages"
+                aria-label={__('Refresh messages')}
               >
                 <RefreshCw
                   className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')}
@@ -527,7 +526,7 @@ export default function Outbox() {
             rowActions={rowActions}
             bulkActions={bulkActions}
             bulkActionLoading={bulkActionLoading}
-            emptyMessage="No messages match your filters"
+            emptyMessage={__('No messages match your filters')}
             emptyIcon={Inbox}
           />
         </CardContent>
@@ -539,10 +538,10 @@ export default function Outbox() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
-              Message Details
+              {__('Message Details')}
             </DialogTitle>
             <DialogDescription>
-              Sent on {viewMessage && formatDate(viewMessage.date, { hour: '2-digit', minute: '2-digit' })}
+              {__('Sent on')} {viewMessage && formatDate(viewMessage.date, { hour: '2-digit', minute: '2-digit' })}
             </DialogDescription>
           </DialogHeader>
           <DialogBody>
@@ -551,21 +550,21 @@ export default function Outbox() {
                 {/* Status and Recipients Row */}
                 <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-p-4 wsms-rounded-lg wsms-bg-muted/30">
                   <div className="wsms-flex-1">
-                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Status</p>
+                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Status')}</p>
                     <StatusBadge variant={viewMessage.status === 'success' ? 'success' : 'failed'}>
                       {viewMessage.status === 'success' ? __('Sent') : __('Failed')}
                     </StatusBadge>
                   </div>
                   <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
                   <div className="wsms-flex-1">
-                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Recipients</p>
+                    <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Recipients')}</p>
                     <p className="wsms-text-[13px] wsms-font-medium">{viewMessage.recipient_count}</p>
                   </div>
                   {viewMessage.sender && (
                     <>
                       <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
                       <div className="wsms-flex-1">
-                        <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Sender</p>
+                        <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Sender')}</p>
                         <p className="wsms-text-[13px] wsms-font-medium">{viewMessage.sender}</p>
                       </div>
                     </>
@@ -574,7 +573,7 @@ export default function Outbox() {
 
                 {/* Recipient(s) */}
                 <div>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Recipient(s)</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Recipient(s)')}</p>
                   <p className="wsms-text-[13px] wsms-break-all wsms-font-mono wsms-p-2 wsms-rounded wsms-bg-muted/30">
                     {viewMessage.recipient}
                   </p>
@@ -582,7 +581,7 @@ export default function Outbox() {
 
                 {/* Message */}
                 <div>
-                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">Message</p>
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Message')}</p>
                   <div className="wsms-p-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
                     <p className="wsms-text-[13px] wsms-whitespace-pre-wrap">{viewMessage.message}</p>
                   </div>
@@ -593,7 +592,7 @@ export default function Outbox() {
                   <div>
                     <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1 wsms-flex wsms-items-center wsms-gap-1">
                       <Image className="wsms-h-3 wsms-w-3" aria-hidden="true" />
-                      Media
+                      {__('Media')}
                     </p>
                     <div className="wsms-flex wsms-flex-wrap wsms-gap-2">
                       {viewMessage.media.map((url, idx) => (
@@ -619,7 +618,7 @@ export default function Outbox() {
                 {viewMessage.response && (
                   <div>
                     <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">
-                      Gateway Response
+                      {__('Gateway Response')}
                     </p>
                     <pre className="wsms-text-[11px] wsms-text-muted-foreground wsms-font-mono wsms-p-3 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border wsms-overflow-x-auto wsms-whitespace-pre-wrap wsms-break-words wsms-max-h-[200px] wsms-overflow-y-auto">
                       {viewMessage.response}
@@ -631,11 +630,11 @@ export default function Outbox() {
           </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={() => setViewMessage(null)}>
-              Close
+              {__('Close')}
             </Button>
             <Button onClick={() => handleResend(viewMessage?.id)}>
               <Send className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
-              Resend
+              {__('Resend')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -647,15 +646,15 @@ export default function Outbox() {
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
-              Quick Reply
+              {__('Quick Reply')}
             </DialogTitle>
-            <DialogDescription>Send a quick reply to this recipient</DialogDescription>
+            <DialogDescription>{__('Send a quick reply to this recipient')}</DialogDescription>
           </DialogHeader>
           <DialogBody>
             <div className="wsms-space-y-4">
               <div className="wsms-space-y-2">
                 <label htmlFor="quick-reply-to" className="wsms-text-[12px] wsms-font-medium">
-                  To
+                  {__('To')}
                 </label>
                 <Input
                   id="quick-reply-to"
@@ -666,13 +665,13 @@ export default function Outbox() {
               </div>
               <div className="wsms-space-y-2">
                 <label htmlFor="quick-reply-message" className="wsms-text-[12px] wsms-font-medium">
-                  Message
+                  {__('Message')}
                 </label>
                 <textarea
                   id="quick-reply-message"
                   value={quickReplyMessage}
                   onChange={(e) => setQuickReplyMessage(e.target.value)}
-                  placeholder="Type your reply message..."
+                  placeholder={__('Type your reply message...')}
                   rows={4}
                   className="wsms-flex wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-px-3 wsms-py-2 wsms-text-sm wsms-ring-offset-background placeholder:wsms-text-muted-foreground focus-visible:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-ring focus-visible:wsms-ring-offset-2"
                 />
@@ -681,18 +680,18 @@ export default function Outbox() {
           </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={() => setQuickReplyTo(null)}>
-              Cancel
+              {__('Cancel')}
             </Button>
             <Button onClick={handleQuickReply} disabled={isSendingReply || !quickReplyMessage.trim()}>
               {isSendingReply ? (
                 <>
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" aria-hidden="true" />
-                  Sending...
+                  {__('Sending...')}
                 </>
               ) : (
                 <>
                   <Send className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
-                  Send Reply
+                  {__('Send Reply')}
                 </>
               )}
             </Button>
