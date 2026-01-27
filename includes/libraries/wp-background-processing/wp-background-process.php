@@ -93,11 +93,75 @@ abstract class WP_Background_Process extends WP_Async_Request {
 			return false;
 		}
 
+		// Test loopback connectivity before dispatching (blocking request).
+		$loopback_result = $this->test_loopback();
+		if ( is_wp_error( $loopback_result ) ) {
+			$this->store_dispatch_error( $loopback_result->get_error_message() );
+			return $loopback_result; // Return error instead of silently failing.
+		}
+
+		// Clear any previous error on successful loopback test.
+		$this->clear_dispatch_error();
+
 		// Schedule the cron healthcheck.
 		$this->schedule_event();
 
 		// Perform remote post.
 		return parent::dispatch();
+	}
+
+	/**
+	 * Test if loopback requests work on this server.
+	 *
+	 * Uses WordPress Site Health's built-in loopback test which handles
+	 * edge cases like HTTP Basic Auth and tests against wp-cron.php.
+	 *
+	 * @return true|\WP_Error True on success, WP_Error on failure.
+	 */
+	protected function test_loopback() {
+		if ( ! class_exists( 'WP_Site_Health' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/class-wp-site-health.php';
+		}
+
+		$site_health = new \WP_Site_Health();
+		$result      = $site_health->can_perform_loopback();
+
+		if ( ! empty( $result->status ) && 'good' === $result->status ) {
+			return true;
+		}
+
+		return new \WP_Error(
+			'loopback_failed',
+			__( 'Background process could not start. Your server may be blocking loopback requests. Check Tools → Site Health for details.', 'wp-sms' )
+		);
+	}
+
+	/**
+	 * Store a dispatch error message for later retrieval.
+	 *
+	 * @param string $message The error message to store.
+	 */
+	public function store_dispatch_error( $message ) {
+		update_site_option( $this->identifier . '_dispatch_error', array(
+			'message' => $message,
+			'time'    => time(),
+		) );
+	}
+
+	/**
+	 * Get stored dispatch error, if any.
+	 *
+	 * @return array|false Array with 'message' and 'time' keys, or false if no error.
+	 */
+	public function get_dispatch_error() {
+		return get_site_option( $this->identifier . '_dispatch_error', false );
+	}
+
+	/**
+	 * Clear any stored dispatch error.
+	 */
+	public function clear_dispatch_error() {
+		delete_site_option( $this->identifier . '_dispatch_error' );
 	}
 
 	/**

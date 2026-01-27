@@ -10,6 +10,7 @@ use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
 use WP_SMS\Blocks\BlockAssetsManager;
 use WP_SMS\Components\Logger;
 use WP_SMS\Controller\ControllerManager;
+use WP_SMS\Core\CoreFactory;
 use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Services\CronJobs\CronJobManager;
 use WP_SMS\Services\Formidable\FormidableManager;
@@ -24,6 +25,7 @@ use WP_SMS\Webhook\WebhookManager;
 use WP_SMS\Widget\WidgetsManager;
 use WP_SMS\Admin\Notification\NotificationManager;
 use WP_SMS\Services\CronEventManager;
+use WP_SMS\Services\Database\Migrations\Queue\QueueManager;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -56,9 +58,6 @@ class WP_SMS
          */
         add_action('plugins_loaded', array($this, 'plugin_setup'));
 
-        require_once WP_SMS_DIR . 'includes/class-wpsms-install.php';
-        require_once WP_SMS_DIR . 'includes/class-wpsms-uninstall.php';
-
         register_activation_hook(WP_SMS_DIR . 'wp-sms.php', array($this, 'activate'));
         register_deactivation_hook(WP_SMS_DIR . 'wp-sms.php', array($this, 'deactivate'));
     }
@@ -68,17 +67,19 @@ class WP_SMS
      */
     public function activate($network_wide)
     {
-        $class = new \WP_SMS\Install();
-        $class->install($network_wide);
+        // Load autoloader early for activation
+        require_once WP_SMS_DIR . 'vendor/autoload.php';
+        CoreFactory::activator($network_wide);
     }
 
     /**
-     * Deactivate & Uninstall plugin
+     * Deactivate plugin
      */
     public function deactivate()
     {
-        $class = new \WP_SMS\Uninstall();
-        $class->deactivate();
+        // Load autoloader early for deactivation
+        require_once WP_SMS_DIR . 'vendor/autoload.php';
+        CoreFactory::uninstaller();
     }
 
     /**
@@ -104,6 +105,9 @@ class WP_SMS
 
         $this->includes();
         $this->setupBackgroundProcess();
+
+        // Initialize Core services
+        CoreFactory::updater();
     }
 
     /**
@@ -210,6 +214,8 @@ class WP_SMS
         $notificationManager = new NotificationManager();
 
         if (is_admin()) {
+            CoreFactory::loader();
+
             // Admin legacy classes.
             $this->include('includes/admin/settings/class-wpsms-settings.php');
             $this->include('includes/admin/settings/class-wpsms-settings-integration.php');
@@ -224,6 +230,7 @@ class WP_SMS
             NoticeManager::getInstance();
             $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
             $adminManager             = new AdminManager();
+            new QueueManager();
 
             add_action('init', function () {
                 $wizard = new WizardManager(__('WPSMS OnBoarding Process', 'wp-sms'), 'wp-sms-onboarding');

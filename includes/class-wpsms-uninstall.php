@@ -6,6 +6,11 @@ if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
 
+/**
+ * Legacy Uninstall class.
+ *
+ * @deprecated 7.2 Use WP_SMS\Core\CoreFactory instead.
+ */
 class Uninstall
 {
     /**

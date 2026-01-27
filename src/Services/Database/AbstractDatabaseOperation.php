@@ -1,0 +1,130 @@
+<?php
+
+namespace WP_SMS\Services\Database;
+
+use WP_SMS\Services\Database\Managers\TransactionHandler;
+
+/**
+ * Base class for database operations.
+ *
+ * This abstract class provides common functionality for database operations,
+ * such as handling connections, validating table names, and managing arguments.
+ *
+ * @package   Database
+ * @version   1.0.0
+ * @since     7.1
+ * @author    Hooman
+ */
+abstract class AbstractDatabaseOperation implements DatabaseManager
+{
+    /**
+     * WordPress database connection.
+     *
+     * @var \wpdb
+     */
+    protected $wpdb;
+
+    /**
+     * Table name (without prefix).
+     *
+     * @var string
+     */
+    protected $tableName = '';
+
+    /**
+     * Full table name including WordPress prefix.
+     *
+     * @var string
+     */
+    protected $fullName = '';
+
+    /**
+     * Arguments for the operation.
+     *
+     * @var array
+     */
+    protected $args = [];
+
+    /**
+     * Handles database transactions.
+     *
+     * @var TransactionHandler
+     */
+    protected $transactionHandler;
+
+    /**
+     * Constructor to initialize dependencies.
+     */
+    public function __construct()
+    {
+        $this->ensureConnection();
+    }
+
+    /**
+     * Set the operation arguments.
+     *
+     * @param array $args The arguments for the operation.
+     * @return $this
+     */
+    public function setArgs($args)
+    {
+        $this->args = $args;
+        return $this;
+    }
+
+    /**
+     * Validate the table name.
+     *
+     * @return void
+     * @throws \InvalidArgumentException If table name is empty.
+     */
+    protected function validateTableName()
+    {
+        if (empty($this->tableName)) {
+            throw new \InvalidArgumentException('Table name is required');
+        }
+    }
+
+    /**
+     * Validate the operation arguments.
+     *
+     * @return void
+     * @throws \InvalidArgumentException If arguments are empty.
+     */
+    protected function validateArgs()
+    {
+        if (empty($this->args)) {
+            throw new \InvalidArgumentException('Column definitions are required');
+        }
+    }
+
+    /**
+     * Generate the full table name with WordPress prefix.
+     *
+     * WP SMS tables use the format: {wp_prefix}sms_{table_name}
+     *
+     * @return void
+     * @throws \InvalidArgumentException If table name is not set.
+     */
+    protected function setFullTableName()
+    {
+        if (empty($this->tableName)) {
+            throw new \InvalidArgumentException('Table name must be set before proceeding.');
+        }
+
+        $this->fullName = $this->wpdb->prefix . 'sms_' . $this->tableName;
+    }
+
+    /**
+     * Ensure the database connection and initialize the transaction handler.
+     *
+     * @return void
+     */
+    protected function ensureConnection()
+    {
+        global $wpdb;
+
+        $this->wpdb = $wpdb;
+        $this->transactionHandler = new TransactionHandler($this->wpdb);
+    }
+}
