@@ -46,7 +46,7 @@ import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 
 export default function Outbox() {
   const { toast } = useToast()
-  const { currentPage } = useSettings()
+  const { currentPage, setCurrentPage } = useSettings()
 
   // Use useListPage for combined filter + table management
   const { filters, table, handleDelete, handleBulkAction } = useListPage({
@@ -304,7 +304,14 @@ export default function Outbox() {
                 resend failed messages, and export your history.
               </p>
               <Tip variant="info">
-                Go to <strong>Send SMS</strong> to send your first message!
+                Go to{' '}
+                <button
+                  onClick={() => setCurrentPage('send-sms')}
+                  className="wsms-underline wsms-font-semibold hover:wsms-text-primary wsms-transition-colors"
+                >
+                  {__('Send SMS')}
+                </button>{' '}
+                to send your first message!
               </Tip>
             </div>
           </CardContent>
