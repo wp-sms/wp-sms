@@ -34,6 +34,7 @@ import {
   RotateCcw,
   ArrowLeftRight,
   Terminal,
+  CalendarClock,
 } from 'lucide-react'
 import { __ } from '@/lib/utils'
 
@@ -72,6 +73,13 @@ export const pageDefinitions = {
     icon: Inbox,
     component: lazy(() => import('@/pages/Outbox')),
     nav: { type: 'item', order: 2 },
+  },
+  'scheduled': {
+    label: () => __('Scheduled'),
+    icon: CalendarClock,
+    component: lazy(() => import('@/pages/Scheduled')),
+    nav: { type: 'item', order: 2.5 },
+    condition: 'hasProAddon',
   },
 
   // ===== SUBSCRIBERS =====

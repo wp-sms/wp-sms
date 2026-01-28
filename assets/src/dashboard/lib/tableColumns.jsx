@@ -1,5 +1,5 @@
 import React from 'react'
-import { Clock, Image, Eye, MessageSquare, Send, Trash2, RefreshCw, Edit, UserCheck, UserX, Pause, Play, Repeat } from 'lucide-react'
+import { Clock, Image, Eye, Edit, MessageSquare, Send, Trash2, RefreshCw, UserCheck, UserX, Repeat } from 'lucide-react'
 import { StatusBadge } from '@/components/shared/StatusBadge'
 import { formatDate, __, cn } from '@/lib/utils'
 
@@ -388,8 +388,8 @@ export function getSubscriberBulkActions({ onDelete, onActivate, onDeactivate, o
  */
 export const scheduledSmsColumns = [
   createDateColumn({
-    id: 'scheduled_date',
-    accessorKey: 'scheduled_date',
+    id: 'date',
+    accessorKey: 'date',
     header: __('Scheduled Date'),
     showTime: true,
   }),
@@ -483,21 +483,21 @@ export function getScheduledBulkActions({ onDelete, onSendAll }) {
 export const repeatingMessagesColumns = [
   {
     id: 'interval',
-    accessorKey: 'interval_value',
+    accessorKey: 'interval',
     header: __('Interval'),
     cell: ({ row }) => {
       const unitLabels = {
-        minute: row.interval_value === 1 ? __('minute') : __('minutes'),
-        hour: row.interval_value === 1 ? __('hour') : __('hours'),
-        day: row.interval_value === 1 ? __('day') : __('days'),
-        week: row.interval_value === 1 ? __('week') : __('weeks'),
-        month: row.interval_value === 1 ? __('month') : __('months'),
+        minute: row.interval === 1 ? __('minute') : __('minutes'),
+        hour: row.interval === 1 ? __('hour') : __('hours'),
+        day: row.interval === 1 ? __('day') : __('days'),
+        week: row.interval === 1 ? __('week') : __('weeks'),
+        month: row.interval === 1 ? __('month') : __('months'),
       }
       return (
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <Repeat className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" aria-hidden="true" />
           <span className="wsms-text-[12px] wsms-text-foreground">
-            {__('Every')} {row.interval_value} {unitLabels[row.interval_unit] || row.interval_unit}
+            {__('Every')} {row.interval} {unitLabels[row.interval_unit] || row.interval_unit}
           </span>
         </div>
       )
@@ -539,8 +539,7 @@ export const repeatingMessagesColumns = [
   createStatusColumn({
     statusMap: {
       active: { variant: 'success', label: __('Active') },
-      paused: { variant: 'warning', label: __('Paused') },
-      completed: { variant: 'default', label: __('Completed') },
+      ended: { variant: 'default', label: __('Ended') },
     },
   }),
 ]
@@ -550,7 +549,7 @@ export const repeatingMessagesColumns = [
  * @param {Object} handlers - Action handlers
  * @returns {Array} Row actions
  */
-export function getRepeatingRowActions({ onView, onEdit, onPause, onResume, onDelete }) {
+export function getRepeatingRowActions({ onView, onEdit, onDelete }) {
   return [
     {
       label: __('View Details'),
@@ -561,19 +560,7 @@ export function getRepeatingRowActions({ onView, onEdit, onPause, onResume, onDe
       label: __('Edit'),
       icon: Edit,
       onClick: onEdit,
-      condition: (row) => row.status !== 'completed',
-    },
-    {
-      label: __('Pause'),
-      icon: Pause,
-      onClick: onPause,
       condition: (row) => row.status === 'active',
-    },
-    {
-      label: __('Resume'),
-      icon: Play,
-      onClick: onResume,
-      condition: (row) => row.status === 'paused',
     },
     {
       label: __('Delete'),
@@ -589,23 +576,13 @@ export function getRepeatingRowActions({ onView, onEdit, onPause, onResume, onDe
  * @param {Object} handlers - Action handlers
  * @returns {Array} Bulk actions
  */
-export function getRepeatingBulkActions({ onDelete, onPause, onResume }) {
+export function getRepeatingBulkActions({ onDelete }) {
   return [
     {
       label: __('Delete Selected'),
       icon: Trash2,
       onClick: onDelete,
       variant: 'destructive',
-    },
-    {
-      label: __('Pause Selected'),
-      icon: Pause,
-      onClick: onPause,
-    },
-    {
-      label: __('Resume Selected'),
-      icon: Play,
-      onClick: onResume,
     },
   ]
 }
