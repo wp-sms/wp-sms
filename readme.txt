@@ -5,7 +5,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable tag: 7.1
+Stable tag: 7.1.1
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -140,6 +140,16 @@ All premium features + all add-ons in one package.
 - New Onboarding, Add-on Manager, and All-in-One package.
 
 == Changelog ==
+= v7.1.1 - 2026-01-28 =
+- **New:** Added `%product_name%` variable support for WooCommerce product notifications.
+- **Security:** Escape output and validate input in Outbox list table.
+- **Fix:** Fixed CF7 "Send to form" field not extracting phone number from form submission.
+- **Fix:** Fixed SMS.to gateway GetCredit() to handle decoded JSON response correctly.
+- **Fix:** Fixed license API cache to prevent excessive requests on multilingual sites.
+- **Fix:** Fixed license conditions for header and notice display separation.
+- **Fix:** Fixed license status image size issue in header.
+- **Fix:** Fixed accessibility issues on privacy page with proper label associations.
+
 = v7.1 - 2025-12-16 =
 - **New:** Introduced Notifications to receive important updates and promotions.
 - **New:** Added support for the Ghasedak.me gateway.
