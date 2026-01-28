@@ -23,14 +23,20 @@ export function createDateColumn({
     accessorKey,
     header,
     sortable: true,
-    cell: ({ row }) => (
-      <div className="wsms-flex wsms-items-center wsms-gap-2">
-        <Clock className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" aria-hidden="true" />
-        <span className="wsms-text-[12px] wsms-text-muted-foreground">
-          {formatDate(row[accessorKey], showTime ? { hour: '2-digit', minute: '2-digit' } : {})}
-        </span>
-      </div>
-    ),
+    cell: ({ row }) => {
+      const value = row[accessorKey]
+      if (!value) {
+        return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
+      }
+      return (
+        <div className="wsms-flex wsms-items-center wsms-gap-2">
+          <Clock className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" aria-hidden="true" />
+          <span className="wsms-text-[12px] wsms-text-muted-foreground">
+            {formatDate(value, showTime ? { hour: '2-digit', minute: '2-digit' } : {})}
+          </span>
+        </div>
+      )
+    },
   }
 }
 
@@ -509,6 +515,16 @@ export const repeatingMessagesColumns = [
     header: __('Next Occurrence'),
     showTime: true,
   }),
+  {
+    id: 'ends_at',
+    accessorKey: 'ends_at_date',
+    header: __('Ends At'),
+    cell: ({ row }) => (
+      <span className="wsms-text-[12px] wsms-text-muted-foreground">
+        {row.ends_at_date ? formatDate(row.ends_at_date, true) : __('Never')}
+      </span>
+    ),
+  },
   {
     id: 'recipient',
     accessorKey: 'recipient',
