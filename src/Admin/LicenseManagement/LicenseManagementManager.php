@@ -36,6 +36,7 @@ class LicenseManagementManager
         $this->initActionCallbacks();
 
         add_filter('wp_sms_enable_upgrade_to_bundle', [$this, 'showUpgradeToBundle']);
+        add_filter('wp_sms_enable_upgrade_notice', [$this, 'showUpgradeNotice']);
         add_filter('wp_sms_admin_menu_list', [$this, 'addMenuItem']);
         add_action('admin_init', [$this, 'initAdminPreview']);
         add_action('init', [$this, 'redirectOldLicenseUrlToNew']);
@@ -103,12 +104,26 @@ class LicenseManagementManager
     }
 
     /**
-     * Show the "Upgrade To Premium" only if the user has a premium license.
+     * Show the "Upgrade To Bundle" in header when user doesn't have All-in-One license.
+     * Shows even if they have Pro or other add-ons (to encourage upgrading to All-in-One).
      *
      * @return bool
      */
     public function showUpgradeToBundle()
     {
-        return !(LicenseHelper::isPremiumLicenseAvailable() || LicenseHelper::isPluginLicenseValid());
+        // Hide only if they have All-in-One license
+        return !LicenseHelper::isPremiumLicenseAvailable();
+    }
+
+    /**
+     * Show upgrade notice when user has neither All-in-One nor Pro license.
+     * Used for displaying upgrade notices in send-sms and settings pages.
+     *
+     * @return bool
+     */
+    public function showUpgradeNotice()
+    {
+        // Hide if they have All-in-One OR Pro license
+        return !(LicenseHelper::isPremiumLicenseAvailable() || LicenseHelper::isPluginLicenseValid('wp-sms-pro'));
     }
 }

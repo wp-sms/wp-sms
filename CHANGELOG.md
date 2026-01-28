@@ -1,3 +1,13 @@
+= v7.1.1 - 2026-01-28 =
+- **New:** Added `%product_name%` variable support for WooCommerce product notifications.
+- **Security:** Escape output and validate input in Outbox list table.
+- **Fix:** Fixed CF7 "Send to form" field not extracting phone number from form submission.
+- **Fix:** Fixed SMS.to gateway GetCredit() to handle decoded JSON response correctly.
+- **Fix:** Fixed license API cache to prevent excessive requests on multilingual sites.
+- **Fix:** Fixed license conditions for header and notice display separation.
+- **Fix:** Fixed license status image size issue in header.
+- **Fix:** Fixed accessibility issues on privacy page with proper label associations.
+
 = v7.1 - 2025-12-16 =
 - **New:** Introduced Notifications to receive important updates and promotions.
 - **New:** Added support for the Ghasedak.me gateway.
@@ -5,6 +15,7 @@
 - **Enhancement:** Updated PHP requirement to version 7.2.
 - **Enhancement:** Tested up to v6.9
 - **Enhancement:** Improve error handling when PHP SoapClient is unavailable in gateways.
+- **Fix:** Fixed privacy data deletion not removing subscribers from database due to incorrect phone number handling and query format issues.
 
 = v7.0.10 - 2025-12-01 =
 - **Enhancement:** Refactored plugin architecture for better add-on extensibility.

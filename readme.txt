@@ -5,7 +5,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 6.9
 Requires PHP: 7.2
-Stable tag: 7.1
+Stable tag: 7.1.1
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -15,6 +15,7 @@ Send SMS/MMS notifications, OTP & 2FA messages, and WooCommerce updates with sup
 [WSMS](https://wp-sms-pro.com/?utm_source=wporg&utm_medium=link&utm_campaign=website) lets you send SMS/MMS notifications, one-time passwords (OTP), and two-factor authentication (2FA) messages straight from WordPress. It supports a wide range of SMS gateways and integrates with popular e-commerce and form builder plugins.
 
 **Use WSMS to:**
+
 - Keep customers updated on WooCommerce orders
 - Collect subscribers with SMS newsletter forms
 - Secure logins with OTP & 2FA
@@ -40,6 +41,7 @@ Send SMS/MMS notifications, OTP & 2FA messages, and WooCommerce updates with sup
 Unlock additional features with **All-in-One** — the plan that gives you access to all premium add-ons in one package.
 
 **With All-in-One you get:**
+
 - Secure login & registration with OTP & 2FA
 - Scheduled & recurring SMS/MMS
 - Two-way SMS inbox
@@ -138,6 +140,16 @@ All premium features + all add-ons in one package.
 - New Onboarding, Add-on Manager, and All-in-One package.
 
 == Changelog ==
+= v7.1.1 - 2026-01-28 =
+- **New:** Added `%product_name%` variable support for WooCommerce product notifications.
+- **Security:** Escape output and validate input in Outbox list table.
+- **Fix:** Fixed CF7 "Send to form" field not extracting phone number from form submission.
+- **Fix:** Fixed SMS.to gateway GetCredit() to handle decoded JSON response correctly.
+- **Fix:** Fixed license API cache to prevent excessive requests on multilingual sites.
+- **Fix:** Fixed license conditions for header and notice display separation.
+- **Fix:** Fixed license status image size issue in header.
+- **Fix:** Fixed accessibility issues on privacy page with proper label associations.
+
 = v7.1 - 2025-12-16 =
 - **New:** Introduced Notifications to receive important updates and promotions.
 - **New:** Added support for the Ghasedak.me gateway.
@@ -145,68 +157,6 @@ All premium features + all add-ons in one package.
 - **Enhancement:** Updated PHP requirement to version 7.2.
 - **Enhancement:** Tested up to v6.9
 - **Enhancement:** Improve error handling when PHP SoapClient is unavailable in gateways.
-
-= v7.0.10 - 2025-12-01 =
-- **Enhancement:** Refactored plugin architecture for better add-on extensibility.
-- **Enhancement:** Added new filters and hooks for developers.
-- **Fix:** Minor bug fixes and improvements.
-
-= v7.0.9 - 2025-11-26 =
-- **Enhancement:** Minor improvements.
-
-= v7.0.8 - 2025-11-23 =
-- **Enhancement:** Repositioned the "All-in-One Required" label to the top of the PRO gateway onboarding table for better visibility.
-- **Enhancement:** Added more plugin details to the Site Health Info section for easier diagnostics.
-- **Enhancement:** Removed deprecated `utf8_decode()` usage in `nusoap.class.php`.
-- **Enhancement:** Updated libraries and cleaned up assets.
-- **Fix:** Fixed incorrect changelog URL links in add-ons.
-- **Fix:** Fixed connection status display and moved the Connection Status section below the Gateway Guide for improved UI
-- **Fix:** Fixed SCSS Compilation Error in mail.css
-
-= v7.0.4 - 2025-11-02 =
-- **New:** Added support for the SMS.es gateway.
-- **New:** Display an admin notice when the gateway version changes, required fields are missing, or the gateway is not configured.
-- **Enhancement:** Added support for Service-Line SMS.ir template-based messaging.
-- **Enhancement:** Refactored the MeliPayamak gateway for better stability and reliability.
-- **Enhancement:** Improved Kavenegar gateway to support template-based SMS messages with variable placeholders.
-- **Enhancement:** Refactored the FARAZSMS gateway for improved reliability.
-- **Fix:** Disabled caching to prevent duplicate responses for identical messages.
-- **Fix:** Ensured PHP 8.1+ compatibility by avoiding "Automatic conversion of false to array" warnings.
-- **Fix:** Delayed the anonymous data opt-in notice to appear 7 days after plugin activation.
-- **Fix:** Masked sensitive variables (`code`, `otp`, `post_password`, `coupon_code`) in logs when `WP_DEBUG` is disabled.
-
-= v7.0.3 - 2025-09-17 =
-- **Enhancement:** Improved Send SMS page performance by loading recipients via AJAX instead of on initial render.
-- **Enhancement:** Prevented sending emails to users who registered with only a phone number.
-
-= v7.0.2 - 2025-08-18 =
-- **New:** License keys can now be set via `wp-config.php` using constants like `WP_SMS_LICENSE` and are automatically validated on init.
-- **New:** Added plugin information to the Site Health Info section for easier diagnostics.
-- **New:** Added the Threema gateway to Pro gateways
-- **Fix:** Fixed variable rendering in message content.
-- **Fix:** Fixed showing migration failed notice on not valid licenses.
-- **Fix:** Resolved issue where screen options were disappearing on non-plugin-related admin pages.
-- **Fix:** Properly replace special tags (e.g., `%_site_title%`) in message content of CF7.
-- **Fix:** Corrected handling of multiple phone numbers in Contact Form 7 integration so SMS is sent to all recipients, not just the first one.
-- **Fix:** SMS registration now handles duplicate usernames by adding a numeric suffix, allowing re-registration with the same phone number.
-- **Fix:** Only send SMS notifications for published posts matching selected taxonomy term IDs.
-- **Enhancement:** Added user capability checks to AJAX actions in the license manager to restrict access to authorized roles only.
-- **Enhancement:** Removed deprecated SMS gateways: smss, bearsms, mobtexting, waapi, livesms, ozioma, smsgateway, zipwhip, whatsappapi, asr3sms, smsdone, micron, sms_s, tcisms, aradpayamak, dot4all.
-
-= v7.0 - 2025-07-09 =
-- **New:** Introduced an Onboarding Process to simplify gateway integration.
-- **New:** Launched a new Add-on Manager for easier add-on installation and updates.
-- **New:** Introduced WSMS All-in-One package.
-- **Enhancement:** Removed the FeedbackBird button and its related functionality.
-- **Enhancement:** Integrated NumberParser for better phone number validation.
-- **Enhancement:** Improved newsletter unsubscription handling based on different user inputs.
-- **Enhancement:** Added support for a wider range of CSV MIME types during import.
-- **Enhancement:** Refactored the MeliPayamak gateway for improved reliability.
-- **Enhancement:** Improved overall UX across the plugin.
-- **Fix:** Fixed disappearing billing fields in WooCommerce (Legacy and HPOS modes).
-- **Fix:** Fixed scheduled post notification issues.
-- **Fix:** Removed deprecated gateways.
-- **Fix:** Resolved fatal error when passing invalid meta in notification content.
-- **Fix:** Fixed message logging issues on multisite installations.
+- **Fix:** Fixed privacy data deletion not removing subscribers from database due to incorrect phone number handling and query format issues.
 
 [See changelog for all versions](https://raw.githubusercontent.com/wp-sms/wp-sms/master/CHANGELOG.md).

@@ -13,6 +13,7 @@ class WooCommerceProductNotification extends Notification
     protected $variables = [
         '%product_id%'             => 'getId',
         '%product_title%'          => 'getTitle',
+        '%product_name%'           => 'getName',
         '%product_url%'            => 'getUrl',
         '%product_date%'           => 'getDate',
         '%product_price%'          => 'getPrice',
@@ -35,6 +36,11 @@ class WooCommerceProductNotification extends Notification
     public function getTitle()
     {
         return $this->product->get_title();
+    }
+
+    public function getName()
+    {
+        return $this->product->get_name();
     }
 
     public function getUrl()

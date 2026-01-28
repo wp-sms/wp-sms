@@ -101,7 +101,8 @@ class Integrations
          * Send SMS to a specific field
          */
         if (!empty($cf7_options_field['message']) && !empty($cf7_options_field['phone'])) {
-            $to = $cf7_options_field['phone'];
+            $variables = $notification->getVariables();
+            $to = $variables[$cf7_options_field['phone']] ?? '';
 
             // Check if the type of the field is select.
             foreach ($form->scan_form_tags() as $scan_form_tag) {

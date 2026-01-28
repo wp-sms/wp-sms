@@ -15,7 +15,7 @@ class PrivacyDataAjax extends AjaxControllerAbstract
 
     protected function run()
     {
-        $this->mobile = (int)$this->get('mobileNumber');
+        $this->mobile = $this->get('mobileNumber');
         $this->type   = $this->get('type');
 
         // Process the submitted form
@@ -87,8 +87,10 @@ class PrivacyDataAjax extends AjaxControllerAbstract
         /*
          * Check in Subscribes Table
          */
-        $get_user = $wpdb->get_results(
-            $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` = %s", $mobile),
+        $mobileVariations = Helper::prepareMobileNumberQuery($mobile);
+        $placeholders     = implode(', ', array_fill(0, count($mobileVariations), '%s'));
+        $get_user         = $wpdb->get_results(
+            $wpdb->prepare("SELECT * FROM `{$wpdb->prefix}sms_subscribes` WHERE `mobile` IN ($placeholders)", $mobileVariations),
             ARRAY_A
         );
 
@@ -105,7 +107,7 @@ class PrivacyDataAjax extends AjaxControllerAbstract
 
                 //Remove User data if Delete Request
                 if ($this->type === 'delete') {
-                    $wpdb->delete($wpdb->prefix . 'sms_subscribes', array('ID' => $user['ID']), array(' % d'));
+                    $wpdb->delete($wpdb->prefix . 'sms_subscribes', array('ID' => $user['ID']), array('%d'));
                 }
             }
         }
