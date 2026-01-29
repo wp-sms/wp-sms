@@ -284,17 +284,7 @@ export function getNavigation() {
   const sortedGroups = Object.entries(navGroups)
     .sort((a, b) => a[1].order - b[1].order)
 
-  // Insert separator before add-on groups
-  const hasAddons = sortedGroups.some(([, group]) =>
-    group.condition === 'hasWooCommercePro' || group.condition === 'hasTwoWay'
-  )
-  if (hasAddons) {
-    navigation.push({
-      type: 'separator',
-      label: __('ADD-ONS'),
-      condition: 'hasAnyAddon',
-    })
-  }
+  let addOnSeparatorInserted = false
 
   for (const [groupId, group] of sortedGroups) {
     // Get pages in this group
@@ -303,6 +293,16 @@ export function getNavigation() {
       .sort((a, b) => a[1].nav.order - b[1].nav.order)
 
     if (groupPages.length === 0) continue
+
+    // Insert separator before the first add-on group (not before settings)
+    if (!addOnSeparatorInserted && group.condition) {
+      addOnSeparatorInserted = true
+      navigation.push({
+        type: 'separator',
+        label: __('ADD-ONS'),
+        condition: 'hasAnyAddon',
+      })
+    }
 
     navigation.push({
       type: 'group',
