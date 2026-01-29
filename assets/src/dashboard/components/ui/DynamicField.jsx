@@ -5,8 +5,10 @@ import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
 import { MultiSelect } from './multi-select'
 import { Repeater } from './repeater'
 import { Label } from './label'
+import { Input } from './input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select'
 import { useSettings } from '@/context/SettingsContext'
-import { getWpSettings } from '@/lib/utils'
+import { getWpSettings, __ } from '@/lib/utils'
 
 /**
  * Resolve options reference from add-on data
@@ -357,6 +359,107 @@ export function DynamicField({ field }) {
         </div>
       )
 
+    case 'time-duration': {
+      const dur = (typeof value === 'object' && value !== null) ? value : { days: 0, hours: 0, minutes: 0 }
+      const updateDur = (key, val) => setValue({ ...dur, [key]: val })
+      return (
+        <div className="wsms-space-y-2">
+          {field.label && (
+            <Label className="wsms-text-[13px] wsms-font-medium">
+              {field.label}
+              {field.required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
+            </Label>
+          )}
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            <div className="wsms-flex wsms-items-center wsms-gap-1.5">
+              <Input
+                type="number"
+                min={0}
+                value={dur.days ?? 0}
+                onChange={(e) => updateDur('days', parseInt(e.target.value) || 0)}
+                className="wsms-w-[70px]"
+                disabled={field.disabled}
+              />
+              <span className="wsms-text-sm wsms-text-muted-foreground">{__('Days')}</span>
+            </div>
+            <div className="wsms-flex wsms-items-center wsms-gap-1.5">
+              <Input
+                type="number"
+                min={0}
+                max={23}
+                value={dur.hours ?? 0}
+                onChange={(e) => updateDur('hours', parseInt(e.target.value) || 0)}
+                className="wsms-w-[70px]"
+                disabled={field.disabled}
+              />
+              <span className="wsms-text-sm wsms-text-muted-foreground">{__('Hours')}</span>
+            </div>
+            <div className="wsms-flex wsms-items-center wsms-gap-1.5">
+              <Input
+                type="number"
+                min={0}
+                max={59}
+                step={5}
+                value={dur.minutes ?? 0}
+                onChange={(e) => updateDur('minutes', parseInt(e.target.value) || 0)}
+                className="wsms-w-[70px]"
+                disabled={field.disabled}
+              />
+              <span className="wsms-text-sm wsms-text-muted-foreground">{__('Minutes')}</span>
+            </div>
+          </div>
+          {field.description && (
+            <FieldDescription>{field.description}</FieldDescription>
+          )}
+        </div>
+      )
+    }
+
+    case 'coupon-amount': {
+      const coupon = (typeof value === 'object' && value !== null) ? value : { amount: 0, type: 'percent' }
+      const updateCoupon = (key, val) => setValue({ ...coupon, [key]: val })
+      const typeOptions = resolveOptions(field.options, field.addonSlug)
+      return (
+        <div className="wsms-space-y-2">
+          {field.label && (
+            <Label className="wsms-text-[13px] wsms-font-medium">
+              {field.label}
+              {field.required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
+            </Label>
+          )}
+          <div className="wsms-flex wsms-items-center wsms-gap-3">
+            <Input
+              type="number"
+              min={0}
+              value={coupon.amount ?? 0}
+              onChange={(e) => updateCoupon('amount', parseFloat(e.target.value) || 0)}
+              className="wsms-w-[100px]"
+              disabled={field.disabled}
+            />
+            <Select
+              value={coupon.type || 'percent'}
+              onValueChange={(val) => updateCoupon('type', val)}
+              disabled={field.disabled}
+            >
+              <SelectTrigger className="wsms-w-[140px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {typeOptions.map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          {field.description && (
+            <FieldDescription>{field.description}</FieldDescription>
+          )}
+        </div>
+      )
+    }
+
     default:
       console.warn(`DynamicField: Unknown field type "${field.type}" for field "${field.id}"`)
       return null
@@ -376,6 +479,8 @@ DynamicField.propTypes = {
       'checkbox',
       'repeater',
       'password',
+      'time-duration',
+      'coupon-amount',
     ]).isRequired,
     label: PropTypes.string,
     description: PropTypes.string,
