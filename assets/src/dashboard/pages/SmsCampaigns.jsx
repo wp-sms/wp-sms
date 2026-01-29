@@ -101,19 +101,14 @@ const QueueStatusBadge = ({ queueStatus, nextSchedule }) => {
 
 // Time specification display
 const TimeSpecDisplay = ({ timeSpec, specificDate, delayedTime }) => {
+  const defaultConfig = { label: __('Right Away'), icon: Send }
   const specConfig = {
-    'immediately': { label: __('Immediately'), icon: Send },
-    'right-away': { label: __('Right Away'), icon: Send },
-    'right_away': { label: __('Right Away'), icon: Send },
-    'specific_date': { label: __('Specific Date'), icon: Calendar },
+    'right-away': defaultConfig,
     'specific-date': { label: __('Specific Date'), icon: Calendar },
-    'after_placing_order': { label: __('After Placing Order'), icon: Timer },
     'after-placing-order': { label: __('After Placing Order'), icon: Timer },
   }
 
-  // Normalize: try original, then with dashes/underscores swapped
-  const normalized = timeSpec?.replace(/[-_]/g, (m) => m === '-' ? '_' : '-')
-  const config = specConfig[timeSpec] || specConfig[normalized] || { label: timeSpec || '\u2014', icon: Clock }
+  const config = (timeSpec && specConfig[timeSpec]) || defaultConfig
   const Icon = config.icon
 
   return (
@@ -122,10 +117,10 @@ const TimeSpecDisplay = ({ timeSpec, specificDate, delayedTime }) => {
         <Icon className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
         <span>{config.label}</span>
       </div>
-      {timeSpec === 'specific_date' && specificDate && (
+      {timeSpec === 'specific-date' && specificDate && (
         <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-ml-5">{specificDate}</span>
       )}
-      {timeSpec === 'after_placing_order' && delayedTime && (
+      {timeSpec === 'after-placing-order' && delayedTime && (
         <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-ml-5">
           {delayedTime.value} {delayedTime.unit}
         </span>
@@ -140,7 +135,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, onSave, 
     title: campaign?.title || '',
     status: campaign?.status || 'draft',
     conditions: campaign?.conditions || [],
-    time_specification: campaign?.time_specification || 'immediately',
+    time_specification: campaign?.time_specification || 'right-away',
     specific_date: campaign?.specific_date || '',
     delayed_time: campaign?.delayed_time || { value: 30, unit: 'minutes' },
     message_content: campaign?.message_content || '',
@@ -230,7 +225,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, onSave, 
             </p>
           )}
 
-          {formData.conditions.map((condition, index) => (
+          {(Array.isArray(formData.conditions) ? formData.conditions : []).map((condition, index) => (
             <div key={index} className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-3 wsms-bg-muted/30 wsms-rounded-lg">
               <Select
                 value={condition.type}
@@ -820,7 +815,7 @@ export default function SmsCampaigns() {
                   <div>
                     <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Conditions')}</Label>
                     <div className="wsms-mt-1 wsms-space-y-1">
-                      {selectedCampaign.conditions.map((condition, index) => (
+                      {(Array.isArray(selectedCampaign.conditions) ? selectedCampaign.conditions : []).map((condition, index) => (
                         <div key={index} className="wsms-text-[12px] wsms-p-2 wsms-bg-muted/30 wsms-rounded">
                           {condition.type} {condition.operator} {condition.value}
                         </div>
@@ -830,9 +825,22 @@ export default function SmsCampaigns() {
                 )}
 
                 <div>
-                  <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Message Content')}</Label>
-                  <div className="wsms-mt-1 wsms-p-3 wsms-bg-muted/30 wsms-rounded-lg wsms-text-[13px]">
-                    {selectedCampaign.message_content || <span className="wsms-text-muted-foreground">{__('No message content')}</span>}
+                  <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Message Preview')}</Label>
+                  <div className="wsms-mt-2 wsms-rounded-lg wsms-border wsms-border-border wsms-bg-muted/10 wsms-p-4">
+                    {selectedCampaign.message_content ? (
+                      <div className="wsms-max-w-[75%]">
+                        <div className="wsms-bg-primary/10 wsms-rounded-xl wsms-rounded-tl-sm wsms-px-3 wsms-py-2.5">
+                          <p className="wsms-text-[13px] wsms-text-foreground wsms-whitespace-pre-wrap wsms-break-words">
+                            {selectedCampaign.message_content}
+                          </p>
+                        </div>
+                        <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-1 wsms-ml-1">
+                          {selectedCampaign.message_content.length} {__('characters')}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="wsms-text-[12px] wsms-text-muted-foreground">{__('No message content')}</p>
+                    )}
                   </div>
                 </div>
 
