@@ -18,7 +18,6 @@ import {
   ExternalLink,
   RefreshCw,
   Search,
-  RotateCcw,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -58,7 +57,6 @@ const StatusBadge = ({ status }) => {
     publish: { label: __('Active'), icon: CheckCircle2, className: 'wsms-bg-green-100 wsms-text-green-800 dark:wsms-bg-green-900 dark:wsms-text-green-300' },
     draft: { label: __('Draft'), icon: Edit2, className: 'wsms-bg-gray-100 wsms-text-gray-800 dark:wsms-bg-gray-800 dark:wsms-text-gray-300' },
     pending: { label: __('Pending'), icon: Clock, className: 'wsms-bg-yellow-100 wsms-text-yellow-800 dark:wsms-bg-yellow-900 dark:wsms-text-yellow-300' },
-    trash: { label: __('Trashed'), icon: Trash2, className: 'wsms-bg-red-100 wsms-text-red-800 dark:wsms-bg-red-900 dark:wsms-text-red-300' },
   }
 
   const config = statusConfig[status] || statusConfig.draft
@@ -440,7 +438,7 @@ const campaignColumns = [
 ]
 
 // Row actions factory
-function getCampaignRowActions({ onView, onEdit, onDelete, onRestore }) {
+function getCampaignRowActions({ onView, onEdit, onDelete }) {
   return [
     {
       label: __('View Details'),
@@ -451,13 +449,6 @@ function getCampaignRowActions({ onView, onEdit, onDelete, onRestore }) {
       label: __('Edit'),
       icon: Edit2,
       onClick: onEdit,
-      hidden: (row) => row.status === 'trash',
-    },
-    {
-      label: __('Restore'),
-      icon: RotateCcw,
-      onClick: onRestore,
-      hidden: (row) => row.status !== 'trash',
     },
     {
       label: __('Delete'),
@@ -525,19 +516,11 @@ export default function SmsCampaigns() {
   const [formLoading, setFormLoading] = useState(false)
   const [detailLoading, setDetailLoading] = useState(false)
 
-  // Track which campaign is being deleted (for trash vs permanent logic)
-  const [campaignToDelete, setCampaignToDelete] = useState(null)
-
   // Delete confirmation dialog
   const deleteDialog = useFormDialog({
     saveFn: async (id) => {
-      const force = campaignToDelete?.status === 'trash'
-      await woocommerceProApi.deleteCampaign(id, { force })
-      if (!force) {
-        table.updateItem(id, { status: 'trash' })
-      } else {
-        table.removeItems([id])
-      }
+      await woocommerceProApi.deleteCampaign(id, { force: true })
+      table.removeItems([id])
     },
     successMessage: __('Campaign deleted successfully'),
   })
@@ -612,25 +595,7 @@ export default function SmsCampaigns() {
     }
   }, [toast])
 
-  const handleRestore = useCallback(async (campaign) => {
-    // Optimistic update: if filtering by trash, remove the row; otherwise update status inline
-    if (filters.filters.status === 'trash') {
-      table.removeItems([campaign.id])
-    } else {
-      table.updateItem(campaign.id, { status: 'draft' })
-    }
-    try {
-      await woocommerceProApi.updateCampaign(campaign.id, { status: 'draft' })
-      toast({ title: __('Campaign restored successfully'), variant: 'success' })
-    } catch (err) {
-      toast({ title: err.message || __('Failed to restore campaign'), variant: 'destructive' })
-      // Revert on failure
-      table.refresh()
-    }
-  }, [toast, table, filters.filters.status])
-
   const handleDeleteClick = useCallback((campaign) => {
-    setCampaignToDelete(campaign)
     deleteDialog.open(campaign)
   }, [deleteDialog])
 
@@ -667,8 +632,7 @@ export default function SmsCampaigns() {
     onView: handleView,
     onEdit: handleEdit,
     onDelete: handleDeleteClick,
-    onRestore: handleRestore,
-  }), [handleView, handleEdit, handleDeleteClick, handleRestore])
+  }), [handleView, handleEdit, handleDeleteClick])
 
   // Loading skeleton
   if (!table.initialLoadDone) {
@@ -736,7 +700,6 @@ export default function SmsCampaigns() {
                 <SelectItem value="publish">{__('Active')}</SelectItem>
                 <SelectItem value="draft">{__('Draft')}</SelectItem>
                 <SelectItem value="pending">{__('Pending')}</SelectItem>
-                <SelectItem value="trash">{__('Trashed')}</SelectItem>
               </SelectContent>
             </Select>
 
@@ -903,10 +866,8 @@ export default function SmsCampaigns() {
         onClose={deleteDialog.close}
         onConfirm={handleDeleteConfirm}
         isSaving={deleteDialog.isSaving}
-        title={campaignToDelete?.status === 'trash' ? __('Permanently Delete Campaign') : __('Move to Trash')}
-        description={campaignToDelete?.status === 'trash'
-          ? __('Are you sure you want to permanently delete this campaign? This action cannot be undone.')
-          : __('Are you sure you want to move this campaign to trash? You can restore it later.')}
+        title={__('Delete Campaign')}
+        description={__('Are you sure you want to delete this campaign? This action is irreversible and cannot be undone.')}
       >
         {deleteDialog.item && (
           <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
