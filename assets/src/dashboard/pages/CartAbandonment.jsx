@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useMemo } from 'react'
 import {
   RotateCcw,
   ShoppingCart,
@@ -29,77 +29,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { __, getWpSettings } from '@/lib/utils'
+import { DataTable } from '@/components/ui/data-table'
+import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
+import { PageLoadingSkeleton, Skeleton } from '@/components/ui/skeleton'
+import { __, cn } from '@/lib/utils'
 import { useSettings } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
+import { woocommerceProApi } from '@/api/woocommerceProApi'
 
-// Create API client for WooCommerce Pro endpoints
-const createWooProClient = () => {
-  const { nonce } = getWpSettings()
-  const baseUrl = '/wp-json/wp-sms-woo-pro/v1/'
-
-  return {
-    async get(endpoint, params = {}) {
-      const searchParams = new URLSearchParams()
-      Object.entries(params).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== '') {
-          searchParams.append(key, value)
-        }
-      })
-      const queryString = searchParams.toString()
-      const url = `${baseUrl}${endpoint}${queryString ? `?${queryString}` : ''}`
-
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-WP-Nonce': nonce,
-        },
-      })
-
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({}))
-        throw new Error(error.message || __('Request failed'))
-      }
-
-      return response.json()
-    },
-
-    async post(endpoint, data = {}) {
-      const url = `${baseUrl}${endpoint}`
-
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-WP-Nonce': nonce,
-        },
-        body: JSON.stringify(data),
-      })
-
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({}))
-        throw new Error(error.message || __('Request failed'))
-      }
-
-      return response.json()
-    },
-  }
-}
-
-const wooProClient = createWooProClient()
-
-// Status badge component
+// SMS status badge component
 function SmsStatusBadge({ status, time }) {
   const statusConfig = {
     unscheduled: {
@@ -171,6 +109,108 @@ function StatsCard({ icon: Icon, label, value, description, color, isHtml = fals
   )
 }
 
+// Stats skeleton
+function StatsSkeleton() {
+  return (
+    <div className="wsms-grid wsms-grid-cols-4 wsms-gap-4">
+      {[1, 2, 3, 4].map((i) => (
+        <Card key={i}>
+          <CardContent className="wsms-p-4">
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <Skeleton className="wsms-h-10 wsms-w-10 wsms-rounded-lg" />
+              <div className="wsms-flex-1 wsms-space-y-2">
+                <Skeleton className="wsms-h-3 wsms-w-20" />
+                <Skeleton className="wsms-h-5 wsms-w-12" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
+}
+
+// Column definitions
+const cartColumns = [
+  {
+    id: 'customer',
+    accessorKey: 'cart_owner',
+    header: __('Customer'),
+    cell: ({ row }) => (
+      <div className="wsms-flex wsms-items-center wsms-gap-2">
+        <div className="wsms-flex wsms-h-8 wsms-w-8 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary/10">
+          <User className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+        </div>
+        <span className="wsms-text-[13px] wsms-font-medium">
+          {row.cart_owner || __('Guest')}
+        </span>
+      </div>
+    ),
+  },
+  {
+    id: 'phone',
+    accessorKey: 'phone_number',
+    header: __('Phone'),
+    cell: ({ row }) => (
+      <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px] wsms-text-muted-foreground">
+        <Phone className="wsms-h-3.5 wsms-w-3.5" />
+        {row.phone_number || '-'}
+      </div>
+    ),
+  },
+  {
+    id: 'cart_total',
+    accessorKey: 'cart_total',
+    header: __('Cart Total'),
+    cell: ({ row }) => (
+      <span
+        className="wsms-text-[13px] wsms-font-medium"
+        dangerouslySetInnerHTML={{ __html: row.cart_total }}
+      />
+    ),
+  },
+  {
+    id: 'recovered',
+    accessorKey: 'is_recovered',
+    header: __('Recovered'),
+    cell: ({ row }) =>
+      row.is_recovered === 'Yes' ? (
+        <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-emerald-600 wsms-text-[12px]">
+          <CheckCircle className="wsms-h-3.5 wsms-w-3.5" />
+          {__('Yes')}
+        </span>
+      ) : (
+        <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-muted-foreground wsms-text-[12px]">
+          <XCircle className="wsms-h-3.5 wsms-w-3.5" />
+          {__('No')}
+        </span>
+      ),
+  },
+  {
+    id: 'sms_status',
+    accessorKey: 'sms_status',
+    header: __('SMS Status'),
+    cell: ({ row }) => (
+      <SmsStatusBadge
+        status={row.sms_status?.status}
+        time={row.sms_status?.time}
+      />
+    ),
+  },
+]
+
+// Row actions
+function getCartRowActions({ onDelete }) {
+  return [
+    {
+      label: __('Delete'),
+      icon: Trash2,
+      onClick: onDelete,
+      variant: 'destructive',
+    },
+  ]
+}
+
 export default function CartAbandonment() {
   const { setCurrentPage, isAddonActive } = useSettings()
   const { toast } = useToast()
@@ -216,6 +256,7 @@ export default function CartAbandonment() {
 
   // State
   const [isLoading, setIsLoading] = useState(true)
+  const [initialLoadDone, setInitialLoadDone] = useState(false)
   const [carts, setCarts] = useState([])
   const [stats, setStats] = useState({
     recoveredCarts: 0,
@@ -230,22 +271,23 @@ export default function CartAbandonment() {
     type: 'allCarts',
     search: '',
   })
-  const [deleteDialog, setDeleteDialog] = useState({ open: false, cart: null })
+
+  // Delete dialog state
+  const [deleteTarget, setDeleteTarget] = useState(null)
   const [isDeleting, setIsDeleting] = useState(false)
 
   // Fetch cart data
   const fetchData = useCallback(async () => {
     setIsLoading(true)
     try {
-      const response = await wooProClient.get('cart-abandonment', {
+      const result = await woocommerceProApi.getCarts({
         duration: filters.duration === 'all' ? '' : filters.duration,
         type: filters.type,
         search: filters.search,
       })
-
-      if (response.success) {
-        setCarts(response.data.carts || [])
-        setStats(response.data.stats || stats)
+      setCarts(result.items || [])
+      if (result.stats) {
+        setStats(result.stats)
       }
     } catch (error) {
       console.error('Failed to fetch cart data:', error)
@@ -256,8 +298,9 @@ export default function CartAbandonment() {
       })
     } finally {
       setIsLoading(false)
+      setInitialLoadDone(true)
     }
-  }, [filters])
+  }, [filters, toast])
 
   // Initial load
   useEffect(() => {
@@ -265,39 +308,31 @@ export default function CartAbandonment() {
   }, [fetchData])
 
   // Handle delete
-  const handleDelete = async () => {
-    if (!deleteDialog.cart) return
+  const handleDeleteConfirm = async () => {
+    if (!deleteTarget) return
 
     setIsDeleting(true)
     try {
-      const response = await wooProClient.post('cart-abandonment/delete', {
-        customer_id: deleteDialog.cart.customer_id,
-        cart_hash: deleteDialog.cart.cart_hash,
+      await woocommerceProApi.deleteCart(deleteTarget.customer_id, deleteTarget.cart_hash)
+      toast({
+        title: __('Cart deleted successfully'),
+        variant: 'success',
       })
-
-      if (response.success) {
-        toast({
-          title: __('Success'),
-          description: __('Cart deleted successfully'),
-          variant: 'success',
-        })
-        setCarts((prev) =>
-          prev.filter(
-            (c) =>
-              c.customer_id !== deleteDialog.cart.customer_id ||
-              c.cart_hash !== deleteDialog.cart.cart_hash
-          )
+      setCarts((prev) =>
+        prev.filter(
+          (c) =>
+            c.customer_id !== deleteTarget.customer_id ||
+            c.cart_hash !== deleteTarget.cart_hash
         )
-      }
+      )
     } catch (error) {
       toast({
-        title: __('Error'),
-        description: error.message || __('Failed to delete cart'),
+        title: error.message || __('Failed to delete cart'),
         variant: 'destructive',
       })
     } finally {
       setIsDeleting(false)
-      setDeleteDialog({ open: false, cart: null })
+      setDeleteTarget(null)
     }
   }
 
@@ -312,8 +347,43 @@ export default function CartAbandonment() {
     fetchData()
   }
 
+  // Row actions
+  const rowActions = useMemo(
+    () =>
+      getCartRowActions({
+        onDelete: (cart) => setDeleteTarget(cart),
+      }),
+    []
+  )
+
+  // Row ID function for composite keys
+  const getRowId = useCallback(
+    (row, index) => `${row.customer_id}-${row.cart_hash}-${index}`,
+    []
+  )
+
+  // Loading skeleton
+  if (!initialLoadDone) {
+    return (
+      <div className="wsms-space-y-6">
+        {/* Hero skeleton */}
+        <div className="wsms-rounded-lg wsms-border wsms-border-border wsms-bg-card wsms-p-5">
+          <div className="wsms-flex wsms-items-center wsms-gap-4">
+            <Skeleton className="wsms-h-12 wsms-w-12 wsms-rounded-xl" />
+            <div className="wsms-space-y-2 wsms-flex-1">
+              <Skeleton className="wsms-h-5 wsms-w-48" />
+              <Skeleton className="wsms-h-3 wsms-w-96" />
+            </div>
+          </div>
+        </div>
+        <StatsSkeleton />
+        <PageLoadingSkeleton />
+      </div>
+    )
+  }
+
   return (
-    <div className="wsms-space-y-6">
+    <div className="wsms-space-y-6 wsms-stagger-children">
       {/* Hero Section */}
       <div className="wsms-relative wsms-overflow-hidden wsms-rounded-lg wsms-bg-gradient-to-br wsms-from-primary/5 wsms-via-primary/10 wsms-to-transparent wsms-border wsms-border-primary/20">
         <div className="wsms-absolute wsms-top-0 wsms-right-0 wsms-w-32 wsms-h-32 wsms-bg-primary/5 wsms-rounded-full wsms--translate-y-1/2 wsms-translate-x-1/2" />
@@ -372,7 +442,7 @@ export default function CartAbandonment() {
         />
       </div>
 
-      {/* Filters and Table */}
+      {/* Filters */}
       <Card>
         <CardHeader className="wsms-pb-4">
           <div className="wsms-flex wsms-items-center wsms-justify-between">
@@ -384,14 +454,13 @@ export default function CartAbandonment() {
             </div>
             <Button variant="outline" size="sm" onClick={fetchData} disabled={isLoading}>
               <RefreshCw
-                className={`wsms-h-4 wsms-w-4 wsms-mr-2 ${isLoading ? 'wsms-animate-spin' : ''}`}
+                className={cn('wsms-h-4 wsms-w-4 wsms-mr-2', isLoading && 'wsms-animate-spin')}
               />
               {__('Refresh')}
             </Button>
           </div>
         </CardHeader>
         <CardContent>
-          {/* Filters */}
           <form onSubmit={handleSearchSubmit} className="wsms-flex wsms-gap-3 wsms-mb-4">
             <div className="wsms-relative wsms-flex-1 wsms-max-w-xs">
               <Search className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
@@ -437,146 +506,44 @@ export default function CartAbandonment() {
             </Button>
           </form>
 
-          {/* Table */}
-          <div className="wsms-border wsms-rounded-lg wsms-overflow-hidden">
-            <table className="wsms-w-full">
-              <thead className="wsms-bg-muted/50">
-                <tr>
-                  <th className="wsms-px-4 wsms-py-3 wsms-text-left wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground">
-                    {__('Customer')}
-                  </th>
-                  <th className="wsms-px-4 wsms-py-3 wsms-text-left wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground">
-                    {__('Phone')}
-                  </th>
-                  <th className="wsms-px-4 wsms-py-3 wsms-text-left wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground">
-                    {__('Cart Total')}
-                  </th>
-                  <th className="wsms-px-4 wsms-py-3 wsms-text-left wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground">
-                    {__('Recovered')}
-                  </th>
-                  <th className="wsms-px-4 wsms-py-3 wsms-text-left wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground">
-                    {__('SMS Status')}
-                  </th>
-                  <th className="wsms-px-4 wsms-py-3 wsms-text-right wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground">
-                    {__('Actions')}
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="wsms-divide-y wsms-divide-border">
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={6} className="wsms-px-4 wsms-py-12 wsms-text-center">
-                      <Loader2 className="wsms-h-6 wsms-w-6 wsms-animate-spin wsms-mx-auto wsms-text-muted-foreground" />
-                      <p className="wsms-mt-2 wsms-text-[13px] wsms-text-muted-foreground">
-                        {__('Loading...')}
-                      </p>
-                    </td>
-                  </tr>
-                ) : carts.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="wsms-px-4 wsms-py-12 wsms-text-center">
-                      <ShoppingCart className="wsms-h-8 wsms-w-8 wsms-mx-auto wsms-text-muted-foreground/50" />
-                      <p className="wsms-mt-2 wsms-text-[13px] wsms-text-muted-foreground">
-                        {__('No abandoned carts found')}
-                      </p>
-                    </td>
-                  </tr>
-                ) : (
-                  carts.map((cart, index) => (
-                    <tr key={`${cart.customer_id}-${cart.cart_hash}-${index}`} className="hover:wsms-bg-muted/30">
-                      <td className="wsms-px-4 wsms-py-3">
-                        <div className="wsms-flex wsms-items-center wsms-gap-2">
-                          <div className="wsms-flex wsms-h-8 wsms-w-8 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary/10">
-                            <User className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                          </div>
-                          <span className="wsms-text-[13px] wsms-font-medium">
-                            {cart.cart_owner || __('Guest')}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="wsms-px-4 wsms-py-3">
-                        <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[13px] wsms-text-muted-foreground">
-                          <Phone className="wsms-h-3.5 wsms-w-3.5" />
-                          {cart.phone_number || '-'}
-                        </div>
-                      </td>
-                      <td className="wsms-px-4 wsms-py-3">
-                        <span
-                          className="wsms-text-[13px] wsms-font-medium"
-                          dangerouslySetInnerHTML={{ __html: cart.cart_total }}
-                        />
-                      </td>
-                      <td className="wsms-px-4 wsms-py-3">
-                        {cart.is_recovered === 'Yes' ? (
-                          <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-emerald-600 wsms-text-[12px]">
-                            <CheckCircle className="wsms-h-3.5 wsms-w-3.5" />
-                            {__('Yes')}
-                          </span>
-                        ) : (
-                          <span className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-muted-foreground wsms-text-[12px]">
-                            <XCircle className="wsms-h-3.5 wsms-w-3.5" />
-                            {__('No')}
-                          </span>
-                        )}
-                      </td>
-                      <td className="wsms-px-4 wsms-py-3">
-                        <SmsStatusBadge
-                          status={cart.sms_status?.status}
-                          time={cart.sms_status?.time}
-                        />
-                      </td>
-                      <td className="wsms-px-4 wsms-py-3 wsms-text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="wsms-text-destructive hover:wsms-text-destructive hover:wsms-bg-destructive/10"
-                          onClick={() => setDeleteDialog({ open: true, cart })}
-                        >
-                          <Trash2 className="wsms-h-4 wsms-w-4" />
-                        </Button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+          {/* Data Table */}
+          <DataTable
+            columns={cartColumns}
+            data={carts}
+            loading={isLoading}
+            rowActions={rowActions}
+            getRowId={getRowId}
+            emptyMessage={__('No abandoned carts found')}
+            emptyIcon={ShoppingCart}
+          />
         </CardContent>
       </Card>
 
       {/* Delete Confirmation Dialog */}
-      <AlertDialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, cart: null })}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{__('Delete Abandoned Cart')}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {__(
-                'Are you sure you want to delete this abandoned cart record? This action cannot be undone.'
+      <DeleteConfirmDialog
+        isOpen={!!deleteTarget}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDeleteConfirm}
+        isSaving={isDeleting}
+        title={__('Delete Abandoned Cart')}
+        description={__('Are you sure you want to delete this abandoned cart record? This action cannot be undone.')}
+      >
+        {deleteTarget && (
+          <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
+            <div className="wsms-flex wsms-items-center wsms-gap-2">
+              <User className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+              <span className="wsms-text-[13px] wsms-font-medium">
+                {deleteTarget.cart_owner || __('Guest')}
+              </span>
+              {deleteTarget.phone_number && (
+                <span className="wsms-text-[12px] wsms-text-muted-foreground">
+                  ({deleteTarget.phone_number})
+                </span>
               )}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel disabled={isDeleting}>{__('Cancel')}</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className="wsms-bg-destructive wsms-text-destructive-foreground hover:wsms-bg-destructive/90"
-            >
-              {isDeleting ? (
-                <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
-                  {__('Deleting...')}
-                </>
-              ) : (
-                <>
-                  <Trash2 className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-                  {__('Delete')}
-                </>
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+            </div>
+          </div>
+        )}
+      </DeleteConfirmDialog>
     </div>
   )
 }
