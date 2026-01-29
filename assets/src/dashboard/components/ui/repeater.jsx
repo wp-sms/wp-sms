@@ -3,8 +3,10 @@ import { Plus, Trash2, ChevronUp, ChevronDown } from 'lucide-react'
 import { cn, __ } from '@/lib/utils'
 import { Button } from './button'
 import { Input } from './input'
+import { Textarea } from './textarea'
 import { Label } from './label'
 import { MediaSelector } from '@/components/shared/MediaSelector'
+import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
 
 /**
  * Repeater component for managing arrays of items with configurable fields
@@ -219,9 +221,32 @@ Repeater.displayName = 'Repeater'
  * Individual field renderer for repeater items
  */
 function RepeaterField({ field, value, onChange, disabled }) {
-  const { type = 'text', placeholder, options, buttonText } = field
+  const { type = 'text', placeholder, options, buttonText, variables } = field
 
   switch (type) {
+    case 'textarea':
+      if (Array.isArray(variables) && variables.length > 0) {
+        return (
+          <TemplateTextarea
+            value={value}
+            onChange={onChange}
+            variables={variables}
+            placeholder={placeholder}
+            rows={field.rows || 3}
+            disabled={disabled}
+          />
+        )
+      }
+      return (
+        <Textarea
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          rows={field.rows || 3}
+          disabled={disabled}
+        />
+      )
+
     case 'select':
       return (
         <select

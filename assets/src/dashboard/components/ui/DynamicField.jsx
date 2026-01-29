@@ -1,6 +1,7 @@
 import React, { useMemo, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { InputField, TextareaField, SelectField, SwitchField, FieldDescription } from './form-field'
+import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
 import { MultiSelect } from './multi-select'
 import { Repeater } from './repeater'
 import { Label } from './label'
@@ -51,6 +52,33 @@ function resolveOptions(options, addonSlug) {
 }
 
 /**
+ * Resolve variables for template textarea fields
+ *
+ * @param {string[]|string|undefined} variables - Variables array, string reference to addon data, or undefined
+ * @param {string} addonSlug - The add-on slug to look up data from
+ * @returns {string[]} Resolved variables array
+ */
+function resolveVariables(variables, addonSlug) {
+  if (Array.isArray(variables)) {
+    return variables
+  }
+
+  if (typeof variables !== 'string') {
+    return []
+  }
+
+  // Look up the reference in add-on data
+  const { addonSettings = {} } = getWpSettings()
+  const addonSchema = addonSettings[addonSlug]
+
+  if (addonSchema?.data && Array.isArray(addonSchema.data[variables])) {
+    return addonSchema.data[variables]
+  }
+
+  return []
+}
+
+/**
  * Evaluate conditional display rules
  *
  * @param {Array} conditions - Array of condition objects
@@ -63,11 +91,10 @@ function evaluateConditions(conditions, settings, proSettings, addonValues) {
   if (!conditions || conditions.length === 0) return true
 
   return conditions.every(condition => {
-    // First check settings, then proSettings, then all addon values
-    let value = settings[condition.field] ?? proSettings[condition.field]
+    let value
 
-    // If not found in main settings, check addon values
-    if (value === undefined && addonValues) {
+    // Check addon values first (these are updated by React state changes)
+    if (addonValues) {
       for (const addonSlug of Object.keys(addonValues)) {
         if (addonValues[addonSlug]?.[condition.field] !== undefined) {
           value = addonValues[addonSlug][condition.field]
@@ -76,10 +103,28 @@ function evaluateConditions(conditions, settings, proSettings, addonValues) {
       }
     }
 
+    // Fall back to settings, then proSettings
+    if (value === undefined) {
+      value = settings[condition.field] ?? proSettings[condition.field]
+    }
+
     switch (condition.operator) {
       case '==':
+        // Handle legacy string formats (enable/disable, yes/no) when comparing to booleans
+        if (condition.value === true) {
+          return value === true || value === 'enable' || value === 'yes' || value === 1 || value === '1'
+        }
+        if (condition.value === false) {
+          return value === false || value === 'disable' || value === 'no' || value === 0 || value === '0' || value === '' || value === null || value === undefined
+        }
         return value === condition.value
       case '!=':
+        if (condition.value === true) {
+          return !(value === true || value === 'enable' || value === 'yes' || value === 1 || value === '1')
+        }
+        if (condition.value === false) {
+          return !(value === false || value === 'disable' || value === 'no' || value === 0 || value === '0' || value === '' || value === null || value === undefined)
+        }
         return value !== condition.value
       case 'contains':
         return Array.isArray(value) && value.includes(condition.value)
@@ -196,7 +241,33 @@ export function DynamicField({ field }) {
         />
       )
 
-    case 'textarea':
+    case 'textarea': {
+      // Resolve variables: can be an array or a string reference to addon data
+      const variables = resolveVariables(field.variables, field.addonSlug)
+
+      if (variables.length > 0) {
+        return (
+          <div className="wsms-space-y-2">
+            {field.label && (
+              <Label className="wsms-text-[13px] wsms-font-medium">
+                {field.label}
+                {field.required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
+              </Label>
+            )}
+            <TemplateTextarea
+              value={value || ''}
+              onChange={setValue}
+              variables={variables}
+              placeholder={field.placeholder}
+              rows={field.rows || 3}
+            />
+            {field.description && (
+              <FieldDescription>{field.description}</FieldDescription>
+            )}
+          </div>
+        )
+      }
+
       return (
         <TextareaField
           {...commonProps}
@@ -206,6 +277,7 @@ export function DynamicField({ field }) {
           rows={field.rows || 3}
         />
       )
+    }
 
     case 'select':
       return (
