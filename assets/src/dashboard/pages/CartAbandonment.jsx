@@ -6,11 +6,9 @@ import {
   DollarSign,
   TrendingUp,
   Clock,
-  Settings,
   Trash2,
   RefreshCw,
   Search,
-  Filter,
   User,
   Phone,
   CheckCircle,
@@ -31,7 +29,7 @@ import {
 } from '@/components/ui/select'
 import { DataTable } from '@/components/ui/data-table'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
-import { PageLoadingSkeleton, Skeleton } from '@/components/ui/skeleton'
+import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 import { __, cn } from '@/lib/utils'
 import { useSettings } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
@@ -78,57 +76,6 @@ function SmsStatusBadge({ status, time }) {
   )
 }
 
-// Stats card component
-function StatsCard({ icon: Icon, label, value, description, color, isHtml = false }) {
-  return (
-    <Card>
-      <CardContent className="wsms-p-4">
-        <div className="wsms-flex wsms-items-center wsms-gap-3">
-          <div
-            className={`wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg ${color}`}
-          >
-            <Icon className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-          </div>
-          <div className="wsms-flex-1">
-            <p className="wsms-text-[12px] wsms-text-muted-foreground">{label}</p>
-            {isHtml ? (
-              <p
-                className="wsms-text-lg wsms-font-semibold wsms-text-foreground"
-                dangerouslySetInnerHTML={{ __html: value }}
-              />
-            ) : (
-              <p className="wsms-text-lg wsms-font-semibold wsms-text-foreground">{value}</p>
-            )}
-            {description && (
-              <p className="wsms-text-[10px] wsms-text-muted-foreground">{description}</p>
-            )}
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
-
-// Stats skeleton
-function StatsSkeleton() {
-  return (
-    <div className="wsms-grid wsms-grid-cols-4 wsms-gap-4">
-      {[1, 2, 3, 4].map((i) => (
-        <Card key={i}>
-          <CardContent className="wsms-p-4">
-            <div className="wsms-flex wsms-items-center wsms-gap-3">
-              <Skeleton className="wsms-h-10 wsms-w-10 wsms-rounded-lg" />
-              <div className="wsms-flex-1 wsms-space-y-2">
-                <Skeleton className="wsms-h-3 wsms-w-20" />
-                <Skeleton className="wsms-h-5 wsms-w-12" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  )
-}
 
 // Column definitions
 const cartColumns = [
@@ -212,7 +159,7 @@ function getCartRowActions({ onDelete }) {
 }
 
 export default function CartAbandonment() {
-  const { setCurrentPage, isAddonActive } = useSettings()
+  const { isAddonActive } = useSettings()
   const { toast } = useToast()
   const hasWooCommercePro = isAddonActive('woocommerce')
 
@@ -365,148 +312,138 @@ export default function CartAbandonment() {
   // Loading skeleton
   if (!initialLoadDone) {
     return (
-      <div className="wsms-space-y-6">
-        {/* Hero skeleton */}
-        <div className="wsms-rounded-lg wsms-border wsms-border-border wsms-bg-card wsms-p-5">
-          <div className="wsms-flex wsms-items-center wsms-gap-4">
-            <Skeleton className="wsms-h-12 wsms-w-12 wsms-rounded-xl" />
-            <div className="wsms-space-y-2 wsms-flex-1">
-              <Skeleton className="wsms-h-5 wsms-w-48" />
-              <Skeleton className="wsms-h-3 wsms-w-96" />
-            </div>
-          </div>
-        </div>
-        <StatsSkeleton />
-        <PageLoadingSkeleton />
-      </div>
+      <PageLoadingSkeleton />
     )
   }
 
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
-      {/* Hero Section */}
-      <div className="wsms-relative wsms-overflow-hidden wsms-rounded-lg wsms-bg-gradient-to-br wsms-from-primary/5 wsms-via-primary/10 wsms-to-transparent wsms-border wsms-border-primary/20">
-        <div className="wsms-absolute wsms-top-0 wsms-right-0 wsms-w-32 wsms-h-32 wsms-bg-primary/5 wsms-rounded-full wsms--translate-y-1/2 wsms-translate-x-1/2" />
-        <div className="wsms-relative wsms-p-6">
-          <div className="wsms-flex wsms-items-start wsms-justify-between">
-            <div className="wsms-flex wsms-items-start wsms-gap-4">
-              <div className="wsms-flex wsms-h-12 wsms-w-12 wsms-items-center wsms-justify-center wsms-rounded-xl wsms-bg-primary/10 wsms-shrink-0">
-                <RotateCcw className="wsms-h-6 wsms-w-6 wsms-text-primary" />
+      {/* Stats & Actions Header */}
+      <div className="wsms-px-4 lg:wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
+        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4 lg:wsms-flex lg:wsms-items-center lg:wsms-gap-8">
+            {/* Recoverable Carts */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-blue-500/10">
+                <ShoppingCart className="wsms-h-5 wsms-w-5 wsms-text-blue-500" aria-hidden="true" />
               </div>
               <div>
-                <h2 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-1">
-                  {__('Cart Abandonment Recovery')}
-                </h2>
-                <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-max-w-lg">
-                  {__(
-                    'Recover lost sales by automatically sending SMS reminders to customers who abandoned their shopping carts.'
-                  )}
-                </p>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.recoverableCarts}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recoverable')}</p>
               </div>
             </div>
-            <Button variant="outline" size="sm" onClick={() => setCurrentPage('woocommerce-pro')}>
-              <Settings className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-              {__('Settings')}
-            </Button>
-          </div>
+
+            <div className="wsms-hidden lg:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+
+            {/* Recovered Carts */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-emerald-500/10">
+                <TrendingUp className="wsms-h-5 wsms-w-5 wsms-text-emerald-500" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-emerald-500">{stats.recoveredCarts}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recovered')}</p>
+              </div>
+            </div>
+
+            <div className="wsms-hidden lg:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+
+            {/* Recoverable Revenue */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-amber-500/10">
+                <DollarSign className="wsms-h-5 wsms-w-5 wsms-text-amber-500" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-foreground" dangerouslySetInnerHTML={{ __html: stats.recoverableRevenue }} />
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Revenue')}</p>
+              </div>
+            </div>
+
+            <div className="wsms-hidden lg:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+
+            {/* SMS Sent */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-purple-500/10">
+                <MessageSquare className="wsms-h-5 wsms-w-5 wsms-text-purple-500" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.sentSMS}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{stats.followingSMS} {__('in queue')}</p>
+              </div>
+            </div>
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="wsms-grid wsms-grid-cols-4 wsms-gap-4">
-        <StatsCard
-          icon={ShoppingCart}
-          label={__('Recoverable Carts')}
-          value={stats.recoverableCarts}
-          color="wsms-bg-blue-500/10 wsms-text-blue-500"
-        />
-        <StatsCard
-          icon={TrendingUp}
-          label={__('Recovered Carts')}
-          value={stats.recoveredCarts}
-          color="wsms-bg-emerald-500/10 wsms-text-emerald-500"
-        />
-        <StatsCard
-          icon={DollarSign}
-          label={__('Recoverable Revenue')}
-          value={stats.recoverableRevenue}
-          color="wsms-bg-amber-500/10 wsms-text-amber-500"
-          isHtml
-        />
-        <StatsCard
-          icon={MessageSquare}
-          label={__('SMS Sent')}
-          value={stats.sentSMS}
-          description={`${stats.followingSMS} ${__('in queue')}`}
-          color="wsms-bg-purple-500/10 wsms-text-purple-500"
-        />
-      </div>
-
-      {/* Filters */}
-      <Card>
-        <CardHeader className="wsms-pb-4">
-          <div className="wsms-flex wsms-items-center wsms-justify-between">
-            <div>
-              <CardTitle>{__('Abandoned Carts')}</CardTitle>
-              <CardDescription>
-                {__('View and manage abandoned shopping carts')}
-              </CardDescription>
-            </div>
-            <Button variant="outline" size="sm" onClick={fetchData} disabled={isLoading}>
-              <RefreshCw
-                className={cn('wsms-h-4 wsms-w-4 wsms-mr-2', isLoading && 'wsms-animate-spin')}
-              />
-              {__('Refresh')}
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSearchSubmit} className="wsms-flex wsms-gap-3 wsms-mb-4">
-            <div className="wsms-relative wsms-flex-1 wsms-max-w-xs">
-              <Search className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+      {/* Toolbar */}
+      <Card className="wsms-relative wsms-z-10">
+        <CardContent className="wsms-p-0">
+          <form onSubmit={handleSearchSubmit} className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-2 wsms-p-3">
+            {/* Search */}
+            <div className="wsms-relative wsms-w-full xl:wsms-w-[220px] xl:wsms-shrink-0">
+              <Search className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
               <Input
-                placeholder={__('Search by phone number...')}
+                type="text"
+                placeholder={__('Search by phone...')}
                 value={filters.search}
                 onChange={(e) => handleFilterChange('search', e.target.value)}
-                className="wsms-pl-9"
+                className="wsms-pl-8 wsms-h-9"
               />
             </div>
-            <Select
-              value={filters.type}
-              onValueChange={(value) => handleFilterChange('type', value)}
+
+            {/* Filters */}
+            <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-2">
+              <Select
+                value={filters.type}
+                onValueChange={(value) => handleFilterChange('type', value)}
+              >
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[12px]" aria-label={__('Filter by type')}>
+                  <SelectValue placeholder={__('All Carts')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="allCarts">{__('All Carts')}</SelectItem>
+                  <SelectItem value="abandonedCarts">{__('Abandoned Only')}</SelectItem>
+                  <SelectItem value="recoveredCarts">{__('Recovered Only')}</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select
+                value={filters.duration}
+                onValueChange={(value) => handleFilterChange('duration', value)}
+              >
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-text-[12px]" aria-label={__('Filter by duration')}>
+                  <SelectValue placeholder={__('All Time')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{__('All Time')}</SelectItem>
+                  <SelectItem value="today">{__('Today')}</SelectItem>
+                  <SelectItem value="yesterday">{__('Yesterday')}</SelectItem>
+                  <SelectItem value="lastWeek">{__('Last Week')}</SelectItem>
+                  <SelectItem value="lastMonth">{__('Last Month')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Refresh */}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={fetchData}
+              disabled={isLoading}
+              className="wsms-h-9 wsms-px-2.5 xl:wsms-ml-auto"
+              aria-label={__('Refresh')}
             >
-              <SelectTrigger className="wsms-w-[180px]">
-                <Filter className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-                <SelectValue placeholder={__('Filter by type')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="allCarts">{__('All Carts')}</SelectItem>
-                <SelectItem value="abandonedCarts">{__('Abandoned Only')}</SelectItem>
-                <SelectItem value="recoveredCarts">{__('Recovered Only')}</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select
-              value={filters.duration}
-              onValueChange={(value) => handleFilterChange('duration', value)}
-            >
-              <SelectTrigger className="wsms-w-[180px]">
-                <Clock className="wsms-h-4 wsms-w-4 wsms-mr-2" />
-                <SelectValue placeholder={__('Time period')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{__('All Time')}</SelectItem>
-                <SelectItem value="today">{__('Today')}</SelectItem>
-                <SelectItem value="yesterday">{__('Yesterday')}</SelectItem>
-                <SelectItem value="lastWeek">{__('Last Week')}</SelectItem>
-                <SelectItem value="lastMonth">{__('Last Month')}</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button type="submit" disabled={isLoading}>
-              {__('Apply')}
+              <RefreshCw
+                className={cn('wsms-h-4 wsms-w-4', isLoading && 'wsms-animate-spin')}
+                aria-hidden="true"
+              />
             </Button>
           </form>
+        </CardContent>
+      </Card>
 
-          {/* Data Table */}
+      {/* Data Table */}
+      <Card>
+        <CardContent className="wsms-p-0">
           <DataTable
             columns={cartColumns}
             data={carts}
