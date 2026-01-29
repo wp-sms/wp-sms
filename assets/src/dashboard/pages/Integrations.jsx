@@ -299,8 +299,11 @@ export default function Integrations() {
     return null
   }
 
-  // Additional integrations (Pro/Add-on only, excluding free ones already shown above)
+  // All integrations (free + pro)
   const additionalIntegrations = [
+    { name: __('Contact Form 7'), pluginKey: 'contact-form-7', requirement: __('Free'), Icon: FileInput },
+    { name: __('Formidable Forms'), pluginKey: 'formidable', requirement: __('Free'), Icon: FileInput },
+    { name: __('Forminator'), pluginKey: 'forminator', requirement: __('Free'), Icon: FileInput },
     { name: __('Gravity Forms'), pluginKey: 'gravity-forms', requirement: __('Requires WSMS Pro'), Icon: ClipboardList },
     { name: __('Quform'), pluginKey: 'quform', requirement: __('Requires WSMS Pro'), Icon: ClipboardList },
     { name: __('WooCommerce'), pluginKey: 'woocommerce', requirement: __('Requires WSMS Pro'), Icon: ShoppingCart },
@@ -321,142 +324,160 @@ export default function Integrations() {
     { name: __('Booking Calendar'), pluginKey: 'booking', requirement: __('Requires Booking add-on'), Icon: Calendar },
   ]
 
+  // Collapsible state for free integrations
+  const [cf7Open, setCf7Open] = useState(false)
+  const [formidableOpen, setFormidableOpen] = useState(false)
+  const [forminatorOpen, setForminatorOpen] = useState(false)
+
   return (
     <div className="wsms-space-y-6">
-      {/* Contact Form 7 */}
-      <Card className={cf7Status.status !== 'active' ? 'wsms-opacity-75' : ''}>
-        <CardHeader className="wsms-flex wsms-flex-row wsms-items-center wsms-justify-between wsms-space-y-0">
-          <div>
-            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <FileInput className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              {__('Contact Form 7')}
-            </CardTitle>
-            <CardDescription className="wsms-mt-1">
-              {__('Send SMS notifications when Contact Form 7 forms are submitted')}
-            </CardDescription>
-          </div>
-          <PluginStatusBadge status={cf7Status.status} />
-        </CardHeader>
-        {cf7Status.status === 'active' && (
-          <CardContent className="wsms-border-t wsms-pt-4">
-            <div className="wsms-rounded-lg wsms-border wsms-p-4">
-              <div className="wsms-flex wsms-items-center wsms-justify-between">
-                <div>
-                  <h4 className="wsms-text-[13px] wsms-font-medium">{__('SMS Notification Tab')}</h4>
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">
-                    {__('Add an SMS notification settings tab to each Contact Form 7 form editor.')}
-                  </p>
+      {/* Contact Form 7 - only show if active */}
+      {cf7Status.status === 'active' && (
+        <Card>
+          <CardHeader
+            className="wsms-cursor-pointer wsms-select-none"
+            onClick={() => setCf7Open(!cf7Open)}
+          >
+            <div className="wsms-flex wsms-items-center wsms-justify-between">
+              <div>
+                <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+                  <FileInput className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+                  {__('Contact Form 7')}
+                </CardTitle>
+                <CardDescription className="wsms-mt-1">
+                  {__('Send SMS notifications when Contact Form 7 forms are submitted')}
+                </CardDescription>
+              </div>
+              {cf7Open ? (
+                <ChevronUp className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
+              ) : (
+                <ChevronDown className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
+              )}
+            </div>
+          </CardHeader>
+          {cf7Open && (
+            <CardContent className="wsms-border-t wsms-pt-4">
+              <div className="wsms-rounded-lg wsms-border wsms-p-4">
+                <div className="wsms-flex wsms-items-center wsms-justify-between">
+                  <div>
+                    <h4 className="wsms-text-[13px] wsms-font-medium">{__('SMS Notification Tab')}</h4>
+                    <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">
+                      {__('Add an SMS notification settings tab to each Contact Form 7 form editor.')}
+                    </p>
+                  </div>
+                  <Switch
+                    checked={cf7Metabox === '1'}
+                    onCheckedChange={(checked) => setCf7Metabox(checked ? '1' : '')}
+                  />
                 </div>
-                <Switch
-                  checked={cf7Metabox === '1'}
-                  onCheckedChange={(checked) => setCf7Metabox(checked ? '1' : '')}
-                />
               </div>
-            </div>
-            {cf7AddonFields.length > 0 && (
-              <div className="wsms-mt-4">
-                <AddonFieldsInjection fields={cf7AddonFields} />
-              </div>
-            )}
-          </CardContent>
-        )}
-      </Card>
-
-      {/* Formidable Forms */}
-      <Card className={formidableStatus.status !== 'active' ? 'wsms-opacity-75' : ''}>
-        <CardHeader className="wsms-flex wsms-flex-row wsms-items-center wsms-justify-between wsms-space-y-0">
-          <div>
-            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <FileInput className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              {__('Formidable Forms')}
-            </CardTitle>
-            <CardDescription className="wsms-mt-1">
-              {__('Send SMS notifications when Formidable forms are submitted')}
-            </CardDescription>
-          </div>
-          <PluginStatusBadge status={formidableStatus.status} />
-        </CardHeader>
-        {formidableStatus.status === 'active' && (
-          <CardContent className="wsms-border-t wsms-pt-4">
-            <div className="wsms-rounded-lg wsms-border wsms-p-4">
-              <div className="wsms-flex wsms-items-center wsms-justify-between">
-                <div>
-                  <h4 className="wsms-text-[13px] wsms-font-medium">{__('SMS Notification Tab')}</h4>
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">
-                    {__('Add an SMS notification settings tab to each Formidable form editor.')}
-                  </p>
+              {cf7AddonFields.length > 0 && (
+                <div className="wsms-mt-4">
+                  <AddonFieldsInjection fields={cf7AddonFields} />
                 </div>
-                <Switch
-                  checked={formidableMetabox === '1'}
-                  onCheckedChange={(checked) => setFormidableMetabox(checked ? '1' : '')}
-                />
-              </div>
-            </div>
-          </CardContent>
-        )}
-      </Card>
-
-      {/* Forminator */}
-      <Card className={forminatorStatus.status !== 'active' ? 'wsms-opacity-75' : ''}>
-        <CardHeader className="wsms-flex wsms-flex-row wsms-items-center wsms-justify-between wsms-space-y-0">
-          <div>
-            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <FileInput className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              {__('Forminator')}
-            </CardTitle>
-            <CardDescription className="wsms-mt-1">
-              {__('Send SMS notifications when Forminator forms are submitted')}
-            </CardDescription>
-          </div>
-          <PluginStatusBadge status={forminatorStatus.status} />
-        </CardHeader>
-        <CardContent className={forminatorStatus.status === 'active' ? 'wsms-border-t wsms-pt-4' : ''}>
-          {forminatorStatus.status !== 'active' ? (
-            <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
-              <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                {__('Install and activate Forminator to configure SMS notifications.')}
-              </p>
-            </div>
-          ) : forminatorData.isActive && forminatorData.forms.length > 0 ? (
-            <div className="wsms-space-y-2">
-              {forminatorData.forms.map((form) => (
-                <ForminatorFormSettings key={form.id} form={form} />
-              ))}
-            </div>
-          ) : (
-            <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
-              <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                {__('No forms found. Create a form in Forminator to configure SMS notifications.')}
-              </p>
-            </div>
+              )}
+            </CardContent>
           )}
-        </CardContent>
-      </Card>
+        </Card>
+      )}
 
-      {/* Add-on Defined Sections */}
+      {/* Formidable Forms - only show if active */}
+      {formidableStatus.status === 'active' && (
+        <Card>
+          <CardHeader
+            className="wsms-cursor-pointer wsms-select-none"
+            onClick={() => setFormidableOpen(!formidableOpen)}
+          >
+            <div className="wsms-flex wsms-items-center wsms-justify-between">
+              <div>
+                <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+                  <FileInput className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+                  {__('Formidable Forms')}
+                </CardTitle>
+                <CardDescription className="wsms-mt-1">
+                  {__('Send SMS notifications when Formidable forms are submitted')}
+                </CardDescription>
+              </div>
+              {formidableOpen ? (
+                <ChevronUp className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
+              ) : (
+                <ChevronDown className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
+              )}
+            </div>
+          </CardHeader>
+          {formidableOpen && (
+            <CardContent className="wsms-border-t wsms-pt-4">
+              <div className="wsms-rounded-lg wsms-border wsms-p-4">
+                <div className="wsms-flex wsms-items-center wsms-justify-between">
+                  <div>
+                    <h4 className="wsms-text-[13px] wsms-font-medium">{__('SMS Notification Tab')}</h4>
+                    <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">
+                      {__('Add an SMS notification settings tab to each Formidable form editor.')}
+                    </p>
+                  </div>
+                  <Switch
+                    checked={formidableMetabox === '1'}
+                    onCheckedChange={(checked) => setFormidableMetabox(checked ? '1' : '')}
+                  />
+                </div>
+              </div>
+            </CardContent>
+          )}
+        </Card>
+      )}
+
+      {/* Forminator - only show if active */}
+      {forminatorStatus.status === 'active' && (
+        <Card>
+          <CardHeader
+            className="wsms-cursor-pointer wsms-select-none"
+            onClick={() => setForminatorOpen(!forminatorOpen)}
+          >
+            <div className="wsms-flex wsms-items-center wsms-justify-between">
+              <div>
+                <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+                  <FileInput className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+                  {__('Forminator')}
+                </CardTitle>
+                <CardDescription className="wsms-mt-1">
+                  {__('Send SMS notifications when Forminator forms are submitted')}
+                </CardDescription>
+              </div>
+              {forminatorOpen ? (
+                <ChevronUp className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
+              ) : (
+                <ChevronDown className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
+              )}
+            </div>
+          </CardHeader>
+          {forminatorOpen && (
+            <CardContent className="wsms-border-t wsms-pt-4">
+              {forminatorData.isActive && forminatorData.forms.length > 0 ? (
+                <div className="wsms-space-y-2">
+                  {forminatorData.forms.map((form) => (
+                    <ForminatorFormSettings key={form.id} form={form} />
+                  ))}
+                </div>
+              ) : (
+                <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                    {__('No forms found. Create a form in Forminator to configure SMS notifications.')}
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          )}
+        </Card>
+      )}
+
+      {/* Add-on Defined Sections - only show active ones */}
       {addonSections.map((section) => {
         const isPluginActive = isSectionPluginActive(section.id)
         const pluginInfo = getSectionPluginInfo(section.id)
 
+        // Skip inactive sections entirely
         if (!isPluginActive && pluginInfo) {
-          return (
-            <Card key={section.id} className="wsms-opacity-75">
-              <CardHeader>
-                <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-                  <Puzzle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-                  {section.title}
-                </CardTitle>
-                {section.description && (
-                  <CardDescription>{section.description}</CardDescription>
-                )}
-              </CardHeader>
-              <CardContent>
-                <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4">
-                  <PluginStatusBadge status={pluginInfo.status} />
-                </div>
-              </CardContent>
-            </Card>
-          )
+          return null
         }
 
         return (
@@ -490,10 +511,10 @@ export default function Integrations() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <Puzzle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Additional Integrations')}
+            {__('Integrations')}
           </CardTitle>
           <CardDescription>
-            {__('Other plugins supported through WSMS Pro and add-ons')}
+            {__('All supported plugins and integrations')}
           </CardDescription>
         </CardHeader>
         <CardContent>

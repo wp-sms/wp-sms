@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import * as Icons from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from './card'
@@ -46,8 +46,11 @@ function getIconComponent(iconName) {
  * @param {Array} props.fields - Array of field definitions for this section
  */
 export function AddonSection({ section, fields }) {
+  const [isOpen, setIsOpen] = useState(false)
+
   // Get icon component dynamically
   const IconComponent = getIconComponent(section.icon) || Icons.Puzzle
+  const ChevronIcon = isOpen ? Icons.ChevronUp : Icons.ChevronDown
 
   // Sort fields by priority
   const sortedFields = [...fields].sort((a, b) =>
@@ -61,20 +64,30 @@ export function AddonSection({ section, fields }) {
 
   return (
     <Card>
-      <CardHeader>
-        <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-          <IconComponent className="wsms-h-4 wsms-w-4" />
-          {section.title}
-        </CardTitle>
-        {section.description && (
-          <CardDescription>{section.description}</CardDescription>
-        )}
+      <CardHeader
+        className="wsms-cursor-pointer wsms-select-none"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <div className="wsms-flex wsms-items-center wsms-justify-between">
+          <div>
+            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <IconComponent className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              {section.title}
+            </CardTitle>
+            {section.description && (
+              <CardDescription className="wsms-mt-1">{section.description}</CardDescription>
+            )}
+          </div>
+          <ChevronIcon className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
+        </div>
       </CardHeader>
-      <CardContent className="wsms-space-y-4">
-        {sortedFields.map((field) => (
-          <DynamicField key={field.id} field={field} />
-        ))}
-      </CardContent>
+      {isOpen && (
+        <CardContent className="wsms-space-y-4 wsms-border-t wsms-pt-4">
+          {sortedFields.map((field) => (
+            <DynamicField key={field.id} field={field} />
+          ))}
+        </CardContent>
+      )}
     </Card>
   )
 }
