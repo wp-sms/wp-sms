@@ -322,7 +322,7 @@ export default function CartAbandonment() {
     <div className="wsms-space-y-6 wsms-stagger-children">
       {/* Stats & Actions Header */}
       <div className="wsms-px-4 lg:wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
-        <div className="wsms-grid wsms-grid-cols-2 md:wsms-grid-cols-3 wsms-gap-4 lg:wsms-flex lg:wsms-items-center lg:wsms-gap-8">
+        <div className="wsms-grid wsms-grid-cols-2 md:wsms-grid-cols-3 wsms-gap-4 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-8">
             {/* Recoverable Carts */}
             <div className="wsms-flex wsms-items-center wsms-gap-3">
               <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-blue-500/10">
@@ -334,7 +334,7 @@ export default function CartAbandonment() {
               </div>
             </div>
 
-            <div className="wsms-hidden lg:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+            <div className="wsms-hidden xl:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
 
             {/* Recovered Carts */}
             <div className="wsms-flex wsms-items-center wsms-gap-3">
@@ -347,7 +347,7 @@ export default function CartAbandonment() {
               </div>
             </div>
 
-            <div className="wsms-hidden lg:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+            <div className="wsms-hidden xl:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
 
             {/* Recoverable Revenue */}
             <div className="wsms-flex wsms-items-center wsms-gap-3">
@@ -360,7 +360,7 @@ export default function CartAbandonment() {
               </div>
             </div>
 
-            <div className="wsms-hidden lg:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+            <div className="wsms-hidden xl:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
 
             {/* Recovered Revenue */}
             <div className="wsms-flex wsms-items-center wsms-gap-3">
@@ -373,7 +373,7 @@ export default function CartAbandonment() {
               </div>
             </div>
 
-            <div className="wsms-hidden lg:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+            <div className="wsms-hidden xl:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
 
             {/* SMS Sent */}
             <div className="wsms-flex wsms-items-center wsms-gap-3">
@@ -386,7 +386,7 @@ export default function CartAbandonment() {
               </div>
             </div>
 
-            <div className="wsms-hidden lg:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+            <div className="wsms-hidden xl:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
 
             {/* Following SMS */}
             <div className="wsms-flex wsms-items-center wsms-gap-3">
