@@ -1,9 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { Inbox, AlertCircle, ExternalLink, Search, Trash2, Eye, MessageSquare, RefreshCw, CheckCircle, Clock, MailOpen, Filter, XCircle, MinusCircle } from 'lucide-react'
+import React, { useState, useCallback, useEffect } from 'react'
+import { Inbox, AlertCircle, ExternalLink, RefreshCw, Eye, MessageSquare, Trash2, Filter, CheckCircle, Clock, MailOpen } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
+import { DataTable } from '@/components/ui/data-table'
+import { StatusBadge } from '@/components/shared/StatusBadge'
+import { ExportButton } from '@/components/shared/ExportButton'
+import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
+import { PageLoadingSkeleton } from '@/components/ui/skeleton'
+import { useListPage } from '@/hooks/useListPage'
+import { useFormDialog } from '@/hooks/useFormDialog'
 import { useSettings } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
 import { __ } from '@/lib/utils'
@@ -17,16 +23,6 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import {
   Select,
   SelectContent,
   SelectItem,
@@ -34,197 +30,121 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { Checkbox } from '@/components/ui/checkbox'
-import { ExportButton } from '@/components/shared/ExportButton'
 
 export default function TwoWayInbox() {
   const { isAddonActive } = useSettings()
   const { toast } = useToast()
-
-  // Check if Two-Way add-on is active
   const hasTwoWay = isAddonActive('two-way')
 
-  // State
-  const [messages, setMessages] = useState([])
-  const [stats, setStats] = useState({ total: 0, today: 0, week: 0, unread: 0 })
-  const [isLoading, setIsLoading] = useState(true)
-  const [search, setSearch] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
-  const [actionStatusFilter, setActionStatusFilter] = useState('all')
-  const [commandFilter, setCommandFilter] = useState('all')
+  // Commands for filter dropdown
   const [commands, setCommands] = useState([])
-  const [page, setPage] = useState(1)
-  const [totalPages, setTotalPages] = useState(1)
-  const [selectedMessages, setSelectedMessages] = useState([])
+
+  // Dialog states
   const [viewingMessage, setViewingMessage] = useState(null)
   const [replyingTo, setReplyingTo] = useState(null)
   const [replyMessage, setReplyMessage] = useState('')
   const [isReplying, setIsReplying] = useState(false)
-  const [deleteConfirm, setDeleteConfirm] = useState(null)
-  const [bulkDeleteConfirm, setBulkDeleteConfirm] = useState(false)
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false)
 
   // Fetch commands for filter
-  const fetchCommands = useCallback(async () => {
-    try {
-      const response = await inboxApi.getCommands()
-      if (response.success) {
-        setCommands(Array.isArray(response.data) ? response.data : [])
-      }
-    } catch (error) {
-      console.error('Failed to fetch commands:', error)
-    }
-  }, [])
-
-  // Fetch messages
-  const fetchMessages = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      const params = {
-        page,
-        per_page: 20,
-      }
-
-      if (search) params.search = search
-      if (statusFilter && statusFilter !== 'all') params.status = statusFilter
-      if (actionStatusFilter && actionStatusFilter !== 'all') params.action_status = actionStatusFilter
-      if (commandFilter && commandFilter !== 'all') params.command_id = commandFilter
-
-      const response = await inboxApi.getMessages(params)
-
-      if (response.success) {
-        setMessages(Array.isArray(response.data?.messages) ? response.data.messages : [])
-        setTotalPages(response.data?.total_pages || 1)
-      }
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to load messages',
-        variant: 'destructive',
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }, [page, search, statusFilter, actionStatusFilter, commandFilter, toast])
-
-  // Fetch stats
-  const fetchStats = useCallback(async () => {
-    try {
-      const response = await inboxApi.getStats()
-      if (response.success) {
-        setStats(response.data || { total: 0, today: 0, week: 0, unread: 0 })
-      }
-    } catch (error) {
-      console.error('Failed to fetch stats:', error)
-    }
-  }, [])
-
-  // Load data on mount and when filters change
   useEffect(() => {
     if (hasTwoWay) {
-      fetchMessages()
-      fetchStats()
-      fetchCommands()
+      inboxApi.getCommands().then((response) => {
+        if (response.success) {
+          setCommands(Array.isArray(response.data) ? response.data : [])
+        }
+      }).catch(() => {})
     }
-  }, [hasTwoWay, fetchMessages, fetchStats, fetchCommands])
+  }, [hasTwoWay])
 
-  // Reset page when filters change
-  useEffect(() => {
-    setPage(1)
-  }, [statusFilter, actionStatusFilter, commandFilter])
+  // useListPage for table + filters
+  const { filters, table, handleDelete, handleBulkDelete } = useListPage({
+    fetchFn: async (params) => {
+      const response = await inboxApi.getMessages(params)
+      if (!response.success) throw new Error(__('Failed to load messages'))
+      const data = response.data || {}
+      return {
+        items: Array.isArray(data.messages) ? data.messages : [],
+        pagination: {
+          total: data.total || 0,
+          total_pages: data.total_pages || 1,
+          current_page: data.current_page || 1,
+          per_page: data.per_page || 20,
+        },
+        stats: data.stats || { total: 0, today: 0, week: 0, unread: 0 },
+      }
+    },
+    deleteFn: (id) => inboxApi.deleteMessage(id),
+    bulkActionFn: (action, ids) => inboxApi.bulkDelete(ids),
+    initialFilters: { search: '', status: 'all', action_status: 'all', command_id: 'all' },
+    messages: {
+      deleteSuccess: __('Message deleted'),
+      bulkSuccess: __('Messages deleted'),
+    },
+  })
 
-  // Handle search
-  const handleSearch = (e) => {
-    e.preventDefault()
-    setPage(1)
-    fetchMessages()
+  const stats = table.stats || { total: 0, today: 0, week: 0, unread: 0 }
+
+  // Delete confirmation dialog
+  const deleteDialog = useFormDialog({
+    saveFn: async (id) => {
+      await handleDelete(id)
+    },
+    successMessage: __('Message deleted'),
+  })
+
+  const handleDeleteClick = useCallback((message) => {
+    deleteDialog.open(message)
+  }, [deleteDialog])
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteDialog.item) return
+    try {
+      await deleteDialog.save()
+    } catch {
+      // handled by useFormDialog
+    }
   }
 
-  // Handle reply
+  // Reply handler
   const handleReply = async () => {
     if (!replyingTo || !replyMessage.trim()) return
-
     try {
       setIsReplying(true)
       const response = await inboxApi.replyToMessage(replyingTo.id, replyMessage.trim())
-
       if (response.success) {
-        toast({
-          title: 'Success',
-          description: 'Reply sent successfully',
-        })
+        toast({ title: __('Reply sent successfully'), variant: 'success' })
         setReplyingTo(null)
         setReplyMessage('')
       }
     } catch (error) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to send reply',
-        variant: 'destructive',
-      })
+      toast({ title: error.message || __('Failed to send reply'), variant: 'destructive' })
     } finally {
       setIsReplying(false)
     }
   }
 
-  // Handle delete
-  const handleDelete = async (id) => {
+  // Mark as read
+  const handleMarkAsRead = async (id) => {
     try {
-      const response = await inboxApi.deleteMessage(id)
-      if (response.success) {
-        toast({
-          title: 'Success',
-          description: 'Message deleted',
-        })
-        fetchMessages()
-        fetchStats()
-      }
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to delete message',
-        variant: 'destructive',
-      })
+      await inboxApi.markAsRead(id)
+      table.refresh()
+    } catch {
+      // silent
     }
-    setDeleteConfirm(null)
   }
 
-  // Handle bulk delete
-  const handleBulkDelete = async () => {
-    if (selectedMessages.length === 0) return
-
-    try {
-      const response = await inboxApi.bulkDelete(selectedMessages)
-      if (response.success) {
-        toast({
-          title: 'Success',
-          description: `${selectedMessages.length} messages deleted`,
-        })
-        setSelectedMessages([])
-        fetchMessages()
-        fetchStats()
-      }
-    } catch (error) {
-      toast({
-        title: 'Error',
-        description: error.message || 'Failed to delete messages',
-        variant: 'destructive',
-      })
-    }
-    setBulkDeleteConfirm(false)
-  }
-
-  // Handle export
+  // Export
   const handleExport = async () => {
     const params = {}
-    if (search) params.search = search
-    if (statusFilter && statusFilter !== 'all') params.status = statusFilter
-    if (actionStatusFilter && actionStatusFilter !== 'all') params.action_status = actionStatusFilter
-    if (commandFilter && commandFilter !== 'all') params.command_id = commandFilter
+    const f = filters.debouncedFilters
+    if (f.search) params.search = f.search
+    if (f.status && f.status !== 'all') params.status = f.status
+    if (f.action_status && f.action_status !== 'all') params.action_status = f.action_status
+    if (f.command_id && f.command_id !== 'all') params.command_id = f.command_id
 
     const response = await inboxApi.exportMessages(params)
-
     if (response.success && response.data?.csv) {
-      // Create a Blob and download
       const blob = new Blob(['\ufeff' + response.data.csv], { type: 'text/csv;charset=utf-8;' })
       const link = document.createElement('a')
       const url = URL.createObjectURL(blob)
@@ -237,37 +157,109 @@ export default function TwoWayInbox() {
       URL.revokeObjectURL(url)
       return { count: response.data.total }
     }
-    throw new Error('Failed to export messages')
+    throw new Error(__('Failed to export messages'))
   }
 
-  // Handle mark as read
-  const handleMarkAsRead = async (id) => {
+  // Bulk delete with confirmation
+  const handleBulkDeleteConfirm = useCallback(async () => {
+    setShowBulkDeleteConfirm(false)
     try {
-      await inboxApi.markAsRead(id)
-      fetchMessages()
-      fetchStats()
-    } catch (error) {
-      console.error('Failed to mark as read:', error)
+      await handleBulkDelete()
+    } catch {
+      // handled
     }
-  }
+  }, [handleBulkDelete])
 
-  // Toggle message selection
-  const toggleMessageSelection = (id) => {
-    setSelectedMessages((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    )
-  }
+  // Table columns
+  const columns = [
+    {
+      id: 'sender_number',
+      accessorKey: 'sender_number',
+      header: __('Sender'),
+      cellClassName: 'wsms-font-mono wsms-text-[12px]',
+    },
+    {
+      id: 'text',
+      accessorKey: 'text',
+      header: __('Message'),
+      cell: ({ value }) => (
+        <span className="wsms-max-w-xs wsms-truncate wsms-block">
+          {value?.substring(0, 50)}{value?.length > 50 ? '...' : ''}
+        </span>
+      ),
+    },
+    {
+      id: 'command_name',
+      accessorKey: 'command_name',
+      header: __('Command'),
+      cell: ({ value }) => value
+        ? <Badge variant="outline">{value}</Badge>
+        : <span className="wsms-text-muted-foreground">—</span>,
+    },
+    {
+      id: 'action_status',
+      accessorKey: 'action_status',
+      header: __('Action Status'),
+      cell: ({ value }) => {
+        if (value === 'successful') return <StatusBadge variant="success">{__('Successful')}</StatusBadge>
+        if (value === 'failed') return <StatusBadge variant="failed">{__('Failed')}</StatusBadge>
+        if (value === 'plain') return <StatusBadge variant="default">{__('Plain')}</StatusBadge>
+        return <span className="wsms-text-muted-foreground">—</span>
+      },
+    },
+    {
+      id: 'received_at',
+      header: __('Date'),
+      cell: ({ row }) => (
+        <span className="wsms-text-muted-foreground">
+          {row.received_at_formatted || row.received_at}
+        </span>
+      ),
+    },
+    {
+      id: 'is_read',
+      accessorKey: 'is_read',
+      header: __('Read'),
+      cell: ({ value }) => value
+        ? <StatusBadge variant="default" showIcon={false}>{__('Read')}</StatusBadge>
+        : <StatusBadge variant="active">{__('New')}</StatusBadge>,
+    },
+  ]
 
-  // Toggle all selection
-  const toggleAllSelection = () => {
-    if (selectedMessages.length === messages.length) {
-      setSelectedMessages([])
-    } else {
-      setSelectedMessages(messages.map((m) => m.id))
-    }
-  }
+  // Row actions
+  const rowActions = [
+    {
+      label: __('View'),
+      icon: Eye,
+      onClick: (row) => {
+        setViewingMessage(row)
+        if (!row.is_read) handleMarkAsRead(row.id)
+      },
+    },
+    {
+      label: __('Reply'),
+      icon: MessageSquare,
+      onClick: (row) => setReplyingTo(row),
+    },
+    {
+      label: __('Delete'),
+      icon: Trash2,
+      variant: 'destructive',
+      onClick: handleDeleteClick,
+    },
+  ]
 
-  // Show placeholder if Two-Way add-on is not active
+  // Bulk actions
+  const bulkActions = [
+    {
+      label: __('Delete Selected'),
+      icon: Trash2,
+      variant: 'destructive',
+      onClick: () => setShowBulkDeleteConfirm(true),
+    },
+  ]
+
+  // Addon not active placeholder
   if (!hasTwoWay) {
     return (
       <div className="wsms-space-y-6">
@@ -275,26 +267,22 @@ export default function TwoWayInbox() {
           <CardHeader>
             <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <Inbox className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              Two-Way SMS Inbox
+              {__('Two-Way SMS Inbox')}
             </CardTitle>
             <CardDescription>
-              Receive and manage incoming SMS messages
+              {__('Receive and manage incoming SMS messages')}
             </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
               <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
-              <h3 className="wsms-font-medium wsms-mb-2">Two-Way SMS Add-on Required</h3>
+              <h3 className="wsms-font-medium wsms-mb-2">{__('Two-Way SMS Add-on Required')}</h3>
               <p className="wsms-text-sm wsms-text-muted-foreground wsms-mb-4">
-                Install and activate the WP SMS Two-Way add-on to receive incoming messages.
+                {__('Install and activate the WP SMS Two-Way add-on to receive incoming messages.')}
               </p>
               <Button variant="outline" asChild>
-                <a
-                  href="https://wp-sms-pro.com/product/wp-sms-two-way/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Learn More
+                <a href="https://wp-sms-pro.com/product/wp-sms-two-way/" target="_blank" rel="noopener noreferrer">
+                  {__('Learn More')}
                   <ExternalLink className="wsms-ml-2 wsms-h-4 wsms-w-4" />
                 </a>
               </Button>
@@ -305,17 +293,33 @@ export default function TwoWayInbox() {
     )
   }
 
+  // Initial loading
+  if (!table.initialLoadDone) {
+    return <PageLoadingSkeleton />
+  }
+
   return (
-    <div className="wsms-space-y-6">
+    <div className="wsms-space-y-6 wsms-stagger-children">
       {/* Page Header */}
-      <div className="wsms-mb-6">
-        <h1 className="wsms-text-2xl wsms-font-bold wsms-flex wsms-items-center wsms-gap-2">
-          <Inbox className="wsms-h-6 wsms-w-6" />
-          Inbox
-        </h1>
-        <p className="wsms-text-muted-foreground wsms-mt-1">
-          View and manage incoming SMS messages from your subscribers.
-        </p>
+      <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4">
+        <div>
+          <h1 className="wsms-text-xl wsms-font-semibold wsms-text-foreground wsms-flex wsms-items-center wsms-gap-2">
+            <Inbox className="wsms-h-5 wsms-w-5" />
+            {__('Inbox')}
+          </h1>
+          <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mt-1">
+            {__('View and manage incoming SMS messages from your subscribers.')}
+          </p>
+        </div>
+        <div className="wsms-flex wsms-items-center wsms-gap-2">
+          <Button variant="outline" size="icon" onClick={() => table.refresh()}>
+            <RefreshCw className="wsms-h-4 wsms-w-4" />
+          </Button>
+          <ExportButton
+            onExport={handleExport}
+            successMessage={__('Exported %d messages successfully')}
+          />
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -324,7 +328,7 @@ export default function TwoWayInbox() {
           <CardContent className="wsms-pt-4">
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-              <span className="wsms-text-sm wsms-text-muted-foreground">Total</span>
+              <span className="wsms-text-sm wsms-text-muted-foreground">{__('Total')}</span>
             </div>
             <p className="wsms-text-2xl wsms-font-bold wsms-mt-1">{stats.total}</p>
           </CardContent>
@@ -333,7 +337,7 @@ export default function TwoWayInbox() {
           <CardContent className="wsms-pt-4">
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <Clock className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-              <span className="wsms-text-sm wsms-text-muted-foreground">Today</span>
+              <span className="wsms-text-sm wsms-text-muted-foreground">{__('Today')}</span>
             </div>
             <p className="wsms-text-2xl wsms-font-bold wsms-mt-1">{stats.today}</p>
           </CardContent>
@@ -342,7 +346,7 @@ export default function TwoWayInbox() {
           <CardContent className="wsms-pt-4">
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-              <span className="wsms-text-sm wsms-text-muted-foreground">This Week</span>
+              <span className="wsms-text-sm wsms-text-muted-foreground">{__('This Week')}</span>
             </div>
             <p className="wsms-text-2xl wsms-font-bold wsms-mt-1">{stats.week}</p>
           </CardContent>
@@ -351,7 +355,7 @@ export default function TwoWayInbox() {
           <CardContent className="wsms-pt-4">
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <MailOpen className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-              <span className="wsms-text-sm wsms-text-muted-foreground">Unread</span>
+              <span className="wsms-text-sm wsms-text-muted-foreground">{__('Unread')}</span>
             </div>
             <p className="wsms-text-2xl wsms-font-bold wsms-mt-1">{stats.unread}</p>
           </CardContent>
@@ -360,262 +364,74 @@ export default function TwoWayInbox() {
 
       {/* Messages Table */}
       <Card>
-        <CardHeader>
-          <div className="wsms-flex wsms-flex-col wsms-gap-4">
-            <div className="wsms-flex wsms-flex-col sm:wsms-flex-row wsms-items-start sm:wsms-items-center wsms-justify-between wsms-gap-4">
-              <CardTitle>Messages</CardTitle>
-              <div className="wsms-flex wsms-items-center wsms-gap-2">
-                <form onSubmit={handleSearch} className="wsms-flex wsms-items-center wsms-gap-2">
-                  <Input
-                    placeholder="Search messages..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="wsms-w-48"
-                  />
-                  <Button type="submit" variant="outline" size="icon">
-                    <Search className="wsms-h-4 wsms-w-4" />
-                  </Button>
-                </form>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => {
-                    fetchMessages()
-                    fetchStats()
-                  }}
-                >
-                  <RefreshCw className="wsms-h-4 wsms-w-4" />
-                </Button>
-                <ExportButton
-                  onExport={handleExport}
-                  successMessage={__('Exported %d messages successfully')}
-                />
-              </div>
-            </div>
-
-            {/* Filters */}
-            <div className="wsms-flex wsms-items-center wsms-gap-2">
-              <Filter className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
-              <Select value={actionStatusFilter} onValueChange={setActionStatusFilter}>
-                <SelectTrigger className="wsms-w-[130px] wsms-h-9">
-                  <SelectValue placeholder="Action Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Actions</SelectItem>
-                  <SelectItem value="successful">Successful</SelectItem>
-                  <SelectItem value="failed">Failed</SelectItem>
-                  <SelectItem value="plain">Plain</SelectItem>
-                </SelectContent>
-              </Select>
-              <Select value={commandFilter} onValueChange={setCommandFilter}>
-                <SelectTrigger className="wsms-w-[140px] wsms-h-9">
-                  <SelectValue placeholder="Command" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Commands</SelectItem>
-                  {commands.map((cmd) => (
-                    <SelectItem key={cmd.id} value={String(cmd.id)}>
-                      {cmd.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="wsms-w-[110px] wsms-h-9">
-                  <SelectValue placeholder="Read" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="unread">Unread</SelectItem>
-                  <SelectItem value="read">Read</SelectItem>
-                </SelectContent>
-              </Select>
-              {(statusFilter !== 'all' || actionStatusFilter !== 'all' || commandFilter !== 'all') && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="wsms-h-9"
-                  onClick={() => {
-                    setStatusFilter('all')
-                    setActionStatusFilter('all')
-                    setCommandFilter('all')
-                  }}
-                >
-                  Clear
-                </Button>
-              )}
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {selectedMessages.length > 0 && (
-            <div className="wsms-mb-4 wsms-flex wsms-items-center wsms-gap-2">
-              <span className="wsms-text-sm wsms-text-muted-foreground">
-                {selectedMessages.length} selected
-              </span>
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={() => setBulkDeleteConfirm(true)}
-              >
-                <Trash2 className="wsms-h-4 wsms-w-4 wsms-mr-1" />
-                Delete Selected
+        <CardContent className="wsms-p-0">
+          {/* Filters */}
+          <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-px-6 wsms-py-4">
+            <Filter className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
+            <Select value={filters.filters.action_status} onValueChange={(v) => filters.setFilter('action_status', v)}>
+              <SelectTrigger className="wsms-w-[130px] wsms-h-9">
+                <SelectValue placeholder={__('Action Status')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{__('All Actions')}</SelectItem>
+                <SelectItem value="successful">{__('Successful')}</SelectItem>
+                <SelectItem value="failed">{__('Failed')}</SelectItem>
+                <SelectItem value="plain">{__('Plain')}</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={filters.filters.command_id} onValueChange={(v) => filters.setFilter('command_id', v)}>
+              <SelectTrigger className="wsms-w-[140px] wsms-h-9">
+                <SelectValue placeholder={__('Command')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{__('All Commands')}</SelectItem>
+                {commands.map((cmd) => (
+                  <SelectItem key={cmd.id} value={String(cmd.id)}>
+                    {cmd.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Select value={filters.filters.status} onValueChange={(v) => filters.setFilter('status', v)}>
+              <SelectTrigger className="wsms-w-[110px] wsms-h-9">
+                <SelectValue placeholder={__('Read')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{__('All')}</SelectItem>
+                <SelectItem value="unread">{__('Unread')}</SelectItem>
+                <SelectItem value="read">{__('Read')}</SelectItem>
+              </SelectContent>
+            </Select>
+            {filters.hasActiveFilters && (
+              <Button variant="ghost" size="sm" className="wsms-h-9" onClick={filters.resetFilters}>
+                {__('Clear')}
               </Button>
-            </div>
-          )}
+            )}
+          </div>
 
-          {isLoading ? (
-            <div className="wsms-text-center wsms-py-8 wsms-text-muted-foreground">
-              Loading messages...
-            </div>
-          ) : messages.length === 0 ? (
-            <div className="wsms-text-center wsms-py-8 wsms-text-muted-foreground">
-              No messages found
-            </div>
-          ) : (
-            <>
-              <div className="wsms-overflow-x-auto">
-                <table className="wsms-w-full">
-                  <thead>
-                    <tr className="wsms-border-b">
-                      <th className="wsms-p-2 wsms-text-left wsms-w-8">
-                        <Checkbox
-                          checked={selectedMessages.length === messages.length}
-                          onCheckedChange={toggleAllSelection}
-                        />
-                      </th>
-                      <th className="wsms-p-2 wsms-text-left wsms-font-medium">Sender</th>
-                      <th className="wsms-p-2 wsms-text-left wsms-font-medium">Message</th>
-                      <th className="wsms-p-2 wsms-text-left wsms-font-medium">Command</th>
-                      <th className="wsms-p-2 wsms-text-left wsms-font-medium">Action Status</th>
-                      <th className="wsms-p-2 wsms-text-left wsms-font-medium">Date</th>
-                      <th className="wsms-p-2 wsms-text-left wsms-font-medium">Read</th>
-                      <th className="wsms-p-2 wsms-text-right wsms-font-medium">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {messages.map((message) => (
-                      <tr
-                        key={message.id}
-                        className={`wsms-border-b hover:wsms-bg-muted/50 ${!message.is_read ? 'wsms-bg-primary/5' : ''}`}
-                      >
-                        <td className="wsms-p-2">
-                          <Checkbox
-                            checked={selectedMessages.includes(message.id)}
-                            onCheckedChange={() => toggleMessageSelection(message.id)}
-                          />
-                        </td>
-                        <td className="wsms-p-2 wsms-font-mono wsms-text-sm">
-                          {message.sender_number}
-                        </td>
-                        <td className="wsms-p-2 wsms-max-w-xs wsms-truncate">
-                          {message.text?.substring(0, 50)}{message.text?.length > 50 ? '...' : ''}
-                        </td>
-                        <td className="wsms-p-2 wsms-text-sm">
-                          {message.command_name ? (
-                            <Badge variant="outline">{message.command_name}</Badge>
-                          ) : (
-                            <span className="wsms-text-muted-foreground">—</span>
-                          )}
-                        </td>
-                        <td className="wsms-p-2">
-                          {message.action_status === 'successful' && (
-                            <Badge variant="outline" className="wsms-border-green-500 wsms-text-green-600">
-                              <CheckCircle className="wsms-h-3 wsms-w-3 wsms-mr-1" />
-                              Successful
-                            </Badge>
-                          )}
-                          {message.action_status === 'failed' && (
-                            <Badge variant="outline" className="wsms-border-red-500 wsms-text-red-600">
-                              <XCircle className="wsms-h-3 wsms-w-3 wsms-mr-1" />
-                              Failed
-                            </Badge>
-                          )}
-                          {message.action_status === 'plain' && (
-                            <Badge variant="outline" className="wsms-border-gray-400 wsms-text-gray-500">
-                              <MinusCircle className="wsms-h-3 wsms-w-3 wsms-mr-1" />
-                              Plain
-                            </Badge>
-                          )}
-                          {!message.action_status && (
-                            <span className="wsms-text-muted-foreground">—</span>
-                          )}
-                        </td>
-                        <td className="wsms-p-2 wsms-text-sm wsms-text-muted-foreground">
-                          {message.received_at_formatted || message.received_at}
-                        </td>
-                        <td className="wsms-p-2">
-                          {message.is_read ? (
-                            <Badge variant="outline">Read</Badge>
-                          ) : (
-                            <Badge>New</Badge>
-                          )}
-                        </td>
-                        <td className="wsms-p-2 wsms-text-right">
-                          <div className="wsms-flex wsms-items-center wsms-justify-end wsms-gap-1">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => {
-                                setViewingMessage(message)
-                                if (!message.is_read) {
-                                  handleMarkAsRead(message.id)
-                                }
-                              }}
-                              title="View"
-                            >
-                              <Eye className="wsms-h-4 wsms-w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => setReplyingTo(message)}
-                              title="Reply"
-                            >
-                              <MessageSquare className="wsms-h-4 wsms-w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => setDeleteConfirm(message)}
-                              title="Delete"
-                            >
-                              <Trash2 className="wsms-h-4 wsms-w-4" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="wsms-flex wsms-items-center wsms-justify-center wsms-gap-2 wsms-mt-4">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={page <= 1}
-                    onClick={() => setPage((p) => p - 1)}
-                  >
-                    Previous
-                  </Button>
-                  <span className="wsms-text-sm wsms-text-muted-foreground">
-                    Page {page} of {totalPages}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    disabled={page >= totalPages}
-                    onClick={() => setPage((p) => p + 1)}
-                  >
-                    Next
-                  </Button>
-                </div>
-              )}
-            </>
-          )}
+          <DataTable
+            columns={columns}
+            data={table.data}
+            loading={table.isLoading}
+            pagination={{
+              page: table.pagination.current_page,
+              perPage: table.pagination.per_page,
+              total: table.pagination.total,
+              totalPages: table.pagination.total_pages,
+              onPageChange: table.handlePageChange,
+            }}
+            selection={{
+              selected: table.selectedIds,
+              onSelect: (id) => table.toggleSelection(id),
+              onSelectAll: (ids) => ids.length === 0 ? table.clearSelection() : table.setSelectedIds(ids),
+            }}
+            rowActions={rowActions}
+            bulkActions={bulkActions}
+            onSearch={(v) => filters.setFilter('search', v)}
+            searchPlaceholder={__('Search messages...')}
+            emptyMessage={__('No messages found')}
+            emptyIcon={Inbox}
+          />
         </CardContent>
       </Card>
 
@@ -623,9 +439,9 @@ export default function TwoWayInbox() {
       <Dialog open={!!viewingMessage} onOpenChange={() => setViewingMessage(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Message from {viewingMessage?.sender_number}</DialogTitle>
+            <DialogTitle>{__('Message from %s').replace('%s', viewingMessage?.sender_number)}</DialogTitle>
             <DialogDescription>
-              Received: {viewingMessage?.received_at_formatted || viewingMessage?.received_at}
+              {__('Received')}: {viewingMessage?.received_at_formatted || viewingMessage?.received_at}
             </DialogDescription>
           </DialogHeader>
           <div className="wsms-px-6 wsms-pb-2">
@@ -634,101 +450,76 @@ export default function TwoWayInbox() {
             </div>
             {viewingMessage?.command_name && (
               <div className="wsms-mt-4">
-                <span className="wsms-text-sm wsms-text-muted-foreground">Matched Command: </span>
+                <span className="wsms-text-sm wsms-text-muted-foreground">{__('Matched Command')}: </span>
                 <Badge variant="outline">{viewingMessage.command_name}</Badge>
               </div>
             )}
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setViewingMessage(null)}>
-              Close
+              {__('Close')}
             </Button>
             <Button onClick={() => {
               setReplyingTo(viewingMessage)
               setViewingMessage(null)
             }}>
-              Reply
+              {__('Reply')}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Reply Dialog */}
-      <Dialog open={!!replyingTo} onOpenChange={() => {
-        setReplyingTo(null)
-        setReplyMessage('')
-      }}>
+      <Dialog open={!!replyingTo} onOpenChange={() => { setReplyingTo(null); setReplyMessage('') }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Reply to {replyingTo?.sender_number}</DialogTitle>
+            <DialogTitle>{__('Reply to %s').replace('%s', replyingTo?.sender_number)}</DialogTitle>
             <DialogDescription>
-              Send an SMS reply to this number
+              {__('Send an SMS reply to this number')}
             </DialogDescription>
           </DialogHeader>
           <div className="wsms-px-6 wsms-pb-2 wsms-space-y-4">
             <div className="wsms-p-3 wsms-bg-muted wsms-rounded-lg wsms-text-sm">
-              <p className="wsms-text-muted-foreground wsms-mb-1">Original message:</p>
+              <p className="wsms-text-muted-foreground wsms-mb-1">{__('Original message')}:</p>
               <p>{replyingTo?.text?.substring(0, 100)}{replyingTo?.text?.length > 100 ? '...' : ''}</p>
             </div>
             <Textarea
-              placeholder="Type your reply..."
+              placeholder={__('Type your reply...')}
               value={replyMessage}
               onChange={(e) => setReplyMessage(e.target.value)}
               rows={4}
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => {
-              setReplyingTo(null)
-              setReplyMessage('')
-            }}>
-              Cancel
+            <Button variant="outline" onClick={() => { setReplyingTo(null); setReplyMessage('') }}>
+              {__('Cancel')}
             </Button>
-            <Button
-              onClick={handleReply}
-              disabled={!replyMessage.trim() || isReplying}
-            >
-              {isReplying ? 'Sending...' : 'Send Reply'}
+            <Button onClick={handleReply} disabled={!replyMessage.trim() || isReplying}>
+              {isReplying ? __('Sending...') : __('Send Reply')}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Delete Confirmation */}
-      <AlertDialog open={!!deleteConfirm} onOpenChange={() => setDeleteConfirm(null)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete Message?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete this message from {deleteConfirm?.sender_number}? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={() => handleDelete(deleteConfirm?.id)}>
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={deleteDialog.close}
+        onConfirm={handleDeleteConfirm}
+        isSaving={deleteDialog.isSaving}
+        title={__('Delete Message?')}
+        description={__('Are you sure you want to delete this message from %s? This action cannot be undone.').replace('%s', deleteDialog.item?.sender_number || '')}
+      />
 
       {/* Bulk Delete Confirmation */}
-      <AlertDialog open={bulkDeleteConfirm} onOpenChange={setBulkDeleteConfirm}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Delete {selectedMessages.length} Messages?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete {selectedMessages.length} selected messages? This action cannot be undone.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleBulkDelete}>
-              Delete All
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <DeleteConfirmDialog
+        isOpen={showBulkDeleteConfirm}
+        onClose={() => setShowBulkDeleteConfirm(false)}
+        onConfirm={handleBulkDeleteConfirm}
+        title={__('Delete %d Messages?').replace('%d', table.selectedIds.length)}
+        description={__('Are you sure you want to delete %d selected messages? This action cannot be undone.').replace('%d', table.selectedIds.length)}
+        confirmLabel={__('Delete All')}
+      />
     </div>
   )
 }
