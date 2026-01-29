@@ -68,7 +68,7 @@ function SmsStatusBadge({ status, time }) {
   return (
     <div className="wsms-flex wsms-flex-col wsms-gap-1">
       <span
-        className={`wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-px-2 wsms-py-1 wsms-rounded-full wsms-text-[11px] wsms-font-medium ${config.className}`}
+        className={`wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-px-2 wsms-py-1 wsms-rounded-full wsms-text-[11px] wsms-font-medium wsms-w-fit ${config.className}`}
       >
         <Icon className="wsms-h-3 wsms-w-3" />
         {config.label}
