@@ -5,6 +5,8 @@ import {
   MessageSquare,
   DollarSign,
   TrendingUp,
+  CircleDollarSign,
+  SendHorizonal,
   Clock,
   Trash2,
   RefreshCw,
@@ -320,7 +322,7 @@ export default function CartAbandonment() {
     <div className="wsms-space-y-6 wsms-stagger-children">
       {/* Stats & Actions Header */}
       <div className="wsms-px-4 lg:wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
-        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4 lg:wsms-flex lg:wsms-items-center lg:wsms-gap-8">
+        <div className="wsms-grid wsms-grid-cols-2 md:wsms-grid-cols-3 wsms-gap-4 lg:wsms-flex lg:wsms-items-center lg:wsms-gap-8">
             {/* Recoverable Carts */}
             <div className="wsms-flex wsms-items-center wsms-gap-3">
               <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-blue-500/10">
@@ -354,7 +356,20 @@ export default function CartAbandonment() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground" dangerouslySetInnerHTML={{ __html: stats.recoverableRevenue }} />
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Revenue')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recoverable Revenue')}</p>
+              </div>
+            </div>
+
+            <div className="wsms-hidden lg:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+
+            {/* Recovered Revenue */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-green-500/10">
+                <CircleDollarSign className="wsms-h-5 wsms-w-5 wsms-text-green-500" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-green-500" dangerouslySetInnerHTML={{ __html: stats.recoveredRevenue }} />
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Recovered Revenue')}</p>
               </div>
             </div>
 
@@ -367,7 +382,20 @@ export default function CartAbandonment() {
               </div>
               <div>
                 <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.sentSMS}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{stats.followingSMS} {__('in queue')}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Sent SMS')}</p>
+              </div>
+            </div>
+
+            <div className="wsms-hidden lg:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+
+            {/* Following SMS */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-indigo-500/10">
+                <SendHorizonal className="wsms-h-5 wsms-w-5 wsms-text-indigo-500" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.followingSMS}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Following SMS')}</p>
               </div>
             </div>
         </div>
