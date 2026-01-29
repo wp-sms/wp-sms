@@ -12,6 +12,7 @@ import {
   Timer,
   Send,
   Eye,
+  ListOrdered,
   X,
   Save,
   Loader2,
@@ -49,7 +50,7 @@ import { useListPage } from '@/hooks/useListPage'
 import { useFormDialog } from '@/hooks/useFormDialog'
 import { useToast } from '@/components/ui/toaster'
 import { woocommerceProApi } from '@/api/woocommerceProApi'
-import { __, cn } from '@/lib/utils'
+import { __, cn, formatDate } from '@/lib/utils'
 
 // Status badge component
 const StatusBadge = ({ status }) => {
@@ -433,12 +434,17 @@ const campaignColumns = [
 ]
 
 // Row actions factory
-function getCampaignRowActions({ onView, onEdit, onDelete }) {
+function getCampaignRowActions({ onView, onViewQueue, onEdit, onDelete }) {
   return [
     {
       label: __('View Details'),
       icon: Eye,
       onClick: onView,
+    },
+    {
+      label: __('View Queue'),
+      icon: ListOrdered,
+      onClick: onViewQueue,
     },
     {
       label: __('Edit'),
@@ -507,9 +513,12 @@ export default function SmsCampaigns() {
   // Dialog states
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [isViewOpen, setIsViewOpen] = useState(false)
+  const [isQueueOpen, setIsQueueOpen] = useState(false)
   const [selectedCampaign, setSelectedCampaign] = useState(null)
+  const [queueCampaign, setQueueCampaign] = useState(null)
   const [formLoading, setFormLoading] = useState(false)
   const [detailLoading, setDetailLoading] = useState(false)
+  const [queueLoading, setQueueLoading] = useState(false)
 
   // Delete confirmation dialog
   const deleteDialog = useFormDialog({
@@ -590,6 +599,20 @@ export default function SmsCampaigns() {
     }
   }, [toast])
 
+  const handleViewQueue = useCallback(async (campaign) => {
+    setQueueCampaign(campaign)
+    setIsQueueOpen(true)
+    setQueueLoading(true)
+    try {
+      const data = await woocommerceProApi.getCampaign(campaign.id)
+      setQueueCampaign(data)
+    } catch (err) {
+      toast({ title: err.message || __('Failed to load queue data'), variant: 'destructive' })
+    } finally {
+      setQueueLoading(false)
+    }
+  }, [toast])
+
   const handleDeleteClick = useCallback((campaign) => {
     deleteDialog.open(campaign)
   }, [deleteDialog])
@@ -625,9 +648,10 @@ export default function SmsCampaigns() {
   // Row actions
   const rowActions = useMemo(() => getCampaignRowActions({
     onView: handleView,
+    onViewQueue: handleViewQueue,
     onEdit: handleEdit,
     onDelete: handleDeleteClick,
-  }), [handleView, handleEdit, handleDeleteClick])
+  }), [handleView, handleViewQueue, handleEdit, handleDeleteClick])
 
   // Loading skeleton
   if (!table.initialLoadDone) {
@@ -844,15 +868,6 @@ export default function SmsCampaigns() {
                   </div>
                 </div>
 
-                <div>
-                  <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Queue Status')}</Label>
-                  <div className="wsms-mt-1">
-                    <QueueStatusBadge
-                      queueStatus={selectedCampaign.queue_status}
-                      nextSchedule={selectedCampaign.next_schedule}
-                    />
-                  </div>
-                </div>
               </div>
             </DialogBody>
           )}
@@ -863,6 +878,151 @@ export default function SmsCampaigns() {
             <Button onClick={() => { setIsViewOpen(false); handleEdit(selectedCampaign) }}>
               <Edit2 className="wsms-h-4 wsms-w-4 wsms-mr-2" />
               {__('Edit')}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Queue Dialog */}
+      <Dialog open={isQueueOpen} onOpenChange={setIsQueueOpen}>
+        <DialogContent className="wsms-max-w-[95vw] md:wsms-max-w-2xl">
+          <DialogHeader>
+            <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <ListOrdered className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              <span className="wsms-truncate">{queueCampaign?.title}</span>
+            </DialogTitle>
+            <DialogDescription>
+              {__('Queue execution details and target orders')}
+            </DialogDescription>
+          </DialogHeader>
+          {queueLoading ? (
+            <div className="wsms-flex wsms-items-center wsms-justify-center wsms-py-12">
+              <Loader2 className="wsms-h-6 wsms-w-6 wsms-animate-spin wsms-text-muted-foreground" />
+            </div>
+          ) : queueCampaign && (
+            <DialogBody>
+              <div className="wsms-space-y-4">
+                {/* Queue Summary */}
+                <div className="wsms-grid wsms-grid-cols-1 sm:wsms-grid-cols-3 wsms-gap-3">
+                  <div>
+                    <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Status')}</Label>
+                    <div className="wsms-mt-1">
+                      <QueueStatusBadge
+                        queueStatus={queueCampaign.queue_status}
+                        nextSchedule={queueCampaign.next_schedule}
+                      />
+                    </div>
+                  </div>
+                  {queueCampaign.last_execution && (
+                    <div>
+                      <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Last Execution')}</Label>
+                      <p className="wsms-mt-1 wsms-text-[13px]">{formatDate(queueCampaign.last_execution)}</p>
+                    </div>
+                  )}
+                  {queueCampaign.queue_response && (
+                    <div>
+                      <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Response')}</Label>
+                      <p className="wsms-mt-1 wsms-text-[13px] wsms-text-muted-foreground">{queueCampaign.queue_response}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Target Orders */}
+                {Array.isArray(queueCampaign.target_orders) && queueCampaign.target_orders.length > 0 ? (
+                  <div>
+                    <Label className="wsms-text-[12px] wsms-text-muted-foreground">
+                      {__('Target Orders')} ({queueCampaign.target_orders.length})
+                    </Label>
+
+                    {/* Mobile: Card layout */}
+                    <div className="wsms-mt-2 wsms-space-y-2 md:wsms-hidden">
+                      {queueCampaign.target_orders.map((order, index) => {
+                        const statusConfig = {
+                          success: { label: __('Sent'), className: 'wsms-text-emerald-600' },
+                          pending: { label: __('In Queue'), className: 'wsms-text-blue-600' },
+                          failed: { label: __('Failed'), className: 'wsms-text-red-600' },
+                        }
+                        const smsStatus = statusConfig[order.status] || statusConfig.pending
+                        return (
+                          <div key={index} className="wsms-rounded-lg wsms-border wsms-border-border wsms-p-3 wsms-space-y-1.5 wsms-text-[12px]">
+                            <div className="wsms-flex wsms-items-center wsms-justify-between">
+                              <a
+                                href={`/wp-admin/post.php?post=${order.order_id}&action=edit`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="wsms-text-primary wsms-font-medium hover:wsms-underline"
+                              >
+                                #{order.order_id}
+                              </a>
+                              <span className={`wsms-font-medium ${smsStatus.className}`}>{smsStatus.label}</span>
+                            </div>
+                            <div className="wsms-flex wsms-items-center wsms-justify-between wsms-text-muted-foreground">
+                              <span className="wsms-font-mono">{order.mobile_number || '—'}</span>
+                              <span>{order.order_date ? formatDate(order.order_date) : '—'}</span>
+                            </div>
+                            {order.response && (
+                              <p className="wsms-text-muted-foreground wsms-text-[11px]">{order.response}</p>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+
+                    {/* Desktop: Table layout */}
+                    <div className="wsms-mt-2 wsms-rounded-lg wsms-border wsms-border-border wsms-overflow-hidden wsms-max-h-[400px] wsms-overflow-y-auto wsms-hidden md:wsms-block">
+                      <table className="wsms-w-full wsms-text-[12px]">
+                        <thead className="wsms-sticky wsms-top-0">
+                          <tr className="wsms-bg-muted/50 wsms-border-b wsms-border-border">
+                            <th className="wsms-px-3 wsms-py-2 wsms-text-left wsms-font-medium wsms-text-muted-foreground">{__('Order ID')}</th>
+                            <th className="wsms-px-3 wsms-py-2 wsms-text-left wsms-font-medium wsms-text-muted-foreground">{__('Order Date')}</th>
+                            <th className="wsms-px-3 wsms-py-2 wsms-text-left wsms-font-medium wsms-text-muted-foreground">{__('Mobile Number')}</th>
+                            <th className="wsms-px-3 wsms-py-2 wsms-text-left wsms-font-medium wsms-text-muted-foreground">{__('SMS Status')}</th>
+                            <th className="wsms-px-3 wsms-py-2 wsms-text-left wsms-font-medium wsms-text-muted-foreground">{__('Response')}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {queueCampaign.target_orders.map((order, index) => {
+                            const statusConfig = {
+                              success: { label: __('Sent'), className: 'wsms-text-emerald-600' },
+                              pending: { label: __('In Queue'), className: 'wsms-text-blue-600' },
+                              failed: { label: __('Failed'), className: 'wsms-text-red-600' },
+                            }
+                            const smsStatus = statusConfig[order.status] || statusConfig.pending
+                            return (
+                              <tr key={index} className="wsms-border-b wsms-border-border last:wsms-border-0">
+                                <td className="wsms-px-3 wsms-py-2">
+                                  <a
+                                    href={`/wp-admin/post.php?post=${order.order_id}&action=edit`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="wsms-text-primary hover:wsms-underline"
+                                  >
+                                    #{order.order_id}
+                                  </a>
+                                </td>
+                                <td className="wsms-px-3 wsms-py-2 wsms-text-muted-foreground">{order.order_date ? formatDate(order.order_date) : '—'}</td>
+                                <td className="wsms-px-3 wsms-py-2 wsms-font-mono">{order.mobile_number || '—'}</td>
+                                <td className={`wsms-px-3 wsms-py-2 wsms-font-medium ${smsStatus.className}`}>{smsStatus.label}</td>
+                                <td className="wsms-px-3 wsms-py-2 wsms-text-muted-foreground">{order.response || '—'}</td>
+                              </tr>
+                            )
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="wsms-text-center wsms-py-8">
+                    <ListOrdered className="wsms-h-8 wsms-w-8 wsms-text-muted-foreground wsms-mx-auto wsms-mb-2" />
+                    <p className="wsms-text-[13px] wsms-text-muted-foreground">{__('No target orders found for this campaign')}</p>
+                  </div>
+                )}
+              </div>
+            </DialogBody>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsQueueOpen(false)}>
+              {__('Close')}
             </Button>
           </DialogFooter>
         </DialogContent>
