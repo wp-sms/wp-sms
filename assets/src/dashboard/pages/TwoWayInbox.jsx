@@ -61,6 +61,7 @@ export default function TwoWayInbox() {
   const [replyMessage, setReplyMessage] = useState('')
   const [isReplying, setIsReplying] = useState(false)
   const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false)
+  const [bulkActionLoading, setBulkActionLoading] = useState(null)
 
   // Fetch commands for filter
   useEffect(() => {
@@ -197,12 +198,15 @@ export default function TwoWayInbox() {
 
   // Bulk delete with confirmation
   const handleBulkDeleteConfirm = useCallback(async () => {
-    setShowBulkDeleteConfirm(false)
+    setBulkActionLoading(__('Delete Selected'))
     try {
       await handleBulkDelete()
       fetchStats()
     } catch {
       // handled
+    } finally {
+      setBulkActionLoading(null)
+      setShowBulkDeleteConfirm(false)
     }
   }, [handleBulkDelete, fetchStats])
 
@@ -674,6 +678,7 @@ export default function TwoWayInbox() {
         isOpen={showBulkDeleteConfirm}
         onClose={() => setShowBulkDeleteConfirm(false)}
         onConfirm={handleBulkDeleteConfirm}
+        isSaving={bulkActionLoading === __('Delete Selected')}
         title={__('Delete Messages')}
         description={__('Are you sure you want to delete the selected messages?')}
       >
