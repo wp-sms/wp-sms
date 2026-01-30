@@ -144,25 +144,40 @@ function RowActionsDropdown({ actions, row }) {
 
   if (visibleActions.length === 0) return null
 
+  // Check if any action is in loading state for this row
+  const hasLoadingAction = visibleActions.some(
+    (action) => typeof action.loading === 'function' && action.loading(row)
+  )
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="wsms-h-8 wsms-w-8">
-          <MoreHorizontal className="wsms-h-4 wsms-w-4" />
+        <Button variant="ghost" size="icon" className="wsms-h-8 wsms-w-8" disabled={hasLoadingAction}>
+          {hasLoadingAction
+            ? <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
+            : <MoreHorizontal className="wsms-h-4 wsms-w-4" />
+          }
           <span className="wsms-sr-only">{__('Open menu')}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" sideOffset={5}>
-        {visibleActions.map((action, index) => (
-          <DropdownMenuItem
-            key={index}
-            onClick={() => action.onClick(row)}
-            style={action.variant === 'destructive' ? { color: '#dc2626' } : undefined}
-          >
-            {action.icon && <action.icon style={{ marginRight: '8px', width: '16px', height: '16px' }} />}
-            {action.label}
-          </DropdownMenuItem>
-        ))}
+        {visibleActions.map((action, index) => {
+          const isLoading = typeof action.loading === 'function' && action.loading(row)
+          return (
+            <DropdownMenuItem
+              key={index}
+              onClick={() => !isLoading && action.onClick(row)}
+              disabled={isLoading}
+              style={action.variant === 'destructive' ? { color: '#dc2626' } : undefined}
+            >
+              {isLoading
+                ? <Loader2 style={{ marginRight: '8px', width: '16px', height: '16px' }} className="wsms-animate-spin" />
+                : action.icon && <action.icon style={{ marginRight: '8px', width: '16px', height: '16px' }} />
+              }
+              {action.label}
+            </DropdownMenuItem>
+          )
+        })}
       </DropdownMenuContent>
     </DropdownMenu>
   )
