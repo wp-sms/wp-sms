@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { cn, __, getWpSettings, getGatewayDisplayName } from '@/lib/utils'
 import { smsApi } from '@/api/smsApi'
+import { inboxApi } from '@/api/twoWayApi'
 import { useSettings, useSetting, useSavedSetting } from '@/context/SettingsContext'
 import { getNavigation } from '@/lib/pageRegistry'
 
@@ -198,7 +199,7 @@ function RatePlugin() {
 }
 
 // Single nav item (leaf node)
-function NavItem({ item, isActive, onClick, isNested = false }) {
+function NavItem({ item, isActive, onClick, isNested = false, badge }) {
   const Icon = item.icon
 
   // For nested items, background starts after the line and extends to the right edge
@@ -221,6 +222,11 @@ function NavItem({ item, isActive, onClick, isNested = false }) {
         >
           <Icon className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" strokeWidth={1.75} />
           <span className="wsms-text-[12px] wsms-font-medium">{item.label}</span>
+          {badge > 0 && (
+            <span className="wsms-ml-auto wsms-flex wsms-h-[18px] wsms-min-w-[18px] wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary wsms-px-1 wsms-text-[10px] wsms-font-semibold wsms-text-primary-foreground wsms-leading-none">
+              {badge > 99 ? '99+' : badge}
+            </span>
+          )}
         </span>
       </button>
     )
@@ -320,7 +326,7 @@ function NestedNavGroup({ group, currentPage, setCurrentPage }) {
 }
 
 // Collapsible group component
-function NavGroup({ group, currentPage, setCurrentPage, conditions }) {
+function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} }) {
   // Check if any item in this group is active (including nested groups)
   const hasActiveChild = group.items.some((item) => {
     if (item.type === 'nested-group') {
@@ -350,6 +356,9 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions }) {
 
   const Icon = group.icon
 
+  // Sum all badges for child items to show on collapsed group header
+  const groupBadgeTotal = filteredItems.reduce((sum, item) => sum + (badges[item.id] || 0), 0)
+
   return (
     <div className="wsms-space-y-0.5">
       {/* Group header - clickable to expand/collapse */}
@@ -366,13 +375,20 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions }) {
           <Icon className="wsms-h-[18px] wsms-w-[18px] wsms-shrink-0" strokeWidth={1.5} />
           <span>{group.label}</span>
         </div>
-        <ChevronRight
-          className={cn(
-            'wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-transition-transform wsms-duration-200',
-            isExpanded && 'wsms-rotate-90'
+        <div className="wsms-flex wsms-items-center wsms-gap-1.5">
+          {groupBadgeTotal > 0 && !isExpanded && (
+            <span className="wsms-flex wsms-h-[18px] wsms-min-w-[18px] wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary wsms-px-1 wsms-text-[10px] wsms-font-semibold wsms-text-primary-foreground wsms-leading-none">
+              {groupBadgeTotal > 99 ? '99+' : groupBadgeTotal}
+            </span>
           )}
-          strokeWidth={1.5}
-        />
+          <ChevronRight
+            className={cn(
+              'wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-transition-transform wsms-duration-200',
+              isExpanded && 'wsms-rotate-90'
+            )}
+            strokeWidth={1.5}
+          />
+        </div>
       </button>
 
       {/* Expandable content with smooth animation */}
@@ -422,6 +438,7 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions }) {
                 isActive={currentPage === item.id}
                 onClick={() => setCurrentPage(item.id)}
                 isNested={true}
+                badge={badges[item.id]}
               />
             )
           )}
@@ -456,6 +473,20 @@ export default function Sidebar({ onClose, showClose }) {
 
   // Check if any add-on is active (for showing ADD-ONS separator)
   const hasAnyAddon = hasWooCommercePro || hasTwoWay
+
+  // Fetch inbox unread count for nav badge
+  const [navBadges, setNavBadges] = useState({})
+  useEffect(() => {
+    if (!hasTwoWay) return
+    let cancelled = false
+    inboxApi.getStats().then((res) => {
+      if (cancelled) return
+      if (res.success && res.data?.unread > 0) {
+        setNavBadges((prev) => ({ ...prev, 'two-way-inbox': res.data.unread }))
+      }
+    }).catch(() => {})
+    return () => { cancelled = true }
+  }, [hasTwoWay, currentPage])
 
   // Conditions object for filtering
   const conditions = {
@@ -513,6 +544,7 @@ export default function Sidebar({ onClose, showClose }) {
                 currentPage={currentPage}
                 setCurrentPage={setCurrentPage}
                 conditions={conditions}
+                badges={navBadges}
               />
             ) : (
               <NavItem

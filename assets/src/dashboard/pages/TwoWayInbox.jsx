@@ -1,7 +1,22 @@
 import React, { useState, useCallback, useEffect } from 'react'
-import { Inbox, AlertCircle, ExternalLink, RefreshCw, Eye, MessageSquare, Trash2, Filter, CheckCircle, Clock, MailOpen } from 'lucide-react'
+import {
+  Inbox,
+  AlertCircle,
+  ExternalLink,
+  RefreshCw,
+  Eye,
+  MessageSquare,
+  Trash2,
+  Calendar,
+  Clock,
+  Loader2,
+  MailOpen,
+  Search,
+  X,
+} from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { DataTable } from '@/components/ui/data-table'
 import { StatusBadge } from '@/components/shared/StatusBadge'
@@ -12,12 +27,13 @@ import { useListPage } from '@/hooks/useListPage'
 import { useFormDialog } from '@/hooks/useFormDialog'
 import { useSettings } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
-import { __ } from '@/lib/utils'
+import { cn, __ } from '@/lib/utils'
 import { inboxApi } from '@/api/twoWayApi'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogBody,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -57,6 +73,26 @@ export default function TwoWayInbox() {
     }
   }, [hasTwoWay])
 
+  // Stats (fetched separately — the messages endpoint does not include stats)
+  const [stats, setStats] = useState({ total: 0, today: 0, week: 0, unread: 0 })
+
+  const fetchStats = useCallback(() => {
+    inboxApi.getStats().then((res) => {
+      if (res.success && res.data) {
+        setStats({
+          total: res.data.total || 0,
+          today: res.data.today || 0,
+          week: res.data.this_week || 0,
+          unread: res.data.unread || 0,
+        })
+      }
+    }).catch(() => {})
+  }, [])
+
+  useEffect(() => {
+    if (hasTwoWay) fetchStats()
+  }, [hasTwoWay, fetchStats])
+
   // useListPage for table + filters
   const { filters, table, handleDelete, handleBulkDelete } = useListPage({
     fetchFn: async (params) => {
@@ -68,10 +104,9 @@ export default function TwoWayInbox() {
         pagination: {
           total: data.total || 0,
           total_pages: data.total_pages || 1,
-          current_page: data.current_page || 1,
+          current_page: data.page || 1,
           per_page: data.per_page || 20,
         },
-        stats: data.stats || { total: 0, today: 0, week: 0, unread: 0 },
       }
     },
     deleteFn: (id) => inboxApi.deleteMessage(id),
@@ -83,12 +118,11 @@ export default function TwoWayInbox() {
     },
   })
 
-  const stats = table.stats || { total: 0, today: 0, week: 0, unread: 0 }
-
   // Delete confirmation dialog
   const deleteDialog = useFormDialog({
     saveFn: async (id) => {
       await handleDelete(id)
+      fetchStats()
     },
     successMessage: __('Message deleted'),
   })
@@ -129,6 +163,7 @@ export default function TwoWayInbox() {
     try {
       await inboxApi.markAsRead(id)
       table.refresh()
+      fetchStats()
     } catch {
       // silent
     }
@@ -165,10 +200,17 @@ export default function TwoWayInbox() {
     setShowBulkDeleteConfirm(false)
     try {
       await handleBulkDelete()
+      fetchStats()
     } catch {
       // handled
     }
-  }, [handleBulkDelete])
+  }, [handleBulkDelete, fetchStats])
+
+  // Check if any filters are active
+  const hasActiveFilters = filters.filters.search ||
+    filters.filters.action_status !== 'all' ||
+    filters.filters.command_id !== 'all' ||
+    filters.filters.status !== 'all'
 
   // Table columns
   const columns = [
@@ -176,14 +218,18 @@ export default function TwoWayInbox() {
       id: 'sender_number',
       accessorKey: 'sender_number',
       header: __('Sender'),
-      cellClassName: 'wsms-font-mono wsms-text-[12px]',
+      cell: ({ row }) => (
+        <span className="wsms-text-[13px] wsms-font-mono wsms-text-foreground">
+          {row.sender_number}
+        </span>
+      ),
     },
     {
       id: 'text',
       accessorKey: 'text',
       header: __('Message'),
       cell: ({ value }) => (
-        <span className="wsms-max-w-xs wsms-truncate wsms-block">
+        <span className="wsms-text-[13px] wsms-max-w-xs wsms-truncate wsms-block">
           {value?.substring(0, 50)}{value?.length > 50 ? '...' : ''}
         </span>
       ),
@@ -194,7 +240,7 @@ export default function TwoWayInbox() {
       header: __('Command'),
       cell: ({ value }) => value
         ? <Badge variant="outline">{value}</Badge>
-        : <span className="wsms-text-muted-foreground">—</span>,
+        : <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>,
     },
     {
       id: 'action_status',
@@ -204,14 +250,14 @@ export default function TwoWayInbox() {
         if (value === 'successful') return <StatusBadge variant="success">{__('Successful')}</StatusBadge>
         if (value === 'failed') return <StatusBadge variant="failed">{__('Failed')}</StatusBadge>
         if (value === 'plain') return <StatusBadge variant="default">{__('Plain')}</StatusBadge>
-        return <span className="wsms-text-muted-foreground">—</span>
+        return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
       },
     },
     {
       id: 'received_at',
       header: __('Date'),
       cell: ({ row }) => (
-        <span className="wsms-text-muted-foreground">
+        <span className="wsms-text-[12px] wsms-text-muted-foreground">
           {row.received_at_formatted || row.received_at}
         </span>
       ),
@@ -263,21 +309,16 @@ export default function TwoWayInbox() {
   if (!hasTwoWay) {
     return (
       <div className="wsms-space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <Inbox className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              {__('Two-Way SMS Inbox')}
-            </CardTitle>
-            <CardDescription>
-              {__('Receive and manage incoming SMS messages')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
-              <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
-              <h3 className="wsms-font-medium wsms-mb-2">{__('Two-Way SMS Add-on Required')}</h3>
-              <p className="wsms-text-sm wsms-text-muted-foreground wsms-mb-4">
+        <Card className="wsms-border-dashed">
+          <CardContent className="wsms-py-16">
+            <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center wsms-max-w-md wsms-mx-auto">
+              <div className="wsms-flex wsms-h-16 wsms-w-16 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary/10 wsms-mb-6">
+                <Inbox className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
+              </div>
+              <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
+                {__('Two-Way SMS Add-on Required')}
+              </h3>
+              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
                 {__('Install and activate the WP SMS Two-Way add-on to receive incoming messages.')}
               </p>
               <Button variant="outline" asChild>
@@ -300,136 +341,189 @@ export default function TwoWayInbox() {
 
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
-      {/* Page Header */}
-      <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4">
-        <div>
-          <h1 className="wsms-text-xl wsms-font-semibold wsms-text-foreground wsms-flex wsms-items-center wsms-gap-2">
-            <Inbox className="wsms-h-5 wsms-w-5" />
-            {__('Inbox')}
-          </h1>
-          <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mt-1">
-            {__('View and manage incoming SMS messages from your subscribers.')}
-          </p>
-        </div>
-        <div className="wsms-flex wsms-items-center wsms-gap-2">
-          <Button variant="outline" size="icon" onClick={() => table.refresh()}>
-            <RefreshCw className="wsms-h-4 wsms-w-4" />
-          </Button>
-          <ExportButton
-            onExport={handleExport}
-            successMessage={__('Exported %d messages successfully')}
-          />
-        </div>
-      </div>
+      {/* Stats Header Bar */}
+      <div className="wsms-px-4 xl:wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
+        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4 xl:wsms-flex xl:wsms-items-center xl:wsms-justify-between xl:wsms-gap-4">
+          <div className="wsms-contents xl:wsms-flex xl:wsms-items-center xl:wsms-gap-8">
+            {/* Total */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10">
+                <MessageSquare className="wsms-h-5 wsms-w-5 wsms-text-primary" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total')}</p>
+              </div>
+            </div>
 
-      {/* Stats Cards */}
-      <div className="wsms-grid wsms-grid-cols-2 md:wsms-grid-cols-4 wsms-gap-4">
-        <Card>
-          <CardContent className="wsms-pt-4">
-            <div className="wsms-flex wsms-items-center wsms-gap-2">
-              <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-              <span className="wsms-text-sm wsms-text-muted-foreground">{__('Total')}</span>
-            </div>
-            <p className="wsms-text-2xl wsms-font-bold wsms-mt-1">{stats.total}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="wsms-pt-4">
-            <div className="wsms-flex wsms-items-center wsms-gap-2">
-              <Clock className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-              <span className="wsms-text-sm wsms-text-muted-foreground">{__('Today')}</span>
-            </div>
-            <p className="wsms-text-2xl wsms-font-bold wsms-mt-1">{stats.today}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="wsms-pt-4">
-            <div className="wsms-flex wsms-items-center wsms-gap-2">
-              <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-              <span className="wsms-text-sm wsms-text-muted-foreground">{__('This Week')}</span>
-            </div>
-            <p className="wsms-text-2xl wsms-font-bold wsms-mt-1">{stats.week}</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="wsms-pt-4">
-            <div className="wsms-flex wsms-items-center wsms-gap-2">
-              <MailOpen className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-              <span className="wsms-text-sm wsms-text-muted-foreground">{__('Unread')}</span>
-            </div>
-            <p className="wsms-text-2xl wsms-font-bold wsms-mt-1">{stats.unread}</p>
-          </CardContent>
-        </Card>
-      </div>
+            <div className="wsms-hidden xl:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
 
-      {/* Messages Table */}
-      <Card>
-        <CardContent className="wsms-p-0">
-          {/* Filters */}
-          <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-px-6 wsms-py-4">
-            <Filter className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
-            <Select value={filters.filters.action_status} onValueChange={(v) => filters.setFilter('action_status', v)}>
-              <SelectTrigger className="wsms-w-[130px] wsms-h-9">
-                <SelectValue placeholder={__('Action Status')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{__('All Actions')}</SelectItem>
-                <SelectItem value="successful">{__('Successful')}</SelectItem>
-                <SelectItem value="failed">{__('Failed')}</SelectItem>
-                <SelectItem value="plain">{__('Plain')}</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select value={filters.filters.command_id} onValueChange={(v) => filters.setFilter('command_id', v)}>
-              <SelectTrigger className="wsms-w-[140px] wsms-h-9">
-                <SelectValue placeholder={__('Command')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{__('All Commands')}</SelectItem>
-                {commands.map((cmd) => (
-                  <SelectItem key={cmd.id} value={String(cmd.id)}>
-                    {cmd.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={filters.filters.status} onValueChange={(v) => filters.setFilter('status', v)}>
-              <SelectTrigger className="wsms-w-[110px] wsms-h-9">
-                <SelectValue placeholder={__('Read')} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">{__('All')}</SelectItem>
-                <SelectItem value="unread">{__('Unread')}</SelectItem>
-                <SelectItem value="read">{__('Read')}</SelectItem>
-              </SelectContent>
-            </Select>
-            {filters.hasActiveFilters && (
-              <Button variant="ghost" size="sm" className="wsms-h-9" onClick={filters.resetFilters}>
-                {__('Clear')}
-              </Button>
-            )}
+            {/* Today */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-success/10">
+                <Clock className="wsms-h-5 wsms-w-5 wsms-text-success" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.today}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Today')}</p>
+              </div>
+            </div>
+
+            <div className="wsms-hidden xl:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+
+            {/* This Week */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-blue-100 dark:wsms-bg-blue-900/30">
+                <Calendar className="wsms-h-5 wsms-w-5 wsms-text-blue-600 dark:wsms-text-blue-400" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.week}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('This Week')}</p>
+              </div>
+            </div>
+
+            <div className="wsms-hidden xl:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+
+            {/* Unread */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className={cn(
+                'wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg',
+                stats.unread > 0 ? 'wsms-bg-destructive/10' : 'wsms-bg-slate-200 dark:wsms-bg-slate-700'
+              )}>
+                <MailOpen className={cn(
+                  'wsms-h-5 wsms-w-5',
+                  stats.unread > 0 ? 'wsms-text-destructive' : 'wsms-text-slate-500 dark:wsms-text-slate-400'
+                )} aria-hidden="true" />
+              </div>
+              <div>
+                <p className={cn(
+                  'wsms-text-xl wsms-font-bold',
+                  stats.unread > 0 ? 'wsms-text-destructive' : 'wsms-text-muted-foreground'
+                )}>{stats.unread}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Unread')}</p>
+              </div>
+            </div>
           </div>
 
+          {/* Export */}
+          <div className="wsms-col-span-2 xl:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 xl:wsms-mt-0">
+            <ExportButton
+              onExport={handleExport}
+              successMessage={__('Exported %d messages successfully')}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <Card>
+        <CardContent className="wsms-p-3">
+          <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-2">
+            {/* Search */}
+            <div className="wsms-relative wsms-w-full xl:wsms-w-[220px] xl:wsms-shrink-0">
+              <Search className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
+              <Input
+                type="text"
+                value={filters.filters.search}
+                onChange={(e) => filters.setFilter('search', e.target.value)}
+                placeholder={__('Search messages...')}
+                className="wsms-pl-8 wsms-h-9"
+                aria-label={__('Search messages')}
+              />
+            </div>
+
+            {/* Filters */}
+            <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-2">
+              <Select value={filters.filters.action_status} onValueChange={(v) => filters.setFilter('action_status', v)}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by action status')}>
+                  <SelectValue placeholder={__('All Actions')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{__('All Actions')}</SelectItem>
+                  <SelectItem value="successful">{__('Successful')}</SelectItem>
+                  <SelectItem value="failed">{__('Failed')}</SelectItem>
+                  <SelectItem value="plain">{__('Plain')}</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={filters.filters.command_id} onValueChange={(v) => filters.setFilter('command_id', v)}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[130px] wsms-text-[12px]" aria-label={__('Filter by command')}>
+                  <SelectValue placeholder={__('All Commands')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{__('All Commands')}</SelectItem>
+                  {commands.map((cmd) => (
+                    <SelectItem key={cmd.id} value={String(cmd.id)}>
+                      {cmd.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={filters.filters.status} onValueChange={(v) => filters.setFilter('status', v)}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[100px] wsms-text-[12px]" aria-label={__('Filter by read status')}>
+                  <SelectValue placeholder={__('All')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{__('All')}</SelectItem>
+                  <SelectItem value="unread">{__('Unread')}</SelectItem>
+                  <SelectItem value="read">{__('Read')}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Actions */}
+            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ml-auto">
+              {hasActiveFilters && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={filters.resetFilters}
+                  className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
+                  aria-label={__('Clear all filters')}
+                >
+                  <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => { table.fetch({ page: 1 }); fetchStats() }}
+                className="wsms-h-9 wsms-px-2.5"
+                aria-label={__('Refresh messages')}
+              >
+                <RefreshCw
+                  className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')}
+                  aria-hidden="true"
+                />
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Data Table */}
+      <Card>
+        <CardContent className="wsms-p-0">
           <DataTable
             columns={columns}
             data={table.data}
             loading={table.isLoading}
             pagination={{
-              page: table.pagination.current_page,
-              perPage: table.pagination.per_page,
               total: table.pagination.total,
               totalPages: table.pagination.total_pages,
+              page: table.pagination.current_page,
+              perPage: table.pagination.per_page,
               onPageChange: table.handlePageChange,
             }}
             selection={{
               selected: table.selectedIds,
-              onSelect: (id) => table.toggleSelection(id),
-              onSelectAll: (ids) => ids.length === 0 ? table.clearSelection() : table.setSelectedIds(ids),
+              onSelect: table.toggleSelection,
+              onSelectAll: table.toggleSelectAll,
             }}
             rowActions={rowActions}
             bulkActions={bulkActions}
-            onSearch={(v) => filters.setFilter('search', v)}
-            searchPlaceholder={__('Search messages...')}
-            emptyMessage={__('No messages found')}
+            emptyMessage={__('No messages match your filters')}
             emptyIcon={Inbox}
           />
         </CardContent>
@@ -439,22 +533,52 @@ export default function TwoWayInbox() {
       <Dialog open={!!viewingMessage} onOpenChange={() => setViewingMessage(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{__('Message from %s').replace('%s', viewingMessage?.sender_number)}</DialogTitle>
+            <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
+              {__('Message Details')}
+            </DialogTitle>
             <DialogDescription>
               {__('Received')}: {viewingMessage?.received_at_formatted || viewingMessage?.received_at}
             </DialogDescription>
           </DialogHeader>
-          <div className="wsms-px-6 wsms-pb-2">
-            <div className="wsms-p-4 wsms-bg-muted wsms-rounded-lg">
-              <p className="wsms-whitespace-pre-wrap">{viewingMessage?.text}</p>
-            </div>
-            {viewingMessage?.command_name && (
-              <div className="wsms-mt-4">
-                <span className="wsms-text-sm wsms-text-muted-foreground">{__('Matched Command')}: </span>
-                <Badge variant="outline">{viewingMessage.command_name}</Badge>
+          <DialogBody>
+            <div className="wsms-space-y-4">
+              {/* Sender & Status Row */}
+              <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-p-4 wsms-rounded-lg wsms-bg-muted/30">
+                <div className="wsms-flex-1">
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Sender')}</p>
+                  <p className="wsms-text-[13px] wsms-font-mono wsms-font-medium">{viewingMessage?.sender_number}</p>
+                </div>
+                <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
+                <div className="wsms-flex-1">
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Status')}</p>
+                  {viewingMessage?.action_status === 'successful'
+                    ? <StatusBadge variant="success">{__('Successful')}</StatusBadge>
+                    : viewingMessage?.action_status === 'failed'
+                      ? <StatusBadge variant="failed">{__('Failed')}</StatusBadge>
+                      : <StatusBadge variant="default">{__('Plain')}</StatusBadge>
+                  }
+                </div>
+                {viewingMessage?.command_name && (
+                  <>
+                    <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
+                    <div className="wsms-flex-1">
+                      <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Command')}</p>
+                      <Badge variant="outline">{viewingMessage.command_name}</Badge>
+                    </div>
+                  </>
+                )}
               </div>
-            )}
-          </div>
+
+              {/* Message */}
+              <div>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Message')}</p>
+                <div className="wsms-p-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
+                  <p className="wsms-text-[13px] wsms-whitespace-pre-wrap">{viewingMessage?.text}</p>
+                </div>
+              </div>
+            </div>
+          </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={() => setViewingMessage(null)}>
               {__('Close')}
@@ -463,6 +587,7 @@ export default function TwoWayInbox() {
               setReplyingTo(viewingMessage)
               setViewingMessage(null)
             }}>
+              <MessageSquare className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
               {__('Reply')}
             </Button>
           </DialogFooter>
@@ -473,29 +598,51 @@ export default function TwoWayInbox() {
       <Dialog open={!!replyingTo} onOpenChange={() => { setReplyingTo(null); setReplyMessage('') }}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{__('Reply to %s').replace('%s', replyingTo?.sender_number)}</DialogTitle>
+            <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
+              {__('Quick Reply')}
+            </DialogTitle>
             <DialogDescription>
               {__('Send an SMS reply to this number')}
             </DialogDescription>
           </DialogHeader>
-          <div className="wsms-px-6 wsms-pb-2 wsms-space-y-4">
-            <div className="wsms-p-3 wsms-bg-muted wsms-rounded-lg wsms-text-sm">
-              <p className="wsms-text-muted-foreground wsms-mb-1">{__('Original message')}:</p>
-              <p>{replyingTo?.text?.substring(0, 100)}{replyingTo?.text?.length > 100 ? '...' : ''}</p>
+          <DialogBody>
+            <div className="wsms-space-y-4">
+              <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/50 wsms-border wsms-border-border">
+                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">{__('Recipient')}</p>
+                <p className="wsms-text-[13px] wsms-font-mono wsms-text-foreground">
+                  {replyingTo?.sender_number}
+                </p>
+              </div>
+              <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/30 wsms-text-[13px]">
+                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">{__('Original message')}</p>
+                <p>{replyingTo?.text?.substring(0, 100)}{replyingTo?.text?.length > 100 ? '...' : ''}</p>
+              </div>
+              <div className="wsms-space-y-2">
+                <label className="wsms-text-[12px] wsms-font-medium">{__('Message')}</label>
+                <Textarea
+                  placeholder={__('Type your reply...')}
+                  value={replyMessage}
+                  onChange={(e) => setReplyMessage(e.target.value)}
+                  rows={4}
+                />
+                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-text-right">
+                  {replyMessage.length} {__('characters')}
+                </p>
+              </div>
             </div>
-            <Textarea
-              placeholder={__('Type your reply...')}
-              value={replyMessage}
-              onChange={(e) => setReplyMessage(e.target.value)}
-              rows={4}
-            />
-          </div>
+          </DialogBody>
           <DialogFooter>
             <Button variant="outline" onClick={() => { setReplyingTo(null); setReplyMessage('') }}>
               {__('Cancel')}
             </Button>
             <Button onClick={handleReply} disabled={!replyMessage.trim() || isReplying}>
-              {isReplying ? __('Sending...') : __('Send Reply')}
+              {isReplying ? (
+                <>
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" aria-hidden="true" />
+                  {__('Sending...')}
+                </>
+              ) : __('Send Reply')}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -507,19 +654,35 @@ export default function TwoWayInbox() {
         onClose={deleteDialog.close}
         onConfirm={handleDeleteConfirm}
         isSaving={deleteDialog.isSaving}
-        title={__('Delete Message?')}
-        description={__('Are you sure you want to delete this message from %s? This action cannot be undone.').replace('%s', deleteDialog.item?.sender_number || '')}
-      />
+        title={__('Delete Message')}
+        description={__('Are you sure you want to delete this message?')}
+      >
+        <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
+          <div className="wsms-space-y-1">
+            <p className="wsms-text-[13px] wsms-font-mono wsms-text-muted-foreground">
+              {deleteDialog.item?.sender_number}
+            </p>
+            <p className="wsms-text-[13px] wsms-text-foreground">
+              {deleteDialog.item?.text?.substring(0, 80)}{deleteDialog.item?.text?.length > 80 ? '...' : ''}
+            </p>
+          </div>
+        </div>
+      </DeleteConfirmDialog>
 
       {/* Bulk Delete Confirmation */}
       <DeleteConfirmDialog
         isOpen={showBulkDeleteConfirm}
         onClose={() => setShowBulkDeleteConfirm(false)}
         onConfirm={handleBulkDeleteConfirm}
-        title={__('Delete %d Messages?').replace('%d', table.selectedIds.length)}
-        description={__('Are you sure you want to delete %d selected messages? This action cannot be undone.').replace('%d', table.selectedIds.length)}
-        confirmLabel={__('Delete All')}
-      />
+        title={__('Delete Messages')}
+        description={__('Are you sure you want to delete the selected messages?')}
+      >
+        <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
+          <p className="wsms-text-[13px] wsms-text-foreground">
+            {__('%d message(s) will be permanently deleted.').replace('%d', table.selectedIds.length)}
+          </p>
+        </div>
+      </DeleteConfirmDialog>
     </div>
   )
 }
