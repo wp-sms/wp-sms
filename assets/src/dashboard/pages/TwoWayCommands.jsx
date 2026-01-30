@@ -109,6 +109,7 @@ export default function TwoWayCommands() {
     initialData: {
       command_name: '',
       action_reference: '',
+      command_option: '',
       status: 'enabled',
       response_data: {
         success: { text: '' },
@@ -156,6 +157,7 @@ export default function TwoWayCommands() {
       id: command.id,
       command_name: command.command_name || '',
       action_reference: command.action_reference || '',
+      command_option: '',
       status: command.status || 'enabled',
       response_data: {
         success: { text: '' },
@@ -163,7 +165,7 @@ export default function TwoWayCommands() {
       },
     })
 
-    // Then fetch full data (includes response_data)
+    // Then fetch full data (includes response_data + command_option)
     try {
       setIsEditLoading(true)
       const response = await commandsApi.getCommand(command.id)
@@ -173,6 +175,7 @@ export default function TwoWayCommands() {
           id: full.id,
           command_name: full.command_name || '',
           action_reference: full.action_reference || '',
+          command_option: full.command_option || '',
           status: full.status || 'enabled',
           response_data: {
             success: { text: full.response_data?.success?.text || '' },
@@ -561,7 +564,10 @@ export default function TwoWayCommands() {
                 <Select
                   key={`action-${isActionsLoading}-${commandDialog.formData.action_reference}`}
                   value={commandDialog.formData.action_reference}
-                  onValueChange={(value) => commandDialog.updateField('action_reference', value)}
+                  onValueChange={(value) => {
+                    commandDialog.updateField('action_reference', value)
+                    commandDialog.updateField('command_option', '')
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder={__('Select an action')} />
@@ -593,6 +599,31 @@ export default function TwoWayCommands() {
                   <p className="wsms-text-[11px] wsms-text-destructive">{commandDialog.getError('action_reference')}</p>
                 )}
               </div>
+
+              {/* Action Option (e.g., subscriber group for signup/cancel) */}
+              {selectedActionData?.options?.length > 0 && (
+                <div className="wsms-space-y-2">
+                  <label className="wsms-text-[12px] wsms-font-medium">
+                    {selectedActionData.optionsLabel || __('Option')}
+                  </label>
+                  <Select
+                    key={`option-${commandDialog.formData.action_reference}-${commandDialog.formData.command_option}`}
+                    value={commandDialog.formData.command_option}
+                    onValueChange={(value) => commandDialog.updateField('command_option', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={__('Select an option')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {selectedActionData.options.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               <div className="wsms-space-y-2">
                 <label className="wsms-text-[12px] wsms-font-medium">{__('Success Response')}</label>
