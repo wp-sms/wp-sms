@@ -43,6 +43,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { DataTable } from '@/components/ui/data-table'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
+import { DialogLoadingSpinner } from '@/components/shared/DialogLoadingSpinner'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
 import { useSettings } from '@/context/SettingsContext'
@@ -785,9 +786,7 @@ export default function SmsCampaigns() {
             </DialogDescription>
           </DialogHeader>
           {detailLoading ? (
-            <div className="wsms-flex wsms-items-center wsms-justify-center wsms-py-12">
-              <Loader2 className="wsms-h-6 wsms-w-6 wsms-animate-spin wsms-text-muted-foreground" />
-            </div>
+            <DialogLoadingSpinner />
           ) : (
             <CampaignForm
               campaign={selectedCampaign}
@@ -811,9 +810,7 @@ export default function SmsCampaigns() {
             </DialogDescription>
           </DialogHeader>
           {detailLoading ? (
-            <div className="wsms-flex wsms-items-center wsms-justify-center wsms-py-12">
-              <Loader2 className="wsms-h-6 wsms-w-6 wsms-animate-spin wsms-text-muted-foreground" />
-            </div>
+            <DialogLoadingSpinner />
           ) : selectedCampaign && (
             <DialogBody>
               <div className="wsms-space-y-4">
@@ -896,9 +893,7 @@ export default function SmsCampaigns() {
             </DialogDescription>
           </DialogHeader>
           {queueLoading ? (
-            <div className="wsms-flex wsms-items-center wsms-justify-center wsms-py-12">
-              <Loader2 className="wsms-h-6 wsms-w-6 wsms-animate-spin wsms-text-muted-foreground" />
-            </div>
+            <DialogLoadingSpinner />
           ) : queueCampaign && (
             <DialogBody>
               <div className="wsms-space-y-4">
