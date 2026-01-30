@@ -223,8 +223,9 @@ export default function Outbox() {
         },
         onResend: (row) => handleResend(row.id),
         onDelete: handleDeleteClick,
+        isResending: (row) => actionLoading === row.id,
       }),
-    [handleResend, handleDeleteClick]
+    [handleResend, handleDeleteClick, actionLoading]
   )
 
   // Handle bulk delete with confirmation

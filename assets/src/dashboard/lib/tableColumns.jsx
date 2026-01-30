@@ -205,7 +205,7 @@ export const outboxColumns = [
  * @param {Object} handlers - Action handlers
  * @returns {Array} Row actions
  */
-export function getOutboxRowActions({ onView, onQuickReply, onResend, onDelete }) {
+export function getOutboxRowActions({ onView, onQuickReply, onResend, onDelete, isResending }) {
   return [
     {
       label: __('View Details'),
@@ -223,6 +223,7 @@ export function getOutboxRowActions({ onView, onQuickReply, onResend, onDelete }
       label: __('Resend'),
       icon: Send,
       onClick: onResend,
+      loading: isResending,
     },
     {
       label: __('Delete'),
