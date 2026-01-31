@@ -457,7 +457,7 @@ class Settings
                     'id'      => 'gateway_name',
                     'name'    => esc_html__('Choose the Gateway', 'wp-sms'),
                     'type'    => 'advancedselect',
-                    'options' => Gateway::gateway(),
+                    'options' => self::getGatewayOptionsForLegacySelect(),
                     'desc'    => esc_html__('Select your preferred SMS Gateway to send messages.', 'wp-sms')
                 ),
                 'gateway_help'                 => array(
@@ -1553,7 +1553,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'option'   => $option,
                     'name'     => $name,
                     'selected' => $option == $value,
-                    'disabled' => array_column(Gateway::$proGateways, $option) ? true : false,
+                    'disabled' => self::isGatewayPremium($option),
                 ]);
 
                 if ($options['disabled']) {
@@ -1957,5 +1957,82 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         $newValue['gateway_version'] = $currentVer;
 
         return $newValue;
+    }
+
+    /**
+     * Build gateway options array for the legacy settings select dropdown
+     * using data from GatewayRegistry.
+     *
+     * @return array Region-grouped gateway options compatible with advancedselect
+     */
+    private static function getGatewayOptionsForLegacySelect()
+    {
+        $registry = \WP_SMS\Services\Gateway\GatewayRegistry::getGateways();
+        $options  = [
+            '' => ['default' => esc_html__('Please select your gateway', 'wp-sms')],
+        ];
+
+        if (empty($registry['gateways'])) {
+            return $options;
+        }
+
+        foreach ($registry['gateways'] as $gw) {
+            $slug = $gw['slug'] ?? '';
+            $name = $gw['name'] ?? $slug;
+
+            if (empty($slug) || $slug === 'default') {
+                continue;
+            }
+
+            // Use first region or 'global' as group key
+            $region = (!empty($gw['regions']) && is_array($gw['regions'])) ? $gw['regions'][0] : 'global';
+
+            if (!isset($options[$region])) {
+                $options[$region] = [];
+            }
+
+            $options[$region][$slug] = $name;
+        }
+
+        // Sort region groups alphabetically, keeping '' and 'global' first
+        $header = [];
+        if (isset($options[''])) {
+            $header[''] = $options[''];
+            unset($options['']);
+        }
+        $global = [];
+        if (isset($options['global'])) {
+            $global['global'] = $options['global'];
+            unset($options['global']);
+        }
+        ksort($options);
+
+        return array_merge($header, $global, $options);
+    }
+
+    /**
+     * Check if a gateway slug is premium using GatewayRegistry data
+     *
+     * @param string $slug
+     * @return bool
+     */
+    private static function isGatewayPremium($slug)
+    {
+        static $premiumMap = null;
+
+        if ($premiumMap === null) {
+            $premiumMap = [];
+            $registry = \WP_SMS\Services\Gateway\GatewayRegistry::getGateways();
+
+            if (!empty($registry['gateways'])) {
+                foreach ($registry['gateways'] as $gw) {
+                    if (!empty($gw['premium']) && !empty($gw['slug'])) {
+                        $premiumMap[$gw['slug']] = true;
+                    }
+                }
+            }
+        }
+
+        return isset($premiumMap[$slug]);
     }
 }

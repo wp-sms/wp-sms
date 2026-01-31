@@ -6,7 +6,7 @@ module.exports = {
   important: '#wpsms-settings-root',
   darkMode: ['class', '[data-theme="dark"]'],
   content: [
-    path.join(__dirname, 'assets/src/dashboard/**/*.{js,jsx,ts,tsx}'),
+    path.join(__dirname, 'resources/react/src/**/*.{js,jsx,ts,tsx}'),
   ],
   theme: {
     extend: {

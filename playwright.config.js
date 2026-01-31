@@ -13,7 +13,7 @@ dotenv.config({ path: '.env.e2e' });
  * Run tests: npm run e2e
  */
 export default defineConfig({
-  testDir: './e2e/tests',
+  testDir: './tests/e2e/tests',
 
   // Run tests in files in parallel
   fullyParallel: false, // WordPress may have state issues with parallel tests
@@ -55,8 +55,8 @@ export default defineConfig({
   },
 
   // Global setup and teardown
-  globalSetup: './e2e/global-setup.js',
-  globalTeardown: './e2e/global-teardown.js',
+  globalSetup: './tests/e2e/global-setup.js',
+  globalTeardown: './tests/e2e/global-teardown.js',
 
   // Test timeout
   timeout: 60000,
@@ -68,7 +68,7 @@ export default defineConfig({
     {
       name: 'setup',
       testMatch: /auth\.setup\.js/,
-      testDir: './e2e',
+      testDir: './tests/e2e',
     },
 
     // Chromium tests (default for local development)
@@ -76,7 +76,7 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        storageState: path.join(__dirname, 'e2e/.auth/user.json'),
+        storageState: path.join(__dirname, 'tests/e2e/.auth/user.json'),
       },
       dependencies: ['setup'],
     },
@@ -86,7 +86,7 @@ export default defineConfig({
     //   name: 'firefox',
     //   use: {
     //     ...devices['Desktop Firefox'],
-    //     storageState: path.join(__dirname, 'e2e/.auth/user.json'),
+    //     storageState: path.join(__dirname, 'tests/e2e/.auth/user.json'),
     //   },
     //   dependencies: ['setup'],
     // },
@@ -96,7 +96,7 @@ export default defineConfig({
     //   name: 'webkit',
     //   use: {
     //     ...devices['Desktop Safari'],
-    //     storageState: path.join(__dirname, 'e2e/.auth/user.json'),
+    //     storageState: path.join(__dirname, 'tests/e2e/.auth/user.json'),
     //   },
     //   dependencies: ['setup'],
     // },

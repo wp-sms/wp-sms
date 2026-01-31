@@ -76,6 +76,16 @@ class SettingsApi extends RestApi
             ],
         ]);
 
+        // Gateway registry (API-sourced with local fallback)
+        // Must be registered before the wildcard section route
+        register_rest_route($this->namespace . '/v1', '/settings/gateways', [
+            [
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => [$this, 'getGatewayRegistry'],
+                'permission_callback' => [$this, 'checkPermission'],
+            ],
+        ]);
+
         // Get specific settings section
         register_rest_route($this->namespace . '/v1', '/settings/(?P<section>[a-zA-Z0-9_-]+)', [
             [
@@ -118,6 +128,7 @@ class SettingsApi extends RestApi
                 'permission_callback' => [$this, 'checkPermission'],
             ],
         ]);
+
 
     }
 
@@ -792,6 +803,19 @@ class SettingsApi extends RestApi
     }
 
     /**
+     * Get gateway registry from API with local fallback
+     *
+     * @param WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function getGatewayRegistry(WP_REST_Request $request)
+    {
+        $data = \WP_SMS\Services\Gateway\GatewayRegistry::getGateways();
+
+        return self::response(__('Gateway registry retrieved successfully', 'wp-sms'), 200, $data);
+    }
+
+    /**
      * Validate gateway name against available gateways
      *
      * @param string $value Gateway name
@@ -799,21 +823,17 @@ class SettingsApi extends RestApi
      */
     private function validateGateway($value)
     {
-        $availableGateways = \WP_SMS\Gateway::gateway();
+        $registry = \WP_SMS\Services\Gateway\GatewayRegistry::getGateways();
 
-        // Flatten gateway groups to get all gateway keys
-        $allGateways = [];
-        foreach ($availableGateways as $group) {
-            if (is_array($group)) {
-                $allGateways = array_merge($allGateways, array_keys($group));
+        if (!empty($registry['gateways'])) {
+            foreach ($registry['gateways'] as $gw) {
+                if (isset($gw['slug']) && $gw['slug'] === $value) {
+                    return null;
+                }
             }
         }
 
-        if (!in_array($value, $allGateways, true)) {
-            return __('Invalid gateway selected', 'wp-sms');
-        }
-
-        return null;
+        return __('Invalid gateway selected', 'wp-sms');
     }
 
     /**

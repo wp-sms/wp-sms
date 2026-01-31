@@ -49,7 +49,7 @@ bundle-analysis.html
 # E2E Testing (Playwright)
 /e2e-report/
 /e2e-results/
-/e2e/.auth/
+/tests/e2e/.auth/
 .env.e2e
 .env.e2e.local
 /playwright-report/

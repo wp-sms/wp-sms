@@ -23,7 +23,7 @@ export default defineConfig(({ command, mode }) => ({
       brotliSize: true,
     }),
   ].filter(Boolean),
-  root: 'assets/src/dashboard',
+  root: 'resources/react',
   css: {
     postcss: {
       plugins: [
@@ -49,7 +49,7 @@ export default defineConfig(({ command, mode }) => ({
       },
     },
     rollupOptions: {
-      input: path.resolve(__dirname, 'assets/src/dashboard/index.html'),
+      input: path.resolve(__dirname, 'resources/react/index.html'),
       output: {
         entryFileNames: 'assets/dashboard.js',
         chunkFileNames: 'assets/dashboard-[hash].js',
@@ -102,7 +102,7 @@ export default defineConfig(({ command, mode }) => ({
   },
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'assets/src/dashboard'),
+      '@': path.resolve(__dirname, 'resources/react/src'),
       // Ensure single React instance (prevents "useState is null" errors)
       'react': path.resolve(__dirname, 'node_modules/react'),
       'react-dom': path.resolve(__dirname, 'node_modules/react-dom'),

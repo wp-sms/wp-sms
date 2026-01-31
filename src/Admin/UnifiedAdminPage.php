@@ -4,7 +4,6 @@ namespace WP_SMS\Admin;
 
 use WP_SMS\Components\Singleton;
 use WP_SMS\Option;
-use WP_SMS\Gateway;
 use WP_SMS\Newsletter;
 
 if (!defined('ABSPATH')) {
@@ -129,15 +128,17 @@ class UnifiedAdminPage extends Singleton
         // Check for Vite manifest
         $manifestPath = $distPath . '.vite/manifest.json';
 
-        // Use dev server if WPSMS_SETTINGS_DEV is defined or manifest doesn't exist
-        $useDevServer = defined('WPSMS_SETTINGS_DEV') && WPSMS_SETTINGS_DEV;
+        // Use dev server if WPSMS_VITE_DEV_SERVER constant is defined with URL
+        // e.g. define('WPSMS_VITE_DEV_SERVER', 'http://localhost:5177') in wp-config.php
+        $viteDevServer = defined('WPSMS_VITE_DEV_SERVER') ? WPSMS_VITE_DEV_SERVER : false;
 
-        if (!$useDevServer && file_exists($manifestPath)) {
-            // Production build
+        if ($viteDevServer) {
+            $this->enqueueDevelopmentAssets($viteDevServer);
+        } elseif (file_exists($manifestPath)) {
             $this->enqueueProductionAssets($manifestPath, $distUrl);
         } else {
-            // Development mode - use Vite dev server
-            $this->enqueueDevelopmentAssets();
+            // No dev server and no manifest — nothing to load
+            return;
         }
 
         // Localize script data
@@ -200,9 +201,8 @@ class UnifiedAdminPage extends Singleton
     /**
      * Enqueue development assets from Vite dev server
      */
-    private function enqueueDevelopmentAssets()
+    private function enqueueDevelopmentAssets($viteDevServerUrl)
     {
-        $viteDevServerUrl = 'http://localhost:5177';
         $localizedData = $this->getLocalizedData();
 
         // Inject localized data and Vite scripts directly in footer
@@ -219,7 +219,7 @@ class UnifiedAdminPage extends Singleton
                 window.__vite_plugin_react_preamble_installed__ = true
             </script>
             <script type="module" src="<?php echo esc_url($viteDevServerUrl); ?>/@vite/client"></script>
-            <script type="module" src="<?php echo esc_url($viteDevServerUrl); ?>/main.jsx"></script>
+            <script type="module" src="<?php echo esc_url($viteDevServerUrl); ?>/src/main.jsx"></script>
             <?php
         });
 
@@ -244,7 +244,6 @@ class UnifiedAdminPage extends Singleton
             'settings'      => $this->maskSensitiveSettings($this->getSettingsWithDefaults()),
             'proSettings'   => $this->maskSensitiveSettings(Option::getOptions(true)),
             'addons'        => $this->getActiveAddons(),
-            'gateways'      => Gateway::gateway(),
             'gateway'       => $this->getGatewayCapabilities(),
             'adminUrl'      => admin_url(),
             'siteUrl'       => site_url(),

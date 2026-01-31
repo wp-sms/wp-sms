@@ -2,18 +2,14 @@
 
 namespace WP_SMS\Admin\OnBoarding\Steps;
 
-use Exception;
 use WP_SMS\Admin\OnBoarding\StepAbstract;
-use WP_SMS\Components\RemoteRequest;
 use WP_SMS\Option;
-use WP_SMS\Utils\Request;
+use WP_SMS\Services\Gateway\GatewayRegistry;
 
 if (!defined('ABSPATH')) exit;
 
 class SmsGateway extends StepAbstract
 {
-    const CACHE_DURATION = 43200; // 12 hours in seconds
-
     public function getFields()
     {
         return ['name'];
@@ -21,35 +17,10 @@ class SmsGateway extends StepAbstract
 
     protected function initialize()
     {
-        if (Request::get('step') == $this->getSlug()) {
-            $this->setData('gateways', $this->getAllPages());
+        if (\WP_SMS\Utils\Request::get('step') == $this->getSlug()) {
+            $registry = GatewayRegistry::getGateways();
+            $this->setData('gateways', $registry['gateways'] ?? []);
         }
-    }
-
-    private function getAllPages()
-    {
-        $gateways = array();
-        $page     = 1;
-
-        try {
-            do {
-                $request = new RemoteRequest('get', "https://wp-sms-pro.com/wp-json/wp/v2/gateway?per_page=100&page={$page}");
-                $response = $request->execute(true, true, self::CACHE_DURATION);
-
-                if (is_array($response) && !empty($response)) {
-                    $gateways = array_merge($gateways, $response);
-                    $page++;
-                } else {
-                    break;
-                }
-
-            } while (count($response) === 100);
-        } catch (Exception $e) {
-            /* translators: %s: error message */
-            error_log(sprintf(__('Error fetching pages: %s', 'wp-sms'), $e->getMessage()));
-        }
-
-        return $gateways;
     }
 
     public function getSlug()
@@ -66,7 +37,7 @@ class SmsGateway extends StepAbstract
     {
         $result = ['country' => ''];
 
-        $country_code = \WP_SMS\Option::getOption('mobile_county_code');
+        $country_code = Option::getOption('mobile_county_code');
 
         if (empty($country_code)) {
             return $result;
@@ -99,5 +70,4 @@ class SmsGateway extends StepAbstract
     {
         Option::updateOption('gateway_name', $this->data['name']);
     }
-
 }

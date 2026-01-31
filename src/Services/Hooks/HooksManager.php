@@ -5,7 +5,6 @@ namespace WP_SMS\Services\Hooks;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Utils\PluginHelper;
-use WP_SMS\Gateway;
 
 if (!defined('ABSPATH')) exit;
 
@@ -14,7 +13,6 @@ class HooksManager
     public function __construct()
     {
         add_filter('plugin_action_links_' . plugin_basename(WP_SMS_DIR . 'wp-sms.php'), [$this, 'addActionLinks']);
-        add_filter('wpsms_gateway_list', [$this, 'addProGateways']);
     }
 
     /**
@@ -40,32 +38,4 @@ class HooksManager
         return array_merge($customLinks, $links);
     }
 
-    /**
-     * Adds Pro gateways to the gateway list.
-     *
-     * @param array $gateways The existing gateways.
-     *
-     * @return array The modified gateways with Pro gateways added.
-     */
-    public function addProGateways($gateways)
-    {
-        // Merge pro gateways into existing gateways, without duplicates
-        foreach (Gateway::$proGateways as $country => $gatewayList) {
-            foreach ($gatewayList as $key => $value) {
-                if (!isset($gateways[$country][$key])) {
-                    $gateways[$country][$key] = $value;
-                }
-            }
-        }
-
-        // Fix the first array key value
-        unset($gateways['']);
-        $gateways = array_merge(['' => ['default' => esc_html__('Please select your gateway', 'wp-sms')]], $gateways);
-
-        // Sort gateways by countries and merge them with global at first
-        $gateways_countries = array_splice($gateways, 2);
-        ksort($gateways_countries);
-
-        return array_replace_recursive($gateways, $gateways_countries);
-    }
 }
