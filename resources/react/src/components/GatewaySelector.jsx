@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react'
 import { Search, CheckCircle, Star, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { SearchableSelect } from '@/components/ui/searchable-select'
-import { cn, __, countryCodeToFlag } from '@/lib/utils'
+import { cn, __, countryCodeToFlag, getGatewayLogo } from '@/lib/utils'
 import { GatewayCard, GatewayCardMinimal } from '@/components/GatewayCard'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 
@@ -142,12 +142,23 @@ export default function GatewaySelector({
 
   const CardComponent = isApiSource ? GatewayCard : GatewayCardMinimal
 
+  const getFeatureTags = (gateway) => {
+    if (!gateway.features) return []
+    const map = { bulk_send: 'Bulk', mms: 'MMS', incoming_sms: 'SMS-in', whatsapp: 'WhatsApp' }
+    return Object.entries(map)
+      .filter(([key]) => gateway.features[key])
+      .map(([, label]) => label)
+      .slice(0, 3)
+  }
+
   const renderCard = (gateway) => (
     <CardComponent
       key={gateway.slug}
-      gateway={gateway}
+      gateway={isApiSource ? { ...gateway, logo: getGatewayLogo(gateway) } : gateway}
       isSelected={selectedGateway === gateway.slug}
       onClick={handleSelect}
+      showFeatures={isApiSource}
+      featureTags={isApiSource ? getFeatureTags(gateway) : []}
     />
   )
 
