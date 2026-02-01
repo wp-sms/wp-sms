@@ -2,14 +2,15 @@ import React from 'react'
 import { Phone, Smartphone, Globe, Shield } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { InputField, MultiSelectField, SettingRow } from '@/components/ui/form-field'
 import { InternationalPhoneInput } from '@/components/ui/InternationalPhoneInput'
-import { useSetting } from '@/context/SettingsContext'
+import { useSetting, useSettings } from '@/context/SettingsContext'
 import { getWpSettings, __ } from '@/lib/utils'
 
 export default function PhoneConfig() {
-  const { countriesByCode = {}, countriesByDialCode = {} } = getWpSettings()
+  const { countriesByCode = {}, countriesByDialCode = {}, mobileFieldSources = [] } = getWpSettings()
+  const { getSetting, updateSetting } = useSettings()
 
   // Admin mobile
   const [adminMobile, setAdminMobile] = useSetting('admin_mobile_number', '')
@@ -31,6 +32,16 @@ export default function PhoneConfig() {
 
   // GDPR
   const [gdprCompliance, setGdprCompliance] = useSetting('gdpr_compliance', '')
+
+  // Find active sub-field from add-on mobile field sources
+  const activeSubField = React.useMemo(() => {
+    for (const source of mobileFieldSources) {
+      const options = source.options || [source]
+      const match = options.find(o => o.value === addMobileField && o.subField)
+      if (match) return match.subField
+    }
+    return null
+  }, [mobileFieldSources, addMobileField])
 
   const isInternationalEnabled = internationalMobile === '1'
 
@@ -86,9 +97,50 @@ export default function PhoneConfig() {
                 <SelectItem value="add_mobile_field_in_profile">{__('User profile — Add field to WordPress user profiles')}</SelectItem>
                 <SelectItem value="add_mobile_field_in_wc_billing">{__('WooCommerce billing (new field) — Add dedicated mobile field')}</SelectItem>
                 <SelectItem value="use_phone_field_in_wc_billing">{__('WooCommerce billing (existing) — Use existing phone field')}</SelectItem>
+                {mobileFieldSources.map((source) => (
+                  source.group ? (
+                    <SelectGroup key={source.group}>
+                      <SelectLabel>{source.group}</SelectLabel>
+                      {source.options.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                      ))}
+                    </SelectGroup>
+                  ) : (
+                    <SelectItem key={source.value} value={source.value}>{source.label}</SelectItem>
+                  )
+                ))}
               </SelectContent>
             </Select>
           </div>
+
+          {/* Sub-field from add-on sources (e.g., PMPro field selector) */}
+          {activeSubField && (
+            <div className="wsms-space-y-2">
+              <Label>{activeSubField.label}</Label>
+              <Select value={getSetting(activeSubField.settingKey, '')} onValueChange={(v) => updateSetting(activeSubField.settingKey, v)}>
+                <SelectTrigger aria-label={activeSubField.label}>
+                  <SelectValue placeholder={activeSubField.label} />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(activeSubField.options).map(([groupLabel, fields]) => (
+                    typeof fields === 'object' ? (
+                      <SelectGroup key={groupLabel}>
+                        <SelectLabel>{groupLabel}</SelectLabel>
+                        {Object.entries(fields).map(([value, label]) => (
+                          <SelectItem key={value} value={value}>{label}</SelectItem>
+                        ))}
+                      </SelectGroup>
+                    ) : (
+                      <SelectItem key={groupLabel} value={groupLabel}>{fields}</SelectItem>
+                    )
+                  ))}
+                </SelectContent>
+              </Select>
+              {activeSubField.description && (
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{activeSubField.description}</p>
+              )}
+            </div>
+          )}
 
           {addMobileField !== 'disable' && (
             <>

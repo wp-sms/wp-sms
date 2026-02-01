@@ -272,6 +272,8 @@ class UnifiedAdminPage extends Singleton
             'features'      => $this->getFeatureFlags(),
             // Additional recipient types for Send SMS page (filterable by add-ons)
             'additionalRecipientTypes' => $this->getAdditionalRecipientTypes(),
+            // Additional mobile field sources from add-ons (e.g., PMPro phone fields)
+            'mobileFieldSources' => apply_filters('wpsms_mobile_field_sources', []),
         ];
     }
 
