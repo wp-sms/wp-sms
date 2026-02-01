@@ -29,6 +29,7 @@ class GatewayRegistry
         $result = self::fetchFromApi();
 
         if ($result !== null) {
+            $result = self::appendTestGateway($result);
             set_transient(self::CACHE_KEY_GATEWAYS, $result, self::CACHE_DURATION);
             return $result;
         }
@@ -175,6 +176,29 @@ class GatewayRegistry
             'website'     => '',
             'features'    => [],
         ];
+    }
+
+    /**
+     * Append the test gateway if it exists on disk but is missing from the list
+     *
+     * @param array $data
+     * @return array
+     */
+    private static function appendTestGateway($data)
+    {
+        if (!file_exists(WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-test.php')) {
+            return $data;
+        }
+
+        foreach ($data['gateways'] as $gateway) {
+            if ($gateway['slug'] === 'test') {
+                return $data;
+            }
+        }
+
+        array_unshift($data['gateways'], self::buildFallbackEntry('test', false));
+
+        return $data;
     }
 
     /**

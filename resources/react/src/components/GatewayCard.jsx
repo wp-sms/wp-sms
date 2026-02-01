@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils'
 /**
  * Full gateway card — used when API data is available (logo, features, premium badge)
  */
-export function GatewayCard({ gateway, isSelected, onClick, showFeatures = false, featureTags = [] }) {
+export function GatewayCard({ gateway, isSelected, isCurrent, onClick, showFeatures = false, featureTags = [] }) {
   return (
     <button
       key={gateway.slug}
@@ -15,7 +15,9 @@ export function GatewayCard({ gateway, isSelected, onClick, showFeatures = false
         'wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-md wsms-border wsms-px-3 wsms-py-2 wsms-text-left wsms-text-[12px] wsms-transition-colors',
         isSelected
           ? 'wsms-border-primary wsms-bg-primary/10 wsms-text-primary wsms-font-medium'
-          : 'wsms-border-border wsms-bg-card hover:wsms-bg-accent'
+          : isCurrent
+            ? 'wsms-border-primary/40 wsms-bg-card wsms-text-muted-foreground'
+            : 'wsms-border-border wsms-bg-card hover:wsms-bg-accent'
       )}
     >
       {gateway.logo ? (
@@ -49,7 +51,7 @@ export function GatewayCard({ gateway, isSelected, onClick, showFeatures = false
 /**
  * Minimal gateway card — used when local fallback (just name + selected check)
  */
-export function GatewayCardMinimal({ gateway, isSelected, onClick }) {
+export function GatewayCardMinimal({ gateway, isSelected, isCurrent, onClick }) {
   return (
     <button
       key={gateway.slug}
@@ -59,7 +61,9 @@ export function GatewayCardMinimal({ gateway, isSelected, onClick }) {
         'wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-md wsms-border wsms-px-3 wsms-py-2 wsms-text-left wsms-text-[12px] wsms-transition-colors',
         isSelected
           ? 'wsms-border-primary wsms-bg-primary/10 wsms-text-primary wsms-font-medium'
-          : 'wsms-border-border wsms-bg-card hover:wsms-bg-accent'
+          : isCurrent
+            ? 'wsms-border-primary/40 wsms-bg-card wsms-text-muted-foreground'
+            : 'wsms-border-border wsms-bg-card hover:wsms-bg-accent'
       )}
     >
       {isSelected && <CheckCircle className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" />}

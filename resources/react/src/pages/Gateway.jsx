@@ -144,7 +144,10 @@ export default function Gateway() {
       return nameA.localeCompare(nameB)
     })
 
-    return { sortedSlugs, groups, globalList }
+    const testList = globalList.filter((g) => g.slug === 'test')
+    const filteredGlobalList = globalList.filter((g) => g.slug !== 'test')
+
+    return { sortedSlugs, groups, globalList: filteredGlobalList, testList }
   }, [filteredGateways, regionNameMap, isApiSource])
 
   // Build country name lookup from regions data
@@ -219,7 +222,10 @@ export default function Gateway() {
   }
 
   const handleGatewayClick = (slug) => {
-    if (slug === gatewayName) return
+    if (slug === gatewayName) {
+      setPendingGateway(null)
+      return
+    }
     if (!gatewayName) {
       setGatewayName(slug)
       return
@@ -234,7 +240,8 @@ export default function Gateway() {
     <CardComponent
       key={gateway.slug}
       gateway={isApiSource ? { ...gateway, logo: getGatewayLogo(gateway) } : gateway}
-      isSelected={gatewayName === gateway.slug}
+      isSelected={pendingGateway ? pendingGateway === gateway.slug : gatewayName === gateway.slug}
+      isCurrent={!!pendingGateway && gatewayName === gateway.slug}
       onClick={handleGatewayClick}
       showFeatures={isApiSource}
       featureTags={isApiSource ? getFeatureTags(gateway) : []}
@@ -332,6 +339,18 @@ export default function Gateway() {
                         </p>
                         <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
                           {recommended.map(renderGatewayButton)}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Test / Development gateway */}
+                    {regionGroups.testList.length > 0 && (
+                      <div>
+                        <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-font-semibold wsms-text-foreground">
+                          {__('Development')} 🛠️
+                        </p>
+                        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
+                          {regionGroups.testList.map(renderGatewayButton)}
                         </div>
                       </div>
                     )}
