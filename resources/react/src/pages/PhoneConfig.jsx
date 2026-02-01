@@ -94,9 +94,15 @@ export default function PhoneConfig() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="disable">{__("Don't collect — No mobile field")}</SelectItem>
-                <SelectItem value="add_mobile_field_in_profile">{__('User profile — Add field to WordPress user profiles')}</SelectItem>
-                <SelectItem value="add_mobile_field_in_wc_billing">{__('WooCommerce billing (new field) — Add dedicated mobile field')}</SelectItem>
-                <SelectItem value="use_phone_field_in_wc_billing">{__('WooCommerce billing (existing) — Use existing phone field')}</SelectItem>
+                <SelectGroup>
+                  <SelectLabel>{__('WordPress')}</SelectLabel>
+                  <SelectItem value="add_mobile_field_in_profile">{__('Add field to user profiles')}</SelectItem>
+                </SelectGroup>
+                <SelectGroup>
+                  <SelectLabel>{__('WooCommerce')}</SelectLabel>
+                  <SelectItem value="add_mobile_field_in_wc_billing">{__('Add dedicated mobile field to billing')}</SelectItem>
+                  <SelectItem value="use_phone_field_in_wc_billing">{__('Use existing billing phone field')}</SelectItem>
+                </SelectGroup>
                 {mobileFieldSources.map((source) => (
                   source.group ? (
                     <SelectGroup key={source.group}>
