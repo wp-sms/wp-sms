@@ -3,7 +3,7 @@ import { Search, CheckCircle, Star, Loader2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { SearchableSelect } from '@/components/ui/searchable-select'
 import { cn, __, countryCodeToFlag, getGatewayLogo } from '@/lib/utils'
-import { GatewayCard, GatewayCardMinimal } from '@/components/GatewayCard'
+import { GatewayCard, GatewayCardMinimal, PremiumSearchResults, MoreGatewaysNotice } from '@/components/GatewayCard'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 
 /**
@@ -14,7 +14,7 @@ export default function GatewaySelector({
   onGatewaySelect,
   maxHeight = '280px',
 }) {
-  const { gateways, regions, source, isLoading, error } = useGatewayRegistry()
+  const { gateways, regions, source, premiumCount, premiumGateways, isLoading, error } = useGatewayRegistry()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedRegion, setSelectedRegion] = useState('')
 
@@ -62,6 +62,18 @@ export default function GatewaySelector({
 
     return list
   }, [gateways, searchQuery, selectedRegion])
+
+  // Premium gateways matching the current search
+  const filteredPremiumGateways = useMemo(() => {
+    if (!searchQuery || premiumGateways.length === 0) return []
+    const query = searchQuery.toLowerCase()
+    return premiumGateways.filter(
+      (g) =>
+        g.name.toLowerCase().includes(query) ||
+        g.slug.toLowerCase().includes(query) ||
+        (g.description && g.description.toLowerCase().includes(query))
+    )
+  }, [premiumGateways, searchQuery])
 
   // Split into recommended and rest when no search/filter active
   const { recommended, rest } = useMemo(() => {
@@ -311,11 +323,13 @@ export default function GatewaySelector({
         )}
 
         {filteredGateways.length === 0 && (
-          <div className="wsms-py-8 wsms-text-center wsms-text-[12px] wsms-text-muted-foreground">
-            {__('No gateways found')}
-          </div>
+          <PremiumSearchResults gateways={filteredPremiumGateways} searchQuery={searchQuery} />
         )}
       </div>
+
+      {filteredGateways.length > 0 && (
+        <MoreGatewaysNotice premiumCount={premiumCount} searchQuery={searchQuery} />
+      )}
 
       {/* Selected Gateway */}
       {selectedGateway && (

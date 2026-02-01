@@ -23,22 +23,23 @@ class GatewayRegistry
         $cached = get_transient(self::CACHE_KEY_GATEWAYS);
 
         if ($cached !== false) {
-            return $cached;
+            return apply_filters('wpsms_gateway_registry', $cached);
         }
 
         $result = self::fetchFromApi();
 
         if ($result !== null) {
             $result = self::appendTestGateway($result);
+            $result = self::filterPremiumGateways($result);
             set_transient(self::CACHE_KEY_GATEWAYS, $result, self::CACHE_DURATION);
-            return $result;
+            return apply_filters('wpsms_gateway_registry', $result);
         }
 
         $fallback = self::getLocalFallback();
         // Cache fallback for 1 hour (shorter, so we retry API sooner)
         set_transient(self::CACHE_KEY_GATEWAYS, $fallback, 3600);
 
-        return $fallback;
+        return apply_filters('wpsms_gateway_registry', $fallback);
     }
 
     /**
@@ -117,16 +118,6 @@ class GatewayRegistry
             }
         }
 
-        // Scan pro gateway files
-        $proPattern = WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-*.php';
-        foreach (glob($proPattern) as $file) {
-            $slug = self::extractSlugFromFilename($file, 'class-wpsms-pro-gateway-');
-            if ($slug && !isset($seen[$slug])) {
-                $seen[$slug] = true;
-                $gateways[] = self::buildFallbackEntry($slug, true);
-            }
-        }
-
         return [
             'source'   => 'local',
             'gateways' => $gateways,
@@ -197,6 +188,27 @@ class GatewayRegistry
         }
 
         array_unshift($data['gateways'], self::buildFallbackEntry('test', false));
+
+        return $data;
+    }
+
+    /**
+     * Remove premium gateways from the list
+     *
+     * @param array $data
+     * @return array
+     */
+    private static function filterPremiumGateways($data)
+    {
+        $premiumGateways = array_values(array_filter($data['gateways'], function ($gateway) {
+            return !empty($gateway['premium']);
+        }));
+
+        $data['premium_count']    = count($premiumGateways);
+        $data['premium_gateways'] = $premiumGateways;
+        $data['gateways']         = array_values(array_filter($data['gateways'], function ($gateway) {
+            return empty($gateway['premium']);
+        }));
 
         return $data;
     }

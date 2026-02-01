@@ -10,10 +10,13 @@ export default function useGatewayRegistry() {
     gateways: [],
     regions: [],
     source: null,
+    premiumCount: 0,
+    premiumGateways: [],
   })
   // Ensure gateways/regions are always arrays (defensive)
   const gateways = Array.isArray(data.gateways) ? data.gateways : []
   const regions = Array.isArray(data.regions) ? data.regions : []
+  const premiumGateways = Array.isArray(data.premiumGateways) ? data.premiumGateways : []
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState(null)
   const fetchedRef = useRef(false)
@@ -32,6 +35,8 @@ export default function useGatewayRegistry() {
             gateways: result.gateways || [],
             regions: result.regions || [],
             source: result.source || 'local',
+            premiumCount: result.premium_count || 0,
+            premiumGateways: result.premium_gateways || [],
           })
         }
       } catch (err) {
@@ -56,6 +61,8 @@ export default function useGatewayRegistry() {
     gateways,
     regions,
     source: data.source,
+    premiumCount: data.premiumCount,
+    premiumGateways,
     isLoading,
     error,
   }
