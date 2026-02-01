@@ -12,7 +12,7 @@ export function GatewayCard({ gateway, isSelected, isCurrent, onClick, showFeatu
       type="button"
       onClick={() => onClick(gateway.slug)}
       className={cn(
-        'wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-md wsms-border wsms-px-3 wsms-py-2 wsms-text-left wsms-text-[12px] wsms-transition-colors',
+        'wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-md wsms-border wsms-px-3 wsms-py-2 wsms-h-[46px] wsms-text-left wsms-text-[12px] wsms-transition-colors',
         isSelected
           ? 'wsms-border-primary wsms-bg-primary/10 wsms-text-primary wsms-font-medium'
           : isCurrent
@@ -58,7 +58,7 @@ export function GatewayCardMinimal({ gateway, isSelected, isCurrent, onClick }) 
       type="button"
       onClick={() => onClick(gateway.slug)}
       className={cn(
-        'wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-md wsms-border wsms-px-3 wsms-py-2 wsms-text-left wsms-text-[12px] wsms-transition-colors',
+        'wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-md wsms-border wsms-px-3 wsms-py-2 wsms-h-[46px] wsms-text-left wsms-text-[12px] wsms-transition-colors',
         isSelected
           ? 'wsms-border-primary wsms-bg-primary/10 wsms-text-primary wsms-font-medium'
           : isCurrent
