@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react'
-import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap, BookOpen, ExternalLink, XCircle, RotateCcw, Code, Unplug, Wallet, Star } from 'lucide-react'
+import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap, BookOpen, ExternalLink, XCircle, RotateCcw, Code, Unplug, Wallet, Star, Globe, Wrench } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -346,8 +346,9 @@ export default function Gateway() {
                     {/* Test / Development gateway */}
                     {regionGroups.testList.length > 0 && (
                       <div>
-                        <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-font-semibold wsms-text-foreground">
-                          {__('Development')} 🛠️
+                        <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
+                          <Wrench className="wsms-h-3 wsms-w-3 wsms-text-muted-foreground" />
+                          {__('Development')}
                         </p>
                         <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
                           {regionGroups.testList.map(renderGatewayButton)}
@@ -358,8 +359,9 @@ export default function Gateway() {
                     {/* Global gateways */}
                     {regionGroups.globalList.length > 0 && (
                       <div>
-                        <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-font-semibold wsms-text-foreground">
-                          {__('Global')} 🌐
+                        <p className="wsms-mb-2 wsms-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-font-semibold wsms-uppercase wsms-text-muted-foreground wsms-tracking-wide">
+                          <Globe className="wsms-h-3 wsms-w-3 wsms-text-muted-foreground" />
+                          {__('Global')}
                         </p>
                         <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 md:wsms-grid-cols-3 lg:wsms-grid-cols-4">
                           {regionGroups.globalList.map(renderGatewayButton)}
