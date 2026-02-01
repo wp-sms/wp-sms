@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react'
-import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap, BookOpen, ExternalLink, XCircle, RotateCcw, Code, Unplug, Wallet, Star, Globe, Wrench } from 'lucide-react'
+import { Search, CheckCircle, Radio, Send, Loader2, Shield, Zap, BookOpen, ExternalLink, XCircle, RotateCcw, Code, Unplug, Wallet, Star, Globe, Wrench, Crown } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -16,7 +16,7 @@ import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 export default function Gateway() {
   const { testGatewayConnection, getSetting, updateSetting, hasChanges, isSaving } = useSettings()
   const { toast } = useToast()
-  const { countriesByDialCode = {}, gateway: gatewayCapabilities = {} } = getWpSettings()
+  const { countriesByDialCode = {}, gateway: gatewayCapabilities = {}, isProActive } = getWpSettings()
   const { gateways, regions, source, isLoading: registryLoading } = useGatewayRegistry()
 
   const isApiSource = source === 'api'
@@ -81,6 +81,11 @@ export default function Gateway() {
   const filteredGateways = useMemo(() => {
     let list = gateways.filter((g) => g.slug && g.slug.trim() !== '')
 
+    // Hide pro gateways when pro addon is not active
+    if (!isProActive) {
+      list = list.filter((g) => !g.premium)
+    }
+
     if (selectedRegion && selectedRegion !== 'all') {
       list = list.filter((g) => (g.regions || []).some(
         (r) => r.toLowerCase() === selectedRegion.toLowerCase()
@@ -98,7 +103,7 @@ export default function Gateway() {
     }
 
     return list
-  }, [gateways, searchQuery, selectedRegion])
+  }, [gateways, searchQuery, selectedRegion, isProActive])
 
   // Split into recommended and rest when no search/filter
   const { recommended, rest } = useMemo(() => {
@@ -260,10 +265,23 @@ export default function Gateway() {
       {/* Gateway Selection */}
       <Card>
         <CardHeader>
-          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Radio className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('SMS Gateway')}
-          </CardTitle>
+          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-3">
+            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <Radio className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              {__('SMS Gateway')}
+            </CardTitle>
+            {!isProActive && (
+              <a
+                href="https://wp-sms-pro.com/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=gateway-pro-gateways"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="wsms-shrink-0 wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-self-center wsms-rounded-full wsms-bg-gradient-to-r wsms-from-amber-500 wsms-to-orange-500 wsms-pl-2 wsms-pr-3 wsms-py-1 wsms-text-[11px] wsms-font-medium wsms-text-white wsms-shadow-sm wsms-shadow-orange-500/20 wsms-transition-all hover:wsms-from-amber-600 hover:wsms-to-orange-600 hover:wsms-shadow-md"
+              >
+                <Crown className="wsms-h-3 wsms-w-3" />
+                +100 {__('gateways with All-in-One')}
+              </a>
+            )}
+          </div>
           <CardDescription>{__('Select your SMS service provider. Configure credentials below after selecting.')}</CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
