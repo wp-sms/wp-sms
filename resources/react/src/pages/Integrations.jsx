@@ -324,6 +324,21 @@ export default function Integrations() {
     { name: __('Booking Calendar'), pluginKey: 'booking', requirement: __('Requires Booking add-on'), Icon: Calendar },
   ]
 
+  // Sort additional integrations: active first, inactive second, not_installed last
+  const statusOrder = { active: 0, inactive: 1, not_installed: 2, unknown: 3 }
+  const sortedAdditionalIntegrations = [...additionalIntegrations].sort((a, b) => {
+    const aStatus = getPluginStatus(a.pluginKey).status
+    const bStatus = getPluginStatus(b.pluginKey).status
+    return (statusOrder[aStatus] ?? 3) - (statusOrder[bStatus] ?? 3)
+  })
+
+  // Sort addon sections: active first, then inactive/not installed
+  const sortedAddonSections = [...addonSections].sort((a, b) => {
+    const aActive = isSectionPluginActive(a.id) ? 0 : 1
+    const bActive = isSectionPluginActive(b.id) ? 0 : 1
+    return aActive - bActive
+  })
+
   // Collapsible state for free integrations
   const [cf7Open, setCf7Open] = useState(false)
   const [formidableOpen, setFormidableOpen] = useState(false)
@@ -470,24 +485,14 @@ export default function Integrations() {
         </Card>
       )}
 
-      {/* Add-on Defined Sections - only show active ones */}
-      {addonSections.map((section) => {
-        const isPluginActive = isSectionPluginActive(section.id)
-        const pluginInfo = getSectionPluginInfo(section.id)
-
-        // Skip inactive sections entirely
-        if (!isPluginActive && pluginInfo) {
-          return null
-        }
-
-        return (
-          <AddonSection
-            key={section.id}
-            section={section}
-            fields={fieldsBySection[section.id] || []}
-          />
-        )
-      })}
+      {/* Add-on Defined Sections - sorted: active first */}
+      {sortedAddonSections.map((section) => (
+        <AddonSection
+          key={section.id}
+          section={section}
+          fields={fieldsBySection[section.id] || []}
+        />
+      ))}
 
       {/* Standalone Add-on Fields */}
       {standaloneFields.length > 0 && (
@@ -519,7 +524,7 @@ export default function Integrations() {
         </CardHeader>
         <CardContent>
           <div className="wsms-grid wsms-grid-cols-1 md:wsms-grid-cols-2 lg:wsms-grid-cols-3 wsms-gap-3">
-            {additionalIntegrations.map((plugin) => {
+            {sortedAdditionalIntegrations.map((plugin) => {
               const pluginStatus = getPluginStatus(plugin.pluginKey)
               const isActive = pluginStatus.status === 'active'
               const IconComponent = plugin.Icon
