@@ -98,7 +98,7 @@ const MessageComposer = React.forwardRef(
 
     return (
       <div className={cn('wsms-space-y-2', className)} {...props}>
-        <div className="wsms-relative">
+        <div>
           <Textarea
             ref={ref}
             value={value}
@@ -107,13 +107,13 @@ const MessageComposer = React.forwardRef(
             disabled={disabled}
             rows={rows}
             className={cn(
-              'wsms-resize-none wsms-pr-4 wsms-pb-10',
+              'wsms-resize-none wsms-pr-4 wsms-rounded-b-none wsms-border-b-0',
               isOverLimit && 'wsms-border-red-500 focus:wsms-ring-red-500/20'
             )}
           />
 
-          {/* Character counter overlay */}
-          <div className="wsms-absolute wsms-bottom-2 wsms-left-3 wsms-right-3 wsms-flex wsms-items-center wsms-justify-between wsms-text-[11px] wsms-text-muted-foreground wsms-pointer-events-none">
+          {/* Character counter bar */}
+          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-px-3 wsms-py-1.5 wsms-text-[11px] wsms-text-muted-foreground wsms-border wsms-border-input wsms-border-t-border/40 wsms-rounded-b-md wsms-bg-muted/30">
             <div className="wsms-flex wsms-items-center wsms-gap-3">
               <span className="wsms-flex wsms-items-center wsms-gap-1">
                 <Hash className="wsms-h-3 wsms-w-3" />
