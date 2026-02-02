@@ -310,7 +310,7 @@ class Newsletter
     {
         global $wpdb;
 
-        if (empty($id) or empty($name) or empty($mobile)) {
+        if (empty($id) or empty($mobile)) {
             return array('result' => 'error', 'message' => esc_html__('The fields must be valued.', 'wp-sms'));
         }
 
