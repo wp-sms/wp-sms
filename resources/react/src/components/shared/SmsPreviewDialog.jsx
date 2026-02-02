@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Send, Users, MessageSquare, Hash, Zap, Image, Check, AlertTriangle, Loader2 } from 'lucide-react'
+import { Send, Users, MessageSquare, Hash, Zap, Image, Check, AlertTriangle, Loader2, XCircle, RefreshCw, CheckCircle2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -112,123 +112,179 @@ export function SmsPreviewDialog({
   isFlash,
   hasMedia,
   onConfirm,
+  onRetry,
+  onDone,
   isSending,
+  status = 'preview',
+  resultMessage = '',
 }) {
   const totalSms = recipientCount * smsInfo.segments
   const { groups = [], roles = [], users = [], numbers = [] } = recipients
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={status === 'preview' ? (isSending ? undefined : onOpenChange) : onDone}>
       <DialogContent size="lg" showClose={!isSending}>
-        <DialogHeader>
-          <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Send className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            Review & Send
-          </DialogTitle>
-          <DialogDescription>
-            Review your message before sending.
-          </DialogDescription>
-        </DialogHeader>
+        {status === 'success' ? (
+          <>
+            <DialogHeader>
+              <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
+                <CheckCircle2 className="wsms-h-4 wsms-w-4 wsms-text-emerald-600" />
+                Message Sent
+              </DialogTitle>
+            </DialogHeader>
+            <DialogBody>
+              <div className="wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-py-8 wsms-transition-all wsms-duration-300">
+                <div className="wsms-flex wsms-items-center wsms-justify-center wsms-w-16 wsms-h-16 wsms-rounded-full wsms-bg-emerald-100 dark:wsms-bg-emerald-900/40 wsms-mb-4">
+                  <CheckCircle2 className="wsms-h-8 wsms-w-8 wsms-text-emerald-600 dark:wsms-text-emerald-400" />
+                </div>
+                <p className="wsms-text-[14px] wsms-font-medium wsms-text-foreground wsms-text-center wsms-mb-1">
+                  {resultMessage}
+                </p>
+              </div>
+            </DialogBody>
+            <DialogFooter />
+          </>
+        ) : status === 'error' ? (
+          <>
+            <DialogHeader>
+              <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
+                <XCircle className="wsms-h-4 wsms-w-4 wsms-text-red-600" />
+                Sending Failed
+              </DialogTitle>
+            </DialogHeader>
+            <DialogBody>
+              <div className="wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-py-8 wsms-transition-all wsms-duration-300">
+                <div className="wsms-flex wsms-items-center wsms-justify-center wsms-w-16 wsms-h-16 wsms-rounded-full wsms-bg-red-100 dark:wsms-bg-red-900/40 wsms-mb-4">
+                  <XCircle className="wsms-h-8 wsms-w-8 wsms-text-red-600 dark:wsms-text-red-400" />
+                </div>
+                <p className="wsms-text-[14px] wsms-font-medium wsms-text-foreground wsms-text-center wsms-mb-1">
+                  {resultMessage}
+                </p>
+              </div>
+            </DialogBody>
+            <DialogFooter>
+              <Button variant="outline" onClick={onDone} size="sm">
+                Close
+              </Button>
+              <Button onClick={onRetry} size="sm">
+                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-mr-1.5" />
+                Retry
+              </Button>
+            </DialogFooter>
+          </>
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
+                <Send className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+                Review & Send
+              </DialogTitle>
+              <DialogDescription>
+                Review your message before sending.
+              </DialogDescription>
+            </DialogHeader>
 
-        <DialogBody className="wsms-p-0">
-          <div className="wsms-grid md:wsms-grid-cols-2 wsms-gap-0">
-            {/* Left: Phone Preview */}
-            <div className="wsms-p-5 wsms-bg-muted/30 wsms-flex wsms-items-center wsms-justify-center wsms-border-r wsms-border-border">
-              <PhoneMockup
-                message={message}
-                senderId={senderId}
-                isFlash={isFlash}
-                hasMedia={hasMedia}
-              />
-            </div>
+            <DialogBody className="wsms-p-0">
+              <div className="wsms-grid md:wsms-grid-cols-2 wsms-gap-0">
+                {/* Left: Phone Preview */}
+                <div className="wsms-p-5 wsms-bg-muted/30 wsms-flex wsms-items-center wsms-justify-center wsms-border-r wsms-border-border">
+                  <PhoneMockup
+                    message={message}
+                    senderId={senderId}
+                    isFlash={isFlash}
+                    hasMedia={hasMedia}
+                  />
+                </div>
 
-            {/* Right: Details */}
-            <div className="wsms-p-5 wsms-space-y-4">
-              {/* Stats */}
-              <div className="wsms-space-y-2.5 wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
-                <StatItem icon={Users} label="Recipients" value={recipientCount} />
-                <StatItem icon={MessageSquare} label="Segments" value={smsInfo.segments} />
-                <StatItem icon={Hash} label="Characters" value={smsInfo.characters || smsInfo.length} />
-                <div className="wsms-pt-2 wsms-border-t wsms-border-border">
-                  <StatItem icon={Send} label="Total SMS" value={totalSms} highlight />
+                {/* Right: Details */}
+                <div className="wsms-p-5 wsms-space-y-4">
+                  {/* Stats */}
+                  <div className="wsms-space-y-2.5 wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
+                    <StatItem icon={Users} label="Recipients" value={recipientCount} />
+                    <StatItem icon={MessageSquare} label="Segments" value={smsInfo.segments} />
+                    <StatItem icon={Hash} label="Characters" value={smsInfo.characters || smsInfo.length} />
+                    <div className="wsms-pt-2 wsms-border-t wsms-border-border">
+                      <StatItem icon={Send} label="Total SMS" value={totalSms} highlight />
+                    </div>
+                  </div>
+
+                  {/* Recipient Breakdown */}
+                  {(groups.length > 0 || roles.length > 0 || users.length > 0 || numbers.length > 0) && (
+                    <div className="wsms-space-y-2">
+                      <p className="wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase">
+                        Sending to
+                      </p>
+                      <div className="wsms-flex wsms-flex-wrap wsms-gap-2">
+                        {groups.length > 0 && (
+                          <span className="wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground">
+                            {groups.length} group{groups.length !== 1 ? 's' : ''}
+                          </span>
+                        )}
+                        {roles.length > 0 && (
+                          <span className="wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground">
+                            {roles.length} role{roles.length !== 1 ? 's' : ''}
+                          </span>
+                        )}
+                        {users.length > 0 && (
+                          <span className="wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground">
+                            {users.length} user{users.length !== 1 ? 's' : ''}
+                          </span>
+                        )}
+                        {numbers.length > 0 && (
+                          <span className="wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground">
+                            {numbers.length} number{numbers.length !== 1 ? 's' : ''}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Warnings */}
+                  {(smsInfo.isUnicode || isFlash) && (
+                    <div className="wsms-space-y-2">
+                      {smsInfo.isUnicode && (
+                        <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-2 wsms-rounded-md wsms-bg-amber-500/10 wsms-text-[11px] wsms-text-amber-700 dark:wsms-text-amber-400">
+                          <AlertTriangle className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" />
+                          Unicode encoding - reduced character limit
+                        </div>
+                      )}
+                      {isFlash && (
+                        <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-2 wsms-rounded-md wsms-bg-amber-500/10 wsms-text-[11px] wsms-text-amber-700 dark:wsms-text-amber-400">
+                          <Zap className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" />
+                          Flash SMS - displays directly on screen
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
+            </DialogBody>
 
-              {/* Recipient Breakdown */}
-              {(groups.length > 0 || roles.length > 0 || users.length > 0 || numbers.length > 0) && (
-                <div className="wsms-space-y-2">
-                  <p className="wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase">
-                    Sending to
-                  </p>
-                  <div className="wsms-flex wsms-flex-wrap wsms-gap-2">
-                    {groups.length > 0 && (
-                      <span className="wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground">
-                        {groups.length} group{groups.length !== 1 ? 's' : ''}
-                      </span>
-                    )}
-                    {roles.length > 0 && (
-                      <span className="wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground">
-                        {roles.length} role{roles.length !== 1 ? 's' : ''}
-                      </span>
-                    )}
-                    {users.length > 0 && (
-                      <span className="wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground">
-                        {users.length} user{users.length !== 1 ? 's' : ''}
-                      </span>
-                    )}
-                    {numbers.length > 0 && (
-                      <span className="wsms-px-2 wsms-py-1 wsms-rounded-md wsms-bg-muted wsms-text-[11px] wsms-text-foreground">
-                        {numbers.length} number{numbers.length !== 1 ? 's' : ''}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Warnings */}
-              {(smsInfo.isUnicode || isFlash) && (
-                <div className="wsms-space-y-2">
-                  {smsInfo.isUnicode && (
-                    <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-2 wsms-rounded-md wsms-bg-amber-500/10 wsms-text-[11px] wsms-text-amber-700 dark:wsms-text-amber-400">
-                      <AlertTriangle className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" />
-                      Unicode encoding - reduced character limit
-                    </div>
-                  )}
-                  {isFlash && (
-                    <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-2 wsms-rounded-md wsms-bg-amber-500/10 wsms-text-[11px] wsms-text-amber-700 dark:wsms-text-amber-400">
-                      <Zap className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" />
-                      Flash SMS - displays directly on screen
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-        </DialogBody>
-
-        <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isSending}
-            size="sm"
-          >
-            Cancel
-          </Button>
-          <Button onClick={onConfirm} disabled={isSending} size="sm">
-            {isSending ? (
-              <>
-                <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1.5 wsms-animate-spin" />
-                Sending...
-              </>
-            ) : (
-              <>
-                <Check className="wsms-h-4 wsms-w-4 wsms-mr-1.5" />
-                Send Message
-              </>
-            )}
-          </Button>
-        </DialogFooter>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={isSending}
+                size="sm"
+              >
+                Cancel
+              </Button>
+              <Button onClick={onConfirm} disabled={isSending} size="sm">
+                {isSending ? (
+                  <>
+                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1.5 wsms-animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Check className="wsms-h-4 wsms-w-4 wsms-mr-1.5" />
+                    Send Message
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   )
