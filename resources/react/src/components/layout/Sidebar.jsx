@@ -18,13 +18,13 @@ import { getNavigation } from '@/lib/pageRegistry'
 
 function getLinks() {
   return [
-    { label: __('Documentation'), href: 'https://wp-sms-pro.com/documentation/' },
+    { label: __('Documentation'), href: 'https://wsms.io/documentation/' },
     { label: __('Support'), href: 'https://wordpress.org/support/plugin/wp-sms/' },
   ]
 }
 
 const footerUrls = {
-  changelog: 'https://wp-sms-pro.com/changelog/',
+  changelog: 'https://wsms.io/changelog/',
   rate: 'https://wordpress.org/support/plugin/wp-sms/reviews/#new-post',
 }
 

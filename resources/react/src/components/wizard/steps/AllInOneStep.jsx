@@ -106,7 +106,7 @@ export default function AllInOneStep({ onSkip }) {
           className="wsms-min-w-[220px] wsms-bg-gradient-to-r wsms-from-amber-500 wsms-to-orange-500 hover:wsms-from-amber-600 hover:wsms-to-orange-600 wsms-shadow-lg wsms-shadow-orange-500/25"
         >
           <a
-            href="https://wp-sms-pro.com/pricing/"
+            href="https://wsms.io/pricing/"
             target="_blank"
             rel="noopener noreferrer"
           >

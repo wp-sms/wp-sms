@@ -168,7 +168,7 @@ export default function TwoWaySettings() {
               </p>
               <Button variant="outline" asChild>
                 <a
-                  href="https://wp-sms-pro.com/product/wp-sms-two-way/"
+                  href="https://wsms.io/product/wp-sms-two-way/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

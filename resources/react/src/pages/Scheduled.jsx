@@ -1270,7 +1270,7 @@ export default function Scheduled() {
                 {__('Schedule SMS messages for later delivery or create recurring messages with WP SMS Pro. Perfect for reminders, notifications, and automated campaigns.')}
               </p>
               <Button variant="outline" asChild>
-                <a href="https://wp-sms-pro.com/buy/" target="_blank" rel="noopener noreferrer">
+                <a href="https://wsms.io/buy/" target="_blank" rel="noopener noreferrer">
                   {__('Learn More')}
                   <ExternalLink className="wsms-ml-2 wsms-h-4 wsms-w-4" />
                 </a>

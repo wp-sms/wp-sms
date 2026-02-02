@@ -8,27 +8,25 @@ import { useNotifications } from '@/hooks/useNotifications'
 
 /**
  * License/Upgrade button component
- * Follows the same logic as the PHP template in:
+ * Follows the same logic as the legacy PHP template in:
  * /includes/templates/admin/partials/license-status.php
  *
  * States:
- * 1. No license: Show "Upgrade to All-in-One"
- * 2. Partial license: Show "License: X/Y" with upgrade option
- * 3. Premium (All-in-One): Show "All-in-One" badge (no upgrade needed)
+ * 1. Premium (All-in-One SKU): Show "All-in-One" badge (no upgrade link)
+ * 2. Has any valid license (single/partial): Show "License: X/Y" with upgrade
+ * 3. No license at all: Show "Upgrade to All-in-One"
  */
 function LicenseButton() {
   const wpSmsSettings = window.wpSmsSettings || {}
-  const isPremium = wpSmsSettings?.addons?.pro || false
-  const licenses = wpSmsSettings?.licenses || []
-  const hasValidLicense = licenses.length > 0
+  const license = wpSmsSettings?.license || {}
+  const isPremium = license.isPremium || false
+  const hasValidLicense = license.hasValidLicense || false
+  const licensedCount = license.licensedCount || 0
+  const totalPlugins = license.totalPlugins || 7
 
-  // Count licensed plugins vs total available
-  const licensedCount = wpSmsSettings?.licensedPluginsCount || 0
-  const totalPlugins = wpSmsSettings?.totalPlugins || 7
+  const pricingUrl = 'https://wsms.io/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header'
 
-  const pricingUrl = 'https://wp-sms-pro.com/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=header'
-
-  // State 3: Premium license - show activated badge
+  // State 1: All-in-One license - show badge, no upgrade needed
   if (isPremium) {
     return (
       <div className={cn(
@@ -42,8 +40,8 @@ function LicenseButton() {
     )
   }
 
-  // State 2: Has partial license - show license count with upgrade
-  if (hasValidLicense && licensedCount > 0) {
+  // State 2: Has valid license but not AIO - show license count with upgrade
+  if (hasValidLicense) {
     return (
       <div className="wsms-flex wsms-items-center wsms-gap-2">
         <span className="wsms-text-[12px] wsms-text-muted-foreground">
@@ -68,7 +66,7 @@ function LicenseButton() {
     )
   }
 
-  // State 1: No license - show full upgrade button
+  // State 3: No license at all - show full upgrade button
   return (
     <a
       href={pricingUrl}

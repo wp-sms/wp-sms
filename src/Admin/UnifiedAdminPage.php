@@ -5,6 +5,8 @@ namespace WP_SMS\Admin;
 use WP_SMS\Components\Singleton;
 use WP_SMS\Option;
 use WP_SMS\Newsletter;
+use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+use WP_SMS\Admin\LicenseManagement\Plugin\PluginHelper;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -270,6 +272,8 @@ class UnifiedAdminPage extends Singleton
             'stats'         => $this->getStats(),
             'capabilities'  => $this->getUserCapabilities(),
             'features'      => $this->getFeatureFlags(),
+            // License data for header badge
+            'license'       => $this->getLicenseData(),
             // Additional recipient types for Send SMS page (filterable by add-ons)
             'additionalRecipientTypes' => $this->getAdditionalRecipientTypes(),
             // Additional mobile field sources from add-ons (e.g., PMPro phone fields)
@@ -452,6 +456,29 @@ class UnifiedAdminPage extends Singleton
             'canManageSubscribers' => current_user_can('wpsms_subscribers'),
             'canManageSettings'   => current_user_can('wpsms_setting'),
             'canManageOptions'    => current_user_can('manage_options'),
+        ];
+    }
+
+    /**
+     * Get license data for the header badge
+     *
+     * Follows the same logic as the legacy PHP template in:
+     * /includes/templates/admin/partials/license-status.php
+     *
+     * @return array
+     */
+    private function getLicenseData()
+    {
+        $isPremium      = (bool) LicenseHelper::isPremiumLicenseAvailable();
+        $hasValidLicense = LicenseHelper::isValidLicenseAvailable();
+        $licensedCount  = count(PluginHelper::getLicensedPlugins());
+        $totalPlugins   = count(PluginHelper::$plugins);
+
+        return [
+            'isPremium'      => $isPremium,
+            'hasValidLicense' => $hasValidLicense,
+            'licensedCount'  => $licensedCount,
+            'totalPlugins'   => $totalPlugins,
         ];
     }
 

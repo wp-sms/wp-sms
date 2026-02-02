@@ -374,7 +374,7 @@ export default function Overview() {
               </p>
             </div>
             <Button variant="outline" size="sm" asChild>
-              <a href="https://wp-sms-pro.com/" target="_blank" rel="noopener noreferrer">
+              <a href="https://wsms.io/" target="_blank" rel="noopener noreferrer">
                 {__('Learn More')}
                 <ExternalLink className="wsms-h-3 wsms-w-3 wsms-ml-1" />
               </a>

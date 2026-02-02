@@ -480,7 +480,7 @@ export default function SmsCampaigns() {
               </p>
               <Button variant="outline" asChild>
                 <a
-                  href="https://wp-sms-pro.com/product/wp-sms-woocommerce-pro/"
+                  href="https://wsms.io/product/wp-sms-woocommerce-pro/"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
