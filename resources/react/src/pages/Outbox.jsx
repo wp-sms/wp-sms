@@ -633,8 +633,12 @@ export default function Outbox() {
             <Button variant="outline" onClick={() => setViewMessage(null)}>
               {__('Close')}
             </Button>
-            <Button onClick={() => handleResend(viewMessage?.id)}>
-              <Send className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
+            <Button onClick={() => handleResend(viewMessage?.id)} disabled={actionLoading === viewMessage?.id}>
+              {actionLoading === viewMessage?.id ? (
+                <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" aria-hidden="true" />
+              ) : (
+                <Send className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
+              )}
               {__('Resend')}
             </Button>
           </DialogFooter>
