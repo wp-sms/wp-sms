@@ -110,7 +110,11 @@ class ApiClient {
     // Create abort controller for timeout
     const abortController = new AbortController()
     const timeout = options.timeout || DEFAULT_TIMEOUT
-    const timeoutId = setTimeout(() => abortController.abort(), timeout)
+    let timedOut = false
+    const timeoutId = setTimeout(() => {
+      timedOut = true
+      abortController.abort()
+    }, timeout)
 
     const config = {
       ...options,
@@ -147,8 +151,8 @@ class ApiClient {
     } catch (error) {
       clearTimeout(timeoutId)
 
-      // Retry on network errors
-      if (this.isNetworkError(error) && retryCount < MAX_RETRIES) {
+      // Retry on network errors, but not on timeouts (retrying a slow endpoint just wastes time)
+      if (this.isNetworkError(error) && !timedOut && retryCount < MAX_RETRIES) {
         console.warn(`Request failed, retrying (${retryCount + 1}/${MAX_RETRIES})...`)
         await this.sleep(RETRY_DELAY * (retryCount + 1))
         return this.request(endpoint, options, retryCount + 1)

@@ -6,6 +6,11 @@ import apiClient from './client'
 const SETTINGS_TIMEOUT = 10000
 
 /**
+ * Longer timeout for gateway registry (cold cache requires external API fetch)
+ */
+const GATEWAY_REGISTRY_TIMEOUT = 30000
+
+/**
  * Settings API methods
  */
 export const settingsApi = {
@@ -45,7 +50,7 @@ export const settingsApi = {
    * @returns {Promise<object>} { source, gateways, regions }
    */
   async getGatewayRegistry() {
-    const response = await apiClient.get('settings/gateways', {}, { timeout: SETTINGS_TIMEOUT })
+    const response = await apiClient.get('settings/gateways', {}, { timeout: GATEWAY_REGISTRY_TIMEOUT })
     return response.data
   },
 
