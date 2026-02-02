@@ -38,6 +38,7 @@ import { outboxApi } from '@/api/outboxApi'
 import { smsApi } from '@/api/smsApi'
 import { cn, formatDate, __, downloadCsv } from '@/lib/utils'
 import { useListPage } from '@/hooks/useListPage'
+import { useCountryCheck } from '@/hooks/useCountryCheck'
 import { useFormDialog } from '@/hooks/useFormDialog'
 import { useToast } from '@/components/ui/toaster'
 import { useSettings } from '@/context/SettingsContext'
@@ -47,6 +48,7 @@ import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 export default function Outbox() {
   const { toast } = useToast()
   const { currentPage, setCurrentPage } = useSettings()
+  const checkCountryRestriction = useCountryCheck()
 
   // Use useListPage for combined filter + table management
   const { filters, table, handleDelete, handleBulkAction } = useListPage({
@@ -143,7 +145,17 @@ export default function Outbox() {
 
   // Custom handler for resend (not part of useListPage)
   const handleResend = useCallback(
-    async (id) => {
+    async (id, recipient) => {
+      if (recipient) {
+        const { blocked } = checkCountryRestriction(recipient)
+        if (blocked.length > 0) {
+          toast({
+            title: __('Cannot resend. %d %s outside your allowed countries. You can update this in Gateway > Country Restrictions.').replace('%d', blocked.length).replace('%s', blocked.length === 1 ? __('recipient is') : __('recipients are')),
+            variant: 'destructive',
+          })
+          return
+        }
+      }
       setActionLoading(id)
       try {
         await outboxApi.resendMessage(id)
@@ -155,7 +167,7 @@ export default function Outbox() {
         setActionLoading(null)
       }
     },
-    [toast, table]
+    [toast, table, checkCountryRestriction]
   )
 
   // Custom bulk handler to show affected count in message
@@ -194,13 +206,29 @@ export default function Outbox() {
   const handleQuickReply = useCallback(async () => {
     if (!quickReplyTo || !quickReplyMessage.trim()) return
 
+    const { allowed, blocked } = checkCountryRestriction(quickReplyTo)
+    if (allowed.length === 0) {
+      toast({
+        title: __('All recipients are outside your allowed countries. You can update this in Gateway > Country Restrictions.'),
+        variant: 'destructive',
+      })
+      return
+    }
+
     setIsSendingReply(true)
     try {
       await smsApi.send({
         message: quickReplyMessage,
-        recipients: { groups: [], roles: [], numbers: quickReplyTo.split(',').map(n => n.trim()).filter(Boolean) },
+        recipients: { groups: [], roles: [], numbers: allowed },
       })
-      toast({ title: __('Reply sent successfully'), variant: 'success' })
+      if (blocked.length > 0) {
+        toast({
+          title: __('Reply sent to %d1 recipient(s). %d2 skipped — their country codes don\'t match your country restriction settings.').replace('%d1', allowed.length).replace('%d2', blocked.length),
+          variant: 'warning',
+        })
+      } else {
+        toast({ title: __('Reply sent successfully'), variant: 'success' })
+      }
       setQuickReplyTo(null)
       setQuickReplyMessage('')
       table.refresh()
@@ -209,7 +237,7 @@ export default function Outbox() {
     } finally {
       setIsSendingReply(false)
     }
-  }, [quickReplyTo, quickReplyMessage, toast, table])
+  }, [quickReplyTo, quickReplyMessage, toast, table, checkCountryRestriction])
 
   // Memoized row and bulk actions
   const rowActions = useMemo(
@@ -220,7 +248,7 @@ export default function Outbox() {
           setQuickReplyTo(row.recipient)
           setQuickReplyMessage('')
         },
-        onResend: (row) => handleResend(row.id),
+        onResend: (row) => handleResend(row.id, row.recipient),
         onDelete: handleDeleteClick,
         isResending: (row) => actionLoading === row.id,
       }),
@@ -632,7 +660,7 @@ export default function Outbox() {
             <Button variant="outline" onClick={() => setViewMessage(null)}>
               {__('Close')}
             </Button>
-            <Button onClick={() => handleResend(viewMessage?.id)} disabled={actionLoading === viewMessage?.id}>
+            <Button onClick={() => handleResend(viewMessage?.id, viewMessage?.recipient)} disabled={actionLoading === viewMessage?.id}>
               {actionLoading === viewMessage?.id ? (
                 <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" aria-hidden="true" />
               ) : (

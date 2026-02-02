@@ -38,6 +38,7 @@ import {
 import { subscribersApi } from '@/api/subscribersApi'
 import { groupsApi } from '@/api/groupsApi'
 import { smsApi } from '@/api/smsApi'
+import { useCountryCheck } from '@/hooks/useCountryCheck'
 import { InternationalPhoneInput } from '@/components/ui/InternationalPhoneInput'
 import { cn, formatDate, getWpSettings, __, downloadCsv } from '@/lib/utils'
 import { useListPage } from '@/hooks/useListPage'
@@ -72,6 +73,7 @@ function SubscriberImportDialog({ open, onOpenChange, onImport, isLoading }) {
 
 export default function Subscribers() {
   const { toast } = useToast()
+  const checkCountryRestriction = useCountryCheck()
 
   // Get countries from settings
   const { countries = [] } = getWpSettings()
@@ -282,6 +284,15 @@ export default function Subscribers() {
   // Handle quick reply
   const handleQuickReply = async () => {
     if (!quickReplyTo || !quickReplyMessage.trim()) return
+
+    const { blocked } = checkCountryRestriction([quickReplyTo.mobile])
+    if (blocked.length > 0) {
+      toast({
+        title: __('This recipient is outside your allowed countries. You can update this in Gateway > Country Restrictions.'),
+        variant: 'destructive',
+      })
+      return
+    }
 
     setIsSendingReply(true)
     try {

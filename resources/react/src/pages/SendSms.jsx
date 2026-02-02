@@ -12,11 +12,13 @@ import { MediaSelector } from '@/components/shared/MediaSelector'
 import { Tip } from '@/components/ui/ux-helpers'
 import { smsApi } from '@/api/smsApi'
 import { useSettings } from '@/context/SettingsContext'
+import { useCountryCheck } from '@/hooks/useCountryCheck'
 import { cn, getGatewayDisplayName, __, getWpSettings } from '@/lib/utils'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 
 export default function SendSms() {
   const { setCurrentPage, getSetting } = useSettings()
+  const checkCountryRestriction = useCountryCheck()
   // Check for Pro add-on and additional recipient types
   const { hasProAddon, additionalRecipientTypes = [] } = getWpSettings()
 
@@ -171,12 +173,31 @@ export default function SendSms() {
   const handleConfirmedSend = useCallback(async () => {
     if (!canSend) return
 
+    // Filter explicit numbers by country restrictions
+    let filteredRecipients = recipients
+    let blockedCount = 0
+
+    if (recipients.numbers?.length > 0) {
+      const { allowed, blocked } = checkCountryRestriction(recipients.numbers)
+      blockedCount = blocked.length
+
+      // If all explicit numbers are blocked and no other recipient types, abort
+      const hasOtherRecipients = recipients.groups?.length > 0 || recipients.roles?.length > 0 || (recipients.users?.length || 0) > 0
+      if (allowed.length === 0 && !hasOtherRecipients) {
+        setDialogStatus('error')
+        setDialogResultMessage(__('All recipients are outside your allowed countries. You can update this in Gateway > Country Restrictions.'))
+        return
+      }
+
+      filteredRecipients = { ...recipients, numbers: allowed }
+    }
+
     setIsSending(true)
 
     try {
       const result = await smsApi.send({
         message,
-        recipients,
+        recipients: filteredRecipients,
         from: senderId || undefined,
         flash: flashSms,
         mediaUrl: mediaUrl || undefined,
@@ -201,14 +222,18 @@ export default function SendSms() {
       window.dispatchEvent(new CustomEvent('wpsms:sms-sent'))
 
       setDialogStatus('success')
-      setDialogResultMessage(result.message || __(`Message sent successfully to ${result.recipientCount || recipientCount} recipient(s)`))
+      if (blockedCount > 0) {
+        setDialogResultMessage(__('Message sent. %d recipient(s) skipped — their country codes don\'t match your country restriction settings.').replace('%d', blockedCount))
+      } else {
+        setDialogResultMessage(result.message || __(`Message sent successfully to ${result.recipientCount || recipientCount} recipient(s)`))
+      }
     } catch (error) {
       setDialogStatus('error')
       setDialogResultMessage(error.message || __('Failed to send message'))
     } finally {
       setIsSending(false)
     }
-  }, [canSend, message, recipients, senderId, flashSms, mediaUrl, recipientCount, defaultSender, scheduleEnabled, scheduledDate, repeatEnabled, repeatInterval, repeatIntervalUnit, repeatEndDate, repeatForever])
+  }, [canSend, message, recipients, senderId, flashSms, mediaUrl, recipientCount, defaultSender, scheduleEnabled, scheduledDate, repeatEnabled, repeatInterval, repeatIntervalUnit, repeatEndDate, repeatForever, checkCountryRestriction])
 
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
@@ -465,10 +490,10 @@ export default function SendSms() {
                             min={1}
                             value={repeatInterval}
                             onChange={(e) => setRepeatInterval(parseInt(e.target.value) || 1)}
-                            className="wsms-w-20"
+                            className="!wsms-w-[120px]"
                           />
                           <Select value={repeatIntervalUnit} onValueChange={setRepeatIntervalUnit}>
-                            <SelectTrigger className="wsms-w-32">
+                            <SelectTrigger className="!wsms-w-[120px]">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
