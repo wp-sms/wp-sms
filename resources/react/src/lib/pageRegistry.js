@@ -35,6 +35,7 @@ import {
   ArrowLeftRight,
   Terminal,
   CalendarClock,
+  Blocks,
 } from 'lucide-react'
 import { __ } from '@/lib/utils'
 
@@ -104,6 +105,14 @@ export const pageDefinitions = {
     component: lazy(() => import('@/pages/Privacy')),
     nav: { type: 'item', order: 5 },
     condition: 'gdprEnabled',
+  },
+
+  // ===== ADD-ONS =====
+  'add-ons': {
+    label: () => __('Add-Ons'),
+    icon: Blocks,
+    component: lazy(() => import('@/pages/AddOns')),
+    nav: { type: 'item', order: 6 },
   },
 
   // ===== SETTINGS (grouped) =====
