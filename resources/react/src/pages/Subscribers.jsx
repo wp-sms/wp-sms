@@ -51,7 +51,7 @@ import { useToast } from '@/components/ui/toaster'
 function SubscriberImportDialog({ open, onOpenChange, onImport, isLoading }) {
   const importFields = [
     { name: 'name', label: 'Name', required: false },
-    { name: 'mobile', label: 'Mobile', required: true },
+    { name: 'mobile', label: 'Phone Number', required: true },
     { name: 'status', label: 'Status', required: false },
     { name: 'group_id', label: 'Group ID', required: false },
   ]
@@ -105,7 +105,7 @@ export default function Subscribers() {
     initialData: { name: '', mobile: '', group_id: '', status: '1' },
     validate: (data) => {
       const errors = {}
-      if (!data.mobile?.trim()) errors.mobile = __('Mobile number is required')
+      if (!data.mobile?.trim()) errors.mobile = __('Phone number is required')
       return { valid: Object.keys(errors).length === 0, errors }
     },
     onSuccess: () => table.refresh(),
@@ -341,7 +341,7 @@ export default function Subscribers() {
     {
       id: 'mobile',
       accessorKey: 'mobile',
-      header: __('Mobile'),
+      header: __('Phone Number'),
       sortable: true,
       cell: ({ row }) => (
         <span className="wsms-text-[13px] wsms-font-mono wsms-text-foreground">
@@ -821,7 +821,7 @@ export default function Subscribers() {
                 />
               </div>
               <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium">Mobile Number</label>
+                <label className="wsms-text-[12px] wsms-font-medium">{__('Phone Number')}</label>
                 <InternationalPhoneInput
                   value={editDialog.formData.mobile}
                   onChange={(value) => editDialog.updateField('mobile', value)}
