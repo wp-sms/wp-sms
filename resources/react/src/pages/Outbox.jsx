@@ -198,7 +198,7 @@ export default function Outbox() {
     try {
       await smsApi.send({
         message: quickReplyMessage,
-        recipients: { groups: [], roles: [], numbers: [quickReplyTo] },
+        recipients: { groups: [], roles: [], numbers: quickReplyTo.split(',').map(n => n.trim()).filter(Boolean) },
       })
       toast({ title: __('Reply sent successfully'), variant: 'success' })
       setQuickReplyTo(null)
@@ -217,8 +217,7 @@ export default function Outbox() {
       getOutboxRowActions({
         onView: (row) => setViewMessage(row),
         onQuickReply: (row) => {
-          const recipient = row.recipient?.split(',')[0]?.trim() || row.recipient
-          setQuickReplyTo(recipient)
+          setQuickReplyTo(row.recipient)
           setQuickReplyMessage('')
         },
         onResend: (row) => handleResend(row.id),
@@ -653,7 +652,7 @@ export default function Outbox() {
               <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
               {__('Quick Reply')}
             </DialogTitle>
-            <DialogDescription>{__('Send a quick reply to this recipient')}</DialogDescription>
+            <DialogDescription>{__('Send a quick reply to the recipient(s)')}</DialogDescription>
           </DialogHeader>
           <DialogBody>
             <div className="wsms-space-y-4">
