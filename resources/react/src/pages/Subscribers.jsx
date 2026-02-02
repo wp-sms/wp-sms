@@ -98,7 +98,7 @@ export default function Subscribers() {
       await subscribersApi.updateSubscriber(id, {
         name: data.name,
         mobile: data.mobile,
-        group_id: data.group_id ? parseInt(data.group_id) : null,
+        group_id: data.group_id ? parseInt(data.group_id) : 0,
         status: data.status,
       })
     },
