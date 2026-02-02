@@ -103,6 +103,11 @@ export default function Subscribers() {
       })
     },
     initialData: { name: '', mobile: '', group_id: '', status: '1' },
+    validate: (data) => {
+      const errors = {}
+      if (!data.mobile?.trim()) errors.mobile = __('Mobile number is required')
+      return { valid: Object.keys(errors).length === 0, errors }
+    },
     onSuccess: () => table.refresh(),
     successMessage: __('Subscriber updated successfully'),
   })
@@ -821,7 +826,11 @@ export default function Subscribers() {
                   value={editDialog.formData.mobile}
                   onChange={(value) => editDialog.updateField('mobile', value)}
                   placeholder="+1234567890"
+                  className={editDialog.hasError('mobile') ? 'wsms-border-destructive' : ''}
                 />
+                {editDialog.getError('mobile') && (
+                  <p className="wsms-text-[11px] wsms-text-destructive">{editDialog.getError('mobile')}</p>
+                )}
               </div>
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
                 <div className="wsms-space-y-2">
