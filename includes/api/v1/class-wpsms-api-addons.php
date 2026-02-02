@@ -104,15 +104,28 @@ class AddonsApi extends RestApi
             $plugins = PluginHelper::getRemotePlugins();
             $addons = [];
 
+            // Get all licenses (valid + expired) for looking up per-addon
+            $allLicenses = array_merge(
+                LicenseHelper::getLicenses('valid'),
+                LicenseHelper::getLicenses('license_expired')
+            );
+
             foreach ($plugins as $plugin) {
-                $licenseKey = $plugin->getLicenseKey();
-                $maskedKey = '';
-                if (!empty($licenseKey)) {
-                    $maskedKey = str_repeat('•', max(0, strlen($licenseKey) - 4)) . substr($licenseKey, -4);
+                $slug = $plugin->getSlug();
+
+                // Find all licenses that contain this addon
+                $licenses = [];
+                foreach ($allLicenses as $key => $license) {
+                    if (!empty($license['products']) && in_array($slug, $license['products'])) {
+                        $licenses[] = [
+                            'masked_key' => str_repeat('•', max(0, strlen($key) - 4)) . substr($key, -4),
+                            'status'     => $license['status'] ?? 'unknown',
+                        ];
+                    }
                 }
 
                 $addons[] = [
-                    'slug'                => $plugin->getSlug(),
+                    'slug'                => $slug,
                     'name'                => $plugin->getName(),
                     'description'         => $plugin->getDescription(),
                     'short_description'   => $plugin->getShortDescription(),
@@ -122,7 +135,7 @@ class AddonsApi extends RestApi
                     'label'               => $plugin->getLabel(),
                     'status'              => $plugin->getStatus(),
                     'status_label'        => $plugin->getStatusLabel(),
-                    'license_key_masked'  => $maskedKey,
+                    'licenses'            => $licenses,
                     'is_installed'        => $plugin->isInstalled(),
                     'is_activated'        => $plugin->isActivated(),
                     'is_update_available' => $plugin->isUpdateAvailable(),

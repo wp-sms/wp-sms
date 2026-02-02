@@ -13,11 +13,11 @@ import {
   ExternalLink,
   BookOpen,
   FileText,
-  Settings,
   KeyRound,
   Loader2,
   Trash2,
   ArrowUpCircle,
+  Pencil,
 } from 'lucide-react'
 
 const STATUS_TO_VARIANT = {
@@ -31,12 +31,15 @@ const STATUS_TO_VARIANT = {
 function AddOnCard({ addon, onLicenseChanged }) {
   const [licenseKey, setLicenseKey] = useState('')
   const [activating, setActivating] = useState(false)
-  const [removing, setRemoving] = useState(false)
+  const [removingIndex, setRemovingIndex] = useState(null)
   const [activateError, setActivateError] = useState('')
   const [removeError, setRemoveError] = useState('')
+  const [showUpdateInput, setShowUpdateInput] = useState(false)
 
   const needsLicense = addon.is_installed && (addon.status === 'not_licensed' || addon.status === 'license_expired')
-  const hasLicense = !!addon.license_key_masked
+  const licenses = addon.licenses || []
+  const hasLicense = licenses.length > 0
+  const showLicenseInput = needsLicense || showUpdateInput
 
   const handleActivate = async () => {
     if (!licenseKey.trim()) return
@@ -46,6 +49,7 @@ function AddOnCard({ addon, onLicenseChanged }) {
       const response = await addonsApi.activateLicense(addon.slug, licenseKey.trim())
       onLicenseChanged(response.message || __('License activated successfully.'))
       setLicenseKey('')
+      setShowUpdateInput(false)
     } catch (err) {
       setActivateError(err.message || __('Failed to activate license.'))
     } finally {
@@ -53,8 +57,8 @@ function AddOnCard({ addon, onLicenseChanged }) {
     }
   }
 
-  const handleRemove = async () => {
-    setRemoving(true)
+  const handleRemove = async (index) => {
+    setRemovingIndex(index)
     setRemoveError('')
     try {
       const response = await addonsApi.removeLicense(addon.slug)
@@ -62,7 +66,7 @@ function AddOnCard({ addon, onLicenseChanged }) {
     } catch (err) {
       setRemoveError(err.message || __('Failed to remove license.'))
     } finally {
-      setRemoving(false)
+      setRemovingIndex(null)
     }
   }
 
@@ -116,30 +120,53 @@ function AddOnCard({ addon, onLicenseChanged }) {
           </p>
         )}
 
-        {/* Existing license key */}
+        {/* Existing license keys with actions */}
         {hasLicense && (
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-mt-3 wsms-p-2 wsms-rounded-md wsms-bg-muted/30">
-            <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[11px] wsms-text-muted-foreground wsms-min-w-0">
-              <KeyRound className="wsms-h-3 wsms-w-3 wsms-shrink-0" />
-              <span className="wsms-font-mono wsms-truncate">{addon.license_key_masked}</span>
-            </div>
-            <button
-              onClick={handleRemove}
-              disabled={removing}
-              className="wsms-p-1 wsms-rounded wsms-text-muted-foreground hover:wsms-text-destructive hover:wsms-bg-destructive/10 wsms-transition-colors disabled:wsms-opacity-50"
-              title={__('Remove license')}
-            >
-              {removing ? (
-                <Loader2 className="wsms-h-3 wsms-w-3 wsms-animate-spin" />
-              ) : (
-                <Trash2 className="wsms-h-3 wsms-w-3" />
-              )}
-            </button>
+          <div className="wsms-mt-3 wsms-space-y-2">
+            {licenses.map((license, index) => (
+              <div key={index} className="wsms-flex wsms-items-center wsms-justify-between wsms-p-2 wsms-rounded-md wsms-bg-muted/30">
+                <div className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[11px] wsms-text-muted-foreground wsms-min-w-0">
+                  <KeyRound className="wsms-h-3 wsms-w-3 wsms-shrink-0" />
+                  <span className="wsms-font-mono wsms-truncate">{license.masked_key}</span>
+                  {license.status === 'license_expired' && (
+                    <span className="wsms-text-[9px] wsms-font-bold wsms-uppercase wsms-text-amber-600">
+                      {__('Expired')}
+                    </span>
+                  )}
+                </div>
+                <div className="wsms-flex wsms-items-center wsms-gap-1 wsms-shrink-0">
+                  <button
+                    onClick={() => {
+                      setShowUpdateInput(!showUpdateInput)
+                      setLicenseKey('')
+                      setActivateError('')
+                    }}
+                    className="wsms-p-1 wsms-rounded wsms-text-muted-foreground hover:wsms-text-primary hover:wsms-bg-primary/10 wsms-transition-colors"
+                    title={__('Update license')}
+                  >
+                    <Pencil className="wsms-h-3 wsms-w-3" />
+                  </button>
+                  <button
+                    onClick={() => handleRemove(index)}
+                    disabled={removingIndex === index}
+                    className="wsms-p-1 wsms-rounded wsms-text-muted-foreground hover:wsms-text-destructive hover:wsms-bg-destructive/10 wsms-transition-colors disabled:wsms-opacity-50"
+                    title={__('Remove license')}
+                  >
+                    {removingIndex === index ? (
+                      <Loader2 className="wsms-h-3 wsms-w-3 wsms-animate-spin" />
+                    ) : (
+                      <Trash2 className="wsms-h-3 wsms-w-3" />
+                    )}
+                  </button>
+                </div>
+              </div>
+            ))}
+            {removeError && <ValidationMessage type="error"><span dangerouslySetInnerHTML={{ __html: removeError }} /></ValidationMessage>}
           </div>
         )}
 
-        {/* License activation form */}
-        {needsLicense && (
+        {/* License input (new activation or update) */}
+        {showLicenseInput && (
           <div className="wsms-mt-3 wsms-space-y-2">
             <div className="wsms-flex wsms-gap-2">
               <Input
@@ -148,7 +175,7 @@ function AddOnCard({ addon, onLicenseChanged }) {
                   setLicenseKey(e.target.value)
                   setActivateError('')
                 }}
-                placeholder={__('Enter license key')}
+                placeholder={showUpdateInput ? __('Enter new license key') : __('Enter license key')}
                 className="!wsms-h-8 wsms-text-[12px]"
                 onKeyDown={(e) => e.key === 'Enter' && handleActivate()}
               />
@@ -160,17 +187,30 @@ function AddOnCard({ addon, onLicenseChanged }) {
               >
                 {activating ? (
                   <Loader2 className="wsms-h-3.5 wsms-w-3.5 wsms-animate-spin" />
+                ) : showUpdateInput ? (
+                  __('Update')
                 ) : (
                   __('Activate')
                 )}
               </Button>
+              {showUpdateInput && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="wsms-shrink-0 !wsms-h-8"
+                  onClick={() => {
+                    setShowUpdateInput(false)
+                    setLicenseKey('')
+                    setActivateError('')
+                  }}
+                >
+                  {__('Cancel')}
+                </Button>
+              )}
             </div>
-            {activateError && <ValidationMessage type="error">{activateError}</ValidationMessage>}
+            {activateError && <ValidationMessage type="error"><span dangerouslySetInnerHTML={{ __html: activateError }} /></ValidationMessage>}
           </div>
         )}
-
-        {/* Remove license error */}
-        {removeError && <ValidationMessage type="error" className="wsms-mt-2">{removeError}</ValidationMessage>}
       </div>
 
       {/* Footer links */}
@@ -184,15 +224,6 @@ function AddOnCard({ addon, onLicenseChanged }) {
           >
             <ExternalLink className="wsms-h-3 wsms-w-3" />
             {addon.is_installed ? __('Details') : __('Get Add-On')}
-          </a>
-        )}
-        {addon.settings_url && addon.is_installed && addon.status === 'activated' && (
-          <a
-            href={addon.settings_url}
-            className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[11px] wsms-text-muted-foreground hover:wsms-text-foreground wsms-transition-colors"
-          >
-            <Settings className="wsms-h-3 wsms-w-3" />
-            {__('Settings')}
           </a>
         )}
         {addon.documentation_url && (
@@ -318,52 +349,34 @@ export default function AddOns() {
     )
   }
 
-  const activeAddons = addons.filter((a) => a.status === 'activated')
-  const availableAddons = addons.filter((a) => a.status !== 'activated')
+  // Sort: active addons first, then by name
+  const statusOrder = { activated: 0, not_activated: 1, not_licensed: 2, license_expired: 3, not_installed: 4 }
+  const sortedAddons = [...addons].sort((a, b) => {
+    const orderDiff = (statusOrder[a.status] ?? 5) - (statusOrder[b.status] ?? 5)
+    if (orderDiff !== 0) return orderDiff
+    return (a.name || '').localeCompare(b.name || '')
+  })
 
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
-      {activeAddons.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <Blocks className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              {__('Active Add-Ons')}
-            </CardTitle>
-            <CardDescription>
-              {__('Licensed and activated add-ons on your site')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="wsms-grid wsms-grid-cols-1 lg:wsms-grid-cols-2 xl:wsms-grid-cols-3 wsms-gap-3">
-              {activeAddons.map((addon) => (
-                <AddOnCard key={addon.slug} addon={addon} onLicenseChanged={handleLicenseChanged} />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {availableAddons.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <Blocks className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
-              {__('Available Add-Ons')}
-            </CardTitle>
-            <CardDescription>
-              {__('Install and activate add-ons to extend WP SMS functionality')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="wsms-grid wsms-grid-cols-1 lg:wsms-grid-cols-2 xl:wsms-grid-cols-3 wsms-gap-3">
-              {availableAddons.map((addon) => (
-                <AddOnCard key={addon.slug} addon={addon} onLicenseChanged={handleLicenseChanged} />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      <Card>
+        <CardHeader>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <Blocks className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+            {__('Add-Ons')}
+          </CardTitle>
+          <CardDescription>
+            {__('Manage add-ons to extend WP SMS functionality')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="wsms-grid wsms-grid-cols-1 lg:wsms-grid-cols-2 xl:wsms-grid-cols-3 wsms-gap-3">
+            {sortedAddons.map((addon) => (
+              <AddOnCard key={addon.slug} addon={addon} onLicenseChanged={handleLicenseChanged} />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }
