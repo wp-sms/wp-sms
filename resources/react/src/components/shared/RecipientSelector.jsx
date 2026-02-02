@@ -380,6 +380,11 @@ const RecipientSelector = React.forwardRef(
                         <Icon className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
                         <span className="wsms-flex-1 wsms-text-[12px] wsms-text-foreground wsms-truncate">
                           {type.label}
+                          {type.addonSlug === 'wp-sms-pro' && (
+                            <span className="wsms-ml-1.5 wsms-px-1.5 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[9px] wsms-font-medium">
+                              PRO
+                            </span>
+                          )}
                         </span>
                         {isLoading ? (
                           <Loader2 className="wsms-h-3 wsms-w-3 wsms-animate-spin wsms-text-muted-foreground" />

@@ -380,7 +380,7 @@ export default function SendSms() {
               <CalendarClock className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               <CardTitle className="wsms-text-sm">{__('Scheduling Options')}</CardTitle>
               <span className="wsms-ml-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
-                {__('All-in-One')}
+                {__('PRO')}
               </span>
             </div>
           </CardHeader>

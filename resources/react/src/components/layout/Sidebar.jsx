@@ -245,6 +245,11 @@ function NavItem({ item, isActive, onClick, isNested = false, badge }) {
     >
       <Icon className="wsms-h-4 wsms-w-4 wsms-shrink-0" strokeWidth={1.75} />
       <span>{item.label}</span>
+      {item.badgeLabel && (
+        <span className="wsms-ml-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
+          {item.badgeLabel}
+        </span>
+      )}
     </button>
   )
 }
