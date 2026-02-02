@@ -13,13 +13,10 @@ import { Tip } from '@/components/ui/ux-helpers'
 import { smsApi } from '@/api/smsApi'
 import { useSettings } from '@/context/SettingsContext'
 import { cn, getGatewayDisplayName, __, getWpSettings } from '@/lib/utils'
-import { useToast } from '@/components/ui/toaster'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 
 export default function SendSms() {
   const { setCurrentPage, getSetting } = useSettings()
-  const { toast } = useToast()
-
   // Check for Pro add-on and additional recipient types
   const { hasProAddon, additionalRecipientTypes = [] } = getWpSettings()
 
@@ -61,6 +58,8 @@ export default function SendSms() {
   const [isLoadingCount, setIsLoadingCount] = useState(false)
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [showPreviewDialog, setShowPreviewDialog] = useState(false)
+  const [dialogStatus, setDialogStatus] = useState('preview')
+  const [dialogResultMessage, setDialogResultMessage] = useState('')
 
   // Sync sender ID when settings change (e.g., after saving gateway settings)
   useEffect(() => {
@@ -131,9 +130,39 @@ export default function SendSms() {
   // Allow send if gateway is configured, has message and actual recipients, and scheduling is valid
   const canSend = gatewayConfigured && hasMessage && hasActualRecipients && !isSending && !isLoadingCount && isScheduleValid && isRepeatValid
 
+  // Handle "Done" from success/error dialog
+  const handleDialogDone = useCallback(() => {
+    setShowPreviewDialog(false)
+    if (dialogStatus === 'success') {
+      // Reset form
+      setMessage('')
+      setRecipients({ groups: [], roles: [], users: [], numbers: [] })
+      setSenderId(defaultSender)
+      setFlashSms(false)
+      setMediaUrl('')
+      setScheduleEnabled(false)
+      setScheduledDate('')
+      setRepeatEnabled(false)
+      setRepeatInterval(1)
+      setRepeatIntervalUnit('day')
+      setRepeatEndDate('')
+      setRepeatForever(false)
+    }
+    setDialogStatus('preview')
+    setDialogResultMessage('')
+  }, [dialogStatus, defaultSender])
+
+  // Handle retry from error dialog
+  const handleDialogRetry = useCallback(() => {
+    setDialogStatus('preview')
+    setDialogResultMessage('')
+  }, [])
+
   // Handle preview button click
   const handlePreview = useCallback(() => {
     if (canSend) {
+      setDialogStatus('preview')
+      setDialogResultMessage('')
       setShowPreviewDialog(true)
     }
   }, [canSend])
@@ -163,44 +192,23 @@ export default function SendSms() {
         }),
       })
 
-      setShowPreviewDialog(false)
-      toast({
-        title: result.message || __(`Message sent successfully to ${result.recipientCount || recipientCount} recipient(s)`),
-        variant: 'success',
-      })
-
-      // Notify other pages (e.g., Outbox) that SMS was sent
-      window.dispatchEvent(new CustomEvent('wpsms:sms-sent'))
-
       // Update credit
       if (result.credit !== undefined) {
         setCredit(result.credit)
       }
 
-      // Reset form
-      setMessage('')
-      setRecipients({ groups: [], roles: [], users: [], numbers: [] })
-      setSenderId(defaultSender)
-      setFlashSms(false)
-      setMediaUrl('')
-      // Reset scheduling options
-      setScheduleEnabled(false)
-      setScheduledDate('')
-      setRepeatEnabled(false)
-      setRepeatInterval(1)
-      setRepeatIntervalUnit('day')
-      setRepeatEndDate('')
-      setRepeatForever(false)
+      // Notify other pages (e.g., Outbox) that SMS was sent
+      window.dispatchEvent(new CustomEvent('wpsms:sms-sent'))
+
+      setDialogStatus('success')
+      setDialogResultMessage(result.message || __(`Message sent successfully to ${result.recipientCount || recipientCount} recipient(s)`))
     } catch (error) {
-      setShowPreviewDialog(false)
-      toast({
-        title: error.message || __('Failed to send message'),
-        variant: 'destructive',
-      })
+      setDialogStatus('error')
+      setDialogResultMessage(error.message || __('Failed to send message'))
     } finally {
       setIsSending(false)
     }
-  }, [canSend, message, recipients, senderId, flashSms, mediaUrl, recipientCount, defaultSender, scheduleEnabled, scheduledDate, repeatEnabled, repeatInterval, repeatIntervalUnit, repeatEndDate, repeatForever, toast])
+  }, [canSend, message, recipients, senderId, flashSms, mediaUrl, recipientCount, defaultSender, scheduleEnabled, scheduledDate, repeatEnabled, repeatInterval, repeatIntervalUnit, repeatEndDate, repeatForever])
 
   return (
     <div className="wsms-space-y-6 wsms-stagger-children">
@@ -586,7 +594,11 @@ export default function SendSms() {
         isFlash={flashSms}
         hasMedia={!!mediaUrl}
         onConfirm={handleConfirmedSend}
+        onDone={handleDialogDone}
+        onRetry={handleDialogRetry}
         isSending={isSending}
+        status={dialogStatus}
+        resultMessage={dialogResultMessage}
       />
     </div>
   )
