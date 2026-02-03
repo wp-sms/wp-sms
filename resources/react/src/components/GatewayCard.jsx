@@ -35,7 +35,7 @@ export function GatewayCard({ gateway, isSelected, isCurrent, onClick, showFeatu
         <span className="wsms-truncate wsms-block">{gateway.name}</span>
         {gateway.website && (
           <span className="wsms-text-[9px] wsms-text-muted-foreground wsms-truncate wsms-block">
-            {gateway.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+            {gateway.website.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}
           </span>
         )}
       </div>
