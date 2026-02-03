@@ -100,5 +100,8 @@ Before committing:
 2. Run `npm run dashboard:build` to verify build
 3. Check: input sanitized, output escaped, no SQL injection
 4. Warn user before committing risky changes (core functionality, DB operations, API contracts)
+5. Critically review every diff for safety and backward compatibility
 
 Only commit files you modified. Do not include changes from other sessions.
+
+For sessions with multiple fixes/features, commit each change separately.
