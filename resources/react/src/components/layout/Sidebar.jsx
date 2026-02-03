@@ -10,6 +10,7 @@ import {
   RefreshCw,
 } from 'lucide-react'
 import { cn, __, getWpSettings, getGatewayDisplayName } from '@/lib/utils'
+import Logo from './Logo'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 import { smsApi } from '@/api/smsApi'
 import { inboxApi } from '@/api/twoWayApi'
@@ -515,9 +516,10 @@ export default function Sidebar({ onClose, showClose }) {
 
   return (
     <div className="wsms-flex wsms-flex-col wsms-h-full wsms-min-h-0 wsms-bg-card">
-      {/* Mobile close button */}
+      {/* Mobile header with logo and close button */}
       {showClose && (
-        <div className="wsms-flex wsms-justify-end wsms-p-3 wsms-border-b wsms-border-border">
+        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-p-3 wsms-border-b wsms-border-border">
+          <Logo className="wsms-h-7" />
           <button
             onClick={onClose}
             aria-label="Close navigation menu"

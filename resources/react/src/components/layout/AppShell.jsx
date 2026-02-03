@@ -65,7 +65,7 @@ const AppShell = memo(function AppShell() {
         {/* Mobile overlay */}
         {isMobile && mobileMenuOpen && (
           <div
-            className="wsms-fixed wsms-inset-0 wsms-z-40 wsms-bg-black/50"
+            className="wsms-fixed wsms-inset-0 wsms-top-[46px] wsms-z-[99998] wsms-bg-black/50"
             onClick={() => setMobileMenuOpen(false)}
           />
         )}
@@ -74,7 +74,7 @@ const AppShell = memo(function AppShell() {
         <aside
           className={cn(
             'wsms-sidebar',
-            isMobile && 'wsms-fixed wsms-inset-y-0 wsms-left-0 wsms-z-50 wsms-w-[240px] wsms-transform wsms-transition-transform wsms-duration-200',
+            isMobile && 'wsms-fixed wsms-top-[46px] wsms-bottom-0 wsms-left-0 wsms-z-[99999] wsms-w-[240px] wsms-transform wsms-transition-transform wsms-duration-200',
             isMobile && !mobileMenuOpen && 'wsms--translate-x-full'
           )}
         >
