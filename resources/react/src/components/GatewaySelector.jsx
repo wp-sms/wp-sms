@@ -336,8 +336,9 @@ export default function GatewaySelector({
         <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-px-3 wsms-py-2 wsms-rounded-md wsms-bg-primary/5 wsms-border wsms-border-primary/20">
           {isApiSource && (() => {
             const gw = gateways.find((g) => g.slug === selectedGateway)
-            return gw?.logo ? (
-              <img src={gw.logo} alt="" className="wsms-h-5 wsms-w-5 wsms-rounded-sm wsms-object-contain" onError={(e) => { e.target.style.display = 'none' }} />
+            const logoUrl = getGatewayLogo(gw)
+            return logoUrl ? (
+              <img src={logoUrl} alt="" className="wsms-h-5 wsms-w-5 wsms-rounded-sm wsms-object-contain" onError={(e) => { e.target.style.display = 'none' }} />
             ) : (
               <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-primary" />
             )

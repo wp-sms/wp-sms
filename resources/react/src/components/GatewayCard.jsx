@@ -6,6 +6,8 @@ import { cn, __, getGatewayLogo } from '@/lib/utils'
  * Full gateway card — used when API data is available (logo, features, premium badge)
  */
 export function GatewayCard({ gateway, isSelected, isCurrent, onClick, showFeatures = false, featureTags = [] }) {
+  const logoUrl = getGatewayLogo(gateway)
+
   return (
     <button
       key={gateway.slug}
@@ -20,16 +22,14 @@ export function GatewayCard({ gateway, isSelected, isCurrent, onClick, showFeatu
             : 'wsms-border-border wsms-bg-card hover:wsms-bg-accent'
       )}
     >
-      {gateway.logo ? (
+      {logoUrl ? (
         <img
-          src={gateway.logo}
+          src={logoUrl}
           alt=""
           className="wsms-h-5 wsms-w-5 wsms-shrink-0 wsms-rounded-sm wsms-object-contain"
           loading="lazy"
           onError={(e) => { e.target.style.display = 'none' }}
         />
-      ) : isSelected ? (
-        <CheckCircle className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" />
       ) : null}
       <div className="wsms-min-w-0 wsms-flex-1">
         <span className="wsms-truncate wsms-block">{gateway.name}</span>
@@ -39,6 +39,7 @@ export function GatewayCard({ gateway, isSelected, isCurrent, onClick, showFeatu
           </span>
         )}
       </div>
+      {isSelected && <CheckCircle className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" />}
     </button>
   )
 }
