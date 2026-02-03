@@ -100,9 +100,23 @@ export default function PhoneInput({
           const iti = window.intlTelInput(inputRef.current, options)
           itiRef.current = iti
 
-          // Set initial value if provided
+          // Set initial value if provided and validate after utils loads
           if (value) {
             iti.setNumber(value)
+            // Validate after utils.js is loaded to ensure proper validation
+            if (iti.promise) {
+              iti.promise.then(() => {
+                const valid = iti.isValidNumber()
+                setIsValid(valid)
+                if (valid) {
+                  const fullNumber = iti.getNumber().replace(/[-\s]/g, '')
+                  const countryData = iti.getSelectedCountryData()
+                  const countryCode = `+${countryData.dialCode}`
+                  onChange?.(fullNumber, countryCode)
+                  onValidChange?.(true)
+                }
+              })
+            }
           }
 
           // Update placeholder
