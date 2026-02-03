@@ -45,10 +45,29 @@ function shouldAutoOpenWizard() {
 }
 
 /**
+ * Get initial credentials from existing settings based on gateway fields
+ */
+function getInitialCredentials(settings, gatewayFields) {
+  const credentials = {}
+  if (gatewayFields && typeof gatewayFields === 'object') {
+    Object.values(gatewayFields).forEach((field) => {
+      if (field.id && settings[field.id] !== undefined) {
+        credentials[field.id] = settings[field.id]
+      }
+    })
+  }
+  return credentials
+}
+
+/**
  * Full-screen setup wizard modal
  */
 export default function SetupWizard() {
   const { updateSetting, setCurrentPage } = useSettings()
+
+  // Get existing settings for pre-population
+  const { settings = {}, gateway: gatewayCapabilities = {}, addons = {} } = getWpSettings()
+  const gatewayFields = gatewayCapabilities.gatewayFields || {}
 
   // Initialize with correct value to avoid flash
   const [isOpen, setIsOpen] = useState(shouldAutoOpenWizard)
@@ -56,17 +75,16 @@ export default function SetupWizard() {
   const [completedSteps, setCompletedSteps] = useState([])
   const [saving, setSaving] = useState(false)
 
-  // Form data state
-  const [phoneNumber, setPhoneNumber] = useState('')
-  const [countryCode, setCountryCode] = useState('')
-  const [isPhoneValid, setIsPhoneValid] = useState(false)
-  const [selectedGateway, setSelectedGateway] = useState('')
-  const [credentials, setCredentials] = useState({})
+  // Form data state - pre-populate with existing data if available
+  const [phoneNumber, setPhoneNumber] = useState(settings.admin_mobile_number || '')
+  const [countryCode, setCountryCode] = useState(settings.admin_mobile_number_country_prefix || '')
+  const [isPhoneValid, setIsPhoneValid] = useState(!!settings.admin_mobile_number)
+  const [selectedGateway, setSelectedGateway] = useState(settings.gateway_name || '')
+  const [credentials, setCredentials] = useState(() => getInitialCredentials(settings, gatewayFields))
   const [connectionTested, setConnectionTested] = useState(false)
   const [testSmsSent, setTestSmsSent] = useState(false)
 
   // Determine if All-in-One step should be shown
-  const { addons = {} } = getWpSettings()
   const showAllInOneStep = !addons.pro
 
   // Build steps array based on conditions
