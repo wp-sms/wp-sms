@@ -33,9 +33,9 @@ export function GatewayCard({ gateway, isSelected, isCurrent, onClick, showFeatu
       ) : null}
       <div className="wsms-min-w-0 wsms-flex-1">
         <span className="wsms-truncate wsms-block">{gateway.name}</span>
-        {showFeatures && featureTags.length > 0 && (
+        {gateway.website && (
           <span className="wsms-text-[9px] wsms-text-muted-foreground wsms-truncate wsms-block">
-            {featureTags.join(' · ')}
+            {gateway.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
           </span>
         )}
       </div>
