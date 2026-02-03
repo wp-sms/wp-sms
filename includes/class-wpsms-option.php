@@ -8,6 +8,15 @@ if (!defined('ABSPATH')) {
 
 class Option
 {
+    /**
+     * Deprecated options that should always return empty/false.
+     * Used to disable features without removing code or migrating data.
+     *
+     * @var array
+     */
+    public static $deprecatedOptions = [
+        'newsletter_form_multiple_select',
+    ];
 
     /**
      * Get the whole Plugin Options
@@ -37,6 +46,10 @@ class Option
      */
     public static function getOption($option_name, $pro = false)
     {
+        if (in_array($option_name, self::$deprecatedOptions, true)) {
+            return '';
+        }
+
         $options = self::getOptions($pro);
 
         return isset($options[$option_name]) ? $options[$option_name] : '';

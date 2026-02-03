@@ -1,5 +1,5 @@
 import React from 'react'
-import { Users, FormInput, Shield, Mail, Palette } from 'lucide-react'
+import { FormInput, Shield, Mail, Palette } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -18,7 +18,6 @@ export default function Newsletter() {
 
   // Form settings
   const [formGroups, setFormGroups] = useSetting('newsletter_form_groups', '')
-  const [multipleSelect, setMultipleSelect] = useSetting('newsletter_form_multiple_select', '')
   const [specifiedGroups, setSpecifiedGroups] = useSetting('newsletter_form_specified_groups', [])
   const [defaultGroup, setDefaultGroup] = useSetting('newsletter_form_default_group', '0')
   const [formVerify, setFormVerify] = useSetting('newsletter_form_verify', '')
@@ -67,13 +66,6 @@ export default function Newsletter() {
                 placeholder={__('All groups')}
                 searchPlaceholder={__('Search groups...')}
                 description={__('Which groups subscribers can choose from. Leave empty for all groups.')}
-              />
-
-              <SettingRow
-                title={__('Allow Multiple Groups')}
-                description={__('Let subscribers join more than one group at a time.')}
-                checked={multipleSelect === '1'}
-                onCheckedChange={(checked) => setMultipleSelect(checked ? '1' : '')}
               />
 
               <SelectField
