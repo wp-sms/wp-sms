@@ -1,9 +1,9 @@
 import apiClient from './client'
 
 /**
- * Timeout for settings API requests (shorter than default)
+ * Timeout for settings API requests
  */
-const SETTINGS_TIMEOUT = 10000
+const SETTINGS_TIMEOUT = 20000
 
 /**
  * Longer timeout for gateway registry (cold cache requires external API fetch)
