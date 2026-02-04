@@ -230,7 +230,11 @@ class SettingsApi extends RestApi
             $sanitizedSettings = $this->sanitizeSettings($data['settings']);
             // Preserve existing values for masked sensitive fields
             $sanitizedSettings = $this->preserveSensitiveFields($sanitizedSettings, $currentSettings);
+            // Convert booleans to legacy format ('1' or unset) for backward compatibility
+            $sanitizedSettings = $this->convertBooleansForLegacyStorage($sanitizedSettings, $currentSettings);
             $mergedSettings = array_merge($currentSettings, $sanitizedSettings);
+            // Clean up __UNSET__ markers (removes keys that were set to false in React)
+            $mergedSettings = $this->cleanupUnsetMarkers($mergedSettings);
             update_option('wpsms_settings', $mergedSettings);
         }
 
@@ -240,7 +244,11 @@ class SettingsApi extends RestApi
             $sanitizedProSettings = $this->sanitizeSettings($data['proSettings']);
             // Preserve existing values for masked sensitive fields
             $sanitizedProSettings = $this->preserveSensitiveFields($sanitizedProSettings, $currentProSettings);
+            // Convert booleans to legacy format ('1' or unset) for backward compatibility
+            $sanitizedProSettings = $this->convertBooleansForLegacyStorage($sanitizedProSettings, $currentProSettings);
             $mergedProSettings = array_merge($currentProSettings, $sanitizedProSettings);
+            // Clean up __UNSET__ markers (removes keys that were set to false in React)
+            $mergedProSettings = $this->cleanupUnsetMarkers($mergedProSettings);
             update_option('wps_pp_settings', $mergedProSettings);
         }
 
@@ -589,6 +597,54 @@ class SettingsApi extends RestApi
         }
 
         return $newSettings;
+    }
+
+    /**
+     * Convert boolean values to legacy storage format for backward compatibility.
+     *
+     * Legacy PHP settings pages store checkbox values as '1' when enabled
+     * and unset (absent from array) when disabled. The React UI sends
+     * boolean true/false, which needs to be converted for compatibility.
+     *
+     * This method uses a special marker (__UNSET__) for false values, which
+     * must be cleaned up after array_merge using cleanupUnsetMarkers().
+     *
+     * @param array $newSettings New settings with possible boolean values
+     * @param array $currentSettings Current stored settings (unused but kept for consistency)
+     * @return array Settings with booleans converted to '1' or marked for removal
+     */
+    private function convertBooleansForLegacyStorage($newSettings, $currentSettings)
+    {
+        foreach ($newSettings as $key => $value) {
+            if (is_bool($value)) {
+                if ($value === true) {
+                    // Convert true to '1' for legacy compatibility
+                    $newSettings[$key] = '1';
+                } else {
+                    // For false, mark for removal after merge
+                    // (can't just unset here because array_merge would restore from currentSettings)
+                    $newSettings[$key] = '__UNSET__';
+                }
+            }
+        }
+
+        return $newSettings;
+    }
+
+    /**
+     * Remove keys marked with __UNSET__ marker after array_merge.
+     *
+     * @param array $settings Settings array after merge
+     * @return array Settings with marked keys removed
+     */
+    private function cleanupUnsetMarkers($settings)
+    {
+        foreach ($settings as $key => $value) {
+            if ($value === '__UNSET__') {
+                unset($settings[$key]);
+            }
+        }
+        return $settings;
     }
 
     /**
