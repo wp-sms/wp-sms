@@ -16,17 +16,17 @@ import {
 
 /**
  * FieldDescription - Renders field descriptions with proper HTML support
- * Safely renders <code> tags as styled code chips
+ * Safely renders <code> tags as styled code chips and <a> tags as links
  */
 const FieldDescription = ({ children, className }) => {
   if (!children) return null
 
-  // Parse HTML and convert <code> tags to styled spans
+  // Parse HTML and convert supported tags to React elements
   const renderDescription = (text) => {
     if (typeof text !== 'string') return text
 
-    // Split by <code> tags and render appropriately
-    const parts = text.split(/(<code>.*?<\/code>)/g)
+    // Split by <code> and <a> tags and render appropriately
+    const parts = text.split(/(<code>.*?<\/code>|<a\s+[^>]*>.*?<\/a>)/g)
 
     return parts.map((part, index) => {
       // Check if this part is a <code> tag
@@ -41,6 +41,28 @@ const FieldDescription = ({ children, className }) => {
           </code>
         )
       }
+
+      // Check if this part is an <a> tag
+      const linkMatch = part.match(/<a\s+([^>]*)>(.*?)<\/a>/)
+      if (linkMatch) {
+        const attrs = linkMatch[1]
+        const linkText = linkMatch[2]
+        const hrefMatch = attrs.match(/href=["']([^"']*)["']/)
+        const targetMatch = attrs.match(/target=["']([^"']*)["']/)
+
+        return (
+          <a
+            key={index}
+            href={hrefMatch ? hrefMatch[1] : '#'}
+            target={targetMatch ? targetMatch[1] : '_blank'}
+            rel="noopener noreferrer"
+            className="wsms-text-primary wsms-underline hover:wsms-no-underline"
+          >
+            {linkText}
+          </a>
+        )
+      }
+
       return part
     })
   }
