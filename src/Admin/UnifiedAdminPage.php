@@ -268,6 +268,10 @@ class UnifiedAdminPage extends Singleton
             'thirdPartyPlugins' => $this->getThirdPartyPluginStatus(),
             // Forminator forms data for dynamic settings
             'forminatorForms' => $this->getForminatorFormsData(),
+            // Gravity Forms data for dynamic settings (Pro)
+            'gravityForms' => $this->getGravityFormsData(),
+            // Quform data for dynamic settings (Pro)
+            'quformForms' => $this->getQuformFormsData(),
             // Extended data for unified admin pages
             'stats'         => $this->getStats(),
             'capabilities'  => $this->getUserCapabilities(),
@@ -1074,6 +1078,159 @@ class UnifiedAdminPage extends Singleton
             }
         } catch (\Exception $e) {
             // Forminator not properly set up, return empty
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get Gravity Forms data for React settings
+     *
+     * Returns forms list with their fields and notification variables
+     * for dynamic rendering in the React integrations page.
+     *
+     * @return array
+     */
+    private function getGravityFormsData()
+    {
+        $result = [
+            'isActive' => false,
+            'forms'    => [],
+        ];
+
+        if (!class_exists('RGFormsModel')) {
+            return $result;
+        }
+
+        $result['isActive'] = true;
+
+        try {
+            $forms = \RGFormsModel::get_forms(null, 'title');
+
+            if (empty($forms)) {
+                return $result;
+            }
+
+            foreach ($forms as $form) {
+                $formId = $form->id;
+                $formFields = [];
+
+                // Get form fields (excluding non-input types)
+                $fields = \WP_SMS\Gravityforms::get_field($formId);
+                if (!empty($fields) && is_array($fields)) {
+                    foreach ($fields as $fieldId => $label) {
+                        $formFields[(string)$fieldId] = $label;
+                    }
+                }
+
+                // Build notification variables
+                $variables = [
+                    ['key' => '%title%', 'label' => 'Form Title'],
+                    ['key' => '%ip%', 'label' => 'IP Address'],
+                    ['key' => '%source_url%', 'label' => 'Source URL'],
+                    ['key' => '%user_agent%', 'label' => 'User Agent'],
+                ];
+
+                // Add field variables
+                if (!empty($fields) && is_array($fields)) {
+                    foreach ($fields as $fieldId => $label) {
+                        $variables[] = [
+                            'key'   => "%field-{$fieldId}%",
+                            'label' => $label,
+                        ];
+                    }
+                }
+
+                // hasFields indicates whether "Send to field" section should be shown
+                $hasFields = !empty($formFields);
+
+                $result['forms'][] = [
+                    'id'        => $formId,
+                    'name'      => $form->title,
+                    'fields'    => $formFields,
+                    'variables' => $variables,
+                    'hasFields' => $hasFields,
+                ];
+            }
+        } catch (\Exception $e) {
+            // Gravity Forms not properly set up, return empty
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get Quform data for React settings
+     *
+     * Returns forms list with their fields and notification variables
+     * for dynamic rendering in the React integrations page.
+     *
+     * @return array
+     */
+    private function getQuformFormsData()
+    {
+        $result = [
+            'isActive' => false,
+            'forms'    => [],
+        ];
+
+        if (!class_exists('Quform_Repository')) {
+            return $result;
+        }
+
+        $result['isActive'] = true;
+
+        try {
+            $quform = new \Quform_Repository();
+            $forms = $quform->allForms();
+
+            if (empty($forms)) {
+                return $result;
+            }
+
+            foreach ($forms as $form) {
+                $formId = $form['id'];
+                $formFields = [];
+
+                // Get form fields (excluding non-input types)
+                $fields = \WP_SMS\Quform::get_fields($formId);
+                if (!empty($fields) && is_array($fields)) {
+                    foreach ($fields as $fieldId => $label) {
+                        $formFields[(string)$fieldId] = $label;
+                    }
+                }
+
+                // Build notification variables
+                $variables = [
+                    ['key' => '%post_title%', 'label' => 'Post Title'],
+                    ['key' => '%form_url%', 'label' => 'Form URL'],
+                    ['key' => '%referring_url%', 'label' => 'Referring URL'],
+                ];
+
+                // Add field variables
+                if (!empty($fields) && is_array($fields)) {
+                    foreach ($fields as $fieldId => $label) {
+                        $variables[] = [
+                            'key'   => "%field-{$fieldId}%",
+                            'label' => $label,
+                        ];
+                    }
+                }
+
+                // Check if form has elements (for "Send to field" feature)
+                // Legacy code uses $form['elements'] directly for this check
+                $hasElements = !empty($form['elements']);
+
+                $result['forms'][] = [
+                    'id'          => $formId,
+                    'name'        => $form['name'],
+                    'fields'      => $formFields,
+                    'variables'   => $variables,
+                    'hasElements' => $hasElements,
+                ];
+            }
+        } catch (\Exception $e) {
+            // Quform not properly set up, return empty
         }
 
         return $result;
