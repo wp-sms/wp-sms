@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
-import { useSetting } from '@/context/SettingsContext'
+import { useSetting, useProSetting } from '@/context/SettingsContext'
 import { useAddonSettings, useAddonFieldsForSection } from '@/hooks/useAddonSettings'
 import { AddonSection, AddonFieldsInjection } from '@/components/ui/AddonSection'
 import { DynamicField } from '@/components/ui/DynamicField'
@@ -41,6 +41,18 @@ const PluginStatusBadge = ({ status }) => {
 const getForminatorFormsData = () => {
   const wpSettings = getWpSettings()
   return wpSettings.forminatorForms || { isActive: false, forms: [] }
+}
+
+// Get Gravity Forms data
+const getGravityFormsData = () => {
+  const wpSettings = getWpSettings()
+  return wpSettings.gravityForms || { isActive: false, forms: [] }
+}
+
+// Get Quform data
+const getQuformFormsData = () => {
+  const wpSettings = getWpSettings()
+  return wpSettings.quformForms || { isActive: false, forms: [] }
 }
 
 // Clickable variable chip component - matches TemplateTextarea styling
@@ -109,13 +121,11 @@ const ForminatorFormSettings = ({ form }) => {
 
       {isExpanded && (
         <div className="wsms-p-4 wsms-space-y-6 wsms-border-t">
+          {/* Send SMS to a number */}
           <div className="wsms-space-y-4">
             <div className="wsms-flex wsms-items-center wsms-justify-between">
               <div>
-                <Label className="wsms-font-medium">{__('Notify admin')}</Label>
-                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">
-                  {__('Send an SMS to your team when someone submits this form')}
-                </p>
+                <Label className="wsms-font-medium">{__('Send SMS to a number')}</Label>
               </div>
               <Switch
                 checked={enableForm === '1'}
@@ -126,7 +136,7 @@ const ForminatorFormSettings = ({ form }) => {
             {enableForm === '1' && (
               <div className="wsms-space-y-4 wsms-pl-4 wsms-border-l-2 wsms-border-primary/20">
                 <div className="wsms-space-y-2">
-                  <Label>{__('Recipient phone number(s)')}</Label>
+                  <Label>{__('Phone number(s)')}</Label>
                   <Input
                     type="text"
                     value={receiverForm}
@@ -134,18 +144,18 @@ const ForminatorFormSettings = ({ form }) => {
                     placeholder="+1234567890, +0987654321"
                   />
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                    {__('Multiple numbers can be separated with commas')}
+                    {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.')}
                   </p>
                 </div>
 
                 <div className="wsms-space-y-2">
-                  <Label>{__('Message')}</Label>
+                  <Label>{__('Message body')}</Label>
                   <Textarea
                     ref={messageFormRef}
                     value={messageForm}
                     onChange={(e) => setMessageForm(e.target.value)}
                     rows={3}
-                    placeholder={__('New form submission received...')}
+                    placeholder={__('Enter your message content.')}
                   />
                   {form.variables && form.variables.length > 0 && (
                     <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -163,14 +173,12 @@ const ForminatorFormSettings = ({ form }) => {
             )}
           </div>
 
+          {/* Send SMS to field */}
           {hasFields && (
             <div className="wsms-space-y-4 wsms-pt-4 wsms-border-t">
               <div className="wsms-flex wsms-items-center wsms-justify-between">
                 <div>
-                  <Label className="wsms-font-medium">{__('Notify form submitter')}</Label>
-                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-1">
-                  {__('Send a confirmation SMS to the person who submitted the form')}
-                  </p>
+                  <Label className="wsms-font-medium">{__('Send SMS to field')}</Label>
                 </div>
                 <Switch
                   checked={enableField === '1'}
@@ -181,7 +189,7 @@ const ForminatorFormSettings = ({ form }) => {
               {enableField === '1' && (
                 <div className="wsms-space-y-4 wsms-pl-4 wsms-border-l-2 wsms-border-primary/20">
                   <div className="wsms-space-y-2">
-                    <Label>{__('Phone number field')}</Label>
+                    <Label>{__('A field of the form')}</Label>
                     <Select value={receiverField} onValueChange={setReceiverField}>
                       <SelectTrigger>
                         <SelectValue placeholder={__('Select a field...')} />
@@ -194,16 +202,366 @@ const ForminatorFormSettings = ({ form }) => {
                         ))}
                       </SelectContent>
                     </Select>
+                    <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                      {__('Select the field of your form.')}
+                    </p>
                   </div>
 
                   <div className="wsms-space-y-2">
-                    <Label>{__('Message')}</Label>
+                    <Label>{__('Message body')}</Label>
                     <Textarea
                       ref={messageFieldRef}
                       value={messageField}
                       onChange={(e) => setMessageField(e.target.value)}
                       rows={3}
-                      placeholder={__('Thank you for your submission!')}
+                      placeholder={__('Enter your message content.')}
+                    />
+                    {form.variables && form.variables.length > 0 && (
+                      <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
+                        {form.variables.map((v, i) => (
+                          <VariableChip
+                            key={i}
+                            variable={v}
+                            onClick={(key) => insertVariable(key, messageFieldRef, messageField, setMessageField)}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Gravity Forms form settings component
+const GravityFormSettings = ({ form }) => {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const messageFormRef = useRef(null)
+  const messageFieldRef = useRef(null)
+
+  // Pro settings stored in wps_pp_settings
+  const [enableForm, setEnableForm] = useProSetting(`gf_notify_enable_form_${form.id}`, '')
+  const [receiverForm, setReceiverForm] = useProSetting(`gf_notify_receiver_form_${form.id}`, '')
+  const [messageForm, setMessageForm] = useProSetting(`gf_notify_message_form_${form.id}`, '')
+  const [enableField, setEnableField] = useProSetting(`gf_notify_enable_field_form_${form.id}`, '')
+  const [receiverField, setReceiverField] = useProSetting(`gf_notify_receiver_field_form_${form.id}`, '')
+  const [messageField, setMessageField] = useProSetting(`gf_notify_message_field_form_${form.id}`, '')
+
+  // Use hasFields from PHP which indicates if form has selectable fields
+  const hasFields = form.hasFields || (form.fields && Object.keys(form.fields).length > 0)
+  const hasAnyEnabled = enableForm === '1' || enableField === '1'
+
+  const insertVariable = (variable, textareaRef, currentValue, setValue) => {
+    const textarea = textareaRef.current
+    if (textarea) {
+      const start = textarea.selectionStart
+      const end = textarea.selectionEnd
+      const newValue = currentValue.substring(0, start) + variable + currentValue.substring(end)
+      setValue(newValue)
+      setTimeout(() => {
+        textarea.focus()
+        textarea.setSelectionRange(start + variable.length, start + variable.length)
+      }, 0)
+    } else {
+      setValue(currentValue + variable)
+    }
+  }
+
+  return (
+    <div className="wsms-rounded-lg wsms-border wsms-overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-p-3 wsms-bg-muted/30 hover:wsms-bg-muted/50 wsms-transition-colors wsms-text-left"
+      >
+        <div className="wsms-flex wsms-items-center wsms-gap-3">
+          {hasAnyEnabled && (
+            <span className="wsms-h-2 wsms-w-2 wsms-rounded-full wsms-bg-green-500" />
+          )}
+          <span className="wsms-text-[13px] wsms-font-medium">{form.name}</span>
+        </div>
+        {isExpanded ? (
+          <ChevronUp className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+        ) : (
+          <ChevronDown className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+        )}
+      </button>
+
+      {isExpanded && (
+        <div className="wsms-p-4 wsms-space-y-6 wsms-border-t">
+          {/* Send SMS to a number */}
+          <div className="wsms-space-y-4">
+            <div className="wsms-flex wsms-items-center wsms-justify-between">
+              <div>
+                <Label className="wsms-font-medium">{__('Send SMS to a number')}</Label>
+              </div>
+              <Switch
+                checked={enableForm === '1'}
+                onCheckedChange={(checked) => setEnableForm(checked ? '1' : '')}
+              />
+            </div>
+
+            {enableForm === '1' && (
+              <div className="wsms-space-y-4 wsms-pl-4 wsms-border-l-2 wsms-border-primary/20">
+                <div className="wsms-space-y-2">
+                  <Label>{__('Phone number(s)')}</Label>
+                  <Input
+                    type="text"
+                    value={receiverForm}
+                    onChange={(e) => setReceiverForm(e.target.value)}
+                    placeholder="+1234567890, +0987654321"
+                  />
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                    {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.')}
+                  </p>
+                </div>
+
+                <div className="wsms-space-y-2">
+                  <Label>{__('Message body')}</Label>
+                  <Textarea
+                    ref={messageFormRef}
+                    value={messageForm}
+                    onChange={(e) => setMessageForm(e.target.value)}
+                    rows={3}
+                    placeholder={__('Enter your message content.')}
+                  />
+                  {form.variables && form.variables.length > 0 && (
+                    <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
+                      {form.variables.map((v, i) => (
+                        <VariableChip
+                          key={i}
+                          variable={v}
+                          onClick={(key) => insertVariable(key, messageFormRef, messageForm, setMessageForm)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Send SMS to field */}
+          {hasFields && (
+            <div className="wsms-space-y-4 wsms-pt-4 wsms-border-t">
+              <div className="wsms-flex wsms-items-center wsms-justify-between">
+                <div>
+                  <Label className="wsms-font-medium">{__('Send SMS to field')}</Label>
+                </div>
+                <Switch
+                  checked={enableField === '1'}
+                  onCheckedChange={(checked) => setEnableField(checked ? '1' : '')}
+                />
+              </div>
+
+              {enableField === '1' && (
+                <div className="wsms-space-y-4 wsms-pl-4 wsms-border-l-2 wsms-border-primary/20">
+                  <div className="wsms-space-y-2">
+                    <Label>{__('A field of the form')}</Label>
+                    <Select value={receiverField} onValueChange={setReceiverField}>
+                      <SelectTrigger>
+                        <SelectValue placeholder={__('Select a field...')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(form.fields).map(([id, label]) => (
+                          <SelectItem key={id} value={id}>
+                            {label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                      {__('Select the field of your form.')}
+                    </p>
+                  </div>
+
+                  <div className="wsms-space-y-2">
+                    <Label>{__('Message body')}</Label>
+                    <Textarea
+                      ref={messageFieldRef}
+                      value={messageField}
+                      onChange={(e) => setMessageField(e.target.value)}
+                      rows={3}
+                      placeholder={__('Enter your message content.')}
+                    />
+                    {form.variables && form.variables.length > 0 && (
+                      <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
+                        {form.variables.map((v, i) => (
+                          <VariableChip
+                            key={i}
+                            variable={v}
+                            onClick={(key) => insertVariable(key, messageFieldRef, messageField, setMessageField)}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Quform form settings component
+const QuformFormSettings = ({ form }) => {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const messageFormRef = useRef(null)
+  const messageFieldRef = useRef(null)
+
+  // Pro settings stored in wps_pp_settings
+  const [enableForm, setEnableForm] = useProSetting(`qf_notify_enable_form_${form.id}`, '')
+  const [receiverForm, setReceiverForm] = useProSetting(`qf_notify_receiver_form_${form.id}`, '')
+  const [messageForm, setMessageForm] = useProSetting(`qf_notify_message_form_${form.id}`, '')
+  const [enableField, setEnableField] = useProSetting(`qf_notify_enable_field_form_${form.id}`, '')
+  const [receiverField, setReceiverField] = useProSetting(`qf_notify_receiver_field_form_${form.id}`, '')
+  const [messageField, setMessageField] = useProSetting(`qf_notify_message_field_form_${form.id}`, '')
+
+  // Use hasElements from PHP which indicates if form has elements (for "Send to field" feature)
+  // This matches the legacy code which checks $form['elements'] directly
+  const hasFields = form.hasElements || (form.fields && Object.keys(form.fields).length > 0)
+  const hasAnyEnabled = enableForm === '1' || enableField === '1'
+
+  const insertVariable = (variable, textareaRef, currentValue, setValue) => {
+    const textarea = textareaRef.current
+    if (textarea) {
+      const start = textarea.selectionStart
+      const end = textarea.selectionEnd
+      const newValue = currentValue.substring(0, start) + variable + currentValue.substring(end)
+      setValue(newValue)
+      setTimeout(() => {
+        textarea.focus()
+        textarea.setSelectionRange(start + variable.length, start + variable.length)
+      }, 0)
+    } else {
+      setValue(currentValue + variable)
+    }
+  }
+
+  return (
+    <div className="wsms-rounded-lg wsms-border wsms-overflow-hidden">
+      <button
+        type="button"
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-p-3 wsms-bg-muted/30 hover:wsms-bg-muted/50 wsms-transition-colors wsms-text-left"
+      >
+        <div className="wsms-flex wsms-items-center wsms-gap-3">
+          {hasAnyEnabled && (
+            <span className="wsms-h-2 wsms-w-2 wsms-rounded-full wsms-bg-green-500" />
+          )}
+          <span className="wsms-text-[13px] wsms-font-medium">{form.name}</span>
+        </div>
+        {isExpanded ? (
+          <ChevronUp className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+        ) : (
+          <ChevronDown className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+        )}
+      </button>
+
+      {isExpanded && (
+        <div className="wsms-p-4 wsms-space-y-6 wsms-border-t">
+          {/* Send SMS to a number */}
+          <div className="wsms-space-y-4">
+            <div className="wsms-flex wsms-items-center wsms-justify-between">
+              <div>
+                <Label className="wsms-font-medium">{__('Send SMS to a number')}</Label>
+              </div>
+              <Switch
+                checked={enableForm === '1'}
+                onCheckedChange={(checked) => setEnableForm(checked ? '1' : '')}
+              />
+            </div>
+
+            {enableForm === '1' && (
+              <div className="wsms-space-y-4 wsms-pl-4 wsms-border-l-2 wsms-border-primary/20">
+                <div className="wsms-space-y-2">
+                  <Label>{__('Phone number(s)')}</Label>
+                  <Input
+                    type="text"
+                    value={receiverForm}
+                    onChange={(e) => setReceiverForm(e.target.value)}
+                    placeholder="+1234567890, +0987654321"
+                  />
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                    {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.')}
+                  </p>
+                </div>
+
+                <div className="wsms-space-y-2">
+                  <Label>{__('Message body')}</Label>
+                  <Textarea
+                    ref={messageFormRef}
+                    value={messageForm}
+                    onChange={(e) => setMessageForm(e.target.value)}
+                    rows={3}
+                    placeholder={__('Enter your message content.')}
+                  />
+                  {form.variables && form.variables.length > 0 && (
+                    <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
+                      {form.variables.map((v, i) => (
+                        <VariableChip
+                          key={i}
+                          variable={v}
+                          onClick={(key) => insertVariable(key, messageFormRef, messageForm, setMessageForm)}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Send SMS to field */}
+          {hasFields && (
+            <div className="wsms-space-y-4 wsms-pt-4 wsms-border-t">
+              <div className="wsms-flex wsms-items-center wsms-justify-between">
+                <div>
+                  <Label className="wsms-font-medium">{__('Send SMS to field')}</Label>
+                </div>
+                <Switch
+                  checked={enableField === '1'}
+                  onCheckedChange={(checked) => setEnableField(checked ? '1' : '')}
+                />
+              </div>
+
+              {enableField === '1' && (
+                <div className="wsms-space-y-4 wsms-pl-4 wsms-border-l-2 wsms-border-primary/20">
+                  <div className="wsms-space-y-2">
+                    <Label>{__('A field of the form')}</Label>
+                    <Select value={receiverField} onValueChange={setReceiverField}>
+                      <SelectTrigger>
+                        <SelectValue placeholder={__('Select a field...')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(form.fields).map(([id, label]) => (
+                          <SelectItem key={id} value={id}>
+                            {label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                      {__('Select the field of your form.')}
+                    </p>
+                  </div>
+
+                  <div className="wsms-space-y-2">
+                    <Label>{__('Message body')}</Label>
+                    <Textarea
+                      ref={messageFieldRef}
+                      value={messageField}
+                      onChange={(e) => setMessageField(e.target.value)}
+                      rows={3}
+                      placeholder={__('Enter your message content.')}
                     />
                     {form.variables && form.variables.length > 0 && (
                       <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -239,6 +597,14 @@ export default function Integrations() {
   // Forminator
   const forminatorData = getForminatorFormsData()
   const forminatorStatus = getPluginStatus('forminator')
+
+  // Gravity Forms
+  const gravityFormsData = getGravityFormsData()
+  const gravityFormsStatus = getPluginStatus('gravity-forms')
+
+  // Quform
+  const quformData = getQuformFormsData()
+  const quformStatus = getPluginStatus('quform')
 
   // Get add-on settings for this page
   const { sections: addonSections, fieldsBySection, standaloneFields } = useAddonSettings('integrations')
@@ -339,10 +705,12 @@ export default function Integrations() {
     return aActive - bActive
   })
 
-  // Collapsible state for free integrations
+  // Collapsible state for integrations
   const [cf7Open, setCf7Open] = useState(false)
   const [formidableOpen, setFormidableOpen] = useState(false)
   const [forminatorOpen, setForminatorOpen] = useState(false)
+  const [gravityFormsOpen, setGravityFormsOpen] = useState(false)
+  const [quformOpen, setQuformOpen] = useState(false)
 
   return (
     <div className="wsms-space-y-6">
@@ -477,6 +845,100 @@ export default function Integrations() {
                 <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
                     {__('No forms found. Create a form in Forminator to configure SMS notifications.')}
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          )}
+        </Card>
+      )}
+
+      {/* Gravity Forms - only show if active */}
+      {gravityFormsStatus.status === 'active' && (
+        <Card>
+          <CardHeader
+            className="wsms-cursor-pointer wsms-select-none"
+            onClick={() => setGravityFormsOpen(!gravityFormsOpen)}
+          >
+            <div className="wsms-flex wsms-items-center wsms-justify-between">
+              <div>
+                <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+                  <ClipboardList className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+                  {__('Gravity Forms')}
+                  <span className="wsms-ml-1 wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
+                    PRO
+                  </span>
+                </CardTitle>
+                <CardDescription className="wsms-mt-1">
+                  {__('Send SMS notifications when Gravity Forms are submitted')}
+                </CardDescription>
+              </div>
+              {gravityFormsOpen ? (
+                <ChevronUp className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
+              ) : (
+                <ChevronDown className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
+              )}
+            </div>
+          </CardHeader>
+          {gravityFormsOpen && (
+            <CardContent className="wsms-border-t wsms-pt-4">
+              {gravityFormsData.isActive && gravityFormsData.forms.length > 0 ? (
+                <div className="wsms-space-y-2">
+                  {gravityFormsData.forms.map((form) => (
+                    <GravityFormSettings key={form.id} form={form} />
+                  ))}
+                </div>
+              ) : (
+                <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                    {__('No forms found. Create a form in Gravity Forms to configure SMS notifications.')}
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          )}
+        </Card>
+      )}
+
+      {/* Quform - only show if active */}
+      {quformStatus.status === 'active' && (
+        <Card>
+          <CardHeader
+            className="wsms-cursor-pointer wsms-select-none"
+            onClick={() => setQuformOpen(!quformOpen)}
+          >
+            <div className="wsms-flex wsms-items-center wsms-justify-between">
+              <div>
+                <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+                  <ClipboardList className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+                  {__('Quform')}
+                  <span className="wsms-ml-1 wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
+                    PRO
+                  </span>
+                </CardTitle>
+                <CardDescription className="wsms-mt-1">
+                  {__('Send SMS notifications when Quform forms are submitted')}
+                </CardDescription>
+              </div>
+              {quformOpen ? (
+                <ChevronUp className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
+              ) : (
+                <ChevronDown className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
+              )}
+            </div>
+          </CardHeader>
+          {quformOpen && (
+            <CardContent className="wsms-border-t wsms-pt-4">
+              {quformData.isActive && quformData.forms.length > 0 ? (
+                <div className="wsms-space-y-2">
+                  {quformData.forms.map((form) => (
+                    <QuformFormSettings key={form.id} form={form} />
+                  ))}
+                </div>
+              ) : (
+                <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-4 wsms-text-center">
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                    {__('No forms found. Create a form in Quform to configure SMS notifications.')}
                   </p>
                 </div>
               )}
