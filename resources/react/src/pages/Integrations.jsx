@@ -638,7 +638,9 @@ export default function Integrations() {
     'pmpro': 'paid-memberships-pro',
     'simple-membership': 'simple-membership',
     'bookingpress': 'bookingpress',
+    'woo-appointments': 'woocommerce-appointments',
     'woocommerce-appointments': 'woocommerce-appointments',
+    'woo-bookings': 'woocommerce-bookings',
     'woocommerce-bookings': 'woocommerce-bookings',
     'booking-calendar': 'booking',
     'booking': 'booking',
@@ -704,6 +706,7 @@ export default function Integrations() {
     const bActive = isSectionPluginActive(b.id) ? 0 : 1
     return aActive - bActive
   })
+
 
   // Collapsible state for integrations
   const [cf7Open, setCf7Open] = useState(false)
