@@ -70,6 +70,7 @@ export default function TwoWaySettings() {
       toast({
         title: __('Copied'),
         description: __('Webhook URL copied to clipboard'),
+        variant: 'success',
       })
       setTimeout(() => setCopied(false), 2000)
     } catch (error) {
@@ -96,6 +97,7 @@ export default function TwoWaySettings() {
         toast({
           title: __('Success'),
           description: __('Webhook token has been reset. Refreshing...'),
+          variant: 'success',
         })
         setTimeout(() => window.location.reload(), 1500)
       } else {
@@ -130,6 +132,7 @@ export default function TwoWaySettings() {
         toast({
           title: __('Success'),
           description: __('Webhook registered successfully with your gateway.'),
+          variant: 'success',
         })
       } else {
         throw new Error(data.message || __('Failed to register webhook'))
