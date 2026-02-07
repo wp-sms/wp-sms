@@ -37,7 +37,7 @@
     "svg-inline-loader": "^0.8.2",
     "terser-webpack-plugin": "^5.3.10",
     "watch": "^0.13.0",
-    "webpack": "^5.94.0",
+    "webpack": "^5.105.0",
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
