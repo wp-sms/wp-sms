@@ -41,6 +41,6 @@ npm run e2e                  # Playwright E2E (expects Docker env running)
 ## Commit & Pull Request Guidelines
 
 - Commit messages commonly use `type: summary` (e.g., `feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`). Keep summaries imperative and scoped.
+- After every change or task, run `npm run dashboard:build` to ensure the React dashboard compiles (and `npm run build` if blocks changed).
 - PRs should include: what changed, why, how to test, and screenshots for admin/dashboard UI changes.
-- Watch for backward compatibility (settings formats, REST/AJAX contracts) and WordPress.org wording (avoid “Pro” terminology in the free plugin UI).
-
+- Watch for backward compatibility (settings formats, REST/AJAX contracts) and WordPress.org wording (avoid "Pro" terminology in the free plugin UI).
