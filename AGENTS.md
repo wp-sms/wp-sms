@@ -30,6 +30,7 @@ npm run e2e                  # Playwright E2E (expects Docker env running)
 - Follow `.editorconfig` (4 spaces, LF). Keep changes consistent with surrounding code.
 - PHP: prefer namespaced code in `src/`; sanitize inputs and escape outputs (`sanitize_*`, `esc_*`, `wp_kses_post()`).
 - JS/React: use existing patterns in `resources/react/src/` (Tailwind + shadcn components).
+- When doing automated edits (codemods) on JS/JSX in PowerShell, do not use default `Set-Content`/`Out-File` without an explicit UTF-8 encoding; it can introduce BOMs or mojibake in user-visible strings.
 - Tests: PHP files end with `*Test.php`; Jest tests use `*.test.js`/`*.spec.js` or `__tests__/`.
 
 ## Testing Guidelines
