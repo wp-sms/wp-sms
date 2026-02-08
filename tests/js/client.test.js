@@ -146,6 +146,27 @@ describe('ApiClient', () => {
       )
     })
 
+    test('supports plain permalinks (rest_route) without breaking query parameters', async () => {
+      global.window.wpSmsSettings = {
+        apiUrl: 'http://localhost/?rest_route=/wpsms/v1/',
+        nonce: 'test-nonce',
+      }
+      client = new ApiClient()
+
+      const mockResponse = { data: [] }
+      global.fetch.mockResolvedValueOnce({
+        ok: true,
+        text: async () => JSON.stringify(mockResponse),
+      })
+
+      await client.get('outbox', { page: 1, search: 'test' })
+
+      const calledUrl = new URL(global.fetch.mock.calls[0][0])
+      expect(calledUrl.searchParams.get('rest_route')).toBe('/wpsms/v1/outbox')
+      expect(calledUrl.searchParams.get('page')).toBe('1')
+      expect(calledUrl.searchParams.get('search')).toBe('test')
+    })
+
     test('accepts custom timeout option', async () => {
       const mockResponse = { data: {} }
       global.fetch.mockResolvedValueOnce({

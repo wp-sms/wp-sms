@@ -10,6 +10,8 @@ import {
   X,
   LayoutGrid,
   List,
+  AlertCircle,
+  RefreshCw,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -260,6 +262,31 @@ export default function Groups() {
   // Show skeleton during initial load
   if (!table.initialLoadDone) {
     return <PageLoadingSkeleton />
+  }
+
+  // Error state
+  if (table.error) {
+    return (
+      <div className="wsms-space-y-6">
+        <Card className="wsms-border-destructive">
+          <CardContent className="wsms-py-8">
+            <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center">
+              <AlertCircle className="wsms-h-12 wsms-w-12 wsms-text-destructive wsms-mb-4" />
+              <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
+                {__('Failed to load groups')}
+              </h3>
+              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
+                {table.error}
+              </p>
+              <Button onClick={() => table.fetch({ page: 1 })}>
+                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                {__('Try Again')}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   // Empty state

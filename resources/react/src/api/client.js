@@ -26,6 +26,63 @@ class ApiClient {
   }
 
   /**
+   * Build the final request URL for both permalink modes:
+   * - Pretty permalinks: /wp-json/{namespace}/...
+   * - Plain permalinks: /?rest_route=/{namespace}/...
+   *
+   * WordPress switches `rest_url()` between these styles based on permalink settings.
+   * Our API client must merge endpoint path + query params without producing a second `?`.
+   *
+   * @param {string} endpoint - Endpoint path, optionally with query string (e.g. "outbox?page=1")
+   * @returns {string} Absolute URL
+   */
+  buildRequestUrl(endpoint) {
+    const base = new URL(this.baseUrl, window.location.origin)
+    const ep = new URL(endpoint, 'http://endpoint.local')
+
+    // Plain permalinks: rest_url() returns something like "/?rest_route=/wpsms/v1/"
+    if (base.searchParams.has('rest_route')) {
+      const baseRoute = base.searchParams.get('rest_route') || '/'
+      const joinedRoute = this.joinRoute(baseRoute, ep.pathname)
+      base.searchParams.set('rest_route', joinedRoute)
+
+      // Merge endpoint query params into the base query string (keep duplicates, e.g. ids[]=1&ids[]=2)
+      ep.searchParams.forEach((value, key) => {
+        if (key === 'rest_route') return
+        base.searchParams.append(key, value)
+      })
+
+      return base.toString()
+    }
+
+    // Pretty permalinks: rest_url() returns something like "/wp-json/wpsms/v1/"
+    base.pathname = this.joinPath(base.pathname, ep.pathname)
+    ep.searchParams.forEach((value, key) => base.searchParams.append(key, value))
+    return base.toString()
+  }
+
+  /**
+   * Join URL path segments with exactly one slash between them.
+   */
+  joinPath(basePath, endpointPath) {
+    const a = String(basePath || '').replace(/\/+$/, '')
+    const b = String(endpointPath || '').replace(/^\/+/, '')
+    if (!a) return `/${b}`
+    if (!b) return a || '/'
+    return `${a}/${b}`
+  }
+
+  /**
+   * Join REST route segments (always keep a single leading slash).
+   */
+  joinRoute(baseRoute, endpointPath) {
+    const a = `/${String(baseRoute || '').replace(/^\/+|\/+$/g, '')}`
+    const b = String(endpointPath || '').replace(/^\/+|\/+$/g, '')
+    if (!b) return a === '//' ? '/' : a
+    return `${a}/${b}`.replace(/\/{2,}/g, '/')
+  }
+
+  /**
    * Sleep for a given duration
    * @param {number} ms - Milliseconds to sleep
    * @returns {Promise<void>}
@@ -94,7 +151,7 @@ class ApiClient {
    * @returns {Promise<object>} Response data
    */
   async request(endpoint, options = {}, retryCount = 0) {
-    const url = `${this.baseUrl}${endpoint}`
+    const url = this.buildRequestUrl(endpoint)
 
     const headers = {
       'Content-Type': 'application/json',
