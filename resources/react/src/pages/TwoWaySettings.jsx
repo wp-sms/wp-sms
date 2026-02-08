@@ -30,7 +30,7 @@ import {
 import { SwitchField } from '@/components/ui/form-field'
 import { Tip } from '@/components/ui/ux-helpers'
 import { useSettings } from '@/context/SettingsContext'
-import { getWpSettings, __, cn } from '@/lib/utils'
+import { getWpSettings, buildRestUrl, __, cn } from '@/lib/utils'
 import { useToast } from '@/components/ui/toaster'
 
 export default function TwoWaySettings() {
@@ -86,7 +86,7 @@ export default function TwoWaySettings() {
   const handleResetToken = async () => {
     try {
       setIsResetting(true)
-      const response = await fetch('/wp-json/wp-sms-two-way/v1/webhook/reset-token', {
+      const response = await fetch(buildRestUrl('wp-sms-two-way/v1/webhook/reset-token'), {
         method: 'GET',
         headers: {
           'X-WP-Nonce': wpSettings.nonce,
@@ -118,7 +118,7 @@ export default function TwoWaySettings() {
   const handleRegisterWebhook = async () => {
     try {
       setIsRegistering(true)
-      const response = await fetch('/wp-json/wp-sms-two-way/v1/webhook/register', {
+      const response = await fetch(buildRestUrl('wp-sms-two-way/v1/webhook/register'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

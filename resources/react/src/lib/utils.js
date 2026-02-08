@@ -61,8 +61,26 @@ export function debounce(func, wait) {
  * @returns {object} Settings object with features flattened to top level
  */
 export function getWpSettings() {
+  const getDefaultApiUrl = () => {
+    const root = window.wpApiSettings?.root
+    if (typeof root === 'string' && root.length > 0) {
+      // `wpApiSettings.root` is built from WP's `rest_url()` and follows permalink mode.
+      // Examples:
+      // - Pretty permalinks: "https://example.com/wp-json/"
+      // - Plain permalinks:  "https://example.com/?rest_route=/"
+      if (root.includes('rest_route=')) {
+        // Ensure we append to rest_route without creating a second "?".
+        return root.replace(/rest_route=\/?$/, 'rest_route=/') + 'wpsms/v1/'
+      }
+      return root.replace(/\/?$/, '/') + 'wpsms/v1/'
+    }
+
+    // Fallback (should be overridden by localized `window.wpSmsSettings` in the dashboard).
+    return '/wp-json/wpsms/v1/'
+  }
+
   const wpSettings = window.wpSmsSettings || {
-    apiUrl: '/wp-json/wpsms/v1/',
+    apiUrl: getDefaultApiUrl(),
     nonce: '',
     settings: {},
     proSettings: {},
@@ -90,6 +108,47 @@ export function getWpSettings() {
     isWooActive: features.isWooActive || false,
     isBuddyPressActive: features.isBuddyPressActive || false,
   }
+}
+
+/**
+ * Build a WordPress REST API URL for any route, in both permalink modes.
+ *
+ * Examples:
+ * - buildRestUrl('wpsms/v1/outbox')
+ * - buildRestUrl('wp-sms-two-way/v1/webhook/register')
+ *
+ * @param {string} restRoute - Route without the "/wp-json/" prefix (leading slash optional)
+ * @returns {string} Absolute URL
+ */
+export function buildRestUrl(restRoute) {
+  const { apiUrl } = getWpSettings()
+  const origin = window.location?.origin || ''
+  const route = String(restRoute || '').trim().replace(/^\/+/, '')
+  if (!route) return ''
+
+  // Use the localized `rest_url('wpsms/v1/')` shape to infer permalink mode.
+  // Pretty: /wp-json/wpsms/v1/
+  // Plain:  /?rest_route=/wpsms/v1/
+  const base = new URL(apiUrl || '/', origin || 'http://localhost')
+
+  if (base.searchParams.has('rest_route')) {
+    base.searchParams.set('rest_route', `/${route}`)
+    return base.toString()
+  }
+
+  const marker = '/wp-json/'
+  const idx = base.pathname.indexOf(marker)
+  if (idx !== -1) {
+    const rootPath = base.pathname.slice(0, idx + marker.length)
+    const normalized = rootPath.replace(/\/+$/, '/')
+    base.pathname = normalized + route
+    base.search = '' // Drop any accidental query string in pretty mode.
+    return base.toString()
+  }
+
+  // Last-resort: join route to whatever pathname we have.
+  base.pathname = base.pathname.replace(/\/+$/, '/') + route
+  return base.toString()
 }
 
 /**

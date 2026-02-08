@@ -1,72 +1,16 @@
-import { getWpSettings } from '../lib/utils'
+import { ApiClient } from './client'
+import { buildRestUrl } from '@/lib/utils'
 
 /**
  * Two-Way SMS API client
  * Uses the wp-sms-two-way/v1 namespace
  */
-class TwoWayApiClient {
+class TwoWayApiClient extends ApiClient {
   constructor() {
-    const { nonce } = getWpSettings()
-    this.baseUrl = '/wp-json/wp-sms-two-way/v1/'
-    this.nonce = nonce
-  }
-
-  /**
-   * Build query string from params
-   */
-  buildQueryString(params) {
-    if (!params || Object.keys(params).length === 0) return ''
-    const searchParams = new URLSearchParams()
-    Object.entries(params).forEach(([key, value]) => {
-      if (value !== undefined && value !== null && value !== '') {
-        searchParams.append(key, value)
-      }
-    })
-    const queryString = searchParams.toString()
-    return queryString ? `?${queryString}` : ''
-  }
-
-  /**
-   * Make an API request
-   */
-  async request(endpoint, options = {}) {
-    const url = `${this.baseUrl}${endpoint}`
-    const headers = {
-      'Content-Type': 'application/json',
-      'X-WP-Nonce': this.nonce,
-      ...options.headers,
-    }
-
-    const config = {
-      ...options,
-      headers,
-    }
-
-    try {
-      const response = await fetch(url, config)
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data?.message || `HTTP error! status: ${response.status}`)
-      }
-
-      return data
-    } catch (error) {
-      console.error('Two-Way API Error:', error)
-      throw error
-    }
-  }
-
-  async get(endpoint, params = {}) {
-    const queryString = this.buildQueryString(params)
-    return this.request(`${endpoint}${queryString}`, { method: 'GET' })
-  }
-
-  async post(endpoint, data) {
-    return this.request(endpoint, {
-      method: 'POST',
-      body: JSON.stringify(data),
-    })
+    super()
+    // IMPORTANT: do not hardcode "/wp-json/..." because Plain permalinks switch REST routing
+    // to `?rest_route=...` URLs. `buildRestUrl()` derives the correct base from localized settings.
+    this.baseUrl = buildRestUrl('wp-sms-two-way/v1/')
   }
 }
 
@@ -101,7 +45,7 @@ export const inboxApi = {
    * Delete message
    */
   async deleteMessage(id) {
-    return twoWayClient.post(`inbox/${id}/delete`)
+    return twoWayClient.post(`inbox/${id}/delete`, {})
   },
 
   /**
@@ -115,7 +59,7 @@ export const inboxApi = {
    * Mark message as read
    */
   async markAsRead(id) {
-    return twoWayClient.post(`inbox/${id}/read`)
+    return twoWayClient.post(`inbox/${id}/read`, {})
   },
 
   /**
@@ -183,14 +127,14 @@ export const commandsApi = {
    * Delete command
    */
   async deleteCommand(id) {
-    return twoWayClient.post(`commands/${id}/delete`)
+    return twoWayClient.post(`commands/${id}/delete`, {})
   },
 
   /**
    * Toggle command status
    */
   async toggleCommand(id) {
-    return twoWayClient.post(`commands/${id}/toggle`)
+    return twoWayClient.post(`commands/${id}/toggle`, {})
   },
 }
 

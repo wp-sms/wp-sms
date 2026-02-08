@@ -1,5 +1,6 @@
 import { ApiClient } from './client'
 import { __ } from '@/lib/utils'
+import { buildRestUrl } from '@/lib/utils'
 
 /**
  * WooCommerce Pro API client
@@ -8,7 +9,9 @@ import { __ } from '@/lib/utils'
 class WooCommerceProClient extends ApiClient {
   constructor() {
     super()
-    this.baseUrl = '/wp-json/wp-sms-woo-pro/v1/'
+    // Do not hardcode "/wp-json/..." because Plain permalinks switch REST routing
+    // to `?rest_route=...` URLs.
+    this.baseUrl = buildRestUrl('wp-sms-woo-pro/v1/')
   }
 }
 
