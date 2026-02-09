@@ -99,6 +99,8 @@ class UnifiedAdminPage extends Singleton
     public function view()
     {
         // Hide WordPress admin notices, footer, and add full-width container
+        // Note: Height constraint is set here (not in external CSS) because the body class
+        // that WordPress generates for admin pages may be missing in RTL mode.
         echo '<style>
             .wrap { max-width: none !important; margin: 0 !important; padding: 0 !important; }
             .wrap > h1:first-child { display: none; }
@@ -109,6 +111,16 @@ class UnifiedAdminPage extends Singleton
             /* Hide chatbox by default - React Preview button will toggle it */
             .wpsms-chatbox { display: none !important; }
             .wpsms-chatbox.wpsms-chatbox--visible { display: block !important; }
+            /* Height constraint for React app - must be inline to work in RTL */
+            #wpsms-settings-root {
+                height: calc(100vh - 32px) !important;
+                overflow: hidden !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            @media screen and (max-width: 782px) {
+                #wpsms-settings-root { height: calc(100vh - 46px) !important; }
+            }
         </style>';
         echo sprintf(
             '<div id="wpsms-settings-root" class="wpsms-settings-app" dir="%s"></div>',
