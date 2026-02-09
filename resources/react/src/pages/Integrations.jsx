@@ -856,8 +856,8 @@ export default function Integrations() {
         </Card>
       )}
 
-      {/* Gravity Forms - only show if active */}
-      {gravityFormsStatus.status === 'active' && (
+      {/* Gravity Forms - only show if active AND Pro is active */}
+      {gravityFormsStatus.status === 'active' && window.wpSmsSettings?.addons?.pro && (
         <Card>
           <CardHeader
             className="wsms-cursor-pointer wsms-select-none"
@@ -903,8 +903,8 @@ export default function Integrations() {
         </Card>
       )}
 
-      {/* Quform - only show if active */}
-      {quformStatus.status === 'active' && (
+      {/* Quform - only show if active AND Pro is active */}
+      {quformStatus.status === 'active' && window.wpSmsSettings?.addons?.pro && (
         <Card>
           <CardHeader
             className="wsms-cursor-pointer wsms-select-none"
