@@ -533,7 +533,7 @@ export default function Gateway() {
                   ) : (
                     <button
                       onClick={() => setShowDisconnectConfirm(true)}
-                      className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-rounded-md wsms-px-3 wsms-py-1.5 wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground wsms-transition-colors hover:wsms-bg-destructive/10 hover:wsms-text-destructive"
+                      className="wsms-flex rtl:wsms-flex-row-reverse wsms-items-center wsms-gap-1.5 wsms-rounded-md wsms-px-3 wsms-py-1.5 wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground wsms-transition-colors hover:wsms-bg-destructive/10 hover:wsms-text-destructive"
                     >
                       <Unplug className="wsms-h-3.5 wsms-w-3.5" />
                       {__('Disconnect')}
