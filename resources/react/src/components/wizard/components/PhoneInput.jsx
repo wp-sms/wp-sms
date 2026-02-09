@@ -225,6 +225,9 @@ export default function PhoneInput({
           // Ensure enough room for the country button on the "start" side:
           // LTR: left, RTL: right.
           'wsms-ps-[90px] wsms-pe-3 rtl:wsms-ps-3 rtl:wsms-pe-[90px]',
+          // Keep phone number direction LTR for readability, but align text to the right in RTL
+          // so the value sits next to the flag dropdown.
+          'rtl:wsms-text-right',
         )}
       />
       {error && (

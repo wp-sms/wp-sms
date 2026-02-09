@@ -51,6 +51,11 @@ body.rtl #wpsms-settings-root[dir="rtl"] .iti__search-input {
   text-align: right;
 }
 
+/* Align the phone value to the right in RTL so it appears next to the flag dropdown. */
+body.rtl #wpsms-settings-root[dir="rtl"] .iti input.iti__tel-input {
+  text-align: right;
+}
+
 /*
  * Unified dialog close button:
  * Dialogs render a close button absolutely positioned in the top-right via inline styles.
