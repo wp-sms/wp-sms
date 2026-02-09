@@ -653,6 +653,7 @@ export default function Gateway() {
               {Object.entries(gatewayFields).map(([key, field]) => {
                 const fieldValue = getSetting(field.id, '')
                 const isPassword = key === 'password' || field.id.includes('password')
+                const isFullWidth = key === 'from' || field.id === 'gateway_sender_id'
 
                 if (field.type === 'select' && field.options) {
                   const options = Object.entries(field.options).map(([value, label]) => ({
@@ -668,6 +669,7 @@ export default function Gateway() {
                       onValueChange={(value) => updateSetting(field.id, value)}
                       placeholder={field.placeholder || `Select ${field.name}`}
                       options={options}
+                      className={isFullWidth ? 'md:wsms-col-span-2' : ''}
                     />
                   )
                 }
@@ -681,6 +683,7 @@ export default function Gateway() {
                     value={fieldValue}
                     onChange={(e) => updateSetting(field.id, e.target.value)}
                     placeholder={field.placeholder || ''}
+                    className={isFullWidth ? 'md:wsms-col-span-2' : ''}
                   />
                 )
               })}

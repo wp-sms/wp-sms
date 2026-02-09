@@ -371,9 +371,9 @@ export default function SetupWizard() {
                 variant="ghost"
                 onClick={handlePrev}
                 disabled={currentStep === 0}
-                className={currentStep === 0 ? 'wsms-invisible' : ''}
+                className={`rtl:wsms-flex-row-reverse ${currentStep === 0 ? 'wsms-invisible' : ''}`}
               >
-                <ChevronLeft className="wsms-h-4 wsms-w-4 wsms-me-1 rtl:wsms-scale-x-[-1]" />
+                <ChevronLeft className="wsms-h-4 wsms-w-4 wsms-me-1 rtl:wsms-me-0 rtl:wsms-ms-1 rtl:wsms-scale-x-[-1]" />
                 {__('Back')}
               </Button>
 
