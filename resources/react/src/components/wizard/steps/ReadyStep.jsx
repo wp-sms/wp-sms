@@ -112,7 +112,7 @@ export default function ReadyStep({
                   }`}
                 />
               </div>
-              <div className="wsms-flex-1 wsms-text-left">
+              <div className="wsms-flex-1" style={{ textAlign: 'start' }}>
                 <p
                   className={`wsms-text-[13px] wsms-font-semibold ${
                     action.primary ? 'wsms-text-primary' : 'wsms-text-foreground'
@@ -125,7 +125,7 @@ export default function ReadyStep({
                 </p>
               </div>
               <ArrowRight
-                className={`wsms-h-4 wsms-w-4 ${
+                className={`wsms-h-4 wsms-w-4 rtl:wsms-scale-x-[-1] ${
                   action.primary ? 'wsms-text-primary' : 'wsms-text-muted-foreground'
                 }`}
               />
@@ -144,7 +144,7 @@ export default function ReadyStep({
         >
           {isCompleting ? (
             <>
-              <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+              <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
               {__('Completing...')}
             </>
           ) : (

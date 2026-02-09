@@ -84,12 +84,12 @@ export default function TestSetupStep({
               >
                 {sending ? (
                   <>
-                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
                     {__('Sending...')}
                   </>
                 ) : (
                   <>
-                    <Send className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                    <Send className="wsms-h-4 wsms-w-4 wsms-me-2" />
                     {__('Send Test SMS')}
                   </>
                 )}
@@ -113,11 +113,11 @@ export default function TestSetupStep({
               </div>
               <div className="wsms-flex wsms-gap-2">
                 <Button onClick={() => handleConfirmReceived(true)} className="wsms-flex-1">
-                  <CheckCircle className="wsms-h-4 wsms-w-4 wsms-mr-1.5" />
+                  <CheckCircle className="wsms-h-4 wsms-w-4 wsms-me-1.5" />
                   {__('Yes')}
                 </Button>
                 <Button onClick={() => handleConfirmReceived(false)} variant="outline" className="wsms-flex-1">
-                  <XCircle className="wsms-h-4 wsms-w-4 wsms-mr-1.5" />
+                  <XCircle className="wsms-h-4 wsms-w-4 wsms-me-1.5" />
                   {__('No')}
                 </Button>
               </div>
@@ -149,7 +149,7 @@ export default function TestSetupStep({
               </div>
               <div className="wsms-flex wsms-gap-2">
                 <Button onClick={handleTryAgain} variant="outline" className="wsms-flex-1">
-                  <RotateCcw className="wsms-h-4 wsms-w-4 wsms-mr-1.5" />
+                  <RotateCcw className="wsms-h-4 wsms-w-4 wsms-me-1.5" />
                   {__('Try Again')}
                 </Button>
                 <Button onClick={() => onTestComplete?.(true)} variant="ghost" className="wsms-flex-1">

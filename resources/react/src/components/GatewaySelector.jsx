@@ -177,7 +177,7 @@ export default function GatewaySelector({
   if (isLoading) {
     return (
       <div className="wsms-flex wsms-items-center wsms-justify-center wsms-py-12 wsms-text-muted-foreground">
-        <Loader2 className="wsms-h-5 wsms-w-5 wsms-animate-spin wsms-mr-2" />
+        <Loader2 className="wsms-h-5 wsms-w-5 wsms-animate-spin wsms-me-2" />
         <span className="wsms-text-[12px]">{__('Loading gateways...')}</span>
       </div>
     )
@@ -196,12 +196,12 @@ export default function GatewaySelector({
       {/* Search and Region Filter */}
       <div className="wsms-flex wsms-items-center wsms-gap-3">
         <div className="wsms-relative wsms-flex-1">
-          <Search className="wsms-absolute wsms-left-3 wsms-top-1/2 wsms-h-4 wsms-w-4 wsms--translate-y-1/2 wsms-text-muted-foreground" />
+          <Search className="wsms-absolute wsms-start-3 wsms-top-1/2 wsms-h-4 wsms-w-4 wsms--translate-y-1/2 wsms-text-muted-foreground" />
           <Input
             placeholder={__('Search gateways...')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="wsms-pl-9"
+            className="wsms-ps-9"
           />
         </div>
 

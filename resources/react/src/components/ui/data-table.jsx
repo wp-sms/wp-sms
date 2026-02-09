@@ -117,9 +117,9 @@ function BulkActionsDropdown({ actions, selectedCount, onAction, loadingAction }
               style={action.variant === 'destructive' ? { color: '#dc2626' } : undefined}
             >
               {isLoading ? (
-                <Loader2 style={{ marginRight: '8px', width: '16px', height: '16px' }} className="wsms-animate-spin" />
+                <Loader2 style={{ marginInlineEnd: '8px', width: '16px', height: '16px' }} className="wsms-animate-spin" />
               ) : (
-                action.icon && <action.icon style={{ marginRight: '8px', width: '16px', height: '16px' }} />
+                action.icon && <action.icon style={{ marginInlineEnd: '8px', width: '16px', height: '16px' }} />
               )}
               {action.label}
             </DropdownMenuItem>
@@ -171,8 +171,8 @@ function RowActionsDropdown({ actions, row }) {
               style={action.variant === 'destructive' ? { color: '#dc2626' } : undefined}
             >
               {isLoading
-                ? <Loader2 style={{ marginRight: '8px', width: '16px', height: '16px' }} className="wsms-animate-spin" />
-                : action.icon && <action.icon style={{ marginRight: '8px', width: '16px', height: '16px' }} />
+                ? <Loader2 style={{ marginInlineEnd: '8px', width: '16px', height: '16px' }} className="wsms-animate-spin" />
+                : action.icon && <action.icon style={{ marginInlineEnd: '8px', width: '16px', height: '16px' }} />
               }
               {action.label}
             </DropdownMenuItem>
@@ -230,7 +230,7 @@ function Pagination({
           disabled={currentPage <= 1}
           aria-label={__('Go to previous page')}
         >
-          <ChevronLeft className="wsms-h-4 wsms-w-4" />
+          <ChevronLeft className="wsms-h-4 wsms-w-4 rtl:wsms-scale-x-[-1]" />
         </Button>
 
         {pages[0] > 1 && (
@@ -285,7 +285,7 @@ function Pagination({
           disabled={currentPage >= totalPages}
           aria-label={__('Go to next page')}
         >
-          <ChevronRight className="wsms-h-4 wsms-w-4" />
+          <ChevronRight className="wsms-h-4 wsms-w-4 rtl:wsms-scale-x-[-1]" />
         </Button>
       </div>
     </div>
@@ -409,13 +409,13 @@ export function DataTable({
 
           {onSearch && (
             <div className="wsms-relative wsms-w-full sm:wsms-w-64">
-              <Search className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms-h-4 wsms-w-4 wsms--translate-y-1/2 wsms-text-muted-foreground" />
+              <Search className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms-h-4 wsms-w-4 wsms--translate-y-1/2 wsms-text-muted-foreground" />
               <Input
                 type="search"
                 placeholder={searchPlaceholder}
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                className="wsms-pl-8 wsms-h-9"
+                className="wsms-ps-8 wsms-h-9"
               />
             </div>
           )}
@@ -428,7 +428,7 @@ export function DataTable({
           <thead>
             <tr className="wsms-border-b wsms-border-border wsms-bg-muted/30">
               {hasSelection && (
-                <th className="wsms-w-12 wsms-p-3 wsms-text-left">
+                <th className="wsms-w-12 wsms-p-3 wsms-text-start">
                   <Checkbox
                     checked={allSelected}
                     indeterminate={someSelected}
@@ -441,7 +441,7 @@ export function DataTable({
                 <th
                   key={column.id || column.accessorKey}
                   className={cn(
-                    'wsms-p-3 wsms-text-left wsms-text-[12px] wsms-font-semibold wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide',
+                    'wsms-p-3 wsms-text-start wsms-text-[12px] wsms-font-semibold wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide',
                     column.sortable && 'wsms-cursor-pointer wsms-select-none hover:wsms-text-foreground wsms-transition-colors',
                     column.className
                   )}

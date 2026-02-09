@@ -4,7 +4,7 @@ import { AlertCircle, CheckCircle2, Info, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const alertVariants = cva(
-  'wsms-relative wsms-w-full wsms-rounded-lg wsms-border wsms-p-4 [&>svg~*]:wsms-pl-7 [&>svg+div]:wsms-translate-y-[-3px] [&>svg]:wsms-absolute [&>svg]:wsms-left-4 [&>svg]:wsms-top-4 [&>svg]:wsms-text-foreground',
+  'wsms-relative wsms-w-full wsms-rounded-lg wsms-border wsms-p-4 [&>svg~*]:wsms-ps-7 [&>svg+div]:wsms-translate-y-[-3px] [&>svg]:wsms-absolute [&>svg]:wsms-start-4 [&>svg]:wsms-top-4 [&>svg]:wsms-text-foreground',
   {
     variants: {
       variant: {

@@ -91,7 +91,7 @@ const FormField = React.forwardRef(
         {label && (
           <Label htmlFor={id} className={cn(error && 'wsms-text-destructive')}>
             {label}
-            {required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
+      {required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
           </Label>
         )}
         {React.cloneElement(children, { id, 'aria-invalid': !!error })}
@@ -117,15 +117,22 @@ const SwitchField = React.forwardRef(
         ref={ref}
         className={cn(
           'wsms-flex wsms-items-center wsms-justify-between wsms-py-3',
-          disabled && 'wsms-opacity-50',
+          disabled && 'wsms-cursor-not-allowed',
           className
         )}
         {...props}
       >
-        <div className="wsms-space-y-1 wsms-pr-4">
-          <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">{label}</p>
+        <div className="wsms-space-y-1 wsms-pe-4">
+          <p className={cn(
+            'wsms-text-[13px] wsms-font-medium',
+            disabled ? 'wsms-text-muted-foreground' : 'wsms-text-foreground'
+          )}>
+            {label}
+          </p>
           {description && (
-            <FieldDescription>{description}</FieldDescription>
+            <FieldDescription className={cn(disabled && 'wsms-text-muted-foreground/80')}>
+              {description}
+            </FieldDescription>
           )}
         </div>
         <Switch
@@ -152,7 +159,7 @@ const InputField = React.forwardRef(
         {label && (
           <Label htmlFor={id} className={cn(error && 'wsms-text-destructive')}>
             {label}
-            {required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
+        {required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
           </Label>
         )}
         <Input
@@ -186,7 +193,7 @@ const TextareaField = React.forwardRef(
         {label && (
           <Label htmlFor={id} className={cn(error && 'wsms-text-destructive')}>
             {label}
-            {required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
+        {required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
           </Label>
         )}
         <Textarea
@@ -222,7 +229,7 @@ const SelectField = React.forwardRef(
         {label && (
           <Label htmlFor={id} className={cn(error && 'wsms-text-destructive')}>
             {label}
-            {required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
+        {required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
           </Label>
         )}
         <Select value={normalizedValue} onValueChange={onValueChange} {...props}>
@@ -261,7 +268,7 @@ const MultiSelectField = React.forwardRef(
         {label && (
           <Label htmlFor={id} className={cn(error && 'wsms-text-destructive')}>
             {label}
-            {required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
+        {required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
           </Label>
         )}
         <MultiSelect
@@ -301,7 +308,7 @@ const SettingRow = React.forwardRef(
         )}
         {...props}
       >
-        <div className="wsms-space-y-1 wsms-pr-4">
+        <div className="wsms-space-y-1 wsms-pe-4">
           <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">{title}</p>
           {description && (
             <FieldDescription>{description}</FieldDescription>

@@ -4,6 +4,8 @@ import { cn } from '@/lib/utils'
 
 const Switch = React.forwardRef(({ className, ...props }, ref) => (
   <SwitchPrimitives.Root
+    // Force LTR inside the switch so it renders the same in RTL admin pages.
+    dir="ltr"
     className={cn(
       'wsms-peer wsms-inline-flex wsms-h-6 wsms-w-11 wsms-shrink-0 wsms-cursor-pointer wsms-items-center wsms-rounded-full wsms-border-2 wsms-border-transparent wsms-transition-colors focus-visible:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-ring focus-visible:wsms-ring-offset-2 focus-visible:wsms-ring-offset-background disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50 data-[state=checked]:wsms-bg-primary data-[state=unchecked]:wsms-bg-input',
       className

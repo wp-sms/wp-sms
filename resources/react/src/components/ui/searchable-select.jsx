@@ -136,6 +136,7 @@ const SearchableSelect = React.forwardRef(
           variant="outline"
           role="combobox"
           type="button"
+          dir={document.getElementById('wpsms-settings-root')?.getAttribute('dir') || undefined}
           aria-expanded={open}
           aria-label={ariaLabel || placeholder}
           disabled={disabled}
@@ -146,12 +147,12 @@ const SearchableSelect = React.forwardRef(
             triggerClassName
           )}
         >
-          <span className="wsms-truncate wsms-text-left wsms-flex-1">
+          <span className="wsms-truncate wsms-flex-1 wsms-text-start">
             {selectedLabel || placeholder}
           </span>
           <ChevronDown
             className={cn(
-              'wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-transition-transform wsms-shrink-0 wsms-ml-2',
+              'wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-transition-transform wsms-shrink-0 wsms-ms-2',
               open && 'wsms-rotate-180'
             )}
           />
@@ -162,13 +163,15 @@ const SearchableSelect = React.forwardRef(
             {/* Search input */}
             <div className="wsms-p-2 wsms-border-b wsms-border-border">
               <div className="wsms-relative">
-                <Search className="wsms-absolute wsms-left-2 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+                <Search
+                  className="wsms-absolute wsms-start-2 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground"
+                />
                 <Input
                   ref={searchInputRef}
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={searchPlaceholder}
-                  className="wsms-pl-8 wsms-h-8"
+                  className="wsms-h-8 wsms-ps-8 wsms-text-start"
                 />
               </div>
             </div>
@@ -188,7 +191,7 @@ const SearchableSelect = React.forwardRef(
                       type="button"
                       onClick={() => handleSelect(option.value)}
                       className={cn(
-                        'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded wsms-px-2 wsms-py-1.5 wsms-text-left wsms-text-[13px] wsms-outline-none',
+                        'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded wsms-px-2 wsms-py-1.5 wsms-text-start wsms-text-[13px] wsms-outline-none',
                         'hover:wsms-bg-accent focus:wsms-bg-accent',
                         isSelected && 'wsms-bg-accent/50',
                         optionClassName

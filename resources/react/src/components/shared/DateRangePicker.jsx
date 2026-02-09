@@ -25,7 +25,7 @@ export function DateRangePicker({
   return (
     <div
       className={cn(
-        'wsms-flex wsms-items-center wsms-gap-2 wsms-pl-3 wsms-border-l wsms-border-border',
+        'wsms-flex wsms-items-center wsms-gap-2 wsms-ps-3 wsms-border-s wsms-border-border',
         disabled && 'wsms-opacity-50 wsms-pointer-events-none',
         className
       )}
@@ -39,7 +39,7 @@ export function DateRangePicker({
         className="wsms-h-9 wsms-w-[130px] wsms-text-[12px]"
         aria-label={__('From date')}
       />
-      <span className="wsms-text-muted-foreground">—</span>
+      <span className="wsms-text-muted-foreground" aria-hidden="true">-</span>
       <Input
         type="date"
         value={to}

@@ -61,9 +61,9 @@ export function ExportButton({
       className={className}
     >
       {isExporting ? (
-        <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" aria-hidden="true" />
+        <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" aria-hidden="true" />
       ) : (
-        <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
+        <Download className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
       )}
       {label || __('Export')}
     </Button>

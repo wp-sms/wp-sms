@@ -193,7 +193,7 @@ export default function CartAbandonment() {
                   rel="noopener noreferrer"
                 >
                   {__('Learn More')}
-                  <ExternalLink className="wsms-ml-2 wsms-h-4 wsms-w-4" />
+                  <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
                 </a>
               </Button>
             </div>
@@ -407,13 +407,13 @@ export default function CartAbandonment() {
           <form onSubmit={handleSearchSubmit} className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-2 wsms-p-3">
             {/* Search */}
             <div className="wsms-relative wsms-w-full xl:wsms-w-[220px] xl:wsms-shrink-0">
-              <Search className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
+              <Search className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
               <Input
                 type="text"
                 placeholder={__('Search by phone...')}
                 value={filters.search}
                 onChange={(e) => handleFilterChange('search', e.target.value)}
-                className="wsms-pl-8 wsms-h-9"
+                className="wsms-ps-8 wsms-h-9"
               />
             </div>
 
@@ -457,7 +457,7 @@ export default function CartAbandonment() {
               size="sm"
               onClick={fetchData}
               disabled={isLoading}
-              className="wsms-h-9 wsms-px-2.5 xl:wsms-ml-auto"
+              className="wsms-h-9 wsms-px-2.5 xl:wsms-ms-auto"
               aria-label={__('Refresh')}
             >
               <RefreshCw

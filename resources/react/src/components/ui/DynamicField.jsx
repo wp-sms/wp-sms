@@ -253,7 +253,7 @@ export function DynamicField({ field }) {
             {field.label && (
               <Label className="wsms-text-[13px] wsms-font-medium">
                 {field.label}
-                {field.required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
+                {field.required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
               </Label>
             )}
             <TemplateTextarea
@@ -298,7 +298,7 @@ export function DynamicField({ field }) {
           {field.label && (
             <Label className="wsms-text-[13px] wsms-font-medium">
               {field.label}
-              {field.required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
+              {field.required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
             </Label>
           )}
           <MultiSelect
@@ -342,7 +342,7 @@ export function DynamicField({ field }) {
           {field.label && (
             <Label className="wsms-text-[13px] wsms-font-medium">
               {field.label}
-              {field.required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
+              {field.required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
             </Label>
           )}
           <Repeater
@@ -367,7 +367,7 @@ export function DynamicField({ field }) {
           {field.label && (
             <Label className="wsms-text-[13px] wsms-font-medium">
               {field.label}
-              {field.required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
+              {field.required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
             </Label>
           )}
           <div className="wsms-flex wsms-items-center wsms-gap-3">
@@ -424,7 +424,7 @@ export function DynamicField({ field }) {
           {field.label && (
             <Label className="wsms-text-[13px] wsms-font-medium">
               {field.label}
-              {field.required && <span className="wsms-ml-1 wsms-text-destructive">*</span>}
+              {field.required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
             </Label>
           )}
           <div className="wsms-flex wsms-items-center wsms-gap-3">

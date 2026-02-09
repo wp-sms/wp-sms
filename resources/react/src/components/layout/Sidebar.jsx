@@ -66,7 +66,7 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
     return (
       <button
         onClick={onConfigure}
-        className="wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-px-3 wsms-py-2 wsms-rounded-md wsms-transition-all wsms-text-left wsms-bg-amber-500/10 hover:wsms-bg-amber-500/15"
+        className="wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-px-3 wsms-py-2 wsms-rounded-md wsms-transition-all wsms-text-start wsms-bg-amber-500/10 hover:wsms-bg-amber-500/15"
       >
         <span className="wsms-relative wsms-flex wsms-h-2 wsms-w-2">
           <span className="wsms-relative wsms-inline-flex wsms-rounded-full wsms-h-2 wsms-w-2 wsms-bg-amber-500" />
@@ -83,7 +83,7 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
       {/* Header - clickable to expand/collapse */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-px-3 wsms-py-2 wsms-text-left hover:wsms-bg-emerald-500/15 wsms-rounded-md wsms-transition-colors"
+        className="wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-px-3 wsms-py-2 wsms-text-start hover:wsms-bg-emerald-500/15 wsms-rounded-md wsms-transition-colors"
       >
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <span className="wsms-relative wsms-flex wsms-h-2 wsms-w-2">
@@ -127,7 +127,7 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
                 ) : (
                   <>
                     <span className="wsms-font-medium wsms-text-foreground">
-                      {credit !== null ? credit : '—'}
+            {credit !== null ? credit : '—'}
                     </span>
                     <button
                       onClick={(e) => {
@@ -210,7 +210,7 @@ function NavItem({ item, isActive, onClick, isNested = false, badge }) {
       <button
         onClick={onClick}
         className={cn(
-          'wsms-flex wsms-w-full wsms-items-center wsms-py-0.5 wsms-pr-3 wsms-pl-7 wsms-text-left wsms-transition-colors wsms-duration-150',
+          'wsms-flex wsms-w-full wsms-items-center wsms-py-0.5 wsms-pe-3 wsms-ps-7 wsms-text-start wsms-transition-colors wsms-duration-150',
           isActive ? 'wsms-text-primary' : 'wsms-text-foreground/70 hover:wsms-text-foreground'
         )}
       >
@@ -225,7 +225,7 @@ function NavItem({ item, isActive, onClick, isNested = false, badge }) {
           <Icon className="wsms-h-3.5 wsms-w-3.5 wsms-shrink-0" strokeWidth={1.75} />
           <span className="wsms-text-[12px] wsms-font-medium">{item.label}</span>
           {badge > 0 && (
-            <span className="wsms-ml-auto wsms-flex wsms-h-[18px] wsms-min-w-[18px] wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary wsms-px-1 wsms-text-[10px] wsms-font-semibold wsms-text-primary-foreground wsms-leading-none">
+            <span className="wsms-ms-auto wsms-flex wsms-h-[18px] wsms-min-w-[18px] wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary wsms-px-1 wsms-text-[10px] wsms-font-semibold wsms-text-primary-foreground wsms-leading-none">
               {badge > 99 ? '99+' : badge}
             </span>
           )}
@@ -238,7 +238,7 @@ function NavItem({ item, isActive, onClick, isNested = false, badge }) {
     <button
       onClick={onClick}
       className={cn(
-        'wsms-flex wsms-w-full wsms-items-center wsms-gap-3 wsms-rounded-md wsms-text-[13px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-left wsms-px-3 wsms-py-2.5',
+        'wsms-flex wsms-w-full wsms-items-center wsms-gap-3 wsms-rounded-md wsms-text-[13px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start wsms-px-3 wsms-py-2.5',
         isActive
           ? 'wsms-bg-primary/10 wsms-text-primary wsms-font-semibold'
           : 'wsms-text-foreground/70 hover:wsms-bg-primary/5 hover:wsms-text-foreground wsms-transition-colors wsms-duration-150'
@@ -247,7 +247,7 @@ function NavItem({ item, isActive, onClick, isNested = false, badge }) {
       <Icon className="wsms-h-4 wsms-w-4 wsms-shrink-0" strokeWidth={1.75} />
       <span>{item.label}</span>
       {item.badgeLabel && (
-        <span className="wsms-ml-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
+        <span className="wsms-ms-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
           {item.badgeLabel}
         </span>
       )}
@@ -273,12 +273,12 @@ function NestedNavGroup({ group, currentPage, setCurrentPage }) {
   const Icon = group.icon
 
   return (
-    <div className="wsms-pl-7">
+    <div className="wsms-ps-7">
       {/* Nested group header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className={cn(
-          'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-px-2.5 wsms-py-1.5 wsms-text-[12px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-left',
+          'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-px-2.5 wsms-py-1.5 wsms-text-[12px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start',
           hasActiveChild
             ? 'wsms-text-primary wsms-bg-primary/10'
             : 'wsms-text-foreground/70 hover:wsms-bg-primary/5 hover:wsms-text-foreground'
@@ -304,9 +304,9 @@ function NestedNavGroup({ group, currentPage, setCurrentPage }) {
           isExpanded ? 'wsms-max-h-[300px] wsms-opacity-100' : 'wsms-max-h-0 wsms-opacity-0'
         )}
       >
-        <div className="wsms-relative wsms-py-0.5 wsms-pl-4">
+        <div className="wsms-relative wsms-py-0.5 wsms-ps-4">
           {/* Connecting line for nested items */}
-          <div className="wsms-absolute wsms-left-[14px] wsms-top-1 wsms-bottom-1 wsms-w-px wsms-bg-border/40" />
+          <div className="wsms-absolute wsms-start-[14px] wsms-top-1 wsms-bottom-1 wsms-w-px wsms-bg-border/40" />
 
           {group.items.map((item) => {
             const ItemIcon = item.icon
@@ -315,7 +315,7 @@ function NestedNavGroup({ group, currentPage, setCurrentPage }) {
                 key={item.id}
                 onClick={() => setCurrentPage(item.id)}
                 className={cn(
-                  'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded-md wsms-px-2 wsms-py-1.5 wsms-text-[11px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-left',
+                  'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded-md wsms-px-2 wsms-py-1.5 wsms-text-[11px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start',
                   currentPage === item.id
                     ? 'wsms-text-primary wsms-bg-primary/10'
                     : 'wsms-text-foreground/60 hover:wsms-bg-primary/5 hover:wsms-text-foreground/80'
@@ -372,7 +372,7 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} 
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         className={cn(
-          'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-px-3 wsms-py-2.5 wsms-text-[13px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-left',
+          'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-px-3 wsms-py-2.5 wsms-text-[13px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start',
           hasActiveChild
             ? 'wsms-text-primary wsms-bg-primary/5'
             : 'wsms-text-foreground/80 hover:wsms-bg-accent hover:wsms-text-foreground'
@@ -407,7 +407,7 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} 
       >
         <div className="wsms-relative wsms-py-1">
           {/* Subtle connecting line */}
-          <div className="wsms-absolute wsms-left-[22px] wsms-top-2 wsms-bottom-2 wsms-w-px wsms-bg-border/50" />
+          <div className="wsms-absolute wsms-start-[22px] wsms-top-2 wsms-bottom-2 wsms-w-px wsms-bg-border/50" />
 
           {filteredItems.map((item, index) =>
             item.type === 'separator' ? (

@@ -53,7 +53,7 @@ export default function WooCommercePro() {
                   rel="noopener noreferrer"
                 >
                   Learn More
-                  <ExternalLink className="wsms-ml-2 wsms-h-4 wsms-w-4" />
+                  <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
                 </a>
               </Button>
             </div>

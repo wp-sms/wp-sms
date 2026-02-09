@@ -111,7 +111,7 @@ export default function AllInOneStep({ onSkip }) {
             rel="noopener noreferrer"
           >
             {__('View Plans')}
-            <ExternalLink className="wsms-h-4 wsms-w-4 wsms-ml-2" />
+            <ExternalLink className="wsms-h-4 wsms-w-4 wsms-ms-2" />
           </a>
         </Button>
         <Button variant="ghost" onClick={onSkip} className="wsms-text-muted-foreground">

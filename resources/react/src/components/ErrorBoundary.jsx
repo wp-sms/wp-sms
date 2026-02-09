@@ -75,7 +75,7 @@ class ErrorBoundary extends React.Component {
               )}
               <div className="wsms-flex wsms-justify-center">
                 <Button onClick={this.handleRetry} variant="outline">
-                  <RefreshCw className="wsms-w-4 wsms-h-4 wsms-mr-2" />
+                  <RefreshCw className="wsms-w-4 wsms-h-4 wsms-me-2" />
                   Try Again
                 </Button>
               </div>

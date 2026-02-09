@@ -223,7 +223,7 @@ export default function Outbox() {
       })
       if (blocked.length > 0) {
         toast({
-          title: __('Reply sent to %d1 recipient(s). %d2 skipped — their country codes don\'t match your country restriction settings.').replace('%d1', allowed.length).replace('%d2', blocked.length),
+              title: __('Reply sent to %d1 recipient(s). %d2 skipped — their country codes don\'t match your country restriction settings.').replace('%d1', allowed.length).replace('%d2', blocked.length),
           variant: 'warning',
         })
       } else {
@@ -297,7 +297,7 @@ export default function Outbox() {
                 {table.error}
               </p>
               <Button onClick={() => table.fetch({ page: 1 })}>
-                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-me-2" />
                 {__('Try Again')}
               </Button>
             </div>
@@ -457,7 +457,7 @@ export default function Outbox() {
             {/* Search */}
             <div className="wsms-relative wsms-w-full xl:wsms-w-[220px] xl:wsms-shrink-0">
               <Search
-                className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none"
+                className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none"
                 aria-hidden="true"
               />
               <Input
@@ -465,7 +465,7 @@ export default function Outbox() {
                 value={filters.filters.search}
                 onChange={(e) => filters.setFilter('search', e.target.value)}
                 placeholder={__('Search messages...')}
-                className="wsms-pl-8 wsms-h-9"
+                className="wsms-ps-8 wsms-h-9"
                 aria-label={__('Search messages')}
               />
             </div>
@@ -494,7 +494,7 @@ export default function Outbox() {
             />
 
             {/* Actions */}
-            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ml-auto">
+            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ms-auto">
               {/* Clear Filters */}
               {(filters.filters.search || filters.filters.status !== 'all' || filters.filters.date_from || filters.filters.date_to) && (
                 <Button
@@ -662,9 +662,9 @@ export default function Outbox() {
             </Button>
             <Button onClick={() => handleResend(viewMessage?.id, viewMessage?.recipient)} disabled={actionLoading === viewMessage?.id}>
               {actionLoading === viewMessage?.id ? (
-                <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" aria-hidden="true" />
+                <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" aria-hidden="true" />
               ) : (
-                <Send className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
+                <Send className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
               )}
               {__('Resend')}
             </Button>
@@ -717,12 +717,12 @@ export default function Outbox() {
             <Button onClick={handleQuickReply} disabled={isSendingReply || !quickReplyMessage.trim()}>
               {isSendingReply ? (
                 <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" aria-hidden="true" />
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" aria-hidden="true" />
                   {__('Sending...')}
                 </>
               ) : (
                 <>
-                  <Send className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
+                  <Send className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
                   {__('Send Reply')}
                 </>
               )}

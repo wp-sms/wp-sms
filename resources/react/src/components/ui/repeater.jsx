@@ -202,10 +202,10 @@ const Repeater = React.forwardRef(
           disabled={!canAddMore}
           className="wsms-w-full wsms-border-dashed"
         >
-          <Plus className="wsms-h-4 wsms-w-4 wsms-mr-1.5" />
+          <Plus className="wsms-h-4 wsms-w-4 wsms-me-1.5" />
           {addLabel}
           {maxItems && items.length > 0 && (
-            <span className="wsms-ml-1.5 wsms-text-muted-foreground">
+            <span className="wsms-ms-1.5 wsms-text-muted-foreground">
               ({items.length}/{maxItems})
             </span>
           )}

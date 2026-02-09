@@ -13,8 +13,9 @@ export function GatewayCard({ gateway, isSelected, isCurrent, onClick, showFeatu
       key={gateway.slug}
       type="button"
       onClick={() => onClick(gateway.slug)}
+      style={{ textAlign: 'start' }}
       className={cn(
-        'wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-md wsms-border wsms-px-3 wsms-py-2 wsms-h-[46px] wsms-text-left wsms-text-[12px] wsms-transition-colors',
+        'wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-md wsms-border wsms-px-3 wsms-py-2 wsms-h-[46px] wsms-text-[12px] wsms-transition-colors',
         isSelected
           ? 'wsms-border-primary wsms-bg-primary/10 wsms-text-primary wsms-font-medium'
           : isCurrent
@@ -53,8 +54,9 @@ export function GatewayCardMinimal({ gateway, isSelected, isCurrent, onClick }) 
       key={gateway.slug}
       type="button"
       onClick={() => onClick(gateway.slug)}
+      style={{ textAlign: 'start' }}
       className={cn(
-        'wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-md wsms-border wsms-px-3 wsms-py-2 wsms-h-[46px] wsms-text-left wsms-text-[12px] wsms-transition-colors',
+        'wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-md wsms-border wsms-px-3 wsms-py-2 wsms-h-[46px] wsms-text-[12px] wsms-transition-colors',
         isSelected
           ? 'wsms-border-primary wsms-bg-primary/10 wsms-text-primary wsms-font-medium'
           : isCurrent
@@ -77,7 +79,8 @@ export function GatewayCardPro({ gateway }) {
       href={`https://wsms.io/gateways/${gateway.slug}/`}
       target="_blank"
       rel="noopener noreferrer"
-      className="wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-md wsms-border wsms-border-dashed wsms-border-border wsms-px-3 wsms-py-2 wsms-h-[46px] wsms-text-left wsms-text-[12px] wsms-opacity-75 hover:wsms-opacity-100 wsms-transition-opacity"
+      style={{ textAlign: 'start' }}
+      className="wsms-flex wsms-items-center wsms-gap-2 wsms-rounded-md wsms-border wsms-border-dashed wsms-border-border wsms-px-3 wsms-py-2 wsms-h-[46px] wsms-text-[12px] wsms-opacity-75 hover:wsms-opacity-100 wsms-transition-opacity"
     >
       {gateway.logo ? (
         <img
@@ -119,6 +122,7 @@ export function PremiumSearchResults({ gateways, searchQuery }) {
 
   return (
     <div className="wsms-space-y-4">
+      {/** Keep arrow direction correct in RTL */}
       <p className="wsms-text-center wsms-text-[12px] wsms-text-muted-foreground">
         {__('These gateways are available with the Pro add-on:')}
       </p>
@@ -134,7 +138,8 @@ export function PremiumSearchResults({ gateways, searchQuery }) {
           rel="noopener noreferrer"
           className="wsms-font-medium wsms-text-primary hover:wsms-text-primary/80"
         >
-          {__('View all gateways')} &rarr;
+          {__('View all gateways')}{' '}
+          <span className="wsms-inline-block rtl:wsms-scale-x-[-1]">{'\u2192'}</span>
         </a>
       </p>
     </div>
@@ -161,7 +166,8 @@ export function MoreGatewaysNotice({ premiumCount, searchQuery }) {
         rel="noopener noreferrer"
         className="wsms-shrink-0 wsms-text-[12px] wsms-font-medium wsms-text-primary hover:wsms-text-primary/80"
       >
-        {__('View all gateways')} &rarr;
+        {__('View all gateways')}{' '}
+        <span className="wsms-inline-block rtl:wsms-scale-x-[-1]">{'\u2192'}</span>
       </a>
     </div>
   )

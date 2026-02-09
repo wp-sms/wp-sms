@@ -90,6 +90,10 @@
 
 #wpsms-settings-root {
   position: relative;
+
+  /* Direction-driven tokens (dir is set on this root in main.jsx) */
+  --wsms-section-divider-angle: 90deg;
+  --wsms-notification-enter-x: 12px;
 }
 
 /* Hide WordPress admin footer when settings app is loaded */
@@ -111,6 +115,8 @@ body.sms_page_wp-sms-unified-admin #wpbody-content {
 body.sms_page_wp-sms-unified-admin #wpsms-settings-root {
   height: calc(100vh - 32px) !important; /* Subtract admin bar height */
   overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
 }
 
 /* Mobile admin bar is taller */
@@ -124,6 +130,14 @@ body.sms_page_wp-sms-unified-admin #wpsms-settings-root {
 body.sms_page_wp-sms-unified-admin.no-admin-bar #wpsms-settings-root {
   height: 100vh !important;
 }
+
+#wpsms-settings-root[dir="rtl"] {
+  --wsms-section-divider-angle: 270deg;
+  --wsms-notification-enter-x: -12px;
+}
+
+/* Keep RTL behavior driven by the app root's dir attribute.
+ * Avoid forcing direction on generic components (e.g. multi-select triggers) since that breaks layout. */
 
 .wpsms-settings-app,
 .wsms-settings-app {
@@ -176,10 +190,33 @@ body.sms_page_wp-sms-unified-admin.no-admin-bar #wpsms-settings-root {
    ============================================ */
 
 .wsms-settings-app {
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+}
+
+/* In RTL, keep "leading icons" (icon before text in DOM) on the physical left for scanability.
+ * Exclude combobox triggers (MultiSelect/SearchableSelect) which should follow RTL layout. */
+#wpsms-settings-root[dir="rtl"] .wsms-btn:not([role="combobox"]) {
+  direction: ltr !important;
+  text-align: right;
+}
+
+/* Floating save bar should stick to the bottom of the viewport (not the end of the scrollable content). */
+.wsms-floating-savebar {
+  position: fixed;
+  bottom: 0;
+  left: var(--wsms-fixed-left, var(--wsms-fixed-inset-start, 0));
+  width: var(--wsms-fixed-width, calc(100vw - var(--wsms-fixed-inset-start, 0) - var(--wsms-fixed-inset-end, 0)));
+  right: auto;
+  z-index: 99997;
+}
+
+/* Ensure scrolling content doesn't end up behind the fixed save bar. */
+#wpsms-settings-root.wsms-has-floating-savebar .wsms-content {
+  padding-bottom: calc(24px + var(--wsms-floating-savebar-h, 56px));
 }
 
 .wsms-settings-wrapper {
@@ -193,7 +230,7 @@ body.sms_page_wp-sms-unified-admin.no-admin-bar #wpsms-settings-root {
   width: var(--sidebar-width);
   min-width: var(--sidebar-width);
   flex-shrink: 0;
-  border-right: 1px solid hsl(var(--border));
+  border-inline-end: 1px solid hsl(var(--border));
   background: hsl(var(--card));
   display: flex;
   flex-direction: column;
@@ -203,6 +240,7 @@ body.sms_page_wp-sms-unified-admin.no-admin-bar #wpsms-settings-root {
 .wsms-main {
   flex: 1;
   min-width: 0;
+  min-height: 0; /* Allow the content area to become the scroll container */
   display: flex;
   flex-direction: column;
   background: hsl(var(--muted));
@@ -211,8 +249,9 @@ body.sms_page_wp-sms-unified-admin.no-admin-bar #wpsms-settings-root {
 
 .wsms-content {
   flex: 1;
+  min-height: 0; /* Required for nested flex + overflow scrolling to work reliably */
   padding: 24px;
-  padding-left: 32px;
+  padding-inline-start: 32px;
   overflow-y: auto;
 }
 
@@ -477,7 +516,7 @@ body.sms_page_wp-sms-unified-admin.no-admin-bar #wpsms-settings-root {
   content: '';
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, hsl(var(--border)), transparent);
+  background: linear-gradient(var(--wsms-section-divider-angle, 90deg), hsl(var(--border)), transparent);
 }
 
 /* ============================================
@@ -501,7 +540,7 @@ body.sms_page_wp-sms-unified-admin.no-admin-bar #wpsms-settings-root {
 
 .wsms-list-item-selected {
   background-color: hsl(var(--primary) / 0.08);
-  border-left: 3px solid hsl(var(--primary));
+  border-inline-start: 3px solid hsl(var(--primary));
 }
 
 /* ============================================
@@ -546,7 +585,7 @@ body.sms_page_wp-sms-unified-admin.no-admin-bar #wpsms-settings-root {
 /* Body scroll lock when notification sidebar is open */
 body.wsms-notification-sidebar-open {
   overflow: hidden !important;
-  padding-right: var(--scrollbar-width, 0);
+  padding-inline-end: var(--scrollbar-width, 0);
 }
 
 /* Ensure sidebar overlays WordPress admin elements */
@@ -559,7 +598,7 @@ body.wsms-notification-sidebar-open {
 @keyframes wsms-notification-slide-in {
   from {
     opacity: 0;
-    transform: translateX(12px);
+    transform: translateX(var(--wsms-notification-enter-x, 12px));
   }
   to {
     opacity: 1;

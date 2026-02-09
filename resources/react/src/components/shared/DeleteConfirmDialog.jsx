@@ -50,12 +50,12 @@ export function DeleteConfirmDialog({
           <Button variant="destructive" onClick={onConfirm} disabled={isSaving}>
             {isSaving ? (
               <>
-                <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+                <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
                 {__('Deleting...')}
               </>
             ) : (
               <>
-                <Trash2 className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                <Trash2 className="wsms-h-4 wsms-w-4 wsms-me-2" />
                 {confirmLabel || __('Delete')}
               </>
             )}

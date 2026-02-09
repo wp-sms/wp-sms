@@ -110,7 +110,10 @@ class UnifiedAdminPage extends Singleton
             .wpsms-chatbox { display: none !important; }
             .wpsms-chatbox.wpsms-chatbox--visible { display: block !important; }
         </style>';
-        echo '<div id="wpsms-settings-root" class="wpsms-settings-app"></div>';
+        echo sprintf(
+            '<div id="wpsms-settings-root" class="wpsms-settings-app" dir="%s"></div>',
+            is_rtl() ? 'rtl' : 'ltr'
+        );
     }
 
     /**
@@ -141,6 +144,23 @@ class UnifiedAdminPage extends Singleton
         } else {
             // No dev server and no manifest — nothing to load
             return;
+        }
+
+        // RTL overrides for the React dashboard.
+        // Keep this separate from the Vite build output so we can patch RTL issues quickly.
+        if (is_rtl()) {
+            $rtlPath = WP_SMS_DIR . 'assets/css/rtl.css';
+            if (file_exists($rtlPath)) {
+                $deps = wp_style_is('wpsms-unified-admin', 'registered') || wp_style_is('wpsms-unified-admin', 'enqueued')
+                    ? ['wpsms-unified-admin']
+                    : [];
+                wp_enqueue_style(
+                    'wpsms-unified-admin-rtl',
+                    WP_SMS_URL . 'assets/css/rtl.css',
+                    $deps,
+                    WP_SMS_VERSION . '.' . filemtime($rtlPath)
+                );
+            }
         }
 
         // Localize script data

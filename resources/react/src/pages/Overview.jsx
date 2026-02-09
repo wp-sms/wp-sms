@@ -29,7 +29,7 @@ function StatusRow({ icon: Icon, title, value, status, onClick }) {
     <button
       onClick={onClick}
       className={cn(
-        'wsms-flex wsms-w-full wsms-items-center wsms-gap-3 wsms-px-3 wsms-py-2.5 wsms-text-left wsms-transition-colors wsms-rounded',
+        'wsms-flex wsms-w-full wsms-items-center wsms-gap-3 wsms-px-3 wsms-py-2.5 wsms-text-start wsms-transition-colors wsms-rounded',
         'hover:wsms-bg-accent'
       )}
     >
@@ -49,7 +49,7 @@ function StatusRow({ icon: Icon, title, value, status, onClick }) {
       {status === 'configured' ? (
         <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-success wsms-shrink-0" />
       ) : (
-        <ArrowRight className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
+        <ArrowRight className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0 rtl:wsms-scale-x-[-1]" />
       )}
     </button>
   )
@@ -282,12 +282,12 @@ export default function Overview() {
               >
                 {testing ? (
                   <>
-                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1 wsms-animate-spin" />
+                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1 wsms-animate-spin" />
                     {__('Testing...')}
                   </>
                 ) : (
                   <>
-                    <Send className="wsms-h-4 wsms-w-4 wsms-mr-1" />
+                    <Send className="wsms-h-4 wsms-w-4 wsms-me-1" />
                     {__('Test')}
                   </>
                 )}
@@ -353,7 +353,7 @@ export default function Overview() {
           </div>
           <Button variant="outline" size="sm" onClick={() => setCurrentPage('gateway')}>
             {__('Browse')}
-            <ArrowRight className="wsms-h-4 wsms-w-4 wsms-ml-1" />
+            <ArrowRight className="wsms-h-4 wsms-w-4 wsms-ms-1 rtl:wsms-scale-x-[-1]" />
           </Button>
         </div>
       </Card>
@@ -376,7 +376,7 @@ export default function Overview() {
             <Button variant="outline" size="sm" asChild>
               <a href="https://wsms.io/" target="_blank" rel="noopener noreferrer">
                 {__('Learn More')}
-                <ExternalLink className="wsms-h-3 wsms-w-3 wsms-ml-1" />
+                <ExternalLink className="wsms-h-3 wsms-w-3 wsms-ms-1" />
               </a>
             </Button>
           </div>

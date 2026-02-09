@@ -217,7 +217,7 @@ export default function Groups() {
             ) : (
               <button
                 onClick={() => handleInlineEditStart(row)}
-                className="wsms-text-[13px] wsms-font-medium wsms-text-foreground hover:wsms-text-primary wsms-text-left wsms-transition-colors wsms-truncate wsms-block wsms-max-w-full"
+                className="wsms-text-[13px] wsms-font-medium wsms-text-foreground hover:wsms-text-primary wsms-text-start wsms-transition-colors wsms-truncate wsms-block wsms-max-w-full"
               >
                 {row.name}
               </button>
@@ -279,7 +279,7 @@ export default function Groups() {
                 {table.error}
               </p>
               <Button onClick={() => table.fetch({ page: 1 })}>
-                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-me-2" />
                 {__('Try Again')}
               </Button>
             </div>
@@ -321,12 +321,12 @@ export default function Groups() {
               </div>
 
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4 wsms-mt-8 wsms-pt-6 wsms-border-t wsms-border-border wsms-w-full">
-                <div className="wsms-text-left wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
+                <div className="wsms-text-start wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
                   <Users className="wsms-h-4 wsms-w-4 wsms-text-primary wsms-mb-2" />
                   <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">{__('Targeted Messaging')}</p>
                   <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Send SMS to specific groups only')}</p>
                 </div>
-                <div className="wsms-text-left wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
+                <div className="wsms-text-start wsms-p-3 wsms-rounded-lg wsms-bg-muted/30">
                   <LayoutGrid className="wsms-h-4 wsms-w-4 wsms-text-primary wsms-mb-2" />
                   <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">{__('Easy Organization')}</p>
                   <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Manage subscribers efficiently')}</p>
@@ -464,7 +464,7 @@ export default function Groups() {
                         onClick={handleInlineEditCancel}
                         disabled={isInlineEditSaving}
                       >
-                        <X className="wsms-h-3 wsms-w-3 wsms-mr-1" />
+                        <X className="wsms-h-3 wsms-w-3 wsms-me-1" />
                         {__('Cancel')}
                       </Button>
                       <Button
@@ -474,9 +474,9 @@ export default function Groups() {
                         disabled={isInlineEditSaving}
                       >
                         {isInlineEditSaving ? (
-                          <Loader2 className="wsms-h-3 wsms-w-3 wsms-mr-1 wsms-animate-spin" />
+                          <Loader2 className="wsms-h-3 wsms-w-3 wsms-me-1 wsms-animate-spin" />
                         ) : (
-                          <Save className="wsms-h-3 wsms-w-3 wsms-mr-1" />
+                          <Save className="wsms-h-3 wsms-w-3 wsms-me-1" />
                         )}
                         {isInlineEditSaving ? __('Saving...') : __('Save')}
                       </Button>
@@ -517,7 +517,7 @@ export default function Groups() {
                       <div className="wsms-min-w-0">
                         <button
                           onClick={() => handleInlineEditStart(group)}
-                          className="wsms-text-[13px] wsms-font-medium wsms-text-foreground hover:wsms-text-primary wsms-text-left wsms-transition-colors wsms-truncate wsms-block wsms-w-full"
+                          className="wsms-text-[13px] wsms-font-medium wsms-text-foreground hover:wsms-text-primary wsms-text-start wsms-transition-colors wsms-truncate wsms-block wsms-w-full"
                         >
                           {group.name}
                         </button>

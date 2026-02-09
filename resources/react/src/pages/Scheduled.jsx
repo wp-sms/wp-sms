@@ -237,7 +237,7 @@ function ScheduledSmsTab() {
                 {table.error}
               </p>
               <Button onClick={() => table.fetch({ page: 1 })}>
-                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-me-2" />
                 {__('Try Again')}
               </Button>
             </div>
@@ -355,7 +355,7 @@ function ScheduledSmsTab() {
             {/* Search */}
             <div className="wsms-relative wsms-w-full xl:wsms-w-[220px] xl:wsms-shrink-0">
               <Search
-                className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none"
+                className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none"
                 aria-hidden="true"
               />
               <Input
@@ -363,7 +363,7 @@ function ScheduledSmsTab() {
                 value={filters.filters.search}
                 onChange={(e) => filters.setFilter('search', e.target.value)}
                 placeholder={__('Search messages...')}
-                className="wsms-pl-8 wsms-h-9"
+                className="wsms-ps-8 wsms-h-9"
                 aria-label={__('Search scheduled messages')}
               />
             </div>
@@ -393,7 +393,7 @@ function ScheduledSmsTab() {
             />
 
             {/* Actions */}
-            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ml-auto">
+            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ms-auto">
               {/* Clear Filters */}
               {(filters.filters.search || filters.filters.status !== 'all' || filters.filters.date_from || filters.filters.date_to) && (
                 <Button
@@ -549,7 +549,7 @@ function ScheduledSmsTab() {
             </Button>
             {viewMessage?.status === 'pending' && (
               <Button onClick={() => { handleSendNow(viewMessage?.id); setViewMessage(null) }}>
-                <Send className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
+                <Send className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
                 {__('Send Now')}
               </Button>
             )}
@@ -652,7 +652,7 @@ function ScheduledSmsTab() {
             <Button onClick={editDialog.save} disabled={editDialog.isSaving}>
               {editDialog.isSaving ? (
                 <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" aria-hidden="true" />
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" aria-hidden="true" />
                   {__('Saving...')}
                 </>
               ) : (
@@ -825,7 +825,7 @@ function RepeatingSmsTab() {
                 {table.error}
               </p>
               <Button onClick={() => table.fetch({ page: 1 })}>
-                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-me-2" />
                 {__('Try Again')}
               </Button>
             </div>
@@ -924,7 +924,7 @@ function RepeatingSmsTab() {
             {/* Search */}
             <div className="wsms-relative wsms-w-full xl:wsms-w-[220px] xl:wsms-shrink-0">
               <Search
-                className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none"
+                className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none"
                 aria-hidden="true"
               />
               <Input
@@ -932,7 +932,7 @@ function RepeatingSmsTab() {
                 value={filters.filters.search}
                 onChange={(e) => filters.setFilter('search', e.target.value)}
                 placeholder={__('Search messages...')}
-                className="wsms-pl-8 wsms-h-9"
+                className="wsms-ps-8 wsms-h-9"
                 aria-label={__('Search repeating messages')}
               />
             </div>
@@ -953,7 +953,7 @@ function RepeatingSmsTab() {
             </Select>
 
             {/* Actions */}
-            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ml-auto">
+            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ms-auto">
               {/* Clear Filters */}
               {(filters.filters.search || filters.filters.status !== 'all') && (
                 <Button
@@ -1230,7 +1230,7 @@ function RepeatingSmsTab() {
             <Button onClick={editDialog.save} disabled={editDialog.isSaving}>
               {editDialog.isSaving ? (
                 <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" aria-hidden="true" />
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" aria-hidden="true" />
                   {__('Saving...')}
                 </>
               ) : (
@@ -1272,7 +1272,7 @@ export default function Scheduled() {
               <Button variant="outline" asChild>
                 <a href="https://wsms.io/buy/" target="_blank" rel="noopener noreferrer">
                   {__('Learn More')}
-                  <ExternalLink className="wsms-ml-2 wsms-h-4 wsms-w-4" />
+                  <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
                 </a>
               </Button>
             </div>

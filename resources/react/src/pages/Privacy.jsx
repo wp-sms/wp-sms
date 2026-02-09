@@ -231,24 +231,24 @@ export default function Privacy() {
             </div>
             <div className="wsms-flex wsms-gap-2">
               <div className="wsms-relative wsms-flex-1">
-                <Phone className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" />
+                <Phone className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" />
                 <Input
                   type="tel"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   placeholder="+1234567890"
-                  className="wsms-pl-8 wsms-h-9 wsms-font-mono"
+                  className="wsms-ps-8 wsms-h-9 wsms-font-mono"
                 />
               </div>
               <Button type="submit" disabled={isSearching || !phoneNumber.trim()} className="wsms-h-9 wsms-px-4">
                 {isSearching ? (
                   <>
-                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
                     Searching...
                   </>
                 ) : (
                   <>
-                    <Search className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                    <Search className="wsms-h-4 wsms-w-4 wsms-me-2" />
                     Search
                   </>
                 )}
@@ -282,7 +282,7 @@ export default function Privacy() {
                     successMessage={__('Exported %d records successfully')}
                   />
                   <Button variant="destructive" onClick={() => setShowDeleteConfirm(true)}>
-                    <Trash2 className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                    <Trash2 className="wsms-h-4 wsms-w-4 wsms-me-2" />
                     Delete All
                   </Button>
                 </div>
@@ -424,7 +424,7 @@ export default function Privacy() {
                 <p className="wsms-text-[12px] wsms-font-medium wsms-text-destructive wsms-mb-2">
                   This will delete:
                 </p>
-                <ul className="wsms-text-[12px] wsms-text-destructive wsms-list-disc wsms-ml-4 wsms-space-y-1">
+                <ul className="wsms-text-[12px] wsms-text-destructive wsms-list-disc wsms-ms-4 wsms-space-y-1">
                   <li>User mobile number from profiles</li>
                   <li>Newsletter subscriptions</li>
                   <li>Sent message history</li>
@@ -439,12 +439,12 @@ export default function Privacy() {
             <Button variant="destructive" onClick={handleDelete} disabled={isDeleting}>
               {isDeleting ? (
                 <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
                   Deleting...
                 </>
               ) : (
                 <>
-                  <Trash2 className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                  <Trash2 className="wsms-h-4 wsms-w-4 wsms-me-2" />
                   Delete All Data
                 </>
               )}

@@ -120,10 +120,10 @@ const TimeSpecDisplay = ({ timeSpec, specificDate, delayedTime }) => {
         <span>{config.label}</span>
       </div>
       {timeSpec === 'specific-date' && specificDate && (
-        <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-ml-5">{specificDate}</span>
+        <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-ms-5">{specificDate}</span>
       )}
       {timeSpec === 'after-placing-order' && delayedTime && (
-        <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-ml-5">
+        <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-ms-5">
           {delayedTime.value} {delayedTime.unit}
         </span>
       )}
@@ -216,7 +216,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, onSave, 
           <div className="wsms-flex wsms-items-center wsms-justify-between">
             <Label>{__('Conditions')}</Label>
             <Button type="button" variant="outline" size="sm" onClick={addCondition}>
-              <Plus className="wsms-h-4 wsms-w-4 wsms-mr-1" />
+              <Plus className="wsms-h-4 wsms-w-4 wsms-me-1" />
               {__('Add Condition')}
             </Button>
           </div>
@@ -361,12 +361,12 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, onSave, 
         <Button type="submit" form={formId} disabled={isLoading}>
           {isLoading ? (
             <>
-              <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+              <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
               {__('Saving...')}
             </>
           ) : (
             <>
-              <Save className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+              <Save className="wsms-h-4 wsms-w-4 wsms-me-2" />
               {campaign ? __('Update Campaign') : __('Create Campaign')}
             </>
           )}
@@ -485,7 +485,7 @@ export default function SmsCampaigns() {
                   rel="noopener noreferrer"
                 >
                   {__('Learn More')}
-                  <ExternalLink className="wsms-ml-2 wsms-h-4 wsms-w-4" />
+                  <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
                 </a>
               </Button>
             </div>
@@ -680,7 +680,7 @@ export default function SmsCampaigns() {
               </div>
             </div>
             <Button size="sm" onClick={handleCreate}>
-              <Plus className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+              <Plus className="wsms-h-4 wsms-w-4 wsms-me-2" />
               {__('New Campaign')}
             </Button>
           </div>
@@ -694,7 +694,7 @@ export default function SmsCampaigns() {
             {/* Search */}
             <div className="wsms-relative wsms-w-full xl:wsms-w-[220px] xl:wsms-shrink-0">
               <Search
-                className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none"
+                className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none"
                 aria-hidden="true"
               />
               <Input
@@ -702,7 +702,7 @@ export default function SmsCampaigns() {
                 value={filters.filters.search}
                 onChange={(e) => filters.setFilter('search', e.target.value)}
                 placeholder={__('Search campaigns...')}
-                className="wsms-pl-8 wsms-h-9"
+                className="wsms-ps-8 wsms-h-9"
                 aria-label={__('Search campaigns')}
               />
             </div>
@@ -724,7 +724,7 @@ export default function SmsCampaigns() {
             </Select>
 
             {/* Actions */}
-            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ml-auto">
+            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ms-auto">
               {(filters.filters.search || filters.filters.status !== 'any') && (
                 <Button
                   variant="ghost"
@@ -855,7 +855,7 @@ export default function SmsCampaigns() {
                             {selectedCampaign.message_content}
                           </p>
                         </div>
-                        <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-1 wsms-ml-1">
+                        <p className="wsms-text-[10px] wsms-text-muted-foreground wsms-mt-1 wsms-ms-1">
                           {selectedCampaign.message_content.length} {__('characters')}
                         </p>
                       </div>
@@ -873,7 +873,7 @@ export default function SmsCampaigns() {
               {__('Close')}
             </Button>
             <Button onClick={() => { setIsViewOpen(false); handleEdit(selectedCampaign) }}>
-              <Edit2 className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+              <Edit2 className="wsms-h-4 wsms-w-4 wsms-me-2" />
               {__('Edit')}
             </Button>
           </DialogFooter>
@@ -968,11 +968,11 @@ export default function SmsCampaigns() {
                       <table className="wsms-w-full wsms-text-[12px]">
                         <thead className="wsms-sticky wsms-top-0">
                           <tr className="wsms-bg-muted/50 wsms-border-b wsms-border-border">
-                            <th className="wsms-px-3 wsms-py-2 wsms-text-left wsms-font-medium wsms-text-muted-foreground">{__('Order ID')}</th>
-                            <th className="wsms-px-3 wsms-py-2 wsms-text-left wsms-font-medium wsms-text-muted-foreground">{__('Order Date')}</th>
-                            <th className="wsms-px-3 wsms-py-2 wsms-text-left wsms-font-medium wsms-text-muted-foreground">{__('Mobile Number')}</th>
-                            <th className="wsms-px-3 wsms-py-2 wsms-text-left wsms-font-medium wsms-text-muted-foreground">{__('SMS Status')}</th>
-                            <th className="wsms-px-3 wsms-py-2 wsms-text-left wsms-font-medium wsms-text-muted-foreground">{__('Response')}</th>
+                            <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('Order ID')}</th>
+                            <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('Order Date')}</th>
+                            <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('Mobile Number')}</th>
+                            <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('SMS Status')}</th>
+                            <th className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground">{__('Response')}</th>
                           </tr>
                         </thead>
                         <tbody>

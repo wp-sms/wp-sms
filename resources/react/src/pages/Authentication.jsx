@@ -21,7 +21,7 @@ export default function Authentication() {
               <Shield className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               Authentication & OTP
               <Badge variant="warning">
-                <Diamond className="wsms-mr-1 wsms-h-3 wsms-w-3" />
+                <Diamond className="wsms-me-1 wsms-h-3 wsms-w-3" />
                 Add-on Required
               </Badge>
             </CardTitle>

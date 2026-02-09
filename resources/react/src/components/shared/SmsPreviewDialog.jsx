@@ -167,7 +167,7 @@ export function SmsPreviewDialog({
                 Close
               </Button>
               <Button onClick={onRetry} size="sm">
-                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-mr-1.5" />
+                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-me-1.5" />
                 Retry
               </Button>
             </DialogFooter>
@@ -187,7 +187,7 @@ export function SmsPreviewDialog({
             <DialogBody className="wsms-p-0">
               <div className="wsms-grid md:wsms-grid-cols-2 wsms-gap-0">
                 {/* Left: Phone Preview */}
-                <div className="wsms-p-5 wsms-bg-muted/30 wsms-flex wsms-items-center wsms-justify-center wsms-border-r wsms-border-border">
+                <div className="wsms-p-5 wsms-bg-muted/30 wsms-flex wsms-items-center wsms-justify-center wsms-border-e wsms-border-border">
                   <PhoneMockup
                     message={message}
                     senderId={senderId}
@@ -272,12 +272,12 @@ export function SmsPreviewDialog({
               <Button onClick={onConfirm} disabled={isSending} size="sm">
                 {isSending ? (
                   <>
-                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1.5 wsms-animate-spin" />
+                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1.5 wsms-animate-spin" />
                     Sending...
                   </>
                 ) : (
                   <>
-                    <Check className="wsms-h-4 wsms-w-4 wsms-mr-1.5" />
+                    <Check className="wsms-h-4 wsms-w-4 wsms-me-1.5" />
                     Send Message
                   </>
                 )}

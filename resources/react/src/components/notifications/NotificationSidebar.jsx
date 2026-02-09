@@ -125,26 +125,29 @@ export function NotificationSidebar({
         aria-hidden="true"
       >
         {/* Gradient overlay for depth */}
-        <div className="wsms-absolute wsms-inset-0 wsms-bg-gradient-to-l wsms-from-black/40 wsms-via-black/25 wsms-to-black/10" />
+        <div
+          className={cn(
+            'wsms-absolute wsms-inset-0 wsms-from-black/40 wsms-via-black/25 wsms-to-black/10',
+            'wsms-bg-gradient-to-l rtl:wsms-bg-gradient-to-r'
+          )}
+        />
       </div>
 
       {/* Sidebar panel */}
       <div
         className={cn(
-          'wsms-fixed wsms-right-0 wsms-w-[420px] wsms-max-w-[calc(100vw-24px)]',
+          'wsms-fixed wsms-w-[420px] wsms-max-w-[calc(100vw-24px)]',
           'wsms-bg-background wsms-z-[9999]',
           'wsms-flex wsms-flex-col',
           'wsms-transition-transform wsms-duration-300',
+          'wsms-right-0 rtl:wsms-right-auto rtl:wsms-left-0',
           isOpen
-            ? 'wsms-translate-x-0 wsms-ease-out'
-            : 'wsms-translate-x-full wsms-ease-in'
+            ? 'wsms-translate-x-0 wsms-ease-out wsms-shadow-[-20px_0_60px_-15px_rgba(0,0,0,0.2),_-8px_0_20px_-10px_rgba(0,0,0,0.1)] rtl:wsms-shadow-[20px_0_60px_-15px_rgba(0,0,0,0.2),_8px_0_20px_-10px_rgba(0,0,0,0.1)]'
+            : 'wsms-translate-x-full rtl:wsms--translate-x-full wsms-ease-in'
         )}
         style={{
           top: WP_ADMIN_BAR_HEIGHT,
           height: `calc(100vh - ${WP_ADMIN_BAR_HEIGHT}px)`,
-          boxShadow: isOpen
-            ? '-20px 0 60px -15px rgba(0, 0, 0, 0.2), -8px 0 20px -10px rgba(0, 0, 0, 0.1)'
-            : 'none'
         }}
         role="dialog"
         aria-modal="true"

@@ -114,7 +114,7 @@ export function SetupProgress({ steps, className }) {
             onClick={step.onClick}
             disabled={step.completed}
             className={cn(
-              'wsms-flex wsms-items-center wsms-gap-3 wsms-w-full wsms-p-3 wsms-rounded-lg wsms-border wsms-text-left wsms-transition-all',
+              'wsms-flex wsms-items-center wsms-gap-3 wsms-w-full wsms-p-3 wsms-rounded-lg wsms-border wsms-text-start wsms-transition-all',
               step.completed
                 ? 'wsms-bg-success/5 wsms-border-success/20 wsms-cursor-default'
                 : 'wsms-bg-card wsms-border-border hover:wsms-border-primary/50 hover:wsms-bg-primary/5 wsms-cursor-pointer'
@@ -146,7 +146,7 @@ export function SetupProgress({ steps, className }) {
               )}
             </div>
             {!step.completed && (
-              <ArrowRight className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0" />
+              <ArrowRight className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-shrink-0 rtl:wsms-scale-x-[-1]" />
             )}
           </button>
         ))}
@@ -196,7 +196,7 @@ export function EmptyStateAction({
       <div className="wsms-flex wsms-items-center wsms-gap-3">
         {action && (
           <Button onClick={action} size="sm">
-            <Sparkles className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+            <Sparkles className="wsms-h-4 wsms-w-4 wsms-me-2" />
             {actionLabel}
           </Button>
         )}
@@ -275,7 +275,7 @@ export function CollapsibleSection({
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'wsms-flex wsms-items-center wsms-justify-between wsms-w-full wsms-px-4 wsms-py-3 wsms-bg-muted/30 hover:wsms-bg-muted/50 wsms-transition-colors wsms-text-left',
+          'wsms-flex wsms-items-center wsms-justify-between wsms-w-full wsms-px-4 wsms-py-3 wsms-bg-muted/30 hover:wsms-bg-muted/50 wsms-transition-colors wsms-text-start',
           !isOpen && 'wsms-rounded-lg'
         )}
       >

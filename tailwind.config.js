@@ -1,4 +1,5 @@
 const path = require('path')
+const plugin = require('tailwindcss/plugin')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -102,5 +103,30 @@ module.exports = {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    plugin(function ({ addVariant }) {
+      // Direction-aware variants scoped to the React root.
+      //
+      // Note: this project uses `important: '#wpsms-settings-root'`, which prefixes every selector
+      // with `#wpsms-settings-root`. If we used a plain selector like `#wpsms-settings-root[dir="rtl"] &`,
+      // Tailwind would end up generating impossible selectors like:
+      //   #wpsms-settings-root #wpsms-settings-root[dir="rtl"] .rtl\:...
+      // So we rewrite the prefixed selector in-place.
+      addVariant('rtl', ({ modifySelectors }) => {
+        modifySelectors(({ selector }) =>
+          selector.startsWith('#wpsms-settings-root')
+            ? selector.replace(/^#wpsms-settings-root\b/, '#wpsms-settings-root[dir="rtl"]')
+            : selector
+        )
+      })
+
+      addVariant('ltr', ({ modifySelectors }) => {
+        modifySelectors(({ selector }) =>
+          selector.startsWith('#wpsms-settings-root')
+            ? selector.replace(/^#wpsms-settings-root\b/, '#wpsms-settings-root[dir="ltr"]')
+            : selector
+        )
+      })
+    }),
+  ],
 }

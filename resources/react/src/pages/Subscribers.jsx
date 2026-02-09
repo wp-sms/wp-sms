@@ -518,7 +518,7 @@ export default function Subscribers() {
                 {table.error}
               </p>
               <Button onClick={() => table.fetch({ page: 1 })}>
-                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-me-2" />
                 {__('Try Again')}
               </Button>
             </div>
@@ -591,7 +591,7 @@ export default function Subscribers() {
 
               {/* Import option */}
               <Button variant="outline" onClick={() => setShowImportDialog(true)}>
-                <Upload className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                <Upload className="wsms-h-4 wsms-w-4 wsms-me-2" />
                 {__('Import from CSV')}
               </Button>
             </div>
@@ -656,7 +656,7 @@ export default function Subscribers() {
           {/* Import/Export */}
           <div className="wsms-col-span-2 lg:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 lg:wsms-mt-0">
             <Button variant="outline" onClick={() => setShowImportDialog(true)}>
-              <Upload className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
+              <Upload className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
               {__('Import')}
             </Button>
             <ExportButton
@@ -674,13 +674,13 @@ export default function Subscribers() {
           <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-2 wsms-p-3">
             {/* Search */}
             <div className="wsms-relative wsms-w-full xl:wsms-w-[220px] xl:wsms-shrink-0">
-              <Search className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
+              <Search className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
               <Input
                 type="text"
                 value={filters.filters.search}
                 onChange={(e) => filters.setFilter('search', e.target.value)}
                 placeholder={__('Search...')}
-                className="wsms-pl-8 wsms-h-9"
+                className="wsms-ps-8 wsms-h-9"
               />
             </div>
 
@@ -737,7 +737,7 @@ export default function Subscribers() {
               variant="outline"
               size="sm"
               onClick={() => table.fetch({ page: 1 })}
-              className="wsms-h-9 wsms-px-2.5 xl:wsms-ml-auto"
+              className="wsms-h-9 wsms-px-2.5 xl:wsms-ms-auto"
               aria-label={__('Refresh subscribers')}
             >
               <RefreshCw
@@ -797,9 +797,9 @@ export default function Subscribers() {
                 className="wsms-h-9 wsms-px-4 wsms-shrink-0"
               >
                 {isAddingQuick ? (
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1.5 wsms-animate-spin" aria-hidden="true" />
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1.5 wsms-animate-spin" aria-hidden="true" />
                 ) : (
-                  <UserPlus className="wsms-h-4 wsms-w-4 wsms-mr-1.5" aria-hidden="true" />
+                  <UserPlus className="wsms-h-4 wsms-w-4 wsms-me-1.5" aria-hidden="true" />
                 )}
                 {__('Add')}
               </Button>
@@ -914,7 +914,7 @@ export default function Subscribers() {
             <Button onClick={editDialog.save} disabled={editDialog.isSaving}>
               {editDialog.isSaving ? (
                 <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
                   Saving...
                 </>
               ) : (
@@ -990,12 +990,12 @@ export default function Subscribers() {
             >
               {isSendingReply ? (
                 <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
                   Sending...
                 </>
               ) : (
                 <>
-                  <Send className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                  <Send className="wsms-h-4 wsms-w-4 wsms-me-2" />
                   Send Message
                 </>
               )}
@@ -1074,7 +1074,7 @@ export default function Subscribers() {
               <Button onClick={handleMoveToGroup} disabled={isMovingToGroup || !moveToGroupId}>
                 {isMovingToGroup ? (
                   <>
-                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
                     {__('Moving...')}
                   </>
                 ) : (

@@ -74,7 +74,7 @@ export function AddonSection({ section, fields }) {
               <IconComponent className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               {section.title}
               {section.addonSlug === 'wp-sms-pro' && (
-                <span className="wsms-ml-1 wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
+                <span className="wsms-ms-1 wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
                   PRO
                 </span>
               )}

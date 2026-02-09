@@ -245,7 +245,8 @@ export default function SendSms() {
             onClick={() => setCurrentPage('gateway')}
             className="wsms-underline wsms-font-medium"
           >
-            {__('Configure Gateway')} →
+            {__('Configure Gateway')}{' '}
+            <span className="wsms-inline-block rtl:wsms-scale-x-[-1]">{'\u2192'}</span>
           </button>
         </Tip>
       )}
@@ -332,7 +333,7 @@ export default function SendSms() {
                       className="wsms-scale-90"
                     />
                     <span className="wsms-text-[12px] wsms-text-muted-foreground">
-                      <Zap className="wsms-h-3 wsms-w-3 wsms-inline wsms-mr-1 wsms-text-amber-500" />
+                      <Zap className="wsms-h-3 wsms-w-3 wsms-inline wsms-me-1 wsms-text-amber-500" />
                       {__('Flash')}
                     </span>
                   </label>
@@ -377,7 +378,7 @@ export default function SendSms() {
               <Users className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               <CardTitle className="wsms-text-sm">{__('Recipients')}</CardTitle>
               {recipientCount > 0 && (
-                <span className="wsms-ml-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary wsms-text-primary-foreground wsms-text-[11px] wsms-font-medium">
+                <span className="wsms-ms-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary wsms-text-primary-foreground wsms-text-[11px] wsms-font-medium">
                   {isLoadingCount ? (
                     <Loader2 className="wsms-h-3 wsms-w-3 wsms-animate-spin" />
                   ) : (
@@ -412,7 +413,7 @@ export default function SendSms() {
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <CalendarClock className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               <CardTitle className="wsms-text-sm">{__('Scheduling Options')}</CardTitle>
-              <span className="wsms-ml-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
+              <span className="wsms-ms-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
                 {__('PRO')}
               </span>
             </div>
@@ -440,7 +441,7 @@ export default function SendSms() {
 
               {/* Schedule Date/Time */}
               {scheduleEnabled && (
-                <div className="wsms-pl-7 wsms-space-y-4 wsms-border-l-2 wsms-border-primary/20 wsms-ml-2">
+                <div className="wsms-ps-7 wsms-space-y-4 wsms-border-s-2 wsms-border-primary/20 wsms-ms-2">
                   <div className="wsms-space-y-1.5">
                     <label className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">
                       {__('Schedule Date & Time')}
@@ -478,7 +479,7 @@ export default function SendSms() {
 
                   {/* Repeat Options */}
                   {repeatEnabled && (
-                    <div className="wsms-space-y-4 wsms-pl-7 wsms-border-l-2 wsms-border-primary/10 wsms-ml-2">
+                    <div className="wsms-space-y-4 wsms-ps-7 wsms-border-s-2 wsms-border-primary/10 wsms-ms-2">
                       {/* Repeat Interval */}
                       <div className="wsms-space-y-1.5">
                         <label className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">

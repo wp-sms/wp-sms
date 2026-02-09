@@ -104,7 +104,7 @@ const ForminatorFormSettings = ({ form }) => {
       <button
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-p-3 wsms-bg-muted/30 hover:wsms-bg-muted/50 wsms-transition-colors wsms-text-left"
+        className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-p-3 wsms-bg-muted/30 hover:wsms-bg-muted/50 wsms-transition-colors wsms-text-start"
       >
         <div className="wsms-flex wsms-items-center wsms-gap-3">
           {hasAnyEnabled && (
@@ -134,7 +134,7 @@ const ForminatorFormSettings = ({ form }) => {
             </div>
 
             {enableForm === '1' && (
-              <div className="wsms-space-y-4 wsms-pl-4 wsms-border-l-2 wsms-border-primary/20">
+              <div className="wsms-space-y-4 wsms-ps-4 wsms-border-s-2 wsms-border-primary/20">
                 <div className="wsms-space-y-2">
                   <Label>{__('Phone number(s)')}</Label>
                   <Input
@@ -187,7 +187,7 @@ const ForminatorFormSettings = ({ form }) => {
               </div>
 
               {enableField === '1' && (
-                <div className="wsms-space-y-4 wsms-pl-4 wsms-border-l-2 wsms-border-primary/20">
+                <div className="wsms-space-y-4 wsms-ps-4 wsms-border-s-2 wsms-border-primary/20">
                   <div className="wsms-space-y-2">
                     <Label>{__('A field of the form')}</Label>
                     <Select value={receiverField} onValueChange={setReceiverField}>
@@ -277,7 +277,7 @@ const GravityFormSettings = ({ form }) => {
       <button
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-p-3 wsms-bg-muted/30 hover:wsms-bg-muted/50 wsms-transition-colors wsms-text-left"
+        className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-p-3 wsms-bg-muted/30 hover:wsms-bg-muted/50 wsms-transition-colors wsms-text-start"
       >
         <div className="wsms-flex wsms-items-center wsms-gap-3">
           {hasAnyEnabled && (
@@ -307,7 +307,7 @@ const GravityFormSettings = ({ form }) => {
             </div>
 
             {enableForm === '1' && (
-              <div className="wsms-space-y-4 wsms-pl-4 wsms-border-l-2 wsms-border-primary/20">
+              <div className="wsms-space-y-4 wsms-ps-4 wsms-border-s-2 wsms-border-primary/20">
                 <div className="wsms-space-y-2">
                   <Label>{__('Phone number(s)')}</Label>
                   <Input
@@ -360,7 +360,7 @@ const GravityFormSettings = ({ form }) => {
               </div>
 
               {enableField === '1' && (
-                <div className="wsms-space-y-4 wsms-pl-4 wsms-border-l-2 wsms-border-primary/20">
+                <div className="wsms-space-y-4 wsms-ps-4 wsms-border-s-2 wsms-border-primary/20">
                   <div className="wsms-space-y-2">
                     <Label>{__('A field of the form')}</Label>
                     <Select value={receiverField} onValueChange={setReceiverField}>
@@ -451,7 +451,7 @@ const QuformFormSettings = ({ form }) => {
       <button
         type="button"
         onClick={() => setIsExpanded(!isExpanded)}
-        className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-p-3 wsms-bg-muted/30 hover:wsms-bg-muted/50 wsms-transition-colors wsms-text-left"
+        className="wsms-w-full wsms-flex wsms-items-center wsms-justify-between wsms-p-3 wsms-bg-muted/30 hover:wsms-bg-muted/50 wsms-transition-colors wsms-text-start"
       >
         <div className="wsms-flex wsms-items-center wsms-gap-3">
           {hasAnyEnabled && (
@@ -481,7 +481,7 @@ const QuformFormSettings = ({ form }) => {
             </div>
 
             {enableForm === '1' && (
-              <div className="wsms-space-y-4 wsms-pl-4 wsms-border-l-2 wsms-border-primary/20">
+              <div className="wsms-space-y-4 wsms-ps-4 wsms-border-s-2 wsms-border-primary/20">
                 <div className="wsms-space-y-2">
                   <Label>{__('Phone number(s)')}</Label>
                   <Input
@@ -534,7 +534,7 @@ const QuformFormSettings = ({ form }) => {
               </div>
 
               {enableField === '1' && (
-                <div className="wsms-space-y-4 wsms-pl-4 wsms-border-l-2 wsms-border-primary/20">
+                <div className="wsms-space-y-4 wsms-ps-4 wsms-border-s-2 wsms-border-primary/20">
                   <div className="wsms-space-y-2">
                     <Label>{__('A field of the form')}</Label>
                     <Select value={receiverField} onValueChange={setReceiverField}>
@@ -868,7 +868,7 @@ export default function Integrations() {
                 <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                   <ClipboardList className="wsms-h-4 wsms-w-4 wsms-text-primary" />
                   {__('Gravity Forms')}
-                  <span className="wsms-ml-1 wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
+                  <span className="wsms-ms-1 wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
                     PRO
                   </span>
                 </CardTitle>
@@ -915,7 +915,7 @@ export default function Integrations() {
                 <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                   <ClipboardList className="wsms-h-4 wsms-w-4 wsms-text-primary" />
                   {__('Quform')}
-                  <span className="wsms-ml-1 wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
+                  <span className="wsms-ms-1 wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
                     PRO
                   </span>
                 </CardTitle>
@@ -1006,7 +1006,7 @@ export default function Integrations() {
                     </div>
                     <PluginStatusBadge status={pluginStatus.status} />
                   </div>
-                  <p className="wsms-text-xs wsms-text-muted-foreground wsms-mt-1 wsms-ml-6">{plugin.requirement}</p>
+                  <p className="wsms-text-xs wsms-text-muted-foreground wsms-mt-1 wsms-ms-6">{plugin.requirement}</p>
                 </div>
               )
             })}

@@ -136,6 +136,7 @@ const MultiSelect = React.forwardRef(
           variant="outline"
           role="combobox"
           type="button"
+          dir={document.getElementById('wpsms-settings-root')?.getAttribute('dir') || undefined}
           aria-expanded={open}
           aria-label={ariaLabel || placeholder}
           disabled={disabled}
@@ -145,7 +146,7 @@ const MultiSelect = React.forwardRef(
             !selectedValues.length && 'wsms-text-muted-foreground'
           )}
         >
-          <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-flex-1 wsms-text-left">
+          <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-flex-1 wsms-text-start">
             {selectedValues.length === 0 ? (
               <span>{placeholder}</span>
             ) : selectedValues.length <= maxDisplayItems ? (
@@ -158,7 +159,7 @@ const MultiSelect = React.forwardRef(
                   {label}
                   <button
                     type="button"
-                    className="wsms-ml-1 wsms-rounded-full wsms-outline-none hover:wsms-bg-secondary-foreground/20"
+                    className="wsms-ms-1 wsms-rounded-full wsms-outline-none hover:wsms-bg-secondary-foreground/20"
                     onClick={(e) => handleRemove(selectedValues[index], e)}
                     aria-label={`Remove ${label}`}
                   >
@@ -172,7 +173,7 @@ const MultiSelect = React.forwardRef(
               </Badge>
             )}
           </div>
-          <div className="wsms-flex wsms-items-center wsms-gap-1 wsms-ml-2">
+          <div className="wsms-flex wsms-items-center wsms-gap-1 wsms-ms-2">
             {selectedValues.length > 0 && (
               <button
                 type="button"
@@ -197,12 +198,12 @@ const MultiSelect = React.forwardRef(
             {/* Search input */}
             <div className="wsms-p-2 wsms-border-b wsms-border-border">
               <div className="wsms-relative">
-                <Search className="wsms-absolute wsms-left-2 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
+                <Search className="wsms-absolute wsms-start-2 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
                 <Input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={searchPlaceholder}
-                  className="wsms-pl-8 wsms-h-8"
+                  className="wsms-ps-8 wsms-h-8"
                 />
               </div>
             </div>
@@ -222,7 +223,7 @@ const MultiSelect = React.forwardRef(
                       type="button"
                       onClick={() => handleSelect(option.value)}
                       className={cn(
-                        'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded wsms-px-2 wsms-py-1.5 wsms-text-left wsms-text-[13px] wsms-outline-none',
+                        'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded wsms-px-2 wsms-py-1.5 wsms-text-start wsms-text-[13px] wsms-outline-none',
                         'hover:wsms-bg-accent focus:wsms-bg-accent',
                         isSelected && 'wsms-bg-accent/50'
                       )}

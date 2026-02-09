@@ -54,7 +54,7 @@ export function TemplateTextarea({
       />
       {variables.length > 0 && (
         <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-1.5">
-          <span className="wsms-text-xs wsms-text-muted-foreground wsms-mr-1">Insert:</span>
+          <span className="wsms-text-xs wsms-text-muted-foreground wsms-me-1">Insert:</span>
           {variables.map((variable) => (
             <button
               key={variable}

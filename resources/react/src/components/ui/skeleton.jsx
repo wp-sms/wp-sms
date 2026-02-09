@@ -80,7 +80,7 @@ function PageLoadingSkeleton({ className, ...props }) {
             <div key={i} className="wsms-flex wsms-items-center wsms-gap-4">
               <Skeleton className="wsms-h-4 wsms-w-4 wsms-rounded" />
               <Skeleton className="wsms-h-4 wsms-flex-1 wsms-max-w-[200px]" />
-              <Skeleton className="wsms-h-4 wsms-w-20 wsms-ml-auto" />
+              <Skeleton className="wsms-h-4 wsms-w-20 wsms-ms-auto" />
             </div>
           ))}
         </div>

@@ -10,15 +10,16 @@ const SelectValue = SelectPrimitive.Value
 const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
+    dir={document.getElementById('wpsms-settings-root')?.getAttribute('dir') || undefined}
     className={cn(
-      'wsms-flex wsms-h-9 wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-border wsms-border-input wsms-bg-card wsms-px-3 wsms-text-[13px] wsms-text-foreground wsms-shadow-sm hover:wsms-bg-accent/50 focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20 focus:wsms-border-primary disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50 [&>span]:wsms-line-clamp-1',
+      'wsms-select-trigger wsms-flex wsms-h-9 wsms-w-full wsms-items-center wsms-justify-between wsms-gap-2 wsms-rounded-md wsms-border wsms-border-input wsms-bg-card wsms-px-3 wsms-text-[13px] wsms-text-foreground wsms-shadow-sm hover:wsms-bg-accent/50 focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-primary/20 focus:wsms-border-primary disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50 [&>span]:wsms-line-clamp-1 [&>span]:wsms-flex-1 [&>span]:wsms-text-start',
       className
     )}
     {...props}
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <ChevronDown className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-transition-transform" />
+      <ChevronDown className="wsms-h-4 wsms-w-4 wsms-shrink-0 wsms-text-muted-foreground wsms-transition-transform" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ))
@@ -41,8 +42,9 @@ const SelectContent = React.forwardRef(({ className, children, position = 'poppe
   <SelectPrimitive.Portal container={document.getElementById('wpsms-settings-root')}>
     <SelectPrimitive.Content
       ref={ref}
+      dir={document.getElementById('wpsms-settings-root')?.getAttribute('dir') || undefined}
       className={cn(
-        'wsms-relative wsms-min-w-[8rem] wsms-rounded wsms-shadow-md',
+        'wsms-relative wsms-min-w-[8rem] wsms-rounded wsms-shadow-md ltr:wsms-text-left rtl:wsms-text-right',
         position === 'popper' && 'wsms-translate-y-1',
         className
       )}
@@ -67,7 +69,10 @@ SelectContent.displayName = SelectPrimitive.Content.displayName
 const SelectLabel = React.forwardRef(({ className, ...props }, ref) => (
   <SelectPrimitive.Label
     ref={ref}
-    className={cn('wsms-py-1.5 wsms-pl-7 wsms-pr-2 wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground', className)}
+    className={cn(
+      'wsms-py-1.5 wsms-ps-7 wsms-pe-2 wsms-text-[12px] wsms-font-medium wsms-text-muted-foreground wsms-text-start rtl:wsms-text-right',
+      className
+    )}
     {...props}
   />
 ))
@@ -77,7 +82,6 @@ const selectItemBaseStyles = {
   display: 'flex',
   alignItems: 'center',
   width: '100%',
-  padding: '6px 8px 6px 28px',
   borderRadius: '4px',
   fontSize: '13px',
   fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -94,7 +98,7 @@ const SelectItem = React.forwardRef(({ className, children, style, ...props }, r
     <SelectPrimitive.Item
       ref={ref}
       className={cn(
-        'wsms-relative wsms-flex wsms-w-full wsms-cursor-pointer wsms-select-none wsms-items-center wsms-rounded wsms-py-1.5 wsms-pl-7 wsms-pr-2 wsms-text-[13px] wsms-outline-none data-[disabled]:wsms-pointer-events-none data-[disabled]:wsms-opacity-50',
+        'wsms-relative wsms-flex wsms-w-full wsms-cursor-pointer wsms-select-none wsms-items-center wsms-rounded wsms-py-1.5 wsms-ps-7 wsms-pe-2 wsms-text-[13px] wsms-outline-none data-[disabled]:wsms-pointer-events-none data-[disabled]:wsms-opacity-50 wsms-text-start rtl:wsms-text-right',
         className
       )}
       style={{
@@ -106,12 +110,14 @@ const SelectItem = React.forwardRef(({ className, children, style, ...props }, r
       onMouseLeave={() => setIsHovered(false)}
       {...props}
     >
-      <span style={{ position: 'absolute', left: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '14px', height: '14px' }}>
+      <span className="wsms-absolute wsms-start-2 wsms-flex wsms-items-center wsms-justify-center wsms-w-[14px] wsms-h-[14px]">
         <SelectPrimitive.ItemIndicator>
           <Check style={{ width: '12px', height: '12px', color: '#f97316' }} />
         </SelectPrimitive.ItemIndicator>
       </span>
-      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+      <SelectPrimitive.ItemText asChild>
+        <span className="wsms-flex-1 wsms-text-start rtl:wsms-text-right">{children}</span>
+      </SelectPrimitive.ItemText>
     </SelectPrimitive.Item>
   )
 })

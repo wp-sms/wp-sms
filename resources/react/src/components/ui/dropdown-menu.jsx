@@ -18,13 +18,13 @@ const DropdownMenuSubTrigger = React.forwardRef(
         'wsms-flex wsms-cursor-default wsms-select-none wsms-items-center wsms-rounded-sm wsms-px-2 wsms-py-1.5 wsms-text-sm wsms-outline-none',
         'focus:wsms-bg-accent',
         'data-[state=open]:wsms-bg-accent',
-        inset && 'wsms-pl-8',
+        inset && 'wsms-ps-8',
         className
       )}
       {...props}
     >
       {children}
-      <ChevronRight className="wsms-ml-auto wsms-h-4 wsms-w-4" />
+      <ChevronRight className="wsms-ms-auto wsms-h-4 wsms-w-4 rtl:wsms-scale-x-[-1]" />
     </DropdownMenuPrimitive.SubTrigger>
   )
 )
@@ -97,7 +97,7 @@ const dropdownItemBaseStyles = {
   outline: 'none',
   border: 'none',
   width: '100%',
-  textAlign: 'left',
+  textAlign: 'start',
   textDecoration: 'none',
 }
 
@@ -110,7 +110,7 @@ const DropdownMenuItem = React.forwardRef(
         className={cn(
           'wsms-relative wsms-flex wsms-cursor-pointer wsms-select-none wsms-items-center wsms-gap-2 wsms-rounded-md wsms-outline-none wsms-transition-colors',
           'data-[disabled]:wsms-pointer-events-none data-[disabled]:wsms-opacity-50',
-          inset && 'wsms-pl-8',
+          inset && 'wsms-ps-8',
           className
         )}
         style={{
@@ -132,7 +132,7 @@ const DropdownMenuCheckboxItem = React.forwardRef(
     <DropdownMenuPrimitive.CheckboxItem
       ref={ref}
       className={cn(
-        'wsms-relative wsms-flex wsms-cursor-pointer wsms-select-none wsms-items-center wsms-rounded-sm wsms-py-1.5 wsms-pl-8 wsms-pr-2 wsms-text-sm wsms-outline-none wsms-transition-colors',
+        'wsms-relative wsms-flex wsms-cursor-pointer wsms-select-none wsms-items-center wsms-rounded-sm wsms-py-1.5 wsms-ps-8 wsms-pe-2 wsms-text-sm wsms-outline-none wsms-transition-colors',
         'focus:wsms-bg-accent focus:wsms-text-accent-foreground',
         'data-[disabled]:wsms-pointer-events-none data-[disabled]:wsms-opacity-50',
         className
@@ -140,7 +140,7 @@ const DropdownMenuCheckboxItem = React.forwardRef(
       checked={checked}
       {...props}
     >
-      <span className="wsms-absolute wsms-left-2 wsms-flex wsms-h-3.5 wsms-w-3.5 wsms-items-center wsms-justify-center">
+      <span className="wsms-absolute wsms-start-2 wsms-flex wsms-h-3.5 wsms-w-3.5 wsms-items-center wsms-justify-center">
         <DropdownMenuPrimitive.ItemIndicator>
           <Check className="wsms-h-4 wsms-w-4" />
         </DropdownMenuPrimitive.ItemIndicator>
@@ -156,14 +156,14 @@ const DropdownMenuRadioItem = React.forwardRef(
     <DropdownMenuPrimitive.RadioItem
       ref={ref}
       className={cn(
-        'wsms-relative wsms-flex wsms-cursor-pointer wsms-select-none wsms-items-center wsms-rounded-sm wsms-py-1.5 wsms-pl-8 wsms-pr-2 wsms-text-sm wsms-outline-none wsms-transition-colors',
+        'wsms-relative wsms-flex wsms-cursor-pointer wsms-select-none wsms-items-center wsms-rounded-sm wsms-py-1.5 wsms-ps-8 wsms-pe-2 wsms-text-sm wsms-outline-none wsms-transition-colors',
         'focus:wsms-bg-accent focus:wsms-text-accent-foreground',
         'data-[disabled]:wsms-pointer-events-none data-[disabled]:wsms-opacity-50',
         className
       )}
       {...props}
     >
-      <span className="wsms-absolute wsms-left-2 wsms-flex wsms-h-3.5 wsms-w-3.5 wsms-items-center wsms-justify-center">
+      <span className="wsms-absolute wsms-start-2 wsms-flex wsms-h-3.5 wsms-w-3.5 wsms-items-center wsms-justify-center">
         <DropdownMenuPrimitive.ItemIndicator>
           <Circle className="wsms-h-2 wsms-w-2 wsms-fill-current" />
         </DropdownMenuPrimitive.ItemIndicator>
@@ -180,7 +180,7 @@ const DropdownMenuLabel = React.forwardRef(
       ref={ref}
       className={cn(
         'wsms-px-2 wsms-py-1.5 wsms-text-sm wsms-font-semibold',
-        inset && 'wsms-pl-8',
+        inset && 'wsms-ps-8',
         className
       )}
       {...props}
@@ -203,7 +203,7 @@ DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName
 const DropdownMenuShortcut = ({ className, ...props }) => {
   return (
     <span
-      className={cn('wsms-ml-auto wsms-text-xs wsms-tracking-widest wsms-opacity-60', className)}
+      className={cn('wsms-ms-auto wsms-text-xs wsms-tracking-widest wsms-opacity-60', className)}
       {...props}
     />
   )

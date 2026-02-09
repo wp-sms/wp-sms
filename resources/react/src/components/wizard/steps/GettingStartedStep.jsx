@@ -50,7 +50,7 @@ export default function GettingStartedStep({
         <CardHeader>
           <CardTitle>
             {__('Your Mobile Number')}
-            <span className="wsms-text-destructive wsms-ml-0.5">*</span>
+            <span className="wsms-text-destructive wsms-ms-0.5">*</span>
           </CardTitle>
           <CardDescription>
             {__("We'll use this for test SMS and admin notifications.")}

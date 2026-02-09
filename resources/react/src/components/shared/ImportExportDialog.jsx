@@ -171,7 +171,7 @@ const ImportExportDialog = ({
                 {file ? (
                   <div className="wsms-flex wsms-items-center wsms-justify-center wsms-gap-3">
                     <FileText className="wsms-h-8 wsms-w-8 wsms-text-primary" />
-                    <div className="wsms-text-left">
+                    <div className="wsms-text-start">
                       <p className="wsms-text-[13px] wsms-font-medium">{file.name}</p>
                       <p className="wsms-text-[11px] wsms-text-muted-foreground">
                         {(file.size / 1024).toFixed(1)} KB
@@ -235,7 +235,7 @@ const ImportExportDialog = ({
                         {preview[0]?.map((header, i) => (
                           <th
                             key={i}
-                            className="wsms-px-3 wsms-py-2 wsms-text-left wsms-font-medium wsms-text-muted-foreground"
+                            className="wsms-px-3 wsms-py-2 wsms-text-start wsms-font-medium wsms-text-muted-foreground"
                           >
                             {header}
                           </th>
@@ -331,12 +331,12 @@ const ImportExportDialog = ({
             <Button onClick={handleImport} disabled={isLoading || !file}>
               {isLoading ? (
                 <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
                   Importing...
                 </>
               ) : (
                 <>
-                  <Upload className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                  <Upload className="wsms-h-4 wsms-w-4 wsms-me-2" />
                   Import
                 </>
               )}
@@ -345,12 +345,12 @@ const ImportExportDialog = ({
             <Button onClick={handleExport} disabled={isLoading}>
               {isLoading ? (
                 <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
                   Exporting...
                 </>
               ) : (
                 <>
-                  <Download className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                  <Download className="wsms-h-4 wsms-w-4 wsms-me-2" />
                   Export
                 </>
               )}

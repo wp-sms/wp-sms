@@ -149,7 +149,7 @@ export default function ConfigurationStep({
             </div>
           ) : (
             <Tip variant="info">
-              <AlertCircle className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-inline" />
+              <AlertCircle className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-inline" />
               {__('Save your gateway selection first to load credential fields.')}
             </Tip>
           )}
@@ -162,7 +162,7 @@ export default function ConfigurationStep({
           <Button onClick={handleTestConnection} disabled={testing || !hasFields} size="sm">
             {testing ? (
               <>
-                <Loader2 className="wsms-h-3.5 wsms-w-3.5 wsms-mr-1.5 wsms-animate-spin" />
+                <Loader2 className="wsms-h-3.5 wsms-w-3.5 wsms-me-1.5 wsms-animate-spin" />
                 {__('Testing...')}
               </>
             ) : (

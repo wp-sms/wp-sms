@@ -373,20 +373,20 @@ export default function SetupWizard() {
                 disabled={currentStep === 0}
                 className={currentStep === 0 ? 'wsms-invisible' : ''}
               >
-                <ChevronLeft className="wsms-h-4 wsms-w-4 wsms-mr-1" />
+                <ChevronLeft className="wsms-h-4 wsms-w-4 wsms-me-1 rtl:wsms-scale-x-[-1]" />
                 {__('Back')}
               </Button>
 
               <Button onClick={handleNext} disabled={!canProceed || saving}>
                 {saving ? (
                   <>
-                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-1.5 wsms-animate-spin" />
+                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1.5 wsms-animate-spin" />
                     {__('Saving...')}
                   </>
                 ) : (
                   <>
                     {getNextButtonLabel()}
-                    <ChevronRight className="wsms-h-4 wsms-w-4 wsms-ml-1" />
+                    <ChevronRight className="wsms-h-4 wsms-w-4 wsms-ms-1 rtl:wsms-scale-x-[-1]" />
                   </>
                 )}
               </Button>

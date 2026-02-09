@@ -107,7 +107,7 @@ const MessageComposer = React.forwardRef(
             disabled={disabled}
             rows={rows}
             className={cn(
-              'wsms-resize-none wsms-pr-4 wsms-rounded-b-none wsms-border-b-0',
+              'wsms-resize-none wsms-pe-4 wsms-rounded-b-none wsms-border-b-0',
               isOverLimit && 'wsms-border-red-500 focus:wsms-ring-red-500/20'
             )}
           />

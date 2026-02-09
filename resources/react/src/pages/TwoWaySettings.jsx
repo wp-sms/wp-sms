@@ -176,7 +176,7 @@ export default function TwoWaySettings() {
                   rel="noopener noreferrer"
                 >
                   {__('Learn More')}
-                  <ExternalLink className="wsms-ml-2 wsms-h-4 wsms-w-4" />
+                  <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
                 </a>
               </Button>
             </div>
@@ -310,12 +310,12 @@ export default function TwoWaySettings() {
                   >
                     {isRegistering ? (
                       <>
-                        <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" />
+                        <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
                         {__('Registering...')}
                       </>
                     ) : (
                       <>
-                        <ArrowRight className="wsms-h-4 wsms-w-4 wsms-mr-2" />
+                        <ArrowRight className="wsms-h-4 wsms-w-4 wsms-me-2 rtl:wsms-scale-x-[-1]" />
                         {__('Register Webhook')}
                       </>
                     )}

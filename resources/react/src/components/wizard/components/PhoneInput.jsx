@@ -41,17 +41,20 @@ export default function PhoneInput({
       }
 
       // Add custom styles for intlTelInput
-      if (!document.querySelector('style[data-iti-custom]')) {
-        const style = document.createElement('style')
+      // Keep this style block idempotent. In the React SPA, the element may already exist from a
+      // previous navigation, and we don't want stale CSS to linger across updates.
+      const existingStyle = document.querySelector('style[data-iti-custom]')
+      const style = existingStyle || document.createElement('style')
+      if (!existingStyle) {
         style.setAttribute('data-iti-custom', 'true')
-        style.textContent = `
-          .iti { width: 100%; }
-          .iti__country-list { font-size: 12px; }
-          .iti__country-name, .iti__dial-code { font-size: 12px; }
-          .iti__search-input { font-size: 12px; padding: 6px 8px; }
-        `
         document.head.appendChild(style)
       }
+      style.textContent = `
+        .iti { width: 100%; }
+        .iti__country-list { font-size: 12px; }
+        .iti__country-name, .iti__dial-code { font-size: 12px; }
+        .iti__search-input { font-size: 12px; padding: 6px 8px; }
+      `
 
 
       // Load main script if not already loaded
@@ -214,15 +217,15 @@ export default function PhoneInput({
         autoComplete="off"
         disabled={disabled}
         className={cn(
-          'wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-px-3 wsms-py-1 wsms-text-sm wsms-ring-offset-background',
+          'wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-py-1 wsms-text-sm wsms-ring-offset-background',
           'placeholder:wsms-text-muted-foreground',
           'focus-visible:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-ring focus-visible:wsms-ring-offset-2',
           'disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50',
           error && 'wsms-border-destructive',
-          // Extra padding for the country dropdown
-          'wsms-pl-[90px]'
+          // Ensure enough room for the country button on the "start" side:
+          // LTR: left, RTL: right.
+          'wsms-ps-[90px] wsms-pe-3 rtl:wsms-ps-3 rtl:wsms-pe-[90px]',
         )}
-        style={{ paddingLeft: '90px', height: '36px' }}
       />
       {error && (
         <p className="wsms-text-[12px] wsms-text-destructive wsms-mt-1">{error}</p>

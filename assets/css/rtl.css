@@ -1,0 +1,51 @@
+/*
+ * WP SMS - RTL fixes
+ * Scoped to the Unified Admin (React dashboard) page.
+ */
+
+/* WordPress admin uses padding-right in RTL; remove it for the full-width React app. */
+body.rtl.sms_page_wp-sms-unified-admin #wpcontent {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+
+body.rtl.sms_page_wp-sms-unified-admin #wpbody-content {
+  padding-right: 0 !important;
+}
+
+/*
+ * Message Button preview (chatbox) in RTL:
+ * WP admin UI sits on the right in RTL. Force the preview to render on the left side to avoid overlap.
+ * This only affects the Unified Admin React page in RTL.
+ */
+body.rtl.sms_page_wp-sms-unified-admin .wpsms-chatbox.wpsms-chatbox--right-side,
+body.rtl.sms_page_wp-sms-unified-admin .wpsms-chatbox.wpsms-chatbox--left-side {
+  right: auto !important;
+  left: 2rem !important;
+}
+
+body.rtl.sms_page_wp-sms-unified-admin .wpsms-chatbox.wpsms-chatbox--right-side .wpsms-chatbox__content,
+body.rtl.sms_page_wp-sms-unified-admin .wpsms-chatbox.wpsms-chatbox--left-side .wpsms-chatbox__content {
+  right: auto !important;
+  left: 1rem !important;
+}
+
+body.rtl.sms_page_wp-sms-unified-admin .wpsms-chatbox.wpsms-chatbox--right-side .wpsms-chatbox__arrow,
+body.rtl.sms_page_wp-sms-unified-admin .wpsms-chatbox.wpsms-chatbox--left-side .wpsms-chatbox__arrow {
+  right: auto !important;
+  left: 2.5rem !important;
+}
+
+/*
+ * intl-tel-input (PhoneInput) in RTL:
+ * Ensure the dropdown aligns inside the viewport and the list/search align properly.
+ */
+body.rtl.sms_page_wp-sms-unified-admin #wpsms-settings-root[dir="rtl"] .iti--inline-dropdown .iti__dropdown-content {
+  left: auto !important;
+  right: 0 !important;
+}
+
+body.rtl.sms_page_wp-sms-unified-admin #wpsms-settings-root[dir="rtl"] .iti__country-list,
+body.rtl.sms_page_wp-sms-unified-admin #wpsms-settings-root[dir="rtl"] .iti__search-input {
+  text-align: right;
+}

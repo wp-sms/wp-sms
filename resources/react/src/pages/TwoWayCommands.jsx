@@ -340,7 +340,7 @@ export default function TwoWayCommands() {
               <Button variant="outline" asChild>
                 <a href="https://wsms.io/product/wp-sms-two-way/" target="_blank" rel="noopener noreferrer">
                   {__('Learn More')}
-                  <ExternalLink className="wsms-ml-2 wsms-h-4 wsms-w-4" />
+                  <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
                 </a>
               </Button>
             </div>
@@ -371,7 +371,7 @@ export default function TwoWayCommands() {
                 {__('Create auto-reply rules that trigger actions when subscribers send specific keywords via SMS.')}
               </p>
               <Button onClick={() => commandDialog.open()}>
-                <Plus className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
+                <Plus className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
                 {__('Create First Command')}
               </Button>
             </div>
@@ -428,7 +428,7 @@ export default function TwoWayCommands() {
           {/* Actions */}
           <div className="wsms-col-span-2 xl:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 xl:wsms-mt-0">
             <Button onClick={() => commandDialog.open()}>
-              <Plus className="wsms-h-4 wsms-w-4 wsms-mr-2" aria-hidden="true" />
+              <Plus className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
               {__('New Command')}
             </Button>
           </div>
@@ -441,13 +441,13 @@ export default function TwoWayCommands() {
           <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-2">
             {/* Search */}
             <div className="wsms-relative wsms-w-full xl:wsms-w-[220px] xl:wsms-shrink-0">
-              <Search className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
+              <Search className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
               <Input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={__('Search commands...')}
-                className="wsms-pl-8 wsms-h-9"
+                className="wsms-ps-8 wsms-h-9"
                 aria-label={__('Search commands')}
               />
             </div>
@@ -481,7 +481,7 @@ export default function TwoWayCommands() {
             </div>
 
             {/* Actions */}
-            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ml-auto">
+            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ms-auto">
               {hasActiveFilters && (
                 <Button
                   variant="ghost"
@@ -641,7 +641,7 @@ export default function TwoWayCommands() {
                 />
                 {successVariables.length > 0 && (
                   <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-1.5 wsms-mt-2">
-                    <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-mr-1">{__('Insert')}:</span>
+                    <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-me-1">{__('Insert')}:</span>
                     {successVariables.map(v => (
                       <button
                         key={v}
@@ -684,7 +684,7 @@ export default function TwoWayCommands() {
                 />
                 {failureVariables.length > 0 && (
                   <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-1.5 wsms-mt-2">
-                    <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-mr-1">{__('Insert')}:</span>
+                    <span className="wsms-text-[11px] wsms-text-muted-foreground wsms-me-1">{__('Insert')}:</span>
                     {failureVariables.map(v => (
                       <button
                         key={v}
@@ -731,7 +731,7 @@ export default function TwoWayCommands() {
             <Button onClick={commandDialog.save} disabled={commandDialog.isSaving || isEditLoading}>
               {commandDialog.isSaving ? (
                 <>
-                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-mr-2 wsms-animate-spin" aria-hidden="true" />
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" aria-hidden="true" />
                   {__('Saving...')}
                 </>
               ) : commandDialog.isEdit ? __('Save Changes') : __('Create Command')}

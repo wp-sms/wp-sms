@@ -8,31 +8,31 @@ import { cn } from '@/lib/utils'
 const colorVariants = {
   danger: {
     card: 'wsms-bg-gradient-to-br wsms-from-red-50 wsms-to-red-50/50 dark:wsms-from-red-950/30 dark:wsms-to-red-950/10',
-    border: 'wsms-border-l-red-500',
+    border: 'wsms-border-s-red-500',
     icon: 'wsms-bg-red-100 dark:wsms-bg-red-900/30',
     glow: 'wsms-shadow-red-500/5'
   },
   info: {
     card: 'wsms-bg-gradient-to-br wsms-from-blue-50 wsms-to-blue-50/50 dark:wsms-from-blue-950/30 dark:wsms-to-blue-950/10',
-    border: 'wsms-border-l-blue-500',
+    border: 'wsms-border-s-blue-500',
     icon: 'wsms-bg-blue-100 dark:wsms-bg-blue-900/30',
     glow: 'wsms-shadow-blue-500/5'
   },
   warning: {
     card: 'wsms-bg-gradient-to-br wsms-from-amber-50 wsms-to-amber-50/50 dark:wsms-from-amber-950/30 dark:wsms-to-amber-950/10',
-    border: 'wsms-border-l-amber-500',
+    border: 'wsms-border-s-amber-500',
     icon: 'wsms-bg-amber-100 dark:wsms-bg-amber-900/30',
     glow: 'wsms-shadow-amber-500/5'
   },
   success: {
     card: 'wsms-bg-gradient-to-br wsms-from-emerald-50 wsms-to-emerald-50/50 dark:wsms-from-emerald-950/30 dark:wsms-to-emerald-950/10',
-    border: 'wsms-border-l-emerald-500',
+    border: 'wsms-border-s-emerald-500',
     icon: 'wsms-bg-emerald-100 dark:wsms-bg-emerald-900/30',
     glow: 'wsms-shadow-emerald-500/5'
   },
   '': {
     card: 'wsms-bg-card',
-    border: 'wsms-border-l-border',
+    border: 'wsms-border-s-border',
     icon: 'wsms-bg-muted',
     glow: ''
   },
@@ -71,7 +71,7 @@ export function NotificationCard({ notification, onDismiss, showDismiss = true }
     <div
       className={cn(
         'wsms-group wsms-relative wsms-rounded-xl wsms-p-4',
-        'wsms-border-l-[3px] wsms-border wsms-border-border/40',
+        'wsms-border-s-[3px] wsms-border wsms-border-border/40',
         'wsms-transition-all wsms-duration-300 wsms-ease-out',
         'hover:wsms-shadow-lg',
         variant.card,
@@ -119,7 +119,7 @@ export function NotificationCard({ notification, onDismiss, showDismiss = true }
         )}
 
         {/* Main content */}
-        <div className="wsms-flex-1 wsms-min-w-0 wsms-pr-6">
+        <div className="wsms-flex-1 wsms-min-w-0 wsms-pe-6">
           {/* Title */}
           {title && (
             <h4 className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground wsms-leading-snug wsms-mb-1">

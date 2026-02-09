@@ -290,14 +290,14 @@ const RecipientSelector = React.forwardRef(
         {/* Search Bar - Compact */}
         {(activeTab === 'groups' || activeTab === 'roles') && (
           <div className="wsms-relative">
-            <Search className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
+            <Search className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
             <Input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={activeTab === 'groups' ? __('Search groups...') : __('Search roles...')}
               disabled={disabled}
-              className="wsms-pl-8 wsms-h-8 wsms-text-[12px]"
+              className="wsms-ps-8 wsms-h-8 wsms-text-[12px]"
             />
           </div>
         )}
@@ -305,14 +305,14 @@ const RecipientSelector = React.forwardRef(
         {/* User Search Bar */}
         {activeTab === 'users' && (
           <div className="wsms-relative">
-            <Search className="wsms-absolute wsms-left-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
+            <Search className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
             <Input
               type="text"
               value={userSearchQuery}
               onChange={(e) => setUserSearchQuery(e.target.value)}
               placeholder={__('Search by name, email, or user ID...')}
               disabled={disabled}
-              className="wsms-pl-8 wsms-h-8 wsms-text-[12px]"
+              className="wsms-ps-8 wsms-h-8 wsms-text-[12px]"
             />
           </div>
         )}
@@ -381,7 +381,7 @@ const RecipientSelector = React.forwardRef(
                         <span className="wsms-flex-1 wsms-text-[12px] wsms-text-foreground wsms-truncate">
                           {type.label}
                           {type.addonSlug === 'wp-sms-pro' && (
-                            <span className="wsms-ml-1.5 wsms-px-1.5 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[9px] wsms-font-medium">
+                            <span className="wsms-ms-1.5 wsms-px-1.5 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[9px] wsms-font-medium">
                               PRO
                             </span>
                           )}
@@ -478,7 +478,7 @@ const RecipientSelector = React.forwardRef(
                               disabled={disabled || isAlreadySelected || !user.hasMobile}
                               className={cn(
                                 'wsms-w-full wsms-flex wsms-items-center wsms-gap-2.5 wsms-px-2.5 wsms-py-2 wsms-rounded-md',
-                                'wsms-text-left wsms-transition-colors',
+                                'wsms-text-start wsms-transition-colors',
                                 isAlreadySelected
                                   ? 'wsms-bg-primary/10 wsms-cursor-not-allowed'
                                   : !user.hasMobile
@@ -492,7 +492,7 @@ const RecipientSelector = React.forwardRef(
                               <div className="wsms-flex-1 wsms-min-w-0">
                                 <p className="wsms-text-[12px] wsms-font-medium wsms-text-foreground wsms-truncate">
                                   {user.name}
-                                  <span className="wsms-text-muted-foreground wsms-font-normal wsms-ml-1">
+                                  <span className="wsms-text-muted-foreground wsms-font-normal wsms-ms-1">
                                     #{user.id}
                                   </span>
                                 </p>

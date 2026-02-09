@@ -25,8 +25,10 @@ function Toast({ id, title, description, variant, onDismiss }) {
   return (
     <div
       className={cn(
-        'wsms-pointer-events-auto wsms-relative wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-space-x-4 wsms-overflow-hidden wsms-rounded-md wsms-border wsms-p-4 wsms-pr-8 wsms-shadow-lg wsms-transition-all wsms-duration-150',
-        isExiting ? 'wsms-opacity-0 wsms-translate-x-2' : 'wsms-opacity-100 wsms-translate-x-0',
+        'wsms-pointer-events-auto wsms-relative wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-gap-4 wsms-overflow-hidden wsms-rounded-md wsms-border wsms-p-4 wsms-pe-8 wsms-shadow-lg wsms-transition-all wsms-duration-150',
+        isExiting
+          ? 'wsms-opacity-0 wsms-translate-x-2 rtl:wsms--translate-x-2'
+          : 'wsms-opacity-100 wsms-translate-x-0',
         variant === 'destructive' && 'wsms-border-red-200 wsms-bg-red-50 wsms-text-red-900',
         variant === 'success' && 'wsms-border-emerald-200 wsms-bg-emerald-50 wsms-text-emerald-900',
         variant === 'default' && 'wsms-border-border wsms-bg-white wsms-text-foreground'
@@ -43,7 +45,7 @@ function Toast({ id, title, description, variant, onDismiss }) {
       </div>
       <button
         onClick={handleDismiss}
-        className="wsms-absolute wsms-right-2 wsms-top-2 wsms-rounded-md wsms-p-1 wsms-text-current wsms-opacity-50 hover:wsms-opacity-100 wsms-transition-opacity"
+        className="wsms-absolute wsms-end-2 wsms-top-2 wsms-rounded-md wsms-p-1 wsms-text-current wsms-opacity-50 hover:wsms-opacity-100 wsms-transition-opacity"
       >
         <X className="wsms-h-4 wsms-w-4" />
       </button>
@@ -78,7 +80,7 @@ export function Toaster({ children }) {
       {/* Toast viewport - rendered inline, not as a portal */}
       <div
         ref={containerRef}
-        className="wsms-fixed wsms-bottom-4 wsms-right-4 wsms-z-[9999999] wsms-flex wsms-flex-col wsms-gap-2 wsms-max-w-[380px] wsms-w-full wsms-pointer-events-none"
+        className="wsms-fixed wsms-bottom-4 wsms-end-4 wsms-z-[9999999] wsms-flex wsms-flex-col wsms-gap-2 wsms-max-w-[380px] wsms-w-full wsms-pointer-events-none"
       >
         {toasts.map(({ id, title, description, variant }) => (
           <Toast
