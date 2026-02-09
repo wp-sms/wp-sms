@@ -50,3 +50,13 @@ body.rtl #wpsms-settings-root[dir="rtl"] .iti__country-list,
 body.rtl #wpsms-settings-root[dir="rtl"] .iti__search-input {
   text-align: right;
 }
+
+/*
+ * Unified dialog close button:
+ * Dialogs render a close button absolutely positioned in the top-right via inline styles.
+ * In RTL this can overlap right-aligned titles; move it to the top-left.
+ */
+body.rtl #wpsms-settings-root[dir="rtl"] .wsms-dialog-content [aria-label="Close dialog"] {
+  right: auto !important;
+  left: 12px !important;
+}
