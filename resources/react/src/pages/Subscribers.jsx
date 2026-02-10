@@ -16,6 +16,7 @@ import {
   UserX,
   RefreshCw,
   AlertCircle,
+  X,
 } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -528,12 +529,9 @@ export default function Subscribers() {
     )
   }
 
-  // Empty state - only show when truly no subscribers and no filters applied
-  const hasNoSubscribers = table.data.length === 0 &&
-    !filters.filters.search &&
-    filters.filters.group_id === 'all' &&
-    filters.filters.status === 'all' &&
-    filters.filters.country_code === 'all'
+  // Empty state - only show when there are truly no subscribers in the system
+  // Use stats.total (global count) instead of table.data.length (filtered results)
+  const hasNoSubscribers = stats.total === 0 && !table.isLoading
 
   if (hasNoSubscribers) {
     return (
@@ -591,7 +589,7 @@ export default function Subscribers() {
 
               {/* Import option */}
               <Button variant="outline" onClick={() => setShowImportDialog(true)}>
-                <Upload className="wsms-h-4 wsms-w-4 wsms-me-2" />
+                <Download className="wsms-h-4 wsms-w-4 wsms-me-2" />
                 {__('Import from CSV')}
               </Button>
             </div>
@@ -731,6 +729,19 @@ export default function Subscribers() {
                 </div>
               )}
             </div>
+
+            {/* Clear Filters */}
+            {(filters.filters.search || filters.filters.group_id !== 'all' || filters.filters.status !== 'all' || filters.filters.country_code !== 'all') && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={filters.resetFilters}
+                className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
+                aria-label={__('Clear all filters')}
+              >
+                <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
+              </Button>
+            )}
 
             {/* Refresh */}
             <Button
