@@ -428,7 +428,7 @@ const campaignColumns = [
     header: __('Created'),
     cell: ({ row }) => (
       <span className="wsms-text-[12px] wsms-text-muted-foreground">
-        {row.created_at ? new Date(row.created_at).toLocaleDateString() : '\u2014'}
+        {row.created_at ? formatDate(row.created_at) : '\u2014'}
       </span>
     ),
   },
@@ -723,29 +723,29 @@ export default function SmsCampaigns() {
               </SelectContent>
             </Select>
 
-            {/* Actions */}
-            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ms-auto">
-              {(filters.filters.search || filters.filters.status !== 'any') && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => filters.resetFilters()}
-                  className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
-                  aria-label={__('Clear all filters')}
-                >
-                  <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
-                </Button>
-              )}
+            {/* Clear Filters */}
+            {(filters.filters.search || filters.filters.status !== 'any') && (
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
-                onClick={() => table.fetch({ page: 1 })}
-                className="wsms-h-9 wsms-px-2.5"
-                aria-label={__('Refresh')}
+                onClick={() => filters.resetFilters()}
+                className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
+                aria-label={__('Clear all filters')}
               >
-                <RefreshCw className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')} />
+                <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
               </Button>
-            </div>
+            )}
+
+            {/* Refresh */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.fetch({ page: 1 })}
+              className="wsms-h-9 wsms-px-2.5 xl:wsms-ms-auto"
+              aria-label={__('Refresh')}
+            >
+              <RefreshCw className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')} />
+            </Button>
           </div>
         </CardContent>
       </Card>

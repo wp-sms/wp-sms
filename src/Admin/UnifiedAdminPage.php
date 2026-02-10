@@ -288,6 +288,8 @@ class UnifiedAdminPage extends Singleton
             'adminUrl'      => admin_url(),
             'siteUrl'       => site_url(),
             'timezone'      => wp_timezone_string(),
+            'dateFormat'    => get_option('date_format', 'F j, Y'),
+            'timeFormat'    => get_option('time_format', 'g:i a'),
             'version'       => WP_SMS_VERSION,
             'i18n'          => $this->getTranslations(),
             // Dynamic data for multi-select fields

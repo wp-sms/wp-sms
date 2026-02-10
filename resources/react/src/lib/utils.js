@@ -1,5 +1,6 @@
 import { clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
+import { formatDateWP } from './dateFormatter'
 
 /**
  * Merge class names with Tailwind CSS classes
@@ -24,18 +25,21 @@ export function formatCurrency(amount, currency = 'USD') {
 }
 
 /**
- * Format a date string
+ * Format a date string using WordPress date/time format settings
  * @param {string|Date} date - Date to format
- * @param {object} options - Intl.DateTimeFormat options
+ * @param {object} options - Formatting options
+ * @param {boolean} options.includeTime - Whether to include time
+ * @param {boolean} options.hour - Legacy option, if set implies includeTime
  * @returns {string} Formatted date string
  */
 export function formatDate(date, options = {}) {
-  const defaultOptions = {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-  }
-  return new Intl.DateTimeFormat('en-US', { ...defaultOptions, ...options }).format(new Date(date))
+  const includeTime = options.hour !== undefined || options.includeTime === true
+  return formatDateWP(date, {
+    includeTime,
+    dateFormat: window.wpSmsSettings?.dateFormat,
+    timeFormat: window.wpSmsSettings?.timeFormat,
+    timezone: window.wpSmsSettings?.timezone,
+  })
 }
 
 /**
