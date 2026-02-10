@@ -7,6 +7,7 @@ use WP_REST_Server;
 use WP_SMS\Newsletter;
 use WP_SMS\RestApi;
 use WP_SMS\Components\NumberParser;
+use WP_SMS\Api\Traits\DateFormatter;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -21,6 +22,7 @@ if (!defined('ABSPATH')) {
  */
 class SubscribersApi extends RestApi
 {
+    use DateFormatter;
     public function __construct()
     {
         add_action('rest_api_init', [$this, 'registerRoutes']);
@@ -335,14 +337,15 @@ class SubscribersApi extends RestApi
         // Format items
         $formatted = array_map(function ($item) {
             return [
-                'id'            => (int) $item['ID'],
-                'name'          => $item['name'],
-                'mobile'        => $item['mobile'],
-                'group_id'      => (int) $item['group_ID'],
-                'group_name'    => $item['group_name'] ?: '',
-                'status'        => $item['status'],
-                'date'          => $item['date'],
-                'custom_fields' => maybe_unserialize($item['custom_fields']) ?: [],
+                'id'             => (int) $item['ID'],
+                'name'           => $item['name'],
+                'mobile'         => $item['mobile'],
+                'group_id'       => (int) $item['group_ID'],
+                'group_name'     => $item['group_name'] ?: '',
+                'status'         => $item['status'],
+                'date'           => $item['date'],
+                'date_formatted' => $this->formatDateI18n($item['date'], false),
+                'custom_fields'  => maybe_unserialize($item['custom_fields']) ?: [],
             ];
         }, $items ?: []);
 
@@ -387,14 +390,15 @@ class SubscribersApi extends RestApi
         $group = Newsletter::getGroup($subscriber->group_ID);
 
         return self::response(__('Subscriber retrieved successfully', 'wp-sms'), 200, [
-            'id'            => (int) $subscriber->ID,
-            'name'          => $subscriber->name,
-            'mobile'        => $subscriber->mobile,
-            'group_id'      => (int) $subscriber->group_ID,
-            'group_name'    => $group ? $group->name : '',
-            'status'        => $subscriber->status,
-            'date'          => $subscriber->date,
-            'custom_fields' => maybe_unserialize($subscriber->custom_fields) ?: [],
+            'id'             => (int) $subscriber->ID,
+            'name'           => $subscriber->name,
+            'mobile'         => $subscriber->mobile,
+            'group_id'       => (int) $subscriber->group_ID,
+            'group_name'     => $group ? $group->name : '',
+            'status'         => $subscriber->status,
+            'date'           => $subscriber->date,
+            'date_formatted' => $this->formatDateI18n($subscriber->date, false),
+            'custom_fields'  => maybe_unserialize($subscriber->custom_fields) ?: [],
         ]);
     }
 

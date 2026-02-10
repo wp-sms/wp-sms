@@ -567,7 +567,7 @@ export default function Outbox() {
               {__('Message Details')}
             </DialogTitle>
             <DialogDescription>
-              {__('Sent on')} {viewMessage && formatDate(viewMessage.date, { hour: '2-digit', minute: '2-digit' })}
+              {__('Sent on')} {viewMessage && (viewMessage.date_formatted || formatDate(viewMessage.date, { hour: '2-digit', minute: '2-digit' }))}
             </DialogDescription>
           </DialogHeader>
           <DialogBody>

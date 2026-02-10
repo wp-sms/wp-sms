@@ -255,6 +255,9 @@ class WP_SMS
 
         $cronEventManager = new CronEventManager();
 
+        // API traits
+        $this->include('includes/api/traits/trait-date-formatter.php');
+
         // API class.
         $this->include('includes/api/v1/class-wpsms-api-newsletter.php');
         $this->include('includes/api/v1/class-wpsms-api-send.php');

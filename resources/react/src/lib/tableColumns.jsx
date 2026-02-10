@@ -28,11 +28,14 @@ export function createDateColumn({
       if (!value) {
         return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
       }
+      // Use pre-formatted date from server if available (supports i18n filters like Persian/Jalali calendars)
+      const formattedKey = accessorKey + '_formatted'
+      const displayValue = row[formattedKey] || formatDate(value, showTime ? { hour: '2-digit', minute: '2-digit' } : {})
       return (
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <Clock className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" aria-hidden="true" />
           <span className="wsms-text-[12px] wsms-text-muted-foreground">
-            {formatDate(value, showTime ? { hour: '2-digit', minute: '2-digit' } : {})}
+            {displayValue}
           </span>
         </div>
       )

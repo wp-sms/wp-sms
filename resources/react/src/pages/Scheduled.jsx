@@ -466,7 +466,7 @@ function ScheduledSmsTab() {
               {__('Scheduled Message Details')}
             </DialogTitle>
             <DialogDescription>
-              {__('Scheduled for')} {viewMessage && formatDate(viewMessage.date, { hour: '2-digit', minute: '2-digit' })}
+              {__('Scheduled for')} {viewMessage && (viewMessage.date_formatted || formatDate(viewMessage.date, { hour: '2-digit', minute: '2-digit' }))}
             </DialogDescription>
           </DialogHeader>
           <DialogBody>
@@ -1052,7 +1052,7 @@ function RepeatingSmsTab() {
                       <div className="wsms-flex-1">
                         <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Next')}</p>
                         <p className="wsms-text-[13px] wsms-font-medium">
-                          {formatDate(viewMessage.next_occurrence, { hour: '2-digit', minute: '2-digit' })}
+                          {viewMessage.next_occurrence_formatted || formatDate(viewMessage.next_occurrence, { hour: '2-digit', minute: '2-digit' })}
                         </p>
                       </div>
                     </>

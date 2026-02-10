@@ -5,6 +5,7 @@ namespace WP_SMS\Api\V1;
 use WP_REST_Request;
 use WP_REST_Server;
 use WP_SMS\RestApi;
+use WP_SMS\Api\Traits\DateFormatter;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -19,6 +20,7 @@ if (!defined('ABSPATH')) {
  */
 class OutboxApi extends RestApi
 {
+    use DateFormatter;
     public function __construct()
     {
         add_action('rest_api_init', [$this, 'registerRoutes']);
@@ -255,6 +257,7 @@ class OutboxApi extends RestApi
             return [
                 'id'              => (int) $item['ID'],
                 'date'            => $item['date'],
+                'date_formatted'  => $this->formatDateI18n($item['date'], true),
                 'sender'          => $item['sender'],
                 'recipient'       => $item['recipient'],
                 'recipient_count' => count($recipients),
@@ -338,6 +341,7 @@ class OutboxApi extends RestApi
         return self::response(__('Message retrieved successfully', 'wp-sms'), 200, [
             'id'              => (int) $item['ID'],
             'date'            => $item['date'],
+            'date_formatted'  => $this->formatDateI18n($item['date'], true),
             'sender'          => $item['sender'],
             'recipient'       => $item['recipient'],
             'recipients'      => $recipients,
