@@ -102,30 +102,61 @@ class UnifiedAdminPage extends Singleton
         // Note: Height constraint is set here (not in external CSS) because the body class
         // that WordPress generates for admin pages may be missing in RTL mode.
         echo '<style>
-            html, body { overflow: hidden !important; height: 100% !important; }
             .wrap { max-width: none !important; margin: 0 !important; padding: 0 !important; }
             .wrap > h1:first-child { display: none; }
             .notice, .updated, .error, .is-dismissible { display: none !important; }
             #wpfooter { display: none !important; }
             #wpcontent { padding: 0 !important; }
-            #wpbody { overflow: hidden !important; }
-            #wpbody-content {
-                padding: 0 !important;
-                overflow: hidden !important;
-            }
+            #wpbody-content { padding: 0 !important; }
             #wpbody-content > .clear { display: none !important; }
             /* Hide chatbox by default - React Preview button will toggle it */
             .wpsms-chatbox { display: none !important; }
             .wpsms-chatbox.wpsms-chatbox--visible { display: block !important; }
-            /* Height constraint for React app - must be inline to work in RTL */
+            /* Fixed positioning - dashboard stays in viewport regardless of page scroll */
             #wpsms-settings-root {
-                height: calc(100vh - 32px) !important;
+                position: fixed !important;
+                top: 32px !important;
+                left: 160px !important;
+                right: 0 !important;
+                bottom: 0 !important;
                 overflow: hidden !important;
                 display: flex !important;
                 flex-direction: column !important;
             }
+            /* Collapsed sidebar */
+            body.folded #wpsms-settings-root {
+                left: 36px !important;
+            }
+            /* Mobile - sidebar is hidden/overlay */
             @media screen and (max-width: 782px) {
-                #wpsms-settings-root { height: calc(100vh - 46px) !important; }
+                #wpsms-settings-root {
+                    top: 46px !important;
+                    left: 0 !important;
+                }
+            }
+            /* Auto-fold at 960px */
+            @media screen and (max-width: 960px) {
+                body:not(.folded) #wpsms-settings-root {
+                    left: 36px !important;
+                }
+            }
+            /* RTL support - sidebar is on the right */
+            body.rtl #wpsms-settings-root {
+                left: 0 !important;
+                right: 160px !important;
+            }
+            body.rtl.folded #wpsms-settings-root {
+                right: 36px !important;
+            }
+            @media screen and (max-width: 782px) {
+                body.rtl #wpsms-settings-root {
+                    right: 0 !important;
+                }
+            }
+            @media screen and (max-width: 960px) {
+                body.rtl:not(.folded) #wpsms-settings-root {
+                    right: 36px !important;
+                }
             }
         </style>';
         echo sprintf(
