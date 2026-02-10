@@ -51,7 +51,7 @@ export default defineConfig(({ command, mode }) => ({
     rollupOptions: {
       input: path.resolve(__dirname, 'resources/react/index.html'),
       output: {
-        entryFileNames: 'assets/dashboard.js',
+        entryFileNames: 'assets/dashboard-[hash].js',
         chunkFileNames: 'assets/dashboard-[hash].js',
         assetFileNames: 'assets/dashboard[extname]',
         // Manual chunks to reduce chunk count and optimize caching
