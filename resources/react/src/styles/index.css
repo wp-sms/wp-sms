@@ -96,25 +96,10 @@
   --wsms-notification-enter-x: 12px;
 }
 
-/* Hide WordPress admin footer when settings app is loaded */
-body.sms_page_wp-sms-unified-admin #wpfooter {
-  display: none !important;
-}
-
-/* WordPress admin layout fixes for settings page */
-body.sms_page_wp-sms-unified-admin #wpcontent {
-  padding-left: 0 !important;
-}
-
-body.sms_page_wp-sms-unified-admin #wpbody-content {
-  padding-bottom: 0 !important;
-  float: none !important;
-}
-
 /*
- * Height constraint for #wpsms-settings-root is now set via inline styles in
- * UnifiedAdminPage.php to ensure it works in RTL mode (WordPress may not generate
- * the expected body class in RTL, causing these CSS rules to not apply).
+ * WordPress admin layout overrides (hiding footer, removing padding, height constraints)
+ * are now set via inline styles in UnifiedAdminPage.php to ensure they work in RTL mode.
+ * WordPress may not generate the expected body class in RTL, causing CSS rules here to not apply.
  */
 
 #wpsms-settings-root[dir="rtl"] {

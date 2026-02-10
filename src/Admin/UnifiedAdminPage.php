@@ -102,12 +102,18 @@ class UnifiedAdminPage extends Singleton
         // Note: Height constraint is set here (not in external CSS) because the body class
         // that WordPress generates for admin pages may be missing in RTL mode.
         echo '<style>
+            html, body { overflow: hidden !important; height: 100% !important; }
             .wrap { max-width: none !important; margin: 0 !important; padding: 0 !important; }
             .wrap > h1:first-child { display: none; }
             .notice, .updated, .error, .is-dismissible { display: none !important; }
             #wpfooter { display: none !important; }
-            #wpbody-content { padding: 0 !important; }
             #wpcontent { padding: 0 !important; }
+            #wpbody { overflow: hidden !important; }
+            #wpbody-content {
+                padding: 0 !important;
+                overflow: hidden !important;
+            }
+            #wpbody-content > .clear { display: none !important; }
             /* Hide chatbox by default - React Preview button will toggle it */
             .wpsms-chatbox { display: none !important; }
             .wpsms-chatbox.wpsms-chatbox--visible { display: block !important; }
