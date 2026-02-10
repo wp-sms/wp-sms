@@ -74,8 +74,8 @@ const AppShell = memo(function AppShell() {
         <aside
           className={cn(
             'wsms-sidebar',
-            isMobile && 'wsms-fixed wsms-top-[46px] wsms-bottom-0 wsms-left-0 wsms-z-[99999] wsms-w-[240px] wsms-transform wsms-transition-transform wsms-duration-200',
-            isMobile && !mobileMenuOpen && 'wsms--translate-x-full'
+            isMobile && 'wsms-fixed wsms-top-[46px] wsms-bottom-0 wsms-start-0 wsms-z-[99999] wsms-w-[240px] wsms-transform wsms-transition-transform wsms-duration-200',
+            isMobile && !mobileMenuOpen && 'wsms--translate-x-full rtl:wsms-translate-x-full'
           )}
         >
           <Sidebar onClose={() => setMobileMenuOpen(false)} showClose={isMobile && mobileMenuOpen} />

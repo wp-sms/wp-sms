@@ -291,7 +291,9 @@ function NestedNavGroup({ group, currentPage, setCurrentPage }) {
         <ChevronRight
           className={cn(
             'wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground wsms-transition-transform wsms-duration-200',
-            isExpanded && 'wsms-rotate-90'
+            isExpanded
+              ? 'wsms-rotate-90'
+              : 'rtl:wsms-rotate-180'
           )}
           strokeWidth={1.5}
         />
@@ -391,7 +393,9 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} 
           <ChevronRight
             className={cn(
               'wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-transition-transform wsms-duration-200',
-              isExpanded && 'wsms-rotate-90'
+              isExpanded
+                ? 'wsms-rotate-90'
+                : 'rtl:wsms-rotate-180'
             )}
             strokeWidth={1.5}
           />
