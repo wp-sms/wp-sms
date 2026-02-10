@@ -296,7 +296,7 @@ const ImportExportDialog = ({
               )}
 
               <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/30 wsms-border wsms-border-border wsms-text-center">
-                <Download className="wsms-h-10 wsms-w-10 wsms-mx-auto wsms-text-muted-foreground wsms-mb-3" />
+                <Upload className="wsms-h-10 wsms-w-10 wsms-mx-auto wsms-text-muted-foreground wsms-mb-3" />
                 <p className="wsms-text-[13px]">
                   Click export to download your data as a CSV file
                 </p>
@@ -336,7 +336,7 @@ const ImportExportDialog = ({
                 </>
               ) : (
                 <>
-                  <Upload className="wsms-h-4 wsms-w-4 wsms-me-2" />
+                  <Download className="wsms-h-4 wsms-w-4 wsms-me-2" />
                   Import
                 </>
               )}
@@ -350,7 +350,7 @@ const ImportExportDialog = ({
                 </>
               ) : (
                 <>
-                  <Download className="wsms-h-4 wsms-w-4 wsms-me-2" />
+                  <Upload className="wsms-h-4 wsms-w-4 wsms-me-2" />
                   Export
                 </>
               )}

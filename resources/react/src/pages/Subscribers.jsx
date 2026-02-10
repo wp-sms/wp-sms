@@ -5,7 +5,7 @@ import {
   Trash2,
   Edit,
   Search,
-  Upload,
+  Download,
   CheckCircle,
   XCircle,
   Loader2,
@@ -656,7 +656,7 @@ export default function Subscribers() {
           {/* Import/Export */}
           <div className="wsms-col-span-2 lg:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 lg:wsms-mt-0">
             <Button variant="outline" onClick={() => setShowImportDialog(true)}>
-              <Upload className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
+              <Download className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
               {__('Import')}
             </Button>
             <ExportButton

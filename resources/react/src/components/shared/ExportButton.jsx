@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Download, Loader2 } from 'lucide-react'
+import { Upload, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useToast } from '@/components/ui/toaster'
 import { __ } from '@/lib/utils'
@@ -63,7 +63,7 @@ export function ExportButton({
       {isExporting ? (
         <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" aria-hidden="true" />
       ) : (
-        <Download className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
+        <Upload className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
       )}
       {label || __('Export')}
     </Button>
