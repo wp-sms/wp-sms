@@ -87,7 +87,7 @@ export default function PhoneInput({
             useFullscreenPopup: false,
             nationalMode: false,
             autoPlaceholder: 'polite',
-            utilsScript: utilsUrl,
+            loadUtilsOnInit: utilsUrl,
             customPlaceholder: (selectedCountryPlaceholder, selectedCountryData) => {
               return `+${selectedCountryData.dialCode} 555 123 4567`
             },
@@ -98,7 +98,8 @@ export default function PhoneInput({
             options.onlyCountries = onlyCountries.map(c => c.toLowerCase())
           }
           if (preferredCountries.length > 0) {
-            options.preferredCountries = preferredCountries.map(c => c.toLowerCase())
+            // v24+ uses countryOrder instead of preferredCountries
+            options.countryOrder = preferredCountries.map(c => c.toLowerCase())
           }
 
           const iti = window.intlTelInput(inputRef.current, options)
