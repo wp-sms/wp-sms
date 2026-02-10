@@ -6,6 +6,7 @@ use WP_REST_Request;
 use WP_REST_Server;
 use WP_SMS\RestApi;
 use WP_SMS\Components\NumberParser;
+use WP_SMS\Api\Traits\DateFormatter;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -20,6 +21,7 @@ if (!defined('ABSPATH')) {
  */
 class PrivacyApi extends RestApi
 {
+    use DateFormatter;
     public function __construct()
     {
         add_action('rest_api_init', [$this, 'registerRoutes']);
@@ -156,12 +158,13 @@ class PrivacyApi extends RestApi
 
         foreach ($users as $user) {
             $records[] = [
-                'source'       => 'wp_users',
-                'id'           => (int) $user['ID'],
-                'display_name' => $user['display_name'],
-                'email'        => $user['email'] ?? '',
-                'mobile'       => $user['mobile'],
-                'created_at'   => $user['user_registered'],
+                'source'               => 'wp_users',
+                'id'                   => (int) $user['ID'],
+                'display_name'         => $user['display_name'],
+                'email'                => $user['email'] ?? '',
+                'mobile'               => $user['mobile'],
+                'created_at'           => $user['user_registered'],
+                'created_at_formatted' => $this->formatDateI18n($user['user_registered'], false),
             ];
         }
 
@@ -179,13 +182,14 @@ class PrivacyApi extends RestApi
 
         foreach ($subscribers as $sub) {
             $records[] = [
-                'source'       => 'sms_subscribes',
-                'id'           => (int) $sub['ID'],
-                'display_name' => $sub['name'],
-                'mobile'       => $sub['mobile'],
-                'group'        => $sub['group_name'] ?: '',
-                'status'       => $sub['status'] === '1' ? 'Active' : 'Inactive',
-                'created_at'   => $sub['date'],
+                'source'               => 'sms_subscribes',
+                'id'                   => (int) $sub['ID'],
+                'display_name'         => $sub['name'],
+                'mobile'               => $sub['mobile'],
+                'group'                => $sub['group_name'] ?: '',
+                'status'               => $sub['status'] === '1' ? 'Active' : 'Inactive',
+                'created_at'           => $sub['date'],
+                'created_at_formatted' => $this->formatDateI18n($sub['date'], false),
             ];
         }
 
@@ -204,14 +208,15 @@ class PrivacyApi extends RestApi
 
         foreach ($messages as $msg) {
             $records[] = [
-                'source'       => 'sms_send',
-                'id'           => (int) $msg['ID'],
-                'display_name' => __('SMS Message', 'wp-sms'),
-                'mobile'       => $msg['recipient'],
-                'sender'       => $msg['sender'],
-                'message'      => substr($msg['message'], 0, 100) . (strlen($msg['message']) > 100 ? '...' : ''),
-                'status'       => $msg['status'],
-                'created_at'   => $msg['date'],
+                'source'               => 'sms_send',
+                'id'                   => (int) $msg['ID'],
+                'display_name'         => __('SMS Message', 'wp-sms'),
+                'mobile'               => $msg['recipient'],
+                'sender'               => $msg['sender'],
+                'message'              => substr($msg['message'], 0, 100) . (strlen($msg['message']) > 100 ? '...' : ''),
+                'status'               => $msg['status'],
+                'created_at'           => $msg['date'],
+                'created_at_formatted' => $this->formatDateI18n($msg['date'], true),
             ];
         }
 

@@ -379,7 +379,7 @@ export default function Privacy() {
                       </div>
                       <div className="wsms-text-right wsms-shrink-0">
                         <p className="wsms-text-[11px] wsms-text-muted-foreground">
-                          {formatDate(record.created_at)}
+                          {record.created_at_formatted || formatDate(record.created_at)}
                         </p>
                         {record.status && getStatusVariant(record.source, record.status) && (
                           <StatusBadge
