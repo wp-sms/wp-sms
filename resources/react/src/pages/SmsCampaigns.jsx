@@ -428,7 +428,7 @@ const campaignColumns = [
     header: __('Created'),
     cell: ({ row }) => (
       <span className="wsms-text-[12px] wsms-text-muted-foreground">
-        {row.created_at ? formatDate(row.created_at) : '\u2014'}
+        {row.created_at ? (row.created_at_formatted || formatDate(row.created_at)) : '\u2014'}
       </span>
     ),
   },
@@ -911,7 +911,7 @@ export default function SmsCampaigns() {
                   {queueCampaign.last_execution && (
                     <div>
                       <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Last Execution')}</Label>
-                      <p className="wsms-mt-1 wsms-text-[13px]">{formatDate(queueCampaign.last_execution)}</p>
+                      <p className="wsms-mt-1 wsms-text-[13px]">{queueCampaign.last_execution_formatted || formatDate(queueCampaign.last_execution)}</p>
                     </div>
                   )}
                   {queueCampaign.queue_response && (
@@ -953,7 +953,7 @@ export default function SmsCampaigns() {
                             </div>
                             <div className="wsms-flex wsms-items-center wsms-justify-between wsms-text-muted-foreground">
                               <span className="wsms-font-mono">{order.mobile_number || '—'}</span>
-                              <span>{order.order_date ? formatDate(order.order_date) : '—'}</span>
+                              <span>{order.order_date ? (order.order_date_formatted || formatDate(order.order_date)) : '—'}</span>
                             </div>
                             {order.response && (
                               <p className="wsms-text-muted-foreground wsms-text-[11px]">{order.response}</p>
@@ -995,7 +995,7 @@ export default function SmsCampaigns() {
                                     #{order.order_id}
                                   </a>
                                 </td>
-                                <td className="wsms-px-3 wsms-py-2 wsms-text-muted-foreground">{order.order_date ? formatDate(order.order_date) : '—'}</td>
+                                <td className="wsms-px-3 wsms-py-2 wsms-text-muted-foreground">{order.order_date ? (order.order_date_formatted || formatDate(order.order_date)) : '—'}</td>
                                 <td className="wsms-px-3 wsms-py-2 wsms-font-mono">{order.mobile_number || '—'}</td>
                                 <td className={`wsms-px-3 wsms-py-2 wsms-font-medium ${smsStatus.className}`}>{smsStatus.label}</td>
                                 <td className="wsms-px-3 wsms-py-2 wsms-text-muted-foreground">{order.response || '—'}</td>
