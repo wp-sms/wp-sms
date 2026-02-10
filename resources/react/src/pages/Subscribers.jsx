@@ -432,7 +432,7 @@ export default function Subscribers() {
       sortable: true,
       cell: ({ row }) => (
         <span className="wsms-text-[12px] wsms-text-muted-foreground">
-          {formatDate(row.date)}
+          {row.date_formatted || formatDate(row.date)}
         </span>
       ),
     },

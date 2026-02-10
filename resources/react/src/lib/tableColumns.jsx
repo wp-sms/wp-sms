@@ -525,7 +525,7 @@ export const repeatingMessagesColumns = [
     header: __('Ends At'),
     cell: ({ row }) => (
       <span className="wsms-text-[12px] wsms-text-muted-foreground">
-        {row.ends_at_date ? formatDate(row.ends_at_date, true) : __('Never')}
+        {row.ends_at_date ? (row.ends_at_formatted || formatDate(row.ends_at_date, true)) : __('Never')}
       </span>
     ),
   },
