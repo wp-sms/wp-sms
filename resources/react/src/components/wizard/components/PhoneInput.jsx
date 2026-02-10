@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from 'react'
+import { AlertCircle } from 'lucide-react'
 import { cn, getWpSettings } from '@/lib/utils'
 
 /**
@@ -218,7 +219,7 @@ export default function PhoneInput({
 
     // If external value is empty, clear the input to just the dial code
     if (value === '' && currentInputValue !== '' && currentInputValue !== dialCodePrefix) {
-      itiRef.current.setNumber('')
+      // Directly set input value instead of using setNumber() to avoid library issues
       inputRef.current.value = dialCodePrefix
       setIsValid(false)
       setError('')
@@ -234,21 +235,31 @@ export default function PhoneInput({
         autoComplete="off"
         disabled={disabled}
         className={cn(
-          'wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-py-1 wsms-text-sm wsms-ring-offset-background',
+          'wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-bg-background wsms-py-1 wsms-text-sm wsms-ring-offset-background',
           'placeholder:wsms-text-muted-foreground',
-          'focus-visible:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-ring focus-visible:wsms-ring-offset-2',
+          'focus-visible:wsms-outline-none focus-visible:wsms-ring-2 focus-visible:wsms-ring-offset-2',
           'disabled:wsms-cursor-not-allowed disabled:wsms-opacity-50',
-          error && 'wsms-border-destructive',
+          error
+            ? 'wsms-border-red-500 focus-visible:wsms-ring-red-500/30'
+            : 'wsms-border-input focus-visible:wsms-ring-ring',
           // Ensure enough room for the country button on the "start" side:
           // LTR: left, RTL: right.
-          'wsms-ps-[90px] wsms-pe-3 rtl:wsms-ps-3 rtl:wsms-pe-[90px]',
+          'wsms-ps-[90px] rtl:wsms-ps-3',
+          error ? 'wsms-pe-7 rtl:wsms-pe-3 rtl:wsms-ps-7' : 'wsms-pe-3 rtl:wsms-pe-[90px]',
           // Keep phone number direction LTR for readability, but align text to the right in RTL
           // so the value sits next to the flag dropdown.
           'rtl:wsms-text-right',
         )}
       />
       {error && (
-        <p className="wsms-text-[12px] wsms-text-destructive wsms-mt-1">{error}</p>
+        <div className="wsms-absolute wsms-end-2 wsms-top-1/2 wsms--translate-y-1/2 wsms-group">
+          <AlertCircle className="wsms-h-3.5 wsms-w-3.5 wsms-text-red-500 wsms-cursor-help" strokeWidth={2} />
+          <div className="wsms-absolute wsms-bottom-full wsms-start-1/2 wsms--translate-x-1/2 wsms-mb-1.5 wsms-hidden group-hover:wsms-block wsms-z-50 wsms-pointer-events-none">
+            <div className="wsms-bg-slate-800 wsms-text-white wsms-text-[11px] wsms-px-2 wsms-py-1 wsms-rounded wsms-whitespace-nowrap wsms-shadow-lg">
+              {error}
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
