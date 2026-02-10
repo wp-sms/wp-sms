@@ -324,8 +324,8 @@ export function getSubscriberColumns({ groups = [], countries = {} } = {}) {
       },
     }),
     createDateColumn({
-      id: 'created_at',
-      accessorKey: 'created_at',
+      id: 'date',
+      accessorKey: 'date',
       header: __('Subscribed'),
       showTime: false,
     }),
