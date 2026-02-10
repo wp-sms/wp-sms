@@ -208,6 +208,23 @@ export default function PhoneInput({
     }
   }, [isLoaded, handleCountryChange, handleInput])
 
+  // Sync external value prop with internal input (e.g., when parent clears the value)
+  useEffect(() => {
+    if (!itiRef.current || !inputRef.current || !isLoaded) return
+
+    const currentInputValue = inputRef.current.value.trim()
+    const dialCode = itiRef.current.getSelectedCountryData().dialCode || '1'
+    const dialCodePrefix = `+${dialCode}`
+
+    // If external value is empty, clear the input to just the dial code
+    if (value === '' && currentInputValue !== '' && currentInputValue !== dialCodePrefix) {
+      itiRef.current.setNumber('')
+      inputRef.current.value = dialCodePrefix
+      setIsValid(false)
+      setError('')
+    }
+  }, [value, isLoaded])
+
   return (
     <div className={cn('wsms-relative', className)}>
       <input
