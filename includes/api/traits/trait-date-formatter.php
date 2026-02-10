@@ -4,7 +4,7 @@ namespace WP_SMS\Api\Traits;
 /**
  * Date Formatter Trait
  *
- * Provides date formatting using WordPress's wp_date_i18n() function
+ * Provides date formatting using WordPress's date_i18n() function
  * to support localized dates (e.g., Persian/Jalali calendars via plugins).
  *
  * @package WP_SMS\Api\Traits
@@ -12,7 +12,7 @@ namespace WP_SMS\Api\Traits;
 trait DateFormatter
 {
     /**
-     * Format a date using WordPress's wp_date_i18n() function.
+     * Format a date using WordPress's date_i18n() function.
      *
      * This allows third-party plugins (like WP-Parsidate for Persian dates)
      * to hook into the date_i18n filter and transform dates.
@@ -36,6 +36,6 @@ trait DateFormatter
         $timeFormat = get_option('time_format', 'g:i a');
         $format = $includeTime ? $dateFormat . ', ' . $timeFormat : $dateFormat;
 
-        return wp_date($format, $timestamp);
+        return date_i18n($format, $timestamp);
     }
 }
