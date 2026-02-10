@@ -493,34 +493,32 @@ export default function Outbox() {
               onToChange={(value) => filters.setFilter('date_to', value)}
             />
 
-            {/* Actions */}
-            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ms-auto">
-              {/* Clear Filters */}
-              {(filters.filters.search || filters.filters.status !== 'all' || filters.filters.date_from || filters.filters.date_to) && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => filters.resetFilters()}
-                  className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
-                  aria-label={__('Clear all filters')}
-                >
-                  <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
-                </Button>
-              )}
-              {/* Refresh */}
+            {/* Clear Filters */}
+            {(filters.filters.search || filters.filters.status !== 'all' || filters.filters.date_from || filters.filters.date_to) && (
               <Button
-                variant="outline"
+                variant="ghost"
                 size="sm"
-                onClick={() => table.fetch({ page: 1 })}
-                className="wsms-h-9 wsms-px-2.5"
-                aria-label={__('Refresh messages')}
+                onClick={() => filters.resetFilters()}
+                className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
+                aria-label={__('Clear all filters')}
               >
-                <RefreshCw
-                  className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')}
-                  aria-hidden="true"
-                />
+                <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
               </Button>
-            </div>
+            )}
+
+            {/* Refresh */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.fetch({ page: 1 })}
+              className="wsms-h-9 wsms-px-2.5 xl:wsms-ms-auto"
+              aria-label={__('Refresh messages')}
+            >
+              <RefreshCw
+                className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')}
+                aria-hidden="true"
+              />
+            </Button>
           </div>
         </CardContent>
       </Card>
