@@ -27,13 +27,15 @@ export function formatCurrency(amount, currency = 'USD') {
 /**
  * Format a date string using WordPress date/time format settings
  * @param {string|Date} date - Date to format
- * @param {object} options - Formatting options
+ * @param {boolean|object} options - true for time, or options object
  * @param {boolean} options.includeTime - Whether to include time
- * @param {boolean} options.hour - Legacy option, if set implies includeTime
+ * @param {string} options.hour - Legacy option, if set implies includeTime
  * @returns {string} Formatted date string
  */
 export function formatDate(date, options = {}) {
-  const includeTime = options.hour !== undefined || options.includeTime === true
+  // Handle backward compatibility: formatDate(date, true)
+  const opts = options === true ? { includeTime: true } : (options || {})
+  const includeTime = opts.includeTime === true || opts.hour !== undefined
   return formatDateWP(date, {
     includeTime,
     dateFormat: window.wpSmsSettings?.dateFormat,

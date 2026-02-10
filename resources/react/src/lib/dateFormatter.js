@@ -6,6 +6,25 @@
  */
 
 /**
+ * Cache for Intl.DateTimeFormat instances to avoid repeated instantiation
+ */
+const formatterCache = new Map()
+
+/**
+ * Get a cached Intl.DateTimeFormat instance
+ * @param {string} cacheKey - Unique key for the formatter configuration
+ * @param {string} locale - Locale string
+ * @param {object} options - Intl.DateTimeFormat options
+ * @returns {Intl.DateTimeFormat} Cached or new formatter instance
+ */
+function getCachedFormatter(cacheKey, locale, options) {
+  if (!formatterCache.has(cacheKey)) {
+    formatterCache.set(cacheKey, new Intl.DateTimeFormat(locale, options))
+  }
+  return formatterCache.get(cacheKey)
+}
+
+/**
  * Get the ordinal suffix for a day number (1st, 2nd, 3rd, etc.)
  * @param {number} day - Day of month
  * @returns {string} Ordinal suffix
@@ -45,8 +64,9 @@ function padZero(num, length = 2) {
  * @returns {string} Formatted name
  */
 function getLocalizedName(date, type, style, locale = undefined) {
+  const cacheKey = `name_${type}_${style}_${locale || 'default'}`
   const options = { [type]: style }
-  return new Intl.DateTimeFormat(locale, options).format(date)
+  return getCachedFormatter(cacheKey, locale, options).format(date)
 }
 
 /**
@@ -62,6 +82,7 @@ function formatWithPHPFormat(date, format, timezone) {
   if (timezone) {
     try {
       // Get the date parts in the target timezone
+      const cacheKey = `tz_${timezone}`
       const options = {
         timeZone: timezone,
         year: 'numeric',
@@ -72,7 +93,7 @@ function formatWithPHPFormat(date, format, timezone) {
         second: '2-digit',
         hour12: false,
       }
-      const formatter = new Intl.DateTimeFormat('en-US', options)
+      const formatter = getCachedFormatter(cacheKey, 'en-US', options)
       const parts = formatter.formatToParts(date)
       const getPart = (type) => parts.find((p) => p.type === type)?.value || ''
 
