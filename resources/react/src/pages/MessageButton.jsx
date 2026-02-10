@@ -58,7 +58,7 @@ export default function MessageButton() {
   const [buttonPosition, setButtonPosition] = useSetting('chatbox_button_position', 'bottom_right')
 
   // Colors
-  const [chatboxColor, setChatboxColor] = useSetting('chatbox_color', '#00a9c0')
+  const [chatboxColor, setChatboxColor] = useSetting('chatbox_color', '#f88e40')
   const [chatboxTextColor, setChatboxTextColor] = useSetting('chatbox_text_color', '#ffffff')
 
   // Footer
@@ -79,8 +79,8 @@ export default function MessageButton() {
   // Team members
   const [teamMembers, setTeamMembers] = useSetting('chatbox_team_members', [])
 
-  // Get hasChanges and currentPage from settings context
-  const { hasChanges, currentPage } = useSettings()
+  // Get currentPage from settings context
+  const { currentPage } = useSettings()
 
   const isEnabled = messageButton === '1'
 
@@ -163,21 +163,17 @@ export default function MessageButton() {
     const chatbox = document.querySelector('.wpsms-chatbox')
     if (!chatbox) return
 
-    // Move chatbox higher when save bar is visible (hasChanges)
-    // Add smooth transition for the animation
-    chatbox.style.transition = 'bottom 0.3s ease'
-    chatbox.style.bottom = hasChanges ? '80px' : '2rem'
+    // Position chatbox higher to avoid notice/savebar overlap
+    chatbox.style.bottom = '90px'
 
     const chatboxContent = chatbox.querySelector('.wpsms-chatbox__content')
     if (chatboxContent) {
-      chatboxContent.style.transition = 'bottom 0.3s ease'
-      chatboxContent.style.bottom = hasChanges ? '144px' : '96px'
+      chatboxContent.style.bottom = '154px'
     }
 
     const chatboxArrow = chatbox.querySelector('.wpsms-chatbox__arrow')
     if (chatboxArrow) {
-      chatboxArrow.style.transition = 'bottom 0.3s ease'
-      chatboxArrow.style.bottom = hasChanges ? '125px' : '77px'
+      chatboxArrow.style.bottom = '135px'
     }
 
     // Update button text
@@ -193,7 +189,7 @@ export default function MessageButton() {
     }
 
     // Update colors
-    const primaryColor = chatboxColor || '#00a9c0'
+    const primaryColor = chatboxColor || '#f88e40'
     const textColor = chatboxTextColor || '#ffffff'
 
     const button = chatbox.querySelector('.wpsms-chatbox__button')
@@ -346,7 +342,6 @@ export default function MessageButton() {
     }
 
   }, [
-    hasChanges,
     buttonText,
     chatboxTitle,
     chatboxColor,
@@ -499,7 +494,7 @@ export default function MessageButton() {
                     <Input
                       value={chatboxColor}
                       onChange={(e) => setChatboxColor(e.target.value)}
-                      placeholder="#00a9c0"
+                      placeholder="#f88e40"
                     />
                   </div>
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">

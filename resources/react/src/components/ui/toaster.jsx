@@ -77,7 +77,7 @@ export function Toaster({ children }) {
   return (
     <ToastContext.Provider value={{ toast, dismiss }}>
       {children}
-      {/* Toast viewport - rendered inline, not as a portal */}
+      {/* Toast viewport */}
       <div
         ref={containerRef}
         className="wsms-fixed wsms-bottom-4 wsms-end-4 wsms-z-[9999999] wsms-flex wsms-flex-col wsms-gap-2 wsms-max-w-[380px] wsms-w-full wsms-pointer-events-none"
