@@ -4,11 +4,12 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { StatusBadge } from '@/components/shared/StatusBadge'
-import { EmptyStateAction, ValidationMessage } from '@/components/ui/ux-helpers'
+import { EmptyStateAction } from '@/components/ui/ux-helpers'
 import { useToast } from '@/components/ui/toaster'
 import { addonsApi } from '@/api/addonsApi'
 import { __ } from '@/lib/utils'
 import {
+  AlertCircle,
   Blocks,
   ExternalLink,
   BookOpen,
@@ -161,7 +162,16 @@ function AddOnCard({ addon, onLicenseChanged }) {
                 </div>
               </div>
             ))}
-            {removeError && <ValidationMessage type="error"><span dangerouslySetInnerHTML={{ __html: removeError }} /></ValidationMessage>}
+            {removeError && (
+              <div className="wsms-flex wsms-items-center wsms-justify-end">
+                <div className="wsms-relative wsms-group">
+                  <AlertCircle className="wsms-h-3.5 wsms-w-3.5 wsms-text-red-500 wsms-cursor-help" strokeWidth={2} />
+                  <div className="wsms-absolute wsms-bottom-full wsms--end-2 wsms-mb-1.5 wsms-hidden group-hover:wsms-block wsms-z-50 wsms-pointer-events-none wsms-w-max">
+                    <div className="wsms-bg-slate-800 wsms-text-white wsms-text-[11px] wsms-px-2 wsms-py-1 wsms-rounded wsms-max-w-[280px] wsms-shadow-lg" dangerouslySetInnerHTML={{ __html: removeError }} />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -169,16 +179,26 @@ function AddOnCard({ addon, onLicenseChanged }) {
         {showLicenseInput && (
           <div className="wsms-mt-3 wsms-space-y-2">
             <div className="wsms-flex wsms-gap-2">
-              <Input
-                value={licenseKey}
-                onChange={(e) => {
-                  setLicenseKey(e.target.value)
-                  setActivateError('')
-                }}
-                placeholder={showUpdateInput ? __('Enter new license key') : __('Enter license key')}
-                className="!wsms-h-8 wsms-text-[12px]"
-                onKeyDown={(e) => e.key === 'Enter' && handleActivate()}
-              />
+              <div className="wsms-relative wsms-flex-1">
+                <Input
+                  value={licenseKey}
+                  onChange={(e) => {
+                    setLicenseKey(e.target.value)
+                    setActivateError('')
+                  }}
+                  placeholder={showUpdateInput ? __('Enter new license key') : __('Enter license key')}
+                  className={`!wsms-h-8 wsms-text-[12px] ${activateError ? 'wsms-border-red-500 focus-visible:wsms-ring-red-500/30 wsms-pe-7' : ''}`}
+                  onKeyDown={(e) => e.key === 'Enter' && handleActivate()}
+                />
+                {activateError && (
+                  <div className="wsms-absolute wsms-end-2 wsms-top-1/2 wsms--translate-y-1/2 wsms-group">
+                    <AlertCircle className="wsms-h-3.5 wsms-w-3.5 wsms-text-red-500 wsms-cursor-help" strokeWidth={2} />
+                    <div className="wsms-absolute wsms-bottom-full wsms--end-2 wsms-mb-1.5 wsms-hidden group-hover:wsms-block wsms-z-50 wsms-pointer-events-none wsms-w-max">
+                      <div className="wsms-bg-slate-800 wsms-text-white wsms-text-[11px] wsms-px-2 wsms-py-1 wsms-rounded wsms-max-w-[280px] wsms-shadow-lg" dangerouslySetInnerHTML={{ __html: activateError }} />
+                    </div>
+                  </div>
+                )}
+              </div>
               <Button
                 size="sm"
                 className="wsms-shrink-0 !wsms-h-8"
@@ -208,7 +228,6 @@ function AddOnCard({ addon, onLicenseChanged }) {
                 </Button>
               )}
             </div>
-            {activateError && <ValidationMessage type="error"><span dangerouslySetInnerHTML={{ __html: activateError }} /></ValidationMessage>}
           </div>
         )}
       </div>
@@ -343,7 +362,7 @@ export default function AddOns() {
         <EmptyStateAction
           icon={Blocks}
           title={__('No add-ons available')}
-          description={__('Add-ons extend WP SMS with extra features. Check back later for available add-ons.')}
+          description={__('Add-ons extend WSMS with extra features. Check back later for available add-ons.')}
         />
       </Card>
     )
@@ -366,7 +385,7 @@ export default function AddOns() {
             {__('Add-Ons')}
           </CardTitle>
           <CardDescription>
-            {__('Manage add-ons to extend WP SMS functionality')}
+            {__('Manage add-ons to extend WSMS functionality')}
           </CardDescription>
         </CardHeader>
         <CardContent>

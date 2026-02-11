@@ -255,8 +255,8 @@ export default function PhoneInput({
       {error && (
         <div className="wsms-absolute wsms-end-2 wsms-top-1/2 wsms--translate-y-1/2 wsms-group">
           <AlertCircle className="wsms-h-3.5 wsms-w-3.5 wsms-text-red-500 wsms-cursor-help" strokeWidth={2} />
-          <div className="wsms-absolute wsms-bottom-full wsms-start-1/2 wsms--translate-x-1/2 wsms-mb-1.5 wsms-hidden group-hover:wsms-block wsms-z-50 wsms-pointer-events-none">
-            <div className="wsms-bg-slate-800 wsms-text-white wsms-text-[11px] wsms-px-2 wsms-py-1 wsms-rounded wsms-whitespace-nowrap wsms-shadow-lg">
+          <div className="wsms-absolute wsms-bottom-full wsms--end-2 wsms-mb-1.5 wsms-hidden group-hover:wsms-block wsms-z-50 wsms-pointer-events-none wsms-w-max">
+            <div className="wsms-bg-slate-800 wsms-text-white wsms-text-[11px] wsms-px-2 wsms-py-1 wsms-rounded wsms-max-w-[280px] wsms-shadow-lg">
               {error}
             </div>
           </div>
