@@ -19,6 +19,7 @@ export default function Newsletter() {
   // Form settings
   const [formGroups, setFormGroups] = useSetting('newsletter_form_groups', '')
   const [specifiedGroups, setSpecifiedGroups] = useSetting('newsletter_form_specified_groups', [])
+  const [multipleSelect, setMultipleSelect] = useSetting('newsletter_form_multiple_select', '')
   const [defaultGroup, setDefaultGroup] = useSetting('newsletter_form_default_group', '0')
   const [formVerify, setFormVerify] = useSetting('newsletter_form_verify', '')
 
@@ -58,6 +59,13 @@ export default function Newsletter() {
 
           {showGroups && (
             <>
+              <SettingRow
+                title={__('Allow Multiple Group Selection')}
+                description={__('Allow subscribers to join multiple groups from the form.')}
+                checked={multipleSelect === '1'}
+                onCheckedChange={(checked) => setMultipleSelect(checked ? '1' : '')}
+              />
+
               <MultiSelectField
                 label={__('Available Groups')}
                 options={groupOptions}
@@ -68,17 +76,19 @@ export default function Newsletter() {
                 description={__('Which groups subscribers can choose from. Leave empty for all groups.')}
               />
 
-              <SelectField
-                label={__('Default Group')}
-                value={defaultGroup}
-                onValueChange={setDefaultGroup}
-                placeholder={__('Select a group')}
-                description={__('Automatically add new subscribers to this group.')}
-                options={[
-                  { value: '0', label: __('All') },
-                  ...groupOptions,
-                ]}
-              />
+              {multipleSelect !== '1' && (
+                <SelectField
+                  label={__('Default Group')}
+                  value={defaultGroup}
+                  onValueChange={setDefaultGroup}
+                  placeholder={__('Select a group')}
+                  description={__('Automatically add new subscribers to this group.')}
+                  options={[
+                    { value: '0', label: __('All') },
+                    ...groupOptions,
+                  ]}
+                />
+              )}
             </>
           )}
 

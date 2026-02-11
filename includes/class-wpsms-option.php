@@ -14,9 +14,7 @@ class Option
      *
      * @var array
      */
-    public static $deprecatedOptions = [
-        'newsletter_form_multiple_select',
-    ];
+    public static $deprecatedOptions = [];
 
     /**
      * Get the whole Plugin Options

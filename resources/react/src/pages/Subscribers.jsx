@@ -37,12 +37,14 @@ import {
   DialogBody,
   DialogFooter,
 } from '@/components/ui/dialog'
+import { MultiSelect } from '@/components/ui/multi-select'
 import { subscribersApi } from '@/api/subscribersApi'
 import { groupsApi } from '@/api/groupsApi'
 import { smsApi } from '@/api/smsApi'
 import { useCountryCheck } from '@/hooks/useCountryCheck'
 import { InternationalPhoneInput } from '@/components/ui/InternationalPhoneInput'
 import { cn, formatDate, getWpSettings, __, downloadCsv } from '@/lib/utils'
+import { useSetting } from '@/context/SettingsContext'
 import { useListPage } from '@/hooks/useListPage'
 import { useFormDialog } from '@/hooks/useFormDialog'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
@@ -80,6 +82,10 @@ export default function Subscribers() {
   // Get countries from settings
   const { countries = [] } = getWpSettings()
   const showActivateCode = window.wpSmsSettings?.newsletter_form_verify || false
+
+  // Multi-group setting
+  const [multipleSelect] = useSetting('newsletter_form_multiple_select', '')
+  const multiGroupEnabled = multipleSelect === '1'
 
   // Groups state (fetched separately)
   const [groups, setGroups] = useState([])
@@ -218,16 +224,25 @@ export default function Subscribers() {
     if (!mobile?.trim()) return
     setIsAddingQuick(true)
     try {
+      let groupIdParam
+      if (multiGroupEnabled) {
+        // quickAddGroup is an array of string IDs when multi-group is on
+        groupIdParam = Array.isArray(quickAddGroup) && quickAddGroup.length > 0
+          ? quickAddGroup.map(id => parseInt(id))
+          : undefined
+      } else {
+        groupIdParam = quickAddGroup ? parseInt(quickAddGroup) : undefined
+      }
       await subscribersApi.createSubscriber({
         name: name?.trim() || '',
         mobile: mobile.trim(),
-        group_id: quickAddGroup ? parseInt(quickAddGroup) : undefined,
+        group_id: groupIdParam,
         status: '1',
       })
       toast({ title: __('Subscriber added successfully'), variant: 'success' })
       setQuickAddName('')
       setQuickAddPhone('')
-      setQuickAddGroup('')
+      setQuickAddGroup(multiGroupEnabled ? [] : '')
       table.fetch({ page: 1 })
     } catch (error) {
       toast({ title: error.message || __('Failed to add subscriber'), variant: 'destructive' })
@@ -559,20 +574,31 @@ export default function Subscribers() {
                       placeholder={__('Phone number')}
                     />
                   </div>
-                  <div className="wsms-w-[120px] wsms-shrink-0">
-                    <Select value={quickAddGroup || 'none'} onValueChange={(v) => setQuickAddGroup(v === 'none' ? '' : v)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder={__('No Group')} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">{__('No Group')}</SelectItem>
-                        {groups.map((group) => (
-                          <SelectItem key={group.id} value={String(group.id)}>
-                            {group.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                  <div className={cn('wsms-shrink-0', multiGroupEnabled ? 'wsms-w-[160px]' : 'wsms-w-[120px]')}>
+                    {multiGroupEnabled ? (
+                      <MultiSelect
+                        options={groups.map(g => ({ value: String(g.id), label: g.name }))}
+                        value={Array.isArray(quickAddGroup) ? quickAddGroup : []}
+                        onValueChange={setQuickAddGroup}
+                        placeholder={__('Groups')}
+                        searchPlaceholder={__('Search groups...')}
+                        maxDisplayItems={0}
+                      />
+                    ) : (
+                      <Select value={quickAddGroup || 'none'} onValueChange={(v) => setQuickAddGroup(v === 'none' ? '' : v)}>
+                        <SelectTrigger>
+                          <SelectValue placeholder={__('No Group')} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">{__('No Group')}</SelectItem>
+                          {groups.map((group) => (
+                            <SelectItem key={group.id} value={String(group.id)}>
+                              {group.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   </div>
                   <Button
                     onClick={() => handleQuickAdd('', quickAddPhone)}
@@ -787,20 +813,31 @@ export default function Subscribers() {
                   placeholder={__('Phone number')}
                 />
               </div>
-              <div className="wsms-w-[120px] wsms-shrink-0">
-                <Select value={quickAddGroup || 'none'} onValueChange={(v) => setQuickAddGroup(v === 'none' ? '' : v)}>
-                  <SelectTrigger className="wsms-h-9 wsms-text-[13px]">
-                    <SelectValue placeholder={__('No Group')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none">{__('No Group')}</SelectItem>
-                    {groups.map((group) => (
-                      <SelectItem key={group.id} value={String(group.id)}>
-                        {group.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+              <div className={cn('wsms-shrink-0', multiGroupEnabled ? 'wsms-w-[160px]' : 'wsms-w-[120px]')}>
+                {multiGroupEnabled ? (
+                  <MultiSelect
+                    options={groups.map(g => ({ value: String(g.id), label: g.name }))}
+                    value={Array.isArray(quickAddGroup) ? quickAddGroup : []}
+                    onValueChange={setQuickAddGroup}
+                    placeholder={__('Groups')}
+                    searchPlaceholder={__('Search groups...')}
+                    maxDisplayItems={0}
+                  />
+                ) : (
+                  <Select value={quickAddGroup || 'none'} onValueChange={(v) => setQuickAddGroup(v === 'none' ? '' : v)}>
+                    <SelectTrigger className="wsms-h-9 wsms-text-[13px]">
+                      <SelectValue placeholder={__('No Group')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">{__('No Group')}</SelectItem>
+                      {groups.map((group) => (
+                        <SelectItem key={group.id} value={String(group.id)}>
+                          {group.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
               <Button
                 disabled={isAddingQuick || !quickAddPhone.trim()}

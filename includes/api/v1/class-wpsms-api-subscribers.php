@@ -421,28 +421,64 @@ class SubscribersApi extends RestApi
             return self::response($mobile->get_error_message(), 400);
         }
 
-        // Check if subscriber exists
+        // Multi-group creation: loop through each group, let addSubscriber handle per-group duplicates
+        if (is_array($group_id) && count($group_id) > 1) {
+            $createdIds = [];
+            $skipped    = 0;
+
+            foreach ($group_id as $gid) {
+                $gid = absint($gid);
+                $result = Newsletter::addSubscriber(
+                    $name,
+                    $mobile,
+                    $gid,
+                    $status,
+                    '',
+                    $custom_fields
+                );
+                if (is_array($result) && ($result['result'] ?? '') === 'success') {
+                    $createdIds[] = $result['id'];
+                } else {
+                    $skipped++;
+                }
+            }
+
+            if (empty($createdIds)) {
+                return self::response(__('Subscriber already exists in all selected groups', 'wp-sms'), 400);
+            }
+
+            return self::response(__('Subscriber created successfully', 'wp-sms'), 201, [
+                'ids'     => $createdIds,
+                'skipped' => $skipped,
+            ]);
+        }
+
+        // Single group creation: keep existing behavior with broad duplicate check
+        $singleGroupId = is_array($group_id) ? absint($group_id[0]) : absint($group_id);
+
         $existing = Newsletter::getSubscriberByMobile($mobile);
         if ($existing) {
             return self::response(__('A subscriber with this phone number already exists', 'wp-sms'), 400);
         }
 
-        // Add subscriber
         $result = Newsletter::addSubscriber(
             $name,
             $mobile,
-            is_array($group_id) ? $group_id[0] : $group_id,
+            $singleGroupId,
             $status,
             '',
             $custom_fields
         );
 
-        if (!$result) {
-            return self::response(__('Failed to create subscriber', 'wp-sms'), 500);
+        if (!is_array($result) || ($result['result'] ?? '') !== 'success') {
+            $errorMsg = is_array($result) && !empty($result['message'])
+                ? $result['message']
+                : __('Failed to create subscriber', 'wp-sms');
+            return self::response($errorMsg, 500);
         }
 
         return self::response(__('Subscriber created successfully', 'wp-sms'), 201, [
-            'id' => $result,
+            'id' => $result['id'],
         ]);
     }
 
