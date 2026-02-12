@@ -69,13 +69,25 @@ class Modal
     }
 
     /**
+     * Check if a modal has been seen by the current user.
+     *
+     * @param string $modalId The modal ID to check.
+     *
+     * @return bool
+     */
+    public static function hasBeenSeen($modalId)
+    {
+        return !empty(self::getState($modalId));
+    }
+
+    /**
      * Updates the state of a modal.
      *
      * @param string $modalId The name of the modal.
      *
      * @return void
      */
-    private static function updateState($modalId)
+    public static function updateState($modalId)
     {
         $modals           = self::getStates();
         $modals[$modalId] = self::generateStateObject($modalId);

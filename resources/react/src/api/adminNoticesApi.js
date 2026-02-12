@@ -12,6 +12,15 @@ export const adminNoticesApi = {
     return response.data
   },
 
+  async markModalSeen(modalId) {
+    const response = await apiClient.post(
+      'admin-notices/modal-seen',
+      { id: modalId },
+      { timeout: TIMEOUT }
+    )
+    return response.data
+  },
+
   async executeAction(id, action) {
     const response = await apiClient.post(
       'admin-notices/action',

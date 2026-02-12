@@ -5,6 +5,7 @@ import { Toaster } from './components/ui/toaster'
 import AppShell from './components/layout/AppShell'
 import ErrorBoundary from './components/ErrorBoundary'
 import { SetupWizard } from './components/wizard'
+import AllInOneModal from './components/modals/AllInOneModal'
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
           <Toaster>
             <AppShell />
             <SetupWizard />
+            <AllInOneModal />
           </Toaster>
         </SettingsProvider>
       </ThemeProvider>

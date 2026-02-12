@@ -7,6 +7,8 @@ use WP_SMS\Option;
 use WP_SMS\Newsletter;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHelper;
+use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
+use WP_SMS\Admin\ModalHandler\Modal;
 use WP_SMS\Notice\NoticeManager;
 use WP_SMS\Utils\OptionUtil;
 
@@ -359,6 +361,10 @@ class UnifiedAdminPage extends Singleton
             'mobileFieldSources' => apply_filters('wpsms_mobile_field_sources', []),
             // Admin notices for React dashboard banner
             'adminNotices' => $this->getAdminNotices(),
+            // Plugin base URL for asset references
+            'pluginUrl'    => WP_SMS_URL,
+            // All-in-One modal data
+            'aioModal'     => $this->getAioModalData(),
         ];
     }
 
@@ -709,6 +715,34 @@ class UnifiedAdminPage extends Singleton
             'hasValidLicense' => $hasValidLicense,
             'licensedCount'  => $licensedCount,
             'totalPlugins'   => $totalPlugins,
+        ];
+    }
+
+    /**
+     * Get All-in-One modal data for the React dashboard
+     *
+     * @return array
+     */
+    private function getAioModalData()
+    {
+        $pluginHandler = new PluginHandler();
+        $isPremium     = (bool) LicenseHelper::isPremiumLicenseAvailable();
+
+        $addons = [];
+        foreach (PluginHelper::$plugins as $slug => $title) {
+            $addons[] = [
+                'slug'        => $slug,
+                'title'       => $title,
+                'isActive'    => $pluginHandler->isPluginActive($slug),
+                'isInstalled' => $pluginHandler->isPluginInstalled($slug),
+                'hasLicense'  => LicenseHelper::isPluginLicenseValid($slug),
+            ];
+        }
+
+        return [
+            'seen'      => Modal::hasBeenSeen('welcome-premium'),
+            'isPremium' => $isPremium,
+            'addons'    => $addons,
         ];
     }
 

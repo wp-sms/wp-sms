@@ -4,6 +4,7 @@ namespace WP_SMS\Api\V1;
 
 use WP_REST_Server;
 use WP_REST_Request;
+use WP_SMS\Admin\ModalHandler\Modal;
 use WP_SMS\RestApi;
 use WP_SMS\Utils\OptionUtil;
 
@@ -26,6 +27,15 @@ class AdminNoticesApi extends RestApi
      */
     private $allowedOptions = [
         'share_anonymous_data',
+    ];
+
+    /**
+     * Allowed modal IDs that can be marked as seen via the REST endpoint
+     *
+     * @var array
+     */
+    private $allowedModalIds = [
+        'welcome-premium',
     ];
 
     /**
@@ -59,6 +69,22 @@ class AdminNoticesApi extends RestApi
                         'type'              => 'string',
                         'sanitize_callback' => 'sanitize_text_field',
                         'enum'              => ['static', 'handler'],
+                    ],
+                ],
+            ],
+        ]);
+
+        // Mark a modal as seen (syncs with legacy Modal::showOnce)
+        register_rest_route($this->namespace . '/v1', '/admin-notices/modal-seen', [
+            [
+                'methods'             => WP_REST_Server::CREATABLE,
+                'callback'            => [$this, 'markModalSeen'],
+                'permission_callback' => [$this, 'checkPermission'],
+                'args'                => [
+                    'id' => [
+                        'required'          => true,
+                        'type'              => 'string',
+                        'sanitize_callback' => 'sanitize_text_field',
                     ],
                 ],
             ],
@@ -145,6 +171,27 @@ class AdminNoticesApi extends RestApi
 
         return self::response(__('Notice dismissed', 'wp-sms'), 200, [
             'dismissed' => $id,
+        ]);
+    }
+
+    /**
+     * Mark a modal as seen (writes to the same storage as legacy Modal::showOnce)
+     *
+     * @param WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function markModalSeen(WP_REST_Request $request)
+    {
+        $id = $request->get_param('id');
+
+        if (empty($id) || !in_array($id, $this->allowedModalIds, true)) {
+            return self::response(__('Invalid parameters', 'wp-sms'), 400);
+        }
+
+        Modal::updateState($id);
+
+        return self::response(__('Modal marked as seen', 'wp-sms'), 200, [
+            'modal' => $id,
         ]);
     }
 

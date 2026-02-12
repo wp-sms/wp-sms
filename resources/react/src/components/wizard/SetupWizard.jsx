@@ -17,6 +17,7 @@ import { Logo } from '@/components/ui/logo'
 import { useSettings } from '@/context/SettingsContext'
 import { settingsApi } from '@/api/settingsApi'
 import { wizardApi } from '@/api/wizardApi'
+import { useRootZIndex } from '@/hooks/useRootZIndex'
 import { getWpSettings, cn, __ } from '@/lib/utils'
 
 import WizardStepper from './WizardStepper'
@@ -105,20 +106,10 @@ export default function SetupWizard() {
     return baseSteps
   }, [showAllInOneStep])
 
-  // Boost the root element's z-index when the wizard is open so the
-  // fixed-position overlay/content sit above the WP admin sidebar.
-  useEffect(() => {
-    const root = document.getElementById('wpsms-settings-root')
-    if (!root) return
-    if (isOpen) {
-      root.style.zIndex = '100000'
-    } else {
-      root.style.zIndex = ''
-    }
-    return () => {
-      root.style.zIndex = ''
-    }
-  }, [isOpen])
+  // Boost the root element's z-index so the fixed-position overlay
+  // sits above the WP admin sidebar. Uses a shared ref-counted hook
+  // so multiple modals (wizard + AIO) don't fight over the same property.
+  useRootZIndex(isOpen)
 
   // Expose open function globally for "Re-run Wizard" button
   useEffect(() => {
