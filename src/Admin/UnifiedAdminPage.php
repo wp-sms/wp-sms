@@ -7,6 +7,8 @@ use WP_SMS\Option;
 use WP_SMS\Newsletter;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHelper;
+use WP_SMS\Notice\NoticeManager;
+use WP_SMS\Utils\OptionUtil;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -355,7 +357,158 @@ class UnifiedAdminPage extends Singleton
             'additionalRecipientTypes' => $this->getAdditionalRecipientTypes(),
             // Additional mobile field sources from add-ons (e.g., PMPro phone fields)
             'mobileFieldSources' => apply_filters('wpsms_mobile_field_sources', []),
+            // Admin notices for React dashboard banner
+            'adminNotices' => $this->getAdminNotices(),
         ];
+    }
+
+    /**
+     * Collect active admin notices for the React dashboard
+     *
+     * Reads static notices registered by NoticeManager and the anonymous data
+     * opt-in notice.  Each notice is normalized to a standard shape that the
+     * React AdminNotices component can render.
+     *
+     * @return array
+     */
+    private function getAdminNotices()
+    {
+        $result = [];
+
+        // 1. Static notices from NoticeManager
+        $manager          = NoticeManager::getInstance();
+        $registeredNotices = $manager->getRegisteredNotices();
+        $dismissedStatic  = get_option('wpsms_notices', []);
+
+        if (!is_array($dismissedStatic)) {
+            $dismissedStatic = [];
+        }
+
+        foreach ($registeredNotices as $id => $notice) {
+            // Already dismissed
+            if (!empty($dismissedStatic[$id])) {
+                continue;
+            }
+
+            // Skip page-conditional notices that target non-unified-admin pages
+            if (!empty($notice['url']) && strpos($notice['url'], 'wp-sms-unified-admin') === false) {
+                continue;
+            }
+
+            // Extract tab from notice URL for page-conditional rendering in the SPA
+            $showOnTab = null;
+            if (!empty($notice['url'])) {
+                $parsed = [];
+                parse_str(wp_parse_url($notice['url'], PHP_URL_QUERY) ?: '', $parsed);
+                if (!empty($parsed['tab'])) {
+                    $showOnTab = sanitize_text_field($parsed['tab']);
+                }
+            }
+
+            $isActivation = strpos($id, 'wp_sms_') === 0 && strpos($id, '_activation') !== false;
+
+            // Strip inline action/dismiss links from the message — the React
+            // component renders its own dismiss control and action buttons.
+            $message = $notice['message'];
+            if ($isActivation) {
+                // Activation notices embed buttons as <a> tags inside a wrapper span;
+                // strip the entire action wrapper and any remaining links.
+                $message = preg_replace('/<span[^>]*wpsms-admin-notice__action[^>]*>.*?<\/span>/is', '', $message);
+            }
+            $message = preg_replace('/<a[^>]*(?:wpsms_dismiss|class=["\'].*?button)[^>]*>.*?<\/a>/is', '', $message);
+            $message = wp_kses_post(trim(strip_tags($message, '<strong><em><br><b><i>')));
+
+            // Activation notices become action-type with a "Launch Setup Wizard" button
+            if ($isActivation) {
+                $result[] = [
+                    'id'           => $id,
+                    'type'         => 'action',
+                    'variant'      => 'info',
+                    'message'      => $message,
+                    'title'        => null,
+                    'dismissible'  => true,
+                    'dismissStore' => 'static',
+                    'link'         => null,
+                    'showOnTab'    => null,
+                    'actions'      => [
+                        [
+                            'label'    => __('Launch Setup Wizard', 'wp-sms'),
+                            'navigate' => 'wizard',
+                        ],
+                    ],
+                ];
+                continue;
+            }
+
+            $result[] = [
+                'id'           => $id,
+                'type'         => 'simple',
+                'variant'      => 'warning',
+                'message'      => $message,
+                'title'        => null,
+                'dismissible'  => (bool) $notice['dismiss'],
+                'dismissStore' => 'static',
+                'link'         => !empty($notice['url']) ? admin_url($notice['url']) : null,
+                'showOnTab'    => $showOnTab,
+                'actions'      => [],
+            ];
+        }
+
+        // 2. Anonymous data sharing notice
+        $installationTime    = get_option('wp_sms_installation_time');
+        $dismissedHandler    = get_option('wp_sms_dismissed_notices', []);
+
+        if (!is_array($dismissedHandler)) {
+            $dismissedHandler = [];
+        }
+
+        if (
+            current_user_can('manage_options') &&
+            !OptionUtil::get('share_anonymous_data') &&
+            !in_array('share_anonymous_data', $dismissedHandler) &&
+            $installationTime &&
+            (time() > $installationTime + 7 * DAY_IN_SECONDS)
+        ) {
+            $result[] = [
+                'id'           => 'share_anonymous_data',
+                'type'         => 'action',
+                'variant'      => 'info',
+                'message'      => __('We\'ve added a new Usage Tracking option to help us understand how WP SMS is used and identify areas for improvement. By enabling this feature, you\'ll help us make the plugin better for everyone. No personal or sensitive data is collected.', 'wp-sms'),
+                'title'        => __('Help Us Improve WP SMS!', 'wp-sms'),
+                'dismissible'  => true,
+                'dismissStore' => 'handler',
+                'link'         => null,
+                'showOnTab'    => null,
+                'actions'      => [
+                    [
+                        'label'       => __('Enable Share Anonymous Data', 'wp-sms'),
+                        'action_type' => 'update_option',
+                        'option'      => 'share_anonymous_data',
+                        'value'       => 'true',
+                    ],
+                    [
+                        'label' => __('Learn More', 'wp-sms'),
+                        'url'   => 'https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=doc',
+                    ],
+                ],
+            ];
+        }
+
+        /**
+         * Filter admin notices shown in the React dashboard.
+         *
+         * @param array $result Normalized notice array
+         */
+        $result = apply_filters('wpsms_react_admin_notices', $result);
+
+        // Sanitize all messages after the filter to prevent XSS from third-party add-ons
+        foreach ($result as &$notice) {
+            if (!empty($notice['message'])) {
+                $notice['message'] = wp_kses_post($notice['message']);
+            }
+        }
+
+        return $result;
     }
 
     /**

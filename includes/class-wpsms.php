@@ -271,6 +271,7 @@ class WP_SMS
         $this->include('includes/api/v1/class-wpsms-api-outbox.php');
         $this->include('includes/api/v1/class-wpsms-api-privacy.php');
         $this->include('includes/api/v1/class-wpsms-api-notifications.php');
+        $this->include('includes/api/v1/class-wpsms-api-admin-notices.php');
         $this->include('includes/api/v1/class-wpsms-api-addons.php');
 
         // Anonymous Data sharing

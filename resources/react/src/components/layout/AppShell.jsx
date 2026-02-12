@@ -1,6 +1,7 @@
 import React, { useState, Suspense, memo, useEffect } from 'react'
 import Sidebar from './Sidebar'
 import Header from './Header'
+import AdminNotices from './AdminNotices'
 import FloatingSaveBar from './FloatingSaveBar'
 import BrandingFooter from './BrandingFooter'
 import ErrorBoundary from '@/components/ErrorBoundary'
@@ -85,6 +86,7 @@ const AppShell = memo(function AppShell() {
         <div className="wsms-main">
           <main id="main-content" className="wsms-content wsms-scrollbar-thin" tabIndex={-1}>
             <div className="wsms-content-inner">
+              <AdminNotices />
               {isLoading ? (
                 <LoadingSkeleton />
               ) : (

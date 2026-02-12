@@ -42,6 +42,16 @@ abstract class AbstractNotice
     }
 
     /**
+     * Get all registered notices
+     *
+     * @return array
+     */
+    public function getRegisteredNotices()
+    {
+        return $this->notices;
+    }
+
+    /**
      * Generate a link for dismissing the notice
      */
     protected static function generateNoticeLink($id, $url, $nonce)
