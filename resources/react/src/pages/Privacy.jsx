@@ -31,10 +31,15 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog'
 import { privacyApi } from '@/api/privacyApi'
-import { cn, formatDate, __, downloadCsv } from '@/lib/utils'
+import { cn, formatDate, __, downloadCsv, getWpSettings } from '@/lib/utils'
 import { useToast } from '@/components/ui/toaster'
+import { useSettings, useSavedSetting } from '@/context/SettingsContext'
 
 export default function Privacy() {
+  const { setCurrentPage } = useSettings()
+  const { gdprEnabled: initialGdprEnabled } = getWpSettings()
+  const savedGdprSetting = useSavedSetting('gdpr_compliance', '')
+  const gdprEnabled = initialGdprEnabled || savedGdprSetting === '1'
   const { toast } = useToast()
 
   // Search state
@@ -167,6 +172,32 @@ export default function Privacy() {
 
     // Default
     return status
+  }
+
+  // GDPR not enabled placeholder
+  if (!gdprEnabled) {
+    return (
+      <div className="wsms-space-y-6">
+        <Card className="wsms-border-dashed">
+          <CardContent className="wsms-py-16">
+            <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center wsms-max-w-md wsms-mx-auto">
+              <div className="wsms-flex wsms-h-16 wsms-w-16 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary/10 wsms-mb-6">
+                <Shield className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
+              </div>
+              <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
+                {__('GDPR Compliance Required')}
+              </h3>
+              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
+                {__('Enable the GDPR Compliance setting to access privacy data management tools.')}
+              </p>
+              <Button variant="outline" onClick={() => setCurrentPage('phone')}>
+                {__('Go to Phone Settings')}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
   }
 
   return (
