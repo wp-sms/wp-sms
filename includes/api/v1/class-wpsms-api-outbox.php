@@ -526,10 +526,12 @@ class OutboxApi extends RestApi
                         if (!is_wp_error($result)) {
                             $affected++;
                         } else {
-                            $errors[] = sprintf(__('Failed to resend message #%d: %s', 'wp-sms'), $id, $result->get_error_message());
+                            /* translators: %1$d: message ID, %2$s: error message */
+                            $errors[] = sprintf(__('Failed to resend message #%1$d: %2$s', 'wp-sms'), $id, $result->get_error_message());
                         }
                     } catch (\Exception $e) {
-                        $errors[] = sprintf(__('Failed to resend message #%d: %s', 'wp-sms'), $id, $e->getMessage());
+                        /* translators: %1$d: message ID, %2$s: error message */
+                        $errors[] = sprintf(__('Failed to resend message #%1$d: %2$s', 'wp-sms'), $id, $e->getMessage());
                     }
                 }
                 break;
@@ -541,6 +543,7 @@ class OutboxApi extends RestApi
         }
 
         return self::response(
+            /* translators: %d: number of messages processed */
             sprintf(__('%d message(s) processed successfully', 'wp-sms'), $affected),
             200,
             $response_data

@@ -634,6 +634,7 @@ class SubscribersApi extends RestApi
         }
 
         return self::response(
+            /* translators: %d: number of subscribers updated */
             sprintf(__('%d subscriber(s) updated successfully', 'wp-sms'), $affected),
             200,
             ['affected' => $affected]
@@ -786,6 +787,7 @@ class SubscribersApi extends RestApi
             }
 
             if (empty($mobile)) {
+                /* translators: %d: row number in the CSV import file */
                 $errors[] = sprintf(__('Row %d: Mobile number is required', 'wp-sms'), $row_num);
                 $skipped++;
                 continue;
@@ -796,7 +798,8 @@ class SubscribersApi extends RestApi
             $parsed_mobile = $numberParser->getValidNumber();
 
             if (is_wp_error($parsed_mobile)) {
-                $errors[] = sprintf(__('Row %d: %s', 'wp-sms'), $row_num, $parsed_mobile->get_error_message());
+                /* translators: %1$d: row number in the CSV import file, %2$s: error message */
+                $errors[] = sprintf(__('Row %1$d: %2$s', 'wp-sms'), $row_num, $parsed_mobile->get_error_message());
                 $skipped++;
                 continue;
             }
@@ -808,6 +811,7 @@ class SubscribersApi extends RestApi
                     $skipped++;
                     continue;
                 } else {
+                    /* translators: %d: row number in the CSV import file */
                     $errors[] = sprintf(__('Row %d: Subscriber already exists', 'wp-sms'), $row_num);
                     $skipped++;
                     continue;
@@ -820,6 +824,7 @@ class SubscribersApi extends RestApi
             if ($result) {
                 $imported++;
             } else {
+                /* translators: %d: row number in the CSV import file */
                 $errors[] = sprintf(__('Row %d: Failed to add subscriber', 'wp-sms'), $row_num);
                 $skipped++;
             }
@@ -828,7 +833,8 @@ class SubscribersApi extends RestApi
         fclose($handle);
 
         return self::response(
-            sprintf(__('Import completed: %d imported, %d skipped', 'wp-sms'), $imported, $skipped),
+            /* translators: %1$d: number of subscribers imported, %2$d: number of subscribers skipped */
+            sprintf(__('Import completed: %1$d imported, %2$d skipped', 'wp-sms'), $imported, $skipped),
             200,
             [
                 'imported' => $imported,

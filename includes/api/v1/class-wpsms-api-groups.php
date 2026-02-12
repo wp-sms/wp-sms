@@ -267,6 +267,7 @@ class GroupsApi extends RestApi
         if ($subscriber_count > 0) {
             return self::response(
                 sprintf(
+                    /* translators: %d: number of subscribers in the group */
                     __('Cannot delete group. It has %d subscriber(s). Please move or delete them first.', 'wp-sms'),
                     $subscriber_count
                 ),
@@ -315,6 +316,7 @@ class GroupsApi extends RestApi
                 $failed[] = [
                     'id'     => $id,
                     'reason' => sprintf(
+                        /* translators: %d: number of subscribers in the group */
                         __('Group has %d subscriber(s)', 'wp-sms'),
                         $subscriber_count
                     ),
@@ -342,6 +344,7 @@ class GroupsApi extends RestApi
         }
 
         return self::response(
+            /* translators: %d: number of groups deleted */
             sprintf(__('%d group(s) deleted successfully', 'wp-sms'), count($deleted)),
             200,
             [

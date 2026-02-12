@@ -289,13 +289,15 @@ class UnifiedAdminPage extends Singleton
                 window.$RefreshSig$ = () => (type) => type
                 window.__vite_plugin_react_preamble_installed__ = true
             </script>
+            <?php // phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Vite dev server requires type="module" scripts ?>
             <script type="module" src="<?php echo esc_url($viteDevServerUrl); ?>/@vite/client"></script>
             <script type="module" src="<?php echo esc_url($viteDevServerUrl); ?>/src/main.jsx"></script>
+            <?php // phpcs:enable WordPress.WP.EnqueuedResources.NonEnqueuedScript ?>
             <?php
         });
 
         // Register empty script for wp_localize_script compatibility
-        wp_register_script('wpsms-unified-admin', '', [], null, true);
+        wp_register_script('wpsms-unified-admin', '', [], WP_SMS_VERSION, true);
         wp_enqueue_script('wpsms-unified-admin');
     }
 
@@ -1668,7 +1670,8 @@ class UnifiedAdminPage extends Singleton
             'Search campaigns...' => __('Search campaigns...', 'wp-sms'),
             'All Statuses'    => __('All Statuses', 'wp-sms'),
             'Campaigns'       => __('Campaigns', 'wp-sms'),
-            'Showing %d of %d campaigns' => __('Showing %d of %d campaigns', 'wp-sms'),
+            /* translators: %1$d: number of campaigns shown, %2$d: total number of campaigns */
+            'Showing %d of %d campaigns' => __('Showing %1$d of %2$d campaigns', 'wp-sms'),
             'No campaigns found' => __('No campaigns found', 'wp-sms'),
             'No campaigns yet' => __('No campaigns yet', 'wp-sms'),
             'Create your first SMS campaign to get started.' => __('Create your first SMS campaign to get started.', 'wp-sms'),
@@ -1682,8 +1685,10 @@ class UnifiedAdminPage extends Singleton
             'Create a new targeted SMS marketing campaign.' => __('Create a new targeted SMS marketing campaign.', 'wp-sms'),
             'Campaign details and configuration' => __('Campaign details and configuration', 'wp-sms'),
             'Close'           => __('Close', 'wp-sms'),
+            /* translators: %s: name of the item to be deleted */
             'Are you sure you want to delete "%s"? This action cannot be undone.' => __('Are you sure you want to delete "%s"? This action cannot be undone.', 'wp-sms'),
-            'Page %d of %d'   => __('Page %d of %d', 'wp-sms'),
+            /* translators: %1$d: current page number, %2$d: total number of pages */
+            'Page %d of %d'   => __('Page %1$d of %2$d', 'wp-sms'),
             'Order Status'    => __('Order Status', 'wp-sms'),
             'Coupon Code'     => __('Coupon Code', 'wp-sms'),
             'Product'         => __('Product', 'wp-sms'),

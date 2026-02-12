@@ -341,7 +341,8 @@ class PrivacyApi extends RestApi
         }
 
         return self::response(
-            sprintf(__('Successfully deleted %d record(s) for %s', 'wp-sms'), $total_deleted, $number),
+            /* translators: %1$d: number of records deleted, %2$s: phone number */
+            sprintf(__('Successfully deleted %1$d record(s) for %2$s', 'wp-sms'), $total_deleted, $number),
             200,
             [
                 'deleted' => $deleted,

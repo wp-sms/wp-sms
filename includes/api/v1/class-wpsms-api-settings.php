@@ -798,6 +798,7 @@ class SettingsApi extends RestApi
 
             if (isset($rules['minLength']) && $length < $rules['minLength']) {
                 return sprintf(
+                    /* translators: %d: minimum number of characters required */
                     __('Value must be at least %d characters', 'wp-sms'),
                     $rules['minLength']
                 );
@@ -805,6 +806,7 @@ class SettingsApi extends RestApi
 
             if (isset($rules['maxLength']) && $length > $rules['maxLength']) {
                 return sprintf(
+                    /* translators: %d: maximum number of characters allowed */
                     __('Value must not exceed %d characters', 'wp-sms'),
                     $rules['maxLength']
                 );
@@ -825,6 +827,7 @@ class SettingsApi extends RestApi
 
             if (isset($rules['min']) && $numericValue < $rules['min']) {
                 return sprintf(
+                    /* translators: %s: minimum value allowed */
                     __('Value must be at least %s', 'wp-sms'),
                     $rules['min']
                 );
@@ -832,6 +835,7 @@ class SettingsApi extends RestApi
 
             if (isset($rules['max']) && $numericValue > $rules['max']) {
                 return sprintf(
+                    /* translators: %s: maximum value allowed */
                     __('Value must not exceed %s', 'wp-sms'),
                     $rules['max']
                 );
