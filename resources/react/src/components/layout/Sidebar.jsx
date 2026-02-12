@@ -14,7 +14,7 @@ import Logo from './Logo'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 import { smsApi } from '@/api/smsApi'
 import { inboxApi } from '@/api/twoWayApi'
-import { useSettings, useSetting, useSavedSetting } from '@/context/SettingsContext'
+import { useSettings, useSavedSetting } from '@/context/SettingsContext'
 import { getNavigation } from '@/lib/pageRegistry'
 
 function getLinks() {
@@ -33,8 +33,8 @@ const footerUrls = {
 function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
   const [isExpanded, setIsExpanded] = useState(false)
   const [credit, setCredit] = useState(null)
-  const [creditSupported, setCreditSupported] = useState(true)
-  const [isLoadingCredit, setIsLoadingCredit] = useState(false)
+  const [creditSupported, setCreditSupported] = useState(null)
+  const [isLoadingCredit, setIsLoadingCredit] = useState(true)
   const { gateways } = useGatewayRegistry()
 
   const gatewayDisplayName = getGatewayDisplayName(gatewayKey, gateways)
@@ -49,17 +49,31 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
     } catch (error) {
       console.error('Failed to fetch credit:', error)
       setCredit(null)
+      setCreditSupported(false)
     } finally {
       setIsLoadingCredit(false)
     }
   }, [isConfigured])
 
-  // Fetch credit when expanded for the first time
+  // Fetch credit eagerly on mount to determine connection status
   useEffect(() => {
-    if (isExpanded && credit === null && !isLoadingCredit) {
+    if (isConfigured) {
       fetchCredit()
+    } else {
+      setIsLoadingCredit(false)
+      setCreditSupported(false)
     }
-  }, [isExpanded, credit, isLoadingCredit, fetchCredit])
+  }, [isConfigured, gatewayKey, fetchCredit])
+
+  // Re-fetch credit when gateway test succeeds (from Gateway page)
+  useEffect(() => {
+    const handler = () => fetchCredit()
+    window.addEventListener('wsms:gateway-tested', handler)
+    return () => window.removeEventListener('wsms:gateway-tested', handler)
+  }, [fetchCredit])
+
+  // Determine connection status: connected only when credit is available
+  const isConnected = creditSupported === true && credit !== null
 
   // If not configured, just show the button that navigates to gateway settings
   if (!isConfigured) {
@@ -78,25 +92,45 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
     )
   }
 
+  const statusLabel = isLoadingCredit
+    ? __('Checking gateway...')
+    : isConnected
+      ? __('Gateway Connected')
+      : __('Gateway not connected')
+
   return (
-    <div className="wsms-rounded-md wsms-bg-emerald-500/10 wsms-transition-all">
+    <div className={cn('wsms-rounded-md wsms-transition-all', isConnected ? 'wsms-bg-emerald-500/10' : 'wsms-bg-amber-500/10')}>
       {/* Header - clickable to expand/collapse */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-px-3 wsms-py-2 wsms-text-start hover:wsms-bg-emerald-500/15 wsms-rounded-md wsms-transition-colors"
+        className={cn(
+          'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-px-3 wsms-py-2 wsms-text-start wsms-rounded-md wsms-transition-colors',
+          isConnected ? 'hover:wsms-bg-emerald-500/15' : 'hover:wsms-bg-amber-500/15'
+        )}
       >
         <div className="wsms-flex wsms-items-center wsms-gap-2">
           <span className="wsms-relative wsms-flex wsms-h-2 wsms-w-2">
-            <span className="wsms-absolute wsms-inline-flex wsms-h-full wsms-w-full wsms-rounded-full wsms-bg-emerald-500 wsms-opacity-75 wsms-animate-ping" />
-            <span className="wsms-relative wsms-inline-flex wsms-rounded-full wsms-h-2 wsms-w-2 wsms-bg-emerald-500" />
+            {isConnected && (
+              <span className="wsms-absolute wsms-inline-flex wsms-h-full wsms-w-full wsms-rounded-full wsms-bg-emerald-500 wsms-opacity-75 wsms-animate-ping" />
+            )}
+            <span className={cn(
+              'wsms-relative wsms-inline-flex wsms-rounded-full wsms-h-2 wsms-w-2',
+              isConnected ? 'wsms-bg-emerald-500' : 'wsms-bg-amber-500'
+            )} />
           </span>
-          <span className="wsms-text-[11px] wsms-font-medium wsms-text-emerald-700 dark:wsms-text-emerald-400">
-            {__('Gateway Connected')}
+          <span className={cn(
+            'wsms-text-[11px] wsms-font-medium',
+            isConnected
+              ? 'wsms-text-emerald-700 dark:wsms-text-emerald-400'
+              : 'wsms-text-amber-700 dark:wsms-text-amber-400'
+          )}>
+            {statusLabel}
           </span>
         </div>
         <ChevronDown
           className={cn(
-            'wsms-h-3.5 wsms-w-3.5 wsms-text-emerald-600 dark:wsms-text-emerald-400 wsms-transition-transform wsms-duration-200',
+            'wsms-h-3.5 wsms-w-3.5 wsms-transition-transform wsms-duration-200',
+            isConnected ? 'wsms-text-emerald-600 dark:wsms-text-emerald-400' : 'wsms-text-amber-600 dark:wsms-text-amber-400',
             isExpanded && 'wsms-rotate-180'
           )}
           strokeWidth={2}
@@ -118,7 +152,7 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
           </div>
 
           {/* Credit */}
-          {creditSupported && (
+          {isConnected && (
             <div className="wsms-flex wsms-items-center wsms-justify-between wsms-text-[11px]">
               <span className="wsms-text-muted-foreground">{__('Credit')}</span>
               <div className="wsms-flex wsms-items-center wsms-gap-1.5">
@@ -127,7 +161,7 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
                 ) : (
                   <>
                     <span className="wsms-font-medium wsms-text-foreground">
-            {credit !== null ? credit : '—'}
+                      {credit !== null ? credit : '—'}
                     </span>
                     <button
                       onClick={(e) => {
@@ -148,7 +182,12 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
           {/* Configure button */}
           <button
             onClick={onConfigure}
-            className="wsms-flex wsms-w-full wsms-items-center wsms-justify-center wsms-gap-1.5 wsms-px-2.5 wsms-py-1.5 wsms-text-[11px] wsms-font-medium wsms-text-emerald-700 dark:wsms-text-emerald-400 wsms-bg-emerald-500/10 hover:wsms-bg-emerald-500/20 wsms-rounded-md wsms-transition-colors"
+            className={cn(
+              'wsms-flex wsms-w-full wsms-items-center wsms-justify-center wsms-gap-1.5 wsms-px-2.5 wsms-py-1.5 wsms-text-[11px] wsms-font-medium wsms-rounded-md wsms-transition-colors',
+              isConnected
+                ? 'wsms-text-emerald-700 dark:wsms-text-emerald-400 wsms-bg-emerald-500/10 hover:wsms-bg-emerald-500/20'
+                : 'wsms-text-amber-700 dark:wsms-text-amber-400 wsms-bg-amber-500/10 hover:wsms-bg-amber-500/20'
+            )}
           >
             <Settings2 className="wsms-h-3 wsms-w-3" />
             {__('Configure')}
@@ -464,13 +503,13 @@ export default function Sidebar({ onClose, showClose }) {
   const version = window.wpSmsSettings?.version || '7.0'
   const { gdprEnabled: initialGdprEnabled, hasProAddon } = getWpSettings()
 
-  // Use useSetting hook for reactive updates when settings change
-  const [gatewayName] = useSetting('gateway_name', '')
+  // Use saved setting so sidebar only reflects persisted gateway (not unsaved dropdown changes)
+  const savedGatewayName = useSavedSetting('gateway_name', '')
 
   // Use saved setting for GDPR - only update sidebar when settings are saved
   const savedGdprSetting = useSavedSetting('gdpr_compliance', '')
 
-  const isGatewayConfigured = Boolean(gatewayName)
+  const isGatewayConfigured = Boolean(savedGatewayName)
 
   // Check GDPR from both initial settings AND saved settings context
   // This only updates the sidebar when settings are actually saved
@@ -592,7 +631,7 @@ export default function Sidebar({ onClose, showClose }) {
         <div className="wsms-px-3 wsms-py-1">
           <GatewayStatus
             isConfigured={isGatewayConfigured}
-            gatewayKey={gatewayName}
+            gatewayKey={savedGatewayName}
             onConfigure={() => setCurrentPage('gateway')}
           />
         </div>

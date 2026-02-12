@@ -236,6 +236,14 @@ class SettingsApi extends RestApi
             // Clean up __UNSET__ markers (removes keys that were set to false in React)
             $mergedSettings = $this->cleanupUnsetMarkers($mergedSettings);
             update_option('wpsms_settings', $mergedSettings);
+
+            // Clear cached credit when gateway changes so stale values aren't displayed
+            if (
+                isset($sanitizedSettings['gateway_name']) &&
+                ($currentSettings['gateway_name'] ?? '') !== $sanitizedSettings['gateway_name']
+            ) {
+                delete_option('wpsms_gateway_credit');
+            }
         }
 
         // Update pro settings
@@ -410,6 +418,11 @@ class SettingsApi extends RestApi
                 return self::response($credit->get_error_message(), 400, [
                     'rawResponse' => var_export($credit->get_error_message(), true),
                 ]);
+            }
+
+            // Cache the credit so sidebar, admin bar, and Send SMS page show accurate values
+            if (!is_object($credit)) {
+                update_option('wpsms_gateway_credit', $credit);
             }
 
             return self::response(__('Gateway connection successful', 'wp-sms'), 200, [

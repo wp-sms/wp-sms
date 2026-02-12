@@ -215,6 +215,9 @@ export default function Gateway() {
         description: result.success ? `Credit: ${result.credit}` : result.error,
         variant: result.success ? 'success' : 'destructive',
       })
+      if (result.success) {
+        window.dispatchEvent(new CustomEvent('wsms:gateway-tested'))
+      }
     } catch (error) {
       setConnectionTested(true)
       setConnectionSuccess(false)
