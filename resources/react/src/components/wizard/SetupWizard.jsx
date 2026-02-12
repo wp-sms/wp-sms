@@ -105,6 +105,21 @@ export default function SetupWizard() {
     return baseSteps
   }, [showAllInOneStep])
 
+  // Boost the root element's z-index when the wizard is open so the
+  // fixed-position overlay/content sit above the WP admin sidebar.
+  useEffect(() => {
+    const root = document.getElementById('wpsms-settings-root')
+    if (!root) return
+    if (isOpen) {
+      root.style.zIndex = '100000'
+    } else {
+      root.style.zIndex = ''
+    }
+    return () => {
+      root.style.zIndex = ''
+    }
+  }, [isOpen])
+
   // Expose open function globally for "Re-run Wizard" button
   useEffect(() => {
     window.wpSmsOpenWizard = () => {
