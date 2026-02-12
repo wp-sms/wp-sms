@@ -5,6 +5,7 @@ import { Menu, Bell, Moon, Sun, Sparkles, ExternalLink } from 'lucide-react'
 import { cn, __ } from '@/lib/utils'
 import { NotificationSidebar } from '@/components/notifications'
 import { useNotifications } from '@/hooks/useNotifications'
+import { useSavedSetting } from '@/context/SettingsContext'
 
 /**
  * License/Upgrade button component
@@ -166,6 +167,8 @@ function ThemeToggle() {
 }
 
 export default function Header({ onMenuClick, showMenuButton }) {
+  const displayNotifications = useSavedSetting('display_notifications', '1')
+
   return (
     <header className="wsms-flex wsms-items-center wsms-justify-between wsms-h-14 wsms-px-4 wsms-bg-card wsms-border-b wsms-border-border">
       {/* Left: Mobile menu + Logo */}
@@ -193,7 +196,7 @@ export default function Header({ onMenuClick, showMenuButton }) {
         <div className="wsms-h-5 wsms-w-px wsms-bg-border" />
 
         <div className="wsms-flex wsms-items-center wsms-gap-1">
-          <NotificationBell />
+          {displayNotifications === '1' && <NotificationBell />}
           <ThemeToggle />
         </div>
       </div>
