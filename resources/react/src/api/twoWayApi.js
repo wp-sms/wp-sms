@@ -77,6 +77,20 @@ export const inboxApi = {
   },
 
   /**
+   * Get conversation thread for a sender number
+   */
+  async getConversation(senderNumber) {
+    return twoWayClient.get(`inbox/conversation/${encodeURIComponent(senderNumber)}`)
+  },
+
+  /**
+   * Reply to a conversation by sender number
+   */
+  async replyToConversation(senderNumber, message) {
+    return twoWayClient.post(`inbox/conversation/${encodeURIComponent(senderNumber)}/reply`, { message })
+  },
+
+  /**
    * Export messages as CSV
    */
   async exportMessages(params = {}) {

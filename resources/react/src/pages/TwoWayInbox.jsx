@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import {
   Inbox,
   AlertCircle,
@@ -11,7 +11,9 @@ import {
   Clock,
   Loader2,
   MailOpen,
+  MessagesSquare,
   Search,
+  Send,
   X,
 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
@@ -64,6 +66,15 @@ export default function TwoWayInbox() {
   const [isReplying, setIsReplying] = useState(false)
   const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false)
   const [bulkActionLoading, setBulkActionLoading] = useState(null)
+
+  // Conversation thread states
+  const [conversationSender, setConversationSender] = useState(null)
+  const [conversationMessages, setConversationMessages] = useState([])
+  const [isConversationLoading, setIsConversationLoading] = useState(false)
+  const [conversationReply, setConversationReply] = useState('')
+  const [isSendingReply, setIsSendingReply] = useState(false)
+  const conversationEndRef = useRef(null)
+  const conversationDirtyRef = useRef(false)
 
   // Fetch commands for filter
   useEffect(() => {
@@ -172,6 +183,71 @@ export default function TwoWayInbox() {
       // silent
     }
   }
+
+  // Open conversation thread
+  const handleOpenConversation = async (row) => {
+    conversationDirtyRef.current = false
+    setConversationSender(row.sender_number)
+    setIsConversationLoading(true)
+    try {
+      const response = await inboxApi.getConversation(row.sender_number)
+      if (response.success) {
+        setConversationMessages(response.data?.messages || [])
+      }
+    } catch (error) {
+      toast({ title: error.message || __('Failed to load conversation'), variant: 'destructive' })
+    } finally {
+      setIsConversationLoading(false)
+    }
+    // Mark as read silently — skip table refresh since we'll refresh on close if needed
+    if (!row.is_read) {
+      conversationDirtyRef.current = true
+      inboxApi.markAsRead(row.id).catch(() => {})
+    }
+  }
+
+  // Send reply within conversation
+  const handleConversationReply = async () => {
+    if (!conversationSender || !conversationReply.trim()) return
+    setIsSendingReply(true)
+    try {
+      const response = await inboxApi.replyToConversation(conversationSender, conversationReply.trim())
+      if (response.success) {
+        setConversationMessages(prev => [...prev, {
+          message: conversationReply.trim(),
+          date_formatted: __('Just now'),
+          type: 'outgoing',
+          status: 'success',
+        }])
+        setConversationReply('')
+        conversationDirtyRef.current = true
+        toast({ title: __('Reply sent'), variant: 'success' })
+      }
+    } catch (error) {
+      toast({ title: error.message || __('Failed to send reply'), variant: 'destructive' })
+    } finally {
+      setIsSendingReply(false)
+    }
+  }
+
+  // Close conversation — only refresh if something changed
+  const handleCloseConversation = () => {
+    const needsRefresh = conversationDirtyRef.current
+    setConversationSender(null)
+    setConversationMessages([])
+    setConversationReply('')
+    if (needsRefresh) {
+      table.refresh()
+      fetchStats()
+    }
+  }
+
+  // Auto-scroll conversation to bottom
+  useEffect(() => {
+    if (conversationEndRef.current) {
+      conversationEndRef.current.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [conversationMessages])
 
   // Export
   const handleExport = async () => {
@@ -288,6 +364,11 @@ export default function TwoWayInbox() {
         setViewingMessage(row)
         if (!row.is_read) handleMarkAsRead(row.id)
       },
+    },
+    {
+      label: __('Conversation'),
+      icon: MessagesSquare,
+      onClick: handleOpenConversation,
     },
     {
       label: __('Reply'),
@@ -656,6 +737,105 @@ export default function TwoWayInbox() {
               ) : __('Send Reply')}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Conversation Dialog */}
+      <Dialog open={!!conversationSender} onOpenChange={handleCloseConversation}>
+        <DialogContent className="wsms-max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <MessagesSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
+              {__('Conversation')}
+            </DialogTitle>
+            <DialogDescription className="wsms-font-mono">
+              {conversationSender}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogBody>
+            <div className="wsms-flex wsms-flex-col wsms-gap-3 wsms-max-h-[400px] wsms-overflow-y-auto wsms-p-1">
+              {isConversationLoading ? (
+                <div className="wsms-flex wsms-items-center wsms-justify-center wsms-py-12">
+                  <Loader2 className="wsms-h-6 wsms-w-6 wsms-animate-spin wsms-text-muted-foreground" />
+                </div>
+              ) : conversationMessages.length === 0 ? (
+                <div className="wsms-text-center wsms-py-12 wsms-text-[13px] wsms-text-muted-foreground">
+                  {__('No messages in this conversation')}
+                </div>
+              ) : (
+                conversationMessages.map((msg, index) => (
+                  <div
+                    key={index}
+                    className={cn(
+                      'wsms-flex wsms-flex-col wsms-max-w-[80%] wsms-gap-1',
+                      msg.type === 'outgoing' ? 'wsms-self-end wsms-items-end' : 'wsms-self-start wsms-items-start'
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        'wsms-rounded-lg wsms-px-3 wsms-py-2 wsms-text-[13px]',
+                        msg.type === 'outgoing'
+                          ? 'wsms-bg-primary/10 wsms-text-foreground'
+                          : 'wsms-bg-muted/50 wsms-text-foreground wsms-border wsms-border-border'
+                      )}
+                    >
+                      <p className="wsms-whitespace-pre-wrap">{msg.message}</p>
+                    </div>
+                    <div className="wsms-flex wsms-items-center wsms-gap-1.5">
+                      <span className="wsms-text-[11px] wsms-text-muted-foreground">
+                        {msg.date_formatted || msg.date}
+                      </span>
+                      {msg.type === 'outgoing' && msg.status != null && (
+                        <span className={cn(
+                          'wsms-text-[10px] wsms-font-medium',
+                          msg.status === 'success' ? 'wsms-text-success' : 'wsms-text-destructive'
+                        )}>
+                          {msg.status === 'success' ? __('Sent') : __('Failed')}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))
+              )}
+              <div ref={conversationEndRef} />
+            </div>
+
+            {/* Inline reply bar */}
+            {!isConversationLoading && (
+              <div className="wsms-flex wsms-items-end wsms-gap-2 wsms-mt-3 wsms-pt-3 wsms-border-t wsms-border-border">
+                <div className="wsms-flex-1 wsms-space-y-1">
+                  <Input
+                    type="text"
+                    value={conversationReply}
+                    onChange={(e) => setConversationReply(e.target.value)}
+                    placeholder={__('Type a reply...')}
+                    className="wsms-h-9"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault()
+                        handleConversationReply()
+                      }
+                    }}
+                  />
+                  <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-text-right">
+                    {conversationReply.length} {__('characters')}
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  className="wsms-h-9 wsms-px-3 wsms-mb-[18px]"
+                  disabled={!conversationReply.trim() || isSendingReply}
+                  onClick={handleConversationReply}
+                >
+                  {isSendingReply ? (
+                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" aria-hidden="true" />
+                  ) : (
+                    <Send className="wsms-h-4 wsms-w-4" aria-hidden="true" />
+                  )}
+                </Button>
+              </div>
+            )}
+          </DialogBody>
         </DialogContent>
       </Dialog>
 
