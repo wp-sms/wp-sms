@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import {
   CalendarClock,
   RefreshCw,
@@ -61,6 +61,7 @@ import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 // ============================================
 function ScheduledSmsTab() {
   const { toast } = useToast()
+  const { currentPage } = useSettings()
 
   // Use useListPage for combined filter + table management
   const { filters, table } = useListPage({
@@ -73,6 +74,28 @@ function ScheduledSmsTab() {
       bulkSuccess: __('Action completed successfully'),
     },
   })
+
+  // Auto-refresh when SMS is sent from Send SMS page
+  const needsRefresh = useRef(false)
+
+  useEffect(() => {
+    const handleSmsSent = () => {
+      if (currentPage === 'scheduled') {
+        table.refresh()
+      } else {
+        needsRefresh.current = true
+      }
+    }
+    window.addEventListener('wpsms:sms-sent', handleSmsSent)
+    return () => window.removeEventListener('wpsms:sms-sent', handleSmsSent)
+  }, [currentPage, table])
+
+  useEffect(() => {
+    if (currentPage === 'scheduled' && needsRefresh.current && table.initialLoadDone) {
+      table.refresh()
+      needsRefresh.current = false
+    }
+  }, [currentPage, table.initialLoadDone])
 
   // Delete confirmation dialog using useFormDialog
   const deleteDialog = useFormDialog({
@@ -670,6 +693,7 @@ function ScheduledSmsTab() {
 // ============================================
 function RepeatingSmsTab() {
   const { toast } = useToast()
+  const { currentPage } = useSettings()
 
   // Use useListPage for combined filter + table management
   const { filters, table } = useListPage({
@@ -682,6 +706,28 @@ function RepeatingSmsTab() {
       bulkSuccess: __('Action completed successfully'),
     },
   })
+
+  // Auto-refresh when SMS is sent from Send SMS page
+  const needsRefresh = useRef(false)
+
+  useEffect(() => {
+    const handleSmsSent = () => {
+      if (currentPage === 'scheduled') {
+        table.refresh()
+      } else {
+        needsRefresh.current = true
+      }
+    }
+    window.addEventListener('wpsms:sms-sent', handleSmsSent)
+    return () => window.removeEventListener('wpsms:sms-sent', handleSmsSent)
+  }, [currentPage, table])
+
+  useEffect(() => {
+    if (currentPage === 'scheduled' && needsRefresh.current && table.initialLoadDone) {
+      table.refresh()
+      needsRefresh.current = false
+    }
+  }, [currentPage, table.initialLoadDone])
 
   // Delete confirmation dialog
   const deleteDialog = useFormDialog({
