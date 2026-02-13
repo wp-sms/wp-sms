@@ -146,6 +146,13 @@ export const pageDefinitions = {
     component: lazy(() => import('@/pages/Notifications')),
     nav: { type: 'group-item', group: 'settings', order: 5 },
   },
+  'authentication': {
+    label: () => __('Authentication'),
+    icon: Shield,
+    component: lazy(() => import('@/pages/Authentication')),
+    nav: { type: 'group-item', group: 'settings', order: 5.5 },
+    condition: 'hasProAddon',
+  },
   'newsletter': {
     label: () => __('Newsletter'),
     icon: Mail,
@@ -326,6 +333,8 @@ export function getNavigation() {
         id,
         label: page.label(),
         icon: page.icon,
+        condition: page.condition,
+        badgeLabel: page.badgeLabel,
       })),
     })
   }

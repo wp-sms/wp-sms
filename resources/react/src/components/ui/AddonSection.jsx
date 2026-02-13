@@ -45,8 +45,8 @@ function getIconComponent(iconName) {
  * @param {Object} props.section - Section definition from add-on schema
  * @param {Array} props.fields - Array of field definitions for this section
  */
-export function AddonSection({ section, fields }) {
-  const [isOpen, setIsOpen] = useState(false)
+export function AddonSection({ section, fields, defaultOpen = false }) {
+  const [isOpen, setIsOpen] = useState(defaultOpen)
 
   // Get icon component dynamically
   const IconComponent = getIconComponent(section.icon) || Icons.Puzzle
@@ -117,6 +117,7 @@ AddonSection.propTypes = {
       }),
     })
   ).isRequired,
+  defaultOpen: PropTypes.bool,
 }
 
 /**

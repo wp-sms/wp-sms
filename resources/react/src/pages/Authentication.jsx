@@ -1,16 +1,31 @@
 import React from 'react'
-import { Shield, Key, Smartphone, Clock, Diamond } from 'lucide-react'
+import * as Icons from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { InputField, SettingRow } from '@/components/ui/form-field'
 import { useSettings } from '@/context/SettingsContext'
+import { useAddonSettings } from '@/hooks/useAddonSettings'
+import { DynamicField } from '@/components/ui/DynamicField'
+
+const { Shield, Diamond } = Icons
+
+function getIconComponent(iconName) {
+  if (!iconName) return null
+  if (Icons[iconName]) return Icons[iconName]
+  const pascal = iconName.replace(/-([a-z])/g, (_, c) => c.toUpperCase())
+  return Icons[pascal] || null
+}
 
 export default function Authentication() {
   const { isAddonActive } = useSettings()
   const hasPro = isAddonActive('pro')
   const hasOtp = isAddonActive('otp')
+
+  // Get add-on settings for this page
+  const { sections: addonSections, fieldsBySection, standaloneFields, hasAddonContent } = useAddonSettings('authentication')
+
+  // Sort sections by priority
+  const sortedSections = [...addonSections].sort((a, b) => (a.priority || 0) - (b.priority || 0))
 
   if (!hasPro && !hasOtp) {
     return (
@@ -54,97 +69,71 @@ export default function Authentication() {
     )
   }
 
-  return (
-    <div className="wsms-space-y-6">
-      {/* OTP Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Key className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            OTP Settings
-          </CardTitle>
-          <CardDescription>
-            Configure one-time password settings
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="wsms-space-y-4">
-          <div className="wsms-grid wsms-grid-cols-1 wsms-gap-4 md:wsms-grid-cols-2">
-            <InputField
-              label="OTP Length"
-              type="number"
-              placeholder="6"
-              defaultValue="6"
-              description="Number of digits in the OTP code"
-            />
-
-            <InputField
-              label="Expiry Time (seconds)"
-              type="number"
-              placeholder="300"
-              defaultValue="300"
-              description="How long until the OTP expires"
-            />
-          </div>
-
-          <div className="wsms-flex wsms-items-center wsms-justify-between wsms-rounded-lg wsms-border wsms-p-4">
-            <div>
-              <p className="wsms-text-[13px] wsms-font-medium">Resend Cooldown</p>
+  if (!hasAddonContent) {
+    return (
+      <div className="wsms-space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <Shield className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              Authentication
+            </CardTitle>
+            <CardDescription>
+              SMS-based login and two-factor authentication settings
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
               <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                Prevent spam by limiting OTP resend frequency
+                No settings available. Please ensure your add-on is up to date.
               </p>
             </div>
-            <Input type="number" className="wsms-w-24" placeholder="60" defaultValue="60" />
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
-      {/* Phone Verification */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Smartphone className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            Phone Verification
-          </CardTitle>
-          <CardDescription>
-            Verify user phone numbers during registration
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="wsms-space-y-4">
-          <SettingRow
-            title="Enable Phone Verification"
-            description="Require phone verification during user registration"
-          />
+  return (
+    <div className="wsms-space-y-6">
+      {sortedSections.map((section) => {
+        const IconComponent = getIconComponent(section.icon) || Icons.Puzzle
+        const fields = [...(fieldsBySection[section.id] || [])].sort(
+          (a, b) => (a.target?.priority || 100) - (b.target?.priority || 100)
+        )
+        if (fields.length === 0) return null
+        return (
+          <Card key={section.id}>
+            <CardHeader>
+              <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+                <IconComponent className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+                {section.title}
+              </CardTitle>
+              {section.description && (
+                <CardDescription>{section.description}</CardDescription>
+              )}
+            </CardHeader>
+            <CardContent className="wsms-space-y-4">
+              {fields.map((field) => (
+                <DynamicField key={field.id} field={field} />
+              ))}
+            </CardContent>
+          </Card>
+        )
+      })}
 
-          <SettingRow
-            title="Verify on Login"
-            description="Require OTP verification when users log in"
-          />
-        </CardContent>
-      </Card>
-
-      {/* 2FA Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <Shield className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            Two-Factor Authentication
-          </CardTitle>
-          <CardDescription>
-            Add an extra layer of security with SMS-based 2FA
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="wsms-space-y-4">
-          <SettingRow
-            title="Enable 2FA"
-            description="Allow users to enable SMS-based two-factor authentication"
-          />
-
-          <SettingRow
-            title="Force 2FA for Admins"
-            description="Require 2FA for all administrator accounts"
-          />
-        </CardContent>
-      </Card>
+      {standaloneFields.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Additional Settings</CardTitle>
+          </CardHeader>
+          <CardContent className="wsms-space-y-4">
+            {standaloneFields.map((field) => (
+              <DynamicField key={field.id} field={field} />
+            ))}
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }
