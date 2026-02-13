@@ -1,13 +1,21 @@
 import React from 'react'
-import { ShoppingCart, AlertCircle, ExternalLink } from 'lucide-react'
+import * as Icons from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { useSettings } from '@/context/SettingsContext'
 import { useAddonSettings } from '@/hooks/useAddonSettings'
 import { AddonUpdateRequired } from '@/components/shared/AddonUpdateRequired'
-import { AddonSection } from '@/components/ui/AddonSection'
 import { DynamicField } from '@/components/ui/DynamicField'
-import { getWpSettings, isAddonDashboardReady } from '@/lib/utils'
+import { __, getWpSettings, isAddonDashboardReady } from '@/lib/utils'
+
+const { ShoppingCart, AlertCircle, ExternalLink } = Icons
+
+function getIconComponent(iconName) {
+  if (!iconName) return null
+  if (Icons[iconName]) return Icons[iconName]
+  const pascal = iconName.replace(/-([a-z])/g, (_, c) => c.toUpperCase())
+  return Icons[pascal] || null
+}
 
 export default function WooCommercePro() {
   const { isAddonActive } = useSettings()
@@ -143,13 +151,31 @@ export default function WooCommercePro() {
       </div>
 
       {/* Add-on Defined Sections */}
-      {sortedSections.map((section) => (
-        <AddonSection
-          key={section.id}
-          section={section}
-          fields={fieldsBySection[section.id] || []}
-        />
-      ))}
+      {sortedSections.map((section) => {
+        const IconComponent = getIconComponent(section.icon) || Icons.Puzzle
+        const fields = [...(fieldsBySection[section.id] || [])].sort(
+          (a, b) => (a.target?.priority || 100) - (b.target?.priority || 100)
+        )
+        if (fields.length === 0) return null
+        return (
+          <Card key={section.id}>
+            <CardHeader>
+              <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+                <IconComponent className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+                {section.title}
+              </CardTitle>
+              {section.description && (
+                <CardDescription>{section.description}</CardDescription>
+              )}
+            </CardHeader>
+            <CardContent className="wsms-space-y-4">
+              {fields.map((field) => (
+                <DynamicField key={field.id} field={field} />
+              ))}
+            </CardContent>
+          </Card>
+        )
+      })}
 
       {/* Standalone Add-on Fields (fields without a section) */}
       {standaloneFields.length > 0 && (
