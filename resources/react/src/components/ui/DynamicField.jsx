@@ -347,7 +347,7 @@ export function DynamicField({ field }) {
           )}
           <Repeater
             value={Array.isArray(value) ? value : []}
-            onChange={setValue}
+            onValueChange={setValue}
             fields={field.fields || []}
             maxItems={field.maxItems}
             addLabel={field.addLabel || 'Add Item'}
