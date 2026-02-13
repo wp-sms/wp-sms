@@ -1666,7 +1666,7 @@
 
       .wpsms-step-link__badge {
         background-color: #165e2e;
-        color: rgb(206 255 222);
+        color: rgb(206, 255, 222);
         font-size: 0;
         background-repeat: no-repeat;
         background-position: center;
@@ -3956,6 +3956,15 @@ a.wpsms-addon__download_active-all {
     border-radius: 8px;
     width: 524px;
     margin-left: -62px;
+
+    .rtl &{
+      margin-left: 0;
+      margin-right: -62px;
+
+      @media(max-width: 700px){
+        margin-right: 0;
+      }
+    }
 
     @media(max-width: 700px){
       max-width: 100%;

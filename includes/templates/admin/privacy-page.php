@@ -14,8 +14,8 @@
                 <p><?php esc_html_e("This section allows you to export all of the SMS data associated with a specific user's mobile number. This data includes the user's name, phone number, and all of the SMS messages that they have sent and received.", 'wp-sms'); ?></p>
                 <div class="wpsms-privacyPage__options">
                     <div class="wpsms-privacyPage__options__field">
-                        <label><?php esc_html_e('Enter User’s Mobile Number', 'wp-sms'); ?></label>
-                        <input type="tel" name="mobile-number-export" value=""/>
+                        <label for="mobile-number-export"><?php esc_html_e('Enter User’s Mobile Number', 'wp-sms'); ?></label>
+                        <input type="tel" id="mobile-number-export" name="mobile-number-export" value=""/>
                     </div>
                     <input name="export" type="submit" value="<?php esc_html_e('Export', 'wp-sms'); ?>">
                 </div>
@@ -26,8 +26,8 @@
                 <p><?php esc_html_e("This section allows you to delete all of the SMS data associated with a specific user's mobile number. This is a permanent action, so be sure to back up your data before proceeding.", 'wp-sms'); ?></p>
                 <div class="wpsms-privacyPage__options">
                     <div class="wpsms-privacyPage__options__field">
-                        <label><?php esc_html_e('Enter User’s Mobile Number', 'wp-sms'); ?></label>
-                        <input type="tel" name="mobile-number-delete" value=""/>
+                        <label for="mobile-number-delete"><?php esc_html_e('Enter User’s Mobile Number', 'wp-sms'); ?></label>
+                        <input type="tel" id="mobile-number-delete" name="mobile-number-delete" value=""/>
                     </div>
                     <input name="delete" type="submit" value="<?php esc_html_e('Delete', 'wp-sms'); ?>">
                 </div>

@@ -2,6 +2,8 @@
 
 namespace WP_SMS;
 
+use WP_SMS\Option;
+
 if (!defined('ABSPATH')) {
     exit;
 } // Exit if accessed directly
@@ -44,7 +46,7 @@ class Install
             }
         } else {
             self::checkIsFresh();
-            
+
             call_user_func(array(__CLASS__, $method));
         }
     }
@@ -219,6 +221,17 @@ class Install
 
             self::createSmsOtpTable();
             self::createSmsOtpAttemptsTable();
+
+            /**
+             * Initialize default plugin options during upgrade.
+             */
+            if (version_compare($installer_wpsms_ver, '7.1', '<')) {
+                Option::updateOption('display_notifications', 1);
+                Option::updateOption('store_outbox_messages', 1);
+                Option::updateOption('outbox_retention_days', 90);
+                Option::updateOption('store_inbox_messages', 1);
+                Option::updateOption('inbox_retention_days', 90);
+            }
 
             update_option('wp_sms_db_version', WP_SMS_VERSION);
         }

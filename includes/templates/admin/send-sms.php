@@ -284,7 +284,7 @@ use WP_SMS\Components\View;
                 <div class="next-button"><?php esc_html_e('Next', 'wp-sms') ?><span></span></div>
             </div>
 
-            <?php if (apply_filters('wp_sms_enable_upgrade_to_bundle', true)) :
+            <?php if (apply_filters('wp_sms_enable_upgrade_notice', true)) :
                 View::load("components/objects/notice-all-in-one", [
                     'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=send-sms',
                     'link_text' => esc_html__('Upgrade to unlock all features.', 'wp-sms'),

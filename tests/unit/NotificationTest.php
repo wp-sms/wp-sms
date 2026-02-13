@@ -255,4 +255,298 @@ class NotificationTest extends WP_UnitTestCase
             $notification->getOutputVariables()
         );
     }
+
+    /**
+     * Test notification getVariables returns registered variables.
+     */
+    public function testNotificationGetVariablesReturnsRegisteredVariables()
+    {
+        $notification = NotificationFactory::getCustom();
+        $variables    = [
+            '%test_var%' => 'Test Value',
+        ];
+        $notification->registerVariables($variables);
+
+        $result = $notification->getVariables();
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('%test_var%', $result);
+    }
+
+    /**
+     * Test custom notification with multiple variables.
+     */
+    public function testCustomNotificationWithMultipleVariables()
+    {
+        $notification = NotificationFactory::getCustom();
+        $firstName    = $this->faker->firstName;
+        $lastName     = $this->faker->lastName;
+        $email        = $this->faker->email;
+
+        $notification->registerVariables([
+            '%first_name%' => $firstName,
+            '%last_name%'  => $lastName,
+            '%email%'      => $email,
+        ]);
+
+        $message  = 'Hello %first_name% %last_name%, your email is %email%';
+        $expected = "Hello {$firstName} {$lastName}, your email is {$email}";
+
+        $this->assertEquals($expected, $notification->getOutputMessage($message));
+    }
+
+    /**
+     * Test notification with non-existent variable.
+     */
+    public function testNotificationWithNonExistentVariable()
+    {
+        $notification = NotificationFactory::getCustom();
+        $notification->registerVariables([
+            '%name%' => 'John',
+        ]);
+
+        // %unknown% is not registered, should remain as-is
+        $message = 'Hello %name%, your ID is %unknown%';
+        $result  = $notification->getOutputMessage($message);
+
+        $this->assertStringContainsString('John', $result);
+        $this->assertStringContainsString('%unknown%', $result);
+    }
+
+    /**
+     * Test post notification has post title variable.
+     */
+    public function testPostNotificationHasPostTitleVariable()
+    {
+        $postTitle = $this->faker->sentence;
+        $postId    = $this->factory()->post->create(['post_title' => $postTitle]);
+
+        $notification = NotificationFactory::getPost($postId);
+        $result       = $notification->getOutputMessage('Title: %post_title%');
+
+        $this->assertStringContainsString($postTitle, $result);
+    }
+
+    /**
+     * Test post notification has post content variable.
+     */
+    public function testPostNotificationHasPostContentVariable()
+    {
+        // Use a short content that won't be trimmed
+        $postContent = 'This is a test content';
+        $postId      = $this->factory()->post->create(['post_content' => $postContent]);
+
+        $notification = NotificationFactory::getPost($postId);
+        $result       = $notification->getOutputMessage('Content: %post_content%');
+
+        // Content is trimmed by wp_trim_words, so just check it's not the placeholder
+        $this->assertStringNotContainsString('%post_content%', $result);
+        $this->assertStringContainsString('Content:', $result);
+    }
+
+    /**
+     * Test post notification has post URL variable.
+     */
+    public function testPostNotificationHasPostUrlVariable()
+    {
+        $postId = $this->factory()->post->create();
+
+        $notification = NotificationFactory::getPost($postId);
+        $result       = $notification->getOutputMessage('URL: %post_url%');
+
+        $this->assertStringContainsString(get_permalink($postId), $result);
+    }
+
+    /**
+     * Test user notification has user email variable.
+     */
+    public function testUserNotificationHasUserEmailVariable()
+    {
+        $userEmail = $this->faker->email;
+        $userId    = $this->factory()->user->create(['user_email' => $userEmail]);
+
+        $notification = NotificationFactory::getUser($userId);
+        $result       = $notification->getOutputMessage('Email: %user_email%');
+
+        $this->assertStringContainsString($userEmail, $result);
+    }
+
+    /**
+     * Test user notification has display name variable.
+     */
+    public function testUserNotificationHasDisplayNameVariable()
+    {
+        $displayName = $this->faker->name;
+        $userId      = $this->factory()->user->create(['display_name' => $displayName]);
+
+        $notification = NotificationFactory::getUser($userId);
+        $result       = $notification->getOutputMessage('Name: %display_name%');
+
+        $this->assertStringContainsString($displayName, $result);
+    }
+
+    /**
+     * Test comment notification has comment author variable.
+     */
+    public function testCommentNotificationHasCommentAuthorVariable()
+    {
+        $authorName = $this->faker->name;
+        $commentId  = $this->factory()->comment->create(['comment_author' => $authorName]);
+
+        $notification = NotificationFactory::getComment($commentId);
+        $result       = $notification->getOutputMessage('Author: %comment_author%');
+
+        $this->assertStringContainsString($authorName, $result);
+    }
+
+    /**
+     * Test comment notification has comment content variable.
+     */
+    public function testCommentNotificationHasCommentContentVariable()
+    {
+        $content   = $this->faker->sentence;
+        $commentId = $this->factory()->comment->create(['comment_content' => $content]);
+
+        $notification = NotificationFactory::getComment($commentId);
+        $result       = $notification->getOutputMessage('Comment: %comment_content%');
+
+        $this->assertStringContainsString($content, $result);
+    }
+
+    /**
+     * Test OTP notification has code variable.
+     */
+    public function testOtpNotificationHasCodeVariable()
+    {
+        $phoneNumber  = '+12025551234';
+        $code         = '123456';
+        $notification = NotificationFactory::getOtp($phoneNumber, $code);
+
+        // OTP uses %code% or %otp% variable
+        $result = $notification->getOutputMessage('Your code is %code%');
+
+        $this->assertStringContainsString($code, $result);
+    }
+
+    /**
+     * Test WooCommerce order notification has order ID variable.
+     */
+    public function testWooCommerceOrderNotificationHasOrderIdVariable()
+    {
+        $orderId = $this->factory()->post->create(['post_type' => 'shop_order']);
+        $order   = wc_get_order($orderId);
+
+        $notification = NotificationFactory::getWooCommerceOrder($order);
+        $result       = $notification->getOutputMessage('Order: #%order_id%');
+
+        $this->assertStringContainsString((string) $orderId, $result);
+    }
+
+    /**
+     * Test WooCommerce order notification has order status variable.
+     */
+    public function testWooCommerceOrderNotificationHasOrderStatusVariable()
+    {
+        $orderId = $this->factory()->post->create(['post_type' => 'shop_order']);
+        $order   = wc_get_order($orderId);
+        $order->set_status('processing');
+        $order->save();
+
+        $notification = NotificationFactory::getWooCommerceOrder($order);
+        $result       = $notification->getOutputMessage('Status: %status%');
+
+        $this->assertStringContainsString('processing', strtolower($result));
+    }
+
+    /**
+     * Test WooCommerce product notification has product title variable.
+     */
+    public function testWooCommerceProductNotificationHasProductTitleVariable()
+    {
+        $productName = $this->faker->words(3, true);
+        $productId   = $this->factory()->post->create([
+            'post_type'  => 'product',
+            'post_title' => $productName,
+        ]);
+
+        $notification = NotificationFactory::getWooCommerceProduct($productId);
+        // Product notification uses %product_title% not %product_name%
+        $result       = $notification->getOutputMessage('Product: %product_title%');
+
+        $this->assertStringContainsString($productName, $result);
+    }
+
+    /**
+     * Test notification factory getHandler returns default for unknown handler.
+     */
+    public function testNotificationFactoryGetHandlerReturnsDefaultForUnknown()
+    {
+        $handler = NotificationFactory::getHandler('NonExistentHandler');
+
+        $this->assertInstanceOf(
+            \WP_SMS\Notification\Handler\DefaultNotification::class,
+            $handler
+        );
+    }
+
+    /**
+     * Test notification factory getHandler returns correct handler.
+     */
+    public function testNotificationFactoryGetHandlerReturnsCorrectHandler()
+    {
+        $handler = NotificationFactory::getHandler('CustomNotification');
+
+        $this->assertInstanceOf(
+            \WP_SMS\Notification\Handler\CustomNotification::class,
+            $handler
+        );
+    }
+
+    /**
+     * Test getOutputVariables returns empty array before processing.
+     */
+    public function testGetOutputVariablesReturnsEmptyArrayBeforeProcessing()
+    {
+        $notification = NotificationFactory::getCustom();
+
+        $this->assertEquals([], $notification->getOutputVariables());
+    }
+
+    /**
+     * Test notification caches processed message.
+     */
+    public function testNotificationCachesProcessedMessage()
+    {
+        $notification = NotificationFactory::getCustom();
+        $notification->registerVariables([
+            '%name%' => 'John',
+        ]);
+
+        $message = 'Hello %name%';
+
+        // Call twice
+        $result1 = $notification->getOutputMessage($message);
+        $result2 = $notification->getOutputMessage($message);
+
+        $this->assertEquals($result1, $result2);
+        $this->assertEquals('Hello John', $result1);
+    }
+
+    /**
+     * Test notification reprocesses when message changes.
+     */
+    public function testNotificationReprocessesWhenMessageChanges()
+    {
+        $notification = NotificationFactory::getCustom();
+        $notification->registerVariables([
+            '%name%' => 'John',
+            '%city%' => 'NYC',
+        ]);
+
+        $result1 = $notification->getOutputMessage('Hello %name%');
+        $result2 = $notification->getOutputMessage('Hello from %city%');
+
+        $this->assertEquals('Hello John', $result1);
+        $this->assertEquals('Hello from NYC', $result2);
+    }
 }

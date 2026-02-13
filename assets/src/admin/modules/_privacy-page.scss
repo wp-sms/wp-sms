@@ -42,13 +42,19 @@
     border: 1px solid #E8E8EB;
 
     p {
-      text-align: justify;
       line-height: 1.6 !important;
       font-size: 14px;
       color: #242A31;
       font-weight: 400;
       margin: 0;
       margin-bottom: 15px;
+    }
+
+    span.description{
+      font-size: 12px;
+      color: #5b5b5b;
+      margin-top: 8px;
+      display: inline-block;
     }
 
     .wpsms-privacyPage__options {
@@ -75,12 +81,7 @@
           line-height: 20px;
           border: 1px solid #5B5B5B !important;
           box-sizing: border-box;
-          border-radius: 2px;
-
-          &:focus,
-          &:focus-visible {
-            border: 1px solid #F88E40 !important;
-          }
+          border-radius: 4px;
         }
       }
 
@@ -90,9 +91,9 @@
         font-size: 14px;
         line-height: 17px;
         padding: 15px;
-        border-radius: 2px;
+        border-radius: 4px;
         transition: 0.2s;
-        background: #F88E40;
+        background: #c2410c;
         color: #fff !important;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         border: none;
@@ -100,7 +101,7 @@
         cursor: pointer;
 
         &:hover {
-          background-color: #EF771F;
+          opacity: .7;
         }
       }
     }
@@ -116,8 +117,7 @@
       margin: 0;
 
       &.text-lead {
-        text-align: justify;
-        line-height: 1.7 !important;
+         line-height: 1.7 !important;
         font-size: 15px;
       }
     }

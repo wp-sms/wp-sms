@@ -6,6 +6,8 @@ use Forminator_API;
 use WP_SMS\Components\View;
 use WP_SMS\Notification\NotificationFactory;
 use WP_SMS\Services\Forminator\Forminator;
+use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+use WP_SMS\Utils\PluginHelper;
 use WP_SMS\Utils\Request;
 
 if (!defined('ABSPATH')) {
@@ -92,7 +94,12 @@ class Settings
             update_option($this->setting_name, array(
                 'add_mobile_field'             => 'add_mobile_field_in_profile',
                 'notify_errors_to_admin_email' => 1,
-                'report_wpsms_statistics'      => 1
+                'report_wpsms_statistics'      => 1,
+                'display_notifications'        => 1,
+                'store_outbox_messages'        => 1,
+                'outbox_retention_days'        => 90,
+                'store_inbox_messages'         => 1,
+                'inbox_retention_days'         => 90,
             ));
         }
 
@@ -299,6 +306,14 @@ class Settings
             'enable'  => esc_html__('Enable', 'wp-sms'),
             'disable' => esc_html__('Disable', 'wp-sms')
         );
+
+        $retentionOptions = [
+            30  => __('30 days', 'wp-sms'),
+            90  => __('90 days', 'wp-sms'),
+            180 => __('180 days', 'wp-sms'),
+            365 => __('365 days', 'wp-sms'),
+            0   => __('Keep forever', 'wp-sms'),
+        ];
 
         /*
          * Pro Pack fields
@@ -852,6 +867,19 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'options' => $options,
                     'desc'    => esc_html__('Notifies the admin email upon SMS transmission failures.', 'wp-sms')
                 ),
+                'display_notifications_header' => array(
+                    'id'   => 'display_notifications_header',
+                    'name' => esc_html__('Plugin Notifications', 'wp-sms'),
+                    'type' => 'header'
+                ),
+                'display_notifications'        => array(
+                    'id'      => 'display_notifications',
+                    'name'    => esc_html__('WP SMS Notifications', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'default' => true,
+                    'desc'    => esc_html__('Display important notifications inside the plugin about new versions, feature updates, news, and special offers.', 'wp-sms')
+                ),
                 'webhooks'                     => array(
                     'id'   => 'webhooks',
                     'name' => $this->renderOptionHeader(
@@ -891,6 +919,26 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'options' => $options,
                     'desc'    => __('Sends non-personal, anonymized data to help us improve WP SMS. No personal or identifying information is collected or shared. <a href="https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Learn More</a>.', 'wp-sms'),
                 ),
+                'store_outbox_messages_header' => [
+                    'id'   => 'store_outbox_messages_header',
+                    'name' => esc_html__('Message Storage & Cleanup', 'wp-sms'),
+                    'type' => 'header',
+                ],
+                'store_outbox_messages'        => [
+                    'id'      => 'store_outbox_messages',
+                    'name'    => esc_html__('Store Outbox Messages', 'wp-sms'),
+                    'type'    => 'checkbox',
+                    'options' => $options,
+                    'desc'    => esc_html__('If disabled, new SMS will not be logged in the Outbox.', 'wp-sms'),
+                ],
+                'outbox_retention_days'        => [
+                    'id'        => 'outbox_retention_days',
+                    'name'      => esc_html__('Delete Outbox Messages Older Than', 'wp-sms'),
+                    'type'      => 'select',
+                    'className' => 'js-wpsms-show_if_store_outbox_messages_enabled',
+                    'options'   => $retentionOptions,
+                    'desc'      => esc_html__('Runs daily at 00:00 (site time). Choose how long to retain Outbox messages.', 'wp-sms')
+                ],
             )),
 
             /**
@@ -1710,32 +1758,28 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                         ?>
                         <li>
                             <?php
-                            $isIntegrationsPage = isset($_GET['page']) && $_GET['page'] === 'wp-sms-integrations';
-                            $noticeConfig       = $isIntegrationsPage ? [
-                                'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=integrations',
-                                'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
-                                'title'     => sprintf(
-                                /* translators: %s: Plugin name (WP SMS All-in-One) */
-                                    esc_html__('Full integration support is available in %s, including WooCommerce, BuddyPress, Gravity Forms and more.', 'wp-sms'),
-                                    '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
-                                )
-                            ] : [
-                                'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings',
-                                'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
-                                'title'     => sprintf(
-                                /* translators: %s: Plugin name (WP SMS All-in-One) */
-                                    esc_html__('Some settings are only available in %s, including extended field support, syncing options, and more advanced configuration.', 'wp-sms'),
-                                    '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
-                                )
-                            ];
+                            if (apply_filters('wp_sms_enable_upgrade_notice', true)) :
+                                $isIntegrationsPage = isset($_GET['page']) && $_GET['page'] === 'wp-sms-integrations';
+                                $noticeConfig       = $isIntegrationsPage ? [
+                                    'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=integrations',
+                                    'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
+                                    'title'     => sprintf(
+                                    /* translators: %s: Plugin name (WP SMS All-in-One) */
+                                        esc_html__('Full integration support is available in %s, including WooCommerce, BuddyPress, Gravity Forms and more.', 'wp-sms'),
+                                        '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
+                                    )
+                                ] : [
+                                    'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings',
+                                    'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
+                                    'title'     => sprintf(
+                                    /* translators: %s: Plugin name (WP SMS All-in-One) */
+                                        esc_html__('Some settings are only available in %s, including extended field support, syncing options, and more advanced configuration.', 'wp-sms'),
+                                        '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
+                                    )
+                                ];
 
-                            /**
-                             * Hook: wp_sms_settings_integrations_box
-                             *
-                             * Fires inside the integrations page.
-                             * Allows WP SMS Pro (or other extensions) to output HTML.
-                             */
-                            echo wp_kses_post(apply_filters('wp_sms_settings_integrations_box', View::load("components/objects/notice-all-in-one", $noticeConfig, true)));
+                                View::load("components/objects/notice-all-in-one", $noticeConfig);
+                            endif;
                             ?>
                         </li>
                     </ul>

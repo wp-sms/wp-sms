@@ -14,5 +14,7 @@ composer.lock
 LICENSE
 package.json
 package-lock.json
+pnpm-lock.yaml
 postcss.config.js
+webpack.scripts.config.js
 README.md
