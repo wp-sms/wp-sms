@@ -1,3 +1,6 @@
+= v7.1.x - 2026-x-x =
+- **Enhancement:** Update Textplode API gateway
+
 = v7.1.1 - 2026-01-28 =
 - **New:** Added `%product_name%` variable support for WooCommerce product notifications.
 - **Security:** Escape output and validate input in Outbox list table.
