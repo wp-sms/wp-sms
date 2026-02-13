@@ -360,176 +360,9 @@ export default function TwoWayCommands() {
     return <PageLoadingSkeleton />
   }
 
-  // Empty state - no commands at all
-  if (commands.length === 0) {
-    return (
-      <div className="wsms-space-y-6 wsms-stagger-children">
-        <Card className="wsms-border-dashed">
-          <CardContent className="wsms-py-16">
-            <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center wsms-max-w-md wsms-mx-auto">
-              <div className="wsms-flex wsms-h-16 wsms-w-16 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary/10 wsms-mb-6">
-                <Terminal className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
-              </div>
-              <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                {__('No commands yet')}
-              </h3>
-              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-                {__('Create auto-reply rules that trigger actions when subscribers send specific keywords via SMS.')}
-              </p>
-              <Button onClick={() => commandDialog.open()}>
-                <Plus className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
-                {__('Create First Command')}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
-  return (
-    <div className="wsms-space-y-6 wsms-stagger-children">
-      {/* Stats Header Bar */}
-      <div className="wsms-px-4 xl:wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
-        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4 xl:wsms-flex xl:wsms-items-center xl:wsms-justify-between xl:wsms-gap-4">
-          <div className="wsms-contents xl:wsms-flex xl:wsms-items-center xl:wsms-gap-8">
-            {/* Total */}
-            <div className="wsms-flex wsms-items-center wsms-gap-3">
-              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10">
-                <Terminal className="wsms-h-5 wsms-w-5 wsms-text-primary" aria-hidden="true" />
-              </div>
-              <div>
-                <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{commands.length}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total')}</p>
-              </div>
-            </div>
-
-            <div className="wsms-hidden xl:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
-
-            {/* Enabled */}
-            <div className="wsms-flex wsms-items-center wsms-gap-3">
-              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-success/10">
-                <CheckCircle className="wsms-h-5 wsms-w-5 wsms-text-success" aria-hidden="true" />
-              </div>
-              <div>
-                <p className="wsms-text-xl wsms-font-bold wsms-text-success">{enabledCount}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Enabled')}</p>
-              </div>
-            </div>
-
-            <div className="wsms-hidden xl:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
-
-            {/* Disabled */}
-            <div className="wsms-flex wsms-items-center wsms-gap-3">
-              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-slate-200 dark:wsms-bg-slate-700">
-                <XCircle className="wsms-h-5 wsms-w-5 wsms-text-slate-500 dark:wsms-text-slate-400" aria-hidden="true" />
-              </div>
-              <div>
-                <p className="wsms-text-xl wsms-font-bold wsms-text-muted-foreground">{disabledCount}</p>
-                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Disabled')}</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="wsms-col-span-2 xl:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 xl:wsms-mt-0">
-            <Button onClick={() => commandDialog.open()}>
-              <Plus className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
-              {__('New Command')}
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <Card>
-        <CardContent className="wsms-p-3">
-          <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-2">
-            {/* Search */}
-            <div className="wsms-relative wsms-w-full xl:wsms-w-[220px] xl:wsms-shrink-0">
-              <Search className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
-              <Input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder={__('Search commands...')}
-                className="wsms-ps-8 wsms-h-9"
-                aria-label={__('Search commands')}
-              />
-            </div>
-
-            {/* Filters */}
-            <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-2">
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by status')}>
-                  <SelectValue placeholder={__('All Status')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{__('All Status')}</SelectItem>
-                  <SelectItem value="enabled">{__('Enabled')}</SelectItem>
-                  <SelectItem value="disabled">{__('Disabled')}</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <Select value={filterAction} onValueChange={setFilterAction}>
-                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[160px] wsms-text-[12px]" aria-label={__('Filter by action')}>
-                  <SelectValue placeholder={__('All Actions')} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">{__('All Actions')}</SelectItem>
-                  {uniqueActions.map((ref) => (
-                    <SelectItem key={ref} value={ref}>
-                      {ref}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Actions */}
-            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ms-auto">
-              {hasActiveFilters && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={resetFilters}
-                  className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
-                  aria-label={__('Clear all filters')}
-                >
-                  <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
-                </Button>
-              )}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={fetchCommands}
-                className="wsms-h-9 wsms-px-2.5"
-                aria-label={__('Refresh commands')}
-              >
-                <RefreshCw
-                  className={cn('wsms-h-4 wsms-w-4', isLoading && 'wsms-animate-spin')}
-                  aria-hidden="true"
-                />
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Data Table */}
-      <Card>
-        <CardContent className="wsms-p-0">
-          <DataTable
-            columns={columns}
-            data={filteredCommands}
-            loading={isLoading}
-            rowActions={rowActions}
-            emptyMessage={__('No commands match your filters')}
-            emptyIcon={Terminal}
-          />
-        </CardContent>
-      </Card>
-
+  // Shared dialog JSX (rendered in both empty and populated states)
+  const commandDialogJsx = (
+    <>
       {/* Create/Edit Dialog */}
       <Dialog open={commandDialog.isOpen} onOpenChange={(open) => !open && commandDialog.close()}>
         <DialogContent className="sm:wsms-max-w-[500px]">
@@ -766,6 +599,181 @@ export default function TwoWayCommands() {
           </div>
         </div>
       </DeleteConfirmDialog>
+    </>
+  )
+
+  // Empty state - no commands at all
+  if (commands.length === 0) {
+    return (
+      <div className="wsms-space-y-6 wsms-stagger-children">
+        <Card className="wsms-border-dashed">
+          <CardContent className="wsms-py-16">
+            <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center wsms-max-w-md wsms-mx-auto">
+              <div className="wsms-flex wsms-h-16 wsms-w-16 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary/10 wsms-mb-6">
+                <Terminal className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
+              </div>
+              <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
+                {__('No commands yet')}
+              </h3>
+              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
+                {__('Create auto-reply rules that trigger actions when subscribers send specific keywords via SMS.')}
+              </p>
+              <Button onClick={() => commandDialog.open()}>
+                <Plus className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
+                {__('Create First Command')}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+        {commandDialogJsx}
+      </div>
+    )
+  }
+
+  return (
+    <div className="wsms-space-y-6 wsms-stagger-children">
+      {/* Stats Header Bar */}
+      <div className="wsms-px-4 xl:wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
+        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4 xl:wsms-flex xl:wsms-items-center xl:wsms-justify-between xl:wsms-gap-4">
+          <div className="wsms-contents xl:wsms-flex xl:wsms-items-center xl:wsms-gap-8">
+            {/* Total */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10">
+                <Terminal className="wsms-h-5 wsms-w-5 wsms-text-primary" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{commands.length}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total')}</p>
+              </div>
+            </div>
+
+            <div className="wsms-hidden xl:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+
+            {/* Enabled */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-success/10">
+                <CheckCircle className="wsms-h-5 wsms-w-5 wsms-text-success" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-success">{enabledCount}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Enabled')}</p>
+              </div>
+            </div>
+
+            <div className="wsms-hidden xl:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+
+            {/* Disabled */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-slate-200 dark:wsms-bg-slate-700">
+                <XCircle className="wsms-h-5 wsms-w-5 wsms-text-slate-500 dark:wsms-text-slate-400" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-muted-foreground">{disabledCount}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Disabled')}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="wsms-col-span-2 xl:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 xl:wsms-mt-0">
+            <Button onClick={() => commandDialog.open()}>
+              <Plus className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
+              {__('New Command')}
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <Card>
+        <CardContent className="wsms-p-3">
+          <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-2">
+            {/* Search */}
+            <div className="wsms-relative wsms-w-full xl:wsms-w-[220px] xl:wsms-shrink-0">
+              <Search className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
+              <Input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder={__('Search commands...')}
+                className="wsms-ps-8 wsms-h-9"
+                aria-label={__('Search commands')}
+              />
+            </div>
+
+            {/* Filters */}
+            <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-2">
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by status')}>
+                  <SelectValue placeholder={__('All Status')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{__('All Status')}</SelectItem>
+                  <SelectItem value="enabled">{__('Enabled')}</SelectItem>
+                  <SelectItem value="disabled">{__('Disabled')}</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <Select value={filterAction} onValueChange={setFilterAction}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[160px] wsms-text-[12px]" aria-label={__('Filter by action')}>
+                  <SelectValue placeholder={__('All Actions')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{__('All Actions')}</SelectItem>
+                  {uniqueActions.map((ref) => (
+                    <SelectItem key={ref} value={ref}>
+                      {ref}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Actions */}
+            <div className="wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ms-auto">
+              {hasActiveFilters && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={resetFilters}
+                  className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
+                  aria-label={__('Clear all filters')}
+                >
+                  <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={fetchCommands}
+                className="wsms-h-9 wsms-px-2.5"
+                aria-label={__('Refresh commands')}
+              >
+                <RefreshCw
+                  className={cn('wsms-h-4 wsms-w-4', isLoading && 'wsms-animate-spin')}
+                  aria-hidden="true"
+                />
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Data Table */}
+      <Card>
+        <CardContent className="wsms-p-0">
+          <DataTable
+            columns={columns}
+            data={filteredCommands}
+            loading={isLoading}
+            rowActions={rowActions}
+            emptyMessage={__('No commands match your filters')}
+            emptyIcon={Terminal}
+          />
+        </CardContent>
+      </Card>
+
+      {commandDialogJsx}
     </div>
   )
 }
