@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import * as Icons from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from './card'
 import { DynamicField } from './DynamicField'
+import { __ } from '@/lib/utils'
 
 /**
  * Get an icon component by name from lucide-react
@@ -75,7 +76,7 @@ export function AddonSection({ section, fields, defaultOpen = false }) {
               {section.title}
               {section.addonSlug === 'wp-sms-pro' && (
                 <span className="wsms-ms-1 wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
-                  PRO
+                  {__('PRO')}
                 </span>
               )}
             </CardTitle>
