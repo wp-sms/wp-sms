@@ -43,6 +43,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { DataTable } from '@/components/ui/data-table'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
+import { AddonUpdateRequired } from '@/components/shared/AddonUpdateRequired'
 import { DialogLoadingSpinner } from '@/components/shared/DialogLoadingSpinner'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
@@ -51,7 +52,7 @@ import { useListPage } from '@/hooks/useListPage'
 import { useFormDialog } from '@/hooks/useFormDialog'
 import { useToast } from '@/components/ui/toaster'
 import { woocommerceProApi } from '@/api/woocommerceProApi'
-import { __, cn, formatDate } from '@/lib/utils'
+import { __, cn, formatDate, isAddonDashboardReady } from '@/lib/utils'
 
 // Status badge component
 const StatusBadge = ({ status }) => {
@@ -465,35 +466,7 @@ export default function SmsCampaigns() {
   const { isAddonActive } = useSettings()
   const { toast } = useToast()
   const hasWooCommercePro = isAddonActive('woocommerce')
-
-  // Show placeholder if WooCommerce Pro add-on is not active
-  if (!hasWooCommercePro) {
-    return (
-      <div className="wsms-space-y-6">
-        <Card>
-          <CardContent className="wsms-py-8">
-            <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
-              <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
-              <h3 className="wsms-font-medium wsms-mb-2">{__('WooCommerce Pro Add-on Required')}</h3>
-              <p className="wsms-text-sm wsms-text-muted-foreground wsms-mb-4">
-                {__('Install and activate the WSMS WooCommerce Pro add-on to access SMS Campaigns.')}
-              </p>
-              <Button variant="outline" asChild>
-                <a
-                  href="https://wsms.io/product/wp-sms-woocommerce-pro/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {__('Learn More')}
-                  <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
-                </a>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
+  const dashboardReady = isAddonDashboardReady('woocommerce')
 
   // useListPage for data management
   const { filters, table } = useListPage({
@@ -502,6 +475,7 @@ export default function SmsCampaigns() {
     bulkActionFn: async () => {},
     initialFilters: { search: '', status: 'any' },
     perPage: 10,
+    fetchOnMount: hasWooCommercePro && dashboardReady,
     messages: {
       deleteSuccess: __('Campaign deleted successfully'),
     },
@@ -532,6 +506,7 @@ export default function SmsCampaigns() {
 
   // Fetch condition options
   useEffect(() => {
+    if (!hasWooCommercePro || !dashboardReady) return
     const fetchConditionOptions = async () => {
       try {
         const response = await woocommerceProApi.getConditionOptions()
@@ -564,7 +539,7 @@ export default function SmsCampaigns() {
       }
     }
     fetchConditionOptions()
-  }, [])
+  }, [hasWooCommercePro, dashboardReady])
 
   // Handlers
   const handleCreate = () => {
@@ -653,6 +628,39 @@ export default function SmsCampaigns() {
     onEdit: handleEdit,
     onDelete: handleDeleteClick,
   }), [handleView, handleViewQueue, handleEdit, handleDeleteClick])
+
+  // Show placeholder if WooCommerce Pro add-on is not active
+  if (!hasWooCommercePro) {
+    return (
+      <div className="wsms-space-y-6">
+        <Card>
+          <CardContent className="wsms-py-8">
+            <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
+              <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
+              <h3 className="wsms-font-medium wsms-mb-2">{__('WooCommerce Pro Add-on Required')}</h3>
+              <p className="wsms-text-sm wsms-text-muted-foreground wsms-mb-4">
+                {__('Install and activate the WSMS WooCommerce Pro add-on to access SMS Campaigns.')}
+              </p>
+              <Button variant="outline" asChild>
+                <a
+                  href="https://wsms.io/product/wp-sms-woocommerce-pro/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {__('Learn More')}
+                  <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
+                </a>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  if (!dashboardReady) {
+    return <AddonUpdateRequired addonKey="woocommerce" icon={Megaphone} />
+  }
 
   // Loading skeleton
   if (!table.initialLoadDone) {

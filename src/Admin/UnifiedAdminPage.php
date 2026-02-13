@@ -321,6 +321,7 @@ class UnifiedAdminPage extends Singleton
             'settings'      => $this->maskSensitiveSettings($this->getSettingsWithDefaults()),
             'proSettings'   => $this->maskSensitiveSettings(Option::getOptions(true)),
             'addons'        => $this->getActiveAddons(),
+            'addonDashboardSupport' => $this->getAddonDashboardSupport(),
             'gateway'       => $this->getGatewayCapabilities(),
             'adminUrl'      => admin_url(),
             'siteUrl'       => site_url(),
@@ -1102,6 +1103,29 @@ class UnifiedAdminPage extends Singleton
         }
 
         return $active;
+    }
+
+    /**
+     * Check which add-ons support the new React dashboard.
+     *
+     * Updated add-ons opt in by hooking into the 'wpsms_addon_dashboard_support'
+     * filter and setting their key to true. Old add-ons that haven't been updated
+     * won't hook in, so their key stays false — allowing the dashboard to show a
+     * friendly "update required" message instead of broken error screens.
+     *
+     * @return array<string, bool>
+     */
+    private function getAddonDashboardSupport()
+    {
+        $support = apply_filters('wpsms_addon_dashboard_support', []);
+
+        $knownAddons = ['pro', 'woocommerce', 'two-way'];
+        $result = [];
+        foreach ($knownAddons as $key) {
+            $result[$key] = !empty($support[$key]);
+        }
+
+        return $result;
     }
 
     /**

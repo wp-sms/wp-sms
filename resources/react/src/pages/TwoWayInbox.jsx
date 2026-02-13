@@ -20,6 +20,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { DataTable } from '@/components/ui/data-table'
 import { StatusBadge } from '@/components/shared/StatusBadge'
+import { AddonUpdateRequired } from '@/components/shared/AddonUpdateRequired'
 import { ExportButton } from '@/components/shared/ExportButton'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
@@ -27,7 +28,7 @@ import { useListPage } from '@/hooks/useListPage'
 import { useFormDialog } from '@/hooks/useFormDialog'
 import { useSettings } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
-import { cn, __ } from '@/lib/utils'
+import { cn, __, isAddonDashboardReady } from '@/lib/utils'
 import { inboxApi } from '@/api/twoWayApi'
 import {
   Dialog,
@@ -51,6 +52,7 @@ export default function TwoWayInbox() {
   const { isAddonActive } = useSettings()
   const { toast } = useToast()
   const hasTwoWay = isAddonActive('two-way')
+  const dashboardReady = isAddonDashboardReady('two-way')
 
   // Commands for filter dropdown
   const [commands, setCommands] = useState([])
@@ -65,14 +67,14 @@ export default function TwoWayInbox() {
 
   // Fetch commands for filter
   useEffect(() => {
-    if (hasTwoWay) {
+    if (hasTwoWay && dashboardReady) {
       inboxApi.getCommands().then((response) => {
         if (response.success) {
           setCommands(Array.isArray(response.data) ? response.data : [])
         }
       }).catch(() => {})
     }
-  }, [hasTwoWay])
+  }, [hasTwoWay, dashboardReady])
 
   // Stats (fetched separately — the messages endpoint does not include stats)
   const [stats, setStats] = useState({ total: 0, today: 0, week: 0, unread: 0 })
@@ -91,8 +93,8 @@ export default function TwoWayInbox() {
   }, [])
 
   useEffect(() => {
-    if (hasTwoWay) fetchStats()
-  }, [hasTwoWay, fetchStats])
+    if (hasTwoWay && dashboardReady) fetchStats()
+  }, [hasTwoWay, dashboardReady, fetchStats])
 
   // useListPage for table + filters
   const { filters, table, handleDelete, handleBulkDelete } = useListPage({
@@ -113,6 +115,7 @@ export default function TwoWayInbox() {
     deleteFn: (id) => inboxApi.deleteMessage(id),
     bulkActionFn: (action, ids) => inboxApi.bulkDelete(ids),
     initialFilters: { search: '', status: 'all', action_status: 'all', command_id: 'all' },
+    fetchOnMount: dashboardReady,
     messages: {
       deleteSuccess: __('Message deleted'),
       bulkSuccess: __('Messages deleted'),
@@ -336,6 +339,10 @@ export default function TwoWayInbox() {
         </Card>
       </div>
     )
+  }
+
+  if (!dashboardReady) {
+    return <AddonUpdateRequired addonKey="two-way" icon={Inbox} />
   }
 
   // Initial loading

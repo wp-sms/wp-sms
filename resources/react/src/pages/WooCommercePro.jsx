@@ -4,9 +4,10 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Button } from '@/components/ui/button'
 import { useSettings } from '@/context/SettingsContext'
 import { useAddonSettings } from '@/hooks/useAddonSettings'
+import { AddonUpdateRequired } from '@/components/shared/AddonUpdateRequired'
 import { AddonSection } from '@/components/ui/AddonSection'
 import { DynamicField } from '@/components/ui/DynamicField'
-import { getWpSettings } from '@/lib/utils'
+import { getWpSettings, isAddonDashboardReady } from '@/lib/utils'
 
 export default function WooCommercePro() {
   const { isAddonActive } = useSettings()
@@ -61,6 +62,10 @@ export default function WooCommercePro() {
         </Card>
       </div>
     )
+  }
+
+  if (!isAddonDashboardReady('woocommerce')) {
+    return <AddonUpdateRequired addonKey="woocommerce" icon={ShoppingCart} />
   }
 
   // Show placeholder if WooCommerce is not active

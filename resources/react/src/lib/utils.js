@@ -117,6 +117,20 @@ export function getWpSettings() {
 }
 
 /**
+ * Check if an add-on is active AND has been updated to support the React dashboard.
+ * Updated add-ons opt in via the 'wpsms_addon_dashboard_support' PHP filter.
+ * @param {string} addon - Add-on key ('pro', 'woocommerce', 'two-way')
+ * @returns {boolean} Whether the add-on is dashboard-ready
+ */
+export function isAddonDashboardReady(addon) {
+  const settings = getWpSettings()
+  const isActive = settings.addons?.[addon] === true
+  if (!isActive) return false
+  const support = settings.addonDashboardSupport || {}
+  return support[addon] === true
+}
+
+/**
  * Build a WordPress REST API URL for any route, in both permalink modes.
  *
  * Examples:

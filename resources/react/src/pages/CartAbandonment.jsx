@@ -31,8 +31,9 @@ import {
 } from '@/components/ui/select'
 import { DataTable } from '@/components/ui/data-table'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
+import { AddonUpdateRequired } from '@/components/shared/AddonUpdateRequired'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
-import { __, cn } from '@/lib/utils'
+import { __, cn, isAddonDashboardReady } from '@/lib/utils'
 import { useSettings } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
 import { woocommerceProApi } from '@/api/woocommerceProApi'
@@ -164,44 +165,7 @@ export default function CartAbandonment() {
   const { isAddonActive } = useSettings()
   const { toast } = useToast()
   const hasWooCommercePro = isAddonActive('woocommerce')
-
-  // Show placeholder if WooCommerce Pro add-on is not active
-  if (!hasWooCommercePro) {
-    return (
-      <div className="wsms-space-y-6">
-        <Card>
-          <CardHeader>
-            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-              <RotateCcw className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-              {__('Cart Abandonment')}
-            </CardTitle>
-            <CardDescription>
-              {__('Recover abandoned carts with automated SMS reminders.')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
-              <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
-              <h3 className="wsms-font-medium wsms-mb-2">{__('WooCommerce Pro Add-on Required')}</h3>
-              <p className="wsms-text-sm wsms-text-muted-foreground wsms-mb-4">
-                {__('Install and activate the WSMS WooCommerce Pro add-on to access Cart Abandonment features.')}
-              </p>
-              <Button variant="outline" asChild>
-                <a
-                  href="https://wsms.io/product/wp-sms-woocommerce-pro/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {__('Learn More')}
-                  <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
-                </a>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
+  const dashboardReady = isAddonDashboardReady('woocommerce')
 
   // State
   const [isLoading, setIsLoading] = useState(true)
@@ -253,8 +217,9 @@ export default function CartAbandonment() {
 
   // Initial load
   useEffect(() => {
+    if (!hasWooCommercePro || !dashboardReady) return
     fetchData()
-  }, [fetchData])
+  }, [hasWooCommercePro, dashboardReady, fetchData])
 
   // Handle delete
   const handleDeleteConfirm = async () => {
@@ -310,6 +275,48 @@ export default function CartAbandonment() {
     (row, index) => `${row.customer_id}-${row.cart_hash}-${index}`,
     []
   )
+
+  // Show placeholder if WooCommerce Pro add-on is not active
+  if (!hasWooCommercePro) {
+    return (
+      <div className="wsms-space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <RotateCcw className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              {__('Cart Abandonment')}
+            </CardTitle>
+            <CardDescription>
+              {__('Recover abandoned carts with automated SMS reminders.')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="wsms-rounded-lg wsms-border wsms-border-dashed wsms-bg-muted/30 wsms-p-6 wsms-text-center">
+              <AlertCircle className="wsms-mx-auto wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mb-3" />
+              <h3 className="wsms-font-medium wsms-mb-2">{__('WooCommerce Pro Add-on Required')}</h3>
+              <p className="wsms-text-sm wsms-text-muted-foreground wsms-mb-4">
+                {__('Install and activate the WSMS WooCommerce Pro add-on to access Cart Abandonment features.')}
+              </p>
+              <Button variant="outline" asChild>
+                <a
+                  href="https://wsms.io/product/wp-sms-woocommerce-pro/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {__('Learn More')}
+                  <ExternalLink className="wsms-ms-2 wsms-h-4 wsms-w-4" />
+                </a>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  if (!dashboardReady) {
+    return <AddonUpdateRequired addonKey="woocommerce" icon={RotateCcw} />
+  }
 
   // Loading skeleton
   if (!initialLoadDone) {

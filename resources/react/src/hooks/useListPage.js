@@ -38,6 +38,7 @@ export function useListPage({
   perPage = 20,
   debounceMs = 500,
   getRowId = (row) => row.id,
+  fetchOnMount = true,
   messages = {},
 } = {}) {
   const { toast } = useToast()
@@ -72,6 +73,7 @@ export function useListPage({
     fetchFn: fetchWithFilters,
     initialPerPage: perPage,
     getRowId,
+    fetchOnMount,
   })
 
   // Auto-refetch when debounced filters change (after initial load)

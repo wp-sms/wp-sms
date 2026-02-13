@@ -9,7 +9,7 @@ import {
   Settings2,
   RefreshCw,
 } from 'lucide-react'
-import { cn, __, getWpSettings, getGatewayDisplayName } from '@/lib/utils'
+import { cn, __, getWpSettings, getGatewayDisplayName, isAddonDashboardReady } from '@/lib/utils'
 import Logo from './Logo'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 import { smsApi } from '@/api/smsApi'
@@ -527,7 +527,7 @@ export default function Sidebar({ onClose, showClose }) {
   // Fetch inbox unread count for nav badge
   const [navBadges, setNavBadges] = useState({})
   useEffect(() => {
-    if (!hasTwoWay) return
+    if (!hasTwoWay || !isAddonDashboardReady('two-way')) return
     let cancelled = false
     inboxApi.getStats().then((res) => {
       if (cancelled) return

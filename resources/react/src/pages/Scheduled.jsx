@@ -29,6 +29,7 @@ import { StatusBadge } from '@/components/shared/StatusBadge'
 import { ExportButton } from '@/components/shared/ExportButton'
 import { DateRangePicker } from '@/components/shared/DateRangePicker'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
+import { AddonUpdateRequired } from '@/components/shared/AddonUpdateRequired'
 import {
   Dialog,
   DialogContent,
@@ -40,7 +41,7 @@ import {
 } from '@/components/ui/dialog'
 import { scheduledApi } from '@/api/scheduledApi'
 import { repeatingApi } from '@/api/repeatingApi'
-import { cn, formatDate, __, downloadCsv, getWpSettings } from '@/lib/utils'
+import { cn, formatDate, __, downloadCsv, getWpSettings, isAddonDashboardReady } from '@/lib/utils'
 import { useListPage } from '@/hooks/useListPage'
 import { useFormDialog } from '@/hooks/useFormDialog'
 import { useToast } from '@/components/ui/toaster'
@@ -1276,6 +1277,10 @@ export default function Scheduled() {
         </Card>
       </div>
     )
+  }
+
+  if (!isAddonDashboardReady('pro')) {
+    return <AddonUpdateRequired addonKey="pro" icon={CalendarClock} />
   }
 
   return (

@@ -20,6 +20,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
+import { AddonUpdateRequired } from '@/components/shared/AddonUpdateRequired'
 import {
   Select,
   SelectContent,
@@ -30,7 +31,7 @@ import {
 import { SwitchField } from '@/components/ui/form-field'
 import { Tip } from '@/components/ui/ux-helpers'
 import { useSettings } from '@/context/SettingsContext'
-import { getWpSettings, buildRestUrl, __, cn } from '@/lib/utils'
+import { getWpSettings, buildRestUrl, __, cn, isAddonDashboardReady } from '@/lib/utils'
 import { useToast } from '@/components/ui/toaster'
 
 export default function TwoWaySettings() {
@@ -184,6 +185,10 @@ export default function TwoWaySettings() {
         </Card>
       </div>
     )
+  }
+
+  if (!isAddonDashboardReady('two-way')) {
+    return <AddonUpdateRequired addonKey="two-way" icon={Settings} />
   }
 
   return (

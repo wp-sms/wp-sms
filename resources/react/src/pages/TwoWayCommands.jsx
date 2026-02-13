@@ -19,13 +19,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { DataTable } from '@/components/ui/data-table'
 import { StatusBadge } from '@/components/shared/StatusBadge'
+import { AddonUpdateRequired } from '@/components/shared/AddonUpdateRequired'
 import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
 import { DialogLoadingSpinner } from '@/components/shared/DialogLoadingSpinner'
 import { PageLoadingSkeleton } from '@/components/ui/skeleton'
 import { useFormDialog } from '@/hooks/useFormDialog'
 import { useSettings } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
-import { cn, __ } from '@/lib/utils'
+import { cn, __, isAddonDashboardReady } from '@/lib/utils'
 import { commandsApi } from '@/api/twoWayApi'
 import {
   Dialog,
@@ -52,6 +53,7 @@ export default function TwoWayCommands() {
   const { isAddonActive } = useSettings()
   const { toast } = useToast()
   const hasTwoWay = isAddonActive('two-way')
+  const dashboardReady = isAddonDashboardReady('two-way')
 
   // Data state
   const [commands, setCommands] = useState([])
@@ -92,11 +94,11 @@ export default function TwoWayCommands() {
   }, [])
 
   useEffect(() => {
-    if (hasTwoWay) {
+    if (hasTwoWay && dashboardReady) {
       fetchCommands()
       fetchActions()
     }
-  }, [hasTwoWay, fetchCommands, fetchActions])
+  }, [hasTwoWay, dashboardReady, fetchCommands, fetchActions])
 
   // Command form dialog
   const commandDialog = useFormDialog({
@@ -348,6 +350,10 @@ export default function TwoWayCommands() {
         </Card>
       </div>
     )
+  }
+
+  if (!dashboardReady) {
+    return <AddonUpdateRequired addonKey="two-way" icon={Terminal} />
   }
 
   if (isInitialLoad) {
