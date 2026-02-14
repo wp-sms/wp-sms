@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react'
+import React, { useRef, useCallback, useMemo } from 'react'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 
@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
  *
  * @param {string} value - Current textarea value
  * @param {function} onChange - Callback when value changes (receives new value string)
- * @param {string[]} variables - Array of variable strings (e.g., ['%post_title%', '%post_url%'])
+ * @param {(string|{variable: string, description?: string})[]} variables - Array of variable strings or objects
  * @param {string} [placeholder] - Placeholder text
  * @param {number} [rows=3] - Number of textarea rows
  * @param {string} [id] - Optional id for the textarea
@@ -23,6 +23,12 @@ export function TemplateTextarea({
   className,
 }) {
   const textareaRef = useRef(null)
+
+  // Normalize variables to always be objects with { variable, description }
+  const normalizedVars = useMemo(() =>
+    variables.map(v => typeof v === 'string' ? { variable: v, description: '' } : v),
+    [variables]
+  )
 
   const handleInsertVariable = useCallback((variable) => {
     const textarea = textareaRef.current
@@ -52,14 +58,15 @@ export function TemplateTextarea({
         placeholder={placeholder}
         rows={rows}
       />
-      {variables.length > 0 && (
+      {normalizedVars.length > 0 && (
         <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-1.5">
           <span className="wsms-text-xs wsms-text-muted-foreground wsms-me-1">Insert:</span>
-          {variables.map((variable) => (
+          {normalizedVars.map(({ variable, description }) => (
             <button
               key={variable}
               type="button"
               onClick={() => handleInsertVariable(variable)}
+              title={description || undefined}
               className={cn(
                 'wsms-inline-flex wsms-items-center wsms-rounded wsms-border wsms-border-border',
                 'wsms-px-1.5 wsms-py-0.5 wsms-text-[11px] wsms-font-mono',

@@ -132,47 +132,121 @@ const TimeSpecDisplay = ({ timeSpec, specificDate, delayedTime }) => {
   )
 }
 
+// Normalize conditions into group structure for AND/OR support
+function normalizeConditionGroups(conditions) {
+  if (!Array.isArray(conditions) || conditions.length === 0) return []
+  // If already in group format [{condition: [...]}]
+  if (conditions[0]?.condition) {
+    return conditions.map(group => ({
+      conditions: (group.condition || []).map(c => ({
+        condition_key: c.condition_key || '',
+        condition_value: c.condition_value || '',
+      }))
+    }))
+  }
+  // If flat format [{type, value}] (legacy React format) — convert to single AND group
+  return [{
+    conditions: conditions.map(c => ({
+      condition_key: c.type || c.condition_key || '',
+      condition_value: c.value || c.condition_value || '',
+    }))
+  }]
+}
+
+// Normalize delayed_time from backend {days, hours, minutes} to UI {value, unit}
+function normalizeDelayedTime(dt) {
+  if (!dt) return { value: 30, unit: 'minutes' }
+  // Already in UI format
+  if (dt.value !== undefined && dt.unit !== undefined) return dt
+  // Convert from backend {days, hours, minutes} format
+  const days = parseInt(dt.days) || 0
+  const hours = parseInt(dt.hours) || 0
+  const minutes = parseInt(dt.minutes) || 0
+  if (days > 0 && hours === 0 && minutes === 0) return { value: days, unit: 'days' }
+  if (hours > 0 && days === 0 && minutes === 0) return { value: hours, unit: 'hours' }
+  // Mixed or minutes-only: convert to total minutes
+  const totalMinutes = days * 1440 + hours * 60 + minutes
+  return { value: totalMinutes || 30, unit: 'minutes' }
+}
+
+// Convert UI {value, unit} to backend {days, hours, minutes}
+function serializeDelayedTime(dt) {
+  const val = parseInt(dt.value) || 0
+  if (dt.unit === 'days') return { days: val, hours: 0, minutes: 0 }
+  if (dt.unit === 'hours') return { days: 0, hours: val, minutes: 0 }
+  return { days: 0, hours: 0, minutes: val }
+}
+
 // Campaign form component
-const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, onSave, onCancel, isLoading, formId = 'campaign-form' }) => {
+const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageVariables, onSave, onCancel, isLoading, formId = 'campaign-form' }) => {
   const [formData, setFormData] = useState({
     title: campaign?.title || '',
     status: campaign?.status || 'draft',
-    conditions: campaign?.conditions || [],
+    conditionGroups: normalizeConditionGroups(campaign?.conditions),
     time_specification: campaign?.time_specification || 'right-away',
     specific_date: campaign?.specific_date || '',
-    delayed_time: campaign?.delayed_time || { value: 30, unit: 'minutes' },
+    delayed_time: normalizeDelayedTime(campaign?.delayed_time),
     message_content: campaign?.message_content || '',
   })
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    onSave(formData)
+    const submitData = {
+      ...formData,
+      conditions: formData.conditionGroups.map(group => ({
+        condition: group.conditions.map(c => ({
+          condition_key: c.condition_key,
+          condition_value: c.condition_value,
+        }))
+      })),
+      delayed_time: serializeDelayedTime(formData.delayed_time),
+    }
+    delete submitData.conditionGroups
+    onSave(submitData)
   }
 
   const updateField = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
-  const addCondition = () => {
+  const addConditionGroup = () => {
     setFormData(prev => ({
       ...prev,
-      conditions: [...prev.conditions, { type: '', operator: 'is', value: '' }]
+      conditionGroups: [...prev.conditionGroups, { conditions: [{ condition_key: '', condition_value: '' }] }]
     }))
   }
 
-  const updateCondition = (index, field, value) => {
+  const addConditionToGroup = (groupIndex) => {
     setFormData(prev => {
-      const newConditions = [...prev.conditions]
-      newConditions[index] = { ...newConditions[index], [field]: value }
-      return { ...prev, conditions: newConditions }
+      const groups = [...prev.conditionGroups]
+      groups[groupIndex] = {
+        ...groups[groupIndex],
+        conditions: [...groups[groupIndex].conditions, { condition_key: '', condition_value: '' }]
+      }
+      return { ...prev, conditionGroups: groups }
     })
   }
 
-  const removeCondition = (index) => {
-    setFormData(prev => ({
-      ...prev,
-      conditions: prev.conditions.filter((_, i) => i !== index)
-    }))
+  const updateConditionInGroup = (groupIndex, condIndex, field, value) => {
+    setFormData(prev => {
+      const groups = [...prev.conditionGroups]
+      const conditions = [...groups[groupIndex].conditions]
+      conditions[condIndex] = { ...conditions[condIndex], [field]: value }
+      groups[groupIndex] = { ...groups[groupIndex], conditions }
+      return { ...prev, conditionGroups: groups }
+    })
+  }
+
+  const removeConditionFromGroup = (groupIndex, condIndex) => {
+    setFormData(prev => {
+      const groups = [...prev.conditionGroups]
+      const conditions = groups[groupIndex].conditions.filter((_, i) => i !== condIndex)
+      if (conditions.length === 0) {
+        return { ...prev, conditionGroups: groups.filter((_, i) => i !== groupIndex) }
+      }
+      groups[groupIndex] = { ...groups[groupIndex], conditions }
+      return { ...prev, conditionGroups: groups }
+    })
   }
 
   const getConditionValues = (type) => {
@@ -214,74 +288,91 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, onSave, 
 
         {/* Conditions */}
         <div className="wsms-space-y-3">
-          <div className="wsms-flex wsms-items-center wsms-justify-between">
-            <Label>{__('Conditions')}</Label>
-            <Button type="button" variant="outline" size="sm" onClick={addCondition}>
-              <Plus className="wsms-h-4 wsms-w-4 wsms-me-1" />
-              {__('Add Condition')}
-            </Button>
-          </div>
+          <Label>{__('Conditions')}</Label>
 
-          {formData.conditions.length === 0 && (
+          {formData.conditionGroups.length === 0 && (
             <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-py-4 wsms-text-center wsms-border wsms-border-dashed wsms-rounded-lg">
               {__('No conditions added. Campaign will match all orders.')}
             </p>
           )}
 
-          {(Array.isArray(formData.conditions) ? formData.conditions : []).map((condition, index) => (
-            <div key={index} className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-3 wsms-bg-muted/30 wsms-rounded-lg">
-              <Select
-                value={condition.type}
-                onValueChange={(value) => updateCondition(index, 'type', value)}
-              >
-                <SelectTrigger className="wsms-w-[180px]">
-                  <SelectValue placeholder={__('Select type...')} />
-                </SelectTrigger>
-                <SelectContent>
-                  {Array.isArray(conditionOptions) && conditionOptions.map(opt => (
-                    <SelectItem key={opt.key} value={opt.key}>{opt.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+          {formData.conditionGroups.map((group, groupIndex) => (
+            <div key={groupIndex}>
+              {groupIndex > 0 && (
+                <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-my-2">
+                  <div className="wsms-flex-1 wsms-border-t wsms-border-border" />
+                  <span className="wsms-text-xs wsms-font-medium wsms-text-orange-600 wsms-bg-orange-50 wsms-px-2 wsms-py-0.5 wsms-rounded">{__('OR')}</span>
+                  <div className="wsms-flex-1 wsms-border-t wsms-border-border" />
+                </div>
+              )}
+              <div className="wsms-p-3 wsms-border wsms-border-border wsms-rounded-lg wsms-space-y-2">
+                {groupIndex === 0 && (
+                  <p className="wsms-text-xs wsms-text-muted-foreground wsms-mb-1">{__('Send SMS to orders if')}</p>
+                )}
+                {group.conditions.map((condition, condIndex) => (
+                  <div key={condIndex}>
+                    {condIndex > 0 && (
+                      <div className="wsms-flex wsms-justify-center wsms-my-1">
+                        <span className="wsms-text-[11px] wsms-font-medium wsms-text-blue-600 wsms-bg-blue-50 wsms-px-2 wsms-py-0.5 wsms-rounded">{__('AND')}</span>
+                      </div>
+                    )}
+                    <div className="wsms-flex wsms-items-center wsms-gap-2">
+                      <div className="wsms-flex-1 wsms-min-w-0">
+                        <Select
+                          value={condition.condition_key}
+                          onValueChange={(value) => updateConditionInGroup(groupIndex, condIndex, 'condition_key', value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={__('Select type...')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Array.isArray(conditionOptions) && conditionOptions.map(opt => (
+                              <SelectItem key={opt.key} value={opt.key}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-              <Select
-                value={condition.operator}
-                onValueChange={(value) => updateCondition(index, 'operator', value)}
-              >
-                <SelectTrigger className="wsms-w-[100px]">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="is">{__('is')}</SelectItem>
-                  <SelectItem value="is_not">{__('is not')}</SelectItem>
-                </SelectContent>
-              </Select>
+                      <div className="wsms-flex-1 wsms-min-w-0">
+                        <Select
+                          value={condition.condition_value}
+                          onValueChange={(value) => updateConditionInGroup(groupIndex, condIndex, 'condition_value', value)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={__('Select value...')} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {getConditionValues(condition.condition_key).map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-              <Select
-                value={condition.value}
-                onValueChange={(value) => updateCondition(index, 'value', value)}
-              >
-                <SelectTrigger className="wsms-flex-1">
-                  <SelectValue placeholder={__('Select value...')} />
-                </SelectTrigger>
-                <SelectContent>
-                  {getConditionValues(condition.type).map(opt => (
-                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                onClick={() => removeCondition(index)}
-                className="wsms-shrink-0"
-              >
-                <X className="wsms-h-4 wsms-w-4" />
-              </Button>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => removeConditionFromGroup(groupIndex, condIndex)}
+                        className="wsms-shrink-0"
+                      >
+                        <X className="wsms-h-4 wsms-w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+                <Button type="button" variant="ghost" size="sm" onClick={() => addConditionToGroup(groupIndex)} className="wsms-mt-1">
+                  <Plus className="wsms-h-3.5 wsms-w-3.5 wsms-me-1" />
+                  {__('Add condition')}
+                </Button>
+              </div>
             </div>
           ))}
+
+          <Button type="button" variant="outline" size="sm" onClick={addConditionGroup}>
+            <Plus className="wsms-h-4 wsms-w-4 wsms-me-1" />
+            {__('Add condition group')}
+          </Button>
         </div>
 
         {/* Time Specification */}
@@ -296,16 +387,16 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, onSave, 
             </SelectTrigger>
             <SelectContent>
               {(timeSpecifications.length > 0 ? timeSpecifications : [
-                { value: 'immediately', label: __('Immediately') },
-                { value: 'specific_date', label: __('Specific Date') },
-                { value: 'after_placing_order', label: __('After Placing Order') },
+                { value: 'right-away', label: __('Right Away') },
+                { value: 'specific-date', label: __('Specific Date') },
+                { value: 'after-placing-order', label: __('After Placing Order') },
               ]).map(spec => (
                 <SelectItem key={spec.value} value={spec.value}>{spec.label}</SelectItem>
               ))}
             </SelectContent>
           </Select>
 
-          {formData.time_specification === 'specific_date' && (
+          {formData.time_specification === 'specific-date' && (
             <Input
               type="datetime-local"
               value={formData.specific_date}
@@ -313,7 +404,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, onSave, 
             />
           )}
 
-          {formData.time_specification === 'after_placing_order' && (
+          {formData.time_specification === 'after-placing-order' && (
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <Input
                 type="number"
@@ -349,7 +440,17 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, onSave, 
             onChange={(value) => updateField('message_content', value)}
             placeholder={__('Enter your SMS message...')}
             rows={4}
-            variables={['%customer_name%', '%order_id%', '%order_status%', '%order_total%', '%product_name%']}
+            variables={messageVariables.length > 0 ? messageVariables : [
+              { variable: '%billing_first_name%', description: 'First Name' },
+              { variable: '%billing_last_name%', description: 'Last Name' },
+              { variable: '%order_number%', description: 'Order Number' },
+              { variable: '%order_total%', description: 'Order Total' },
+              { variable: '%status%', description: 'Order Status' },
+              { variable: '%order_items%', description: 'Order Items' },
+              { variable: '%billing_phone%', description: 'Phone' },
+              { variable: '%billing_email%', description: 'Email' },
+              { variable: '%shipping_method%', description: 'Shipping Method' },
+            ]}
           />
         </div>
       </form>
@@ -484,6 +585,7 @@ export default function SmsCampaigns() {
   // Condition options from API
   const [conditionOptions, setConditionOptions] = useState([])
   const [timeSpecifications, setTimeSpecifications] = useState([])
+  const [messageVariables, setMessageVariables] = useState([])
 
   // Dialog states
   const [isFormOpen, setIsFormOpen] = useState(false)
@@ -534,6 +636,9 @@ export default function SmsCampaigns() {
 
         setConditionOptions(transformedConditions)
         setTimeSpecifications(Array.isArray(timeSpecs) ? timeSpecs : [])
+
+        const vars = response?.data?.message_variables
+        setMessageVariables(Array.isArray(vars) ? vars : [])
       } catch (err) {
         console.error('Failed to fetch condition options:', err)
       }
@@ -781,7 +886,7 @@ export default function SmsCampaigns() {
 
       {/* Create/Edit Dialog */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent className="wsms-max-w-2xl wsms-max-h-[90vh] wsms-overflow-y-auto">
+        <DialogContent className="wsms-max-h-[90vh] wsms-overflow-y-auto" style={{ maxWidth: '896px' }}>
           <DialogHeader>
             <DialogTitle>
               {selectedCampaign ? __('Edit Campaign') : __('Create Campaign')}
@@ -800,6 +905,7 @@ export default function SmsCampaigns() {
               campaign={selectedCampaign}
               conditionOptions={conditionOptions}
               timeSpecifications={timeSpecifications}
+              messageVariables={messageVariables}
               onSave={handleSave}
               onCancel={() => setIsFormOpen(false)}
               isLoading={formLoading}
@@ -844,9 +950,27 @@ export default function SmsCampaigns() {
                   <div>
                     <Label className="wsms-text-[12px] wsms-text-muted-foreground">{__('Conditions')}</Label>
                     <div className="wsms-mt-1 wsms-space-y-1">
-                      {(Array.isArray(selectedCampaign.conditions) ? selectedCampaign.conditions : []).map((condition, index) => (
-                        <div key={index} className="wsms-text-[12px] wsms-p-2 wsms-bg-muted/30 wsms-rounded">
-                          {condition.type} {condition.operator} {condition.value}
+                      {normalizeConditionGroups(selectedCampaign.conditions).map((group, groupIndex) => (
+                        <div key={groupIndex}>
+                          {groupIndex > 0 && (
+                            <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-my-1">
+                              <div className="wsms-flex-1 wsms-border-t wsms-border-border" />
+                              <span className="wsms-text-[10px] wsms-font-medium wsms-text-orange-600">{__('OR')}</span>
+                              <div className="wsms-flex-1 wsms-border-t wsms-border-border" />
+                            </div>
+                          )}
+                          <div className="wsms-p-2 wsms-bg-muted/30 wsms-rounded wsms-space-y-1">
+                            {group.conditions.map((condition, condIndex) => (
+                              <div key={condIndex}>
+                                {condIndex > 0 && (
+                                  <span className="wsms-text-[10px] wsms-font-medium wsms-text-blue-600 wsms-block wsms-text-center wsms-my-0.5">{__('AND')}</span>
+                                )}
+                                <div className="wsms-text-[12px]">
+                                  {condition.condition_key} = {condition.condition_value}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       ))}
                     </div>
