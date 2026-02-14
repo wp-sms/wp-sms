@@ -406,27 +406,30 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
 
           {formData.time_specification === 'after-placing-order' && (
             <div className="wsms-flex wsms-items-center wsms-gap-2">
-              <Input
-                type="number"
-                min="1"
-                value={formData.delayed_time.value}
-                onChange={(e) => updateField('delayed_time', { ...formData.delayed_time, value: parseInt(e.target.value) || 1 })}
-                className="wsms-w-24"
-              />
-              <Select
-                value={formData.delayed_time.unit}
-                onValueChange={(value) => updateField('delayed_time', { ...formData.delayed_time, unit: value })}
-              >
-                <SelectTrigger className="wsms-w-32">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="minutes">{__('Minutes')}</SelectItem>
-                  <SelectItem value="hours">{__('Hours')}</SelectItem>
-                  <SelectItem value="days">{__('Days')}</SelectItem>
-                </SelectContent>
-              </Select>
-              <span className="wsms-text-[12px] wsms-text-muted-foreground">{__('after order is placed')}</span>
+              <div className="wsms-w-20 wsms-shrink-0">
+                <Input
+                  type="number"
+                  min="1"
+                  value={formData.delayed_time.value}
+                  onChange={(e) => updateField('delayed_time', { ...formData.delayed_time, value: parseInt(e.target.value) || 1 })}
+                />
+              </div>
+              <div className="wsms-w-28 wsms-shrink-0">
+                <Select
+                  value={formData.delayed_time.unit}
+                  onValueChange={(value) => updateField('delayed_time', { ...formData.delayed_time, unit: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="minutes">{__('Minutes')}</SelectItem>
+                    <SelectItem value="hours">{__('Hours')}</SelectItem>
+                    <SelectItem value="days">{__('Days')}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <span className="wsms-text-xs wsms-text-muted-foreground wsms-whitespace-nowrap">{__('after order is placed')}</span>
             </div>
           )}
         </div>
@@ -886,7 +889,7 @@ export default function SmsCampaigns() {
 
       {/* Create/Edit Dialog */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
-        <DialogContent className="wsms-max-h-[90vh] wsms-overflow-y-auto" style={{ maxWidth: '896px' }}>
+        <DialogContent className="wsms-max-h-[90vh] wsms-overflow-y-auto wsms-scrollbar-thin" style={{ maxWidth: '768px' }}>
           <DialogHeader>
             <DialogTitle>
               {selectedCampaign ? __('Edit Campaign') : __('Create Campaign')}
