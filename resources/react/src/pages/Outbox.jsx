@@ -475,7 +475,7 @@ export default function Outbox() {
               value={filters.filters.status}
               onValueChange={(value) => filters.setFilter('status', value)}
             >
-              <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[100px] wsms-text-[12px]" aria-label={__('Filter by status')}>
+              <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[12px]" aria-label={__('Filter by status')}>
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
