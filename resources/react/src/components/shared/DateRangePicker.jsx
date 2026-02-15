@@ -25,7 +25,7 @@ export function DateRangePicker({
   return (
     <div
       className={cn(
-        'wsms-flex wsms-items-center wsms-gap-2 wsms-ps-3 wsms-border-s wsms-border-border',
+        'wsms-flex wsms-items-center wsms-gap-2 xl:wsms-ps-3 xl:wsms-border-s wsms-border-border wsms-w-full xl:wsms-w-auto',
         disabled && 'wsms-opacity-50 wsms-pointer-events-none',
         className
       )}
@@ -36,7 +36,7 @@ export function DateRangePicker({
         value={from}
         onChange={(e) => onFromChange?.(e.target.value)}
         disabled={disabled}
-        className="wsms-h-9 wsms-w-[130px] wsms-text-[12px]"
+        className="wsms-h-9 wsms-min-w-0 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[130px] wsms-text-[12px]"
         aria-label={__('From date')}
       />
       <span className="wsms-text-muted-foreground" aria-hidden="true">-</span>
@@ -45,7 +45,7 @@ export function DateRangePicker({
         value={to}
         onChange={(e) => onToChange?.(e.target.value)}
         disabled={disabled}
-        className="wsms-h-9 wsms-w-[130px] wsms-text-[12px]"
+        className="wsms-h-9 wsms-min-w-0 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[130px] wsms-text-[12px]"
         aria-label={__('To date')}
       />
     </div>
