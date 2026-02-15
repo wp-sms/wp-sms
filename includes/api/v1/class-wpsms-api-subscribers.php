@@ -453,13 +453,8 @@ class SubscribersApi extends RestApi
             ]);
         }
 
-        // Single group creation: keep existing behavior with broad duplicate check
+        // Single group creation: let addSubscriber handle per-group duplicate checking
         $singleGroupId = is_array($group_id) ? absint($group_id[0]) : absint($group_id);
-
-        $existing = Newsletter::getSubscriberByMobile($mobile);
-        if ($existing) {
-            return self::response(__('A subscriber with this phone number already exists', 'wp-sms'), 400);
-        }
 
         $result = Newsletter::addSubscriber(
             $name,
