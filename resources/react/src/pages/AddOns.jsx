@@ -9,7 +9,6 @@ import { useToast } from '@/components/ui/toaster'
 import { addonsApi } from '@/api/addonsApi'
 import { __ } from '@/lib/utils'
 import {
-  AlertCircle,
   Blocks,
   ExternalLink,
   BookOpen,
@@ -33,9 +32,8 @@ function AddOnCard({ addon, onLicenseChanged }) {
   const [licenseKey, setLicenseKey] = useState('')
   const [activating, setActivating] = useState(false)
   const [removingIndex, setRemovingIndex] = useState(null)
-  const [activateError, setActivateError] = useState('')
-  const [removeError, setRemoveError] = useState('')
   const [showUpdateInput, setShowUpdateInput] = useState(false)
+  const { toast } = useToast()
 
   const needsLicense = addon.is_installed && (addon.status === 'not_licensed' || addon.status === 'license_expired')
   const licenses = addon.licenses || []
@@ -45,14 +43,13 @@ function AddOnCard({ addon, onLicenseChanged }) {
   const handleActivate = async () => {
     if (!licenseKey.trim()) return
     setActivating(true)
-    setActivateError('')
     try {
       const response = await addonsApi.activateLicense(addon.slug, licenseKey.trim())
       onLicenseChanged(response.message || __('License activated successfully.'))
       setLicenseKey('')
       setShowUpdateInput(false)
     } catch (err) {
-      setActivateError(err.message || __('Failed to activate license.'))
+      toast({ title: err.message || __('Failed to activate license.'), variant: 'destructive' })
     } finally {
       setActivating(false)
     }
@@ -60,12 +57,11 @@ function AddOnCard({ addon, onLicenseChanged }) {
 
   const handleRemove = async (index) => {
     setRemovingIndex(index)
-    setRemoveError('')
     try {
       const response = await addonsApi.removeLicense(addon.slug)
       onLicenseChanged(response.message || __('License removed successfully.'))
     } catch (err) {
-      setRemoveError(err.message || __('Failed to remove license.'))
+      toast({ title: err.message || __('Failed to remove license.'), variant: 'destructive' })
     } finally {
       setRemovingIndex(null)
     }
@@ -140,7 +136,6 @@ function AddOnCard({ addon, onLicenseChanged }) {
                     onClick={() => {
                       setShowUpdateInput(!showUpdateInput)
                       setLicenseKey('')
-                      setActivateError('')
                     }}
                     className="wsms-p-1 wsms-rounded wsms-text-muted-foreground hover:wsms-text-primary hover:wsms-bg-primary/10 wsms-transition-colors"
                     title={__('Update license')}
@@ -162,16 +157,6 @@ function AddOnCard({ addon, onLicenseChanged }) {
                 </div>
               </div>
             ))}
-            {removeError && (
-              <div className="wsms-flex wsms-items-center wsms-justify-end">
-                <div className="wsms-relative wsms-group">
-                  <AlertCircle className="wsms-h-3.5 wsms-w-3.5 wsms-text-red-500 wsms-cursor-help" strokeWidth={2} />
-                  <div className="wsms-absolute wsms-bottom-full wsms--end-2 wsms-mb-1.5 wsms-hidden group-hover:wsms-block wsms-z-50 wsms-pointer-events-none wsms-w-max">
-                    <div className="wsms-bg-slate-800 wsms-text-white wsms-text-[11px] wsms-px-2 wsms-py-1 wsms-rounded wsms-max-w-[280px] wsms-shadow-lg" dangerouslySetInnerHTML={{ __html: removeError }} />
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
         )}
 
@@ -179,26 +164,13 @@ function AddOnCard({ addon, onLicenseChanged }) {
         {showLicenseInput && (
           <div className="wsms-mt-3 wsms-space-y-2">
             <div className="wsms-flex wsms-gap-2">
-              <div className="wsms-relative wsms-flex-1">
-                <Input
-                  value={licenseKey}
-                  onChange={(e) => {
-                    setLicenseKey(e.target.value)
-                    setActivateError('')
-                  }}
-                  placeholder={showUpdateInput ? __('Enter new license key') : __('Enter license key')}
-                  className={`!wsms-h-8 wsms-text-[12px] ${activateError ? 'wsms-border-red-500 focus-visible:wsms-ring-red-500/30 wsms-pe-7' : ''}`}
-                  onKeyDown={(e) => e.key === 'Enter' && handleActivate()}
-                />
-                {activateError && (
-                  <div className="wsms-absolute wsms-end-2 wsms-top-1/2 wsms--translate-y-1/2 wsms-group">
-                    <AlertCircle className="wsms-h-3.5 wsms-w-3.5 wsms-text-red-500 wsms-cursor-help" strokeWidth={2} />
-                    <div className="wsms-absolute wsms-bottom-full wsms--end-2 wsms-mb-1.5 wsms-hidden group-hover:wsms-block wsms-z-50 wsms-pointer-events-none wsms-w-max">
-                      <div className="wsms-bg-slate-800 wsms-text-white wsms-text-[11px] wsms-px-2 wsms-py-1 wsms-rounded wsms-max-w-[280px] wsms-shadow-lg" dangerouslySetInnerHTML={{ __html: activateError }} />
-                    </div>
-                  </div>
-                )}
-              </div>
+              <Input
+                value={licenseKey}
+                onChange={(e) => setLicenseKey(e.target.value)}
+                placeholder={showUpdateInput ? __('Enter new license key') : __('Enter license key')}
+                className="!wsms-h-8 wsms-text-[12px] wsms-flex-1"
+                onKeyDown={(e) => e.key === 'Enter' && handleActivate()}
+              />
               <Button
                 size="sm"
                 className="wsms-shrink-0 !wsms-h-8"
@@ -221,7 +193,6 @@ function AddOnCard({ addon, onLicenseChanged }) {
                   onClick={() => {
                     setShowUpdateInput(false)
                     setLicenseKey('')
-                    setActivateError('')
                   }}
                 >
                   {__('Cancel')}
