@@ -222,7 +222,7 @@ export default function Privacy() {
           </div>
 
           {/* Feature Cards */}
-          <div className="wsms-grid wsms-grid-cols-3 wsms-gap-4 wsms-mt-6">
+          <div className="wsms-grid wsms-grid-cols-1 sm:wsms-grid-cols-3 wsms-gap-3 sm:wsms-gap-4 wsms-mt-6">
             <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-p-3 wsms-rounded-lg wsms-bg-background/50 wsms-border wsms-border-border">
               <Eye className="wsms-h-5 wsms-w-5 wsms-text-blue-500" />
               <div>
@@ -295,7 +295,7 @@ export default function Privacy() {
           {/* Summary Card */}
           <Card>
             <CardHeader>
-              <div className="wsms-flex wsms-items-center wsms-justify-between">
+              <div className="wsms-flex wsms-flex-col wsms-gap-3 sm:wsms-flex-row sm:wsms-items-center sm:wsms-justify-between">
                 <div>
                   <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                     <CheckCircle className="wsms-h-4 wsms-w-4 wsms-text-success" />
@@ -306,7 +306,7 @@ export default function Privacy() {
                   </CardDescription>
                 </div>
                 {/* Action Buttons */}
-                <div className="wsms-flex wsms-items-center wsms-gap-2">
+                <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-2">
                   <ExportButton
                     onExport={handleExport}
                     label={__('Export CSV')}
@@ -320,7 +320,7 @@ export default function Privacy() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="wsms-grid wsms-grid-cols-3 wsms-gap-4">
+              <div className="wsms-grid wsms-grid-cols-1 sm:wsms-grid-cols-3 wsms-gap-3 sm:wsms-gap-4">
                 <div className="wsms-flex wsms-items-center wsms-gap-4 wsms-p-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
                   <div className="wsms-flex wsms-h-12 wsms-w-12 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-blue-500/10">
                     <User className="wsms-h-6 wsms-w-6 wsms-text-blue-500" />

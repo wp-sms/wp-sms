@@ -292,7 +292,7 @@ export default function SendSms() {
         {/* Left Column: Message Compose */}
         <Card className="wsms-overflow-hidden">
           <CardHeader className="wsms-border-b wsms-border-border wsms-bg-muted/20 wsms-py-3">
-            <div className="wsms-flex wsms-items-center wsms-justify-between">
+            <div className="wsms-flex wsms-flex-col wsms-gap-2 lg:wsms-flex-row lg:wsms-items-center lg:wsms-justify-between">
               <div className="wsms-flex wsms-items-center wsms-gap-2">
                 <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" />
                 <CardTitle className="wsms-text-sm">{__('Compose Message')}</CardTitle>
@@ -545,9 +545,9 @@ export default function SendSms() {
 
       {/* Bottom Action Bar */}
       <Card className="wsms-overflow-hidden">
-        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-3">
+        <div className="wsms-flex wsms-flex-col lg:wsms-flex-row wsms-items-start lg:wsms-items-center wsms-justify-between wsms-gap-3 wsms-px-4 lg:wsms-px-5 wsms-py-3">
           {/* Left: Summary Stats */}
-          <div className="wsms-flex wsms-items-center wsms-gap-5 wsms-text-[13px]">
+          <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-x-5 wsms-gap-y-1 wsms-text-[13px]">
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <Users className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
               <span className="wsms-text-muted-foreground">{__('Recipients:')}</span>
@@ -555,13 +555,13 @@ export default function SendSms() {
                 {isLoadingCount ? '...' : recipientCount}
               </span>
             </div>
-            <div className="wsms-w-px wsms-h-4 wsms-bg-border" />
+            <div className="wsms-w-px wsms-h-4 wsms-bg-border wsms-hidden lg:wsms-block" />
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-muted-foreground" />
               <span className="wsms-text-muted-foreground">{__('Segments:')}</span>
               <span className="wsms-font-semibold wsms-text-foreground">{smsInfo.segments}</span>
             </div>
-            <div className="wsms-w-px wsms-h-4 wsms-bg-border" />
+            <div className="wsms-w-px wsms-h-4 wsms-bg-border wsms-hidden lg:wsms-block" />
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <Send className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               <span className="wsms-text-muted-foreground">{__('Total:')}</span>
@@ -570,7 +570,7 @@ export default function SendSms() {
           </div>
 
           {/* Right: Validation + Button */}
-          <div className="wsms-flex wsms-items-center wsms-gap-4">
+          <div className="wsms-flex wsms-flex-wrap wsms-items-center wsms-gap-3 lg:wsms-gap-4">
             {!canSend && (
               <p className="wsms-text-[12px] wsms-text-amber-700 dark:wsms-text-amber-500">
                 {isLoadingCount
@@ -595,7 +595,7 @@ export default function SendSms() {
             <Button
               onClick={handlePreview}
               disabled={!canSend}
-              className="wsms-gap-2"
+              className="wsms-gap-2 wsms-w-full lg:wsms-w-auto"
             >
               {isLoadingCount ? (
                 <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />

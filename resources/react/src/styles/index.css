@@ -241,6 +241,12 @@
   overflow-y: auto;
 }
 
+@media (max-width: 782px) {
+  .wsms-content {
+    padding: 12px;
+  }
+}
+
 .wsms-content-inner {
   /* No max-width - content stretches to fill available space */
   /* Data tables benefit from full width on large screens */

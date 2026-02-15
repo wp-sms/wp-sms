@@ -261,7 +261,7 @@ const RecipientSelector = React.forwardRef(
                 onClick={() => setActiveTab(tab.id)}
                 disabled={disabled}
                 className={cn(
-                  'wsms-flex-1 wsms-flex wsms-items-center wsms-justify-center wsms-gap-1.5 wsms-px-3 wsms-py-2',
+                  'wsms-flex-1 wsms-flex wsms-flex-col sm:wsms-flex-row wsms-items-center wsms-justify-center wsms-gap-0.5 sm:wsms-gap-1.5 wsms-px-2 wsms-py-2 sm:wsms-px-3',
                   'wsms-rounded-md wsms-text-[12px] wsms-font-medium wsms-transition-colors',
                   isActive
                     ? 'wsms-bg-card wsms-text-foreground wsms-shadow-sm'
@@ -269,7 +269,7 @@ const RecipientSelector = React.forwardRef(
                 )}
               >
                 <Icon className={cn('wsms-h-3.5 wsms-w-3.5', isActive && 'wsms-text-primary')} />
-                {tab.label}
+                <span className="wsms-text-[10px] sm:wsms-text-[12px]">{tab.label}</span>
                 {count > 0 && (
                   <span
                     className={cn(

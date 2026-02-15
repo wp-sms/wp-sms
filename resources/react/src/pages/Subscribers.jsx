@@ -793,27 +793,27 @@ export default function Subscribers() {
               {__('Quick Add')}
             </span>
 
-            <div className="wsms-flex wsms-flex-1 wsms-items-center wsms-gap-2">
+            <div className="wsms-flex wsms-flex-1 wsms-flex-wrap wsms-items-center wsms-gap-2">
               <Input
                 type="text"
                 value={quickAddName}
                 onChange={(e) => setQuickAddName(e.target.value)}
                 placeholder={__('Name (optional)')}
-                className="wsms-h-9 wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[140px] wsms-text-[13px]"
+                className="wsms-h-9 wsms-w-full sm:wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[140px] wsms-text-[13px]"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && quickAddPhone.trim()) {
                     handleQuickAdd(quickAddName, quickAddPhone)
                   }
                 }}
               />
-              <div className="wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[180px]">
+              <div className="wsms-w-full sm:wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[180px]">
                 <InternationalPhoneInput
                   value={quickAddPhone}
                   onChange={setQuickAddPhone}
                   placeholder={__('Phone number')}
                 />
               </div>
-              <div className={cn('wsms-shrink-0', multiGroupEnabled ? 'wsms-w-[160px]' : 'wsms-w-[120px]')}>
+              <div className={cn('wsms-w-full sm:wsms-w-auto sm:wsms-shrink-0', multiGroupEnabled ? 'sm:wsms-w-[160px]' : 'sm:wsms-w-[120px]')}>
                 {multiGroupEnabled ? (
                   <MultiSelect
                     options={groups.map(g => ({ value: String(g.id), label: g.name }))}
@@ -842,7 +842,7 @@ export default function Subscribers() {
               <Button
                 disabled={isAddingQuick || !quickAddPhone.trim()}
                 onClick={() => handleQuickAdd(quickAddName, quickAddPhone)}
-                className="wsms-h-9 wsms-px-4 wsms-shrink-0"
+                className="wsms-h-9 wsms-px-4 wsms-w-full sm:wsms-w-auto wsms-shrink-0"
               >
                 {isAddingQuick ? (
                   <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1.5 wsms-animate-spin" aria-hidden="true" />

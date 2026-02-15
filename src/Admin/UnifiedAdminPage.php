@@ -131,17 +131,18 @@ class UnifiedAdminPage extends Singleton
             body.folded #wpsms-settings-root {
                 left: 36px !important;
             }
-            /* Mobile - sidebar is hidden/overlay */
-            @media screen and (max-width: 782px) {
-                #wpsms-settings-root {
-                    top: 46px !important;
-                    left: 0 !important;
-                }
-            }
-            /* Auto-fold at 960px */
+            /* Auto-fold at 960px (must come before the 782px rule so mobile wins) */
             @media screen and (max-width: 960px) {
                 body:not(.folded) #wpsms-settings-root {
                     left: 36px !important;
+                }
+            }
+            /* Mobile - sidebar is hidden/overlay (repeat high-specificity selector to override 960px rule) */
+            @media screen and (max-width: 782px) {
+                #wpsms-settings-root,
+                body:not(.folded) #wpsms-settings-root {
+                    top: 46px !important;
+                    left: 0 !important;
                 }
             }
             /* RTL support - sidebar is on the right */
@@ -152,14 +153,15 @@ class UnifiedAdminPage extends Singleton
             body.rtl.folded #wpsms-settings-root {
                 right: 36px !important;
             }
-            @media screen and (max-width: 782px) {
-                body.rtl #wpsms-settings-root {
-                    right: 0 !important;
-                }
-            }
             @media screen and (max-width: 960px) {
                 body.rtl:not(.folded) #wpsms-settings-root {
                     right: 36px !important;
+                }
+            }
+            @media screen and (max-width: 782px) {
+                body.rtl #wpsms-settings-root,
+                body.rtl:not(.folded) #wpsms-settings-root {
+                    right: 0 !important;
                 }
             }
         </style>';
