@@ -204,7 +204,7 @@ function StepNotice({ addon, step }) {
  */
 function StepActions({ step, addon, isPremium, onClose }) {
   const { adminUrl } = getWpSettings()
-  const addOnsPageUrl = `${adminUrl}admin.php?page=wp-sms-unified-admin&tab=addons`
+  const addOnsPageUrl = `${adminUrl}admin.php?page=wp-sms-unified-admin&tab=add-ons`
 
   // First step actions
   if (step.slug === 'first-step') {
