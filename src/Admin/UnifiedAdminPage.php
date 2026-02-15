@@ -350,6 +350,8 @@ class UnifiedAdminPage extends Singleton
             'gravityForms' => $this->getGravityFormsData(),
             // Quform data for dynamic settings (Pro)
             'quformForms' => $this->getQuformFormsData(),
+            // Fluent Forms data for dynamic settings (Fluent add-on)
+            'fluentForms' => apply_filters('wpsms_admin_localized_fluent_forms_data', ['isActive' => false, 'forms' => []]),
             // Extended data for unified admin pages
             'stats'         => $this->getStats(),
             'capabilities'  => $this->getUserCapabilities(),
@@ -1340,12 +1342,22 @@ class UnifiedAdminPage extends Singleton
                 }
 
                 // Get notification variables
-                $variables = [];
+                $variables = [
+                    ['key' => '%site_name%', 'label' => 'Site Name'],
+                    ['key' => '%site_url%', 'label' => 'Site URL'],
+                ];
                 if (class_exists('WP_SMS\\Notification\\NotificationFactory')) {
                     $notificationVariables = \WP_SMS\Notification\NotificationFactory::getForminator($formId)->getVariables();
                     foreach ($notificationVariables as $key => $value) {
-                        preg_match("/(%field-|%)(.+)*\%/", $key, $match);
-                        $label = isset($match[2]) ? $match[2] : $key;
+                        // Skip base variables already added above
+                        if (in_array($key, ['%site_name%', '%site_url%'])) {
+                            continue;
+                        }
+                        // Field variables: use the form field label from $formFields
+                        preg_match("/^%field-(.+)%$/", $key, $match);
+                        $label = isset($match[1]) && isset($formFields[$match[1]])
+                            ? $formFields[$match[1]]
+                            : (isset($match[1]) ? $match[1] : $key);
                         $variables[] = [
                             'key'   => $key,
                             'label' => $label,
