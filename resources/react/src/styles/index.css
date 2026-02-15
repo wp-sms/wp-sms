@@ -107,6 +107,12 @@
   --wsms-notification-enter-x: -12px;
 }
 
+/* Prevent layout shift when Radix UI adds overflow:hidden to body on dropdown open */
+html:has(.wpsms-settings-app),
+html:has(.wsms-settings-app) {
+  scrollbar-gutter: stable;
+}
+
 /* Keep RTL behavior driven by the app root's dir attribute.
  * Avoid forcing direction on generic components (e.g. multi-select triggers) since that breaks layout. */
 
