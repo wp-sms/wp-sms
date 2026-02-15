@@ -6,9 +6,7 @@ use WP_SMS\Admin\LicenseManagement\ApiCommunicator;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\LicenseManagement\LicenseMigration;
 use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
-use WP_SMS\Utils\MenuUtil;
 use WP_SMS\Version;
-use WP_SMS\Admin\ModalHandler\Modal;
 use WP_SMS\Option;
 use WP_SMS\Admin\Notification\NotificationFactory;
 use WP_SMS\Components\View;
@@ -106,11 +104,3 @@ if ($displayNotifications) {
     View::load("components/notification/side-bar", ['notifications' => NotificationFactory::getAllNotifications()]);
 }
 ?>
-<?php
-add_action('admin_footer', function () {
-    if (MenuUtil::isInPluginPage()) {
-        Modal::showOnce('welcome-premium');
-    }
-}, 20);
-?>
-<?php Modal::render('all-in-one'); ?>

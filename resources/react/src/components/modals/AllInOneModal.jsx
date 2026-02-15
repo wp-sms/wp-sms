@@ -14,9 +14,9 @@ import { useAllInOneModal } from '@/hooks/useAllInOneModal'
 import { useRootZIndex } from '@/hooks/useRootZIndex'
 import { getWpSettings, cn, __ } from '@/lib/utils'
 
-const WP_SMS_SITE = 'https://wp-sms-pro.com'
+const WP_SMS_SITE = 'https://wsms.io'
 const PRICING_URL = `${WP_SMS_SITE}/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-aio`
-const AUTO_SLIDE_INTERVAL = 5000
+const AUTO_SLIDE_INTERVAL = 15000
 
 /**
  * Step definitions matching the legacy modal
@@ -36,7 +36,7 @@ const STEPS = [
     addonName: 'WSMS Pro',
     title: __('Key SMS Tools for Your Site'),
     description: __('WSMS Pro offers phone logins, two-factor authentication, scheduled and repeating messages, shorter Bitly URLs, and a Gutenberg block. It also integrates with WooCommerce, BuddyPress, Quform, Gravity Forms, Easy Digital Downloads, WP Job Manager, and WP Awesome Support.'),
-    learnMoreSlug: 'wp-sms-pro',
+    learnMoreSlug: 'wsms-pro',
   },
   {
     id: 'wp-sms-woocommerce-pro',
@@ -44,7 +44,7 @@ const STEPS = [
     addonName: 'WSMS WooCommerce Pro',
     title: __('Advanced WooCommerce SMS Features'),
     description: __('WooCommerce Pro boosts sales and support with SMS campaigns, abandoned cart reminders, phone verification at checkout, SMS login and registration, and local shipping notifications.'),
-    learnMoreSlug: 'wp-sms-woocommerce-pro',
+    learnMoreSlug: 'woocommerce-pro',
   },
   {
     id: 'wp-sms-two-way',
@@ -52,7 +52,7 @@ const STEPS = [
     addonName: 'WSMS Two-Way',
     title: __('Send and Receive Messages'),
     description: __('Two-Way lets you view incoming texts in your dashboard, set keywords to trigger replies, allow customers to update orders via SMS, and let subscribers join or leave newsletters by texting.'),
-    learnMoreSlug: 'wp-sms-two-way',
+    learnMoreSlug: 'two-way',
   },
   {
     id: 'wp-sms-elementor-form',
@@ -60,7 +60,7 @@ const STEPS = [
     addonName: 'WSMS Elementor Form',
     title: __('Elementor Form SMS Alerts'),
     description: __('Link your Elementor Pro forms to WSMS and send text message alerts to you and your users whenever a form is submitted.'),
-    learnMoreSlug: 'wp-sms-elementor-form',
+    learnMoreSlug: 'elementor',
   },
   {
     id: 'wp-sms-membership-integrations',
@@ -68,7 +68,7 @@ const STEPS = [
     addonName: 'WSMS Membership Integrations',
     title: __('Keep Members Informed'),
     description: __('Send automatic text messages whenever important membership events happen, like new signups, payment confirmations, or membership cancellations, so everyone stays in the loop.'),
-    learnMoreSlug: 'wp-sms-membership-integrations',
+    learnMoreSlug: 'membership',
   },
   {
     id: 'wp-sms-booking-integrations',
@@ -76,7 +76,7 @@ const STEPS = [
     addonName: 'WSMS Booking Integrations',
     title: __('Booking SMS Notifications'),
     description: __('Send SMS messages whenever important booking events happen. Automatically notify users for new, approved, canceled, or rescheduled appointments.'),
-    learnMoreSlug: 'wp-sms-booking-integrations',
+    learnMoreSlug: 'booking',
   },
   {
     id: 'wp-sms-fluent-integrations',
@@ -84,7 +84,7 @@ const STEPS = [
     addonName: 'WSMS Fluent Integrations',
     title: __('Connect with Fluent'),
     description: __('Connect WSMS with Fluent CRM, Fluent Forms, and Fluent Support. Get real-time SMS notifications for new subscribers, form submissions, or support tickets.'),
-    learnMoreSlug: 'wp-sms-fluent-integrations',
+    learnMoreSlug: 'fluent',
   },
 ]
 
@@ -204,7 +204,7 @@ function StepNotice({ addon, step }) {
  */
 function StepActions({ step, addon, isPremium, onClose }) {
   const { adminUrl } = getWpSettings()
-  const addOnsPageUrl = `${adminUrl}admin.php?page=wp-sms-add-ons`
+  const addOnsPageUrl = `${adminUrl}admin.php?page=wp-sms-unified-admin&tab=addons`
 
   // First step actions
   if (step.slug === 'first-step') {
@@ -440,7 +440,7 @@ export default function AllInOneModal() {
                     <>
                       {' '}
                       <a
-                        href={`${WP_SMS_SITE}/product/${step.learnMoreSlug}/?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-aio`}
+                        href={`${WP_SMS_SITE}/addons/${step.learnMoreSlug}/?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-aio`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="wsms-text-primary hover:wsms-underline wsms-font-medium"
