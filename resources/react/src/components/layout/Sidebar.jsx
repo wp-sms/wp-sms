@@ -19,7 +19,7 @@ import { getNavigation } from '@/lib/pageRegistry'
 
 function getLinks() {
   return [
-    { label: __('Documentation'), href: 'https://wsms.io/documentation/' },
+    { label: __('Documentation'), href: 'https://wsms.io/docs/' },
     { label: __('Support'), href: 'https://wordpress.org/support/plugin/wp-sms/' },
   ]
 }
