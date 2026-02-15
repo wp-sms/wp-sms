@@ -813,7 +813,7 @@ export default function Subscribers() {
                   placeholder={__('Phone number')}
                 />
               </div>
-              <div className={cn('wsms-w-full sm:wsms-w-auto sm:wsms-shrink-0', multiGroupEnabled ? 'sm:wsms-w-[160px]' : 'sm:wsms-w-[120px]')}>
+              <div className={cn('wsms-w-full sm:wsms-shrink-0', multiGroupEnabled ? 'sm:wsms-w-[160px]' : 'sm:wsms-w-[120px]')}>
                 {multiGroupEnabled ? (
                   <MultiSelect
                     options={groups.map(g => ({ value: String(g.id), label: g.name }))}
