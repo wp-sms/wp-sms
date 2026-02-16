@@ -18,7 +18,6 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
 import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
 import { AddonUpdateRequired } from '@/components/shared/AddonUpdateRequired'
 import { SettingRow, SelectField } from '@/components/ui/form-field'
@@ -356,61 +355,34 @@ export default function TwoWaySettings() {
             {__('Choose how you want to be notified when new SMS messages arrive')}
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="wsms-divide-y wsms-divide-border wsms-rounded-lg wsms-border wsms-border-border wsms-overflow-hidden">
-            {/* SMS Forwarding */}
-            <div className="wsms-space-y-3 wsms-p-4">
-              <div className="wsms-flex wsms-items-center wsms-justify-between">
-                <div>
-                  <Label htmlFor="sms-forward" className="wsms-text-[13px] wsms-font-medium wsms-cursor-pointer">
-                    {__('Forward to SMS')}
-                  </Label>
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">
-                    {__('Send a copy of incoming messages to your admin mobile number')}
-                  </p>
-                </div>
-                <Switch
-                  id="sms-forward"
-                  checked={smsForwardEnabled === true}
-                  onCheckedChange={(checked) => updateAddonSetting('two-way', 'notif_new_inbox_message', checked)}
-                />
-              </div>
-
-              {/* SMS Template - Conditionally shown */}
-              {smsForwardEnabled && (
-                <div className="wsms-space-y-2 wsms-pt-2">
-                  <Label htmlFor="sms-template" className="wsms-text-[13px] wsms-font-medium">
-                    {__('Message Template')}
-                  </Label>
-                  <TemplateTextarea
-                    id="sms-template"
-                    value={smsForwardTemplate || ''}
-                    onChange={(value) => updateAddonSetting('two-way', 'notif_new_inbox_message_template', value)}
-                    rows={2}
-                    placeholder={__('New SMS from %sender_number%: %sms_content%')}
-                    variables={['%sender_number%', '%sms_content%', '%site_name%', '%user_name%', '%subscriber_name%']}
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Email Forwarding */}
-            <div className="wsms-flex wsms-items-center wsms-justify-between wsms-p-4">
-              <div>
-                <Label htmlFor="email-forward" className="wsms-text-[13px] wsms-font-medium wsms-cursor-pointer">
-                  {__('Forward to Email')}
-                </Label>
-                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">
-                  {__('Send incoming messages to your WordPress admin email')}
-                </p>
-              </div>
-              <Switch
-                id="email-forward"
-                checked={emailForwardEnabled === true}
-                onCheckedChange={(checked) => updateAddonSetting('two-way', 'email_new_inbox_message', checked)}
+        <CardContent className="wsms-space-y-4">
+          <SettingRow
+            title={__('Forward to SMS')}
+            description={__('Send a copy of incoming messages to your admin mobile number')}
+            checked={smsForwardEnabled === true}
+            onCheckedChange={(checked) => updateAddonSetting('two-way', 'notif_new_inbox_message', checked)}
+          />
+          {smsForwardEnabled && (
+            <div className="wsms-space-y-2">
+              <Label htmlFor="sms-template" className="wsms-text-[13px] wsms-font-medium">
+                {__('Message Template')}
+              </Label>
+              <TemplateTextarea
+                id="sms-template"
+                value={smsForwardTemplate || ''}
+                onChange={(value) => updateAddonSetting('two-way', 'notif_new_inbox_message_template', value)}
+                rows={2}
+                placeholder={__('New SMS from %sender_number%: %sms_content%')}
+                variables={['%sender_number%', '%sms_content%', '%site_name%', '%user_name%', '%subscriber_name%']}
               />
             </div>
-          </div>
+          )}
+          <SettingRow
+            title={__('Forward to Email')}
+            description={__('Send incoming messages to your WordPress admin email')}
+            checked={emailForwardEnabled === true}
+            onCheckedChange={(checked) => updateAddonSetting('two-way', 'email_new_inbox_message', checked)}
+          />
         </CardContent>
       </Card>
 
