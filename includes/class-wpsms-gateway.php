@@ -589,7 +589,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     {
         global $sms;
 
-        $link = function_exists('WPSmsTwoWay') ? admin_url('admin.php?page=wp-sms-settings&tab=addon_two_way') : WP_SMS_SITE . '/product/wp-sms-two-way';
+        $link = function_exists('WPSmsTwoWay') ? admin_url('admin.php?page=wp-sms-unified-admin&tab=two-way-settings') : WP_SMS_SITE . '/product/wp-sms-two-way';
 
         if ($sms->supportIncoming === true) {
             return Helper::loadTemplate('admin/label-button.php', array(

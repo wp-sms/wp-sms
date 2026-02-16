@@ -427,7 +427,7 @@ class UnifiedAdminPage extends Singleton
                 $message = preg_replace('/<span[^>]*wpsms-admin-notice__action[^>]*>.*?<\/span>/is', '', $message);
             }
             $message = preg_replace('/<a[^>]*(?:wpsms_dismiss|class=["\'].*?button)[^>]*>.*?<\/a>/is', '', $message);
-            $message = wp_kses_post(trim(strip_tags($message, '<strong><em><br><b><i>')));
+            $message = wp_kses_post(trim(strip_tags($message, '<strong><em><br><b><i><a>')));
 
             // Activation notices become action-type with a "Launch Setup Wizard" button
             if ($isActivation) {

@@ -4632,8 +4632,13 @@ msgstr ""
 msgid "This mobile is already registered, please choose another one."
 msgstr ""
 
-#: src/Notice/NoticeManager.php:83
-msgid "You need to configure the Mobile field option in General settings to send SMS to customers."
+#: src/Notice/NoticeManager.php:86
+msgid "Integrations settings"
+msgstr ""
+
+#. translators: %s: link to Integrations settings page
+#: src/Notice/NoticeManager.php:90
+msgid "You need to configure the Mobile field option in %s to send SMS to customers."
 msgstr ""
 
 #: src/Notice/NoticeManager.php:87
@@ -4652,10 +4657,14 @@ msgid ""
 "        "
 msgstr ""
 
-#. translators: %s: Newsletter link
-#: src/Notice/NoticeManager.php:107
+#: src/Notice/NoticeManager.php:120
+msgid "Subscribe to our newsletter here"
+msgstr ""
+
+#. translators: %s: Newsletter subscription link
+#: src/Notice/NoticeManager.php:123
 #, php-format
-msgid "Stay informed and receive exclusive offers, <a href=\"%s\" target=\"_blank\">Subscribe to our newsletter here</a>!"
+msgid "Stay informed and receive exclusive offers, %s!"
 msgstr ""
 
 #. translators: %s: Phone numbers

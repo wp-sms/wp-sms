@@ -80,7 +80,16 @@ class NoticeManager extends AbstractNotice
         $mobileFieldStatus = Option::getOption('add_mobile_field');
 
         if ($mobileFieldStatus !== 'add_mobile_field_in_wc_billing' && $mobileFieldStatus !== 'use_phone_field_in_wc_billing') {
-            $this->registerNotice('woocommerce_mobile_field', __('You need to configure the Mobile field option in General settings to send SMS to customers.', 'wp-sms'), true, 'admin.php?page=wp-sms-unified-admin&tab=integrations');
+            $integrationsLink = sprintf(
+                '<a href="%s">%s</a>',
+                esc_url(admin_url('admin.php?page=wp-sms-unified-admin&tab=integrations')),
+                __('Integrations settings', 'wp-sms')
+            );
+            $this->registerNotice('woocommerce_mobile_field', sprintf(
+                /* translators: %s: link to Integrations settings page */
+                __('You need to configure the Mobile field option in %s to send SMS to customers.', 'wp-sms'),
+                $integrationsLink
+            ), true, 'admin.php?page=wp-sms-unified-admin&tab=integrations');
         }
 
         if (!$mobileFieldStatus or $mobileFieldStatus == 'disable') {
@@ -95,7 +104,7 @@ class NoticeManager extends AbstractNotice
             <strong>WP SMS notice – PHP upgrade required</strong><br>
             Your site is running PHP %s. upcoming WP SMS 7.1 requires PHP 7.2 or higher.
             Please upgrade your server\'s PHP version before installing the update.
-            <a href="https://wp-sms-pro.com/33155/version-7-1/" target="_blank">More details</a>.
+            <a href="https://wp-sms-pro.com/33155/version-7-1/" target="_blank" rel="noopener noreferrer">More details</a>.
         ', 'wp-sms'),
                 esc_html($current_version)
             );
@@ -103,8 +112,16 @@ class NoticeManager extends AbstractNotice
             $this->registerNotice('php_version_warning', wp_kses_post($message), true);
         }
 
-        // translators: %s: Newsletter link
-        $this->registerNotice('marketing_newsletter', sprintf(__('Stay informed and receive exclusive offers, <a href="%s" target="_blank">Subscribe to our newsletter here</a>!', 'wp-sms'), 'https://dashboard.mailerlite.com/forms/421827/86962232715379904/share'), true, 'admin.php?page=wp-sms-settings');
+        $newsletterLink = sprintf(
+            '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
+            'https://dashboard.mailerlite.com/forms/421827/86962232715379904/share',
+            __('subscribe to our newsletter here', 'wp-sms')
+        );
+        // translators: %s: Newsletter subscription link
+        $this->registerNotice('marketing_newsletter', sprintf(
+            __('Stay informed and receive exclusive offers, %s!', 'wp-sms'),
+            $newsletterLink
+        ), true, 'admin.php?page=wp-sms-unified-admin');
     }
 
     /**

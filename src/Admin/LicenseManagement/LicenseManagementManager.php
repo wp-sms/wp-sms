@@ -47,7 +47,7 @@ class LicenseManagementManager
             (Request::compare('page', 'wp-sms-settings') && Request::compare('tab', 'licenses')) ||
             (Request::compare('page', 'wp-sms-plugins') && Request::compare('tab', 'add-license'))
         ) {
-            wp_redirect(admin_url('admin.php?page=wp-sms-add-ons'));
+            wp_redirect(admin_url('admin.php?page=wp-sms-unified-admin&tab=add-ons'));
             exit;
         }
     }

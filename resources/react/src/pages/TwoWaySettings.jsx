@@ -241,7 +241,7 @@ export default function TwoWaySettings() {
                 )}
                 {!webhookSupported && !currentGateway && (
                   <span className="wsms-text-[11px] wsms-text-muted-foreground">
-                    — {__('Configure a gateway in General settings first')}
+                    — {__('Configure a gateway in Gateway settings first')}
                   </span>
                 )}
               </div>
