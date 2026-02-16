@@ -113,7 +113,7 @@ $footer_color       = $chatbox->getFooterTextColor() ? sprintf('color: %s!import
             <?php if ($chatbox->isFooterLogoEnabled()) : ?>
                 <div class="wpsms-chatbox__copy-right">
                     <?php esc_html_e('Powered By', 'wp-sms') ?>
-                    <a href="https://wp-sms-pro.com/?utm_source=msg-btn&utm_medium=referral" target="_blank" title="<?php esc_html_e('WSMS', 'wp-sms') ?>">WSMS</a>
+                    <a href="https://wsms.io/?utm_source=msg-btn&utm_medium=referral" target="_blank" title="<?php esc_html_e('WSMS', 'wp-sms') ?>">WSMS</a>
                 </div>
             <?php endif; ?>
         </div>
