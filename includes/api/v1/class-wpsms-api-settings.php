@@ -435,6 +435,10 @@ class SettingsApi extends RestApi
                 update_option('wpsms_gateway_credit', $credit);
             }
 
+            // Sync gateway version so the "requires attention" notice is cleared
+            $currentVer = (isset($sms->version) && $sms->version !== '') ? (string) $sms->version : '1.0';
+            Option::updateOption('gateway_version', $currentVer);
+
             return self::response(__('Gateway connection successful', 'wp-sms'), 200, [
                 'credit'      => $credit,
                 'gateway'     => Option::getOption('gateway_name'),

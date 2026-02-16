@@ -43,6 +43,7 @@ export default function ConfigurationStep({
       })
 
       if (result.success) {
+        window.dispatchEvent(new CustomEvent('wpsms:gateway-test-success'))
         onTestSuccess?.(result)
       }
     } catch (error) {

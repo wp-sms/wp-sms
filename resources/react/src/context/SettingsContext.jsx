@@ -285,6 +285,9 @@ export function SettingsProvider({ children }) {
   const testGatewayConnection = useCallback(async () => {
     try {
       const result = await settingsApi.testGateway()
+      if (result.success) {
+        window.dispatchEvent(new CustomEvent('wpsms:gateway-test-success'))
+      }
       return result
     } catch (error) {
       return { success: false, error: error.message }

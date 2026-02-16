@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import { getWpSettings } from '@/lib/utils'
 import { adminNoticesApi } from '@/api/adminNoticesApi'
 
@@ -11,6 +11,15 @@ export function useAdminNotices() {
     const { adminNotices } = getWpSettings()
     return Array.isArray(adminNotices) ? adminNotices : []
   })
+
+  // Auto-dismiss gateway attention notices when gateway test succeeds
+  useEffect(() => {
+    const handler = () => {
+      setNotices((prev) => prev.filter((n) => !n.id.startsWith('gateway_attention_')))
+    }
+    window.addEventListener('wpsms:gateway-test-success', handler)
+    return () => window.removeEventListener('wpsms:gateway-test-success', handler)
+  }, [])
 
   const hasNotices = notices.length > 0
 
