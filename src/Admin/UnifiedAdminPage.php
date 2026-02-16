@@ -484,8 +484,8 @@ class UnifiedAdminPage extends Singleton
                 'id'           => 'share_anonymous_data',
                 'type'         => 'action',
                 'variant'      => 'info',
-                'message'      => __('We\'ve added a new Usage Tracking option to help us understand how WP SMS is used and identify areas for improvement. By enabling this feature, you\'ll help us make the plugin better for everyone. No personal or sensitive data is collected.', 'wp-sms'),
-                'title'        => __('Help Us Improve WP SMS!', 'wp-sms'),
+                'message'      => __('Help us improve by sharing anonymous usage data. No personal or sensitive information is collected.', 'wp-sms'),
+                'title'        => __('Help Us Improve WSMS!', 'wp-sms'),
                 'dismissible'  => true,
                 'dismissStore' => 'handler',
                 'link'         => null,
@@ -499,7 +499,7 @@ class UnifiedAdminPage extends Singleton
                     ],
                     [
                         'label' => __('Learn More', 'wp-sms'),
-                        'url'   => 'https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=doc',
+                        'url'   => 'https://wsms.io/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=doc',
                     ],
                 ],
             ];

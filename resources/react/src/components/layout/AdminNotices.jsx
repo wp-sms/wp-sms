@@ -96,7 +96,7 @@ function NoticeItem({ notice, onDismiss, onAction, onRemove, onInlineLink, onNav
                   href={action.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-font-medium wsms-text-primary hover:wsms-underline"
+                  className="wsms-inline-flex wsms-items-center wsms-gap-1 wsms-text-[12px] wsms-font-medium wsms-text-blue-600 dark:wsms-text-blue-400 hover:wsms-underline"
                 >
                   {action.label}
                   <ExternalLink className="wsms-h-3 wsms-w-3 wsms-opacity-60" />
