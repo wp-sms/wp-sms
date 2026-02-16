@@ -239,11 +239,12 @@ export default function SetupWizard() {
       } catch (error) {
         console.error('Failed to mark wizard complete:', error)
       }
-      // Refresh the page to reload settings from server
-      // This prevents "unsaved changes" warning since settings are already saved via API
-      const baseUrl = window.location.href.split('#')[0]
+      // Navigate to the target page (or just reload) to pick up fresh settings
+      const url = new URL(window.location.href)
+      url.searchParams.delete('wizard')
       if (navigateToPage) {
-        window.location.href = `${baseUrl}#/${navigateToPage}`
+        url.searchParams.set('tab', navigateToPage)
+        window.location.href = url.toString()
       } else {
         window.location.reload()
       }
