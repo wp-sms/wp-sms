@@ -80,16 +80,16 @@ class NoticeManager extends AbstractNotice
         $mobileFieldStatus = Option::getOption('add_mobile_field');
 
         if ($mobileFieldStatus !== 'add_mobile_field_in_wc_billing' && $mobileFieldStatus !== 'use_phone_field_in_wc_billing') {
-            $integrationsLink = sprintf(
+            $phoneLink = sprintf(
                 '<a href="%s">%s</a>',
-                esc_url(admin_url('admin.php?page=wp-sms-unified-admin&tab=integrations')),
-                __('Integrations settings', 'wp-sms')
+                esc_url(admin_url('admin.php?page=wp-sms-unified-admin&tab=phone')),
+                __('Phone settings', 'wp-sms')
             );
             $this->registerNotice('woocommerce_mobile_field', sprintf(
-                /* translators: %s: link to Integrations settings page */
+                /* translators: %s: link to Phone settings page */
                 __('You need to configure the Mobile field option in %s to send SMS to customers.', 'wp-sms'),
-                $integrationsLink
-            ), true, 'admin.php?page=wp-sms-unified-admin&tab=integrations');
+                $phoneLink
+            ), true, 'admin.php?page=wp-sms-unified-admin&tab=phone');
         }
 
         if (!$mobileFieldStatus or $mobileFieldStatus == 'disable') {

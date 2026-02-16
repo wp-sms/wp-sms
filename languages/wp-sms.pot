@@ -4633,10 +4633,10 @@ msgid "This mobile is already registered, please choose another one."
 msgstr ""
 
 #: src/Notice/NoticeManager.php:86
-msgid "Integrations settings"
+msgid "Phone settings"
 msgstr ""
 
-#. translators: %s: link to Integrations settings page
+#. translators: %s: link to Phone settings page
 #: src/Notice/NoticeManager.php:90
 msgid "You need to configure the Mobile field option in %s to send SMS to customers."
 msgstr ""
