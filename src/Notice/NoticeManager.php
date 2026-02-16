@@ -93,7 +93,16 @@ class NoticeManager extends AbstractNotice
         }
 
         if (!$mobileFieldStatus or $mobileFieldStatus == 'disable') {
-            $this->registerNotice('login_mobile_field', __('You need to configure the Mobile field option to use login with SMS functionality.', 'wp-sms'), true, 'admin.php?page=wp-sms-unified-admin&tab=phone');
+            $phoneLink = sprintf(
+                '<a href="%s">%s</a>',
+                esc_url(admin_url('admin.php?page=wp-sms-unified-admin&tab=phone')),
+                __('Phone settings', 'wp-sms')
+            );
+            $this->registerNotice('login_mobile_field', sprintf(
+                /* translators: %s: link to Phone settings page */
+                __('You need to configure the Mobile field option in %s to use login with SMS functionality.', 'wp-sms'),
+                $phoneLink
+            ), true, 'admin.php?page=wp-sms-unified-admin&tab=phone');
         }
 
         if (version_compare(PHP_VERSION, '7.2', '<')) {
