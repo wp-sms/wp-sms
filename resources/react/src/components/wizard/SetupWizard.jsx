@@ -161,15 +161,18 @@ export default function SetupWizard() {
 
       // After saving gateway_name, fetch fresh capabilities for the new gateway
       if (steps[currentStep].id === 'sms-gateway') {
+        const gatewayChanged = selectedGateway !== settings.gateway_name
         try {
           const caps = await settingsApi.getGatewayCapabilities()
           setGatewayCapabilities(caps)
         } catch (err) {
           console.error('Failed to fetch gateway capabilities:', err)
         }
-        // Reset credentials and test state — old values are meaningless for the new gateway
-        setCredentials({})
-        setConnectionTested(false)
+        // Reset credentials and test state only when gateway actually changed
+        if (gatewayChanged) {
+          setCredentials({})
+          setConnectionTested(false)
+        }
       }
 
       return true
