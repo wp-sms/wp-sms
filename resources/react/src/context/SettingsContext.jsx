@@ -52,6 +52,7 @@ const ACTIONS = {
   SAVE_SUCCESS: 'SAVE_SUCCESS',
   RESET_CHANGES: 'RESET_CHANGES',
   SET_PAGE: 'SET_PAGE',
+  SYNC_EXTERNAL_SETTING: 'SYNC_EXTERNAL_SETTING',
 }
 
 // Reducer
@@ -155,6 +156,13 @@ function settingsReducer(state, action) {
     case ACTIONS.SET_PAGE:
       return { ...state, currentPage: action.payload }
 
+    case ACTIONS.SYNC_EXTERNAL_SETTING:
+      return {
+        ...state,
+        settings: { ...state.settings, [action.payload.key]: action.payload.value },
+        originalSettings: { ...state.originalSettings, [action.payload.key]: action.payload.value },
+      }
+
     default:
       return state
   }
@@ -183,9 +191,15 @@ export function SettingsProvider({ children }) {
     })
   }, [])
 
-  // Update a single setting
+  // Update a single setting (marks as changed — user must save)
   const updateSetting = useCallback((key, value) => {
     dispatch({ type: ACTIONS.UPDATE_SETTING, payload: { key, value } })
+  }, [])
+
+  // Sync a setting that was already saved externally (e.g. via notice action API).
+  // Updates both settings and originalSettings so hasChanges is not affected.
+  const syncExternalSetting = useCallback((key, value) => {
+    dispatch({ type: ACTIONS.SYNC_EXTERNAL_SETTING, payload: { key, value } })
   }, [])
 
   // Update a single pro setting
@@ -282,6 +296,7 @@ export function SettingsProvider({ children }) {
     () => ({
       ...state,
       updateSetting,
+      syncExternalSetting,
       updateProSetting,
       updateAddonSetting,
       updateSettingsBatch,
@@ -297,6 +312,7 @@ export function SettingsProvider({ children }) {
     [
       state,
       updateSetting,
+      syncExternalSetting,
       updateProSetting,
       updateAddonSetting,
       updateSettingsBatch,

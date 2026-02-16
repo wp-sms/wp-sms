@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useState, useMemo } from 'react'
-import { AlertTriangle, Info, X, ExternalLink } from 'lucide-react'
+import { AlertTriangle, Info, X, ExternalLink, Check, Loader2 } from 'lucide-react'
 import { useAdminNotices } from '@/hooks/useAdminNotices'
 import { useSettings } from '@/context/SettingsContext'
 import { cn, __ } from '@/lib/utils'
@@ -25,14 +25,39 @@ const variants = {
   },
 }
 
-function NoticeItem({ notice, onDismiss, onAction, onInlineLink, onNavigate }) {
+function NoticeItem({ notice, onDismiss, onAction, onRemove, onInlineLink, onNavigate }) {
   const [isExiting, setIsExiting] = useState(false)
+  const [actionState, setActionState] = useState('idle') // idle | loading | success | error
   const v = variants[notice.variant] || variants.warning
   const Icon = v.IconComponent
 
-  const handleDismiss = () => {
+  const exitAndRemove = () => {
     setIsExiting(true)
-    setTimeout(() => onDismiss(notice.id, notice.dismissStore), 200)
+    setTimeout(() => onRemove(notice.id), 300)
+  }
+
+  const handleDismiss = () => {
+    onDismiss(notice.id, notice.dismissStore)
+    exitAndRemove()
+  }
+
+  const handleActionClick = async (action) => {
+    if (actionState === 'loading') return
+    setActionState('loading')
+    try {
+      const success = await onAction(notice.id, action)
+      if (success) {
+        setActionState('success')
+        // Auto-dismiss after 5 seconds
+        setTimeout(exitAndRemove, 5000)
+      } else {
+        setActionState('error')
+        setTimeout(() => setActionState('idle'), 2000)
+      }
+    } catch {
+      setActionState('error')
+      setTimeout(() => setActionState('idle'), 2000)
+    }
   }
 
   return (
@@ -40,7 +65,7 @@ function NoticeItem({ notice, onDismiss, onAction, onInlineLink, onNavigate }) {
       className={cn(
         'wsms-flex wsms-items-start wsms-gap-3 wsms-p-3 wsms-rounded-lg',
         'wsms-border wsms-border-s-[3px]',
-        'wsms-transition-all wsms-duration-200',
+        'wsms-transition-all wsms-duration-300',
         v.container,
         isExiting && 'wsms-opacity-0 wsms-scale-[0.98]'
       )}
@@ -89,10 +114,30 @@ function NoticeItem({ notice, onDismiss, onAction, onInlineLink, onNavigate }) {
                 <button
                   key={i}
                   type="button"
-                  onClick={() => onAction(notice.id, action)}
-                  className="wsms-inline-flex wsms-items-center wsms-px-2.5 wsms-py-1 wsms-text-[11px] wsms-font-medium wsms-rounded-md wsms-border wsms-border-border wsms-bg-card wsms-text-foreground hover:wsms-border-blue-400 hover:wsms-text-blue-600 dark:hover:wsms-text-blue-400 wsms-transition-colors"
+                  disabled={actionState === 'loading' || actionState === 'success'}
+                  onClick={() => handleActionClick(action)}
+                  className={cn(
+                    'wsms-inline-flex wsms-items-center wsms-gap-1.5 wsms-px-2.5 wsms-py-1 wsms-text-[11px] wsms-font-medium wsms-rounded-md wsms-border wsms-transition-all wsms-duration-300',
+                    actionState === 'success'
+                      ? 'wsms-border-emerald-400 wsms-bg-emerald-500 wsms-text-white dark:wsms-border-emerald-500 dark:wsms-bg-emerald-600'
+                      : actionState === 'loading'
+                        ? 'wsms-border-border wsms-bg-muted wsms-text-muted-foreground wsms-cursor-wait'
+                        : actionState === 'error'
+                          ? 'wsms-border-red-300 wsms-bg-red-50 wsms-text-red-600 dark:wsms-border-red-700 dark:wsms-bg-red-950/30 dark:wsms-text-red-400'
+                          : 'wsms-border-border wsms-bg-card wsms-text-foreground hover:wsms-border-blue-400 hover:wsms-text-blue-600 dark:hover:wsms-text-blue-400'
+                  )}
                 >
-                  {action.label}
+                  {actionState === 'loading' && (
+                    <Loader2 className="wsms-h-3 wsms-w-3 wsms-animate-spin" />
+                  )}
+                  {actionState === 'success' && (
+                    <Check className="wsms-h-3 wsms-w-3" />
+                  )}
+                  {actionState === 'error'
+                    ? __('Failed, try again')
+                    : actionState === 'success'
+                      ? __('Enabled')
+                      : action.label}
                 </button>
               )
             )}
@@ -115,8 +160,20 @@ function NoticeItem({ notice, onDismiss, onAction, onInlineLink, onNavigate }) {
 }
 
 const AdminNotices = memo(function AdminNotices() {
-  const { notices, dismissNotice, executeAction, hasNotices } = useAdminNotices()
-  const { currentPage, setCurrentPage } = useSettings()
+  const { notices, dismissNotice, executeAction, removeNotice, hasNotices } = useAdminNotices()
+  const { currentPage, setCurrentPage, syncExternalSetting } = useSettings()
+
+  // Wrap executeAction to sync settings context and return success status
+  const handleAction = useCallback(
+    async (id, action) => {
+      const success = await executeAction(id, action)
+      if (success && action.action_type === 'update_option' && action.option) {
+        syncExternalSetting(action.option, action.value)
+      }
+      return success
+    },
+    [executeAction, syncExternalSetting]
+  )
 
   // Filter notices by current tab — matches legacy page-conditional behavior
   const visibleNotices = useMemo(
@@ -160,7 +217,8 @@ const AdminNotices = memo(function AdminNotices() {
           key={notice.id}
           notice={notice}
           onDismiss={dismissNotice}
-          onAction={executeAction}
+          onAction={handleAction}
+          onRemove={removeNotice}
           onInlineLink={handleInlineLink}
           onNavigate={handleNavigate}
         />

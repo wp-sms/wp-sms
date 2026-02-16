@@ -23,19 +23,23 @@ export function useAdminNotices() {
     }
   }, [])
 
+  const removeNotice = useCallback((id) => {
+    setNotices((prev) => prev.filter((n) => n.id !== id))
+  }, [])
+
   const executeAction = useCallback(async (id, action) => {
     try {
       await adminNoticesApi.executeAction(id, action)
-      // Remove notice after successful action
-      setNotices((prev) => prev.filter((n) => n.id !== id))
+      return true
     } catch (err) {
       console.error('Failed to execute admin notice action:', err)
+      return false
     }
   }, [])
 
   return useMemo(
-    () => ({ notices, dismissNotice, executeAction, hasNotices }),
-    [notices, dismissNotice, executeAction, hasNotices]
+    () => ({ notices, dismissNotice, executeAction, removeNotice, hasNotices }),
+    [notices, dismissNotice, executeAction, removeNotice, hasNotices]
   )
 }
 

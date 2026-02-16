@@ -26,7 +26,7 @@ if (
                 'url'        => '#',
                 'attributes' => [
                     'data-option' => 'share_anonymous_data',
-                    'data-value'  => 'true',
+                    'data-value'  => '1',
                 ],
                 'class'      => 'wpsms-option__updater notice--enable-usage',
             ]

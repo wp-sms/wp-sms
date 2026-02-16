@@ -495,7 +495,7 @@ class UnifiedAdminPage extends Singleton
                         'label'       => __('Enable Share Anonymous Data', 'wp-sms'),
                         'action_type' => 'update_option',
                         'option'      => 'share_anonymous_data',
-                        'value'       => 'true',
+                        'value'       => '1',
                     ],
                     [
                         'label' => __('Learn More', 'wp-sms'),
