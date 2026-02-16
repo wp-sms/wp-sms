@@ -21,14 +21,7 @@ import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { TemplateTextarea } from '@/components/shared/TemplateTextarea'
 import { AddonUpdateRequired } from '@/components/shared/AddonUpdateRequired'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import { SwitchField } from '@/components/ui/form-field'
+import { SettingRow, SelectField } from '@/components/ui/form-field'
 import { Tip } from '@/components/ui/ux-helpers'
 import { useSettings } from '@/context/SettingsContext'
 import { getWpSettings, buildRestUrl, __, cn, isAddonDashboardReady } from '@/lib/utils'
@@ -432,46 +425,29 @@ export default function TwoWaySettings() {
             {__('Control how incoming messages are stored in your database')}
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <div className="wsms-divide-y wsms-divide-border wsms-rounded-lg wsms-border wsms-border-border wsms-overflow-hidden">
-            {/* Store Messages Toggle */}
-            <SwitchField
-              label={__('Save Messages to Inbox')}
-              description={__('Store incoming SMS messages for viewing and replying later')}
-              checked={storeMessages === true}
-              onCheckedChange={(checked) => updateAddonSetting('two-way', 'store_inbox_messages', checked)}
-              className="wsms-px-4"
+        <CardContent className="wsms-space-y-4">
+          <SettingRow
+            title={__('Save Messages to Inbox')}
+            description={__('Store incoming SMS messages for viewing and replying later')}
+            checked={storeMessages === true}
+            onCheckedChange={(checked) => updateAddonSetting('two-way', 'store_inbox_messages', checked)}
+          />
+          {storeMessages && (
+            <SelectField
+              label={__('Auto-Delete After')}
+              value={String(retentionDays)}
+              onValueChange={(value) => updateAddonSetting('two-way', 'inbox_retention_days', value)}
+              placeholder={__('Select period')}
+              description={__('Automatically remove old messages to save database space')}
+              options={[
+                { value: '30', label: __('30 days') },
+                { value: '90', label: __('90 days') },
+                { value: '180', label: __('180 days') },
+                { value: '365', label: __('1 year') },
+                { value: '0', label: __('Keep forever') },
+              ]}
             />
-
-            {/* Retention Period */}
-            {storeMessages && (
-              <div className="wsms-flex wsms-items-center wsms-justify-between wsms-p-4">
-                <div>
-                  <Label htmlFor="retention" className="wsms-text-[13px] wsms-font-medium">
-                    {__('Auto-Delete After')}
-                  </Label>
-                  <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">
-                    {__('Automatically remove old messages to save database space')}
-                  </p>
-                </div>
-                <Select
-                  value={String(retentionDays)}
-                  onValueChange={(value) => updateAddonSetting('two-way', 'inbox_retention_days', value)}
-                >
-                  <SelectTrigger id="retention" className="wsms-w-[140px]">
-                    <SelectValue placeholder={__('Select period')} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="30">{__('30 days')}</SelectItem>
-                    <SelectItem value="90">{__('90 days')}</SelectItem>
-                    <SelectItem value="180">{__('180 days')}</SelectItem>
-                    <SelectItem value="365">{__('1 year')}</SelectItem>
-                    <SelectItem value="0">{__('Keep forever')}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-          </div>
+          )}
         </CardContent>
       </Card>
     </div>
