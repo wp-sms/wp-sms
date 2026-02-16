@@ -1307,10 +1307,10 @@ export default function Scheduled() {
                 <CalendarClock className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
               </div>
               <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
-                {__('WP SMS Pro Required')}
+                {__('WSMS Pro Required')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-                {__('Schedule SMS messages for later delivery or create recurring messages with WP SMS Pro. Perfect for reminders, notifications, and automated campaigns.')}
+                {__('Schedule SMS messages for later delivery or create recurring messages with WSMS Pro. Perfect for reminders, notifications, and automated campaigns.')}
               </p>
               <Button variant="outline" asChild>
                 <a href="https://wsms.io/buy/" target="_blank" rel="noopener noreferrer">

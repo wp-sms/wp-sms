@@ -6,15 +6,15 @@ import { getWpSettings, __ } from '@/lib/utils'
 
 const ADDON_INFO = {
   pro: {
-    name: 'WP SMS Pro',
+    name: 'WSMS Pro',
     pluginFile: 'wp-sms-pro',
   },
   woocommerce: {
-    name: 'WP SMS WooCommerce Pro',
+    name: 'WSMS WooCommerce Pro',
     pluginFile: 'wp-sms-woocommerce-pro',
   },
   'two-way': {
-    name: 'WP SMS Two-Way',
+    name: 'WSMS Two-Way',
     pluginFile: 'wp-sms-two-way',
   },
 }

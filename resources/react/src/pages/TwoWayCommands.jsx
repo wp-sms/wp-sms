@@ -337,7 +337,7 @@ export default function TwoWayCommands() {
                 {__('Two-Way SMS Add-on Required')}
               </h3>
               <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
-                {__('Install and activate the WP SMS Two-Way add-on to create auto-reply commands.')}
+                {__('Install and activate the WSMS Two-Way add-on to create auto-reply commands.')}
               </p>
               <Button variant="outline" asChild>
                 <a href="https://wsms.io/product/wp-sms-two-way/" target="_blank" rel="noopener noreferrer">

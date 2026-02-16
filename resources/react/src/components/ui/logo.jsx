@@ -2,7 +2,7 @@ import React from 'react'
 import { cn } from '@/lib/utils'
 
 /**
- * WP SMS Logo component
+ * WSMS Logo component
  */
 export function Logo({ className, ...props }) {
   return (
