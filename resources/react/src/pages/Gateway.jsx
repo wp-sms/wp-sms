@@ -14,7 +14,7 @@ import { GatewayCard, GatewayCardMinimal, PremiumSearchResults, MoreGatewaysNoti
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 
 export default function Gateway() {
-  const { testGatewayConnection, getSetting, updateSetting, hasChanges, isSaving } = useSettings()
+  const { testGatewayConnection, getSetting, updateSetting, hasChanges, isSaving, saveSettings } = useSettings()
   const { toast } = useToast()
   const { countriesByDialCode = {}, gateway: gatewayCapabilities = {} } = getWpSettings()
   const { gateways, regions, source, premiumCount, premiumGateways, isLoading: registryLoading } = useGatewayRegistry()
@@ -206,6 +206,14 @@ export default function Gateway() {
   const handleTestConnection = async () => {
     setTesting(true)
     try {
+      // Save settings first so the DB has the credentials the test endpoint will read
+      if (hasChanges) {
+        const saveResult = await saveSettings()
+        if (!saveResult.success) {
+          setTesting(false)
+          return
+        }
+      }
       const result = await testGatewayConnection()
       setConnectionTested(true)
       setConnectionSuccess(result.success)
