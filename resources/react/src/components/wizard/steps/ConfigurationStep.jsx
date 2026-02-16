@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { InputField, SelectField } from '@/components/ui/form-field'
 import { Tip } from '@/components/ui/ux-helpers'
 import { settingsApi } from '@/api/settingsApi'
-import { getWpSettings, __, getGatewayDisplayName as getGatewayName } from '@/lib/utils'
+import { __, getGatewayDisplayName as getGatewayName } from '@/lib/utils'
 import useGatewayRegistry from '@/hooks/useGatewayRegistry'
 
 /**
@@ -13,11 +13,11 @@ import useGatewayRegistry from '@/hooks/useGatewayRegistry'
  */
 export default function ConfigurationStep({
   gatewayName,
+  gatewayCapabilities = {},
   credentials,
   onCredentialChange,
   onTestSuccess,
 }) {
-  const { gateway: gatewayCapabilities = {} } = getWpSettings()
   const { gateways } = useGatewayRegistry()
   const gatewayFields = gatewayCapabilities.gatewayFields || {}
   const gatewayHelp = gatewayCapabilities.help || ''

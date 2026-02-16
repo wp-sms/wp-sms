@@ -55,6 +55,15 @@ export const settingsApi = {
   },
 
   /**
+   * Get gateway capabilities (fields, help, docs) for the currently configured gateway
+   * @returns {Promise<object>} Gateway capabilities
+   */
+  async getGatewayCapabilities() {
+    const response = await apiClient.get('settings/gateway-capabilities', {}, { timeout: SETTINGS_TIMEOUT })
+    return response.data
+  },
+
+  /**
    * Test gateway connection
    * @returns {Promise<object>} Gateway test result
    */

@@ -86,6 +86,16 @@ class SettingsApi extends RestApi
             ],
         ]);
 
+        // Gateway capabilities (fields, help, docs for currently configured gateway)
+        // Must be registered before the wildcard section route
+        register_rest_route($this->namespace . '/v1', '/settings/gateway-capabilities', [
+            [
+                'methods'             => WP_REST_Server::READABLE,
+                'callback'            => [$this, 'getGatewayCapabilities'],
+                'permission_callback' => [$this, 'checkPermission'],
+            ],
+        ]);
+
         // Get specific settings section
         register_rest_route($this->namespace . '/v1', '/settings/(?P<section>[a-zA-Z0-9_-]+)', [
             [
@@ -886,6 +896,74 @@ class SettingsApi extends RestApi
         $data = \WP_SMS\Services\Gateway\GatewayRegistry::getGateways();
 
         return self::response(__('Gateway registry retrieved successfully', 'wp-sms'), 200, $data);
+    }
+
+    /**
+     * Get gateway capabilities for the currently configured gateway
+     *
+     * Returns gateway fields, help text, document URL, and other capabilities
+     * so the frontend can dynamically render configuration forms.
+     *
+     * @param WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function getGatewayCapabilities(WP_REST_Request $request)
+    {
+        try {
+            $sms = \WP_SMS\Gateway::initial();
+
+            if (!$sms || !is_object($sms)) {
+                return self::response(__('Gateway capabilities retrieved', 'wp-sms'), 200, [
+                    'flash'           => '',
+                    'supportMedia'    => false,
+                    'supportIncoming' => false,
+                    'bulk_send'       => false,
+                    'validateNumber'  => '',
+                    'from'            => '',
+                    'gatewayFields'   => new \stdClass(),
+                    'help'            => '',
+                    'documentUrl'     => '',
+                ]);
+            }
+
+            // Build gateway fields array
+            $gatewayFields = [];
+            if (!empty($sms->gatewayFields) && is_array($sms->gatewayFields)) {
+                foreach ($sms->gatewayFields as $key => $field) {
+                    if (!is_array($field)) {
+                        continue;
+                    }
+                    $gatewayFields[$key] = [
+                        'id'          => $field['id'] ?? '',
+                        'name'        => $field['name'] ?? '',
+                        'desc'        => $field['desc'] ?? '',
+                        'placeholder' => $field['place_holder'] ?? '',
+                        'type'        => $field['type'] ?? 'text',
+                        'options'     => $field['options'] ?? [],
+                    ];
+                }
+            }
+
+            // Sanitize help text
+            $help = '';
+            if (!empty($sms->help) && $sms->help !== false) {
+                $help = wp_kses_post($sms->help);
+            }
+
+            return self::response(__('Gateway capabilities retrieved', 'wp-sms'), 200, [
+                'flash'           => $sms->flash ?? '',
+                'supportMedia'    => $sms->supportMedia ?? false,
+                'supportIncoming' => $sms->supportIncoming ?? false,
+                'bulk_send'       => $sms->bulk_send ?? false,
+                'validateNumber'  => $sms->validateNumber ?? '',
+                'from'            => $sms->from ?? '',
+                'gatewayFields'   => !empty($gatewayFields) ? $gatewayFields : new \stdClass(),
+                'help'            => $help,
+                'documentUrl'     => is_string($sms->documentUrl ?? '') ? ($sms->documentUrl ?? '') : '',
+            ]);
+        } catch (\Exception $e) {
+            return self::response($e->getMessage(), 500);
+        }
     }
 
     /**

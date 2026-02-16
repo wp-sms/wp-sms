@@ -67,7 +67,8 @@ export default function SetupWizard() {
   const { updateSetting, setCurrentPage } = useSettings()
 
   // Get existing settings for pre-population
-  const { settings = {}, gateway: gatewayCapabilities = {}, addons = {} } = getWpSettings()
+  const { settings = {}, gateway: initialGatewayCapabilities = {}, addons = {} } = getWpSettings()
+  const [gatewayCapabilities, setGatewayCapabilities] = useState(initialGatewayCapabilities)
   const gatewayFields = gatewayCapabilities.gatewayFields || {}
 
   // Initialize with correct value to avoid flash
@@ -156,6 +157,19 @@ export default function SetupWizard() {
         Object.entries(settingsToSave).forEach(([key, value]) => {
           updateSetting(key, value)
         })
+      }
+
+      // After saving gateway_name, fetch fresh capabilities for the new gateway
+      if (steps[currentStep].id === 'sms-gateway') {
+        try {
+          const caps = await settingsApi.getGatewayCapabilities()
+          setGatewayCapabilities(caps)
+        } catch (err) {
+          console.error('Failed to fetch gateway capabilities:', err)
+        }
+        // Reset credentials and test state — old values are meaningless for the new gateway
+        setCredentials({})
+        setConnectionTested(false)
       }
 
       return true
@@ -266,6 +280,7 @@ export default function SetupWizard() {
         return (
           <ConfigurationStep
             gatewayName={selectedGateway}
+            gatewayCapabilities={gatewayCapabilities}
             credentials={credentials}
             onCredentialChange={setCredentials}
             onTestSuccess={() => setConnectionTested(true)}
