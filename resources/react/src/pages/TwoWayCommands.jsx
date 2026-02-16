@@ -365,7 +365,7 @@ export default function TwoWayCommands() {
     <>
       {/* Create/Edit Dialog */}
       <Dialog open={commandDialog.isOpen} onOpenChange={(open) => !open && commandDialog.close()}>
-        <DialogContent className="sm:wsms-max-w-[500px]">
+        <DialogContent size="lg">
           <DialogHeader>
             <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
               <Terminal className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
@@ -380,7 +380,7 @@ export default function TwoWayCommands() {
           {isEditLoading ? (
             <DialogLoadingSpinner />
           ) : (
-          <DialogBody overflow="visible">
+          <DialogBody className="wsms-scrollbar-thin">
             <div className="wsms-space-y-4">
               <div className="wsms-space-y-2">
                 <label className="wsms-text-[12px] wsms-font-medium">{__('Command Name')}</label>
