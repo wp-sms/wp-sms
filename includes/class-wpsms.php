@@ -6,6 +6,8 @@ use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\OnBoarding\StepFactory;
 use WP_SMS\Admin\OnBoarding\WizardManager;
 use WP_SMS\Admin\UnifiedAdminPage;
+use WP_SMS\Components\Assets;
+use WP_SMS\Service\Assets\AssetsFactory;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
 use WP_SMS\Blocks\BlockAssetsManager;
@@ -176,6 +178,9 @@ class WP_SMS
         // Autoloader
         require_once WP_SMS_DIR . "vendor/autoload.php";
 
+        // Initialize asset system
+        Assets::init();
+
         // Third-party libraries
         $this->include('includes/libraries/wp-background-processing/wp-async-request.php');
         $this->include('includes/libraries/wp-background-processing/wp-background-process.php');
@@ -217,6 +222,10 @@ class WP_SMS
             $this->include('includes/admin/class-wpsms-admin.php');
             $this->include('includes/admin/class-wpsms-admin-helper.php');
 
+            // Initialize admin asset handlers
+            AssetsFactory::admin();
+            AssetsFactory::dashboard();
+
             WidgetsManager::init();
             NoticeManager::getInstance();
             $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
@@ -240,6 +249,9 @@ class WP_SMS
         }
 
         if (!is_admin()) {
+            // Frontend asset handler
+            AssetsFactory::frontend();
+
             // Front Class.
             $this->include('includes/class-front.php');
         }

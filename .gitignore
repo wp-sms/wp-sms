@@ -36,7 +36,12 @@ nbproject
 
 # Build Folder
 /build
-/assets/dist/dashboard/
+/public/dashboard/
+/public/blocks/
+/public/js/admin.min.js
+/public/js/frontend.min.js
+/public/js/licenseManager.min.js
+/public/js/onboarding.min.js
 bundle-analysis.html
 
 #vscode

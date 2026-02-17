@@ -62,7 +62,7 @@ class UnifiedAdminPage extends Singleton
         $this->db = $wpdb;
         $this->tb_prefix = $wpdb->prefix;
 
-        add_action('admin_enqueue_scripts', [$this, 'enqueueAssets']);
+        // Asset enqueueing is handled by DashboardHandler via AssetsFactory.
     }
 
     /**
@@ -150,147 +150,12 @@ class UnifiedAdminPage extends Singleton
     }
 
     /**
-     * Enqueue assets for the admin page
-     *
-     * @param string $hook
-     */
-    public function enqueueAssets($hook)
-    {
-        if (strpos($hook, 'page_wsms') === false) {
-            return;
-        }
-
-        $distPath = WP_SMS_DIR . 'assets/dist/dashboard/';
-        $distUrl = WP_SMS_URL . 'assets/dist/dashboard/';
-
-        // Check for Vite manifest
-        $manifestPath = $distPath . '.vite/manifest.json';
-
-        // Use dev server if WPSMS_VITE_DEV_SERVER constant is defined with URL
-        // e.g. define('WPSMS_VITE_DEV_SERVER', 'http://localhost:5177') in wp-config.php
-        $viteDevServer = defined('WPSMS_VITE_DEV_SERVER') ? WPSMS_VITE_DEV_SERVER : false;
-
-        if ($viteDevServer) {
-            $this->enqueueDevelopmentAssets($viteDevServer);
-        } elseif (file_exists($manifestPath)) {
-            $this->enqueueProductionAssets($manifestPath, $distUrl);
-        } else {
-            // No dev server and no manifest — nothing to load
-            return;
-        }
-
-        // RTL overrides for the React dashboard.
-        // Keep this separate from the Vite build output so we can patch RTL issues quickly.
-        if (is_rtl()) {
-            $rtlPath = WP_SMS_DIR . 'assets/css/rtl.css';
-            if (file_exists($rtlPath)) {
-                $deps = wp_style_is('wpsms-unified-admin', 'registered') || wp_style_is('wpsms-unified-admin', 'enqueued')
-                    ? ['wpsms-unified-admin']
-                    : [];
-                wp_enqueue_style(
-                    'wpsms-unified-admin-rtl',
-                    WP_SMS_URL . 'assets/css/rtl.css',
-                    $deps,
-                    WP_SMS_VERSION . '.' . filemtime($rtlPath)
-                );
-            }
-        }
-
-        // Localize script data
-        wp_localize_script('wpsms-unified-admin', 'wpSmsSettings', $this->getLocalizedData());
-    }
-
-    /**
-     * Enqueue production assets from Vite build
-     *
-     * @param string $manifestPath
-     * @param string $distUrl
-     */
-    private function enqueueProductionAssets($manifestPath, $distUrl)
-    {
-        $manifest = json_decode(file_get_contents($manifestPath), true);
-
-        // Find the main entry file
-        $mainEntry = null;
-        foreach ($manifest as $key => $entry) {
-            if (isset($entry['isEntry']) && $entry['isEntry']) {
-                $mainEntry = $entry;
-                break;
-            }
-        }
-
-        if (!$mainEntry) {
-            return;
-        }
-
-        // Enqueue CSS
-        if (isset($mainEntry['css'])) {
-            foreach ($mainEntry['css'] as $index => $cssFile) {
-                wp_enqueue_style(
-                    'wpsms-unified-admin' . ($index > 0 ? '-' . $index : ''),
-                    $distUrl . $cssFile,
-                    [],
-                    WP_SMS_VERSION
-                );
-            }
-        }
-
-        // Enqueue JS
-        wp_enqueue_script(
-            'wpsms-unified-admin',
-            $distUrl . $mainEntry['file'],
-            [],
-            WP_SMS_VERSION . '.' . filemtime(WP_SMS_DIR . 'assets/dist/dashboard/' . $mainEntry['file']),
-            true
-        );
-
-        // Add type="module" to the script tag for ESM
-        add_filter('script_loader_tag', function ($tag, $handle) {
-            if ($handle === 'wpsms-unified-admin') {
-                return str_replace(' src', ' type="module" src', $tag);
-            }
-            return $tag;
-        }, 10, 2);
-    }
-
-    /**
-     * Enqueue development assets from Vite dev server
-     */
-    private function enqueueDevelopmentAssets($viteDevServerUrl)
-    {
-        $localizedData = $this->getLocalizedData();
-
-        // Inject localized data and Vite scripts directly in footer
-        add_action('admin_footer', function () use ($viteDevServerUrl, $localizedData) {
-            ?>
-            <script>
-                window.wpSmsSettings = <?php echo wp_json_encode($localizedData); ?>;
-            </script>
-            <script type="module">
-                import RefreshRuntime from '<?php echo esc_url($viteDevServerUrl); ?>/@react-refresh'
-                RefreshRuntime.injectIntoGlobalHook(window)
-                window.$RefreshReg$ = () => {}
-                window.$RefreshSig$ = () => (type) => type
-                window.__vite_plugin_react_preamble_installed__ = true
-            </script>
-            <?php // phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Vite dev server requires type="module" scripts ?>
-            <script type="module" src="<?php echo esc_url($viteDevServerUrl); ?>/@vite/client"></script>
-            <script type="module" src="<?php echo esc_url($viteDevServerUrl); ?>/src/main.jsx"></script>
-            <?php // phpcs:enable WordPress.WP.EnqueuedResources.NonEnqueuedScript ?>
-            <?php
-        });
-
-        // Register empty script for wp_localize_script compatibility
-        wp_register_script('wpsms-unified-admin', '', [], WP_SMS_VERSION, true);
-        wp_enqueue_script('wpsms-unified-admin');
-    }
-
-    /**
-     * Get localized data for the React app
+     * Get localized data for the React app.
+     * Public so DashboardHandler can access it.
      *
      * @return array
      */
-    private function getLocalizedData()
+    public function getLocalizedData()
     {
         return [
             'apiUrl'        => rest_url('wpsms/v1/'),

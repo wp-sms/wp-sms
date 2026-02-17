@@ -32,9 +32,9 @@ export default defineConfig(({ command, mode }) => ({
       ],
     },
   },
-  base: command === 'serve' ? '/' : '/wp-content/plugins/wp-sms/assets/dist/dashboard/',
+  base: command === 'serve' ? '/' : '/wp-content/plugins/wp-sms/public/dashboard/',
   build: {
-    outDir: path.resolve(__dirname, 'assets/dist/dashboard'),
+    outDir: path.resolve(__dirname, 'public/dashboard'),
     emptyDirBeforeWrite: true,
     manifest: true,
     // Use terser for better minification

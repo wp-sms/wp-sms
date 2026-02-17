@@ -32,8 +32,8 @@ module.exports = {
     },
     output: {
         filename: '[name].min.js',
-        path: path.resolve(__dirname, 'assets/js'),
-        publicPath: '/assets/js/',
+        path: path.resolve(__dirname, 'public/js'),
+        publicPath: '/public/js/',
     },
     module: {
         rules: [
@@ -51,7 +51,7 @@ module.exports = {
     },
     devServer: {
         static: {
-            directory: path.join(__dirname, 'assets/js'),
+            directory: path.join(__dirname, 'public/js'),
         },
     },
     optimization: {

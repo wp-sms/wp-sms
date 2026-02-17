@@ -30,7 +30,7 @@ if ($step_name !== 'first-step') {
     </div>
 
     <?php if ($step_name !== 'first-step') : ?>
-        <img class="wp-sms-aio-step__image v-image-lazy" width="509" height="291" data-src="<?php echo WP_SMS_URL . 'assets/images/premium-modal/' . esc_attr($step_name) . '.png'; ?>" alt="<?php echo esc_attr($step_name); ?>">
+        <img class="wp-sms-aio-step__image v-image-lazy" width="509" height="291" data-src="<?php echo WP_SMS_URL . 'public/images/premium-modal/' . esc_attr($step_name) . '.png'; ?>" alt="<?php echo esc_attr($step_name); ?>">
 
         <?php if ($hasLicense && !$isInstalled) : ?>
             <div class="wp-sms-aio-step__notice">
@@ -59,6 +59,6 @@ if ($step_name !== 'first-step') {
             </div>
         <?php endif; ?>
     <?php else: ?>
-        <img class="wp-sms-aio-step__image v-image-lazy" alt="WP SMS All-in-One bundle overview" width="509" height="291" data-src="<?php echo WP_SMS_URL . 'assets/images/premium-modal/first-step.png'; ?>">
+        <img class="wp-sms-aio-step__image v-image-lazy" alt="WP SMS All-in-One bundle overview" width="509" height="291" data-src="<?php echo WP_SMS_URL . 'public/images/premium-modal/first-step.png'; ?>">
     <?php endif; ?>
 </div>

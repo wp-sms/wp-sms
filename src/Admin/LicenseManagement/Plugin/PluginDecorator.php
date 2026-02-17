@@ -52,7 +52,7 @@ class PluginDecorator
 
     public function getIcon()
     {
-        $iconPath = "assets/images/add-ons/{$this->getSlug()}.svg";
+        $iconPath = "public/images/add-ons/{$this->getSlug()}.svg";
         if (file_exists(WP_SMS_DIR . $iconPath)) {
             return esc_url(WP_SMS_URL . $iconPath);
         }

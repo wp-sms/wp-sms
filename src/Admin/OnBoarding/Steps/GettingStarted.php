@@ -26,14 +26,14 @@ class GettingStarted extends StepAbstract
     {
         wp_enqueue_style(
             'wp-sms-intel-style',
-            WP_SMS_URL . 'assets/css/intlTelInput.min.css',
+            WP_SMS_URL . 'public/css/intlTelInput.min.css',
             [],
             '24.8.2'
         );
 
         wp_enqueue_script(
             'wp-sms-intel-script',
-            WP_SMS_URL . 'assets/js/intel/intlTelInput.min.js',
+            WP_SMS_URL . 'public/js/intel/intlTelInput.min.js',
             ['jquery'],
             '24.8.2',
             true
@@ -43,7 +43,7 @@ class GettingStarted extends StepAbstract
             'wp-sms-intel-script',
             'wp_sms_intel_tel_util',
             [
-                'util_js' => WP_SMS_URL . 'assets/js/intel/utils.js'
+                'util_js' => WP_SMS_URL . 'public/js/intel/utils.js'
             ]
         );
     }
