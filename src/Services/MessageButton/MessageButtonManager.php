@@ -27,16 +27,9 @@ class MessageButtonManager
 
     public function initAdminPreview()
     {
-        // Legacy settings page (backward compat)
-        if (isset($_GET['page']) && $_GET['page'] == 'wsms' && isset($_GET['tab']) && $_GET['tab'] == 'message_button') {
-            add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
-            add_action('admin_footer', [$this, 'renderChatBox']);
-        }
-
-        // Dashboard page (React)
-        // Always render chatbox on React pages since React handles client-side routing
-        // The chatbox is hidden by default via CSS and toggled visible by React's Preview button
-        if (isset($_GET['page']) && (strpos($_GET['page'], 'new-settings') !== false || strpos($_GET['page'], 'unified-admin') !== false)) {
+        // Render chatbox on the dashboard page for the settings preview
+        // Hidden by default via CSS, toggled visible by React's Preview button
+        if (isset($_GET['page']) && $_GET['page'] === 'wsms' && !isset($_GET['path'])) {
             add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
             add_action('admin_footer', [$this, 'renderChatBox']);
         }
