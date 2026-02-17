@@ -3,7 +3,7 @@ import { getWpSettings } from '../lib/utils'
 /**
  * Default request timeout in milliseconds
  */
-const DEFAULT_TIMEOUT = 30000
+const DEFAULT_TIMEOUT = 60000
 
 /**
  * Maximum retry attempts for network errors
