@@ -117,12 +117,12 @@ class TabsView extends BaseTabView
 
             $args = [
                 'title'      => esc_html__('License Manager', 'wp-sms'),
-                'pageName'   => MenuUtil::getPageSlug('add-ons'),
+                'pageName'   => 'wsms',
                 'custom_get' => ['tab' => $currentTab],
                 'data'       => $data,
                 'tabs'       => [
                     [
-                        'link'  => MenuUtil::getAdminUrl('add-ons', ['tab' => 'add-ons']),
+                        'link'  => admin_url('admin.php?page=wsms&tab=add-ons'),
                         'title' => esc_html__('Add-Ons', 'wp-sms'),
                         'class' => $this->isTab('add-ons') ? 'current' : '',
                     ]
@@ -134,7 +134,7 @@ class TabsView extends BaseTabView
 
                 if (is_main_site()) {
                     $args['install_addon_btn_txt']  = esc_html__('Install Add-On', 'wp-sms');
-                    $args['install_addon_btn_link'] = esc_url(MenuUtil::getAdminUrl('plugins', ['tab' => 'add-license']));
+                    $args['install_addon_btn_link'] = esc_url(admin_url('admin.php?page=wsms&tab=add-ons&action=add-license'));
                 }
 
                 AdminHelper::getTemplate(['layout/header', 'layout/title'], $args);

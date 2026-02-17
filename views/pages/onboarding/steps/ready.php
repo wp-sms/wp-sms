@@ -19,7 +19,7 @@ $is_pro = LicenseHelper::isPluginLicensedAndActive();
         <p class="u-text-center">
             <?php esc_html_e('Start sending SMS messages from your WordPress site right away.', 'wp-sms'); ?>
         </p>
-        <a href="<?php echo esc_url(admin_url('/admin.php?page=wp-sms')); ?>" title="<?php esc_attr_e('start using WP SMS', 'wp-sms'); ?>" class="c-btn c-btn--primary c-btn--mainready">
+        <a href="<?php echo esc_url(admin_url('/admin.php?page=wsms')); ?>" title="<?php esc_attr_e('start using WP SMS', 'wp-sms'); ?>" class="c-btn c-btn--primary c-btn--mainready">
             <?php esc_html_e('Start using WP SMS', 'wp-sms'); ?>
         </a>
     </div>

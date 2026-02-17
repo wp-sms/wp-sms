@@ -306,7 +306,7 @@ Send SMS page
 /**
 New styles for new version of the page
  */
-body.sms_page_wp-sms .wpsms-wrap .wpsms-sendsms {
+body.sms_page_wsms .wpsms-wrap .wpsms-sendsms {
   background-color: white;
   position: relative;
   padding: 108px 20px;
@@ -1307,7 +1307,7 @@ body.wp-admin:has(.wpsms-sendsms) {
 
 
 .rtl {
-  &.sms_page_wp-sms .wpsms-wrap .wpsms-sendsms {
+  &.sms_page_wsms .wpsms-wrap .wpsms-sendsms {
     .sendsms-tabs .tab:after {
       transform: rotate(180deg) translateX(50%);
     }

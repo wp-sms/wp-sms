@@ -44,7 +44,7 @@
 
     <div class="footer-links">
         <p><?php echo sprintf('This email automatically has been sent from <a href="%s">%s</a>.', esc_url($site_url), esc_html($site_name)) ?></p>
-        <p style="margin-top: 5px;"><?php echo sprintf('<a href="%s">Manage Email Notifications</a>', esc_url(admin_url('admin.php?page=wp-sms-unified-admin&tab=advanced'))) ?></p>
+        <p style="margin-top: 5px;"><?php echo sprintf('<a href="%s">Manage Email Notifications</a>', esc_url(admin_url('admin.php?page=wsms&tab=advanced'))) ?></p>
     </div>
 
 </div>

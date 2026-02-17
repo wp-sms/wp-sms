@@ -27,7 +27,7 @@ const DASHBOARD_PAGES = [
 test.describe('Dashboard Accessibility @accessibility', () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to the unified admin dashboard
-    await page.goto('/wp-admin/admin.php?page=wp-sms-unified-admin');
+    await page.goto('/wp-admin/admin.php?page=wsms');
     // Wait for React app to mount
     await expect(page.locator('#wpsms-settings-root')).toBeVisible({ timeout: 30000 });
     // Wait for initial loading to complete
@@ -38,7 +38,7 @@ test.describe('Dashboard Accessibility @accessibility', () => {
     test(`${pageConfig.name} page should have no accessibility violations`, async ({ page }) => {
       // Navigate to the specific page via sidebar or tab param
       if (pageConfig.id !== 'send-sms') {
-        await page.goto(`/wp-admin/admin.php?page=wp-sms-unified-admin&tab=${pageConfig.id}`);
+        await page.goto(`/wp-admin/admin.php?page=wsms&tab=${pageConfig.id}`);
         await expect(page.locator('#wpsms-settings-root')).toBeVisible({ timeout: 30000 });
         // Wait for page content to load
         await page.waitForTimeout(1500);
@@ -85,8 +85,8 @@ test.describe('Dashboard Accessibility Summary @accessibility', () => {
     for (const pageConfig of DASHBOARD_PAGES) {
       // Navigate to page
       const url = pageConfig.id === 'send-sms'
-        ? '/wp-admin/admin.php?page=wp-sms-unified-admin'
-        : `/wp-admin/admin.php?page=wp-sms-unified-admin&tab=${pageConfig.id}`;
+        ? '/wp-admin/admin.php?page=wsms'
+        : `/wp-admin/admin.php?page=wsms&tab=${pageConfig.id}`;
 
       await page.goto(url);
       await expect(page.locator('#wpsms-settings-root')).toBeVisible({ timeout: 30000 });

@@ -69,7 +69,7 @@ class Front
                 $wp_admin_bar->add_menu(array(
                     'id'    => 'wp-credit-sms',
                     'title' => '<span class="ab-icon"></span>' . $credit,
-                    'href'  => WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-unified-admin'
+                    'href'  => WP_SMS_ADMIN_URL . 'admin.php?page=wsms'
                 ));
             }
         }
@@ -78,7 +78,7 @@ class Front
             'id'     => 'wp-send-sms',
             'parent' => 'new-content',
             'title'  => esc_html__('SMS', 'wp-sms'),
-            'href'   => WP_SMS_ADMIN_URL . '/admin.php?page=wp-sms'
+            'href'   => WP_SMS_ADMIN_URL . '/admin.php?page=wsms'
         ));
     }
 }

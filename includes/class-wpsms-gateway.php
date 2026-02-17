@@ -496,7 +496,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
 
             //Check that, Are we in the Gateway WP_SMS tab setting page or not?
             if (
-                (is_admin() && isset($_REQUEST['page'], $_REQUEST['tab']) && $_REQUEST['page'] === 'wp-sms-settings' && $_REQUEST['tab'] === 'gateway')
+                (is_admin() && isset($_REQUEST['page'], $_REQUEST['tab']) && $_REQUEST['page'] === 'wsms' && $_REQUEST['tab'] === 'gateway')
                 || $return === true
             ) {
 
@@ -589,7 +589,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
     {
         global $sms;
 
-        $link = function_exists('WPSmsTwoWay') ? admin_url('admin.php?page=wp-sms-unified-admin&tab=two-way-settings') : WP_SMS_SITE . '/product/wp-sms-two-way';
+        $link = function_exists('WPSmsTwoWay') ? admin_url('admin.php?page=wsms&tab=two-way-settings') : WP_SMS_SITE . '/product/wp-sms-two-way';
 
         if ($sms->supportIncoming === true) {
             return Helper::loadTemplate('admin/label-button.php', array(
@@ -1064,7 +1064,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'site_url'    => home_url(),
                 'site_name'   => $siteName,
                 'cta_title'   => esc_html__('Check SMS gateway configuration', 'wp-sms'),
-                'cta_link'    => admin_url('admin.php?page=wp-sms-unified-admin&tab=gateway'),
+                'cta_link'    => admin_url('admin.php?page=wsms&tab=gateway'),
             ]);
         }
     }
@@ -1113,7 +1113,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         $versionChanged = ($storedVer !== null && $storedVer !== $currentVer);
 
         if ($versionChanged) {
-            $settingsLink = admin_url('admin.php?page=wp-sms-unified-admin&tab=gateway');
+            $settingsLink = admin_url('admin.php?page=wsms&tab=gateway');
 
             $message = sprintf(
             /* translators: %1$s: URL to gateway settings page */

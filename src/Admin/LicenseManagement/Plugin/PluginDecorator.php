@@ -230,13 +230,13 @@ class PluginDecorator
 
         switch ($pluginSlug) {
             case 'wp-sms-woocommerce-pro':
-                $settingsUrl = MenuUtil::getAdminUrl('wp-sms-woo-pro-settings');
+                $settingsUrl = admin_url('admin.php?page=wsms&tab=woocommerce-pro-settings');
                 break;
             case 'wp-sms-pro':
-                $settingsUrl = MenuUtil::getAdminUrl('settings');
+                $settingsUrl = admin_url('admin.php?page=wsms&tab=settings');
                 break;
             case 'wp-sms-two-way':
-                $settingsUrl = MenuUtil::getAdminUrl('settings', ['tab' => 'addon_two_way']);
+                $settingsUrl = admin_url('admin.php?page=wsms&tab=settings&section=addon_two_way');
                 break;
             case 'wp-sms-elementor-form':
                 $settingsUrl = '';
@@ -257,7 +257,7 @@ class PluginDecorator
                     if (!empty($activePlugins)) {
                         $firstActivePlugin = reset($activePlugins);
                         $tab               = $this->getTabForPlugin($pluginSlug, $firstActivePlugin);
-                        $settingsUrl       = MenuUtil::getAdminUrl('wp-sms-integrations', ['tab' => $tab]);
+                        $settingsUrl       = admin_url('admin.php?page=wsms&tab=integrations&section=' . $tab);
                     }
                 }
                 break;
@@ -265,7 +265,7 @@ class PluginDecorator
             default:
                 $pluginName  = str_replace('wp-sms-', '', $pluginSlug);
                 $tab         = !empty($pluginName) ? "$pluginName-settings" : '';
-                $settingsUrl = MenuUtil::getAdminUrl('settings', ['tab' => $tab]);
+                $settingsUrl = admin_url('admin.php?page=wsms&tab=' . $tab);
                 break;
         }
 

@@ -216,13 +216,6 @@ class WP_SMS
             $this->include('includes/admin/settings/class-wpsms-settings-integration.php');
             $this->include('includes/admin/class-wpsms-admin.php');
             $this->include('includes/admin/class-wpsms-admin-helper.php');
-            $this->include('includes/admin/outbox/class-wpsms-outbox.php');
-            $this->include('includes/admin/inbox/class-wpsms-inbox.php');
-            $this->include('includes/admin/send/class-wpsms-send.php');
-            $this->include('includes/admin/add-ons/class-add-ons.php');
-
-            // Sample add-on settings for testing - remove in production
-            $this->include('includes/admin/add-ons/sample-addon-settings.php');
 
             WidgetsManager::init();
             NoticeManager::getInstance();

@@ -62,29 +62,7 @@ class UnifiedAdminPage extends Singleton
         $this->db = $wpdb;
         $this->tb_prefix = $wpdb->prefix;
 
-        add_filter('wp_sms_admin_menu_list', [$this, 'registerMenu']);
         add_action('admin_enqueue_scripts', [$this, 'enqueueAssets']);
-    }
-
-    /**
-     * Register the menu item
-     *
-     * @param array $list
-     * @return array
-     */
-    public function registerMenu($list)
-    {
-        $list['unified-admin'] = [
-            'sub'      => 'wp-sms',
-            'title'    => __('Dashboard', 'wp-sms'),
-            'name'     => __('Dashboard', 'wp-sms') . ' <span style="background:#1d4ed8;color:white;padding:2px 6px;border-radius:3px;font-size:10px;margin-left:5px;">Beta</span>',
-            'cap'      => 'wpsms_sendsms',
-            'page_url' => 'unified-admin',
-            'callback' => __CLASS__,
-            'priority' => 0, // First in menu
-        ];
-
-        return $list;
     }
 
     /**
@@ -178,7 +156,7 @@ class UnifiedAdminPage extends Singleton
      */
     public function enqueueAssets($hook)
     {
-        if (strpos($hook, 'unified-admin') === false) {
+        if (strpos($hook, 'page_wsms') === false) {
             return;
         }
 
@@ -401,8 +379,8 @@ class UnifiedAdminPage extends Singleton
                 continue;
             }
 
-            // Skip page-conditional notices that target non-unified-admin pages
-            if (!empty($notice['url']) && strpos($notice['url'], 'wp-sms-unified-admin') === false) {
+            // Skip page-conditional notices that target non-dashboard pages
+            if (!empty($notice['url']) && strpos($notice['url'], 'page=wsms') === false) {
                 continue;
             }
 

@@ -53,7 +53,7 @@ if ($step_name !== 'first-step') {
                         /* translators: 1: license status text 2: link to license page */
                         __('This add-on does %1$s, which means it cannot receive updates, including important security updates. For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license. Activate your license %2$s.', 'wp-sms'),
                         '<b>' . __('not have an active license', 'wp-sms') . '</b>',
-                        '<a href="' . esc_url(admin_url('admin.php?page=wp-sms-unified-admin&tab=add-ons')) . '">' . __('here', 'wp-sms') . '</a>'
+                        '<a href="' . esc_url(admin_url('admin.php?page=wsms&tab=add-ons')) . '">' . __('here', 'wp-sms') . '</a>'
                     ); ?>
                 </div>
             </div>

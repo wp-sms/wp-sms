@@ -59,8 +59,7 @@ setup('authenticate as admin', async ({ page }) => {
   console.log('Admin access verified!');
 
   // Navigate to WP-SMS Dashboard (React app)
-  // Note: The React dashboard page slug is wp-sms-unified-admin
-  await page.goto(`${baseUrl}/wp-admin/admin.php?page=wp-sms-unified-admin`);
+  await page.goto(`${baseUrl}/wp-admin/admin.php?page=wsms`);
 
   // Wait for React app to mount (with longer timeout for first load)
   await expect(page.locator('#wpsms-settings-root')).toBeVisible({ timeout: 30000 });

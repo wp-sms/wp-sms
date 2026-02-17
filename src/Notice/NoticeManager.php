@@ -82,27 +82,27 @@ class NoticeManager extends AbstractNotice
         if ($mobileFieldStatus !== 'add_mobile_field_in_wc_billing' && $mobileFieldStatus !== 'use_phone_field_in_wc_billing') {
             $phoneLink = sprintf(
                 '<a href="%s">%s</a>',
-                esc_url(admin_url('admin.php?page=wp-sms-unified-admin&tab=phone')),
+                esc_url(admin_url('admin.php?page=wsms&tab=phone')),
                 __('Phone settings', 'wp-sms')
             );
             $this->registerNotice('woocommerce_mobile_field', sprintf(
                 /* translators: %s: link to Phone settings page */
                 __('You need to configure the Mobile field option in %s to send SMS to customers.', 'wp-sms'),
                 $phoneLink
-            ), true, 'admin.php?page=wp-sms-unified-admin&tab=phone');
+            ), true, 'admin.php?page=wsms&tab=phone');
         }
 
         if (!$mobileFieldStatus or $mobileFieldStatus == 'disable') {
             $phoneLink = sprintf(
                 '<a href="%s">%s</a>',
-                esc_url(admin_url('admin.php?page=wp-sms-unified-admin&tab=phone')),
+                esc_url(admin_url('admin.php?page=wsms&tab=phone')),
                 __('Phone settings', 'wp-sms')
             );
             $this->registerNotice('login_mobile_field', sprintf(
                 /* translators: %s: link to Phone settings page */
                 __('You need to configure the Mobile field option in %s to use login with SMS functionality.', 'wp-sms'),
                 $phoneLink
-            ), true, 'admin.php?page=wp-sms-unified-admin&tab=phone');
+            ), true, 'admin.php?page=wsms&tab=phone');
         }
 
         if (version_compare(PHP_VERSION, '7.2', '<')) {
@@ -130,7 +130,7 @@ class NoticeManager extends AbstractNotice
         $this->registerNotice('marketing_newsletter', sprintf(
             __('Stay informed and receive exclusive offers, %s!', 'wp-sms'),
             $newsletterLink
-        ), true, 'admin.php?page=wp-sms-unified-admin');
+        ), true, 'admin.php?page=wsms');
     }
 
     /**

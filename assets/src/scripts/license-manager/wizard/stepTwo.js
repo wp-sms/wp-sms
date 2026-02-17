@@ -88,7 +88,7 @@ const initStepTwo = () => {
                 const licenseKey = getLicenseKey()
                 submitStepTwo.classList.add('redirecting');
                 submitStepTwo.textContent = getString('redirecting');
-                window.location.href = `admin.php?page=wp-sms-add-ons&tab=get-started&license_key=${licenseKey}`;
+                window.location.href = `admin.php?page=wsms&tab=add-ons&license_key=${licenseKey}`;
                 removeClass(submitStepTwo, 'wpsms-loading-button')
                 submitStepTwo.textContent = ""
             }

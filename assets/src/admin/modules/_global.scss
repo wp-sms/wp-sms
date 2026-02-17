@@ -1,18 +1,16 @@
-.sms_page_wp-sms,
-.sms_page_wp-sms-settings,
-.sms_page_wp-sms-subscribers-privacy,
-.sms_page_wp-sms-inbox,
-.sms_page_wp-sms-add-ons,
-.toplevel_page_wp-sms,
-.sms_page_wp-sms-outbox,
-.sms_page_wp-sms-subscribers,
-.sms_page_wp-sms-subscribers-group,
-.sms_page_wp-sms-settings.sms_page_wp-sms-pro,
-.sms_page_wp-sms-scheduled,
-.sms_page_wp-sms-commands,
+.sms_page_wsms,
+.sms_page_wsms-settings,
+.sms_page_wsms-subscribers-privacy,
+.sms_page_wsms-inbox,
+.sms_page_wsms-add-ons,
+.toplevel_page_wsms,
+.sms_page_wsms-outbox,
+.sms_page_wsms-subscribers,
+.sms_page_wsms-subscribers-group,
+.sms_page_wsms-settings.sms_page_wsms-pro,
+.sms_page_wsms-scheduled,
+.sms_page_wsms-commands,
 .post-type-wpsms-command,
-.sms-woo-pro_page_wp-sms-woo-pro-settings,
-.sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment,
 .post-type-sms-campaign {
   &.php-error {
     #wpwrap {
@@ -396,8 +394,6 @@
   }
 }
 
-.sms-woo-pro_page_wp-sms-woo-pro-settings,
-.sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment,
 .post-type-sms-campaign {
   .wrap {
     padding: 20px 8px;
@@ -416,13 +412,13 @@
   }
 }
 
-.sms_page_wp-sms-commands {
+.sms_page_wsms-commands {
   .wpsms-header-banner {
     margin-left: 0 !important;
   }
 }
 
-.sms_page_wp-sms-commands #wpbody-content {
+.sms_page_wsms-commands #wpbody-content {
   margin: 0;
 
   .wrap {
@@ -435,7 +431,7 @@
   margin: 0;
 }
 
-.sms_page_wp-sms.rtl {
+.sms_page_wsms.rtl {
   table {
     td, th {
       text-align: right !important;
@@ -476,8 +472,8 @@
 }
 
 //Mobile header
-.post-type-wpsms-command #feedback-bird-app, .sms_page_wp-sms #feedback-bird-app, .sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment #feedback-bird-app,
-.sms-woo-pro_page_wp-sms-woo-pro-settings #feedback-bird-app {
+.post-type-wpsms-command #feedback-bird-app, .sms_page_wsms #feedback-bird-app,
+.post-type-sms-campaign #feedback-bird-app {
   display: none;
 }
 
@@ -488,7 +484,7 @@
   }
 }
 
-.sms_page_wp-sms-integrations ,.sms_page_wp-sms-settings{
+.sms_page_wsms-integrations ,.sms_page_wsms-settings{
   .wpsms-wrap__top {
     background: transparent;
     border-bottom: none;
@@ -557,7 +553,7 @@
   .wpsms-wrap-woo-pro a.page-title-action {
     display: inline-block;
   }
-  .sms_page_wp-sms #show-settings-link {
+  .sms_page_wsms #show-settings-link {
     font-size: 11px;
     font-weight: 400;
     line-height: 20px;

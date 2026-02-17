@@ -44,7 +44,7 @@
                 <td>
                     <label for="wpsms_group_name" class="wp_sms_subscribers_label"><?php esc_html_e('Group', 'wp-sms'); ?></label>
                     <?php esc_html_e('There is no group!', 'wp-sms'); ?>
-                    <a href="admin.php?page=wp-sms-subscribers-group"><?php esc_html_e('Add', 'wp-sms') ?></a>
+                    <a href="admin.php?page=wsms&tab=groups"><?php esc_html_e('Add', 'wp-sms') ?></a>
                 </td>
             </tr>
         <?php endif; ?>

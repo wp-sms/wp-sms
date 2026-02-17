@@ -186,7 +186,7 @@ $isPremium        = LicenseHelper::isPremiumLicenseAvailable();
                                     <a href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=pop-up-aio') ?>" target="_blank" class="wp-sms-aio-step__action-btn wp-sms-aio-step__action-btn--upgrade js-wp-sms-aioModalUpgradeBtn"><?php esc_html_e('Upgrade to All-in-One', 'wp-sms'); ?></a>
                                     <a class="wp-sms-aio-step__action-btn wp-sms-aio-step__action-btn--later js-wp-sms-aioModalClose"><?php esc_html_e('Maybe Later', 'wp-sms'); ?></a>
                                 <?php elseif (($hasLicense && !$isActive) || (!$hasLicense && $isInstalled)) : ?>
-                                    <a href="<?php echo esc_url(admin_url('admin.php?page=wp-sms-unified-admin&tab=add-ons')) ?>" class="wp-sms-aio-step__action-btn js-wp-sms-aioModalUpgradeBtn wp-sms-aio-step__action-btn--addons"><?php esc_html_e('Go to Add-Ons Page', 'wp-sms'); ?></a>
+                                    <a href="<?php echo esc_url(admin_url('admin.php?page=wsms&tab=add-ons')) ?>" class="wp-sms-aio-step__action-btn js-wp-sms-aioModalUpgradeBtn wp-sms-aio-step__action-btn--addons"><?php esc_html_e('Go to Add-Ons Page', 'wp-sms'); ?></a>
                                 <?php elseif ($hasLicense && $isActive) : ?>
                                     <a class="wp-sms-aio-step__action-btn wp-sms-aio-step__action-btn--upgrade  activated js-wp-sms-aioModalUpgradeBtn"><?php esc_html_e('Add-on Activated', 'wp-sms'); ?></a>
                                 <?php endif; ?>

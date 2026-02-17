@@ -437,8 +437,8 @@ body.rtl #feedback-bird-app {
   }
 }
 
-.post-type-wpsms-command #feedback-bird-app, .sms_page_wp-sms #feedback-bird-app, .sms-woo-pro_page_wp-sms-woo-pro-cart-abandonment #feedback-bird-app,
-.sms-woo-pro_page_wp-sms-woo-pro-settings #feedback-bird-app {
+.post-type-wpsms-command #feedback-bird-app, .sms_page_wsms #feedback-bird-app,
+.post-type-sms-campaign #feedback-bird-app {
   .c-fbb-btn--default {
     transition: 0.3s all ease-out;
     background-color: transparent !important;
@@ -759,29 +759,29 @@ body.rtl #screen-meta-links {
   }
 }
 
-.sms_page_wp-sms-subscribers-privacy .inside .description {
+.sms_page_wsms-subscribers-privacy .inside .description {
   margin-top: 5px !important;
   display: block;
 }
 
-.sms_page_wp-sms-subscribers-privacy .postbox,
+.sms_page_wsms-subscribers-privacy .postbox,
 .wpsms-wrap .postbox {
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
   border-radius: 2px;
   border: none !important;
 }
 
-.sms_page_wp-sms-subscribers-privacy .postbox-header,
+.sms_page_wsms-subscribers-privacy .postbox-header,
 .wpsms-wrap .postbox-header {
   border-bottom: 1px solid #e7e7e7 !important;
 }
 
-.sms_page_wp-sms-subscribers-privacy.postbox-header h2,
+.sms_page_wsms-subscribers-privacy.postbox-header h2,
 .wpsms-wrap .postbox-header h2 {
   padding: 15px 12px !important;
 }
 
-.sms_page_wp-sms-subscribers-privacy .privacy_page {
+.sms_page_wsms-subscribers-privacy .privacy_page {
   margin: 0 !important;
 }
 

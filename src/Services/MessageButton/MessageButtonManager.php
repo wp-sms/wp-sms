@@ -27,8 +27,8 @@ class MessageButtonManager
 
     public function initAdminPreview()
     {
-        // Old settings page
-        if (isset($_GET['page']) && $_GET['page'] == 'wp-sms-settings' && isset($_GET['tab']) && $_GET['tab'] == 'message_button') {
+        // Legacy settings page (backward compat)
+        if (isset($_GET['page']) && $_GET['page'] == 'wsms' && isset($_GET['tab']) && $_GET['tab'] == 'message_button') {
             add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
             add_action('admin_footer', [$this, 'renderChatBox']);
         }

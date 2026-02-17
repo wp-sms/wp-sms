@@ -27,14 +27,6 @@ class WizardManager
 
     public function setup()
     {
-        $skipped_pages = [
-            'wp-sms-add-ons'
-        ];
-
-        if (in_array(Request::get('page'), $skipped_pages)) {
-            return;
-        }
-
         if (!UserHelper::isAdmin()) {
             return;
         }
@@ -71,7 +63,7 @@ class WizardManager
         $noticeManager = NoticeManager::getInstance();
 
         // Generate the setup wizard URL (React wizard with ?wizard=open parameter)
-        $setup_url = admin_url('admin.php?page=wp-sms-unified-admin&wizard=open');
+        $setup_url = admin_url('admin.php?page=wsms&wizard=open');
 
         // Allow 'display' CSS property for inline styles
         add_filter('safe_style_css', [$this, 'allowDisplayStyle']);
@@ -179,7 +171,7 @@ class WizardManager
             'slug'           => $this->slug,
             'is_last'        => $this->isLastStep(),
             'is_first'       => $this->isFirstStep(),
-            'skip_setup_url' => admin_url('admin.php?page=wp-sms')
+            'skip_setup_url' => admin_url('admin.php?page=wsms')
         );
 
         if (method_exists($this->currentStep, 'extraData')) {
@@ -214,7 +206,7 @@ class WizardManager
 
     public function isOnboarding()
     {
-        return Request::get('page') === 'wp-sms' && Request::get('path') === $this->slug;
+        return Request::get('page') === 'wsms' && Request::get('path') === $this->slug;
     }
 
     private function getCTAs()
