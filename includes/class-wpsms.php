@@ -103,6 +103,8 @@ class WP_SMS
      */
     public function plugin_setup()
     {
+        $this->loadTextDomain();
+
         add_action('init', array($this, 'init'));
 
         $this->includes();
@@ -131,7 +133,6 @@ class WP_SMS
 
     public function init()
     {
-        $this->loadTextDomain();
         $this->initGateway();
     }
 
