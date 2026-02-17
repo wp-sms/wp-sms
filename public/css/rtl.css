@@ -1,10 +1,10 @@
 /*
  * WP SMS - RTL fixes
- * Scoped to the Unified Admin (React dashboard) page.
+ * Scoped to the React dashboard page.
  */
 
 /* WordPress admin uses padding-right in RTL; remove it for the full-width React app. */
-/* Note: this stylesheet is only enqueued for the Unified Admin page in PHP. */
+/* Note: this stylesheet is only enqueued for the dashboard page in PHP. */
 body.rtl #wpcontent {
   padding-right: 0 !important;
   padding-left: 0 !important;
@@ -17,7 +17,7 @@ body.rtl #wpbody-content {
 /*
  * Message Button preview (chatbox) in RTL:
  * WP admin UI sits on the right in RTL. Force the preview to render on the left side to avoid overlap.
- * This only affects the Unified Admin page because the stylesheet is only enqueued there.
+ * This only affects the dashboard page because the stylesheet is only enqueued there.
  */
 body.rtl .wpsms-chatbox.wpsms-chatbox--right-side,
 body.rtl .wpsms-chatbox.wpsms-chatbox--left-side {
@@ -57,7 +57,7 @@ body.rtl #wpsms-settings-root[dir="rtl"] .iti input.iti__tel-input {
 }
 
 /*
- * Unified dialog close button:
+ * Dialog close button:
  * Dialogs render a close button absolutely positioned in the top-right via inline styles.
  * In RTL this can overlap right-aligned titles; move it to the top-left.
  */

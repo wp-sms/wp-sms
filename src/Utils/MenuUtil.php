@@ -2,7 +2,7 @@
 
 namespace WP_SMS\Utils;
 
-use WP_SMS\Admin\UnifiedAdminPage;
+use WP_SMS\Admin\Dashboard;
 
 if (!defined('ABSPATH')) exit;
 
@@ -32,7 +32,7 @@ class MenuUtil
     public static function registerMenus()
     {
         // Register the single top-level "WSMS" menu pointing to the React dashboard
-        add_menu_page('WSMS', 'WSMS', 'wpsms_sendsms', 'wsms', [UnifiedAdminPage::instance(), 'view'], 'dashicons-email-alt');
+        add_menu_page('WSMS', 'WSMS', 'wpsms_sendsms', 'wsms', [Dashboard::instance(), 'view'], 'dashicons-email-alt');
 
         // Remove the auto-generated submenu item that WordPress creates matching the parent
         remove_submenu_page('wsms', 'wsms');

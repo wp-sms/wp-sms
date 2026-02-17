@@ -26,7 +26,7 @@ const DASHBOARD_PAGES = [
 
 test.describe('Dashboard Accessibility @accessibility', () => {
   test.beforeEach(async ({ page }) => {
-    // Navigate to the unified admin dashboard
+    // Navigate to the dashboard
     await page.goto('/wp-admin/admin.php?page=wsms');
     // Wait for React app to mount
     await expect(page.locator('#wpsms-settings-root')).toBeVisible({ timeout: 30000 });

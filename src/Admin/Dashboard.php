@@ -17,9 +17,9 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * Unified Admin Page - React-based admin interface for all WP-SMS pages
+ * Dashboard - React-based admin interface for all WP-SMS pages
  *
- * This class provides a unified React application that handles:
+ * This class provides the main dashboard React application that handles:
  * - Send SMS
  * - Outbox
  * - Subscribers
@@ -27,7 +27,7 @@ if (!defined('ABSPATH')) {
  * - Privacy (GDPR)
  * - Settings (all existing settings pages)
  */
-class UnifiedAdminPage extends Singleton
+class Dashboard extends Singleton
 {
     /**
      * Database instance
@@ -197,7 +197,7 @@ class UnifiedAdminPage extends Singleton
             'quformForms' => $this->getQuformFormsData(),
             // Fluent Forms data for dynamic settings (Fluent add-on)
             'fluentForms' => apply_filters('wpsms_admin_localized_fluent_forms_data', ['isActive' => false, 'forms' => []]),
-            // Extended data for unified admin pages
+            // Extended data for dashboard pages
             'stats'         => $this->getStats(),
             'capabilities'  => $this->getUserCapabilities(),
             'features'      => $this->getFeatureFlags(),

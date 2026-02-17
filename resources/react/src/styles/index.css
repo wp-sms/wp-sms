@@ -98,7 +98,7 @@
 
 /*
  * WordPress admin layout overrides (hiding footer, removing padding, height constraints)
- * are now set via inline styles in UnifiedAdminPage.php to ensure they work in RTL mode.
+ * are now set via inline styles in Dashboard.php to ensure they work in RTL mode.
  * WordPress may not generate the expected body class in RTL, causing CSS rules here to not apply.
  */
 

@@ -33,7 +33,7 @@ class MessageButtonManager
             add_action('admin_footer', [$this, 'renderChatBox']);
         }
 
-        // New/Unified settings page (React dashboard)
+        // Dashboard page (React)
         // Always render chatbox on React pages since React handles client-side routing
         // The chatbox is hidden by default via CSS and toggled visible by React's Preview button
         if (isset($_GET['page']) && (strpos($_GET['page'], 'new-settings') !== false || strpos($_GET['page'], 'unified-admin') !== false)) {

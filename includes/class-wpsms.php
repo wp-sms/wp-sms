@@ -5,7 +5,7 @@ use WP_SMS\Admin\AnonymizedUsageData\AnonymizedUsageDataManager;
 use WP_SMS\Admin\LicenseManagement\LicenseHelper;
 use WP_SMS\Admin\OnBoarding\StepFactory;
 use WP_SMS\Admin\OnBoarding\WizardManager;
-use WP_SMS\Admin\UnifiedAdminPage;
+use WP_SMS\Admin\Dashboard;
 use WP_SMS\Components\Assets;
 use WP_SMS\Service\Assets\AssetsFactory;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
@@ -231,8 +231,8 @@ class WP_SMS
             $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
             $adminManager             = new AdminManager();
 
-            // Initialize unified admin page
-            UnifiedAdminPage::getInstance()->init();
+            // Initialize dashboard
+            Dashboard::getInstance()->init();
 
             add_action('init', function () {
                 $wizard = new WizardManager(__('WPSMS OnBoarding Process', 'wp-sms'), 'wp-sms-onboarding');
@@ -270,7 +270,7 @@ class WP_SMS
         $this->include('includes/api/v1/class-wpsms-api-credit.php');
         $this->include('includes/api/v1/class-wpsms-api-settings.php');
 
-        // Unified admin API endpoints
+        // Dashboard API endpoints
         $this->include('includes/api/v1/class-wpsms-api-subscribers.php');
         $this->include('includes/api/v1/class-wpsms-api-groups.php');
         $this->include('includes/api/v1/class-wpsms-api-outbox.php');
