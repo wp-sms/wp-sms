@@ -25,18 +25,32 @@ npm run e2e                       # Run E2E tests (requires Docker)
 **Namespace**: `WP_SMS\` maps to `src/` (PSR-4)
 
 ### Key Directories
-- `src/Admin/` - Admin pages, settings, onboarding
+- `src/Admin/` - Admin pages (`Dashboard.php` is the main React admin interface), settings, onboarding
+- `src/Abstracts/` - Abstract base classes (`BaseAssets` for asset handlers)
+- `src/Service/Assets/` - Asset loading system (`AssetsFactory`, handler classes)
 - `src/Services/` - Business logic (WooCommerce, forms, subscribers)
 - `src/Controller/` - AJAX handlers (extend `AjaxControllerAbstract`)
 - `src/Notification/` - Notification system with `NotificationFactory`
 - `includes/gateways/` - SMS gateway implementations (extend base Gateway class)
 - `includes/api/v1/` - REST API endpoints
-- `assets/src/dashboard/` - React dashboard (Vite, Tailwind, shadcn)
-- `assets/src/blocks/` - Gutenberg blocks
+- `public/` - All browser-facing assets (CSS, JS, images, fonts, dashboard build, blocks build)
+- `assets/src/` - Source files only (SCSS, scripts, blocks source, dashboard React source)
+- `resources/react/` - React dashboard source (Vite, Tailwind, shadcn)
+
+### Asset System
+Assets are loaded via a handler-based architecture (inspired by WP Statistics):
+- `src/Components/Assets.php` - Static utility for `script()`, `style()`, `localize()`
+- `src/Abstracts/BaseAssets.php` - Abstract base for all asset handlers
+- `src/Service/Assets/Handlers/AdminHandler.php` - Admin CSS/JS (legacy scripts)
+- `src/Service/Assets/Handlers/FrontendHandler.php` - Frontend CSS/JS
+- `src/Service/Assets/Handlers/DashboardHandler.php` - React dashboard (Vite build)
+- `src/Service/Assets/AssetsFactory.php` - Singleton factory for handler instantiation
+
+All browser-facing assets live in `public/`. Build outputs: `public/js/` (webpack), `public/css/` (sass), `public/blocks/` (wp-scripts), `public/dashboard/` (vite). Script handles use `wsms-` prefix (e.g., `wsms-dashboard`).
 
 ### REST API
 Namespace: `wpsms/v1`
-Endpoints: `/send`, `/newsletter`, `/webhook`, `/credit`, `/settings`, `/subscribers`, `/groups`, `/outbox`, `/privacy`, `/notifications`
+Endpoints: `/send`, `/newsletter`, `/webhook`, `/credit`, `/settings`, `/subscribers`, `/groups`, `/outbox`, `/privacy`, `/notifications`, `/addons`, `/admin-notices`
 
 ### Database Tables
 - `{prefix}sms_subscribes` - Subscribers
@@ -68,7 +82,7 @@ Add-ons register recipient types via `wpsms_additional_recipient_types` filter. 
 
 ## Testing
 
-**Locations**: `tests/unit/` (PHP), `assets/src/**/__tests__/` (JS), `e2e/tests/` (Playwright)
+**Locations**: `tests/unit/` (PHP), `resources/react/src/**/__tests__/` (JS), `tests/e2e/tests/` (Playwright)
 
 **Write tests for**:
 - REST API endpoints (success, errors, auth)
