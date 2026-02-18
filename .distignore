@@ -5,6 +5,7 @@
 /bin
 /tests
 /vendor
+/resources
 
 .distignore
 .gitignore
@@ -33,3 +34,4 @@ tailwind.config.js
 vite.config.js
 bundle-analysis.html
 .env.e2e.example
+.wp-env.json
