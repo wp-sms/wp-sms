@@ -20,6 +20,11 @@ if (!defined('ABSPATH')) {
 } // Exit if accessed directly
 
 /**
+ * Load Autoloader (handles both WP_SMS\ classes and prefixed dependencies)
+ */
+require_once __DIR__ . '/src/Dependencies/autoload.php';
+
+/**
  * Load Plugin Defines
  */
 include_once __DIR__ . '/includes/defines.php';
