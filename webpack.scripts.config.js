@@ -5,29 +5,29 @@ module.exports = {
     mode:'production',
     entry: {
         admin: [
-            './assets/src/scripts/quick-reply.js',
-            './assets/src/scripts/import-subscriber.js',
-            './assets/src/scripts/admin.js',
-            './assets/src/scripts/admin-export.js',
-            './assets/src/scripts/admin-send-sms.js',
-            './assets/src/scripts/edit-subscriber.js',
-            './assets/src/scripts/edit-group.js',
-            './assets/src/scripts/admin-privacy-data.js',
-            './assets/src/scripts/admin-order-view.js',
-            './assets/src/scripts/admin-dashboard-stats-widget.js',
-            './assets/src/scripts/chart.min.js',
-            './assets/src/scripts/modal-handler.js',
-            './assets/src/scripts/option-updater.js',
-            './assets/src/scripts/notification.js'
+            './public/src/scripts/quick-reply.js',
+            './public/src/scripts/import-subscriber.js',
+            './public/src/scripts/admin.js',
+            './public/src/scripts/admin-export.js',
+            './public/src/scripts/admin-send-sms.js',
+            './public/src/scripts/edit-subscriber.js',
+            './public/src/scripts/edit-group.js',
+            './public/src/scripts/admin-privacy-data.js',
+            './public/src/scripts/admin-order-view.js',
+            './public/src/scripts/admin-dashboard-stats-widget.js',
+            './public/src/scripts/chart.min.js',
+            './public/src/scripts/modal-handler.js',
+            './public/src/scripts/option-updater.js',
+            './public/src/scripts/notification.js'
         ],
         frontend: [
-            './assets/src/scripts/blocks.js',
+            './public/src/scripts/blocks.js',
         ],
         licenseManager: [
-            './assets/src/scripts/license-manager/license-manager.js',
+            './public/src/scripts/license-manager/license-manager.js',
         ],
         onboarding: [
-            './assets/src/scripts/onboarding.js',
+            './public/src/scripts/onboarding.js',
         ]
     },
     output: {

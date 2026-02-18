@@ -34,7 +34,7 @@ npm run e2e                       # Run E2E tests (requires Docker)
 - `includes/gateways/` - SMS gateway implementations (extend base Gateway class)
 - `includes/api/v1/` - REST API endpoints
 - `public/` - All browser-facing assets (CSS, JS, images, fonts, dashboard build, blocks build)
-- `assets/src/` - Source files only (SCSS, scripts, blocks source, dashboard React source)
+- `public/src/` - Source files (SCSS, scripts, blocks source)
 - `resources/react/` - React dashboard source (Vite, Tailwind, shadcn)
 
 ### Asset System

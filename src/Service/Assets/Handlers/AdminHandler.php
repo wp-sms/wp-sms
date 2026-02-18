@@ -95,7 +95,7 @@ class AdminHandler extends BaseAssets
         // Register global variables
         wp_register_script(
             'wp-sms-global-script',
-            $this->pluginUrl . 'assets/src/scripts/global.js',
+            $this->getUrl('src/scripts/global.js'),
             [],
             $this->getVersion(),
             true

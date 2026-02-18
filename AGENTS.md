@@ -5,7 +5,7 @@
 - `wp-sms.php`: plugin entry point; bootstraps core in `includes/`.
 - `src/`: primary PHP code (PSR-4 `WP_SMS\\` via `composer.json`).
 - `includes/`: legacy/core integration code, including `includes/gateways/` and REST API under `includes/api/v1/`.
-- `assets/src/`: blocks, SCSS, and settings assets; compiled outputs land in `assets/css/`, `assets/blocks/`, etc.
+- `public/src/`: blocks, SCSS, and scripts source; compiled outputs land in `public/css/`, `public/blocks/`, `public/js/`, etc.
 - `resources/react/src/`: React dashboard (Vite + Tailwind).
 - `tests/`: PHP unit tests and Playwright E2E (`tests/e2e/`).
 
@@ -36,7 +36,7 @@ npm run e2e                  # Playwright E2E (expects Docker env running)
 ## Testing Guidelines
 
 - PHPUnit: configured in `phpunit.xml.dist` (coverage output under `tests/coverage/`).
-- Jest: configured in `jest.config.js` (covers `assets/src/settings/`, `resources/react/src/`, and `tests/js/`).
+- Jest: configured in `jest.config.js` (covers `public/src/settings/`, `resources/react/src/`, and `tests/js/`).
 - Playwright: configured in `playwright.config.js`; E2E tests live in `tests/e2e/tests/` and run single-worker for WP stability.
 
 ## Commit & Pull Request Guidelines
