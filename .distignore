@@ -4,12 +4,14 @@
 /node_modules
 /bin
 /tests
+/vendor
 
 .distignore
 .gitignore
 .editorconfig
 .gulpfile.js
 codeception.dist.yml
+composer.json
 composer.lock
 LICENSE
 package.json
@@ -19,3 +21,15 @@ postcss.config.js
 webpack.scripts.config.js
 README.md
 CLAUDE.md
+AGENTS.md
+CONTRIBUTING.md
+security.md
+phpunit.xml.dist
+babel.config.js
+jest.config.js
+jest.setup.js
+playwright.config.js
+tailwind.config.js
+vite.config.js
+bundle-analysis.html
+.env.e2e.example
