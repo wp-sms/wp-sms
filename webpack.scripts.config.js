@@ -7,6 +7,9 @@ module.exports = {
         admin: [
             './public/src/scripts/quick-reply.js',
             './public/src/scripts/admin-order-view.js',
+            './public/src/scripts/postbox.js',
+            './public/src/scripts/chart.min.js',
+            './public/src/scripts/admin-dashboard-stats-widget.js',
         ],
         frontend: [
             './public/src/scripts/blocks.js',
