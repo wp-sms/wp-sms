@@ -32,7 +32,8 @@ class MenuUtil
     public static function registerMenus()
     {
         // Register the single top-level "WSMS" menu pointing to the React dashboard
-        add_menu_page('WSMS', 'WSMS', 'wpsms_sendsms', 'wsms', [Dashboard::instance(), 'view'], 'dashicons-email-alt');
+        $icon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9Ii01IDAgMzYgMzYiPjxwYXRoIGQ9Ik0wIDkuNTM3NTJWMTcuNzMzNUwxOC4yMTAxIDguMTc3NjRWMEwwIDkuNTM3NTJaIiBmaWxsPSIjYTdhYWFkIi8+PHBhdGggZD0iTTAgMjAuNzI5VjI4LjkwNjdMMjYgMTUuMjcxMVY3LjA5MzUxTDAgMjAuNzI5WiIgZmlsbD0iI2E3YWFhZCIvPjxwYXRoIGQ9Ik0yNS45OTcyIDE4LjI2NjZWMjYuMzUyNEw3LjgwNzM0IDM2LjAwMDFMNy43ODcxMSAyNy43MzA2TDI1Ljk5NzIgMTguMjY2NloiIGZpbGw9IiNhN2FhYWQiLz48L3N2Zz4=';
+        add_menu_page('WSMS', 'WSMS', 'wpsms_sendsms', 'wsms', [Dashboard::instance(), 'view'], $icon);
 
         // Remove the auto-generated submenu item that WordPress creates matching the parent
         remove_submenu_page('wsms', 'wsms');
