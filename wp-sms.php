@@ -22,7 +22,11 @@ if (!defined('ABSPATH')) {
 /**
  * Load Autoloader (handles both WP_SMS\ classes and prefixed dependencies)
  */
-require_once __DIR__ . '/src/Dependencies/autoload.php';
+if (file_exists(__DIR__ . '/packages/autoload.php')) {
+    require_once __DIR__ . '/packages/autoload.php';
+} else {
+    return;
+}
 
 /**
  * Load Plugin Defines

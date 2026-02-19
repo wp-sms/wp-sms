@@ -63,6 +63,9 @@ bundle-analysis.html
 # Composer
 /vendor/
 
+# Scoped Dependencies
+/packages/
+
 # Claude Code
 .mcp.json
 CLAUDE.local.md

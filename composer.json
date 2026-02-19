@@ -14,7 +14,7 @@
     "php": ">=7.4"
   },
   "require-dev": {
-    "veronalabs/wp-scoper": "^1.0"
+    "veronalabs/wp-scoper": "^1.2.2"
   },
   "autoload": {
     "psr-4": {
@@ -25,7 +25,8 @@
     "wp-scoper": {
       "namespace_prefix": "WP_SMS\\Dependencies",
       "packages": [],
-      "target_directory": "src/Dependencies",
+      "target_directory": "packages",
+      "delete_vendor_packages": true,
       "exclude_directories": ["views", "templates", "resources", "public"]
     }
   },
