@@ -247,11 +247,22 @@ class SettingsApi extends RestApi
             $mergedSettings = $this->cleanupUnsetMarkers($mergedSettings);
             update_option('wpsms_settings', $mergedSettings);
 
-            // Clear cached credit when gateway changes so stale values aren't displayed
-            if (
-                isset($sanitizedSettings['gateway_name']) &&
-                ($currentSettings['gateway_name'] ?? '') !== $sanitizedSettings['gateway_name']
-            ) {
+            // Clear cached credit when gateway or credential fields change
+            // so the sidebar doesn't show stale "Gateway Connected" status
+            $credentialFields = ['gateway_name', 'gateway_key', 'gateway_username', 'gateway_password', 'gateway_sender_id'];
+            $shouldClearCredit = false;
+
+            foreach ($credentialFields as $field) {
+                if (
+                    isset($sanitizedSettings[$field]) &&
+                    ($currentSettings[$field] ?? '') !== $sanitizedSettings[$field]
+                ) {
+                    $shouldClearCredit = true;
+                    break;
+                }
+            }
+
+            if ($shouldClearCredit) {
                 delete_option('wpsms_gateway_credit');
             }
         }
