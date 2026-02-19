@@ -28,7 +28,21 @@ function loadUtilsModule() {
         });
 }
 
+/**
+ * Pre-load utils before creating intlTelInput instances.
+ *
+ * strictMode requires utils (e.g. getCoreNumber) to be available synchronously
+ * on keystroke. Loading utils first ensures they are ready before any instance
+ * registers its keydown handler.
+ */
 function init() {
+    var utilsReady = window.intlTelInput.loadUtils(loadUtilsModule);
+    (utilsReady || Promise.resolve())
+        .catch(function () { /* continue without utils */ })
+        .then(initInputs);
+}
+
+function initInputs() {
     const body = document.body;
     const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
 
@@ -78,7 +92,6 @@ function init() {
                     nationalMode: true,
                     useFullscreenPopup: useFullscreenPopupOption,
                     dropdownContainer: body.classList.contains('rtl') ? null : body,
-                    loadUtilsOnInit: loadUtilsModule,
                     hiddenInput: () => ({ phone: inputTells[i].name }),
                     formatOnDisplay: false,
                     initialCountry: defaultCountry
@@ -185,7 +198,6 @@ function init() {
             countryOrder: wp_sms_intel_tel_input.preferred_countries,
             autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
             nationalMode: true,
-            loadUtilsOnInit: loadUtilsModule,
             formatOnDisplay: false,
             initialCountry: defaultCountry
         });
