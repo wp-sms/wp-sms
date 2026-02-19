@@ -8,9 +8,13 @@ const ThemeContext = createContext({
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
-    // Check localStorage first
-    const stored = localStorage.getItem('wpsms-theme')
-    if (stored) return stored
+    try {
+      // Check localStorage first
+      const stored = localStorage.getItem('wpsms-theme')
+      if (stored === 'light' || stored === 'dark') return stored
+    } catch {
+      // localStorage unavailable (private browsing, restricted iframe, etc.)
+    }
 
     // Check system preference
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -21,16 +25,13 @@ export function ThemeProvider({ children }) {
   })
 
   useEffect(() => {
-    const root = document.documentElement
+    document.documentElement.setAttribute('data-theme', theme)
 
-    // Remove old theme
-    root.removeAttribute('data-theme')
-
-    // Set new theme
-    root.setAttribute('data-theme', theme)
-
-    // Store preference
-    localStorage.setItem('wpsms-theme', theme)
+    try {
+      localStorage.setItem('wpsms-theme', theme)
+    } catch {
+      // localStorage unavailable — theme still applies visually
+    }
   }, [theme])
 
   // Listen for system preference changes
@@ -38,9 +39,14 @@ export function ThemeProvider({ children }) {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
 
     const handleChange = (e) => {
-      const stored = localStorage.getItem('wpsms-theme')
-      // Only auto-switch if user hasn't set a preference
-      if (!stored) {
+      try {
+        const stored = localStorage.getItem('wpsms-theme')
+        // Only auto-switch if user hasn't set a preference
+        if (!stored) {
+          setTheme(e.matches ? 'dark' : 'light')
+        }
+      } catch {
+        // localStorage unavailable — respect system preference directly
         setTheme(e.matches ? 'dark' : 'light')
       }
     }

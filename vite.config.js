@@ -35,7 +35,7 @@ export default defineConfig(({ command, mode }) => ({
   base: command === 'serve' ? '/' : '/wp-content/plugins/wp-sms/public/dashboard/',
   build: {
     outDir: path.resolve(__dirname, 'public/dashboard'),
-    emptyDirBeforeWrite: true,
+    emptyOutDir: true,
     manifest: true,
     // Use terser for better minification
     minify: 'terser',
@@ -53,7 +53,7 @@ export default defineConfig(({ command, mode }) => ({
       output: {
         entryFileNames: 'assets/dashboard-[hash].js',
         chunkFileNames: 'assets/dashboard-[hash].js',
-        assetFileNames: 'assets/dashboard[extname]',
+        assetFileNames: 'assets/dashboard-[hash][extname]',
         // Manual chunks to reduce chunk count and optimize caching
         manualChunks: {
           // Core React runtime - changes rarely
