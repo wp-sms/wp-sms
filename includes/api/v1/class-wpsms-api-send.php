@@ -260,6 +260,10 @@ class SendSmsApi extends \WP_SMS\RestApi
                 throw new Exception($response->get_error_message());
             }
 
+            if ($response === false || $response === null) {
+                throw new Exception(esc_html__('Failed to send SMS. An unexpected error occurred. Please try again or check your gateway settings.', 'wp-sms'));
+            }
+
             $response = apply_filters('wp_sms_send_sms_response', esc_html__('Successfully send SMS!', 'wp-sms'));
             return self::response($response, 200, [
                 'balance' => Gateway::credit()
@@ -579,6 +583,10 @@ class SendSmsApi extends \WP_SMS\RestApi
 
             if (is_wp_error($response)) {
                 throw new Exception($response->get_error_message());
+            }
+
+            if ($response === false || $response === null) {
+                throw new Exception(esc_html__('Failed to send SMS. An unexpected error occurred. Please try again or check your gateway settings.', 'wp-sms'));
             }
 
             return self::response(esc_html__('Successfully sent SMS!', 'wp-sms'), 200, [

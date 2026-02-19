@@ -46,11 +46,12 @@ class Notification
         }
 
         if (!$this->optIn) {
+            $optOutError = new WP_Error('opt-out', __('This number has opted out of receiving SMS notifications.', 'wp-sms'));
             if (is_callable([$this, 'failed'])) {
-                $this->failed($to, new WP_Error('opt-out', __('This number has opted out of receiving SMS notifications.', 'wp-sms')));
+                $this->failed($to, $optOutError);
             }
 
-            return;
+            return $optOutError;
         }
 
         $this->processMessage($message);
