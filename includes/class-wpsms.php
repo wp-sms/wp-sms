@@ -174,7 +174,7 @@ class WP_SMS
     public function includes()
     {
         // Autoloader
-        require_once WP_SMS_DIR . "vendor/autoload.php";
+        require_once WP_SMS_DIR . "src/Dependencies/autoload.php";
 
         // Initialize asset system
         Assets::init();
