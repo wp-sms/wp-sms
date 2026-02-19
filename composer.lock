@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9872e5fc5e6be86a7ed65aa8d3a74c70",
+    "content-hash": "abe581b5da31adaea6820740145ac9d2",
     "packages": [],
     "packages-dev": [
         {
@@ -783,16 +783,16 @@
         },
         {
             "name": "veronalabs/wp-scoper",
-            "version": "v0.1.0-beta",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/veronalabs/wp-scoper.git",
-                "reference": "3917c40b296128ced0ac5e32b1ca6a3dc94e22cf"
+                "reference": "a09fa330bf20c76d2beea0007fc9dca2894f350a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/veronalabs/wp-scoper/zipball/3917c40b296128ced0ac5e32b1ca6a3dc94e22cf",
-                "reference": "3917c40b296128ced0ac5e32b1ca6a3dc94e22cf",
+                "url": "https://api.github.com/repos/veronalabs/wp-scoper/zipball/a09fa330bf20c76d2beea0007fc9dca2894f350a",
+                "reference": "a09fa330bf20c76d2beea0007fc9dca2894f350a",
                 "shasum": ""
             },
             "require": {
@@ -831,17 +831,15 @@
             "description": "A Composer plugin that prefixes namespaces in WordPress plugin dependencies to prevent conflicts",
             "support": {
                 "issues": "https://github.com/veronalabs/wp-scoper/issues",
-                "source": "https://github.com/veronalabs/wp-scoper/tree/v0.1.0-beta"
+                "source": "https://github.com/veronalabs/wp-scoper/tree/v1.0.0"
             },
-            "time": "2026-02-18T20:22:17+00:00"
+            "time": "2026-02-19T07:17:57+00:00"
         }
     ],
     "aliases": [],
-    "minimum-stability": "beta",
-    "stability-flags": {
-        "veronalabs/wp-scoper": 10
-    },
-    "prefer-stable": true,
+    "minimum-stability": "stable",
+    "stability-flags": {},
+    "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {},
     "platform-dev": {},

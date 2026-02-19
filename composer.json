@@ -11,7 +11,7 @@
     }
   ],
   "require-dev": {
-    "veronalabs/wp-scoper": "^0.1.0-beta"
+    "veronalabs/wp-scoper": "^1.0"
   },
   "autoload": {
     "psr-4": {
@@ -31,8 +31,6 @@
       "PATH=$(composer global config bin-dir --absolute --quiet --testdox):$PATH phpunit"
     ]
   },
-  "minimum-stability": "beta",
-  "prefer-stable": true,
   "config": {
     "allow-plugins": {
       "veronalabs/wp-scoper": true
