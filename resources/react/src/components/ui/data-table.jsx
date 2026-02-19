@@ -114,7 +114,7 @@ function BulkActionsDropdown({ actions, selectedCount, onAction, loadingAction }
               key={index}
               onClick={() => !isAnyLoading && onAction(action)}
               disabled={isAnyLoading}
-              style={action.variant === 'destructive' ? { color: '#dc2626' } : undefined}
+              style={action.variant === 'destructive' ? { color: 'hsl(var(--destructive))' } : undefined}
             >
               {isLoading ? (
                 <Loader2 style={{ marginInlineEnd: '8px', width: '16px', height: '16px' }} className="wsms-animate-spin" />
@@ -168,7 +168,7 @@ function RowActionsDropdown({ actions, row }) {
               key={index}
               onClick={() => !isLoading && action.onClick(row)}
               disabled={isLoading}
-              style={action.variant === 'destructive' ? { color: '#dc2626' } : undefined}
+              style={action.variant === 'destructive' ? { color: 'hsl(var(--destructive))' } : undefined}
             >
               {isLoading
                 ? <Loader2 style={{ marginInlineEnd: '8px', width: '16px', height: '16px' }} className="wsms-animate-spin" />

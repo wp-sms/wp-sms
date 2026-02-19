@@ -29,7 +29,7 @@ class DashboardHandler extends BaseAssets
      */
     public function enqueue($hook)
     {
-        if (strpos($hook, 'page_wsms') === false) {
+        if ($hook !== 'toplevel_page_wsms') {
             return;
         }
 
@@ -51,11 +51,12 @@ class DashboardHandler extends BaseAssets
                 $deps = wp_style_is('wsms-dashboard', 'registered') || wp_style_is('wsms-dashboard', 'enqueued')
                     ? ['wsms-dashboard']
                     : [];
+                $mtime = filemtime($rtlPath);
                 wp_enqueue_style(
                     'wsms-dashboard-rtl',
                     $this->pluginUrl . 'public/css/rtl.css',
                     $deps,
-                    $this->getVersion() . '.' . filemtime($rtlPath)
+                    $this->getVersion() . ($mtime !== false ? '.' . $mtime : '')
                 );
             }
         }
@@ -74,18 +75,15 @@ class DashboardHandler extends BaseAssets
 
         $manifestPath = $distPath . '.vite/manifest.json';
 
-        // Use dev server if WPSMS_VITE_DEV_SERVER constant is defined
-        $viteDevServer = defined('WPSMS_VITE_DEV_SERVER') ? WPSMS_VITE_DEV_SERVER : false;
+        // Use dev server if WPSMS_VITE_DEV_SERVER is defined as a non-empty string URL.
+        $viteDevServer = (defined('WPSMS_VITE_DEV_SERVER') && is_string(WPSMS_VITE_DEV_SERVER))
+            ? rtrim(WPSMS_VITE_DEV_SERVER, '/')
+            : false;
 
         if ($viteDevServer) {
-            // Dev mode: localization is injected via admin_footer inside this method
             $this->enqueueDevelopmentAssets($viteDevServer);
         } elseif (file_exists($manifestPath)) {
             $this->enqueueProductionAssets($manifestPath, $distUrl);
-
-            // Production: localize script data via wp_localize_script
-            $unifiedPage = Dashboard::getInstance();
-            wp_localize_script('wsms-dashboard', 'wpSmsSettings', $unifiedPage->getLocalizedData());
         }
     }
 
@@ -125,22 +123,55 @@ class DashboardHandler extends BaseAssets
             }
         }
 
-        // Enqueue JS
-        wp_enqueue_script(
-            'wsms-dashboard',
-            $distUrl . $mainEntry['file'],
-            [],
-            $this->getVersion() . '.' . filemtime($this->getUrl($mainEntry['file'], true)),
-            true
-        );
+        // Enqueue JS as native ES module (WP 6.5+)
+        if (function_exists('wp_enqueue_script_module')) {
+            // null = no version query string appended; Vite content-hashes the filename instead.
+            wp_enqueue_script_module('wsms-dashboard', $distUrl . $mainEntry['file'], [], null);
 
-        // Add type="module" to the script tag for ESM
-        add_filter('script_loader_tag', function ($tag, $handle) {
-            if ($handle === 'wsms-dashboard') {
-                return str_replace(' src', ' type="module" src', $tag);
-            }
-            return $tag;
-        }, 10, 2);
+            // Print localized data immediately — admin_enqueue_scripts fires inside <head>,
+            // before the module is printed in the footer by print_enqueued_script_modules().
+            // wp_localize_script() is incompatible with script modules.
+            $this->printLocalizedData();
+        } else {
+            // Fallback for WP < 6.5
+            $filePath  = $this->getUrl($mainEntry['file'], true);
+            $fileMtime = file_exists($filePath) ? filemtime($filePath) : false;
+            wp_enqueue_script(
+                'wsms-dashboard',
+                $distUrl . $mainEntry['file'],
+                [],
+                $this->getVersion() . ($fileMtime !== false ? '.' . $fileMtime : ''),
+                true
+            );
+            add_filter('script_loader_tag', function ($tag, $handle) {
+                if ($handle === 'wsms-dashboard') {
+                    return str_replace(' src', ' type="module" src', $tag);
+                }
+                return $tag;
+            }, 10, 2);
+            wp_localize_script('wsms-dashboard', 'wpSmsSettings', Dashboard::getInstance()->getLocalizedData());
+        }
+    }
+
+    /**
+     * Print localized settings data for the React app.
+     *
+     * Called directly during admin_enqueue_scripts (which fires inside <head>),
+     * so wp_print_inline_script_tag() outputs at the correct position — before
+     * any module scripts printed in the footer.
+     *
+     * Since wp_localize_script() is incompatible with script modules, data is
+     * injected as a classic <script> var. The React bundle always reads this as
+     * window.wpSmsSettings (never as a bare identifier).
+     *
+     * @return void
+     */
+    private function printLocalizedData()
+    {
+        wp_print_inline_script_tag(
+            'var wpSmsSettings = ' . wp_json_encode(Dashboard::getInstance()->getLocalizedData()) . ';',
+            ['id' => 'wsms-dashboard-settings']
+        );
     }
 
     /**
@@ -149,33 +180,25 @@ class DashboardHandler extends BaseAssets
      * @param string $viteDevServerUrl
      * @return void
      */
-    private function enqueueDevelopmentAssets($viteDevServerUrl)
+    private function enqueueDevelopmentAssets(string $viteDevServerUrl)
     {
-        $unifiedPage   = Dashboard::getInstance();
-        $localizedData = $unifiedPage->getLocalizedData();
+        // Print localized data immediately — same timing as the production path.
+        $this->printLocalizedData();
 
-        // Inject localized data and Vite scripts directly in footer
-        add_action('admin_footer', function () use ($viteDevServerUrl, $localizedData) {
-            ?>
-            <script>
-                window.wpSmsSettings = <?php echo wp_json_encode($localizedData); ?>;
-            </script>
-            <script type="module">
-                import RefreshRuntime from '<?php echo esc_url($viteDevServerUrl); ?>/@react-refresh'
-                RefreshRuntime.injectIntoGlobalHook(window)
-                window.$RefreshReg$ = () => {}
-                window.$RefreshSig$ = () => (type) => type
-                window.__vite_plugin_react_preamble_installed__ = true
-            </script>
-            <?php // phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript -- Vite dev server requires type="module" scripts ?>
-            <script type="module" src="<?php echo esc_url($viteDevServerUrl); ?>/@vite/client"></script>
-            <script type="module" src="<?php echo esc_url($viteDevServerUrl); ?>/src/main.jsx"></script>
-            <?php // phpcs:enable WordPress.WP.EnqueuedResources.NonEnqueuedScript ?>
-            <?php
+        // Inject React Refresh preamble + Vite client + entry point via admin_head.
+        add_action('admin_head', function () use ($viteDevServerUrl) {
+            // phpcs:disable WordPress.WP.EnqueuedResources.NonEnqueuedScript
+            echo '<script type="module">
+import RefreshRuntime from "' . esc_url($viteDevServerUrl) . '/@react-refresh"
+RefreshRuntime.injectIntoGlobalHook(window)
+window.$RefreshReg$ = () => {}
+window.$RefreshSig$ = () => (type) => type
+window.__vite_plugin_react_preamble_installed__ = true
+</script>' . "\n";
+            echo '<script type="module" src="' . esc_url($viteDevServerUrl) . '/@vite/client"></script>' . "\n";
+            // Entry point must match the `input` in vite.config.js (resources/react/src/main.jsx).
+            echo '<script type="module" src="' . esc_url($viteDevServerUrl) . '/src/main.jsx"></script>' . "\n";
+            // phpcs:enable WordPress.WP.EnqueuedResources.NonEnqueuedScript
         });
-
-        // Register empty script for wp_localize_script compatibility
-        wp_register_script('wsms-dashboard', '', [], $this->getVersion(), true);
-        wp_enqueue_script('wsms-dashboard');
     }
 }

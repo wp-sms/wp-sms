@@ -3,7 +3,46 @@ jQuery(document).ready(function () {
     setTimeout(init, 1500);
 });
 
+/**
+ * Load intl-tel-input utils via fetch + Blob URL.
+ *
+ * WordPress/local-dev servers can return text/html for .js files when loaded
+ * via dynamic import(), which fails strict MIME checking for ES modules.
+ * Fetching the file first and creating a Blob with the correct MIME type
+ * avoids this issue.
+ */
+function loadUtilsModule() {
+    return fetch(wp_sms_intel_tel_input.util_js)
+        .then(function (response) {
+            if (!response.ok) {
+                throw new Error('Failed to fetch intl-tel-input utils: ' + response.status);
+            }
+            return response.text();
+        })
+        .then(function (text) {
+            var blob = new Blob([text], { type: 'text/javascript' });
+            var blobUrl = URL.createObjectURL(blob);
+            return import(blobUrl).finally(function () {
+                URL.revokeObjectURL(blobUrl);
+            });
+        });
+}
+
+/**
+ * Pre-load utils before creating intlTelInput instances.
+ *
+ * strictMode requires utils (e.g. getCoreNumber) to be available synchronously
+ * on keystroke. Loading utils first ensures they are ready before any instance
+ * registers its keydown handler.
+ */
 function init() {
+    var utilsReady = window.intlTelInput.loadUtils(loadUtilsModule);
+    (utilsReady || Promise.resolve())
+        .catch(function () { /* continue without utils */ })
+        .then(initInputs);
+}
+
+function initInputs() {
     const body = document.body;
     const direction = body.classList.contains('rtl') ? 'rtl' : 'ltr';
 
@@ -53,7 +92,6 @@ function init() {
                     nationalMode: true,
                     useFullscreenPopup: useFullscreenPopupOption,
                     dropdownContainer: body.classList.contains('rtl') ? null : body,
-                    utilsScript: wp_sms_intel_tel_input.util_js,
                     hiddenInput: () => ({ phone: inputTells[i].name }),
                     formatOnDisplay: false,
                     initialCountry: defaultCountry
@@ -160,7 +198,6 @@ function init() {
             countryOrder: wp_sms_intel_tel_input.preferred_countries,
             autoHideDialCode: wp_sms_intel_tel_input.auto_hide,
             nationalMode: true,
-            utilsScript: wp_sms_intel_tel_input.util_js,
             formatOnDisplay: false,
             initialCountry: defaultCountry
         });

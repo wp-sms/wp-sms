@@ -83,7 +83,7 @@ function settingsReducer(state, action) {
         error: null,
       }
 
-    case ACTIONS.UPDATE_SETTING:
+    case ACTIONS.UPDATE_SETTING: {
       const newSettings = { ...state.settings, [action.payload.key]: action.payload.value }
       return {
         ...state,
@@ -92,8 +92,9 @@ function settingsReducer(state, action) {
                     !isEqual(state.proSettings, state.originalProSettings) ||
                     !isEqual(state.addonValues, state.originalAddonValues),
       }
+    }
 
-    case ACTIONS.UPDATE_PRO_SETTING:
+    case ACTIONS.UPDATE_PRO_SETTING: {
       const newProSettings = { ...state.proSettings, [action.payload.key]: action.payload.value }
       return {
         ...state,
@@ -102,8 +103,9 @@ function settingsReducer(state, action) {
                     !isEqual(newProSettings, state.originalProSettings) ||
                     !isEqual(state.addonValues, state.originalAddonValues),
       }
+    }
 
-    case ACTIONS.UPDATE_ADDON_SETTING:
+    case ACTIONS.UPDATE_ADDON_SETTING: {
       const { addonSlug: slug, key: fieldKey, value: fieldValue } = action.payload
       const currentAddonValues = state.addonValues || {}
       const newAddonValues = {
@@ -120,8 +122,9 @@ function settingsReducer(state, action) {
                     !isEqual(state.proSettings, state.originalProSettings) ||
                     !isEqual(newAddonValues, state.originalAddonValues || {}),
       }
+    }
 
-    case ACTIONS.UPDATE_SETTINGS_BATCH:
+    case ACTIONS.UPDATE_SETTINGS_BATCH: {
       const batchSettings = { ...state.settings, ...action.payload.settings }
       const batchProSettings = { ...state.proSettings, ...action.payload.proSettings }
       return {
@@ -132,6 +135,7 @@ function settingsReducer(state, action) {
                     !isEqual(batchProSettings, state.originalProSettings) ||
                     !isEqual(state.addonValues, state.originalAddonValues),
       }
+    }
 
     case ACTIONS.SAVE_SUCCESS:
       return {

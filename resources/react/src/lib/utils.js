@@ -54,7 +54,6 @@ export function debounce(func, wait) {
   let timeout
   return function executedFunction(...args) {
     const later = () => {
-      clearTimeout(timeout)
       func(...args)
     }
     clearTimeout(timeout)
@@ -279,11 +278,6 @@ export function arrayToCsv(data) {
 }
 
 /**
- * Download data as CSV file
- * @param {Array} data - Array of rows, each row is an array of cells
- * @param {string} filename - Output filename
- */
-/**
  * Get the best logo URL from a gateway object
  * Handles both string and object ({ square, rectangular }) formats
  * @param {object} gateway - Gateway object
@@ -305,6 +299,11 @@ export function countryCodeToFlag(code) {
   return String.fromCodePoint(...[...code.toUpperCase()].map(c => 0x1F1E6 + c.charCodeAt(0) - 65))
 }
 
+/**
+ * Download data as CSV file
+ * @param {Array} data - Array of rows, each row is an array of cells
+ * @param {string} filename - Output filename
+ */
 export function downloadCsv(data, filename) {
   const csvContent = arrayToCsv(data)
   // Add BOM for Excel UTF-8 compatibility

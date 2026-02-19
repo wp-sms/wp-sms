@@ -37,7 +37,7 @@ export default function PhoneInput({
       if (!document.querySelector('link[href*="intlTelInput"]')) {
         const link = document.createElement('link')
         link.rel = 'stylesheet'
-        link.href = `${baseUrl}assets/css/intlTelInput.min.css`
+        link.href = `${baseUrl}public/css/intlTelInput.min.css`
         document.head.appendChild(link)
       }
 
@@ -62,32 +62,42 @@ export default function PhoneInput({
       if (!window.intlTelInput) {
         await new Promise((resolve, reject) => {
           const script = document.createElement('script')
-          script.src = `${baseUrl}assets/js/intel/intlTelInput.min.js`
+          script.src = `${baseUrl}public/js/intel/intlTelInput.min.js`
           script.onload = resolve
           script.onerror = reject
           document.head.appendChild(script)
         })
       }
 
-      // Load utils script
-      const utilsUrl = `${baseUrl}assets/js/intel/utils.js`
+      // Pre-load utils via fetch+Blob to avoid MIME type issues with import()
+      const utilsUrl = `${baseUrl}public/js/intel/utils.js`
+      if (!window.intlTelInput.utils) {
+        const response = await fetch(utilsUrl)
+        if (response.ok) {
+          const text = await response.text()
+          const blob = new Blob([text], { type: 'text/javascript' })
+          const blobUrl = URL.createObjectURL(blob)
+          try {
+            await window.intlTelInput.loadUtils(blobUrl)
+          } finally {
+            URL.revokeObjectURL(blobUrl)
+          }
+        }
+      }
 
       setIsLoaded(true)
-      return utilsUrl
     }
 
     loadScripts()
-      .then((utilsUrl) => {
+      .then(() => {
         if (inputRef.current && window.intlTelInput && !itiRef.current) {
           const options = {
             initialCountry: initialCountry,
             autoInsertDialCode: true,
             allowDropdown: true,
-            strictMode: true,
             useFullscreenPopup: false,
             nationalMode: false,
             autoPlaceholder: 'polite',
-            loadUtilsOnInit: utilsUrl,
             customPlaceholder: (selectedCountryPlaceholder, selectedCountryData) => {
               return `+${selectedCountryData.dialCode} 555 123 4567`
             },
