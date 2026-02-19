@@ -2,9 +2,6 @@
 
 use WP_SMS\Admin\AdminManager;
 use WP_SMS\Admin\AnonymizedUsageData\AnonymizedUsageDataManager;
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-use WP_SMS\Admin\OnBoarding\StepFactory;
-use WP_SMS\Admin\OnBoarding\WizardManager;
 use WP_SMS\Admin\Dashboard;
 use WP_SMS\Components\Assets;
 use WP_SMS\Service\Assets\AssetsFactory;
@@ -234,18 +231,6 @@ class WP_SMS
 
             // Initialize dashboard
             Dashboard::getInstance()->init();
-
-            add_action('init', function () {
-                $wizard = new WizardManager(__('WPSMS OnBoarding Process', 'wp-sms'), 'wp-sms-onboarding');
-                $wizard->add(StepFactory::create('GettingStarted', $wizard));
-                $wizard->add(StepFactory::create('SmsGateway', $wizard));
-                $wizard->add(StepFactory::create('Configuration', $wizard));
-                $wizard->add(StepFactory::create('TestSetup', $wizard));
-                if (!LicenseHelper::isPremiumLicenseAvailable())
-                    $wizard->add(StepFactory::create('Pro', $wizard));
-                $wizard->add(StepFactory::create('Ready', $wizard));
-                $wizard->setup();
-            });
 
         }
 
