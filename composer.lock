@@ -787,12 +787,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/veronalabs/wp-scoper.git",
-                "reference": "a09fa330bf20c76d2beea0007fc9dca2894f350a"
+                "reference": "196e0030dbd4f69e24ca61b8a97072a34b1d30d3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/veronalabs/wp-scoper/zipball/a09fa330bf20c76d2beea0007fc9dca2894f350a",
-                "reference": "a09fa330bf20c76d2beea0007fc9dca2894f350a",
+                "url": "https://api.github.com/repos/veronalabs/wp-scoper/zipball/196e0030dbd4f69e24ca61b8a97072a34b1d30d3",
+                "reference": "196e0030dbd4f69e24ca61b8a97072a34b1d30d3",
                 "shasum": ""
             },
             "require": {
@@ -833,7 +833,7 @@
                 "issues": "https://github.com/veronalabs/wp-scoper/issues",
                 "source": "https://github.com/veronalabs/wp-scoper/tree/v1.0.0"
             },
-            "time": "2026-02-19T07:17:57+00:00"
+            "time": "2026-02-19T08:27:34+00:00"
         }
     ],
     "aliases": [],
