@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: WSMS (formerly WP SMS)
- * Plugin URI: https://wp-sms-pro.com/
+ * Plugin URI: https://wsms.io/
  * Description: SMS & MMS Notifications, 2FA, OTP, and Integrations with E-Commerce and Form Builders
  * Version: 7.1
  * Author: VeronaLabs
