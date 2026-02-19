@@ -20,7 +20,7 @@
   },
   "extra": {
     "wp-scoper": {
-      "namespace_prefix": "WP_SMS\\Deps",
+      "namespace_prefix": "WP_SMS\\Dependencies",
       "packages": [],
       "target_directory": "src/Dependencies",
       "exclude_directories": ["views", "templates", "resources", "public"]
