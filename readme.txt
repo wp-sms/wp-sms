@@ -4,7 +4,7 @@ Donate link: https://wp-sms-pro.com/donate
 Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sms
 Requires at least: 4.1
 Tested up to: 6.9
-Requires PHP: 7.2
+Requires PHP: 7.4
 Stable tag: 7.1
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html

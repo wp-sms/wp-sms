@@ -10,6 +10,9 @@
       "homepage": "https://veronalabs.com"
     }
   ],
+  "require": {
+    "php": ">=7.4"
+  },
   "require-dev": {
     "veronalabs/wp-scoper": "^1.0"
   },
@@ -32,6 +35,10 @@
     ]
   },
   "config": {
+    "platform-check": false,
+    "platform": {
+      "php": "7.4"
+    },
     "allow-plugins": {
       "veronalabs/wp-scoper": true
     }
