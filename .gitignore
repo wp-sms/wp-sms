@@ -60,6 +60,9 @@ bundle-analysis.html
 /playwright-report/
 /test-results/
 
+# Composer
+/vendor/
+
 # Claude Code
 .mcp.json
 CLAUDE.local.md
