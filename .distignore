@@ -1,15 +1,18 @@
 /.wordpress-org
 /.git
 /.github
+/.claude
 /node_modules
 /bin
 /tests
 /vendor
 /resources
+/dist
 
 .distignore
 .gitignore
 .editorconfig
+.DS_Store
 .gulpfile.js
 codeception.dist.yml
 composer.json
@@ -21,6 +24,7 @@ pnpm-lock.yaml
 postcss.config.js
 webpack.scripts.config.js
 README.md
+CHANGELOG.md
 CLAUDE.md
 AGENTS.md
 CONTRIBUTING.md

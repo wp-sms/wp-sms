@@ -165,6 +165,18 @@ function wp_sms_modify_message($message) {
 add_filter('wp_sms_msg', 'wp_sms_modify_message');
 ```
 
+## Building Distribution ZIP
+
+To create a clean plugin ZIP for distribution (without development files):
+
+```bash
+composer dist
+```
+
+This creates `dist/wp-sms.zip`, excluding files listed in `.distignore`.
+
+**Prerequisites:** Run `composer install --no-dev` and build assets (`npm run build`) before creating the ZIP.
+
 ## Development Guide
 For more information on how to contribute to WP SMS, please refer to the [Development Guide](https://github.com/wp-sms/wp-sms/wiki)
 

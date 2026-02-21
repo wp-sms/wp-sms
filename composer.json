@@ -33,7 +33,8 @@
   "scripts": {
     "test": [
       "PATH=$(composer global config bin-dir --absolute --quiet --testdox):$PATH phpunit"
-    ]
+    ],
+    "dist": "bash bin/build-zip.sh"
   },
   "config": {
     "platform-check": false,
