@@ -1,41 +1,82 @@
+# WordPress.org Distribution Ignore File
+# Files and directories listed here will be excluded from the plugin ZIP
+
+# ============================================
+# Version Control & CI/CD
+# ============================================
 /.wordpress-org
 /.git
 /.github
-/.claude
-/node_modules
 /bin
-/tests
-/vendor
-/resources
-/dist
 
-.distignore
-.gitignore
-.editorconfig
-.DS_Store
-.gulpfile.js
-codeception.dist.yml
-composer.json
-composer.lock
-LICENSE
+# ============================================
+# Node.js & Build Tools
+# ============================================
+/node_modules
+/dist
 package.json
 package-lock.json
 pnpm-lock.yaml
 postcss.config.js
 webpack.scripts.config.js
-README.md
-CHANGELOG.md
-CLAUDE.md
-AGENTS.md
-CONTRIBUTING.md
-security.md
-phpunit.xml.dist
 babel.config.js
+
+# ============================================
+# Testing
+# ============================================
+/tests
+phpunit.xml.dist
+.phpunit.result.cache
 jest.config.js
 jest.setup.js
 playwright.config.js
+.wp-env.json
+.env.e2e.example
+
+# ============================================
+# Frontend Build Configuration
+# ============================================
 tailwind.config.js
 vite.config.js
 bundle-analysis.html
-.env.e2e.example
-.wp-env.json
+
+# ============================================
+# PHP Build Configuration
+# ============================================
+composer.json
+composer.lock
+codeception.dist.yml
+
+# ============================================
+# Source Files (only built files needed)
+# ============================================
+/resources
+/vendor
+
+# ============================================
+# Documentation (not needed in production)
+# ============================================
+README.md
+CHANGELOG.md
+CONTRIBUTING.md
+security.md
+
+# ============================================
+# Environment & Configuration Files
+# ============================================
+.distignore
+.editorconfig
+.gitignore
+.gitattributes
+.DS_Store
+.gulpfile.js
+
+# ============================================
+# AI & IDE Tools
+# ============================================
+/.claude
+/.cursor
+/.vscode
+.mcp.json
+CLAUDE.md
+AGENTS.md
