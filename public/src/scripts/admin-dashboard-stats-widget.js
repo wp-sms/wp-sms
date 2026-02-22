@@ -50,10 +50,12 @@ const WPSmsStatsWidget = {
         const direction = this.elements.smsDirection.val()
         const datasets = (timeFrame && direction) ? WP_Sms_Admin_Dashboard_Object[direction][timeFrame] : null
         const localization = WP_Sms_Admin_Dashboard_Object.localization
+        const labels = Object.keys(datasets['successful'] || {})
 
         switch (direction) {
             case 'send-messages-stats':
                 return {
+                    labels: labels,
                     datasets: [
                         {
                             label: localization.successful,
@@ -61,7 +63,7 @@ const WPSmsStatsWidget = {
                             borderColor: 'rgba(0, 148, 67, 1)',
                             borderWidth: 1,
                             fill: true,
-                            data: datasets['successful'],
+                            data: Object.values(datasets['successful'] || {}),
                             tension: 0.4,
                         },
                         {
@@ -70,13 +72,14 @@ const WPSmsStatsWidget = {
                             borderColor: 'rgba(255, 99, 132, 1)',
                             borderWidth: 1,
                             fill: true,
-                            data: datasets['failure'],
+                            data: Object.values(datasets['failure'] || {}),
                             tension: 0.4,
                         }
                     ]
                 }
             case 'received-messages-stats':
                 return {
+                    labels: labels,
                     datasets: [
                         {
                             label: localization.successful,
@@ -84,7 +87,7 @@ const WPSmsStatsWidget = {
                             borderColor: 'rgba(0, 148, 67, 1)',
                             borderWidth: 1,
                             fill: true,
-                            data: datasets['successful'],
+                            data: Object.values(datasets['successful'] || {}),
                             tension: 0.4,
                         },
                         {
@@ -93,7 +96,7 @@ const WPSmsStatsWidget = {
                             borderColor: 'rgba(255, 99, 132, 1)',
                             borderWidth: 1,
                             fill: true,
-                            data: datasets['failure'],
+                            data: Object.values(datasets['failure'] || {}),
                             tension: 0.4,
                         },
                         {
@@ -102,7 +105,7 @@ const WPSmsStatsWidget = {
                             borderColor: 'rgb(73, 80, 87)',
                             borderWidth: 1,
                             fill: true,
-                            data: datasets['plain'],
+                            data: Object.values(datasets['plain'] || {}),
                             tension: 0.4,
                         }
                     ]
