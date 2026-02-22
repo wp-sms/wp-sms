@@ -1047,9 +1047,6 @@ export default function Integrations() {
                 <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                   <ClipboardList className="wsms-h-4 wsms-w-4 wsms-text-primary" />
                   {__('Gravity Forms')}
-                  <span className="wsms-ms-1 wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
-                    PRO
-                  </span>
                 </CardTitle>
                 <CardDescription className="wsms-mt-1">
                   {__('Send SMS notifications when Gravity Forms are submitted')}
@@ -1094,9 +1091,6 @@ export default function Integrations() {
                 <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                   <ClipboardList className="wsms-h-4 wsms-w-4 wsms-text-primary" />
                   {__('Quform')}
-                  <span className="wsms-ms-1 wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
-                    PRO
-                  </span>
                 </CardTitle>
                 <CardDescription className="wsms-mt-1">
                   {__('Send SMS notifications when Quform forms are submitted')}

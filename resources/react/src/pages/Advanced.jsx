@@ -215,11 +215,6 @@ export default function Advanced() {
               <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
                 <IconComponent className="wsms-h-4 wsms-w-4 wsms-text-primary" />
                 {section.title}
-                {section.addonSlug === 'wp-sms-pro' && (
-                  <span className="wsms-ms-1 wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
-                    {__('PRO')}
-                  </span>
-                )}
               </CardTitle>
               {section.description && (
                 <CardDescription>{section.description}</CardDescription>

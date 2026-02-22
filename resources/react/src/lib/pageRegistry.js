@@ -81,7 +81,6 @@ export const pageDefinitions = {
     component: lazy(() => import('@/pages/Scheduled')),
     nav: { type: 'item', order: 2.5 },
     condition: 'hasProAddon',
-    badgeLabel: 'PRO',
   },
 
   // ===== SUBSCRIBERS =====

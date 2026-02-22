@@ -413,9 +413,6 @@ export default function SendSms() {
             <div className="wsms-flex wsms-items-center wsms-gap-2">
               <CalendarClock className="wsms-h-4 wsms-w-4 wsms-text-primary" />
               <CardTitle className="wsms-text-sm">{__('Scheduling Options')}</CardTitle>
-              <span className="wsms-ms-auto wsms-px-2 wsms-py-0.5 wsms-rounded-full wsms-bg-primary/10 wsms-text-primary wsms-text-[10px] wsms-font-medium">
-                {__('PRO')}
-              </span>
             </div>
           </CardHeader>
           <CardContent className="wsms-p-4">
