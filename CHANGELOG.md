@@ -1,3 +1,6 @@
+= v7.2 - 2026-xx-xx =
+- **New:** Redesigned admin interface with improved user experience.
+
 = v7.1 - 2025-12-16 =
 - **New:** Introduced Notifications to receive important updates and promotions.
 - **New:** Added support for the Ghasedak.me gateway.

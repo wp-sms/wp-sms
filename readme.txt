@@ -5,7 +5,7 @@ Tags: sms notifications, otp login, woocommerce sms, 2fa authentication, bulk sm
 Requires at least: 4.1
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 7.1
+Stable tag: 7.2
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -138,6 +138,9 @@ All premium features + all add-ons in one package.
 - New Onboarding, Add-on Manager, and All-in-One package.
 
 == Changelog ==
+= v7.2 - 2026-xx-xx =
+- **New:** Redesigned admin interface with improved user experience.
+
 = v7.1 - 2025-12-16 =
 - **New:** Introduced Notifications to receive important updates and promotions.
 - **New:** Added support for the Ghasedak.me gateway.
