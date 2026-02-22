@@ -105,6 +105,13 @@ class WP_SMS
         add_action('init', array($this, 'init'));
 
         $this->includes();
+
+        // Initialize default settings if not already present
+        if (!get_option('wpsms_settings')) {
+            require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
+            update_option('wpsms_settings', \WP_SMS\Settings::getDefaultSettings());
+        }
+
         $this->setupBackgroundProcess();
     }
 

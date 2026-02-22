@@ -26,6 +26,25 @@ class Settings
     private $active_tab;
 
     /**
+     * Get default plugin settings.
+     *
+     * @return array
+     */
+    public static function getDefaultSettings()
+    {
+        return [
+            'add_mobile_field'             => 'add_mobile_field_in_profile',
+            'notify_errors_to_admin_email' => 1,
+            'report_wpsms_statistics'      => 1,
+            'display_notifications'        => 1,
+            'store_outbox_messages'        => 1,
+            'outbox_retention_days'        => 90,
+            'store_inbox_messages'         => 1,
+            'inbox_retention_days'         => 90,
+        ];
+    }
+
+    /**
      * @return string
      */
     private function getCurrentOptionName()
@@ -91,16 +110,7 @@ class Settings
 
         // Set default options
         if (!$settings) {
-            update_option($this->setting_name, array(
-                'add_mobile_field'             => 'add_mobile_field_in_profile',
-                'notify_errors_to_admin_email' => 1,
-                'report_wpsms_statistics'      => 1,
-                'display_notifications'        => 1,
-                'store_outbox_messages'        => 1,
-                'outbox_retention_days'        => 90,
-                'store_inbox_messages'         => 1,
-                'inbox_retention_days'         => 90,
-            ));
+            update_option($this->setting_name, self::getDefaultSettings());
         }
 
         return apply_filters('wpsms_get_settings', $settings);
