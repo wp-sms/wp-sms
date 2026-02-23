@@ -342,6 +342,7 @@ const RecipientSelector = React.forwardRef(
                           checked={isSelected}
                           onCheckedChange={() => handleGroupToggle(group.id)}
                           disabled={disabled}
+                          aria-label={group.name}
                         />
                         <Users className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
                         <span className="wsms-flex-1 wsms-text-[12px] wsms-text-foreground wsms-truncate">
@@ -377,6 +378,7 @@ const RecipientSelector = React.forwardRef(
                           checked={isSelected}
                           onCheckedChange={(checked) => handleAdditionalTypeToggle(type.id, checked)}
                           disabled={disabled}
+                          aria-label={type.label}
                         />
                         <Icon className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground" />
                         <span className="wsms-flex-1 wsms-text-[12px] wsms-text-foreground wsms-truncate">
@@ -434,6 +436,7 @@ const RecipientSelector = React.forwardRef(
                             checked={isSelected}
                             onCheckedChange={() => handleRoleToggle(role.id)}
                             disabled={disabled}
+                            aria-label={role.name}
                           />
                           <span className="wsms-text-[12px] wsms-text-foreground wsms-truncate">
                             {role.name}
