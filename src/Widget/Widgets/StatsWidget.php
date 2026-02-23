@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) exit;
 class StatsWidget extends AbstractWidget
 {
     protected $id = 'wp-sms-stats-widget';
-    protected $name = 'WP SMS Stats';
+    protected $name = 'WSMS Stats';
 
     protected $capability = 'manage_options';
 
