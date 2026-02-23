@@ -383,7 +383,7 @@ export default function TwoWayCommands() {
           <DialogBody className="wsms-scrollbar-thin">
             <div className="wsms-space-y-4">
               <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium">{__('Command Name')}</label>
+                <label htmlFor="command-name" className="wsms-text-[12px] wsms-font-medium">{__('Command Name')}</label>
                 <Input
                   id="command-name"
                   placeholder={__('e.g., HELP, INFO, STOP')}
@@ -408,7 +408,7 @@ export default function TwoWayCommands() {
                     commandDialog.updateField('command_option', '')
                   }}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger aria-label={__('Action')}>
                     <SelectValue placeholder={__('Select an action')} />
                   </SelectTrigger>
                   <SelectContent>
@@ -450,7 +450,7 @@ export default function TwoWayCommands() {
                     value={commandDialog.formData.command_option}
                     onValueChange={(value) => commandDialog.updateField('command_option', value)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger aria-label={selectedActionData.optionsLabel || __('Option')}>
                       <SelectValue placeholder={__('Select an option')} />
                     </SelectTrigger>
                     <SelectContent>
@@ -465,7 +465,7 @@ export default function TwoWayCommands() {
               )}
 
               <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium">{__('Success Response')}</label>
+                <label htmlFor="success-response" className="wsms-text-[12px] wsms-font-medium">{__('Success Response')}</label>
                 <Textarea
                   id="success-response"
                   placeholder={__('Message sent when the action succeeds')}
@@ -508,7 +508,7 @@ export default function TwoWayCommands() {
               </div>
 
               <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium">{__('Failure Response')}</label>
+                <label htmlFor="failure-response" className="wsms-text-[12px] wsms-font-medium">{__('Failure Response')}</label>
                 <Textarea
                   id="failure-response"
                   placeholder={__('Message sent when the action fails')}
@@ -547,13 +547,14 @@ export default function TwoWayCommands() {
 
               <div className="wsms-flex wsms-items-center wsms-justify-between">
                 <div>
-                  <label className="wsms-text-[12px] wsms-font-medium">{__('Status')}</label>
+                  <label htmlFor="command-status" className="wsms-text-[12px] wsms-font-medium">{__('Status')}</label>
                   <p className="wsms-text-[11px] wsms-text-muted-foreground">
                     {__('Enable or disable this command')}
                   </p>
                 </div>
                 <Switch
                   id="command-status"
+                  aria-label={__('Status')}
                   checked={commandDialog.formData.status === 'enabled'}
                   onCheckedChange={(checked) =>
                     commandDialog.updateField('status', checked ? 'enabled' : 'disabled')

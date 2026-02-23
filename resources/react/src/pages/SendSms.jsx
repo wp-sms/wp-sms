@@ -305,6 +305,7 @@ export default function SendSms() {
                   value={senderId}
                   onChange={(e) => setSenderId(e.target.value)}
                   placeholder={__('Sender ID')}
+                  aria-label={__('Sender ID')}
                   maxLength={18}
                   className="wsms-w-32 wsms-h-7 wsms-text-[12px]"
                 />
@@ -330,6 +331,7 @@ export default function SendSms() {
                     <Switch
                       checked={flashSms}
                       onCheckedChange={setFlashSms}
+                      aria-label={__('Flash SMS')}
                       className="wsms-scale-90"
                     />
                     <span className="wsms-text-[12px] wsms-text-muted-foreground">
@@ -431,6 +433,7 @@ export default function SendSms() {
                   </div>
                 </div>
                 <Switch
+                  aria-label={__('Schedule Message')}
                   checked={scheduleEnabled}
                   onCheckedChange={setScheduleEnabled}
                 />
@@ -440,10 +443,11 @@ export default function SendSms() {
               {scheduleEnabled && (
                 <div className="wsms-ps-7 wsms-space-y-4 wsms-border-s-2 wsms-border-primary/20 wsms-ms-2">
                   <div className="wsms-space-y-1.5">
-                    <label className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">
+                    <label htmlFor="schedule-date" className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">
                       {__('Schedule Date & Time')}
                     </label>
                     <Input
+                      id="schedule-date"
                       type="datetime-local"
                       value={scheduledDate}
                       onChange={(e) => setScheduledDate(e.target.value)}
@@ -469,6 +473,7 @@ export default function SendSms() {
                       </div>
                     </div>
                     <Switch
+                      aria-label={__('Repeat Message')}
                       checked={repeatEnabled}
                       onCheckedChange={setRepeatEnabled}
                     />
@@ -479,11 +484,12 @@ export default function SendSms() {
                     <div className="wsms-space-y-4 wsms-ps-7 wsms-border-s-2 wsms-border-primary/10 wsms-ms-2">
                       {/* Repeat Interval */}
                       <div className="wsms-space-y-1.5">
-                        <label className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">
+                        <label htmlFor="repeat-interval" className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">
                           {__('Repeat Every')}
                         </label>
                         <div className="wsms-flex wsms-items-center wsms-gap-2">
                           <Input
+                            id="repeat-interval"
                             type="number"
                             min={1}
                             value={repeatInterval}
@@ -491,7 +497,7 @@ export default function SendSms() {
                             className="!wsms-w-[120px]"
                           />
                           <Select value={repeatIntervalUnit} onValueChange={setRepeatIntervalUnit}>
-                            <SelectTrigger className="!wsms-w-[120px]">
+                            <SelectTrigger className="!wsms-w-[120px]" aria-label={__('Repeat interval unit')}>
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -506,11 +512,12 @@ export default function SendSms() {
 
                       {/* End Date */}
                       <div className="wsms-space-y-1.5">
-                        <label className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">
+                        <label htmlFor="repeat-end-date" className="wsms-text-[12px] wsms-font-medium wsms-text-foreground">
                           {__('End Date')}
                         </label>
                         <div className="wsms-flex wsms-items-center wsms-gap-4">
                           <Input
+                            id="repeat-end-date"
                             type="date"
                             value={repeatEndDate}
                             onChange={(e) => setRepeatEndDate(e.target.value)}

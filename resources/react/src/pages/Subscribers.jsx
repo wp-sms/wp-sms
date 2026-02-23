@@ -572,6 +572,7 @@ export default function Subscribers() {
                       value={quickAddPhone}
                       onChange={setQuickAddPhone}
                       placeholder={__('Phone number')}
+                      aria-label={__('Phone number')}
                     />
                   </div>
                   <div className={cn('wsms-shrink-0', multiGroupEnabled ? 'wsms-w-[160px]' : 'wsms-w-[120px]')}>
@@ -704,6 +705,7 @@ export default function Subscribers() {
                 value={filters.filters.search}
                 onChange={(e) => filters.setFilter('search', e.target.value)}
                 placeholder={__('Search...')}
+                aria-label={__('Search subscribers')}
                 className="wsms-ps-8 wsms-h-9"
               />
             </div>
@@ -799,6 +801,7 @@ export default function Subscribers() {
                 value={quickAddName}
                 onChange={(e) => setQuickAddName(e.target.value)}
                 placeholder={__('Name (optional)')}
+                aria-label={__('Subscriber name')}
                 className="wsms-h-9 wsms-w-full sm:wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[140px] wsms-text-[13px]"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && quickAddPhone.trim()) {
@@ -811,6 +814,7 @@ export default function Subscribers() {
                   value={quickAddPhone}
                   onChange={setQuickAddPhone}
                   placeholder={__('Phone number')}
+                  aria-label={__('Phone number')}
                 />
               </div>
               <div className={cn('wsms-w-full sm:wsms-shrink-0', multiGroupEnabled ? 'sm:wsms-w-[160px]' : 'sm:wsms-w-[120px]')}>
@@ -898,8 +902,9 @@ export default function Subscribers() {
           <DialogBody overflow="visible">
             <div className="wsms-space-y-4">
               <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium">Name</label>
+                <label htmlFor="edit-subscriber-name" className="wsms-text-[12px] wsms-font-medium">Name</label>
                 <Input
+                  id="edit-subscriber-name"
                   value={editDialog.formData.name}
                   onChange={(e) => editDialog.updateField('name', e.target.value)}
                   placeholder="Subscriber name"
@@ -911,6 +916,7 @@ export default function Subscribers() {
                   value={editDialog.formData.mobile}
                   onChange={(value) => editDialog.updateField('mobile', value)}
                   placeholder="+1234567890"
+                  aria-label={__('Phone number')}
                   className={editDialog.hasError('mobile') ? 'wsms-border-destructive' : ''}
                 />
                 {editDialog.getError('mobile') && (
@@ -1008,8 +1014,9 @@ export default function Subscribers() {
                 </p>
               </div>
               <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium">Message</label>
+                <label htmlFor="quick-reply-message" className="wsms-text-[12px] wsms-font-medium">Message</label>
                 <textarea
+                  id="quick-reply-message"
                   value={quickReplyMessage}
                   onChange={(e) => setQuickReplyMessage(e.target.value)}
                   placeholder="Type your message..."

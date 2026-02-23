@@ -296,6 +296,7 @@ export default function Gateway() {
               <Search className="wsms-absolute wsms-start-3 wsms-top-1/2 wsms-h-4 wsms-w-4 wsms--translate-y-1/2 wsms-text-muted-foreground" />
               <Input
                 placeholder={__('Search gateways...')}
+                aria-label={__('Search gateways')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="wsms-ps-9"

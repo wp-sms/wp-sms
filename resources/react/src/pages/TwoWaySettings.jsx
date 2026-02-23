@@ -264,6 +264,7 @@ export default function TwoWaySettings() {
                 <Input
                   value={webhookUrl}
                   readOnly
+                  aria-label={__('Webhook URL')}
                   className="wsms-font-mono wsms-text-xs wsms-bg-muted/50"
                 />
                 <Button

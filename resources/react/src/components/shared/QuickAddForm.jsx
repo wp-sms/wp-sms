@@ -72,6 +72,7 @@ const QuickAddForm = React.forwardRef(
             value={value}
             onChange={handleChange}
             placeholder={placeholder}
+            aria-label={placeholder}
             disabled={isLoading || disabled}
             maxLength={maxLength}
             className={cn(

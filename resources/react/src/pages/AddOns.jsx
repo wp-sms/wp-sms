@@ -168,6 +168,7 @@ function AddOnCard({ addon, onLicenseChanged }) {
                 value={licenseKey}
                 onChange={(e) => setLicenseKey(e.target.value)}
                 placeholder={showUpdateInput ? __('Enter new license key') : __('Enter license key')}
+                aria-label={showUpdateInput ? __('Enter new license key') : __('Enter license key')}
                 className="!wsms-h-8 wsms-text-[12px] wsms-flex-1"
                 onKeyDown={(e) => e.key === 'Enter' && handleActivate()}
               />

@@ -418,6 +418,7 @@ export default function CartAbandonment() {
               <Input
                 type="text"
                 placeholder={__('Search by phone...')}
+                aria-label={__('Search abandoned carts')}
                 value={filters.search}
                 onChange={(e) => handleFilterChange('search', e.target.value)}
                 className="wsms-ps-8 wsms-h-9"

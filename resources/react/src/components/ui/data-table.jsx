@@ -436,6 +436,7 @@ export function DataTable({
             <tr className="wsms-border-b wsms-border-border wsms-bg-muted/30">
               {hasSelection && (
                 <th className="wsms-w-12 wsms-p-3 wsms-text-start">
+                  <span className="wsms-sr-only">{__('Select')}</span>
                   <Checkbox
                     checked={allSelected}
                     indeterminate={someSelected}

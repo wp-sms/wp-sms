@@ -104,6 +104,7 @@ const MessageComposer = React.forwardRef(
             value={value}
             onChange={(e) => onChange?.(e.target.value)}
             placeholder={placeholder}
+            aria-label={__('Message')}
             disabled={disabled}
             rows={rows}
             className={cn(

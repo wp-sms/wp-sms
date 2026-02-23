@@ -187,6 +187,7 @@ export default function Groups() {
                   onChange={(e) => setInlineEditValue(e.target.value)}
                   onKeyDown={handleInlineEditKeyDown}
                   autoFocus
+                  aria-label={__('Edit group name')}
                   className="wsms-h-7 wsms-flex-1 wsms-min-w-0 wsms-text-[13px]"
                 />
                 <Button
@@ -375,7 +376,7 @@ export default function Groups() {
                 'wsms-p-1.5 wsms-rounded-md wsms-transition-colors',
                 viewMode === 'list' ? 'wsms-bg-muted wsms-text-foreground' : 'wsms-text-muted-foreground hover:wsms-text-foreground'
               )}
-              aria-label="List view"
+              aria-label={__('List view')}
               aria-pressed={viewMode === 'list'}
             >
               <List className="wsms-h-4 wsms-w-4" />
@@ -386,7 +387,7 @@ export default function Groups() {
                 'wsms-p-1.5 wsms-rounded-md wsms-transition-colors',
                 viewMode === 'grid' ? 'wsms-bg-muted wsms-text-foreground' : 'wsms-text-muted-foreground hover:wsms-text-foreground'
               )}
-              aria-label="Grid view"
+              aria-label={__('Grid view')}
               aria-pressed={viewMode === 'grid'}
             >
               <LayoutGrid className="wsms-h-4 wsms-w-4" />
@@ -402,13 +403,13 @@ export default function Groups() {
             <Plus className="wsms-h-5 wsms-w-5 wsms-text-primary wsms-shrink-0" />
             <div className="wsms-flex-1">
               <QuickAddForm
-                placeholder="Enter group name to create..."
-                buttonLabel="Create Group"
+                placeholder={__('Enter group name to create...')}
+                buttonLabel={__('Create Group')}
                 onSubmit={handleQuickAdd}
                 isLoading={isAddingQuick}
                 validate={(value) => {
-                  if (value.length < 2) return 'Group name must be at least 2 characters'
-                  if (value.length > 50) return 'Group name must be less than 50 characters'
+                  if (value.length < 2) return __('Group name must be at least 2 characters')
+                  if (value.length > 50) return __('Group name must be less than 50 characters')
                   return null
                 }}
               />
@@ -454,6 +455,7 @@ export default function Groups() {
                       onChange={(e) => setInlineEditValue(e.target.value)}
                       onKeyDown={handleInlineEditKeyDown}
                       autoFocus
+                      aria-label={__('Edit group name')}
                       className="wsms-h-8"
                     />
                     <div className="wsms-flex wsms-gap-2">

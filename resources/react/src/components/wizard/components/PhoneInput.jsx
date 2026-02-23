@@ -16,6 +16,8 @@ export default function PhoneInput({
   initialCountry = 'us',
   onlyCountries = [],
   preferredCountries = [],
+  'aria-label': ariaLabel,
+  id,
 }) {
   const inputRef = useRef(null)
   const itiRef = useRef(null)
@@ -245,6 +247,8 @@ export default function PhoneInput({
         dir="ltr"
         autoComplete="off"
         disabled={disabled}
+        aria-label={ariaLabel}
+        id={id}
         className={cn(
           'wsms-flex wsms-h-9 wsms-w-full wsms-rounded-md wsms-border wsms-bg-background wsms-py-1 wsms-text-sm wsms-ring-offset-background',
           'placeholder:wsms-text-muted-foreground',

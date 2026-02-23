@@ -275,7 +275,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
         <div className="wsms-space-y-2">
           <Label htmlFor="status">{__('Status')}</Label>
           <Select value={formData.status} onValueChange={(value) => updateField('status', value)}>
-            <SelectTrigger>
+            <SelectTrigger id="status">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -322,7 +322,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
                           value={condition.condition_key}
                           onValueChange={(value) => updateConditionInGroup(groupIndex, condIndex, 'condition_key', value)}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger aria-label={__('Condition type')}>
                             <SelectValue placeholder={__('Select type...')} />
                           </SelectTrigger>
                           <SelectContent>
@@ -338,7 +338,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
                           value={condition.condition_value}
                           onValueChange={(value) => updateConditionInGroup(groupIndex, condIndex, 'condition_value', value)}
                         >
-                          <SelectTrigger>
+                          <SelectTrigger aria-label={__('Condition value')}>
                             <SelectValue placeholder={__('Select value...')} />
                           </SelectTrigger>
                           <SelectContent>
@@ -382,7 +382,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
             value={formData.time_specification}
             onValueChange={(value) => updateField('time_specification', value)}
           >
-            <SelectTrigger>
+            <SelectTrigger aria-label={__('When to send')}>
               <SelectValue placeholder={__('Select when to send...')} />
             </SelectTrigger>
             <SelectContent>
@@ -401,6 +401,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
               type="datetime-local"
               value={formData.specific_date}
               onChange={(e) => updateField('specific_date', e.target.value)}
+              aria-label={__('Specific date')}
             />
           )}
 
@@ -412,6 +413,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
                   min="1"
                   value={formData.delayed_time.value}
                   onChange={(e) => updateField('delayed_time', { ...formData.delayed_time, value: parseInt(e.target.value) || 1 })}
+                  aria-label={__('Delay value')}
                 />
               </div>
               <div className="wsms-w-28 wsms-shrink-0">
@@ -419,7 +421,7 @@ const CampaignForm = ({ campaign, conditionOptions, timeSpecifications, messageV
                   value={formData.delayed_time.unit}
                   onValueChange={(value) => updateField('delayed_time', { ...formData.delayed_time, unit: value })}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger aria-label={__('Delay unit')}>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>

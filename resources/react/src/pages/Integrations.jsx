@@ -128,6 +128,7 @@ const ForminatorFormSettings = ({ form }) => {
                 <Label className="wsms-font-medium">{__('Send SMS to a number')}</Label>
               </div>
               <Switch
+                aria-label={__('Send SMS to a number')}
                 checked={enableForm === '1'}
                 onCheckedChange={(checked) => setEnableForm(checked ? '1' : '')}
               />
@@ -142,6 +143,7 @@ const ForminatorFormSettings = ({ form }) => {
                     value={receiverForm}
                     onChange={(e) => setReceiverForm(e.target.value)}
                     placeholder="+1234567890, +0987654321"
+                    aria-label={__('Phone numbers')}
                   />
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
                     {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.')}
@@ -156,6 +158,7 @@ const ForminatorFormSettings = ({ form }) => {
                     onChange={(e) => setMessageForm(e.target.value)}
                     rows={3}
                     placeholder={__('Enter your message content.')}
+                    aria-label={__('Message body')}
                   />
                   {form.variables && form.variables.length > 0 && (
                     <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -181,6 +184,7 @@ const ForminatorFormSettings = ({ form }) => {
                   <Label className="wsms-font-medium">{__('Send SMS to field')}</Label>
                 </div>
                 <Switch
+                  aria-label={__('Send SMS to field')}
                   checked={enableField === '1'}
                   onCheckedChange={(checked) => setEnableField(checked ? '1' : '')}
                 />
@@ -191,7 +195,7 @@ const ForminatorFormSettings = ({ form }) => {
                   <div className="wsms-space-y-2">
                     <Label>{__('A field of the form')}</Label>
                     <Select value={receiverField} onValueChange={setReceiverField}>
-                      <SelectTrigger>
+                      <SelectTrigger aria-label={__('Form field')}>
                         <SelectValue placeholder={__('Select a field...')} />
                       </SelectTrigger>
                       <SelectContent>
@@ -215,6 +219,7 @@ const ForminatorFormSettings = ({ form }) => {
                       onChange={(e) => setMessageField(e.target.value)}
                       rows={3}
                       placeholder={__('Enter your message content.')}
+                      aria-label={__('Message body')}
                     />
                     {form.variables && form.variables.length > 0 && (
                       <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -301,6 +306,7 @@ const GravityFormSettings = ({ form }) => {
                 <Label className="wsms-font-medium">{__('Send SMS to a number')}</Label>
               </div>
               <Switch
+                aria-label={__('Send SMS to a number')}
                 checked={enableForm === '1'}
                 onCheckedChange={(checked) => setEnableForm(checked ? '1' : '')}
               />
@@ -315,6 +321,7 @@ const GravityFormSettings = ({ form }) => {
                     value={receiverForm}
                     onChange={(e) => setReceiverForm(e.target.value)}
                     placeholder="+1234567890, +0987654321"
+                    aria-label={__('Phone numbers')}
                   />
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
                     {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.')}
@@ -329,6 +336,7 @@ const GravityFormSettings = ({ form }) => {
                     onChange={(e) => setMessageForm(e.target.value)}
                     rows={3}
                     placeholder={__('Enter your message content.')}
+                    aria-label={__('Message body')}
                   />
                   {form.variables && form.variables.length > 0 && (
                     <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -354,6 +362,7 @@ const GravityFormSettings = ({ form }) => {
                   <Label className="wsms-font-medium">{__('Send SMS to field')}</Label>
                 </div>
                 <Switch
+                  aria-label={__('Send SMS to field')}
                   checked={enableField === '1'}
                   onCheckedChange={(checked) => setEnableField(checked ? '1' : '')}
                 />
@@ -364,7 +373,7 @@ const GravityFormSettings = ({ form }) => {
                   <div className="wsms-space-y-2">
                     <Label>{__('A field of the form')}</Label>
                     <Select value={receiverField} onValueChange={setReceiverField}>
-                      <SelectTrigger>
+                      <SelectTrigger aria-label={__('Form field')}>
                         <SelectValue placeholder={__('Select a field...')} />
                       </SelectTrigger>
                       <SelectContent>
@@ -388,6 +397,7 @@ const GravityFormSettings = ({ form }) => {
                       onChange={(e) => setMessageField(e.target.value)}
                       rows={3}
                       placeholder={__('Enter your message content.')}
+                      aria-label={__('Message body')}
                     />
                     {form.variables && form.variables.length > 0 && (
                       <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -475,6 +485,7 @@ const QuformFormSettings = ({ form }) => {
                 <Label className="wsms-font-medium">{__('Send SMS to a number')}</Label>
               </div>
               <Switch
+                aria-label={__('Send SMS to a number')}
                 checked={enableForm === '1'}
                 onCheckedChange={(checked) => setEnableForm(checked ? '1' : '')}
               />
@@ -489,6 +500,7 @@ const QuformFormSettings = ({ form }) => {
                     value={receiverForm}
                     onChange={(e) => setReceiverForm(e.target.value)}
                     placeholder="+1234567890, +0987654321"
+                    aria-label={__('Phone numbers')}
                   />
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
                     {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.')}
@@ -503,6 +515,7 @@ const QuformFormSettings = ({ form }) => {
                     onChange={(e) => setMessageForm(e.target.value)}
                     rows={3}
                     placeholder={__('Enter your message content.')}
+                    aria-label={__('Message body')}
                   />
                   {form.variables && form.variables.length > 0 && (
                     <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -528,6 +541,7 @@ const QuformFormSettings = ({ form }) => {
                   <Label className="wsms-font-medium">{__('Send SMS to field')}</Label>
                 </div>
                 <Switch
+                  aria-label={__('Send SMS to field')}
                   checked={enableField === '1'}
                   onCheckedChange={(checked) => setEnableField(checked ? '1' : '')}
                 />
@@ -538,7 +552,7 @@ const QuformFormSettings = ({ form }) => {
                   <div className="wsms-space-y-2">
                     <Label>{__('A field of the form')}</Label>
                     <Select value={receiverField} onValueChange={setReceiverField}>
-                      <SelectTrigger>
+                      <SelectTrigger aria-label={__('Form field')}>
                         <SelectValue placeholder={__('Select a field...')} />
                       </SelectTrigger>
                       <SelectContent>
@@ -562,6 +576,7 @@ const QuformFormSettings = ({ form }) => {
                       onChange={(e) => setMessageField(e.target.value)}
                       rows={3}
                       placeholder={__('Enter your message content.')}
+                      aria-label={__('Message body')}
                     />
                     {form.variables && form.variables.length > 0 && (
                       <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -646,6 +661,7 @@ const FluentFormSettings = ({ form }) => {
                 <Label className="wsms-font-medium">{__('Send SMS to a number')}</Label>
               </div>
               <Switch
+                aria-label={__('Send SMS to a number')}
                 checked={enableForm === '1'}
                 onCheckedChange={(checked) => setEnableForm(checked ? '1' : '')}
               />
@@ -660,6 +676,7 @@ const FluentFormSettings = ({ form }) => {
                     value={receiverForm}
                     onChange={(e) => setReceiverForm(e.target.value)}
                     placeholder="+1234567890, +0987654321"
+                    aria-label={__('Phone numbers')}
                   />
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
                     {__('Enter the mobile number(s) to receive SMS, to separate numbers, use the latin comma.')}
@@ -674,6 +691,7 @@ const FluentFormSettings = ({ form }) => {
                     onChange={(e) => setMessageForm(e.target.value)}
                     rows={3}
                     placeholder={__('Enter your message content.')}
+                    aria-label={__('Message body')}
                   />
                   {form.variables && form.variables.length > 0 && (
                     <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -699,6 +717,7 @@ const FluentFormSettings = ({ form }) => {
                   <Label className="wsms-font-medium">{__('Send SMS to field')}</Label>
                 </div>
                 <Switch
+                  aria-label={__('Send SMS to field')}
                   checked={enableField === '1'}
                   onCheckedChange={(checked) => setEnableField(checked ? '1' : '')}
                 />
@@ -709,7 +728,7 @@ const FluentFormSettings = ({ form }) => {
                   <div className="wsms-space-y-2">
                     <Label>{__('A field of the form')}</Label>
                     <Select value={receiverField} onValueChange={setReceiverField}>
-                      <SelectTrigger>
+                      <SelectTrigger aria-label={__('Form field')}>
                         <SelectValue placeholder={__('Select a field...')} />
                       </SelectTrigger>
                       <SelectContent>
@@ -733,6 +752,7 @@ const FluentFormSettings = ({ form }) => {
                       onChange={(e) => setMessageField(e.target.value)}
                       rows={3}
                       placeholder={__('Enter your message content.')}
+                      aria-label={__('Message body')}
                     />
                     {form.variables && form.variables.length > 0 && (
                       <div className="wsms-flex wsms-flex-wrap wsms-gap-1 wsms-mt-2">
@@ -931,6 +951,7 @@ export default function Integrations() {
                     </p>
                   </div>
                   <Switch
+                    aria-label={__('SMS Notification Tab')}
                     checked={cf7Metabox === '1'}
                     onCheckedChange={(checked) => setCf7Metabox(checked ? '1' : '')}
                   />
@@ -981,6 +1002,7 @@ export default function Integrations() {
                     </p>
                   </div>
                   <Switch
+                    aria-label={__('SMS Notification Tab')}
                     checked={formidableMetabox === '1'}
                     onCheckedChange={(checked) => setFormidableMetabox(checked ? '1' : '')}
                   />

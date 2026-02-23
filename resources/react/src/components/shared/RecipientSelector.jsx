@@ -296,6 +296,7 @@ const RecipientSelector = React.forwardRef(
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={activeTab === 'groups' ? __('Search groups...') : __('Search roles...')}
+              aria-label={activeTab === 'groups' ? __('Search groups') : __('Search roles')}
               disabled={disabled}
               className="wsms-ps-8 wsms-h-8 wsms-text-[12px]"
             />

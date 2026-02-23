@@ -268,6 +268,7 @@ export default function Privacy() {
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   placeholder="+1234567890"
+                  aria-label={__('Phone number')}
                   className="wsms-ps-8 wsms-h-9 wsms-font-mono"
                 />
               </div>

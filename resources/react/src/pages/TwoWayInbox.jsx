@@ -711,8 +711,9 @@ export default function TwoWayInbox() {
                 <p>{replyingTo?.text?.substring(0, 100)}{replyingTo?.text?.length > 100 ? '...' : ''}</p>
               </div>
               <div className="wsms-space-y-2">
-                <label className="wsms-text-[12px] wsms-font-medium">{__('Message')}</label>
+                <label className="wsms-text-[12px] wsms-font-medium" htmlFor="reply-message">{__('Message')}</label>
                 <Textarea
+                  id="reply-message"
                   placeholder={__('Type your reply...')}
                   value={replyMessage}
                   onChange={(e) => setReplyMessage(e.target.value)}
@@ -809,6 +810,7 @@ export default function TwoWayInbox() {
                     value={conversationReply}
                     onChange={(e) => setConversationReply(e.target.value)}
                     placeholder={__('Type a reply...')}
+                    aria-label={__('Reply message')}
                     className="wsms-h-9"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {

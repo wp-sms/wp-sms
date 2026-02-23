@@ -171,6 +171,7 @@ const SearchableSelect = React.forwardRef(
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder={searchPlaceholder}
+                  aria-label={searchPlaceholder || __('Search')}
                   className="wsms-h-8 wsms-ps-8 wsms-text-start"
                 />
               </div>

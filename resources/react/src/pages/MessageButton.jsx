@@ -495,6 +495,7 @@ export default function MessageButton() {
                       value={chatboxColor}
                       onChange={(e) => setChatboxColor(e.target.value)}
                       placeholder="#f88e40"
+                      aria-label={__('Primary color hex value')}
                     />
                   </div>
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
@@ -516,6 +517,7 @@ export default function MessageButton() {
                       value={chatboxTextColor}
                       onChange={(e) => setChatboxTextColor(e.target.value)}
                       placeholder="#ffffff"
+                      aria-label={__('Text color hex value')}
                     />
                   </div>
                   <p className="wsms-text-[12px] wsms-text-muted-foreground">
@@ -560,6 +562,7 @@ export default function MessageButton() {
                     value={footerTextColor}
                     onChange={(e) => setFooterTextColor(e.target.value)}
                     placeholder="#666666"
+                    aria-label={__('Footer text color hex value')}
                   />
                 </div>
               </div>
