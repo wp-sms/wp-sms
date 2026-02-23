@@ -85,7 +85,7 @@ const AppShell = memo(function AppShell() {
 
         {/* Main content */}
         <div className="wsms-main">
-          <main id="main-content" className="wsms-content wsms-scrollbar-thin" tabIndex={-1}>
+          <div id="main-content" role="region" aria-label="WP SMS content" className="wsms-content wsms-scrollbar-thin" tabIndex={-1}>
             <div className="wsms-content-inner">
               <AdminNotices />
               {isLoading ? (
@@ -116,7 +116,7 @@ const AppShell = memo(function AppShell() {
 
               <BrandingFooter />
             </div>
-          </main>
+          </div>
 
           <FloatingSaveBar />
         </div>

@@ -170,7 +170,7 @@ export default function Header({ onMenuClick, showMenuButton }) {
   const displayNotifications = useSavedSetting('display_notifications', '1')
 
   return (
-    <header className="wsms-flex wsms-items-center wsms-justify-between wsms-h-14 wsms-px-4 wsms-bg-card wsms-border-b wsms-border-border">
+    <div className="wsms-flex wsms-items-center wsms-justify-between wsms-h-14 wsms-px-4 wsms-bg-card wsms-border-b wsms-border-border">
       {/* Left: Mobile menu + Logo */}
       <div className="wsms-flex wsms-items-center wsms-gap-3">
         {showMenuButton && (
@@ -200,6 +200,6 @@ export default function Header({ onMenuClick, showMenuButton }) {
           <ThemeToggle />
         </div>
       </div>
-    </header>
+    </div>
   )
 }

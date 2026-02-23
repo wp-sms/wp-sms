@@ -586,7 +586,7 @@ export default function Subscribers() {
                       />
                     ) : (
                       <Select value={quickAddGroup || 'none'} onValueChange={(v) => setQuickAddGroup(v === 'none' ? '' : v)}>
-                        <SelectTrigger>
+                        <SelectTrigger aria-label={__('Select group')}>
                           <SelectValue placeholder={__('No Group')} />
                         </SelectTrigger>
                         <SelectContent>
@@ -825,7 +825,7 @@ export default function Subscribers() {
                   />
                 ) : (
                   <Select value={quickAddGroup || 'none'} onValueChange={(v) => setQuickAddGroup(v === 'none' ? '' : v)}>
-                    <SelectTrigger className="wsms-h-9 wsms-text-[13px]">
+                    <SelectTrigger className="wsms-h-9 wsms-text-[13px]" aria-label={__('Select group')}>
                       <SelectValue placeholder={__('No Group')} />
                     </SelectTrigger>
                     <SelectContent>
@@ -924,7 +924,7 @@ export default function Subscribers() {
                     value={editDialog.formData.group_id || 'none'}
                     onValueChange={(v) => editDialog.updateField('group_id', v === 'none' ? '' : v)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger aria-label={__('Group')}>
                       <SelectValue placeholder="Select group" />
                     </SelectTrigger>
                     <SelectContent>
@@ -943,7 +943,7 @@ export default function Subscribers() {
                     value={editDialog.formData.status}
                     onValueChange={(v) => editDialog.updateField('status', v)}
                   >
-                    <SelectTrigger>
+                    <SelectTrigger aria-label={__('Status')}>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -1087,7 +1087,7 @@ export default function Subscribers() {
                   <div className="wsms-space-y-2">
                     <label className="wsms-text-[12px] wsms-font-medium">{__('Select Group')}</label>
                     <Select value={moveToGroupId} onValueChange={setMoveToGroupId}>
-                      <SelectTrigger>
+                      <SelectTrigger aria-label={__('Select group')}>
                         <SelectValue placeholder={__('Choose a group...')} />
                       </SelectTrigger>
                       <SelectContent>

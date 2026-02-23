@@ -478,7 +478,7 @@ export function DataTable({
                   </th>
                 )
               })}
-              {rowActions && <th className="wsms-w-12 wsms-p-3" />}
+              {rowActions && <th className="wsms-w-12 wsms-p-3"><span className="wsms-sr-only">{__('Actions')}</span></th>}
             </tr>
           </thead>
           <tbody>

@@ -58,7 +58,7 @@ function HeartIcon({ className }) {
  */
 const BrandingFooter = memo(function BrandingFooter() {
   return (
-    <footer className="wsms-mt-20 wsms-mb-10 wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-gap-4">
+    <div className="wsms-mt-20 wsms-mb-10 wsms-flex wsms-flex-col wsms-items-center wsms-justify-center wsms-gap-4">
       {/* Logo container with refined hover interaction */}
       <div className="wsms-group wsms-relative wsms-flex wsms-items-center wsms-justify-center wsms-p-4 wsms-cursor-default">
         {/* Subtle glow effect on hover */}
@@ -74,12 +74,12 @@ const BrandingFooter = memo(function BrandingFooter() {
       </div>
 
       {/* Community message */}
-      <p className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-text-muted-foreground/50">
+      <p className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-text-[12px] wsms-text-muted-foreground">
         <span>{__('Made with')}</span>
         <HeartIcon className="wsms-h-3.5 wsms-w-3.5 wsms-text-rose-400/70" />
         <span>{__('for the WordPress community')}</span>
       </p>
-    </footer>
+    </div>
   )
 })
 

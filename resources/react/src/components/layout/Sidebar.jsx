@@ -212,7 +212,7 @@ function WhatsNew({ version }) {
         <Sparkles className="wsms-h-3 wsms-w-3 wsms-text-primary/60 group-hover:wsms-text-primary wsms-transition-colors" />
         <span>{__("What's New")}</span>
       </span>
-      <span className="wsms-font-medium wsms-text-muted-foreground/70">v{version}</span>
+      <span className="wsms-font-medium wsms-text-muted-foreground">v{version}</span>
     </a>
   )
 }
@@ -259,7 +259,7 @@ function NavItem({ item, isActive, onClick, isNested = false, badge }) {
           className={cn(
             'wsms-flex wsms-flex-1 wsms-items-center wsms-gap-2.5 wsms-py-1.5 wsms-px-2.5 wsms-rounded-md wsms-transition-colors wsms-duration-150',
             isActive
-              ? 'wsms-bg-primary/10 wsms-font-semibold'
+              ? 'wsms-bg-primary/[0.06] wsms-font-semibold'
               : 'hover:wsms-bg-primary/5'
           )}
         >
@@ -282,7 +282,7 @@ function NavItem({ item, isActive, onClick, isNested = false, badge }) {
       className={cn(
         'wsms-flex wsms-w-full wsms-items-center wsms-gap-3 wsms-rounded-md wsms-text-[13px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start wsms-px-3 wsms-py-2.5',
         isActive
-          ? 'wsms-bg-primary/10 wsms-text-primary wsms-font-semibold'
+          ? 'wsms-bg-primary/[0.06] wsms-text-primary wsms-font-semibold'
           : 'wsms-text-foreground/70 hover:wsms-bg-primary/5 hover:wsms-text-foreground wsms-transition-colors wsms-duration-150'
       )}
     >
@@ -323,7 +323,7 @@ function NestedNavGroup({ group, currentPage, setCurrentPage }) {
         className={cn(
           'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-px-2.5 wsms-py-1.5 wsms-text-[12px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start',
           hasActiveChild
-            ? 'wsms-text-primary wsms-bg-primary/10'
+            ? 'wsms-text-primary wsms-bg-primary/[0.06]'
             : 'wsms-text-foreground/70 hover:wsms-bg-primary/5 hover:wsms-text-foreground'
         )}
       >
@@ -363,7 +363,7 @@ function NestedNavGroup({ group, currentPage, setCurrentPage }) {
                 className={cn(
                   'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded-md wsms-px-2 wsms-py-1.5 wsms-text-[11px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start',
                   currentPage === item.id
-                    ? 'wsms-text-primary wsms-bg-primary/10'
+                    ? 'wsms-text-primary wsms-bg-primary/[0.06]'
                     : 'wsms-text-foreground/60 hover:wsms-bg-primary/5 hover:wsms-text-foreground/80'
                 )}
               >

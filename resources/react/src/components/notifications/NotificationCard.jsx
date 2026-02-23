@@ -122,9 +122,9 @@ export function NotificationCard({ notification, onDismiss, showDismiss = true }
         <div className="wsms-flex-1 wsms-min-w-0 wsms-pe-6">
           {/* Title */}
           {title && (
-            <h4 className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground wsms-leading-snug wsms-mb-1">
+            <p className="wsms-text-[13px] wsms-font-semibold wsms-text-foreground wsms-leading-snug wsms-mb-1">
               {title}
-            </h4>
+            </p>
           )}
 
           {/* Timestamp */}
