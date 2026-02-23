@@ -34,6 +34,8 @@ const Repeater = React.forwardRef(
     },
     ref
   ) => {
+    const repeaterId = React.useId()
+
     // Ensure value is always an array
     const items = React.useMemo(() => {
       if (!value) return []
@@ -136,42 +138,50 @@ const Repeater = React.forwardRef(
                   ) : fields.length === 2 ? (
                     // Two fields - side by side
                     <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2">
-                      {fields.map((field) => (
-                        <div key={field.name} className="wsms-space-y-1">
-                          <Label className="wsms-text-[12px]">
-                            {field.label}
-                          </Label>
-                          <RepeaterField
-                            field={field}
-                            value={item[field.name] || ''}
-                            onChange={(val) => handleItemChange(index, field.name, val)}
-                            disabled={disabled}
-                          />
-                        </div>
-                      ))}
+                      {fields.map((field) => {
+                        const fieldId = `${repeaterId}-${index}-${field.name}`
+                        return (
+                          <div key={field.name} className="wsms-space-y-1">
+                            <Label htmlFor={fieldId} className="wsms-text-[12px]">
+                              {field.label}
+                            </Label>
+                            <RepeaterField
+                              field={field}
+                              fieldId={fieldId}
+                              value={item[field.name] || ''}
+                              onChange={(val) => handleItemChange(index, field.name, val)}
+                              disabled={disabled}
+                            />
+                          </div>
+                        )
+                      })}
                     </div>
                   ) : (
                     // Multiple fields - 2-column grid with colSpan support
                     <div className="wsms-grid wsms-grid-cols-2 wsms-gap-x-3 wsms-gap-y-2">
-                      {fields.map((field) => (
-                        <div
-                          key={field.name}
-                          className={cn(
-                            'wsms-space-y-1 wsms-min-w-0',
-                            field.colSpan === 2 && 'wsms-col-span-2'
-                          )}
-                        >
-                          <Label className="wsms-text-[12px]">
-                            {field.label}
-                          </Label>
-                          <RepeaterField
-                            field={field}
-                            value={item[field.name] || ''}
-                            onChange={(val) => handleItemChange(index, field.name, val)}
-                            disabled={disabled}
-                          />
-                        </div>
-                      ))}
+                      {fields.map((field) => {
+                        const fieldId = `${repeaterId}-${index}-${field.name}`
+                        return (
+                          <div
+                            key={field.name}
+                            className={cn(
+                              'wsms-space-y-1 wsms-min-w-0',
+                              field.colSpan === 2 && 'wsms-col-span-2'
+                            )}
+                          >
+                            <Label htmlFor={fieldId} className="wsms-text-[12px]">
+                              {field.label}
+                            </Label>
+                            <RepeaterField
+                              field={field}
+                              fieldId={fieldId}
+                              value={item[field.name] || ''}
+                              onChange={(val) => handleItemChange(index, field.name, val)}
+                              disabled={disabled}
+                            />
+                          </div>
+                        )
+                      })}
                     </div>
                   )}
                 </div>
@@ -220,7 +230,7 @@ Repeater.displayName = 'Repeater'
 /**
  * Individual field renderer for repeater items
  */
-function RepeaterField({ field, value, onChange, disabled }) {
+function RepeaterField({ field, fieldId, value, onChange, disabled }) {
   const { type = 'text', placeholder, options, buttonText, variables } = field
 
   switch (type) {
@@ -239,6 +249,7 @@ function RepeaterField({ field, value, onChange, disabled }) {
       }
       return (
         <Textarea
+          id={fieldId}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
@@ -250,6 +261,7 @@ function RepeaterField({ field, value, onChange, disabled }) {
     case 'select':
       return (
         <select
+          id={fieldId}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           disabled={disabled}
@@ -279,6 +291,7 @@ function RepeaterField({ field, value, onChange, disabled }) {
     case 'url':
       return (
         <Input
+          id={fieldId}
           type="url"
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -290,6 +303,7 @@ function RepeaterField({ field, value, onChange, disabled }) {
     case 'tel':
       return (
         <Input
+          id={fieldId}
           type="tel"
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -302,6 +316,7 @@ function RepeaterField({ field, value, onChange, disabled }) {
     default:
       return (
         <Input
+          id={fieldId}
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}

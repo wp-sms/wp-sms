@@ -214,7 +214,7 @@ function Pagination({
   if (totalPages <= 1) return null
 
   return (
-    <div className="wsms-flex wsms-flex-col sm:wsms-flex-row wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-4 wsms-py-3 wsms-border-t wsms-border-border wsms-bg-muted/20">
+    <nav aria-label={__('Pagination')} className="wsms-flex wsms-flex-col sm:wsms-flex-row wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-4 wsms-py-3 wsms-border-t wsms-border-border wsms-bg-muted/20">
       <p className="wsms-text-[12px] wsms-text-muted-foreground">
         {__('Showing')} <span className="wsms-font-medium wsms-text-foreground">{startItem}</span> {__('to')}{' '}
         <span className="wsms-font-medium wsms-text-foreground">{endItem}</span> {__('of')}{' '}
@@ -240,6 +240,8 @@ function Pagination({
               size="icon"
               className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
               onClick={() => onPageChange(1)}
+              aria-label={__('Go to page %s').replace('%s', '1')}
+              aria-current={currentPage === 1 ? 'page' : undefined}
             >
               1
             </Button>
@@ -256,6 +258,8 @@ function Pagination({
             size="icon"
             className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
             onClick={() => onPageChange(page)}
+            aria-label={__('Go to page %s').replace('%s', String(page))}
+            aria-current={currentPage === page ? 'page' : undefined}
           >
             {page}
           </Button>
@@ -271,6 +275,8 @@ function Pagination({
               size="icon"
               className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
               onClick={() => onPageChange(totalPages)}
+              aria-label={__('Go to page %s').replace('%s', String(totalPages))}
+              aria-current={currentPage === totalPages ? 'page' : undefined}
             >
               {totalPages}
             </Button>
@@ -288,7 +294,7 @@ function Pagination({
           <ChevronRight className="wsms-h-4 wsms-w-4 rtl:wsms-scale-x-[-1]" />
         </Button>
       </div>
-    </div>
+    </nav>
   )
 }
 
@@ -416,6 +422,7 @@ export function DataTable({
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 className="wsms-ps-8 wsms-h-9"
+                aria-label={__('Search')}
               />
             </div>
           )}
@@ -437,31 +444,40 @@ export function DataTable({
                   />
                 </th>
               )}
-              {columns.map((column) => (
-                <th
-                  key={column.id || column.accessorKey}
-                  className={cn(
-                    'wsms-p-3 wsms-text-start wsms-text-[12px] wsms-font-semibold wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide',
-                    column.sortable && 'wsms-cursor-pointer wsms-select-none hover:wsms-text-foreground wsms-transition-colors',
-                    column.className
-                  )}
-                  style={{ width: column.width }}
-                  onClick={() => column.sortable && handleSort(column.id || column.accessorKey)}
-                >
-                  <div className="wsms-flex wsms-items-center wsms-gap-1.5">
-                    <span>{column.header}</span>
-                    {column.sortable && (
-                      <SortIndicator
-                        direction={
-                          sortConfig.key === (column.id || column.accessorKey)
-                            ? sortConfig.direction
-                            : null
-                        }
-                      />
+              {columns.map((column) => {
+                const columnKey = column.id || column.accessorKey
+                const currentDirection = sortConfig.key === columnKey ? sortConfig.direction : null
+                const ariaSortValue = column.sortable
+                  ? (currentDirection === 'asc' ? 'ascending' : currentDirection === 'desc' ? 'descending' : 'none')
+                  : undefined
+
+                return (
+                  <th
+                    key={columnKey}
+                    className={cn(
+                      'wsms-p-3 wsms-text-start wsms-text-[12px] wsms-font-semibold wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide',
+                      column.className
                     )}
-                  </div>
-                </th>
-              ))}
+                    style={{ width: column.width }}
+                    aria-sort={ariaSortValue}
+                  >
+                    {column.sortable ? (
+                      <button
+                        type="button"
+                        onClick={() => handleSort(columnKey)}
+                        className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-cursor-pointer wsms-select-none hover:wsms-text-foreground wsms-transition-colors wsms-bg-transparent wsms-border-0 wsms-p-0 wsms-font-semibold wsms-text-[12px] wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground"
+                      >
+                        <span>{column.header}</span>
+                        <SortIndicator direction={currentDirection} />
+                      </button>
+                    ) : (
+                      <div className="wsms-flex wsms-items-center wsms-gap-1.5">
+                        <span>{column.header}</span>
+                      </div>
+                    )}
+                  </th>
+                )
+              })}
               {rowActions && <th className="wsms-w-12 wsms-p-3" />}
             </tr>
           </thead>

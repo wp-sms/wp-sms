@@ -68,6 +68,7 @@ const AppShell = memo(function AppShell() {
           <div
             className="wsms-fixed wsms-inset-0 wsms-top-[46px] wsms-z-[99998] wsms-bg-black/50"
             onClick={() => setMobileMenuOpen(false)}
+            aria-hidden="true"
           />
         )}
 

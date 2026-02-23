@@ -73,7 +73,7 @@ export function MediaSelector({
         {isImage && !imageError ? (
           <img
             src={value}
-            alt=""
+            alt={__('Selected media')}
             onError={handleImageError}
             className="wsms-h-9 wsms-w-9 wsms-rounded wsms-object-cover wsms-border wsms-border-border"
           />
@@ -99,6 +99,7 @@ export function MediaSelector({
           onClick={handleRemove}
           disabled={disabled}
           className="wsms-h-9 wsms-w-9 wsms-p-0 wsms-text-muted-foreground hover:wsms-text-destructive"
+          aria-label={__('Remove media')}
         >
           <X className="wsms-h-4 wsms-w-4" />
         </Button>

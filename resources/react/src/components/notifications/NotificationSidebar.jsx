@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { X, Loader2, Bell, Trash2 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+import { cn, __ } from '@/lib/utils'
 import { NotificationCard } from './NotificationCard'
 import { EmptyState } from './EmptyState'
 
@@ -12,9 +12,14 @@ const WP_ADMIN_BAR_HEIGHT = 32
 /**
  * Tab button component with refined styling
  */
-function TabButton({ active, onClick, children, count }) {
+function TabButton({ active, onClick, children, count, id, controls }) {
   return (
     <button
+      role="tab"
+      aria-selected={active}
+      id={id}
+      aria-controls={controls}
+      tabIndex={active ? 0 : -1}
       onClick={onClick}
       className={cn(
         'wsms-relative wsms-px-1 wsms-py-3 wsms-text-[13px] wsms-font-medium',
@@ -72,6 +77,7 @@ export function NotificationSidebar({
   const [activeTab, setActiveTab] = useState('inbox')
   const [isAnimatingOut, setIsAnimatingOut] = useState(false)
   const contentRef = useRef(null)
+  const sidebarRef = useRef(null)
 
   // Lock body scroll when sidebar is open
   useEffect(() => {
@@ -106,6 +112,48 @@ export function NotificationSidebar({
     }
   }, [activeTab])
 
+  // Focus trap and auto-focus when sidebar opens
+  useEffect(() => {
+    if (!isOpen) return
+
+    const sidebar = sidebarRef.current
+    if (!sidebar) return
+
+    // Auto-focus the close button on open
+    const closeButton = sidebar.querySelector('[aria-label="Close notifications"]')
+    if (closeButton) {
+      closeButton.focus()
+    }
+
+    // Focus trap: keep focus inside sidebar
+    const handleTabKey = (e) => {
+      if (e.key !== 'Tab') return
+
+      const focusableElements = sidebar.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+      if (focusableElements.length === 0) return
+
+      const firstElement = focusableElements[0]
+      const lastElement = focusableElements[focusableElements.length - 1]
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault()
+          lastElement.focus()
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault()
+          firstElement.focus()
+        }
+      }
+    }
+
+    document.addEventListener('keydown', handleTabKey)
+    return () => document.removeEventListener('keydown', handleTabKey)
+  }, [isOpen])
+
   const currentNotifications = activeTab === 'inbox' ? inboxNotifications : dismissedNotifications
   const totalCount = inboxNotifications.length + dismissedNotifications.length
 
@@ -135,6 +183,7 @@ export function NotificationSidebar({
 
       {/* Sidebar panel */}
       <div
+        ref={sidebarRef}
         className={cn(
           'wsms-fixed wsms-w-[420px] wsms-max-w-[calc(100vw-24px)]',
           'wsms-bg-background wsms-z-[9999]',
@@ -193,11 +242,25 @@ export function NotificationSidebar({
 
         {/* Tabs section */}
         <div className="wsms-flex wsms-items-center wsms-justify-between wsms-px-5 wsms-py-1 wsms-border-b wsms-border-border/50 wsms-bg-card/50">
-          <div className="wsms-flex wsms-gap-5">
+          <div
+            role="tablist"
+            aria-label={__('Notification tabs')}
+            className="wsms-flex wsms-gap-5"
+            onKeyDown={(e) => {
+              if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                e.preventDefault()
+                const nextTab = activeTab === 'inbox' ? 'dismissed' : 'inbox'
+                setActiveTab(nextTab)
+                document.getElementById(`notifications-tab-${nextTab}`)?.focus()
+              }
+            }}
+          >
             <TabButton
               active={activeTab === 'inbox'}
               onClick={() => setActiveTab('inbox')}
               count={inboxNotifications.length}
+              id="notifications-tab-inbox"
+              controls="notifications-tabpanel"
             >
               Inbox
             </TabButton>
@@ -205,6 +268,8 @@ export function NotificationSidebar({
               active={activeTab === 'dismissed'}
               onClick={() => setActiveTab('dismissed')}
               count={dismissedNotifications.length}
+              id="notifications-tab-dismissed"
+              controls="notifications-tabpanel"
             >
               Dismissed
             </TabButton>
@@ -214,6 +279,7 @@ export function NotificationSidebar({
           {activeTab === 'inbox' && inboxNotifications.length > 1 && (
             <button
               onClick={onDismissAll}
+              aria-label={__('Clear all %s notifications').replace('%s', String(inboxNotifications.length))}
               className={cn(
                 'wsms-flex wsms-items-center wsms-gap-1.5 wsms-px-2.5 wsms-py-1.5',
                 'wsms-text-xs wsms-font-medium wsms-text-muted-foreground wsms-rounded-md',
@@ -231,6 +297,9 @@ export function NotificationSidebar({
         {/* Content area */}
         <div
           ref={contentRef}
+          role="tabpanel"
+          id="notifications-tabpanel"
+          aria-labelledby={`notifications-tab-${activeTab}`}
           className={cn(
             'wsms-flex-1 wsms-overflow-y-auto wsms-overscroll-contain',
             'wsms-scrollbar-thin wsms-bg-muted/30'

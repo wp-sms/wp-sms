@@ -18,7 +18,7 @@ import {
  * FieldDescription - Renders field descriptions with proper HTML support
  * Safely renders <code> tags as styled code chips and <a> tags as links
  */
-const FieldDescription = ({ children, className }) => {
+const FieldDescription = ({ children, className, id }) => {
   if (!children) return null
 
   // Parse HTML and convert supported tags to React elements
@@ -68,7 +68,7 @@ const FieldDescription = ({ children, className }) => {
   }
 
   return (
-    <p className={cn('wsms-text-[12px] wsms-text-muted-foreground wsms-leading-relaxed', className)}>
+    <p id={id} className={cn('wsms-text-[12px] wsms-text-muted-foreground wsms-leading-relaxed', className)}>
       {renderDescription(children)}
     </p>
   )
@@ -85,6 +85,12 @@ FieldDescription.propTypes = {
 const FormField = React.forwardRef(
   ({ label, description, error, required, className, children, ...props }, ref) => {
     const id = React.useId()
+    const descriptionId = `${id}-description`
+    const errorId = `${id}-error`
+    const describedBy = [
+      description && !error ? descriptionId : null,
+      error ? errorId : null,
+    ].filter(Boolean).join(' ') || undefined
 
     return (
       <div ref={ref} className={cn('wsms-space-y-2', className)} {...props}>
@@ -94,12 +100,12 @@ const FormField = React.forwardRef(
       {required && <span className="wsms-ms-1 wsms-text-destructive">*</span>}
           </Label>
         )}
-        {React.cloneElement(children, { id, 'aria-invalid': !!error })}
+        {React.cloneElement(children, { id, 'aria-invalid': !!error, 'aria-describedby': describedBy })}
         {description && !error && (
-          <FieldDescription className="wsms-mt-1">{description}</FieldDescription>
+          <FieldDescription id={descriptionId} className="wsms-mt-1">{description}</FieldDescription>
         )}
         {error && (
-          <p className="wsms-text-[12px] wsms-text-destructive wsms-mt-1">{error}</p>
+          <p id={errorId} role="alert" className="wsms-text-[12px] wsms-text-destructive wsms-mt-1">{error}</p>
         )}
       </div>
     )
@@ -153,6 +159,12 @@ SwitchField.displayName = 'SwitchField'
 const InputField = React.forwardRef(
   ({ label, description, error, required, type = 'text', className, inputClassName, ...props }, ref) => {
     const id = React.useId()
+    const descriptionId = `${id}-description`
+    const errorId = `${id}-error`
+    const describedBy = [
+      description && !error ? descriptionId : null,
+      error ? errorId : null,
+    ].filter(Boolean).join(' ') || undefined
 
     return (
       <div ref={ref} className={cn('wsms-space-y-2', className)}>
@@ -166,14 +178,15 @@ const InputField = React.forwardRef(
           id={id}
           type={type}
           aria-invalid={!!error}
+          aria-describedby={describedBy}
           className={cn(error && 'wsms-border-destructive', inputClassName)}
           {...props}
         />
         {description && !error && (
-          <FieldDescription>{description}</FieldDescription>
+          <FieldDescription id={descriptionId}>{description}</FieldDescription>
         )}
         {error && (
-          <p className="wsms-text-[12px] wsms-text-destructive">{error}</p>
+          <p id={errorId} role="alert" className="wsms-text-[12px] wsms-text-destructive">{error}</p>
         )}
       </div>
     )
@@ -187,6 +200,12 @@ InputField.displayName = 'InputField'
 const TextareaField = React.forwardRef(
   ({ label, description, error, required, className, textareaClassName, ...props }, ref) => {
     const id = React.useId()
+    const descriptionId = `${id}-description`
+    const errorId = `${id}-error`
+    const describedBy = [
+      description && !error ? descriptionId : null,
+      error ? errorId : null,
+    ].filter(Boolean).join(' ') || undefined
 
     return (
       <div ref={ref} className={cn('wsms-space-y-2', className)}>
@@ -199,14 +218,15 @@ const TextareaField = React.forwardRef(
         <Textarea
           id={id}
           aria-invalid={!!error}
+          aria-describedby={describedBy}
           className={cn(error && 'wsms-border-destructive', textareaClassName)}
           {...props}
         />
         {description && !error && (
-          <FieldDescription>{description}</FieldDescription>
+          <FieldDescription id={descriptionId}>{description}</FieldDescription>
         )}
         {error && (
-          <p className="wsms-text-[12px] wsms-text-destructive">{error}</p>
+          <p id={errorId} role="alert" className="wsms-text-[12px] wsms-text-destructive">{error}</p>
         )}
       </div>
     )
@@ -220,6 +240,12 @@ TextareaField.displayName = 'TextareaField'
 const SelectField = React.forwardRef(
   ({ label, description, error, required, placeholder, value, onValueChange, options = [], className, ...props }, ref) => {
     const id = React.useId()
+    const descriptionId = `${id}-description`
+    const errorId = `${id}-error`
+    const describedBy = [
+      description && !error ? descriptionId : null,
+      error ? errorId : null,
+    ].filter(Boolean).join(' ') || undefined
 
     // Ensure value is always a string (handle legacy array values)
     const normalizedValue = Array.isArray(value) ? (value[0] || '') : (value ?? '')
@@ -233,7 +259,7 @@ const SelectField = React.forwardRef(
           </Label>
         )}
         <Select value={normalizedValue} onValueChange={onValueChange} {...props}>
-          <SelectTrigger id={id} className={cn(error && 'wsms-border-destructive')}>
+          <SelectTrigger id={id} aria-describedby={describedBy} className={cn(error && 'wsms-border-destructive')}>
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
           <SelectContent>
@@ -245,10 +271,10 @@ const SelectField = React.forwardRef(
           </SelectContent>
         </Select>
         {description && !error && (
-          <FieldDescription>{description}</FieldDescription>
+          <FieldDescription id={descriptionId}>{description}</FieldDescription>
         )}
         {error && (
-          <p className="wsms-text-[12px] wsms-text-destructive">{error}</p>
+          <p id={errorId} role="alert" className="wsms-text-[12px] wsms-text-destructive">{error}</p>
         )}
       </div>
     )
@@ -262,6 +288,12 @@ SelectField.displayName = 'SelectField'
 const MultiSelectField = React.forwardRef(
   ({ label, description, error, required, placeholder, searchPlaceholder, options = [], value = [], onValueChange, className, ...props }, ref) => {
     const id = React.useId()
+    const descriptionId = `${id}-description`
+    const errorId = `${id}-error`
+    const describedBy = [
+      description && !error ? descriptionId : null,
+      error ? errorId : null,
+    ].filter(Boolean).join(' ') || undefined
 
     return (
       <div ref={ref} className={cn('wsms-space-y-2', className)}>
@@ -273,6 +305,7 @@ const MultiSelectField = React.forwardRef(
         )}
         <MultiSelect
           id={id}
+          aria-describedby={describedBy}
           options={options}
           value={value}
           onValueChange={onValueChange}
@@ -281,10 +314,10 @@ const MultiSelectField = React.forwardRef(
           {...props}
         />
         {description && !error && (
-          <FieldDescription>{description}</FieldDescription>
+          <FieldDescription id={descriptionId}>{description}</FieldDescription>
         )}
         {error && (
-          <p className="wsms-text-[12px] wsms-text-destructive">{error}</p>
+          <p id={errorId} role="alert" className="wsms-text-[12px] wsms-text-destructive">{error}</p>
         )}
       </div>
     )

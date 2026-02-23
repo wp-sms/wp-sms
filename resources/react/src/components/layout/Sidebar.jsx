@@ -103,6 +103,7 @@ function GatewayStatus({ isConfigured, gatewayKey, onConfigure }) {
       {/* Header - clickable to expand/collapse */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
+        aria-expanded={isExpanded}
         className={cn(
           'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-px-3 wsms-py-2 wsms-text-start wsms-rounded-md wsms-transition-colors',
           isConnected ? 'hover:wsms-bg-emerald-500/15' : 'hover:wsms-bg-amber-500/15'
@@ -248,6 +249,7 @@ function NavItem({ item, isActive, onClick, isNested = false, badge }) {
     return (
       <button
         onClick={onClick}
+        aria-current={isActive ? 'page' : undefined}
         className={cn(
           'wsms-flex wsms-w-full wsms-items-center wsms-py-0.5 wsms-pe-3 wsms-ps-7 wsms-text-start wsms-transition-colors wsms-duration-150',
           isActive ? 'wsms-text-primary' : 'wsms-text-foreground/70 hover:wsms-text-foreground'
@@ -276,6 +278,7 @@ function NavItem({ item, isActive, onClick, isNested = false, badge }) {
   return (
     <button
       onClick={onClick}
+      aria-current={isActive ? 'page' : undefined}
       className={cn(
         'wsms-flex wsms-w-full wsms-items-center wsms-gap-3 wsms-rounded-md wsms-text-[13px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start wsms-px-3 wsms-py-2.5',
         isActive
@@ -316,6 +319,7 @@ function NestedNavGroup({ group, currentPage, setCurrentPage }) {
       {/* Nested group header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
+        aria-expanded={isExpanded}
         className={cn(
           'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-px-2.5 wsms-py-1.5 wsms-text-[12px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start',
           hasActiveChild
@@ -355,6 +359,7 @@ function NestedNavGroup({ group, currentPage, setCurrentPage }) {
               <button
                 key={item.id}
                 onClick={() => setCurrentPage(item.id)}
+                aria-current={currentPage === item.id ? 'page' : undefined}
                 className={cn(
                   'wsms-flex wsms-w-full wsms-items-center wsms-gap-2 wsms-rounded-md wsms-px-2 wsms-py-1.5 wsms-text-[11px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start',
                   currentPage === item.id
@@ -412,6 +417,7 @@ function NavGroup({ group, currentPage, setCurrentPage, conditions, badges = {} 
       {/* Group header - clickable to expand/collapse */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
+        aria-expanded={isExpanded}
         className={cn(
           'wsms-flex wsms-w-full wsms-items-center wsms-justify-between wsms-rounded-md wsms-px-3 wsms-py-2.5 wsms-text-[13px] wsms-font-medium wsms-transition-all wsms-duration-150 wsms-text-start',
           hasActiveChild
