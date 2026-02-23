@@ -19,7 +19,7 @@ if (
         'links'   => [
             'learn_more'     => [
                 'text' => __('Learn More', 'wp-sms'),
-                'url'  => 'https://wsms.io/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=doc',
+                'url'  => 'https://wsms.io/docs/share-anonymous-data/?utm_source=wp-sms&utm_medium=link&utm_campaign=doc',
             ],
             'primary_button' => [
                 'text'       => __('Enable Share Anonymous Data', 'wp-sms'),

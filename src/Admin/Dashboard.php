@@ -342,7 +342,7 @@ class Dashboard extends Singleton
                     ],
                     [
                         'label' => __('Learn More', 'wp-sms'),
-                        'url'   => 'https://wsms.io/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=doc',
+                        'url'   => 'https://wsms.io/docs/share-anonymous-data/?utm_source=wp-sms&utm_medium=link&utm_campaign=doc',
                     ],
                 ],
             ];
