@@ -90,9 +90,23 @@ rm -rf "${BUILD_DIR:?}/$PLUGIN_SLUG"
 mkdir -p "$BUILD_DIR/$PLUGIN_SLUG"
 mkdir -p "$OUTPUT_DIR"
 
-# Copy files, respecting .distignore
-rsync -rc --exclude-from="$PLUGIN_DIR/.distignore" \
-    "$PLUGIN_DIR/" "$BUILD_DIR/$PLUGIN_SLUG/" --delete
+# Build tar exclude args from .distignore (cross-platform rsync alternative)
+EXCLUDE_ARGS=()
+while IFS= read -r line || [[ -n "$line" ]]; do
+    # Skip empty lines and comments
+    [[ "$line" =~ ^[[:space:]]*($|#) ]] && continue
+    if [[ "$line" == /* ]]; then
+        # Root-relative: prepend dot for tar matching from ./
+        EXCLUDE_ARGS+=("--exclude=.${line}")
+    else
+        # Non-rooted: matches anywhere in the tree
+        EXCLUDE_ARGS+=("--exclude=${line}")
+    fi
+done < "$PLUGIN_DIR/.distignore"
+
+# Copy files using tar pipe (works on macOS, Linux, and Windows/MINGW64)
+(cd "$PLUGIN_DIR" && tar cf - "${EXCLUDE_ARGS[@]}" .) | \
+    (cd "$BUILD_DIR/$PLUGIN_SLUG" && tar xf -)
 
 # Remove system files
 find "$BUILD_DIR/$PLUGIN_SLUG" -name ".DS_Store" -delete 2>/dev/null || true
