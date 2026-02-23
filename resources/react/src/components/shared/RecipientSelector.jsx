@@ -576,6 +576,7 @@ const RecipientSelector = React.forwardRef(
                     onChange={(e) => setNumberInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={__('Enter phone number...')}
+                    aria-label={__('Phone number')}
                     disabled={disabled}
                     className="wsms-flex-1 wsms-h-8 wsms-text-[12px] wsms-font-mono"
                   />
@@ -585,6 +586,7 @@ const RecipientSelector = React.forwardRef(
                     disabled={disabled || !numberInput.trim()}
                     size="sm"
                     className="wsms-h-8"
+                    aria-label={__('Add number')}
                   >
                     <Plus className="wsms-h-3.5 wsms-w-3.5" />
                   </Button>
