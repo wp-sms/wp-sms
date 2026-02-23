@@ -94,7 +94,7 @@ const STEPS = [
 function getStepImageUrl(slug) {
   const { pluginUrl } = getWpSettings()
   const baseUrl = pluginUrl || '/wp-content/plugins/wp-sms/'
-  return `${baseUrl}assets/images/premium-modal/${slug}.png`
+  return `${baseUrl}public/images/premium-modal/${slug}.png`
 }
 
 /**
