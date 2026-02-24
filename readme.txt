@@ -138,7 +138,7 @@ All premium features + all add-ons in one package.
 - New Onboarding, Add-on Manager, and All-in-One package.
 
 == Changelog ==
-= v7.2 - 2026-xx-xx =
+= v7.2 - 2026-03-01 =
 - **New:** Redesigned admin interface with improved user experience.
 
 = v7.1 - 2025-12-16 =

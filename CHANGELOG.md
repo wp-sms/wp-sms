@@ -1,4 +1,4 @@
-= v7.2 - 2026-xx-xx =
+= v7.2 - 2026-03-01 =
 - **New:** Redesigned admin interface with improved user experience.
 
 = v7.1 - 2025-12-16 =
