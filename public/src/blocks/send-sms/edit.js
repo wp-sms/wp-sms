@@ -15,6 +15,12 @@ import {
     PanelBody,
 } from '@wordpress/components';
 
+const SmsIcon = () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="hsl(24, 95%, 38%)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    </svg>
+);
+
 /**
  * Edit function.
  *
@@ -96,7 +102,10 @@ export default function edit({attributes, setAttributes}) {
             {blockSettings}
             <div {...useBlockProps()}>
                 <div className="wp-sms-block wp-sms-block--sendSms">
-                    <h2 className="wp-sms-block__title">Send SMS</h2>
+                    <div className="wp-sms-block__header">
+                        <SmsIcon />
+                        <span>{__('Send SMS', 'wp-sms')}</span>
+                    </div>
                     <div className="wp-sms-block__main">
                         <TextControl
                             label={__('Title', 'wp-sms')}
@@ -108,7 +117,17 @@ export default function edit({attributes, setAttributes}) {
                             value={description}
                             onChange={onChangeDescription}
                         />
-                        {/* Add more inputs and controls as needed */}
+                    </div>
+                    <div className="wp-sms-block__preview">
+                        <div className="wp-sms-block__preview-label">{__('Message', 'wp-sms')}</div>
+                        <div className="wp-sms-block__preview-textarea"></div>
+                        {receiver === 'numbers' && (
+                            <>
+                                <div className="wp-sms-block__preview-label">{__('Receiver', 'wp-sms')}</div>
+                                <div className="wp-sms-block__preview-input"></div>
+                            </>
+                        )}
+                        <div className="wp-sms-block__preview-button">{__('Send Message', 'wp-sms')}</div>
                     </div>
                 </div>
             </div>

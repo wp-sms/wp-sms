@@ -1,35 +1,38 @@
-@font-face {
-  font-family: 'Barlow';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('../fonts/barlow-v5-latin-regular.woff2') format('woff2'),
-       url('../fonts/barlow-v5-latin-regular.woff') format('woff');
-}
+// Barlow font-face declarations (deprecated in favor of system font stack)
+// Preserved for reference; the system font stack from --wsms-font-family takes over.
 
-@font-face {
-  font-family: 'Barlow';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url('../fonts/barlow-medium.woff2') format('woff2'),
-       url('../fonts/barlow-medium.woff') format('woff');
-}
+// @font-face {
+//   font-family: 'Barlow';
+//   font-style: normal;
+//   font-weight: 400;
+//   font-display: swap;
+//   src: url('../fonts/barlow-v5-latin-regular.woff2') format('woff2'),
+//        url('../fonts/barlow-v5-latin-regular.woff') format('woff');
+// }
 
-@font-face {
-  font-family: 'Barlow';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('../fonts/barlow-semi-bold..woff2') format('woff2'),
-       url('../fonts/barlow-semi-bold.woff') format('woff');
-}
+// @font-face {
+//   font-family: 'Barlow';
+//   font-style: normal;
+//   font-weight: 500;
+//   font-display: swap;
+//   src: url('../fonts/barlow-medium.woff2') format('woff2'),
+//        url('../fonts/barlow-medium.woff') format('woff');
+// }
 
-@font-face {
-  font-family: 'Barlow';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('../fonts/barlow-v5-latin-700.woff2') format('woff2'),
-       url('../fonts/barlow-v5-latin-700.woff') format('woff');
-}
+// @font-face {
+//   font-family: 'Barlow';
+//   font-style: normal;
+//   font-weight: 600;
+//   font-display: swap;
+//   src: url('../fonts/barlow-semi-bold..woff2') format('woff2'),
+//        url('../fonts/barlow-semi-bold.woff') format('woff');
+// }
+
+// @font-face {
+//   font-family: 'Barlow';
+//   font-style: normal;
+//   font-weight: 700;
+//   font-display: swap;
+//   src: url('../fonts/barlow-v5-latin-700.woff2') format('woff2'),
+//        url('../fonts/barlow-v5-latin-700.woff') format('woff');
+// }
