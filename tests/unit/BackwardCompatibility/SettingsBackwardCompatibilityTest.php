@@ -22,7 +22,7 @@ class SettingsBackwardCompatibilityTest extends WPSMSTestCase
      * @var array
      */
     private $legacySettings = [
-        'gateway_name'              => 'twilio',
+        'gateway_name'              => 'test',
         'gateway_key'               => 'test_api_key_123',
         'gateway_password'          => 'test_password_456',
         'gateway_sender_id'         => '+15551234567',
@@ -86,7 +86,7 @@ class SettingsBackwardCompatibilityTest extends WPSMSTestCase
         $apiSettings = $data['data']['settings'];
 
         // Verify gateway name is preserved
-        $this->assertEquals('twilio', $apiSettings['gateway_name']);
+        $this->assertEquals('test', $apiSettings['gateway_name']);
 
         // Verify sender ID is preserved
         $this->assertEquals('+15551234567', $apiSettings['gateway_sender_id']);
@@ -123,7 +123,7 @@ class SettingsBackwardCompatibilityTest extends WPSMSTestCase
     {
         $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
-                'gateway_name'        => 'twilio',
+                'gateway_name'        => 'test',
                 'gateway_sender_id'   => '+15557777777',
                 'admin_mobile_number' => '+15558888888',
             ],
@@ -137,7 +137,7 @@ class SettingsBackwardCompatibilityTest extends WPSMSTestCase
         $savedSenderId = Option::getOption('gateway_sender_id');
         $savedAdminMobile = Option::getOption('admin_mobile_number');
 
-        $this->assertEquals('twilio', $savedGateway);
+        $this->assertEquals('test', $savedGateway);
         $this->assertEquals('+15557777777', $savedSenderId);
         $this->assertEquals('+15558888888', $savedAdminMobile);
     }
@@ -163,7 +163,7 @@ class SettingsBackwardCompatibilityTest extends WPSMSTestCase
         // Verify other settings are preserved
         $allSettings = Option::getOptions();
 
-        $this->assertEquals('twilio', $allSettings['gateway_name']);
+        $this->assertEquals('test', $allSettings['gateway_name']);
         $this->assertEquals('+15551234567', $allSettings['gateway_sender_id']);
         $this->assertEquals('1', $allSettings['international_mobile']);
         $this->assertEquals('+15550000000', $allSettings['admin_mobile_number']);
@@ -366,7 +366,7 @@ class SettingsBackwardCompatibilityTest extends WPSMSTestCase
     {
         // Save via API with valid values (gateway_name and admin_mobile_number are validated)
         $settingsToSave = [
-            'gateway_name'        => 'twilio',  // Must be valid gateway
+            'gateway_name'        => 'test',  // Must be valid gateway
             'gateway_key'         => 'test_api_key',
             'gateway_password'    => 'test_password',
             'gateway_sender_id'   => '+15551234567',
@@ -400,7 +400,7 @@ class SettingsBackwardCompatibilityTest extends WPSMSTestCase
         // First save via API
         $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
-                'gateway_name' => 'twilio',
+                'gateway_name' => 'test',
             ],
         ]);
         rest_do_request($request);
@@ -411,7 +411,7 @@ class SettingsBackwardCompatibilityTest extends WPSMSTestCase
         // Both values should exist
         $allSettings = Option::getOptions();
 
-        $this->assertEquals('twilio', $allSettings['gateway_name']);
+        $this->assertEquals('test', $allSettings['gateway_name']);
         $this->assertEquals('+15551234567', $allSettings['admin_mobile_number']);
     }
 
@@ -520,7 +520,7 @@ class SettingsBackwardCompatibilityTest extends WPSMSTestCase
     public function testCacheClearedAfterApiUpdate()
     {
         // Save initial value (use valid gateway name)
-        update_option('wpsms_settings', ['gateway_name' => 'twilio']);
+        update_option('wpsms_settings', ['gateway_name' => 'test']);
 
         // Read to potentially cache
         Option::getOptions();
@@ -528,7 +528,7 @@ class SettingsBackwardCompatibilityTest extends WPSMSTestCase
         // Update via API (use different valid gateway)
         $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
-                'gateway_name' => 'clickatell',
+                'gateway_name' => '_0098sms',
             ],
         ]);
         $response = rest_do_request($request);
@@ -537,6 +537,6 @@ class SettingsBackwardCompatibilityTest extends WPSMSTestCase
         // Read again - should get updated value, not cached
         $settings = Option::getOptions();
 
-        $this->assertEquals('clickatell', $settings['gateway_name']);
+        $this->assertEquals('_0098sms', $settings['gateway_name']);
     }
 }

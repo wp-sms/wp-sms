@@ -213,7 +213,7 @@ class SubscribersApiTest extends WPSMSTestCase
 
         $this->assertEquals(400, $response2->get_status());
         $this->assertArrayHasKey('error', $data2);
-        $this->assertStringContainsString('exists', strtolower($data2['error']['message']));
+        $this->assertStringContainsString('already', strtolower($data2['error']['message']));
     }
 
     /**
