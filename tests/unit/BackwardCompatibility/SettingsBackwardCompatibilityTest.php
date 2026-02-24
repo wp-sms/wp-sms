@@ -528,7 +528,7 @@ class SettingsBackwardCompatibilityTest extends WPSMSTestCase
         // Update via API (use different valid gateway)
         $request = $this->createJsonRequest('POST', '/wpsms/v1/settings', [
             'settings' => [
-                'gateway_name' => '_0098sms',
+                'gateway_name' => 'adpdigital',
             ],
         ]);
         $response = rest_do_request($request);
@@ -537,6 +537,6 @@ class SettingsBackwardCompatibilityTest extends WPSMSTestCase
         // Read again - should get updated value, not cached
         $settings = Option::getOptions();
 
-        $this->assertEquals('_0098sms', $settings['gateway_name']);
+        $this->assertEquals('adpdigital', $settings['gateway_name']);
     }
 }
