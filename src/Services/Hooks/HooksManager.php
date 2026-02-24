@@ -27,7 +27,7 @@ class HooksManager
         $isPremium = (bool) LicenseHelper::isPremiumLicenseAvailable();
 
         $customLinks = [
-            '<a href="' . esc_url(admin_url('admin.php?page=wsms&tab=settings')) . '">' . esc_html__('Settings', 'wp-sms') . '</a>',
+            '<a href="' . esc_url(admin_url('admin.php?page=wsms&tab=overview')) . '">' . esc_html__('Settings', 'wp-sms') . '</a>',
         ];
 
         if (!$isPremium) {
