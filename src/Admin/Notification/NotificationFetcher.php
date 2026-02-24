@@ -12,7 +12,7 @@ class NotificationFetcher
      *
      * @var string
      */
-    private $apiUrl = 'https://connect.wp-sms-pro.com';
+    private $apiUrl = 'https://connect.wsms.io';
 
     /**
      * Fetches notifications from the remote API and stores them in the WordPress database.

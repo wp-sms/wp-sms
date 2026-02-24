@@ -15,7 +15,7 @@ class AnonymizedUsageDataSender
      *
      * @var string
      */
-    private $apiUrl = 'https://connect.wp-sms-pro.com';
+    private $apiUrl = 'https://connect.wsms.io';
 
     /**
      * Sends anonymized usage data to the remote API.
