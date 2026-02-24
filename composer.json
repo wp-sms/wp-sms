@@ -14,7 +14,8 @@
     "php": ">=7.4"
   },
   "require-dev": {
-    "veronalabs/wp-scoper": "^1.2.2"
+    "veronalabs/wp-scoper": "^1.2.2",
+    "fakerphp/faker": "^1.23"
   },
   "autoload": {
     "psr-4": {
@@ -32,7 +33,7 @@
   },
   "scripts": {
     "test": [
-      "PATH=$(composer global config bin-dir --absolute --quiet --testdox):$PATH phpunit"
+      "phpunit --testdox"
     ],
     "dist": "bash bin/build-zip.sh"
   },
