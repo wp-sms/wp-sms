@@ -1,15 +1,15 @@
-# Copyright (C) 2025 VeronaLabs
+# Copyright (C) 2026 VeronaLabs
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: WSMS (formerly WP SMS) 7.1\n"
+"Project-Id-Version: WSMS (formerly WP SMS) 7.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-sms\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-12-16T07:28:35+00:00\n"
+"POT-Creation-Date: 2026-01-28T08:19:59+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: wp-sms\n"
@@ -2677,6 +2677,10 @@ msgstr ""
 msgid "Enter your Registered Entity ID. This field is optional."
 msgstr ""
 
+#: includes/gateways/class-wpsms-gateway-smsto.php:195
+msgid "Invalid response from SMS.to API"
+msgstr ""
+
 #: includes/gateways/class-wpsms-gateway-textanywhere.php:197
 msgid "Username and API password are required."
 msgstr ""
@@ -3778,37 +3782,37 @@ msgid "Every 2 Months"
 msgstr ""
 
 #. translators: %s: API URL
-#: src/Admin/LicenseManagement/ApiCommunicator.php:34
+#: src/Admin/LicenseManagement/ApiCommunicator.php:42
 #, php-format
 msgid "No products were found. The API returned an empty response from the following URL: %s"
 msgstr ""
 
 #. translators: %s: Error message.
-#: src/Admin/LicenseManagement/ApiCommunicator.php:41
+#: src/Admin/LicenseManagement/ApiCommunicator.php:49
 #, php-format
 msgid "Unable to retrieve product list from the remote server, %s. Please check the remote server connection or your remote work configuration."
 msgstr ""
 
-#: src/Admin/LicenseManagement/ApiCommunicator.php:81
+#: src/Admin/LicenseManagement/ApiCommunicator.php:150
 msgid "License key is not valid. Please enter a valid license and try again."
 msgstr ""
 
-#: src/Admin/LicenseManagement/ApiCommunicator.php:94
+#: src/Admin/LicenseManagement/ApiCommunicator.php:163
 msgid "Invalid license response!"
 msgstr ""
 
-#: src/Admin/LicenseManagement/ApiCommunicator.php:100
+#: src/Admin/LicenseManagement/ApiCommunicator.php:169
 msgid "Unknown error!"
 msgstr ""
 
 #. translators: %s: Add-On name
-#: src/Admin/LicenseManagement/ApiCommunicator.php:123
+#: src/Admin/LicenseManagement/ApiCommunicator.php:192
 #, php-format
 msgid "The license is not related to the requested Add-On <b>%s</b>."
 msgstr ""
 
-#: src/Admin/LicenseManagement/LicenseManagementManager.php:71
 #: src/Admin/LicenseManagement/LicenseManagementManager.php:72
+#: src/Admin/LicenseManagement/LicenseManagementManager.php:73
 #: src/Admin/LicenseManagement/Views/TabsView.php:126
 #: src/Admin/LicenseManagement/Views/TabsView.php:133
 #: views/pages/license-manager/add-ons.php:10
@@ -4408,7 +4412,7 @@ msgstr ""
 
 #. translators: %s: Response message
 #. translators: %s: Error message
-#: src/Components/RemoteRequest.php:128
+#: src/Components/RemoteRequest.php:140
 #: src/Webhook/WebhookAbstract.php:78
 #, php-format
 msgid "Failed to get success response, %s"
@@ -4543,11 +4547,11 @@ msgstr ""
 msgid "User with % s mobile number is removed completely!"
 msgstr ""
 
-#: src/Controller/PrivacyDataAjax.php:114
+#: src/Controller/PrivacyDataAjax.php:116
 msgid "User with this mobile number was not found!"
 msgstr ""
 
-#: src/Controller/PrivacyDataAjax.php:149
+#: src/Controller/PrivacyDataAjax.php:151
 msgid "The CSV file generated successfully!"
 msgstr ""
 
