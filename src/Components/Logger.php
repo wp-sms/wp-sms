@@ -46,6 +46,9 @@ class Logger
                 'media'     => serialize($media),
                 'status'    => $status,
             ));
+
+            // Invalidate dashboard stats cache so the widget reflects the new message
+            delete_transient('wp_sms_dashboard_send_data');
         }
 
         /**
