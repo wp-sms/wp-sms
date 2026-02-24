@@ -1649,7 +1649,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         if ($wp_version >= 3.3 && function_exists('wp_editor')) {
             $html = wp_editor(stripslashes($value), "$this->setting_name[$id]", array('textarea_name' => "$this->setting_name[$id]"));
         } else {
-            $html = sprintf('<textarea class="large-text" rows="10" id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s]">' . esc_textarea(stripslashes($value)) . '</textarea>', esc_attr($args['id']));
+            $html = sprintf('<textarea class="large-text" dir="auto" rows="10" id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s]">' . esc_textarea(stripslashes($value)) . '</textarea>', esc_attr($args['id']));
         }
 
         $html .= sprintf('<p class="description"> %1$s</p>', wp_kses_post($args['desc']));

@@ -4,7 +4,7 @@
         <tr>
             <td>
                 <label for="wp_group_name" class="wp_sms_subscribers_label"><?php esc_html_e('Name', 'wp-sms'); ?><span class="wp-sms-required">*</span></label>
-                <input type="text" id="wp_group_name" name="wp_group_name" placeholder="<?php esc_html_e('Name', 'wp-sms'); ?>" value="<?php echo isset($group_name) ? esc_attr($group_name) : ''; ?>" class="wp_sms_subscribers_input_text" required/>
+                <input type="text" dir="auto" id="wp_group_name" name="wp_group_name" placeholder="<?php esc_html_e('Name', 'wp-sms'); ?>" value="<?php echo isset($group_name) ? esc_attr($group_name) : ''; ?>" class="wp_sms_subscribers_input_text" required/>
                 <?php if (isset($group_id)) : ?>
                     <input type="hidden" id="wp_group_name" name="group_id" placeholder="<?php esc_html_e('ID', 'wp-sms'); ?>" value="<?php echo esc_attr($group_id); ?>" class="wp_sms_subscribers_input_text"/>
                 <?php endif; ?>

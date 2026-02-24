@@ -20,7 +20,7 @@
 
     <div class="wpsms-orderSmsMetabox__messageField">
         <label for="message_content"><?php esc_html_e('Message', 'wp-sms') ?></label>
-        <textarea placeholder="<?php esc_html_e('Write your SMS message here ...', 'wp-sms'); ?>" id="message_content" name="message_content" rows="5"></textarea>
+        <textarea dir="auto" placeholder="<?php esc_html_e('Write your SMS message here ...', 'wp-sms'); ?>" id="message_content" name="message_content" rows="5"></textarea>
     </div>
 
     <div class="wpsms-orderSmsMetabox__variables">

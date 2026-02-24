@@ -15,12 +15,12 @@
                 <p class="wpsms-sendSmsForm__description"><?php echo isset($attributes['description']) ? esc_html($attributes['description']) : ''; ?></p>
                 <div class="wpsms-sendSmsForm__fieldContainer">
                     <label><?php esc_html_e('Message', 'wp-sms'); ?></label>
-                    <textarea disabled placeholder="<?php esc_html_e('Write your message content', 'wp-sms'); ?>" class="wpsms-sendSmsForm__messageField"></textarea>
+                    <textarea disabled dir="auto" placeholder="<?php esc_html_e('Write your message content', 'wp-sms'); ?>" class="wpsms-sendSmsForm__messageField"></textarea>
                 </div>
                 <?php if (isset($attributes['receiver']) && $attributes['receiver'] === 'numbers'): ?>
                     <div class="wpsms-sendSmsForm__fieldContainer">
                         <label><?php esc_html_e('Receiver', 'wp-sms'); ?></label>
-                        <input type="tel" disabled placeholder="<?php esc_html_e('Phone number', 'wp-sms'); ?>"/>
+                        <input type="tel" disabled dir="auto" placeholder="<?php esc_html_e('Phone number', 'wp-sms'); ?>"/>
                     </div>
                 <?php endif; ?>
                 <input class="wpsms-sendSmsForm__submit" type="button" disabled value="<?php esc_html_e('Send Message', 'wp-sms'); ?>"/>
@@ -43,7 +43,7 @@
         <form>
             <div class="wpsms-sendSmsForm__fieldContainer">
                 <label><?php esc_html_e('Message', 'wp-sms'); ?></label>
-                <textarea data-max="<?php echo esc_html($attributes['maxCharacters']); ?>" placeholder="<?php esc_html_e('Write your message content', 'wp-sms'); ?>" class="wpsms-sendSmsForm__messageField"></textarea>
+                <textarea data-max="<?php echo esc_html($attributes['maxCharacters']); ?>" dir="auto" placeholder="<?php esc_html_e('Write your message content', 'wp-sms'); ?>" class="wpsms-sendSmsForm__messageField"></textarea>
                 <p class="wpsms-sendSmsForm__messageField__alert"><?php esc_html_e('Max remaining characters: ', 'wp-sms'); ?><span></span></p>
             </div>
 

@@ -17,7 +17,7 @@
             <tr>
                 <td style="padding-top: 10px;">
                     <label for="wpsms-quick-reply-to"><?php esc_html_e('To', 'wp-sms'); ?></label>
-                    <input type="text" id="wpsms-quick-reply-to" class="js-wpSmsQuickReplyTo" name="wpsms_quick_reply_message" value="" readonly style="display: block; width: 100%"/>
+                    <input type="text" dir="auto" id="wpsms-quick-reply-to" class="js-wpSmsQuickReplyTo" name="wpsms_quick_reply_message" value="" readonly style="display: block; width: 100%"/>
                 </td>
             </tr>
             <tr>
