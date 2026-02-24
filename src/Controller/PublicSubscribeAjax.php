@@ -18,6 +18,11 @@ class PublicSubscribeAjax extends AjaxControllerAbstract
 
     protected function run()
     {
+        // Check GDPR consent if enabled
+        if (Option::getOption('gdpr_compliance') === '1' && !$this->get('gdpr_consent')) {
+            throw new Exception(__('Please accept the privacy checkbox to continue.', 'wp-sms'));
+        }
+
         $name           = $this->get('name');
         $number         = $this->get('mobile');
         $customFields   = $this->get('custom_fields');

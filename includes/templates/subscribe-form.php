@@ -79,7 +79,7 @@
                         </label>
                     </div>
                 <?php } ?>
-                <button class="wpsms-button wpsms-form-submit js-wpSmsSubmitTypeButton js-wpSmsSubmitButton" <?php if ($gdpr_compliance && $subscribe_form_gdpr_confirm_checkbox == 'unchecked') {
+                <button class="wpsms-button wpsms-form-submit js-wpSmsSubmitTypeButton js-wpSmsSubmitButton" <?php if ($gdpr_compliance && $subscribe_form_gdpr_confirm_checkbox !== 'checked') {
                     echo 'disabled';
                 }; ?>>
                     <?php esc_html_e('Subscribe', 'wp-sms'); ?>

@@ -50,6 +50,14 @@ let wpSmsSubscribeForm = {
         let customFields = element.find('.js-wpSmsSubscriberCustomFields');
         let mobileField = element.find(".js-wpSmsSubscriberMobile");
 
+        // Check GDPR consent if the checkbox exists
+        let gdprCheckbox = element.find('.js-wpSmsGdprConfirmation');
+        if (gdprCheckbox.length && !gdprCheckbox.is(':checked')) {
+            let errorText = (wpsms_ajax_object && wpsms_ajax_object.gdpr_error_text) || 'Please accept the privacy checkbox to continue.';
+            messageContainer.fadeIn().html('<span class="wpsms-subscribe__message wpsms-subscribe__message--error"></span>').find('span').text(errorText);
+            return;
+        }
+
         submitButton.prop('disabled', true);
         messageContainer.hide();
         processingOverlay.css('display', 'flex');
@@ -64,6 +72,10 @@ let wpSmsSubscribeForm = {
         }
 
         formData.append('type', element.find(".js-wpSmsSubscribeType:checked").val());
+
+        if (gdprCheckbox.length) {
+            formData.append('gdpr_consent', '1');
+        }
 
         customFields.each(function () {
             let label = jQuery(this).data('field-name');
@@ -98,7 +110,8 @@ let wpSmsSubscribeForm = {
             error: function (data) {
                 submitButton.prop('disabled', false);
                 processingOverlay.hide();
-                messageContainer.fadeIn().html('<span class="wpsms-subscribe__message wpsms-subscribe__message--error">' + data.responseJSON.data + '</span>');
+                let errorMessage = (data.responseJSON && data.responseJSON.data) ? data.responseJSON.data : wpsms_ajax_object.unknown_error;
+                messageContainer.fadeIn().html('<span class="wpsms-subscribe__message wpsms-subscribe__message--error"></span>').find('span').text(errorMessage);
             }
         });
 
@@ -150,7 +163,8 @@ let wpSmsSubscribeForm = {
             error: function (data) {
                 activationButton.prop('disabled', false);
                 processingOverlay.hide();
-                messageContainer.fadeIn().html('<span class="wpsms-subscribe__message wpsms-subscribe__message--error">' + data.responseJSON.data + '</span>');
+                let errorMessage = (data.responseJSON && data.responseJSON.data) ? data.responseJSON.data : wpsms_ajax_object.unknown_error;
+                messageContainer.fadeIn().html('<span class="wpsms-subscribe__message wpsms-subscribe__message--error"></span>').find('span').text(errorMessage);
             }
         });
     },
@@ -230,7 +244,10 @@ let wpSmsSendSmsBlockForm = {
                     jQuery(elements.SBOverlay).fadeOut();
                 },
                 error: function (data) {
-                    var message = data.responseJSON.data && data.responseJSON.data.message ? data.responseJSON.data.message : data.responseJSON.data || 'An unexpected error occurred.';
+                    var message = wpsms_ajax_object.unknown_error;
+                    if (data.responseJSON && data.responseJSON.data) {
+                        message = data.responseJSON.data.message || data.responseJSON.data;
+                    }
                     jQuery(elements.SBResult).text(message).fadeIn().addClass('failed');
                     jQuery(elements.SBOverlay).fadeOut();
                 }

@@ -63,21 +63,32 @@ form.js-wpSmsSubscribeForm {
   }
 
   .wpsms-sendSmsForm__deactiveBlock {
-    width: 100%;
-    padding-top: 100%;
-    margin: 15px 0;
-    border-radius: 15px;
-    background: url("../images/send-sms-background.jpg") no-repeat center center/contain;
     position: relative;
 
-    .wpsms-sendSmsForm__deactiveBlock__content {
+    .wpsms-sendSmsForm__deactiveBlock__preview {
+      filter: blur(2px);
+      opacity: 0.5;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .wpsms-sendSmsForm__deactiveBlock__overlay {
       position: absolute;
-      top: 54%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wpsms-sendSmsForm__deactiveBlock__content {
       background-color: hsl(var(--wsms-card));
       padding: var(--wsms-space-5);
       width: 70%;
+      max-width: 360px;
       text-align: center;
       border-radius: var(--wsms-radius);
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 8px 20px rgba(0, 0, 0, 0.1);

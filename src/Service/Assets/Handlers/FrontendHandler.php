@@ -66,6 +66,7 @@ class FrontendHandler extends BaseAssets
             'loading_text'              => esc_html__('Loading...', 'wp-sms'),
             'subscribe_text'            => esc_html__('Subscribe', 'wp-sms'),
             'activation_text'           => esc_html__('Activate', 'wp-sms'),
+            'gdpr_error_text'           => esc_html__('Please accept the privacy checkbox to continue.', 'wp-sms'),
             'sender'                    => $sms->from,
             'front_sms_endpoint_url'    => apply_filters('wp_sms_send_front_sms_ajax', null)
         ]);

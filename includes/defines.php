@@ -19,7 +19,7 @@ define('WP_SMS_MAIN_FILE', WP_SMS_DIR . 'wp-sms.php');
 
 // Set another useful Plugin defines.
 define('WP_SMS_ADMIN_URL', get_admin_url());
-define('WP_SMS_SITE', 'https://wp-sms-pro.com');
+define('WP_SMS_SITE', 'https://wsms.io');
 define('WP_SMS_MOBILE_REGEX', '/^[\+|\(|\)|\d|\- ]*$/');
 
 if (function_exists('current_datetime')) {
