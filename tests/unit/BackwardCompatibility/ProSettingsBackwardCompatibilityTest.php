@@ -4,7 +4,6 @@ namespace unit\BackwardCompatibility;
 
 use unit\WPSMSTestCase;
 use WP_SMS\Option;
-use WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema;
 
 require_once dirname(__DIR__) . '/WPSMSTestCase.php';
 
@@ -25,6 +24,10 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
 {
     public function setUp(): void
     {
+        if (!class_exists('WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema')) {
+            $this->markTestSkipped('WP SMS Pro plugin is not available.');
+        }
+
         parent::setUp();
         if (!defined('WP_SMS_PRO_VERSION')) {
             define('WP_SMS_PRO_VERSION', '4.0.0-test');
@@ -61,7 +64,7 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
             'wc_notify_order_receiver' => 'text',
         ];
 
-        $result = ProSettingsSchema::handleSave(false, $fields, $fieldTypes);
+        $result = \WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::handleSave(false, $fields, $fieldTypes);
 
         $this->assertTrue($result, 'handleSave should return true');
 
@@ -83,7 +86,7 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
     {
         update_option('wps_pp_settings', []);
 
-        ProSettingsSchema::handleSave(false, ['login_sms' => true], ['login_sms' => 'switch']);
+        \WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::handleSave(false, ['login_sms' => true], ['login_sms' => 'switch']);
 
         $saved = get_option('wps_pp_settings');
         $this->assertEquals('enable', $saved['login_sms']);
@@ -96,7 +99,7 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
     {
         update_option('wps_pp_settings', []);
 
-        ProSettingsSchema::handleSave(false, ['login_sms' => false], ['login_sms' => 'switch']);
+        \WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::handleSave(false, ['login_sms' => false], ['login_sms' => 'switch']);
 
         $saved = get_option('wps_pp_settings');
         $this->assertEquals('disable', $saved['login_sms']);
@@ -109,7 +112,7 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
     {
         update_option('wps_pp_settings', []);
 
-        ProSettingsSchema::handleSave(false, ['some_check' => true], ['some_check' => 'checkbox']);
+        \WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::handleSave(false, ['some_check' => true], ['some_check' => 'checkbox']);
 
         $saved = get_option('wps_pp_settings');
         $this->assertEquals('enable', $saved['some_check']);
@@ -122,7 +125,7 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
     {
         update_option('wps_pp_settings', []);
 
-        ProSettingsSchema::handleSave(
+        \WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::handleSave(
             false,
             ['short_url_api_token' => 'abc123token'],
             ['short_url_api_token' => 'text']
@@ -139,7 +142,7 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
     {
         update_option('wps_pp_settings', []);
 
-        ProSettingsSchema::handleSave(
+        \WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::handleSave(
             false,
             ['some_field' => 'raw_value'],
             [] // no type mapping
@@ -164,9 +167,9 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
 
         // Simulate React loading — getCurrentValues is private, so we test via schema
         $schema = null;
-        add_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        add_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
         $schemas = apply_filters('wpsms_addon_settings_schema', []);
-        remove_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        remove_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
 
         $this->assertArrayHasKey('wp-sms-pro', $schemas);
         $currentValues = $schemas['wp-sms-pro']['data']['currentValues'] ?? [];
@@ -176,7 +179,7 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
         $this->assertEquals('my-token', $currentValues['short_url_api_token']);
 
         // Now simulate React saving back
-        ProSettingsSchema::handleSave(
+        \WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::handleSave(
             false,
             ['login_sms' => true, 'register_sms' => false, 'short_url_api_token' => 'my-token'],
             ['login_sms' => 'switch', 'register_sms' => 'switch', 'short_url_api_token' => 'text']
@@ -198,9 +201,9 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
             'login_sms' => '',
         ]);
 
-        add_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        add_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
         $schemas = apply_filters('wpsms_addon_settings_schema', []);
-        remove_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        remove_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
 
         $currentValues = $schemas['wp-sms-pro']['data']['currentValues'] ?? [];
         $this->assertFalse($currentValues['login_sms']);
@@ -214,9 +217,9 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
         // Empty pro settings — no keys set
         update_option('wps_pp_settings', []);
 
-        add_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        add_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
         $schemas = apply_filters('wpsms_addon_settings_schema', []);
-        remove_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        remove_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
 
         $currentValues = $schemas['wp-sms-pro']['data']['currentValues'] ?? [];
 
@@ -232,7 +235,7 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
      */
     public function testSaveFilterTriggeredViaRestApi()
     {
-        ProSettingsSchema::init();
+        \WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::init();
 
         update_option('wps_pp_settings', []);
 
@@ -261,9 +264,9 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
      */
     public function testSchemaRegistersViaFilter()
     {
-        add_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        add_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
         $schemas = apply_filters('wpsms_addon_settings_schema', []);
-        remove_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        remove_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
 
         $this->assertArrayHasKey('wp-sms-pro', $schemas);
         $this->assertEquals('WP SMS Pro', $schemas['wp-sms-pro']['name']);
@@ -277,9 +280,9 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
      */
     public function testAdvancedFieldIdsPresent()
     {
-        add_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        add_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
         $schemas = apply_filters('wpsms_addon_settings_schema', []);
-        remove_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        remove_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
 
         $fieldIds = array_column($schemas['wp-sms-pro']['fields'], 'id');
 
@@ -311,7 +314,7 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
             ['order_status' => 'processing', 'notify_status' => '1', 'message' => 'Processing'],
         ];
 
-        ProSettingsSchema::handleSave(
+        \WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::handleSave(
             false,
             ['wc_notify_by_status_content' => $repeaterData],
             ['wc_notify_by_status_content' => 'repeater']
@@ -331,10 +334,10 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
         update_option('wps_pp_settings', ['pre_existing' => 'value']);
 
         // First save
-        ProSettingsSchema::handleSave(false, ['login_sms' => true], ['login_sms' => 'switch']);
+        \WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::handleSave(false, ['login_sms' => true], ['login_sms' => 'switch']);
 
         // Second save (different fields)
-        ProSettingsSchema::handleSave(false, ['short_url_api_token' => 'token'], ['short_url_api_token' => 'text']);
+        \WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::handleSave(false, ['short_url_api_token' => 'token'], ['short_url_api_token' => 'text']);
 
         $saved = get_option('wps_pp_settings');
         $this->assertEquals('value', $saved['pre_existing']);
@@ -374,9 +377,9 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
         ]);
 
         // Simulate React loading via schema
-        add_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        add_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
         $schemas = apply_filters('wpsms_addon_settings_schema', []);
-        remove_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        remove_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
 
         $currentValues = $schemas['wp-sms-pro']['data']['currentValues'] ?? [];
 
@@ -406,7 +409,7 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
             ],
         ];
 
-        ProSettingsSchema::handleSave(
+        \WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::handleSave(
             false,
             ['wc_notify_by_status_content' => $reactData],
             ['wc_notify_by_status_content' => 'repeater']
@@ -442,7 +445,7 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
             'wc_notify_by_status_content' => [],
         ]);
 
-        ProSettingsSchema::handleSave(
+        \WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::handleSave(
             false,
             ['wc_notify_by_status_content' => []],
             ['wc_notify_by_status_content' => 'repeater']
@@ -458,7 +461,7 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
      */
     private function callPrivateMethod(string $method, array $args = []): mixed
     {
-        $ref = new \ReflectionMethod(ProSettingsSchema::class, $method);
+        $ref = new \ReflectionMethod(\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, $method);
         $ref->setAccessible(true);
         return $ref->invoke(null, ...$args);
     }
@@ -679,13 +682,13 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
 
             // Test true → 'enable'
             update_option('wps_pp_settings', []);
-            ProSettingsSchema::handleSave(false, [$id => true], [$id => $field['type']]);
+            \WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::handleSave(false, [$id => true], [$id => $field['type']]);
             $saved = get_option('wps_pp_settings');
             $this->assertEquals('enable', $saved[$id], "Field '$id': true should save as 'enable'");
 
             // Test false → 'disable'
             update_option('wps_pp_settings', []);
-            ProSettingsSchema::handleSave(false, [$id => false], [$id => $field['type']]);
+            \WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::handleSave(false, [$id => false], [$id => $field['type']]);
             $saved = get_option('wps_pp_settings');
             $this->assertEquals('disable', $saved[$id], "Field '$id': false should save as 'disable'");
         }
@@ -791,9 +794,9 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
      */
     public function testPerStatusRepeaterSubFieldNames()
     {
-        add_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        add_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
         $schemas = apply_filters('wpsms_addon_settings_schema', []);
-        remove_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        remove_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
 
         $repeaterField = null;
         foreach ($schemas['wp-sms-pro']['fields'] as $field) {
@@ -823,9 +826,9 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
      */
     public function testPerStatusOrderStatusOptionsHaveNoWcPrefix()
     {
-        add_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        add_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
         $schemas = apply_filters('wpsms_addon_settings_schema', []);
-        remove_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        remove_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
 
         $repeaterField = null;
         foreach ($schemas['wp-sms-pro']['fields'] as $field) {
@@ -864,9 +867,9 @@ class ProSettingsBackwardCompatibilityTest extends WPSMSTestCase
     {
         update_option('wps_pp_settings', ['login_sms' => 'enable']);
 
-        add_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        add_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
         $schemas = apply_filters('wpsms_addon_settings_schema', []);
-        remove_filter('wpsms_addon_settings_schema', [ProSettingsSchema::class, 'registerSchema'], 5);
+        remove_filter('wpsms_addon_settings_schema', [\WP_SMS\Pro\Admin\ReactSettings\ProSettingsSchema::class, 'registerSchema'], 5);
 
         $data = $schemas['wp-sms-pro']['data'];
         $this->assertArrayHasKey('currentValues', $data);

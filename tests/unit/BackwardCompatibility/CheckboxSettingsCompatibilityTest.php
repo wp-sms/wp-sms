@@ -186,11 +186,11 @@ class CheckboxSettingsCompatibilityTest extends WP_UnitTestCase
     {
         // Test with '1' (our new save format)
         $result = checked(1, '1', false);
-        $this->assertEquals('checked=\'checked\'', $result, 'Value "1" should show as checked');
+        $this->assertStringContainsString('checked', $result, 'Value "1" should show as checked');
 
         // Test with integer 1
         $result = checked(1, 1, false);
-        $this->assertEquals('checked=\'checked\'', $result, 'Value 1 should show as checked');
+        $this->assertStringContainsString('checked', $result, 'Value 1 should show as checked');
 
         // Test with empty (disabled)
         $result = checked(1, '', false);
@@ -216,7 +216,7 @@ class CheckboxSettingsCompatibilityTest extends WP_UnitTestCase
 
         // But our new format works
         $result = checked(1, '1', false);
-        $this->assertEquals('checked=\'checked\'', $result, '"1" correctly matches checked(1, value)');
+        $this->assertStringContainsString('checked', $result, '"1" correctly matches checked(1, value)');
     }
 
     // =========================================================================

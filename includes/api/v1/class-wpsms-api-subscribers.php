@@ -469,7 +469,7 @@ class SubscribersApi extends RestApi
             $errorMsg = is_array($result) && !empty($result['message'])
                 ? $result['message']
                 : __('Failed to create subscriber', 'wp-sms');
-            return self::response($errorMsg, 500);
+            return self::response($errorMsg, 400);
         }
 
         return self::response(__('Subscriber created successfully', 'wp-sms'), 201, [

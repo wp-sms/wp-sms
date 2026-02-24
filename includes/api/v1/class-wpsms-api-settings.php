@@ -991,11 +991,14 @@ class SettingsApi extends RestApi
     {
         $registry = \WP_SMS\Services\Gateway\GatewayRegistry::getGateways();
 
-        if (!empty($registry['gateways'])) {
-            foreach ($registry['gateways'] as $gw) {
-                if (isset($gw['slug']) && $gw['slug'] === $value) {
-                    return null;
-                }
+        // If no gateways are registered, skip validation
+        if (empty($registry['gateways'])) {
+            return null;
+        }
+
+        foreach ($registry['gateways'] as $gw) {
+            if (isset($gw['slug']) && $gw['slug'] === $value) {
+                return null;
             }
         }
 

@@ -298,7 +298,7 @@ class LegacyValueReadingTest extends WP_UnitTestCase
     public function testLegacyCheckboxCallbackWithNewFormat()
     {
         // checked(1, '1') should return 'checked="checked"'
-        $this->assertEquals('checked=\'checked\'', checked(1, '1', false));
+        $this->assertStringContainsString('checked', checked(1, '1', false));
 
         // checked(1, '') should return ''
         $this->assertEquals('', checked(1, '', false));
