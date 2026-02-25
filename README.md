@@ -11,9 +11,7 @@
 
 # WSMS - WordPress SMS Plugin
 
-The best WordPress SMS messaging and notification plugin! Send SMS/MMS through **200+ gateways** including Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Messagebird, ClickSend and more. [See all gateways](https://wsms.io/gateways/)
-
-Send notifications to subscribers, users, and WooCommerce customers about orders, new posts, products, and more.
+SMS & MMS Notifications, 2FA, OTP, and Integrations with E-Commerce and Form Builders. Send messages through **200+ gateways** including Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Messagebird, ClickSend and more. [See all gateways](https://wsms.io/gateways/)
 
 <p align="center">
   <img src=".github/screenshot.png" alt="WSMS Send SMS Interface" width="820">
