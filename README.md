@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="resources/images/logo.svg" alt="WP SMS" width="160">
+  <img src="resources/images/logo.svg" alt="WSMS" width="160">
 </p>
 
 <p align="center">
@@ -9,15 +9,11 @@
   <a href="https://plugintests.com/plugins/wporg/wp-sms/latest"><img src="https://plugintests.com/plugins/wporg/wp-sms/php-badge.svg" alt="PHP compatibility"></a>
 </p>
 
-# WP SMS Plugin
+# WSMS - WordPress SMS Plugin
 
-The best WordPress SMS messaging and notification plugin! Send SMS/MMS through **200+ gateways** including Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Messagebird, ClickSend and more. [See all gateways](https://wp-sms-pro.com/gateways/)
+The best WordPress SMS messaging and notification plugin! Send SMS/MMS through **200+ gateways** including Twilio, Plivo, Clickatell, BulkSMS, Infobip, Vonage (Nexmo), Messagebird, ClickSend and more. [See all gateways](https://wsms.io/gateways/)
 
 Send notifications to subscribers, users, and WooCommerce customers about orders, new posts, products, and more.
-
-<p align="center">
-  <img src=".github/screenshot.png" alt="WP SMS Send SMS Interface" width="820">
-</p>
 
 ## Send SMS via PHP
 
@@ -121,7 +117,7 @@ add_filter('wp_sms_to', 'wp_sms_modify_receiver');
 
 ```php
 function wp_sms_modify_message($message) {
-    return $message . "\nPowered by: WP SMS";
+    return $message . "\nPowered by: WSMS";
 }
 add_filter('wp_sms_msg', 'wp_sms_modify_message');
 ```
@@ -138,12 +134,12 @@ Creates `dist/wp-sms.zip`, excluding files listed in `.distignore`.
 
 ## Internationalization
 
-WP SMS is translated into many languages. See the [translate page](https://translate.wordpress.org/projects/wp-plugins/wp-sms) for details and [contribute a translation](http://wp-sms-pro.com/localization/).
+WSMS is translated into many languages. See the [translate page](https://translate.wordpress.org/projects/wp-plugins/wp-sms) for details.
 
 ## Resources
 
 - [WordPress.org](https://wordpress.org/plugins/wp-sms/)
-- [Website](https://wp-sms-pro.com)
-- [Documentation](https://wp-sms-pro.com/resources-category/api-endpoints/)
+- [Website](https://wsms.io)
+- [Documentation](https://wsms.io/resources-category/api-endpoints/)
 - [API Documentation](https://documenter.getpostman.com/view/3239688/UVkqsvCK)
 - [Development Guide](https://github.com/wp-sms/wp-sms/wiki)
