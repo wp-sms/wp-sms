@@ -82,7 +82,7 @@ function initInputs() {
         // And re-instantiate them again
         for (var i = 0; i < inputTells.length; i++) {
             if (inputTells[i] && inputTells[i].nodeName === 'INPUT') {
-                inputTells[i].setAttribute('dir', direction);
+                inputTells[i].setAttribute('dir', 'ltr');
                 let iti = window.intlTelInput(inputTells[i], {
                     separateDialCode: false,
                     allowDropdown: true,
@@ -186,7 +186,7 @@ function initInputs() {
     // Additional specific input field initialization
     var inputTell = document.querySelector("#job_mobile, #_job_mobile");
     if (inputTell && !inputTell.getAttribute('placeholder')) {
-        inputTell.setAttribute('dir', direction)
+        inputTell.setAttribute('dir', 'ltr')
         let iti_job = window.intlTelInput(inputTell, {
             autoInsertDialCode: true,
             autoPlaceholder: "aggressive",
