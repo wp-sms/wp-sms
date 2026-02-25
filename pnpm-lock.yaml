@@ -117,9 +117,6 @@ importers:
       autoprefixer:
         specifier: ^10.4.0
         version: 10.4.22(postcss@8.5.6)
-      babel-loader:
-        specifier: ^10.0.0
-        version: 10.0.0(@babel/core@7.28.5)(webpack@5.102.1)
       concurrently:
         specifier: ^7.5.0
         version: 7.6.0
@@ -147,21 +144,12 @@ importers:
       terser:
         specifier: ^5.44.1
         version: 5.44.1
-      terser-webpack-plugin:
-        specifier: ^5.3.10
-        version: 5.3.14(webpack@5.102.1)
       vite:
         specifier: ^5.4.0
         version: 5.4.21(@types/node@24.10.1)(sass@1.95.1)(terser@5.44.1)
       vite-plugin-compression:
         specifier: ^0.5.1
         version: 0.5.1(vite@5.4.21(@types/node@24.10.1)(sass@1.95.1)(terser@5.44.1))
-      webpack:
-        specifier: ^5.94.0
-        version: 5.102.1(webpack-cli@5.1.4)
-      webpack-cli:
-        specifier: ^5.1.4
-        version: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.102.1)
 
 packages:
 
@@ -3679,13 +3667,6 @@ packages:
     engines: {node: ^18.14.0 || ^20.0.0 || ^22.0.0 || >=24.0.0}
     peerDependencies:
       '@babel/core': ^7.11.0 || ^8.0.0-0
-
-  babel-loader@10.0.0:
-    resolution: {integrity: sha512-z8jt+EdS61AMw22nSfoNJAZ0vrtmhPRVi6ghL3rCeRZI8cdNYFiV5xeV3HbE7rlZZNmGH8BVccwWt8/ED0QOHA==}
-    engines: {node: ^18.20.0 || ^20.10.0 || >=22.0.0}
-    peerDependencies:
-      '@babel/core': ^7.12.0
-      webpack: '>=5.61.0'
 
   babel-loader@9.2.1:
     resolution: {integrity: sha512-fqe8naHt46e0yIdkjUZYqddSXfej3AHajX+CSO5X7oy0EmPc6o5Xh+RClNoHjnieWz9AW4kZxW9yyFMhVB1QLA==}
@@ -13074,17 +13055,17 @@ snapshots:
       '@webassemblyjs/ast': 1.14.1
       '@xtuc/long': 4.2.2
 
-  '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4)(webpack@5.102.1)':
+  '@webpack-cli/configtest@2.1.1(webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.102.1))(webpack@5.102.1)':
     dependencies:
       webpack: 5.102.1(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.102.1)
 
-  '@webpack-cli/info@2.0.2(webpack-cli@5.1.4)(webpack@5.102.1)':
+  '@webpack-cli/info@2.0.2(webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.102.1))(webpack@5.102.1)':
     dependencies:
       webpack: 5.102.1(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.102.1)
 
-  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4)(webpack-dev-server@4.15.2)(webpack@5.102.1)':
+  '@webpack-cli/serve@2.0.5(webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.102.1))(webpack-dev-server@4.15.2)(webpack@5.102.1)':
     dependencies:
       webpack: 5.102.1(webpack-cli@5.1.4)
       webpack-cli: 5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.102.1)
@@ -13860,12 +13841,6 @@ snapshots:
       slash: 3.0.0
     transitivePeerDependencies:
       - supports-color
-
-  babel-loader@10.0.0(@babel/core@7.28.5)(webpack@5.102.1):
-    dependencies:
-      '@babel/core': 7.28.5
-      find-up: 5.0.0
-      webpack: 5.102.1(webpack-cli@5.1.4)
 
   babel-loader@9.2.1(@babel/core@7.25.7)(webpack@5.102.1):
     dependencies:
@@ -19985,9 +19960,9 @@ snapshots:
   webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.102.1):
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
-      '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4)(webpack@5.102.1)
-      '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4)(webpack@5.102.1)
-      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4)(webpack-dev-server@4.15.2)(webpack@5.102.1)
+      '@webpack-cli/configtest': 2.1.1(webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.102.1))(webpack@5.102.1)
+      '@webpack-cli/info': 2.0.2(webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.102.1))(webpack@5.102.1)
+      '@webpack-cli/serve': 2.0.5(webpack-cli@5.1.4(webpack-bundle-analyzer@4.10.2)(webpack-dev-server@4.15.2)(webpack@5.102.1))(webpack-dev-server@4.15.2)(webpack@5.102.1)
       colorette: 2.0.20
       commander: 10.0.1
       cross-spawn: 7.0.6

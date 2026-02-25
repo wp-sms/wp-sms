@@ -11,8 +11,8 @@
                 </div>
             </div>
             <div class="wpsms-sendSmsForm__deactiveBlock__preview" aria-hidden="true">
-                <h2 class="wpsms-sendSmsForm__title"><?php echo isset($attributes['title']) ? esc_html($attributes['title']) : esc_html__('Send SMS', 'wp-sms'); ?></h2>
-                <p class="wpsms-sendSmsForm__description"><?php echo isset($attributes['description']) ? esc_html($attributes['description']) : ''; ?></p>
+                <h2 class="wpsms-sendSmsForm__title"><?php echo !empty($attributes['title']) ? esc_html($attributes['title']) : esc_html__('Send SMS', 'wp-sms'); ?></h2>
+                <p class="wpsms-sendSmsForm__description"><?php echo !empty($attributes['description']) ? esc_html($attributes['description']) : ''; ?></p>
                 <div class="wpsms-sendSmsForm__fieldContainer">
                     <label><?php esc_html_e('Message', 'wp-sms'); ?></label>
                     <textarea disabled dir="auto" placeholder="<?php esc_html_e('Write your message content', 'wp-sms'); ?>" class="wpsms-sendSmsForm__messageField"></textarea>
@@ -37,8 +37,8 @@
             </svg>
         </div>
 
-        <h2 class="wpsms-sendSmsForm__title"><?php echo isset($attributes['title']) ? esc_html($attributes['title']) : esc_html__('Send SMS', 'wp-sms'); ?></h2>
-        <p class="wpsms-sendSmsForm__description"><?php echo isset($attributes['description']) ? esc_html($attributes['description']) : ''; ?></p>
+        <h2 class="wpsms-sendSmsForm__title"><?php echo !empty($attributes['title']) ? esc_html($attributes['title']) : esc_html__('Send SMS', 'wp-sms'); ?></h2>
+        <p class="wpsms-sendSmsForm__description"><?php echo !empty($attributes['description']) ? esc_html($attributes['description']) : ''; ?></p>
 
         <form>
             <div class="wpsms-sendSmsForm__fieldContainer">

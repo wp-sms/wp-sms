@@ -1,0 +1,7 @@
+.wpsms-admin-notice {
+    position: relative;
+}
+
+.wpsms-admin-notice .notice-dismiss {
+    text-decoration: none;
+}

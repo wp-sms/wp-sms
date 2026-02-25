@@ -34,14 +34,9 @@ nbproject
 # node_modules
 /node_modules
 
-# Build Folder
-/build
-/public/dashboard/
-/public/blocks/
-/public/js/admin.min.js
-/public/js/frontend.min.js
-/public/js/licenseManager.min.js
-/public/js/onboarding.min.js
+# Build output (rebuilt by `npm run build`)
+/public/*
+!/public/.gitkeep
 bundle-analysis.html
 
 #vscode

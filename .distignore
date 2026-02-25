@@ -18,7 +18,6 @@ package.json
 package-lock.json
 pnpm-lock.yaml
 postcss.config.js
-webpack.scripts.config.js
 babel.config.js
 
 # ============================================
@@ -38,6 +37,7 @@ playwright.config.js
 # ============================================
 tailwind.config.js
 vite.config.js
+vite.config.entries.mjs
 bundle-analysis.html
 
 # ============================================
@@ -50,7 +50,15 @@ codeception.dist.yml
 # ============================================
 # Source Files (only built files needed)
 # ============================================
-/resources
+/resources/blocks
+/resources/entries
+/resources/fonts
+/resources/images
+/resources/json
+/resources/react
+/resources/scss
+/resources/vendor-css
+/resources/vendor-js
 /vendor
 
 # ============================================

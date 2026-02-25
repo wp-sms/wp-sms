@@ -153,7 +153,7 @@ class WP_SMS
             load_textdomain('wp-sms', WP_LANG_DIR . '/wp-sms-' . $locale . '.mo');
         }
 
-        load_plugin_textdomain('wp-sms', false, dirname(plugin_basename(__FILE__)) . '/languages');
+        load_plugin_textdomain('wp-sms', false, WP_SMS_DIR . 'resources/languages');
     }
 
     private function initGateway()
