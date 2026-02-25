@@ -56,12 +56,14 @@ export default function edit({attributes, setAttributes}) {
         <InspectorControls>
             <PanelBody title={__('Settings', 'wp-sms')} initialOpen={true}>
                 <ToggleControl
+                    __nextHasNoMarginBottom
                     label={__('Only for logged in users', 'wp-sms')}
                     checked={onlyLoggedUsers}
                     onChange={toggleLoggedUsers}
                 />
                 {showUserRoles && (
                     <RadioControl
+                        __nextHasNoMarginBottom
                         label={__('Select Role', 'wp-sms')}
                         selected={userRole}
                         options={wpSmsSendSmsBlockData.userRoleOptions}
@@ -69,12 +71,16 @@ export default function edit({attributes, setAttributes}) {
                     />
                 )}
                 <TextControl
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
                     label={__('Max Characters', 'wp-sms')}
                     value={maxCharacters}
                     onChange={onChangeMaxCharacters}
                     type="number"
                 />
                 <SelectControl
+                    __next40pxDefaultSize
+                    __nextHasNoMarginBottom
                     label={__('Receiver', 'wp-sms')}
                     value={receiver}
                     options={[
@@ -87,6 +93,8 @@ export default function edit({attributes, setAttributes}) {
 
                 {showSubscriberGroup && (
                     <SelectControl
+                        __next40pxDefaultSize
+                        __nextHasNoMarginBottom
                         label={__('Subscriber Group', 'wp-sms')}
                         value={subscriberGroup}
                         options={wpSmsSendSmsBlockData.subscriberGroups}
@@ -108,11 +116,14 @@ export default function edit({attributes, setAttributes}) {
                     </div>
                     <div className="wp-sms-block__main">
                         <TextControl
+                            __next40pxDefaultSize
+                            __nextHasNoMarginBottom
                             label={__('Title', 'wp-sms')}
                             value={title}
                             onChange={onChangeTitle}
                         />
                         <TextareaControl
+                            __nextHasNoMarginBottom
                             label={__('Description', 'wp-sms')}
                             value={description}
                             onChange={onChangeDescription}

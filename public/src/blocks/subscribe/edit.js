@@ -50,11 +50,14 @@ export default function edit( { attributes, setAttributes } ) {
                     </div>
                     <div className="wp-sms-block__main">
                         <TextControl
+                            __next40pxDefaultSize
+                            __nextHasNoMarginBottom
                             label={__('Title', 'wp-sms')}
                             value={title}
                             onChange={onChangeTitle}
                         />
                         <TextareaControl
+                            __nextHasNoMarginBottom
                             label={__('Description', 'wp-sms')}
                             value={description}
                             onChange={onChangeDescription}
