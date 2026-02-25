@@ -15,6 +15,10 @@ The best WordPress SMS messaging and notification plugin! Send SMS/MMS through *
 
 Send notifications to subscribers, users, and WooCommerce customers about orders, new posts, products, and more.
 
+<p align="center">
+  <img src=".github/screenshot.png" alt="WSMS Send SMS Interface" width="820">
+</p>
+
 ## Send SMS via PHP
 
 ```php
