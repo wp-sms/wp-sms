@@ -15,31 +15,33 @@ $footer_color       = $chatbox->getFooterTextColor() ? sprintf('color: %s!import
     }
 </style>
 
-<div class="wpsms-chatbox wpsms-chatbox--ltr <?php echo $chatbox->getButtonPosition() === 'bottom_right' ? 'wpsms-chatbox--right-side' : 'wpsms-chatbox--left-side' ?>">
-    <button class="wpsms-chatbox__button js-wpsms-chatbox__button wpsms-chatbox__button--rounded wpsms-chatbox__button--rounded wpsms-chatbox__button--has-arrow wpsms-chatbox--bobbles" style="<?php echo esc_attr($general_color) . esc_attr($general_background) ?>">
+<aside class="wpsms-chatbox wpsms-chatbox--ltr <?php echo $chatbox->getButtonPosition() === 'bottom_right' ? 'wpsms-chatbox--right-side' : 'wpsms-chatbox--left-side' ?>" role="complementary" aria-label="<?php esc_attr_e('Chat widget', 'wp-sms'); ?>">
+    <button class="wpsms-chatbox__button js-wpsms-chatbox__button wpsms-chatbox__button--rounded wpsms-chatbox__button--rounded wpsms-chatbox__button--has-arrow wpsms-chatbox--bobbles" style="<?php echo esc_attr($general_color) . esc_attr($general_background) ?>" aria-expanded="false" aria-controls="wpsms-chatbox-panel">
         <span class="wpsms-chatbox__button-arrow">
-           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="8" fill="none"><g clip-path="url(#a)"><path stroke="<?php echo esc_attr($general_fill_color) ?>" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10" stroke-width="2" d="m11 1.5-5 5-5-5"/></g><defs><clipPath id="a"><path fill="<?php echo esc_attr($general_fill_color) ?>" d="M0 .5h12v7H0z"/></clipPath></defs></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="<?php echo esc_attr($general_fill_color) ?>" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </span>
         <span class="wpsms-chatbox__button-icon messenger">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"><path fill="<?php echo esc_attr($general_fill_color) ?>" d="M6 9a.968.968 0 0 0 .713-.288A.964.964 0 0 0 7 8a.965.965 0 0 0-.288-.712A.972.972 0 0 0 6 7a.965.965 0 0 0-.712.288A.972.972 0 0 0 5 8c0 .283.096.521.288.713.192.192.43.288.712.287Zm4 0a.968.968 0 0 0 .713-.288A.964.964 0 0 0 11 8a.965.965 0 0 0-.288-.712A.972.972 0 0 0 10 7a.965.965 0 0 0-.712.288A.972.972 0 0 0 9 8c0 .283.096.521.288.713.192.192.43.288.712.287Zm4 0a.968.968 0 0 0 .713-.288A.964.964 0 0 0 15 8a.965.965 0 0 0-.288-.712A.972.972 0 0 0 14 7a.965.965 0 0 0-.712.288A.973.973 0 0 0 13 8c0 .283.096.521.288.713.192.192.43.288.712.287ZM0 20V2C0 1.45.196.98.588.588A1.93 1.93 0 0 1 2 0h16c.55 0 1.021.196 1.413.588.392.392.588.863.587 1.412v12c0 .55-.196 1.021-.587 1.413A1.92 1.92 0 0 1 18 16H4l-4 4Zm3.15-6H18V2H2v13.125L3.15 14Z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6 9a1 1 0 100-2 1 1 0 000 2zm4 0a1 1 0 100-2 1 1 0 000 2zm4 0a1 1 0 100-2 1 1 0 000 2zM0 20V2a2 2 0 012-2h16a2 2 0 012 2v12a2 2 0 01-2 2H4l-4 4zm3.15-6H18V2H2v13.125L3.15 14z" fill="<?php echo esc_attr($general_fill_color) ?>"/></svg>
         </span>
         <span class="wpsms-chatbox__button-title">
             <?php echo esc_html($chatbox->getButtonText()); ?>
         </span>
     </button>
 
-    <div class="wpsms-chatbox__content <?php echo $chatbox->getAnimationEffect() ? 'wpsms-chatbox__content--' . esc_attr($chatbox->getAnimationEffect()) : '' ?>">
-        <div class="wpsms-chatbox__header" style="<?php echo esc_attr($general_color) . esc_attr($general_background) ?>">
+    <div class="wpsms-chatbox__backdrop js-wpsms-chatbox__backdrop" aria-hidden="true"></div>
+
+    <div id="wpsms-chatbox-panel" class="wpsms-chatbox__content <?php echo $chatbox->getAnimationEffect() ? 'wpsms-chatbox__content--' . esc_attr($chatbox->getAnimationEffect()) : '' ?>" role="dialog" aria-label="<?php echo esc_attr($chatbox->getTitle()); ?>">
+        <header class="wpsms-chatbox__header" style="<?php echo esc_attr($general_color) . esc_attr($general_background) ?>">
             <h2>
                 <?php echo esc_html($chatbox->getTitle()); ?>
             </h2>
-            <button class="wpsms-chatbox__close-button js-wpsms-chatbox__close-button">
+            <button class="wpsms-chatbox__close-button js-wpsms-chatbox__close-button" aria-label="<?php esc_attr_e('Close', 'wp-sms'); ?>">
                 <span class="screen-reader-text"><?php esc_html_e('Close', 'wp-sms'); ?></span>
-                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="10" height="10" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                     <path d="M1 11L6 6L11 11M11 1L5.99905 6L1 1" stroke="<?php echo esc_attr($general_fill_color) ?>" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                 </svg>
             </button>
-        </div>
+        </header>
         <div class="wpsms-chatbox__elements">
             <div class="wpsms-chatbox__container">
                 <div class="wpsms-chatbox__teams">
@@ -48,10 +50,10 @@ $footer_color       = $chatbox->getFooterTextColor() ? sprintf('color: %s!import
                             <?php if (empty($member['member_name']) || empty($member['member_role'])) continue; ?>
                             <?php $avatar_url = !empty($member['member_photo']) ? $member['member_photo'] : WP_SMS_URL . 'public/images/avatar.png'; ?>
 
-                            <a href="<?php echo esc_attr($member['contact_link']) ?>" target="_blank" class="wpsms-chatbox__team">
+                            <a href="<?php echo esc_url($member['contact_link'], ['https', 'http', 'tel', 'sms', 'mailto']) ?>" target="_blank" rel="noopener noreferrer" class="wpsms-chatbox__team">
                                 <div class="wpsms-chatbox__team-avatar">
                                     <span class="wpsms-chatbox__team-icon messenger" style="<?php echo esc_attr($general_background) ?>">
-                                    <img src="<?php echo esc_attr($member['contact_link_icon']) ?>"/>
+                                    <img src="<?php echo esc_url($member['contact_link_icon']) ?>" alt="" aria-hidden="true"/>
                                     </span>
                                     <img class="wpsms-chatbox__team-avatar-img" src="<?php echo esc_url($avatar_url); ?>" loading="lazy" width="56" height="56" alt="<?php echo esc_attr($member['member_name']); ?>"></div>
                                 <div class="wpsms-chatbox__team-info">
@@ -72,36 +74,32 @@ $footer_color       = $chatbox->getFooterTextColor() ? sprintf('color: %s!import
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
-    
+
                 <?php if ($chatbox->isLinkEnabled()) : ?>
-                    <div class="wpsms-chatbox__articles">
+                    <nav class="wpsms-chatbox__articles" aria-label="<?php echo esc_attr($chatbox->getLinkTitle()); ?>">
                         <ul>
                             <li class="wpsms-chatbox__articles-header">
                                 <?php echo esc_html($chatbox->getLinkTitle()); ?>
                             </li>
-    
+
                             <?php foreach ($chatbox->fetchLinks() as $link) : ?>
                                 <?php if (empty($link['chatbox_link_title'])) continue; ?>
-    
+
                                 <li class="wpsms-chatbox__article">
                                     <a href="<?php echo esc_url($link['chatbox_link_url']) ?>" title="<?php echo esc_attr($link['chatbox_link_title']) ?>">
                                         <?php echo esc_html($link['chatbox_link_title']); ?>
-                                        <span>
-                                            <?php if (is_rtl()) : ?>
-                                                <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L5 5L1 9" stroke="#4F7EF6" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            <?php else : ?>
-                                                <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 9L1 5L5 1" stroke="#4F7EF6" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            <?php endif; ?>
+                                        <span class="wpsms-chatbox__article-chevron">
+                                            <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M1 9l4-4-4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                         </span>
                                     </a>
                                 </li>
                             <?php endforeach; ?>
                         </ul>
-                    </div>
+                    </nav>
                 <?php endif; ?>
             </div>
         </div>
-        <div class="wpsms-chatbox__info">
+        <footer class="wpsms-chatbox__info">
             <div class="wpsms-chatbox__info--text">
                 <?php echo esc_html($chatbox->getFooterText()); ?>
 
@@ -116,7 +114,7 @@ $footer_color       = $chatbox->getFooterTextColor() ? sprintf('color: %s!import
                     <a href="https://wsms.io/?utm_source=msg-btn&utm_medium=referral" target="_blank" title="<?php esc_html_e('WSMS', 'wp-sms') ?>">WSMS</a>
                 </div>
             <?php endif; ?>
-        </div>
+        </footer>
         <span class="wpsms-chatbox__arrow"><i></i></span>
     </div>
-</div>
+</aside>

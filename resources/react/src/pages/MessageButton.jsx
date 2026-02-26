@@ -58,7 +58,7 @@ export default function MessageButton() {
   const [buttonPosition, setButtonPosition] = useSetting('chatbox_button_position', 'bottom_right')
 
   // Colors
-  const [chatboxColor, setChatboxColor] = useSetting('chatbox_color', '#f88e40')
+  const [chatboxColor, setChatboxColor] = useSetting('chatbox_color', '#c2410c')
   const [chatboxTextColor, setChatboxTextColor] = useSetting('chatbox_text_color', '#ffffff')
 
   // Footer
@@ -95,6 +95,10 @@ export default function MessageButton() {
         content.classList.remove('open', 'opening')
         content.style.display = 'none'
       }
+      const backdrop = chatbox.querySelector('.js-wpsms-chatbox__backdrop')
+      if (backdrop) backdrop.classList.remove('active')
+      const btn = chatbox.querySelector('.js-wpsms-chatbox__button')
+      if (btn) btn.setAttribute('aria-expanded', 'false')
       document.body.classList.remove('chatbox-open')
     }
   }, [])
@@ -126,6 +130,9 @@ export default function MessageButton() {
         content.classList.remove('open', 'opening')
         content.style.display = 'none'
       }
+      const backdrop = chatbox.querySelector('.js-wpsms-chatbox__backdrop')
+      if (backdrop) backdrop.classList.remove('active')
+      if (chatboxButton) chatboxButton.setAttribute('aria-expanded', 'false')
       document.body.classList.remove('chatbox-open')
     }
 
@@ -136,6 +143,9 @@ export default function MessageButton() {
         e.stopPropagation()
         content.classList.remove('open', 'opening')
         content.style.display = 'none'
+        const backdrop = chatbox.querySelector('.js-wpsms-chatbox__backdrop')
+        if (backdrop) backdrop.classList.remove('active')
+        if (chatboxButton) chatboxButton.setAttribute('aria-expanded', 'false')
         document.body.classList.remove('chatbox-open')
       }
       // If not open, let original handler open it
@@ -189,7 +199,7 @@ export default function MessageButton() {
     }
 
     // Update colors
-    const primaryColor = chatboxColor || '#f88e40'
+    const primaryColor = chatboxColor || '#c2410c'
     const textColor = chatboxTextColor || '#ffffff'
 
     const button = chatbox.querySelector('.wpsms-chatbox__button')
@@ -322,8 +332,8 @@ export default function MessageButton() {
             li.innerHTML = `
               <a href="${link.chatbox_link_url || '#'}" title="${link.chatbox_link_title}">
                 ${link.chatbox_link_title}
-                <span>
-                  <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 9L1 5L5 1" stroke="#4F7EF6" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="wpsms-chatbox__article-chevron">
+                  <svg width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1 9l4-4-4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </span>
               </a>
             `
@@ -494,7 +504,7 @@ export default function MessageButton() {
                     <Input
                       value={chatboxColor}
                       onChange={(e) => setChatboxColor(e.target.value)}
-                      placeholder="#f88e40"
+                      placeholder="#c2410c"
                       aria-label={__('Primary color hex value')}
                     />
                   </div>

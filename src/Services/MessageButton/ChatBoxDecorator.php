@@ -57,7 +57,7 @@ class ChatBoxDecorator
 
     public function getColor()
     {
-        return $this->getData('chatbox_color', '#f88e40');
+        return $this->getData('chatbox_color', '#c2410c');
     }
 
     public function getAnimationEffect()
