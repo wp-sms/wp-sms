@@ -16,16 +16,23 @@ $footer_color       = $chatbox->getFooterTextColor() ? sprintf('color: %s!import
 </style>
 
 <aside class="wpsms-chatbox wpsms-chatbox--ltr <?php echo $chatbox->getButtonPosition() === 'bottom_right' ? 'wpsms-chatbox--right-side' : 'wpsms-chatbox--left-side' ?>" role="complementary" aria-label="<?php esc_attr_e('Chat widget', 'wp-sms'); ?>">
-    <button class="wpsms-chatbox__button js-wpsms-chatbox__button wpsms-chatbox__button--rounded wpsms-chatbox__button--rounded wpsms-chatbox__button--has-arrow wpsms-chatbox--bobbles" style="<?php echo esc_attr($general_color) . esc_attr($general_background) ?>" aria-expanded="false" aria-controls="wpsms-chatbox-panel">
-        <span class="wpsms-chatbox__button-arrow">
-            <svg xmlns="http://www.w3.org/2000/svg" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="<?php echo esc_attr($general_fill_color) ?>" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </span>
+    <?php
+    $button_style = $chatbox->getButtonStyle();
+    $is_circle    = $button_style === 'icon_only';
+    $show_icon    = $button_style !== 'text_only';
+    $show_text    = $button_style !== 'icon_only';
+    $shape_class  = $is_circle ? 'wpsms-chatbox__button--circle' : 'wpsms-chatbox__button--rounded';
+    $text_only_class = $button_style === 'text_only' ? ' wpsms-chatbox__button--text-only' : '';
+    ?>
+    <button class="wpsms-chatbox__button js-wpsms-chatbox__button <?php echo esc_attr($shape_class . $text_only_class); ?> wpsms-chatbox--bobbles" style="<?php echo esc_attr($general_color) . esc_attr($general_background) ?>" aria-expanded="false" aria-controls="wpsms-chatbox-panel">
+        <?php if ($show_icon) : ?>
         <span class="wpsms-chatbox__button-icon messenger">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M6 9a1 1 0 100-2 1 1 0 000 2zm4 0a1 1 0 100-2 1 1 0 000 2zm4 0a1 1 0 100-2 1 1 0 000 2zM0 20V2a2 2 0 012-2h16a2 2 0 012 2v12a2 2 0 01-2 2H4l-4 4zm3.15-6H18V2H2v13.125L3.15 14z" fill="<?php echo esc_attr($general_fill_color) ?>"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="<?php echo esc_attr($general_fill_color) ?>" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></svg>
         </span>
-        <span class="wpsms-chatbox__button-title">
-            <?php echo esc_html($chatbox->getButtonText()); ?>
-        </span>
+        <?php endif; ?>
+        <?php if ($show_text) : ?>
+        <span class="wpsms-chatbox__button-title"><?php echo esc_html($chatbox->getButtonText()); ?></span>
+        <?php endif; ?>
     </button>
 
     <div class="wpsms-chatbox__backdrop js-wpsms-chatbox__backdrop" aria-hidden="true"></div>

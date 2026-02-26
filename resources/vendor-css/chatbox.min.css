@@ -175,6 +175,7 @@
   align-items: center;
   align-content: center;
   justify-content: center;
+  gap: 6px;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   z-index: 10000;
@@ -183,7 +184,8 @@
   font-size: 14px;
   letter-spacing: -0.01em;
   box-shadow: var(--cb-shadow-md);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .wpsms-chatbox__button:hover {
@@ -192,7 +194,7 @@
 }
 
 .wpsms-chatbox__button:active {
-  transform: translateY(0) scale(0.98);
+  transform: translateY(0) scale(0.97);
   box-shadow: var(--cb-shadow);
 }
 
@@ -202,8 +204,8 @@
 }
 
 .wpsms-chatbox__button-icon {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -211,8 +213,8 @@
 }
 
 .wpsms-chatbox__button-icon svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
 }
 
 .wpsms-chatbox__button-bobbles-title {
@@ -220,49 +222,16 @@
 }
 
 .wpsms-chatbox__button-title {
-  margin: 0 0.3rem;
   font-size: 14px;
   white-space: nowrap;
+  line-height: 1;
 }
 
+/* Arrow – kept as no-op for backward compat */
 .wpsms-chatbox__button-arrow {
   display: none;
 }
-
-/* Arrow variant */
-.wpsms-chatbox__button--has-arrow {
-  padding-right: 32px !important;
-}
-
-.wpsms-chatbox__button--has-arrow .wpsms-chatbox__button-arrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 50%;
-  right: 12px;
-  transform: translateY(-50%) rotate(180deg);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.chatbox-open .wpsms-chatbox__button-arrow {
-  transform: translateY(-50%) rotate(0deg);
-}
-
-/* RTL arrow */
-[dir=rtl] .wpsms-chatbox__button--has-arrow,
-body.rtl .wpsms-chatbox__button--has-arrow,
-.wpsms-chatbox--rtl .wpsms-chatbox__button--has-arrow {
-  padding-right: 22px !important;
-  padding-left: 32px !important;
-}
-
-[dir=rtl] .wpsms-chatbox__button--has-arrow .wpsms-chatbox__button-arrow,
-body.rtl .wpsms-chatbox__button--has-arrow .wpsms-chatbox__button-arrow,
-.wpsms-chatbox--rtl .wpsms-chatbox__button--has-arrow .wpsms-chatbox__button-arrow {
-  right: auto;
-  left: 12px;
-}
+.wpsms-chatbox__button--has-arrow {}
 
 /* Button shapes */
 .wpsms-chatbox__button--rounded {
@@ -272,9 +241,24 @@ body.rtl .wpsms-chatbox__button--has-arrow .wpsms-chatbox__button-arrow,
 
 .wpsms-chatbox__button--circle {
   border-radius: 50% !important;
-  padding: 8px !important;
-  width: 48px;
-  height: 48px;
+  padding: 0 !important;
+  width: 52px;
+  height: 52px;
+}
+
+.wpsms-chatbox__button--circle .wpsms-chatbox__button-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.wpsms-chatbox__button--circle .wpsms-chatbox__button-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Text-only variant */
+.wpsms-chatbox__button--text-only {
+  padding: 12px 24px !important;
 }
 
 /* No idle animation – clean & still like dashboard buttons */
@@ -836,7 +820,9 @@ body.rtl .wpsms-chatbox__article-chevron,
 
   .wpsms-chatbox__arrow { display: none !important; }
   .wpsms-chatbox__button--rounded { padding: 10px 18px !important; }
+  .wpsms-chatbox__button--text-only { padding: 10px 20px !important; }
   .wpsms-chatbox__button-title { font-size: 13px; }
+  .wpsms-chatbox__button--circle { width: 48px; height: 48px; }
 }
 
 @media (max-width: 479px) {

@@ -741,6 +741,17 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type' => 'text',
                     'desc' => esc_html__('The message displayed on the chat button, e.g., \'Talk to Us\'', 'wp-sms')
                 ),
+                'chatbox_button_style'      => array(
+                    'id'      => 'chatbox_button_style',
+                    'name'    => esc_html__('Button Style', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => array(
+                        'icon_text' => esc_html__('Icon & Text', 'wp-sms'),
+                        'icon_only' => esc_html__('Icon Only', 'wp-sms'),
+                        'text_only' => esc_html__('Text Only', 'wp-sms'),
+                    ),
+                    'desc'    => esc_html__('Choose how the floating button appears.', 'wp-sms')
+                ),
                 'chatbox_button_position'   => array(
                     'id'      => 'chatbox_button_position',
                     'name'    => esc_html__('Position', 'wp-sms'),

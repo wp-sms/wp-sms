@@ -30,6 +30,11 @@ class ChatBoxDecorator
         return $this->getData('chatbox_button_text', __('Talk to Us', 'wp-sms'));
     }
 
+    public function getButtonStyle()
+    {
+        return $this->getData('chatbox_button_style', 'icon_text');
+    }
+
     public function getFooterText()
     {
         return $this->getData('chatbox_footer_text', __('Chat with us on WhatsApp for instant support!', 'wp-sms'));

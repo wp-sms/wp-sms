@@ -55,6 +55,7 @@ export default function MessageButton() {
 
   // Button appearance
   const [buttonText, setButtonText] = useSetting('chatbox_button_text', '')
+  const [buttonStyle, setButtonStyle] = useSetting('chatbox_button_style', 'icon_text')
   const [buttonPosition, setButtonPosition] = useSetting('chatbox_button_position', 'bottom_right')
 
   // Colors
@@ -186,18 +187,6 @@ export default function MessageButton() {
       chatboxArrow.style.bottom = '135px'
     }
 
-    // Update button text
-    const buttonTitle = chatbox.querySelector('.wpsms-chatbox__button-title')
-    if (buttonTitle) {
-      buttonTitle.textContent = buttonText || __('Talk to Us')
-    }
-
-    // Update header title
-    const headerTitle = chatbox.querySelector('.wpsms-chatbox__header h2')
-    if (headerTitle) {
-      headerTitle.textContent = chatboxTitle || __('Chat with Us!')
-    }
-
     // Update colors
     const primaryColor = chatboxColor || '#c2410c'
     const textColor = chatboxTextColor || '#ffffff'
@@ -206,6 +195,23 @@ export default function MessageButton() {
     if (button) {
       button.style.backgroundColor = primaryColor
       button.style.color = textColor
+    }
+
+    // Update button text — ensure the span exists for preview toggling
+    let buttonTitle = chatbox.querySelector('.wpsms-chatbox__button-title')
+    if (!buttonTitle && button) {
+      buttonTitle = document.createElement('span')
+      buttonTitle.className = 'wpsms-chatbox__button-title'
+      button.appendChild(buttonTitle)
+    }
+    if (buttonTitle) {
+      buttonTitle.textContent = buttonText || __('Chat with us')
+    }
+
+    // Update header title
+    const headerTitle = chatbox.querySelector('.wpsms-chatbox__header h2')
+    if (headerTitle) {
+      headerTitle.textContent = chatboxTitle || __('Chat with Us!')
     }
 
     const header = chatbox.querySelector('.wpsms-chatbox__header')
@@ -224,6 +230,41 @@ export default function MessageButton() {
         el.setAttribute('stroke', textColor)
       }
     })
+
+    // Update button style (shape + icon/text visibility)
+    const currentStyle = buttonStyle || 'icon_text'
+    if (button) {
+      button.classList.remove('wpsms-chatbox__button--rounded', 'wpsms-chatbox__button--circle', 'wpsms-chatbox__button--has-arrow', 'wpsms-chatbox__button--text-only')
+      if (currentStyle === 'icon_only') {
+        button.classList.add('wpsms-chatbox__button--circle')
+      } else {
+        button.classList.add('wpsms-chatbox__button--rounded')
+        if (currentStyle === 'text_only') {
+          button.classList.add('wpsms-chatbox__button--text-only')
+        }
+      }
+    }
+
+    // Ensure icon span exists for preview toggling
+    let iconEl = chatbox.querySelector('.wpsms-chatbox__button-icon')
+    if (!iconEl && button) {
+      iconEl = document.createElement('span')
+      iconEl.className = 'wpsms-chatbox__button-icon messenger'
+      iconEl.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="' + textColor + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z"/></svg>'
+      button.insertBefore(iconEl, button.firstChild)
+    }
+    const titleEl = chatbox.querySelector('.wpsms-chatbox__button-title')
+    const arrowEl = chatbox.querySelector('.wpsms-chatbox__button-arrow')
+
+    if (iconEl) {
+      iconEl.style.display = currentStyle === 'text_only' ? 'none' : ''
+    }
+    if (titleEl) {
+      titleEl.style.display = currentStyle === 'icon_only' ? 'none' : ''
+    }
+    if (arrowEl) {
+      arrowEl.style.display = 'none'
+    }
 
     // Update position
     chatbox.classList.remove('wpsms-chatbox--right-side', 'wpsms-chatbox--left-side')
@@ -353,6 +394,7 @@ export default function MessageButton() {
 
   }, [
     buttonText,
+    buttonStyle,
     chatboxTitle,
     chatboxColor,
     chatboxTextColor,
@@ -449,6 +491,19 @@ export default function MessageButton() {
                 onChange={(e) => setButtonText(e.target.value)}
                 placeholder={__('Chat with us')}
                 description={__('Text shown on the floating button.')}
+              />
+
+              <SelectField
+                label={__('Button Style')}
+                value={buttonStyle || 'icon_text'}
+                onValueChange={setButtonStyle}
+                placeholder={__('Select style')}
+                description={__('Choose how the floating button appears.')}
+                options={[
+                  { value: 'icon_text', label: __('Icon & Text') },
+                  { value: 'icon_only', label: __('Icon Only') },
+                  { value: 'text_only', label: __('Text Only') },
+                ]}
               />
 
               <SelectField
