@@ -12,7 +12,7 @@ class mitto extends \WP_SMS\Gateway
     public $unit;
     public $flash = "disable";
     public $isflash = false;
-    public $documentUrl = 'https://wp-sms-pro.com/resources/mitto-gateway-configuration/';
+    public $documentUrl = 'https://wsms.io/docs/gateway-configuration';
     public $gatewayFields = [
         'from'    => [
             'id'           => 'gateway_sender_id',

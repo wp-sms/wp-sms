@@ -19,7 +19,7 @@ class cellsynt extends \WP_SMS\Gateway
         parent::__construct();
         $this->validateNumber  = "00xxxxxxxxxxxx";
         $this->supportIncoming = true;
-        $this->documentUrl     = 'https://wp-sms-pro.com/resources/cellsynt-gateway-configuration/';
+        $this->documentUrl     = 'https://wsms.io/docs/gateway-configuration';
         $this->gatewayFields = [
             'username'         => [
                 'id'   => 'username',

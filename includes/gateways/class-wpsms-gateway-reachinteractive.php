@@ -8,7 +8,7 @@ class reachinteractive extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://api.reach-interactive.com/sms";
     public $tariff = "https://reach-interactive.com/";
-    public $documentUrl = 'https://wp-sms-pro.com/resources/reach-interactive-gateway-configuration/';
+    public $documentUrl = 'https://wsms.io/docs/gateway-configuration';
     public $unitrial = false;
     public $unit;
     public $flash = "disable";

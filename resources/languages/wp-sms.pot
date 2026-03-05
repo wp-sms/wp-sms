@@ -830,7 +830,7 @@ msgid "Incoming SMS Handling Webhook"
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:918
-msgid "Define the Webhook URL for the \"<a href=\"https://wp-sms-pro.com/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings\" target=\"_blank\">Two-Way SMS</a>\" add-on that handles incoming SMS messages. Only secure HTTPS URLs are accepted."
+msgid "Define the Webhook URL for the \"<a href=\"https://wsms.io/addons/two-way?utm_source=wp-sms&utm_medium=link&utm_campaign=settings\" target=\"_blank\">Two-Way SMS</a>\" add-on that handles incoming SMS messages. Only secure HTTPS URLs are accepted."
 msgstr ""
 
 #: includes/admin/settings/class-wpsms-settings.php:918
@@ -5762,7 +5762,7 @@ msgid ""
 "            <strong>WP SMS notice – PHP upgrade required</strong><br>\n"
 "            Your site is running PHP %s. upcoming WP SMS 7.1 requires PHP 7.2 or higher.\n"
 "            Please upgrade your server's PHP version before installing the update.\n"
-"            <a href=\"https://wp-sms-pro.com/33155/version-7-1/\" target=\"_blank\" rel=\"noopener noreferrer\">More details</a>.\n"
+"            <a href=\"https://wsms.io/blog/version-7-1/\" target=\"_blank\" rel=\"noopener noreferrer\">More details</a>.\n"
 "        "
 msgstr ""
 

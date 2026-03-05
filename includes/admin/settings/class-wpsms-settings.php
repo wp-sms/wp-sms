@@ -926,7 +926,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'id'   => 'new_incoming_sms_webhook',
                     'name' => esc_html__('Incoming SMS Handling Webhook', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Define the Webhook URL for the "<a href="https://wp-sms-pro.com/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Two-Way SMS</a>" add-on that handles incoming SMS messages. Only secure HTTPS URLs are accepted.', 'wp-sms') . '<br><br /><i>' . esc_html__('Please provide each Webhook URL on a separate line if you\'re setting up more than one.', 'wp-sms') . '</i>',
+                    'desc' => __('Define the Webhook URL for the "<a href="https://wsms.io/addons/two-way?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Two-Way SMS</a>" add-on that handles incoming SMS messages. Only secure HTTPS URLs are accepted.', 'wp-sms') . '<br><br /><i>' . esc_html__('Please provide each Webhook URL on a separate line if you\'re setting up more than one.', 'wp-sms') . '</i>',
                 ),
                 'share_anonymous_data_header'  => array(
                     'id'   => 'share_anonymous_data_header',
@@ -1782,7 +1782,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                             if (apply_filters('wp_sms_enable_upgrade_notice', true)) :
                                 $isIntegrationsPage = isset($_GET['page']) && $_GET['page'] === 'wp-sms-integrations';
                                 $noticeConfig       = $isIntegrationsPage ? [
-                                    'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=integrations',
+                                    'link'      => 'https://wsms.io/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=integrations',
                                     'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
                                     'title'     => sprintf(
                                     /* translators: %s: Plugin name (WP SMS All-in-One) */
@@ -1790,7 +1790,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                                         '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
                                     )
                                 ] : [
-                                    'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings',
+                                    'link'      => 'https://wsms.io/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings',
                                     'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
                                     'title'     => sprintf(
                                     /* translators: %s: Plugin name (WP SMS All-in-One) */

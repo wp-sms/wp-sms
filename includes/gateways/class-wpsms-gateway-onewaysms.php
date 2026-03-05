@@ -8,7 +8,7 @@ class onewaysms extends \WP_SMS\Gateway
 {
     private $wsdl_link = "http://gateway.onewaysms.com.my:10001/";
     public $tariff = "https://onewaysms.com/";
-    public $documentUrl = 'https://wp-sms-pro.com/resources/onewaysms-gateway-configuration/';
+    public $documentUrl = 'https://wsms.io/docs/gateway-configuration';
     public $unitrial = false;
     public $unit;
     public $flash = "disable";

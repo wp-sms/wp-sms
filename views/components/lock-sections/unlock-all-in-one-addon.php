@@ -36,11 +36,11 @@
             </p>
 
             <div class="wp-sms-lock__actions">
-                <a href="<?php echo esc_url('https://wp-sms-pro.com/pricing/'); ?>" class="wp-sms-lock__action wp-sms-lock__action--primary">
+                <a href="<?php echo esc_url('https://wsms.io/pricing/'); ?>" class="wp-sms-lock__action wp-sms-lock__action--primary">
                     <?php esc_html_e('Unlock Everything – All-in-One Plan', 'wp-sms'); ?>
                 </a>
 
-                <a href="<?php echo esc_url('https://wp-sms-pro.com/product/wp-sms-pro/'); ?>" class="wp-sms-lock__action wp-sms-lock__action--default">
+                <a href="<?php echo esc_url('https://wsms.io/addons/wsms-pro'); ?>" class="wp-sms-lock__action wp-sms-lock__action--default">
                     <?php esc_html_e('Get WP SMS Pro only', 'wp-sms'); ?>
                 </a>
             </div>

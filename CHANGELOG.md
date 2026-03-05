@@ -171,7 +171,7 @@ v6.9.1 - 31.05.2024
 * Improvement: Implemented minor enhancements
 
 v6.9 - 12.05.2024
-* Addition: Introduced a custom gateway feature allowing manual integration with your own SMS gateway. Detailed setup instructions available at [Custom SMS Gateway Setup Documentation](https://wp-sms-pro.com/resources/custom-sms-gateway-setup-documentation).
+* Addition: Introduced a custom gateway feature allowing manual integration with your own SMS gateway. Detailed setup instructions available at [Custom SMS Gateway Setup Documentation](https://wsms.io/docs/custom-gateway).
 * Updates: Support for MTarget, SMSGatewayHub, and Octopush gateways.
 * Fixes: Issue with SMS report scheduling not clearing when disabled.
 * Fixes: Issue with specific WordPress user roles not receiving new post alerts.
@@ -203,7 +203,7 @@ v6.7.1 - 20.03.2024
 * Improvement: Implemented minor enhancements.
 
 v6.7 - 16.03.2024
-* Addition: Integration with [Formidable](https://wordpress.org/plugins/formidable/) and [Forminator](https://wordpress.org/plugins/forminator/) now includes SMS notifications for enhanced functionality. [More info](https://wp-sms-pro.com/25942/formidable-forms-and-forminator-integration-now-available/)
+* Addition: Integration with [Formidable](https://wordpress.org/plugins/formidable/) and [Forminator](https://wordpress.org/plugins/forminator/) now includes SMS notifications for enhanced functionality. [More info](https://wsms.io/blog/formidable-forms-and-forminator-integration-now-available/)
 * Fixes: Addressed issue with retrieving incorrect variables from admin JavaScript.
 * Improvement: Made minor improvements and optimizations for better performance.
 
@@ -223,7 +223,7 @@ v6.6.1 - 08.03.2024
 * Improvement: Sanitized and Escaped the rest of the inputs/outputs and hardened plugin security.
 
 v6.6 - 06.03.2024
-* Addition: Messaging Button for direct visitor communication via WhatsApp, SMS, and other platforms. [More info](https://wp-sms-pro.com/25841/whats-new-in-wp-sms-6-6-better-faster-and-more-customizable/)
+* Addition: Messaging Button for direct visitor communication via WhatsApp, SMS, and other platforms. [More info](https://wsms.io/blog/whats-new-in-wp-sms-6-6-better-faster-and-more-customizable/)
 * Improvement: Admin area texts for clearer instructions and settings management.
 * Improvement: Various performance tweaks for a smoother plugin experience.
 * Development: New `wp_sms_mobile_number_numeric_check` filter for developer-specific number handling customization.
@@ -259,7 +259,7 @@ v6.5.1 - 28.12.2023
 * Improvement: Enhance plugin security by adding a nonce to the delete subscriber function.
 
 v6.5 - 19.12.2023
-* Addition: Introducing Background Processing! You can now send SMS in bulk to thousands of numbers without disrupting the user experience, [click here](https://wp-sms-pro.com/24758/new-wp-sms-6-5-update-expanded-sms-delivery-options/) to more information.
+* Addition: Introducing Background Processing! You can now send SMS in bulk to thousands of numbers without disrupting the user experience, [click here](https://wsms.io/blog/new-wp-sms-6-5-update-expanded-sms-delivery-options/) to more information.
 * Improvement: Improved visibility of form labels on white backgrounds, ensuring they are clearly readable regardless of theme or background color.
 * Fixes: Resolved an issue with the group assignment in the subscriber shortcode, enhancing reliability and user management.
 
@@ -311,7 +311,7 @@ v6.3 - 23.09.2023
 * Fixes: Prevented the sending of blank SMS in CF7.
 * Improvement: Made minor improvements and optimizations for better performance.
 
-[Read more](https://wp-sms-pro.com/23630/new-update-wp-sms-plugin-v6-3/) to see more information about release.
+[Read more](https://wsms.io/blog/new-update-wp-sms-plugin-v6-3/) to see more information about release.
 
 v6.2.4.1 - 09.09.2023
 * Fixes: PHP Fatal Error in WooCommerceUsePhoneFieldHandler.php
@@ -449,8 +449,8 @@ v6.0.2 - 23.01.2023
 * Improvement: Better showing response
 
 v6.0.1 - 21.01.2023
-* New: Shortcode `[wp_sms_subscriber_form]` is back! [Documentation](https://wp-sms-pro.com/resources/add-sms-subscriber-form/)
-* New: Support custom fields for subscribers! [Demo](https://demo.wp-sms-pro.com/)
+* New: Shortcode `[wp_sms_subscriber_form]` is back! [Documentation](https://wsms.io/docs/subscriber-form)
+* New: Support custom fields for subscribers! [Demo](https://demo.wsms.io/)
 * New: Implement notification handler
 * New: The SmsOtp library added in the plugin
 * Improvement: The Oursms gateway updated
@@ -473,8 +473,8 @@ v5.9.1 - 18.12.2022
 * Bugfix: Webhooks notices issue
 
 v5.9 - 13.12.2022
-* New: [Zapier integration!](https://wp-sms-pro.com/zapier-integration)
-* New: [Support Webhooks](https://wp-sms-pro.com/resources/webhooks/) to trigger actions when sending SMS and new Subscriber
+* New: [Zapier integration!](https://wsms.io/integrations/zapier)
+* New: [Support Webhooks](https://wsms.io/docs/webhooks) to trigger actions when sending SMS and new Subscriber
 * New: Support filter by subscribers in Admin → SMS → Subscribers
 * New: Implement filter subscribers by the group in Admin → SMS → Groups
 * New: REST API Endpoint `wpsms/v1/webhook` to register and deregister a webhook
@@ -618,7 +618,7 @@ v5.7.2.1 - 15.04.2022
 * Improvement: Improvement license updater
 
 v5.7.2 - 12.04.2022
-* Feature: The Add-Ons page added! [Checkout New Add-Ons!](https://wp-sms-pro.com/product-category/add-ons/)
+* Feature: The Add-Ons page added! [Checkout New Add-Ons!](https://wsms.io/addons)
 * Feature: The SMS Stats dashboard widget has been added!
 * Feature: The Inbox page added!
 * Feature: Add new ability to choose the specific groups to show on SMS newsletter widget
@@ -937,7 +937,7 @@ v4.1.1
 
 v4.1
 * Added: a new checkbox in the SMS subscription form for GDPR compliance.
-* Added: Privacy menu in the plugin for Import & Export the user data for GDPR compliance. read [the blog post](https://wp-sms-pro.com/gdpr-compliant-in-wp-sms/) to get more information.
+* Added: Privacy menu in the plugin for Import & Export the user data for GDPR compliance. read [the blog post](https://wsms.io/blog/gdpr-compliant-in-wp-sms/) to get more information.
 * Added: SMS Sending feature to different roles in Send SMS Page.
 * Added: mobiledot.net.sa and smsnation.co.rw gateways.
 * Added: multi-site support in WordPress Network.
@@ -964,7 +964,7 @@ v4.0.18
 * Updated: settings page fields.
 
 v4.0.17
-* IMPORTANT: Updated the domain name of the Plugin website to wp-sms-pro.com
+* IMPORTANT: Updated the domain name of the Plugin website to wsms.io
 
 v4.0.16
 * Added: Send SMS to multi numbers in the Contact Form 7.
