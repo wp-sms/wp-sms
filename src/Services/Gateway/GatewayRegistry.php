@@ -29,7 +29,7 @@ class GatewayRegistry
         $result = self::fetchFromApi();
 
         if ($result !== null) {
-            $result = self::appendTestGateway($result);
+            $result = self::appendLocalGateways($result);
             $result = self::filterPremiumGateways($result);
             set_transient(self::CACHE_KEY_GATEWAYS, $result, self::CACHE_DURATION);
             return apply_filters('wpsms_gateway_registry', $result);
@@ -113,6 +113,11 @@ class GatewayRegistry
         foreach (glob($corePattern) as $file) {
             $slug = self::extractSlugFromFilename($file, 'class-wpsms-gateway-');
             if ($slug && $slug !== 'default' && !isset($seen[$slug])) {
+                // Skip test gateway when WP_DEBUG is off
+                if ($slug === 'test' && !(defined('WP_DEBUG') && WP_DEBUG)) {
+                    continue;
+                }
+
                 $seen[$slug] = true;
                 $gateways[] = self::buildFallbackEntry($slug, false);
             }
@@ -170,24 +175,45 @@ class GatewayRegistry
     }
 
     /**
-     * Append the test gateway if it exists on disk but is missing from the list
+     * Append local-only gateways (custom, test) if they exist on disk but are missing from the API list
      *
      * @param array $data
      * @return array
      */
-    private static function appendTestGateway($data)
+    private static function appendLocalGateways($data)
     {
-        if (!file_exists(WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-test.php')) {
-            return $data;
-        }
+        $localGateways = [
+            'custom' => [
+                'file'      => 'class-wpsms-gateway-custom.php',
+                'name'      => esc_html__('Custom Gateway', 'wp-sms'),
+                'condition' => true,
+            ],
+            'test' => [
+                'file'      => 'class-wpsms-gateway-test.php',
+                'name'      => esc_html__('Test Gateway', 'wp-sms'),
+                'condition' => defined('WP_DEBUG') && WP_DEBUG,
+            ],
+        ];
 
-        foreach ($data['gateways'] as $gateway) {
-            if ($gateway['slug'] === 'test') {
-                return $data;
+        $existingSlugs = array_column($data['gateways'], 'slug');
+
+        foreach ($localGateways as $slug => $config) {
+            if (!$config['condition']) {
+                continue;
             }
-        }
 
-        array_unshift($data['gateways'], self::buildFallbackEntry('test', false));
+            if (!file_exists(WP_SMS_DIR . 'includes/gateways/' . $config['file'])) {
+                continue;
+            }
+
+            if (in_array($slug, $existingSlugs, true)) {
+                continue;
+            }
+
+            $entry         = self::buildFallbackEntry($slug, false);
+            $entry['name'] = $config['name'];
+            array_unshift($data['gateways'], $entry);
+        }
 
         return $data;
     }

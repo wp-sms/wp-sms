@@ -142,6 +142,5 @@ WSMS is translated into many languages. See the [translate page](https://transla
 
 - [WordPress.org](https://wordpress.org/plugins/wp-sms/)
 - [Website](https://wsms.io)
-- [Documentation](https://wsms.io/resources-category/api-endpoints/)
-- [API Documentation](https://documenter.getpostman.com/view/3239688/UVkqsvCK)
+- [Documentation](https://wsms.io/docs)
 - [Development Guide](https://github.com/wp-sms/wp-sms/wiki)

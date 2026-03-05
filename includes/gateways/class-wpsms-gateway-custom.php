@@ -19,11 +19,12 @@ class custom extends \WP_SMS\Gateway
     public $http_parameters;
     public $is_post_body;
     public $encode_message;
+    public $documentUrl = 'https://wsms.io/docs/custom-gateway/';
 
     public function __construct()
     {
         parent::__construct();
-        $this->help          = sprintf('Check the <a target="_blank" href="%s">documentation</a> for instructions on setting up your custom API gateway.', WP_SMS_SITE . '/resources/custom-sms-gateway-setup-documentation/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings');
+        $this->help          = sprintf('Check the <a target="_blank" href="%s">documentation</a> for instructions on setting up your custom API gateway.', WP_SMS_SITE . '/docs/custom-gateway/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings');
         $this->gatewayFields = [
             'api_url'         => [
                 'id'   => 'gateway_api_url',
@@ -45,7 +46,7 @@ class custom extends \WP_SMS\Gateway
             'is_post_body'    => [
                 'id'      => 'gateway_is_post_body',
                 'name'    => 'Send As POST',
-                'desc'    => esc_html__("Choose 'Yes' to send the HTTP parameters as body data in a POST request. Select 'No' if parameters are sent directly in the URL.", 'wp-sms'),
+                'desc'    => __("Choose 'Yes' to send the HTTP parameters as body data in a POST request. Select 'No' if parameters are sent directly in the URL.", 'wp-sms'),
                 'type'    => 'select',
                 'options' => [
                     'no'  => 'No',
@@ -55,7 +56,7 @@ class custom extends \WP_SMS\Gateway
             'encode_message'  => [
                 'id'      => 'gateway_encode_message',
                 'name'    => 'Encode Message',
-                'desc'    => esc_html__("Select 'Yes' to encode the SMS message content to ensure compatibility with the gateway. Encoding may be necessary for special characters or binary data", 'wp-sms'),
+                'desc'    => __("Select 'Yes' to encode the SMS message content to ensure compatibility with the gateway. Encoding may be necessary for special characters or binary data", 'wp-sms'),
                 'type'    => 'select',
                 'options' => [
                     'no'  => 'No',

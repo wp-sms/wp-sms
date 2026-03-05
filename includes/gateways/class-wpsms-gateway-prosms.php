@@ -21,7 +21,7 @@ class prosms extends \WP_SMS\Gateway
         parent::__construct();
         $this->validateNumber = esc_html__('46*********', 'wp-sms');
         $this->has_key        = true;
-        $this->help           = esc_html__('Note: that you need to get every \'Sender Name\' approved before you can use it as \'Sender Name\'. You can do it by going to your gateway account then go to this path : Account setting > SENDER NAME > Add', 'wp-sms');
+        $this->help           = __('Note: that you need to get every \'Sender Name\' approved before you can use it as \'Sender Name\'. You can do it by going to your gateway account then go to this path : Account setting > SENDER NAME > Add', 'wp-sms');
         $this->gatewayFields  = [
             'from'    => [
                 'id'   => 'gateway_sender_name',
