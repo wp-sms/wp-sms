@@ -81,14 +81,9 @@ security.md
 .gulpfile.js
 
 # ============================================
-# Compressed & Stale Build Files
+# Compressed Files (not permitted by WordPress.org)
 # ============================================
 *.gz
-/public/js/blocks
-/public/js/css
-/public/js/fonts
-/public/js/images
-/public/js/json
 
 # ============================================
 # AI & IDE Tools
