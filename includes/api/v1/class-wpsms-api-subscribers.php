@@ -724,7 +724,7 @@ class SubscribersApi extends RestApi
         }
 
         // Parse CSV
-        $handle = fopen($file['tmp_name'], 'r');
+        $handle = fopen($file['tmp_name'], 'r'); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fopen -- Reading uploaded CSV temp file
         if ($handle === false) {
             return self::response(__('Failed to read uploaded file', 'wp-sms'), 500);
         }
@@ -825,7 +825,7 @@ class SubscribersApi extends RestApi
             }
         }
 
-        fclose($handle);
+        fclose($handle); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_fclose
 
         return self::response(
             /* translators: %1$d: number of subscribers imported, %2$d: number of subscribers skipped */

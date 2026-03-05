@@ -44,10 +44,12 @@ class ApiCommunicator
             }
 
         } catch (Exception $e) {
+            // phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Message is escaped via esc_html()
             throw new Exception(
-            // translators: %s: Error message.
+                /* translators: %s: Error message. */
                 sprintf(__('Unable to retrieve product list from the remote server, %s. Please check the remote server connection or your remote work configuration.', 'wp-sms'), esc_html($e->getMessage()))
             );
+            // phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped
         }
 
         return $addons;
@@ -176,11 +178,13 @@ class ApiCommunicator
                 ? intval($licenseData->code)
                 : 0;
 
+            // phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Message is escaped, $status/$code are internal params
             throw new LicenseException(
                 esc_html($message),
                 $status,
                 $code
             );
+            // phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped
 
         }
 
@@ -188,8 +192,12 @@ class ApiCommunicator
             $productSlugs = array_column($licenseData->products, 'slug');
 
             if (!in_array($product, $productSlugs, true)) {
-                /* translators: %s: Add-On name */
-                throw new LicenseException(sprintf(__('The license is not related to the requested Add-On <b>%s</b>.', 'wp-sms'), esc_html($product)));
+                // phpcs:disable WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Product name is escaped via esc_html()
+                throw new LicenseException(
+                    /* translators: %s: Add-On name */
+                    sprintf(__('The license is not related to the requested Add-On <b>%s</b>.', 'wp-sms'), esc_html($product))
+                );
+                // phpcs:enable WordPress.Security.EscapeOutput.ExceptionNotEscaped
             }
         }
 

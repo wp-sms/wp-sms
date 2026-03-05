@@ -104,33 +104,6 @@ class NoticeManager extends AbstractNotice
                 $phoneLink
             ), true, 'admin.php?page=wsms&tab=phone');
         }
-
-        if (version_compare(PHP_VERSION, '7.2', '<')) {
-            $current_version = PHP_VERSION;
-            $message         = sprintf(
-                /* translators: %s: current PHP version */
-                __('
-            <strong>WP SMS notice – PHP upgrade required</strong><br>
-            Your site is running PHP %s. upcoming WP SMS 7.1 requires PHP 7.2 or higher.
-            Please upgrade your server\'s PHP version before installing the update.
-            <a href="https://wp-sms-pro.com/33155/version-7-1/" target="_blank" rel="noopener noreferrer">More details</a>.
-        ', 'wp-sms'),
-                esc_html($current_version)
-            );
-
-            $this->registerNotice('php_version_warning', wp_kses_post($message), true);
-        }
-
-        $newsletterLink = sprintf(
-            '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>',
-            'https://dashboard.mailerlite.com/forms/421827/86962232715379904/share',
-            __('subscribe to our newsletter here', 'wp-sms')
-        );
-        // translators: %s: Newsletter subscription link
-        $this->registerNotice('marketing_newsletter', sprintf(
-            __('Stay informed and receive exclusive offers, %s!', 'wp-sms'),
-            $newsletterLink
-        ), true, 'admin.php?page=wsms');
     }
 
     /**

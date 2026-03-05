@@ -258,6 +258,7 @@ class NumberParser
             $query .= $wpdb->prepare(' AND `user_id` != %d', $userId);
         }
 
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query is built via $wpdb->prepare() above
         return !empty($wpdb->get_results($query));
     }
 
@@ -282,6 +283,7 @@ class NumberParser
             $query .= $wpdb->prepare(' AND `id` != %d', $subscribeId);
         }
 
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- $query is built via $wpdb->prepare() above
         $result = $wpdb->get_row($query);
 
         // Check if result exists and it has an active status

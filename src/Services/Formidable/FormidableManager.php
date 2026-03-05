@@ -79,13 +79,14 @@ class FormidableManager
     {
         $values   = wp_sms_sanitize_array($values);
         $sms_data = Option::getOption("formdiable_wp_sms_options_" . $values['id']);
-        // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+        // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped -- Template handles its own escaping
         echo Helper::loadTemplate('formidable/formidable-form.php', [
             'form'       => $values['id'],
             'sms_data'   => $sms_data,
             'formFields' => $this->formfileds($values['id']),
             'fieldGroup' => NotificationFactory::getFormidable($values['id'])->getVariables()
         ]);
+        // phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
     }
 
     public function frm_save_new_settings_tab($options, $values)
