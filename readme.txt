@@ -114,24 +114,20 @@ All premium features + all add-ons in one package.
 👉 [Compare free vs All-in-One](https://wp-sms-pro.com/pricing/?utm_source=wporg&utm_medium=link&utm_campaign=pricing)
 
 == Screenshots ==
-1. Send SMS Page
-2. Send SMS Page: Receiver
-3. Send SMS Page: Options
-4. Outbox
-5. Inbox
-6. Subscribers Management Page
-7. Login With SMS
-8. SMS Subscriber Widget
-9. SMS Stats Dashboard Widget
-10. Email Notification: SMS Failed Delivery
-11. Settings
-12. Settings: Gateway Configuration
-13. Settings: Advanced
-14. Settings: OTP & 2FA
-15. Settings: WooCommerce
-16. Email Notification: SMS Stats
-17. Send SMS form (Gutenberg block)
-18. Message Button
+1. Send SMS via Admin
+2. Outbox
+3. Subscribers Management
+4. Subscriber Group Management
+5. SMS Newsletter Configuration
+6. Settings Overview
+7. Integrations
+8. Gateways Configuration
+9. Notifications Management
+10. Login With SMS
+11. Gutenburg Block: SMS Newsletter Form
+12. Gutenburg Block: Send SMS Form via website
+13. Message Button
+14. SMS Stats Dashboard Widget
 
 == Upgrade Notice ==
 = 7.0 =
