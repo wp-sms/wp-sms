@@ -272,7 +272,7 @@ class PrivacyApi extends RestApi
 
         return self::response(__('Export data ready', 'wp-sms'), 200, [
             'csv_data' => $csv_data,
-            'filename' => 'wpsms-privacy-export-' . sanitize_file_name($number) . '-' . date('Y-m-d') . '.csv',
+            'filename' => 'wpsms-privacy-export-' . sanitize_file_name($number) . '-' . gmdate('Y-m-d') . '.csv',
             'count'    => count($records),
         ]);
     }

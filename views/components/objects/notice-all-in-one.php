@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('ABSPATH')) exit;
+
 // Set default values if not provided
 $link = $link ?? '#';
 $linkText = $linkText ?? $link_text ?? 'Upgrade to unlock all features.';

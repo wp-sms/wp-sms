@@ -77,7 +77,7 @@ class Modal
 
         $state = [
             'times_opened' => (is_array($modal) && isset($modal['times_opened'])) ? $modal['times_opened'] + 1 : 1,
-            'last_opened'  => date('Y-m-d H:i:s')
+            'last_opened'  => gmdate('Y-m-d H:i:s')
         ];
 
         return $state;

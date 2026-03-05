@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "231281f7ce11927c5abcf80fa8ffef71",
+    "content-hash": "6ec310d79098f328a79a6e05c5f36969",
     "packages": [],
     "packages-dev": [
         {
@@ -1084,16 +1084,16 @@
         },
         {
             "name": "veronalabs/wp-scoper",
-            "version": "v1.2.3",
+            "version": "1.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/veronalabs/wp-scoper.git",
-                "reference": "7c9fcb8ebb611a2aac726e4e7382afd600e38c86"
+                "reference": "eb4c15397a57ef44a17b30907880369da2aaf1bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/veronalabs/wp-scoper/zipball/7c9fcb8ebb611a2aac726e4e7382afd600e38c86",
-                "reference": "7c9fcb8ebb611a2aac726e4e7382afd600e38c86",
+                "url": "https://api.github.com/repos/veronalabs/wp-scoper/zipball/eb4c15397a57ef44a17b30907880369da2aaf1bc",
+                "reference": "eb4c15397a57ef44a17b30907880369da2aaf1bc",
                 "shasum": ""
             },
             "require": {
@@ -1132,9 +1132,9 @@
             "description": "A Composer plugin that prefixes namespaces in WordPress plugin dependencies to prevent conflicts",
             "support": {
                 "issues": "https://github.com/veronalabs/wp-scoper/issues",
-                "source": "https://github.com/veronalabs/wp-scoper/tree/v1.2.3"
+                "source": "https://github.com/veronalabs/wp-scoper/tree/v1.2.4"
             },
-            "time": "2026-02-21T11:20:32+00:00"
+            "time": "2026-03-05T08:51:13+00:00"
         }
     ],
     "aliases": [],

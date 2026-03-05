@@ -620,7 +620,7 @@ class OutboxApi extends RestApi
             ];
         }
 
-        $filename = 'outbox-export-' . date('Y-m-d') . '.csv';
+        $filename = 'outbox-export-' . gmdate('Y-m-d') . '.csv';
 
         return self::response(__('Export generated successfully', 'wp-sms'), 200, [
             'data'     => $csvData,

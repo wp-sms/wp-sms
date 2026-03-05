@@ -85,7 +85,7 @@ class StatsWidget extends AbstractWidget
             }
 
             // Initialize this year and last 12 months
-            $currentYear  = date('Y');
+            $currentYear  = gmdate('Y');
             $last12Months = new DatePeriod(new DateTime('first day of -11 month'), new DateInterval('P1M'), new DateTime('first day of next month'));
 
             foreach ($last12Months as $date) {

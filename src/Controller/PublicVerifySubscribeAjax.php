@@ -33,7 +33,7 @@ class PublicVerifySubscribeAjax extends AjaxControllerAbstract
             $result = SubscriberUtil::verifySubscriber($name, $number, $activation, $groupId);
 
             if (is_wp_error($result)) {
-                throw new Exception($result->get_error_message());
+                throw new Exception(esc_html($result->get_error_message()));
             }
         }
 

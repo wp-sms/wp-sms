@@ -3,18 +3,11 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import tailwindcss from 'tailwindcss'
 import autoprefixer from 'autoprefixer'
-import compression from 'vite-plugin-compression'
 import { visualizer } from 'rollup-plugin-visualizer'
 
 export default defineConfig(({ command, mode }) => ({
   plugins: [
     react(),
-    // Generate gzip compressed assets for production
-    mode === 'production' && compression({
-      algorithm: 'gzip',
-      ext: '.gz',
-      threshold: 1024, // Only compress files > 1KB
-    }),
     // Bundle analyzer - generates bundle-analysis.html
     mode === 'production' && visualizer({
       filename: 'bundle-analysis.html',

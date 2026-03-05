@@ -41,7 +41,7 @@ class TimeZone
         $args['to'] = ($args['to'] === false ? self::getCurrentDate() : $args['to']);
 
         // Get List Of Day
-        $period = new \DatePeriod(new \DateTime($args['from']), new \DateInterval('P1D'), new \DateTime(date('Y-m-d', strtotime("+1 day", strtotime($args['to']))))); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+        $period = new \DatePeriod(new \DateTime($args['from']), new \DateInterval('P1D'), new \DateTime(gmdate('Y-m-d', strtotime("+1 day", strtotime($args['to'])))));
         foreach ($period as $key => $value) {
             $list[$value->format('Y-m-d')] = array(
                 'timestamp' => $value->format('U'),
@@ -97,7 +97,7 @@ class TimeZone
      */
     public static function getLocalDate($format, $timestamp)
     {
-        return date($format, $timestamp + self::set_timezone());
+        return gmdate($format, $timestamp + self::set_timezone());
     }
 
     /**
@@ -111,12 +111,12 @@ class TimeZone
     {
         if ($strtotime) {
             if ($relative) {
-                return date($format, strtotime("{$strtotime} day", $relative) + self::set_timezone());
+                return gmdate($format, strtotime("{$strtotime} day", $relative) + self::set_timezone());
             } else {
-                return date($format, strtotime("{$strtotime} day") + self::set_timezone());
+                return gmdate($format, strtotime("{$strtotime} day") + self::set_timezone());
             }
         } else {
-            return date($format, time() + self::set_timezone());
+            return gmdate($format, time() + self::set_timezone());
         }
     }
 
@@ -133,12 +133,12 @@ class TimeZone
     {
         if ($strtotime) {
             if ($relative) {
-                return date($format, strtotime("{$strtotime} day", $relative));
+                return gmdate($format, strtotime("{$strtotime} day", $relative));
             } else {
-                return date($format, strtotime("{$strtotime} day"));
+                return gmdate($format, strtotime("{$strtotime} day"));
             }
         } else {
-            return date($format, time());
+            return gmdate($format, time());
         }
     }
 
@@ -187,7 +187,7 @@ class TimeZone
      */
     public static function getTimeAgo($ago_days = 1, $format = 'Y-m-d')
     {
-        return date($format, strtotime("- " . $ago_days . " day", self::getCurrentTimestamp()));
+        return gmdate($format, strtotime("- " . $ago_days . " day", self::getCurrentTimestamp()));
     }
 
     /**

@@ -25,7 +25,7 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
     {
         // Check GDPR consent if enabled
         if (Option::getOption('gdpr_compliance') === '1' && !$this->get('gdpr_consent')) {
-            throw new Exception(__('Please accept the privacy checkbox to continue.', 'wp-sms'));
+            throw new Exception(esc_html__('Please accept the privacy checkbox to continue.', 'wp-sms'));
         }
 
         $name           = $this->get('name');
@@ -62,13 +62,13 @@ class PublicUnsubscribeAjax extends AjaxControllerAbstract
                 foreach ($groupIds as $groupId) {
                     $result = SubscriberUtil::unSubscribe($name, $subscriberNumber, $groupId);
                     if (is_wp_error($result)) {
-                        throw new Exception($result->get_error_message());
+                        throw new Exception(esc_html($result->get_error_message()));
                     }
                 }
             } else {
                 $result = SubscriberUtil::unSubscribe($name, $subscriberNumber);
                 if (is_wp_error($result)) {
-                    throw new Exception($result->get_error_message());
+                    throw new Exception(esc_html($result->get_error_message()));
                 }
             }
         }

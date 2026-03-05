@@ -77,7 +77,18 @@ security.md
 .gitignore
 .gitattributes
 .DS_Store
+.gitkeep
 .gulpfile.js
+
+# ============================================
+# Compressed & Stale Build Files
+# ============================================
+*.gz
+/public/js/blocks
+/public/js/css
+/public/js/fonts
+/public/js/images
+/public/js/json
 
 # ============================================
 # AI & IDE Tools

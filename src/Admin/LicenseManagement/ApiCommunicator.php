@@ -46,7 +46,7 @@ class ApiCommunicator
         } catch (Exception $e) {
             throw new Exception(
             // translators: %s: Error message.
-                sprintf(__('Unable to retrieve product list from the remote server, %s. Please check the remote server connection or your remote work configuration.', 'wp-sms'), $e->getMessage())
+                sprintf(__('Unable to retrieve product list from the remote server, %s. Please check the remote server connection or your remote work configuration.', 'wp-sms'), esc_html($e->getMessage()))
             );
         }
 
@@ -160,7 +160,7 @@ class ApiCommunicator
         $licenseData = $remoteRequest->execute(false, false);
 
         if (empty($licenseData)) {
-            throw new LicenseException(__('Invalid license response!', 'wp-sms'));
+            throw new LicenseException(esc_html__('Invalid license response!', 'wp-sms'));
         }
 
         if (empty($licenseData->license_details)) {
@@ -177,7 +177,7 @@ class ApiCommunicator
                 : 0;
 
             throw new LicenseException(
-                $message,
+                esc_html($message),
                 $status,
                 $code
             );
@@ -189,7 +189,7 @@ class ApiCommunicator
 
             if (!in_array($product, $productSlugs, true)) {
                 /* translators: %s: Add-On name */
-                throw new LicenseException(sprintf(__('The license is not related to the requested Add-On <b>%s</b>.', 'wp-sms'), $product));
+                throw new LicenseException(sprintf(__('The license is not related to the requested Add-On <b>%s</b>.', 'wp-sms'), esc_html($product)));
             }
         }
 
