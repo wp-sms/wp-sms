@@ -141,12 +141,9 @@ All premium features + all add-ons in one package.
 13. Message Button
 14. SMS Stats Dashboard Widget
 
-== Upgrade Notice ==
-= 7.0 =
-- New Onboarding, Add-on Manager, and All-in-One package.
-
 == Changelog ==
 = v7.2 - 2026-03-08 =
 - **New:** Redesigned admin interface with improved user experience.
+- **Enhancement:** Updated PHP requirement to version 7.4.
 
 [See changelog for all versions](https://wsms.io/changelog/?utm_source=wporg&utm_medium=link&utm_campaign=changelog).

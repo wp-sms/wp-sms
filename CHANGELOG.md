@@ -1,5 +1,6 @@
 = v7.2 - 2026-03-08 =
 - **New:** Redesigned admin interface with improved user experience.
+- **Enhancement:** Updated PHP requirement to version 7.4.
 
 = v7.1 - 2025-12-16 =
 - **New:** Introduced Notifications to receive important updates and promotions.
