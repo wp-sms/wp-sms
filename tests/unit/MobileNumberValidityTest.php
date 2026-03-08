@@ -9,17 +9,12 @@ use WP_UnitTestCase;
 
 class MobileNumberValidityTest extends WP_UnitTestCase
 {
-    protected $faker;
-
     /**
      * Setup before each test.
      */
     public function setUp(): void
     {
         parent::setUp();
-
-        // Initialize Faker for generating test data
-        $this->faker = \Faker\Factory::create();
     }
 
     /**

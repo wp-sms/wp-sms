@@ -1,0 +1,36 @@
+// Design tokens — mirrors the React dashboard (:root in resources/react/src/styles/index.css)
+.wpsms-subscribe,
+.wpsms-sendSmsForm {
+  // Colors (exact dashboard values)
+  --wsms-primary: 24 95% 38%;
+  --wsms-primary-foreground: 0 0% 100%;
+  --wsms-foreground: 20 10% 12%;
+  --wsms-muted-foreground: 20 6% 35%;
+  --wsms-card: 0 0% 100%;
+  --wsms-border: 20 8% 75%;
+  --wsms-input: 20 8% 75%;
+  --wsms-ring: 24 95% 38%;
+  --wsms-success: 142 76% 25%;
+  --wsms-destructive: 0 72% 51%;
+  --wsms-muted: 30 8% 95%;
+
+  // Radii (dashboard --radius: 6px; rounded-lg = 6px, rounded-md = 4px)
+  --wsms-radius: 6px;
+
+  // Typography
+  --wsms-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  --wsms-font-size-sm: 12px;
+  --wsms-font-size-base: 13px;
+
+  // Spacing
+  --wsms-space-1: 4px;
+  --wsms-space-2: 8px;
+  --wsms-space-3: 12px;
+  --wsms-space-4: 16px;
+  --wsms-space-5: 20px;
+  --wsms-space-6: 24px;
+
+  // Sizing (dashboard: h-9 = 36px default, h-10 = 40px large)
+  --wsms-input-height: 36px;
+  --wsms-button-height: 36px;
+}

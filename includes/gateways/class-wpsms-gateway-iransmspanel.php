@@ -36,7 +36,7 @@ class iransmspanel extends \WP_SMS\Gateway
     }
 
     /**
-     * This function is used to send SMS via socket.
+     * Send SMS via WordPress HTTP API.
      *
      * @param $username
      * @param $password
@@ -46,63 +46,9 @@ class iransmspanel extends \WP_SMS\Gateway
      * @param $message
      * @param $flash
      *
-     * @return bool|mixed|string
-     * @internal param Username $string
-     * @internal param Password $string
-     * @internal param Number $string (From - Example: 100002972)
-     * @internal param Recipient $string Number
-     * @internal param Port $integer Number
-     * @internal param Message $string
-     * @internal param Is $bool Flash SMS?
-     *
+     * @return string|false
      */
-    private function Send_Via_Socket($username, $password, $number, $recipient, $port, $message, $flash)
-    {
-        $result     = $response = '';
-        $params     = array(
-            'username'  => $username,
-            'password'  => $password,
-            'number'    => $number,
-            'recipient' => $recipient,
-            'port'      => $port,
-            'message'   => $message,
-            'flash'     => $flash
-        );
-        $parameters = '';
-        foreach ($params as $name => $value) {
-            $parameters .= ($parameters != '' ? '&' : '') . "$name=" . urlencode($value);
-        }
-        $sockerrno = 0;
-        $sockerr   = '';
-        $socket    = @fsockopen($this->host, 80, $sockerrno, $sockerr, 2);
-        if ($sockerr == '') {
-            @fputs($socket, "POST $this->uri HTTP/1.1\nHost: $this->host\nContent-type: application/x-www-form-urlencoded\nContent-length: " . strlen($parameters) . "\nConnection: close\n\n$parameters");
-            $result = trim(fgets($socket));
-            while (!@feof($socket)) {
-                $response .= @fread($socket, 256);
-            }
-            @fclose($socket);
-            #################### SPLIT HEADER AND DOCUMENT BODY ##################
-            if ($result == 'HTTP/1.1 200 OK') {
-                $hunks = explode("\r\n\r\n", trim($response));
-                if (!is_array($hunks) or sizeof($hunks) < 2) {
-                    return false;
-                } else {
-                    $response = $hunks[count($hunks) - 1];
-                }
-                if (preg_match('#(.+)[\r\n](.+)[\r\n](.+)#', $response, $match)) {
-                    $response = $match[2];
-                }
-            }
-        } else {
-            return false;
-        }
-
-        ######################################################################
-        return ($result == 'HTTP/1.1 200 OK') ? $response : false;
-    }
-
-    private function Send_Via_cURL($username, $password, $number, $recipient, $port, $message, $flash)
+    private function sendRequest($username, $password, $number, $recipient, $port, $message, $flash)
     {
         $response = wp_remote_post('http://www.2972.ir/api', [
             'body' => [
@@ -116,8 +62,11 @@ class iransmspanel extends \WP_SMS\Gateway
             ]
         ]);
 
-        $result = wp_remote_retrieve_body($response);
-        return $result;
+        if (is_wp_error($response)) {
+            return false;
+        }
+
+        return wp_remote_retrieve_body($response);
     }
 
     /**
@@ -173,11 +122,7 @@ class iransmspanel extends \WP_SMS\Gateway
             return $credit;
         }
 
-        if (@function_exists('curl_init')) {
-            $this->Send_Via_cURL($this->username, $this->password, $this->from, implode(',', $this->to), $this->port, $this->msg, $this->isflash);
-        }
-
-        $result = $this->Send_Via_Socket($this->username, $this->password, $this->from, implode(',', $this->to), $this->port, $this->msg, $this->isflash);
+        $result = $this->sendRequest($this->username, $this->password, $this->from, implode(',', $this->to), $this->port, $this->msg, $this->isflash);
 
         if (!$result) {
             // Log the result

@@ -26,6 +26,25 @@ class Settings
     private $active_tab;
 
     /**
+     * Get default plugin settings.
+     *
+     * @return array
+     */
+    public static function getDefaultSettings()
+    {
+        return [
+            'add_mobile_field'             => 'add_mobile_field_in_profile',
+            'notify_errors_to_admin_email' => 1,
+            'report_wpsms_statistics'      => 1,
+            'display_notifications'        => 1,
+            'store_outbox_messages'        => 1,
+            'outbox_retention_days'        => 90,
+            'store_inbox_messages'         => 1,
+            'inbox_retention_days'         => 90,
+        ];
+    }
+
+    /**
      * @return string
      */
     private function getCurrentOptionName()
@@ -91,16 +110,7 @@ class Settings
 
         // Set default options
         if (!$settings) {
-            update_option($this->setting_name, array(
-                'add_mobile_field'             => 'add_mobile_field_in_profile',
-                'notify_errors_to_admin_email' => 1,
-                'report_wpsms_statistics'      => 1,
-                'display_notifications'        => 1,
-                'store_outbox_messages'        => 1,
-                'outbox_retention_days'        => 90,
-                'store_inbox_messages'         => 1,
-                'inbox_retention_days'         => 90,
-            ));
+            update_option($this->setting_name, self::getDefaultSettings());
         }
 
         return apply_filters('wpsms_get_settings', $settings);
@@ -408,7 +418,7 @@ class Settings
                     'name'       => esc_html__('Country Code Prefix', 'wp-sms'),
                     'type'       => 'select',
                     'className'  => 'js-wpsms-show_if_international_mobile_disabled',
-                    'desc'       => esc_html__('If the user\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global / Local)\'.', 'wp-sms'),
+                    'desc'       => __('If the user\'s mobile number requires a country code, select it from the list. If the number is not specific to any country, select \'No country code (Global / Local)\'.', 'wp-sms'),
                     'options'    => array_merge(['0' => esc_html__('No country code (Global / Local)', 'wp-sms')], wp_sms_countries()->getCountriesMerged()),
                     'attributes' => ['class' => 'js-wpsms-select2', 'aria-label' => esc_html__('Country Code Prefix', 'wp-sms')],
                 ),
@@ -457,7 +467,7 @@ class Settings
                     'id'      => 'gateway_name',
                     'name'    => esc_html__('Choose the Gateway', 'wp-sms'),
                     'type'    => 'advancedselect',
-                    'options' => Gateway::gateway(),
+                    'options' => self::getGatewayOptionsForLegacySelect(),
                     'desc'    => esc_html__('Select your preferred SMS Gateway to send messages.', 'wp-sms')
                 ),
                 'gateway_help'                 => array(
@@ -484,8 +494,7 @@ class Settings
                     'name' => esc_html__('Sender ID/Number', 'wp-sms'),
                     'type' => 'text',
                     'std'  => Gateway::from(),
-                    'desc' => esc_html__('This is the number or sender ID displayed on recipients’ devices.
-It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supported by your gateway.', 'wp-sms')
+                    'desc' => __('This is the number or sender ID displayed on recipients\' devices. It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supported by your gateway.', 'wp-sms')
                 ),
                 'gateway_key'                  => array(
                     'id'   => 'gateway_key',
@@ -499,7 +508,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'type'    => 'html',
                     'options' => '
                         <div>
-                            <a href="' . admin_url('admin.php?page=wp-sms&path=wp-sms-onboarding') . '" target="_blank" class="button button-primary">' . esc_html__('Re-run Setup Wizard', 'wp-sms') . '</a><br>
+                            <a href="' . admin_url('admin.php?page=wsms&wizard=open') . '" class="button button-primary">' . esc_html__('Re-run Setup Wizard', 'wp-sms') . '</a><br>
                         </div>
                     ',
                     'desc'    => esc_html__('Need to debug or update your gateway settings? Relaunch the WP SMS Setup Wizard for a guided, step-by-step process. This will help you verify your credentials, test sending/receiving capabilities, and ensure everything is running smoothly.', 'wp-sms')
@@ -692,7 +701,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'id'   => 'disable_style_in_front',
                     'name' => esc_html__('Disable Default Form Styling', 'wp-sms'),
                     'type' => 'checkbox',
-                    'desc' => esc_html__('Remove the plugin\'s default styling from the subscription form if preferred.', 'wp-sms')
+                    'desc' => __('Remove the plugin\'s default styling from the subscription form if preferred.', 'wp-sms')
                 )
             )),
 
@@ -717,7 +726,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'id'   => 'chatbox_title',
                     'name' => esc_html__('Title', 'wp-sms'),
                     'type' => 'text',
-                    'desc' => esc_html__('Main title for your chatbox, e.g., \'Chat with Us!\'', 'wp-sms')
+                    'desc' => __('Main title for your chatbox, e.g., \'Chat with Us!\'', 'wp-sms')
                 ),
                 // Button settings
                 'chatbox_button'            => array(
@@ -729,7 +738,18 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'id'   => 'chatbox_button_text',
                     'name' => esc_html__('Text', 'wp-sms'),
                     'type' => 'text',
-                    'desc' => esc_html__('The message displayed on the chat button, e.g., \'Talk to Us\'', 'wp-sms')
+                    'desc' => __('The message displayed on the chat button, e.g., \'Talk to Us\'', 'wp-sms')
+                ),
+                'chatbox_button_style'      => array(
+                    'id'      => 'chatbox_button_style',
+                    'name'    => esc_html__('Button Style', 'wp-sms'),
+                    'type'    => 'select',
+                    'options' => array(
+                        'icon_text' => esc_html__('Icon & Text', 'wp-sms'),
+                        'icon_only' => esc_html__('Icon Only', 'wp-sms'),
+                        'text_only' => esc_html__('Text Only', 'wp-sms'),
+                    ),
+                    'desc'    => esc_html__('Choose how the floating button appears.', 'wp-sms')
                 ),
                 'chatbox_button_position'   => array(
                     'id'      => 'chatbox_button_position',
@@ -765,7 +785,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'id'   => 'chatbox_color',
                     'name' => esc_html__('Chatbox Color', 'wp-sms'),
                     'type' => 'color',
-                    'desc' => esc_html__('Choose your chat button\'s background color and header color.', 'wp-sms')
+                    'desc' => __('Choose your chat button\'s background color and header color.', 'wp-sms')
                 ),
                 'chatbox_text_color'        => array(
                     'id'   => 'chatbox_text_color',
@@ -777,7 +797,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'id'   => 'chatbox_footer_text',
                     'name' => esc_html__('Footer Text', 'wp-sms'),
                     'type' => 'text',
-                    'desc' => esc_html__('Text displayed in the chatbox footer, such as \'Chat with us on WhatsApp for instant support!\'', 'wp-sms')
+                    'desc' => __('Text displayed in the chatbox footer, such as \'Chat with us on WhatsApp for instant support!\'', 'wp-sms')
                 ),
                 'chatbox_footer_text_color' => array(
                     'id'   => 'chatbox_footer_text_color',
@@ -789,7 +809,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'id'   => 'chatbox_footer_link_title',
                     'name' => esc_html__('Footer Link Title', 'wp-sms'),
                     'type' => 'text',
-                    'desc' => esc_html__('Include a link for more information in the chatbox footer, e.g., \'Related Articles\'', 'wp-sms')
+                    'desc' => __('Include a link for more information in the chatbox footer, e.g., \'Related Articles\'', 'wp-sms')
                 ),
                 'chatbox_footer_link_url'   => array(
                     'id'   => 'chatbox_footer_link_url',
@@ -806,7 +826,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                         'fade'  => esc_html__('Fade In', 'wp-sms'),
                         'slide' => esc_html__('Slide Up', 'wp-sms'),
                     ),
-                    'desc'    => esc_html__('Choose an effect for the chatbox\'s entry or hover state.', 'wp-sms')
+                    'desc'    => __('Choose an effect for the chatbox\'s entry or hover state.', 'wp-sms')
                 ),
                 'chatbox_disable_logo'      => array(
                     'id'      => 'chatbox_disable_logo',
@@ -832,7 +852,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'id'   => 'chatbox_links_title',
                     'name' => esc_html__('Section Title', 'wp-sms'),
                     'type' => 'text',
-                    'desc' => esc_html__('The heading for your resource links, e.g., \'Quick Links\'', 'wp-sms')
+                    'desc' => __('The heading for your resource links, e.g., \'Quick Links\'', 'wp-sms')
                 ),
                 'chatbox_links'             => array(
                     'id'      => 'chatbox_links',
@@ -884,7 +904,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'id'   => 'webhooks',
                     'name' => $this->renderOptionHeader(
                         esc_html__('Webhooks Configuration', 'wp-sms'),
-                        esc_html__('Set up your system’s Webhook URLs to integrate with external services.', 'wp-sms')
+                        esc_html__('Set up your system\'s Webhook URLs to integrate with external services.', 'wp-sms')
                     ),
                     'type' => 'header',
                     'doc'  => '/resources/webhooks/'
@@ -905,7 +925,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'id'   => 'new_incoming_sms_webhook',
                     'name' => esc_html__('Incoming SMS Handling Webhook', 'wp-sms'),
                     'type' => 'textarea',
-                    'desc' => __('Define the Webhook URL for the "<a href="https://wp-sms-pro.com/product/wp-sms-two-way/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Two-Way SMS</a>" add-on that handles incoming SMS messages. Only secure HTTPS URLs are accepted.', 'wp-sms') . '<br><br /><i>' . esc_html__('Please provide each Webhook URL on a separate line if you\'re setting up more than one.', 'wp-sms') . '</i>',
+                    'desc' => __('Define the Webhook URL for the "<a href="https://wsms.io/addons/two-way?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Two-Way SMS</a>" add-on that handles incoming SMS messages. Only secure HTTPS URLs are accepted.', 'wp-sms') . '<br><br /><i>' . __('Please provide each Webhook URL on a separate line if you\'re setting up more than one.', 'wp-sms') . '</i>',
                 ),
                 'share_anonymous_data_header'  => array(
                     'id'   => 'share_anonymous_data_header',
@@ -917,7 +937,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'name'    => esc_html__('Share Anonymous Data', 'wp-sms'),
                     'type'    => 'checkbox',
                     'options' => $options,
-                    'desc'    => __('Sends non-personal, anonymized data to help us improve WP SMS. No personal or identifying information is collected or shared. <a href="https://wp-sms-pro.com/resources/sharing-your-data-with-us/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Learn More</a>.', 'wp-sms'),
+                    'desc'    => __('Sends non-personal, anonymized data to help us improve WP SMS. No personal or identifying information is collected or shared. <a href="https://wsms.io/docs/share-anonymous-data/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings" target="_blank">Learn More</a>.', 'wp-sms'),
                 ),
                 'store_outbox_messages_header' => [
                     'id'   => 'store_outbox_messages_header',
@@ -1250,7 +1270,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                 'id'   => 'newsletter_form_gdpr_text',
                 'name' => esc_html__('Consent Text', 'wp-sms'),
                 'type' => 'textarea',
-                'desc' => esc_html__('Provide a clear message that informs subscribers how their data will be used and that their consent is required. For example: "I agree to receive SMS notifications and understand that my data will be handled according to the privacy policy."', 'wp-sms'),
+                'desc' => __('Provide a clear message that informs subscribers how their data will be used and that their consent is required. For example: "I agree to receive SMS notifications and understand that my data will be handled according to the privacy policy."', 'wp-sms'),
             );
 
             $settings['newsletter']['newsletter_form_gdpr_confirm_checkbox'] = array(
@@ -1553,7 +1573,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                     'option'   => $option,
                     'name'     => $name,
                     'selected' => $option == $value,
-                    'disabled' => array_column(Gateway::$proGateways, $option) ? true : false,
+                    'disabled' => self::isGatewayPremium($option),
                 ]);
 
                 if ($options['disabled']) {
@@ -1639,7 +1659,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         if ($wp_version >= 3.3 && function_exists('wp_editor')) {
             $html = wp_editor(stripslashes($value), "$this->setting_name[$id]", array('textarea_name' => "$this->setting_name[$id]"));
         } else {
-            $html = sprintf('<textarea class="large-text" rows="10" id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s]">' . esc_textarea(stripslashes($value)) . '</textarea>', esc_attr($args['id']));
+            $html = sprintf('<textarea class="large-text" dir="auto" rows="10" id="' . esc_attr($this->setting_name) . '[%1$s]" name="' . esc_attr($this->setting_name) . '[%1$s]">' . esc_textarea(stripslashes($value)) . '</textarea>', esc_attr($args['id']));
         }
 
         $html .= sprintf('<p class="description"> %1$s</p>', wp_kses_post($args['desc']));
@@ -1728,8 +1748,8 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                             $ariaDisabled      = $this->active_tab != $tab_id ? ' aria-disabled="true"' : '';
                             $isIntegrationsTab = in_array($tab_id, $this->pluginIntegrationsTabs) ? ' is-pro-tab' : '';
 
-                            $tabUrl = ($tab_id == 'integrations') ? esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wp-sms-integrations') : esc_url($tab_url);
-                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($isIntegrationsTab) . '"><a href="' . esc_url($tabUrl) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '"' . $ariaDisabled . '>';
+                            $tabUrl = ($tab_id == 'integrations') ? esc_url(WP_SMS_ADMIN_URL . 'admin.php?page=wsms&tab=integrations') : esc_url($tab_url);
+                            echo '<li class="tab-' . esc_attr($tab_id) . esc_attr($isIntegrationsTab) . '"><a href="' . esc_url($tabUrl) . '" title="' . esc_attr($tab_name) . '" class="' . esc_attr($active) . '"' . esc_attr($ariaDisabled) . '>';
                             echo esc_html($tab_name);
                             echo '</a></li>';
                         };
@@ -1761,7 +1781,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                             if (apply_filters('wp_sms_enable_upgrade_notice', true)) :
                                 $isIntegrationsPage = isset($_GET['page']) && $_GET['page'] === 'wp-sms-integrations';
                                 $noticeConfig       = $isIntegrationsPage ? [
-                                    'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=integrations',
+                                    'link'      => 'https://wsms.io/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=integrations',
                                     'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
                                     'title'     => sprintf(
                                     /* translators: %s: Plugin name (WP SMS All-in-One) */
@@ -1769,7 +1789,7 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
                                         '<strong>' . esc_html__('WP SMS All-in-One', 'wp-sms') . '</strong>'
                                     )
                                 ] : [
-                                    'link'      => 'https://wp-sms-pro.com/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings',
+                                    'link'      => 'https://wsms.io/pricing/?utm_source=wp-sms&utm_medium=link&utm_campaign=settings',
                                     'link_text' => esc_html__('Upgrade to unlock everything.', 'wp-sms'),
                                     'title'     => sprintf(
                                     /* translators: %s: Plugin name (WP SMS All-in-One) */
@@ -1957,5 +1977,82 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
         $newValue['gateway_version'] = $currentVer;
 
         return $newValue;
+    }
+
+    /**
+     * Build gateway options array for the legacy settings select dropdown
+     * using data from GatewayRegistry.
+     *
+     * @return array Region-grouped gateway options compatible with advancedselect
+     */
+    private static function getGatewayOptionsForLegacySelect()
+    {
+        $registry = \WP_SMS\Services\Gateway\GatewayRegistry::getGateways();
+        $options  = [
+            '' => ['default' => esc_html__('Please select your gateway', 'wp-sms')],
+        ];
+
+        if (empty($registry['gateways'])) {
+            return $options;
+        }
+
+        foreach ($registry['gateways'] as $gw) {
+            $slug = $gw['slug'] ?? '';
+            $name = $gw['name'] ?? $slug;
+
+            if (empty($slug) || $slug === 'default') {
+                continue;
+            }
+
+            // Use first region or 'global' as group key
+            $region = (!empty($gw['regions']) && is_array($gw['regions'])) ? $gw['regions'][0] : 'global';
+
+            if (!isset($options[$region])) {
+                $options[$region] = [];
+            }
+
+            $options[$region][$slug] = $name;
+        }
+
+        // Sort region groups alphabetically, keeping '' and 'global' first
+        $header = [];
+        if (isset($options[''])) {
+            $header[''] = $options[''];
+            unset($options['']);
+        }
+        $global = [];
+        if (isset($options['global'])) {
+            $global['global'] = $options['global'];
+            unset($options['global']);
+        }
+        ksort($options);
+
+        return array_merge($header, $global, $options);
+    }
+
+    /**
+     * Check if a gateway slug is premium using GatewayRegistry data
+     *
+     * @param string $slug
+     * @return bool
+     */
+    private static function isGatewayPremium($slug)
+    {
+        static $premiumMap = null;
+
+        if ($premiumMap === null) {
+            $premiumMap = [];
+            $registry = \WP_SMS\Services\Gateway\GatewayRegistry::getGateways();
+
+            if (!empty($registry['gateways'])) {
+                foreach ($registry['gateways'] as $gw) {
+                    if (!empty($gw['premium']) && !empty($gw['slug'])) {
+                        $premiumMap[$gw['slug']] = true;
+                    }
+                }
+            }
+        }
+
+        return isset($premiumMap[$slug]);
     }
 }

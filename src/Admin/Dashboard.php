@@ -1,0 +1,1933 @@
+<?php
+
+namespace WP_SMS\Admin;
+
+use WP_SMS\Components\Singleton;
+use WP_SMS\Option;
+use WP_SMS\Newsletter;
+use WP_SMS\Admin\LicenseManagement\LicenseHelper;
+use WP_SMS\Admin\LicenseManagement\Plugin\PluginHelper;
+use WP_SMS\Admin\LicenseManagement\Plugin\PluginHandler;
+use WP_SMS\Admin\ModalHandler\Modal;
+use WP_SMS\Notice\NoticeManager;
+use WP_SMS\Utils\OptionUtil;
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+/**
+ * Dashboard - React-based admin interface for all WP-SMS pages
+ *
+ * This class provides the main dashboard React application that handles:
+ * - Send SMS
+ * - Outbox
+ * - Subscribers
+ * - Groups
+ * - Privacy (GDPR)
+ * - Settings (all existing settings pages)
+ */
+class Dashboard extends Singleton
+{
+    /**
+     * Database instance
+     *
+     * @var \wpdb
+     */
+    private $db;
+
+    /**
+     * Table prefix
+     *
+     * @var string
+     */
+    private $tb_prefix;
+
+    /**
+     * Sensitive fields that should be masked before sending to frontend
+     *
+     * @var array
+     */
+    private $sensitiveFields = [
+        'gateway_password',
+        'gateway_key',
+    ];
+
+    /**
+     * Initialize the admin page
+     */
+    public function init()
+    {
+        global $wpdb;
+        $this->db = $wpdb;
+        $this->tb_prefix = $wpdb->prefix;
+
+        // Asset enqueueing is handled by DashboardHandler via AssetsFactory.
+    }
+
+    /**
+     * Static instance method required by MenuUtil
+     *
+     * @return static
+     */
+    public static function instance()
+    {
+        return parent::getInstance();
+    }
+
+    /**
+     * Render the admin page
+     */
+    public function view()
+    {
+        // Hide WordPress admin notices, footer, and add full-width container
+        // Note: Height constraint is set here (not in external CSS) because the body class
+        // that WordPress generates for admin pages may be missing in RTL mode.
+        echo '<style>
+            .wrap { max-width: none !important; margin: 0 !important; padding: 0 !important; }
+            .wrap > h1:first-child { display: none; }
+            .notice, .updated, .error, .is-dismissible { display: none !important; }
+            #wpfooter { display: none !important; }
+            #wpcontent { padding: 0 !important; }
+            #wpbody-content { padding: 0 !important; }
+            #wpbody-content > .clear { display: none !important; }
+            /* Hide chatbox by default - React Preview button will toggle it */
+            .wpsms-chatbox { display: none !important; }
+            .wpsms-chatbox.wpsms-chatbox--visible { display: block !important; }
+            /* Fixed positioning - dashboard stays in viewport regardless of page scroll */
+            #wpsms-settings-root {
+                position: fixed !important;
+                top: 32px !important;
+                left: 160px !important;
+                right: 0 !important;
+                bottom: 0 !important;
+                overflow: hidden !important;
+                display: flex !important;
+                flex-direction: column !important;
+            }
+            /* Collapsed sidebar */
+            body.folded #wpsms-settings-root {
+                left: 36px !important;
+            }
+            /* Auto-fold at 960px (must come before the 782px rule so mobile wins) */
+            @media screen and (max-width: 960px) {
+                body:not(.folded) #wpsms-settings-root {
+                    left: 36px !important;
+                }
+            }
+            /* Mobile - sidebar is hidden/overlay (repeat high-specificity selector to override 960px rule) */
+            @media screen and (max-width: 782px) {
+                #wpsms-settings-root,
+                body:not(.folded) #wpsms-settings-root {
+                    top: 46px !important;
+                    left: 0 !important;
+                }
+            }
+            /* RTL support - sidebar is on the right */
+            body.rtl #wpsms-settings-root {
+                left: 0 !important;
+                right: 160px !important;
+            }
+            body.rtl.folded #wpsms-settings-root {
+                right: 36px !important;
+            }
+            @media screen and (max-width: 960px) {
+                body.rtl:not(.folded) #wpsms-settings-root {
+                    right: 36px !important;
+                }
+            }
+            @media screen and (max-width: 782px) {
+                body.rtl #wpsms-settings-root,
+                body.rtl:not(.folded) #wpsms-settings-root {
+                    right: 0 !important;
+                }
+            }
+        </style>';
+        echo sprintf(
+            '<div id="wpsms-settings-root" class="wpsms-settings-app" dir="%s"></div>',
+            is_rtl() ? 'rtl' : 'ltr'
+        );
+    }
+
+    /**
+     * Get localized data for the React app.
+     * Public so DashboardHandler can access it.
+     *
+     * @return array
+     */
+    public function getLocalizedData()
+    {
+        return [
+            'apiUrl'        => rest_url('wpsms/v1/'),
+            'nonce'         => wp_create_nonce('wp_rest'),
+            'ajaxUrls'      => [
+                'recipientCounts' => \WP_SMS\Controller\RecipientCountsAjax::url(),
+            ],
+            'settings'      => $this->maskSensitiveSettings($this->getSettingsWithDefaults()),
+            'proSettings'   => $this->maskSensitiveSettings(Option::getOptions(true)),
+            'addons'        => $this->getActiveAddons(),
+            'addonDashboardSupport' => $this->getAddonDashboardSupport(),
+            'gateway'       => $this->getGatewayCapabilities(),
+            'adminUrl'      => admin_url(),
+            'siteUrl'       => site_url(),
+            'timezone'      => wp_timezone_string(),
+            'dateFormat'    => get_option('date_format', 'F j, Y'),
+            'timeFormat'    => get_option('time_format', 'g:i a'),
+            'version'       => WP_SMS_VERSION,
+            'i18n'          => $this->getTranslations(),
+            // Dynamic data for multi-select fields
+            'countries'     => $this->getCountries(),              // Full country objects for filters
+            'countriesByCode' => $this->getCountriesByCode(),      // ISO codes for countryselect multiselects
+            'countriesByDialCode' => $this->getCountriesByDialCode(), // Dial codes for select/multiselect
+            'postTypes'     => $this->getPostTypes(),
+            'taxonomies'    => $this->getTaxonomiesWithTerms(),
+            'roles'         => $this->getUserRoles(),
+            'groups'        => $this->getNewsletterGroups(),
+            // Add-on settings schema for dynamic rendering
+            'addonSettings' => $this->getAddonSettingsSchema(),
+            // Add-on option values
+            'addonValues'   => $this->getAddonOptionValues(),
+            // Third-party plugin status for integrations
+            'thirdPartyPlugins' => $this->getThirdPartyPluginStatus(),
+            // Forminator forms data for dynamic settings
+            'forminatorForms' => $this->getForminatorFormsData(),
+            // Gravity Forms data for dynamic settings (Pro)
+            'gravityForms' => $this->getGravityFormsData(),
+            // Quform data for dynamic settings (Pro)
+            'quformForms' => $this->getQuformFormsData(),
+            // Fluent Forms data for dynamic settings (Fluent add-on)
+            'fluentForms' => apply_filters('wpsms_admin_localized_fluent_forms_data', ['isActive' => false, 'forms' => []]),
+            // Extended data for dashboard pages
+            'stats'         => $this->getStats(),
+            'capabilities'  => $this->getUserCapabilities(),
+            'features'      => $this->getFeatureFlags(),
+            // License data for header badge
+            'license'       => $this->getLicenseData(),
+            // Additional recipient types for Send SMS page (filterable by add-ons)
+            'additionalRecipientTypes' => $this->getAdditionalRecipientTypes(),
+            // Additional mobile field sources from add-ons (e.g., PMPro phone fields)
+            'mobileFieldSources' => apply_filters('wpsms_mobile_field_sources', []),
+            // Admin notices for React dashboard banner
+            'adminNotices' => $this->getAdminNotices(),
+            // Plugin base URL for asset references
+            'pluginUrl'    => WP_SMS_URL,
+            // All-in-One modal data
+            'aioModal'     => $this->getAioModalData(),
+        ];
+    }
+
+    /**
+     * Collect active admin notices for the React dashboard
+     *
+     * Reads static notices registered by NoticeManager and the anonymous data
+     * opt-in notice.  Each notice is normalized to a standard shape that the
+     * React AdminNotices component can render.
+     *
+     * @return array
+     */
+    private function getAdminNotices()
+    {
+        $result = [];
+
+        // 1. Static notices from NoticeManager
+        $manager          = NoticeManager::getInstance();
+        $registeredNotices = $manager->getRegisteredNotices();
+        $dismissedStatic  = get_option('wpsms_notices', []);
+
+        if (!is_array($dismissedStatic)) {
+            $dismissedStatic = [];
+        }
+
+        foreach ($registeredNotices as $id => $notice) {
+            // Already dismissed
+            if (!empty($dismissedStatic[$id])) {
+                continue;
+            }
+
+            // Skip page-conditional notices that target non-dashboard pages
+            if (!empty($notice['url']) && strpos($notice['url'], 'page=wsms') === false) {
+                continue;
+            }
+
+            // Extract tab from notice URL for page-conditional rendering in the SPA
+            $showOnTab = null;
+            if (!empty($notice['url'])) {
+                $parsed = [];
+                parse_str(wp_parse_url($notice['url'], PHP_URL_QUERY) ?: '', $parsed);
+                if (!empty($parsed['tab'])) {
+                    $showOnTab = sanitize_text_field($parsed['tab']);
+                }
+            }
+
+            $isActivation = strpos($id, 'wp_sms_') === 0 && strpos($id, '_activation') !== false;
+
+            // Strip inline action/dismiss links from the message — the React
+            // component renders its own dismiss control and action buttons.
+            $message = $notice['message'];
+            if ($isActivation) {
+                // Activation notices embed buttons as <a> tags inside a wrapper span;
+                // strip the entire action wrapper and any remaining links.
+                $message = preg_replace('/<span[^>]*wpsms-admin-notice__action[^>]*>.*?<\/span>/is', '', $message);
+            }
+            $message = preg_replace('/<a[^>]*(?:wpsms_dismiss|class=["\'].*?button)[^>]*>.*?<\/a>/is', '', $message);
+            $message = wp_kses_post(trim(strip_tags($message, '<strong><em><br><b><i><a>')));
+
+            // Activation notices become action-type with a "Launch Setup Wizard" button
+            if ($isActivation) {
+                $result[] = [
+                    'id'           => $id,
+                    'type'         => 'action',
+                    'variant'      => 'info',
+                    'message'      => $message,
+                    'title'        => null,
+                    'dismissible'  => true,
+                    'dismissStore' => 'static',
+                    'link'         => null,
+                    'showOnTab'    => null,
+                    'actions'      => [
+                        [
+                            'label'    => __('Launch Setup Wizard', 'wp-sms'),
+                            'navigate' => 'wizard',
+                        ],
+                    ],
+                ];
+                continue;
+            }
+
+            $result[] = [
+                'id'           => $id,
+                'type'         => 'simple',
+                'variant'      => 'warning',
+                'message'      => $message,
+                'title'        => null,
+                'dismissible'  => (bool) $notice['dismiss'],
+                'dismissStore' => 'static',
+                'link'         => !empty($notice['url']) ? admin_url($notice['url']) : null,
+                'showOnTab'    => $showOnTab,
+                'actions'      => [],
+            ];
+        }
+
+        // 2. Anonymous data sharing notice
+        $installationTime    = get_option('wp_sms_installation_time');
+        $dismissedHandler    = get_option('wp_sms_dismissed_notices', []);
+
+        if (!is_array($dismissedHandler)) {
+            $dismissedHandler = [];
+        }
+
+        if (
+            current_user_can('manage_options') &&
+            !OptionUtil::get('share_anonymous_data') &&
+            !in_array('share_anonymous_data', $dismissedHandler) &&
+            $installationTime &&
+            (time() > $installationTime + 7 * DAY_IN_SECONDS)
+        ) {
+            $result[] = [
+                'id'           => 'share_anonymous_data',
+                'type'         => 'action',
+                'variant'      => 'info',
+                'message'      => __('Help us improve by sharing anonymous usage data. No personal or sensitive information is collected.', 'wp-sms'),
+                'title'        => __('Help Us Improve WSMS!', 'wp-sms'),
+                'dismissible'  => true,
+                'dismissStore' => 'handler',
+                'link'         => null,
+                'showOnTab'    => null,
+                'actions'      => [
+                    [
+                        'label'       => __('Enable Share Anonymous Data', 'wp-sms'),
+                        'action_type' => 'update_option',
+                        'option'      => 'share_anonymous_data',
+                        'value'       => '1',
+                    ],
+                    [
+                        'label' => __('Learn More', 'wp-sms'),
+                        'url'   => 'https://wsms.io/docs/share-anonymous-data/?utm_source=wp-sms&utm_medium=link&utm_campaign=doc',
+                    ],
+                ],
+            ];
+        }
+
+        /**
+         * Filter admin notices shown in the React dashboard.
+         *
+         * @param array $result Normalized notice array
+         */
+        $result = apply_filters('wpsms_react_admin_notices', $result);
+
+        // Sanitize all messages after the filter to prevent XSS from third-party add-ons
+        foreach ($result as &$notice) {
+            if (!empty($notice['message'])) {
+                $notice['message'] = wp_kses_post($notice['message']);
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get dashboard statistics
+     *
+     * @return array
+     */
+    private function getStats()
+    {
+        return [
+            'subscribers' => [
+                'total'  => $this->getSubscriberCount(),
+                'active' => $this->getSubscriberCount(true),
+            ],
+            'groups'  => $this->getGroupCount(),
+            'outbox'  => [
+                'total'   => $this->getOutboxCount(),
+                'success' => $this->getOutboxCount('success'),
+                'failed'  => $this->getOutboxCount('failed'),
+            ],
+            'credit'  => $this->getGatewayCredit(),
+        ];
+    }
+
+    /**
+     * Get subscriber count
+     *
+     * @param bool $activeOnly
+     * @return int
+     */
+    private function getSubscriberCount($activeOnly = false)
+    {
+        $table = $this->tb_prefix . 'sms_subscribes';
+        $where = $activeOnly ? "WHERE status = '1'" : '';
+        return (int) $this->db->get_var("SELECT COUNT(*) FROM {$table} {$where}");
+    }
+
+    /**
+     * Get group count
+     *
+     * @return int
+     */
+    private function getGroupCount()
+    {
+        $table = $this->tb_prefix . 'sms_subscribes_group';
+        return (int) $this->db->get_var("SELECT COUNT(*) FROM {$table}");
+    }
+
+    /**
+     * Get outbox message count
+     *
+     * @param string|null $status
+     * @return int
+     */
+    private function getOutboxCount($status = null)
+    {
+        $table = $this->tb_prefix . 'sms_send';
+        $where = '';
+        if ($status) {
+            $where = $this->db->prepare("WHERE status = %s", $status);
+        }
+        return (int) $this->db->get_var("SELECT COUNT(*) FROM {$table} {$where}");
+    }
+
+    /**
+     * Get gateway credit balance
+     *
+     * @return mixed
+     */
+    private function getGatewayCredit()
+    {
+        global $sms;
+        if (isset($sms) && method_exists($sms, 'GetCredit')) {
+            try {
+                return $sms->GetCredit();
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get active gateway capabilities
+     *
+     * @return array
+     */
+    private function getGatewayCapabilities()
+    {
+        try {
+            global $sms;
+
+            // Initialize gateway if not already done
+            if (!$sms || !is_object($sms)) {
+                if (function_exists('wp_sms_initial_gateway')) {
+                    $sms = wp_sms_initial_gateway();
+                }
+            }
+
+            if (!$sms || !is_object($sms)) {
+                return [
+                    'flash'           => '',
+                    'supportMedia'    => false,
+                    'supportIncoming' => false,
+                    'bulk_send'       => false,
+                    'validateNumber'  => '',
+                    'from'            => '',
+                    'gatewayFields'   => [],
+                    'help'            => '',
+                    'documentUrl'     => '',
+                ];
+            }
+
+            // Build gateway fields array
+            $gatewayFields = [];
+            if (!empty($sms->gatewayFields) && is_array($sms->gatewayFields)) {
+                foreach ($sms->gatewayFields as $key => $field) {
+                    if (!is_array($field)) {
+                        continue;
+                    }
+                    $gatewayFields[$key] = [
+                        'id'          => $field['id'] ?? '',
+                        'name'        => $field['name'] ?? '',
+                        'desc'        => $field['desc'] ?? '',
+                        'placeholder' => $field['place_holder'] ?? '',
+                        'type'        => $field['type'] ?? 'text',
+                        'options'     => $field['options'] ?? [],
+                    ];
+                }
+            }
+
+            // Sanitize help text
+            $help = '';
+            if (!empty($sms->help) && $sms->help !== false) {
+                $help = wp_kses_post($sms->help);
+            }
+
+            return [
+                'flash'           => $sms->flash ?? '',
+                'supportMedia'    => $sms->supportMedia ?? false,
+                'supportIncoming' => $sms->supportIncoming ?? false,
+                'bulk_send'       => $sms->bulk_send ?? false,
+                'validateNumber'  => $sms->validateNumber ?? '',
+                'from'            => $sms->from ?? '',
+                'gatewayFields'   => $gatewayFields,
+                'help'            => $help,
+                'documentUrl'     => is_string($sms->documentUrl ?? '') ? ($sms->documentUrl ?? '') : '',
+            ];
+        } catch (\Exception $e) {
+            return [
+                'flash'           => '',
+                'supportMedia'    => false,
+                'supportIncoming' => false,
+                'bulk_send'       => false,
+                'validateNumber'  => '',
+                'from'            => '',
+                'gatewayFields'   => [],
+                'help'            => '',
+                'documentUrl'     => '',
+            ];
+        }
+    }
+
+    /**
+     * Get user capabilities for the current user
+     *
+     * @return array
+     */
+    private function getUserCapabilities()
+    {
+        return [
+            'canSendSms'          => current_user_can('wpsms_sendsms'),
+            'canViewOutbox'       => current_user_can('wpsms_outbox'),
+            'canViewInbox'        => current_user_can('wpsms_inbox'),
+            'canManageSubscribers' => current_user_can('wpsms_subscribers'),
+            'canManageSettings'   => current_user_can('wpsms_setting'),
+            'canManageOptions'    => current_user_can('manage_options'),
+        ];
+    }
+
+    /**
+     * Get license data for the header badge
+     *
+     * Follows the same logic as the legacy PHP template in:
+     * /includes/templates/admin/partials/license-status.php
+     *
+     * @return array
+     */
+    private function getLicenseData()
+    {
+        $isPremium      = (bool) LicenseHelper::isPremiumLicenseAvailable();
+        $hasValidLicense = LicenseHelper::isValidLicenseAvailable();
+        $licensedCount  = count(PluginHelper::getLicensedPlugins());
+        $totalPlugins   = count(PluginHelper::$plugins);
+
+        return [
+            'isPremium'      => $isPremium,
+            'hasValidLicense' => $hasValidLicense,
+            'licensedCount'  => $licensedCount,
+            'totalPlugins'   => $totalPlugins,
+        ];
+    }
+
+    /**
+     * Get All-in-One modal data for the React dashboard
+     *
+     * @return array
+     */
+    private function getAioModalData()
+    {
+        $pluginHandler = new PluginHandler();
+        $isPremium     = (bool) LicenseHelper::isPremiumLicenseAvailable();
+
+        $addons = [];
+        foreach (PluginHelper::$plugins as $slug => $title) {
+            $addons[] = [
+                'slug'        => $slug,
+                'title'       => $title,
+                'isActive'    => $pluginHandler->isPluginActive($slug),
+                'isInstalled' => $pluginHandler->isPluginInstalled($slug),
+                'hasLicense'  => LicenseHelper::isPluginLicenseValid($slug),
+            ];
+        }
+
+        return [
+            'seen'      => Modal::hasBeenSeen('welcome-premium'),
+            'isPremium' => $isPremium,
+            'addons'    => $addons,
+        ];
+    }
+
+    /**
+     * Get feature flags
+     *
+     * @return array
+     */
+    private function getFeatureFlags()
+    {
+        $isProActive = is_plugin_active('wp-sms-pro/wp-sms-pro.php');
+
+        // Check if wizard was completed (uses same option as legacy wizard)
+        $activationNoticeShown = get_option('wp_sms_wp-sms-onboarding_activation_notice_shown', false);
+
+        return [
+            'gdprEnabled'           => Option::getOption('gdpr_compliance') === '1',
+            'twoWayEnabled'         => is_plugin_active('wp-sms-two-way/wp-sms-two-way.php'),
+            'scheduledSms'          => class_exists('WP_SMS\Pro\Scheduled'),
+            'isProActive'           => $isProActive,
+            'hasProAddon'           => $isProActive, // Alias for sidebar navigation
+            'isWooActive'           => class_exists('WooCommerce'),
+            'isBuddyPressActive'    => class_exists('BuddyPress'),
+            // Wizard completion flag
+            'wizardCompleted'       => (bool) $activationNoticeShown,
+        ];
+    }
+
+    /**
+     * Get additional recipient types for Send SMS page
+     *
+     * This allows add-ons to register additional recipient types like WooCommerce Customers
+     * and BuddyPress Users via the 'wpsms_additional_recipient_types' filter.
+     *
+     * Each type should have:
+     * - id: Unique identifier (e.g., 'wooCustomers', 'buddyPressUsers')
+     * - label: Display label
+     * - icon: Icon name from lucide-react (e.g., 'ShoppingCart', 'UserCircle')
+     * - apiType: The type parameter for the RecipientCountsAjax endpoint (e.g., 'wc-customers', 'bp-users')
+     * - isActive: Whether the required plugin is active
+     *
+     * @return array
+     */
+    private function getAdditionalRecipientTypes()
+    {
+        /**
+         * Filter to register additional recipient types for Send SMS page
+         *
+         * @param array $types Array of recipient type definitions
+         */
+        return apply_filters('wpsms_additional_recipient_types', []);
+    }
+
+    /**
+     * Get settings with default values applied
+     *
+     * Extracts defaults from the legacy settings registration (get_registered_settings)
+     * and applies them for keys that don't exist in stored settings.
+     * Also normalizes numeric values to strings for consistent React comparison.
+     *
+     * @return array
+     */
+    private function getSettingsWithDefaults()
+    {
+        $storedSettings = Option::getOptions();
+
+        // Get defaults from the registered settings (same source as legacy page)
+        $defaults = $this->getRegisteredDefaults();
+
+        // Apply defaults only for keys that don't exist in stored settings
+        foreach ($defaults as $key => $defaultValue) {
+            if (!array_key_exists($key, $storedSettings)) {
+                $storedSettings[$key] = $defaultValue;
+            }
+        }
+
+        // Normalize all numeric values to strings for consistent React comparison
+        // Legacy PHP may store integer 1, but React expects string '1'
+        foreach ($storedSettings as $key => $value) {
+            if (is_int($value) || is_float($value)) {
+                $storedSettings[$key] = (string) $value;
+            }
+        }
+
+        return $storedSettings;
+    }
+
+    /**
+     * Extract default values from the legacy registered settings
+     *
+     * Reads the 'std' (standard/default) values from class-wpsms-settings.php
+     * to ensure React interface uses the same defaults as the legacy page.
+     *
+     * @return array Key-value pairs of setting IDs and their default values
+     */
+    private function getRegisteredDefaults()
+    {
+        $defaults = [];
+
+        // Instantiate the legacy settings class to get registered settings
+        if (!class_exists('WP_SMS\\Admin\\Settings\\Settings')) {
+            return $defaults;
+        }
+
+        $settingsInstance = new \WP_SMS\Admin\Settings\Settings();
+
+        // Use reflection to call the protected method, or check if it's public
+        if (!method_exists($settingsInstance, 'get_registered_settings')) {
+            return $defaults;
+        }
+
+        $registeredSettings = $settingsInstance->get_registered_settings();
+
+        // Extract 'std' values from all tabs and fields
+        foreach ($registeredSettings as $tab => $fields) {
+            if (!is_array($fields)) {
+                continue;
+            }
+
+            foreach ($fields as $fieldKey => $field) {
+                if (!is_array($field)) {
+                    continue;
+                }
+
+                // Get the field ID (either from 'id' key or the array key itself)
+                $fieldId = isset($field['id']) ? $field['id'] : $fieldKey;
+
+                // If 'std' (default) is set, add it to defaults
+                if (isset($field['std']) && $field['std'] !== '') {
+                    $defaults[$fieldId] = $field['std'];
+                }
+            }
+        }
+
+        return $defaults;
+    }
+
+    /**
+     * Mask sensitive fields in settings array
+     *
+     * @param array $settings
+     * @return array
+     */
+    private function maskSensitiveSettings($settings)
+    {
+        if (!is_array($settings)) {
+            return $settings;
+        }
+
+        foreach ($this->sensitiveFields as $field) {
+            if (isset($settings[$field]) && !empty($settings[$field])) {
+                $settings[$field] = '••••••••';
+            }
+        }
+
+        return $settings;
+    }
+
+    /**
+     * Get full countries list as array of objects
+     *
+     * Returns the full countries array with all properties (code, name, dialCode, etc.)
+     * for use in Subscribers.jsx filtering and other components.
+     *
+     * @return array Array of country objects with code, name, dialCode, etc.
+     */
+    private function getCountries()
+    {
+        if (!function_exists('wp_sms_countries')) {
+            return [];
+        }
+
+        // Return full countries array for components that need the full data
+        // (e.g., Subscribers.jsx needs code and name for filtering)
+        return wp_sms_countries()->getCountries();
+    }
+
+    /**
+     * Get countries keyed by ISO code for countryselect multiselects
+     *
+     * Returns countries keyed by ISO country code (e.g., 'US', 'GB')
+     * to match the legacy countryselect_callback which stores country codes.
+     *
+     * @return array Format: ['US' => 'United States', 'GB' => 'United Kingdom', ...]
+     */
+    private function getCountriesByCode()
+    {
+        if (!function_exists('wp_sms_countries')) {
+            return [];
+        }
+
+        // Legacy countryselect_callback uses getCountries() and stores $country['code']
+        $countries = wp_sms_countries()->getCountries();
+        $result = [];
+
+        foreach ($countries as $country) {
+            if (isset($country['code']) && isset($country['name'])) {
+                $result[$country['code']] = $country['name'];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get countries list keyed by dial code for single select fields
+     *
+     * Returns countries keyed by dial code (e.g., '+1', '+44')
+     * to match the legacy mobile_county_code select which uses getCountriesMerged().
+     *
+     * @return array Format: ['+1' => 'United States (+1)', '+44' => 'United Kingdom (+44)', ...]
+     */
+    private function getCountriesByDialCode()
+    {
+        if (!function_exists('wp_sms_countries')) {
+            return [];
+        }
+
+        // Legacy uses getCountriesMerged() which returns ['dialCode' => 'fullInfo', ...]
+        return wp_sms_countries()->getCountriesMerged();
+    }
+
+    /**
+     * Get post types with show_ui enabled
+     *
+     * @return array
+     */
+    private function getPostTypes()
+    {
+        $postTypes = get_post_types(['show_ui' => true], 'objects');
+        $result = [];
+
+        // Exclude list matching legacy settings
+        $exclude = [
+            'attachment',
+            'acf-field',
+            'acf-field-group',
+            'vc4_templates',
+            'vc_grid_item',
+            'acf',
+            'wpcf7_contact_form',
+            'shop_order',
+            'shop_coupon',
+        ];
+
+        foreach ($postTypes as $postType) {
+            if (in_array($postType->name, $exclude)) {
+                continue;
+            }
+            if ($postType->_builtin && !$postType->public) {
+                continue;
+            }
+            // Use legacy format: capability|slug => label
+            // This matches the format stored by legacy settings
+            $key = $postType->cap->publish_posts . '|' . $postType->name;
+            $result[$key] = $postType->label;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get taxonomies with their terms
+     *
+     * @return array
+     */
+    private function getTaxonomiesWithTerms()
+    {
+        $taxonomies = get_taxonomies(['show_ui' => true], 'objects');
+        $result = [];
+
+        foreach ($taxonomies as $taxonomy) {
+            $terms = get_terms([
+                'taxonomy'   => $taxonomy->name,
+                'hide_empty' => false,
+                'number'     => 100,
+            ]);
+
+            if (!is_wp_error($terms) && !empty($terms)) {
+                $termList = [];
+                foreach ($terms as $term) {
+                    $termList[$term->term_id] = $term->name;
+                }
+
+                $result[$taxonomy->name] = [
+                    'label' => $taxonomy->label,
+                    'terms' => $termList,
+                ];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get WordPress user roles
+     *
+     * @return array
+     */
+    private function getUserRoles()
+    {
+        return wp_roles()->get_names();
+    }
+
+    /**
+     * Get newsletter subscriber groups with counts
+     *
+     * @return array
+     */
+    private function getNewsletterGroups()
+    {
+        if (!class_exists('WP_SMS\\Newsletter')) {
+            return [];
+        }
+
+        $groups = Newsletter::getGroups();
+        if (!is_array($groups)) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($groups as $group) {
+            if (isset($group->ID) && isset($group->name)) {
+                $count = Newsletter::getTotal($group->ID);
+                $result[] = [
+                    'id'    => (int) $group->ID,
+                    'name'  => $group->name,
+                    'count' => (int) $count,
+                ];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get active add-ons
+     *
+     * @return array
+     */
+    private function getActiveAddons()
+    {
+        $addons = [
+            'pro'         => 'wp-sms-pro/wp-sms-pro.php',
+            'woocommerce' => 'wp-sms-woocommerce-pro/wp-sms-woocommerce-pro.php',
+            'two-way'     => 'wp-sms-two-way/wp-sms-two-way.php',
+            'elementor'   => 'wp-sms-elementor-form/wp-sms-elementor-form.php',
+            'membership'  => 'wp-sms-membership-integrations/wp-sms-membership-integrations.php',
+            'booking'     => 'wp-sms-booking-integrations/wp-sms-booking-integrations.php',
+            'fluent'      => 'wp-sms-fluent-integrations/wp-sms-fluent-integrations.php',
+            'otp'         => 'wp-sms-otp-mfa/wp-sms-otp-mfa.php',
+        ];
+
+        $active = [];
+        foreach ($addons as $key => $plugin) {
+            $active[$key] = is_plugin_active($plugin);
+        }
+
+        return $active;
+    }
+
+    /**
+     * Check which add-ons support the new React dashboard.
+     *
+     * Updated add-ons opt in by hooking into the 'wpsms_addon_dashboard_support'
+     * filter and setting their key to true. Old add-ons that haven't been updated
+     * won't hook in, so their key stays false — allowing the dashboard to show a
+     * friendly "update required" message instead of broken error screens.
+     *
+     * @return array<string, bool>
+     */
+    private function getAddonDashboardSupport()
+    {
+        $support = apply_filters('wpsms_addon_dashboard_support', []);
+
+        $knownAddons = ['pro', 'woocommerce', 'two-way'];
+        $result = [];
+        foreach ($knownAddons as $key) {
+            $result[$key] = !empty($support[$key]);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get third-party plugin status for integrations page
+     *
+     * Checks whether integration-related plugins are installed and active.
+     *
+     * @return array Plugin status information
+     */
+    private function getThirdPartyPluginStatus()
+    {
+        $plugins = [
+            // Form plugins (free version support)
+            'contact-form-7' => [
+                'file'       => 'contact-form-7/wp-contact-form-7.php',
+                'name'       => 'Contact Form 7',
+                'wpOrgSlug'  => 'contact-form-7',
+            ],
+            'formidable' => [
+                'file'       => 'formidable/formidable.php',
+                'name'       => 'Formidable Forms',
+                'wpOrgSlug'  => 'formidable',
+            ],
+            'forminator' => [
+                'file'       => 'forminator/forminator.php',
+                'name'       => 'Forminator',
+                'wpOrgSlug'  => 'forminator',
+            ],
+
+            // WP SMS Pro pack integrations
+            'gravity-forms' => [
+                'file'       => 'gravityforms/gravityforms.php',
+                'name'       => 'Gravity Forms',
+                'wpOrgSlug'  => null,
+                'externalUrl' => 'https://www.gravityforms.com/',
+            ],
+            'quform' => [
+                'file'       => 'quform/quform.php',
+                'name'       => 'Quform',
+                'wpOrgSlug'  => null,
+                'externalUrl' => 'https://www.quform.com/',
+            ],
+            'woocommerce' => [
+                'file'       => 'woocommerce/woocommerce.php',
+                'name'       => 'WooCommerce',
+                'wpOrgSlug'  => 'woocommerce',
+            ],
+            'buddypress' => [
+                'file'       => 'buddypress/bp-loader.php',
+                'name'       => 'BuddyPress',
+                'wpOrgSlug'  => 'buddypress',
+            ],
+            'easy-digital-downloads' => [
+                'file'       => 'easy-digital-downloads/easy-digital-downloads.php',
+                'name'       => 'Easy Digital Downloads',
+                'wpOrgSlug'  => 'easy-digital-downloads',
+            ],
+            'wp-job-manager' => [
+                'file'       => 'wp-job-manager/wp-job-manager.php',
+                'name'       => 'WP Job Manager',
+                'wpOrgSlug'  => 'wp-job-manager',
+            ],
+            'awesome-support' => [
+                'file'       => 'awesome-support/awesome-support.php',
+                'name'       => 'Awesome Support',
+                'wpOrgSlug'  => 'awesome-support',
+            ],
+            'ultimate-member' => [
+                'file'       => 'ultimate-member/ultimate-member.php',
+                'name'       => 'Ultimate Member',
+                'wpOrgSlug'  => 'ultimate-member',
+            ],
+
+            // Separate add-on integrations
+            'elementor' => [
+                'file'       => 'elementor/elementor.php',
+                'name'       => 'Elementor',
+                'wpOrgSlug'  => 'elementor',
+            ],
+            'elementor-pro' => [
+                'file'       => 'elementor-pro/elementor-pro.php',
+                'name'       => 'Elementor Pro',
+                'wpOrgSlug'  => null,
+                'externalUrl' => 'https://elementor.com/pro/',
+            ],
+            'fluent-crm' => [
+                'file'       => 'fluent-crm/fluent-crm.php',
+                'name'       => 'Fluent CRM',
+                'wpOrgSlug'  => 'fluent-crm',
+            ],
+            'fluentform' => [
+                'file'       => 'fluentform/fluentform.php',
+                'name'       => 'Fluent Forms',
+                'wpOrgSlug'  => 'fluentform',
+            ],
+            'fluent-support' => [
+                'file'       => 'fluent-support/fluent-support.php',
+                'name'       => 'Fluent Support',
+                'wpOrgSlug'  => 'fluent-support',
+            ],
+            'paid-memberships-pro' => [
+                'file'       => 'paid-memberships-pro/paid-memberships-pro.php',
+                'name'       => 'Paid Memberships Pro',
+                'wpOrgSlug'  => 'paid-memberships-pro',
+            ],
+            'simple-membership' => [
+                'file'       => 'simple-membership/simple-wp-membership.php',
+                'name'       => 'Simple Membership',
+                'wpOrgSlug'  => 'simple-membership',
+            ],
+            'bookingpress' => [
+                'file'       => 'bookingpress-appointment-booking/bookingpress-appointment-booking.php',
+                'name'       => 'BookingPress',
+                'wpOrgSlug'  => 'bookingpress-appointment-booking',
+            ],
+            'woocommerce-appointments' => [
+                'file'       => 'woocommerce-appointments/woocommerce-appointments.php',
+                'name'       => 'WooCommerce Appointments',
+                'wpOrgSlug'  => null,
+                'externalUrl' => 'https://woocommerce.com/products/woocommerce-appointments/',
+            ],
+            'woocommerce-bookings' => [
+                'file'       => 'woocommerce-bookings/woocommerce-bookings.php',
+                'name'       => 'WooCommerce Bookings',
+                'wpOrgSlug'  => null,
+                'externalUrl' => 'https://woocommerce.com/products/woocommerce-bookings/',
+            ],
+            'booking' => [
+                'file'       => 'booking/wpdev-booking.php',
+                'name'       => 'Booking Calendar',
+                'wpOrgSlug'  => 'booking',
+            ],
+        ];
+
+        $result = [];
+        $installedPlugins = get_plugins();
+
+        foreach ($plugins as $key => $plugin) {
+            $isInstalled = isset($installedPlugins[$plugin['file']]);
+            $isActive = is_plugin_active($plugin['file']);
+
+            // Determine status
+            if ($isActive) {
+                $status = 'active';
+            } elseif ($isInstalled) {
+                $status = 'inactive';
+            } else {
+                $status = 'not_installed';
+            }
+
+            // Build action URL based on status
+            $actionUrl = '';
+            if ($status === 'inactive') {
+                $actionUrl = admin_url('plugins.php');
+            } elseif ($status === 'not_installed') {
+                if (!empty($plugin['wpOrgSlug'])) {
+                    $actionUrl = admin_url('plugin-install.php?s=' . urlencode($plugin['name']) . '&tab=search&type=term');
+                } elseif (!empty($plugin['externalUrl'])) {
+                    $actionUrl = $plugin['externalUrl'];
+                }
+            }
+
+            $result[$key] = [
+                'name'      => $plugin['name'],
+                'status'    => $status,
+                'actionUrl' => $actionUrl,
+                'isExternal' => !empty($plugin['externalUrl']) && $status === 'not_installed',
+            ];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get Forminator forms data for React settings
+     *
+     * Returns forms list with their fields and notification variables
+     * for dynamic rendering in the React integrations page.
+     *
+     * @return array
+     */
+    private function getForminatorFormsData()
+    {
+        $result = [
+            'isActive' => false,
+            'forms'    => [],
+        ];
+
+        if (!class_exists('Forminator') || !class_exists('Forminator_API')) {
+            return $result;
+        }
+
+        $result['isActive'] = true;
+
+        try {
+            $forms = \Forminator_API::get_forms(null, 1, 100, 'publish');
+
+            if (empty($forms)) {
+                return $result;
+            }
+
+            foreach ($forms as $form) {
+                $formId = $form->id;
+                $formFields = [];
+
+                // Get form fields
+                $fields = \Forminator_API::get_form_fields($formId);
+                if (!empty($fields)) {
+                    foreach ($fields as $field) {
+                        $formFields[$field->slug] = $field->raw['field_label'] ?? $field->slug;
+                    }
+                }
+
+                // Get notification variables
+                $variables = [
+                    ['key' => '%site_name%', 'label' => 'Site Name'],
+                    ['key' => '%site_url%', 'label' => 'Site URL'],
+                ];
+                if (class_exists('WP_SMS\\Notification\\NotificationFactory')) {
+                    $notificationVariables = \WP_SMS\Notification\NotificationFactory::getForminator($formId)->getVariables();
+                    foreach ($notificationVariables as $key => $value) {
+                        // Skip base variables already added above
+                        if (in_array($key, ['%site_name%', '%site_url%'])) {
+                            continue;
+                        }
+                        // Field variables: use the form field label from $formFields
+                        preg_match("/^%field-(.+)%$/", $key, $match);
+                        $label = isset($match[1]) && isset($formFields[$match[1]])
+                            ? $formFields[$match[1]]
+                            : (isset($match[1]) ? $match[1] : $key);
+                        $variables[] = [
+                            'key'   => $key,
+                            'label' => $label,
+                        ];
+                    }
+                }
+
+                $result['forms'][] = [
+                    'id'        => $formId,
+                    'name'      => $form->name,
+                    'fields'    => $formFields,
+                    'variables' => $variables,
+                ];
+            }
+        } catch (\Exception $e) {
+            // Forminator not properly set up, return empty
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get Gravity Forms data for React settings
+     *
+     * Returns forms list with their fields and notification variables
+     * for dynamic rendering in the React integrations page.
+     *
+     * @return array
+     */
+    private function getGravityFormsData()
+    {
+        $result = [
+            'isActive' => false,
+            'forms'    => [],
+        ];
+
+        if (!class_exists('RGFormsModel')) {
+            return $result;
+        }
+
+        $result['isActive'] = true;
+
+        try {
+            $forms = \RGFormsModel::get_forms(null, 'title');
+
+            if (empty($forms)) {
+                return $result;
+            }
+
+            foreach ($forms as $form) {
+                $formId = $form->id;
+                $formFields = [];
+
+                // Get form fields (excluding non-input types)
+                $fields = \WP_SMS\Gravityforms::get_field($formId);
+                if (!empty($fields) && is_array($fields)) {
+                    foreach ($fields as $fieldId => $label) {
+                        $formFields[(string)$fieldId] = $label;
+                    }
+                }
+
+                // Build notification variables
+                $variables = [
+                    ['key' => '%title%', 'label' => 'Form Title'],
+                    ['key' => '%ip%', 'label' => 'IP Address'],
+                    ['key' => '%source_url%', 'label' => 'Source URL'],
+                    ['key' => '%user_agent%', 'label' => 'User Agent'],
+                ];
+
+                // Add field variables
+                if (!empty($fields) && is_array($fields)) {
+                    foreach ($fields as $fieldId => $label) {
+                        $variables[] = [
+                            'key'   => "%field-{$fieldId}%",
+                            'label' => $label,
+                        ];
+                    }
+                }
+
+                // hasFields indicates whether "Send to field" section should be shown
+                $hasFields = !empty($formFields);
+
+                $result['forms'][] = [
+                    'id'        => $formId,
+                    'name'      => $form->title,
+                    'fields'    => $formFields,
+                    'variables' => $variables,
+                    'hasFields' => $hasFields,
+                ];
+            }
+        } catch (\Exception $e) {
+            // Gravity Forms not properly set up, return empty
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get Quform data for React settings
+     *
+     * Returns forms list with their fields and notification variables
+     * for dynamic rendering in the React integrations page.
+     *
+     * @return array
+     */
+    private function getQuformFormsData()
+    {
+        $result = [
+            'isActive' => false,
+            'forms'    => [],
+        ];
+
+        if (!class_exists('Quform_Repository')) {
+            return $result;
+        }
+
+        $result['isActive'] = true;
+
+        try {
+            $quform = new \Quform_Repository();
+            $forms = $quform->allForms();
+
+            if (empty($forms)) {
+                return $result;
+            }
+
+            foreach ($forms as $form) {
+                $formId = $form['id'];
+                $formFields = [];
+
+                // Get form fields (excluding non-input types)
+                $fields = \WP_SMS\Quform::get_fields($formId);
+                if (!empty($fields) && is_array($fields)) {
+                    foreach ($fields as $fieldId => $label) {
+                        $formFields[(string)$fieldId] = $label;
+                    }
+                }
+
+                // Build notification variables
+                $variables = [
+                    ['key' => '%post_title%', 'label' => 'Post Title'],
+                    ['key' => '%form_url%', 'label' => 'Form URL'],
+                    ['key' => '%referring_url%', 'label' => 'Referring URL'],
+                ];
+
+                // Add field variables
+                if (!empty($fields) && is_array($fields)) {
+                    foreach ($fields as $fieldId => $label) {
+                        $variables[] = [
+                            'key'   => "%field-{$fieldId}%",
+                            'label' => $label,
+                        ];
+                    }
+                }
+
+                // Check if form has elements (for "Send to field" feature)
+                // Legacy code uses $form['elements'] directly for this check
+                $hasElements = !empty($form['elements']);
+
+                $result['forms'][] = [
+                    'id'          => $formId,
+                    'name'        => $form['name'],
+                    'fields'      => $formFields,
+                    'variables'   => $variables,
+                    'hasElements' => $hasElements,
+                ];
+            }
+        } catch (\Exception $e) {
+            // Quform not properly set up, return empty
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get add-on settings schema from filter
+     *
+     * @return array
+     */
+    private function getAddonSettingsSchema()
+    {
+        $schemas = apply_filters('wpsms_addon_settings_schema', []);
+        return $this->validateAddonSchemas($schemas);
+    }
+
+    /**
+     * Validate and sanitize add-on schemas
+     *
+     * @param array $schemas
+     * @return array
+     */
+    private function validateAddonSchemas($schemas)
+    {
+        if (!is_array($schemas)) {
+            return [];
+        }
+
+        // Validate addon settings schema
+        // For brevity, just return sanitized schemas
+        $validated = [];
+        foreach ($schemas as $addonSlug => $schema) {
+            if (!is_array($schema) || empty($schema['fields'])) {
+                continue;
+            }
+            $validated[sanitize_key($addonSlug)] = $schema;
+        }
+
+        return $validated;
+    }
+
+    /**
+     * Get add-on option values from database
+     *
+     * Loads option values for all registered add-on fields,
+     * converting WooCommerce 'yes'/'no' strings to boolean.
+     *
+     * @return array
+     */
+    private function getAddonOptionValues()
+    {
+        $schemas = apply_filters('wpsms_addon_settings_schema', []);
+        $values = [];
+
+        foreach ($schemas as $addonSlug => $schema) {
+            // Check if addon provides pre-loaded values (for add-ons using legacy storage like wpsms_settings array)
+            // This allows add-ons to read values from their own storage and provide them directly
+            if (!empty($schema['data']['currentValues']) && is_array($schema['data']['currentValues'])) {
+                $values[sanitize_key($addonSlug)] = $schema['data']['currentValues'];
+                continue;
+            }
+
+            if (empty($schema['fields']) || !is_array($schema['fields'])) {
+                continue;
+            }
+
+            $addonValues = [];
+            foreach ($schema['fields'] as $field) {
+                if (empty($field['id'])) {
+                    continue;
+                }
+
+                $optionKey = $field['id'];
+                $fieldType = $field['type'] ?? 'text';
+                $default = $field['default'] ?? null;
+
+                $value = get_option($optionKey, $default);
+
+                // Convert 'yes'/'no' to boolean for switch/checkbox fields (WooCommerce compatibility)
+                if (in_array($fieldType, ['switch', 'checkbox'], true)) {
+                    if ($value === 'yes') {
+                        $value = true;
+                    } elseif ($value === 'no' || $value === '' || $value === null) {
+                        $value = false;
+                    } else {
+                        $value = (bool) $value;
+                    }
+                }
+
+                $addonValues[$optionKey] = $value;
+            }
+
+            if (!empty($addonValues)) {
+                $values[sanitize_key($addonSlug)] = $addonValues;
+            }
+        }
+
+        return $values;
+    }
+
+    /**
+     * Get translations for the React app
+     *
+     * @return array
+     */
+    private function getTranslations()
+    {
+        return [
+            // Common
+            'save'           => __('Save Changes', 'wp-sms'),
+            'saving'         => __('Saving...', 'wp-sms'),
+            'saved'          => __('Changes saved', 'wp-sms'),
+            'error'          => __('Error saving changes', 'wp-sms'),
+            'unsavedChanges' => __('You have unsaved changes', 'wp-sms'),
+            'discard'        => __('Discard', 'wp-sms'),
+            'cancel'         => __('Cancel', 'wp-sms'),
+            'confirm'        => __('Confirm', 'wp-sms'),
+            'loading'        => __('Loading...', 'wp-sms'),
+            'search'         => __('Search...', 'wp-sms'),
+            'noResults'      => __('No results found', 'wp-sms'),
+            'required'       => __('This field is required', 'wp-sms'),
+            'invalid'        => __('Invalid value', 'wp-sms'),
+
+            // Actions
+            'add'            => __('Add', 'wp-sms'),
+            'edit'           => __('Edit', 'wp-sms'),
+            'delete'         => __('Delete', 'wp-sms'),
+            'resend'         => __('Resend', 'wp-sms'),
+            'export'         => __('Export', 'wp-sms'),
+            'import'         => __('Import', 'wp-sms'),
+            'Browse'         => __('Browse', 'wp-sms'),
+            'Test'           => __('Test', 'wp-sms'),
+            'Switch'         => __('Switch', 'wp-sms'),
+            'Disconnect'     => __('Disconnect', 'wp-sms'),
+
+            // Navigation
+            'Send SMS'       => __('Send SMS', 'wp-sms'),
+            'Outbox'         => __('Outbox', 'wp-sms'),
+            'Subscribers'    => __('Subscribers', 'wp-sms'),
+            'Groups'         => __('Groups', 'wp-sms'),
+            'Settings'       => __('Settings', 'wp-sms'),
+            'Overview'       => __('Overview', 'wp-sms'),
+            'Gateway'        => __('Gateway', 'wp-sms'),
+            'Phone'          => __('Phone', 'wp-sms'),
+            'Message Button' => __('Message Button', 'wp-sms'),
+            'Notifications'  => __('Notifications', 'wp-sms'),
+            'Newsletter'     => __('Newsletter', 'wp-sms'),
+            'Integrations'   => __('Integrations', 'wp-sms'),
+            'Advanced'       => __('Advanced', 'wp-sms'),
+            'Privacy'        => __('Privacy', 'wp-sms'),
+            'Documentation'  => __('Documentation', 'wp-sms'),
+            'Support'        => __('Support', 'wp-sms'),
+
+            // Sidebar
+            'Gateway Connected'       => __('Gateway Connected', 'wp-sms'),
+            'Gateway not configured'  => __('Gateway not configured', 'wp-sms'),
+            "What's New"              => __("What's New", 'wp-sms'),
+            'Enjoying WSMS?'          => __('Enjoying WSMS?', 'wp-sms'),
+
+            // Header
+            'All-in-One'              => __('All-in-One', 'wp-sms'),
+            'License:'                => __('License:', 'wp-sms'),
+            'Upgrade'                 => __('Upgrade', 'wp-sms'),
+            'Upgrade to All-in-One'   => __('Upgrade to All-in-One', 'wp-sms'),
+
+            // Footer
+            'Made with'                   => __('Made with', 'wp-sms'),
+            'for the WordPress community' => __('for the WordPress community', 'wp-sms'),
+
+            // Gateway page
+            'SMS Gateway'             => __('SMS Gateway', 'wp-sms'),
+            'Search gateways...'      => __('Search gateways...', 'wp-sms'),
+            'No gateways found'       => __('No gateways found', 'wp-sms'),
+            'Selected Gateway'        => __('Selected Gateway', 'wp-sms'),
+            'Switch to'               => __('Switch to', 'wp-sms'),
+            'Are you sure?'           => __('Are you sure?', 'wp-sms'),
+            'No Gateway Selected'     => __('No Gateway Selected', 'wp-sms'),
+            'Choose a provider from the list above' => __('Choose a provider from the list above', 'wp-sms'),
+            'Capabilities:'           => __('Capabilities:', 'wp-sms'),
+            'Flash SMS'               => __('Flash SMS', 'wp-sms'),
+            'Bulk Send'               => __('Bulk Send', 'wp-sms'),
+            'MMS'                     => __('MMS', 'wp-sms'),
+            'Incoming SMS'            => __('Incoming SMS', 'wp-sms'),
+            'Gateway Guide'           => __('Gateway Guide', 'wp-sms'),
+            'Setup instructions for'  => __('Setup instructions for', 'wp-sms'),
+            'View Full Documentation' => __('View Full Documentation', 'wp-sms'),
+            'Credentials'             => __('Credentials', 'wp-sms'),
+            'API credentials for'     => __('API credentials for', 'wp-sms'),
+            'Test Connection'         => __('Test Connection', 'wp-sms'),
+            'Testing...'              => __('Testing...', 'wp-sms'),
+            'Verify your credentials are working' => __('Verify your credentials are working', 'wp-sms'),
+            'API Response'            => __('API Response', 'wp-sms'),
+            'Raw response from the gateway for debugging' => __('Raw response from the gateway for debugging', 'wp-sms'),
+            'Gateway Response:'       => __('Gateway Response:', 'wp-sms'),
+            'Delivery Settings'       => __('Delivery Settings', 'wp-sms'),
+            'Configure how messages are processed and delivered' => __('Configure how messages are processed and delivered', 'wp-sms'),
+            'Delivery Method'         => __('Delivery Method', 'wp-sms'),
+            'How SMS messages are processed and sent.' => __('How SMS messages are processed and sent.', 'wp-sms'),
+            'Select method'           => __('Select method', 'wp-sms'),
+            'Instant — Send immediately when triggered' => __('Instant — Send immediately when triggered', 'wp-sms'),
+            'Background — Process in background (reduces page load time)' => __('Background — Process in background (reduces page load time)', 'wp-sms'),
+            'Queue — Add to queue for batch processing' => __('Queue — Add to queue for batch processing', 'wp-sms'),
+            'Message Formatting'      => __('Message Formatting', 'wp-sms'),
+            'Enable Unicode'          => __('Enable Unicode', 'wp-sms'),
+            'Required for non-Latin characters (Arabic, Chinese, emoji). May reduce characters per SMS.' => __('Required for non-Latin characters (Arabic, Chinese, emoji). May reduce characters per SMS.', 'wp-sms'),
+            'Auto-format Numbers'     => __('Auto-format Numbers', 'wp-sms'),
+            'Automatically remove spaces and special characters from phone numbers before sending.' => __('Automatically remove spaces and special characters from phone numbers before sending.', 'wp-sms'),
+            'Country Restrictions'    => __('Country Restrictions', 'wp-sms'),
+            'Limit SMS delivery to specific countries' => __('Limit SMS delivery to specific countries', 'wp-sms'),
+            'Restrict to Specific Countries' => __('Restrict to Specific Countries', 'wp-sms'),
+            'Only send SMS to phone numbers from selected countries.' => __('Only send SMS to phone numbers from selected countries.', 'wp-sms'),
+            'Allowed Countries'       => __('Allowed Countries', 'wp-sms'),
+            'Select countries...'     => __('Select countries...', 'wp-sms'),
+            'Search countries...'     => __('Search countries...', 'wp-sms'),
+            'SMS will only be sent to numbers from these countries.' => __('SMS will only be sent to numbers from these countries.', 'wp-sms'),
+            'Credit Display'          => __('Credit Display', 'wp-sms'),
+            'Show Credit in Menu'     => __('Show Credit in Menu', 'wp-sms'),
+            'Display your SMS credit balance in the WordPress admin menu bar.' => __('Display your SMS credit balance in the WordPress admin menu bar.', 'wp-sms'),
+            'Show Credit on Send Page' => __('Show Credit on Send Page', 'wp-sms'),
+            'Display your remaining SMS credits when composing messages.' => __('Display your remaining SMS credits when composing messages.', 'wp-sms'),
+            'Setup Wizard'            => __('Setup Wizard', 'wp-sms'),
+            'Re-run the guided setup to update your gateway configuration' => __('Re-run the guided setup to update your gateway configuration', 'wp-sms'),
+            'Re-run Wizard'           => __('Re-run Wizard', 'wp-sms'),
+
+            // Gateway tips
+            'Need help choosing a gateway?' => __('Need help choosing a gateway?', 'wp-sms'),
+            'Consider factors like coverage area, pricing, and API features. Most gateways offer free trial credits to test before committing.' => __('Consider factors like coverage area, pricing, and API features. Most gateways offer free trial credits to test before committing.', 'wp-sms'),
+            'Select your SMS service provider. Configure credentials below after selecting.' => __('Select your SMS service provider. Configure credentials below after selecting.', 'wp-sms'),
+            'Save your changes to see capabilities and configure credentials for this gateway.' => __('Save your changes to see capabilities and configure credentials for this gateway.', 'wp-sms'),
+            'Click'                   => __('Click', 'wp-sms'),
+            'to verify your gateway credentials are working correctly.' => __('to verify your gateway credentials are working correctly.', 'wp-sms'),
+            "Gateway connection verified successfully. You're ready to send SMS!" => __("Gateway connection verified successfully. You're ready to send SMS!", 'wp-sms'),
+            'Connection test failed. Please check your credentials and try again.' => __('Connection test failed. Please check your credentials and try again.', 'wp-sms'),
+            'Queue mode requires a cron job to process messages. Configure WP-Cron or set up a real cron job for reliable delivery.' => __('Queue mode requires a cron job to process messages. Configure WP-Cron or set up a real cron job for reliable delivery.', 'wp-sms'),
+
+            // Overview page
+            'Welcome to WSMS!'        => __('Welcome to WSMS!', 'wp-sms'),
+            'Complete these steps to start sending SMS messages from your WordPress site.' => __('Complete these steps to start sending SMS messages from your WordPress site.', 'wp-sms'),
+            'Configure SMS Gateway'   => __('Configure SMS Gateway', 'wp-sms'),
+            'Connected to'            => __('Connected to', 'wp-sms'),
+            'Select your SMS provider' => __('Select your SMS provider', 'wp-sms'),
+            'Set Admin Mobile Number' => __('Set Admin Mobile Number', 'wp-sms'),
+            'Add your phone for test messages' => __('Add your phone for test messages', 'wp-sms'),
+            'Test Your Connection'    => __('Test Your Connection', 'wp-sms'),
+            'Gateway is working'      => __('Gateway is working', 'wp-sms'),
+            'Verify credentials work' => __('Verify credentials work', 'wp-sms'),
+            "You're all set!"         => __("You're all set!", 'wp-sms'),
+            'Your SMS gateway is configured and ready to send messages.' => __('Your SMS gateway is configured and ready to send messages.', 'wp-sms'),
+            'Head to'                 => __('Head to', 'wp-sms'),
+            'to send your first message.' => __('to send your first message.', 'wp-sms'),
+            'Gateway Status'          => __('Gateway Status', 'wp-sms'),
+            'Current SMS gateway connection' => __('Current SMS gateway connection', 'wp-sms'),
+            'Connected'               => __('Connected', 'wp-sms'),
+            'Credit:'                 => __('Credit:', 'wp-sms'),
+            'Connection failed'       => __('Connection failed', 'wp-sms'),
+            'Click to test'           => __('Click to test', 'wp-sms'),
+            'Configure a gateway to send SMS' => __('Configure a gateway to send SMS', 'wp-sms'),
+            'Configuration'           => __('Configuration', 'wp-sms'),
+            'Quick access to main settings' => __('Quick access to main settings', 'wp-sms'),
+            'Quick Links'             => __('Quick Links', 'wp-sms'),
+            'Not configured'          => __('Not configured', 'wp-sms'),
+            'Admin Mobile'            => __('Admin Mobile', 'wp-sms'),
+            'Not set'                 => __('Not set', 'wp-sms'),
+            'Enabled'                 => __('Enabled', 'wp-sms'),
+            'Disabled'                => __('Disabled', 'wp-sms'),
+            'SMS Gateways Available'  => __('SMS Gateways Available', 'wp-sms'),
+            'Providers from around the world' => __('Providers from around the world', 'wp-sms'),
+            'Pro'                     => __('Pro', 'wp-sms'),
+            'Upgrade to WSMS Pro'     => __('Upgrade to WSMS Pro', 'wp-sms'),
+            'OTP authentication, WooCommerce integration, and more' => __('OTP authentication, WooCommerce integration, and more', 'wp-sms'),
+            'Learn More'              => __('Learn More', 'wp-sms'),
+
+            // SendSms page
+            'No SMS gateway configured.' => __('No SMS gateway configured.', 'wp-sms'),
+            'You need to set up a gateway before you can send messages.' => __('You need to set up a gateway before you can send messages.', 'wp-sms'),
+            'Configure Gateway'       => __('Configure Gateway', 'wp-sms'),
+            'Credit'                  => __('Credit', 'wp-sms'),
+            'Format:'                 => __('Format:', 'wp-sms'),
+            'Compose Message'         => __('Compose Message', 'wp-sms'),
+            'Sender ID'               => __('Sender ID', 'wp-sms'),
+            'Type your message here...' => __('Type your message here...', 'wp-sms'),
+            'Flash'                   => __('Flash', 'wp-sms'),
+            'Media'                   => __('Media', 'wp-sms'),
+            'Media URL (https://...)' => __('Media URL (https://...)', 'wp-sms'),
+            'Recipients'              => __('Recipients', 'wp-sms'),
+            "This gateway doesn't support bulk SMS. Only the first number will receive the message." => __("This gateway doesn't support bulk SMS. Only the first number will receive the message.", 'wp-sms'),
+            'Recipients:'             => __('Recipients:', 'wp-sms'),
+            'Segments:'               => __('Segments:', 'wp-sms'),
+            'Total:'                  => __('Total:', 'wp-sms'),
+            'Configure gateway first' => __('Configure gateway first', 'wp-sms'),
+            'Add message and recipients' => __('Add message and recipients', 'wp-sms'),
+            'Enter a message'         => __('Enter a message', 'wp-sms'),
+            'Add recipients'          => __('Add recipients', 'wp-sms'),
+            'Selected groups/roles have no subscribers' => __('Selected groups/roles have no subscribers', 'wp-sms'),
+            'Checking recipients...'  => __('Checking recipients...', 'wp-sms'),
+            'Review & Send'           => __('Review & Send', 'wp-sms'),
+
+            // Old keys for backwards compatibility
+            'sendSms'        => __('Send SMS', 'wp-sms'),
+            'sending'        => __('Sending...', 'wp-sms'),
+            'sent'           => __('Message sent successfully', 'wp-sms'),
+            'recipients'     => __('Recipients', 'wp-sms'),
+            'message'        => __('Message', 'wp-sms'),
+            'characters'     => __('characters', 'wp-sms'),
+            'segments'       => __('segments', 'wp-sms'),
+            'outbox'         => __('Outbox', 'wp-sms'),
+            'date'           => __('Date', 'wp-sms'),
+            'sender'         => __('Sender', 'wp-sms'),
+            'recipient'      => __('Recipient', 'wp-sms'),
+            'status'         => __('Status', 'wp-sms'),
+            'success'        => __('Success', 'wp-sms'),
+            'failed'         => __('Failed', 'wp-sms'),
+            'subscribers'    => __('Subscribers', 'wp-sms'),
+            'subscriber'     => __('Subscriber', 'wp-sms'),
+            'name'           => __('Name', 'wp-sms'),
+            'mobile'         => __('Mobile', 'wp-sms'),
+            'group'          => __('Group', 'wp-sms'),
+            'active'         => __('Active', 'wp-sms'),
+            'inactive'       => __('Inactive', 'wp-sms'),
+            'groups'         => __('Groups', 'wp-sms'),
+            'groupName'      => __('Group Name', 'wp-sms'),
+            'subscriberCount' => __('Subscriber Count', 'wp-sms'),
+            'privacy'        => __('Privacy', 'wp-sms'),
+            'gdprCompliance' => __('GDPR Compliance', 'wp-sms'),
+            'exportData'     => __('Export Data', 'wp-sms'),
+            'deleteData'     => __('Delete Data', 'wp-sms'),
+            'confirmDelete'  => __('Are you sure you want to delete this?', 'wp-sms'),
+            'confirmResend'  => __('Are you sure you want to resend this message?', 'wp-sms'),
+
+            // SMS Campaigns page
+            'SMS Campaigns'   => __('SMS Campaigns', 'wp-sms'),
+            'Create targeted SMS marketing campaigns based on customer behavior.' => __('Create targeted SMS marketing campaigns based on customer behavior.', 'wp-sms'),
+            'Create targeted SMS marketing campaigns based on customer behavior. Set conditions, schedule delivery, and track results.' => __('Create targeted SMS marketing campaigns based on customer behavior. Set conditions, schedule delivery, and track results.', 'wp-sms'),
+            'WooCommerce Pro Add-on Required' => __('WooCommerce Pro Add-on Required', 'wp-sms'),
+            'Install and activate the WP SMS WooCommerce Pro add-on to access SMS Campaigns.' => __('Install and activate the WP SMS WooCommerce Pro add-on to access SMS Campaigns.', 'wp-sms'),
+            'New Campaign'    => __('New Campaign', 'wp-sms'),
+            'Create Campaign' => __('Create Campaign', 'wp-sms'),
+            'Edit Campaign'   => __('Edit Campaign', 'wp-sms'),
+            'Update Campaign' => __('Update Campaign', 'wp-sms'),
+            'Delete Campaign' => __('Delete Campaign', 'wp-sms'),
+            'Campaign Title'  => __('Campaign Title', 'wp-sms'),
+            'Enter campaign title...' => __('Enter campaign title...', 'wp-sms'),
+            'Conditions'      => __('Conditions', 'wp-sms'),
+            'Add Condition'   => __('Add Condition', 'wp-sms'),
+            'No conditions added. Campaign will match all orders.' => __('No conditions added. Campaign will match all orders.', 'wp-sms'),
+            'Select type...'  => __('Select type...', 'wp-sms'),
+            'Select value...' => __('Select value...', 'wp-sms'),
+            'is'              => __('is', 'wp-sms'),
+            'is not'          => __('is not', 'wp-sms'),
+            'When to Send'    => __('When to Send', 'wp-sms'),
+            'Select when to send...' => __('Select when to send...', 'wp-sms'),
+            'Immediately'     => __('Immediately', 'wp-sms'),
+            'Specific Date'   => __('Specific Date', 'wp-sms'),
+            'After Placing Order' => __('After Placing Order', 'wp-sms'),
+            'After Order'     => __('After Order', 'wp-sms'),
+            'Minutes'         => __('Minutes', 'wp-sms'),
+            'Hours'           => __('Hours', 'wp-sms'),
+            'Days'            => __('Days', 'wp-sms'),
+            'after order is placed' => __('after order is placed', 'wp-sms'),
+            'Message Content' => __('Message Content', 'wp-sms'),
+            'Enter your SMS message...' => __('Enter your SMS message...', 'wp-sms'),
+            'Available variables:' => __('Available variables:', 'wp-sms'),
+            'No message content' => __('No message content', 'wp-sms'),
+            'Search campaigns...' => __('Search campaigns...', 'wp-sms'),
+            'All Statuses'    => __('All Statuses', 'wp-sms'),
+            'Campaigns'       => __('Campaigns', 'wp-sms'),
+            /* translators: %1$d: number of campaigns shown, %2$d: total number of campaigns */
+            'Showing %d of %d campaigns' => __('Showing %1$d of %2$d campaigns', 'wp-sms'),
+            'No campaigns found' => __('No campaigns found', 'wp-sms'),
+            'No campaigns yet' => __('No campaigns yet', 'wp-sms'),
+            'Create your first SMS campaign to get started.' => __('Create your first SMS campaign to get started.', 'wp-sms'),
+            'Campaign'        => __('Campaign', 'wp-sms'),
+            'Schedule'        => __('Schedule', 'wp-sms'),
+            'Queue'           => __('Queue', 'wp-sms'),
+            'Queue Status'    => __('Queue Status', 'wp-sms'),
+            'Created'         => __('Created', 'wp-sms'),
+            'View'            => __('View', 'wp-sms'),
+            'Update your SMS campaign settings.' => __('Update your SMS campaign settings.', 'wp-sms'),
+            'Create a new targeted SMS marketing campaign.' => __('Create a new targeted SMS marketing campaign.', 'wp-sms'),
+            'Campaign details and configuration' => __('Campaign details and configuration', 'wp-sms'),
+            'Close'           => __('Close', 'wp-sms'),
+            /* translators: %s: name of the item to be deleted */
+            'Are you sure you want to delete "%s"? This action cannot be undone.' => __('Are you sure you want to delete "%s"? This action cannot be undone.', 'wp-sms'),
+            /* translators: %1$d: current page number, %2$d: total number of pages */
+            'Page %d of %d'   => __('Page %1$d of %2$d', 'wp-sms'),
+            'Order Status'    => __('Order Status', 'wp-sms'),
+            'Coupon Code'     => __('Coupon Code', 'wp-sms'),
+            'Product'         => __('Product', 'wp-sms'),
+            'Product Type'    => __('Product Type', 'wp-sms'),
+            'API request failed' => __('API request failed', 'wp-sms'),
+            'Trashed'         => __('Trashed', 'wp-sms'),
+            'Processing'      => __('Processing', 'wp-sms'),
+            'Completed'       => __('Completed', 'wp-sms'),
+
+            // Cart Abandonment page
+            'Cart Abandonment' => __('Cart Abandonment', 'wp-sms'),
+            'Cart Abandonment Recovery' => __('Cart Abandonment Recovery', 'wp-sms'),
+            'Recover abandoned carts with automated SMS reminders.' => __('Recover abandoned carts with automated SMS reminders.', 'wp-sms'),
+            'Recover lost sales by automatically sending SMS reminders to customers who abandoned their shopping carts.' => __('Recover lost sales by automatically sending SMS reminders to customers who abandoned their shopping carts.', 'wp-sms'),
+            'Install and activate the WP SMS WooCommerce Pro add-on to access Cart Abandonment features.' => __('Install and activate the WP SMS WooCommerce Pro add-on to access Cart Abandonment features.', 'wp-sms'),
+            'Recoverable Carts' => __('Recoverable Carts', 'wp-sms'),
+            'Recovered Carts' => __('Recovered Carts', 'wp-sms'),
+            'Recoverable Revenue' => __('Recoverable Revenue', 'wp-sms'),
+            'SMS Sent'        => __('SMS Sent', 'wp-sms'),
+            'in queue'        => __('in queue', 'wp-sms'),
+            'Abandoned Carts' => __('Abandoned Carts', 'wp-sms'),
+            'View and manage abandoned shopping carts' => __('View and manage abandoned shopping carts', 'wp-sms'),
+            'Refresh'         => __('Refresh', 'wp-sms'),
+            'Search by phone number...' => __('Search by phone number...', 'wp-sms'),
+            'Filter by type'  => __('Filter by type', 'wp-sms'),
+            'All Carts'       => __('All Carts', 'wp-sms'),
+            'Abandoned Only'  => __('Abandoned Only', 'wp-sms'),
+            'Recovered Only'  => __('Recovered Only', 'wp-sms'),
+            'Time period'     => __('Time period', 'wp-sms'),
+            'All Time'        => __('All Time', 'wp-sms'),
+            'Today'           => __('Today', 'wp-sms'),
+            'Yesterday'       => __('Yesterday', 'wp-sms'),
+            'Last Week'       => __('Last Week', 'wp-sms'),
+            'Last Month'      => __('Last Month', 'wp-sms'),
+            'Apply'           => __('Apply', 'wp-sms'),
+            'Customer'        => __('Customer', 'wp-sms'),
+            'Cart Total'      => __('Cart Total', 'wp-sms'),
+            'Recovered'       => __('Recovered', 'wp-sms'),
+            'SMS Status'      => __('SMS Status', 'wp-sms'),
+            'No abandoned carts found' => __('No abandoned carts found', 'wp-sms'),
+            'Guest'           => __('Guest', 'wp-sms'),
+            'Yes'             => __('Yes', 'wp-sms'),
+            'No'              => __('No', 'wp-sms'),
+            'Delete Abandoned Cart' => __('Delete Abandoned Cart', 'wp-sms'),
+            'Are you sure you want to delete this abandoned cart record? This action cannot be undone.' => __('Are you sure you want to delete this abandoned cart record? This action cannot be undone.', 'wp-sms'),
+            'Cart deleted successfully' => __('Cart deleted successfully', 'wp-sms'),
+            'Failed to delete cart' => __('Failed to delete cart', 'wp-sms'),
+            'Failed to load cart abandonment data' => __('Failed to load cart abandonment data', 'wp-sms'),
+            'Deleting...'     => __('Deleting...', 'wp-sms'),
+            'Not Scheduled'   => __('Not Scheduled', 'wp-sms'),
+            'Not Sent'        => __('Not Sent', 'wp-sms'),
+            'In Queue'        => __('In Queue', 'wp-sms'),
+            'Sent'            => __('Sent', 'wp-sms'),
+            'Request failed'  => __('Request failed', 'wp-sms'),
+
+            // Advanced page
+            'Webhooks'        => __('Webhooks', 'wp-sms'),
+            'Integrate with external services via webhook notifications' => __('Integrate with external services via webhook notifications', 'wp-sms'),
+            'Outgoing SMS Webhook' => __('Outgoing SMS Webhook', 'wp-sms'),
+            'Called after each SMS is sent. Enter one URL per line.' => __('Called after each SMS is sent. Enter one URL per line.', 'wp-sms'),
+            'New Subscriber Webhook' => __('New Subscriber Webhook', 'wp-sms'),
+            'Called when someone subscribes to your SMS newsletter.' => __('Called when someone subscribes to your SMS newsletter.', 'wp-sms'),
+            'Incoming SMS Webhook' => __('Incoming SMS Webhook', 'wp-sms'),
+            'Called when you receive an SMS reply. Requires Two-Way SMS add-on.' => __('Called when you receive an SMS reply. Requires Two-Way SMS add-on.', 'wp-sms'),
+            'Message Storage'  => __('Message Storage', 'wp-sms'),
+            'Configure message logging and automatic cleanup' => __('Configure message logging and automatic cleanup', 'wp-sms'),
+            'Log Sent Messages' => __('Log Sent Messages', 'wp-sms'),
+            'Save all sent SMS messages in the Outbox for tracking.' => __('Save all sent SMS messages in the Outbox for tracking.', 'wp-sms'),
+            'Log sent messages' => __('Log sent messages', 'wp-sms'),
+            'Auto-delete Sent Messages' => __('Auto-delete Sent Messages', 'wp-sms'),
+            'Outbox retention period' => __('Outbox retention period', 'wp-sms'),
+            'Select retention period' => __('Select retention period', 'wp-sms'),
+            'After 30 days'   => __('After 30 days', 'wp-sms'),
+            'After 90 days'   => __('After 90 days', 'wp-sms'),
+            'After 180 days'  => __('After 180 days', 'wp-sms'),
+            'After 365 days'  => __('After 365 days', 'wp-sms'),
+            'Keep forever'    => __('Keep forever', 'wp-sms'),
+            'Automatically remove old messages from the Outbox.' => __('Automatically remove old messages from the Outbox.', 'wp-sms'),
+            'Log Received Messages' => __('Log Received Messages', 'wp-sms'),
+            'Save incoming SMS messages in the Inbox.' => __('Save incoming SMS messages in the Inbox.', 'wp-sms'),
+            'Log received messages' => __('Log received messages', 'wp-sms'),
+            'Auto-delete Received Messages' => __('Auto-delete Received Messages', 'wp-sms'),
+            'Inbox retention period' => __('Inbox retention period', 'wp-sms'),
+            'Automatically remove old messages from the Inbox.' => __('Automatically remove old messages from the Inbox.', 'wp-sms'),
+            'Admin Notifications' => __('Admin Notifications', 'wp-sms'),
+            'Configure email reports and plugin notifications' => __('Configure email reports and plugin notifications', 'wp-sms'),
+            'Weekly Statistics Email' => __('Weekly Statistics Email', 'wp-sms'),
+            'Receive weekly SMS usage reports via email.' => __('Receive weekly SMS usage reports via email.', 'wp-sms'),
+            'Enable weekly statistics email' => __('Enable weekly statistics email', 'wp-sms'),
+            'Error Notifications' => __('Error Notifications', 'wp-sms'),
+            'Email admin when SMS sending fails.' => __('Email admin when SMS sending fails.', 'wp-sms'),
+            'Enable error notifications' => __('Enable error notifications', 'wp-sms'),
+            'Plugin Notifications' => __('Plugin Notifications', 'wp-sms'),
+            'Show update notices and announcements in the admin area.' => __('Show update notices and announcements in the admin area.', 'wp-sms'),
+            'Enable plugin notifications' => __('Enable plugin notifications', 'wp-sms'),
+            'Usage Analytics' => __('Usage Analytics', 'wp-sms'),
+            'Share anonymous usage data to help improve WSMS.' => __('Share anonymous usage data to help improve WSMS.', 'wp-sms'),
+            'Enable usage analytics' => __('Enable usage analytics', 'wp-sms'),
+            'Additional Add-on Settings' => __('Additional Add-on Settings', 'wp-sms'),
+
+            // Integrations page
+            'Active'          => __('Active', 'wp-sms'),
+            'Inactive'        => __('Inactive', 'wp-sms'),
+            'Not Installed'   => __('Not Installed', 'wp-sms'),
+            'Unknown'         => __('Unknown', 'wp-sms'),
+            'Activate'        => __('Activate', 'wp-sms'),
+            'Install'         => __('Install', 'wp-sms'),
+            'Contact Form 7'  => __('Contact Form 7', 'wp-sms'),
+            'Send SMS notifications when Contact Form 7 forms are submitted.' => __('Send SMS notifications when Contact Form 7 forms are submitted.', 'wp-sms'),
+            'Adds an "SMS Notification" tab to the Contact Form 7 editor.' => __('Adds an "SMS Notification" tab to the Contact Form 7 editor.', 'wp-sms'),
+            'Gravity Forms'   => __('Gravity Forms', 'wp-sms'),
+            'Formidable Forms' => __('Formidable Forms', 'wp-sms'),
+            'Forminator'      => __('Forminator', 'wp-sms'),
+            'WooCommerce'     => __('WooCommerce', 'wp-sms'),
+            'Elementor Forms' => __('Elementor Forms', 'wp-sms'),
+            'Automatic support via add-on' => __('Automatic support via add-on', 'wp-sms'),
+            'Available via WooCommerce add-on' => __('Available via WooCommerce add-on', 'wp-sms'),
+            'Available via Elementor add-on' => __('Available via Elementor add-on', 'wp-sms'),
+            'Form Plugin Integration' => __('Form Plugin Integration', 'wp-sms'),
+            'Configure SMS notifications for form submissions' => __('Configure SMS notifications for form submissions', 'wp-sms'),
+            'Enable'          => __('Enable', 'wp-sms'),
+            'is required to use these settings.' => __('is required to use these settings.', 'wp-sms'),
+            'Additional Integrations' => __('Additional Integrations', 'wp-sms'),
+            'Other plugins supported through WSMS add-ons' => __('Other plugins supported through WSMS add-ons', 'wp-sms'),
+
+            // Newsletter page
+            'SMS Newsletter Configuration' => __('SMS Newsletter Configuration', 'wp-sms'),
+            'Configure how visitors subscribe to your SMS notifications' => __('Configure how visitors subscribe to your SMS notifications', 'wp-sms'),
+            'Show Groups in Form' => __('Show Groups in Form', 'wp-sms'),
+            'Let subscribers choose which groups to join.' => __('Let subscribers choose which groups to join.', 'wp-sms'),
+            'Show groups in form' => __('Show groups in form', 'wp-sms'),
+            'Available Groups' => __('Available Groups', 'wp-sms'),
+            'All groups'      => __('All groups', 'wp-sms'),
+            'Search groups...' => __('Search groups...', 'wp-sms'),
+            'Which groups subscribers can choose from. Leave empty for all groups.' => __('Which groups subscribers can choose from. Leave empty for all groups.', 'wp-sms'),
+            'Allow Multiple Groups' => __('Allow Multiple Groups', 'wp-sms'),
+            'Let subscribers join more than one group at a time.' => __('Let subscribers join more than one group at a time.', 'wp-sms'),
+            'Allow multiple groups' => __('Allow multiple groups', 'wp-sms'),
+            'Default Group'   => __('Default Group', 'wp-sms'),
+            'Default group'   => __('Default group', 'wp-sms'),
+            'Select a group'  => __('Select a group', 'wp-sms'),
+            'All'             => __('All', 'wp-sms'),
+            'Automatically add new subscribers to this group.' => __('Automatically add new subscribers to this group.', 'wp-sms'),
+            'Require SMS Verification' => __('Require SMS Verification', 'wp-sms'),
+            'Subscribers must verify their phone number via SMS code.' => __('Subscribers must verify their phone number via SMS code.', 'wp-sms'),
+            'Require SMS verification' => __('Require SMS verification', 'wp-sms'),
+            'Welcome SMS'     => __('Welcome SMS', 'wp-sms'),
+            'Set up automatic SMS messages for new subscribers' => __('Set up automatic SMS messages for new subscribers', 'wp-sms'),
+            'Send Welcome Message' => __('Send Welcome Message', 'wp-sms'),
+            'Automatically send a welcome SMS to new subscribers.' => __('Automatically send a welcome SMS to new subscribers.', 'wp-sms'),
+            'Send welcome message' => __('Send welcome message', 'wp-sms'),
+            'Welcome Message' => __('Welcome Message', 'wp-sms'),
+            'Welcome to our newsletter! Thanks for subscribing.' => __('Welcome to our newsletter! Thanks for subscribing.', 'wp-sms'),
+            'Variables:'      => __('Variables:', 'wp-sms'),
+            'Form Appearance' => __('Form Appearance', 'wp-sms'),
+            'Customize the look of your subscription form' => __('Customize the look of your subscription form', 'wp-sms'),
+            'Disable Default Styles' => __('Disable Default Styles', 'wp-sms'),
+            'Remove plugin CSS to use your own form styling.' => __('Remove plugin CSS to use your own form styling.', 'wp-sms'),
+            'Disable default styles' => __('Disable default styles', 'wp-sms'),
+            'GDPR Compliance' => __('GDPR Compliance', 'wp-sms'),
+            'Ensure your newsletter form is GDPR-compliant' => __('Ensure your newsletter form is GDPR-compliant', 'wp-sms'),
+            'Privacy Consent Checkbox' => __('Privacy Consent Checkbox', 'wp-sms'),
+            'Require subscribers to accept your privacy policy.' => __('Require subscribers to accept your privacy policy.', 'wp-sms'),
+            'Enable privacy consent' => __('Enable privacy consent', 'wp-sms'),
+            'Consent Message' => __('Consent Message', 'wp-sms'),
+            'I agree to receive SMS messages and accept the privacy policy.' => __('I agree to receive SMS messages and accept the privacy policy.', 'wp-sms'),
+            'Text shown next to the consent checkbox.' => __('Text shown next to the consent checkbox.', 'wp-sms'),
+            'Privacy Page'    => __('Privacy Page', 'wp-sms'),
+            'Select a page'   => __('Select a page', 'wp-sms'),
+            'Link to your privacy policy page. Typically set in Settings → Privacy.' => __('Link to your privacy policy page. Typically set in Settings → Privacy.', 'wp-sms'),
+            'Tip: Enable GDPR features in the Privacy settings page to show a consent checkbox on all forms.' => __('Tip: Enable GDPR features in the Privacy settings page to show a consent checkbox on all forms.', 'wp-sms'),
+        ];
+    }
+}

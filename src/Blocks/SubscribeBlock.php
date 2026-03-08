@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) exit;
 
 class SubscribeBlock extends BlockAbstract
 {
-    protected $blockName = 'Subscribe';
+    protected $blockName = 'subscribe';
     protected $blockVersion = '1.0';
 
     protected function output($attributes)
@@ -18,6 +18,7 @@ class SubscribeBlock extends BlockAbstract
 
     public function buildBlockAjaxData()
     {
+        return [];
     }
 
     public function buildBlockAttributes($baseConfig)

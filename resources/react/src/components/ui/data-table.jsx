@@ -1,0 +1,619 @@
+import * as React from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
+import PropTypes from 'prop-types'
+import {
+  ChevronUp,
+  ChevronDown,
+  ChevronsUpDown,
+  ChevronLeft,
+  ChevronRight,
+  Search,
+  MoreHorizontal,
+  Inbox,
+  Loader2,
+} from 'lucide-react'
+import { cn, __ } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Skeleton } from '@/components/ui/skeleton'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu'
+
+// Debounce hook
+function useDebounce(value, delay) {
+  const [debouncedValue, setDebouncedValue] = useState(value)
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [value, delay])
+
+  return debouncedValue
+}
+
+// Sort indicator component
+function SortIndicator({ direction }) {
+  if (!direction) {
+    return <ChevronsUpDown className="wsms-h-3.5 wsms-w-3.5 wsms-text-muted-foreground/50" />
+  }
+  return direction === 'asc' ? (
+    <ChevronUp className="wsms-h-3.5 wsms-w-3.5 wsms-text-primary" />
+  ) : (
+    <ChevronDown className="wsms-h-3.5 wsms-w-3.5 wsms-text-primary" />
+  )
+}
+
+// Table skeleton loader
+function TableSkeleton({ columns, rows = 5, hasSelection }) {
+  const colCount = columns + (hasSelection ? 1 : 0)
+  return (
+    <>
+      {Array.from({ length: rows }).map((_, rowIndex) => (
+        <tr
+          key={rowIndex}
+          className="wsms-border-b wsms-border-border last:wsms-border-0"
+        >
+          {Array.from({ length: colCount }).map((_, colIndex) => (
+            <td key={colIndex} className="wsms-p-3">
+              <Skeleton className="wsms-h-4 wsms-w-full" />
+            </td>
+          ))}
+        </tr>
+      ))}
+    </>
+  )
+}
+
+// Empty state component with enhanced styling
+function EmptyState({ icon: Icon = Inbox, message }) {
+  return (
+    <div className="wsms-empty-state">
+      <div className="wsms-empty-state-icon">
+        <Icon strokeWidth={1.5} />
+      </div>
+      <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-text-center wsms-max-w-[280px]">{message || __('No items found')}</p>
+    </div>
+  )
+}
+
+// Bulk actions dropdown
+function BulkActionsDropdown({ actions, selectedCount, onAction, loadingAction }) {
+  if (!actions || actions.length === 0) return null
+
+  const isAnyLoading = !!loadingAction
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="sm" className="wsms-gap-1.5" disabled={isAnyLoading}>
+          {isAnyLoading ? (
+            <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
+          ) : (
+            <span>{__('Actions')}</span>
+          )}
+          <span className="wsms-flex wsms-h-5 wsms-min-w-5 wsms-items-center wsms-justify-center wsms-rounded wsms-bg-primary/10 wsms-px-1.5 wsms-text-[11px] wsms-font-semibold wsms-text-primary">
+            {selectedCount}
+          </span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" sideOffset={5}>
+        {actions.map((action, index) => {
+          const isLoading = loadingAction === action.label
+          return (
+            <DropdownMenuItem
+              key={index}
+              onClick={() => !isAnyLoading && onAction(action)}
+              disabled={isAnyLoading}
+              style={action.variant === 'destructive' ? { color: 'hsl(var(--destructive))' } : undefined}
+            >
+              {isLoading ? (
+                <Loader2 style={{ marginInlineEnd: '8px', width: '16px', height: '16px' }} className="wsms-animate-spin" />
+              ) : (
+                action.icon && <action.icon style={{ marginInlineEnd: '8px', width: '16px', height: '16px' }} />
+              )}
+              {action.label}
+            </DropdownMenuItem>
+          )
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+// Row actions dropdown
+function RowActionsDropdown({ actions, row }) {
+  if (!actions || actions.length === 0) return null
+
+  // Filter out hidden actions based on row data
+  const visibleActions = actions.filter((action) => {
+    if (typeof action.hidden === 'function') {
+      return !action.hidden(row)
+    }
+    return !action.hidden
+  })
+
+  if (visibleActions.length === 0) return null
+
+  // Check if any action is in loading state for this row
+  const hasLoadingAction = visibleActions.some(
+    (action) => typeof action.loading === 'function' && action.loading(row)
+  )
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" className="wsms-h-8 wsms-w-8" disabled={hasLoadingAction}>
+          {hasLoadingAction
+            ? <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
+            : <MoreHorizontal className="wsms-h-4 wsms-w-4" />
+          }
+          <span className="wsms-sr-only">{__('Open menu')}</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" sideOffset={5}>
+        {visibleActions.map((action, index) => {
+          const isLoading = typeof action.loading === 'function' && action.loading(row)
+          return (
+            <DropdownMenuItem
+              key={index}
+              onClick={() => !isLoading && action.onClick(row)}
+              disabled={isLoading}
+              style={action.variant === 'destructive' ? { color: 'hsl(var(--destructive))' } : undefined}
+            >
+              {isLoading
+                ? <Loader2 style={{ marginInlineEnd: '8px', width: '16px', height: '16px' }} className="wsms-animate-spin" />
+                : action.icon && <action.icon style={{ marginInlineEnd: '8px', width: '16px', height: '16px' }} />
+              }
+              {action.label}
+            </DropdownMenuItem>
+          )
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+// Pagination component
+function Pagination({
+  currentPage,
+  totalPages,
+  totalItems,
+  perPage,
+  onPageChange,
+}) {
+  const startItem = (currentPage - 1) * perPage + 1
+  const endItem = Math.min(currentPage * perPage, totalItems)
+
+  // Generate page numbers to show
+  const pages = useMemo(() => {
+    const items = []
+    const maxVisible = 5
+    let start = Math.max(1, currentPage - Math.floor(maxVisible / 2))
+    let end = Math.min(totalPages, start + maxVisible - 1)
+
+    if (end - start + 1 < maxVisible) {
+      start = Math.max(1, end - maxVisible + 1)
+    }
+
+    for (let i = start; i <= end; i++) {
+      items.push(i)
+    }
+    return items
+  }, [currentPage, totalPages])
+
+  if (totalPages <= 1) return null
+
+  return (
+    <nav aria-label={__('Pagination')} className="wsms-flex wsms-flex-col sm:wsms-flex-row wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-4 wsms-py-3 wsms-border-t wsms-border-border wsms-bg-muted/20">
+      <p className="wsms-text-[12px] wsms-text-muted-foreground">
+        {__('Showing')} <span className="wsms-font-medium wsms-text-foreground">{startItem}</span> {__('to')}{' '}
+        <span className="wsms-font-medium wsms-text-foreground">{endItem}</span> {__('of')}{' '}
+        <span className="wsms-font-medium wsms-text-foreground">{totalItems}</span> {__('results')}
+      </p>
+
+      <div className="wsms-flex wsms-items-center wsms-gap-1">
+        <Button
+          variant="outline"
+          size="icon"
+          className="wsms-h-8 wsms-w-8"
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage <= 1}
+          aria-label={__('Go to previous page')}
+        >
+          <ChevronLeft className="wsms-h-4 wsms-w-4 rtl:wsms-scale-x-[-1]" />
+        </Button>
+
+        {pages[0] > 1 && (
+          <>
+            <Button
+              variant={currentPage === 1 ? 'default' : 'ghost'}
+              size="icon"
+              className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
+              onClick={() => onPageChange(1)}
+              aria-label={__('Go to page %s').replace('%s', '1')}
+              aria-current={currentPage === 1 ? 'page' : undefined}
+            >
+              1
+            </Button>
+            {pages[0] > 2 && (
+              <span className="wsms-px-1 wsms-text-muted-foreground">...</span>
+            )}
+          </>
+        )}
+
+        {pages.map((page) => (
+          <Button
+            key={page}
+            variant={currentPage === page ? 'default' : 'ghost'}
+            size="icon"
+            className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
+            onClick={() => onPageChange(page)}
+            aria-label={__('Go to page %s').replace('%s', String(page))}
+            aria-current={currentPage === page ? 'page' : undefined}
+          >
+            {page}
+          </Button>
+        ))}
+
+        {pages[pages.length - 1] < totalPages && (
+          <>
+            {pages[pages.length - 1] < totalPages - 1 && (
+              <span className="wsms-px-1 wsms-text-muted-foreground">...</span>
+            )}
+            <Button
+              variant={currentPage === totalPages ? 'default' : 'ghost'}
+              size="icon"
+              className="wsms-h-8 wsms-w-8 wsms-text-[12px]"
+              onClick={() => onPageChange(totalPages)}
+              aria-label={__('Go to page %s').replace('%s', String(totalPages))}
+              aria-current={currentPage === totalPages ? 'page' : undefined}
+            >
+              {totalPages}
+            </Button>
+          </>
+        )}
+
+        <Button
+          variant="outline"
+          size="icon"
+          className="wsms-h-8 wsms-w-8"
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage >= totalPages}
+          aria-label={__('Go to next page')}
+        >
+          <ChevronRight className="wsms-h-4 wsms-w-4 rtl:wsms-scale-x-[-1]" />
+        </Button>
+      </div>
+    </nav>
+  )
+}
+
+/**
+ * DataTable - A professional data table component with sorting, selection, and pagination
+ */
+export function DataTable({
+  columns,
+  data = [],
+  loading = false,
+  pagination,
+  selection,
+  onRowClick,
+  onSort,
+  onSearch,
+  bulkActions,
+  bulkActionLoading,
+  rowActions,
+  searchPlaceholder = 'Search...',
+  emptyMessage = 'No items found',
+  emptyIcon,
+  className,
+  getRowId = (row) => row.id,
+}) {
+  const [searchValue, setSearchValue] = useState('')
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null })
+
+  const debouncedSearch = useDebounce(searchValue, 300)
+
+  // Trigger search callback when debounced value changes
+  useEffect(() => {
+    if (onSearch) {
+      onSearch(debouncedSearch)
+    }
+  }, [debouncedSearch, onSearch])
+
+  // Handle column sort
+  const handleSort = useCallback(
+    (columnKey) => {
+      let direction = 'asc'
+      if (sortConfig.key === columnKey && sortConfig.direction === 'asc') {
+        direction = 'desc'
+      } else if (sortConfig.key === columnKey && sortConfig.direction === 'desc') {
+        direction = null
+      }
+
+      setSortConfig({ key: direction ? columnKey : null, direction })
+      if (onSort) {
+        onSort(columnKey, direction)
+      }
+    },
+    [sortConfig, onSort]
+  )
+
+  // Check if all visible rows are selected
+  const allSelected = useMemo(() => {
+    if (!selection || !data.length) return false
+    return data.every((row) => selection.selected.includes(getRowId(row)))
+  }, [selection, data, getRowId])
+
+  // Check if some rows are selected (for indeterminate state)
+  const someSelected = useMemo(() => {
+    if (!selection || !data.length) return false
+    const selectedCount = data.filter((row) => selection.selected.includes(getRowId(row))).length
+    return selectedCount > 0 && selectedCount < data.length
+  }, [selection, data, getRowId])
+
+  // Handle select all
+  const handleSelectAll = useCallback(
+    (checked) => {
+      if (!selection) return
+      if (checked) {
+        selection.onSelectAll(data.map(getRowId))
+      } else {
+        selection.onSelectAll([])
+      }
+    },
+    [selection, data, getRowId]
+  )
+
+  // Handle row selection
+  const handleSelectRow = useCallback(
+    (rowId, checked) => {
+      if (!selection) return
+      selection.onSelect(rowId, checked)
+    },
+    [selection]
+  )
+
+  // Handle bulk action
+  const handleBulkAction = useCallback(
+    (action) => {
+      if (action.onClick && selection) {
+        action.onClick(selection.selected)
+      }
+    },
+    [selection]
+  )
+
+  const hasSelection = !!selection
+  const selectedCount = selection?.selected?.length || 0
+
+  return (
+    <div className={cn('wsms-w-full', className)}>
+      {/* Toolbar */}
+      {(onSearch || (bulkActions && selectedCount > 0)) && (
+        <div className="wsms-flex wsms-flex-col sm:wsms-flex-row wsms-items-start sm:wsms-items-center wsms-justify-between wsms-gap-3 wsms-p-4 wsms-border-b wsms-border-border">
+          <div className="wsms-flex wsms-items-center wsms-gap-3 wsms-w-full sm:wsms-w-auto">
+            {selectedCount > 0 && bulkActions ? (
+              <BulkActionsDropdown
+                actions={bulkActions}
+                selectedCount={selectedCount}
+                onAction={handleBulkAction}
+                loadingAction={bulkActionLoading}
+              />
+            ) : null}
+          </div>
+
+          {onSearch && (
+            <div className="wsms-relative wsms-w-full sm:wsms-w-64">
+              <Search className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms-h-4 wsms-w-4 wsms--translate-y-1/2 wsms-text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder={searchPlaceholder}
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                className="wsms-ps-8 wsms-h-9"
+                aria-label={__('Search')}
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Table */}
+      <div className="wsms-overflow-x-auto">
+        <table className="wsms-w-full wsms-border-collapse">
+          <thead>
+            <tr className="wsms-border-b wsms-border-border wsms-bg-muted/30">
+              {hasSelection && (
+                <th className="wsms-w-12 wsms-p-3 wsms-text-start">
+                  <span className="wsms-sr-only">{__('Select')}</span>
+                  <Checkbox
+                    checked={allSelected}
+                    indeterminate={someSelected}
+                    onCheckedChange={handleSelectAll}
+                    aria-label={__('Select all')}
+                  />
+                </th>
+              )}
+              {columns.map((column) => {
+                const columnKey = column.id || column.accessorKey
+                const currentDirection = sortConfig.key === columnKey ? sortConfig.direction : null
+                const ariaSortValue = column.sortable
+                  ? (currentDirection === 'asc' ? 'ascending' : currentDirection === 'desc' ? 'descending' : 'none')
+                  : undefined
+
+                return (
+                  <th
+                    key={columnKey}
+                    className={cn(
+                      'wsms-p-3 wsms-text-start wsms-text-[12px] wsms-font-semibold wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide',
+                      column.className
+                    )}
+                    style={{ width: column.width }}
+                    aria-sort={ariaSortValue}
+                  >
+                    {column.sortable ? (
+                      <button
+                        type="button"
+                        onClick={() => handleSort(columnKey)}
+                        className="wsms-flex wsms-items-center wsms-gap-1.5 wsms-cursor-pointer wsms-select-none hover:wsms-text-foreground wsms-transition-colors wsms-bg-transparent wsms-border-0 wsms-p-0 wsms-font-semibold wsms-text-[12px] wsms-uppercase wsms-tracking-wide wsms-text-muted-foreground"
+                      >
+                        <span>{column.header}</span>
+                        <SortIndicator direction={currentDirection} />
+                      </button>
+                    ) : (
+                      <div className="wsms-flex wsms-items-center wsms-gap-1.5">
+                        <span>{column.header}</span>
+                      </div>
+                    )}
+                  </th>
+                )
+              })}
+              {rowActions && <th className="wsms-w-12 wsms-p-3"><span className="wsms-sr-only">{__('Actions')}</span></th>}
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <TableSkeleton
+                columns={columns.length + (rowActions ? 1 : 0)}
+                rows={data.length > 0 ? Math.min(data.length, pagination?.perPage || 10) : (pagination?.perPage || 5)}
+                hasSelection={hasSelection}
+              />
+            ) : data.length === 0 ? (
+              <tr>
+                <td colSpan={columns.length + (hasSelection ? 1 : 0) + (rowActions ? 1 : 0)}>
+                  <EmptyState icon={emptyIcon} message={emptyMessage} />
+                </td>
+              </tr>
+            ) : (
+              data.map((row, rowIndex) => {
+                const rowId = getRowId(row)
+                const isSelected = selection?.selected.includes(rowId)
+
+                return (
+                  <tr
+                    key={rowId}
+                    className={cn(
+                      'wsms-border-b wsms-border-border last:wsms-border-0 wsms-transition-colors',
+                      isSelected && 'wsms-bg-primary/5',
+                      onRowClick && 'wsms-cursor-pointer',
+                      'hover:wsms-bg-muted/40'
+                    )}
+                    onClick={() => onRowClick && onRowClick(row)}
+                  >
+                    {hasSelection && (
+                      <td className="wsms-p-3" onClick={(e) => e.stopPropagation()}>
+                        <Checkbox
+                          checked={isSelected}
+                          onCheckedChange={(checked) => handleSelectRow(rowId, checked)}
+                          aria-label={__('Select row %s').replace('%s', rowIndex + 1)}
+                        />
+                      </td>
+                    )}
+                    {columns.map((column) => {
+                      const cellValue = column.accessorKey
+                        ? row[column.accessorKey]
+                        : column.accessorFn?.(row)
+
+                      return (
+                        <td
+                          key={column.id || column.accessorKey}
+                          className={cn('wsms-p-3 wsms-text-[13px] wsms-text-foreground', column.cellClassName)}
+                        >
+                          {column.cell ? column.cell({ row, value: cellValue }) : cellValue}
+                        </td>
+                      )
+                    })}
+                    {rowActions && (
+                      <td className="wsms-p-3" onClick={(e) => e.stopPropagation()}>
+                        <RowActionsDropdown actions={rowActions} row={row} />
+                      </td>
+                    )}
+                  </tr>
+                )
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Pagination */}
+      {pagination && !loading && data.length > 0 && (
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages}
+          totalItems={pagination.total}
+          perPage={pagination.perPage}
+          onPageChange={pagination.onPageChange}
+        />
+      )}
+    </div>
+  )
+}
+
+DataTable.propTypes = {
+  columns: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string,
+      accessorKey: PropTypes.string,
+      accessorFn: PropTypes.func,
+      header: PropTypes.string.isRequired,
+      cell: PropTypes.func,
+      sortable: PropTypes.bool,
+      width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      className: PropTypes.string,
+      cellClassName: PropTypes.string,
+    })
+  ).isRequired,
+  data: PropTypes.array,
+  loading: PropTypes.bool,
+  pagination: PropTypes.shape({
+    page: PropTypes.number.isRequired,
+    perPage: PropTypes.number.isRequired,
+    total: PropTypes.number.isRequired,
+    totalPages: PropTypes.number.isRequired,
+    onPageChange: PropTypes.func.isRequired,
+  }),
+  selection: PropTypes.shape({
+    selected: PropTypes.array.isRequired,
+    onSelect: PropTypes.func.isRequired,
+    onSelectAll: PropTypes.func.isRequired,
+  }),
+  onRowClick: PropTypes.func,
+  onSort: PropTypes.func,
+  onSearch: PropTypes.func,
+  bulkActions: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      onClick: PropTypes.func.isRequired,
+      icon: PropTypes.elementType,
+      variant: PropTypes.oneOf(['default', 'destructive']),
+    })
+  ),
+  bulkActionLoading: PropTypes.string,
+  rowActions: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      onClick: PropTypes.func.isRequired,
+      icon: PropTypes.elementType,
+      variant: PropTypes.oneOf(['default', 'destructive']),
+    })
+  ),
+  searchPlaceholder: PropTypes.string,
+  emptyMessage: PropTypes.string,
+  emptyIcon: PropTypes.elementType,
+  className: PropTypes.string,
+  getRowId: PropTypes.func,
+}
+
+export default DataTable

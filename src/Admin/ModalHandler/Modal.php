@@ -2,8 +2,6 @@
 
 namespace WP_SMS\Admin\ModalHandler;
 
-use Exception;
-use WP_SMS\Components\View;
 use WP_SMS\Utils\OptionUtil as Option;
 
 if (!defined('ABSPATH')) exit;
@@ -13,59 +11,15 @@ class Modal
     const MODAL_OPTION_KEY = 'user_modals';
 
     /**
-     * Returns the relative path to the modals' directory.
+     * Check if a modal has been seen by the current user.
      *
-     * @return string
+     * @param string $modalId The modal ID to check.
+     *
+     * @return bool
      */
-    private static function getModalsDir()
+    public static function hasBeenSeen($modalId)
     {
-        return '/components/modals/';
-    }
-
-    /**
-     * Shows the modal if the user has not seen it before.
-     *
-     * @param string $modalId The name of the modal to show.
-     * @param array $args
-     *
-     * @return void
-     * @throws Exception
-     */
-    public static function showOnce($modalId, $args = [])
-    {
-        if (empty(self::getState($modalId))) {
-            self::show($modalId, $args);
-        }
-    }
-
-    /**
-     * Shows the modal and updates the state. (stateful modal)
-     *
-     * @param string $modalId The name of the modal to show.
-     * @param array $args
-     *
-     * @return void
-     * @throws Exception
-     */
-    public static function show($modalId, $args = [])
-    {
-        self::updateState($modalId);
-        self::render($modalId, $args);
-    }
-
-
-    /**
-     * Renders the modal with the given ID. (stateless modal)
-     *
-     * @param string $modalId The ID of the modal to render.
-     * @param array $args
-     *
-     * @return void
-     * @throws Exception
-     */
-    public static function render($modalId, $args = [])
-    {
-        View::load(self::getModalsDir() . "/{$modalId}/{$modalId}-modal", $args);
+        return !empty(self::getState($modalId));
     }
 
     /**
@@ -75,7 +29,7 @@ class Modal
      *
      * @return void
      */
-    private static function updateState($modalId)
+    public static function updateState($modalId)
     {
         $modals           = self::getStates();
         $modals[$modalId] = self::generateStateObject($modalId);
@@ -123,7 +77,7 @@ class Modal
 
         $state = [
             'times_opened' => (is_array($modal) && isset($modal['times_opened'])) ? $modal['times_opened'] + 1 : 1,
-            'last_opened'  => date('Y-m-d H:i:s')
+            'last_opened'  => gmdate('Y-m-d H:i:s')
         ];
 
         return $state;

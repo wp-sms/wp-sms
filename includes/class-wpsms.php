@@ -2,9 +2,9 @@
 
 use WP_SMS\Admin\AdminManager;
 use WP_SMS\Admin\AnonymizedUsageData\AnonymizedUsageDataManager;
-use WP_SMS\Admin\LicenseManagement\LicenseHelper;
-use WP_SMS\Admin\OnBoarding\StepFactory;
-use WP_SMS\Admin\OnBoarding\WizardManager;
+use WP_SMS\Admin\Dashboard;
+use WP_SMS\Components\Assets;
+use WP_SMS\Service\Assets\AssetsFactory;
 use WP_SMS\BackgroundProcess\Async\RemoteRequestAsync;
 use WP_SMS\BackgroundProcess\Queues\RemoteRequestQueue;
 use WP_SMS\Blocks\BlockAssetsManager;
@@ -100,9 +100,18 @@ class WP_SMS
      */
     public function plugin_setup()
     {
+        $this->loadTextDomain();
+
         add_action('init', array($this, 'init'));
 
         $this->includes();
+
+        // Initialize default settings if not already present
+        if (!get_option('wpsms_settings')) {
+            require_once WP_SMS_DIR . 'includes/admin/settings/class-wpsms-settings.php';
+            update_option('wpsms_settings', \WP_SMS\Settings::getDefaultSettings());
+        }
+
         $this->setupBackgroundProcess();
     }
 
@@ -128,7 +137,6 @@ class WP_SMS
 
     public function init()
     {
-        $this->loadTextDomain();
         $this->initGateway();
     }
 
@@ -145,7 +153,7 @@ class WP_SMS
             load_textdomain('wp-sms', WP_LANG_DIR . '/wp-sms-' . $locale . '.mo');
         }
 
-        load_plugin_textdomain('wp-sms', false, dirname(plugin_basename(__FILE__)) . '/languages');
+        load_plugin_textdomain('wp-sms', false, WP_SMS_DIR . 'resources/languages');
     }
 
     private function initGateway()
@@ -173,7 +181,12 @@ class WP_SMS
     public function includes()
     {
         // Autoloader
-        require_once WP_SMS_DIR . "vendor/autoload.php";
+        if (file_exists(WP_SMS_DIR . "packages/autoload.php")) {
+            require_once WP_SMS_DIR . "packages/autoload.php";
+        }
+
+        // Initialize asset system
+        Assets::init();
 
         // Third-party libraries
         $this->include('includes/libraries/wp-background-processing/wp-async-request.php');
@@ -215,31 +228,25 @@ class WP_SMS
             $this->include('includes/admin/settings/class-wpsms-settings-integration.php');
             $this->include('includes/admin/class-wpsms-admin.php');
             $this->include('includes/admin/class-wpsms-admin-helper.php');
-            $this->include('includes/admin/outbox/class-wpsms-outbox.php');
-            $this->include('includes/admin/inbox/class-wpsms-inbox.php');
-            $this->include('includes/admin/send/class-wpsms-send.php');
-            $this->include('includes/admin/add-ons/class-add-ons.php');
+
+            // Initialize admin asset handlers
+            AssetsFactory::admin();
+            AssetsFactory::dashboard();
 
             WidgetsManager::init();
             NoticeManager::getInstance();
             $licenseManagementManager = new \WP_SMS\Admin\LicenseManagement\LicenseManagementManager();
             $adminManager             = new AdminManager();
 
-            add_action('init', function () {
-                $wizard = new WizardManager(__('WPSMS OnBoarding Process', 'wp-sms'), 'wp-sms-onboarding');
-                $wizard->add(StepFactory::create('GettingStarted', $wizard));
-                $wizard->add(StepFactory::create('SmsGateway', $wizard));
-                $wizard->add(StepFactory::create('Configuration', $wizard));
-                $wizard->add(StepFactory::create('TestSetup', $wizard));
-                if (!LicenseHelper::isPremiumLicenseAvailable())
-                    $wizard->add(StepFactory::create('Pro', $wizard));
-                $wizard->add(StepFactory::create('Ready', $wizard));
-                $wizard->setup();
-            });
+            // Initialize dashboard
+            Dashboard::getInstance()->init();
 
         }
 
         if (!is_admin()) {
+            // Frontend asset handler
+            AssetsFactory::frontend();
+
             // Front Class.
             $this->include('includes/class-front.php');
         }
@@ -248,11 +255,24 @@ class WP_SMS
 
         $cronEventManager = new CronEventManager();
 
+        // API traits
+        $this->include('includes/api/traits/trait-date-formatter.php');
+
         // API class.
         $this->include('includes/api/v1/class-wpsms-api-newsletter.php');
         $this->include('includes/api/v1/class-wpsms-api-send.php');
         $this->include('includes/api/v1/class-wpsms-api-webhook.php');
         $this->include('includes/api/v1/class-wpsms-api-credit.php');
+        $this->include('includes/api/v1/class-wpsms-api-settings.php');
+
+        // Dashboard API endpoints
+        $this->include('includes/api/v1/class-wpsms-api-subscribers.php');
+        $this->include('includes/api/v1/class-wpsms-api-groups.php');
+        $this->include('includes/api/v1/class-wpsms-api-outbox.php');
+        $this->include('includes/api/v1/class-wpsms-api-privacy.php');
+        $this->include('includes/api/v1/class-wpsms-api-notifications.php');
+        $this->include('includes/api/v1/class-wpsms-api-admin-notices.php');
+        $this->include('includes/api/v1/class-wpsms-api-addons.php');
 
         // Anonymous Data sharing
         $anonymizedUsageDataManager = new AnonymizedUsageDataManager();

@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) exit;
 class StatsWidget extends AbstractWidget
 {
     protected $id = 'wp-sms-stats-widget';
-    protected $name = 'WP SMS Stats';
+    protected $name = 'WSMS Stats';
 
     protected $capability = 'manage_options';
 
@@ -41,7 +41,6 @@ class StatsWidget extends AbstractWidget
      */
     public function getLocalizationData()
     {
-        // Set a transient key and expiration time for the query results (e.g., 12 hours)
         $transientKey = 'wp_sms_dashboard_send_data';
         $expiration   = HOUR_IN_SECONDS;
 
@@ -86,7 +85,7 @@ class StatsWidget extends AbstractWidget
             }
 
             // Initialize this year and last 12 months
-            $currentYear  = date('Y');
+            $currentYear  = gmdate('Y');
             $last12Months = new DatePeriod(new DateTime('first day of -11 month'), new DateInterval('P1M'), new DateTime('first day of next month'));
 
             foreach ($last12Months as $date) {
@@ -96,19 +95,15 @@ class StatsWidget extends AbstractWidget
                 $datasets['last_12_month']['successful'][$key] = 0;
                 $datasets['last_12_month']['failure'][$key]    = 0;
 
-                // Check if the month belongs to the current year
+                // Initialize this_year data for all months in the current year (including current month)
                 if ($date->format('Y') == $currentYear) {
-                    // Only initialize this_year data for months that have passed
-                    if ($date < new DateTime('first day of this month')) {
-                        $datasets['this_year']['successful'][$key] = 0;
-                        $datasets['this_year']['failure'][$key]    = 0;
-                    }
+                    $datasets['this_year']['successful'][$key] = 0;
+                    $datasets['this_year']['failure'][$key]    = 0;
                 }
             }
 
-            $currentYear   = date('Y');
-            $sevenDaysAgo  = (new DateTime('-6 days'))->format('Y-m-d');
-            $thirtyDaysAgo = (new DateTime('-29 days'))->format('Y-m-d');
+            $sevenDaysAgo  = new DateTime('-6 days');
+            $thirtyDaysAgo = new DateTime('-29 days');
 
             foreach ($results as $row) {
                 $date   = new DateTime($row->date);
@@ -116,13 +111,13 @@ class StatsWidget extends AbstractWidget
                 $count  = (int)$row->count;
 
                 // Last 7 days
-                if ($date >= new DateTime($sevenDaysAgo)) {
+                if ($date >= $sevenDaysAgo) {
                     $key                                    = $date->format('d D');
                     $datasets['last_7_days'][$status][$key] = $count;
                 }
 
                 // Last 30 days
-                if ($date >= new DateTime($thirtyDaysAgo)) {
+                if ($date >= $thirtyDaysAgo) {
                     $key                                     = $date->format('d M');
                     $datasets['last_30_days'][$status][$key] = $count;
                 }
@@ -146,9 +141,11 @@ class StatsWidget extends AbstractWidget
 
         // Localization data is generated every time, not cached
         $widgetData['localization'] = [
-            'successful' => esc_html__('Successful', 'wp-sms'),
-            'failed'     => esc_html__('Failed', 'wp-sms'),
-            'plain'      => esc_html__('Plain', 'wp-sms'),
+            'successful'   => esc_html__('Successful', 'wp-sms'),
+            'failed'       => esc_html__('Failed', 'wp-sms'),
+            'plain'        => esc_html__('Plain', 'wp-sms'),
+            'total'        => esc_html__('Total', 'wp-sms'),
+            'success_rate' => esc_html__('Success Rate', 'wp-sms'),
         ];
 
         // Add the query results to the widget data

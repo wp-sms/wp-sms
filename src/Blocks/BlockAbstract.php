@@ -24,6 +24,13 @@ abstract class BlockAbstract
     protected $script = false;
 
     /**
+     * The JS global object name used for wp_localize_script
+     *
+     * @var string $localizeObjectName
+     */
+    protected $localizeObjectName;
+
+    /**
      * Block blockVersion
      *
      * @var $blockVersion
@@ -35,7 +42,7 @@ abstract class BlockAbstract
      */
     public function registerBlockType()
     {
-        $blockPath = Helper::getAssetPath("assets/blocks/{$this->blockName}");
+        $blockPath = Helper::getAssetPath("public/blocks/{$this->blockName}");
 
         // Define a base config for all blocks.
         $baseConfig = ['render_callback' => [$this, 'renderCallback']];
@@ -44,11 +51,10 @@ abstract class BlockAbstract
         register_block_type($blockPath, $config);
 
         /**
-         * Enqueue the script and data
+         * Localize the script data
          */
-        if ($this->script) {
-            wp_enqueue_script("wpSms{$this->blockName}BlockData");
-            wp_localize_script($this->script, "wpSms{$this->blockName}BlockData", $this->buildBlockAjaxData());
+        if ($this->script && $this->localizeObjectName) {
+            wp_localize_script($this->script, $this->localizeObjectName, $this->buildBlockAjaxData());
         }
     }
 

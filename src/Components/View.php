@@ -48,7 +48,7 @@ class View
                 include $viewPath;
             }
         } catch (\Exception $e) {
-            \WP_SMS::log($e->getMessage(), 'error');
+            Logger::log($e->getMessage(), 'error');
         }
     }
 

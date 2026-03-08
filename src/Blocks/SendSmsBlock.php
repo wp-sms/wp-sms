@@ -8,9 +8,10 @@ if (!defined('ABSPATH')) exit;
 
 class SendSmsBlock extends BlockAbstract
 {
-    protected $blockName = 'SendSms';
+    protected $blockName = 'send-sms';
     protected $blockVersion = '1.0';
     protected $script = 'wp-sms-blocks-send-sms-editor-script';
+    protected $localizeObjectName = 'wpSmsSendSmsBlockData';
 
     protected function output($attributes)
     {

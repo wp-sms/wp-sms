@@ -9,7 +9,18 @@ use WP_UnitTestCase;
 
 class NotificationTest extends WP_UnitTestCase
 {
-    protected $faker;
+    /**
+     * Static test data to replace Faker
+     */
+    private static $testCounter = 0;
+
+    /**
+     * Get unique test value
+     */
+    private function uniqueId()
+    {
+        return ++self::$testCounter;
+    }
 
     /**
      * Setup before each test.
@@ -17,9 +28,6 @@ class NotificationTest extends WP_UnitTestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        // Initialize Faker for generating dynamic test data
-        $this->faker = \Faker\Factory::create();
     }
 
     /**
@@ -38,8 +46,8 @@ class NotificationTest extends WP_UnitTestCase
     {
         $notification = NotificationFactory::getCustom();
         $variables = [
-            '%age%'  => $this->faker->numberBetween(18, 60),
-            '%name%' => $this->faker->firstName,
+            '%age%'  => 25,
+            '%name%' => 'TestUser',
         ];
         $notification->registerVariables($variables);
 
@@ -59,8 +67,8 @@ class NotificationTest extends WP_UnitTestCase
     {
         $notification = NotificationFactory::getCustom();
         $variables    = [
-            '%age%'  => $this->faker->numberBetween(18, 60),
-            '%name%' => $this->faker->firstName,
+            '%age%'  => 30,
+            '%name%' => 'John',
         ];
         $notification->registerVariables($variables);
 
@@ -118,8 +126,8 @@ class NotificationTest extends WP_UnitTestCase
      */
     public function testSubscriberOutputMessage()
     {
-        $name         = $this->faker->name;
-        $mobile       = $this->faker->phoneNumber;
+        $name         = 'Test Subscriber';
+        $mobile       = '+15551234567';
         $subscriber   = WPSms()->newsletter()::addSubscriber($name, $mobile);
         $notification = NotificationFactory::getSubscriber($subscriber['id']);
         $this->assertStringContainsString(
@@ -130,11 +138,13 @@ class NotificationTest extends WP_UnitTestCase
 
     /**
      * Test coupon notification output.
+     *
+     * Note: WooCommerce normalizes coupon codes to lowercase.
      */
     public function testCouponNotificationOutput()
     {
-        $couponCode   = $this->faker->bothify('???###');
-        $couponAmount = $this->faker->randomFloat(2, 10, 100);
+        $couponCode   = 'test' . $this->uniqueId(); // Use lowercase - WC normalizes codes
+        $couponAmount = 25.50;
 
         $coupon = new WC_Coupon();
         $coupon->set_code($couponCode);
@@ -154,11 +164,12 @@ class NotificationTest extends WP_UnitTestCase
      */
     public function testCustomerNotificationOutput()
     {
+        $uniqueId = $this->uniqueId();
         $customer = new WC_Customer();
-        $customer->set_email($this->faker->email);
-        $customer->set_username($this->faker->userName);
-        $customer->set_first_name($this->faker->firstName);
-        $customer->set_last_name($this->faker->lastName);
+        $customer->set_email("test{$uniqueId}@example.com");
+        $customer->set_username("testuser{$uniqueId}");
+        $customer->set_first_name('John');
+        $customer->set_last_name('Doe');
         $customer->save();
 
         $notification = NotificationFactory::getWooCommerceCustomer($customer);
@@ -279,9 +290,9 @@ class NotificationTest extends WP_UnitTestCase
     public function testCustomNotificationWithMultipleVariables()
     {
         $notification = NotificationFactory::getCustom();
-        $firstName    = $this->faker->firstName;
-        $lastName     = $this->faker->lastName;
-        $email        = $this->faker->email;
+        $firstName    = 'Jane';
+        $lastName     = 'Smith';
+        $email        = 'jane.smith@example.com';
 
         $notification->registerVariables([
             '%first_name%' => $firstName,
@@ -318,7 +329,7 @@ class NotificationTest extends WP_UnitTestCase
      */
     public function testPostNotificationHasPostTitleVariable()
     {
-        $postTitle = $this->faker->sentence;
+        $postTitle = 'Test Post Title ' . $this->uniqueId();
         $postId    = $this->factory()->post->create(['post_title' => $postTitle]);
 
         $notification = NotificationFactory::getPost($postId);
@@ -362,7 +373,7 @@ class NotificationTest extends WP_UnitTestCase
      */
     public function testUserNotificationHasUserEmailVariable()
     {
-        $userEmail = $this->faker->email;
+        $userEmail = 'testuser' . $this->uniqueId() . '@example.com';
         $userId    = $this->factory()->user->create(['user_email' => $userEmail]);
 
         $notification = NotificationFactory::getUser($userId);
@@ -376,7 +387,7 @@ class NotificationTest extends WP_UnitTestCase
      */
     public function testUserNotificationHasDisplayNameVariable()
     {
-        $displayName = $this->faker->name;
+        $displayName = 'Test User ' . $this->uniqueId();
         $userId      = $this->factory()->user->create(['display_name' => $displayName]);
 
         $notification = NotificationFactory::getUser($userId);
@@ -390,7 +401,7 @@ class NotificationTest extends WP_UnitTestCase
      */
     public function testCommentNotificationHasCommentAuthorVariable()
     {
-        $authorName = $this->faker->name;
+        $authorName = 'Comment Author ' . $this->uniqueId();
         $commentId  = $this->factory()->comment->create(['comment_author' => $authorName]);
 
         $notification = NotificationFactory::getComment($commentId);
@@ -404,7 +415,7 @@ class NotificationTest extends WP_UnitTestCase
      */
     public function testCommentNotificationHasCommentContentVariable()
     {
-        $content   = $this->faker->sentence;
+        $content   = 'This is test comment content.';
         $commentId = $this->factory()->comment->create(['comment_content' => $content]);
 
         $notification = NotificationFactory::getComment($commentId);
@@ -463,7 +474,7 @@ class NotificationTest extends WP_UnitTestCase
      */
     public function testWooCommerceProductNotificationHasProductTitleVariable()
     {
-        $productName = $this->faker->words(3, true);
+        $productName = 'Test Product Name';
         $productId   = $this->factory()->post->create([
             'post_type'  => 'product',
             'post_title' => $productName,

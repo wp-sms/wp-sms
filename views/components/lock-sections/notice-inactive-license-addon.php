@@ -8,7 +8,7 @@
                 /* translators: %s: URL to license activation page */
                 __('This add-on does not have an active license, which means it cannot receive updates, including important security updates.
 For uninterrupted access to updates and to keep your site secure, we strongly recommend activating a license. Activate your license <a href="%s">here</a>.', 'wp-sms'),
-                esc_url(admin_url('admin.php?page=wp-sms-add-ons'))
+                esc_url(admin_url('admin.php?page=wsms&tab=add-ons'))
             ));
             ?>
         </div>

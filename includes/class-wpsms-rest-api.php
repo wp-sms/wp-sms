@@ -36,7 +36,7 @@ class RestApi
      */
     public static function response($message, $status = 200, $data = [])
     {
-        if ($status == 200) {
+        if ($status >= 200 && $status < 300) {
             $output = array(
                 'message' => $message,
                 'error'   => array(),

@@ -31,7 +31,7 @@ class SubscriberManager
             $message  = Option::getOption('newsletter_form_welcome_text');
             $receiver = array($mobile);
 
-            // @doc https://wp-sms-pro.com/resources/unsubscribe-opt-out-mobile-number-by-url/
+            // @doc https://wsms.io/docs/unsubscribe-url
             $message = apply_filters('wpsms_welcome_sms_message', $message, $mobile);
 
             // Fire notification

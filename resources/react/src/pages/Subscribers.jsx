@@ -1,0 +1,1184 @@
+import React, { useState, useEffect, useCallback } from 'react'
+import {
+  Users,
+  UserPlus,
+  Trash2,
+  Edit,
+  Search,
+  Download,
+  CheckCircle,
+  XCircle,
+  Loader2,
+  MessageSquare,
+  FolderOpen,
+  Send,
+  UserCheck,
+  UserX,
+  RefreshCw,
+  AlertCircle,
+  X,
+} from 'lucide-react'
+import { Card, CardContent } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { SearchableSelect } from '@/components/ui/searchable-select'
+import { DataTable } from '@/components/ui/data-table'
+import { StatusBadge } from '@/components/shared/StatusBadge'
+import { ImportExportDialog } from '@/components/shared/ImportExportDialog'
+import { ExportButton } from '@/components/shared/ExportButton'
+import { DeleteConfirmDialog } from '@/components/shared/DeleteConfirmDialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogBody,
+  DialogFooter,
+} from '@/components/ui/dialog'
+import { MultiSelect } from '@/components/ui/multi-select'
+import { subscribersApi } from '@/api/subscribersApi'
+import { groupsApi } from '@/api/groupsApi'
+import { smsApi } from '@/api/smsApi'
+import { useCountryCheck } from '@/hooks/useCountryCheck'
+import { InternationalPhoneInput } from '@/components/ui/InternationalPhoneInput'
+import { cn, formatDate, getWpSettings, __, downloadCsv } from '@/lib/utils'
+import { useSetting } from '@/context/SettingsContext'
+import { useListPage } from '@/hooks/useListPage'
+import { useFormDialog } from '@/hooks/useFormDialog'
+import { PageLoadingSkeleton } from '@/components/ui/skeleton'
+import { useToast } from '@/components/ui/toaster'
+
+/**
+ * Reusable subscriber import dialog component
+ */
+function SubscriberImportDialog({ open, onOpenChange, onImport, isLoading }) {
+  const importFields = [
+    { name: 'name', label: 'Name', required: false },
+    { name: 'mobile', label: 'Phone Number', required: true },
+    { name: 'status', label: 'Status', required: false },
+    { name: 'group_id', label: 'Group ID', required: false },
+  ]
+
+  return (
+    <ImportExportDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      mode="import"
+      title="Import Subscribers"
+      description="Upload a CSV file with subscriber data"
+      onImport={onImport}
+      isLoading={isLoading}
+      importFields={importFields}
+    />
+  )
+}
+
+export default function Subscribers() {
+  const { toast } = useToast()
+  const checkCountryRestriction = useCountryCheck()
+
+  // Get countries from settings
+  const { countries = [] } = getWpSettings()
+  const showActivateCode = window.wpSmsSettings?.newsletter_form_verify || false
+
+  // Multi-group setting
+  const [multipleSelect] = useSetting('newsletter_form_multiple_select', '')
+  const multiGroupEnabled = multipleSelect === '1'
+
+  // Groups state (fetched separately)
+  const [groups, setGroups] = useState([])
+
+  // Use combined list page hook
+  const { filters, table, handleDelete, handleBulkAction } = useListPage({
+    fetchFn: subscribersApi.getSubscribers,
+    deleteFn: subscribersApi.deleteSubscriber,
+    bulkActionFn: subscribersApi.bulkAction,
+    initialFilters: { search: '', group_id: 'all', status: 'all', country_code: 'all' },
+    messages: {
+      deleteSuccess: __('Subscriber deleted successfully'),
+      bulkSuccess: __('Subscribers updated successfully'),
+    },
+  })
+
+  // Edit dialog using useFormDialog
+  const editDialog = useFormDialog({
+    saveFn: async (id, data) => {
+      await subscribersApi.updateSubscriber(id, {
+        name: data.name,
+        mobile: data.mobile,
+        group_id: data.group_id ? parseInt(data.group_id) : 0,
+        status: data.status,
+      })
+    },
+    initialData: { name: '', mobile: '', group_id: '', status: '1' },
+    validate: (data) => {
+      const errors = {}
+      if (!data.mobile?.trim()) errors.mobile = __('Phone number is required')
+      return { valid: Object.keys(errors).length === 0, errors }
+    },
+    onSuccess: () => table.refresh(),
+    successMessage: __('Subscriber updated successfully'),
+  })
+
+  // Delete confirmation dialog using useFormDialog
+  const deleteDialog = useFormDialog({
+    saveFn: async (id) => {
+      await subscribersApi.deleteSubscriber(id)
+      table.removeItems([id])
+    },
+    successMessage: __('Subscriber deleted successfully'),
+  })
+
+  // Handle delete click - opens confirmation dialog
+  const handleDeleteClick = useCallback((subscriber) => {
+    deleteDialog.open(subscriber)
+  }, [deleteDialog])
+
+  // Handle delete confirm
+  const handleDeleteConfirm = async () => {
+    if (!deleteDialog.item) return
+    try {
+      await deleteDialog.save()
+    } catch {
+      // Error already handled by useFormDialog
+    }
+  }
+
+  // Fetch groups function
+  const fetchGroups = useCallback(async () => {
+    try {
+      const result = await groupsApi.getGroupsList()
+      setGroups(result)
+    } catch (error) {
+      console.error('Failed to fetch groups:', error)
+    }
+  }, [])
+
+  // Fetch groups on mount
+  useEffect(() => {
+    fetchGroups()
+  }, [fetchGroups])
+
+  // Listen for groups changes from other pages (e.g., Groups page)
+  useEffect(() => {
+    const handleGroupsChanged = () => {
+      fetchGroups()
+    }
+    window.addEventListener('wpsms:groups-changed', handleGroupsChanged)
+    return () => window.removeEventListener('wpsms:groups-changed', handleGroupsChanged)
+  }, [fetchGroups])
+
+  // Listen for subscribers changes from other pages (e.g., Privacy page delete)
+  useEffect(() => {
+    const handleSubscribersChanged = () => {
+      table.refresh()
+    }
+    window.addEventListener('wpsms:subscribers-changed', handleSubscribersChanged)
+    return () => window.removeEventListener('wpsms:subscribers-changed', handleSubscribersChanged)
+  }, [table])
+
+  // UI state
+  const [showImportDialog, setShowImportDialog] = useState(false)
+  const [isImporting, setIsImporting] = useState(false)
+  const [isAddingQuick, setIsAddingQuick] = useState(false)
+
+  // Quick add form state
+  const [quickAddName, setQuickAddName] = useState('')
+  const [quickAddPhone, setQuickAddPhone] = useState('')
+  const [quickAddGroup, setQuickAddGroup] = useState('')
+
+  // Quick reply state
+  const [quickReplyTo, setQuickReplyTo] = useState(null)
+  const [quickReplyMessage, setQuickReplyMessage] = useState('')
+  const [isSendingReply, setIsSendingReply] = useState(false)
+
+  // Move to group state
+  const [showMoveToGroup, setShowMoveToGroup] = useState(false)
+  const [moveToGroupId, setMoveToGroupId] = useState('')
+  const [isMovingToGroup, setIsMovingToGroup] = useState(false)
+
+  // Bulk action loading state
+  const [bulkActionLoading, setBulkActionLoading] = useState(null)
+  const [showBulkDeleteConfirm, setShowBulkDeleteConfirm] = useState(false)
+
+  // Sorting state
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null })
+
+  // Handle sort
+  const handleSort = useCallback((columnKey, direction) => {
+    setSortConfig({ key: direction ? columnKey : null, direction })
+    table.fetch({
+      page: 1,
+      orderby: direction ? columnKey : undefined,
+      order: direction || undefined,
+    })
+  }, [table])
+
+  // Aliases for easier access
+  const stats = table.stats || { total: 0, active: 0, inactive: 0 }
+
+  // Handle quick add
+  const handleQuickAdd = async (name, mobile) => {
+    if (!mobile?.trim()) return
+    setIsAddingQuick(true)
+    try {
+      let groupIdParam
+      if (multiGroupEnabled) {
+        // quickAddGroup is an array of string IDs when multi-group is on
+        groupIdParam = Array.isArray(quickAddGroup) && quickAddGroup.length > 0
+          ? quickAddGroup.map(id => parseInt(id))
+          : undefined
+      } else {
+        groupIdParam = quickAddGroup ? parseInt(quickAddGroup) : undefined
+      }
+      await subscribersApi.createSubscriber({
+        name: name?.trim() || '',
+        mobile: mobile.trim(),
+        group_id: groupIdParam,
+        status: '1',
+      })
+      toast({ title: __('Subscriber added successfully'), variant: 'success' })
+      setQuickAddName('')
+      setQuickAddPhone('')
+      setQuickAddGroup(multiGroupEnabled ? [] : '')
+      table.fetch({ page: 1 })
+    } catch (error) {
+      toast({ title: error.message || __('Failed to add subscriber'), variant: 'destructive' })
+    } finally {
+      setIsAddingQuick(false)
+    }
+  }
+
+  // Handle edit - opens dialog with subscriber data
+  const handleEdit = useCallback((subscriber) => {
+    editDialog.open({
+      id: subscriber.id,
+      name: subscriber.name || '',
+      mobile: subscriber.mobile || '',
+      // Ensure group_id 0 or null/undefined becomes empty string for "No Group"
+      group_id: subscriber.group_id && subscriber.group_id !== '0' ? subscriber.group_id.toString() : '',
+      status: subscriber.status || '1',
+    })
+  }, [editDialog])
+
+  // Handle import
+  const handleImport = async (file) => {
+    setIsImporting(true)
+    try {
+      const result = await subscribersApi.importCsv(file, {
+        group_id: filters.filters.group_id !== 'all' ? parseInt(filters.filters.group_id) : undefined,
+        skip_duplicates: true,
+      })
+      toast({
+        title: __('Imported %d subscribers, skipped %d').replace('%d', result.imported).replace('%d', result.skipped),
+        variant: 'success',
+      })
+      setShowImportDialog(false)
+      table.fetch({ page: 1 })
+    } catch (error) {
+      toast({
+        title: error.message || __('Import failed'),
+        variant: 'destructive',
+      })
+      throw error
+    } finally {
+      setIsImporting(false)
+    }
+  }
+
+  // Handle export
+  const handleExport = async () => {
+    const result = await subscribersApi.exportCsv({
+      group_id: filters.filters.group_id !== 'all' ? filters.filters.group_id : undefined,
+      status: filters.filters.status !== 'all' ? filters.filters.status : undefined,
+    })
+    downloadCsv(result.data, result.filename)
+    return { count: result.count || result.data.length - 1 }
+  }
+
+  // Handle quick reply
+  const handleQuickReply = async () => {
+    if (!quickReplyTo || !quickReplyMessage.trim()) return
+
+    const { blocked } = checkCountryRestriction([quickReplyTo.mobile])
+    if (blocked.length > 0) {
+      toast({
+        title: __('This recipient is outside your allowed countries. You can update this in Gateway > Country Restrictions.'),
+        variant: 'destructive',
+      })
+      return
+    }
+
+    setIsSendingReply(true)
+    try {
+      await smsApi.send({
+        message: quickReplyMessage,
+        recipients: { groups: [], roles: [], numbers: [quickReplyTo.mobile] },
+      })
+      toast({ title: __('Message sent to %s').replace('%s', quickReplyTo.mobile), variant: 'success' })
+      setQuickReplyTo(null)
+      setQuickReplyMessage('')
+      // Notify Outbox page that SMS was sent
+      window.dispatchEvent(new CustomEvent('wpsms:sms-sent'))
+    } catch (error) {
+      toast({ title: error.message || __('Failed to send message'), variant: 'destructive' })
+    } finally {
+      setIsSendingReply(false)
+    }
+  }
+
+  // Handle move to group
+  const handleMoveToGroup = async () => {
+    if (table.selectedIds.length === 0 || !moveToGroupId) return
+
+    setIsMovingToGroup(true)
+    try {
+      const result = await subscribersApi.bulkAction('move', table.selectedIds, {
+        group_id: parseInt(moveToGroupId),
+      })
+      toast({
+        title: __('%d subscriber(s) moved to group').replace('%d', result.affected),
+        variant: 'success',
+      })
+      table.clearSelection()
+      setShowMoveToGroup(false)
+      setMoveToGroupId('')
+      table.fetch({ page: 1 })
+    } catch (error) {
+      toast({ title: error.message, variant: 'destructive' })
+    } finally {
+      setIsMovingToGroup(false)
+    }
+  }
+
+  // Table columns
+  const columns = [
+    {
+      id: 'name',
+      accessorKey: 'name',
+      header: __('Name'),
+      sortable: true,
+      cell: ({ row }) => (
+        <span className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+          {row.name || '—'}
+        </span>
+      ),
+    },
+    {
+      id: 'mobile',
+      accessorKey: 'mobile',
+      header: __('Phone Number'),
+      sortable: true,
+      cell: ({ row }) => (
+        <span className="wsms-text-[13px] wsms-font-mono wsms-text-foreground">
+          {row.mobile}
+        </span>
+      ),
+    },
+    {
+      id: 'group',
+      accessorKey: 'group_name',
+      header: __('Group'),
+      cell: ({ row }) => (
+        <span className="wsms-text-[12px] wsms-text-muted-foreground">
+          {row.group_name || '—'}
+        </span>
+      ),
+    },
+    {
+      id: 'custom_fields',
+      accessorKey: 'custom_fields',
+      header: __('Custom Fields'),
+      cell: ({ row }) => {
+        if (!row.custom_fields || Object.keys(row.custom_fields).length === 0) {
+          return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
+        }
+        const entries = Object.entries(row.custom_fields)
+        return (
+          <div className="wsms-flex wsms-flex-wrap wsms-gap-1">
+            {entries.slice(0, 2).map(([key, value]) => (
+              <span
+                key={key}
+                className="wsms-inline-flex wsms-items-center wsms-px-2 wsms-py-0.5 wsms-rounded wsms-text-[10px] wsms-bg-muted wsms-text-muted-foreground"
+                title={`${key}: ${value}`}
+              >
+                {key}: {String(value).substring(0, 15)}{String(value).length > 15 ? '...' : ''}
+              </span>
+            ))}
+            {entries.length > 2 && (
+              <span className="wsms-text-[10px] wsms-text-muted-foreground">
+                +{entries.length - 2} {__('more')}
+              </span>
+            )}
+          </div>
+        )
+      },
+    },
+    {
+      id: 'status',
+      accessorKey: 'status',
+      header: __('Status'),
+      cell: ({ row }) => (
+        <StatusBadge variant={row.status === '1' ? 'active' : 'inactive'}>
+          {row.status === '1' ? __('Active') : __('Inactive')}
+        </StatusBadge>
+      ),
+    },
+    ...(showActivateCode
+      ? [
+          {
+            id: 'activate_key',
+            accessorKey: 'activate_key',
+            header: __('Activate Code'),
+            cell: ({ row }) => (
+              <span className="wsms-text-[12px] wsms-font-mono wsms-text-muted-foreground">
+                {row.activate_key || '—'}
+              </span>
+            ),
+          },
+        ]
+      : []),
+    {
+      id: 'date',
+      accessorKey: 'date',
+      header: __('Subscribed'),
+      sortable: true,
+      cell: ({ row }) => (
+        <span className="wsms-text-[12px] wsms-text-muted-foreground">
+          {row.date_formatted || formatDate(row.date)}
+        </span>
+      ),
+    },
+  ]
+
+  // Row actions
+  const rowActions = [
+    {
+      label: __('Quick Reply'),
+      icon: MessageSquare,
+      onClick: (row) => setQuickReplyTo(row),
+    },
+    {
+      label: __('Edit'),
+      icon: Edit,
+      onClick: handleEdit,
+    },
+    {
+      label: __('Delete'),
+      icon: Trash2,
+      onClick: handleDeleteClick,
+      variant: 'destructive',
+    },
+  ]
+
+  // Wrap bulk action with loading state
+  const handleBulkActionWithLoading = async (action, label) => {
+    setBulkActionLoading(label)
+    try {
+      await handleBulkAction(action)
+    } finally {
+      setBulkActionLoading(null)
+    }
+  }
+
+  // Handle bulk delete with confirmation
+  const handleBulkDeleteConfirm = useCallback(async () => {
+    setShowBulkDeleteConfirm(false)
+    await handleBulkActionWithLoading('delete', __('Delete Selected'))
+  }, [handleBulkAction]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Bulk actions
+  const bulkActions = [
+    {
+      label: __('Move to Group'),
+      icon: FolderOpen,
+      onClick: () => setShowMoveToGroup(true),
+    },
+    {
+      label: __('Activate Selected'),
+      icon: CheckCircle,
+      onClick: () => handleBulkActionWithLoading('activate', __('Activate Selected')),
+    },
+    {
+      label: __('Deactivate Selected'),
+      icon: XCircle,
+      onClick: () => handleBulkActionWithLoading('deactivate', __('Deactivate Selected')),
+    },
+    {
+      label: __('Delete Selected'),
+      icon: Trash2,
+      onClick: () => setShowBulkDeleteConfirm(true),
+      variant: 'destructive',
+    },
+  ]
+
+  // Show skeleton during initial load
+  if (!table.initialLoadDone) {
+    return <PageLoadingSkeleton />
+  }
+
+  // Error state
+  if (table.error) {
+    return (
+      <div className="wsms-space-y-6">
+        <Card className="wsms-border-destructive">
+          <CardContent className="wsms-py-8">
+            <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center">
+              <AlertCircle className="wsms-h-12 wsms-w-12 wsms-text-destructive wsms-mb-4" />
+              <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
+                {__('Failed to load subscribers')}
+              </h3>
+              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
+                {table.error}
+              </p>
+              <Button onClick={() => table.fetch({ page: 1 })}>
+                <RefreshCw className="wsms-h-4 wsms-w-4 wsms-me-2" />
+                {__('Try Again')}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
+  // Empty state - only show when there are truly no subscribers in the system
+  // Use stats.total (global count) instead of table.data.length (filtered results)
+  const hasNoSubscribers = stats.total === 0 && !table.isLoading
+
+  if (hasNoSubscribers) {
+    return (
+      <div className="wsms-space-y-6 wsms-stagger-children">
+        <Card className="wsms-border-dashed">
+          <CardContent className="wsms-py-16">
+            <div className="wsms-flex wsms-flex-col wsms-items-center wsms-text-center wsms-max-w-md wsms-mx-auto">
+              <div className="wsms-flex wsms-h-16 wsms-w-16 wsms-items-center wsms-justify-center wsms-rounded-full wsms-bg-primary/10 wsms-mb-6">
+                <Users className="wsms-h-8 wsms-w-8 wsms-text-primary" strokeWidth={1.5} />
+              </div>
+              <h3 className="wsms-text-lg wsms-font-semibold wsms-text-foreground wsms-mb-2">
+                {__('No subscribers yet')}
+              </h3>
+              <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-6">
+                {__('Start building your SMS audience. Add subscribers manually, import from CSV, or let users subscribe through your website forms.')}
+              </p>
+
+              {/* Quick Add */}
+              <div className="wsms-w-full wsms-max-w-md wsms-mb-6">
+                <div className="wsms-flex wsms-gap-2">
+                  <div className="wsms-flex-1">
+                    <InternationalPhoneInput
+                      value={quickAddPhone}
+                      onChange={setQuickAddPhone}
+                      placeholder={__('Phone number')}
+                      aria-label={__('Phone number')}
+                    />
+                  </div>
+                  <div className={cn('wsms-shrink-0', multiGroupEnabled ? 'wsms-w-[160px]' : 'wsms-w-[120px]')}>
+                    {multiGroupEnabled ? (
+                      <MultiSelect
+                        options={groups.map(g => ({ value: String(g.id), label: g.name }))}
+                        value={Array.isArray(quickAddGroup) ? quickAddGroup : []}
+                        onValueChange={setQuickAddGroup}
+                        placeholder={__('Groups')}
+                        searchPlaceholder={__('Search groups...')}
+                        maxDisplayItems={0}
+                      />
+                    ) : (
+                      <Select value={quickAddGroup || 'none'} onValueChange={(v) => setQuickAddGroup(v === 'none' ? '' : v)}>
+                        <SelectTrigger aria-label={__('Select group')}>
+                          <SelectValue placeholder={__('No Group')} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">{__('No Group')}</SelectItem>
+                          {groups.map((group) => (
+                            <SelectItem key={group.id} value={String(group.id)}>
+                              {group.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </div>
+                  <Button
+                    onClick={() => handleQuickAdd('', quickAddPhone)}
+                    disabled={isAddingQuick || !quickAddPhone.trim()}
+                  >
+                    {isAddingQuick ? (
+                      <Loader2 className="wsms-h-4 wsms-w-4 wsms-animate-spin" />
+                    ) : (
+                      __('Add')
+                    )}
+                  </Button>
+                </div>
+              </div>
+
+              {/* Import option */}
+              <Button variant="outline" onClick={() => setShowImportDialog(true)}>
+                <Download className="wsms-h-4 wsms-w-4 wsms-me-2" />
+                {__('Import from CSV')}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Import Dialog */}
+        <SubscriberImportDialog
+          open={showImportDialog}
+          onOpenChange={setShowImportDialog}
+          onImport={handleImport}
+          isLoading={isImporting}
+        />
+      </div>
+    )
+  }
+
+  return (
+    <div className="wsms-space-y-6 wsms-stagger-children">
+      {/* Stats & Actions Header */}
+      <div className="wsms-px-4 lg:wsms-px-5 wsms-py-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-border">
+        <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4 lg:wsms-flex lg:wsms-items-center lg:wsms-justify-between lg:wsms-gap-4">
+          <div className="wsms-contents lg:wsms-flex lg:wsms-items-center lg:wsms-gap-8">
+            {/* Total */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-primary/10">
+                <Users className="wsms-h-5 wsms-w-5 wsms-text-primary" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-foreground">{stats.total}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Total')}</p>
+              </div>
+            </div>
+
+            <div className="wsms-hidden lg:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+
+            {/* Active */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-success/10">
+                <UserCheck className="wsms-h-5 wsms-w-5 wsms-text-success" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-success">{stats.active}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Active')}</p>
+              </div>
+            </div>
+
+            <div className="wsms-hidden lg:wsms-block wsms-w-px wsms-h-10 wsms-bg-border" aria-hidden="true" />
+
+            {/* Inactive */}
+            <div className="wsms-flex wsms-items-center wsms-gap-3">
+              <div className="wsms-flex wsms-h-10 wsms-w-10 wsms-items-center wsms-justify-center wsms-rounded-lg wsms-bg-slate-200 dark:wsms-bg-slate-700">
+                <UserX className="wsms-h-5 wsms-w-5 wsms-text-slate-500 dark:wsms-text-slate-400" aria-hidden="true" />
+              </div>
+              <div>
+                <p className="wsms-text-xl wsms-font-bold wsms-text-muted-foreground">{stats.inactive}</p>
+                <p className="wsms-text-[11px] wsms-text-muted-foreground">{__('Inactive')}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Import/Export */}
+          <div className="wsms-col-span-2 lg:wsms-col-span-1 wsms-flex wsms-items-center wsms-justify-end wsms-gap-2 wsms-mt-2 lg:wsms-mt-0">
+            <Button variant="outline" onClick={() => setShowImportDialog(true)}>
+              <Download className="wsms-h-4 wsms-w-4 wsms-me-2" aria-hidden="true" />
+              {__('Import')}
+            </Button>
+            <ExportButton
+              onExport={handleExport}
+              successMessage={__('Exported %d subscribers successfully')}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Toolbar */}
+      <Card className="wsms-relative wsms-z-10">
+        <CardContent className="wsms-p-0">
+          {/* Row 1: Search + Filters */}
+          <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-2 wsms-p-3">
+            {/* Search */}
+            <div className="wsms-relative wsms-w-full xl:wsms-w-[220px] xl:wsms-shrink-0">
+              <Search className="wsms-absolute wsms-start-2.5 wsms-top-1/2 wsms--translate-y-1/2 wsms-h-4 wsms-w-4 wsms-text-muted-foreground wsms-pointer-events-none" aria-hidden="true" />
+              <Input
+                type="text"
+                value={filters.filters.search}
+                onChange={(e) => filters.setFilter('search', e.target.value)}
+                placeholder={__('Search...')}
+                aria-label={__('Search subscribers')}
+                className="wsms-ps-8 wsms-h-9"
+              />
+            </div>
+
+            {/* Filters */}
+            <div className="wsms-grid wsms-grid-cols-2 wsms-gap-2 xl:wsms-flex xl:wsms-items-center xl:wsms-gap-2">
+              <Select value={filters.filters.group_id} onValueChange={(v) => filters.setFilter('group_id', v)}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[120px] wsms-text-[12px]" aria-label={__('Filter by group')}>
+                  <SelectValue placeholder={__('All Groups')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{__('All Groups')}</SelectItem>
+                  {groups.map((group) => (
+                    <SelectItem key={group.id} value={group.id.toString()}>
+                      {group.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+
+              <Select value={filters.filters.status} onValueChange={(v) => filters.setFilter('status', v)}>
+                <SelectTrigger className="wsms-h-9 wsms-w-full xl:wsms-w-[140px] wsms-text-[12px]" aria-label={__('Filter by status')}>
+                  <SelectValue placeholder={__('Status')} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{__('All Status')}</SelectItem>
+                  <SelectItem value="active">{__('Active')}</SelectItem>
+                  <SelectItem value="inactive">{__('Inactive')}</SelectItem>
+                </SelectContent>
+              </Select>
+
+              {countries.length > 0 && (
+                <div className="wsms-w-full xl:wsms-w-[180px]">
+                  <SearchableSelect
+                    value={filters.filters.country_code}
+                    onValueChange={(v) => filters.setFilter('country_code', v)}
+                    placeholder={__('All Countries')}
+                    searchPlaceholder={__('Search countries...')}
+                    options={[
+                      { value: 'all', label: __('All Countries') },
+                      ...countries
+                        .filter((country, index, self) =>
+                          index === self.findIndex((c) => c.code === country.code)
+                        )
+                        .map((country) => ({ value: country.code, label: country.name })),
+                    ]}
+                    aria-label={__('Filter by country')}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Clear Filters */}
+            {(filters.filters.search || filters.filters.group_id !== 'all' || filters.filters.status !== 'all' || filters.filters.country_code !== 'all') && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={filters.resetFilters}
+                className="wsms-h-9 wsms-px-2.5 wsms-text-muted-foreground hover:wsms-text-foreground"
+                aria-label={__('Clear all filters')}
+              >
+                <X className="wsms-h-4 wsms-w-4" aria-hidden="true" />
+              </Button>
+            )}
+
+            {/* Refresh */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => table.fetch({ page: 1 })}
+              className="wsms-h-9 wsms-px-2.5 xl:wsms-ms-auto"
+              aria-label={__('Refresh subscribers')}
+            >
+              <RefreshCw
+                className={cn('wsms-h-4 wsms-w-4', table.isLoading && 'wsms-animate-spin')}
+                aria-hidden="true"
+              />
+            </Button>
+          </div>
+
+          {/* Separator */}
+          <div className="wsms-border-t wsms-border-dashed wsms-border-border" />
+
+          {/* Row 2: Quick Add */}
+          <div className="wsms-flex wsms-flex-col wsms-gap-3 xl:wsms-flex-row xl:wsms-items-center xl:wsms-gap-3 wsms-p-3">
+            <span className="wsms-text-[11px] wsms-font-medium wsms-text-muted-foreground wsms-uppercase wsms-tracking-wide wsms-shrink-0">
+              {__('Quick Add')}
+            </span>
+
+            <div className="wsms-flex wsms-flex-1 wsms-flex-wrap wsms-items-center wsms-gap-2">
+              <Input
+                type="text"
+                value={quickAddName}
+                onChange={(e) => setQuickAddName(e.target.value)}
+                placeholder={__('Name (optional)')}
+                aria-label={__('Subscriber name')}
+                className="wsms-h-9 wsms-w-full sm:wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[140px] wsms-text-[13px]"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && quickAddPhone.trim()) {
+                    handleQuickAdd(quickAddName, quickAddPhone)
+                  }
+                }}
+              />
+              <div className="wsms-w-full sm:wsms-flex-1 xl:wsms-flex-none xl:wsms-w-[180px]">
+                <InternationalPhoneInput
+                  value={quickAddPhone}
+                  onChange={setQuickAddPhone}
+                  placeholder={__('Phone number')}
+                  aria-label={__('Phone number')}
+                />
+              </div>
+              <div className={cn('wsms-w-full sm:wsms-shrink-0', multiGroupEnabled ? 'sm:wsms-w-[160px]' : 'sm:wsms-w-[120px]')}>
+                {multiGroupEnabled ? (
+                  <MultiSelect
+                    options={groups.map(g => ({ value: String(g.id), label: g.name }))}
+                    value={Array.isArray(quickAddGroup) ? quickAddGroup : []}
+                    onValueChange={setQuickAddGroup}
+                    placeholder={__('Groups')}
+                    searchPlaceholder={__('Search groups...')}
+                    maxDisplayItems={0}
+                  />
+                ) : (
+                  <Select value={quickAddGroup || 'none'} onValueChange={(v) => setQuickAddGroup(v === 'none' ? '' : v)}>
+                    <SelectTrigger className="wsms-h-9 wsms-text-[13px]" aria-label={__('Select group')}>
+                      <SelectValue placeholder={__('No Group')} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">{__('No Group')}</SelectItem>
+                      {groups.map((group) => (
+                        <SelectItem key={group.id} value={String(group.id)}>
+                          {group.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              </div>
+              <Button
+                disabled={isAddingQuick || !quickAddPhone.trim()}
+                onClick={() => handleQuickAdd(quickAddName, quickAddPhone)}
+                className="wsms-h-9 wsms-px-4 wsms-w-full sm:wsms-w-auto wsms-shrink-0"
+              >
+                {isAddingQuick ? (
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1.5 wsms-animate-spin" aria-hidden="true" />
+                ) : (
+                  <UserPlus className="wsms-h-4 wsms-w-4 wsms-me-1.5" aria-hidden="true" />
+                )}
+                {__('Add')}
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Data Table */}
+      <Card>
+        <CardContent className="wsms-p-0">
+          <DataTable
+            columns={columns}
+            data={table.data}
+            loading={table.isLoading}
+            pagination={{
+              total: table.pagination.total,
+              totalPages: table.pagination.total_pages,
+              page: table.pagination.current_page,
+              perPage: table.pagination.per_page,
+              onPageChange: table.handlePageChange,
+            }}
+            selection={{
+              selected: table.selectedIds,
+              onSelect: table.toggleSelection,
+              onSelectAll: table.toggleSelectAll,
+            }}
+            onSort={handleSort}
+            rowActions={rowActions}
+            bulkActions={bulkActions}
+            bulkActionLoading={bulkActionLoading}
+            emptyMessage="No subscribers match your filters"
+            emptyIcon={Users}
+          />
+        </CardContent>
+      </Card>
+
+      {/* Edit Dialog */}
+      <Dialog open={editDialog.isOpen} onOpenChange={(open) => !open && editDialog.close()}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <Edit className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              Edit Subscriber
+            </DialogTitle>
+            <DialogDescription>Update subscriber information</DialogDescription>
+          </DialogHeader>
+          <DialogBody overflow="visible">
+            <div className="wsms-space-y-4">
+              <div className="wsms-space-y-2">
+                <label htmlFor="edit-subscriber-name" className="wsms-text-[12px] wsms-font-medium">Name</label>
+                <Input
+                  id="edit-subscriber-name"
+                  value={editDialog.formData.name}
+                  onChange={(e) => editDialog.updateField('name', e.target.value)}
+                  placeholder="Subscriber name"
+                />
+              </div>
+              <div className="wsms-space-y-2">
+                <label className="wsms-text-[12px] wsms-font-medium">{__('Phone Number')}</label>
+                <InternationalPhoneInput
+                  value={editDialog.formData.mobile}
+                  onChange={(value) => editDialog.updateField('mobile', value)}
+                  placeholder="+1234567890"
+                  aria-label={__('Phone number')}
+                  className={editDialog.hasError('mobile') ? 'wsms-border-destructive' : ''}
+                />
+                {editDialog.getError('mobile') && (
+                  <p className="wsms-text-[11px] wsms-text-destructive">{editDialog.getError('mobile')}</p>
+                )}
+              </div>
+              <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
+                <div className="wsms-space-y-2">
+                  <label className="wsms-text-[12px] wsms-font-medium">Group</label>
+                  <Select
+                    value={editDialog.formData.group_id || 'none'}
+                    onValueChange={(v) => editDialog.updateField('group_id', v === 'none' ? '' : v)}
+                  >
+                    <SelectTrigger aria-label={__('Group')}>
+                      <SelectValue placeholder="Select group" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">No Group</SelectItem>
+                      {groups.map((group) => (
+                        <SelectItem key={group.id} value={group.id.toString()}>
+                          {group.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="wsms-space-y-2">
+                  <label className="wsms-text-[12px] wsms-font-medium">Status</label>
+                  <Select
+                    value={editDialog.formData.status}
+                    onValueChange={(v) => editDialog.updateField('status', v)}
+                  >
+                    <SelectTrigger aria-label={__('Status')}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">Active</SelectItem>
+                      <SelectItem value="0">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+          </DialogBody>
+          <DialogFooter>
+            <Button variant="outline" onClick={editDialog.close}>
+              Cancel
+            </Button>
+            <Button onClick={editDialog.save} disabled={editDialog.isSaving}>
+              {editDialog.isSaving ? (
+                <>
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                'Save Changes'
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Import Dialog */}
+      <SubscriberImportDialog
+        open={showImportDialog}
+        onOpenChange={setShowImportDialog}
+        onImport={handleImport}
+        isLoading={isImporting}
+      />
+
+      {/* Quick Reply Dialog */}
+      <Dialog
+        open={!!quickReplyTo}
+        onOpenChange={() => {
+          setQuickReplyTo(null)
+          setQuickReplyMessage('')
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <MessageSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              Quick Reply
+            </DialogTitle>
+            <DialogDescription>
+              Send a message to {quickReplyTo?.name || quickReplyTo?.mobile}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogBody>
+            <div className="wsms-space-y-4">
+              <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/50 wsms-border wsms-border-border">
+                <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mb-1">Recipient</p>
+                <p className="wsms-text-[13px] wsms-font-mono wsms-text-foreground">
+                  {quickReplyTo?.mobile}
+                </p>
+              </div>
+              <div className="wsms-space-y-2">
+                <label htmlFor="quick-reply-message" className="wsms-text-[12px] wsms-font-medium">Message</label>
+                <textarea
+                  id="quick-reply-message"
+                  value={quickReplyMessage}
+                  onChange={(e) => setQuickReplyMessage(e.target.value)}
+                  placeholder="Type your message..."
+                  rows={4}
+                  className="wsms-w-full wsms-px-3 wsms-py-2 wsms-text-[13px] wsms-rounded-md wsms-border wsms-border-input wsms-bg-background wsms-resize-none focus:wsms-outline-none focus:wsms-ring-2 focus:wsms-ring-ring focus:wsms-ring-offset-2"
+                />
+                <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-text-right">
+                  {quickReplyMessage.length} characters
+                </p>
+              </div>
+            </div>
+          </DialogBody>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setQuickReplyTo(null)
+                setQuickReplyMessage('')
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleQuickReply}
+              disabled={isSendingReply || !quickReplyMessage.trim()}
+            >
+              {isSendingReply ? (
+                <>
+                  <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
+                  Sending...
+                </>
+              ) : (
+                <>
+                  <Send className="wsms-h-4 wsms-w-4 wsms-me-2" />
+                  Send Message
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Move to Group Dialog */}
+      <Dialog
+        open={showMoveToGroup}
+        onOpenChange={(open) => {
+          setShowMoveToGroup(open)
+          if (!open) setMoveToGroupId('')
+        }}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="wsms-flex wsms-items-center wsms-gap-2">
+              <FolderOpen className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+              Move to Group
+            </DialogTitle>
+            <DialogDescription>
+              Move {table.selectedIds.length} selected subscriber(s) to a group
+            </DialogDescription>
+          </DialogHeader>
+          <DialogBody>
+            <div className="wsms-space-y-4">
+              {groups.length === 0 ? (
+                <div className="wsms-p-4 wsms-rounded-lg wsms-bg-muted/30 wsms-border wsms-border-dashed wsms-text-center">
+                  <FolderOpen className="wsms-h-8 wsms-w-8 wsms-text-muted-foreground wsms-mx-auto wsms-mb-2" />
+                  <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground wsms-mb-1">
+                    {__('No groups available')}
+                  </p>
+                  <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                    {__('Create a group first in the Groups page to organize your subscribers.')}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <div className="wsms-space-y-2">
+                    <label className="wsms-text-[12px] wsms-font-medium">{__('Select Group')}</label>
+                    <Select value={moveToGroupId} onValueChange={setMoveToGroupId}>
+                      <SelectTrigger aria-label={__('Select group')}>
+                        <SelectValue placeholder={__('Choose a group...')} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {groups.map((group) => (
+                          <SelectItem key={group.id} value={group.id.toString()}>
+                            {group.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="wsms-p-3 wsms-rounded-lg wsms-bg-muted/50 wsms-border wsms-border-border">
+                    <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                      {__('This will move %d subscriber(s) to the selected group.').replace('%d', table.selectedIds.length)}
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          </DialogBody>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowMoveToGroup(false)
+                setMoveToGroupId('')
+              }}
+            >
+              {groups.length === 0 ? __('Close') : __('Cancel')}
+            </Button>
+            {groups.length > 0 && (
+              <Button onClick={handleMoveToGroup} disabled={isMovingToGroup || !moveToGroupId}>
+                {isMovingToGroup ? (
+                  <>
+                    <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-2 wsms-animate-spin" />
+                    {__('Moving...')}
+                  </>
+                ) : (
+                  __('Move to Group')
+                )}
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={deleteDialog.close}
+        onConfirm={handleDeleteConfirm}
+        isSaving={deleteDialog.isSaving}
+        title={__('Delete Subscriber')}
+        description={__('Are you sure you want to delete this subscriber?')}
+      >
+        <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
+          <div className="wsms-space-y-1">
+            {deleteDialog.item?.name && (
+              <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+                {deleteDialog.item.name}
+              </p>
+            )}
+            <p className="wsms-text-[13px] wsms-font-mono wsms-text-muted-foreground">
+              {deleteDialog.item?.mobile}
+            </p>
+          </div>
+        </div>
+      </DeleteConfirmDialog>
+
+      {/* Bulk Delete Confirmation Dialog */}
+      <DeleteConfirmDialog
+        isOpen={showBulkDeleteConfirm}
+        onClose={() => setShowBulkDeleteConfirm(false)}
+        onConfirm={handleBulkDeleteConfirm}
+        isSaving={bulkActionLoading === __('Delete Selected')}
+        title={__('Delete Subscribers')}
+        description={__('Are you sure you want to delete the selected subscribers?')}
+      >
+        <div className="wsms-p-4 wsms-rounded-md wsms-bg-muted/50 wsms-border wsms-border-border">
+          <p className="wsms-text-[13px] wsms-text-foreground">
+            {__('%d subscriber(s) will be permanently deleted.').replace('%d', table.selectedIds.length)}
+          </p>
+        </div>
+      </DeleteConfirmDialog>
+    </div>
+  )
+}

@@ -2,7 +2,6 @@
 
 namespace unit;
 
-use Faker\Factory;
 use WP_SMS\Helper;
 use WP_SMS\Option;
 use WP_UnitTestCase;
@@ -10,10 +9,7 @@ use WP_User;
 
 class MobileNumberUtilsTest extends WP_UnitTestCase
 {
-    /**
-     * @var \Faker\Generator
-     */
-    protected $faker;
+    private static $counter = 0;
 
     /**
      * Setup before each test.
@@ -21,9 +17,6 @@ class MobileNumberUtilsTest extends WP_UnitTestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        // Initialize Faker
-        $this->faker = Factory::create();
     }
 
     /**
@@ -31,8 +24,6 @@ class MobileNumberUtilsTest extends WP_UnitTestCase
      */
     public function tearDown(): void
     {
-        // Clean up.
-
         parent::tearDown();
     }
 
@@ -44,8 +35,8 @@ class MobileNumberUtilsTest extends WP_UnitTestCase
         // Update mobile field option
         Option::updateOption('add_mobile_field', 'add_mobile_field_in_profile');
 
-        // Generate a random phone number
-        $mobileNumber = $this->faker->e164PhoneNumber;
+        // Static phone number
+        $mobileNumber = '+12025550' . str_pad(++self::$counter, 3, '0', STR_PAD_LEFT);
 
         // Add mobile to user
         update_user_meta($userId, Helper::getUserMobileFieldName(), $mobileNumber);
@@ -70,21 +61,21 @@ class MobileNumberUtilsTest extends WP_UnitTestCase
         // Update mobile field option
         Option::updateOption('add_mobile_field', 'use_phone_field_in_wc_billing');
 
-        // Generate a random phone number
-        $mobileNumber = $this->faker->e164PhoneNumber;
+        // Static phone number
+        $mobileNumber = '+12025551' . str_pad(++self::$counter, 3, '0', STR_PAD_LEFT);
 
         // Add mobile to user
         update_user_meta($userId, Helper::getUserMobileFieldName(), $mobileNumber);
 
         // Create WooCommerce order
         $order = wc_create_order();
-        $order->set_billing_first_name($this->faker->firstName);
-        $order->set_billing_last_name($this->faker->lastName);
-        $order->set_billing_address_1($this->faker->streetAddress);
-        $order->set_billing_postcode($this->faker->postcode);
-        $order->set_billing_email($this->faker->email);
+        $order->set_billing_first_name('John');
+        $order->set_billing_last_name('Doe');
+        $order->set_billing_address_1('123 Main St');
+        $order->set_billing_postcode('10001');
+        $order->set_billing_email('john.doe@example.com');
         $order->set_billing_country('US');
-        $order->set_billing_city($this->faker->city);
+        $order->set_billing_city('New York');
         $order->set_billing_phone($mobileNumber);
         $order->set_customer_id($userId);
         $order->save();
@@ -100,18 +91,18 @@ class MobileNumberUtilsTest extends WP_UnitTestCase
         // Update mobile field option
         Option::updateOption('add_mobile_field', 'use_phone_field_in_wc_billing');
 
-        // Generate a random phone number
-        $mobileNumber = $this->faker->e164PhoneNumber;
+        // Static phone number
+        $mobileNumber = '+12025552' . str_pad(++self::$counter, 3, '0', STR_PAD_LEFT);
 
         // Create WooCommerce order
         $order = wc_create_order();
-        $order->set_billing_first_name($this->faker->firstName);
-        $order->set_billing_last_name($this->faker->lastName);
-        $order->set_billing_address_1($this->faker->streetAddress);
-        $order->set_billing_postcode($this->faker->postcode);
-        $order->set_billing_email($this->faker->email);
+        $order->set_billing_first_name('Jane');
+        $order->set_billing_last_name('Smith');
+        $order->set_billing_address_1('456 Oak Ave');
+        $order->set_billing_postcode('90210');
+        $order->set_billing_email('jane.smith@example.com');
         $order->set_billing_country('US');
-        $order->set_billing_city($this->faker->city);
+        $order->set_billing_city('Los Angeles');
         $order->set_billing_phone($mobileNumber);
         $order->save();
         $order->save_meta_data();

@@ -1,9 +1,9 @@
 <?php
 /**
  * Plugin Name: WSMS (formerly WP SMS)
- * Plugin URI: https://wp-sms-pro.com/
+ * Plugin URI: https://wsms.io/
  * Description: SMS & MMS Notifications, 2FA, OTP, and Integrations with E-Commerce and Form Builders
- * Version: 7.1.1
+ * Version: 7.2
  * Author: VeronaLabs
  * Author URI: https://veronalabs.com/
  * Text Domain: wp-sms
@@ -12,7 +12,7 @@
  * License: GPL-2.0+
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Requires at least: 4.1
- * Requires PHP: 7.2
+ * Requires PHP: 7.4
  */
 
 if (!defined('ABSPATH')) {
@@ -20,12 +20,21 @@ if (!defined('ABSPATH')) {
 } // Exit if accessed directly
 
 /**
+ * Load Autoloader (handles both WP_SMS\ classes and prefixed dependencies)
+ */
+if (file_exists(__DIR__ . '/packages/autoload.php')) {
+    require_once __DIR__ . '/packages/autoload.php';
+} else {
+    return;
+}
+
+/**
  * Load Plugin Defines
  */
 include_once __DIR__ . '/includes/defines.php';
 
 // Set the plugin version
-define('WP_SMS_VERSION', '7.1.1');
+define('WP_SMS_VERSION', '7.2');
 
 /**
  * Load plugin Special Functions

@@ -1,0 +1,288 @@
+import React from 'react'
+import { Phone, Smartphone, Globe, Shield } from 'lucide-react'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { InputField, MultiSelectField, SettingRow } from '@/components/ui/form-field'
+import { InternationalPhoneInput } from '@/components/ui/InternationalPhoneInput'
+import { useSetting, useSettings } from '@/context/SettingsContext'
+import { getWpSettings, __ } from '@/lib/utils'
+
+export default function PhoneConfig() {
+  const { countriesByCode = {}, countriesByDialCode = {}, mobileFieldSources = [] } = getWpSettings()
+  const { getSetting, updateSetting } = useSettings()
+
+  // Admin mobile
+  const [adminMobile, setAdminMobile] = useSetting('admin_mobile_number', '')
+
+  // Mobile field configuration
+  const [addMobileField, setAddMobileField] = useSetting('add_mobile_field', 'add_mobile_field_in_profile')
+  const [optionalMobileField, setOptionalMobileField] = useSetting('optional_mobile_field', '0')
+  const [mobilePlaceholder, setMobilePlaceholder] = useSetting('mobile_terms_field_place_holder', '')
+
+  // International settings
+  const [internationalMobile, setInternationalMobile] = useSetting('international_mobile', '')
+  const [countryCode, setCountryCode] = useSetting('mobile_county_code', '0')
+  const [onlyCountries, setOnlyCountries] = useSetting('international_mobile_only_countries', [])
+  const [preferredCountries, setPreferredCountries] = useSetting('international_mobile_preferred_countries', [])
+
+  // Length validation (shown when international is disabled)
+  const [minLength, setMinLength] = useSetting('mobile_terms_minimum', '')
+  const [maxLength, setMaxLength] = useSetting('mobile_terms_maximum', '')
+
+  // GDPR
+  const [gdprCompliance, setGdprCompliance] = useSetting('gdpr_compliance', '')
+
+  // Find active sub-field from add-on mobile field sources
+  const activeSubField = React.useMemo(() => {
+    for (const source of mobileFieldSources) {
+      const options = source.options || [source]
+      const match = options.find(o => o.value === addMobileField && o.subField)
+      if (match) return match.subField
+    }
+    return null
+  }, [mobileFieldSources, addMobileField])
+
+  const isInternationalEnabled = internationalMobile === '1'
+
+  return (
+    <div className="wsms-space-y-6">
+      {/* Admin Phone */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <Phone className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+            {__('Administrator Notifications')}
+          </CardTitle>
+          <CardDescription>
+            {__('Receives system notifications (new users, comments, errors).')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="wsms-space-y-4">
+          <div className="wsms-space-y-2">
+            <Label htmlFor="adminPhone">{__('Admin Phone Number')}</Label>
+            <InternationalPhoneInput
+              id="adminPhone"
+              value={adminMobile}
+              onChange={setAdminMobile}
+              placeholder="+1 555 123 4567"
+            />
+            <p className="wsms-text-[12px] wsms-text-muted-foreground">
+              {__('Enter the full phone number including country code.')}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Mobile Field Configuration */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <Smartphone className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+            {__('Mobile Field Configuration')}
+          </CardTitle>
+          <CardDescription>
+            {__('Choose where to collect mobile numbers from users.')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="wsms-space-y-4">
+          <div className="wsms-space-y-2">
+            <Label>{__('Collect Phone Numbers From')}</Label>
+            <Select value={addMobileField} onValueChange={setAddMobileField}>
+              <SelectTrigger aria-label={__('Collect phone numbers from')}>
+                <SelectValue placeholder={__('Select source')} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="disable">{__("Don't collect — No mobile field")}</SelectItem>
+                <SelectGroup>
+                  <SelectLabel>{__('WordPress')}</SelectLabel>
+                  <SelectItem value="add_mobile_field_in_profile">{__('Add field to user profiles')}</SelectItem>
+                </SelectGroup>
+                <SelectGroup>
+                  <SelectLabel>{__('WooCommerce')}</SelectLabel>
+                  <SelectItem value="add_mobile_field_in_wc_billing">{__('Add dedicated mobile field to billing')}</SelectItem>
+                  <SelectItem value="use_phone_field_in_wc_billing">{__('Use existing billing phone field')}</SelectItem>
+                </SelectGroup>
+                {mobileFieldSources.map((source) => (
+                  source.group ? (
+                    <SelectGroup key={source.group}>
+                      <SelectLabel>{source.group}</SelectLabel>
+                      {source.options.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                      ))}
+                    </SelectGroup>
+                  ) : (
+                    <SelectItem key={source.value} value={source.value}>{source.label}</SelectItem>
+                  )
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Sub-field from add-on sources (e.g., PMPro field selector) */}
+          {activeSubField && (
+            <div className="wsms-space-y-2">
+              <Label>{activeSubField.label}</Label>
+              <Select value={getSetting(activeSubField.settingKey, '')} onValueChange={(v) => updateSetting(activeSubField.settingKey, v)}>
+                <SelectTrigger aria-label={activeSubField.label}>
+                  <SelectValue placeholder={activeSubField.label} />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(activeSubField.options).map(([groupLabel, fields]) => (
+                    typeof fields === 'object' ? (
+                      <SelectGroup key={groupLabel}>
+                        <SelectLabel>{groupLabel}</SelectLabel>
+                        {Object.entries(fields).map(([value, label]) => (
+                          <SelectItem key={value} value={value}>{label}</SelectItem>
+                        ))}
+                      </SelectGroup>
+                    ) : (
+                      <SelectItem key={groupLabel} value={groupLabel}>{fields}</SelectItem>
+                    )
+                  ))}
+                </SelectContent>
+              </Select>
+              {activeSubField.description && (
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">{activeSubField.description}</p>
+              )}
+            </div>
+          )}
+
+          {addMobileField !== 'disable' && (
+            <>
+              <div className="wsms-space-y-2">
+                <Label>{__('Field Requirement')}</Label>
+                <Select value={optionalMobileField} onValueChange={setOptionalMobileField}>
+                  <SelectTrigger aria-label={__('Field requirement')}>
+                    <SelectValue placeholder={__('Select requirement')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">{__('Required — Users must enter a mobile number')}</SelectItem>
+                    <SelectItem value="optional">{__('Optional — Users can skip this field')}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <InputField
+                label={__('Placeholder Text')}
+                value={mobilePlaceholder}
+                onChange={(e) => setMobilePlaceholder(e.target.value)}
+                placeholder={__('e.g., +1 555 000 0000')}
+                description={__('Example format shown in the empty field.')}
+              />
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* International Settings */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <Globe className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+            {__('International Phone Input')}
+          </CardTitle>
+          <CardDescription>
+            {__('Show a country flag selector for international phone number formatting.')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="wsms-space-y-4">
+          <SettingRow
+            title={__('International Phone Input')}
+            description={__('Show a country flag selector for international phone number formatting.')}
+            checked={isInternationalEnabled}
+            onCheckedChange={(checked) => setInternationalMobile(checked ? '1' : '')}
+          />
+
+          {isInternationalEnabled && (
+            <>
+              <MultiSelectField
+                label={__('Limit Countries')}
+                options={countriesByCode}
+                value={onlyCountries}
+                onValueChange={setOnlyCountries}
+                placeholder={__('All countries')}
+                searchPlaceholder={__('Search countries...')}
+                description={__('Only show these countries in the dropdown. Leave empty to show all.')}
+              />
+
+              <MultiSelectField
+                label={__('Preferred Countries')}
+                options={countriesByCode}
+                value={preferredCountries}
+                onValueChange={setPreferredCountries}
+                placeholder={__('None selected')}
+                searchPlaceholder={__('Search countries...')}
+                description={__('Show these countries at the top of the dropdown for quick access.')}
+              />
+            </>
+          )}
+
+          {!isInternationalEnabled && (
+            <>
+              <div className="wsms-space-y-2">
+                <Label>{__('Default Country Code')}</Label>
+                <Select value={countryCode} onValueChange={setCountryCode}>
+                  <SelectTrigger aria-label={__('Default country code')}>
+                    <SelectValue placeholder={__('Select country code')} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0">{__("None — Don't add country code")}</SelectItem>
+                    {countriesByDialCode && Object.entries(countriesByDialCode).map(([dialCode, label]) => (
+                      <SelectItem key={dialCode} value={dialCode}>
+                        {label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                  {__('Automatically prepend this country code to all phone numbers.')}
+                </p>
+              </div>
+
+              <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
+                <InputField
+                  label={__('Minimum Digits')}
+                  type="number"
+                  value={minLength}
+                  onChange={(e) => setMinLength(e.target.value)}
+                  placeholder="10"
+                  description={__('Minimum number of digits required (excluding country code).')}
+                />
+                <InputField
+                  label={__('Maximum Digits')}
+                  type="number"
+                  value={maxLength}
+                  onChange={(e) => setMaxLength(e.target.value)}
+                  placeholder="15"
+                  description={__('Maximum number of digits allowed (excluding country code).')}
+                />
+              </div>
+            </>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* GDPR Compliance */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <Shield className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+            {__('Data Protection')}
+          </CardTitle>
+          <CardDescription>
+            {__('Privacy and GDPR compliance settings.')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="wsms-space-y-4">
+          <SettingRow
+            title={__('GDPR Compliance')}
+            description={__('Enable data export/deletion by mobile number and add SMS consent checkbox to forms.')}
+            checked={gdprCompliance === '1'}
+            onCheckedChange={(checked) => setGdprCompliance(checked ? '1' : '')}
+          />
+        </CardContent>
+      </Card>
+    </div>
+  )
+}

@@ -27,7 +27,9 @@ class MessageButtonManager
 
     public function initAdminPreview()
     {
-        if (isset($_GET['page']) && $_GET['page'] == 'wp-sms-settings' && isset($_GET['tab']) && $_GET['tab'] == 'message_button') {
+        // Render chatbox on the dashboard page for the settings preview
+        // Hidden by default via CSS, toggled visible by React's Preview button
+        if (isset($_GET['page']) && $_GET['page'] === 'wsms' && !isset($_GET['path'])) {
             add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
             add_action('admin_footer', [$this, 'renderChatBox']);
         }

@@ -62,7 +62,7 @@ class PluginHandler
     public function getPluginData($pluginSlug)
     {
         if (!$this->isPluginInstalled($pluginSlug)) {
-            throw new Exception(__('Plugin is not installed!', 'wp-sms'));
+            throw new Exception(esc_html__('Plugin is not installed!', 'wp-sms'));
         }
 
         return get_plugin_data(WP_PLUGIN_DIR . DIRECTORY_SEPARATOR . $this->getPluginFile($pluginSlug));

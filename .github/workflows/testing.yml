@@ -34,8 +34,8 @@ jobs:
       - name: Install required dependencies
         run: sudo apt-get update && sudo apt-get install -y subversion
 
-      - name: Install FakerPHP
-        run: composer global require fakerphp/faker --dev
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
 
       - name: Setup tests
         run: bash bin/install-wp-tests.sh wordpress_tests root root 127.0.0.1 latest true

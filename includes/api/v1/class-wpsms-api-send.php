@@ -10,8 +10,6 @@ use WP_SMS\Gateway;
 use WP_SMS\Helper;
 use WP_SMS\Newsletter;
 use WP_SMS\Notification\NotificationFactory;
-use WP_SMS\Pro\Scheduled;
-use WP_SMS\Pro\RepeatingMessages;
 
 if (!defined('ABSPATH')) {
     exit;
@@ -24,6 +22,37 @@ if (!defined('ABSPATH')) {
  */
 class SendSmsApi extends \WP_SMS\RestApi
 {
+    /**
+     * Convert datetime from various formats to MySQL format (YYYY-MM-DD HH:MM:SS)
+     * Handles ISO format from datetime-local input (YYYY-MM-DDTHH:MM) and date-only input (YYYY-MM-DD)
+     *
+     * @param string $datetime Input datetime string
+     * @return string MySQL formatted datetime
+     */
+    private static function toMySQLDatetime($datetime)
+    {
+        if (empty($datetime)) {
+            return '';
+        }
+
+        // Handle date-only input (YYYY-MM-DD) - add default time
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $datetime)) {
+            return $datetime . ' 23:59:59';
+        }
+
+        // Handle ISO format with T separator (YYYY-MM-DDTHH:MM or YYYY-MM-DDTHH:MM:SS)
+        if (strpos($datetime, 'T') !== false) {
+            $datetime = str_replace('T', ' ', $datetime);
+        }
+
+        // Add seconds if missing (HH:MM -> HH:MM:SS)
+        if (preg_match('/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/', $datetime)) {
+            $datetime .= ':00';
+        }
+
+        return $datetime;
+    }
+
     private $sendSmsArguments = [
         'sender'               => array('required' => true, 'type' => 'string'),
         'recipients'           => array('required' => true, 'type' => 'string', 'enum' => ['subscribers', 'users', 'roles', 'wc-customers', 'bp-users', 'numbers']),
@@ -65,16 +94,44 @@ class SendSmsApi extends \WP_SMS\RestApi
             )
         ));
 
-        // @todo, this can be moved to a separate class
-        register_rest_route($this->namespace . '/v1', '/outbox', array(
+        // Quick send endpoint for new settings UI
+        register_rest_route($this->namespace . '/v1', '/send/quick', array(
             array(
-                'methods'             => \WP_REST_Server::READABLE,
-                'callback'            => array($this, 'getOutboxCallback'),
+                'methods'             => \WP_REST_Server::CREATABLE,
+                'callback'            => array($this, 'quickSendCallback'),
                 'permission_callback' => function () {
-                    return current_user_can('wpsms_outbox');
+                    return current_user_can('wpsms_sendsms');
                 },
             )
         ));
+
+        // Recipient count endpoint for new settings UI
+        register_rest_route($this->namespace . '/v1', '/send/count', array(
+            array(
+                'methods'             => \WP_REST_Server::CREATABLE,
+                'callback'            => array($this, 'getRecipientCountCallback'),
+                'permission_callback' => function () {
+                    return current_user_can('wpsms_sendsms');
+                },
+            )
+        ));
+
+        // User search endpoint for recipient selector
+        register_rest_route($this->namespace . '/v1', '/users/search', array(
+            array(
+                'methods'             => \WP_REST_Server::READABLE,
+                'callback'            => array($this, 'searchUsersCallback'),
+                'permission_callback' => function () {
+                    return current_user_can('wpsms_sendsms');
+                },
+                'args'                => [
+                    'search' => ['required' => false, 'type' => 'string'],
+                    'per_page' => ['required' => false, 'type' => 'integer', 'default' => 20],
+                ],
+            )
+        ));
+
+        // Note: /outbox endpoint moved to class-wpsms-api-outbox.php
     }
 
     /**
@@ -111,7 +168,8 @@ class SendSmsApi extends \WP_SMS\RestApi
             $message = apply_filters('wp_sms_api_message_content', $message, $request->get_params());
 
             /*
-             * Repeating SMS
+             * Repeating SMS (add-on)
+             * Add-ons can hook into 'wpsms_api_repeating_sms_handler' to provide repeating SMS functionality
              */
             if ($request->has_param('schedule') && $request->has_param('repeat')) {
                 $data      = $request->get_param('repeat');
@@ -127,7 +185,10 @@ class SendSmsApi extends \WP_SMS\RestApi
                     return self::response(esc_html__('Selected end date must be after start date', 'wp-sms'), 400);
                 }
 
-                RepeatingMessages::add(
+                /** This filter is documented in includes/api/v1/class-wpsms-api-send.php */
+                $handled = apply_filters(
+                    'wpsms_api_repeating_sms_handler',
+                    false,
                     $startDate,
                     $endDate,
                     $interval['value'],
@@ -138,26 +199,46 @@ class SendSmsApi extends \WP_SMS\RestApi
                     $mediaUrls
                 );
 
-                return self::response(esc_html__('Repeating SMS is scheduled successfully!', 'wp-sms'));
+                if (is_wp_error($handled)) {
+                    return self::response($handled->get_error_message(), 400);
+                }
+
+                if ($handled === true) {
+                    return self::response(esc_html__('Repeating SMS is scheduled successfully!', 'wp-sms'));
+                }
+
+                return self::response(esc_html__('Repeating SMS requires the WP SMS Pro add-on. Please install and activate the add-on to use this feature.', 'wp-sms'), 400);
             }
 
             /**
-             * Scheduled SMS
+             * Scheduled SMS (add-on)
+             * Add-ons can hook into 'wpsms_api_scheduled_sms_handler' to provide scheduled SMS functionality
              */
             if ($request->has_param('schedule')) {
                 if ((new DateTime(get_gmt_from_date($request->get_param('schedule'))))->getTimestamp() < time()) {
                     return self::response(esc_html__('Selected start date must be in future', 'wp-sms'), 400);
                 }
 
-                Scheduled::add(
+                /** This filter is documented in includes/api/v1/class-wpsms-api-send.php */
+                $handled = apply_filters(
+                    'wpsms_api_scheduled_sms_handler',
+                    false,
                     $request->get_param('schedule'),
                     $request->get_param('sender'),
                     $message,
                     $recipientNumbers,
-                    true,
                     $mediaUrls
                 );
-                return self::response('SMS Scheduled Successfully!');
+
+                if (is_wp_error($handled)) {
+                    return self::response($handled->get_error_message(), 400);
+                }
+
+                if ($handled === true) {
+                    return self::response(esc_html__('SMS scheduled successfully!', 'wp-sms'));
+                }
+
+                return self::response(esc_html__('Scheduled SMS requires the WP SMS Pro add-on. Please install and activate the add-on to use this feature.', 'wp-sms'), 400);
             }
 
             /*
@@ -177,6 +258,10 @@ class SendSmsApi extends \WP_SMS\RestApi
 
             if (is_wp_error($response)) {
                 throw new Exception($response->get_error_message());
+            }
+
+            if ($response === false || $response === null) {
+                throw new Exception(esc_html__('Failed to send SMS. An unexpected error occurred. Please try again or check your gateway settings.', 'wp-sms'));
             }
 
             $response = apply_filters('wp_sms_send_sms_response', esc_html__('Successfully send SMS!', 'wp-sms'));
@@ -303,15 +388,335 @@ class SendSmsApi extends \WP_SMS\RestApi
     }
 
     /**
+     * Quick send callback for new settings UI
+     * Simplified send endpoint that accepts groups, roles, and numbers directly
+     * Also supports scheduling and repeating messages (add-on)
+     *
      * @param WP_REST_Request $request
-     * @return array|object|\stdClass[]|null
-     * @todo support pagination and filter
+     * @return \WP_REST_Response
      */
-    public function getOutboxCallback(WP_REST_Request $request)
+    public function quickSendCallback(WP_REST_Request $request)
     {
-        $query = "SELECT * FROM `{$this->tb_prefix}sms_send`";
+        try {
+            $recipients = $request->get_param('recipients');
+            $message = $request->get_param('message');
+            $flash = $request->get_param('flash') ?? false;
+            $mediaUrl = $request->get_param('media_url') ?? '';
+            $from = $request->get_param('from') ?? '';
+            $schedule = $request->get_param('schedule');
+            $repeat = $request->get_param('repeat');
 
-        return $this->db->get_results($query, ARRAY_A);
+            // Convert datetime values to MySQL format (handles ISO format from frontend)
+            if (!empty($schedule)) {
+                $schedule = self::toMySQLDatetime($schedule);
+            }
+            if (!empty($repeat['endDate'])) {
+                $repeat['endDate'] = self::toMySQLDatetime($repeat['endDate']);
+            }
+
+            if (empty($message)) {
+                throw new Exception(esc_html__('The message body can not be empty.', 'wp-sms'));
+            }
+
+            $recipientNumbers = [];
+
+            // Get numbers from groups (subscribers)
+            if (!empty($recipients['groups']) && is_array($recipients['groups'])) {
+                $groupNumbers = Newsletter::getSubscribers($recipients['groups'], true);
+                $recipientNumbers = array_merge($recipientNumbers, $groupNumbers);
+            }
+
+            // Get numbers from roles
+            if (!empty($recipients['roles']) && is_array($recipients['roles'])) {
+                foreach ($recipients['roles'] as $roleId) {
+                    $roleNumbers = Helper::getUsersMobileNumbers(array($roleId));
+                    $recipientNumbers = array_merge($recipientNumbers, $roleNumbers);
+                }
+            }
+
+            // Get numbers from specific users
+            if (!empty($recipients['users']) && is_array($recipients['users'])) {
+                $userNumbers = Helper::getUsersMobileNumbers(false, $recipients['users']);
+                $recipientNumbers = array_merge($recipientNumbers, $userNumbers);
+            }
+
+            // Add direct numbers
+            if (!empty($recipients['numbers']) && is_array($recipients['numbers'])) {
+                $recipientNumbers = array_merge($recipientNumbers, $recipients['numbers']);
+            }
+
+            // Allow add-ons to add recipient numbers (e.g., WooCommerce, BuddyPress)
+            $recipientNumbers = apply_filters('wpsms_api_recipient_numbers', $recipientNumbers, $recipients, []);
+
+            // Remove duplicates
+            $recipientNumbers = array_unique($recipientNumbers);
+
+            if (count($recipientNumbers) === 0) {
+                throw new Exception(esc_html__('Could not find any mobile numbers.', 'wp-sms'));
+            }
+
+            // Make URLs shorter
+            $message = Helper::makeUrlsShorter($message);
+
+            // Get sender
+            $sender = !empty($from) ? $from : Gateway::from();
+
+            // Prepare media URLs
+            $mediaUrls = !empty($mediaUrl) ? [$mediaUrl] : [];
+
+            /*
+             * Repeating SMS (add-on)
+             * Add-ons can hook into 'wpsms_api_repeating_sms_handler' to provide repeating SMS functionality
+             */
+            if (!empty($schedule) && !empty($repeat)) {
+                $startDate = new DateTime(get_gmt_from_date($schedule));
+                $endDate = !empty($repeat['endDate']) ? (new DateTime(get_gmt_from_date($repeat['endDate']))) : null;
+                $intervalValue = isset($repeat['interval']) ? intval($repeat['interval']) : 1;
+                $intervalUnit = isset($repeat['unit']) ? $repeat['unit'] : 'day';
+
+                if ($startDate->getTimestamp() < time()) {
+                    return self::response(esc_html__('Selected start date must be in future', 'wp-sms'), 400);
+                }
+
+                if (isset($endDate) && $endDate->getTimestamp() < $startDate->getTimestamp()) {
+                    return self::response(esc_html__('Selected end date must be after start date', 'wp-sms'), 400);
+                }
+
+                /**
+                 * Filter to handle repeating SMS scheduling
+                 * Add-ons should return true if they handled the scheduling, or WP_Error on failure
+                 *
+                 * @param bool|WP_Error $handled Whether the repeating SMS was handled
+                 * @param DateTime $startDate Start date for the schedule
+                 * @param DateTime|null $endDate End date for the schedule (null for forever)
+                 * @param int $intervalValue Interval value (e.g., 1, 2, 3)
+                 * @param string $intervalUnit Interval unit (day, week, month, year)
+                 * @param string $sender Sender ID
+                 * @param string $message Message content
+                 * @param array $recipientNumbers Array of recipient phone numbers
+                 * @param array $mediaUrls Array of media URLs for MMS
+                 */
+                $handled = apply_filters(
+                    'wpsms_api_repeating_sms_handler',
+                    false,
+                    $startDate,
+                    $endDate,
+                    $intervalValue,
+                    $intervalUnit,
+                    $sender,
+                    $message,
+                    $recipientNumbers,
+                    $mediaUrls
+                );
+
+                if (is_wp_error($handled)) {
+                    return self::response($handled->get_error_message(), 400);
+                }
+
+                if ($handled === true) {
+                    return self::response(esc_html__('Repeating SMS is scheduled successfully!', 'wp-sms'), 200, [
+                        'recipient_count' => count($recipientNumbers),
+                        'credit' => Gateway::credit()
+                    ]);
+                }
+
+                // No add-on handled the repeating SMS request
+                return self::response(esc_html__('Repeating SMS requires the WP SMS Pro add-on. Please install and activate the add-on to use this feature.', 'wp-sms'), 400);
+            }
+
+            /**
+             * Scheduled SMS (add-on)
+             * Add-ons can hook into 'wpsms_api_scheduled_sms_handler' to provide scheduled SMS functionality
+             */
+            if (!empty($schedule)) {
+                $scheduleDateTime = new DateTime(get_gmt_from_date($schedule));
+
+                if ($scheduleDateTime->getTimestamp() < time()) {
+                    return self::response(esc_html__('Selected start date must be in future', 'wp-sms'), 400);
+                }
+
+                /**
+                 * Filter to handle scheduled SMS
+                 * Add-ons should return true if they handled the scheduling, or WP_Error on failure
+                 *
+                 * @param bool|WP_Error $handled Whether the scheduled SMS was handled
+                 * @param string $schedule Schedule datetime string
+                 * @param string $sender Sender ID
+                 * @param string $message Message content
+                 * @param array $recipientNumbers Array of recipient phone numbers
+                 * @param array $mediaUrls Array of media URLs for MMS
+                 */
+                $handled = apply_filters(
+                    'wpsms_api_scheduled_sms_handler',
+                    false,
+                    $schedule,
+                    $sender,
+                    $message,
+                    $recipientNumbers,
+                    $mediaUrls
+                );
+
+                if (is_wp_error($handled)) {
+                    return self::response($handled->get_error_message(), 400);
+                }
+
+                if ($handled === true) {
+                    return self::response(esc_html__('SMS scheduled successfully!', 'wp-sms'), 200, [
+                        'recipient_count' => count($recipientNumbers),
+                        'credit' => Gateway::credit()
+                    ]);
+                }
+
+                // No add-on handled the scheduled SMS request
+                return self::response(esc_html__('Scheduled SMS requires the WP SMS Pro add-on. Please install and activate the add-on to use this feature.', 'wp-sms'), 400);
+            }
+
+            // Send SMS immediately
+            $notification = NotificationFactory::getHandler(null, null);
+            $response = $notification->send(
+                $message,
+                $recipientNumbers,
+                $mediaUrls,
+                $flash,
+                $sender
+            );
+
+            if (is_wp_error($response)) {
+                throw new Exception($response->get_error_message());
+            }
+
+            if ($response === false || $response === null) {
+                throw new Exception(esc_html__('Failed to send SMS. An unexpected error occurred. Please try again or check your gateway settings.', 'wp-sms'));
+            }
+
+            return self::response(esc_html__('Successfully sent SMS!', 'wp-sms'), 200, [
+                'recipient_count' => count($recipientNumbers),
+                'credit' => Gateway::credit()
+            ]);
+        } catch (\Throwable $e) {
+            return self::response($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Get recipient count for new settings UI
+     *
+     * @param WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function getRecipientCountCallback(WP_REST_Request $request)
+    {
+        try {
+            $recipients = $request->get_param('recipients');
+            $counts = [
+                'groups' => 0,
+                'roles' => 0,
+                'users' => 0,
+                'numbers' => 0,
+                'total' => 0
+            ];
+
+            $allNumbers = [];
+
+            // Count from groups (subscribers)
+            if (!empty($recipients['groups']) && is_array($recipients['groups'])) {
+                $groupNumbers = Newsletter::getSubscribers($recipients['groups'], true);
+                $counts['groups'] = count($groupNumbers);
+                $allNumbers = array_merge($allNumbers, $groupNumbers);
+            }
+
+            // Count from roles
+            if (!empty($recipients['roles']) && is_array($recipients['roles'])) {
+                $roleNumbers = [];
+                foreach ($recipients['roles'] as $roleId) {
+                    $numbers = Helper::getUsersMobileNumbers(array($roleId));
+                    $roleNumbers = array_merge($roleNumbers, $numbers);
+                }
+                $counts['roles'] = count($roleNumbers);
+                $allNumbers = array_merge($allNumbers, $roleNumbers);
+            }
+
+            // Count from specific users
+            if (!empty($recipients['users']) && is_array($recipients['users'])) {
+                $userNumbers = Helper::getUsersMobileNumbers(false, $recipients['users']);
+                $counts['users'] = count($userNumbers);
+                $allNumbers = array_merge($allNumbers, $userNumbers);
+            }
+
+            // Count direct numbers
+            if (!empty($recipients['numbers']) && is_array($recipients['numbers'])) {
+                $counts['numbers'] = count($recipients['numbers']);
+                $allNumbers = array_merge($allNumbers, $recipients['numbers']);
+            }
+
+            /**
+             * Filter to add recipient numbers from add-ons (e.g., WooCommerce, BuddyPress)
+             *
+             * @param array $allNumbers Current collected numbers
+             * @param array $recipients Recipients request data
+             * @param array $counts Current counts array (pass by reference via filter)
+             */
+            $allNumbers = apply_filters('wpsms_api_recipient_numbers', $allNumbers, $recipients, $counts);
+
+            // Total unique count
+            $counts['total'] = count(array_unique($allNumbers));
+
+            return self::response('', 200, $counts);
+        } catch (\Throwable $e) {
+            return self::response($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Search users for recipient selector
+     * Returns users with their mobile numbers
+     *
+     * @param WP_REST_Request $request
+     * @return \WP_REST_Response
+     */
+    public function searchUsersCallback(WP_REST_Request $request)
+    {
+        try {
+            $search = $request->get_param('search');
+            $perPage = $request->get_param('per_page') ?? 20;
+            $mobileFieldKey = Helper::getUserMobileFieldName();
+
+            $args = [
+                'number' => $perPage,
+                'orderby' => 'display_name',
+                'order' => 'ASC',
+            ];
+
+            // Add search if provided
+            if (!empty($search)) {
+                // Check if search is numeric (user ID search)
+                if (is_numeric($search)) {
+                    $args['include'] = [intval($search)];
+                } else {
+                    $args['search'] = '*' . $search . '*';
+                    $args['search_columns'] = ['user_login', 'user_email', 'display_name', 'user_nicename'];
+                }
+            }
+
+            $userQuery = new \WP_User_Query($args);
+            $users = $userQuery->get_results();
+
+            $results = [];
+            foreach ($users as $user) {
+                $mobile = get_user_meta($user->ID, $mobileFieldKey, true);
+                $results[] = [
+                    'id' => $user->ID,
+                    'name' => $user->display_name,
+                    'email' => $user->user_email,
+                    'mobile' => $mobile ?: null,
+                    'hasMobile' => !empty($mobile),
+                ];
+            }
+
+            return self::response('', 200, ['users' => $results]);
+        } catch (\Throwable $e) {
+            return self::response($e->getMessage(), 400);
+        }
     }
 }
 

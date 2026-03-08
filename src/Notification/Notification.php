@@ -3,6 +3,7 @@
 namespace WP_SMS\Notification;
 
 use WP_Error;
+use WP_SMS\Components\Logger;
 
 if (!defined('ABSPATH')) exit;
 
@@ -46,11 +47,12 @@ class Notification
         }
 
         if (!$this->optIn) {
+            $optOutError = new WP_Error('opt-out', __('This number has opted out of receiving SMS notifications.', 'wp-sms'));
             if (is_callable([$this, 'failed'])) {
-                $this->failed($to, new WP_Error('opt-out', __('This number has opted out of receiving SMS notifications.', 'wp-sms')));
+                $this->failed($to, $optOutError);
             }
 
-            return;
+            return $optOutError;
         }
 
         $this->processMessage($message);
@@ -145,14 +147,14 @@ class Notification
                         if ($reflection->getNumberOfRequiredParameters() === 0) {
                             $replacement = $this->$callBack();
                         } else {
-                            \WP_SMS::log("Skipping variable '{$variable}' because '{$callBack}' requires arguments.", 'warning');
+                            Logger::log("Skipping variable '{$variable}' because '{$callBack}' requires arguments.", 'warning');
                             continue;
                         }
                     } else {
                         $replacement = $this->$callBack();
                     }
                 } catch (\Throwable $e) {
-                    \WP_SMS::log('Variable replacement error: ' . $e->getMessage(), 'error');
+                    Logger::log('Variable replacement error: ' . $e->getMessage(), 'error');
                     continue;
                 }
             } else {
@@ -184,13 +186,13 @@ class Notification
             $metaKey  = $matches[2][$index];
 
             if (!isset($metaHandlers[$metaType])) {
-                \WP_SMS::log("Handler method for meta type '{$metaType}' not found.", 'warning');
+                Logger::log("Handler method for meta type '{$metaType}' not found.", 'warning');
                 continue;
             }
 
             $handlerMethod = $metaHandlers[$metaType];
             if (!method_exists($this, $handlerMethod)) {
-                \WP_SMS::log("Handler method '{$handlerMethod}' not found.", 'warning');
+                Logger::log("Handler method '{$handlerMethod}' not found.", 'warning');
                 continue;
             }
 
@@ -214,10 +216,10 @@ class Notification
 
                     $finalMessage = str_replace($metaVariable, (string)$metaValue, $finalMessage);
                 } else {
-                    \WP_SMS::log("Meta value for '{$metaVariable}' is null or not found.", 'warning');
+                    Logger::log("Meta value for '{$metaVariable}' is null or not found.", 'warning');
                 }
             } catch (\Throwable $e) {
-                \WP_SMS::log(json_encode([
+                Logger::log(json_encode([
                     'error'     => $e->getMessage(),
                     'meta_type' => $metaType,
                     'meta_key'  => $metaKey,

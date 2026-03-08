@@ -3,10 +3,27 @@
 
     <?php if (!$visibility): ?>
         <div class="wpsms-sendSmsForm__deactiveBlock">
-            <div class="wpsms-sendSmsForm__deactiveBlock__content">
-                <h6><?php esc_html_e('Send SMS Messages from Your Website', 'wp-sms'); ?></h6>
-                <p><?php esc_html_e('Give your website visitors the power to send SMS messages directly from your site.', 'wp-sms'); ?></p>
-                <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=send_sms-pro'); ?>"><?php esc_html_e('Upgrade to WP SMS Pro', 'wp-sms'); ?></a>
+            <div class="wpsms-sendSmsForm__deactiveBlock__overlay">
+                <div class="wpsms-sendSmsForm__deactiveBlock__content">
+                    <h6><?php esc_html_e('Send SMS Messages from Your Website', 'wp-sms'); ?></h6>
+                    <p><?php esc_html_e('Give your website visitors the power to send SMS messages directly from your site.', 'wp-sms'); ?></p>
+                    <a target="_blank" href="<?php echo esc_url(WP_SMS_SITE . '/pricing?utm_source=wp-sms&utm_medium=link&utm_campaign=send_sms-pro'); ?>"><?php esc_html_e('Upgrade to WSMS Pro', 'wp-sms'); ?></a>
+                </div>
+            </div>
+            <div class="wpsms-sendSmsForm__deactiveBlock__preview" aria-hidden="true">
+                <h2 class="wpsms-sendSmsForm__title"><?php echo !empty($attributes['title']) ? esc_html($attributes['title']) : esc_html__('Send SMS', 'wp-sms'); ?></h2>
+                <p class="wpsms-sendSmsForm__description"><?php echo !empty($attributes['description']) ? esc_html($attributes['description']) : ''; ?></p>
+                <div class="wpsms-sendSmsForm__fieldContainer">
+                    <label><?php esc_html_e('Message', 'wp-sms'); ?></label>
+                    <textarea disabled dir="auto" placeholder="<?php esc_html_e('Write your message content', 'wp-sms'); ?>" class="wpsms-sendSmsForm__messageField"></textarea>
+                </div>
+                <?php if (isset($attributes['receiver']) && $attributes['receiver'] === 'numbers'): ?>
+                    <div class="wpsms-sendSmsForm__fieldContainer">
+                        <label><?php esc_html_e('Receiver', 'wp-sms'); ?></label>
+                        <input type="tel" disabled dir="auto" placeholder="<?php esc_html_e('Phone number', 'wp-sms'); ?>"/>
+                    </div>
+                <?php endif; ?>
+                <input class="wpsms-sendSmsForm__submit" type="button" disabled value="<?php esc_html_e('Send Message', 'wp-sms'); ?>"/>
             </div>
         </div>
     <?php else: ?>
@@ -20,13 +37,13 @@
             </svg>
         </div>
 
-        <h2 class="wpsms-sendSmsForm__title"><?php echo isset($attributes['title']) ? esc_html($attributes['title']) : esc_html__('Send SMS', 'wp-sms'); ?></h2>
-        <p class="wpsms-sendSmsForm__description"><?php echo isset($attributes['description']) ? esc_html($attributes['description']) : ''; ?></p>
+        <h2 class="wpsms-sendSmsForm__title"><?php echo !empty($attributes['title']) ? esc_html($attributes['title']) : esc_html__('Send SMS', 'wp-sms'); ?></h2>
+        <p class="wpsms-sendSmsForm__description"><?php echo !empty($attributes['description']) ? esc_html($attributes['description']) : ''; ?></p>
 
         <form>
             <div class="wpsms-sendSmsForm__fieldContainer">
                 <label><?php esc_html_e('Message', 'wp-sms'); ?></label>
-                <textarea data-max="<?php echo esc_html($attributes['maxCharacters']); ?>" placeholder="<?php esc_html_e('Write your message content', 'wp-sms'); ?>" class="wpsms-sendSmsForm__messageField"></textarea>
+                <textarea data-max="<?php echo esc_html($attributes['maxCharacters']); ?>" dir="auto" placeholder="<?php esc_html_e('Write your message content', 'wp-sms'); ?>" class="wpsms-sendSmsForm__messageField"></textarea>
                 <p class="wpsms-sendSmsForm__messageField__alert"><?php esc_html_e('Max remaining characters: ', 'wp-sms'); ?><span></span></p>
             </div>
 

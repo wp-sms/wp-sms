@@ -8,7 +8,7 @@
         <tr>
             <td>
                 <label for="wp_subscribe_name" class="wp_sms_subscribers_label"><?php esc_html_e('Name', 'wp-sms'); ?></label>
-                <input type="text" id="wp_subscribe_name" placeholder="<?php esc_html_e('Name', 'wp-sms'); ?>" name="wp_subscribe_name" value="<?php echo isset($subscriber->name) ? esc_attr($subscriber->name) : ''; ?>" class="wp_sms_subscribers_input_text"/>
+                <input type="text" dir="auto" id="wp_subscribe_name" placeholder="<?php esc_html_e('Name', 'wp-sms'); ?>" name="wp_subscribe_name" value="<?php echo isset($subscriber->name) ? esc_attr($subscriber->name) : ''; ?>" class="wp_sms_subscribers_input_text"/>
             </td>
         </tr>
         <tr>
@@ -44,7 +44,7 @@
                 <td>
                     <label for="wpsms_group_name" class="wp_sms_subscribers_label"><?php esc_html_e('Group', 'wp-sms'); ?></label>
                     <?php esc_html_e('There is no group!', 'wp-sms'); ?>
-                    <a href="admin.php?page=wp-sms-subscribers-group"><?php esc_html_e('Add', 'wp-sms') ?></a>
+                    <a href="admin.php?page=wsms&tab=groups"><?php esc_html_e('Add', 'wp-sms') ?></a>
                 </td>
             </tr>
         <?php endif; ?>

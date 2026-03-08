@@ -40,7 +40,7 @@
         <!-- Enter receiver number -->
         <td colspan="2" id="wpsms-select-numbers" class="js-wpsms-show_if_wpsms-send-to_equal_numbers">
             <label for="wpsms-mobile-numbers"><?php esc_html_e('Number(s)', 'wp-sms'); ?></label>
-            <input placeholder="<?php esc_html_e('Separate numbers with commas', 'wp-sms'); ?>" type="text" name="wps_mobile_numbers" id="wpsms-mobile-numbers" class="regular-text" value="<?php echo esc_attr(wp_sms_get_option('notif_publish_new_post_numbers')) ?>"/>
+            <input placeholder="<?php esc_html_e('Separate numbers with commas', 'wp-sms'); ?>" type="text" dir="auto" name="wps_mobile_numbers" id="wpsms-mobile-numbers" class="regular-text" value="<?php echo esc_attr(wp_sms_get_option('notif_publish_new_post_numbers')) ?>"/>
 
         </td>
 
@@ -78,7 +78,7 @@
         <!--Message Body-->
         <td colspan="4">
             <label for="wpsms-text-template"><?php esc_html_e('Message body', 'wp-sms'); ?></label>
-            <textarea cols="60" rows="5" id="wpsms-text-template" name="wpsms_text_template"><?php echo esc_textarea(wp_sms_get_option('notif_publish_new_post_template')); ?></textarea>
+            <textarea cols="60" rows="5" dir="auto" id="wpsms-text-template" name="wpsms_text_template"><?php echo esc_textarea(wp_sms_get_option('notif_publish_new_post_template')); ?></textarea>
         </td>
         <td colspan="1" class="short-codes" id="wpsms-short-codes">
             <div class="sms-shortcode-label"><?php esc_html_e('Short codes', 'wp-sms'); ?></div>

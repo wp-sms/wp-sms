@@ -8,6 +8,13 @@ if (!defined('ABSPATH')) {
 
 class Option
 {
+    /**
+     * Deprecated options that should always return empty/false.
+     * Used to disable features without removing code or migrating data.
+     *
+     * @var array
+     */
+    public static $deprecatedOptions = [];
 
     /**
      * Get the whole Plugin Options
@@ -37,6 +44,10 @@ class Option
      */
     public static function getOption($option_name, $pro = false)
     {
+        if (in_array($option_name, self::$deprecatedOptions, true)) {
+            return '';
+        }
+
         $options = self::getOptions($pro);
 
         return isset($options[$option_name]) ? $options[$option_name] : '';
@@ -72,5 +83,27 @@ class Option
         $options[$key] = $value;
 
         update_option($setting_name, $options);
+    }
+
+    /**
+     * Delete Option
+     *
+     * @param string $key The option key to delete
+     * @param bool $pro Whether to use pro settings
+     */
+    public static function deleteOption($key, $pro = false)
+    {
+        if ($pro) {
+            $setting_name = 'wps_pp_settings';
+        } else {
+            $setting_name = 'wpsms_settings';
+        }
+
+        $options = self::getOptions($pro);
+
+        if (isset($options[$key])) {
+            unset($options[$key]);
+            update_option($setting_name, $options);
+        }
     }
 }

@@ -14,7 +14,7 @@ class callifony extends \WP_SMS\Gateway
     public $isflash = false;
     public $has_key = false;
     public $do = false;
-    public $documentUrl = 'https://wp-sms-pro.com/resources/callifony-gateway-configuration/';
+    public $documentUrl = 'https://wsms.io/docs/gateway-configuration';
 
     public function __construct()
     {

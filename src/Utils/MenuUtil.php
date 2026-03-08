@@ -2,26 +2,20 @@
 
 namespace WP_SMS\Utils;
 
+use WP_SMS\Admin\Dashboard;
+
 if (!defined('ABSPATH')) exit;
 
 class MenuUtil
 {
-    private static $parentSlug = 'wp-sms';
+    private static $parentSlug = 'wsms';
     /**
      * List of Admin Page Slugs
      *
      * @var array
      */
     public static $pages = [
-        'wp-sms'              => 'wp-sms',
-        'outbox'              => 'outbox',
-        'inbox'               => 'inbox',
-        'subscribers'         => 'subscribers',
-        'subscribers-group'   => 'subscribers-group',
-        'subscribers-privacy' => 'subscribers-privacy',
-        'settings'            => 'settings',
-        'integrations'        => 'integrations',
-        'add-ons'             => 'add-ons',
+        'wsms' => 'wsms',
     ];
 
     /**
@@ -37,45 +31,16 @@ class MenuUtil
      */
     public static function registerMenus()
     {
-        foreach (self::getMenuList() as $key => $menu) {
-            $capability = 'manage_options';
-            $method     = 'log';
-            $name       = $menu['title'];
+        // Register the single top-level "WSMS" menu pointing to the React dashboard
+        $icon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9Ii01IDAgMzYgMzYiPjxwYXRoIGQ9Ik0wIDkuNTM3NTJWMTcuNzMzNUwxOC4yMTAxIDguMTc3NjRWMEwwIDkuNTM3NTJaIiBmaWxsPSIjYTdhYWFkIi8+PHBhdGggZD0iTTAgMjAuNzI5VjI4LjkwNjdMMjYgMTUuMjcxMVY3LjA5MzUxTDAgMjAuNzI5WiIgZmlsbD0iI2E3YWFhZCIvPjxwYXRoIGQ9Ik0yNS45OTcyIDE4LjI2NjZWMjYuMzUyNEw3LjgwNzM0IDM2LjAwMDFMNy43ODcxMSAyNy43MzA2TDI1Ljk5NzIgMTguMjY2NloiIGZpbGw9IiNhN2FhYWQiLz48L3N2Zz4=';
+        add_menu_page('WSMS', 'WSMS', 'wpsms_sendsms', 'wsms', [Dashboard::instance(), 'view'], $icon);
 
-            if (array_key_exists('cap', $menu)) {
-                $capability = $menu['cap'];
-            }
+        // Remove the auto-generated submenu item that WordPress creates matching the parent
+        remove_submenu_page('wsms', 'wsms');
 
-            if (array_key_exists('method', $menu)) {
-                $method = $menu['method'];
-            }
-
-            if (array_key_exists('name', $menu)) {
-                $name = $menu['name'];
-            }
-
-            // Assume '\WP_SMS\\' is a constant base namespace for your classes.
-            $baseNamespace = '\WP_SMS\\';
-
-            // Determine the class name. Use $menu['callback'] if it's set; otherwise, construct the name from $method.
-            $className = $menu['callback'] ?? $baseNamespace . $method . '_page';
-            // Now, ensure that the 'view' method exists in the determined class.
-            if (method_exists($className, 'view')) {
-                $callback = [$className::instance(), 'view'];
-            } else {
-                continue;
-            }
-
-            //Check if SubMenu or Main Menu
-            if (array_key_exists('sub', $menu)) {
-                //Check Conditions For Show Menu
-                if (OptionUtil::checkOptionRequire($menu) === true) {
-                    add_submenu_page(self::$parentSlug, $menu['title'], $name, $capability, self::getPageSlug($menu['page_url']), $callback);
-                }
-            } else {
-                add_menu_page($menu['title'], $name, $capability, self::getPageSlug($menu['page_url']), $callback, $menu['icon']);
-            }
-        }
+        // Still fire the filter so add-ons can hook into it for data purposes
+        $list = [];
+        $list = apply_filters('wp_sms_admin_menu_list', $list);
     }
 
     /**
@@ -83,7 +48,7 @@ class MenuUtil
      *
      * @var string
      */
-    public static $adminMenuSlug = 'wp-sms-[slug]';
+    public static $adminMenuSlug = 'wsms-[slug]';
 
     /**
      * Admin Page Load Action Slug
@@ -150,18 +115,18 @@ class MenuUtil
      */
     public static function getPageKeyFromSlug($pageSlug)
     {
-        // If it's a top-level menu (exactly 'wp-sms'), then return it directly
+        // If it's a top-level menu (exactly 'wsms'), then return it directly
         if ($pageSlug === self::$parentSlug) {
             return [$pageSlug];
         }
 
-        // If it starts with "wp-sms-" then remove that prefix and return the rest
+        // If it starts with "wsms-" then remove that prefix and return the rest
         if (str_starts_with($pageSlug, self::$parentSlug . '-')) {
             $key = substr($pageSlug, strlen(self::$parentSlug . '-'));
             return [$key];
         }
 
-        // Otherwise, it’s already a short slug (e.g. 'add-ons')
+        // Otherwise, it's already a short slug (e.g. 'add-ons')
         return [$pageSlug];
     }
 
@@ -232,7 +197,7 @@ class MenuUtil
     public static function getCurrentPage()
     {
         $currentPage = Request::get('page');
-        $pagesList   = array_merge(self::getHardcodedMenuList(), self::getMenuList());
+        $pagesList   = self::getMenuList();
 
         if (!$currentPage) {
             return false;
@@ -246,88 +211,5 @@ class MenuUtil
         });
 
         return reset($filteredPages);
-    }
-
-    /**
-     * Retrieve the hardcoded list of admin menu items
-     *
-     * @return array
-     */
-    public static function getHardcodedMenuList()
-    {
-        return [
-            [
-                'title'    => esc_html__('Send SMS', 'wp-sms'),
-                'name'     => esc_html__('SMS', 'wp-sms'),
-                'cap'      => 'wpsms_sendsms',
-                'page_url' => 'wp-sms',
-                'callback' => '',
-                'icon'     => 'dashicons-email-alt',
-                'priority' => 1,
-            ],
-            [
-                'sub'      => 'wp-sms',
-                'title'    => esc_html__('Outbox', 'wp-sms'),
-                'name'     => esc_html__('Outbox', 'wp-sms'),
-                'cap'      => 'wpsms_outbox',
-                'page_url' => 'outbox',
-                'callback' => '',
-                'priority' => 2,
-            ],
-            [
-                'sub'      => 'wp-sms',
-                'title'    => esc_html__('Inbox', 'wp-sms'),
-                'name'     => esc_html__('Inbox', 'wp-sms'),
-                'cap'      => 'wpsms_inbox',
-                'page_url' => 'inbox',
-                'callback' => '',
-                'priority' => 3,
-            ],
-            [
-                'sub'      => 'wp-sms',
-                'title'    => esc_html__('Subscribers', 'wp-sms'),
-                'name'     => esc_html__('Subscribers', 'wp-sms'),
-                'cap'      => 'wpsms_subscribers',
-                'page_url' => 'subscribers',
-                'callback' => '',
-                'priority' => 4,
-            ],
-            [
-                'sub'      => 'wp-sms',
-                'title'    => esc_html__('Groups', 'wp-sms'),
-                'name'     => esc_html__('Groups', 'wp-sms'),
-                'cap'      => 'wpsms_subscribers',
-                'page_url' => 'subscribers-group',
-                'callback' => '',
-                'priority' => 5,
-            ],
-            [
-                'sub'      => 'wp-sms',
-                'title'    => esc_html__('Privacy', 'wp-sms'),
-                'name'     => esc_html__('Privacy', 'wp-sms'),
-                'cap'      => 'wpsms_setting',
-                'page_url' => 'subscribers-privacy',
-                'callback' => '',
-                'priority' => 6,
-            ],
-            [
-                'sub'      => 'wp-sms',
-                'title'    => esc_html__('Settings', 'wp-sms'),
-                'name'     => esc_html__('Settings', 'wp-sms'),
-                'cap'      => 'wpsms_setting',
-                'page_url' => 'settings',
-                'callback' => '',
-                'priority' => 7,
-            ],
-            [
-                'sub'      => 'wp-sms',
-                'title'    => esc_html__('Integrations', 'wp-sms'),
-                'name'     => esc_html__('Integrations', 'wp-sms'),
-                'cap'      => 'wpsms_setting',
-                'page_url' => 'integrations',
-                'callback' => '',
-                'priority' => 8,
-            ],
-        ];
     }
 }

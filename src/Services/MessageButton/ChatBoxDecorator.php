@@ -30,6 +30,11 @@ class ChatBoxDecorator
         return $this->getData('chatbox_button_text', __('Talk to Us', 'wp-sms'));
     }
 
+    public function getButtonStyle()
+    {
+        return $this->getData('chatbox_button_style', 'icon_text');
+    }
+
     public function getFooterText()
     {
         return $this->getData('chatbox_footer_text', __('Chat with us on WhatsApp for instant support!', 'wp-sms'));
@@ -57,7 +62,7 @@ class ChatBoxDecorator
 
     public function getColor()
     {
-        return $this->getData('chatbox_color');
+        return $this->getData('chatbox_color', '#c2410c');
     }
 
     public function getAnimationEffect()
@@ -102,8 +107,8 @@ class ChatBoxDecorator
             if ($teamMember['member_availability'] == '') {
                 $teamMember['member_availability'] = __('Available 10AM-5PM PST', 'wp-sms');
             }
-            if ($teamMember['member_photo'] == '') {
-                $teamMember['member_photo'] = WP_SMS_URL . 'assets/images/avatar.png';
+            if (empty($teamMember['member_photo'])) {
+                $teamMember['member_photo'] = WP_SMS_URL . 'public/images/avatar.png';
             }
             if ($teamMember['member_contact_value'] == '') {
                 $teamMember['member_contact_value'] = '+1122334455';
@@ -114,7 +119,7 @@ class ChatBoxDecorator
 
             // Process each team member
             $teamMember['contact_link']      = $this->generateContactLink($teamMember['member_contact_type'], $teamMember['member_contact_value']);
-            $teamMember['contact_link_icon'] = sprintf('%s/assets/images/chatbox/icon-%s.svg', WP_SMS_URL, $teamMember['member_contact_type']);
+            $teamMember['contact_link_icon'] = sprintf('%s/public/images/chatbox/icon-%s.svg', WP_SMS_URL, $teamMember['member_contact_type']);
 
             $processedTeam[] = $teamMember;
         }

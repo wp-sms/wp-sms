@@ -33,9 +33,12 @@ nbproject
 
 # node_modules
 /node_modules
+package-lock.json
 
-# Build Folder
-/build
+# Build output (rebuilt by `npm run build`)
+/public/*
+!/public/.gitkeep
+bundle-analysis.html
 
 #vscode
 .vscode
@@ -43,3 +46,26 @@ nbproject
 # Testing
 /tests/logs
 .phpunit.result.cache
+
+# E2E Testing (Playwright)
+/e2e-report/
+/e2e-results/
+/tests/e2e/.auth/
+.env.e2e
+.env.e2e.local
+/playwright-report/
+/test-results/
+
+# Composer
+/vendor/
+
+# Scoped Dependencies
+/packages/
+
+# Claude Code
+.mcp.json
+CLAUDE.local.md
+CLAUDE.md
+AGENTS.md
+
+/dist

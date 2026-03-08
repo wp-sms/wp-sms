@@ -1,12 +1,47 @@
 {
+  "name": "veronalabs/wp-sms",
+  "description": "SMS & MMS Notifications, 2FA, OTP, and Integrations with E-Commerce and Form Builders",
+  "type": "wordpress-plugin",
+  "license": "GPL-2.0+",
+  "authors": [
+    {
+      "name": "VeronaLabs",
+      "email": "dev@veronalabs.com",
+      "homepage": "https://veronalabs.com"
+    }
+  ],
+  "require": {
+    "php": ">=7.4"
+  },
+  "require-dev": {
+    "veronalabs/wp-scoper": "^1.2.4",
+    "fakerphp/faker": "^1.23"
+  },
   "autoload": {
     "psr-4": {
       "WP_SMS\\": "src/"
     }
   },
+  "extra": {
+    "wp-scoper": {
+      "namespace_prefix": "WP_SMS\\Dependencies",
+      "packages": [],
+      "target_directory": "packages",
+      "delete_vendor_packages": true,
+      "exclude_directories": ["views", "templates", "resources", "public"]
+    }
+  },
   "scripts": {
-    "test": [
-      "PATH=$(composer global config bin-dir --absolute --quiet --testdox):$PATH phpunit"
-    ]
+    "test": "phpunit --testdox",
+    "dist": "bash bin/build-zip.sh"
+  },
+  "config": {
+    "platform-check": false,
+    "platform": {
+      "php": "7.4"
+    },
+    "allow-plugins": {
+      "veronalabs/wp-scoper": true
+    }
   }
 }

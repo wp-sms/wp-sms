@@ -1,0 +1,67 @@
+/*
+ * WP SMS - RTL fixes
+ * Scoped to the React dashboard page.
+ */
+
+/* WordPress admin uses padding-right in RTL; remove it for the full-width React app. */
+/* Note: this stylesheet is only enqueued for the dashboard page in PHP. */
+body.rtl #wpcontent {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
+
+body.rtl #wpbody-content {
+  padding-right: 0 !important;
+}
+
+/*
+ * Message Button preview (chatbox) in RTL:
+ * WP admin UI sits on the right in RTL. Force the preview to render on the left side to avoid overlap.
+ * This only affects the dashboard page because the stylesheet is only enqueued there.
+ */
+body.rtl .wpsms-chatbox.wpsms-chatbox--right-side,
+body.rtl .wpsms-chatbox.wpsms-chatbox--left-side {
+  right: auto !important;
+  left: 2rem !important;
+}
+
+body.rtl .wpsms-chatbox.wpsms-chatbox--right-side .wpsms-chatbox__content,
+body.rtl .wpsms-chatbox.wpsms-chatbox--left-side .wpsms-chatbox__content {
+  right: auto !important;
+  left: 1rem !important;
+}
+
+body.rtl .wpsms-chatbox.wpsms-chatbox--right-side .wpsms-chatbox__arrow,
+body.rtl .wpsms-chatbox.wpsms-chatbox--left-side .wpsms-chatbox__arrow {
+  right: auto !important;
+  left: 2.5rem !important;
+}
+
+/*
+ * intl-tel-input (PhoneInput) in RTL:
+ * Ensure the dropdown aligns inside the viewport and the list/search align properly.
+ */
+body.rtl #wpsms-settings-root[dir="rtl"] .iti--inline-dropdown .iti__dropdown-content {
+  left: auto !important;
+  right: 0 !important;
+}
+
+body.rtl #wpsms-settings-root[dir="rtl"] .iti__country-list,
+body.rtl #wpsms-settings-root[dir="rtl"] .iti__search-input {
+  text-align: right;
+}
+
+/* Align the phone value to the right in RTL so it appears next to the flag dropdown. */
+body.rtl #wpsms-settings-root[dir="rtl"] .iti input.iti__tel-input {
+  text-align: right;
+}
+
+/*
+ * Dialog close button:
+ * Dialogs render a close button absolutely positioned in the top-right via inline styles.
+ * In RTL this can overlap right-aligned titles; move it to the top-left.
+ */
+body.rtl #wpsms-settings-root[dir="rtl"] .wsms-dialog-content [aria-label="Close dialog"] {
+  right: auto !important;
+  left: 12px !important;
+}

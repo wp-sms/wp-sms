@@ -136,8 +136,10 @@ class RemoteRequest
                 $responseBody = json_decode($responseBody, true);
             }
 
+            $errorDetail = $this->extractErrorMessage($responseBody);
+
             // translators: %s: Response message
-            throw new Exception(sprintf(esc_html__('Failed to get success response, %s', 'wp-sms'), esc_html(print_r($responseBody, 1))));
+            throw new Exception(sprintf(esc_html__('Failed to get success response, %s', 'wp-sms'), esc_html($errorDetail)));
         }
 
         $responseJson = json_decode($this->responseBody);
@@ -205,5 +207,44 @@ class RemoteRequest
         }
 
         return false;
+    }
+
+    /**
+     * Extract a human-readable error message from an API response body.
+     *
+     * Tries common JSON response shapes (message, error, return.message, etc.)
+     * and falls back to compact JSON for arrays or the raw string.
+     *
+     * @param mixed $responseBody Decoded array/object or raw string
+     * @return string
+     */
+    private function extractErrorMessage($responseBody)
+    {
+        if (is_string($responseBody)) {
+            return $responseBody;
+        }
+
+        if (!is_array($responseBody)) {
+            return (string) $responseBody;
+        }
+
+        // Try common top-level message keys
+        foreach (['message', 'error', 'error_message', 'msg', 'detail'] as $key) {
+            if (!empty($responseBody[$key]) && is_string($responseBody[$key])) {
+                return $responseBody[$key];
+            }
+        }
+
+        // Try nested response shapes (e.g. Kavenegar: { return: { status, message } })
+        if (!empty($responseBody['return']['message']) && is_string($responseBody['return']['message'])) {
+            $msg = $responseBody['return']['message'];
+            if (!empty($responseBody['return']['status'])) {
+                $msg = $responseBody['return']['status'] . ' ' . $msg;
+            }
+            return $msg;
+        }
+
+        // Fallback: compact JSON instead of print_r
+        return wp_json_encode($responseBody, JSON_UNESCAPED_UNICODE) ?: __('Unknown error', 'wp-sms');
     }
 }

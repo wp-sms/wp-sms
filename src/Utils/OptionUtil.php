@@ -87,6 +87,10 @@ class OptionUtil
      */
     public static function get($optionName, $default = null)
     {
+        if (in_array($optionName, \WP_SMS\Option::$deprecatedOptions, true)) {
+            return '';
+        }
+
         $options = self::getOptions();
 
         if (!array_key_exists($optionName, $options)) {

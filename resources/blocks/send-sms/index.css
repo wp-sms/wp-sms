@@ -1,0 +1,100 @@
+/* WARNING: These variables must be kept in sync with public/src/scss/settings/_variables.scss */
+/* Mirrors dashboard: Card = rounded-lg border border-border bg-card shadow */
+.wp-sms-block {
+    --wsms-primary: 24 95% 38%;
+    --wsms-primary-foreground: 0 0% 100%;
+    --wsms-foreground: 20 10% 12%;
+    --wsms-muted-foreground: 20 6% 35%;
+    --wsms-card: 0 0% 100%;
+    --wsms-border: 20 8% 75%;
+    --wsms-input: 20 8% 75%;
+    --wsms-radius: 6px;
+
+    background-color: hsl(var(--wsms-card));
+    border: 1px solid hsl(var(--wsms-border));
+    border-radius: var(--wsms-radius);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 13px;
+    overflow: hidden;
+}
+
+/* Mirrors: CardHeader — px-5 py-4 with border-b */
+.wp-sms-block__header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 20px;
+    border-bottom: 1px solid hsl(var(--wsms-border));
+    font-size: 13px;
+    font-weight: 600;
+    color: hsl(var(--wsms-foreground));
+    line-height: 1;
+    margin: 0;
+}
+
+.wp-sms-block__header svg {
+    flex-shrink: 0;
+}
+
+/* Mirrors: CardContent — px-5 py-4 */
+.wp-sms-block__main {
+    padding: 16px 20px;
+}
+
+.wp-sms-block label {
+    font-size: 13px;
+    font-weight: 500;
+    text-transform: none !important;
+    color: hsl(var(--wsms-foreground));
+}
+
+/* Preview section — dashed separator */
+.wp-sms-block__preview {
+    border-top: 1px dashed hsl(var(--wsms-border));
+    margin: 0 20px;
+    padding: 16px 0;
+}
+
+.wp-sms-block__preview-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: hsl(var(--wsms-foreground));
+    margin-bottom: 8px;
+}
+
+/* Mirrors: Input — h-9 rounded-md border border-input bg-card shadow-sm */
+.wp-sms-block__preview-input {
+    height: 36px;
+    border: 1px solid hsl(var(--wsms-input));
+    border-radius: calc(var(--wsms-radius) - 2px);
+    background-color: hsl(var(--wsms-card));
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Mirrors: Textarea — min-h-[80px] rounded-md border border-input bg-card shadow-sm */
+.wp-sms-block__preview-textarea {
+    height: 80px;
+    border: 1px solid hsl(var(--wsms-input));
+    border-radius: calc(var(--wsms-radius) - 2px);
+    background-color: hsl(var(--wsms-card));
+    margin-bottom: 12px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Mirrors: Button default — h-9 rounded-md bg-primary shadow-sm */
+.wp-sms-block__preview-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    background-color: hsl(var(--wsms-primary));
+    color: hsl(var(--wsms-primary-foreground));
+    border-radius: calc(var(--wsms-radius) - 2px);
+    font-size: 13px;
+    font-weight: 500;
+    margin-top: 4px;
+    cursor: default;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}

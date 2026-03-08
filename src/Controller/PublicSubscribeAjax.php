@@ -18,6 +18,11 @@ class PublicSubscribeAjax extends AjaxControllerAbstract
 
     protected function run()
     {
+        // Check GDPR consent if enabled
+        if (Option::getOption('gdpr_compliance') === '1' && !$this->get('gdpr_consent')) {
+            throw new Exception(esc_html__('Please accept the privacy checkbox to continue.', 'wp-sms'));
+        }
+
         $name           = $this->get('name');
         $number         = $this->get('mobile');
         $customFields   = $this->get('custom_fields');
@@ -32,7 +37,7 @@ class PublicSubscribeAjax extends AjaxControllerAbstract
         $result = SubscriberUtil::subscribe($name, $number, $group_id, $customFields);
 
         if (is_wp_error($result)) {
-            throw new Exception($result->get_error_message());
+            throw new Exception(esc_html($result->get_error_message()));
         }
 
         return wp_send_json_success($result);

@@ -191,11 +191,13 @@ class Newsletter
         );
 
         if ($single) {
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above via $wpdb->prepare()
             $result = $wpdb->get_row($exactMatchQuery);
             if ($result) {
                 return $result;
             }
         } else {
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above via $wpdb->prepare()
             $exactMatches = $wpdb->get_results($exactMatchQuery);
             if (!empty($exactMatches)) {
                 $results = $exactMatches;
@@ -207,6 +209,7 @@ class Newsletter
                 $metaValue
             );
 
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above via $wpdb->prepare()
             $normalizedMatches = $wpdb->get_results($normalizedMatchQuery);
 
             // Merge results without duplicates (based on ID or mobile)
@@ -310,7 +313,7 @@ class Newsletter
     {
         global $wpdb;
 
-        if (empty($id) or empty($name) or empty($mobile)) {
+        if (empty($id) or empty($mobile)) {
             return array('result' => 'error', 'message' => esc_html__('The fields must be valued.', 'wp-sms'));
         }
 
@@ -387,6 +390,7 @@ class Newsletter
 
         if (empty($groupIds) || !is_array($groupIds)) {
             $sql = "SELECT * FROM `{$wpdb->prefix}sms_subscribes_group`";
+            // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- No user input in query
             return $wpdb->get_results($sql);
         }
 
@@ -398,6 +402,7 @@ class Newsletter
             $groupIds
         );
 
+        // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared -- Query is prepared above via $wpdb->prepare()
         return $wpdb->get_results($sql);
     }
 
@@ -746,6 +751,7 @@ class Newsletter
     WHERE mobile IN ($mobile_placeholders) 
     AND group_ID IN ($group_placeholders)";
 
+        // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- $sql_base contains placeholders, prepared via $wpdb->prepare()
         if ($only_active) {
             $count = $wpdb->get_var(
                 $wpdb->prepare(
@@ -761,6 +767,7 @@ class Newsletter
                 )
             );
         }
+        // phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
 
         return $count > 0;
     }
@@ -788,6 +795,7 @@ class Newsletter
     LEFT JOIN {$wpdb->prefix}sms_subscribes_group g ON s.group_ID = g.ID
     WHERE s.mobile IN ($mobile_placeholders)";
 
+        // phpcs:disable WordPress.DB.PreparedSQL.NotPrepared -- $sql_base contains placeholders, prepared via $wpdb->prepare()
         if ($only_active) {
             $results = $wpdb->get_results(
                 $wpdb->prepare(
@@ -803,6 +811,7 @@ class Newsletter
                 )
             );
         }
+        // phpcs:enable WordPress.DB.PreparedSQL.NotPrepared
 
         $groups = [];
 

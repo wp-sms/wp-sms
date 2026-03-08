@@ -1,0 +1,22 @@
+{
+  "core": "WordPress/WordPress#6.4",
+  "phpVersion": "8.2",
+  "plugins": ["."],
+  "themes": [],
+  "config": {
+    "WP_DEBUG": true,
+    "WP_DEBUG_LOG": true,
+    "SCRIPT_DEBUG": true
+  },
+  "mappings": {},
+  "port": 8888,
+  "testsPort": 8889,
+  "env": {
+    "tests": {
+      "plugins": ["."],
+      "config": {
+        "WP_DEBUG": true
+      }
+    }
+  }
+}

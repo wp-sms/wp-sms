@@ -36,9 +36,6 @@ class LicenseManagementManager
         $this->initActionCallbacks();
 
         add_filter('wp_sms_enable_upgrade_to_bundle', [$this, 'showUpgradeToBundle']);
-        add_filter('wp_sms_enable_upgrade_notice', [$this, 'showUpgradeNotice']);
-        add_filter('wp_sms_admin_menu_list', [$this, 'addMenuItem']);
-        add_action('admin_init', [$this, 'initAdminPreview']);
         add_action('init', [$this, 'redirectOldLicenseUrlToNew']);
     }
 
@@ -48,37 +45,9 @@ class LicenseManagementManager
             (Request::compare('page', 'wp-sms-settings') && Request::compare('tab', 'licenses')) ||
             (Request::compare('page', 'wp-sms-plugins') && Request::compare('tab', 'add-license'))
         ) {
-            wp_redirect(admin_url('admin.php?page=wp-sms-add-ons'));
+            wp_redirect(admin_url('admin.php?page=wsms&tab=add-ons'));
             exit;
         }
-    }
-
-    public function initAdminPreview()
-    {
-        if (isset($_GET['page']) && $_GET['page'] == 'wp-sms-add-ons') {
-            add_action('admin_enqueue_scripts', [$this, 'enqueueScripts']);
-        }
-    }
-
-    public function enqueueScripts()
-    {
-        Assets::script('license-manager', 'js/licenseManager.min.js', ['jquery'], [], true);
-    }
-
-    public function addMenuItem($items)
-    {
-        $items['plugins'] = [
-            'sub'      => 'wp-sms',
-            'title'    => __('Add-Ons', 'wp-sms'),
-            'name'     => '<span class="wpsms-text-warning">' . __('Add-Ons', 'wp-sms') . '</span>',
-            'page_url' => 'add-ons',
-            'callback' => LicenseManagerPage::class,
-            'cap'      => WP_SMS\User\UserHelper::validateCapability(WP_SMS\Utils\OptionUtil::get('manage_capability', 'manage_options')),
-            'priority' => 90,
-            'break'    => true,
-        ];
-
-        return $items;
     }
 
     /**
@@ -104,26 +73,12 @@ class LicenseManagementManager
     }
 
     /**
-     * Show the "Upgrade To Bundle" in header when user doesn't have All-in-One license.
-     * Shows even if they have Pro or other add-ons (to encourage upgrading to All-in-One).
+     * Show the "Upgrade To Premium" only if the user has a premium license.
      *
      * @return bool
      */
     public function showUpgradeToBundle()
     {
-        // Hide only if they have All-in-One license
-        return !LicenseHelper::isPremiumLicenseAvailable();
-    }
-
-    /**
-     * Show upgrade notice when user has neither All-in-One nor Pro license.
-     * Used for displaying upgrade notices in send-sms and settings pages.
-     *
-     * @return bool
-     */
-    public function showUpgradeNotice()
-    {
-        // Hide if they have All-in-One OR Pro license
-        return !(LicenseHelper::isPremiumLicenseAvailable() || LicenseHelper::isPluginLicenseValid('wp-sms-pro'));
+        return !(LicenseHelper::isPremiumLicenseAvailable() || LicenseHelper::isPluginLicenseValid());
     }
 }

@@ -8,18 +8,18 @@
                 <tbody>
 
                     <tr id="wp-sms-recipient-numbers">
-                        <th scope="row"><label for="formidable-sms-recipient-number"><?php _e('Numbers', 'wp-sms'); ?>:</label></th>
+                        <th scope="row"><label for="formidable-sms-recipient-number"><?php esc_html_e('Numbers', 'wp-sms'); ?>:</label></th>
                         <td>
-                            <input type="text" value="<?php echo isset($sms_data['phone']) ? esc_attr($sms_data['phone']) : ''; ?>" size="70" class="large-text code" name="formidable-sms[phone]" id="formidable-sms-recipient-number">
-                            <p class="description"><?php _e('<b>Note:</b> When sending multiple numbers, please separate them with a comma. for example: 10000000001, 10000000002.', 'wp-sms'); ?></p>
+                            <input type="text" dir="auto" value="<?php echo isset($sms_data['phone']) ? esc_attr($sms_data['phone']) : ''; ?>" size="70" class="large-text code" name="formidable-sms[phone]" id="formidable-sms-recipient-number">
+                            <p class="description"><?php echo wp_kses(__('<b>Note:</b> When sending multiple numbers, please separate them with a comma. for example: 10000000001, 10000000002.', 'wp-sms'), ['b' => []]); ?></p>
                         </td>
                     </tr>
 
 
                     <tr id="wp-sms-cf7-message-body">
-                        <th scope="row"><label for="formidable-sms-message"><?php _e('Message body', 'wp-sms'); ?>:</label></th>
+                        <th scope="row"><label for="formidable-sms-message"><?php esc_html_e('Message body', 'wp-sms'); ?>:</label></th>
                         <td>
-                            <textarea class="large-text" rows="4" cols="100" name="formidable-sms[message]" id="formidable-sms-message"><?php echo isset($sms_data['message']) ? esc_html($sms_data['message']) : ''; ?></textarea>
+                            <textarea class="large-text" dir="auto" rows="4" cols="100" name="formidable-sms[message]" id="formidable-sms-message"><?php echo isset($sms_data['message']) ? esc_html($sms_data['message']) : ''; ?></textarea>
                             <p class="description">
                                 <?php
                                 foreach ($fieldGroup as $key => $value) {
@@ -33,11 +33,11 @@
                     </tr>
             </table>
 
-            <h3><?php _e('Send to form', 'wp-sms'); ?></h3>
-            <legend><?php _e('After submitting the form, you have the option to send an SMS message to the specified field:', 'wp-sms'); ?><br></legend>
+            <h3><?php esc_html_e('Send to form', 'wp-sms'); ?></h3>
+            <legend><?php esc_html_e('After submitting the form, you have the option to send an SMS message to the specified field:', 'wp-sms'); ?><br></legend>
             <table class="form-table">
                 <tr>
-                    <th scope="row"><label for="formidable-sms-sender-form"><?php _e('Send to field', 'wp-sms'); ?>:</label>
+                    <th scope="row"><label for="formidable-sms-sender-form"><?php esc_html_e('Send to field', 'wp-sms'); ?>:</label>
                     </th>
                     <td>
                         <select class="large-select code" name="formidable-sms[field][phone]" id="formidable-sms-sender-form">
@@ -54,10 +54,10 @@
                 </tr>
 
                 <tr>
-                    <th scope="row"><label for="formidable-sms-message-form"><?php _e('Message body', 'wp-sms'); ?>:</label>
+                    <th scope="row"><label for="formidable-sms-message-form"><?php esc_html_e('Message body', 'wp-sms'); ?>:</label>
                     </th>
                     <td>
-                        <textarea class="large-text" rows="4" cols="100" name="formidable-sms[field][message]" id="formidable-sms-message-form"><?php echo isset($sms_data['field']['message']) ? esc_html($sms_data['field']['message']) : ''; ?></textarea>
+                        <textarea class="large-text" dir="auto" rows="4" cols="100" name="formidable-sms[field][message]" id="formidable-sms-message-form"><?php echo isset($sms_data['field']['message']) ? esc_html($sms_data['field']['message']) : ''; ?></textarea>
                         <p class="description">
                             <?php
                             foreach ($fieldGroup as $key => $value) {
@@ -72,7 +72,7 @@
                     <th scope="row"><label for="formidable-sms-message-form"></label>
                     </th>
                     <td>
-                        <button type="submit" class="button button-primary"><?php _e('Submit', 'wp-sms'); ?></button>
+                        <button type="submit" class="button button-primary"><?php esc_html_e('Submit', 'wp-sms'); ?></button>
                     </td>
                 </tr>
                 </tbody>

@@ -2,6 +2,8 @@
 
 namespace WP_SMS\Admin\Notification;
 
+if (!defined('ABSPATH')) exit;
+
 use WP_SMS\Option;
 
 class NotificationManager

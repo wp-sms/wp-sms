@@ -10,18 +10,20 @@ class test extends \WP_SMS\Gateway
     public $tariff = '';
     public $unitrial = true;
     public $unit;
-    public $flash = "false";
+    public $flash = "enable";
     public $isflash = false;
     public $options;
 
     public function __construct()
     {
         parent::__construct();
-        $this->help           = "";
-        $this->validateNumber = "09xxxxxxxx";
-        $this->has_key        = true;
-        $this->bulk_send      = true;
-        $this->gatewayFields  = [
+        $this->help            = "";
+        $this->validateNumber  = "09xxxxxxxx";
+        $this->has_key         = true;
+        $this->bulk_send       = true;
+        $this->supportMedia    = true;
+        $this->supportIncoming = true;
+        $this->gatewayFields   = [
             'from' => [
                 'id'   => 'gateway_sender_id',
                 'name' => 'Sender ID',
@@ -81,6 +83,8 @@ class test extends \WP_SMS\Gateway
                 'to'         => $this->to,
                 'recipients' => is_array($this->to) ? count($this->to) : 1,
                 'message'    => $this->msg,
+                'flash'      => $this->isflash,
+                'media'      => $this->media ?: null,
                 'cost'       => sprintf('%.2f USD', wp_rand(5, 500) / 100),
                 'sent_at'    => current_time('mysql'),
                 'error'      => null,
@@ -91,7 +95,7 @@ class test extends \WP_SMS\Gateway
             ];
 
             //log the result
-            $this->log($this->from, $this->msg, $this->to, $response);
+            $this->log($this->from, $this->msg, $this->to, $response, 'success', $this->media);
 
             /**
              * Run hook after send sms.
@@ -105,7 +109,7 @@ class test extends \WP_SMS\Gateway
             return $response;
 
         } catch (\Exception $e) {
-            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error', $this->media);
 
             return new \WP_Error('send-sms', $e->getMessage());
         }

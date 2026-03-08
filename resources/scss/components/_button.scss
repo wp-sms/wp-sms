@@ -1,0 +1,46 @@
+// Mirrors: Button default — h-9 px-4 rounded-md bg-primary text-primary-foreground shadow-sm
+.wpsms-button {
+  background: hsl(24, 95%, 38%) !important;
+  background: hsl(var(--wsms-primary)) !important;
+  border-radius: calc(var(--wsms-radius, 6px) - 2px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff !important;
+  color: hsl(var(--wsms-primary-foreground)) !important;
+  font-family: inherit;
+  padding: 0 var(--wsms-space-4);
+  font-weight: 500;
+  font-size: var(--wsms-font-size-base);
+  line-height: 1;
+  height: var(--wsms-button-height);
+  text-decoration: none;
+  border: none !important;
+  transition: all 0.15s ease;
+  width: 100%;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+
+  &:focus, &:active {
+    text-decoration: none !important;
+  }
+
+  // Mirrors: hover:bg-primary/90
+  &:hover {
+    background: hsl(var(--wsms-primary) / 0.9) !important;
+    text-decoration: none !important;
+  }
+
+  // Mirrors: active:scale-[0.98]
+  &:active {
+    transform: scale(0.98);
+  }
+
+  // Mirrors: disabled:pointer-events-none disabled:opacity-50
+  &:disabled {
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}

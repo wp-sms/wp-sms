@@ -18,7 +18,7 @@
             <div class="wpsms-form-step-one js-wpSmsSubscribeStepOne">
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberName">
                     <label><?php esc_html_e('Your Name', 'wp-sms'); ?></label>
-                    <input type="text" placeholder="<?php esc_html_e('Full Name', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
+                    <input type="text" dir="auto" placeholder="<?php esc_html_e('Full Name', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
                 </div>
 
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberMobile">
@@ -56,7 +56,7 @@
                 <?php if (isset($attributes['fields'])) : ?><?php foreach ($attributes['fields'] as $key => $field) : ?>
                     <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField js-wpSmsSubscriberCustomFields" data-field-name=<?php echo esc_html(ucfirst($field['label'])); ?>>
                         <label for="wpsms-<?php echo esc_attr($key); ?>"><?php echo esc_html(ucfirst($field['label'])); ?></label>
-                        <input id="wpsms-<?php echo esc_attr($key); ?>" name="fields[<?php echo esc_attr($key); ?>]" type="<?php echo esc_attr($field['type']); ?>" placeholder="<?php echo esc_attr($field['description']); ?>" class="wpsms-subscribe__field__input"/>
+                        <input id="wpsms-<?php echo esc_attr($key); ?>" name="fields[<?php echo esc_attr($key); ?>]" type="<?php echo esc_attr($field['type']); ?>" dir="auto" placeholder="<?php echo esc_attr($field['description']); ?>" class="wpsms-subscribe__field__input"/>
                     </div>
                 <?php endforeach; ?><?php endif; ?>
 
@@ -79,7 +79,7 @@
                         </label>
                     </div>
                 <?php } ?>
-                <button class="wpsms-button wpsms-form-submit js-wpSmsSubmitTypeButton js-wpSmsSubmitButton" <?php if ($gdpr_compliance && $subscribe_form_gdpr_confirm_checkbox == 'unchecked') {
+                <button class="wpsms-button wpsms-form-submit js-wpSmsSubmitTypeButton js-wpSmsSubmitButton" <?php if ($gdpr_compliance && $subscribe_form_gdpr_confirm_checkbox !== 'checked') {
                     echo 'disabled';
                 }; ?>>
                     <?php esc_html_e('Subscribe', 'wp-sms'); ?>
@@ -92,7 +92,7 @@
 
                 <div class="wpsms-subscribe__form__field js-wpSmsSubscribeFormField">
                     <label><?php esc_html_e('Activation code', 'wp-sms'); ?></label>
-                    <input type="text" class="wpsms-activation-code js-wpSmsActivationCode" placeholder="<?php esc_html_e('Activation code', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
+                    <input type="text" dir="auto" class="wpsms-activation-code js-wpSmsActivationCode" placeholder="<?php esc_html_e('Activation code', 'wp-sms'); ?>" class="wpsms-subscribe__field__input"/>
                 </div>
                 <button class="wpsms-button wpsms-activation-submit js-wpSmsSubmitTypeButton js-wpSmsActivationButton"><?php esc_html_e('Activate', 'wp-sms'); ?></button>
                 <input type="hidden" class="newsletter-form-verify js-wpSmsMandatoryVerify" value="<?php echo esc_attr(wp_sms_get_option('newsletter_form_verify')); ?>">

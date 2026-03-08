@@ -5,7 +5,6 @@ namespace WP_SMS\Admin;
 use WP_SMS\Admin\AjaxOptionUpdater;
 use WP_SMS\Admin\NoticeHandler\Notice;
 use WP_SMS\Components\Ajax;
-use WP_SMS\SMS_Send;
 
 if (!defined('ABSPATH')) exit;
 

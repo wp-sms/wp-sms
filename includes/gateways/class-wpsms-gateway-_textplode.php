@@ -4,133 +4,134 @@ namespace WP_SMS\Gateway;
 
 if (!defined('ABSPATH')) exit; // Exit if accessed directly
 
+use Exception;
+use WP_Error;
+use WP_SMS\Gateway;
+use WP_SMS\Helper;
+
 class _textplode extends \WP_SMS\Gateway
 {
-    private $wsdl_link = "";
-    public $tariff = "https://www.textplode.com/";
-    public $unitrial = true;
-    public $unit;
-    public $flash = "disable";
-    public $isflash = false;
+    private $wsdl_link      = 'http://api.textplode.com/v3';
+    public  $version        = '2.0';
+    public  $tariff         = 'https://www.textplode.com/';
+    public  $unitrial       = false;
+    public  $unit;
+    public  $flash          = 'disable';
+    public  $isflash        = false;
+    public  $bulk_send      = true;
+    public  $supportMedia   = false;
+    public  $supportIncoming= false;
+    public  $has_key        = true;
+    public  $help           = '';
+    public  $api_key;
+    public  $sender;
+
+    public $gatewayFields = [
+        'api_key' => [
+            'id'   => 'textplode_api_key',
+            'name' => 'API Key',
+            'desc' => 'Paste your Textplode API key here.',
+            'type' => 'text',
+        ],
+        'sender'  => [
+            'id'   => 'textplode_sender',
+            'name' => 'From Name',
+            'desc' => 'Alphanumeric or phone number per Textplode rules.',
+            'type' => 'text',
+        ]
+    ];
 
     public function __construct()
     {
         parent::__construct();
-        $this->validateNumber = "440000000000,440000000001";
 
-        // Enable api key
-        $this->has_key = true;
+        // Optional: set defaults or dynamic help
+        $this->help = $this->help ?: esc_html__('Configure Textplode API Key and From Name.', 'wp-sms');
     }
 
     public function SendSMS()
     {
-        /**
-         * Modify sender number
-         *
-         * @param string $this ->from sender number.
-         * @since 3.4
-         *
-         */
+        // Let WP SMS apply number cleaning / country code if enabled in settings
         $this->from = apply_filters('wp_sms_from', $this->from);
+        $this->to   = apply_filters('wp_sms_to',   $this->to);
+        $this->msg  = apply_filters('wp_sms_msg',  $this->msg);
 
-        /**
-         * Modify Receiver number
-         *
-         * @param array $this ->to receiver number
-         * @since 3.4
-         *
-         */
-        $this->to = apply_filters('wp_sms_to', $this->to);
+        try {
+            // Build recipients array for Textplode API format
+            $recipients = [];
+            foreach ((array) $this->to as $number) {
+                $recipients[] = [
+                    'phone_number' => $number,
+                    'merge'        => []
+                ];
+            }
 
-        if (!class_exists('Textplode')) {
-            $this->log($this->from, $this->msg, $this->to, __('The Textplode class could not be found. Please ensure the Textplode library or plugin is properly loaded.', 'wp-sms'), 'error');
+            // Build HTTP params
+            $params = [
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ],
+                'body' => [
+                    'api_key'    => trim($this->api_key),
+                    'from'       => $this->from ?: trim($this->sender),
+                    'message'    => $this->msg,
+                    'recipients' => wp_json_encode($recipients),
+                ]
+            ];
 
-            return new \WP_Error(
-                'textplode-missing',
-                __('The Textplode class could not be found. Please ensure the Textplode library or plugin is properly loaded.', 'wp-sms')
-            );
+            $response = $this->request('POST', $this->wsdl_link . '/messages/send', [], $params, true);
+
+            // Check for API errors
+            if (isset($response->errors->errorCode) && $response->errors->errorCode != 200) {
+                $errorMessage = $response->errors->errorMessage ?? esc_html__('Unknown API error.', 'wp-sms');
+                throw new Exception($errorMessage);
+            }
+
+            // Check if we have campaign_id in the response data
+            if (!isset($response->data->campaign_id)) {
+                throw new Exception(esc_html__('Invalid response from gateway.', 'wp-sms'));
+            }
+
+            // Log to Outbox table
+            $this->log($this->from, $this->msg, $this->to, $response);
+
+            // Fire plugin hook
+            do_action('wp_sms_send', $response);
+
+            return $response;
+
+        } catch (Exception $e) {
+            
+            // Log error to Outbox
+            $this->log($this->from, $this->msg, $this->to, $e->getMessage(), 'error');
+
+            return new WP_Error('send-sms', $e->getMessage());
         }
-
-        // Get the credit.
-        $credit = $this->GetCredit();
-
-        // Check gateway credit
-        if (is_wp_error($credit)) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $credit->get_error_message(), 'error');
-
-            return $credit;
-        }
-
-        /**
-         * Modify text message
-         *
-         * @param string $this ->msg text message.
-         * @since 3.4
-         *
-         */
-        $this->msg = apply_filters('wp_sms_msg', $this->msg);
-
-        // Init class
-        $textplode = new \Textplode($this->has_key);
-
-        // Add recipient
-        foreach ($this->to as $to) {
-            $textplode->messages->add_recipient($to, array());
-        }
-
-        // Set From Name
-        $textplode->messages->set_from($this->from);
-
-        // Set Message
-        $textplode->messages->set_message($this->msg);
-
-        // Send sms
-        $result = $textplode->messages->send();
-
-        // Check result
-        if (!$result) {
-            // Log the result
-            $this->log($this->from, $this->msg, $this->to, $result, 'error');
-
-            return new \WP_Error('send-sms', $result);
-        }
-
-        // Log the result
-        $this->log($this->from, $this->msg, $this->to, $result);
-
-        /**
-         * Run hook after send sms.
-         *
-         * @param string $result result output.
-         * @since 2.4
-         *
-         */
-        do_action('wp_sms_send', $result);
-
-        return $result;
     }
 
     public function GetCredit()
     {
-        if (!class_exists('Textplode')) {
-            return new \WP_Error(
-                'textplode-missing',
-                __('The Textplode class could not be found. Please ensure the Textplode library or plugin is properly loaded.', 'wp-sms')
-            );
+        try {
+            if (empty($this->api_key)) {
+                return new WP_Error('account-credit', esc_html__('Please enter your API key.', 'wp-sms'));
+            }
+
+            // Build HTTP params for POST request
+            $params = [
+                'headers' => [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ],
+                'body'    => [
+                    'api_key' => trim($this->api_key),
+                ]
+            ];
+
+            $response = $this->request('POST', $this->wsdl_link . '/account/get/credits', [], $params, true);
+
+            return $response->data[0]->credits ?? throw new Exception(esc_html__('Unable to retrieve balance.', 'wp-sms'));
+
+        } catch (Exception $e) {
+            return new WP_Error('account-credit', $e->getMessage());
         }
-
-        // Check username and password
-        if (!$this->username && !$this->password) {
-            return new \WP_Error('account-credit', esc_html__('Username and Password are required.', 'wp-sms'));
-        }
-
-        // Init class
-        $textplode = new \Textplode($this->has_key);
-
-        // Get credit
-        $credits = $textplode->account->get_credits();
-
-        return $credits;
     }
 }

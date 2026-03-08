@@ -1,0 +1,726 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   WSMS Settings - Clean Minimal Orange Theme
+   ============================================ */
+
+:root {
+  /* Light theme - Warm orange palette with refined grays */
+  --background: 30 10% 98%;
+  --foreground: 20 10% 12%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 20 10% 12%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 20 10% 12%;
+
+  /* Orange primary - darker for WCAG AA contrast with white text (4.5:1) */
+  --primary: 24 95% 38%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 30 8% 95%;
+  --secondary-foreground: 20 10% 12%;
+
+  --muted: 30 8% 95%;
+  --muted-foreground: 20 6% 35%;
+
+  --accent: 30 12% 93%;
+  --accent-foreground: 20 10% 12%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 142 76% 25%;
+  --success-foreground: 0 0% 100%;
+
+  --warning: 38 92% 50%;
+  --warning-foreground: 0 0% 0%;
+
+  /* Improved border contrast - darker for visibility */
+  --border: 20 8% 75%;
+  --input: 20 8% 75%;
+  --ring: 24 95% 38%;
+
+  --radius: 6px;
+
+  /* Sidebar width */
+  --sidebar-width: 240px;
+}
+
+[data-theme="dark"] {
+  --background: 20 8% 8%;
+  --foreground: 30 10% 93%;
+
+  --card: 20 6% 11%;
+  --card-foreground: 30 10% 93%;
+
+  --popover: 20 6% 12%;
+  --popover-foreground: 30 10% 93%;
+
+  --primary: 24 95% 45%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 20 5% 16%;
+  --secondary-foreground: 30 10% 93%;
+
+  --muted: 20 5% 16%;
+  --muted-foreground: 20 5% 55%;
+
+  --accent: 20 6% 20%;
+  --accent-foreground: 30 10% 93%;
+
+  --destructive: 0 62% 50%;
+  --destructive-foreground: 0 0% 100%;
+
+  --success: 142 60% 38%;
+  --success-foreground: 0 0% 100%;
+
+  /* Improved border contrast for dark mode */
+  --border: 20 6% 28%;
+  --input: 20 6% 28%;
+  --ring: 24 95% 45%;
+}
+
+/* ============================================
+   Base Styles - Clean and minimal
+   ============================================ */
+
+#wpsms-settings-root {
+  position: relative;
+
+  /* Direction-driven tokens (dir is set on this root in main.jsx) */
+  --wsms-section-divider-angle: 90deg;
+  --wsms-notification-enter-x: 12px;
+}
+
+/*
+ * WordPress admin layout overrides (hiding footer, removing padding, height constraints)
+ * are now set via inline styles in Dashboard.php to ensure they work in RTL mode.
+ * WordPress may not generate the expected body class in RTL, causing CSS rules here to not apply.
+ */
+
+#wpsms-settings-root[dir="rtl"] {
+  --wsms-section-divider-angle: 270deg;
+  --wsms-notification-enter-x: -12px;
+}
+
+/* Prevent Radix UI scroll-lock from breaking WP admin layout.
+ * Radix injects a <style> with body[data-scroll-locked] { overflow: hidden; margin-right: Xpx }
+ * after our CSS loads, so we need higher specificity (doubled attribute selector) to win. */
+body[data-scroll-locked][data-scroll-locked] {
+  overflow: auto !important;
+  margin-right: 0 !important;
+}
+
+/* Keep RTL behavior driven by the app root's dir attribute.
+ * Avoid forcing direction on generic components (e.g. multi-select triggers) since that breaks layout. */
+
+.wpsms-settings-app,
+.wsms-settings-app {
+  font-family: inherit;
+  font-size: 13px;
+  line-height: 1.5;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+}
+
+.wpsms-settings-app *,
+.wpsms-settings-app *::before,
+.wpsms-settings-app *::after,
+.wsms-settings-app *,
+.wsms-settings-app *::before,
+.wsms-settings-app *::after {
+  box-sizing: border-box;
+}
+
+/*
+ * Minimal Reset for WordPress Admin Compatibility
+ * Only reset properties that WordPress admin styles override incorrectly.
+ * Let Tailwind handle all visual styling (padding, backgrounds, borders, etc.)
+ */
+
+/* Typography reset - only margin and font inheritance */
+#wpsms-settings-root h1,
+#wpsms-settings-root h2,
+#wpsms-settings-root h3,
+#wpsms-settings-root h4,
+#wpsms-settings-root p {
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* Form elements - font inheritance only */
+#wpsms-settings-root input,
+#wpsms-settings-root select,
+#wpsms-settings-root textarea,
+#wpsms-settings-root button {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* ============================================
+   Layout - WordPress Admin Integration
+   ============================================ */
+
+.wsms-settings-app {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* RTL button layout:
+ * Keep icons on the physical left and label text on the physical right in RTL without `direction:ltr`.
+ * Button normalizes its text into `.wsms-btn__label` so we can safely reorder only in RTL.
+ *
+ * LTR is intentionally left unchanged to avoid visual regressions. */
+#wpsms-settings-root[dir="rtl"] .wsms-btn__label {
+  order: 1;
+}
+
+#wpsms-settings-root[dir="rtl"] .wsms-btn > :not(.wsms-btn__label) {
+  order: 2;
+}
+
+#wpsms-settings-root[dir="rtl"] .wsms-btn {
+  gap: 0.5rem;
+}
+
+#wpsms-settings-root[dir="rtl"] .wsms-btn svg {
+  margin-inline-start: 0 !important;
+  margin-inline-end: 0 !important;
+}
+
+/* Floating save bar should stick to the bottom of the viewport (not the end of the scrollable content). */
+.wsms-floating-savebar {
+  position: fixed;
+  bottom: 0;
+  left: var(--wsms-fixed-left, var(--wsms-fixed-inset-start, 0));
+  width: var(--wsms-fixed-width, calc(100vw - var(--wsms-fixed-inset-start, 0) - var(--wsms-fixed-inset-end, 0)));
+  right: auto;
+  z-index: 99997;
+}
+
+/* Ensure scrolling content doesn't end up behind the fixed save bar. */
+#wpsms-settings-root.wsms-has-floating-savebar .wsms-content {
+  padding-bottom: calc(24px + var(--wsms-floating-savebar-h, 56px));
+}
+
+.wsms-settings-wrapper {
+  display: flex;
+  flex: 1;
+  min-height: 0; /* Important for flex children to scroll properly */
+  overflow: hidden;
+}
+
+.wsms-sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  flex-shrink: 0;
+  border-inline-end: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.wsms-main {
+  flex: 1;
+  min-width: 0;
+  min-height: 0; /* Allow the content area to become the scroll container */
+  display: flex;
+  flex-direction: column;
+  background: hsl(var(--muted));
+  overflow: hidden;
+}
+
+.wsms-content {
+  flex: 1;
+  min-height: 0; /* Required for nested flex + overflow scrolling to work reliably */
+  padding: 24px;
+  padding-inline-start: 32px;
+  overflow-y: auto;
+}
+
+@media (max-width: 782px) {
+  .wsms-content {
+    padding: 12px;
+  }
+}
+
+.wsms-content-inner {
+  /* No max-width - content stretches to fill available space */
+  /* Data tables benefit from full width on large screens */
+}
+
+/* ============================================
+   Scrollbar - Minimal
+   ============================================ */
+
+@layer utilities {
+  .wsms-scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  .wsms-scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .wsms-scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .wsms-scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 3px;
+  }
+
+  .wsms-scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.4);
+  }
+}
+
+/* ============================================
+   Animations - Refined & Polished
+   ============================================ */
+
+/* Fade-in kept for intentional fade effects (e.g., modals, overlays) */
+/* WARNING: Do not apply to main content - content may be invisible if animation fails */
+@keyframes wsms-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Safe slide-up animation - no opacity change, content always visible */
+@keyframes wsms-slide-up {
+  from {
+    transform: translateY(8px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes wsms-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Safe stagger animation - no opacity change, content always visible */
+@keyframes wsms-stagger-slide {
+  from {
+    transform: translateY(4px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes wsms-pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes wsms-shimmer {
+  0% { background-position: 100% 0; }
+  100% { background-position: -100% 0; }
+}
+
+.wsms-animate-in {
+  animation: wsms-fade-in 0.2s ease-out forwards;
+}
+
+.wsms-animate-slide-up {
+  animation: wsms-slide-up 0.25s ease-out forwards;
+}
+
+.wsms-animate-scale-in {
+  animation: wsms-scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Staggered children animations for page loads (progressive enhancement) */
+/* Content is ALWAYS visible by default - animation is decorative only */
+.wsms-stagger-children > * {
+  /* No opacity change - content always visible */
+}
+
+/* Only apply animation for users who haven't disabled motion */
+@media (prefers-reduced-motion: no-preference) {
+  .wsms-stagger-children > * {
+    animation: wsms-stagger-slide 0.25s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .wsms-stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+  .wsms-stagger-children > *:nth-child(2) { animation-delay: 30ms; }
+  .wsms-stagger-children > *:nth-child(3) { animation-delay: 60ms; }
+  .wsms-stagger-children > *:nth-child(4) { animation-delay: 90ms; }
+  .wsms-stagger-children > *:nth-child(5) { animation-delay: 120ms; }
+  .wsms-stagger-children > *:nth-child(6) { animation-delay: 150ms; }
+  .wsms-stagger-children > *:nth-child(7) { animation-delay: 180ms; }
+  .wsms-stagger-children > *:nth-child(8) { animation-delay: 210ms; }
+}
+
+/* Smooth hover transitions for cards */
+.wsms-card-hover {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wsms-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.1);
+}
+
+/* Button press effect */
+.wsms-btn-press:active {
+  transform: scale(0.97);
+}
+
+/* Skeleton loading - subtle pulse that matches design system */
+.wsms-skeleton {
+  background-color: hsl(var(--muted));
+  animation: wsms-skeleton-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes wsms-skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* ============================================
+   Enhanced Stats Cards
+   ============================================ */
+
+.wsms-stat-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.wsms-stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary) / 0.5));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.wsms-stat-card:hover::before {
+  opacity: 1;
+}
+
+.wsms-stat-card-success::before {
+  background: linear-gradient(90deg, hsl(var(--success)), hsl(var(--success) / 0.5));
+  opacity: 1;
+}
+
+.wsms-stat-card-warning::before {
+  background: linear-gradient(90deg, hsl(var(--warning)), hsl(var(--warning) / 0.5));
+  opacity: 1;
+}
+
+.wsms-stat-card-destructive::before {
+  background: linear-gradient(90deg, hsl(var(--destructive)), hsl(var(--destructive) / 0.5));
+  opacity: 1;
+}
+
+/* ============================================
+   Enhanced Empty States
+   ============================================ */
+
+.wsms-empty-state {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.wsms-empty-state-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, hsl(var(--muted)), hsl(var(--muted) / 0.5));
+  margin-bottom: 16px;
+}
+
+.wsms-empty-state-icon svg {
+  width: 28px;
+  height: 28px;
+  color: hsl(var(--muted-foreground));
+  stroke-width: 1.5;
+}
+
+/* ============================================
+   Focus Ring Improvements
+   ============================================ */
+
+.wsms-focus-ring:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px hsl(var(--background)),
+              0 0 0 4px hsl(var(--ring));
+}
+
+/* ============================================
+   Gradient Text Accent
+   ============================================ */
+
+.wsms-gradient-text {
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.7));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   Section Dividers
+   ============================================ */
+
+.wsms-section-divider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0;
+  color: hsl(var(--muted-foreground));
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.wsms-section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(var(--wsms-section-divider-angle, 90deg), hsl(var(--border)), transparent);
+}
+
+/* ============================================
+   Interactive List Items
+   ============================================ */
+
+.wsms-list-item {
+  position: relative;
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.wsms-list-item:hover {
+  background-color: hsl(var(--accent));
+}
+
+.wsms-list-item:active {
+  transform: scale(0.99);
+}
+
+.wsms-list-item-selected {
+  background-color: hsl(var(--primary) / 0.08);
+  border-inline-start: 3px solid hsl(var(--primary));
+}
+
+/* ============================================
+   Number Counter Animation
+   ============================================ */
+
+@keyframes wsms-count-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.wsms-count-animate {
+  animation: wsms-count-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ============================================
+   Screen reader utility
+   ============================================ */
+
+.wsms-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ============================================
+   Notification Sidebar
+   ============================================ */
+
+/* Body scroll lock when notification sidebar is open */
+body.wsms-notification-sidebar-open {
+  overflow: hidden !important;
+  padding-inline-end: var(--scrollbar-width, 0);
+}
+
+/* Ensure sidebar overlays WordPress admin elements */
+.wsms-notification-sidebar-open #wpcontent,
+.wsms-notification-sidebar-open #wpfooter {
+  position: relative;
+}
+
+/* Notification card animation on entry */
+@keyframes wsms-notification-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(var(--wsms-notification-enter-x, 12px));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.wsms-animate-in {
+  animation: wsms-notification-slide-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Notification card prose styling */
+.wsms-prose a {
+  color: hsl(var(--primary));
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s ease;
+}
+
+.wsms-prose a:hover {
+  text-decoration: underline;
+  color: hsl(var(--primary) / 0.8);
+}
+
+.wsms-prose p {
+  margin: 0;
+}
+
+.wsms-prose p + p {
+  margin-top: 0.5rem;
+}
+
+.wsms-prose ul,
+.wsms-prose ol {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem;
+}
+
+.wsms-prose li {
+  margin: 0.25rem 0;
+}
+
+.wsms-prose strong {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.wsms-prose code {
+  font-size: 0.85em;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  background: hsl(var(--muted));
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* Notification card hover lift effect */
+.wsms-notification-card-lift {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wsms-notification-card-lift:hover {
+  transform: translateY(-1px);
+}
+
+/* Smooth backdrop blur for modern browsers */
+@supports (backdrop-filter: blur(4px)) {
+  .wsms-backdrop-blur {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+}
+
+/* ============================================
+   Date/Time Input Styling
+   ============================================ */
+
+/* Style all date/time inputs for consistent cross-browser appearance */
+#wpsms-settings-root input[type="date"],
+#wpsms-settings-root input[type="time"],
+#wpsms-settings-root input[type="datetime-local"] {
+  position: relative;
+  padding-right: 2.5rem; /* Space for the calendar/clock icon */
+}
+
+/* WebKit browsers (Chrome, Safari, Edge) calendar/time picker indicator */
+#wpsms-settings-root input[type="date"]::-webkit-calendar-picker-indicator,
+#wpsms-settings-root input[type="time"]::-webkit-calendar-picker-indicator,
+#wpsms-settings-root input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.15s ease;
+}
+
+#wpsms-settings-root input[type="date"]::-webkit-calendar-picker-indicator:hover,
+#wpsms-settings-root input[type="time"]::-webkit-calendar-picker-indicator:hover,
+#wpsms-settings-root input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Firefox - hide the native clear button and style consistently */
+#wpsms-settings-root input[type="date"]::-moz-clear,
+#wpsms-settings-root input[type="time"]::-moz-clear,
+#wpsms-settings-root input[type="datetime-local"]::-moz-clear {
+  display: none;
+}
+
+/* Ensure the input text doesn't overlap with the icon */
+#wpsms-settings-root input[type="date"]::-webkit-datetime-edit,
+#wpsms-settings-root input[type="time"]::-webkit-datetime-edit,
+#wpsms-settings-root input[type="datetime-local"]::-webkit-datetime-edit {
+  padding-right: 0;
+}
+
+#wpsms-settings-root input[type="date"]::-webkit-datetime-edit-fields-wrapper,
+#wpsms-settings-root input[type="time"]::-webkit-datetime-edit-fields-wrapper,
+#wpsms-settings-root input[type="datetime-local"]::-webkit-datetime-edit-fields-wrapper {
+  padding: 0;
+}

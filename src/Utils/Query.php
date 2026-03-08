@@ -228,7 +228,7 @@ class Query
                 }
                 break;
             default:
-                throw new InvalidArgumentException("Unsupported operator: $operator");
+                throw new InvalidArgumentException(esc_html("Unsupported operator: $operator"));
         }
 
         return ['condition' => $condition, 'values' => $values];
@@ -298,7 +298,7 @@ class Query
             case 'union':
                 return $this->unionQuery();
             default:
-                throw new InvalidArgumentException("Unknown query operation: $this->operation");
+                throw new InvalidArgumentException(esc_html("Unknown query operation: $this->operation"));
         }
     }
 
@@ -321,7 +321,7 @@ class Query
      */
     protected function updateQuery()
     {
-        if (empty($this->setClauses)) throw new InvalidArgumentException("No SET clauses for update query");
+        if (empty($this->setClauses)) throw new InvalidArgumentException(esc_html('No SET clauses for update query'));
         $query = "UPDATE $this->table SET " . implode(', ', $this->setClauses);
         if (!empty($this->whereClauses)) $query .= ' WHERE ' . implode(" $this->whereRelation ", $this->whereClauses);
         return $query;
@@ -333,7 +333,7 @@ class Query
     protected function insertQuery()
     {
         if (empty($this->setClauses)) {
-            throw new InvalidArgumentException("No values provided for insert query");
+            throw new InvalidArgumentException(esc_html('No values provided for insert query'));
         }
 
         $fields = [];
@@ -444,7 +444,7 @@ class Query
     {
         $allowedOperators = ['=', '!=', '<', '>', '<=', '>='];
         if (!in_array($operator, $allowedOperators, true)) {
-            throw new InvalidArgumentException("Unsupported join operator: $operator");
+            throw new InvalidArgumentException(esc_html("Unsupported join operator: $operator"));
         }
 
         $type                = in_array(strtoupper($type), ['INNER', 'LEFT', 'RIGHT', 'OUTER'], true) ? strtoupper($type) : 'INNER';

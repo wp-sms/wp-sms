@@ -31,7 +31,7 @@
                     </div>
 
                     <div style="display: block; width: 100%; margin-bottom: 15px;">
-                        <textarea aria-label="<?php esc_attr_e('Enter the contents of the SMS message', 'wp-sms'); ?>" name="message" rows="3" style="display: block; width: 100%;"><?php echo esc_html($message) ?></textarea>
+                        <textarea aria-label="<?php esc_attr_e('Enter the contents of the SMS message', 'wp-sms'); ?>" dir="auto" name="message" rows="3" style="display: block; width: 100%;"><?php echo esc_html($message) ?></textarea>
                         <p class="description"><?php esc_html_e('Enter the contents of the SMS message.', 'wp-sms'); ?></p>
                         <p class="description"><?php echo wp_kses_post($args['options']['variables']); ?></p>
                     </div>
@@ -62,7 +62,7 @@
                         <p class="description"><?php esc_html_e('Please select notify status', 'wp-sms'); ?></p>
                     </div>
                     <div style="display: block; width: 100%; margin-bottom: 15px;">
-                        <textarea aria-label="<?php esc_attr_e('Enter the contents of the SMS message', 'wp-sms'); ?>" name="message" rows="3" style="display: block; width: 100%;"></textarea>
+                        <textarea aria-label="<?php esc_attr_e('Enter the contents of the SMS message', 'wp-sms'); ?>" dir="auto" name="message" rows="3" style="display: block; width: 100%;"></textarea>
                         <p class="description"><?php esc_html_e('Enter the contents of the SMS message.', 'wp-sms'); ?></p>
                         <p class="description"><?php echo wp_kses_post($args['options']['variables']); ?></p>
                     </div>
