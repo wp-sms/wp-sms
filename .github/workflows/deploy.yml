@@ -23,19 +23,25 @@ jobs:
         with:
           php-version: '7.4'
 
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
 
       - name: Install Composer dependencies
         run: composer install
 
       - name: Install Node dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build assets
-        run: npm run build
+        run: pnpm build
 
       - name: WordPress Plugin Deploy
         uses: 10up/action-wordpress-plugin-deploy@stable

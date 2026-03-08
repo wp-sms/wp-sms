@@ -33,6 +33,7 @@ nbproject
 
 # node_modules
 /node_modules
+package-lock.json
 
 # Build output (rebuilt by `npm run build`)
 /public/*
