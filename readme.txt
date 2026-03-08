@@ -95,10 +95,6 @@ All source code for minified JavaScript and CSS is included in the plugin under 
 
 [Chart.js](https://github.com/chartjs/Chart.js), [flatpickr](https://github.com/flatpickr/flatpickr), [intlTelInput](https://github.com/jackocnr/intl-tel-input), [jquery.repeater](https://github.com/DubFriend/jquery.repeater), [jQuery Word and Character Counter](https://github.com/qwertypants/jQuery-Word-and-Character-Counter-Plugin), [React](https://github.com/facebook/react), [Select2](https://github.com/select2/select2), [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss), [Tooltipster](https://github.com/calebjacob/tooltipster), [WP Scoper](https://github.com/veronalabs/wp-scoper)
 
-= Repository =
-
-Full source code: [github.com/wp-sms/wp-sms](https://github.com/wp-sms/wp-sms)
-
 == Frequently Asked Questions ==
 = Who should use WSMS? =
 Any WordPress site that wants to enhance communication with users, customers, or subscribers via SMS. Perfect for businesses, bloggers, and e-commerce stores.

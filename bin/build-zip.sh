@@ -7,7 +7,7 @@
 #   bash bin/build-zip.sh  # Direct execution
 #
 # This script runs the full build pipeline:
-#   1. composer install --no-dev --optimize-autoloader
+#   1. composer install
 #   2. pnpm install (if package.json exists)
 #   3. pnpm build (auto-detects build script from package.json)
 #   4. Creates ZIP using .distignore
