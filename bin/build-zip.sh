@@ -50,7 +50,7 @@ cd "$PLUGIN_DIR"
 
 # ---- Step 1: Install PHP dependencies ----
 echo "Step 1: Installing PHP dependencies..."
-composer install --no-dev --optimize-autoloader
+composer install
 echo ""
 
 # ---- Step 2: Install Node.js dependencies ----
