@@ -18,7 +18,6 @@ const mappings = [
   { from: 'images',     to: 'images' },
   { from: 'vendor-css', to: 'css' },
   { from: 'vendor-js',  to: 'js' },
-  { from: 'json',       to: 'json' },
 ]
 
 for (const { from, to } of mappings) {

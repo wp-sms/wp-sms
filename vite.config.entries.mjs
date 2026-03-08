@@ -16,6 +16,7 @@ const entries = {
 }
 
 export default defineConfig({
+  publicDir: false,
   build: {
     outDir: path.resolve(__dirname, 'public/js'),
     emptyOutDir: false,

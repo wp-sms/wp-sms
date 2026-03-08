@@ -88,14 +88,6 @@ describe('Build output: Static assets (copy-static)', () => {
     expectDir('images')
   })
 
-  test('countries.json copied', () => {
-    expectFile('json/countries.json')
-    const content = fs.readFileSync(path.resolve(pub, 'json/countries.json'), 'utf8')
-    const data = JSON.parse(content)
-    expect(Array.isArray(data)).toBe(true)
-    expect(data.length).toBeGreaterThan(100)
-  })
-
   test('vendor CSS files copied', () => {
     expectFile('css/intlTelInput.min.css')
   })

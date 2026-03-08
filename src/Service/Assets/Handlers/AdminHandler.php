@@ -136,9 +136,8 @@ class AdminHandler extends BaseAssets
             }
         }
 
-        // Select2 and word counter on all admin pages
+        // Select2 on all admin pages
         wp_enqueue_script('wpsms-select2', $this->getUrl('js/select2.min.js'), [], $this->getVersion(), false);
-        wp_enqueue_script('wpsms-word-and-character-counter', $this->getUrl('js/jquery.word-and-character-counter.min.js'), [], $this->getVersion(), false);
 
         // Main admin script
         $order_id = 0;
