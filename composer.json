@@ -32,9 +32,7 @@
     }
   },
   "scripts": {
-    "test": [
-      "phpunit --testdox"
-    ],
+    "test": "phpunit --testdox",
     "dist": "bash bin/build-zip.sh"
   },
   "config": {
