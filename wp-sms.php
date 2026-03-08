@@ -7,7 +7,7 @@
  * Author: VeronaLabs
  * Author URI: https://veronalabs.com/
  * Text Domain: wp-sms
- * Domain Path: /resources/languages
+ * Domain Path: /languages
  * GitHub Plugin URI: https://github.com/veronalabs/wp-sms
  * License: GPL-2.0+
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
