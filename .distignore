@@ -15,7 +15,6 @@
 /node_modules
 /dist
 package.json
-package-lock.json
 pnpm-lock.yaml
 postcss.config.js
 babel.config.js
@@ -45,21 +44,11 @@ bundle-analysis.html
 # ============================================
 composer.json
 composer.lock
-codeception.dist.yml
 
 # ============================================
 # Source Files (only built files needed)
 # ============================================
-/resources/blocks
-/resources/entries
-/resources/fonts
-/resources/images
-/resources/json
-/resources/react
-/resources/scss
-/resources/vendor-css
-/resources/vendor-js
-/vendor
+/resources
 
 # ============================================
 # Documentation (not needed in production)
@@ -75,10 +64,7 @@ security.md
 .distignore
 .editorconfig
 .gitignore
-.gitattributes
 .DS_Store
-.gitkeep
-.gulpfile.js
 
 # ============================================
 # Compressed Files (not permitted by WordPress.org)
