@@ -1,8 +1,6 @@
 name: Deploy to WordPress.org
 
 on:
-  release:
-    types: [published]
   push:
     tags:
       - 'v*'
