@@ -22,8 +22,19 @@ class smsto extends \WP_SMS\Gateway
         $this->validateNumber = "XXXXXXXX,YYYYYYYY";
         $this->has_key        = true;
         $this->bulk_send      = true;
-        $this->help           = 'Please enter your API key and leave the API username & API password empty.';
         $this->documentUrl    = 'https://wsms.io/docs/gateway-configuration';
+        $this->gatewayFields  = [
+            'has_key' => [
+                'id'   => 'gateway_key',
+                'name' => 'API Key',
+                'desc' => 'Enter your sms.to API key from the API Clients tab in your sms.to dashboard.',
+            ],
+            'from'    => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Sender ID',
+                'desc' => 'Your approved sender ID registered in sms.to.',
+            ],
+        ];
     }
 
     public function SendSMS()
