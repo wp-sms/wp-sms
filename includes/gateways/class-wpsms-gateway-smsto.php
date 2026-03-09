@@ -85,7 +85,7 @@ class smsto extends \WP_SMS\Gateway
             $apiURL = "{$this->wsdl_link}/fsms/send";
         }
 
-        $args = [
+        $params = [
             'method'      => 'POST',
             'timeout'     => 15,
             'redirection' => 10,
@@ -99,21 +99,13 @@ class smsto extends \WP_SMS\Gateway
         ];
 
         try {
-            $httpResponse = $this->request('POST', $apiURL, $args);
-
-            if (is_wp_error($httpResponse)) {
-                $err      = $httpResponse->get_error_message();
-                $response = null;
-            } else {
-                $response = json_decode(wp_remote_retrieve_body($httpResponse));
-                $err      = null;
-            }
+            $response = $this->request('POST', $apiURL, [], $params);
         } catch (Exception $e) {
             $err      = $e->getMessage();
             $response = null;
         }
 
-        if ($err) {
+        if (isset($err)) {
             $response = [
                 'error'  => true,
                 'reason' => $err,
@@ -126,7 +118,6 @@ class smsto extends \WP_SMS\Gateway
 
             return $response;
         }
-
 
         if (isset($response->success) && $response->success == 'true') {
             // Log the result
