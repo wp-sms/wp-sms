@@ -42,6 +42,7 @@ bundle-analysis.html
 # ============================================
 # PHP Build Configuration
 # ============================================
+/vendor
 composer.json
 composer.lock
 
