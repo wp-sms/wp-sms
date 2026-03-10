@@ -6,6 +6,11 @@ namespace WP_SMS\Utils;
 
 class OptionUtil
 {
+    public function __call($name, $arguments)
+    {
+        return null;
+    }
+
     public static function __callStatic($name, $arguments)
     {
         return null;
