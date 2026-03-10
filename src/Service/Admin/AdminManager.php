@@ -11,6 +11,9 @@ defined('ABSPATH') || exit;
  */
 class AdminManager
 {
+    /** @var string Menu slug used for the top-level admin page. */
+    const MENU_SLUG = 'wsms';
+
     public function __construct()
     {
         add_action('admin_menu', [$this, 'registerMenus']);
@@ -23,15 +26,22 @@ class AdminManager
      */
     public function registerMenus(): void
     {
+        $icon = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9Ii01IDAgMzYgMzYiPjxwYXRoIGQ9Ik0wIDkuNTM3NTJWMTcuNzMzNUwxOC4yMTAxIDguMTc3NjRWMEwwIDkuNTM3NTJaIiBmaWxsPSIjYTdhYWFkIi8+PHBhdGggZD0iTTAgMjAuNzI5VjI4LjkwNjdMMjYgMTUuMjcxMVY3LjA5MzUxTDAgMjAuNzI5WiIgZmlsbD0iI2E3YWFhZCIvPjxwYXRoIGQ9Ik0yNS45OTcyIDE4LjI2NjZWMjYuMzUyNEw3LjgwNzM0IDM2LjAwMDFMNy43ODcxMSAyNy43MzA2TDI1Ljk5NzIgMTguMjY2NloiIGZpbGw9IiNhN2FhYWQiLz48L3N2Zz4=';
+
         add_menu_page(
             __('WSMS', 'wp-sms'),
             __('WSMS', 'wp-sms'),
             'manage_options',
-            'wp-sms',
+            self::MENU_SLUG,
             [$this, 'renderDashboard'],
-            'dashicons-email-alt',
-            25
+            $icon
         );
+
+        // Remove the auto-generated submenu item matching the parent
+        remove_submenu_page(self::MENU_SLUG, self::MENU_SLUG);
+
+        // Fire filter so add-ons can hook into menu data
+        apply_filters('wp_sms_admin_menu_list', []);
     }
 
     /**

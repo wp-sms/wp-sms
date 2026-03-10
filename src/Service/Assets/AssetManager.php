@@ -79,7 +79,7 @@ class AssetManager
      */
     private function isWsmsPage(string $hook): bool
     {
-        return strpos($hook, 'toplevel_page_wp-sms') !== false
-            || strpos($hook, '_page_wp-sms') !== false;
+        return strpos($hook, 'toplevel_page_wsms') !== false
+            || strpos($hook, '_page_wsms') !== false;
     }
 }
