@@ -1,0 +1,12 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "wp-sms/example-block",
+    "version": "1.0.0",
+    "title": "WSMS Example Block",
+    "category": "widgets",
+    "description": "An example Gutenberg block for WSMS.",
+    "textdomain": "wp-sms",
+    "editorScript": "file:./index.js",
+    "style": "file:./index.css"
+}

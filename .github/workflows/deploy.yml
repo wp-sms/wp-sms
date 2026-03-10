@@ -12,32 +12,35 @@ jobs:
 
     steps:
       - name: Check out source code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: '7.4'
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'pnpm'
+
+      - name: Setup WP-CLI
+        run: |
+          curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+          chmod +x wp-cli.phar
+          sudo mv wp-cli.phar /usr/local/bin/wp
 
       - name: Install Composer dependencies
-        run: composer install
+        run: composer install --no-dev --optimize-autoloader
 
       - name: Install Node dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm ci
 
       - name: Build assets
-        run: pnpm build
+        run: npm run build
+
+      - name: Generate language files
+        run: wp i18n make-pot . public/languages/wp-sms.pot --slug=wp-sms --domain=wp-sms
 
       - name: WordPress Plugin Deploy
         uses: 10up/action-wordpress-plugin-deploy@stable

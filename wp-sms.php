@@ -3,65 +3,66 @@
  * Plugin Name: WSMS (formerly WP SMS)
  * Plugin URI: https://wsms.io/
  * Description: SMS & MMS Notifications, 2FA, OTP, and Integrations with E-Commerce and Form Builders
- * Version: 7.2
+ * Version: 8.0
  * Author: VeronaLabs
  * Author URI: https://veronalabs.com/
  * Text Domain: wp-sms
- * Domain Path: /languages
- * GitHub Plugin URI: https://github.com/veronalabs/wp-sms
+ * Domain Path: /public/languages
+ * Requires at least: 6.0
+ * Requires PHP: 7.4
  * License: GPL-2.0+
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Requires at least: 4.1
- * Requires PHP: 7.4
  */
 
-if (!defined('ABSPATH')) {
-    exit;
-} // Exit if accessed directly
+defined('ABSPATH') || exit;
 
-/**
- * Load Autoloader (handles both WP_SMS\ classes and prefixed dependencies)
- */
-if (file_exists(__DIR__ . '/packages/autoload.php')) {
-    require_once __DIR__ . '/packages/autoload.php';
-} else {
+/*
+|--------------------------------------------------------------------------
+| Premium compatibility check
+|--------------------------------------------------------------------------
+*/
+require_once __DIR__ . '/src/premium-compatibility.php';
+
+if (wp_sms_is_premium_active()) {
+    wp_sms_init_premium_compatibility(__FILE__);
     return;
 }
 
-/**
- * Load Plugin Defines
- */
-include_once __DIR__ . '/includes/defines.php';
+/*
+|--------------------------------------------------------------------------
+| Autoloaders
+|--------------------------------------------------------------------------
+*/
+require_once __DIR__ . '/compat/autoload.php';
 
-// Set the plugin version
-define('WP_SMS_VERSION', '7.2');
-
-/**
- * Load plugin Special Functions
- */
-require_once WP_SMS_DIR . 'includes/functions.php';
-
-/**
- * Load plugin option
- */
-require_once WP_SMS_DIR . 'includes/class-wpsms-option.php';
-
-/**
- * Initial gateway
- */
-require_once WP_SMS_DIR . 'includes/class-wpsms-gateway.php';
-
-/**
- * Load Plugin
- */
-require WP_SMS_DIR . 'includes/class-wpsms.php';
-
-/**
- * @return WP_SMS
- */
-function WPSms()
-{
-    return WP_SMS::get_instance();
+// In production, wp-scoper generates packages/autoload.php.
+// In development, Composer's vendor/autoload.php is used instead.
+$composerAutoload = __DIR__ . '/packages/autoload.php';
+if (!file_exists($composerAutoload)) {
+    $composerAutoload = __DIR__ . '/vendor/autoload.php';
+}
+if (file_exists($composerAutoload)) {
+    require_once $composerAutoload;
 }
 
-WPSms();
+/*
+|--------------------------------------------------------------------------
+| Constants
+|--------------------------------------------------------------------------
+*/
+require_once __DIR__ . '/src/constants.php';
+
+/*
+|--------------------------------------------------------------------------
+| Functions
+|--------------------------------------------------------------------------
+*/
+require_once __DIR__ . '/src/functions.php';
+require_once __DIR__ . '/compat/functions.php';
+
+/*
+|--------------------------------------------------------------------------
+| Bootstrap
+|--------------------------------------------------------------------------
+*/
+WSms\Bootstrap::init();

@@ -15,16 +15,22 @@
   },
   "require-dev": {
     "veronalabs/wp-scoper": "^1.2.4",
-    "fakerphp/faker": "^1.23"
+    "fakerphp/faker": "^1.23",
+    "phpunit/phpunit": "^9.6"
   },
   "autoload": {
     "psr-4": {
-      "WP_SMS\\": "src/"
+      "WSms\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "WSms\\Tests\\": "tests/"
     }
   },
   "extra": {
     "wp-scoper": {
-      "namespace_prefix": "WP_SMS\\Dependencies",
+      "namespace_prefix": "WSms\\Dependencies",
       "packages": [],
       "target_directory": "packages",
       "delete_vendor_packages": true,

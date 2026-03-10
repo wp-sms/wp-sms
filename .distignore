@@ -1,80 +1,43 @@
-# WordPress.org Distribution Ignore File
-# Files and directories listed here will be excluded from the plugin ZIP
-
-# ============================================
 # Version Control & CI/CD
-# ============================================
-/.wordpress-org
 /.git
 /.github
 /bin
 
-# ============================================
 # Node.js & Build Tools
-# ============================================
 /node_modules
-/dist
 package.json
-pnpm-lock.yaml
+package-lock.json
 postcss.config.js
-babel.config.js
+tailwind.config.js
 
-# ============================================
 # Testing
-# ============================================
 /tests
 phpunit.xml.dist
 .phpunit.result.cache
-jest.config.js
-jest.setup.js
-playwright.config.js
-.wp-env.json
-.env.e2e.example
 
-# ============================================
 # Frontend Build Configuration
-# ============================================
-tailwind.config.js
 vite.config.js
 vite.config.entries.mjs
-bundle-analysis.html
 
-# ============================================
 # PHP Build Configuration
-# ============================================
 /vendor
 composer.json
 composer.lock
 
-# ============================================
 # Source Files (only built files needed)
-# ============================================
 /resources
 
-# ============================================
-# Documentation (not needed in production)
-# ============================================
+# Documentation
 README.md
 CHANGELOG.md
-CONTRIBUTING.md
-security.md
 
-# ============================================
 # Environment & Configuration Files
-# ============================================
 .distignore
 .editorconfig
 .gitignore
 .DS_Store
 
-# ============================================
-# Compressed Files (not permitted by WordPress.org)
-# ============================================
-*.gz
-
-# ============================================
 # AI & IDE Tools
-# ============================================
 /.claude
 /.cursor
 /.vscode
