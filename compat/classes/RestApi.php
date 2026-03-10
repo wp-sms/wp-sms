@@ -7,6 +7,8 @@ namespace WP_SMS;
 class RestApi
 {
     public $tb_prefix;
+    public $namespace = 'wpsms';
+    public $version = 'v1';
 
     public function __construct()
     {
