@@ -1,0 +1,414 @@
+/* ============================================
+   WP SMS Auth UI — Scoped under #wsms-auth
+   ============================================ */
+
+#wsms-auth {
+    --wsms-font: 'DM Sans', system-ui, -apple-system, sans-serif;
+    --wsms-card-bg: #ffffff;
+    --wsms-text: #111827;
+    --wsms-text-secondary: #6b7280;
+    --wsms-border: #e5e7eb;
+    --wsms-input-bg: #f9fafb;
+    --wsms-accent: #2563eb;
+    --wsms-accent-hover: #1d4ed8;
+    --wsms-accent-subtle: #eff6ff;
+    --wsms-error: #dc2626;
+    --wsms-error-bg: #fef2f2;
+    --wsms-success: #059669;
+    --wsms-success-bg: #ecfdf5;
+    --wsms-info: #2563eb;
+    --wsms-info-bg: #eff6ff;
+    --wsms-radius: 10px;
+    --wsms-radius-sm: 6px;
+    --wsms-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 24px rgba(0, 0, 0, 0.04);
+    --wsms-transition: 150ms ease;
+
+    font-family: var(--wsms-font);
+    color: var(--wsms-text);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    justify-content: center;
+    padding: 40px 16px;
+    box-sizing: border-box;
+}
+
+#wsms-auth *,
+#wsms-auth *::before,
+#wsms-auth *::after {
+    box-sizing: border-box;
+}
+
+/* Card */
+#wsms-auth .wsms-card {
+    background: var(--wsms-card-bg);
+    border-radius: var(--wsms-radius);
+    box-shadow: var(--wsms-shadow);
+    padding: 32px;
+    width: 100%;
+    max-width: 420px;
+    animation: wsms-fade-in var(--wsms-transition) ease-out;
+}
+
+@keyframes wsms-fade-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Page */
+#wsms-auth .wsms-page {
+    animation: wsms-fade-in var(--wsms-transition) ease-out;
+}
+
+/* Typography */
+#wsms-auth .wsms-title {
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 4px;
+    color: var(--wsms-text);
+    letter-spacing: -0.01em;
+}
+
+#wsms-auth .wsms-subtitle {
+    font-size: 14px;
+    color: var(--wsms-text-secondary);
+    margin: 0 0 20px;
+}
+
+/* Form */
+#wsms-auth .wsms-form {
+    margin-top: 20px;
+}
+
+#wsms-auth .wsms-field {
+    margin-bottom: 16px;
+}
+
+#wsms-auth .wsms-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--wsms-text);
+    margin-bottom: 6px;
+}
+
+#wsms-auth .wsms-input {
+    display: block;
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    font-family: var(--wsms-font);
+    font-size: 15px;
+    color: var(--wsms-text);
+    background: var(--wsms-input-bg);
+    border: 1px solid var(--wsms-border);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color var(--wsms-transition), box-shadow var(--wsms-transition);
+}
+
+#wsms-auth .wsms-input:focus {
+    border-color: var(--wsms-accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+#wsms-auth .wsms-input:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#wsms-auth .wsms-input::placeholder {
+    color: var(--wsms-text-secondary);
+}
+
+/* Buttons */
+#wsms-auth .wsms-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    padding: 0 24px;
+    font-family: var(--wsms-font);
+    font-size: 15px;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color var(--wsms-transition), opacity var(--wsms-transition);
+}
+
+#wsms-auth .wsms-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#wsms-auth .wsms-btn--primary {
+    width: 100%;
+    color: #ffffff;
+    background: var(--wsms-accent);
+}
+
+#wsms-auth .wsms-btn--primary:hover:not(:disabled) {
+    background: var(--wsms-accent-hover);
+}
+
+#wsms-auth .wsms-btn--text {
+    background: none;
+    color: var(--wsms-accent);
+    height: auto;
+    padding: 8px 0;
+    font-size: 14px;
+}
+
+#wsms-auth .wsms-btn--text:hover:not(:disabled) {
+    text-decoration: underline;
+}
+
+/* Method Tabs */
+#wsms-auth .wsms-methods {
+    display: flex;
+    gap: 8px;
+    margin: 20px 0 4px;
+    flex-wrap: wrap;
+}
+
+#wsms-auth .wsms-method-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-family: var(--wsms-font);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--wsms-text-secondary);
+    background: none;
+    border: 1px solid var(--wsms-border);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all var(--wsms-transition);
+}
+
+#wsms-auth .wsms-method-tab:hover {
+    border-color: var(--wsms-accent);
+    color: var(--wsms-accent);
+}
+
+#wsms-auth .wsms-method-tab.is-active {
+    background: var(--wsms-accent-subtle);
+    border-color: var(--wsms-accent);
+    color: var(--wsms-accent);
+}
+
+#wsms-auth .wsms-method-tab__icon {
+    font-size: 15px;
+    line-height: 1;
+}
+
+#wsms-auth .wsms-method-tab__label {
+    line-height: 1;
+}
+
+/* Alerts */
+#wsms-auth .wsms-alert {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--wsms-radius-sm);
+    font-size: 14px;
+    margin-bottom: 16px;
+    border-left: 3px solid;
+}
+
+#wsms-auth .wsms-alert--error {
+    background: var(--wsms-error-bg);
+    color: var(--wsms-error);
+    border-left-color: var(--wsms-error);
+}
+
+#wsms-auth .wsms-alert--success {
+    background: var(--wsms-success-bg);
+    color: var(--wsms-success);
+    border-left-color: var(--wsms-success);
+}
+
+#wsms-auth .wsms-alert--info {
+    background: var(--wsms-info-bg);
+    color: var(--wsms-info);
+    border-left-color: var(--wsms-info);
+}
+
+#wsms-auth .wsms-alert__close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: inherit;
+    opacity: 0.6;
+    padding: 0;
+    line-height: 1;
+}
+
+#wsms-auth .wsms-alert__close:hover {
+    opacity: 1;
+}
+
+/* Links */
+#wsms-auth .wsms-links {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--wsms-border);
+}
+
+#wsms-auth .wsms-link {
+    font-size: 14px;
+    color: var(--wsms-accent);
+    text-decoration: none;
+    transition: color var(--wsms-transition);
+}
+
+#wsms-auth .wsms-link:hover {
+    text-decoration: underline;
+    color: var(--wsms-accent-hover);
+}
+
+/* Phone Input */
+#wsms-auth .wsms-phone-input {
+    display: flex;
+    gap: 8px;
+}
+
+#wsms-auth .wsms-phone-input__country {
+    flex-shrink: 0;
+    width: 100px;
+    height: 48px;
+    padding: 0 8px;
+    font-family: var(--wsms-font);
+    font-size: 14px;
+    color: var(--wsms-text);
+    background: var(--wsms-input-bg);
+    border: 1px solid var(--wsms-border);
+    border-radius: 8px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color var(--wsms-transition);
+}
+
+#wsms-auth .wsms-phone-input__country:focus {
+    border-color: var(--wsms-accent);
+}
+
+#wsms-auth .wsms-phone-input__number {
+    flex: 1;
+    min-width: 0;
+}
+
+/* OTP Input */
+#wsms-auth .wsms-otp-container {
+    display: flex;
+    justify-content: center;
+}
+
+#wsms-auth .wsms-otp-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#wsms-auth .wsms-otp-slot {
+    width: 48px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--wsms-font);
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--wsms-text);
+    background: var(--wsms-input-bg);
+    border: 1px solid var(--wsms-border);
+    border-radius: 8px;
+    transition: border-color var(--wsms-transition), box-shadow var(--wsms-transition);
+}
+
+#wsms-auth .wsms-otp-slot.is-active {
+    border-color: var(--wsms-accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+#wsms-auth .wsms-otp-separator {
+    font-size: 20px;
+    color: var(--wsms-text-secondary);
+    margin: 0 2px;
+}
+
+#wsms-auth .wsms-otp-caret {
+    display: inline-block;
+    width: 2px;
+    height: 24px;
+    background: var(--wsms-accent);
+    animation: wsms-blink 1s step-end infinite;
+}
+
+@keyframes wsms-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+#wsms-auth .wsms-otp-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+/* Loader / Spinner */
+#wsms-auth .wsms-loader {
+    text-align: center;
+    padding: 20px 0;
+}
+
+#wsms-auth .wsms-spinner {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--wsms-border);
+    border-top-color: var(--wsms-accent);
+    border-radius: 50%;
+    animation: wsms-spin 0.6s linear infinite;
+    margin-bottom: 12px;
+}
+
+@keyframes wsms-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+    #wsms-auth {
+        padding: 20px 12px;
+    }
+
+    #wsms-auth .wsms-card {
+        padding: 24px 20px;
+    }
+
+    #wsms-auth .wsms-otp-slot {
+        width: 40px;
+        height: 48px;
+        font-size: 18px;
+    }
+
+    #wsms-auth .wsms-methods {
+        gap: 6px;
+    }
+
+    #wsms-auth .wsms-method-tab {
+        padding: 6px 10px;
+        font-size: 12px;
+    }
+}

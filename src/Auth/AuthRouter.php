@@ -62,12 +62,27 @@ class AuthRouter
         }
 
         $pluginUrl = plugin_dir_url(dirname(__DIR__, 1) . '/../wp-sms.php');
+        $version = defined('WP_SMS_VERSION') ? WP_SMS_VERSION : '8.0';
+
+        wp_enqueue_style(
+            'wsms-auth-font',
+            'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap',
+            [],
+            null,
+        );
+
+        wp_enqueue_style(
+            'wsms-auth-style',
+            $pluginUrl . 'public/auth/style.css',
+            ['wsms-auth-font'],
+            $version,
+        );
 
         wp_enqueue_script(
             'wsms-auth',
-            $pluginUrl . 'assets/auth/app.js',
+            $pluginUrl . 'public/auth/app.js',
             [],
-            '1.0.0',
+            $version,
             true,
         );
 

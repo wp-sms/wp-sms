@@ -1,0 +1,18 @@
+import { signal, computed } from '@preact/signals';
+import { api } from '../api/client';
+
+export const authConfig = signal(null);
+export const configLoading = signal(false);
+export const primaryMethods = computed(() => authConfig.value?.primary_methods ?? ['password']);
+export const registrationFields = computed(() => authConfig.value?.registration_fields ?? ['email', 'password']);
+
+export async function loadConfig() {
+    if (authConfig.value || configLoading.value) return;
+    configLoading.value = true;
+    try {
+        const data = await api.get('/auth/config');
+        authConfig.value = data;
+    } finally {
+        configLoading.value = false;
+    }
+}

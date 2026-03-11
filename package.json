@@ -4,22 +4,29 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "concurrently \"npm run dev:dashboard\" \"npm run dev:scripts\" \"npm run dev:sass\"",
+    "dev": "concurrently \"npm run dev:dashboard\" \"npm run dev:scripts\" \"npm run dev:sass\" \"npm run dev:auth\"",
     "dev:dashboard": "vite",
     "dev:scripts": "ENTRY=admin vite build -c vite.config.entries.mjs --watch",
     "dev:sass": "sass --watch resources/scss/admin.scss:public/css/admin.css resources/scss/frontend.scss:public/css/frontend.css",
-    "build": "npm run build:dashboard && npm run build:scripts && npm run build:sass && npm run build:blocks",
+    "dev:auth": "vite build -c vite.config.auth.mjs --watch",
+    "build": "npm run build:dashboard && npm run build:scripts && npm run build:sass && npm run build:blocks && npm run build:auth",
     "build:dashboard": "vite build",
     "build:scripts": "ENTRY=admin vite build -c vite.config.entries.mjs && ENTRY=frontend vite build -c vite.config.entries.mjs",
     "build:sass": "sass resources/scss/admin.scss:public/css/admin.css resources/scss/frontend.scss:public/css/frontend.css --style=compressed --no-source-map",
     "build:blocks": "wp-scripts build --webpack-src-dir=resources/blocks --output-path=public/blocks",
+    "build:auth": "vite build -c vite.config.auth.mjs",
     "build:pot": "wp i18n make-pot . public/languages/wp-sms.pot --slug=wp-sms --domain=wp-sms"
   },
   "dependencies": {
+    "@preact/signals": "^2.8.2",
+    "input-otp": "^1.4.2",
+    "preact": "^10.28.4",
+    "preact-iso": "^2.11.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@preact/preset-vite": "^2.10.3",
     "@vitejs/plugin-react": "^4.4.0",
     "@wordpress/scripts": "^30.0.0",
     "concurrently": "^9.1.0",
