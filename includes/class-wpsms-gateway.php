@@ -250,21 +250,35 @@ It might be a phone number (e.g., +1 555 123 4567) or an alphanumeric ID if supp
             return $sms;
         }
 
-        if (is_file(WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $gateway_name . '.php')) {
-            include_once WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $gateway_name . '.php';
-        } elseif (is_file(WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.php')) {
-            include_once(WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $gateway_name . '.php');
-        } else {
+        // Resolve gateway file, trying underscore prefix fallback for numeric-prefixed slugs
+        $gateway_file  = null;
+        $resolved_name = $gateway_name;
+
+        foreach ([$gateway_name, '_' . $gateway_name] as $name) {
+            if (is_file(WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $name . '.php')) {
+                $gateway_file  = WP_SMS_DIR . 'includes/gateways/class-wpsms-gateway-' . $name . '.php';
+                $resolved_name = $name;
+                break;
+            } elseif (is_file(WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $name . '.php')) {
+                $gateway_file  = WP_PLUGIN_DIR . '/wp-sms-pro/includes/gateways/class-wpsms-pro-gateway-' . $name . '.php';
+                $resolved_name = $name;
+                break;
+            }
+        }
+
+        if (!$gateway_file) {
             $sms = new $class_name();
 
             return $sms;
         }
 
+        include_once $gateway_file;
+
         // Create object from the gateway class
         if ($gateway_name == 'default') {
             $sms = new $class_name();
         } else {
-            $class_name = '\\WP_SMS\\Gateway\\' . $gateway_name;
+            $class_name = '\\WP_SMS\\Gateway\\' . $resolved_name;
             $sms        = new $class_name();
         }
 
