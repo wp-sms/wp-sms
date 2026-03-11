@@ -1,5 +1,5 @@
 import { challengeToken, challengeMeta, pendingMfa, clearAuth } from '../signals/auth';
-import { getBaseUrl } from './urls';
+import { authUrl, getBaseUrl } from './urls';
 
 export function handleAuthResponse(res, route) {
     if (res.status === 'authenticated') {
@@ -13,7 +13,7 @@ export function handleAuthResponse(res, route) {
             available_factors: res.meta?.available_factors,
             challenge_token: res.challenge_token,
         };
-        route('/verify');
+        route(authUrl('/verify'));
         return;
     }
 

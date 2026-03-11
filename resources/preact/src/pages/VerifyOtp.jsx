@@ -16,7 +16,7 @@ export function VerifyOtp() {
     const token = challengeToken.value || pendingMfa.value?.challenge_token;
 
     useEffect(() => {
-        if (!token) route('/login');
+        if (!token) route(authUrl('/login'));
     }, [token, route]);
 
     useEffect(() => {

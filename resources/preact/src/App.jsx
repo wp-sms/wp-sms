@@ -1,7 +1,7 @@
 import { LocationProvider, Router, Route, ErrorBoundary } from 'preact-iso';
 import { useEffect } from 'preact/hooks';
 import { loadConfig } from './signals/config';
-import { getBaseUrl } from './utils/urls';
+import { authUrl, getBaseUrl } from './utils/urls';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { ForgotPassword } from './pages/ForgotPassword';
@@ -23,17 +23,17 @@ export function App() {
             <div class="wsms-card">
                 <ErrorBoundary>
                     <Router>
-                        <Route path="/login" component={Login} />
-                        <Route path="/register" component={Register} />
-                        <Route path="/forgot-password" component={ForgotPassword} />
-                        <Route path="/reset-password" component={ResetPassword} />
-                        <Route path="/verify" component={VerifyOtp} />
-                        <Route path="/verify-magic-link" component={VerifyMagicLinkPage} />
-                        <Route path="/verify-email" component={VerifyEmailPage} />
-                        <Route path="/profile" component={Profile} />
-                        <Route path="/change-password" component={ChangePassword} />
-                        <Route path="/security" component={Security} />
-                        <Route path="/" component={AccountOrLogin} />
+                        <Route path={authUrl('/login')} component={Login} />
+                        <Route path={authUrl('/register')} component={Register} />
+                        <Route path={authUrl('/forgot-password')} component={ForgotPassword} />
+                        <Route path={authUrl('/reset-password')} component={ResetPassword} />
+                        <Route path={authUrl('/verify')} component={VerifyOtp} />
+                        <Route path={authUrl('/verify-magic-link')} component={VerifyMagicLinkPage} />
+                        <Route path={authUrl('/verify-email')} component={VerifyEmailPage} />
+                        <Route path={authUrl('/profile')} component={Profile} />
+                        <Route path={authUrl('/change-password')} component={ChangePassword} />
+                        <Route path={authUrl('/security')} component={Security} />
+                        <Route path={authUrl('/')} component={AccountOrLogin} />
                         <Route default component={AccountOrLogin} />
                     </Router>
                 </ErrorBoundary>

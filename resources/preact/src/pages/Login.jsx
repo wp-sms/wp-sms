@@ -49,7 +49,7 @@ export function Login() {
             if (status === 'challenge_sent' && activeMethod === 'magic_link') {
                 setSuccessMsg('Check your email for a magic link.');
             } else if (status === 'challenge_sent') {
-                route('/verify');
+                route(authUrl('/verify'));
             }
         } catch (err) {
             authError.value = extractError(err);
