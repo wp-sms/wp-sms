@@ -5,6 +5,9 @@ namespace WSms;
 use WSms\Container\ServiceContainer;
 use WSms\Container\CoreServiceProvider;
 use WSms\Container\AdminServiceProvider;
+use WSms\Container\AuthServiceProvider;
+use WSms\Container\MfaServiceProvider;
+use WSms\Container\AuditServiceProvider;
 use WSms\Service\Installation\InstallManager;
 
 defined('ABSPATH') || exit;
@@ -29,6 +32,9 @@ class Bootstrap
     private static array $providers = [
         CoreServiceProvider::class,
         AdminServiceProvider::class,
+        AuthServiceProvider::class,
+        MfaServiceProvider::class,
+        AuditServiceProvider::class,
     ];
 
     /**
