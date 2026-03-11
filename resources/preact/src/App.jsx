@@ -8,6 +8,10 @@ import { ForgotPassword } from './pages/ForgotPassword';
 import { ResetPassword } from './pages/ResetPassword';
 import { VerifyOtp } from './pages/VerifyOtp';
 import { VerifyToken } from './pages/VerifyToken';
+import { Account } from './pages/Account';
+import { Profile } from './pages/Profile';
+import { ChangePassword } from './pages/ChangePassword';
+import { Security } from './pages/Security';
 
 export function App() {
     useEffect(() => {
@@ -26,12 +30,20 @@ export function App() {
                         <Route path="/verify" component={VerifyOtp} />
                         <Route path="/verify-magic-link" component={VerifyMagicLinkPage} />
                         <Route path="/verify-email" component={VerifyEmailPage} />
-                        <Route default component={Login} />
+                        <Route path="/profile" component={Profile} />
+                        <Route path="/change-password" component={ChangePassword} />
+                        <Route path="/security" component={Security} />
+                        <Route path="/" component={AccountOrLogin} />
+                        <Route default component={AccountOrLogin} />
                     </Router>
                 </ErrorBoundary>
             </div>
         </LocationProvider>
     );
+}
+
+function AccountOrLogin() {
+    return window.wsmsAuth?.isLoggedIn ? <Account /> : <Login />;
 }
 
 function VerifyMagicLinkPage() {

@@ -387,6 +387,208 @@
     to { transform: rotate(360deg); }
 }
 
+/* Secondary Button */
+#wsms-auth .wsms-btn--secondary {
+    color: var(--wsms-text);
+    background: var(--wsms-input-bg);
+    border: 1px solid var(--wsms-border);
+}
+
+#wsms-auth .wsms-btn--secondary:hover:not(:disabled) {
+    border-color: var(--wsms-accent);
+    color: var(--wsms-accent);
+}
+
+#wsms-auth .wsms-btn--sm {
+    height: 36px;
+    padding: 0 16px;
+    font-size: 13px;
+}
+
+#wsms-auth .wsms-btn--danger {
+    color: var(--wsms-error);
+}
+
+#wsms-auth .wsms-btn--danger:hover:not(:disabled) {
+    color: #ffffff;
+    background: var(--wsms-error);
+    border-color: var(--wsms-error);
+}
+
+/* Utility text */
+#wsms-auth .wsms-text-secondary {
+    font-size: 14px;
+    color: var(--wsms-text-secondary);
+    margin: 0 0 12px;
+}
+
+#wsms-auth .wsms-text-error {
+    font-size: 13px;
+    color: var(--wsms-error);
+    margin: 0 0 8px;
+}
+
+/* Section */
+#wsms-auth .wsms-section {
+    padding: 16px 0;
+    border-top: 1px solid var(--wsms-border);
+    margin-top: 16px;
+}
+
+#wsms-auth .wsms-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: var(--wsms-text);
+}
+
+/* Account Navigation */
+#wsms-auth .wsms-account-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 20px;
+}
+
+#wsms-auth .wsms-account-nav__item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px;
+    background: var(--wsms-input-bg);
+    border: 1px solid var(--wsms-border);
+    border-radius: var(--wsms-radius-sm);
+    text-decoration: none;
+    color: var(--wsms-text);
+    transition: border-color var(--wsms-transition), box-shadow var(--wsms-transition);
+}
+
+#wsms-auth .wsms-account-nav__item:hover {
+    border-color: var(--wsms-accent);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.06);
+}
+
+#wsms-auth .wsms-account-nav__item strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+}
+
+#wsms-auth .wsms-account-nav__item p {
+    font-size: 13px;
+    color: var(--wsms-text-secondary);
+    margin: 0;
+}
+
+#wsms-auth .wsms-account-nav__icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--wsms-card-bg);
+    border-radius: 8px;
+}
+
+/* MFA Factor Card */
+#wsms-auth .wsms-factor-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+#wsms-auth .wsms-factor-card {
+    border: 1px solid var(--wsms-border);
+    border-radius: var(--wsms-radius-sm);
+    overflow: hidden;
+    transition: border-color var(--wsms-transition);
+}
+
+#wsms-auth .wsms-factor-card.is-enrolled {
+    border-color: var(--wsms-success);
+    background: var(--wsms-success-bg);
+}
+
+#wsms-auth .wsms-factor-card__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+}
+
+#wsms-auth .wsms-factor-card__icon {
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+#wsms-auth .wsms-factor-card__info {
+    flex: 1;
+    min-width: 0;
+}
+
+#wsms-auth .wsms-factor-card__info strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+#wsms-auth .wsms-factor-card__info p {
+    font-size: 13px;
+    color: var(--wsms-text-secondary);
+    margin: 2px 0 0;
+}
+
+#wsms-auth .wsms-factor-card__actions {
+    flex-shrink: 0;
+}
+
+#wsms-auth .wsms-factor-card__body {
+    padding: 0 16px 16px;
+    animation: wsms-fade-in var(--wsms-transition) ease-out;
+}
+
+/* Backup Codes */
+#wsms-auth .wsms-backup-codes {
+    background: var(--wsms-info-bg);
+    border: 1px solid var(--wsms-accent);
+    border-radius: var(--wsms-radius-sm);
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+#wsms-auth .wsms-backup-codes__header {
+    margin-bottom: 16px;
+}
+
+#wsms-auth .wsms-backup-codes__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+#wsms-auth .wsms-backup-codes__code {
+    display: block;
+    padding: 6px 10px;
+    background: var(--wsms-card-bg);
+    border: 1px solid var(--wsms-border);
+    border-radius: 4px;
+    font-family: 'SF Mono', SFMono-Regular, ui-monospace, monospace;
+    font-size: 13px;
+    text-align: center;
+    letter-spacing: 0.05em;
+}
+
+#wsms-auth .wsms-backup-codes__actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
 /* Responsive */
 @media (max-width: 480px) {
     #wsms-auth {

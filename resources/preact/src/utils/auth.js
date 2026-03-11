@@ -27,3 +27,13 @@ export function handleAuthResponse(res, route) {
 export function extractError(err) {
     return err.message || 'Something went wrong. Please try again.';
 }
+
+export async function logout() {
+    const { api } = await import('../api/client');
+    try {
+        await api.post('/auth/logout');
+    } catch {
+        // proceed with redirect regardless
+    }
+    window.location.href = getBaseUrl() + '/login';
+}
