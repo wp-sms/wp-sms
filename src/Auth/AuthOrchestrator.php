@@ -25,6 +25,7 @@ class AuthOrchestrator
         private MfaManager $mfaManager,
         private AuditLogger $auditLogger,
         private AuthSession $session,
+        private AccountLockout $lockout,
     ) {
     }
 
@@ -33,9 +34,25 @@ class AuthOrchestrator
      */
     public function loginWithPassword(string $username, string $password): AuthResult
     {
+        $resolvedUser = get_user_by('login', $username);
+
+        if ($resolvedUser) {
+            $lockStatus = $this->lockout->isLocked($resolvedUser->ID);
+
+            if ($lockStatus['locked']) {
+                return AuthResult::failed('account_locked', 'Account is temporarily locked.', [
+                    'retry_after' => $lockStatus['until'],
+                ]);
+            }
+        }
+
         $user = wp_authenticate($username, $password);
 
         if (is_wp_error($user)) {
+            if ($resolvedUser) {
+                $this->lockout->recordFailure($resolvedUser->ID);
+            }
+
             $this->auditLogger->log(EventType::LoginFailure, 'failure', null, [
                 'method' => 'password',
                 'reason' => $user->get_error_code(),
@@ -43,6 +60,8 @@ class AuthOrchestrator
 
             return AuthResult::failed('invalid_credentials', 'Invalid username or password.');
         }
+
+        $this->lockout->reset($user->ID);
 
         return $this->resolvePostPrimary($user->ID, 'password');
     }

@@ -5,6 +5,7 @@ namespace WSms\Tests\Unit\Auth;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
+use WSms\Auth\AccountLockout;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthSession;
 use WSms\Auth\PolicyEngine;
@@ -21,6 +22,7 @@ class AuthOrchestratorTest extends TestCase
     private MockObject&MfaManager $mfaManager;
     private MockObject&AuditLogger $auditLogger;
     private MockObject&AuthSession $session;
+    private MockObject&AccountLockout $lockout;
 
     protected function setUp(): void
     {
@@ -28,12 +30,14 @@ class AuthOrchestratorTest extends TestCase
         $this->mfaManager = $this->createMock(MfaManager::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->session = $this->createMock(AuthSession::class);
+        $this->lockout = $this->createMock(AccountLockout::class);
 
         $this->orchestrator = new AuthOrchestrator(
             $this->policy,
             $this->mfaManager,
             $this->auditLogger,
             $this->session,
+            $this->lockout,
         );
 
         unset(
@@ -323,6 +327,65 @@ class AuthOrchestratorTest extends TestCase
 
         $this->assertTrue($result->success);
         $this->assertSame('challenge_sent', $result->status);
+    }
+
+    // --- Account Lockout ---
+
+    public function testLoginWithPasswordRejectsLockedAccount(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_get_user_by_result'] = $user;
+
+        $this->lockout->method('isLocked')->willReturn([
+            'locked'   => true,
+            'until'    => '2030-01-01T00:00:00Z',
+            'attempts' => 5,
+        ]);
+
+        $result = $this->orchestrator->loginWithPassword('admin', 'pass');
+
+        $this->assertFalse($result->success);
+        $this->assertSame('account_locked', $result->error);
+        $this->assertSame('2030-01-01T00:00:00Z', $result->meta['retry_after']);
+    }
+
+    public function testLoginWithPasswordRecordsFailureOnWrongPassword(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_get_user_by_result'] = $user;
+        $GLOBALS['_test_wp_authenticate_result'] = new \WP_Error('incorrect_password', 'Wrong');
+
+        $this->lockout->method('isLocked')->willReturn([
+            'locked'   => false,
+            'until'    => null,
+            'attempts' => 0,
+        ]);
+
+        $this->lockout->expects($this->once())->method('recordFailure')->with(1);
+
+        $this->orchestrator->loginWithPassword('admin', 'wrong');
+    }
+
+    public function testLoginWithPasswordResetsLockoutOnSuccess(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_get_user_by_result'] = $user;
+        $GLOBALS['_test_wp_authenticate_result'] = $user;
+        $GLOBALS['_test_userdata'] = $user;
+
+        $this->lockout->method('isLocked')->willReturn([
+            'locked'   => false,
+            'until'    => null,
+            'attempts' => 3,
+        ]);
+
+        $this->policy->method('isMfaRequired')->willReturn(false);
+
+        $this->lockout->expects($this->once())->method('reset')->with(1);
+
+        $result = $this->orchestrator->loginWithPassword('admin', 'pass');
+
+        $this->assertTrue($result->success);
     }
 
     // --- Helper ---

@@ -2,6 +2,7 @@
 
 namespace WSms\Container;
 
+use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthRouter;
@@ -35,12 +36,17 @@ class AuthServiceProvider implements ServiceProvider
             return new RateLimiter();
         });
 
+        $container->register('auth.lockout', function () {
+            return new AccountLockout();
+        });
+
         $container->register('auth.orchestrator', function () use ($container) {
             return new AuthOrchestrator(
                 $container->get('auth.policy'),
                 $container->get('mfa.manager'),
                 $container->get('audit.logger'),
                 $container->get('auth.session'),
+                $container->get('auth.lockout'),
             );
         });
 

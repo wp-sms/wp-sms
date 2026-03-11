@@ -49,13 +49,14 @@ readonly class AuthResult
         );
     }
 
-    public static function failed(string $error, string $message): self
+    public static function failed(string $error, string $message, array $meta = []): self
     {
         return new self(
             success: false,
             status: 'failed',
             error: $error,
             message: $message,
+            meta: $meta,
         );
     }
 
