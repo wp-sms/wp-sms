@@ -2,6 +2,8 @@
 
 namespace WSms\Container;
 
+use WSms\Database\CleanupScheduler;
+
 defined('ABSPATH') || exit;
 
 /**
@@ -18,7 +20,9 @@ class CoreServiceProvider implements ServiceProvider
      */
     public function register(ServiceContainer $container): void
     {
-        // Register core services here as features are built.
+        $container->register('database.cleanup', fn () => new CleanupScheduler(
+            $container->get('audit.logger'),
+        ));
     }
 
     /**
@@ -26,6 +30,6 @@ class CoreServiceProvider implements ServiceProvider
      */
     public function boot(ServiceContainer $container): void
     {
-        // Boot core services here.
+        add_action(CleanupScheduler::HOOK_NAME, [$container->get('database.cleanup'), 'run']);
     }
 }

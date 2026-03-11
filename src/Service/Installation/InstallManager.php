@@ -2,6 +2,7 @@
 
 namespace WSms\Service\Installation;
 
+use WSms\Database\CleanupScheduler;
 use WSms\Database\Migrator;
 
 defined('ABSPATH') || exit;
@@ -18,6 +19,10 @@ class InstallManager
         Migrator::createTables();
 
         set_transient('wsms_flush_rewrite', '1');
+
+        if (!wp_next_scheduled(CleanupScheduler::HOOK_NAME)) {
+            wp_schedule_event(time(), 'daily', CleanupScheduler::HOOK_NAME);
+        }
 
         add_option('wsms_auth_settings', [
             'primary_methods'        => ['password'],
@@ -49,6 +54,6 @@ class InstallManager
      */
     public static function deactivate(): void
     {
-        wp_clear_scheduled_hook('wsms_cleanup_auth_logs');
+        wp_clear_scheduled_hook(CleanupScheduler::HOOK_NAME);
     }
 }

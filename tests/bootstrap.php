@@ -332,6 +332,38 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('wp_next_scheduled')) {
+        function wp_next_scheduled(string $hook, array $args = []) {
+            return $GLOBALS['_test_wp_next_scheduled'][$hook] ?? false;
+        }
+    }
+
+    if (!function_exists('wp_schedule_event')) {
+        function wp_schedule_event(int $timestamp, string $recurrence, string $hook, array $args = [], bool $wpError = false) {
+            $GLOBALS['_test_wp_scheduled_events'][$hook] = [
+                'timestamp'  => $timestamp,
+                'recurrence' => $recurrence,
+                'args'       => $args,
+            ];
+            return true;
+        }
+    }
+
+    if (!function_exists('wp_clear_scheduled_hook')) {
+        function wp_clear_scheduled_hook(string $hook, array $args = []): int {
+            unset($GLOBALS['_test_wp_scheduled_events'][$hook]);
+            unset($GLOBALS['_test_wp_next_scheduled'][$hook]);
+            return 1;
+        }
+    }
+
+    if (!function_exists('delete_option')) {
+        function delete_option(string $option): bool {
+            unset($GLOBALS['_test_options'][$option]);
+            return true;
+        }
+    }
+
     if (!function_exists('add_rewrite_rule')) {
         function add_rewrite_rule(string $regex, string $query, string $after = 'bottom'): void {
             // No-op in tests.
