@@ -2,6 +2,8 @@
 
 namespace WSms\Container;
 
+use WSms\Rest\AccountController;
+use WSms\Rest\AdminController;
 use WSms\Rest\AuthController;
 use WSms\Rest\MfaController;
 use WSms\Rest\EnrollmentController;
@@ -33,6 +35,20 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('auth.policy'),
             );
         });
+
+        $container->register('rest.account', function () use ($container) {
+            return new AccountController(
+                $container->get('auth.account_manager'),
+                $container->get('auth.rate_limiter'),
+            );
+        });
+
+        $container->register('rest.admin', function () use ($container) {
+            return new AdminController(
+                $container->get('audit.logger'),
+                $container->get('mfa.manager'),
+            );
+        });
     }
 
     /** {@inheritDoc} */
@@ -42,6 +58,8 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.auth')->registerRoutes();
             $container->get('rest.mfa')->registerRoutes();
             $container->get('rest.enrollment')->registerRoutes();
+            $container->get('rest.account')->registerRoutes();
+            $container->get('rest.admin')->registerRoutes();
         });
     }
 }

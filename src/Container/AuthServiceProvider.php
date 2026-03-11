@@ -2,7 +2,9 @@
 
 namespace WSms\Container;
 
+use WSms\Auth\AccountManager;
 use WSms\Auth\AuthOrchestrator;
+use WSms\Auth\AuthRouter;
 use WSms\Auth\AuthSession;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\RateLimiter;
@@ -41,10 +43,23 @@ class AuthServiceProvider implements ServiceProvider
                 $container->get('auth.session'),
             );
         });
+
+        $container->register('auth.account_manager', function () use ($container) {
+            return new AccountManager(
+                $container->get('audit.logger'),
+                $container->get('mfa.otp_generator'),
+                $container->get('mfa.manager'),
+            );
+        });
+
+        $container->register('auth.router', function () {
+            return new AuthRouter();
+        });
     }
 
     /** {@inheritDoc} */
     public function boot(ServiceContainer $container): void
     {
+        $container->get('auth.router')->registerHooks();
     }
 }

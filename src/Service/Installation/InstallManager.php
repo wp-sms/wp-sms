@@ -17,6 +17,8 @@ class InstallManager
     {
         Migrator::createTables();
 
+        set_transient('wsms_flush_rewrite', '1');
+
         add_option('wsms_auth_settings', [
             'primary_methods'        => ['password'],
             'mfa_factors'            => [],
