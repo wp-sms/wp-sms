@@ -2,6 +2,8 @@
 
 namespace WSms\Service\Admin;
 
+use WSms\Components\View;
+
 defined('ABSPATH') || exit;
 
 /**
@@ -51,6 +53,6 @@ class AdminManager
      */
     public function renderDashboard(): void
     {
-        echo '<div id="wpsms-settings-root"></div>';
+        View::load('admin/app');
     }
 }

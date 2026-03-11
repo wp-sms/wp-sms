@@ -7,7 +7,7 @@ export default defineConfig({
     root: 'resources/react',
     base: './',
     build: {
-        outDir: resolve(__dirname, 'public/dashboard'),
+        outDir: resolve(__dirname, 'public/app'),
         emptyOutDir: true,
         manifest: true,
         rollupOptions: {

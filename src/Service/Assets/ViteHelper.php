@@ -21,7 +21,7 @@ class ViteHelper
      */
     public static function readManifest(): ?array
     {
-        $manifestPath = WP_SMS_DIR . 'public/dashboard/.vite/manifest.json';
+        $manifestPath = WP_SMS_DIR . 'public/app/.vite/manifest.json';
 
         if (!file_exists($manifestPath)) {
             return null;
@@ -48,7 +48,7 @@ class ViteHelper
         }
 
         $entryData = $manifest[$entry];
-        $distUrl = WP_SMS_URL . 'public/dashboard/';
+        $distUrl = WP_SMS_URL . 'public/app/';
 
         // Enqueue CSS imports
         if (!empty($entryData['css'])) {
