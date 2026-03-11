@@ -4,6 +4,7 @@ namespace WSms\Audit;
 
 use WSms\Enums\EventType;
 use WSms\Enums\LogVerbosity;
+use WSms\Support\IpResolver;
 
 defined('ABSPATH') || exit;
 
@@ -124,21 +125,6 @@ class AuditLogger
 
     private function getIpAddress(): string
     {
-        $headers = ['HTTP_CF_CONNECTING_IP', 'HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR'];
-
-        foreach ($headers as $header) {
-            if (!empty($_SERVER[$header])) {
-                $ip = sanitize_text_field(wp_unslash($_SERVER[$header]));
-                // For X-Forwarded-For, take the first IP
-                if (str_contains($ip, ',')) {
-                    $ip = trim(explode(',', $ip)[0]);
-                }
-                if (filter_var($ip, FILTER_VALIDATE_IP)) {
-                    return $ip;
-                }
-            }
-        }
-
-        return '';
+        return IpResolver::resolve();
     }
 }

@@ -182,30 +182,33 @@ class MagicLinkChannel implements ChannelInterface
         ]);
     }
 
-    /** {@inheritDoc} */
-    public function verify(int $userId, string $code, array $context = []): bool
+    /**
+     * Verify a magic link token and resolve the user ID.
+     *
+     * Unlike verify(), this looks up by token alone (no userId required)
+     * and returns the userId on success, or null on failure.
+     */
+    public function verifyTokenAndResolveUser(string $token): ?int
     {
         global $wpdb;
 
         $table = $wpdb->prefix . 'wsms_verifications';
-        $hashedToken = $this->otpGenerator->hash($code);
+        $hashedToken = $this->otpGenerator->hash($token);
 
-        // Look up by hashed token — no attempt counting for high-entropy tokens.
         $verification = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM {$table}
-             WHERE user_id = %d AND channel_id = %s AND code = %s AND used_at IS NULL
+             WHERE channel_id = %s AND code = %s AND used_at IS NULL
              LIMIT 1",
-            $userId,
             $this->getId(),
             $hashedToken,
         ));
 
         if (!$verification) {
-            return false;
+            return null;
         }
 
         if (strtotime($verification->expires_at) < time()) {
-            return false;
+            return null;
         }
 
         // Mark as used.
@@ -215,11 +218,19 @@ class MagicLinkChannel implements ChannelInterface
             ['id' => $verification->id],
         );
 
+        $userId = (int) $verification->user_id;
+
         $this->auditLogger->log(EventType::MagicLinkVerified, 'success', $userId, [
             'channel' => $this->getId(),
         ]);
 
-        return true;
+        return $userId;
+    }
+
+    /** {@inheritDoc} */
+    public function verify(int $userId, string $code, array $context = []): bool
+    {
+        return $this->verifyTokenAndResolveUser($code) === $userId;
     }
 
     /** {@inheritDoc} */

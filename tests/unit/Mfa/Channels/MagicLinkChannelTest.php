@@ -149,6 +149,58 @@ class MagicLinkChannelTest extends TestCase
         $this->assertFalse($this->channel->verify(1, 'badtoken'));
     }
 
+    public function testVerifyTokenAndResolveUserReturnsUserId(): void
+    {
+        $token = 'magictoken123';
+        $hashedToken = hash('sha256', $token);
+
+        $this->otpGenerator->method('hash')->willReturn($hashedToken);
+
+        $verification = (object) [
+            'id'         => 1,
+            'user_id'    => 42,
+            'channel_id' => 'magic_link',
+            'code'       => $hashedToken,
+            'expires_at' => gmdate('Y-m-d H:i:s', time() + 600),
+            'used_at'    => null,
+        ];
+
+        $wpdb = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['get_row', 'prepare', 'update'])
+            ->getMock();
+        $wpdb->prefix = 'wp_';
+        $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
+        $wpdb->method('get_row')->willReturn($verification);
+        $wpdb->method('update')->willReturn(1);
+        $GLOBALS['wpdb'] = $wpdb;
+
+        $this->assertSame(42, $this->channel->verifyTokenAndResolveUser($token));
+    }
+
+    public function testVerifyTokenAndResolveUserReturnsNullForExpired(): void
+    {
+        $this->otpGenerator->method('hash')->willReturn('somehash');
+
+        $verification = (object) [
+            'id'         => 1,
+            'user_id'    => 1,
+            'channel_id' => 'magic_link',
+            'code'       => 'somehash',
+            'expires_at' => gmdate('Y-m-d H:i:s', time() - 10),
+            'used_at'    => null,
+        ];
+
+        $wpdb = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['get_row', 'prepare'])
+            ->getMock();
+        $wpdb->prefix = 'wp_';
+        $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
+        $wpdb->method('get_row')->willReturn($verification);
+        $GLOBALS['wpdb'] = $wpdb;
+
+        $this->assertNull($this->channel->verifyTokenAndResolveUser('badtoken'));
+    }
+
     public function testSendChallengeFailsWhenNotEnrolled(): void
     {
         $this->setupWpdbMock(null);

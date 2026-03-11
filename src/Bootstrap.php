@@ -8,6 +8,7 @@ use WSms\Container\AdminServiceProvider;
 use WSms\Container\AuthServiceProvider;
 use WSms\Container\MfaServiceProvider;
 use WSms\Container\AuditServiceProvider;
+use WSms\Container\RestServiceProvider;
 use WSms\Service\Installation\InstallManager;
 
 defined('ABSPATH') || exit;
@@ -35,6 +36,7 @@ class Bootstrap
         AuthServiceProvider::class,
         MfaServiceProvider::class,
         AuditServiceProvider::class,
+        RestServiceProvider::class,
     ];
 
     /**
