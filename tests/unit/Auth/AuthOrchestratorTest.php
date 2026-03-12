@@ -562,6 +562,8 @@ class AuthOrchestratorTest extends TestCase
         $user->user_email = 'test@example.com';
         $user->user_login = 'testuser';
         $user->display_name = 'Test User';
+        $user->first_name = 'Test';
+        $user->last_name = 'User';
         $user->roles = ['subscriber'];
 
         return $user;
