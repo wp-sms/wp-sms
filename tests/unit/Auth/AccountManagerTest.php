@@ -121,6 +121,56 @@ class AccountManagerTest extends TestCase
         $this->assertSame('existing_user_email', $result['error']);
     }
 
+    public function testRegisterUserFailsWhenPhoneRequiredButMissing(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'registration_fields' => ['email', 'password'],
+            'phone' => ['required_at_signup' => true],
+        ];
+
+        $result = $this->manager->registerUser([
+            'email'    => 'test@example.com',
+            'password' => 'StrongPass1!',
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('missing_phone', $result['error']);
+    }
+
+    public function testRegisterUserSucceedsWhenPhoneRequiredAndProvided(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 50;
+        $this->stubWpdb();
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'registration_fields' => ['email', 'password'],
+            'phone' => ['required_at_signup' => true],
+        ];
+
+        $result = $this->manager->registerUser([
+            'email'    => 'test@example.com',
+            'password' => 'StrongPass1!',
+            'phone'    => '+1234567890',
+        ]);
+
+        $this->assertTrue($result['success']);
+    }
+
+    public function testRegisterUserFailsWhenFirstNameRequired(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'registration_fields' => ['email', 'password', 'first_name'],
+        ];
+
+        $result = $this->manager->registerUser([
+            'email'    => 'test@example.com',
+            'password' => 'StrongPass1!',
+        ]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('missing_first_name', $result['error']);
+    }
+
     public function testRegisterUserFailsWithMissingEmail(): void
     {
         $result = $this->manager->registerUser([

@@ -127,6 +127,73 @@ class AdminControllerTest extends TestCase
         $this->assertSame('user_not_found', $response->get_data()['error']);
     }
 
+    public function testValidationRejectsInvalidCodeLength(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+
+        $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
+        $request->set_param('phone', ['code_length' => 5]);
+
+        $response = $this->controller->handleUpdateSettings($request);
+
+        $this->assertSame(400, $response->get_status());
+        $this->assertSame('validation_failed', $response->get_data()['error']);
+    }
+
+    public function testValidationRejectsInvalidAuthBaseUrl(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+
+        $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
+        $request->set_param('auth_base_url', 'no-leading-slash');
+
+        $response = $this->controller->handleUpdateSettings($request);
+
+        $this->assertSame(400, $response->get_status());
+        $this->assertSame('validation_failed', $response->get_data()['error']);
+    }
+
+    public function testValidationAcceptsValidCodeLength(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+
+        $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
+        $request->set_param('phone', ['code_length' => 4]);
+
+        $response = $this->controller->handleUpdateSettings($request);
+
+        $this->assertSame(200, $response->get_status());
+        $this->assertTrue($response->get_data()['success']);
+    }
+
+    public function testRewriteFlushTransientSetWhenAuthBaseUrlChanges(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = ['auth_base_url' => '/account'];
+        $GLOBALS['_test_transients'] = [];
+
+        $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
+        $request->set_param('auth_base_url', '/my-auth');
+
+        $response = $this->controller->handleUpdateSettings($request);
+
+        $this->assertSame(200, $response->get_status());
+        $this->assertSame('1', get_transient('wsms_flush_rewrite'));
+    }
+
+    public function testNoRewriteFlushWhenAuthBaseUrlUnchanged(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = ['auth_base_url' => '/account'];
+        $GLOBALS['_test_transients'] = [];
+
+        $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
+        $request->set_param('auth_base_url', '/account');
+
+        $response = $this->controller->handleUpdateSettings($request);
+
+        $this->assertSame(200, $response->get_status());
+        $this->assertFalse(get_transient('wsms_flush_rewrite'));
+    }
+
     private function makeUser(int $id): object
     {
         $user = new \stdClass();

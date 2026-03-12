@@ -5,7 +5,9 @@ namespace WSms\Rest;
 use WP_REST_Request;
 use WP_REST_Response;
 use WSms\Audit\AuditLogger;
+use WSms\Enums\EnrollmentTiming;
 use WSms\Enums\EventType;
+use WSms\Enums\LogVerbosity;
 use WSms\Mfa\MfaManager;
 
 defined('ABSPATH') || exit;
@@ -25,8 +27,6 @@ class AdminController
         'log_retention_days',
         'registration_fields',
         'redirect_login',
-        'require_email_verification',
-        'require_phone_verification',
     ];
 
     /** Channel keys that accept nested sub-objects. */
@@ -117,7 +117,23 @@ class AdminController
             }
         }
 
+        $errors = $this->validateSettings($updated);
+
+        if (!empty($errors)) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error'   => 'validation_failed',
+                'message' => 'Invalid settings values.',
+                'errors'  => $errors,
+            ], 400);
+        }
+
         update_option('wsms_auth_settings', $updated);
+
+        // Flush rewrite rules when auth_base_url changes.
+        if (($current['auth_base_url'] ?? '/account') !== ($updated['auth_base_url'] ?? '/account')) {
+            set_transient('wsms_flush_rewrite', '1');
+        }
 
         return new WP_REST_Response([
             'success'  => true,
@@ -171,5 +187,88 @@ class AdminController
             'success' => true,
             'message' => 'All MFA factors have been disabled for this user.',
         ]);
+    }
+
+    private function validateSettings(array $settings): array
+    {
+        $errors = [];
+
+        foreach (['phone', 'email'] as $channel) {
+            $ch = $settings[$channel] ?? [];
+
+            if (isset($ch['code_length']) && !in_array((int) $ch['code_length'], [4, 6], true)) {
+                $errors[] = "{$channel}.code_length must be 4 or 6.";
+            }
+
+            if (isset($ch['expiry'])) {
+                $v = (int) $ch['expiry'];
+                if ($v < 60 || $v > 3600) {
+                    $errors[] = "{$channel}.expiry must be between 60 and 3600.";
+                }
+            }
+
+            if (isset($ch['max_attempts'])) {
+                $v = (int) $ch['max_attempts'];
+                if ($v < 1 || $v > 20) {
+                    $errors[] = "{$channel}.max_attempts must be between 1 and 20.";
+                }
+            }
+
+            if (isset($ch['cooldown'])) {
+                $v = (int) $ch['cooldown'];
+                if ($v < 10 || $v > 300) {
+                    $errors[] = "{$channel}.cooldown must be between 10 and 300.";
+                }
+            }
+        }
+
+        if (isset($settings['enrollment_timing']) && EnrollmentTiming::tryFrom($settings['enrollment_timing']) === null) {
+            $allowed = array_column(EnrollmentTiming::cases(), 'value');
+            $errors[] = 'enrollment_timing must be one of: ' . implode(', ', $allowed) . '.';
+        }
+
+        if (isset($settings['grace_period_days'])) {
+            $v = (int) $settings['grace_period_days'];
+            if ($v < 1 || $v > 90) {
+                $errors[] = 'grace_period_days must be between 1 and 90.';
+            }
+        }
+
+        if (isset($settings['log_verbosity']) && LogVerbosity::tryFrom($settings['log_verbosity']) === null) {
+            $allowed = array_column(LogVerbosity::cases(), 'value');
+            $errors[] = 'log_verbosity must be one of: ' . implode(', ', $allowed) . '.';
+        }
+
+        if (isset($settings['log_retention_days'])) {
+            $v = (int) $settings['log_retention_days'];
+            if ($v < 1 || $v > 365) {
+                $errors[] = 'log_retention_days must be between 1 and 365.';
+            }
+        }
+
+        if (isset($settings['auth_base_url'])) {
+            $url = $settings['auth_base_url'];
+            if (!preg_match('#^/[a-zA-Z0-9\-/]*$#', $url)) {
+                $errors[] = 'auth_base_url must start with / and contain only alphanumeric characters and hyphens.';
+            }
+        }
+
+        $bc = $settings['backup_codes'] ?? [];
+
+        if (isset($bc['count'])) {
+            $v = (int) $bc['count'];
+            if ($v < 4 || $v > 20) {
+                $errors[] = 'backup_codes.count must be between 4 and 20.';
+            }
+        }
+
+        if (isset($bc['length'])) {
+            $v = (int) $bc['length'];
+            if ($v < 6 || $v > 12) {
+                $errors[] = 'backup_codes.length must be between 6 and 12.';
+            }
+        }
+
+        return $errors;
     }
 }

@@ -13,12 +13,19 @@ defined('ABSPATH') || exit;
 
 class AccountManager
 {
+    private ?array $settings = null;
+
     public function __construct(
         private AuditLogger $auditLogger,
         private OtpGenerator $otpGenerator,
         private MfaManager $mfaManager,
         private AuthSession $authSession,
     ) {
+    }
+
+    private function getSettings(): array
+    {
+        return $this->settings ??= get_option('wsms_auth_settings', []);
     }
 
     /**
@@ -28,7 +35,7 @@ class AccountManager
      */
     public function registerUser(array $data): array
     {
-        $settings = get_option('wsms_auth_settings', []);
+        $settings = $this->getSettings();
         $requiredFields = $settings['registration_fields'] ?? ['email', 'password'];
 
         // Validate required fields.
@@ -38,6 +45,20 @@ class AccountManager
 
         if (in_array('password', $requiredFields, true) && empty($data['password'])) {
             return ['success' => false, 'error' => 'missing_password', 'message' => 'Password is required.'];
+        }
+
+        // Enforce phone.required_at_signup.
+        if (!empty($settings['phone']['required_at_signup']) && empty($data['phone'])) {
+            return ['success' => false, 'error' => 'missing_phone', 'message' => 'Phone number is required.'];
+        }
+
+        // Enforce registration_fields for first_name/last_name.
+        if (in_array('first_name', $requiredFields, true) && empty($data['first_name'])) {
+            return ['success' => false, 'error' => 'missing_first_name', 'message' => 'First name is required.'];
+        }
+
+        if (in_array('last_name', $requiredFields, true) && empty($data['last_name'])) {
+            return ['success' => false, 'error' => 'missing_last_name', 'message' => 'Last name is required.'];
         }
 
         $email = sanitize_email($data['email'] ?? '');
@@ -333,7 +354,10 @@ class AccountManager
             return ['success' => false, 'error' => 'no_phone', 'message' => 'No phone number on file.'];
         }
 
-        if ($this->isVerificationOnCooldown($userId, 'phone_verify')) {
+        $settings = $this->getSettings();
+        $cooldown = (int) ($settings['phone']['cooldown'] ?? 60);
+
+        if ($this->isVerificationOnCooldown($userId, 'phone_verify', $cooldown)) {
             return ['success' => false, 'error' => 'cooldown', 'message' => 'Please wait before requesting a new code.'];
         }
 
@@ -356,7 +380,10 @@ class AccountManager
             return ['success' => false, 'error' => 'no_email', 'message' => 'No email address on file.'];
         }
 
-        if ($this->isVerificationOnCooldown($userId, 'email_verify')) {
+        $settings = $this->getSettings();
+        $cooldown = (int) ($settings['email']['cooldown'] ?? 60);
+
+        if ($this->isVerificationOnCooldown($userId, 'email_verify', $cooldown)) {
             return ['success' => false, 'error' => 'cooldown', 'message' => 'Please wait before requesting a new email.'];
         }
 
@@ -421,7 +448,13 @@ class AccountManager
     {
         global $wpdb;
 
-        $otp = $this->otpGenerator->generate();
+        $settings = $this->getSettings();
+        $phoneSettings = $settings['phone'] ?? [];
+        $codeLength = (int) ($phoneSettings['code_length'] ?? 6);
+        $expiry = (int) ($phoneSettings['expiry'] ?? 300);
+        $maxAttempts = (int) ($phoneSettings['max_attempts'] ?? 5);
+
+        $otp = $this->otpGenerator->generate($codeLength);
         $hashed = $this->otpGenerator->hash($otp);
 
         $wpdb->insert($wpdb->prefix . 'wsms_verifications', [
@@ -430,8 +463,8 @@ class AccountManager
             'identifier'   => $phone,
             'code'         => $hashed,
             'attempts'     => 0,
-            'max_attempts' => 5,
-            'expires_at'   => gmdate('Y-m-d H:i:s', time() + 300),
+            'max_attempts' => $maxAttempts,
+            'expires_at'   => gmdate('Y-m-d H:i:s', time() + $expiry),
             'created_at'   => current_time('mysql', true),
         ]);
 
@@ -487,12 +520,14 @@ class AccountManager
         );
 
         $baseUrl = get_site_url();
+        $authSettings = $this->getSettings();
+        $authBase = $authSettings['auth_base_url'] ?? '/account';
 
         $siteName = get_bloginfo('name');
         $headers = ['Content-Type: text/html; charset=UTF-8'];
 
         if ($type === 'email_verify') {
-            $link = $baseUrl . '/account/verify-email?token=' . $token;
+            $link = $baseUrl . $authBase . '/verify-email?token=' . $token;
             $subject = sprintf('[%s] Verify your email address', $siteName);
             $message = sprintf(
                 '<p>Please verify your email address by clicking the link below:</p>'
@@ -502,7 +537,7 @@ class AccountManager
                 esc_url($link),
             );
         } else {
-            $link = $baseUrl . '/account/reset-password?token=' . $token;
+            $link = $baseUrl . $authBase . '/reset-password?token=' . $token;
             $subject = sprintf('[%s] Reset your password', $siteName);
             $message = sprintf(
                 '<p>Click the link below to reset your password:</p>'
@@ -516,15 +551,16 @@ class AccountManager
         wp_mail($identifier, $subject, $message, $headers);
     }
 
-    private function isVerificationOnCooldown(int $userId, string $type): bool
+    private function isVerificationOnCooldown(int $userId, string $type, int $cooldownSeconds = 60): bool
     {
         global $wpdb;
         $table = $wpdb->prefix . 'wsms_verifications';
 
         return (bool) $wpdb->get_row($wpdb->prepare(
-            "SELECT id FROM {$table} WHERE user_id = %d AND type = %s AND used_at IS NULL AND created_at > DATE_SUB(NOW(), INTERVAL 60 SECOND) LIMIT 1",
+            "SELECT id FROM {$table} WHERE user_id = %d AND type = %s AND used_at IS NULL AND created_at > DATE_SUB(NOW(), INTERVAL %d SECOND) LIMIT 1",
             $userId,
             $type,
+            $cooldownSeconds,
         ));
     }
 

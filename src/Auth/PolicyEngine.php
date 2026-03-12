@@ -275,7 +275,7 @@ class PolicyEngine
         $settings = $this->getSettings();
         $pending = [];
 
-        if (!empty($settings['require_email_verification'])) {
+        if (!empty($settings['email']['verify_at_signup'])) {
             $hasEmail = !empty(get_userdata($userId)?->user_email);
             $emailVerified = (bool) get_user_meta($userId, 'wsms_email_verified', true);
             if ($hasEmail && !$emailVerified) {
@@ -283,7 +283,7 @@ class PolicyEngine
             }
         }
 
-        if (!empty($settings['require_phone_verification'])) {
+        if (!empty($settings['phone']['verify_at_signup'])) {
             $hasPhone = !empty(get_user_meta($userId, 'wsms_phone', true));
             $phoneVerified = (bool) get_user_meta($userId, 'wsms_phone_verified', true);
             if ($hasPhone && !$phoneVerified) {
@@ -322,7 +322,7 @@ class PolicyEngine
             'allow_sign_in'        => true,
         ],
         'email' => [
-            'enabled'              => false,
+            'enabled'              => true,
             'usage'                => 'login',
             'verification_methods' => ['otp'],
             'allow_sign_in'        => true,

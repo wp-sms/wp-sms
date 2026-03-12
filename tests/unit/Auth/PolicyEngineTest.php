@@ -45,13 +45,13 @@ class PolicyEngineTest extends TestCase
 
     public static function primaryMethodsProvider(): iterable
     {
-        yield 'default settings returns password' => [
+        yield 'default settings returns password and email' => [
             [],
-            ['password'],
+            ['password', 'email'],
         ];
 
         yield 'only password enabled' => [
-            ['password' => ['enabled' => true]],
+            ['password' => ['enabled' => true], 'email' => ['enabled' => false]],
             ['password'],
         ];
 
@@ -59,6 +59,7 @@ class PolicyEngineTest extends TestCase
             [
                 'password' => ['enabled' => true],
                 'phone'    => ['enabled' => true, 'usage' => 'login', 'allow_sign_in' => true],
+                'email'    => ['enabled' => false],
             ],
             ['password', 'phone'],
         ];
@@ -101,6 +102,7 @@ class PolicyEngineTest extends TestCase
             [
                 'password' => ['enabled' => true],
                 'phone'    => ['enabled' => true, 'usage' => 'mfa', 'allow_sign_in' => true],
+                'email'    => ['enabled' => false],
             ],
             ['password'],
         ];
@@ -109,6 +111,7 @@ class PolicyEngineTest extends TestCase
             [
                 'password' => ['enabled' => true],
                 'phone'    => ['enabled' => true, 'usage' => 'login', 'allow_sign_in' => false],
+                'email'    => ['enabled' => false],
             ],
             ['password'],
         ];
@@ -117,20 +120,23 @@ class PolicyEngineTest extends TestCase
             [
                 'password' => ['enabled' => false],
                 'phone'    => ['enabled' => true, 'usage' => 'login', 'allow_sign_in' => true],
+                'email'    => ['enabled' => false],
             ],
             ['phone'],
         ];
     }
 
-    public function testUserMethodsDefaultSettingsReturnsPassword(): void
+    public function testUserMethodsDefaultSettingsReturnsPasswordAndEmail(): void
     {
         $GLOBALS['_test_options']['wsms_auth_settings'] = [];
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
 
         $methods = $this->engine->getAvailableMethodsForUser(1);
+        $methodNames = array_column($methods, 'method');
 
-        $this->assertCount(1, $methods);
-        $this->assertSame('password', $methods[0]['method']);
+        $this->assertCount(2, $methods);
+        $this->assertContains('password', $methodNames);
+        $this->assertContains('email_otp', $methodNames);
     }
 
     public function testUserMethodsWithPhoneReturnsPhoneOtp(): void
@@ -168,6 +174,7 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'password' => ['enabled' => true],
             'phone'    => ['enabled' => true, 'usage' => 'login', 'verification_methods' => ['otp']],
+            'email'    => ['enabled' => false],
         ];
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
 
@@ -283,6 +290,48 @@ class PolicyEngineTest extends TestCase
         yield 'phone primary prefers email' => ['phone_otp', $bothFactors, 'email'];
         yield 'email primary prefers phone' => ['email_otp', $bothFactors, 'phone'];
         yield 'single factor returns that' => ['phone_otp', $phoneOnly, 'phone'];
+    }
+
+    public function testGetPendingVerificationsReadsEmailVerifyAtSignup(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'email' => ['enabled' => true, 'verify_at_signup' => true],
+        ];
+        $GLOBALS['_test_userdata'] = $this->makeUser(1);
+        $GLOBALS['_test_user_meta'][1] = ['wsms_email_verified' => ''];
+
+        $pending = $this->engine->getPendingVerifications(1);
+
+        $this->assertCount(1, $pending);
+        $this->assertSame('email', $pending[0]['type']);
+    }
+
+    public function testGetPendingVerificationsReadsPhoneVerifyAtSignup(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => true, 'verify_at_signup' => true],
+        ];
+        $GLOBALS['_test_userdata'] = $this->makeUser(1);
+        $GLOBALS['_test_user_meta'][1] = ['wsms_phone' => '+1234567890', 'wsms_phone_verified' => ''];
+
+        $pending = $this->engine->getPendingVerifications(1);
+
+        $this->assertCount(1, $pending);
+        $this->assertSame('phone', $pending[0]['type']);
+    }
+
+    public function testGetPendingVerificationsEmptyWhenVerifyAtSignupDisabled(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'email' => ['enabled' => true, 'verify_at_signup' => false],
+            'phone' => ['enabled' => true, 'verify_at_signup' => false],
+        ];
+        $GLOBALS['_test_userdata'] = $this->makeUser(1);
+        $GLOBALS['_test_user_meta'][1] = ['wsms_phone' => '+1234567890'];
+
+        $pending = $this->engine->getPendingVerifications(1);
+
+        $this->assertSame([], $pending);
     }
 
     private function makeUser(int $id, string $email = 'test@example.com'): object
