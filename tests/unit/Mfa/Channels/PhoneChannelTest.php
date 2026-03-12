@@ -6,29 +6,27 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
-use WSms\Mfa\Channels\SmsOtpChannel;
+use WSms\Mfa\Channels\MagicLinkChannel;
+use WSms\Mfa\Channels\PhoneChannel;
 use WSms\Mfa\OtpGenerator;
-use WSms\Mfa\ValueObjects\EnrollmentResult;
 
-class SmsOtpChannelTest extends TestCase
+class PhoneChannelTest extends TestCase
 {
-    private SmsOtpChannel $channel;
+    private PhoneChannel $channel;
     private MockObject&OtpGenerator $otpGenerator;
     private MockObject&AuditLogger $auditLogger;
+    private MockObject&MagicLinkChannel $magicLink;
     private object $wpdb;
 
     protected function setUp(): void
     {
         $this->otpGenerator = $this->createMock(OtpGenerator::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
-        $this->channel = new SmsOtpChannel($this->otpGenerator, $this->auditLogger);
+        $this->magicLink = $this->createMock(MagicLinkChannel::class);
+        $this->channel = new PhoneChannel($this->otpGenerator, $this->auditLogger, $this->magicLink);
 
         // Mock global $wpdb.
-        $this->wpdb = new \stdClass();
-        $this->wpdb->prefix = 'wp_';
-        $this->wpdb->insert_id = 1;
-        $this->wpdb->rows_affected = 1;
-        $GLOBALS['wpdb'] = $this->wpdb;
+        $this->setupWpdbMock(null);
     }
 
     protected function tearDown(): void
@@ -36,14 +34,14 @@ class SmsOtpChannelTest extends TestCase
         unset($GLOBALS['wpdb']);
     }
 
-    public function testGetIdReturnsSms(): void
+    public function testGetIdReturnsPhone(): void
     {
-        $this->assertSame('sms', $this->channel->getId());
+        $this->assertSame('phone', $this->channel->getId());
     }
 
-    public function testGetNameReturnsSmsOtp(): void
+    public function testGetNameReturnsPhone(): void
     {
-        $this->assertSame('SMS OTP', $this->channel->getName());
+        $this->assertSame('Phone', $this->channel->getName());
     }
 
     public function testSupportsPrimaryAuth(): void
@@ -73,10 +71,7 @@ class SmsOtpChannelTest extends TestCase
 
     public function testEnrollAcceptsValidE164Phone(): void
     {
-        $this->mockWpdbGetRow(null); // No existing factor
-        $this->mockWpdbInsert();     // createFactor
-        $this->mockWpdbQuery();      // invalidate existing
-        $this->mockWpdbInsert();     // insert verification
+        $this->setupWpdbMock(null);
 
         $this->otpGenerator->method('generate')->willReturn('123456');
         $this->otpGenerator->method('hash')->willReturn('hashed');
@@ -90,7 +85,7 @@ class SmsOtpChannelTest extends TestCase
 
     public function testEnrollRejectsAlreadyEnrolled(): void
     {
-        $this->mockWpdbGetRow($this->makeFactorRow(ChannelStatus::Active));
+        $this->setupWpdbMock($this->makeFactorRow(ChannelStatus::Active));
 
         $result = $this->channel->enroll(1, ['phone' => '+12025551234']);
 
@@ -100,48 +95,37 @@ class SmsOtpChannelTest extends TestCase
 
     public function testIsEnrolledReturnsTrueForActiveFactor(): void
     {
-        $this->mockWpdbGetRow($this->makeFactorRow(ChannelStatus::Active));
+        $this->setupWpdbMock($this->makeFactorRow(ChannelStatus::Active));
 
         $this->assertTrue($this->channel->isEnrolled(1));
     }
 
     public function testIsEnrolledReturnsFalseForPendingFactor(): void
     {
-        $this->mockWpdbGetRow($this->makeFactorRow(ChannelStatus::Pending));
+        $this->setupWpdbMock($this->makeFactorRow(ChannelStatus::Pending));
 
         $this->assertFalse($this->channel->isEnrolled(1));
     }
 
     public function testIsEnrolledReturnsFalseWhenNoFactor(): void
     {
-        $this->mockWpdbGetRow(null);
+        $this->setupWpdbMock(null);
 
         $this->assertFalse($this->channel->isEnrolled(1));
     }
 
     public function testUnenrollDeletesPhoneMeta(): void
     {
-        $this->mockWpdbGetRow($this->makeFactorRow(ChannelStatus::Active));
-        $this->mockWpdbUpdate();
+        $this->setupWpdbMock($this->makeFactorRow(ChannelStatus::Active));
 
         $result = $this->channel->unenroll(1);
 
         $this->assertTrue($result);
     }
 
-    public function testSendChallengeFailsWhenNotEnrolled(): void
-    {
-        $this->mockWpdbGetRow(null);
-
-        $result = $this->channel->sendChallenge(1);
-
-        $this->assertFalse($result->success);
-        $this->assertStringContainsString('not enrolled', $result->message);
-    }
-
     public function testGetEnrollmentInfoWhenNotEnrolled(): void
     {
-        $this->mockWpdbGetRow(null);
+        $this->setupWpdbMock(null);
 
         $info = $this->channel->getEnrollmentInfo(1);
 
@@ -150,7 +134,7 @@ class SmsOtpChannelTest extends TestCase
 
     public function testConfirmEnrollmentFailsWithNoPendingFactor(): void
     {
-        $this->mockWpdbGetRow(null);
+        $this->setupWpdbMock(null);
 
         $result = $this->channel->confirmEnrollment(1, '123456');
 
@@ -165,7 +149,7 @@ class SmsOtpChannelTest extends TestCase
         return (object) [
             'id'         => 1,
             'user_id'    => 1,
-            'channel_id' => 'sms',
+            'channel_id' => 'phone',
             'status'     => $status->value,
             'meta'       => json_encode($meta),
             'created_at' => '2025-01-01 00:00:00',
@@ -173,20 +157,8 @@ class SmsOtpChannelTest extends TestCase
         ];
     }
 
-    private function mockWpdbGetRow(?object $result): void
+    private function setupWpdbMock(?object $getRowReturn): void
     {
-        $this->wpdb->get_row = fn() => $result;
-
-        // Use a closure-based mock since stdClass can't use ->method().
-        $mock = $this->wpdb;
-        $returnVal = $result;
-
-        if (!method_exists($mock, 'get_row')) {
-            $mock->get_row_return = $returnVal;
-            // We'll override via __call or direct property. For simplicity, mock the object:
-        }
-
-        // Replace with a proper mock object.
         $wpdb = $this->getMockBuilder(\stdClass::class)
             ->addMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var', 'get_results'])
             ->getMock();
@@ -195,7 +167,7 @@ class SmsOtpChannelTest extends TestCase
         $wpdb->rows_affected = 1;
 
         $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturn($result);
+        $wpdb->method('get_row')->willReturn($getRowReturn);
         $wpdb->method('insert')->willReturn(1);
         $wpdb->method('update')->willReturn(1);
         $wpdb->method('query')->willReturn(1);
@@ -203,20 +175,5 @@ class SmsOtpChannelTest extends TestCase
 
         $this->wpdb = $wpdb;
         $GLOBALS['wpdb'] = $wpdb;
-    }
-
-    private function mockWpdbInsert(): void
-    {
-        // Already handled via mockWpdbGetRow's full mock setup.
-    }
-
-    private function mockWpdbUpdate(): void
-    {
-        // Already handled via mockWpdbGetRow's full mock setup.
-    }
-
-    private function mockWpdbQuery(): void
-    {
-        // Already handled via mockWpdbGetRow's full mock setup.
     }
 }

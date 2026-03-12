@@ -8,7 +8,7 @@ use WSms\Mfa\ValueObjects\ChallengeResult;
 interface ChannelInterface
 {
     /**
-     * Unique channel identifier (e.g., 'sms', 'email_otp', 'magic_link').
+     * Unique channel identifier (e.g., 'phone', 'email', 'backup_codes').
      */
     public function getId(): string;
 

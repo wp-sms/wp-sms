@@ -86,6 +86,8 @@ trait HasUserFactor
 
     /**
      * Get a config value for this channel from auth settings.
+     *
+     * Settings are stored nested by channel prefix, e.g. settings['phone']['code_length'].
      */
     protected function getConfigValue(string $key, mixed $default = null): mixed
     {
@@ -93,9 +95,9 @@ trait HasUserFactor
             $this->settings = get_option('wsms_auth_settings', []);
         }
 
-        $prefixedKey = $this->getConfigPrefix() . '_' . $key;
+        $prefix = $this->getConfigPrefix();
 
-        return $this->settings[$prefixedKey] ?? $default;
+        return $this->settings[$prefix][$key] ?? $default;
     }
 
     /**

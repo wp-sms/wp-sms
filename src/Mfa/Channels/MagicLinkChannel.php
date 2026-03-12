@@ -13,6 +13,10 @@ use WSms\Mfa\ValueObjects\EnrollmentResult;
 
 defined('ABSPATH') || exit;
 
+/**
+ * Internal magic link implementation — used as a delegate by EmailChannel and PhoneChannel.
+ * Not registered as a standalone channel in MfaManager.
+ */
 class MagicLinkChannel implements ChannelInterface
 {
     use HasUserFactor;
@@ -90,7 +94,6 @@ class MagicLinkChannel implements ChannelInterface
             return new ChallengeResult(false, 'User is not enrolled in Magic Link.');
         }
 
-        // Read email from factor meta to avoid redundant get_userdata() call.
         $factor = $this->getFactor($userId);
         $email = $factor->meta['email'] ?? null;
 
@@ -101,7 +104,7 @@ class MagicLinkChannel implements ChannelInterface
         $table = $wpdb->prefix . 'wsms_verifications';
 
         // Check cooldown.
-        $cooldown = (int) $this->getConfigValue('cooldown', 60);
+        $cooldown = (int) ($this->getConfigValue('cooldown', 60) ?: 60);
 
         $recent = $wpdb->get_row($wpdb->prepare(
             "SELECT id FROM {$table}
@@ -128,7 +131,7 @@ class MagicLinkChannel implements ChannelInterface
         // Generate token.
         $token = $this->otpGenerator->generateToken(32);
         $hashedToken = $this->otpGenerator->hash($token);
-        $expiry = (int) $this->getConfigValue('expiry', 600);
+        $expiry = (int) ($this->getConfigValue('expiry', 600) ?: 600);
 
         $wpdb->insert($table, [
             'user_id'      => $userId,
@@ -142,10 +145,8 @@ class MagicLinkChannel implements ChannelInterface
             'created_at'   => current_time('mysql', true),
         ]);
 
-        // Build magic link URL.
         $url = get_site_url() . '/account/verify-magic-link?token=' . $token;
 
-        // Send email.
         $siteName = get_bloginfo('name');
         $expiryMinutes = (int) ($expiry / 60);
 
@@ -183,10 +184,39 @@ class MagicLinkChannel implements ChannelInterface
     }
 
     /**
+     * Generate a magic link token and store it, returning the full URL.
+     * Used by parent channels (EmailChannel, PhoneChannel) for combined messages.
+     */
+    public function generateToken(int $userId, string $identifier, int $expiry): string
+    {
+        global $wpdb;
+
+        $table = $wpdb->prefix . 'wsms_verifications';
+
+        $token = $this->otpGenerator->generateToken(32);
+        $hashedToken = $this->otpGenerator->hash($token);
+
+        $wpdb->insert($table, [
+            'user_id'      => $userId,
+            'type'         => 'magic_link',
+            'channel_id'   => $this->getId(),
+            'identifier'   => $identifier,
+            'code'         => $hashedToken,
+            'attempts'     => 0,
+            'max_attempts' => 1,
+            'expires_at'   => gmdate('Y-m-d H:i:s', time() + $expiry),
+            'created_at'   => current_time('mysql', true),
+        ]);
+
+        $this->auditLogger->log(EventType::MagicLinkSent, 'success', $userId, [
+            'channel' => $this->getId(),
+        ]);
+
+        return get_site_url() . '/account/verify-magic-link?token=' . $token;
+    }
+
+    /**
      * Verify a magic link token and resolve the user ID.
-     *
-     * Unlike verify(), this looks up by token alone (no userId required)
-     * and returns the userId on success, or null on failure.
      */
     public function verifyTokenAndResolveUser(string $token): ?int
     {

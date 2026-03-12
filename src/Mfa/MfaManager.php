@@ -47,9 +47,24 @@ class MfaManager
     public function getEnabledChannels(): array
     {
         $settings = get_option('wsms_auth_settings', []);
-        $enabledPrimary = $settings['primary_methods'] ?? [];
-        $enabledMfa = $settings['mfa_factors'] ?? [];
-        $enabledIds = array_unique(array_merge($enabledPrimary, $enabledMfa));
+        $enabledIds = [];
+
+        // Channels with nested settings (phone, email).
+        foreach (['phone', 'email'] as $channelKey) {
+            if (!empty($settings[$channelKey]['enabled'])) {
+                $enabledIds[] = $channelKey;
+            }
+        }
+
+        // Password (has its own enabled flag).
+        if (!empty($settings['password']['enabled'])) {
+            $enabledIds[] = 'password';
+        }
+
+        // Backup codes.
+        if (!empty($settings['backup_codes']['enabled'])) {
+            $enabledIds[] = 'backup_codes';
+        }
 
         return array_values(array_filter(
             $this->channels,

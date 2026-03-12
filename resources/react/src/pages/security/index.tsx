@@ -1,5 +1,4 @@
-import { MfaFactors } from './mfa-factors';
-import { Policies } from './policies';
+import { MfaPolicies } from './mfa-policies';
 import { RateLimiting } from './rate-limiting';
 import type { AuthSettings } from '@/lib/api';
 
@@ -11,13 +10,9 @@ interface SecurityPageProps {
 }
 
 export function SecurityPage({ section, settings, onUpdate, roles }: SecurityPageProps) {
-  if (section === 'policies') {
-    return <Policies settings={settings} onUpdate={onUpdate} roles={roles} />;
-  }
-
   if (section === 'rate-limiting') {
     return <RateLimiting settings={settings} onUpdate={onUpdate} />;
   }
 
-  return <MfaFactors settings={settings} onUpdate={onUpdate} />;
+  return <MfaPolicies settings={settings} onUpdate={onUpdate} roles={roles} />;
 }

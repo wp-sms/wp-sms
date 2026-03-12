@@ -11,25 +11,24 @@ class PolicyEngine
     private ?array $settings = null;
 
     /**
-     * Channel ID to conflicting channel ID mapping.
-     *
-     * When a primary method uses a channel, the same channel cannot be an MFA factor.
-     */
-    private const CONFLICT_MAP = [
-        'phone_otp'  => 'sms',
-        'email_otp'  => 'email_otp',
-        'magic_link' => 'email_otp',
-    ];
-
-    /**
      * Check whether MFA is required for a given user.
      */
     public function isMfaRequired(int $userId): bool
     {
         $settings = $this->getSettings();
 
-        $enabledFactors = $settings['mfa_factors'] ?? [];
-        if (empty($enabledFactors)) {
+        // Check if any channel is configured for MFA usage.
+        $hasMfaFactors = false;
+
+        foreach (['phone', 'email'] as $channelKey) {
+            $channel = $settings[$channelKey] ?? [];
+            if (!empty($channel['enabled']) && ($channel['usage'] ?? '') === 'mfa') {
+                $hasMfaFactors = true;
+                break;
+            }
+        }
+
+        if (!$hasMfaFactors && empty($settings['backup_codes']['enabled'])) {
             return false;
         }
 
@@ -87,45 +86,74 @@ class PolicyEngine
     }
 
     /**
-     * Get the enabled primary authentication methods.
+     * Derive available primary methods from channel settings.
+     *
+     * Primary methods = channels where enabled && usage === 'login' && allow_sign_in,
+     * plus 'password' if enabled.
      *
      * @return string[]
      */
     public function getAvailablePrimaryMethods(): array
     {
         $settings = $this->getSettings();
+        $methods = [];
 
-        return $settings['primary_methods'] ?? ['password'];
+        // Password.
+        $password = $settings['password'] ?? [];
+        if (!empty($password['enabled']) && !empty($password['allow_sign_in'])) {
+            $methods[] = 'password';
+        }
+
+        // Phone channel.
+        $phone = $settings['phone'] ?? [];
+        if (!empty($phone['enabled']) && ($phone['usage'] ?? '') === 'login' && !empty($phone['allow_sign_in'])) {
+            $methods[] = 'phone';
+        }
+
+        // Email channel.
+        $email = $settings['email'] ?? [];
+        if (!empty($email['enabled']) && ($email['usage'] ?? '') === 'login' && !empty($email['allow_sign_in'])) {
+            $methods[] = 'email';
+        }
+
+        return $methods ?: ['password'];
     }
 
     /**
-     * Get the enabled MFA factors.
+     * Derive available MFA factors from channel settings.
+     *
+     * MFA factors = channels where enabled && usage === 'mfa', plus backup_codes if enabled.
      *
      * @return string[]
      */
     public function getAvailableMfaFactors(): array
     {
         $settings = $this->getSettings();
+        $factors = [];
 
-        return $settings['mfa_factors'] ?? [];
+        foreach (['phone', 'email'] as $channelKey) {
+            $channel = $settings[$channelKey] ?? [];
+            if (!empty($channel['enabled']) && ($channel['usage'] ?? '') === 'mfa') {
+                $factors[] = $channelKey;
+            }
+        }
+
+        if (!empty($settings['backup_codes']['enabled'])) {
+            $factors[] = 'backup_codes';
+        }
+
+        return $factors;
     }
 
     /**
-     * Validate that a primary method and MFA factor don't conflict.
+     * Policy conflicts are eliminated by design — usage is mutually exclusive
+     * per channel (login OR mfa), so no validation needed.
      *
-     * The same channel cannot serve as both primary auth and MFA factor.
-     *
-     * @return bool True if the combination is valid (no conflict).
+     * @return bool Always true.
      */
     public function validatePolicyConflicts(string $primaryMethod, string $mfaFactor): bool
     {
-        $blockedFactor = self::CONFLICT_MAP[$primaryMethod] ?? null;
-
-        if ($blockedFactor === null) {
-            return true;
-        }
-
-        return $mfaFactor !== $blockedFactor;
+        return true;
     }
 
     /**

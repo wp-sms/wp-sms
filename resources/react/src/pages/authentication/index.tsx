@@ -1,4 +1,4 @@
-import { LoginMethods } from './login-methods';
+import { Channels } from './channels';
 import { Registration } from './registration';
 import type { AuthSettings } from '@/lib/api';
 
@@ -13,5 +13,5 @@ export function AuthenticationPage({ section, settings, onUpdate }: Authenticati
     return <Registration settings={settings} onUpdate={onUpdate} />;
   }
 
-  return <LoginMethods settings={settings} onUpdate={onUpdate} />;
+  return <Channels settings={settings} onUpdate={onUpdate} />;
 }

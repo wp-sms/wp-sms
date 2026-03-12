@@ -10,40 +10,42 @@ describe('AuthenticationPage', () => {
     onUpdate: vi.fn(),
   };
 
-  describe('Login Methods', () => {
-    it('renders all 4 method cards', () => {
-      render(<AuthenticationPage section="login-methods" {...defaultProps} />);
+  describe('Channels', () => {
+    it('renders Phone, Email, and Password channel cards', () => {
+      render(<AuthenticationPage section="channels" {...defaultProps} />);
 
+      expect(screen.getByText('Phone')).toBeInTheDocument();
+      expect(screen.getByText('Email')).toBeInTheDocument();
       expect(screen.getByText('Password')).toBeInTheDocument();
-      expect(screen.getByText('Phone OTP')).toBeInTheDocument();
-      expect(screen.getByText('Email OTP')).toBeInTheDocument();
-      expect(screen.getByText('Magic Link')).toBeInTheDocument();
     });
 
-    it('shows password as enabled by default', () => {
-      render(<AuthenticationPage section="login-methods" {...defaultProps} />);
+    it('shows email as enabled by default', () => {
+      render(<AuthenticationPage section="channels" {...defaultProps} />);
 
+      // Email channel is enabled by default, password is enabled by default
       const switches = screen.getAllByRole('switch');
-      // First switch (Password) should be checked
-      expect(switches[0]).toBeChecked();
+      // Phone (off), Email (on), Password (on)
+      expect(switches[0]).not.toBeChecked(); // Phone
+      expect(switches[1]).toBeChecked(); // Email
+      expect(switches[2]).toBeChecked(); // Password
     });
 
-    it('calls onUpdate when toggling a method', async () => {
+    it('calls onUpdate when toggling phone channel', async () => {
       const user = userEvent.setup();
       const onUpdate = vi.fn();
 
       render(
         <AuthenticationPage
-          section="login-methods"
+          section="channels"
           settings={{ ...DEFAULTS }}
           onUpdate={onUpdate}
         />
       );
 
-      const phoneSwitch = screen.getByRole('switch', { name: /toggle phone otp/i });
+      const phoneSwitch = screen.getByRole('switch', { name: /toggle phone/i });
       await user.click(phoneSwitch);
 
-      expect(onUpdate).toHaveBeenCalledWith('primary_methods', ['password', 'phone_otp']);
+      expect(onUpdate).toHaveBeenCalledWith('phone', expect.objectContaining({ enabled: true }));
     });
   });
 

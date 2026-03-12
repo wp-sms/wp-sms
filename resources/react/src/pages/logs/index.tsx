@@ -40,7 +40,7 @@ export function LogsPage({ settings, onUpdate }: LogsPageProps) {
               <FieldLabel htmlFor="log_verbosity">Verbosity</FieldLabel>
               <Select
                 value={settings.log_verbosity}
-                onValueChange={(value) => onUpdate('log_verbosity', value)}
+                onValueChange={(value) => onUpdate('log_verbosity', value as AuthSettings['log_verbosity'])}
               >
                 <SelectTrigger id="log_verbosity">
                   <SelectValue />

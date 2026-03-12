@@ -1,19 +1,33 @@
 import type { LucideIcon } from 'lucide-react';
-import { KeyRound, Smartphone, Mail, Link2, KeySquare } from 'lucide-react';
+import { Smartphone, Mail } from 'lucide-react';
 import type { AuthSettings } from './api';
 
-export const PRIMARY_METHODS: readonly { id: string; label: string; description: string; icon: LucideIcon }[] = [
-  { id: 'password', label: 'Password', description: 'Traditional username & password login', icon: KeyRound },
-  { id: 'phone_otp', label: 'Phone OTP', description: 'One-time password sent via SMS', icon: Smartphone },
-  { id: 'email_otp', label: 'Email OTP', description: 'One-time password sent via email', icon: Mail },
-  { id: 'magic_link', label: 'Magic Link', description: 'Passwordless login via email link', icon: Link2 },
-];
-
-export const MFA_FACTORS: readonly { id: string; label: string; description: string; icon: LucideIcon }[] = [
-  { id: 'sms', label: 'SMS Code', description: 'Verification code sent via SMS', icon: Smartphone },
-  { id: 'email_otp', label: 'Email OTP', description: 'One-time password sent via email', icon: Mail },
-  { id: 'backup_codes', label: 'Backup Codes', description: 'Single-use recovery codes', icon: KeySquare },
-];
+export const CHANNELS = [
+  {
+    id: 'phone' as const,
+    label: 'Phone',
+    icon: Smartphone,
+    verificationMethods: [
+      { value: 'otp', label: 'OTP Code' },
+      { value: 'magic_link', label: 'Magic Link (SMS link)' },
+    ],
+    deliveryChannels: [
+      { value: 'sms', label: 'SMS', available: true },
+      { value: 'whatsapp', label: 'WhatsApp', available: false },
+      { value: 'viber', label: 'Viber', available: false },
+    ],
+  },
+  {
+    id: 'email' as const,
+    label: 'Email',
+    icon: Mail,
+    verificationMethods: [
+      { value: 'otp', label: 'OTP Code' },
+      { value: 'magic_link', label: 'Magic Link' },
+    ],
+    deliveryChannels: null,
+  },
+] as const;
 
 export const ENROLLMENT_TIMING = [
   { value: 'on_registration', label: 'On Registration', description: 'Users must enroll in MFA when they register' },
@@ -60,25 +74,47 @@ export const REGISTRATION_FIELDS = [
 
 /** Matches PHP InstallManager defaults exactly. */
 export const DEFAULTS: Required<AuthSettings> = {
-  primary_methods: ['password'],
-  mfa_factors: [],
+  phone: {
+    enabled: false,
+    usage: 'login',
+    verification_methods: ['otp'],
+    delivery_channel: 'sms',
+    required_at_signup: false,
+    verify_at_signup: false,
+    allow_sign_in: true,
+    code_length: 6,
+    expiry: 300,
+    max_attempts: 5,
+    cooldown: 60,
+  },
+  email: {
+    enabled: true,
+    usage: 'login',
+    verification_methods: ['otp'],
+    required_at_signup: true,
+    verify_at_signup: false,
+    allow_sign_in: true,
+    code_length: 6,
+    expiry: 600,
+    max_attempts: 5,
+    cooldown: 60,
+  },
+  password: {
+    enabled: true,
+    required_at_signup: true,
+    allow_sign_in: true,
+  },
+  backup_codes: {
+    enabled: false,
+    count: 10,
+    length: 10,
+  },
   mfa_required_roles: [],
   enrollment_timing: 'voluntary',
   grace_period_days: 7,
-  auto_create_users: false,
   auth_base_url: '/account',
   redirect_login: false,
-  otp_sms_length: 6,
-  otp_sms_expiry: 300,
-  otp_sms_max_attempts: 5,
-  otp_sms_cooldown: 60,
-  otp_email_length: 6,
-  otp_email_expiry: 600,
-  otp_email_max_attempts: 5,
-  otp_email_cooldown: 60,
-  magic_link_expiry: 600,
-  backup_codes_count: 10,
-  backup_codes_length: 10,
+  auto_create_users: false,
   log_verbosity: 'standard',
   log_retention_days: 90,
   registration_fields: ['email', 'password'],

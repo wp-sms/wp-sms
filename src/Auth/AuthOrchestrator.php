@@ -6,20 +6,14 @@ use WSms\Audit\AuditLogger;
 use WSms\Auth\ValueObjects\AuthResult;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
-use WSms\Mfa\Channels\MagicLinkChannel;
+use WSms\Mfa\Channels\EmailChannel;
+use WSms\Mfa\Channels\PhoneChannel;
 use WSms\Mfa\MfaManager;
 
 defined('ABSPATH') || exit;
 
 class AuthOrchestrator
 {
-    /** Maps passwordless method names to channel IDs. */
-    private const METHOD_CHANNEL_MAP = [
-        'phone_otp'  => 'sms',
-        'email_otp'  => 'email_otp',
-        'magic_link' => 'magic_link',
-    ];
-
     public function __construct(
         private PolicyEngine $policy,
         private MfaManager $mfaManager,
@@ -67,57 +61,52 @@ class AuthOrchestrator
     }
 
     /**
-     * Initiate passwordless login (phone_otp, email_otp, magic_link).
+     * Initiate passwordless login via a channel (phone or email).
+     *
+     * Channel names are now first-class IDs: 'phone', 'email'.
      */
-    public function loginPasswordless(string $method, string $identifier): AuthResult
+    public function loginPasswordless(string $channel, string $identifier): AuthResult
     {
-        $channelId = self::METHOD_CHANNEL_MAP[$method] ?? null;
-
-        if ($channelId === null) {
-            return AuthResult::failed('invalid_method', 'Unsupported authentication method.');
-        }
-
         $availableMethods = $this->policy->getAvailablePrimaryMethods();
 
-        if (!in_array($method, $availableMethods, true)) {
+        if (!in_array($channel, $availableMethods, true)) {
             return AuthResult::failed('method_disabled', 'This authentication method is not enabled.');
         }
 
         // Resolve user by identifier.
-        $user = $this->resolveUserByIdentifier($method, $identifier);
+        $user = $this->resolveUserByIdentifier($channel, $identifier);
 
         if (!$user) {
-            // Generic message to prevent user enumeration.
             return AuthResult::failed('invalid_credentials', 'Invalid credentials.');
         }
 
-        $channel = $this->mfaManager->getChannel($channelId);
+        $channelObj = $this->mfaManager->getChannel($channel);
 
-        if (!$channel) {
+        if (!$channelObj) {
             return AuthResult::failed('channel_unavailable', 'Authentication channel is not available.');
         }
 
-        if (!$channel->isEnrolled($user->ID)) {
-            // Auto-enroll for email-based channels.
-            if (in_array($method, ['email_otp', 'magic_link'], true)) {
-                $channel->enroll($user->ID, []);
+        if (!$channelObj->isEnrolled($user->ID)) {
+            // Auto-enroll for email channel.
+            if ($channel === 'email') {
+                $channelObj->enroll($user->ID, []);
             } else {
                 return AuthResult::failed('not_enrolled', 'You are not enrolled in this authentication method.');
             }
         }
 
-        $challengeResult = $channel->sendChallenge($user->ID);
+        $challengeResult = $channelObj->sendChallenge($user->ID);
 
         if (!$challengeResult->success) {
             return AuthResult::failed('challenge_failed', $challengeResult->message);
         }
 
-        $token = $this->session->create($user->ID, $method, 'challenge_pending', [
-            'channel_id' => $channelId,
+        $token = $this->session->create($user->ID, $channel, 'challenge_pending', [
+            'channel_id' => $channel,
         ]);
 
         return AuthResult::challengeSent($token, array_merge(
-            ['method' => $method],
+            ['method' => $channel],
             $challengeResult->meta,
         ));
     }
@@ -159,22 +148,32 @@ class AuthOrchestrator
 
     /**
      * Verify a magic link token (comes directly from URL, no session token).
+     * Looks up the token via email channel's magic link delegate.
      */
     public function verifyMagicLink(string $token): AuthResult
     {
-        $channel = $this->mfaManager->getChannel('magic_link');
+        // Try email channel first, then phone channel.
+        $emailChannel = $this->mfaManager->getChannel('email');
 
-        if (!$channel || !($channel instanceof MagicLinkChannel)) {
-            return AuthResult::failed('channel_unavailable', 'Magic link authentication is not available.');
+        if ($emailChannel && $emailChannel instanceof EmailChannel) {
+            $userId = $emailChannel->verifyTokenAndResolveUser($token);
+
+            if ($userId !== null) {
+                return $this->resolvePostPrimary($userId, 'email');
+            }
         }
 
-        $userId = $channel->verifyTokenAndResolveUser($token);
+        $phoneChannel = $this->mfaManager->getChannel('phone');
 
-        if ($userId === null) {
-            return AuthResult::failed('invalid_token', 'This link is invalid or has expired.');
+        if ($phoneChannel && $phoneChannel instanceof PhoneChannel) {
+            $userId = $phoneChannel->verifyTokenAndResolveUser($token);
+
+            if ($userId !== null) {
+                return $this->resolvePostPrimary($userId, 'phone');
+            }
         }
 
-        return $this->resolvePostPrimary($userId, 'magic_link');
+        return AuthResult::failed('invalid_token', 'This link is invalid or has expired.');
     }
 
     /**
@@ -198,9 +197,7 @@ class AuthOrchestrator
             return AuthResult::failed('invalid_channel', 'Invalid MFA channel.');
         }
 
-        if (!$this->policy->validatePolicyConflicts($sessionData['method'], $channelId)) {
-            return AuthResult::failed('policy_conflict', 'This MFA method conflicts with your login method.');
-        }
+        // No conflict validation needed — usage is mutually exclusive per channel.
 
         if (!$channel->isEnrolled($sessionData['user_id'])) {
             return AuthResult::failed('not_enrolled', 'You are not enrolled in this MFA method.');
@@ -300,10 +297,6 @@ class AuthOrchestrator
                 continue;
             }
 
-            if (!$this->policy->validatePolicyConflicts($method, $factor->channelId)) {
-                continue;
-            }
-
             $channel = $this->mfaManager->getChannel($factor->channelId);
 
             if (!$channel || !$channel->supportsMfa()) {
@@ -360,11 +353,11 @@ class AuthOrchestrator
     }
 
     /**
-     * Resolve a user by their identifier based on the auth method.
+     * Resolve a user by their identifier based on the channel.
      */
-    private function resolveUserByIdentifier(string $method, string $identifier): ?object
+    private function resolveUserByIdentifier(string $channel, string $identifier): ?object
     {
-        if ($method === 'phone_otp') {
+        if ($channel === 'phone') {
             $users = get_users([
                 'meta_key'   => 'wsms_phone',
                 'meta_value' => $identifier,
@@ -374,7 +367,7 @@ class AuthOrchestrator
             return !empty($users) ? $users[0] : null;
         }
 
-        // email_otp and magic_link use email.
+        // email channel uses email.
         $user = get_user_by('email', $identifier);
 
         return $user ?: null;

@@ -15,7 +15,7 @@ import { AlertCircle } from 'lucide-react';
 const { roles, version } = getConfig();
 
 export default function App() {
-  const [section, setSection] = useState('login-methods');
+  const [section, setSection] = useState('channels');
   const { settings, updateSetting, isDirty, saveStatus, save, loading, error } = useSettings();
   const handleSave = useCallback(() => { void save(); }, [save]);
 

@@ -4,21 +4,35 @@ namespace WSms\Mfa\Channels;
 
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
+use WSms\Audit\AuditLogger;
+use WSms\Mfa\OtpGenerator;
 use WSms\Mfa\Support\PhoneMasker;
+use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
 
 defined('ABSPATH') || exit;
 
-class SmsOtpChannel extends AbstractOtpChannel
+class PhoneChannel extends AbstractOtpChannel
 {
+    private MagicLinkChannel $magicLink;
+
+    public function __construct(
+        OtpGenerator $otpGenerator,
+        AuditLogger $auditLogger,
+        MagicLinkChannel $magicLink,
+    ) {
+        parent::__construct($otpGenerator, $auditLogger);
+        $this->magicLink = $magicLink;
+    }
+
     public function getId(): string
     {
-        return 'sms';
+        return 'phone';
     }
 
     public function getName(): string
     {
-        return 'SMS OTP';
+        return 'Phone';
     }
 
     public function supportsPrimaryAuth(): bool
@@ -40,11 +54,10 @@ class SmsOtpChannel extends AbstractOtpChannel
             return new EnrollmentResult(false, 'Invalid phone number. Use E.164 format (e.g. +12025551234).');
         }
 
-        // Create pending factor.
         $existing = $this->getFactor($userId);
 
         if ($existing && $existing->status === ChannelStatus::Active) {
-            return new EnrollmentResult(false, 'Already enrolled in SMS OTP.');
+            return new EnrollmentResult(false, 'Already enrolled in Phone.');
         }
 
         if ($existing) {
@@ -102,7 +115,7 @@ class SmsOtpChannel extends AbstractOtpChannel
             'channel' => $this->getId(),
         ]);
 
-        return new EnrollmentResult(true, 'SMS OTP enrollment confirmed.');
+        return new EnrollmentResult(true, 'Phone enrollment confirmed.');
     }
 
     /** {@inheritDoc} */
@@ -118,9 +131,85 @@ class SmsOtpChannel extends AbstractOtpChannel
         return $result;
     }
 
+    /**
+     * Send challenge with OTP, magic link, or both based on verification_methods setting.
+     */
+    public function sendChallenge(int $userId, array $context = []): ChallengeResult
+    {
+        $verificationMethods = (array) $this->getConfigValue('verification_methods', ['otp']);
+        $hasOtp = in_array('otp', $verificationMethods, true);
+        $hasMagicLink = in_array('magic_link', $verificationMethods, true);
+
+        if (!$hasOtp && !$hasMagicLink) {
+            return new ChallengeResult(false, 'No verification methods enabled for phone channel.');
+        }
+
+        if (!$this->isEnrolled($userId)) {
+            return new ChallengeResult(false, 'User is not enrolled in this channel.');
+        }
+
+        $identifier = $this->getIdentifier($userId);
+
+        if ($identifier === null) {
+            return new ChallengeResult(false, 'No phone number found for user.');
+        }
+
+        // Check cooldown.
+        $cooldown = (int) $this->getConfigValue('cooldown', 60);
+
+        if ($this->hasCooldownActive($userId, $cooldown)) {
+            return new ChallengeResult(false, 'Please wait before requesting a new code.');
+        }
+
+        $expiry = (int) $this->getConfigValue('expiry', 300);
+        $otpCode = null;
+        $magicLinkUrl = null;
+
+        // Generate OTP if enabled.
+        if ($hasOtp) {
+            $otpCode = $this->generateAndStoreOtp($userId, $identifier, $expiry);
+        }
+
+        // Generate magic link if enabled.
+        if ($hasMagicLink) {
+            $magicLinkUrl = $this->magicLink->generateToken($userId, $identifier, $expiry);
+        }
+
+        // Send combined SMS.
+        $sent = $this->deliverCombined($identifier, $otpCode, $magicLinkUrl, $expiry);
+
+        if (!$sent) {
+            $this->auditLogger->log(EventType::OtpSent, 'failure', $userId, [
+                'channel' => $this->getId(),
+            ]);
+
+            return new ChallengeResult(false, 'Failed to deliver the verification SMS.');
+        }
+
+        $this->auditLogger->log(EventType::OtpSent, 'success', $userId, [
+            'channel' => $this->getId(),
+        ]);
+
+        return new ChallengeResult(true, 'Verification code sent.', [
+            'masked_identifier' => $this->maskIdentifier($identifier),
+            'expires_in'        => $expiry,
+            'has_otp'           => $hasOtp,
+            'has_magic_link'    => $hasMagicLink,
+        ]);
+    }
+
+    /**
+     * Verify a magic link token and resolve the user.
+     */
+    public function verifyTokenAndResolveUser(string $token): ?int
+    {
+        return $this->magicLink->verifyTokenAndResolveUser($token);
+    }
+
     /** {@inheritDoc} */
     protected function deliver(int $userId, string $code, string $identifier): bool
     {
+        // Used only for enrollment verification OTP.
         $message = sprintf(
             'Your verification code is: %s. It expires in %d minutes.',
             $code,
@@ -155,6 +244,30 @@ class SmsOtpChannel extends AbstractOtpChannel
     /** {@inheritDoc} */
     protected function getConfigPrefix(): string
     {
-        return 'otp_sms';
+        return 'phone';
+    }
+
+    /**
+     * Send a single SMS containing OTP code, magic link, or both.
+     */
+    private function deliverCombined(string $identifier, ?string $otpCode, ?string $magicLinkUrl, int $expiry): bool
+    {
+        $parts = [];
+
+        if ($otpCode !== null) {
+            $parts[] = sprintf('Your verification code is: %s.', $otpCode);
+        }
+
+        if ($magicLinkUrl !== null) {
+            $parts[] = sprintf('Or log in: %s', $magicLinkUrl);
+        }
+
+        $parts[] = sprintf('Expires in %d minutes.', (int) ($expiry / 60));
+
+        $message = implode(' ', $parts);
+
+        do_action('wsms_send_sms', $identifier, $message);
+
+        return true;
     }
 }

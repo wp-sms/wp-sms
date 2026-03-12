@@ -10,7 +10,7 @@ use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthSession;
 use WSms\Auth\PolicyEngine;
 use WSms\Enums\ChannelStatus;
-use WSms\Mfa\Channels\SmsOtpChannel;
+use WSms\Mfa\Channels\PhoneChannel;
 use WSms\Mfa\MfaManager;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\UserFactor;
@@ -92,16 +92,15 @@ class AuthOrchestratorTest extends TestCase
         $GLOBALS['_test_userdata'] = $user;
 
         $this->policy->method('isMfaRequired')->willReturn(true);
-        $this->policy->method('validatePolicyConflicts')->willReturn(true);
 
-        $smsChannel = $this->createMock(SmsOtpChannel::class);
-        $smsChannel->method('supportsMfa')->willReturn(true);
-        $smsChannel->method('getName')->willReturn('SMS');
+        $phoneChannel = $this->createMock(PhoneChannel::class);
+        $phoneChannel->method('supportsMfa')->willReturn(true);
+        $phoneChannel->method('getName')->willReturn('Phone');
 
-        $factor = new UserFactor(1, 1, 'sms', ChannelStatus::Active, [], '', '');
+        $factor = new UserFactor(1, 1, 'phone', ChannelStatus::Active, [], '', '');
 
         $this->mfaManager->method('getUserFactors')->willReturn([$factor]);
-        $this->mfaManager->method('getChannel')->willReturn($smsChannel);
+        $this->mfaManager->method('getChannel')->willReturn($phoneChannel);
 
         $this->session->method('create')->willReturn('session-token-abc');
 
@@ -114,19 +113,11 @@ class AuthOrchestratorTest extends TestCase
 
     // --- loginPasswordless ---
 
-    public function testLoginPasswordlessFailsForInvalidMethod(): void
-    {
-        $result = $this->orchestrator->loginPasswordless('carrier_pigeon', 'user@test.com');
-
-        $this->assertFalse($result->success);
-        $this->assertSame('invalid_method', $result->error);
-    }
-
     public function testLoginPasswordlessFailsWhenMethodDisabled(): void
     {
         $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
 
-        $result = $this->orchestrator->loginPasswordless('phone_otp', '+1234567890');
+        $result = $this->orchestrator->loginPasswordless('phone', '+1234567890');
 
         $this->assertFalse($result->success);
         $this->assertSame('method_disabled', $result->error);
@@ -134,20 +125,20 @@ class AuthOrchestratorTest extends TestCase
 
     public function testLoginPasswordlessSendsChallenge(): void
     {
-        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['phone_otp']);
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['phone']);
 
         $user = $this->makeUser(5);
         $GLOBALS['_test_get_users_result'] = [$user];
 
-        $smsChannel = $this->createMock(SmsOtpChannel::class);
-        $smsChannel->method('isEnrolled')->willReturn(true);
-        $smsChannel->method('sendChallenge')->willReturn(new ChallengeResult(true, 'Sent', ['masked_to' => '+1*****90']));
+        $phoneChannel = $this->createMock(PhoneChannel::class);
+        $phoneChannel->method('isEnrolled')->willReturn(true);
+        $phoneChannel->method('sendChallenge')->willReturn(new ChallengeResult(true, 'Sent', ['masked_to' => '+1*****90']));
 
-        $this->mfaManager->method('getChannel')->with('sms')->willReturn($smsChannel);
+        $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
 
         $this->session->method('create')->willReturn('challenge-token-xyz');
 
-        $result = $this->orchestrator->loginPasswordless('phone_otp', '+1234567890');
+        $result = $this->orchestrator->loginPasswordless('phone', '+1234567890');
 
         $this->assertTrue($result->success);
         $this->assertSame('challenge_sent', $result->status);
@@ -173,16 +164,16 @@ class AuthOrchestratorTest extends TestCase
 
         $this->session->method('validate')->willReturn([
             'user_id'     => 1,
-            'method'      => 'phone_otp',
+            'method'      => 'phone',
             'stage'       => 'challenge_pending',
-            'channel_id'  => 'sms',
+            'channel_id'  => 'phone',
             'session_key' => 'sk123',
         ]);
 
-        $smsChannel = $this->createMock(SmsOtpChannel::class);
-        $smsChannel->method('verify')->willReturn(true);
+        $phoneChannel = $this->createMock(PhoneChannel::class);
+        $phoneChannel->method('verify')->willReturn(true);
 
-        $this->mfaManager->method('getChannel')->with('sms')->willReturn($smsChannel);
+        $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
         $this->policy->method('isMfaRequired')->willReturn(false);
 
         $result = $this->orchestrator->verifyPrimary('token', '123456');
@@ -195,16 +186,16 @@ class AuthOrchestratorTest extends TestCase
     {
         $this->session->method('validate')->willReturn([
             'user_id'     => 1,
-            'method'      => 'phone_otp',
+            'method'      => 'phone',
             'stage'       => 'challenge_pending',
-            'channel_id'  => 'sms',
+            'channel_id'  => 'phone',
             'session_key' => 'sk123',
         ]);
 
-        $smsChannel = $this->createMock(SmsOtpChannel::class);
-        $smsChannel->method('verify')->willReturn(false);
+        $phoneChannel = $this->createMock(PhoneChannel::class);
+        $phoneChannel->method('verify')->willReturn(false);
 
-        $this->mfaManager->method('getChannel')->with('sms')->willReturn($smsChannel);
+        $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
 
         $result = $this->orchestrator->verifyPrimary('token', 'wrong');
 
@@ -223,39 +214,17 @@ class AuthOrchestratorTest extends TestCase
             'session_key' => 'sk456',
         ]);
 
-        $smsChannel = $this->createMock(SmsOtpChannel::class);
-        $smsChannel->method('supportsMfa')->willReturn(true);
-        $smsChannel->method('isEnrolled')->willReturn(true);
-        $smsChannel->method('sendChallenge')->willReturn(new ChallengeResult(true, 'Sent', []));
+        $phoneChannel = $this->createMock(PhoneChannel::class);
+        $phoneChannel->method('supportsMfa')->willReturn(true);
+        $phoneChannel->method('isEnrolled')->willReturn(true);
+        $phoneChannel->method('sendChallenge')->willReturn(new ChallengeResult(true, 'Sent', []));
 
-        $this->mfaManager->method('getChannel')->with('sms')->willReturn($smsChannel);
-        $this->policy->method('validatePolicyConflicts')->willReturn(true);
+        $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
 
-        $result = $this->orchestrator->sendMfaChallenge('token', 'sms');
+        $result = $this->orchestrator->sendMfaChallenge('token', 'phone');
 
         $this->assertTrue($result->success);
         $this->assertSame('challenge_sent', $result->status);
-    }
-
-    public function testSendMfaChallengeRejectsPolicyConflict(): void
-    {
-        $this->session->method('validate')->willReturn([
-            'user_id'     => 1,
-            'method'      => 'phone_otp',
-            'stage'       => 'primary_verified',
-            'session_key' => 'sk789',
-        ]);
-
-        $smsChannel = $this->createMock(SmsOtpChannel::class);
-        $smsChannel->method('supportsMfa')->willReturn(true);
-
-        $this->mfaManager->method('getChannel')->with('sms')->willReturn($smsChannel);
-        $this->policy->method('validatePolicyConflicts')->willReturn(false);
-
-        $result = $this->orchestrator->sendMfaChallenge('token', 'sms');
-
-        $this->assertFalse($result->success);
-        $this->assertSame('policy_conflict', $result->error);
     }
 
     // --- verifyMfa ---
@@ -272,13 +241,13 @@ class AuthOrchestratorTest extends TestCase
             'session_key' => 'sk_mfa',
         ]);
 
-        $smsChannel = $this->createMock(SmsOtpChannel::class);
-        $smsChannel->method('supportsMfa')->willReturn(true);
-        $smsChannel->method('verify')->willReturn(true);
+        $phoneChannel = $this->createMock(PhoneChannel::class);
+        $phoneChannel->method('supportsMfa')->willReturn(true);
+        $phoneChannel->method('verify')->willReturn(true);
 
-        $this->mfaManager->method('getChannel')->with('sms')->willReturn($smsChannel);
+        $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
 
-        $result = $this->orchestrator->verifyMfa('token', '123456', 'sms');
+        $result = $this->orchestrator->verifyMfa('token', '123456', 'phone');
 
         $this->assertTrue($result->success);
         $this->assertSame('authenticated', $result->status);
@@ -294,13 +263,13 @@ class AuthOrchestratorTest extends TestCase
             'session_key' => 'sk_mfa2',
         ]);
 
-        $smsChannel = $this->createMock(SmsOtpChannel::class);
-        $smsChannel->method('supportsMfa')->willReturn(true);
-        $smsChannel->method('verify')->willReturn(false);
+        $phoneChannel = $this->createMock(PhoneChannel::class);
+        $phoneChannel->method('supportsMfa')->willReturn(true);
+        $phoneChannel->method('verify')->willReturn(false);
 
-        $this->mfaManager->method('getChannel')->with('sms')->willReturn($smsChannel);
+        $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
 
-        $result = $this->orchestrator->verifyMfa('token', 'wrong', 'sms');
+        $result = $this->orchestrator->verifyMfa('token', 'wrong', 'phone');
 
         $this->assertFalse($result->success);
         $this->assertSame('invalid_code', $result->error);
@@ -314,14 +283,14 @@ class AuthOrchestratorTest extends TestCase
             'user_id'        => 1,
             'method'         => 'password',
             'stage'          => 'mfa_pending',
-            'mfa_channel_id' => 'sms',
+            'mfa_channel_id' => 'phone',
             'session_key'    => 'sk_resend',
         ]);
 
-        $smsChannel = $this->createMock(SmsOtpChannel::class);
-        $smsChannel->method('sendChallenge')->willReturn(new ChallengeResult(true, 'Sent', []));
+        $phoneChannel = $this->createMock(PhoneChannel::class);
+        $phoneChannel->method('sendChallenge')->willReturn(new ChallengeResult(true, 'Sent', []));
 
-        $this->mfaManager->method('getChannel')->with('sms')->willReturn($smsChannel);
+        $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
 
         $result = $this->orchestrator->resendChallenge('token');
 

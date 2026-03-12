@@ -8,8 +8,8 @@ import { api } from '../api/client';
 import { extractError } from '../utils/auth';
 
 const CHANNEL_META = {
-    sms:          { label: 'SMS OTP',      icon: '\u{1F4F1}', description: 'Receive a code via text message' },
-    email_otp:    { label: 'Email OTP',    icon: '\u{2709}\u{FE0F}', description: 'Receive a code via email' },
+    phone:        { label: 'Phone',        icon: '\u{1F4F1}', description: 'Receive a code via text message' },
+    email:        { label: 'Email',        icon: '\u{2709}\u{FE0F}', description: 'Receive a code via email' },
     backup_codes: { label: 'Backup Codes', icon: '\u{1F4CB}', description: 'One-time use recovery codes' },
 };
 
@@ -26,29 +26,29 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
     async function handleEnable() {
         setError('');
 
-        if (method.id === 'sms' && !expanding) {
+        if (method.id === 'phone' && !expanding) {
             setExpanding(true);
             return;
         }
 
         setLoading(true);
-        const data = method.id === 'sms' ? { phone } : {};
+        const data = method.id === 'phone' ? { phone } : {};
         const res = await onEnroll(method.id, data);
 
-        if (res && method.id === 'sms' && res.data?.requires_verification) {
+        if (res && method.id === 'phone' && res.data?.requires_verification) {
             setVerifying(true);
         }
 
         setLoading(false);
     }
 
-    async function handleVerifySms(code) {
+    async function handleVerifyPhone(code) {
         setError('');
         setLoading(true);
 
         try {
             const res = await api.post('/auth/mfa/enroll/verify', {
-                channel_id: 'sms',
+                channel_id: 'phone',
                 code,
             });
             if (res.success) {
@@ -97,7 +97,7 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                 </div>
             </div>
 
-            {expanding && !enrolled && method.id === 'sms' && !verifying && (
+            {expanding && !enrolled && method.id === 'phone' && !verifying && (
                 <div className="px-4 pb-4 space-y-3 animate-fade-in">
                     {error && <p className="text-sm text-destructive">{error}</p>}
                     <div className="space-y-2">
@@ -114,7 +114,7 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                 <div className="px-4 pb-4 space-y-3 animate-fade-in">
                     {error && <p className="text-sm text-destructive">{error}</p>}
                     <p className="text-sm text-muted-foreground">Enter the code sent to your phone</p>
-                    <OtpInput onComplete={handleVerifySms} disabled={loading} />
+                    <OtpInput onComplete={handleVerifyPhone} disabled={loading} />
                 </div>
             )}
         </div>

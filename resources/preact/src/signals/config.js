@@ -4,6 +4,7 @@ import { api } from '../api/client';
 export const authConfig = signal(null);
 export const configLoading = signal(false);
 export const primaryMethods = computed(() => authConfig.value?.primary_methods ?? ['password']);
+export const methodDetails = computed(() => authConfig.value?.method_details ?? {});
 export const registrationFields = computed(() => authConfig.value?.registration_fields ?? ['email', 'password']);
 
 export async function loadConfig() {

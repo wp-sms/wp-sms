@@ -6,20 +6,23 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
-use WSms\Mfa\Channels\EmailOtpChannel;
+use WSms\Mfa\Channels\EmailChannel;
+use WSms\Mfa\Channels\MagicLinkChannel;
 use WSms\Mfa\OtpGenerator;
 
-class EmailOtpChannelTest extends TestCase
+class EmailChannelTest extends TestCase
 {
-    private EmailOtpChannel $channel;
+    private EmailChannel $channel;
     private MockObject&OtpGenerator $otpGenerator;
     private MockObject&AuditLogger $auditLogger;
+    private MockObject&MagicLinkChannel $magicLink;
 
     protected function setUp(): void
     {
         $this->otpGenerator = $this->createMock(OtpGenerator::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
-        $this->channel = new EmailOtpChannel($this->otpGenerator, $this->auditLogger);
+        $this->magicLink = $this->createMock(MagicLinkChannel::class);
+        $this->channel = new EmailChannel($this->otpGenerator, $this->auditLogger, $this->magicLink);
 
         unset($GLOBALS['_test_userdata']);
         $this->setupWpdbMock(null);
@@ -30,14 +33,14 @@ class EmailOtpChannelTest extends TestCase
         unset($GLOBALS['wpdb'], $GLOBALS['_test_userdata']);
     }
 
-    public function testGetIdReturnsEmailOtp(): void
+    public function testGetIdReturnsEmail(): void
     {
-        $this->assertSame('email_otp', $this->channel->getId());
+        $this->assertSame('email', $this->channel->getId());
     }
 
-    public function testGetNameReturnsEmailOtp(): void
+    public function testGetNameReturnsEmail(): void
     {
-        $this->assertSame('Email OTP', $this->channel->getName());
+        $this->assertSame('Email', $this->channel->getName());
     }
 
     public function testSupportsPrimaryAuth(): void
@@ -52,7 +55,6 @@ class EmailOtpChannelTest extends TestCase
 
     public function testEnrollAutoActivates(): void
     {
-        // Override get_userdata to return a user with email.
         $this->overrideGetUserdata(1, 'user@example.com');
         $this->setupWpdbMock(null);
 
@@ -64,7 +66,6 @@ class EmailOtpChannelTest extends TestCase
 
     public function testEnrollFailsWhenNoEmail(): void
     {
-        // get_userdata returns false (default stub).
         $result = $this->channel->enroll(1, []);
 
         $this->assertFalse($result->success);
@@ -94,15 +95,6 @@ class EmailOtpChannelTest extends TestCase
         $this->setupWpdbMock(null);
 
         $this->assertFalse($this->channel->isEnrolled(1));
-    }
-
-    public function testSendChallengeFailsWhenNotEnrolled(): void
-    {
-        $this->setupWpdbMock(null);
-
-        $result = $this->channel->sendChallenge(1);
-
-        $this->assertFalse($result->success);
     }
 
     public function testUnenrollSucceeds(): void
@@ -135,7 +127,7 @@ class EmailOtpChannelTest extends TestCase
         return (object) [
             'id'         => 1,
             'user_id'    => 1,
-            'channel_id' => 'email_otp',
+            'channel_id' => 'email',
             'status'     => $status->value,
             'meta'       => json_encode(['email' => 'user@example.com']),
             'created_at' => '2025-01-01 00:00:00',
@@ -164,9 +156,6 @@ class EmailOtpChannelTest extends TestCase
 
     private function overrideGetUserdata(int $userId, string $email): void
     {
-        // Override the global function for this test.
-        // Since we can't redefine, we rely on the stub in tests/bootstrap.php.
-        // We need to use a global to pass data to the stub.
         $GLOBALS['_test_userdata'] = (object) [
             'ID'         => $userId,
             'user_email' => $email,

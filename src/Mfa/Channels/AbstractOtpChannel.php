@@ -178,6 +178,17 @@ abstract class AbstractOtpChannel implements ChannelInterface
      */
     protected function createAndDeliverOtp(int $userId, string $identifier, int $expiry): bool
     {
+        $code = $this->generateAndStoreOtp($userId, $identifier, $expiry);
+
+        return $this->deliver($userId, $code, $identifier);
+    }
+
+    /**
+     * Generate an OTP, store it in the verifications table, and return the
+     * plain-text code. Does NOT deliver — callers handle delivery.
+     */
+    protected function generateAndStoreOtp(int $userId, string $identifier, int $expiry): string
+    {
         global $wpdb;
 
         $table = $wpdb->prefix . 'wsms_verifications';
@@ -207,13 +218,13 @@ abstract class AbstractOtpChannel implements ChannelInterface
             'created_at'   => current_time('mysql', true),
         ]);
 
-        return $this->deliver($userId, $code, $identifier);
+        return $code;
     }
 
     /**
      * Check if a cooldown is active for this user/channel.
      */
-    private function hasCooldownActive(int $userId, int $cooldown): bool
+    protected function hasCooldownActive(int $userId, int $cooldown): bool
     {
         global $wpdb;
 

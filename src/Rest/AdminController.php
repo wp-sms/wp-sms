@@ -14,30 +14,25 @@ class AdminController
 {
     private const NAMESPACE = 'wsms/v1';
 
-    /** Allowed setting keys to prevent arbitrary option writes. */
-    private const ALLOWED_SETTINGS = [
-        'primary_methods',
-        'mfa_factors',
+    /** Top-level scalar/array setting keys allowed for direct writes. */
+    private const ALLOWED_SCALAR_SETTINGS = [
         'mfa_required_roles',
         'enrollment_timing',
         'grace_period_days',
         'auto_create_users',
         'auth_base_url',
-        'otp_sms_length',
-        'otp_sms_expiry',
-        'otp_sms_max_attempts',
-        'otp_sms_cooldown',
-        'otp_email_length',
-        'otp_email_expiry',
-        'otp_email_max_attempts',
-        'otp_email_cooldown',
-        'magic_link_expiry',
-        'backup_codes_count',
-        'backup_codes_length',
         'log_verbosity',
         'log_retention_days',
         'registration_fields',
         'redirect_login',
+    ];
+
+    /** Channel keys that accept nested sub-objects. */
+    private const ALLOWED_CHANNEL_KEYS = [
+        'phone',
+        'email',
+        'password',
+        'backup_codes',
     ];
 
     public function __construct(
@@ -105,7 +100,16 @@ class AdminController
         $body = $request->get_params();
         $updated = $current;
 
-        foreach (self::ALLOWED_SETTINGS as $key) {
+        // Deep-merge channel sub-objects.
+        foreach (self::ALLOWED_CHANNEL_KEYS as $channelKey) {
+            if (array_key_exists($channelKey, $body) && is_array($body[$channelKey])) {
+                $existing = $updated[$channelKey] ?? [];
+                $updated[$channelKey] = array_merge($existing, $body[$channelKey]);
+            }
+        }
+
+        // Merge scalar settings.
+        foreach (self::ALLOWED_SCALAR_SETTINGS as $key) {
             if (array_key_exists($key, $body)) {
                 $updated[$key] = $body[$key];
             }

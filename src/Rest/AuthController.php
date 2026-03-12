@@ -5,6 +5,7 @@ namespace WSms\Rest;
 use WP_REST_Request;
 use WP_REST_Response;
 use WSms\Auth\AuthOrchestrator;
+use WSms\Auth\PolicyEngine;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\ValueObjects\AuthResult;
 
@@ -17,6 +18,7 @@ class AuthController
     public function __construct(
         private AuthOrchestrator $orchestrator,
         private RateLimiter $rateLimiter,
+        private PolicyEngine $policy,
     ) {
     }
 
@@ -158,10 +160,26 @@ class AuthController
     public function handleConfig(WP_REST_Request $request): WP_REST_Response
     {
         $settings = get_option('wsms_auth_settings', []);
+        $primaryMethods = $this->policy->getAvailablePrimaryMethods();
+
+        // Build method_details for channels with verification method info.
+        $methodDetails = [];
+
+        foreach (['phone', 'email'] as $channelKey) {
+            if (in_array($channelKey, $primaryMethods, true)) {
+                $channelSettings = $settings[$channelKey] ?? [];
+                $verificationMethods = $channelSettings['verification_methods'] ?? ['otp'];
+                $methodDetails[$channelKey] = [
+                    'has_otp'        => in_array('otp', $verificationMethods, true),
+                    'has_magic_link' => in_array('magic_link', $verificationMethods, true),
+                ];
+            }
+        }
 
         return new WP_REST_Response([
-            'primary_methods'     => $settings['primary_methods'] ?? ['password'],
-            'mfa_enabled'         => !empty($settings['mfa_factors']),
+            'primary_methods'     => $primaryMethods,
+            'method_details'      => $methodDetails,
+            'mfa_enabled'         => !empty($this->policy->getAvailableMfaFactors()),
             'base_url'            => $settings['auth_base_url'] ?? '/account',
             'registration_fields' => $settings['registration_fields'] ?? ['email', 'password'],
         ]);

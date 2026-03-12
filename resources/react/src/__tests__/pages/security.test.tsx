@@ -17,38 +17,15 @@ describe('SecurityPage', () => {
     roles: testRoles,
   };
 
-  describe('MFA Factors', () => {
-    it('renders all 3 MFA factor cards', () => {
-      render(<SecurityPage section="mfa-factors" {...defaultProps} />);
+  describe('MFA Policies', () => {
+    it('renders backup codes card', () => {
+      render(<SecurityPage section="mfa-policies" {...defaultProps} />);
 
-      expect(screen.getByText('SMS Code')).toBeInTheDocument();
-      expect(screen.getByText('Email OTP')).toBeInTheDocument();
       expect(screen.getByText('Backup Codes')).toBeInTheDocument();
     });
 
-    it('toggles MFA factor', async () => {
-      const user = userEvent.setup();
-      const onUpdate = vi.fn();
-
-      render(
-        <SecurityPage
-          section="mfa-factors"
-          settings={{ ...DEFAULTS }}
-          onUpdate={onUpdate}
-          roles={testRoles}
-        />
-      );
-
-      const smsSwitch = screen.getByRole('switch', { name: /toggle sms code/i });
-      await user.click(smsSwitch);
-
-      expect(onUpdate).toHaveBeenCalledWith('mfa_factors', ['sms']);
-    });
-  });
-
-  describe('Policies', () => {
     it('renders role matrix with roles from WordPress', () => {
-      render(<SecurityPage section="policies" {...defaultProps} />);
+      render(<SecurityPage section="mfa-policies" {...defaultProps} />);
 
       expect(screen.getByText('Administrator')).toBeInTheDocument();
       expect(screen.getByText('Editor')).toBeInTheDocument();
@@ -56,9 +33,28 @@ describe('SecurityPage', () => {
     });
 
     it('renders enrollment timing selector', () => {
-      render(<SecurityPage section="policies" {...defaultProps} />);
+      render(<SecurityPage section="mfa-policies" {...defaultProps} />);
 
       expect(screen.getByText('Enrollment Timing')).toBeInTheDocument();
+    });
+
+    it('toggles backup codes', async () => {
+      const user = userEvent.setup();
+      const onUpdate = vi.fn();
+
+      render(
+        <SecurityPage
+          section="mfa-policies"
+          settings={{ ...DEFAULTS }}
+          onUpdate={onUpdate}
+          roles={testRoles}
+        />
+      );
+
+      const backupSwitch = screen.getByRole('switch', { name: /toggle backup codes/i });
+      await user.click(backupSwitch);
+
+      expect(onUpdate).toHaveBeenCalledWith('backup_codes', expect.objectContaining({ enabled: true }));
     });
 
     it('toggles a role in the matrix', async () => {
@@ -67,7 +63,7 @@ describe('SecurityPage', () => {
 
       render(
         <SecurityPage
-          section="policies"
+          section="mfa-policies"
           settings={{ ...DEFAULTS }}
           onUpdate={onUpdate}
           roles={testRoles}
@@ -82,14 +78,14 @@ describe('SecurityPage', () => {
   });
 
   describe('Rate Limiting', () => {
-    it('renders SMS and email rate limit settings', () => {
+    it('renders Phone and Email rate limit settings', () => {
       render(<SecurityPage section="rate-limiting" {...defaultProps} />);
 
-      expect(screen.getByText('SMS OTP Limits')).toBeInTheDocument();
-      expect(screen.getByText('Email OTP Limits')).toBeInTheDocument();
+      expect(screen.getByText('Phone Channel Limits')).toBeInTheDocument();
+      expect(screen.getByText('Email Channel Limits')).toBeInTheDocument();
     });
 
-    it('updates max attempts setting', async () => {
+    it('updates max attempts setting for phone', async () => {
       const user = userEvent.setup();
       const onUpdate = vi.fn();
 
@@ -102,7 +98,7 @@ describe('SecurityPage', () => {
         />
       );
 
-      const maxAttemptsInput = screen.getByLabelText('Max Attempts', { selector: '#otp_sms_max_attempts' });
+      const maxAttemptsInput = screen.getByLabelText('Max Attempts', { selector: '#phone_max_attempts' });
       await user.clear(maxAttemptsInput);
       await user.type(maxAttemptsInput, '10');
 

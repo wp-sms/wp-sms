@@ -31,27 +31,54 @@ export interface LogsResponse {
   per_page: number;
 }
 
+export type VerificationMethod = 'otp' | 'magic_link';
+export type DeliveryChannel = 'sms' | 'whatsapp' | 'viber';
+export type EnrollmentTiming = 'on_registration' | 'grace_period' | 'voluntary';
+export type LogVerbosity = 'minimal' | 'standard' | 'verbose';
+
+export interface ChannelSettings {
+  enabled?: boolean;
+  usage?: 'login' | 'mfa';
+  verification_methods?: VerificationMethod[];
+  required_at_signup?: boolean;
+  verify_at_signup?: boolean;
+  allow_sign_in?: boolean;
+  code_length?: number;
+  expiry?: number;
+  max_attempts?: number;
+  cooldown?: number;
+}
+
+export interface PhoneChannelSettings extends ChannelSettings {
+  delivery_channel?: DeliveryChannel;
+}
+
+export type EmailChannelSettings = ChannelSettings;
+
+export interface PasswordSettings {
+  enabled?: boolean;
+  required_at_signup?: boolean;
+  allow_sign_in?: boolean;
+}
+
+export interface BackupCodesSettings {
+  enabled?: boolean;
+  count?: number;
+  length?: number;
+}
+
 export interface AuthSettings {
-  primary_methods?: string[];
-  mfa_factors?: string[];
+  phone?: PhoneChannelSettings;
+  email?: EmailChannelSettings;
+  password?: PasswordSettings;
+  backup_codes?: BackupCodesSettings;
   mfa_required_roles?: string[];
-  enrollment_timing?: string;
+  enrollment_timing?: EnrollmentTiming;
   grace_period_days?: number;
-  auto_create_users?: boolean;
   auth_base_url?: string;
   redirect_login?: boolean;
-  otp_sms_length?: number;
-  otp_sms_expiry?: number;
-  otp_sms_max_attempts?: number;
-  otp_sms_cooldown?: number;
-  otp_email_length?: number;
-  otp_email_expiry?: number;
-  otp_email_max_attempts?: number;
-  otp_email_cooldown?: number;
-  magic_link_expiry?: number;
-  backup_codes_count?: number;
-  backup_codes_length?: number;
-  log_verbosity?: string;
+  auto_create_users?: boolean;
+  log_verbosity?: LogVerbosity;
   log_retention_days?: number;
   registration_fields?: string[];
 }

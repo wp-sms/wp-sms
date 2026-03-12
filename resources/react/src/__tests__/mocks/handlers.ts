@@ -1,6 +1,7 @@
 import { http, HttpResponse } from 'msw';
 import type { AuthSettings } from '@/lib/api';
 import { DEFAULTS } from '@/lib/constants';
+import { deepMerge } from '@/lib/utils';
 
 const BASE_URL = 'https://example.com/wp-json/wsms/v1';
 
@@ -31,7 +32,7 @@ const mockLogs = [
     event: 'otp_sent',
     status: 'success',
     ip_address: '192.168.1.1',
-    context: { method: 'sms' },
+    context: { method: 'phone' },
     created_at: '2025-01-15T10:20:00Z',
   },
 ];
@@ -50,7 +51,7 @@ export const handlers = [
 
   http.put(`${BASE_URL}/auth/admin/settings`, async ({ request }) => {
     const body = (await request.json()) as Partial<AuthSettings>;
-    mockSettings = { ...mockSettings, ...body };
+    mockSettings = deepMerge(mockSettings as Required<AuthSettings>, body) as AuthSettings;
     return HttpResponse.json({
       success: true,
       message: 'Settings updated.',

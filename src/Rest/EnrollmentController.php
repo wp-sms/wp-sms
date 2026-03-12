@@ -6,7 +6,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WSms\Auth\PolicyEngine;
 use WSms\Enums\ChannelStatus;
-use WSms\Mfa\Channels\SmsOtpChannel;
+use WSms\Mfa\Channels\PhoneChannel;
 use WSms\Mfa\Channels\BackupCodesChannel;
 use WSms\Mfa\MfaManager;
 
@@ -184,7 +184,7 @@ class EnrollmentController
             ], 400);
         }
 
-        if ($channel instanceof SmsOtpChannel) {
+        if ($channel instanceof PhoneChannel) {
             $result = $channel->confirmEnrollment($userId, $code);
 
             if ($result->success) {

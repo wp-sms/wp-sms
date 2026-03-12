@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { toast } from 'sonner';
 import { api, type AuthSettings, type SettingsResponse } from '@/lib/api';
 import { DEFAULTS } from '@/lib/constants';
+import { deepMerge } from '@/lib/utils';
 
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -34,7 +35,7 @@ export function useSettings(): UseSettingsReturn {
     api.get<SettingsResponse>('auth/admin/settings')
       .then((res) => {
         if (cancelled) return;
-        const merged = { ...DEFAULTS, ...res.settings };
+        const merged = deepMerge(DEFAULTS, res.settings);
         setSavedSettings(merged);
         setDraftSettings(merged);
       })
@@ -56,10 +57,7 @@ export function useSettings(): UseSettingsReturn {
   }, []);
 
   const isDirty = useMemo(() => {
-    for (const key of Object.keys(savedSettings) as (keyof AuthSettings)[]) {
-      if (savedSettings[key] !== draftSettings[key]) return true;
-    }
-    return false;
+    return JSON.stringify(savedSettings) !== JSON.stringify(draftSettings);
   }, [savedSettings, draftSettings]);
 
   const save = useCallback(async (keys?: (keyof AuthSettings)[]) => {
@@ -85,7 +83,7 @@ export function useSettings(): UseSettingsReturn {
       }
 
       const res = await api.put<SettingsResponse>('auth/admin/settings', payload);
-      const merged = { ...DEFAULTS, ...res.settings };
+      const merged = deepMerge(DEFAULTS, res.settings);
       setSavedSettings(merged);
       setDraftSettings(merged);
       setSaveStatus('saved');

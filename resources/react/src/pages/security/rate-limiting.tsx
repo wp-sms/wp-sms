@@ -71,27 +71,27 @@ export function RateLimiting({ settings, onUpdate }: RateLimitingProps) {
   return (
     <div className="space-y-4">
       <RateLimitCard
-        title="SMS OTP Limits"
-        description="Limit the number of SMS OTP verification attempts"
+        title="Phone Channel Limits"
+        description="Limit the number of phone verification attempts"
         icon={Smartphone}
-        attemptsId="otp_sms_max_attempts"
-        cooldownId="otp_sms_cooldown"
-        maxAttempts={settings.otp_sms_max_attempts}
-        cooldown={settings.otp_sms_cooldown}
-        onChangeAttempts={(v) => onUpdate('otp_sms_max_attempts', v)}
-        onChangeCooldown={(v) => onUpdate('otp_sms_cooldown', v)}
+        attemptsId="phone_max_attempts"
+        cooldownId="phone_cooldown"
+        maxAttempts={settings.phone.max_attempts}
+        cooldown={settings.phone.cooldown}
+        onChangeAttempts={(v) => onUpdate('phone', { ...settings.phone, max_attempts: v })}
+        onChangeCooldown={(v) => onUpdate('phone', { ...settings.phone, cooldown: v })}
       />
 
       <RateLimitCard
-        title="Email OTP Limits"
-        description="Limit the number of email OTP verification attempts"
+        title="Email Channel Limits"
+        description="Limit the number of email verification attempts"
         icon={Mail}
-        attemptsId="otp_email_max_attempts"
-        cooldownId="otp_email_cooldown"
-        maxAttempts={settings.otp_email_max_attempts}
-        cooldown={settings.otp_email_cooldown}
-        onChangeAttempts={(v) => onUpdate('otp_email_max_attempts', v)}
-        onChangeCooldown={(v) => onUpdate('otp_email_cooldown', v)}
+        attemptsId="email_max_attempts"
+        cooldownId="email_cooldown"
+        maxAttempts={settings.email.max_attempts}
+        cooldown={settings.email.cooldown}
+        onChangeAttempts={(v) => onUpdate('email', { ...settings.email, max_attempts: v })}
+        onChangeCooldown={(v) => onUpdate('email', { ...settings.email, cooldown: v })}
       />
     </div>
   );

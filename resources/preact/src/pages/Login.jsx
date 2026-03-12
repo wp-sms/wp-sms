@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import { useLocation } from 'preact-iso';
 import { api } from '../api/client';
-import { primaryMethods } from '../signals/config';
+import { primaryMethods, methodDetails } from '../signals/config';
 import { authError, authLoading } from '../signals/auth';
 import { handleAuthResponse, extractError } from '../utils/auth';
 import { authUrl } from '../utils/urls';
@@ -17,6 +17,7 @@ import { PhoneInput } from '../components/PhoneInput';
 export function Login() {
     const { route } = useLocation();
     const methods = primaryMethods.value;
+    const details = methodDetails.value;
     const [activeMethod, setActiveMethod] = useState(methods[0] || 'password');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
@@ -50,11 +51,20 @@ export function Login() {
             });
 
             const status = handleAuthResponse(res, route);
+            const channelDetails = details[activeMethod] || {};
 
-            if (status === 'challenge_sent' && activeMethod === 'magic_link') {
-                setSuccessMsg('Check your email for a magic link.');
-            } else if (status === 'challenge_sent') {
-                route(authUrl('/verify'));
+            if (status === 'challenge_sent') {
+                if (channelDetails.has_magic_link && !channelDetails.has_otp) {
+                    // Magic link only — show success message.
+                    const target = activeMethod === 'email' ? 'email' : 'SMS';
+                    setSuccessMsg(`Check your ${target} for a login link.`);
+                } else if (channelDetails.has_magic_link && channelDetails.has_otp) {
+                    // Both OTP + magic link — go to verify page but show hint.
+                    route(authUrl('/verify'));
+                } else {
+                    // OTP only — go to verify page.
+                    route(authUrl('/verify'));
+                }
             }
         } catch (err) {
             authError.value = extractError(err);
@@ -109,19 +119,19 @@ export function Login() {
                 </form>
             )}
 
-            {activeMethod === 'phone_otp' && (
+            {activeMethod === 'phone' && (
                 <form onSubmit={handlePasswordless} className="space-y-4">
                     <div className="space-y-2">
                         <Label>Phone Number</Label>
                         <PhoneInput value={identifier} onChange={setIdentifier} disabled={authLoading.value} />
                     </div>
                     <Button className="w-full" type="submit" disabled={authLoading.value}>
-                        {authLoading.value ? 'Sending\u2026' : 'Send OTP'}
+                        {authLoading.value ? 'Sending\u2026' : 'Send Code'}
                     </Button>
                 </form>
             )}
 
-            {(activeMethod === 'email_otp' || activeMethod === 'magic_link') && (
+            {activeMethod === 'email' && (
                 <form onSubmit={handlePasswordless} className="space-y-4">
                     <div className="space-y-2">
                         <Label for="wsms-identifier">Email</Label>
@@ -136,7 +146,7 @@ export function Login() {
                         />
                     </div>
                     <Button className="w-full" type="submit" disabled={authLoading.value}>
-                        {authLoading.value ? 'Sending\u2026' : (activeMethod === 'magic_link' ? 'Send Magic Link' : 'Send OTP')}
+                        {authLoading.value ? 'Sending\u2026' : 'Continue'}
                     </Button>
                 </form>
             )}

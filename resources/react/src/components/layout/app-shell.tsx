@@ -44,7 +44,7 @@ const NAV_ITEMS = [
     label: 'Authentication',
     icon: LogIn,
     children: [
-      { id: 'login-methods', label: 'Login Methods' },
+      { id: 'channels', label: 'Channels' },
       { id: 'registration', label: 'Registration' },
     ],
   },
@@ -53,8 +53,7 @@ const NAV_ITEMS = [
     label: 'Security',
     icon: Shield,
     children: [
-      { id: 'mfa-factors', label: 'MFA Factors' },
-      { id: 'policies', label: 'Policies' },
+      { id: 'mfa-policies', label: 'MFA Policies' },
       { id: 'rate-limiting', label: 'Rate Limiting' },
     ],
   },
@@ -71,10 +70,9 @@ const NAV_ITEMS = [
 ] as const;
 
 const SECTION_DESCRIPTIONS: Record<string, string> = {
-  'login-methods': 'Choose which authentication methods users can use to sign in.',
+  'channels': 'Configure authentication channels — Phone, Email, and Password.',
   'registration': 'Configure how new users register through the authentication pages.',
-  'mfa-factors': 'Enable multi-factor authentication methods for additional security.',
-  'policies': 'Define which roles require MFA and how enrollment is handled.',
+  'mfa-policies': 'Manage MFA policies, backup codes, required roles, and enrollment timing.',
   'rate-limiting': 'Configure rate limits to prevent brute-force attacks on OTP verification.',
   'branding': 'Customize the appearance and behavior of your authentication pages.',
   'logs': 'View authentication events and configure logging preferences.',

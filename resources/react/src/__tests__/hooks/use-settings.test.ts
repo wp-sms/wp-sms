@@ -12,7 +12,8 @@ describe('useSettings', () => {
       expect(result.current.loading).toBe(false);
     });
 
-    expect(result.current.settings.primary_methods).toEqual(['password']);
+    expect(result.current.settings.password.enabled).toBe(true);
+    expect(result.current.settings.email.enabled).toBe(true);
     expect(result.current.error).toBeNull();
   });
 
@@ -26,11 +27,11 @@ describe('useSettings', () => {
     expect(result.current.isDirty).toBe(false);
 
     act(() => {
-      result.current.updateSetting('otp_sms_length', 8);
+      result.current.updateSetting('phone', { ...result.current.settings.phone, code_length: 8 });
     });
 
     expect(result.current.isDirty).toBe(true);
-    expect(result.current.settings.otp_sms_length).toBe(8);
+    expect(result.current.settings.phone.code_length).toBe(8);
   });
 
   it('saves changed settings and resets dirty state', async () => {
@@ -41,7 +42,7 @@ describe('useSettings', () => {
     });
 
     act(() => {
-      result.current.updateSetting('primary_methods', ['password', 'otp_sms']);
+      result.current.updateSetting('phone', { ...result.current.settings.phone, enabled: true });
     });
 
     expect(result.current.isDirty).toBe(true);
@@ -52,7 +53,7 @@ describe('useSettings', () => {
 
     expect(result.current.isDirty).toBe(false);
     expect(result.current.saveStatus).toBe('saved');
-    expect(result.current.settings.primary_methods).toEqual(['password', 'otp_sms']);
+    expect(result.current.settings.phone.enabled).toBe(true);
   });
 
   it('saves only specified keys when keys parameter is provided', async () => {
@@ -63,12 +64,12 @@ describe('useSettings', () => {
     });
 
     act(() => {
-      result.current.updateSetting('otp_sms_length', 8);
-      result.current.updateSetting('otp_email_length', 4);
+      result.current.updateSetting('phone', { ...result.current.settings.phone, code_length: 8 });
+      result.current.updateSetting('email', { ...result.current.settings.email, code_length: 4 });
     });
 
     await act(async () => {
-      await result.current.save(['otp_sms_length']);
+      await result.current.save(['phone']);
     });
 
     expect(result.current.saveStatus).toBe('saved');
@@ -82,7 +83,7 @@ describe('useSettings', () => {
     });
 
     act(() => {
-      result.current.updateSetting('otp_sms_length', 8);
+      result.current.updateSetting('phone', { ...result.current.settings.phone, code_length: 8 });
     });
 
     await act(async () => {

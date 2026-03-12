@@ -2,9 +2,8 @@ import { cn } from '@/utils/cn';
 
 const METHOD_META = {
     password:   { label: 'Password',   icon: '\u{1F512}' },
-    phone_otp:  { label: 'Phone',      icon: '\u{1F4F1}' },
-    email_otp:  { label: 'Email',      icon: '\u{2709}\u{FE0F}' },
-    magic_link: { label: 'Magic Link', icon: '\u{2728}' },
+    phone:      { label: 'Phone',      icon: '\u{1F4F1}' },
+    email:      { label: 'Email',      icon: '\u{2709}\u{FE0F}' },
 };
 
 export function MethodSelector({ methods, active, onChange }) {
