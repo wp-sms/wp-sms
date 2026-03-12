@@ -103,10 +103,12 @@
   }
 }
 
-/* Mount-point app styling */
+/* Mount-point app styling — negative margin cancels WP admin's #wpbody-content padding */
 #wpsms-app {
-  @apply relative h-auto w-full;
+  @apply relative h-auto;
   @apply bg-background text-foreground;
+  margin-left: -20px;
+  width: calc(100% + 20px);
 }
 
 /* ID-scoped resets — beats WP admin's #wpbody selectors */
@@ -159,6 +161,8 @@
 #wpsms-app [role="option"],
 #wpsms-app [role="link"],
 #wpsms-app [role="switch"],
+#wpsms-app [data-slot="sidebar-menu-button"],
+#wpsms-app [data-slot="sidebar-menu-sub-button"],
 #wpsms-app summary,
 #wpsms-app a[href] {
   cursor: pointer;
@@ -174,15 +178,15 @@
 
 /* ─── Visual Polish: Surfaces & Depth ─── */
 
-/* Sidebar wrapper — override min-h-svh so it matches content height */
+/* Sidebar wrapper — override min-h-svh so it matches content height.
+   Paint sidebar bg via gradient so it always covers the full column. */
 #wpsms-app [data-slot="sidebar-wrapper"] {
-  min-height: auto;
-}
-
-/* Sidebar stretches to match content */
-#wpsms-app [data-slot="sidebar"] {
-  height: auto;
-  align-self: stretch;
+  min-height: auto !important;
+  background-image: linear-gradient(
+    to right,
+    var(--sidebar) var(--sidebar-width),
+    transparent var(--sidebar-width)
+  ) !important;
 }
 
 /* Off-white content area behind cards */
