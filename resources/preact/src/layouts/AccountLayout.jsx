@@ -1,7 +1,9 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
+import { UserAvatar } from '@/components/ui/UserAvatar';
 import { authUrl } from '@/utils/urls';
 import { logout } from '@/utils/auth';
+import { currentUser } from '@/signals/auth';
 
 const NAV_ITEMS = [
     { path: '/', label: 'Dashboard' },
@@ -11,6 +13,8 @@ const NAV_ITEMS = [
 ];
 
 export function AccountLayout({ title, subtitle, currentPath, children }) {
+    const user = currentUser.value;
+
     return (
         <div className="min-h-screen bg-muted p-4 md:p-8 font-sans text-foreground antialiased">
             <div className="mx-auto max-w-3xl space-y-6">
@@ -33,9 +37,24 @@ export function AccountLayout({ title, subtitle, currentPath, children }) {
                             );
                         })}
                     </nav>
-                    <Button variant="ghost" size="sm" onClick={logout}>
-                        Sign Out
-                    </Button>
+                    <div className="flex items-center gap-3">
+                        {user && (
+                            <div className="flex items-center gap-2">
+                                <UserAvatar user={user} size="sm" />
+                                <span className="hidden text-sm font-medium sm:inline">
+                                    {user.display_name || user.username}
+                                </span>
+                            </div>
+                        )}
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-muted-foreground hover:bg-red-50 hover:text-red-600"
+                            onClick={logout}
+                        >
+                            Sign Out
+                        </Button>
+                    </div>
                 </div>
 
                 <Card className="animate-fade-in">

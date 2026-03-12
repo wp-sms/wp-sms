@@ -12,6 +12,47 @@ import { Separator } from '../components/ui/Separator';
 import { MfaFactorCard } from '../components/MfaFactorCard';
 import { BackupCodesDisplay } from '../components/BackupCodesDisplay';
 
+function SecurityPosture({ user }) {
+    const steps = [
+        { label: 'Email verified', done: !!user.email_verified },
+        { label: 'Phone verified', done: !!(user.phone && user.phone_verified) },
+        { label: 'MFA enabled', done: !!user.mfa_enabled },
+    ];
+    const completed = steps.filter((s) => s.done).length;
+    const total = steps.length;
+    const allDone = completed === total;
+    const noneDone = completed === 0;
+
+    const barColor = allDone ? 'bg-green-500' : noneDone ? 'bg-red-400' : 'bg-amber-400';
+    const textColor = allDone ? 'text-green-700' : noneDone ? 'text-red-600' : 'text-amber-700';
+
+    return (
+        <div className="mb-6 rounded-lg border bg-card p-4">
+            <div className="mb-3 flex items-center justify-between">
+                <span className={`text-sm font-semibold ${textColor}`}>
+                    {completed} of {total} security steps completed
+                </span>
+            </div>
+
+            {/* Segment indicators */}
+            <div className="flex gap-1.5">
+                {steps.map((step) => (
+                    <div key={step.label} className="flex-1 space-y-1">
+                        <div
+                            className={`h-1.5 rounded-full ${step.done ? barColor : 'bg-muted'}`}
+                        />
+                        <div
+                            className={`text-[10px] leading-tight ${step.done ? 'font-medium text-foreground' : 'text-muted-foreground'}`}
+                        >
+                            {step.label}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
 export function Security() {
     const authed = useAuthGuard();
     const [availableMethods, setAvailableMethods] = useState([]);
@@ -107,16 +148,20 @@ export function Security() {
             <AccountLayout title="Security" currentPath="/security">
                 <div className="flex flex-col items-center gap-3 py-8">
                     <Spinner className="size-8" />
-                    <p className="text-sm text-muted-foreground">Loading security settings\u2026</p>
+                    <p className="text-sm text-muted-foreground">Loading security settings…</p>
                 </div>
             </AccountLayout>
         );
     }
 
+    const user = currentUser.value;
+
     return (
         <AccountLayout title="Security" subtitle="Manage your multi-factor authentication methods" currentPath="/security">
             <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="mb-4" />
             <Alert variant="success" message={success} className="mb-4" />
+
+            {user && <SecurityPosture user={user} />}
 
             {backupCodes && (
                 <BackupCodesDisplay

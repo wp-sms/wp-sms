@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'preact/hooks';
-import { CheckCircle2 } from 'lucide-react';
 import { api } from '../api/client';
 import { currentUser } from '../signals/auth';
 import { methodDetails } from '../signals/config';
@@ -11,25 +10,10 @@ import { Alert } from '../components/ui/Alert';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
+import { Separator } from '../components/ui/Separator';
 import { PhoneInput } from '../components/PhoneInput';
 import { OtpVerifyInline } from '../components/verification/OtpVerifyInline';
-
-function VerifiedBadge() {
-    return (
-        <span className="inline-flex items-center gap-1 text-xs font-medium text-green-600">
-            <CheckCircle2 className="size-3.5" />
-            Verified
-        </span>
-    );
-}
-
-function UnverifiedBadge() {
-    return (
-        <span className="inline-flex items-center gap-1 text-xs font-medium text-yellow-600">
-            Unverified
-        </span>
-    );
-}
+import { StatusBadge } from '../components/ui/StatusBadge';
 
 export function Profile() {
     const authed = useAuthGuard();
@@ -138,119 +122,137 @@ export function Profile() {
             <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="mb-4" />
             <Alert variant="success" message={success} className="mb-4" />
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                    <Label for="wsms-prof-name">Display Name</Label>
-                    <Input
-                        id="wsms-prof-name"
-                        type="text"
-                        value={form.display_name}
-                        onInput={(e) => updateField('display_name', e.target.value)}
-                        disabled={loading}
-                        autoComplete="name"
-                    />
-                </div>
+            <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Section 1: Personal Information */}
+                <div className="space-y-4">
+                    <h3 className="text-sm font-semibold text-foreground">Personal Information</h3>
 
-                <div className="space-y-2">
-                    <Label for="wsms-prof-first-name">First Name</Label>
-                    <Input
-                        id="wsms-prof-first-name"
-                        type="text"
-                        value={form.first_name}
-                        onInput={(e) => updateField('first_name', e.target.value)}
-                        disabled={loading}
-                        autoComplete="given-name"
-                    />
-                </div>
-
-                <div className="space-y-2">
-                    <Label for="wsms-prof-last-name">Last Name</Label>
-                    <Input
-                        id="wsms-prof-last-name"
-                        type="text"
-                        value={form.last_name}
-                        onInput={(e) => updateField('last_name', e.target.value)}
-                        disabled={loading}
-                        autoComplete="family-name"
-                    />
-                </div>
-
-                <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                        <Label for="wsms-prof-email">Email</Label>
-                        {user && (user.email_verified ? <VerifiedBadge /> : <UnverifiedBadge />)}
+                    <div className="space-y-2">
+                        <Label for="wsms-prof-name">Display Name</Label>
+                        <Input
+                            id="wsms-prof-name"
+                            type="text"
+                            value={form.display_name}
+                            onInput={(e) => updateField('display_name', e.target.value)}
+                            disabled={loading}
+                            autoComplete="name"
+                        />
                     </div>
-                    <Input
-                        id="wsms-prof-email"
-                        type="email"
-                        value={form.email}
-                        onInput={(e) => updateField('email', e.target.value)}
-                        required
-                        disabled={loading}
-                        autoComplete="email"
-                    />
-                    {user && !user.email_verified && !showEmailOtp && (
-                        <div>
-                            {emailSent ? (
-                                <p className="text-xs text-green-600">Verification email sent! Check your inbox.</p>
-                            ) : (
-                                <Button
-                                    variant="link"
-                                    type="button"
-                                    className="h-auto p-0 text-xs"
-                                    onClick={handleSendEmailVerification}
-                                    disabled={emailSending}
-                                >
-                                    {emailSending ? 'Sending\u2026' : 'Send verification code'}
-                                </Button>
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                        <div className="space-y-2">
+                            <Label for="wsms-prof-first-name">First Name</Label>
+                            <Input
+                                id="wsms-prof-first-name"
+                                type="text"
+                                value={form.first_name}
+                                onInput={(e) => updateField('first_name', e.target.value)}
+                                disabled={loading}
+                                autoComplete="given-name"
+                            />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label for="wsms-prof-last-name">Last Name</Label>
+                            <Input
+                                id="wsms-prof-last-name"
+                                type="text"
+                                value={form.last_name}
+                                onInput={(e) => updateField('last_name', e.target.value)}
+                                disabled={loading}
+                                autoComplete="family-name"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <Separator />
+
+                {/* Section 2: Contact & Verification */}
+                <div className="space-y-4">
+                    <h3 className="text-sm font-semibold text-foreground">Contact & Verification</h3>
+
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                            <Label for="wsms-prof-email">Email</Label>
+                            {user && (
+                                <StatusBadge variant={user.email_verified ? 'verified' : 'unverified'} />
                             )}
                         </div>
-                    )}
-                    {showEmailOtp && (
-                        <OtpVerifyInline
-                            verifyEndpoint="/auth/profile/verify-email"
-                            resendEndpoint="/auth/profile/send-email-verification"
-                            onVerified={() => handleVerified('email')}
-                            onError={setError}
-                            label="Enter the code sent to your email"
-                            codeLength={emailCodeLength}
-                            className="pt-2"
+                        <Input
+                            id="wsms-prof-email"
+                            type="email"
+                            value={form.email}
+                            onInput={(e) => updateField('email', e.target.value)}
+                            required
+                            disabled={loading}
+                            autoComplete="email"
                         />
-                    )}
-                </div>
-
-                <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                        <Label>Phone Number</Label>
-                        {user && user.phone && (user.phone_verified ? <VerifiedBadge /> : <UnverifiedBadge />)}
+                        {user && !user.email_verified && !showEmailOtp && (
+                            <div>
+                                {emailSent ? (
+                                    <p className="text-xs text-green-600">Verification email sent! Check your inbox.</p>
+                                ) : (
+                                    <Button
+                                        variant="link"
+                                        type="button"
+                                        className="h-auto p-0 text-xs"
+                                        onClick={handleSendEmailVerification}
+                                        disabled={emailSending}
+                                    >
+                                        {emailSending ? 'Sending\u2026' : 'Send verification code'}
+                                    </Button>
+                                )}
+                            </div>
+                        )}
+                        {showEmailOtp && (
+                            <OtpVerifyInline
+                                verifyEndpoint="/auth/profile/verify-email"
+                                resendEndpoint="/auth/profile/send-email-verification"
+                                onVerified={() => handleVerified('email')}
+                                onError={setError}
+                                label="Enter the code sent to your email"
+                                codeLength={emailCodeLength}
+                                className="pt-2"
+                            />
+                        )}
                     </div>
-                    <PhoneInput
-                        value={form.phone}
-                        onChange={(val) => updateField('phone', val)}
-                        disabled={loading}
-                    />
-                    {user && user.phone && !user.phone_verified && !showPhoneOtp && (
-                        <Button
-                            variant="link"
-                            type="button"
-                            className="h-auto p-0 text-xs"
-                            onClick={handleSendPhoneVerification}
-                            disabled={phoneSending}
-                        >
-                            {phoneSending ? 'Sending\u2026' : 'Verify phone'}
-                        </Button>
-                    )}
-                    {showPhoneOtp && (
-                        <OtpVerifyInline
-                            verifyEndpoint="/auth/profile/verify-phone"
-                            resendEndpoint="/auth/profile/send-phone-verification"
-                            onVerified={() => handleVerified('phone')}
-                            onError={setError}
-                            label="Enter the code sent to your phone"
-                            codeLength={phoneCodeLength}
-                            className="pt-2"
+
+                    <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                            <Label>Phone Number</Label>
+                            {user && user.phone && (
+                                <StatusBadge variant={user.phone_verified ? 'verified' : 'unverified'} />
+                            )}
+                        </div>
+                        <PhoneInput
+                            value={form.phone}
+                            onChange={(val) => updateField('phone', val)}
+                            disabled={loading}
                         />
-                    )}
+                        {user && user.phone && !user.phone_verified && !showPhoneOtp && (
+                            <Button
+                                variant="link"
+                                type="button"
+                                className="h-auto p-0 text-xs"
+                                onClick={handleSendPhoneVerification}
+                                disabled={phoneSending}
+                            >
+                                {phoneSending ? 'Sending\u2026' : 'Verify phone'}
+                            </Button>
+                        )}
+                        {showPhoneOtp && (
+                            <OtpVerifyInline
+                                verifyEndpoint="/auth/profile/verify-phone"
+                                resendEndpoint="/auth/profile/send-phone-verification"
+                                onVerified={() => handleVerified('phone')}
+                                onError={setError}
+                                label="Enter the code sent to your phone"
+                                codeLength={phoneCodeLength}
+                                className="pt-2"
+                            />
+                        )}
+                    </div>
                 </div>
 
                 <Button className="w-full" type="submit" disabled={loading}>

@@ -281,6 +281,7 @@ class EnrollmentController
                 'display_name'     => $user->display_name,
                 'first_name'       => $user->first_name,
                 'last_name'        => $user->last_name,
+                'avatar_url'       => get_avatar_url($userId, ['size' => 128]),
                 'phone'            => get_user_meta($userId, 'wsms_phone', true) ?: null,
                 'phone_verified'   => (bool) get_user_meta($userId, 'wsms_phone_verified', true),
                 'email_verified'   => (bool) get_user_meta($userId, 'wsms_email_verified', true),
