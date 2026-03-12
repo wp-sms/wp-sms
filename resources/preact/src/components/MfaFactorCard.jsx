@@ -1,4 +1,7 @@
 import { useState } from 'preact/hooks';
+import { cn } from '@/utils/cn';
+import { Button } from './ui/Button';
+import { Label } from './ui/Label';
 import { PhoneInput } from './PhoneInput';
 import { OtpInput } from './OtpInput';
 import { api } from '../api/client';
@@ -18,7 +21,6 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Don't show backup_codes as a standalone card — handled separately in Security.jsx
     if (method.id === 'backup_codes') return null;
 
     async function handleEnable() {
@@ -70,57 +72,48 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
     }
 
     return (
-        <div class={`wsms-factor-card ${enrolled ? 'is-enrolled' : ''}`}>
-            <div class="wsms-factor-card__header">
-                <span class="wsms-factor-card__icon">{meta.icon}</span>
-                <div class="wsms-factor-card__info">
-                    <strong>{meta.label}</strong>
-                    <p>{meta.description}</p>
+        <div
+            className={cn(
+                'rounded-lg border transition-colors overflow-hidden',
+                enrolled ? 'border-success/50 bg-success/5' : 'border-border',
+            )}
+        >
+            <div className="flex items-center gap-3 p-4">
+                <span className="text-xl shrink-0">{meta.icon}</span>
+                <div className="flex-1 min-w-0">
+                    <div className="text-sm font-semibold">{meta.label}</div>
+                    <div className="text-xs text-muted-foreground">{meta.description}</div>
                 </div>
-                <div class="wsms-factor-card__actions">
+                <div className="shrink-0">
                     {enrolled ? (
-                        <button
-                            type="button"
-                            class="wsms-btn wsms-btn--secondary wsms-btn--sm wsms-btn--danger"
-                            onClick={handleDisable}
-                        >
+                        <Button variant="outline" size="sm" onClick={handleDisable} className="text-destructive hover:text-destructive">
                             Disable
-                        </button>
+                        </Button>
                     ) : (
-                        <button
-                            type="button"
-                            class="wsms-btn wsms-btn--secondary wsms-btn--sm"
-                            onClick={handleEnable}
-                            disabled={loading}
-                        >
+                        <Button variant="outline" size="sm" onClick={handleEnable} disabled={loading}>
                             Enable
-                        </button>
+                        </Button>
                     )}
                 </div>
             </div>
 
             {expanding && !enrolled && method.id === 'sms' && !verifying && (
-                <div class="wsms-factor-card__body">
-                    {error && <p class="wsms-text-error">{error}</p>}
-                    <div class="wsms-field">
-                        <label class="wsms-label">Phone Number</label>
+                <div className="px-4 pb-4 space-y-3 animate-fade-in">
+                    {error && <p className="text-sm text-destructive">{error}</p>}
+                    <div className="space-y-2">
+                        <Label>Phone Number</Label>
                         <PhoneInput value={phone} onChange={setPhone} disabled={loading} />
                     </div>
-                    <button
-                        type="button"
-                        class="wsms-btn wsms-btn--primary wsms-btn--sm"
-                        onClick={handleEnable}
-                        disabled={loading || !phone}
-                    >
-                        {loading ? 'Sending…' : 'Send Verification Code'}
-                    </button>
+                    <Button size="sm" onClick={handleEnable} disabled={loading || !phone}>
+                        {loading ? 'Sending\u2026' : 'Send Verification Code'}
+                    </Button>
                 </div>
             )}
 
             {verifying && (
-                <div class="wsms-factor-card__body">
-                    {error && <p class="wsms-text-error">{error}</p>}
-                    <p class="wsms-text-secondary">Enter the code sent to your phone</p>
+                <div className="px-4 pb-4 space-y-3 animate-fade-in">
+                    {error && <p className="text-sm text-destructive">{error}</p>}
+                    <p className="text-sm text-muted-foreground">Enter the code sent to your phone</p>
                     <OtpInput onComplete={handleVerifySms} disabled={loading} />
                 </div>
             )}

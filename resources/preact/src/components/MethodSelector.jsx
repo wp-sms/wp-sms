@@ -1,3 +1,5 @@
+import { cn } from '@/utils/cn';
+
 const METHOD_META = {
     password:   { label: 'Password',   icon: '\u{1F512}' },
     phone_otp:  { label: 'Phone',      icon: '\u{1F4F1}' },
@@ -9,21 +11,27 @@ export function MethodSelector({ methods, active, onChange }) {
     if (!methods || methods.length <= 1) return null;
 
     return (
-        <div class="wsms-methods" role="tablist">
+        <div className="flex flex-wrap gap-2 mb-4" role="tablist">
             {methods.map((method) => {
                 const meta = METHOD_META[method];
                 if (!meta) return null;
+                const isActive = active === method;
                 return (
                     <button
                         key={method}
                         type="button"
                         role="tab"
-                        aria-selected={active === method}
-                        class={`wsms-method-tab ${active === method ? 'is-active' : ''}`}
+                        aria-selected={isActive}
+                        className={cn(
+                            'inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium transition-colors cursor-pointer bg-transparent',
+                            isActive
+                                ? 'border-primary bg-primary/10 text-primary'
+                                : 'border-border text-muted-foreground hover:border-primary hover:text-primary',
+                        )}
                         onClick={() => onChange(method)}
                     >
-                        <span class="wsms-method-tab__icon">{meta.icon}</span>
-                        <span class="wsms-method-tab__label">{meta.label}</span>
+                        <span className="text-sm leading-none">{meta.icon}</span>
+                        <span>{meta.label}</span>
                     </button>
                 );
             })}

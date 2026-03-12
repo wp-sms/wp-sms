@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'preact/hooks';
 import { api } from '../api/client';
 import { authUrl, getQueryParam } from '../utils/urls';
-import { Alert } from '../components/Alert';
+import { AuthLayout } from '../layouts/AuthLayout';
+import { Alert } from '../components/ui/Alert';
+import { Spinner } from '../components/ui/Spinner';
+import { AuthLink } from '../components/AuthLink';
 
 export function VerifyToken({
     title,
@@ -47,37 +50,25 @@ export function VerifyToken({
     }, []);
 
     return (
-        <div class="wsms-page">
-            <h1 class="wsms-title">{title}</h1>
-
+        <AuthLayout
+            title={title}
+            footer={
+                status !== 'loading' && !successRedirect && (
+                    <AuthLink href={authUrl('/login')}>
+                        {successLinkText || 'Back to login'}
+                    </AuthLink>
+                )
+            }
+        >
             {status === 'loading' && (
-                <div class="wsms-loader">
-                    <div class="wsms-spinner" />
-                    <p class="wsms-subtitle">{loadingText}</p>
+                <div className="flex flex-col items-center gap-3 py-4">
+                    <Spinner className="size-8" />
+                    <p className="text-sm text-muted-foreground">{loadingText}</p>
                 </div>
             )}
 
-            {status === 'success' && (
-                <>
-                    <Alert type="success" message={message} />
-                    {!successRedirect && (
-                        <div class="wsms-links">
-                            <a href={authUrl('/login')} class="wsms-link">
-                                {successLinkText || 'Back to login'}
-                            </a>
-                        </div>
-                    )}
-                </>
-            )}
-
-            {status === 'error' && (
-                <>
-                    <Alert type="error" message={message} />
-                    <div class="wsms-links">
-                        <a href={authUrl('/login')} class="wsms-link">Back to login</a>
-                    </div>
-                </>
-            )}
-        </div>
+            {status === 'success' && <Alert variant="success" message={message} />}
+            {status === 'error' && <Alert variant="destructive" message={message} />}
+        </AuthLayout>
     );
 }

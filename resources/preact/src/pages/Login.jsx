@@ -5,7 +5,12 @@ import { primaryMethods } from '../signals/config';
 import { authError, authLoading } from '../signals/auth';
 import { handleAuthResponse, extractError } from '../utils/auth';
 import { authUrl } from '../utils/urls';
-import { Alert } from '../components/Alert';
+import { AuthLayout } from '../layouts/AuthLayout';
+import { Alert } from '../components/ui/Alert';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Label } from '../components/ui/Label';
+import { AuthLink } from '../components/AuthLink';
 import { MethodSelector } from '../components/MethodSelector';
 import { PhoneInput } from '../components/PhoneInput';
 
@@ -58,22 +63,26 @@ export function Login() {
         }
     }
 
-    return (
-        <div class="wsms-page">
-            <h1 class="wsms-title">Sign In</h1>
+    const footer = (
+        <div className="flex gap-4">
+            <AuthLink href={authUrl('/forgot-password')}>Forgot password?</AuthLink>
+            <AuthLink href={authUrl('/register')}>Create account</AuthLink>
+        </div>
+    );
 
-            <Alert type="error" message={authError.value} onDismiss={() => (authError.value = null)} />
-            <Alert type="success" message={successMsg} />
+    return (
+        <AuthLayout title="Sign In" footer={footer}>
+            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
+            <Alert variant="success" message={successMsg} className="mb-4" />
 
             <MethodSelector methods={methods} active={activeMethod} onChange={setActiveMethod} />
 
             {activeMethod === 'password' && (
-                <form onSubmit={handlePasswordLogin} class="wsms-form">
-                    <div class="wsms-field">
-                        <label class="wsms-label" for="wsms-username">Username or Email</label>
-                        <input
+                <form onSubmit={handlePasswordLogin} className="space-y-4">
+                    <div className="space-y-2">
+                        <Label for="wsms-username">Username or Email</Label>
+                        <Input
                             id="wsms-username"
-                            class="wsms-input"
                             type="text"
                             value={username}
                             onInput={(e) => setUsername(e.target.value)}
@@ -82,11 +91,10 @@ export function Login() {
                             autoComplete="username"
                         />
                     </div>
-                    <div class="wsms-field">
-                        <label class="wsms-label" for="wsms-password">Password</label>
-                        <input
+                    <div className="space-y-2">
+                        <Label for="wsms-password">Password</Label>
+                        <Input
                             id="wsms-password"
-                            class="wsms-input"
                             type="password"
                             value={password}
                             onInput={(e) => setPassword(e.target.value)}
@@ -95,29 +103,30 @@ export function Login() {
                             autoComplete="current-password"
                         />
                     </div>
-                    <button class="wsms-btn wsms-btn--primary" type="submit" disabled={authLoading.value}>
+                    <Button className="w-full" type="submit" disabled={authLoading.value}>
                         {authLoading.value ? 'Signing in\u2026' : 'Sign In'}
-                    </button>
+                    </Button>
                 </form>
             )}
 
             {activeMethod === 'phone_otp' && (
-                <form onSubmit={handlePasswordless} class="wsms-form">
-                    <div class="wsms-field">
-                        <label class="wsms-label">Phone Number</label>
+                <form onSubmit={handlePasswordless} className="space-y-4">
+                    <div className="space-y-2">
+                        <Label>Phone Number</Label>
                         <PhoneInput value={identifier} onChange={setIdentifier} disabled={authLoading.value} />
                     </div>
-                    <PasswordlessSubmit loading={authLoading.value} label="Send OTP" />
+                    <Button className="w-full" type="submit" disabled={authLoading.value}>
+                        {authLoading.value ? 'Sending\u2026' : 'Send OTP'}
+                    </Button>
                 </form>
             )}
 
             {(activeMethod === 'email_otp' || activeMethod === 'magic_link') && (
-                <form onSubmit={handlePasswordless} class="wsms-form">
-                    <div class="wsms-field">
-                        <label class="wsms-label" for="wsms-identifier">Email</label>
-                        <input
+                <form onSubmit={handlePasswordless} className="space-y-4">
+                    <div className="space-y-2">
+                        <Label for="wsms-identifier">Email</Label>
+                        <Input
                             id="wsms-identifier"
-                            class="wsms-input"
                             type="email"
                             value={identifier}
                             onInput={(e) => setIdentifier(e.target.value)}
@@ -126,25 +135,11 @@ export function Login() {
                             autoComplete="email"
                         />
                     </div>
-                    <PasswordlessSubmit
-                        loading={authLoading.value}
-                        label={activeMethod === 'magic_link' ? 'Send Magic Link' : 'Send OTP'}
-                    />
+                    <Button className="w-full" type="submit" disabled={authLoading.value}>
+                        {authLoading.value ? 'Sending\u2026' : (activeMethod === 'magic_link' ? 'Send Magic Link' : 'Send OTP')}
+                    </Button>
                 </form>
             )}
-
-            <div class="wsms-links">
-                <a href={authUrl('/forgot-password')} class="wsms-link">Forgot password?</a>
-                <a href={authUrl('/register')} class="wsms-link">Create account</a>
-            </div>
-        </div>
-    );
-}
-
-function PasswordlessSubmit({ loading, label }) {
-    return (
-        <button class="wsms-btn wsms-btn--primary" type="submit" disabled={loading}>
-            {loading ? 'Sending\u2026' : label}
-        </button>
+        </AuthLayout>
     );
 }

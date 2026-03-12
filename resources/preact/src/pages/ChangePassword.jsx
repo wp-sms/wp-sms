@@ -2,8 +2,11 @@ import { useState } from 'preact/hooks';
 import { api } from '../api/client';
 import { useAuthGuard } from '../hooks/useAuthGuard';
 import { extractError } from '../utils/auth';
-import { authUrl } from '../utils/urls';
-import { Alert } from '../components/Alert';
+import { AccountLayout } from '../layouts/AccountLayout';
+import { Alert } from '../components/ui/Alert';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Label } from '../components/ui/Label';
 
 export function ChangePassword() {
     const authed = useAuthGuard();
@@ -47,18 +50,15 @@ export function ChangePassword() {
     if (!authed) return null;
 
     return (
-        <div class="wsms-page">
-            <h1 class="wsms-title">Change Password</h1>
+        <AccountLayout title="Change Password" currentPath="/change-password">
+            <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="mb-4" />
+            <Alert variant="success" message={success} className="mb-4" />
 
-            <Alert type="error" message={error} onDismiss={() => setError('')} />
-            <Alert type="success" message={success} />
-
-            <form onSubmit={handleSubmit} class="wsms-form">
-                <div class="wsms-field">
-                    <label class="wsms-label" for="wsms-cur-pass">Current Password</label>
-                    <input
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                    <Label for="wsms-cur-pass">Current Password</Label>
+                    <Input
                         id="wsms-cur-pass"
-                        class="wsms-input"
                         type="password"
                         value={currentPassword}
                         onInput={(e) => setCurrentPassword(e.target.value)}
@@ -68,11 +68,10 @@ export function ChangePassword() {
                     />
                 </div>
 
-                <div class="wsms-field">
-                    <label class="wsms-label" for="wsms-new-pass2">New Password</label>
-                    <input
+                <div className="space-y-2">
+                    <Label for="wsms-new-pass2">New Password</Label>
+                    <Input
                         id="wsms-new-pass2"
-                        class="wsms-input"
                         type="password"
                         value={newPassword}
                         onInput={(e) => setNewPassword(e.target.value)}
@@ -82,11 +81,10 @@ export function ChangePassword() {
                     />
                 </div>
 
-                <div class="wsms-field">
-                    <label class="wsms-label" for="wsms-confirm-pass2">Confirm New Password</label>
-                    <input
+                <div className="space-y-2">
+                    <Label for="wsms-confirm-pass2">Confirm New Password</Label>
+                    <Input
                         id="wsms-confirm-pass2"
-                        class="wsms-input"
                         type="password"
                         value={confirm}
                         onInput={(e) => setConfirm(e.target.value)}
@@ -96,14 +94,10 @@ export function ChangePassword() {
                     />
                 </div>
 
-                <button class="wsms-btn wsms-btn--primary" type="submit" disabled={loading}>
+                <Button className="w-full" type="submit" disabled={loading}>
                     {loading ? 'Changing\u2026' : 'Change Password'}
-                </button>
+                </Button>
             </form>
-
-            <div class="wsms-links">
-                <a href={authUrl('/')} class="wsms-link">Back to account</a>
-            </div>
-        </div>
+        </AccountLayout>
     );
 }

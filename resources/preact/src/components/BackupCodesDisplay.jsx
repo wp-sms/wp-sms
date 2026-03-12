@@ -1,3 +1,6 @@
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from './ui/Card';
+import { Button } from './ui/Button';
+
 export function BackupCodesDisplay({ codes, onDismiss }) {
     if (!codes || codes.length === 0) return null;
 
@@ -17,32 +20,37 @@ export function BackupCodesDisplay({ codes, onDismiss }) {
     }
 
     return (
-        <div class="wsms-backup-codes">
-            <div class="wsms-backup-codes__header">
-                <h2 class="wsms-section-title">Save Your Backup Codes</h2>
-                <p class="wsms-text-secondary">
+        <Card className="mb-4 border-info/30 bg-info/5">
+            <CardHeader>
+                <CardTitle className="text-base">Save Your Backup Codes</CardTitle>
+                <CardDescription>
                     Store these codes in a safe place. Each code can only be used once.
                     You won't be able to see them again.
-                </p>
-            </div>
-
-            <div class="wsms-backup-codes__grid">
-                {codes.map((code, i) => (
-                    <code key={i} class="wsms-backup-codes__code">{code}</code>
-                ))}
-            </div>
-
-            <div class="wsms-backup-codes__actions">
-                <button type="button" class="wsms-btn wsms-btn--secondary wsms-btn--sm" onClick={handleDownload}>
+                </CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="grid grid-cols-2 gap-1.5">
+                    {codes.map((code, i) => (
+                        <code
+                            key={i}
+                            className="block rounded border bg-card px-2.5 py-1.5 text-center font-mono text-sm tracking-wider"
+                        >
+                            {code}
+                        </code>
+                    ))}
+                </div>
+            </CardContent>
+            <CardFooter className="gap-2">
+                <Button variant="outline" size="sm" onClick={handleDownload}>
                     Download
-                </button>
-                <button type="button" class="wsms-btn wsms-btn--secondary wsms-btn--sm" onClick={handleCopy}>
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleCopy}>
                     Copy All
-                </button>
-                <button type="button" class="wsms-btn wsms-btn--text wsms-btn--sm" onClick={onDismiss}>
+                </Button>
+                <Button variant="link" size="sm" onClick={onDismiss}>
                     I've saved them
-                </button>
-            </div>
-        </div>
+                </Button>
+            </CardFooter>
+        </Card>
     );
 }

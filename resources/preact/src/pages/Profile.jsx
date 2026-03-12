@@ -4,8 +4,11 @@ import { currentUser } from '../signals/auth';
 import { loadCurrentUser, refreshUser } from '../signals/user';
 import { useAuthGuard } from '../hooks/useAuthGuard';
 import { extractError } from '../utils/auth';
-import { authUrl } from '../utils/urls';
-import { Alert } from '../components/Alert';
+import { AccountLayout } from '../layouts/AccountLayout';
+import { Alert } from '../components/ui/Alert';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Label } from '../components/ui/Label';
 import { PhoneInput } from '../components/PhoneInput';
 
 export function Profile() {
@@ -58,19 +61,15 @@ export function Profile() {
     if (!authed) return null;
 
     return (
-        <div class="wsms-page">
-            <h1 class="wsms-title">Profile</h1>
-            <p class="wsms-subtitle">Manage your account information</p>
+        <AccountLayout title="Profile" subtitle="Manage your account information" currentPath="/profile">
+            <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="mb-4" />
+            <Alert variant="success" message={success} className="mb-4" />
 
-            <Alert type="error" message={error} onDismiss={() => setError('')} />
-            <Alert type="success" message={success} />
-
-            <form onSubmit={handleSubmit} class="wsms-form">
-                <div class="wsms-field">
-                    <label class="wsms-label" for="wsms-prof-name">Display Name</label>
-                    <input
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                    <Label for="wsms-prof-name">Display Name</Label>
+                    <Input
                         id="wsms-prof-name"
-                        class="wsms-input"
                         type="text"
                         value={form.display_name}
                         onInput={(e) => updateField('display_name', e.target.value)}
@@ -79,11 +78,10 @@ export function Profile() {
                     />
                 </div>
 
-                <div class="wsms-field">
-                    <label class="wsms-label" for="wsms-prof-email">Email</label>
-                    <input
+                <div className="space-y-2">
+                    <Label for="wsms-prof-email">Email</Label>
+                    <Input
                         id="wsms-prof-email"
-                        class="wsms-input"
                         type="email"
                         value={form.email}
                         onInput={(e) => updateField('email', e.target.value)}
@@ -93,8 +91,8 @@ export function Profile() {
                     />
                 </div>
 
-                <div class="wsms-field">
-                    <label class="wsms-label">Phone Number</label>
+                <div className="space-y-2">
+                    <Label>Phone Number</Label>
                     <PhoneInput
                         value={form.phone}
                         onChange={(val) => updateField('phone', val)}
@@ -102,14 +100,10 @@ export function Profile() {
                     />
                 </div>
 
-                <button class="wsms-btn wsms-btn--primary" type="submit" disabled={loading}>
+                <Button className="w-full" type="submit" disabled={loading}>
                     {loading ? 'Saving\u2026' : 'Save Changes'}
-                </button>
+                </Button>
             </form>
-
-            <div class="wsms-links">
-                <a href={authUrl('/')} class="wsms-link">Back to account</a>
-            </div>
-        </div>
+        </AccountLayout>
     );
 }

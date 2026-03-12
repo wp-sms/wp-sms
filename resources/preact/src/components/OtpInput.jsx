@@ -1,9 +1,19 @@
 import { OTPInput } from 'input-otp';
+import { cn } from '@/utils/cn';
 
 function Slot({ char, isActive, hasFakeCaret }) {
     return (
-        <div class={`wsms-otp-slot ${isActive ? 'is-active' : ''}`}>
-            {char || (hasFakeCaret && <span class="wsms-otp-caret" />)}
+        <div
+            className={cn(
+                'flex size-12 items-center justify-center rounded-md border bg-transparent text-xl font-semibold transition-[border-color,box-shadow]',
+                isActive
+                    ? 'border-ring ring-[3px] ring-ring/50'
+                    : 'border-input',
+            )}
+        >
+            {char || (hasFakeCaret && (
+                <span className="inline-block w-0.5 h-6 bg-primary animate-[wsms-blink_1s_step-end_infinite]" />
+            ))}
         </div>
     );
 }
@@ -14,13 +24,13 @@ export function OtpInput({ length = 6, onComplete, disabled }) {
             maxLength={length}
             onComplete={onComplete}
             disabled={disabled}
-            containerClassName="wsms-otp-container"
+            containerClassName="flex justify-center"
             render={({ slots }) => (
-                <div class="wsms-otp-group">
+                <div className="flex items-center gap-1.5">
                     {slots.slice(0, 3).map((slot, i) => (
                         <Slot key={i} {...slot} />
                     ))}
-                    <span class="wsms-otp-separator">&ndash;</span>
+                    <span className="text-lg text-muted-foreground mx-0.5">&ndash;</span>
                     {slots.slice(3).map((slot, i) => (
                         <Slot key={i + 3} {...slot} />
                     ))}

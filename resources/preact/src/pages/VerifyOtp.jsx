@@ -4,7 +4,12 @@ import { api } from '../api/client';
 import { authError, authLoading, challengeToken, challengeMeta, pendingMfa, clearAuth } from '../signals/auth';
 import { handleAuthResponse, extractError } from '../utils/auth';
 import { authUrl } from '../utils/urls';
-import { Alert } from '../components/Alert';
+import { AuthLayout } from '../layouts/AuthLayout';
+import { Alert } from '../components/ui/Alert';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Label } from '../components/ui/Label';
+import { AuthLink } from '../components/AuthLink';
 import { OtpInput } from '../components/OtpInput';
 
 export function VerifyOtp() {
@@ -61,29 +66,26 @@ export function VerifyOtp() {
 
     if (!token) return null;
 
+    const subtitle = challengeMeta.value?.masked_identifier
+        ? `Enter the code sent to ${challengeMeta.value.masked_identifier}`
+        : pendingMfa.value
+            ? 'Enter your verification code to continue.'
+            : undefined;
+
     return (
-        <div class="wsms-page">
-            <h1 class="wsms-title">Verify Your Identity</h1>
-
-            {challengeMeta.value?.masked_identifier && (
-                <p class="wsms-subtitle">
-                    Enter the code sent to <strong>{challengeMeta.value.masked_identifier}</strong>
-                </p>
-            )}
-
-            {pendingMfa.value && !challengeMeta.value?.masked_identifier && (
-                <p class="wsms-subtitle">Enter your verification code to continue.</p>
-            )}
-
-            <Alert type="error" message={authError.value} onDismiss={() => (authError.value = null)} />
+        <AuthLayout
+            title="Verify Your Identity"
+            subtitle={subtitle}
+            footer={<AuthLink href={authUrl('/login')} onClick={() => clearAuth()}>Back to login</AuthLink>}
+        >
+            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
 
             {useBackup ? (
-                <form onSubmit={handleBackupSubmit} class="wsms-form">
-                    <div class="wsms-field">
-                        <label class="wsms-label" for="wsms-backup">Backup Code</label>
-                        <input
+                <form onSubmit={handleBackupSubmit} className="space-y-4">
+                    <div className="space-y-2">
+                        <Label for="wsms-backup">Backup Code</Label>
+                        <Input
                             id="wsms-backup"
-                            class="wsms-input"
                             type="text"
                             value={backupCode}
                             onInput={(e) => setBackupCode(e.target.value)}
@@ -92,41 +94,35 @@ export function VerifyOtp() {
                             autoComplete="one-time-code"
                         />
                     </div>
-                    <button class="wsms-btn wsms-btn--primary" type="submit" disabled={authLoading.value || !backupCode.trim()}>
+                    <Button className="w-full" type="submit" disabled={authLoading.value || !backupCode.trim()}>
                         {authLoading.value ? 'Verifying\u2026' : 'Verify Backup Code'}
-                    </button>
-                    <button type="button" class="wsms-btn wsms-btn--text" onClick={() => setUseBackup(false)}>
+                    </Button>
+                    <Button variant="link" type="button" className="w-full" onClick={() => setUseBackup(false)}>
                         Use OTP instead
-                    </button>
+                    </Button>
                 </form>
             ) : (
-                <div class="wsms-form">
+                <div className="space-y-4">
                     <OtpInput onComplete={handleVerify} disabled={authLoading.value} />
 
-                    <div class="wsms-otp-actions">
-                        <button
+                    <div className="flex justify-center gap-4">
+                        <Button
+                            variant="link"
                             type="button"
-                            class="wsms-btn wsms-btn--text"
                             onClick={handleResend}
                             disabled={resendCooldown > 0}
                         >
                             {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend code'}
-                        </button>
+                        </Button>
 
                         {pendingMfa.value && (
-                            <button type="button" class="wsms-btn wsms-btn--text" onClick={() => setUseBackup(true)}>
+                            <Button variant="link" type="button" onClick={() => setUseBackup(true)}>
                                 Use backup code
-                            </button>
+                            </Button>
                         )}
                     </div>
                 </div>
             )}
-
-            <div class="wsms-links">
-                <a href={authUrl('/login')} class="wsms-link" onClick={() => clearAuth()}>
-                    Back to login
-                </a>
-            </div>
-        </div>
+        </AuthLayout>
     );
 }

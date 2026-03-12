@@ -3,7 +3,12 @@ import { api } from '../api/client';
 import { authError, authLoading } from '../signals/auth';
 import { extractError } from '../utils/auth';
 import { authUrl } from '../utils/urls';
-import { Alert } from '../components/Alert';
+import { AuthLayout } from '../layouts/AuthLayout';
+import { Alert } from '../components/ui/Alert';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Label } from '../components/ui/Label';
+import { AuthLink } from '../components/AuthLink';
 
 export function ForgotPassword() {
     const [email, setEmail] = useState('');
@@ -25,20 +30,20 @@ export function ForgotPassword() {
     }
 
     return (
-        <div class="wsms-page">
-            <h1 class="wsms-title">Forgot Password</h1>
-            <p class="wsms-subtitle">Enter your email and we'll send you a reset link.</p>
-
-            <Alert type="error" message={authError.value} onDismiss={() => (authError.value = null)} />
-            <Alert type="success" message={success} />
+        <AuthLayout
+            title="Forgot Password"
+            subtitle="Enter your email and we'll send you a reset link."
+            footer={<AuthLink href={authUrl('/login')}>Back to login</AuthLink>}
+        >
+            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
+            <Alert variant="success" message={success} className="mb-4" />
 
             {!success && (
-                <form onSubmit={handleSubmit} class="wsms-form">
-                    <div class="wsms-field">
-                        <label class="wsms-label" for="wsms-forgot-email">Email</label>
-                        <input
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="space-y-2">
+                        <Label for="wsms-forgot-email">Email</Label>
+                        <Input
                             id="wsms-forgot-email"
-                            class="wsms-input"
                             type="email"
                             value={email}
                             onInput={(e) => setEmail(e.target.value)}
@@ -47,15 +52,11 @@ export function ForgotPassword() {
                             autoComplete="email"
                         />
                     </div>
-                    <button class="wsms-btn wsms-btn--primary" type="submit" disabled={authLoading.value}>
+                    <Button className="w-full" type="submit" disabled={authLoading.value}>
                         {authLoading.value ? 'Sending\u2026' : 'Send Reset Link'}
-                    </button>
+                    </Button>
                 </form>
             )}
-
-            <div class="wsms-links">
-                <a href={authUrl('/login')} class="wsms-link">Back to login</a>
-            </div>
-        </div>
+        </AuthLayout>
     );
 }

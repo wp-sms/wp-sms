@@ -8,12 +8,28 @@ class AuthRouter
 {
     private ?array $settings = null;
 
+    /** @var array<string, string> Route → page title mapping. */
+    private static array $routeTitles = [
+        ''                => 'Account',
+        'login'           => 'Sign In',
+        'register'        => 'Create Account',
+        'forgot-password' => 'Forgot Password',
+        'reset-password'  => 'Reset Password',
+        'verify'          => 'Verify',
+        'verify-magic-link' => 'Magic Link',
+        'verify-email'    => 'Email Verification',
+        'profile'         => 'Profile',
+        'change-password' => 'Change Password',
+        'security'        => 'Security',
+    ];
+
     public function registerHooks(): void
     {
         add_action('init', [$this, 'addRewriteRules']);
         add_filter('query_vars', [$this, 'registerQueryVars']);
         add_filter('template_include', [$this, 'loadTemplate']);
         add_action('wp_enqueue_scripts', [$this, 'enqueueAssets']);
+        add_action('wp_enqueue_scripts', [$this, 'dequeueNonPluginAssets'], 999);
         add_action('login_init', [$this, 'maybeRedirectLogin']);
     }
 
@@ -52,6 +68,9 @@ class AuthRouter
             return $template;
         }
 
+        // Pass page title to template.
+        $GLOBALS['wsmsPageTitle'] = $this->getPageTitle();
+
         return dirname(__DIR__, 2) . '/views/auth/app.php';
     }
 
@@ -65,16 +84,9 @@ class AuthRouter
         $version = defined('WP_SMS_VERSION') ? WP_SMS_VERSION : '8.0';
 
         wp_enqueue_style(
-            'wsms-auth-font',
-            'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap',
-            [],
-            null,
-        );
-
-        wp_enqueue_style(
             'wsms-auth-style',
             $pluginUrl . 'public/auth/style.css',
-            ['wsms-auth-font'],
+            [],
             $version,
         );
 
@@ -95,6 +107,37 @@ class AuthRouter
         ]);
     }
 
+    /**
+     * Dequeue all non-WSMS styles and scripts on auth pages for a clean standalone experience.
+     */
+    public function dequeueNonPluginAssets(): void
+    {
+        if (!get_query_var('wsms_auth_page')) {
+            return;
+        }
+
+        global $wp_styles, $wp_scripts;
+
+        $allowedStyles = ['wsms-auth-style'];
+        $allowedScripts = ['wsms-auth', 'wp-hooks'];
+
+        if ($wp_styles instanceof \WP_Styles) {
+            foreach ($wp_styles->queue as $handle) {
+                if (!in_array($handle, $allowedStyles, true)) {
+                    wp_dequeue_style($handle);
+                }
+            }
+        }
+
+        if ($wp_scripts instanceof \WP_Scripts) {
+            foreach ($wp_scripts->queue as $handle) {
+                if (!in_array($handle, $allowedScripts, true)) {
+                    wp_dequeue_script($handle);
+                }
+            }
+        }
+    }
+
     public function maybeRedirectLogin(): void
     {
         $settings = $this->getSettings();
@@ -107,6 +150,15 @@ class AuthRouter
 
         wp_redirect($loginUrl);
         exit;
+    }
+
+    private function getPageTitle(): string
+    {
+        $route = get_query_var('wsms_auth_route', '');
+        // Strip query string and trailing slash.
+        $route = trim(strtok($route, '?'), '/');
+
+        return self::$routeTitles[$route] ?? 'Account';
     }
 
     private function getBaseUrl(): string

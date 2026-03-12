@@ -4,7 +4,12 @@ import { registrationFields } from '../signals/config';
 import { authError, authLoading } from '../signals/auth';
 import { extractError } from '../utils/auth';
 import { authUrl } from '../utils/urls';
-import { Alert } from '../components/Alert';
+import { AuthLayout } from '../layouts/AuthLayout';
+import { Alert } from '../components/ui/Alert';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Label } from '../components/ui/Label';
+import { AuthLink } from '../components/AuthLink';
 import { PhoneInput } from '../components/PhoneInput';
 
 export function Register() {
@@ -46,29 +51,28 @@ export function Register() {
 
     if (success) {
         return (
-            <div class="wsms-page">
-                <h1 class="wsms-title">Account Created</h1>
-                <Alert type="success" message={success} />
-                <div class="wsms-links">
-                    <a href={authUrl('/login')} class="wsms-link">Back to login</a>
-                </div>
-            </div>
+            <AuthLayout
+                title="Account Created"
+                footer={<AuthLink href={authUrl('/login')}>Back to login</AuthLink>}
+            >
+                <Alert variant="success" message={success} />
+            </AuthLayout>
         );
     }
 
     return (
-        <div class="wsms-page">
-            <h1 class="wsms-title">Create Account</h1>
+        <AuthLayout
+            title="Create Account"
+            footer={<AuthLink href={authUrl('/login')}>Already have an account? Sign in</AuthLink>}
+        >
+            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
 
-            <Alert type="error" message={authError.value} onDismiss={() => (authError.value = null)} />
-
-            <form onSubmit={handleSubmit} class="wsms-form">
+            <form onSubmit={handleSubmit} className="space-y-4">
                 {fields.includes('username') && (
-                    <div class="wsms-field">
-                        <label class="wsms-label" for="wsms-reg-username">Username</label>
-                        <input
+                    <div className="space-y-2">
+                        <Label for="wsms-reg-username">Username</Label>
+                        <Input
                             id="wsms-reg-username"
-                            class="wsms-input"
                             type="text"
                             value={form.username}
                             onInput={(e) => updateField('username', e.target.value)}
@@ -79,11 +83,10 @@ export function Register() {
                 )}
 
                 {fields.includes('display_name') && (
-                    <div class="wsms-field">
-                        <label class="wsms-label" for="wsms-reg-name">Display Name</label>
-                        <input
+                    <div className="space-y-2">
+                        <Label for="wsms-reg-name">Display Name</Label>
+                        <Input
                             id="wsms-reg-name"
-                            class="wsms-input"
                             type="text"
                             value={form.display_name}
                             onInput={(e) => updateField('display_name', e.target.value)}
@@ -93,11 +96,10 @@ export function Register() {
                     </div>
                 )}
 
-                <div class="wsms-field">
-                    <label class="wsms-label" for="wsms-reg-email">Email</label>
-                    <input
+                <div className="space-y-2">
+                    <Label for="wsms-reg-email">Email</Label>
+                    <Input
                         id="wsms-reg-email"
-                        class="wsms-input"
                         type="email"
                         value={form.email}
                         onInput={(e) => updateField('email', e.target.value)}
@@ -108,8 +110,8 @@ export function Register() {
                 </div>
 
                 {fields.includes('phone') && (
-                    <div class="wsms-field">
-                        <label class="wsms-label">Phone Number</label>
+                    <div className="space-y-2">
+                        <Label>Phone Number</Label>
                         <PhoneInput
                             value={form.phone}
                             onChange={(val) => updateField('phone', val)}
@@ -119,11 +121,10 @@ export function Register() {
                 )}
 
                 {fields.includes('password') && (
-                    <div class="wsms-field">
-                        <label class="wsms-label" for="wsms-reg-password">Password</label>
-                        <input
+                    <div className="space-y-2">
+                        <Label for="wsms-reg-password">Password</Label>
+                        <Input
                             id="wsms-reg-password"
-                            class="wsms-input"
                             type="password"
                             value={form.password}
                             onInput={(e) => updateField('password', e.target.value)}
@@ -134,14 +135,10 @@ export function Register() {
                     </div>
                 )}
 
-                <button class="wsms-btn wsms-btn--primary" type="submit" disabled={authLoading.value}>
+                <Button className="w-full" type="submit" disabled={authLoading.value}>
                     {authLoading.value ? 'Creating account\u2026' : 'Create Account'}
-                </button>
+                </Button>
             </form>
-
-            <div class="wsms-links">
-                <a href={authUrl('/login')} class="wsms-link">Already have an account? Sign in</a>
-            </div>
-        </div>
+        </AuthLayout>
     );
 }

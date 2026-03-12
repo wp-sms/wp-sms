@@ -7,6 +7,7 @@ use WSms\Auth\AccountManager;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthRouter;
 use WSms\Auth\AuthSession;
+use WSms\Auth\AuthShortcode;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\RateLimiter;
 
@@ -61,11 +62,16 @@ class AuthServiceProvider implements ServiceProvider
         $container->register('auth.router', function () {
             return new AuthRouter();
         });
+
+        $container->register('auth.shortcode', function () {
+            return new AuthShortcode();
+        });
     }
 
     /** {@inheritDoc} */
     public function boot(ServiceContainer $container): void
     {
         $container->get('auth.router')->registerHooks();
+        $container->get('auth.shortcode')->registerHooks();
     }
 }

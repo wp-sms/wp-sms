@@ -4,8 +4,11 @@ import { currentUser } from '../signals/auth';
 import { loadCurrentUser, refreshUser, enrolledFactors } from '../signals/user';
 import { useAuthGuard } from '../hooks/useAuthGuard';
 import { extractError } from '../utils/auth';
-import { authUrl } from '../utils/urls';
-import { Alert } from '../components/Alert';
+import { AccountLayout } from '../layouts/AccountLayout';
+import { Alert } from '../components/ui/Alert';
+import { Button } from '../components/ui/Button';
+import { Spinner } from '../components/ui/Spinner';
+import { Separator } from '../components/ui/Separator';
 import { MfaFactorCard } from '../components/MfaFactorCard';
 import { BackupCodesDisplay } from '../components/BackupCodesDisplay';
 
@@ -101,22 +104,19 @@ export function Security() {
 
     if (loading) {
         return (
-            <div class="wsms-page">
-                <div class="wsms-loader">
-                    <div class="wsms-spinner" />
-                    <p class="wsms-subtitle">Loading security settings\u2026</p>
+            <AccountLayout title="Security" currentPath="/security">
+                <div className="flex flex-col items-center gap-3 py-8">
+                    <Spinner className="size-8" />
+                    <p className="text-sm text-muted-foreground">Loading security settings\u2026</p>
                 </div>
-            </div>
+            </AccountLayout>
         );
     }
 
     return (
-        <div class="wsms-page">
-            <h1 class="wsms-title">Security</h1>
-            <p class="wsms-subtitle">Manage your multi-factor authentication methods</p>
-
-            <Alert type="error" message={error} onDismiss={() => setError('')} />
-            <Alert type="success" message={success} />
+        <AccountLayout title="Security" subtitle="Manage your multi-factor authentication methods" currentPath="/security">
+            <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="mb-4" />
+            <Alert variant="success" message={success} className="mb-4" />
 
             {backupCodes && (
                 <BackupCodesDisplay
@@ -125,7 +125,7 @@ export function Security() {
                 />
             )}
 
-            <div class="wsms-factor-list">
+            <div className="space-y-3">
                 {availableMethods.map((method) => (
                     <MfaFactorCard
                         key={method.id}
@@ -140,26 +140,19 @@ export function Security() {
             </div>
 
             {isEnrolled('backup_codes') && (
-                <div class="wsms-section">
-                    <h2 class="wsms-section-title">Backup Codes</h2>
-                    <p class="wsms-text-secondary">
+                <div className="mt-6 space-y-3">
+                    <Separator />
+                    <h3 className="text-base font-semibold">Backup Codes</h3>
+                    <p className="text-sm text-muted-foreground">
                         {getFactorInfo('backup_codes')?.remaining_codes != null
                             ? `${getFactorInfo('backup_codes').remaining_codes} codes remaining`
                             : 'Backup codes are enabled'}
                     </p>
-                    <button
-                        type="button"
-                        class="wsms-btn wsms-btn--secondary"
-                        onClick={handleRegenerateBackupCodes}
-                    >
+                    <Button variant="outline" onClick={handleRegenerateBackupCodes}>
                         Regenerate Backup Codes
-                    </button>
+                    </Button>
                 </div>
             )}
-
-            <div class="wsms-links">
-                <a href={authUrl('/')} class="wsms-link">Back to account</a>
-            </div>
-        </div>
+        </AccountLayout>
     );
 }

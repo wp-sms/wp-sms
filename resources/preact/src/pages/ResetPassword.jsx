@@ -3,7 +3,12 @@ import { api } from '../api/client';
 import { authError, authLoading } from '../signals/auth';
 import { extractError } from '../utils/auth';
 import { authUrl, getQueryParam } from '../utils/urls';
-import { Alert } from '../components/Alert';
+import { AuthLayout } from '../layouts/AuthLayout';
+import { Alert } from '../components/ui/Alert';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Label } from '../components/ui/Label';
+import { AuthLink } from '../components/AuthLink';
 
 export function ResetPassword() {
     const token = getQueryParam('token');
@@ -36,40 +41,35 @@ export function ResetPassword() {
 
     if (!token) {
         return (
-            <div class="wsms-page">
-                <h1 class="wsms-title">Invalid Link</h1>
-                <Alert type="error" message="No reset token found. Please request a new password reset." />
-                <div class="wsms-links">
-                    <a href={authUrl('/forgot-password')} class="wsms-link">Request reset link</a>
-                </div>
-            </div>
+            <AuthLayout
+                title="Invalid Link"
+                footer={<AuthLink href={authUrl('/forgot-password')}>Request reset link</AuthLink>}
+            >
+                <Alert variant="destructive" message="No reset token found. Please request a new password reset." />
+            </AuthLayout>
         );
     }
 
     if (success) {
         return (
-            <div class="wsms-page">
-                <h1 class="wsms-title">Password Reset</h1>
-                <Alert type="success" message={success} />
-                <div class="wsms-links">
-                    <a href={authUrl('/login')} class="wsms-link">Sign in with new password</a>
-                </div>
-            </div>
+            <AuthLayout
+                title="Password Reset"
+                footer={<AuthLink href={authUrl('/login')}>Sign in with new password</AuthLink>}
+            >
+                <Alert variant="success" message={success} />
+            </AuthLayout>
         );
     }
 
     return (
-        <div class="wsms-page">
-            <h1 class="wsms-title">Reset Password</h1>
+        <AuthLayout title="Reset Password">
+            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
 
-            <Alert type="error" message={authError.value} onDismiss={() => (authError.value = null)} />
-
-            <form onSubmit={handleSubmit} class="wsms-form">
-                <div class="wsms-field">
-                    <label class="wsms-label" for="wsms-new-pass">New Password</label>
-                    <input
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                    <Label for="wsms-new-pass">New Password</Label>
+                    <Input
                         id="wsms-new-pass"
-                        class="wsms-input"
                         type="password"
                         value={password}
                         onInput={(e) => setPassword(e.target.value)}
@@ -78,11 +78,10 @@ export function ResetPassword() {
                         autoComplete="new-password"
                     />
                 </div>
-                <div class="wsms-field">
-                    <label class="wsms-label" for="wsms-confirm-pass">Confirm Password</label>
-                    <input
+                <div className="space-y-2">
+                    <Label for="wsms-confirm-pass">Confirm Password</Label>
+                    <Input
                         id="wsms-confirm-pass"
-                        class="wsms-input"
                         type="password"
                         value={confirm}
                         onInput={(e) => setConfirm(e.target.value)}
@@ -91,10 +90,10 @@ export function ResetPassword() {
                         autoComplete="new-password"
                     />
                 </div>
-                <button class="wsms-btn wsms-btn--primary" type="submit" disabled={authLoading.value}>
+                <Button className="w-full" type="submit" disabled={authLoading.value}>
                     {authLoading.value ? 'Resetting\u2026' : 'Reset Password'}
-                </button>
+                </Button>
             </form>
-        </div>
+        </AuthLayout>
     );
 }

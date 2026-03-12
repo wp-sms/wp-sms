@@ -3,7 +3,8 @@ import { currentUser } from '../signals/auth';
 import { loadCurrentUser, userLoading } from '../signals/user';
 import { useAuthGuard } from '../hooks/useAuthGuard';
 import { authUrl } from '../utils/urls';
-import { logout } from '../utils/auth';
+import { AccountLayout } from '../layouts/AccountLayout';
+import { Spinner } from '../components/ui/Spinner';
 
 export function Account() {
     const authed = useAuthGuard();
@@ -16,56 +17,60 @@ export function Account() {
 
     if (userLoading.value && !currentUser.value) {
         return (
-            <div class="wsms-page">
-                <div class="wsms-loader">
-                    <div class="wsms-spinner" />
-                    <p class="wsms-subtitle">Loading your account\u2026</p>
+            <AccountLayout title="Account" currentPath="/">
+                <div className="flex flex-col items-center gap-3 py-8">
+                    <Spinner className="size-8" />
+                    <p className="text-sm text-muted-foreground">Loading your account\u2026</p>
                 </div>
-            </div>
+            </AccountLayout>
         );
     }
 
     const user = currentUser.value;
     if (!user) return null;
 
+    const navItems = [
+        {
+            href: authUrl('/profile'),
+            icon: '\u{1F464}',
+            title: 'Profile',
+            description: 'Update your name, email, and phone number',
+        },
+        {
+            href: authUrl('/security'),
+            icon: '\u{1F6E1}\u{FE0F}',
+            title: 'Security',
+            description: user.mfa_enabled
+                ? `MFA enabled (${user.enrolled_factors.length} factor${user.enrolled_factors.length !== 1 ? 's' : ''})`
+                : 'Set up multi-factor authentication',
+        },
+        {
+            href: authUrl('/change-password'),
+            icon: '\u{1F511}',
+            title: 'Change Password',
+            description: 'Update your password',
+        },
+    ];
+
     return (
-        <div class="wsms-page">
-            <h1 class="wsms-title">Welcome, {user.display_name || user.username}</h1>
-            <p class="wsms-subtitle">{user.email}</p>
-
-            <nav class="wsms-account-nav">
-                <a href={authUrl('/profile')} class="wsms-account-nav__item">
-                    <span class="wsms-account-nav__icon">{'\u{1F464}'}</span>
-                    <div>
-                        <strong>Profile</strong>
-                        <p>Update your name, email, and phone number</p>
-                    </div>
-                </a>
-                <a href={authUrl('/security')} class="wsms-account-nav__item">
-                    <span class="wsms-account-nav__icon">{'\u{1F6E1}\u{FE0F}'}</span>
-                    <div>
-                        <strong>Security</strong>
-                        <p>
-                            {user.mfa_enabled
-                                ? `MFA enabled (${user.enrolled_factors.length} factor${user.enrolled_factors.length !== 1 ? 's' : ''})`
-                                : 'Set up multi-factor authentication'}
-                        </p>
-                    </div>
-                </a>
-                <a href={authUrl('/change-password')} class="wsms-account-nav__item">
-                    <span class="wsms-account-nav__icon">{'\u{1F511}'}</span>
-                    <div>
-                        <strong>Change Password</strong>
-                        <p>Update your password</p>
-                    </div>
-                </a>
-            </nav>
-
-            <div class="wsms-links">
-                <button type="button" class="wsms-btn wsms-btn--text wsms-btn--danger" onClick={logout}>
-                    Sign Out
-                </button>
+        <AccountLayout title={`Welcome, ${user.display_name || user.username}`} subtitle={user.email} currentPath="/">
+            <div className="space-y-3">
+                {navItems.map((item) => (
+                    <a
+                        key={item.href}
+                        href={item.href}
+                        className="flex items-center gap-4 rounded-lg border bg-card p-4 no-underline text-foreground transition-colors hover:border-primary hover:shadow-sm"
+                    >
+                        <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-muted text-lg">
+                            {item.icon}
+                        </span>
+                        <div>
+                            <div className="text-sm font-semibold">{item.title}</div>
+                            <div className="text-xs text-muted-foreground">{item.description}</div>
+                        </div>
+                    </a>
+                ))}
             </div>
-        </div>
+        </AccountLayout>
     );
 }

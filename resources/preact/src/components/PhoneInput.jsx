@@ -1,4 +1,6 @@
 import { useState, useRef } from 'preact/hooks';
+import { Input } from './ui/Input';
+import { cn } from '@/utils/cn';
 
 const COUNTRIES = [
     { code: 'US', dial: '1',  flag: '\u{1F1FA}\u{1F1F8}' },
@@ -51,15 +53,14 @@ export function PhoneInput({ value = '', onChange, disabled }) {
         onChange(`+${country.dial}${number}`);
     }
 
-    // Extract the number part from value if it starts with the dial code
     const numberPart = value.startsWith(`+${country.dial}`)
         ? value.slice(country.dial.length + 1)
         : '';
 
     return (
-        <div class="wsms-phone-input">
+        <div className="flex gap-2">
             <select
-                class="wsms-phone-input__country"
+                className="h-9 shrink-0 w-[100px] rounded-md border border-input bg-transparent px-2 text-sm outline-none transition-[color,box-shadow] cursor-pointer focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:opacity-50 disabled:cursor-not-allowed appearance-auto"
                 value={country.code}
                 onChange={handleCountryChange}
                 disabled={disabled}
@@ -71,10 +72,9 @@ export function PhoneInput({ value = '', onChange, disabled }) {
                     </option>
                 ))}
             </select>
-            <input
+            <Input
                 ref={inputRef}
                 type="tel"
-                class="wsms-input wsms-phone-input__number"
                 value={numberPart}
                 onInput={handleNumberChange}
                 placeholder="Phone number"
