@@ -192,18 +192,25 @@ function ChannelContent({
       {/* Code Settings */}
       <div className="space-y-4">
         <Label className="text-sm font-medium">Code Settings</Label>
-        <Field>
-          <FieldLabel htmlFor={`${channelId}-sheet-code-length`}>Code Length</FieldLabel>
-          <Input
-            id={`${channelId}-sheet-code-length`}
-            type="number"
-            min={4}
-            max={8}
-            value={settings.code_length}
-            onChange={(e) => onUpdate({ code_length: Number(e.target.value) })}
-          />
-          <FieldDescription>Number of digits in the OTP code (4-8)</FieldDescription>
-        </Field>
+        {settings.verification_methods?.includes('otp') && (
+          <Field>
+            <FieldLabel>Code Length</FieldLabel>
+            <RadioGroup
+              value={String(settings.code_length)}
+              onValueChange={(v) => onUpdate({ code_length: Number(v) })}
+              className="flex gap-4"
+            >
+              <label className="flex items-center gap-2 cursor-pointer">
+                <RadioGroupItem value="4" />
+                <span className="text-sm">4 Digit</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <RadioGroupItem value="6" />
+                <span className="text-sm">6 Digit</span>
+              </label>
+            </RadioGroup>
+          </Field>
+        )}
         <Field>
           <FieldLabel htmlFor={`${channelId}-sheet-expiry`}>Expiry (seconds)</FieldLabel>
           <Input
