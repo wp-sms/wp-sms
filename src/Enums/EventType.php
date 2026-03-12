@@ -24,6 +24,7 @@ enum EventType: string
     case MfaAdminBypass = 'mfa_admin_bypass';
     case BackupCodeUsed = 'backup_code_used';
     case BackupCodesRegenerated = 'backup_codes_regenerated';
+    case PhoneVerified = 'phone_verified';
     case AccountLocked = 'account_locked';
     case AccountUnlocked = 'account_unlocked';
 }

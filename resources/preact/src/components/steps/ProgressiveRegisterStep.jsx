@@ -3,8 +3,11 @@ import { api } from '../../api/client';
 import {
     authError,
     authLoading,
+    authStep,
     identifyResult,
     enteredIdentifier,
+    registrationToken,
+    pendingVerifications,
     resetIdentifyFlow,
 } from '../../signals/auth';
 import { extractError } from '../../utils/auth';
@@ -46,7 +49,13 @@ export function ProgressiveRegisterStep() {
         try {
             const res = await api.post('/auth/register', body);
             if (res.success) {
-                setSuccess(res.message || 'Account created successfully.');
+                if (res.pending_verifications?.length > 0) {
+                    registrationToken.value = res.registration_token;
+                    pendingVerifications.value = res.pending_verifications;
+                    authStep.value = 'register_verify';
+                } else {
+                    setSuccess(res.message || 'Account created successfully.');
+                }
             }
         } catch (err) {
             authError.value = extractError(err);

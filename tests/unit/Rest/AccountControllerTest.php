@@ -5,6 +5,7 @@ namespace WSms\Tests\Unit\Rest;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Auth\AccountManager;
+use WSms\Auth\AuthSession;
 use WSms\Auth\RateLimiter;
 use WSms\Rest\AccountController;
 
@@ -13,15 +14,18 @@ class AccountControllerTest extends TestCase
     private AccountController $controller;
     private MockObject&AccountManager $accountManager;
     private MockObject&RateLimiter $rateLimiter;
+    private MockObject&AuthSession $authSession;
 
     protected function setUp(): void
     {
         $this->accountManager = $this->createMock(AccountManager::class);
         $this->rateLimiter = $this->createMock(RateLimiter::class);
+        $this->authSession = $this->createMock(AuthSession::class);
 
         $this->controller = new AccountController(
             $this->accountManager,
             $this->rateLimiter,
+            $this->authSession,
         );
 
         // Default: no rate limiting.
@@ -79,7 +83,7 @@ class AccountControllerTest extends TestCase
             'allowed' => false, 'remaining' => 0, 'retry_after' => 45,
         ]);
 
-        $controller = new AccountController($this->accountManager, $this->rateLimiter);
+        $controller = new AccountController($this->accountManager, $this->rateLimiter, $this->authSession);
 
         $request = new \WP_REST_Request('POST', '/auth/register');
         $request->set_param('email', 'test@example.com');

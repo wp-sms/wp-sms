@@ -479,6 +479,7 @@ if (!class_exists('WP_Error')) {
 if (!class_exists('WP_REST_Request')) {
     class WP_REST_Request {
         private array $params = [];
+        private array $headers = [];
 
         public function __construct(string $method = 'GET', string $route = '') {
         }
@@ -493,6 +494,14 @@ if (!class_exists('WP_REST_Request')) {
 
         public function get_params(): array {
             return $this->params;
+        }
+
+        public function set_header(string $key, string $value): void {
+            $this->headers[strtolower($key)] = $value;
+        }
+
+        public function get_header(string $key): ?string {
+            return $this->headers[strtolower($key)] ?? null;
         }
     }
 }

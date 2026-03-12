@@ -56,6 +56,7 @@ class AuthServiceProvider implements ServiceProvider
                 $container->get('audit.logger'),
                 $container->get('mfa.otp_generator'),
                 $container->get('mfa.manager'),
+                $container->get('auth.session'),
             );
         });
 

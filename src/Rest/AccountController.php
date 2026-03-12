@@ -5,6 +5,7 @@ namespace WSms\Rest;
 use WP_REST_Request;
 use WP_REST_Response;
 use WSms\Auth\AccountManager;
+use WSms\Auth\AuthSession;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\ValueObjects\AuthResult;
 
@@ -17,6 +18,7 @@ class AccountController
     public function __construct(
         private AccountManager $accountManager,
         private RateLimiter $rateLimiter,
+        private AuthSession $authSession,
     ) {
     }
 
@@ -92,6 +94,33 @@ class AccountController
             'methods'             => 'POST',
             'callback'            => [$this, 'handleLogout'],
             'permission_callback' => [$this, 'checkAuthenticated'],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/auth/register/verify-phone', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'handleVerifyPhone'],
+            'permission_callback' => '__return_true',
+            'args'                => [
+                'code' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/auth/register/resend-phone', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'handleResendPhone'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/auth/register/resend-email', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'handleResendEmail'],
+            'permission_callback' => '__return_true',
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/auth/register/status', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'handleVerificationStatus'],
+            'permission_callback' => '__return_true',
         ]);
     }
 
@@ -206,6 +235,108 @@ class AccountController
             'success' => true,
             'message' => 'Logged out successfully.',
         ]);
+    }
+
+    public function handleVerifyPhone(WP_REST_Request $request): WP_REST_Response
+    {
+        $rl = $this->rateLimiter->check('register_verify_phone', 10, 60);
+
+        if (!$rl['allowed']) {
+            return $this->rateLimitedResponse($rl['retry_after']);
+        }
+
+        $session = $this->validateRegistrationToken($request);
+
+        if (!$session) {
+            return $this->invalidTokenResponse();
+        }
+
+        $result = $this->accountManager->verifyPhone($session['user_id'], $request->get_param('code'));
+
+        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+    }
+
+    public function handleResendPhone(WP_REST_Request $request): WP_REST_Response
+    {
+        $rl = $this->rateLimiter->check('register_resend_phone', 3, 60);
+
+        if (!$rl['allowed']) {
+            return $this->rateLimitedResponse($rl['retry_after']);
+        }
+
+        $session = $this->validateRegistrationToken($request);
+
+        if (!$session) {
+            return $this->invalidTokenResponse();
+        }
+
+        $result = $this->accountManager->resendPhoneVerification($session['user_id']);
+
+        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+    }
+
+    public function handleResendEmail(WP_REST_Request $request): WP_REST_Response
+    {
+        $rl = $this->rateLimiter->check('register_resend_email', 3, 60);
+
+        if (!$rl['allowed']) {
+            return $this->rateLimitedResponse($rl['retry_after']);
+        }
+
+        $session = $this->validateRegistrationToken($request);
+
+        if (!$session) {
+            return $this->invalidTokenResponse();
+        }
+
+        $result = $this->accountManager->resendEmailVerification($session['user_id']);
+
+        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+    }
+
+    public function handleVerificationStatus(WP_REST_Request $request): WP_REST_Response
+    {
+        $rl = $this->rateLimiter->check('register_status', 20, 60);
+
+        if (!$rl['allowed']) {
+            return $this->rateLimitedResponse($rl['retry_after']);
+        }
+
+        $session = $this->validateRegistrationToken($request);
+
+        if (!$session) {
+            return $this->invalidTokenResponse();
+        }
+
+        $result = $this->accountManager->getVerificationStatus($session['user_id']);
+
+        return new WP_REST_Response(array_merge(['success' => true], $result));
+    }
+
+    private function invalidTokenResponse(): WP_REST_Response
+    {
+        return new WP_REST_Response([
+            'success' => false,
+            'error'   => 'invalid_token',
+            'message' => 'Invalid or expired registration token.',
+        ], 401);
+    }
+
+    private function validateRegistrationToken(WP_REST_Request $request): ?array
+    {
+        $token = $request->get_header('X-Registration-Token');
+
+        if (empty($token)) {
+            return null;
+        }
+
+        $session = $this->authSession->validate($token);
+
+        if (!$session || ($session['stage'] ?? '') !== 'registration_verify') {
+            return null;
+        }
+
+        return $session;
     }
 
     private function rateLimitedResponse(int $retryAfter): WP_REST_Response

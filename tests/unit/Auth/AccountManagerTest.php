@@ -6,6 +6,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountManager;
+use WSms\Auth\AuthSession;
 use WSms\Mfa\MfaManager;
 use WSms\Mfa\OtpGenerator;
 
@@ -15,21 +16,25 @@ class AccountManagerTest extends TestCase
     private MockObject&AuditLogger $auditLogger;
     private MockObject&OtpGenerator $otpGenerator;
     private MockObject&MfaManager $mfaManager;
+    private MockObject&AuthSession $authSession;
 
     protected function setUp(): void
     {
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->otpGenerator = $this->createMock(OtpGenerator::class);
         $this->mfaManager = $this->createMock(MfaManager::class);
+        $this->authSession = $this->createMock(AuthSession::class);
 
         $this->manager = new AccountManager(
             $this->auditLogger,
             $this->otpGenerator,
             $this->mfaManager,
+            $this->authSession,
         );
 
         $this->otpGenerator->method('generateToken')->willReturn('test-token-abc');
         $this->otpGenerator->method('hash')->willReturn('hashed-token-abc');
+        $this->authSession->method('create')->willReturn('reg-session-token');
 
         // Stub $wpdb.
         $wpdb = new \stdClass();

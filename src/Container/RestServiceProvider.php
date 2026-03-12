@@ -41,6 +41,7 @@ class RestServiceProvider implements ServiceProvider
             return new AccountController(
                 $container->get('auth.account_manager'),
                 $container->get('auth.rate_limiter'),
+                $container->get('auth.session'),
             );
         });
 

@@ -3,6 +3,7 @@
 namespace WSms\Auth;
 
 use WSms\Audit\AuditLogger;
+use WSms\Auth\AuthSession;
 use WSms\Enums\EnrollmentTiming;
 use WSms\Enums\EventType;
 use WSms\Mfa\MfaManager;
@@ -16,6 +17,7 @@ class AccountManager
         private AuditLogger $auditLogger,
         private OtpGenerator $otpGenerator,
         private MfaManager $mfaManager,
+        private AuthSession $authSession,
     ) {
     }
 
@@ -74,14 +76,20 @@ class AccountManager
             ];
         }
 
+        $pendingVerifications = [];
+
         // Store phone meta if provided.
         if (!empty($data['phone'])) {
-            update_user_meta($userId, 'wsms_phone', sanitize_text_field($data['phone']));
+            $phone = sanitize_text_field($data['phone']);
+            update_user_meta($userId, 'wsms_phone', $phone);
+            $this->createPhoneVerification($userId, $phone);
+            $pendingVerifications[] = ['type' => 'phone', 'status' => 'pending'];
         }
 
         // Generate and send email verification.
         if (!empty($email)) {
             $this->createVerification($userId, 'email_verify', $email);
+            $pendingVerifications[] = ['type' => 'email', 'status' => 'pending'];
         }
 
         $this->auditLogger->log(EventType::Register, 'success', $userId, [
@@ -93,6 +101,16 @@ class AccountManager
             'user_id' => $userId,
             'message' => 'Registration successful.',
         ];
+
+        // Create registration session token for pending verifications.
+        if (!empty($pendingVerifications)) {
+            $result['pending_verifications'] = $pendingVerifications;
+            $result['registration_token'] = $this->authSession->create(
+                $userId,
+                'registration',
+                'registration_verify',
+            );
+        }
 
         $timing = EnrollmentTiming::tryFrom($settings['enrollment_timing'] ?? 'voluntary');
 
@@ -262,6 +280,145 @@ class AccountManager
     }
 
     /**
+     * Verify a phone number using an OTP code.
+     *
+     * @return array{success: bool, error?: string, message: string}
+     */
+    public function verifyPhone(int $userId, string $code): array
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . 'wsms_verifications';
+
+        $verification = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$table} WHERE user_id = %d AND type = 'phone_verify' AND used_at IS NULL ORDER BY created_at DESC LIMIT 1",
+            $userId,
+        ));
+
+        if (!$verification) {
+            return ['success' => false, 'error' => 'no_verification', 'message' => 'No pending phone verification.'];
+        }
+
+        if (strtotime($verification->expires_at) < time()) {
+            return ['success' => false, 'error' => 'expired', 'message' => 'Verification code has expired.'];
+        }
+
+        if ((int) $verification->attempts >= (int) $verification->max_attempts) {
+            return ['success' => false, 'error' => 'max_attempts', 'message' => 'Too many attempts.'];
+        }
+
+        $wpdb->update($table, ['attempts' => (int) $verification->attempts + 1], ['id' => $verification->id]);
+
+        if (!$this->otpGenerator->verify($code, $verification->code)) {
+            return ['success' => false, 'error' => 'invalid_code', 'message' => 'Invalid verification code.'];
+        }
+
+        $wpdb->update($table, ['used_at' => gmdate('Y-m-d H:i:s')], ['id' => $verification->id]);
+        update_user_meta($userId, 'wsms_phone_verified', '1');
+
+        $this->auditLogger->log(EventType::PhoneVerified, 'success', $userId);
+
+        return ['success' => true, 'message' => 'Phone verified successfully.'];
+    }
+
+    /**
+     * Resend phone verification OTP.
+     *
+     * @return array{success: bool, error?: string, message: string}
+     */
+    public function resendPhoneVerification(int $userId): array
+    {
+        $phone = get_user_meta($userId, 'wsms_phone', true);
+
+        if (empty($phone)) {
+            return ['success' => false, 'error' => 'no_phone', 'message' => 'No phone number on file.'];
+        }
+
+        if ($this->isVerificationOnCooldown($userId, 'phone_verify')) {
+            return ['success' => false, 'error' => 'cooldown', 'message' => 'Please wait before requesting a new code.'];
+        }
+
+        $this->invalidateVerifications($userId, 'phone_verify');
+        $this->createPhoneVerification($userId, $phone);
+
+        return ['success' => true, 'message' => 'New verification code sent.'];
+    }
+
+    /**
+     * Resend email verification link.
+     *
+     * @return array{success: bool, error?: string, message: string}
+     */
+    public function resendEmailVerification(int $userId): array
+    {
+        $email = get_userdata($userId)?->user_email;
+
+        if (empty($email)) {
+            return ['success' => false, 'error' => 'no_email', 'message' => 'No email address on file.'];
+        }
+
+        if ($this->isVerificationOnCooldown($userId, 'email_verify')) {
+            return ['success' => false, 'error' => 'cooldown', 'message' => 'Please wait before requesting a new email.'];
+        }
+
+        $this->invalidateVerifications($userId, 'email_verify');
+        $this->createVerification($userId, 'email_verify', $email);
+
+        return ['success' => true, 'message' => 'Verification email resent.'];
+    }
+
+    /**
+     * Get the verification status for a user.
+     *
+     * @return array{pending_verifications: array, all_verified: bool}
+     */
+    public function getVerificationStatus(int $userId): array
+    {
+        $phoneVerified = (bool) get_user_meta($userId, 'wsms_phone_verified', true);
+        $emailVerified = (bool) get_user_meta($userId, 'wsms_email_verified', true);
+        $hasPhone = !empty(get_user_meta($userId, 'wsms_phone', true));
+        $hasEmail = !empty(get_userdata($userId)?->user_email);
+
+        $pending = [];
+
+        if ($hasPhone && !$phoneVerified) {
+            $pending[] = ['type' => 'phone', 'status' => 'pending'];
+        }
+
+        if ($hasEmail && !$emailVerified) {
+            $pending[] = ['type' => 'email', 'status' => 'pending'];
+        }
+
+        return [
+            'pending_verifications' => $pending,
+            'all_verified'          => empty($pending),
+        ];
+    }
+
+    /**
+     * Create a phone verification record and send OTP via SMS.
+     */
+    private function createPhoneVerification(int $userId, string $phone): void
+    {
+        global $wpdb;
+
+        $otp = $this->otpGenerator->generate();
+        $hashed = $this->otpGenerator->hash($otp);
+
+        $wpdb->insert($wpdb->prefix . 'wsms_verifications', [
+            'user_id'      => $userId,
+            'type'         => 'phone_verify',
+            'identifier'   => $phone,
+            'code'         => $hashed,
+            'attempts'     => 0,
+            'max_attempts' => 5,
+            'expires_at'   => gmdate('Y-m-d H:i:s', time() + 300),
+            'created_at'   => current_time('mysql', true),
+        ]);
+
+        do_action('wsms_send_sms', $phone, sprintf('Your verification code is: %s', $otp));
+    }
+
+    /**
      * Look up, validate, and consume a verification token.
      *
      * @return object|array The verification record on success, or an error array on failure.
@@ -311,17 +468,56 @@ class AccountManager
 
         $baseUrl = get_site_url();
 
+        $siteName = get_bloginfo('name');
+        $headers = ['Content-Type: text/html; charset=UTF-8'];
+
         if ($type === 'email_verify') {
             $link = $baseUrl . '/account/verify-email?token=' . $token;
-            $subject = 'Verify your email address';
-            $message = "Please verify your email by clicking this link:\n\n{$link}";
+            $subject = sprintf('[%s] Verify your email address', $siteName);
+            $message = sprintf(
+                '<p>Please verify your email address by clicking the link below:</p>'
+                . '<p><a href="%s">Verify Email</a></p>'
+                . '<p>This link expires in 60 minutes.</p>'
+                . '<p>If you did not create an account, please ignore this email.</p>',
+                esc_url($link),
+            );
         } else {
             $link = $baseUrl . '/account/reset-password?token=' . $token;
-            $subject = 'Reset your password';
-            $message = "Click this link to reset your password:\n\n{$link}";
+            $subject = sprintf('[%s] Reset your password', $siteName);
+            $message = sprintf(
+                '<p>Click the link below to reset your password:</p>'
+                . '<p><a href="%s">Reset Password</a></p>'
+                . '<p>This link expires in 60 minutes.</p>'
+                . '<p>If you did not request this, please ignore this email.</p>',
+                esc_url($link),
+            );
         }
 
-        wp_mail($identifier, $subject, $message);
+        wp_mail($identifier, $subject, $message, $headers);
+    }
+
+    private function isVerificationOnCooldown(int $userId, string $type): bool
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . 'wsms_verifications';
+
+        return (bool) $wpdb->get_row($wpdb->prepare(
+            "SELECT id FROM {$table} WHERE user_id = %d AND type = %s AND used_at IS NULL AND created_at > DATE_SUB(NOW(), INTERVAL 60 SECOND) LIMIT 1",
+            $userId,
+            $type,
+        ));
+    }
+
+    private function invalidateVerifications(int $userId, string $type): void
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . 'wsms_verifications';
+
+        $wpdb->query($wpdb->prepare(
+            "UPDATE {$table} SET used_at = NOW() WHERE user_id = %d AND type = %s AND used_at IS NULL",
+            $userId,
+            $type,
+        ));
     }
 
     private function lookupVerification(string $token, string $type): ?object

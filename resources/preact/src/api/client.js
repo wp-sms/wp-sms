@@ -1,11 +1,12 @@
 const { restUrl, nonce } = window.wsmsAuth || {};
 
-async function request(method, endpoint, body = null) {
+async function request(method, endpoint, body = null, extraHeaders = {}) {
     const opts = {
         method,
         headers: {
             'Content-Type': 'application/json',
             'X-WP-Nonce': nonce,
+            ...extraHeaders,
         },
         credentials: 'same-origin',
     };
@@ -21,8 +22,8 @@ async function request(method, endpoint, body = null) {
 }
 
 export const api = {
-    get: (url) => request('GET', url),
-    post: (url, body) => request('POST', url, body),
-    put: (url, body) => request('PUT', url, body),
-    del: (url, body) => request('DELETE', url, body),
+    get: (url, headers) => request('GET', url, null, headers),
+    post: (url, body, headers) => request('POST', url, body, headers),
+    put: (url, body, headers) => request('PUT', url, body, headers),
+    del: (url, body, headers) => request('DELETE', url, body, headers),
 };

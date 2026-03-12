@@ -9,11 +9,15 @@ export const authError = signal(null);
 export const authLoading = signal(false);
 
 // Identifier-first flow signals.
-export const authStep = signal('identifier'); // 'identifier'|'authenticate'|'mfa'|'register'
+export const authStep = signal('identifier'); // 'identifier'|'authenticate'|'mfa'|'register'|'register_verify'
 export const identifyResult = signal(null);
 export const enteredIdentifier = signal('');
 export const rememberedIdentifier = signal(localStorage.getItem('wsms_remembered_id') || '');
 export const selectedMethod = signal(null);
+
+// Registration verification signals.
+export const registrationToken = signal(null);
+export const pendingVerifications = signal([]);
 
 export function rememberIdentifier(id) {
     localStorage.setItem('wsms_remembered_id', id);
@@ -31,6 +35,8 @@ export function resetIdentifyFlow() {
     enteredIdentifier.value = '';
     selectedMethod.value = null;
     authError.value = null;
+    registrationToken.value = null;
+    pendingVerifications.value = [];
 }
 
 export function clearAuth() {
