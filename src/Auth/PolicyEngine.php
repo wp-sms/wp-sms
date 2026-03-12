@@ -98,21 +98,21 @@ class PolicyEngine
         $settings = $this->getSettings();
         $methods = [];
 
-        // Password.
+        // Password — allow_sign_in defaults to true (matches frontend defaults).
         $password = $settings['password'] ?? [];
-        if (!empty($password['enabled']) && !empty($password['allow_sign_in'])) {
+        if (!empty($password['enabled']) && ($password['allow_sign_in'] ?? true)) {
             $methods[] = 'password';
         }
 
         // Phone channel.
         $phone = $settings['phone'] ?? [];
-        if (!empty($phone['enabled']) && ($phone['usage'] ?? '') === 'login' && !empty($phone['allow_sign_in'])) {
+        if (!empty($phone['enabled']) && ($phone['usage'] ?? '') === 'login' && ($phone['allow_sign_in'] ?? true)) {
             $methods[] = 'phone';
         }
 
         // Email channel.
         $email = $settings['email'] ?? [];
-        if (!empty($email['enabled']) && ($email['usage'] ?? '') === 'login' && !empty($email['allow_sign_in'])) {
+        if (!empty($email['enabled']) && ($email['usage'] ?? '') === 'login' && ($email['allow_sign_in'] ?? true)) {
             $methods[] = 'email';
         }
 
@@ -146,6 +146,126 @@ class PolicyEngine
     }
 
     /**
+     * Get available authentication methods for a specific user.
+     *
+     * Uses getAvailablePrimaryMethods() as the source of truth for globally
+     * enabled methods, then cross-references with the user's data.
+     *
+     * @return array<int, array{method: string, type: string, channel: string}>
+     */
+    public function getAvailableMethodsForUser(int $userId): array
+    {
+        $globalMethods = $this->getAvailablePrimaryMethods();
+        $settings = $this->getSettings();
+        $user = get_userdata($userId);
+
+        if (!$user) {
+            return [];
+        }
+
+        $methods = [];
+        $userPhone = get_user_meta($userId, 'wsms_phone', true);
+
+        if (in_array('password', $globalMethods, true)) {
+            $methods[] = ['method' => 'password', 'type' => 'password', 'channel' => 'password'];
+        }
+
+        if (in_array('phone', $globalMethods, true) && !empty($userPhone)) {
+            $verificationMethods = ($settings['phone'] ?? [])['verification_methods'] ?? ['otp'];
+            if (in_array('otp', $verificationMethods, true)) {
+                $methods[] = ['method' => 'phone_otp', 'type' => 'otp', 'channel' => 'phone'];
+            }
+            if (in_array('magic_link', $verificationMethods, true)) {
+                $methods[] = ['method' => 'phone_magic_link', 'type' => 'magic_link', 'channel' => 'phone'];
+            }
+        }
+
+        if (in_array('email', $globalMethods, true) && !empty($user->user_email)) {
+            $verificationMethods = ($settings['email'] ?? [])['verification_methods'] ?? ['otp'];
+            if (in_array('otp', $verificationMethods, true)) {
+                $methods[] = ['method' => 'email_otp', 'type' => 'otp', 'channel' => 'email'];
+            }
+            if (in_array('magic_link', $verificationMethods, true)) {
+                $methods[] = ['method' => 'email_magic_link', 'type' => 'magic_link', 'channel' => 'email'];
+            }
+        }
+
+        return $methods;
+    }
+
+    /**
+     * Determine the smart default method based on how the user identified themselves.
+     */
+    public function getDefaultMethod(string $identifierType, array $availableMethods): ?string
+    {
+        if (empty($availableMethods)) {
+            return null;
+        }
+
+        $methodNames = array_column($availableMethods, 'method');
+
+        // Phone identifier → prefer phone_otp.
+        if ($identifierType === 'phone') {
+            if (in_array('phone_otp', $methodNames, true)) {
+                return 'phone_otp';
+            }
+            if (in_array('phone_magic_link', $methodNames, true)) {
+                return 'phone_magic_link';
+            }
+        }
+
+        // Email identifier → prefer password.
+        if ($identifierType === 'email') {
+            if (in_array('password', $methodNames, true)) {
+                return 'password';
+            }
+            if (in_array('email_otp', $methodNames, true)) {
+                return 'email_otp';
+            }
+        }
+
+        // Username → prefer password.
+        if ($identifierType === 'username') {
+            if (in_array('password', $methodNames, true)) {
+                return 'password';
+            }
+        }
+
+        // Fallback to first available.
+        return $methodNames[0] ?? null;
+    }
+
+    /**
+     * Pick the best MFA factor from a different channel than primary auth.
+     */
+    public function getSmartMfaDefault(string $primaryMethod, array $availableFactors): ?string
+    {
+        if (empty($availableFactors)) {
+            return null;
+        }
+
+        $factorIds = array_column($availableFactors, 'channel_id');
+
+        // Determine the primary channel.
+        $primaryChannel = match (true) {
+            str_starts_with($primaryMethod, 'phone') => 'phone',
+            str_starts_with($primaryMethod, 'email') => 'email',
+            $primaryMethod === 'password'             => 'password',
+            default                                   => null,
+        };
+
+        // Prefer a factor from a different channel.
+        foreach ($factorIds as $factorId) {
+            if ($factorId !== $primaryChannel) {
+                return $factorId;
+            }
+        }
+
+        // Fallback to first available.
+        return $factorIds[0] ?? null;
+    }
+
+    /**
      * Policy conflicts are eliminated by design — usage is mutually exclusive
      * per channel (login OR mfa), so no validation needed.
      *
@@ -157,10 +277,48 @@ class PolicyEngine
     }
 
     /**
+     * Backend defaults matching the frontend constants (resources/react/src/lib/constants.ts).
+     * Applied so that settings missing from the DB still behave as the admin UI shows.
+     */
+    private const CHANNEL_DEFAULTS = [
+        'password' => [
+            'enabled'            => true,
+            'required_at_signup' => true,
+            'allow_sign_in'      => true,
+        ],
+        'phone' => [
+            'enabled'              => false,
+            'usage'                => 'login',
+            'verification_methods' => ['otp'],
+            'allow_sign_in'        => true,
+        ],
+        'email' => [
+            'enabled'              => false,
+            'usage'                => 'login',
+            'verification_methods' => ['otp'],
+            'allow_sign_in'        => true,
+        ],
+        'backup_codes' => [
+            'enabled' => false,
+        ],
+    ];
+
+    /**
      * @return array<string, mixed>
      */
     private function getSettings(): array
     {
-        return $this->settings ??= get_option('wsms_auth_settings', []);
+        if ($this->settings !== null) {
+            return $this->settings;
+        }
+
+        $raw = get_option('wsms_auth_settings', []);
+
+        // Deep-merge channel defaults so missing keys fall back to sane values.
+        foreach (self::CHANNEL_DEFAULTS as $key => $defaults) {
+            $raw[$key] = array_merge($defaults, $raw[$key] ?? []);
+        }
+
+        return $this->settings = $raw;
     }
 }

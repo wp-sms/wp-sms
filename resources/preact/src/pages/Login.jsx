@@ -1,155 +1,43 @@
-import { useState } from 'preact/hooks';
-import { useLocation } from 'preact-iso';
-import { api } from '../api/client';
-import { primaryMethods, methodDetails } from '../signals/config';
-import { authError, authLoading } from '../signals/auth';
-import { handleAuthResponse, extractError } from '../utils/auth';
+import { authStep, authError } from '../signals/auth';
 import { authUrl } from '../utils/urls';
 import { AuthLayout } from '../layouts/AuthLayout';
-import { Alert } from '../components/ui/Alert';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { Label } from '../components/ui/Label';
 import { AuthLink } from '../components/AuthLink';
-import { MethodSelector } from '../components/MethodSelector';
-import { PhoneInput } from '../components/PhoneInput';
+import { IdentifierStep } from '../components/steps/IdentifierStep';
+import { AuthenticateStep } from '../components/steps/AuthenticateStep';
+import { MfaStep } from '../components/steps/MfaStep';
+import { ProgressiveRegisterStep } from '../components/steps/ProgressiveRegisterStep';
+
+const TITLES = {
+    identifier: 'Sign In',
+    authenticate: 'Sign In',
+    mfa: 'Verify Your Identity',
+    register: 'Create Account',
+};
 
 export function Login() {
-    const { route } = useLocation();
-    const methods = primaryMethods.value;
-    const details = methodDetails.value;
-    const [activeMethod, setActiveMethod] = useState(methods[0] || 'password');
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [identifier, setIdentifier] = useState('');
-    const [successMsg, setSuccessMsg] = useState('');
+    const step = authStep.value;
 
-    async function handlePasswordLogin(e) {
-        e.preventDefault();
-        authError.value = null;
-        authLoading.value = true;
-
-        try {
-            const res = await api.post('/auth/login', { username, password });
-            handleAuthResponse(res, route);
-        } catch (err) {
-            authError.value = extractError(err);
-        } finally {
-            authLoading.value = false;
-        }
-    }
-
-    async function handlePasswordless(e) {
-        e.preventDefault();
-        authError.value = null;
-        authLoading.value = true;
-
-        try {
-            const res = await api.post('/auth/login/passwordless', {
-                method: activeMethod,
-                identifier,
-            });
-
-            const status = handleAuthResponse(res, route);
-            const channelDetails = details[activeMethod] || {};
-
-            if (status === 'challenge_sent') {
-                if (channelDetails.has_magic_link && !channelDetails.has_otp) {
-                    // Magic link only — show success message.
-                    const target = activeMethod === 'email' ? 'email' : 'SMS';
-                    setSuccessMsg(`Check your ${target} for a login link.`);
-                } else if (channelDetails.has_magic_link && channelDetails.has_otp) {
-                    // Both OTP + magic link — go to verify page but show hint.
-                    route(authUrl('/verify'));
-                } else {
-                    // OTP only — go to verify page.
-                    route(authUrl('/verify'));
-                }
-            }
-        } catch (err) {
-            authError.value = extractError(err);
-        } finally {
-            authLoading.value = false;
-        }
-    }
-
-    const footer = (
+    const footer = step === 'register' ? (
+        <AuthLink href={authUrl('/login')} onClick={() => (authStep.value = 'identifier')}>
+            Already have an account? Sign in
+        </AuthLink>
+    ) : step === 'identifier' ? (
         <div className="flex gap-4">
             <AuthLink href={authUrl('/forgot-password')}>Forgot password?</AuthLink>
             <AuthLink href={authUrl('/register')}>Create account</AuthLink>
         </div>
+    ) : (
+        <AuthLink href={authUrl('/forgot-password')}>Forgot password?</AuthLink>
     );
 
     return (
-        <AuthLayout title="Sign In" footer={footer}>
-            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
-            <Alert variant="success" message={successMsg} className="mb-4" />
-
-            <MethodSelector methods={methods} active={activeMethod} onChange={setActiveMethod} />
-
-            {activeMethod === 'password' && (
-                <form onSubmit={handlePasswordLogin} className="space-y-4">
-                    <div className="space-y-2">
-                        <Label for="wsms-username">Username or Email</Label>
-                        <Input
-                            id="wsms-username"
-                            type="text"
-                            value={username}
-                            onInput={(e) => setUsername(e.target.value)}
-                            required
-                            disabled={authLoading.value}
-                            autoComplete="username"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label for="wsms-password">Password</Label>
-                        <Input
-                            id="wsms-password"
-                            type="password"
-                            value={password}
-                            onInput={(e) => setPassword(e.target.value)}
-                            required
-                            disabled={authLoading.value}
-                            autoComplete="current-password"
-                        />
-                    </div>
-                    <Button className="w-full" type="submit" disabled={authLoading.value}>
-                        {authLoading.value ? 'Signing in\u2026' : 'Sign In'}
-                    </Button>
-                </form>
-            )}
-
-            {activeMethod === 'phone' && (
-                <form onSubmit={handlePasswordless} className="space-y-4">
-                    <div className="space-y-2">
-                        <Label>Phone Number</Label>
-                        <PhoneInput value={identifier} onChange={setIdentifier} disabled={authLoading.value} />
-                    </div>
-                    <Button className="w-full" type="submit" disabled={authLoading.value}>
-                        {authLoading.value ? 'Sending\u2026' : 'Send Code'}
-                    </Button>
-                </form>
-            )}
-
-            {activeMethod === 'email' && (
-                <form onSubmit={handlePasswordless} className="space-y-4">
-                    <div className="space-y-2">
-                        <Label for="wsms-identifier">Email</Label>
-                        <Input
-                            id="wsms-identifier"
-                            type="email"
-                            value={identifier}
-                            onInput={(e) => setIdentifier(e.target.value)}
-                            required
-                            disabled={authLoading.value}
-                            autoComplete="email"
-                        />
-                    </div>
-                    <Button className="w-full" type="submit" disabled={authLoading.value}>
-                        {authLoading.value ? 'Sending\u2026' : 'Continue'}
-                    </Button>
-                </form>
-            )}
+        <AuthLayout title={TITLES[step] || 'Sign In'} footer={footer}>
+            <div className="animate-fade-in">
+                {step === 'identifier' && <IdentifierStep />}
+                {step === 'authenticate' && <AuthenticateStep />}
+                {step === 'mfa' && <MfaStep />}
+                {step === 'register' && <ProgressiveRegisterStep />}
+            </div>
         </AuthLayout>
     );
 }

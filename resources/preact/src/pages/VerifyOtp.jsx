@@ -66,6 +66,7 @@ export function VerifyOtp() {
 
     if (!token) return null;
 
+    const hasMagicLink = challengeMeta.value?.has_magic_link;
     const subtitle = challengeMeta.value?.masked_identifier
         ? `Enter the code sent to ${challengeMeta.value.masked_identifier}`
         : pendingMfa.value
@@ -79,6 +80,10 @@ export function VerifyOtp() {
             footer={<AuthLink href={authUrl('/login')} onClick={() => clearAuth()}>Back to login</AuthLink>}
         >
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
+
+            {hasMagicLink && (
+                <Alert variant="default" message="We also sent a login link — check your inbox if you prefer to click instead." className="mb-4" />
+            )}
 
             {useBackup ? (
                 <form onSubmit={handleBackupSubmit} className="space-y-4">

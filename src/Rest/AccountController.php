@@ -31,6 +31,8 @@ class AccountController
                 'password'     => ['required' => false, 'type' => 'string'],
                 'username'     => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_user'],
                 'display_name' => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                'first_name'   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                'last_name'    => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 'phone'        => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
             ],
         ]);
@@ -69,6 +71,8 @@ class AccountController
             'permission_callback' => [$this, 'checkAuthenticated'],
             'args'                => [
                 'display_name' => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                'first_name'   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                'last_name'    => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 'phone'        => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 'email'        => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_email'],
             ],
@@ -109,6 +113,8 @@ class AccountController
             'password'     => $request->get_param('password'),
             'username'     => $request->get_param('username'),
             'display_name' => $request->get_param('display_name'),
+            'first_name'   => $request->get_param('first_name'),
+            'last_name'    => $request->get_param('last_name'),
             'phone'        => $request->get_param('phone'),
         ]);
 
@@ -164,6 +170,8 @@ class AccountController
     {
         $data = array_filter([
             'display_name' => $request->get_param('display_name'),
+            'first_name'   => $request->get_param('first_name'),
+            'last_name'    => $request->get_param('last_name'),
             'phone'        => $request->get_param('phone'),
             'email'        => $request->get_param('email'),
         ], fn($v) => $v !== null);

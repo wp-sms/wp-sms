@@ -1,4 +1,4 @@
-import { challengeToken, challengeMeta, pendingMfa, clearAuth } from '../signals/auth';
+import { challengeToken, challengeMeta, pendingMfa, authStep, clearAuth } from '../signals/auth';
 import { authUrl, getBaseUrl } from './urls';
 
 export function handleAuthResponse(res, route) {
@@ -13,8 +13,8 @@ export function handleAuthResponse(res, route) {
             available_factors: res.meta?.available_factors,
             challenge_token: res.challenge_token,
         };
-        route(authUrl('/verify'));
-        return;
+        authStep.value = 'mfa';
+        return 'mfa_required';
     }
 
     if (res.status === 'challenge_sent') {

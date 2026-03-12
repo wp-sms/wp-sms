@@ -13,7 +13,7 @@ import { PhoneInput } from '../components/PhoneInput';
 
 export function Profile() {
     const authed = useAuthGuard();
-    const [form, setForm] = useState({ display_name: '', email: '', phone: '' });
+    const [form, setForm] = useState({ display_name: '', first_name: '', last_name: '', email: '', phone: '' });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -27,6 +27,8 @@ export function Profile() {
             if (u) {
                 setForm({
                     display_name: u.display_name || '',
+                    first_name: u.first_name || '',
+                    last_name: u.last_name || '',
                     email: u.email || '',
                     phone: u.phone || '',
                 });
@@ -75,6 +77,30 @@ export function Profile() {
                         onInput={(e) => updateField('display_name', e.target.value)}
                         disabled={loading}
                         autoComplete="name"
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <Label for="wsms-prof-first-name">First Name</Label>
+                    <Input
+                        id="wsms-prof-first-name"
+                        type="text"
+                        value={form.first_name}
+                        onInput={(e) => updateField('first_name', e.target.value)}
+                        disabled={loading}
+                        autoComplete="given-name"
+                    />
+                </div>
+
+                <div className="space-y-2">
+                    <Label for="wsms-prof-last-name">Last Name</Label>
+                    <Input
+                        id="wsms-prof-last-name"
+                        type="text"
+                        value={form.last_name}
+                        onInput={(e) => updateField('last_name', e.target.value)}
+                        disabled={loading}
+                        autoComplete="family-name"
                     />
                 </div>
 

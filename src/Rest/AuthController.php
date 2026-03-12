@@ -72,6 +72,15 @@ class AuthController
             ],
         ]);
 
+        register_rest_route(self::NAMESPACE, '/auth/identify', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'handleIdentify'],
+            'permission_callback' => '__return_true',
+            'args'                => [
+                'identifier' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+            ],
+        ]);
+
         register_rest_route(self::NAMESPACE, '/auth/config', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleConfig'],
@@ -155,6 +164,21 @@ class AuthController
         );
 
         return $this->toResponse($result);
+    }
+
+    public function handleIdentify(WP_REST_Request $request): WP_REST_Response
+    {
+        $rl = $this->rateLimiter->check('identify', 10, 60);
+
+        if (!$rl['allowed']) {
+            return $this->rateLimitedResponse($rl['retry_after']);
+        }
+
+        $result = $this->orchestrator->identify(
+            $request->get_param('identifier'),
+        );
+
+        return new WP_REST_Response($result->toArray(), 200);
     }
 
     public function handleConfig(WP_REST_Request $request): WP_REST_Response

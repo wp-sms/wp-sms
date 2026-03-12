@@ -1,27 +1,31 @@
 import { useState } from 'preact/hooks';
-import { api } from '../api/client';
-import { registrationFields } from '../signals/config';
-import { authError, authLoading } from '../signals/auth';
-import { extractError } from '../utils/auth';
-import { authUrl } from '../utils/urls';
-import { AuthLayout } from '../layouts/AuthLayout';
-import { Alert } from '../components/ui/Alert';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { Label } from '../components/ui/Label';
-import { AuthLink } from '../components/AuthLink';
-import { PhoneInput } from '../components/PhoneInput';
+import { api } from '../../api/client';
+import {
+    authError,
+    authLoading,
+    identifyResult,
+    enteredIdentifier,
+    resetIdentifyFlow,
+} from '../../signals/auth';
+import { extractError } from '../../utils/auth';
+import { Alert } from '../ui/Alert';
+import { Button } from '../ui/Button';
+import { Input } from '../ui/Input';
+import { Label } from '../ui/Label';
+import { PhoneInput } from '../PhoneInput';
 
-export function Register() {
-    const fields = registrationFields.value;
-    const [form, setForm] = useState({
-        email: '',
-        password: '',
-        username: '',
-        display_name: '',
-        first_name: '',
-        last_name: '',
-        phone: '',
+export function ProgressiveRegisterStep() {
+    const result = identifyResult.value;
+    const identifier = enteredIdentifier.value;
+    const identifierType = result?.identifier_type;
+    const fields = result?.registration_fields || ['email', 'password'];
+
+    const [form, setForm] = useState(() => {
+        const initial = { email: '', password: '', username: '', display_name: '', first_name: '', last_name: '', phone: '' };
+        // Pre-fill the identifier field.
+        if (identifierType === 'email') initial.email = identifier;
+        if (identifierType === 'phone') initial.phone = identifier;
+        return initial;
     });
     const [success, setSuccess] = useState('');
 
@@ -42,7 +46,7 @@ export function Register() {
         try {
             const res = await api.post('/auth/register', body);
             if (res.success) {
-                setSuccess(res.message || 'Account created. Please check your email to verify.');
+                setSuccess(res.message || 'Account created successfully.');
             }
         } catch (err) {
             authError.value = extractError(err);
@@ -53,21 +57,24 @@ export function Register() {
 
     if (success) {
         return (
-            <AuthLayout
-                title="Account Created"
-                footer={<AuthLink href={authUrl('/login')}>Back to login</AuthLink>}
-            >
+            <div className="space-y-4 animate-fade-in">
                 <Alert variant="success" message={success} />
-            </AuthLayout>
+                <div className="text-center">
+                    <Button variant="link" type="button" onClick={resetIdentifyFlow}>
+                        Back to sign in
+                    </Button>
+                </div>
+            </div>
         );
     }
 
     return (
-        <AuthLayout
-            title="Create Account"
-            footer={<AuthLink href={authUrl('/login')}>Already have an account? Sign in</AuthLink>}
-        >
+        <div className="space-y-4 animate-fade-in">
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
+
+            <p className="text-sm text-muted-foreground text-center">
+                Create your account to get started
+            </p>
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 {fields.includes('username') && (
@@ -134,7 +141,7 @@ export function Register() {
                         value={form.email}
                         onInput={(e) => updateField('email', e.target.value)}
                         required
-                        disabled={authLoading.value}
+                        disabled={authLoading.value || identifierType === 'email'}
                         autoComplete="email"
                     />
                 </div>
@@ -145,7 +152,7 @@ export function Register() {
                         <PhoneInput
                             value={form.phone}
                             onChange={(val) => updateField('phone', val)}
-                            disabled={authLoading.value}
+                            disabled={authLoading.value || identifierType === 'phone'}
                         />
                     </div>
                 )}
@@ -166,9 +173,15 @@ export function Register() {
                 )}
 
                 <Button className="w-full" type="submit" disabled={authLoading.value}>
-                    {authLoading.value ? 'Creating account\u2026' : 'Create Account'}
+                    {authLoading.value ? 'Creating account...' : 'Create Account'}
                 </Button>
             </form>
-        </AuthLayout>
+
+            <div className="text-center">
+                <Button variant="link" type="button" onClick={resetIdentifyFlow}>
+                    Use a different {identifierType === 'email' ? 'email' : identifierType === 'phone' ? 'phone' : 'identifier'}
+                </Button>
+            </div>
+        </div>
     );
 }

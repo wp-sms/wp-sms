@@ -279,6 +279,8 @@ class EnrollmentController
                 'email'            => $user->user_email,
                 'username'         => $user->user_login,
                 'display_name'     => $user->display_name,
+                'first_name'       => $user->first_name,
+                'last_name'        => $user->last_name,
                 'phone'            => get_user_meta($userId, 'wsms_phone', true) ?: null,
                 'phone_verified'   => (bool) get_user_meta($userId, 'wsms_phone_verified', true),
                 'roles'            => $user->roles,

@@ -4,6 +4,7 @@ namespace WSms\Auth;
 
 use WSms\Audit\AuditLogger;
 use WSms\Auth\ValueObjects\AuthResult;
+use WSms\Auth\ValueObjects\IdentifyResult;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
 use WSms\Mfa\Channels\EmailChannel;
@@ -24,11 +25,57 @@ class AuthOrchestrator
     }
 
     /**
+     * Identify a user by any identifier (email, phone, or username).
+     *
+     * Returns available auth methods for the user, or registration info if not found.
+     */
+    public function identify(string $identifier): IdentifyResult
+    {
+        $identifierType = $this->detectIdentifierType($identifier);
+        $user = $this->resolveUserByAnyIdentifier($identifier, $identifierType);
+
+        if ($user) {
+            $availableMethods = $this->policy->getAvailableMethodsForUser($user->ID);
+            $defaultMethod = $this->policy->getDefaultMethod($identifierType, $availableMethods);
+
+            return new IdentifyResult(
+                identifierType: $identifierType,
+                userFound: true,
+                availableMethods: $availableMethods,
+                defaultMethod: $defaultMethod,
+                registrationAvailable: false,
+                registrationFields: [],
+                meta: [
+                    'masked_identifier' => $this->maskIdentifier($identifier, $identifierType),
+                ],
+            );
+        }
+
+        // User not found — check if registration is available.
+        $settings = get_option('wsms_auth_settings', []);
+        $autoCreate = !empty($settings['auto_create_users']);
+        $regFields = $settings['registration_fields'] ?? ['email', 'password'];
+
+        return new IdentifyResult(
+            identifierType: $identifierType,
+            userFound: false,
+            availableMethods: [],
+            defaultMethod: null,
+            registrationAvailable: $autoCreate,
+            registrationFields: $autoCreate ? $regFields : [],
+            meta: [],
+        );
+    }
+
+    /**
      * Standard username/password login.
+     *
+     * Accepts any identifier (email, phone, or username) and resolves to the user first.
      */
     public function loginWithPassword(string $username, string $password): AuthResult
     {
-        $resolvedUser = get_user_by('login', $username);
+        $identifierType = $this->detectIdentifierType($username);
+        $resolvedUser = $this->resolveUserByAnyIdentifier($username, $identifierType);
 
         if ($resolvedUser) {
             $lockStatus = $this->lockout->isLocked($resolvedUser->ID);
@@ -40,7 +87,9 @@ class AuthOrchestrator
             }
         }
 
-        $user = wp_authenticate($username, $password);
+        // Use the resolved user's login name for wp_authenticate so email/phone identifiers work.
+        $loginName = $resolvedUser ? $resolvedUser->user_login : $username;
+        $user = wp_authenticate($loginName, $password);
 
         if (is_wp_error($user)) {
             if ($resolvedUser) {
@@ -348,6 +397,8 @@ class AuthOrchestrator
             'email'        => $user->user_email,
             'username'     => $user->user_login,
             'display_name' => $user->display_name,
+            'first_name'   => $user->first_name,
+            'last_name'    => $user->last_name,
             'roles'        => $user->roles,
         ];
     }
@@ -371,6 +422,73 @@ class AuthOrchestrator
         $user = get_user_by('email', $identifier);
 
         return $user ?: null;
+    }
+
+    /**
+     * Resolve a user by any identifier type (email, phone, or username).
+     */
+    private function resolveUserByAnyIdentifier(string $identifier, string $type): ?object
+    {
+        if ($type === 'email') {
+            $user = get_user_by('email', $identifier);
+            return $user ?: null;
+        }
+
+        if ($type === 'phone') {
+            $users = get_users([
+                'meta_key'   => 'wsms_phone',
+                'meta_value' => $identifier,
+                'number'     => 1,
+            ]);
+            return !empty($users) ? $users[0] : null;
+        }
+
+        // Username.
+        $user = get_user_by('login', $identifier);
+        return $user ?: null;
+    }
+
+    /**
+     * Detect identifier type: email, phone, or username.
+     */
+    private function detectIdentifierType(string $identifier): string
+    {
+        if (str_contains($identifier, '@')) {
+            return 'email';
+        }
+
+        if (preg_match('/^\+?[0-9]{7,15}$/', $identifier)) {
+            return 'phone';
+        }
+
+        return 'username';
+    }
+
+    /**
+     * Mask an identifier for display (e.g., "j***@example.com", "+1***789").
+     */
+    private function maskIdentifier(string $identifier, string $type): string
+    {
+        if ($type === 'email') {
+            [$local, $domain] = explode('@', $identifier, 2);
+            $masked = $local[0] . str_repeat('*', max(strlen($local) - 1, 2));
+            return $masked . '@' . $domain;
+        }
+
+        if ($type === 'phone') {
+            $len = strlen($identifier);
+            if ($len <= 4) {
+                return $identifier;
+            }
+            return substr($identifier, 0, 2) . str_repeat('*', $len - 5) . substr($identifier, -3);
+        }
+
+        // Username — show first and last character.
+        $len = strlen($identifier);
+        if ($len <= 2) {
+            return $identifier;
+        }
+        return $identifier[0] . str_repeat('*', $len - 2) . $identifier[$len - 1];
     }
 
 }

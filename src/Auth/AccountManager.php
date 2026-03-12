@@ -56,6 +56,14 @@ class AccountManager
             $userdata['display_name'] = sanitize_text_field($data['display_name']);
         }
 
+        if (!empty($data['first_name'])) {
+            $userdata['first_name'] = sanitize_text_field($data['first_name']);
+        }
+
+        if (!empty($data['last_name'])) {
+            $userdata['last_name'] = sanitize_text_field($data['last_name']);
+        }
+
         $userId = wp_insert_user($userdata);
 
         if (is_wp_error($userId)) {
@@ -181,11 +189,22 @@ class AccountManager
 
         $result = ['success' => true, 'message' => 'Profile updated.'];
 
+        $userUpdate = ['ID' => $userId];
+
         if (isset($data['display_name'])) {
-            wp_update_user([
-                'ID'           => $userId,
-                'display_name' => sanitize_text_field($data['display_name']),
-            ]);
+            $userUpdate['display_name'] = sanitize_text_field($data['display_name']);
+        }
+
+        if (isset($data['first_name'])) {
+            $userUpdate['first_name'] = sanitize_text_field($data['first_name']);
+        }
+
+        if (isset($data['last_name'])) {
+            $userUpdate['last_name'] = sanitize_text_field($data['last_name']);
+        }
+
+        if (count($userUpdate) > 1) {
+            wp_update_user($userUpdate);
         }
 
         if (isset($data['phone'])) {
