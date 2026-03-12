@@ -1,3 +1,9 @@
+= v7.2.1 - 2026-03-12 =
+- **New:** Added Contact column to the Two-Way inbox, showing subscriber name or WordPress user display name for each sender.
+- **Fix:** Fixed gateway initialization issue for 4jawaly, 1s2u, 160au, 0098sms, and 18sms gateways.
+- **Fix:** Fixed sms.to gateway request config passed as params instead of query args.
+- **Fix:** Removed unused username/password fields from sms.to gateway.
+
 = v7.2 - 2026-03-08 =
 - **New:** Redesigned admin interface with improved user experience.
 - **Enhancement:** Updated PHP requirement to version 7.4.
