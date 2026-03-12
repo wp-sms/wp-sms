@@ -1,7 +1,13 @@
-/node_modules
+node_modules
 /vendor
 /dist
 /packages
 .DS_Store
 .phpunit.result.cache
 /public/
+CLAUDE.md
+SPEC.md
+.env
+.agents/
+.claude/
+skills-lock.json

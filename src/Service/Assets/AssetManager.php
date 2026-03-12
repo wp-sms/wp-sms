@@ -47,7 +47,7 @@ class AssetManager
             return;
         }
 
-        ViteHelper::enqueueFromManifest($manifest, 'src/main.jsx', 'wsms-dashboard');
+        ViteHelper::enqueueFromManifest($manifest, 'src/main.tsx', 'wsms-dashboard');
 
         wp_print_inline_script_tag(
             'var wpSmsSettings = ' . wp_json_encode($this->getLocalizedData()) . ';',
@@ -68,6 +68,7 @@ class AssetManager
             'version'   => WP_SMS_VERSION,
             'adminUrl'  => admin_url(),
             'isPremium' => defined('WP_SMS_PREMIUM_FILE'),
+            'roles'     => wp_list_pluck(get_editable_roles(), 'name'),
         ];
     }
 

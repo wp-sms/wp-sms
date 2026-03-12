@@ -1,9 +1,16 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
+import postcssImportantPlugin from './postcss-important-plugin';
 import { resolve } from 'path';
 
 export default defineConfig({
-    plugins: [react()],
+    plugins: [react(), tailwindcss()],
+    css: {
+        postcss: {
+            plugins: [postcssImportantPlugin()],
+        },
+    },
     root: 'resources/react',
     base: './',
     build: {
@@ -11,7 +18,7 @@ export default defineConfig({
         emptyOutDir: true,
         manifest: true,
         rollupOptions: {
-            input: resolve(__dirname, 'resources/react/src/main.jsx'),
+            input: resolve(__dirname, 'resources/react/src/main.tsx'),
         },
     },
     resolve: {
