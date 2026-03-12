@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from 'preact/hooks';
+import { X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
 export function Dialog({ open, onClose, children, className }) {
@@ -51,10 +52,7 @@ export function Dialog({ open, onClose, children, className }) {
                     className="absolute top-3 right-3 flex size-7 items-center justify-center rounded-md bg-transparent border-none text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
                     aria-label="Close"
                 >
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                        <line x1="4" y1="4" x2="12" y2="12" />
-                        <line x1="12" y1="4" x2="4" y2="12" />
-                    </svg>
+                    <X className="size-4" />
                 </button>
                 {children}
             </div>

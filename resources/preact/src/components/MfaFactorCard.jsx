@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { Smartphone, Mail, ClipboardList, Lock } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { Button } from './ui/Button';
 import { Label } from './ui/Label';
@@ -8,13 +9,13 @@ import { api } from '../api/client';
 import { extractError } from '../utils/auth';
 
 const CHANNEL_META = {
-    phone:        { label: 'Phone',        icon: '\u{1F4F1}', description: 'Receive a code via text message' },
-    email:        { label: 'Email',        icon: '\u{2709}\u{FE0F}', description: 'Receive a code via email' },
-    backup_codes: { label: 'Backup Codes', icon: '\u{1F4CB}', description: 'One-time use recovery codes' },
+    phone:        { label: 'Phone',        icon: Smartphone,     description: 'Receive a code via text message' },
+    email:        { label: 'Email',        icon: Mail,           description: 'Receive a code via email' },
+    backup_codes: { label: 'Backup Codes', icon: ClipboardList,  description: 'One-time use recovery codes' },
 };
 
 export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, onRefresh }) {
-    const meta = CHANNEL_META[method.id] || { label: method.name, icon: '\u{1F512}', description: '' };
+    const meta = CHANNEL_META[method.id] || { label: method.name, icon: Lock, description: '' };
     const [expanding, setExpanding] = useState(false);
     const [phone, setPhone] = useState('');
     const [verifying, setVerifying] = useState(false);
@@ -79,7 +80,7 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
             )}
         >
             <div className="flex items-center gap-3 p-4">
-                <span className="text-xl shrink-0">{meta.icon}</span>
+                <meta.icon className="size-5 shrink-0 text-muted-foreground" />
                 <div className="flex-1 min-w-0">
                     <div className="text-sm font-semibold">{meta.label}</div>
                     <div className="text-xs text-muted-foreground">{meta.description}</div>

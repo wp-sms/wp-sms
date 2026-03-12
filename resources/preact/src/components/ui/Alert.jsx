@@ -1,4 +1,5 @@
 import { cva } from 'class-variance-authority';
+import { X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
 const alertVariants = cva(
@@ -38,7 +39,7 @@ export function Alert({ className, variant, message, onDismiss, children, ...pro
                         className="shrink-0 text-inherit opacity-60 hover:opacity-100 bg-transparent border-none cursor-pointer"
                         aria-label="Dismiss"
                     >
-                        &times;
+                        <X className="size-3.5" />
                     </button>
                 )}
             </div>

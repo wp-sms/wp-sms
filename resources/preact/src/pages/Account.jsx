@@ -1,4 +1,5 @@
 import { useEffect } from 'preact/hooks';
+import { User, Shield, KeyRound } from 'lucide-react';
 import { currentUser } from '../signals/auth';
 import { loadCurrentUser, userLoading } from '../signals/user';
 import { useAuthGuard } from '../hooks/useAuthGuard';
@@ -32,13 +33,13 @@ export function Account() {
     const navItems = [
         {
             href: authUrl('/profile'),
-            icon: '\u{1F464}',
+            icon: User,
             title: 'Profile',
             description: 'Update your name, email, and phone number',
         },
         {
             href: authUrl('/security'),
-            icon: '\u{1F6E1}\u{FE0F}',
+            icon: Shield,
             title: 'Security',
             description: user.mfa_enabled
                 ? `MFA enabled (${user.enrolled_factors.length} factor${user.enrolled_factors.length !== 1 ? 's' : ''})`
@@ -46,7 +47,7 @@ export function Account() {
         },
         {
             href: authUrl('/change-password'),
-            icon: '\u{1F511}',
+            icon: KeyRound,
             title: 'Change Password',
             description: 'Update your password',
         },
@@ -61,8 +62,8 @@ export function Account() {
                         href={item.href}
                         className="flex items-center gap-4 rounded-lg border bg-card p-4 no-underline text-foreground transition-colors hover:border-primary hover:shadow-sm"
                     >
-                        <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-muted text-lg">
-                            {item.icon}
+                        <span className="flex size-10 shrink-0 items-center justify-center rounded-md bg-muted">
+                            <item.icon className="size-5 text-muted-foreground" />
                         </span>
                         <div>
                             <div className="text-sm font-semibold">{item.title}</div>
