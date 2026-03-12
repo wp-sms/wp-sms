@@ -2,6 +2,7 @@ import { useState, useEffect } from 'preact/hooks';
 import { CheckCircle2 } from 'lucide-react';
 import { api } from '../api/client';
 import { currentUser } from '../signals/auth';
+import { methodDetails } from '../signals/config';
 import { loadCurrentUser, refreshUser } from '../signals/user';
 import { useAuthGuard } from '../hooks/useAuthGuard';
 import { extractError } from '../utils/auth';
@@ -11,7 +12,7 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
 import { PhoneInput } from '../components/PhoneInput';
-import { OtpInput } from '../components/OtpInput';
+import { OtpVerifyInline } from '../components/verification/OtpVerifyInline';
 
 function VerifiedBadge() {
     return (
@@ -38,9 +39,9 @@ export function Profile() {
     const [success, setSuccess] = useState('');
     const [emailSending, setEmailSending] = useState(false);
     const [emailSent, setEmailSent] = useState(false);
+    const [showEmailOtp, setShowEmailOtp] = useState(false);
     const [phoneSending, setPhoneSending] = useState(false);
     const [showPhoneOtp, setShowPhoneOtp] = useState(false);
-    const [phoneVerifying, setPhoneVerifying] = useState(false);
 
     useEffect(() => {
         if (!authed) return;
@@ -62,9 +63,16 @@ export function Profile() {
     }, [authed]);
 
     const user = currentUser.value;
+    const details = methodDetails.value;
+    const emailCodeLength = details.email?.code_length;
+    const phoneCodeLength = details.phone?.code_length;
 
     function updateField(name, value) {
         setForm((prev) => ({ ...prev, [name]: value }));
+        if (name === 'email') {
+            setEmailSent(false);
+            setShowEmailOtp(false);
+        }
     }
 
     async function handleSubmit(e) {
@@ -90,8 +98,12 @@ export function Profile() {
         setEmailSending(true);
         setError('');
         try {
-            await api.post('/auth/profile/send-email-verification');
-            setEmailSent(true);
+            const res = await api.post('/auth/profile/send-email-verification');
+            if (res.method === 'otp') {
+                setShowEmailOtp(true);
+            } else {
+                setEmailSent(true);
+            }
         } catch (err) {
             setError(extractError(err));
         } finally {
@@ -112,21 +124,11 @@ export function Profile() {
         }
     }
 
-    async function handlePhoneOtpComplete(code) {
-        setPhoneVerifying(true);
-        setError('');
-        try {
-            const res = await api.post('/auth/profile/verify-phone', { code });
-            if (res.success) {
-                setShowPhoneOtp(false);
-                setSuccess('Phone verified successfully.');
-                await refreshUser();
-            }
-        } catch (err) {
-            setError(extractError(err));
-        } finally {
-            setPhoneVerifying(false);
-        }
+    async function handleVerified(channel) {
+        if (channel === 'email') setShowEmailOtp(false);
+        if (channel === 'phone') setShowPhoneOtp(false);
+        setSuccess(`${channel === 'email' ? 'Email' : 'Phone'} verified successfully.`);
+        await refreshUser();
     }
 
     if (!authed) return null;
@@ -187,10 +189,10 @@ export function Profile() {
                         disabled={loading}
                         autoComplete="email"
                     />
-                    {user && !user.email_verified && (
+                    {user && !user.email_verified && !showEmailOtp && (
                         <div>
                             {emailSent ? (
-                                <p className="text-xs text-green-600">Verification email sent!</p>
+                                <p className="text-xs text-green-600">Verification email sent! Check your inbox.</p>
                             ) : (
                                 <Button
                                     variant="link"
@@ -199,10 +201,21 @@ export function Profile() {
                                     onClick={handleSendEmailVerification}
                                     disabled={emailSending}
                                 >
-                                    {emailSending ? 'Sending\u2026' : 'Send verification email'}
+                                    {emailSending ? 'Sending\u2026' : 'Send verification code'}
                                 </Button>
                             )}
                         </div>
+                    )}
+                    {showEmailOtp && (
+                        <OtpVerifyInline
+                            verifyEndpoint="/auth/profile/verify-email"
+                            resendEndpoint="/auth/profile/send-email-verification"
+                            onVerified={() => handleVerified('email')}
+                            onError={setError}
+                            label="Enter the code sent to your email"
+                            codeLength={emailCodeLength}
+                            className="pt-2"
+                        />
                     )}
                 </div>
 
@@ -228,10 +241,15 @@ export function Profile() {
                         </Button>
                     )}
                     {showPhoneOtp && (
-                        <div className="space-y-2 pt-2">
-                            <p className="text-xs text-muted-foreground">Enter the code sent to your phone</p>
-                            <OtpInput onComplete={handlePhoneOtpComplete} disabled={phoneVerifying} />
-                        </div>
+                        <OtpVerifyInline
+                            verifyEndpoint="/auth/profile/verify-phone"
+                            resendEndpoint="/auth/profile/send-phone-verification"
+                            onVerified={() => handleVerified('phone')}
+                            onError={setError}
+                            label="Enter the code sent to your phone"
+                            codeLength={phoneCodeLength}
+                            className="pt-2"
+                        />
                     )}
                 </div>
 

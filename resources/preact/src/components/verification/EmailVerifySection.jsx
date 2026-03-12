@@ -1,12 +1,37 @@
 import { useState } from 'preact/hooks';
 import { Mail } from 'lucide-react';
 import { authError } from '../../signals/auth';
+import { methodDetails } from '../../signals/config';
 import { api } from '../../api/client';
 import { extractError } from '../../utils/auth';
 import { useResendCooldown } from '../../hooks/useResendCooldown';
 import { Button } from '../ui/Button';
+import { OtpVerifyInline } from './OtpVerifyInline';
 
-export function EmailVerifySection({ headers, className }) {
+export function EmailVerifySection({ headers, className, onVerified }) {
+    const emailDetails = methodDetails.value.email;
+    const isOtp = emailDetails?.has_otp ?? false;
+    const codeLength = emailDetails?.code_length;
+
+    if (isOtp) {
+        return (
+            <OtpVerifyInline
+                verifyEndpoint="/auth/register/verify-email"
+                resendEndpoint="/auth/register/resend-email"
+                headers={headers}
+                onVerified={onVerified}
+                onError={(msg) => { authError.value = msg; }}
+                label="Enter the code sent to your email"
+                codeLength={codeLength}
+                className={className}
+            />
+        );
+    }
+
+    return <EmailMagicLinkSection headers={headers} className={className} />;
+}
+
+function EmailMagicLinkSection({ headers, className }) {
     const [resent, setResent] = useState(false);
     const [cooldown, resetCooldown] = useResendCooldown(0);
 

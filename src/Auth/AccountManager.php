@@ -109,7 +109,11 @@ class AccountManager
 
         // Generate and send email verification.
         if (!empty($email)) {
-            $this->createVerification($userId, 'email_verify', $email);
+            if ($this->emailUsesOtp()) {
+                $this->createEmailOtpVerification($userId, $email);
+            } else {
+                $this->createVerification($userId, 'email_verify', $email);
+            }
             $pendingVerifications[] = ['type' => 'email', 'status' => 'pending'];
         }
 
@@ -388,7 +392,12 @@ class AccountManager
         }
 
         $this->invalidateVerifications($userId, 'email_verify');
-        $this->createVerification($userId, 'email_verify', $email);
+
+        if ($this->emailUsesOtp()) {
+            $this->createEmailOtpVerification($userId, $email);
+        } else {
+            $this->createVerification($userId, 'email_verify', $email);
+        }
 
         return ['success' => true, 'message' => 'Verification email resent.'];
     }
@@ -436,7 +445,11 @@ class AccountManager
             $email = get_userdata($userId)?->user_email;
             if (!empty($email)) {
                 $this->invalidateVerifications($userId, 'email_verify');
-                $this->createVerification($userId, 'email_verify', $email);
+                if ($this->emailUsesOtp()) {
+                    $this->createEmailOtpVerification($userId, $email);
+                } else {
+                    $this->createVerification($userId, 'email_verify', $email);
+                }
             }
         }
     }
@@ -469,6 +482,111 @@ class AccountManager
         ]);
 
         do_action('wsms_send_sms', $phone, sprintf('Your verification code is: %s', $otp));
+    }
+
+    /**
+     * Whether the email channel is configured for OTP verification.
+     */
+    public function emailUsesOtp(): bool
+    {
+        $settings = $this->getSettings();
+        $methods = (array) ($settings['email']['verification_methods'] ?? ['otp']);
+
+        return in_array('otp', $methods, true);
+    }
+
+    /**
+     * Create an email verification record and send OTP via email.
+     */
+    private function createEmailOtpVerification(int $userId, string $email): void
+    {
+        global $wpdb;
+
+        $settings = $this->getSettings();
+        $emailSettings = $settings['email'] ?? [];
+        $codeLength = (int) ($emailSettings['code_length'] ?? 6);
+        $expiry = (int) ($emailSettings['expiry'] ?? 600);
+        $maxAttempts = (int) ($emailSettings['max_attempts'] ?? 5);
+
+        $otp = $this->otpGenerator->generate($codeLength);
+        $hashed = $this->otpGenerator->hash($otp);
+
+        $wpdb->insert($wpdb->prefix . 'wsms_verifications', [
+            'user_id'      => $userId,
+            'type'         => 'email_verify',
+            'identifier'   => $email,
+            'code'         => $hashed,
+            'attempts'     => 0,
+            'max_attempts' => $maxAttempts,
+            'expires_at'   => gmdate('Y-m-d H:i:s', time() + $expiry),
+            'created_at'   => current_time('mysql', true),
+        ]);
+
+        $siteName = get_bloginfo('name');
+        $headers = ['Content-Type: text/html; charset=UTF-8'];
+        $subject = sprintf('[%s] Your verification code', $siteName);
+        $message = sprintf(
+            '<p>Your email verification code is:</p>'
+            . '<p style="font-size:24px;font-weight:bold;letter-spacing:4px;">%s</p>'
+            . '<p>This code expires in %d minutes.</p>'
+            . '<p>If you did not request this, please ignore this email.</p>',
+            esc_html($otp),
+            (int) ceil($expiry / 60),
+        );
+
+        wp_mail($email, $subject, $message, $headers);
+    }
+
+    /**
+     * Verify an email OTP code (mirrors verifyPhone).
+     */
+    public function verifyEmailOtp(int $userId, string $code): array
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . 'wsms_verifications';
+
+        $verification = $wpdb->get_row($wpdb->prepare(
+            "SELECT * FROM {$table} WHERE user_id = %d AND type = 'email_verify' AND used_at IS NULL ORDER BY created_at DESC LIMIT 1",
+            $userId,
+        ));
+
+        if (!$verification) {
+            return ['success' => false, 'error' => 'no_verification', 'message' => 'No pending email verification.'];
+        }
+
+        if (strtotime($verification->expires_at) < time()) {
+            return ['success' => false, 'error' => 'expired', 'message' => 'Verification code has expired.'];
+        }
+
+        if ((int) $verification->attempts >= (int) $verification->max_attempts) {
+            return ['success' => false, 'error' => 'max_attempts', 'message' => 'Too many attempts.'];
+        }
+
+        $newAttempts = (int) $verification->attempts + 1;
+
+        if (!$this->otpGenerator->verify($code, $verification->code)) {
+            $wpdb->update($table, ['attempts' => $newAttempts], ['id' => $verification->id]);
+
+            return ['success' => false, 'error' => 'invalid_code', 'message' => 'Invalid verification code.'];
+        }
+
+        $wpdb->update($table, ['attempts' => $newAttempts, 'used_at' => gmdate('Y-m-d H:i:s')], ['id' => $verification->id]);
+        update_user_meta($userId, 'wsms_email_verified', '1');
+
+        // Check for pending email change.
+        $pendingEmail = get_user_meta($userId, 'wsms_pending_email', true);
+
+        if (!empty($pendingEmail) && $pendingEmail === $verification->identifier) {
+            wp_update_user([
+                'ID'         => $userId,
+                'user_email' => $pendingEmail,
+            ]);
+            delete_user_meta($userId, 'wsms_pending_email');
+        }
+
+        $this->auditLogger->log(EventType::EmailVerified, 'success', $userId);
+
+        return ['success' => true, 'message' => 'Email verified successfully.'];
     }
 
     /**

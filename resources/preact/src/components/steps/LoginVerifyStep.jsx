@@ -5,6 +5,7 @@ import {
     challengeToken,
     pendingVerifications,
 } from '../../signals/auth';
+import { authConfig } from '../../signals/config';
 import { handleAuthResponse, extractError } from '../../utils/auth';
 import { Alert } from '../ui/Alert';
 import { PhoneVerifySection } from '../verification/PhoneVerifySection';
@@ -19,6 +20,9 @@ export function LoginVerifyStep() {
     const hasPhone = verifications.some((v) => v.type === 'phone');
     const hasEmail = verifications.some((v) => v.type === 'email');
 
+    const config = authConfig.value;
+    const emailIsOtp = config?.method_details?.email?.has_otp ?? false;
+
     const [phoneVerified, setPhoneVerified] = useState(false);
     const [emailVerified, setEmailVerified] = useState(false);
 
@@ -32,9 +36,9 @@ export function LoginVerifyStep() {
         }
     }
 
-    // Poll for email verification status.
+    // Poll for email verification status only in magic-link mode.
     useEffect(() => {
-        if (!hasEmail) return;
+        if (!hasEmail || emailIsOtp) return;
         let stopped = false;
         const interval = setInterval(async () => {
             if (stopped) return;
@@ -52,7 +56,12 @@ export function LoginVerifyStep() {
             }
         }, 5000);
         return () => { stopped = true; clearInterval(interval); };
-    }, [hasEmail]);
+    }, [hasEmail, emailIsOtp]);
+
+    function handleEmailVerified() {
+        setEmailVerified(true);
+        tryCompleteLogin();
+    }
 
     return (
         <div className="space-y-6 animate-fade-in">
@@ -78,6 +87,7 @@ export function LoginVerifyStep() {
                 <EmailVerifySection
                     headers={verifyHeaders()}
                     className={hasPhone ? 'border-t pt-4' : ''}
+                    onVerified={handleEmailVerified}
                 />
             )}
 

@@ -111,6 +111,15 @@ class AccountController
             'permission_callback' => '__return_true',
         ]);
 
+        register_rest_route(self::NAMESPACE, '/auth/register/verify-email', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'handleRegisterVerifyEmail'],
+            'permission_callback' => '__return_true',
+            'args'                => [
+                'code' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+            ],
+        ]);
+
         register_rest_route(self::NAMESPACE, '/auth/register/resend-email', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleResendEmail'],
@@ -142,6 +151,15 @@ class AccountController
             'methods'             => 'POST',
             'callback'            => [$this, 'handleSendEmailVerification'],
             'permission_callback' => [$this, 'checkAuthenticated'],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/auth/profile/verify-email', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'handleProfileVerifyEmail'],
+            'permission_callback' => [$this, 'checkAuthenticated'],
+            'args'                => [
+                'code' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+            ],
         ]);
     }
 
@@ -277,6 +295,25 @@ class AccountController
         return new WP_REST_Response($result, $result['success'] ? 200 : 400);
     }
 
+    public function handleRegisterVerifyEmail(WP_REST_Request $request): WP_REST_Response
+    {
+        $rl = $this->rateLimiter->check('register_verify_email', 10, 60);
+
+        if (!$rl['allowed']) {
+            return $this->rateLimitedResponse($rl['retry_after']);
+        }
+
+        $session = $this->validateVerificationToken($request);
+
+        if (!$session) {
+            return $this->invalidTokenResponse();
+        }
+
+        $result = $this->accountManager->verifyEmailOtp($session['user_id'], $request->get_param('code'));
+
+        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+    }
+
     public function handleResendPhone(WP_REST_Request $request): WP_REST_Response
     {
         $rl = $this->rateLimiter->check('register_resend_phone', 3, 60);
@@ -373,7 +410,29 @@ class AccountController
 
         $this->accountManager->sendVerificationChallenge(get_current_user_id(), 'email');
 
-        return new WP_REST_Response(['success' => true, 'message' => 'Verification email sent.']);
+        $method = $this->accountManager->emailUsesOtp() ? 'otp' : 'magic_link';
+
+        return new WP_REST_Response([
+            'success' => true,
+            'method'  => $method,
+            'message' => $method === 'otp' ? 'Verification code sent.' : 'Verification email sent.',
+        ]);
+    }
+
+    public function handleProfileVerifyEmail(WP_REST_Request $request): WP_REST_Response
+    {
+        $rl = $this->rateLimiter->check('profile_verify_email', 10, 60);
+
+        if (!$rl['allowed']) {
+            return $this->rateLimitedResponse($rl['retry_after']);
+        }
+
+        $result = $this->accountManager->verifyEmailOtp(
+            get_current_user_id(),
+            $request->get_param('code'),
+        );
+
+        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
     }
 
     private function invalidTokenResponse(): WP_REST_Response

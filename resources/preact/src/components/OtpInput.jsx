@@ -19,6 +19,8 @@ function Slot({ char, isActive, hasFakeCaret }) {
 }
 
 export function OtpInput({ length = 6, onComplete, disabled }) {
+    const half = Math.ceil(length / 2);
+
     return (
         <OTPInput
             maxLength={length}
@@ -27,12 +29,12 @@ export function OtpInput({ length = 6, onComplete, disabled }) {
             containerClassName="flex justify-center"
             render={({ slots }) => (
                 <div className="flex items-center gap-1.5">
-                    {slots.slice(0, 3).map((slot, i) => (
+                    {slots.slice(0, half).map((slot, i) => (
                         <Slot key={i} {...slot} />
                     ))}
                     <span className="text-lg text-muted-foreground mx-0.5">&ndash;</span>
-                    {slots.slice(3).map((slot, i) => (
-                        <Slot key={i + 3} {...slot} />
+                    {slots.slice(half).map((slot, i) => (
+                        <Slot key={i + half} {...slot} />
                     ))}
                 </div>
             )}

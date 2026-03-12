@@ -215,6 +215,7 @@ class AuthController
                 $methodDetails[$channelKey] = [
                     'has_otp'        => in_array('otp', $verificationMethods, true),
                     'has_magic_link' => in_array('magic_link', $verificationMethods, true),
+                    'code_length'    => (int) ($channelSettings['code_length'] ?? 6),
                 ];
             }
         }
