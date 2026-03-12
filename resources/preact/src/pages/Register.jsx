@@ -1,7 +1,7 @@
 import { useState } from 'preact/hooks';
 import { api } from '../api/client';
 import { registrationFields } from '../signals/config';
-import { authError, authLoading } from '../signals/auth';
+import { authError, authLoading, registrationToken, pendingVerifications } from '../signals/auth';
 import { extractError } from '../utils/auth';
 import { authUrl } from '../utils/urls';
 import { AuthLayout } from '../layouts/AuthLayout';
@@ -11,6 +11,7 @@ import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
 import { AuthLink } from '../components/AuthLink';
 import { PhoneInput } from '../components/PhoneInput';
+import { RegisterVerifyStep } from '../components/steps/RegisterVerifyStep';
 
 export function Register() {
     const fields = registrationFields.value;
@@ -24,6 +25,7 @@ export function Register() {
         phone: '',
     });
     const [success, setSuccess] = useState('');
+    const [verifying, setVerifying] = useState(false);
 
     function updateField(name, value) {
         setForm((prev) => ({ ...prev, [name]: value }));
@@ -42,13 +44,30 @@ export function Register() {
         try {
             const res = await api.post('/auth/register', body);
             if (res.success) {
-                setSuccess(res.message || 'Account created. Please check your email to verify.');
+                if (res.pending_verifications?.length > 0) {
+                    registrationToken.value = res.registration_token;
+                    pendingVerifications.value = res.pending_verifications;
+                    setVerifying(true);
+                } else {
+                    setSuccess(res.message || 'Account created successfully.');
+                }
             }
         } catch (err) {
             authError.value = extractError(err);
         } finally {
             authLoading.value = false;
         }
+    }
+
+    if (verifying) {
+        return (
+            <AuthLayout
+                title="Verify Your Account"
+                footer={<AuthLink href={authUrl('/login')}>Back to login</AuthLink>}
+            >
+                <RegisterVerifyStep onComplete={() => { window.location.href = authUrl('/login'); }} />
+            </AuthLayout>
+        );
     }
 
     if (success) {

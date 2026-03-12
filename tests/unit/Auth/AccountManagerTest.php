@@ -191,6 +191,97 @@ class AccountManagerTest extends TestCase
         $this->assertSame('missing_password', $result['error']);
     }
 
+    public function testRegisterUserNoPendingWhenVerifyAtSignupDisabled(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 60;
+        $this->stubWpdb();
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'registration_fields' => ['email', 'password'],
+            'phone' => ['required_at_signup' => true],
+            'email' => [],
+        ];
+
+        $result = $this->manager->registerUser([
+            'email'    => 'test@example.com',
+            'password' => 'StrongPass1!',
+            'phone'    => '+1234567890',
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertArrayNotHasKey('pending_verifications', $result);
+        $this->assertArrayNotHasKey('registration_token', $result);
+    }
+
+    public function testRegisterUserPendingEmailWhenVerifyAtSignupEnabled(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 61;
+        $this->stubWpdb();
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'registration_fields' => ['email', 'password'],
+            'email' => ['verify_at_signup' => true],
+        ];
+
+        $result = $this->manager->registerUser([
+            'email'    => 'verify@example.com',
+            'password' => 'StrongPass1!',
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertCount(1, $result['pending_verifications']);
+        $this->assertSame('email', $result['pending_verifications'][0]['type']);
+        $this->assertArrayHasKey('registration_token', $result);
+    }
+
+    public function testRegisterUserPendingPhoneWhenVerifyAtSignupEnabled(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 62;
+        $this->stubWpdb();
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'registration_fields' => ['email', 'password'],
+            'phone' => ['required_at_signup' => true, 'verify_at_signup' => true],
+        ];
+
+        $result = $this->manager->registerUser([
+            'email'    => 'test@example.com',
+            'password' => 'StrongPass1!',
+            'phone'    => '+1234567890',
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertCount(1, $result['pending_verifications']);
+        $this->assertSame('phone', $result['pending_verifications'][0]['type']);
+        $this->assertArrayHasKey('registration_token', $result);
+    }
+
+    public function testRegisterUserBothPendingWhenBothEnabled(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 63;
+        $this->stubWpdb();
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'registration_fields' => ['email', 'password'],
+            'phone' => ['required_at_signup' => true, 'verify_at_signup' => true],
+            'email' => ['verify_at_signup' => true],
+        ];
+
+        $result = $this->manager->registerUser([
+            'email'    => 'both@example.com',
+            'password' => 'StrongPass1!',
+            'phone'    => '+1234567890',
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertCount(2, $result['pending_verifications']);
+
+        $types = array_column($result['pending_verifications'], 'type');
+        $this->assertContains('phone', $types);
+        $this->assertContains('email', $types);
+        $this->assertArrayHasKey('registration_token', $result);
+    }
+
     // --- initiatePasswordReset ---
 
     public function testInitiatePasswordResetCreatesVerification(): void

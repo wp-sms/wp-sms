@@ -103,12 +103,15 @@ class AccountManager
         if (!empty($data['phone'])) {
             $phone = sanitize_text_field($data['phone']);
             update_user_meta($userId, 'wsms_phone', $phone);
-            $this->createPhoneVerification($userId, $phone);
-            $pendingVerifications[] = ['type' => 'phone', 'status' => 'pending'];
+
+            if (!empty($settings['phone']['verify_at_signup'])) {
+                $this->createPhoneVerification($userId, $phone);
+                $pendingVerifications[] = ['type' => 'phone', 'status' => 'pending'];
+            }
         }
 
-        // Generate and send email verification.
-        if (!empty($email)) {
+        // Generate and send email verification only when required.
+        if (!empty($email) && !empty($settings['email']['verify_at_signup'])) {
             if ($this->emailUsesOtp()) {
                 $this->createEmailOtpVerification($userId, $email);
             } else {
