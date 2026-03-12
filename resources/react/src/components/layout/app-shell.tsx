@@ -38,7 +38,7 @@ interface AppShellProps {
   children: ReactNode;
 }
 
-const NAV_ITEMS = [
+export const NAV_ITEMS = [
   {
     id: 'authentication',
     label: 'Authentication',
@@ -132,6 +132,9 @@ function getBreadcrumb(sectionId: string, onNavigate: (section: string) => void)
 }
 
 export function AppShell({ activeSection, onNavigate, version, children }: AppShellProps) {
+  const pageTitle = getPageTitle(activeSection);
+  const pageDescription = SECTION_DESCRIPTIONS[activeSection];
+
   return (
     <SidebarProvider defaultOpen={true}>
       <Sidebar collapsible="none">
@@ -220,12 +223,12 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
           </Breadcrumb>
         </header>
         <div className="p-6">
-          {getPageTitle(activeSection) && (
-            <h1 className="text-lg font-semibold tracking-tight">{getPageTitle(activeSection)}</h1>
+          {pageTitle && (
+            <h1 className="text-lg font-semibold tracking-tight">{pageTitle}</h1>
           )}
-          {SECTION_DESCRIPTIONS[activeSection] && (
+          {pageDescription && (
             <p className="mb-6 mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-              {SECTION_DESCRIPTIONS[activeSection]}
+              {pageDescription}
             </p>
           )}
           {children}

@@ -17,8 +17,8 @@ export function Registration({ settings, onUpdate }: RegistrationProps) {
   return (
     <div className="space-y-4">
       <MethodCard
-        title="Auto-Create Users"
-        description="Automatically create WordPress accounts when new users register"
+        title="Auto-Create Accounts on Login"
+        description="When someone logs in with a phone or email that doesn't have an account yet, automatically create one instead of rejecting them"
         icon={UserPlus}
         enabled={settings.auto_create_users}
         onToggle={(checked) => onUpdate('auto_create_users', checked)}

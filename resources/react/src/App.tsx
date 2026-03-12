@@ -1,7 +1,8 @@
-import { useState, useCallback } from 'react';
+import { useCallback } from 'react';
 import { AppShell, getParentSection } from '@/components/layout/app-shell';
 import { SaveBar } from '@/components/layout/save-bar';
 import { useSettings } from '@/hooks/use-settings';
+import { useHashSection } from '@/hooks/use-hash-section';
 import { getConfig } from '@/lib/api';
 import { AuthenticationPage } from '@/pages/authentication';
 import { SecurityPage } from '@/pages/security';
@@ -15,7 +16,7 @@ import { AlertCircle } from 'lucide-react';
 const { roles, version } = getConfig();
 
 export default function App() {
-  const [section, setSection] = useState('channels');
+  const [section, setSection] = useHashSection('channels');
   const { settings, updateSetting, isDirty, saveStatus, save, loading, error } = useSettings();
   const handleSave = useCallback(() => { void save(); }, [save]);
 
