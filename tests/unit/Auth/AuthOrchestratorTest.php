@@ -45,20 +45,9 @@ class AuthOrchestratorTest extends TestCase
             $GLOBALS['_test_userdata'],
             $GLOBALS['_test_get_users_result'],
             $GLOBALS['_test_get_user_by_result'],
+            $GLOBALS['_test_options']['wsms_auth_settings'],
         );
     }
-
-    protected function tearDown(): void
-    {
-        unset(
-            $GLOBALS['_test_wp_authenticate_result'],
-            $GLOBALS['_test_userdata'],
-            $GLOBALS['_test_get_users_result'],
-            $GLOBALS['_test_get_user_by_result'],
-        );
-    }
-
-    // --- loginWithPassword ---
 
     public function testLoginWithPasswordSucceedsWithoutMfa(): void
     {
@@ -111,8 +100,6 @@ class AuthOrchestratorTest extends TestCase
         $this->assertSame('session-token-abc', $result->sessionToken);
     }
 
-    // --- loginPasswordless ---
-
     public function testLoginPasswordlessFailsWhenMethodDisabled(): void
     {
         $this->policy->method('getAvailablePrimaryMethods')->willReturn(['password']);
@@ -144,8 +131,6 @@ class AuthOrchestratorTest extends TestCase
         $this->assertSame('challenge_sent', $result->status);
         $this->assertSame('challenge-token-xyz', $result->sessionToken);
     }
-
-    // --- verifyPrimary ---
 
     public function testVerifyPrimaryReturnsInvalidTokenForBadSession(): void
     {
@@ -203,8 +188,6 @@ class AuthOrchestratorTest extends TestCase
         $this->assertSame('invalid_code', $result->error);
     }
 
-    // --- sendMfaChallenge ---
-
     public function testSendMfaChallengeSucceeds(): void
     {
         $this->session->method('validate')->willReturn([
@@ -226,8 +209,6 @@ class AuthOrchestratorTest extends TestCase
         $this->assertTrue($result->success);
         $this->assertSame('challenge_sent', $result->status);
     }
-
-    // --- verifyMfa ---
 
     public function testVerifyMfaCompletesLogin(): void
     {
@@ -275,8 +256,6 @@ class AuthOrchestratorTest extends TestCase
         $this->assertSame('invalid_code', $result->error);
     }
 
-    // --- resendChallenge ---
-
     public function testResendChallengeSucceeds(): void
     {
         $this->session->method('validate')->willReturn([
@@ -297,8 +276,6 @@ class AuthOrchestratorTest extends TestCase
         $this->assertTrue($result->success);
         $this->assertSame('challenge_sent', $result->status);
     }
-
-    // --- Account Lockout ---
 
     public function testLoginWithPasswordRejectsLockedAccount(): void
     {
@@ -357,7 +334,226 @@ class AuthOrchestratorTest extends TestCase
         $this->assertTrue($result->success);
     }
 
-    // --- Helper ---
+    /**
+     * @dataProvider identifierTypeProvider
+     */
+    public function testIdentifyDetectsType(string $identifier, string $expectedType): void
+    {
+        $result = $this->orchestrator->identify($identifier);
+        $this->assertSame($expectedType, $result->identifierType);
+    }
+
+    public static function identifierTypeProvider(): iterable
+    {
+        yield 'email' => ['user@example.com', 'email'];
+        yield 'email with plus tag' => ['user+tag@example.com', 'email'];
+        yield 'phone with plus' => ['+12345678901', 'phone'];
+        yield 'phone digits only' => ['1234567890', 'phone'];
+        yield 'phone min length (7 digits)' => ['1234567', 'phone'];
+        yield 'username' => ['admin', 'username'];
+        yield 'short digits as username (<7)' => ['12345', 'username'];
+        yield 'long digits as username (>15)' => ['1234567890123456', 'username'];
+    }
+
+    public function testIdentifyUserFoundReturnsMethodsAndDefault(): void
+    {
+        $methods = [
+            ['method' => 'password', 'type' => 'password', 'channel' => 'password'],
+            ['method' => 'email_otp', 'type' => 'otp', 'channel' => 'email'],
+        ];
+
+        $this->setupIdentifyUserFound('user@example.com', $methods, 'password');
+
+        $result = $this->orchestrator->identify('user@example.com');
+
+        $this->assertTrue($result->userFound);
+        $this->assertSame($methods, $result->availableMethods);
+        $this->assertSame('password', $result->defaultMethod);
+        $this->assertFalse($result->registrationAvailable);
+    }
+
+    public function testIdentifyUserFoundReturnsMaskedEmail(): void
+    {
+        $this->setupIdentifyUserFound('john@example.com');
+
+        $result = $this->orchestrator->identify('john@example.com');
+
+        $this->assertSame('j***@example.com', $result->meta['masked_identifier']);
+    }
+
+    public function testIdentifyUserFoundReturnsMaskedPhone(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_get_users_result'] = [$user];
+
+        $this->policy->method('getAvailableMethodsForUser')->willReturn([]);
+        $this->policy->method('getDefaultMethod')->willReturn(null);
+
+        $result = $this->orchestrator->identify('+1234567890');
+
+        $this->assertMatchesRegularExpression('/^\+1\*+890$/', $result->meta['masked_identifier']);
+    }
+
+    public function testIdentifyUserFoundReturnsMaskedUsername(): void
+    {
+        $this->setupIdentifyUserFound('admin');
+
+        $result = $this->orchestrator->identify('admin');
+
+        $this->assertSame('a***n', $result->meta['masked_identifier']);
+    }
+
+    public function testIdentifyUserFoundRegistrationNotAvailable(): void
+    {
+        $this->setupIdentifyUserFound('user@example.com');
+
+        $result = $this->orchestrator->identify('user@example.com');
+
+        $this->assertFalse($result->registrationAvailable);
+    }
+
+    public function testIdentifyNotFoundAutoCreateOn(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'auto_create_users'    => true,
+            'registration_fields'  => ['email', 'phone', 'password'],
+        ];
+
+        $result = $this->orchestrator->identify('nobody@example.com');
+
+        $this->assertFalse($result->userFound);
+        $this->assertTrue($result->registrationAvailable);
+        $this->assertSame(['email', 'phone', 'password'], $result->registrationFields);
+    }
+
+    public function testIdentifyNotFoundAutoCreateOff(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'auto_create_users' => false,
+        ];
+
+        $result = $this->orchestrator->identify('nobody@example.com');
+
+        $this->assertFalse($result->userFound);
+        $this->assertFalse($result->registrationAvailable);
+        $this->assertSame([], $result->registrationFields);
+    }
+
+    public function testIdentifyNotFoundNoSettings(): void
+    {
+        $result = $this->orchestrator->identify('nobody@example.com');
+
+        $this->assertFalse($result->userFound);
+        $this->assertFalse($result->registrationAvailable);
+    }
+
+    public function testIdentifyNotFoundEmptyMethods(): void
+    {
+        $result = $this->orchestrator->identify('nobody@example.com');
+
+        $this->assertSame([], $result->availableMethods);
+        $this->assertNull($result->defaultMethod);
+    }
+
+    public function testLoginViaEmail(): void
+    {
+        $user = $this->makeUser(1);
+        $user->user_login = 'john';
+        $this->setupSuccessfulLogin($user, '_test_get_user_by_result');
+
+        $result = $this->orchestrator->loginWithPassword('john@example.com', 'secret');
+
+        $this->assertTrue($result->success);
+        $this->assertSame('authenticated', $result->status);
+    }
+
+    public function testLoginViaPhone(): void
+    {
+        $user = $this->makeUser(1);
+        $user->user_login = 'phoneuser';
+        $GLOBALS['_test_get_users_result'] = [$user];
+        $GLOBALS['_test_wp_authenticate_result'] = $user;
+        $GLOBALS['_test_userdata'] = $user;
+
+        $this->lockout->method('isLocked')->willReturn(['locked' => false, 'until' => null, 'attempts' => 0]);
+        $this->policy->method('isMfaRequired')->willReturn(false);
+
+        $result = $this->orchestrator->loginWithPassword('+1234567890', 'secret');
+
+        $this->assertTrue($result->success);
+        $this->assertSame('authenticated', $result->status);
+    }
+
+    public function testLoginViaUsername(): void
+    {
+        $user = $this->makeUser(1);
+        $this->setupSuccessfulLogin($user, '_test_get_user_by_result');
+
+        $result = $this->orchestrator->loginWithPassword('testuser', 'secret');
+
+        $this->assertTrue($result->success);
+        $this->assertSame('authenticated', $result->status);
+    }
+
+    public function testLoginUnknownIdentifierFails(): void
+    {
+        $GLOBALS['_test_wp_authenticate_result'] = new \WP_Error('invalid_username', 'Unknown user');
+
+        $result = $this->orchestrator->loginWithPassword('nonexistent', 'pass');
+
+        $this->assertFalse($result->success);
+        $this->assertSame('invalid_credentials', $result->error);
+    }
+
+    public function testLoginViaEmailLockedAccount(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_get_user_by_result'] = $user;
+
+        $this->lockout->method('isLocked')->willReturn([
+            'locked'   => true,
+            'until'    => '2030-06-01T00:00:00Z',
+            'attempts' => 5,
+        ]);
+
+        $result = $this->orchestrator->loginWithPassword('user@example.com', 'pass');
+
+        $this->assertFalse($result->success);
+        $this->assertSame('account_locked', $result->error);
+    }
+
+    public function testLoginViaPhoneRecordsFailure(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_get_users_result'] = [$user];
+        $GLOBALS['_test_wp_authenticate_result'] = new \WP_Error('incorrect_password', 'Wrong');
+
+        $this->lockout->method('isLocked')->willReturn(['locked' => false, 'until' => null, 'attempts' => 0]);
+        $this->lockout->expects($this->once())->method('recordFailure')->with(1);
+
+        $result = $this->orchestrator->loginWithPassword('+1234567890', 'wrong');
+
+        $this->assertFalse($result->success);
+    }
+
+    private function setupIdentifyUserFound(string $identifier, array $methods = [], ?string $default = null): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_get_user_by_result'] = $user;
+
+        $this->policy->method('getAvailableMethodsForUser')->willReturn($methods);
+        $this->policy->method('getDefaultMethod')->willReturn($default);
+    }
+
+    private function setupSuccessfulLogin(object $user, string $resolutionGlobal): void
+    {
+        $GLOBALS[$resolutionGlobal] = $user;
+        $GLOBALS['_test_wp_authenticate_result'] = $user;
+        $GLOBALS['_test_userdata'] = $user;
+
+        $this->lockout->method('isLocked')->willReturn(['locked' => false, 'until' => null, 'attempts' => 0]);
+        $this->policy->method('isMfaRequired')->willReturn(false);
+    }
 
     private function makeUser(int $id): object
     {
