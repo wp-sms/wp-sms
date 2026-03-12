@@ -1,5 +1,6 @@
 import { ChannelCard } from '@/components/channel-card';
 import { MethodCard } from '@/components/method-card';
+import { Checkbox } from '@/components/ui/checkbox';
 import { CHANNELS } from '@/lib/constants';
 import { KeyRound } from 'lucide-react';
 import type { AuthSettings, PhoneChannelSettings, EmailChannelSettings } from '@/lib/api';
@@ -82,20 +83,16 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
       >
         <div className="space-y-2">
           <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
+            <Checkbox
               checked={settings.password.required_at_signup}
-              onChange={(e) => onUpdate('password', { ...settings.password, required_at_signup: e.target.checked })}
-              className="accent-primary"
+              onCheckedChange={(checked) => onUpdate('password', { ...settings.password, required_at_signup: !!checked })}
             />
             <span className="text-sm">Required at sign up</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
+            <Checkbox
               checked={settings.password.allow_sign_in}
-              onChange={(e) => onUpdate('password', { ...settings.password, allow_sign_in: e.target.checked })}
-              className="accent-primary"
+              onCheckedChange={(checked) => onUpdate('password', { ...settings.password, allow_sign_in: !!checked })}
             />
             <span className="text-sm">Allow to sign in</span>
           </label>

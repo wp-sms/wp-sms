@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { Checkbox } from '@/components/ui/checkbox';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { cn } from '@/lib/utils';
 
 interface VerificationMethod {
@@ -92,28 +93,20 @@ export function ChannelCard({
           {onUsageChange && (
             <div className="space-y-2">
               <Label className="text-sm font-medium text-muted-foreground">Usage</Label>
-              <div className="flex gap-4">
+              <RadioGroup
+                value={usage}
+                onValueChange={(v) => { if (v === 'login' || v === 'mfa') onUsageChange(v); }}
+                className="flex gap-4"
+              >
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name={`${title}-usage`}
-                    checked={usage === 'login'}
-                    onChange={() => onUsageChange('login')}
-                    className="accent-primary"
-                  />
+                  <RadioGroupItem value="login" />
                   <span className="text-sm">Login / Register</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="radio"
-                    name={`${title}-usage`}
-                    checked={usage === 'mfa'}
-                    onChange={() => onUsageChange('mfa')}
-                    className="accent-primary"
-                  />
+                  <RadioGroupItem value="mfa" />
                   <span className="text-sm">MFA</span>
                 </label>
-              </div>
+              </RadioGroup>
             </div>
           )}
 
@@ -147,7 +140,11 @@ export function ChannelCard({
           {deliveryChannels && onDeliveryChannelChange && (
             <div className="space-y-2">
               <Label className="text-sm font-medium text-muted-foreground">Delivery</Label>
-              <div className="flex gap-4">
+              <RadioGroup
+                value={activeDeliveryChannel}
+                onValueChange={onDeliveryChannelChange}
+                className="flex gap-4"
+              >
                 {deliveryChannels.map((dc) => (
                   <label
                     key={dc.value}
@@ -156,14 +153,7 @@ export function ChannelCard({
                       dc.available ? 'cursor-pointer' : 'cursor-not-allowed opacity-50',
                     )}
                   >
-                    <input
-                      type="radio"
-                      name={`${title}-delivery`}
-                      checked={activeDeliveryChannel === dc.value}
-                      onChange={() => onDeliveryChannelChange(dc.value)}
-                      disabled={!dc.available}
-                      className="accent-primary"
-                    />
+                    <RadioGroupItem value={dc.value} disabled={!dc.available} />
                     <span className="text-sm">{dc.label}</span>
                     {!dc.available && (
                       <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
@@ -172,7 +162,7 @@ export function ChannelCard({
                     )}
                   </label>
                 ))}
-              </div>
+              </RadioGroup>
             </div>
           )}
 
