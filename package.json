@@ -36,7 +36,8 @@
     "react-dom": "^19.0.0",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.5.0",
-    "tailwindcss": "^4.2.1"
+    "tailwindcss": "^4.2.1",
+    "vaul": "^1.1.2"
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.3",

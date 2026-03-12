@@ -120,6 +120,14 @@ export const DEFAULTS: Required<AuthSettings> = {
   registration_fields: ['email', 'password'],
 };
 
+export type ChannelId = 'phone' | 'email' | 'password';
+
+export const SOCIAL_METHODS = [
+  { id: 'google', label: 'Google' },
+  { id: 'apple', label: 'Apple' },
+  { id: 'linkedin', label: 'LinkedIn' },
+] as const;
+
 /** Toggle an item in/out of an array. */
 export function toggleArrayItem<T>(arr: T[], item: T, enabled: boolean): T[] {
   return enabled ? [...arr, item] : arr.filter((x) => x !== item);
