@@ -138,7 +138,7 @@ All premium features + all add-ons in one package.
 14. SMS Stats Dashboard Widget
 
 == Changelog ==
-= v7.2.1 - 2026-03-12 =
+= v7.2.1 - 2026-03-** =
 - **New:** Added Contact column to the Two-Way inbox, showing subscriber name or WordPress user display name for each sender.
 - **Fix:** Fixed gateway initialization issue for 4jawaly, 1s2u, 160au, 0098sms, and 18sms gateways.
 - **Fix:** Fixed sms.to gateway request config passed as params instead of query args.
