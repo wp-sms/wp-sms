@@ -25,6 +25,8 @@ class AdminController
         'log_retention_days',
         'registration_fields',
         'redirect_login',
+        'require_email_verification',
+        'require_phone_verification',
     ];
 
     /** Channel keys that accept nested sub-objects. */

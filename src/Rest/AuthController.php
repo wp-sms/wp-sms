@@ -81,6 +81,12 @@ class AuthController
             ],
         ]);
 
+        register_rest_route(self::NAMESPACE, '/auth/verification/complete', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'handleVerificationComplete'],
+            'permission_callback' => '__return_true',
+        ]);
+
         register_rest_route(self::NAMESPACE, '/auth/config', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleConfig'],
@@ -181,6 +187,19 @@ class AuthController
         return new WP_REST_Response($result->toArray(), 200);
     }
 
+    public function handleVerificationComplete(WP_REST_Request $request): WP_REST_Response
+    {
+        $token = $request->get_header('X-Verification-Token');
+
+        if (empty($token)) {
+            return new WP_REST_Response(['success' => false, 'error' => 'missing_token'], 400);
+        }
+
+        $result = $this->orchestrator->completeVerification($token);
+
+        return $this->toResponse($result);
+    }
+
     public function handleConfig(WP_REST_Request $request): WP_REST_Response
     {
         $settings = get_option('wsms_auth_settings', []);
@@ -201,11 +220,13 @@ class AuthController
         }
 
         return new WP_REST_Response([
-            'primary_methods'     => $primaryMethods,
-            'method_details'      => $methodDetails,
-            'mfa_enabled'         => !empty($this->policy->getAvailableMfaFactors()),
-            'base_url'            => $settings['auth_base_url'] ?? '/account',
-            'registration_fields' => $settings['registration_fields'] ?? ['email', 'password'],
+            'primary_methods'              => $primaryMethods,
+            'method_details'               => $methodDetails,
+            'mfa_enabled'                  => !empty($this->policy->getAvailableMfaFactors()),
+            'base_url'                     => $settings['auth_base_url'] ?? '/account',
+            'registration_fields'          => $settings['registration_fields'] ?? ['email', 'password'],
+            'require_email_verification'   => !empty($settings['require_email_verification']),
+            'require_phone_verification'   => !empty($settings['require_phone_verification']),
         ]);
     }
 

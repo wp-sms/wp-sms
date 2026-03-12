@@ -5,6 +5,7 @@ import { loadCurrentUser, userLoading } from '../signals/user';
 import { useAuthGuard } from '../hooks/useAuthGuard';
 import { authUrl } from '../utils/urls';
 import { AccountLayout } from '../layouts/AccountLayout';
+import { Alert } from '../components/ui/Alert';
 import { Spinner } from '../components/ui/Spinner';
 
 export function Account() {
@@ -53,8 +54,17 @@ export function Account() {
         },
     ];
 
+    const hasUnverified = user && (!user.email_verified || (user.phone && !user.phone_verified));
+
     return (
         <AccountLayout title={`Welcome, ${user.display_name || user.username}`} subtitle={user.email} currentPath="/">
+            {hasUnverified && (
+                <a href={authUrl('/profile')} className="block no-underline mb-4">
+                    <Alert variant="info">
+                        Some of your account details are not verified. <span className="underline font-medium">Verify now</span>
+                    </Alert>
+                </a>
+            )}
             <div className="space-y-3">
                 {navItems.map((item) => (
                     <a

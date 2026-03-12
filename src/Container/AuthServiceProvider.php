@@ -48,6 +48,7 @@ class AuthServiceProvider implements ServiceProvider
                 $container->get('audit.logger'),
                 $container->get('auth.session'),
                 $container->get('auth.lockout'),
+                $container->get('auth.account_manager'),
             );
         });
 

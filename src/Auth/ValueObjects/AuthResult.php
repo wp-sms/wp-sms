@@ -49,6 +49,17 @@ readonly class AuthResult
         );
     }
 
+    public static function verificationRequired(string $sessionToken, array $pendingVerifications): self
+    {
+        return new self(
+            success: true,
+            status: 'verification_required',
+            sessionToken: $sessionToken,
+            message: 'Account verification required.',
+            meta: ['pending_verifications' => $pendingVerifications],
+        );
+    }
+
     public static function failed(string $error, string $message, array $meta = []): self
     {
         return new self(
@@ -94,7 +105,7 @@ readonly class AuthResult
     public function toHttpStatus(): int
     {
         return match ($this->status) {
-            'authenticated', 'mfa_required', 'challenge_sent' => 200,
+            'authenticated', 'mfa_required', 'challenge_sent', 'verification_required' => 200,
             'rate_limited' => 429,
             'expired', 'invalid_token' => 401,
             'failed' => match ($this->error) {

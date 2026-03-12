@@ -7,6 +7,7 @@ import { AuthenticateStep } from '../components/steps/AuthenticateStep';
 import { MfaStep } from '../components/steps/MfaStep';
 import { ProgressiveRegisterStep } from '../components/steps/ProgressiveRegisterStep';
 import { RegisterVerifyStep } from '../components/steps/RegisterVerifyStep';
+import { LoginVerifyStep } from '../components/steps/LoginVerifyStep';
 
 const TITLES = {
     identifier: 'Sign In',
@@ -14,6 +15,7 @@ const TITLES = {
     mfa: 'Verify Your Identity',
     register: 'Create Account',
     register_verify: 'Verify Your Account',
+    login_verify: 'Verify Your Account',
 };
 
 export function Login() {
@@ -27,7 +29,7 @@ export function Login() {
         <AuthLink href={authUrl('/login')} onClick={() => resetIdentifyFlow()}>
             Skip for now
         </AuthLink>
-    ) : step === 'identifier' ? (
+    ) : step === 'login_verify' ? null : step === 'identifier' ? (
         <div className="flex gap-4">
             <AuthLink href={authUrl('/forgot-password')}>Forgot password?</AuthLink>
             <AuthLink href={authUrl('/register')}>Create account</AuthLink>
@@ -44,6 +46,7 @@ export function Login() {
                 {step === 'mfa' && <MfaStep />}
                 {step === 'register' && <ProgressiveRegisterStep />}
                 {step === 'register_verify' && <RegisterVerifyStep />}
+                {step === 'login_verify' && <LoginVerifyStep />}
             </div>
         </AuthLayout>
     );

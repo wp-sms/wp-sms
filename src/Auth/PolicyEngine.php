@@ -266,6 +266,35 @@ class PolicyEngine
     }
 
     /**
+     * Check admin settings + user meta to determine pending verifications.
+     *
+     * @return array<int, array{type: string, status: string}>
+     */
+    public function getPendingVerifications(int $userId): array
+    {
+        $settings = $this->getSettings();
+        $pending = [];
+
+        if (!empty($settings['require_email_verification'])) {
+            $hasEmail = !empty(get_userdata($userId)?->user_email);
+            $emailVerified = (bool) get_user_meta($userId, 'wsms_email_verified', true);
+            if ($hasEmail && !$emailVerified) {
+                $pending[] = ['type' => 'email', 'status' => 'pending'];
+            }
+        }
+
+        if (!empty($settings['require_phone_verification'])) {
+            $hasPhone = !empty(get_user_meta($userId, 'wsms_phone', true));
+            $phoneVerified = (bool) get_user_meta($userId, 'wsms_phone_verified', true);
+            if ($hasPhone && !$phoneVerified) {
+                $pending[] = ['type' => 'phone', 'status' => 'pending'];
+            }
+        }
+
+        return $pending;
+    }
+
+    /**
      * Policy conflicts are eliminated by design — usage is mutually exclusive
      * per channel (login OR mfa), so no validation needed.
      *

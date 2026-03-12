@@ -395,6 +395,26 @@ class AccountManager
     }
 
     /**
+     * Send a fresh verification challenge for login-time enforcement.
+     */
+    public function sendVerificationChallenge(int $userId, string $type): void
+    {
+        if ($type === 'phone') {
+            $phone = get_user_meta($userId, 'wsms_phone', true);
+            if (!empty($phone)) {
+                $this->invalidateVerifications($userId, 'phone_verify');
+                $this->createPhoneVerification($userId, $phone);
+            }
+        } elseif ($type === 'email') {
+            $email = get_userdata($userId)?->user_email;
+            if (!empty($email)) {
+                $this->invalidateVerifications($userId, 'email_verify');
+                $this->createVerification($userId, 'email_verify', $email);
+            }
+        }
+    }
+
+    /**
      * Create a phone verification record and send OTP via SMS.
      */
     private function createPhoneVerification(int $userId, string $phone): void

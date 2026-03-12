@@ -6,6 +6,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountLockout;
+use WSms\Auth\AccountManager;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthSession;
 use WSms\Auth\PolicyEngine;
@@ -23,6 +24,7 @@ class AuthOrchestratorTest extends TestCase
     private MockObject&AuditLogger $auditLogger;
     private MockObject&AuthSession $session;
     private MockObject&AccountLockout $lockout;
+    private MockObject&AccountManager $accountManager;
 
     protected function setUp(): void
     {
@@ -31,6 +33,7 @@ class AuthOrchestratorTest extends TestCase
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->session = $this->createMock(AuthSession::class);
         $this->lockout = $this->createMock(AccountLockout::class);
+        $this->accountManager = $this->createMock(AccountManager::class);
 
         $this->orchestrator = new AuthOrchestrator(
             $this->policy,
@@ -38,7 +41,11 @@ class AuthOrchestratorTest extends TestCase
             $this->auditLogger,
             $this->session,
             $this->lockout,
+            $this->accountManager,
         );
+
+        // Default: no pending verifications (tests can override via specific expectations).
+        $this->policy->method('getPendingVerifications')->willReturn([]);
 
         unset(
             $GLOBALS['_test_wp_authenticate_result'],

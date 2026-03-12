@@ -1,4 +1,4 @@
-import { challengeToken, challengeMeta, pendingMfa, authStep, clearAuth } from '../signals/auth';
+import { challengeToken, challengeMeta, pendingMfa, pendingVerifications, authStep, clearAuth } from '../signals/auth';
 import { authUrl, getBaseUrl } from './urls';
 
 export function handleAuthResponse(res, route) {
@@ -6,6 +6,13 @@ export function handleAuthResponse(res, route) {
         clearAuth();
         window.location.href = res.redirect || getBaseUrl();
         return;
+    }
+
+    if (res.status === 'verification_required') {
+        pendingVerifications.value = res.meta?.pending_verifications || [];
+        challengeToken.value = res.challenge_token;
+        authStep.value = 'login_verify';
+        return 'verification_required';
     }
 
     if (res.status === 'mfa_required') {

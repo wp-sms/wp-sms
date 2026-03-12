@@ -9,7 +9,7 @@ export const authError = signal(null);
 export const authLoading = signal(false);
 
 // Identifier-first flow signals.
-export const authStep = signal('identifier'); // 'identifier'|'authenticate'|'mfa'|'register'|'register_verify'
+export const authStep = signal('identifier'); // 'identifier'|'authenticate'|'mfa'|'register'|'register_verify'|'login_verify'
 export const identifyResult = signal(null);
 export const enteredIdentifier = signal('');
 export const rememberedIdentifier = signal(localStorage.getItem('wsms_remembered_id') || '');

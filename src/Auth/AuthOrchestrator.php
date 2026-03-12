@@ -21,6 +21,7 @@ class AuthOrchestrator
         private AuditLogger $auditLogger,
         private AuthSession $session,
         private AccountLockout $lockout,
+        private AccountManager $accountManager,
     ) {
     }
 
@@ -293,10 +294,9 @@ class AuthOrchestrator
             return AuthResult::failed('invalid_code', 'The code you entered is incorrect.');
         }
 
-        $userData = $this->completeLogin($sessionData['user_id'], $sessionData['method'], $channelId);
         $this->session->destroy($sessionData['session_key']);
 
-        return AuthResult::authenticated($sessionData['user_id'], $userData);
+        return $this->resolveLogin($sessionData['user_id'], $sessionData['method'], $channelId);
     }
 
     /**
@@ -327,14 +327,36 @@ class AuthOrchestrator
     }
 
     /**
-     * After primary auth succeeds, decide: complete login or require MFA.
+     * Complete verification during login and finish login if all verifications are done.
      */
+    public function completeVerification(string $sessionToken): AuthResult
+    {
+        $sessionData = $this->session->validate($sessionToken);
+
+        if ($sessionData === null) {
+            return AuthResult::invalidToken();
+        }
+
+        if ($sessionData['stage'] !== 'verification_pending') {
+            return AuthResult::failed('invalid_stage', 'Invalid session stage.');
+        }
+
+        $pending = $this->policy->getPendingVerifications($sessionData['user_id']);
+
+        if (!empty($pending)) {
+            return AuthResult::verificationRequired($sessionToken, $pending);
+        }
+
+        $this->session->destroy($sessionData['session_key']);
+        $userData = $this->completeLogin($sessionData['user_id'], $sessionData['method']);
+
+        return AuthResult::authenticated($sessionData['user_id'], $userData);
+    }
+
     private function resolvePostPrimary(int $userId, string $method, ?string $existingSessionKey = null): AuthResult
     {
         if (!$this->policy->isMfaRequired($userId)) {
-            $userData = $this->completeLogin($userId, $method);
-
-            return AuthResult::authenticated($userId, $userData);
+            return $this->resolveLogin($userId, $method);
         }
 
         // MFA is required — find available factors.
@@ -360,9 +382,7 @@ class AuthOrchestrator
 
         // If no valid MFA factors available, complete login without MFA (graceful).
         if (empty($availableFactors)) {
-            $userData = $this->completeLogin($userId, $method);
-
-            return AuthResult::authenticated($userId, $userData);
+            return $this->resolveLogin($userId, $method);
         }
 
         // Destroy old session if transitioning from challenge_pending.
@@ -373,6 +393,33 @@ class AuthOrchestrator
         $token = $this->session->create($userId, $method, 'primary_verified');
 
         return AuthResult::mfaRequired($token, $availableFactors);
+    }
+
+    /**
+     * Check verification requirements and either complete login or require verification.
+     */
+    private function resolveLogin(int $userId, string $method, ?string $mfaChannel = null): AuthResult
+    {
+        $pending = $this->policy->getPendingVerifications($userId);
+
+        if (!empty($pending)) {
+            $this->sendLoginVerifications($userId, $pending);
+
+            $token = $this->session->create($userId, $method, 'verification_pending');
+
+            return AuthResult::verificationRequired($token, $pending);
+        }
+
+        $userData = $this->completeLogin($userId, $method, $mfaChannel);
+
+        return AuthResult::authenticated($userId, $userData);
+    }
+
+    private function sendLoginVerifications(int $userId, array $pending): void
+    {
+        foreach ($pending as $verification) {
+            $this->accountManager->sendVerificationChallenge($userId, $verification['type']);
+        }
     }
 
     /**

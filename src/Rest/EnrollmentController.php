@@ -283,6 +283,7 @@ class EnrollmentController
                 'last_name'        => $user->last_name,
                 'phone'            => get_user_meta($userId, 'wsms_phone', true) ?: null,
                 'phone_verified'   => (bool) get_user_meta($userId, 'wsms_phone_verified', true),
+                'email_verified'   => (bool) get_user_meta($userId, 'wsms_email_verified', true),
                 'roles'            => $user->roles,
                 'mfa_enabled'      => !empty($enrolledFactors),
                 'enrolled_factors' => $enrolledFactors,

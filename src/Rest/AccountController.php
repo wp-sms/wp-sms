@@ -122,6 +122,27 @@ class AccountController
             'callback'            => [$this, 'handleVerificationStatus'],
             'permission_callback' => '__return_true',
         ]);
+
+        register_rest_route(self::NAMESPACE, '/auth/profile/send-phone-verification', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'handleSendPhoneVerification'],
+            'permission_callback' => [$this, 'checkAuthenticated'],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/auth/profile/verify-phone', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'handleProfileVerifyPhone'],
+            'permission_callback' => [$this, 'checkAuthenticated'],
+            'args'                => [
+                'code' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/auth/profile/send-email-verification', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'handleSendEmailVerification'],
+            'permission_callback' => [$this, 'checkAuthenticated'],
+        ]);
     }
 
     public function checkAuthenticated(WP_REST_Request $request): bool
@@ -245,7 +266,7 @@ class AccountController
             return $this->rateLimitedResponse($rl['retry_after']);
         }
 
-        $session = $this->validateRegistrationToken($request);
+        $session = $this->validateVerificationToken($request);
 
         if (!$session) {
             return $this->invalidTokenResponse();
@@ -264,7 +285,7 @@ class AccountController
             return $this->rateLimitedResponse($rl['retry_after']);
         }
 
-        $session = $this->validateRegistrationToken($request);
+        $session = $this->validateVerificationToken($request);
 
         if (!$session) {
             return $this->invalidTokenResponse();
@@ -283,7 +304,7 @@ class AccountController
             return $this->rateLimitedResponse($rl['retry_after']);
         }
 
-        $session = $this->validateRegistrationToken($request);
+        $session = $this->validateVerificationToken($request);
 
         if (!$session) {
             return $this->invalidTokenResponse();
@@ -302,7 +323,7 @@ class AccountController
             return $this->rateLimitedResponse($rl['retry_after']);
         }
 
-        $session = $this->validateRegistrationToken($request);
+        $session = $this->validateVerificationToken($request);
 
         if (!$session) {
             return $this->invalidTokenResponse();
@@ -313,18 +334,61 @@ class AccountController
         return new WP_REST_Response(array_merge(['success' => true], $result));
     }
 
+    public function handleSendPhoneVerification(WP_REST_Request $request): WP_REST_Response
+    {
+        $rl = $this->rateLimiter->check('profile_send_phone', 3, 60);
+
+        if (!$rl['allowed']) {
+            return $this->rateLimitedResponse($rl['retry_after']);
+        }
+
+        $this->accountManager->sendVerificationChallenge(get_current_user_id(), 'phone');
+
+        return new WP_REST_Response(['success' => true, 'message' => 'Verification code sent.']);
+    }
+
+    public function handleProfileVerifyPhone(WP_REST_Request $request): WP_REST_Response
+    {
+        $rl = $this->rateLimiter->check('profile_verify_phone', 10, 60);
+
+        if (!$rl['allowed']) {
+            return $this->rateLimitedResponse($rl['retry_after']);
+        }
+
+        $result = $this->accountManager->verifyPhone(
+            get_current_user_id(),
+            $request->get_param('code'),
+        );
+
+        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+    }
+
+    public function handleSendEmailVerification(WP_REST_Request $request): WP_REST_Response
+    {
+        $rl = $this->rateLimiter->check('profile_send_email', 3, 60);
+
+        if (!$rl['allowed']) {
+            return $this->rateLimitedResponse($rl['retry_after']);
+        }
+
+        $this->accountManager->sendVerificationChallenge(get_current_user_id(), 'email');
+
+        return new WP_REST_Response(['success' => true, 'message' => 'Verification email sent.']);
+    }
+
     private function invalidTokenResponse(): WP_REST_Response
     {
         return new WP_REST_Response([
             'success' => false,
             'error'   => 'invalid_token',
-            'message' => 'Invalid or expired registration token.',
+            'message' => 'Invalid or expired verification token.',
         ], 401);
     }
 
-    private function validateRegistrationToken(WP_REST_Request $request): ?array
+    private function validateVerificationToken(WP_REST_Request $request): ?array
     {
-        $token = $request->get_header('X-Registration-Token');
+        $token = $request->get_header('X-Verification-Token')
+              ?? $request->get_header('X-Registration-Token');
 
         if (empty($token)) {
             return null;
@@ -332,7 +396,7 @@ class AccountController
 
         $session = $this->authSession->validate($token);
 
-        if (!$session || ($session['stage'] ?? '') !== 'registration_verify') {
+        if (!$session || !in_array($session['stage'] ?? '', ['registration_verify', 'verification_pending'], true)) {
             return null;
         }
 
