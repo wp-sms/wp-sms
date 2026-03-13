@@ -1,9 +1,9 @@
-import { useState } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import { api } from '../api/client';
 import { registrationFields, socialProviders } from '../signals/config';
 import { authError, authLoading, registrationToken, pendingVerifications } from '../signals/auth';
-import { extractError } from '../utils/auth';
-import { authUrl } from '../utils/urls';
+import { extractError, friendlySocialError } from '../utils/auth';
+import { authUrl, getQueryParam } from '../utils/urls';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { Alert } from '../components/ui/Alert';
 import { Button } from '../components/ui/Button';
@@ -32,6 +32,14 @@ export function Register() {
     });
     const [success, setSuccess] = useState('');
     const [verifying, setVerifying] = useState(false);
+
+    useEffect(() => {
+        const socialError = getQueryParam('social_error');
+        if (socialError) {
+            authError.value = friendlySocialError(socialError);
+            window.history.replaceState({}, '', window.location.pathname);
+        }
+    }, []);
 
     function updateField(name, value) {
         setForm((prev) => ({ ...prev, [name]: value }));
@@ -96,7 +104,7 @@ export function Register() {
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
 
             {socialProviders.value.length > 0 && <>
-                <SocialLoginButtons />
+                <SocialLoginButtons intent="register" />
                 <SocialDivider />
             </>}
 

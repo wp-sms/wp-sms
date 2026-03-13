@@ -35,6 +35,15 @@ export function extractError(err) {
     return err.message || 'Something went wrong. Please try again.';
 }
 
+const SOCIAL_ERROR_MESSAGES = {
+    registration_disabled: 'No account found. Create an account first.',
+    missing_params: 'Social login failed. Please try again.',
+};
+
+export function friendlySocialError(code) {
+    return SOCIAL_ERROR_MESSAGES[code] ?? `Social login failed: ${code}`;
+}
+
 export async function logout() {
     const { api } = await import('../api/client');
     try {

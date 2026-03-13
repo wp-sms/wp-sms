@@ -405,6 +405,90 @@ class SocialAuthOrchestratorTest extends TestCase
         $this->assertArrayNotHasKey('tokens', $accounts[0]);
     }
 
+    public function testHandleCallbackRegisterIntentSkipsAutoCreateCheck(): void
+    {
+        $provider = $this->makeProvider();
+        $provider->method('exchangeCode')->willReturn(['access_token' => 'token']);
+        $provider->method('getUserInfo')->willReturn([
+            'id' => '44444', 'email' => 'register-intent@gmail.com', 'name' => 'Register User',
+            'email_verified' => true, 'given_name' => 'Register', 'family_name' => 'User',
+        ]);
+
+        $this->socialManager->method('getProvider')->willReturn($provider);
+        $this->stateManager->method('consume')->willReturn(['code_verifier' => 'v', 'intent' => 'register']);
+        $this->repository->method('findByProviderAccount')->willReturn(null);
+        $GLOBALS['_test_get_user_by_result'] = false;
+
+        $this->policyEngine->method('getSetting')
+            ->willReturnMap([['auto_create_users', false, false]]);
+
+        $this->accountManager->method('registerUser')->willReturn([
+            'success' => true,
+            'user_id' => 101,
+            'message' => 'Registration successful.',
+        ]);
+
+        $this->authOrchestrator->method('resolveAuthFromSocial')->willReturn(
+            AuthResult::authenticated(101, ['id' => 101, 'email' => 'register-intent@gmail.com', 'username' => 'wsms_reg', 'display_name' => 'Register User', 'first_name' => 'Register', 'last_name' => 'User', 'roles' => ['subscriber']])
+        );
+
+        $result = $this->orchestrator->handleCallback('google', 'code', 'state');
+
+        $this->assertSame(101, $result['user_id']);
+        $this->assertTrue($result['result']->toArray()['success']);
+    }
+
+    public function testHandleCallbackLoginIntentRespectsAutoCreateDisabled(): void
+    {
+        $provider = $this->makeProvider();
+        $provider->method('exchangeCode')->willReturn(['access_token' => 'token']);
+        $provider->method('getUserInfo')->willReturn([
+            'id' => '55555', 'email' => 'login-intent@gmail.com', 'name' => 'Login User',
+            'email_verified' => true,
+        ]);
+
+        $this->socialManager->method('getProvider')->willReturn($provider);
+        $this->stateManager->method('consume')->willReturn(['code_verifier' => 'v', 'intent' => 'login']);
+        $this->repository->method('findByProviderAccount')->willReturn(null);
+        $GLOBALS['_test_get_user_by_result'] = false;
+
+        $this->policyEngine->method('getSetting')
+            ->willReturnMap([['auto_create_users', false, false]]);
+
+        $result = $this->orchestrator->handleCallback('google', 'code', 'state');
+
+        $this->assertSame('registration_disabled', $result['result']->toArray()['error']);
+    }
+
+    public function testHandleCallbackReturnsIntent(): void
+    {
+        $provider = $this->makeProvider();
+        $provider->method('exchangeCode')->willReturn(['access_token' => 'token']);
+        $provider->method('getUserInfo')->willReturn([
+            'id' => '66666', 'email' => 'intent-test@gmail.com', 'name' => 'Intent Test',
+            'email_verified' => true,
+        ]);
+
+        $this->socialManager->method('getProvider')->willReturn($provider);
+        $this->stateManager->method('consume')->willReturn(['code_verifier' => 'v', 'intent' => 'register']);
+
+        // Existing link found — so resolveUser path includes intent in result.
+        $existingLink = (object) ['id' => 1, 'user_id' => 50, 'channel_id' => 'google', 'identifier' => '66666', 'meta' => '{}'];
+        $this->repository->method('findByProviderAccount')->willReturn($existingLink);
+
+        $this->lockout->method('isLocked')->willReturn(['locked' => false, 'until' => null, 'attempts' => 0]);
+        $this->policyEngine->method('getSetting')
+            ->willReturnMap([['social_profile_sync', 'registration_only', 'registration_only']]);
+        $this->authOrchestrator->method('resolveAuthFromSocial')->willReturn(
+            AuthResult::authenticated(50, ['id' => 50, 'email' => 'intent-test@gmail.com', 'username' => 'user', 'display_name' => 'Intent Test', 'first_name' => '', 'last_name' => '', 'roles' => ['subscriber']])
+        );
+
+        $result = $this->orchestrator->handleCallback('google', 'code', 'state');
+
+        $this->assertArrayHasKey('intent', $result);
+        $this->assertSame('register', $result['intent']);
+    }
+
     private function makeProvider(): MockObject&SocialProviderInterface
     {
         $provider = $this->createMock(SocialProviderInterface::class);

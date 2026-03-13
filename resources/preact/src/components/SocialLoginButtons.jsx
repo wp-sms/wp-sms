@@ -1,7 +1,7 @@
 import { socialProviders } from '../signals/config';
 import { Button } from './ui/Button';
 
-export function SocialLoginButtons() {
+export function SocialLoginButtons({ intent = 'login' }) {
     const providers = socialProviders.value;
 
     if (!providers.length) return null;
@@ -15,7 +15,9 @@ export function SocialLoginButtons() {
                     className="w-full"
                     type="button"
                     onClick={() => {
-                        window.location.href = provider.authorize_url;
+                        const url = new URL(provider.authorize_url, window.location.origin);
+                        url.searchParams.set('intent', intent);
+                        window.location.href = url.toString();
                     }}
                 >
                     <span

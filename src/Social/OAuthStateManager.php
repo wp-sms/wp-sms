@@ -14,7 +14,7 @@ class OAuthStateManager
      *
      * @return array{state: string, code_verifier: string}
      */
-    public function create(?int $linkUserId = null): array
+    public function create(?int $linkUserId = null, string $intent = 'login'): array
     {
         $state = bin2hex(random_bytes(16));
         $codeVerifier = $this->generateCodeVerifier();
@@ -22,6 +22,7 @@ class OAuthStateManager
         $data = [
             'code_verifier' => $codeVerifier,
             'created_at'    => time(),
+            'intent'        => $intent,
         ];
 
         if ($linkUserId !== null) {

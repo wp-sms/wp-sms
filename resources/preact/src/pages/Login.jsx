@@ -2,6 +2,7 @@ import { useEffect } from 'preact/hooks';
 import { authStep, authError, challengeToken, resetIdentifyFlow } from '../signals/auth';
 import { primaryMethods } from '../signals/config';
 import { authUrl, getQueryParam } from '../utils/urls';
+import { friendlySocialError } from '../utils/auth';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { AuthLink } from '../components/AuthLink';
 import { IdentifierStep } from '../components/steps/IdentifierStep';
@@ -30,9 +31,7 @@ export function Login() {
         const socialMfa = getQueryParam('social_mfa');
 
         if (socialError) {
-            authError.value = socialError === 'missing_params'
-                ? 'Social login failed. Please try again.'
-                : `Social login failed: ${socialError}`;
+            authError.value = friendlySocialError(socialError);
             window.history.replaceState({}, '', window.location.pathname);
         } else if (socialMfa) {
             challengeToken.value = socialMfa;

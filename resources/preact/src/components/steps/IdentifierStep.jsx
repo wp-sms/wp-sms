@@ -107,7 +107,7 @@ export function IdentifierStep() {
         <div className="space-y-4">
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
 
-            {hasSocial && <SocialLoginButtons />}
+            {hasSocial && <SocialLoginButtons intent="login" />}
             {hasSocial && <SocialDivider />}
 
             <form onSubmit={handleSubmit} className="space-y-4">

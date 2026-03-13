@@ -29,6 +29,7 @@ class SocialAuthController
             'permission_callback' => '__return_true',
             'args'                => [
                 'provider' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                'intent'   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
             ],
         ]);
 
@@ -74,18 +75,22 @@ class SocialAuthController
      */
     public function handleAuthorize(WP_REST_Request $request): WP_REST_Response
     {
+        $intent = $request->get_param('intent');
+        $intent = in_array($intent, ['login', 'register'], true) ? $intent : 'login';
+        $errorPage = $intent === 'register' ? '/register' : '/login';
+
         $rl = $this->rateLimiter->check('social_auth', 10, 60);
 
         if (!$rl['allowed']) {
-            return $this->redirectTo($this->getLoginUrl() . '?social_error=rate_limited');
+            return $this->redirectTo($this->getAuthBaseUrl() . $errorPage . '?social_error=rate_limited');
         }
 
         $providerId = $request->get_param('provider');
 
         try {
-            $data = $this->orchestrator->initiateAuthorize($providerId);
+            $data = $this->orchestrator->initiateAuthorize($providerId, null, $intent);
         } catch (\InvalidArgumentException $e) {
-            return $this->redirectTo($this->getLoginUrl() . '?social_error=invalid_provider');
+            return $this->redirectTo($this->getAuthBaseUrl() . $errorPage . '?social_error=invalid_provider');
         }
 
         return $this->redirectTo($data['authorize_url']);
@@ -117,6 +122,7 @@ class SocialAuthController
         $callbackResult = $this->orchestrator->handleCallback($providerId, $code, $state);
         $result = $callbackResult['result'];
         $resultArray = $result->toArray();
+        $intent = $callbackResult['intent'] ?? 'login';
 
         // Success — user is authenticated.
         if (!empty($resultArray['success']) && ($resultArray['status'] ?? '') === 'authenticated') {
@@ -133,10 +139,11 @@ class SocialAuthController
             return $this->redirectTo($baseUrl . '/security?linked=' . $providerId);
         }
 
-        // Error — redirect with error code.
+        // Error — redirect to the page matching the original intent.
         $errorCode = $resultArray['error'] ?? 'unknown_error';
+        $errorPage = $intent === 'register' ? '/register' : '/login';
 
-        return $this->redirectTo($loginUrl . '?social_error=' . urlencode($errorCode));
+        return $this->redirectTo($baseUrl . $errorPage . '?social_error=' . urlencode($errorCode));
     }
 
     public function handleLink(WP_REST_Request $request): WP_REST_Response
@@ -185,11 +192,6 @@ class SocialAuthController
         $settings = get_option('wsms_auth_settings', []);
 
         return get_site_url() . ($settings['auth_base_url'] ?? '/account');
-    }
-
-    private function getLoginUrl(): string
-    {
-        return $this->getAuthBaseUrl() . '/login';
     }
 
     private function redirectTo(string $url): WP_REST_Response

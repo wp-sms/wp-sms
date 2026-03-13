@@ -35,7 +35,7 @@ class SocialAuthOrchestrator
      *
      * @return array{authorize_url: string}
      */
-    public function initiateAuthorize(string $providerId, ?int $linkUserId = null): array
+    public function initiateAuthorize(string $providerId, ?int $linkUserId = null, string $intent = 'login'): array
     {
         $provider = $this->socialManager->getProvider($providerId);
 
@@ -43,7 +43,7 @@ class SocialAuthOrchestrator
             throw new \InvalidArgumentException("Unknown social provider: {$providerId}");
         }
 
-        $stateData = $this->stateManager->create($linkUserId);
+        $stateData = $this->stateManager->create($linkUserId, $intent);
         $redirectUri = $this->getCallbackUrl($providerId);
 
         $authData = $provider->createAuthorizationURL(
@@ -108,13 +108,18 @@ class SocialAuthOrchestrator
             return $this->handleLinking($providerId, $stateData['link_user_id'], $userInfo, $tokens);
         }
 
+        // Extract intent from state (login or register).
+        $intent = $stateData['intent'] ?? 'login';
+
         // Resolve user from social account.
-        $result = $this->resolveUser($providerId, $provider, $userInfo, $tokens);
+        $result = $this->resolveUser($providerId, $provider, $userInfo, $tokens, $intent === 'register');
 
         // Auto-enroll Telegram MFA if user logged in via Telegram with bot_access scope.
         if ($providerId === 'telegram' && !empty($result['user_id']) && !empty($userInfo['id'])) {
             $this->autoEnrollTelegramMfa($result['user_id'], $userInfo);
         }
+
+        $result['intent'] = $intent;
 
         return $result;
     }
@@ -172,7 +177,7 @@ class SocialAuthOrchestrator
     /**
      * Resolve a user from social login: existing link, email match, or new registration.
      */
-    private function resolveUser(string $providerId, Contracts\SocialProviderInterface $provider, array $userInfo, array $tokens): array
+    private function resolveUser(string $providerId, Contracts\SocialProviderInterface $provider, array $userInfo, array $tokens, bool $allowAutoCreate = false): array
     {
         // Case 1: Existing social link.
         $existingLink = $this->repository->findByProviderAccount($providerId, $userInfo['id']);
@@ -240,7 +245,7 @@ class SocialAuthOrchestrator
         }
 
         // Case 4 & 5: No match — create new user or reject.
-        if (!$this->policyEngine?->getSetting('auto_create_users', false)) {
+        if (!$allowAutoCreate && !$this->policyEngine?->getSetting('auto_create_users', false)) {
             return ['result' => AuthResult::failed(
                 'registration_disabled',
                 'Automatic account creation is disabled. Please contact an administrator.',
