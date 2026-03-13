@@ -89,24 +89,25 @@ class AccountManager
      *
      * @return array{success: bool, user_id?: int, mfa_required?: bool, error?: string, message: string}
      */
-    public function registerUser(array $data): array
+    public function registerUser(array $data, bool $socialLogin = false): array
     {
         $settings = $this->getSettings();
         $requiredFields = $settings['registration_fields'] ?? ['email', 'password'];
 
         // Channel-based requirement checks (default to required for backward compat).
-        $emailRequired = $settings['email']['required_at_signup'] ?? true;
+        // Social login skips these — the social provider controls what fields are available.
+        $emailRequired = $socialLogin ? false : ($settings['email']['required_at_signup'] ?? true);
         if ($emailRequired && empty($data['email'])) {
             return ['success' => false, 'error' => 'missing_email', 'message' => 'Email is required.'];
         }
 
-        $passwordRequired = !empty($settings['password']['enabled']) && ($settings['password']['required_at_signup'] ?? true);
+        $passwordRequired = $socialLogin ? false : (!empty($settings['password']['enabled']) && ($settings['password']['required_at_signup'] ?? true));
         if ($passwordRequired && empty($data['password'])) {
             return ['success' => false, 'error' => 'missing_password', 'message' => 'Password is required.'];
         }
 
-        // Enforce phone.required_at_signup (only when phone channel is enabled).
-        if (!empty($settings['phone']['enabled']) && !empty($settings['phone']['required_at_signup']) && empty($data['phone'])) {
+        $phoneRequired = $socialLogin ? false : (!empty($settings['phone']['enabled']) && !empty($settings['phone']['required_at_signup']));
+        if ($phoneRequired && empty($data['phone'])) {
             return ['success' => false, 'error' => 'missing_phone', 'message' => 'Phone number is required.'];
         }
 

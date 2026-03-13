@@ -255,12 +255,13 @@ class SocialAuthOrchestrator
         // Register new user via AccountManager.
         $regData = [
             'email'        => $userInfo['email'] ?? '',
+            'phone'        => $userInfo['phone_number'] ?? '',
             'display_name' => $userInfo['name'] ?? '',
             'first_name'   => $userInfo['given_name'] ?? '',
             'last_name'    => $userInfo['family_name'] ?? '',
         ];
 
-        $regResult = $this->accountManager->registerUser($regData);
+        $regResult = $this->accountManager->registerUser($regData, socialLogin: true);
 
         if (!$regResult['success']) {
             return ['result' => AuthResult::failed($regResult['error'] ?? 'registration_failed', $regResult['message'])];

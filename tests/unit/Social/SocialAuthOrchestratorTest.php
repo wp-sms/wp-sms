@@ -387,6 +387,54 @@ class SocialAuthOrchestratorTest extends TestCase
         $this->assertSame('1', $GLOBALS['_test_user_meta'][77]['wsms_phone_verified'] ?? null);
     }
 
+    public function testHandleCallbackTelegramNoEmailRegistersSuccessfully(): void
+    {
+        $provider = $this->createMock(SocialProviderInterface::class);
+        $provider->method('getId')->willReturn('telegram');
+        $provider->method('isTrustedEmailProvider')->willReturn(false);
+        $provider->method('exchangeCode')->willReturn(['access_token' => 'token']);
+        $provider->method('getUserInfo')->willReturn([
+            'id'             => '555666',
+            'email'          => '',
+            'name'           => 'TG No Email',
+            'email_verified' => false,
+            'phone_number'   => '+1234567890',
+        ]);
+
+        $this->socialManager->method('getProvider')->willReturn($provider);
+        $this->stateManager->method('consume')->willReturn(['code_verifier' => 'v']);
+        $this->repository->method('findByProviderAccount')->willReturn(null);
+        $GLOBALS['_test_get_user_by_result'] = false;
+        $GLOBALS['_test_get_users_result'] = [];
+
+        $this->policyEngine->method('getSetting')
+            ->willReturnMap([['auto_create_users', false, true]]);
+
+        // Verify registerUser is called with socialLogin: true and phone included.
+        $this->accountManager->expects($this->once())
+            ->method('registerUser')
+            ->with(
+                $this->callback(function (array $data) {
+                    return $data['phone'] === '+1234567890' && $data['email'] === '';
+                }),
+                true, // socialLogin
+            )
+            ->willReturn([
+                'success' => true,
+                'user_id' => 88,
+                'message' => 'Registration successful.',
+            ]);
+
+        $this->authOrchestrator->method('resolveAuthFromSocial')->willReturn(
+            AuthResult::authenticated(88, ['id' => 88, 'email' => '', 'username' => 'wsms_tg2', 'display_name' => 'TG No Email', 'first_name' => '', 'last_name' => '', 'roles' => ['subscriber']])
+        );
+
+        $result = $this->orchestrator->handleCallback('telegram', 'code', 'state');
+
+        $this->assertSame(88, $result['user_id']);
+        $this->assertTrue($result['result']->toArray()['success']);
+    }
+
     public function testGetLinkedAccountsStripsTokens(): void
     {
         $this->repository->method('findByUserId')->willReturn([

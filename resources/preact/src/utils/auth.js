@@ -38,6 +38,7 @@ export function extractError(err) {
 const SOCIAL_ERROR_MESSAGES = {
     registration_disabled: 'No account found. Create an account first.',
     missing_params: 'Social login failed. Please try again.',
+    missing_email: 'Registration failed. Please try again or use a different method.',
 };
 
 export function friendlySocialError(code) {

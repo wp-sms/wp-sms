@@ -194,6 +194,41 @@ class AccountManagerTest extends TestCase
         $this->assertSame('missing_password', $result['error']);
     }
 
+    public function testRegisterUserSocialLoginSkipsEmailRequirement(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 50;
+        $this->stubWpdb();
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'registration_fields' => ['email', 'password'],
+            'email' => ['required_at_signup' => true],
+            'password' => ['enabled' => true, 'required_at_signup' => true],
+        ];
+
+        $result = $this->manager->registerUser(['phone' => '+971500000000'], socialLogin: true);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(50, $result['user_id']);
+    }
+
+    public function testRegisterUserSocialLoginSkipsPasswordRequirement(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 51;
+        $this->stubWpdb();
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'registration_fields' => ['email', 'password'],
+            'password' => ['enabled' => true, 'required_at_signup' => true],
+        ];
+
+        $result = $this->manager->registerUser([
+            'email' => 'social@example.com',
+        ], socialLogin: true);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(51, $result['user_id']);
+    }
+
     public function testRegisterUserNoPendingWhenVerifyAtSignupDisabled(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 60;
