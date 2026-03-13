@@ -98,7 +98,7 @@ describe('Profile email verification', () => {
 
   it('should send and verify email inline', async () => {
     // Send verification.
-    const sendRes = await api.api('POST', '/auth/profile/send-email-verification');
+    const sendRes = await api.api('POST', '/auth/profile/send-verification/email');
     const sendData = await sendRes.json();
 
     expect(sendData.success).toBe(true);
@@ -107,7 +107,7 @@ describe('Profile email verification', () => {
     const otp = await getOtp(api, userId, 'email_verify');
 
     // Verify.
-    const verifyRes = await api.api('POST', '/auth/profile/verify-email', {
+    const verifyRes = await api.api('POST', '/auth/profile/verify/email', {
       code: otp,
     });
     const verifyData = await verifyRes.json();
@@ -135,7 +135,7 @@ describe('Profile phone verification', () => {
 
   it('should send and verify phone inline', async () => {
     // Send verification.
-    const sendRes = await api.api('POST', '/auth/profile/send-phone-verification');
+    const sendRes = await api.api('POST', '/auth/profile/send-verification/phone');
     const sendData = await sendRes.json();
 
     expect(sendData.success).toBe(true);
@@ -144,7 +144,7 @@ describe('Profile phone verification', () => {
     const otp = await getOtp(api, userId, 'phone_verify');
 
     // Verify.
-    const verifyRes = await api.api('POST', '/auth/profile/verify-phone', {
+    const verifyRes = await api.api('POST', '/auth/profile/verify/phone', {
       code: otp,
     });
     const verifyData = await verifyRes.json();

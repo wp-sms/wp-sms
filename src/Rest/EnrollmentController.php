@@ -7,8 +7,8 @@ use WP_REST_Response;
 use WSms\Auth\AccountManager;
 use WSms\Auth\PolicyEngine;
 use WSms\Enums\ChannelStatus;
-use WSms\Mfa\Channels\PhoneChannel;
 use WSms\Mfa\Channels\BackupCodesChannel;
+use WSms\Mfa\Contracts\SupportsEnrollmentConfirmation;
 use WSms\Mfa\MfaManager;
 
 defined('ABSPATH') || exit;
@@ -185,7 +185,7 @@ class EnrollmentController
             ], 400);
         }
 
-        if ($channel instanceof PhoneChannel) {
+        if ($channel instanceof SupportsEnrollmentConfirmation) {
             $result = $channel->confirmEnrollment($userId, $code);
 
             if ($result->success) {

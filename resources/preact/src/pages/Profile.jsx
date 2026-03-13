@@ -82,7 +82,7 @@ export function Profile() {
         setEmailSending(true);
         setError('');
         try {
-            const res = await api.post('/auth/profile/send-email-verification');
+            const res = await api.post('/auth/profile/send-verification/email');
             if (res.method === 'otp') {
                 setShowEmailOtp(true);
             } else {
@@ -99,7 +99,7 @@ export function Profile() {
         setPhoneSending(true);
         setError('');
         try {
-            await api.post('/auth/profile/send-phone-verification');
+            await api.post('/auth/profile/send-verification/phone');
             setShowPhoneOtp(true);
         } catch (err) {
             setError(extractError(err));
@@ -208,8 +208,8 @@ export function Profile() {
                         )}
                         {showEmailOtp && (
                             <OtpVerifyInline
-                                verifyEndpoint="/auth/profile/verify-email"
-                                resendEndpoint="/auth/profile/send-email-verification"
+                                verifyEndpoint="/auth/profile/verify/email"
+                                resendEndpoint="/auth/profile/send-verification/email"
                                 onVerified={() => handleVerified('email')}
                                 onError={setError}
                                 label="Enter the code sent to your email"
@@ -244,8 +244,8 @@ export function Profile() {
                         )}
                         {showPhoneOtp && (
                             <OtpVerifyInline
-                                verifyEndpoint="/auth/profile/verify-phone"
-                                resendEndpoint="/auth/profile/send-phone-verification"
+                                verifyEndpoint="/auth/profile/verify/phone"
+                                resendEndpoint="/auth/profile/send-verification/phone"
                                 onVerified={() => handleVerified('phone')}
                                 onError={setError}
                                 label="Enter the code sent to your phone"

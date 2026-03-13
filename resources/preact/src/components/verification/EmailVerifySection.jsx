@@ -16,8 +16,8 @@ export function EmailVerifySection({ headers, className, onVerified }) {
     if (isOtp) {
         return (
             <OtpVerifyInline
-                verifyEndpoint="/auth/register/verify-email"
-                resendEndpoint="/auth/register/resend-email"
+                verifyEndpoint="/auth/register/verify/email"
+                resendEndpoint="/auth/register/resend/email"
                 headers={headers}
                 onVerified={onVerified}
                 onError={(msg) => { authError.value = msg; }}
@@ -40,7 +40,7 @@ function EmailMagicLinkSection({ headers, className }) {
         authError.value = null;
 
         try {
-            const res = await api.post('/auth/register/resend-email', null, headers);
+            const res = await api.post('/auth/register/resend/email', null, headers);
             if (res.success) {
                 setResent(true);
                 resetCooldown(60);

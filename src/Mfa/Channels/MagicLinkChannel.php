@@ -265,6 +265,16 @@ class MagicLinkChannel implements ChannelInterface
         return $this->verifyTokenAndResolveUser($code) === $userId;
     }
 
+    public function supportsAutoEnrollment(): bool
+    {
+        return false;
+    }
+
+    public function isAvailableForUser(int $userId): bool
+    {
+        return $this->isEnrolled($userId);
+    }
+
     /** {@inheritDoc} */
     public function getEnrollmentInfo(int $userId): array
     {

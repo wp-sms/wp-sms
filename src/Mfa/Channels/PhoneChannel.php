@@ -5,6 +5,8 @@ namespace WSms\Mfa\Channels;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
 use WSms\Audit\AuditLogger;
+use WSms\Mfa\Contracts\SupportsEnrollmentConfirmation;
+use WSms\Mfa\Contracts\SupportsTokenVerification;
 use WSms\Mfa\OtpGenerator;
 use WSms\Mfa\Support\PhoneMasker;
 use WSms\Mfa\ValueObjects\ChallengeResult;
@@ -12,7 +14,7 @@ use WSms\Mfa\ValueObjects\EnrollmentResult;
 
 defined('ABSPATH') || exit;
 
-class PhoneChannel extends AbstractOtpChannel
+class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerification, SupportsEnrollmentConfirmation
 {
     private MagicLinkChannel $magicLink;
 

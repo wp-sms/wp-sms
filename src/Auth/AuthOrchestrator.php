@@ -7,8 +7,7 @@ use WSms\Auth\ValueObjects\AuthResult;
 use WSms\Auth\ValueObjects\IdentifyResult;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
-use WSms\Mfa\Channels\EmailChannel;
-use WSms\Mfa\Channels\PhoneChannel;
+use WSms\Mfa\Contracts\SupportsTokenVerification;
 use WSms\Mfa\MfaManager;
 
 defined('ABSPATH') || exit;
@@ -137,8 +136,7 @@ class AuthOrchestrator
         }
 
         if (!$channelObj->isEnrolled($user->ID)) {
-            // Auto-enroll for email channel.
-            if ($channel === 'email') {
+            if ($channelObj->supportsAutoEnrollment()) {
                 $channelObj->enroll($user->ID, []);
             } else {
                 return AuthResult::failed('not_enrolled', 'You are not enrolled in this authentication method.');
@@ -198,28 +196,19 @@ class AuthOrchestrator
 
     /**
      * Verify a magic link token (comes directly from URL, no session token).
-     * Looks up the token via email channel's magic link delegate.
+     * Iterates all channels that support token verification.
      */
     public function verifyMagicLink(string $token): AuthResult
     {
-        // Try email channel first, then phone channel.
-        $emailChannel = $this->mfaManager->getChannel('email');
-
-        if ($emailChannel && $emailChannel instanceof EmailChannel) {
-            $userId = $emailChannel->verifyTokenAndResolveUser($token);
-
-            if ($userId !== null) {
-                return $this->resolvePostPrimary($userId, 'email');
+        foreach ($this->mfaManager->getAvailableChannels() as $channel) {
+            if (!$channel instanceof SupportsTokenVerification) {
+                continue;
             }
-        }
 
-        $phoneChannel = $this->mfaManager->getChannel('phone');
-
-        if ($phoneChannel && $phoneChannel instanceof PhoneChannel) {
-            $userId = $phoneChannel->verifyTokenAndResolveUser($token);
+            $userId = $channel->verifyTokenAndResolveUser($token);
 
             if ($userId !== null) {
-                return $this->resolvePostPrimary($userId, 'phone');
+                return $this->resolvePostPrimary($userId, $channel->getId());
             }
         }
 

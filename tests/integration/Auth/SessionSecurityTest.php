@@ -122,7 +122,7 @@ class SessionSecurityTest extends IntegrationTestCase
         $user = UserFactory::create();
         UserFactory::install($user);
 
-        $channel = $this->configureMfaChannel('email', enrolled: true);
+        $channel = $this->configureMfaChannel('email', enrolled: true, supportsPrimaryAuth: true);
 
         $challengeResult = $this->orchestrator->loginPasswordless('email', $user->user_email);
         $this->assertSame('challenge_sent', $challengeResult->status);

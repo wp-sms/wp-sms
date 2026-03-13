@@ -186,18 +186,14 @@ class AccountManager
             update_user_meta($userId, 'wsms_phone', $phone);
 
             if (!empty($settings['phone']['verify_at_signup'])) {
-                $this->createPhoneVerification($userId, $phone);
+                $this->createChannelVerification($userId, 'phone', $phone);
                 $pendingVerifications[] = ['type' => 'phone', 'status' => 'pending'];
             }
         }
 
         // Generate and send email verification only when required (skip for placeholder emails).
         if (!empty($email) && !$isPlaceholder && !empty($settings['email']['verify_at_signup'])) {
-            if ($this->emailUsesOtp()) {
-                $this->createEmailOtpVerification($userId, $email);
-            } else {
-                $this->createVerification($userId, 'email_verify', $email);
-            }
+            $this->createChannelVerification($userId, 'email', $email);
             $pendingVerifications[] = ['type' => 'email', 'status' => 'pending'];
         }
 
@@ -378,22 +374,26 @@ class AccountManager
     }
 
     /**
-     * Verify a phone number using an OTP code.
+     * Verify a channel using an OTP code.
+     *
+     * Verify any channel that stores OTP verifications with type '{channel}_verify'.
      *
      * @return array{success: bool, error?: string, message: string}
      */
-    public function verifyPhone(int $userId, string $code): array
+    public function verifyChannelOtp(int $userId, string $channel, string $code): array
     {
         global $wpdb;
         $table = $wpdb->prefix . 'wsms_verifications';
+        $verifyType = $channel . '_verify';
 
         $verification = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$table} WHERE user_id = %d AND type = 'phone_verify' AND used_at IS NULL ORDER BY created_at DESC LIMIT 1",
+            "SELECT * FROM {$table} WHERE user_id = %d AND type = %s AND used_at IS NULL ORDER BY created_at DESC LIMIT 1",
             $userId,
+            $verifyType,
         ));
 
         if (!$verification) {
-            return ['success' => false, 'error' => 'no_verification', 'message' => 'No pending phone verification.'];
+            return ['success' => false, 'error' => 'no_verification', 'message' => "No pending {$channel} verification."];
         }
 
         if (strtotime($verification->expires_at) < time()) {
@@ -413,69 +413,43 @@ class AccountManager
         }
 
         $wpdb->update($table, ['attempts' => $newAttempts, 'used_at' => gmdate('Y-m-d H:i:s')], ['id' => $verification->id]);
-        update_user_meta($userId, 'wsms_phone_verified', '1');
 
-        $this->auditLogger->log(EventType::PhoneVerified, 'success', $userId);
+        // Apply channel-specific post-verification actions.
+        $this->applyChannelVerified($userId, $channel, $verification->identifier);
         $this->maybeActivateUser($userId);
 
-        return ['success' => true, 'message' => 'Phone verified successfully.'];
+        $channelLabel = ucfirst($channel);
+
+        return ['success' => true, 'message' => "{$channelLabel} verified successfully."];
     }
 
     /**
-     * Resend phone verification OTP.
+     * Resend a verification code/link for any channel.
+     *
+     * Resend a verification code/link for the given channel.
      *
      * @return array{success: bool, error?: string, message: string}
      */
-    public function resendPhoneVerification(int $userId): array
+    public function resendVerification(int $userId, string $channel): array
     {
-        $phone = get_user_meta($userId, 'wsms_phone', true);
+        $identifier = $this->getChannelIdentifier($userId, $channel);
 
-        if (empty($phone)) {
-            return ['success' => false, 'error' => 'no_phone', 'message' => 'No phone number on file.'];
+        if ($identifier === null) {
+            return ['success' => false, 'error' => "no_{$channel}", 'message' => "No {$channel} on file."];
         }
 
         $settings = $this->getSettings();
-        $cooldown = (int) ($settings['phone']['cooldown'] ?? 60);
+        $verifyType = $channel . '_verify';
+        $cooldown = (int) ($settings[$channel]['cooldown'] ?? 60);
 
-        if ($this->isVerificationOnCooldown($userId, 'phone_verify', $cooldown)) {
+        if ($this->isVerificationOnCooldown($userId, $verifyType, $cooldown)) {
             return ['success' => false, 'error' => 'cooldown', 'message' => 'Please wait before requesting a new code.'];
         }
 
-        $this->invalidateVerifications($userId, 'phone_verify');
-        $this->createPhoneVerification($userId, $phone);
+        $this->invalidateVerifications($userId, $verifyType);
+        $this->createChannelVerification($userId, $channel, $identifier);
 
-        return ['success' => true, 'message' => 'New verification code sent.'];
-    }
-
-    /**
-     * Resend email verification link.
-     *
-     * @return array{success: bool, error?: string, message: string}
-     */
-    public function resendEmailVerification(int $userId): array
-    {
-        $email = get_userdata($userId)?->user_email;
-
-        if (empty($email) || self::isPlaceholderEmail($email)) {
-            return ['success' => false, 'error' => 'no_email', 'message' => 'No email address on file.'];
-        }
-
-        $settings = $this->getSettings();
-        $cooldown = (int) ($settings['email']['cooldown'] ?? 60);
-
-        if ($this->isVerificationOnCooldown($userId, 'email_verify', $cooldown)) {
-            return ['success' => false, 'error' => 'cooldown', 'message' => 'Please wait before requesting a new email.'];
-        }
-
-        $this->invalidateVerifications($userId, 'email_verify');
-
-        if ($this->emailUsesOtp()) {
-            $this->createEmailOtpVerification($userId, $email);
-        } else {
-            $this->createVerification($userId, 'email_verify', $email);
-        }
-
-        return ['success' => true, 'message' => 'Verification email resent.'];
+        return ['success' => true, 'message' => 'Verification resent.'];
     }
 
     /**
@@ -488,12 +462,10 @@ class AccountManager
         $state = self::getUserVerificationState($userId);
         $pending = [];
 
-        if ($state['phone']['has'] && !$state['phone']['verified']) {
-            $pending[] = ['type' => 'phone', 'status' => 'pending'];
-        }
-
-        if ($state['email']['has'] && !$state['email']['verified']) {
-            $pending[] = ['type' => 'email', 'status' => 'pending'];
+        foreach ($state as $channel => $channelState) {
+            if ($channelState['has'] && !$channelState['verified']) {
+                $pending[] = ['type' => $channel, 'status' => 'pending'];
+            }
         }
 
         return [
@@ -505,48 +477,109 @@ class AccountManager
     /**
      * Send a fresh verification challenge for login-time enforcement.
      */
-    public function sendVerificationChallenge(int $userId, string $type): void
+    public function sendVerificationChallenge(int $userId, string $channel): void
     {
-        if ($type === 'phone') {
+        $identifier = $this->getChannelIdentifier($userId, $channel);
+
+        if ($identifier === null) {
+            return;
+        }
+
+        $verifyType = $channel . '_verify';
+        $this->invalidateVerifications($userId, $verifyType);
+        $this->createChannelVerification($userId, $channel, $identifier);
+    }
+
+    /**
+     * Get the user's identifier for a given channel.
+     */
+    private function getChannelIdentifier(int $userId, string $channel): ?string
+    {
+        if ($channel === 'phone') {
             $phone = get_user_meta($userId, 'wsms_phone', true);
-            if (!empty($phone)) {
-                $this->invalidateVerifications($userId, 'phone_verify');
-                $this->createPhoneVerification($userId, $phone);
-            }
-        } elseif ($type === 'email') {
+            return !empty($phone) ? $phone : null;
+        }
+
+        if ($channel === 'email') {
             $email = get_userdata($userId)?->user_email;
-            if (!empty($email) && !self::isPlaceholderEmail($email)) {
-                $this->invalidateVerifications($userId, 'email_verify');
-                if ($this->emailUsesOtp()) {
-                    $this->createEmailOtpVerification($userId, $email);
-                } else {
-                    $this->createVerification($userId, 'email_verify', $email);
-                }
-            }
+            return (!empty($email) && !self::isPlaceholderEmail($email)) ? $email : null;
+        }
+
+        // For future channels, check user meta by convention: wsms_{channel}.
+        $value = get_user_meta($userId, 'wsms_' . $channel, true);
+        return !empty($value) ? $value : null;
+    }
+
+    /**
+     * Create a verification record for any channel and deliver it.
+     */
+    private function createChannelVerification(int $userId, string $channel, string $identifier): void
+    {
+        if ($channel === 'email' && !$this->emailUsesOtp()) {
+            $this->createVerification($userId, 'email_verify', $identifier);
+
+            return;
+        }
+
+        $otp = $this->createOtpVerification($userId, $channel, $identifier);
+
+        // Channel-specific delivery.
+        if ($channel === 'phone') {
+            do_action('wsms_send_sms', $identifier, sprintf('Your verification code is: %s', $otp));
+        } elseif ($channel === 'email') {
+            $this->sendVerificationEmail($identifier, $otp, $channel);
+        } else {
+            do_action('wsms_channel_verification_created', $userId, $channel, $identifier, $otp);
         }
     }
 
     /**
-     * Create a phone verification record and send OTP via SMS.
+     * Apply channel-specific actions after successful OTP verification.
      */
-    private function createPhoneVerification(int $userId, string $phone): void
+    private function applyChannelVerified(int $userId, string $channel, string $identifier): void
+    {
+        if ($channel === 'phone') {
+            update_user_meta($userId, 'wsms_phone_verified', '1');
+            $this->auditLogger->log(EventType::PhoneVerified, 'success', $userId);
+            return;
+        }
+
+        if ($channel === 'email') {
+            $this->markEmailVerified($userId, $identifier);
+            $this->auditLogger->log(EventType::EmailVerified, 'success', $userId);
+            return;
+        }
+
+        // For future channels: mark as verified via convention.
+        update_user_meta($userId, 'wsms_' . $channel . '_verified', '1');
+        $this->auditLogger->log(EventType::OtpVerified, 'success', $userId, [
+            'channel' => $channel,
+        ]);
+    }
+
+    /**
+     * Create an OTP verification record for any channel.
+     *
+     * @return string The plaintext OTP (caller is responsible for delivery).
+     */
+    private function createOtpVerification(int $userId, string $channel, string $identifier): string
     {
         global $wpdb;
 
         $settings = $this->getSettings();
-        $phoneSettings = $settings['phone'] ?? [];
-        $codeLength = (int) ($phoneSettings['code_length'] ?? 6);
-        $expiry = (int) ($phoneSettings['expiry'] ?? 300);
-        $maxAttempts = (int) ($phoneSettings['max_attempts'] ?? 5);
+        $channelSettings = $settings[$channel] ?? [];
+        $codeLength = (int) ($channelSettings['code_length'] ?? 6);
+        $expiry = (int) ($channelSettings['expiry'] ?? 300);
+        $maxAttempts = (int) ($channelSettings['max_attempts'] ?? 5);
 
         $otp = $this->otpGenerator->generate($codeLength);
-        do_action('wsms_otp_generated', $userId, $otp, 'phone_verify');
+        do_action('wsms_otp_generated', $userId, $otp, $channel . '_verify');
         $hashed = $this->otpGenerator->hash($otp);
 
         $wpdb->insert($wpdb->prefix . 'wsms_verifications', [
             'user_id'      => $userId,
-            'type'         => 'phone_verify',
-            'identifier'   => $phone,
+            'type'         => $channel . '_verify',
+            'identifier'   => $identifier,
             'code'         => $hashed,
             'attempts'     => 0,
             'max_attempts' => $maxAttempts,
@@ -554,7 +587,7 @@ class AccountManager
             'created_at'   => current_time('mysql', true),
         ]);
 
-        do_action('wsms_send_sms', $phone, sprintf('Your verification code is: %s', $otp));
+        return $otp;
     }
 
     /**
@@ -569,32 +602,12 @@ class AccountManager
     }
 
     /**
-     * Create an email verification record and send OTP via email.
+     * Send a verification OTP via email.
      */
-    private function createEmailOtpVerification(int $userId, string $email): void
+    private function sendVerificationEmail(string $email, string $otp, string $channel): void
     {
-        global $wpdb;
-
         $settings = $this->getSettings();
-        $emailSettings = $settings['email'] ?? [];
-        $codeLength = (int) ($emailSettings['code_length'] ?? 6);
-        $expiry = (int) ($emailSettings['expiry'] ?? 600);
-        $maxAttempts = (int) ($emailSettings['max_attempts'] ?? 5);
-
-        $otp = $this->otpGenerator->generate($codeLength);
-        do_action('wsms_otp_generated', $userId, $otp, 'email_verify');
-        $hashed = $this->otpGenerator->hash($otp);
-
-        $wpdb->insert($wpdb->prefix . 'wsms_verifications', [
-            'user_id'      => $userId,
-            'type'         => 'email_verify',
-            'identifier'   => $email,
-            'code'         => $hashed,
-            'attempts'     => 0,
-            'max_attempts' => $maxAttempts,
-            'expires_at'   => gmdate('Y-m-d H:i:s', time() + $expiry),
-            'created_at'   => current_time('mysql', true),
-        ]);
+        $expiry = (int) (($settings[$channel] ?? [])['expiry'] ?? 300);
 
         $siteName = get_bloginfo('name');
         $headers = ['Content-Type: text/html; charset=UTF-8'];
@@ -612,47 +625,6 @@ class AccountManager
     }
 
     /**
-     * Verify an email OTP code (mirrors verifyPhone).
-     */
-    public function verifyEmailOtp(int $userId, string $code): array
-    {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_verifications';
-
-        $verification = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$table} WHERE user_id = %d AND type = 'email_verify' AND used_at IS NULL ORDER BY created_at DESC LIMIT 1",
-            $userId,
-        ));
-
-        if (!$verification) {
-            return ['success' => false, 'error' => 'no_verification', 'message' => 'No pending email verification.'];
-        }
-
-        if (strtotime($verification->expires_at) < time()) {
-            return ['success' => false, 'error' => 'expired', 'message' => 'Verification code has expired.'];
-        }
-
-        if ((int) $verification->attempts >= (int) $verification->max_attempts) {
-            return ['success' => false, 'error' => 'max_attempts', 'message' => 'Too many attempts.'];
-        }
-
-        $newAttempts = (int) $verification->attempts + 1;
-
-        if (!$this->otpGenerator->verify($code, $verification->code)) {
-            $wpdb->update($table, ['attempts' => $newAttempts], ['id' => $verification->id]);
-
-            return ['success' => false, 'error' => 'invalid_code', 'message' => 'Invalid verification code.'];
-        }
-
-        $wpdb->update($table, ['attempts' => $newAttempts, 'used_at' => gmdate('Y-m-d H:i:s')], ['id' => $verification->id]);
-        $this->markEmailVerified($userId, $verification->identifier);
-        $this->auditLogger->log(EventType::EmailVerified, 'success', $userId);
-        $this->maybeActivateUser($userId);
-
-        return ['success' => true, 'message' => 'Email verified successfully.'];
-    }
-
-    /**
      * Transition a pending user to active if all required verifications are complete
      * (or if the admin has since disabled verify_at_signup).
      */
@@ -666,21 +638,25 @@ class AccountManager
         $settings = $this->getSettings();
         $state = self::getUserVerificationState($userId);
 
-        $emailRequired = !empty($settings['email']['verify_at_signup']);
-        $phoneRequired = !empty($settings['phone']['verify_at_signup']);
+        // Collect all channels that require verify_at_signup.
+        $requiredChannels = [];
+        foreach ($state as $channel => $channelState) {
+            if (!empty($settings[$channel]['verify_at_signup'])) {
+                $requiredChannels[] = $channel;
+            }
+        }
 
         // If admin disabled all verify_at_signup, auto-activate.
-        if (!$emailRequired && !$phoneRequired) {
+        if (empty($requiredChannels)) {
             $this->activateUser($userId);
             return;
         }
 
         // Check each still-required verification.
-        if ($emailRequired && $state['email']['has'] && !$state['email']['verified']) {
-            return;
-        }
-        if ($phoneRequired && $state['phone']['has'] && !$state['phone']['verified']) {
-            return;
+        foreach ($requiredChannels as $channel) {
+            if (($state[$channel]['has'] ?? false) && !($state[$channel]['verified'] ?? true)) {
+                return;
+            }
         }
 
         $this->activateUser($userId);

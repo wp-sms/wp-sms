@@ -70,7 +70,7 @@ describe.each(verificationPresets)(
         const emailOtp = await getOtp(api, data.user_id, 'email_verify');
         const emailVerifyRes = await api.api(
           'POST',
-          '/auth/register/verify-email',
+          '/auth/register/verify/email',
           { code: emailOtp },
           tokenHeaders,
         );
@@ -86,7 +86,7 @@ describe.each(verificationPresets)(
         const phoneOtp = await getOtp(api, data.user_id, 'phone_verify');
         const phoneVerifyRes = await api.api(
           'POST',
-          '/auth/register/verify-phone',
+          '/auth/register/verify/phone',
           { code: phoneOtp },
           tokenHeaders,
         );

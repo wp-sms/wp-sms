@@ -5,6 +5,8 @@ namespace WSms\Mfa\Channels;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
 use WSms\Audit\AuditLogger;
+use WSms\Auth\AccountManager;
+use WSms\Mfa\Contracts\SupportsTokenVerification;
 use WSms\Mfa\OtpGenerator;
 use WSms\Mfa\Support\EmailMasker;
 use WSms\Mfa\ValueObjects\ChallengeResult;
@@ -12,7 +14,7 @@ use WSms\Mfa\ValueObjects\EnrollmentResult;
 
 defined('ABSPATH') || exit;
 
-class EmailChannel extends AbstractOtpChannel
+class EmailChannel extends AbstractOtpChannel implements SupportsTokenVerification
 {
     private MagicLinkChannel $magicLink;
 
@@ -43,6 +45,18 @@ class EmailChannel extends AbstractOtpChannel
     public function supportsMfa(): bool
     {
         return true;
+    }
+
+    public function supportsAutoEnrollment(): bool
+    {
+        return true;
+    }
+
+    public function isAvailableForUser(int $userId): bool
+    {
+        $email = $this->getIdentifier($userId);
+
+        return $email !== null && !AccountManager::isPlaceholderEmail($email);
     }
 
     /** {@inheritDoc} */

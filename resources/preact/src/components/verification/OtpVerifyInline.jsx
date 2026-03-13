@@ -8,7 +8,7 @@ import { OtpInput } from '../OtpInput';
 /**
  * Shared inline OTP verification UI.
  *
- * @param {string}   verifyEndpoint   - API path to POST the code (e.g. '/auth/profile/verify-email')
+ * @param {string}   verifyEndpoint   - API path to POST the code (e.g. '/auth/profile/verify/email')
  * @param {string}   [resendEndpoint] - API path to POST for resend (omit to hide resend button)
  * @param {object}   [headers]        - Extra request headers (e.g. challenge token)
  * @param {function} onVerified       - Called on successful verification

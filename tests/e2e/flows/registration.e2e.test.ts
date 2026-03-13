@@ -90,7 +90,7 @@ describe('Registration with email verification at signup', () => {
 
     // Verify email with registration token.
     const tokenHeaders = { 'X-Registration-Token': data.registration_token };
-    const verifyRes = await api.api('POST', '/auth/register/verify-email', {
+    const verifyRes = await api.api('POST', '/auth/register/verify/email', {
       code: otp,
     }, tokenHeaders);
     const verifyData = await verifyRes.json();
@@ -132,7 +132,7 @@ describe('Registration with phone verification at signup', () => {
 
     // Verify phone with registration token.
     const tokenHeaders = { 'X-Registration-Token': data.registration_token };
-    const verifyRes = await api.api('POST', '/auth/register/verify-phone', {
+    const verifyRes = await api.api('POST', '/auth/register/verify/phone', {
       code: otp,
     }, tokenHeaders);
     const verifyData = await verifyRes.json();
@@ -176,14 +176,14 @@ describe('Registration with both email and phone verification', () => {
 
     // Verify email first.
     const emailOtp = await getOtp(api, data.user_id, 'email_verify');
-    const emailVerifyRes = await api.api('POST', '/auth/register/verify-email', {
+    const emailVerifyRes = await api.api('POST', '/auth/register/verify/email', {
       code: emailOtp,
     }, tokenHeaders);
     expect((await emailVerifyRes.json()).success).toBe(true);
 
     // Verify phone.
     const phoneOtp = await getOtp(api, data.user_id, 'phone_verify');
-    const phoneVerifyRes = await api.api('POST', '/auth/register/verify-phone', {
+    const phoneVerifyRes = await api.api('POST', '/auth/register/verify/phone', {
       code: phoneOtp,
     }, tokenHeaders);
     expect((await phoneVerifyRes.json()).success).toBe(true);

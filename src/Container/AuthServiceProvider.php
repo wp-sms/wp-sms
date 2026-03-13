@@ -24,8 +24,10 @@ class AuthServiceProvider implements ServiceProvider
     /** {@inheritDoc} */
     public function register(ServiceContainer $container): void
     {
-        $container->register('auth.policy', function () {
-            return new PolicyEngine();
+        $container->register('auth.policy', function () use ($container) {
+            return new PolicyEngine(
+                $container->get('mfa.manager'),
+            );
         });
 
         $container->register('auth.session', function () use ($container) {

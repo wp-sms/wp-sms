@@ -32,7 +32,7 @@ abstract class IntegrationTestCase extends TestCase
     protected AuthSession $session;
     protected AccountLockout $lockout;
 
-    protected MockObject&MfaManager $mfaManager;
+    protected MfaManager $mfaManager;
     protected MockObject&AuditLogger $auditLogger;
     protected MockObject&OtpGenerator $otpGenerator;
 
@@ -69,8 +69,19 @@ abstract class IntegrationTestCase extends TestCase
         $this->wpdb = new WpdbFake();
         $GLOBALS['wpdb'] = $this->wpdb;
 
+        // Mocked I/O (created early so PolicyEngine can use mfaManager).
+        $this->auditLogger = $this->createMock(AuditLogger::class);
+
+        // Partial mock: real channel registry (registerChannel/getChannel/getAvailableChannels),
+        // mocked DB methods (getUserFactors/hasActiveFactors/disableAllFactors).
+        $this->mfaManager = $this->createPartialMock(MfaManager::class, [
+            'getUserFactors',
+            'hasActiveFactors',
+            'disableAllFactors',
+        ]);
+
         // Real classes.
-        $this->policy = new PolicyEngine();
+        $this->policy = new PolicyEngine($this->mfaManager);
         $this->lockout = new AccountLockout();
 
         // Controlled OTP generator: predictable codes but real hash/verify.
@@ -89,10 +100,6 @@ abstract class IntegrationTestCase extends TestCase
 
         // Real AuthSession (uses transient stubs from bootstrap).
         $this->session = new AuthSession($this->otpGenerator);
-
-        // Mocked I/O.
-        $this->auditLogger = $this->createMock(AuditLogger::class);
-        $this->mfaManager = $this->createMock(MfaManager::class);
 
         // Real AccountManager.
         $this->accountManager = new AccountManager(
@@ -216,11 +223,15 @@ abstract class IntegrationTestCase extends TestCase
         bool $challengeSuccess = true,
         bool $verifySuccess = true,
         bool $supportsMfa = true,
+        bool $supportsPrimaryAuth = false,
     ): MockObject&ChannelInterface {
         $channel = $this->createMock(ChannelInterface::class);
         $channel->method('getId')->willReturn($channelId);
         $channel->method('getName')->willReturn(ucfirst($channelId));
         $channel->method('supportsMfa')->willReturn($supportsMfa);
+        $channel->method('supportsPrimaryAuth')->willReturn($supportsPrimaryAuth);
+        $channel->method('supportsAutoEnrollment')->willReturn(false);
+        $channel->method('isAvailableForUser')->willReturn(true);
         $channel->method('isEnrolled')->willReturn($enrolled);
 
         $channel->method('sendChallenge')->willReturn(
@@ -236,10 +247,8 @@ abstract class IntegrationTestCase extends TestCase
             new EnrollmentResult(true, 'Enrolled.'),
         );
 
-        $this->mfaManager->method('getChannel')
-            ->willReturnMap([
-                [$channelId, $channel],
-            ]);
+        // Register on the real MfaManager so PolicyEngine can discover it.
+        $this->mfaManager->registerChannel($channel);
 
         return $channel;
     }

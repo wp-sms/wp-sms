@@ -45,6 +45,16 @@ class BackupCodesChannel implements ChannelInterface
         return true;
     }
 
+    public function supportsAutoEnrollment(): bool
+    {
+        return false;
+    }
+
+    public function isAvailableForUser(int $userId): bool
+    {
+        return $this->isEnrolled($userId);
+    }
+
     protected function getConfigPrefix(): string
     {
         return 'backup_codes';

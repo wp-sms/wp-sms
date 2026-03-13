@@ -127,7 +127,7 @@ class LoginFlowTest extends IntegrationTestCase
         $user = UserFactory::withPhone('+1234567890');
         UserFactory::install($user);
 
-        $channelMock = $this->configureMfaChannel($channel);
+        $channelMock = $this->configureMfaChannel($channel, supportsPrimaryAuth: true);
 
         $identifier = $channel === 'phone' ? '+1234567890' : $user->user_email;
         $result = $this->orchestrator->loginPasswordless($channel, $identifier);
@@ -159,7 +159,7 @@ class LoginFlowTest extends IntegrationTestCase
     {
         $this->setSettings(AuthScenarios::emailOtpOnly());
 
-        $this->configureMfaChannel('email');
+        $this->configureMfaChannel('email', supportsPrimaryAuth: true);
         $GLOBALS['_test_get_user_by_result'] = false;
 
         $result = $this->orchestrator->loginPasswordless('email', 'nobody@example.com');
@@ -174,7 +174,7 @@ class LoginFlowTest extends IntegrationTestCase
         $user = UserFactory::create();
         UserFactory::install($user);
 
-        $channel = $this->configureMfaChannel('email', enrolled: true, verifySuccess: true);
+        $channel = $this->configureMfaChannel('email', enrolled: true, verifySuccess: true, supportsPrimaryAuth: true);
 
         $challengeResult = $this->orchestrator->loginPasswordless('email', $user->user_email);
         $this->assertSame('challenge_sent', $challengeResult->status);
@@ -192,7 +192,7 @@ class LoginFlowTest extends IntegrationTestCase
         $user = UserFactory::create();
         UserFactory::install($user);
 
-        $this->configureMfaChannel('email', enrolled: true, verifySuccess: false);
+        $this->configureMfaChannel('email', enrolled: true, verifySuccess: false, supportsPrimaryAuth: true);
 
         $challengeResult = $this->orchestrator->loginPasswordless('email', $user->user_email);
         $verifyResult = $this->orchestrator->verifyPrimary($challengeResult->sessionToken, 'wrong');
@@ -210,6 +210,9 @@ class LoginFlowTest extends IntegrationTestCase
         $settings = AuthScenarios::verifyAtLogin();
         $this->setSettings($settings);
         $this->setOtpCodes('654321');
+
+        // Register email channel so PolicyEngine discovers it for verification checks.
+        $this->configureMfaChannel('email', supportsPrimaryAuth: true);
 
         $user = UserFactory::create();
         UserFactory::install($user);
@@ -247,6 +250,10 @@ class LoginFlowTest extends IntegrationTestCase
     public function testIdentifyReturnsAvailableMethods(): void
     {
         $this->setSettings(AuthScenarios::passwordAndEmailOtp());
+
+        // Register email channel so PolicyEngine discovers it for method enumeration.
+        $this->configureMfaChannel('email', supportsPrimaryAuth: true);
+
         $user = UserFactory::create();
         UserFactory::install($user);
 

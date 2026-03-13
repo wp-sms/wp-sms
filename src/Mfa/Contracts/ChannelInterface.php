@@ -66,4 +66,20 @@ interface ChannelInterface
      * Get enrollment display data for the frontend (masked phone, email, etc.).
      */
     public function getEnrollmentInfo(int $userId): array;
+
+    /**
+     * Whether this channel can auto-enroll users without explicit enrollment data.
+     *
+     * E.g., email channel can auto-enroll because the user's WP email is already verified.
+     * Phone channel cannot because the user must provide and verify a phone number first.
+     */
+    public function supportsAutoEnrollment(): bool;
+
+    /**
+     * Whether this channel is available for a specific user.
+     *
+     * Checks if the user has the required identifier (phone number, email, etc.)
+     * for this channel. Used by PolicyEngine to dynamically build method lists.
+     */
+    public function isAvailableForUser(int $userId): bool;
 }

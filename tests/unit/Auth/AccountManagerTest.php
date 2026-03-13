@@ -550,7 +550,7 @@ class AccountManagerTest extends TestCase
         $user->user_email = 'abc123def0@noreply.wsms.local';
         $GLOBALS['_test_userdata'] = $user;
 
-        $result = $this->manager->resendEmailVerification(200);
+        $result = $this->manager->resendVerification(200, 'email');
 
         $this->assertFalse($result['success']);
         $this->assertSame('no_email', $result['error']);

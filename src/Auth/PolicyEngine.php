@@ -3,12 +3,19 @@
 namespace WSms\Auth;
 
 use WSms\Enums\EnrollmentTiming;
+use WSms\Mfa\Contracts\ChannelInterface;
+use WSms\Mfa\MfaManager;
 
 defined('ABSPATH') || exit;
 
 class PolicyEngine
 {
     private ?array $settings = null;
+
+    public function __construct(
+        private MfaManager $mfaManager,
+    ) {
+    }
 
     /**
      * Check whether MFA is required for a given user.
@@ -17,18 +24,9 @@ class PolicyEngine
     {
         $settings = $this->getSettings();
 
-        // Check if any channel is configured for MFA usage.
-        $hasMfaFactors = false;
+        $hasMfaFactors = !empty($this->getAvailableMfaFactors());
 
-        foreach (['phone', 'email'] as $channelKey) {
-            $channel = $settings[$channelKey] ?? [];
-            if (!empty($channel['enabled']) && ($channel['usage'] ?? '') === 'mfa') {
-                $hasMfaFactors = true;
-                break;
-            }
-        }
-
-        if (!$hasMfaFactors && empty($settings['backup_codes']['enabled'])) {
+        if (!$hasMfaFactors) {
             return false;
         }
 
@@ -104,16 +102,22 @@ class PolicyEngine
             $methods[] = 'password';
         }
 
-        // Phone channel.
-        $phone = $settings['phone'] ?? [];
-        if (!empty($phone['enabled']) && ($phone['usage'] ?? '') === 'login' && ($phone['allow_sign_in'] ?? true)) {
-            $methods[] = 'phone';
-        }
+        // Dynamically iterate registered channels that support primary auth.
+        foreach ($this->mfaManager->getAvailableChannels() as $channel) {
+            if (!$channel->supportsPrimaryAuth()) {
+                continue;
+            }
 
-        // Email channel.
-        $email = $settings['email'] ?? [];
-        if (!empty($email['enabled']) && ($email['usage'] ?? '') === 'login' && ($email['allow_sign_in'] ?? true)) {
-            $methods[] = 'email';
+            $channelKey = $channel->getId();
+            $channelSettings = $settings[$channelKey] ?? [];
+
+            if (
+                !empty($channelSettings['enabled'])
+                && ($channelSettings['usage'] ?? '') === 'login'
+                && ($channelSettings['allow_sign_in'] ?? true)
+            ) {
+                $methods[] = $channelKey;
+            }
         }
 
         return $methods ?: ['password'];
@@ -131,15 +135,25 @@ class PolicyEngine
         $settings = $this->getSettings();
         $factors = [];
 
-        foreach (['phone', 'email'] as $channelKey) {
-            $channel = $settings[$channelKey] ?? [];
-            if (!empty($channel['enabled']) && ($channel['usage'] ?? '') === 'mfa') {
-                $factors[] = $channelKey;
+        foreach ($this->mfaManager->getAvailableChannels() as $channel) {
+            if (!$channel->supportsMfa()) {
+                continue;
             }
-        }
 
-        if (!empty($settings['backup_codes']['enabled'])) {
-            $factors[] = 'backup_codes';
+            $channelKey = $channel->getId();
+            $channelSettings = $settings[$channelKey] ?? [];
+
+            if (empty($channelSettings['enabled'])) {
+                continue;
+            }
+
+            // Channels with a 'usage' toggle (phone, email) must be set to 'mfa'.
+            // Channels without one (backup_codes, future MFA-only channels) are MFA by nature.
+            if (isset($channelSettings['usage']) && $channelSettings['usage'] !== 'mfa') {
+                continue;
+            }
+
+            $factors[] = $channelKey;
         }
 
         return $factors;
@@ -164,29 +178,30 @@ class PolicyEngine
         }
 
         $methods = [];
-        $userPhone = get_user_meta($userId, 'wsms_phone', true);
 
         if (in_array('password', $globalMethods, true)) {
             $methods[] = ['method' => 'password', 'type' => 'password', 'channel' => 'password'];
         }
 
-        if (in_array('phone', $globalMethods, true) && !empty($userPhone)) {
-            $verificationMethods = ($settings['phone'] ?? [])['verification_methods'] ?? ['otp'];
-            if (in_array('otp', $verificationMethods, true)) {
-                $methods[] = ['method' => 'phone_otp', 'type' => 'otp', 'channel' => 'phone'];
-            }
-            if (in_array('magic_link', $verificationMethods, true)) {
-                $methods[] = ['method' => 'phone_magic_link', 'type' => 'magic_link', 'channel' => 'phone'];
-            }
-        }
+        // Dynamically build methods for each channel.
+        foreach ($this->mfaManager->getAvailableChannels() as $channel) {
+            $channelKey = $channel->getId();
 
-        if (in_array('email', $globalMethods, true) && !empty($user->user_email) && !AccountManager::isPlaceholderEmail($user->user_email)) {
-            $verificationMethods = ($settings['email'] ?? [])['verification_methods'] ?? ['otp'];
+            if (!in_array($channelKey, $globalMethods, true)) {
+                continue;
+            }
+
+            if (!$channel->isAvailableForUser($userId)) {
+                continue;
+            }
+
+            $verificationMethods = ($settings[$channelKey] ?? [])['verification_methods'] ?? ['otp'];
+
             if (in_array('otp', $verificationMethods, true)) {
-                $methods[] = ['method' => 'email_otp', 'type' => 'otp', 'channel' => 'email'];
+                $methods[] = ['method' => $channelKey . '_otp', 'type' => 'otp', 'channel' => $channelKey];
             }
             if (in_array('magic_link', $verificationMethods, true)) {
-                $methods[] = ['method' => 'email_magic_link', 'type' => 'magic_link', 'channel' => 'email'];
+                $methods[] = ['method' => $channelKey . '_magic_link', 'type' => 'magic_link', 'channel' => $channelKey];
             }
         }
 
@@ -246,13 +261,17 @@ class PolicyEngine
 
         $factorIds = array_column($availableFactors, 'channel_id');
 
-        // Determine the primary channel.
-        $primaryChannel = match (true) {
-            str_starts_with($primaryMethod, 'phone') => 'phone',
-            str_starts_with($primaryMethod, 'email') => 'email',
-            $primaryMethod === 'password'             => 'password',
-            default                                   => null,
-        };
+        // Derive the primary channel from method name (e.g., 'phone_otp' → 'phone').
+        $primaryChannel = $primaryMethod === 'password' ? 'password' : null;
+
+        if ($primaryChannel === null) {
+            foreach ($this->mfaManager->getAvailableChannels() as $channel) {
+                if (str_starts_with($primaryMethod, $channel->getId())) {
+                    $primaryChannel = $channel->getId();
+                    break;
+                }
+            }
+        }
 
         // Prefer a factor from a different channel.
         foreach ($factorIds as $factorId) {
@@ -276,12 +295,15 @@ class PolicyEngine
         $state = AccountManager::getUserVerificationState($userId);
         $pending = [];
 
-        if (!empty($settings['email']['verify_at_signup']) && $state['email']['has'] && !$state['email']['verified']) {
-            $pending[] = ['type' => 'email', 'status' => 'pending'];
-        }
-
-        if (!empty($settings['phone']['verify_at_signup']) && $state['phone']['has'] && !$state['phone']['verified']) {
-            $pending[] = ['type' => 'phone', 'status' => 'pending'];
+        // Dynamically check each verification channel.
+        foreach ($this->getVerificationChannelKeys() as $channelKey) {
+            if (
+                !empty($settings[$channelKey]['verify_at_signup'])
+                && ($state[$channelKey]['has'] ?? false)
+                && !($state[$channelKey]['verified'] ?? true)
+            ) {
+                $pending[] = ['type' => $channelKey, 'status' => 'pending'];
+            }
         }
 
         return $pending;
@@ -327,6 +349,82 @@ class PolicyEngine
         }
 
         return $effectiveFields;
+    }
+
+    /**
+     * Get channel keys that support user verification (verify_at_signup/verify_at_login).
+     *
+     * @return string[]
+     */
+    public function getVerificationChannelKeys(): array
+    {
+        $keys = [];
+
+        foreach ($this->mfaManager->getAvailableChannels() as $channel) {
+            if ($channel->supportsPrimaryAuth()) {
+                $keys[] = $channel->getId();
+            }
+        }
+
+        return $keys;
+    }
+
+    /**
+     * Get channel-level method details for the /auth/config response.
+     *
+     * @return array<string, array{has_otp: bool, has_magic_link: bool, code_length: int}>
+     */
+    public function getMethodDetails(array $primaryMethods): array
+    {
+        $settings = $this->getSettings();
+        $details = [];
+
+        foreach ($this->mfaManager->getAvailableChannels() as $channel) {
+            $channelKey = $channel->getId();
+
+            if (!in_array($channelKey, $primaryMethods, true)) {
+                continue;
+            }
+
+            $channelSettings = $settings[$channelKey] ?? [];
+            $verificationMethods = $channelSettings['verification_methods'] ?? ['otp'];
+
+            $details[$channelKey] = [
+                'has_otp'        => in_array('otp', $verificationMethods, true),
+                'has_magic_link' => in_array('magic_link', $verificationMethods, true),
+                'code_length'    => (int) ($channelSettings['code_length'] ?? 6),
+            ];
+        }
+
+        return $details;
+    }
+
+    /**
+     * Get a single top-level setting value (with defaults applied).
+     */
+    public function getSetting(string $key, mixed $default = null): mixed
+    {
+        return $this->getSettings()[$key] ?? $default;
+    }
+
+    /**
+     * Build verification requirement flags for each channel.
+     *
+     * Always emits both true and false values so the API response shape is stable.
+     *
+     * @return array<string, bool>
+     */
+    public function getVerificationRequirements(): array
+    {
+        $settings = $this->getSettings();
+        $requirements = [];
+
+        foreach ($this->getVerificationChannelKeys() as $channelKey) {
+            $requirements['require_' . $channelKey . '_verification'] =
+                !empty($settings[$channelKey]['verify_at_signup']);
+        }
+
+        return $requirements;
     }
 
     /**

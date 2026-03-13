@@ -7,8 +7,8 @@ export function PhoneVerifySection({ headers, onVerified }) {
 
     return (
         <OtpVerifyInline
-            verifyEndpoint="/auth/register/verify-phone"
-            resendEndpoint="/auth/register/resend-phone"
+            verifyEndpoint="/auth/register/verify/phone"
+            resendEndpoint="/auth/register/resend/phone"
             headers={headers}
             onVerified={onVerified}
             onError={(msg) => { authError.value = msg; }}

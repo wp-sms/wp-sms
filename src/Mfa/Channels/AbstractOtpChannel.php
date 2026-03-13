@@ -222,6 +222,16 @@ abstract class AbstractOtpChannel implements ChannelInterface
         return $code;
     }
 
+    public function supportsAutoEnrollment(): bool
+    {
+        return false;
+    }
+
+    public function isAvailableForUser(int $userId): bool
+    {
+        return $this->getIdentifier($userId) !== null;
+    }
+
     /**
      * Check if a cooldown is active for this user/channel.
      */

@@ -96,33 +96,21 @@ class AccountController
             'permission_callback' => [$this, 'checkAuthenticated'],
         ]);
 
-        register_rest_route(self::NAMESPACE, '/auth/register/verify-phone', [
+        // --- Generic registration verification endpoints ---
+        $verifyArgs = [
+            'code' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+        ];
+
+        register_rest_route(self::NAMESPACE, '/auth/register/verify/(?P<channel>[a-z_]+)', [
             'methods'             => 'POST',
-            'callback'            => [$this, 'handleVerifyPhone'],
+            'callback'            => [$this, 'handleRegisterVerifyChannel'],
             'permission_callback' => '__return_true',
-            'args'                => [
-                'code' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-            ],
+            'args'                => $verifyArgs,
         ]);
 
-        register_rest_route(self::NAMESPACE, '/auth/register/resend-phone', [
+        register_rest_route(self::NAMESPACE, '/auth/register/resend/(?P<channel>[a-z_]+)', [
             'methods'             => 'POST',
-            'callback'            => [$this, 'handleResendPhone'],
-            'permission_callback' => '__return_true',
-        ]);
-
-        register_rest_route(self::NAMESPACE, '/auth/register/verify-email', [
-            'methods'             => 'POST',
-            'callback'            => [$this, 'handleRegisterVerifyEmail'],
-            'permission_callback' => '__return_true',
-            'args'                => [
-                'code' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-            ],
-        ]);
-
-        register_rest_route(self::NAMESPACE, '/auth/register/resend-email', [
-            'methods'             => 'POST',
-            'callback'            => [$this, 'handleResendEmail'],
+            'callback'            => [$this, 'handleRegisterResendChannel'],
             'permission_callback' => '__return_true',
         ]);
 
@@ -132,41 +120,28 @@ class AccountController
             'permission_callback' => '__return_true',
         ]);
 
-        register_rest_route(self::NAMESPACE, '/auth/profile/send-phone-verification', [
+        // --- Generic profile verification endpoints ---
+        register_rest_route(self::NAMESPACE, '/auth/profile/send-verification/(?P<channel>[a-z_]+)', [
             'methods'             => 'POST',
-            'callback'            => [$this, 'handleSendPhoneVerification'],
+            'callback'            => [$this, 'handleProfileSendVerification'],
             'permission_callback' => [$this, 'checkAuthenticated'],
         ]);
 
-        register_rest_route(self::NAMESPACE, '/auth/profile/verify-phone', [
+        register_rest_route(self::NAMESPACE, '/auth/profile/verify/(?P<channel>[a-z_]+)', [
             'methods'             => 'POST',
-            'callback'            => [$this, 'handleProfileVerifyPhone'],
+            'callback'            => [$this, 'handleProfileVerifyChannel'],
             'permission_callback' => [$this, 'checkAuthenticated'],
-            'args'                => [
-                'code' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-            ],
+            'args'                => $verifyArgs,
         ]);
 
-        register_rest_route(self::NAMESPACE, '/auth/profile/send-email-verification', [
-            'methods'             => 'POST',
-            'callback'            => [$this, 'handleSendEmailVerification'],
-            'permission_callback' => [$this, 'checkAuthenticated'],
-        ]);
-
-        register_rest_route(self::NAMESPACE, '/auth/profile/verify-email', [
-            'methods'             => 'POST',
-            'callback'            => [$this, 'handleProfileVerifyEmail'],
-            'permission_callback' => [$this, 'checkAuthenticated'],
-            'args'                => [
-                'code' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-            ],
-        ]);
     }
 
     public function checkAuthenticated(WP_REST_Request $request): bool
     {
         return is_user_logged_in();
     }
+
+    // --- Registration ---
 
     public function handleRegister(WP_REST_Request $request): WP_REST_Response
     {
@@ -188,6 +163,8 @@ class AccountController
 
         return new WP_REST_Response($result, $result['success'] ? 201 : 400);
     }
+
+    // --- Password ---
 
     public function handleForgotPassword(WP_REST_Request $request): WP_REST_Response
     {
@@ -234,6 +211,8 @@ class AccountController
         return new WP_REST_Response($result, $result['success'] ? 200 : 400);
     }
 
+    // --- Profile ---
+
     public function handleUpdateProfile(WP_REST_Request $request): WP_REST_Response
     {
         $data = array_filter([
@@ -276,9 +255,12 @@ class AccountController
         ]);
     }
 
-    public function handleVerifyPhone(WP_REST_Request $request): WP_REST_Response
+    // --- Generic registration verification ---
+
+    public function handleRegisterVerifyChannel(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('register_verify_phone', 10, 60);
+        $channel = $request->get_param('channel');
+        $rl = $this->rateLimiter->check("register_verify_{$channel}", 10, 60);
 
         if (!$rl['allowed']) {
             return $this->rateLimitedResponse($rl['retry_after']);
@@ -290,14 +272,15 @@ class AccountController
             return $this->invalidTokenResponse();
         }
 
-        $result = $this->accountManager->verifyPhone($session['user_id'], $request->get_param('code'));
+        $result = $this->accountManager->verifyChannelOtp($session['user_id'], $channel, $request->get_param('code'));
 
         return new WP_REST_Response($result, $result['success'] ? 200 : 400);
     }
 
-    public function handleRegisterVerifyEmail(WP_REST_Request $request): WP_REST_Response
+    public function handleRegisterResendChannel(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('register_verify_email', 10, 60);
+        $channel = $request->get_param('channel');
+        $rl = $this->rateLimiter->check("register_resend_{$channel}", 3, 60);
 
         if (!$rl['allowed']) {
             return $this->rateLimitedResponse($rl['retry_after']);
@@ -309,45 +292,41 @@ class AccountController
             return $this->invalidTokenResponse();
         }
 
-        $result = $this->accountManager->verifyEmailOtp($session['user_id'], $request->get_param('code'));
+        $result = $this->accountManager->resendVerification($session['user_id'], $channel);
 
         return new WP_REST_Response($result, $result['success'] ? 200 : 400);
     }
 
-    public function handleResendPhone(WP_REST_Request $request): WP_REST_Response
+    // --- Generic profile verification ---
+
+    public function handleProfileSendVerification(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('register_resend_phone', 3, 60);
+        $channel = $request->get_param('channel');
+        $rl = $this->rateLimiter->check("profile_send_{$channel}", 3, 60);
 
         if (!$rl['allowed']) {
             return $this->rateLimitedResponse($rl['retry_after']);
         }
 
-        $session = $this->validateVerificationToken($request);
+        $this->accountManager->sendVerificationChallenge(get_current_user_id(), $channel);
 
-        if (!$session) {
-            return $this->invalidTokenResponse();
-        }
-
-        $result = $this->accountManager->resendPhoneVerification($session['user_id']);
-
-        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+        return new WP_REST_Response(['success' => true, 'message' => 'Verification sent.']);
     }
 
-    public function handleResendEmail(WP_REST_Request $request): WP_REST_Response
+    public function handleProfileVerifyChannel(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('register_resend_email', 3, 60);
+        $channel = $request->get_param('channel');
+        $rl = $this->rateLimiter->check("profile_verify_{$channel}", 10, 60);
 
         if (!$rl['allowed']) {
             return $this->rateLimitedResponse($rl['retry_after']);
         }
 
-        $session = $this->validateVerificationToken($request);
-
-        if (!$session) {
-            return $this->invalidTokenResponse();
-        }
-
-        $result = $this->accountManager->resendEmailVerification($session['user_id']);
+        $result = $this->accountManager->verifyChannelOtp(
+            get_current_user_id(),
+            $channel,
+            $request->get_param('code'),
+        );
 
         return new WP_REST_Response($result, $result['success'] ? 200 : 400);
     }
@@ -371,69 +350,7 @@ class AccountController
         return new WP_REST_Response(array_merge(['success' => true], $result));
     }
 
-    public function handleSendPhoneVerification(WP_REST_Request $request): WP_REST_Response
-    {
-        $rl = $this->rateLimiter->check('profile_send_phone', 3, 60);
-
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
-
-        $this->accountManager->sendVerificationChallenge(get_current_user_id(), 'phone');
-
-        return new WP_REST_Response(['success' => true, 'message' => 'Verification code sent.']);
-    }
-
-    public function handleProfileVerifyPhone(WP_REST_Request $request): WP_REST_Response
-    {
-        $rl = $this->rateLimiter->check('profile_verify_phone', 10, 60);
-
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
-
-        $result = $this->accountManager->verifyPhone(
-            get_current_user_id(),
-            $request->get_param('code'),
-        );
-
-        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
-    }
-
-    public function handleSendEmailVerification(WP_REST_Request $request): WP_REST_Response
-    {
-        $rl = $this->rateLimiter->check('profile_send_email', 3, 60);
-
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
-
-        $this->accountManager->sendVerificationChallenge(get_current_user_id(), 'email');
-
-        $method = $this->accountManager->emailUsesOtp() ? 'otp' : 'magic_link';
-
-        return new WP_REST_Response([
-            'success' => true,
-            'method'  => $method,
-            'message' => $method === 'otp' ? 'Verification code sent.' : 'Verification email sent.',
-        ]);
-    }
-
-    public function handleProfileVerifyEmail(WP_REST_Request $request): WP_REST_Response
-    {
-        $rl = $this->rateLimiter->check('profile_verify_email', 10, 60);
-
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
-
-        $result = $this->accountManager->verifyEmailOtp(
-            get_current_user_id(),
-            $request->get_param('code'),
-        );
-
-        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
-    }
+    // --- Shared helpers ---
 
     private function invalidTokenResponse(): WP_REST_Response
     {

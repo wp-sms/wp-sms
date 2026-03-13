@@ -4,14 +4,24 @@ namespace WSms\Tests\Unit\Auth;
 
 use PHPUnit\Framework\TestCase;
 use WSms\Auth\PolicyEngine;
+use WSms\Mfa\Contracts\ChannelInterface;
+use WSms\Mfa\MfaManager;
 
 class PolicyEngineTest extends TestCase
 {
     private PolicyEngine $engine;
+    private MfaManager $mfaManager;
 
     protected function setUp(): void
     {
-        $this->engine = new PolicyEngine();
+        $this->mfaManager = new MfaManager();
+
+        // Register phone and email channels (matching production setup).
+        $this->mfaManager->registerChannel($this->makeChannel('phone', supportsPrimary: true, supportsMfa: true));
+        $this->mfaManager->registerChannel($this->makeChannel('email', supportsPrimary: true, supportsMfa: true));
+        $this->mfaManager->registerChannel($this->makeChannel('backup_codes', supportsPrimary: false, supportsMfa: true));
+
+        $this->engine = new PolicyEngine($this->mfaManager);
 
         unset(
             $GLOBALS['_test_options']['wsms_auth_settings'],
@@ -40,7 +50,10 @@ class PolicyEngineTest extends TestCase
     {
         $GLOBALS['_test_options']['wsms_auth_settings'] = $settings;
 
-        $this->assertSame($expected, $this->engine->getAvailablePrimaryMethods());
+        // Need fresh engine because settings are cached.
+        $engine = new PolicyEngine($this->mfaManager);
+
+        $this->assertSame($expected, $engine->getAvailablePrimaryMethods());
     }
 
     public static function primaryMethodsProvider(): iterable
@@ -148,7 +161,8 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
         $GLOBALS['_test_user_meta'][1]['wsms_phone'] = '+1234567890';
 
-        $methodNames = array_column($this->engine->getAvailableMethodsForUser(1), 'method');
+        $engine = new PolicyEngine($this->mfaManager);
+        $methodNames = array_column($engine->getAvailableMethodsForUser(1), 'method');
 
         $this->assertContains('password', $methodNames);
         $this->assertContains('phone_otp', $methodNames);
@@ -163,7 +177,8 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
         $GLOBALS['_test_user_meta'][1]['wsms_phone'] = '+1234567890';
 
-        $methodNames = array_column($this->engine->getAvailableMethodsForUser(1), 'method');
+        $engine = new PolicyEngine($this->mfaManager);
+        $methodNames = array_column($engine->getAvailableMethodsForUser(1), 'method');
 
         $this->assertContains('phone_otp', $methodNames);
         $this->assertContains('phone_magic_link', $methodNames);
@@ -178,7 +193,8 @@ class PolicyEngineTest extends TestCase
         ];
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
 
-        $methodNames = array_column($this->engine->getAvailableMethodsForUser(1), 'method');
+        $engine = new PolicyEngine($this->mfaManager);
+        $methodNames = array_column($engine->getAvailableMethodsForUser(1), 'method');
 
         $this->assertSame(['password'], $methodNames);
     }
@@ -191,7 +207,8 @@ class PolicyEngineTest extends TestCase
         ];
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
 
-        $methodNames = array_column($this->engine->getAvailableMethodsForUser(1), 'method');
+        $engine = new PolicyEngine($this->mfaManager);
+        $methodNames = array_column($engine->getAvailableMethodsForUser(1), 'method');
 
         $this->assertContains('email_otp', $methodNames);
         $this->assertContains('email_magic_link', $methodNames);
@@ -205,7 +222,8 @@ class PolicyEngineTest extends TestCase
         ];
         $GLOBALS['_test_userdata'] = $this->makeUser(1, '');
 
-        $methodNames = array_column($this->engine->getAvailableMethodsForUser(1), 'method');
+        $engine = new PolicyEngine($this->mfaManager);
+        $methodNames = array_column($engine->getAvailableMethodsForUser(1), 'method');
 
         $this->assertSame(['password'], $methodNames);
     }
@@ -220,7 +238,9 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
         $GLOBALS['_test_user_meta'][1]['wsms_phone'] = '+1234567890';
 
-        $this->assertCount(5, $this->engine->getAvailableMethodsForUser(1));
+        $engine = new PolicyEngine($this->mfaManager);
+
+        $this->assertCount(5, $engine->getAvailableMethodsForUser(1));
     }
 
     public function testUserMethodsNonexistentUserReturnsEmpty(): void
@@ -229,7 +249,9 @@ class PolicyEngineTest extends TestCase
             'password' => ['enabled' => true],
         ];
 
-        $this->assertSame([], $this->engine->getAvailableMethodsForUser(999));
+        $engine = new PolicyEngine($this->mfaManager);
+
+        $this->assertSame([], $engine->getAvailableMethodsForUser(999));
     }
 
     public function testUserMethodsOnlyEmailOtp(): void
@@ -240,7 +262,8 @@ class PolicyEngineTest extends TestCase
         ];
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
 
-        $methodNames = array_column($this->engine->getAvailableMethodsForUser(1), 'method');
+        $engine = new PolicyEngine($this->mfaManager);
+        $methodNames = array_column($engine->getAvailableMethodsForUser(1), 'method');
 
         $this->assertSame(['email_otp'], $methodNames);
     }
@@ -300,7 +323,8 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
         $GLOBALS['_test_user_meta'][1] = ['wsms_email_verified' => ''];
 
-        $pending = $this->engine->getPendingVerifications(1);
+        $engine = new PolicyEngine($this->mfaManager);
+        $pending = $engine->getPendingVerifications(1);
 
         $this->assertCount(1, $pending);
         $this->assertSame('email', $pending[0]['type']);
@@ -314,7 +338,8 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
         $GLOBALS['_test_user_meta'][1] = ['wsms_phone' => '+1234567890', 'wsms_phone_verified' => ''];
 
-        $pending = $this->engine->getPendingVerifications(1);
+        $engine = new PolicyEngine($this->mfaManager);
+        $pending = $engine->getPendingVerifications(1);
 
         $this->assertCount(1, $pending);
         $this->assertSame('phone', $pending[0]['type']);
@@ -329,7 +354,8 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
         $GLOBALS['_test_user_meta'][1] = ['wsms_phone' => '+1234567890'];
 
-        $pending = $this->engine->getPendingVerifications(1);
+        $engine = new PolicyEngine($this->mfaManager);
+        $pending = $engine->getPendingVerifications(1);
 
         $this->assertSame([], $pending);
     }
@@ -344,7 +370,7 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_options']['wsms_auth_settings'] = $settings;
 
         // PolicyEngine caches settings, need fresh instance.
-        $engine = new PolicyEngine();
+        $engine = new PolicyEngine($this->mfaManager);
         $this->assertSame($expected, $engine->getEffectiveRegistrationFields());
     }
 
@@ -403,7 +429,8 @@ class PolicyEngineTest extends TestCase
         ];
         $GLOBALS['_test_userdata'] = $this->makeUser(1, 'abc123@noreply.wsms.local');
 
-        $methodNames = array_column($this->engine->getAvailableMethodsForUser(1), 'method');
+        $engine = new PolicyEngine($this->mfaManager);
+        $methodNames = array_column($engine->getAvailableMethodsForUser(1), 'method');
 
         $this->assertContains('password', $methodNames);
         $this->assertNotContains('email_otp', $methodNames);
@@ -417,10 +444,13 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_userdata'] = $this->makeUser(1, 'abc123@noreply.wsms.local');
         $GLOBALS['_test_user_meta'][1] = ['wsms_email_verified' => ''];
 
-        $pending = $this->engine->getPendingVerifications(1);
+        $engine = new PolicyEngine($this->mfaManager);
+        $pending = $engine->getPendingVerifications(1);
 
         $this->assertSame([], $pending);
     }
+
+    // --- Helpers ---
 
     private function makeUser(int $id, string $email = 'test@example.com'): object
     {
@@ -433,5 +463,42 @@ class PolicyEngineTest extends TestCase
         $user->user_registered = '2024-01-01 00:00:00';
 
         return $user;
+    }
+
+    private function makeChannel(string $id, bool $supportsPrimary = false, bool $supportsMfa = false): ChannelInterface
+    {
+        return new class($id, $supportsPrimary, $supportsMfa) implements ChannelInterface {
+            public function __construct(
+                private string $id,
+                private bool $supportsPrimary,
+                private bool $supportsMfa,
+            ) {
+            }
+
+            public function getId(): string { return $this->id; }
+            public function getName(): string { return ucfirst($this->id); }
+            public function supportsPrimaryAuth(): bool { return $this->supportsPrimary; }
+            public function supportsMfa(): bool { return $this->supportsMfa; }
+            public function supportsAutoEnrollment(): bool { return $this->id === 'email'; }
+
+            public function isAvailableForUser(int $userId): bool
+            {
+                if ($this->id === 'phone') {
+                    return !empty(get_user_meta($userId, 'wsms_phone', true));
+                }
+                if ($this->id === 'email') {
+                    $email = get_userdata($userId)?->user_email ?? '';
+                    return !empty($email) && !str_ends_with($email, '@noreply.wsms.local');
+                }
+                return true;
+            }
+
+            public function enroll(int $userId, array $data): \WSms\Mfa\ValueObjects\EnrollmentResult { return new \WSms\Mfa\ValueObjects\EnrollmentResult(true, 'OK'); }
+            public function sendChallenge(int $userId, array $context = []): \WSms\Mfa\ValueObjects\ChallengeResult { return new \WSms\Mfa\ValueObjects\ChallengeResult(true, 'OK'); }
+            public function verify(int $userId, string $code, array $context = []): bool { return true; }
+            public function unenroll(int $userId): bool { return true; }
+            public function isEnrolled(int $userId): bool { return false; }
+            public function getEnrollmentInfo(int $userId): array { return []; }
+        };
     }
 }

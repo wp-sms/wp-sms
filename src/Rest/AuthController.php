@@ -202,33 +202,18 @@ class AuthController
 
     public function handleConfig(WP_REST_Request $request): WP_REST_Response
     {
-        $settings = get_option('wsms_auth_settings', []);
         $primaryMethods = $this->policy->getAvailablePrimaryMethods();
 
-        // Build method_details for channels with verification method info.
-        $methodDetails = [];
-
-        foreach (['phone', 'email'] as $channelKey) {
-            if (in_array($channelKey, $primaryMethods, true)) {
-                $channelSettings = $settings[$channelKey] ?? [];
-                $verificationMethods = $channelSettings['verification_methods'] ?? ['otp'];
-                $methodDetails[$channelKey] = [
-                    'has_otp'        => in_array('otp', $verificationMethods, true),
-                    'has_magic_link' => in_array('magic_link', $verificationMethods, true),
-                    'code_length'    => (int) ($channelSettings['code_length'] ?? 6),
-                ];
-            }
-        }
-
-        return new WP_REST_Response([
-            'primary_methods'              => $primaryMethods,
-            'method_details'               => $methodDetails,
-            'mfa_enabled'                  => !empty($this->policy->getAvailableMfaFactors()),
-            'base_url'                     => $settings['auth_base_url'] ?? '/account',
-            'registration_fields'          => $this->policy->getEffectiveRegistrationFields(),
-            'require_email_verification'   => !empty($settings['email']['verify_at_signup']),
-            'require_phone_verification'   => !empty($settings['phone']['verify_at_signup']),
-        ]);
+        return new WP_REST_Response(array_merge(
+            [
+                'primary_methods'     => $primaryMethods,
+                'method_details'      => $this->policy->getMethodDetails($primaryMethods),
+                'mfa_enabled'         => !empty($this->policy->getAvailableMfaFactors()),
+                'base_url'            => $this->policy->getSetting('auth_base_url', '/account'),
+                'registration_fields' => $this->policy->getEffectiveRegistrationFields(),
+            ],
+            $this->policy->getVerificationRequirements(),
+        ));
     }
 
     private function toResponse(AuthResult $result): WP_REST_Response
