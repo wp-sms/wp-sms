@@ -16,6 +16,8 @@ import { Alert } from '../ui/Alert';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Label } from '../ui/Label';
+import { CaptchaWidget } from '../CaptchaWidget';
+import { useCaptcha } from '../../hooks/useCaptcha';
 
 
 export function AuthenticateStep() {
@@ -27,6 +29,8 @@ export function AuthenticateStep() {
     const [showMethodPicker, setShowMethodPicker] = useState(false);
     const [codeSent, setCodeSent] = useState(false);
     const [successMsg, setSuccessMsg] = useState('');
+    const captcha = useCaptcha();
+    const needsCaptcha = captcha.isRequiredFor('login');
 
     const autoSentRef = useRef(false);
 
@@ -57,10 +61,11 @@ export function AuthenticateStep() {
         authLoading.value = true;
 
         try {
-            const res = await api.post('/auth/login', { username: identifier, password });
+            const res = await api.post('/auth/login', { username: identifier, password }, captcha.getHeaders());
             handleAuthResponse(res, route);
         } catch (err) {
             authError.value = extractError(err);
+            captcha.reset();
         } finally {
             authLoading.value = false;
         }
@@ -77,7 +82,7 @@ export function AuthenticateStep() {
             const res = await api.post('/auth/login/passwordless', {
                 method: m.channel,
                 identifier,
-            });
+            }, captcha.getHeaders());
 
             const status = handleAuthResponse(res, route);
 
@@ -156,7 +161,15 @@ export function AuthenticateStep() {
                             autoFocus
                         />
                     </div>
-                    <Button className="w-full" type="submit" disabled={authLoading.value}>
+                    {needsCaptcha && (
+                        <CaptchaWidget
+                            provider={captcha.provider}
+                            siteKey={captcha.siteKey}
+                            onVerify={captcha.setToken}
+                            resetRef={captcha.resetRef}
+                        />
+                    )}
+                    <Button className="w-full" type="submit" disabled={authLoading.value || (needsCaptcha && !captcha.token)}>
                         {authLoading.value ? 'Signing in...' : 'Continue'}
                     </Button>
 
@@ -173,10 +186,18 @@ export function AuthenticateStep() {
             {/* OTP send flow */}
             {activeMethod && activeMethod !== 'password' && !activeMethod.includes('magic_link') && !codeSent && (
                 <div className="space-y-4">
+                    {needsCaptcha && (
+                        <CaptchaWidget
+                            provider={captcha.provider}
+                            siteKey={captcha.siteKey}
+                            onVerify={captcha.setToken}
+                            resetRef={captcha.resetRef}
+                        />
+                    )}
                     <Button
                         className="w-full"
                         onClick={() => sendChallenge(activeMethod)}
-                        disabled={authLoading.value}
+                        disabled={authLoading.value || (needsCaptcha && !captcha.token)}
                     >
                         {authLoading.value ? 'Sending...' : 'Send Code'}
                     </Button>
@@ -194,10 +215,18 @@ export function AuthenticateStep() {
             {/* Magic link only */}
             {activeMethod && activeMethod.includes('magic_link') && !successMsg && (
                 <div className="space-y-4">
+                    {needsCaptcha && (
+                        <CaptchaWidget
+                            provider={captcha.provider}
+                            siteKey={captcha.siteKey}
+                            onVerify={captcha.setToken}
+                            resetRef={captcha.resetRef}
+                        />
+                    )}
                     <Button
                         className="w-full"
                         onClick={() => sendChallenge(activeMethod)}
-                        disabled={authLoading.value}
+                        disabled={authLoading.value || (needsCaptcha && !captcha.token)}
                     >
                         {authLoading.value ? 'Sending...' : 'Send Login Link'}
                     </Button>

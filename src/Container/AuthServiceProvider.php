@@ -8,6 +8,10 @@ use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthRouter;
 use WSms\Auth\AuthSession;
 use WSms\Auth\AuthShortcode;
+use WSms\Auth\CaptchaGuard;
+use WSms\Auth\CaptchaProviders\HcaptchaProvider;
+use WSms\Auth\CaptchaProviders\RecaptchaProvider;
+use WSms\Auth\CaptchaProviders\TurnstileProvider;
 use WSms\Auth\LoginGuard;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\RateLimiter;
@@ -64,6 +68,14 @@ class AuthServiceProvider implements ServiceProvider
             );
         });
 
+        $container->register('auth.captcha_guard', function () {
+            return new CaptchaGuard([
+                'turnstile' => new TurnstileProvider(),
+                'recaptcha' => new RecaptchaProvider(),
+                'hcaptcha'  => new HcaptchaProvider(),
+            ]);
+        });
+
         $container->register('auth.router', function () {
             return new AuthRouter();
         });
@@ -80,6 +92,7 @@ class AuthServiceProvider implements ServiceProvider
     /** {@inheritDoc} */
     public function boot(ServiceContainer $container): void
     {
+        $container->get('auth.router')->setCaptchaGuard($container->get('auth.captcha_guard'));
         $container->get('auth.router')->registerHooks();
         $container->get('auth.shortcode')->registerHooks();
 

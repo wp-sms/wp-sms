@@ -457,6 +457,14 @@ class PolicyEngine
         'backup_codes' => [
             'enabled' => false,
         ],
+        'captcha' => [
+            'enabled'           => false,
+            'provider'          => 'turnstile',
+            'site_key'          => '',
+            'secret_key'        => '',
+            'protected_actions' => ['login', 'register', 'forgot_password'],
+            'fail_open'         => false,
+        ],
     ];
 
     /**

@@ -12,9 +12,13 @@ import { Label } from '../components/ui/Label';
 import { AuthLink } from '../components/AuthLink';
 import { PhoneInput } from '../components/PhoneInput';
 import { RegisterVerifyStep } from '../components/steps/RegisterVerifyStep';
+import { CaptchaWidget } from '../components/CaptchaWidget';
+import { useCaptcha } from '../hooks/useCaptcha';
 
 export function Register() {
     const fields = registrationFields.value;
+    const captcha = useCaptcha();
+    const needsCaptcha = captcha.isRequiredFor('register');
     const [form, setForm] = useState({
         email: '',
         password: '',
@@ -42,7 +46,7 @@ export function Register() {
         }
 
         try {
-            const res = await api.post('/auth/register', body);
+            const res = await api.post('/auth/register', body, captcha.getHeaders());
             if (res.success) {
                 if (res.pending_verifications?.length > 0) {
                     registrationToken.value = res.registration_token;
@@ -54,6 +58,7 @@ export function Register() {
             }
         } catch (err) {
             authError.value = extractError(err);
+            captcha.reset();
         } finally {
             authLoading.value = false;
         }
@@ -186,7 +191,15 @@ export function Register() {
                     </div>
                 )}
 
-                <Button className="w-full" type="submit" disabled={authLoading.value}>
+                {needsCaptcha && (
+                    <CaptchaWidget
+                        provider={captcha.provider}
+                        siteKey={captcha.siteKey}
+                        onVerify={captcha.setToken}
+                        resetRef={captcha.resetRef}
+                    />
+                )}
+                <Button className="w-full" type="submit" disabled={authLoading.value || (needsCaptcha && !captcha.token)}>
                     {authLoading.value ? 'Creating account\u2026' : 'Create Account'}
                 </Button>
             </form>

@@ -1,6 +1,7 @@
 import { MfaPolicies } from './mfa-policies';
 import { RateLimiting } from './rate-limiting';
 import { AccountCleanup } from './account-cleanup';
+import { Captcha } from './captcha';
 import type { AuthSettings } from '@/lib/api';
 
 interface SecurityPageProps {
@@ -17,6 +18,10 @@ export function SecurityPage({ section, settings, onUpdate, roles }: SecurityPag
 
   if (section === 'account-cleanup') {
     return <AccountCleanup settings={settings} onUpdate={onUpdate} />;
+  }
+
+  if (section === 'captcha') {
+    return <Captcha settings={settings} onUpdate={onUpdate} />;
   }
 
   return <MfaPolicies settings={settings} onUpdate={onUpdate} roles={roles} />;

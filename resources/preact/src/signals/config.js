@@ -6,6 +6,7 @@ export const configLoading = signal(false);
 export const primaryMethods = computed(() => authConfig.value?.primary_methods ?? ['password']);
 export const methodDetails = computed(() => authConfig.value?.method_details ?? {});
 export const registrationFields = computed(() => authConfig.value?.registration_fields ?? ['email', 'password']);
+export const captchaConfig = computed(() => authConfig.value?.captcha ?? null);
 
 export async function loadConfig() {
     if (authConfig.value || configLoading.value) return;

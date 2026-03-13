@@ -35,6 +35,7 @@ class AdminController
         'email',
         'password',
         'backup_codes',
+        'captcha',
     ];
 
     public function __construct(
@@ -264,6 +265,31 @@ class AdminController
             $errors[] = 'At least one identifier (email or phone) must be required at signup or included in registration fields.';
         }
 
+        // Captcha settings validation.
+        $captcha = $settings['captcha'] ?? [];
+
+        if (!empty($captcha['enabled'])) {
+            if (empty($captcha['site_key']) || empty($captcha['secret_key'])) {
+                $errors[] = 'captcha: site_key and secret_key are required when CAPTCHA is enabled.';
+            }
+
+            $allowedProviders = ['turnstile', 'recaptcha', 'hcaptcha'];
+            $provider = $captcha['provider'] ?? 'turnstile';
+
+            if (!in_array($provider, $allowedProviders, true)) {
+                $errors[] = 'captcha.provider must be one of: ' . implode(', ', $allowedProviders) . '.';
+            }
+
+            $allowedActions = ['login', 'register', 'forgot_password', 'identify'];
+            $protectedActions = $captcha['protected_actions'] ?? [];
+
+            foreach ($protectedActions as $action) {
+                if (!in_array($action, $allowedActions, true)) {
+                    $errors[] = "captcha.protected_actions: invalid action '{$action}'.";
+                }
+            }
+        }
+
         $bc = $settings['backup_codes'] ?? [];
 
         if (isset($bc['count'])) {
@@ -282,4 +308,5 @@ class AdminController
 
         return $errors;
     }
+
 }

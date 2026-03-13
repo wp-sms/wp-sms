@@ -6,6 +6,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WP_REST_Request;
 use WSms\Auth\AuthOrchestrator;
+use WSms\Auth\CaptchaGuard;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\ValueObjects\IdentifyResult;
@@ -22,10 +23,14 @@ class AuthControllerIdentifyTest extends TestCase
         $this->orchestrator = $this->createMock(AuthOrchestrator::class);
         $this->rateLimiter = $this->createMock(RateLimiter::class);
 
+        $captchaGuard = $this->createMock(CaptchaGuard::class);
+        $captchaGuard->method('verify')->willReturn(null);
+
         $this->controller = new AuthController(
             $this->orchestrator,
             $this->rateLimiter,
             $this->createMock(PolicyEngine::class),
+            $captchaGuard,
         );
     }
 

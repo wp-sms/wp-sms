@@ -9,10 +9,14 @@ import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
 import { AuthLink } from '../components/AuthLink';
+import { CaptchaWidget } from '../components/CaptchaWidget';
+import { useCaptcha } from '../hooks/useCaptcha';
 
 export function ForgotPassword() {
     const [email, setEmail] = useState('');
     const [success, setSuccess] = useState('');
+    const captcha = useCaptcha();
+    const needsCaptcha = captcha.isRequiredFor('forgot_password');
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -20,10 +24,11 @@ export function ForgotPassword() {
         authLoading.value = true;
 
         try {
-            const res = await api.post('/auth/forgot-password', { email });
+            const res = await api.post('/auth/forgot-password', { email }, captcha.getHeaders());
             setSuccess(res.message || 'If that email exists, a reset link has been sent.');
         } catch (err) {
             authError.value = extractError(err);
+            captcha.reset();
         } finally {
             authLoading.value = false;
         }
@@ -52,7 +57,15 @@ export function ForgotPassword() {
                             autoComplete="email"
                         />
                     </div>
-                    <Button className="w-full" type="submit" disabled={authLoading.value}>
+                    {needsCaptcha && (
+                        <CaptchaWidget
+                            provider={captcha.provider}
+                            siteKey={captcha.siteKey}
+                            onVerify={captcha.setToken}
+                            resetRef={captcha.resetRef}
+                        />
+                    )}
+                    <Button className="w-full" type="submit" disabled={authLoading.value || (needsCaptcha && !captcha.token)}>
                         {authLoading.value ? 'Sending\u2026' : 'Send Reset Link'}
                     </Button>
                 </form>

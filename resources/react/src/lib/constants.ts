@@ -120,6 +120,14 @@ export const DEFAULTS: Required<AuthSettings> = {
   registration_fields: ['email', 'password'],
   pending_user_cleanup_enabled: true,
   pending_user_ttl_hours: 24,
+  captcha: {
+    enabled: false,
+    provider: 'turnstile',
+    site_key: '',
+    secret_key: '',
+    protected_actions: ['login', 'register', 'forgot_password'],
+    fail_open: false,
+  },
 };
 
 export type ChannelId = 'phone' | 'email' | 'password';

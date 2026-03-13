@@ -67,11 +67,24 @@ export interface BackupCodesSettings {
   length?: number;
 }
 
+export type CaptchaProvider = 'turnstile' | 'recaptcha' | 'hcaptcha';
+export type CaptchaAction = 'login' | 'register' | 'forgot_password' | 'identify';
+
+export interface CaptchaSettings {
+  enabled?: boolean;
+  provider?: CaptchaProvider;
+  site_key?: string;
+  secret_key?: string;
+  protected_actions?: CaptchaAction[];
+  fail_open?: boolean;
+}
+
 export interface AuthSettings {
   phone?: PhoneChannelSettings;
   email?: EmailChannelSettings;
   password?: PasswordSettings;
   backup_codes?: BackupCodesSettings;
+  captcha?: CaptchaSettings;
   mfa_required_roles?: string[];
   enrollment_timing?: EnrollmentTiming;
   grace_period_days?: number;

@@ -6,6 +6,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AuthSession;
+use WSms\Auth\CaptchaGuard;
 use WSms\Auth\RateLimiter;
 use WSms\Rest\AccountController;
 
@@ -22,10 +23,14 @@ class AccountControllerTest extends TestCase
         $this->rateLimiter = $this->createMock(RateLimiter::class);
         $this->authSession = $this->createMock(AuthSession::class);
 
+        $captchaGuard = $this->createMock(CaptchaGuard::class);
+        $captchaGuard->method('verify')->willReturn(null);
+
         $this->controller = new AccountController(
             $this->accountManager,
             $this->rateLimiter,
             $this->authSession,
+            $captchaGuard,
         );
 
         // Default: no rate limiting.
@@ -83,7 +88,10 @@ class AccountControllerTest extends TestCase
             'allowed' => false, 'remaining' => 0, 'retry_after' => 45,
         ]);
 
-        $controller = new AccountController($this->accountManager, $this->rateLimiter, $this->authSession);
+        $captchaGuard = $this->createMock(CaptchaGuard::class);
+        $captchaGuard->method('verify')->willReturn(null);
+
+        $controller = new AccountController($this->accountManager, $this->rateLimiter, $this->authSession, $captchaGuard);
 
         $request = new \WP_REST_Request('POST', '/auth/register');
         $request->set_param('email', 'test@example.com');

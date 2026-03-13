@@ -6,6 +6,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AuthSession;
+use WSms\Auth\CaptchaGuard;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\ValueObjects\AuthResult;
 
@@ -19,6 +20,7 @@ class AccountController
         private AccountManager $accountManager,
         private RateLimiter $rateLimiter,
         private AuthSession $authSession,
+        private CaptchaGuard $captchaGuard,
     ) {
     }
 
@@ -157,6 +159,11 @@ class AccountController
             return $this->rateLimitedResponse($rl['retry_after']);
         }
 
+        $captcha = $this->captchaGuard->verify($request, 'register');
+        if ($captcha === false) {
+            return CaptchaGuard::failedResponse();
+        }
+
         $result = $this->accountManager->registerUser([
             'email'        => $request->get_param('email'),
             'password'     => $request->get_param('password'),
@@ -178,6 +185,11 @@ class AccountController
 
         if (!$rl['allowed']) {
             return $this->rateLimitedResponse($rl['retry_after']);
+        }
+
+        $captcha = $this->captchaGuard->verify($request, 'forgot_password');
+        if ($captcha === false) {
+            return CaptchaGuard::failedResponse();
         }
 
         $this->accountManager->initiatePasswordReset($request->get_param('email'));

@@ -20,6 +20,7 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('auth.orchestrator'),
                 $container->get('auth.rate_limiter'),
                 $container->get('auth.policy'),
+                $container->get('auth.captcha_guard'),
             );
         });
 
@@ -42,6 +43,7 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('auth.account_manager'),
                 $container->get('auth.rate_limiter'),
                 $container->get('auth.session'),
+                $container->get('auth.captcha_guard'),
             );
         });
 

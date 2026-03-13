@@ -5,6 +5,7 @@ namespace WSms\Rest;
 use WP_REST_Request;
 use WP_REST_Response;
 use WSms\Auth\AuthOrchestrator;
+use WSms\Auth\CaptchaGuard;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\ValueObjects\AuthResult;
@@ -19,6 +20,7 @@ class AuthController
         private AuthOrchestrator $orchestrator,
         private RateLimiter $rateLimiter,
         private PolicyEngine $policy,
+        private CaptchaGuard $captchaGuard,
     ) {
     }
 
@@ -102,6 +104,11 @@ class AuthController
             return $this->rateLimitedResponse($rl['retry_after']);
         }
 
+        $captcha = $this->captchaGuard->verify($request, 'login');
+        if ($captcha === false) {
+            return CaptchaGuard::failedResponse();
+        }
+
         $result = $this->orchestrator->loginWithPassword(
             $request->get_param('username'),
             $request->get_param('password'),
@@ -116,6 +123,11 @@ class AuthController
 
         if (!$rl['allowed']) {
             return $this->rateLimitedResponse($rl['retry_after']);
+        }
+
+        $captcha = $this->captchaGuard->verify($request, 'login');
+        if ($captcha === false) {
+            return CaptchaGuard::failedResponse();
         }
 
         $result = $this->orchestrator->loginPasswordless(
@@ -204,7 +216,7 @@ class AuthController
     {
         $primaryMethods = $this->policy->getAvailablePrimaryMethods();
 
-        return new WP_REST_Response(array_merge(
+        $config = array_merge(
             [
                 'primary_methods'     => $primaryMethods,
                 'method_details'      => $this->policy->getMethodDetails($primaryMethods),
@@ -213,7 +225,14 @@ class AuthController
                 'registration_fields' => $this->policy->getEffectiveRegistrationFields(),
             ],
             $this->policy->getVerificationRequirements(),
-        ));
+        );
+
+        $captchaConfig = $this->captchaGuard->getPublicConfig();
+        if ($captchaConfig) {
+            $config['captcha'] = $captchaConfig;
+        }
+
+        return new WP_REST_Response($config);
     }
 
     private function toResponse(AuthResult $result): WP_REST_Response

@@ -7,6 +7,7 @@ defined('ABSPATH') || exit;
 class AuthRouter
 {
     private ?array $settings = null;
+    private ?CaptchaGuard $captchaGuard = null;
 
     /** @var array<string, string> Route → page title mapping. */
     private static array $routeTitles = [
@@ -22,6 +23,11 @@ class AuthRouter
         'change-password' => 'Change Password',
         'security'        => 'Security',
     ];
+
+    public function setCaptchaGuard(CaptchaGuard $captchaGuard): void
+    {
+        $this->captchaGuard = $captchaGuard;
+    }
 
     public function registerHooks(): void
     {
@@ -105,6 +111,28 @@ class AuthRouter
             'isLoggedIn' => is_user_logged_in(),
             'route'      => get_query_var('wsms_auth_route', ''),
         ]);
+
+        // Enqueue CAPTCHA provider script if enabled.
+        $this->enqueueCaptchaScript();
+    }
+
+    private function enqueueCaptchaScript(): void
+    {
+        if (!$this->captchaGuard) {
+            return;
+        }
+
+        $scriptUrl = $this->captchaGuard->getScriptUrl();
+
+        if ($scriptUrl) {
+            wp_enqueue_script(
+                'wsms-captcha-provider',
+                $scriptUrl,
+                [],
+                null,
+                true,
+            );
+        }
     }
 
     /**
@@ -119,7 +147,7 @@ class AuthRouter
         global $wp_styles, $wp_scripts;
 
         $allowedStyles = ['wsms-auth-style'];
-        $allowedScripts = ['wsms-auth', 'wp-hooks'];
+        $allowedScripts = ['wsms-auth', 'wp-hooks', 'wsms-captcha-provider'];
 
         if ($wp_styles instanceof \WP_Styles) {
             foreach ($wp_styles->queue as $handle) {
