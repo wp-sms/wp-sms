@@ -42,8 +42,9 @@ describe('AuthenticationPage', () => {
         />
       );
 
-      const phoneSwitch = screen.getByRole('switch', { name: /toggle phone/i });
-      await user.click(phoneSwitch);
+      // Two Phone switches exist (Sign-in + MFA columns), pick the first one.
+      const phoneSwitches = screen.getAllByRole('switch', { name: /toggle phone/i });
+      await user.click(phoneSwitches[0]);
 
       expect(onUpdate).toHaveBeenCalledWith('phone', expect.objectContaining({ enabled: true }));
     });
@@ -53,7 +54,7 @@ describe('AuthenticationPage', () => {
     it('renders registration settings', () => {
       render(<AuthenticationPage section="registration" {...defaultProps} />);
 
-      expect(screen.getByText('Auto-Create Users')).toBeInTheDocument();
+      expect(screen.getByText('Auto-Create Accounts on Login')).toBeInTheDocument();
       expect(screen.getByText('Registration Fields')).toBeInTheDocument();
     });
 
@@ -69,7 +70,7 @@ describe('AuthenticationPage', () => {
         />
       );
 
-      const autoCreateSwitch = screen.getByRole('switch', { name: /toggle auto-create users/i });
+      const autoCreateSwitch = screen.getByRole('switch', { name: /toggle auto-create accounts on login/i });
       await user.click(autoCreateSwitch);
 
       expect(onUpdate).toHaveBeenCalledWith('auto_create_users', true);
