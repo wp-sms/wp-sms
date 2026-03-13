@@ -3,6 +3,7 @@
 namespace WSms\Tests\Integration\Auth;
 
 use WSms\Auth\AccountManager;
+use WSms\Enums\VerificationType;
 use WSms\Tests\Support\AuthScenarios;
 use WSms\Tests\Support\IntegrationTestCase;
 
@@ -26,8 +27,8 @@ class RegistrationFlowTest extends IntegrationTestCase
         $this->assertSame(42, $result['user_id']);
         $this->assertArrayNotHasKey('pending_verifications', $result);
         $this->assertArrayNotHasKey('registration_token', $result);
-        $this->assertEmpty($this->wpdb->getVerificationsByType('email_verify'));
-        $this->assertEmpty($this->wpdb->getVerificationsByType('phone_verify'));
+        $this->assertEmpty($this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value));
+        $this->assertEmpty($this->wpdb->getVerificationsByType(VerificationType::PhoneVerify->value));
     }
 
     public function testRegisterFailsWithMissingEmail(): void
@@ -141,7 +142,7 @@ class RegistrationFlowTest extends IntegrationTestCase
 
         $this->assertTrue($result['success']);
 
-        $emailVerifications = $this->wpdb->getVerificationsByType('email_verify');
+        $emailVerifications = $this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value);
         $this->assertCount(1, $emailVerifications);
         $this->assertSame(60, (int) $emailVerifications[0]->user_id);
         $this->assertSame('otp@example.com', $emailVerifications[0]->identifier);
@@ -164,7 +165,7 @@ class RegistrationFlowTest extends IntegrationTestCase
 
         $this->assertTrue($result['success']);
 
-        $emailVerifications = $this->wpdb->getVerificationsByType('email_verify');
+        $emailVerifications = $this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value);
         $this->assertCount(1, $emailVerifications);
         $this->assertSame('ml@example.com', $emailVerifications[0]->identifier);
     }
@@ -183,7 +184,7 @@ class RegistrationFlowTest extends IntegrationTestCase
 
         $this->assertTrue($result['success']);
 
-        $phoneVerifications = $this->wpdb->getVerificationsByType('phone_verify');
+        $phoneVerifications = $this->wpdb->getVerificationsByType(VerificationType::PhoneVerify->value);
         $this->assertCount(1, $phoneVerifications);
         $this->assertSame('+1234567890', $phoneVerifications[0]->identifier);
         $this->assertSame($this->hashCode('789012'), $phoneVerifications[0]->code);
@@ -204,8 +205,8 @@ class RegistrationFlowTest extends IntegrationTestCase
         $this->assertTrue($result['success']);
         $this->assertCount(2, $result['pending_verifications']);
 
-        $phoneVerifications = $this->wpdb->getVerificationsByType('phone_verify');
-        $emailVerifications = $this->wpdb->getVerificationsByType('email_verify');
+        $phoneVerifications = $this->wpdb->getVerificationsByType(VerificationType::PhoneVerify->value);
+        $emailVerifications = $this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value);
         $this->assertCount(1, $phoneVerifications);
         $this->assertCount(1, $emailVerifications);
     }
@@ -352,9 +353,9 @@ class RegistrationFlowTest extends IntegrationTestCase
         $this->assertNotContains('email', $pendingTypes);
 
         // No email verification records created.
-        $this->assertEmpty($this->wpdb->getVerificationsByType('email_verify'));
+        $this->assertEmpty($this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value));
         // Phone verification record created.
-        $this->assertCount(1, $this->wpdb->getVerificationsByType('phone_verify'));
+        $this->assertCount(1, $this->wpdb->getVerificationsByType(VerificationType::PhoneVerify->value));
     }
 
     public function testPhoneOnlyRegistrationFailsWithoutPhone(): void

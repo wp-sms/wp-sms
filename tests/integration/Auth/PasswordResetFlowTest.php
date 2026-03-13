@@ -2,6 +2,7 @@
 
 namespace WSms\Tests\Integration\Auth;
 
+use WSms\Enums\VerificationType;
 use WSms\Tests\Support\AuthScenarios;
 use WSms\Tests\Support\IntegrationTestCase;
 use WSms\Tests\Support\UserFactory;
@@ -16,7 +17,7 @@ class PasswordResetFlowTest extends IntegrationTestCase
 
         $this->accountManager->initiatePasswordReset($user->user_email);
 
-        $verifications = $this->wpdb->getVerificationsByType('password_reset');
+        $verifications = $this->wpdb->getVerificationsByType(VerificationType::PasswordReset->value);
         $this->assertCount(1, $verifications);
         $this->assertSame(5, (int) $verifications[0]->user_id);
     }
@@ -28,7 +29,7 @@ class PasswordResetFlowTest extends IntegrationTestCase
 
         $this->accountManager->initiatePasswordReset('nobody@example.com');
 
-        $verifications = $this->wpdb->getVerificationsByType('password_reset');
+        $verifications = $this->wpdb->getVerificationsByType(VerificationType::PasswordReset->value);
         $this->assertEmpty($verifications);
     }
 
@@ -45,7 +46,7 @@ class PasswordResetFlowTest extends IntegrationTestCase
         $this->assertTrue($result['success']);
         $this->assertSame('Password has been reset successfully.', $result['message']);
 
-        $verifications = $this->wpdb->getVerificationsByType('password_reset');
+        $verifications = $this->wpdb->getVerificationsByType(VerificationType::PasswordReset->value);
         $this->assertNotNull($verifications[0]->used_at);
     }
 
@@ -121,7 +122,7 @@ class PasswordResetFlowTest extends IntegrationTestCase
 
         $this->accountManager->initiatePasswordReset($user->user_email);
 
-        $verifications = $this->wpdb->getVerificationsByType('password_reset');
+        $verifications = $this->wpdb->getVerificationsByType(VerificationType::PasswordReset->value);
         $this->assertCount(1, $verifications);
     }
 

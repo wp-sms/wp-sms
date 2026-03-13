@@ -4,6 +4,7 @@ namespace WSms\Mfa\Channels;
 
 use WSms\Audit\AuditLogger;
 use WSms\Enums\EventType;
+use WSms\Enums\VerificationType;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\OtpGenerator;
 use WSms\Mfa\ValueObjects\ChallengeResult;
@@ -110,10 +111,11 @@ abstract class AbstractOtpChannel implements ChannelInterface
 
         $verification = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM {$table}
-             WHERE user_id = %d AND channel_id = %s AND type = 'otp' AND used_at IS NULL
+             WHERE user_id = %d AND channel_id = %s AND type = %s AND used_at IS NULL
              ORDER BY created_at DESC LIMIT 1",
             $userId,
             $this->getId(),
+            VerificationType::Otp->value,
         ));
 
         if (!$verification) {
@@ -228,7 +230,7 @@ abstract class AbstractOtpChannel implements ChannelInterface
 
         $wpdb->insert($table, [
             'user_id'      => $userId,
-            'type'         => 'otp',
+            'type'         => VerificationType::Otp->value,
             'channel_id'   => $this->getId(),
             'identifier'   => $identifier,
             'code'         => $hashedCode,

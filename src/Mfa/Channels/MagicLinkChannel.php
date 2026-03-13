@@ -5,6 +5,7 @@ namespace WSms\Mfa\Channels;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
+use WSms\Enums\VerificationType;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\OtpGenerator;
 use WSms\Mfa\Support\EmailMasker;
@@ -139,7 +140,7 @@ class MagicLinkChannel implements ChannelInterface
 
         $wpdb->insert($table, [
             'user_id'      => $userId,
-            'type'         => 'magic_link',
+            'type'         => VerificationType::MagicLink->value,
             'channel_id'   => $this->getId(),
             'identifier'   => $email,
             'code'         => $hashedToken,
@@ -200,10 +201,11 @@ class MagicLinkChannel implements ChannelInterface
         // Invalidate existing pending magic links for this user.
         $wpdb->query($wpdb->prepare(
             "UPDATE {$table} SET used_at = %s
-             WHERE user_id = %d AND channel_id = %s AND type = 'magic_link' AND used_at IS NULL",
+             WHERE user_id = %d AND channel_id = %s AND type = %s AND used_at IS NULL",
             gmdate('Y-m-d H:i:s'),
             $userId,
             $this->getId(),
+            VerificationType::MagicLink->value,
         ));
 
         $token = $this->otpGenerator->generateToken(32);
@@ -212,7 +214,7 @@ class MagicLinkChannel implements ChannelInterface
 
         $wpdb->insert($table, [
             'user_id'      => $userId,
-            'type'         => 'magic_link',
+            'type'         => VerificationType::MagicLink->value,
             'channel_id'   => $this->getId(),
             'identifier'   => $identifier,
             'code'         => $hashedToken,
@@ -237,9 +239,10 @@ class MagicLinkChannel implements ChannelInterface
 
         $verification = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM {$table}
-             WHERE channel_id = %s AND type = 'magic_link' AND code = %s AND used_at IS NULL
+             WHERE channel_id = %s AND type = %s AND code = %s AND used_at IS NULL
              LIMIT 1",
             $this->getId(),
+            VerificationType::MagicLink->value,
             $hashedToken,
         ));
 

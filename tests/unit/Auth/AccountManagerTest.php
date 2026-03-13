@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AuthSession;
+use WSms\Enums\VerificationType;
 use WSms\Mfa\MfaManager;
 use WSms\Mfa\OtpGenerator;
 
@@ -314,7 +315,7 @@ class AccountManagerTest extends TestCase
 
     public function testCompletePasswordResetSucceeds(): void
     {
-        $verification = $this->makeVerification(1, 'password_reset');
+        $verification = $this->makeVerification(1, VerificationType::PasswordReset->value);
         $this->stubWpdbLookup($verification);
 
         $this->auditLogger->expects($this->once())->method('log');
@@ -327,7 +328,7 @@ class AccountManagerTest extends TestCase
 
     public function testCompletePasswordResetFailsWithExpiredToken(): void
     {
-        $verification = $this->makeVerification(1, 'password_reset', expired: true);
+        $verification = $this->makeVerification(1, VerificationType::PasswordReset->value, expired: true);
         $this->stubWpdbLookup($verification);
 
         $result = $this->manager->completePasswordReset('test-token-abc', 'NewPass1!');
@@ -338,7 +339,7 @@ class AccountManagerTest extends TestCase
 
     public function testCompletePasswordResetFailsWithUsedToken(): void
     {
-        $verification = $this->makeVerification(1, 'password_reset', used: true);
+        $verification = $this->makeVerification(1, VerificationType::PasswordReset->value, used: true);
         $this->stubWpdbLookup($verification);
 
         $result = $this->manager->completePasswordReset('test-token-abc', 'NewPass1!');
@@ -361,7 +362,7 @@ class AccountManagerTest extends TestCase
 
     public function testVerifyEmailSucceeds(): void
     {
-        $verification = $this->makeVerification(3, 'email_verify');
+        $verification = $this->makeVerification(3, VerificationType::EmailVerify->value);
         $this->stubWpdbLookup($verification);
 
         $this->auditLogger->expects($this->once())->method('log');
@@ -641,7 +642,7 @@ class AccountManagerTest extends TestCase
 
     public function testVerifyEmailClearsPlaceholderFlag(): void
     {
-        $verification = $this->makeVerification(202, 'email_verify');
+        $verification = $this->makeVerification(202, VerificationType::EmailVerify->value);
         $this->stubWpdbLookup($verification);
 
         $GLOBALS['_test_user_meta'][202] = ['wsms_email_placeholder' => '1'];

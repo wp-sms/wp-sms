@@ -2,6 +2,7 @@
 
 namespace WSms\Tests\Integration\Auth;
 
+use WSms\Enums\VerificationType;
 use WSms\Tests\Support\AuthScenarios;
 use WSms\Tests\Support\IntegrationTestCase;
 use WSms\Tests\Support\UserFactory;
@@ -225,7 +226,7 @@ class VerificationFlowTest extends IntegrationTestCase
 
         $this->assertTrue($resendResult['success']);
         // Should have 2 inserts for phone_verify (original + resend).
-        $phoneVerifications = $this->wpdb->getVerificationsByType('phone_verify');
+        $phoneVerifications = $this->wpdb->getVerificationsByType(VerificationType::PhoneVerify->value);
         $this->assertCount(2, $phoneVerifications);
     }
 
@@ -249,7 +250,7 @@ class VerificationFlowTest extends IntegrationTestCase
         $resendResult = $this->accountManager->resendVerification(41, 'email');
 
         $this->assertTrue($resendResult['success']);
-        $emailVerifications = $this->wpdb->getVerificationsByType('email_verify');
+        $emailVerifications = $this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value);
         $this->assertCount(2, $emailVerifications);
     }
 
@@ -266,7 +267,7 @@ class VerificationFlowTest extends IntegrationTestCase
         $this->assertTrue($result['success']);
         $this->assertTrue($result['email_verification_required']);
 
-        $emailVerifications = $this->wpdb->getVerificationsByType('email_verify');
+        $emailVerifications = $this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value);
         $this->assertCount(1, $emailVerifications);
     }
 
@@ -334,7 +335,7 @@ class VerificationFlowTest extends IntegrationTestCase
         $this->assertTrue($result['success']);
         $this->assertArrayNotHasKey('phone_verification_required', $result);
         // No verification records created.
-        $this->assertCount(0, $this->wpdb->getVerificationsByType('phone_verify'));
+        $this->assertCount(0, $this->wpdb->getVerificationsByType(VerificationType::PhoneVerify->value));
     }
 
     public function testProfileEmailResendUsesNewPendingAddress(): void
@@ -354,7 +355,7 @@ class VerificationFlowTest extends IntegrationTestCase
         $this->assertTrue($resendResult['success']);
 
         // All email verifications should target the pending address.
-        $verifications = $this->wpdb->getVerificationsByType('email_verify');
+        $verifications = $this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value);
         foreach ($verifications as $v) {
             $this->assertSame('new@example.com', $v->identifier);
         }

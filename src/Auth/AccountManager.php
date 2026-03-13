@@ -6,6 +6,7 @@ use WSms\Audit\AuditLogger;
 use WSms\Auth\AuthSession;
 use WSms\Enums\EnrollmentTiming;
 use WSms\Enums\EventType;
+use WSms\Enums\VerificationType;
 use WSms\Mfa\MfaManager;
 use WSms\Mfa\OtpGenerator;
 
@@ -262,7 +263,7 @@ class AccountManager
             return;
         }
 
-        $this->createVerification($user->ID, 'password_reset', $email);
+        $this->createVerification($user->ID, VerificationType::PasswordReset->value, $email);
 
         $this->auditLogger->log(EventType::PasswordResetRequest, 'success', $user->ID);
     }
@@ -274,7 +275,7 @@ class AccountManager
      */
     public function completePasswordReset(string $token, string $newPassword): array
     {
-        $verification = $this->consumeVerification($token, 'password_reset');
+        $verification = $this->consumeVerification($token, VerificationType::PasswordReset->value);
 
         if (is_array($verification)) {
             return $verification;
@@ -294,7 +295,7 @@ class AccountManager
      */
     public function verifyEmail(string $token): array
     {
-        $verification = $this->consumeVerification($token, 'email_verify');
+        $verification = $this->consumeVerification($token, VerificationType::EmailVerify->value);
 
         if (is_array($verification)) {
             return $verification;
@@ -345,7 +346,7 @@ class AccountManager
 
         if ($phoneChanged) {
             $cooldown = (int) ($settings['phone']['cooldown'] ?? 60);
-            if ($this->isVerificationOnCooldown($userId, 'phone_verify', $cooldown)) {
+            if ($this->isVerificationOnCooldown($userId, VerificationType::PhoneVerify->value, $cooldown)) {
                 return ['success' => false, 'error' => 'cooldown', 'message' => 'Please wait before changing your phone number.'];
             }
 
@@ -356,7 +357,7 @@ class AccountManager
 
         if ($emailChanged) {
             $cooldown = (int) ($settings['email']['cooldown'] ?? 60);
-            if ($this->isVerificationOnCooldown($userId, 'email_verify', $cooldown)) {
+            if ($this->isVerificationOnCooldown($userId, VerificationType::EmailVerify->value, $cooldown)) {
                 return ['success' => false, 'error' => 'cooldown', 'message' => 'Please wait before changing your email.'];
             }
         }
@@ -384,13 +385,13 @@ class AccountManager
 
         if ($phoneChanged) {
             update_user_meta($userId, 'wsms_pending_phone', $phone);
-            $this->invalidateVerifications($userId, 'phone_verify');
+            $this->invalidateVerifications($userId, VerificationType::PhoneVerify->value);
             $this->createChannelVerification($userId, 'phone', $phone);
             $result['phone_verification_required'] = true;
         }
 
         if ($emailChanged) {
-            $this->invalidateVerifications($userId, 'email_verify');
+            $this->invalidateVerifications($userId, VerificationType::EmailVerify->value);
             update_user_meta($userId, 'wsms_pending_email', $newEmail);
             $this->createChannelVerification($userId, 'email', $newEmail);
             $result['email_verification_required'] = true;
@@ -448,7 +449,7 @@ class AccountManager
     {
         global $wpdb;
         $table = $wpdb->prefix . 'wsms_verifications';
-        $verifyType = $channel . '_verify';
+        $verifyType = VerificationType::forChannel($channel)->value;
 
         $verification = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM {$table} WHERE user_id = %d AND type = %s AND used_at IS NULL ORDER BY created_at DESC LIMIT 1",
@@ -503,7 +504,7 @@ class AccountManager
         }
 
         $settings = $this->getSettings();
-        $verifyType = $channel . '_verify';
+        $verifyType = VerificationType::forChannel($channel)->value;
         $cooldown = (int) ($settings[$channel]['cooldown'] ?? 60);
 
         if ($this->isVerificationOnCooldown($userId, $verifyType, $cooldown)) {
@@ -550,7 +551,7 @@ class AccountManager
             return;
         }
 
-        $verifyType = $channel . '_verify';
+        $verifyType = VerificationType::forChannel($channel)->value;
         $this->invalidateVerifications($userId, $verifyType);
         $this->createChannelVerification($userId, $channel, $identifier);
     }
@@ -604,7 +605,7 @@ class AccountManager
     private function createChannelVerification(int $userId, string $channel, string $identifier): void
     {
         if ($channel === 'email' && !$this->emailUsesOtp()) {
-            $this->createVerification($userId, 'email_verify', $identifier);
+            $this->createVerification($userId, VerificationType::EmailVerify->value, $identifier);
 
             return;
         }
@@ -661,12 +662,13 @@ class AccountManager
         $maxAttempts = (int) ($channelSettings['max_attempts'] ?? 5);
 
         $otp = $this->otpGenerator->generate($codeLength);
-        do_action('wsms_otp_generated', $userId, $otp, $channel . '_verify');
+        $verifyType = VerificationType::forChannel($channel)->value;
+        do_action('wsms_otp_generated', $userId, $otp, $verifyType);
         $hashed = $this->otpGenerator->hash($otp);
 
         $wpdb->insert($wpdb->prefix . 'wsms_verifications', [
             'user_id'      => $userId,
-            'type'         => $channel . '_verify',
+            'type'         => $verifyType,
             'identifier'   => $identifier,
             'code'         => $hashed,
             'attempts'     => 0,
@@ -819,7 +821,7 @@ class AccountManager
     {
         $metaKey = 'wsms_pending_' . $channel;
         delete_user_meta($userId, $metaKey);
-        $this->invalidateVerifications($userId, $channel . '_verify');
+        $this->invalidateVerifications($userId, VerificationType::forChannel($channel)->value);
     }
 
     /**
@@ -877,7 +879,7 @@ class AccountManager
         $siteName = get_bloginfo('name');
         $headers = ['Content-Type: text/html; charset=UTF-8'];
 
-        if ($type === 'email_verify') {
+        if ($type === VerificationType::EmailVerify->value) {
             $link = $baseUrl . $authBase . '/verify-email?token=' . $token;
             $subject = sprintf('[%s] Verify your email address', $siteName);
             $message = sprintf(
