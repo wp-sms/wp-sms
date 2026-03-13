@@ -4,6 +4,7 @@ namespace WSms\Rest;
 
 use WP_REST_Request;
 use WP_REST_Response;
+use WSms\Auth\AccountManager;
 use WSms\Auth\PolicyEngine;
 use WSms\Enums\ChannelStatus;
 use WSms\Mfa\Channels\PhoneChannel;
@@ -273,21 +274,24 @@ class EnrollmentController
             );
         }
 
+        $isPlaceholder = AccountManager::isPlaceholderEmail($user->user_email);
+
         return new WP_REST_Response([
             'user' => [
-                'id'               => $userId,
-                'email'            => $user->user_email,
-                'username'         => $user->user_login,
-                'display_name'     => $user->display_name,
-                'first_name'       => $user->first_name,
-                'last_name'        => $user->last_name,
-                'avatar_url'       => get_avatar_url($userId, ['size' => 128]),
-                'phone'            => get_user_meta($userId, 'wsms_phone', true) ?: null,
-                'phone_verified'   => (bool) get_user_meta($userId, 'wsms_phone_verified', true),
-                'email_verified'   => (bool) get_user_meta($userId, 'wsms_email_verified', true),
-                'roles'            => $user->roles,
-                'mfa_enabled'      => !empty($enrolledFactors),
-                'enrolled_factors' => $enrolledFactors,
+                'id'                    => $userId,
+                'email'                 => $isPlaceholder ? '' : $user->user_email,
+                'username'              => $user->user_login,
+                'display_name'          => $user->display_name,
+                'first_name'            => $user->first_name,
+                'last_name'             => $user->last_name,
+                'avatar_url'            => get_avatar_url($userId, ['size' => 128]),
+                'phone'                 => get_user_meta($userId, 'wsms_phone', true) ?: null,
+                'phone_verified'        => (bool) get_user_meta($userId, 'wsms_phone_verified', true),
+                'email_verified'        => $isPlaceholder ? true : (bool) get_user_meta($userId, 'wsms_email_verified', true),
+                'has_placeholder_email' => $isPlaceholder,
+                'roles'                 => $user->roles,
+                'mfa_enabled'           => !empty($enrolledFactors),
+                'enrolled_factors'      => $enrolledFactors,
             ],
         ]);
     }

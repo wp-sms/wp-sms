@@ -180,7 +180,7 @@ class PolicyEngine
             }
         }
 
-        if (in_array('email', $globalMethods, true) && !empty($user->user_email)) {
+        if (in_array('email', $globalMethods, true) && !empty($user->user_email) && !AccountManager::isPlaceholderEmail($user->user_email)) {
             $verificationMethods = ($settings['email'] ?? [])['verification_methods'] ?? ['otp'];
             if (in_array('otp', $verificationMethods, true)) {
                 $methods[] = ['method' => 'email_otp', 'type' => 'otp', 'channel' => 'email'];
@@ -276,7 +276,8 @@ class PolicyEngine
         $pending = [];
 
         if (!empty($settings['email']['verify_at_signup'])) {
-            $hasEmail = !empty(get_userdata($userId)?->user_email);
+            $userEmail = get_userdata($userId)?->user_email ?? '';
+            $hasEmail = !empty($userEmail) && !AccountManager::isPlaceholderEmail($userEmail);
             $emailVerified = (bool) get_user_meta($userId, 'wsms_email_verified', true);
             if ($hasEmail && !$emailVerified) {
                 $pending[] = ['type' => 'email', 'status' => 'pending'];
@@ -306,6 +307,37 @@ class PolicyEngine
     }
 
     /**
+     * Compute effective registration fields from channel settings.
+     *
+     * Email and password are included only when their channel has required_at_signup.
+     * Other fields from registration_fields (phone, first_name, last_name, etc.) pass through.
+     *
+     * @return string[]
+     */
+    public function getEffectiveRegistrationFields(): array
+    {
+        $settings = $this->getSettings();
+        $regFields = $settings['registration_fields'] ?? ['email', 'password'];
+        $effectiveFields = [];
+
+        if (!empty($settings['email']['required_at_signup'])) {
+            $effectiveFields[] = 'email';
+        }
+
+        if (!empty($settings['password']['required_at_signup'])) {
+            $effectiveFields[] = 'password';
+        }
+
+        foreach ($regFields as $f) {
+            if (!in_array($f, ['email', 'password'], true) && !in_array($f, $effectiveFields, true)) {
+                $effectiveFields[] = $f;
+            }
+        }
+
+        return $effectiveFields;
+    }
+
+    /**
      * Backend defaults matching the frontend constants (resources/react/src/lib/constants.ts).
      * Applied so that settings missing from the DB still behave as the admin UI shows.
      */
@@ -326,6 +358,7 @@ class PolicyEngine
             'usage'                => 'login',
             'verification_methods' => ['otp'],
             'allow_sign_in'        => true,
+            'required_at_signup'   => true,
         ],
         'backup_codes' => [
             'enabled' => false,

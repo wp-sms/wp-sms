@@ -29,7 +29,7 @@ class AccountController
             'callback'            => [$this, 'handleRegister'],
             'permission_callback' => '__return_true',
             'args'                => [
-                'email'        => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_email'],
+                'email'        => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_email'],
                 'password'     => ['required' => false, 'type' => 'string'],
                 'username'     => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_user'],
                 'display_name' => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],

@@ -225,7 +225,7 @@ class AuthController
             'method_details'               => $methodDetails,
             'mfa_enabled'                  => !empty($this->policy->getAvailableMfaFactors()),
             'base_url'                     => $settings['auth_base_url'] ?? '/account',
-            'registration_fields'          => $settings['registration_fields'] ?? ['email', 'password'],
+            'registration_fields'          => $this->policy->getEffectiveRegistrationFields(),
             'require_email_verification'   => !empty($settings['email']['verify_at_signup']),
             'require_phone_verification'   => !empty($settings['phone']['verify_at_signup']),
         ]);

@@ -426,11 +426,14 @@ class AuthOrchestratorTest extends TestCase
             'registration_fields'  => ['email', 'phone', 'password'],
         ];
 
+        $this->policy->method('getEffectiveRegistrationFields')
+            ->willReturn(['email', 'password', 'phone']);
+
         $result = $this->orchestrator->identify('nobody@example.com');
 
         $this->assertFalse($result->userFound);
         $this->assertTrue($result->registrationAvailable);
-        $this->assertSame(['email', 'phone', 'password'], $result->registrationFields);
+        $this->assertSame(['email', 'password', 'phone'], $result->registrationFields);
     }
 
     public function testIdentifyNotFoundAutoCreateOff(): void

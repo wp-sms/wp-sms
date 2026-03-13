@@ -154,6 +154,27 @@ class AuthScenarios
     }
 
     // ──────────────────────────────────────────────
+    //  Phone-only registration
+    // ──────────────────────────────────────────────
+
+    public static function phoneOnlyRegistration(): array
+    {
+        return [
+            'password' => ['enabled' => false, 'required_at_signup' => false],
+            'email'    => ['enabled' => false, 'required_at_signup' => false],
+            'phone'    => [
+                'enabled'              => true,
+                'usage'                => 'login',
+                'verification_methods' => ['otp'],
+                'required_at_signup'   => true,
+                'allow_sign_in'        => true,
+                'code_length'          => 6,
+            ],
+            'registration_fields' => ['phone'],
+        ];
+    }
+
+    // ──────────────────────────────────────────────
     //  Verification presets
     // ──────────────────────────────────────────────
 
@@ -279,6 +300,7 @@ class AuthScenarios
     public static function allPresets(): array
     {
         return [
+            'phoneOnlyRegistration' => self::phoneOnlyRegistration(),
             'passwordOnly'        => self::passwordOnly(),
             'emailOtpOnly'        => self::emailOtpOnly(),
             'emailMagicLinkOnly'  => self::emailMagicLinkOnly(),

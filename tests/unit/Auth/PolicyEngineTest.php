@@ -334,6 +334,94 @@ class PolicyEngineTest extends TestCase
         $this->assertSame([], $pending);
     }
 
+    // --- getEffectiveRegistrationFields ---
+
+    /**
+     * @dataProvider effectiveRegistrationFieldsProvider
+     */
+    public function testGetEffectiveRegistrationFields(array $settings, array $expected): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = $settings;
+
+        // PolicyEngine caches settings, need fresh instance.
+        $engine = new PolicyEngine();
+        $this->assertSame($expected, $engine->getEffectiveRegistrationFields());
+    }
+
+    public static function effectiveRegistrationFieldsProvider(): iterable
+    {
+        yield 'defaults: email and password required' => [
+            [],
+            ['email', 'password'],
+        ];
+
+        yield 'email not required, password required' => [
+            [
+                'email'    => ['required_at_signup' => false],
+                'password' => ['required_at_signup' => true],
+                'registration_fields' => ['email', 'password', 'phone'],
+            ],
+            ['password', 'phone'],
+        ];
+
+        yield 'both not required, phone in fields' => [
+            [
+                'email'    => ['required_at_signup' => false],
+                'password' => ['required_at_signup' => false],
+                'registration_fields' => ['phone'],
+            ],
+            ['phone'],
+        ];
+
+        yield 'both required, extra fields preserved' => [
+            [
+                'email'    => ['required_at_signup' => true],
+                'password' => ['required_at_signup' => true],
+                'registration_fields' => ['email', 'password', 'first_name', 'last_name'],
+            ],
+            ['email', 'password', 'first_name', 'last_name'],
+        ];
+
+        yield 'phone-only registration' => [
+            [
+                'email'    => ['required_at_signup' => false],
+                'password' => ['required_at_signup' => false],
+                'phone'    => ['required_at_signup' => true],
+                'registration_fields' => ['phone'],
+            ],
+            ['phone'],
+        ];
+    }
+
+    // --- Placeholder guards ---
+
+    public function testUserMethodsSkipsEmailForPlaceholderEmail(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'password' => ['enabled' => true],
+            'email'    => ['enabled' => true, 'usage' => 'login', 'verification_methods' => ['otp']],
+        ];
+        $GLOBALS['_test_userdata'] = $this->makeUser(1, 'abc123@noreply.wsms.local');
+
+        $methodNames = array_column($this->engine->getAvailableMethodsForUser(1), 'method');
+
+        $this->assertContains('password', $methodNames);
+        $this->assertNotContains('email_otp', $methodNames);
+    }
+
+    public function testPendingVerificationsSkipsPlaceholderEmail(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'email' => ['enabled' => true, 'verify_at_signup' => true],
+        ];
+        $GLOBALS['_test_userdata'] = $this->makeUser(1, 'abc123@noreply.wsms.local');
+        $GLOBALS['_test_user_meta'][1] = ['wsms_email_verified' => ''];
+
+        $pending = $this->engine->getPendingVerifications(1);
+
+        $this->assertSame([], $pending);
+    }
+
     private function makeUser(int $id, string $email = 'test@example.com'): object
     {
         $user = new \stdClass();

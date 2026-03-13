@@ -175,7 +175,7 @@ export function Profile() {
                     <div className="space-y-2">
                         <div className="flex items-center justify-between">
                             <Label for="wsms-prof-email">Email</Label>
-                            {user && (
+                            {user && !user.has_placeholder_email && (
                                 <StatusBadge variant={user.email_verified ? 'verified' : 'unverified'} />
                             )}
                         </div>
@@ -184,11 +184,12 @@ export function Profile() {
                             type="email"
                             value={form.email}
                             onInput={(e) => updateField('email', e.target.value)}
-                            required
+                            required={!user?.has_placeholder_email}
+                            placeholder={user?.has_placeholder_email ? 'Add your email address' : undefined}
                             disabled={loading}
                             autoComplete="email"
                         />
-                        {user && !user.email_verified && !showEmailOtp && (
+                        {user && !user.has_placeholder_email && !user.email_verified && !showEmailOtp && (
                             <div>
                                 {emailSent ? (
                                     <p className="text-xs text-green-600">Verification email sent! Check your inbox.</p>

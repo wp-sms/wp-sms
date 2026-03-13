@@ -297,6 +297,118 @@ class RegistrationFlowTest extends IntegrationTestCase
         $this->assertSame('invalid_email', $result['error']);
     }
 
+    // ──────────────────────────────────────────────
+    //  Phone-only registration (placeholder email)
+    // ──────────────────────────────────────────────
+
+    public function testPhoneOnlyRegistrationSucceeds(): void
+    {
+        $this->setSettings(AuthScenarios::phoneOnlyRegistration());
+        $this->simulateUserCreation(90);
+
+        $result = $this->accountManager->registerUser([
+            'phone' => '+1234567890',
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(90, $result['user_id']);
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][90]['wsms_email_placeholder'] ?? '');
+    }
+
+    public function testPhoneOnlyRegistrationStoresPhoneMeta(): void
+    {
+        $this->setSettings(AuthScenarios::phoneOnlyRegistration());
+        $this->simulateUserCreation(91);
+
+        $this->accountManager->registerUser([
+            'phone' => '+9876543210',
+        ]);
+
+        $this->assertSame('+9876543210', $GLOBALS['_test_user_meta'][91]['wsms_phone'] ?? '');
+    }
+
+    public function testPhoneOnlyRegistrationSkipsEmailVerification(): void
+    {
+        $settings = AuthScenarios::withOverrides(AuthScenarios::phoneOnlyRegistration(), [
+            'email' => ['verify_at_signup' => true, 'required_at_signup' => false],
+            'phone' => ['verify_at_signup' => true, 'required_at_signup' => true],
+        ]);
+        $this->setSettings($settings);
+        $this->simulateUserCreation(92);
+        $this->setOtpCodes('654321');
+
+        $result = $this->accountManager->registerUser([
+            'phone' => '+1234567890',
+        ]);
+
+        $this->assertTrue($result['success']);
+        $pendingTypes = array_column($result['pending_verifications'] ?? [], 'type');
+        $this->assertContains('phone', $pendingTypes);
+        $this->assertNotContains('email', $pendingTypes);
+
+        // No email verification records created.
+        $this->assertEmpty($this->wpdb->getVerificationsByType('email_verify'));
+        // Phone verification record created.
+        $this->assertCount(1, $this->wpdb->getVerificationsByType('phone_verify'));
+    }
+
+    public function testPhoneOnlyRegistrationFailsWithoutPhone(): void
+    {
+        $this->setSettings(AuthScenarios::phoneOnlyRegistration());
+
+        $result = $this->accountManager->registerUser([]);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('missing_phone', $result['error']);
+    }
+
+    public function testPlaceholderEmailExcludedFromVerificationStatus(): void
+    {
+        $this->setSettings(AuthScenarios::phoneOnlyRegistration());
+        $this->simulateUserCreation(93);
+
+        $this->accountManager->registerUser([
+            'phone' => '+1234567890',
+        ]);
+
+        // Simulate user with placeholder email in user_data.
+        $GLOBALS['_test_userdata'] = (object) [
+            'ID' => 93,
+            'user_email' => 'abc123def0@noreply.wsms.local',
+        ];
+        $GLOBALS['_test_user_meta'][93]['wsms_email_verified'] = '';
+        $GLOBALS['_test_user_meta'][93]['wsms_phone_verified'] = '';
+
+        $status = $this->accountManager->getVerificationStatus(93);
+        $types = array_column($status['pending_verifications'], 'type');
+
+        $this->assertContains('phone', $types);
+        $this->assertNotContains('email', $types);
+    }
+
+    public function testPlaceholderUserPolicySkipsEmailMethods(): void
+    {
+        $settings = AuthScenarios::withOverrides(AuthScenarios::phoneOnlyRegistration(), [
+            'email' => ['enabled' => true, 'usage' => 'login', 'verification_methods' => ['otp']],
+        ]);
+        $this->setSettings($settings);
+
+        $user = new \stdClass();
+        $user->ID = 94;
+        $user->user_email = 'abc123def0@noreply.wsms.local';
+        $user->user_login = '+1234567890';
+        $user->display_name = '+1234567890';
+        $user->roles = ['subscriber'];
+        $user->user_registered = '2024-01-01 00:00:00';
+        $GLOBALS['_test_userdata'] = $user;
+        $GLOBALS['_test_user_meta'][94]['wsms_phone'] = '+1234567890';
+
+        $methods = $this->policy->getAvailableMethodsForUser(94);
+        $methodNames = array_column($methods, 'method');
+
+        $this->assertNotContains('email_otp', $methodNames);
+    }
+
     public function testRegisterWithDuplicateEmailFails(): void
     {
         $this->setSettings(AuthScenarios::passwordOnly());

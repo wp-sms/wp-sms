@@ -253,6 +253,17 @@ class AdminController
             }
         }
 
+        // Require at least one identifier channel (email or phone) to be required or in registration_fields.
+        $emailRequired = !empty(($settings['email'] ?? [])['required_at_signup']);
+        $phoneRequired = !empty(($settings['phone'] ?? [])['required_at_signup']);
+        $regFields = $settings['registration_fields'] ?? ['email', 'password'];
+        $hasEmailField = in_array('email', $regFields, true);
+        $hasPhoneField = in_array('phone', $regFields, true);
+
+        if (!$emailRequired && !$phoneRequired && !$hasEmailField && !$hasPhoneField) {
+            $errors[] = 'At least one identifier (email or phone) must be required at signup or included in registration fields.';
+        }
+
         $bc = $settings['backup_codes'] ?? [];
 
         if (isset($bc['count'])) {

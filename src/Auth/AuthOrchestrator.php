@@ -55,7 +55,7 @@ class AuthOrchestrator
         // User not found — check if registration is available.
         $settings = get_option('wsms_auth_settings', []);
         $autoCreate = !empty($settings['auto_create_users']);
-        $regFields = $settings['registration_fields'] ?? ['email', 'password'];
+        $effectiveFields = $this->policy->getEffectiveRegistrationFields();
 
         return new IdentifyResult(
             identifierType: $identifierType,
@@ -63,7 +63,7 @@ class AuthOrchestrator
             availableMethods: [],
             defaultMethod: null,
             registrationAvailable: $autoCreate,
-            registrationFields: $autoCreate ? $regFields : [],
+            registrationFields: $autoCreate ? $effectiveFields : [],
             meta: [],
         );
     }

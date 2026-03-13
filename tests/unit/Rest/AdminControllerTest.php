@@ -194,6 +194,40 @@ class AdminControllerTest extends TestCase
         $this->assertFalse(get_transient('wsms_flush_rewrite'));
     }
 
+    public function testValidationRejectsNoIdentifierConfig(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+
+        $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
+        $request->set_param('email', ['required_at_signup' => false]);
+        $request->set_param('phone', ['required_at_signup' => false]);
+        $request->set_param('registration_fields', []);
+
+        $response = $this->controller->handleUpdateSettings($request);
+
+        $this->assertSame(400, $response->get_status());
+        $this->assertSame('validation_failed', $response->get_data()['error']);
+
+        $errors = $response->get_data()['errors'];
+        $this->assertNotEmpty($errors);
+        $this->assertStringContainsString('identifier', $errors[0]);
+    }
+
+    public function testValidationAcceptsPhoneOnlyConfig(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+
+        $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
+        $request->set_param('email', ['required_at_signup' => false]);
+        $request->set_param('phone', ['required_at_signup' => true]);
+        $request->set_param('registration_fields', ['phone']);
+
+        $response = $this->controller->handleUpdateSettings($request);
+
+        $this->assertSame(200, $response->get_status());
+        $this->assertTrue($response->get_data()['success']);
+    }
+
     private function makeUser(int $id): object
     {
         $user = new \stdClass();

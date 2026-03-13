@@ -75,5 +75,19 @@ class AuthServiceProvider implements ServiceProvider
     {
         $container->get('auth.router')->registerHooks();
         $container->get('auth.shortcode')->registerHooks();
+
+        // Block wp_mail to placeholder email addresses.
+        add_filter('pre_wp_mail', function ($null, $atts) {
+            $to = is_array($atts['to'] ?? '') ? implode(',', $atts['to']) : ($atts['to'] ?? '');
+            $recipients = array_map('trim', explode(',', $to));
+
+            foreach ($recipients as $r) {
+                if (!AccountManager::isPlaceholderEmail($r)) {
+                    return $null; // At least one real recipient — allow.
+                }
+            }
+
+            return false; // All placeholder — block.
+        }, 10, 2);
     }
 }

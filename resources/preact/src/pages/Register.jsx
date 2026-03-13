@@ -145,18 +145,20 @@ export function Register() {
                     </div>
                 )}
 
-                <div className="space-y-2">
-                    <Label for="wsms-reg-email">Email</Label>
-                    <Input
-                        id="wsms-reg-email"
-                        type="email"
-                        value={form.email}
-                        onInput={(e) => updateField('email', e.target.value)}
-                        required
-                        disabled={authLoading.value}
-                        autoComplete="email"
-                    />
-                </div>
+                {fields.includes('email') && (
+                    <div className="space-y-2">
+                        <Label for="wsms-reg-email">Email</Label>
+                        <Input
+                            id="wsms-reg-email"
+                            type="email"
+                            value={form.email}
+                            onInput={(e) => updateField('email', e.target.value)}
+                            required
+                            disabled={authLoading.value}
+                            autoComplete="email"
+                        />
+                    </div>
+                )}
 
                 {fields.includes('phone') && (
                     <div className="space-y-2">

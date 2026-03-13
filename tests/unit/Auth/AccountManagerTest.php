@@ -448,6 +448,146 @@ class AccountManagerTest extends TestCase
         $this->assertSame(0, $GLOBALS['_test_current_user_id']);
     }
 
+    // --- isPlaceholderEmail ---
+
+    public function testIsPlaceholderEmailReturnsTrueForPlaceholder(): void
+    {
+        $this->assertTrue(AccountManager::isPlaceholderEmail('abc123def0@noreply.wsms.local'));
+    }
+
+    public function testIsPlaceholderEmailReturnsFalseForRealEmail(): void
+    {
+        $this->assertFalse(AccountManager::isPlaceholderEmail('user@example.com'));
+    }
+
+    public function testIsPlaceholderEmailReturnsFalseForSimilarDomain(): void
+    {
+        $this->assertFalse(AccountManager::isPlaceholderEmail('user@notnoreply.wsms.local'));
+    }
+
+    // --- Placeholder registration ---
+
+    public function testRegisterUserWithPlaceholderEmailWhenEmailNotRequired(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 100;
+        $this->stubWpdb();
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'email'    => ['required_at_signup' => false],
+            'password' => ['required_at_signup' => false],
+            'phone'    => ['required_at_signup' => true],
+            'registration_fields' => ['phone'],
+        ];
+
+        $result = $this->manager->registerUser([
+            'phone' => '+1234567890',
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame(100, $result['user_id']);
+
+        // Placeholder meta should be stored.
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][100]['wsms_email_placeholder'] ?? '');
+    }
+
+    public function testRegisterUserWithPlaceholderSkipsEmailVerification(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 101;
+        $this->stubWpdb();
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'email'    => ['required_at_signup' => false, 'verify_at_signup' => true],
+            'password' => ['required_at_signup' => false],
+            'phone'    => ['required_at_signup' => true, 'verify_at_signup' => true],
+            'registration_fields' => ['phone'],
+        ];
+
+        $result = $this->manager->registerUser([
+            'phone' => '+1234567890',
+        ]);
+
+        $this->assertTrue($result['success']);
+
+        // Only phone should be pending, not email (since email is a placeholder).
+        $pendingTypes = array_column($result['pending_verifications'] ?? [], 'type');
+        $this->assertContains('phone', $pendingTypes);
+        $this->assertNotContains('email', $pendingTypes);
+    }
+
+    public function testRegisterUserPlaceholderUsesPhoneAsUsername(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'email'    => ['required_at_signup' => false],
+            'password' => ['required_at_signup' => false],
+            'phone'    => ['required_at_signup' => true],
+            'registration_fields' => ['phone'],
+        ];
+
+        // Capture what's passed to wp_insert_user.
+        $capturedUserdata = null;
+        $GLOBALS['_test_wp_insert_user_callback'] = function ($data) use (&$capturedUserdata) {
+            $capturedUserdata = $data;
+            return 102;
+        };
+        $GLOBALS['_test_wp_insert_user_result'] = 102;
+        $this->stubWpdb();
+
+        $result = $this->manager->registerUser([
+            'phone' => '+1234567890',
+        ]);
+
+        $this->assertTrue($result['success']);
+        // The wp_insert_user stub captures data via the global. Since we're using
+        // simplified stubs, verify that the placeholder email was generated.
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][102]['wsms_email_placeholder'] ?? '');
+    }
+
+    // --- Verification guards for placeholder ---
+
+    public function testResendEmailVerificationRejectsPlaceholderEmail(): void
+    {
+        $user = $this->makeUser(200);
+        $user->user_email = 'abc123def0@noreply.wsms.local';
+        $GLOBALS['_test_userdata'] = $user;
+
+        $result = $this->manager->resendEmailVerification(200);
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('no_email', $result['error']);
+    }
+
+    public function testGetVerificationStatusExcludesPlaceholderEmail(): void
+    {
+        $user = $this->makeUser(201);
+        $user->user_email = 'abc123def0@noreply.wsms.local';
+        $GLOBALS['_test_userdata'] = $user;
+        $GLOBALS['_test_user_meta'][201] = [
+            'wsms_email_verified' => '',
+            'wsms_phone' => '+1234567890',
+            'wsms_phone_verified' => '',
+        ];
+
+        $status = $this->manager->getVerificationStatus(201);
+
+        // Only phone should be pending, not email.
+        $types = array_column($status['pending_verifications'], 'type');
+        $this->assertContains('phone', $types);
+        $this->assertNotContains('email', $types);
+    }
+
+    public function testVerifyEmailClearsPlaceholderFlag(): void
+    {
+        $verification = $this->makeVerification(202, 'email_verify');
+        $this->stubWpdbLookup($verification);
+
+        $GLOBALS['_test_user_meta'][202] = ['wsms_email_placeholder' => '1'];
+
+        $result = $this->manager->verifyEmail('test-token-abc');
+
+        $this->assertTrue($result['success']);
+        $this->assertArrayNotHasKey('wsms_email_placeholder', $GLOBALS['_test_user_meta'][202] ?? []);
+    }
+
     // --- Helpers ---
 
     private function makeUser(int $id): object

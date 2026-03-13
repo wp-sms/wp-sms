@@ -13,6 +13,8 @@ defined('ABSPATH') || exit;
 
 class AccountManager
 {
+    public const PLACEHOLDER_EMAIL_DOMAIN = 'noreply.wsms.local';
+
     private ?array $settings = null;
 
     public function __construct(
@@ -21,6 +23,16 @@ class AccountManager
         private MfaManager $mfaManager,
         private AuthSession $authSession,
     ) {
+    }
+
+    public static function isPlaceholderEmail(string $email): bool
+    {
+        return str_ends_with($email, '@' . self::PLACEHOLDER_EMAIL_DOMAIN);
+    }
+
+    private static function generatePlaceholderEmail(): string
+    {
+        return bin2hex(random_bytes(5)) . '@' . self::PLACEHOLDER_EMAIL_DOMAIN;
     }
 
     private function getSettings(): array
@@ -38,12 +50,14 @@ class AccountManager
         $settings = $this->getSettings();
         $requiredFields = $settings['registration_fields'] ?? ['email', 'password'];
 
-        // Validate required fields.
-        if (in_array('email', $requiredFields, true) && empty($data['email'])) {
+        // Channel-based requirement checks (default to required for backward compat).
+        $emailRequired = $settings['email']['required_at_signup'] ?? true;
+        if ($emailRequired && empty($data['email'])) {
             return ['success' => false, 'error' => 'missing_email', 'message' => 'Email is required.'];
         }
 
-        if (in_array('password', $requiredFields, true) && empty($data['password'])) {
+        $passwordRequired = $settings['password']['required_at_signup'] ?? true;
+        if ($passwordRequired && empty($data['password'])) {
             return ['success' => false, 'error' => 'missing_password', 'message' => 'Password is required.'];
         }
 
@@ -62,12 +76,22 @@ class AccountManager
         }
 
         $email = sanitize_email($data['email'] ?? '');
+        $isPlaceholder = false;
 
-        if (!empty($email) && !is_email($email)) {
+        if (empty($email) && !$emailRequired) {
+            $email = self::generatePlaceholderEmail();
+            $isPlaceholder = true;
+        }
+
+        if (!empty($data['email']) && !empty($email) && !is_email($email)) {
             return ['success' => false, 'error' => 'invalid_email', 'message' => 'Invalid email address.'];
         }
 
-        $username = !empty($data['username']) ? sanitize_user($data['username']) : $email;
+        $username = !empty($data['username'])
+            ? sanitize_user($data['username'])
+            : ($isPlaceholder
+                ? sanitize_user(!empty($data['phone']) ? $data['phone'] : strtok($email, '@'))
+                : $email);
 
         $userdata = [
             'user_login' => $username,
@@ -97,6 +121,10 @@ class AccountManager
             ];
         }
 
+        if ($isPlaceholder) {
+            update_user_meta($userId, 'wsms_email_placeholder', '1');
+        }
+
         $pendingVerifications = [];
 
         // Store phone meta if provided.
@@ -110,8 +138,8 @@ class AccountManager
             }
         }
 
-        // Generate and send email verification only when required.
-        if (!empty($email) && !empty($settings['email']['verify_at_signup'])) {
+        // Generate and send email verification only when required (skip for placeholder emails).
+        if (!empty($email) && !$isPlaceholder && !empty($settings['email']['verify_at_signup'])) {
             if ($this->emailUsesOtp()) {
                 $this->createEmailOtpVerification($userId, $email);
             } else {
@@ -200,6 +228,7 @@ class AccountManager
 
         $userId = (int) $verification->user_id;
         update_user_meta($userId, 'wsms_email_verified', '1');
+        delete_user_meta($userId, 'wsms_email_placeholder');
 
         // Check for pending email change.
         $pendingEmail = get_user_meta($userId, 'wsms_pending_email', true);
@@ -383,7 +412,7 @@ class AccountManager
     {
         $email = get_userdata($userId)?->user_email;
 
-        if (empty($email)) {
+        if (empty($email) || self::isPlaceholderEmail($email)) {
             return ['success' => false, 'error' => 'no_email', 'message' => 'No email address on file.'];
         }
 
@@ -415,7 +444,8 @@ class AccountManager
         $phoneVerified = (bool) get_user_meta($userId, 'wsms_phone_verified', true);
         $emailVerified = (bool) get_user_meta($userId, 'wsms_email_verified', true);
         $hasPhone = !empty(get_user_meta($userId, 'wsms_phone', true));
-        $hasEmail = !empty(get_userdata($userId)?->user_email);
+        $userEmail = get_userdata($userId)?->user_email ?? '';
+        $hasEmail = !empty($userEmail) && !self::isPlaceholderEmail($userEmail);
 
         $pending = [];
 
@@ -446,7 +476,7 @@ class AccountManager
             }
         } elseif ($type === 'email') {
             $email = get_userdata($userId)?->user_email;
-            if (!empty($email)) {
+            if (!empty($email) && !self::isPlaceholderEmail($email)) {
                 $this->invalidateVerifications($userId, 'email_verify');
                 if ($this->emailUsesOtp()) {
                     $this->createEmailOtpVerification($userId, $email);
@@ -577,6 +607,7 @@ class AccountManager
 
         $wpdb->update($table, ['attempts' => $newAttempts, 'used_at' => gmdate('Y-m-d H:i:s')], ['id' => $verification->id]);
         update_user_meta($userId, 'wsms_email_verified', '1');
+        delete_user_meta($userId, 'wsms_email_placeholder');
 
         // Check for pending email change.
         $pendingEmail = get_user_meta($userId, 'wsms_pending_email', true);
