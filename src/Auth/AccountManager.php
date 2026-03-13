@@ -371,13 +371,15 @@ class AccountManager
             return ['success' => false, 'error' => 'max_attempts', 'message' => 'Too many attempts.'];
         }
 
-        $wpdb->update($table, ['attempts' => (int) $verification->attempts + 1], ['id' => $verification->id]);
+        $newAttempts = (int) $verification->attempts + 1;
 
         if (!$this->otpGenerator->verify($code, $verification->code)) {
+            $wpdb->update($table, ['attempts' => $newAttempts], ['id' => $verification->id]);
+
             return ['success' => false, 'error' => 'invalid_code', 'message' => 'Invalid verification code.'];
         }
 
-        $wpdb->update($table, ['used_at' => gmdate('Y-m-d H:i:s')], ['id' => $verification->id]);
+        $wpdb->update($table, ['attempts' => $newAttempts, 'used_at' => gmdate('Y-m-d H:i:s')], ['id' => $verification->id]);
         update_user_meta($userId, 'wsms_phone_verified', '1');
 
         $this->auditLogger->log(EventType::PhoneVerified, 'success', $userId);
