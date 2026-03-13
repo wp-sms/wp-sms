@@ -228,6 +228,70 @@ export function verifyAtLogin(): AuthSettings {
 }
 
 // ──────────────────────────────────────────────
+//  Social login presets
+// ──────────────────────────────────────────────
+
+export function telegramSocialLogin(): AuthSettings {
+  return {
+    password: { ...PASSWORD_ENABLED },
+    phone: { enabled: false },
+    email: { enabled: false },
+    social: {
+      telegram: {
+        enabled: true,
+        client_id: 'test-telegram-client-id',
+        client_secret: 'test-telegram-client-secret',
+      },
+    },
+  };
+}
+
+export function telegramSocialWithMfa(): AuthSettings {
+  return {
+    password: { ...PASSWORD_ENABLED },
+    phone: { enabled: false },
+    email: { enabled: false },
+    social: {
+      telegram: {
+        enabled: true,
+        client_id: 'test-telegram-client-id',
+        client_secret: 'test-telegram-client-secret',
+      },
+    },
+    telegram: {
+      bot_token: '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11',
+      bot_username: 'test_bot',
+      webhook_secret: 'test-webhook-secret',
+      mfa_enabled: true,
+      code_length: 6,
+      expiry: 300,
+      max_attempts: 5,
+      cooldown: 60,
+    },
+  };
+}
+
+export function googleAndTelegramSocial(): AuthSettings {
+  return {
+    password: { ...PASSWORD_ENABLED },
+    phone: { enabled: false },
+    email: { enabled: false },
+    social: {
+      google: {
+        enabled: true,
+        client_id: 'test-google-client-id',
+        client_secret: 'test-google-client-secret',
+      },
+      telegram: {
+        enabled: true,
+        client_id: 'test-telegram-client-id',
+        client_secret: 'test-telegram-client-secret',
+      },
+    },
+  };
+}
+
+// ──────────────────────────────────────────────
 //  Exhaustive lists
 // ──────────────────────────────────────────────
 
@@ -248,6 +312,9 @@ export const allPresets = {
   verifyPhoneAtSignup,
   verifyBothAtSignup,
   verifyAtLogin,
+  telegramSocialLogin,
+  telegramSocialWithMfa,
+  googleAndTelegramSocial,
 } as const;
 
 export const primaryPresets = [
@@ -273,4 +340,10 @@ export const mfaPresets = [
   ['mfaWithBackupCodes', mfaWithBackupCodes()],
   ['mfaGracePeriod', mfaGracePeriod()],
   ['mfaVoluntary', mfaVoluntary()],
+] as const;
+
+export const socialPresets = [
+  ['telegramSocialLogin', telegramSocialLogin()],
+  ['telegramSocialWithMfa', telegramSocialWithMfa()],
+  ['googleAndTelegramSocial', googleAndTelegramSocial()],
 ] as const;

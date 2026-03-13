@@ -31,6 +31,20 @@ export interface AuthSettings {
   backup_codes?: {
     enabled?: boolean;
   };
+  social?: {
+    google?: { enabled?: boolean; client_id?: string; client_secret?: string };
+    telegram?: { enabled?: boolean; client_id?: string; client_secret?: string };
+  };
+  telegram?: {
+    bot_token?: string;
+    bot_username?: string;
+    webhook_secret?: string;
+    mfa_enabled?: boolean;
+    code_length?: number;
+    expiry?: number;
+    max_attempts?: number;
+    cooldown?: number;
+  };
   mfa_required_roles?: string[];
   enrollment_timing?: 'on_registration' | 'grace_period' | 'voluntary';
   grace_period_days?: number;

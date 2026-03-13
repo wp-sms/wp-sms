@@ -7,8 +7,10 @@ use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthSession;
+use WSms\Auth\PolicyEngine;
 use WSms\Auth\ValueObjects\AuthResult;
 use WSms\Enums\EventType;
+use WSms\Mfa\Channels\TelegramChannel;
 
 defined('ABSPATH') || exit;
 
@@ -23,6 +25,8 @@ class SocialAuthOrchestrator
         private AuthSession $session,
         private AuditLogger $auditLogger,
         private AccountLockout $lockout,
+        private ?PolicyEngine $policyEngine = null,
+        private ?TelegramChannel $telegramChannel = null,
     ) {
     }
 
@@ -105,7 +109,14 @@ class SocialAuthOrchestrator
         }
 
         // Resolve user from social account.
-        return $this->resolveUser($providerId, $provider, $userInfo, $tokens);
+        $result = $this->resolveUser($providerId, $provider, $userInfo, $tokens);
+
+        // Auto-enroll Telegram MFA if user logged in via Telegram with bot_access scope.
+        if ($providerId === 'telegram' && !empty($result['user_id']) && !empty($userInfo['id'])) {
+            $this->autoEnrollTelegramMfa($result['user_id'], $userInfo);
+        }
+
+        return $result;
     }
 
     /**
@@ -169,15 +180,10 @@ class SocialAuthOrchestrator
         if ($existingLink) {
             $userId = (int) $existingLink->user_id;
 
-            // Check account lockout.
-            $lockStatus = $this->lockout->isLocked($userId);
-            if ($lockStatus['locked']) {
-                return ['result' => AuthResult::failed('account_locked', 'Account is temporarily locked.', [
-                    'retry_after' => $lockStatus['until'],
-                ])];
+            if ($locked = $this->checkLockout($userId)) {
+                return $locked;
             }
 
-            $this->lockout->reset($userId);
             $this->repository->updateTokens((int) $existingLink->id, $tokens);
             $this->syncProfileData($userId, $userInfo);
 
@@ -185,9 +191,7 @@ class SocialAuthOrchestrator
                 'provider' => $providerId,
             ]);
 
-            $result = $this->authOrchestrator->resolveAuthFromSocial($userId, 'social:' . $providerId);
-
-            return ['result' => $result, 'user_id' => $userId];
+            return $this->authenticateUser($userId, $providerId);
         }
 
         // Case 2 & 3: Email match.
@@ -202,43 +206,41 @@ class SocialAuthOrchestrator
                     )];
                 }
 
-                // Auto-link trusted provider.
                 $userId = $existingUser->ID;
 
-                $lockStatus = $this->lockout->isLocked($userId);
-                if ($lockStatus['locked']) {
-                    return ['result' => AuthResult::failed('account_locked', 'Account is temporarily locked.', [
-                        'retry_after' => $lockStatus['until'],
-                    ])];
+                if ($locked = $this->checkLockout($userId)) {
+                    return $locked;
                 }
 
-                $this->lockout->reset($userId);
+                $this->linkAndLog($userId, $providerId, $userInfo, $tokens, ['auto_link' => true]);
 
-                $this->repository->linkAccount($userId, $providerId, $userInfo['id'], [
-                    'email'  => $userInfo['email'],
-                    'name'   => $userInfo['name'] ?? '',
-                    'tokens' => $tokens,
-                ]);
+                return $this->authenticateUser($userId, $providerId);
+            }
+        }
 
-                $this->auditLogger->log(EventType::SocialAccountLinked, 'success', $userId, [
-                    'provider'  => $providerId,
-                    'auto_link' => true,
-                ]);
+        // Case 2b: Phone number match (for providers like Telegram with phone but no email).
+        if (empty($userInfo['email']) && !empty($userInfo['phone_number'])) {
+            $phoneUsers = get_users([
+                'meta_key'   => 'wsms_phone',
+                'meta_value' => $userInfo['phone_number'],
+                'number'     => 1,
+            ]);
 
-                $this->auditLogger->log(EventType::SocialLoginSuccess, 'success', $userId, [
-                    'provider' => $providerId,
-                ]);
+            if ($phoneUsers) {
+                $userId = $phoneUsers[0]->ID;
 
-                $result = $this->authOrchestrator->resolveAuthFromSocial($userId, 'social:' . $providerId);
+                if ($locked = $this->checkLockout($userId)) {
+                    return $locked;
+                }
 
-                return ['result' => $result, 'user_id' => $userId];
+                $this->linkAndLog($userId, $providerId, $userInfo, $tokens, ['auto_link' => true, 'match' => 'phone']);
+
+                return $this->authenticateUser($userId, $providerId);
             }
         }
 
         // Case 4 & 5: No match — create new user or reject.
-        $settings = get_option('wsms_auth_settings', []);
-
-        if (empty($settings['auto_create_users'])) {
+        if (!$this->policyEngine?->getSetting('auto_create_users', false)) {
             return ['result' => AuthResult::failed(
                 'registration_disabled',
                 'Automatic account creation is disabled. Please contact an administrator.',
@@ -267,19 +269,19 @@ class SocialAuthOrchestrator
             update_user_meta($userId, 'wsms_registration_status', 'active');
         }
 
-        $this->repository->linkAccount($userId, $providerId, $userInfo['id'], [
-            'email'  => $userInfo['email'] ?? '',
-            'name'   => $userInfo['name'] ?? '',
-            'tokens' => $tokens,
-        ]);
+        // Store phone number from provider (e.g. Telegram).
+        if (!empty($userInfo['phone_number'])) {
+            update_user_meta($userId, 'wsms_phone', $userInfo['phone_number']);
+            update_user_meta($userId, 'wsms_phone_verified', '1');
+        }
+
+        $this->linkAccount($userId, $providerId, $userInfo, $tokens);
 
         $this->auditLogger->log(EventType::SocialRegistration, 'success', $userId, [
             'provider' => $providerId,
         ]);
 
-        $result = $this->authOrchestrator->resolveAuthFromSocial($userId, 'social:' . $providerId);
-
-        return ['result' => $result, 'user_id' => $userId];
+        return $this->authenticateUser($userId, $providerId);
     }
 
     /**
@@ -301,11 +303,7 @@ class SocialAuthOrchestrator
             return ['result' => AuthResult::failed('provider_taken', 'This social account is already linked to another user.')];
         }
 
-        $this->repository->linkAccount($userId, $providerId, $userInfo['id'], [
-            'email'  => $userInfo['email'] ?? '',
-            'name'   => $userInfo['name'] ?? '',
-            'tokens' => $tokens,
-        ]);
+        $this->linkAccount($userId, $providerId, $userInfo, $tokens);
 
         $this->auditLogger->log(EventType::SocialAccountLinked, 'success', $userId, [
             'provider' => $providerId,
@@ -318,12 +316,68 @@ class SocialAuthOrchestrator
     }
 
     /**
+     * Check lockout and reset if not locked. Returns failure array if locked, null otherwise.
+     */
+    private function checkLockout(int $userId): ?array
+    {
+        $lockStatus = $this->lockout->isLocked($userId);
+
+        if ($lockStatus['locked']) {
+            return ['result' => AuthResult::failed('account_locked', 'Account is temporarily locked.', [
+                'retry_after' => $lockStatus['until'],
+            ])];
+        }
+
+        $this->lockout->reset($userId);
+
+        return null;
+    }
+
+    /**
+     * Link a social account and store standard meta.
+     */
+    private function linkAccount(int $userId, string $providerId, array $userInfo, array $tokens): void
+    {
+        $this->repository->linkAccount($userId, $providerId, $userInfo['id'], [
+            'email'  => $userInfo['email'] ?? '',
+            'name'   => $userInfo['name'] ?? '',
+            'tokens' => $tokens,
+        ]);
+    }
+
+    /**
+     * Link, log the link event, and log login success.
+     */
+    private function linkAndLog(int $userId, string $providerId, array $userInfo, array $tokens, array $extraContext = []): void
+    {
+        $this->linkAccount($userId, $providerId, $userInfo, $tokens);
+
+        $this->auditLogger->log(EventType::SocialAccountLinked, 'success', $userId, array_merge(
+            ['provider' => $providerId],
+            $extraContext,
+        ));
+
+        $this->auditLogger->log(EventType::SocialLoginSuccess, 'success', $userId, [
+            'provider' => $providerId,
+        ]);
+    }
+
+    /**
+     * Authenticate user via social login and return result array.
+     */
+    private function authenticateUser(int $userId, string $providerId): array
+    {
+        $result = $this->authOrchestrator->resolveAuthFromSocial($userId, 'social:' . $providerId);
+
+        return ['result' => $result, 'user_id' => $userId];
+    }
+
+    /**
      * Sync profile data from provider to WordPress user.
      */
     private function syncProfileData(int $userId, array $userInfo): void
     {
-        $settings = get_option('wsms_auth_settings', []);
-        $syncMode = $settings['social_profile_sync'] ?? 'registration_only';
+        $syncMode = $this->policyEngine?->getSetting('social_profile_sync', 'registration_only') ?? 'registration_only';
 
         if ($syncMode !== 'every_login') {
             return;
@@ -366,5 +420,31 @@ class SocialAuthOrchestrator
     private function getCallbackUrl(string $providerId): string
     {
         return rest_url('wsms/v1/auth/social/callback/' . $providerId);
+    }
+
+    /**
+     * Auto-enroll Telegram MFA factor when user logs in via Telegram social login.
+     */
+    private function autoEnrollTelegramMfa(int $userId, array $userInfo): void
+    {
+        if (!$this->telegramChannel) {
+            return;
+        }
+
+        try {
+            if (!$this->telegramChannel->isEnrolled($userId)) {
+                $this->telegramChannel->autoEnroll(
+                    $userId,
+                    (int) $userInfo['id'],
+                    $userInfo['preferred_username'] ?? null,
+                );
+            }
+        } catch (\Throwable $e) {
+            // Non-critical — log but don't block login.
+            $this->auditLogger->log(EventType::MfaEnrolled, 'failure', $userId, [
+                'channel' => 'telegram',
+                'error'   => $e->getMessage(),
+            ]);
+        }
     }
 }

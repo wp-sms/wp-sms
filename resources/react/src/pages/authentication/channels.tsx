@@ -2,15 +2,18 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ChannelRow } from '@/components/channel-row';
 import { ChannelSettingsSheet } from '@/components/channel-settings-sheet';
 import { SocialSettingsSheet } from '@/components/social-settings-sheet';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
+import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import type { ChannelId } from '@/lib/constants';
-import { GoogleIcon, AppleIcon, LinkedInIcon, FacebookIcon, MicrosoftIcon, GitHubIcon, TwitterIcon } from '@/components/icons/social';
+import { GoogleIcon, TelegramIcon, AppleIcon, LinkedInIcon, FacebookIcon, MicrosoftIcon, GitHubIcon, TwitterIcon } from '@/components/icons/social';
 import { SOCIAL_METHODS } from '@/lib/constants';
-import { Smartphone, Mail, KeyRound, Fingerprint } from 'lucide-react';
-import type { AuthSettings, PhoneChannelSettings, EmailChannelSettings } from '@/lib/api';
+import { Smartphone, Mail, KeyRound, Fingerprint, Send, ExternalLink } from 'lucide-react';
+import type { AuthSettings, PhoneChannelSettings, EmailChannelSettings, TelegramSettings } from '@/lib/api';
 
 interface ChannelsProps {
   settings: Required<AuthSettings>;
@@ -19,6 +22,7 @@ interface ChannelsProps {
 
 const SOCIAL_ICONS: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
   google: GoogleIcon,
+  telegram: TelegramIcon,
   apple: AppleIcon,
   facebook: FacebookIcon,
   microsoft: MicrosoftIcon,
@@ -53,10 +57,22 @@ function getChannelSummary(channelId: 'phone' | 'email', settings: PhoneChannelS
   return parts.join(' · ');
 }
 
+function getTelegramMfaSummary(tg: TelegramSettings): string {
+  if (!tg.mfa_enabled) {
+    return 'Send verification codes via Telegram bot message';
+  }
+  if (tg.bot_username) {
+    return `@${tg.bot_username} · ${tg.code_length ?? 6}-digit OTP`;
+  }
+  return 'OTP via Telegram bot';
+}
+
 export function Channels({ settings, onUpdate }: ChannelsProps) {
   const [editingChannel, setEditingChannel] = useState<ChannelId | null>(null);
   const [editingSocial, setEditingSocial] = useState<string | null>(null);
+  const [editingTelegramMfa, setEditingTelegramMfa] = useState(false);
   const socialSettings = settings.social ?? {};
+  const telegramSettings = settings.telegram ?? {} as TelegramSettings;
 
   function updatePhone(partial: Partial<PhoneChannelSettings>) {
     onUpdate('phone', { ...settings.phone, ...partial });
@@ -64,6 +80,10 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
 
   function updateEmail(partial: Partial<EmailChannelSettings>) {
     onUpdate('email', { ...settings.email, ...partial });
+  }
+
+  function updateTelegram(partial: Partial<TelegramSettings>) {
+    onUpdate('telegram', { ...telegramSettings, ...partial });
   }
 
   const phoneUsage = settings.phone.usage ?? 'login';
@@ -249,6 +269,18 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
 
               <Separator />
 
+              {/* Telegram MFA */}
+              <ChannelRow
+                icon={Send}
+                title="Telegram MFA"
+                description={getTelegramMfaSummary(telegramSettings)}
+                enabled={!!telegramSettings.mfa_enabled}
+                onToggle={(v) => updateTelegram({ mfa_enabled: v })}
+                onConfigure={() => setEditingTelegramMfa(true)}
+              />
+
+              <Separator />
+
               {/* Biometric */}
               <ChannelRow
                 icon={Fingerprint}
@@ -276,6 +308,113 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
           }}
         />
       )}
+
+      {/* Telegram MFA Settings Drawer */}
+      <Drawer open={editingTelegramMfa} onOpenChange={setEditingTelegramMfa} direction="right">
+        <DrawerContent className="sm:max-w-md overflow-y-auto">
+          <DrawerHeader>
+            <DrawerTitle className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted">
+                <Send className="h-4 w-4 text-muted-foreground" />
+              </div>
+              Telegram MFA Settings
+            </DrawerTitle>
+            <DrawerDescription>
+              Send MFA verification codes to users via a Telegram bot. Users link their account by starting a conversation with your bot.
+            </DrawerDescription>
+          </DrawerHeader>
+
+          <div className="space-y-6 px-4 pb-4">
+            <a
+              href="https://t.me/botfather"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-primary hover:underline"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+              Create a bot with @BotFather
+            </a>
+
+            <Field>
+              <FieldLabel htmlFor="tg-bot-token">Bot Token</FieldLabel>
+              <Input
+                id="tg-bot-token"
+                type="password"
+                value={telegramSettings.bot_token ?? ''}
+                onChange={(e) => updateTelegram({ bot_token: e.target.value })}
+                placeholder="123456789:ABCdefGhIjKlmNoPqRsTuVwXyZ"
+              />
+              <FieldDescription>
+                The API token from @BotFather. Go to BotFather {'>'} select your bot {'>'} API Token.
+              </FieldDescription>
+            </Field>
+
+            {telegramSettings.bot_username && (
+              <div className="rounded-md border bg-muted/50 p-3">
+                <div className="text-xs font-medium text-muted-foreground">Connected Bot</div>
+                <div className="text-sm font-medium mt-1">@{telegramSettings.bot_username}</div>
+              </div>
+            )}
+
+            <div className="rounded-md border bg-muted/50 p-3 space-y-1.5">
+              <div className="text-xs font-medium text-muted-foreground">How it works</div>
+              <ul className="list-disc list-inside space-y-1">
+                <li className="text-xs text-muted-foreground">Users who sign in with Telegram Login are auto-enrolled for Telegram MFA</li>
+                <li className="text-xs text-muted-foreground">Other users can link their Telegram account by clicking a deep link to your bot</li>
+                <li className="text-xs text-muted-foreground">During MFA, a verification code is sent as a bot message in Telegram</li>
+              </ul>
+            </div>
+
+            <Separator />
+
+            <Field>
+              <FieldLabel htmlFor="tg-code-length">Code Length</FieldLabel>
+              <div className="flex gap-2">
+                {[4, 6].map((len) => (
+                  <button
+                    key={len}
+                    type="button"
+                    onClick={() => updateTelegram({ code_length: len })}
+                    className={`rounded-md border px-3 py-1.5 text-sm transition-colors ${(telegramSettings.code_length ?? 6) === len ? 'border-primary bg-primary/10 text-primary' : 'border-border hover:bg-accent'}`}
+                  >
+                    {len} digits
+                  </button>
+                ))}
+              </div>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="tg-expiry">Code Expiry (seconds)</FieldLabel>
+              <Input
+                id="tg-expiry"
+                type="number"
+                min={60}
+                max={900}
+                value={telegramSettings.expiry ?? 300}
+                onChange={(e) => updateTelegram({ expiry: parseInt(e.target.value) || 300 })}
+              />
+              <FieldDescription>
+                How long a verification code is valid. Default: 300 seconds (5 minutes).
+              </FieldDescription>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="tg-cooldown">Cooldown (seconds)</FieldLabel>
+              <Input
+                id="tg-cooldown"
+                type="number"
+                min={10}
+                max={300}
+                value={telegramSettings.cooldown ?? 60}
+                onChange={(e) => updateTelegram({ cooldown: parseInt(e.target.value) || 60 })}
+              />
+              <FieldDescription>
+                Minimum wait time between code requests. Prevents abuse.
+              </FieldDescription>
+            </Field>
+          </div>
+        </DrawerContent>
+      </Drawer>
 
       {/* Settings Sheet */}
       <ChannelSettingsSheet

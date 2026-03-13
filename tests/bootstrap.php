@@ -438,6 +438,15 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('wp_remote_retrieve_response_code')) {
+        function wp_remote_retrieve_response_code($response): int {
+            if (is_wp_error($response)) {
+                return 0;
+            }
+            return $response['response']['code'] ?? 200;
+        }
+    }
+
     if (!function_exists('add_filter')) {
         function add_filter(string $hookName, $callback, int $priority = 10, int $acceptedArgs = 1) {
             // No-op in tests.
@@ -534,6 +543,7 @@ if (!class_exists('WP_REST_Request')) {
     class WP_REST_Request {
         private array $params = [];
         private array $headers = [];
+        private ?string $body = null;
 
         public function __construct(string $method = 'GET', string $route = '') {
         }
@@ -556,6 +566,17 @@ if (!class_exists('WP_REST_Request')) {
 
         public function get_header(string $key): ?string {
             return $this->headers[strtolower($key)] ?? null;
+        }
+
+        public function set_body(string $body): void {
+            $this->body = $body;
+        }
+
+        public function get_json_params(): array {
+            if ($this->body === null) {
+                return [];
+            }
+            return json_decode($this->body, true) ?? [];
         }
     }
 }

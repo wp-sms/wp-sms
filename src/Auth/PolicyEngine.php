@@ -465,6 +465,20 @@ class PolicyEngine
             'protected_actions' => ['login', 'register', 'forgot_password'],
             'fail_open'         => false,
         ],
+        'social' => [
+            'google'   => ['enabled' => false, 'client_id' => '', 'client_secret' => ''],
+            'telegram' => ['enabled' => false, 'client_id' => '', 'client_secret' => ''],
+        ],
+        'telegram' => [
+            'bot_token'      => '',
+            'bot_username'   => '',
+            'webhook_secret' => '',
+            'mfa_enabled'    => false,
+            'code_length'    => 6,
+            'expiry'         => 300,
+            'max_attempts'   => 5,
+            'cooldown'       => 60,
+        ],
     ];
 
     /**

@@ -125,6 +125,16 @@ export const DEFAULTS: Required<AuthSettings> = {
   registration_fields: ['email', 'password'],
   pending_user_cleanup_enabled: true,
   pending_user_ttl_hours: 24,
+  telegram: {
+    bot_token: '',
+    bot_username: '',
+    webhook_secret: '',
+    mfa_enabled: false,
+    code_length: 6,
+    expiry: 300,
+    max_attempts: 5,
+    cooldown: 60,
+  },
   captcha: {
     enabled: false,
     provider: 'turnstile',
@@ -135,6 +145,7 @@ export const DEFAULTS: Required<AuthSettings> = {
   },
   social: {
     google: { enabled: false, client_id: '', client_secret: '' },
+    telegram: { enabled: false, client_id: '', client_secret: '' },
   },
   social_profile_sync: 'registration_only',
 };
@@ -143,6 +154,7 @@ export type ChannelId = 'phone' | 'email' | 'password';
 
 export const SOCIAL_METHODS = [
   { id: 'google', label: 'Google', comingSoon: false },
+  { id: 'telegram', label: 'Telegram', comingSoon: false },
   { id: 'apple', label: 'Apple', comingSoon: true },
   { id: 'facebook', label: 'Facebook', comingSoon: true },
   { id: 'microsoft', label: 'Microsoft', comingSoon: true },

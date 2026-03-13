@@ -9,6 +9,7 @@ use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthSession;
+use WSms\Auth\PolicyEngine;
 use WSms\Auth\ValueObjects\AuthResult;
 use WSms\Social\Contracts\SocialProviderInterface;
 use WSms\Social\OAuthStateManager;
@@ -27,6 +28,7 @@ class SocialAuthOrchestratorTest extends TestCase
     private MockObject&AuthSession $session;
     private MockObject&AuditLogger $auditLogger;
     private MockObject&AccountLockout $lockout;
+    private MockObject&PolicyEngine $policyEngine;
 
     protected function setUp(): void
     {
@@ -38,6 +40,7 @@ class SocialAuthOrchestratorTest extends TestCase
         $this->session = $this->createMock(AuthSession::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->lockout = $this->createMock(AccountLockout::class);
+        $this->policyEngine = $this->createMock(PolicyEngine::class);
 
         $this->orchestrator = new SocialAuthOrchestrator(
             $this->socialManager,
@@ -48,6 +51,7 @@ class SocialAuthOrchestratorTest extends TestCase
             $this->session,
             $this->auditLogger,
             $this->lockout,
+            $this->policyEngine,
         );
 
         unset(
@@ -127,7 +131,8 @@ class SocialAuthOrchestratorTest extends TestCase
             AuthResult::authenticated(42, ['id' => 42, 'email' => 'user@gmail.com', 'username' => 'user', 'display_name' => 'Test User', 'first_name' => '', 'last_name' => '', 'roles' => ['subscriber']])
         );
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['social_profile_sync' => 'registration_only'];
+        $this->policyEngine->method('getSetting')
+            ->willReturnMap([['social_profile_sync', 'registration_only', 'registration_only']]);
 
         $result = $this->orchestrator->handleCallback('google', 'auth-code', 'valid-state');
 
@@ -201,7 +206,8 @@ class SocialAuthOrchestratorTest extends TestCase
         $this->repository->method('findByProviderAccount')->willReturn(null);
         $GLOBALS['_test_get_user_by_result'] = false;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['auto_create_users' => false];
+        $this->policyEngine->method('getSetting')
+            ->willReturnMap([['auto_create_users', false, false]]);
 
         $result = $this->orchestrator->handleCallback('google', 'code', 'state');
 
@@ -222,7 +228,8 @@ class SocialAuthOrchestratorTest extends TestCase
         $this->repository->method('findByProviderAccount')->willReturn(null);
         $GLOBALS['_test_get_user_by_result'] = false;
 
-        $GLOBALS['_test_options']['wsms_auth_settings'] = ['auto_create_users' => true];
+        $this->policyEngine->method('getSetting')
+            ->willReturnMap([['auto_create_users', false, true]]);
 
         $this->accountManager->method('registerUser')->willReturn([
             'success' => true,
@@ -273,6 +280,111 @@ class SocialAuthOrchestratorTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertSame('last_auth_method', $result['error']);
+    }
+
+    public function testHandleCallbackPhoneMatchAutoLinks(): void
+    {
+        $provider = $this->createMock(SocialProviderInterface::class);
+        $provider->method('getId')->willReturn('telegram');
+        $provider->method('isTrustedEmailProvider')->willReturn(false);
+        $provider->method('exchangeCode')->willReturn(['access_token' => 'token']);
+        $provider->method('getUserInfo')->willReturn([
+            'id'                 => '987654',
+            'email'              => '',
+            'name'               => 'Telegram User',
+            'email_verified'     => false,
+            'phone_number'       => '+971577777777',
+            'preferred_username' => 'tguser',
+        ]);
+
+        $this->socialManager->method('getProvider')->willReturn($provider);
+        $this->stateManager->method('consume')->willReturn(['code_verifier' => 'v']);
+        $this->repository->method('findByProviderAccount')->willReturn(null);
+        $GLOBALS['_test_get_user_by_result'] = false; // No email match.
+
+        // Phone match.
+        $user = new \WP_User(15);
+        $user->user_email = 'existing@example.com';
+        $GLOBALS['_test_get_users_result'] = [$user];
+
+        $this->lockout->method('isLocked')->willReturn(['locked' => false, 'until' => null, 'attempts' => 0]);
+        $this->authOrchestrator->method('resolveAuthFromSocial')->willReturn(
+            AuthResult::authenticated(15, ['id' => 15, 'email' => 'existing@example.com', 'username' => 'existing', 'display_name' => 'Existing', 'first_name' => '', 'last_name' => '', 'roles' => ['subscriber']])
+        );
+
+        $result = $this->orchestrator->handleCallback('telegram', 'code', 'state');
+
+        $this->assertSame(15, $result['user_id']);
+        $this->assertTrue($result['result']->toArray()['success']);
+    }
+
+    public function testHandleCallbackPhoneMatchSkippedWhenEmailPresent(): void
+    {
+        $provider = $this->createMock(SocialProviderInterface::class);
+        $provider->method('getId')->willReturn('telegram');
+        $provider->method('isTrustedEmailProvider')->willReturn(false);
+        $provider->method('exchangeCode')->willReturn(['access_token' => 'token']);
+        $provider->method('getUserInfo')->willReturn([
+            'id'             => '987654',
+            'email'          => 'user@telegram.org',
+            'name'           => 'Telegram User',
+            'email_verified' => false,
+            'phone_number'   => '+971577777777',
+        ]);
+
+        $this->socialManager->method('getProvider')->willReturn($provider);
+        $this->stateManager->method('consume')->willReturn(['code_verifier' => 'v']);
+        $this->repository->method('findByProviderAccount')->willReturn(null);
+
+        // Email match exists for untrusted provider → should reject, NOT phone match.
+        $user = new \WP_User(20);
+        $GLOBALS['_test_get_user_by_result'] = $user;
+
+        $result = $this->orchestrator->handleCallback('telegram', 'code', 'state');
+
+        $this->assertSame('email_exists_untrusted', $result['result']->toArray()['error']);
+    }
+
+    public function testHandleCallbackStoresPhoneOnRegistration(): void
+    {
+        $provider = $this->createMock(SocialProviderInterface::class);
+        $provider->method('getId')->willReturn('telegram');
+        $provider->method('isTrustedEmailProvider')->willReturn(false);
+        $provider->method('exchangeCode')->willReturn(['access_token' => 'token']);
+        $provider->method('getUserInfo')->willReturn([
+            'id'             => '111222',
+            'email'          => '',
+            'name'           => 'New TG User',
+            'email_verified' => false,
+            'phone_number'   => '+44123456789',
+        ]);
+
+        $this->socialManager->method('getProvider')->willReturn($provider);
+        $this->stateManager->method('consume')->willReturn(['code_verifier' => 'v']);
+        $this->repository->method('findByProviderAccount')->willReturn(null);
+        $GLOBALS['_test_get_user_by_result'] = false;
+        $GLOBALS['_test_get_users_result'] = []; // No phone match.
+
+        $this->policyEngine->method('getSetting')
+            ->willReturnMap([['auto_create_users', false, true]]);
+
+        $this->accountManager->method('registerUser')->willReturn([
+            'success' => true,
+            'user_id' => 77,
+            'message' => 'Registration successful.',
+        ]);
+
+        $this->authOrchestrator->method('resolveAuthFromSocial')->willReturn(
+            AuthResult::authenticated(77, ['id' => 77, 'email' => '', 'username' => 'wsms_tg', 'display_name' => 'New TG User', 'first_name' => '', 'last_name' => '', 'roles' => ['subscriber']])
+        );
+
+        $result = $this->orchestrator->handleCallback('telegram', 'code', 'state');
+
+        $this->assertSame(77, $result['user_id']);
+
+        // Verify phone was stored in user meta.
+        $this->assertSame('+44123456789', $GLOBALS['_test_user_meta'][77]['wsms_phone'] ?? null);
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][77]['wsms_phone_verified'] ?? null);
     }
 
     public function testGetLinkedAccountsStripsTokens(): void

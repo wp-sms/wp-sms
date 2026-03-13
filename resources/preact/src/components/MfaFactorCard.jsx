@@ -1,5 +1,5 @@
-import { useState } from 'preact/hooks';
-import { Smartphone, Mail, ClipboardList, Lock } from 'lucide-react';
+import { useState, useEffect, useRef } from 'preact/hooks';
+import { Smartphone, Mail, ClipboardList, Lock, Send } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { Button } from './ui/Button';
 import { Label } from './ui/Label';
@@ -11,6 +11,7 @@ import { extractError } from '../utils/auth';
 const CHANNEL_META = {
     phone:        { label: 'Phone',        icon: Smartphone,     description: 'Receive a code via text message' },
     email:        { label: 'Email',        icon: Mail,           description: 'Receive a code via email' },
+    telegram:     { label: 'Telegram',     icon: Send,           description: 'Receive a code via Telegram bot' },
     backup_codes: { label: 'Backup Codes', icon: ClipboardList,  description: 'One-time use recovery codes' },
 };
 
@@ -21,6 +22,13 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
     const [verifying, setVerifying] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const [telegramLink, setTelegramLink] = useState('');
+    const pollRef = useRef(null);
+
+    // Poll for Telegram enrollment completion.
+    useEffect(() => {
+        return () => { if (pollRef.current) clearInterval(pollRef.current); };
+    }, []);
 
     if (method.id === 'backup_codes') return null;
 
@@ -38,6 +46,17 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
 
         if (res && method.id === 'phone' && res.data?.requires_verification) {
             setVerifying(true);
+        }
+
+        if (res && method.id === 'telegram' && res.data?.deep_link) {
+            setTelegramLink(res.data.deep_link);
+            setExpanding(true);
+
+            // Poll every 3s to check if enrollment completed.
+            if (pollRef.current) clearInterval(pollRef.current);
+            pollRef.current = setInterval(() => {
+                if (onRefresh) onRefresh();
+            }, 3000);
         }
 
         setLoading(false);
@@ -70,7 +89,19 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
         onUnenroll(method.id);
         setExpanding(false);
         setVerifying(false);
+        setTelegramLink('');
+        if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
     }
+
+    // Stop polling once enrolled.
+    useEffect(() => {
+        if (enrolled && pollRef.current) {
+            clearInterval(pollRef.current);
+            pollRef.current = null;
+            setExpanding(false);
+            setTelegramLink('');
+        }
+    }, [enrolled]);
 
     return (
         <div
@@ -108,6 +139,25 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                     <Button size="sm" onClick={handleEnable} disabled={loading || !phone}>
                         {loading ? 'Sending\u2026' : 'Send Verification Code'}
                     </Button>
+                </div>
+            )}
+
+            {expanding && !enrolled && method.id === 'telegram' && telegramLink && (
+                <div className="px-4 pb-4 space-y-3 animate-fade-in">
+                    {error && <p className="text-sm text-destructive">{error}</p>}
+                    <p className="text-sm text-muted-foreground">
+                        Click the button below to open Telegram and link your account.
+                    </p>
+                    <a
+                        href={telegramLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-md bg-[#26A5E4] px-4 py-2 text-sm font-medium text-white hover:bg-[#1E96D1] transition-colors"
+                    >
+                        <Send className="size-4" />
+                        Open in Telegram
+                    </a>
+                    <p className="text-xs text-muted-foreground">Waiting for confirmation...</p>
                 </div>
             )}
 

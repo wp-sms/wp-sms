@@ -87,12 +87,24 @@ export interface SocialProviderSettings {
 
 export type SocialProfileSync = 'registration_only' | 'every_login';
 
+export interface TelegramSettings {
+  bot_token?: string;
+  bot_username?: string;
+  webhook_secret?: string;
+  mfa_enabled?: boolean;
+  code_length?: number;
+  expiry?: number;
+  max_attempts?: number;
+  cooldown?: number;
+}
+
 export interface AuthSettings {
   phone?: PhoneChannelSettings;
   email?: EmailChannelSettings;
   password?: PasswordSettings;
   backup_codes?: BackupCodesSettings;
   captcha?: CaptchaSettings;
+  telegram?: TelegramSettings;
   mfa_required_roles?: string[];
   enrollment_timing?: EnrollmentTiming;
   grace_period_days?: number;

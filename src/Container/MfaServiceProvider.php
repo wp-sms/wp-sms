@@ -6,8 +6,10 @@ use WSms\Mfa\Channels\BackupCodesChannel;
 use WSms\Mfa\Channels\EmailChannel;
 use WSms\Mfa\Channels\MagicLinkChannel;
 use WSms\Mfa\Channels\PhoneChannel;
+use WSms\Mfa\Channels\TelegramChannel;
 use WSms\Mfa\MfaManager;
 use WSms\Mfa\OtpGenerator;
+use WSms\Telegram\TelegramBotClient;
 
 defined('ABSPATH') || exit;
 
@@ -59,6 +61,21 @@ class MfaServiceProvider implements ServiceProvider
                 $container->get('audit.logger'),
             );
         });
+
+        $container->register('telegram.bot_client', function () {
+            $settings = get_option('wsms_auth_settings', []);
+            $botToken = $settings['telegram']['bot_token'] ?? '';
+
+            return new TelegramBotClient($botToken);
+        });
+
+        $container->register('mfa.channel.telegram', function () use ($container) {
+            return new TelegramChannel(
+                $container->get('mfa.otp_generator'),
+                $container->get('audit.logger'),
+                $container->get('telegram.bot_client'),
+            );
+        });
     }
 
     /** {@inheritDoc} */
@@ -69,6 +86,7 @@ class MfaServiceProvider implements ServiceProvider
         $manager->registerChannel($container->get('mfa.channel.phone'));
         $manager->registerChannel($container->get('mfa.channel.email'));
         $manager->registerChannel($container->get('mfa.channel.backup'));
+        $manager->registerChannel($container->get('mfa.channel.telegram'));
         // MagicLinkChannel is NOT registered — it's used internally by phone/email channels.
     }
 }

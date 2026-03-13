@@ -8,6 +8,7 @@ use WSms\Rest\AuthController;
 use WSms\Rest\MfaController;
 use WSms\Rest\EnrollmentController;
 use WSms\Rest\SocialAuthController;
+use WSms\Rest\TelegramController;
 
 defined('ABSPATH') || exit;
 
@@ -63,6 +64,12 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('mfa.manager'),
             );
         });
+
+        $container->register('rest.telegram', function () use ($container) {
+            return new TelegramController(
+                $container->get('mfa.channel.telegram'),
+            );
+        });
     }
 
     /** {@inheritDoc} */
@@ -75,6 +82,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.account')->registerRoutes();
             $container->get('rest.admin')->registerRoutes();
             $container->get('rest.social')->registerRoutes();
+            $container->get('rest.telegram')->registerRoutes();
         });
     }
 }
