@@ -588,6 +588,292 @@ class AccountManagerTest extends TestCase
         $this->assertArrayNotHasKey('wsms_email_placeholder', $GLOBALS['_test_user_meta'][202] ?? []);
     }
 
+    // --- Registration status meta ---
+
+    public function testRegisterUserSetsActiveStatusWhenNoVerificationRequired(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 70;
+        $this->stubWpdb();
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'registration_fields' => ['email', 'password'],
+        ];
+
+        $this->manager->registerUser([
+            'email'    => 'active@example.com',
+            'password' => 'StrongPass1!',
+        ]);
+
+        $this->assertSame('active', $GLOBALS['_test_user_meta'][70]['wsms_registration_status'] ?? '');
+        $this->assertArrayNotHasKey('wsms_registration_created_at', $GLOBALS['_test_user_meta'][70] ?? []);
+    }
+
+    public function testRegisterUserSetsPendingStatusWhenEmailVerifyRequired(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 71;
+        $this->stubWpdb();
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'registration_fields' => ['email', 'password'],
+            'email' => ['verify_at_signup' => true],
+        ];
+
+        $this->manager->registerUser([
+            'email'    => 'pending@example.com',
+            'password' => 'StrongPass1!',
+        ]);
+
+        $this->assertSame('pending', $GLOBALS['_test_user_meta'][71]['wsms_registration_status'] ?? '');
+        $this->assertNotEmpty($GLOBALS['_test_user_meta'][71]['wsms_registration_created_at'] ?? '');
+    }
+
+    public function testRegisterUserSetsPendingStatusWhenPhoneVerifyRequired(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 72;
+        $this->stubWpdb();
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'registration_fields' => ['email', 'password'],
+            'phone' => ['required_at_signup' => true, 'verify_at_signup' => true],
+        ];
+
+        $this->manager->registerUser([
+            'email'    => 'test@example.com',
+            'password' => 'StrongPass1!',
+            'phone'    => '+1234567890',
+        ]);
+
+        $this->assertSame('pending', $GLOBALS['_test_user_meta'][72]['wsms_registration_status'] ?? '');
+    }
+
+    public function testRegisterUserPhoneOnlySetsActiveWhenNoVerify(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 73;
+        $this->stubWpdb();
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'email'    => ['required_at_signup' => false],
+            'password' => ['required_at_signup' => false],
+            'phone'    => ['required_at_signup' => true],
+            'registration_fields' => ['phone'],
+        ];
+
+        $this->manager->registerUser([
+            'phone' => '+1234567890',
+        ]);
+
+        $this->assertSame('active', $GLOBALS['_test_user_meta'][73]['wsms_registration_status'] ?? '');
+    }
+
+    public function testRegisterUserPhoneOnlySetsPendingWhenVerifyRequired(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 74;
+        $this->stubWpdb();
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'email'    => ['required_at_signup' => false, 'verify_at_signup' => true],
+            'password' => ['required_at_signup' => false],
+            'phone'    => ['required_at_signup' => true, 'verify_at_signup' => true],
+            'registration_fields' => ['phone'],
+        ];
+
+        $this->manager->registerUser([
+            'phone' => '+1234567890',
+        ]);
+
+        // Pending because phone verify_at_signup is true (email verify skipped for placeholder).
+        $this->assertSame('pending', $GLOBALS['_test_user_meta'][74]['wsms_registration_status'] ?? '');
+    }
+
+    // --- maybeActivateUser ---
+
+    public function testMaybeActivateUserActivatesWhenAllVerified(): void
+    {
+        $GLOBALS['_test_user_meta'][80] = [
+            'wsms_registration_status'     => 'pending',
+            'wsms_registration_created_at' => '2026-01-01 00:00:00',
+            'wsms_email_verified'          => '1',
+            'wsms_phone'                   => '+1234567890',
+            'wsms_phone_verified'          => '1',
+        ];
+
+        $user = $this->makeUser(80);
+        $user->user_email = 'test@example.com';
+        $GLOBALS['_test_userdata'] = $user;
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'email' => ['verify_at_signup' => true],
+            'phone' => ['verify_at_signup' => true],
+        ];
+
+        $this->manager->maybeActivateUser(80);
+
+        $this->assertSame('active', $GLOBALS['_test_user_meta'][80]['wsms_registration_status']);
+        $this->assertArrayNotHasKey('wsms_registration_created_at', $GLOBALS['_test_user_meta'][80]);
+    }
+
+    public function testMaybeActivateUserStaysPendingWhenEmailUnverified(): void
+    {
+        $GLOBALS['_test_user_meta'][81] = [
+            'wsms_registration_status'     => 'pending',
+            'wsms_registration_created_at' => '2026-01-01 00:00:00',
+            'wsms_email_verified'          => '',
+        ];
+
+        $user = $this->makeUser(81);
+        $user->user_email = 'test@example.com';
+        $GLOBALS['_test_userdata'] = $user;
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'email' => ['verify_at_signup' => true],
+        ];
+
+        $this->manager->maybeActivateUser(81);
+
+        $this->assertSame('pending', $GLOBALS['_test_user_meta'][81]['wsms_registration_status']);
+    }
+
+    public function testMaybeActivateUserAutoActivatesWhenSettingsDisabled(): void
+    {
+        $GLOBALS['_test_user_meta'][82] = [
+            'wsms_registration_status'     => 'pending',
+            'wsms_registration_created_at' => '2026-01-01 00:00:00',
+            'wsms_email_verified'          => '',
+        ];
+
+        $user = $this->makeUser(82);
+        $user->user_email = 'test@example.com';
+        $GLOBALS['_test_userdata'] = $user;
+
+        // Admin disabled all verify_at_signup.
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'email' => ['verify_at_signup' => false],
+            'phone' => ['verify_at_signup' => false],
+        ];
+
+        $this->manager->maybeActivateUser(82);
+
+        $this->assertSame('active', $GLOBALS['_test_user_meta'][82]['wsms_registration_status']);
+    }
+
+    public function testMaybeActivateUserSkipsAlreadyActiveUsers(): void
+    {
+        $GLOBALS['_test_user_meta'][83] = [
+            'wsms_registration_status' => 'active',
+        ];
+
+        $this->manager->maybeActivateUser(83);
+
+        // Should remain active, not call getSettings or anything else.
+        $this->assertSame('active', $GLOBALS['_test_user_meta'][83]['wsms_registration_status']);
+    }
+
+    public function testMaybeActivateUserSkipsUsersWithNoStatus(): void
+    {
+        // Legacy user with no status meta — should be a no-op.
+        $this->manager->maybeActivateUser(84);
+
+        $this->assertArrayNotHasKey(84, $GLOBALS['_test_user_meta']);
+    }
+
+    // --- Re-registration with expired pending users ---
+
+    public function testRegisterDeletesExpiredPendingUserByEmail(): void
+    {
+        $GLOBALS['_test_deleted_users'] = [];
+
+        // Expired pending user exists.
+        $existingUser = $this->makeUser(90);
+        $existingUser->user_email = 'reuse@example.com';
+        $GLOBALS['_test_get_user_by_result'] = $existingUser;
+        $GLOBALS['_test_user_meta'][90] = [
+            'wsms_registration_status'     => 'pending',
+            'wsms_registration_created_at' => gmdate('Y-m-d H:i:s', time() - 90000), // 25 hours ago
+        ];
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'registration_fields'     => ['email', 'password'],
+            'email'                   => ['verify_at_signup' => true],
+            'pending_user_ttl_hours'  => 24,
+        ];
+
+        // After deletion, wp_insert_user should succeed.
+        $GLOBALS['_test_wp_insert_user_result'] = 91;
+        $this->stubWpdb();
+
+        $result = $this->manager->registerUser([
+            'email'    => 'reuse@example.com',
+            'password' => 'StrongPass1!',
+        ]);
+
+        $this->assertContains(90, $GLOBALS['_test_deleted_users']);
+        $this->assertTrue($result['success']);
+    }
+
+    public function testRegisterDoesNotDeleteNonExpiredPendingUser(): void
+    {
+        $GLOBALS['_test_deleted_users'] = [];
+
+        $existingUser = $this->makeUser(92);
+        $existingUser->user_email = 'recent@example.com';
+        $GLOBALS['_test_get_user_by_result'] = $existingUser;
+        $GLOBALS['_test_user_meta'][92] = [
+            'wsms_registration_status'     => 'pending',
+            'wsms_registration_created_at' => gmdate('Y-m-d H:i:s', time() - 3600), // 1 hour ago
+        ];
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'registration_fields'     => ['email', 'password'],
+            'email'                   => ['verify_at_signup' => true],
+            'pending_user_ttl_hours'  => 24,
+        ];
+
+        // wp_insert_user will fail because email is still taken.
+        $GLOBALS['_test_wp_insert_user_result'] = new \WP_Error('existing_user_email', 'Email exists.');
+        $this->stubWpdb();
+
+        $result = $this->manager->registerUser([
+            'email'    => 'recent@example.com',
+            'password' => 'StrongPass1!',
+        ]);
+
+        $this->assertEmpty($GLOBALS['_test_deleted_users']);
+        $this->assertFalse($result['success']);
+    }
+
+    public function testRegisterDeletesExpiredPendingUserByPhone(): void
+    {
+        $GLOBALS['_test_deleted_users'] = [];
+
+        $existingUser = $this->makeUser(93);
+        $GLOBALS['_test_get_users_result'] = [$existingUser];
+        $GLOBALS['_test_user_meta'][93] = [
+            'wsms_registration_status'     => 'pending',
+            'wsms_registration_created_at' => gmdate('Y-m-d H:i:s', time() - 90000),
+            'wsms_phone'                   => '+1234567890',
+        ];
+        // No email collision (get_user_by returns false for email check).
+        $GLOBALS['_test_get_user_by_result'] = false;
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'email'    => ['required_at_signup' => false],
+            'password' => ['required_at_signup' => false],
+            'phone'    => ['required_at_signup' => true, 'verify_at_signup' => true],
+            'registration_fields'    => ['phone'],
+            'pending_user_ttl_hours' => 24,
+        ];
+
+        $GLOBALS['_test_wp_insert_user_result'] = 94;
+        $this->stubWpdb();
+
+        $result = $this->manager->registerUser([
+            'phone' => '+1234567890',
+        ]);
+
+        $this->assertContains(93, $GLOBALS['_test_deleted_users']);
+        $this->assertTrue($result['success']);
+    }
+
     // --- Helpers ---
 
     private function makeUser(int $id): object

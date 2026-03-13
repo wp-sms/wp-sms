@@ -55,6 +55,7 @@ export const NAV_ITEMS = [
     children: [
       { id: 'mfa-policies', label: 'MFA Policies' },
       { id: 'rate-limiting', label: 'Rate Limiting' },
+      { id: 'account-cleanup', label: 'Account Cleanup' },
     ],
   },
   {
@@ -74,6 +75,7 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   'registration': 'Configure how new users register through the authentication pages.',
   'mfa-policies': 'Manage MFA policies, backup codes, required roles, and enrollment timing.',
   'rate-limiting': 'Configure rate limits to prevent brute-force attacks on OTP verification.',
+  'account-cleanup': 'Manage automatic cleanup of unverified pending registrations.',
   'branding': 'Customize the appearance and behavior of your authentication pages.',
   'logs': 'View authentication events and configure logging preferences.',
 };

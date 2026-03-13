@@ -14,6 +14,7 @@ defined('ABSPATH') || exit;
 class AccountManager
 {
     public const PLACEHOLDER_EMAIL_DOMAIN = 'noreply.wsms.local';
+    public const DEFAULT_PENDING_USER_TTL_HOURS = 24;
 
     private ?array $settings = null;
 
@@ -132,6 +133,29 @@ class AccountManager
             $userdata['last_name'] = sanitize_text_field($data['last_name']);
         }
 
+        // Check for stale pending users that can be replaced (only when verify_at_signup is active).
+        $emailVerifyEnabled = !$isPlaceholder && !empty($settings['email']['verify_at_signup']);
+        $phoneVerifyEnabled = !empty($settings['phone']['verify_at_signup']);
+
+        if ($emailVerifyEnabled || $phoneVerifyEnabled) {
+            $ttlHours = (int) ($settings['pending_user_ttl_hours'] ?? self::DEFAULT_PENDING_USER_TTL_HOURS);
+
+            if ($emailVerifyEnabled && !empty($email)) {
+                $this->deleteExpiredPendingUser(get_user_by('email', $email), $ttlHours);
+            }
+
+            if ($phoneVerifyEnabled && !empty($data['phone'])) {
+                $phoneUsers = get_users([
+                    'meta_key'   => 'wsms_phone',
+                    'meta_value' => sanitize_text_field($data['phone']),
+                    'number'     => 1,
+                ]);
+                if (!empty($phoneUsers)) {
+                    $this->deleteExpiredPendingUser($phoneUsers[0], $ttlHours);
+                }
+            }
+        }
+
         $userId = wp_insert_user($userdata);
 
         if (is_wp_error($userId)) {
@@ -144,6 +168,14 @@ class AccountManager
 
         if ($isPlaceholder) {
             update_user_meta($userId, 'wsms_email_placeholder', '1');
+        }
+
+        $needsVerification = (!$isPlaceholder && !empty($settings['email']['verify_at_signup']))
+            || (!empty($data['phone']) && !empty($settings['phone']['verify_at_signup']));
+
+        update_user_meta($userId, 'wsms_registration_status', $needsVerification ? 'pending' : 'active');
+        if ($needsVerification) {
+            update_user_meta($userId, 'wsms_registration_created_at', gmdate('Y-m-d H:i:s'));
         }
 
         $pendingVerifications = [];
@@ -250,6 +282,7 @@ class AccountManager
         $userId = (int) $verification->user_id;
         $this->markEmailVerified($userId, $verification->identifier);
         $this->auditLogger->log(EventType::EmailVerified, 'success', $userId);
+        $this->maybeActivateUser($userId);
 
         return ['success' => true, 'message' => 'Email verified successfully.'];
     }
@@ -383,6 +416,7 @@ class AccountManager
         update_user_meta($userId, 'wsms_phone_verified', '1');
 
         $this->auditLogger->log(EventType::PhoneVerified, 'success', $userId);
+        $this->maybeActivateUser($userId);
 
         return ['success' => true, 'message' => 'Phone verified successfully.'];
     }
@@ -613,8 +647,68 @@ class AccountManager
         $wpdb->update($table, ['attempts' => $newAttempts, 'used_at' => gmdate('Y-m-d H:i:s')], ['id' => $verification->id]);
         $this->markEmailVerified($userId, $verification->identifier);
         $this->auditLogger->log(EventType::EmailVerified, 'success', $userId);
+        $this->maybeActivateUser($userId);
 
         return ['success' => true, 'message' => 'Email verified successfully.'];
+    }
+
+    /**
+     * Transition a pending user to active if all required verifications are complete
+     * (or if the admin has since disabled verify_at_signup).
+     */
+    public function maybeActivateUser(int $userId): void
+    {
+        $status = get_user_meta($userId, 'wsms_registration_status', true);
+        if ($status !== 'pending') {
+            return;
+        }
+
+        $settings = $this->getSettings();
+        $state = self::getUserVerificationState($userId);
+
+        $emailRequired = !empty($settings['email']['verify_at_signup']);
+        $phoneRequired = !empty($settings['phone']['verify_at_signup']);
+
+        // If admin disabled all verify_at_signup, auto-activate.
+        if (!$emailRequired && !$phoneRequired) {
+            $this->activateUser($userId);
+            return;
+        }
+
+        // Check each still-required verification.
+        if ($emailRequired && $state['email']['has'] && !$state['email']['verified']) {
+            return;
+        }
+        if ($phoneRequired && $state['phone']['has'] && !$state['phone']['verified']) {
+            return;
+        }
+
+        $this->activateUser($userId);
+    }
+
+    private function activateUser(int $userId): void
+    {
+        update_user_meta($userId, 'wsms_registration_status', 'active');
+        delete_user_meta($userId, 'wsms_registration_created_at');
+    }
+
+    private function deleteExpiredPendingUser($user, int $ttlHours): void
+    {
+        if (!$user) {
+            return;
+        }
+
+        $status = get_user_meta($user->ID, 'wsms_registration_status', true);
+        $createdAt = get_user_meta($user->ID, 'wsms_registration_created_at', true);
+
+        if ($status === 'pending' && !empty($createdAt)) {
+            if (time() > strtotime($createdAt) + ($ttlHours * 3600)) {
+                if (!function_exists('wp_delete_user')) {
+                    require_once ABSPATH . 'wp-admin/includes/user.php';
+                }
+                wp_delete_user($user->ID);
+            }
+        }
     }
 
     /**

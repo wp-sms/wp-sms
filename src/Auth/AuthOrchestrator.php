@@ -427,6 +427,8 @@ class AuthOrchestrator
      */
     private function completeLogin(int $userId, string $method, ?string $mfaChannel = null): array
     {
+        $this->accountManager->maybeActivateUser($userId);
+
         wp_set_auth_cookie($userId, true);
         wp_set_current_user($userId);
 

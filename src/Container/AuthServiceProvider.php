@@ -8,6 +8,7 @@ use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthRouter;
 use WSms\Auth\AuthSession;
 use WSms\Auth\AuthShortcode;
+use WSms\Auth\LoginGuard;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\RateLimiter;
 
@@ -68,6 +69,10 @@ class AuthServiceProvider implements ServiceProvider
         $container->register('auth.shortcode', function () {
             return new AuthShortcode();
         });
+
+        $container->register('auth.login_guard', function () {
+            return new LoginGuard();
+        });
     }
 
     /** {@inheritDoc} */
@@ -75,6 +80,8 @@ class AuthServiceProvider implements ServiceProvider
     {
         $container->get('auth.router')->registerHooks();
         $container->get('auth.shortcode')->registerHooks();
+
+        $container->get('auth.login_guard')->registerHooks();
 
         // Block wp_mail to placeholder email addresses.
         add_filter('pre_wp_mail', function ($null, $atts) {

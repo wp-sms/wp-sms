@@ -19,6 +19,9 @@ class CleanupSchedulerTest extends TestCase
         $GLOBALS['_test_wp_next_scheduled'] = [];
         $GLOBALS['_test_wp_scheduled_events'] = [];
         $GLOBALS['_test_options'] = [];
+        $GLOBALS['_test_deleted_users'] = [];
+        $GLOBALS['_test_get_users_result'] = [];
+        $GLOBALS['_test_user_meta'] = [];
     }
 
     protected function tearDown(): void
@@ -27,6 +30,9 @@ class CleanupSchedulerTest extends TestCase
             $GLOBALS['_test_wp_next_scheduled'],
             $GLOBALS['_test_wp_scheduled_events'],
             $GLOBALS['_test_options'],
+            $GLOBALS['_test_deleted_users'],
+            $GLOBALS['_test_get_users_result'],
+            $GLOBALS['_test_user_meta'],
         );
     }
 
@@ -109,6 +115,79 @@ class CleanupSchedulerTest extends TestCase
     public function testHookNameConstant(): void
     {
         $this->assertSame('wsms_daily_cleanup', CleanupScheduler::HOOK_NAME);
+    }
+
+    public function testRunDeletesExpiredPendingUsers(): void
+    {
+        $wpdb = $this->createWpdbMock();
+        $GLOBALS['wpdb'] = $wpdb;
+
+        $user = new \stdClass();
+        $user->ID = 10;
+        $GLOBALS['_test_get_users_result'] = [$user];
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'pending_user_cleanup_enabled' => true,
+            'pending_user_ttl_hours'       => 24,
+        ];
+
+        $this->scheduler->run();
+
+        $this->assertContains(10, $GLOBALS['_test_deleted_users']);
+        unset($GLOBALS['wpdb']);
+    }
+
+    public function testRunSkipsCleanupWhenDisabled(): void
+    {
+        $wpdb = $this->createWpdbMock();
+        $GLOBALS['wpdb'] = $wpdb;
+
+        $user = new \stdClass();
+        $user->ID = 11;
+        $GLOBALS['_test_get_users_result'] = [$user];
+
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'pending_user_cleanup_enabled' => false,
+        ];
+
+        $this->scheduler->run();
+
+        $this->assertNotContains(11, $GLOBALS['_test_deleted_users']);
+        unset($GLOBALS['wpdb']);
+    }
+
+    public function testRunUsesDefaultTtlOf24Hours(): void
+    {
+        $wpdb = $this->createWpdbMock();
+        $GLOBALS['wpdb'] = $wpdb;
+
+        $user = new \stdClass();
+        $user->ID = 12;
+        $GLOBALS['_test_get_users_result'] = [$user];
+
+        // No TTL setting — should default to 24h.
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+
+        $this->scheduler->run();
+
+        // get_users was called (cleanup is enabled by default), users returned are deleted.
+        $this->assertContains(12, $GLOBALS['_test_deleted_users']);
+        unset($GLOBALS['wpdb']);
+    }
+
+    public function testRunSkipsCleanupWhenNoExpiredUsers(): void
+    {
+        $wpdb = $this->createWpdbMock();
+        $GLOBALS['wpdb'] = $wpdb;
+
+        // No users returned by get_users.
+        $GLOBALS['_test_get_users_result'] = [];
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+
+        $this->scheduler->run();
+
+        $this->assertEmpty($GLOBALS['_test_deleted_users']);
+        unset($GLOBALS['wpdb']);
     }
 
     private function createWpdbMock(): object

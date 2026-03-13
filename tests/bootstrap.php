@@ -434,6 +434,20 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('wp_delete_user')) {
+        function wp_delete_user(int $userId, ?int $reassign = null): bool {
+            $GLOBALS['_test_deleted_users'][] = $userId;
+            unset($GLOBALS['_test_user_meta'][$userId]);
+            return true;
+        }
+    }
+
+    if (!function_exists('__')) {
+        function __(string $text, string $domain = 'default'): string {
+            return $text;
+        }
+    }
+
     if (!defined('AUTH_KEY')) {
         define('AUTH_KEY', 'test-auth-key-for-unit-tests');
     }
@@ -446,6 +460,24 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
     $GLOBALS['_test_options'] = [];
     $GLOBALS['_test_query_vars'] = [];
 
+}
+
+// WP_User stub.
+if (!class_exists('WP_User')) {
+    class WP_User {
+        public int $ID = 0;
+        public string $user_login = '';
+        public string $user_email = '';
+        public string $user_pass = '';
+        public string $display_name = '';
+        public string $first_name = '';
+        public string $last_name = '';
+        public array $roles = [];
+
+        public function __construct(int $id = 0) {
+            $this->ID = $id;
+        }
+    }
 }
 
 // WP_Error stub (must be at top level, not inside if-block).

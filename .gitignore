@@ -7,6 +7,7 @@ node_modules
 /public/
 CLAUDE.md
 SPEC.md
+docs/
 .env
 .agents/
 .claude/

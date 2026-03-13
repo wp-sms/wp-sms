@@ -81,6 +81,8 @@ export interface AuthSettings {
   log_verbosity?: LogVerbosity;
   log_retention_days?: number;
   registration_fields?: string[];
+  pending_user_cleanup_enabled?: boolean;
+  pending_user_ttl_hours?: number;
 }
 
 export interface LogEntry {

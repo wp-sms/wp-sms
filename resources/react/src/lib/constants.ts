@@ -118,6 +118,8 @@ export const DEFAULTS: Required<AuthSettings> = {
   log_verbosity: 'standard',
   log_retention_days: 90,
   registration_fields: ['email', 'password'],
+  pending_user_cleanup_enabled: true,
+  pending_user_ttl_hours: 24,
 };
 
 export type ChannelId = 'phone' | 'email' | 'password';

@@ -1,5 +1,6 @@
 import { MfaPolicies } from './mfa-policies';
 import { RateLimiting } from './rate-limiting';
+import { AccountCleanup } from './account-cleanup';
 import type { AuthSettings } from '@/lib/api';
 
 interface SecurityPageProps {
@@ -12,6 +13,10 @@ interface SecurityPageProps {
 export function SecurityPage({ section, settings, onUpdate, roles }: SecurityPageProps) {
   if (section === 'rate-limiting') {
     return <RateLimiting settings={settings} onUpdate={onUpdate} />;
+  }
+
+  if (section === 'account-cleanup') {
+    return <AccountCleanup settings={settings} onUpdate={onUpdate} />;
   }
 
   return <MfaPolicies settings={settings} onUpdate={onUpdate} roles={roles} />;
