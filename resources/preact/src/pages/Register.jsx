@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import { api } from '../api/client';
-import { registrationFields } from '../signals/config';
+import { registrationFields, socialProviders } from '../signals/config';
 import { authError, authLoading, registrationToken, pendingVerifications } from '../signals/auth';
 import { extractError } from '../utils/auth';
 import { authUrl } from '../utils/urls';
@@ -14,6 +14,8 @@ import { PhoneInput } from '../components/PhoneInput';
 import { RegisterVerifyStep } from '../components/steps/RegisterVerifyStep';
 import { CaptchaWidget } from '../components/CaptchaWidget';
 import { useCaptcha } from '../hooks/useCaptcha';
+import { SocialLoginButtons } from '../components/SocialLoginButtons';
+import { SocialDivider } from '../components/SocialDivider';
 
 export function Register() {
     const fields = registrationFields.value;
@@ -92,6 +94,11 @@ export function Register() {
             footer={<AuthLink href={authUrl('/login')}>Already have an account? Sign in</AuthLink>}
         >
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
+
+            {socialProviders.value.length > 0 && <>
+                <SocialLoginButtons />
+                <SocialDivider />
+            </>}
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 {fields.includes('username') && (

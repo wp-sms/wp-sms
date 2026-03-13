@@ -9,6 +9,7 @@ use WSms\Enums\EnrollmentTiming;
 use WSms\Enums\EventType;
 use WSms\Enums\LogVerbosity;
 use WSms\Mfa\MfaManager;
+use WSms\Social\SocialAccountRepository;
 
 defined('ABSPATH') || exit;
 
@@ -27,6 +28,7 @@ class AdminController
         'log_retention_days',
         'registration_fields',
         'redirect_login',
+        'social_profile_sync',
     ];
 
     /** Channel keys that accept nested sub-objects. */
@@ -36,6 +38,7 @@ class AdminController
         'password',
         'backup_codes',
         'captcha',
+        'social',
     ];
 
     public function __construct(
@@ -286,6 +289,32 @@ class AdminController
             foreach ($protectedActions as $action) {
                 if (!in_array($action, $allowedActions, true)) {
                     $errors[] = "captcha.protected_actions: invalid action '{$action}'.";
+                }
+            }
+        }
+
+        // Social profile sync validation.
+        if (isset($settings['social_profile_sync'])) {
+            $allowed = ['registration_only', 'every_login'];
+            if (!in_array($settings['social_profile_sync'], $allowed, true)) {
+                $errors[] = 'social_profile_sync must be one of: ' . implode(', ', $allowed) . '.';
+            }
+        }
+
+        // Social provider settings validation.
+        $social = $settings['social'] ?? [];
+        $validProviders = SocialAccountRepository::SOCIAL_PROVIDERS;
+        foreach ($social as $provider => $providerSettings) {
+            if (!in_array($provider, $validProviders, true)) {
+                $errors[] = "social: unknown provider '{$provider}'.";
+                continue;
+            }
+            if (!empty($providerSettings['enabled'])) {
+                if (empty($providerSettings['client_id'])) {
+                    $errors[] = "social.{$provider}: client_id is required when enabled.";
+                }
+                if (empty($providerSettings['client_secret'])) {
+                    $errors[] = "social.{$provider}: client_secret is required when enabled.";
                 }
             }
         }

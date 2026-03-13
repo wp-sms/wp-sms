@@ -79,6 +79,14 @@ export interface CaptchaSettings {
   fail_open?: boolean;
 }
 
+export interface SocialProviderSettings {
+  enabled?: boolean;
+  client_id?: string;
+  client_secret?: string;
+}
+
+export type SocialProfileSync = 'registration_only' | 'every_login';
+
 export interface AuthSettings {
   phone?: PhoneChannelSettings;
   email?: EmailChannelSettings;
@@ -96,6 +104,8 @@ export interface AuthSettings {
   registration_fields?: string[];
   pending_user_cleanup_enabled?: boolean;
   pending_user_ttl_hours?: number;
+  social?: Record<string, SocialProviderSettings>;
+  social_profile_sync?: SocialProfileSync;
 }
 
 export interface LogEntry {

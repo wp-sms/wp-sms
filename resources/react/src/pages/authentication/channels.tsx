@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import { Label } from '@/components/ui/label';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ChannelRow } from '@/components/channel-row';
 import { ChannelSettingsSheet } from '@/components/channel-settings-sheet';
+import { SocialSettingsSheet } from '@/components/social-settings-sheet';
 import type { ChannelId } from '@/lib/constants';
-import { GoogleIcon, AppleIcon, LinkedInIcon } from '@/components/icons/social';
+import { GoogleIcon, AppleIcon, LinkedInIcon, FacebookIcon, MicrosoftIcon, GitHubIcon, TwitterIcon } from '@/components/icons/social';
 import { SOCIAL_METHODS } from '@/lib/constants';
 import { Smartphone, Mail, KeyRound, Fingerprint } from 'lucide-react';
 import type { AuthSettings, PhoneChannelSettings, EmailChannelSettings } from '@/lib/api';
@@ -17,7 +20,11 @@ interface ChannelsProps {
 const SOCIAL_ICONS: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
   google: GoogleIcon,
   apple: AppleIcon,
+  facebook: FacebookIcon,
+  microsoft: MicrosoftIcon,
+  github: GitHubIcon,
   linkedin: LinkedInIcon,
+  twitter: TwitterIcon,
 };
 
 function getChannelSummary(channelId: 'phone' | 'email', settings: PhoneChannelSettings | EmailChannelSettings): string {
@@ -48,6 +55,8 @@ function getChannelSummary(channelId: 'phone' | 'email', settings: PhoneChannelS
 
 export function Channels({ settings, onUpdate }: ChannelsProps) {
   const [editingChannel, setEditingChannel] = useState<ChannelId | null>(null);
+  const [editingSocial, setEditingSocial] = useState<string | null>(null);
+  const socialSettings = settings.social ?? {};
 
   function updatePhone(partial: Partial<PhoneChannelSettings>) {
     onUpdate('phone', { ...settings.phone, ...partial });
@@ -138,17 +147,55 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
               <CardDescription>Allow users to sign in with social accounts</CardDescription>
             </CardHeader>
             <CardContent className="space-y-0">
-              {SOCIAL_METHODS.map((method, i) => (
-                <div key={method.id}>
-                  {i > 0 && <Separator />}
-                  <ChannelRow
-                    icon={SOCIAL_ICONS[method.id]}
-                    title={method.label}
-                    comingSoon
-                  />
-                </div>
-              ))}
+              {SOCIAL_METHODS.map((method, i) => {
+                const providerSettings = socialSettings[method.id] ?? {};
+                const isEnabled = !method.comingSoon && !!providerSettings.enabled;
+
+                return (
+                  <div key={method.id}>
+                    {i > 0 && <Separator />}
+                    <ChannelRow
+                      icon={SOCIAL_ICONS[method.id]}
+                      title={method.label}
+                      comingSoon={method.comingSoon}
+                      enabled={isEnabled}
+                      onToggle={method.comingSoon ? undefined : (v) => {
+                        const social = { ...socialSettings };
+                        social[method.id] = { ...providerSettings, enabled: v };
+                        onUpdate('social', social);
+                      }}
+                      onConfigure={method.comingSoon ? undefined : () => setEditingSocial(method.id)}
+                      description={isEnabled && providerSettings.client_id ? 'Configured' : undefined}
+                    />
+                  </div>
+                );
+              })}
             </CardContent>
+
+            {/* Profile Data Sync */}
+            <div className="border-t px-6 py-4">
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">Profile Data Sync</Label>
+                <RadioGroup
+                  value={settings.social_profile_sync ?? 'registration_only'}
+                  onValueChange={(v) => {
+                    if (v === 'registration_only' || v === 'every_login') {
+                      onUpdate('social_profile_sync', v);
+                    }
+                  }}
+                  className="space-y-1"
+                >
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <RadioGroupItem value="registration_only" />
+                    <span className="text-sm">Only at registration</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <RadioGroupItem value="every_login" />
+                    <span className="text-sm">Every login</span>
+                  </label>
+                </RadioGroup>
+              </div>
+            </div>
           </Card>
         </div>
 
@@ -212,6 +259,23 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
           </Card>
         </div>
       </div>
+
+      {/* Social Settings Sheet */}
+      {editingSocial && (
+        <SocialSettingsSheet
+          open={editingSocial !== null}
+          onOpenChange={(open) => { if (!open) setEditingSocial(null); }}
+          providerId={editingSocial}
+          providerLabel={SOCIAL_METHODS.find((m) => m.id === editingSocial)?.label ?? editingSocial}
+          icon={SOCIAL_ICONS[editingSocial] ?? GoogleIcon}
+          settings={socialSettings[editingSocial] ?? {}}
+          onUpdate={(partial) => {
+            const social = { ...socialSettings };
+            social[editingSocial] = { ...(social[editingSocial] ?? {}), ...partial };
+            onUpdate('social', social);
+          }}
+        />
+      )}
 
       {/* Settings Sheet */}
       <ChannelSettingsSheet

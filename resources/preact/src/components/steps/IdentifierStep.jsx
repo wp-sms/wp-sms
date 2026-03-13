@@ -12,10 +12,13 @@ import {
     forgetIdentifier,
 } from '../../signals/auth';
 import { extractError } from '../../utils/auth';
+import { socialProviders } from '../../signals/config';
 import { Alert } from '../ui/Alert';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Label } from '../ui/Label';
+import { SocialLoginButtons } from '../SocialLoginButtons';
+import { SocialDivider } from '../SocialDivider';
 
 function getIdentifierHints(methods) {
     const hasPhone = methods.includes('phone');
@@ -98,9 +101,14 @@ export function IdentifierStep() {
         );
     }
 
+    const hasSocial = socialProviders.value.length > 0;
+
     return (
         <div className="space-y-4">
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
+
+            {hasSocial && <SocialLoginButtons />}
+            {hasSocial && <SocialDivider />}
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">

@@ -423,6 +423,12 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('wp_remote_get')) {
+        function wp_remote_get(string $url, array $args = []) {
+            return $GLOBALS['_test_wp_remote_get'] ?? new \WP_Error('not_configured', 'Test not configured');
+        }
+    }
+
     if (!function_exists('wp_remote_retrieve_body')) {
         function wp_remote_retrieve_body($response): string {
             if (is_wp_error($response)) {

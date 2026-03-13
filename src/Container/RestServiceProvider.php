@@ -7,6 +7,7 @@ use WSms\Rest\AdminController;
 use WSms\Rest\AuthController;
 use WSms\Rest\MfaController;
 use WSms\Rest\EnrollmentController;
+use WSms\Rest\SocialAuthController;
 
 defined('ABSPATH') || exit;
 
@@ -21,6 +22,15 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('auth.rate_limiter'),
                 $container->get('auth.policy'),
                 $container->get('auth.captcha_guard'),
+                $container->get('social.manager'),
+            );
+        });
+
+        $container->register('rest.social', function () use ($container) {
+            return new SocialAuthController(
+                $container->get('social.orchestrator'),
+                $container->get('social.manager'),
+                $container->get('auth.rate_limiter'),
             );
         });
 
@@ -64,6 +74,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.enrollment')->registerRoutes();
             $container->get('rest.account')->registerRoutes();
             $container->get('rest.admin')->registerRoutes();
+            $container->get('rest.social')->registerRoutes();
         });
     }
 }

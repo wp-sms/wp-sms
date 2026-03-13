@@ -27,4 +27,9 @@ enum EventType: string
     case PhoneVerified = 'phone_verified';
     case AccountLocked = 'account_locked';
     case AccountUnlocked = 'account_unlocked';
+    case SocialLoginSuccess = 'social_login_success';
+    case SocialLoginFailure = 'social_login_failure';
+    case SocialAccountLinked = 'social_account_linked';
+    case SocialAccountUnlinked = 'social_account_unlinked';
+    case SocialRegistration = 'social_registration';
 }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { api } from '../api/client';
+import { socialProviders } from '../signals/config';
 import { currentUser } from '../signals/auth';
 import { loadCurrentUser, refreshUser, enrolledFactors } from '../signals/user';
 import { useAuthGuard } from '../hooks/useAuthGuard';
@@ -56,6 +57,7 @@ function SecurityPosture({ user }) {
 export function Security() {
     const authed = useAuthGuard();
     const [availableMethods, setAvailableMethods] = useState([]);
+    const [linkedAccounts, setLinkedAccounts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -69,15 +71,45 @@ export function Security() {
     async function init() {
         setLoading(true);
         try {
-            const [, methodsRes] = await Promise.all([
+            const [, methodsRes, accountsRes] = await Promise.all([
                 currentUser.value ? Promise.resolve() : loadCurrentUser(),
                 api.get('/auth/methods'),
+                api.get('/auth/social/accounts').catch(() => ({ accounts: [] })),
             ]);
             setAvailableMethods(methodsRes.methods.filter((m) => m.supports_mfa));
+            setLinkedAccounts(accountsRes.accounts || []);
         } catch (err) {
             setError(extractError(err));
         } finally {
             setLoading(false);
+        }
+    }
+
+    async function handleLinkProvider(providerId) {
+        setError('');
+        try {
+            const res = await api.post(`/auth/social/link/${providerId}`);
+            if (res.authorize_url) {
+                window.location.href = res.authorize_url;
+            }
+        } catch (err) {
+            setError(extractError(err));
+        }
+    }
+
+    async function handleUnlinkProvider(providerId) {
+        setError('');
+        setSuccess('');
+        try {
+            const res = await api.del(`/auth/social/unlink/${providerId}`);
+            if (res.success) {
+                setLinkedAccounts((prev) => prev.filter((a) => a.provider !== providerId));
+                setSuccess(res.message || 'Account unlinked.');
+            } else {
+                setError(res.message || 'Failed to unlink account.');
+            }
+        } catch (err) {
+            setError(extractError(err));
         }
     }
 
@@ -183,6 +215,43 @@ export function Security() {
                     />
                 ))}
             </div>
+
+            {socialProviders.value.length > 0 && (
+                <div className="mt-6 space-y-3">
+                    <Separator />
+                    <h3 className="text-base font-semibold">Linked Accounts</h3>
+                    <p className="text-sm text-muted-foreground">
+                        Connect social accounts for easier sign-in.
+                    </p>
+                    <div className="space-y-2">
+                        {socialProviders.value.map((provider) => {
+                            const linked = linkedAccounts.find((a) => a.provider === provider.id);
+                            return (
+                                <div key={provider.id} className="flex items-center justify-between rounded-lg border p-3">
+                                    <div className="flex items-center gap-3">
+                                        <span dangerouslySetInnerHTML={{ __html: provider.icon }} />
+                                        <div>
+                                            <div className="text-sm font-medium">{provider.name}</div>
+                                            {linked && (
+                                                <div className="text-xs text-muted-foreground">{linked.email}</div>
+                                            )}
+                                        </div>
+                                    </div>
+                                    {linked ? (
+                                        <Button variant="outline" size="sm" onClick={() => handleUnlinkProvider(provider.id)}>
+                                            Unlink
+                                        </Button>
+                                    ) : (
+                                        <Button variant="outline" size="sm" onClick={() => handleLinkProvider(provider.id)}>
+                                            Link
+                                        </Button>
+                                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
 
             {isEnrolled('backup_codes') && (
                 <div className="mt-6 space-y-3">

@@ -11,6 +11,7 @@ use WSms\Auth\PolicyEngine;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\ValueObjects\IdentifyResult;
 use WSms\Rest\AuthController;
+use WSms\Social\SocialAuthManager;
 
 class AuthControllerIdentifyTest extends TestCase
 {
@@ -31,6 +32,7 @@ class AuthControllerIdentifyTest extends TestCase
             $this->rateLimiter,
             $this->createMock(PolicyEngine::class),
             $captchaGuard,
+            new SocialAuthManager(),
         );
     }
 

@@ -64,6 +64,11 @@ export const EVENT_TYPES = [
   'backup_codes_regenerated',
   'account_locked',
   'account_unlocked',
+  'social_login_success',
+  'social_login_failure',
+  'social_account_linked',
+  'social_account_unlinked',
+  'social_registration',
 ] as const;
 
 export const REGISTRATION_FIELDS = [
@@ -128,14 +133,22 @@ export const DEFAULTS: Required<AuthSettings> = {
     protected_actions: ['login', 'register', 'forgot_password'],
     fail_open: false,
   },
+  social: {
+    google: { enabled: false, client_id: '', client_secret: '' },
+  },
+  social_profile_sync: 'registration_only',
 };
 
 export type ChannelId = 'phone' | 'email' | 'password';
 
 export const SOCIAL_METHODS = [
-  { id: 'google', label: 'Google' },
-  { id: 'apple', label: 'Apple' },
-  { id: 'linkedin', label: 'LinkedIn' },
+  { id: 'google', label: 'Google', comingSoon: false },
+  { id: 'apple', label: 'Apple', comingSoon: true },
+  { id: 'facebook', label: 'Facebook', comingSoon: true },
+  { id: 'microsoft', label: 'Microsoft', comingSoon: true },
+  { id: 'github', label: 'GitHub', comingSoon: true },
+  { id: 'linkedin', label: 'LinkedIn', comingSoon: true },
+  { id: 'twitter', label: 'Twitter / X', comingSoon: true },
 ] as const;
 
 /** Toggle an item in/out of an array. */

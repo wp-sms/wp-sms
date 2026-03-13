@@ -1,6 +1,7 @@
-import { authStep, authError, resetIdentifyFlow } from '../signals/auth';
+import { useEffect } from 'preact/hooks';
+import { authStep, authError, challengeToken, resetIdentifyFlow } from '../signals/auth';
 import { primaryMethods } from '../signals/config';
-import { authUrl } from '../utils/urls';
+import { authUrl, getQueryParam } from '../utils/urls';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { AuthLink } from '../components/AuthLink';
 import { IdentifierStep } from '../components/steps/IdentifierStep';
@@ -22,6 +23,23 @@ const TITLES = {
 export function Login() {
     const step = authStep.value;
     const hasPassword = primaryMethods.value.includes('password');
+
+    // Handle social login callback params in URL.
+    useEffect(() => {
+        const socialError = getQueryParam('social_error');
+        const socialMfa = getQueryParam('social_mfa');
+
+        if (socialError) {
+            authError.value = socialError === 'missing_params'
+                ? 'Social login failed. Please try again.'
+                : `Social login failed: ${socialError}`;
+            window.history.replaceState({}, '', window.location.pathname);
+        } else if (socialMfa) {
+            challengeToken.value = socialMfa;
+            authStep.value = 'mfa';
+            window.history.replaceState({}, '', window.location.pathname);
+        }
+    }, []);
 
     const footer = step === 'register' ? (
         <AuthLink href={authUrl('/login')} onClick={() => resetIdentifyFlow()}>

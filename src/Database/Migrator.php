@@ -48,12 +48,14 @@ class Migrator
             user_id         BIGINT UNSIGNED NOT NULL,
             channel_id      VARCHAR(50) NOT NULL,
             status          VARCHAR(20) NOT NULL DEFAULT 'pending',
+            identifier      VARCHAR(255) DEFAULT NULL,
             meta            TEXT,
             created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             INDEX idx_user_id (user_id),
             INDEX idx_user_channel (user_id, channel_id),
-            INDEX idx_status (status)
+            INDEX idx_status (status),
+            UNIQUE INDEX idx_channel_identifier (channel_id, identifier)
         ) {$charsetCollate};\n";
     }
 

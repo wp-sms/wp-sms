@@ -9,6 +9,7 @@ use WSms\Auth\CaptchaGuard;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\ValueObjects\AuthResult;
+use WSms\Social\SocialAuthManager;
 
 defined('ABSPATH') || exit;
 
@@ -21,6 +22,7 @@ class AuthController
         private RateLimiter $rateLimiter,
         private PolicyEngine $policy,
         private CaptchaGuard $captchaGuard,
+        private SocialAuthManager $socialManager,
     ) {
     }
 
@@ -226,6 +228,19 @@ class AuthController
             ],
             $this->policy->getVerificationRequirements(),
         );
+
+        $socialProviders = [];
+        foreach ($this->socialManager->getEnabledProviders() as $p) {
+            $socialProviders[] = [
+                'id'            => $p->getId(),
+                'name'          => $p->getName(),
+                'icon'          => $p->getIconSvg(),
+                'authorize_url' => rest_url('wsms/v1/auth/social/authorize/' . $p->getId()),
+            ];
+        }
+        if (!empty($socialProviders)) {
+            $config['social_providers'] = $socialProviders;
+        }
 
         $captchaConfig = $this->captchaGuard->getPublicConfig();
         if ($captchaConfig) {

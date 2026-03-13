@@ -342,6 +342,14 @@ class AuthOrchestrator
         return AuthResult::authenticated($sessionData['user_id'], $userData);
     }
 
+    /**
+     * Entry point for social login into the post-primary auth pipeline (MFA/verification checks).
+     */
+    public function resolveAuthFromSocial(int $userId, string $method): AuthResult
+    {
+        return $this->resolvePostPrimary($userId, $method);
+    }
+
     private function resolvePostPrimary(int $userId, string $method, ?string $existingSessionKey = null): AuthResult
     {
         if (!$this->policy->isMfaRequired($userId)) {

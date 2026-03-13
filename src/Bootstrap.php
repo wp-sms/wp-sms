@@ -7,6 +7,7 @@ use WSms\Container\CoreServiceProvider;
 use WSms\Container\AdminServiceProvider;
 use WSms\Container\AuthServiceProvider;
 use WSms\Container\MfaServiceProvider;
+use WSms\Container\SocialServiceProvider;
 use WSms\Container\AuditServiceProvider;
 use WSms\Container\RestServiceProvider;
 use WSms\Service\Installation\InstallManager;
@@ -35,6 +36,7 @@ class Bootstrap
         AdminServiceProvider::class,
         AuthServiceProvider::class,
         MfaServiceProvider::class,
+        SocialServiceProvider::class,
         AuditServiceProvider::class,
         RestServiceProvider::class,
     ];
