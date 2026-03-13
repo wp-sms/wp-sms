@@ -31,7 +31,6 @@ const COUNTRIES = [
     { code: 'SE', dial: '46', flag: '\u{1F1F8}\u{1F1EA}' },
     { code: 'NO', dial: '47', flag: '\u{1F1F3}\u{1F1F4}' },
     { code: 'PL', dial: '48', flag: '\u{1F1F5}\u{1F1F1}' },
-    { code: 'IR', dial: '98', flag: '\u{1F1EE}\u{1F1F7}' },
 ];
 
 const COUNTRIES_BY_DIAL_LENGTH = [...COUNTRIES].sort((a, b) => b.dial.length - a.dial.length);

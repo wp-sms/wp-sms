@@ -199,7 +199,7 @@ class RegistrationFlowTest extends IntegrationTestCase
         $result = $this->accountManager->registerUser([
             'email'    => 'both@example.com',
             'password' => 'Pass1!',
-            'phone'    => '+9876543210',
+            'phone'    => '+4476543210',
         ]);
 
         $this->assertTrue($result['success']);
@@ -327,10 +327,10 @@ class RegistrationFlowTest extends IntegrationTestCase
         $this->simulateUserCreation(91);
 
         $this->accountManager->registerUser([
-            'phone' => '+9876543210',
+            'phone' => '+4476543210',
         ]);
 
-        $this->assertSame('+9876543210', $GLOBALS['_test_user_meta'][91]['wsms_phone'] ?? '');
+        $this->assertSame('+4476543210', $GLOBALS['_test_user_meta'][91]['wsms_phone'] ?? '');
     }
 
     public function testPhoneOnlyRegistrationSkipsEmailVerification(): void

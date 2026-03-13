@@ -26,8 +26,8 @@ class PhoneMaskerTest extends TestCase
 
     public function testMasksInternationalPhone(): void
     {
-        // +989121234567 (13 chars) → +98******4567
-        $this->assertSame('+98******4567', PhoneMasker::mask('+989121234567'));
+        // +449121234567 (13 chars) → +44******4567
+        $this->assertSame('+44******4567', PhoneMasker::mask('+449121234567'));
     }
 
     public function testMasksMinimumMaskableLength(): void

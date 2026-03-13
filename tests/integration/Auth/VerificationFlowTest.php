@@ -284,7 +284,7 @@ class VerificationFlowTest extends IntegrationTestCase
         ];
         $this->setOtpCodes('999999');
 
-        $result = $this->accountManager->updateProfile(1, ['phone' => '+9876543210']);
+        $result = $this->accountManager->updateProfile(1, ['phone' => '+4476543210']);
 
         $this->assertTrue($result['success']);
         $this->assertTrue($result['phone_verification_required']);
@@ -292,7 +292,7 @@ class VerificationFlowTest extends IntegrationTestCase
         $this->assertSame('+1111111111', $GLOBALS['_test_user_meta'][1]['wsms_phone']);
         $this->assertSame('1', $GLOBALS['_test_user_meta'][1]['wsms_phone_verified']);
         // New phone stored as pending.
-        $this->assertSame('+9876543210', $GLOBALS['_test_user_meta'][1]['wsms_pending_phone']);
+        $this->assertSame('+4476543210', $GLOBALS['_test_user_meta'][1]['wsms_pending_phone']);
     }
 
     public function testProfilePhoneVerificationAppliesPendingPhone(): void
@@ -308,14 +308,14 @@ class VerificationFlowTest extends IntegrationTestCase
         ];
         $this->setOtpCodes('999999');
 
-        $this->accountManager->updateProfile(1, ['phone' => '+9876543210']);
+        $this->accountManager->updateProfile(1, ['phone' => '+4476543210']);
 
         // Verify the OTP.
         $verifyResult = $this->accountManager->verifyChannelOtp(1, 'phone', '999999');
 
         $this->assertTrue($verifyResult['success']);
         // Pending phone applied as canonical.
-        $this->assertSame('+9876543210', $GLOBALS['_test_user_meta'][1]['wsms_phone']);
+        $this->assertSame('+4476543210', $GLOBALS['_test_user_meta'][1]['wsms_phone']);
         $this->assertSame('1', $GLOBALS['_test_user_meta'][1]['wsms_phone_verified']);
         // Pending meta cleaned up.
         $this->assertArrayNotHasKey('wsms_pending_phone', $GLOBALS['_test_user_meta'][1]);
@@ -326,11 +326,11 @@ class VerificationFlowTest extends IntegrationTestCase
         $this->setSettings(AuthScenarios::passwordOnly());
 
         $GLOBALS['_test_user_meta'][1] = [
-            'wsms_phone'          => '+9876543210',
+            'wsms_phone'          => '+4476543210',
             'wsms_phone_verified' => '1',
         ];
 
-        $result = $this->accountManager->updateProfile(1, ['phone' => '+9876543210']);
+        $result = $this->accountManager->updateProfile(1, ['phone' => '+4476543210']);
 
         $this->assertTrue($result['success']);
         $this->assertArrayNotHasKey('phone_verification_required', $result);
@@ -374,7 +374,7 @@ class VerificationFlowTest extends IntegrationTestCase
         ];
         $this->setOtpCodes('999999');
 
-        $this->accountManager->updateProfile(1, ['phone' => '+9876543210']);
+        $this->accountManager->updateProfile(1, ['phone' => '+4476543210']);
 
         // Cancel the pending change.
         $this->accountManager->cancelPendingChange(1, 'phone');
