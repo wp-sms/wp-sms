@@ -14,6 +14,7 @@ defined('ABSPATH') || exit;
 class AccountManager
 {
     public const PLACEHOLDER_EMAIL_DOMAIN = 'noreply.wsms.local';
+    public const PLACEHOLDER_USERNAME_PREFIX = 'wsms_';
     public const DEFAULT_PENDING_USER_TTL_HOURS = 24;
 
     private ?array $settings = null;
@@ -29,6 +30,11 @@ class AccountManager
     public static function isPlaceholderEmail(string $email): bool
     {
         return str_ends_with($email, '@' . self::PLACEHOLDER_EMAIL_DOMAIN);
+    }
+
+    public static function isPlaceholderUsername(string $username): bool
+    {
+        return str_starts_with($username, self::PLACEHOLDER_USERNAME_PREFIX);
     }
 
     /**
@@ -55,6 +61,11 @@ class AccountManager
     private static function generatePlaceholderEmail(): string
     {
         return bin2hex(random_bytes(5)) . '@' . self::PLACEHOLDER_EMAIL_DOMAIN;
+    }
+
+    private static function generatePlaceholderUsername(): string
+    {
+        return self::PLACEHOLDER_USERNAME_PREFIX . bin2hex(random_bytes(5));
     }
 
     private function getSettings(): array
@@ -122,7 +133,7 @@ class AccountManager
         $username = !empty($data['username'])
             ? sanitize_user($data['username'])
             : ($isPlaceholder
-                ? sanitize_user(!empty($data['phone']) ? $data['phone'] : strtok($email, '@'))
+                ? self::generatePlaceholderUsername()
                 : $email);
 
         $userdata = [

@@ -248,6 +248,7 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
 
     if (!function_exists('wp_insert_user')) {
         function wp_insert_user($userdata) {
+            $GLOBALS['_test_wp_insert_user_data'] = $userdata;
             return $GLOBALS['_test_wp_insert_user_result'] ?? 1;
         }
     }

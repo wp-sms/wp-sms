@@ -49,6 +49,7 @@ class AccountManagerTest extends TestCase
 
         unset(
             $GLOBALS['_test_wp_insert_user_result'],
+            $GLOBALS['_test_wp_insert_user_data'],
             $GLOBALS['_test_wp_check_password_result'],
             $GLOBALS['_test_userdata'],
             $GLOBALS['_test_get_user_by_result'],
@@ -61,6 +62,7 @@ class AccountManagerTest extends TestCase
         unset(
             $GLOBALS['wpdb'],
             $GLOBALS['_test_wp_insert_user_result'],
+            $GLOBALS['_test_wp_insert_user_data'],
             $GLOBALS['_test_wp_check_password_result'],
             $GLOBALS['_test_userdata'],
             $GLOBALS['_test_get_user_by_result'],
@@ -514,7 +516,7 @@ class AccountManagerTest extends TestCase
         $this->assertNotContains('email', $pendingTypes);
     }
 
-    public function testRegisterUserPlaceholderUsesPhoneAsUsername(): void
+    public function testRegisterUserPlaceholderGeneratesDummyUsername(): void
     {
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'email'    => ['required_at_signup' => false],
@@ -523,12 +525,6 @@ class AccountManagerTest extends TestCase
             'registration_fields' => ['phone'],
         ];
 
-        // Capture what's passed to wp_insert_user.
-        $capturedUserdata = null;
-        $GLOBALS['_test_wp_insert_user_callback'] = function ($data) use (&$capturedUserdata) {
-            $capturedUserdata = $data;
-            return 102;
-        };
         $GLOBALS['_test_wp_insert_user_result'] = 102;
         $this->stubWpdb();
 
@@ -537,9 +533,11 @@ class AccountManagerTest extends TestCase
         ]);
 
         $this->assertTrue($result['success']);
-        // The wp_insert_user stub captures data via the global. Since we're using
-        // simplified stubs, verify that the placeholder email was generated.
         $this->assertSame('1', $GLOBALS['_test_user_meta'][102]['wsms_email_placeholder'] ?? '');
+
+        $capturedUsername = $GLOBALS['_test_wp_insert_user_data']['user_login'] ?? '';
+        $this->assertTrue(AccountManager::isPlaceholderUsername($capturedUsername));
+        $this->assertStringNotContainsString('+1234567890', $capturedUsername);
     }
 
     // --- Verification guards for placeholder ---

@@ -129,6 +129,7 @@ abstract class IntegrationTestCase extends TestCase
             $GLOBALS['_test_get_users_result'],
             $GLOBALS['_test_wp_authenticate_result'],
             $GLOBALS['_test_wp_insert_user_result'],
+            $GLOBALS['_test_wp_insert_user_data'],
             $GLOBALS['_test_wp_check_password_result'],
             $GLOBALS['_test_current_user_id'],
         );
