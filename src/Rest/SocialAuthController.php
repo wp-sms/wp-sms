@@ -69,12 +69,15 @@ class SocialAuthController
         ]);
     }
 
+    /**
+     * OAuth authorize — browser redirect. Returns HTTP 302, not JSON.
+     */
     public function handleAuthorize(WP_REST_Request $request): WP_REST_Response
     {
         $rl = $this->rateLimiter->check('social_auth', 10, 60);
 
         if (!$rl['allowed']) {
-            return new WP_REST_Response(['success' => false, 'error' => 'rate_limited'], 429);
+            return $this->redirectTo($this->getLoginUrl() . '?social_error=rate_limited');
         }
 
         $providerId = $request->get_param('provider');
@@ -82,13 +85,10 @@ class SocialAuthController
         try {
             $data = $this->orchestrator->initiateAuthorize($providerId);
         } catch (\InvalidArgumentException $e) {
-            return new WP_REST_Response(['success' => false, 'error' => 'invalid_provider', 'message' => $e->getMessage()], 400);
+            return $this->redirectTo($this->getLoginUrl() . '?social_error=invalid_provider');
         }
 
-        return new WP_REST_Response([
-            'success'       => true,
-            'authorize_url' => $data['authorize_url'],
-        ]);
+        return $this->redirectTo($data['authorize_url']);
     }
 
     /**
@@ -97,25 +97,21 @@ class SocialAuthController
     public function handleCallback(WP_REST_Request $request): WP_REST_Response
     {
         $providerId = $request->get_param('provider');
-        $settings = get_option('wsms_auth_settings', []);
-        $baseUrl = get_site_url() . ($settings['auth_base_url'] ?? '/account');
+        $baseUrl  = $this->getAuthBaseUrl();
         $loginUrl = $baseUrl . '/login';
 
         // Provider returned an error.
         if ($request->get_param('error')) {
             $errorCode = sanitize_text_field($request->get_param('error'));
-            wp_redirect($loginUrl . '?social_error=' . urlencode($errorCode));
 
-            return new WP_REST_Response(null, 302);
+            return $this->redirectTo($loginUrl . '?social_error=' . urlencode($errorCode));
         }
 
         $code = $request->get_param('code');
         $state = $request->get_param('state');
 
         if (empty($code) || empty($state)) {
-            wp_redirect($loginUrl . '?social_error=missing_params');
-
-            return new WP_REST_Response(null, 302);
+            return $this->redirectTo($loginUrl . '?social_error=missing_params');
         }
 
         $callbackResult = $this->orchestrator->handleCallback($providerId, $code, $state);
@@ -124,30 +120,23 @@ class SocialAuthController
 
         // Success — user is authenticated.
         if (!empty($resultArray['success']) && ($resultArray['status'] ?? '') === 'authenticated') {
-            wp_redirect($baseUrl . '/profile');
-
-            return new WP_REST_Response(null, 302);
+            return $this->redirectTo($baseUrl . '/profile');
         }
 
         // MFA required — redirect with session token.
         if (($resultArray['status'] ?? '') === 'mfa_required') {
-            wp_redirect($loginUrl . '?social_mfa=' . urlencode($resultArray['challenge_token']));
-
-            return new WP_REST_Response(null, 302);
+            return $this->redirectTo($loginUrl . '?social_mfa=' . urlencode($resultArray['challenge_token']));
         }
 
         // Account linking success — redirect to security page.
         if (!empty($resultArray['success']) && isset($callbackResult['user_id'])) {
-            wp_redirect($baseUrl . '/security?linked=' . $providerId);
-
-            return new WP_REST_Response(null, 302);
+            return $this->redirectTo($baseUrl . '/security?linked=' . $providerId);
         }
 
         // Error — redirect with error code.
         $errorCode = $resultArray['error'] ?? 'unknown_error';
-        wp_redirect($loginUrl . '?social_error=' . urlencode($errorCode));
 
-        return new WP_REST_Response(null, 302);
+        return $this->redirectTo($loginUrl . '?social_error=' . urlencode($errorCode));
     }
 
     public function handleLink(WP_REST_Request $request): WP_REST_Response
@@ -189,5 +178,24 @@ class SocialAuthController
             'success'  => true,
             'accounts' => $accounts,
         ]);
+    }
+
+    private function getAuthBaseUrl(): string
+    {
+        $settings = get_option('wsms_auth_settings', []);
+
+        return get_site_url() . ($settings['auth_base_url'] ?? '/account');
+    }
+
+    private function getLoginUrl(): string
+    {
+        return $this->getAuthBaseUrl() . '/login';
+    }
+
+    private function redirectTo(string $url): WP_REST_Response
+    {
+        wp_redirect($url);
+
+        return new WP_REST_Response(null, 302);
     }
 }
