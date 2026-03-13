@@ -273,23 +273,15 @@ class PolicyEngine
     public function getPendingVerifications(int $userId): array
     {
         $settings = $this->getSettings();
+        $state = AccountManager::getUserVerificationState($userId);
         $pending = [];
 
-        if (!empty($settings['email']['verify_at_signup'])) {
-            $userEmail = get_userdata($userId)?->user_email ?? '';
-            $hasEmail = !empty($userEmail) && !AccountManager::isPlaceholderEmail($userEmail);
-            $emailVerified = (bool) get_user_meta($userId, 'wsms_email_verified', true);
-            if ($hasEmail && !$emailVerified) {
-                $pending[] = ['type' => 'email', 'status' => 'pending'];
-            }
+        if (!empty($settings['email']['verify_at_signup']) && $state['email']['has'] && !$state['email']['verified']) {
+            $pending[] = ['type' => 'email', 'status' => 'pending'];
         }
 
-        if (!empty($settings['phone']['verify_at_signup'])) {
-            $hasPhone = !empty(get_user_meta($userId, 'wsms_phone', true));
-            $phoneVerified = (bool) get_user_meta($userId, 'wsms_phone_verified', true);
-            if ($hasPhone && !$phoneVerified) {
-                $pending[] = ['type' => 'phone', 'status' => 'pending'];
-            }
+        if (!empty($settings['phone']['verify_at_signup']) && $state['phone']['has'] && !$state['phone']['verified']) {
+            $pending[] = ['type' => 'phone', 'status' => 'pending'];
         }
 
         return $pending;

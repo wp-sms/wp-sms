@@ -30,6 +30,27 @@ class AccountManager
         return str_ends_with($email, '@' . self::PLACEHOLDER_EMAIL_DOMAIN);
     }
 
+    /**
+     * Get the raw verification state for a user's email and phone channels.
+     *
+     * @return array{email: array{has: bool, verified: bool}, phone: array{has: bool, verified: bool}}
+     */
+    public static function getUserVerificationState(int $userId): array
+    {
+        $userEmail = get_userdata($userId)?->user_email ?? '';
+
+        return [
+            'email' => [
+                'has'      => !empty($userEmail) && !self::isPlaceholderEmail($userEmail),
+                'verified' => (bool) get_user_meta($userId, 'wsms_email_verified', true),
+            ],
+            'phone' => [
+                'has'      => !empty(get_user_meta($userId, 'wsms_phone', true)),
+                'verified' => (bool) get_user_meta($userId, 'wsms_phone_verified', true),
+            ],
+        ];
+    }
+
     private static function generatePlaceholderEmail(): string
     {
         return bin2hex(random_bytes(5)) . '@' . self::PLACEHOLDER_EMAIL_DOMAIN;
@@ -227,20 +248,7 @@ class AccountManager
         }
 
         $userId = (int) $verification->user_id;
-        update_user_meta($userId, 'wsms_email_verified', '1');
-        delete_user_meta($userId, 'wsms_email_placeholder');
-
-        // Check for pending email change.
-        $pendingEmail = get_user_meta($userId, 'wsms_pending_email', true);
-
-        if (!empty($pendingEmail) && $pendingEmail === $verification->identifier) {
-            wp_update_user([
-                'ID'         => $userId,
-                'user_email' => $pendingEmail,
-            ]);
-            delete_user_meta($userId, 'wsms_pending_email');
-        }
-
+        $this->markEmailVerified($userId, $verification->identifier);
         $this->auditLogger->log(EventType::EmailVerified, 'success', $userId);
 
         return ['success' => true, 'message' => 'Email verified successfully.'];
@@ -441,19 +449,14 @@ class AccountManager
      */
     public function getVerificationStatus(int $userId): array
     {
-        $phoneVerified = (bool) get_user_meta($userId, 'wsms_phone_verified', true);
-        $emailVerified = (bool) get_user_meta($userId, 'wsms_email_verified', true);
-        $hasPhone = !empty(get_user_meta($userId, 'wsms_phone', true));
-        $userEmail = get_userdata($userId)?->user_email ?? '';
-        $hasEmail = !empty($userEmail) && !self::isPlaceholderEmail($userEmail);
-
+        $state = self::getUserVerificationState($userId);
         $pending = [];
 
-        if ($hasPhone && !$phoneVerified) {
+        if ($state['phone']['has'] && !$state['phone']['verified']) {
             $pending[] = ['type' => 'phone', 'status' => 'pending'];
         }
 
-        if ($hasEmail && !$emailVerified) {
+        if ($state['email']['has'] && !$state['email']['verified']) {
             $pending[] = ['type' => 'email', 'status' => 'pending'];
         }
 
@@ -606,23 +609,29 @@ class AccountManager
         }
 
         $wpdb->update($table, ['attempts' => $newAttempts, 'used_at' => gmdate('Y-m-d H:i:s')], ['id' => $verification->id]);
+        $this->markEmailVerified($userId, $verification->identifier);
+        $this->auditLogger->log(EventType::EmailVerified, 'success', $userId);
+
+        return ['success' => true, 'message' => 'Email verified successfully.'];
+    }
+
+    /**
+     * Mark email as verified and apply any pending email change.
+     */
+    private function markEmailVerified(int $userId, string $verifiedAddress): void
+    {
         update_user_meta($userId, 'wsms_email_verified', '1');
         delete_user_meta($userId, 'wsms_email_placeholder');
 
-        // Check for pending email change.
         $pendingEmail = get_user_meta($userId, 'wsms_pending_email', true);
 
-        if (!empty($pendingEmail) && $pendingEmail === $verification->identifier) {
+        if (!empty($pendingEmail) && $pendingEmail === $verifiedAddress) {
             wp_update_user([
                 'ID'         => $userId,
                 'user_email' => $pendingEmail,
             ]);
             delete_user_meta($userId, 'wsms_pending_email');
         }
-
-        $this->auditLogger->log(EventType::EmailVerified, 'success', $userId);
-
-        return ['success' => true, 'message' => 'Email verified successfully.'];
     }
 
     /**
