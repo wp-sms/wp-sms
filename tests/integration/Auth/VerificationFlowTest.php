@@ -270,14 +270,118 @@ class VerificationFlowTest extends IntegrationTestCase
         $this->assertCount(1, $emailVerifications);
     }
 
-    public function testProfilePhoneChangeTriggersVerification(): void
+    public function testProfilePhoneChangeStoresPendingAndPreservesOld(): void
     {
-        $this->setSettings(AuthScenarios::passwordOnly());
+        $settings = AuthScenarios::withOverrides(AuthScenarios::passwordOnly(), [
+            'phone' => ['cooldown' => 0],
+        ]);
+        $this->setSettings($settings);
+
+        $GLOBALS['_test_user_meta'][1] = [
+            'wsms_phone'          => '+1111111111',
+            'wsms_phone_verified' => '1',
+        ];
+        $this->setOtpCodes('999999');
 
         $result = $this->accountManager->updateProfile(1, ['phone' => '+9876543210']);
 
         $this->assertTrue($result['success']);
         $this->assertTrue($result['phone_verification_required']);
-        $this->assertSame('0', $GLOBALS['_test_user_meta'][1]['wsms_phone_verified']);
+        // Old phone preserved.
+        $this->assertSame('+1111111111', $GLOBALS['_test_user_meta'][1]['wsms_phone']);
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][1]['wsms_phone_verified']);
+        // New phone stored as pending.
+        $this->assertSame('+9876543210', $GLOBALS['_test_user_meta'][1]['wsms_pending_phone']);
+    }
+
+    public function testProfilePhoneVerificationAppliesPendingPhone(): void
+    {
+        $settings = AuthScenarios::withOverrides(AuthScenarios::passwordOnly(), [
+            'phone' => ['cooldown' => 0],
+        ]);
+        $this->setSettings($settings);
+
+        $GLOBALS['_test_user_meta'][1] = [
+            'wsms_phone'          => '+1111111111',
+            'wsms_phone_verified' => '1',
+        ];
+        $this->setOtpCodes('999999');
+
+        $this->accountManager->updateProfile(1, ['phone' => '+9876543210']);
+
+        // Verify the OTP.
+        $verifyResult = $this->accountManager->verifyChannelOtp(1, 'phone', '999999');
+
+        $this->assertTrue($verifyResult['success']);
+        // Pending phone applied as canonical.
+        $this->assertSame('+9876543210', $GLOBALS['_test_user_meta'][1]['wsms_phone']);
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][1]['wsms_phone_verified']);
+        // Pending meta cleaned up.
+        $this->assertArrayNotHasKey('wsms_pending_phone', $GLOBALS['_test_user_meta'][1]);
+    }
+
+    public function testProfilePhoneSameValueSkipsVerification(): void
+    {
+        $this->setSettings(AuthScenarios::passwordOnly());
+
+        $GLOBALS['_test_user_meta'][1] = [
+            'wsms_phone'          => '+9876543210',
+            'wsms_phone_verified' => '1',
+        ];
+
+        $result = $this->accountManager->updateProfile(1, ['phone' => '+9876543210']);
+
+        $this->assertTrue($result['success']);
+        $this->assertArrayNotHasKey('phone_verification_required', $result);
+        // No verification records created.
+        $this->assertCount(0, $this->wpdb->getVerificationsByType('phone_verify'));
+    }
+
+    public function testProfileEmailResendUsesNewPendingAddress(): void
+    {
+        $settings = AuthScenarios::withOverrides(AuthScenarios::passwordOnly(), [
+            'email' => ['cooldown' => 0],
+        ]);
+        $this->setSettings($settings);
+
+        $user = UserFactory::create(['ID' => 50, 'user_email' => 'old@example.com']);
+        UserFactory::install($user);
+
+        $this->accountManager->updateProfile(50, ['email' => 'new@example.com']);
+
+        // Resend should use the pending email, not the old one.
+        $resendResult = $this->accountManager->resendVerification(50, 'email');
+        $this->assertTrue($resendResult['success']);
+
+        // All email verifications should target the pending address.
+        $verifications = $this->wpdb->getVerificationsByType('email_verify');
+        foreach ($verifications as $v) {
+            $this->assertSame('new@example.com', $v->identifier);
+        }
+    }
+
+    public function testCancelPendingPhoneCleanup(): void
+    {
+        $settings = AuthScenarios::withOverrides(AuthScenarios::passwordOnly(), [
+            'phone' => ['cooldown' => 0],
+        ]);
+        $this->setSettings($settings);
+
+        $GLOBALS['_test_user_meta'][1] = [
+            'wsms_phone'          => '+1111111111',
+            'wsms_phone_verified' => '1',
+        ];
+        $this->setOtpCodes('999999');
+
+        $this->accountManager->updateProfile(1, ['phone' => '+9876543210']);
+
+        // Cancel the pending change.
+        $this->accountManager->cancelPendingChange(1, 'phone');
+
+        // Pending meta removed.
+        $this->assertArrayNotHasKey('wsms_pending_phone', $GLOBALS['_test_user_meta'][1]);
+        // Original phone preserved.
+        $this->assertSame('+1111111111', $GLOBALS['_test_user_meta'][1]['wsms_phone']);
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][1]['wsms_phone_verified']);
     }
 }

@@ -118,4 +118,19 @@ class MfaManager
 
         update_user_meta($userId, 'wsms_mfa_enabled', '0');
     }
+
+    /**
+     * Update the meta for an active factor.
+     */
+    public function updateFactorMeta(int $userId, string $channelId, array $meta): void
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . 'wsms_user_factors';
+
+        $wpdb->update(
+            $table,
+            ['meta' => wp_json_encode($meta), 'updated_at' => current_time('mysql', true)],
+            ['user_id' => $userId, 'channel_id' => $channelId, 'status' => ChannelStatus::Active->value],
+        );
+    }
 }

@@ -319,6 +319,40 @@ class AccountManager
             }
         }
 
+        // Determine which channels have actual changes.
+        $phoneChanged = false;
+        $emailChanged = false;
+        $phone = null;
+
+        if (isset($data['phone'])) {
+            $phone = sanitize_text_field($data['phone']);
+            $currentPhone = get_user_meta($userId, 'wsms_phone', true);
+            $phoneChanged = ($phone !== $currentPhone);
+        }
+
+        if (isset($newEmail)) {
+            $currentEmail = get_userdata($userId)?->user_email ?? '';
+            $emailChanged = ($newEmail !== $currentEmail);
+        }
+
+        // Check all cooldowns before any writes.
+        $settings = $this->getSettings();
+
+        if ($phoneChanged) {
+            $cooldown = (int) ($settings['phone']['cooldown'] ?? 60);
+            if ($this->isVerificationOnCooldown($userId, 'phone_verify', $cooldown)) {
+                return ['success' => false, 'error' => 'cooldown', 'message' => 'Please wait before changing your phone number.'];
+            }
+        }
+
+        if ($emailChanged) {
+            $cooldown = (int) ($settings['email']['cooldown'] ?? 60);
+            if ($this->isVerificationOnCooldown($userId, 'email_verify', $cooldown)) {
+                return ['success' => false, 'error' => 'cooldown', 'message' => 'Please wait before changing your email.'];
+            }
+        }
+
+        // All validations passed — apply writes.
         $result = ['success' => true, 'message' => 'Profile updated.'];
 
         $userUpdate = ['ID' => $userId];
@@ -339,16 +373,17 @@ class AccountManager
             wp_update_user($userUpdate);
         }
 
-        if (isset($data['phone'])) {
-            $phone = sanitize_text_field($data['phone']);
-            update_user_meta($userId, 'wsms_phone', $phone);
-            update_user_meta($userId, 'wsms_phone_verified', '0');
+        if ($phoneChanged) {
+            update_user_meta($userId, 'wsms_pending_phone', $phone);
+            $this->invalidateVerifications($userId, 'phone_verify');
+            $this->createChannelVerification($userId, 'phone', $phone);
             $result['phone_verification_required'] = true;
         }
 
-        if (isset($newEmail)) {
+        if ($emailChanged) {
+            $this->invalidateVerifications($userId, 'email_verify');
             update_user_meta($userId, 'wsms_pending_email', $newEmail);
-            $this->createVerification($userId, 'email_verify', $newEmail);
+            $this->createChannelVerification($userId, 'email', $newEmail);
             $result['email_verification_required'] = true;
         }
 
@@ -496,10 +531,11 @@ class AccountManager
 
     /**
      * Send a fresh verification challenge for login-time enforcement.
+     * Uses the confirmed identifier (not pending) to prevent sending codes to unverified addresses.
      */
     public function sendVerificationChallenge(int $userId, string $channel): void
     {
-        $identifier = $this->getChannelIdentifier($userId, $channel);
+        $identifier = $this->getConfirmedIdentifier($userId, $channel);
 
         if ($identifier === null) {
             return;
@@ -511,9 +547,32 @@ class AccountManager
     }
 
     /**
-     * Get the user's identifier for a given channel.
+     * Get the user's identifier for a given channel, preferring pending values.
+     * Used by resend/profile verification flows where the pending address is the target.
      */
     private function getChannelIdentifier(int $userId, string $channel): ?string
+    {
+        if ($channel === 'phone') {
+            $pending = get_user_meta($userId, 'wsms_pending_phone', true);
+            if (!empty($pending)) {
+                return $pending;
+            }
+        }
+
+        if ($channel === 'email') {
+            $pending = get_user_meta($userId, 'wsms_pending_email', true);
+            if (!empty($pending)) {
+                return $pending;
+            }
+        }
+
+        return $this->getConfirmedIdentifier($userId, $channel);
+    }
+
+    /**
+     * Get the user's confirmed (canonical) identifier for a given channel.
+     */
+    private function getConfirmedIdentifier(int $userId, string $channel): ?string
     {
         if ($channel === 'phone') {
             $phone = get_user_meta($userId, 'wsms_phone', true);
@@ -559,7 +618,7 @@ class AccountManager
     private function applyChannelVerified(int $userId, string $channel, string $identifier): void
     {
         if ($channel === 'phone') {
-            update_user_meta($userId, 'wsms_phone_verified', '1');
+            $this->markPhoneVerified($userId, $identifier);
             $this->auditLogger->log(EventType::PhoneVerified, 'success', $userId);
             return;
         }
@@ -724,6 +783,34 @@ class AccountManager
             ]);
             delete_user_meta($userId, 'wsms_pending_email');
         }
+    }
+
+    /**
+     * Mark phone as verified and apply any pending phone change.
+     */
+    private function markPhoneVerified(int $userId, string $verifiedPhone): void
+    {
+        update_user_meta($userId, 'wsms_phone_verified', '1');
+
+        $pendingPhone = get_user_meta($userId, 'wsms_pending_phone', true);
+
+        if (!empty($pendingPhone) && $pendingPhone === $verifiedPhone) {
+            update_user_meta($userId, 'wsms_phone', $pendingPhone);
+            delete_user_meta($userId, 'wsms_pending_phone');
+
+            // Sync MFA phone factor if enrolled.
+            $this->mfaManager->updateFactorMeta($userId, 'phone', ['phone' => $pendingPhone]);
+        }
+    }
+
+    /**
+     * Cancel a pending phone or email change.
+     */
+    public function cancelPendingChange(int $userId, string $channel): void
+    {
+        $metaKey = 'wsms_pending_' . $channel;
+        delete_user_meta($userId, $metaKey);
+        $this->invalidateVerifications($userId, $channel . '_verify');
     }
 
     /**

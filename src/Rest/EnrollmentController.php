@@ -276,6 +276,9 @@ class EnrollmentController
 
         $isPlaceholder = AccountManager::isPlaceholderEmail($user->user_email);
 
+        $pendingPhone = get_user_meta($userId, 'wsms_pending_phone', true) ?: null;
+        $pendingEmail = get_user_meta($userId, 'wsms_pending_email', true) ?: null;
+
         return new WP_REST_Response([
             'user' => [
                 'id'                    => $userId,
@@ -289,6 +292,8 @@ class EnrollmentController
                 'phone_verified'        => (bool) get_user_meta($userId, 'wsms_phone_verified', true),
                 'email_verified'        => $isPlaceholder ? true : (bool) get_user_meta($userId, 'wsms_email_verified', true),
                 'has_placeholder_email' => $isPlaceholder,
+                'pending_phone'         => $pendingPhone,
+                'pending_email'         => $pendingEmail,
                 'roles'                 => $user->roles,
                 'mfa_enabled'           => !empty($enrolledFactors),
                 'enrolled_factors'      => $enrolledFactors,

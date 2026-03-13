@@ -128,6 +128,7 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         if ($result) {
             delete_user_meta($userId, 'wsms_phone');
             delete_user_meta($userId, 'wsms_phone_verified');
+            delete_user_meta($userId, 'wsms_pending_phone');
         }
 
         return $result;

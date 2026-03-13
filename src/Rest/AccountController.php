@@ -120,6 +120,12 @@ class AccountController
             'permission_callback' => '__return_true',
         ]);
 
+        register_rest_route(self::NAMESPACE, '/auth/profile/pending-change/(?P<channel>[a-z_]+)', [
+            'methods'             => 'DELETE',
+            'callback'            => [$this, 'handleCancelPendingChange'],
+            'permission_callback' => [$this, 'checkAuthenticated'],
+        ]);
+
         // --- Generic profile verification endpoints ---
         register_rest_route(self::NAMESPACE, '/auth/profile/send-verification/(?P<channel>[a-z_]+)', [
             'methods'             => 'POST',
@@ -295,6 +301,25 @@ class AccountController
         $result = $this->accountManager->resendVerification($session['user_id'], $channel);
 
         return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+    }
+
+    // --- Pending change cancellation ---
+
+    public function handleCancelPendingChange(WP_REST_Request $request): WP_REST_Response
+    {
+        $channel = $request->get_param('channel');
+
+        if (!in_array($channel, ['phone', 'email'], true)) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error'   => 'invalid_channel',
+                'message' => 'Invalid channel.',
+            ], 400);
+        }
+
+        $this->accountManager->cancelPendingChange(get_current_user_id(), $channel);
+
+        return new WP_REST_Response(['success' => true, 'message' => 'Pending change cancelled.']);
     }
 
     // --- Generic profile verification ---

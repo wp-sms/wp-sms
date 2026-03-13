@@ -383,15 +383,29 @@ class AccountManagerTest extends TestCase
 
     public function testUpdateProfilePhoneTriggersVerification(): void
     {
+        $this->stubWpdb();
+
+        // Set current phone to something different so the change is detected.
+        $GLOBALS['_test_user_meta'][1] = ['wsms_phone' => '+0000000000'];
+
         $result = $this->manager->updateProfile(1, ['phone' => '+1234567890']);
 
         $this->assertTrue($result['success']);
         $this->assertTrue($result['phone_verification_required']);
+        // Phone should be stored as pending, NOT overwritten.
+        $this->assertSame('+1234567890', $GLOBALS['_test_user_meta'][1]['wsms_pending_phone']);
+        // Original phone should be preserved.
+        $this->assertSame('+0000000000', $GLOBALS['_test_user_meta'][1]['wsms_phone']);
     }
 
     public function testUpdateProfileEmailTriggersVerification(): void
     {
         $this->stubWpdb();
+
+        // Set current email to something different so the change is detected.
+        $user = $this->makeUser(1);
+        $user->user_email = 'old@example.com';
+        $GLOBALS['_test_userdata'] = $user;
 
         $result = $this->manager->updateProfile(1, ['email' => 'new@example.com']);
 
@@ -405,6 +419,58 @@ class AccountManagerTest extends TestCase
 
         $this->assertFalse($result['success']);
         $this->assertSame('invalid_email', $result['error']);
+    }
+
+    public function testUpdateProfilePhoneSameValueSkipsVerification(): void
+    {
+        $GLOBALS['_test_user_meta'][1] = ['wsms_phone' => '+1234567890'];
+
+        $result = $this->manager->updateProfile(1, ['phone' => '+1234567890']);
+
+        $this->assertTrue($result['success']);
+        $this->assertArrayNotHasKey('phone_verification_required', $result);
+    }
+
+    public function testUpdateProfileEmailSameValueSkipsVerification(): void
+    {
+        $user = $this->makeUser(1);
+        $user->user_email = 'same@example.com';
+        $GLOBALS['_test_userdata'] = $user;
+
+        $result = $this->manager->updateProfile(1, ['email' => 'same@example.com']);
+
+        $this->assertTrue($result['success']);
+        $this->assertArrayNotHasKey('email_verification_required', $result);
+    }
+
+    public function testUpdateProfilePhonePreservesOldPhone(): void
+    {
+        $this->stubWpdb();
+        $GLOBALS['_test_user_meta'][1] = ['wsms_phone' => '+1111111111', 'wsms_phone_verified' => '1'];
+
+        $result = $this->manager->updateProfile(1, ['phone' => '+2222222222']);
+
+        $this->assertTrue($result['success']);
+        // Old phone preserved.
+        $this->assertSame('+1111111111', $GLOBALS['_test_user_meta'][1]['wsms_phone']);
+        // Verified status NOT reset (old phone still verified).
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][1]['wsms_phone_verified']);
+        // New phone stored as pending.
+        $this->assertSame('+2222222222', $GLOBALS['_test_user_meta'][1]['wsms_pending_phone']);
+    }
+
+    public function testCancelPendingChangeRemovesPendingMeta(): void
+    {
+        $this->stubWpdb();
+        $GLOBALS['_test_user_meta'][1] = [
+            'wsms_phone'         => '+1111111111',
+            'wsms_pending_phone' => '+2222222222',
+        ];
+
+        $this->manager->cancelPendingChange(1, 'phone');
+
+        $this->assertArrayNotHasKey('wsms_pending_phone', $GLOBALS['_test_user_meta'][1]);
+        $this->assertSame('+1111111111', $GLOBALS['_test_user_meta'][1]['wsms_phone']);
     }
 
     // --- changePassword ---
@@ -931,6 +997,11 @@ class AccountManagerTest extends TestCase
                 public function update($table, $data, $where, $format = null, $whereFormat = null): bool
                 {
                     return true;
+                }
+
+                public function query($query)
+                {
+                    return 1;
                 }
             };
         }
