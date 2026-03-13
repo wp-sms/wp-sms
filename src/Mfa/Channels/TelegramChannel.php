@@ -44,6 +44,11 @@ class TelegramChannel extends AbstractOtpChannel
         return true;
     }
 
+    public function supportsAutoEnrollment(): bool
+    {
+        return true;
+    }
+
     /** {@inheritDoc} */
     public function enroll(int $userId, array $data): EnrollmentResult
     {
@@ -51,6 +56,11 @@ class TelegramChannel extends AbstractOtpChannel
 
         if ($existing && $existing->status === ChannelStatus::Active) {
             return new EnrollmentResult(false, 'Already enrolled in Telegram MFA.');
+        }
+
+        // Delete old linking transient if exists.
+        if ($existing && !empty($existing->meta['linking_token'])) {
+            delete_transient(self::LINKING_TOKEN_PREFIX . $existing->meta['linking_token']);
         }
 
         // Generate a linking token for deep link enrollment.
@@ -67,8 +77,7 @@ class TelegramChannel extends AbstractOtpChannel
             $this->createFactor($userId, ChannelStatus::Pending, ['linking_token' => $token]);
         }
 
-        $settings = get_option('wsms_auth_settings', []);
-        $botInfo = $settings['telegram']['bot_username'] ?? '';
+        $botInfo = $this->getConfigValue('bot_username', '');
 
         $deepLink = $botInfo
             ? "https://t.me/{$botInfo}?start={$token}"

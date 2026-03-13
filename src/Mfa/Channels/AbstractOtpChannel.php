@@ -44,8 +44,11 @@ abstract class AbstractOtpChannel implements ChannelInterface
      */
     abstract protected function maskIdentifier(string $identifier): string;
 
-    /** {@inheritDoc} */
-    public function sendChallenge(int $userId, array $context = []): ChallengeResult
+    /**
+     * Validate common prerequisites before sending a challenge.
+     * Returns a success ChallengeResult with 'identifier' in meta, or a failure ChallengeResult.
+     */
+    protected function validateChallengePrerequisites(int $userId): ChallengeResult
     {
         if (!$this->isEnrolled($userId)) {
             return new ChallengeResult(false, 'User is not enrolled in this channel.');
@@ -57,13 +60,25 @@ abstract class AbstractOtpChannel implements ChannelInterface
             return new ChallengeResult(false, 'No identifier found for user.');
         }
 
-        // Check cooldown.
         $cooldown = (int) $this->getConfigValue('cooldown', 60);
 
         if ($this->hasCooldownActive($userId, $cooldown)) {
             return new ChallengeResult(false, 'Please wait before requesting a new code.');
         }
 
+        return new ChallengeResult(true, '', ['identifier' => $identifier]);
+    }
+
+    /** {@inheritDoc} */
+    public function sendChallenge(int $userId, array $context = []): ChallengeResult
+    {
+        $prereq = $this->validateChallengePrerequisites($userId);
+
+        if (!$prereq->success) {
+            return $prereq;
+        }
+
+        $identifier = $prereq->meta['identifier'];
         $expiry = (int) $this->getConfigValue('expiry', 300);
 
         $delivered = $this->createAndDeliverOtp($userId, $identifier, $expiry);
@@ -95,7 +110,7 @@ abstract class AbstractOtpChannel implements ChannelInterface
 
         $verification = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM {$table}
-             WHERE user_id = %d AND channel_id = %s AND used_at IS NULL
+             WHERE user_id = %d AND channel_id = %s AND type = 'otp' AND used_at IS NULL
              ORDER BY created_at DESC LIMIT 1",
             $userId,
             $this->getId(),
@@ -106,6 +121,8 @@ abstract class AbstractOtpChannel implements ChannelInterface
         }
 
         if (strtotime($verification->expires_at) < time()) {
+            $wpdb->delete($table, ['id' => $verification->id]);
+
             $this->auditLogger->log(EventType::OtpExpired, 'failure', $userId, [
                 'channel' => $this->getId(),
             ]);
@@ -141,7 +158,7 @@ abstract class AbstractOtpChannel implements ChannelInterface
         // Mark as used.
         $wpdb->update(
             $table,
-            ['used_at' => current_time('mysql', true)],
+            ['used_at' => gmdate('Y-m-d H:i:s')],
             ['id' => $verification->id],
         );
 
@@ -194,9 +211,11 @@ abstract class AbstractOtpChannel implements ChannelInterface
         $table = $wpdb->prefix . 'wsms_verifications';
 
         // Invalidate existing pending verifications.
+        $now = gmdate('Y-m-d H:i:s');
         $wpdb->query($wpdb->prepare(
-            "UPDATE {$table} SET used_at = NOW()
+            "UPDATE {$table} SET used_at = %s
              WHERE user_id = %d AND channel_id = %s AND used_at IS NULL",
+            $now,
             $userId,
             $this->getId(),
         ));
@@ -216,7 +235,7 @@ abstract class AbstractOtpChannel implements ChannelInterface
             'attempts'     => 0,
             'max_attempts' => $maxAttempts,
             'expires_at'   => gmdate('Y-m-d H:i:s', time() + $expiry),
-            'created_at'   => current_time('mysql', true),
+            'created_at'   => gmdate('Y-m-d H:i:s'),
         ]);
 
         return $code;
@@ -241,14 +260,16 @@ abstract class AbstractOtpChannel implements ChannelInterface
 
         $table = $wpdb->prefix . 'wsms_verifications';
 
+        $cutoff = gmdate('Y-m-d H:i:s', time() - $cooldown);
+
         return (bool) $wpdb->get_row($wpdb->prepare(
             "SELECT id FROM {$table}
              WHERE user_id = %d AND channel_id = %s AND used_at IS NULL
-               AND created_at > DATE_SUB(NOW(), INTERVAL %d SECOND)
+               AND created_at > %s
              ORDER BY created_at DESC LIMIT 1",
             $userId,
             $this->getId(),
-            $cooldown,
+            $cutoff,
         ));
     }
 }

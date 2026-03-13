@@ -177,6 +177,11 @@ class AccountManager
             }
         }
 
+        // Check phone uniqueness (after pending-user cleanup so expired conflicts are cleared).
+        if (!empty($data['phone']) && self::isPhoneTaken(sanitize_text_field($data['phone']))) {
+            return ['success' => false, 'error' => 'phone_exists', 'message' => 'This phone number is already associated with another account.'];
+        }
+
         $userId = wp_insert_user($userdata);
 
         if (is_wp_error($userId)) {
@@ -342,6 +347,10 @@ class AccountManager
             $cooldown = (int) ($settings['phone']['cooldown'] ?? 60);
             if ($this->isVerificationOnCooldown($userId, 'phone_verify', $cooldown)) {
                 return ['success' => false, 'error' => 'cooldown', 'message' => 'Please wait before changing your phone number.'];
+            }
+
+            if (self::isPhoneTaken($phone, $userId)) {
+                return ['success' => false, 'error' => 'phone_exists', 'message' => 'This phone number is already associated with another account.'];
             }
         }
 
@@ -898,11 +907,13 @@ class AccountManager
         global $wpdb;
         $table = $wpdb->prefix . 'wsms_verifications';
 
+        $cutoff = gmdate('Y-m-d H:i:s', time() - $cooldownSeconds);
+
         return (bool) $wpdb->get_row($wpdb->prepare(
-            "SELECT id FROM {$table} WHERE user_id = %d AND type = %s AND used_at IS NULL AND created_at > DATE_SUB(NOW(), INTERVAL %d SECOND) LIMIT 1",
+            "SELECT id FROM {$table} WHERE user_id = %d AND type = %s AND used_at IS NULL AND created_at > %s LIMIT 1",
             $userId,
             $type,
-            $cooldownSeconds,
+            $cutoff,
         ));
     }
 
@@ -912,10 +923,30 @@ class AccountManager
         $table = $wpdb->prefix . 'wsms_verifications';
 
         $wpdb->query($wpdb->prepare(
-            "UPDATE {$table} SET used_at = NOW() WHERE user_id = %d AND type = %s AND used_at IS NULL",
+            "UPDATE {$table} SET used_at = %s WHERE user_id = %d AND type = %s AND used_at IS NULL",
+            gmdate('Y-m-d H:i:s'),
             $userId,
             $type,
         ));
+    }
+
+    /**
+     * Check if a phone number is already in use by another user.
+     */
+    public static function isPhoneTaken(string $phone, ?int $excludeUserId = null): bool
+    {
+        $args = [
+            'meta_key'   => 'wsms_phone',
+            'meta_value' => $phone,
+            'number'     => 1,
+            'fields'     => 'ID',
+        ];
+
+        if ($excludeUserId !== null) {
+            $args['exclude'] = [$excludeUserId];
+        }
+
+        return !empty(get_users($args));
     }
 
     private function lookupVerification(string $token, string $type): ?object

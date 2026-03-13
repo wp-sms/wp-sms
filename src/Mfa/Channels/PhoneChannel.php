@@ -2,6 +2,7 @@
 
 namespace WSms\Mfa\Channels;
 
+use WSms\Auth\AccountManager;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
 use WSms\Audit\AuditLogger;
@@ -54,6 +55,10 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
 
         if (!preg_match('/^\+[1-9]\d{1,14}$/', $phone)) {
             return new EnrollmentResult(false, 'Invalid phone number. Use E.164 format (e.g. +12025551234).');
+        }
+
+        if (AccountManager::isPhoneTaken($phone, $userId)) {
+            return new EnrollmentResult(false, 'This phone number is already associated with another account.');
         }
 
         $existing = $this->getFactor($userId);
@@ -147,23 +152,13 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
             return new ChallengeResult(false, 'No verification methods enabled for phone channel.');
         }
 
-        if (!$this->isEnrolled($userId)) {
-            return new ChallengeResult(false, 'User is not enrolled in this channel.');
+        $prereq = $this->validateChallengePrerequisites($userId);
+
+        if (!$prereq->success) {
+            return $prereq;
         }
 
-        $identifier = $this->getIdentifier($userId);
-
-        if ($identifier === null) {
-            return new ChallengeResult(false, 'No phone number found for user.');
-        }
-
-        // Check cooldown.
-        $cooldown = (int) $this->getConfigValue('cooldown', 60);
-
-        if ($this->hasCooldownActive($userId, $cooldown)) {
-            return new ChallengeResult(false, 'Please wait before requesting a new code.');
-        }
-
+        $identifier = $prereq->meta['identifier'];
         $expiry = (int) $this->getConfigValue('expiry', 300);
         $otpCode = null;
         $magicLinkUrl = null;

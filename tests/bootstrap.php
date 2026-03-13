@@ -224,7 +224,14 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
 
     if (!function_exists('get_users')) {
         function get_users(array $args = []): array {
-            return $GLOBALS['_test_get_users_result'] ?? [];
+            $result = $GLOBALS['_test_get_users_result'] ?? [];
+            $deleted = $GLOBALS['_test_deleted_users'] ?? [];
+
+            if (!empty($deleted)) {
+                $result = array_filter($result, fn($u) => !in_array($u->ID, $deleted, true));
+            }
+
+            return array_values($result);
         }
     }
 

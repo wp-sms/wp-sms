@@ -47,7 +47,7 @@ class TelegramController
         // Validate webhook secret.
         $headerSecret = $request->get_header('X-Telegram-Bot-Api-Secret-Token');
 
-        if (empty($expectedSecret) || $headerSecret !== $expectedSecret) {
+        if (empty($expectedSecret) || !is_string($headerSecret) || !hash_equals($expectedSecret, $headerSecret)) {
             return new WP_REST_Response(['ok' => false], 403);
         }
 

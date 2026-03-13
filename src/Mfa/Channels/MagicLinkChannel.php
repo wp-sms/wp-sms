@@ -106,14 +106,16 @@ class MagicLinkChannel implements ChannelInterface
         // Check cooldown.
         $cooldown = (int) ($this->getConfigValue('cooldown', 60) ?: 60);
 
+        $cutoff = gmdate('Y-m-d H:i:s', time() - $cooldown);
+
         $recent = $wpdb->get_row($wpdb->prepare(
             "SELECT id FROM {$table}
              WHERE user_id = %d AND channel_id = %s AND used_at IS NULL
-               AND created_at > DATE_SUB(NOW(), INTERVAL %d SECOND)
+               AND created_at > %s
              ORDER BY created_at DESC LIMIT 1",
             $userId,
             $this->getId(),
-            $cooldown,
+            $cutoff,
         ));
 
         if ($recent) {
@@ -122,8 +124,9 @@ class MagicLinkChannel implements ChannelInterface
 
         // Invalidate existing pending.
         $wpdb->query($wpdb->prepare(
-            "UPDATE {$table} SET used_at = NOW()
+            "UPDATE {$table} SET used_at = %s
              WHERE user_id = %d AND channel_id = %s AND used_at IS NULL",
+            gmdate('Y-m-d H:i:s'),
             $userId,
             $this->getId(),
         ));
@@ -143,7 +146,7 @@ class MagicLinkChannel implements ChannelInterface
             'attempts'     => 0,
             'max_attempts' => 1,
             'expires_at'   => gmdate('Y-m-d H:i:s', time() + $expiry),
-            'created_at'   => current_time('mysql', true),
+            'created_at'   => gmdate('Y-m-d H:i:s'),
         ]);
 
         $url = get_site_url() . '/account/verify-magic-link?token=' . $token;
@@ -194,6 +197,15 @@ class MagicLinkChannel implements ChannelInterface
 
         $table = $wpdb->prefix . 'wsms_verifications';
 
+        // Invalidate existing pending magic links for this user.
+        $wpdb->query($wpdb->prepare(
+            "UPDATE {$table} SET used_at = %s
+             WHERE user_id = %d AND channel_id = %s AND type = 'magic_link' AND used_at IS NULL",
+            gmdate('Y-m-d H:i:s'),
+            $userId,
+            $this->getId(),
+        ));
+
         $token = $this->otpGenerator->generateToken(32);
         do_action('wsms_magic_link_generated', $userId, $token);
         $hashedToken = $this->otpGenerator->hash($token);
@@ -207,11 +219,7 @@ class MagicLinkChannel implements ChannelInterface
             'attempts'     => 0,
             'max_attempts' => 1,
             'expires_at'   => gmdate('Y-m-d H:i:s', time() + $expiry),
-            'created_at'   => current_time('mysql', true),
-        ]);
-
-        $this->auditLogger->log(EventType::MagicLinkSent, 'success', $userId, [
-            'channel' => $this->getId(),
+            'created_at'   => gmdate('Y-m-d H:i:s'),
         ]);
 
         return get_site_url() . '/account/verify-magic-link?token=' . $token;
@@ -229,7 +237,7 @@ class MagicLinkChannel implements ChannelInterface
 
         $verification = $wpdb->get_row($wpdb->prepare(
             "SELECT * FROM {$table}
-             WHERE channel_id = %s AND code = %s AND used_at IS NULL
+             WHERE channel_id = %s AND type = 'magic_link' AND code = %s AND used_at IS NULL
              LIMIT 1",
             $this->getId(),
             $hashedToken,
@@ -246,7 +254,7 @@ class MagicLinkChannel implements ChannelInterface
         // Mark as used.
         $wpdb->update(
             $table,
-            ['used_at' => current_time('mysql', true)],
+            ['used_at' => gmdate('Y-m-d H:i:s')],
             ['id' => $verification->id],
         );
 
@@ -262,6 +270,8 @@ class MagicLinkChannel implements ChannelInterface
     /** {@inheritDoc} */
     public function verify(int $userId, string $code, array $context = []): bool
     {
+        // Token is consumed by verifyTokenAndResolveUser() regardless of userId match.
+        // This is intentional: prevents cross-user token reuse if a token leaks.
         return $this->verifyTokenAndResolveUser($code) === $userId;
     }
 

@@ -169,21 +169,11 @@ class BackupCodesChannel implements ChannelInterface
             return false;
         }
 
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
-
-        $wpdb->update(
-            $table,
-            [
-                'status'     => ChannelStatus::Disabled->value,
-                'meta'       => wp_json_encode([]),
-                'updated_at' => current_time('mysql', true),
-            ],
-            ['id' => $factor->id],
-        );
-
-        $this->factorCache = [];
+        // Clear backup code hashes and disable in a single update.
+        $this->updateFactor($factor->id, [
+            'status' => ChannelStatus::Disabled->value,
+            'meta'   => wp_json_encode([]),
+        ]);
 
         $this->auditLogger->log(EventType::MfaUnenrolled, 'success', $userId, [
             'channel' => $this->getId(),

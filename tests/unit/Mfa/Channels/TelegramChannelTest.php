@@ -55,9 +55,9 @@ class TelegramChannelTest extends TestCase
         $this->assertTrue($this->channel->supportsMfa());
     }
 
-    public function testDoesNotSupportAutoEnrollment(): void
+    public function testSupportsAutoEnrollment(): void
     {
-        $this->assertFalse($this->channel->supportsAutoEnrollment());
+        $this->assertTrue($this->channel->supportsAutoEnrollment());
     }
 
     public function testEnrollCreatesDeepLink(): void

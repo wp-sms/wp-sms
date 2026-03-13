@@ -256,6 +256,8 @@ class WpdbFake
 
         if (preg_match('/created_at\s*>\s*DATE_SUB\s*\(\s*NOW\(\)\s*,\s*INTERVAL\s+(\d+)\s+SECOND\s*\)/i', $query, $m)) {
             $conditions['cooldown_seconds'] = (int) $m[1];
+        } elseif (preg_match("/created_at\s*>\s*'([^']+)'/i", $query, $m)) {
+            $conditions['cooldown_cutoff'] = $m[1];
         }
 
         return $conditions;
@@ -287,6 +289,15 @@ class WpdbFake
             $createdAt = isset($row->created_at) ? strtotime($row->created_at) : 0;
 
             if ($createdAt <= $threshold) {
+                return false;
+            }
+        }
+
+        if (($conditions['cooldown_cutoff'] ?? null) !== null) {
+            $cutoff = strtotime($conditions['cooldown_cutoff']);
+            $createdAt = isset($row->created_at) ? strtotime($row->created_at) : 0;
+
+            if ($createdAt <= $cutoff) {
                 return false;
             }
         }

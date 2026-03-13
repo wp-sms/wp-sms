@@ -106,23 +106,13 @@ class EmailChannel extends AbstractOtpChannel implements SupportsTokenVerificati
             return new ChallengeResult(false, 'No verification methods enabled for email channel.');
         }
 
-        if (!$this->isEnrolled($userId)) {
-            return new ChallengeResult(false, 'User is not enrolled in this channel.');
+        $prereq = $this->validateChallengePrerequisites($userId);
+
+        if (!$prereq->success) {
+            return $prereq;
         }
 
-        $identifier = $this->getIdentifier($userId);
-
-        if ($identifier === null) {
-            return new ChallengeResult(false, 'No email address found for user.');
-        }
-
-        // Check cooldown.
-        $cooldown = (int) $this->getConfigValue('cooldown', 60);
-
-        if ($this->hasCooldownActive($userId, $cooldown)) {
-            return new ChallengeResult(false, 'Please wait before requesting a new code.');
-        }
-
+        $identifier = $prereq->meta['identifier'];
         $expiry = (int) $this->getConfigValue('expiry', 600);
         $otpCode = null;
         $magicLinkUrl = null;
