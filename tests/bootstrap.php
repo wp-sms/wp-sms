@@ -588,6 +588,12 @@ if (!class_exists('WP_REST_Request')) {
     }
 }
 
+// Load scoped packages for WSms\Dependencies\* classes.
+$packagesAutoload = dirname(__DIR__) . '/packages/autoload.php';
+if (file_exists($packagesAutoload)) {
+    require_once $packagesAutoload;
+}
+
 // WP_REST_Response stub.
 if (!class_exists('WP_REST_Response')) {
     class WP_REST_Response {

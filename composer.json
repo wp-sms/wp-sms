@@ -11,7 +11,8 @@
     }
   ],
   "require": {
-    "php": ">=8.1"
+    "php": ">=8.1",
+    "firebase/php-jwt": "^7.0"
   },
   "require-dev": {
     "veronalabs/wp-scoper": "^1.2.4",
@@ -31,7 +32,7 @@
   "extra": {
     "wp-scoper": {
       "namespace_prefix": "WSms\\Dependencies",
-      "packages": [],
+      "packages": ["firebase/php-jwt"],
       "target_directory": "packages",
       "delete_vendor_packages": true,
       "exclude_directories": ["views", "templates", "resources", "public"]

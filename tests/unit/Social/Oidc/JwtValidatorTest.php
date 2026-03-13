@@ -44,21 +44,25 @@ class JwtValidatorTest extends TestCase
 
     public function testValidateRejectsInvalidFormat(): void
     {
+        $this->stubJwks($this->keyPair['jwk']);
+
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('expected 3 parts');
+        $this->expectExceptionMessage('Invalid JWT');
 
         $this->validator->validate('not.a.valid.jwt.at.all', $this->jwksUri, 'iss', 'aud');
     }
 
     public function testValidateRejectsUnsupportedAlgorithm(): void
     {
-        // Create a JWT with HS256 algorithm header.
-        $header = $this->base64UrlEncode(json_encode(['alg' => 'HS256', 'typ' => 'JWT']));
+        $this->stubJwks($this->keyPair['jwk']);
+
+        // Create a JWT with HS256 algorithm header — library rejects because no matching key.
+        $header = $this->base64UrlEncode(json_encode(['alg' => 'HS256', 'typ' => 'JWT', 'kid' => 'test-kid']));
         $payload = $this->base64UrlEncode(json_encode(['sub' => '123']));
         $jwt = $header . '.' . $payload . '.fake-sig';
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('Unsupported JWT algorithm: HS256');
+        $this->expectExceptionMessage('Invalid JWT');
 
         $this->validator->validate($jwt, $this->jwksUri, 'iss', 'aud');
     }
