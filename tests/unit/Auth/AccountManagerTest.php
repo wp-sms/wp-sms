@@ -983,8 +983,8 @@ class AccountManagerTest extends TestCase
         $user = $this->makeUser(500);
         $user->user_pass = 'hashed-pass';
         $GLOBALS['_test_userdata'] = $user;
-        // No wsms_has_usable_password meta → social login user.
-        $GLOBALS['_test_user_meta'][500] = [];
+        // Explicitly '0' → social login user (registered without password).
+        $GLOBALS['_test_user_meta'][500] = ['wsms_has_usable_password' => '0'];
 
         $this->auditLogger->expects($this->once())->method('log');
 
@@ -1032,7 +1032,34 @@ class AccountManagerTest extends TestCase
         $result = $this->manager->registerUser(['phone' => '+971500000000'], socialLogin: true);
 
         $this->assertTrue($result['success']);
-        $this->assertArrayNotHasKey('wsms_has_usable_password', $GLOBALS['_test_user_meta'][121] ?? []);
+        $this->assertSame('0', $GLOBALS['_test_user_meta'][121]['wsms_has_usable_password'] ?? '');
+    }
+
+    public function testChangePasswordRequiresCurrentForPreExistingWpUser(): void
+    {
+        $user = $this->makeUser(502);
+        $user->user_pass = 'hashed-pass';
+        $GLOBALS['_test_userdata'] = $user;
+        // No wsms_has_usable_password meta → pre-existing WP user (meta returns '').
+        $GLOBALS['_test_user_meta'][502] = [];
+
+        $result = $this->manager->changePassword(502, null, 'NewPass1!');
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('wrong_password', $result['error']);
+    }
+
+    public function testCompletePasswordResetSetsUsablePasswordFlag(): void
+    {
+        $verification = $this->makeVerification(503, VerificationType::PasswordReset->value);
+        $this->stubWpdbLookup($verification);
+
+        $GLOBALS['_test_user_meta'][503] = ['wsms_has_usable_password' => '0'];
+
+        $result = $this->manager->completePasswordReset('test-token-abc', 'NewPass1!');
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][503]['wsms_has_usable_password'] ?? '');
     }
 
     // --- Helpers ---

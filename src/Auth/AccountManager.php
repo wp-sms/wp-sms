@@ -17,6 +17,7 @@ class AccountManager
     public const PLACEHOLDER_EMAIL_DOMAIN = 'noreply.wsms.local';
     public const PLACEHOLDER_USERNAME_PREFIX = 'wsms_';
     public const DEFAULT_PENDING_USER_TTL_HOURS = 24;
+    private const META_HAS_USABLE_PASSWORD = 'wsms_has_usable_password';
 
     private ?array $settings = null;
 
@@ -36,6 +37,19 @@ class AccountManager
     public static function isPlaceholderUsername(string $username): bool
     {
         return str_starts_with($username, self::PLACEHOLDER_USERNAME_PREFIX);
+    }
+
+    /**
+     * Whether a user has a usable (known) password.
+     *
+     * '' = meta not set → pre-existing WP user, assume has password.
+     * '1' = explicitly has password. '0' = explicitly no password (social login).
+     */
+    public static function hasUsablePassword(int $userId): bool
+    {
+        $meta = get_user_meta($userId, self::META_HAS_USABLE_PASSWORD, true);
+
+        return $meta === '' || $meta === '1';
     }
 
     /**
@@ -198,9 +212,7 @@ class AccountManager
             update_user_meta($userId, 'wsms_email_placeholder', '1');
         }
 
-        if (!empty($data['password'])) {
-            update_user_meta($userId, 'wsms_has_usable_password', '1');
-        }
+        update_user_meta($userId, self::META_HAS_USABLE_PASSWORD, !empty($data['password']) ? '1' : '0');
 
         $needsVerification = $emailVerifyEnabled || (!empty($data['phone']) && $phoneVerifyEnabled);
 
@@ -286,9 +298,12 @@ class AccountManager
             return $verification;
         }
 
-        wp_set_password($newPassword, (int) $verification->user_id);
+        $userId = (int) $verification->user_id;
 
-        $this->auditLogger->log(EventType::PasswordResetComplete, 'success', (int) $verification->user_id);
+        wp_set_password($newPassword, $userId);
+        update_user_meta($userId, self::META_HAS_USABLE_PASSWORD, '1');
+
+        $this->auditLogger->log(EventType::PasswordResetComplete, 'success', $userId);
 
         return ['success' => true, 'message' => 'Password has been reset successfully.'];
     }
@@ -418,7 +433,7 @@ class AccountManager
             return ['success' => false, 'error' => 'user_not_found', 'message' => 'User not found.'];
         }
 
-        $hasUsablePassword = (bool) get_user_meta($userId, 'wsms_has_usable_password', true);
+        $hasUsablePassword = self::hasUsablePassword($userId);
 
         if ($hasUsablePassword) {
             if (empty($currentPassword) || !wp_check_password($currentPassword, $user->user_pass, $userId)) {
@@ -427,7 +442,7 @@ class AccountManager
         }
 
         wp_set_password($newPassword, $userId);
-        update_user_meta($userId, 'wsms_has_usable_password', '1');
+        update_user_meta($userId, self::META_HAS_USABLE_PASSWORD, '1');
         wp_set_auth_cookie($userId, false);
         wp_set_current_user($userId);
 
