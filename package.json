@@ -19,7 +19,8 @@
     "build:auth-popup": "vite build -c vite.config.auth-popup.mjs",
     "build:pot": "wp i18n make-pot . public/languages/wp-sms.pot --slug=wp-sms --domain=wp-sms",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:e2e": "vitest run --config tests/e2e/vitest.config.e2e.ts"
   },
   "dependencies": {
     "@preact/signals": "^2.8.2",

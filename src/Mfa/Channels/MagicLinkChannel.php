@@ -130,6 +130,7 @@ class MagicLinkChannel implements ChannelInterface
 
         // Generate token.
         $token = $this->otpGenerator->generateToken(32);
+        do_action('wsms_magic_link_generated', $userId, $token);
         $hashedToken = $this->otpGenerator->hash($token);
         $expiry = (int) ($this->getConfigValue('expiry', 600) ?: 600);
 
@@ -194,6 +195,7 @@ class MagicLinkChannel implements ChannelInterface
         $table = $wpdb->prefix . 'wsms_verifications';
 
         $token = $this->otpGenerator->generateToken(32);
+        do_action('wsms_magic_link_generated', $userId, $token);
         $hashedToken = $this->otpGenerator->hash($token);
 
         $wpdb->insert($table, [

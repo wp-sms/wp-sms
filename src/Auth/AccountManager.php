@@ -471,6 +471,7 @@ class AccountManager
         $maxAttempts = (int) ($phoneSettings['max_attempts'] ?? 5);
 
         $otp = $this->otpGenerator->generate($codeLength);
+        do_action('wsms_otp_generated', $userId, $otp, 'phone_verify');
         $hashed = $this->otpGenerator->hash($otp);
 
         $wpdb->insert($wpdb->prefix . 'wsms_verifications', [
@@ -512,6 +513,7 @@ class AccountManager
         $maxAttempts = (int) ($emailSettings['max_attempts'] ?? 5);
 
         $otp = $this->otpGenerator->generate($codeLength);
+        do_action('wsms_otp_generated', $userId, $otp, 'email_verify');
         $hashed = $this->otpGenerator->hash($otp);
 
         $wpdb->insert($wpdb->prefix . 'wsms_verifications', [
