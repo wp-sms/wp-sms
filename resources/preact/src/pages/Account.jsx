@@ -54,7 +54,7 @@ export function Account() {
     const user = currentUser.value;
     if (!user) return null;
 
-    const emailBadge = user.email_verified ? 'verified' : 'unverified';
+    const emailBadge = user.has_placeholder_email ? 'not-set' : user.email_verified ? 'verified' : 'unverified';
     const phoneBadge = user.phone
         ? user.phone_verified
             ? 'verified'
@@ -85,7 +85,7 @@ export function Account() {
                     href={authUrl('/profile')}
                     icon={Mail}
                     label="Email"
-                    value={maskEmail(user.email)}
+                    value={user.has_placeholder_email ? 'No email added' : maskEmail(user.email)}
                     badge={<StatusBadge variant={emailBadge} />}
                 />
                 <StatusCard
@@ -106,7 +106,7 @@ export function Account() {
                     href={authUrl('/change-password')}
                     icon={KeyRound}
                     label="Password"
-                    value="Change password"
+                    value={user.has_usable_password ? 'Change password' : 'Set password'}
                 />
             </div>
         </AccountLayout>
