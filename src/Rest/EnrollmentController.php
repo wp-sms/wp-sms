@@ -292,6 +292,7 @@ class EnrollmentController
                 'phone_verified'        => (bool) get_user_meta($userId, 'wsms_phone_verified', true),
                 'email_verified'        => $isPlaceholder ? true : (bool) get_user_meta($userId, 'wsms_email_verified', true),
                 'has_placeholder_email' => $isPlaceholder,
+                'has_usable_password'   => (bool) get_user_meta($userId, 'wsms_has_usable_password', true),
                 'pending_phone'         => $pendingPhone,
                 'pending_email'         => $pendingEmail,
                 'roles'                 => $user->roles,

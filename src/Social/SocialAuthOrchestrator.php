@@ -261,6 +261,14 @@ class SocialAuthOrchestrator
             'last_name'    => $userInfo['family_name'] ?? '',
         ];
 
+        // When the OIDC layer fell back given_name to the full name (no separate first/last),
+        // split on the first space so we get a proper first_name / last_name pair.
+        [$regData['first_name'], $regData['last_name']] = self::splitFullNameIfNeeded(
+            $regData['first_name'],
+            $regData['last_name'],
+            $userInfo['name'] ?? null,
+        );
+
         $regResult = $this->accountManager->registerUser($regData, socialLogin: true);
 
         if (!$regResult['success']) {
@@ -395,12 +403,18 @@ class SocialAuthOrchestrator
             $update['display_name'] = sanitize_text_field($userInfo['name']);
         }
 
-        if (!empty($userInfo['given_name'])) {
-            $update['first_name'] = sanitize_text_field($userInfo['given_name']);
+        [$firstName, $lastName] = self::splitFullNameIfNeeded(
+            $userInfo['given_name'] ?? '',
+            $userInfo['family_name'] ?? '',
+            $userInfo['name'] ?? null,
+        );
+
+        if (!empty($firstName)) {
+            $update['first_name'] = sanitize_text_field($firstName);
         }
 
-        if (!empty($userInfo['family_name'])) {
-            $update['last_name'] = sanitize_text_field($userInfo['family_name']);
+        if (!empty($lastName)) {
+            $update['last_name'] = sanitize_text_field($lastName);
         }
 
         if (count($update) > 1) {
@@ -421,6 +435,27 @@ class SocialAuthOrchestrator
             'last_name'    => $user->last_name,
             'roles'        => $user->roles,
         ];
+    }
+
+    /**
+     * Split a full name into first/last when the OIDC layer fell back given_name to the raw name.
+     *
+     * @return array{0: string, 1: string} [firstName, lastName]
+     */
+    private static function splitFullNameIfNeeded(string $firstName, string $lastName, ?string $rawName): array
+    {
+        if (
+            !empty($firstName)
+            && empty($lastName)
+            && $rawName !== null
+            && $firstName === $rawName
+        ) {
+            $parts = explode(' ', trim($firstName), 2);
+
+            return [$parts[0], $parts[1] ?? ''];
+        }
+
+        return [$firstName, $lastName];
     }
 
     private function getCallbackUrl(string $providerId): string

@@ -15,7 +15,7 @@ import { BackupCodesDisplay } from '../components/BackupCodesDisplay';
 
 function SecurityPosture({ user }) {
     const steps = [
-        { label: 'Email verified', done: !!user.email_verified },
+        { label: 'Email verified', done: !user.has_placeholder_email && !!user.email_verified },
         { label: 'Phone verified', done: !!(user.phone && user.phone_verified) },
         { label: 'MFA enabled', done: !!user.mfa_enabled },
     ];

@@ -537,6 +537,146 @@ class SocialAuthOrchestratorTest extends TestCase
         $this->assertSame('register', $result['intent']);
     }
 
+    public function testResolveUserSplitsFullNameIntoFirstAndLast(): void
+    {
+        $provider = $this->createMock(SocialProviderInterface::class);
+        $provider->method('getId')->willReturn('telegram');
+        $provider->method('isTrustedEmailProvider')->willReturn(false);
+        $provider->method('exchangeCode')->willReturn(['access_token' => 'token']);
+        $provider->method('getUserInfo')->willReturn([
+            'id'             => '777888',
+            'email'          => '',
+            'name'           => 'Navid Kashani',
+            'given_name'     => 'Navid Kashani', // OIDC fallback: given_name = name
+            'family_name'    => '',
+            'email_verified' => false,
+            'phone_number'   => '+971500000001',
+        ]);
+
+        $this->socialManager->method('getProvider')->willReturn($provider);
+        $this->stateManager->method('consume')->willReturn(['code_verifier' => 'v', 'intent' => 'register']);
+        $this->repository->method('findByProviderAccount')->willReturn(null);
+        $GLOBALS['_test_get_user_by_result'] = false;
+        $GLOBALS['_test_get_users_result'] = [];
+
+        $this->policyEngine->method('getSetting')
+            ->willReturnMap([['auto_create_users', false, true]]);
+
+        $this->accountManager->expects($this->once())
+            ->method('registerUser')
+            ->with(
+                $this->callback(function (array $data) {
+                    return $data['first_name'] === 'Navid' && $data['last_name'] === 'Kashani';
+                }),
+                true,
+            )
+            ->willReturn([
+                'success' => true,
+                'user_id' => 200,
+                'message' => 'Registration successful.',
+            ]);
+
+        $this->authOrchestrator->method('resolveAuthFromSocial')->willReturn(
+            AuthResult::authenticated(200, ['id' => 200, 'email' => '', 'username' => 'wsms_tg', 'display_name' => 'Navid Kashani', 'first_name' => 'Navid', 'last_name' => 'Kashani', 'roles' => ['subscriber']])
+        );
+
+        $result = $this->orchestrator->handleCallback('telegram', 'code', 'state');
+
+        $this->assertSame(200, $result['user_id']);
+    }
+
+    public function testResolveUserPreservesExplicitGivenName(): void
+    {
+        $provider = $this->makeProvider();
+        $provider->method('exchangeCode')->willReturn(['access_token' => 'token']);
+        $provider->method('getUserInfo')->willReturn([
+            'id'             => '888999',
+            'email'          => 'john@gmail.com',
+            'name'           => 'John Doe',
+            'given_name'     => 'John',
+            'family_name'    => 'Doe',
+            'email_verified' => true,
+        ]);
+
+        $this->socialManager->method('getProvider')->willReturn($provider);
+        $this->stateManager->method('consume')->willReturn(['code_verifier' => 'v', 'intent' => 'register']);
+        $this->repository->method('findByProviderAccount')->willReturn(null);
+        $GLOBALS['_test_get_user_by_result'] = false;
+
+        $this->policyEngine->method('getSetting')
+            ->willReturnMap([['auto_create_users', false, true]]);
+
+        $this->accountManager->expects($this->once())
+            ->method('registerUser')
+            ->with(
+                $this->callback(function (array $data) {
+                    return $data['first_name'] === 'John' && $data['last_name'] === 'Doe';
+                }),
+                true,
+            )
+            ->willReturn([
+                'success' => true,
+                'user_id' => 201,
+                'message' => 'Registration successful.',
+            ]);
+
+        $this->authOrchestrator->method('resolveAuthFromSocial')->willReturn(
+            AuthResult::authenticated(201, ['id' => 201, 'email' => 'john@gmail.com', 'username' => 'john', 'display_name' => 'John Doe', 'first_name' => 'John', 'last_name' => 'Doe', 'roles' => ['subscriber']])
+        );
+
+        $result = $this->orchestrator->handleCallback('google', 'code', 'state');
+
+        $this->assertSame(201, $result['user_id']);
+    }
+
+    public function testResolveUserSingleWordNameNoSplit(): void
+    {
+        $provider = $this->createMock(SocialProviderInterface::class);
+        $provider->method('getId')->willReturn('telegram');
+        $provider->method('isTrustedEmailProvider')->willReturn(false);
+        $provider->method('exchangeCode')->willReturn(['access_token' => 'token']);
+        $provider->method('getUserInfo')->willReturn([
+            'id'             => '999000',
+            'email'          => '',
+            'name'           => 'Madonna',
+            'given_name'     => 'Madonna', // OIDC fallback
+            'family_name'    => '',
+            'email_verified' => false,
+            'phone_number'   => '+44777000111',
+        ]);
+
+        $this->socialManager->method('getProvider')->willReturn($provider);
+        $this->stateManager->method('consume')->willReturn(['code_verifier' => 'v', 'intent' => 'register']);
+        $this->repository->method('findByProviderAccount')->willReturn(null);
+        $GLOBALS['_test_get_user_by_result'] = false;
+        $GLOBALS['_test_get_users_result'] = [];
+
+        $this->policyEngine->method('getSetting')
+            ->willReturnMap([['auto_create_users', false, true]]);
+
+        $this->accountManager->expects($this->once())
+            ->method('registerUser')
+            ->with(
+                $this->callback(function (array $data) {
+                    return $data['first_name'] === 'Madonna' && $data['last_name'] === '';
+                }),
+                true,
+            )
+            ->willReturn([
+                'success' => true,
+                'user_id' => 202,
+                'message' => 'Registration successful.',
+            ]);
+
+        $this->authOrchestrator->method('resolveAuthFromSocial')->willReturn(
+            AuthResult::authenticated(202, ['id' => 202, 'email' => '', 'username' => 'wsms_tg', 'display_name' => 'Madonna', 'first_name' => 'Madonna', 'last_name' => '', 'roles' => ['subscriber']])
+        );
+
+        $result = $this->orchestrator->handleCallback('telegram', 'code', 'state');
+
+        $this->assertSame(202, $result['user_id']);
+    }
+
     private function makeProvider(): MockObject&SocialProviderInterface
     {
         $provider = $this->createMock(SocialProviderInterface::class);

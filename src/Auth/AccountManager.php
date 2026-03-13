@@ -198,6 +198,10 @@ class AccountManager
             update_user_meta($userId, 'wsms_email_placeholder', '1');
         }
 
+        if (!empty($data['password'])) {
+            update_user_meta($userId, 'wsms_has_usable_password', '1');
+        }
+
         $needsVerification = $emailVerifyEnabled || (!empty($data['phone']) && $phoneVerifyEnabled);
 
         update_user_meta($userId, 'wsms_registration_status', $needsVerification ? 'pending' : 'active');
@@ -406,7 +410,7 @@ class AccountManager
      *
      * @return array{success: bool, error?: string, message: string}
      */
-    public function changePassword(int $userId, string $currentPassword, string $newPassword): array
+    public function changePassword(int $userId, ?string $currentPassword, string $newPassword): array
     {
         $user = get_userdata($userId);
 
@@ -414,11 +418,16 @@ class AccountManager
             return ['success' => false, 'error' => 'user_not_found', 'message' => 'User not found.'];
         }
 
-        if (!wp_check_password($currentPassword, $user->user_pass, $userId)) {
-            return ['success' => false, 'error' => 'wrong_password', 'message' => 'Current password is incorrect.'];
+        $hasUsablePassword = (bool) get_user_meta($userId, 'wsms_has_usable_password', true);
+
+        if ($hasUsablePassword) {
+            if (empty($currentPassword) || !wp_check_password($currentPassword, $user->user_pass, $userId)) {
+                return ['success' => false, 'error' => 'wrong_password', 'message' => 'Current password is incorrect.'];
+            }
         }
 
         wp_set_password($newPassword, $userId);
+        update_user_meta($userId, 'wsms_has_usable_password', '1');
         wp_set_auth_cookie($userId, false);
         wp_set_current_user($userId);
 

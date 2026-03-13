@@ -1,6 +1,5 @@
-import { useState, useRef } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
 import { Input } from './ui/Input';
-import { cn } from '@/utils/cn';
 
 const COUNTRIES = [
     { code: 'US', dial: '1',  flag: '\u{1F1FA}\u{1F1F8}' },
@@ -35,9 +34,24 @@ const COUNTRIES = [
     { code: 'IR', dial: '98', flag: '\u{1F1EE}\u{1F1F7}' },
 ];
 
+const COUNTRIES_BY_DIAL_LENGTH = [...COUNTRIES].sort((a, b) => b.dial.length - a.dial.length);
+
+function detectCountry(phone) {
+    if (!phone || !phone.startsWith('+')) return null;
+    const digits = phone.slice(1);
+    return COUNTRIES_BY_DIAL_LENGTH.find((c) => digits.startsWith(c.dial)) || null;
+}
+
 export function PhoneInput({ value = '', onChange, disabled }) {
-    const [country, setCountry] = useState(COUNTRIES[0]);
+    const [country, setCountry] = useState(() => detectCountry(value) || COUNTRIES[0]);
     const inputRef = useRef(null);
+
+    useEffect(() => {
+        if (value) {
+            const detected = detectCountry(value);
+            if (detected && detected.code !== country.code) setCountry(detected);
+        }
+    }, [value]);
 
     function handleCountryChange(e) {
         const selected = COUNTRIES.find((c) => c.code === e.target.value);

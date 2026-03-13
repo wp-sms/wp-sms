@@ -516,6 +516,7 @@ class AccountManagerTest extends TestCase
         $user = $this->makeUser(1);
         $user->user_pass = 'hashed-pass';
         $GLOBALS['_test_userdata'] = $user;
+        $GLOBALS['_test_user_meta'][1] = ['wsms_has_usable_password' => '1'];
         $GLOBALS['_test_wp_check_password_result'] = true;
 
         $this->auditLogger->expects($this->once())->method('log');
@@ -531,6 +532,7 @@ class AccountManagerTest extends TestCase
         $user = $this->makeUser(1);
         $user->user_pass = 'hashed-pass';
         $GLOBALS['_test_userdata'] = $user;
+        $GLOBALS['_test_user_meta'][1] = ['wsms_has_usable_password' => '1'];
         $GLOBALS['_test_wp_check_password_result'] = false;
 
         $result = $this->manager->changePassword(1, 'wrongPass', 'newPass');
@@ -972,6 +974,65 @@ class AccountManagerTest extends TestCase
 
         $this->assertContains(93, $GLOBALS['_test_deleted_users']);
         $this->assertTrue($result['success']);
+    }
+
+    // --- changePassword with usable password flag ---
+
+    public function testChangePasswordSucceedsWithoutCurrentForSocialUser(): void
+    {
+        $user = $this->makeUser(500);
+        $user->user_pass = 'hashed-pass';
+        $GLOBALS['_test_userdata'] = $user;
+        // No wsms_has_usable_password meta → social login user.
+        $GLOBALS['_test_user_meta'][500] = [];
+
+        $this->auditLogger->expects($this->once())->method('log');
+
+        $result = $this->manager->changePassword(500, null, 'NewPass1!');
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][500]['wsms_has_usable_password'] ?? '');
+    }
+
+    public function testChangePasswordFailsWithoutCurrentForRegularUser(): void
+    {
+        $user = $this->makeUser(501);
+        $user->user_pass = 'hashed-pass';
+        $GLOBALS['_test_userdata'] = $user;
+        $GLOBALS['_test_user_meta'][501] = ['wsms_has_usable_password' => '1'];
+
+        $result = $this->manager->changePassword(501, null, 'NewPass1!');
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('wrong_password', $result['error']);
+    }
+
+    public function testRegisterUserSetsUsablePasswordFlag(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 120;
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'registration_fields' => ['email', 'password'],
+        ];
+        $this->stubWpdb();
+
+        $result = $this->manager->registerUser([
+            'email'    => 'withpass@example.com',
+            'password' => 'StrongPass1!',
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][120]['wsms_has_usable_password'] ?? '');
+    }
+
+    public function testRegisterUserSocialLoginNoUsablePasswordFlag(): void
+    {
+        $GLOBALS['_test_wp_insert_user_result'] = 121;
+        $this->stubWpdb();
+
+        $result = $this->manager->registerUser(['phone' => '+971500000000'], socialLogin: true);
+
+        $this->assertTrue($result['success']);
+        $this->assertArrayNotHasKey('wsms_has_usable_password', $GLOBALS['_test_user_meta'][121] ?? []);
     }
 
     // --- Helpers ---

@@ -1,5 +1,7 @@
-import { useState } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import { api } from '../api/client';
+import { currentUser } from '../signals/auth';
+import { loadCurrentUser } from '../signals/user';
 import { useAuthGuard } from '../hooks/useAuthGuard';
 import { extractError } from '../utils/auth';
 import { AccountLayout } from '../layouts/AccountLayout';
@@ -17,6 +19,14 @@ export function ChangePassword() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
+    useEffect(() => {
+        if (authed && !currentUser.value) loadCurrentUser();
+    }, [authed]);
+
+    const user = currentUser.value;
+    const hasPassword = user?.has_usable_password !== false;
+    const title = hasPassword ? 'Change Password' : 'Set Password';
+
     async function handleSubmit(e) {
         e.preventDefault();
         setError('');
@@ -30,10 +40,12 @@ export function ChangePassword() {
         setLoading(true);
 
         try {
-            const res = await api.put('/auth/password', {
-                current_password: currentPassword,
-                new_password: newPassword,
-            });
+            const payload = { new_password: newPassword };
+            if (hasPassword) {
+                payload.current_password = currentPassword;
+            }
+
+            const res = await api.put('/auth/password', payload);
             if (res.success) {
                 setSuccess(res.message || 'Password changed successfully.');
                 setCurrentPassword('');
@@ -50,23 +62,25 @@ export function ChangePassword() {
     if (!authed) return null;
 
     return (
-        <AccountLayout title="Change Password" currentPath="/change-password">
+        <AccountLayout title={title} currentPath="/change-password">
             <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="mb-4" />
             <Alert variant="success" message={success} className="mb-4" />
 
             <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                    <Label for="wsms-cur-pass">Current Password</Label>
-                    <Input
-                        id="wsms-cur-pass"
-                        type="password"
-                        value={currentPassword}
-                        onInput={(e) => setCurrentPassword(e.target.value)}
-                        required
-                        disabled={loading}
-                        autoComplete="current-password"
-                    />
-                </div>
+                {hasPassword && (
+                    <div className="space-y-2">
+                        <Label for="wsms-cur-pass">Current Password</Label>
+                        <Input
+                            id="wsms-cur-pass"
+                            type="password"
+                            value={currentPassword}
+                            onInput={(e) => setCurrentPassword(e.target.value)}
+                            required
+                            disabled={loading}
+                            autoComplete="current-password"
+                        />
+                    </div>
+                )}
 
                 <div className="space-y-2">
                     <Label for="wsms-new-pass2">New Password</Label>
@@ -95,7 +109,7 @@ export function ChangePassword() {
                 </div>
 
                 <Button className="w-full" type="submit" disabled={loading}>
-                    {loading ? 'Changing\u2026' : 'Change Password'}
+                    {loading ? (hasPassword ? 'Changing\u2026' : 'Setting\u2026') : title}
                 </Button>
             </form>
         </AccountLayout>

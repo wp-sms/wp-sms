@@ -87,7 +87,7 @@ class AccountController
             'callback'            => [$this, 'handleChangePassword'],
             'permission_callback' => [$this, 'checkAuthenticated'],
             'args'                => [
-                'current_password' => ['required' => true, 'type' => 'string'],
+                'current_password' => ['required' => false, 'type' => 'string', 'default' => null],
                 'new_password'     => ['required' => true, 'type' => 'string'],
             ],
         ]);
