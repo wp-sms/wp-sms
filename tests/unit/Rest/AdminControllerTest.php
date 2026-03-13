@@ -251,7 +251,7 @@ class AdminControllerTest extends TestCase
         $request->set_param('telegram', [
             'code_length'  => 6,
             'expiry'       => 300,
-            'max_attempts' => 5,
+            'max_attempts' => 3,
             'cooldown'     => 60,
         ]);
 

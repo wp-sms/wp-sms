@@ -124,6 +124,8 @@ class AuthOrchestratorTest extends TestCase
         $user = $this->makeUser(5);
         $GLOBALS['_test_get_users_result'] = [$user];
 
+        $this->lockout->method('isLocked')->willReturn(['locked' => false, 'until' => null, 'attempts' => 0]);
+
         $phoneChannel = $this->createMock(PhoneChannel::class);
         $phoneChannel->method('isEnrolled')->willReturn(true);
         $phoneChannel->method('sendChallenge')->willReturn(new ChallengeResult(true, 'Sent', ['masked_to' => '+1*****90']));
@@ -137,6 +139,26 @@ class AuthOrchestratorTest extends TestCase
         $this->assertTrue($result->success);
         $this->assertSame('challenge_sent', $result->status);
         $this->assertSame('challenge-token-xyz', $result->sessionToken);
+    }
+
+    public function testLoginPasswordlessRejectsLockedAccount(): void
+    {
+        $this->policy->method('getAvailablePrimaryMethods')->willReturn(['phone']);
+
+        $user = $this->makeUser(5);
+        $GLOBALS['_test_get_users_result'] = [$user];
+
+        $this->lockout->method('isLocked')->willReturn([
+            'locked'   => true,
+            'until'    => '2030-01-01T00:00:00Z',
+            'attempts' => 3,
+        ]);
+
+        $result = $this->orchestrator->loginPasswordless('phone', '+1234567890');
+
+        $this->assertFalse($result->success);
+        $this->assertSame('account_locked', $result->error);
+        $this->assertSame('2030-01-01T00:00:00Z', $result->meta['retry_after']);
     }
 
     public function testVerifyPrimaryReturnsInvalidTokenForBadSession(): void

@@ -226,7 +226,7 @@ abstract class AbstractOtpChannel implements ChannelInterface
         $code = $this->otpGenerator->generate($codeLength);
         do_action('wsms_otp_generated', $userId, $code, $this->getId());
         $hashedCode = $this->otpGenerator->hash($code);
-        $maxAttempts = (int) $this->getConfigValue('max_attempts', 5);
+        $maxAttempts = (int) $this->getConfigValue('max_attempts', 3);
 
         $wpdb->insert($table, [
             'user_id'      => $userId,

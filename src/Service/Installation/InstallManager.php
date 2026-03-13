@@ -35,7 +35,7 @@ class InstallManager
                 'allow_sign_in'        => true,
                 'code_length'          => 6,
                 'expiry'               => 300,
-                'max_attempts'         => 5,
+                'max_attempts'         => 3,
                 'cooldown'             => 60,
             ],
             'email' => [
@@ -47,7 +47,7 @@ class InstallManager
                 'allow_sign_in'        => true,
                 'code_length'          => 6,
                 'expiry'               => 600,
-                'max_attempts'         => 5,
+                'max_attempts'         => 3,
                 'cooldown'             => 60,
             ],
             'password' => [

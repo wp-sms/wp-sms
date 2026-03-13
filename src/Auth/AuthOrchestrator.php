@@ -78,12 +78,9 @@ class AuthOrchestrator
         $resolvedUser = $this->resolveUserByAnyIdentifier($username, $identifierType);
 
         if ($resolvedUser) {
-            $lockStatus = $this->lockout->isLocked($resolvedUser->ID);
-
-            if ($lockStatus['locked']) {
-                return AuthResult::failed('account_locked', 'Account is temporarily locked.', [
-                    'retry_after' => $lockStatus['until'],
-                ]);
+            $locked = $this->checkLockout($resolvedUser->ID);
+            if ($locked) {
+                return $locked;
             }
         }
 
@@ -127,6 +124,11 @@ class AuthOrchestrator
 
         if (!$user) {
             return AuthResult::failed('invalid_credentials', 'Invalid credentials.');
+        }
+
+        $locked = $this->checkLockout($user->ID);
+        if ($locked) {
+            return $locked;
         }
 
         $channelObj = $this->mfaManager->getChannel($channel);
@@ -447,6 +449,19 @@ class AuthOrchestrator
             'last_name'    => $user->last_name,
             'roles'        => $user->roles,
         ];
+    }
+
+    private function checkLockout(int $userId): ?AuthResult
+    {
+        $lockStatus = $this->lockout->isLocked($userId);
+
+        if ($lockStatus['locked']) {
+            return AuthResult::failed('account_locked', 'Account is temporarily locked.', [
+                'retry_after' => $lockStatus['until'],
+            ]);
+        }
+
+        return null;
     }
 
     /**

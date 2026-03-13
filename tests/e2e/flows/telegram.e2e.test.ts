@@ -93,7 +93,7 @@ describe('Telegram settings persistence', () => {
     expect(stored.telegram?.bot_username).toBe('test_bot');
     expect(stored.telegram?.code_length).toBe(6);
     expect(stored.telegram?.expiry).toBe(300);
-    expect(stored.telegram?.max_attempts).toBe(5);
+    expect(stored.telegram?.max_attempts).toBe(3);
     expect(stored.telegram?.cooldown).toBe(60);
   });
 });

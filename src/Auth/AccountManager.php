@@ -684,7 +684,7 @@ class AccountManager
         $channelSettings = $settings[$channel] ?? [];
         $codeLength = (int) ($channelSettings['code_length'] ?? 6);
         $expiry = (int) ($channelSettings['expiry'] ?? 300);
-        $maxAttempts = (int) ($channelSettings['max_attempts'] ?? 5);
+        $maxAttempts = (int) ($channelSettings['max_attempts'] ?? 3);
 
         $otp = $this->otpGenerator->generate($codeLength);
         $verifyType = VerificationType::forChannel($channel)->value;

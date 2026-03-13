@@ -47,7 +47,7 @@ class WpdbFake
             $row->id = $this->insert_id;
             $row->used_at = $data['used_at'] ?? null;
             $row->attempts = $data['attempts'] ?? 0;
-            $row->max_attempts = $data['max_attempts'] ?? 5;
+            $row->max_attempts = $data['max_attempts'] ?? 3;
             $row->expires_at = $data['expires_at'] ?? gmdate('Y-m-d H:i:s', time() + 3600);
             $row->created_at = $data['created_at'] ?? gmdate('Y-m-d H:i:s');
             $this->verifications[$this->insert_id] = $row;

@@ -69,7 +69,7 @@ class Migrator
             identifier      VARCHAR(255) NOT NULL,
             code            VARCHAR(255) NOT NULL,
             attempts        TINYINT UNSIGNED NOT NULL DEFAULT 0,
-            max_attempts    TINYINT UNSIGNED NOT NULL DEFAULT 5,
+            max_attempts    TINYINT UNSIGNED NOT NULL DEFAULT 3,
             expires_at      DATETIME NOT NULL,
             used_at         DATETIME,
             created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

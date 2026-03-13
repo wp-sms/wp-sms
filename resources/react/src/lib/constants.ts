@@ -89,7 +89,7 @@ export const DEFAULTS: Required<AuthSettings> = {
     allow_sign_in: true,
     code_length: 6,
     expiry: 300,
-    max_attempts: 5,
+    max_attempts: 3,
     cooldown: 60,
   },
   email: {
@@ -101,7 +101,7 @@ export const DEFAULTS: Required<AuthSettings> = {
     allow_sign_in: true,
     code_length: 6,
     expiry: 600,
-    max_attempts: 5,
+    max_attempts: 3,
     cooldown: 60,
   },
   password: {
@@ -132,7 +132,7 @@ export const DEFAULTS: Required<AuthSettings> = {
     mfa_enabled: false,
     code_length: 6,
     expiry: 300,
-    max_attempts: 5,
+    max_attempts: 3,
     cooldown: 60,
   },
   captcha: {

@@ -265,7 +265,7 @@ export function telegramSocialWithMfa(): AuthSettings {
       mfa_enabled: true,
       code_length: 6,
       expiry: 300,
-      max_attempts: 5,
+      max_attempts: 3,
       cooldown: 60,
     },
   };
