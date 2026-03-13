@@ -338,7 +338,7 @@ class PolicyEngine
             $effectiveFields[] = 'email';
         }
 
-        if (!empty($settings['password']['required_at_signup'])) {
+        if (!empty($settings['password']['enabled']) && !empty($settings['password']['required_at_signup'])) {
             $effectiveFields[] = 'password';
         }
 
@@ -358,11 +358,15 @@ class PolicyEngine
      */
     public function getVerificationChannelKeys(): array
     {
+        $settings = $this->getSettings();
         $keys = [];
 
         foreach ($this->mfaManager->getAvailableChannels() as $channel) {
             if ($channel->supportsPrimaryAuth()) {
-                $keys[] = $channel->getId();
+                $channelKey = $channel->getId();
+                if (!empty($settings[$channelKey]['enabled'])) {
+                    $keys[] = $channelKey;
+                }
             }
         }
 
@@ -431,7 +435,7 @@ class PolicyEngine
      * Backend defaults matching the frontend constants (resources/react/src/lib/constants.ts).
      * Applied so that settings missing from the DB still behave as the admin UI shows.
      */
-    private const CHANNEL_DEFAULTS = [
+    public const CHANNEL_DEFAULTS = [
         'password' => [
             'enabled'            => true,
             'required_at_signup' => true,

@@ -1,4 +1,5 @@
 import { authStep, authError, resetIdentifyFlow } from '../signals/auth';
+import { primaryMethods } from '../signals/config';
 import { authUrl } from '../utils/urls';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { AuthLink } from '../components/AuthLink';
@@ -20,6 +21,7 @@ const TITLES = {
 
 export function Login() {
     const step = authStep.value;
+    const hasPassword = primaryMethods.value.includes('password');
 
     const footer = step === 'register' ? (
         <AuthLink href={authUrl('/login')} onClick={() => (authStep.value = 'identifier')}>
@@ -31,11 +33,11 @@ export function Login() {
         </AuthLink>
     ) : step === 'login_verify' ? null : step === 'identifier' ? (
         <div className="flex gap-4">
-            <AuthLink href={authUrl('/forgot-password')}>Forgot password?</AuthLink>
+            {hasPassword && <AuthLink href={authUrl('/forgot-password')}>Forgot password?</AuthLink>}
             <AuthLink href={authUrl('/register')}>Create account</AuthLink>
         </div>
     ) : (
-        <AuthLink href={authUrl('/forgot-password')}>Forgot password?</AuthLink>
+        hasPassword ? <AuthLink href={authUrl('/forgot-password')}>Forgot password?</AuthLink> : null
     );
 
     return (

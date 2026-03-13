@@ -59,7 +59,17 @@ class AccountManager
 
     private function getSettings(): array
     {
-        return $this->settings ??= get_option('wsms_auth_settings', []);
+        if ($this->settings !== null) {
+            return $this->settings;
+        }
+
+        $raw = get_option('wsms_auth_settings', []);
+
+        foreach (PolicyEngine::CHANNEL_DEFAULTS as $key => $defaults) {
+            $raw[$key] = array_merge($defaults, $raw[$key] ?? []);
+        }
+
+        return $this->settings = $raw;
     }
 
     /**
@@ -78,13 +88,13 @@ class AccountManager
             return ['success' => false, 'error' => 'missing_email', 'message' => 'Email is required.'];
         }
 
-        $passwordRequired = $settings['password']['required_at_signup'] ?? true;
+        $passwordRequired = !empty($settings['password']['enabled']) && ($settings['password']['required_at_signup'] ?? true);
         if ($passwordRequired && empty($data['password'])) {
             return ['success' => false, 'error' => 'missing_password', 'message' => 'Password is required.'];
         }
 
-        // Enforce phone.required_at_signup.
-        if (!empty($settings['phone']['required_at_signup']) && empty($data['phone'])) {
+        // Enforce phone.required_at_signup (only when phone channel is enabled).
+        if (!empty($settings['phone']['enabled']) && !empty($settings['phone']['required_at_signup']) && empty($data['phone'])) {
             return ['success' => false, 'error' => 'missing_phone', 'message' => 'Phone number is required.'];
         }
 
@@ -134,8 +144,8 @@ class AccountManager
         }
 
         // Check for stale pending users that can be replaced (only when verify_at_signup is active).
-        $emailVerifyEnabled = !$isPlaceholder && !empty($settings['email']['verify_at_signup']);
-        $phoneVerifyEnabled = !empty($settings['phone']['verify_at_signup']);
+        $emailVerifyEnabled = !$isPlaceholder && !empty($settings['email']['enabled']) && !empty($settings['email']['verify_at_signup']);
+        $phoneVerifyEnabled = !empty($settings['phone']['enabled']) && !empty($settings['phone']['verify_at_signup']);
 
         if ($emailVerifyEnabled || $phoneVerifyEnabled) {
             $ttlHours = (int) ($settings['pending_user_ttl_hours'] ?? self::DEFAULT_PENDING_USER_TTL_HOURS);
@@ -170,8 +180,7 @@ class AccountManager
             update_user_meta($userId, 'wsms_email_placeholder', '1');
         }
 
-        $needsVerification = (!$isPlaceholder && !empty($settings['email']['verify_at_signup']))
-            || (!empty($data['phone']) && !empty($settings['phone']['verify_at_signup']));
+        $needsVerification = $emailVerifyEnabled || (!empty($data['phone']) && $phoneVerifyEnabled);
 
         update_user_meta($userId, 'wsms_registration_status', $needsVerification ? 'pending' : 'active');
         if ($needsVerification) {
@@ -185,14 +194,14 @@ class AccountManager
             $phone = sanitize_text_field($data['phone']);
             update_user_meta($userId, 'wsms_phone', $phone);
 
-            if (!empty($settings['phone']['verify_at_signup'])) {
+            if ($phoneVerifyEnabled) {
                 $this->createChannelVerification($userId, 'phone', $phone);
                 $pendingVerifications[] = ['type' => 'phone', 'status' => 'pending'];
             }
         }
 
         // Generate and send email verification only when required (skip for placeholder emails).
-        if (!empty($email) && !$isPlaceholder && !empty($settings['email']['verify_at_signup'])) {
+        if (!empty($email) && $emailVerifyEnabled) {
             $this->createChannelVerification($userId, 'email', $email);
             $pendingVerifications[] = ['type' => 'email', 'status' => 'pending'];
         }
@@ -641,7 +650,7 @@ class AccountManager
         // Collect all channels that require verify_at_signup.
         $requiredChannels = [];
         foreach ($state as $channel => $channelState) {
-            if (!empty($settings[$channel]['verify_at_signup'])) {
+            if (!empty($settings[$channel]['enabled']) && !empty($settings[$channel]['verify_at_signup'])) {
                 $requiredChannels[] = $channel;
             }
         }

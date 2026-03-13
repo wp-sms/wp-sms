@@ -125,7 +125,7 @@ class AccountManagerTest extends TestCase
     {
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
-            'phone' => ['required_at_signup' => true],
+            'phone' => ['enabled' => true, 'required_at_signup' => true],
         ];
 
         $result = $this->manager->registerUser([
@@ -241,7 +241,7 @@ class AccountManagerTest extends TestCase
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
-            'phone' => ['required_at_signup' => true, 'verify_at_signup' => true],
+            'phone' => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
         ];
 
         $result = $this->manager->registerUser([
@@ -263,7 +263,7 @@ class AccountManagerTest extends TestCase
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
-            'phone' => ['required_at_signup' => true, 'verify_at_signup' => true],
+            'phone' => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
             'email' => ['verify_at_signup' => true],
         ];
 
@@ -498,7 +498,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'email'    => ['required_at_signup' => false, 'verify_at_signup' => true],
             'password' => ['required_at_signup' => false],
-            'phone'    => ['required_at_signup' => true, 'verify_at_signup' => true],
+            'phone'    => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
             'registration_fields' => ['phone'],
         ];
 
@@ -634,7 +634,7 @@ class AccountManagerTest extends TestCase
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
-            'phone' => ['required_at_signup' => true, 'verify_at_signup' => true],
+            'phone' => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
         ];
 
         $this->manager->registerUser([
@@ -673,7 +673,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'email'    => ['required_at_signup' => false, 'verify_at_signup' => true],
             'password' => ['required_at_signup' => false],
-            'phone'    => ['required_at_signup' => true, 'verify_at_signup' => true],
+            'phone'    => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
             'registration_fields' => ['phone'],
         ];
 
@@ -703,7 +703,7 @@ class AccountManagerTest extends TestCase
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'email' => ['verify_at_signup' => true],
-            'phone' => ['verify_at_signup' => true],
+            'phone' => ['enabled' => true, 'verify_at_signup' => true],
         ];
 
         $this->manager->maybeActivateUser(80);
@@ -858,7 +858,7 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'email'    => ['required_at_signup' => false],
             'password' => ['required_at_signup' => false],
-            'phone'    => ['required_at_signup' => true, 'verify_at_signup' => true],
+            'phone'    => ['enabled' => true, 'required_at_signup' => true, 'verify_at_signup' => true],
             'registration_fields'    => ['phone'],
             'pending_user_ttl_hours' => 24,
         ];
