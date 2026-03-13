@@ -8,7 +8,7 @@ defined('ABSPATH') || exit;
 
 class SocialAccountRepository
 {
-    public const SOCIAL_PROVIDERS = ['google', 'apple', 'facebook', 'microsoft', 'github', 'linkedin', 'twitter'];
+    public const SOCIAL_PROVIDERS = ['google', 'apple', 'facebook', 'microsoft', 'github', 'linkedin', 'twitter', 'telegram'];
 
     /**
      * Find a WordPress user by their social provider account ID.

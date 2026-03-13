@@ -228,6 +228,80 @@ class AdminControllerTest extends TestCase
         $this->assertTrue($response->get_data()['success']);
     }
 
+    public function testSavingWithSocialTelegramSucceeds(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+
+        $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
+        $request->set_param('social', [
+            'telegram' => ['enabled' => false],
+        ]);
+
+        $response = $this->controller->handleUpdateSettings($request);
+
+        $this->assertSame(200, $response->get_status());
+        $this->assertTrue($response->get_data()['success']);
+    }
+
+    public function testTelegramChannelSettingsAreSaved(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+
+        $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
+        $request->set_param('telegram', [
+            'code_length'  => 6,
+            'expiry'       => 300,
+            'max_attempts' => 5,
+            'cooldown'     => 60,
+        ]);
+
+        $response = $this->controller->handleUpdateSettings($request);
+
+        $this->assertSame(200, $response->get_status());
+        $settings = $response->get_data()['settings'];
+        $this->assertSame(6, $settings['telegram']['code_length']);
+        $this->assertSame(300, $settings['telegram']['expiry']);
+    }
+
+    public function testPendingUserCleanupSettingsAreSaved(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+
+        $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
+        $request->set_param('pending_user_cleanup_enabled', true);
+        $request->set_param('pending_user_ttl_hours', 48);
+
+        $response = $this->controller->handleUpdateSettings($request);
+
+        $this->assertSame(200, $response->get_status());
+        $settings = $response->get_data()['settings'];
+        $this->assertTrue($settings['pending_user_cleanup_enabled']);
+        $this->assertSame(48, $settings['pending_user_ttl_hours']);
+    }
+
+    public function testTelegramChannelValidationRejectsInvalidValues(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [];
+
+        $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
+        $request->set_param('telegram', [
+            'code_length'  => 5,
+            'expiry'       => 10,
+            'max_attempts' => 0,
+            'cooldown'     => 5,
+        ]);
+
+        $response = $this->controller->handleUpdateSettings($request);
+
+        $this->assertSame(400, $response->get_status());
+        $errors = $response->get_data()['errors'];
+        $this->assertCount(4, $errors);
+        $this->assertStringContainsString('telegram.code_length', $errors[0]);
+        $this->assertStringContainsString('telegram.expiry', $errors[1]);
+        $this->assertStringContainsString('telegram.max_attempts', $errors[2]);
+        $this->assertStringContainsString('telegram.cooldown', $errors[3]);
+    }
+
     private function makeUser(int $id): object
     {
         $user = new \stdClass();

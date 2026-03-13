@@ -29,6 +29,8 @@ class AdminController
         'registration_fields',
         'redirect_login',
         'social_profile_sync',
+        'pending_user_cleanup_enabled',
+        'pending_user_ttl_hours',
     ];
 
     /** Channel keys that accept nested sub-objects. */
@@ -39,6 +41,7 @@ class AdminController
         'backup_codes',
         'captcha',
         'social',
+        'telegram',
     ];
 
     public function __construct(
@@ -197,7 +200,7 @@ class AdminController
     {
         $errors = [];
 
-        foreach (['phone', 'email'] as $channel) {
+        foreach (['phone', 'email', 'telegram'] as $channel) {
             $ch = $settings[$channel] ?? [];
 
             if (isset($ch['code_length']) && !in_array((int) $ch['code_length'], [4, 6], true)) {
