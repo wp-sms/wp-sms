@@ -29,7 +29,7 @@ export function forgetIdentifier() {
     rememberedIdentifier.value = '';
 }
 
-export function resetIdentifyFlow() {
+export function resetIdentifyFlow({ keepRemembered = false } = {}) {
     authStep.value = 'identifier';
     identifyResult.value = null;
     enteredIdentifier.value = '';
@@ -37,6 +37,7 @@ export function resetIdentifyFlow() {
     authError.value = null;
     registrationToken.value = null;
     pendingVerifications.value = [];
+    if (!keepRemembered) forgetIdentifier();
 }
 
 export function clearAuth() {
@@ -45,5 +46,5 @@ export function clearAuth() {
     pendingMfa.value = null;
     authError.value = null;
     authLoading.value = false;
-    resetIdentifyFlow();
+    resetIdentifyFlow({ keepRemembered: true });
 }

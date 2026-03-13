@@ -24,7 +24,7 @@ export function Login() {
     const hasPassword = primaryMethods.value.includes('password');
 
     const footer = step === 'register' ? (
-        <AuthLink href={authUrl('/login')} onClick={() => (authStep.value = 'identifier')}>
+        <AuthLink href={authUrl('/login')} onClick={() => resetIdentifyFlow()}>
             Already have an account? Sign in
         </AuthLink>
     ) : step === 'register_verify' ? (
