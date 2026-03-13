@@ -195,20 +195,23 @@ function ChannelContent({
         {settings.verification_methods?.includes('otp') && (
           <Field>
             <FieldLabel>Code Length</FieldLabel>
-            <RadioGroup
-              value={String(settings.code_length)}
-              onValueChange={(v) => onUpdate({ code_length: Number(v) })}
-              className="flex gap-4"
-            >
-              <label className="flex items-center gap-2 cursor-pointer">
-                <RadioGroupItem value="4" />
-                <span className="text-sm">4 Digit</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer">
-                <RadioGroupItem value="6" />
-                <span className="text-sm">6 Digit</span>
-              </label>
-            </RadioGroup>
+            <div className="flex gap-2">
+              {[4, 6].map((len) => (
+                <button
+                  key={len}
+                  type="button"
+                  aria-pressed={(settings.code_length ?? 6) === len}
+                  onClick={() => onUpdate({ code_length: len })}
+                  className={`rounded-md border px-3 py-1.5 text-sm transition-colors ${
+                    (settings.code_length ?? 6) === len
+                      ? 'border-primary bg-primary/10 text-primary'
+                      : 'border-border hover:bg-accent'
+                  }`}
+                >
+                  {len} digits
+                </button>
+              ))}
+            </div>
           </Field>
         )}
         <Field>
