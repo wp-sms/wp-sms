@@ -63,7 +63,8 @@ class Migrator
     {
         return "CREATE TABLE {$prefix}wsms_verifications (
             id              BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-            user_id         BIGINT UNSIGNED NOT NULL,
+            user_id         BIGINT UNSIGNED DEFAULT NULL,
+            session_id      VARCHAR(64) DEFAULT NULL,
             type            VARCHAR(50) NOT NULL,
             channel_id      VARCHAR(50),
             identifier      VARCHAR(255) NOT NULL,
@@ -74,6 +75,7 @@ class Migrator
             used_at         DATETIME,
             created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             INDEX idx_user_type (user_id, type, channel_id),
+            INDEX idx_session_type (session_id, type),
             INDEX idx_identifier (identifier),
             INDEX idx_expires (expires_at)
         ) {$charsetCollate};\n";

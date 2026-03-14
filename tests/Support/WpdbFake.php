@@ -118,16 +118,25 @@ class WpdbFake
         return true;
     }
 
+    /** @var int Rows affected by last query() call. */
+    public int $rows_affected = 1;
+
     public function query($query)
     {
         $this->queries[] = $query;
+        $this->rows_affected = 0;
 
         // Handle bulk UPDATE (invalidateVerifications).
-        if (preg_match('/UPDATE.*wsms_verifications.*SET\s+used_at/i', $query)) {
+        if (preg_match('/UPDATE.*wsms_verifications.*SET\b.*used_at/is', $query)) {
             $conditions = self::parseQueryConditions($query);
+            $affected = 0;
 
             foreach ($this->verifications as &$row) {
                 if ($conditions['user_id'] !== null && (int) $row->user_id !== $conditions['user_id']) {
+                    continue;
+                }
+
+                if ($conditions['session_id'] !== null && ($row->session_id ?? '') !== $conditions['session_id']) {
                     continue;
                 }
 
@@ -139,11 +148,26 @@ class WpdbFake
                     continue;
                 }
 
+                // Handle atomic single-row update (WHERE id = X AND used_at IS NULL).
+                if (preg_match('/WHERE\s+.*id\s*=\s*(\d+)/i', $query, $m)) {
+                    if ((int) $row->id !== (int) $m[1]) {
+                        continue;
+                    }
+                }
+
+                // Handle attempts update in the same query.
+                if (preg_match('/attempts\s*=\s*(\d+)/i', $query, $m)) {
+                    $row->attempts = (int) $m[1];
+                }
+
                 $row->used_at = gmdate('Y-m-d H:i:s');
+                $affected++;
             }
+
+            $this->rows_affected = $affected;
         }
 
-        return 1;
+        return $this->rows_affected;
     }
 
     public function prepare(string $query, ...$args): string
@@ -232,8 +256,10 @@ class WpdbFake
     {
         $conditions = [
             'user_id'           => null,
+            'session_id'        => null,
             'type'              => null,
             'code'              => null,
+            'identifier'        => null,
             'require_unused'    => false,
             'cooldown_seconds'  => null,
         ];
@@ -242,12 +268,20 @@ class WpdbFake
             $conditions['user_id'] = (int) $m[1];
         }
 
+        if (preg_match("/session_id\s*=\s*'([^']+)'/i", $query, $m)) {
+            $conditions['session_id'] = $m[1];
+        }
+
         if (preg_match("/type\s*=\s*'([^']+)'/i", $query, $m)) {
             $conditions['type'] = $m[1];
         }
 
         if (preg_match("/code\s*=\s*'([^']+)'/i", $query, $m)) {
             $conditions['code'] = $m[1];
+        }
+
+        if (preg_match("/identifier\s*=\s*'([^']+)'/i", $query, $m)) {
+            $conditions['identifier'] = $m[1];
         }
 
         if (str_contains($query, 'used_at IS NULL')) {
@@ -272,11 +306,19 @@ class WpdbFake
             return false;
         }
 
+        if ($conditions['session_id'] !== null && ($row->session_id ?? '') !== $conditions['session_id']) {
+            return false;
+        }
+
         if ($conditions['type'] !== null && ($row->type ?? '') !== $conditions['type']) {
             return false;
         }
 
         if ($conditions['code'] !== null && ($row->code ?? '') !== $conditions['code']) {
+            return false;
+        }
+
+        if ($conditions['identifier'] !== null && ($row->identifier ?? '') !== $conditions['identifier']) {
             return false;
         }
 

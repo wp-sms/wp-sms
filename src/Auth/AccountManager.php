@@ -10,6 +10,7 @@ use WSms\Enums\SessionStage;
 use WSms\Enums\VerificationType;
 use WSms\Mfa\MfaManager;
 use WSms\Mfa\OtpGenerator;
+use WSms\Verification\VerificationMailer;
 
 defined('ABSPATH') || exit;
 
@@ -818,19 +819,7 @@ class AccountManager
         $settings = $this->settingsRepo->all();
         $expiry = (int) (($settings[$channel] ?? [])['expiry'] ?? 300);
 
-        $siteName = get_bloginfo('name');
-        $headers = ['Content-Type: text/html; charset=UTF-8'];
-        $subject = sprintf('[%s] Your verification code', $siteName);
-        $message = sprintf(
-            '<p>Your email verification code is:</p>'
-            . '<p style="font-size:24px;font-weight:bold;letter-spacing:4px;">%s</p>'
-            . '<p>This code expires in %d minutes.</p>'
-            . '<p>If you did not request this, please ignore this email.</p>',
-            esc_html($otp),
-            (int) ceil($expiry / 60),
-        );
-
-        wp_mail($email, $subject, $message, $headers);
+        VerificationMailer::sendOtp($email, $otp, $expiry);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace WSms\Auth;
 
 use WSms\Enums\SessionStage;
 use WSms\Mfa\OtpGenerator;
+use WSms\Support\SigningKey;
 
 defined('ABSPATH') || exit;
 
@@ -39,7 +40,7 @@ class AuthSession
 
         $expiry = time() + self::DEFAULT_TTL;
         $payload = $userId . '|' . $sessionKey . '|' . $expiry;
-        $signature = hash_hmac('sha256', $payload, $this->getSigningKey());
+        $signature = hash_hmac('sha256', $payload, SigningKey::get());
 
         return base64_encode($payload . '|' . $signature);
     }
@@ -66,7 +67,7 @@ class AuthSession
         [$userId, $sessionKey, $expiry, $signature] = $parts;
 
         $expectedPayload = $userId . '|' . $sessionKey . '|' . $expiry;
-        $expectedSignature = hash_hmac('sha256', $expectedPayload, $this->getSigningKey());
+        $expectedSignature = hash_hmac('sha256', $expectedPayload, SigningKey::get());
 
         if (!hash_equals($expectedSignature, $signature)) {
             return null;
@@ -132,8 +133,4 @@ class AuthSession
         delete_transient(self::TRANSIENT_PREFIX . $sessionKey);
     }
 
-    private function getSigningKey(): string
-    {
-        return defined('AUTH_KEY') ? AUTH_KEY : 'wsms-fallback-key-' . ABSPATH;
-    }
 }

@@ -17,6 +17,7 @@
     "build:blocks": "wp-scripts build --webpack-src-dir=resources/blocks --output-path=public/blocks",
     "build:auth": "vite build -c vite.config.auth.mjs",
     "build:auth-popup": "vite build -c vite.config.auth-popup.mjs",
+    "build:verify-widget": "vite build -c vite.config.verify-widget.mjs",
     "build:pot": "wp i18n make-pot . public/languages/wp-sms.pot --slug=wp-sms --domain=wp-sms",
     "test": "vitest run",
     "test:watch": "vitest",

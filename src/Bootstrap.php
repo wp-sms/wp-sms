@@ -10,6 +10,8 @@ use WSms\Container\MfaServiceProvider;
 use WSms\Container\SocialServiceProvider;
 use WSms\Container\AuditServiceProvider;
 use WSms\Container\RestServiceProvider;
+use WSms\Container\VerificationServiceProvider;
+use WSms\Integrations\ContactForm7\CF7ServiceProvider;
 use WSms\Service\Installation\InstallManager;
 
 defined('ABSPATH') || exit;
@@ -39,6 +41,8 @@ class Bootstrap
         SocialServiceProvider::class,
         AuditServiceProvider::class,
         RestServiceProvider::class,
+        VerificationServiceProvider::class,
+        CF7ServiceProvider::class,
     ];
 
     /**

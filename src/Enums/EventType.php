@@ -34,4 +34,7 @@ enum EventType: string
     case SocialAccountLinked = 'social_account_linked';
     case SocialAccountUnlinked = 'social_account_unlinked';
     case SocialRegistration = 'social_registration';
+    case StandaloneVerificationSent = 'standalone_verification_sent';
+    case StandaloneVerificationSuccess = 'standalone_verification_success';
+    case StandaloneVerificationFailed = 'standalone_verification_failed';
 }

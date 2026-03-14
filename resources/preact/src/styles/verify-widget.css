@@ -1,0 +1,246 @@
+.wsms-vw {
+    --wsms-vw-text: #1f2937;
+    --wsms-vw-text-muted: #6b7280;
+    --wsms-vw-border: #d0d5dd;
+    --wsms-vw-bg: #f9fafb;
+    --wsms-vw-success: #46b450;
+    --wsms-vw-error: #dc3232;
+    --wsms-vw-link: #2271b1;
+    --wsms-vw-radius: 6px;
+
+    padding: 12px 16px;
+    border: 1px solid var(--wsms-vw-border);
+    border-radius: var(--wsms-vw-radius);
+    margin-top: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--wsms-vw-text);
+    line-height: 1.5;
+    box-sizing: border-box;
+}
+
+.wsms-vw *,
+.wsms-vw *::before,
+.wsms-vw *::after {
+    box-sizing: border-box;
+}
+
+/* Prompt state — send code button */
+.wsms-vw-send-btn {
+    display: block;
+    width: 100%;
+    padding: 8px 16px;
+    margin-top: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--wsms-vw-link);
+    background: rgba(34, 113, 177, 0.06);
+    border: 1px solid var(--wsms-vw-link);
+    border-radius: var(--wsms-vw-radius);
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.wsms-vw-send-btn:hover {
+    background: rgba(34, 113, 177, 0.12);
+}
+
+/* Sending state */
+.wsms-vw-sending {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--wsms-vw-text-muted);
+    font-size: 14px;
+    padding: 4px 0;
+}
+
+/* Spinner */
+.wsms-vw-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid var(--wsms-vw-border);
+    border-top-color: var(--wsms-vw-link);
+    border-radius: 50%;
+    animation: wsms-vw-spin 0.6s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes wsms-vw-spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wsms-vw-spinner {
+        animation-duration: 1.5s;
+    }
+}
+
+/* Input state */
+.wsms-vw-label {
+    display: block;
+    font-size: 13px;
+    color: var(--wsms-vw-text-muted);
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+/* OTP input */
+.wsms-vw-otp {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+}
+
+.wsms-vw-otp-separator {
+    color: var(--wsms-vw-text-muted);
+    font-size: 16px;
+    margin: 0 2px;
+    user-select: none;
+}
+
+.wsms-vw-otp-box {
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--wsms-vw-border);
+    border-radius: var(--wsms-vw-radius);
+    text-align: center;
+    font-size: 18px;
+    font-weight: 600;
+    font-family: inherit;
+    color: var(--wsms-vw-text);
+    background: #fff;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    padding: 0;
+    -moz-appearance: textfield;
+}
+
+.wsms-vw-otp-box::-webkit-inner-spin-button,
+.wsms-vw-otp-box::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.wsms-vw-otp-box:focus {
+    border-color: var(--wsms-vw-link);
+    box-shadow: 0 0 0 2px rgba(34, 113, 177, 0.25);
+}
+
+.wsms-vw-otp-box:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* Resend button */
+.wsms-vw-actions {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.wsms-vw-resend {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--wsms-vw-link);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 0;
+    text-decoration: none;
+}
+
+.wsms-vw-resend:not(:disabled):hover {
+    text-decoration: underline;
+}
+
+.wsms-vw-resend:disabled {
+    color: var(--wsms-vw-text-muted);
+    cursor: default;
+}
+
+/* Error state */
+.wsms-vw-error-msg {
+    font-size: 13px;
+    color: var(--wsms-vw-error);
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.wsms-vw-error-box {
+    border-left: 3px solid var(--wsms-vw-error);
+    padding: 8px 12px;
+    margin-bottom: 4px;
+}
+
+.wsms-vw-error-box p {
+    margin: 0 0 6px;
+    font-size: 14px;
+    color: var(--wsms-vw-error);
+}
+
+.wsms-vw-retry {
+    font-size: 13px;
+    font-family: inherit;
+    color: var(--wsms-vw-link);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    text-decoration: underline;
+}
+
+.wsms-vw-retry:hover {
+    color: var(--wsms-vw-text);
+}
+
+/* Verified state */
+.wsms-vw-verified {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(70, 180, 80, 0.08);
+    border-radius: var(--wsms-vw-radius);
+    color: var(--wsms-vw-success);
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.wsms-vw-check-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* Verifying overlay */
+.wsms-vw-verifying {
+    position: relative;
+}
+
+.wsms-vw-verifying .wsms-vw-otp {
+    opacity: 0.5;
+}
+
+@media (max-width: 380px) {
+    .wsms-vw-otp-box {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+    .wsms-vw-otp { gap: 4px; }
+}
+
+.wsms-vw-verifying-indicator {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--wsms-vw-text-muted);
+}

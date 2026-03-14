@@ -159,6 +159,12 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('esc_attr')) {
+        function esc_attr(string $text) {
+            return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+        }
+    }
+
     // In-memory transient storage for tests.
     $GLOBALS['_test_transients'] = [];
 
@@ -196,6 +202,12 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
     if (!function_exists('add_action')) {
         function add_action(string $hookName, $callback, int $priority = 10, int $acceptedArgs = 1) {
             // No-op in tests.
+        }
+    }
+
+    if (!function_exists('has_action')) {
+        function has_action(string $hookName, $callback = false) {
+            return $GLOBALS['_test_has_action'][$hookName] ?? false;
         }
     }
 

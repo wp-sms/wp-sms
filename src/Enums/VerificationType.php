@@ -9,6 +9,8 @@ enum VerificationType: string
     case EmailVerify = 'email_verify';
     case PhoneVerify = 'phone_verify';
     case PasswordReset = 'password_reset';
+    case StandaloneEmail = 'standalone_email';
+    case StandalonePhone = 'standalone_phone';
 
     /**
      * Resolve the verification type for a channel name ('email' or 'phone').
@@ -19,6 +21,18 @@ enum VerificationType: string
             'email' => self::EmailVerify,
             'phone' => self::PhoneVerify,
             default => throw new \InvalidArgumentException("Unknown verification channel: {$channel}"),
+        };
+    }
+
+    /**
+     * Resolve the verification type for a standalone channel.
+     */
+    public static function forStandaloneChannel(string $channel): self
+    {
+        return match ($channel) {
+            'email' => self::StandaloneEmail,
+            'phone' => self::StandalonePhone,
+            default => throw new \InvalidArgumentException("Unknown standalone channel: {$channel}"),
         };
     }
 }
