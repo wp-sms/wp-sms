@@ -520,10 +520,60 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         define('DAY_IN_SECONDS', 86400);
     }
 
+    // Multisite stubs.
+
+    if (!function_exists('is_multisite')) {
+        function is_multisite(): bool {
+            return $GLOBALS['_test_is_multisite'] ?? false;
+        }
+    }
+
+    if (!function_exists('get_sites')) {
+        function get_sites(array $args = []): array {
+            return $GLOBALS['_test_sites'] ?? [];
+        }
+    }
+
+    if (!function_exists('switch_to_blog')) {
+        function switch_to_blog(int $blogId): bool {
+            $GLOBALS['_test_switched_blog_calls'][] = $blogId;
+            return true;
+        }
+    }
+
+    if (!function_exists('restore_current_blog')) {
+        function restore_current_blog(): bool {
+            $GLOBALS['_test_restore_blog_calls'] = ($GLOBALS['_test_restore_blog_calls'] ?? 0) + 1;
+            return true;
+        }
+    }
+
+    if (!function_exists('get_site_option')) {
+        function get_site_option(string $option, $default = false) {
+            if ($option === 'active_sitewide_plugins') {
+                return $GLOBALS['_test_active_sitewide_plugins'] ?? $default;
+            }
+            return $GLOBALS['_test_site_options'][$option] ?? $default;
+        }
+    }
+
+    if (!function_exists('plugin_basename')) {
+        function plugin_basename(string $file): string {
+            // Return a consistent basename for testing.
+            return 'wp-sms/wp-sms.php';
+        }
+    }
+
+    if (!defined('WP_SMS_MAIN_FILE')) {
+        define('WP_SMS_MAIN_FILE', dirname(__DIR__) . '/wp-sms.php');
+    }
+
     // Initialize test globals.
     $GLOBALS['_test_options'] = [];
     $GLOBALS['_test_query_vars'] = [];
     $GLOBALS['_test_do_action_calls'] = [];
+    $GLOBALS['_test_switched_blog_calls'] = [];
+    $GLOBALS['_test_restore_blog_calls'] = 0;
 
 }
 
@@ -619,6 +669,15 @@ if (!class_exists('WP_REST_Request')) {
 $packagesAutoload = dirname(__DIR__) . '/packages/autoload.php';
 if (file_exists($packagesAutoload)) {
     require_once $packagesAutoload;
+}
+
+// WP_Site stub for multisite tests.
+if (!class_exists('WP_Site')) {
+    class WP_Site {
+        public $blog_id = '1';
+        public $domain = 'localhost';
+        public $path = '/';
+    }
 }
 
 // WP_REST_Response stub.

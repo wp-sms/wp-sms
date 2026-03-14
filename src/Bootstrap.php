@@ -137,15 +137,16 @@ class Bootstrap
     /**
      * Deactivation callback.
      *
+     * @param bool $networkDeactivating Whether the plugin is being deactivated network-wide.
      * @return void
      */
-    public static function deactivate(): void
+    public static function deactivate(bool $networkDeactivating = false): void
     {
-        InstallManager::deactivate();
+        InstallManager::deactivate($networkDeactivating);
     }
 
     /**
-     * Register activation and deactivation hooks with WordPress.
+     * Register activation, deactivation, and multisite lifecycle hooks.
      *
      * @return void
      */
@@ -153,6 +154,12 @@ class Bootstrap
     {
         register_activation_hook(WP_SMS_MAIN_FILE, [__CLASS__, 'activate']);
         register_deactivation_hook(WP_SMS_MAIN_FILE, [__CLASS__, 'deactivate']);
+
+        // Multisite: provision/deprovision tables when sites are created/deleted.
+        if (is_multisite()) {
+            add_action('wp_initialize_site', [InstallManager::class, 'onNewSiteCreated'], 900);
+            add_action('wp_uninitialize_site', [InstallManager::class, 'onSiteDeleted'], 0);
+        }
     }
 
     /**
