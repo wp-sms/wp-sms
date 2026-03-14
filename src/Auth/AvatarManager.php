@@ -6,6 +6,9 @@ defined('ABSPATH') || exit;
 
 class AvatarManager
 {
+    /** @var array<int, ?string> Request-scoped avatar URL cache. */
+    private array $avatarUrlCache = [];
+
     private const UPLOAD_DIR = 'wsms-avatars';
     private const MAX_SIZE_BYTES = 2 * 1024 * 1024; // 2MB
     private const ALLOWED_MIMES = [
@@ -76,6 +79,7 @@ class AvatarManager
 
         $url = $this->getUploadUrl() . '/' . $filename;
         update_user_meta($userId, self::META_CUSTOM_AVATAR, $url);
+        unset($this->avatarUrlCache[$userId]);
 
         return [
             'success'    => true,
@@ -91,6 +95,7 @@ class AvatarManager
     {
         $this->deleteAvatarFile($userId);
         delete_user_meta($userId, self::META_CUSTOM_AVATAR);
+        unset($this->avatarUrlCache[$userId]);
     }
 
     /**
@@ -98,17 +103,18 @@ class AvatarManager
      */
     public function getAvatarUrl(int $userId): ?string
     {
+        if (array_key_exists($userId, $this->avatarUrlCache)) {
+            return $this->avatarUrlCache[$userId];
+        }
+
         $custom = get_user_meta($userId, self::META_CUSTOM_AVATAR, true);
         if (!empty($custom)) {
-            return $custom;
+            return $this->avatarUrlCache[$userId] = $custom;
         }
 
         $social = get_user_meta($userId, self::META_SOCIAL_AVATAR, true);
-        if (!empty($social)) {
-            return $social;
-        }
 
-        return null;
+        return $this->avatarUrlCache[$userId] = (!empty($social) ? $social : null);
     }
 
     /**
@@ -224,11 +230,14 @@ class AvatarManager
             return ['items_removed' => false, 'items_retained' => false, 'messages' => [], 'done' => true];
         }
 
+        $hadCustom = !empty(get_user_meta($user->ID, self::META_CUSTOM_AVATAR, true));
+        $hadSocial = !empty(get_user_meta($user->ID, self::META_SOCIAL_AVATAR, true));
+
         $this->deleteAvatar($user->ID);
         delete_user_meta($user->ID, self::META_SOCIAL_AVATAR);
 
         return [
-            'items_removed'  => true,
+            'items_removed'  => $hadCustom || $hadSocial,
             'items_retained' => false,
             'messages'       => [],
             'done'           => true,

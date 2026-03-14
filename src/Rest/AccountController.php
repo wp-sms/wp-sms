@@ -77,7 +77,7 @@ class AccountController
         register_rest_route(self::NAMESPACE, '/auth/profile', [
             'methods'             => 'PUT',
             'callback'            => [$this, 'handleUpdateProfile'],
-            'permission_callback' => [$this, 'checkAuthenticated'],
+            'permission_callback' => 'is_user_logged_in',
             'args'                => [
                 'display_name' => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 'first_name'   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -90,7 +90,7 @@ class AccountController
         register_rest_route(self::NAMESPACE, '/auth/password', [
             'methods'             => 'PUT',
             'callback'            => [$this, 'handleChangePassword'],
-            'permission_callback' => [$this, 'checkAuthenticated'],
+            'permission_callback' => 'is_user_logged_in',
             'args'                => [
                 'current_password' => ['required' => false, 'type' => 'string', 'default' => null],
                 'new_password'     => ['required' => true, 'type' => 'string'],
@@ -100,7 +100,7 @@ class AccountController
         register_rest_route(self::NAMESPACE, '/auth/logout', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleLogout'],
-            'permission_callback' => [$this, 'checkAuthenticated'],
+            'permission_callback' => 'is_user_logged_in',
         ]);
 
         // --- Generic registration verification endpoints ---
@@ -130,20 +130,20 @@ class AccountController
         register_rest_route(self::NAMESPACE, '/auth/profile/pending-change/(?P<channel>[a-z_]+)', [
             'methods'             => 'DELETE',
             'callback'            => [$this, 'handleCancelPendingChange'],
-            'permission_callback' => [$this, 'checkAuthenticated'],
+            'permission_callback' => 'is_user_logged_in',
         ]);
 
         // --- Generic profile verification endpoints ---
         register_rest_route(self::NAMESPACE, '/auth/profile/send-verification/(?P<channel>[a-z_]+)', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleProfileSendVerification'],
-            'permission_callback' => [$this, 'checkAuthenticated'],
+            'permission_callback' => 'is_user_logged_in',
         ]);
 
         register_rest_route(self::NAMESPACE, '/auth/profile/verify/(?P<channel>[a-z_]+)', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleProfileVerifyChannel'],
-            'permission_callback' => [$this, 'checkAuthenticated'],
+            'permission_callback' => 'is_user_logged_in',
             'args'                => $verifyArgs,
         ]);
 
@@ -151,20 +151,15 @@ class AccountController
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'handleUploadAvatar'],
-                'permission_callback' => [$this, 'checkAuthenticated'],
+                'permission_callback' => 'is_user_logged_in',
             ],
             [
                 'methods'             => 'DELETE',
                 'callback'            => [$this, 'handleDeleteAvatar'],
-                'permission_callback' => [$this, 'checkAuthenticated'],
+                'permission_callback' => 'is_user_logged_in',
             ],
         ]);
 
-    }
-
-    public function checkAuthenticated(WP_REST_Request $request): bool
-    {
-        return is_user_logged_in();
     }
 
     // --- Registration ---

@@ -39,13 +39,13 @@ class EnrollmentController
         register_rest_route(self::NAMESPACE, '/auth/factors', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleListFactors'],
-            'permission_callback' => [$this, 'checkAuthenticated'],
+            'permission_callback' => 'is_user_logged_in',
         ]);
 
         register_rest_route(self::NAMESPACE, '/auth/mfa/enroll', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleEnroll'],
-            'permission_callback' => [$this, 'checkAuthenticated'],
+            'permission_callback' => 'is_user_logged_in',
             'args'                => [
                 'channel_id' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 'data'       => ['required' => false, 'type' => 'object', 'default' => []],
@@ -55,7 +55,7 @@ class EnrollmentController
         register_rest_route(self::NAMESPACE, '/auth/mfa/enroll/verify', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleEnrollVerify'],
-            'permission_callback' => [$this, 'checkAuthenticated'],
+            'permission_callback' => 'is_user_logged_in',
             'args'                => [
                 'channel_id' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 'code'       => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -65,7 +65,7 @@ class EnrollmentController
         register_rest_route(self::NAMESPACE, '/auth/mfa/unenroll', [
             'methods'             => 'DELETE',
             'callback'            => [$this, 'handleUnenroll'],
-            'permission_callback' => [$this, 'checkAuthenticated'],
+            'permission_callback' => 'is_user_logged_in',
             'args'                => [
                 'channel_id' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
             ],
@@ -74,19 +74,14 @@ class EnrollmentController
         register_rest_route(self::NAMESPACE, '/auth/mfa/backup-codes/regenerate', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleRegenerateBackupCodes'],
-            'permission_callback' => [$this, 'checkAuthenticated'],
+            'permission_callback' => 'is_user_logged_in',
         ]);
 
         register_rest_route(self::NAMESPACE, '/auth/me', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleMe'],
-            'permission_callback' => [$this, 'checkAuthenticated'],
+            'permission_callback' => 'is_user_logged_in',
         ]);
-    }
-
-    public function checkAuthenticated(WP_REST_Request $request): bool
-    {
-        return is_user_logged_in();
     }
 
     public function handleListMethods(WP_REST_Request $request): WP_REST_Response

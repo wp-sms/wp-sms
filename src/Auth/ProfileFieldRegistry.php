@@ -18,6 +18,8 @@ class ProfileFieldRegistry
         'show_admin_bar_front', 'use_ssl',
     ];
 
+    private ?array $allFieldsCache = null;
+
     public function __construct(
         private SettingsRepository $settings,
     ) {
@@ -71,6 +73,10 @@ class ProfileFieldRegistry
      */
     public function getAllFields(): array
     {
+        if ($this->allFieldsCache !== null) {
+            return $this->allFieldsCache;
+        }
+
         $systemFields = $this->getSystemDefaults();
         $customData = $this->settings->get('profile_fields', []);
 
@@ -119,7 +125,7 @@ class ProfileFieldRegistry
 
         usort($merged, fn(ProfileFieldDefinition $a, ProfileFieldDefinition $b) => $a->sortOrder <=> $b->sortOrder);
 
-        return $merged;
+        return $this->allFieldsCache = $merged;
     }
 
     /**

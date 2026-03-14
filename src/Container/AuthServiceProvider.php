@@ -238,13 +238,15 @@ class AuthServiceProvider implements ServiceProvider
 
         /** @var ProfileFieldRegistry $registry */
         $registry = $container->get('auth.field_registry');
+        $removed = false;
 
         foreach ($registry->getCustomFields() as $field) {
             delete_user_meta($user->ID, $field->metaKey);
+            $removed = true;
         }
 
         return [
-            'items_removed'  => true,
+            'items_removed'  => $removed,
             'items_retained' => false,
             'messages'       => [],
             'done'           => true,
