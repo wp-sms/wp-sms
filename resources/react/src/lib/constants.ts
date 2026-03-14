@@ -171,6 +171,7 @@ export const DEFAULTS: Required<AuthSettings> = {
   },
   social: {
     google: { enabled: false, client_id: '', client_secret: '' },
+    github: { enabled: false, client_id: '', client_secret: '' },
     telegram: { enabled: false, client_id: '', client_secret: '' },
   },
   social_profile_sync: 'registration_only',
@@ -181,10 +182,10 @@ export type ChannelId = 'phone' | 'email' | 'password';
 export const SOCIAL_METHODS = [
   { id: 'google', label: 'Google', comingSoon: false },
   { id: 'telegram', label: 'Telegram', comingSoon: false },
+  { id: 'github', label: 'GitHub', comingSoon: false },
   { id: 'apple', label: 'Apple', comingSoon: true },
   { id: 'facebook', label: 'Facebook', comingSoon: true },
   { id: 'microsoft', label: 'Microsoft', comingSoon: true },
-  { id: 'github', label: 'GitHub', comingSoon: true },
   { id: 'linkedin', label: 'LinkedIn', comingSoon: true },
   { id: 'twitter', label: 'Twitter / X', comingSoon: true },
 ] as const;

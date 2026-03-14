@@ -476,7 +476,9 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
 
     if (!function_exists('wp_remote_get')) {
         function wp_remote_get(string $url, array $args = []) {
-            return $GLOBALS['_test_wp_remote_get'] ?? new \WP_Error('not_configured', 'Test not configured');
+            $mock = $GLOBALS['_test_wp_remote_get'] ?? new \WP_Error('not_configured', 'Test not configured');
+
+            return is_callable($mock) ? $mock($url, $args) : $mock;
         }
     }
 

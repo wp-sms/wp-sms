@@ -7,6 +7,7 @@ use WSms\Social\Oidc\JwtValidator;
 use WSms\Social\Oidc\OidcDiscovery;
 use WSms\Social\Oidc\OidcPresets;
 use WSms\Social\Oidc\OidcProvider;
+use WSms\Social\Providers\GitHubProvider;
 use WSms\Social\Providers\GoogleProvider;
 use WSms\Social\SocialAccountRepository;
 use WSms\Social\SocialAuthManager;
@@ -33,6 +34,10 @@ class SocialServiceProvider implements ServiceProvider
 
         $container->register('social.provider.google', function () {
             return new GoogleProvider();
+        });
+
+        $container->register('social.provider.github', function () {
+            return new GitHubProvider();
         });
 
         // Shared OIDC services.
@@ -79,6 +84,7 @@ class SocialServiceProvider implements ServiceProvider
         $manager = $container->get('social.manager');
 
         $manager->registerProvider($container->get('social.provider.google'));
+        $manager->registerProvider($container->get('social.provider.github'));
         $manager->registerProvider($container->get('social.provider.telegram'));
     }
 }

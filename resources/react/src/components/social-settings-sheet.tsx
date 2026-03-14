@@ -37,6 +37,20 @@ const PROVIDER_HELP: Record<string, ProviderHelp> = {
       'Enable the Google+ API or People API in your project.',
     ],
   },
+  github: {
+    description: 'Allow users to sign in with their GitHub account',
+    clientIdLabel: 'Client ID',
+    clientIdPlaceholder: 'Iv1.abc123def456',
+    clientIdHelp: 'From GitHub > Settings > Developer settings > OAuth Apps. Create a new OAuth App.',
+    clientSecretHelp: 'Generate a client secret in the same OAuth App settings page.',
+    setupUrl: 'https://github.com/settings/developers',
+    setupLabel: 'GitHub Developer Settings',
+    notes: [
+      'Set the Authorization callback URL to: {callback_url}',
+      'The Homepage URL should be your WordPress site URL.',
+      'GitHub users with private emails will still be matched — the plugin fetches verified emails via the API.',
+    ],
+  },
   telegram: {
     description: 'Allow users to sign in with their Telegram account via OpenID Connect',
     clientIdLabel: 'Client ID (Bot ID)',
