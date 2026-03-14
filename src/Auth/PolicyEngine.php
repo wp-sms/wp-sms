@@ -30,6 +30,14 @@ class PolicyEngine
             return false;
         }
 
+        // Voluntary enrollment: if user has explicitly enrolled, always require MFA.
+        $userEnrolled = (bool) get_user_meta($userId, 'wsms_mfa_enabled', true);
+
+        if ($userEnrolled) {
+            return true;
+        }
+
+        // Below here: forced enrollment via admin policy.
         $requiredRoles = $settings['mfa_required_roles'] ?? [];
         if (empty($requiredRoles)) {
             return false;
@@ -49,10 +57,8 @@ class PolicyEngine
             ?? EnrollmentTiming::Voluntary;
 
         if ($timing === EnrollmentTiming::Voluntary) {
-            $hasFactor = (bool) get_user_meta($userId, 'wsms_mfa_enabled', true);
-            if (!$hasFactor) {
-                return false;
-            }
+            // Already handled above — user enrolled voluntarily.
+            return false;
         }
 
         if ($timing === EnrollmentTiming::GracePeriod) {
@@ -61,13 +67,11 @@ class PolicyEngine
             $graceExpiry = $registered + ($graceDays * DAY_IN_SECONDS);
 
             if (time() < $graceExpiry) {
-                $hasFactor = (bool) get_user_meta($userId, 'wsms_mfa_enabled', true);
-                if (!$hasFactor) {
-                    return false;
-                }
+                return false;
             }
         }
 
+        // OnRegistration or past grace period — require MFA.
         return true;
     }
 
@@ -455,6 +459,9 @@ class PolicyEngine
             'required_at_signup'   => true,
         ],
         'backup_codes' => [
+            'enabled' => false,
+        ],
+        'totp' => [
             'enabled' => false,
         ],
         'captcha' => [

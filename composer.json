@@ -12,7 +12,9 @@
   ],
   "require": {
     "php": ">=8.1",
-    "firebase/php-jwt": "^7.0"
+    "firebase/php-jwt": "^7.0",
+    "spomky-labs/otphp": "^11.3",
+    "bacon/bacon-qr-code": "^3.0"
   },
   "require-dev": {
     "veronalabs/wp-scoper": "^1.2.4",
@@ -32,7 +34,7 @@
   "extra": {
     "wp-scoper": {
       "namespace_prefix": "WSms\\Dependencies",
-      "packages": ["firebase/php-jwt"],
+      "packages": ["firebase/php-jwt", "spomky-labs/otphp", "bacon/bacon-qr-code"],
       "target_directory": "packages",
       "delete_vendor_packages": true,
       "exclude_directories": ["views", "templates", "resources", "public"]

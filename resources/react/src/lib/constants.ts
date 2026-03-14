@@ -62,6 +62,8 @@ export const EVENT_TYPES = [
   'mfa_admin_bypass',
   'backup_code_used',
   'backup_codes_regenerated',
+  'totp_verified',
+  'totp_failed',
   'account_locked',
   'account_unlocked',
   'social_login_success',
@@ -113,6 +115,9 @@ export const DEFAULTS: Required<AuthSettings> = {
     enabled: false,
     count: 10,
     length: 10,
+  },
+  totp: {
+    enabled: false,
   },
   mfa_required_roles: [],
   enrollment_timing: 'voluntary',

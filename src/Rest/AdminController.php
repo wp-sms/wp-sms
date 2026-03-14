@@ -39,6 +39,7 @@ class AdminController
         'email',
         'password',
         'backup_codes',
+        'totp',
         'captcha',
         'social',
         'telegram',

@@ -67,6 +67,10 @@ export interface BackupCodesSettings {
   length?: number;
 }
 
+export interface TotpSettings {
+  enabled?: boolean;
+}
+
 export type CaptchaProvider = 'turnstile' | 'recaptcha' | 'hcaptcha';
 export type CaptchaAction = 'login' | 'register' | 'forgot_password' | 'identify';
 
@@ -103,6 +107,7 @@ export interface AuthSettings {
   email?: EmailChannelSettings;
   password?: PasswordSettings;
   backup_codes?: BackupCodesSettings;
+  totp?: TotpSettings;
   captcha?: CaptchaSettings;
   telegram?: TelegramSettings;
   mfa_required_roles?: string[];

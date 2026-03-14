@@ -60,6 +60,9 @@ class InstallManager
                 'count'   => 10,
                 'length'  => 10,
             ],
+            'totp' => [
+                'enabled' => false,
+            ],
             'mfa_required_roles'  => [],
             'enrollment_timing'   => 'voluntary',
             'grace_period_days'   => 7,

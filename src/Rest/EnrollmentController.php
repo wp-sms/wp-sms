@@ -10,6 +10,7 @@ use WSms\Enums\ChannelStatus;
 use WSms\Mfa\Channels\BackupCodesChannel;
 use WSms\Mfa\Contracts\SupportsEnrollmentConfirmation;
 use WSms\Mfa\MfaManager;
+use WSms\Mfa\ValueObjects\EnrollmentResult;
 
 defined('ABSPATH') || exit;
 
@@ -142,24 +143,8 @@ class EnrollmentController
         $result = $channel->enroll($userId, $data);
 
         if ($result->success) {
-            // Auto-enroll backup codes on first MFA factor.
-            if ($channelId !== 'backup_codes') {
-                $backupChannel = $this->mfaManager->getChannel('backup_codes');
-
-                if ($backupChannel && !$backupChannel->isEnrolled($userId)) {
-                    $backupResult = $backupChannel->enroll($userId, []);
-
-                    if ($backupResult->success) {
-                        $result = new \WSms\Mfa\ValueObjects\EnrollmentResult(
-                            $result->success,
-                            $result->message,
-                            array_merge($result->data, ['backup_codes' => $backupResult->data['codes'] ?? []]),
-                        );
-                    }
-                }
-            }
-
             update_user_meta($userId, 'wsms_mfa_enabled', '1');
+            $result = $this->autoEnrollBackupCodes($userId, $channelId, $result);
         }
 
         return new WP_REST_Response([
@@ -190,11 +175,13 @@ class EnrollmentController
 
             if ($result->success) {
                 update_user_meta($userId, 'wsms_mfa_enabled', '1');
+                $result = $this->autoEnrollBackupCodes($userId, $channelId, $result);
             }
 
             return new WP_REST_Response([
                 'success' => $result->success,
                 'message' => $result->message,
+                'data'    => $result->data,
             ], $result->success ? 200 : 400);
         }
 
@@ -300,5 +287,30 @@ class EnrollmentController
                 'enrolled_factors'      => $enrolledFactors,
             ],
         ]);
+    }
+
+    private function autoEnrollBackupCodes(int $userId, string $channelId, EnrollmentResult $result): EnrollmentResult
+    {
+        if ($channelId === 'backup_codes') {
+            return $result;
+        }
+
+        $backupChannel = $this->mfaManager->getChannel('backup_codes');
+
+        if (!$backupChannel || $backupChannel->isEnrolled($userId)) {
+            return $result;
+        }
+
+        $backupResult = $backupChannel->enroll($userId, []);
+
+        if ($backupResult->success) {
+            return new EnrollmentResult(
+                $result->success,
+                $result->message,
+                array_merge($result->data, ['backup_codes' => $backupResult->data['codes'] ?? []]),
+            );
+        }
+
+        return $result;
     }
 }

@@ -35,6 +35,13 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         define('ABSPATH', '/');
     }
 
+    // Load scoped dependencies autoloader (wp-scoper output).
+    // Must come after ABSPATH is defined since packages/autoload.php guards on it.
+    $scopedAutoloader = dirname(__DIR__) . '/packages/autoload.php';
+    if (file_exists($scopedAutoloader)) {
+        require_once $scopedAutoloader;
+    }
+
     // Stub WordPress functions used by unit-tested classes.
     if (!function_exists('get_option')) {
         function get_option(string $option, $default = false) {

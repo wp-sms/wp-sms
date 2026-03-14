@@ -37,7 +37,7 @@ export function MfaStep() {
         const primaryMethod = selectedAuthMethod.value || 'password';
         const primaryChannel = primaryMethod.startsWith('phone') ? 'phone' : primaryMethod.startsWith('email') ? 'email' : 'password';
 
-        let defaultFactor = factors.find((f) => f.channel_id !== primaryChannel);
+        let defaultFactor = factors.find((f) => f.channel_id !== primaryChannel && f.channel_id !== 'backup_codes');
         if (!defaultFactor) defaultFactor = factors[0];
 
         setActiveFactor(defaultFactor.channel_id);
@@ -119,9 +119,11 @@ export function MfaStep() {
         sendMfaChallenge(channelId);
     }
 
-    const subtitle = challengeMeta.value?.masked_identifier
-        ? `Enter the code sent to ${challengeMeta.value.masked_identifier}`
-        : 'Enter your verification code to continue.';
+    const subtitle = challengeMeta.value?.requires_delivery === false
+        ? 'Enter the code from your authenticator app'
+        : challengeMeta.value?.masked_identifier
+            ? `Enter the code sent to ${challengeMeta.value.masked_identifier}`
+            : 'Enter your verification code to continue.';
 
     // Factor picker overlay.
     if (showFactorPicker) {
@@ -178,7 +180,7 @@ export function MfaStep() {
                     {challengeSent && <OtpInput onComplete={handleVerify} disabled={authLoading.value} />}
 
                     <div className="flex justify-center gap-4 flex-wrap">
-                        {challengeSent && (
+                        {challengeSent && challengeMeta.value?.requires_delivery !== false && (
                             <Button
                                 variant="link"
                                 type="button"

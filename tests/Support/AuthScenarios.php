@@ -153,6 +153,22 @@ class AuthScenarios
         return self::baseMfa('phone', ['administrator'], EnrollmentTiming::Voluntary);
     }
 
+    public static function mfaTotpForAdmin(): array
+    {
+        return array_merge(
+            [
+                'password' => self::PASSWORD_ENABLED,
+                'phone'    => ['enabled' => false],
+                'email'    => ['enabled' => false],
+                'totp'     => ['enabled' => true],
+            ],
+            [
+                'mfa_required_roles' => ['administrator'],
+                'enrollment_timing'  => EnrollmentTiming::OnRegistration->value,
+            ],
+        );
+    }
+
     // ──────────────────────────────────────────────
     //  Phone-only registration
     // ──────────────────────────────────────────────
@@ -313,6 +329,7 @@ class AuthScenarios
             'mfaWithBackupCodes'  => self::mfaWithBackupCodes(),
             'mfaGracePeriod'      => self::mfaGracePeriod(),
             'mfaVoluntary'        => self::mfaVoluntary(),
+            'mfaTotpForAdmin'     => self::mfaTotpForAdmin(),
             'verifyEmailAtSignup' => self::verifyEmailAtSignup(),
             'verifyPhoneAtSignup' => self::verifyPhoneAtSignup(),
             'verifyBothAtSignup'  => self::verifyBothAtSignup(),

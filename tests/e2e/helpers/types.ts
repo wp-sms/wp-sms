@@ -31,6 +31,9 @@ export interface AuthSettings {
   backup_codes?: {
     enabled?: boolean;
   };
+  totp?: {
+    enabled?: boolean;
+  };
   social?: {
     google?: { enabled?: boolean; client_id?: string; client_secret?: string };
     telegram?: { enabled?: boolean; client_id?: string; client_secret?: string };

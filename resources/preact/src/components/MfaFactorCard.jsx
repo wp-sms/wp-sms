@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
-import { Smartphone, Mail, ClipboardList, Lock, Send } from 'lucide-react';
+import { Smartphone, Mail, ClipboardList, Lock, Send, KeyRound } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { Button } from './ui/Button';
 import { Label } from './ui/Label';
@@ -12,6 +12,7 @@ const CHANNEL_META = {
     phone:        { label: 'Phone',        icon: Smartphone,     description: 'Receive a code via text message' },
     email:        { label: 'Email',        icon: Mail,           description: 'Receive a code via email' },
     telegram:     { label: 'Telegram',     icon: Send,           description: 'Receive a code via Telegram bot' },
+    totp:         { label: 'Authenticator App', icon: KeyRound, description: 'Use an app like Google Authenticator or Authy' },
     backup_codes: { label: 'Backup Codes', icon: ClipboardList,  description: 'One-time use recovery codes' },
 };
 
@@ -23,6 +24,7 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [telegramLink, setTelegramLink] = useState('');
+    const [totpEnroll, setTotpEnroll] = useState(null); // { qrCodeUri, secret }
     const pollRef = useRef(null);
 
     // Poll for Telegram enrollment completion.
@@ -48,6 +50,11 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
             setVerifying(true);
         }
 
+        if (res && method.id === 'totp' && res.data?.requires_confirmation && res.data?.qr_code_uri) {
+            setTotpEnroll({ qrCodeUri: res.data.qr_code_uri, secret: res.data.secret || '' });
+            setExpanding(true);
+        }
+
         if (res && method.id === 'telegram' && res.data?.deep_link) {
             setTelegramLink(res.data.deep_link);
             setExpanding(true);
@@ -62,18 +69,19 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
         setLoading(false);
     }
 
-    async function handleVerifyPhone(code) {
+    async function handleVerifyEnrollment(channelId, code) {
         setError('');
         setLoading(true);
 
         try {
             const res = await api.post('/auth/mfa/enroll/verify', {
-                channel_id: 'phone',
+                channel_id: channelId,
                 code,
             });
             if (res.success) {
                 setExpanding(false);
                 setVerifying(false);
+                setTotpEnroll(null);
                 if (onRefresh) await onRefresh();
             } else {
                 setError(res.message || 'Verification failed.');
@@ -161,11 +169,32 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                 </div>
             )}
 
+            {expanding && !enrolled && method.id === 'totp' && totpEnroll && (
+                <div className="px-4 pb-4 space-y-4 animate-fade-in">
+                    {error && <p className="text-sm text-destructive">{error}</p>}
+                    <div className="flex justify-center">
+                        <img src={totpEnroll.qrCodeUri} alt="Scan with authenticator app" className="w-48 h-48" />
+                    </div>
+                    <details className="text-sm">
+                        <summary className="cursor-pointer text-muted-foreground">
+                            Can't scan? Enter this key manually
+                        </summary>
+                        <code className="mt-2 block rounded bg-muted p-2 text-xs font-mono break-all select-all">
+                            {totpEnroll.secret}
+                        </code>
+                    </details>
+                    <p className="text-sm text-muted-foreground">
+                        Enter the 6-digit code from your app to verify setup
+                    </p>
+                    <OtpInput onComplete={(code) => handleVerifyEnrollment('totp', code)} disabled={loading} />
+                </div>
+            )}
+
             {verifying && (
                 <div className="px-4 pb-4 space-y-3 animate-fade-in">
                     {error && <p className="text-sm text-destructive">{error}</p>}
                     <p className="text-sm text-muted-foreground">Enter the code sent to your phone</p>
-                    <OtpInput onComplete={handleVerifyPhone} disabled={loading} />
+                    <OtpInput onComplete={(code) => handleVerifyEnrollment('phone', code)} disabled={loading} />
                 </div>
             )}
         </div>

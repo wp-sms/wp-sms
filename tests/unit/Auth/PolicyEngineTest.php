@@ -43,6 +43,34 @@ class PolicyEngineTest extends TestCase
         $this->assertFalse($this->engine->isMfaRequired(1));
     }
 
+    public function testIsMfaRequiredReturnsTrueForVoluntarilyEnrolledUser(): void
+    {
+        // Enable an MFA channel (phone with usage=mfa).
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => true, 'usage' => 'mfa'],
+            // No mfa_required_roles set — user enrolled voluntarily.
+        ];
+
+        // User has wsms_mfa_enabled = 1 (enrolled voluntarily).
+        $GLOBALS['_test_user_meta'][1]['wsms_mfa_enabled'] = '1';
+
+        $engine = new PolicyEngine($this->mfaManager);
+
+        $this->assertTrue($engine->isMfaRequired(1));
+    }
+
+    public function testIsMfaRequiredReturnsFalseForUnenrolledUserWithNoRequiredRoles(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => true, 'usage' => 'mfa'],
+        ];
+
+        // User has NOT enrolled.
+        $engine = new PolicyEngine($this->mfaManager);
+
+        $this->assertFalse($engine->isMfaRequired(1));
+    }
+
     /**
      * @dataProvider primaryMethodsProvider
      */

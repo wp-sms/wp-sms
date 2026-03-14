@@ -153,6 +153,17 @@ export function mfaVoluntary(): AuthSettings {
   return baseMfa('phone', ['administrator'], 'voluntary');
 }
 
+export function mfaTotpForAdmin(): AuthSettings {
+  return {
+    password: { ...PASSWORD_ENABLED },
+    phone: { enabled: false },
+    email: { enabled: false },
+    totp: { enabled: true },
+    mfa_required_roles: ['administrator'],
+    enrollment_timing: 'on_registration',
+  };
+}
+
 // ──────────────────────────────────────────────
 //  Verification presets
 // ──────────────────────────────────────────────
@@ -308,6 +319,7 @@ export const allPresets = {
   mfaWithBackupCodes,
   mfaGracePeriod,
   mfaVoluntary,
+  mfaTotpForAdmin,
   verifyEmailAtSignup,
   verifyPhoneAtSignup,
   verifyBothAtSignup,
@@ -340,6 +352,7 @@ export const mfaPresets = [
   ['mfaWithBackupCodes', mfaWithBackupCodes()],
   ['mfaGracePeriod', mfaGracePeriod()],
   ['mfaVoluntary', mfaVoluntary()],
+  ['mfaTotpForAdmin', mfaTotpForAdmin()],
 ] as const;
 
 export const socialPresets = [

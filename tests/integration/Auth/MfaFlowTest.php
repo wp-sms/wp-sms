@@ -190,6 +190,56 @@ class MfaFlowTest extends IntegrationTestCase
         $this->assertSame('authenticated', $result->status);
     }
 
+    public function testVoluntaryEnrollmentEnforcesMfaWithNoRequiredRoles(): void
+    {
+        // Only enable TOTP — no mfa_required_roles set.
+        $this->setSettings([
+            'password' => ['enabled' => true, 'required_at_signup' => true, 'allow_sign_in' => true],
+            'totp'     => ['enabled' => true],
+        ]);
+
+        $user = UserFactory::withMfa('totp', ['roles' => ['subscriber']]);
+        UserFactory::install($user);
+        $this->simulateAuthenticate($user);
+
+        $this->configureMfaChannel('totp', enrolled: true, verifySuccess: true);
+        $this->configureMfaFactors($user->ID, [
+            ['channel_id' => 'totp', 'status' => ChannelStatus::Active],
+        ]);
+
+        $result = $this->orchestrator->loginWithPassword($user->user_email, 'password');
+
+        $this->assertSame('mfa_required', $result->status);
+    }
+
+    public function testTotpMfaFlowCompletesLogin(): void
+    {
+        $this->setSettings(AuthScenarios::mfaTotpForAdmin());
+        $user = UserFactory::create(['roles' => ['administrator']]);
+        UserFactory::install($user);
+        $this->simulateAuthenticate($user);
+
+        $channel = $this->configureMfaChannel('totp', enrolled: true, verifySuccess: true);
+        $this->configureMfaFactors($user->ID, [
+            ['channel_id' => 'totp', 'status' => ChannelStatus::Active],
+        ]);
+
+        // Step 1: Password login → MFA required.
+        $loginResult = $this->orchestrator->loginWithPassword($user->user_email, 'password');
+        $this->assertSame('mfa_required', $loginResult->status);
+
+        // Step 2: Send MFA challenge (no-op for TOTP).
+        $challengeResult = $this->orchestrator->sendMfaChallenge($loginResult->sessionToken, 'totp');
+        $this->assertTrue($challengeResult->success);
+        $this->assertSame('challenge_sent', $challengeResult->status);
+
+        // Step 3: Verify MFA → authenticated.
+        $verifyResult = $this->orchestrator->verifyMfa($challengeResult->sessionToken, '123456', 'totp');
+        $this->assertTrue($verifyResult->success);
+        $this->assertSame('authenticated', $verifyResult->status);
+        $this->assertSame($user->ID, $verifyResult->userId);
+    }
+
     public function testMfaGracePeriodEnforcesAfterGrace(): void
     {
         $this->setSettings(AuthScenarios::mfaGracePeriod(7));

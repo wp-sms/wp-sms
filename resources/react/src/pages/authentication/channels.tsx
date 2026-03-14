@@ -281,6 +281,17 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
 
               <Separator />
 
+              {/* TOTP (Authenticator App) */}
+              <ChannelRow
+                icon={KeyRound}
+                title="Authenticator App"
+                description={settings.totp.enabled ? 'TOTP — Google Authenticator, Authy, 1Password' : undefined}
+                enabled={settings.totp.enabled}
+                onToggle={(v) => onUpdate('totp', { ...settings.totp, enabled: v })}
+              />
+
+              <Separator />
+
               {/* Biometric */}
               <ChannelRow
                 icon={Fingerprint}

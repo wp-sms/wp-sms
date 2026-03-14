@@ -7,6 +7,7 @@ use WSms\Mfa\Channels\EmailChannel;
 use WSms\Mfa\Channels\MagicLinkChannel;
 use WSms\Mfa\Channels\PhoneChannel;
 use WSms\Mfa\Channels\TelegramChannel;
+use WSms\Mfa\Channels\TotpChannel;
 use WSms\Mfa\MfaManager;
 use WSms\Mfa\OtpGenerator;
 use WSms\Telegram\TelegramBotClient;
@@ -76,6 +77,10 @@ class MfaServiceProvider implements ServiceProvider
                 $container->get('telegram.bot_client'),
             );
         });
+
+        $container->register('mfa.channel.totp', function () use ($container) {
+            return new TotpChannel($container->get('audit.logger'));
+        });
     }
 
     /** {@inheritDoc} */
@@ -87,6 +92,7 @@ class MfaServiceProvider implements ServiceProvider
         $manager->registerChannel($container->get('mfa.channel.email'));
         $manager->registerChannel($container->get('mfa.channel.backup'));
         $manager->registerChannel($container->get('mfa.channel.telegram'));
+        $manager->registerChannel($container->get('mfa.channel.totp'));
         // MagicLinkChannel is NOT registered — it's used internally by phone/email channels.
     }
 }
