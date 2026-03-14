@@ -143,6 +143,7 @@ All premium features + all add-ons in one package.
 - **Fix:** Fixed gateway initialization issue for 4jawaly, 1s2u, 160au, 0098sms, and 18sms gateways.
 - **Fix:** Fixed sms.to gateway request config passed as params instead of query args.
 - **Fix:** Removed unused username/password fields from sms.to gateway.
+- **Fix:** Fixed Textplode gateway not stripping `+` prefix from phone numbers, causing send failures.
 
 = v7.2 - 2026-03-08 =
 - **New:** Redesigned admin interface with improved user experience.
