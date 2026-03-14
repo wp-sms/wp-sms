@@ -98,8 +98,13 @@ class AuthServiceProvider implements ServiceProvider
             );
         });
 
-        $container->register('auth.login_guard', function () {
-            return new LoginGuard();
+        $container->register('auth.login_guard', function () use ($container) {
+            return new LoginGuard(
+                $container->get('auth.policy'),
+                $container->get('auth.session'),
+                $container->get('mfa.manager'),
+                $container->get('auth.settings'),
+            );
         });
     }
 

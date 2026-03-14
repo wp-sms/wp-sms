@@ -431,6 +431,25 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('wp_safe_redirect')) {
+        function wp_safe_redirect(string $location, int $status = 302, string $xRedirectBy = 'WordPress'): bool {
+            $GLOBALS['_test_redirect'] = ['location' => $location, 'status' => $status];
+            return true;
+        }
+    }
+
+    if (!function_exists('wp_clear_auth_cookie')) {
+        function wp_clear_auth_cookie(): void {
+            $GLOBALS['_test_auth_cookie_cleared'] = true;
+        }
+    }
+
+    if (!function_exists('wp_doing_ajax')) {
+        function wp_doing_ajax(): bool {
+            return $GLOBALS['_test_doing_ajax'] ?? false;
+        }
+    }
+
     if (!function_exists('wp_remote_post')) {
         function wp_remote_post(string $url, array $args = []) {
             return $GLOBALS['_test_wp_remote_post'] ?? new \WP_Error('not_configured', 'Test not configured');

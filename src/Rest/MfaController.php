@@ -22,6 +22,15 @@ class MfaController
 
     public function registerRoutes(): void
     {
+        register_rest_route(self::NAMESPACE, '/auth/mfa/factors', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'handleGetFactors'],
+            'permission_callback' => '__return_true',
+            'args'                => [
+                'session_token' => ['required' => true, 'type' => 'string'],
+            ],
+        ]);
+
         register_rest_route(self::NAMESPACE, '/auth/mfa/send', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleSendChallenge'],
@@ -42,6 +51,21 @@ class MfaController
                 'channel_id'     => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
             ],
         ]);
+    }
+
+    public function handleGetFactors(WP_REST_Request $request): WP_REST_Response
+    {
+        $rl = $this->rateLimiter->check('mfa_factors', 5, 60);
+
+        if (!$rl['allowed']) {
+            return $this->toResponse(AuthResult::rateLimited($rl['retry_after']));
+        }
+
+        $result = $this->orchestrator->getSessionMfaFactors(
+            $request->get_param('session_token'),
+        );
+
+        return $this->toResponse($result);
     }
 
     public function handleSendChallenge(WP_REST_Request $request): WP_REST_Response

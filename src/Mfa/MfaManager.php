@@ -102,6 +102,36 @@ class MfaManager
     }
 
     /**
+     * Get a user's active factors whose channels support MFA.
+     *
+     * @return array<array{channel_id: string, name: string}>
+     */
+    public function getActiveMfaFactors(int $userId): array
+    {
+        $factors = $this->getUserFactors($userId);
+        $active = [];
+
+        foreach ($factors as $factor) {
+            if ($factor->status !== ChannelStatus::Active) {
+                continue;
+            }
+
+            $channel = $this->getChannel($factor->channelId);
+
+            if (!$channel || !$channel->supportsMfa()) {
+                continue;
+            }
+
+            $active[] = [
+                'channel_id' => $factor->channelId,
+                'name'       => $channel->getName(),
+            ];
+        }
+
+        return $active;
+    }
+
+    /**
      * Disable all MFA factors for a user.
      */
     public function disableAllFactors(int $userId): void

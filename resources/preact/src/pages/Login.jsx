@@ -1,8 +1,9 @@
 import { useEffect } from 'preact/hooks';
-import { authStep, authError, challengeToken, resetIdentifyFlow } from '../signals/auth';
+import { authStep, authError, resetIdentifyFlow } from '../signals/auth';
 import { primaryMethods } from '../signals/config';
 import { authUrl, getQueryParam } from '../utils/urls';
-import { friendlySocialError } from '../utils/auth';
+import { friendlySocialError, handleAuthResponse } from '../utils/auth';
+import { api } from '../api/client';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { AuthLink } from '../components/AuthLink';
 import { IdentifierStep } from '../components/steps/IdentifierStep';
@@ -25,18 +26,17 @@ export function Login() {
     const step = authStep.value;
     const hasPassword = primaryMethods.value.includes('password');
 
-    // Handle social login callback params in URL.
+    // Handle redirect-based MFA params (social login, wp-login.php).
     useEffect(() => {
         const socialError = getQueryParam('social_error');
-        const socialMfa = getQueryParam('social_mfa');
+        const mfaToken = getQueryParam('social_mfa') || getQueryParam('wp_mfa');
 
         if (socialError) {
             authError.value = friendlySocialError(socialError);
             window.history.replaceState({}, '', window.location.pathname);
-        } else if (socialMfa) {
-            challengeToken.value = socialMfa;
-            authStep.value = 'mfa';
+        } else if (mfaToken) {
             window.history.replaceState({}, '', window.location.pathname);
+            resolveMfaSession(mfaToken);
         }
     }, []);
 
@@ -69,4 +69,13 @@ export function Login() {
             </div>
         </AuthLayout>
     );
+}
+
+async function resolveMfaSession(token) {
+    try {
+        const res = await api.post('/auth/mfa/factors', { session_token: token });
+        handleAuthResponse(res);
+    } catch {
+        authError.value = 'Your session has expired. Please sign in again.';
+    }
 }

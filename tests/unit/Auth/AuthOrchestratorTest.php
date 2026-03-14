@@ -11,11 +11,9 @@ use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthSession;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\SettingsRepository;
-use WSms\Enums\ChannelStatus;
 use WSms\Mfa\Channels\PhoneChannel;
 use WSms\Mfa\MfaManager;
 use WSms\Mfa\ValueObjects\ChallengeResult;
-use WSms\Mfa\ValueObjects\UserFactor;
 
 class AuthOrchestratorTest extends TestCase
 {
@@ -93,14 +91,9 @@ class AuthOrchestratorTest extends TestCase
 
         $this->policy->method('isMfaRequired')->willReturn(true);
 
-        $phoneChannel = $this->createMock(PhoneChannel::class);
-        $phoneChannel->method('supportsMfa')->willReturn(true);
-        $phoneChannel->method('getName')->willReturn('Phone');
-
-        $factor = new UserFactor(1, 1, 'phone', ChannelStatus::Active, [], '', '');
-
-        $this->mfaManager->method('getUserFactors')->willReturn([$factor]);
-        $this->mfaManager->method('getChannel')->willReturn($phoneChannel);
+        $this->mfaManager->method('getActiveMfaFactors')->willReturn([
+            ['channel_id' => 'phone', 'name' => 'Phone'],
+        ]);
 
         $this->session->method('create')->willReturn('session-token-abc');
 

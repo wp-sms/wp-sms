@@ -5,7 +5,6 @@ namespace WSms\Auth;
 use WSms\Audit\AuditLogger;
 use WSms\Auth\ValueObjects\AuthResult;
 use WSms\Auth\ValueObjects\IdentifyResult;
-use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
 use WSms\Enums\SessionStage;
 use WSms\Mfa\Contracts\SupportsTokenVerification;
@@ -338,6 +337,24 @@ class AuthOrchestrator
         return $this->resolvePostPrimary($userId, $method);
     }
 
+    /**
+     * Resolve a PrimaryVerified session into its available MFA factors.
+     *
+     * Used by redirect-based flows (wp-login.php, social login) where the
+     * frontend receives a session token via URL but has no factor list.
+     */
+    public function getSessionMfaFactors(string $sessionToken): AuthResult
+    {
+        $sessionData = $this->requireSession($sessionToken, SessionStage::PrimaryVerified);
+        if ($sessionData instanceof AuthResult) {
+            return $sessionData;
+        }
+
+        $availableFactors = $this->mfaManager->getActiveMfaFactors($sessionData['user_id']);
+
+        return AuthResult::mfaRequired($sessionToken, $availableFactors);
+    }
+
     private function resolvePostPrimary(int $userId, string $method, ?string $existingSessionKey = null): AuthResult
     {
         if (!$this->policy->isMfaRequired($userId)) {
@@ -345,25 +362,7 @@ class AuthOrchestrator
         }
 
         // MFA is required — find available factors.
-        $factors = $this->mfaManager->getUserFactors($userId);
-        $availableFactors = [];
-
-        foreach ($factors as $factor) {
-            if ($factor->status !== ChannelStatus::Active) {
-                continue;
-            }
-
-            $channel = $this->mfaManager->getChannel($factor->channelId);
-
-            if (!$channel || !$channel->supportsMfa()) {
-                continue;
-            }
-
-            $availableFactors[] = [
-                'channel_id' => $factor->channelId,
-                'name'       => $channel->getName(),
-            ];
-        }
+        $availableFactors = $this->mfaManager->getActiveMfaFactors($userId);
 
         // If no valid MFA factors available, complete login without MFA (graceful).
         if (empty($availableFactors)) {
