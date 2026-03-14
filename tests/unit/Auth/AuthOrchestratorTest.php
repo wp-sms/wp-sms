@@ -54,6 +54,8 @@ class AuthOrchestratorTest extends TestCase
             $GLOBALS['_test_get_user_by_result'],
             $GLOBALS['_test_options']['wsms_auth_settings'],
         );
+
+        $GLOBALS['_test_do_action_calls'] = [];
     }
 
     public function testLoginWithPasswordSucceedsWithoutMfa(): void
@@ -566,6 +568,93 @@ class AuthOrchestratorTest extends TestCase
         $result = $this->orchestrator->loginWithPassword('+1234567890', 'wrong');
 
         $this->assertFalse($result->success);
+    }
+
+    public function testLoginWithPasswordFiresWpLoginFailedHook(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_get_user_by_result'] = $user;
+        $GLOBALS['_test_wp_authenticate_result'] = new \WP_Error('incorrect_password', 'Wrong');
+
+        $this->lockout->method('isLocked')->willReturn(['locked' => false, 'until' => null, 'attempts' => 0]);
+
+        $this->orchestrator->loginWithPassword('admin', 'wrong');
+
+        $args = $this->assertHookFiredOnce('wp_login_failed');
+        $this->assertSame('admin', $args[0]);
+        $this->assertInstanceOf(\WP_Error::class, $args[1]);
+    }
+
+    public function testLoginWithPasswordFiresWpLoginHookOnSuccess(): void
+    {
+        $user = $this->makeUser(1);
+        $this->setupSuccessfulLogin($user, '_test_get_user_by_result');
+
+        $this->orchestrator->loginWithPassword('admin', 'pass');
+
+        $args = $this->assertHookFiredOnce('wp_login');
+        $this->assertSame('testuser', $args[0]);
+        $this->assertSame($user, $args[1]);
+    }
+
+    public function testCompleteLoginFiresWpLoginHookForPasswordless(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_userdata'] = $user;
+
+        $this->session->method('validate')->willReturn([
+            'user_id'     => 1,
+            'method'      => 'phone',
+            'stage'       => 'challenge_pending',
+            'channel_id'  => 'phone',
+            'session_key' => 'sk123',
+        ]);
+
+        $phoneChannel = $this->createMock(PhoneChannel::class);
+        $phoneChannel->method('verify')->willReturn(true);
+
+        $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
+        $this->policy->method('isMfaRequired')->willReturn(false);
+
+        $this->orchestrator->verifyPrimary('token', '123456');
+
+        $args = $this->assertHookFiredOnce('wp_login');
+        $this->assertSame('testuser', $args[0]);
+    }
+
+    public function testCompleteLoginFiresWpLoginHookAfterMfa(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_userdata'] = $user;
+
+        $this->session->method('validate')->willReturn([
+            'user_id'     => 1,
+            'method'      => 'password',
+            'stage'       => 'mfa_pending',
+            'session_key' => 'sk_mfa',
+        ]);
+
+        $phoneChannel = $this->createMock(PhoneChannel::class);
+        $phoneChannel->method('supportsMfa')->willReturn(true);
+        $phoneChannel->method('verify')->willReturn(true);
+
+        $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
+
+        $this->orchestrator->verifyMfa('token', '123456', 'phone');
+
+        $this->assertHookFiredOnce('wp_login');
+    }
+
+    private function assertHookFiredOnce(string $hookName): array
+    {
+        $fired = array_filter(
+            $GLOBALS['_test_do_action_calls'],
+            fn ($call) => $call['hook'] === $hookName,
+        );
+
+        $this->assertCount(1, $fired, "Expected hook '{$hookName}' to fire exactly once.");
+
+        return array_values($fired)[0]['args'];
     }
 
     private function setupIdentifyUserFound(string $identifier, array $methods = [], ?string $default = null): void

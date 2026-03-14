@@ -98,6 +98,8 @@ class AuthOrchestrator
                 'reason' => $user->get_error_code(),
             ]);
 
+            do_action('wp_login_failed', $username, $user);
+
             return AuthResult::failed('invalid_credentials', 'Invalid username or password.');
         }
 
@@ -436,9 +438,10 @@ class AuthOrchestrator
             'mfa_channel' => $mfaChannel,
         ]);
 
-        do_action('wsms_login_success', $userId, $method, $mfaChannel);
-
         $user = get_userdata($userId);
+
+        do_action('wp_login', $user->user_login, $user);
+        do_action('wsms_login_success', $userId, $method, $mfaChannel);
 
         return [
             'id'           => $userId,

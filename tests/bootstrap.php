@@ -102,7 +102,7 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
 
     if (!function_exists('do_action')) {
         function do_action(string $hookName, ...$args) {
-            // No-op in tests.
+            $GLOBALS['_test_do_action_calls'][] = ['hook' => $hookName, 'args' => $args];
         }
     }
 
@@ -497,6 +497,7 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
     // Initialize test globals.
     $GLOBALS['_test_options'] = [];
     $GLOBALS['_test_query_vars'] = [];
+    $GLOBALS['_test_do_action_calls'] = [];
 
 }
 
