@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 import { api } from '../api/client';
-import { registrationFields, socialProviders } from '../signals/config';
+import { registrationFields, registrationFieldDefs, socialProviders } from '../signals/config';
 import { authError, authLoading, registrationToken, pendingVerifications } from '../signals/auth';
 import { extractError, friendlySocialError } from '../utils/auth';
 import { authUrl, getQueryParam } from '../utils/urls';
@@ -12,14 +12,17 @@ import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
 import { AuthLink } from '../components/AuthLink';
 import { PhoneInput } from '../components/PhoneInput';
+import { DynamicField } from '../components/DynamicField';
 import { RegisterVerifyStep } from '../components/steps/RegisterVerifyStep';
 import { CaptchaWidget } from '../components/CaptchaWidget';
 import { useCaptcha } from '../hooks/useCaptcha';
 import { SocialLoginButtons } from '../components/SocialLoginButtons';
 import { SocialDivider } from '../components/SocialDivider';
+import { SYSTEM_FIELD_IDS } from '../utils/fields';
 
 export function Register() {
     const fields = registrationFields.value;
+    const fieldDefs = registrationFieldDefs.value;
     const firstFieldRef = useAutoFocus();
     const captcha = useCaptcha();
     const needsCaptcha = captcha.isRequiredFor('register');
@@ -34,6 +37,25 @@ export function Register() {
     });
     const [success, setSuccess] = useState('');
     const [verifying, setVerifying] = useState(false);
+
+    // Initialize custom field values when defs load, using default_value when available.
+    useEffect(() => {
+        if (fieldDefs.length > 0) {
+            const customDefaults = {};
+            for (const def of fieldDefs) {
+                if (!SYSTEM_FIELD_IDS.includes(def.id) && !(def.id in form)) {
+                    if (def.default_value !== undefined && def.default_value !== '') {
+                        customDefaults[def.id] = def.default_value;
+                    } else {
+                        customDefaults[def.id] = def.type === 'checkbox' ? false : '';
+                    }
+                }
+            }
+            if (Object.keys(customDefaults).length > 0) {
+                setForm((prev) => ({ ...prev, ...customDefaults }));
+            }
+        }
+    }, [fieldDefs]);
 
     useEffect(() => {
         const socialError = getQueryParam('social_error');
@@ -53,8 +75,15 @@ export function Register() {
         authLoading.value = true;
 
         const body = {};
+        // Include system fields from registration_fields.
         for (const f of fields) {
-            if (form[f]) body[f] = form[f];
+            if (form[f] !== undefined && form[f] !== '') body[f] = form[f];
+        }
+        // Include custom fields.
+        for (const def of fieldDefs) {
+            if (!SYSTEM_FIELD_IDS.includes(def.id) && form[def.id] !== undefined) {
+                body[def.id] = form[def.id];
+            }
         }
 
         try {
@@ -97,6 +126,9 @@ export function Register() {
             </AuthLayout>
         );
     }
+
+    // Separate custom field defs from system fields, maintaining sort order.
+    const customFieldDefs = fieldDefs.filter((def) => !SYSTEM_FIELD_IDS.includes(def.id));
 
     return (
         <AuthLayout
@@ -212,6 +244,17 @@ export function Register() {
                         />
                     </div>
                 )}
+
+                {/* Custom/meta fields from field definitions */}
+                {customFieldDefs.map((def) => (
+                    <DynamicField
+                        key={def.id}
+                        field={def}
+                        value={form[def.id]}
+                        onChange={(val) => updateField(def.id, val)}
+                        disabled={authLoading.value}
+                    />
+                ))}
 
                 {needsCaptcha && (
                     <CaptchaWidget

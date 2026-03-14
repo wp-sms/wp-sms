@@ -6,6 +6,8 @@ export const configLoading = signal(false);
 export const primaryMethods = computed(() => authConfig.value?.primary_methods ?? ['password']);
 export const methodDetails = computed(() => authConfig.value?.method_details ?? {});
 export const registrationFields = computed(() => authConfig.value?.registration_fields ?? ['email', 'password']);
+export const registrationFieldDefs = computed(() => authConfig.value?.registration_field_definitions ?? []);
+export const profileFieldDefs = computed(() => authConfig.value?.profile_field_definitions ?? []);
 export const captchaConfig = computed(() => authConfig.value?.captcha ?? null);
 export const enabledChannels = computed(() => authConfig.value?.enabled_channels ?? []);
 export const socialProviders = computed(() => authConfig.value?.social_providers ?? []);

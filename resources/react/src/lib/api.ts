@@ -102,6 +102,31 @@ export interface TelegramSettings {
   cooldown?: number;
 }
 
+export type FieldType = 'text' | 'textarea' | 'select' | 'checkbox';
+export type FieldSource = 'system' | 'custom' | 'meta';
+export type FieldVisibility = 'registration' | 'profile' | 'both' | 'hidden';
+
+export interface ProfileFieldDefinition {
+  id: string;
+  type: FieldType;
+  label: string;
+  source: FieldSource;
+  meta_key: string;
+  visibility: FieldVisibility;
+  required: boolean;
+  sort_order: number;
+  placeholder?: string;
+  options?: { value: string; label: string }[];
+  description?: string;
+  default_value?: string | boolean;
+}
+
+export interface MetaKeyInfo {
+  key: string;
+  sample_value: string;
+  count: number;
+}
+
 export interface AuthSettings {
   phone?: PhoneChannelSettings;
   email?: EmailChannelSettings;
@@ -119,6 +144,7 @@ export interface AuthSettings {
   log_verbosity?: LogVerbosity;
   log_retention_days?: number;
   registration_fields?: string[];
+  profile_fields?: ProfileFieldDefinition[];
   pending_user_cleanup_enabled?: boolean;
   pending_user_ttl_hours?: number;
   social?: Record<string, SocialProviderSettings>;
@@ -175,3 +201,8 @@ export const api = {
   put: <T>(url: string, body: unknown) => request<T>('PUT', url, body),
   del: <T>(url: string) => request<T>('DELETE', url),
 };
+
+export async function getMetaKeys(): Promise<MetaKeyInfo[]> {
+  const res = await api.get<{ success: boolean; meta_keys: MetaKeyInfo[] }>('/wsms/v1/auth/admin/meta-keys');
+  return res.meta_keys;
+}

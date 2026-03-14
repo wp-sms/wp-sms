@@ -26,6 +26,7 @@ class AccountManager
         private MfaManager $mfaManager,
         private AuthSession $authSession,
         private SettingsRepository $settingsRepo,
+        private ?ProfileFieldRegistry $fieldRegistry = null,
     ) {
     }
 
@@ -121,6 +122,7 @@ class AccountManager
         }
 
         $this->storeUserMeta($userId, $data, $isPlaceholder, $emailVerifyEnabled, $phoneVerifyEnabled);
+        $this->writeCustomFields($userId, $data);
 
         $pendingVerifications = $this->setupVerifications($userId, $data, $email, $emailVerifyEnabled, $phoneVerifyEnabled);
 
@@ -165,6 +167,22 @@ class AccountManager
             $sanitized = sanitize_email($data['email']);
             if (!empty($sanitized) && !is_email($sanitized)) {
                 return ['success' => false, 'error' => 'invalid_email', 'message' => 'Invalid email address.'];
+            }
+        }
+
+        // Validate required custom fields.
+        if (!$socialLogin && $this->fieldRegistry) {
+            foreach ($this->fieldRegistry->getFieldsForContext('registration') as $field) {
+                if ($field->isSystem() || !$field->required) {
+                    continue;
+                }
+                if (empty($data[$field->id])) {
+                    return [
+                        'success' => false,
+                        'error'   => 'missing_' . $field->id,
+                        'message' => $field->label . ' is required.',
+                    ];
+                }
             }
         }
 
@@ -255,6 +273,44 @@ class AccountManager
         if (!empty($data['phone'])) {
             update_user_meta($userId, 'wsms_phone', sanitize_text_field($data['phone']));
         }
+    }
+
+    /**
+     * Write custom profile field values for a user.
+     * Uses default_value when the user didn't submit a value and a default exists.
+     */
+    private function writeCustomFields(int $userId, array $data): void
+    {
+        if (!$this->fieldRegistry) {
+            return;
+        }
+
+        foreach ($this->fieldRegistry->getCustomFields() as $field) {
+            if (array_key_exists($field->id, $data)) {
+                $this->fieldRegistry->writeValue($userId, $field, $data[$field->id]);
+            } elseif ($field->defaultValue !== '') {
+                $this->fieldRegistry->writeValue($userId, $field, $field->defaultValue);
+            }
+        }
+    }
+
+    /**
+     * Read custom profile field values for a user.
+     *
+     * @return array<string, mixed>
+     */
+    public function readCustomFields(int $userId): array
+    {
+        if (!$this->fieldRegistry) {
+            return [];
+        }
+
+        $values = [];
+        foreach ($this->fieldRegistry->getCustomFields() as $field) {
+            $values[$field->id] = $this->fieldRegistry->readValue($userId, $field);
+        }
+
+        return $values;
     }
 
     /**
@@ -451,6 +507,9 @@ class AccountManager
             $this->createChannelVerification($userId, 'email', $newEmail);
             $result['email_verification_required'] = true;
         }
+
+        // Write custom profile fields.
+        $this->writeCustomFields($userId, $data);
 
         return $result;
     }

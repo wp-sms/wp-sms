@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'preact/hooks';
+import { useState, useEffect, useRef } from 'preact/hooks';
 import { api } from '../api/client';
 import { currentUser } from '../signals/auth';
-import { methodDetails, enabledChannels } from '../signals/config';
+import { methodDetails, enabledChannels, profileFieldDefs } from '../signals/config';
 import { loadCurrentUser, refreshUser } from '../signals/user';
 import { useAuthGuard } from '../hooks/useAuthGuard';
 import { extractError } from '../utils/auth';
@@ -14,6 +14,9 @@ import { Separator } from '../components/ui/Separator';
 import { PhoneInput } from '../components/PhoneInput';
 import { OtpVerifyInline } from '../components/verification/OtpVerifyInline';
 import { StatusBadge } from '../components/ui/StatusBadge';
+import { UserAvatar } from '../components/ui/UserAvatar';
+import { DynamicField } from '../components/DynamicField';
+import { SYSTEM_FIELD_IDS } from '../utils/fields';
 
 export function Profile() {
     const authed = useAuthGuard();
@@ -26,6 +29,8 @@ export function Profile() {
     const [showEmailOtp, setShowEmailOtp] = useState(false);
     const [phoneSending, setPhoneSending] = useState(false);
     const [showPhoneOtp, setShowPhoneOtp] = useState(false);
+    const [avatarUploading, setAvatarUploading] = useState(false);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         if (!authed) return;
@@ -34,13 +39,22 @@ export function Profile() {
             if (!currentUser.value) await loadCurrentUser();
             const u = currentUser.value;
             if (u) {
-                setForm({
+                const initial = {
                     display_name: u.display_name || '',
                     first_name: u.first_name || '',
                     last_name: u.last_name || '',
                     email: u.email || '',
                     phone: u.phone || '',
-                });
+                };
+
+                // Load custom field values.
+                if (u.custom_fields) {
+                    for (const [key, val] of Object.entries(u.custom_fields)) {
+                        initial[key] = val || '';
+                    }
+                }
+
+                setForm(initial);
             }
         }
         init();
@@ -50,6 +64,7 @@ export function Profile() {
     const details = methodDetails.value;
     const emailCodeLength = details.email?.code_length;
     const phoneCodeLength = details.phone?.code_length;
+    const customFieldDefs = profileFieldDefs.value.filter((def) => !SYSTEM_FIELD_IDS.includes(def.id));
 
     function updateField(name, value) {
         setForm((prev) => ({ ...prev, [name]: value }));
@@ -75,6 +90,45 @@ export function Profile() {
             setError(extractError(err));
         } finally {
             setLoading(false);
+        }
+    }
+
+    async function handleAvatarUpload(e) {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setAvatarUploading(true);
+        setError('');
+
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        try {
+            const res = await api.upload('/auth/profile/avatar', formData);
+            if (res.success) {
+                setSuccess('Avatar updated.');
+                await refreshUser();
+            }
+        } catch (err) {
+            setError(extractError(err));
+        } finally {
+            setAvatarUploading(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
+    }
+
+    async function handleAvatarRemove() {
+        setAvatarUploading(true);
+        setError('');
+
+        try {
+            await api.del('/auth/profile/avatar');
+            setSuccess('Avatar removed.');
+            await refreshUser();
+        } catch (err) {
+            setError(extractError(err));
+        } finally {
+            setAvatarUploading(false);
         }
     }
 
@@ -121,6 +175,43 @@ export function Profile() {
         <AccountLayout title="Profile" subtitle="Manage your account information" currentPath="/profile">
             <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="mb-4" />
             <Alert variant="success" message={success} className="mb-4" />
+
+            {/* Avatar Section */}
+            {user && (
+                <div className="mb-6 flex items-center gap-4">
+                    <UserAvatar user={user} size="lg" />
+                    <div className="space-y-1">
+                        <div className="flex gap-2">
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => fileInputRef.current?.click()}
+                                disabled={avatarUploading}
+                            >
+                                {avatarUploading ? 'Uploading\u2026' : 'Upload'}
+                            </Button>
+                            {user.avatar_url && (
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={handleAvatarRemove}
+                                    disabled={avatarUploading}
+                                >
+                                    Remove
+                                </Button>
+                            )}
+                        </div>
+                        <p className="text-xs text-muted-foreground">JPG, PNG, GIF, or WebP. Max 2MB.</p>
+                    </div>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/jpeg,image/png,image/gif,image/webp"
+                        className="hidden"
+                        onChange={handleAvatarUpload}
+                    />
+                </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Section 1: Personal Information */}
@@ -257,6 +348,25 @@ export function Profile() {
                         </div>
                     )}
                 </div>
+
+                {/* Section 3: Additional Information (custom fields) */}
+                {customFieldDefs.length > 0 && (
+                    <>
+                        <Separator />
+                        <div className="space-y-4">
+                            <h3 className="text-sm font-semibold text-foreground">Additional Information</h3>
+                            {customFieldDefs.map((def) => (
+                                <DynamicField
+                                    key={def.id}
+                                    field={def}
+                                    value={form[def.id]}
+                                    onChange={(val) => updateField(def.id, val)}
+                                    disabled={loading}
+                                />
+                            ))}
+                        </div>
+                    </>
+                )}
 
                 <Button className="w-full" type="submit" disabled={loading}>
                     {loading ? 'Saving\u2026' : 'Save Changes'}

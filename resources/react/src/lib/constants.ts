@@ -79,6 +79,26 @@ export const REGISTRATION_FIELDS = [
   { id: 'last_name', label: 'Last Name' },
 ] as const;
 
+export const FIELD_TYPES = [
+  { value: 'text', label: 'Text' },
+  { value: 'textarea', label: 'Textarea' },
+  { value: 'select', label: 'Select' },
+  { value: 'checkbox', label: 'Checkbox' },
+] as const;
+
+export const FIELD_VISIBILITY = [
+  { value: 'both', label: 'Registration & Profile' },
+  { value: 'registration', label: 'Registration Only' },
+  { value: 'profile', label: 'Profile Only' },
+  { value: 'hidden', label: 'Hidden' },
+] as const;
+
+export const FIELD_SOURCES = [
+  { value: 'system', label: 'System' },
+  { value: 'custom', label: 'Custom' },
+  { value: 'meta', label: 'Existing Meta' },
+] as const;
+
 /** Matches PHP InstallManager defaults exactly. */
 export const DEFAULTS: Required<AuthSettings> = {
   phone: {
@@ -128,6 +148,7 @@ export const DEFAULTS: Required<AuthSettings> = {
   log_verbosity: 'standard',
   log_retention_days: 30,
   registration_fields: ['email', 'password'],
+  profile_fields: [],
   pending_user_cleanup_enabled: true,
   pending_user_ttl_hours: 24,
   telegram: {
