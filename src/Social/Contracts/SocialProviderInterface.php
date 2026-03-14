@@ -35,7 +35,7 @@ interface SocialProviderInterface
     /**
      * Fetch user info from the provider.
      *
-     * @return array{id: string, email: string, name: string, email_verified: bool, given_name?: string, family_name?: string}
+     * @return array{id: string, email: string, name: string, email_verified: bool, given_name?: string, family_name?: string, phone_number?: string, picture?: string, preferred_username?: string}
      */
     public function getUserInfo(string $accessToken): array;
 }

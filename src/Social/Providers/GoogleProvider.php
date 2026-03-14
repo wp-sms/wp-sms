@@ -115,6 +115,7 @@ class GoogleProvider implements SocialProviderInterface
             'email_verified' => $data['verified_email'] ?? false,
             'given_name'     => $data['given_name'] ?? '',
             'family_name'    => $data['family_name'] ?? '',
+            'picture'        => $data['picture'] ?? null,
         ];
     }
 

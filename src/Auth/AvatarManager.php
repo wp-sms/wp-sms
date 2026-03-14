@@ -130,6 +130,99 @@ class AvatarManager
     }
 
     /**
+     * Download a social avatar and store it locally as a custom avatar.
+     *
+     * Uses META_CUSTOM_AVATAR so it becomes the primary avatar. Skips if the user
+     * already has a custom avatar (user-uploaded takes precedence). Never throws —
+     * failures must not block login.
+     */
+    public function downloadAndStoreAvatar(int $userId, string $url): bool
+    {
+        // Don't overwrite user-uploaded avatars.
+        $existing = get_user_meta($userId, self::META_CUSTOM_AVATAR, true);
+
+        if (!empty($existing)) {
+            return false;
+        }
+
+        $tempFile = null;
+
+        try {
+            $response = wp_remote_get($url, ['timeout' => 10]);
+
+            if (is_wp_error($response)) {
+                return false;
+            }
+
+            if (wp_remote_retrieve_response_code($response) !== 200) {
+                return false;
+            }
+
+            $body = wp_remote_retrieve_body($response);
+
+            if (empty($body)) {
+                return false;
+            }
+
+            if (strlen($body) > self::MAX_SIZE_BYTES) {
+                return false;
+            }
+
+            // Validate Content-Type against allowed MIME types.
+            $contentType = wp_remote_retrieve_header($response, 'content-type');
+            $mime = strtolower(trim(explode(';', (string) $contentType)[0]));
+            $ext = $this->extensionFromMime($mime);
+
+            if ($ext === null) {
+                return false;
+            }
+
+            // Write to temp file for image processing.
+            $tempFile = wp_tempnam('wsms_avatar_');
+            file_put_contents($tempFile, $body);
+
+            $uploadDir = $this->getUploadDir();
+
+            if (!wp_mkdir_p($uploadDir)) {
+                return false;
+            }
+
+            $this->deleteAvatarFile($userId);
+
+            $filename = $userId . '.' . $ext;
+            $filepath = $uploadDir . '/' . $filename;
+
+            // Resize to standard dimensions via WP image editor.
+            $editor = wp_get_image_editor($tempFile);
+
+            if (!is_wp_error($editor)) {
+                $editor->resize(self::RESIZE_PX, self::RESIZE_PX, true);
+                $saved = $editor->save($filepath);
+
+                if (!is_wp_error($saved)) {
+                    $filepath = $saved['path'];
+                    $filename = basename($filepath);
+                }
+            } else {
+                // Fallback: copy without resize.
+                copy($tempFile, $filepath);
+            }
+
+            $localUrl = $this->getUploadUrl() . '/' . $filename;
+            update_user_meta($userId, self::META_CUSTOM_AVATAR, $localUrl);
+            unset($this->avatarUrlCache[$userId]);
+
+            return true;
+        } catch (\Throwable) {
+            return false;
+        } finally {
+            if ($tempFile !== null && file_exists($tempFile)) {
+                @unlink($tempFile);
+            }
+        }
+    }
+
+    /**
      * Filter WordPress get_avatar_url to use our avatar chain.
      * Hook: get_avatar_url (priority 10).
      */
@@ -269,6 +362,17 @@ class AvatarManager
         $uploadDir = wp_upload_dir();
 
         return $uploadDir['baseurl'] . '/' . self::UPLOAD_DIR;
+    }
+
+    private function extensionFromMime(string $mime): ?string
+    {
+        return match ($mime) {
+            'image/jpeg', 'image/jpg' => 'jpg',
+            'image/png'               => 'png',
+            'image/gif'               => 'gif',
+            'image/webp'              => 'webp',
+            default                   => null,
+        };
     }
 
     private function resolveUserId(mixed $idOrEmail): ?int

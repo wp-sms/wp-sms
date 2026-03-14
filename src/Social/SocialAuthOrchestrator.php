@@ -291,9 +291,9 @@ class SocialAuthOrchestrator
             update_user_meta($userId, 'wsms_phone_verified', '1');
         }
 
-        // Save social avatar for new user.
+        // Download and store social avatar locally for new user.
         if (!empty($userInfo['picture']) && $this->avatarManager) {
-            $this->avatarManager->saveSocialAvatar($userId, $userInfo['picture']);
+            $this->avatarManager->downloadAndStoreAvatar($userId, $userInfo['picture']);
         }
 
         $this->linkAccount($userId, $providerId, $userInfo, $tokens);
@@ -428,9 +428,9 @@ class SocialAuthOrchestrator
             wp_update_user($update);
         }
 
-        // Save social avatar.
+        // Download and store social avatar locally.
         if (!empty($userInfo['picture']) && $this->avatarManager) {
-            $this->avatarManager->saveSocialAvatar($userId, $userInfo['picture']);
+            $this->avatarManager->downloadAndStoreAvatar($userId, $userInfo['picture']);
         }
     }
 

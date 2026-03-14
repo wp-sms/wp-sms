@@ -486,6 +486,59 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('wp_remote_retrieve_header')) {
+        function wp_remote_retrieve_header($response, string $header): string {
+            if (is_wp_error($response)) {
+                return '';
+            }
+            $header = strtolower($header);
+            return $response['headers'][$header] ?? '';
+        }
+    }
+
+    if (!function_exists('wp_tempnam')) {
+        function wp_tempnam(string $prefix = ''): string {
+            return tempnam(sys_get_temp_dir(), $prefix);
+        }
+    }
+
+    if (!function_exists('wp_upload_dir')) {
+        function wp_upload_dir(): array {
+            $dir = $GLOBALS['_test_upload_dir'] ?? sys_get_temp_dir() . '/wp-uploads';
+            return [
+                'basedir' => $dir,
+                'baseurl' => 'http://localhost/wp-content/uploads',
+            ];
+        }
+    }
+
+    if (!function_exists('wp_mkdir_p')) {
+        function wp_mkdir_p(string $target): bool {
+            if (isset($GLOBALS['_test_wp_mkdir_p'])) {
+                return $GLOBALS['_test_wp_mkdir_p'];
+            }
+            if (is_dir($target)) {
+                return true;
+            }
+            return @mkdir($target, 0755, true);
+        }
+    }
+
+    if (!function_exists('wp_get_image_editor')) {
+        function wp_get_image_editor(string $path, array $args = []) {
+            if (isset($GLOBALS['_test_image_editor'])) {
+                return $GLOBALS['_test_image_editor'];
+            }
+            return new \WP_Error('no_editor', 'No image editor in test environment');
+        }
+    }
+
+    if (!function_exists('esc_url_raw')) {
+        function esc_url_raw(string $url, ?array $protocols = null): string {
+            return filter_var($url, FILTER_SANITIZE_URL) ?: '';
+        }
+    }
+
     if (!function_exists('add_filter')) {
         function add_filter(string $hookName, $callback, int $priority = 10, int $acceptedArgs = 1) {
             // No-op in tests.
