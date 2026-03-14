@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { api } from '../../api/client';
 import {
     authError,
@@ -22,6 +23,12 @@ export function ProgressiveRegisterStep() {
     const identifier = enteredIdentifier.value;
     const identifierType = result?.identifier_type;
     const fields = result?.registration_fields || ['email', 'password'];
+    const firstEditableField = fields.find((f) =>
+        (f === 'email' && identifierType !== 'email') ||
+        (f === 'phone' && identifierType !== 'phone') ||
+        (f !== 'email' && f !== 'phone')
+    );
+    const firstFieldRef = useAutoFocus();
 
     const [form, setForm] = useState(() => {
         const initial = { email: '', password: '', username: '', display_name: '', first_name: '', last_name: '', phone: '' };
@@ -90,6 +97,7 @@ export function ProgressiveRegisterStep() {
                     <div className="space-y-2">
                         <Label for="wsms-reg-username">Username</Label>
                         <Input
+                            ref={firstEditableField === 'username' ? firstFieldRef : undefined}
                             id="wsms-reg-username"
                             type="text"
                             value={form.username}
@@ -104,6 +112,7 @@ export function ProgressiveRegisterStep() {
                     <div className="space-y-2">
                         <Label for="wsms-reg-name">Display Name</Label>
                         <Input
+                            ref={firstEditableField === 'display_name' ? firstFieldRef : undefined}
                             id="wsms-reg-name"
                             type="text"
                             value={form.display_name}
@@ -118,6 +127,7 @@ export function ProgressiveRegisterStep() {
                     <div className="space-y-2">
                         <Label for="wsms-reg-first-name">First Name</Label>
                         <Input
+                            ref={firstEditableField === 'first_name' ? firstFieldRef : undefined}
                             id="wsms-reg-first-name"
                             type="text"
                             value={form.first_name}
@@ -146,6 +156,7 @@ export function ProgressiveRegisterStep() {
                     <div className="space-y-2">
                         <Label for="wsms-reg-email">Email</Label>
                         <Input
+                            ref={firstEditableField === 'email' ? firstFieldRef : undefined}
                             id="wsms-reg-email"
                             type="email"
                             value={form.email}
@@ -164,6 +175,7 @@ export function ProgressiveRegisterStep() {
                             value={form.phone}
                             onChange={(val) => updateField('phone', val)}
                             disabled={authLoading.value || identifierType === 'phone'}
+                            autoFocus={firstEditableField === 'phone'}
                         />
                     </div>
                 )}
@@ -172,6 +184,7 @@ export function ProgressiveRegisterStep() {
                     <div className="space-y-2">
                         <Label for="wsms-reg-password">Password</Label>
                         <Input
+                            ref={firstEditableField === 'password' ? firstFieldRef : undefined}
                             id="wsms-reg-password"
                             type="password"
                             value={form.password}

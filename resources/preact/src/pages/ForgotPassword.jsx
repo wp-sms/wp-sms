@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { useAutoFocus } from '../hooks/useAutoFocus';
 import { api } from '../api/client';
 import { authError, authLoading } from '../signals/auth';
 import { extractError } from '../utils/auth';
@@ -15,6 +16,7 @@ import { useCaptcha } from '../hooks/useCaptcha';
 export function ForgotPassword() {
     const [email, setEmail] = useState('');
     const [success, setSuccess] = useState('');
+    const emailRef = useAutoFocus();
     const captcha = useCaptcha();
     const needsCaptcha = captcha.isRequiredFor('forgot_password');
 
@@ -48,6 +50,7 @@ export function ForgotPassword() {
                     <div className="space-y-2">
                         <Label for="wsms-forgot-email">Email</Label>
                         <Input
+                            ref={emailRef}
                             id="wsms-forgot-email"
                             type="email"
                             value={email}

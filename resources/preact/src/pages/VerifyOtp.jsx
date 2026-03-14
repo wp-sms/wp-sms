@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { useAutoFocus } from '../hooks/useAutoFocus';
 import { useLocation } from 'preact-iso';
 import { api } from '../api/client';
 import { authError, authLoading, challengeToken, challengeMeta, pendingMfa, clearAuth } from '../signals/auth';
@@ -16,6 +17,7 @@ export function VerifyOtp() {
     const { route } = useLocation();
     const [useBackup, setUseBackup] = useState(false);
     const [backupCode, setBackupCode] = useState('');
+    const backupRef = useAutoFocus(useBackup);
     const [resendCooldown, setResendCooldown] = useState(0);
 
     const token = challengeToken.value || pendingMfa.value?.session_token;
@@ -90,6 +92,7 @@ export function VerifyOtp() {
                     <div className="space-y-2">
                         <Label for="wsms-backup">Backup Code</Label>
                         <Input
+                            ref={backupRef}
                             id="wsms-backup"
                             type="text"
                             value={backupCode}
@@ -108,7 +111,7 @@ export function VerifyOtp() {
                 </form>
             ) : (
                 <div className="space-y-4">
-                    <OtpInput onComplete={handleVerify} disabled={authLoading.value} />
+                    <OtpInput autoFocus onComplete={handleVerify} disabled={authLoading.value} />
 
                     <div className="flex justify-center gap-4">
                         <Button

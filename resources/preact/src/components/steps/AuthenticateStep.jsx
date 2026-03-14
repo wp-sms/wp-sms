@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
+import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { useLocation } from 'preact-iso';
 import { api } from '../../api/client';
 import {
@@ -33,6 +34,7 @@ export function AuthenticateStep() {
     const needsCaptcha = captcha.isRequiredFor('login');
 
     const autoSentRef = useRef(false);
+    const passwordRef = useAutoFocus(activeMethod === 'password');
 
     // Auto-send challenge when there's only one method and it's not password.
     useEffect(() => {
@@ -151,6 +153,7 @@ export function AuthenticateStep() {
                     <div className="space-y-2">
                         <Label for="wsms-password">Password</Label>
                         <Input
+                            ref={passwordRef}
                             id="wsms-password"
                             type="password"
                             value={password}
@@ -158,7 +161,6 @@ export function AuthenticateStep() {
                             required
                             disabled={authLoading.value}
                             autoComplete="current-password"
-                            autoFocus
                         />
                     </div>
                     {needsCaptcha && (

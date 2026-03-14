@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { useAutoFocus } from '../hooks/useAutoFocus';
 import { api } from '../api/client';
 import { registrationFields, socialProviders } from '../signals/config';
 import { authError, authLoading, registrationToken, pendingVerifications } from '../signals/auth';
@@ -19,6 +20,7 @@ import { SocialDivider } from '../components/SocialDivider';
 
 export function Register() {
     const fields = registrationFields.value;
+    const firstFieldRef = useAutoFocus();
     const captcha = useCaptcha();
     const needsCaptcha = captcha.isRequiredFor('register');
     const [form, setForm] = useState({
@@ -113,6 +115,7 @@ export function Register() {
                     <div className="space-y-2">
                         <Label for="wsms-reg-username">Username</Label>
                         <Input
+                            ref={fields[0] === 'username' ? firstFieldRef : undefined}
                             id="wsms-reg-username"
                             type="text"
                             value={form.username}
@@ -127,6 +130,7 @@ export function Register() {
                     <div className="space-y-2">
                         <Label for="wsms-reg-name">Display Name</Label>
                         <Input
+                            ref={fields[0] === 'display_name' ? firstFieldRef : undefined}
                             id="wsms-reg-name"
                             type="text"
                             value={form.display_name}
@@ -141,6 +145,7 @@ export function Register() {
                     <div className="space-y-2">
                         <Label for="wsms-reg-first-name">First Name</Label>
                         <Input
+                            ref={fields[0] === 'first_name' ? firstFieldRef : undefined}
                             id="wsms-reg-first-name"
                             type="text"
                             value={form.first_name}
@@ -169,6 +174,7 @@ export function Register() {
                     <div className="space-y-2">
                         <Label for="wsms-reg-email">Email</Label>
                         <Input
+                            ref={fields[0] === 'email' ? firstFieldRef : undefined}
                             id="wsms-reg-email"
                             type="email"
                             value={form.email}
@@ -187,6 +193,7 @@ export function Register() {
                             value={form.phone}
                             onChange={(val) => updateField('phone', val)}
                             disabled={authLoading.value}
+                            autoFocus={fields[0] === 'phone'}
                         />
                     </div>
                 )}

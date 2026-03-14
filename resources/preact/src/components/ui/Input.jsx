@@ -1,8 +1,10 @@
+import { forwardRef } from 'preact/compat';
 import { cn } from '@/utils/cn';
 
-export function Input({ className, type, ...props }) {
+export const Input = forwardRef(function Input({ className, type, ...props }, ref) {
     return (
         <input
+            ref={ref}
             type={type}
             data-slot="input"
             className={cn(
@@ -14,4 +16,4 @@ export function Input({ className, type, ...props }) {
             {...props}
         />
     );
-}
+});

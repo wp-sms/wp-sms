@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { api } from '../../api/client';
 import { primaryMethods } from '../../signals/config';
 import {
@@ -44,6 +45,7 @@ function getIdentifierHints(methods) {
 export function IdentifierStep() {
     const [identifier, setIdentifier] = useState(rememberedIdentifier.value || '');
     const remembered = rememberedIdentifier.value;
+    const identifierRef = useAutoFocus(!remembered);
     const methods = primaryMethods.value;
     const { label: identifierLabel, placeholder } = getIdentifierHints(methods);
 
@@ -114,6 +116,7 @@ export function IdentifierStep() {
                 <div className="space-y-2">
                     <Label for="wsms-identifier">{identifierLabel}</Label>
                     <Input
+                        ref={identifierRef}
                         id="wsms-identifier"
                         type="text"
                         value={identifier}
@@ -122,7 +125,6 @@ export function IdentifierStep() {
                         required
                         disabled={authLoading.value}
                         autoComplete="username"
-                        autoFocus
                     />
                 </div>
                 <Button className="w-full" type="submit" disabled={authLoading.value || !identifier.trim()}>

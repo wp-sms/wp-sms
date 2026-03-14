@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { useLocation } from 'preact-iso';
 import { api } from '../../api/client';
 import {
@@ -28,6 +29,7 @@ export function MfaStep() {
     const [backupCode, setBackupCode] = useState('');
     const [showFactorPicker, setShowFactorPicker] = useState(false);
     const [resendCooldown, setResendCooldown] = useState(0);
+    const backupRef = useAutoFocus(useBackup);
 
     // Auto-select the best MFA factor and send challenge on mount.
     useEffect(() => {
@@ -158,6 +160,7 @@ export function MfaStep() {
                     <div className="space-y-2">
                         <Label for="wsms-backup">Backup Code</Label>
                         <Input
+                            ref={backupRef}
                             id="wsms-backup"
                             type="text"
                             value={backupCode}
@@ -165,7 +168,6 @@ export function MfaStep() {
                             placeholder="Enter backup code"
                             disabled={authLoading.value}
                             autoComplete="one-time-code"
-                            autoFocus
                         />
                     </div>
                     <Button className="w-full" type="submit" disabled={authLoading.value || !backupCode.trim()}>
@@ -177,7 +179,7 @@ export function MfaStep() {
                 </form>
             ) : (
                 <div className="space-y-4">
-                    {challengeSent && <OtpInput onComplete={handleVerify} disabled={authLoading.value} />}
+                    {challengeSent && <OtpInput autoFocus onComplete={handleVerify} disabled={authLoading.value} />}
 
                     <div className="flex justify-center gap-4 flex-wrap">
                         {challengeSent && challengeMeta.value?.requires_delivery !== false && (

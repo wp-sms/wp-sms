@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { useAutoFocus } from '../hooks/useAutoFocus';
 import { api } from '../api/client';
 import { currentUser } from '../signals/auth';
 import { loadCurrentUser } from '../signals/user';
@@ -25,6 +26,8 @@ export function ChangePassword() {
 
     const user = currentUser.value;
     const hasPassword = user?.has_usable_password !== false;
+    const currentPasswordRef = useAutoFocus(hasPassword);
+    const newPasswordRef = useAutoFocus(!hasPassword);
     const title = hasPassword ? 'Change Password' : 'Set Password';
 
     async function handleSubmit(e) {
@@ -71,6 +74,7 @@ export function ChangePassword() {
                     <div className="space-y-2">
                         <Label for="wsms-cur-pass">Current Password</Label>
                         <Input
+                            ref={currentPasswordRef}
                             id="wsms-cur-pass"
                             type="password"
                             value={currentPassword}
@@ -85,6 +89,7 @@ export function ChangePassword() {
                 <div className="space-y-2">
                     <Label for="wsms-new-pass2">New Password</Label>
                     <Input
+                        ref={newPasswordRef}
                         id="wsms-new-pass2"
                         type="password"
                         value={newPassword}

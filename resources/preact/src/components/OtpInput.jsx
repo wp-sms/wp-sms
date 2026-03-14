@@ -1,5 +1,6 @@
 import { OTPInput } from 'input-otp';
 import { cn } from '@/utils/cn';
+import { useAutoFocus } from '../hooks/useAutoFocus';
 
 function Slot({ char, isActive, hasFakeCaret }) {
     return (
@@ -18,14 +19,17 @@ function Slot({ char, isActive, hasFakeCaret }) {
     );
 }
 
-export function OtpInput({ length = 6, onComplete, disabled }) {
+export function OtpInput({ length = 6, onComplete, disabled, autoFocus = false }) {
+    const focusRef = useAutoFocus(autoFocus);
     const half = Math.ceil(length / 2);
 
     return (
         <OTPInput
+            ref={focusRef}
             maxLength={length}
             onComplete={onComplete}
             disabled={disabled}
+            autoComplete="one-time-code"
             containerClassName="flex justify-center"
             render={({ slots }) => (
                 <div className="flex items-center gap-1.5">

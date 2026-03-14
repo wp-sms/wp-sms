@@ -18,7 +18,7 @@ import { OtpInput } from '../OtpInput';
  * @param {number}   [initialCooldown=0] - Initial resend cooldown in seconds
  * @param {number}   [codeLength]        - OTP digit count (defaults to config or 6)
  */
-export function OtpVerifyInline({ verifyEndpoint, resendEndpoint, headers, onVerified, onError, label, className, initialCooldown = 0, codeLength }) {
+export function OtpVerifyInline({ verifyEndpoint, resendEndpoint, headers, onVerified, onError, label, className, initialCooldown = 0, codeLength, autoFocus = true }) {
     const [verifying, setVerifying] = useState(false);
     const [cooldown, resetCooldown] = useResendCooldown(initialCooldown);
 
@@ -50,7 +50,7 @@ export function OtpVerifyInline({ verifyEndpoint, resendEndpoint, headers, onVer
         <div className={`space-y-3 ${className || ''}`}>
             <p className="text-sm text-muted-foreground text-center">{label}</p>
 
-            <OtpInput length={codeLength} onComplete={handleVerify} disabled={verifying} />
+            <OtpInput length={codeLength} onComplete={handleVerify} disabled={verifying} autoFocus={autoFocus} />
 
             {resendEndpoint && (
                 <div className="flex justify-center">

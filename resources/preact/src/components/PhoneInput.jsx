@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import { Input } from './ui/Input';
+import { useAutoFocus } from '../hooks/useAutoFocus';
 
 const COUNTRIES = [
     { code: 'US', dial: '1',  flag: '\u{1F1FA}\u{1F1F8}' },
@@ -41,9 +42,9 @@ function detectCountry(phone) {
     return COUNTRIES_BY_DIAL_LENGTH.find((c) => digits.startsWith(c.dial)) || null;
 }
 
-export function PhoneInput({ value = '', onChange, disabled }) {
+export function PhoneInput({ value = '', onChange, disabled, autoFocus = false }) {
     const [country, setCountry] = useState(() => detectCountry(value) || COUNTRIES[0]);
-    const inputRef = useRef(null);
+    const focusRef = useAutoFocus(autoFocus);
 
     useEffect(() => {
         if (value) {
@@ -56,8 +57,7 @@ export function PhoneInput({ value = '', onChange, disabled }) {
         const selected = COUNTRIES.find((c) => c.code === e.target.value);
         if (selected) {
             setCountry(selected);
-            const number = inputRef.current?.value || '';
-            onChange(`+${selected.dial}${number.replace(/\D/g, '')}`);
+            onChange(`+${selected.dial}${numberPart.replace(/\D/g, '')}`);
         }
     }
 
@@ -86,13 +86,14 @@ export function PhoneInput({ value = '', onChange, disabled }) {
                 ))}
             </select>
             <Input
-                ref={inputRef}
+                ref={focusRef}
                 type="tel"
                 value={numberPart}
                 onInput={handleNumberChange}
                 placeholder="Phone number"
                 disabled={disabled}
                 inputMode="numeric"
+                autoComplete="tel-national"
             />
         </div>
     );

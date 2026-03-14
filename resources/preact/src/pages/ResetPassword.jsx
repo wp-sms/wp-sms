@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { useAutoFocus } from '../hooks/useAutoFocus';
 import { api } from '../api/client';
 import { authError, authLoading } from '../signals/auth';
 import { extractError } from '../utils/auth';
@@ -15,6 +16,7 @@ export function ResetPassword() {
     const [password, setPassword] = useState('');
     const [confirm, setConfirm] = useState('');
     const [success, setSuccess] = useState('');
+    const passwordRef = useAutoFocus();
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -69,6 +71,7 @@ export function ResetPassword() {
                 <div className="space-y-2">
                     <Label for="wsms-new-pass">New Password</Label>
                     <Input
+                        ref={passwordRef}
                         id="wsms-new-pass"
                         type="password"
                         value={password}
