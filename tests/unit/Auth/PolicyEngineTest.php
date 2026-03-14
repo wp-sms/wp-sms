@@ -508,6 +508,7 @@ class PolicyEngineTest extends TestCase
             public function supportsPrimaryAuth(): bool { return $this->supportsPrimary; }
             public function supportsMfa(): bool { return $this->supportsMfa; }
             public function supportsAutoEnrollment(): bool { return $this->id === 'email'; }
+            public function getEnabledSettingKey(): string { return 'enabled'; }
 
             public function isAvailableForUser(int $userId): bool
             {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import { api } from '../api/client';
 import { currentUser } from '../signals/auth';
-import { methodDetails } from '../signals/config';
+import { methodDetails, enabledChannels } from '../signals/config';
 import { loadCurrentUser, refreshUser } from '../signals/user';
 import { useAuthGuard } from '../hooks/useAuthGuard';
 import { extractError } from '../utils/auth';
@@ -189,7 +189,7 @@ export function Profile() {
                             disabled={loading}
                             autoComplete="email"
                         />
-                        {user && !user.has_placeholder_email && !user.email_verified && !showEmailOtp && (
+                        {enabledChannels.value.includes('email') && user && !user.has_placeholder_email && !user.email_verified && !showEmailOtp && (
                             <div>
                                 {emailSent ? (
                                     <p className="text-xs text-green-600">Verification email sent! Check your inbox.</p>
@@ -206,7 +206,7 @@ export function Profile() {
                                 )}
                             </div>
                         )}
-                        {showEmailOtp && (
+                        {enabledChannels.value.includes('email') && showEmailOtp && (
                             <OtpVerifyInline
                                 verifyEndpoint="/auth/profile/verify/email"
                                 resendEndpoint="/auth/profile/send-verification/email"
@@ -219,41 +219,43 @@ export function Profile() {
                         )}
                     </div>
 
-                    <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                            <Label>Phone Number</Label>
-                            {user && user.phone && (
-                                <StatusBadge variant={user.phone_verified ? 'verified' : 'unverified'} />
+                    {enabledChannels.value.includes('phone') && (
+                        <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                                <Label>Phone Number</Label>
+                                {user && user.phone && (
+                                    <StatusBadge variant={user.phone_verified ? 'verified' : 'unverified'} />
+                                )}
+                            </div>
+                            <PhoneInput
+                                value={form.phone}
+                                onChange={(val) => updateField('phone', val)}
+                                disabled={loading}
+                            />
+                            {user && user.phone && !user.phone_verified && !showPhoneOtp && (
+                                <Button
+                                    variant="link"
+                                    type="button"
+                                    className="h-auto p-0 text-xs"
+                                    onClick={handleSendPhoneVerification}
+                                    disabled={phoneSending}
+                                >
+                                    {phoneSending ? 'Sending\u2026' : 'Verify phone'}
+                                </Button>
+                            )}
+                            {showPhoneOtp && (
+                                <OtpVerifyInline
+                                    verifyEndpoint="/auth/profile/verify/phone"
+                                    resendEndpoint="/auth/profile/send-verification/phone"
+                                    onVerified={() => handleVerified('phone')}
+                                    onError={setError}
+                                    label="Enter the code sent to your phone"
+                                    codeLength={phoneCodeLength}
+                                    className="pt-2"
+                                />
                             )}
                         </div>
-                        <PhoneInput
-                            value={form.phone}
-                            onChange={(val) => updateField('phone', val)}
-                            disabled={loading}
-                        />
-                        {user && user.phone && !user.phone_verified && !showPhoneOtp && (
-                            <Button
-                                variant="link"
-                                type="button"
-                                className="h-auto p-0 text-xs"
-                                onClick={handleSendPhoneVerification}
-                                disabled={phoneSending}
-                            >
-                                {phoneSending ? 'Sending\u2026' : 'Verify phone'}
-                            </Button>
-                        )}
-                        {showPhoneOtp && (
-                            <OtpVerifyInline
-                                verifyEndpoint="/auth/profile/verify/phone"
-                                resendEndpoint="/auth/profile/send-verification/phone"
-                                onVerified={() => handleVerified('phone')}
-                                onError={setError}
-                                label="Enter the code sent to your phone"
-                                codeLength={phoneCodeLength}
-                                className="pt-2"
-                            />
-                        )}
-                    </div>
+                    )}
                 </div>
 
                 <Button className="w-full" type="submit" disabled={loading}>

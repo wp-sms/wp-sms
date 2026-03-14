@@ -55,7 +55,7 @@ class MfaManager
             function (ChannelInterface $ch) use ($settings) {
                 $channelSettings = $settings[$ch->getId()] ?? [];
 
-                return !empty($channelSettings['enabled']);
+                return !empty($channelSettings[$ch->getEnabledSettingKey()]);
             },
         ));
     }

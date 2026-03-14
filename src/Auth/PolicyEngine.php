@@ -147,12 +147,12 @@ class PolicyEngine
             $channelKey = $channel->getId();
             $channelSettings = $settings[$channelKey] ?? [];
 
-            if (empty($channelSettings['enabled'])) {
+            if (empty($channelSettings[$channel->getEnabledSettingKey()])) {
                 continue;
             }
 
             // Channels with a 'usage' toggle (phone, email) must be set to 'mfa'.
-            // Channels without one (backup_codes, future MFA-only channels) are MFA by nature.
+            // Channels without one (backup_codes, totp, telegram) are MFA by nature.
             if (isset($channelSettings['usage']) && $channelSettings['usage'] !== 'mfa') {
                 continue;
             }

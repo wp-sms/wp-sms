@@ -68,6 +68,14 @@ interface ChannelInterface
     public function getEnrollmentInfo(int $userId): array;
 
     /**
+     * The settings key that controls whether this channel is enabled.
+     *
+     * Most channels use 'enabled'. Telegram uses 'mfa_enabled'.
+     * PolicyEngine reads this key from the merged channel settings.
+     */
+    public function getEnabledSettingKey(): string;
+
+    /**
      * Whether this channel can auto-enroll users without explicit enrollment data.
      *
      * E.g., email channel can auto-enroll because the user's WP email is already verified.

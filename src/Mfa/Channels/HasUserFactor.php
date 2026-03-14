@@ -105,6 +105,11 @@ trait HasUserFactor
      */
     abstract protected function getConfigPrefix(): string;
 
+    public function getEnabledSettingKey(): string
+    {
+        return 'enabled';
+    }
+
     public function isEnrolled(int $userId): bool
     {
         $factor = $this->getFactor($userId);

@@ -87,10 +87,16 @@ class EnrollmentController
 
     public function handleListMethods(WP_REST_Request $request): WP_REST_Response
     {
-        $channels = $this->mfaManager->getAvailableChannels();
+        $mfaFactorIds = $this->policy->getAvailableMfaFactors();
         $methods = [];
 
-        foreach ($channels as $channel) {
+        foreach ($mfaFactorIds as $channelId) {
+            $channel = $this->mfaManager->getChannel($channelId);
+
+            if (!$channel) {
+                continue;
+            }
+
             $methods[] = [
                 'id'                   => $channel->getId(),
                 'name'                 => $channel->getName(),
@@ -247,10 +253,16 @@ class EnrollmentController
         $user = get_userdata($userId);
 
         $factors = $this->mfaManager->getUserFactors($userId);
+        $availableMfaIds = $this->policy->getAvailableMfaFactors();
         $enrolledFactors = [];
 
         foreach ($factors as $factor) {
             if ($factor->status !== ChannelStatus::Active) {
+                continue;
+            }
+
+            // Only include factors whose channels are currently enabled for MFA.
+            if (!in_array($factor->channelId, $availableMfaIds, true)) {
                 continue;
             }
 

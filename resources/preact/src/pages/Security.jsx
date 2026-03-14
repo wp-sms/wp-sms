@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { api } from '../api/client';
-import { socialProviders } from '../signals/config';
+import { socialProviders, enabledChannels, authConfig } from '../signals/config';
 import { currentUser } from '../signals/auth';
 import { loadCurrentUser, refreshUser, enrolledFactors } from '../signals/user';
 import { useAuthGuard } from '../hooks/useAuthGuard';
@@ -14,11 +14,21 @@ import { MfaFactorCard } from '../components/MfaFactorCard';
 import { BackupCodesDisplay } from '../components/BackupCodesDisplay';
 
 function SecurityPosture({ user }) {
-    const steps = [
-        { label: 'Email verified', done: !user.has_placeholder_email && !!user.email_verified },
-        { label: 'Phone verified', done: !!(user.phone && user.phone_verified) },
-        { label: 'MFA enabled', done: !!user.mfa_enabled },
-    ];
+    const channels = enabledChannels.value;
+    const mfaEnabled = authConfig.value?.mfa_enabled;
+
+    const steps = [];
+    if (channels.includes('email')) {
+        steps.push({ label: 'Email verified', done: !user.has_placeholder_email && !!user.email_verified });
+    }
+    if (channels.includes('phone')) {
+        steps.push({ label: 'Phone verified', done: !!(user.phone && user.phone_verified) });
+    }
+    if (mfaEnabled) {
+        steps.push({ label: 'MFA enabled', done: !!user.mfa_enabled });
+    }
+    if (steps.length === 0) return null;
+
     const completed = steps.filter((s) => s.done).length;
     const total = steps.length;
     const allDone = completed === total;
@@ -253,7 +263,7 @@ export function Security() {
                 </div>
             )}
 
-            {isEnrolled('backup_codes') && (
+            {isEnrolled('backup_codes') && availableMethods.length > 0 && (
                 <div className="mt-6 space-y-3">
                     <Separator />
                     <h3 className="text-base font-semibold">Backup Codes</h3>

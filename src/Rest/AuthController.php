@@ -223,6 +223,7 @@ class AuthController
                 'primary_methods'     => $primaryMethods,
                 'method_details'      => $this->policy->getMethodDetails($primaryMethods),
                 'mfa_enabled'         => !empty($this->policy->getAvailableMfaFactors()),
+                'enabled_channels'    => $this->policy->getVerificationChannelKeys(),
                 'base_url'            => $this->policy->getSetting('auth_base_url', '/account'),
                 'registration_fields' => $this->policy->getEffectiveRegistrationFields(),
             ],
