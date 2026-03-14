@@ -5,7 +5,9 @@ namespace WSms\Rest;
 use WP_REST_Request;
 use WP_REST_Response;
 use WSms\Auth\AccountManager;
+use WSms\Auth\AvatarManager;
 use WSms\Auth\PolicyEngine;
+use WSms\Auth\ProfileFieldRegistry;
 use WSms\Enums\ChannelStatus;
 use WSms\Mfa\Channels\BackupCodesChannel;
 use WSms\Mfa\Contracts\SupportsEnrollmentConfirmation;
@@ -21,6 +23,8 @@ class EnrollmentController
     public function __construct(
         private MfaManager $mfaManager,
         private PolicyEngine $policy,
+        private ?ProfileFieldRegistry $fieldRegistry = null,
+        private ?AvatarManager $avatarManager = null,
     ) {
     }
 
@@ -286,7 +290,7 @@ class EnrollmentController
                 'display_name'          => $user->display_name,
                 'first_name'            => $user->first_name,
                 'last_name'             => $user->last_name,
-                'avatar_url'            => get_avatar_url($userId, ['size' => 128]),
+                'avatar_url'            => $this->resolveAvatarUrl($userId),
                 'phone'                 => get_user_meta($userId, 'wsms_phone', true) ?: null,
                 'phone_verified'        => (bool) get_user_meta($userId, 'wsms_phone_verified', true),
                 'email_verified'        => $isPlaceholder ? true : (bool) get_user_meta($userId, 'wsms_email_verified', true),
@@ -297,8 +301,40 @@ class EnrollmentController
                 'roles'                 => $user->roles,
                 'mfa_enabled'           => !empty($enrolledFactors),
                 'enrolled_factors'      => $enrolledFactors,
+                'custom_fields'         => $this->readCustomFields($userId),
             ],
         ]);
+    }
+
+    private function resolveAvatarUrl(int $userId): string
+    {
+        if ($this->avatarManager) {
+            $url = $this->avatarManager->getAvatarUrl($userId);
+            if ($url) {
+                return $url;
+            }
+        }
+
+        return get_avatar_url($userId, ['size' => 128]);
+    }
+
+    /**
+     * Read custom profile field values for a user.
+     *
+     * @return array<string, mixed>
+     */
+    private function readCustomFields(int $userId): array
+    {
+        if (!$this->fieldRegistry) {
+            return [];
+        }
+
+        $values = [];
+        foreach ($this->fieldRegistry->getCustomFields() as $field) {
+            $values[$field->id] = $this->fieldRegistry->readValue($userId, $field);
+        }
+
+        return $values;
     }
 
     private function autoEnrollBackupCodes(int $userId, string $channelId, EnrollmentResult $result): EnrollmentResult

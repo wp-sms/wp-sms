@@ -46,6 +46,8 @@ class RestServiceProvider implements ServiceProvider
             return new EnrollmentController(
                 $container->get('mfa.manager'),
                 $container->get('auth.policy'),
+                $container->get('auth.field_registry'),
+                $container->get('auth.avatar_manager'),
             );
         });
 
@@ -55,6 +57,8 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('auth.rate_limiter'),
                 $container->get('auth.session'),
                 $container->get('auth.captcha_guard'),
+                $container->get('auth.field_registry'),
+                $container->get('auth.avatar_manager'),
             );
         });
 
@@ -62,6 +66,7 @@ class RestServiceProvider implements ServiceProvider
             return new AdminController(
                 $container->get('audit.logger'),
                 $container->get('mfa.manager'),
+                $container->get('auth.field_registry'),
             );
         });
 

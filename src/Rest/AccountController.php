@@ -6,7 +6,9 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AuthSession;
+use WSms\Auth\AvatarManager;
 use WSms\Auth\CaptchaGuard;
+use WSms\Auth\ProfileFieldRegistry;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\ValueObjects\AuthResult;
 use WSms\Enums\SessionStage;
@@ -22,6 +24,8 @@ class AccountController
         private RateLimiter $rateLimiter,
         private AuthSession $authSession,
         private CaptchaGuard $captchaGuard,
+        private ?ProfileFieldRegistry $fieldRegistry = null,
+        private ?AvatarManager $avatarManager = null,
     ) {
     }
 
@@ -143,6 +147,19 @@ class AccountController
             'args'                => $verifyArgs,
         ]);
 
+        register_rest_route(self::NAMESPACE, '/auth/profile/avatar', [
+            [
+                'methods'             => 'POST',
+                'callback'            => [$this, 'handleUploadAvatar'],
+                'permission_callback' => [$this, 'checkAuthenticated'],
+            ],
+            [
+                'methods'             => 'DELETE',
+                'callback'            => [$this, 'handleDeleteAvatar'],
+                'permission_callback' => [$this, 'checkAuthenticated'],
+            ],
+        ]);
+
     }
 
     public function checkAuthenticated(WP_REST_Request $request): bool
@@ -165,7 +182,7 @@ class AccountController
             return CaptchaGuard::failedResponse();
         }
 
-        $result = $this->accountManager->registerUser([
+        $data = [
             'email'        => $request->get_param('email'),
             'password'     => $request->get_param('password'),
             'username'     => $request->get_param('username'),
@@ -173,7 +190,19 @@ class AccountController
             'first_name'   => $request->get_param('first_name'),
             'last_name'    => $request->get_param('last_name'),
             'phone'        => $request->get_param('phone'),
-        ]);
+        ];
+
+        // Include custom field values from request body.
+        if ($this->fieldRegistry) {
+            foreach ($this->fieldRegistry->getCustomFields() as $field) {
+                $value = $request->get_param($field->id);
+                if ($value !== null) {
+                    $data[$field->id] = $value;
+                }
+            }
+        }
+
+        $result = $this->accountManager->registerUser($data);
 
         return new WP_REST_Response($result, $result['success'] ? 201 : 400);
     }
@@ -241,6 +270,19 @@ class AccountController
             'phone'        => $request->get_param('phone'),
             'email'        => $request->get_param('email'),
         ], fn($v) => $v !== null);
+
+        // Include custom field values from request body.
+        if ($this->fieldRegistry) {
+            foreach ($this->fieldRegistry->getFieldsForContext('profile') as $field) {
+                if ($field->isSystem()) {
+                    continue;
+                }
+                $value = $request->get_param($field->id);
+                if ($value !== null) {
+                    $data[$field->id] = $value;
+                }
+            }
+        }
 
         $result = $this->accountManager->updateProfile(get_current_user_id(), $data);
 
@@ -386,6 +428,52 @@ class AccountController
         $result = $this->accountManager->getVerificationStatus($session['user_id']);
 
         return new WP_REST_Response(array_merge(['success' => true], $result));
+    }
+
+    // --- Avatar ---
+
+    public function handleUploadAvatar(WP_REST_Request $request): WP_REST_Response
+    {
+        if (!$this->avatarManager) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error'   => 'unavailable',
+                'message' => 'Avatar uploads not available.',
+            ], 500);
+        }
+
+        $files = $request->get_file_params();
+        $file = $files['avatar'] ?? null;
+
+        if (!$file) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error'   => 'no_file',
+                'message' => 'No avatar file provided.',
+            ], 400);
+        }
+
+        $result = $this->avatarManager->uploadAvatar(get_current_user_id(), $file);
+
+        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+    }
+
+    public function handleDeleteAvatar(WP_REST_Request $request): WP_REST_Response
+    {
+        if (!$this->avatarManager) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error'   => 'unavailable',
+                'message' => 'Avatar management not available.',
+            ], 500);
+        }
+
+        $this->avatarManager->deleteAvatar(get_current_user_id());
+
+        return new WP_REST_Response([
+            'success' => true,
+            'message' => 'Avatar removed.',
+        ]);
     }
 
     // --- Shared helpers ---

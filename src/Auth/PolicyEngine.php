@@ -14,6 +14,7 @@ class PolicyEngine
     public function __construct(
         private MfaManager $mfaManager,
         private SettingsRepository $settingsRepo,
+        private ?ProfileFieldRegistry $fieldRegistry = null,
     ) {
     }
 
@@ -335,6 +336,28 @@ class PolicyEngine
     public function getEffectiveRegistrationFields(): array
     {
         $settings = $this->settingsRepo->all();
+
+        // When the field registry is available, derive from it.
+        if ($this->fieldRegistry) {
+            $defs = $this->fieldRegistry->getFieldsForContext('registration');
+            $effectiveFields = [];
+
+            foreach ($defs as $def) {
+                // System fields: apply channel-level overrides.
+                if ($def->id === 'email' && empty($settings['email']['required_at_signup'])) {
+                    continue;
+                }
+                if ($def->id === 'password' && (empty($settings['password']['enabled']) || empty($settings['password']['required_at_signup']))) {
+                    continue;
+                }
+
+                $effectiveFields[] = $def->id;
+            }
+
+            return $effectiveFields;
+        }
+
+        // Legacy path (no registry injected).
         $regFields = $settings['registration_fields'] ?? ['email', 'password'];
         $effectiveFields = [];
 
@@ -353,6 +376,51 @@ class PolicyEngine
         }
 
         return $effectiveFields;
+    }
+
+    /**
+     * Get full field definitions for registration context (for frontend).
+     *
+     * @return array[]
+     */
+    public function getRegistrationFieldDefinitions(): array
+    {
+        if (!$this->fieldRegistry) {
+            return [];
+        }
+
+        $settings = $this->settingsRepo->all();
+        $defs = $this->fieldRegistry->getFieldsForContext('registration');
+        $result = [];
+
+        foreach ($defs as $def) {
+            if ($def->id === 'email' && empty($settings['email']['required_at_signup'])) {
+                continue;
+            }
+            if ($def->id === 'password' && (empty($settings['password']['enabled']) || empty($settings['password']['required_at_signup']))) {
+                continue;
+            }
+
+            $result[] = $def->toArray();
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get full field definitions for profile context (for frontend).
+     *
+     * @return array[]
+     */
+    public function getProfileFieldDefinitions(): array
+    {
+        if (!$this->fieldRegistry) {
+            return [];
+        }
+
+        $defs = $this->fieldRegistry->getFieldsForContext('profile');
+
+        return array_map(fn($d) => $d->toArray(), $defs);
     }
 
     /**

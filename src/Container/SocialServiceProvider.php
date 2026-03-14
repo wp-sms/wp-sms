@@ -68,6 +68,7 @@ class SocialServiceProvider implements ServiceProvider
                 $container->get('auth.lockout'),
                 $container->get('auth.policy'),
                 $container->has('mfa.channel.telegram') ? $container->get('mfa.channel.telegram') : null,
+                $container->get('auth.avatar_manager'),
             );
         });
     }

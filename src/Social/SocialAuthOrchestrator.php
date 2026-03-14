@@ -7,6 +7,7 @@ use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthSession;
+use WSms\Auth\AvatarManager;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\ValueObjects\AuthResult;
 use WSms\Enums\EventType;
@@ -27,6 +28,7 @@ class SocialAuthOrchestrator
         private AccountLockout $lockout,
         private ?PolicyEngine $policyEngine = null,
         private ?TelegramChannel $telegramChannel = null,
+        private ?AvatarManager $avatarManager = null,
     ) {
     }
 
@@ -289,6 +291,11 @@ class SocialAuthOrchestrator
             update_user_meta($userId, 'wsms_phone_verified', '1');
         }
 
+        // Save social avatar for new user.
+        if (!empty($userInfo['picture']) && $this->avatarManager) {
+            $this->avatarManager->saveSocialAvatar($userId, $userInfo['picture']);
+        }
+
         $this->linkAccount($userId, $providerId, $userInfo, $tokens);
 
         $this->auditLogger->log(EventType::SocialRegistration, 'success', $userId, [
@@ -419,6 +426,11 @@ class SocialAuthOrchestrator
 
         if (count($update) > 1) {
             wp_update_user($update);
+        }
+
+        // Save social avatar.
+        if (!empty($userInfo['picture']) && $this->avatarManager) {
+            $this->avatarManager->saveSocialAvatar($userId, $userInfo['picture']);
         }
     }
 

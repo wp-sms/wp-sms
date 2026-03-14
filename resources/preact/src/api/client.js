@@ -21,9 +21,25 @@ async function request(method, endpoint, body = null, extraHeaders = {}) {
     return data;
 }
 
+async function uploadRequest(method, endpoint, formData) {
+    const res = await fetch(`${restUrl}${endpoint.replace(/^\//, '')}`, {
+        method,
+        headers: { 'X-WP-Nonce': nonce },
+        credentials: 'same-origin',
+        body: formData,
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+        throw { status: res.status, ...data };
+    }
+    return data;
+}
+
 export const api = {
     get: (url, headers) => request('GET', url, null, headers),
     post: (url, body, headers) => request('POST', url, body, headers),
     put: (url, body, headers) => request('PUT', url, body, headers),
     del: (url, body, headers) => request('DELETE', url, body, headers),
+    upload: (url, formData) => uploadRequest('POST', url, formData),
 };

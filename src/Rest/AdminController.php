@@ -5,6 +5,7 @@ namespace WSms\Rest;
 use WP_REST_Request;
 use WP_REST_Response;
 use WSms\Audit\AuditLogger;
+use WSms\Auth\ProfileFieldRegistry;
 use WSms\Enums\EnrollmentTiming;
 use WSms\Enums\EventType;
 use WSms\Enums\LogVerbosity;
@@ -31,6 +32,7 @@ class AdminController
         'social_profile_sync',
         'pending_user_cleanup_enabled',
         'pending_user_ttl_hours',
+        'profile_fields',
     ];
 
     /** Channel keys that accept nested sub-objects. */
@@ -48,6 +50,7 @@ class AdminController
     public function __construct(
         private AuditLogger $auditLogger,
         private MfaManager $mfaManager,
+        private ?ProfileFieldRegistry $fieldRegistry = null,
     ) {
     }
 
@@ -101,6 +104,12 @@ class AdminController
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
             ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/auth/admin/meta-keys', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'handleGetMetaKeys'],
+            'permission_callback' => [$this, 'checkAdmin'],
         ]);
     }
 
@@ -251,6 +260,22 @@ class AdminController
         ]);
     }
 
+    public function handleGetMetaKeys(WP_REST_Request $request): WP_REST_Response
+    {
+        if (!$this->fieldRegistry) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error'   => 'unavailable',
+                'message' => 'Profile field registry not available.',
+            ], 500);
+        }
+
+        return new WP_REST_Response([
+            'success'   => true,
+            'meta_keys' => $this->fieldRegistry->scanMetaKeys(),
+        ]);
+    }
+
     private function validateSettings(array $settings): array
     {
         $errors = [];
@@ -375,6 +400,12 @@ class AdminController
                     $errors[] = "social.{$provider}: client_secret is required when enabled.";
                 }
             }
+        }
+
+        // Profile fields validation.
+        if (isset($settings['profile_fields']) && is_array($settings['profile_fields']) && $this->fieldRegistry) {
+            $fieldErrors = $this->fieldRegistry->validateFieldsConfig($settings['profile_fields']);
+            $errors = array_merge($errors, $fieldErrors);
         }
 
         $bc = $settings['backup_codes'] ?? [];

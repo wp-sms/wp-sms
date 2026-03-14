@@ -219,14 +219,19 @@ class AuthController
     {
         $primaryMethods = $this->policy->getAvailablePrimaryMethods();
 
+        $regFieldDefs = $this->policy->getRegistrationFieldDefinitions();
+        $profileFieldDefs = $this->policy->getProfileFieldDefinitions();
+
         $config = array_merge(
             [
-                'primary_methods'     => $primaryMethods,
-                'method_details'      => $this->policy->getMethodDetails($primaryMethods),
-                'mfa_enabled'         => !empty($this->policy->getAvailableMfaFactors()),
-                'enabled_channels'    => $this->policy->getVerificationChannelKeys(),
-                'base_url'            => $this->policy->getSetting('auth_base_url', '/account'),
-                'registration_fields' => $this->policy->getEffectiveRegistrationFields(),
+                'primary_methods'              => $primaryMethods,
+                'method_details'               => $this->policy->getMethodDetails($primaryMethods),
+                'mfa_enabled'                  => !empty($this->policy->getAvailableMfaFactors()),
+                'enabled_channels'             => $this->policy->getVerificationChannelKeys(),
+                'base_url'                     => $this->policy->getSetting('auth_base_url', '/account'),
+                'registration_fields'          => $this->policy->getEffectiveRegistrationFields(),
+                'registration_field_definitions' => $regFieldDefs,
+                'profile_field_definitions'    => $profileFieldDefs,
             ],
             $this->policy->getVerificationRequirements(),
         );

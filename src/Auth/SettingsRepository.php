@@ -78,6 +78,11 @@ class SettingsRepository
             $raw[$key] = array_merge($defaults, $raw[$key] ?? []);
         }
 
+        // Migrate old registration_fields to profile_fields if needed.
+        if (empty($raw['profile_fields']) && !empty($raw['registration_fields'])) {
+            $raw['profile_fields'] = $this->migrateRegistrationFields($raw['registration_fields']);
+        }
+
         return $this->settings = $raw;
     }
 
@@ -97,5 +102,29 @@ class SettingsRepository
     public function get(string $key, mixed $default = null): mixed
     {
         return $this->all()[$key] ?? $default;
+    }
+
+    /**
+     * Migrate old registration_fields (string[]) to profile_fields format.
+     *
+     * @param string[] $regFields
+     * @return array<int, array<string, mixed>>
+     */
+    private function migrateRegistrationFields(array $regFields): array
+    {
+        $profileFields = [];
+        $order = 1;
+
+        foreach ($regFields as $fieldId) {
+            $profileFields[] = [
+                'id'         => $fieldId,
+                'source'     => 'system',
+                'visibility' => $fieldId === 'password' ? 'registration' : 'both',
+                'required'   => in_array($fieldId, ['email', 'password'], true),
+                'sort_order' => $order++,
+            ];
+        }
+
+        return $profileFields;
     }
 }

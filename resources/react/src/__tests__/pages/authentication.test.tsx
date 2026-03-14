@@ -76,12 +76,10 @@ describe('AuthenticationPage', () => {
       expect(onUpdate).toHaveBeenCalledWith('auto_create_users', true);
     });
 
-    it('renders registration field checkboxes', () => {
+    it('renders link to profile fields page', () => {
       render(<AuthenticationPage section="registration" {...defaultProps} />);
 
-      expect(screen.getByText('Phone Number')).toBeInTheDocument();
-      expect(screen.getByText('First Name')).toBeInTheDocument();
-      expect(screen.getByText('Last Name')).toBeInTheDocument();
+      expect(screen.getByText('Manage Profile Fields')).toBeInTheDocument();
     });
   });
 });
