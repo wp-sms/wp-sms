@@ -9,6 +9,7 @@ use WSms\Auth\AccountManager;
 use WSms\Auth\AuthSession;
 use WSms\Enums\VerificationType;
 use WSms\Mfa\MfaManager;
+use WSms\Auth\SettingsRepository;
 use WSms\Mfa\OtpGenerator;
 
 class AccountManagerTest extends TestCase
@@ -31,6 +32,7 @@ class AccountManagerTest extends TestCase
             $this->otpGenerator,
             $this->mfaManager,
             $this->authSession,
+            new SettingsRepository(),
         );
 
         $this->otpGenerator->method('generateToken')->willReturn('test-token-abc');
@@ -248,7 +250,7 @@ class AccountManagerTest extends TestCase
 
         $this->assertTrue($result['success']);
         $this->assertArrayNotHasKey('pending_verifications', $result);
-        $this->assertArrayNotHasKey('registration_token', $result);
+        $this->assertArrayNotHasKey('session_token', $result);
     }
 
     public function testRegisterUserPendingEmailWhenVerifyAtSignupEnabled(): void
@@ -269,7 +271,7 @@ class AccountManagerTest extends TestCase
         $this->assertTrue($result['success']);
         $this->assertCount(1, $result['pending_verifications']);
         $this->assertSame('email', $result['pending_verifications'][0]['type']);
-        $this->assertArrayHasKey('registration_token', $result);
+        $this->assertArrayHasKey('session_token', $result);
     }
 
     public function testRegisterUserPendingPhoneWhenVerifyAtSignupEnabled(): void
@@ -291,7 +293,7 @@ class AccountManagerTest extends TestCase
         $this->assertTrue($result['success']);
         $this->assertCount(1, $result['pending_verifications']);
         $this->assertSame('phone', $result['pending_verifications'][0]['type']);
-        $this->assertArrayHasKey('registration_token', $result);
+        $this->assertArrayHasKey('session_token', $result);
     }
 
     public function testRegisterUserBothPendingWhenBothEnabled(): void
@@ -317,7 +319,7 @@ class AccountManagerTest extends TestCase
         $types = array_column($result['pending_verifications'], 'type');
         $this->assertContains('phone', $types);
         $this->assertContains('email', $types);
-        $this->assertArrayHasKey('registration_token', $result);
+        $this->assertArrayHasKey('session_token', $result);
     }
 
     // --- initiatePasswordReset ---

@@ -18,7 +18,7 @@ export function VerifyOtp() {
     const [backupCode, setBackupCode] = useState('');
     const [resendCooldown, setResendCooldown] = useState(0);
 
-    const token = challengeToken.value || pendingMfa.value?.challenge_token;
+    const token = challengeToken.value || pendingMfa.value?.session_token;
 
     useEffect(() => {
         if (!token) route(authUrl('/login'));
@@ -36,7 +36,7 @@ export function VerifyOtp() {
 
         try {
             const res = await api.post('/auth/verify', {
-                challenge_token: token,
+                session_token: token,
                 code,
             });
             handleAuthResponse(res, route);
@@ -52,7 +52,7 @@ export function VerifyOtp() {
         authError.value = null;
 
         try {
-            await api.post('/auth/resend', { challenge_token: token });
+            await api.post('/auth/resend', { session_token: token });
             setResendCooldown(60);
         } catch (err) {
             authError.value = extractError(err);

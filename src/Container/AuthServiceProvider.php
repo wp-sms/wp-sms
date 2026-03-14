@@ -15,6 +15,7 @@ use WSms\Auth\CaptchaProviders\TurnstileProvider;
 use WSms\Auth\LoginGuard;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\RateLimiter;
+use WSms\Auth\SettingsRepository;
 
 defined('ABSPATH') || exit;
 
@@ -28,9 +29,14 @@ class AuthServiceProvider implements ServiceProvider
     /** {@inheritDoc} */
     public function register(ServiceContainer $container): void
     {
+        $container->register('auth.settings', function () {
+            return new SettingsRepository();
+        });
+
         $container->register('auth.policy', function () use ($container) {
             return new PolicyEngine(
                 $container->get('mfa.manager'),
+                $container->get('auth.settings'),
             );
         });
 
@@ -44,8 +50,10 @@ class AuthServiceProvider implements ServiceProvider
             return new RateLimiter();
         });
 
-        $container->register('auth.lockout', function () {
-            return new AccountLockout();
+        $container->register('auth.lockout', function () use ($container) {
+            return new AccountLockout(
+                $container->get('auth.settings'),
+            );
         });
 
         $container->register('auth.orchestrator', function () use ($container) {
@@ -56,6 +64,7 @@ class AuthServiceProvider implements ServiceProvider
                 $container->get('auth.session'),
                 $container->get('auth.lockout'),
                 $container->get('auth.account_manager'),
+                $container->get('auth.settings'),
             );
         });
 
@@ -65,23 +74,28 @@ class AuthServiceProvider implements ServiceProvider
                 $container->get('mfa.otp_generator'),
                 $container->get('mfa.manager'),
                 $container->get('auth.session'),
+                $container->get('auth.settings'),
             );
         });
 
-        $container->register('auth.captcha_guard', function () {
+        $container->register('auth.captcha_guard', function () use ($container) {
             return new CaptchaGuard([
                 'turnstile' => new TurnstileProvider(),
                 'recaptcha' => new RecaptchaProvider(),
                 'hcaptcha'  => new HcaptchaProvider(),
-            ]);
+            ], $container->get('auth.settings'));
         });
 
-        $container->register('auth.router', function () {
-            return new AuthRouter();
+        $container->register('auth.router', function () use ($container) {
+            return new AuthRouter(
+                $container->get('auth.settings'),
+            );
         });
 
-        $container->register('auth.shortcode', function () {
-            return new AuthShortcode();
+        $container->register('auth.shortcode', function () use ($container) {
+            return new AuthShortcode(
+                $container->get('auth.settings'),
+            );
         });
 
         $container->register('auth.login_guard', function () {
@@ -97,6 +111,14 @@ class AuthServiceProvider implements ServiceProvider
         $container->get('auth.shortcode')->registerHooks();
 
         $container->get('auth.login_guard')->registerHooks();
+
+        // Inject settings into MFA channels for consistent config access.
+        $settingsRepo = $container->get('auth.settings');
+        foreach ($container->get('mfa.manager')->getAvailableChannels() as $channel) {
+            if (method_exists($channel, 'setSettingsRepository')) {
+                $channel->setSettingsRepository($settingsRepo);
+            }
+        }
 
         // Block wp_mail to placeholder email addresses.
         add_filter('pre_wp_mail', function ($null, $atts) {

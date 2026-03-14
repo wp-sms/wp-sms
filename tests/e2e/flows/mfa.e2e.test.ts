@@ -118,12 +118,12 @@ describe('MFA login flow', () => {
     expect(loginRes.status).toBe(200);
     expect(loginData.success).toBe(true);
     expect(loginData.status).toBe('mfa_required');
-    expect(loginData.challenge_token).toBeDefined();
+    expect(loginData.session_token).toBeDefined();
     expect(loginData.meta?.available_factors).toBeDefined();
 
     // Step 2: Send MFA challenge.
     const sendRes = await api.api('POST', '/auth/mfa/send', {
-      challenge_token: loginData.challenge_token,
+      session_token: loginData.session_token,
       channel_id: 'phone',
     });
     const sendData = await sendRes.json();
@@ -135,7 +135,7 @@ describe('MFA login flow', () => {
 
     // Step 4: Verify MFA.
     const verifyRes = await api.api('POST', '/auth/mfa/verify', {
-      challenge_token: loginData.challenge_token,
+      session_token: loginData.session_token,
       code: otp,
       channel_id: 'phone',
     });

@@ -53,7 +53,7 @@ class AuthController
             'callback'            => [$this, 'handleVerify'],
             'permission_callback' => '__return_true',
             'args'                => [
-                'challenge_token' => ['required' => true, 'type' => 'string'],
+                'session_token' => ['required' => true, 'type' => 'string'],
                 'code'            => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
             ],
         ]);
@@ -72,7 +72,7 @@ class AuthController
             'callback'            => [$this, 'handleResend'],
             'permission_callback' => '__return_true',
             'args'                => [
-                'challenge_token' => ['required' => true, 'type' => 'string'],
+                'session_token' => ['required' => true, 'type' => 'string'],
             ],
         ]);
 
@@ -149,7 +149,7 @@ class AuthController
         }
 
         $result = $this->orchestrator->verifyPrimary(
-            $request->get_param('challenge_token'),
+            $request->get_param('session_token'),
             $request->get_param('code'),
         );
 
@@ -180,7 +180,7 @@ class AuthController
         }
 
         $result = $this->orchestrator->resendChallenge(
-            $request->get_param('challenge_token'),
+            $request->get_param('session_token'),
         );
 
         return $this->toResponse($result);
@@ -203,7 +203,8 @@ class AuthController
 
     public function handleVerificationComplete(WP_REST_Request $request): WP_REST_Response
     {
-        $token = $request->get_header('X-Verification-Token');
+        $token = $request->get_header('X-Auth-Session')
+              ?? $request->get_header('X-Verification-Token');
 
         if (empty($token)) {
             return new WP_REST_Response(['success' => false, 'error' => 'missing_token'], 400);

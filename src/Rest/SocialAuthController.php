@@ -131,7 +131,7 @@ class SocialAuthController
 
         // MFA required — redirect with session token.
         if (($resultArray['status'] ?? '') === 'mfa_required') {
-            return $this->redirectTo($loginUrl . '?social_mfa=' . urlencode($resultArray['challenge_token']));
+            return $this->redirectTo($loginUrl . '?social_mfa=' . urlencode($resultArray['session_token']));
         }
 
         // Account linking success — redirect to security page.

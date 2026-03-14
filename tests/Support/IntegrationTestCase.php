@@ -10,6 +10,7 @@ use WSms\Auth\AccountManager;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthSession;
 use WSms\Auth\PolicyEngine;
+use WSms\Auth\SettingsRepository;
 use WSms\Enums\ChannelStatus;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\MfaManager;
@@ -80,9 +81,12 @@ abstract class IntegrationTestCase extends TestCase
             'disableAllFactors',
         ]);
 
+        // Shared settings repository — all classes see the same cached settings.
+        $settingsRepo = new SettingsRepository();
+
         // Real classes.
-        $this->policy = new PolicyEngine($this->mfaManager);
-        $this->lockout = new AccountLockout();
+        $this->policy = new PolicyEngine($this->mfaManager, $settingsRepo);
+        $this->lockout = new AccountLockout($settingsRepo);
 
         // Controlled OTP generator: predictable codes but real hash/verify.
         $this->otpGenerator = $this->createPartialMock(OtpGenerator::class, ['generate', 'generateToken']);
@@ -107,6 +111,7 @@ abstract class IntegrationTestCase extends TestCase
             $this->otpGenerator,
             $this->mfaManager,
             $this->session,
+            $settingsRepo,
         );
 
         // Real AuthOrchestrator with full dependency graph.
@@ -117,6 +122,7 @@ abstract class IntegrationTestCase extends TestCase
             $this->session,
             $this->lockout,
             $this->accountManager,
+            $settingsRepo,
         );
     }
 
@@ -234,6 +240,7 @@ abstract class IntegrationTestCase extends TestCase
         $channel->method('supportsAutoEnrollment')->willReturn(false);
         $channel->method('isAvailableForUser')->willReturn(true);
         $channel->method('isEnrolled')->willReturn($enrolled);
+        $channel->method('getEnabledSettingKey')->willReturn('enabled');
 
         $channel->method('sendChallenge')->willReturn(
             new ChallengeResult($challengeSuccess, $challengeSuccess ? 'Challenge sent.' : 'Failed.', [

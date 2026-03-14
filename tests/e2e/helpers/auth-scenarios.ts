@@ -273,7 +273,7 @@ export function telegramSocialWithMfa(): AuthSettings {
       bot_token: '123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11',
       bot_username: 'test_bot',
       webhook_secret: 'test-webhook-secret',
-      mfa_enabled: true,
+      enabled: true,
       code_length: 6,
       expiry: 300,
       max_attempts: 3,

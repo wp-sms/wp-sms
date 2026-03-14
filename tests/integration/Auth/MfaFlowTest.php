@@ -3,6 +3,7 @@
 namespace WSms\Tests\Integration\Auth;
 
 use WSms\Enums\ChannelStatus;
+use WSms\Enums\SessionStage;
 use WSms\Tests\Support\AuthScenarios;
 use WSms\Tests\Support\IntegrationTestCase;
 use WSms\Tests\Support\UserFactory;
@@ -131,7 +132,7 @@ class MfaFlowTest extends IntegrationTestCase
         $this->setSettings(AuthScenarios::mfaPhoneForAdmin());
 
         // Create a session at wrong stage (challenge_pending instead of primary_verified).
-        $token = $this->session->create(1, 'password', 'challenge_pending');
+        $token = $this->session->create(1, 'password', SessionStage::ChallengePending);
 
         $this->configureMfaChannel('phone');
 

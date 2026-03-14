@@ -15,7 +15,10 @@ class AccountLockout
         15 => 3600,  // 60 min
     ];
 
-    private ?array $settings = null;
+    public function __construct(
+        private SettingsRepository $settingsRepo,
+    ) {
+    }
 
     public function recordFailure(int $userId): void
     {
@@ -66,8 +69,6 @@ class AccountLockout
 
     private function getThresholds(): array
     {
-        $this->settings ??= get_option('wsms_auth_settings', []);
-
-        return $this->settings['lockout_thresholds'] ?? self::DEFAULT_THRESHOLDS;
+        return $this->settingsRepo->get('lockout_thresholds', self::DEFAULT_THRESHOLDS);
     }
 }

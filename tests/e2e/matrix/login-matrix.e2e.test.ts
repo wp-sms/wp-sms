@@ -73,7 +73,7 @@ describe.each(primaryPresets)('Login with %s', (name, settings) => {
 
       const otp = await getOtp(api, userId, 'email');
       const verifyRes = await api.api('POST', '/auth/verify', {
-        challenge_token: challengeData.challenge_token,
+        session_token: challengeData.session_token,
         code: otp,
       });
       const verifyData = await verifyRes.json();
@@ -116,7 +116,7 @@ describe.each(primaryPresets)('Login with %s', (name, settings) => {
 
       const otp = await getOtp(api, userId, 'phone');
       const verifyRes = await api.api('POST', '/auth/verify', {
-        challenge_token: challengeData.challenge_token,
+        session_token: challengeData.session_token,
         code: otp,
       });
       const verifyData = await verifyRes.json();

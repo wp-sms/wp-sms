@@ -6,6 +6,7 @@ use WSms\Audit\AuditLogger;
 use WSms\Auth\AuthSession;
 use WSms\Enums\EnrollmentTiming;
 use WSms\Enums\EventType;
+use WSms\Enums\SessionStage;
 use WSms\Enums\VerificationType;
 use WSms\Mfa\MfaManager;
 use WSms\Mfa\OtpGenerator;
@@ -19,13 +20,12 @@ class AccountManager
     public const DEFAULT_PENDING_USER_TTL_HOURS = 24;
     private const META_HAS_USABLE_PASSWORD = 'wsms_has_usable_password';
 
-    private ?array $settings = null;
-
     public function __construct(
         private AuditLogger $auditLogger,
         private OtpGenerator $otpGenerator,
         private MfaManager $mfaManager,
         private AuthSession $authSession,
+        private SettingsRepository $settingsRepo,
     ) {
     }
 
@@ -83,21 +83,6 @@ class AccountManager
         return self::PLACEHOLDER_USERNAME_PREFIX . bin2hex(random_bytes(5));
     }
 
-    private function getSettings(): array
-    {
-        if ($this->settings !== null) {
-            return $this->settings;
-        }
-
-        $raw = get_option('wsms_auth_settings', []);
-
-        foreach (PolicyEngine::CHANNEL_DEFAULTS as $key => $defaults) {
-            $raw[$key] = array_merge($defaults, $raw[$key] ?? []);
-        }
-
-        return $this->settings = $raw;
-    }
-
     /**
      * Register a new user.
      *
@@ -105,12 +90,54 @@ class AccountManager
      */
     public function registerUser(array $data, bool $socialLogin = false): array
     {
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
+
+        $emailRequired = $socialLogin ? false : ($settings['email']['required_at_signup'] ?? true);
+
+        $validationError = $this->validateRegistrationFields($data, $settings, $socialLogin, $emailRequired);
+        if ($validationError !== null) {
+            return $validationError;
+        }
+
+        [$email, $isPlaceholder, $username, $userdata] = $this->resolveEmailAndUsername($data, $emailRequired);
+
+        $emailVerifyEnabled = !$isPlaceholder && !empty($settings['email']['enabled']) && !empty($settings['email']['verify_at_signup']);
+        $phoneVerifyEnabled = !empty($settings['phone']['enabled']) && !empty($settings['phone']['verify_at_signup']);
+
+        $this->cleanupExpiredPendingUsers($data, $email, $emailVerifyEnabled, $phoneVerifyEnabled, $settings);
+
+        if (!empty($data['phone']) && self::isPhoneTaken(sanitize_text_field($data['phone']))) {
+            return ['success' => false, 'error' => 'phone_exists', 'message' => 'This phone number is already associated with another account.'];
+        }
+
+        $userId = wp_insert_user($userdata);
+
+        if (is_wp_error($userId)) {
+            return [
+                'success' => false,
+                'error'   => $userId->get_error_code(),
+                'message' => $userId->get_error_message(),
+            ];
+        }
+
+        $this->storeUserMeta($userId, $data, $isPlaceholder, $emailVerifyEnabled, $phoneVerifyEnabled);
+
+        $pendingVerifications = $this->setupVerifications($userId, $data, $email, $emailVerifyEnabled, $phoneVerifyEnabled);
+
+        $this->auditLogger->log(EventType::Register, 'success', $userId, [
+            'method' => 'registration',
+        ]);
+
+        return $this->buildRegistrationResult($userId, $pendingVerifications, $settings);
+    }
+
+    /**
+     * @return array|null Error array if validation fails, null if all checks pass.
+     */
+    private function validateRegistrationFields(array $data, array $settings, bool $socialLogin, bool $emailRequired): ?array
+    {
         $requiredFields = $settings['registration_fields'] ?? ['email', 'password'];
 
-        // Channel-based requirement checks (default to required for backward compat).
-        // Social login skips these — the social provider controls what fields are available.
-        $emailRequired = $socialLogin ? false : ($settings['email']['required_at_signup'] ?? true);
         if ($emailRequired && empty($data['email'])) {
             return ['success' => false, 'error' => 'missing_email', 'message' => 'Email is required.'];
         }
@@ -125,7 +152,6 @@ class AccountManager
             return ['success' => false, 'error' => 'missing_phone', 'message' => 'Phone number is required.'];
         }
 
-        // Enforce registration_fields for first_name/last_name.
         if (in_array('first_name', $requiredFields, true) && empty($data['first_name'])) {
             return ['success' => false, 'error' => 'missing_first_name', 'message' => 'First name is required.'];
         }
@@ -134,16 +160,30 @@ class AccountManager
             return ['success' => false, 'error' => 'missing_last_name', 'message' => 'Last name is required.'];
         }
 
+        // Validate email format when provided.
+        if (!empty($data['email'])) {
+            $sanitized = sanitize_email($data['email']);
+            if (!empty($sanitized) && !is_email($sanitized)) {
+                return ['success' => false, 'error' => 'invalid_email', 'message' => 'Invalid email address.'];
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Resolve email, username, and WP userdata from registration input.
+     *
+     * @return array{0: string, 1: bool, 2: string, 3: array} [email, isPlaceholder, username, userdata]
+     */
+    private function resolveEmailAndUsername(array $data, bool $emailRequired): array
+    {
         $email = sanitize_email($data['email'] ?? '');
         $isPlaceholder = false;
 
         if (empty($email) && !$emailRequired) {
             $email = self::generatePlaceholderEmail();
             $isPlaceholder = true;
-        }
-
-        if (!empty($data['email']) && !empty($email) && !is_email($email)) {
-            return ['success' => false, 'error' => 'invalid_email', 'message' => 'Invalid email address.'];
         }
 
         $username = !empty($data['username'])
@@ -170,44 +210,35 @@ class AccountManager
             $userdata['last_name'] = sanitize_text_field($data['last_name']);
         }
 
-        // Check for stale pending users that can be replaced (only when verify_at_signup is active).
-        $emailVerifyEnabled = !$isPlaceholder && !empty($settings['email']['enabled']) && !empty($settings['email']['verify_at_signup']);
-        $phoneVerifyEnabled = !empty($settings['phone']['enabled']) && !empty($settings['phone']['verify_at_signup']);
+        return [$email, $isPlaceholder, $username, $userdata];
+    }
 
-        if ($emailVerifyEnabled || $phoneVerifyEnabled) {
-            $ttlHours = (int) ($settings['pending_user_ttl_hours'] ?? self::DEFAULT_PENDING_USER_TTL_HOURS);
+    private function cleanupExpiredPendingUsers(array $data, string $email, bool $emailVerifyEnabled, bool $phoneVerifyEnabled, array $settings): void
+    {
+        if (!$emailVerifyEnabled && !$phoneVerifyEnabled) {
+            return;
+        }
 
-            if ($emailVerifyEnabled && !empty($email)) {
-                $this->deleteExpiredPendingUser(get_user_by('email', $email), $ttlHours);
+        $ttlHours = (int) ($settings['pending_user_ttl_hours'] ?? self::DEFAULT_PENDING_USER_TTL_HOURS);
+
+        if ($emailVerifyEnabled && !empty($email)) {
+            $this->deleteExpiredPendingUser(get_user_by('email', $email), $ttlHours);
+        }
+
+        if ($phoneVerifyEnabled && !empty($data['phone'])) {
+            $phoneUsers = get_users([
+                'meta_key'   => 'wsms_phone',
+                'meta_value' => sanitize_text_field($data['phone']),
+                'number'     => 1,
+            ]);
+            if (!empty($phoneUsers)) {
+                $this->deleteExpiredPendingUser($phoneUsers[0], $ttlHours);
             }
-
-            if ($phoneVerifyEnabled && !empty($data['phone'])) {
-                $phoneUsers = get_users([
-                    'meta_key'   => 'wsms_phone',
-                    'meta_value' => sanitize_text_field($data['phone']),
-                    'number'     => 1,
-                ]);
-                if (!empty($phoneUsers)) {
-                    $this->deleteExpiredPendingUser($phoneUsers[0], $ttlHours);
-                }
-            }
         }
+    }
 
-        // Check phone uniqueness (after pending-user cleanup so expired conflicts are cleared).
-        if (!empty($data['phone']) && self::isPhoneTaken(sanitize_text_field($data['phone']))) {
-            return ['success' => false, 'error' => 'phone_exists', 'message' => 'This phone number is already associated with another account.'];
-        }
-
-        $userId = wp_insert_user($userdata);
-
-        if (is_wp_error($userId)) {
-            return [
-                'success' => false,
-                'error'   => $userId->get_error_code(),
-                'message' => $userId->get_error_message(),
-            ];
-        }
-
+    private function storeUserMeta(int $userId, array $data, bool $isPlaceholder, bool $emailVerifyEnabled, bool $phoneVerifyEnabled): void
+    {
         if ($isPlaceholder) {
             update_user_meta($userId, 'wsms_email_placeholder', '1');
         }
@@ -221,42 +252,46 @@ class AccountManager
             update_user_meta($userId, 'wsms_registration_created_at', gmdate('Y-m-d H:i:s'));
         }
 
+        if (!empty($data['phone'])) {
+            update_user_meta($userId, 'wsms_phone', sanitize_text_field($data['phone']));
+        }
+    }
+
+    /**
+     * @return array<int, array{type: string, status: string}>
+     */
+    private function setupVerifications(int $userId, array $data, string $email, bool $emailVerifyEnabled, bool $phoneVerifyEnabled): array
+    {
         $pendingVerifications = [];
 
-        // Store phone meta if provided.
-        if (!empty($data['phone'])) {
+        if (!empty($data['phone']) && $phoneVerifyEnabled) {
             $phone = sanitize_text_field($data['phone']);
-            update_user_meta($userId, 'wsms_phone', $phone);
-
-            if ($phoneVerifyEnabled) {
-                $this->createChannelVerification($userId, 'phone', $phone);
-                $pendingVerifications[] = ['type' => 'phone', 'status' => 'pending'];
-            }
+            $this->createChannelVerification($userId, 'phone', $phone);
+            $pendingVerifications[] = ['type' => 'phone', 'status' => 'pending'];
         }
 
-        // Generate and send email verification only when required (skip for placeholder emails).
         if (!empty($email) && $emailVerifyEnabled) {
             $this->createChannelVerification($userId, 'email', $email);
             $pendingVerifications[] = ['type' => 'email', 'status' => 'pending'];
         }
 
-        $this->auditLogger->log(EventType::Register, 'success', $userId, [
-            'method' => 'registration',
-        ]);
+        return $pendingVerifications;
+    }
 
+    private function buildRegistrationResult(int $userId, array $pendingVerifications, array $settings): array
+    {
         $result = [
             'success' => true,
             'user_id' => $userId,
             'message' => 'Registration successful.',
         ];
 
-        // Create registration session token for pending verifications.
         if (!empty($pendingVerifications)) {
             $result['pending_verifications'] = $pendingVerifications;
-            $result['registration_token'] = $this->authSession->create(
+            $result['session_token'] = $this->authSession->create(
                 $userId,
                 'registration',
-                'registration_verify',
+                SessionStage::RegistrationVerify,
             );
         }
 
@@ -362,7 +397,7 @@ class AccountManager
         }
 
         // Check all cooldowns before any writes.
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
 
         if ($phoneChanged) {
             $cooldown = (int) ($settings['phone']['cooldown'] ?? 60);
@@ -528,7 +563,7 @@ class AccountManager
             return ['success' => false, 'error' => "no_{$channel}", 'message' => "No {$channel} on file."];
         }
 
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
         $verifyType = VerificationType::forChannel($channel)->value;
         $cooldown = (int) ($settings[$channel]['cooldown'] ?? 60);
 
@@ -680,7 +715,7 @@ class AccountManager
     {
         global $wpdb;
 
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
         $channelSettings = $settings[$channel] ?? [];
         $codeLength = (int) ($channelSettings['code_length'] ?? 6);
         $expiry = (int) ($channelSettings['expiry'] ?? 300);
@@ -710,7 +745,7 @@ class AccountManager
      */
     public function emailUsesOtp(): bool
     {
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
         $methods = (array) ($settings['email']['verification_methods'] ?? ['otp']);
 
         return in_array('otp', $methods, true);
@@ -721,7 +756,7 @@ class AccountManager
      */
     private function sendVerificationEmail(string $email, string $otp, string $channel): void
     {
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
         $expiry = (int) (($settings[$channel] ?? [])['expiry'] ?? 300);
 
         $siteName = get_bloginfo('name');
@@ -750,7 +785,7 @@ class AccountManager
             return;
         }
 
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
         $state = self::getUserVerificationState($userId);
 
         // Collect all channels that require verify_at_signup.
@@ -898,7 +933,7 @@ class AccountManager
         );
 
         $baseUrl = get_site_url();
-        $authSettings = $this->getSettings();
+        $authSettings = $this->settingsRepo->all();
         $authBase = $authSettings['auth_base_url'] ?? '/account';
 
         $siteName = get_bloginfo('name');

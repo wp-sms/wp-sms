@@ -89,7 +89,7 @@ describe('Telegram settings persistence', () => {
 
     const stored = await getSettings(api);
 
-    expect(stored.telegram?.mfa_enabled).toBe(true);
+    expect(stored.telegram?.enabled).toBe(true);
     expect(stored.telegram?.bot_username).toBe('test_bot');
     expect(stored.telegram?.code_length).toBe(6);
     expect(stored.telegram?.expiry).toBe(300);

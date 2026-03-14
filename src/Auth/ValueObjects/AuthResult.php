@@ -124,7 +124,7 @@ readonly class AuthResult
         ];
 
         if ($this->sessionToken !== null) {
-            $data['challenge_token'] = $this->sessionToken;
+            $data['session_token'] = $this->sessionToken;
         }
 
         if ($this->user !== null) {

@@ -4,6 +4,7 @@ namespace WSms\Tests\Unit\Auth;
 
 use PHPUnit\Framework\TestCase;
 use WSms\Auth\PolicyEngine;
+use WSms\Auth\SettingsRepository;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\MfaManager;
 
@@ -21,7 +22,7 @@ class PolicyEngineTest extends TestCase
         $this->mfaManager->registerChannel($this->makeChannel('email', supportsPrimary: true, supportsMfa: true));
         $this->mfaManager->registerChannel($this->makeChannel('backup_codes', supportsPrimary: false, supportsMfa: true));
 
-        $this->engine = new PolicyEngine($this->mfaManager);
+        $this->engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
 
         unset(
             $GLOBALS['_test_options']['wsms_auth_settings'],
@@ -54,7 +55,7 @@ class PolicyEngineTest extends TestCase
         // User has wsms_mfa_enabled = 1 (enrolled voluntarily).
         $GLOBALS['_test_user_meta'][1]['wsms_mfa_enabled'] = '1';
 
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
 
         $this->assertTrue($engine->isMfaRequired(1));
     }
@@ -66,7 +67,7 @@ class PolicyEngineTest extends TestCase
         ];
 
         // User has NOT enrolled.
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
 
         $this->assertFalse($engine->isMfaRequired(1));
     }
@@ -79,7 +80,7 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_options']['wsms_auth_settings'] = $settings;
 
         // Need fresh engine because settings are cached.
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
 
         $this->assertSame($expected, $engine->getAvailablePrimaryMethods());
     }
@@ -189,7 +190,7 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
         $GLOBALS['_test_user_meta'][1]['wsms_phone'] = '+1234567890';
 
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
         $methodNames = array_column($engine->getAvailableMethodsForUser(1), 'method');
 
         $this->assertContains('password', $methodNames);
@@ -205,7 +206,7 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
         $GLOBALS['_test_user_meta'][1]['wsms_phone'] = '+1234567890';
 
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
         $methodNames = array_column($engine->getAvailableMethodsForUser(1), 'method');
 
         $this->assertContains('phone_otp', $methodNames);
@@ -221,7 +222,7 @@ class PolicyEngineTest extends TestCase
         ];
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
 
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
         $methodNames = array_column($engine->getAvailableMethodsForUser(1), 'method');
 
         $this->assertSame(['password'], $methodNames);
@@ -235,7 +236,7 @@ class PolicyEngineTest extends TestCase
         ];
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
 
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
         $methodNames = array_column($engine->getAvailableMethodsForUser(1), 'method');
 
         $this->assertContains('email_otp', $methodNames);
@@ -250,7 +251,7 @@ class PolicyEngineTest extends TestCase
         ];
         $GLOBALS['_test_userdata'] = $this->makeUser(1, '');
 
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
         $methodNames = array_column($engine->getAvailableMethodsForUser(1), 'method');
 
         $this->assertSame(['password'], $methodNames);
@@ -266,7 +267,7 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
         $GLOBALS['_test_user_meta'][1]['wsms_phone'] = '+1234567890';
 
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
 
         $this->assertCount(5, $engine->getAvailableMethodsForUser(1));
     }
@@ -277,7 +278,7 @@ class PolicyEngineTest extends TestCase
             'password' => ['enabled' => true],
         ];
 
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
 
         $this->assertSame([], $engine->getAvailableMethodsForUser(999));
     }
@@ -290,7 +291,7 @@ class PolicyEngineTest extends TestCase
         ];
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
 
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
         $methodNames = array_column($engine->getAvailableMethodsForUser(1), 'method');
 
         $this->assertSame(['email_otp'], $methodNames);
@@ -351,7 +352,7 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
         $GLOBALS['_test_user_meta'][1] = ['wsms_email_verified' => ''];
 
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
         $pending = $engine->getPendingVerifications(1);
 
         $this->assertCount(1, $pending);
@@ -366,7 +367,7 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
         $GLOBALS['_test_user_meta'][1] = ['wsms_phone' => '+1234567890', 'wsms_phone_verified' => ''];
 
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
         $pending = $engine->getPendingVerifications(1);
 
         $this->assertCount(1, $pending);
@@ -382,7 +383,7 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_userdata'] = $this->makeUser(1);
         $GLOBALS['_test_user_meta'][1] = ['wsms_phone' => '+1234567890'];
 
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
         $pending = $engine->getPendingVerifications(1);
 
         $this->assertSame([], $pending);
@@ -398,7 +399,7 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_options']['wsms_auth_settings'] = $settings;
 
         // PolicyEngine caches settings, need fresh instance.
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
         $this->assertSame($expected, $engine->getEffectiveRegistrationFields());
     }
 
@@ -457,7 +458,7 @@ class PolicyEngineTest extends TestCase
         ];
         $GLOBALS['_test_userdata'] = $this->makeUser(1, 'abc123@noreply.wsms.local');
 
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
         $methodNames = array_column($engine->getAvailableMethodsForUser(1), 'method');
 
         $this->assertContains('password', $methodNames);
@@ -472,7 +473,7 @@ class PolicyEngineTest extends TestCase
         $GLOBALS['_test_userdata'] = $this->makeUser(1, 'abc123@noreply.wsms.local');
         $GLOBALS['_test_user_meta'][1] = ['wsms_email_verified' => ''];
 
-        $engine = new PolicyEngine($this->mfaManager);
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
         $pending = $engine->getPendingVerifications(1);
 
         $this->assertSame([], $pending);

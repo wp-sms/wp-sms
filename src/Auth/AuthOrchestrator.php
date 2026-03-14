@@ -7,6 +7,7 @@ use WSms\Auth\ValueObjects\AuthResult;
 use WSms\Auth\ValueObjects\IdentifyResult;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
+use WSms\Enums\SessionStage;
 use WSms\Mfa\Contracts\SupportsTokenVerification;
 use WSms\Mfa\MfaManager;
 
@@ -21,6 +22,7 @@ class AuthOrchestrator
         private AuthSession $session,
         private AccountLockout $lockout,
         private AccountManager $accountManager,
+        private SettingsRepository $settingsRepo,
     ) {
     }
 
@@ -52,8 +54,7 @@ class AuthOrchestrator
         }
 
         // User not found — check if registration is available.
-        $settings = get_option('wsms_auth_settings', []);
-        $autoCreate = !empty($settings['auto_create_users']);
+        $autoCreate = !empty($this->settingsRepo->get('auto_create_users'));
         $effectiveFields = $this->policy->getEffectiveRegistrationFields();
 
         return new IdentifyResult(
@@ -153,7 +154,7 @@ class AuthOrchestrator
             return AuthResult::failed('challenge_failed', $challengeResult->message);
         }
 
-        $token = $this->session->create($user->ID, $channel, 'challenge_pending', [
+        $token = $this->session->create($user->ID, $channel, SessionStage::ChallengePending, [
             'channel_id' => $channel,
         ]);
 
@@ -168,14 +169,9 @@ class AuthOrchestrator
      */
     public function verifyPrimary(string $sessionToken, string $code): AuthResult
     {
-        $sessionData = $this->session->validate($sessionToken);
-
-        if ($sessionData === null) {
-            return AuthResult::invalidToken();
-        }
-
-        if ($sessionData['stage'] !== 'challenge_pending') {
-            return AuthResult::failed('invalid_stage', 'Invalid session stage.');
+        $sessionData = $this->requireSession($sessionToken, SessionStage::ChallengePending);
+        if ($sessionData instanceof AuthResult) {
+            return $sessionData;
         }
 
         $channelId = $sessionData['channel_id'] ?? null;
@@ -224,14 +220,9 @@ class AuthOrchestrator
      */
     public function sendMfaChallenge(string $sessionToken, string $channelId): AuthResult
     {
-        $sessionData = $this->session->validate($sessionToken);
-
-        if ($sessionData === null) {
-            return AuthResult::invalidToken();
-        }
-
-        if ($sessionData['stage'] !== 'primary_verified') {
-            return AuthResult::failed('invalid_stage', 'Primary authentication has not been verified.');
+        $sessionData = $this->requireSession($sessionToken, SessionStage::PrimaryVerified);
+        if ($sessionData instanceof AuthResult) {
+            return $sessionData;
         }
 
         $channel = $this->mfaManager->getChannel($channelId);
@@ -253,7 +244,7 @@ class AuthOrchestrator
         }
 
         $this->session->update($sessionData['session_key'], [
-            'stage'          => 'mfa_pending',
+            'stage'          => SessionStage::MfaPending->value,
             'mfa_channel_id' => $channelId,
         ]);
 
@@ -265,14 +256,9 @@ class AuthOrchestrator
      */
     public function verifyMfa(string $sessionToken, string $code, string $channelId): AuthResult
     {
-        $sessionData = $this->session->validate($sessionToken);
-
-        if ($sessionData === null) {
-            return AuthResult::invalidToken();
-        }
-
-        if (!in_array($sessionData['stage'], ['primary_verified', 'mfa_pending'], true)) {
-            return AuthResult::failed('invalid_stage', 'Invalid session stage.');
+        $sessionData = $this->requireSession($sessionToken, SessionStage::PrimaryVerified, SessionStage::MfaPending);
+        if ($sessionData instanceof AuthResult) {
+            return $sessionData;
         }
 
         $channel = $this->mfaManager->getChannel($channelId);
@@ -297,10 +283,13 @@ class AuthOrchestrator
      */
     public function resendChallenge(string $sessionToken): AuthResult
     {
-        $sessionData = $this->session->validate($sessionToken);
-
-        if ($sessionData === null) {
-            return AuthResult::invalidToken();
+        $sessionData = $this->requireSession(
+            $sessionToken,
+            SessionStage::ChallengePending,
+            SessionStage::MfaPending,
+        );
+        if ($sessionData instanceof AuthResult) {
+            return $sessionData;
         }
 
         $channelId = $sessionData['mfa_channel_id'] ?? $sessionData['channel_id'] ?? null;
@@ -324,14 +313,9 @@ class AuthOrchestrator
      */
     public function completeVerification(string $sessionToken): AuthResult
     {
-        $sessionData = $this->session->validate($sessionToken);
-
-        if ($sessionData === null) {
-            return AuthResult::invalidToken();
-        }
-
-        if ($sessionData['stage'] !== 'verification_pending') {
-            return AuthResult::failed('invalid_stage', 'Invalid session stage.');
+        $sessionData = $this->requireSession($sessionToken, SessionStage::VerificationPending);
+        if ($sessionData instanceof AuthResult) {
+            return $sessionData;
         }
 
         $pending = $this->policy->getPendingVerifications($sessionData['user_id']);
@@ -391,7 +375,7 @@ class AuthOrchestrator
             $this->session->destroy($existingSessionKey);
         }
 
-        $token = $this->session->create($userId, $method, 'primary_verified');
+        $token = $this->session->create($userId, $method, SessionStage::PrimaryVerified);
 
         return AuthResult::mfaRequired($token, $availableFactors);
     }
@@ -406,7 +390,7 @@ class AuthOrchestrator
         if (!empty($pending)) {
             $this->sendLoginVerifications($userId, $pending);
 
-            $token = $this->session->create($userId, $method, 'verification_pending');
+            $token = $this->session->create($userId, $method, SessionStage::VerificationPending);
 
             return AuthResult::verificationRequired($token, $pending);
         }
@@ -452,6 +436,28 @@ class AuthOrchestrator
             'last_name'    => $user->last_name,
             'roles'        => $user->roles,
         ];
+    }
+
+    /**
+     * Validate a session token and ensure it's in one of the allowed stages.
+     *
+     * @return AuthResult|array Session data on success, AuthResult error on failure.
+     */
+    private function requireSession(string $token, SessionStage ...$allowedStages): AuthResult|array
+    {
+        $data = $this->session->validate($token);
+
+        if ($data === null) {
+            return AuthResult::invalidToken();
+        }
+
+        $stage = SessionStage::tryFrom($data['stage'] ?? '');
+
+        if ($stage === null || !in_array($stage, $allowedStages, true)) {
+            return AuthResult::failed('invalid_stage', 'Invalid session stage.');
+        }
+
+        return $data;
     }
 
     private function checkLockout(int $userId): ?AuthResult

@@ -9,6 +9,7 @@ use WSms\Auth\AuthSession;
 use WSms\Auth\CaptchaGuard;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\ValueObjects\AuthResult;
+use WSms\Enums\SessionStage;
 
 defined('ABSPATH') || exit;
 
@@ -400,7 +401,8 @@ class AccountController
 
     private function validateVerificationToken(WP_REST_Request $request): ?array
     {
-        $token = $request->get_header('X-Verification-Token')
+        $token = $request->get_header('X-Auth-Session')
+              ?? $request->get_header('X-Verification-Token')
               ?? $request->get_header('X-Registration-Token');
 
         if (empty($token)) {
@@ -409,7 +411,7 @@ class AccountController
 
         $session = $this->authSession->validate($token);
 
-        if (!$session || !in_array($session['stage'] ?? '', ['registration_verify', 'verification_pending'], true)) {
+        if (!$session || !in_array($session['stage'] ?? '', [SessionStage::RegistrationVerify->value, SessionStage::VerificationPending->value], true)) {
             return null;
         }
 

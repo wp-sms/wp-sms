@@ -70,8 +70,7 @@ interface ChannelInterface
     /**
      * The settings key that controls whether this channel is enabled.
      *
-     * Most channels use 'enabled'. Telegram uses 'mfa_enabled'.
-     * PolicyEngine reads this key from the merged channel settings.
+     * All channels use 'enabled'. PolicyEngine reads this key from the merged channel settings.
      */
     public function getEnabledSettingKey(): string;
 

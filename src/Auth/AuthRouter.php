@@ -6,8 +6,12 @@ defined('ABSPATH') || exit;
 
 class AuthRouter
 {
-    private ?array $settings = null;
     private ?CaptchaGuard $captchaGuard = null;
+
+    public function __construct(
+        private SettingsRepository $settingsRepo,
+    ) {
+    }
 
     /** @var array<string, string> Route → page title mapping. */
     private static array $routeTitles = [
@@ -168,9 +172,7 @@ class AuthRouter
 
     public function maybeRedirectLogin(): void
     {
-        $settings = $this->getSettings();
-
-        if (empty($settings['redirect_login'])) {
+        if (empty($this->settingsRepo->get('redirect_login'))) {
             return;
         }
 
@@ -191,16 +193,6 @@ class AuthRouter
 
     private function getBaseUrl(): string
     {
-        $settings = $this->getSettings();
-
-        return $settings['auth_base_url'] ?? '/account';
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function getSettings(): array
-    {
-        return $this->settings ??= get_option('wsms_auth_settings', []);
+        return $this->settingsRepo->get('auth_base_url', '/account');
     }
 }

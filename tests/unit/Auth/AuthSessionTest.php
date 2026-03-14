@@ -5,6 +5,7 @@ namespace WSms\Tests\Unit\Auth;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Auth\AuthSession;
+use WSms\Enums\SessionStage;
 use WSms\Mfa\OtpGenerator;
 
 class AuthSessionTest extends TestCase
@@ -28,7 +29,7 @@ class AuthSessionTest extends TestCase
     {
         $this->otpGenerator->method('generateToken')->willReturn('abc123sessionkey');
 
-        $token = $this->session->create(1, 'password', 'primary_verified');
+        $token = $this->session->create(1, 'password', SessionStage::PrimaryVerified);
 
         $this->assertNotEmpty($token);
         $this->assertNotFalse(base64_decode($token, true));
@@ -38,7 +39,7 @@ class AuthSessionTest extends TestCase
     {
         $this->otpGenerator->method('generateToken')->willReturn('sessionkey123456');
 
-        $token = $this->session->create(42, 'password', 'primary_verified');
+        $token = $this->session->create(42, 'password', SessionStage::PrimaryVerified);
         $data = $this->session->validate($token);
 
         $this->assertNotNull($data);
@@ -57,7 +58,7 @@ class AuthSessionTest extends TestCase
     {
         $this->otpGenerator->method('generateToken')->willReturn('sessionkey654321');
 
-        $token = $this->session->create(1, 'password', 'primary_verified');
+        $token = $this->session->create(1, 'password', SessionStage::PrimaryVerified);
 
         // Decode, tamper with signature, re-encode.
         $decoded = base64_decode($token, true);
@@ -72,7 +73,7 @@ class AuthSessionTest extends TestCase
     {
         $this->otpGenerator->method('generateToken')->willReturn('sessionkeyexpire');
 
-        $token = $this->session->create(1, 'password', 'primary_verified');
+        $token = $this->session->create(1, 'password', SessionStage::PrimaryVerified);
 
         // Decode and set expiry to past.
         $decoded = base64_decode($token, true);
@@ -89,10 +90,10 @@ class AuthSessionTest extends TestCase
     {
         $this->otpGenerator->method('generateToken')->willReturn('sessionkeyupdate');
 
-        $token = $this->session->create(1, 'password', 'primary_verified');
+        $token = $this->session->create(1, 'password', SessionStage::PrimaryVerified);
         $data = $this->session->validate($token);
 
-        $this->session->update($data['session_key'], ['stage' => 'mfa_pending', 'mfa_channel_id' => 'sms']);
+        $this->session->update($data['session_key'], ['stage' => SessionStage::MfaPending->value, 'mfa_channel_id' => 'sms']);
 
         $updated = $this->session->validate($token);
         $this->assertSame('mfa_pending', $updated['stage']);
@@ -103,7 +104,7 @@ class AuthSessionTest extends TestCase
     {
         $this->otpGenerator->method('generateToken')->willReturn('sessionkeydestry');
 
-        $token = $this->session->create(1, 'password', 'primary_verified');
+        $token = $this->session->create(1, 'password', SessionStage::PrimaryVerified);
         $data = $this->session->validate($token);
 
         $this->session->destroy($data['session_key']);
@@ -115,7 +116,7 @@ class AuthSessionTest extends TestCase
     {
         $this->otpGenerator->method('generateToken')->willReturn('sessionkeychanid');
 
-        $token = $this->session->create(1, 'phone_otp', 'challenge_pending', [
+        $token = $this->session->create(1, 'phone_otp', SessionStage::ChallengePending, [
             'channel_id' => 'sms',
         ]);
 

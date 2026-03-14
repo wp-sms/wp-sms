@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use WP_REST_Request;
 use WSms\Auth\CaptchaGuard;
 use WSms\Auth\CaptchaProviders\ProviderInterface;
+use WSms\Auth\SettingsRepository;
 
 class CaptchaGuardTest extends TestCase
 {
@@ -15,7 +16,7 @@ class CaptchaGuardTest extends TestCase
     protected function setUp(): void
     {
         $this->mockProvider = $this->createMock(ProviderInterface::class);
-        $this->guard = new CaptchaGuard(['turnstile' => $this->mockProvider]);
+        $this->guard = new CaptchaGuard(['turnstile' => $this->mockProvider], new SettingsRepository());
         $GLOBALS['_test_options'] = [];
         $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
     }

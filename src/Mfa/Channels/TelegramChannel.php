@@ -205,6 +205,6 @@ class TelegramChannel extends AbstractOtpChannel
 
     public function getEnabledSettingKey(): string
     {
-        return 'mfa_enabled';
+        return 'enabled';
     }
 }

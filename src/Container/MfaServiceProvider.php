@@ -63,9 +63,9 @@ class MfaServiceProvider implements ServiceProvider
             );
         });
 
-        $container->register('telegram.bot_client', function () {
-            $settings = get_option('wsms_auth_settings', []);
-            $botToken = $settings['telegram']['bot_token'] ?? '';
+        $container->register('telegram.bot_client', function () use ($container) {
+            $settingsRepo = $container->get('auth.settings');
+            $botToken = $settingsRepo->channel('telegram')['bot_token'] ?? '';
 
             return new TelegramBotClient($botToken);
         });

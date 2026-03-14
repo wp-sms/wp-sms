@@ -4,6 +4,7 @@ namespace WSms\Tests\Unit\Auth;
 
 use PHPUnit\Framework\TestCase;
 use WSms\Auth\AccountLockout;
+use WSms\Auth\SettingsRepository;
 
 class AccountLockoutTest extends TestCase
 {
@@ -11,7 +12,7 @@ class AccountLockoutTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->lockout = new AccountLockout();
+        $this->lockout = new AccountLockout(new SettingsRepository());
         $GLOBALS['_test_user_meta'] = [];
         unset($GLOBALS['_test_options']['wsms_auth_settings']);
     }
@@ -128,7 +129,7 @@ class AccountLockoutTest extends TestCase
             ],
         ];
 
-        $lockout = new AccountLockout();
+        $lockout = new AccountLockout(new SettingsRepository());
 
         for ($i = 0; $i < 3; $i++) {
             $lockout->recordFailure(1);

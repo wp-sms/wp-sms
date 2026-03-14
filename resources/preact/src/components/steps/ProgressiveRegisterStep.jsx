@@ -50,7 +50,7 @@ export function ProgressiveRegisterStep() {
             const res = await api.post('/auth/register', body);
             if (res.success) {
                 if (res.pending_verifications?.length > 0) {
-                    registrationToken.value = res.registration_token;
+                    registrationToken.value = res.session_token;
                     pendingVerifications.value = res.pending_verifications;
                     authStep.value = 'register_verify';
                 } else {

@@ -58,7 +58,7 @@ function getChannelSummary(channelId: 'phone' | 'email', settings: PhoneChannelS
 }
 
 function getTelegramMfaSummary(tg: TelegramSettings): string {
-  if (!tg.mfa_enabled) {
+  if (!tg.enabled) {
     return 'Send verification codes via Telegram bot message';
   }
   if (tg.bot_username) {
@@ -274,8 +274,8 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                 icon={Send}
                 title="Telegram MFA"
                 description={getTelegramMfaSummary(telegramSettings)}
-                enabled={!!telegramSettings.mfa_enabled}
-                onToggle={(v) => updateTelegram({ mfa_enabled: v })}
+                enabled={!!telegramSettings.enabled}
+                onToggle={(v) => updateTelegram({ enabled: v })}
                 onConfigure={() => setEditingTelegramMfa(true)}
               />
 

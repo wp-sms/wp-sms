@@ -2,6 +2,7 @@
 
 namespace WSms\Auth;
 
+use WSms\Enums\ChannelUsage;
 use WSms\Enums\EnrollmentTiming;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\MfaManager;
@@ -10,10 +11,9 @@ defined('ABSPATH') || exit;
 
 class PolicyEngine
 {
-    private ?array $settings = null;
-
     public function __construct(
         private MfaManager $mfaManager,
+        private SettingsRepository $settingsRepo,
     ) {
     }
 
@@ -22,7 +22,7 @@ class PolicyEngine
      */
     public function isMfaRequired(int $userId): bool
     {
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
 
         $hasMfaFactors = !empty($this->getAvailableMfaFactors());
 
@@ -82,7 +82,7 @@ class PolicyEngine
      */
     public function getRequiredRoles(): array
     {
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
 
         return $settings['mfa_required_roles'] ?? [];
     }
@@ -97,7 +97,7 @@ class PolicyEngine
      */
     public function getAvailablePrimaryMethods(): array
     {
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
         $methods = [];
 
         // Password — allow_sign_in defaults to true (matches frontend defaults).
@@ -117,7 +117,7 @@ class PolicyEngine
 
             if (
                 !empty($channelSettings['enabled'])
-                && ($channelSettings['usage'] ?? '') === 'login'
+                && ($channelSettings['usage'] ?? '') === ChannelUsage::Login->value
                 && ($channelSettings['allow_sign_in'] ?? true)
             ) {
                 $methods[] = $channelKey;
@@ -136,7 +136,7 @@ class PolicyEngine
      */
     public function getAvailableMfaFactors(): array
     {
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
         $factors = [];
 
         foreach ($this->mfaManager->getAvailableChannels() as $channel) {
@@ -153,7 +153,7 @@ class PolicyEngine
 
             // Channels with a 'usage' toggle (phone, email) must be set to 'mfa'.
             // Channels without one (backup_codes, totp, telegram) are MFA by nature.
-            if (isset($channelSettings['usage']) && $channelSettings['usage'] !== 'mfa') {
+            if (isset($channelSettings['usage']) && $channelSettings['usage'] !== ChannelUsage::Mfa->value) {
                 continue;
             }
 
@@ -174,7 +174,7 @@ class PolicyEngine
     public function getAvailableMethodsForUser(int $userId): array
     {
         $globalMethods = $this->getAvailablePrimaryMethods();
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
         $user = get_userdata($userId);
 
         if (!$user) {
@@ -295,7 +295,7 @@ class PolicyEngine
      */
     public function getPendingVerifications(int $userId): array
     {
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
         $state = AccountManager::getUserVerificationState($userId);
         $pending = [];
 
@@ -334,7 +334,7 @@ class PolicyEngine
      */
     public function getEffectiveRegistrationFields(): array
     {
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
         $regFields = $settings['registration_fields'] ?? ['email', 'password'];
         $effectiveFields = [];
 
@@ -362,7 +362,7 @@ class PolicyEngine
      */
     public function getVerificationChannelKeys(): array
     {
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
         $keys = [];
 
         foreach ($this->mfaManager->getAvailableChannels() as $channel) {
@@ -384,7 +384,7 @@ class PolicyEngine
      */
     public function getMethodDetails(array $primaryMethods): array
     {
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
         $details = [];
 
         foreach ($this->mfaManager->getAvailableChannels() as $channel) {
@@ -412,7 +412,7 @@ class PolicyEngine
      */
     public function getSetting(string $key, mixed $default = null): mixed
     {
-        return $this->getSettings()[$key] ?? $default;
+        return $this->settingsRepo->get($key, $default);
     }
 
     /**
@@ -424,7 +424,7 @@ class PolicyEngine
      */
     public function getVerificationRequirements(): array
     {
-        $settings = $this->getSettings();
+        $settings = $this->settingsRepo->all();
         $requirements = [];
 
         foreach ($this->getVerificationChannelKeys() as $channelKey) {
@@ -435,75 +435,6 @@ class PolicyEngine
         return $requirements;
     }
 
-    /**
-     * Backend defaults matching the frontend constants (resources/react/src/lib/constants.ts).
-     * Applied so that settings missing from the DB still behave as the admin UI shows.
-     */
-    public const CHANNEL_DEFAULTS = [
-        'password' => [
-            'enabled'            => true,
-            'required_at_signup' => true,
-            'allow_sign_in'      => true,
-        ],
-        'phone' => [
-            'enabled'              => false,
-            'usage'                => 'login',
-            'verification_methods' => ['otp'],
-            'allow_sign_in'        => true,
-        ],
-        'email' => [
-            'enabled'              => true,
-            'usage'                => 'login',
-            'verification_methods' => ['otp'],
-            'allow_sign_in'        => true,
-            'required_at_signup'   => true,
-        ],
-        'backup_codes' => [
-            'enabled' => false,
-        ],
-        'totp' => [
-            'enabled' => false,
-        ],
-        'captcha' => [
-            'enabled'           => false,
-            'provider'          => 'turnstile',
-            'site_key'          => '',
-            'secret_key'        => '',
-            'protected_actions' => ['login', 'register', 'forgot_password'],
-            'fail_open'         => false,
-        ],
-        'social' => [
-            'google'   => ['enabled' => false, 'client_id' => '', 'client_secret' => ''],
-            'telegram' => ['enabled' => false, 'client_id' => '', 'client_secret' => ''],
-        ],
-        'telegram' => [
-            'bot_token'      => '',
-            'bot_username'   => '',
-            'webhook_secret' => '',
-            'mfa_enabled'    => false,
-            'code_length'    => 6,
-            'expiry'         => 300,
-            'max_attempts'   => 3,
-            'cooldown'       => 60,
-        ],
-    ];
-
-    /**
-     * @return array<string, mixed>
-     */
-    private function getSettings(): array
-    {
-        if ($this->settings !== null) {
-            return $this->settings;
-        }
-
-        $raw = get_option('wsms_auth_settings', []);
-
-        // Deep-merge channel defaults so missing keys fall back to sane values.
-        foreach (self::CHANNEL_DEFAULTS as $key => $defaults) {
-            $raw[$key] = array_merge($defaults, $raw[$key] ?? []);
-        }
-
-        return $this->settings = $raw;
-    }
+    /** @deprecated Use SettingsRepository::CHANNEL_DEFAULTS instead. */
+    public const CHANNEL_DEFAULTS = SettingsRepository::CHANNEL_DEFAULTS;
 }

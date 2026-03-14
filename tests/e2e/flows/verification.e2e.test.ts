@@ -46,7 +46,7 @@ describe('Email OTP verification', () => {
     // Get and verify OTP.
     const otp = await getOtp(api, userId, 'email');
     const verifyRes = await api.api('POST', '/auth/verify', {
-      challenge_token: challengeData.challenge_token,
+      session_token: challengeData.session_token,
       code: otp,
     });
     const verifyData = await verifyRes.json();
@@ -63,7 +63,7 @@ describe('Email OTP verification', () => {
     const challengeData = await challengeRes.json();
 
     const verifyRes = await api.api('POST', '/auth/verify', {
-      challenge_token: challengeData.challenge_token,
+      session_token: challengeData.session_token,
       code: '000000',
     });
     const verifyData = await verifyRes.json();
@@ -100,7 +100,7 @@ describe('Phone OTP verification', () => {
 
     const otp = await getOtp(api, userId, 'phone');
     const verifyRes = await api.api('POST', '/auth/verify', {
-      challenge_token: challengeData.challenge_token,
+      session_token: challengeData.session_token,
       code: otp,
     });
     const verifyData = await verifyRes.json();
@@ -176,10 +176,10 @@ describe('Resend verification', () => {
     });
     const challengeData = await challengeRes.json();
 
-    expect(challengeData.challenge_token).toBeDefined();
+    expect(challengeData.session_token).toBeDefined();
 
     const resendRes = await api.api('POST', '/auth/resend', {
-      challenge_token: challengeData.challenge_token,
+      session_token: challengeData.session_token,
     });
     const resendData = await resendRes.json();
 

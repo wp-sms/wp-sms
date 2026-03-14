@@ -26,7 +26,7 @@ class RegistrationFlowTest extends IntegrationTestCase
         $this->assertTrue($result['success']);
         $this->assertSame(42, $result['user_id']);
         $this->assertArrayNotHasKey('pending_verifications', $result);
-        $this->assertArrayNotHasKey('registration_token', $result);
+        $this->assertArrayNotHasKey('session_token', $result);
         $this->assertEmpty($this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value));
         $this->assertEmpty($this->wpdb->getVerificationsByType(VerificationType::PhoneVerify->value));
     }
@@ -88,7 +88,7 @@ class RegistrationFlowTest extends IntegrationTestCase
 
         $this->assertTrue($result['success']);
         $this->assertNotEmpty($result['pending_verifications']);
-        $this->assertArrayHasKey('registration_token', $result);
+        $this->assertArrayHasKey('session_token', $result);
 
         $pendingTypes = array_column($result['pending_verifications'], 'type');
 

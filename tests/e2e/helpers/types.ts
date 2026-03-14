@@ -42,7 +42,7 @@ export interface AuthSettings {
     bot_token?: string;
     bot_username?: string;
     webhook_secret?: string;
-    mfa_enabled?: boolean;
+    enabled?: boolean;
     code_length?: number;
     expiry?: number;
     max_attempts?: number;

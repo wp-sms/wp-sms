@@ -109,11 +109,11 @@ describe.each(mfaPresets)('MFA with %s', (name, settings) => {
         expect(loginRes.status).toBe(200);
         // If enrolled, should require MFA; if not enrolled yet, may authenticate directly.
         if (loginData.status === 'mfa_required') {
-          expect(loginData.challenge_token).toBeDefined();
+          expect(loginData.session_token).toBeDefined();
 
           // Send challenge.
           const sendRes = await api.api('POST', '/auth/mfa/send', {
-            challenge_token: loginData.challenge_token,
+            session_token: loginData.session_token,
             channel_id: mfaChannel,
           });
           expect((await sendRes.json()).success).toBe(true);
@@ -121,7 +121,7 @@ describe.each(mfaPresets)('MFA with %s', (name, settings) => {
           // Verify.
           const otp = await getOtp(api, userId, mfaChannel);
           const verifyRes = await api.api('POST', '/auth/mfa/verify', {
-            challenge_token: loginData.challenge_token,
+            session_token: loginData.session_token,
             code: otp,
             channel_id: mfaChannel,
           });

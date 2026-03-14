@@ -96,14 +96,14 @@ describe('Email OTP passwordless login', () => {
     expect(challengeRes.status).toBe(200);
     expect(challengeData.success).toBe(true);
     expect(challengeData.status).toBe('challenge_sent');
-    expect(challengeData.challenge_token).toBeDefined();
+    expect(challengeData.session_token).toBeDefined();
 
     // Step 2: Intercept OTP.
     const otp = await getOtp(api, userId, 'email');
 
     // Step 3: Verify OTP.
     const verifyRes = await api.api('POST', '/auth/verify', {
-      challenge_token: challengeData.challenge_token,
+      session_token: challengeData.session_token,
       code: otp,
     });
     const verifyData = await verifyRes.json();
@@ -188,14 +188,14 @@ describe('Phone OTP passwordless login', () => {
     expect(challengeRes.status).toBe(200);
     expect(challengeData.success).toBe(true);
     expect(challengeData.status).toBe('challenge_sent');
-    expect(challengeData.challenge_token).toBeDefined();
+    expect(challengeData.session_token).toBeDefined();
 
     // Step 2: Intercept OTP.
     const otp = await getOtp(api, userId, 'phone');
 
     // Step 3: Verify OTP.
     const verifyRes = await api.api('POST', '/auth/verify', {
-      challenge_token: challengeData.challenge_token,
+      session_token: challengeData.session_token,
       code: otp,
     });
     const verifyData = await verifyRes.json();

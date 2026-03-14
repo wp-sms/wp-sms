@@ -27,7 +27,7 @@ class MfaController
             'callback'            => [$this, 'handleSendChallenge'],
             'permission_callback' => '__return_true',
             'args'                => [
-                'challenge_token' => ['required' => true, 'type' => 'string'],
+                'session_token' => ['required' => true, 'type' => 'string'],
                 'channel_id'     => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
             ],
         ]);
@@ -37,7 +37,7 @@ class MfaController
             'callback'            => [$this, 'handleVerify'],
             'permission_callback' => '__return_true',
             'args'                => [
-                'challenge_token' => ['required' => true, 'type' => 'string'],
+                'session_token' => ['required' => true, 'type' => 'string'],
                 'code'            => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 'channel_id'     => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
             ],
@@ -53,7 +53,7 @@ class MfaController
         }
 
         $result = $this->orchestrator->sendMfaChallenge(
-            $request->get_param('challenge_token'),
+            $request->get_param('session_token'),
             $request->get_param('channel_id'),
         );
 
@@ -69,7 +69,7 @@ class MfaController
         }
 
         $result = $this->orchestrator->verifyMfa(
-            $request->get_param('challenge_token'),
+            $request->get_param('session_token'),
             $request->get_param('code'),
             $request->get_param('channel_id'),
         );

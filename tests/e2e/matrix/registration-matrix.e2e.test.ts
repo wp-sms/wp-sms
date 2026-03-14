@@ -54,11 +54,11 @@ describe.each(verificationPresets)(
 
       if (requiresEmailVerify || requiresPhoneVerify) {
         expect(data.pending_verifications).toBeDefined();
-        expect(data.registration_token).toBeDefined();
+        expect(data.session_token).toBeDefined();
       }
 
-      const tokenHeaders = data.registration_token
-        ? { 'X-Registration-Token': data.registration_token }
+      const tokenHeaders = data.session_token
+        ? { 'X-Auth-Session': data.session_token }
         : undefined;
 
       if (requiresEmailVerify) {

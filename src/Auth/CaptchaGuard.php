@@ -16,12 +16,10 @@ class CaptchaGuard
     /** @var array<string, ProviderInterface> */
     private array $providers;
 
-    private ?array $settings = null;
-
     /**
      * @param array<string, ProviderInterface> $providers  Keyed by provider id ('turnstile', 'recaptcha', 'hcaptcha').
      */
-    public function __construct(array $providers)
+    public function __construct(array $providers, private SettingsRepository $settingsRepo)
     {
         $this->providers = $providers;
     }
@@ -135,11 +133,6 @@ class CaptchaGuard
      */
     private function getSettings(): array
     {
-        if ($this->settings === null) {
-            $allSettings = get_option('wsms_auth_settings', []);
-            $this->settings = $allSettings['captcha'] ?? [];
-        }
-
-        return $this->settings;
+        return $this->settingsRepo->channel('captcha');
     }
 }

@@ -18,7 +18,11 @@ defined('ABSPATH') || exit;
 class AuthShortcode
 {
     private bool $enqueued = false;
-    private ?array $settings = null;
+
+    public function __construct(
+        private SettingsRepository $settingsRepo,
+    ) {
+    }
 
     public function registerHooks(): void
     {
@@ -76,8 +80,6 @@ class AuthShortcode
 
     private function getBaseUrl(): string
     {
-        $this->settings ??= get_option('wsms_auth_settings', []);
-
-        return $this->settings['auth_base_url'] ?? '/account';
+        return $this->settingsRepo->get('auth_base_url', '/account');
     }
 }

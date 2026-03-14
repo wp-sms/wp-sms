@@ -12,7 +12,7 @@ import { PhoneVerifySection } from '../verification/PhoneVerifySection';
 import { EmailVerifySection } from '../verification/EmailVerifySection';
 
 function regHeaders() {
-    return { 'X-Registration-Token': registrationToken.value };
+    return { 'X-Auth-Session': registrationToken.value };
 }
 
 export function RegisterVerifyStep({ onComplete }) {

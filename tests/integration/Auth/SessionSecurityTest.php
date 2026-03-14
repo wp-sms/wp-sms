@@ -3,6 +3,7 @@
 namespace WSms\Tests\Integration\Auth;
 
 use WSms\Enums\ChannelStatus;
+use WSms\Enums\SessionStage;
 use WSms\Tests\Support\AuthScenarios;
 use WSms\Tests\Support\IntegrationTestCase;
 use WSms\Tests\Support\UserFactory;
@@ -25,7 +26,7 @@ class SessionSecurityTest extends IntegrationTestCase
         $user = UserFactory::create();
 
         // Create a valid session, then tamper with the base64 payload.
-        $token = $this->session->create($user->ID, 'email', 'challenge_pending', [
+        $token = $this->session->create($user->ID, 'email', SessionStage::ChallengePending, [
             'channel_id' => 'email',
         ]);
 
@@ -44,7 +45,7 @@ class SessionSecurityTest extends IntegrationTestCase
         $user = UserFactory::create();
 
         // Create a session token.
-        $token = $this->session->create($user->ID, 'email', 'challenge_pending');
+        $token = $this->session->create($user->ID, 'email', SessionStage::ChallengePending);
 
         // Decode the token and modify the expiry in the base64 payload.
         $decoded = base64_decode($token, true);
@@ -70,7 +71,7 @@ class SessionSecurityTest extends IntegrationTestCase
         $this->configureMfaChannel('email');
 
         // Create session at 'primary_verified' stage.
-        $token = $this->session->create($user->ID, 'email', 'primary_verified');
+        $token = $this->session->create($user->ID, 'email', SessionStage::PrimaryVerified);
 
         // Try to verify primary (expects 'challenge_pending').
         $result = $this->orchestrator->verifyPrimary($token, '123456');
@@ -85,7 +86,7 @@ class SessionSecurityTest extends IntegrationTestCase
         $this->configureMfaChannel('phone');
 
         // Create session at 'challenge_pending' stage (not 'primary_verified' or 'mfa_pending').
-        $token = $this->session->create(1, 'password', 'challenge_pending');
+        $token = $this->session->create(1, 'password', SessionStage::ChallengePending);
 
         $result = $this->orchestrator->verifyMfa($token, '123456', 'phone');
 

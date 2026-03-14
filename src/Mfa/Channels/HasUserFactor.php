@@ -2,6 +2,7 @@
 
 namespace WSms\Mfa\Channels;
 
+use WSms\Auth\SettingsRepository;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
 use WSms\Mfa\ValueObjects\UserFactor;
@@ -13,7 +14,7 @@ use WSms\Mfa\ValueObjects\UserFactor;
  */
 trait HasUserFactor
 {
-    private ?array $settings = null;
+    private ?SettingsRepository $channelSettingsRepo = null;
 
     /** @var array<int, ?UserFactor> Per-userId cache for the current request. */
     private array $factorCache = [];
@@ -89,15 +90,25 @@ trait HasUserFactor
      *
      * Settings are stored nested by channel prefix, e.g. settings['phone']['code_length'].
      */
+    public function setSettingsRepository(SettingsRepository $settingsRepo): void
+    {
+        $this->channelSettingsRepo = $settingsRepo;
+    }
+
     protected function getConfigValue(string $key, mixed $default = null): mixed
     {
-        if ($this->settings === null) {
-            $this->settings = get_option('wsms_auth_settings', []);
-        }
-
         $prefix = $this->getConfigPrefix();
 
-        return $this->settings[$prefix][$key] ?? $default;
+        if ($this->channelSettingsRepo) {
+            return $this->channelSettingsRepo->channel($prefix)[$key] ?? $default;
+        }
+
+        // Fallback: apply channel defaults for consistency with SettingsRepository.
+        $raw = get_option('wsms_auth_settings', []);
+        $defaults = SettingsRepository::CHANNEL_DEFAULTS[$prefix] ?? [];
+        $merged = array_merge($defaults, $raw[$prefix] ?? []);
+
+        return $merged[$key] ?? $default;
     }
 
     /**

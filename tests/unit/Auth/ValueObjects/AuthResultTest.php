@@ -83,7 +83,7 @@ class AuthResultTest extends TestCase
         $this->assertSame('failed', $array['status']);
         $this->assertSame('bad', $array['error']);
         $this->assertSame('Error', $array['message']);
-        $this->assertArrayNotHasKey('challenge_token', $array);
+        $this->assertArrayNotHasKey('session_token', $array);
         $this->assertArrayNotHasKey('user', $array);
         $this->assertArrayNotHasKey('meta', $array);
     }
@@ -93,7 +93,7 @@ class AuthResultTest extends TestCase
         $result = AuthResult::challengeSent('tok', ['key' => 'val']);
         $array = $result->toArray();
 
-        $this->assertSame('tok', $array['challenge_token']);
+        $this->assertSame('tok', $array['session_token']);
         $this->assertSame(['key' => 'val'], $array['meta']);
     }
 

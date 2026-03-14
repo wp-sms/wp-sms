@@ -83,13 +83,13 @@ describe('Registration with email verification at signup', () => {
     expect(data.pending_verifications).toEqual(
       expect.arrayContaining([expect.objectContaining({ type: 'email' })]),
     );
-    expect(data.registration_token).toBeDefined();
+    expect(data.session_token).toBeDefined();
 
     // Intercept OTP.
     const otp = await getOtp(api, data.user_id, 'email_verify');
 
     // Verify email with registration token.
-    const tokenHeaders = { 'X-Registration-Token': data.registration_token };
+    const tokenHeaders = { 'X-Auth-Session': data.session_token };
     const verifyRes = await api.api('POST', '/auth/register/verify/email', {
       code: otp,
     }, tokenHeaders);
@@ -125,13 +125,13 @@ describe('Registration with phone verification at signup', () => {
     expect(data.pending_verifications).toEqual(
       expect.arrayContaining([expect.objectContaining({ type: 'phone' })]),
     );
-    expect(data.registration_token).toBeDefined();
+    expect(data.session_token).toBeDefined();
 
     // Intercept OTP.
     const otp = await getOtp(api, data.user_id, 'phone_verify');
 
     // Verify phone with registration token.
-    const tokenHeaders = { 'X-Registration-Token': data.registration_token };
+    const tokenHeaders = { 'X-Auth-Session': data.session_token };
     const verifyRes = await api.api('POST', '/auth/register/verify/phone', {
       code: otp,
     }, tokenHeaders);
@@ -171,8 +171,8 @@ describe('Registration with both email and phone verification', () => {
       expect.arrayContaining([expect.objectContaining({ type: 'phone' })]),
     );
 
-    expect(data.registration_token).toBeDefined();
-    const tokenHeaders = { 'X-Registration-Token': data.registration_token };
+    expect(data.session_token).toBeDefined();
+    const tokenHeaders = { 'X-Auth-Session': data.session_token };
 
     // Verify email first.
     const emailOtp = await getOtp(api, data.user_id, 'email_verify');

@@ -2,6 +2,7 @@
 
 namespace WSms\Auth;
 
+use WSms\Enums\SessionStage;
 use WSms\Mfa\OtpGenerator;
 
 defined('ABSPATH') || exit;
@@ -21,14 +22,14 @@ class AuthSession
      *
      * @return string HMAC-signed session token for the client.
      */
-    public function create(int $userId, string $method, string $stage, array $context = []): string
+    public function create(int $userId, string $method, SessionStage $stage, array $context = []): string
     {
         $sessionKey = $this->otpGenerator->generateToken(16);
 
         $data = [
             'user_id'    => $userId,
             'method'     => $method,
-            'stage'      => $stage,
+            'stage'      => $stage->value,
             'ip'         => $context['ip'] ?? '',
             'channel_id' => $context['channel_id'] ?? null,
             'created_at' => time(),
@@ -92,6 +93,10 @@ class AuthSession
 
     /**
      * Update fields in an existing session, preserving the original TTL.
+     *
+     * Validates stage transitions when a 'stage' update is included.
+     *
+     * @throws \InvalidArgumentException If the stage transition is invalid.
      */
     public function update(string $sessionKey, array $updates): void
     {
@@ -100,6 +105,17 @@ class AuthSession
 
         if ($data === false) {
             return;
+        }
+
+        if (isset($updates['stage'])) {
+            $currentStage = SessionStage::tryFrom($data['stage'] ?? '');
+            $newStage = SessionStage::tryFrom($updates['stage']);
+
+            if ($currentStage !== null && $newStage !== null && !$currentStage->canTransitionTo($newStage)) {
+                throw new \InvalidArgumentException(
+                    "Invalid stage transition: {$currentStage->value} → {$newStage->value}",
+                );
+            }
         }
 
         $remainingTtl = self::DEFAULT_TTL - (time() - ($data['created_at'] ?? time()));

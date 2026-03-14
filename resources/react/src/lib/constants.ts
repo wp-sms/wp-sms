@@ -134,7 +134,7 @@ export const DEFAULTS: Required<AuthSettings> = {
     bot_token: '',
     bot_username: '',
     webhook_secret: '',
-    mfa_enabled: false,
+    enabled: false,
     code_length: 6,
     expiry: 300,
     max_attempts: 3,

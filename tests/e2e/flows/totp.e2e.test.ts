@@ -145,11 +145,11 @@ describe('TOTP login flow', () => {
     expect(loginRes.status).toBe(200);
     expect(loginData.success).toBe(true);
     expect(loginData.status).toBe('mfa_required');
-    expect(loginData.challenge_token).toBeDefined();
+    expect(loginData.session_token).toBeDefined();
 
     // Step 2: Send MFA challenge (no-op for TOTP).
     const sendRes = await api.api('POST', '/auth/mfa/send', {
-      challenge_token: loginData.challenge_token,
+      session_token: loginData.session_token,
       channel_id: 'totp',
     });
     const sendData = await sendRes.json();
@@ -160,7 +160,7 @@ describe('TOTP login flow', () => {
     const code = totp.generate();
 
     const verifyRes = await api.api('POST', '/auth/mfa/verify', {
-      challenge_token: loginData.challenge_token,
+      session_token: loginData.session_token,
       code,
       channel_id: 'totp',
     });

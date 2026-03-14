@@ -19,7 +19,7 @@ import { OtpInput } from '../OtpInput';
 export function MfaStep() {
     const { route } = useLocation();
     const mfa = pendingMfa.value;
-    const token = mfa?.challenge_token;
+    const token = mfa?.session_token;
     const factors = mfa?.available_factors || [];
 
     const [activeFactor, setActiveFactor] = useState(null);
@@ -59,12 +59,12 @@ export function MfaStep() {
 
         try {
             const res = await api.post('/auth/mfa/send', {
-                challenge_token: token,
+                session_token: token,
                 channel_id: channelId,
             });
 
-            if (res.challenge_token) {
-                challengeToken.value = res.challenge_token;
+            if (res.session_token) {
+                challengeToken.value = res.session_token;
                 challengeMeta.value = res.meta || null;
             }
             setChallengeSent(true);
@@ -82,7 +82,7 @@ export function MfaStep() {
 
         try {
             const res = await api.post('/auth/mfa/verify', {
-                challenge_token: token,
+                session_token: token,
                 code,
                 channel_id: activeFactor,
             });
@@ -99,7 +99,7 @@ export function MfaStep() {
         authError.value = null;
 
         try {
-            await api.post('/auth/resend', { challenge_token: token });
+            await api.post('/auth/resend', { session_token: token });
             setResendCooldown(60);
         } catch (err) {
             authError.value = extractError(err);

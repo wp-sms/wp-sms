@@ -12,7 +12,7 @@ import { PhoneVerifySection } from '../verification/PhoneVerifySection';
 import { EmailVerifySection } from '../verification/EmailVerifySection';
 
 function verifyHeaders() {
-    return { 'X-Verification-Token': challengeToken.value };
+    return { 'X-Auth-Session': challengeToken.value };
 }
 
 export function LoginVerifyStep() {

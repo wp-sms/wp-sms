@@ -10,6 +10,7 @@ use WSms\Auth\AccountManager;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthSession;
 use WSms\Auth\PolicyEngine;
+use WSms\Auth\SettingsRepository;
 use WSms\Enums\ChannelStatus;
 use WSms\Mfa\Channels\PhoneChannel;
 use WSms\Mfa\MfaManager;
@@ -42,6 +43,7 @@ class AuthOrchestratorTest extends TestCase
             $this->session,
             $this->lockout,
             $this->accountManager,
+            new SettingsRepository(),
         );
 
         // Default: no pending verifications (tests can override via specific expectations).

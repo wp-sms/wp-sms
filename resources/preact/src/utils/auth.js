@@ -10,7 +10,7 @@ export function handleAuthResponse(res, route) {
 
     if (res.status === 'verification_required') {
         pendingVerifications.value = res.meta?.pending_verifications || [];
-        challengeToken.value = res.challenge_token;
+        challengeToken.value = res.session_token;
         authStep.value = 'login_verify';
         return 'verification_required';
     }
@@ -18,14 +18,14 @@ export function handleAuthResponse(res, route) {
     if (res.status === 'mfa_required') {
         pendingMfa.value = {
             available_factors: res.meta?.available_factors,
-            challenge_token: res.challenge_token,
+            session_token: res.session_token,
         };
         authStep.value = 'mfa';
         return 'mfa_required';
     }
 
     if (res.status === 'challenge_sent') {
-        challengeToken.value = res.challenge_token;
+        challengeToken.value = res.session_token;
         challengeMeta.value = res.meta || null;
         return 'challenge_sent';
     }
