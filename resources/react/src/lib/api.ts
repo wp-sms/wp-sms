@@ -131,8 +131,11 @@ export interface LogEntry {
   event: string;
   status: string;
   ip_address: string;
-  context: Record<string, unknown>;
+  channel_id: string | null;
+  user_agent: string | null;
+  meta: string | Record<string, unknown> | null;
   created_at: string;
+  user_display: { display_name: string; email: string } | null;
 }
 
 const FALLBACK_CONFIG = { restUrl: '', nonce: '', version: '', adminUrl: '', isPremium: false, roles: {} as Record<string, string> };

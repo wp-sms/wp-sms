@@ -20,16 +20,26 @@ class AuditLogger
         string $status,
         ?int $userId = null,
         array $meta = [],
+        ?string $channelId = null,
     ): void {
         global $wpdb;
 
         $verbosity = $this->getVerbosity();
+
+        // Auto-extract channel_id from meta when not explicitly provided.
+        if ($channelId === null && isset($meta['channel'])) {
+            $channelId = $meta['channel'];
+        }
 
         $data = [
             'event'   => $event->value,
             'status'  => $status,
             'user_id' => $userId,
         ];
+
+        if ($channelId !== null) {
+            $data['channel_id'] = $channelId;
+        }
 
         if ($verbosity !== LogVerbosity::Minimal) {
             $data['ip_address'] = $this->getIpAddress();
@@ -42,10 +52,18 @@ class AuditLogger
             $data['meta'] = wp_json_encode($meta);
         }
 
+        $data = apply_filters('wsms_audit_log_entry', $data, $event, $userId);
+
+        if ($data === null) {
+            return;
+        }
+
         $wpdb->insert(
             $wpdb->prefix . 'wsms_auth_logs',
             $data,
         );
+
+        do_action('wsms_audit_log_written', $data, $event, $userId);
     }
 
     /**
@@ -58,25 +76,7 @@ class AuditLogger
         global $wpdb;
 
         $table = $wpdb->prefix . 'wsms_auth_logs';
-        $where = [];
-        $values = [];
-
-        if (!empty($filters['user_id'])) {
-            $where[] = 'user_id = %d';
-            $values[] = $filters['user_id'];
-        }
-
-        if (!empty($filters['event'])) {
-            $where[] = 'event = %s';
-            $values[] = $filters['event'];
-        }
-
-        if (!empty($filters['status'])) {
-            $where[] = 'status = %s';
-            $values[] = $filters['status'];
-        }
-
-        $whereClause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
+        [$whereClause, $values] = $this->buildWhereClause($filters);
 
         $countSql = "SELECT COUNT(*) FROM {$table} {$whereClause}";
         $total = !empty($values)
@@ -96,6 +96,25 @@ class AuditLogger
     }
 
     /**
+     * Delete log entries matching the given filters, or all entries if no filters.
+     */
+    public function deleteAll(array $filters = []): int
+    {
+        global $wpdb;
+
+        $table = $wpdb->prefix . 'wsms_auth_logs';
+        [$whereClause, $values] = $this->buildWhereClause($filters);
+
+        $sql = "DELETE FROM {$table} {$whereClause}";
+
+        if (!empty($values)) {
+            return (int) $wpdb->query($wpdb->prepare($sql, ...$values));
+        }
+
+        return (int) $wpdb->query($sql);
+    }
+
+    /**
      * Delete log entries older than the specified number of days.
      */
     public function deleteOlderThan(int $days): int
@@ -110,6 +129,44 @@ class AuditLogger
                 $days,
             ),
         );
+    }
+
+    /**
+     * @return array{0: string, 1: array}
+     */
+    private function buildWhereClause(array $filters): array
+    {
+        $where = [];
+        $values = [];
+
+        if (!empty($filters['user_id'])) {
+            $where[] = 'user_id = %d';
+            $values[] = $filters['user_id'];
+        }
+
+        if (!empty($filters['event'])) {
+            $where[] = 'event = %s';
+            $values[] = $filters['event'];
+        }
+
+        if (!empty($filters['status'])) {
+            $where[] = 'status = %s';
+            $values[] = $filters['status'];
+        }
+
+        if (!empty($filters['date_from'])) {
+            $where[] = 'created_at >= %s';
+            $values[] = $filters['date_from'];
+        }
+
+        if (!empty($filters['date_to'])) {
+            $where[] = 'created_at <= %s';
+            $values[] = $filters['date_to'];
+        }
+
+        $whereClause = !empty($where) ? 'WHERE ' . implode(' AND ', $where) : '';
+
+        return [$whereClause, $values];
     }
 
     private function getVerbosity(): LogVerbosity

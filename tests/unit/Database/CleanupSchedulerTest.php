@@ -105,7 +105,7 @@ class CleanupSchedulerTest extends TestCase
 
         $this->auditLogger->expects($this->once())
             ->method('deleteOlderThan')
-            ->with(90);
+            ->with(30);
 
         $this->scheduler->run();
 

@@ -126,7 +126,7 @@ export const DEFAULTS: Required<AuthSettings> = {
   redirect_login: false,
   auto_create_users: false,
   log_verbosity: 'standard',
-  log_retention_days: 90,
+  log_retention_days: 30,
   registration_fields: ['email', 'password'],
   pending_user_cleanup_enabled: true,
   pending_user_ttl_hours: 24,

@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import {
   Select,
@@ -8,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Settings2, List } from 'lucide-react';
+import { Settings2, List, Trash2 } from 'lucide-react';
 import { LogTable } from '@/components/log-table';
 import { useLogs } from '@/hooks/use-logs';
 import { EVENT_TYPES, LOG_VERBOSITY, formatLabel } from '@/lib/constants';
@@ -20,7 +22,19 @@ interface LogsPageProps {
 }
 
 export function LogsPage({ settings, onUpdate }: LogsPageProps) {
-  const { logs, total, page, perPage, filters, setFilter, setPage, loading } = useLogs();
+  const { logs, total, page, perPage, filters, setFilter, setPage, loading, clearLogs } = useLogs();
+  const [confirmClear, setConfirmClear] = useState(false);
+  const [clearing, setClearing] = useState(false);
+
+  const handleClearLogs = async () => {
+    setClearing(true);
+    try {
+      await clearLogs();
+    } finally {
+      setClearing(false);
+      setConfirmClear(false);
+    }
+  };
 
   return (
     <div className="space-y-4">
@@ -75,16 +89,55 @@ export function LogsPage({ settings, onUpdate }: LogsPageProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <List className="h-4 w-4 text-muted-foreground" />
-            Event Log
-          </CardTitle>
-          <CardDescription>
-            Showing {total} total events
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-base">
+                <List className="h-4 w-4 text-muted-foreground" />
+                Event Log
+              </CardTitle>
+              <CardDescription>
+                Showing {total} total events
+              </CardDescription>
+            </div>
+            {total > 0 && (
+              <div className="flex items-center gap-2">
+                {confirmClear ? (
+                  <>
+                    <span className="text-sm text-destructive">Delete all logs?</span>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={handleClearLogs}
+                      disabled={clearing}
+                    >
+                      {clearing ? 'Deleting...' : 'Confirm'}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setConfirmClear(false)}
+                      disabled={clearing}
+                    >
+                      Cancel
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setConfirmClear(true)}
+                    className="text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="mr-1 h-3.5 w-3.5" />
+                    Clear Logs
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
         </CardHeader>
         <CardContent>
-          <div className="mb-4 grid gap-4 sm:grid-cols-3">
+          <div className="mb-4 grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
             <Field>
               <FieldLabel htmlFor="filter-event">Event Type</FieldLabel>
               <Select
@@ -128,6 +181,24 @@ export function LogsPage({ settings, onUpdate }: LogsPageProps) {
                 placeholder="Filter by user ID"
                 value={filters.user_id}
                 onChange={(e) => setFilter('user_id', e.target.value)}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="filter-date-from">From Date</FieldLabel>
+              <Input
+                id="filter-date-from"
+                type="date"
+                value={filters.date_from}
+                onChange={(e) => setFilter('date_from', e.target.value)}
+              />
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="filter-date-to">To Date</FieldLabel>
+              <Input
+                id="filter-date-to"
+                type="date"
+                value={filters.date_to}
+                onChange={(e) => setFilter('date_to', e.target.value)}
               />
             </Field>
           </div>

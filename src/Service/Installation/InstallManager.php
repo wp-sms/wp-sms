@@ -130,7 +130,7 @@ class InstallManager
             'redirect_login'      => false,
             'auto_create_users'   => false,
             'log_verbosity'       => 'standard',
-            'log_retention_days'  => 90,
+            'log_retention_days'  => 30,
             'registration_fields' => ['email', 'password'],
         ]);
     }

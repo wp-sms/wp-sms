@@ -44,7 +44,7 @@ class CleanupScheduler
     private function cleanOldAuditLogs(): void
     {
         $settings = get_option('wsms_auth_settings', []);
-        $days = $settings['log_retention_days'] ?? 90;
+        $days = $settings['log_retention_days'] ?? 30;
         $this->auditLogger->deleteOlderThan($days);
     }
 

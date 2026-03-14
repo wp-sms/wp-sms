@@ -11,8 +11,11 @@ const mockLogs: LogEntry[] = [
     event: 'login_success',
     status: 'success',
     ip_address: '192.168.1.1',
-    context: {},
+    channel_id: null,
+    user_agent: 'Mozilla/5.0',
+    meta: null,
     created_at: '2025-01-15T10:30:00Z',
+    user_display: { display_name: 'Admin', email: 'admin@example.com' },
   },
   {
     id: 2,
@@ -20,8 +23,23 @@ const mockLogs: LogEntry[] = [
     event: 'login_failure',
     status: 'failure',
     ip_address: '10.0.0.1',
-    context: {},
+    channel_id: null,
+    user_agent: null,
+    meta: { reason: 'invalid_password' },
     created_at: '2025-01-15T10:25:00Z',
+    user_display: null,
+  },
+  {
+    id: 3,
+    user_id: 1,
+    event: 'otp_sent',
+    status: 'success',
+    ip_address: '192.168.1.1',
+    channel_id: 'phone',
+    user_agent: 'Mozilla/5.0',
+    meta: { channel: 'phone', method: 'sms' },
+    created_at: '2025-01-15T10:20:00Z',
+    user_display: { display_name: 'Admin', email: 'admin@example.com' },
   },
 ];
 
@@ -30,7 +48,7 @@ describe('LogTable', () => {
     render(
       <LogTable
         logs={mockLogs}
-        total={2}
+        total={3}
         page={1}
         perPage={20}
         onPageChange={() => {}}
@@ -40,7 +58,7 @@ describe('LogTable', () => {
 
     expect(screen.getByText('Login Success')).toBeInTheDocument();
     expect(screen.getByText('Login Failure')).toBeInTheDocument();
-    expect(screen.getByText('192.168.1.1')).toBeInTheDocument();
+    expect(screen.getAllByText('192.168.1.1').length).toBeGreaterThan(0);
   });
 
   it('shows empty message when no logs', () => {
@@ -138,5 +156,119 @@ describe('LogTable', () => {
     );
 
     expect(screen.getByText('failure')).toBeInTheDocument();
+  });
+
+  it('shows user display name with email tooltip', () => {
+    render(
+      <LogTable
+        logs={[mockLogs[0]!]}
+        total={1}
+        page={1}
+        perPage={20}
+        onPageChange={() => {}}
+        loading={false}
+      />
+    );
+
+    const nameEl = screen.getByText('Admin');
+    expect(nameEl).toBeInTheDocument();
+    expect(nameEl).toHaveAttribute('title', 'admin@example.com');
+  });
+
+  it('falls back to user_id when user_display is null', () => {
+    render(
+      <LogTable
+        logs={[mockLogs[1]!]}
+        total={1}
+        page={1}
+        perPage={20}
+        onPageChange={() => {}}
+        loading={false}
+      />
+    );
+
+    expect(screen.getByText('2')).toBeInTheDocument();
+  });
+
+  it('shows expand chevron for rows with details', () => {
+    render(
+      <LogTable
+        logs={[mockLogs[2]!]}
+        total={1}
+        page={1}
+        perPage={20}
+        onPageChange={() => {}}
+        loading={false}
+      />
+    );
+
+    expect(screen.getByLabelText('Expand details')).toBeInTheDocument();
+  });
+
+  it('does not show expand chevron for rows without details', () => {
+    const logNoDetails: LogEntry = {
+      ...mockLogs[0]!,
+      user_agent: null,
+      meta: null,
+      channel_id: null,
+    };
+
+    render(
+      <LogTable
+        logs={[logNoDetails]}
+        total={1}
+        page={1}
+        perPage={20}
+        onPageChange={() => {}}
+        loading={false}
+      />
+    );
+
+    expect(screen.queryByLabelText('Expand details')).not.toBeInTheDocument();
+  });
+
+  it('expands row to show metadata on click', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <LogTable
+        logs={[mockLogs[2]!]}
+        total={1}
+        page={1}
+        perPage={20}
+        onPageChange={() => {}}
+        loading={false}
+      />
+    );
+
+    await user.click(screen.getByLabelText('Expand details'));
+
+    // "phone" appears in both channel_id and metadata
+    expect(screen.getAllByText('phone').length).toBeGreaterThan(0);
+    expect(screen.getByText('sms')).toBeInTheDocument();
+    expect(screen.getByText('Metadata:')).toBeInTheDocument();
+    expect(screen.getByText('User Agent:')).toBeInTheDocument();
+    expect(screen.getByLabelText('Collapse details')).toBeInTheDocument();
+  });
+
+  it('collapses expanded row on second click', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <LogTable
+        logs={[mockLogs[2]!]}
+        total={1}
+        page={1}
+        perPage={20}
+        onPageChange={() => {}}
+        loading={false}
+      />
+    );
+
+    await user.click(screen.getByLabelText('Expand details'));
+    expect(screen.getByLabelText('Collapse details')).toBeInTheDocument();
+
+    await user.click(screen.getByLabelText('Collapse details'));
+    expect(screen.getByLabelText('Expand details')).toBeInTheDocument();
   });
 });

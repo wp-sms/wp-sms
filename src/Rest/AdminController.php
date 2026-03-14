@@ -67,15 +67,30 @@ class AdminController
         ]);
 
         register_rest_route(self::NAMESPACE, '/auth/admin/logs', [
-            'methods'             => 'GET',
-            'callback'            => [$this, 'handleGetLogs'],
-            'permission_callback' => [$this, 'checkAdmin'],
-            'args'                => [
-                'page'     => ['required' => false, 'type' => 'integer', 'default' => 1],
-                'per_page' => ['required' => false, 'type' => 'integer', 'default' => 50],
-                'user_id'  => ['required' => false, 'type' => 'integer'],
-                'event'    => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                'status'   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+            [
+                'methods'             => 'GET',
+                'callback'            => [$this, 'handleGetLogs'],
+                'permission_callback' => [$this, 'checkAdmin'],
+                'args'                => [
+                    'page'      => ['required' => false, 'type' => 'integer', 'default' => 1],
+                    'per_page'  => ['required' => false, 'type' => 'integer', 'default' => 50],
+                    'user_id'   => ['required' => false, 'type' => 'integer'],
+                    'event'     => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'status'    => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'date_from' => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'date_to'   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                ],
+            ],
+            [
+                'methods'             => 'DELETE',
+                'callback'            => [$this, 'handleDeleteLogs'],
+                'permission_callback' => [$this, 'checkAdmin'],
+                'args'                => [
+                    'event'     => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'status'    => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'date_from' => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'date_to'   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                ],
             ],
         ]);
 
@@ -153,9 +168,11 @@ class AdminController
     public function handleGetLogs(WP_REST_Request $request): WP_REST_Response
     {
         $filters = array_filter([
-            'user_id' => $request->get_param('user_id'),
-            'event'   => $request->get_param('event'),
-            'status'  => $request->get_param('status'),
+            'user_id'   => $request->get_param('user_id'),
+            'event'     => $request->get_param('event'),
+            'status'    => $request->get_param('status'),
+            'date_from' => $request->get_param('date_from'),
+            'date_to'   => $request->get_param('date_to'),
         ]);
 
         $page = max(1, (int) $request->get_param('page'));
@@ -163,12 +180,49 @@ class AdminController
 
         $result = $this->auditLogger->getEvents($filters, $page, $perPage);
 
+        // Hydrate user display names (single batch query via cache_users).
+        $userIds = array_unique(array_filter(array_column($result['items'], 'user_id')));
+        $intIds = array_map('intval', $userIds);
+        cache_users($intIds);
+
+        $userMap = [];
+
+        foreach ($intIds as $uid) {
+            $u = get_userdata($uid);
+            if ($u) {
+                $userMap[$uid] = ['display_name' => $u->display_name, 'email' => $u->user_email];
+            }
+        }
+
+        foreach ($result['items'] as &$item) {
+            $item->user_display = $userMap[$item->user_id] ?? null;
+        }
+        unset($item);
+
+        return new WP_REST_Response([
+            'success'  => true,
+            'items'    => $result['items'],
+            'total'    => $result['total'],
+            'page'     => $page,
+            'per_page' => $perPage,
+        ]);
+    }
+
+    public function handleDeleteLogs(WP_REST_Request $request): WP_REST_Response
+    {
+        $filters = array_filter([
+            'event'     => $request->get_param('event'),
+            'status'    => $request->get_param('status'),
+            'date_from' => $request->get_param('date_from'),
+            'date_to'   => $request->get_param('date_to'),
+        ]);
+
+        $deleted = $this->auditLogger->deleteAll($filters);
+
         return new WP_REST_Response([
             'success' => true,
-            'items'   => $result['items'],
-            'total'   => $result['total'],
-            'page'    => $page,
-            'per_page' => $perPage,
+            'deleted' => $deleted,
+            'message' => "Deleted {$deleted} log entries.",
         ]);
     }
 

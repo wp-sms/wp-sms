@@ -56,6 +56,12 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('cache_users')) {
+        function cache_users(array $userIds): void {
+            // No-op in tests — get_userdata is already faked.
+        }
+    }
+
     $GLOBALS['_test_user_meta'] = [];
 
     if (!function_exists('get_user_meta')) {
@@ -488,6 +494,12 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
 
     if (!function_exists('apply_filters')) {
         function apply_filters(string $hookName, $value, ...$args) {
+            $callback = $GLOBALS['_test_apply_filters'][$hookName] ?? null;
+
+            if ($callback !== null) {
+                return $callback($value, ...$args);
+            }
+
             return $value;
         }
     }
@@ -572,6 +584,7 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
     $GLOBALS['_test_options'] = [];
     $GLOBALS['_test_query_vars'] = [];
     $GLOBALS['_test_do_action_calls'] = [];
+    $GLOBALS['_test_apply_filters'] = [];
     $GLOBALS['_test_switched_blog_calls'] = [];
     $GLOBALS['_test_restore_blog_calls'] = 0;
 

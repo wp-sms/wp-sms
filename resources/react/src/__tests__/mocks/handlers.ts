@@ -14,8 +14,11 @@ const mockLogs = [
     event: 'login_success',
     status: 'success',
     ip_address: '192.168.1.1',
-    context: {},
+    channel_id: null,
+    user_agent: 'Mozilla/5.0 (Macintosh)',
+    meta: null,
     created_at: '2025-01-15T10:30:00Z',
+    user_display: { display_name: 'Admin', email: 'admin@example.com' },
   },
   {
     id: 2,
@@ -23,8 +26,11 @@ const mockLogs = [
     event: 'login_failure',
     status: 'failure',
     ip_address: '10.0.0.1',
-    context: { reason: 'invalid_password' },
+    channel_id: null,
+    user_agent: null,
+    meta: { reason: 'invalid_password' },
     created_at: '2025-01-15T10:25:00Z',
+    user_display: { display_name: 'John', email: 'john@example.com' },
   },
   {
     id: 3,
@@ -32,8 +38,11 @@ const mockLogs = [
     event: 'otp_sent',
     status: 'success',
     ip_address: '192.168.1.1',
-    context: { method: 'phone' },
+    channel_id: 'phone',
+    user_agent: 'Mozilla/5.0 (Macintosh)',
+    meta: { channel: 'phone', method: 'sms' },
     created_at: '2025-01-15T10:20:00Z',
+    user_display: { display_name: 'Admin', email: 'admin@example.com' },
   },
 ];
 
@@ -79,6 +88,14 @@ export const handlers = [
       total: filtered.length,
       page,
       per_page: perPage,
+    });
+  }),
+
+  http.delete(`${BASE_URL}/auth/admin/logs`, () => {
+    return HttpResponse.json({
+      success: true,
+      deleted: mockLogs.length,
+      message: `Deleted ${mockLogs.length} log entries.`,
     });
   }),
 
