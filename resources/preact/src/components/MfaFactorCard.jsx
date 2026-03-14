@@ -16,7 +16,7 @@ const CHANNEL_META = {
     backup_codes: { label: 'Backup Codes', icon: ClipboardList,  description: 'One-time use recovery codes' },
 };
 
-export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, onRefresh }) {
+export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, onRefresh, onBackupCodes }) {
     const meta = CHANNEL_META[method.id] || { label: method.name, icon: Lock, description: '' };
     const [expanding, setExpanding] = useState(false);
     const [phone, setPhone] = useState('');
@@ -82,6 +82,9 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                 setExpanding(false);
                 setVerifying(false);
                 setTotpEnroll(null);
+                if (res.data?.backup_codes && onBackupCodes) {
+                    onBackupCodes(res.data.backup_codes);
+                }
                 if (onRefresh) await onRefresh();
             } else {
                 setError(res.message || 'Verification failed.');
@@ -94,6 +97,14 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
     }
 
     function handleDisable() {
+        if (method.id === 'totp') {
+            const confirmed = window.confirm(
+                'Are you sure you want to disable your authenticator app? ' +
+                'If this is your only MFA method, multi-factor authentication will be turned off for your account.'
+            );
+            if (!confirmed) return;
+        }
+
         onUnenroll(method.id);
         setExpanding(false);
         setVerifying(false);
@@ -173,13 +184,13 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                 <div className="px-4 pb-4 space-y-4 animate-fade-in">
                     {error && <p className="text-sm text-destructive">{error}</p>}
                     <div className="flex justify-center">
-                        <img src={totpEnroll.qrCodeUri} alt="Scan with authenticator app" className="w-48 h-48" />
+                        <img src={totpEnroll.qrCodeUri} alt="QR code for authenticator app setup. Use the manual key below if you cannot scan." className="w-48 h-48" />
                     </div>
                     <details className="text-sm">
                         <summary className="cursor-pointer text-muted-foreground">
                             Can't scan? Enter this key manually
                         </summary>
-                        <code className="mt-2 block rounded bg-muted p-2 text-xs font-mono break-all select-all">
+                        <code className="mt-2 block rounded bg-muted p-2 text-xs font-mono break-all select-all" aria-label="Manual setup key for authenticator app">
                             {totpEnroll.secret}
                         </code>
                     </details>

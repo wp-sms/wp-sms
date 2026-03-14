@@ -222,6 +222,7 @@ export function Security() {
                         onEnroll={handleEnroll}
                         onUnenroll={handleUnenroll}
                         onRefresh={refreshUser}
+                        onBackupCodes={setBackupCodes}
                     />
                 ))}
             </div>

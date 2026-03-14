@@ -307,6 +307,10 @@ class EnrollmentController
             return $result;
         }
 
+        if (!in_array('backup_codes', $this->policy->getAvailableMfaFactors(), true)) {
+            return $result;
+        }
+
         $backupChannel = $this->mfaManager->getChannel('backup_codes');
 
         if (!$backupChannel || $backupChannel->isEnrolled($userId)) {
