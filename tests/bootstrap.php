@@ -598,6 +598,24 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('wp_add_inline_script')) {
+        function wp_add_inline_script(string $handle, string $data, string $position = 'after'): bool {
+            return true;
+        }
+    }
+
+    if (!function_exists('absint')) {
+        function absint($maybeint): int {
+            return abs((int) $maybeint);
+        }
+    }
+
+    if (!function_exists('plugin_dir_url')) {
+        function plugin_dir_url(string $file): string {
+            return 'http://localhost/wp-content/plugins/wp-sms/';
+        }
+    }
+
     if (!function_exists('add_filter')) {
         function add_filter(string $hookName, $callback, int $priority = 10, int $acceptedArgs = 1) {
             // No-op in tests.
@@ -835,5 +853,69 @@ if (!class_exists('WP_REST_Response')) {
         public function get_status(): int {
             return $this->status;
         }
+    }
+}
+
+// WPForms_Field stub for unit tests.
+if (!class_exists('WPForms_Field')) {
+    class WPForms_Field {
+        public $name = '';
+        public $type = '';
+        public $icon = '';
+        public $order = 0;
+        public $group = 'standard';
+        public $keywords = '';
+
+        public function __construct() {
+            $this->init();
+        }
+
+        public function init() {}
+
+        public function validate($field_id, $field_submit, $form_data) {
+            if (!empty($form_data['fields'][$field_id]['required']) && empty($field_submit)) {
+                wpforms()->obj('process')->errors[$form_data['id']][$field_id] = 'This field is required.';
+            }
+        }
+
+        public function field_option($option, $field, $args = []) {}
+        public function field_preview_option($option, $field, $args = []) {}
+        public function field_display_error($key, $field) {}
+    }
+}
+
+// WPForms process stub for tests.
+if (!class_exists('WPFormsProcess')) {
+    class WPFormsProcess {
+        public array $errors = [];
+        public array $fields = [];
+    }
+}
+
+// WPForms application stub for tests.
+if (!class_exists('WPFormsApp')) {
+    class WPFormsApp {
+        private WPFormsProcess $process;
+
+        public function __construct() {
+            $this->process = new WPFormsProcess();
+        }
+
+        public function obj(string $name) {
+            if ($name === 'process') {
+                return $this->process;
+            }
+            return null;
+        }
+    }
+}
+
+if (!function_exists('wpforms')) {
+    function wpforms() {
+        static $instance = null;
+        if ($instance === null) {
+            $instance = new WPFormsApp();
+        }
+        return $instance;
     }
 }

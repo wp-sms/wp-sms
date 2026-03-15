@@ -1,4 +1,13 @@
-.wsms-vw {
+/*
+ * Verify Widget styles.
+ *
+ * Selectors use doubled class (.wsms-vw.wsms-vw) to beat
+ * WPForms' aggressive `div.wpforms-container-full *` reset
+ * which zeroes border, padding, margin, background, border-radius
+ * on all descendants with specificity 0,1,1.
+ */
+
+.wsms-vw.wsms-vw {
     --wsms-vw-text: #1f2937;
     --wsms-vw-text-muted: #6b7280;
     --wsms-vw-border: #d0d5dd;
@@ -19,14 +28,14 @@
     box-sizing: border-box;
 }
 
-.wsms-vw *,
-.wsms-vw *::before,
-.wsms-vw *::after {
+.wsms-vw.wsms-vw *,
+.wsms-vw.wsms-vw *::before,
+.wsms-vw.wsms-vw *::after {
     box-sizing: border-box;
 }
 
 /* Prompt state — send code button */
-.wsms-vw-send-btn {
+.wsms-vw.wsms-vw .wsms-vw-send-btn {
     display: block;
     width: 100%;
     padding: 8px 16px;
@@ -41,12 +50,12 @@
     transition: background 0.15s;
 }
 
-.wsms-vw-send-btn:hover {
+.wsms-vw.wsms-vw .wsms-vw-send-btn:hover {
     background: rgba(34, 113, 177, 0.12);
 }
 
 /* Sending state */
-.wsms-vw-sending {
+.wsms-vw.wsms-vw .wsms-vw-sending {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -56,7 +65,7 @@
 }
 
 /* Spinner */
-.wsms-vw-spinner {
+.wsms-vw.wsms-vw .wsms-vw-spinner {
     display: inline-block;
     width: 16px;
     height: 16px;
@@ -72,13 +81,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .wsms-vw-spinner {
+    .wsms-vw.wsms-vw .wsms-vw-spinner {
         animation-duration: 1.5s;
     }
 }
 
 /* Input state */
-.wsms-vw-label {
+.wsms-vw.wsms-vw .wsms-vw-label {
     display: block;
     font-size: 13px;
     color: var(--wsms-vw-text-muted);
@@ -87,21 +96,21 @@
 }
 
 /* OTP input */
-.wsms-vw-otp {
+.wsms-vw.wsms-vw .wsms-vw-otp {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 6px;
 }
 
-.wsms-vw-otp-separator {
+.wsms-vw.wsms-vw .wsms-vw-otp-separator {
     color: var(--wsms-vw-text-muted);
     font-size: 16px;
     margin: 0 2px;
     user-select: none;
 }
 
-.wsms-vw-otp-box {
+.wsms-vw.wsms-vw .wsms-vw-otp-box {
     width: 40px;
     height: 40px;
     border: 1px solid var(--wsms-vw-border);
@@ -118,29 +127,29 @@
     -moz-appearance: textfield;
 }
 
-.wsms-vw-otp-box::-webkit-inner-spin-button,
-.wsms-vw-otp-box::-webkit-outer-spin-button {
+.wsms-vw.wsms-vw .wsms-vw-otp-box::-webkit-inner-spin-button,
+.wsms-vw.wsms-vw .wsms-vw-otp-box::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
-.wsms-vw-otp-box:focus {
+.wsms-vw.wsms-vw .wsms-vw-otp-box:focus {
     border-color: var(--wsms-vw-link);
     box-shadow: 0 0 0 2px rgba(34, 113, 177, 0.25);
 }
 
-.wsms-vw-otp-box:disabled {
+.wsms-vw.wsms-vw .wsms-vw-otp-box:disabled {
     opacity: 0.5;
     cursor: default;
 }
 
 /* Resend button */
-.wsms-vw-actions {
+.wsms-vw.wsms-vw .wsms-vw-actions {
     margin-top: 10px;
     text-align: center;
 }
 
-.wsms-vw-resend {
+.wsms-vw.wsms-vw .wsms-vw-resend {
     display: inline-flex;
     align-items: center;
     gap: 4px;
@@ -154,36 +163,36 @@
     text-decoration: none;
 }
 
-.wsms-vw-resend:not(:disabled):hover {
+.wsms-vw.wsms-vw .wsms-vw-resend:not(:disabled):hover {
     text-decoration: underline;
 }
 
-.wsms-vw-resend:disabled {
+.wsms-vw.wsms-vw .wsms-vw-resend:disabled {
     color: var(--wsms-vw-text-muted);
     cursor: default;
 }
 
 /* Error state */
-.wsms-vw-error-msg {
+.wsms-vw.wsms-vw .wsms-vw-error-msg {
     font-size: 13px;
     color: var(--wsms-vw-error);
     margin-bottom: 8px;
     text-align: center;
 }
 
-.wsms-vw-error-box {
+.wsms-vw.wsms-vw .wsms-vw-error-box {
     border-left: 3px solid var(--wsms-vw-error);
     padding: 8px 12px;
     margin-bottom: 4px;
 }
 
-.wsms-vw-error-box p {
+.wsms-vw.wsms-vw .wsms-vw-error-box p {
     margin: 0 0 6px;
     font-size: 14px;
     color: var(--wsms-vw-error);
 }
 
-.wsms-vw-retry {
+.wsms-vw.wsms-vw .wsms-vw-retry {
     font-size: 13px;
     font-family: inherit;
     color: var(--wsms-vw-link);
@@ -194,12 +203,12 @@
     text-decoration: underline;
 }
 
-.wsms-vw-retry:hover {
+.wsms-vw.wsms-vw .wsms-vw-retry:hover {
     color: var(--wsms-vw-text);
 }
 
 /* Verified state */
-.wsms-vw-verified {
+.wsms-vw.wsms-vw .wsms-vw-verified {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -211,31 +220,31 @@
     font-weight: 500;
 }
 
-.wsms-vw-check-icon {
+.wsms-vw.wsms-vw .wsms-vw-check-icon {
     width: 18px;
     height: 18px;
     flex-shrink: 0;
 }
 
 /* Verifying overlay */
-.wsms-vw-verifying {
+.wsms-vw.wsms-vw .wsms-vw-verifying {
     position: relative;
 }
 
-.wsms-vw-verifying .wsms-vw-otp {
+.wsms-vw.wsms-vw .wsms-vw-verifying .wsms-vw-otp {
     opacity: 0.5;
 }
 
 @media (max-width: 380px) {
-    .wsms-vw-otp-box {
+    .wsms-vw.wsms-vw .wsms-vw-otp-box {
         width: 32px;
         height: 32px;
         font-size: 16px;
     }
-    .wsms-vw-otp { gap: 4px; }
+    .wsms-vw.wsms-vw .wsms-vw-otp { gap: 4px; }
 }
 
-.wsms-vw-verifying-indicator {
+.wsms-vw.wsms-vw .wsms-vw-verifying-indicator {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -246,7 +255,7 @@
 }
 
 /* Powered-by branding */
-.wsms-vw-powered-by {
+.wsms-vw.wsms-vw .wsms-vw-powered-by {
     margin-top: 10px;
     padding-top: 8px;
     border-top: 1px solid var(--wsms-vw-border);
@@ -258,7 +267,7 @@
     line-height: 1;
 }
 
-.wsms-vw-powered-by-brand {
+.wsms-vw.wsms-vw .wsms-vw-powered-by-brand {
     font-weight: 600;
     letter-spacing: 0.05em;
     opacity: 0.8;
