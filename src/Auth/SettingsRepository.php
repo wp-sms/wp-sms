@@ -23,6 +23,7 @@ class SettingsRepository
             'usage'                => 'login',
             'verification_methods' => ['otp'],
             'allow_sign_in'        => true,
+            'reverify_on_change'   => false,
         ],
         'email' => [
             'enabled'              => true,
@@ -30,6 +31,7 @@ class SettingsRepository
             'verification_methods' => ['otp'],
             'allow_sign_in'        => true,
             'required_at_signup'   => true,
+            'reverify_on_change'   => false,
         ],
         'backup_codes' => [
             'enabled' => false,
@@ -58,6 +60,12 @@ class SettingsRepository
             'expiry'         => 300,
             'max_attempts'   => 3,
             'cooldown'       => 60,
+        ],
+        'woocommerce' => [
+            'verify_email_at_checkout' => false,
+            'verify_phone_at_checkout' => false,
+            'skip_verified_users'      => true,
+            'redirect_auth'            => false,
         ],
         'trusted_devices' => [
             'enabled' => false,

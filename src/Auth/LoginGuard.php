@@ -21,6 +21,7 @@ class LoginGuard
     {
         add_filter('authenticate', [$this, 'blockPendingUsers'], 99, 3);
         add_action('wp_login', [$this, 'enforceMfaOnWpLogin'], 10, 2);
+        add_action('wp_login', [$this, 'enforceVerificationOnWpLogin'], 11, 2);
     }
 
     /**
@@ -66,15 +67,104 @@ class LoginGuard
             return;
         }
 
-        // MFA required + active factors: intercept the login.
+        $this->interceptLogin($user->ID, 'password', SessionStage::PrimaryVerified, 'wp_mfa');
+    }
+
+    /**
+     * Enforce verify-at-login on any non-REST WordPress login.
+     *
+     * Fires at priority 11 (after MFA at 10). If MFA already intercepted,
+     * this never runs (MFA handler calls exit). If no MFA but verify_at_login
+     * is enabled and user hasn't verified, redirect to WSMS verification flow.
+     */
+    public function enforceVerificationOnWpLogin(string $userLogin, \WP_User $user): void
+    {
+        if ($this->shouldSkipEnforcement()) {
+            return;
+        }
+
+        if (!$this->needsLoginVerification($user->ID)) {
+            return;
+        }
+
+        $this->interceptLogin($user->ID, 'password', SessionStage::VerificationPending, 'wp_verify');
+    }
+
+    /**
+     * Enforce verify-at-signup on WooCommerce registrations.
+     *
+     * Called by WooCommerceServiceProvider (not registered here — WC-specific concern).
+     *
+     * @param int   $customerId        The new customer's user ID.
+     * @param array $data              WC hook data (unused).
+     * @param bool  $passwordGenerated WC hook flag (unused).
+     */
+    public function enforceVerificationOnWcRegistration(int $customerId, array $data = [], bool $passwordGenerated = false): void
+    {
+        if ($this->shouldSkipEnforcement()) {
+            return;
+        }
+
+        if (!$this->needsSignupVerification()) {
+            return;
+        }
+
+        update_user_meta($customerId, 'wsms_registration_status', 'pending');
+
+        $this->interceptLogin($customerId, 'registration', SessionStage::RegistrationVerify, 'wp_verify');
+    }
+
+    /**
+     * Check if a user needs login-time channel verification.
+     */
+    private function needsLoginVerification(int $userId): bool
+    {
+        $settings = $this->settingsRepo->all();
+
+        if (
+            !empty($settings['email']['enabled'])
+            && ($settings['email']['usage'] ?? '') === 'login'
+            && !empty($settings['email']['verify_at_login'])
+            && empty(get_user_meta($userId, 'wsms_email_verified', true))
+        ) {
+            return true;
+        }
+
+        if (
+            !empty($settings['phone']['enabled'])
+            && ($settings['phone']['usage'] ?? '') === 'login'
+            && !empty($settings['phone']['verify_at_login'])
+            && empty(get_user_meta($userId, 'wsms_phone_verified', true))
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if verify-at-signup is enabled for any channel.
+     */
+    private function needsSignupVerification(): bool
+    {
+        $settings = $this->settingsRepo->all();
+
+        return (!empty($settings['email']['enabled']) && !empty($settings['email']['verify_at_signup']))
+            || (!empty($settings['phone']['enabled']) && !empty($settings['phone']['verify_at_signup']));
+    }
+
+    /**
+     * Clear auth cookie, create session, and redirect to WSMS auth flow.
+     */
+    private function interceptLogin(int $userId, string $method, SessionStage $stage, string $queryParam): void
+    {
         wp_clear_auth_cookie();
         wp_set_current_user(0);
 
-        $token = $this->session->create($user->ID, 'password', SessionStage::PrimaryVerified);
+        $token = $this->session->create($userId, $method, $stage);
         $authBaseUrl = $this->settingsRepo->get('auth_base_url', '/account');
-        $url = home_url($authBaseUrl . '/login?wp_mfa=' . urlencode($token));
 
-        $this->redirect($url);
+        $this->redirect(home_url($authBaseUrl . '/login?' . $queryParam . '=' . urlencode($token)));
     }
 
     private function shouldSkipEnforcement(): bool

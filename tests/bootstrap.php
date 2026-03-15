@@ -768,11 +768,24 @@ if (!class_exists('WP_Error')) {
         private string $code;
         private string $message;
         private $data;
+        private array $errors = [];
 
         public function __construct(string $code = '', string $message = '', $data = '') {
             $this->code = $code;
             $this->message = $message;
             $this->data = $data;
+            if ($code !== '') {
+                $this->errors[$code] = [$message];
+            }
+        }
+
+        public function add(string $code, string $message, $data = ''): void {
+            if ($this->code === '') {
+                $this->code = $code;
+                $this->message = $message;
+                $this->data = $data;
+            }
+            $this->errors[$code][] = $message;
         }
 
         public function get_error_code(): string {
@@ -785,6 +798,14 @@ if (!class_exists('WP_Error')) {
 
         public function get_error_data() {
             return $this->data;
+        }
+
+        public function get_error_codes(): array {
+            return array_keys($this->errors);
+        }
+
+        public function has_errors(): bool {
+            return !empty($this->errors);
         }
     }
 }
@@ -930,4 +951,92 @@ if (!function_exists('wpforms')) {
         }
         return $instance;
     }
+}
+
+// WooCommerce stubs for unit tests.
+if (!function_exists('wc_get_order')) {
+    function wc_get_order($orderId) {
+        return $GLOBALS['_test_wc_order'] ?? null;
+    }
+}
+
+if (!function_exists('is_checkout')) {
+    function is_checkout(): bool {
+        return $GLOBALS['_test_is_checkout'] ?? false;
+    }
+}
+
+if (!function_exists('is_account_page')) {
+    function is_account_page(): bool {
+        return $GLOBALS['_test_is_account_page'] ?? false;
+    }
+}
+
+if (!function_exists('wc_add_notice')) {
+    function wc_add_notice(string $message, string $type = 'success', $data = []): void {
+        $GLOBALS['_test_wc_notices'][] = ['message' => $message, 'type' => $type];
+    }
+}
+
+if (!function_exists('wp_get_current_user')) {
+    function wp_get_current_user() {
+        return $GLOBALS['_test_userdata'] ?? new \WP_User(0);
+    }
+}
+
+// WC_Order stub for tests.
+if (!class_exists('WC_Order_Stub')) {
+    class WC_Order_Stub {
+        private int $id;
+        private array $meta = [];
+        private string $billingEmail = '';
+        private string $billingPhone = '';
+
+        public function __construct(int $id = 1) {
+            $this->id = $id;
+        }
+
+        public function get_id(): int {
+            return $this->id;
+        }
+
+        public function get_billing_email(): string {
+            return $this->billingEmail;
+        }
+
+        public function set_billing_email(string $email): void {
+            $this->billingEmail = $email;
+        }
+
+        public function get_billing_phone(): string {
+            return $this->billingPhone;
+        }
+
+        public function set_billing_phone(string $phone): void {
+            $this->billingPhone = $phone;
+        }
+
+        public function update_meta_data(string $key, $value): void {
+            $this->meta[$key] = $value;
+        }
+
+        public function get_meta(string $key) {
+            return $this->meta[$key] ?? '';
+        }
+
+        public function save(): void {
+            // No-op in tests.
+        }
+    }
+}
+
+// WooCommerce RouteException stub for block checkout validation tests.
+if (!class_exists('Automattic\WooCommerce\StoreApi\Exceptions\RouteException')) {
+    eval('namespace Automattic\WooCommerce\StoreApi\Exceptions {
+        class RouteException extends \Exception {
+            public function __construct(string $errorCode = "", string $message = "", int $httpStatus = 400) {
+                parent::__construct($message, $httpStatus);
+            }
+        }
+    }');
 }

@@ -6,6 +6,7 @@ import { useHashSection } from '@/hooks/use-hash-section';
 import { getConfig } from '@/lib/api';
 import { AuthenticationPage } from '@/pages/authentication';
 import { SecurityPage } from '@/pages/security';
+import { IntegrationsPage } from '@/pages/integrations';
 import { BrandingPage } from '@/pages/branding';
 import { LogsPage } from '@/pages/logs';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -47,6 +48,8 @@ export default function App() {
         return <AuthenticationPage section={section} settings={settings} onUpdate={updateSetting} />;
       case 'security':
         return <SecurityPage section={section} settings={settings} onUpdate={updateSetting} roles={roles} />;
+      case 'integrations':
+        return <IntegrationsPage section={section} settings={settings} onUpdate={updateSetting} />;
       case 'branding':
         return <BrandingPage settings={settings} onUpdate={updateSetting} />;
       case 'logs':

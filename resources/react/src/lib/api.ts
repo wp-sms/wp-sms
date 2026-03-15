@@ -47,6 +47,7 @@ export interface ChannelSettings {
   expiry?: number;
   max_attempts?: number;
   cooldown?: number;
+  reverify_on_change?: boolean;
 }
 
 export interface PhoneChannelSettings extends ChannelSettings {
@@ -127,6 +128,13 @@ export interface MetaKeyInfo {
   count: number;
 }
 
+export interface WooCommerceSettings {
+  verify_email_at_checkout?: boolean;
+  verify_phone_at_checkout?: boolean;
+  skip_verified_users?: boolean;
+  redirect_auth?: boolean;
+}
+
 export interface AuthSettings {
   phone?: PhoneChannelSettings;
   email?: EmailChannelSettings;
@@ -135,6 +143,7 @@ export interface AuthSettings {
   totp?: TotpSettings;
   captcha?: CaptchaSettings;
   telegram?: TelegramSettings;
+  woocommerce?: WooCommerceSettings;
   mfa_required_roles?: string[];
   enrollment_timing?: EnrollmentTiming;
   grace_period_days?: number;

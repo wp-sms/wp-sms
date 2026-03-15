@@ -45,6 +45,7 @@ class AdminController
         'captcha',
         'social',
         'telegram',
+        'woocommerce',
     ];
 
     public function __construct(

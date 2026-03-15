@@ -1,5 +1,5 @@
 import { useEffect } from 'preact/hooks';
-import { authStep, authError, resetIdentifyFlow } from '../signals/auth';
+import { authStep, authError, challengeToken, pendingVerifications, resetIdentifyFlow } from '../signals/auth';
 import { primaryMethods } from '../signals/config';
 import { authUrl, getQueryParam } from '../utils/urls';
 import { friendlySocialError, handleAuthResponse } from '../utils/auth';
@@ -26,10 +26,11 @@ export function Login() {
     const step = authStep.value;
     const hasPassword = primaryMethods.value.includes('password');
 
-    // Handle redirect-based MFA params (social login, wp-login.php).
+    // Handle redirect-based auth params (social login, wp-login.php, WooCommerce).
     useEffect(() => {
         const socialError = getQueryParam('social_error');
         const mfaToken = getQueryParam('social_mfa') || getQueryParam('wp_mfa');
+        const verifyToken = getQueryParam('wp_verify');
 
         if (socialError) {
             authError.value = friendlySocialError(socialError);
@@ -37,6 +38,9 @@ export function Login() {
         } else if (mfaToken) {
             window.history.replaceState({}, '', window.location.pathname);
             resolveMfaSession(mfaToken);
+        } else if (verifyToken) {
+            window.history.replaceState({}, '', window.location.pathname);
+            resolveVerifySession(verifyToken);
         }
     }, []);
 
@@ -75,6 +79,26 @@ async function resolveMfaSession(token) {
     try {
         const res = await api.post('/auth/mfa/factors', { session_token: token });
         handleAuthResponse(res);
+    } catch {
+        authError.value = 'Your session has expired. Please sign in again.';
+    }
+}
+
+async function resolveVerifySession(token) {
+    try {
+        challengeToken.value = token;
+        const res = await api.get('/auth/register/status', { 'X-Auth-Session': token });
+
+        if (res.pending_verifications?.length > 0) {
+            pendingVerifications.value = res.pending_verifications;
+            // Determine step based on whether this is a registration or login verification.
+            const isRegistration = res.pending_verifications.some((v) => v.context === 'registration');
+            authStep.value = isRegistration ? 'register_verify' : 'login_verify';
+        } else {
+            // Already verified — try to complete.
+            const completeRes = await api.post('/auth/verification/complete', null, { 'X-Auth-Session': token });
+            handleAuthResponse(completeRes);
+        }
     } catch {
         authError.value = 'Your session has expired. Please sign in again.';
     }

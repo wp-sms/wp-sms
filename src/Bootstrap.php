@@ -13,6 +13,7 @@ use WSms\Container\RestServiceProvider;
 use WSms\Container\VerificationServiceProvider;
 use WSms\Integrations\ContactForm7\CF7ServiceProvider;
 use WSms\Integrations\WPForms\WPFormsServiceProvider;
+use WSms\Integrations\WooCommerce\WooCommerceServiceProvider;
 use WSms\Service\Installation\InstallManager;
 
 defined('ABSPATH') || exit;
@@ -45,6 +46,7 @@ class Bootstrap
         VerificationServiceProvider::class,
         CF7ServiceProvider::class,
         WPFormsServiceProvider::class,
+        WooCommerceServiceProvider::class,
     ];
 
     /**

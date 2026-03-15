@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight } from 'lucide-react';
+import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import {
   Sidebar,
@@ -62,6 +62,14 @@ export const NAV_ITEMS = [
     ],
   },
   {
+    id: 'integrations',
+    label: 'Integrations',
+    icon: Plug,
+    children: [
+      { id: 'woocommerce', label: 'WooCommerce' },
+    ],
+  },
+  {
     id: 'branding',
     label: 'Branding',
     icon: Paintbrush,
@@ -81,6 +89,7 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   'rate-limiting': 'Configure rate limits to prevent brute-force attacks on OTP verification.',
   'captcha': 'Add CAPTCHA verification to protect authentication endpoints from bots.',
   'account-cleanup': 'Manage automatic cleanup of unverified pending registrations.',
+  'woocommerce': 'Add email and phone OTP verification to WooCommerce checkout, registration, and account pages.',
   'branding': 'Customize the appearance and behavior of your authentication pages.',
   'logs': 'View authentication events and configure logging preferences.',
 };

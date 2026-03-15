@@ -184,6 +184,13 @@ function ChannelContent({
             />
             <span className="text-sm">Allow to sign in</span>
           </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <Checkbox
+              checked={settings.reverify_on_change}
+              onCheckedChange={(checked) => onUpdate({ reverify_on_change: !!checked })}
+            />
+            <span className="text-sm">Re-verify on change</span>
+          </label>
         </div>
       </div>
 

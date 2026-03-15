@@ -113,6 +113,7 @@ export const DEFAULTS: Required<AuthSettings> = {
     expiry: 300,
     max_attempts: 3,
     cooldown: 60,
+    reverify_on_change: false,
   },
   email: {
     enabled: true,
@@ -125,6 +126,7 @@ export const DEFAULTS: Required<AuthSettings> = {
     expiry: 600,
     max_attempts: 3,
     cooldown: 60,
+    reverify_on_change: false,
   },
   password: {
     enabled: true,
@@ -168,6 +170,12 @@ export const DEFAULTS: Required<AuthSettings> = {
     secret_key: '',
     protected_actions: ['login', 'register', 'forgot_password'],
     fail_open: false,
+  },
+  woocommerce: {
+    verify_email_at_checkout: false,
+    verify_phone_at_checkout: false,
+    skip_verified_users: true,
+    redirect_auth: false,
   },
   social: {
     google: { enabled: false, client_id: '', client_secret: '' },
