@@ -22,6 +22,7 @@ class AuthOrchestrator
         private AccountLockout $lockout,
         private AccountManager $accountManager,
         private SettingsRepository $settingsRepo,
+        private ?TrustedDeviceManager $trustedDevices = null,
     ) {
     }
 
@@ -366,6 +367,11 @@ class AuthOrchestrator
 
         // If no valid MFA factors available, complete login without MFA (graceful).
         if (empty($availableFactors)) {
+            return $this->resolveLogin($userId, $method);
+        }
+
+        // Trusted device: skip MFA if the browser has a valid trust cookie.
+        if ($this->trustedDevices && $this->trustedDevices->isTrusted($userId)) {
             return $this->resolveLogin($userId, $method);
         }
 

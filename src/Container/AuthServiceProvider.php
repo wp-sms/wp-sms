@@ -19,6 +19,7 @@ use WSms\Auth\PolicyEngine;
 use WSms\Auth\ProfileFieldRegistry;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\SettingsRepository;
+use WSms\Auth\TrustedDeviceManager;
 
 defined('ABSPATH') || exit;
 
@@ -70,6 +71,12 @@ class AuthServiceProvider implements ServiceProvider
             );
         });
 
+        $container->register('auth.trusted_devices', function () use ($container) {
+            return new TrustedDeviceManager(
+                $container->get('auth.settings'),
+            );
+        });
+
         $container->register('auth.orchestrator', function () use ($container) {
             return new AuthOrchestrator(
                 $container->get('auth.policy'),
@@ -79,6 +86,7 @@ class AuthServiceProvider implements ServiceProvider
                 $container->get('auth.lockout'),
                 $container->get('auth.account_manager'),
                 $container->get('auth.settings'),
+                $container->get('auth.trusted_devices'),
             );
         });
 
@@ -90,6 +98,7 @@ class AuthServiceProvider implements ServiceProvider
                 $container->get('auth.session'),
                 $container->get('auth.settings'),
                 $container->get('auth.field_registry'),
+                $container->get('auth.trusted_devices'),
             );
         });
 

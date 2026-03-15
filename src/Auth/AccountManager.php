@@ -29,6 +29,7 @@ class AccountManager
         private AuthSession $authSession,
         private SettingsRepository $settingsRepo,
         private ?ProfileFieldRegistry $fieldRegistry = null,
+        private ?TrustedDeviceManager $trustedDevices = null,
     ) {
     }
 
@@ -395,6 +396,7 @@ class AccountManager
 
         wp_set_password($newPassword, $userId);
         update_user_meta($userId, self::META_HAS_USABLE_PASSWORD, '1');
+        $this->trustedDevices?->revokeAll($userId);
 
         $this->auditLogger->log(EventType::PasswordResetComplete, 'success', $userId);
 
@@ -539,6 +541,7 @@ class AccountManager
 
         wp_set_password($newPassword, $userId);
         update_user_meta($userId, self::META_HAS_USABLE_PASSWORD, '1');
+        $this->trustedDevices?->revokeAll($userId);
         wp_set_auth_cookie($userId, false);
         wp_set_current_user($userId);
 

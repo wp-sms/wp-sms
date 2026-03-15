@@ -6,6 +6,7 @@ use WP_REST_Request;
 use WP_REST_Response;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\RateLimiter;
+use WSms\Auth\TrustedDeviceManager;
 use WSms\Auth\ValueObjects\AuthResult;
 
 defined('ABSPATH') || exit;
@@ -17,6 +18,7 @@ class MfaController
     public function __construct(
         private AuthOrchestrator $orchestrator,
         private RateLimiter $rateLimiter,
+        private ?TrustedDeviceManager $trustedDevices = null,
     ) {
     }
 
@@ -46,9 +48,10 @@ class MfaController
             'callback'            => [$this, 'handleVerify'],
             'permission_callback' => '__return_true',
             'args'                => [
-                'session_token' => ['required' => true, 'type' => 'string'],
-                'code'            => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                'session_token'  => ['required' => true, 'type' => 'string'],
+                'code'           => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 'channel_id'     => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                'trust_device'   => ['required' => false, 'type' => 'boolean', 'default' => false],
             ],
         ]);
     }
@@ -97,6 +100,10 @@ class MfaController
             $request->get_param('code'),
             $request->get_param('channel_id'),
         );
+
+        if ($result->success && $request->get_param('trust_device') && $this->trustedDevices) {
+            $this->trustedDevices->trust($result->userId);
+        }
 
         return $this->toResponse($result);
     }

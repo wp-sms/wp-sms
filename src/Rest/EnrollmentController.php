@@ -8,6 +8,7 @@ use WSms\Auth\AccountManager;
 use WSms\Auth\AvatarManager;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\ProfileFieldRegistry;
+use WSms\Auth\TrustedDeviceManager;
 use WSms\Enums\ChannelStatus;
 use WSms\Mfa\Channels\BackupCodesChannel;
 use WSms\Mfa\Contracts\SupportsEnrollmentConfirmation;
@@ -25,6 +26,7 @@ class EnrollmentController
         private PolicyEngine $policy,
         private ?ProfileFieldRegistry $fieldRegistry = null,
         private ?AvatarManager $avatarManager = null,
+        private ?TrustedDeviceManager $trustedDevices = null,
     ) {
     }
 
@@ -224,6 +226,7 @@ class EnrollmentController
         }
 
         if ($result) {
+            $this->trustedDevices?->revokeAll($userId);
             $this->destroyOtherSessions();
         }
 

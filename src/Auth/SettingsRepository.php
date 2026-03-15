@@ -59,6 +59,10 @@ class SettingsRepository
             'max_attempts'   => 3,
             'cooldown'       => 60,
         ],
+        'trusted_devices' => [
+            'enabled' => false,
+            'ttl'     => 2592000, // 30 days
+        ],
     ];
 
     /**

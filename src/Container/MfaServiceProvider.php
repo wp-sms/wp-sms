@@ -10,6 +10,7 @@ use WSms\Mfa\Channels\TelegramChannel;
 use WSms\Mfa\Channels\TotpChannel;
 use WSms\Mfa\MfaManager;
 use WSms\Mfa\OtpGenerator;
+use WSms\Mfa\SecretEncryptor;
 use WSms\Telegram\TelegramBotClient;
 
 defined('ABSPATH') || exit;
@@ -78,8 +79,15 @@ class MfaServiceProvider implements ServiceProvider
             );
         });
 
+        $container->register('mfa.secret_encryptor', function () {
+            return new SecretEncryptor();
+        });
+
         $container->register('mfa.channel.totp', function () use ($container) {
-            return new TotpChannel($container->get('audit.logger'));
+            return new TotpChannel(
+                $container->get('audit.logger'),
+                $container->get('mfa.secret_encryptor'),
+            );
         });
     }
 

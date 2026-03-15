@@ -654,6 +654,18 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('is_ssl')) {
+        function is_ssl(): bool {
+            return $GLOBALS['_test_is_ssl'] ?? false;
+        }
+    }
+
+    if (!function_exists('wp_destroy_other_sessions')) {
+        function wp_destroy_other_sessions(): void {
+            // No-op in tests.
+        }
+    }
+
     if (!defined('AUTH_KEY')) {
         define('AUTH_KEY', 'test-auth-key-for-unit-tests');
     }

@@ -40,6 +40,7 @@ class RestServiceProvider implements ServiceProvider
             return new MfaController(
                 $container->get('auth.orchestrator'),
                 $container->get('auth.rate_limiter'),
+                $container->get('auth.trusted_devices'),
             );
         });
 
@@ -49,6 +50,7 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('auth.policy'),
                 $container->get('auth.field_registry'),
                 $container->get('auth.avatar_manager'),
+                $container->get('auth.trusted_devices'),
             );
         });
 

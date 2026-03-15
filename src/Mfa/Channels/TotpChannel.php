@@ -14,6 +14,7 @@ use WSms\Dependencies\BaconQrCode\Renderer\ImageRenderer;
 use WSms\Dependencies\BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use WSms\Dependencies\BaconQrCode\Writer;
 use WSms\Dependencies\OTPHP\TOTP;
+use WSms\Mfa\SecretEncryptor;
 
 defined('ABSPATH') || exit;
 
@@ -23,6 +24,7 @@ class TotpChannel implements ChannelInterface, SupportsEnrollmentConfirmation
 
     public function __construct(
         private AuditLogger $auditLogger,
+        private SecretEncryptor $encryptor,
     ) {
     }
 
@@ -81,13 +83,15 @@ class TotpChannel implements ChannelInterface, SupportsEnrollmentConfirmation
 
         $qrCodeUri = $this->generateQrCodeDataUri($uri);
 
+        $encryptedSecret = $this->encryptor->encrypt($secret, $userId);
+
         if ($existing) {
             $this->updateFactor($existing->id, [
                 'status' => ChannelStatus::Pending->value,
-                'meta'   => wp_json_encode(['secret' => $secret]),
+                'meta'   => wp_json_encode(['secret' => $encryptedSecret]),
             ]);
         } else {
-            $this->createFactor($userId, ChannelStatus::Pending, ['secret' => $secret]);
+            $this->createFactor($userId, ChannelStatus::Pending, ['secret' => $encryptedSecret]);
         }
 
         return new EnrollmentResult(true, 'Scan the QR code with your authenticator app.', [
@@ -109,12 +113,13 @@ class TotpChannel implements ChannelInterface, SupportsEnrollmentConfirmation
             return new EnrollmentResult(false, 'No pending enrollment found.');
         }
 
-        $secret = $factor->meta['secret'] ?? '';
+        $storedSecret = $factor->meta['secret'] ?? '';
 
-        if (empty($secret)) {
+        if (empty($storedSecret)) {
             return new EnrollmentResult(false, 'Invalid enrollment state.');
         }
 
+        $secret = $this->encryptor->decrypt($storedSecret, $userId);
         $totp = TOTP::createFromSecret($secret);
 
         if (!$totp->verify($code, null, 1)) {
@@ -126,7 +131,7 @@ class TotpChannel implements ChannelInterface, SupportsEnrollmentConfirmation
         $this->updateFactor($factor->id, [
             'status' => ChannelStatus::Active->value,
             'meta'   => wp_json_encode([
-                'secret'              => $secret,
+                'secret'              => $storedSecret,
                 'last_used_timestamp' => $currentTimestamp,
             ]),
         ]);
@@ -157,12 +162,13 @@ class TotpChannel implements ChannelInterface, SupportsEnrollmentConfirmation
             return false;
         }
 
-        $secret = $factor->meta['secret'] ?? '';
+        $storedSecret = $factor->meta['secret'] ?? '';
 
-        if (empty($secret)) {
+        if (empty($storedSecret)) {
             return false;
         }
 
+        $secret = $this->encryptor->decrypt($storedSecret, $userId);
         $totp = TOTP::createFromSecret($secret);
 
         $currentTimestamp = (int) floor(time() / $totp->getPeriod());
@@ -183,10 +189,9 @@ class TotpChannel implements ChannelInterface, SupportsEnrollmentConfirmation
             return false;
         }
 
-        // Update last used timestamp.
         $this->updateFactor($factor->id, [
             'meta' => wp_json_encode([
-                'secret'              => $secret,
+                'secret'              => $storedSecret,
                 'last_used_timestamp' => $currentTimestamp,
             ]),
         ]);

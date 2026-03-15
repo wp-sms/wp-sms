@@ -7,16 +7,19 @@ use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
 use WSms\Mfa\Channels\TotpChannel;
+use WSms\Mfa\SecretEncryptor;
 
 class TotpChannelTest extends TestCase
 {
     private TotpChannel $channel;
     private MockObject&AuditLogger $auditLogger;
+    private SecretEncryptor $encryptor;
 
     protected function setUp(): void
     {
         $this->auditLogger = $this->createMock(AuditLogger::class);
-        $this->channel = new TotpChannel($this->auditLogger);
+        $this->encryptor = new SecretEncryptor();
+        $this->channel = new TotpChannel($this->auditLogger, $this->encryptor);
 
         $this->setupWpdbMock(null);
 
