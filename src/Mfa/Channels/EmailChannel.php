@@ -11,6 +11,7 @@ use WSms\Mfa\OtpGenerator;
 use WSms\Mfa\Support\EmailMasker;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
+use WSms\Support\IpResolver;
 
 defined('ABSPATH') || exit;
 
@@ -217,7 +218,13 @@ class EmailChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         }
 
         $bodyParts[] = sprintf('<p>This expires in %d minutes.</p>', $expiryMinutes);
-        $bodyParts[] = '<p>If you did not request this, please ignore this email.</p>';
+
+        $ipWarning = IpResolver::renderIpWarningHtml('This code was requested');
+        if ($ipWarning !== '') {
+            $bodyParts[] = $ipWarning;
+        } else {
+            $bodyParts[] = '<p>If you did not request this, please ignore this email.</p>';
+        }
 
         $body = implode("\n", $bodyParts);
         $headers = ['Content-Type: text/html; charset=UTF-8'];

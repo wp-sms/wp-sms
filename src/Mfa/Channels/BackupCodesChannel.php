@@ -131,7 +131,7 @@ class BackupCodesChannel implements ChannelInterface
             return false;
         }
 
-        $normalized = str_replace('-', '', $code);
+        $normalized = preg_replace('/[\s-]+/', '', $code);
 
         // Iterate all hashes unconditionally to avoid timing side-channel.
         $matchIndex = null;

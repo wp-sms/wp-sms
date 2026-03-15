@@ -26,4 +26,25 @@ class IpResolver
 
         return '';
     }
+
+    /**
+     * Render an HTML paragraph with the client IP and a security warning.
+     *
+     * Returns empty string when the IP cannot be determined.
+     */
+    public static function renderIpWarningHtml(string $action = 'This request was made'): string
+    {
+        $ip = self::resolve();
+
+        if ($ip === '') {
+            return '';
+        }
+
+        return sprintf(
+            '<p style="color:#666;font-size:0.9em;">%s from IP: %s. '
+            . 'If you did not request this, your password may have been compromised.</p>',
+            esc_html($action),
+            esc_html($ip),
+        );
+    }
 }

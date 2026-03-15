@@ -4,6 +4,7 @@ namespace WSms\Container;
 
 use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountManager;
+use WSms\Auth\ApiAuthGuard;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthRouter;
 use WSms\Auth\AuthSession;
@@ -120,6 +121,12 @@ class AuthServiceProvider implements ServiceProvider
                 $container->get('auth.settings'),
             );
         });
+
+        $container->register('auth.api_guard', function () use ($container) {
+            return new ApiAuthGuard(
+                $container->get('mfa.manager'),
+            );
+        });
     }
 
     /** {@inheritDoc} */
@@ -130,6 +137,7 @@ class AuthServiceProvider implements ServiceProvider
         $container->get('auth.shortcode')->registerHooks();
 
         $container->get('auth.login_guard')->registerHooks();
+        $container->get('auth.api_guard')->registerHooks();
 
         // Register custom profile field meta on init.
         add_action('init', function () use ($container) {

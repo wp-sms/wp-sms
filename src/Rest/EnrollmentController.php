@@ -150,6 +150,10 @@ class EnrollmentController
         if ($result->success) {
             update_user_meta($userId, 'wsms_mfa_enabled', '1');
             $result = $this->autoEnrollBackupCodes($userId, $channelId, $result);
+
+            if (empty($result->data['requires_confirmation'])) {
+                $this->destroyOtherSessions();
+            }
         }
 
         return new WP_REST_Response([
@@ -181,6 +185,7 @@ class EnrollmentController
             if ($result->success) {
                 update_user_meta($userId, 'wsms_mfa_enabled', '1');
                 $result = $this->autoEnrollBackupCodes($userId, $channelId, $result);
+                $this->destroyOtherSessions();
             }
 
             return new WP_REST_Response([
@@ -216,6 +221,10 @@ class EnrollmentController
 
         if (!$this->mfaManager->hasActiveFactors($userId)) {
             update_user_meta($userId, 'wsms_mfa_enabled', '0');
+        }
+
+        if ($result) {
+            $this->destroyOtherSessions();
         }
 
         return new WP_REST_Response([
@@ -330,6 +339,11 @@ class EnrollmentController
         }
 
         return $values;
+    }
+
+    private function destroyOtherSessions(): void
+    {
+        wp_destroy_other_sessions();
     }
 
     private function autoEnrollBackupCodes(int $userId, string $channelId, EnrollmentResult $result): EnrollmentResult

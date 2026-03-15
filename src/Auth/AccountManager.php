@@ -10,6 +10,7 @@ use WSms\Enums\SessionStage;
 use WSms\Enums\VerificationType;
 use WSms\Mfa\MfaManager;
 use WSms\Mfa\OtpGenerator;
+use WSms\Support\IpResolver;
 use WSms\Verification\VerificationMailer;
 
 defined('ABSPATH') || exit;
@@ -1004,8 +1005,10 @@ class AccountManager
                 '<p>Click the link below to reset your password:</p>'
                 . '<p><a href="%s">Reset Password</a></p>'
                 . '<p>This link expires in 60 minutes.</p>'
+                . '%s'
                 . '<p>If you did not request this, please ignore this email.</p>',
                 esc_url($link),
+                IpResolver::renderIpWarningHtml('This request was made'),
             );
         }
 

@@ -101,6 +101,8 @@ class TotpChannel implements ChannelInterface, SupportsEnrollmentConfirmation
     /** {@inheritDoc} */
     public function confirmEnrollment(int $userId, string $code): EnrollmentResult
     {
+        $code = preg_replace('/\s+/', '', $code);
+
         $factor = $this->getFactor($userId);
 
         if (!$factor || $factor->status !== ChannelStatus::Pending) {
@@ -147,6 +149,8 @@ class TotpChannel implements ChannelInterface, SupportsEnrollmentConfirmation
     /** {@inheritDoc} */
     public function verify(int $userId, string $code, array $context = []): bool
     {
+        $code = preg_replace('/\s+/', '', $code);
+
         $factor = $this->getFactor($userId);
 
         if ($factor === null || $factor->status !== ChannelStatus::Active) {

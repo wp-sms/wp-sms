@@ -105,6 +105,8 @@ abstract class AbstractOtpChannel implements ChannelInterface
     /** {@inheritDoc} */
     public function verify(int $userId, string $code, array $context = []): bool
     {
+        $code = preg_replace('/\s+/', '', $code);
+
         global $wpdb;
 
         $table = $wpdb->prefix . 'wsms_verifications';
