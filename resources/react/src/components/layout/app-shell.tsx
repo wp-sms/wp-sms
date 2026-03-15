@@ -240,6 +240,31 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
           )}
           {children}
         </div>
+        <footer className="mt-auto border-t border-border/60 px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/[0.08]">
+                <Logo className="h-4 w-4 text-primary/60" />
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-[13px] font-medium tracking-tight text-muted-foreground/80">WSMS</span>
+                <span className="rounded border border-border/80 px-1.5 py-px font-mono text-[9px] tracking-wide text-muted-foreground/50">{version}</span>
+                <span className="mx-0.5 text-border">·</span>
+                <span className="text-[11px] text-muted-foreground/50">
+                  by{' '}
+                  <a href="https://veronalabs.com" target="_blank" rel="noopener noreferrer" className="font-medium text-muted-foreground/60 transition-colors hover:text-primary">
+                    VeronaLabs
+                  </a>
+                </span>
+              </div>
+            </div>
+            <nav className="flex items-center gap-4 text-[11px] text-muted-foreground/50">
+              <a href="https://wsms.io/docs" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">Docs</a>
+              <a href="https://wsms.io/support" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">Support</a>
+              <a href="https://wsms.io" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">wsms.io</a>
+            </nav>
+          </div>
+        </footer>
       </SidebarInset>
     </SidebarProvider>
   );
