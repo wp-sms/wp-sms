@@ -177,6 +177,27 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('esc_attr_e')) {
+        function esc_attr_e(string $text, string $domain = 'default'): void {
+            echo esc_attr($text);
+        }
+    }
+
+    if (!function_exists('esc_attr__')) {
+        function esc_attr__(string $text, string $domain = 'default'): string {
+            return esc_attr($text);
+        }
+    }
+
+    if (!function_exists('date_i18n')) {
+        function date_i18n(string $format, $timestamp = false, bool $gmt = false): string {
+            if ($timestamp === false) {
+                $timestamp = time();
+            }
+            return date($format, $timestamp);
+        }
+    }
+
     // In-memory transient storage for tests.
     $GLOBALS['_test_transients'] = [];
 

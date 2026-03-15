@@ -4,6 +4,7 @@ namespace WSms\Container;
 
 use WSms\Rest\AccountController;
 use WSms\Rest\AdminController;
+use WSms\Rest\AdminUserController;
 use WSms\Rest\AuthController;
 use WSms\Rest\MfaController;
 use WSms\Rest\EnrollmentController;
@@ -75,6 +76,17 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('mfa.channel.telegram'),
             );
         });
+
+        $container->register('rest.admin_user', function () use ($container) {
+            return new AdminUserController(
+                $container->get('audit.logger'),
+                $container->get('mfa.manager'),
+                $container->get('social.repository'),
+                $container->get('auth.lockout'),
+                $container->get('auth.account_manager'),
+                $container->get('auth.settings'),
+            );
+        });
     }
 
     /** {@inheritDoc} */
@@ -88,6 +100,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.admin')->registerRoutes();
             $container->get('rest.social')->registerRoutes();
             $container->get('rest.telegram')->registerRoutes();
+            $container->get('rest.admin_user')->registerRoutes();
         });
     }
 }
