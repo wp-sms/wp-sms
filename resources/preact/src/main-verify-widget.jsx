@@ -40,6 +40,14 @@ function Spinner() {
     return <span className="wsms-vw-spinner" aria-hidden="true" />;
 }
 
+function PoweredBy() {
+    return (
+        <div className="wsms-vw-powered-by">
+            powered by <span className="wsms-vw-powered-by-brand">WSMS</span>
+        </div>
+    );
+}
+
 function VerifyWidget({ channel, identifier, onVerified, onError, codeLength = 6 }) {
     const [state, setState] = useState('idle');
     const [sessionToken, setSessionToken] = useState(null);
@@ -111,102 +119,94 @@ function VerifyWidget({ channel, identifier, onVerified, onError, codeLength = 6
         }
     }, [channel, identifier, sessionToken, cooldown, resetCooldown]);
 
-    // Verified
+    // No identifier — render nothing
+    if (state === 'idle' && !identifier) {
+        return null;
+    }
+
+    let content;
+
     if (state === 'verified') {
-        return (
-            <div className="wsms-vw">
-                <div className="wsms-vw-verified" role="status">
-                    <CheckIcon />
-                    <span>Verification complete</span>
-                </div>
+        content = (
+            <div className="wsms-vw-verified" role="status">
+                <CheckIcon />
+                <span>Verification complete</span>
             </div>
         );
-    }
-
-    // Sending
-    if (state === 'sending') {
-        return (
-            <div className="wsms-vw">
-                <div className="wsms-vw-sending" role="status" aria-live="polite">
-                    <Spinner />
-                    <span>Sending verification code&hellip;</span>
-                </div>
+    } else if (state === 'sending') {
+        content = (
+            <div className="wsms-vw-sending" role="status" aria-live="polite">
+                <Spinner />
+                <span>Sending verification code&hellip;</span>
             </div>
         );
-    }
+    } else if (state === 'error' && !sessionToken) {
+        content = (
+            <div className="wsms-vw-error-box" role="alert">
+                <p>{errorMsg}</p>
+                <button type="button" className="wsms-vw-retry" onClick={() => sendCode(null)}>
+                    Send a new code
+                </button>
+            </div>
+        );
+    } else if (state === 'input' || state === 'verifying') {
+        content = (
+            <div className={state === 'verifying' ? 'wsms-vw-verifying' : ''}>
+                <p className="wsms-vw-label">
+                    We sent a {codeLength}-digit code to <strong>{maskedId}</strong>
+                </p>
 
-    // Initial error (no session yet)
-    if (state === 'error' && !sessionToken) {
-        return (
-            <div className="wsms-vw">
-                <div className="wsms-vw-error-box" role="alert">
-                    <p>{errorMsg}</p>
-                    <button type="button" className="wsms-vw-retry" onClick={() => sendCode(null)}>
-                        Send a new code
+                {errorMsg && (
+                    <p className="wsms-vw-error-msg" role="alert">{errorMsg}</p>
+                )}
+
+                <OtpInputLight
+                    length={codeLength}
+                    onComplete={handleVerify}
+                    disabled={state === 'verifying'}
+                    autoFocus={true}
+                />
+
+                {state === 'verifying' && (
+                    <div className="wsms-vw-verifying-indicator" role="status" aria-live="polite">
+                        <Spinner />
+                        <span>Verifying&hellip;</span>
+                    </div>
+                )}
+
+                <div className="wsms-vw-actions">
+                    <button
+                        type="button"
+                        className="wsms-vw-resend"
+                        onClick={handleResend}
+                        disabled={cooldown > 0 || state === 'verifying'}
+                    >
+                        {cooldown > 0 ? `Resend code in ${cooldown}s` : 'Resend code'}
                     </button>
                 </div>
             </div>
         );
-    }
-
-    // OTP input / verifying
-    if (state === 'input' || state === 'verifying') {
-        return (
-            <div className="wsms-vw">
-                <div className={state === 'verifying' ? 'wsms-vw-verifying' : ''}>
-                    <p className="wsms-vw-label">
-                        We sent a {codeLength}-digit code to <strong>{maskedId}</strong>
-                    </p>
-
-                    {errorMsg && (
-                        <p className="wsms-vw-error-msg" role="alert">{errorMsg}</p>
-                    )}
-
-                    <OtpInputLight
-                        length={codeLength}
-                        onComplete={handleVerify}
-                        disabled={state === 'verifying'}
-                        autoFocus={true}
-                    />
-
-                    {state === 'verifying' && (
-                        <div className="wsms-vw-verifying-indicator" role="status" aria-live="polite">
-                            <Spinner />
-                            <span>Verifying&hellip;</span>
-                        </div>
-                    )}
-
-                    <div className="wsms-vw-actions">
-                        <button
-                            type="button"
-                            className="wsms-vw-resend"
-                            onClick={handleResend}
-                            disabled={cooldown > 0 || state === 'verifying'}
-                        >
-                            {cooldown > 0 ? `Resend code in ${cooldown}s` : 'Resend code'}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    // Prompt — waiting for user to request code
-    if (state === 'idle' && identifier) {
+    } else {
+        // idle with identifier — prompt to send code
         const channelLabel = channel === 'phone' ? 'phone number' : 'email address';
-        return (
-            <div className="wsms-vw">
+        content = (
+            <>
                 <p className="wsms-vw-label">
                     We need to verify your {channelLabel}
                 </p>
                 <button type="button" className="wsms-vw-send-btn" onClick={() => sendCode(null)}>
                     Send verification code
                 </button>
-            </div>
+            </>
         );
     }
 
-    return null;
+    return (
+        <div className="wsms-vw">
+            {content}
+            <PoweredBy />
+        </div>
+    );
 }
 
 window.wsmsVerify = {
