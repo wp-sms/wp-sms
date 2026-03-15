@@ -103,6 +103,10 @@
   }
 }
 
+/* Hide WP admin footer on plugin pages */
+#wpfooter { display: none; }
+#wpbody-content { padding-bottom: 0; }
+
 /* Mount-point app styling — negative margin cancels WP admin's #wpbody-content padding */
 #wpsms-app {
   @apply relative h-auto;
