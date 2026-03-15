@@ -165,6 +165,18 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('esc_html_e')) {
+        function esc_html_e(string $text, string $domain = 'default'): void {
+            echo esc_html($text);
+        }
+    }
+
+    if (!function_exists('esc_html__')) {
+        function esc_html__(string $text, string $domain = 'default'): string {
+            return esc_html($text);
+        }
+    }
+
     // In-memory transient storage for tests.
     $GLOBALS['_test_transients'] = [];
 
@@ -468,6 +480,18 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('get_current_screen')) {
+        function get_current_screen() {
+            return $GLOBALS['_test_current_screen'] ?? null;
+        }
+    }
+
+    if (!function_exists('admin_url')) {
+        function admin_url(string $path = ''): string {
+            return 'http://localhost/wp-admin/' . ltrim($path, '/');
+        }
+    }
+
     if (!function_exists('wp_remote_post')) {
         function wp_remote_post(string $url, array $args = []) {
             return $GLOBALS['_test_wp_remote_post'] ?? new \WP_Error('not_configured', 'Test not configured');
@@ -641,6 +665,18 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
             // Return a consistent basename for testing.
             return 'wp-sms/wp-sms.php';
         }
+    }
+
+    if (!defined('WP_SMS_DIR')) {
+        define('WP_SMS_DIR', dirname(__DIR__) . '/');
+    }
+
+    if (!defined('WP_SMS_URL')) {
+        define('WP_SMS_URL', 'http://localhost/wp-content/plugins/wp-sms/');
+    }
+
+    if (!defined('WP_SMS_VERSION')) {
+        define('WP_SMS_VERSION', '8.0');
     }
 
     if (!defined('WP_SMS_MAIN_FILE')) {

@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
-import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, MessageSquare } from 'lucide-react';
+import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight } from 'lucide-react';
+import { Logo } from '@/components/logo';
 import {
   Sidebar,
   SidebarContent,
@@ -147,7 +148,7 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
         <SidebarHeader className="border-b border-sidebar-border px-4 py-3">
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary">
-              <MessageSquare className="h-4 w-4 text-primary-foreground" />
+              <Logo className="h-6 w-6 text-primary-foreground" />
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-semibold leading-none">WP SMS</span>
