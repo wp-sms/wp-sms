@@ -23,57 +23,96 @@ class PolicyEngine
      */
     public function isMfaRequired(int $userId): bool
     {
-        $settings = $this->settingsRepo->all();
-
-        $hasMfaFactors = !empty($this->getAvailableMfaFactors());
-
-        if (!$hasMfaFactors) {
+        if (empty($this->getAvailableMfaFactors())) {
             return false;
         }
 
         // Voluntary enrollment: if user has explicitly enrolled, always require MFA.
-        $userEnrolled = (bool) get_user_meta($userId, 'wsms_mfa_enabled', true);
-
-        if ($userEnrolled) {
+        if ((bool) get_user_meta($userId, 'wsms_mfa_enabled', true)) {
             return true;
         }
 
-        // Below here: forced enrollment via admin policy.
+        $context = $this->resolveEnrollmentContext($userId);
+        if (!$context) {
+            return false;
+        }
+
+        if ($context['timing'] === EnrollmentTiming::Voluntary) {
+            return false;
+        }
+
+        if ($context['timing'] === EnrollmentTiming::GracePeriod && time() < $context['grace_expiry']) {
+            return false;
+        }
+
+        // OnRegistration or past grace period — require MFA.
+        return true;
+    }
+
+    /**
+     * Get grace period info for a user, or null if not applicable.
+     *
+     * Returns remaining days and expiry when the user is within a grace period window.
+     */
+    public function getGracePeriodInfo(int $userId): ?array
+    {
+        // Cheap check first: enrolled users don't need grace info.
+        if ((bool) get_user_meta($userId, 'wsms_mfa_enabled', true)) {
+            return null;
+        }
+
+        if (empty($this->getAvailableMfaFactors())) {
+            return null;
+        }
+
+        $context = $this->resolveEnrollmentContext($userId);
+        if (!$context || $context['timing'] !== EnrollmentTiming::GracePeriod) {
+            return null;
+        }
+
+        $remaining = $context['grace_expiry'] - time();
+        if ($remaining <= 0) {
+            return null;
+        }
+
+        return [
+            'grace_period_remaining_days' => (int) ceil($remaining / DAY_IN_SECONDS),
+            'grace_period_expires_at'     => gmdate('c', $context['grace_expiry']),
+        ];
+    }
+
+    /**
+     * Resolve enrollment timing context for a user.
+     *
+     * Returns null if the user doesn't match any forced-enrollment policy
+     * (no required roles, role mismatch, or user not found).
+     *
+     * @return array{timing: EnrollmentTiming, grace_expiry: int}|null
+     */
+    private function resolveEnrollmentContext(int $userId): ?array
+    {
+        $settings = $this->settingsRepo->all();
+
         $requiredRoles = $settings['mfa_required_roles'] ?? [];
         if (empty($requiredRoles)) {
-            return false;
+            return null;
         }
 
         $user = get_userdata($userId);
-        if (!$user) {
-            return false;
-        }
-
-        $userRoles = $user->roles;
-        if (empty(array_intersect($userRoles, $requiredRoles))) {
-            return false;
+        if (!$user || empty(array_intersect($user->roles, $requiredRoles))) {
+            return null;
         }
 
         $timing = EnrollmentTiming::tryFrom($settings['enrollment_timing'] ?? 'voluntary')
             ?? EnrollmentTiming::Voluntary;
 
-        if ($timing === EnrollmentTiming::Voluntary) {
-            // Already handled above — user enrolled voluntarily.
-            return false;
-        }
-
+        $graceExpiry = 0;
         if ($timing === EnrollmentTiming::GracePeriod) {
             $graceDays = (int) ($settings['grace_period_days'] ?? 7);
-            $registered = strtotime($user->user_registered);
-            $graceExpiry = $registered + ($graceDays * DAY_IN_SECONDS);
-
-            if (time() < $graceExpiry) {
-                return false;
-            }
+            $graceExpiry = strtotime($user->user_registered) + ($graceDays * DAY_IN_SECONDS);
         }
 
-        // OnRegistration or past grace period — require MFA.
-        return true;
+        return ['timing' => $timing, 'grace_expiry' => $graceExpiry];
     }
 
     /**

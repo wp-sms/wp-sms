@@ -640,6 +640,111 @@ class AuthOrchestratorTest extends TestCase
         $this->assertHookFiredOnce('wp_login');
     }
 
+    public function testLoginReturnsEnrollmentRequiredWhenMfaRequiredNoFactors(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_wp_authenticate_result'] = $user;
+        $GLOBALS['_test_userdata'] = $user;
+
+        $this->policy->method('isMfaRequired')->willReturn(true);
+        $this->mfaManager->method('getActiveMfaFactors')->willReturn([]);
+        $this->policy->method('getAvailableMfaFactors')->willReturn(['phone']);
+
+        $result = $this->orchestrator->loginWithPassword('admin', 'pass');
+
+        $this->assertTrue($result->success);
+        $this->assertSame('mfa_enrollment_required', $result->status);
+        $this->assertSame(['phone'], $result->meta['available_channels']);
+        // Verify user meta was set.
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][1]['wsms_mfa_enrollment_pending'] ?? '');
+    }
+
+    public function testPasswordlessReturnsEnrollmentRequiredWhenMfaRequiredNoFactors(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_userdata'] = $user;
+
+        $this->session->method('validate')->willReturn([
+            'user_id'     => 1,
+            'method'      => 'phone',
+            'stage'       => 'challenge_pending',
+            'channel_id'  => 'phone',
+            'session_key' => 'sk123',
+        ]);
+
+        $phoneChannel = $this->createMock(\WSms\Mfa\Channels\PhoneChannel::class);
+        $phoneChannel->method('verify')->willReturn(true);
+
+        $this->mfaManager->method('getChannel')->with('phone')->willReturn($phoneChannel);
+        $this->policy->method('isMfaRequired')->willReturn(true);
+        $this->mfaManager->method('getActiveMfaFactors')->willReturn([]);
+        $this->policy->method('getAvailableMfaFactors')->willReturn(['phone']);
+
+        $result = $this->orchestrator->verifyPrimary('token', '123456');
+
+        $this->assertTrue($result->success);
+        $this->assertSame('mfa_enrollment_required', $result->status);
+    }
+
+    public function testMagicLinkReturnsEnrollmentRequiredWhenNoFactors(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_userdata'] = $user;
+
+        // Need a mock that implements both ChannelInterface and SupportsTokenVerification.
+        $magicChannel = $this->getMockBuilder(\WSms\Mfa\Channels\EmailChannel::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['verifyTokenAndResolveUser', 'getId', 'supportsMfa', 'supportsPrimaryAuth', 'supportsAutoEnrollment', 'getEnabledSettingKey', 'isAvailableForUser', 'isEnrolled', 'enroll', 'sendChallenge', 'verify', 'unenroll', 'getEnrollmentInfo', 'getName'])
+            ->getMock();
+        $magicChannel->method('verifyTokenAndResolveUser')->willReturn(1);
+        $magicChannel->method('getId')->willReturn('email');
+
+        $this->mfaManager->method('getAvailableChannels')->willReturn([$magicChannel]);
+        $this->policy->method('isMfaRequired')->willReturn(true);
+        $this->mfaManager->method('getActiveMfaFactors')->willReturn([]);
+        $this->policy->method('getAvailableMfaFactors')->willReturn(['phone']);
+
+        $result = $this->orchestrator->verifyMagicLink('some-token');
+
+        $this->assertTrue($result->success);
+        $this->assertSame('mfa_enrollment_required', $result->status);
+    }
+
+    public function testLoginIncludesGracePeriodMeta(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_wp_authenticate_result'] = $user;
+        $GLOBALS['_test_userdata'] = $user;
+
+        $this->policy->method('isMfaRequired')->willReturn(false);
+        $this->policy->method('getGracePeriodInfo')->willReturn([
+            'grace_period_remaining_days' => 5,
+            'grace_period_expires_at'     => '2026-04-01T00:00:00+00:00',
+        ]);
+
+        $result = $this->orchestrator->loginWithPassword('admin', 'pass');
+
+        $this->assertTrue($result->success);
+        $this->assertSame('authenticated', $result->status);
+        $this->assertSame(5, $result->meta['grace_period']['grace_period_remaining_days']);
+    }
+
+    public function testLoginOmitsGracePeriodMetaWhenNotApplicable(): void
+    {
+        $user = $this->makeUser(1);
+        $GLOBALS['_test_wp_authenticate_result'] = $user;
+        $GLOBALS['_test_userdata'] = $user;
+
+        $this->policy->method('isMfaRequired')->willReturn(false);
+        $this->policy->method('getGracePeriodInfo')->willReturn(null);
+
+        $result = $this->orchestrator->loginWithPassword('admin', 'pass');
+
+        $this->assertTrue($result->success);
+        $this->assertSame('authenticated', $result->status);
+        $this->assertArrayNotHasKey('grace_period', $result->meta);
+    }
+
     private function assertHookFiredOnce(string $hookName): array
     {
         $fired = array_filter(

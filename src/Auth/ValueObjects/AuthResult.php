@@ -16,7 +16,7 @@ readonly class AuthResult
     ) {
     }
 
-    public static function authenticated(int $userId, array $user): self
+    public static function authenticated(int $userId, array $user, array $meta = []): self
     {
         return new self(
             success: true,
@@ -24,6 +24,17 @@ readonly class AuthResult
             userId: $userId,
             user: $user,
             message: 'Login successful.',
+            meta: $meta,
+        );
+    }
+
+    public static function mfaEnrollmentRequired(array $availableChannels): self
+    {
+        return new self(
+            success: true,
+            status: 'mfa_enrollment_required',
+            message: 'MFA enrollment is required to continue.',
+            meta: ['available_channels' => $availableChannels],
         );
     }
 
@@ -105,7 +116,7 @@ readonly class AuthResult
     public function toHttpStatus(): int
     {
         return match ($this->status) {
-            'authenticated', 'mfa_required', 'challenge_sent', 'verification_required' => 200,
+            'authenticated', 'mfa_required', 'mfa_enrollment_required', 'challenge_sent', 'verification_required' => 200,
             'rate_limited' => 429,
             'expired', 'invalid_token' => 401,
             'failed' => match ($this->error) {

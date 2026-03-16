@@ -4,8 +4,17 @@ import { authUrl, getBaseUrl } from './urls';
 export function handleAuthResponse(res, route) {
     if (res.status === 'authenticated') {
         clearAuth();
+        if (res.meta?.grace_period) {
+            sessionStorage.setItem('wsms_grace_period', JSON.stringify(res.meta.grace_period));
+        }
         window.location.href = res.redirect || getBaseUrl();
         return;
+    }
+
+    if (res.status === 'mfa_enrollment_required') {
+        clearAuth();
+        window.location.href = getBaseUrl() + '/security?mfa_enroll=required';
+        return 'mfa_enrollment_required';
     }
 
     if (res.status === 'verification_required') {

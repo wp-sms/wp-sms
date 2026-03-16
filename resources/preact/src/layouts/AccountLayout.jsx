@@ -14,7 +14,7 @@ const NAV_ITEMS = [
     { path: '/change-password', label: 'Password' },
 ];
 
-export function AccountLayout({ title, subtitle, currentPath, children }) {
+export function AccountLayout({ title, subtitle, currentPath, hideNav, children }) {
     const user = currentUser.value;
 
     return (
@@ -28,25 +28,29 @@ export function AccountLayout({ title, subtitle, currentPath, children }) {
                             </div>
                             <span className="hidden text-sm font-semibold tracking-tight sm:inline">WSMS</span>
                         </div>
-                        <div className="h-5 w-px bg-border" />
-                        <nav className="flex gap-1">
-                            {NAV_ITEMS.map((item) => {
-                                const active = currentPath === item.path;
-                                return (
-                                    <a
-                                        key={item.path}
-                                        href={authUrl(item.path)}
-                                        className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline ${
-                                            active
-                                                ? 'bg-primary text-primary-foreground'
-                                                : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-                                        }`}
-                                    >
-                                        {item.label}
-                                    </a>
-                                );
-                            })}
-                        </nav>
+                        {!hideNav && (
+                            <>
+                                <div className="h-5 w-px bg-border" />
+                                <nav className="flex gap-1">
+                                    {NAV_ITEMS.map((item) => {
+                                        const active = currentPath === item.path;
+                                        return (
+                                            <a
+                                                key={item.path}
+                                                href={authUrl(item.path)}
+                                                className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline ${
+                                                    active
+                                                        ? 'bg-primary text-primary-foreground'
+                                                        : 'text-muted-foreground hover:text-foreground hover:bg-accent'
+                                                }`}
+                                            >
+                                                {item.label}
+                                            </a>
+                                        );
+                                    })}
+                                </nav>
+                            </>
+                        )}
                     </div>
                     <div className="flex items-center gap-3">
                         {user && (

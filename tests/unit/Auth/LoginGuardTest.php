@@ -146,7 +146,7 @@ class LoginGuardTest extends TestCase
         $this->assertNull($this->guard->redirectedTo);
     }
 
-    public function testEnforceMfaSkipsWhenNoActiveFactors(): void
+    public function testEnforceMfaRedirectsToEnrollmentWhenNoFactors(): void
     {
         $user = new \WP_User(1);
 
@@ -155,7 +155,11 @@ class LoginGuardTest extends TestCase
 
         $this->guard->enforceMfaOnWpLogin('admin', $user);
 
-        $this->assertNull($this->guard->redirectedTo);
+        // Should redirect to enrollment page instead of passing through.
+        $this->assertNotNull($this->guard->redirectedTo);
+        $this->assertStringContainsString('/security?mfa_enroll=required', $this->guard->redirectedTo);
+        // Should set enrollment pending meta.
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][1]['wsms_mfa_enrollment_pending'] ?? '');
     }
 
     /**
@@ -184,5 +188,98 @@ class LoginGuardTest extends TestCase
         $this->guard->enforceMfaOnWpLogin('admin', $user);
 
         $this->assertNull($this->guard->redirectedTo);
+    }
+
+    // --- Enrollment gate REST filter tests ---
+
+    public function testEnrollmentGateBlocksNonEnrollmentEndpoints(): void
+    {
+        $GLOBALS['_test_current_user_id'] = 1;
+        $GLOBALS['_test_user_meta'][1]['wsms_mfa_enrollment_pending'] = '1';
+
+        $this->policy->method('isMfaRequired')->with(1)->willReturn(true);
+        $this->mfaManager->method('getActiveMfaFactors')->with(1)->willReturn([]);
+
+        $request = new \WP_REST_Request('GET', '/wsms/v1/auth/some-other-endpoint');
+
+        $result = $this->guard->enforceEnrollmentGate(null, null, $request);
+
+        $this->assertInstanceOf(\WP_Error::class, $result);
+        $this->assertSame('mfa_enrollment_required', $result->get_error_code());
+    }
+
+    public function testEnrollmentGateAllowsEnrollmentEndpoints(): void
+    {
+        $GLOBALS['_test_current_user_id'] = 1;
+        $GLOBALS['_test_user_meta'][1]['wsms_mfa_enrollment_pending'] = '1';
+
+        $this->policy->method('isMfaRequired')->with(1)->willReturn(true);
+        $this->mfaManager->method('getActiveMfaFactors')->with(1)->willReturn([]);
+
+        $allowedRoutes = [
+            '/wsms/v1/auth/mfa/enroll',
+            '/wsms/v1/auth/mfa/enroll/verify',
+            '/wsms/v1/auth/methods',
+            '/wsms/v1/auth/me',
+            '/wsms/v1/auth/factors',
+            '/wsms/v1/auth/logout',
+            '/wsms/v1/auth/config',
+        ];
+
+        foreach ($allowedRoutes as $route) {
+            $request = new \WP_REST_Request('GET', $route);
+            $result = $this->guard->enforceEnrollmentGate(null, null, $request);
+            $this->assertNull($result, "Route {$route} should be allowed through the gate.");
+        }
+    }
+
+    public function testEnrollmentGateClearsWhenSettingsChange(): void
+    {
+        $GLOBALS['_test_current_user_id'] = 1;
+        $GLOBALS['_test_user_meta'][1]['wsms_mfa_enrollment_pending'] = '1';
+
+        // MFA is no longer required (admin changed settings).
+        $this->policy->method('isMfaRequired')->with(1)->willReturn(false);
+
+        $request = new \WP_REST_Request('GET', '/wsms/v1/auth/some-endpoint');
+
+        $result = $this->guard->enforceEnrollmentGate(null, null, $request);
+
+        // Gate should auto-clear and pass through.
+        $this->assertNull($result);
+        $this->assertEmpty($GLOBALS['_test_user_meta'][1]['wsms_mfa_enrollment_pending'] ?? '');
+    }
+
+    public function testEnrollmentGatePassesThroughNonWsmsRoutes(): void
+    {
+        $GLOBALS['_test_current_user_id'] = 1;
+        $GLOBALS['_test_user_meta'][1]['wsms_mfa_enrollment_pending'] = '1';
+
+        // Non-WSMS routes (Gutenberg, WP core) should pass through.
+        $request = new \WP_REST_Request('GET', '/wp/v2/posts');
+
+        $result = $this->guard->enforceEnrollmentGate(null, null, $request);
+
+        $this->assertNull($result);
+    }
+
+    public function testEnrollmentGateClearsWhenFactorsExist(): void
+    {
+        $GLOBALS['_test_current_user_id'] = 1;
+        $GLOBALS['_test_user_meta'][1]['wsms_mfa_enrollment_pending'] = '1';
+
+        $this->policy->method('isMfaRequired')->with(1)->willReturn(true);
+        // User enrolled via another path.
+        $this->mfaManager->method('getActiveMfaFactors')->with(1)->willReturn([
+            ['channel_id' => 'phone', 'name' => 'Phone'],
+        ]);
+
+        $request = new \WP_REST_Request('GET', '/wsms/v1/auth/some-endpoint');
+
+        $result = $this->guard->enforceEnrollmentGate(null, null, $request);
+
+        // Gate should auto-clear and pass through.
+        $this->assertNull($result);
+        $this->assertEmpty($GLOBALS['_test_user_meta'][1]['wsms_mfa_enrollment_pending'] ?? '');
     }
 }

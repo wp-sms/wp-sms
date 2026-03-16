@@ -134,6 +134,11 @@ class SocialAuthController
             return $this->redirectTo($loginUrl . '?social_mfa=' . urlencode($resultArray['session_token']));
         }
 
+        // MFA enrollment required — redirect to security page.
+        if (($resultArray['status'] ?? '') === 'mfa_enrollment_required') {
+            return $this->redirectTo($baseUrl . '/security?mfa_enroll=required');
+        }
+
         // Account linking success — redirect to security page.
         if (!empty($resultArray['success']) && isset($callbackResult['user_id'])) {
             return $this->redirectTo($baseUrl . '/security?linked=' . $providerId);

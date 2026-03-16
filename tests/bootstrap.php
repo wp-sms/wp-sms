@@ -816,8 +816,18 @@ if (!class_exists('WP_REST_Request')) {
         private array $params = [];
         private array $headers = [];
         private ?string $body = null;
+        private string $route = '';
 
         public function __construct(string $method = 'GET', string $route = '') {
+            $this->route = $route;
+        }
+
+        public function get_route(): string {
+            return $this->route;
+        }
+
+        public function set_route(string $route): void {
+            $this->route = $route;
         }
 
         public function set_param(string $key, $value): void {

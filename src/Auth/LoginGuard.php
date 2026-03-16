@@ -11,6 +11,16 @@ defined('ABSPATH') || exit;
 
 class LoginGuard
 {
+    private const ENROLLMENT_ALLOWED_ROUTES = [
+        '/wsms/v1/auth/mfa/enroll',
+        '/wsms/v1/auth/mfa/enroll/verify',
+        '/wsms/v1/auth/methods',
+        '/wsms/v1/auth/me',
+        '/wsms/v1/auth/factors',
+        '/wsms/v1/auth/logout',
+        '/wsms/v1/auth/config',
+    ];
+
     public function __construct(
         private PolicyEngine $policy,
         private AuthSession $session,
@@ -26,6 +36,10 @@ class LoginGuard
         add_filter('authenticate', [$this, 'blockPendingUsers'], 99, 3);
         add_action('wp_login', [$this, 'enforceMfaOnWpLogin'], 10, 2);
         add_action('wp_login', [$this, 'enforceVerificationOnWpLogin'], 11, 2);
+        add_filter('rest_pre_dispatch', [$this, 'enforceEnrollmentGate'], 10, 3);
+        add_action('template_redirect', [$this, 'redirectEnrollmentGatedUsers']);
+        add_action('admin_init', [$this, 'redirectEnrollmentGatedUsers']);
+        add_action('wp_logout', [$this, 'cleanupEnrollmentGate']);
     }
 
     /**
@@ -92,6 +106,9 @@ class LoginGuard
         }
 
         if (empty($this->mfaManager->getActiveMfaFactors($user->ID))) {
+            update_user_meta($user->ID, 'wsms_mfa_enrollment_pending', '1');
+            $authBaseUrl = $this->settingsRepo->get('auth_base_url', '/account');
+            $this->redirect(home_url($authBaseUrl . '/security?mfa_enroll=required'));
             return;
         }
 
@@ -193,6 +210,94 @@ class LoginGuard
         $authBaseUrl = $this->settingsRepo->get('auth_base_url', '/account');
 
         $this->redirect(home_url($authBaseUrl . '/login?' . $queryParam . '=' . urlencode($token)));
+    }
+
+    /**
+     * Block gated users from accessing non-enrollment WSMS REST endpoints.
+     * Re-validates against live settings on non-allowed routes.
+     *
+     * @param mixed $result
+     * @param \WP_REST_Server $server
+     * @param \WP_REST_Request $request
+     * @return mixed|\WP_Error
+     */
+    public function enforceEnrollmentGate($result, $server, $request)
+    {
+        $userId = get_current_user_id();
+        if (!$userId || !get_user_meta($userId, 'wsms_mfa_enrollment_pending', true)) {
+            return $result;
+        }
+
+        $route = $request->get_route();
+
+        // Only gate WSMS routes — non-WSMS routes (Gutenberg, WP core) pass through.
+        if (!str_starts_with($route, '/wsms/v1/')) {
+            return $result;
+        }
+
+        // Allow enrollment-related endpoints without re-validation.
+        if (in_array($route, self::ENROLLMENT_ALLOWED_ROUTES, true)) {
+            return $result;
+        }
+
+        // Re-validate: settings may have changed since the gate was set.
+        if (!$this->isEnrollmentGateActive($userId)) {
+            return $result;
+        }
+
+        return new \WP_Error('mfa_enrollment_required',
+            'You must complete MFA enrollment before accessing this resource.',
+            ['status' => 403]);
+    }
+
+    public function redirectEnrollmentGatedUsers(): void
+    {
+        $userId = get_current_user_id();
+        if (!$userId || !get_user_meta($userId, 'wsms_mfa_enrollment_pending', true)) {
+            return;
+        }
+
+        // Cheap bail-outs first — avoid DB queries for auth pages and AJAX.
+        if (get_query_var('wsms_auth_page')) {
+            return;
+        }
+
+        if (wp_doing_ajax()) {
+            return;
+        }
+
+        // Re-validate: clear stale gate if settings changed.
+        if (!$this->isEnrollmentGateActive($userId)) {
+            return;
+        }
+
+        $authBaseUrl = $this->settingsRepo->get('auth_base_url', '/account');
+        $this->redirect(home_url($authBaseUrl . '/security?mfa_enroll=required'));
+    }
+
+    public function cleanupEnrollmentGate(): void
+    {
+        $userId = get_current_user_id();
+        if ($userId) {
+            delete_user_meta($userId, 'wsms_mfa_enrollment_pending');
+        }
+    }
+
+    /**
+     * Check if the enrollment gate is still valid for a user.
+     *
+     * Returns true if the gate is active. Clears stale gate meta if
+     * settings changed or user enrolled via another path.
+     */
+    private function isEnrollmentGateActive(int $userId): bool
+    {
+        if (!$this->policy->isMfaRequired($userId)
+            || !empty($this->mfaManager->getActiveMfaFactors($userId))) {
+            delete_user_meta($userId, 'wsms_mfa_enrollment_pending');
+            return false;
+        }
+
+        return true;
     }
 
     private function shouldSkipEnforcement(): bool

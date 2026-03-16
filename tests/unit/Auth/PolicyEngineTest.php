@@ -479,6 +479,174 @@ class PolicyEngineTest extends TestCase
         $this->assertSame([], $pending);
     }
 
+    // --- isMfaRequired enrollment timing tests ---
+
+    public function testIsMfaRequiredOnRegistrationForUnenrolledUser(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => true, 'usage' => 'mfa'],
+            'mfa_required_roles' => ['administrator'],
+            'enrollment_timing'  => 'on_registration',
+        ];
+        $user = $this->makeUser(1);
+        $user->roles = ['administrator'];
+        $GLOBALS['_test_userdata'] = $user;
+
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
+
+        $this->assertTrue($engine->isMfaRequired(1));
+    }
+
+    public function testIsMfaRequiredGracePeriodExpiredForUnenrolled(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => true, 'usage' => 'mfa'],
+            'mfa_required_roles' => ['administrator'],
+            'enrollment_timing'  => 'grace_period',
+            'grace_period_days'  => 7,
+        ];
+        $user = $this->makeUser(1);
+        $user->roles = ['administrator'];
+        $user->user_registered = gmdate('Y-m-d H:i:s', time() - 86400 * 30);
+        $GLOBALS['_test_userdata'] = $user;
+
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
+
+        $this->assertTrue($engine->isMfaRequired(1));
+    }
+
+    public function testIsMfaRequiredGracePeriodExactBoundary(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => true, 'usage' => 'mfa'],
+            'mfa_required_roles' => ['administrator'],
+            'enrollment_timing'  => 'grace_period',
+            'grace_period_days'  => 7,
+        ];
+        // Registered exactly 7 days ago — grace should be expired (time() >= graceExpiry).
+        $user = $this->makeUser(1);
+        $user->roles = ['administrator'];
+        $user->user_registered = gmdate('Y-m-d H:i:s', time() - 7 * 86400);
+        $GLOBALS['_test_userdata'] = $user;
+
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
+
+        $this->assertTrue($engine->isMfaRequired(1));
+    }
+
+    public function testIsMfaRequiredInvalidTimingDefaultsToVoluntary(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => true, 'usage' => 'mfa'],
+            'mfa_required_roles' => ['administrator'],
+            'enrollment_timing'  => 'invalid_value',
+        ];
+        $user = $this->makeUser(1);
+        $user->roles = ['administrator'];
+        $GLOBALS['_test_userdata'] = $user;
+
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
+
+        // Invalid timing defaults to voluntary → unenrolled user → false.
+        $this->assertFalse($engine->isMfaRequired(1));
+    }
+
+    public function testVoluntaryModeIgnoresRequiredRoles(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => true, 'usage' => 'mfa'],
+            'mfa_required_roles' => ['administrator'],
+            'enrollment_timing'  => 'voluntary',
+        ];
+        $user = $this->makeUser(1);
+        $user->roles = ['administrator'];
+        $GLOBALS['_test_userdata'] = $user;
+
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
+
+        // Voluntary + unenrolled → false, even though role is in required_roles.
+        $this->assertFalse($engine->isMfaRequired(1));
+    }
+
+    // --- getGracePeriodInfo tests ---
+
+    public function testGetGracePeriodInfoWithinGrace(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => true, 'usage' => 'mfa'],
+            'mfa_required_roles' => ['administrator'],
+            'enrollment_timing'  => 'grace_period',
+            'grace_period_days'  => 30,
+        ];
+        $user = $this->makeUser(1);
+        $user->roles = ['administrator'];
+        $user->user_registered = gmdate('Y-m-d H:i:s', time() - 86400); // 1 day ago
+        $GLOBALS['_test_userdata'] = $user;
+
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
+        $info = $engine->getGracePeriodInfo(1);
+
+        $this->assertNotNull($info);
+        $this->assertArrayHasKey('grace_period_remaining_days', $info);
+        $this->assertArrayHasKey('grace_period_expires_at', $info);
+        $this->assertGreaterThan(0, $info['grace_period_remaining_days']);
+        $this->assertLessThanOrEqual(30, $info['grace_period_remaining_days']);
+    }
+
+    public function testGetGracePeriodInfoExpired(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => true, 'usage' => 'mfa'],
+            'mfa_required_roles' => ['administrator'],
+            'enrollment_timing'  => 'grace_period',
+            'grace_period_days'  => 7,
+        ];
+        $user = $this->makeUser(1);
+        $user->roles = ['administrator'];
+        $user->user_registered = gmdate('Y-m-d H:i:s', time() - 86400 * 30);
+        $GLOBALS['_test_userdata'] = $user;
+
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
+
+        $this->assertNull($engine->getGracePeriodInfo(1));
+    }
+
+    public function testGetGracePeriodInfoNotGracePeriodTiming(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => true, 'usage' => 'mfa'],
+            'mfa_required_roles' => ['administrator'],
+            'enrollment_timing'  => 'on_registration',
+        ];
+        $user = $this->makeUser(1);
+        $user->roles = ['administrator'];
+        $user->user_registered = gmdate('Y-m-d H:i:s', time() - 86400);
+        $GLOBALS['_test_userdata'] = $user;
+
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
+
+        $this->assertNull($engine->getGracePeriodInfo(1));
+    }
+
+    public function testGetGracePeriodInfoAlreadyEnrolled(): void
+    {
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => true, 'usage' => 'mfa'],
+            'mfa_required_roles' => ['administrator'],
+            'enrollment_timing'  => 'grace_period',
+            'grace_period_days'  => 30,
+        ];
+        $user = $this->makeUser(1);
+        $user->roles = ['administrator'];
+        $user->user_registered = gmdate('Y-m-d H:i:s', time() - 86400);
+        $GLOBALS['_test_userdata'] = $user;
+        $GLOBALS['_test_user_meta'][1]['wsms_mfa_enabled'] = '1';
+
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
+
+        $this->assertNull($engine->getGracePeriodInfo(1));
+    }
+
     // --- Helpers ---
 
     private function makeUser(int $id, string $email = 'test@example.com'): object

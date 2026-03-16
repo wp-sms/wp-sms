@@ -108,13 +108,14 @@ class MfaFlowTest extends IntegrationTestCase
         $this->assertSame('mfa_required', $result->status);
     }
 
-    public function testMfaSkippedWhenNoActiveFactors(): void
+    public function testOnRegistrationNoFactorsReturnsEnrollmentRequired(): void
     {
         $this->setSettings(AuthScenarios::mfaPhoneForAdmin());
         $user = UserFactory::create(['roles' => ['administrator']]);
         UserFactory::install($user);
         $this->simulateAuthenticate($user);
 
+        $this->configureMfaChannel('phone', enrolled: false);
         // No factors enrolled — getUserFactors returns empty.
         $this->mfaManager->method('getUserFactors')
             ->with($user->ID)
@@ -122,9 +123,11 @@ class MfaFlowTest extends IntegrationTestCase
 
         $result = $this->orchestrator->loginWithPassword($user->user_email, 'password');
 
-        // Gracefully completes login when no MFA factors available.
+        // Should gate for enrollment instead of granting full access.
         $this->assertTrue($result->success);
-        $this->assertSame('authenticated', $result->status);
+        $this->assertSame('mfa_enrollment_required', $result->status);
+        $this->assertNotEmpty($result->meta['available_channels']);
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][$user->ID]['wsms_mfa_enrollment_pending'] ?? '');
     }
 
     public function testMfaSendChallengeFailsWithWrongStage(): void
@@ -260,5 +263,142 @@ class MfaFlowTest extends IntegrationTestCase
         $result = $this->orchestrator->loginWithPassword($user->user_email, 'password');
 
         $this->assertSame('mfa_required', $result->status);
+    }
+
+    public function testGracePeriodExpiredNoFactorsReturnsEnrollmentRequired(): void
+    {
+        $this->setSettings(AuthScenarios::mfaGracePeriod(7));
+        // User registered 30 days ago — past grace.
+        $user = UserFactory::create([
+            'roles'           => ['administrator'],
+            'user_registered' => gmdate('Y-m-d H:i:s', time() - 86400 * 30),
+        ]);
+        UserFactory::install($user);
+        $this->simulateAuthenticate($user);
+
+        $this->configureMfaChannel('phone', enrolled: false);
+        $this->mfaManager->method('getUserFactors')
+            ->with($user->ID)
+            ->willReturn([]);
+
+        $result = $this->orchestrator->loginWithPassword($user->user_email, 'password');
+
+        $this->assertTrue($result->success);
+        $this->assertSame('mfa_enrollment_required', $result->status);
+    }
+
+    public function testGracePeriodInfoInAuthenticatedResponse(): void
+    {
+        $this->setSettings(AuthScenarios::mfaGracePeriod(30));
+        // User registered 1 day ago — within grace period.
+        $user = UserFactory::create([
+            'roles'           => ['administrator'],
+            'user_registered' => gmdate('Y-m-d H:i:s', time() - 86400),
+        ]);
+        UserFactory::install($user);
+        $this->simulateAuthenticate($user);
+        // Not enrolled, so isMfaRequired returns false (within grace).
+        // Register the phone channel so getAvailableMfaFactors() is non-empty.
+        $this->configureMfaChannel('phone', enrolled: false);
+
+        $result = $this->orchestrator->loginWithPassword($user->user_email, 'password');
+
+        $this->assertTrue($result->success);
+        $this->assertSame('authenticated', $result->status);
+        $this->assertArrayHasKey('grace_period', $result->meta);
+        $this->assertGreaterThan(0, $result->meta['grace_period']['grace_period_remaining_days']);
+    }
+
+    public function testFullEnrollmentGateFlow(): void
+    {
+        $this->setSettings(AuthScenarios::mfaPhoneForAdmin());
+        $user = UserFactory::create(['roles' => ['administrator']]);
+        UserFactory::install($user);
+        $this->simulateAuthenticate($user);
+
+        // Step 1: No factors enrolled → enrollment_required.
+        $channel = $this->configureMfaChannel('phone', enrolled: false);
+        $this->mfaManager->method('getUserFactors')
+            ->with($user->ID)
+            ->willReturn([]);
+
+        $loginResult = $this->orchestrator->loginWithPassword($user->user_email, 'password');
+        $this->assertSame('mfa_enrollment_required', $loginResult->status);
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][$user->ID]['wsms_mfa_enrollment_pending'] ?? '');
+    }
+
+    public function testSettingsMutationVoluntaryToOnRegistration(): void
+    {
+        // Start with voluntary — user should authenticate freely.
+        $this->setSettings(AuthScenarios::mfaVoluntary());
+        $user = UserFactory::create(['roles' => ['administrator']]);
+        UserFactory::install($user);
+        $this->simulateAuthenticate($user);
+
+        $result1 = $this->orchestrator->loginWithPassword($user->user_email, 'password');
+        $this->assertSame('authenticated', $result1->status);
+
+        // Admin changes to on_registration — now MFA is enforced.
+        // Need new orchestrator since settings changed.
+        $this->setSettings(AuthScenarios::mfaPhoneForAdmin());
+        $settingsRepo = new \WSms\Auth\SettingsRepository();
+        $policy = new \WSms\Auth\PolicyEngine($this->mfaManager, $settingsRepo);
+        $orchestrator = new \WSms\Auth\AuthOrchestrator(
+            $policy,
+            $this->mfaManager,
+            $this->auditLogger,
+            $this->session,
+            $this->lockout,
+            $this->accountManager,
+            $settingsRepo,
+        );
+
+        $this->configureMfaChannel('phone', enrolled: false);
+        $this->mfaManager->method('getUserFactors')
+            ->with($user->ID)
+            ->willReturn([]);
+
+        $result2 = $orchestrator->loginWithPassword($user->user_email, 'password');
+        $this->assertSame('mfa_enrollment_required', $result2->status);
+    }
+
+    public function testEnrollmentGateSelfClearsOnSettingsChange(): void
+    {
+        // Gate a user.
+        $this->setSettings(AuthScenarios::mfaPhoneForAdmin());
+        $user = UserFactory::create(['roles' => ['administrator']]);
+        UserFactory::install($user);
+        $this->simulateAuthenticate($user);
+
+        $this->configureMfaChannel('phone', enrolled: false);
+        $this->mfaManager->method('getUserFactors')
+            ->with($user->ID)
+            ->willReturn([]);
+
+        $result = $this->orchestrator->loginWithPassword($user->user_email, 'password');
+        $this->assertSame('mfa_enrollment_required', $result->status);
+        $this->assertSame('1', $GLOBALS['_test_user_meta'][$user->ID]['wsms_mfa_enrollment_pending'] ?? '');
+
+        // Admin changes to voluntary — gate should self-clear.
+        $this->setSettings(AuthScenarios::mfaVoluntary());
+        $settingsRepo = new \WSms\Auth\SettingsRepository();
+        $policy = new \WSms\Auth\PolicyEngine($this->mfaManager, $settingsRepo);
+
+        // Simulate the REST gate re-validation.
+        $GLOBALS['_test_current_user_id'] = $user->ID;
+
+        $guard = new \WSms\Auth\LoginGuard(
+            $policy,
+            $this->session,
+            $this->mfaManager,
+            $settingsRepo,
+        );
+
+        $request = new \WP_REST_Request('GET', '/wsms/v1/auth/some-endpoint');
+        $gateResult = $guard->enforceEnrollmentGate(null, null, $request);
+
+        // Gate should have auto-cleared.
+        $this->assertNull($gateResult);
+        $this->assertEmpty($GLOBALS['_test_user_meta'][$user->ID]['wsms_mfa_enrollment_pending'] ?? '');
     }
 }

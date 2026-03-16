@@ -150,7 +150,7 @@ class EnrollmentController
         $result = $channel->enroll($userId, $data);
 
         if ($result->success) {
-            update_user_meta($userId, 'wsms_mfa_enabled', '1');
+            $this->markEnrollmentComplete($userId);
             $result = $this->autoEnrollBackupCodes($userId, $channelId, $result);
 
             if (empty($result->data['requires_confirmation'])) {
@@ -185,7 +185,7 @@ class EnrollmentController
             $result = $channel->confirmEnrollment($userId, $code);
 
             if ($result->success) {
-                update_user_meta($userId, 'wsms_mfa_enabled', '1');
+                $this->markEnrollmentComplete($userId);
                 $result = $this->autoEnrollBackupCodes($userId, $channelId, $result);
                 $this->destroyOtherSessions();
             }
@@ -342,6 +342,12 @@ class EnrollmentController
         }
 
         return $values;
+    }
+
+    private function markEnrollmentComplete(int $userId): void
+    {
+        update_user_meta($userId, 'wsms_mfa_enabled', '1');
+        delete_user_meta($userId, 'wsms_mfa_enrollment_pending');
     }
 
     private function destroyOtherSessions(): void

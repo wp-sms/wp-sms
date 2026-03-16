@@ -344,7 +344,7 @@ class AuthOrchestrator
         $this->session->destroy($sessionData['session_key']);
         $userData = $this->completeLogin($sessionData['user_id'], $sessionData['method']);
 
-        return AuthResult::authenticated($sessionData['user_id'], $userData);
+        return $this->authenticatedWithGraceInfo($sessionData['user_id'], $userData);
     }
 
     /**
@@ -382,9 +382,12 @@ class AuthOrchestrator
         // MFA is required — find available factors.
         $availableFactors = $this->mfaManager->getActiveMfaFactors($userId);
 
-        // If no valid MFA factors available, complete login without MFA (graceful).
+        // MFA required but no enrolled factors — gate the user for enrollment.
         if (empty($availableFactors)) {
-            return $this->resolveLogin($userId, $method);
+            if ($existingSessionKey) {
+                $this->session->destroy($existingSessionKey);
+            }
+            return $this->gateForEnrollment($userId, $method);
         }
 
         // Trusted device: skip MFA if the browser has a valid trust cookie.
@@ -400,6 +403,20 @@ class AuthOrchestrator
         $token = $this->session->create($userId, $method, SessionStage::PrimaryVerified);
 
         return AuthResult::mfaRequired($token, $availableFactors);
+    }
+
+    private function gateForEnrollment(int $userId, string $method): AuthResult
+    {
+        update_user_meta($userId, 'wsms_mfa_enrollment_pending', '1');
+        wp_set_auth_cookie($userId, true);
+        wp_set_current_user($userId);
+
+        $this->auditLogger->log(EventType::LoginSuccess, 'enrollment_gated', $userId, [
+            'method' => $method,
+            'reason' => 'mfa_enrollment_required',
+        ]);
+
+        return AuthResult::mfaEnrollmentRequired($this->policy->getAvailableMfaFactors());
     }
 
     /**
@@ -424,7 +441,18 @@ class AuthOrchestrator
 
         $userData = $this->completeLogin($userId, $method, $mfaChannel);
 
-        return AuthResult::authenticated($userId, $userData);
+        return $this->authenticatedWithGraceInfo($userId, $userData);
+    }
+
+    private function authenticatedWithGraceInfo(int $userId, array $userData): AuthResult
+    {
+        $meta = [];
+        $graceInfo = $this->policy->getGracePeriodInfo($userId);
+        if ($graceInfo) {
+            $meta['grace_period'] = $graceInfo;
+        }
+
+        return AuthResult::authenticated($userId, $userData, $meta);
     }
 
     private function sendLoginVerifications(int $userId, array $pending): void

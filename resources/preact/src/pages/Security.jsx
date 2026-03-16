@@ -72,10 +72,23 @@ export function Security() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [backupCodes, setBackupCodes] = useState(null);
+    const [graceNotice, setGraceNotice] = useState(null);
+
+    const isEnrollmentGated = !!window.wsmsAuth?.enrollmentGated;
 
     useEffect(() => {
         if (!authed) return;
         init();
+        const raw = sessionStorage.getItem('wsms_grace_period');
+        if (raw) {
+            try {
+                const parsed = JSON.parse(raw);
+                if (parsed?.grace_period_remaining_days) {
+                    setGraceNotice(parsed);
+                }
+            } catch { /* ignore corrupt data */ }
+            sessionStorage.removeItem('wsms_grace_period');
+        }
     }, [authed]);
 
     async function init() {
@@ -199,7 +212,18 @@ export function Security() {
     const user = currentUser.value;
 
     return (
-        <AccountLayout title="Security" subtitle="Manage your multi-factor authentication methods" currentPath="/security">
+        <AccountLayout title="Security" subtitle="Manage your multi-factor authentication methods" currentPath="/security" hideNav={isEnrollmentGated}>
+            {isEnrollmentGated && (
+                <Alert variant="info" className="mb-4">
+                    MFA enrollment is required. Please enable at least one authentication method below to continue.
+                </Alert>
+            )}
+            {graceNotice && (
+                <Alert variant="info" onDismiss={() => setGraceNotice(null)} className="mb-4">
+                    Two-factor authentication will be required in {graceNotice.grace_period_remaining_days} day{graceNotice.grace_period_remaining_days !== 1 ? 's' : ''}.
+                    Set it up now on the Security page.
+                </Alert>
+            )}
             <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="mb-4" />
             <Alert variant="success" message={success} className="mb-4" />
 
