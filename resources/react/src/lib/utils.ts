@@ -5,6 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function fmtNumber(n: number): string {
+  return n.toLocaleString();
+}
+
 /** Recursively merge two plain objects. Arrays are replaced, not merged. */
 export function deepMerge<T extends Record<string, unknown>>(base: T, override: Partial<T>): T {
   const result = { ...base };

@@ -5,6 +5,7 @@ namespace WSms\Rest;
 use WP_REST_Request;
 use WP_REST_Response;
 use WSms\Audit\AuditLogger;
+use WSms\Audit\ReportAggregator;
 use WSms\Auth\ProfileFieldRegistry;
 use WSms\Enums\EnrollmentTiming;
 use WSms\Enums\EventType;
@@ -52,6 +53,7 @@ class AdminController
         private AuditLogger $auditLogger,
         private MfaManager $mfaManager,
         private ?ProfileFieldRegistry $fieldRegistry = null,
+        private ?ReportAggregator $reportAggregator = null,
     ) {
     }
 
@@ -104,6 +106,22 @@ class AdminController
             'permission_callback' => [$this, 'checkAdmin'],
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/auth/admin/reports', [
+            'methods'             => 'GET',
+            'callback'            => [$this, 'handleGetReports'],
+            'permission_callback' => [$this, 'checkAdmin'],
+            'args'                => [
+                'range' => [
+                    'required'          => false,
+                    'type'              => 'integer',
+                    'default'           => 30,
+                    'sanitize_callback' => function ($value) {
+                        return max(7, min(90, (int) $value));
+                    },
+                ],
             ],
         ]);
 
@@ -258,6 +276,24 @@ class AdminController
         return new WP_REST_Response([
             'success' => true,
             'message' => 'All MFA factors have been disabled for this user.',
+        ]);
+    }
+
+    public function handleGetReports(WP_REST_Request $request): WP_REST_Response
+    {
+        if (!$this->reportAggregator) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error'   => 'unavailable',
+                'message' => 'Report aggregator not available.',
+            ], 500);
+        }
+
+        $range = (int) $request->get_param('range');
+
+        return new WP_REST_Response([
+            'success' => true,
+            ...$this->reportAggregator->getReport($range),
         ]);
     }
 

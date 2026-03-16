@@ -159,6 +159,14 @@ class AuthServiceProvider implements ServiceProvider
         add_filter('get_avatar', [$avatarManager, 'filterGetAvatar'], 10, 6);
         add_action('delete_user', [$avatarManager, 'cleanupOnUserDelete']);
 
+        // Clean up custom table rows when a user is deleted.
+        add_action('delete_user', function (int $userId) {
+            global $wpdb;
+
+            $wpdb->delete($wpdb->prefix . 'wsms_user_factors', ['user_id' => $userId], ['%d']);
+            $wpdb->delete($wpdb->prefix . 'wsms_verifications', ['user_id' => $userId], ['%d']);
+        });
+
         // GDPR: profile fields data exporter.
         add_filter('wp_privacy_personal_data_exporters', function (array $exporters) use ($container) {
             $exporters['wsms-profile-fields'] = [

@@ -160,6 +160,41 @@ export interface AuthSettings {
   social_profile_sync?: SocialProfileSync;
 }
 
+export interface ReportsResponse {
+  success: boolean;
+  range: number;
+  auth_activity: {
+    total_logins: number;
+    successful_logins: number;
+    failed_logins: number;
+    login_success_rate: number;
+    total_registrations: number;
+    password_resets: number;
+    timeline: { date: string; logins: number; failures: number; registrations: number }[];
+  };
+  user_security: {
+    total_users: number;
+    mfa_enrolled: number;
+    mfa_adoption_rate: number;
+    email_verified: number;
+    email_verification_rate: number;
+    phone_verified: number;
+    phone_verification_rate: number;
+  };
+  channel_usage: {
+    login_methods: { method: string; count: number }[];
+    mfa_methods: { method: string; count: number }[];
+    social_providers: { provider: string; count: number }[];
+  };
+  security_alerts: {
+    failed_login_attempts: number;
+    accounts_locked: number;
+    otp_failures: number;
+    top_failed_ips: { ip: string; count: number }[];
+    recent_lockouts: { user_id: number; display_name: string; locked_at: string; ip: string }[];
+  };
+}
+
 export interface LogEntry {
   id: number;
   user_id: number;
@@ -179,7 +214,7 @@ export function getConfig() {
   return window.wpSmsSettings ?? FALLBACK_CONFIG;
 }
 
-async function request<T>(method: string, endpoint: string, body?: unknown): Promise<T> {
+async function request<T>(method: string, endpoint: string, body?: unknown, signal?: AbortSignal): Promise<T> {
   const { restUrl, nonce } = getConfig();
 
   const opts: RequestInit = {
@@ -189,6 +224,7 @@ async function request<T>(method: string, endpoint: string, body?: unknown): Pro
       'X-WP-Nonce': nonce,
     },
     credentials: 'same-origin',
+    signal,
   };
 
   if (body) {
@@ -205,10 +241,14 @@ async function request<T>(method: string, endpoint: string, body?: unknown): Pro
   return data as T;
 }
 
+interface RequestOptions {
+  signal?: AbortSignal;
+}
+
 export const api = {
-  get: <T>(url: string) => request<T>('GET', url),
-  put: <T>(url: string, body: unknown) => request<T>('PUT', url, body),
-  del: <T>(url: string) => request<T>('DELETE', url),
+  get: <T>(url: string, opts?: RequestOptions) => request<T>('GET', url, undefined, opts?.signal),
+  put: <T>(url: string, body: unknown, opts?: RequestOptions) => request<T>('PUT', url, body, opts?.signal),
+  del: <T>(url: string, opts?: RequestOptions) => request<T>('DELETE', url, undefined, opts?.signal),
 };
 
 export async function getMetaKeys(): Promise<MetaKeyInfo[]> {

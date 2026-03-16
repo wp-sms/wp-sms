@@ -86,6 +86,7 @@ class SocialAuthOrchestrator
             );
         } catch (\RuntimeException $e) {
             $this->auditLogger->log(EventType::SocialLoginFailure, 'failure', null, [
+                'channel'  => $providerId,
                 'provider' => $providerId,
                 'error'    => $e->getMessage(),
             ]);
@@ -98,6 +99,7 @@ class SocialAuthOrchestrator
             $userInfo = $provider->getUserInfo($tokens['access_token']);
         } catch (\RuntimeException $e) {
             $this->auditLogger->log(EventType::SocialLoginFailure, 'failure', null, [
+                'channel'  => $providerId,
                 'provider' => $providerId,
                 'error'    => $e->getMessage(),
             ]);
@@ -379,6 +381,7 @@ class SocialAuthOrchestrator
         ));
 
         $this->auditLogger->log(EventType::SocialLoginSuccess, 'success', $userId, [
+            'channel'  => $providerId,
             'provider' => $providerId,
         ]);
     }

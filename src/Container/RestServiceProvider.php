@@ -3,6 +3,7 @@
 namespace WSms\Container;
 
 use WSms\Rest\AccountController;
+use WSms\Audit\ReportAggregator;
 use WSms\Rest\AdminController;
 use WSms\Rest\AdminUserController;
 use WSms\Rest\AuthController;
@@ -65,11 +66,16 @@ class RestServiceProvider implements ServiceProvider
             );
         });
 
+        $container->register('audit.reports', function () {
+            return new ReportAggregator();
+        });
+
         $container->register('rest.admin', function () use ($container) {
             return new AdminController(
                 $container->get('audit.logger'),
                 $container->get('mfa.manager'),
                 $container->get('auth.field_registry'),
+                $container->get('audit.reports'),
             );
         });
 

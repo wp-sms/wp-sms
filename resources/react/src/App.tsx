@@ -9,6 +9,7 @@ import { SecurityPage } from '@/pages/security';
 import { IntegrationsPage } from '@/pages/integrations';
 import { BrandingPage } from '@/pages/branding';
 import { LogsPage } from '@/pages/logs';
+import { ReportsPage } from '@/pages/reports';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Toaster } from '@/components/ui/sonner';
@@ -54,6 +55,8 @@ export default function App() {
         return <BrandingPage settings={settings} onUpdate={updateSetting} />;
       case 'logs':
         return <LogsPage settings={settings} onUpdate={updateSetting} />;
+      case 'reports':
+        return <ReportsPage />;
       default:
         return null;
     }

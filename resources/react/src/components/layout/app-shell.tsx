@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug } from 'lucide-react';
+import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3 } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import {
   Sidebar,
@@ -79,6 +79,11 @@ export const NAV_ITEMS = [
     label: 'Logs',
     icon: ScrollText,
   },
+  {
+    id: 'reports',
+    label: 'Reports',
+    icon: BarChart3,
+  },
 ] as const;
 
 const SECTION_DESCRIPTIONS: Record<string, string> = {
@@ -92,6 +97,7 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   'woocommerce': 'Add email and phone OTP verification to WooCommerce checkout, registration, and account pages.',
   'branding': 'Customize the appearance and behavior of your authentication pages.',
   'logs': 'View authentication events and configure logging preferences.',
+  'reports': 'View authentication activity statistics, security insights, and usage trends.',
 };
 
 function getPageTitle(sectionId: string): string | undefined {

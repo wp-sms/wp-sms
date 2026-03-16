@@ -95,8 +95,9 @@ class AuthOrchestrator
             }
 
             $this->auditLogger->log(EventType::LoginFailure, 'failure', null, [
-                'method' => 'password',
-                'reason' => $user->get_error_code(),
+                'channel' => 'password',
+                'method'  => 'password',
+                'reason'  => $user->get_error_code(),
             ]);
 
             do_action('wp_login_failed', $username, $user);
@@ -423,6 +424,7 @@ class AuthOrchestrator
         wp_set_current_user($userId);
 
         $this->auditLogger->log(EventType::LoginSuccess, 'success', $userId, [
+            'channel'     => $method,
             'method'      => $method,
             'mfa_channel' => $mfaChannel,
         ]);
