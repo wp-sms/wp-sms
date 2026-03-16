@@ -6,6 +6,7 @@ use WP_User;
 use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountManager;
+use WSms\Auth\AccountSuspension;
 use WSms\Auth\SettingsRepository;
 use WSms\Components\View;
 use WSms\Mfa\MfaManager;
@@ -21,6 +22,7 @@ class UserProfileSection
         private AuditLogger $auditLogger,
         private AccountLockout $lockout,
         private SettingsRepository $settingsRepo,
+        private ?AccountSuspension $suspension = null,
     ) {
         add_action('edit_user_profile', [$this, 'render']);
         add_action('show_user_profile', [$this, 'render']);
@@ -58,6 +60,7 @@ class UserProfileSection
 
         $phoneEnabled = !empty($this->settingsRepo->channel('phone')['enabled']);
         $emailEnabled = !empty($this->settingsRepo->channel('email')['enabled']);
+        $suspension = $this->suspension ? $this->suspension->isSuspended($userId) : AccountSuspension::NOT_SUSPENDED;
 
         View::load('admin/user-profile-section', [
             'user_id'                => $userId,
@@ -77,6 +80,7 @@ class UserProfileSection
             'registration_created'   => $registrationCreatedAt,
             'phone_enabled'          => $phoneEnabled,
             'email_enabled'          => $emailEnabled,
+            'suspension'             => $suspension,
         ]);
     }
 

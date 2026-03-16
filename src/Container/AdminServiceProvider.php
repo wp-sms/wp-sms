@@ -33,6 +33,7 @@ class AdminServiceProvider implements ServiceProvider
             return new UserListManager(
                 $container->get('mfa.manager'),
                 $container->get('auth.lockout'),
+                $container->get('auth.suspension'),
             );
         });
 
@@ -43,6 +44,7 @@ class AdminServiceProvider implements ServiceProvider
                 $container->get('audit.logger'),
                 $container->get('auth.lockout'),
                 $container->get('auth.settings'),
+                $container->get('auth.suspension'),
             );
         });
     }

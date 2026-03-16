@@ -93,6 +93,7 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('auth.lockout'),
                 $container->get('auth.account_manager'),
                 $container->get('auth.settings'),
+                $container->get('auth.suspension'),
             );
         });
     }

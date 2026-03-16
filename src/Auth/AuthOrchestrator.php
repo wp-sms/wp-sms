@@ -23,6 +23,7 @@ class AuthOrchestrator
         private AccountManager $accountManager,
         private SettingsRepository $settingsRepo,
         private ?TrustedDeviceManager $trustedDevices = null,
+        private ?AccountSuspension $suspension = null,
     ) {
     }
 
@@ -83,6 +84,11 @@ class AuthOrchestrator
             if ($locked) {
                 return $locked;
             }
+
+            $suspended = $this->checkSuspension($resolvedUser->ID);
+            if ($suspended) {
+                return $suspended;
+            }
         }
 
         // Use the resolved user's login name for wp_authenticate so email/phone identifiers work.
@@ -133,6 +139,11 @@ class AuthOrchestrator
         $locked = $this->checkLockout($user->ID);
         if ($locked) {
             return $locked;
+        }
+
+        $suspended = $this->checkSuspension($user->ID);
+        if ($suspended) {
+            return $suspended;
         }
 
         $channelObj = $this->mfaManager->getChannel($channel);
@@ -319,6 +330,11 @@ class AuthOrchestrator
             return $sessionData;
         }
 
+        $suspended = $this->checkSuspension($sessionData['user_id']);
+        if ($suspended) {
+            return $suspended;
+        }
+
         $pending = $this->policy->getPendingVerifications($sessionData['user_id']);
 
         if (!empty($pending)) {
@@ -391,6 +407,11 @@ class AuthOrchestrator
      */
     private function resolveLogin(int $userId, string $method, ?string $mfaChannel = null): AuthResult
     {
+        $suspended = $this->checkSuspension($userId);
+        if ($suspended) {
+            return $suspended;
+        }
+
         $pending = $this->policy->getPendingVerifications($userId);
 
         if (!empty($pending)) {
@@ -475,6 +496,21 @@ class AuthOrchestrator
             return AuthResult::failed('account_locked', 'Account is temporarily locked.', [
                 'retry_after' => $lockStatus['until'],
             ]);
+        }
+
+        return null;
+    }
+
+    private function checkSuspension(int $userId): ?AuthResult
+    {
+        if (!$this->suspension) {
+            return null;
+        }
+
+        $status = $this->suspension->isSuspended($userId);
+
+        if ($status['suspended']) {
+            return AuthResult::failed('account_suspended', AccountSuspension::ERROR_MESSAGE);
         }
 
         return null;

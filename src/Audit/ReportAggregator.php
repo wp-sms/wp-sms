@@ -155,6 +155,11 @@ class ReportAggregator
             'wsms_phone_verified',
         ));
 
+        $suspendedUsers = (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$wpdb->usermeta} WHERE meta_key = %s",
+            'wsms_suspended',
+        ));
+
         return [
             'total_users'              => $totalUsers,
             'mfa_enrolled'             => $mfaEnrolled,
@@ -163,6 +168,7 @@ class ReportAggregator
             'email_verification_rate'  => $totalUsers > 0 ? round(($emailVerified / $totalUsers) * 100, 1) : 0,
             'phone_verified'           => $phoneVerified,
             'phone_verification_rate'  => $totalUsers > 0 ? round(($phoneVerified / $totalUsers) * 100, 1) : 0,
+            'suspended_users'          => $suspendedUsers,
         ];
     }
 
@@ -253,10 +259,12 @@ class ReportAggregator
             "SELECT
                 SUM(CASE WHEN event IN ({$failureIn}) THEN 1 ELSE 0 END) AS failed_logins,
                 SUM(CASE WHEN event = %s THEN 1 ELSE 0 END) AS accounts_locked,
+                SUM(CASE WHEN event = %s THEN 1 ELSE 0 END) AS accounts_suspended,
                 SUM(CASE WHEN event IN ({$otpFailureIn}) THEN 1 ELSE 0 END) AS otp_failures
             FROM {$table}
             WHERE created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)",
             EventType::AccountLocked->value,
+            EventType::AccountSuspended->value,
             $rangeDays,
         ));
 
@@ -279,42 +287,54 @@ class ReportAggregator
             $topFailedIps[] = ['ip' => $row->ip, 'count' => (int) $row->count];
         }
 
-        // Recent lockouts with user info
-        $lockouts = $wpdb->get_results($wpdb->prepare(
-            "SELECT l.user_id, l.ip_address AS ip, l.created_at AS locked_at
-            FROM {$table} l
-            WHERE l.event = %s
-                AND l.created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)
-            ORDER BY l.created_at DESC
-            LIMIT 10",
-            EventType::AccountLocked->value,
-            $rangeDays,
-        ));
-
-        $recentLockouts = [];
-        $lockoutUserIds = array_unique(array_filter(array_column($lockouts, 'user_id')));
-
-        if (!empty($lockoutUserIds)) {
-            cache_users(array_map('intval', $lockoutUserIds));
-        }
-
-        foreach ($lockouts as $row) {
-            $user = get_userdata((int) $row->user_id);
-            $recentLockouts[] = [
-                'user_id'      => (int) $row->user_id,
-                'display_name' => $user ? $user->display_name : 'Unknown',
-                'locked_at'    => $row->locked_at,
-                'ip'           => $row->ip ?? '',
-            ];
-        }
+        $recentLockouts = $this->getRecentUserEvents($table, EventType::AccountLocked, 'locked_at', $rangeDays);
+        $recentSuspensions = $this->getRecentUserEvents($table, EventType::AccountSuspended, 'suspended_at', $rangeDays);
 
         return [
             'failed_login_attempts' => (int) ($summary->failed_logins ?? 0),
             'accounts_locked'       => (int) ($summary->accounts_locked ?? 0),
+            'accounts_suspended'    => (int) ($summary->accounts_suspended ?? 0),
             'otp_failures'          => (int) ($summary->otp_failures ?? 0),
             'top_failed_ips'        => $topFailedIps,
             'recent_lockouts'       => $recentLockouts,
+            'recent_suspensions'    => $recentSuspensions,
         ];
+    }
+
+    private function getRecentUserEvents(string $table, EventType $event, string $dateKey, int $rangeDays, int $limit = 10): array
+    {
+        global $wpdb;
+
+        $rows = $wpdb->get_results($wpdb->prepare(
+            "SELECT l.user_id, l.ip_address AS ip, l.created_at AS event_at
+            FROM {$table} l
+            WHERE l.event = %s
+                AND l.created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)
+            ORDER BY l.created_at DESC
+            LIMIT %d",
+            $event->value,
+            $rangeDays,
+            $limit,
+        ));
+
+        $userIds = array_unique(array_filter(array_column($rows, 'user_id')));
+
+        if (!empty($userIds)) {
+            cache_users(array_map('intval', $userIds));
+        }
+
+        $result = [];
+        foreach ($rows as $row) {
+            $user = get_userdata((int) $row->user_id);
+            $result[] = [
+                'user_id'      => (int) $row->user_id,
+                'display_name' => $user ? $user->display_name : 'Unknown',
+                $dateKey        => $row->event_at,
+                'ip'           => $row->ip ?? '',
+            ];
+        }
+
+        return $result;
     }
 
     /**

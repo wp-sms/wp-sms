@@ -19,6 +19,7 @@
  * @var string|null $registration_created
  * @var bool   $phone_enabled
  * @var bool   $email_enabled
+ * @var array  $suspension       {suspended: bool, at: ?string, by: ?int}
  */
 
 defined('ABSPATH') || exit;
@@ -29,6 +30,7 @@ $svgCheck = UserListManager::SVG_CIRCLE_CHECK;
 $svgX = UserListManager::SVG_CIRCLE_X;
 $svgShield = UserListManager::SVG_SHIELD_CHECK;
 $svgLock = UserListManager::SVG_LOCK;
+$svgBan = UserListManager::SVG_BAN;
 ?>
 
 <h2><?php esc_html_e('WSMS Authentication', 'wp-sms'); ?></h2>
@@ -233,6 +235,53 @@ $svgLock = UserListManager::SVG_LOCK;
                         <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
+            <?php endif; ?>
+        </td>
+    </tr>
+
+    <!-- Account Suspension -->
+    <tr>
+        <th><?php esc_html_e('Account Suspension', 'wp-sms'); ?></th>
+        <td class="wsms-suspension-cell">
+            <?php if ($suspension['suspended']): ?>
+                <span class="wsms-pill wsms-pill--suspended wsms-profile-badge">
+                    <?php echo $svgBan; ?>
+                    <?php esc_html_e('Suspended', 'wp-sms'); ?>
+                </span>
+                <span style="color: #666; font-size: 12px;">
+                    <?php
+                    if ($suspension['at']) {
+                        echo esc_html(date_i18n('Y-m-d H:i', strtotime($suspension['at'])));
+                    }
+                    if ($suspension['by']) {
+                        $admin = get_userdata($suspension['by']);
+                        if ($admin) {
+                            /* translators: %s: admin display name */
+                            printf(' &mdash; ' . esc_html__('by %s', 'wp-sms'), esc_html($admin->display_name));
+                        }
+                    }
+                    ?>
+                </span>
+                <?php if ($can_manage): ?>
+                    <div class="wsms-profile-actions">
+                        <button type="button"
+                                class="button button-small wsms-action"
+                                data-action="unsuspend"
+                                data-user-id="<?php echo esc_attr($user_id); ?>"
+                        ><?php esc_html_e('Unsuspend', 'wp-sms'); ?></button>
+                    </div>
+                <?php endif; ?>
+            <?php else: ?>
+                <span style="color: #999;"><?php esc_html_e('Not suspended', 'wp-sms'); ?></span>
+                <?php if ($can_manage && $user_id !== get_current_user_id()): ?>
+                    <div class="wsms-profile-actions">
+                        <button type="button"
+                                class="button button-small wsms-action"
+                                data-action="suspend"
+                                data-user-id="<?php echo esc_attr($user_id); ?>"
+                        ><?php esc_html_e('Suspend', 'wp-sms'); ?></button>
+                    </div>
+                <?php endif; ?>
             <?php endif; ?>
         </td>
     </tr>

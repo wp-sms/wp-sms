@@ -3,6 +3,7 @@
 namespace WSms\Service\Admin;
 
 use WSms\Auth\AccountLockout;
+use WSms\Auth\AccountSuspension;
 use WSms\Mfa\MfaManager;
 
 defined('ABSPATH') || exit;
@@ -13,10 +14,12 @@ class UserListManager
     public const SVG_CIRCLE_X = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>';
     public const SVG_SHIELD_CHECK = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>';
     public const SVG_LOCK = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>';
+    public const SVG_BAN = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m4.9 4.9 14.2 14.2"/></svg>';
 
     public function __construct(
         private MfaManager $mfaManager,
         private AccountLockout $lockout,
+        private ?AccountSuspension $suspension = null,
     ) {
         add_filter('manage_users_columns', [$this, 'addColumns']);
         add_filter('manage_users_custom_column', [$this, 'renderColumn'], 10, 3);
@@ -37,6 +40,16 @@ class UserListManager
         }
 
         $pills = [];
+
+        // Account suspension (more severe, shown first)
+        if ($this->suspension) {
+            $suspensionState = $this->suspension->isSuspended($userId);
+            if ($suspensionState['suspended']) {
+                $pills[] = '<span class="wsms-pill wsms-pill--suspended" title="' . esc_attr(__('Account suspended', 'wp-sms')) . '">'
+                    . self::SVG_BAN . ' ' . esc_html__('Suspended', 'wp-sms')
+                    . '</span>';
+            }
+        }
 
         // Account lockout
         $lockoutState = $this->lockout->isLocked($userId);

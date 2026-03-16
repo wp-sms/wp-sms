@@ -37,4 +37,6 @@ enum EventType: string
     case StandaloneVerificationSent = 'standalone_verification_sent';
     case StandaloneVerificationSuccess = 'standalone_verification_success';
     case StandaloneVerificationFailed = 'standalone_verification_failed';
+    case AccountSuspended = 'account_suspended';
+    case AccountUnsuspended = 'account_unsuspended';
 }

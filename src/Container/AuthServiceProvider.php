@@ -4,6 +4,7 @@ namespace WSms\Container;
 
 use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountManager;
+use WSms\Auth\AccountSuspension;
 use WSms\Auth\ApiAuthGuard;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthRouter;
@@ -71,6 +72,10 @@ class AuthServiceProvider implements ServiceProvider
             );
         });
 
+        $container->register('auth.suspension', function () {
+            return new AccountSuspension();
+        });
+
         $container->register('auth.trusted_devices', function () use ($container) {
             return new TrustedDeviceManager(
                 $container->get('auth.settings'),
@@ -87,6 +92,7 @@ class AuthServiceProvider implements ServiceProvider
                 $container->get('auth.account_manager'),
                 $container->get('auth.settings'),
                 $container->get('auth.trusted_devices'),
+                $container->get('auth.suspension'),
             );
         });
 
@@ -128,12 +134,14 @@ class AuthServiceProvider implements ServiceProvider
                 $container->get('auth.session'),
                 $container->get('mfa.manager'),
                 $container->get('auth.settings'),
+                $container->get('auth.suspension'),
             );
         });
 
         $container->register('auth.api_guard', function () use ($container) {
             return new ApiAuthGuard(
                 $container->get('mfa.manager'),
+                $container->get('auth.suspension'),
             );
         });
     }

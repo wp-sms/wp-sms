@@ -20,12 +20,14 @@ class ApiAuthGuard
 {
     public function __construct(
         private MfaManager $mfaManager,
+        private ?AccountSuspension $suspension = null,
     ) {
     }
 
     public function registerHooks(): void
     {
         add_filter('authenticate', [$this, 'blockApiLoginForMfaUsers'], 100, 3);
+        add_filter('rest_pre_dispatch', [$this, 'blockSuspendedUsersFromApi'], 10, 3);
     }
 
     /**
@@ -60,6 +62,39 @@ class ApiAuthGuard
             'mfa_api_blocked',
             'API authentication is not allowed for accounts with MFA enabled. Use an application password instead.',
         );
+    }
+
+    /**
+     * Block suspended users authenticated via Application Passwords (rest_pre_dispatch).
+     *
+     * @param mixed $result
+     * @param \WP_REST_Server $server
+     * @param \WP_REST_Request $request
+     * @return mixed|WP_Error
+     */
+    public function blockSuspendedUsersFromApi($result, $server, $request)
+    {
+        if ($result !== null || !$this->suspension) {
+            return $result;
+        }
+
+        $userId = get_current_user_id();
+
+        if ($userId === 0) {
+            return $result;
+        }
+
+        $status = $this->suspension->isSuspended($userId);
+
+        if ($status['suspended']) {
+            return new WP_Error(
+                'account_suspended',
+                AccountSuspension::ERROR_MESSAGE,
+                ['status' => 403],
+            );
+        }
+
+        return $result;
     }
 
     private function isApiRequest(): bool

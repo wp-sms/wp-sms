@@ -37,7 +37,7 @@ const cards = [
     label: 'Failed Logins',
     icon: AlertTriangle,
     getValue: (d: ReportsResponse) => fmtNumber(d.auth_activity.failed_logins),
-    getSub: (d: ReportsResponse) => `${fmtNumber(d.security_alerts.accounts_locked)} accounts locked`,
+    getSub: (d: ReportsResponse) => `${fmtNumber(d.security_alerts.accounts_locked)} locked, ${fmtNumber(d.security_alerts.accounts_suspended)} suspended`,
     color: 'text-amber-600',
   },
 ];

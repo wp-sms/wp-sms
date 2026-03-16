@@ -4,6 +4,8 @@ namespace WSms\Auth;
 
 use WSms\Enums\SessionStage;
 use WSms\Mfa\MfaManager;
+use WP_User;
+use WP_Error;
 
 defined('ABSPATH') || exit;
 
@@ -14,14 +16,40 @@ class LoginGuard
         private AuthSession $session,
         private MfaManager $mfaManager,
         private SettingsRepository $settingsRepo,
+        private ?AccountSuspension $suspension = null,
     ) {
     }
 
     public function registerHooks(): void
     {
+        add_filter('authenticate', [$this, 'blockSuspendedUsers'], 98, 3);
         add_filter('authenticate', [$this, 'blockPendingUsers'], 99, 3);
         add_action('wp_login', [$this, 'enforceMfaOnWpLogin'], 10, 2);
         add_action('wp_login', [$this, 'enforceVerificationOnWpLogin'], 11, 2);
+    }
+
+    /**
+     * Block suspended users from logging in via any wp_authenticate path.
+     *
+     * @param WP_User|WP_Error|null $user
+     * @return WP_User|WP_Error|null
+     */
+    public function blockSuspendedUsers($user, $username, $password)
+    {
+        if (!$this->suspension || !($user instanceof WP_User)) {
+            return $user;
+        }
+
+        $status = $this->suspension->isSuspended($user->ID);
+
+        if ($status['suspended']) {
+            return new WP_Error(
+                'account_suspended',
+                __(AccountSuspension::ERROR_MESSAGE, 'wp-sms')
+            );
+        }
+
+        return $user;
     }
 
     /**

@@ -889,6 +889,33 @@ if (!class_exists('WP_REST_Response')) {
     }
 }
 
+// WP_Session_Tokens stub for unit tests.
+if (!class_exists('WP_Session_Tokens')) {
+    class WP_Session_Tokens {
+        private static array $instances = [];
+        private int $userId;
+
+        protected function __construct(int $userId) {
+            $this->userId = $userId;
+        }
+
+        public static function get_instance(int $userId): self {
+            if (!isset(self::$instances[$userId])) {
+                self::$instances[$userId] = new self($userId);
+            }
+            return self::$instances[$userId];
+        }
+
+        public function destroy_all(): void {
+            $GLOBALS['_test_sessions_destroyed'][$this->userId] = true;
+        }
+
+        public static function resetInstances(): void {
+            self::$instances = [];
+        }
+    }
+}
+
 // WPForms_Field stub for unit tests.
 if (!class_exists('WPForms_Field')) {
     class WPForms_Field {

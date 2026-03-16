@@ -16,7 +16,7 @@ interface SecurityAlertsProps {
 }
 
 export function SecurityAlerts({ data }: SecurityAlertsProps) {
-  const { failed_login_attempts, accounts_locked, otp_failures, top_failed_ips, recent_lockouts } = data.security_alerts;
+  const { failed_login_attempts, accounts_locked, accounts_suspended, otp_failures, top_failed_ips, recent_lockouts, recent_suspensions } = data.security_alerts;
 
   return (
     <Card>
@@ -28,7 +28,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
         <CardDescription>Failed attempts, lockouts, and suspicious activity</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="grid gap-4 grid-cols-3">
+        <div className="grid gap-4 grid-cols-4">
           <div className="rounded-lg border p-3">
             <p className="text-sm text-muted-foreground">Failed Logins</p>
             <p className="text-xl font-bold">{fmtNumber(failed_login_attempts)}</p>
@@ -36,6 +36,10 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
           <div className="rounded-lg border p-3">
             <p className="text-sm text-muted-foreground">Accounts Locked</p>
             <p className="text-xl font-bold">{fmtNumber(accounts_locked)}</p>
+          </div>
+          <div className="rounded-lg border p-3">
+            <p className="text-sm text-muted-foreground">Accounts Suspended</p>
+            <p className="text-xl font-bold">{fmtNumber(accounts_suspended)}</p>
           </div>
           <div className="rounded-lg border p-3">
             <p className="text-sm text-muted-foreground">OTP Failures</p>
@@ -95,7 +99,35 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
           </div>
         )}
 
-        {top_failed_ips.length === 0 && recent_lockouts.length === 0 && (
+        {recent_suspensions.length > 0 && (
+          <div>
+            <h4 className="mb-2 text-sm font-medium">Recent Suspensions</h4>
+            <div className="rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>User</TableHead>
+                    <TableHead>IP Address</TableHead>
+                    <TableHead className="text-right">Suspended At</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {recent_suspensions.map((entry) => (
+                    <TableRow key={`${entry.user_id}-${entry.suspended_at}`}>
+                      <TableCell>{entry.display_name}</TableCell>
+                      <TableCell className="font-mono text-sm">{entry.ip || '-'}</TableCell>
+                      <TableCell className="text-right text-sm">
+                        {new Date(entry.suspended_at).toLocaleString()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        )}
+
+        {top_failed_ips.length === 0 && recent_lockouts.length === 0 && recent_suspensions.length === 0 && (
           <p className="text-sm text-muted-foreground">No security alerts for this period.</p>
         )}
       </CardContent>

@@ -71,6 +71,8 @@ export const EVENT_TYPES = [
   'social_account_linked',
   'social_account_unlinked',
   'social_registration',
+  'account_suspended',
+  'account_unsuspended',
 ] as const;
 
 export const REGISTRATION_FIELDS = [

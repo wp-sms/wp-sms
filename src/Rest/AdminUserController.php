@@ -7,6 +7,7 @@ use WP_REST_Response;
 use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountManager;
+use WSms\Auth\AccountSuspension;
 use WSms\Auth\SettingsRepository;
 use WSms\Enums\EventType;
 use WSms\Mfa\MfaManager;
@@ -27,6 +28,7 @@ class AdminUserController
         private AccountLockout $lockout,
         private AccountManager $accountManager,
         private SettingsRepository $settingsRepo,
+        private ?AccountSuspension $suspension = null,
     ) {
     }
 
@@ -118,6 +120,24 @@ class AdminUserController
                 'channel' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
             ],
         ]);
+
+        register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/suspend', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'handleSuspendUser'],
+            'permission_callback' => [$this, 'checkAdmin'],
+            'args'                => [
+                'id' => ['required' => true, 'type' => 'integer'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/suspension', [
+            'methods'             => 'DELETE',
+            'callback'            => [$this, 'handleUnsuspendUser'],
+            'permission_callback' => [$this, 'checkAdmin'],
+            'args'                => [
+                'id' => ['required' => true, 'type' => 'integer'],
+            ],
+        ]);
     }
 
     public function checkAdmin(WP_REST_Request $request): bool
@@ -171,6 +191,7 @@ class AdminUserController
             'social_accounts'      => $socialAccounts,
             'recent_activity'      => $logs['items'],
             'lockout'              => $lockout,
+            'suspension'           => $this->suspension ? $this->suspension->isSuspended($userId) : AccountSuspension::NOT_SUSPENDED,
             'registration_status'  => $registrationStatus,
             'registration_created' => $registrationCreatedAt,
             'has_password'         => $hasPassword,
@@ -467,6 +488,91 @@ class AdminUserController
         $result = $this->accountManager->resendVerification($userId, $channel);
 
         return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+    }
+
+    public function handleSuspendUser(WP_REST_Request $request): WP_REST_Response
+    {
+        $userId = (int) $request->get_param('id');
+
+        $user = $this->resolveUser($userId);
+        if ($user instanceof WP_REST_Response) {
+            return $user;
+        }
+
+        if ($userId === get_current_user_id()) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error'   => 'self_suspension',
+                'message' => 'You cannot suspend your own account.',
+            ], 400);
+        }
+
+        if (!$this->suspension) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error'   => 'not_available',
+                'message' => 'Suspension feature is not available.',
+            ], 400);
+        }
+
+        $status = $this->suspension->isSuspended($userId);
+        if ($status['suspended']) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error'   => 'already_suspended',
+                'message' => 'User is already suspended.',
+            ], 400);
+        }
+
+        $adminId = get_current_user_id();
+        $this->suspension->suspend($userId, $adminId);
+
+        $this->auditLogger->log(EventType::AccountSuspended, 'success', $userId, [
+            'admin_id' => $adminId,
+        ]);
+
+        return new WP_REST_Response([
+            'success' => true,
+            'message' => 'User suspended.',
+        ]);
+    }
+
+    public function handleUnsuspendUser(WP_REST_Request $request): WP_REST_Response
+    {
+        $userId = (int) $request->get_param('id');
+
+        $user = $this->resolveUser($userId);
+        if ($user instanceof WP_REST_Response) {
+            return $user;
+        }
+
+        if (!$this->suspension) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error'   => 'not_available',
+                'message' => 'Suspension feature is not available.',
+            ], 400);
+        }
+
+        $status = $this->suspension->isSuspended($userId);
+        if (!$status['suspended']) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error'   => 'not_suspended',
+                'message' => 'User is not suspended.',
+            ], 400);
+        }
+
+        $this->suspension->unsuspend($userId);
+
+        $this->auditLogger->log(EventType::AccountUnsuspended, 'success', $userId, [
+            'admin_id' => get_current_user_id(),
+        ]);
+
+        return new WP_REST_Response([
+            'success' => true,
+            'message' => 'User unsuspended.',
+        ]);
     }
 
     /**

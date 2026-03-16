@@ -5,6 +5,7 @@ namespace WSms\Social;
 use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountManager;
+use WSms\Auth\AccountSuspension;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthSession;
 use WSms\Auth\AvatarManager;
@@ -29,6 +30,7 @@ class SocialAuthOrchestrator
         private ?PolicyEngine $policyEngine = null,
         private ?TelegramChannel $telegramChannel = null,
         private ?AvatarManager $avatarManager = null,
+        private ?AccountSuspension $suspension = null,
     ) {
     }
 
@@ -189,6 +191,10 @@ class SocialAuthOrchestrator
         if ($existingLink) {
             $userId = (int) $existingLink->user_id;
 
+            if ($suspended = $this->checkSuspension($userId)) {
+                return $suspended;
+            }
+
             if ($locked = $this->checkLockout($userId)) {
                 return $locked;
             }
@@ -217,6 +223,10 @@ class SocialAuthOrchestrator
 
                 $userId = $existingUser->ID;
 
+                if ($suspended = $this->checkSuspension($userId)) {
+                    return $suspended;
+                }
+
                 if ($locked = $this->checkLockout($userId)) {
                     return $locked;
                 }
@@ -237,6 +247,10 @@ class SocialAuthOrchestrator
 
             if ($phoneUsers) {
                 $userId = $phoneUsers[0]->ID;
+
+                if ($suspended = $this->checkSuspension($userId)) {
+                    return $suspended;
+                }
 
                 if ($locked = $this->checkLockout($userId)) {
                     return $locked;
@@ -336,6 +350,21 @@ class SocialAuthOrchestrator
             'result'  => AuthResult::authenticated($userId, $this->getUserData($userId)),
             'user_id' => $userId,
         ];
+    }
+
+    private function checkSuspension(int $userId): ?array
+    {
+        if (!$this->suspension) {
+            return null;
+        }
+
+        $status = $this->suspension->isSuspended($userId);
+
+        if ($status['suspended']) {
+            return ['result' => AuthResult::failed('account_suspended', AccountSuspension::ERROR_MESSAGE)];
+        }
+
+        return null;
     }
 
     /**
