@@ -54,17 +54,17 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         $phone = $data['phone'] ?? '';
 
         if (!preg_match('/^\+[1-9]\d{1,14}$/', $phone)) {
-            return new EnrollmentResult(false, 'Invalid phone number. Use E.164 format (e.g. +12025551234).');
+            return new EnrollmentResult(false, __('Invalid phone number. Use E.164 format (e.g. +12025551234).', 'wp-sms'));
         }
 
         if (AccountManager::isPhoneTaken($phone, $userId)) {
-            return new EnrollmentResult(false, 'This phone number is already associated with another account.');
+            return new EnrollmentResult(false, __('This phone number is already associated with another account.', 'wp-sms'));
         }
 
         $existing = $this->getFactor($userId);
 
         if ($existing && $existing->status === ChannelStatus::Active) {
-            return new EnrollmentResult(false, 'Already enrolled in Phone.');
+            return new EnrollmentResult(false, __('Already enrolled in Phone.', 'wp-sms'));
         }
 
         if ($existing) {
@@ -81,10 +81,10 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         $delivered = $this->createAndDeliverOtp($userId, $phone, $expiry);
 
         if (!$delivered) {
-            return new EnrollmentResult(false, 'Failed to send verification code.');
+            return new EnrollmentResult(false, __('Failed to send verification code.', 'wp-sms'));
         }
 
-        return new EnrollmentResult(true, 'Verification code sent to your phone.', [
+        return new EnrollmentResult(true, __('Verification code sent to your phone.', 'wp-sms'), [
             'requires_confirmation' => true,
             'masked_phone'          => PhoneMasker::mask($phone),
         ]);
@@ -98,13 +98,13 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         $factor = $this->getFactor($userId);
 
         if (!$factor || $factor->status !== ChannelStatus::Pending) {
-            return new EnrollmentResult(false, 'No pending enrollment found.');
+            return new EnrollmentResult(false, __('No pending enrollment found.', 'wp-sms'));
         }
 
         $verified = $this->verify($userId, $code);
 
         if (!$verified) {
-            return new EnrollmentResult(false, 'Invalid or expired verification code.');
+            return new EnrollmentResult(false, __('Invalid or expired verification code.', 'wp-sms'));
         }
 
         $phone = $factor->meta['phone'] ?? '';
@@ -122,7 +122,7 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
             'channel' => $this->getId(),
         ]);
 
-        return new EnrollmentResult(true, 'Phone enrollment confirmed.');
+        return new EnrollmentResult(true, __('Phone enrollment confirmed.', 'wp-sms'));
     }
 
     /** {@inheritDoc} */
@@ -149,7 +149,7 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         $hasMagicLink = in_array('magic_link', $verificationMethods, true);
 
         if (!$hasOtp && !$hasMagicLink) {
-            return new ChallengeResult(false, 'No verification methods enabled for phone channel.');
+            return new ChallengeResult(false, __('No verification methods enabled for phone channel.', 'wp-sms'));
         }
 
         $prereq = $this->validateChallengePrerequisites($userId);
@@ -181,14 +181,14 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
                 'channel' => $this->getId(),
             ]);
 
-            return new ChallengeResult(false, 'Failed to deliver the verification SMS.');
+            return new ChallengeResult(false, __('Failed to deliver the verification SMS.', 'wp-sms'));
         }
 
         $this->auditLogger->log(EventType::OtpSent, 'success', $userId, [
             'channel' => $this->getId(),
         ]);
 
-        return new ChallengeResult(true, 'Verification code sent.', [
+        return new ChallengeResult(true, __('Verification code sent.', 'wp-sms'), [
             'masked_identifier' => $this->maskIdentifier($identifier),
             'expires_in'        => $expiry,
             'has_otp'           => $hasOtp,
@@ -209,7 +209,7 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
     {
         // Used only for enrollment verification OTP.
         $message = sprintf(
-            'Your verification code is: %s. It expires in %d minutes.',
+            __('Your verification code is: %s. It expires in %d minutes.', 'wp-sms'),
             $code,
             (int) ($this->getConfigValue('expiry', 300) / 60),
         );
@@ -253,14 +253,14 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         $parts = [];
 
         if ($otpCode !== null) {
-            $parts[] = sprintf('Your verification code is: %s.', $otpCode);
+            $parts[] = sprintf(__('Your verification code is: %s.', 'wp-sms'), $otpCode);
         }
 
         if ($magicLinkUrl !== null) {
-            $parts[] = sprintf('Or log in: %s', $magicLinkUrl);
+            $parts[] = sprintf(__('Or log in: %s', 'wp-sms'), $magicLinkUrl);
         }
 
-        $parts[] = sprintf('Expires in %d minutes.', (int) ($expiry / 60));
+        $parts[] = sprintf(__('Expires in %d minutes.', 'wp-sms'), (int) ($expiry / 60));
 
         $message = implode(' ', $parts);
 

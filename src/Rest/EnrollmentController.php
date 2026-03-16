@@ -143,7 +143,7 @@ class EnrollmentController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'invalid_channel',
-                'message' => 'Unknown channel.',
+                'message' => __('Unknown channel.', 'wp-sms'),
             ], 400);
         }
 
@@ -177,7 +177,7 @@ class EnrollmentController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'invalid_channel',
-                'message' => 'Unknown channel.',
+                'message' => __('Unknown channel.', 'wp-sms'),
             ], 400);
         }
 
@@ -200,7 +200,7 @@ class EnrollmentController
         return new WP_REST_Response([
             'success' => false,
             'error'   => 'not_applicable',
-            'message' => 'This channel does not require enrollment verification.',
+            'message' => __('This channel does not require enrollment verification.', 'wp-sms'),
         ], 400);
     }
 
@@ -215,7 +215,7 @@ class EnrollmentController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'invalid_channel',
-                'message' => 'Unknown channel.',
+                'message' => __('Unknown channel.', 'wp-sms'),
             ], 400);
         }
 
@@ -232,7 +232,7 @@ class EnrollmentController
 
         return new WP_REST_Response([
             'success' => $result,
-            'message' => $result ? $channel->getName() . ' has been disabled.' : 'Failed to unenroll.',
+            'message' => $result ? sprintf(__('%s has been disabled.', 'wp-sms'), $channel->getName()) : __('Failed to unenroll.', 'wp-sms'),
         ], $result ? 200 : 400);
     }
 
@@ -245,7 +245,7 @@ class EnrollmentController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'unavailable',
-                'message' => 'Backup codes channel is not available.',
+                'message' => __('Backup codes channel is not available.', 'wp-sms'),
             ], 400);
         }
 

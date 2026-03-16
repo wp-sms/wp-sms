@@ -31,18 +31,18 @@ class VerificationService
     public function sendCode(string $channel, string $identifier, ?string $sessionToken = null, ?int $userId = null): VerificationResult
     {
         if (!$this->config->isChannelEnabled($channel)) {
-            return VerificationResult::failed('channel_disabled', ucfirst($channel) . ' verification is not enabled.');
+            return VerificationResult::failed('channel_disabled', sprintf(__('%s verification is not enabled.', 'wp-sms'), ucfirst($channel)));
         }
 
         $identifier = $this->normalizeIdentifier($channel, $identifier);
 
         if ($identifier === null) {
-            return VerificationResult::failed('invalid_identifier', 'Invalid ' . $channel . ' address.');
+            return VerificationResult::failed('invalid_identifier', sprintf(__('Invalid %s address.', 'wp-sms'), $channel));
         }
 
         // Check SMS gateway for phone channel.
         if ($channel === 'phone' && !has_action('wsms_send_sms')) {
-            return VerificationResult::failed('no_sms_gateway', 'SMS sending is not configured.');
+            return VerificationResult::failed('no_sms_gateway', __('SMS sending is not configured.', 'wp-sms'));
         }
 
         // Resolve or create session.
@@ -110,7 +110,7 @@ class VerificationService
 
         // Deliver.
         if ($channel === 'phone') {
-            do_action('wsms_send_sms', $identifier, sprintf('Your verification code is: %s', $otp));
+            do_action('wsms_send_sms', $identifier, sprintf(__('Your verification code is: %s', 'wp-sms'), $otp));
         } elseif ($channel === 'email') {
             if (!VerificationMailer::sendOtp($identifier, $otp, $expiry)) {
                 $this->auditLogger->log(EventType::StandaloneVerificationFailed, 'failure', $userId, [
@@ -118,7 +118,7 @@ class VerificationService
                     'reason'  => 'mail_delivery_failed',
                 ]);
 
-                return VerificationResult::failed('mail_failed', 'Failed to send verification email. Please try again.');
+                return VerificationResult::failed('mail_failed', __('Failed to send verification email. Please try again.', 'wp-sms'));
             }
         }
 
@@ -141,14 +141,14 @@ class VerificationService
         $sessionData = $this->session->validate($sessionToken);
 
         if ($sessionData === null) {
-            return VerificationResult::failed('invalid_session', 'Session expired or invalid. Please request a new code.');
+            return VerificationResult::failed('invalid_session', __('Session expired or invalid. Please request a new code.', 'wp-sms'));
         }
 
         $sessionId = $sessionData['session_id'];
         $identifier = $this->normalizeIdentifier($channel, $identifier);
 
         if ($identifier === null) {
-            return VerificationResult::failed('invalid_identifier', 'Invalid ' . $channel . ' address.');
+            return VerificationResult::failed('invalid_identifier', sprintf(__('Invalid %s address.', 'wp-sms'), $channel));
         }
 
         $verifyType = VerificationType::forStandaloneChannel($channel)->value;
@@ -164,7 +164,7 @@ class VerificationService
         ));
 
         if (!$verification) {
-            return VerificationResult::failed('no_verification', 'No pending verification found. Please request a new code.');
+            return VerificationResult::failed('no_verification', __('No pending verification found. Please request a new code.', 'wp-sms'));
         }
 
         if (strtotime($verification->expires_at) < time()) {
@@ -173,7 +173,7 @@ class VerificationService
                 'reason'  => 'expired',
             ]);
 
-            return VerificationResult::failed('expired', 'Verification code has expired. Please request a new one.');
+            return VerificationResult::failed('expired', __('Verification code has expired. Please request a new one.', 'wp-sms'));
         }
 
         if ((int) $verification->attempts >= (int) $verification->max_attempts) {
@@ -182,7 +182,7 @@ class VerificationService
                 'reason'  => 'max_attempts',
             ]);
 
-            return VerificationResult::failed('max_attempts', 'Too many failed attempts. Please request a new code.');
+            return VerificationResult::failed('max_attempts', __('Too many failed attempts. Please request a new code.', 'wp-sms'));
         }
 
         $newAttempts = (int) $verification->attempts + 1;
@@ -195,7 +195,7 @@ class VerificationService
                 'attempts' => $newAttempts,
             ]);
 
-            return VerificationResult::failed('invalid_code', 'Invalid verification code.');
+            return VerificationResult::failed('invalid_code', __('Invalid verification code.', 'wp-sms'));
         }
 
         // Atomic mark as used.
@@ -207,7 +207,7 @@ class VerificationService
         ));
 
         if ($affected === 0) {
-            return VerificationResult::failed('already_used', 'This code has already been used.');
+            return VerificationResult::failed('already_used', __('This code has already been used.', 'wp-sms'));
         }
 
         // Mark verified in session (pass preloaded data to avoid re-reading transient).

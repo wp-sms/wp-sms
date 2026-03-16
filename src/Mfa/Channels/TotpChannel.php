@@ -69,7 +69,7 @@ class TotpChannel implements ChannelInterface, SupportsEnrollmentConfirmation
         $existing = $this->getFactor($userId);
 
         if ($existing && $existing->status === ChannelStatus::Active) {
-            return new EnrollmentResult(false, 'Already enrolled in Authenticator App.');
+            return new EnrollmentResult(false, __('Already enrolled in Authenticator App.', 'wp-sms'));
         }
 
         $totp = TOTP::generate();
@@ -94,7 +94,7 @@ class TotpChannel implements ChannelInterface, SupportsEnrollmentConfirmation
             $this->createFactor($userId, ChannelStatus::Pending, ['secret' => $encryptedSecret]);
         }
 
-        return new EnrollmentResult(true, 'Scan the QR code with your authenticator app.', [
+        return new EnrollmentResult(true, __('Scan the QR code with your authenticator app.', 'wp-sms'), [
             'requires_confirmation' => true,
             'qr_code_uri'          => $qrCodeUri,
             'secret'               => $secret,
@@ -110,20 +110,20 @@ class TotpChannel implements ChannelInterface, SupportsEnrollmentConfirmation
         $factor = $this->getFactor($userId);
 
         if (!$factor || $factor->status !== ChannelStatus::Pending) {
-            return new EnrollmentResult(false, 'No pending enrollment found.');
+            return new EnrollmentResult(false, __('No pending enrollment found.', 'wp-sms'));
         }
 
         $storedSecret = $factor->meta['secret'] ?? '';
 
         if (empty($storedSecret)) {
-            return new EnrollmentResult(false, 'Invalid enrollment state.');
+            return new EnrollmentResult(false, __('Invalid enrollment state.', 'wp-sms'));
         }
 
         $secret = $this->encryptor->decrypt($storedSecret, $userId);
         $totp = TOTP::createFromSecret($secret);
 
         if (!$totp->verify($code, null, 1)) {
-            return new EnrollmentResult(false, 'Invalid verification code.');
+            return new EnrollmentResult(false, __('Invalid verification code.', 'wp-sms'));
         }
 
         $currentTimestamp = (int) floor(time() / $totp->getPeriod());
@@ -140,13 +140,13 @@ class TotpChannel implements ChannelInterface, SupportsEnrollmentConfirmation
             'channel' => $this->getId(),
         ]);
 
-        return new EnrollmentResult(true, 'Authenticator app enrolled successfully.');
+        return new EnrollmentResult(true, __('Authenticator app enrolled successfully.', 'wp-sms'));
     }
 
     /** {@inheritDoc} */
     public function sendChallenge(int $userId, array $context = []): ChallengeResult
     {
-        return new ChallengeResult(true, 'Enter the code from your authenticator app.', [
+        return new ChallengeResult(true, __('Enter the code from your authenticator app.', 'wp-sms'), [
             'requires_delivery' => false,
         ]);
     }

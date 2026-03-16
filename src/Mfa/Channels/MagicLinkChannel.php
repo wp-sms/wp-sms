@@ -59,13 +59,13 @@ class MagicLinkChannel implements ChannelInterface
         $user = get_userdata($userId);
 
         if (!$user || empty($user->user_email)) {
-            return new EnrollmentResult(false, 'No email address found for user.');
+            return new EnrollmentResult(false, __('No email address found for user.', 'wp-sms'));
         }
 
         $existing = $this->getFactor($userId);
 
         if ($existing && $existing->status === ChannelStatus::Active) {
-            return new EnrollmentResult(false, 'Already enrolled in Magic Link.');
+            return new EnrollmentResult(false, __('Already enrolled in Magic Link.', 'wp-sms'));
         }
 
         if ($existing) {
@@ -81,7 +81,7 @@ class MagicLinkChannel implements ChannelInterface
             'channel' => $this->getId(),
         ]);
 
-        return new EnrollmentResult(true, 'Magic Link enrollment complete.', [
+        return new EnrollmentResult(true, __('Magic Link enrollment complete.', 'wp-sms'), [
             'masked_email' => EmailMasker::mask($user->user_email),
         ]);
     }
@@ -92,14 +92,14 @@ class MagicLinkChannel implements ChannelInterface
         global $wpdb;
 
         if (!$this->isEnrolled($userId)) {
-            return new ChallengeResult(false, 'User is not enrolled in Magic Link.');
+            return new ChallengeResult(false, __('User is not enrolled in Magic Link.', 'wp-sms'));
         }
 
         $factor = $this->getFactor($userId);
         $email = $factor->meta['email'] ?? null;
 
         if ($email === null) {
-            return new ChallengeResult(false, 'No email address found for user.');
+            return new ChallengeResult(false, __('No email address found for user.', 'wp-sms'));
         }
 
         $table = $wpdb->prefix . 'wsms_verifications';
@@ -120,7 +120,7 @@ class MagicLinkChannel implements ChannelInterface
         ));
 
         if ($recent) {
-            return new ChallengeResult(false, 'Please wait before requesting a new magic link.');
+            return new ChallengeResult(false, __('Please wait before requesting a new magic link.', 'wp-sms'));
         }
 
         // Invalidate existing pending.
@@ -155,17 +155,14 @@ class MagicLinkChannel implements ChannelInterface
         $siteName = get_bloginfo('name');
         $expiryMinutes = (int) ($expiry / 60);
 
-        $subject = sprintf('[%s] Your login link', $siteName);
+        $subject = sprintf(__('[%s] Your login link', 'wp-sms'), $siteName);
 
-        $body = sprintf(
-            '<p>Click the link below to log in:</p>'
-            . '<p><a href="%s">Log in to %s</a></p>'
-            . '<p>This link expires in %d minutes.</p>'
-            . '<p>If you did not request this, please ignore this email.</p>',
-            esc_url($url),
-            esc_html($siteName),
-            $expiryMinutes,
-        );
+        $body = '<p>' . __('Click the link below to log in:', 'wp-sms') . '</p>'
+            . '<p><a href="' . esc_url($url) . '">'
+            . sprintf(__('Log in to %s', 'wp-sms'), esc_html($siteName))
+            . '</a></p>'
+            . '<p>' . sprintf(__('This link expires in %d minutes.', 'wp-sms'), $expiryMinutes) . '</p>'
+            . '<p>' . __('If you did not request this, please ignore this email.', 'wp-sms') . '</p>';
 
         $headers = ['Content-Type: text/html; charset=UTF-8'];
         $sent = wp_mail($email, $subject, $body, $headers);
@@ -175,14 +172,14 @@ class MagicLinkChannel implements ChannelInterface
                 'channel' => $this->getId(),
             ]);
 
-            return new ChallengeResult(false, 'Failed to send magic link email.');
+            return new ChallengeResult(false, __('Failed to send magic link email.', 'wp-sms'));
         }
 
         $this->auditLogger->log(EventType::MagicLinkSent, 'success', $userId, [
             'channel' => $this->getId(),
         ]);
 
-        return new ChallengeResult(true, 'Magic link sent to your email.', [
+        return new ChallengeResult(true, __('Magic link sent to your email.', 'wp-sms'), [
             'masked_email' => EmailMasker::mask($email),
             'expires_in'   => $expiry,
         ]);

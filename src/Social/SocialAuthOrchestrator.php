@@ -361,7 +361,7 @@ class SocialAuthOrchestrator
         $status = $this->suspension->isSuspended($userId);
 
         if ($status['suspended']) {
-            return ['result' => AuthResult::failed('account_suspended', AccountSuspension::ERROR_MESSAGE)];
+            return ['result' => AuthResult::failed('account_suspended', AccountSuspension::errorMessage())];
         }
 
         return null;

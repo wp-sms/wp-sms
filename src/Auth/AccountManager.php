@@ -111,7 +111,7 @@ class AccountManager
         $this->cleanupExpiredPendingUsers($data, $email, $emailVerifyEnabled, $phoneVerifyEnabled, $settings);
 
         if (!empty($data['phone']) && self::isPhoneTaken(sanitize_text_field($data['phone']))) {
-            return ['success' => false, 'error' => 'phone_exists', 'message' => 'This phone number is already associated with another account.'];
+            return ['success' => false, 'error' => 'phone_exists', 'message' => __('This phone number is already associated with another account.', 'wp-sms')];
         }
 
         $userId = wp_insert_user($userdata);
@@ -144,32 +144,32 @@ class AccountManager
         $requiredFields = $settings['registration_fields'] ?? ['email', 'password'];
 
         if ($emailRequired && empty($data['email'])) {
-            return ['success' => false, 'error' => 'missing_email', 'message' => 'Email is required.'];
+            return ['success' => false, 'error' => 'missing_email', 'message' => __('Email is required.', 'wp-sms')];
         }
 
         $passwordRequired = $socialLogin ? false : (!empty($settings['password']['enabled']) && ($settings['password']['required_at_signup'] ?? true));
         if ($passwordRequired && empty($data['password'])) {
-            return ['success' => false, 'error' => 'missing_password', 'message' => 'Password is required.'];
+            return ['success' => false, 'error' => 'missing_password', 'message' => __('Password is required.', 'wp-sms')];
         }
 
         $phoneRequired = $socialLogin ? false : (!empty($settings['phone']['enabled']) && !empty($settings['phone']['required_at_signup']));
         if ($phoneRequired && empty($data['phone'])) {
-            return ['success' => false, 'error' => 'missing_phone', 'message' => 'Phone number is required.'];
+            return ['success' => false, 'error' => 'missing_phone', 'message' => __('Phone number is required.', 'wp-sms')];
         }
 
         if (in_array('first_name', $requiredFields, true) && empty($data['first_name'])) {
-            return ['success' => false, 'error' => 'missing_first_name', 'message' => 'First name is required.'];
+            return ['success' => false, 'error' => 'missing_first_name', 'message' => __('First name is required.', 'wp-sms')];
         }
 
         if (in_array('last_name', $requiredFields, true) && empty($data['last_name'])) {
-            return ['success' => false, 'error' => 'missing_last_name', 'message' => 'Last name is required.'];
+            return ['success' => false, 'error' => 'missing_last_name', 'message' => __('Last name is required.', 'wp-sms')];
         }
 
         // Validate email format when provided.
         if (!empty($data['email'])) {
             $sanitized = sanitize_email($data['email']);
             if (!empty($sanitized) && !is_email($sanitized)) {
-                return ['success' => false, 'error' => 'invalid_email', 'message' => 'Invalid email address.'];
+                return ['success' => false, 'error' => 'invalid_email', 'message' => __('Invalid email address.', 'wp-sms')];
             }
         }
 
@@ -183,7 +183,7 @@ class AccountManager
                     return [
                         'success' => false,
                         'error'   => 'missing_' . $field->id,
-                        'message' => $field->label . ' is required.',
+                        'message' => sprintf(__('%s is required.', 'wp-sms'), $field->label),
                     ];
                 }
             }
@@ -342,7 +342,7 @@ class AccountManager
         $result = [
             'success' => true,
             'user_id' => $userId,
-            'message' => 'Registration successful.',
+            'message' => __('Registration successful.', 'wp-sms'),
         ];
 
         if (!empty($pendingVerifications)) {
@@ -400,7 +400,7 @@ class AccountManager
 
         $this->auditLogger->log(EventType::PasswordResetComplete, 'success', $userId);
 
-        return ['success' => true, 'message' => 'Password has been reset successfully.'];
+        return ['success' => true, 'message' => __('Password has been reset successfully.', 'wp-sms')];
     }
 
     /**
@@ -421,7 +421,7 @@ class AccountManager
         $this->auditLogger->log(EventType::EmailVerified, 'success', $userId);
         $this->maybeActivateUser($userId);
 
-        return ['success' => true, 'message' => 'Email verified successfully.'];
+        return ['success' => true, 'message' => __('Email verified successfully.', 'wp-sms')];
     }
 
     /**
@@ -436,7 +436,7 @@ class AccountManager
             $newEmail = sanitize_email($data['email']);
 
             if (!is_email($newEmail)) {
-                return ['success' => false, 'error' => 'invalid_email', 'message' => 'Invalid email address.'];
+                return ['success' => false, 'error' => 'invalid_email', 'message' => __('Invalid email address.', 'wp-sms')];
             }
         }
 
@@ -462,23 +462,23 @@ class AccountManager
         if ($phoneChanged) {
             $cooldown = (int) ($settings['phone']['cooldown'] ?? 60);
             if ($this->isVerificationOnCooldown($userId, VerificationType::PhoneVerify->value, $cooldown)) {
-                return ['success' => false, 'error' => 'cooldown', 'message' => 'Please wait before changing your phone number.'];
+                return ['success' => false, 'error' => 'cooldown', 'message' => __('Please wait before changing your phone number.', 'wp-sms')];
             }
 
             if (self::isPhoneTaken($phone, $userId)) {
-                return ['success' => false, 'error' => 'phone_exists', 'message' => 'This phone number is already associated with another account.'];
+                return ['success' => false, 'error' => 'phone_exists', 'message' => __('This phone number is already associated with another account.', 'wp-sms')];
             }
         }
 
         if ($emailChanged) {
             $cooldown = (int) ($settings['email']['cooldown'] ?? 60);
             if ($this->isVerificationOnCooldown($userId, VerificationType::EmailVerify->value, $cooldown)) {
-                return ['success' => false, 'error' => 'cooldown', 'message' => 'Please wait before changing your email.'];
+                return ['success' => false, 'error' => 'cooldown', 'message' => __('Please wait before changing your email.', 'wp-sms')];
             }
         }
 
         // All validations passed — apply writes.
-        $result = ['success' => true, 'message' => 'Profile updated.'];
+        $result = ['success' => true, 'message' => __('Profile updated.', 'wp-sms')];
 
         $userUpdate = ['ID' => $userId];
 
@@ -528,14 +528,14 @@ class AccountManager
         $user = get_userdata($userId);
 
         if (!$user) {
-            return ['success' => false, 'error' => 'user_not_found', 'message' => 'User not found.'];
+            return ['success' => false, 'error' => 'user_not_found', 'message' => __('User not found.', 'wp-sms')];
         }
 
         $hasUsablePassword = self::hasUsablePassword($userId);
 
         if ($hasUsablePassword) {
             if (empty($currentPassword) || !wp_check_password($currentPassword, $user->user_pass, $userId)) {
-                return ['success' => false, 'error' => 'wrong_password', 'message' => 'Current password is incorrect.'];
+                return ['success' => false, 'error' => 'wrong_password', 'message' => __('Current password is incorrect.', 'wp-sms')];
             }
         }
 
@@ -547,7 +547,7 @@ class AccountManager
 
         $this->auditLogger->log(EventType::PasswordChange, 'success', $userId);
 
-        return ['success' => true, 'message' => 'Password changed successfully.'];
+        return ['success' => true, 'message' => __('Password changed successfully.', 'wp-sms')];
     }
 
     /**
@@ -582,15 +582,15 @@ class AccountManager
         ));
 
         if (!$verification) {
-            return ['success' => false, 'error' => 'no_verification', 'message' => "No pending {$channel} verification."];
+            return ['success' => false, 'error' => 'no_verification', 'message' => sprintf(__('No pending %s verification.', 'wp-sms'), $channel)];
         }
 
         if (strtotime($verification->expires_at) < time()) {
-            return ['success' => false, 'error' => 'expired', 'message' => 'Verification code has expired.'];
+            return ['success' => false, 'error' => 'expired', 'message' => __('Verification code has expired.', 'wp-sms')];
         }
 
         if ((int) $verification->attempts >= (int) $verification->max_attempts) {
-            return ['success' => false, 'error' => 'max_attempts', 'message' => 'Too many attempts.'];
+            return ['success' => false, 'error' => 'max_attempts', 'message' => __('Too many attempts.', 'wp-sms')];
         }
 
         $newAttempts = (int) $verification->attempts + 1;
@@ -598,7 +598,7 @@ class AccountManager
         if (!$this->otpGenerator->verify($code, $verification->code)) {
             $wpdb->update($table, ['attempts' => $newAttempts], ['id' => $verification->id]);
 
-            return ['success' => false, 'error' => 'invalid_code', 'message' => 'Invalid verification code.'];
+            return ['success' => false, 'error' => 'invalid_code', 'message' => __('Invalid verification code.', 'wp-sms')];
         }
 
         $wpdb->update($table, ['attempts' => $newAttempts, 'used_at' => gmdate('Y-m-d H:i:s')], ['id' => $verification->id]);
@@ -609,7 +609,7 @@ class AccountManager
 
         $channelLabel = ucfirst($channel);
 
-        return ['success' => true, 'message' => "{$channelLabel} verified successfully."];
+        return ['success' => true, 'message' => sprintf(__('%s verified successfully.', 'wp-sms'), $channelLabel)];
     }
 
     /**
@@ -624,7 +624,7 @@ class AccountManager
         $identifier = $this->getChannelIdentifier($userId, $channel);
 
         if ($identifier === null) {
-            return ['success' => false, 'error' => "no_{$channel}", 'message' => "No {$channel} on file."];
+            return ['success' => false, 'error' => "no_{$channel}", 'message' => sprintf(__('No %s on file.', 'wp-sms'), $channel)];
         }
 
         $settings = $this->settingsRepo->all();
@@ -632,13 +632,13 @@ class AccountManager
         $cooldown = (int) ($settings[$channel]['cooldown'] ?? 60);
 
         if ($this->isVerificationOnCooldown($userId, $verifyType, $cooldown)) {
-            return ['success' => false, 'error' => 'cooldown', 'message' => 'Please wait before requesting a new code.'];
+            return ['success' => false, 'error' => 'cooldown', 'message' => __('Please wait before requesting a new code.', 'wp-sms')];
         }
 
         $this->invalidateVerifications($userId, $verifyType);
         $this->createChannelVerification($userId, $channel, $identifier);
 
-        return ['success' => true, 'message' => 'Verification resent.'];
+        return ['success' => true, 'message' => __('Verification resent.', 'wp-sms')];
     }
 
     /**
@@ -738,7 +738,7 @@ class AccountManager
 
         // Channel-specific delivery.
         if ($channel === 'phone') {
-            do_action('wsms_send_sms', $identifier, sprintf('Your verification code is: %s', $otp));
+            do_action('wsms_send_sms', $identifier, sprintf(__('Your verification code is: %s', 'wp-sms'), $otp));
         } elseif ($channel === 'email') {
             $this->sendVerificationEmail($identifier, $otp, $channel);
         } else {
@@ -946,15 +946,15 @@ class AccountManager
         $verification = $this->lookupVerification($token, $type);
 
         if ($verification === null) {
-            return ['success' => false, 'error' => 'invalid_token', 'message' => 'Invalid or expired token.'];
+            return ['success' => false, 'error' => 'invalid_token', 'message' => __('Invalid or expired token.', 'wp-sms')];
         }
 
         if ($this->isVerificationExpired($verification)) {
-            return ['success' => false, 'error' => 'expired_token', 'message' => 'This token has expired.'];
+            return ['success' => false, 'error' => 'expired_token', 'message' => __('This token has expired.', 'wp-sms')];
         }
 
         if ($verification->used_at !== null) {
-            return ['success' => false, 'error' => 'used_token', 'message' => 'This token has already been used.'];
+            return ['success' => false, 'error' => 'used_token', 'message' => __('This token has already been used.', 'wp-sms')];
         }
 
         $this->markVerificationUsed($verification->id);
@@ -993,25 +993,25 @@ class AccountManager
 
         if ($type === VerificationType::EmailVerify->value) {
             $link = $baseUrl . $authBase . '/verify-email?token=' . $token;
-            $subject = sprintf('[%s] Verify your email address', $siteName);
+            $subject = sprintf(__('[%s] Verify your email address', 'wp-sms'), $siteName);
             $message = sprintf(
-                '<p>Please verify your email address by clicking the link below:</p>'
-                . '<p><a href="%s">Verify Email</a></p>'
-                . '<p>This link expires in 60 minutes.</p>'
-                . '<p>If you did not create an account, please ignore this email.</p>',
+                '<p>' . __('Please verify your email address by clicking the link below:', 'wp-sms') . '</p>'
+                . '<p><a href="%s">' . __('Verify Email', 'wp-sms') . '</a></p>'
+                . '<p>' . __('This link expires in 60 minutes.', 'wp-sms') . '</p>'
+                . '<p>' . __('If you did not create an account, please ignore this email.', 'wp-sms') . '</p>',
                 esc_url($link),
             );
         } else {
             $link = $baseUrl . $authBase . '/reset-password?token=' . $token;
-            $subject = sprintf('[%s] Reset your password', $siteName);
+            $subject = sprintf(__('[%s] Reset your password', 'wp-sms'), $siteName);
             $message = sprintf(
-                '<p>Click the link below to reset your password:</p>'
-                . '<p><a href="%s">Reset Password</a></p>'
-                . '<p>This link expires in 60 minutes.</p>'
+                '<p>' . __('Click the link below to reset your password:', 'wp-sms') . '</p>'
+                . '<p><a href="%s">' . __('Reset Password', 'wp-sms') . '</a></p>'
+                . '<p>' . __('This link expires in 60 minutes.', 'wp-sms') . '</p>'
                 . '%s'
-                . '<p>If you did not request this, please ignore this email.</p>',
+                . '<p>' . __('If you did not request this, please ignore this email.', 'wp-sms') . '</p>',
                 esc_url($link),
-                IpResolver::renderIpWarningHtml('This request was made'),
+                IpResolver::renderIpWarningHtml(__('This request was made', 'wp-sms')),
             );
         }
 

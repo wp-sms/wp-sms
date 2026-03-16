@@ -66,7 +66,7 @@ class BackupCodesChannel implements ChannelInterface
         $existing = $this->getFactor($userId);
 
         if ($existing && $existing->status === ChannelStatus::Active) {
-            return new EnrollmentResult(false, 'Already enrolled in Backup Codes. Use regenerate to get new codes.');
+            return new EnrollmentResult(false, __('Already enrolled in Backup Codes. Use regenerate to get new codes.', 'wp-sms'));
         }
 
         $count = (int) $this->getConfigValue('count', self::DEFAULT_CODE_COUNT);
@@ -94,7 +94,7 @@ class BackupCodesChannel implements ChannelInterface
             'count'   => $count,
         ]);
 
-        return new EnrollmentResult(true, 'Backup codes generated. Save them securely.', [
+        return new EnrollmentResult(true, __('Backup codes generated. Save them securely.', 'wp-sms'), [
             'codes' => $codes,
             'count' => $count,
         ]);
@@ -106,12 +106,12 @@ class BackupCodesChannel implements ChannelInterface
         $factor = $this->getFactor($userId);
 
         if ($factor === null || $factor->status !== ChannelStatus::Active) {
-            return new ChallengeResult(false, 'Backup codes not enrolled.');
+            return new ChallengeResult(false, __('Backup codes not enrolled.', 'wp-sms'));
         }
 
         $remaining = count($factor->meta['codes'] ?? []);
 
-        return new ChallengeResult(true, 'Enter one of your backup codes.', [
+        return new ChallengeResult(true, __('Enter one of your backup codes.', 'wp-sms'), [
             'remaining' => $remaining,
         ]);
     }

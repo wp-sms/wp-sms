@@ -21,7 +21,7 @@ class VerificationResult
     {
         return new self(
             success: true,
-            message: 'Verification code sent.',
+            message: __('Verification code sent.', 'wp-sms'),
             sessionToken: $token,
             maskedIdentifier: $masked,
             expiresIn: $expiresIn,
@@ -32,7 +32,7 @@ class VerificationResult
     {
         return new self(
             success: true,
-            message: 'Verification successful.',
+            message: __('Verification successful.', 'wp-sms'),
             sessionToken: $token,
         );
     }
@@ -50,7 +50,7 @@ class VerificationResult
     {
         return new self(
             success: false,
-            message: 'Please wait before requesting a new code.',
+            message: __('Please wait before requesting a new code.', 'wp-sms'),
             error: 'cooldown',
             retryAfter: $retryAfter,
         );
@@ -60,7 +60,7 @@ class VerificationResult
     {
         return new self(
             success: false,
-            message: 'Too many requests. Please try again later.',
+            message: __('Too many requests. Please try again later.', 'wp-sms'),
             error: 'rate_limited',
             retryAfter: $retryAfter,
         );

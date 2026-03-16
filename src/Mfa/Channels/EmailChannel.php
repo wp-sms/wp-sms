@@ -66,13 +66,13 @@ class EmailChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         $email = $this->getIdentifier($userId);
 
         if ($email === null) {
-            return new EnrollmentResult(false, 'No email address found for user.');
+            return new EnrollmentResult(false, __('No email address found for user.', 'wp-sms'));
         }
 
         $existing = $this->getFactor($userId);
 
         if ($existing && $existing->status === ChannelStatus::Active) {
-            return new EnrollmentResult(false, 'Already enrolled in Email.');
+            return new EnrollmentResult(false, __('Already enrolled in Email.', 'wp-sms'));
         }
 
         // Auto-enroll with Active status — WP email is already verified.
@@ -89,7 +89,7 @@ class EmailChannel extends AbstractOtpChannel implements SupportsTokenVerificati
             'channel' => $this->getId(),
         ]);
 
-        return new EnrollmentResult(true, 'Email enrollment complete.', [
+        return new EnrollmentResult(true, __('Email enrollment complete.', 'wp-sms'), [
             'masked_email' => EmailMasker::mask($email),
         ]);
     }
@@ -104,7 +104,7 @@ class EmailChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         $hasMagicLink = in_array('magic_link', $verificationMethods, true);
 
         if (!$hasOtp && !$hasMagicLink) {
-            return new ChallengeResult(false, 'No verification methods enabled for email channel.');
+            return new ChallengeResult(false, __('No verification methods enabled for email channel.', 'wp-sms'));
         }
 
         $prereq = $this->validateChallengePrerequisites($userId);
@@ -136,14 +136,14 @@ class EmailChannel extends AbstractOtpChannel implements SupportsTokenVerificati
                 'channel' => $this->getId(),
             ]);
 
-            return new ChallengeResult(false, 'Failed to deliver the verification email.');
+            return new ChallengeResult(false, __('Failed to deliver the verification email.', 'wp-sms'));
         }
 
         $this->auditLogger->log(EventType::OtpSent, 'success', $userId, [
             'channel' => $this->getId(),
         ]);
 
-        return new ChallengeResult(true, 'Verification email sent.', [
+        return new ChallengeResult(true, __('Verification email sent.', 'wp-sms'), [
             'masked_identifier' => $this->maskIdentifier($identifier),
             'expires_in'        => $expiry,
             'has_otp'           => $hasOtp,
@@ -197,33 +197,28 @@ class EmailChannel extends AbstractOtpChannel implements SupportsTokenVerificati
     {
         $siteName = get_bloginfo('name');
         $expiryMinutes = (int) ($expiry / 60);
-        $subject = sprintf('[%s] Your verification code', $siteName);
+        $subject = sprintf(__('[%s] Your verification code', 'wp-sms'), $siteName);
 
         $bodyParts = [];
 
         if ($otpCode !== null) {
-            $bodyParts[] = sprintf(
-                '<p>Your verification code is: <strong>%s</strong></p>',
-                $otpCode,
-            );
+            $bodyParts[] = '<p>' . sprintf(__('Your verification code is: %s', 'wp-sms'), '<strong>' . $otpCode . '</strong>') . '</p>';
         }
 
         if ($magicLinkUrl !== null) {
-            $bodyParts[] = sprintf(
-                '<p>Or click the link below to log in:</p>'
-                . '<p><a href="%s">Log in to %s</a></p>',
-                esc_url($magicLinkUrl),
-                esc_html($siteName),
-            );
+            $bodyParts[] = '<p>' . __('Or click the link below to log in:', 'wp-sms') . '</p>'
+                . '<p><a href="' . esc_url($magicLinkUrl) . '">'
+                . sprintf(__('Log in to %s', 'wp-sms'), esc_html($siteName))
+                . '</a></p>';
         }
 
-        $bodyParts[] = sprintf('<p>This expires in %d minutes.</p>', $expiryMinutes);
+        $bodyParts[] = '<p>' . sprintf(__('This expires in %d minutes.', 'wp-sms'), $expiryMinutes) . '</p>';
 
-        $ipWarning = IpResolver::renderIpWarningHtml('This code was requested');
+        $ipWarning = IpResolver::renderIpWarningHtml(__('This code was requested', 'wp-sms'));
         if ($ipWarning !== '') {
             $bodyParts[] = $ipWarning;
         } else {
-            $bodyParts[] = '<p>If you did not request this, please ignore this email.</p>';
+            $bodyParts[] = '<p>' . __('If you did not request this, please ignore this email.', 'wp-sms') . '</p>';
         }
 
         $body = implode("\n", $bodyParts);

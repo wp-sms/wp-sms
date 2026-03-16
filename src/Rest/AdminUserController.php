@@ -214,7 +214,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'channel_not_found',
-                'message' => "MFA channel '{$channelId}' not found.",
+                'message' => sprintf(__('MFA channel \'%s\' not found.', 'wp-sms'), $channelId),
             ], 404);
         }
 
@@ -231,7 +231,7 @@ class AdminUserController
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => "MFA channel '{$channel->getName()}' has been reset for this user.",
+            'message' => sprintf(__('MFA channel \'%s\' has been reset for this user.', 'wp-sms'), $channel->getName()),
         ]);
     }
 
@@ -250,7 +250,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'invalid_channel',
-                'message' => "Channel must be 'email' or 'phone'.",
+                'message' => __("Channel must be 'email' or 'phone'.", 'wp-sms'),
             ], 400);
         }
 
@@ -266,7 +266,7 @@ class AdminUserController
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => ucfirst($channel) . ' marked as ' . ($verified ? 'verified' : 'unverified') . '.',
+            'message' => sprintf(__('%s marked as %s.', 'wp-sms'), ucfirst($channel), $verified ? __('verified', 'wp-sms') : __('unverified', 'wp-sms')),
         ]);
     }
 
@@ -284,7 +284,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'invalid_provider',
-                'message' => "Unknown social provider '{$provider}'.",
+                'message' => sprintf(__('Unknown social provider \'%s\'.', 'wp-sms'), $provider),
             ], 400);
         }
 
@@ -297,7 +297,7 @@ class AdminUserController
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => ucfirst($provider) . ' account disconnected.',
+            'message' => sprintf(__('%s account disconnected.', 'wp-sms'), ucfirst($provider)),
         ]);
     }
 
@@ -318,7 +318,7 @@ class AdminUserController
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => 'Account unlocked.',
+            'message' => __('Account unlocked.', 'wp-sms'),
         ]);
     }
 
@@ -344,7 +344,7 @@ class AdminUserController
 
             return new WP_REST_Response([
                 'success' => true,
-                'message' => 'Phone number removed.',
+                'message' => __('Phone number removed.', 'wp-sms'),
             ]);
         }
 
@@ -352,7 +352,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'invalid_phone',
-                'message' => 'Phone number must be in E.164 format (e.g. +1234567890).',
+                'message' => __('Phone number must be in E.164 format (e.g. +1234567890).', 'wp-sms'),
             ], 400);
         }
 
@@ -360,7 +360,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'phone_taken',
-                'message' => 'This phone number is already in use by another account.',
+                'message' => __('This phone number is already associated with another account.', 'wp-sms'),
             ], 409);
         }
 
@@ -376,7 +376,7 @@ class AdminUserController
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => 'Phone number updated.',
+            'message' => __('Phone number updated.', 'wp-sms'),
         ]);
     }
 
@@ -393,7 +393,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'no_email',
-                'message' => 'User has no real email address.',
+                'message' => __('User has no real email address.', 'wp-sms'),
             ], 400);
         }
 
@@ -406,7 +406,7 @@ class AdminUserController
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => 'Password reset email sent.',
+            'message' => __('Password reset email sent.', 'wp-sms'),
         ]);
     }
 
@@ -424,7 +424,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'not_pending',
-                'message' => 'User is already active.',
+                'message' => __('User is already active.', 'wp-sms'),
             ], 400);
         }
 
@@ -438,7 +438,7 @@ class AdminUserController
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => 'User activated.',
+            'message' => __('User activated.', 'wp-sms'),
         ]);
     }
 
@@ -456,7 +456,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'invalid_channel',
-                'message' => "Channel must be 'email' or 'phone'.",
+                'message' => __("Channel must be 'email' or 'phone'.", 'wp-sms'),
             ], 400);
         }
 
@@ -465,7 +465,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'channel_disabled',
-                'message' => "The {$channel} channel is disabled in settings.",
+                'message' => sprintf(__('The %s channel is disabled in settings.', 'wp-sms'), $channel),
             ], 400);
         }
 
@@ -473,7 +473,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'no_email',
-                'message' => 'No email on file.',
+                'message' => __('No email on file.', 'wp-sms'),
             ], 400);
         }
 
@@ -481,7 +481,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'no_phone',
-                'message' => 'No phone on file.',
+                'message' => __('No phone on file.', 'wp-sms'),
             ], 400);
         }
 
@@ -503,7 +503,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'self_suspension',
-                'message' => 'You cannot suspend your own account.',
+                'message' => __('You cannot suspend your own account.', 'wp-sms'),
             ], 400);
         }
 
@@ -511,7 +511,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'not_available',
-                'message' => 'Suspension feature is not available.',
+                'message' => __('Suspension feature is not available.', 'wp-sms'),
             ], 400);
         }
 
@@ -520,7 +520,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'already_suspended',
-                'message' => 'User is already suspended.',
+                'message' => __('User is already suspended.', 'wp-sms'),
             ], 400);
         }
 
@@ -533,7 +533,7 @@ class AdminUserController
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => 'User suspended.',
+            'message' => __('User suspended.', 'wp-sms'),
         ]);
     }
 
@@ -550,7 +550,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'not_available',
-                'message' => 'Suspension feature is not available.',
+                'message' => __('Suspension feature is not available.', 'wp-sms'),
             ], 400);
         }
 
@@ -559,7 +559,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'not_suspended',
-                'message' => 'User is not suspended.',
+                'message' => __('User is not suspended.', 'wp-sms'),
             ], 400);
         }
 
@@ -571,7 +571,7 @@ class AdminUserController
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => 'User unsuspended.',
+            'message' => __('User unsuspended.', 'wp-sms'),
         ]);
     }
 
@@ -586,7 +586,7 @@ class AdminUserController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'user_not_found',
-                'message' => 'User not found.',
+                'message' => __('User not found.', 'wp-sms'),
             ], 404);
         }
 

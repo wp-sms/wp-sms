@@ -108,7 +108,7 @@ class AuthOrchestrator
 
             do_action('wp_login_failed', $username, $user);
 
-            return AuthResult::failed('invalid_credentials', 'Invalid username or password.');
+            return AuthResult::failed('invalid_credentials', __('Invalid username or password.', 'wp-sms'));
         }
 
         $this->lockout->reset($user->ID);
@@ -126,14 +126,14 @@ class AuthOrchestrator
         $availableMethods = $this->policy->getAvailablePrimaryMethods();
 
         if (!in_array($channel, $availableMethods, true)) {
-            return AuthResult::failed('method_disabled', 'This authentication method is not enabled.');
+            return AuthResult::failed('method_disabled', __('This authentication method is not enabled.', 'wp-sms'));
         }
 
         // Resolve user by identifier.
         $user = $this->resolveUserByIdentifier($channel, $identifier);
 
         if (!$user) {
-            return AuthResult::failed('invalid_credentials', 'Invalid credentials.');
+            return AuthResult::failed('invalid_credentials', __('Invalid credentials.', 'wp-sms'));
         }
 
         $locked = $this->checkLockout($user->ID);
@@ -149,14 +149,14 @@ class AuthOrchestrator
         $channelObj = $this->mfaManager->getChannel($channel);
 
         if (!$channelObj) {
-            return AuthResult::failed('channel_unavailable', 'Authentication channel is not available.');
+            return AuthResult::failed('channel_unavailable', __('Authentication channel is not available.', 'wp-sms'));
         }
 
         if (!$channelObj->isEnrolled($user->ID)) {
             if ($channelObj->supportsAutoEnrollment()) {
                 $channelObj->enroll($user->ID, []);
             } else {
-                return AuthResult::failed('not_enrolled', 'You are not enrolled in this authentication method.');
+                return AuthResult::failed('not_enrolled', __('You are not enrolled in this authentication method.', 'wp-sms'));
             }
         }
 
@@ -190,13 +190,13 @@ class AuthOrchestrator
         $channel = $channelId ? $this->mfaManager->getChannel($channelId) : null;
 
         if (!$channel) {
-            return AuthResult::failed('channel_unavailable', 'Authentication channel is not available.');
+            return AuthResult::failed('channel_unavailable', __('Authentication channel is not available.', 'wp-sms'));
         }
 
         $verified = $channel->verify($sessionData['user_id'], $code);
 
         if (!$verified) {
-            return AuthResult::failed('invalid_code', 'The code you entered is incorrect.');
+            return AuthResult::failed('invalid_code', __('The code you entered is incorrect.', 'wp-sms'));
         }
 
         return $this->resolvePostPrimary(
@@ -224,7 +224,7 @@ class AuthOrchestrator
             }
         }
 
-        return AuthResult::failed('invalid_token', 'This link is invalid or has expired.');
+        return AuthResult::failed('invalid_token', __('This link is invalid or has expired.', 'wp-sms'));
     }
 
     /**
@@ -240,13 +240,13 @@ class AuthOrchestrator
         $channel = $this->mfaManager->getChannel($channelId);
 
         if (!$channel || !$channel->supportsMfa()) {
-            return AuthResult::failed('invalid_channel', 'Invalid MFA channel.');
+            return AuthResult::failed('invalid_channel', __('Invalid MFA channel.', 'wp-sms'));
         }
 
         // No conflict validation needed — usage is mutually exclusive per channel.
 
         if (!$channel->isEnrolled($sessionData['user_id'])) {
-            return AuthResult::failed('not_enrolled', 'You are not enrolled in this MFA method.');
+            return AuthResult::failed('not_enrolled', __('You are not enrolled in this MFA method.', 'wp-sms'));
         }
 
         $challengeResult = $channel->sendChallenge($sessionData['user_id']);
@@ -276,13 +276,13 @@ class AuthOrchestrator
         $channel = $this->mfaManager->getChannel($channelId);
 
         if (!$channel || !$channel->supportsMfa()) {
-            return AuthResult::failed('invalid_channel', 'Invalid MFA channel.');
+            return AuthResult::failed('invalid_channel', __('Invalid MFA channel.', 'wp-sms'));
         }
 
         $verified = $channel->verify($sessionData['user_id'], $code);
 
         if (!$verified) {
-            return AuthResult::failed('invalid_code', 'The code you entered is incorrect.');
+            return AuthResult::failed('invalid_code', __('The code you entered is incorrect.', 'wp-sms'));
         }
 
         $this->session->destroy($sessionData['session_key']);
@@ -308,7 +308,7 @@ class AuthOrchestrator
         $channel = $channelId ? $this->mfaManager->getChannel($channelId) : null;
 
         if (!$channel) {
-            return AuthResult::failed('channel_unavailable', 'No channel found for this session.');
+            return AuthResult::failed('channel_unavailable', __('No channel found for this session.', 'wp-sms'));
         }
 
         $challengeResult = $channel->sendChallenge($sessionData['user_id']);
@@ -510,7 +510,7 @@ class AuthOrchestrator
         $stage = SessionStage::tryFrom($data['stage'] ?? '');
 
         if ($stage === null || !in_array($stage, $allowedStages, true)) {
-            return AuthResult::failed('invalid_stage', 'Invalid session stage.');
+            return AuthResult::failed('invalid_stage', __('Invalid session stage.', 'wp-sms'));
         }
 
         return $data;
@@ -521,7 +521,7 @@ class AuthOrchestrator
         $lockStatus = $this->lockout->isLocked($userId);
 
         if ($lockStatus['locked']) {
-            return AuthResult::failed('account_locked', 'Account is temporarily locked.', [
+            return AuthResult::failed('account_locked', __('Account is temporarily locked.', 'wp-sms'), [
                 'retry_after' => $lockStatus['until'],
             ]);
         }
@@ -538,7 +538,7 @@ class AuthOrchestrator
         $status = $this->suspension->isSuspended($userId);
 
         if ($status['suspended']) {
-            return AuthResult::failed('account_suspended', AccountSuspension::ERROR_MESSAGE);
+            return AuthResult::failed('account_suspended', AccountSuspension::errorMessage());
         }
 
         return null;

@@ -15,12 +15,12 @@ class VerificationMailer
     {
         $siteName = get_bloginfo('name');
         $headers = ['Content-Type: text/html; charset=UTF-8'];
-        $subject = sprintf('[%s] Your verification code', $siteName);
+        $subject = sprintf(__('[%s] Your verification code', 'wp-sms'), $siteName);
         $message = sprintf(
-            '<p>Your verification code is:</p>'
+            '<p>' . __('Your verification code is:', 'wp-sms') . '</p>'
             . '<p style="font-size:24px;font-weight:bold;letter-spacing:4px;">%s</p>'
-            . '<p>This code expires in %d minutes.</p>'
-            . '<p>If you did not request this, please ignore this email.</p>',
+            . '<p>' . __('This code expires in %d minutes.', 'wp-sms') . '</p>'
+            . '<p>' . __('If you did not request this, please ignore this email.', 'wp-sms') . '</p>',
             esc_html($otp),
             (int) ceil($expirySeconds / 60),
         );

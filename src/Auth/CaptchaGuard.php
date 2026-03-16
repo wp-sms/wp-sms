@@ -98,7 +98,7 @@ class CaptchaGuard
         return new WP_REST_Response([
             'success' => false,
             'error'   => 'captcha_failed',
-            'message' => 'CAPTCHA verification failed.',
+            'message' => __('CAPTCHA verification failed.', 'wp-sms'),
         ], 403);
     }
 

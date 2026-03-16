@@ -60,7 +60,7 @@ class VerificationController
             return new WP_REST_Response([
                 'success'     => false,
                 'error'       => 'rate_limited',
-                'message'     => 'Too many requests. Please try again later.',
+                'message'     => __('Too many requests. Please try again later.', 'wp-sms'),
                 'retry_after' => $rateCheck['retry_after'],
             ], 429);
         }
@@ -84,7 +84,7 @@ class VerificationController
             return new WP_REST_Response([
                 'success'     => false,
                 'error'       => 'rate_limited',
-                'message'     => 'Too many requests. Please try again later.',
+                'message'     => __('Too many requests. Please try again later.', 'wp-sms'),
                 'retry_after' => $rateCheck['retry_after'],
             ], 429);
         }
@@ -99,7 +99,7 @@ class VerificationController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'missing_session',
-                'message' => 'Session token is required.',
+                'message' => __('Session token is required.', 'wp-sms'),
             ], 400);
         }
 
@@ -117,7 +117,7 @@ class VerificationController
             return new WP_REST_Response([
                 'success'     => false,
                 'error'       => 'rate_limited',
-                'message'     => 'Too many requests. Please try again later.',
+                'message'     => __('Too many requests. Please try again later.', 'wp-sms'),
                 'retry_after' => $rateCheck['retry_after'],
             ], 429);
         }
@@ -130,7 +130,7 @@ class VerificationController
             return new WP_REST_Response([
                 'success'  => false,
                 'verified' => false,
-                'message'  => 'Session token is required.',
+                'message'  => __('Session token is required.', 'wp-sms'),
             ], 400);
         }
 

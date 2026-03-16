@@ -32,7 +32,7 @@ class IpResolver
      *
      * Returns empty string when the IP cannot be determined.
      */
-    public static function renderIpWarningHtml(string $action = 'This request was made'): string
+    public static function renderIpWarningHtml(string $action): string
     {
         $ip = self::resolve();
 
@@ -41,8 +41,9 @@ class IpResolver
         }
 
         return sprintf(
-            '<p style="color:#666;font-size:0.9em;">%s from IP: %s. '
-            . 'If you did not request this, your password may have been compromised.</p>',
+            '<p style="color:#666;font-size:0.9em;">'
+            . __('%1$s from IP: %2$s. If you did not request this, your password may have been compromised.', 'wp-sms')
+            . '</p>',
             esc_html($action),
             esc_html($ip),
         );

@@ -52,19 +52,19 @@ abstract class AbstractOtpChannel implements ChannelInterface
     protected function validateChallengePrerequisites(int $userId): ChallengeResult
     {
         if (!$this->isEnrolled($userId)) {
-            return new ChallengeResult(false, 'User is not enrolled in this channel.');
+            return new ChallengeResult(false, __('User is not enrolled in this channel.', 'wp-sms'));
         }
 
         $identifier = $this->getIdentifier($userId);
 
         if ($identifier === null) {
-            return new ChallengeResult(false, 'No identifier found for user.');
+            return new ChallengeResult(false, __('No identifier found for user.', 'wp-sms'));
         }
 
         $cooldown = (int) $this->getConfigValue('cooldown', 60);
 
         if ($this->hasCooldownActive($userId, $cooldown)) {
-            return new ChallengeResult(false, 'Please wait before requesting a new code.');
+            return new ChallengeResult(false, __('Please wait before requesting a new code.', 'wp-sms'));
         }
 
         return new ChallengeResult(true, '', ['identifier' => $identifier]);
@@ -89,14 +89,14 @@ abstract class AbstractOtpChannel implements ChannelInterface
                 'channel' => $this->getId(),
             ]);
 
-            return new ChallengeResult(false, 'Failed to deliver the verification code.');
+            return new ChallengeResult(false, __('Failed to deliver the verification code.', 'wp-sms'));
         }
 
         $this->auditLogger->log(EventType::OtpSent, 'success', $userId, [
             'channel' => $this->getId(),
         ]);
 
-        return new ChallengeResult(true, 'Verification code sent.', [
+        return new ChallengeResult(true, __('Verification code sent.', 'wp-sms'), [
             'masked_identifier' => $this->maskIdentifier($identifier),
             'expires_in'        => $expiry,
         ]);

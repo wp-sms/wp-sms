@@ -221,7 +221,7 @@ class AccountController
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => 'If that email exists, a reset link has been sent.',
+            'message' => __('If that email exists, a reset link has been sent.', 'wp-sms'),
         ]);
     }
 
@@ -307,7 +307,7 @@ class AccountController
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => 'Logged out successfully.',
+            'message' => __('Logged out successfully.', 'wp-sms'),
         ]);
     }
 
@@ -363,13 +363,13 @@ class AccountController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'invalid_channel',
-                'message' => 'Invalid channel.',
+                'message' => __('Invalid channel.', 'wp-sms'),
             ], 400);
         }
 
         $this->accountManager->cancelPendingChange(get_current_user_id(), $channel);
 
-        return new WP_REST_Response(['success' => true, 'message' => 'Pending change cancelled.']);
+        return new WP_REST_Response(['success' => true, 'message' => __('Pending change cancelled.', 'wp-sms')]);
     }
 
     // --- Generic profile verification ---
@@ -385,7 +385,7 @@ class AccountController
 
         $this->accountManager->sendVerificationChallenge(get_current_user_id(), $channel);
 
-        return new WP_REST_Response(['success' => true, 'message' => 'Verification sent.']);
+        return new WP_REST_Response(['success' => true, 'message' => __('Verification sent.', 'wp-sms')]);
     }
 
     public function handleProfileVerifyChannel(WP_REST_Request $request): WP_REST_Response
@@ -433,7 +433,7 @@ class AccountController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'unavailable',
-                'message' => 'Avatar uploads not available.',
+                'message' => __('Avatar uploads not available.', 'wp-sms'),
             ], 500);
         }
 
@@ -444,7 +444,7 @@ class AccountController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'no_file',
-                'message' => 'No avatar file provided.',
+                'message' => __('No avatar file provided.', 'wp-sms'),
             ], 400);
         }
 
@@ -459,7 +459,7 @@ class AccountController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'unavailable',
-                'message' => 'Avatar management not available.',
+                'message' => __('Avatar management not available.', 'wp-sms'),
             ], 500);
         }
 
@@ -467,7 +467,7 @@ class AccountController
 
         return new WP_REST_Response([
             'success' => true,
-            'message' => 'Avatar removed.',
+            'message' => __('Avatar removed.', 'wp-sms'),
         ]);
     }
 
@@ -478,7 +478,7 @@ class AccountController
         return new WP_REST_Response([
             'success' => false,
             'error'   => 'invalid_token',
-            'message' => 'Invalid or expired verification token.',
+            'message' => __('Invalid or expired verification token.', 'wp-sms'),
         ], 401);
     }
 

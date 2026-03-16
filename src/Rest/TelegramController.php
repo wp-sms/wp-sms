@@ -72,7 +72,7 @@ class TelegramController
 
                 if ($botToken) {
                     $client = new TelegramBotClient($botToken);
-                    $client->sendMessage($chatId, 'Your Telegram account has been linked for MFA verification.');
+                    $client->sendMessage($chatId, __('Your Telegram account has been linked for MFA verification.', 'wp-sms'));
                 }
             }
         }
@@ -91,7 +91,7 @@ class TelegramController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'missing_bot_token',
-                'message' => 'Bot token is required.',
+                'message' => __('Bot token is required.', 'wp-sms'),
             ], 400);
         }
 
@@ -104,7 +104,7 @@ class TelegramController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'invalid_bot_token',
-                'message' => 'Could not validate the bot token. Please check and try again.',
+                'message' => __('Could not validate the bot token. Please check and try again.', 'wp-sms'),
             ], 400);
         }
 
@@ -118,7 +118,7 @@ class TelegramController
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'webhook_setup_failed',
-                'message' => 'Bot token is valid but webhook setup failed.',
+                'message' => __('Bot token is valid but webhook setup failed.', 'wp-sms'),
             ], 500);
         }
 
@@ -133,7 +133,7 @@ class TelegramController
 
         return new WP_REST_Response([
             'success'      => true,
-            'message'      => 'Telegram bot configured successfully.',
+            'message'      => __('Telegram bot configured successfully.', 'wp-sms'),
             'bot_username' => $me['username'] ?? '',
         ]);
     }

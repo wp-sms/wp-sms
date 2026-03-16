@@ -59,7 +59,7 @@ class LoginGuard
         if ($status['suspended']) {
             return new WP_Error(
                 'account_suspended',
-                __(AccountSuspension::ERROR_MESSAGE, 'wp-sms')
+                AccountSuspension::errorMessage()
             );
         }
 

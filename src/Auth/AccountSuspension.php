@@ -9,7 +9,10 @@ class AccountSuspension
     private const META_KEY = 'wsms_suspended';
 
     public const NOT_SUSPENDED = ['suspended' => false, 'at' => null, 'by' => null];
-    public const ERROR_MESSAGE = 'Your account has been suspended. Contact an administrator.';
+    public static function errorMessage(): string
+    {
+        return __('Your account has been suspended. Contact an administrator.', 'wp-sms');
+    }
 
     public function suspend(int $userId, int $adminId): void
     {

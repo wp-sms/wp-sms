@@ -60,7 +60,7 @@ class ApiAuthGuard
 
         return new WP_Error(
             'mfa_api_blocked',
-            'API authentication is not allowed for accounts with MFA enabled. Use an application password instead.',
+            __('API authentication is not allowed for accounts with MFA enabled. Use an application password instead.', 'wp-sms'),
         );
     }
 
@@ -89,7 +89,7 @@ class ApiAuthGuard
         if ($status['suspended']) {
             return new WP_Error(
                 'account_suspended',
-                AccountSuspension::ERROR_MESSAGE,
+                AccountSuspension::errorMessage(),
                 ['status' => 403],
             );
         }

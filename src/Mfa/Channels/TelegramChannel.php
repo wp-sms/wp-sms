@@ -55,7 +55,7 @@ class TelegramChannel extends AbstractOtpChannel
         $existing = $this->getFactor($userId);
 
         if ($existing && $existing->status === ChannelStatus::Active) {
-            return new EnrollmentResult(false, 'Already enrolled in Telegram MFA.');
+            return new EnrollmentResult(false, __('Already enrolled in Telegram MFA.', 'wp-sms'));
         }
 
         // Delete old linking transient if exists.
@@ -83,7 +83,7 @@ class TelegramChannel extends AbstractOtpChannel
             ? "https://t.me/{$botInfo}?start={$token}"
             : '';
 
-        return new EnrollmentResult(true, 'Open Telegram to complete enrollment.', [
+        return new EnrollmentResult(true, __('Open Telegram to complete enrollment.', 'wp-sms'), [
             'requires_confirmation' => true,
             'deep_link'             => $deepLink,
             'linking_token'         => $token,
@@ -160,11 +160,8 @@ class TelegramChannel extends AbstractOtpChannel
     {
         $expiryMinutes = (int) ($this->getConfigValue('expiry', 300) / 60);
 
-        $message = sprintf(
-            "Your verification code is: <b>%s</b>\nIt expires in %d minutes.",
-            $code,
-            $expiryMinutes,
-        );
+        $message = '<b>' . sprintf(__('Your verification code is: %s', 'wp-sms'), $code) . '</b>'
+            . "\n" . sprintf(__('It expires in %d minutes.', 'wp-sms'), $expiryMinutes);
 
         return $this->telegramClient->sendMessage((int) $identifier, $message);
     }

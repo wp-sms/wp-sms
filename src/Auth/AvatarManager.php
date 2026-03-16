@@ -31,22 +31,22 @@ class AvatarManager
     public function uploadAvatar(int $userId, array $file): array
     {
         if (empty($file['tmp_name']) || !is_uploaded_file($file['tmp_name'])) {
-            return ['success' => false, 'error' => 'no_file', 'message' => 'No file uploaded.'];
+            return ['success' => false, 'error' => 'no_file', 'message' => __('No file uploaded.', 'wp-sms')];
         }
 
         if ($file['size'] > self::MAX_SIZE_BYTES) {
-            return ['success' => false, 'error' => 'file_too_large', 'message' => 'File exceeds 2MB limit.'];
+            return ['success' => false, 'error' => 'file_too_large', 'message' => __('File exceeds 2MB limit.', 'wp-sms')];
         }
 
         $validated = wp_check_filetype_and_ext($file['tmp_name'], $file['name'], self::ALLOWED_MIMES);
 
         if (empty($validated['type'])) {
-            return ['success' => false, 'error' => 'invalid_type', 'message' => 'Invalid image type. Allowed: JPG, PNG, GIF, WebP.'];
+            return ['success' => false, 'error' => 'invalid_type', 'message' => __('Invalid image type. Allowed: JPG, PNG, GIF, WebP.', 'wp-sms')];
         }
 
         $uploadDir = $this->getUploadDir();
         if (!wp_mkdir_p($uploadDir)) {
-            return ['success' => false, 'error' => 'upload_failed', 'message' => 'Could not create upload directory.'];
+            return ['success' => false, 'error' => 'upload_failed', 'message' => __('Could not create upload directory.', 'wp-sms')];
         }
 
         // Remove old avatar file.
@@ -62,14 +62,14 @@ class AvatarManager
         if (is_wp_error($editor)) {
             // Fallback: move without resize.
             if (!move_uploaded_file($file['tmp_name'], $filepath)) {
-                return ['success' => false, 'error' => 'upload_failed', 'message' => 'Failed to save file.'];
+                return ['success' => false, 'error' => 'upload_failed', 'message' => __('Failed to save file.', 'wp-sms')];
             }
         } else {
             $editor->resize(self::RESIZE_PX, self::RESIZE_PX, true);
             $saved = $editor->save($filepath);
 
             if (is_wp_error($saved)) {
-                return ['success' => false, 'error' => 'resize_failed', 'message' => 'Failed to process image.'];
+                return ['success' => false, 'error' => 'resize_failed', 'message' => __('Failed to process image.', 'wp-sms')];
             }
 
             // Use the actual saved path (extension may differ).
@@ -83,7 +83,7 @@ class AvatarManager
 
         return [
             'success'    => true,
-            'message'    => 'Avatar uploaded successfully.',
+            'message'    => __('Avatar uploaded successfully.', 'wp-sms'),
             'avatar_url' => $url,
         ];
     }
@@ -294,16 +294,16 @@ class AvatarManager
             $data = [];
 
             if (!empty($customAvatar)) {
-                $data[] = ['name' => 'Custom Avatar URL', 'value' => $customAvatar];
+                $data[] = ['name' => __('Custom Avatar URL', 'wp-sms'), 'value' => $customAvatar];
             }
 
             if (!empty($socialAvatar)) {
-                $data[] = ['name' => 'Social Avatar URL', 'value' => $socialAvatar];
+                $data[] = ['name' => __('Social Avatar URL', 'wp-sms'), 'value' => $socialAvatar];
             }
 
             $exportItems[] = [
                 'group_id'    => 'wsms-avatar',
-                'group_label' => 'WP SMS Avatar',
+                'group_label' => __('WP SMS Avatar', 'wp-sms'),
                 'item_id'     => 'wsms-avatar-' . $user->ID,
                 'data'        => $data,
             ];

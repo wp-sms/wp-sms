@@ -23,7 +23,7 @@ readonly class AuthResult
             status: 'authenticated',
             userId: $userId,
             user: $user,
-            message: 'Login successful.',
+            message: __('Login successful.', 'wp-sms'),
             meta: $meta,
         );
     }
@@ -33,7 +33,7 @@ readonly class AuthResult
         return new self(
             success: true,
             status: 'mfa_enrollment_required',
-            message: 'MFA enrollment is required to continue.',
+            message: __('MFA enrollment is required to continue.', 'wp-sms'),
             meta: ['available_channels' => $availableChannels],
         );
     }
@@ -44,7 +44,7 @@ readonly class AuthResult
             success: true,
             status: 'mfa_required',
             sessionToken: $sessionToken,
-            message: 'MFA verification required.',
+            message: __('MFA verification required.', 'wp-sms'),
             meta: ['available_factors' => $availableFactors],
         );
     }
@@ -55,7 +55,7 @@ readonly class AuthResult
             success: true,
             status: 'challenge_sent',
             sessionToken: $sessionToken,
-            message: 'Verification challenge sent.',
+            message: __('Verification challenge sent.', 'wp-sms'),
             meta: $meta,
         );
     }
@@ -66,7 +66,7 @@ readonly class AuthResult
             success: true,
             status: 'verification_required',
             sessionToken: $sessionToken,
-            message: 'Account verification required.',
+            message: __('Account verification required.', 'wp-sms'),
             meta: ['pending_verifications' => $pendingVerifications],
         );
     }
@@ -88,7 +88,7 @@ readonly class AuthResult
             success: false,
             status: 'rate_limited',
             error: 'rate_limited',
-            message: 'Too many requests. Please try again later.',
+            message: __('Too many requests. Please try again later.', 'wp-sms'),
             meta: ['retry_after' => $retryAfter],
         );
     }
@@ -99,7 +99,7 @@ readonly class AuthResult
             success: false,
             status: 'expired',
             error: 'session_expired',
-            message: 'Your session has expired. Please start over.',
+            message: __('Your session has expired. Please start over.', 'wp-sms'),
         );
     }
 
@@ -109,7 +109,7 @@ readonly class AuthResult
             success: false,
             status: 'invalid_token',
             error: 'invalid_token',
-            message: 'Invalid or expired token.',
+            message: __('Invalid or expired token.', 'wp-sms'),
         );
     }
 
