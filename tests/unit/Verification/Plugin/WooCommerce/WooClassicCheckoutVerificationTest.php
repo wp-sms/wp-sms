@@ -1,11 +1,11 @@
 <?php
 
-namespace WSms\Tests\Unit\Integrations\WooCommerce;
+namespace WSms\Tests\Unit\Verification\Plugin\WooCommerce;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use WSms\Integrations\WooCommerce\WooClassicCheckoutVerification;
-use WSms\Integrations\WooCommerce\WooCommerceConfig;
+use WSms\Verification\Plugin\WooCommerce\WooClassicCheckoutVerification;
+use WSms\Verification\Plugin\WooCommerce\WooCommerceConfig;
 use WSms\Verification\VerificationService;
 
 class WooClassicCheckoutVerificationTest extends TestCase

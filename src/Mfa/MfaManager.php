@@ -2,6 +2,7 @@
 
 namespace WSms\Mfa;
 
+use WSms\Auth\SettingsRepository;
 use WSms\Enums\ChannelStatus;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\ValueObjects\UserFactor;
@@ -15,10 +16,16 @@ class MfaManager
 
     /** @var UserFactorRepository|null Initialized in constructor or lazily on first access. */
     private ?UserFactorRepository $factorRepo = null;
+    private ?SettingsRepository $settingsRepo = null;
 
     public function __construct(?UserFactorRepository $factorRepo = null)
     {
         $this->factorRepo = $factorRepo;
+    }
+
+    public function setSettingsRepository(SettingsRepository $settingsRepo): void
+    {
+        $this->settingsRepo = $settingsRepo;
     }
 
     /**
@@ -54,7 +61,7 @@ class MfaManager
      */
     public function getEnabledChannels(): array
     {
-        $settings = get_option('wsms_auth_settings', []);
+        $settings = $this->settingsRepo ? $this->settingsRepo->all() : [];
 
         return array_values(array_filter(
             $this->channels,

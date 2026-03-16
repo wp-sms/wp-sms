@@ -1,6 +1,6 @@
 <?php
 
-namespace WSms\Integrations\WooCommerce;
+namespace WSms\Verification\Plugin\WooCommerce;
 
 use Automattic\WooCommerce\StoreApi\Exceptions\RouteException;
 use WSms\Verification\VerificationService;

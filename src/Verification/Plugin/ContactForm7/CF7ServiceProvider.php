@@ -1,6 +1,6 @@
 <?php
 
-namespace WSms\Integrations\ContactForm7;
+namespace WSms\Verification\Plugin\ContactForm7;
 
 use WSms\Container\ServiceContainer;
 use WSms\Container\ServiceProvider;

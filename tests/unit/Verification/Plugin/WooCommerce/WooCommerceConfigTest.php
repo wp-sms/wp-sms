@@ -1,10 +1,10 @@
 <?php
 
-namespace WSms\Tests\Unit\Integrations\WooCommerce;
+namespace WSms\Tests\Unit\Verification\Plugin\WooCommerce;
 
 use PHPUnit\Framework\TestCase;
 use WSms\Auth\SettingsRepository;
-use WSms\Integrations\WooCommerce\WooCommerceConfig;
+use WSms\Verification\Plugin\WooCommerce\WooCommerceConfig;
 use WSms\Verification\VerificationConfig;
 
 class WooCommerceConfigTest extends TestCase

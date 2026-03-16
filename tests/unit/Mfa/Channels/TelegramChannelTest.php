@@ -11,6 +11,7 @@ use WSms\Messaging\Message\TelegramMessage;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Channels\TelegramChannel;
 use WSms\Mfa\OtpGenerator;
+use WSms\Auth\SettingsRepository;
 use WSms\Telegram\TelegramBotClient;
 use WSms\Verification\OtpService;
 use WSms\Verification\VerificationRepository;
@@ -39,6 +40,7 @@ class TelegramChannelTest extends TestCase
 
         $this->setupWpdbMock(null);
         $GLOBALS['_test_options'] = ['wsms_auth_settings' => ['telegram' => ['bot_username' => 'test_bot']]];
+        $this->channel->setSettingsRepository(new SettingsRepository());
         unset($GLOBALS['_test_transients']);
     }
 

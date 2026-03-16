@@ -1,6 +1,6 @@
 <?php
 
-namespace WSms\Integrations\WooCommerce;
+namespace WSms\Verification\Plugin\WooCommerce;
 
 use WSms\Auth\SettingsRepository;
 use WSms\Verification\VerificationConfig;

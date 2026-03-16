@@ -75,18 +75,11 @@ trait HasUserFactor
 
     protected function getConfigValue(string $key, mixed $default = null): mixed
     {
-        $prefix = $this->getConfigPrefix();
-
         if ($this->channelSettingsRepo) {
-            return $this->channelSettingsRepo->channel($prefix)[$key] ?? $default;
+            return $this->channelSettingsRepo->channel($this->getConfigPrefix())[$key] ?? $default;
         }
 
-        // Fallback: apply channel defaults for consistency with SettingsRepository.
-        $raw = get_option('wsms_auth_settings', []);
-        $defaults = SettingsRepository::CHANNEL_DEFAULTS[$prefix] ?? [];
-        $merged = array_merge($defaults, $raw[$prefix] ?? []);
-
-        return $merged[$key] ?? $default;
+        return $default;
     }
 
     /**

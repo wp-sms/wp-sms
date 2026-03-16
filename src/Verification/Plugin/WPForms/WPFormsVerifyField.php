@@ -1,6 +1,6 @@
 <?php
 
-namespace WSms\Integrations\WPForms;
+namespace WSms\Verification\Plugin\WPForms;
 
 use WSms\Verification\EnqueuesVerifyWidget;
 use WSms\Verification\VerificationService;

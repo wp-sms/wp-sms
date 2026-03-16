@@ -207,13 +207,17 @@ class AuthServiceProvider implements ServiceProvider
             return $erasers;
         });
 
-        // Inject settings into MFA channels for consistent config access.
+        // Inject settings into MFA manager and channels for consistent config access.
         $settingsRepo = $container->get('auth.settings');
-        foreach ($container->get('mfa.manager')->getAvailableChannels() as $channel) {
+        $mfaManager = $container->get('mfa.manager');
+        $mfaManager->setSettingsRepository($settingsRepo);
+        foreach ($mfaManager->getAvailableChannels() as $channel) {
             if (method_exists($channel, 'setSettingsRepository')) {
                 $channel->setSettingsRepository($settingsRepo);
             }
         }
+        // MagicLinkChannel is not in getAvailableChannels() — inject separately.
+        $container->get('mfa.channel.magic')->setSettingsRepository($settingsRepo);
 
         // Block wp_mail to placeholder email addresses.
         add_filter('pre_wp_mail', function ($null, $atts) {

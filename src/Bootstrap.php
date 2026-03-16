@@ -18,9 +18,9 @@ use WSms\Container\MessagingServiceProvider;
 use WSms\Container\ContactServiceProvider;
 use WSms\Container\FlowServiceProvider;
 use WSms\Container\IntegrationServiceProvider;
-use WSms\Integrations\ContactForm7\CF7ServiceProvider;
-use WSms\Integrations\WPForms\WPFormsServiceProvider;
-use WSms\Integrations\WooCommerce\WooCommerceServiceProvider;
+use WSms\Verification\Plugin\ContactForm7\CF7ServiceProvider;
+use WSms\Verification\Plugin\WPForms\WPFormsServiceProvider;
+use WSms\Verification\Plugin\WooCommerce\WooCommerceServiceProvider;
 use WSms\Service\Installation\InstallManager;
 
 defined('ABSPATH') || exit;

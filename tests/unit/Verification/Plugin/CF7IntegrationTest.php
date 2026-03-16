@@ -1,10 +1,10 @@
 <?php
 
-namespace WSms\Tests\Unit\Integrations;
+namespace WSms\Tests\Unit\Verification\Plugin;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use WSms\Integrations\ContactForm7\CF7Integration;
+use WSms\Verification\Plugin\ContactForm7\CF7Integration;
 use WSms\Verification\VerificationService;
 
 class CF7IntegrationTest extends TestCase

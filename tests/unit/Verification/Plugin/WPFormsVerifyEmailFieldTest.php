@@ -1,11 +1,11 @@
 <?php
 
-namespace WSms\Tests\Unit\Integrations;
+namespace WSms\Tests\Unit\Verification\Plugin;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use WSms\Integrations\WPForms\VerifyEmailField;
-use WSms\Integrations\WPForms\WPFormsVerifyField;
+use WSms\Verification\Plugin\WPForms\VerifyEmailField;
+use WSms\Verification\Plugin\WPForms\WPFormsVerifyField;
 use WSms\Verification\VerificationService;
 
 class WPFormsVerifyEmailFieldTest extends TestCase
