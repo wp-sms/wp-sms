@@ -6,12 +6,16 @@ use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
 use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountManager;
+use WSms\Messaging\MessageDispatcher;
+use WSms\Messaging\Message\EmailMessage;
 use WSms\Mfa\Contracts\SupportsTokenVerification;
 use WSms\Mfa\OtpGenerator;
 use WSms\Mfa\Support\EmailMasker;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
 use WSms\Support\IpResolver;
+use WSms\Verification\OtpService;
+use WSms\Verification\VerificationRepository;
 
 defined('ABSPATH') || exit;
 
@@ -22,9 +26,12 @@ class EmailChannel extends AbstractOtpChannel implements SupportsTokenVerificati
     public function __construct(
         OtpGenerator $otpGenerator,
         AuditLogger $auditLogger,
+        MessageDispatcher $messageDispatcher,
         MagicLinkChannel $magicLink,
+        VerificationRepository $verificationRepo,
+        ?OtpService $otpService = null,
     ) {
-        parent::__construct($otpGenerator, $auditLogger);
+        parent::__construct($otpGenerator, $auditLogger, $messageDispatcher, $verificationRepo, $otpService);
         $this->magicLink = $magicLink;
     }
 
@@ -224,6 +231,10 @@ class EmailChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         $body = implode("\n", $bodyParts);
         $headers = ['Content-Type: text/html; charset=UTF-8'];
 
-        return wp_mail($identifier, $subject, $body, $headers);
+        $result = $this->messageDispatcher->sendImmediate(
+            new EmailMessage($identifier, $body, $subject, $headers)
+        );
+
+        return $result->success;
     }
 }

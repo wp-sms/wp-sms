@@ -13,6 +13,14 @@ class MfaManager
     /** @var array<string, ChannelInterface> */
     private array $channels = [];
 
+    /** @var UserFactorRepository|null Initialized in constructor or lazily on first access. */
+    private ?UserFactorRepository $factorRepo = null;
+
+    public function __construct(?UserFactorRepository $factorRepo = null)
+    {
+        $this->factorRepo = $factorRepo;
+    }
+
     /**
      * Register a channel implementation.
      */
@@ -42,8 +50,6 @@ class MfaManager
     /**
      * Get channels that are enabled in admin settings.
      *
-     * Dynamically checks each registered channel's ID against settings.
-     *
      * @return ChannelInterface[]
      */
     public function getEnabledChannels(): array
@@ -65,15 +71,7 @@ class MfaManager
      */
     public function hasActiveFactors(int $userId): bool
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
-
-        return (bool) $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$table} WHERE user_id = %d AND status = %s",
-            $userId,
-            ChannelStatus::Active->value,
-        ));
+        return $this->getFactorRepo()->hasActiveFactors($userId);
     }
 
     /**
@@ -83,22 +81,7 @@ class MfaManager
      */
     public function getUserFactors(int $userId): array
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
-        $rows = $wpdb->get_results($wpdb->prepare(
-            "SELECT * FROM {$table} WHERE user_id = %d",
-            $userId,
-        ));
-
-        if (!$rows) {
-            return [];
-        }
-
-        return array_map(
-            fn(object $row) => UserFactor::fromRow($row),
-            $rows,
-        );
+        return $this->getFactorRepo()->getAllForUser($userId);
     }
 
     /**
@@ -136,16 +119,7 @@ class MfaManager
      */
     public function disableAllFactors(int $userId): void
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
-
-        $wpdb->update(
-            $table,
-            ['status' => ChannelStatus::Disabled->value],
-            ['user_id' => $userId],
-        );
-
+        $this->getFactorRepo()->disableAllForUser($userId);
         update_user_meta($userId, 'wsms_mfa_enabled', '0');
     }
 
@@ -154,13 +128,15 @@ class MfaManager
      */
     public function updateFactorMeta(int $userId, string $channelId, array $meta): void
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_user_factors';
+        $this->getFactorRepo()->updateMeta($userId, $channelId, $meta);
+    }
 
-        $wpdb->update(
-            $table,
-            ['meta' => wp_json_encode($meta), 'updated_at' => current_time('mysql', true)],
-            ['user_id' => $userId, 'channel_id' => $channelId, 'status' => ChannelStatus::Active->value],
-        );
+    private function getFactorRepo(): UserFactorRepository
+    {
+        if ($this->factorRepo === null) {
+            $this->factorRepo = new UserFactorRepository();
+        }
+
+        return $this->factorRepo;
     }
 }

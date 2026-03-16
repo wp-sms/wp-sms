@@ -4,6 +4,9 @@ namespace WSms\Database;
 
 use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountManager;
+use WSms\Flow\Storage\FlowExecutionRepository;
+use WSms\Log\MessageLogger;
+use WSms\Verification\VerificationRepository;
 
 defined('ABSPATH') || exit;
 
@@ -13,6 +16,9 @@ class CleanupScheduler
 
     public function __construct(
         private AuditLogger $auditLogger,
+        private FlowExecutionRepository $flowExecutionRepo,
+        private MessageLogger $messageLogger,
+        private VerificationRepository $verificationRepo,
     ) {}
 
     public function schedule(): void
@@ -29,28 +35,28 @@ class CleanupScheduler
 
     public function run(): void
     {
+        $authSettings = get_option('wsms_auth_settings', []);
+
         $this->cleanExpiredVerifications();
-        $this->cleanOldAuditLogs();
-        $this->cleanExpiredPendingUsers();
+        $this->cleanOldAuditLogs($authSettings);
+        $this->cleanExpiredPendingUsers($authSettings);
+        $this->cleanExpiredFlowWaits();
+        $this->cleanOldMessageLogs();
     }
 
     private function cleanExpiredVerifications(): void
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_verifications';
-        $wpdb->query("DELETE FROM {$table} WHERE expires_at < NOW()");
+        $this->verificationRepo->deleteExpired();
     }
 
-    private function cleanOldAuditLogs(): void
+    private function cleanOldAuditLogs(array $settings): void
     {
-        $settings = get_option('wsms_auth_settings', []);
         $days = $settings['log_retention_days'] ?? 30;
         $this->auditLogger->deleteOlderThan($days);
     }
 
-    private function cleanExpiredPendingUsers(): void
+    private function cleanExpiredPendingUsers(array $settings): void
     {
-        $settings = get_option('wsms_auth_settings', []);
 
         if (empty($settings['pending_user_cleanup_enabled'] ?? true)) {
             return;
@@ -82,5 +88,17 @@ class CleanupScheduler
         foreach ($users as $user) {
             wp_delete_user($user->ID);
         }
+    }
+
+    private function cleanExpiredFlowWaits(): void
+    {
+        $this->flowExecutionRepo->cleanupExpiredWaits();
+    }
+
+    private function cleanOldMessageLogs(): void
+    {
+        $settings = get_option('wsms_messaging_settings', []);
+        $days = (int) ($settings['message_log_retention_days'] ?? 90);
+        $this->messageLogger->deleteOlderThan($days);
     }
 }

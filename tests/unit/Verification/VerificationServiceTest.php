@@ -5,8 +5,13 @@ namespace WSms\Tests\Unit\Verification;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
+use WSms\Messaging\Contracts\DeliveryResult;
+use WSms\Messaging\Contracts\TemplateEngineInterface;
+use WSms\Messaging\MessageDispatcher;
+use WSms\Messaging\Template\MustacheEngine;
 use WSms\Mfa\OtpGenerator;
 use WSms\Verification\VerificationConfig;
+use WSms\Verification\VerificationRepository;
 use WSms\Verification\VerificationResult;
 use WSms\Verification\VerificationService;
 use WSms\Verification\VerificationSession;
@@ -32,11 +37,17 @@ class VerificationServiceTest extends TestCase
         $this->session = new VerificationSession($config);
         $this->auditLogger = $this->createMock(AuditLogger::class);
 
+        $messageDispatcher = $this->createMock(MessageDispatcher::class);
+        $messageDispatcher->method('sendImmediate')->willReturn(DeliveryResult::sent());
+
         $this->service = new VerificationService(
             $this->otpGenerator,
             $this->session,
             $this->auditLogger,
             $config,
+            $messageDispatcher,
+            new MustacheEngine(),
+            new VerificationRepository(),
         );
     }
 
@@ -96,16 +107,6 @@ class VerificationServiceTest extends TestCase
 
         $this->assertFalse($result->success);
         $this->assertSame('invalid_identifier', $result->error);
-    }
-
-    public function testSendCodeFailsWhenNoSmsGateway(): void
-    {
-        $GLOBALS['_test_has_action'] = []; // No SMS handler registered.
-
-        $result = $this->service->sendCode('phone', '+1234567890');
-
-        $this->assertFalse($result->success);
-        $this->assertSame('no_sms_gateway', $result->error);
     }
 
     public function testSendCodeReusesExistingSession(): void
@@ -408,11 +409,17 @@ class VerificationServiceTest extends TestCase
     {
         $config = new VerificationConfig();
 
+        $messageDispatcher = $this->createMock(MessageDispatcher::class);
+        $messageDispatcher->method('sendImmediate')->willReturn(DeliveryResult::sent());
+
         return new VerificationService(
             $this->otpGenerator,
             new VerificationSession($config),
             $this->auditLogger,
             $config,
+            $messageDispatcher,
+            new MustacheEngine(),
+            new VerificationRepository(),
         );
     }
 }

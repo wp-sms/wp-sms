@@ -8,10 +8,14 @@ use WSms\Enums\EnrollmentTiming;
 use WSms\Enums\EventType;
 use WSms\Enums\SessionStage;
 use WSms\Enums\VerificationType;
+use WSms\Messaging\MessageDispatcher;
+use WSms\Messaging\Message\EmailMessage;
+use WSms\Messaging\Message\SmsMessage;
+use WSms\Messaging\OtpEmailBuilder;
 use WSms\Mfa\MfaManager;
-use WSms\Mfa\OtpGenerator;
 use WSms\Support\IpResolver;
-use WSms\Verification\VerificationMailer;
+use WSms\Verification\OtpService;
+use WSms\Verification\VerificationRepository;
 
 defined('ABSPATH') || exit;
 
@@ -24,10 +28,11 @@ class AccountManager
 
     public function __construct(
         private AuditLogger $auditLogger,
-        private OtpGenerator $otpGenerator,
+        private OtpService $otpService,
         private MfaManager $mfaManager,
         private AuthSession $authSession,
         private SettingsRepository $settingsRepo,
+        private MessageDispatcher $messageDispatcher,
         private ?ProfileFieldRegistry $fieldRegistry = null,
         private ?TrustedDeviceManager $trustedDevices = null,
     ) {
@@ -571,40 +576,22 @@ class AccountManager
      */
     public function verifyChannelOtp(int $userId, string $channel, string $code): array
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_verifications';
         $verifyType = VerificationType::forChannel($channel)->value;
+        $where = ['user_id' => $userId, 'type' => $verifyType];
 
-        $verification = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$table} WHERE user_id = %d AND type = %s AND used_at IS NULL ORDER BY created_at DESC LIMIT 1",
-            $userId,
-            $verifyType,
-        ));
+        $result = $this->otpService->verifyOtpDetailed($code, $where);
 
-        if (!$verification) {
-            return ['success' => false, 'error' => 'no_verification', 'message' => sprintf(__('No pending %s verification.', 'wp-sms'), $channel)];
+        if ($result['error'] !== null) {
+            return ['success' => false, 'error' => $result['error'], 'message' => match ($result['error']) {
+                'no_verification' => sprintf(__('No pending %s verification.', 'wp-sms'), $channel),
+                'expired'         => __('Verification code has expired.', 'wp-sms'),
+                'max_attempts'    => __('Too many attempts.', 'wp-sms'),
+                'invalid_code'    => __('Invalid verification code.', 'wp-sms'),
+            }];
         }
-
-        if (strtotime($verification->expires_at) < time()) {
-            return ['success' => false, 'error' => 'expired', 'message' => __('Verification code has expired.', 'wp-sms')];
-        }
-
-        if ((int) $verification->attempts >= (int) $verification->max_attempts) {
-            return ['success' => false, 'error' => 'max_attempts', 'message' => __('Too many attempts.', 'wp-sms')];
-        }
-
-        $newAttempts = (int) $verification->attempts + 1;
-
-        if (!$this->otpGenerator->verify($code, $verification->code)) {
-            $wpdb->update($table, ['attempts' => $newAttempts], ['id' => $verification->id]);
-
-            return ['success' => false, 'error' => 'invalid_code', 'message' => __('Invalid verification code.', 'wp-sms')];
-        }
-
-        $wpdb->update($table, ['attempts' => $newAttempts, 'used_at' => gmdate('Y-m-d H:i:s')], ['id' => $verification->id]);
 
         // Apply channel-specific post-verification actions.
-        $this->applyChannelVerified($userId, $channel, $verification->identifier);
+        $this->applyChannelVerified($userId, $channel, $result['verification']->identifier);
         $this->maybeActivateUser($userId);
 
         $channelLabel = ucfirst($channel);
@@ -736,13 +723,12 @@ class AccountManager
 
         $otp = $this->createOtpVerification($userId, $channel, $identifier);
 
-        // Channel-specific delivery.
         if ($channel === 'phone') {
-            do_action('wsms_send_sms', $identifier, sprintf(__('Your verification code is: %s', 'wp-sms'), $otp));
+            $this->messageDispatcher->sendImmediate(
+                new SmsMessage($identifier, sprintf(__('Your verification code is: %s', 'wp-sms'), $otp))
+            );
         } elseif ($channel === 'email') {
             $this->sendVerificationEmail($identifier, $otp, $channel);
-        } else {
-            do_action('wsms_channel_verification_created', $userId, $channel, $identifier, $otp);
         }
     }
 
@@ -777,31 +763,17 @@ class AccountManager
      */
     private function createOtpVerification(int $userId, string $channel, string $identifier): string
     {
-        global $wpdb;
-
         $settings = $this->settingsRepo->all();
         $channelSettings = $settings[$channel] ?? [];
-        $codeLength = (int) ($channelSettings['code_length'] ?? 6);
-        $expiry = (int) ($channelSettings['expiry'] ?? 300);
-        $maxAttempts = (int) ($channelSettings['max_attempts'] ?? 3);
 
-        $otp = $this->otpGenerator->generate($codeLength);
-        $verifyType = VerificationType::forChannel($channel)->value;
-        do_action('wsms_otp_generated', $userId, $otp, $verifyType);
-        $hashed = $this->otpGenerator->hash($otp);
-
-        $wpdb->insert($wpdb->prefix . 'wsms_verifications', [
-            'user_id'      => $userId,
-            'type'         => $verifyType,
-            'identifier'   => $identifier,
-            'code'         => $hashed,
-            'attempts'     => 0,
-            'max_attempts' => $maxAttempts,
-            'expires_at'   => gmdate('Y-m-d H:i:s', time() + $expiry),
-            'created_at'   => current_time('mysql', true),
-        ]);
-
-        return $otp;
+        return $this->otpService->createOtp(
+            $userId,
+            VerificationType::forChannel($channel)->value,
+            $identifier,
+            (int) ($channelSettings['code_length'] ?? 6),
+            (int) ($channelSettings['expiry'] ?? 300),
+            (int) ($channelSettings['max_attempts'] ?? 3),
+        );
     }
 
     /**
@@ -823,7 +795,7 @@ class AccountManager
         $settings = $this->settingsRepo->all();
         $expiry = (int) (($settings[$channel] ?? [])['expiry'] ?? 300);
 
-        VerificationMailer::sendOtp($email, $otp, $expiry);
+        $this->messageDispatcher->sendImmediate(OtpEmailBuilder::build($email, $otp, $expiry));
     }
 
     /**
@@ -943,23 +915,17 @@ class AccountManager
      */
     private function consumeVerification(string $token, string $type): object|array
     {
-        $verification = $this->lookupVerification($token, $type);
+        $result = $this->otpService->consumeTokenDetailed($token, $type);
 
-        if ($verification === null) {
-            return ['success' => false, 'error' => 'invalid_token', 'message' => __('Invalid or expired token.', 'wp-sms')];
+        if ($result['error'] !== null) {
+            return ['success' => false, 'error' => $result['error'], 'message' => match ($result['error']) {
+                'expired_token'  => __('This token has expired.', 'wp-sms'),
+                'used_token'     => __('This token has already been used.', 'wp-sms'),
+                default          => __('Invalid or expired token.', 'wp-sms'),
+            }];
         }
 
-        if ($this->isVerificationExpired($verification)) {
-            return ['success' => false, 'error' => 'expired_token', 'message' => __('This token has expired.', 'wp-sms')];
-        }
-
-        if ($verification->used_at !== null) {
-            return ['success' => false, 'error' => 'used_token', 'message' => __('This token has already been used.', 'wp-sms')];
-        }
-
-        $this->markVerificationUsed($verification->id);
-
-        return $verification;
+        return $result['verification'];
     }
 
     /**
@@ -967,22 +933,7 @@ class AccountManager
      */
     private function createVerification(int $userId, string $type, string $identifier): void
     {
-        global $wpdb;
-
-        $token = $this->otpGenerator->generateToken();
-        $hashedToken = $this->otpGenerator->hash($token);
-        $expiresAt = gmdate('Y-m-d H:i:s', time() + 3600);
-
-        $wpdb->insert(
-            $wpdb->prefix . 'wsms_verifications',
-            [
-                'user_id'    => $userId,
-                'type'       => $type,
-                'identifier' => $identifier,
-                'code'       => $hashedToken,
-                'expires_at' => $expiresAt,
-            ],
-        );
+        $token = $this->otpService->createToken($userId, $type, $identifier, 3600);
 
         $baseUrl = get_site_url();
         $authSettings = $this->settingsRepo->all();
@@ -1015,35 +966,25 @@ class AccountManager
             );
         }
 
-        wp_mail($identifier, $subject, $message, $headers);
+        $this->messageDispatcher->sendImmediate(
+            new EmailMessage($identifier, $message, $subject, $headers)
+        );
     }
 
     private function isVerificationOnCooldown(int $userId, string $type, int $cooldownSeconds = 60): bool
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_verifications';
-
-        $cutoff = gmdate('Y-m-d H:i:s', time() - $cooldownSeconds);
-
-        return (bool) $wpdb->get_row($wpdb->prepare(
-            "SELECT id FROM {$table} WHERE user_id = %d AND type = %s AND used_at IS NULL AND created_at > %s LIMIT 1",
-            $userId,
-            $type,
-            $cutoff,
-        ));
+        return $this->otpService->isOnCooldown([
+            'user_id' => $userId,
+            'type'    => $type,
+        ], $cooldownSeconds);
     }
 
     private function invalidateVerifications(int $userId, string $type): void
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_verifications';
-
-        $wpdb->query($wpdb->prepare(
-            "UPDATE {$table} SET used_at = %s WHERE user_id = %d AND type = %s AND used_at IS NULL",
-            gmdate('Y-m-d H:i:s'),
-            $userId,
-            $type,
-        ));
+        $this->otpService->invalidatePending([
+            'user_id' => $userId,
+            'type'    => $type,
+        ]);
     }
 
     /**
@@ -1065,35 +1006,4 @@ class AccountManager
         return !empty(get_users($args));
     }
 
-    private function lookupVerification(string $token, string $type): ?object
-    {
-        global $wpdb;
-
-        $hashedToken = $this->otpGenerator->hash($token);
-        $table = $wpdb->prefix . 'wsms_verifications';
-
-        $row = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$table} WHERE code = %s AND type = %s LIMIT 1",
-            $hashedToken,
-            $type,
-        ));
-
-        return $row ?: null;
-    }
-
-    private function isVerificationExpired(object $verification): bool
-    {
-        return strtotime($verification->expires_at) < time();
-    }
-
-    private function markVerificationUsed(int $id): void
-    {
-        global $wpdb;
-
-        $wpdb->update(
-            $wpdb->prefix . 'wsms_verifications',
-            ['used_at' => gmdate('Y-m-d H:i:s')],
-            ['id' => $id],
-        );
-    }
 }

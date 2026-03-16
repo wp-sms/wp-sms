@@ -11,6 +11,7 @@ use WSms\Mfa\Channels\TotpChannel;
 use WSms\Mfa\MfaManager;
 use WSms\Mfa\OtpGenerator;
 use WSms\Mfa\SecretEncryptor;
+use WSms\Mfa\UserFactorRepository;
 use WSms\Telegram\TelegramBotClient;
 
 defined('ABSPATH') || exit;
@@ -25,19 +26,25 @@ class MfaServiceProvider implements ServiceProvider
     /** {@inheritDoc} */
     public function register(ServiceContainer $container): void
     {
-        $container->register('mfa.manager', function () {
-            return new MfaManager();
+        $container->register('mfa.factor_repository', fn () => new UserFactorRepository());
+
+        $container->register('mfa.manager', function () use ($container) {
+            return new MfaManager(
+                $container->get('mfa.factor_repository'),
+            );
         });
 
-        $container->register('mfa.otp_generator', function () {
-            return new OtpGenerator();
-        });
+        // Alias — canonical instance lives in VerificationServiceProvider.
+        $container->register('mfa.otp_generator', fn () => $container->get('verification.otp_generator'));
 
         // MagicLinkChannel is an internal delegate, not registered as a standalone channel.
         $container->register('mfa.channel.magic', function () use ($container) {
             return new MagicLinkChannel(
                 $container->get('mfa.otp_generator'),
                 $container->get('audit.logger'),
+                $container->get('message.dispatcher'),
+                $container->get('verification.repository'),
+                $container->get('verification.otp_service'),
             );
         });
 
@@ -45,7 +52,10 @@ class MfaServiceProvider implements ServiceProvider
             return new PhoneChannel(
                 $container->get('mfa.otp_generator'),
                 $container->get('audit.logger'),
+                $container->get('message.dispatcher'),
                 $container->get('mfa.channel.magic'),
+                $container->get('verification.repository'),
+                $container->get('verification.otp_service'),
             );
         });
 
@@ -53,7 +63,10 @@ class MfaServiceProvider implements ServiceProvider
             return new EmailChannel(
                 $container->get('mfa.otp_generator'),
                 $container->get('audit.logger'),
+                $container->get('message.dispatcher'),
                 $container->get('mfa.channel.magic'),
+                $container->get('verification.repository'),
+                $container->get('verification.otp_service'),
             );
         });
 
@@ -75,7 +88,9 @@ class MfaServiceProvider implements ServiceProvider
             return new TelegramChannel(
                 $container->get('mfa.otp_generator'),
                 $container->get('audit.logger'),
-                $container->get('telegram.bot_client'),
+                $container->get('message.dispatcher'),
+                $container->get('verification.repository'),
+                $container->get('verification.otp_service'),
             );
         });
 
@@ -101,6 +116,16 @@ class MfaServiceProvider implements ServiceProvider
         $manager->registerChannel($container->get('mfa.channel.backup'));
         $manager->registerChannel($container->get('mfa.channel.telegram'));
         $manager->registerChannel($container->get('mfa.channel.totp'));
+        // Inject UserFactorRepository into channels.
+        $factorRepo = $container->get('mfa.factor_repository');
+        foreach ($manager->getAvailableChannels() as $channel) {
+            if (method_exists($channel, 'setUserFactorRepository')) {
+                $channel->setUserFactorRepository($factorRepo);
+            }
+        }
+        // Also inject into internal magic link channel.
+        $container->get('mfa.channel.magic')->setUserFactorRepository($factorRepo);
+
         // MagicLinkChannel is NOT registered — it's used internally by phone/email channels.
     }
 }

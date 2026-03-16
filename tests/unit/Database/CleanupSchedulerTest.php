@@ -5,16 +5,23 @@ namespace WSms\Tests\Unit\Database;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Database\CleanupScheduler;
+use WSms\Flow\Storage\FlowExecutionRepository;
+use WSms\Log\MessageLogger;
+use WSms\Verification\VerificationRepository;
 
 class CleanupSchedulerTest extends TestCase
 {
     private CleanupScheduler $scheduler;
     private AuditLogger $auditLogger;
+    private VerificationRepository $verificationRepo;
 
     protected function setUp(): void
     {
         $this->auditLogger = $this->createMock(AuditLogger::class);
-        $this->scheduler = new CleanupScheduler($this->auditLogger);
+        $flowExecRepo = $this->createMock(FlowExecutionRepository::class);
+        $messageLogger = $this->createMock(MessageLogger::class);
+        $this->verificationRepo = $this->createMock(VerificationRepository::class);
+        $this->scheduler = new CleanupScheduler($this->auditLogger, $flowExecRepo, $messageLogger, $this->verificationRepo);
 
         $GLOBALS['_test_wp_next_scheduled'] = [];
         $GLOBALS['_test_wp_scheduled_events'] = [];
@@ -85,7 +92,6 @@ class CleanupSchedulerTest extends TestCase
             'log_retention_days' => 30,
         ];
 
-        // Mock $wpdb for the verifications cleanup.
         $wpdb = $this->createWpdbMock();
         $GLOBALS['wpdb'] = $wpdb;
 
@@ -165,12 +171,10 @@ class CleanupSchedulerTest extends TestCase
         $user->ID = 12;
         $GLOBALS['_test_get_users_result'] = [$user];
 
-        // No TTL setting — should default to 24h.
         $GLOBALS['_test_options']['wsms_auth_settings'] = [];
 
         $this->scheduler->run();
 
-        // get_users was called (cleanup is enabled by default), users returned are deleted.
         $this->assertContains(12, $GLOBALS['_test_deleted_users']);
         unset($GLOBALS['wpdb']);
     }
@@ -180,7 +184,6 @@ class CleanupSchedulerTest extends TestCase
         $wpdb = $this->createWpdbMock();
         $GLOBALS['wpdb'] = $wpdb;
 
-        // No users returned by get_users.
         $GLOBALS['_test_get_users_result'] = [];
         $GLOBALS['_test_options']['wsms_auth_settings'] = [];
 
@@ -198,6 +201,11 @@ class CleanupSchedulerTest extends TestCase
             public function query(string $sql): int
             {
                 return 0;
+            }
+
+            public function prepare(string $sql, ...$args): string
+            {
+                return $sql;
             }
         };
 

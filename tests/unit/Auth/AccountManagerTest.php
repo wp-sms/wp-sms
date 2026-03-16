@@ -8,47 +8,43 @@ use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AuthSession;
 use WSms\Enums\VerificationType;
+use WSms\Messaging\Contracts\DeliveryResult;
+use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\MfaManager;
 use WSms\Auth\SettingsRepository;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpService;
 
 class AccountManagerTest extends TestCase
 {
     private AccountManager $manager;
     private MockObject&AuditLogger $auditLogger;
-    private MockObject&OtpGenerator $otpGenerator;
+    private MockObject&OtpService $otpService;
     private MockObject&MfaManager $mfaManager;
     private MockObject&AuthSession $authSession;
 
     protected function setUp(): void
     {
         $this->auditLogger = $this->createMock(AuditLogger::class);
-        $this->otpGenerator = $this->createMock(OtpGenerator::class);
+        $this->otpService = $this->createMock(OtpService::class);
         $this->mfaManager = $this->createMock(MfaManager::class);
         $this->authSession = $this->createMock(AuthSession::class);
 
         $this->manager = new AccountManager(
             $this->auditLogger,
-            $this->otpGenerator,
+            $this->otpService,
             $this->mfaManager,
             $this->authSession,
             new SettingsRepository(),
+            (function () {
+                $d = $this->createMock(MessageDispatcher::class);
+                $d->method('sendImmediate')->willReturn(DeliveryResult::sent());
+                return $d;
+            })(),
         );
 
-        $this->otpGenerator->method('generateToken')->willReturn('test-token-abc');
-        $this->otpGenerator->method('hash')->willReturn('hashed-token-abc');
+        $this->otpService->method('createToken')->willReturn('test-token-abc');
+        $this->otpService->method('createOtp')->willReturn('123456');
         $this->authSession->method('create')->willReturn('reg-session-token');
-
-        // Stub $wpdb.
-        $wpdb = new \stdClass();
-        $wpdb->prefix = 'wp_';
-        $wpdb->insert_id = 1;
-        $GLOBALS['wpdb'] = $wpdb;
-
-        // Allow insert to succeed by default.
-        $wpdb->insert = function () {
-            return true;
-        };
 
         unset(
             $GLOBALS['_test_wp_insert_user_result'],
@@ -63,7 +59,6 @@ class AccountManagerTest extends TestCase
     protected function tearDown(): void
     {
         unset(
-            $GLOBALS['wpdb'],
             $GLOBALS['_test_wp_insert_user_result'],
             $GLOBALS['_test_wp_insert_user_data'],
             $GLOBALS['_test_wp_check_password_result'],
@@ -78,7 +73,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserSucceeds(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 42;
-        $this->stubWpdb();
 
         $this->auditLogger->expects($this->once())->method('log');
 
@@ -95,7 +89,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserRequiresMfaOnRegistration(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 10;
-        $this->stubWpdb();
 
         // Simulate on_registration enrollment timing.
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
@@ -115,7 +108,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserFailsWithDuplicateEmail(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = new \WP_Error('existing_user_email', 'Email already exists.');
-        $this->stubWpdb();
 
         $result = $this->manager->registerUser([
             'email'    => 'taken@example.com',
@@ -145,7 +137,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserSucceedsWhenPhoneRequiredAndProvided(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 50;
-        $this->stubWpdb();
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
@@ -199,7 +190,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserSocialLoginSkipsEmailRequirement(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 50;
-        $this->stubWpdb();
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
@@ -216,7 +206,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserSocialLoginSkipsPasswordRequirement(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 51;
-        $this->stubWpdb();
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
@@ -234,7 +223,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserNoPendingWhenVerifyAtSignupDisabled(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 60;
-        $this->stubWpdb();
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
@@ -256,7 +244,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserPendingEmailWhenVerifyAtSignupEnabled(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 61;
-        $this->stubWpdb();
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
@@ -277,7 +264,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserPendingPhoneWhenVerifyAtSignupEnabled(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 62;
-        $this->stubWpdb();
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
@@ -299,7 +285,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserBothPendingWhenBothEnabled(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 63;
-        $this->stubWpdb();
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
@@ -328,8 +313,8 @@ class AccountManagerTest extends TestCase
     {
         $user = $this->makeUser(5);
         $GLOBALS['_test_get_user_by_result'] = $user;
-        $this->stubWpdb();
 
+        $this->otpService->expects($this->once())->method('createToken');
         $this->auditLogger->expects($this->once())->method('log');
 
         // Should not throw.
@@ -353,7 +338,7 @@ class AccountManagerTest extends TestCase
     public function testCompletePasswordResetSucceeds(): void
     {
         $verification = $this->makeVerification(1, VerificationType::PasswordReset->value);
-        $this->stubWpdbLookup($verification);
+        $this->otpService->method('consumeTokenDetailed')->willReturn(['verification' => $verification, 'error' => null]);
 
         $this->auditLogger->expects($this->once())->method('log');
 
@@ -365,8 +350,7 @@ class AccountManagerTest extends TestCase
 
     public function testCompletePasswordResetFailsWithExpiredToken(): void
     {
-        $verification = $this->makeVerification(1, VerificationType::PasswordReset->value, expired: true);
-        $this->stubWpdbLookup($verification);
+        $this->otpService->method('consumeTokenDetailed')->willReturn(['verification' => null, 'error' => 'expired_token']);
 
         $result = $this->manager->completePasswordReset('test-token-abc', 'NewPass1!');
 
@@ -376,8 +360,7 @@ class AccountManagerTest extends TestCase
 
     public function testCompletePasswordResetFailsWithUsedToken(): void
     {
-        $verification = $this->makeVerification(1, VerificationType::PasswordReset->value, used: true);
-        $this->stubWpdbLookup($verification);
+        $this->otpService->method('consumeTokenDetailed')->willReturn(['verification' => null, 'error' => 'used_token']);
 
         $result = $this->manager->completePasswordReset('test-token-abc', 'NewPass1!');
 
@@ -387,7 +370,7 @@ class AccountManagerTest extends TestCase
 
     public function testCompletePasswordResetFailsWithInvalidToken(): void
     {
-        $this->stubWpdbLookup(null);
+        $this->otpService->method('consumeTokenDetailed')->willReturn(['verification' => null, 'error' => 'invalid_token']);
 
         $result = $this->manager->completePasswordReset('bad-token', 'NewPass1!');
 
@@ -400,7 +383,7 @@ class AccountManagerTest extends TestCase
     public function testVerifyEmailSucceeds(): void
     {
         $verification = $this->makeVerification(3, VerificationType::EmailVerify->value);
-        $this->stubWpdbLookup($verification);
+        $this->otpService->method('consumeTokenDetailed')->willReturn(['verification' => $verification, 'error' => null]);
 
         $this->auditLogger->expects($this->once())->method('log');
 
@@ -421,7 +404,6 @@ class AccountManagerTest extends TestCase
 
     public function testUpdateProfilePhoneTriggersVerification(): void
     {
-        $this->stubWpdb();
 
         // Set current phone to something different so the change is detected.
         $GLOBALS['_test_user_meta'][1] = ['wsms_phone' => '+0000000000'];
@@ -438,7 +420,6 @@ class AccountManagerTest extends TestCase
 
     public function testUpdateProfileEmailTriggersVerification(): void
     {
-        $this->stubWpdb();
 
         // Set current email to something different so the change is detected.
         $user = $this->makeUser(1);
@@ -483,7 +464,6 @@ class AccountManagerTest extends TestCase
 
     public function testUpdateProfilePhonePreservesOldPhone(): void
     {
-        $this->stubWpdb();
         $GLOBALS['_test_user_meta'][1] = ['wsms_phone' => '+1111111111', 'wsms_phone_verified' => '1'];
 
         $result = $this->manager->updateProfile(1, ['phone' => '+2222222222']);
@@ -499,7 +479,6 @@ class AccountManagerTest extends TestCase
 
     public function testCancelPendingChangeRemovesPendingMeta(): void
     {
-        $this->stubWpdb();
         $GLOBALS['_test_user_meta'][1] = [
             'wsms_phone'         => '+1111111111',
             'wsms_pending_phone' => '+2222222222',
@@ -578,7 +557,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserWithPlaceholderEmailWhenEmailNotRequired(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 100;
-        $this->stubWpdb();
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'email'    => ['required_at_signup' => false],
@@ -601,7 +579,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserWithPlaceholderSkipsEmailVerification(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 101;
-        $this->stubWpdb();
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'email'    => ['required_at_signup' => false, 'verify_at_signup' => true],
@@ -632,7 +609,6 @@ class AccountManagerTest extends TestCase
         ];
 
         $GLOBALS['_test_wp_insert_user_result'] = 102;
-        $this->stubWpdb();
 
         $result = $this->manager->registerUser([
             'phone' => '+1234567890',
@@ -682,7 +658,7 @@ class AccountManagerTest extends TestCase
     public function testVerifyEmailClearsPlaceholderFlag(): void
     {
         $verification = $this->makeVerification(202, VerificationType::EmailVerify->value);
-        $this->stubWpdbLookup($verification);
+        $this->otpService->method('consumeTokenDetailed')->willReturn(['verification' => $verification, 'error' => null]);
 
         $GLOBALS['_test_user_meta'][202] = ['wsms_email_placeholder' => '1'];
 
@@ -697,7 +673,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserSetsActiveStatusWhenNoVerificationRequired(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 70;
-        $this->stubWpdb();
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
@@ -715,7 +690,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserSetsPendingStatusWhenEmailVerifyRequired(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 71;
-        $this->stubWpdb();
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
@@ -734,7 +708,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserSetsPendingStatusWhenPhoneVerifyRequired(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 72;
-        $this->stubWpdb();
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
@@ -753,7 +726,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserPhoneOnlySetsActiveWhenNoVerify(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 73;
-        $this->stubWpdb();
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'email'    => ['required_at_signup' => false],
@@ -772,7 +744,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserPhoneOnlySetsPendingWhenVerifyRequired(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 74;
-        $this->stubWpdb();
 
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'email'    => ['required_at_signup' => false, 'verify_at_signup' => true],
@@ -903,7 +874,6 @@ class AccountManagerTest extends TestCase
 
         // After deletion, wp_insert_user should succeed.
         $GLOBALS['_test_wp_insert_user_result'] = 91;
-        $this->stubWpdb();
 
         $result = $this->manager->registerUser([
             'email'    => 'reuse@example.com',
@@ -934,7 +904,6 @@ class AccountManagerTest extends TestCase
 
         // wp_insert_user will fail because email is still taken.
         $GLOBALS['_test_wp_insert_user_result'] = new \WP_Error('existing_user_email', 'Email exists.');
-        $this->stubWpdb();
 
         $result = $this->manager->registerUser([
             'email'    => 'recent@example.com',
@@ -968,7 +937,6 @@ class AccountManagerTest extends TestCase
         ];
 
         $GLOBALS['_test_wp_insert_user_result'] = 94;
-        $this->stubWpdb();
 
         $result = $this->manager->registerUser([
             'phone' => '+1234567890',
@@ -1015,7 +983,6 @@ class AccountManagerTest extends TestCase
         $GLOBALS['_test_options']['wsms_auth_settings'] = [
             'registration_fields' => ['email', 'password'],
         ];
-        $this->stubWpdb();
 
         $result = $this->manager->registerUser([
             'email'    => 'withpass@example.com',
@@ -1029,7 +996,6 @@ class AccountManagerTest extends TestCase
     public function testRegisterUserSocialLoginNoUsablePasswordFlag(): void
     {
         $GLOBALS['_test_wp_insert_user_result'] = 121;
-        $this->stubWpdb();
 
         $result = $this->manager->registerUser(['phone' => '+971500000000'], socialLogin: true);
 
@@ -1054,7 +1020,7 @@ class AccountManagerTest extends TestCase
     public function testCompletePasswordResetSetsUsablePasswordFlag(): void
     {
         $verification = $this->makeVerification(503, VerificationType::PasswordReset->value);
-        $this->stubWpdbLookup($verification);
+        $this->otpService->method('consumeTokenDetailed')->willReturn(['verification' => $verification, 'error' => null]);
 
         $GLOBALS['_test_user_meta'][503] = ['wsms_has_usable_password' => '0'];
 
@@ -1095,74 +1061,4 @@ class AccountManagerTest extends TestCase
         return $v;
     }
 
-    private function stubWpdb(): void
-    {
-        $wpdb = $GLOBALS['wpdb'];
-
-        // Make insert callable as method.
-        if (!method_exists($wpdb, 'insert')) {
-            $GLOBALS['wpdb'] = new class {
-                public string $prefix = 'wp_';
-                public int $insert_id = 1;
-
-                public function insert($table, $data, $format = null): bool
-                {
-                    return true;
-                }
-
-                public function prepare(string $query, ...$args): string
-                {
-                    return $query;
-                }
-
-                public function get_row($query): ?object
-                {
-                    return null;
-                }
-
-                public function update($table, $data, $where, $format = null, $whereFormat = null): bool
-                {
-                    return true;
-                }
-
-                public function query($query)
-                {
-                    return 1;
-                }
-            };
-        }
-    }
-
-    private function stubWpdbLookup(?object $result): void
-    {
-        $GLOBALS['wpdb'] = new class($result) {
-            public string $prefix = 'wp_';
-            private ?object $lookupResult;
-
-            public function __construct(?object $lookupResult)
-            {
-                $this->lookupResult = $lookupResult;
-            }
-
-            public function insert($table, $data, $format = null): bool
-            {
-                return true;
-            }
-
-            public function prepare(string $query, ...$args): string
-            {
-                return $query;
-            }
-
-            public function get_row($query): ?object
-            {
-                return $this->lookupResult;
-            }
-
-            public function update($table, $data, $where, $format = null, $whereFormat = null): bool
-            {
-                return true;
-            }
-        };
-    }
 }

@@ -6,12 +6,16 @@ use WSms\Auth\AccountManager;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
 use WSms\Audit\AuditLogger;
+use WSms\Messaging\MessageDispatcher;
+use WSms\Messaging\Message\SmsMessage;
 use WSms\Mfa\Contracts\SupportsEnrollmentConfirmation;
 use WSms\Mfa\Contracts\SupportsTokenVerification;
 use WSms\Mfa\OtpGenerator;
 use WSms\Mfa\Support\PhoneMasker;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
+use WSms\Verification\OtpService;
+use WSms\Verification\VerificationRepository;
 
 defined('ABSPATH') || exit;
 
@@ -22,9 +26,12 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
     public function __construct(
         OtpGenerator $otpGenerator,
         AuditLogger $auditLogger,
+        MessageDispatcher $messageDispatcher,
         MagicLinkChannel $magicLink,
+        VerificationRepository $verificationRepo,
+        ?OtpService $otpService = null,
     ) {
-        parent::__construct($otpGenerator, $auditLogger);
+        parent::__construct($otpGenerator, $auditLogger, $messageDispatcher, $verificationRepo, $otpService);
         $this->magicLink = $magicLink;
     }
 
@@ -207,16 +214,15 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
     /** {@inheritDoc} */
     protected function deliver(int $userId, string $code, string $identifier): bool
     {
-        // Used only for enrollment verification OTP.
         $message = sprintf(
             __('Your verification code is: %s. It expires in %d minutes.', 'wp-sms'),
             $code,
             (int) ($this->getConfigValue('expiry', 300) / 60),
         );
 
-        do_action('wsms_send_sms', $identifier, $message);
+        $result = $this->messageDispatcher->sendImmediate(new SmsMessage($identifier, $message));
 
-        return true;
+        return $result->success;
     }
 
     /** {@inheritDoc} */
@@ -262,10 +268,10 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
 
         $parts[] = sprintf(__('Expires in %d minutes.', 'wp-sms'), (int) ($expiry / 60));
 
-        $message = implode(' ', $parts);
+        $body = implode(' ', $parts);
 
-        do_action('wsms_send_sms', $identifier, $message);
+        $result = $this->messageDispatcher->sendImmediate(new SmsMessage($identifier, $body));
 
-        return true;
+        return $result->success;
     }
 }

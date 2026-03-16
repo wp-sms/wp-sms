@@ -6,20 +6,32 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
+use WSms\Messaging\Contracts\DeliveryResult;
+use WSms\Messaging\Message\EmailMessage;
+use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Channels\MagicLinkChannel;
 use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpService;
+use WSms\Verification\VerificationRepository;
 
 class MagicLinkChannelTest extends TestCase
 {
     private MagicLinkChannel $channel;
     private MockObject&OtpGenerator $otpGenerator;
     private MockObject&AuditLogger $auditLogger;
+    private MockObject&MessageDispatcher $dispatcher;
+    private MockObject&VerificationRepository $verificationRepo;
 
     protected function setUp(): void
     {
         $this->otpGenerator = $this->createMock(OtpGenerator::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
-        $this->channel = new MagicLinkChannel($this->otpGenerator, $this->auditLogger);
+        $this->dispatcher = $this->createMock(MessageDispatcher::class);
+        $this->dispatcher->method('sendImmediate')->willReturn(DeliveryResult::sent());
+        $this->verificationRepo = $this->createMock(VerificationRepository::class);
+        $otpService = $this->createMock(OtpService::class);
+        $otpService->method('createToken')->willReturn('abc123token');
+        $this->channel = new MagicLinkChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->verificationRepo, $otpService);
 
         $this->setupWpdbMock(null);
     }
@@ -95,14 +107,8 @@ class MagicLinkChannelTest extends TestCase
             'used_at'    => null,
         ];
 
-        $wpdb = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get_row', 'prepare', 'update'])
-            ->getMock();
-        $wpdb->prefix = 'wp_';
-        $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturn($verification);
-        $wpdb->method('update')->willReturn(1);
-        $GLOBALS['wpdb'] = $wpdb;
+        $this->verificationRepo->method('findByCodeAndChannel')->willReturn($verification);
+        $this->verificationRepo->method('markUsed')->willReturn(true);
 
         $this->assertTrue($this->channel->verify(1, $token));
     }
@@ -123,13 +129,7 @@ class MagicLinkChannelTest extends TestCase
             'used_at'    => null,
         ];
 
-        $wpdb = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get_row', 'prepare'])
-            ->getMock();
-        $wpdb->prefix = 'wp_';
-        $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturn($verification);
-        $GLOBALS['wpdb'] = $wpdb;
+        $this->verificationRepo->method('findByCodeAndChannel')->willReturn($verification);
 
         $this->assertFalse($this->channel->verify(1, $token));
     }
@@ -137,14 +137,7 @@ class MagicLinkChannelTest extends TestCase
     public function testVerifyFailsWhenNoVerification(): void
     {
         $this->otpGenerator->method('hash')->willReturn('somehash');
-
-        $wpdb = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get_row', 'prepare'])
-            ->getMock();
-        $wpdb->prefix = 'wp_';
-        $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturn(null);
-        $GLOBALS['wpdb'] = $wpdb;
+        $this->verificationRepo->method('findByCodeAndChannel')->willReturn(null);
 
         $this->assertFalse($this->channel->verify(1, 'badtoken'));
     }
@@ -165,14 +158,8 @@ class MagicLinkChannelTest extends TestCase
             'used_at'    => null,
         ];
 
-        $wpdb = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get_row', 'prepare', 'update'])
-            ->getMock();
-        $wpdb->prefix = 'wp_';
-        $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturn($verification);
-        $wpdb->method('update')->willReturn(1);
-        $GLOBALS['wpdb'] = $wpdb;
+        $this->verificationRepo->method('findByCodeAndChannel')->willReturn($verification);
+        $this->verificationRepo->method('markUsed')->willReturn(true);
 
         $this->assertSame(42, $this->channel->verifyTokenAndResolveUser($token));
     }
@@ -190,15 +177,47 @@ class MagicLinkChannelTest extends TestCase
             'used_at'    => null,
         ];
 
-        $wpdb = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get_row', 'prepare'])
-            ->getMock();
-        $wpdb->prefix = 'wp_';
-        $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturn($verification);
-        $GLOBALS['wpdb'] = $wpdb;
+        $this->verificationRepo->method('findByCodeAndChannel')->willReturn($verification);
 
         $this->assertNull($this->channel->verifyTokenAndResolveUser('badtoken'));
+    }
+
+    public function testSendChallengeSendsEmailViaDispatcher(): void
+    {
+        $this->overrideGetUserdata(1, 'user@example.com');
+
+        $factorRow = $this->makeFactorRow(ChannelStatus::Active);
+
+        $wpdb = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var'])
+            ->getMock();
+        $wpdb->prefix = 'wp_';
+        $wpdb->insert_id = 1;
+        $wpdb->rows_affected = 1;
+        $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
+        $wpdb->method('get_row')->willReturnOnConsecutiveCalls($factorRow, null);
+        $wpdb->method('insert')->willReturn(1);
+        $wpdb->method('update')->willReturn(1);
+        $wpdb->method('query')->willReturn(1);
+        $wpdb->method('get_var')->willReturn(0);
+        $GLOBALS['wpdb'] = $wpdb;
+
+        $this->otpGenerator->method('generateToken')->willReturn('abc123token');
+        $this->otpGenerator->method('hash')->willReturn('hashed');
+
+        $dispatcher = $this->createMock(MessageDispatcher::class);
+        $dispatcher->expects($this->once())
+            ->method('sendImmediate')
+            ->with($this->callback(fn($msg) => $msg instanceof EmailMessage
+                && $msg->getRecipient() === 'user@example.com'
+            ))
+            ->willReturn(DeliveryResult::sent());
+
+        $verificationRepo = $this->createMock(VerificationRepository::class);
+        $otpSvc = $this->createMock(OtpService::class);
+        $otpSvc->method('createToken')->willReturn('abc123token');
+        $channel = new MagicLinkChannel($this->otpGenerator, $this->auditLogger, $dispatcher, $verificationRepo, $otpSvc);
+        $channel->sendChallenge(1);
     }
 
     public function testSendChallengeFailsWhenNotEnrolled(): void

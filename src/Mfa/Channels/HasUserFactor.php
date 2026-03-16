@@ -5,6 +5,7 @@ namespace WSms\Mfa\Channels;
 use WSms\Auth\SettingsRepository;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
+use WSms\Mfa\UserFactorRepository;
 use WSms\Mfa\ValueObjects\UserFactor;
 
 /**
@@ -15,9 +16,15 @@ use WSms\Mfa\ValueObjects\UserFactor;
 trait HasUserFactor
 {
     private ?SettingsRepository $channelSettingsRepo = null;
+    private ?UserFactorRepository $factorRepo = null;
 
     /** @var array<int, ?UserFactor> Per-userId cache for the current request. */
     private array $factorCache = [];
+
+    public function setUserFactorRepository(UserFactorRepository $factorRepo): void
+    {
+        $this->factorRepo = $factorRepo;
+    }
 
     /**
      * Get the user's factor for this channel (cached per request).
@@ -28,18 +35,7 @@ trait HasUserFactor
             return $this->factorCache[$userId];
         }
 
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
-
-        $row = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$table} WHERE user_id = %d AND channel_id = %s
-             ORDER BY created_at DESC LIMIT 1",
-            $userId,
-            $this->getId(),
-        ));
-
-        $factor = $row ? UserFactor::fromRow($row) : null;
+        $factor = $this->getFactorRepo()->findLatest($userId, $this->getId());
         $this->factorCache[$userId] = $factor;
 
         return $factor;
@@ -50,23 +46,10 @@ trait HasUserFactor
      */
     protected function createFactor(int $userId, ChannelStatus $status, array $meta = []): int
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
-        $now = current_time('mysql', true);
-
-        $wpdb->insert($table, [
-            'user_id'    => $userId,
-            'channel_id' => $this->getId(),
-            'status'     => $status->value,
-            'meta'       => wp_json_encode($meta),
-            'created_at' => $now,
-            'updated_at' => $now,
-        ]);
-
+        $id = $this->getFactorRepo()->create($userId, $this->getId(), $status, $meta);
         unset($this->factorCache[$userId]);
 
-        return (int) $wpdb->insert_id;
+        return $id;
     }
 
     /**
@@ -74,12 +57,7 @@ trait HasUserFactor
      */
     protected function updateFactor(int $factorId, array $data): void
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
-        $data['updated_at'] = current_time('mysql', true);
-
-        $wpdb->update($table, $data, ['id' => $factorId]);
+        $this->getFactorRepo()->update($factorId, $data);
 
         // Invalidate cache since we don't know the userId from just the factorId.
         $this->factorCache = [];
@@ -136,18 +114,7 @@ trait HasUserFactor
             return false;
         }
 
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
-
-        $wpdb->update(
-            $table,
-            [
-                'status'     => ChannelStatus::Disabled->value,
-                'updated_at' => current_time('mysql', true),
-            ],
-            ['id' => $factor->id],
-        );
+        $this->getFactorRepo()->updateStatus($factor->id, ChannelStatus::Disabled);
 
         $this->factorCache = [];
 
@@ -172,5 +139,14 @@ trait HasUserFactor
             'channel'    => $this->getId(),
             'created_at' => $factor->createdAt,
         ];
+    }
+
+    private function getFactorRepo(): UserFactorRepository
+    {
+        if ($this->factorRepo === null) {
+            $this->factorRepo = new UserFactorRepository();
+        }
+
+        return $this->factorRepo;
     }
 }

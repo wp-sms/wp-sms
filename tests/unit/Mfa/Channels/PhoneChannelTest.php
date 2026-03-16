@@ -6,9 +6,14 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
+use WSms\Messaging\Contracts\DeliveryResult;
+use WSms\Messaging\Message\SmsMessage;
+use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Channels\MagicLinkChannel;
 use WSms\Mfa\Channels\PhoneChannel;
 use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpService;
+use WSms\Verification\VerificationRepository;
 
 class PhoneChannelTest extends TestCase
 {
@@ -17,15 +22,22 @@ class PhoneChannelTest extends TestCase
     private MockObject&AuditLogger $auditLogger;
     private MockObject&MagicLinkChannel $magicLink;
     private object $wpdb;
+    private MockObject&MessageDispatcher $dispatcher;
+    private MockObject&VerificationRepository $verificationRepo;
 
     protected function setUp(): void
     {
         $this->otpGenerator = $this->createMock(OtpGenerator::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->magicLink = $this->createMock(MagicLinkChannel::class);
-        $this->channel = new PhoneChannel($this->otpGenerator, $this->auditLogger, $this->magicLink);
+        $this->dispatcher = $this->createMock(MessageDispatcher::class);
+        $this->dispatcher->method('sendImmediate')->willReturn(DeliveryResult::sent());
+        $this->verificationRepo = $this->createMock(VerificationRepository::class);
+        $otpService = $this->createMock(OtpService::class);
+        $otpService->method('createOtp')->willReturn('123456');
+        $this->channel = new PhoneChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->magicLink, $this->verificationRepo, $otpService);
 
-        // Mock global $wpdb.
+        // Mock global $wpdb (still needed for HasUserFactor trait).
         $this->setupWpdbMock(null);
     }
 
@@ -81,6 +93,27 @@ class PhoneChannelTest extends TestCase
         $this->assertTrue($result->success);
         $this->assertArrayHasKey('requires_confirmation', $result->data);
         $this->assertTrue($result->data['requires_confirmation']);
+    }
+
+    public function testEnrollSendsSmsViaDispatcher(): void
+    {
+        $this->setupWpdbMock(null);
+
+        $this->otpGenerator->method('generate')->willReturn('999888');
+        $this->otpGenerator->method('hash')->willReturn('hashed');
+
+        $this->dispatcher->expects($this->once())
+            ->method('sendImmediate')
+            ->with($this->callback(fn($msg) => $msg instanceof SmsMessage
+                && $msg->getRecipient() === '+12025551234'
+                && str_contains($msg->getBody(), '999888')
+            ))
+            ->willReturn(DeliveryResult::sent());
+
+        $otpSvc = $this->createMock(OtpService::class);
+        $otpSvc->method('createOtp')->willReturn('999888');
+        $channel = new PhoneChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->magicLink, $this->verificationRepo, $otpSvc);
+        $channel->enroll(1, ['phone' => '+12025551234']);
     }
 
     public function testEnrollRejectsAlreadyEnrolled(): void

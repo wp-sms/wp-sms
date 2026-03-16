@@ -6,9 +6,14 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
+use WSms\Messaging\Contracts\DeliveryResult;
+use WSms\Messaging\Message\TelegramMessage;
+use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Channels\TelegramChannel;
 use WSms\Mfa\OtpGenerator;
 use WSms\Telegram\TelegramBotClient;
+use WSms\Verification\OtpService;
+use WSms\Verification\VerificationRepository;
 
 class TelegramChannelTest extends TestCase
 {
@@ -17,13 +22,20 @@ class TelegramChannelTest extends TestCase
     private MockObject&AuditLogger $auditLogger;
     private MockObject&TelegramBotClient $botClient;
     private object $wpdb;
+    private MockObject&MessageDispatcher $dispatcher;
+    private MockObject&VerificationRepository $verificationRepo;
 
     protected function setUp(): void
     {
         $this->otpGenerator = $this->createMock(OtpGenerator::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->botClient = $this->createMock(TelegramBotClient::class);
-        $this->channel = new TelegramChannel($this->otpGenerator, $this->auditLogger, $this->botClient);
+        $this->dispatcher = $this->createMock(MessageDispatcher::class);
+        $this->dispatcher->method('sendImmediate')->willReturn(DeliveryResult::sent());
+        $this->verificationRepo = $this->createMock(VerificationRepository::class);
+        $otpService = $this->createMock(OtpService::class);
+        $otpService->method('createOtp')->willReturn('654321');
+        $this->channel = new TelegramChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->verificationRepo, $otpService);
 
         $this->setupWpdbMock(null);
         $GLOBALS['_test_options'] = ['wsms_auth_settings' => ['telegram' => ['bot_username' => 'test_bot']]];
@@ -208,14 +220,45 @@ class TelegramChannelTest extends TestCase
         $this->otpGenerator->method('generate')->willReturn('654321');
         $this->otpGenerator->method('hash')->willReturn('hashed');
 
-        $this->botClient->expects($this->once())
-            ->method('sendMessage')
-            ->with(12345, $this->stringContains('654321'))
-            ->willReturn(true);
-
         $result = $this->channel->sendChallenge(1);
 
         $this->assertTrue($result->success);
+    }
+
+    public function testSendChallengeSendsTelegramMessageViaDispatcher(): void
+    {
+        $factorRow = $this->makeFactorRow(ChannelStatus::Active, ['chat_id' => 12345]);
+
+        $wpdb = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var', 'get_results'])
+            ->getMock();
+        $wpdb->prefix = 'wp_';
+        $wpdb->insert_id = 1;
+        $wpdb->rows_affected = 1;
+        $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
+        $wpdb->method('get_row')->willReturnOnConsecutiveCalls($factorRow, null);
+        $wpdb->method('insert')->willReturn(1);
+        $wpdb->method('update')->willReturn(1);
+        $wpdb->method('query')->willReturn(1);
+        $wpdb->method('get_var')->willReturn(0);
+        $GLOBALS['wpdb'] = $wpdb;
+
+        $this->otpGenerator->method('generate')->willReturn('654321');
+        $this->otpGenerator->method('hash')->willReturn('hashed');
+
+        $dispatcher = $this->createMock(MessageDispatcher::class);
+        $dispatcher->expects($this->once())
+            ->method('sendImmediate')
+            ->with($this->callback(fn($msg) => $msg instanceof TelegramMessage
+                && $msg->getRecipient() === '12345'
+                && str_contains($msg->getBody(), '654321')
+            ))
+            ->willReturn(DeliveryResult::sent());
+
+        $otpSvc = $this->createMock(OtpService::class);
+        $otpSvc->method('createOtp')->willReturn('654321');
+        $channel = new TelegramChannel($this->otpGenerator, $this->auditLogger, $dispatcher, $this->verificationRepo, $otpSvc);
+        $channel->sendChallenge(1);
     }
 
     public function testSendChallengeFailsWhenNotEnrolled(): void

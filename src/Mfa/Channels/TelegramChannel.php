@@ -5,9 +5,12 @@ namespace WSms\Mfa\Channels;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
+use WSms\Messaging\MessageDispatcher;
+use WSms\Messaging\Message\TelegramMessage;
 use WSms\Mfa\OtpGenerator;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
-use WSms\Telegram\TelegramBotClient;
+use WSms\Verification\OtpService;
+use WSms\Verification\VerificationRepository;
 
 defined('ABSPATH') || exit;
 
@@ -19,9 +22,11 @@ class TelegramChannel extends AbstractOtpChannel
     public function __construct(
         OtpGenerator $otpGenerator,
         AuditLogger $auditLogger,
-        private TelegramBotClient $telegramClient,
+        MessageDispatcher $messageDispatcher,
+        VerificationRepository $verificationRepo,
+        ?OtpService $otpService = null,
     ) {
-        parent::__construct($otpGenerator, $auditLogger);
+        parent::__construct($otpGenerator, $auditLogger, $messageDispatcher, $verificationRepo, $otpService);
     }
 
     public function getId(): string
@@ -160,10 +165,12 @@ class TelegramChannel extends AbstractOtpChannel
     {
         $expiryMinutes = (int) ($this->getConfigValue('expiry', 300) / 60);
 
-        $message = '<b>' . sprintf(__('Your verification code is: %s', 'wp-sms'), $code) . '</b>'
+        $body = '<b>' . sprintf(__('Your verification code is: %s', 'wp-sms'), $code) . '</b>'
             . "\n" . sprintf(__('It expires in %d minutes.', 'wp-sms'), $expiryMinutes);
 
-        return $this->telegramClient->sendMessage((int) $identifier, $message);
+        $result = $this->messageDispatcher->sendImmediate(new TelegramMessage($identifier, $body));
+
+        return $result->success;
     }
 
     /** {@inheritDoc} */
@@ -181,10 +188,6 @@ class TelegramChannel extends AbstractOtpChannel
     /** {@inheritDoc} */
     protected function maskIdentifier(string $identifier): string
     {
-        $factor = null;
-
-        // Try to find username from factor meta for a nicer display.
-        // We can't easily get userId here, so just mask the chat_id.
         if (strlen($identifier) > 4) {
             $visible = substr($identifier, -4);
 

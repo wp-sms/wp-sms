@@ -12,12 +12,16 @@ use WSms\Auth\AuthSession;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\SettingsRepository;
 use WSms\Enums\ChannelStatus;
+use WSms\Messaging\Contracts\DeliveryResult;
+use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\MfaManager;
 use WSms\Mfa\OtpGenerator;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
 use WSms\Mfa\ValueObjects\UserFactor;
+use WSms\Verification\OtpService;
+use WSms\Verification\VerificationRepository;
 
 /**
  * Base class for integration tests.
@@ -105,13 +109,19 @@ abstract class IntegrationTestCase extends TestCase
         // Real AuthSession (uses transient stubs from bootstrap).
         $this->session = new AuthSession($this->otpGenerator);
 
+        // Mock MessageDispatcher for integration tests.
+        $messageDispatcher = $this->createMock(MessageDispatcher::class);
+        $messageDispatcher->method('sendImmediate')->willReturn(DeliveryResult::sent());
+
         // Real AccountManager.
+        $otpService = new OtpService(new VerificationRepository(), $this->otpGenerator);
         $this->accountManager = new AccountManager(
             $this->auditLogger,
-            $this->otpGenerator,
+            $otpService,
             $this->mfaManager,
             $this->session,
             $settingsRepo,
+            $messageDispatcher,
         );
 
         // Real AuthOrchestrator with full dependency graph.

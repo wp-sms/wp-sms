@@ -9,8 +9,6 @@ defined('ABSPATH') || exit;
 /**
  * Core service provider — registers services available on every request.
  *
- * Add new services here as features are built.
- *
  * @since 8.0
  */
 class CoreServiceProvider implements ServiceProvider
@@ -22,6 +20,9 @@ class CoreServiceProvider implements ServiceProvider
     {
         $container->register('database.cleanup', fn () => new CleanupScheduler(
             $container->get('audit.logger'),
+            $container->get('flow.execution_repository'),
+            $container->get('log.message'),
+            $container->get('verification.repository'),
         ));
     }
 

@@ -5,10 +5,13 @@ namespace WSms\Mfa\Channels;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\EventType;
 use WSms\Enums\VerificationType;
+use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\OtpGenerator;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
+use WSms\Verification\OtpService;
+use WSms\Verification\VerificationRepository;
 
 defined('ABSPATH') || exit;
 
@@ -19,6 +22,9 @@ abstract class AbstractOtpChannel implements ChannelInterface
     public function __construct(
         protected OtpGenerator $otpGenerator,
         protected AuditLogger $auditLogger,
+        protected MessageDispatcher $messageDispatcher,
+        protected VerificationRepository $verificationRepo,
+        protected ?OtpService $otpService = null,
     ) {
     }
 
@@ -107,25 +113,18 @@ abstract class AbstractOtpChannel implements ChannelInterface
     {
         $code = preg_replace('/\s+/', '', $code);
 
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_verifications';
-
-        $verification = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$table}
-             WHERE user_id = %d AND channel_id = %s AND type = %s AND used_at IS NULL
-             ORDER BY created_at DESC LIMIT 1",
-            $userId,
-            $this->getId(),
-            VerificationType::Otp->value,
-        ));
+        $verification = $this->verificationRepo->findLatestPending([
+            'user_id'    => $userId,
+            'channel_id' => $this->getId(),
+            'type'       => VerificationType::Otp->value,
+        ]);
 
         if (!$verification) {
             return false;
         }
 
         if (strtotime($verification->expires_at) < time()) {
-            $wpdb->delete($table, ['id' => $verification->id]);
+            $this->verificationRepo->delete((int) $verification->id);
 
             $this->auditLogger->log(EventType::OtpExpired, 'failure', $userId, [
                 'channel' => $this->getId(),
@@ -135,14 +134,7 @@ abstract class AbstractOtpChannel implements ChannelInterface
         }
 
         // Atomic attempt increment — fails if max attempts reached.
-        $wpdb->query($wpdb->prepare(
-            "UPDATE {$table}
-             SET attempts = attempts + 1
-             WHERE id = %d AND attempts < max_attempts",
-            $verification->id,
-        ));
-
-        if ($wpdb->rows_affected === 0) {
+        if (!$this->verificationRepo->incrementAttempts((int) $verification->id)) {
             $this->auditLogger->log(EventType::OtpFailed, 'failure', $userId, [
                 'channel' => $this->getId(),
                 'reason'  => 'max_attempts_exceeded',
@@ -160,11 +152,7 @@ abstract class AbstractOtpChannel implements ChannelInterface
         }
 
         // Mark as used.
-        $wpdb->update(
-            $table,
-            ['used_at' => gmdate('Y-m-d H:i:s')],
-            ['id' => $verification->id],
-        );
+        $this->verificationRepo->markUsed((int) $verification->id);
 
         $this->auditLogger->log(EventType::OtpVerified, 'success', $userId, [
             'channel' => $this->getId(),
@@ -210,39 +198,21 @@ abstract class AbstractOtpChannel implements ChannelInterface
      */
     protected function generateAndStoreOtp(int $userId, string $identifier, int $expiry): string
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_verifications';
-
         // Invalidate existing pending verifications.
-        $now = gmdate('Y-m-d H:i:s');
-        $wpdb->query($wpdb->prepare(
-            "UPDATE {$table} SET used_at = %s
-             WHERE user_id = %d AND channel_id = %s AND used_at IS NULL",
-            $now,
-            $userId,
-            $this->getId(),
-        ));
-
-        $codeLength = (int) $this->getConfigValue('code_length', 6);
-        $code = $this->otpGenerator->generate($codeLength);
-        do_action('wsms_otp_generated', $userId, $code, $this->getId());
-        $hashedCode = $this->otpGenerator->hash($code);
-        $maxAttempts = (int) $this->getConfigValue('max_attempts', 3);
-
-        $wpdb->insert($table, [
-            'user_id'      => $userId,
-            'type'         => VerificationType::Otp->value,
-            'channel_id'   => $this->getId(),
-            'identifier'   => $identifier,
-            'code'         => $hashedCode,
-            'attempts'     => 0,
-            'max_attempts' => $maxAttempts,
-            'expires_at'   => gmdate('Y-m-d H:i:s', time() + $expiry),
-            'created_at'   => gmdate('Y-m-d H:i:s'),
+        $this->verificationRepo->invalidatePending([
+            'user_id'    => $userId,
+            'channel_id' => $this->getId(),
         ]);
 
-        return $code;
+        return $this->otpService->createOtp(
+            $userId,
+            VerificationType::Otp->value,
+            $identifier,
+            (int) $this->getConfigValue('code_length', 6),
+            $expiry,
+            (int) $this->getConfigValue('max_attempts', 3),
+            $this->getId(),
+        );
     }
 
     public function supportsAutoEnrollment(): bool
@@ -260,20 +230,9 @@ abstract class AbstractOtpChannel implements ChannelInterface
      */
     protected function hasCooldownActive(int $userId, int $cooldown): bool
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_verifications';
-
-        $cutoff = gmdate('Y-m-d H:i:s', time() - $cooldown);
-
-        return (bool) $wpdb->get_row($wpdb->prepare(
-            "SELECT id FROM {$table}
-             WHERE user_id = %d AND channel_id = %s AND used_at IS NULL
-               AND created_at > %s
-             ORDER BY created_at DESC LIMIT 1",
-            $userId,
-            $this->getId(),
-            $cutoff,
-        ));
+        return $this->verificationRepo->hasPendingWithinCooldown([
+            'user_id'    => $userId,
+            'channel_id' => $this->getId(),
+        ], $cooldown);
     }
 }

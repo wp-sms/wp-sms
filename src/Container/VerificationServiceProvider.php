@@ -3,8 +3,11 @@
 namespace WSms\Container;
 
 use WSms\Rest\VerificationController;
+use WSms\Verification\OtpGenerator;
+use WSms\Verification\OtpService;
 use WSms\Verification\ProfileReverification;
 use WSms\Verification\VerificationConfig;
+use WSms\Verification\VerificationRepository;
 use WSms\Verification\VerificationService;
 use WSms\Verification\VerificationSession;
 
@@ -15,6 +18,15 @@ class VerificationServiceProvider implements ServiceProvider
     /** {@inheritDoc} */
     public function register(ServiceContainer $container): void
     {
+        $container->register('verification.repository', fn () => new VerificationRepository());
+
+        $container->register('verification.otp_generator', fn () => new OtpGenerator());
+
+        $container->register('verification.otp_service', fn () => new OtpService(
+            $container->get('verification.repository'),
+            $container->get('verification.otp_generator'),
+        ));
+
         $container->register('verification.config', fn () => new VerificationConfig());
 
         $container->register('verification.session', fn () => new VerificationSession(
@@ -26,6 +38,9 @@ class VerificationServiceProvider implements ServiceProvider
             $container->get('verification.session'),
             $container->get('audit.logger'),
             $container->get('verification.config'),
+            $container->get('message.dispatcher'),
+            $container->get('template.engine'),
+            $container->get('verification.repository'),
         ));
 
         $container->register('rest.verification', fn () => new VerificationController(

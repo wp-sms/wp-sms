@@ -6,11 +6,15 @@ use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
 use WSms\Enums\VerificationType;
+use WSms\Messaging\MessageDispatcher;
+use WSms\Messaging\Message\EmailMessage;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\OtpGenerator;
 use WSms\Mfa\Support\EmailMasker;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
+use WSms\Verification\OtpService;
+use WSms\Verification\VerificationRepository;
 
 defined('ABSPATH') || exit;
 
@@ -25,6 +29,9 @@ class MagicLinkChannel implements ChannelInterface
     public function __construct(
         private OtpGenerator $otpGenerator,
         private AuditLogger $auditLogger,
+        private MessageDispatcher $messageDispatcher,
+        private VerificationRepository $verificationRepo,
+        private ?OtpService $otpService = null,
     ) {
     }
 
@@ -89,8 +96,6 @@ class MagicLinkChannel implements ChannelInterface
     /** {@inheritDoc} */
     public function sendChallenge(int $userId, array $context = []): ChallengeResult
     {
-        global $wpdb;
-
         if (!$this->isEnrolled($userId)) {
             return new ChallengeResult(false, __('User is not enrolled in Magic Link.', 'wp-sms'));
         }
@@ -102,53 +107,25 @@ class MagicLinkChannel implements ChannelInterface
             return new ChallengeResult(false, __('No email address found for user.', 'wp-sms'));
         }
 
-        $table = $wpdb->prefix . 'wsms_verifications';
-
         // Check cooldown.
         $cooldown = (int) ($this->getConfigValue('cooldown', 60) ?: 60);
 
-        $cutoff = gmdate('Y-m-d H:i:s', time() - $cooldown);
-
-        $recent = $wpdb->get_row($wpdb->prepare(
-            "SELECT id FROM {$table}
-             WHERE user_id = %d AND channel_id = %s AND used_at IS NULL
-               AND created_at > %s
-             ORDER BY created_at DESC LIMIT 1",
-            $userId,
-            $this->getId(),
-            $cutoff,
-        ));
-
-        if ($recent) {
+        if ($this->verificationRepo->hasPendingWithinCooldown([
+            'user_id'    => $userId,
+            'channel_id' => $this->getId(),
+        ], $cooldown)) {
             return new ChallengeResult(false, __('Please wait before requesting a new magic link.', 'wp-sms'));
         }
 
         // Invalidate existing pending.
-        $wpdb->query($wpdb->prepare(
-            "UPDATE {$table} SET used_at = %s
-             WHERE user_id = %d AND channel_id = %s AND used_at IS NULL",
-            gmdate('Y-m-d H:i:s'),
-            $userId,
-            $this->getId(),
-        ));
-
-        // Generate token.
-        $token = $this->otpGenerator->generateToken(32);
-        do_action('wsms_magic_link_generated', $userId, $token);
-        $hashedToken = $this->otpGenerator->hash($token);
-        $expiry = (int) ($this->getConfigValue('expiry', 600) ?: 600);
-
-        $wpdb->insert($table, [
-            'user_id'      => $userId,
-            'type'         => VerificationType::MagicLink->value,
-            'channel_id'   => $this->getId(),
-            'identifier'   => $email,
-            'code'         => $hashedToken,
-            'attempts'     => 0,
-            'max_attempts' => 1,
-            'expires_at'   => gmdate('Y-m-d H:i:s', time() + $expiry),
-            'created_at'   => gmdate('Y-m-d H:i:s'),
+        $this->verificationRepo->invalidatePending([
+            'user_id'    => $userId,
+            'channel_id' => $this->getId(),
         ]);
+
+        $expiry = (int) ($this->getConfigValue('expiry', 600) ?: 600);
+        $token = $this->otpService->createToken($userId, VerificationType::MagicLink->value, $email, $expiry, $this->getId());
+        do_action('wsms_magic_link_generated', $userId, $token);
 
         $url = get_site_url() . '/account/verify-magic-link?token=' . $token;
 
@@ -165,9 +142,11 @@ class MagicLinkChannel implements ChannelInterface
             . '<p>' . __('If you did not request this, please ignore this email.', 'wp-sms') . '</p>';
 
         $headers = ['Content-Type: text/html; charset=UTF-8'];
-        $sent = wp_mail($email, $subject, $body, $headers);
+        $result = $this->messageDispatcher->sendImmediate(
+            new EmailMessage($email, $body, $subject, $headers)
+        );
 
-        if (!$sent) {
+        if (!$result->success) {
             $this->auditLogger->log(EventType::MagicLinkSent, 'failure', $userId, [
                 'channel' => $this->getId(),
             ]);
@@ -191,35 +170,15 @@ class MagicLinkChannel implements ChannelInterface
      */
     public function generateToken(int $userId, string $identifier, int $expiry): string
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_verifications';
-
         // Invalidate existing pending magic links for this user.
-        $wpdb->query($wpdb->prepare(
-            "UPDATE {$table} SET used_at = %s
-             WHERE user_id = %d AND channel_id = %s AND type = %s AND used_at IS NULL",
-            gmdate('Y-m-d H:i:s'),
-            $userId,
-            $this->getId(),
-            VerificationType::MagicLink->value,
-        ));
-
-        $token = $this->otpGenerator->generateToken(32);
-        do_action('wsms_magic_link_generated', $userId, $token);
-        $hashedToken = $this->otpGenerator->hash($token);
-
-        $wpdb->insert($table, [
-            'user_id'      => $userId,
-            'type'         => VerificationType::MagicLink->value,
-            'channel_id'   => $this->getId(),
-            'identifier'   => $identifier,
-            'code'         => $hashedToken,
-            'attempts'     => 0,
-            'max_attempts' => 1,
-            'expires_at'   => gmdate('Y-m-d H:i:s', time() + $expiry),
-            'created_at'   => gmdate('Y-m-d H:i:s'),
+        $this->verificationRepo->invalidatePending([
+            'user_id'    => $userId,
+            'channel_id' => $this->getId(),
+            'type'       => VerificationType::MagicLink->value,
         ]);
+
+        $token = $this->otpService->createToken($userId, VerificationType::MagicLink->value, $identifier, $expiry, $this->getId());
+        do_action('wsms_magic_link_generated', $userId, $token);
 
         return get_site_url() . '/account/verify-magic-link?token=' . $token;
     }
@@ -229,19 +188,13 @@ class MagicLinkChannel implements ChannelInterface
      */
     public function verifyTokenAndResolveUser(string $token): ?int
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_verifications';
         $hashedToken = $this->otpGenerator->hash($token);
 
-        $verification = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$table}
-             WHERE channel_id = %s AND type = %s AND code = %s AND used_at IS NULL
-             LIMIT 1",
-            $this->getId(),
-            VerificationType::MagicLink->value,
+        $verification = $this->verificationRepo->findByCodeAndChannel(
             $hashedToken,
-        ));
+            VerificationType::MagicLink->value,
+            $this->getId(),
+        );
 
         if (!$verification) {
             return null;
@@ -252,11 +205,7 @@ class MagicLinkChannel implements ChannelInterface
         }
 
         // Mark as used.
-        $wpdb->update(
-            $table,
-            ['used_at' => gmdate('Y-m-d H:i:s')],
-            ['id' => $verification->id],
-        );
+        $this->verificationRepo->markUsed((int) $verification->id);
 
         $userId = (int) $verification->user_id;
 

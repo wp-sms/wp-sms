@@ -99,10 +99,11 @@ class AuthServiceProvider implements ServiceProvider
         $container->register('auth.account_manager', function () use ($container) {
             return new AccountManager(
                 $container->get('audit.logger'),
-                $container->get('mfa.otp_generator'),
+                $container->get('verification.otp_service'),
                 $container->get('mfa.manager'),
                 $container->get('auth.session'),
                 $container->get('auth.settings'),
+                $container->get('message.dispatcher'),
                 $container->get('auth.field_registry'),
                 $container->get('auth.trusted_devices'),
             );

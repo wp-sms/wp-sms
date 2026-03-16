@@ -5,6 +5,10 @@ namespace WSms\Verification;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\EventType;
 use WSms\Enums\VerificationType;
+use WSms\Messaging\Contracts\TemplateEngineInterface;
+use WSms\Messaging\MessageDispatcher;
+use WSms\Messaging\Message\SmsMessage;
+use WSms\Messaging\OtpEmailBuilder;
 use WSms\Mfa\OtpGenerator;
 use WSms\Mfa\Support\EmailMasker;
 use WSms\Mfa\Support\PhoneMasker;
@@ -22,6 +26,9 @@ class VerificationService
         private VerificationSession $session,
         private AuditLogger $auditLogger,
         private VerificationConfig $config,
+        private MessageDispatcher $messageDispatcher,
+        private TemplateEngineInterface $templateEngine,
+        private VerificationRepository $verificationRepo,
     ) {
     }
 
@@ -38,11 +45,6 @@ class VerificationService
 
         if ($identifier === null) {
             return VerificationResult::failed('invalid_identifier', sprintf(__('Invalid %s address.', 'wp-sms'), $channel));
-        }
-
-        // Check SMS gateway for phone channel.
-        if ($channel === 'phone' && !has_action('wsms_send_sms')) {
-            return VerificationResult::failed('no_sms_gateway', __('SMS sending is not configured.', 'wp-sms'));
         }
 
         // Resolve or create session.
@@ -92,8 +94,7 @@ class VerificationService
 
         $hashed = $this->otpGenerator->hash($otp);
 
-        global $wpdb;
-        $wpdb->insert($wpdb->prefix . 'wsms_verifications', [
+        $this->verificationRepo->insert([
             'user_id'      => $userId,
             'session_id'   => $sessionId,
             'type'         => $verifyType,
@@ -110,9 +111,17 @@ class VerificationService
 
         // Deliver.
         if ($channel === 'phone') {
-            do_action('wsms_send_sms', $identifier, sprintf(__('Your verification code is: %s', 'wp-sms'), $otp));
+            $smsBody = $this->templateEngine->render(
+                __('Your code: {{code}}. Expires in {{minutes}} min.', 'wp-sms'),
+                ['code' => $otp, 'minutes' => (int) ceil($expiry / 60)],
+            );
+            $this->messageDispatcher->sendImmediate(new SmsMessage($identifier, $smsBody));
         } elseif ($channel === 'email') {
-            if (!VerificationMailer::sendOtp($identifier, $otp, $expiry)) {
+            $result = $this->messageDispatcher->sendImmediate(
+                OtpEmailBuilder::build($identifier, $otp, $expiry)
+            );
+
+            if (!$result->success) {
                 $this->auditLogger->log(EventType::StandaloneVerificationFailed, 'failure', $userId, [
                     'channel' => 'email',
                     'reason'  => 'mail_delivery_failed',
@@ -153,15 +162,11 @@ class VerificationService
 
         $verifyType = VerificationType::forStandaloneChannel($channel)->value;
 
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_verifications';
-
-        $verification = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$table} WHERE session_id = %s AND type = %s AND identifier = %s AND used_at IS NULL ORDER BY created_at DESC LIMIT 1",
-            $sessionId,
-            $verifyType,
-            $identifier,
-        ));
+        $verification = $this->verificationRepo->findLatestPending([
+            'session_id' => $sessionId,
+            'type'       => $verifyType,
+            'identifier' => $identifier,
+        ]);
 
         if (!$verification) {
             return VerificationResult::failed('no_verification', __('No pending verification found. Please request a new code.', 'wp-sms'));
@@ -188,7 +193,7 @@ class VerificationService
         $newAttempts = (int) $verification->attempts + 1;
 
         if (!$this->otpGenerator->verify($code, $verification->code)) {
-            $wpdb->update($table, ['attempts' => $newAttempts], ['id' => $verification->id]);
+            $this->verificationRepo->updateAttempts((int) $verification->id, $newAttempts);
 
             $this->auditLogger->log(EventType::StandaloneVerificationFailed, 'failure', $userId, [
                 'channel'  => $channel,
@@ -199,14 +204,7 @@ class VerificationService
         }
 
         // Atomic mark as used.
-        $affected = $wpdb->query($wpdb->prepare(
-            "UPDATE {$table} SET attempts = %d, used_at = %s WHERE id = %d AND used_at IS NULL",
-            $newAttempts,
-            gmdate('Y-m-d H:i:s'),
-            $verification->id,
-        ));
-
-        if ($affected === 0) {
+        if (!$this->verificationRepo->markUsedWithAttempts((int) $verification->id, $newAttempts)) {
             return VerificationResult::failed('already_used', __('This code has already been used.', 'wp-sms'));
         }
 
@@ -291,29 +289,18 @@ class VerificationService
 
     private function isOnCooldown(string $sessionId, string $verifyType, int $cooldownSeconds): bool
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_verifications';
-        $cutoff = gmdate('Y-m-d H:i:s', time() - $cooldownSeconds);
-
-        return (bool) $wpdb->get_row($wpdb->prepare(
-            "SELECT id FROM {$table} WHERE session_id = %s AND type = %s AND used_at IS NULL AND created_at > %s LIMIT 1",
-            $sessionId,
-            $verifyType,
-            $cutoff,
-        ));
+        return $this->verificationRepo->hasPendingWithinCooldown([
+            'session_id' => $sessionId,
+            'type'       => $verifyType,
+        ], $cooldownSeconds);
     }
 
     private function invalidatePending(string $sessionId, string $verifyType): void
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_verifications';
-
-        $wpdb->query($wpdb->prepare(
-            "UPDATE {$table} SET used_at = %s WHERE session_id = %s AND type = %s AND used_at IS NULL",
-            gmdate('Y-m-d H:i:s'),
-            $sessionId,
-            $verifyType,
-        ));
+        $this->verificationRepo->invalidatePending([
+            'session_id' => $sessionId,
+            'type'       => $verifyType,
+        ]);
     }
 
     private function identifierRateLimitKey(string $channel, string $identifier): string

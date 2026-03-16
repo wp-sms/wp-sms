@@ -6,9 +6,14 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
+use WSms\Messaging\Contracts\DeliveryResult;
+use WSms\Messaging\Message\EmailMessage;
+use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Channels\EmailChannel;
 use WSms\Mfa\Channels\MagicLinkChannel;
 use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpService;
+use WSms\Verification\VerificationRepository;
 
 class EmailChannelTest extends TestCase
 {
@@ -16,13 +21,20 @@ class EmailChannelTest extends TestCase
     private MockObject&OtpGenerator $otpGenerator;
     private MockObject&AuditLogger $auditLogger;
     private MockObject&MagicLinkChannel $magicLink;
+    private MockObject&MessageDispatcher $dispatcher;
+    private MockObject&VerificationRepository $verificationRepo;
 
     protected function setUp(): void
     {
         $this->otpGenerator = $this->createMock(OtpGenerator::class);
         $this->auditLogger = $this->createMock(AuditLogger::class);
         $this->magicLink = $this->createMock(MagicLinkChannel::class);
-        $this->channel = new EmailChannel($this->otpGenerator, $this->auditLogger, $this->magicLink);
+        $this->dispatcher = $this->createMock(MessageDispatcher::class);
+        $this->dispatcher->method('sendImmediate')->willReturn(DeliveryResult::sent());
+        $this->verificationRepo = $this->createMock(VerificationRepository::class);
+        $otpService = $this->createMock(OtpService::class);
+        $otpService->method('createOtp')->willReturn('123456');
+        $this->channel = new EmailChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->magicLink, $this->verificationRepo, $otpService);
 
         unset($GLOBALS['_test_userdata']);
         $this->setupWpdbMock(null);
@@ -118,6 +130,49 @@ class EmailChannelTest extends TestCase
         $info = $this->channel->getEnrollmentInfo(1);
 
         $this->assertFalse($info['enrolled']);
+    }
+
+    public function testSendChallengeSendsEmailViaDispatcher(): void
+    {
+        $this->overrideGetUserdata(1, 'user@example.com');
+
+        $factorRow = $this->makeFactorRow(ChannelStatus::Active);
+
+        // Factor lookup returns active row, then no cooldown.
+        $wpdb = $this->getMockBuilder(\stdClass::class)
+            ->addMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var'])
+            ->getMock();
+        $wpdb->prefix = 'wp_';
+        $wpdb->insert_id = 1;
+        $wpdb->rows_affected = 1;
+        $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
+        $wpdb->method('get_row')->willReturn($factorRow);
+        $wpdb->method('insert')->willReturn(1);
+        $wpdb->method('update')->willReturn(1);
+        $wpdb->method('query')->willReturn(1);
+        $wpdb->method('get_var')->willReturn(0);
+        $GLOBALS['wpdb'] = $wpdb;
+
+        $this->otpGenerator->method('generate')->willReturn('112233');
+        $this->otpGenerator->method('hash')->willReturn('hashed');
+
+        $dispatcher = $this->createMock(MessageDispatcher::class);
+        $dispatcher->expects($this->once())
+            ->method('sendImmediate')
+            ->with($this->callback(fn($msg) => $msg instanceof EmailMessage
+                && $msg->getRecipient() === 'user@example.com'
+                && str_contains($msg->getBody(), '112233')
+            ))
+            ->willReturn(DeliveryResult::sent());
+
+        $magicLink = $this->createMock(MagicLinkChannel::class);
+        $verificationRepo = $this->createMock(VerificationRepository::class);
+        $otpSvc = $this->createMock(OtpService::class);
+        $otpSvc->method('createOtp')->willReturn('112233');
+        $channel = new EmailChannel($this->otpGenerator, $this->auditLogger, $dispatcher, $magicLink, $verificationRepo, $otpSvc);
+        $result = $channel->sendChallenge(1);
+
+        $this->assertTrue($result->success);
     }
 
     // -- Helpers --
