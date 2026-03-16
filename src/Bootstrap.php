@@ -11,6 +11,13 @@ use WSms\Container\SocialServiceProvider;
 use WSms\Container\AuditServiceProvider;
 use WSms\Container\RestServiceProvider;
 use WSms\Container\VerificationServiceProvider;
+use WSms\Container\EventServiceProvider;
+use WSms\Container\LogServiceProvider;
+use WSms\Container\QueueServiceProvider;
+use WSms\Container\MessagingServiceProvider;
+use WSms\Container\ContactServiceProvider;
+use WSms\Container\FlowServiceProvider;
+use WSms\Container\IntegrationServiceProvider;
 use WSms\Integrations\ContactForm7\CF7ServiceProvider;
 use WSms\Integrations\WPForms\WPFormsServiceProvider;
 use WSms\Integrations\WooCommerce\WooCommerceServiceProvider;
@@ -42,8 +49,18 @@ class Bootstrap
         MfaServiceProvider::class,
         SocialServiceProvider::class,
         AuditServiceProvider::class,
-        RestServiceProvider::class,
         VerificationServiceProvider::class,
+        // Messaging platform (order matters: event → log → queue → messaging → contact → flow → integrations → REST)
+        EventServiceProvider::class,
+        LogServiceProvider::class,
+        QueueServiceProvider::class,
+        MessagingServiceProvider::class,
+        ContactServiceProvider::class,
+        FlowServiceProvider::class,
+        IntegrationServiceProvider::class,
+        // REST must come after all services are registered
+        RestServiceProvider::class,
+        // Legacy integrations
         CF7ServiceProvider::class,
         WPFormsServiceProvider::class,
         WooCommerceServiceProvider::class,

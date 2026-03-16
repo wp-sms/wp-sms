@@ -4,6 +4,9 @@ namespace WSms\Tests\Unit\Rest;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use WSms\Messaging\Contracts\DeliveryResult;
+use WSms\Messaging\MessageDispatcher;
+use WSms\Messaging\Message\TelegramMessage;
 use WSms\Mfa\Channels\TelegramChannel;
 use WSms\Rest\TelegramController;
 
@@ -11,11 +14,14 @@ class TelegramControllerTest extends TestCase
 {
     private TelegramController $controller;
     private MockObject&TelegramChannel $telegramChannel;
+    private MockObject&MessageDispatcher $messageDispatcher;
 
     protected function setUp(): void
     {
         $this->telegramChannel = $this->createMock(TelegramChannel::class);
-        $this->controller = new TelegramController($this->telegramChannel);
+        $this->messageDispatcher = $this->createMock(MessageDispatcher::class);
+        $this->messageDispatcher->method('sendImmediate')->willReturn(DeliveryResult::sent());
+        $this->controller = new TelegramController($this->telegramChannel, $this->messageDispatcher);
 
         $GLOBALS['_test_options'] = [
             'wsms_auth_settings' => [
@@ -92,6 +98,32 @@ class TelegramControllerTest extends TestCase
         $response = $this->controller->handleWebhook($request);
 
         $this->assertSame(200, $response->get_status());
+    }
+
+    public function testWebhookSendsConfirmationViaDispatcher(): void
+    {
+        $token = str_repeat('ab', 16);
+
+        $request = new \WP_REST_Request();
+        $request->set_header('X-Telegram-Bot-Api-Secret-Token', 'valid-secret-token');
+        $request->set_body(json_encode([
+            'message' => [
+                'text' => "/start {$token}",
+                'chat' => ['id' => 99999],
+                'from' => ['username' => 'newuser'],
+            ],
+        ]));
+
+        $this->telegramChannel->method('completeLinking')->willReturn(true);
+
+        $this->messageDispatcher->expects($this->once())
+            ->method('sendImmediate')
+            ->with($this->callback(fn($msg) => $msg instanceof TelegramMessage
+                && $msg->getRecipient() === '99999'
+            ))
+            ->willReturn(DeliveryResult::sent());
+
+        $this->controller->handleWebhook($request);
     }
 
     public function testWebhookIgnoresInvalidStartTokenFormat(): void

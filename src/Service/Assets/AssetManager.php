@@ -23,7 +23,6 @@ class AssetManager
      * Enqueue assets on WSMS admin pages only.
      *
      * @param string $hook The current admin page hook suffix.
-     * @return void
      */
     public function enqueueAdmin(string $hook): void
     {
@@ -31,15 +30,13 @@ class AssetManager
             return;
         }
 
-        $this->enqueueDashboard();
+        $this->enqueueDashboard($hook);
     }
 
     /**
      * Enqueue the Vite-built React dashboard app.
-     *
-     * @return void
      */
-    private function enqueueDashboard(): void
+    private function enqueueDashboard(string $hook): void
     {
         $manifest = ViteHelper::readManifest();
 
@@ -50,7 +47,7 @@ class AssetManager
         ViteHelper::enqueueFromManifest($manifest, 'src/main.tsx', 'wsms-dashboard');
 
         wp_print_inline_script_tag(
-            'var wpSmsSettings = ' . wp_json_encode($this->getLocalizedData()) . ';',
+            'var wpSmsSettings = ' . wp_json_encode($this->getLocalizedData($hook)) . ';',
             ['id' => 'wsms-settings-data']
         );
     }
@@ -60,7 +57,7 @@ class AssetManager
      *
      * @return array<string, mixed>
      */
-    private function getLocalizedData(): array
+    private function getLocalizedData(string $hook): array
     {
         return [
             'restUrl'   => rest_url('wsms/v1/'),
@@ -69,14 +66,27 @@ class AssetManager
             'adminUrl'  => admin_url(),
             'isPremium' => defined('WP_SMS_PREMIUM_FILE'),
             'roles'     => wp_list_pluck(get_editable_roles(), 'name'),
+            'area'      => $this->resolveArea($hook),
         ];
     }
 
     /**
+     * Determine the active area from the admin hook.
+     */
+    private function resolveArea(string $hook): string
+    {
+        if (strpos($hook, 'wsms-auth') !== false) {
+            return 'auth';
+        }
+        if (strpos($hook, 'wsms-messaging') !== false) {
+            return 'messaging';
+        }
+
+        return 'dashboard';
+    }
+
+    /**
      * Check whether the current admin page belongs to WSMS.
-     *
-     * @param string $hook Admin page hook suffix.
-     * @return bool
      */
     private function isWsmsPage(string $hook): bool
     {

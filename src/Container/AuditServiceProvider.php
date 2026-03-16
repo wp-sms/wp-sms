@@ -24,5 +24,8 @@ class AuditServiceProvider implements ServiceProvider
     /** {@inheritDoc} */
     public function boot(ServiceContainer $container): void
     {
+        $container->get('audit.logger')->setEventDispatcher(
+            $container->get('event.dispatcher')
+        );
     }
 }

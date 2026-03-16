@@ -4,6 +4,8 @@ namespace WSms\Rest;
 
 use WP_REST_Request;
 use WP_REST_Response;
+use WSms\Messaging\MessageDispatcher;
+use WSms\Messaging\Message\TelegramMessage;
 use WSms\Mfa\Channels\TelegramChannel;
 use WSms\Telegram\TelegramBotClient;
 
@@ -15,6 +17,7 @@ class TelegramController
 
     public function __construct(
         private TelegramChannel $telegramChannel,
+        private MessageDispatcher $messageDispatcher,
     ) {
     }
 
@@ -68,12 +71,9 @@ class TelegramController
             $linked = $this->telegramChannel->completeLinking($token, $chatId, $username);
 
             if ($linked) {
-                $botToken = $settings['telegram']['bot_token'] ?? '';
-
-                if ($botToken) {
-                    $client = new TelegramBotClient($botToken);
-                    $client->sendMessage($chatId, __('Your Telegram account has been linked for MFA verification.', 'wp-sms'));
-                }
+                $this->messageDispatcher->sendImmediate(
+                    new TelegramMessage((string) $chatId, __('Your Telegram account has been linked for MFA verification.', 'wp-sms'))
+                );
             }
         }
 

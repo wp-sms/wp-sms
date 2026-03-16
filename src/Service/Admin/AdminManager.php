@@ -22,9 +22,7 @@ class AdminManager
     }
 
     /**
-     * Add the top-level WSMS admin menu.
-     *
-     * @return void
+     * Add the top-level WSMS admin menu and submenu pages.
      */
     public function registerMenus(): void
     {
@@ -42,16 +40,40 @@ class AdminManager
         // Remove the auto-generated submenu item matching the parent
         remove_submenu_page(self::MENU_SLUG, self::MENU_SLUG);
 
+        add_submenu_page(
+            self::MENU_SLUG,
+            __('Auth', 'wp-sms'),
+            __('Auth', 'wp-sms'),
+            'manage_options',
+            'wsms-auth',
+            [$this, 'renderArea'],
+        );
+
+        add_submenu_page(
+            self::MENU_SLUG,
+            __('Messaging', 'wp-sms'),
+            __('Messaging', 'wp-sms'),
+            'manage_options',
+            'wsms-messaging',
+            [$this, 'renderArea'],
+        );
+
         // Fire filter so add-ons can hook into menu data
         apply_filters('wp_sms_admin_menu_list', []);
     }
 
     /**
      * Output the mount point for the React dashboard app.
-     *
-     * @return void
      */
     public function renderDashboard(): void
+    {
+        View::load('admin/app');
+    }
+
+    /**
+     * Render a subpage area — same React mount point, area determined by JS.
+     */
+    public function renderArea(): void
     {
         View::load('admin/app');
     }

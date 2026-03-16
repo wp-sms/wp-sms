@@ -234,7 +234,9 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
 
     if (!function_exists('add_action')) {
         function add_action(string $hookName, $callback, int $priority = 10, int $acceptedArgs = 1) {
-            // No-op in tests.
+            if (isset($GLOBALS['_test_actions'])) {
+                $GLOBALS['_test_actions'][$hookName][] = $callback;
+            }
         }
     }
 

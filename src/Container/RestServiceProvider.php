@@ -7,10 +7,16 @@ use WSms\Audit\ReportAggregator;
 use WSms\Rest\AdminController;
 use WSms\Rest\AdminUserController;
 use WSms\Rest\AuthController;
+use WSms\Rest\ContactController;
+use WSms\Rest\FlowController;
+use WSms\Rest\GatewayController;
+use WSms\Rest\IntegrationController;
+use WSms\Rest\MessageLogController;
 use WSms\Rest\MfaController;
 use WSms\Rest\EnrollmentController;
 use WSms\Rest\SocialAuthController;
 use WSms\Rest\TelegramController;
+use WSms\Rest\WebhookReceiverController;
 
 defined('ABSPATH') || exit;
 
@@ -82,6 +88,7 @@ class RestServiceProvider implements ServiceProvider
         $container->register('rest.telegram', function () use ($container) {
             return new TelegramController(
                 $container->get('mfa.channel.telegram'),
+                $container->get('message.dispatcher'),
             );
         });
 
@@ -96,6 +103,30 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('auth.suspension'),
             );
         });
+
+        // Messaging platform controllers
+        $container->register('rest.flows', fn($c) => new FlowController(
+            $c->get('flow.repository'),
+            $c->get('flow.execution_repository'),
+        ));
+        $container->register('rest.gateways', fn($c) => new GatewayController(
+            $c->get('gateway.registry'),
+        ));
+        $container->register('rest.contacts', fn($c) => new ContactController(
+            $c->get('contact.repository'),
+            $c->get('contact.segment_evaluator'),
+        ));
+        $container->register('rest.message_logs', fn($c) => new MessageLogController(
+            $c->get('log.message'),
+        ));
+        $container->register('rest.integrations', fn($c) => new IntegrationController(
+            $c->get('integration.registry'),
+            $c->get('flow.triggers'),
+            $c->get('flow.actions'),
+        ));
+        $container->register('rest.webhook_receiver', fn($c) => new WebhookReceiverController(
+            $c->get('auth.rate_limiter'),
+        ));
     }
 
     /** {@inheritDoc} */
@@ -110,6 +141,13 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.social')->registerRoutes();
             $container->get('rest.telegram')->registerRoutes();
             $container->get('rest.admin_user')->registerRoutes();
+            // Messaging platform routes
+            $container->get('rest.flows')->registerRoutes();
+            $container->get('rest.gateways')->registerRoutes();
+            $container->get('rest.contacts')->registerRoutes();
+            $container->get('rest.message_logs')->registerRoutes();
+            $container->get('rest.integrations')->registerRoutes();
+            $container->get('rest.webhook_receiver')->registerRoutes();
         });
     }
 }

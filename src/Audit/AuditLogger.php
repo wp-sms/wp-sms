@@ -4,6 +4,8 @@ namespace WSms\Audit;
 
 use WSms\Enums\EventType;
 use WSms\Enums\LogVerbosity;
+use WSms\Event\Contracts\EventDispatcherInterface;
+use WSms\Event\Events\AuthEvent;
 use WSms\Support\IpResolver;
 
 defined('ABSPATH') || exit;
@@ -11,6 +13,12 @@ defined('ABSPATH') || exit;
 class AuditLogger
 {
     private ?LogVerbosity $verbosity = null;
+    private ?EventDispatcherInterface $eventDispatcher = null;
+
+    public function setEventDispatcher(EventDispatcherInterface $eventDispatcher): void
+    {
+        $this->eventDispatcher = $eventDispatcher;
+    }
 
     /**
      * Log an authentication event.
@@ -63,7 +71,9 @@ class AuditLogger
             $data,
         );
 
-        do_action('wsms_audit_log_written', $data, $event, $userId);
+        if ($this->eventDispatcher !== null) {
+            $this->eventDispatcher->dispatch(new AuthEvent($event, $status, $userId, $meta));
+        }
     }
 
     /**

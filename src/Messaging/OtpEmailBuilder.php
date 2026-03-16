@@ -1,22 +1,18 @@
 <?php
 
-namespace WSms\Verification;
+namespace WSms\Messaging;
+
+use WSms\Messaging\Message\EmailMessage;
 
 defined('ABSPATH') || exit;
 
-class VerificationMailer
+class OtpEmailBuilder
 {
-    /**
-     * Send a verification OTP via email.
-     *
-     * Shared between VerificationService (standalone) and AccountManager (auth).
-     */
-    public static function sendOtp(string $email, string $otp, int $expirySeconds): bool
+    public static function build(string $recipient, string $otp, int $expirySeconds): EmailMessage
     {
         $siteName = get_bloginfo('name');
-        $headers = ['Content-Type: text/html; charset=UTF-8'];
         $subject = sprintf(__('[%s] Your verification code', 'wp-sms'), $siteName);
-        $message = sprintf(
+        $body = sprintf(
             '<p>' . __('Your verification code is:', 'wp-sms') . '</p>'
             . '<p style="font-size:24px;font-weight:bold;letter-spacing:4px;">%s</p>'
             . '<p>' . __('This code expires in %d minutes.', 'wp-sms') . '</p>'
@@ -25,6 +21,6 @@ class VerificationMailer
             (int) ceil($expirySeconds / 60),
         );
 
-        return wp_mail($email, $subject, $message, $headers);
+        return new EmailMessage($recipient, $body, $subject, ['Content-Type: text/html; charset=UTF-8']);
     }
 }

@@ -5,6 +5,8 @@ namespace WSms\Tests\Unit\Audit;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\EventType;
+use WSms\Event\Contracts\EventDispatcherInterface;
+use WSms\Event\Events\AuthEvent;
 use WSms\Tests\Support\WpdbFake;
 
 class AuditLoggerTest extends TestCase
@@ -97,29 +99,34 @@ class AuditLoggerTest extends TestCase
 
     public function testActionFiredAfterWrite(): void
     {
+        $dispatched = [];
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $dispatcher->method('dispatch')->willReturnCallback(function ($event) use (&$dispatched) {
+            $dispatched[] = $event;
+            return $event;
+        });
+        $this->logger->setEventDispatcher($dispatcher);
+
         $this->logger->log(EventType::LoginSuccess, 'success', 1);
 
-        $actions = array_filter(
-            $GLOBALS['_test_do_action_calls'],
-            fn($a) => $a['hook'] === 'wsms_audit_log_written',
-        );
-        $this->assertCount(1, $actions);
+        $authEvents = array_filter($dispatched, fn($e) => $e instanceof AuthEvent);
+        $this->assertCount(1, $authEvents);
 
-        $action = array_values($actions)[0];
-        $this->assertSame('login_success', $action['args'][0]['event']);
+        $event = array_values($authEvents)[0];
+        $this->assertSame(EventType::LoginSuccess, $event->eventType);
+        $this->assertSame('success', $event->status);
+        $this->assertSame(1, $event->userId);
     }
 
     public function testActionNotFiredWhenFilterSuppresses(): void
     {
         $GLOBALS['_test_apply_filters']['wsms_audit_log_entry'] = fn() => null;
 
-        $this->logger->log(EventType::LoginSuccess, 'success', 1);
+        $dispatcher = $this->createMock(EventDispatcherInterface::class);
+        $dispatcher->expects($this->never())->method('dispatch');
+        $this->logger->setEventDispatcher($dispatcher);
 
-        $actions = array_filter(
-            $GLOBALS['_test_do_action_calls'],
-            fn($a) => $a['hook'] === 'wsms_audit_log_written',
-        );
-        $this->assertCount(0, $actions);
+        $this->logger->log(EventType::LoginSuccess, 'success', 1);
     }
 
     public function testMetaStoredInVerboseMode(): void

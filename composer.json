@@ -14,7 +14,11 @@
     "php": ">=8.1",
     "firebase/php-jwt": "^7.0",
     "spomky-labs/otphp": "^11.3",
-    "bacon/bacon-qr-code": "^3.0"
+    "bacon/bacon-qr-code": "^3.0",
+    "woocommerce/action-scheduler": "^3.9",
+    "symfony/expression-language": "^6.4",
+    "symfony/uid": "^6.4",
+    "league/csv": "^9.0"
   },
   "require-dev": {
     "veronalabs/wp-scoper": "^1.2.4",
@@ -34,13 +38,16 @@
   "extra": {
     "wp-scoper": {
       "namespace_prefix": "WSms\\Dependencies",
-      "packages": ["firebase/php-jwt", "spomky-labs/otphp", "bacon/bacon-qr-code"],
+      "packages": ["firebase/php-jwt", "spomky-labs/otphp", "bacon/bacon-qr-code", "symfony/expression-language", "symfony/uid", "league/csv", "woocommerce/action-scheduler"],
       "target_directory": "packages",
       "delete_vendor_packages": true,
       "exclude_directories": ["views", "templates", "resources", "public"]
     }
   },
   "scripts": {
+    "post-update-cmd": "@fix-autoload",
+    "post-install-cmd": "@fix-autoload",
+    "fix-autoload": "php bin/fix-autoload.php",
     "test": "phpunit --testdox",
     "dist": "bash bin/build-zip.sh"
   },
