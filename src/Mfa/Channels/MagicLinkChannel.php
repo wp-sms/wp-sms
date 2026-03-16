@@ -9,7 +9,7 @@ use WSms\Enums\VerificationType;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Message\EmailMessage;
 use WSms\Mfa\Contracts\ChannelInterface;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 use WSms\Mfa\Support\EmailMasker;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;

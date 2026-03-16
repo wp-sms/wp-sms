@@ -3,7 +3,7 @@
 namespace WSms\Auth;
 
 use WSms\Enums\SessionStage;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 use WSms\Support\SigningKey;
 
 defined('ABSPATH') || exit;

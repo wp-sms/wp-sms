@@ -9,7 +9,7 @@ use WSms\Messaging\Contracts\TemplateEngineInterface;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Message\SmsMessage;
 use WSms\Messaging\OtpEmailBuilder;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 use WSms\Mfa\Support\EmailMasker;
 use WSms\Mfa\Support\PhoneMasker;
 

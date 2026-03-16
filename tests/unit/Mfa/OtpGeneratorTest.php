@@ -3,7 +3,7 @@
 namespace WSms\Tests\Unit\Mfa;
 
 use PHPUnit\Framework\TestCase;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 
 class OtpGeneratorTest extends TestCase
 {

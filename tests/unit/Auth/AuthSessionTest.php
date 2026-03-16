@@ -6,7 +6,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Auth\AuthSession;
 use WSms\Enums\SessionStage;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 
 class AuthSessionTest extends TestCase
 {

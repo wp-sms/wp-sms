@@ -10,7 +10,7 @@ use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Message\SmsMessage;
 use WSms\Mfa\Contracts\SupportsEnrollmentConfirmation;
 use WSms\Mfa\Contracts\SupportsTokenVerification;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 use WSms\Mfa\Support\PhoneMasker;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;

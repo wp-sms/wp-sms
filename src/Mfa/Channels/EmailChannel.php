@@ -9,7 +9,7 @@ use WSms\Auth\AccountManager;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Message\EmailMessage;
 use WSms\Mfa\Contracts\SupportsTokenVerification;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 use WSms\Mfa\Support\EmailMasker;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;

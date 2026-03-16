@@ -11,7 +11,7 @@ use WSms\Messaging\Message\EmailMessage;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Channels\EmailChannel;
 use WSms\Mfa\Channels\MagicLinkChannel;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 use WSms\Verification\OtpService;
 use WSms\Verification\VerificationRepository;
 

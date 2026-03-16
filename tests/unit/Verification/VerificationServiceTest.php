@@ -9,7 +9,7 @@ use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\TemplateEngineInterface;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Template\MustacheEngine;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 use WSms\Verification\VerificationConfig;
 use WSms\Verification\VerificationRepository;
 use WSms\Verification\VerificationResult;

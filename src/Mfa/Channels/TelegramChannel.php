@@ -7,7 +7,7 @@ use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Message\TelegramMessage;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
 use WSms\Verification\OtpService;
 use WSms\Verification\VerificationRepository;

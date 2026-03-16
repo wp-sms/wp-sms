@@ -16,7 +16,7 @@ use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\MfaManager;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
 use WSms\Mfa\ValueObjects\UserFactor;

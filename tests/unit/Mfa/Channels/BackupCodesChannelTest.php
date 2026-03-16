@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
 use WSms\Mfa\Channels\BackupCodesChannel;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 
 class BackupCodesChannelTest extends TestCase
 {

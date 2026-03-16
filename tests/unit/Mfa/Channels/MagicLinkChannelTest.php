@@ -10,7 +10,7 @@ use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Message\EmailMessage;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Channels\MagicLinkChannel;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 use WSms\Verification\OtpService;
 use WSms\Verification\VerificationRepository;
 

@@ -9,7 +9,7 @@ use WSms\Mfa\Channels\PhoneChannel;
 use WSms\Mfa\Channels\TelegramChannel;
 use WSms\Mfa\Channels\TotpChannel;
 use WSms\Mfa\MfaManager;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 use WSms\Mfa\SecretEncryptor;
 use WSms\Mfa\UserFactorRepository;
 use WSms\Telegram\TelegramBotClient;

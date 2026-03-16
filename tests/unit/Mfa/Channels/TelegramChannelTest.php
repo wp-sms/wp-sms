@@ -10,7 +10,7 @@ use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Message\TelegramMessage;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Channels\TelegramChannel;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 use WSms\Auth\SettingsRepository;
 use WSms\Telegram\TelegramBotClient;
 use WSms\Verification\OtpService;

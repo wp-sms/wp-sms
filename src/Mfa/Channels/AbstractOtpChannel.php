@@ -7,7 +7,7 @@ use WSms\Enums\EventType;
 use WSms\Enums\VerificationType;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Contracts\ChannelInterface;
-use WSms\Mfa\OtpGenerator;
+use WSms\Verification\OtpGenerator;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
 use WSms\Verification\OtpService;
