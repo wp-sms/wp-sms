@@ -642,6 +642,30 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('get_permalink')) {
+        function get_permalink($post = 0) {
+            $id = is_object($post) ? $post->ID : (int) $post;
+            return $GLOBALS['_test_permalink'] ?? 'http://localhost/?p=' . $id;
+        }
+    }
+
+    if (!function_exists('get_comment')) {
+        function get_comment($comment = null, string $output = 'OBJECT') {
+            return $GLOBALS['_test_comment'] ?? null;
+        }
+    }
+
+    if (!function_exists('wp_insert_post')) {
+        function wp_insert_post($postarr, bool $wpError = false) {
+            $GLOBALS['_test_wp_insert_post_data'] = $postarr;
+            $result = $GLOBALS['_test_wp_insert_post_result'] ?? 1;
+            if ($wpError && $result === 0) {
+                return new \WP_Error('insert_failed', 'Could not insert post');
+            }
+            return $result;
+        }
+    }
+
     if (!function_exists('wp_delete_user')) {
         function wp_delete_user(int $userId, ?int $reassign = null): bool {
             $GLOBALS['_test_deleted_users'][] = $userId;
@@ -1030,6 +1054,12 @@ if (!class_exists('WC_Order_Stub')) {
         private array $meta = [];
         private string $billingEmail = '';
         private string $billingPhone = '';
+        private string $billingFirstName = '';
+        private string $billingLastName = '';
+        private string $total = '0.00';
+        private string $status = 'pending';
+        private array $items = [];
+        private array $notes = [];
 
         public function __construct(int $id = 1) {
             $this->id = $id;
@@ -1055,6 +1085,59 @@ if (!class_exists('WC_Order_Stub')) {
             $this->billingPhone = $phone;
         }
 
+        public function get_billing_first_name(): string {
+            return $this->billingFirstName;
+        }
+
+        public function set_billing_first_name(string $name): void {
+            $this->billingFirstName = $name;
+        }
+
+        public function get_billing_last_name(): string {
+            return $this->billingLastName;
+        }
+
+        public function set_billing_last_name(string $name): void {
+            $this->billingLastName = $name;
+        }
+
+        public function get_total(): string {
+            return $this->total;
+        }
+
+        public function set_total(string $total): void {
+            $this->total = $total;
+        }
+
+        public function get_status(): string {
+            return $this->status;
+        }
+
+        public function update_status(string $status, string $note = ''): void {
+            $this->status = $status;
+            if ($note) {
+                $this->notes[] = ['note' => $note, 'is_customer_note' => false];
+            }
+        }
+
+        public function get_items(): array {
+            return $this->items;
+        }
+
+        public function set_items(array $items): void {
+            $this->items = $items;
+        }
+
+        public function add_order_note(string $note, bool $isCustomerNote = false): int {
+            $noteId = count($this->notes) + 1;
+            $this->notes[] = ['note' => $note, 'is_customer_note' => $isCustomerNote, 'id' => $noteId];
+            return $noteId;
+        }
+
+        public function get_notes(): array {
+            return $this->notes;
+        }
+
         public function update_meta_data(string $key, $value): void {
             $this->meta[$key] = $value;
         }
@@ -1065,6 +1148,33 @@ if (!class_exists('WC_Order_Stub')) {
 
         public function save(): void {
             // No-op in tests.
+        }
+    }
+}
+
+// WC_Order_Item_Product stub for tests.
+if (!class_exists('WC_Order_Item_Stub')) {
+    class WC_Order_Item_Stub {
+        private int $productId;
+        private string $name;
+        private int $quantity;
+
+        public function __construct(int $productId, string $name, int $quantity = 1) {
+            $this->productId = $productId;
+            $this->name = $name;
+            $this->quantity = $quantity;
+        }
+
+        public function get_product_id(): int {
+            return $this->productId;
+        }
+
+        public function get_name(): string {
+            return $this->name;
+        }
+
+        public function get_quantity(): int {
+            return $this->quantity;
         }
     }
 }

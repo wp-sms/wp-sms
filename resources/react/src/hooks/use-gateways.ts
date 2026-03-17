@@ -21,7 +21,7 @@ export function useGateways(): UseGatewaysReturn {
 
     setLoading(true);
     try {
-      const res = await api.get<ListResponse<Gateway>>('wsms/v1/gateways', { signal: controller.signal });
+      const res = await api.get<ListResponse<Gateway>>('gateways', { signal: controller.signal });
       if (!controller.signal.aborted) {
         setGateways(res.items);
       }
@@ -36,12 +36,12 @@ export function useGateways(): UseGatewaysReturn {
   }, []);
 
   const updateConfig = useCallback(async (config: Record<string, Record<string, unknown>>): Promise<void> => {
-    await api.put('wsms/v1/gateways/config', config);
+    await api.put('gateways/config', config);
     void fetchGateways();
   }, [fetchGateways]);
 
   const testGateway = useCallback(async (id: string, data: { channel?: string; to: string; body?: string }): Promise<GatewayTestResult> => {
-    return api.post<GatewayTestResult>(`wsms/v1/gateways/${id}/test`, data);
+    return api.post<GatewayTestResult>(`gateways/${id}/test`, data);
   }, []);
 
   useEffect(() => {

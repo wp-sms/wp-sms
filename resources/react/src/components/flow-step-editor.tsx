@@ -36,7 +36,7 @@ export function FlowStepEditor({ step, stepIndex, onChange, payloadSchema }: Flo
     abortRef.current = controller;
 
     if (!actionsFetch) {
-      actionsFetch = api.get<ListResponse<ActionDefinition>>('wsms/v1/actions', { signal: controller.signal })
+      actionsFetch = api.get<ListResponse<ActionDefinition>>('actions', { signal: controller.signal })
         .then((res) => { cachedActions = res.items; return res.items; })
         .catch((e) => { actionsFetch = null; throw e; });
     }

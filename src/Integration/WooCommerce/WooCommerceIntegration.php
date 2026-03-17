@@ -2,8 +2,15 @@
 
 namespace WSms\Integration\WooCommerce;
 
-use WSms\Flow\Contracts\TriggerInterface;
 use WSms\Integration\Contracts\IntegrationInterface;
+use WSms\Integration\WooCommerce\Actions\AddOrderNoteAction;
+use WSms\Integration\WooCommerce\Actions\UpdateOrderStatusAction;
+use WSms\Integration\WooCommerce\Triggers\CustomerCreatedTrigger;
+use WSms\Integration\WooCommerce\Triggers\OrderCompletedTrigger;
+use WSms\Integration\WooCommerce\Triggers\OrderCreatedTrigger;
+use WSms\Integration\WooCommerce\Triggers\OrderStatusChangedTrigger;
+use WSms\Integration\WooCommerce\Triggers\PaymentFailedTrigger;
+use WSms\Integration\WooCommerce\Triggers\ProductPurchasedTrigger;
 
 defined('ABSPATH') || exit;
 
@@ -47,89 +54,21 @@ class WooCommerceIntegration implements IntegrationInterface
     public function getTriggers(): array
     {
         return [
-            new class implements TriggerInterface {
-                public function getId(): string { return 'woocommerce.order_created'; }
-                public function getName(): string { return __('Order Created', 'wp-sms'); }
-                public function getGroup(): string { return 'WooCommerce'; }
-                public function getPayloadSchema(): array {
-                    return [
-                        'order_id' => ['type' => 'integer', 'label' => __('Order ID', 'wp-sms')],
-                        'order'    => ['type' => 'object', 'label' => __('Order Data', 'wp-sms')],
-                        'customer' => ['type' => 'object', 'label' => __('Customer Data', 'wp-sms')],
-                    ];
-                }
-                public function subscribe(callable $callback): void {
-                    add_action('woocommerce_new_order', function (int $orderId) use ($callback) {
-                        $order = wc_get_order($orderId);
-                        if (!$order) return;
-                        $callback([
-                            'order_id' => $orderId,
-                            'order'    => [
-                                'id'     => $orderId,
-                                'total'  => $order->get_total(),
-                                'status' => $order->get_status(),
-                            ],
-                            'customer' => [
-                                'email' => $order->get_billing_email(),
-                                'phone' => $order->get_billing_phone(),
-                                'name'  => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
-                            ],
-                        ]);
-                    });
-                }
-            },
-            new class implements TriggerInterface {
-                public function getId(): string { return 'woocommerce.order_completed'; }
-                public function getName(): string { return __('Order Completed', 'wp-sms'); }
-                public function getGroup(): string { return 'WooCommerce'; }
-                public function getPayloadSchema(): array {
-                    return [
-                        'order_id' => ['type' => 'integer', 'label' => __('Order ID', 'wp-sms')],
-                        'order'    => ['type' => 'object', 'label' => __('Order Data', 'wp-sms')],
-                        'customer' => ['type' => 'object', 'label' => __('Customer Data', 'wp-sms')],
-                    ];
-                }
-                public function subscribe(callable $callback): void {
-                    add_action('woocommerce_order_status_completed', function (int $orderId) use ($callback) {
-                        $order = wc_get_order($orderId);
-                        if (!$order) return;
-                        $callback([
-                            'order_id' => $orderId,
-                            'order'    => [
-                                'id'     => $orderId,
-                                'total'  => $order->get_total(),
-                                'status' => 'completed',
-                            ],
-                            'customer' => [
-                                'email' => $order->get_billing_email(),
-                                'phone' => $order->get_billing_phone(),
-                                'name'  => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
-                            ],
-                        ]);
-                    });
-                }
-            },
-            new class implements TriggerInterface {
-                public function getId(): string { return 'woocommerce.payment_failed'; }
-                public function getName(): string { return __('Payment Failed', 'wp-sms'); }
-                public function getGroup(): string { return 'WooCommerce'; }
-                public function getPayloadSchema(): array {
-                    return [
-                        'order_id' => ['type' => 'integer', 'label' => __('Order ID', 'wp-sms')],
-                    ];
-                }
-                public function subscribe(callable $callback): void {
-                    add_action('woocommerce_order_status_failed', function (int $orderId) use ($callback) {
-                        $callback(['order_id' => $orderId]);
-                    });
-                }
-            },
+            new OrderCreatedTrigger(),
+            new OrderCompletedTrigger(),
+            new PaymentFailedTrigger(),
+            new OrderStatusChangedTrigger(),
+            new ProductPurchasedTrigger(),
+            new CustomerCreatedTrigger(),
         ];
     }
 
     public function getActions(): array
     {
-        return [];
+        return [
+            new UpdateOrderStatusAction(),
+            new AddOrderNoteAction(),
+        ];
     }
 
     public function boot(): void

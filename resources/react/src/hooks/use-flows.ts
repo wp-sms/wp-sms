@@ -45,7 +45,7 @@ export function useFlows(perPage = 20): UseFlowsReturn {
       params.set('offset', String((p - 1) * perPage));
       if (f.status) params.set('status', f.status);
 
-      const res = await api.get<ListResponse<Flow>>(`wsms/v1/flows?${params.toString()}`, { signal: controller.signal });
+      const res = await api.get<ListResponse<Flow>>(`flows?${params.toString()}`, { signal: controller.signal });
       if (!controller.signal.aborted) {
         setFlows(res.items);
         setTotal(res.total);
@@ -71,24 +71,24 @@ export function useFlows(perPage = 20): UseFlowsReturn {
   }, []);
 
   const createFlow = useCallback(async (data: Partial<Flow>): Promise<Flow> => {
-    const res = await api.post<{ success: boolean; data: Flow }>('wsms/v1/flows', data);
+    const res = await api.post<{ success: boolean; data: Flow }>('flows', data);
     refetch();
     return res.data;
   }, [refetch]);
 
   const updateFlow = useCallback(async (id: string, data: Partial<Flow>): Promise<Flow> => {
-    const res = await api.put<{ success: boolean; data: Flow }>(`wsms/v1/flows/${id}`, data);
+    const res = await api.put<{ success: boolean; data: Flow }>(`flows/${id}`, data);
     refetch();
     return res.data;
   }, [refetch]);
 
   const deleteFlow = useCallback(async (id: string): Promise<void> => {
-    await api.del(`wsms/v1/flows/${id}`);
+    await api.del(`flows/${id}`);
     refetch();
   }, [refetch]);
 
   const publishFlow = useCallback(async (id: string): Promise<Flow> => {
-    const res = await api.post<{ success: boolean; data: Flow }>(`wsms/v1/flows/${id}/publish`, {});
+    const res = await api.post<{ success: boolean; data: Flow }>(`flows/${id}/publish`, {});
     refetch();
     return res.data;
   }, [refetch]);

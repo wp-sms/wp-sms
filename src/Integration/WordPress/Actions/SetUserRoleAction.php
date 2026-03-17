@@ -1,13 +1,13 @@
 <?php
 
-namespace WSms\Flow\Action;
+namespace WSms\Integration\WordPress\Actions;
 
-use WSms\Flow\Contracts\ActionInterface;
+use WSms\Flow\Contracts\AbstractAction;
 use WSms\Flow\Contracts\ActionResult;
 
 defined('ABSPATH') || exit;
 
-class SetUserRoleAction implements ActionInterface
+class SetUserRoleAction extends AbstractAction
 {
     public function getId(): string
     {
@@ -27,8 +27,21 @@ class SetUserRoleAction implements ActionInterface
     public function getConfigSchema(): array
     {
         return [
-            'user_id' => ['type' => 'string', 'label' => __('User ID', 'wp-sms'), 'template' => true, 'required' => true],
-            'role'    => ['type' => 'string', 'label' => __('Role', 'wp-sms'), 'required' => true],
+            'user_id' => [
+                'type' => 'string',
+                'label' => __('User ID', 'wp-sms'),
+                'description' => __('The WordPress user ID to update', 'wp-sms'),
+                'template' => true,
+                'required' => true,
+                'example' => '{{user_id}}',
+            ],
+            'role' => [
+                'type' => 'string',
+                'label' => __('Role', 'wp-sms'),
+                'description' => __('The WordPress role to assign', 'wp-sms'),
+                'required' => true,
+                'example' => 'editor',
+            ],
         ];
     }
 

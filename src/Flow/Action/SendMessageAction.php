@@ -2,7 +2,7 @@
 
 namespace WSms\Flow\Action;
 
-use WSms\Flow\Contracts\ActionInterface;
+use WSms\Flow\Contracts\AbstractAction;
 use WSms\Flow\Contracts\ActionResult;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Message\EmailMessage;
@@ -11,7 +11,7 @@ use WSms\Messaging\Message\WebhookMessage;
 
 defined('ABSPATH') || exit;
 
-class SendMessageAction implements ActionInterface
+class SendMessageAction extends AbstractAction
 {
     public function __construct(
         private readonly MessageDispatcher $messageDispatcher,
@@ -36,11 +36,44 @@ class SendMessageAction implements ActionInterface
     public function getConfigSchema(): array
     {
         return [
-            'gateway' => ['type' => 'string', 'label' => __('Gateway', 'wp-sms'), 'required' => true],
-            'channel' => ['type' => 'string', 'label' => __('Channel', 'wp-sms'), 'required' => true, 'enum' => ['sms', 'email', 'webhook']],
-            'to'      => ['type' => 'string', 'label' => __('Recipient', 'wp-sms'), 'template' => true, 'required' => true],
-            'body'    => ['type' => 'text', 'label' => __('Message Body', 'wp-sms'), 'template' => true, 'required' => true],
-            'subject' => ['type' => 'string', 'label' => __('Subject (email only)', 'wp-sms'), 'template' => true],
+            'gateway' => [
+                'type' => 'string',
+                'label' => __('Gateway', 'wp-sms'),
+                'description' => __('The messaging gateway to send through', 'wp-sms'),
+                'required' => true,
+                'example' => 'twilio',
+            ],
+            'channel' => [
+                'type' => 'string',
+                'label' => __('Channel', 'wp-sms'),
+                'description' => __('The message channel type', 'wp-sms'),
+                'required' => true,
+                'enum' => ['sms', 'email', 'webhook'],
+                'example' => 'sms',
+            ],
+            'to' => [
+                'type' => 'string',
+                'label' => __('Recipient', 'wp-sms'),
+                'description' => __('Recipient address (phone number, email, or webhook URL)', 'wp-sms'),
+                'template' => true,
+                'required' => true,
+                'example' => '{{user.phone}}',
+            ],
+            'body' => [
+                'type' => 'text',
+                'label' => __('Message Body', 'wp-sms'),
+                'description' => __('The message content to send', 'wp-sms'),
+                'template' => true,
+                'required' => true,
+                'example' => 'Hello {{user.display_name}}, your order is confirmed.',
+            ],
+            'subject' => [
+                'type' => 'string',
+                'label' => __('Subject (email only)', 'wp-sms'),
+                'description' => __('Email subject line, only used when channel is email', 'wp-sms'),
+                'template' => true,
+                'example' => 'Order Confirmation',
+            ],
         ];
     }
 
@@ -57,7 +90,7 @@ class SendMessageAction implements ActionInterface
 
         if ($result->success) {
             return ActionResult::success([
-                'status'      => $result->status,
+                'status' => $result->status,
                 'provider_id' => $result->providerId,
             ]);
         }
@@ -68,9 +101,9 @@ class SendMessageAction implements ActionInterface
     private function buildMessage(string $channel, string $to, string $body, array $config, ?string $executionId): \WSms\Messaging\Contracts\MessageInterface
     {
         return match ($channel) {
-            'email'   => new EmailMessage($to, $body, $config['subject'] ?? '', [], $executionId),
+            'email' => new EmailMessage($to, $body, $config['subject'] ?? '', [], $executionId),
             'webhook' => new WebhookMessage($to, $body, $config['method'] ?? 'POST', $config['headers'] ?? [], $executionId),
-            default   => new SmsMessage($to, $body, $executionId),
+            default => new SmsMessage($to, $body, $executionId),
         };
     }
 }

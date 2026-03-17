@@ -48,7 +48,7 @@ export function useContacts(perPage = 20): UseContactsReturn {
       if (f.status) params.set('status', f.status);
       if (f.search) params.set('search', f.search);
 
-      const res = await api.get<ListResponse<Contact>>(`wsms/v1/contacts?${params.toString()}`, { signal: controller.signal });
+      const res = await api.get<ListResponse<Contact>>(`contacts?${params.toString()}`, { signal: controller.signal });
       if (!controller.signal.aborted) {
         setContacts(res.items);
         setTotal(res.total);
@@ -74,29 +74,29 @@ export function useContacts(perPage = 20): UseContactsReturn {
   }, []);
 
   const createContact = useCallback(async (data: Partial<Contact>): Promise<Contact> => {
-    const res = await api.post<{ success: boolean; data: Contact }>('wsms/v1/contacts', data);
+    const res = await api.post<{ success: boolean; data: Contact }>('contacts', data);
     refetch();
     return res.data;
   }, [refetch]);
 
   const updateContact = useCallback(async (id: string, data: Partial<Contact>): Promise<Contact> => {
-    const res = await api.put<{ success: boolean; data: Contact }>(`wsms/v1/contacts/${id}`, data);
+    const res = await api.put<{ success: boolean; data: Contact }>(`contacts/${id}`, data);
     refetch();
     return res.data;
   }, [refetch]);
 
   const deleteContact = useCallback(async (id: string): Promise<void> => {
-    await api.del(`wsms/v1/contacts/${id}`);
+    await api.del(`contacts/${id}`);
     refetch();
   }, [refetch]);
 
   const addTag = useCallback(async (id: string, tagId: string): Promise<void> => {
-    await api.post(`wsms/v1/contacts/${id}/tags`, { tag_id: tagId });
+    await api.post(`contacts/${id}/tags`, { tag_id: tagId });
     refetch();
   }, [refetch]);
 
   const removeTag = useCallback(async (id: string, tagId: string): Promise<void> => {
-    await api.del(`wsms/v1/contacts/${id}/tags?tag_id=${tagId}`);
+    await api.del(`contacts/${id}/tags?tag_id=${tagId}`);
     refetch();
   }, [refetch]);
 

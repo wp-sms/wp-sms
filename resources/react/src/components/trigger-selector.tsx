@@ -36,7 +36,7 @@ export function TriggerSelector({ triggerType, triggerConfig, onChangeTrigger, o
     abortRef.current = controller;
 
     if (!triggersFetch) {
-      triggersFetch = api.get<ListResponse<TriggerDefinition>>('wsms/v1/triggers', { signal: controller.signal })
+      triggersFetch = api.get<ListResponse<TriggerDefinition>>('triggers', { signal: controller.signal })
         .then((res) => { cachedTriggers = res.items; return res.items; })
         .catch((e) => { triggersFetch = null; throw e; });
     }

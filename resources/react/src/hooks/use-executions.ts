@@ -41,7 +41,7 @@ export function useExecutions(flowId: string, perPage = 10): UseExecutionsReturn
     params.set('per_page', String(perPage));
     params.set('offset', String((page - 1) * perPage));
 
-    api.get<ListResponse<FlowExecution>>(`wsms/v1/flows/${flowId}/executions?${params.toString()}`, { signal: controller.signal })
+    api.get<ListResponse<FlowExecution>>(`flows/${flowId}/executions?${params.toString()}`, { signal: controller.signal })
       .then((res) => {
         if (!controller.signal.aborted) {
           setExecutions(res.items);

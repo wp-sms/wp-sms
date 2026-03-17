@@ -2,12 +2,12 @@
 
 namespace WSms\Flow\Action;
 
-use WSms\Flow\Contracts\ActionInterface;
+use WSms\Flow\Contracts\AbstractAction;
 use WSms\Flow\Contracts\ActionResult;
 
 defined('ABSPATH') || exit;
 
-class HttpRequestAction implements ActionInterface
+class HttpRequestAction extends AbstractAction
 {
     public function getId(): string
     {
@@ -27,10 +27,36 @@ class HttpRequestAction implements ActionInterface
     public function getConfigSchema(): array
     {
         return [
-            'url'     => ['type' => 'string', 'label' => __('URL', 'wp-sms'), 'template' => true, 'required' => true],
-            'method'  => ['type' => 'string', 'label' => __('Method', 'wp-sms'), 'enum' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 'default' => 'POST'],
-            'headers' => ['type' => 'object', 'label' => __('Headers', 'wp-sms')],
-            'body'    => ['type' => 'text', 'label' => __('Body', 'wp-sms'), 'template' => true],
+            'url' => [
+                'type' => 'string',
+                'label' => __('URL', 'wp-sms'),
+                'format' => 'url',
+                'description' => __('The URL to send the request to', 'wp-sms'),
+                'template' => true,
+                'required' => true,
+                'example' => 'https://api.example.com/webhook',
+            ],
+            'method' => [
+                'type' => 'string',
+                'label' => __('Method', 'wp-sms'),
+                'description' => __('HTTP method to use', 'wp-sms'),
+                'enum' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+                'default' => 'POST',
+                'example' => 'POST',
+            ],
+            'headers' => [
+                'type' => 'object',
+                'label' => __('Headers', 'wp-sms'),
+                'description' => __('HTTP headers to include in the request', 'wp-sms'),
+                'example' => ['Authorization' => 'Bearer token123'],
+            ],
+            'body' => [
+                'type' => 'text',
+                'label' => __('Body', 'wp-sms'),
+                'description' => __('Request body content', 'wp-sms'),
+                'template' => true,
+                'example' => '{"user_id": {{user_id}}}',
+            ],
         ];
     }
 
@@ -42,7 +68,7 @@ class HttpRequestAction implements ActionInterface
         $body = $config['body'] ?? '';
 
         $args = [
-            'method'  => $method,
+            'method' => $method,
             'headers' => $headers,
             'timeout' => 30,
         ];
@@ -62,7 +88,7 @@ class HttpRequestAction implements ActionInterface
 
         return ActionResult::success([
             'http_status' => $code,
-            'body'        => $responseBody,
+            'body' => $responseBody,
         ]);
     }
 }

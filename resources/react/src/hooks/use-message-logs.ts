@@ -45,7 +45,7 @@ export function useMessageLogs(perPage = 20): UseMessageLogsReturn {
       if (f.recipient) params.set('recipient', f.recipient);
       if (f.gateway_id) params.set('gateway_id', f.gateway_id);
 
-      const res = await api.get<ListResponse<MessageLogEntry>>(`wsms/v1/message-logs?${params.toString()}`, { signal: controller.signal });
+      const res = await api.get<ListResponse<MessageLogEntry>>(`message-logs?${params.toString()}`, { signal: controller.signal });
       if (!controller.signal.aborted) {
         setLogs(res.items);
         setTotal(res.total);

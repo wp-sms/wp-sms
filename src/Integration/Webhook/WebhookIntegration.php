@@ -2,10 +2,8 @@
 
 namespace WSms\Integration\Webhook;
 
-use WSms\Flow\Contracts\ActionInterface;
-use WSms\Flow\Contracts\ActionResult;
-use WSms\Flow\Contracts\TriggerInterface;
 use WSms\Integration\Contracts\IntegrationInterface;
+use WSms\Integration\Webhook\Triggers\InboundWebhookTrigger;
 
 defined('ABSPATH') || exit;
 
@@ -49,22 +47,7 @@ class WebhookIntegration implements IntegrationInterface
     public function getTriggers(): array
     {
         return [
-            new class implements TriggerInterface {
-                public function getId(): string { return 'webhook.inbound'; }
-                public function getName(): string { return __('Inbound Webhook', 'wp-sms'); }
-                public function getGroup(): string { return 'Webhook'; }
-                public function getPayloadSchema(): array {
-                    return [
-                        'body'    => ['type' => 'object', 'label' => __('Request Body', 'wp-sms')],
-                        'headers' => ['type' => 'object', 'label' => __('Request Headers', 'wp-sms')],
-                    ];
-                }
-                public function subscribe(callable $callback): void {
-                    add_action('wsms_webhook_received', function ($data) use ($callback) {
-                        $callback($data);
-                    });
-                }
-            },
+            new InboundWebhookTrigger(),
         ];
     }
 

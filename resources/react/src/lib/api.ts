@@ -256,7 +256,7 @@ export const api = {
 };
 
 export async function getMetaKeys(): Promise<MetaKeyInfo[]> {
-  const res = await api.get<{ success: boolean; meta_keys: MetaKeyInfo[] }>('/wsms/v1/auth/admin/meta-keys');
+  const res = await api.get<{ success: boolean; meta_keys: MetaKeyInfo[] }>('auth/admin/meta-keys');
   return res.meta_keys;
 }
 

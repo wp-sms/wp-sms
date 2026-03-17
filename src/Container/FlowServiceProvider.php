@@ -5,8 +5,6 @@ namespace WSms\Container;
 use WSms\Flow\Action\ActionRegistry;
 use WSms\Flow\Action\HttpRequestAction;
 use WSms\Flow\Action\SendMessageAction;
-use WSms\Flow\Action\SetUserRoleAction;
-use WSms\Flow\Action\UpdateUserMetaAction;
 use WSms\Flow\Condition\ExpressionLanguageEvaluator;
 use WSms\Flow\Engine\FlowExecutor;
 use WSms\Flow\Engine\FlowRunner;
@@ -59,8 +57,6 @@ class FlowServiceProvider implements ServiceProvider
             $container->get('message.dispatcher'),
         ));
         $actions->register(new HttpRequestAction());
-        $actions->register(new UpdateUserMetaAction());
-        $actions->register(new SetUserRoleAction());
 
         // Register job handlers
         $processor = $container->get('queue.processor');
