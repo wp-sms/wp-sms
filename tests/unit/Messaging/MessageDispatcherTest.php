@@ -11,7 +11,7 @@ use WSms\Log\Contracts\MessageLoggerInterface;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\GatewayInterface;
 use WSms\Messaging\Gateway\GatewayRegistry;
-use WSms\Messaging\Message\SmsMessage;
+use WSms\Messaging\Message\Message;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Queue\Contracts\QueueInterface;
 use WSms\Queue\Job\SendMessageJob;
@@ -41,7 +41,7 @@ class MessageDispatcherTest extends TestCase
 
     public function testSendImmediateSuccess(): void
     {
-        $message = new SmsMessage('+12025551234', 'Hello');
+        $message = new Message('sms','+12025551234', 'Hello');
         $gateway = $this->createMock(GatewayInterface::class);
         $gateway->method('getId')->willReturn('twilio');
         $gateway->method('send')->willReturn(DeliveryResult::sent('provider-123'));
@@ -82,7 +82,7 @@ class MessageDispatcherTest extends TestCase
 
     public function testSendImmediateFailure(): void
     {
-        $message = new SmsMessage('+12025551234', 'Hello');
+        $message = new Message('sms','+12025551234', 'Hello');
         $gateway = $this->createMock(GatewayInterface::class);
         $gateway->method('getId')->willReturn('twilio');
         $gateway->method('send')->willReturn(DeliveryResult::failed('Network error'));
@@ -123,7 +123,7 @@ class MessageDispatcherTest extends TestCase
 
     public function testSendImmediateReturnsFailedWhenNoGateway(): void
     {
-        $message = new SmsMessage('+12025551234', 'Hello');
+        $message = new Message('sms','+12025551234', 'Hello');
 
         $this->gatewayRegistry->method('getDefault')->with('sms')->willReturn(null);
 
@@ -138,7 +138,7 @@ class MessageDispatcherTest extends TestCase
 
     public function testSendQueuedLogsAndDispatchesJob(): void
     {
-        $message = new SmsMessage('+12025551234', 'Queued msg', 'exec-1');
+        $message = new Message('sms','+12025551234', 'Queued msg', 'exec-1');
         $gateway = $this->createMock(GatewayInterface::class);
         $gateway->method('getId')->willReturn('twilio');
 

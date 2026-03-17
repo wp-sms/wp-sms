@@ -6,7 +6,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\MessageDispatcher;
-use WSms\Messaging\Message\TelegramMessage;
+use WSms\Messaging\Message\Message;
 use WSms\Mfa\Channels\TelegramChannel;
 use WSms\Rest\TelegramController;
 
@@ -118,7 +118,7 @@ class TelegramControllerTest extends TestCase
 
         $this->messageDispatcher->expects($this->once())
             ->method('sendImmediate')
-            ->with($this->callback(fn($msg) => $msg instanceof TelegramMessage
+            ->with($this->callback(fn($msg) => $msg instanceof Message
                 && $msg->getRecipient() === '99999'
             ))
             ->willReturn(DeliveryResult::sent());

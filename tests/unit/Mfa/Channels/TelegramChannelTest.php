@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
 use WSms\Messaging\Contracts\DeliveryResult;
-use WSms\Messaging\Message\TelegramMessage;
+use WSms\Messaging\Message\Message;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Channels\TelegramChannel;
 use WSms\Verification\OtpGenerator;
@@ -251,7 +251,7 @@ class TelegramChannelTest extends TestCase
         $dispatcher = $this->createMock(MessageDispatcher::class);
         $dispatcher->expects($this->once())
             ->method('sendImmediate')
-            ->with($this->callback(fn($msg) => $msg instanceof TelegramMessage
+            ->with($this->callback(fn($msg) => $msg instanceof Message
                 && $msg->getRecipient() === '12345'
                 && str_contains($msg->getBody(), '654321')
             ))

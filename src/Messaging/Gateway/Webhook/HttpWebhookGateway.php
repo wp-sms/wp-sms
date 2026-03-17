@@ -56,7 +56,10 @@ class HttpWebhookGateway implements GatewayInterface
 
     public function getConfigSchema(): array
     {
-        return [];
+        return [
+            'shared' => [],
+            'channels' => [],
+        ];
     }
 
     public function validateConfig(array $config): bool
@@ -67,5 +70,27 @@ class HttpWebhookGateway implements GatewayInterface
     public function isConfigured(): bool
     {
         return true;
+    }
+
+    public function isConfiguredForChannel(string $channel): bool
+    {
+        return $channel === 'webhook';
+    }
+
+    public function getMetadata(): array
+    {
+        return [
+            'description' => __('Send data to any URL via HTTP request', 'wp-sms'),
+        ];
+    }
+
+    public function getFeatures(): array
+    {
+        return ['unicode' => true];
+    }
+
+    public function getCredit(): ?string
+    {
+        return null;
     }
 }

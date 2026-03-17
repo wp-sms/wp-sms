@@ -7,7 +7,7 @@ use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
 use WSms\Messaging\Contracts\DeliveryResult;
-use WSms\Messaging\Message\SmsMessage;
+use WSms\Messaging\Message\Message;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Channels\MagicLinkChannel;
 use WSms\Mfa\Channels\PhoneChannel;
@@ -104,7 +104,7 @@ class PhoneChannelTest extends TestCase
 
         $this->dispatcher->expects($this->once())
             ->method('sendImmediate')
-            ->with($this->callback(fn($msg) => $msg instanceof SmsMessage
+            ->with($this->callback(fn($msg) => $msg instanceof Message
                 && $msg->getRecipient() === '+12025551234'
                 && str_contains($msg->getBody(), '999888')
             ))

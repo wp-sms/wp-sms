@@ -7,7 +7,7 @@ use WSms\Enums\EventType;
 use WSms\Enums\VerificationType;
 use WSms\Messaging\Contracts\TemplateEngineInterface;
 use WSms\Messaging\MessageDispatcher;
-use WSms\Messaging\Message\SmsMessage;
+use WSms\Messaging\Message\Message;
 use WSms\Messaging\OtpEmailBuilder;
 use WSms\Verification\OtpGenerator;
 use WSms\Mfa\Support\EmailMasker;
@@ -115,7 +115,7 @@ class VerificationService
                 __('Your code: {{code}}. Expires in {{minutes}} min.', 'wp-sms'),
                 ['code' => $otp, 'minutes' => (int) ceil($expiry / 60)],
             );
-            $this->messageDispatcher->sendImmediate(new SmsMessage($identifier, $smsBody));
+            $this->messageDispatcher->sendImmediate(new Message('sms', $identifier, $smsBody));
         } elseif ($channel === 'email') {
             $result = $this->messageDispatcher->sendImmediate(
                 OtpEmailBuilder::build($identifier, $otp, $expiry)

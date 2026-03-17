@@ -51,22 +51,48 @@ class TelegramGateway implements GatewayInterface
     public function getConfigSchema(): array
     {
         return [
-            'bot_token' => [
-                'type'     => 'string',
-                'label'    => __('Bot Token', 'wp-sms'),
-                'required' => true,
+            'shared' => [
+                'bot_token' => [
+                    'type'     => 'string',
+                    'label'    => __('Bot Token', 'wp-sms'),
+                    'required' => true,
+                ],
             ],
+            'channels' => [],
         ];
     }
 
     public function validateConfig(array $config): bool
     {
-        return !empty($config['bot_token']);
+        return !empty($config['shared']['bot_token'] ?? $config['bot_token'] ?? null);
     }
 
     public function isConfigured(): bool
     {
         $settings = get_option('wsms_auth_settings', []);
         return !empty($settings['telegram']['bot_token']);
+    }
+
+    public function isConfiguredForChannel(string $channel): bool
+    {
+        return $channel === 'telegram' && $this->isConfigured();
+    }
+
+    public function getMetadata(): array
+    {
+        return [
+            'description' => __('Send messages via Telegram Bot API', 'wp-sms'),
+            'website'     => 'https://core.telegram.org/bots',
+        ];
+    }
+
+    public function getFeatures(): array
+    {
+        return ['unicode' => true];
+    }
+
+    public function getCredit(): ?string
+    {
+        return null;
     }
 }

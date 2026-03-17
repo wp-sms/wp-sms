@@ -6,7 +6,7 @@ use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
 use WSms\Messaging\MessageDispatcher;
-use WSms\Messaging\Message\TelegramMessage;
+use WSms\Messaging\Message\Message;
 use WSms\Verification\OtpGenerator;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
 use WSms\Verification\OtpService;
@@ -168,7 +168,7 @@ class TelegramChannel extends AbstractOtpChannel
         $body = '<b>' . sprintf(__('Your verification code is: %s', 'wp-sms'), $code) . '</b>'
             . "\n" . sprintf(__('It expires in %d minutes.', 'wp-sms'), $expiryMinutes);
 
-        $result = $this->messageDispatcher->sendImmediate(new TelegramMessage($identifier, $body));
+        $result = $this->messageDispatcher->sendImmediate(new Message('telegram', $identifier, $body));
 
         return $result->success;
     }

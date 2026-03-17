@@ -6,7 +6,7 @@ use WSms\Flow\Contracts\AbstractAction;
 use WSms\Flow\Contracts\ActionResult;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Message\EmailMessage;
-use WSms\Messaging\Message\SmsMessage;
+use WSms\Messaging\Message\Message;
 use WSms\Messaging\Message\WebhookMessage;
 
 defined('ABSPATH') || exit;
@@ -48,7 +48,7 @@ class SendMessageAction extends AbstractAction
                 'label' => __('Channel', 'wp-sms'),
                 'description' => __('The message channel type', 'wp-sms'),
                 'required' => true,
-                'enum' => ['sms', 'email', 'webhook'],
+                'enum' => ['sms', 'email', 'webhook', 'whatsapp', 'telegram'],
                 'example' => 'sms',
             ],
             'to' => [
@@ -119,9 +119,9 @@ class SendMessageAction extends AbstractAction
     private function buildMessage(string $channel, string $to, string $body, array $config, ?string $executionId): \WSms\Messaging\Contracts\MessageInterface
     {
         return match ($channel) {
-            'email' => new EmailMessage($to, $body, $config['subject'] ?? '', [], $executionId),
+            'email'   => new EmailMessage($to, $body, $config['subject'] ?? '', [], $executionId),
             'webhook' => new WebhookMessage($to, $body, $config['method'] ?? 'POST', $config['headers'] ?? [], $executionId),
-            default => new SmsMessage($to, $body, $executionId),
+            default   => new Message($channel, $to, $body, $executionId),
         };
     }
 }

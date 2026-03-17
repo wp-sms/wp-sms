@@ -10,7 +10,7 @@ use WSms\Enums\SessionStage;
 use WSms\Enums\VerificationType;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Message\EmailMessage;
-use WSms\Messaging\Message\SmsMessage;
+use WSms\Messaging\Message\Message;
 use WSms\Messaging\OtpEmailBuilder;
 use WSms\Mfa\MfaManager;
 use WSms\Support\IpResolver;
@@ -725,7 +725,7 @@ class AccountManager
 
         if ($channel === 'phone') {
             $this->messageDispatcher->sendImmediate(
-                new SmsMessage($identifier, sprintf(__('Your verification code is: %s', 'wp-sms'), $otp))
+                new Message('sms', $identifier, sprintf(__('Your verification code is: %s', 'wp-sms'), $otp))
             );
         } elseif ($channel === 'email') {
             $this->sendVerificationEmail($identifier, $otp, $channel);

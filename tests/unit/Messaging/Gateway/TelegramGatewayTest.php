@@ -5,7 +5,7 @@ namespace WSms\Tests\Unit\Messaging\Gateway;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Messaging\Gateway\Telegram\TelegramGateway;
-use WSms\Messaging\Message\TelegramMessage;
+use WSms\Messaging\Message\Message;
 use WSms\Telegram\TelegramBotClient;
 
 class TelegramGatewayTest extends TestCase
@@ -38,7 +38,7 @@ class TelegramGatewayTest extends TestCase
 
     public function testSendCallsBotClientAndReturnsSuccess(): void
     {
-        $message = new TelegramMessage('12345', 'Hello Telegram');
+        $message = new Message('telegram','12345', 'Hello Telegram');
 
         $this->botClient->expects($this->once())
             ->method('sendMessage')
@@ -53,7 +53,7 @@ class TelegramGatewayTest extends TestCase
 
     public function testSendReturnsFailedWhenBotReturnsFalse(): void
     {
-        $message = new TelegramMessage('12345', 'Hello');
+        $message = new Message('telegram','12345', 'Hello');
 
         $this->botClient->expects($this->once())
             ->method('sendMessage')
@@ -67,7 +67,7 @@ class TelegramGatewayTest extends TestCase
 
     public function testSendFailsWithInvalidChatId(): void
     {
-        $message = new TelegramMessage('0', 'Hello');
+        $message = new Message('telegram','0', 'Hello');
 
         $this->botClient->expects($this->never())->method('sendMessage');
 

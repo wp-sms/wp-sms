@@ -42,7 +42,10 @@ class WpMailGateway implements GatewayInterface
 
     public function getConfigSchema(): array
     {
-        return [];
+        return [
+            'shared' => [],
+            'channels' => [],
+        ];
     }
 
     public function validateConfig(array $config): bool
@@ -53,5 +56,27 @@ class WpMailGateway implements GatewayInterface
     public function isConfigured(): bool
     {
         return true;
+    }
+
+    public function isConfiguredForChannel(string $channel): bool
+    {
+        return $channel === 'email';
+    }
+
+    public function getMetadata(): array
+    {
+        return [
+            'description' => __('Built-in WordPress mail function (wp_mail)', 'wp-sms'),
+        ];
+    }
+
+    public function getFeatures(): array
+    {
+        return ['unicode' => true];
+    }
+
+    public function getCredit(): ?string
+    {
+        return null;
     }
 }

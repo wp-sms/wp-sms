@@ -4,9 +4,14 @@ namespace WSms\Container;
 
 use WSms\Messaging\Gateway\Email\WpMailGateway;
 use WSms\Messaging\Gateway\GatewayRegistry;
+use WSms\Messaging\Gateway\Provider\KavenegarProvider;
+use WSms\Messaging\Gateway\Provider\NetGsmProvider;
+use WSms\Messaging\Gateway\Provider\OvhProvider;
+use WSms\Messaging\Gateway\Provider\TwilioProvider;
+use WSms\Messaging\Gateway\Provider\VonageProvider;
 use WSms\Messaging\Gateway\Telegram\TelegramGateway;
+use WSms\Messaging\Gateway\TestGateway;
 use WSms\Messaging\Gateway\Webhook\HttpWebhookGateway;
-use WSms\Messaging\Gateway\WpSms\WpSmsGateway;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Template\MustacheEngine;
 
@@ -14,15 +19,24 @@ defined('ABSPATH') || exit;
 
 class MessagingServiceProvider implements ServiceProvider
 {
+    /** @var array<string, class-string> Provider ID => class name for deferred registration */
+    private const PROVIDERS = [
+        'twilio'    => TwilioProvider::class,
+        'vonage'    => VonageProvider::class,
+        'kavenegar' => KavenegarProvider::class,
+        'ovh'       => OvhProvider::class,
+        'netgsm'    => NetGsmProvider::class,
+    ];
+
     public function register(ServiceContainer $container): void
     {
         $container->register('gateway.registry', fn() => new GatewayRegistry());
-        $container->register('gateway.sms.wp', fn() => new WpSmsGateway());
         $container->register('gateway.email.wp', fn() => new WpMailGateway());
         $container->register('gateway.webhook', fn() => new HttpWebhookGateway());
         $container->register('gateway.telegram', fn($c) => new TelegramGateway(
             $c->get('telegram.bot_client'),
         ));
+        $container->register('gateway.test', fn() => new TestGateway());
         $container->register('template.engine', fn() => new MustacheEngine());
 
         $container->register('message.dispatcher', fn($c) => new MessageDispatcher(
@@ -36,9 +50,24 @@ class MessagingServiceProvider implements ServiceProvider
     public function boot(ServiceContainer $container): void
     {
         $registry = $container->get('gateway.registry');
-        $registry->register($container->get('gateway.sms.wp'));
+
+        // Eager: built-in gateways (always available, no external API deps)
         $registry->register($container->get('gateway.email.wp'));
         $registry->register($container->get('gateway.webhook'));
-        $registry->register($container->get('gateway.telegram'));
+
+        // Deferred: gateways with constructor dependencies
+        $registry->registerDeferred('telegram', fn() => $container->get('gateway.telegram'));
+
+        // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
+        foreach (self::PROVIDERS as $id => $class) {
+            $registry->registerDeferred($id, $class);
+        }
+
+        // Test gateway: only in debug mode
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            $registry->register($container->get('gateway.test'));
+        }
+
+        do_action('wsms_register_gateways', $registry);
     }
 }

@@ -6,23 +6,25 @@ use WSms\Messaging\Contracts\MessageInterface;
 
 defined('ABSPATH') || exit;
 
-class TelegramMessage implements MessageInterface
+class Message implements MessageInterface
 {
     public function __construct(
-        private readonly string $chatId,
+        private readonly string $channel,
+        private readonly string $recipient,
         private readonly string $body,
         private readonly ?string $flowExecutionId = null,
+        private readonly array $meta = [],
     ) {
     }
 
     public function getChannel(): string
     {
-        return 'telegram';
+        return $this->channel;
     }
 
     public function getRecipient(): string
     {
-        return $this->chatId;
+        return $this->recipient;
     }
 
     public function getBody(): string
@@ -32,7 +34,7 @@ class TelegramMessage implements MessageInterface
 
     public function getMeta(): array
     {
-        return [];
+        return $this->meta;
     }
 
     public function getFlowExecutionId(): ?string

@@ -7,7 +7,7 @@ use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
 use WSms\Audit\AuditLogger;
 use WSms\Messaging\MessageDispatcher;
-use WSms\Messaging\Message\SmsMessage;
+use WSms\Messaging\Message\Message;
 use WSms\Mfa\Contracts\SupportsEnrollmentConfirmation;
 use WSms\Mfa\Contracts\SupportsTokenVerification;
 use WSms\Verification\OtpGenerator;
@@ -220,7 +220,7 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
             (int) ($this->getConfigValue('expiry', 300) / 60),
         );
 
-        $result = $this->messageDispatcher->sendImmediate(new SmsMessage($identifier, $message));
+        $result = $this->messageDispatcher->sendImmediate(new Message('sms', $identifier, $message));
 
         return $result->success;
     }
@@ -270,7 +270,7 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
 
         $body = implode(' ', $parts);
 
-        $result = $this->messageDispatcher->sendImmediate(new SmsMessage($identifier, $body));
+        $result = $this->messageDispatcher->sendImmediate(new Message('sms', $identifier, $body));
 
         return $result->success;
     }

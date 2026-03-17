@@ -338,13 +338,42 @@ export interface Contact {
   tags?: string[];
 }
 
+export interface GatewayConfigField {
+  type: string;
+  label: string;
+  required?: boolean;
+  description?: string;
+  default?: unknown;
+  options?: { value: string; label: string }[];
+}
+
+export interface GatewayConfigSchema {
+  shared: Record<string, GatewayConfigField>;
+  channels: Record<string, Record<string, GatewayConfigField>>;
+}
+
+export interface GatewayMetadata {
+  description?: string;
+  website?: string;
+  icon?: string;
+  regions?: string[];
+}
+
+export interface GatewayConfig {
+  shared: Record<string, unknown>;
+  channels: Record<string, Record<string, unknown>>;
+  is_default: Record<string, boolean>;
+}
+
 export interface Gateway {
   id: string;
   name: string;
   supported_channels: string[];
-  config_schema: JsonSchema;
+  config_schema: GatewayConfigSchema;
   is_configured: boolean;
-  config: Record<string, unknown>;
+  config: GatewayConfig;
+  metadata: GatewayMetadata;
+  features: Record<string, boolean>;
 }
 
 export interface GatewayTestResult {

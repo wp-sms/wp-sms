@@ -4,7 +4,7 @@ namespace WSms\Rest;
 
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Message\EmailMessage;
-use WSms\Messaging\Message\SmsMessage;
+use WSms\Messaging\Message\Message;
 use WSms\Messaging\Message\WebhookMessage;
 
 defined('ABSPATH') || exit;
@@ -25,6 +25,11 @@ class GatewayController
                 'methods'             => 'GET',
                 'callback'            => [$this, 'index'],
                 'permission_callback' => [$this, 'canManage'],
+                'args'                => [
+                    'channel' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'region'  => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'search'  => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                ],
             ],
         ]);
 
@@ -53,6 +58,14 @@ class GatewayController
                 ],
             ],
         ]);
+
+        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/credit', [
+            [
+                'methods'             => 'GET',
+                'callback'            => [$this, 'getCredit'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
     }
 
     public function canManage(): bool
@@ -60,12 +73,36 @@ class GatewayController
         return current_user_can('manage_options');
     }
 
-    public function index(): \WP_REST_Response
+    public function index(\WP_REST_Request $request): \WP_REST_Response
     {
+        $filterChannel = $request->get_param('channel');
+        $filterRegion = $request->get_param('region');
+        $filterSearch = $request->get_param('search');
+
         $gateways = [];
         $configs = get_option('wsms_gateway_configs', []);
 
         foreach ($this->gatewayRegistry->all() as $id => $gateway) {
+            if ($filterChannel && !in_array($filterChannel, $gateway->getSupportedChannels())) {
+                continue;
+            }
+
+            $metadata = $gateway->getMetadata();
+
+            if ($filterRegion) {
+                $regions = $metadata['regions'] ?? [];
+                if (!empty($regions) && !in_array($filterRegion, $regions) && !in_array('global', $regions)) {
+                    continue;
+                }
+            }
+
+            if ($filterSearch) {
+                $haystack = strtolower($gateway->getName() . ' ' . ($metadata['description'] ?? ''));
+                if (!str_contains($haystack, strtolower($filterSearch))) {
+                    continue;
+                }
+            }
+
             $gateways[] = [
                 'id'                 => $id,
                 'name'               => $gateway->getName(),
@@ -73,6 +110,8 @@ class GatewayController
                 'config_schema'      => $gateway->getConfigSchema(),
                 'is_configured'      => $gateway->isConfigured(),
                 'config'             => $configs[$id] ?? [],
+                'metadata'           => $metadata,
+                'features'           => $gateway->getFeatures(),
             ];
         }
 
@@ -92,7 +131,8 @@ class GatewayController
 
     public function updateConfig(\WP_REST_Request $request): \WP_REST_Response
     {
-        $config = $request->get_params();
+        $config = $request->get_json_params();
+
         update_option('wsms_gateway_configs', $config);
 
         return new \WP_REST_Response(['success' => true]);
@@ -100,14 +140,9 @@ class GatewayController
 
     public function testSend(\WP_REST_Request $request): \WP_REST_Response
     {
-        $gateway = $this->gatewayRegistry->get($request->get_param('id'));
-
-        if (!$gateway) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Gateway not found', 'wp-sms'),
-            ], 404);
+        $gateway = $this->resolveGateway($request);
+        if ($gateway instanceof \WP_REST_Response) {
+            return $gateway;
         }
 
         $channel = $request->get_param('channel') ?? $gateway->getSupportedChannels()[0] ?? 'sms';
@@ -117,7 +152,7 @@ class GatewayController
         $message = match ($channel) {
             'email'   => new EmailMessage($to, $body, __('WSMS Test', 'wp-sms')),
             'webhook' => new WebhookMessage($to, $body),
-            default   => new SmsMessage($to, $body),
+            default   => new Message($channel, $to, $body),
         };
 
         $result = $gateway->send($message);
@@ -130,5 +165,37 @@ class GatewayController
                 'error'       => $result->error,
             ],
         ]);
+    }
+
+    public function getCredit(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $gateway = $this->resolveGateway($request);
+        if ($gateway instanceof \WP_REST_Response) {
+            return $gateway;
+        }
+
+        $credit = $gateway->getCredit();
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'data'    => [
+                'credit' => $credit,
+            ],
+        ]);
+    }
+
+    private function resolveGateway(\WP_REST_Request $request): \WSms\Messaging\Contracts\GatewayInterface|\WP_REST_Response
+    {
+        $gateway = $this->gatewayRegistry->get($request->get_param('id'));
+
+        if (!$gateway) {
+            return new \WP_REST_Response([
+                'success' => false,
+                'error'   => 'not_found',
+                'message' => __('Gateway not found', 'wp-sms'),
+            ], 404);
+        }
+
+        return $gateway;
     }
 }
