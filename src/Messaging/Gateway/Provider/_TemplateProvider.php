@@ -157,9 +157,7 @@ class _TemplateProvider extends AbstractProvider implements SupportsStatusCallba
     public function getFeatures(): array
     {
         return array_merge(parent::getFeatures(), [
-            'bulk_send'        => true,
             'delivery_receipt' => true,
-            'scheduled_send'   => true,
         ]);
     }
 

@@ -37,7 +37,7 @@ interface GatewayInterface
     public function getMetadata(): array;
 
     /**
-     * Feature flags: bulk_send, mms, flash_sms, delivery_receipt, incoming, unicode, scheduled_send.
+     * Feature flags: mms, flash_sms, delivery_receipt, incoming, unicode.
      *
      * @return array<string, bool>
      */

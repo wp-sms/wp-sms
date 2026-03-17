@@ -72,13 +72,11 @@ class TestGateway implements GatewayInterface
     public function getFeatures(): array
     {
         return [
-            'bulk_send'        => true,
             'mms'              => true,
             'flash_sms'        => false,
             'delivery_receipt' => false,
             'incoming'         => false,
             'unicode'          => true,
-            'scheduled_send'   => false,
         ];
     }
 

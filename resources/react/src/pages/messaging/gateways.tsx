@@ -19,11 +19,9 @@ import { Search, Settings, Star, ChevronDown } from 'lucide-react';
 import type { Gateway } from '@/lib/api';
 
 const FEATURE_LABELS: Record<string, string> = {
-  bulk_send: 'Bulk',
   mms: 'MMS',
   delivery_receipt: 'Receipts',
   incoming: 'Incoming',
-  scheduled_send: 'Scheduled',
 };
 
 function CreditDisplay({ gatewayId, isConfigured, getCredit }: {

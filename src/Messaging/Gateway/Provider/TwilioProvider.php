@@ -90,11 +90,9 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback
     public function getFeatures(): array
     {
         return array_merge(parent::getFeatures(), [
-            'bulk_send'        => true,
             'mms'              => true,
             'delivery_receipt' => true,
             'incoming'         => true,
-            'scheduled_send'   => true,
         ]);
     }
 

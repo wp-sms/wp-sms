@@ -80,7 +80,6 @@ class VonageProvider extends AbstractProvider
     public function getFeatures(): array
     {
         return array_merge(parent::getFeatures(), [
-            'bulk_send'        => true,
             'delivery_receipt' => true,
             'incoming'         => true,
         ]);

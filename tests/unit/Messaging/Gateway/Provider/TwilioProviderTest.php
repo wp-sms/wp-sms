@@ -121,12 +121,11 @@ class TwilioProviderTest extends AbstractProviderTestCase
         $this->assertArrayHasKey('regions', $metadata);
     }
 
-    public function testFeaturesIncludesBulkAndMms(): void
+    public function testFeaturesIncludesMmsAndDeliveryReceipt(): void
     {
         $provider = $this->createProvider();
         $features = $provider->getFeatures();
 
-        $this->assertTrue($features['bulk_send']);
         $this->assertTrue($features['mms']);
         $this->assertTrue($features['delivery_receipt']);
     }
