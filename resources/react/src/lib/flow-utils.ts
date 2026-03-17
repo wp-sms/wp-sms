@@ -3,6 +3,18 @@ import { getOperatorLabel } from '@/lib/condition-utils';
 
 export type StepStatus = 'needs_setup' | 'ready' | 'error';
 
+export const STEP_COLORS = {
+  action:    { border: 'border-l-blue-400',   iconBg: 'bg-blue-100',   iconFg: 'text-blue-600'   },
+  condition: { border: 'border-l-purple-400', iconBg: 'bg-purple-100', iconFg: 'text-purple-600' },
+  delay:     { border: 'border-l-amber-400',  iconBg: 'bg-amber-100',  iconFg: 'text-amber-600'  },
+} as const;
+
+export const STATUS_DOT = {
+  ready:       { color: 'bg-emerald-400', label: 'Ready' },
+  needs_setup: { color: 'bg-amber-400',   label: 'Needs setup' },
+  error:       { color: 'bg-red-400',     label: 'Error' },
+} as const;
+
 /** Get a one-line summary for a step card. */
 export function getStepSummary(step: FlowNode, actions?: ActionDefinition[]): string {
   switch (step.type) {

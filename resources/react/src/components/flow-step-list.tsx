@@ -4,13 +4,13 @@ import { api } from '@/lib/api';
 import { FlowStepEditor } from '@/components/flow-step-editor';
 import { ConditionStepEditor } from '@/components/flow-editor/condition-step-editor';
 import { DelayStepEditor } from '@/components/flow-editor/delay-step-editor';
-import { StepTypePicker, type StepType } from '@/components/flow-editor/step-type-picker';
+import { StepTypePicker, StepTypePopover, STEP_TYPES, type StepType } from '@/components/flow-editor/step-type-picker';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
 import { ArrowUp, ArrowDown, Trash2, Plus, GitBranch, Clock, Zap, ChevronDown, ChevronRight } from 'lucide-react';
-import { generateNodeId } from '@/lib/utils';
-import { getStepSummary, getStepStatus, type StepStatus } from '@/lib/flow-utils';
+import { generateNodeId, cn } from '@/lib/utils';
+import { getStepSummary, getStepStatus, STEP_COLORS, STATUS_DOT, type StepStatus } from '@/lib/flow-utils';
 
 interface FlowStepListProps {
   steps: FlowNode[];
@@ -43,18 +43,47 @@ export function createNode(type: StepType): FlowNode {
   }
 }
 
-const statusBadge: Record<StepStatus, { label: string; variant: 'secondary' | 'outline' | 'destructive' }> = {
-  needs_setup: { label: 'needs setup', variant: 'secondary' },
-  ready: { label: 'ready', variant: 'outline' },
-  error: { label: 'error', variant: 'destructive' },
-};
-
 function StepIcon({ type }: { type: FlowNode['type'] }) {
-  switch (type) {
-    case 'action': return <Zap className="h-3.5 w-3.5" />;
-    case 'condition': return <GitBranch className="h-3.5 w-3.5" />;
-    case 'delay': return <Clock className="h-3.5 w-3.5" />;
-  }
+  const colors = STEP_COLORS[type];
+  const iconClass = cn('h-3.5 w-3.5', colors.iconFg);
+  return (
+    <div className={cn('flex h-7 w-7 items-center justify-center rounded-full shrink-0', colors.iconBg)}>
+      {type === 'action' && <Zap className={iconClass} />}
+      {type === 'condition' && <GitBranch className={iconClass} />}
+      {type === 'delay' && <Clock className={iconClass} />}
+    </div>
+  );
+}
+
+function StatusDot({ status }: { status: StepStatus }) {
+  const dot = STATUS_DOT[status];
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <span className={cn('inline-block h-2 w-2 rounded-full shrink-0', dot.color)} />
+      </TooltipTrigger>
+      <TooltipContent side="top">{dot.label}</TooltipContent>
+    </Tooltip>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="rounded-lg border-2 border-dashed border-border py-8 px-4 text-center">
+      <div className="flex items-center justify-center gap-3 mb-3">
+        {STEP_TYPES.map(({ type, icon: Icon }) => {
+          const colors = STEP_COLORS[type];
+          return (
+            <div key={type} className={cn('flex h-8 w-8 items-center justify-center rounded-full', colors.iconBg)}>
+              <Icon className={cn('h-4 w-4', colors.iconFg)} />
+            </div>
+          );
+        })}
+      </div>
+      <p className="text-sm font-medium text-foreground">No steps yet</p>
+      <p className="text-xs text-muted-foreground mt-1">Add an action, condition, or delay to get started.</p>
+    </div>
+  );
 }
 
 export function FlowStepList({ steps, onChange, payloadSchema, triggerType, depth = 0, showTypePicker = true, sampleData }: FlowStepListProps) {
@@ -78,9 +107,15 @@ export function FlowStepList({ steps, onChange, payloadSchema, triggerType, dept
     return () => { controller.abort(); };
   }, []);
 
-  const addStep = (type: StepType) => {
+  const addStep = (type: StepType, atIndex?: number) => {
     const node = createNode(type);
-    onChange([...steps, node]);
+    if (atIndex !== undefined) {
+      const next = [...steps];
+      next.splice(atIndex, 0, node);
+      onChange(next);
+    } else {
+      onChange([...steps, node]);
+    }
     setExpandedId(node.id);
   };
 
@@ -130,8 +165,9 @@ export function FlowStepList({ steps, onChange, payloadSchema, triggerType, dept
   const atMaxDepth = depth >= MAX_DEPTH;
 
   return (
-    <div className="space-y-3">
-      {steps.length === 0 && (
+    <div className="space-y-0">
+      {steps.length === 0 && depth === 0 && <EmptyState />}
+      {steps.length === 0 && depth > 0 && (
         <p className="py-4 text-center text-sm text-muted-foreground">
           No steps yet. Add a step to get started.
         </p>
@@ -140,94 +176,110 @@ export function FlowStepList({ steps, onChange, payloadSchema, triggerType, dept
       {steps.map((step, i) => {
         const isExpanded = expandedId === step.id;
         const status = getStepStatus(step);
-        const badge = statusBadge[status];
         const summary = getStepSummary(step, actions ?? undefined);
+        const colors = STEP_COLORS[step.type];
 
         return (
-          <Card key={step.id} className="relative">
-            <CardContent className="pt-4">
-              {/* Header — always visible, clickable to toggle */}
-              <div
-                className="mb-0 flex items-center justify-between cursor-pointer select-none"
-                onClick={() => toggleExpand(step.id)}
-              >
-                <div className="flex items-center gap-2 min-w-0">
-                  {isExpanded
-                    ? <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                    : <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />}
-                  <StepIcon type={step.type} />
-                  <span className="text-xs font-medium text-muted-foreground shrink-0">
-                    {stepLabel(step)}{depth === 0 ? ` ${i + 1}` : ''}
-                  </span>
-                  {!isExpanded && (
-                    <span className="text-sm text-foreground truncate ml-1">
-                      {summary}
-                    </span>
-                  )}
-                  <Badge variant={badge.variant} className="ml-2 shrink-0 text-[10px] px-1.5 py-0">
-                    {badge.label}
-                  </Badge>
-                </div>
-                <div className="flex items-center gap-1 shrink-0" onClick={(e) => e.stopPropagation()}>
-                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => moveStep(i, -1)} disabled={i === 0}>
-                    <ArrowUp className="h-3.5 w-3.5" />
-                  </Button>
-                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => moveStep(i, 1)} disabled={i === steps.length - 1}>
-                    <ArrowDown className="h-3.5 w-3.5" />
-                  </Button>
-                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0 text-destructive hover:text-destructive" onClick={() => removeStep(i)}>
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
+          <div key={step.id}>
+            {/* Connector + inline add between steps */}
+            {i > 0 && !atMaxDepth && (
+              <div className="flex flex-col items-center py-1">
+                <div className="h-2 w-px bg-border" />
+                <StepTypePopover onSelect={(type) => addStep(type, i)} />
+                <div className="h-2 w-px bg-border" />
               </div>
+            )}
+            {i > 0 && atMaxDepth && <div className="h-3" />}
 
-              {/* Expanded content */}
-              {isExpanded && (
-                <div className="mt-3 pt-3 border-t">
-                  {step.type === 'action' && (
-                    <FlowStepEditor
-                      step={step}
-                      stepIndex={i}
-                      onChange={(updated) => updateStep(i, updated)}
-                      payloadSchema={payloadSchema}
-                      triggerType={triggerType}
-                      sampleData={sampleData}
-                    />
-                  )}
-
-                  {step.type === 'condition' && (
-                    <ConditionStepEditor
-                      step={step}
-                      onChange={(updated) => updateStep(i, updated)}
-                      payloadSchema={payloadSchema}
-                      depth={depth}
-                    />
-                  )}
-
-                  {step.type === 'delay' && (
-                    <DelayStepEditor
-                      step={step}
-                      onChange={(updated) => updateStep(i, updated)}
-                      payloadSchema={payloadSchema}
-                      depth={depth}
-                    />
-                  )}
+            <Card className={cn('relative border-l-[3px]', colors.border)}>
+              <CardContent className="pt-4">
+                {/* Header — always visible, clickable to toggle */}
+                <div
+                  className="flex items-start justify-between cursor-pointer select-none"
+                  onClick={() => toggleExpand(step.id)}
+                >
+                  <div className="flex items-start gap-2 min-w-0 flex-1">
+                    {isExpanded
+                      ? <ChevronDown className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      : <ChevronRight className="mt-0.5 h-3.5 w-3.5 shrink-0 text-muted-foreground" />}
+                    <StepIcon type={step.type} />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">
+                          {stepLabel(step)}{depth === 0 ? ` ${i + 1}` : ''}
+                        </span>
+                        <StatusDot status={status} />
+                      </div>
+                      {!isExpanded && (
+                        <p className="text-xs text-muted-foreground truncate mt-0.5">
+                          {summary}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-0.5 shrink-0 ml-2" onClick={(e) => e.stopPropagation()}>
+                    <Button variant="ghost" size="icon-xs" onClick={() => moveStep(i, -1)} disabled={i === 0}>
+                      <ArrowUp className="h-3 w-3" />
+                    </Button>
+                    <Button variant="ghost" size="icon-xs" onClick={() => moveStep(i, 1)} disabled={i === steps.length - 1}>
+                      <ArrowDown className="h-3 w-3" />
+                    </Button>
+                    <Button variant="ghost" size="icon-xs" className="text-destructive hover:text-destructive" onClick={() => removeStep(i)}>
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+
+                {/* Expanded content */}
+                {isExpanded && (
+                  <div className="mt-3 pt-3 border-t">
+                    {step.type === 'action' && (
+                      <FlowStepEditor
+                        step={step}
+                        stepIndex={i}
+                        onChange={(updated) => updateStep(i, updated)}
+                        payloadSchema={payloadSchema}
+                        triggerType={triggerType}
+                        sampleData={sampleData}
+                      />
+                    )}
+
+                    {step.type === 'condition' && (
+                      <ConditionStepEditor
+                        step={step}
+                        onChange={(updated) => updateStep(i, updated)}
+                        payloadSchema={payloadSchema}
+                        depth={depth}
+                      />
+                    )}
+
+                    {step.type === 'delay' && (
+                      <DelayStepEditor
+                        step={step}
+                        onChange={(updated) => updateStep(i, updated)}
+                        payloadSchema={payloadSchema}
+                        depth={depth}
+                      />
+                    )}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         );
       })}
 
       {!atMaxDepth && (
-        showTypePicker ? (
-          <StepTypePicker onSelect={addStep} />
-        ) : (
-          <Button variant="outline" size="sm" onClick={addActionStep} className="w-full">
-            <Plus className="mr-1.5 h-3.5 w-3.5" />
-            Add Step
-          </Button>
-        )
+        <div className="pt-3">
+          {showTypePicker ? (
+            <StepTypePicker onSelect={(type) => addStep(type)} />
+          ) : (
+            <Button variant="outline" size="sm" onClick={addActionStep} className="w-full">
+              <Plus className="mr-1.5 h-3.5 w-3.5" />
+              Add Step
+            </Button>
+          )}
+        </div>
       )}
     </div>
   );

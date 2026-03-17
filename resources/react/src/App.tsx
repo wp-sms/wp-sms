@@ -14,6 +14,7 @@ import { ReportsPage } from '@/pages/reports';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Toaster } from '@/components/ui/sonner';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { AlertCircle } from 'lucide-react';
 
 const { roles, version } = getConfig();
@@ -66,15 +67,17 @@ export default function App() {
   }
 
   return (
-    <div className="wsms-app">
-      <div className="border border-border overflow-hidden">
-        <AppShell activeSection={section} onNavigate={setSection} version={version}>
-          {renderContent()}
-        </AppShell>
-      </div>
+    <TooltipProvider>
+      <div className="wsms-app">
+        <div className="border border-border overflow-hidden">
+          <AppShell activeSection={section} onNavigate={setSection} version={version}>
+            {renderContent()}
+          </AppShell>
+        </div>
 
-      <SaveBar isDirty={isDirty} saveStatus={saveStatus} onSave={handleSave} />
-      <Toaster richColors position="bottom-right" />
-    </div>
+        <SaveBar isDirty={isDirty} saveStatus={saveStatus} onSave={handleSave} />
+        <Toaster richColors position="bottom-right" />
+      </div>
+    </TooltipProvider>
   );
 }

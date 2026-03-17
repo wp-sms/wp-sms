@@ -1,6 +1,7 @@
 import type { FlowNode, JsonSchema } from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { TriggerSelector } from '@/components/trigger-selector';
+
 import { FlowStepList } from '@/components/flow-step-list';
 import { useTestTrigger, TestTriggerButton, SampleDataPreview } from './test-trigger';
 
@@ -54,22 +55,20 @@ export function AdvancedMode({
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">Steps</CardTitle>
-          <CardDescription>Define the actions, conditions, and delays in this flow.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <FlowStepList
-            steps={steps}
-            onChange={onChangeSteps}
-            payloadSchema={payloadSchema}
-            triggerType={triggerType}
-            showTypePicker
-            sampleData={sampleData}
-          />
-        </CardContent>
-      </Card>
+      <div className="space-y-3">
+        <div>
+          <h3 className="text-base font-semibold">Steps</h3>
+          <p className="text-sm text-muted-foreground">Define the actions, conditions, and delays in this flow.</p>
+        </div>
+        <FlowStepList
+          steps={steps}
+          onChange={onChangeSteps}
+          payloadSchema={payloadSchema}
+          triggerType={triggerType}
+          showTypePicker
+          sampleData={sampleData}
+        />
+      </div>
     </div>
   );
 }
