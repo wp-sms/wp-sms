@@ -22,8 +22,19 @@ class smsto extends \WP_SMS\Gateway
         $this->validateNumber = "XXXXXXXX,YYYYYYYY";
         $this->has_key        = true;
         $this->bulk_send      = true;
-        $this->help           = 'Please enter your API key and leave the API username & API password empty.';
         $this->documentUrl    = 'https://wsms.io/docs/gateway-configuration';
+        $this->gatewayFields  = [
+            'has_key' => [
+                'id'   => 'gateway_key',
+                'name' => 'API Key',
+                'desc' => 'Enter your sms.to API key from the API Clients tab in your sms.to dashboard.',
+            ],
+            'from'    => [
+                'id'   => 'gateway_sender_id',
+                'name' => 'Sender ID',
+                'desc' => 'Your approved sender ID registered in sms.to.',
+            ],
+        ];
     }
 
     public function SendSMS()
@@ -85,7 +96,7 @@ class smsto extends \WP_SMS\Gateway
             $apiURL = "{$this->wsdl_link}/fsms/send";
         }
 
-        $args = [
+        $params = [
             'method'      => 'POST',
             'timeout'     => 15,
             'redirection' => 10,
@@ -99,21 +110,13 @@ class smsto extends \WP_SMS\Gateway
         ];
 
         try {
-            $httpResponse = $this->request('POST', $apiURL, $args);
-
-            if (is_wp_error($httpResponse)) {
-                $err      = $httpResponse->get_error_message();
-                $response = null;
-            } else {
-                $response = json_decode(wp_remote_retrieve_body($httpResponse));
-                $err      = null;
-            }
+            $response = $this->request('POST', $apiURL, [], $params);
         } catch (Exception $e) {
             $err      = $e->getMessage();
             $response = null;
         }
 
-        if ($err) {
+        if (isset($err)) {
             $response = [
                 'error'  => true,
                 'reason' => $err,
@@ -126,7 +129,6 @@ class smsto extends \WP_SMS\Gateway
 
             return $response;
         }
-
 
         if (isset($response->success) && $response->success == 'true') {
             // Log the result

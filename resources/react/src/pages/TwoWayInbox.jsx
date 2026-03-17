@@ -30,7 +30,7 @@ import { useListPage } from '@/hooks/useListPage'
 import { useFormDialog } from '@/hooks/useFormDialog'
 import { useSettings } from '@/context/SettingsContext'
 import { useToast } from '@/components/ui/toaster'
-import { cn, __, isAddonDashboardReady } from '@/lib/utils'
+import { cn, __, isAddonDashboardReady, getWpSettings } from '@/lib/utils'
 import { inboxApi } from '@/api/twoWayApi'
 import {
   Dialog,
@@ -69,6 +69,7 @@ export default function TwoWayInbox() {
 
   // Conversation thread states
   const [conversationSender, setConversationSender] = useState(null)
+  const [conversationContactName, setConversationContactName] = useState(null)
   const [conversationMessages, setConversationMessages] = useState([])
   const [isConversationLoading, setIsConversationLoading] = useState(false)
   const [conversationReply, setConversationReply] = useState('')
@@ -188,11 +189,13 @@ export default function TwoWayInbox() {
   const handleOpenConversation = async (row) => {
     conversationDirtyRef.current = false
     setConversationSender(row.sender_number)
+    setConversationContactName(row.contact_name || null)
     setIsConversationLoading(true)
     try {
       const response = await inboxApi.getConversation(row.sender_number)
       if (response.success) {
         setConversationMessages(response.data?.messages || [])
+        if (response.data?.contact_name) setConversationContactName(response.data.contact_name)
       }
     } catch (error) {
       toast({ title: error.message || __('Failed to load conversation'), variant: 'destructive' })
@@ -234,6 +237,7 @@ export default function TwoWayInbox() {
   const handleCloseConversation = () => {
     const needsRefresh = conversationDirtyRef.current
     setConversationSender(null)
+    setConversationContactName(null)
     setConversationMessages([])
     setConversationReply('')
     if (needsRefresh) {
@@ -306,6 +310,19 @@ export default function TwoWayInbox() {
           {row.sender_number}
         </span>
       ),
+    },
+    {
+      id: 'contact_name',
+      accessorKey: 'contact_name',
+      header: __('Contact'),
+      cell: ({ row }) => {
+        if (!row.contact_name) return <span className="wsms-text-[12px] wsms-text-muted-foreground">—</span>
+        if (row.contact_user_id) {
+          const { adminUrl } = getWpSettings()
+          return <a href={`${adminUrl}user-edit.php?user_id=${row.contact_user_id}`} className="wsms-text-[13px] wsms-text-primary hover:wsms-underline">{row.contact_name}</a>
+        }
+        return <span className="wsms-text-[13px] wsms-text-foreground">{row.contact_name}</span>
+      },
     },
     {
       id: 'text',
@@ -640,6 +657,9 @@ export default function TwoWayInbox() {
                 <div className="wsms-flex-1">
                   <p className="wsms-text-[11px] wsms-text-muted-foreground wsms-mb-1">{__('Sender')}</p>
                   <p className="wsms-text-[13px] wsms-font-mono wsms-font-medium">{viewingMessage?.sender_number}</p>
+                  {viewingMessage?.contact_name && (
+                    <p className="wsms-text-[12px] wsms-text-muted-foreground">{viewingMessage.contact_name}</p>
+                  )}
                 </div>
                 <div className="wsms-w-px wsms-h-8 wsms-bg-border" aria-hidden="true" />
                 <div className="wsms-flex-1">
@@ -749,8 +769,11 @@ export default function TwoWayInbox() {
               <MessagesSquare className="wsms-h-4 wsms-w-4 wsms-text-primary" aria-hidden="true" />
               {__('Conversation')}
             </DialogTitle>
-            <DialogDescription className="wsms-font-mono">
-              {conversationSender}
+            <DialogDescription>
+              <span className="wsms-font-mono">{conversationSender}</span>
+              {conversationContactName && (
+                <span className="wsms-text-foreground wsms-ms-2">({conversationContactName})</span>
+              )}
             </DialogDescription>
           </DialogHeader>
           <DialogBody>

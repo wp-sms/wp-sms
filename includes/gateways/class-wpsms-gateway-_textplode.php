@@ -61,7 +61,7 @@ class _textplode extends \WP_SMS\Gateway
             $recipients = [];
             foreach ((array) $this->to as $number) {
                 $recipients[] = [
-                    'phone_number' => $number,
+                    'phone_number' => str_replace('+', '', $number),
                     'merge'        => []
                 ];
             }
