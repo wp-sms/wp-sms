@@ -27,29 +27,31 @@ class IntegrationServiceProvider implements ServiceProvider
 
     public function boot(ServiceContainer $container): void
     {
-        $registry = $container->get('integration.registry');
-        $triggers = $container->get('flow.triggers');
-        $actions = $container->get('flow.actions');
+        add_action('init', function () use ($container) {
+            $registry = $container->get('integration.registry');
+            $triggers = $container->get('flow.triggers');
+            $actions = $container->get('flow.actions');
 
-        foreach ($this->integrations as $integrationClass) {
-            $integration = new $integrationClass();
+            foreach ($this->integrations as $integrationClass) {
+                $integration = new $integrationClass();
 
-            if (!$integration->isAvailable()) {
-                continue;
+                if (!$integration->isAvailable()) {
+                    continue;
+                }
+
+                $registry->register($integration);
+
+                foreach ($integration->getTriggers() as $trigger) {
+                    $triggers->register($trigger);
+                }
+                foreach ($integration->getActions() as $action) {
+                    $actions->register($action);
+                }
+
+                $integration->boot();
             }
 
-            $registry->register($integration);
-
-            foreach ($integration->getTriggers() as $trigger) {
-                $triggers->register($trigger);
-            }
-            foreach ($integration->getActions() as $action) {
-                $actions->register($action);
-            }
-
-            $integration->boot();
-        }
-
-        do_action('wsms_register_integrations', $registry, $triggers, $actions);
+            do_action('wsms_register_integrations', $registry, $triggers, $actions);
+        });
     }
 }

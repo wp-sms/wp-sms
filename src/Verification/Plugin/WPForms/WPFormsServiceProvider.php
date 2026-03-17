@@ -31,7 +31,10 @@ class WPFormsServiceProvider implements ServiceProvider
         }
 
         // WPForms field classes self-register on construction via parent::__construct().
-        add_action('wpforms_loaded', fn () => $container->get('integration.wpforms.verify_email'));
-        add_action('wpforms_loaded', fn () => $container->get('integration.wpforms.verify_phone'));
+        // Defer to 'init' so translations are available (wpforms_loaded fires during plugins_loaded).
+        add_action('init', function () use ($container) {
+            $container->get('integration.wpforms.verify_email');
+            $container->get('integration.wpforms.verify_phone');
+        });
     }
 }
