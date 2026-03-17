@@ -27,6 +27,13 @@ interface FlowStepEditorProps {
 let cachedActions: ActionDefinition[] | null = null;
 let actionsFetch: Promise<ActionDefinition[]> | null = null;
 
+const EMPTY_ACTIONS: ActionDefinition[] = [];
+
+/** Return the module-level cached actions (available after FlowStepEditor mounts). */
+export function getCachedActions(): ActionDefinition[] {
+  return cachedActions ?? EMPTY_ACTIONS;
+}
+
 export function FlowStepEditor({ step, stepIndex, onChange, payloadSchema, triggerType, sampleData }: FlowStepEditorProps) {
   const [actions, setActions] = useState<ActionDefinition[]>(cachedActions ?? []);
   const [loading, setLoading] = useState(!cachedActions);

@@ -339,7 +339,7 @@ export interface Flow {
   trigger_type: string;
   trigger_config: Record<string, unknown>;
   steps: FlowNode[];
-  status: 'draft' | 'published';
+  status: 'draft' | 'active' | 'paused';
   published_steps: FlowNode[] | null;
   published_at: string | null;
   description: string | null;

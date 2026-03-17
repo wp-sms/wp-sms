@@ -41,7 +41,8 @@ import {
 } from '@/components/ui/pagination';
 import {
   Plus, Workflow, Pencil, Trash2, Rocket, LayoutTemplate, Search,
-  ShoppingCart, Users, MessageSquare, FileText, type LucideIcon,
+  ShoppingCart, Users, MessageSquare, FileText, History, Pause,
+  type LucideIcon,
 } from 'lucide-react';
 import { formatLabel } from '@/lib/constants';
 import { countSteps } from '@/lib/flow-utils';
@@ -51,7 +52,7 @@ type View =
   | { mode: 'list' }
   | { mode: 'create' }
   | { mode: 'create-from-template'; template: FlowTemplate }
-  | { mode: 'edit'; flow: Flow };
+  | { mode: 'edit'; flow: Flow; tab?: string };
 
 function getTriggerIcon(triggerType: string): LucideIcon {
   if (triggerType.startsWith('woocommerce.')) return ShoppingCart;
@@ -66,6 +67,7 @@ export function Flows() {
   const [view, setView] = useState<View>({ mode: 'list' });
   const [deleting, setDeleting] = useState<string | null>(null);
   const [publishing, setPublishing] = useState<string | null>(null);
+  const [deactivating, setDeactivating] = useState<string | null>(null);
   const [templates, setTemplates] = useState<FlowTemplate[]>([]);
   const [templatesLoading, setTemplatesLoading] = useState(true);
   const [showTemplates, setShowTemplates] = useState(false);
@@ -130,6 +132,18 @@ export function Flows() {
     }
   };
 
+  const handleDeactivate = async (id: string) => {
+    setDeactivating(id);
+    try {
+      await updateFlow(id, { status: 'paused' });
+      toast.success('Flow deactivated.');
+    } catch {
+      toast.error('Failed to deactivate flow.');
+    } finally {
+      setDeactivating(null);
+    }
+  };
+
   const handleUseTemplate = (template: FlowTemplate) => {
     setShowTemplates(false);
     setView({ mode: 'create-from-template', template });
@@ -173,7 +187,9 @@ export function Flows() {
         flow={view.flow}
         onSave={(data) => updateFlow(view.flow.id, data)}
         onPublish={publishFlow}
+        onDeactivate={(id) => updateFlow(id, { status: 'paused' })}
         onBack={() => setView({ mode: 'list' })}
+        defaultTab={view.tab}
       />
     );
   }
@@ -220,7 +236,8 @@ export function Flows() {
                 <SelectContent>
                   <SelectItem value="all">All</SelectItem>
                   <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="published">Published</SelectItem>
+                  <SelectItem value="active">Active</SelectItem>
+                  <SelectItem value="paused">Paused</SelectItem>
                 </SelectContent>
               </Select>
             </Field>
@@ -263,9 +280,13 @@ export function Flows() {
                         <TableCell className="font-medium">{flow.name}</TableCell>
                         <TableCell className="text-sm">{formatLabel(flow.trigger_type)}</TableCell>
                         <TableCell>
-                          {flow.status === 'published' ? (
+                          {flow.status === 'active' ? (
                             <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700">
-                              Published
+                              Active
+                            </Badge>
+                          ) : flow.status === 'paused' ? (
+                            <Badge variant="outline" className="border-amber-200 bg-amber-50 text-amber-700">
+                              Paused
                             </Badge>
                           ) : (
                             <Badge variant="secondary">Draft</Badge>
@@ -281,16 +302,38 @@ export function Flows() {
                               size="sm"
                               className="h-7 w-7 p-0"
                               onClick={() => setView({ mode: 'edit', flow })}
+                              title="Edit"
                             >
                               <Pencil className="h-3.5 w-3.5" />
                             </Button>
-                            {flow.status === 'draft' && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 w-7 p-0"
+                              onClick={() => setView({ mode: 'edit', flow, tab: 'history' })}
+                              title="Execution History"
+                            >
+                              <History className="h-3.5 w-3.5" />
+                            </Button>
+                            {flow.status === 'active' ? (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 w-7 p-0"
+                                onClick={() => void handleDeactivate(flow.id)}
+                                disabled={deactivating === flow.id}
+                                title="Pause"
+                              >
+                                <Pause className="h-3.5 w-3.5" />
+                              </Button>
+                            ) : (
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 className="h-7 w-7 p-0"
                                 onClick={() => void handlePublish(flow.id)}
                                 disabled={publishing === flow.id}
+                                title="Publish"
                               >
                                 <Rocket className="h-3.5 w-3.5" />
                               </Button>
@@ -301,6 +344,7 @@ export function Flows() {
                               className="h-7 w-7 p-0 text-destructive hover:text-destructive"
                               onClick={() => void handleDelete(flow.id)}
                               disabled={deleting === flow.id}
+                              title="Delete"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
                             </Button>

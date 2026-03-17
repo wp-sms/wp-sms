@@ -57,6 +57,46 @@ function truncate(str: string, max: number): string {
   return str.length > max ? str.slice(0, max) + '...' : str;
 }
 
+/** Validate that all required config fields are filled for action steps. */
+export function validateFlowSteps(
+  steps: FlowNode[],
+  actions: ActionDefinition[],
+): { valid: boolean; errors: string[] } {
+  const errors: string[] = [];
+  const actionMap = new Map(actions.map((a) => [a.id, a]));
+
+  function walk(nodes: FlowNode[]) {
+    for (const node of nodes) {
+      if (node.type === 'action' && node.action) {
+        const def = actionMap.get(node.action);
+        const required = def?.config_schema?.required;
+        if (required && required.length > 0) {
+          const missing = required.filter((field) => {
+            const val = node.config[field];
+            return val === undefined || val === null || val === '';
+          });
+          if (missing.length > 0) {
+            const name = def?.name ?? node.action;
+            const labels = missing.map((f) => {
+              const prop = def?.config_schema?.properties?.[f];
+              return prop?.title ?? f;
+            });
+            errors.push(`${name}: missing required field${labels.length > 1 ? 's' : ''} ${labels.join(', ')}`);
+          }
+        }
+      } else if (node.type === 'condition') {
+        walk(node.then);
+        walk(node.else);
+      } else if (node.type === 'delay') {
+        walk(node.then);
+      }
+    }
+  }
+
+  walk(steps);
+  return { valid: errors.length === 0, errors };
+}
+
 /** Get the validation status of a step. */
 export function getStepStatus(step: FlowNode): StepStatus {
   switch (step.type) {
