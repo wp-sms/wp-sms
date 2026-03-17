@@ -34,13 +34,10 @@ class MfaServiceProvider implements ServiceProvider
             );
         });
 
-        // Alias — canonical instance lives in VerificationServiceProvider.
-        $container->register('mfa.otp_generator', fn () => $container->get('verification.otp_generator'));
-
         // MagicLinkChannel is an internal delegate, not registered as a standalone channel.
         $container->register('mfa.channel.magic', function () use ($container) {
             return new MagicLinkChannel(
-                $container->get('mfa.otp_generator'),
+                $container->get('verification.otp_generator'),
                 $container->get('audit.logger'),
                 $container->get('message.dispatcher'),
                 $container->get('verification.repository'),
@@ -50,7 +47,7 @@ class MfaServiceProvider implements ServiceProvider
 
         $container->register('mfa.channel.phone', function () use ($container) {
             return new PhoneChannel(
-                $container->get('mfa.otp_generator'),
+                $container->get('verification.otp_generator'),
                 $container->get('audit.logger'),
                 $container->get('message.dispatcher'),
                 $container->get('mfa.channel.magic'),
@@ -61,7 +58,7 @@ class MfaServiceProvider implements ServiceProvider
 
         $container->register('mfa.channel.email', function () use ($container) {
             return new EmailChannel(
-                $container->get('mfa.otp_generator'),
+                $container->get('verification.otp_generator'),
                 $container->get('audit.logger'),
                 $container->get('message.dispatcher'),
                 $container->get('mfa.channel.magic'),
@@ -72,7 +69,7 @@ class MfaServiceProvider implements ServiceProvider
 
         $container->register('mfa.channel.backup', function () use ($container) {
             return new BackupCodesChannel(
-                $container->get('mfa.otp_generator'),
+                $container->get('verification.otp_generator'),
                 $container->get('audit.logger'),
             );
         });
@@ -86,7 +83,7 @@ class MfaServiceProvider implements ServiceProvider
 
         $container->register('mfa.channel.telegram', function () use ($container) {
             return new TelegramChannel(
-                $container->get('mfa.otp_generator'),
+                $container->get('verification.otp_generator'),
                 $container->get('audit.logger'),
                 $container->get('message.dispatcher'),
                 $container->get('verification.repository'),

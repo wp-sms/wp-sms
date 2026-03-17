@@ -34,7 +34,7 @@ class VerificationServiceProvider implements ServiceProvider
         ));
 
         $container->register('verification.service', fn () => new VerificationService(
-            $container->get('mfa.otp_generator'),
+            $container->get('verification.otp_generator'),
             $container->get('verification.session'),
             $container->get('audit.logger'),
             $container->get('verification.config'),

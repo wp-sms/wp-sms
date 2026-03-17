@@ -542,6 +542,4 @@ class PolicyEngine
         return $requirements;
     }
 
-    /** @deprecated Use SettingsRepository::CHANNEL_DEFAULTS instead. */
-    public const CHANNEL_DEFAULTS = SettingsRepository::CHANNEL_DEFAULTS;
 }

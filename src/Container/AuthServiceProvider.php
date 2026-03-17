@@ -58,7 +58,7 @@ class AuthServiceProvider implements ServiceProvider
 
         $container->register('auth.session', function () use ($container) {
             return new AuthSession(
-                $container->get('mfa.otp_generator'),
+                $container->get('verification.otp_generator'),
             );
         });
 
