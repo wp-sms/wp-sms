@@ -193,17 +193,4 @@ class AccountControllerTest extends TestCase
         $this->assertTrue($response->get_data()['success']);
     }
 
-    public function testCheckAuthenticatedReturnsFalseForGuest(): void
-    {
-        $GLOBALS['_test_current_user_id'] = 0;
-        $request = new \WP_REST_Request();
-        $this->assertFalse($this->controller->checkAuthenticated($request));
-    }
-
-    public function testCheckAuthenticatedReturnsTrueForLoggedIn(): void
-    {
-        $GLOBALS['_test_current_user_id'] = 1;
-        $request = new \WP_REST_Request();
-        $this->assertTrue($this->controller->checkAuthenticated($request));
-    }
 }

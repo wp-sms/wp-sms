@@ -58,7 +58,7 @@ class RegistrationFlowTest extends IntegrationTestCase
     public function testRegisterFailsWhenPhoneRequiredButMissing(): void
     {
         $settings = AuthScenarios::withOverrides(AuthScenarios::passwordOnly(), [
-            'phone' => ['required_at_signup' => true],
+            'phone' => ['enabled' => true, 'required_at_signup' => true],
         ]);
         $this->setSettings($settings);
 
