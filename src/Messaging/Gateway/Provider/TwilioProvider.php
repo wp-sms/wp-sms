@@ -32,31 +32,37 @@ class TwilioProvider extends AbstractProvider
         return [
             'shared' => [
                 'account_sid' => [
-                    'type'     => 'string',
-                    'label'    => __('Account SID', 'wp-sms'),
-                    'required' => true,
+                    'type'        => 'string',
+                    'label'       => __('Account SID', 'wp-sms'),
+                    'required'    => true,
+                    'description' => __('Your Account SID from the Twilio Console dashboard, starts with "AC"', 'wp-sms'),
+                    'placeholder' => 'ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
                 ],
                 'auth_token' => [
-                    'type'     => 'secret',
-                    'label'    => __('Auth Token', 'wp-sms'),
-                    'required' => true,
+                    'type'        => 'secret',
+                    'label'       => __('Auth Token', 'wp-sms'),
+                    'required'    => true,
+                    'description' => __('Found below your Account SID on the Twilio Console dashboard', 'wp-sms'),
+                    'placeholder' => '32-character hex string',
                 ],
             ],
             'channels' => [
                 'sms' => [
                     'from_number' => [
-                        'type'     => 'string',
-                        'label'    => __('From Number', 'wp-sms'),
-                        'required' => true,
-                        'description' => __('Your Twilio phone number in E.164 format', 'wp-sms'),
+                        'type'        => 'string',
+                        'label'       => __('From Number', 'wp-sms'),
+                        'required'    => true,
+                        'description' => __('Your Twilio phone number in E.164 format (e.g., +15551234567)', 'wp-sms'),
+                        'placeholder' => '+15551234567',
                     ],
                 ],
                 'whatsapp' => [
                     'from_number' => [
-                        'type'     => 'string',
-                        'label'    => __('WhatsApp Number', 'wp-sms'),
-                        'required' => true,
-                        'description' => __('Your Twilio WhatsApp-enabled number in E.164 format', 'wp-sms'),
+                        'type'        => 'string',
+                        'label'       => __('WhatsApp Number', 'wp-sms'),
+                        'required'    => true,
+                        'description' => __('Your Twilio WhatsApp-enabled number. For sandbox testing, use +14155238886', 'wp-sms'),
+                        'placeholder' => '+14155238886',
                     ],
                 ],
             ],
@@ -70,6 +76,12 @@ class TwilioProvider extends AbstractProvider
             'website'     => 'https://www.twilio.com',
             'icon'        => '',
             'regions'     => ['global'],
+            'setup_url'   => 'https://console.twilio.com/',
+            'setup_notes' => [
+                __('Find your Account SID and Auth Token on the Twilio Console dashboard.', 'wp-sms'),
+                __('For SMS, purchase a phone number at Phone Numbers > Manage > Buy a Number.', 'wp-sms'),
+                __('For WhatsApp, enable the sandbox at Messaging > Try it out > Send a WhatsApp message.', 'wp-sms'),
+            ],
         ];
     }
 

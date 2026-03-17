@@ -33,14 +33,18 @@ class NetGsmProvider extends AbstractProvider
         return [
             'shared' => [
                 'username' => [
-                    'type'     => 'string',
-                    'label'    => __('Username', 'wp-sms'),
-                    'required' => true,
+                    'type'        => 'string',
+                    'label'       => __('Username', 'wp-sms'),
+                    'required'    => true,
+                    'description' => __('Your NetGSM account username', 'wp-sms'),
+                    'placeholder' => 'Your NetGSM username',
                 ],
                 'password' => [
-                    'type'     => 'secret',
-                    'label'    => __('Password', 'wp-sms'),
-                    'required' => true,
+                    'type'        => 'secret',
+                    'label'       => __('Password', 'wp-sms'),
+                    'required'    => true,
+                    'description' => __('Your NetGSM account password', 'wp-sms'),
+                    'placeholder' => 'Your NetGSM password',
                 ],
             ],
             'channels' => [
@@ -49,7 +53,8 @@ class NetGsmProvider extends AbstractProvider
                         'type'        => 'string',
                         'label'       => __('Message Header', 'wp-sms'),
                         'required'    => true,
-                        'description' => __('Approved sender name in your NetGSM panel', 'wp-sms'),
+                        'description' => __('Your approved sender name from the NetGSM panel. Must be pre-approved.', 'wp-sms'),
+                        'placeholder' => 'MYCOMPANY',
                     ],
                 ],
             ],
@@ -63,6 +68,11 @@ class NetGsmProvider extends AbstractProvider
             'website'     => 'https://www.netgsm.com.tr',
             'icon'        => '',
             'regions'     => ['TR'],
+            'setup_url'   => 'https://www.netgsm.com.tr/',
+            'setup_notes' => [
+                __('Use the same username and password you use to log in to the NetGSM panel.', 'wp-sms'),
+                __('Your Message Header (sender name) must be pre-approved in your NetGSM panel before use.', 'wp-sms'),
+            ],
         ];
     }
 

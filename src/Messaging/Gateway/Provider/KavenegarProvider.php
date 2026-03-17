@@ -32,18 +32,21 @@ class KavenegarProvider extends AbstractProvider
         return [
             'shared' => [
                 'api_key' => [
-                    'type'     => 'secret',
-                    'label'    => __('API Key', 'wp-sms'),
-                    'required' => true,
+                    'type'        => 'secret',
+                    'label'       => __('API Key', 'wp-sms'),
+                    'required'    => true,
+                    'description' => __('Found in your Kavenegar Panel under Settings > API Key', 'wp-sms'),
+                    'placeholder' => 'Your Kavenegar API key',
                 ],
             ],
             'channels' => [
                 'sms' => [
                     'sender' => [
-                        'type'     => 'string',
-                        'label'    => __('Sender Number', 'wp-sms'),
-                        'required' => true,
-                        'description' => __('Your Kavenegar line number', 'wp-sms'),
+                        'type'        => 'string',
+                        'label'       => __('Sender Number', 'wp-sms'),
+                        'required'    => true,
+                        'description' => __('Your dedicated line number from the Kavenegar Panel > SMS > Lines', 'wp-sms'),
+                        'placeholder' => '10001234567890',
                     ],
                 ],
             ],
@@ -57,6 +60,11 @@ class KavenegarProvider extends AbstractProvider
             'website'     => 'https://kavenegar.com',
             'icon'        => '',
             'regions'     => ['IR'],
+            'setup_url'   => 'https://panel.kavenegar.com/',
+            'setup_notes' => [
+                __('Find your API Key in the Kavenegar Panel under Settings > API Key.', 'wp-sms'),
+                __('Your sender number (line) is listed under SMS > Lines in the panel.', 'wp-sms'),
+            ],
         ];
     }
 

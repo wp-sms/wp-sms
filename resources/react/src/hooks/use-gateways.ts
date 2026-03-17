@@ -6,6 +6,7 @@ export interface UseGatewaysReturn {
   loading: boolean;
   updateConfig: (config: Record<string, Record<string, unknown>>) => Promise<void>;
   testGateway: (id: string, data: { channel?: string; to: string; body?: string }) => Promise<GatewayTestResult>;
+  getCredit: (id: string) => Promise<string | null>;
   refetch: () => void;
 }
 
@@ -44,10 +45,19 @@ export function useGateways(): UseGatewaysReturn {
     return api.post<GatewayTestResult>(`gateways/${id}/test`, data);
   }, []);
 
+  const getCredit = useCallback(async (id: string): Promise<string | null> => {
+    try {
+      const res = await api.get<{ credit: string | null }>(`gateways/${id}/credit`);
+      return res.credit;
+    } catch {
+      return null;
+    }
+  }, []);
+
   useEffect(() => {
     void fetchGateways();
     return () => { abortRef.current?.abort(); };
   }, [fetchGateways]);
 
-  return { gateways, loading, updateConfig, testGateway, refetch: fetchGateways };
+  return { gateways, loading, updateConfig, testGateway, getCredit, refetch: fetchGateways };
 }

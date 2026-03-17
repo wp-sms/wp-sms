@@ -32,25 +32,32 @@ class OvhProvider extends AbstractProvider
         return [
             'shared' => [
                 'application_key' => [
-                    'type'     => 'string',
-                    'label'    => __('Application Key', 'wp-sms'),
-                    'required' => true,
+                    'type'        => 'string',
+                    'label'       => __('Application Key', 'wp-sms'),
+                    'required'    => true,
+                    'description' => __('Generated when creating an OVH API application at api.ovh.com', 'wp-sms'),
+                    'placeholder' => 'AbCdEf123456',
                 ],
                 'application_secret' => [
-                    'type'     => 'secret',
-                    'label'    => __('Application Secret', 'wp-sms'),
-                    'required' => true,
+                    'type'        => 'secret',
+                    'label'       => __('Application Secret', 'wp-sms'),
+                    'required'    => true,
+                    'description' => __('Shown once when you create the API application — save it securely', 'wp-sms'),
+                    'placeholder' => 'Your application secret',
                 ],
                 'consumer_key' => [
-                    'type'     => 'secret',
-                    'label'    => __('Consumer Key', 'wp-sms'),
-                    'required' => true,
+                    'type'        => 'secret',
+                    'label'       => __('Consumer Key', 'wp-sms'),
+                    'required'    => true,
+                    'description' => __('Generated when you authorize the application with your account', 'wp-sms'),
+                    'placeholder' => 'Your consumer key',
                 ],
                 'service_name' => [
                     'type'        => 'string',
                     'label'       => __('Service Name', 'wp-sms'),
                     'required'    => true,
-                    'description' => __('Your OVH SMS service name (e.g., sms-xx12345-1)', 'wp-sms'),
+                    'description' => __('Your OVH SMS service identifier, found in Control Panel > Telecom > SMS', 'wp-sms'),
+                    'placeholder' => 'sms-xx12345-1',
                 ],
             ],
             'channels' => [
@@ -59,7 +66,8 @@ class OvhProvider extends AbstractProvider
                         'type'        => 'string',
                         'label'       => __('Sender', 'wp-sms'),
                         'required'    => true,
-                        'description' => __('Sender name or number', 'wp-sms'),
+                        'description' => __('An approved sender name or number from your OVH SMS panel', 'wp-sms'),
+                        'placeholder' => '+33612345678',
                     ],
                 ],
             ],
@@ -73,6 +81,12 @@ class OvhProvider extends AbstractProvider
             'website'     => 'https://www.ovh.com/sms/',
             'icon'        => '',
             'regions'     => ['EU', 'FR'],
+            'setup_url'   => 'https://api.ovh.com/createToken/',
+            'setup_notes' => [
+                __('Create API credentials at api.ovh.com/createToken with GET, POST, PUT rights on /sms/*.', 'wp-sms'),
+                __('Find your Service Name in the OVH Control Panel under Telecom > SMS.', 'wp-sms'),
+                __('Register a sender name or number in the OVH SMS panel before use.', 'wp-sms'),
+            ],
         ];
     }
 

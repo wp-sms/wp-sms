@@ -64,6 +64,9 @@ class _TemplateProvider extends AbstractProvider
      * - 'select'  — dropdown, requires 'options' array of ['value' => '...', 'label' => '...']
      * - 'boolean' — checkbox/toggle
      * - 'number'  — numeric input
+     *
+     * Optional field properties:
+     * - 'placeholder' — example value shown in the input when empty
      */
     public function getConfigSchema(): array
     {
@@ -79,6 +82,7 @@ class _TemplateProvider extends AbstractProvider
                     'type'        => 'secret',
                     'label'       => __('API Secret', 'wp-sms'),
                     'required'    => true,
+                    'description' => __('Your API secret from the provider dashboard', 'wp-sms'),
                 ],
                 'use_sandbox' => [
                     'type'    => 'boolean',
@@ -89,9 +93,11 @@ class _TemplateProvider extends AbstractProvider
             'channels' => [
                 'sms' => [
                     'from_number' => [
-                        'type'     => 'string',
-                        'label'    => __('Sender Number', 'wp-sms'),
-                        'required' => true,
+                        'type'        => 'string',
+                        'label'       => __('Sender Number', 'wp-sms'),
+                        'required'    => true,
+                        'description' => __('Your sender phone number in E.164 format', 'wp-sms'),
+                        'placeholder' => '+15551234567',
                     ],
                 ],
                 // Multi-channel example:
@@ -114,6 +120,8 @@ class _TemplateProvider extends AbstractProvider
      * - website: Provider's website URL
      * - icon: URL or path to provider icon (48x48 recommended)
      * - regions: Array of country/region codes where this provider operates
+     * - setup_url: Direct link to the provider's API credentials/dashboard page
+     * - setup_notes: Array of step-by-step setup instructions shown in the admin UI
      */
     public function getMetadata(): array
     {
@@ -122,6 +130,10 @@ class _TemplateProvider extends AbstractProvider
             'website'     => 'https://example.com',
             'icon'        => '',
             'regions'     => ['global'],
+            'setup_url'   => 'https://example.com/dashboard',
+            'setup_notes' => [
+                __('Find your API Key on the provider dashboard under Settings > API.', 'wp-sms'),
+            ],
         ];
     }
 

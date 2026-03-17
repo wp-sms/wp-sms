@@ -33,23 +33,28 @@ class VonageProvider extends AbstractProvider
         return [
             'shared' => [
                 'api_key' => [
-                    'type'     => 'string',
-                    'label'    => __('API Key', 'wp-sms'),
-                    'required' => true,
+                    'type'        => 'string',
+                    'label'       => __('API Key', 'wp-sms'),
+                    'required'    => true,
+                    'description' => __('Found on the Vonage API Dashboard under Settings', 'wp-sms'),
+                    'placeholder' => 'a1b2c3d4',
                 ],
                 'api_secret' => [
-                    'type'     => 'secret',
-                    'label'    => __('API Secret', 'wp-sms'),
-                    'required' => true,
+                    'type'        => 'secret',
+                    'label'       => __('API Secret', 'wp-sms'),
+                    'required'    => true,
+                    'description' => __('Found on the Vonage API Dashboard under Settings, next to your API Key', 'wp-sms'),
+                    'placeholder' => 'Your API secret',
                 ],
             ],
             'channels' => [
                 'sms' => [
                     'from' => [
-                        'type'     => 'string',
-                        'label'    => __('Sender ID', 'wp-sms'),
-                        'required' => true,
-                        'description' => __('Phone number or alphanumeric sender ID', 'wp-sms'),
+                        'type'        => 'string',
+                        'label'       => __('Sender ID', 'wp-sms'),
+                        'required'    => true,
+                        'description' => __('A Vonage virtual number or an alphanumeric sender ID (max 11 chars)', 'wp-sms'),
+                        'placeholder' => '+15551234567',
                     ],
                 ],
             ],
@@ -63,6 +68,12 @@ class VonageProvider extends AbstractProvider
             'website'     => 'https://www.vonage.com',
             'icon'        => '',
             'regions'     => ['global'],
+            'setup_url'   => 'https://dashboard.nexmo.com/settings',
+            'setup_notes' => [
+                __('Find your API Key and API Secret on the Vonage API Dashboard under Settings.', 'wp-sms'),
+                __('Purchase a virtual number at Numbers > Buy numbers to use as the Sender ID.', 'wp-sms'),
+                __('Alphanumeric sender IDs (e.g., "MyApp") are available in supported countries.', 'wp-sms'),
+            ],
         ];
     }
 

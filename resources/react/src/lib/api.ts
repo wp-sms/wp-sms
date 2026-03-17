@@ -357,6 +357,7 @@ export interface GatewayConfigField {
   label: string;
   required?: boolean;
   description?: string;
+  placeholder?: string;
   default?: unknown;
   options?: { value: string; label: string }[];
 }
@@ -371,6 +372,8 @@ export interface GatewayMetadata {
   website?: string;
   icon?: string;
   regions?: string[];
+  setup_url?: string;
+  setup_notes?: string[];
 }
 
 export interface GatewayConfig {
