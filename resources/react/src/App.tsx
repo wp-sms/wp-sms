@@ -4,6 +4,7 @@ import { SaveBar } from '@/components/layout/save-bar';
 import { useSettings } from '@/hooks/use-settings';
 import { useHashSection } from '@/hooks/use-hash-section';
 import { getConfig } from '@/lib/api';
+import { MessagingPage } from '@/pages/messaging';
 import { AuthenticationPage } from '@/pages/authentication';
 import { SecurityPage } from '@/pages/security';
 import { IntegrationsPage } from '@/pages/integrations';
@@ -45,6 +46,8 @@ export default function App() {
     const parent = getParentSection(section);
 
     switch (parent) {
+      case 'messaging':
+        return <MessagingPage section={section} />;
       case 'authentication':
         return <AuthenticationPage section={section} settings={settings} onUpdate={updateSetting} />;
       case 'security':

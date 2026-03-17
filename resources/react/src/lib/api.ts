@@ -250,6 +250,7 @@ interface RequestOptions {
 
 export const api = {
   get: <T>(url: string, opts?: RequestOptions) => request<T>('GET', url, undefined, opts?.signal),
+  post: <T>(url: string, body: unknown, opts?: RequestOptions) => request<T>('POST', url, body, opts?.signal),
   put: <T>(url: string, body: unknown, opts?: RequestOptions) => request<T>('PUT', url, body, opts?.signal),
   del: <T>(url: string, opts?: RequestOptions) => request<T>('DELETE', url, undefined, opts?.signal),
 };
@@ -257,4 +258,121 @@ export const api = {
 export async function getMetaKeys(): Promise<MetaKeyInfo[]> {
   const res = await api.get<{ success: boolean; meta_keys: MetaKeyInfo[] }>('/wsms/v1/auth/admin/meta-keys');
   return res.meta_keys;
+}
+
+// --- Messaging Platform Types ---
+
+export interface JsonSchemaProperty {
+  type: string;
+  title?: string;
+  description?: string;
+  enum?: string[];
+  default?: unknown;
+  items?: JsonSchemaProperty;
+  properties?: Record<string, JsonSchemaProperty>;
+  required?: string[];
+}
+
+export interface JsonSchema {
+  type?: string;
+  title?: string;
+  description?: string;
+  properties?: Record<string, JsonSchemaProperty>;
+  required?: string[];
+}
+
+export interface FlowStep {
+  type: string;
+  config: Record<string, unknown>;
+  condition?: {
+    expression: string;
+    then_steps?: FlowStep[];
+    else_steps?: FlowStep[];
+  };
+}
+
+export interface Flow {
+  id: string;
+  name: string;
+  trigger_type: string;
+  trigger_config: Record<string, unknown>;
+  steps: FlowStep[];
+  status: 'draft' | 'published';
+  published_steps: FlowStep[] | null;
+  published_at: string | null;
+  description: string | null;
+  priority: number;
+  created_by: number | null;
+}
+
+export interface Contact {
+  id: string;
+  email: string;
+  phone: string;
+  first_name: string;
+  last_name: string;
+  status: string;
+  source: string;
+  custom_fields: Record<string, unknown>;
+  tags?: string[];
+}
+
+export interface Gateway {
+  id: string;
+  name: string;
+  supported_channels: string[];
+  config_schema: JsonSchema;
+  is_configured: boolean;
+  config: Record<string, unknown>;
+}
+
+export interface GatewayTestResult {
+  success: boolean;
+  data: {
+    status: string;
+    provider_id: string | null;
+    error: string | null;
+  };
+}
+
+export interface MessageLogEntry {
+  id: string;
+  channel: string;
+  status: string;
+  recipient: string;
+  gateway_id: string;
+  message_body: string;
+  created_at: string;
+  sent_at: string | null;
+  error: string | null;
+}
+
+export interface TriggerDefinition {
+  id: string;
+  name: string;
+  group: string;
+  payload_schema: JsonSchema;
+}
+
+export interface ActionDefinition {
+  id: string;
+  name: string;
+  group: string;
+  config_schema: JsonSchema;
+}
+
+export interface PlatformIntegration {
+  id: string;
+  name: string;
+  category: string;
+  icon: string;
+  available: boolean;
+  auth_type: string;
+  triggers: number;
+  actions: number;
+}
+
+export interface ListResponse<T> {
+  items: T[];
+  total: number;
 }

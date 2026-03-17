@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3 } from 'lucide-react';
+import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Send } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import {
   Sidebar,
@@ -41,6 +41,17 @@ interface AppShellProps {
 
 export const NAV_ITEMS = [
   {
+    id: 'messaging',
+    label: 'Messaging',
+    icon: Send,
+    children: [
+      { id: 'flows', label: 'Flows' },
+      { id: 'contacts', label: 'Contacts' },
+      { id: 'gateways', label: 'Gateways' },
+      { id: 'message-logs', label: 'Message Logs' },
+    ],
+  },
+  {
     id: 'authentication',
     label: 'Authentication',
     icon: LogIn,
@@ -67,6 +78,7 @@ export const NAV_ITEMS = [
     icon: Plug,
     children: [
       { id: 'woocommerce', label: 'WooCommerce' },
+      { id: 'platform', label: 'Platform' },
     ],
   },
   {
@@ -87,6 +99,10 @@ export const NAV_ITEMS = [
 ] as const;
 
 const SECTION_DESCRIPTIONS: Record<string, string> = {
+  'flows': 'Create and manage automation flows with triggers and action steps.',
+  'contacts': 'Manage your contacts, tags, and segments for targeted messaging.',
+  'gateways': 'Configure messaging gateways for SMS, email, webhooks, and more.',
+  'message-logs': 'View sent messages, delivery status, and error details.',
   'channels': 'Configure authentication channels — Phone, Email, and Password.',
   'registration': 'Configure how new users register through the authentication pages.',
   'profile-fields': 'Manage which fields appear on registration and profile forms.',
@@ -95,6 +111,7 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   'captcha': 'Add CAPTCHA verification to protect authentication endpoints from bots.',
   'account-cleanup': 'Manage automatic cleanup of unverified pending registrations.',
   'woocommerce': 'Add email and phone OTP verification to WooCommerce checkout, registration, and account pages.',
+  'platform': 'Browse available triggers and actions for building automation flows.',
   'branding': 'Customize the appearance and behavior of your authentication pages.',
   'logs': 'View authentication events and configure logging preferences.',
   'reports': 'View authentication activity statistics, security insights, and usage trends.',
