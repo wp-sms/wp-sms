@@ -84,4 +84,23 @@ class AddOrderNoteActionTest extends TestCase
         $this->assertFalse($result->success);
         $this->assertStringContainsString('Order not found', $result->error);
     }
+
+    public function testGetPlaceholdersForOrderCreated(): void
+    {
+        $placeholders = $this->action->getPlaceholders('woocommerce.order_created');
+        $this->assertArrayHasKey('note', $placeholders);
+        $this->assertStringContainsString('{{order_id}}', $placeholders['note']);
+    }
+
+    public function testGetPlaceholdersForOrderStatusChanged(): void
+    {
+        $placeholders = $this->action->getPlaceholders('woocommerce.order_status_changed');
+        $this->assertArrayHasKey('note', $placeholders);
+        $this->assertStringContainsString('{{old_status}}', $placeholders['note']);
+    }
+
+    public function testGetPlaceholdersForUnknownTrigger(): void
+    {
+        $this->assertSame([], $this->action->getPlaceholders('unknown.trigger'));
+    }
 }

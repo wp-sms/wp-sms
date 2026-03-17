@@ -16,5 +16,7 @@ interface ActionInterface
 
     public function getConfigOptions(string $fieldKey): array;
 
+    public function getPlaceholders(string $triggerType): array;
+
     public function execute(array $payload, array $config): ActionResult;
 }

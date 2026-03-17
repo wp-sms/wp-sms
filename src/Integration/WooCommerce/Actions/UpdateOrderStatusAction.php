@@ -30,7 +30,7 @@ class UpdateOrderStatusAction extends AbstractAction
             'order_id' => [
                 'type' => 'string',
                 'label' => __('Order ID', 'wp-sms'),
-                'description' => __('The WooCommerce order ID to update', 'wp-sms'),
+                'description' => __('The order to update. Usually {{order_id}} from the trigger.', 'wp-sms'),
                 'template' => true,
                 'required' => true,
                 'example' => '{{order_id}}',
@@ -46,11 +46,22 @@ class UpdateOrderStatusAction extends AbstractAction
             'note' => [
                 'type' => 'string',
                 'label' => __('Note', 'wp-sms'),
-                'description' => __('Optional note to add with the status change', 'wp-sms'),
+                'description' => __('Optional note added to the order. Use {{variables}} for trigger data.', 'wp-sms'),
                 'template' => true,
                 'example' => 'Status updated by automation flow.',
             ],
         ];
+    }
+
+    public function getPlaceholders(string $triggerType): array
+    {
+        return match ($triggerType) {
+            'woocommerce.order_created' => [
+                'order_id' => '{{order_id}}',
+                'note' => 'Auto-updated for order #{{order_id}}.',
+            ],
+            default => [],
+        };
     }
 
     public function execute(array $payload, array $config): ActionResult

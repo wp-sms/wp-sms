@@ -66,4 +66,11 @@ class HttpRequestActionTest extends TestCase
         $this->assertFalse($result->success);
         $this->assertSame('Connection timed out', $result->error);
     }
+
+    public function testGetPlaceholdersReturnsBodyForAnyTrigger(): void
+    {
+        $placeholders = $this->action->getPlaceholders('woocommerce.order_created');
+        $this->assertArrayHasKey('body', $placeholders);
+        $this->assertStringContainsString('{{_trigger_type}}', $placeholders['body']);
+    }
 }

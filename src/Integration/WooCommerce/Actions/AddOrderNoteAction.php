@@ -30,7 +30,7 @@ class AddOrderNoteAction extends AbstractAction
             'order_id' => [
                 'type' => 'string',
                 'label' => __('Order ID', 'wp-sms'),
-                'description' => __('The WooCommerce order ID', 'wp-sms'),
+                'description' => __('The order to add the note to. Usually {{order_id}} from the trigger.', 'wp-sms'),
                 'template' => true,
                 'required' => true,
                 'example' => '{{order_id}}',
@@ -38,7 +38,7 @@ class AddOrderNoteAction extends AbstractAction
             'note' => [
                 'type' => 'text',
                 'label' => __('Note', 'wp-sms'),
-                'description' => __('The note content to add to the order', 'wp-sms'),
+                'description' => __('Write the note text. Use {{variables}} to include trigger data.', 'wp-sms'),
                 'template' => true,
                 'required' => true,
                 'example' => 'Customer contacted via SMS.',
@@ -51,6 +51,19 @@ class AddOrderNoteAction extends AbstractAction
                 'example' => false,
             ],
         ];
+    }
+
+    public function getPlaceholders(string $triggerType): array
+    {
+        return match ($triggerType) {
+            'woocommerce.order_created' => [
+                'note' => 'Order #{{order_id}} from {{customer.name}} — Total: ${{order.total}}',
+            ],
+            'woocommerce.order_status_changed' => [
+                'note' => 'Status changed from {{old_status}} to {{new_status}} for order #{{order_id}}.',
+            ],
+            default => [],
+        };
     }
 
     public function execute(array $payload, array $config): ActionResult

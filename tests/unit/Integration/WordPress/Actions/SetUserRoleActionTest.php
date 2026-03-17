@@ -60,4 +60,22 @@ class SetUserRoleActionTest extends TestCase
         $this->assertFalse($result->success);
         $this->assertStringContainsString('User not found', $result->error);
     }
+
+    public function testGetPlaceholdersForUserRegister(): void
+    {
+        $placeholders = $this->action->getPlaceholders('wordpress.user_register');
+        $this->assertArrayHasKey('user_id', $placeholders);
+        $this->assertSame('{{user_id}}', $placeholders['user_id']);
+    }
+
+    public function testGetPlaceholdersForUserRoleChanged(): void
+    {
+        $placeholders = $this->action->getPlaceholders('wordpress.user_role_changed');
+        $this->assertArrayHasKey('user_id', $placeholders);
+    }
+
+    public function testGetPlaceholdersForUnknownTrigger(): void
+    {
+        $this->assertSame([], $this->action->getPlaceholders('unknown.trigger'));
+    }
 }

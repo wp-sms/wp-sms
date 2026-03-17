@@ -49,6 +49,7 @@ export function AdvancedMode({
             steps={steps}
             onChange={onChangeSteps}
             payloadSchema={payloadSchema}
+            triggerType={triggerType}
             showTypePicker
           />
         </CardContent>

@@ -12,6 +12,7 @@ interface FlowStepListProps {
   steps: FlowNode[];
   onChange: (steps: FlowNode[]) => void;
   payloadSchema?: JsonSchema;
+  triggerType?: string;
   depth?: number;
   showTypePicker?: boolean;
 }
@@ -34,7 +35,7 @@ export function createNode(type: StepType): FlowNode {
   }
 }
 
-export function FlowStepList({ steps, onChange, payloadSchema, depth = 0, showTypePicker = true }: FlowStepListProps) {
+export function FlowStepList({ steps, onChange, payloadSchema, triggerType, depth = 0, showTypePicker = true }: FlowStepListProps) {
   const addStep = (type: StepType) => {
     onChange([...steps, createNode(type)]);
   };
@@ -103,6 +104,7 @@ export function FlowStepList({ steps, onChange, payloadSchema, depth = 0, showTy
                 stepIndex={i}
                 onChange={(updated) => updateStep(i, updated)}
                 payloadSchema={payloadSchema}
+                triggerType={triggerType}
               />
             )}
 

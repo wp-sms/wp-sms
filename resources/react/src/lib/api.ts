@@ -272,6 +272,8 @@ export interface JsonSchemaProperty {
   properties?: Record<string, JsonSchemaProperty>;
   required?: string[];
   dynamic?: boolean;
+  example?: unknown;
+  template?: boolean;
 }
 
 export interface JsonSchema {
@@ -379,6 +381,7 @@ export interface ActionDefinition {
   name: string;
   group: string;
   config_schema: JsonSchema;
+  placeholders?: Record<string, Record<string, string>>;
 }
 
 export interface PlatformIntegration {

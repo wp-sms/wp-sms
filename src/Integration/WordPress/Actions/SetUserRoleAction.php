@@ -31,7 +31,7 @@ class SetUserRoleAction extends AbstractAction
             'user_id' => [
                 'type' => 'string',
                 'label' => __('User ID', 'wp-sms'),
-                'description' => __('The WordPress user ID to update', 'wp-sms'),
+                'description' => __('The user to update. Usually {{user_id}} from the trigger.', 'wp-sms'),
                 'template' => true,
                 'required' => true,
                 'example' => '{{user_id}}',
@@ -45,6 +45,17 @@ class SetUserRoleAction extends AbstractAction
                 'example' => 'editor',
             ],
         ];
+    }
+
+    public function getPlaceholders(string $triggerType): array
+    {
+        return match ($triggerType) {
+            'wordpress.user_register',
+            'wordpress.user_role_changed' => [
+                'user_id' => '{{user_id}}',
+            ],
+            default => [],
+        };
     }
 
     public function getConfigOptions(string $fieldKey): array

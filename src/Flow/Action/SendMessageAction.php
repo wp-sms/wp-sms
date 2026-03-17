@@ -54,7 +54,7 @@ class SendMessageAction extends AbstractAction
             'to' => [
                 'type' => 'string',
                 'label' => __('Recipient', 'wp-sms'),
-                'description' => __('Recipient address (phone number, email, or webhook URL)', 'wp-sms'),
+                'description' => __('Recipient phone, email, or URL. Use a variable like {{customer.phone}}.', 'wp-sms'),
                 'template' => true,
                 'required' => true,
                 'example' => '{{user.phone}}',
@@ -62,7 +62,7 @@ class SendMessageAction extends AbstractAction
             'body' => [
                 'type' => 'text',
                 'label' => __('Message Body', 'wp-sms'),
-                'description' => __('The message content to send', 'wp-sms'),
+                'description' => __('Message text. Use {{variables}} to personalize with trigger data.', 'wp-sms'),
                 'template' => true,
                 'required' => true,
                 'example' => 'Hello {{user.display_name}}, your order is confirmed.',
@@ -75,6 +75,24 @@ class SendMessageAction extends AbstractAction
                 'example' => 'Order Confirmation',
             ],
         ];
+    }
+
+    public function getPlaceholders(string $triggerType): array
+    {
+        return match ($triggerType) {
+            'woocommerce.order_created' => [
+                'to' => '{{customer.phone}}',
+                'body' => 'Hi {{customer.name}}, order #{{order_id}} (${{order.total}}) received!',
+            ],
+            'wordpress.user_register' => [
+                'to' => '{{user.email}}',
+                'body' => 'Welcome {{user.display_name}}! Your account is ready.',
+            ],
+            'wordpress.post_published' => [
+                'body' => 'New post: "{{post_title}}" — {{post_url}}',
+            ],
+            default => [],
+        };
     }
 
     public function execute(array $payload, array $config): ActionResult

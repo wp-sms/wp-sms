@@ -76,4 +76,16 @@ class UpdateUserMetaActionTest extends TestCase
 
         $this->assertFalse($result->success);
     }
+
+    public function testGetPlaceholdersForUserRegister(): void
+    {
+        $placeholders = $this->action->getPlaceholders('wordpress.user_register');
+        $this->assertArrayHasKey('user_id', $placeholders);
+        $this->assertSame('{{user_id}}', $placeholders['user_id']);
+    }
+
+    public function testGetPlaceholdersForUnknownTrigger(): void
+    {
+        $this->assertSame([], $this->action->getPlaceholders('unknown.trigger'));
+    }
 }

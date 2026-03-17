@@ -19,12 +19,13 @@ interface FlowStepEditorProps {
   stepIndex: number;
   onChange: (step: ActionNode) => void;
   payloadSchema?: JsonSchema;
+  triggerType?: string;
 }
 
 let cachedActions: ActionDefinition[] | null = null;
 let actionsFetch: Promise<ActionDefinition[]> | null = null;
 
-export function FlowStepEditor({ step, stepIndex, onChange, payloadSchema }: FlowStepEditorProps) {
+export function FlowStepEditor({ step, stepIndex, onChange, payloadSchema, triggerType }: FlowStepEditorProps) {
   const [actions, setActions] = useState<ActionDefinition[]>(cachedActions ?? []);
   const [loading, setLoading] = useState(!cachedActions);
 
@@ -53,11 +54,18 @@ export function FlowStepEditor({ step, stepIndex, onChange, payloadSchema }: Flo
     [step.action],
   );
 
+  const selected = actions.find((a) => a.id === step.action);
+
+  const placeholders = useMemo(() => {
+    const action = actions.find((a) => a.id === step.action);
+    if (!action?.placeholders || !triggerType) return undefined;
+    return action.placeholders[triggerType];
+  }, [actions, step.action, triggerType]);
+
   if (loading) {
     return <Skeleton className="h-20 w-full" />;
   }
 
-  const selected = actions.find((a) => a.id === step.action);
   const fieldId = `step-action-${stepIndex}`;
 
   return (
@@ -91,6 +99,7 @@ export function FlowStepEditor({ step, stepIndex, onChange, payloadSchema }: Flo
           onChange={(vals) => onChange({ ...step, config: vals })}
           payloadSchema={payloadSchema}
           dynamicOptionsUrl={dynamicOptionsUrl}
+          placeholders={placeholders}
         />
       )}
     </div>

@@ -78,4 +78,16 @@ class UpdateOrderStatusActionTest extends TestCase
         $this->assertFalse($result->success);
         $this->assertStringContainsString('Order not found', $result->error);
     }
+
+    public function testGetPlaceholdersForOrderCreated(): void
+    {
+        $placeholders = $this->action->getPlaceholders('woocommerce.order_created');
+        $this->assertArrayHasKey('order_id', $placeholders);
+        $this->assertArrayHasKey('note', $placeholders);
+    }
+
+    public function testGetPlaceholdersForUnknownTrigger(): void
+    {
+        $this->assertSame([], $this->action->getPlaceholders('unknown.trigger'));
+    }
 }

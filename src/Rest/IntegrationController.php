@@ -99,7 +99,7 @@ class IntegrationController
                 'id'             => $trigger->getId(),
                 'name'           => $trigger->getName(),
                 'group'          => $trigger->getGroup(),
-                'payload_schema' => $trigger->getPayloadSchema(),
+                'payload_schema' => ['type' => 'object', 'properties' => $trigger->getPayloadSchema()],
                 'filter_schema'  => $trigger->getFilterSchema(),
             ];
         }
@@ -130,13 +130,18 @@ class IntegrationController
     public function actions(): \WP_REST_Response
     {
         $actions = [];
+        $triggerIds = array_map(
+            fn ($t) => $t->getId(),
+            $this->triggerRegistry->all(),
+        );
 
         foreach ($this->actionRegistry->all() as $action) {
             $actions[] = [
                 'id'            => $action->getId(),
                 'name'          => $action->getName(),
                 'group'         => $action->getGroup(),
-                'config_schema' => $action->getConfigSchema(),
+                'config_schema' => ['type' => 'object', 'properties' => $action->getConfigSchema()],
+                'placeholders'  => $this->collectPlaceholders($action, $triggerIds),
             ];
         }
 
@@ -144,6 +149,18 @@ class IntegrationController
             'items' => $actions,
             'total' => count($actions),
         ]);
+    }
+
+    private function collectPlaceholders(\WSms\Flow\Contracts\ActionInterface $action, array $triggerIds): array
+    {
+        $placeholders = [];
+        foreach ($triggerIds as $triggerId) {
+            $map = $action->getPlaceholders($triggerId);
+            if ($map) {
+                $placeholders[$triggerId] = $map;
+            }
+        }
+        return $placeholders;
     }
 
     public function actionConfigOptions(\WP_REST_Request $request): \WP_REST_Response

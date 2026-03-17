@@ -77,6 +77,7 @@ class FlowExecutorTest extends TestCase
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
             public function getConfigOptions(string $fieldKey): array { return []; }
+            public function getPlaceholders(string $triggerType): array { return []; }
             public function execute(array $payload, array $config): ActionResult {
                 $this->executed = true;
                 return ActionResult::success(['done' => true]);
@@ -104,6 +105,7 @@ class FlowExecutorTest extends TestCase
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
             public function getConfigOptions(string $fieldKey): array { return []; }
+            public function getPlaceholders(string $triggerType): array { return []; }
             public function execute(array $payload, array $config): ActionResult {
                 $this->executed = true;
                 return ActionResult::success();
@@ -134,6 +136,7 @@ class FlowExecutorTest extends TestCase
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
             public function getConfigOptions(string $fieldKey): array { return []; }
+            public function getPlaceholders(string $triggerType): array { return []; }
             public function execute(array $payload, array $config): ActionResult {
                 $this->executed = true;
                 return ActionResult::success();
@@ -193,6 +196,7 @@ class FlowExecutorTest extends TestCase
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
             public function getConfigOptions(string $fieldKey): array { return []; }
+            public function getPlaceholders(string $triggerType): array { return []; }
             public function execute(array $payload, array $config): ActionResult {
                 $this->receivedConfig = $config;
                 return ActionResult::success();

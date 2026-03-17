@@ -53,10 +53,17 @@ class HttpRequestAction extends AbstractAction
             'body' => [
                 'type' => 'text',
                 'label' => __('Body', 'wp-sms'),
-                'description' => __('Request body content', 'wp-sms'),
+                'description' => __('JSON or text body. Use {{variables}} to include trigger data.', 'wp-sms'),
                 'template' => true,
                 'example' => '{"user_id": {{user_id}}}',
             ],
+        ];
+    }
+
+    public function getPlaceholders(string $triggerType): array
+    {
+        return [
+            'body' => '{"event": "{{_trigger_type}}", "user_id": {{user_id}}}',
         ];
     }
 

@@ -39,4 +39,19 @@ class AbstractActionTest extends TestCase
 
         $this->assertSame([], $action->getConfigOptions('any_field'));
     }
+
+    public function testDefaultGetPlaceholdersIsEmpty(): void
+    {
+        $action = new class extends AbstractAction {
+            public function getId(): string { return 'test.action'; }
+            public function getName(): string { return 'Test'; }
+            public function getGroup(): string { return 'Test'; }
+            public function getConfigSchema(): array { return []; }
+            public function execute(array $payload, array $config): ActionResult {
+                return ActionResult::success();
+            }
+        };
+
+        $this->assertSame([], $action->getPlaceholders('any.trigger'));
+    }
 }

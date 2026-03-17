@@ -20,4 +20,9 @@ abstract class AbstractAction implements ActionInterface
     {
         return [];
     }
+
+    public function getPlaceholders(string $triggerType): array
+    {
+        return [];
+    }
 }

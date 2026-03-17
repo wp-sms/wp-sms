@@ -22,6 +22,7 @@ interface SchemaFormProps {
   onChange: (values: Record<string, unknown>) => void;
   payloadSchema?: JsonSchema;
   dynamicOptionsUrl?: (fieldKey: string) => string;
+  placeholders?: Record<string, string>;
 }
 
 function insertVariableAtCursor(
@@ -44,12 +45,24 @@ function insertVariableAtCursor(
   }
 }
 
+function resolvePlaceholder(
+  fieldKey: string,
+  prop: JsonSchemaProperty,
+  triggerPlaceholder?: string,
+): string {
+  if (triggerPlaceholder) return triggerPlaceholder;
+  if (prop.example != null) return String(prop.example);
+  const label = prop.title ?? formatLabel(fieldKey);
+  return `Enter ${label.toLowerCase()}`;
+}
+
 function TextareaField({
   fieldKey,
   label,
   value,
   required,
   description,
+  placeholder,
   onChange,
   payloadSchema,
 }: {
@@ -58,6 +71,7 @@ function TextareaField({
   value: string;
   required: boolean;
   description?: string;
+  placeholder: string;
   onChange: (key: string, value: unknown) => void;
   payloadSchema?: JsonSchema;
 }) {
@@ -77,7 +91,7 @@ function TextareaField({
         ref={ref}
         id={`schema-${fieldKey}`}
         value={value}
-        placeholder={description}
+        placeholder={placeholder}
         onChange={(e) => onChange(fieldKey, e.target.value)}
         rows={3}
       />
@@ -92,6 +106,7 @@ function StringField({
   value,
   required,
   description,
+  placeholder,
   onChange,
   payloadSchema,
 }: {
@@ -100,6 +115,7 @@ function StringField({
   value: string;
   required: boolean;
   description?: string;
+  placeholder: string;
   onChange: (key: string, value: unknown) => void;
   payloadSchema?: JsonSchema;
 }) {
@@ -120,7 +136,7 @@ function StringField({
         id={`schema-${fieldKey}`}
         type="text"
         value={value}
-        placeholder={description}
+        placeholder={placeholder}
         onChange={(e) => onChange(fieldKey, e.target.value)}
       />
       {description && <FieldDescription>{description}</FieldDescription>}
@@ -216,6 +232,7 @@ function PropertyField({
   onChange,
   payloadSchema,
   dynamicOptionsUrl,
+  triggerPlaceholder,
 }: {
   fieldKey: string;
   prop: JsonSchemaProperty;
@@ -224,6 +241,7 @@ function PropertyField({
   onChange: (key: string, value: unknown) => void;
   payloadSchema?: JsonSchema;
   dynamicOptionsUrl?: (fieldKey: string) => string;
+  triggerPlaceholder?: string;
 }) {
   const label = prop.title ?? formatLabel(fieldKey);
 
@@ -316,6 +334,7 @@ function PropertyField({
   }
 
   const strValue = String(value ?? prop.default ?? '');
+  const placeholder = resolvePlaceholder(fieldKey, prop, triggerPlaceholder);
   const isTextarea = prop.type === 'text' || (prop.type === 'string' && /body|message|content|template|text/i.test(fieldKey));
 
   if (isTextarea) {
@@ -326,6 +345,7 @@ function PropertyField({
         value={strValue}
         required={required}
         description={prop.description}
+        placeholder={placeholder}
         onChange={onChange}
         payloadSchema={payloadSchema}
       />
@@ -339,13 +359,14 @@ function PropertyField({
       value={strValue}
       required={required}
       description={prop.description}
+      placeholder={placeholder}
       onChange={onChange}
       payloadSchema={payloadSchema}
     />
   );
 }
 
-export function SchemaForm({ schema, values, onChange, payloadSchema, dynamicOptionsUrl }: SchemaFormProps) {
+export function SchemaForm({ schema, values, onChange, payloadSchema, dynamicOptionsUrl, placeholders }: SchemaFormProps) {
   if (!schema.properties || Object.keys(schema.properties).length === 0) {
     return <p className="text-sm text-muted-foreground">No configuration needed.</p>;
   }
@@ -368,6 +389,7 @@ export function SchemaForm({ schema, values, onChange, payloadSchema, dynamicOpt
           onChange={handleChange}
           payloadSchema={payloadSchema}
           dynamicOptionsUrl={dynamicOptionsUrl}
+          triggerPlaceholder={placeholders?.[key]}
         />
       ))}
     </div>

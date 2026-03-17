@@ -78,4 +78,16 @@ class CreatePostActionTest extends TestCase
         $this->assertFalse($result->success);
         $this->assertSame('Could not insert', $result->error);
     }
+
+    public function testGetPlaceholdersForUserRegister(): void
+    {
+        $placeholders = $this->action->getPlaceholders('wordpress.user_register');
+        $this->assertArrayHasKey('post_title', $placeholders);
+        $this->assertStringContainsString('{{user.display_name}}', $placeholders['post_title']);
+    }
+
+    public function testGetPlaceholdersForUnknownTrigger(): void
+    {
+        $this->assertSame([], $this->action->getPlaceholders('unknown.trigger'));
+    }
 }

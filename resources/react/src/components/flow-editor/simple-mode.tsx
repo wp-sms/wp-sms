@@ -85,6 +85,7 @@ export function SimpleMode({
               stepIndex={0}
               onChange={handleActionChange}
               payloadSchema={payloadSchema}
+              triggerType={triggerType}
             />
           </CardContent>
         </Card>
