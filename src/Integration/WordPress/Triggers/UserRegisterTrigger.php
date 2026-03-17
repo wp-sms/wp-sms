@@ -3,6 +3,7 @@
 namespace WSms\Integration\WordPress\Triggers;
 
 use WSms\Flow\Contracts\AbstractTrigger;
+use WSms\Integration\PayloadSchemas;
 use WSms\Integration\WordPress\WordPressOptions;
 
 defined('ABSPATH') || exit;
@@ -43,6 +44,7 @@ class UserRegisterTrigger extends AbstractTrigger
                 'type' => 'object',
                 'label' => __('User Data', 'wp-sms'),
                 'description' => __('User profile data including email, login, display name, and roles', 'wp-sms'),
+                'properties' => PayloadSchemas::wpUser(),
                 'example' => [
                     'email' => 'user@example.com',
                     'login' => 'johndoe',

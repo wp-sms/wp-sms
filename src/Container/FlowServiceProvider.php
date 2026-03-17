@@ -55,6 +55,7 @@ class FlowServiceProvider implements ServiceProvider
         $actions = $container->get('flow.actions');
         $actions->register(new SendMessageAction(
             $container->get('message.dispatcher'),
+            $container->get('gateway.registry'),
         ));
         $actions->register(new HttpRequestAction());
 

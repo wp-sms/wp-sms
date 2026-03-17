@@ -26,11 +26,15 @@ class MessageDispatcher
     }
 
     /**
-     * Send a message immediately (synchronous). Used for auth/OTP flows.
+     * Send a message immediately (synchronous).
+     *
+     * @param string|null $gatewayId Specific gateway to use, or null for channel default
      */
-    public function sendImmediate(MessageInterface $message): DeliveryResult
+    public function sendImmediate(MessageInterface $message, ?string $gatewayId = null): DeliveryResult
     {
-        $gateway = $this->resolveGateway($message->getChannel());
+        $gateway = $gatewayId
+            ? $this->gatewayRegistry->get($gatewayId)
+            : $this->resolveGateway($message->getChannel());
 
         if ($gateway === null) {
             return DeliveryResult::failed(

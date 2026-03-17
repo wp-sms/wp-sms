@@ -3,6 +3,7 @@
 namespace WSms\Integration\WordPress\Triggers;
 
 use WSms\Flow\Contracts\AbstractTrigger;
+use WSms\Integration\PayloadSchemas;
 use WSms\Integration\WordPress\WordPressOptions;
 
 defined('ABSPATH') || exit;
@@ -49,6 +50,7 @@ class UserRoleChangedTrigger extends AbstractTrigger
                 'type' => 'object',
                 'label' => __('User Data', 'wp-sms'),
                 'description' => __('User profile data', 'wp-sms'),
+                'properties' => PayloadSchemas::wpUser(['email', 'login', 'display_name']),
                 'example' => [
                     'email' => 'user@example.com',
                     'login' => 'johndoe',

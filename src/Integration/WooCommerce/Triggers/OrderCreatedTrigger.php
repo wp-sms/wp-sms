@@ -3,6 +3,7 @@
 namespace WSms\Integration\WooCommerce\Triggers;
 
 use WSms\Flow\Contracts\AbstractTrigger;
+use WSms\Integration\PayloadSchemas;
 
 defined('ABSPATH') || exit;
 
@@ -36,12 +37,14 @@ class OrderCreatedTrigger extends AbstractTrigger
                 'type' => 'object',
                 'label' => __('Order Data', 'wp-sms'),
                 'description' => __('Order details including total and status', 'wp-sms'),
+                'properties' => PayloadSchemas::wooOrder(),
                 'example' => ['id' => 1001, 'total' => '59.99', 'status' => 'pending'],
             ],
             'customer' => [
                 'type' => 'object',
                 'label' => __('Customer Data', 'wp-sms'),
                 'description' => __('Customer contact information', 'wp-sms'),
+                'properties' => PayloadSchemas::wooCustomer(),
                 'example' => ['email' => 'customer@example.com', 'phone' => '+1234567890', 'name' => 'John Doe'],
             ],
         ];

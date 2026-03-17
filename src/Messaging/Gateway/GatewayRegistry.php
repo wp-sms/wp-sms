@@ -86,6 +86,20 @@ class GatewayRegistry
         return array_filter($this->gateways, fn($g) => $g->isConfigured());
     }
 
+    /** @return string[] Only channels that have at least one configured gateway */
+    public function getConfiguredChannels(): array
+    {
+        $channels = [];
+        foreach ($this->getConfigured() as $gateway) {
+            foreach ($gateway->getSupportedChannels() as $channel) {
+                if ($gateway->isConfiguredForChannel($channel)) {
+                    $channels[$channel] = true;
+                }
+            }
+        }
+        return array_keys($channels);
+    }
+
     /** @return string[] */
     public function getAvailableChannels(): array
     {

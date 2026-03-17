@@ -4,6 +4,7 @@ namespace WSms\Flow\Action;
 
 use WSms\Flow\Contracts\AbstractAction;
 use WSms\Flow\Contracts\ActionResult;
+use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Message\EmailMessage;
 use WSms\Messaging\Message\Message;
@@ -13,8 +14,11 @@ defined('ABSPATH') || exit;
 
 class SendMessageAction extends AbstractAction
 {
+    public const DEFAULT_GATEWAY = '__default__';
+
     public function __construct(
         private readonly MessageDispatcher $messageDispatcher,
+        private readonly GatewayRegistry $gatewayRegistry,
     ) {
     }
 
@@ -36,20 +40,22 @@ class SendMessageAction extends AbstractAction
     public function getConfigSchema(): array
     {
         return [
-            'gateway' => [
-                'type' => 'string',
-                'label' => __('Gateway', 'wp-sms'),
-                'description' => __('The messaging gateway to send through', 'wp-sms'),
-                'required' => true,
-                'example' => 'twilio',
-            ],
             'channel' => [
                 'type' => 'string',
                 'label' => __('Channel', 'wp-sms'),
                 'description' => __('The message channel type', 'wp-sms'),
                 'required' => true,
-                'enum' => ['sms', 'email', 'webhook', 'whatsapp', 'telegram'],
+                'dynamic' => true,
                 'example' => 'sms',
+            ],
+            'gateway' => [
+                'type' => 'string',
+                'label' => __('Gateway', 'wp-sms'),
+                'description' => __('The messaging gateway to send through', 'wp-sms'),
+                'required' => true,
+                'dynamic' => true,
+                'dependsOn' => ['channel'],
+                'example' => 'twilio',
             ],
             'to' => [
                 'type' => 'string',
@@ -82,6 +88,39 @@ class SendMessageAction extends AbstractAction
         ];
     }
 
+    public function getConfigOptions(string $fieldKey, array $context = []): array
+    {
+        if ($fieldKey === 'channel') {
+            $channels = $this->gatewayRegistry->getConfiguredChannels();
+            return array_map(fn(string $ch) => [
+                'value' => $ch,
+                'label' => ucfirst($ch),
+            ], $channels);
+        }
+
+        if ($fieldKey === 'gateway') {
+            $channel = $context['channel'] ?? '';
+            if ($channel === '') {
+                return [];
+            }
+            $options = [
+                ['value' => self::DEFAULT_GATEWAY, 'label' => __('Channel default', 'wp-sms')],
+            ];
+            $gateways = $this->gatewayRegistry->getByChannel($channel);
+            foreach ($gateways as $gateway) {
+                if ($gateway->isConfiguredForChannel($channel)) {
+                    $options[] = [
+                        'value' => $gateway->getId(),
+                        'label' => $gateway->getName(),
+                    ];
+                }
+            }
+            return $options;
+        }
+
+        return [];
+    }
+
     public function getPlaceholders(string $triggerType): array
     {
         return match ($triggerType) {
@@ -105,11 +144,15 @@ class SendMessageAction extends AbstractAction
         $channel = $config['channel'] ?? 'sms';
         $to = $config['to'] ?? '';
         $body = $config['body'] ?? '';
+        $gatewayId = $config['gateway'] ?? self::DEFAULT_GATEWAY;
 
         $executionId = $payload['_execution_id'] ?? null;
         $message = $this->buildMessage($channel, $to, $body, $config, $executionId);
 
-        $result = $this->messageDispatcher->sendImmediate($message);
+        $result = $this->messageDispatcher->sendImmediate(
+            $message,
+            $gatewayId !== self::DEFAULT_GATEWAY ? $gatewayId : null,
+        );
 
         if ($result->success) {
             return ActionResult::success([

@@ -10,11 +10,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import { formatLabel } from '@/lib/constants';
 import type { JsonSchema, JsonSchemaProperty } from '@/lib/api';
 import { api } from '@/lib/api';
 import { TemplateVariablePicker } from '@/components/flow-editor/template-variable-picker';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Plus, X } from 'lucide-react';
 
 interface SchemaFormProps {
   schema: JsonSchema;
@@ -249,6 +251,113 @@ function DynamicSelectField({
   );
 }
 
+function toKvPairs(obj: Record<string, string>): [string, string][] {
+  const entries = Object.entries(obj);
+  return entries.length > 0 ? entries : [['', '']];
+}
+
+function fromKvPairs(pairs: [string, string][]): Record<string, string> {
+  const obj: Record<string, string> = {};
+  for (const [k, v] of pairs) {
+    if (k) obj[k] = v;
+  }
+  return obj;
+}
+
+function KeyValueField({
+  fieldKey,
+  label,
+  value,
+  required,
+  description,
+  hint,
+  onChange,
+}: {
+  fieldKey: string;
+  label: string;
+  value: Record<string, string>;
+  required: boolean;
+  description?: string;
+  hint?: string;
+  onChange: (key: string, value: unknown) => void;
+}) {
+  // Work with an array of pairs so multiple empty-key rows can coexist
+  const [pairs, setPairs] = useState<[string, string][]>(() => toKvPairs(value));
+
+  // Sync pairs back from parent when value changes externally
+  useEffect(() => {
+    setPairs(toKvPairs(value));
+  }, [value]);
+
+  const commit = (next: [string, string][]) => {
+    setPairs(next);
+    onChange(fieldKey, fromKvPairs(next));
+  };
+
+  const handleChange = (index: number, pos: 0 | 1, newVal: string) => {
+    const next = pairs.map((pair, i) => {
+      if (i !== index) return pair;
+      const updated: [string, string] = [...pair];
+      updated[pos] = newVal;
+      return updated;
+    });
+    commit(next);
+  };
+
+  const handleRemove = (index: number) => {
+    commit(pairs.filter((_, i) => i !== index));
+  };
+
+  const handleAdd = () => {
+    commit([...pairs, ['', '']]);
+  };
+
+  return (
+    <Field>
+      <FieldLabel htmlFor={`schema-${fieldKey}`}>{label}{required && ' *'}</FieldLabel>
+      <div className="space-y-2">
+        {pairs.map(([k, v], index) => (
+          <div key={index} className="flex items-center gap-2">
+            <Input
+              value={k}
+              placeholder="Key"
+              onChange={(e) => handleChange(index, 0, e.target.value)}
+              className="flex-1"
+            />
+            <Input
+              value={v}
+              placeholder="Value"
+              onChange={(e) => handleChange(index, 1, e.target.value)}
+              className="flex-1"
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-9 w-9 p-0 text-muted-foreground hover:text-destructive"
+              onClick={() => handleRemove(index)}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        ))}
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={handleAdd}
+          className="w-full"
+        >
+          <Plus className="mr-1 h-3.5 w-3.5" />
+          Add
+        </Button>
+      </div>
+      {hint && <FieldHint>{hint}</FieldHint>}
+      {description && <FieldDescription>{description}</FieldDescription>}
+    </Field>
+  );
+}
+
 function PropertyField({
   fieldKey,
   prop,
@@ -368,6 +477,20 @@ function PropertyField({
           />
         ))}
       </fieldset>
+    );
+  }
+
+  if (prop.type === 'object' && !prop.properties) {
+    return (
+      <KeyValueField
+        fieldKey={fieldKey}
+        label={label}
+        value={(value ?? {}) as Record<string, string>}
+        required={required}
+        description={prop.description}
+        hint={prop.hint}
+        onChange={onChange}
+      />
     );
   }
 

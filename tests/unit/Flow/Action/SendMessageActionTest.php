@@ -4,6 +4,7 @@ namespace WSms\Tests\Unit\Flow\Action;
 
 use PHPUnit\Framework\TestCase;
 use WSms\Flow\Action\SendMessageAction;
+use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\MessageDispatcher;
 
 class SendMessageActionTest extends TestCase
@@ -13,7 +14,8 @@ class SendMessageActionTest extends TestCase
     protected function setUp(): void
     {
         $dispatcher = $this->createMock(MessageDispatcher::class);
-        $this->action = new SendMessageAction($dispatcher);
+        $registry = $this->createMock(GatewayRegistry::class);
+        $this->action = new SendMessageAction($dispatcher, $registry);
     }
 
     public function testMetadata(): void
@@ -33,6 +35,9 @@ class SendMessageActionTest extends TestCase
         $this->assertArrayHasKey('subject', $schema);
         $this->assertTrue($schema['to']['template']);
         $this->assertTrue($schema['body']['template']);
+        $this->assertTrue($schema['channel']['dynamic']);
+        $this->assertTrue($schema['gateway']['dynamic']);
+        $this->assertSame(['channel'], $schema['gateway']['dependsOn']);
     }
 
     public function testGetPlaceholdersForOrderCreated(): void

@@ -2,6 +2,7 @@ import type { JsonSchema, JsonSchemaProperty } from '@/lib/api';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Braces } from 'lucide-react';
+import { groupBy } from '@/lib/utils';
 
 interface TemplateVariablePickerProps {
   payloadSchema: JsonSchema;
@@ -13,24 +14,36 @@ interface FlatVariable {
   label: string;
   type: string;
   example?: string;
+  group?: string;
 }
 
 function flattenProperties(
   properties: Record<string, JsonSchemaProperty>,
   prefix = '',
+  group?: string,
 ): FlatVariable[] {
   const result: FlatVariable[] = [];
 
   for (const [key, prop] of Object.entries(properties)) {
     const fullPath = prefix ? `${prefix}.${key}` : key;
     if (prop.type === 'object' && prop.properties) {
-      result.push(...flattenProperties(prop.properties, fullPath));
+      result.push(...flattenProperties(prop.properties, fullPath, prop.title ?? key));
+    } else if (prop.type === 'object') {
+      // Dynamic object without properties — show as single entry with hint
+      result.push({
+        path: fullPath,
+        label: prop.title ?? key,
+        type: 'object',
+        example: 'Use dot notation: {{' + fullPath + '.key}}',
+        group,
+      });
     } else {
       result.push({
         path: fullPath,
         label: prop.title ?? key,
         type: prop.type,
         example: prop.example != null ? String(prop.example) : undefined,
+        group,
       });
     }
   }
@@ -46,6 +59,10 @@ export function TemplateVariablePicker({ payloadSchema, onInsert }: TemplateVari
   const variables = flattenProperties(payloadSchema.properties);
 
   if (variables.length === 0) return null;
+
+  const grouped = groupBy(variables, (v) => v.group ?? 'Fields');
+  const groupNames = Object.keys(grouped);
+  const hasMultipleGroups = groupNames.length > 1 || (groupNames.length === 1 && groupNames[0] !== 'Fields');
 
   return (
     <Popover>
@@ -63,24 +80,46 @@ export function TemplateVariablePicker({ payloadSchema, onInsert }: TemplateVari
       <PopoverContent align="end" className="w-72 p-2">
         <p className="mb-2 px-2 text-xs font-medium text-muted-foreground">Insert variable</p>
         <div className="max-h-48 overflow-y-auto space-y-0.5">
-          {variables.map(({ path, label, type, example }) => (
-            <button
-              key={path}
-              type="button"
-              className="flex w-full flex-col rounded px-2 py-1.5 text-left text-sm hover:bg-accent transition-colors"
-              onClick={() => onInsert(`{{${path}}}`)}
-            >
-              <div className="flex w-full items-center justify-between">
-                <span className="font-mono text-xs">{`{{${path}}}`}</span>
-                <span className="ml-2 text-xs text-muted-foreground truncate">{label}</span>
-              </div>
-              <span className="text-[10px] text-muted-foreground/70">
-                {type}{example ? ` · ${example}` : ''}
-              </span>
-            </button>
-          ))}
+          {hasMultipleGroups
+            ? groupNames.map((groupName) => (
+                <div key={groupName}>
+                  <p className="px-2 pt-2 pb-1 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60">
+                    {groupName}
+                  </p>
+                  {grouped[groupName].map((v) => (
+                    <VariableButton key={v.path} variable={v} onInsert={onInsert} />
+                  ))}
+                </div>
+              ))
+            : variables.map((v) => (
+                <VariableButton key={v.path} variable={v} onInsert={onInsert} />
+              ))}
         </div>
       </PopoverContent>
     </Popover>
+  );
+}
+
+function VariableButton({
+  variable: { path, label, type, example },
+  onInsert,
+}: {
+  variable: FlatVariable;
+  onInsert: (variable: string) => void;
+}) {
+  return (
+    <button
+      type="button"
+      className="flex w-full flex-col rounded px-2 py-1.5 text-left text-sm hover:bg-accent transition-colors"
+      onClick={() => onInsert(`{{${path}}}`)}
+    >
+      <div className="flex w-full items-center justify-between">
+        <span className="font-mono text-xs">{`{{${path}}}`}</span>
+        <span className="ml-2 text-xs text-muted-foreground truncate">{label}</span>
+      </div>
+      <span className="text-[10px] text-muted-foreground/70">
+        {type}{example ? ` · ${example}` : ''}
+      </span>
+    </button>
   );
 }

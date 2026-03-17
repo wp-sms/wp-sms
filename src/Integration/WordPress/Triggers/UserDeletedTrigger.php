@@ -3,6 +3,7 @@
 namespace WSms\Integration\WordPress\Triggers;
 
 use WSms\Flow\Contracts\AbstractTrigger;
+use WSms\Integration\PayloadSchemas;
 
 defined('ABSPATH') || exit;
 
@@ -36,6 +37,7 @@ class UserDeletedTrigger extends AbstractTrigger
                 'type' => 'object',
                 'label' => __('User Data', 'wp-sms'),
                 'description' => __('User data captured before deletion', 'wp-sms'),
+                'properties' => PayloadSchemas::wpUser(['email', 'login']),
                 'example' => [
                     'email' => 'user@example.com',
                     'login' => 'johndoe',
