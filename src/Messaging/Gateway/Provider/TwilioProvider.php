@@ -4,11 +4,13 @@ namespace WSms\Messaging\Gateway\Provider;
 
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\MessageInterface;
+use WSms\Messaging\Contracts\StatusUpdate;
+use WSms\Messaging\Contracts\SupportsStatusCallback;
 use WSms\Messaging\Gateway\AbstractProvider;
 
 defined('ABSPATH') || exit;
 
-class TwilioProvider extends AbstractProvider
+class TwilioProvider extends AbstractProvider implements SupportsStatusCallback
 {
     private const API_BASE = 'https://api.twilio.com/2010-04-01';
 
@@ -116,15 +118,23 @@ class TwilioProvider extends AbstractProvider
 
         $url = self::API_BASE . "/Accounts/{$accountSid}/Messages.json";
 
+        $body = [
+            'From'           => $from,
+            'To'             => $to,
+            'Body'           => $message->getBody(),
+            'StatusCallback' => $this->getStatusCallbackUrl(),
+        ];
+
+        $mediaUrls = $message->getMeta()['media_urls'] ?? [];
+        foreach ($mediaUrls as $mediaUrl) {
+            $body['MediaUrl'][] = $mediaUrl;
+        }
+
         $result = $this->httpPost($url, [
             'headers' => [
                 'Authorization' => 'Basic ' . base64_encode("{$accountSid}:{$authToken}"),
             ],
-            'body' => [
-                'From' => $from,
-                'To'   => $to,
-                'Body' => $message->getBody(),
-            ],
+            'body' => $body,
         ]);
 
         if ($result instanceof DeliveryResult) {
@@ -134,13 +144,82 @@ class TwilioProvider extends AbstractProvider
         $data = json_decode($result['body'], true);
 
         if ($result['code'] >= 200 && $result['code'] < 300) {
-            return DeliveryResult::sent(
-                providerId: $data['sid'] ?? null,
-                cost: isset($data['price']) ? abs((float) $data['price']) : null,
-            );
+            $status = $data['status'] ?? 'queued';
+            $providerId = $data['sid'] ?? null;
+            $cost = isset($data['price']) ? abs((float) $data['price']) : null;
+
+            if (in_array($status, ['sent', 'delivered'], true)) {
+                return DeliveryResult::sent($providerId, $cost);
+            }
+
+            return DeliveryResult::queued($providerId);
         }
 
-        return DeliveryResult::failed($data['message'] ?? "HTTP {$result['code']}");
+        return DeliveryResult::failed(
+            $data['message'] ?? "HTTP {$result['code']}",
+            meta: array_filter([
+                'twilio_code' => $data['code'] ?? null,
+                'more_info'   => $data['more_info'] ?? null,
+            ]),
+        );
+    }
+
+    public function validateStatusCallback(\WP_REST_Request $request): bool
+    {
+        $authToken = $this->getSharedConfig('auth_token');
+        if (!$authToken) {
+            return false;
+        }
+
+        $signature = $request->get_header('x-twilio-signature');
+        if (empty($signature)) {
+            return false;
+        }
+
+        $url = $this->getStatusCallbackUrl();
+        $params = $request->get_params();
+        unset($params['gateway_id']);
+
+        ksort($params);
+        $data = $url;
+        foreach ($params as $key => $value) {
+            $data .= $key . $value;
+        }
+
+        $expected = base64_encode(hash_hmac('sha1', $data, $authToken, true));
+
+        return hash_equals($expected, $signature);
+    }
+
+    /** @return StatusUpdate[] */
+    public function parseStatusCallback(\WP_REST_Request $request): array
+    {
+        $messageSid = $request->get_param('MessageSid');
+        $messageStatus = $request->get_param('MessageStatus');
+
+        if (empty($messageSid) || empty($messageStatus)) {
+            return [];
+        }
+
+        $status = match ($messageStatus) {
+            'queued', 'accepted' => 'queued',
+            'sending', 'sent'   => 'sent',
+            'delivered'         => 'delivered',
+            'undelivered', 'failed' => 'failed',
+            default             => $messageStatus,
+        };
+
+        return [new StatusUpdate(
+            providerId: $messageSid,
+            status: $status,
+            errorCode: $request->get_param('ErrorCode'),
+            errorMessage: $request->get_param('ErrorMessage'),
+        )];
+    }
+
+    public function getStatusCallbackUrl(): string
+    {
+        return rest_url('wsms/v1/callbacks/twilio/status');
     }
 
     public function getCredit(): ?string
@@ -165,6 +244,12 @@ class TwilioProvider extends AbstractProvider
         }
 
         $data = json_decode($result['body'], true);
-        return $data['balance'] ?? null;
+
+        $balance = $data['balance'] ?? null;
+        if ($balance === null) {
+            return null;
+        }
+        $currency = $data['currency'] ?? 'USD';
+        return "{$balance} {$currency}";
     }
 }

@@ -67,4 +67,55 @@ class SendMessageActionTest extends TestCase
     {
         $this->assertSame([], $this->action->getPlaceholders('unknown.trigger'));
     }
+
+    public function testConfigSchemaHasMediaUrlField(): void
+    {
+        $schema = $this->action->getConfigSchema();
+
+        $this->assertArrayHasKey('media_url', $schema);
+        $this->assertSame('string', $schema['media_url']['type']);
+        $this->assertTrue($schema['media_url']['template']);
+        $this->assertSame(
+            ['show' => ['channel' => ['sms', 'whatsapp']]],
+            $schema['media_url']['displayOptions'],
+        );
+    }
+
+    public function testBuildMediaMetaParsesCommaSeparatedUrls(): void
+    {
+        $reflection = new \ReflectionMethod($this->action, 'buildMediaMeta');
+        $reflection->setAccessible(true);
+
+        $result = $reflection->invoke($this->action, [
+            'media_url' => 'https://example.com/a.jpg, https://example.com/b.png',
+        ]);
+
+        $this->assertSame([
+            'media_urls' => ['https://example.com/a.jpg', 'https://example.com/b.png'],
+        ], $result);
+    }
+
+    public function testBuildMediaMetaReturnsEmptyForBlankUrl(): void
+    {
+        $reflection = new \ReflectionMethod($this->action, 'buildMediaMeta');
+        $reflection->setAccessible(true);
+
+        $this->assertSame([], $reflection->invoke($this->action, []));
+        $this->assertSame([], $reflection->invoke($this->action, ['media_url' => '']));
+        $this->assertSame([], $reflection->invoke($this->action, ['media_url' => '  ']));
+    }
+
+    public function testBuildMediaMetaHandlesSingleUrl(): void
+    {
+        $reflection = new \ReflectionMethod($this->action, 'buildMediaMeta');
+        $reflection->setAccessible(true);
+
+        $result = $reflection->invoke($this->action, [
+            'media_url' => 'https://example.com/image.jpg',
+        ]);
+
+        $this->assertSame([
+            'media_urls' => ['https://example.com/image.jpg'],
+        ], $result);
+    }
 }

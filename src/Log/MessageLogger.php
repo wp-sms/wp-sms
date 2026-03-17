@@ -47,7 +47,7 @@ class MessageLogger implements MessageLoggerInterface
         return $id;
     }
 
-    public function updateStatus(string $logId, string $status, ?string $providerId = null): void
+    public function updateStatus(string $logId, string $status, ?string $error = null, ?string $providerId = null): void
     {
         global $wpdb;
 
@@ -55,11 +55,33 @@ class MessageLogger implements MessageLoggerInterface
         if ($providerId !== null) {
             $data['provider_id'] = $providerId;
         }
+        if ($error !== null) {
+            $data['error'] = $error;
+        }
+        if ($status === 'sent') {
+            $data['sent_at'] = current_time('mysql');
+        }
         if ($status === 'delivered') {
             $data['delivered_at'] = current_time('mysql');
         }
 
         $wpdb->update($wpdb->prefix . 'wsms_message_logs', $data, ['id' => $logId]);
+    }
+
+    public function findByProviderId(string $gatewayId, string $providerId): ?array
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . 'wsms_message_logs';
+
+        $id = $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT id FROM {$table} WHERE gateway_id = %s AND provider_id = %s ORDER BY created_at DESC LIMIT 1",
+                $gatewayId,
+                $providerId,
+            ),
+        );
+
+        return $id ? ['id' => $id] : null;
     }
 
     public function findByExecution(string $executionId): array

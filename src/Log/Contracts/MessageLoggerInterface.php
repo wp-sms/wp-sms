@@ -20,7 +20,9 @@ interface MessageLoggerInterface
         string $type = 'transactional',
     ): string;
 
-    public function updateStatus(string $logId, string $status, ?string $providerId = null): void;
+    public function updateStatus(string $logId, string $status, ?string $error = null, ?string $providerId = null): void;
+
+    public function findByProviderId(string $gatewayId, string $providerId): ?array;
 
     public function findByExecution(string $executionId): array;
 

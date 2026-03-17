@@ -184,7 +184,8 @@ class Migrator
             INDEX idx_execution (execution_id),
             INDEX idx_channel_status (channel, status),
             INDEX idx_recipient (recipient),
-            INDEX idx_created (created_at)
+            INDEX idx_created (created_at),
+            INDEX idx_gateway_provider (gateway_id, provider_id)
         ) {$charsetCollate};\n";
     }
 

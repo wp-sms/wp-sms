@@ -16,6 +16,7 @@ use WSms\Rest\MfaController;
 use WSms\Rest\EnrollmentController;
 use WSms\Rest\SocialAuthController;
 use WSms\Rest\TelegramController;
+use WSms\Rest\GatewayCallbackController;
 use WSms\Rest\WebhookReceiverController;
 
 defined('ABSPATH') || exit;
@@ -124,6 +125,11 @@ class RestServiceProvider implements ServiceProvider
             $c->get('flow.triggers'),
             $c->get('flow.actions'),
         ));
+        $container->register('rest.gateway_callbacks', fn($c) => new GatewayCallbackController(
+            $c->get('gateway.registry'),
+            $c->get('log.message'),
+            $c->get('auth.rate_limiter'),
+        ));
         $container->register('rest.webhook_receiver', fn($c) => new WebhookReceiverController(
             $c->get('auth.rate_limiter'),
         ));
@@ -147,6 +153,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.contacts')->registerRoutes();
             $container->get('rest.message_logs')->registerRoutes();
             $container->get('rest.integrations')->registerRoutes();
+            $container->get('rest.gateway_callbacks')->registerRoutes();
             $container->get('rest.webhook_receiver')->registerRoutes();
         });
     }

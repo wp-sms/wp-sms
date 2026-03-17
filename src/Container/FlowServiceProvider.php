@@ -66,6 +66,33 @@ class FlowServiceProvider implements ServiceProvider
             $executor->executeNode($payload['node'], $payload['payload'], $payload['execution_id']);
         });
 
+        $processor->registerHandler('send_message', function (array $payload) use ($container) {
+            $registry = $container->get('gateway.registry');
+            $logger = $container->get('log.message');
+            $gateway = $registry->get($payload['gateway_id']);
+
+            if (!$gateway) {
+                $logger->updateStatus($payload['log_id'], 'failed', 'Gateway not found');
+                return;
+            }
+
+            $message = new \WSms\Messaging\Message\Message(
+                $payload['channel'],
+                $payload['recipient'],
+                $payload['body'],
+                $payload['execution_id'] ?? null,
+                $payload['meta'] ?? [],
+            );
+
+            $result = $gateway->send($message);
+            $logger->updateStatus(
+                $payload['log_id'],
+                $result->success ? $result->status : 'failed',
+                $result->error,
+                $result->providerId,
+            );
+        });
+
         // Subscribe active triggers
         $container->get('flow.runner')->subscribeActiveTriggers();
     }

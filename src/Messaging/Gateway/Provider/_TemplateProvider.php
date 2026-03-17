@@ -18,11 +18,23 @@ namespace WSms\Messaging\Gateway\Provider;
 
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\MessageInterface;
+use WSms\Messaging\Contracts\StatusUpdate;
+use WSms\Messaging\Contracts\SupportsStatusCallback;
 use WSms\Messaging\Gateway\AbstractProvider;
 
 defined('ABSPATH') || exit;
 
-class _TemplateProvider extends AbstractProvider
+/**
+ * Optional interfaces:
+ * - SupportsStatusCallback: Implement to receive delivery status webhooks from the provider.
+ *   The platform routes callbacks to POST|GET /wsms/v1/callbacks/{gateway_id}/status
+ *   and calls your validateStatusCallback() and parseStatusCallback() methods.
+ *
+ * MMS / Media:
+ * - Media URLs are passed via $message->getMeta()['media_urls'] (array of URLs).
+ *   Read this in doSend() and include in the provider's API request as needed.
+ */
+class _TemplateProvider extends AbstractProvider implements SupportsStatusCallback
 {
     /**
      * Unique identifier — used as the key in wsms_gateway_configs and the REST API.
@@ -175,17 +187,30 @@ class _TemplateProvider extends AbstractProvider
         // Route by channel for multi-channel providers
         $from = $this->getChannelConfig($channel, 'from_number');
 
+        $body = [
+            'from'    => $from,
+            'to'      => $message->getRecipient(),
+            'message' => $message->getBody(),
+            'channel' => $channel,
+        ];
+
+        // Status callback — tell the provider where to POST delivery updates.
+        // Only needed if implementing SupportsStatusCallback.
+        $body['callback_url'] = $this->getStatusCallbackUrl();
+
+        // MMS / Media — attach media URLs from message meta.
+        // The flow builder's "Media URL" field populates this automatically.
+        $mediaUrls = $message->getMeta()['media_urls'] ?? [];
+        if (!empty($mediaUrls)) {
+            $body['media'] = $mediaUrls;
+        }
+
         $result = $this->httpPost('https://api.example.com/send', [
             'headers' => [
                 'Authorization' => 'Bearer ' . $apiKey,
                 'Content-Type'  => 'application/json',
             ],
-            'body' => wp_json_encode([
-                'from'    => $from,
-                'to'      => $message->getRecipient(),
-                'message' => $message->getBody(),
-                'channel' => $channel,
-            ]),
+            'body' => wp_json_encode($body),
         ]);
 
         // httpPost returns DeliveryResult on WP_Error
@@ -204,6 +229,98 @@ class _TemplateProvider extends AbstractProvider
             providerId: $data['message_id'] ?? null,
             cost: isset($data['cost']) ? (float) $data['cost'] : null,
         );
+    }
+
+    // ──────────────────────────────────────────────────────────────────────
+    // SupportsStatusCallback — Delivery status webhooks (optional interface)
+    //
+    // Implement these three methods if the provider sends delivery reports
+    // via webhook. The platform handles routing, rate limiting, and log updates;
+    // the provider only handles authentication and payload parsing.
+    //
+    // Flow: Provider POSTs to /wsms/v1/callbacks/{gateway_id}/status
+    //   → GatewayCallbackController resolves provider
+    //   → validateStatusCallback() — verify authenticity (signature, token, etc.)
+    //   → parseStatusCallback()   — parse into StatusUpdate[] (array for batch support)
+    //   → Platform updates message log entries automatically
+    // ──────────────────────────────────────────────────────────────────────
+
+    /**
+     * Validate the incoming callback request is authentic.
+     *
+     * Common patterns:
+     * - HMAC signature header (Twilio: X-Twilio-Signature, Plivo: X-Plivo-Signature-V3)
+     * - Shared secret / bearer token in a header
+     * - IP allowlisting (use with caution)
+     *
+     * Return false → platform responds 403 and stops processing.
+     */
+    public function validateStatusCallback(\WP_REST_Request $request): bool
+    {
+        $apiSecret = $this->getSharedConfig('api_secret');
+        if (!$apiSecret) {
+            return false;
+        }
+
+        $signature = $request->get_header('x-provider-signature');
+        if (empty($signature)) {
+            return false;
+        }
+
+        // Example: HMAC-SHA256 of request body
+        $body = $request->get_body() ?? '';
+        $expected = hash_hmac('sha256', $body, $apiSecret);
+
+        return hash_equals($expected, $signature);
+    }
+
+    /**
+     * Parse the provider's webhook payload into normalized StatusUpdate(s).
+     *
+     * Return an array — most providers send one update per callback, but some
+     * (e.g., Infobip) batch multiple statuses in a single request.
+     *
+     * Normalize the provider's status to one of: 'queued', 'sent', 'delivered', 'failed'
+     *
+     * Return [] to silently ignore the callback (e.g., irrelevant event type).
+     *
+     * @return StatusUpdate[]
+     */
+    public function parseStatusCallback(\WP_REST_Request $request): array
+    {
+        // JSON body example
+        $data = $request->get_json_params();
+        $messageId = $data['message_id'] ?? null;
+        $providerStatus = $data['status'] ?? null;
+
+        if (empty($messageId) || empty($providerStatus)) {
+            return [];
+        }
+
+        // Map provider-specific statuses to normalized values
+        $status = match ($providerStatus) {
+            'queued', 'accepted', 'buffered' => 'queued',
+            'sending', 'sent', 'submitted'   => 'sent',
+            'delivered', 'read'              => 'delivered',
+            'rejected', 'failed', 'expired'  => 'failed',
+            default                          => $providerStatus,
+        };
+
+        return [new StatusUpdate(
+            providerId: $messageId,
+            status: $status,
+            errorCode: $data['error_code'] ?? null,
+            errorMessage: $data['error_message'] ?? null,
+        )];
+    }
+
+    /**
+     * The URL to pass to the provider API when sending, so it knows where to
+     * POST delivery updates. Called automatically — just return the standard URL.
+     */
+    public function getStatusCallbackUrl(): string
+    {
+        return rest_url('wsms/v1/callbacks/' . $this->getId() . '/status');
     }
 
     /**

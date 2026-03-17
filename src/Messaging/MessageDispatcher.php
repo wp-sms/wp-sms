@@ -51,7 +51,7 @@ class MessageDispatcher
             channel: $message->getChannel(),
             recipient: $message->getRecipient(),
             body: $message->getBody(),
-            status: $result->success ? 'sent' : 'failed',
+            status: $result->success ? $result->status : 'failed',
             executionId: $message->getFlowExecutionId(),
             subject: $meta['subject'] ?? null,
             providerId: $result->providerId,
@@ -106,6 +106,7 @@ class MessageDispatcher
             body: $message->getBody(),
             meta: $message->getMeta(),
             executionId: $message->getFlowExecutionId(),
+            logId: $logId,
         ));
 
         return $logId;

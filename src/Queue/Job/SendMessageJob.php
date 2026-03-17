@@ -15,6 +15,7 @@ class SendMessageJob implements JobInterface
         private readonly string $body,
         private readonly array $meta = [],
         private readonly ?string $executionId = null,
+        private readonly ?string $logId = null,
     ) {
     }
 
@@ -32,6 +33,7 @@ class SendMessageJob implements JobInterface
             'body'          => $this->body,
             'meta'          => $this->meta,
             'execution_id'  => $this->executionId,
+            'log_id'        => $this->logId,
         ];
     }
 

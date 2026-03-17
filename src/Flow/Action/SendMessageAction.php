@@ -85,6 +85,14 @@ class SendMessageAction extends AbstractAction
                     'show' => ['channel' => ['email']],
                 ],
             ],
+            'media_url' => [
+                'type'           => 'string',
+                'label'          => __('Media URL', 'wp-sms'),
+                'description'    => __('Publicly accessible image URL to attach (JPEG, PNG, GIF). Comma-separate for multiple.', 'wp-sms'),
+                'template'       => true,
+                'example'        => 'https://example.com/image.jpg',
+                'displayOptions' => ['show' => ['channel' => ['sms', 'whatsapp']]],
+            ],
         ];
     }
 
@@ -169,7 +177,19 @@ class SendMessageAction extends AbstractAction
         return match ($channel) {
             'email'   => new EmailMessage($to, $body, $config['subject'] ?? '', [], $executionId),
             'webhook' => new WebhookMessage($to, $body, $config['method'] ?? 'POST', $config['headers'] ?? [], $executionId),
-            default   => new Message($channel, $to, $body, $executionId),
+            default   => new Message($channel, $to, $body, $executionId, $this->buildMediaMeta($config)),
         };
+    }
+
+    private function buildMediaMeta(array $config): array
+    {
+        $mediaUrl = trim($config['media_url'] ?? '');
+        if ($mediaUrl === '') {
+            return [];
+        }
+
+        $urls = array_filter(array_map('trim', explode(',', $mediaUrl)));
+
+        return !empty($urls) ? ['media_urls' => $urls] : [];
     }
 }

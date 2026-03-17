@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useGateways } from '@/hooks/use-gateways';
 import { GatewayConfigSheet } from '@/components/gateway-config-sheet';
 import { channelLabel, ensureConfig } from '@/components/gateway-config-form';

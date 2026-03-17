@@ -517,6 +517,8 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
 
     if (!function_exists('wp_remote_post')) {
         function wp_remote_post(string $url, array $args = []) {
+            $GLOBALS['_test_wp_remote_post_last_url'] = $url;
+            $GLOBALS['_test_wp_remote_post_last_args'] = $args;
             return $GLOBALS['_test_wp_remote_post'] ?? new \WP_Error('not_configured', 'Test not configured');
         }
     }
@@ -878,6 +880,10 @@ if (!class_exists('WP_REST_Request')) {
 
         public function set_body(string $body): void {
             $this->body = $body;
+        }
+
+        public function get_body(): ?string {
+            return $this->body;
         }
 
         public function get_json_params(): array {
