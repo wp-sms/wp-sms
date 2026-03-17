@@ -203,6 +203,9 @@ const AdminNotices = memo(function AdminNotices() {
         const url = new URL(window.location.href)
         url.searchParams.set('wizard', 'open')
         window.location.href = url.toString()
+      } else if (target === 'migration-wizard') {
+        // Dispatch global event for the migration wizard modal
+        window.dispatchEvent(new CustomEvent('wpsms:open-migration-wizard'))
       }
     },
     []

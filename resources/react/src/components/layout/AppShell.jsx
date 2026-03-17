@@ -1,10 +1,11 @@
-import React, { useState, Suspense, memo, useEffect } from 'react'
+import React, { useState, Suspense, memo, useEffect, useCallback } from 'react'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import AdminNotices from './AdminNotices'
 import FloatingSaveBar from './FloatingSaveBar'
 import BrandingFooter from './BrandingFooter'
 import ErrorBoundary from '@/components/ErrorBoundary'
+import NumberMigrationModal from '@/components/NumberMigrationModal'
 import { useSettings } from '@/context/SettingsContext'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Button } from '@/components/ui/button'
@@ -26,6 +27,19 @@ const AppShell = memo(function AppShell() {
   const { currentPage, isLoading } = useSettings()
   const isMobile = useIsMobile()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [migrationOpen, setMigrationOpen] = useState(false)
+
+  // Listen for global event to open migration wizard (from AdminNotices or anywhere)
+  useEffect(() => {
+    const handler = () => setMigrationOpen(true)
+    window.addEventListener('wpsms:open-migration-wizard', handler)
+    // Expose globally for PhoneConfig button
+    window.wpSmsOpenMigrationWizard = handler
+    return () => {
+      window.removeEventListener('wpsms:open-migration-wizard', handler)
+      delete window.wpSmsOpenMigrationWizard
+    }
+  }, [])
 
   // Track visited pages to keep them mounted (preserve state when switching tabs)
   const [visitedPages, setVisitedPages] = useState(() => new Set([currentPage]))
@@ -121,6 +135,8 @@ const AppShell = memo(function AppShell() {
           <FloatingSaveBar />
         </div>
       </div>
+
+      <NumberMigrationModal open={migrationOpen} onOpenChange={setMigrationOpen} />
     </div>
   )
 })

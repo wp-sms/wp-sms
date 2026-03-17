@@ -498,33 +498,34 @@ class Helper
 
     public static function prepareMobileNumberQuery($number)
     {
-        $metaValue   = array();
+        $metaValue = array();
+
+        // Original number as provided
         $metaValue[] = $number;
 
-        // Use NumberParser for normalization and validation
+        // Normalize via NumberParser
         $numberParser     = new \WP_SMS\Components\NumberParser($number);
         $normalizedNumber = $numberParser->getNormalizedNumber();
 
-        // Add original number if it was different from normalized version
-        if ($number != $normalizedNumber) {
-            $metaValue[] = $number;
+        if ($number !== $normalizedNumber) {
+            $metaValue[] = $normalizedNumber;
         }
 
-        $metaValue[]    = $normalizedNumber;
-        $numberWithPlus = '+' . ltrim($normalizedNumber, '+');
+        // With and without + prefix
+        $withPlus    = '+' . ltrim($normalizedNumber, '+');
+        $withoutPlus = ltrim($normalizedNumber, '+');
 
-        // Check if number is international format or not and add country code to meta value
-        if (substr($normalizedNumber, 0, 1) != '+') {
-            $metaValue[]      = $numberWithPlus;
-            $normalizedNumber = $numberWithPlus;
-        } else {
-            $metaValue[] = ltrim($normalizedNumber, '+');
-        }
+        $metaValue[] = $withPlus;
+        $metaValue[] = $withoutPlus;
 
-        // Remove the country code from prefix of number +144444444 -> 44444444
-        foreach (wp_sms_countries()->getCountriesMerged() as $countryCode => $countryName) {
-            if (strpos($normalizedNumber, $countryCode) === 0) {
-                $metaValue[] = substr($normalizedNumber, strlen($countryCode));
+        // Also try stripping the configured country code for backward compatibility with local numbers
+        $countryCode = Option::getOption('mobile_county_code');
+        if (!empty($countryCode) && $countryCode !== '0') {
+            $ccDigits = ltrim($countryCode, '+');
+            if (strpos($withoutPlus, $ccDigits) === 0) {
+                $localNumber = substr($withoutPlus, strlen($ccDigits));
+                $metaValue[] = $localNumber;
+                $metaValue[] = '0' . $localNumber; // With trunk prefix
             }
         }
 
@@ -598,13 +599,35 @@ class Helper
         return $number;
     }
 
+    /**
+     * Normalize a phone number to E.164 format, falling back to the original value on failure.
+     *
+     * @param string $mobile
+     * @return string
+     */
+    public static function normalizeToE164($mobile)
+    {
+        $parser = new \WP_SMS\Components\NumberParser($mobile);
+        $valid  = $parser->getValidNumber();
+        return is_wp_error($valid) ? $mobile : $valid;
+    }
+
     public static function removeDuplicateNumbers($numbers)
     {
         $numbers = array_map('trim', $numbers);
-        $numbers = array_map([__CLASS__, 'normalizeNumber'], $numbers);
-        $numbers = array_unique($numbers);
 
-        return $numbers;
+        // Use normalized form as dedup key but preserve original E.164 numbers
+        $seen   = [];
+        $unique = [];
+        foreach ($numbers as $number) {
+            $normalized = self::normalizeNumber($number);
+            if (!isset($seen[$normalized])) {
+                $seen[$normalized] = true;
+                $unique[]          = $number;
+            }
+        }
+
+        return $unique;
     }
 
     /**

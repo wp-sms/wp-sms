@@ -109,7 +109,7 @@ class WordPressMobileFieldHandler extends AbstractFieldHandler
         $mobile_number = isset($_POST['mobile']) ? $_POST['mobile'] : null;
         if ($mobile_number) {
             $mobile = Helper::sanitizeMobileNumber($mobile_number);
-            update_user_meta($user_id, $this->getUserMobileFieldName(), $mobile);
+            update_user_meta($user_id, $this->getUserMobileFieldName(), Helper::normalizeToE164($mobile));
         }
     }
 }

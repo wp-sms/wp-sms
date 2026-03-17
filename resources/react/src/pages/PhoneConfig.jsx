@@ -1,10 +1,11 @@
 import React from 'react'
-import { Phone, Smartphone, Globe, Shield } from 'lucide-react'
+import { Phone, Smartphone, Globe, Shield, DatabaseZap } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { InputField, MultiSelectField, SettingRow } from '@/components/ui/form-field'
 import { InternationalPhoneInput } from '@/components/ui/InternationalPhoneInput'
+import { Button } from '@/components/ui/button'
 import { useSetting, useSettings } from '@/context/SettingsContext'
 import { getWpSettings, __ } from '@/lib/utils'
 
@@ -227,7 +228,6 @@ export default function PhoneConfig() {
                     <SelectValue placeholder={__('Select country code')} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="0">{__("None — Don't add country code")}</SelectItem>
                     {countriesByDialCode && Object.entries(countriesByDialCode).map(([dialCode, label]) => (
                       <SelectItem key={dialCode} value={dialCode}>
                         {label}
@@ -236,8 +236,13 @@ export default function PhoneConfig() {
                   </SelectContent>
                 </Select>
                 <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                  {__('Automatically prepend this country code to all phone numbers.')}
+                  {__('Automatically prepend this country code to all phone numbers. This setting is required.')}
                 </p>
+                {(!countryCode || countryCode === '0') && (
+                  <p className="wsms-text-[12px] wsms-text-destructive wsms-font-medium">
+                    {__('Please select a country code. This is required for proper phone number storage.')}
+                  </p>
+                )}
               </div>
 
               <div className="wsms-grid wsms-grid-cols-2 wsms-gap-4">
@@ -260,6 +265,24 @@ export default function PhoneConfig() {
               </div>
             </>
           )}
+        </CardContent>
+      </Card>
+
+      {/* Number Migration Tool */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
+            <DatabaseZap className="wsms-h-4 wsms-w-4 wsms-text-primary" />
+            {__('Phone Number Migration')}
+          </CardTitle>
+          <CardDescription>
+            {__('Scan and fix phone numbers stored without country code. Converts all numbers to international format (E.164).')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button onClick={() => window.dispatchEvent(new CustomEvent('wpsms:open-migration-wizard'))} variant="outline">
+            {__('Open Migration Wizard')}
+          </Button>
         </CardContent>
       </Card>
 

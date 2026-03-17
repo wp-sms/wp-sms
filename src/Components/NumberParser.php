@@ -64,6 +64,10 @@ class NumberParser
         } else {
             // Manually add the country code
             $phoneNumber = $this->addSelectedCountryCode($phoneNumber);
+
+            if (is_wp_error($phoneNumber)) {
+                return $phoneNumber;
+            }
         }
 
         $this->validatedPhoneNumber = $phoneNumber;
@@ -71,7 +75,8 @@ class NumberParser
     }
 
     /**
-     * Returns the normalized/sanitized phone number by removing the leading zero and non-numeric characters (except +).
+     * Returns the normalized/sanitized phone number by removing non-numeric characters (except +)
+     * and stripping the trunk prefix (single leading 0) for local numbers.
      *
      * @return string
      */
@@ -88,7 +93,15 @@ class NumberParser
         $number = self::toEnglishNumerals($this->rawPhoneNumber);
 
         $this->normalizedPhoneNumber = preg_replace('/[^\d+]/', '', $number);
-        $this->normalizedPhoneNumber = ltrim($this->normalizedPhoneNumber, '0');
+
+        // Convert international '00' prefix to '+' (e.g. '0044...' → '+44...')
+        if (strpos($this->normalizedPhoneNumber, '00') === 0 && strpos($this->normalizedPhoneNumber, '+') !== 0) {
+            $this->normalizedPhoneNumber = '+' . substr($this->normalizedPhoneNumber, 2);
+        }
+        // Strip a single leading trunk prefix '0' for local numbers (not numbers already starting with +)
+        elseif (strpos($this->normalizedPhoneNumber, '+') !== 0 && strpos($this->normalizedPhoneNumber, '0') === 0) {
+            $this->normalizedPhoneNumber = substr($this->normalizedPhoneNumber, 1);
+        }
 
         return $this->normalizedPhoneNumber;
     }
@@ -192,33 +205,26 @@ class NumberParser
      */
     public function addSelectedCountryCode($phoneNumber)
     {
-        $selectedCountryCode = Option::getOption('mobile_county_code');
-        if (empty($selectedCountryCode)) {
-            if (
-                strpos($this->rawPhoneNumber, '0') === 0 &&
-                substr_count($this->rawPhoneNumber, '0', 0, 2) === 1
-            ) {
-                return $this->rawPhoneNumber;
-            }
-
+        // If the number already starts with '+', it already has a country code — return as-is
+        if (strpos($phoneNumber, '+') === 0) {
             return $phoneNumber;
         }
 
-        // Add leading + if not exists
-        if (strpos($phoneNumber, '+') !== 0) {
-            $phoneNumber = "+$phoneNumber";
+        $selectedCountryCode = Option::getOption('mobile_county_code');
+        if (empty($selectedCountryCode) || $selectedCountryCode === '0') {
+            return new WP_Error('missing_country_code', __('Default Country Code is not configured. Please set it in WP SMS Phone settings.', 'wp-sms'));
         }
 
-        // Ensure country code hasn't been added already
-        if (strpos($phoneNumber, $selectedCountryCode) !== 0) {
-            // Remove leading + if exists
-            $phoneNumber = str_replace('+', '', $phoneNumber);
+        // Strip the leading + for the digits-only version of the country code
+        $countryCodeDigits = ltrim($selectedCountryCode, '+');
 
-            // Add selected country code
-            $phoneNumber = $selectedCountryCode . $phoneNumber;
+        // If number already starts with the country code digits (without +), just ensure + prefix
+        if (strpos($phoneNumber, $countryCodeDigits) === 0) {
+            return '+' . $phoneNumber;
         }
 
-        return $phoneNumber;
+        // Prepend country code (which already includes +)
+        return $selectedCountryCode . $phoneNumber;
     }
 
     /**
