@@ -136,6 +136,16 @@ function FieldTitle({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
+function FieldHint({ className, ...props }: React.ComponentProps<"p">) {
+  return (
+    <p
+      data-slot="field-hint"
+      className={cn("text-xs italic text-muted-foreground/80", className)}
+      {...props}
+    />
+  )
+}
+
 function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
   return (
     <p
@@ -238,6 +248,7 @@ export {
   FieldDescription,
   FieldError,
   FieldGroup,
+  FieldHint,
   FieldLegend,
   FieldSeparator,
   FieldSet,

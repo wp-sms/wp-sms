@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
+import { Field, FieldLabel, FieldDescription, FieldHint } from '@/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -21,8 +21,24 @@ interface SchemaFormProps {
   values: Record<string, unknown>;
   onChange: (values: Record<string, unknown>) => void;
   payloadSchema?: JsonSchema;
-  dynamicOptionsUrl?: (fieldKey: string) => string;
+  dynamicOptionsUrl?: (fieldKey: string, depValues?: Record<string, unknown>) => string;
   placeholders?: Record<string, string>;
+}
+
+function isFieldVisible(prop: JsonSchemaProperty, values: Record<string, unknown>): boolean {
+  if (!prop.displayOptions) return true;
+  const { show, hide } = prop.displayOptions;
+  if (show) {
+    return Object.entries(show).every(([dep, allowed]) =>
+      (allowed as unknown[]).includes(values[dep])
+    );
+  }
+  if (hide) {
+    return !Object.entries(hide).some(([dep, vals]) =>
+      (vals as unknown[]).includes(values[dep])
+    );
+  }
+  return true;
 }
 
 function insertVariableAtCursor(
@@ -62,6 +78,7 @@ function TextareaField({
   value,
   required,
   description,
+  hint,
   placeholder,
   onChange,
   payloadSchema,
@@ -71,6 +88,7 @@ function TextareaField({
   value: string;
   required: boolean;
   description?: string;
+  hint?: string;
   placeholder: string;
   onChange: (key: string, value: unknown) => void;
   payloadSchema?: JsonSchema;
@@ -95,6 +113,7 @@ function TextareaField({
         onChange={(e) => onChange(fieldKey, e.target.value)}
         rows={3}
       />
+      {hint && <FieldHint>{hint}</FieldHint>}
       {description && <FieldDescription>{description}</FieldDescription>}
     </Field>
   );
@@ -106,6 +125,7 @@ function StringField({
   value,
   required,
   description,
+  hint,
   placeholder,
   onChange,
   payloadSchema,
@@ -115,6 +135,7 @@ function StringField({
   value: string;
   required: boolean;
   description?: string;
+  hint?: string;
   placeholder: string;
   onChange: (key: string, value: unknown) => void;
   payloadSchema?: JsonSchema;
@@ -139,6 +160,7 @@ function StringField({
         placeholder={placeholder}
         onChange={(e) => onChange(fieldKey, e.target.value)}
       />
+      {hint && <FieldHint>{hint}</FieldHint>}
       {description && <FieldDescription>{description}</FieldDescription>}
     </Field>
   );
@@ -155,6 +177,7 @@ function DynamicSelectField({
   value,
   required,
   description,
+  hint,
   onChange,
   optionsUrl,
 }: {
@@ -163,6 +186,7 @@ function DynamicSelectField({
   value: string;
   required: boolean;
   description?: string;
+  hint?: string;
   onChange: (key: string, value: unknown) => void;
   optionsUrl: string;
 }) {
@@ -219,6 +243,7 @@ function DynamicSelectField({
           ))}
         </SelectContent>
       </Select>
+      {hint && <FieldHint>{hint}</FieldHint>}
       {description && <FieldDescription>{description}</FieldDescription>}
     </Field>
   );
@@ -233,6 +258,7 @@ function PropertyField({
   payloadSchema,
   dynamicOptionsUrl,
   triggerPlaceholder,
+  allValues,
 }: {
   fieldKey: string;
   prop: JsonSchemaProperty;
@@ -240,13 +266,21 @@ function PropertyField({
   required: boolean;
   onChange: (key: string, value: unknown) => void;
   payloadSchema?: JsonSchema;
-  dynamicOptionsUrl?: (fieldKey: string) => string;
+  dynamicOptionsUrl?: (fieldKey: string, depValues?: Record<string, unknown>) => string;
   triggerPlaceholder?: string;
+  allValues?: Record<string, unknown>;
 }) {
   const label = prop.title ?? formatLabel(fieldKey);
 
   // Dynamic select: fetch options from REST endpoint
   if (prop.dynamic && dynamicOptionsUrl) {
+    // Gather dependency values for cascading selects
+    const depValues: Record<string, unknown> = {};
+    if (prop.dependsOn && allValues) {
+      for (const dep of prop.dependsOn) {
+        if (allValues[dep] != null) depValues[dep] = allValues[dep];
+      }
+    }
     return (
       <DynamicSelectField
         fieldKey={fieldKey}
@@ -254,8 +288,9 @@ function PropertyField({
         value={String(value ?? prop.default ?? '')}
         required={required}
         description={prop.description}
+        hint={prop.hint}
         onChange={onChange}
-        optionsUrl={dynamicOptionsUrl(fieldKey)}
+        optionsUrl={dynamicOptionsUrl(fieldKey, Object.keys(depValues).length > 0 ? depValues : undefined)}
       />
     );
   }
@@ -277,6 +312,7 @@ function PropertyField({
             ))}
           </SelectContent>
         </Select>
+        {prop.hint && <FieldHint>{prop.hint}</FieldHint>}
         {prop.description && <FieldDescription>{prop.description}</FieldDescription>}
       </Field>
     );
@@ -291,6 +327,7 @@ function PropertyField({
           checked={Boolean(value ?? prop.default ?? false)}
           onCheckedChange={(v) => onChange(fieldKey, v)}
         />
+        {prop.hint && <FieldHint>{prop.hint}</FieldHint>}
         {prop.description && <FieldDescription>{prop.description}</FieldDescription>}
       </Field>
     );
@@ -306,6 +343,7 @@ function PropertyField({
           value={value != null ? String(value) : String(prop.default ?? '')}
           onChange={(e) => onChange(fieldKey, e.target.value ? Number(e.target.value) : undefined)}
         />
+        {prop.hint && <FieldHint>{prop.hint}</FieldHint>}
         {prop.description && <FieldDescription>{prop.description}</FieldDescription>}
       </Field>
     );
@@ -345,6 +383,7 @@ function PropertyField({
         value={strValue}
         required={required}
         description={prop.description}
+        hint={prop.hint}
         placeholder={placeholder}
         onChange={onChange}
         payloadSchema={payloadSchema}
@@ -359,6 +398,7 @@ function PropertyField({
       value={strValue}
       required={required}
       description={prop.description}
+      hint={prop.hint}
       placeholder={placeholder}
       onChange={onChange}
       payloadSchema={payloadSchema}
@@ -374,24 +414,36 @@ export function SchemaForm({ schema, values, onChange, payloadSchema, dynamicOpt
   const requiredFields = schema.required ?? [];
 
   const handleChange = (key: string, value: unknown) => {
-    onChange({ ...values, [key]: value });
+    const next: Record<string, unknown> = { ...values, [key]: value };
+    // When a parent field changes, clear any field that dependsOn it
+    if (schema.properties) {
+      for (const [depKey, depProp] of Object.entries(schema.properties)) {
+        if (depProp.dependsOn?.includes(key)) {
+          next[depKey] = undefined;
+        }
+      }
+    }
+    onChange(next);
   };
 
   return (
     <div className="space-y-4">
-      {Object.entries(schema.properties).map(([key, prop]) => (
-        <PropertyField
-          key={key}
-          fieldKey={key}
-          prop={prop}
-          value={values[key]}
-          required={requiredFields.includes(key)}
-          onChange={handleChange}
-          payloadSchema={payloadSchema}
-          dynamicOptionsUrl={dynamicOptionsUrl}
-          triggerPlaceholder={placeholders?.[key]}
-        />
-      ))}
+      {Object.entries(schema.properties)
+        .filter(([, prop]) => isFieldVisible(prop, values))
+        .map(([key, prop]) => (
+          <PropertyField
+            key={key}
+            fieldKey={key}
+            prop={prop}
+            value={values[key]}
+            required={requiredFields.includes(key)}
+            onChange={handleChange}
+            payloadSchema={payloadSchema}
+            dynamicOptionsUrl={dynamicOptionsUrl}
+            triggerPlaceholder={placeholders?.[key]}
+            allValues={values}
+          />
+        ))}
     </div>
   );
 }

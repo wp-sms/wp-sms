@@ -173,7 +173,9 @@ class IntegrationController
             return new \WP_REST_Response(['error' => 'Action not found'], 404);
         }
 
-        $options = $action->getConfigOptions($field);
+        $context = $request->get_query_params();
+        unset($context['actionId'], $context['field']);
+        $options = $action->getConfigOptions($field, $context);
 
         return new \WP_REST_Response([
             'options' => $options,

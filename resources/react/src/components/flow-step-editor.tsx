@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { api, type ActionDefinition, type ActionNode, type ListResponse, type JsonSchema } from '@/lib/api';
+import { ErrorHandlingSettings } from '@/components/flow-editor/error-handling-settings';
 import { Field, FieldLabel } from '@/components/ui/field';
 import {
   Select,
@@ -50,7 +51,17 @@ export function FlowStepEditor({ step, stepIndex, onChange, payloadSchema, trigg
   const groups = useMemo(() => groupBy(actions, (a) => a.group), [actions]);
 
   const dynamicOptionsUrl = useCallback(
-    (fieldKey: string) => `actions/${step.action}/config-options/${fieldKey}`,
+    (fieldKey: string, depValues?: Record<string, unknown>) => {
+      let url = `actions/${step.action}/config-options/${fieldKey}`;
+      if (depValues && Object.keys(depValues).length > 0) {
+        const params = new URLSearchParams();
+        for (const [k, v] of Object.entries(depValues)) {
+          if (v != null) params.set(k, String(v));
+        }
+        url += `?${params.toString()}`;
+      }
+      return url;
+    },
     [step.action],
   );
 
@@ -100,6 +111,13 @@ export function FlowStepEditor({ step, stepIndex, onChange, payloadSchema, trigg
           payloadSchema={payloadSchema}
           dynamicOptionsUrl={dynamicOptionsUrl}
           placeholders={placeholders}
+        />
+      )}
+
+      {step.action && (
+        <ErrorHandlingSettings
+          value={step.onError}
+          onChange={(onError) => onChange({ ...step, onError })}
         />
       )}
     </div>

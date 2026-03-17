@@ -49,13 +49,20 @@ class HttpRequestAction extends AbstractAction
                 'label' => __('Headers', 'wp-sms'),
                 'description' => __('HTTP headers to include in the request', 'wp-sms'),
                 'example' => ['Authorization' => 'Bearer token123'],
+                'displayOptions' => [
+                    'show' => ['method' => ['POST', 'PUT', 'PATCH']],
+                ],
             ],
             'body' => [
                 'type' => 'text',
                 'label' => __('Body', 'wp-sms'),
-                'description' => __('JSON or text body. Use {{variables}} to include trigger data.', 'wp-sms'),
+                'description' => __('JSON or text body for the request.', 'wp-sms'),
+                'hint' => __('Use {{variables}} to include trigger data.', 'wp-sms'),
                 'template' => true,
                 'example' => '{"user_id": {{user_id}}}',
+                'displayOptions' => [
+                    'show' => ['method' => ['POST', 'PUT', 'PATCH']],
+                ],
             ],
         ];
     }

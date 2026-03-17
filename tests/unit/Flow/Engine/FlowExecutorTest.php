@@ -76,7 +76,7 @@ class FlowExecutorTest extends TestCase
             public function getName(): string { return 'Test'; }
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
-            public function getConfigOptions(string $fieldKey): array { return []; }
+            public function getConfigOptions(string $fieldKey, array $context = []): array { return []; }
             public function getPlaceholders(string $triggerType): array { return []; }
             public function execute(array $payload, array $config): ActionResult {
                 $this->executed = true;
@@ -104,7 +104,7 @@ class FlowExecutorTest extends TestCase
             public function getName(): string { return 'Then'; }
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
-            public function getConfigOptions(string $fieldKey): array { return []; }
+            public function getConfigOptions(string $fieldKey, array $context = []): array { return []; }
             public function getPlaceholders(string $triggerType): array { return []; }
             public function execute(array $payload, array $config): ActionResult {
                 $this->executed = true;
@@ -135,7 +135,7 @@ class FlowExecutorTest extends TestCase
             public function getName(): string { return 'Else'; }
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
-            public function getConfigOptions(string $fieldKey): array { return []; }
+            public function getConfigOptions(string $fieldKey, array $context = []): array { return []; }
             public function getPlaceholders(string $triggerType): array { return []; }
             public function execute(array $payload, array $config): ActionResult {
                 $this->executed = true;
@@ -195,7 +195,7 @@ class FlowExecutorTest extends TestCase
             public function getName(): string { return 'Capture'; }
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
-            public function getConfigOptions(string $fieldKey): array { return []; }
+            public function getConfigOptions(string $fieldKey, array $context = []): array { return []; }
             public function getPlaceholders(string $triggerType): array { return []; }
             public function execute(array $payload, array $config): ActionResult {
                 $this->receivedConfig = $config;

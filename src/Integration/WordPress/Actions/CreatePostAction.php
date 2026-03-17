@@ -31,7 +31,8 @@ class CreatePostAction extends AbstractAction
             'post_title' => [
                 'type' => 'string',
                 'label' => __('Post Title', 'wp-sms'),
-                'description' => __('Post title. Use {{variables}} to include trigger data.', 'wp-sms'),
+                'description' => __('Title for the new post.', 'wp-sms'),
+                'hint' => __('Use {{variables}} to include trigger data.', 'wp-sms'),
                 'template' => true,
                 'required' => true,
                 'example' => 'New Post from Flow',
@@ -72,7 +73,7 @@ class CreatePostAction extends AbstractAction
         };
     }
 
-    public function getConfigOptions(string $fieldKey): array
+    public function getConfigOptions(string $fieldKey, array $context = []): array
     {
         if ($fieldKey === 'post_type') {
             return WordPressOptions::postTypes();

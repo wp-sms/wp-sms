@@ -54,7 +54,8 @@ class SendMessageAction extends AbstractAction
             'to' => [
                 'type' => 'string',
                 'label' => __('Recipient', 'wp-sms'),
-                'description' => __('Recipient phone, email, or URL. Use a variable like {{customer.phone}}.', 'wp-sms'),
+                'description' => __('Recipient phone, email, or URL.', 'wp-sms'),
+                'hint' => __('Use {{customer.phone}} to send to the trigger contact.', 'wp-sms'),
                 'template' => true,
                 'required' => true,
                 'example' => '{{user.phone}}',
@@ -62,17 +63,21 @@ class SendMessageAction extends AbstractAction
             'body' => [
                 'type' => 'text',
                 'label' => __('Message Body', 'wp-sms'),
-                'description' => __('Message text. Use {{variables}} to personalize with trigger data.', 'wp-sms'),
+                'description' => __('The content of the message.', 'wp-sms'),
+                'hint' => __('Use {{variables}} to personalize. Click {} to browse fields.', 'wp-sms'),
                 'template' => true,
                 'required' => true,
                 'example' => 'Hello {{user.display_name}}, your order is confirmed.',
             ],
             'subject' => [
                 'type' => 'string',
-                'label' => __('Subject (email only)', 'wp-sms'),
-                'description' => __('Email subject line, only used when channel is email', 'wp-sms'),
+                'label' => __('Subject', 'wp-sms'),
+                'description' => __('Email subject line', 'wp-sms'),
                 'template' => true,
                 'example' => 'Order Confirmation',
+                'displayOptions' => [
+                    'show' => ['channel' => ['email']],
+                ],
             ],
         ];
     }

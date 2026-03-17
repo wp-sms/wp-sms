@@ -16,7 +16,7 @@ abstract class AbstractAction implements ActionInterface
 
     abstract public function execute(array $payload, array $config): ActionResult;
 
-    public function getConfigOptions(string $fieldKey): array
+    public function getConfigOptions(string $fieldKey, array $context = []): array
     {
         return [];
     }

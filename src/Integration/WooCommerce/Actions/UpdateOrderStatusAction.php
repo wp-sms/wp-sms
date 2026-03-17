@@ -46,7 +46,8 @@ class UpdateOrderStatusAction extends AbstractAction
             'note' => [
                 'type' => 'string',
                 'label' => __('Note', 'wp-sms'),
-                'description' => __('Optional note added to the order. Use {{variables}} for trigger data.', 'wp-sms'),
+                'description' => __('Optional note added to the order.', 'wp-sms'),
+                'hint' => __('Use {{variables}} for trigger data.', 'wp-sms'),
                 'template' => true,
                 'example' => 'Status updated by automation flow.',
             ],

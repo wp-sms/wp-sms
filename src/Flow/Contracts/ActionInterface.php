@@ -14,7 +14,7 @@ interface ActionInterface
 
     public function getConfigSchema(): array;
 
-    public function getConfigOptions(string $fieldKey): array;
+    public function getConfigOptions(string $fieldKey, array $context = []): array;
 
     public function getPlaceholders(string $triggerType): array;
 

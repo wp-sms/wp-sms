@@ -57,6 +57,23 @@ class FlowLogger
         ]);
     }
 
+    public function logStepRetry(string $executionId, string $nodeId, string $type, int $attempt, int $maxAttempts, string $error): void
+    {
+        $this->appendStepLog($executionId, [
+            'node_id' => $nodeId,
+            'type'    => $type,
+            'status'  => 'retrying',
+            'error'   => $error,
+            'attempt' => $attempt,
+            'max_attempts' => $maxAttempts,
+            'at'      => gmdate('Y-m-d\TH:i:s\Z'),
+        ]);
+
+        $this->logger->info("Flow step retrying: {$nodeId} ({$type}) attempt {$attempt}/{$maxAttempts}: {$error}", [
+            'execution_id' => $executionId,
+        ]);
+    }
+
     public function logStepError(string $executionId, string $nodeId, string $type, string $error): void
     {
         $this->appendStepLog($executionId, [

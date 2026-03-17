@@ -30,7 +30,8 @@ class AddOrderNoteAction extends AbstractAction
             'order_id' => [
                 'type' => 'string',
                 'label' => __('Order ID', 'wp-sms'),
-                'description' => __('The order to add the note to. Usually {{order_id}} from the trigger.', 'wp-sms'),
+                'description' => __('The order to add the note to.', 'wp-sms'),
+                'hint' => __('Usually {{order_id}} from the trigger.', 'wp-sms'),
                 'template' => true,
                 'required' => true,
                 'example' => '{{order_id}}',
@@ -38,7 +39,8 @@ class AddOrderNoteAction extends AbstractAction
             'note' => [
                 'type' => 'text',
                 'label' => __('Note', 'wp-sms'),
-                'description' => __('Write the note text. Use {{variables}} to include trigger data.', 'wp-sms'),
+                'description' => __('The note text to add to the order.', 'wp-sms'),
+                'hint' => __('Use {{variables}} to include trigger data.', 'wp-sms'),
                 'template' => true,
                 'required' => true,
                 'example' => 'Customer contacted via SMS.',

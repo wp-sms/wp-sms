@@ -266,6 +266,7 @@ export interface JsonSchemaProperty {
   type: string;
   title?: string;
   description?: string;
+  hint?: string;
   enum?: string[];
   default?: unknown;
   items?: JsonSchemaProperty;
@@ -274,6 +275,11 @@ export interface JsonSchemaProperty {
   dynamic?: boolean;
   example?: unknown;
   template?: boolean;
+  displayOptions?: {
+    show?: Record<string, unknown[]>;
+    hide?: Record<string, unknown[]>;
+  };
+  dependsOn?: string[];
 }
 
 export interface JsonSchema {
@@ -290,10 +296,18 @@ interface FlowNodeBase {
   id: string;
 }
 
+export interface ErrorHandlingConfig {
+  behavior: 'stop' | 'continue' | 'retry';
+  maxRetries?: number;
+  retryIntervalSecs?: number;
+  continueOnExhausted?: boolean;
+}
+
 export interface ActionNode extends FlowNodeBase {
   type: 'action';
   action: string;
   config: Record<string, unknown>;
+  onError?: ErrorHandlingConfig;
 }
 
 export interface ConditionNode extends FlowNodeBase {
@@ -434,7 +448,7 @@ export interface ListResponse<T> {
 export interface StepLog {
   node_id: string;
   type: string;
-  status: 'started' | 'completed' | 'error';
+  status: 'started' | 'completed' | 'failed' | 'retrying';
   input?: Record<string, unknown>;
   output?: Record<string, unknown>;
   error?: string;

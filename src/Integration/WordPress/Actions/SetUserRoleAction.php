@@ -31,7 +31,8 @@ class SetUserRoleAction extends AbstractAction
             'user_id' => [
                 'type' => 'string',
                 'label' => __('User ID', 'wp-sms'),
-                'description' => __('The user to update. Usually {{user_id}} from the trigger.', 'wp-sms'),
+                'description' => __('The WordPress user ID to update.', 'wp-sms'),
+                'hint' => __('Usually {{user_id}} from the trigger.', 'wp-sms'),
                 'template' => true,
                 'required' => true,
                 'example' => '{{user_id}}',
@@ -58,7 +59,7 @@ class SetUserRoleAction extends AbstractAction
         };
     }
 
-    public function getConfigOptions(string $fieldKey): array
+    public function getConfigOptions(string $fieldKey, array $context = []): array
     {
         if ($fieldKey === 'role') {
             return WordPressOptions::roles();

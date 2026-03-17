@@ -73,12 +73,40 @@ class FlowExecutor
             return;
         }
 
-        $result = $action->execute($payload, $config);
+        $errorHandling = $node['onError'] ?? ['behavior' => 'stop'];
+        $maxAttempts = ($errorHandling['behavior'] === 'retry')
+            ? max(1, (int) ($errorHandling['maxRetries'] ?? 3))
+            : 1;
+        $retryInterval = (int) ($errorHandling['retryIntervalSecs'] ?? 30);
 
-        if ($result->success) {
-            $this->flowLogger->logStepComplete($executionId, $nodeId, 'action', $result->output);
-        } else {
-            $this->flowLogger->logStepError($executionId, $nodeId, 'action', $result->error ?? 'Action failed');
+        $lastError = null;
+        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            $result = $action->execute($payload, $config);
+
+            if ($result->success) {
+                $this->flowLogger->logStepComplete($executionId, $nodeId, 'action', $result->output);
+                return;
+            }
+
+            $lastError = $result->error ?? 'Action failed';
+
+            if ($attempt < $maxAttempts) {
+                $this->flowLogger->logStepRetry($executionId, $nodeId, 'action', $attempt, $maxAttempts, $lastError);
+                sleep($retryInterval);
+            }
+        }
+
+        $this->flowLogger->logStepError($executionId, $nodeId, 'action', $lastError);
+
+        $shouldStop = match ($errorHandling['behavior']) {
+            'stop' => true,
+            'continue' => false,
+            'retry' => !($errorHandling['continueOnExhausted'] ?? false),
+            default => true,
+        };
+
+        if ($shouldStop) {
+            throw new \RuntimeException("Action {$actionId} failed: {$lastError}");
         }
     }
 
