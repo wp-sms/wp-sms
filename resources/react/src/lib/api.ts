@@ -281,24 +281,42 @@ export interface JsonSchema {
   required?: string[];
 }
 
-export interface FlowStep {
-  type: string;
-  config: Record<string, unknown>;
-  condition?: {
-    expression: string;
-    then_steps?: FlowStep[];
-    else_steps?: FlowStep[];
-  };
+// --- Flow Node Types (matches backend FlowExecutor node shapes) ---
+
+interface FlowNodeBase {
+  id: string;
 }
+
+export interface ActionNode extends FlowNodeBase {
+  type: 'action';
+  action: string;
+  config: Record<string, unknown>;
+}
+
+export interface ConditionNode extends FlowNodeBase {
+  type: 'condition';
+  expression: string;
+  then: FlowNode[];
+  else: FlowNode[];
+}
+
+export interface DelayNode extends FlowNodeBase {
+  type: 'delay';
+  duration: number;
+  then: FlowNode[];
+}
+
+export type FlowNode = ActionNode | ConditionNode | DelayNode;
+
 
 export interface Flow {
   id: string;
   name: string;
   trigger_type: string;
   trigger_config: Record<string, unknown>;
-  steps: FlowStep[];
+  steps: FlowNode[];
   status: 'draft' | 'published';
-  published_steps: FlowStep[] | null;
+  published_steps: FlowNode[] | null;
   published_at: string | null;
   description: string | null;
   priority: number;
@@ -375,4 +393,27 @@ export interface PlatformIntegration {
 export interface ListResponse<T> {
   items: T[];
   total: number;
+}
+
+// --- Flow Execution Types ---
+
+export interface StepLog {
+  node_id: string;
+  type: string;
+  status: 'started' | 'completed' | 'error';
+  input?: Record<string, unknown>;
+  output?: Record<string, unknown>;
+  error?: string;
+  at: string;
+}
+
+export interface FlowExecution {
+  id: string;
+  flow_id: string;
+  trigger_data: Record<string, unknown>;
+  status: 'pending' | 'running' | 'completed' | 'failed' | 'waiting';
+  step_logs: StepLog[];
+  error: string | null;
+  started_at: string;
+  completed_at: string | null;
 }

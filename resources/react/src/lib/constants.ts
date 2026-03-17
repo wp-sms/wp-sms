@@ -205,10 +205,9 @@ export function toggleArrayItem<T>(arr: T[], item: T, enabled: boolean): T[] {
   return enabled ? [...arr, item] : arr.filter((x) => x !== item);
 }
 
-/** Convert snake_case to Title Case. */
+/** Convert snake_case or kebab-case to Title Case. */
 export function formatLabel(value: string): string {
   return value
-    .split('_')
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(' ');
+    .replace(/[_-]/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase());
 }
