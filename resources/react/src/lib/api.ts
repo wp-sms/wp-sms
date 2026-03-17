@@ -271,6 +271,7 @@ export interface JsonSchemaProperty {
   items?: JsonSchemaProperty;
   properties?: Record<string, JsonSchemaProperty>;
   required?: string[];
+  dynamic?: boolean;
 }
 
 export interface JsonSchema {
@@ -370,6 +371,7 @@ export interface TriggerDefinition {
   name: string;
   group: string;
   payload_schema: JsonSchema;
+  filter_schema: Record<string, JsonSchemaProperty>;
 }
 
 export interface ActionDefinition {

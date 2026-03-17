@@ -15,4 +15,14 @@ abstract class AbstractTrigger implements TriggerInterface
     abstract public function getPayloadSchema(): array;
 
     abstract public function subscribe(callable $callback): void;
+
+    public function getFilterSchema(): array
+    {
+        return [];
+    }
+
+    public function getFilterOptions(string $fieldKey): array
+    {
+        return [];
+    }
 }

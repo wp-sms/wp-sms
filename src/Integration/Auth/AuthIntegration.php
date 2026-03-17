@@ -65,6 +65,14 @@ class AuthIntegration implements IntegrationInterface
                     ],
                 ],
                 [EventType::LoginSuccess],
+                [
+                    'method' => [
+                        'type'        => 'string',
+                        'label'       => __('Login Method', 'wp-sms'),
+                        'description' => __('Only trigger for this login method', 'wp-sms'),
+                        'enum'        => ['password', 'otp', 'magic_link'],
+                    ],
+                ],
             ),
             new AuthEventTrigger(
                 'auth.login_failure',

@@ -16,6 +16,7 @@ class AuthEventTrigger extends AbstractTrigger
         private readonly string $name,
         private readonly array $payloadSchema,
         private readonly array $eventTypes,
+        private readonly array $filterSchema = [],
     ) {
     }
 
@@ -37,6 +38,11 @@ class AuthEventTrigger extends AbstractTrigger
     public function getPayloadSchema(): array
     {
         return $this->payloadSchema;
+    }
+
+    public function getFilterSchema(): array
+    {
+        return $this->filterSchema;
     }
 
     public function subscribe(callable $callback): void

@@ -3,6 +3,7 @@
 namespace WSms\Integration\WordPress\Triggers;
 
 use WSms\Flow\Contracts\AbstractTrigger;
+use WSms\Integration\WordPress\WordPressOptions;
 
 defined('ABSPATH') || exit;
 
@@ -58,6 +59,27 @@ class PostPublishedTrigger extends AbstractTrigger
                 'example' => 1,
             ],
         ];
+    }
+
+    public function getFilterSchema(): array
+    {
+        return [
+            'post_type' => [
+                'type'        => 'string',
+                'label'       => __('Post Type', 'wp-sms'),
+                'description' => __('Only trigger for this post type', 'wp-sms'),
+                'dynamic'     => true,
+            ],
+        ];
+    }
+
+    public function getFilterOptions(string $fieldKey): array
+    {
+        if ($fieldKey === 'post_type') {
+            return WordPressOptions::postTypes();
+        }
+
+        return [];
     }
 
     public function subscribe(callable $callback): void

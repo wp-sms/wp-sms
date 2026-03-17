@@ -4,6 +4,7 @@ namespace WSms\Integration\WordPress\Actions;
 
 use WSms\Flow\Contracts\AbstractAction;
 use WSms\Flow\Contracts\ActionResult;
+use WSms\Integration\WordPress\WordPressOptions;
 
 defined('ABSPATH') || exit;
 
@@ -47,6 +48,7 @@ class CreatePostAction extends AbstractAction
                 'label' => __('Post Type', 'wp-sms'),
                 'description' => __('WordPress post type', 'wp-sms'),
                 'default' => 'post',
+                'dynamic' => true,
                 'example' => 'post',
             ],
             'post_status' => [
@@ -58,6 +60,15 @@ class CreatePostAction extends AbstractAction
                 'example' => 'draft',
             ],
         ];
+    }
+
+    public function getConfigOptions(string $fieldKey): array
+    {
+        if ($fieldKey === 'post_type') {
+            return WordPressOptions::postTypes();
+        }
+
+        return [];
     }
 
     public function execute(array $payload, array $config): ActionResult

@@ -76,6 +76,7 @@ class FlowExecutorTest extends TestCase
             public function getName(): string { return 'Test'; }
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
+            public function getConfigOptions(string $fieldKey): array { return []; }
             public function execute(array $payload, array $config): ActionResult {
                 $this->executed = true;
                 return ActionResult::success(['done' => true]);
@@ -102,6 +103,7 @@ class FlowExecutorTest extends TestCase
             public function getName(): string { return 'Then'; }
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
+            public function getConfigOptions(string $fieldKey): array { return []; }
             public function execute(array $payload, array $config): ActionResult {
                 $this->executed = true;
                 return ActionResult::success();
@@ -131,6 +133,7 @@ class FlowExecutorTest extends TestCase
             public function getName(): string { return 'Else'; }
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
+            public function getConfigOptions(string $fieldKey): array { return []; }
             public function execute(array $payload, array $config): ActionResult {
                 $this->executed = true;
                 return ActionResult::success();
@@ -189,6 +192,7 @@ class FlowExecutorTest extends TestCase
             public function getName(): string { return 'Capture'; }
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
+            public function getConfigOptions(string $fieldKey): array { return []; }
             public function execute(array $payload, array $config): ActionResult {
                 $this->receivedConfig = $config;
                 return ActionResult::success();

@@ -15,4 +15,9 @@ abstract class AbstractAction implements ActionInterface
     abstract public function getConfigSchema(): array;
 
     abstract public function execute(array $payload, array $config): ActionResult;
+
+    public function getConfigOptions(string $fieldKey): array
+    {
+        return [];
+    }
 }

@@ -14,5 +14,7 @@ interface ActionInterface
 
     public function getConfigSchema(): array;
 
+    public function getConfigOptions(string $fieldKey): array;
+
     public function execute(array $payload, array $config): ActionResult;
 }

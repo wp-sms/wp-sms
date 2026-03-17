@@ -3,6 +3,7 @@
 namespace WSms\Integration\WordPress\Triggers;
 
 use WSms\Flow\Contracts\AbstractTrigger;
+use WSms\Integration\WordPress\WordPressOptions;
 
 defined('ABSPATH') || exit;
 
@@ -57,6 +58,39 @@ class PostStatusChangedTrigger extends AbstractTrigger
                 'example' => 'publish',
             ],
         ];
+    }
+
+    public function getFilterSchema(): array
+    {
+        return [
+            'post_type' => [
+                'type'        => 'string',
+                'label'       => __('Post Type', 'wp-sms'),
+                'description' => __('Only trigger for this post type', 'wp-sms'),
+                'dynamic'     => true,
+            ],
+            'new_status' => [
+                'type'        => 'string',
+                'label'       => __('New Status', 'wp-sms'),
+                'description' => __('Only trigger when post changes to this status', 'wp-sms'),
+                'enum'        => ['draft', 'publish', 'pending', 'private', 'trash'],
+            ],
+            'old_status' => [
+                'type'        => 'string',
+                'label'       => __('Old Status', 'wp-sms'),
+                'description' => __('Only trigger when post changes from this status', 'wp-sms'),
+                'enum'        => ['draft', 'publish', 'pending', 'private', 'trash'],
+            ],
+        ];
+    }
+
+    public function getFilterOptions(string $fieldKey): array
+    {
+        if ($fieldKey === 'post_type') {
+            return WordPressOptions::postTypes();
+        }
+
+        return [];
     }
 
     public function subscribe(callable $callback): void

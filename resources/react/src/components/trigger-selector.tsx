@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { api, type TriggerDefinition, type ListResponse, type JsonSchema } from '@/lib/api';
 import { Field, FieldLabel } from '@/components/ui/field';
 import {
@@ -27,13 +27,11 @@ let triggersFetch: Promise<TriggerDefinition[]> | null = null;
 export function TriggerSelector({ triggerType, triggerConfig, onChangeTrigger, onPayloadSchemaChange }: TriggerSelectorProps) {
   const [triggers, setTriggers] = useState<TriggerDefinition[]>(cachedTriggers ?? []);
   const [loading, setLoading] = useState(!cachedTriggers);
-  const abortRef = useRef<AbortController>(null);
 
   useEffect(() => {
     if (cachedTriggers) return;
 
     const controller = new AbortController();
-    abortRef.current = controller;
 
     if (!triggersFetch) {
       triggersFetch = api.get<ListResponse<TriggerDefinition>>('triggers', { signal: controller.signal })
@@ -56,6 +54,21 @@ export function TriggerSelector({ triggerType, triggerConfig, onChangeTrigger, o
   useEffect(() => {
     onPayloadSchemaChange?.(selected?.payload_schema);
   }, [selected?.id, onPayloadSchemaChange]);
+
+  // Build a JsonSchema wrapper from the flat filter_schema record
+  const filterSchema = useMemo(() => {
+    if (!selected?.filter_schema || Object.keys(selected.filter_schema).length === 0) return null;
+    return {
+      type: 'object' as const,
+      properties: selected.filter_schema,
+    };
+  }, [selected?.id, selected?.filter_schema]);
+
+  // Build dynamic options URL resolver for this trigger
+  const dynamicOptionsUrl = useCallback(
+    (fieldKey: string) => `triggers/${triggerType}/filter-options/${fieldKey}`,
+    [triggerType],
+  );
 
   if (loading) {
     return (
@@ -90,13 +103,14 @@ export function TriggerSelector({ triggerType, triggerConfig, onChangeTrigger, o
         </Select>
       </Field>
 
-      {selected?.payload_schema?.properties && Object.keys(selected.payload_schema.properties).length > 0 && (
+      {filterSchema && (
         <div className="rounded-md border border-border/50 p-4 space-y-3">
-          <p className="text-sm font-medium text-muted-foreground">Trigger Configuration</p>
+          <p className="text-sm font-medium text-muted-foreground">Filter Configuration</p>
           <SchemaForm
-            schema={selected.payload_schema}
+            schema={filterSchema}
             values={triggerConfig}
             onChange={(vals) => onChangeTrigger(triggerType, vals)}
+            dynamicOptionsUrl={dynamicOptionsUrl}
           />
         </div>
       )}

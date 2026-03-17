@@ -3,6 +3,7 @@
 namespace WSms\Integration\WordPress\Triggers;
 
 use WSms\Flow\Contracts\AbstractTrigger;
+use WSms\Integration\WordPress\WordPressOptions;
 
 defined('ABSPATH') || exit;
 
@@ -32,6 +33,12 @@ class UserRegisterTrigger extends AbstractTrigger
                 'description' => __('The WordPress user ID', 'wp-sms'),
                 'example' => 42,
             ],
+            'role' => [
+                'type' => 'string',
+                'label' => __('Role', 'wp-sms'),
+                'description' => __('The primary role assigned to the user', 'wp-sms'),
+                'example' => 'subscriber',
+            ],
             'user' => [
                 'type' => 'object',
                 'label' => __('User Data', 'wp-sms'),
@@ -46,6 +53,27 @@ class UserRegisterTrigger extends AbstractTrigger
         ];
     }
 
+    public function getFilterSchema(): array
+    {
+        return [
+            'role' => [
+                'type'        => 'string',
+                'label'       => __('Role', 'wp-sms'),
+                'description' => __('Only trigger when user is assigned this role', 'wp-sms'),
+                'dynamic'     => true,
+            ],
+        ];
+    }
+
+    public function getFilterOptions(string $fieldKey): array
+    {
+        if ($fieldKey === 'role') {
+            return WordPressOptions::roles();
+        }
+
+        return [];
+    }
+
     public function subscribe(callable $callback): void
     {
         add_action('user_register', function (int $userId) use ($callback) {
@@ -53,6 +81,7 @@ class UserRegisterTrigger extends AbstractTrigger
             if ($user) {
                 $callback([
                     'user_id' => $userId,
+                    'role' => $user->roles[0] ?? '',
                     'user' => [
                         'email' => $user->user_email,
                         'login' => $user->user_login,

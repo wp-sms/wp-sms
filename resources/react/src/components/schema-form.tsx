@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
@@ -12,13 +12,16 @@ import {
 } from '@/components/ui/select';
 import { formatLabel } from '@/lib/constants';
 import type { JsonSchema, JsonSchemaProperty } from '@/lib/api';
+import { api } from '@/lib/api';
 import { TemplateVariablePicker } from '@/components/flow-editor/template-variable-picker';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface SchemaFormProps {
   schema: JsonSchema;
   values: Record<string, unknown>;
   onChange: (values: Record<string, unknown>) => void;
   payloadSchema?: JsonSchema;
+  dynamicOptionsUrl?: (fieldKey: string) => string;
 }
 
 function insertVariableAtCursor(
@@ -125,6 +128,86 @@ function StringField({
   );
 }
 
+interface DynamicOption {
+  value: string;
+  label: string;
+}
+
+function DynamicSelectField({
+  fieldKey,
+  label,
+  value,
+  required,
+  description,
+  onChange,
+  optionsUrl,
+}: {
+  fieldKey: string;
+  label: string;
+  value: string;
+  required: boolean;
+  description?: string;
+  onChange: (key: string, value: unknown) => void;
+  optionsUrl: string;
+}) {
+  const [options, setOptions] = useState<DynamicOption[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    setError(false);
+    const controller = new AbortController();
+    api.get<{ options: DynamicOption[] }>(optionsUrl, { signal: controller.signal })
+      .then((res) => { setOptions(res.options); setLoading(false); })
+      .catch((e) => {
+        if (!(e instanceof DOMException && e.name === 'AbortError')) {
+          setError(true);
+          setLoading(false);
+        }
+      });
+    return () => { controller.abort(); };
+  }, [optionsUrl]);
+
+  if (loading) {
+    return (
+      <Field>
+        <FieldLabel htmlFor={`schema-${fieldKey}`}>{label}{required && ' *'}</FieldLabel>
+        <Skeleton className="h-10 w-full" />
+      </Field>
+    );
+  }
+
+  if (error) {
+    return (
+      <Field>
+        <FieldLabel htmlFor={`schema-${fieldKey}`}>{label}{required && ' *'}</FieldLabel>
+        <p className="text-sm text-destructive">Failed to load options.</p>
+      </Field>
+    );
+  }
+
+  return (
+    <Field>
+      <FieldLabel htmlFor={`schema-${fieldKey}`}>{label}{required && ' *'}</FieldLabel>
+      <Select
+        value={value}
+        onValueChange={(v) => onChange(fieldKey, v)}
+      >
+        <SelectTrigger id={`schema-${fieldKey}`}>
+          <SelectValue placeholder={`Select ${label.toLowerCase()}`} />
+        </SelectTrigger>
+        <SelectContent>
+          {options.map((opt) => (
+            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+      {description && <FieldDescription>{description}</FieldDescription>}
+    </Field>
+  );
+}
+
 function PropertyField({
   fieldKey,
   prop,
@@ -132,6 +215,7 @@ function PropertyField({
   required,
   onChange,
   payloadSchema,
+  dynamicOptionsUrl,
 }: {
   fieldKey: string;
   prop: JsonSchemaProperty;
@@ -139,8 +223,24 @@ function PropertyField({
   required: boolean;
   onChange: (key: string, value: unknown) => void;
   payloadSchema?: JsonSchema;
+  dynamicOptionsUrl?: (fieldKey: string) => string;
 }) {
   const label = prop.title ?? formatLabel(fieldKey);
+
+  // Dynamic select: fetch options from REST endpoint
+  if (prop.dynamic && dynamicOptionsUrl) {
+    return (
+      <DynamicSelectField
+        fieldKey={fieldKey}
+        label={label}
+        value={String(value ?? prop.default ?? '')}
+        required={required}
+        description={prop.description}
+        onChange={onChange}
+        optionsUrl={dynamicOptionsUrl(fieldKey)}
+      />
+    );
+  }
 
   if (prop.enum && prop.enum.length > 0) {
     return (
@@ -208,6 +308,7 @@ function PropertyField({
             required={prop.required?.includes(nestedKey) ?? false}
             onChange={(nk, nv) => onChange(fieldKey, { ...nested, [nk]: nv })}
             payloadSchema={payloadSchema}
+            dynamicOptionsUrl={dynamicOptionsUrl}
           />
         ))}
       </fieldset>
@@ -244,7 +345,7 @@ function PropertyField({
   );
 }
 
-export function SchemaForm({ schema, values, onChange, payloadSchema }: SchemaFormProps) {
+export function SchemaForm({ schema, values, onChange, payloadSchema, dynamicOptionsUrl }: SchemaFormProps) {
   if (!schema.properties || Object.keys(schema.properties).length === 0) {
     return <p className="text-sm text-muted-foreground">No configuration needed.</p>;
   }
@@ -266,6 +367,7 @@ export function SchemaForm({ schema, values, onChange, payloadSchema }: SchemaFo
           required={requiredFields.includes(key)}
           onChange={handleChange}
           payloadSchema={payloadSchema}
+          dynamicOptionsUrl={dynamicOptionsUrl}
         />
       ))}
     </div>

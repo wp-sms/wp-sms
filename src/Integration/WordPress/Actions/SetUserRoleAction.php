@@ -4,6 +4,7 @@ namespace WSms\Integration\WordPress\Actions;
 
 use WSms\Flow\Contracts\AbstractAction;
 use WSms\Flow\Contracts\ActionResult;
+use WSms\Integration\WordPress\WordPressOptions;
 
 defined('ABSPATH') || exit;
 
@@ -40,9 +41,19 @@ class SetUserRoleAction extends AbstractAction
                 'label' => __('Role', 'wp-sms'),
                 'description' => __('The WordPress role to assign', 'wp-sms'),
                 'required' => true,
+                'dynamic' => true,
                 'example' => 'editor',
             ],
         ];
+    }
+
+    public function getConfigOptions(string $fieldKey): array
+    {
+        if ($fieldKey === 'role') {
+            return WordPressOptions::roles();
+        }
+
+        return [];
     }
 
     public function execute(array $payload, array $config): ActionResult

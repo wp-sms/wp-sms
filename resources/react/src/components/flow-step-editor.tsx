@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { api, type ActionDefinition, type ActionNode, type ListResponse, type JsonSchema } from '@/lib/api';
 import { Field, FieldLabel } from '@/components/ui/field';
 import {
@@ -27,13 +27,11 @@ let actionsFetch: Promise<ActionDefinition[]> | null = null;
 export function FlowStepEditor({ step, stepIndex, onChange, payloadSchema }: FlowStepEditorProps) {
   const [actions, setActions] = useState<ActionDefinition[]>(cachedActions ?? []);
   const [loading, setLoading] = useState(!cachedActions);
-  const abortRef = useRef<AbortController>(null);
 
   useEffect(() => {
     if (cachedActions) return;
 
     const controller = new AbortController();
-    abortRef.current = controller;
 
     if (!actionsFetch) {
       actionsFetch = api.get<ListResponse<ActionDefinition>>('actions', { signal: controller.signal })
@@ -49,6 +47,11 @@ export function FlowStepEditor({ step, stepIndex, onChange, payloadSchema }: Flo
   }, []);
 
   const groups = useMemo(() => groupBy(actions, (a) => a.group), [actions]);
+
+  const dynamicOptionsUrl = useCallback(
+    (fieldKey: string) => `actions/${step.action}/config-options/${fieldKey}`,
+    [step.action],
+  );
 
   if (loading) {
     return <Skeleton className="h-20 w-full" />;
@@ -87,6 +90,7 @@ export function FlowStepEditor({ step, stepIndex, onChange, payloadSchema }: Flo
           values={step.config}
           onChange={(vals) => onChange({ ...step, config: vals })}
           payloadSchema={payloadSchema}
+          dynamicOptionsUrl={dynamicOptionsUrl}
         />
       )}
     </div>

@@ -3,6 +3,7 @@
 namespace WSms\Integration\WordPress\Triggers;
 
 use WSms\Flow\Contracts\AbstractTrigger;
+use WSms\Integration\WordPress\WordPressOptions;
 
 defined('ABSPATH') || exit;
 
@@ -55,6 +56,33 @@ class UserRoleChangedTrigger extends AbstractTrigger
                 ],
             ],
         ];
+    }
+
+    public function getFilterSchema(): array
+    {
+        return [
+            'new_role' => [
+                'type'        => 'string',
+                'label'       => __('New Role', 'wp-sms'),
+                'description' => __('Only trigger when user is assigned this role', 'wp-sms'),
+                'dynamic'     => true,
+            ],
+            'old_role' => [
+                'type'        => 'string',
+                'label'       => __('Old Role', 'wp-sms'),
+                'description' => __('Only trigger when user had this role before', 'wp-sms'),
+                'dynamic'     => true,
+            ],
+        ];
+    }
+
+    public function getFilterOptions(string $fieldKey): array
+    {
+        if ($fieldKey === 'new_role' || $fieldKey === 'old_role') {
+            return WordPressOptions::roles();
+        }
+
+        return [];
     }
 
     public function subscribe(callable $callback): void

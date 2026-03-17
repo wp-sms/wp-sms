@@ -14,5 +14,9 @@ interface TriggerInterface
 
     public function getPayloadSchema(): array;
 
+    public function getFilterSchema(): array;
+
+    public function getFilterOptions(string $fieldKey): array;
+
     public function subscribe(callable $callback): void;
 }

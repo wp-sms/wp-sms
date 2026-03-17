@@ -37,10 +37,26 @@ class IntegrationController
             ],
         ]);
 
+        register_rest_route(self::NAMESPACE, '/triggers/(?P<triggerId>[\\w.]+)/filter-options/(?P<field>[\\w]+)', [
+            [
+                'methods'             => 'GET',
+                'callback'            => [$this, 'triggerFilterOptions'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
         register_rest_route(self::NAMESPACE, '/actions', [
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'actions'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/actions/(?P<actionId>[\\w_]+)/config-options/(?P<field>[\\w]+)', [
+            [
+                'methods'             => 'GET',
+                'callback'            => [$this, 'actionConfigOptions'],
                 'permission_callback' => [$this, 'canManage'],
             ],
         ]);
@@ -84,12 +100,30 @@ class IntegrationController
                 'name'           => $trigger->getName(),
                 'group'          => $trigger->getGroup(),
                 'payload_schema' => $trigger->getPayloadSchema(),
+                'filter_schema'  => $trigger->getFilterSchema(),
             ];
         }
 
         return new \WP_REST_Response([
             'items' => $triggers,
             'total' => count($triggers),
+        ]);
+    }
+
+    public function triggerFilterOptions(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $triggerId = $request->get_param('triggerId');
+        $field = $request->get_param('field');
+
+        $trigger = $this->triggerRegistry->get($triggerId);
+        if (!$trigger) {
+            return new \WP_REST_Response(['error' => 'Trigger not found'], 404);
+        }
+
+        $options = $trigger->getFilterOptions($field);
+
+        return new \WP_REST_Response([
+            'options' => $options,
         ]);
     }
 
@@ -109,6 +143,23 @@ class IntegrationController
         return new \WP_REST_Response([
             'items' => $actions,
             'total' => count($actions),
+        ]);
+    }
+
+    public function actionConfigOptions(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $actionId = $request->get_param('actionId');
+        $field = $request->get_param('field');
+
+        $action = $this->actionRegistry->get($actionId);
+        if (!$action) {
+            return new \WP_REST_Response(['error' => 'Action not found'], 404);
+        }
+
+        $options = $action->getConfigOptions($field);
+
+        return new \WP_REST_Response([
+            'options' => $options,
         ]);
     }
 }

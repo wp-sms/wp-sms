@@ -59,6 +59,24 @@ class OrderStatusChangedTrigger extends AbstractTrigger
         ];
     }
 
+    public function getFilterSchema(): array
+    {
+        return [
+            'new_status' => [
+                'type'        => 'string',
+                'label'       => __('New Status', 'wp-sms'),
+                'description' => __('Only trigger when order changes to this status', 'wp-sms'),
+                'enum'        => ['pending', 'processing', 'on-hold', 'completed', 'cancelled', 'refunded', 'failed'],
+            ],
+            'old_status' => [
+                'type'        => 'string',
+                'label'       => __('Old Status', 'wp-sms'),
+                'description' => __('Only trigger when order changes from this status', 'wp-sms'),
+                'enum'        => ['pending', 'processing', 'on-hold', 'completed', 'cancelled', 'refunded', 'failed'],
+            ],
+        ];
+    }
+
     public function subscribe(callable $callback): void
     {
         add_action('woocommerce_order_status_changed', function (int $orderId, string $oldStatus, string $newStatus) use ($callback) {

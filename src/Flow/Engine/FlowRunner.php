@@ -41,6 +41,11 @@ class FlowRunner
         }
 
         foreach ($flows as $flow) {
+            if (!$this->matchesTriggerFilters($flow->getTriggerConfig(), $payload)) {
+                $this->logger->debug("Flow {$flow->getId()} skipped: trigger filters do not match payload.");
+                continue;
+            }
+
             $steps = $flow->getPublishedSteps();
 
             if (empty($steps)) {
@@ -70,5 +75,41 @@ class FlowRunner
                 $this->executionRepository->setError($executionId, $e->getMessage());
             }
         }
+    }
+
+    /**
+     * Check if the flow's trigger_config filters match the event payload.
+     *
+     * Each key in $filters is compared against the corresponding payload value.
+     * Empty/unset filter values are treated as "match all".
+     * Array filter values use in_array (multi-select).
+     */
+    public function matchesTriggerFilters(array $filters, array $payload): bool
+    {
+        foreach ($filters as $key => $filterValue) {
+            if ($filterValue === '' || $filterValue === null || $filterValue === []) {
+                continue;
+            }
+
+            if (!array_key_exists($key, $payload)) {
+                return false;
+            }
+
+            $payloadValue = (string) $payload[$key];
+
+            if (is_array($filterValue)) {
+                // Multi-select: payload value must be in the filter array
+                if (!in_array($payloadValue, array_map('strval', $filterValue), true)) {
+                    return false;
+                }
+            } else {
+                // String comparison handles int/string mismatches safely (e.g., product_id 55 vs '55')
+                if ($payloadValue !== (string) $filterValue) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

@@ -58,10 +58,22 @@ class CommentPostedTrigger extends AbstractTrigger
                 'example' => 'Great article!',
             ],
             'approved' => [
-                'type' => 'integer',
+                'type' => 'string',
                 'label' => __('Approved', 'wp-sms'),
                 'description' => __('Whether the comment is approved (1) or pending (0)', 'wp-sms'),
-                'example' => 1,
+                'example' => '1',
+            ],
+        ];
+    }
+
+    public function getFilterSchema(): array
+    {
+        return [
+            'approved' => [
+                'type'        => 'string',
+                'label'       => __('Approval Status', 'wp-sms'),
+                'description' => __('Only trigger for this approval status', 'wp-sms'),
+                'enum'        => ['0', '1'],
             ],
         ];
     }
@@ -77,7 +89,7 @@ class CommentPostedTrigger extends AbstractTrigger
                     'author' => $comment->comment_author,
                     'email' => $comment->comment_author_email,
                     'content' => $comment->comment_content,
-                    'approved' => $approved,
+                    'approved' => (string) (int) $approved,
                 ]);
             }
         }, 10, 2);

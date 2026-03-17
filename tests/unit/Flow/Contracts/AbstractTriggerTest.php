@@ -21,4 +21,30 @@ class AbstractTriggerTest extends TestCase
         $this->assertInstanceOf(TriggerInterface::class, $trigger);
         $this->assertSame('test.trigger', $trigger->getId());
     }
+
+    public function testDefaultFilterSchemaIsEmpty(): void
+    {
+        $trigger = new class extends AbstractTrigger {
+            public function getId(): string { return 'test.trigger'; }
+            public function getName(): string { return 'Test'; }
+            public function getGroup(): string { return 'Test'; }
+            public function getPayloadSchema(): array { return []; }
+            public function subscribe(callable $callback): void {}
+        };
+
+        $this->assertSame([], $trigger->getFilterSchema());
+    }
+
+    public function testDefaultFilterOptionsIsEmpty(): void
+    {
+        $trigger = new class extends AbstractTrigger {
+            public function getId(): string { return 'test.trigger'; }
+            public function getName(): string { return 'Test'; }
+            public function getGroup(): string { return 'Test'; }
+            public function getPayloadSchema(): array { return []; }
+            public function subscribe(callable $callback): void {}
+        };
+
+        $this->assertSame([], $trigger->getFilterOptions('any_field'));
+    }
 }

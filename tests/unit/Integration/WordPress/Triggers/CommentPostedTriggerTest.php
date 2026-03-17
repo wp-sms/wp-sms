@@ -68,7 +68,7 @@ class CommentPostedTriggerTest extends TestCase
         $this->assertSame('Jane', $captured['author']);
         $this->assertSame('jane@example.com', $captured['email']);
         $this->assertSame('Great!', $captured['content']);
-        $this->assertSame(1, $captured['approved']);
+        $this->assertSame('1', $captured['approved']);
     }
 
     public function testDoesNotFireIfCommentNotFound(): void

@@ -59,6 +59,31 @@ class ProductPurchasedTrigger extends AbstractTrigger
         ];
     }
 
+    public function getFilterSchema(): array
+    {
+        return [
+            'product_id' => [
+                'type'        => 'integer',
+                'label'       => __('Product', 'wp-sms'),
+                'description' => __('Only trigger for this product', 'wp-sms'),
+                'dynamic'     => true,
+            ],
+        ];
+    }
+
+    public function getFilterOptions(string $fieldKey): array
+    {
+        if ($fieldKey === 'product_id') {
+            $products = wc_get_products(['limit' => 100, 'status' => 'publish', 'orderby' => 'title', 'order' => 'ASC']);
+            return array_map(fn ($product) => [
+                'value' => (string) $product->get_id(),
+                'label' => $product->get_name(),
+            ], $products);
+        }
+
+        return [];
+    }
+
     public function subscribe(callable $callback): void
     {
         add_action('woocommerce_order_status_completed', function (int $orderId) use ($callback) {
