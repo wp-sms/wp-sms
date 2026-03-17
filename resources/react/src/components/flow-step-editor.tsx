@@ -21,12 +21,13 @@ interface FlowStepEditorProps {
   onChange: (step: ActionNode) => void;
   payloadSchema?: JsonSchema;
   triggerType?: string;
+  sampleData?: Record<string, unknown>;
 }
 
 let cachedActions: ActionDefinition[] | null = null;
 let actionsFetch: Promise<ActionDefinition[]> | null = null;
 
-export function FlowStepEditor({ step, stepIndex, onChange, payloadSchema, triggerType }: FlowStepEditorProps) {
+export function FlowStepEditor({ step, stepIndex, onChange, payloadSchema, triggerType, sampleData }: FlowStepEditorProps) {
   const [actions, setActions] = useState<ActionDefinition[]>(cachedActions ?? []);
   const [loading, setLoading] = useState(!cachedActions);
 
@@ -111,6 +112,7 @@ export function FlowStepEditor({ step, stepIndex, onChange, payloadSchema, trigg
           payloadSchema={payloadSchema}
           dynamicOptionsUrl={dynamicOptionsUrl}
           placeholders={placeholders}
+          sampleData={sampleData}
         />
       )}
 

@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
@@ -17,6 +17,7 @@ import { api } from '@/lib/api';
 import { TemplateVariablePicker } from '@/components/flow-editor/template-variable-picker';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Plus, X } from 'lucide-react';
+import { resolveTemplatePreview, extractExampleData } from '@/lib/template-preview';
 
 interface SchemaFormProps {
   schema: JsonSchema;
@@ -25,6 +26,28 @@ interface SchemaFormProps {
   payloadSchema?: JsonSchema;
   dynamicOptionsUrl?: (fieldKey: string, depValues?: Record<string, unknown>) => string;
   placeholders?: Record<string, string>;
+  sampleData?: Record<string, unknown>;
+}
+
+function TemplatePreview({ value, payloadSchema, sampleData }: { value: string; payloadSchema?: JsonSchema; sampleData?: Record<string, unknown> }) {
+  // Memoize schema-derived examples separately so they don't recompute on every keystroke
+  const schemaExamples = useMemo(() => {
+    if (sampleData || !payloadSchema) return undefined;
+    return extractExampleData(payloadSchema);
+  }, [payloadSchema, sampleData]);
+
+  const preview = useMemo(() => {
+    if (!payloadSchema || !value) return null;
+    return resolveTemplatePreview(value, payloadSchema, sampleData ?? schemaExamples);
+  }, [value, payloadSchema, sampleData, schemaExamples]);
+
+  if (!preview) return null;
+
+  return (
+    <p className="mt-1 text-xs text-muted-foreground/70 truncate">
+      Preview: {preview}
+    </p>
+  );
 }
 
 function isFieldVisible(prop: JsonSchemaProperty, values: Record<string, unknown>): boolean {
@@ -84,6 +107,7 @@ function TextareaField({
   placeholder,
   onChange,
   payloadSchema,
+  sampleData,
 }: {
   fieldKey: string;
   label: string;
@@ -94,6 +118,7 @@ function TextareaField({
   placeholder: string;
   onChange: (key: string, value: unknown) => void;
   payloadSchema?: JsonSchema;
+  sampleData?: Record<string, unknown>;
 }) {
   const ref = useRef<HTMLTextAreaElement>(null);
   return (
@@ -115,6 +140,7 @@ function TextareaField({
         onChange={(e) => onChange(fieldKey, e.target.value)}
         rows={3}
       />
+      <TemplatePreview value={value} payloadSchema={payloadSchema} sampleData={sampleData} />
       {hint && <FieldHint>{hint}</FieldHint>}
       {description && <FieldDescription>{description}</FieldDescription>}
     </Field>
@@ -131,6 +157,7 @@ function StringField({
   placeholder,
   onChange,
   payloadSchema,
+  sampleData,
 }: {
   fieldKey: string;
   label: string;
@@ -141,6 +168,7 @@ function StringField({
   placeholder: string;
   onChange: (key: string, value: unknown) => void;
   payloadSchema?: JsonSchema;
+  sampleData?: Record<string, unknown>;
 }) {
   const ref = useRef<HTMLInputElement>(null);
   return (
@@ -162,6 +190,7 @@ function StringField({
         placeholder={placeholder}
         onChange={(e) => onChange(fieldKey, e.target.value)}
       />
+      <TemplatePreview value={value} payloadSchema={payloadSchema} sampleData={sampleData} />
       {hint && <FieldHint>{hint}</FieldHint>}
       {description && <FieldDescription>{description}</FieldDescription>}
     </Field>
@@ -368,6 +397,7 @@ function PropertyField({
   dynamicOptionsUrl,
   triggerPlaceholder,
   allValues,
+  sampleData,
 }: {
   fieldKey: string;
   prop: JsonSchemaProperty;
@@ -378,6 +408,7 @@ function PropertyField({
   dynamicOptionsUrl?: (fieldKey: string, depValues?: Record<string, unknown>) => string;
   triggerPlaceholder?: string;
   allValues?: Record<string, unknown>;
+  sampleData?: Record<string, unknown>;
 }) {
   const label = prop.title ?? formatLabel(fieldKey);
 
@@ -510,6 +541,7 @@ function PropertyField({
         placeholder={placeholder}
         onChange={onChange}
         payloadSchema={payloadSchema}
+        sampleData={sampleData}
       />
     );
   }
@@ -525,11 +557,12 @@ function PropertyField({
       placeholder={placeholder}
       onChange={onChange}
       payloadSchema={payloadSchema}
+      sampleData={sampleData}
     />
   );
 }
 
-export function SchemaForm({ schema, values, onChange, payloadSchema, dynamicOptionsUrl, placeholders }: SchemaFormProps) {
+export function SchemaForm({ schema, values, onChange, payloadSchema, dynamicOptionsUrl, placeholders, sampleData }: SchemaFormProps) {
   if (!schema.properties || Object.keys(schema.properties).length === 0) {
     return <p className="text-sm text-muted-foreground">No configuration needed.</p>;
   }
@@ -565,6 +598,7 @@ export function SchemaForm({ schema, values, onChange, payloadSchema, dynamicOpt
             dynamicOptionsUrl={dynamicOptionsUrl}
             triggerPlaceholder={placeholders?.[key]}
             allValues={values}
+            sampleData={sampleData}
           />
         ))}
     </div>

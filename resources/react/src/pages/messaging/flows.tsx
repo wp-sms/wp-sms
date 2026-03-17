@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useFlows } from '@/hooks/use-flows';
 import { FlowEditor } from './flow-editor';
-import type { Flow } from '@/lib/api';
+import type { Flow, FlowTemplate } from '@/lib/api';
+import { api } from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
 import { Field, FieldLabel } from '@/components/ui/field';
 import {
   Select,
@@ -14,6 +16,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import {
   Table,
   TableBody,
@@ -30,19 +39,72 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
-import { Plus, Workflow, Pencil, Trash2, Rocket } from 'lucide-react';
+import {
+  Plus, Workflow, Pencil, Trash2, Rocket, LayoutTemplate, Search,
+  ShoppingCart, Users, MessageSquare, FileText, type LucideIcon,
+} from 'lucide-react';
 import { formatLabel } from '@/lib/constants';
+import { countSteps } from '@/lib/flow-utils';
 import { toast } from 'sonner';
 
-type View = { mode: 'list' } | { mode: 'create' } | { mode: 'edit'; flow: Flow };
+type View =
+  | { mode: 'list' }
+  | { mode: 'create' }
+  | { mode: 'create-from-template'; template: FlowTemplate }
+  | { mode: 'edit'; flow: Flow };
+
+function getTriggerIcon(triggerType: string): LucideIcon {
+  if (triggerType.startsWith('woocommerce.')) return ShoppingCart;
+  if (triggerType.startsWith('wordpress.user_')) return Users;
+  if (triggerType.startsWith('wordpress.comment_')) return MessageSquare;
+  if (triggerType.startsWith('wordpress.post_')) return FileText;
+  return Workflow;
+}
 
 export function Flows() {
   const { flows, total, page, perPage, filters, setFilter, setPage, loading, createFlow, updateFlow, deleteFlow, publishFlow } = useFlows();
   const [view, setView] = useState<View>({ mode: 'list' });
   const [deleting, setDeleting] = useState<string | null>(null);
   const [publishing, setPublishing] = useState<string | null>(null);
+  const [templates, setTemplates] = useState<FlowTemplate[]>([]);
+  const [templatesLoading, setTemplatesLoading] = useState(true);
+  const [showTemplates, setShowTemplates] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [activeCategory, setActiveCategory] = useState('all');
 
   const totalPages = Math.ceil(total / perPage);
+
+  // Load templates
+  useEffect(() => {
+    const controller = new AbortController();
+    api.get<{ items: FlowTemplate[] }>('flows/templates', { signal: controller.signal })
+      .then((res) => { setTemplates(res.items); setTemplatesLoading(false); })
+      .catch((e) => {
+        if (!(e instanceof DOMException && e.name === 'AbortError')) setTemplatesLoading(false);
+      });
+    return () => { controller.abort(); };
+  }, []);
+
+  // Derive categories from template data
+  const categories = useMemo(() => {
+    const cats = new Set(templates.map((t) => t.category));
+    return Array.from(cats).sort();
+  }, [templates]);
+
+  // Filter templates
+  const filteredTemplates = useMemo(() => {
+    let result = templates;
+    if (activeCategory !== 'all') {
+      result = result.filter((t) => t.category === activeCategory);
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(
+        (t) => t.name.toLowerCase().includes(q) || t.description.toLowerCase().includes(q),
+      );
+    }
+    return result;
+  }, [templates, activeCategory, searchQuery]);
 
   const handleDelete = async (id: string) => {
     setDeleting(id);
@@ -68,9 +130,37 @@ export function Flows() {
     }
   };
 
+  const handleUseTemplate = (template: FlowTemplate) => {
+    setShowTemplates(false);
+    setView({ mode: 'create-from-template', template });
+  };
+
+  const handleOpenTemplates = () => {
+    setSearchQuery('');
+    setActiveCategory('all');
+    setShowTemplates(true);
+  };
+
   if (view.mode === 'create') {
     return (
       <FlowEditor
+        onSave={createFlow}
+        onBack={() => setView({ mode: 'list' })}
+      />
+    );
+  }
+
+  if (view.mode === 'create-from-template') {
+    const t = view.template;
+    return (
+      <FlowEditor
+        initialData={{
+          name: t.name,
+          description: t.description,
+          trigger_type: t.trigger_type,
+          trigger_config: t.trigger_config,
+          steps: t.steps,
+        }}
         onSave={createFlow}
         onBack={() => setView({ mode: 'list' })}
       />
@@ -102,10 +192,18 @@ export function Flows() {
                 {total} {total === 1 ? 'flow' : 'flows'} total
               </CardDescription>
             </div>
-            <Button size="sm" onClick={() => setView({ mode: 'create' })}>
-              <Plus className="mr-1.5 h-3.5 w-3.5" />
-              New Flow
-            </Button>
+            <div className="flex items-center gap-2">
+              {!templatesLoading && templates.length > 0 && (
+                <Button variant="outline" size="sm" onClick={handleOpenTemplates}>
+                  <LayoutTemplate className="mr-1.5 h-3.5 w-3.5" />
+                  From Template
+                </Button>
+              )}
+              <Button size="sm" onClick={() => setView({ mode: 'create' })}>
+                <Plus className="mr-1.5 h-3.5 w-3.5" />
+                New Flow
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
@@ -261,6 +359,82 @@ export function Flows() {
           )}
         </CardContent>
       </Card>
+
+      {/* Template picker dialog */}
+      <Dialog open={showTemplates} onOpenChange={setShowTemplates}>
+        <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Start from a template</DialogTitle>
+            <DialogDescription>Choose a pre-built automation flow.</DialogDescription>
+          </DialogHeader>
+
+          {/* Search + category filter */}
+          <div className="flex items-center gap-3 pb-3">
+            <div className="relative flex-1">
+              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                className="pl-8 h-9"
+                placeholder="Search templates..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <Select value={activeCategory} onValueChange={setActiveCategory}>
+              <SelectTrigger className="w-44 h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                {categories.map((cat) => (
+                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Template grid */}
+          <div className="overflow-y-auto pr-1 -mr-1 flex-1 min-h-0">
+            {filteredTemplates.length === 0 ? (
+              <p className="py-8 text-center text-sm text-muted-foreground">No templates match your filters.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {filteredTemplates.map((template) => {
+                  const Icon = getTriggerIcon(template.trigger_type);
+                  const steps = countSteps(template.steps);
+                  const triggerLabel = formatLabel(
+                    template.trigger_type.includes('.')
+                      ? template.trigger_type.split('.').pop()!
+                      : template.trigger_type
+                  );
+
+                  return (
+                    <button
+                      key={template.id}
+                      type="button"
+                      className="flex flex-col rounded-lg border border-border/50 p-3.5 text-left transition-colors hover:border-primary/30 hover:bg-accent/50"
+                      onClick={() => handleUseTemplate(template)}
+                    >
+                      <div className="flex items-start gap-2.5">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted">
+                          <Icon className="h-4 w-4 text-muted-foreground" />
+                        </div>
+                        <div className="min-w-0">
+                          <span className="text-sm font-medium leading-tight line-clamp-1">{template.name}</span>
+                          <span className="mt-0.5 block text-xs text-muted-foreground line-clamp-2">{template.description}</span>
+                        </div>
+                      </div>
+                      <div className="mt-2.5 flex items-center gap-1.5">
+                        <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{triggerLabel}</Badge>
+                        <span className="text-[10px] text-muted-foreground">{steps} {steps === 1 ? 'step' : 'steps'}</span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

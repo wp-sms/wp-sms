@@ -310,9 +310,16 @@ export interface ActionNode extends FlowNodeBase {
   onError?: ErrorHandlingConfig;
 }
 
+export interface ConditionRule {
+  field: string;
+  operator: string;
+  value: string;
+}
+
 export interface ConditionNode extends FlowNodeBase {
   type: 'condition';
   expression: string;
+  rules?: ConditionRule[];
   then: FlowNode[];
   else: FlowNode[];
 }
@@ -439,6 +446,16 @@ export interface PlatformIntegration {
   auth_type: string;
   triggers: number;
   actions: number;
+}
+
+export interface FlowTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  trigger_type: string;
+  trigger_config: Record<string, unknown>;
+  steps: FlowNode[];
 }
 
 export interface ListResponse<T> {

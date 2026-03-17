@@ -1,9 +1,8 @@
-import { useRef } from 'react';
 import type { ConditionNode, JsonSchema } from '@/lib/api';
-import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
-import { Textarea } from '@/components/ui/textarea';
+import type { ConditionRule } from '@/lib/condition-utils';
+import { rulesToExpression } from '@/lib/condition-utils';
+import { ConditionBuilder } from './condition-builder';
 import { FlowStepList } from '@/components/flow-step-list';
-import { TemplateVariablePicker } from './template-variable-picker';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown } from 'lucide-react';
 
@@ -15,51 +14,24 @@ interface ConditionStepEditorProps {
 }
 
 export function ConditionStepEditor({ step, onChange, payloadSchema, depth }: ConditionStepEditorProps) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const rules: ConditionRule[] = step.rules ?? [];
 
-  const insertAtCursor = (variable: string) => {
-    const el = textareaRef.current;
-    if (el) {
-      const start = el.selectionStart ?? el.value.length;
-      const end = el.selectionEnd ?? start;
-      const expr = step.expression.slice(0, start) + variable + step.expression.slice(end);
-      onChange({ ...step, expression: expr });
-      requestAnimationFrame(() => {
-        el.focus();
-        const pos = start + variable.length;
-        el.setSelectionRange(pos, pos);
-      });
-    } else {
-      onChange({ ...step, expression: step.expression + variable });
-    }
+  const handleRulesChange = (newRules: ConditionRule[]) => {
+    onChange({
+      ...step,
+      rules: newRules,
+      expression: rulesToExpression(newRules),
+    });
   };
 
   return (
     <div className="space-y-4">
-      {/* Expression */}
-      <Field>
-        <div className="flex items-center justify-between">
-          <FieldLabel htmlFor={`condition-expr-${step.id}`}>Expression</FieldLabel>
-          {payloadSchema && (
-            <TemplateVariablePicker
-              payloadSchema={payloadSchema}
-              onInsert={insertAtCursor}
-            />
-          )}
-        </div>
-        <Textarea
-          ref={textareaRef}
-          id={`condition-expr-${step.id}`}
-          className="font-mono text-sm"
-          placeholder='e.g. {{user.role}} == "admin"'
-          value={step.expression}
-          onChange={(e) => onChange({ ...step, expression: e.target.value })}
-          rows={2}
-        />
-        <FieldDescription>
-          A boolean expression evaluated against the trigger payload.
-        </FieldDescription>
-      </Field>
+      {/* Condition builder */}
+      <ConditionBuilder
+        rules={rules}
+        onChange={handleRulesChange}
+        payloadSchema={payloadSchema}
+      />
 
       {/* Then branch */}
       <div className="space-y-2">

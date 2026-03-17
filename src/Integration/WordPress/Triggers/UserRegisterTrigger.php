@@ -76,6 +76,28 @@ class UserRegisterTrigger extends AbstractTrigger
         return [];
     }
 
+    public function getSamplePayload(): ?array
+    {
+        $users = get_users(['number' => 1, 'orderby' => 'registered', 'order' => 'DESC']);
+
+        if (empty($users)) {
+            return null;
+        }
+
+        $user = $users[0];
+
+        return [
+            'user_id' => $user->ID,
+            'role'    => $user->roles[0] ?? '',
+            'user'    => [
+                'email'        => $user->user_email,
+                'login'        => $user->user_login,
+                'display_name' => $user->display_name,
+                'roles'        => $user->roles,
+            ],
+        ];
+    }
+
     public function subscribe(callable $callback): void
     {
         add_action('user_register', function (int $userId) use ($callback) {

@@ -109,6 +109,7 @@ class RestServiceProvider implements ServiceProvider
         $container->register('rest.flows', fn($c) => new FlowController(
             $c->get('flow.repository'),
             $c->get('flow.execution_repository'),
+            $c->get('flow.triggers'),
         ));
         $container->register('rest.gateways', fn($c) => new GatewayController(
             $c->get('gateway.registry'),

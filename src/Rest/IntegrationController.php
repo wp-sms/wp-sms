@@ -136,11 +136,16 @@ class IntegrationController
         );
 
         foreach ($this->actionRegistry->all() as $action) {
+            $schema = $action->getConfigSchema();
             $actions[] = [
                 'id'            => $action->getId(),
                 'name'          => $action->getName(),
                 'group'         => $action->getGroup(),
-                'config_schema' => ['type' => 'object', 'properties' => $action->getConfigSchema()],
+                'config_schema' => [
+                    'type'       => 'object',
+                    'properties' => $schema,
+                    'required'   => array_keys(array_filter($schema, fn($prop) => ($prop['required'] ?? false) === true)),
+                ],
                 'placeholders'  => $this->collectPlaceholders($action, $triggerIds),
             ];
         }

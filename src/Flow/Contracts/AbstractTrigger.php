@@ -25,4 +25,13 @@ abstract class AbstractTrigger implements TriggerInterface
     {
         return [];
     }
+
+    /**
+     * Try to fetch a real sample payload (e.g. latest order, latest user).
+     * Returns null if no real data is available; the controller falls back to schema examples.
+     */
+    public function getSamplePayload(): ?array
+    {
+        return null;
+    }
 }

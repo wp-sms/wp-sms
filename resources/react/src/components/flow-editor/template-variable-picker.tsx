@@ -1,4 +1,5 @@
-import type { JsonSchema, JsonSchemaProperty } from '@/lib/api';
+import type { JsonSchema } from '@/lib/api';
+import { type FieldOption, flattenSchemaFields } from '@/lib/condition-utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Braces } from 'lucide-react';
@@ -9,54 +10,12 @@ interface TemplateVariablePickerProps {
   onInsert: (variable: string) => void;
 }
 
-interface FlatVariable {
-  path: string;
-  label: string;
-  type: string;
-  example?: string;
-  group?: string;
-}
-
-function flattenProperties(
-  properties: Record<string, JsonSchemaProperty>,
-  prefix = '',
-  group?: string,
-): FlatVariable[] {
-  const result: FlatVariable[] = [];
-
-  for (const [key, prop] of Object.entries(properties)) {
-    const fullPath = prefix ? `${prefix}.${key}` : key;
-    if (prop.type === 'object' && prop.properties) {
-      result.push(...flattenProperties(prop.properties, fullPath, prop.title ?? key));
-    } else if (prop.type === 'object') {
-      // Dynamic object without properties — show as single entry with hint
-      result.push({
-        path: fullPath,
-        label: prop.title ?? key,
-        type: 'object',
-        example: 'Use dot notation: {{' + fullPath + '.key}}',
-        group,
-      });
-    } else {
-      result.push({
-        path: fullPath,
-        label: prop.title ?? key,
-        type: prop.type,
-        example: prop.example != null ? String(prop.example) : undefined,
-        group,
-      });
-    }
-  }
-
-  return result;
-}
-
 export function TemplateVariablePicker({ payloadSchema, onInsert }: TemplateVariablePickerProps) {
   if (!payloadSchema?.properties || Object.keys(payloadSchema.properties).length === 0) {
     return null;
   }
 
-  const variables = flattenProperties(payloadSchema.properties);
+  const variables = flattenSchemaFields(payloadSchema.properties);
 
   if (variables.length === 0) return null;
 
@@ -104,7 +63,7 @@ function VariableButton({
   variable: { path, label, type, example },
   onInsert,
 }: {
-  variable: FlatVariable;
+  variable: FieldOption;
   onInsert: (variable: string) => void;
 }) {
   return (

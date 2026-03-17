@@ -38,7 +38,7 @@
   "extra": {
     "wp-scoper": {
       "namespace_prefix": "WSms\\Dependencies",
-      "packages": ["firebase/php-jwt", "spomky-labs/otphp", "bacon/bacon-qr-code", "symfony/expression-language", "symfony/uid", "league/csv", "woocommerce/action-scheduler"],
+      "packages": ["firebase/php-jwt", "spomky-labs/otphp", "bacon/bacon-qr-code", "symfony/expression-language", "symfony/uid", "league/csv"],
       "target_directory": "packages",
       "delete_vendor_packages": true,
       "exclude_directories": ["views", "templates", "resources", "public"]

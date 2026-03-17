@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 
 interface FlowEditorProps {
   flow?: Flow;
+  initialData?: Partial<Flow>;
   onSave: (data: Partial<Flow>) => Promise<Flow>;
   onPublish?: (id: string) => Promise<Flow>;
   onBack: () => void;
@@ -27,26 +28,33 @@ function detectMode(steps: FlowNode[]): EditorMode {
   return 'simple';
 }
 
-export function FlowEditor({ flow, onSave, onPublish, onBack }: FlowEditorProps) {
-  const [name, setName] = useState(flow?.name ?? '');
-  const [description, setDescription] = useState(flow?.description ?? '');
-  const [triggerType, setTriggerType] = useState(flow?.trigger_type ?? '');
-  const [triggerConfig, setTriggerConfig] = useState<Record<string, unknown>>(flow?.trigger_config ?? {});
-  const [steps, setSteps] = useState<FlowNode[]>(flow?.steps ?? []);
+export function FlowEditor({ flow, initialData, onSave, onPublish, onBack }: FlowEditorProps) {
+  const source = flow ?? initialData;
+  const [name, setName] = useState(source?.name ?? '');
+  const [description, setDescription] = useState(source?.description ?? '');
+  const [triggerType, setTriggerType] = useState(source?.trigger_type ?? '');
+  const [triggerConfig, setTriggerConfig] = useState<Record<string, unknown>>(source?.trigger_config ?? {});
+  const [steps, setSteps] = useState<FlowNode[]>(source?.steps ?? []);
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
-  const [mode, setMode] = useState<EditorMode>(detectMode(flow?.steps ?? []));
+  const [mode, setMode] = useState<EditorMode>(detectMode(source?.steps ?? []));
   const [payloadSchema, setPayloadSchema] = useState<JsonSchema | undefined>();
+  const [sampleData, setSampleData] = useState<Record<string, unknown> | undefined>();
 
   const isEdit = !!flow;
 
   const handleChangeTrigger = useCallback((type: string, config: Record<string, unknown>) => {
     setTriggerType(type);
     setTriggerConfig(config);
+    setSampleData(undefined); // Reset sample data when trigger changes
   }, []);
 
   const handlePayloadSchemaChange = useCallback((schema: JsonSchema | undefined) => {
     setPayloadSchema(schema);
+  }, []);
+
+  const handleSampleDataChange = useCallback((data: Record<string, unknown> | undefined) => {
+    setSampleData(data);
   }, []);
 
   const handleSave = async () => {
@@ -132,6 +140,9 @@ export function FlowEditor({ flow, onSave, onPublish, onBack }: FlowEditorProps)
           onPayloadSchemaChange={handlePayloadSchemaChange}
           payloadSchema={payloadSchema}
           onSwitchToAdvanced={() => setMode('advanced')}
+          flowId={flow?.id}
+          sampleData={sampleData}
+          onSampleDataChange={handleSampleDataChange}
         />
       ) : (
         <AdvancedMode
@@ -142,6 +153,9 @@ export function FlowEditor({ flow, onSave, onPublish, onBack }: FlowEditorProps)
           onChangeSteps={setSteps}
           onPayloadSchemaChange={handlePayloadSchemaChange}
           payloadSchema={payloadSchema}
+          flowId={flow?.id}
+          sampleData={sampleData}
+          onSampleDataChange={handleSampleDataChange}
         />
       )}
 

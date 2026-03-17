@@ -82,6 +82,25 @@ class PostPublishedTrigger extends AbstractTrigger
         return [];
     }
 
+    public function getSamplePayload(): ?array
+    {
+        $posts = get_posts(['numberposts' => 1, 'post_status' => 'publish', 'orderby' => 'date', 'order' => 'DESC']);
+
+        if (empty($posts)) {
+            return null;
+        }
+
+        $post = $posts[0];
+
+        return [
+            'post_id'    => $post->ID,
+            'post_title' => $post->post_title,
+            'post_url'   => get_permalink($post->ID),
+            'post_type'  => $post->post_type,
+            'author_id'  => (int) $post->post_author,
+        ];
+    }
+
     public function subscribe(callable $callback): void
     {
         add_action('transition_post_status', function (string $newStatus, string $oldStatus, $post) use ($callback) {

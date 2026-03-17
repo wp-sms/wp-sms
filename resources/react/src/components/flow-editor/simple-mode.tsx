@@ -3,6 +3,7 @@ import type { ActionNode, FlowNode, JsonSchema } from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TriggerSelector } from '@/components/trigger-selector';
 import { FlowStepEditor } from '@/components/flow-step-editor';
+import { useTestTrigger, TestTriggerButton, SampleDataPreview } from './test-trigger';
 import { ArrowRight } from 'lucide-react';
 import { generateNodeId } from '@/lib/utils';
 
@@ -15,6 +16,9 @@ interface SimpleModeProps {
   onPayloadSchemaChange: (schema: JsonSchema | undefined) => void;
   payloadSchema?: JsonSchema;
   onSwitchToAdvanced: () => void;
+  flowId?: string;
+  sampleData?: Record<string, unknown>;
+  onSampleDataChange?: (data: Record<string, unknown> | undefined) => void;
 }
 
 export function SimpleMode({
@@ -26,8 +30,10 @@ export function SimpleMode({
   onPayloadSchemaChange,
   payloadSchema,
   onSwitchToAdvanced,
+  flowId,
+  sampleData,
+  onSampleDataChange,
 }: SimpleModeProps) {
-  // Stable default so we don't generate a new ID every render
   const defaultStep = useRef<ActionNode>({
     id: generateNodeId(),
     type: 'action',
@@ -36,8 +42,9 @@ export function SimpleMode({
   });
   const actionStep = (steps.find((s) => s.type === 'action') as ActionNode) ?? defaultStep.current;
 
+  const { testing, handleTest } = useTestTrigger({ flowId, triggerType, payloadSchema, onSampleDataChange });
+
   const handleActionChange = (updated: ActionNode) => {
-    // Replace the first action step (or add it)
     const existing = steps.findIndex((s) => s.type === 'action');
     if (existing >= 0) {
       const next = [...steps];
@@ -51,10 +58,12 @@ export function SimpleMode({
   return (
     <div className="space-y-4">
       <div className="grid gap-4 md:grid-cols-[1fr,auto,1fr] md:items-start">
-        {/* Trigger card */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">When this happens</CardTitle>
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm">When this happens</CardTitle>
+              <TestTriggerButton triggerType={triggerType} flowId={flowId} testing={testing} onTest={handleTest} />
+            </div>
           </CardHeader>
           <CardContent>
             <TriggerSelector
@@ -63,10 +72,10 @@ export function SimpleMode({
               onChangeTrigger={onChangeTrigger}
               onPayloadSchemaChange={onPayloadSchemaChange}
             />
+            <SampleDataPreview sampleData={sampleData} />
           </CardContent>
         </Card>
 
-        {/* Arrow connector */}
         <div className="hidden md:flex items-center justify-center pt-16">
           <ArrowRight className="h-5 w-5 text-muted-foreground" />
         </div>
@@ -74,7 +83,6 @@ export function SimpleMode({
           <div className="h-6 w-px bg-border" />
         </div>
 
-        {/* Action card */}
         <Card>
           <CardHeader>
             <CardTitle className="text-sm">Do this</CardTitle>
@@ -86,6 +94,7 @@ export function SimpleMode({
               onChange={handleActionChange}
               payloadSchema={payloadSchema}
               triggerType={triggerType}
+              sampleData={sampleData}
             />
           </CardContent>
         </Card>

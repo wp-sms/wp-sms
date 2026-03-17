@@ -50,6 +50,35 @@ class OrderCreatedTrigger extends AbstractTrigger
         ];
     }
 
+    public function getSamplePayload(): ?array
+    {
+        if (!function_exists('wc_get_orders')) {
+            return null;
+        }
+
+        $orders = wc_get_orders(['limit' => 1, 'orderby' => 'date', 'order' => 'DESC']);
+
+        if (empty($orders)) {
+            return null;
+        }
+
+        $order = $orders[0];
+
+        return [
+            'order_id' => $order->get_id(),
+            'order' => [
+                'id'     => $order->get_id(),
+                'total'  => $order->get_total(),
+                'status' => $order->get_status(),
+            ],
+            'customer' => [
+                'email' => $order->get_billing_email(),
+                'phone' => $order->get_billing_phone(),
+                'name'  => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
+            ],
+        ];
+    }
+
     public function subscribe(callable $callback): void
     {
         add_action('woocommerce_new_order', function (int $orderId) use ($callback) {

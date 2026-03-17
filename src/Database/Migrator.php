@@ -58,7 +58,7 @@ class Migrator
     private static function getUserFactorsSchema(string $prefix, string $charsetCollate): string
     {
         return "CREATE TABLE {$prefix}wsms_user_factors (
-            id              BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            id              BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             user_id         BIGINT UNSIGNED NOT NULL,
             channel_id      VARCHAR(50) NOT NULL,
             status          VARCHAR(20) NOT NULL DEFAULT 'pending',
@@ -66,6 +66,7 @@ class Migrator
             meta            TEXT,
             created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             updated_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY  (id),
             INDEX idx_user_id (user_id),
             INDEX idx_user_channel (user_id, channel_id),
             INDEX idx_status (status),
@@ -76,7 +77,7 @@ class Migrator
     private static function getVerificationsSchema(string $prefix, string $charsetCollate): string
     {
         return "CREATE TABLE {$prefix}wsms_verifications (
-            id              BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            id              BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             user_id         BIGINT UNSIGNED DEFAULT NULL,
             session_id      VARCHAR(64) DEFAULT NULL,
             type            VARCHAR(50) NOT NULL,
@@ -88,6 +89,7 @@ class Migrator
             expires_at      DATETIME NOT NULL,
             used_at         DATETIME,
             created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY  (id),
             INDEX idx_user_type (user_id, type, channel_id),
             INDEX idx_session_type (session_id, type),
             INDEX idx_identifier (identifier),
@@ -98,7 +100,7 @@ class Migrator
     private static function getAuthLogsSchema(string $prefix, string $charsetCollate): string
     {
         return "CREATE TABLE {$prefix}wsms_auth_logs (
-            id              BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+            id              BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
             user_id         BIGINT UNSIGNED,
             event           VARCHAR(50) NOT NULL,
             channel_id      VARCHAR(50),
@@ -107,6 +109,7 @@ class Migrator
             user_agent      VARCHAR(500),
             meta            TEXT,
             created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY  (id),
             INDEX idx_user_id (user_id),
             INDEX idx_event (event),
             INDEX idx_created (created_at),

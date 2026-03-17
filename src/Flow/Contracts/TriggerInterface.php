@@ -19,4 +19,6 @@ interface TriggerInterface
     public function getFilterOptions(string $fieldKey): array;
 
     public function subscribe(callable $callback): void;
+
+    public function getSamplePayload(): ?array;
 }

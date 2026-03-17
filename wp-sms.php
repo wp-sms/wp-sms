@@ -47,6 +47,16 @@ if (file_exists($composerAutoload)) {
 
 /*
 |--------------------------------------------------------------------------
+| Action Scheduler (shared library — must NOT be prefixed)
+|--------------------------------------------------------------------------
+*/
+$actionSchedulerPath = __DIR__ . '/vendor/woocommerce/action-scheduler/action-scheduler.php';
+if (file_exists($actionSchedulerPath)) {
+    require_once $actionSchedulerPath;
+}
+
+/*
+|--------------------------------------------------------------------------
 | Constants
 |--------------------------------------------------------------------------
 */

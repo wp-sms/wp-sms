@@ -2,7 +2,7 @@
 
 namespace WSms\Flow\Storage;
 
-use Symfony\Component\Uid\Ulid;
+use WSms\Dependencies\Symfony\Component\Uid\Ulid;
 use WSms\Enums\ExecutionStatus;
 
 defined('ABSPATH') || exit;

@@ -4,7 +4,9 @@ namespace WSms\Rest;
 
 use WSms\Flow\Contracts\FlowRepositoryInterface;
 use WSms\Flow\Contracts\Flow;
+use WSms\Flow\FlowTemplateRegistry;
 use WSms\Flow\Storage\FlowExecutionRepository;
+use WSms\Flow\Trigger\TriggerRegistry;
 
 defined('ABSPATH') || exit;
 
@@ -15,6 +17,7 @@ class FlowController
     public function __construct(
         private readonly FlowRepositoryInterface $flowRepository,
         private readonly FlowExecutionRepository $executionRepository,
+        private readonly TriggerRegistry $triggerRegistry,
     ) {
     }
 
@@ -41,6 +44,14 @@ class FlowController
                     'description'    => ['type' => 'string', 'sanitize_callback' => 'sanitize_textarea_field'],
                     'priority'       => ['type' => 'integer'],
                 ],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/flows/templates', [
+            [
+                'methods'             => 'GET',
+                'callback'            => [$this, 'templates'],
+                'permission_callback' => [$this, 'canManage'],
             ],
         ]);
 
@@ -75,6 +86,14 @@ class FlowController
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'publish'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/flows/(?P<id>[A-Za-z0-9]+)/test-trigger', [
+            [
+                'methods'             => 'POST',
+                'callback'            => [$this, 'testTrigger'],
                 'permission_callback' => [$this, 'canManage'],
             ],
         ]);
@@ -129,6 +148,14 @@ class FlowController
 
         $id = $this->flowRepository->save($flow);
         $saved = $this->flowRepository->find($id);
+
+        if (!$saved) {
+            return new \WP_REST_Response([
+                'success' => false,
+                'error'   => 'save_failed',
+                'message' => __('Failed to save flow', 'wp-sms'),
+            ], 500);
+        }
 
         return new \WP_REST_Response([
             'success' => true,
@@ -226,6 +253,49 @@ class FlowController
         ]);
     }
 
+    public function templates(): \WP_REST_Response
+    {
+        return new \WP_REST_Response([
+            'items' => array_values(FlowTemplateRegistry::all()),
+        ]);
+    }
+
+    public function testTrigger(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $flow = $this->flowRepository->find($request->get_param('id'));
+
+        if (!$flow) {
+            return new \WP_REST_Response([
+                'success' => false,
+                'error'   => 'not_found',
+                'message' => __('Flow not found', 'wp-sms'),
+            ], 404);
+        }
+
+        $trigger = $this->triggerRegistry->get($flow->getTriggerType());
+
+        if (!$trigger) {
+            return new \WP_REST_Response([
+                'success' => false,
+                'error'   => 'trigger_not_found',
+                'message' => __('Trigger not found', 'wp-sms'),
+            ], 404);
+        }
+
+        // Try to get real sample data from the trigger
+        $samplePayload = $trigger->getSamplePayload();
+
+        // Fall back to example values from the payload schema
+        if ($samplePayload === null) {
+            $samplePayload = $this->extractExamplesFromSchema($trigger->getPayloadSchema());
+        }
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'data'    => $samplePayload,
+        ]);
+    }
+
     public function executions(\WP_REST_Request $request): \WP_REST_Response
     {
         $executions = $this->executionRepository->findByFlow(
@@ -238,5 +308,18 @@ class FlowController
             'items' => $executions,
             'total' => count($executions),
         ]);
+    }
+
+    private function extractExamplesFromSchema(array $schema): array
+    {
+        $result = [];
+        foreach ($schema as $key => $prop) {
+            if (($prop['type'] ?? '') === 'object' && isset($prop['properties'])) {
+                $result[$key] = $this->extractExamplesFromSchema($prop['properties']);
+            } elseif (isset($prop['example'])) {
+                $result[$key] = $prop['example'];
+            }
+        }
+        return $result;
     }
 }
