@@ -487,14 +487,20 @@ export interface GatewayTestResult {
 
 export interface MessageLogEntry {
   id: string;
-  channel: string;
-  status: string;
-  recipient: string;
+  execution_id: string | null;
   gateway_id: string;
-  message_body: string;
-  created_at: string;
-  sent_at: string | null;
+  channel: string;
+  type: string;
+  recipient: string;
+  subject: string | null;
+  body_preview: string | null;
+  status: string;
+  provider_id: string | null;
   error: string | null;
+  cost: string | null;
+  sent_at: string | null;
+  delivered_at: string | null;
+  created_at: string;
 }
 
 export interface TriggerDefinition {

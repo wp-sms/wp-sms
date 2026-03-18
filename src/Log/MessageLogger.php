@@ -161,6 +161,14 @@ class MessageLogger implements MessageLoggerInterface
             $where .= ' AND gateway_id = %s';
             $params[] = $filters['gateway_id'];
         }
+        if (!empty($filters['date_from'])) {
+            $where .= ' AND created_at >= %s';
+            $params[] = $filters['date_from'];
+        }
+        if (!empty($filters['date_to'])) {
+            $where .= ' AND created_at <= %s';
+            $params[] = $filters['date_to'];
+        }
 
         return [$where, $params];
     }

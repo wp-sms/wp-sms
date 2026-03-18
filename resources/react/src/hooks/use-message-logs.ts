@@ -6,6 +6,8 @@ export interface MessageLogFilters {
   status: string;
   recipient: string;
   gateway_id: string;
+  date_from: string;
+  date_to: string;
 }
 
 export interface UseMessageLogsReturn {
@@ -19,7 +21,7 @@ export interface UseMessageLogsReturn {
   loading: boolean;
 }
 
-const EMPTY_FILTERS: MessageLogFilters = { channel: '', status: '', recipient: '', gateway_id: '' };
+const EMPTY_FILTERS: MessageLogFilters = { channel: '', status: '', recipient: '', gateway_id: '', date_from: '', date_to: '' };
 
 export function useMessageLogs(perPage = 20): UseMessageLogsReturn {
   const [logs, setLogs] = useState<MessageLogEntry[]>([]);
@@ -44,6 +46,8 @@ export function useMessageLogs(perPage = 20): UseMessageLogsReturn {
       if (f.status) params.set('status', f.status);
       if (f.recipient) params.set('recipient', f.recipient);
       if (f.gateway_id) params.set('gateway_id', f.gateway_id);
+      if (f.date_from) params.set('date_from', f.date_from);
+      if (f.date_to) params.set('date_to', f.date_to);
 
       const res = await api.get<ListResponse<MessageLogEntry>>(`message-logs?${params.toString()}`, { signal: controller.signal });
       if (!controller.signal.aborted) {
@@ -68,7 +72,7 @@ export function useMessageLogs(perPage = 20): UseMessageLogsReturn {
 
   useEffect(() => {
     clearTimeout(debounceRef.current);
-    const hasFilterValue = filters.channel || filters.status || filters.recipient || filters.gateway_id;
+    const hasFilterValue = Object.values(filters).some(Boolean);
     debounceRef.current = setTimeout(() => {
       void fetchLogs(page, filters);
     }, page === 1 && hasFilterValue ? 300 : 0);

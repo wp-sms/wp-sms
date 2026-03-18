@@ -27,6 +27,8 @@ class MessageLogController
                     'status'     => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'recipient'  => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'gateway_id' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'date_from'  => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'date_to'    => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'per_page'   => ['type' => 'integer', 'default' => 50],
                     'offset'     => ['type' => 'integer', 'default' => 0],
                 ],
@@ -42,7 +44,7 @@ class MessageLogController
     public function index(\WP_REST_Request $request): \WP_REST_Response
     {
         $filters = [];
-        foreach (['channel', 'status', 'recipient', 'gateway_id'] as $key) {
+        foreach (['channel', 'status', 'recipient', 'gateway_id', 'date_from', 'date_to'] as $key) {
             if ($request->get_param($key)) {
                 $filters[$key] = $request->get_param($key);
             }
