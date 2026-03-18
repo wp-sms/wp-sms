@@ -9,6 +9,7 @@ import {
   OPERATORS,
 } from '@/lib/condition-utils';
 import { groupBy } from '@/lib/utils';
+import { buildMergedSchema } from '@/lib/flow-utils';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -29,8 +30,9 @@ interface ConditionBuilderProps {
 }
 
 export function ConditionBuilder({ rules, onChange, payloadSchema }: ConditionBuilderProps) {
-  const fields = payloadSchema?.properties
-    ? flattenSchemaFields(payloadSchema.properties)
+  const merged = useMemo(() => buildMergedSchema(payloadSchema), [payloadSchema]);
+  const fields = merged.properties
+    ? flattenSchemaFields(merged.properties)
     : [];
 
   const grouped = groupBy(fields, (f) => f.group ?? 'Fields');

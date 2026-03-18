@@ -8,6 +8,7 @@ import {
   createEmptyRule,
   rulesToExpression,
 } from '@/lib/condition-utils';
+import { buildMergedSchema } from '@/lib/flow-utils';
 import { SentenceToken } from './sentence-token';
 import { X } from 'lucide-react';
 
@@ -21,11 +22,13 @@ interface ConditionSentenceProps {
 export function ConditionSentence({ step, onChange, payloadSchema }: ConditionSentenceProps) {
   const rules: ConditionRule[] = step.rules ?? [];
 
+  const merged = useMemo(() => buildMergedSchema(payloadSchema), [payloadSchema]);
+
   const fields = useMemo(() => {
-    return payloadSchema?.properties
-      ? flattenSchemaFields(payloadSchema.properties)
+    return merged.properties
+      ? flattenSchemaFields(merged.properties)
       : [];
-  }, [payloadSchema]);
+  }, [merged]);
 
   const fieldOptions = useMemo(() => {
     return fields.map((f) => ({ value: f.path, label: f.label, group: f.group }));

@@ -73,3 +73,15 @@ export function resolveTemplatePreview(
 
   return hasResolution ? resolved : null;
 }
+
+/** Find template variables that don't resolve against the given schema. */
+export function findUnresolvedVariables(
+  template: string,
+  schema: JsonSchema,
+): string[] {
+  if (!template.includes('{{')) return [];
+  const data = extractExampleData(schema);
+  return [...template.matchAll(/\{\{([^}]+)\}\}/g)]
+    .map((m) => m[1].trim())
+    .filter((path) => resolveValue(path, data) === undefined);
+}

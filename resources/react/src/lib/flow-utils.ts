@@ -1,4 +1,4 @@
-import type { FlowNode, ActionNode, ConditionNode, DelayNode, ActionDefinition } from '@/lib/api';
+import type { FlowNode, ActionNode, ConditionNode, DelayNode, ActionDefinition, JsonSchema, JsonSchemaProperty } from '@/lib/api';
 import { getOperatorLabel } from '@/lib/condition-utils';
 import { generateNodeId } from '@/lib/utils';
 
@@ -191,4 +191,95 @@ export function nestSteps(flat: FlowNode[]): FlowNode[] {
     }
   }
   return accumulator;
+}
+
+// --- System & Entity Variable Schemas ---
+// Keep in sync with PayloadResolver::getSystemVariables() in src/Flow/Engine/PayloadResolver.php
+
+export const SYSTEM_VARIABLE_SCHEMA: JsonSchema = {
+  type: 'object',
+  properties: {
+    site: {
+      type: 'object',
+      title: 'Site',
+      properties: {
+        name:  { type: 'string', title: 'Site Name', example: 'My Website' },
+        url:   { type: 'string', title: 'Site URL', example: 'https://example.com' },
+        email: { type: 'string', title: 'Admin Email', example: 'admin@example.com' },
+      },
+    },
+    now: {
+      type: 'object',
+      title: 'Date & Time',
+      properties: {
+        date:     { type: 'string', title: 'Current Date', example: '2026-03-18' },
+        time:     { type: 'string', title: 'Current Time', example: '14:30' },
+        datetime: { type: 'string', title: 'Current Date & Time', example: '2026-03-18 14:30:00' },
+        year:     { type: 'string', title: 'Current Year', example: '2026' },
+      },
+    },
+  },
+};
+
+// Keep in sync with PayloadSchemas::extractWpUser() in src/Integration/PayloadSchemas.php
+export const USER_SCHEMA: JsonSchemaProperty = {
+  type: 'object',
+  title: 'User',
+  properties: {
+    email:        { type: 'string', title: 'Email', example: 'user@example.com' },
+    phone:        { type: 'string', title: 'Phone', example: '+1234567890' },
+    login:        { type: 'string', title: 'Username', example: 'johndoe' },
+    display_name: { type: 'string', title: 'Display Name', example: 'John Doe' },
+    first_name:   { type: 'string', title: 'First Name', example: 'John' },
+    last_name:    { type: 'string', title: 'Last Name', example: 'Doe' },
+    roles:        { type: 'array', title: 'Roles', example: ['subscriber'] },
+  },
+};
+
+export const AUTHOR_SCHEMA: JsonSchemaProperty = {
+  type: 'object',
+  title: 'Author',
+  properties: {
+    email:        { type: 'string', title: 'Email', example: 'author@example.com' },
+    phone:        { type: 'string', title: 'Phone', example: '+1234567890' },
+    display_name: { type: 'string', title: 'Display Name', example: 'Jane Doe' },
+  },
+};
+
+// Keep in sync with PayloadSchemas::extractPost() in src/Integration/PayloadSchemas.php
+export const POST_SCHEMA: JsonSchemaProperty = {
+  type: 'object',
+  title: 'Post',
+  properties: {
+    title:   { type: 'string', title: 'Title', example: 'My Post' },
+    url:     { type: 'string', title: 'URL', example: 'https://example.com/my-post' },
+    excerpt: { type: 'string', title: 'Excerpt', example: 'Post summary...' },
+    type:    { type: 'string', title: 'Type', example: 'post' },
+    status:  { type: 'string', title: 'Status', example: 'publish' },
+    date:    { type: 'string', title: 'Date', example: '2026-03-18 14:30:00' },
+  },
+};
+
+/** Build a merged schema combining system vars, trigger payload, and auto-expanded entities. */
+export function buildMergedSchema(payloadSchema?: JsonSchema): JsonSchema {
+  const properties: Record<string, JsonSchemaProperty> = {
+    ...SYSTEM_VARIABLE_SCHEMA.properties,
+  };
+
+  if (payloadSchema?.properties) {
+    Object.assign(properties, payloadSchema.properties);
+
+    // Auto-expand entity schemas for ID fields when object key is missing
+    if (payloadSchema.properties.user_id && !payloadSchema.properties.user) {
+      properties.user = USER_SCHEMA;
+    }
+    if (payloadSchema.properties.author_id && !payloadSchema.properties.author) {
+      properties.author = AUTHOR_SCHEMA;
+    }
+    if (payloadSchema.properties.post_id && !payloadSchema.properties.post) {
+      properties.post = POST_SCHEMA;
+    }
+  }
+
+  return { type: 'object', properties };
 }

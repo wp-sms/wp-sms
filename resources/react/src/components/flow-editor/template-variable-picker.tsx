@@ -1,21 +1,25 @@
+import { useMemo } from 'react';
 import type { JsonSchema } from '@/lib/api';
 import { type FieldOption, flattenSchemaFields } from '@/lib/condition-utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
 import { Braces } from 'lucide-react';
 import { groupBy } from '@/lib/utils';
+import { buildMergedSchema } from '@/lib/flow-utils';
 
 interface TemplateVariablePickerProps {
-  payloadSchema: JsonSchema;
+  payloadSchema?: JsonSchema;
   onInsert: (variable: string) => void;
 }
 
 export function TemplateVariablePicker({ payloadSchema, onInsert }: TemplateVariablePickerProps) {
-  if (!payloadSchema?.properties || Object.keys(payloadSchema.properties).length === 0) {
+  const merged = useMemo(() => buildMergedSchema(payloadSchema), [payloadSchema]);
+
+  if (!merged.properties || Object.keys(merged.properties).length === 0) {
     return null;
   }
 
-  const variables = flattenSchemaFields(payloadSchema.properties);
+  const variables = flattenSchemaFields(merged.properties);
 
   if (variables.length === 0) return null;
 

@@ -1,10 +1,14 @@
-import { useState, useRef, useEffect, forwardRef } from 'react';
+import { useState, useRef, useEffect, useMemo, forwardRef } from 'react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TemplateVariablePicker } from '@/components/flow-editor/template-variable-picker';
 import { api } from '@/lib/api';
 import type { JsonSchema } from '@/lib/api';
 import { cn } from '@/lib/utils';
+import { findUnresolvedVariables } from '@/lib/template-preview';
+import { buildMergedSchema } from '@/lib/flow-utils';
+import { AlertTriangle } from 'lucide-react';
 
 interface TokenOption {
   value: string;
@@ -226,10 +230,31 @@ function TextPopoverContent({
           className="flex-1 rounded-md border bg-background px-3 py-1.5 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         />
       )}
-      {payloadSchema && (
-        <TemplateVariablePicker payloadSchema={payloadSchema} onInsert={handleInsertVariable} />
-      )}
+      <TemplateVariablePicker payloadSchema={payloadSchema} onInsert={handleInsertVariable} />
     </div>
+  );
+}
+
+function UnresolvedVarWarning({ value, payloadSchema }: { value: string; payloadSchema?: JsonSchema }) {
+  const unresolved = useMemo(() => {
+    if (!value.includes('{{')) return [];
+    return findUnresolvedVariables(value, buildMergedSchema(payloadSchema));
+  }, [value, payloadSchema]);
+
+  if (unresolved.length === 0) return null;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <AlertTriangle className="ml-1 h-3 w-3 text-amber-500 shrink-0" />
+      </TooltipTrigger>
+      <TooltipContent side="top" className="max-w-xs">
+        <p className="text-xs">
+          Unknown variable{unresolved.length > 1 ? 's' : ''}:{' '}
+          {unresolved.map((v) => `{{${v}}}`).join(', ')}
+        </p>
+      </TooltipContent>
+    </Tooltip>
   );
 }
 
@@ -289,6 +314,7 @@ export function SentenceToken(props: SentenceTokenProps) {
         <PopoverTrigger asChild>
           <TokenBadge hasValue={hasValue} error={props.error} className={props.className}>
             <span className="max-w-[200px] truncate">{displayValue}</span>
+            <UnresolvedVarWarning value={props.value} payloadSchema={props.payloadSchema} />
           </TokenBadge>
         </PopoverTrigger>
         <PopoverContent className="w-80 p-3" align="start">
@@ -309,6 +335,7 @@ export function SentenceToken(props: SentenceTokenProps) {
         <PopoverTrigger asChild>
           <TokenBadge hasValue={hasValue} error={props.error} className={props.className}>
             <span className="max-w-[300px] truncate">{displayValue}</span>
+            <UnresolvedVarWarning value={props.value} payloadSchema={props.payloadSchema} />
           </TokenBadge>
         </PopoverTrigger>
         <PopoverContent className="w-96 p-3" align="start">

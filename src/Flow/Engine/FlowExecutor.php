@@ -8,6 +8,7 @@ use WSms\Event\Contracts\EventDispatcherInterface;
 use WSms\Event\Events\FlowCompletedEvent;
 use WSms\Flow\Action\ActionRegistry;
 use WSms\Flow\Contracts\ConditionEvaluatorInterface;
+use WSms\Integration\PayloadSchemas;
 use WSms\Flow\Storage\FlowExecutionRepository;
 use WSms\Log\FlowLogger;
 use WSms\Queue\Contracts\QueueInterface;
@@ -32,6 +33,8 @@ class FlowExecutor
     public function execute(string $executionId, array $steps, array $payload): void
     {
         $this->executionRepository->updateStatus($executionId, ExecutionStatus::Running->value);
+
+        $payload = $this->expandEntities($payload);
 
         foreach ($steps as $step) {
             $this->executeNode($step, $payload, $executionId);
@@ -212,6 +215,32 @@ class FlowExecutor
         foreach ($node['steps'] ?? [] as $step) {
             $this->executeNode($step, $payload, $executionId);
         }
+    }
+
+    private function expandEntities(array $payload): array
+    {
+        if (isset($payload['user_id']) && !isset($payload['user'])) {
+            $user = get_userdata((int) $payload['user_id']);
+            if ($user) {
+                $payload['user'] = PayloadSchemas::extractWpUser($user);
+            }
+        }
+
+        if (isset($payload['author_id']) && !isset($payload['author'])) {
+            $user = get_userdata((int) $payload['author_id']);
+            if ($user) {
+                $payload['author'] = PayloadSchemas::extractWpUser($user, ['email', 'phone', 'display_name']);
+            }
+        }
+
+        if (isset($payload['post_id']) && !isset($payload['post'])) {
+            $post = get_post((int) $payload['post_id']);
+            if ($post) {
+                $payload['post'] = PayloadSchemas::extractPost($post);
+            }
+        }
+
+        return $payload;
     }
 
     public function markCompleted(string $executionId, string $flowId): void

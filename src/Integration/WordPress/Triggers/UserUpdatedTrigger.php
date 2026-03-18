@@ -40,8 +40,11 @@ class UserUpdatedTrigger extends AbstractTrigger
                 'properties' => PayloadSchemas::wpUser(),
                 'example' => [
                     'email' => 'user@example.com',
+                    'phone' => '+1234567890',
                     'login' => 'johndoe',
                     'display_name' => 'John Doe',
+                    'first_name' => 'John',
+                    'last_name' => 'Doe',
                     'roles' => ['subscriber'],
                 ],
             ],
@@ -72,13 +75,8 @@ class UserUpdatedTrigger extends AbstractTrigger
             }
 
             $callback([
-                'user_id' => $userId,
-                'user' => [
-                    'email' => $user->user_email,
-                    'login' => $user->user_login,
-                    'display_name' => $user->display_name,
-                    'roles' => $user->roles,
-                ],
+                'user_id'        => $userId,
+                'user'           => PayloadSchemas::extractWpUser($user),
                 'changed_fields' => $changedFields,
             ]);
         }, 10, 2);
