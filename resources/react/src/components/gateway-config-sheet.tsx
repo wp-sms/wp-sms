@@ -197,7 +197,7 @@ export function GatewayConfigSheet({
                     id="test-body"
                     value={testBody}
                     onChange={(e) => setTestBody(e.target.value)}
-                    placeholder="Hello from WP-SMS!"
+                    placeholder="Hello from WSMS!"
                     rows={2}
                   />
                 </Field>

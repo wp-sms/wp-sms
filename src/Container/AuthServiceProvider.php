@@ -179,13 +179,13 @@ class AuthServiceProvider implements ServiceProvider
         // GDPR: profile fields data exporter.
         add_filter('wp_privacy_personal_data_exporters', function (array $exporters) use ($container) {
             $exporters['wsms-profile-fields'] = [
-                'exporter_friendly_name' => 'WP SMS Profile Fields',
+                'exporter_friendly_name' => __('WSMS Profile Fields', 'wp-sms'),
                 'callback'               => function (string $email, int $page) use ($container) {
                     return $this->exportProfileFieldData($container, $email, $page);
                 },
             ];
             $exporters['wsms-avatar'] = [
-                'exporter_friendly_name' => 'WP SMS Avatar',
+                'exporter_friendly_name' => __('WSMS Avatar', 'wp-sms'),
                 'callback'               => [$avatarManager, 'exportPersonalData'],
             ];
 
@@ -194,13 +194,13 @@ class AuthServiceProvider implements ServiceProvider
 
         add_filter('wp_privacy_personal_data_erasers', function (array $erasers) use ($container) {
             $erasers['wsms-profile-fields'] = [
-                'eraser_friendly_name' => 'WP SMS Profile Fields',
+                'eraser_friendly_name' => __('WSMS Profile Fields', 'wp-sms'),
                 'callback'             => function (string $email, int $page) use ($container) {
                     return $this->eraseProfileFieldData($container, $email, $page);
                 },
             ];
             $erasers['wsms-avatar'] = [
-                'eraser_friendly_name' => 'WP SMS Avatar',
+                'eraser_friendly_name' => __('WSMS Avatar', 'wp-sms'),
                 'callback'             => [$avatarManager, 'erasePersonalData'],
             ];
 
@@ -257,7 +257,7 @@ class AuthServiceProvider implements ServiceProvider
         if (!empty($data)) {
             $exportItems[] = [
                 'group_id'    => 'wsms-profile-fields',
-                'group_label' => 'WP SMS Profile Fields',
+                'group_label' => __('WSMS Profile Fields', 'wp-sms'),
                 'item_id'     => 'wsms-fields-' . $user->ID,
                 'data'        => $data,
             ];

@@ -22,7 +22,7 @@ class SendMessageActionTest extends TestCase
     {
         $this->assertSame('send_message', $this->action->getId());
         $this->assertSame('Send Message', $this->action->getName());
-        $this->assertSame('WP SMS', $this->action->getGroup());
+        $this->assertSame('WSMS', $this->action->getGroup());
     }
 
     public function testConfigSchemaHasExpectedFields(): void

@@ -94,7 +94,7 @@ class GitHubProvider implements SocialProviderInterface
     {
         $headers = [
             'Authorization' => 'Bearer ' . $accessToken,
-            'User-Agent'    => 'WP-SMS-Plugin',
+            'User-Agent'    => 'WSMS-Plugin',
             'Accept'        => 'application/vnd.github+json',
         ];
 

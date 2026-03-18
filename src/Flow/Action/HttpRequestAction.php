@@ -26,7 +26,7 @@ class HttpRequestAction extends AbstractAction
 
     public function getGroup(): string
     {
-        return 'WP SMS';
+        return 'WSMS';
     }
 
     public function getConfigSchema(): array

@@ -25,7 +25,7 @@ class WpSmsIntegration implements IntegrationInterface
 
     public function getName(): string
     {
-        return 'WP SMS';
+        return 'WSMS';
     }
 
     public function getCategory(): string

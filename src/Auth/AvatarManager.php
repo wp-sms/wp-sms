@@ -303,7 +303,7 @@ class AvatarManager
 
             $exportItems[] = [
                 'group_id'    => 'wsms-avatar',
-                'group_label' => __('WP SMS Avatar', 'wp-sms'),
+                'group_label' => __('WSMS Avatar', 'wp-sms'),
                 'item_id'     => 'wsms-avatar-' . $user->ID,
                 'data'        => $data,
             ];
