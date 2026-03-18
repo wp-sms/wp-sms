@@ -187,11 +187,23 @@ class ApiClient {
 
       if (!response.ok) {
         // Extract error message from various possible formats
-        const errorMessage =
+        let errorMessage =
           data?.error?.message ||
           data?.message ||
           data?.data?.message ||
           `HTTP error! status: ${response.status}`
+
+        // Append field-level validation errors if present
+        const fieldErrors = data?.data?.errors
+        if (fieldErrors && typeof fieldErrors === 'object') {
+          const details = Object.entries(fieldErrors)
+            .map(([field, msg]) => `${field}: ${msg}`)
+            .join(', ')
+          if (details) {
+            errorMessage += ` (${details})`
+          }
+        }
+
         throw new Error(errorMessage)
       }
 

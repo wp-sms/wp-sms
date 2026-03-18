@@ -48,6 +48,7 @@ class RestApi
                     'code'    => $status,
                     'message' => $message
                 ),
+                'data'  => $data,
             );
         }
 
