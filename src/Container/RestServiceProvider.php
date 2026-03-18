@@ -115,6 +115,7 @@ class RestServiceProvider implements ServiceProvider
         ));
         $container->register('rest.gateways', fn($c) => new GatewayController(
             $c->get('gateway.registry'),
+            $c->get('log.message'),
         ));
         $container->register('rest.contacts', fn($c) => new ContactController(
             $c->get('contact.repository'),

@@ -2,6 +2,7 @@
 
 namespace WSms\Rest;
 
+use WSms\Log\Contracts\MessageLoggerInterface;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Message\EmailMessage;
 use WSms\Messaging\Message\Message;
@@ -15,6 +16,7 @@ class GatewayController
 
     public function __construct(
         private readonly GatewayRegistry $gatewayRegistry,
+        private readonly MessageLoggerInterface $messageLogger,
     ) {
     }
 
@@ -156,6 +158,23 @@ class GatewayController
         };
 
         $result = $gateway->send($message);
+
+        try {
+            $this->messageLogger->logSend(
+                gatewayId:  $request->get_param('id'),
+                channel:    $channel,
+                recipient:  $to,
+                body:       $body,
+                status:     $result->success ? $result->status : 'failed',
+                subject:    $message instanceof EmailMessage ? $message->subject : null,
+                providerId: $result->providerId,
+                error:      $result->error,
+                cost:       $result->cost,
+                type:       'test',
+            );
+        } catch (\Throwable $e) {
+            // Logging is best-effort — don't fail the test-send response.
+        }
 
         return new \WP_REST_Response([
             'success'     => $result->success,
