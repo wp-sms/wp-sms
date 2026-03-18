@@ -20,7 +20,7 @@ import { AlertCircle } from 'lucide-react';
 const { roles, version } = getConfig();
 
 export default function App() {
-  const [section, setSection] = useHashSection('channels');
+  const [section, setSection, subTab] = useHashSection('channels');
   const { settings, updateSetting, isDirty, saveStatus, save, loading, error } = useSettings();
   const handleSave = useCallback(() => { void save(); }, [save]);
 
@@ -48,7 +48,7 @@ export default function App() {
 
     switch (parent) {
       case 'messaging':
-        return <MessagingPage section={section} />;
+        return <MessagingPage section={section} subTab={subTab} onNavigate={setSection} />;
       case 'authentication':
         return <AuthenticationPage section={section} settings={settings} onUpdate={updateSetting} />;
       case 'security':

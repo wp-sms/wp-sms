@@ -180,6 +180,12 @@
   cursor: pointer;
 }
 
+/* Sheet/Dialog overlay & content must sit above WP admin bar (z-index: 99999) */
+[data-slot="sheet-overlay"],
+[data-slot="sheet-content"] {
+  z-index: 100100 !important;
+}
+
 /* ─── Visual Polish: Surfaces & Depth ─── */
 
 /* Sidebar wrapper — override min-h-svh so it matches content height.

@@ -608,6 +608,32 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('sanitize_title')) {
+        function sanitize_title(string $title, string $fallback = '', string $context = 'save'): string {
+            $title = strtolower(trim($title));
+            $title = preg_replace('/[^a-z0-9\-]/', '-', $title);
+            $title = preg_replace('/-+/', '-', $title);
+            return trim($title, '-') ?: $fallback;
+        }
+    }
+
+    if (!function_exists('wp_generate_password')) {
+        function wp_generate_password(int $length = 12, bool $specialChars = true, bool $extraSpecialChars = false): string {
+            $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            $password = '';
+            for ($i = 0; $i < $length; $i++) {
+                $password .= $chars[random_int(0, strlen($chars) - 1)];
+            }
+            return $password;
+        }
+    }
+
+    if (!function_exists('sanitize_file_name')) {
+        function sanitize_file_name(string $filename): string {
+            return preg_replace('/[^a-zA-Z0-9._-]/', '', $filename);
+        }
+    }
+
     if (!function_exists('absint')) {
         function absint($maybeint): int {
             return abs((int) $maybeint);
@@ -692,6 +718,14 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         function wp_destroy_other_sessions(): void {
             // No-op in tests.
         }
+    }
+
+    if (!defined('ARRAY_A')) {
+        define('ARRAY_A', 'ARRAY_A');
+    }
+
+    if (!defined('OBJECT')) {
+        define('OBJECT', 'OBJECT');
     }
 
     if (!defined('AUTH_KEY')) {
@@ -782,6 +816,7 @@ if (!class_exists('WP_User')) {
         public string $display_name = '';
         public string $first_name = '';
         public string $last_name = '';
+        public string $user_registered = '';
         public array $roles = [];
 
         public function __construct(int $id = 0) {
@@ -845,6 +880,7 @@ if (!class_exists('WP_REST_Request')) {
         private array $headers = [];
         private ?string $body = null;
         private string $route = '';
+        private array $fileParams = [];
 
         public function __construct(string $method = 'GET', string $route = '') {
             $this->route = $route;
@@ -891,6 +927,14 @@ if (!class_exists('WP_REST_Request')) {
                 return [];
             }
             return json_decode($this->body, true) ?? [];
+        }
+
+        public function set_file_params(array $files): void {
+            $this->fileParams = $files;
+        }
+
+        public function get_file_params(): array {
+            return $this->fileParams;
         }
     }
 }

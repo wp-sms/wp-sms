@@ -17,6 +17,8 @@ use WSms\Rest\EnrollmentController;
 use WSms\Rest\SocialAuthController;
 use WSms\Rest\TelegramController;
 use WSms\Rest\GatewayCallbackController;
+use WSms\Rest\ListController;
+use WSms\Rest\TagController;
 use WSms\Rest\WebhookReceiverController;
 
 defined('ABSPATH') || exit;
@@ -117,6 +119,16 @@ class RestServiceProvider implements ServiceProvider
         $container->register('rest.contacts', fn($c) => new ContactController(
             $c->get('contact.repository'),
             $c->get('contact.segment_evaluator'),
+            $c->get('contact.importer'),
+            $c->get('contact.exporter'),
+        ));
+        $container->register('rest.tags', fn($c) => new TagController(
+            $c->get('contact.tag_repository'),
+        ));
+        $container->register('rest.lists', fn($c) => new ListController(
+            $c->get('contact.list_repository'),
+            $c->get('contact.segment_evaluator'),
+            $c->get('contact.repository'),
         ));
         $container->register('rest.message_logs', fn($c) => new MessageLogController(
             $c->get('log.message'),
@@ -152,6 +164,8 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.flows')->registerRoutes();
             $container->get('rest.gateways')->registerRoutes();
             $container->get('rest.contacts')->registerRoutes();
+            $container->get('rest.tags')->registerRoutes();
+            $container->get('rest.lists')->registerRoutes();
             $container->get('rest.message_logs')->registerRoutes();
             $container->get('rest.integrations')->registerRoutes();
             $container->get('rest.gateway_callbacks')->registerRoutes();

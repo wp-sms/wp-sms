@@ -7,16 +7,24 @@ const VALID_SECTIONS = new Set(
   )
 );
 
-function parseHash(): string | null {
-  const hash = window.location.hash.slice(1);
-  return VALID_SECTIONS.has(hash) ? hash : null;
+function parseHash(): { section: string; subTab: string } | null {
+  const raw = window.location.hash.slice(1);
+  const [section, subTab] = raw.split('/');
+  if (VALID_SECTIONS.has(section)) {
+    return { section, subTab: subTab ?? '' };
+  }
+  return null;
 }
 
-export function useHashSection(defaultSection: string): [string, (s: string) => void] {
-  const [section, setSectionState] = useState(() => parseHash() ?? defaultSection);
+export function useHashSection(defaultSection: string): [string, (s: string) => void, string] {
+  const initial = parseHash();
+  const [section, setSectionState] = useState(initial?.section ?? defaultSection);
+  const [subTab, setSubTab] = useState(initial?.subTab ?? '');
 
   const setSection = useCallback((s: string) => {
-    setSectionState(s);
+    const [main, sub] = s.split('/');
+    setSectionState(main);
+    setSubTab(sub ?? '');
     if (window.location.hash !== `#${s}`) {
       window.location.hash = s;
     }
@@ -25,11 +33,14 @@ export function useHashSection(defaultSection: string): [string, (s: string) => 
   useEffect(() => {
     const onHashChange = () => {
       const parsed = parseHash();
-      if (parsed) setSectionState(parsed);
+      if (parsed) {
+        setSectionState(parsed.section);
+        setSubTab(parsed.subTab);
+      }
     };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
-  return [section, setSection];
+  return [section, setSection, subTab];
 }

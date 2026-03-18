@@ -253,7 +253,22 @@ export const api = {
   post: <T>(url: string, body: unknown, opts?: RequestOptions) => request<T>('POST', url, body, opts?.signal),
   put: <T>(url: string, body: unknown, opts?: RequestOptions) => request<T>('PUT', url, body, opts?.signal),
   del: <T>(url: string, opts?: RequestOptions) => request<T>('DELETE', url, undefined, opts?.signal),
+  upload: <T>(url: string, formData: FormData, opts?: RequestOptions) => uploadFormData<T>(url, formData, opts?.signal),
 };
+
+async function uploadFormData<T>(endpoint: string, formData: FormData, signal?: AbortSignal): Promise<T> {
+  const { restUrl, nonce } = getConfig();
+  const res = await fetch(`${restUrl}${endpoint.replace(/^\//, '')}`, {
+    method: 'POST',
+    headers: { 'X-WP-Nonce': nonce },
+    credentials: 'same-origin',
+    body: formData,
+    signal,
+  });
+  const data = await res.json();
+  if (!res.ok) throw { status: res.status, ...data } as ApiError;
+  return data as T;
+}
 
 export async function getMetaKeys(): Promise<MetaKeyInfo[]> {
   const res = await api.get<{ success: boolean; meta_keys: MetaKeyInfo[] }>('auth/admin/meta-keys');
@@ -356,7 +371,68 @@ export interface Contact {
   status: string;
   source: string;
   custom_fields: Record<string, unknown>;
-  tags?: string[];
+  wp_user_id?: string | null;
+  created_at?: string;
+  updated_at?: string;
+  tags?: Tag[];
+}
+
+export interface ContactDetail extends Contact {
+  tags: Tag[];
+  wp_user?: { username: string; roles: string[]; registered: string; edit_url: string };
+}
+
+export interface Tag {
+  id: string;
+  name: string;
+  slug: string;
+  color: string;
+  contact_count?: number;
+}
+
+export interface ContactList {
+  id: string;
+  name: string;
+  type: 'static' | 'dynamic';
+  conditions: SegmentConditionGroup | null;
+  tag_id: string | null;
+  description: string | null;
+  contact_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SegmentConditionGroup {
+  match: 'all' | 'any';
+  conditions?: SegmentCondition[];
+  groups?: SegmentConditionGroup[];
+}
+
+export interface SegmentCondition {
+  type: 'attribute' | 'tag';
+  field?: string;
+  operator: string;
+  value?: string;
+}
+
+export interface ContactActivity {
+  id: string;
+  type: string;
+  description: string;
+  meta: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface ImportResult {
+  imported: number;
+  updated: number;
+  skipped: number;
+  errors: string[];
+}
+
+export interface ImportPreview {
+  headers: string[];
+  rows: string[][];
 }
 
 export interface GatewayConfigField {

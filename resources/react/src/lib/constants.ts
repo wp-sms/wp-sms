@@ -200,6 +200,60 @@ export const SOCIAL_METHODS = [
   { id: 'twitter', label: 'Twitter / X', comingSoon: true },
 ] as const;
 
+// --- Contact Management Constants ---
+
+export const CONTACT_STATUSES = [
+  { value: 'subscribed', label: 'Subscribed' },
+  { value: 'unsubscribed', label: 'Unsubscribed' },
+  { value: 'bounced', label: 'Bounced' },
+  { value: 'complained', label: 'Complained' },
+] as const;
+
+export const TAG_COLORS = [
+  '#ef4444', '#f97316', '#eab308', '#22c55e',
+  '#06b6d4', '#3b82f6', '#8b5cf6', '#ec4899',
+] as const;
+
+export const SEGMENT_OPERATORS = {
+  equals: 'Equals',
+  not_equals: 'Not equals',
+  contains: 'Contains',
+  starts_with: 'Starts with',
+  is_empty: 'Is empty',
+  is_not_empty: 'Is not empty',
+  has: 'Has tag',
+  not_has: 'Does not have tag',
+} as const;
+
+export const ATTRIBUTE_FIELDS = [
+  { value: 'email', label: 'Email' },
+  { value: 'phone', label: 'Phone' },
+  { value: 'first_name', label: 'First name' },
+  { value: 'last_name', label: 'Last name' },
+  { value: 'status', label: 'Status' },
+  { value: 'source', label: 'Source' },
+] as const;
+
+export const MATCH_FIELD_OPTIONS = [
+  { value: 'email', label: 'Email address' },
+  { value: 'phone', label: 'Phone number' },
+  { value: 'email_or_phone', label: 'Email or phone' },
+] as const;
+
+export const DUPLICATE_HANDLING_OPTIONS = [
+  { value: 'update', label: 'Update existing contacts' },
+  { value: 'skip', label: 'Skip duplicates' },
+  { value: 'update_if_empty', label: 'Only fill empty fields' },
+] as const;
+
+export const SEGMENT_TEMPLATES = [
+  { name: 'Active subscribers', conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'status', operator: 'equals', value: 'subscribed' }] } },
+  { name: 'Missing phone', conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'phone', operator: 'is_empty' }] } },
+  { name: 'Bounced contacts', conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'status', operator: 'equals', value: 'bounced' }] } },
+  { name: 'Imported contacts', conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'source', operator: 'equals', value: 'import' }] } },
+  { name: 'WordPress users', conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'source', operator: 'equals', value: 'sync' }] } },
+] as const;
+
 /** Toggle an item in/out of an array. */
 export function toggleArrayItem<T>(arr: T[], item: T, enabled: boolean): T[] {
   return enabled ? [...arr, item] : arr.filter((x) => x !== item);

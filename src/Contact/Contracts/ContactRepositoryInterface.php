@@ -30,4 +30,17 @@ interface ContactRepositoryInterface
 
     /** @return array Tag rows for this contact */
     public function getTags(string $contactId): array;
+
+    public function findByTag(string $tagId, int $limit = 50, int $offset = 0): array;
+
+    public function countByTag(string $tagId): int;
+
+    /** @return array Contact rows matching the given IDs */
+    public function findByIds(array $ids): array;
+
+    /** @return int Number of contacts deleted */
+    public function bulkDelete(array $ids): int;
+
+    /** @return int Number of contacts updated */
+    public function bulkUpdateStatus(array $ids, string $status): int;
 }

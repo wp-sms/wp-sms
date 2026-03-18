@@ -19,16 +19,43 @@ class ContactExporter
         $writer = Writer::createFromPath($outputPath, 'w+');
         $writer->setEscape('');
 
-        $writer->insertOne(['id', 'email', 'phone', 'first_name', 'last_name', 'status', 'source', 'created_at']);
-
-        $offset = 0;
         $batch = 500;
+
+        // Pass 1: discover custom field keys (don't store rows)
+        $customFieldKeys = [];
+        $offset = 0;
 
         do {
             $contacts = $this->contacts->findAll($filters, $batch, $offset);
-
             foreach ($contacts as $contact) {
-                $writer->insertOne([
+                foreach (array_keys(self::customFields($contact)) as $key) {
+                    $customFieldKeys[$key] = true;
+                }
+            }
+            $offset += $batch;
+        } while (count($contacts) === $batch);
+
+        $customFieldKeys = array_keys($customFieldKeys);
+        sort($customFieldKeys);
+
+        // Build header
+        $header = ['id', 'email', 'phone', 'first_name', 'last_name', 'status', 'source', 'wp_user_id', 'tags', 'created_at', 'updated_at'];
+        foreach ($customFieldKeys as $key) {
+            $header[] = 'custom_' . $key;
+        }
+        $writer->insertOne($header);
+
+        // Pass 2: stream rows in batches
+        $offset = 0;
+
+        do {
+            $contacts = $this->contacts->findAll($filters, $batch, $offset);
+            foreach ($contacts as $contact) {
+                $tags = $this->contacts->getTags($contact['id']);
+                $tagNames = implode(', ', array_column($tags, 'name'));
+                $cf = self::customFields($contact);
+
+                $row = [
                     $contact['id'],
                     $contact['email'] ?? '',
                     $contact['phone'] ?? '',
@@ -36,13 +63,27 @@ class ContactExporter
                     $contact['last_name'] ?? '',
                     $contact['status'] ?? '',
                     $contact['source'] ?? '',
+                    $contact['wp_user_id'] ?? '',
+                    $tagNames,
                     $contact['created_at'] ?? '',
-                ]);
-            }
+                    $contact['updated_at'] ?? '',
+                ];
 
+                foreach ($customFieldKeys as $key) {
+                    $row[] = $cf[$key] ?? '';
+                }
+
+                $writer->insertOne($row);
+            }
             $offset += $batch;
         } while (count($contacts) === $batch);
 
         return $outputPath;
+    }
+
+    private static function customFields(array $contact): array
+    {
+        $cf = $contact['custom_fields'] ?? [];
+        return is_string($cf) ? (json_decode($cf, true) ?? []) : $cf;
     }
 }
