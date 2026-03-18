@@ -18,6 +18,11 @@ class CustomerCreatedTrigger extends AbstractTrigger
         return __('Customer Created', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Fires when a new customer is created', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WooCommerce';

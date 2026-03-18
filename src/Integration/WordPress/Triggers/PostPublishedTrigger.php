@@ -19,6 +19,11 @@ class PostPublishedTrigger extends AbstractTrigger
         return __('Post Published', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Fires when a post is published', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WordPress';

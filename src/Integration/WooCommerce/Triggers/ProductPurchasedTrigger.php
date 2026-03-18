@@ -19,6 +19,11 @@ class ProductPurchasedTrigger extends AbstractTrigger
         return __('Product Purchased', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Fires when a product is purchased', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WooCommerce';

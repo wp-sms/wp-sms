@@ -18,6 +18,11 @@ class CommentPostedTrigger extends AbstractTrigger
         return __('Comment Posted', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Fires when a new comment is submitted', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WordPress';

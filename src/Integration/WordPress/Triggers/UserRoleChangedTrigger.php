@@ -20,6 +20,11 @@ class UserRoleChangedTrigger extends AbstractTrigger
         return __('User Role Changed', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Fires when a user\'s role is changed', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WordPress';

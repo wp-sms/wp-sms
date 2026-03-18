@@ -26,7 +26,7 @@ class WebhookIntegration implements IntegrationInterface
 
     public function getIcon(): string
     {
-        return 'dashicons-rest-api';
+        return 'webhook';
     }
 
     public function isAvailable(): bool

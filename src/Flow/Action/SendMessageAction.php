@@ -32,9 +32,14 @@ class SendMessageAction extends AbstractAction
         return __('Send Message', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Send an SMS, email, or webhook message', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
-        return 'Messaging';
+        return 'WP SMS';
     }
 
     public function getConfigSchema(): array

@@ -19,6 +19,11 @@ class AddOrderNoteAction extends AbstractAction
         return __('Add Order Note', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Add a note to a WooCommerce order', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WooCommerce';

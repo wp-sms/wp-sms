@@ -1,9 +1,9 @@
 import { useMemo, useCallback, useEffect } from 'react';
 import type { JsonSchema } from '@/lib/api';
 import { useTriggers } from '@/hooks/use-triggers';
-import { SentenceToken } from './sentence-token';
 import { SchemaForm } from '@/components/schema-form';
 import { useTestTrigger, TestTriggerButton, SampleDataPreview } from '@/components/flow-editor/test-trigger';
+import { IntegrationPickerToken } from '@/components/flow-editor/integration-picker';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface TriggerSentenceProps {
@@ -38,7 +38,7 @@ export function TriggerSentence({
   }, [selected?.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const triggerOptions = useMemo(() => {
-    return triggers.map((t) => ({ value: t.id, label: t.name, group: t.group }));
+    return triggers.map((t) => ({ value: t.id, label: t.name, description: t.description, group: t.group, icon: t.icon }));
   }, [triggers]);
 
   const handleTriggerChange = useCallback((type: string) => {
@@ -63,12 +63,13 @@ export function TriggerSentence({
     <div className="space-y-2">
       <div className="flex items-center gap-1.5 flex-wrap">
         <span className="text-sm font-medium text-muted-foreground">When</span>
-        <SentenceToken
-          mode="select"
+        <IntegrationPickerToken
+          items={triggerOptions}
           value={triggerType}
-          options={triggerOptions}
-          onChange={handleTriggerChange}
+          onSelect={handleTriggerChange}
           placeholder="choose a trigger"
+          title="Select a trigger"
+          searchPlaceholder="Search triggers..."
         />
         <TestTriggerButton triggerType={triggerType} flowId={flowId} testing={testing} onTest={handleTest} />
       </div>

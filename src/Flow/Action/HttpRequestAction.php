@@ -19,9 +19,14 @@ class HttpRequestAction extends AbstractAction
         return __('HTTP Request', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Make an HTTP request to an external API', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
-        return 'Utilities';
+        return 'WP SMS';
     }
 
     public function getConfigSchema(): array

@@ -3,8 +3,6 @@
 namespace WSms\Container;
 
 use WSms\Flow\Action\ActionRegistry;
-use WSms\Flow\Action\HttpRequestAction;
-use WSms\Flow\Action\SendMessageAction;
 use WSms\Flow\Condition\ExpressionLanguageEvaluator;
 use WSms\Flow\Engine\FlowExecutor;
 use WSms\Flow\Engine\FlowRunner;
@@ -52,13 +50,6 @@ class FlowServiceProvider implements ServiceProvider
 
     public function boot(ServiceContainer $container): void
     {
-        $actions = $container->get('flow.actions');
-        $actions->register(new SendMessageAction(
-            $container->get('message.dispatcher'),
-            $container->get('gateway.registry'),
-        ));
-        $actions->register(new HttpRequestAction());
-
         // Register job handlers
         $processor = $container->get('queue.processor');
         $processor->registerHandler('execute_flow_step', function (array $payload) use ($container) {

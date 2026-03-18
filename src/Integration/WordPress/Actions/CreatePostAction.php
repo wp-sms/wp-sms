@@ -20,6 +20,11 @@ class CreatePostAction extends AbstractAction
         return __('Create Post', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Create a new WordPress post or page', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WordPress';

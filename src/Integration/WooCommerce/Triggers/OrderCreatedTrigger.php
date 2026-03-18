@@ -19,6 +19,11 @@ class OrderCreatedTrigger extends AbstractTrigger
         return __('Order Created', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Fires when a new order is placed', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WooCommerce';

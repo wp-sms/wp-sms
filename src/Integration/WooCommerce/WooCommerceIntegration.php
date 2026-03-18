@@ -33,7 +33,7 @@ class WooCommerceIntegration implements IntegrationInterface
 
     public function getIcon(): string
     {
-        return 'dashicons-cart';
+        return 'shopping-cart';
     }
 
     public function isAvailable(): bool

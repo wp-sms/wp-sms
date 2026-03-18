@@ -26,7 +26,7 @@ class AuthIntegration implements IntegrationInterface
 
     public function getIcon(): string
     {
-        return 'dashicons-shield';
+        return 'shield';
     }
 
     public function isAvailable(): bool
@@ -73,6 +73,7 @@ class AuthIntegration implements IntegrationInterface
                         'enum'        => ['password', 'otp', 'magic_link'],
                     ],
                 ],
+                __('Fires when a user logs in successfully', 'wp-sms'),
             ),
             new AuthEventTrigger(
                 'auth.login_failure',
@@ -92,6 +93,8 @@ class AuthIntegration implements IntegrationInterface
                     ],
                 ],
                 [EventType::LoginFailure],
+                [],
+                __('Fires when a login attempt fails', 'wp-sms'),
             ),
             new AuthEventTrigger(
                 'auth.account_locked',
@@ -111,6 +114,8 @@ class AuthIntegration implements IntegrationInterface
                     ],
                 ],
                 [EventType::AccountLocked],
+                [],
+                __('Fires when an account is locked out', 'wp-sms'),
             ),
         ];
     }

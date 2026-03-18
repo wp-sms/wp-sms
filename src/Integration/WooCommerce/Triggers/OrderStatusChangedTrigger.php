@@ -19,6 +19,11 @@ class OrderStatusChangedTrigger extends AbstractTrigger
         return __('Order Status Changed', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Fires when an order status changes', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WooCommerce';

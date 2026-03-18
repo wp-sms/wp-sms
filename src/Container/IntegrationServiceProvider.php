@@ -7,6 +7,7 @@ use WSms\Integration\IntegrationRegistry;
 use WSms\Integration\Webhook\WebhookIntegration;
 use WSms\Integration\WooCommerce\WooCommerceIntegration;
 use WSms\Integration\WordPress\WordPressIntegration;
+use WSms\Integration\WpSms\WpSmsIntegration;
 
 defined('ABSPATH') || exit;
 
@@ -31,6 +32,17 @@ class IntegrationServiceProvider implements ServiceProvider
             $registry = $container->get('integration.registry');
             $triggers = $container->get('flow.triggers');
             $actions = $container->get('flow.actions');
+
+            // Register WpSmsIntegration first (needs constructor injection)
+            $wpsms = new WpSmsIntegration(
+                $container->get('message.dispatcher'),
+                $container->get('gateway.registry'),
+            );
+            $registry->register($wpsms);
+            foreach ($wpsms->getActions() as $action) {
+                $actions->register($action);
+            }
+            $wpsms->boot();
 
             foreach ($this->integrations as $integrationClass) {
                 $integration = new $integrationClass();

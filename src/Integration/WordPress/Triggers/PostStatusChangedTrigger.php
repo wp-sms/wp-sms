@@ -19,6 +19,11 @@ class PostStatusChangedTrigger extends AbstractTrigger
         return __('Post Status Changed', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Fires when a post status changes', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WordPress';

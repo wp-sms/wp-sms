@@ -20,6 +20,11 @@ class UserRegisterTrigger extends AbstractTrigger
         return __('User Registered', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Fires when a new user account is created', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WordPress';

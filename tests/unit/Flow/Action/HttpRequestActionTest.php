@@ -24,7 +24,7 @@ class HttpRequestActionTest extends TestCase
     {
         $this->assertSame('http_request', $this->action->getId());
         $this->assertSame('HTTP Request', $this->action->getName());
-        $this->assertSame('Utilities', $this->action->getGroup());
+        $this->assertSame('WP SMS', $this->action->getGroup());
         $this->assertInstanceOf(AbstractAction::class, $this->action);
     }
 

@@ -19,6 +19,11 @@ class UserUpdatedTrigger extends AbstractTrigger
         return __('User Updated', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Fires when a user profile is updated', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WordPress';

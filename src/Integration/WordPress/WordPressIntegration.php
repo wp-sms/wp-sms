@@ -36,7 +36,7 @@ class WordPressIntegration implements IntegrationInterface
 
     public function getIcon(): string
     {
-        return 'dashicons-wordpress';
+        return 'globe';
     }
 
     public function isAvailable(): bool

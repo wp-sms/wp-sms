@@ -10,6 +10,11 @@ abstract class AbstractTrigger implements TriggerInterface
 
     abstract public function getName(): string;
 
+    public function getDescription(): string
+    {
+        return '';
+    }
+
     abstract public function getGroup(): string;
 
     abstract public function getPayloadSchema(): array;

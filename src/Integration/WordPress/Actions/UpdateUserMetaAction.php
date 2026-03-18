@@ -19,6 +19,11 @@ class UpdateUserMetaAction extends AbstractAction
         return __('Update User Meta', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Set or update a user meta field', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WordPress';

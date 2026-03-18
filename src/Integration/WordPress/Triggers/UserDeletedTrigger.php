@@ -19,6 +19,11 @@ class UserDeletedTrigger extends AbstractTrigger
         return __('User Deleted', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Fires when a user account is deleted', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WordPress';

@@ -4,6 +4,7 @@ import { useActions } from '@/hooks/use-actions';
 import { getTemplate, extractTokenFields } from '@/lib/sentence-templates';
 import { SentenceToken } from './sentence-token';
 import { SchemaForm, isFieldVisible } from '@/components/schema-form';
+import { IntegrationPickerToken } from '@/components/flow-editor/integration-picker';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { formatLabel } from '@/lib/constants';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -30,7 +31,7 @@ export function ActionSentence({ step, onChange, payloadSchema, triggerType, sam
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const actionOptions = useMemo(() => {
-    return actions.map((a) => ({ value: a.id, label: a.name, group: a.group }));
+    return actions.map((a) => ({ value: a.id, label: a.name, description: a.description, group: a.group, icon: a.icon }));
   }, [actions]);
 
   const selected = useMemo(() => actions.find((a) => a.id === step.action), [actions, step.action]);
@@ -222,12 +223,13 @@ export function ActionSentence({ step, onChange, payloadSchema, triggerType, sam
     <div className="space-y-2">
       {/* Action selector */}
       <div className="flex items-center gap-1.5 flex-wrap">
-        <SentenceToken
-          mode="select"
+        <IntegrationPickerToken
+          items={actionOptions}
           value={step.action}
-          options={actionOptions}
-          onChange={(v) => onChange({ ...step, action: v, config: {} })}
+          onSelect={(v) => onChange({ ...step, action: v, config: {} })}
           placeholder="choose an action"
+          title="Select an action"
+          searchPlaceholder="Search actions..."
         />
       </div>
 

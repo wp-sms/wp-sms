@@ -19,6 +19,11 @@ class PaymentFailedTrigger extends AbstractTrigger
         return __('Payment Failed', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Fires when a payment fails', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WooCommerce';

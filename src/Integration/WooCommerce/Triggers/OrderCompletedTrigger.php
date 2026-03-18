@@ -19,6 +19,11 @@ class OrderCompletedTrigger extends AbstractTrigger
         return __('Order Completed', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Fires when an order is completed', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WooCommerce';

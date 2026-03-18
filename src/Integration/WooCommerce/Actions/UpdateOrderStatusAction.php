@@ -19,6 +19,11 @@ class UpdateOrderStatusAction extends AbstractAction
         return __('Update Order Status', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Change the status of a WooCommerce order', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WooCommerce';

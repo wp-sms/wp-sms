@@ -19,6 +19,11 @@ class DeleteUserAction extends AbstractAction
         return __('Delete User', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Permanently delete a WordPress user', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WordPress';

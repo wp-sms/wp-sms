@@ -20,6 +20,11 @@ class SetUserRoleAction extends AbstractAction
         return __('Set User Role', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Change a user\'s WordPress role', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'WordPress';

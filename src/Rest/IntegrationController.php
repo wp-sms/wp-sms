@@ -92,13 +92,16 @@ class IntegrationController
 
     public function triggers(): \WP_REST_Response
     {
+        $iconMap = $this->buildIconMap('getTriggers');
         $triggers = [];
 
         foreach ($this->triggerRegistry->all() as $trigger) {
             $triggers[] = [
                 'id'             => $trigger->getId(),
                 'name'           => $trigger->getName(),
+                'description'    => $trigger->getDescription(),
                 'group'          => $trigger->getGroup(),
+                'icon'           => $iconMap[$trigger->getId()] ?? '',
                 'payload_schema' => ['type' => 'object', 'properties' => $trigger->getPayloadSchema()],
                 'filter_schema'  => $trigger->getFilterSchema(),
             ];
@@ -129,6 +132,7 @@ class IntegrationController
 
     public function actions(): \WP_REST_Response
     {
+        $iconMap = $this->buildIconMap('getActions');
         $actions = [];
         $triggerIds = array_map(
             fn ($t) => $t->getId(),
@@ -140,7 +144,9 @@ class IntegrationController
             $actions[] = [
                 'id'            => $action->getId(),
                 'name'          => $action->getName(),
+                'description'   => $action->getDescription(),
                 'group'         => $action->getGroup(),
+                'icon'          => $iconMap[$action->getId()] ?? '',
                 'config_schema' => [
                     'type'       => 'object',
                     'properties' => $schema,
@@ -154,6 +160,18 @@ class IntegrationController
             'items' => $actions,
             'total' => count($actions),
         ]);
+    }
+
+    /** @param 'getTriggers'|'getActions' $method */
+    private function buildIconMap(string $method): array
+    {
+        $map = [];
+        foreach ($this->integrationRegistry->getAll() as $integration) {
+            foreach ($integration->$method() as $item) {
+                $map[$item->getId()] = $integration->getIcon();
+            }
+        }
+        return $map;
     }
 
     private function collectPlaceholders(\WSms\Flow\Contracts\ActionInterface $action, array $triggerIds): array

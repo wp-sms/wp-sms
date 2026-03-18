@@ -74,6 +74,7 @@ class FlowExecutorTest extends TestCase
             public function __construct(private bool &$executed) {}
             public function getId(): string { return 'test_action'; }
             public function getName(): string { return 'Test'; }
+            public function getDescription(): string { return ''; }
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
             public function getConfigOptions(string $fieldKey, array $context = []): array { return []; }
@@ -102,6 +103,7 @@ class FlowExecutorTest extends TestCase
             public function __construct(private bool &$executed) {}
             public function getId(): string { return 'then_action'; }
             public function getName(): string { return 'Then'; }
+            public function getDescription(): string { return ''; }
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
             public function getConfigOptions(string $fieldKey, array $context = []): array { return []; }
@@ -133,6 +135,7 @@ class FlowExecutorTest extends TestCase
             public function __construct(private bool &$executed) {}
             public function getId(): string { return 'else_action'; }
             public function getName(): string { return 'Else'; }
+            public function getDescription(): string { return ''; }
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
             public function getConfigOptions(string $fieldKey, array $context = []): array { return []; }
@@ -193,6 +196,7 @@ class FlowExecutorTest extends TestCase
             public function __construct(private array &$receivedConfig) {}
             public function getId(): string { return 'capture'; }
             public function getName(): string { return 'Capture'; }
+            public function getDescription(): string { return ''; }
             public function getGroup(): string { return 'Test'; }
             public function getConfigSchema(): array { return []; }
             public function getConfigOptions(string $fieldKey, array $context = []): array { return []; }

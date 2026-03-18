@@ -62,7 +62,7 @@ export type SentenceTokenProps =
   | TextareaTokenProps
   | NumberTokenProps;
 
-const TokenBadge = forwardRef<
+export const TokenBadge = forwardRef<
   HTMLButtonElement,
   {
     children: React.ReactNode;

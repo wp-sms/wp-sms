@@ -10,6 +10,8 @@ interface ActionInterface
 
     public function getName(): string;
 
+    public function getDescription(): string;
+
     public function getGroup(): string;
 
     public function getConfigSchema(): array;

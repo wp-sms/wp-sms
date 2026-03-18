@@ -18,6 +18,11 @@ class InboundWebhookTrigger extends AbstractTrigger
         return __('Inbound Webhook', 'wp-sms');
     }
 
+    public function getDescription(): string
+    {
+        return __('Fires when a webhook request is received', 'wp-sms');
+    }
+
     public function getGroup(): string
     {
         return 'Webhook';

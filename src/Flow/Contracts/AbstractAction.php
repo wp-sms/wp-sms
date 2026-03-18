@@ -10,6 +10,11 @@ abstract class AbstractAction implements ActionInterface
 
     abstract public function getName(): string;
 
+    public function getDescription(): string
+    {
+        return '';
+    }
+
     abstract public function getGroup(): string;
 
     abstract public function getConfigSchema(): array;

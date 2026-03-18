@@ -17,6 +17,7 @@ class AuthEventTrigger extends AbstractTrigger
         private readonly array $payloadSchema,
         private readonly array $eventTypes,
         private readonly array $filterSchema = [],
+        private readonly string $description = '',
     ) {
     }
 
@@ -28,6 +29,11 @@ class AuthEventTrigger extends AbstractTrigger
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
     }
 
     public function getGroup(): string

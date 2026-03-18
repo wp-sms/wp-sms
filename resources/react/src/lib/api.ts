@@ -509,7 +509,9 @@ export interface MessageLogEntry {
 export interface TriggerDefinition {
   id: string;
   name: string;
+  description: string;
   group: string;
+  icon: string;
   payload_schema: JsonSchema;
   filter_schema: Record<string, JsonSchemaProperty>;
 }
@@ -517,7 +519,9 @@ export interface TriggerDefinition {
 export interface ActionDefinition {
   id: string;
   name: string;
+  description: string;
   group: string;
+  icon: string;
   config_schema: JsonSchema;
   placeholders?: Record<string, Record<string, string>>;
 }
