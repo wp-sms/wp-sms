@@ -1,0 +1,37 @@
+import { NAV_ITEMS } from '@/components/layout/app-shell';
+
+export type NavItem = (typeof NAV_ITEMS)[number];
+type Area = 'auth' | 'messaging';
+
+interface AreaConfig {
+  sections: string[];
+  defaultSection: string;
+}
+
+const AREA_CONFIG: Record<Area, AreaConfig> = {
+  auth: {
+    sections: ['authentication', 'security', 'integrations', 'branding', 'logs', 'reports'],
+    defaultSection: 'channels',
+  },
+  messaging: {
+    sections: ['messaging'],
+    defaultSection: 'flows',
+  },
+};
+
+export function getNavItemsForArea(area: Area): NavItem[] {
+  const config = AREA_CONFIG[area];
+  return NAV_ITEMS.filter((item) => config.sections.includes(item.id));
+}
+
+export function getDefaultSection(area: Area): string {
+  return AREA_CONFIG[area].defaultSection;
+}
+
+export function getValidSections(items: NavItem[]): Set<string> {
+  return new Set(
+    items.flatMap((item) =>
+      'children' in item ? item.children.map((c) => c.id) : [item.id]
+    )
+  );
+}

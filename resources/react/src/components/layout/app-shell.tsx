@@ -32,11 +32,14 @@ import {
 } from '@/components/ui/breadcrumb';
 
 
+type NavItemList = readonly (typeof NAV_ITEMS)[number][];
+
 interface AppShellProps {
   activeSection: string;
   onNavigate: (section: string) => void;
   version: string;
   children: ReactNode;
+  navItems: NavItemList;
 }
 
 export const NAV_ITEMS = [
@@ -117,8 +120,8 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   'reports': 'View authentication activity statistics, security insights, and usage trends.',
 };
 
-function getPageTitle(sectionId: string): string | undefined {
-  for (const item of NAV_ITEMS) {
+function getPageTitle(sectionId: string, items: NavItemList): string | undefined {
+  for (const item of items) {
     if (item.id === sectionId) return item.label;
     if ('children' in item) {
       const child = item.children.find((c) => c.id === sectionId);
@@ -128,8 +131,8 @@ function getPageTitle(sectionId: string): string | undefined {
 }
 
 /** Derive parent section from a child section ID, using NAV_ITEMS as the source of truth. */
-export function getParentSection(sectionId: string): string {
-  for (const item of NAV_ITEMS) {
+export function getParentSection(sectionId: string, items: NavItemList): string {
+  for (const item of items) {
     if ('children' in item && item.children.some((c) => c.id === sectionId)) {
       return item.id;
     }
@@ -137,8 +140,8 @@ export function getParentSection(sectionId: string): string {
   return sectionId;
 }
 
-function getBreadcrumb(sectionId: string, onNavigate: (section: string) => void) {
-  for (const item of NAV_ITEMS) {
+function getBreadcrumb(sectionId: string, onNavigate: (section: string) => void, items: NavItemList) {
+  for (const item of items) {
     if ('children' in item && item.children) {
       const child = item.children.find((c) => c.id === sectionId);
       if (child) {
@@ -162,7 +165,7 @@ function getBreadcrumb(sectionId: string, onNavigate: (section: string) => void)
   }
 
   // Leaf section (no parent)
-  const item = NAV_ITEMS.find((i) => i.id === sectionId);
+  const item = items.find((i) => i.id === sectionId);
   return (
     <BreadcrumbItem>
       <BreadcrumbPage>{item?.label ?? sectionId}</BreadcrumbPage>
@@ -170,8 +173,8 @@ function getBreadcrumb(sectionId: string, onNavigate: (section: string) => void)
   );
 }
 
-export function AppShell({ activeSection, onNavigate, version, children }: AppShellProps) {
-  const pageTitle = getPageTitle(activeSection);
+export function AppShell({ activeSection, onNavigate, version, children, navItems }: AppShellProps) {
+  const pageTitle = getPageTitle(activeSection, navItems);
   const pageDescription = SECTION_DESCRIPTIONS[activeSection];
 
   return (
@@ -193,7 +196,7 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
             <SidebarGroupLabel>Settings</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {NAV_ITEMS.map((item) => {
+                {navItems.map((item) => {
                   const Icon = item.icon;
                   const hasChildren = 'children' in item && item.children;
 
@@ -257,7 +260,7 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
         <header className="flex h-14 items-center gap-2 border-b px-6">
           <Breadcrumb>
             <BreadcrumbList>
-              {getBreadcrumb(activeSection, onNavigate)}
+              {getBreadcrumb(activeSection, onNavigate, navItems)}
             </BreadcrumbList>
           </Breadcrumb>
         </header>

@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
 class AdminManager
 {
     /** @var string Menu slug used for the top-level admin page. */
-    const MENU_SLUG = 'wsms';
+    const MENU_SLUG = 'wsms-auth';
 
     public function __construct()
     {
@@ -33,19 +33,16 @@ class AdminManager
             __('WSMS', 'wp-sms'),
             'manage_options',
             self::MENU_SLUG,
-            [$this, 'renderDashboard'],
+            [$this, 'renderArea'],
             $icon
         );
-
-        // Remove the auto-generated submenu item matching the parent
-        remove_submenu_page(self::MENU_SLUG, self::MENU_SLUG);
 
         add_submenu_page(
             self::MENU_SLUG,
             __('Auth', 'wp-sms'),
             __('Auth', 'wp-sms'),
             'manage_options',
-            'wsms-auth',
+            self::MENU_SLUG,
             [$this, 'renderArea'],
         );
 
@@ -63,15 +60,7 @@ class AdminManager
     }
 
     /**
-     * Output the mount point for the React dashboard app.
-     */
-    public function renderDashboard(): void
-    {
-        View::load('admin/app');
-    }
-
-    /**
-     * Render a subpage area — same React mount point, area determined by JS.
+     * Render the React dashboard mount point.
      */
     public function renderArea(): void
     {

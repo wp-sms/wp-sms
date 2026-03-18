@@ -75,14 +75,11 @@ class AssetManager
      */
     private function resolveArea(string $hook): string
     {
-        if (strpos($hook, 'wsms-auth') !== false) {
-            return 'auth';
-        }
         if (strpos($hook, 'wsms-messaging') !== false) {
             return 'messaging';
         }
 
-        return 'dashboard';
+        return 'auth';
     }
 
     /**
@@ -90,7 +87,7 @@ class AssetManager
      */
     private function isWsmsPage(string $hook): bool
     {
-        return strpos($hook, 'toplevel_page_wsms') !== false
-            || strpos($hook, '_page_wsms') !== false;
+        return strpos($hook, 'wsms-auth') !== false
+            || strpos($hook, 'wsms-messaging') !== false;
     }
 }

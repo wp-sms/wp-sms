@@ -1,23 +1,16 @@
 import { useState, useEffect, useCallback } from 'react';
-import { NAV_ITEMS } from '@/components/layout/app-shell';
 
-const VALID_SECTIONS = new Set(
-  NAV_ITEMS.flatMap((item) =>
-    'children' in item ? item.children.map((c) => c.id) : [item.id]
-  )
-);
-
-function parseHash(): { section: string; subTab: string } | null {
+function parseHash(validSections: Set<string>): { section: string; subTab: string } | null {
   const raw = window.location.hash.slice(1);
   const [section, subTab] = raw.split('/');
-  if (VALID_SECTIONS.has(section)) {
+  if (validSections.has(section)) {
     return { section, subTab: subTab ?? '' };
   }
   return null;
 }
 
-export function useHashSection(defaultSection: string): [string, (s: string) => void, string] {
-  const initial = parseHash();
+export function useHashSection(defaultSection: string, validSections: Set<string>): [string, (s: string) => void, string] {
+  const initial = parseHash(validSections);
   const [section, setSectionState] = useState(initial?.section ?? defaultSection);
   const [subTab, setSubTab] = useState(initial?.subTab ?? '');
 
@@ -32,7 +25,7 @@ export function useHashSection(defaultSection: string): [string, (s: string) => 
 
   useEffect(() => {
     const onHashChange = () => {
-      const parsed = parseHash();
+      const parsed = parseHash(validSections);
       if (parsed) {
         setSectionState(parsed.section);
         setSubTab(parsed.subTab);
@@ -40,7 +33,7 @@ export function useHashSection(defaultSection: string): [string, (s: string) => 
     };
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
-  }, []);
+  }, [validSections]);
 
   return [section, setSection, subTab];
 }

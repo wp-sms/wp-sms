@@ -7,6 +7,7 @@ declare global {
       adminUrl: string;
       isPremium: boolean;
       roles: Record<string, string>;
+      area: 'auth' | 'messaging';
     };
   }
 }
@@ -211,7 +212,7 @@ export interface LogEntry {
   user_display: { display_name: string; email: string } | null;
 }
 
-const FALLBACK_CONFIG = { restUrl: '', nonce: '', version: '', adminUrl: '', isPremium: false, roles: {} as Record<string, string> };
+const FALLBACK_CONFIG = { restUrl: '', nonce: '', version: '', adminUrl: '', isPremium: false, roles: {} as Record<string, string>, area: 'auth' as const };
 
 export function getConfig() {
   return window.wpSmsSettings ?? FALLBACK_CONFIG;

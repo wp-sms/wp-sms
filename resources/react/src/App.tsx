@@ -4,6 +4,7 @@ import { SaveBar } from '@/components/layout/save-bar';
 import { useSettings } from '@/hooks/use-settings';
 import { useHashSection } from '@/hooks/use-hash-section';
 import { getConfig } from '@/lib/api';
+import { getNavItemsForArea, getDefaultSection, getValidSections } from '@/lib/area-nav';
 import { MessagingPage } from '@/pages/messaging';
 import { AuthenticationPage } from '@/pages/authentication';
 import { SecurityPage } from '@/pages/security';
@@ -17,10 +18,13 @@ import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { AlertCircle } from 'lucide-react';
 
-const { roles, version } = getConfig();
+const { roles, version, area } = getConfig();
+const navItems = getNavItemsForArea(area);
+const defaultSection = getDefaultSection(area);
+const validSections = getValidSections(navItems);
 
 export default function App() {
-  const [section, setSection, subTab] = useHashSection('channels');
+  const [section, setSection, subTab] = useHashSection(defaultSection, validSections);
   const { settings, updateSetting, isDirty, saveStatus, save, loading, error } = useSettings();
   const handleSave = useCallback(() => { void save(); }, [save]);
 
@@ -44,7 +48,7 @@ export default function App() {
       );
     }
 
-    const parent = getParentSection(section);
+    const parent = getParentSection(section, navItems);
 
     switch (parent) {
       case 'messaging':
@@ -70,7 +74,7 @@ export default function App() {
     <TooltipProvider>
       <div className="wsms-app">
         <div className="border border-border overflow-hidden">
-          <AppShell activeSection={section} onNavigate={setSection} version={version}>
+          <AppShell activeSection={section} onNavigate={setSection} version={version} navItems={navItems}>
             {renderContent()}
           </AppShell>
         </div>
