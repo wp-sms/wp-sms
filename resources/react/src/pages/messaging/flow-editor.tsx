@@ -5,11 +5,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Field, FieldLabel } from '@/components/ui/field';
-import { SimpleMode } from '@/components/flow-editor/simple-mode';
-import { AdvancedMode } from '@/components/flow-editor/advanced-mode';
+import { SentenceBuilder } from '@/components/flow-editor/sentence-builder/sentence-builder';
 import { ExecutionHistory } from '@/components/flow-editor/execution-history';
-import { getCachedActions } from '@/components/flow-step-editor';
-import { validateFlowSteps } from '@/lib/flow-utils';
+import { getCachedActions } from '@/hooks/use-actions';
+import { validateFlowSteps, flattenSteps, nestSteps } from '@/lib/flow-utils';
 import { ArrowLeft, Save, Rocket, Pause } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -23,26 +22,16 @@ interface FlowEditorProps {
   defaultTab?: string;
 }
 
-type EditorMode = 'simple' | 'advanced';
-
-function detectMode(steps: FlowNode[]): EditorMode {
-  const actionSteps = steps.filter((s) => s.type === 'action');
-  const hasNonAction = steps.some((s) => s.type !== 'action');
-  if (hasNonAction || actionSteps.length > 1) return 'advanced';
-  return 'simple';
-}
-
 export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate, onBack, defaultTab }: FlowEditorProps) {
   const source = flow ?? initialData;
   const [name, setName] = useState(source?.name ?? '');
   const [description, setDescription] = useState(source?.description ?? '');
   const [triggerType, setTriggerType] = useState(source?.trigger_type ?? '');
   const [triggerConfig, setTriggerConfig] = useState<Record<string, unknown>>(source?.trigger_config ?? {});
-  const [steps, setSteps] = useState<FlowNode[]>(source?.steps ?? []);
+  const [steps, setSteps] = useState<FlowNode[]>(() => flattenSteps(source?.steps ?? []));
   const [saving, setSaving] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [deactivating, setDeactivating] = useState(false);
-  const [mode, setMode] = useState<EditorMode>(detectMode(source?.steps ?? []));
   const [payloadSchema, setPayloadSchema] = useState<JsonSchema | undefined>();
   const [sampleData, setSampleData] = useState<Record<string, unknown> | undefined>();
 
@@ -51,16 +40,9 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
   const handleChangeTrigger = useCallback((type: string, config: Record<string, unknown>) => {
     setTriggerType(type);
     setTriggerConfig(config);
-    setSampleData(undefined); // Reset sample data when trigger changes
+    setSampleData(undefined);
   }, []);
 
-  const handlePayloadSchemaChange = useCallback((schema: JsonSchema | undefined) => {
-    setPayloadSchema(schema);
-  }, []);
-
-  const handleSampleDataChange = useCallback((data: Record<string, unknown> | undefined) => {
-    setSampleData(data);
-  }, []);
 
   const handleSave = async () => {
     if (!name.trim()) {
@@ -85,7 +67,7 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
         description: description.trim() || null,
         trigger_type: triggerType,
         trigger_config: triggerConfig,
-        steps,
+        steps: nestSteps(steps),
       });
       toast.success(isEdit ? 'Flow updated.' : 'Flow created.');
       onBack();
@@ -154,35 +136,19 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
         </CardContent>
       </Card>
 
-      {/* Mode-dependent editor */}
-      {mode === 'simple' ? (
-        <SimpleMode
-          triggerType={triggerType}
-          triggerConfig={triggerConfig}
-          steps={steps}
-          onChangeTrigger={handleChangeTrigger}
-          onChangeSteps={setSteps}
-          onPayloadSchemaChange={handlePayloadSchemaChange}
-          payloadSchema={payloadSchema}
-          onSwitchToAdvanced={() => setMode('advanced')}
-          flowId={flow?.id}
-          sampleData={sampleData}
-          onSampleDataChange={handleSampleDataChange}
-        />
-      ) : (
-        <AdvancedMode
-          triggerType={triggerType}
-          triggerConfig={triggerConfig}
-          steps={steps}
-          onChangeTrigger={handleChangeTrigger}
-          onChangeSteps={setSteps}
-          onPayloadSchemaChange={handlePayloadSchemaChange}
-          payloadSchema={payloadSchema}
-          flowId={flow?.id}
-          sampleData={sampleData}
-          onSampleDataChange={handleSampleDataChange}
-        />
-      )}
+      {/* Sentence Builder */}
+      <SentenceBuilder
+        triggerType={triggerType}
+        triggerConfig={triggerConfig}
+        steps={steps}
+        onChangeTrigger={handleChangeTrigger}
+        onChangeSteps={setSteps}
+        onPayloadSchemaChange={setPayloadSchema}
+        payloadSchema={payloadSchema}
+        flowId={flow?.id}
+        sampleData={sampleData}
+        onSampleDataChange={setSampleData}
+      />
 
       {/* Actions */}
       <div className="flex items-center gap-2 justify-end">
@@ -222,9 +188,6 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
           Back
         </Button>
         <h2 className="text-base font-semibold">{isEdit ? 'Edit Flow' : 'Create Flow'}</h2>
-        {mode === 'advanced' && (
-          <span className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground">Advanced</span>
-        )}
       </div>
 
       {isEdit ? (

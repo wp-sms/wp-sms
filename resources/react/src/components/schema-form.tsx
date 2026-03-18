@@ -50,7 +50,7 @@ function TemplatePreview({ value, payloadSchema, sampleData }: { value: string; 
   );
 }
 
-function isFieldVisible(prop: JsonSchemaProperty, values: Record<string, unknown>): boolean {
+export function isFieldVisible(prop: JsonSchemaProperty, values: Record<string, unknown>): boolean {
   if (!prop.displayOptions) return true;
   const { show, hide } = prop.displayOptions;
   if (show) {
