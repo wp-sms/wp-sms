@@ -259,9 +259,26 @@ export function toggleArrayItem<T>(arr: T[], item: T, enabled: boolean): T[] {
   return enabled ? [...arr, item] : arr.filter((x) => x !== item);
 }
 
-/** Convert snake_case or kebab-case to Title Case. */
+const ACRONYMS: Record<string, string> = {
+  sms: 'SMS',
+  otp: 'OTP',
+  mfa: 'MFA',
+  totp: 'TOTP',
+  url: 'URL',
+  api: 'API',
+  http: 'HTTP',
+  id: 'ID',
+  ip: 'IP',
+  csv: 'CSV',
+  json: 'JSON',
+};
+
+/** Convert snake_case or kebab-case to Title Case, with correct acronym casing. */
 export function formatLabel(value: string): string {
   return value
     .replace(/[_-]/g, ' ')
-    .replace(/\b\w/g, (c) => c.toUpperCase());
+    .replace(/\b\w+\b/g, (word) => {
+      const lower = word.toLowerCase();
+      return ACRONYMS[lower] ?? (word.charAt(0).toUpperCase() + word.slice(1));
+    });
 }
