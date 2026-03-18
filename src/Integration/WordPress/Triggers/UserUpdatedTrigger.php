@@ -57,6 +57,25 @@ class UserUpdatedTrigger extends AbstractTrigger
         ];
     }
 
+    public function getFilterSchema(): array
+    {
+        return [
+            'changed_fields' => [
+                'type'        => 'string',
+                'label'       => __('Changed Field', 'wp-sms'),
+                'description' => __('Only trigger when this specific field was modified', 'wp-sms'),
+                'enum'        => ['user_email', 'display_name', 'user_login', 'first_name', 'last_name'],
+                'enumLabels'  => [
+                    'user_email'   => __('Email', 'wp-sms'),
+                    'display_name' => __('Display Name', 'wp-sms'),
+                    'user_login'   => __('Login', 'wp-sms'),
+                    'first_name'   => __('First Name', 'wp-sms'),
+                    'last_name'    => __('Last Name', 'wp-sms'),
+                ],
+            ],
+        ];
+    }
+
     public function subscribe(callable $callback): void
     {
         add_action('profile_update', function (int $userId, $oldUserData) use ($callback) {

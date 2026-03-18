@@ -27,6 +27,7 @@ interface SchemaFormProps {
   dynamicOptionsUrl?: (fieldKey: string, depValues?: Record<string, unknown>) => string;
   placeholders?: Record<string, string>;
   sampleData?: Record<string, unknown>;
+  filterMode?: boolean;
 }
 
 function TemplatePreview({ value, payloadSchema, sampleData }: { value: string; payloadSchema?: JsonSchema; sampleData?: Record<string, unknown> }) {
@@ -211,6 +212,7 @@ function DynamicSelectField({
   hint,
   onChange,
   optionsUrl,
+  filterMode,
 }: {
   fieldKey: string;
   label: string;
@@ -220,6 +222,7 @@ function DynamicSelectField({
   hint?: string;
   onChange: (key: string, value: unknown) => void;
   optionsUrl: string;
+  filterMode?: boolean;
 }) {
   const [options, setOptions] = useState<DynamicOption[]>([]);
   const [loading, setLoading] = useState(true);
@@ -258,22 +261,37 @@ function DynamicSelectField({
     );
   }
 
+  const showAny = filterMode && !required;
+
   return (
     <Field>
       <FieldLabel htmlFor={`schema-${fieldKey}`}>{label}{required && ' *'}</FieldLabel>
-      <Select
-        value={value}
-        onValueChange={(v) => onChange(fieldKey, v)}
-      >
-        <SelectTrigger id={`schema-${fieldKey}`}>
-          <SelectValue placeholder={`Select ${label.toLowerCase()}`} />
-        </SelectTrigger>
-        <SelectContent>
-          {options.map((opt) => (
-            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="flex items-center gap-1.5">
+        <Select
+          value={value || undefined}
+          onValueChange={(v) => onChange(fieldKey, v)}
+        >
+          <SelectTrigger id={`schema-${fieldKey}`} className="flex-1">
+            <SelectValue placeholder={showAny ? 'Any' : `Select ${label.toLowerCase()}`} />
+          </SelectTrigger>
+          <SelectContent>
+            {options.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        {showAny && value && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-9 w-9 shrink-0 p-0 text-muted-foreground hover:text-foreground"
+            onClick={() => onChange(fieldKey, '')}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
       {hint && <FieldHint>{hint}</FieldHint>}
       {description && <FieldDescription>{description}</FieldDescription>}
     </Field>
@@ -398,6 +416,7 @@ function PropertyField({
   triggerPlaceholder,
   allValues,
   sampleData,
+  filterMode,
 }: {
   fieldKey: string;
   prop: JsonSchemaProperty;
@@ -409,6 +428,7 @@ function PropertyField({
   triggerPlaceholder?: string;
   allValues?: Record<string, unknown>;
   sampleData?: Record<string, unknown>;
+  filterMode?: boolean;
 }) {
   const label = prop.title ?? formatLabel(fieldKey);
 
@@ -431,27 +451,43 @@ function PropertyField({
         hint={prop.hint}
         onChange={onChange}
         optionsUrl={dynamicOptionsUrl(fieldKey, Object.keys(depValues).length > 0 ? depValues : undefined)}
+        filterMode={filterMode}
       />
     );
   }
 
   if (prop.enum && prop.enum.length > 0) {
+    const enumValue = String(value ?? prop.default ?? '');
+    const showAny = filterMode && !required;
     return (
       <Field key={fieldKey}>
         <FieldLabel htmlFor={`schema-${fieldKey}`}>{label}{required && ' *'}</FieldLabel>
-        <Select
-          value={String(value ?? prop.default ?? '')}
-          onValueChange={(v) => onChange(fieldKey, v)}
-        >
-          <SelectTrigger id={`schema-${fieldKey}`}>
-            <SelectValue placeholder={`Select ${label.toLowerCase()}`} />
-          </SelectTrigger>
-          <SelectContent>
-            {prop.enum.map((opt) => (
-              <SelectItem key={opt} value={opt}>{formatLabel(opt)}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <div className="flex items-center gap-1.5">
+          <Select
+            value={enumValue || undefined}
+            onValueChange={(v) => onChange(fieldKey, v)}
+          >
+            <SelectTrigger id={`schema-${fieldKey}`} className="flex-1">
+              <SelectValue placeholder={showAny ? 'Any' : `Select ${label.toLowerCase()}`} />
+            </SelectTrigger>
+            <SelectContent>
+              {prop.enum.map((opt) => (
+                <SelectItem key={opt} value={opt}>{prop.enumLabels?.[opt] ?? formatLabel(opt)}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {showAny && enumValue && (
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-9 w-9 shrink-0 p-0 text-muted-foreground hover:text-foreground"
+              onClick={() => onChange(fieldKey, '')}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
         {prop.hint && <FieldHint>{prop.hint}</FieldHint>}
         {prop.description && <FieldDescription>{prop.description}</FieldDescription>}
       </Field>
@@ -562,7 +598,7 @@ function PropertyField({
   );
 }
 
-export function SchemaForm({ schema, values, onChange, payloadSchema, dynamicOptionsUrl, placeholders, sampleData }: SchemaFormProps) {
+export function SchemaForm({ schema, values, onChange, payloadSchema, dynamicOptionsUrl, placeholders, sampleData, filterMode }: SchemaFormProps) {
   if (!schema.properties || Object.keys(schema.properties).length === 0) {
     return <p className="text-sm text-muted-foreground">No configuration needed.</p>;
   }
@@ -599,6 +635,7 @@ export function SchemaForm({ schema, values, onChange, payloadSchema, dynamicOpt
             triggerPlaceholder={placeholders?.[key]}
             allValues={values}
             sampleData={sampleData}
+            filterMode={filterMode}
           />
         ))}
     </div>

@@ -74,6 +74,10 @@ class CommentPostedTrigger extends AbstractTrigger
                 'label'       => __('Approval Status', 'wp-sms'),
                 'description' => __('Only trigger for this approval status', 'wp-sms'),
                 'enum'        => ['0', '1'],
+                'enumLabels'  => [
+                    '0' => __('Pending', 'wp-sms'),
+                    '1' => __('Approved', 'wp-sms'),
+                ],
             ],
         ];
     }

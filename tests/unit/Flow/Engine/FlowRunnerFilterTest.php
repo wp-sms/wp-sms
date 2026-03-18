@@ -118,6 +118,28 @@ class FlowRunnerFilterTest extends TestCase
         ));
     }
 
+    public function testArrayPayloadValueContainsSingleFilter(): void
+    {
+        // changed_fields is an array in payload, filter is a single string
+        $this->assertTrue($this->runner->matchesTriggerFilters(
+            ['changed_fields' => 'user_email'],
+            ['changed_fields' => ['user_email', 'display_name']],
+        ));
+
+        $this->assertFalse($this->runner->matchesTriggerFilters(
+            ['changed_fields' => 'first_name'],
+            ['changed_fields' => ['user_email', 'display_name']],
+        ));
+    }
+
+    public function testArrayPayloadWithEmptyFilterMatchesAll(): void
+    {
+        $this->assertTrue($this->runner->matchesTriggerFilters(
+            ['changed_fields' => ''],
+            ['changed_fields' => ['user_email', 'display_name']],
+        ));
+    }
+
     public function testMixedEmptyAndActiveFilters(): void
     {
         // Only the non-empty filter should be checked

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import type { JsonSchema } from '@/lib/api';
 import {
   type ConditionRule,
@@ -6,10 +6,12 @@ import {
   flattenSchemaFields,
   getOperatorsForType,
   createEmptyRule,
+  getConditionValueOptions,
   OPERATORS,
 } from '@/lib/condition-utils';
 import { groupBy } from '@/lib/utils';
 import { buildMergedSchema } from '@/lib/flow-utils';
+import { useTriggers } from '@/hooks/use-triggers';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -27,9 +29,16 @@ interface ConditionBuilderProps {
   rules: ConditionRule[];
   onChange: (rules: ConditionRule[]) => void;
   payloadSchema?: JsonSchema;
+  triggerType?: string;
 }
 
-export function ConditionBuilder({ rules, onChange, payloadSchema }: ConditionBuilderProps) {
+export function ConditionBuilder({ rules, onChange, payloadSchema, triggerType }: ConditionBuilderProps) {
+  const { triggers } = useTriggers();
+  const filterSchema = useMemo(() => {
+    const trigger = triggers.find((t) => t.id === triggerType);
+    return trigger?.filter_schema;
+  }, [triggers, triggerType]);
+
   const merged = useMemo(() => buildMergedSchema(payloadSchema), [payloadSchema]);
   const fields = merged.properties
     ? flattenSchemaFields(merged.properties)
@@ -52,6 +61,14 @@ export function ConditionBuilder({ rules, onChange, payloadSchema }: ConditionBu
   };
 
   const getField = (fieldPath: string): FieldOption | undefined => fieldMap.get(fieldPath);
+
+  const getValueEnumOptions = useCallback(
+    (field: string) => {
+      const opts = getConditionValueOptions(field, filterSchema, merged, triggerType);
+      return opts?.type === 'enum' ? opts.options : null;
+    },
+    [filterSchema, merged, triggerType],
+  );
 
   return (
     <div className="space-y-3">
@@ -112,15 +129,40 @@ export function ConditionBuilder({ rules, onChange, payloadSchema }: ConditionBu
             </Select>
 
             {/* Value input */}
-            {!hideValue && (
-              <Input
-                className="flex-1"
-                value={rule.value}
-                onChange={(e) => updateRule(index, { value: e.target.value })}
-                placeholder="Value"
-                type={fieldType === 'integer' || fieldType === 'number' ? 'number' : 'text'}
-              />
-            )}
+            {!hideValue && (() => {
+              const enumOpts = getValueEnumOptions(rule.field);
+              if (enumOpts) {
+                const selected = enumOpts.find((o) => o.value === rule.value);
+                return (
+                  <Select
+                    value={rule.value || undefined}
+                    onValueChange={(v) => updateRule(index, { value: v })}
+                  >
+                    <SelectTrigger className="flex-1">
+                      <SelectValue placeholder="Select value">
+                        {selected?.label}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {enumOpts.map((opt) => (
+                        <SelectItem key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                );
+              }
+              return (
+                <Input
+                  className="flex-1"
+                  value={rule.value}
+                  onChange={(e) => updateRule(index, { value: e.target.value })}
+                  placeholder="Value"
+                  type={fieldType === 'integer' || fieldType === 'number' ? 'number' : 'text'}
+                />
+              );
+            })()}
 
             {/* Remove button */}
             <Button

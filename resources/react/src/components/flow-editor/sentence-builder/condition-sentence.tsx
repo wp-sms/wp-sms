@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import type { ConditionNode, JsonSchema } from '@/lib/api';
 import type { ConditionRule } from '@/lib/condition-utils';
 import {
@@ -7,8 +7,10 @@ import {
   OPERATORS,
   createEmptyRule,
   rulesToExpression,
+  getConditionValueOptions,
 } from '@/lib/condition-utils';
 import { buildMergedSchema } from '@/lib/flow-utils';
+import { useTriggers } from '@/hooks/use-triggers';
 import { SentenceToken } from './sentence-token';
 import { X } from 'lucide-react';
 
@@ -19,8 +21,14 @@ interface ConditionSentenceProps {
   triggerType?: string;
 }
 
-export function ConditionSentence({ step, onChange, payloadSchema }: ConditionSentenceProps) {
+export function ConditionSentence({ step, onChange, payloadSchema, triggerType }: ConditionSentenceProps) {
   const rules: ConditionRule[] = step.rules ?? [];
+  const { triggers } = useTriggers();
+
+  const filterSchema = useMemo(() => {
+    const trigger = triggers.find((t) => t.id === triggerType);
+    return trigger?.filter_schema;
+  }, [triggers, triggerType]);
 
   const merged = useMemo(() => buildMergedSchema(payloadSchema), [payloadSchema]);
 
@@ -67,6 +75,11 @@ export function ConditionSentence({ step, onChange, payloadSchema }: ConditionSe
     return OPERATORS.find((o) => o.value === operator)?.hideValue ?? false;
   };
 
+  const getValueOptions = useCallback(
+    (field: string) => getConditionValueOptions(field, filterSchema, merged, triggerType),
+    [filterSchema, triggerType, merged],
+  );
+
   return (
     <div className="space-y-3">
       {/* Condition rules */}
@@ -91,14 +104,39 @@ export function ConditionSentence({ step, onChange, payloadSchema }: ConditionSe
                 onChange={(v) => updateRule(index, { operator: v })}
                 placeholder="operator"
               />
-              {!currentOpHidesValue(rule.operator) && (
-                <SentenceToken
-                  mode="text"
-                  value={rule.value}
-                  onChange={(v) => updateRule(index, { value: v })}
-                  placeholder="value"
-                />
-              )}
+              {!currentOpHidesValue(rule.operator) && (() => {
+                const opts = getValueOptions(rule.field);
+                if (opts?.type === 'enum') {
+                  return (
+                    <SentenceToken
+                      mode="select"
+                      value={rule.value}
+                      options={opts.options}
+                      onChange={(v) => updateRule(index, { value: v })}
+                      placeholder="value"
+                    />
+                  );
+                }
+                if (opts?.type === 'dynamic') {
+                  return (
+                    <SentenceToken
+                      mode="dynamic-select"
+                      value={rule.value}
+                      optionsUrl={opts.url}
+                      onChange={(v) => updateRule(index, { value: v })}
+                      placeholder="value"
+                    />
+                  );
+                }
+                return (
+                  <SentenceToken
+                    mode="text"
+                    value={rule.value}
+                    onChange={(v) => updateRule(index, { value: v })}
+                    placeholder="value"
+                  />
+                );
+              })()}
             </>
           )}
           <button

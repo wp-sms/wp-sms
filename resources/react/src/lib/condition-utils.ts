@@ -1,4 +1,6 @@
 import type { JsonSchema, JsonSchemaProperty, ConditionRule } from '@/lib/api';
+import { getConfig } from '@/lib/api';
+import { formatLabel } from '@/lib/constants';
 
 export type { ConditionRule };
 
@@ -129,4 +131,77 @@ export function getOperatorLabel(op: string): string {
 /** Create an empty condition rule. */
 export function createEmptyRule(): ConditionRule {
   return { field: '', operator: 'equals', value: '' };
+}
+
+/** Resolve a schema property by dot-path (e.g. "user.roles"). */
+export function resolveFieldProperty(schema: JsonSchema, fieldPath: string): JsonSchemaProperty | undefined {
+  const parts = fieldPath.split('.');
+  let properties = schema.properties;
+  for (let i = 0; i < parts.length; i++) {
+    if (!properties) return undefined;
+    const prop = properties[parts[i]];
+    if (!prop) return undefined;
+    if (i === parts.length - 1) return prop;
+    if (prop.type === 'object' && prop.properties) {
+      properties = prop.properties;
+    } else {
+      return undefined;
+    }
+  }
+  return undefined;
+}
+
+/** Map enum values to { value, label } options using enumLabels or formatLabel fallback. */
+export function formatEnumOptions(
+  enumValues: string[],
+  enumLabels?: Record<string, string>,
+): { value: string; label: string }[] {
+  return enumValues.map((e) => ({
+    value: e,
+    label: enumLabels?.[e] ?? formatLabel(e),
+  }));
+}
+
+export type ValueOptions =
+  | { type: 'enum'; options: { value: string; label: string }[] }
+  | { type: 'dynamic'; url: string }
+  | null;
+
+const ROLE_FIELD_PATTERN = /^roles?$/;
+
+/** Resolve dropdown options for a condition field from filter_schema, merged schema, or WordPress roles. */
+export function getConditionValueOptions(
+  field: string,
+  filterSchema: Record<string, JsonSchemaProperty> | undefined,
+  merged: JsonSchema,
+  triggerType?: string,
+): ValueOptions {
+  // 1. Check trigger's filter_schema
+  const filterField = filterSchema?.[field];
+  if (filterField?.enum && filterField.enum.length > 0) {
+    return { type: 'enum', options: formatEnumOptions(filterField.enum, filterField.enumLabels) };
+  }
+  if (filterField?.dynamic && triggerType) {
+    return { type: 'dynamic', url: `triggers/${triggerType}/filter-options/${field}` };
+  }
+
+  // 2. Check merged payload schema property
+  const mergedProp = resolveFieldProperty(merged, field);
+  if (mergedProp?.enum && mergedProp.enum.length > 0) {
+    return { type: 'enum', options: formatEnumOptions(mergedProp.enum, mergedProp.enumLabels) };
+  }
+
+  // 3. Role fields — use WordPress roles from config
+  const leafName = field.split('.').pop();
+  if (leafName && ROLE_FIELD_PATTERN.test(leafName)) {
+    const roles = getConfig().roles;
+    if (roles && Object.keys(roles).length > 0) {
+      return {
+        type: 'enum',
+        options: Object.entries(roles).map(([value, label]) => ({ value, label })),
+      };
+    }
+  }
+
+  return null;
 }

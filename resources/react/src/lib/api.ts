@@ -284,6 +284,7 @@ export interface JsonSchemaProperty {
   description?: string;
   hint?: string;
   enum?: string[];
+  enumLabels?: Record<string, string>;
   default?: unknown;
   items?: JsonSchemaProperty;
   properties?: Record<string, JsonSchemaProperty>;

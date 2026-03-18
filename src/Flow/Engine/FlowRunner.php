@@ -95,16 +95,26 @@ class FlowRunner
                 return false;
             }
 
-            $payloadValue = (string) $payload[$key];
+            $payloadValue = $payload[$key];
+
+            // Payload value is an array (e.g., changed_fields) — check containment
+            if (is_array($payloadValue) && !is_array($filterValue)) {
+                if (!in_array((string) $filterValue, array_map('strval', $payloadValue), true)) {
+                    return false;
+                }
+                continue;
+            }
+
+            $payloadStr = (string) $payloadValue;
 
             if (is_array($filterValue)) {
                 // Multi-select: payload value must be in the filter array
-                if (!in_array($payloadValue, array_map('strval', $filterValue), true)) {
+                if (!in_array($payloadStr, array_map('strval', $filterValue), true)) {
                     return false;
                 }
             } else {
                 // String comparison handles int/string mismatches safely (e.g., product_id 55 vs '55')
-                if ($payloadValue !== (string) $filterValue) {
+                if ($payloadStr !== (string) $filterValue) {
                     return false;
                 }
             }

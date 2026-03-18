@@ -80,6 +80,7 @@ export function TriggerSentence({
             values={triggerConfig}
             onChange={(vals) => onChangeTrigger(triggerType, vals)}
             dynamicOptionsUrl={dynamicOptionsUrl}
+            filterMode
           />
         </div>
       )}

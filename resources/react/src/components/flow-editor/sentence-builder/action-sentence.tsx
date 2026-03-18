@@ -131,7 +131,7 @@ export function ActionSentence({ step, onChange, payloadSchema, triggerType, sam
           key={fieldKey}
           mode="select"
           value={String(value ?? prop.default ?? '')}
-          options={prop.enum.map((e) => ({ value: e, label: formatLabel(e) }))}
+          options={prop.enum.map((e) => ({ value: e, label: prop.enumLabels?.[e] ?? formatLabel(e) }))}
           onChange={(v) => handleConfigChange(fieldKey, v)}
           placeholder={label}
         />

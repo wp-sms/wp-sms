@@ -90,11 +90,20 @@ class TriggerFilterSchemaTest extends TestCase
         $this->assertTrue($schema['product_id']['dynamic']);
     }
 
-    public function testTriggersWithNoFiltersReturnEmptySchema(): void
+    public function testUserUpdatedHasChangedFieldsFilter(): void
     {
         $trigger = new UserUpdatedTrigger();
-        $this->assertSame([], $trigger->getFilterSchema());
+        $schema = $trigger->getFilterSchema();
 
+        $this->assertArrayHasKey('changed_fields', $schema);
+        $this->assertSame('string', $schema['changed_fields']['type']);
+        $this->assertContains('user_email', $schema['changed_fields']['enum']);
+        $this->assertContains('display_name', $schema['changed_fields']['enum']);
+        $this->assertArrayHasKey('enumLabels', $schema['changed_fields']);
+    }
+
+    public function testTriggersWithNoFiltersReturnEmptySchema(): void
+    {
         $trigger = new UserDeletedTrigger();
         $this->assertSame([], $trigger->getFilterSchema());
 
@@ -165,6 +174,7 @@ class TriggerFilterSchemaTest extends TestCase
             [UserRegisterTrigger::class],
             [UserRoleChangedTrigger::class],
             [CommentPostedTrigger::class],
+            [UserUpdatedTrigger::class],
             [OrderStatusChangedTrigger::class],
             [ProductPurchasedTrigger::class],
         ];
