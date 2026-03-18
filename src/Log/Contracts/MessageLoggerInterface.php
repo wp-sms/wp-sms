@@ -18,6 +18,7 @@ interface MessageLoggerInterface
         ?string $error = null,
         ?float $cost = null,
         string $type = 'transactional',
+        ?string $campaignId = null,
     ): string;
 
     public function updateStatus(string $logId, string $status, ?string $error = null, ?string $providerId = null): void;

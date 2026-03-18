@@ -3,6 +3,7 @@
 namespace WSms\Rest;
 
 use WSms\Auth\RateLimiter;
+use WSms\Campaign\CampaignRepository;
 use WSms\Log\Contracts\MessageLoggerInterface;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
 use WSms\Messaging\Gateway\GatewayRegistry;
@@ -19,6 +20,7 @@ class GatewayCallbackController
         private readonly GatewayRegistry $gatewayRegistry,
         private readonly MessageLoggerInterface $messageLogger,
         private readonly RateLimiter $rateLimiter,
+        private readonly ?CampaignRepository $campaignRepository = null,
     ) {
     }
 
@@ -74,6 +76,15 @@ class GatewayCallbackController
             }
 
             $this->messageLogger->updateStatus($logEntry['id'], $update->status, $update->getDisplayError());
+
+            // Increment campaign counters on delivery receipt
+            if ($this->campaignRepository && ($logEntry['campaign_id'] ?? null)) {
+                if ($update->status === 'delivered') {
+                    $this->campaignRepository->incrementCounters($logEntry['campaign_id'], 'delivered_count');
+                } elseif ($update->status === 'failed') {
+                    $this->campaignRepository->incrementCounters($logEntry['campaign_id'], 'failed_count');
+                }
+            }
         }
 
         return new \WP_REST_Response(['success' => true]);

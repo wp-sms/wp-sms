@@ -7,6 +7,7 @@ declare global {
       adminUrl: string;
       isPremium: boolean;
       roles: Record<string, string>;
+      timezone: string;
       area: 'auth' | 'messaging';
     };
   }
@@ -212,7 +213,7 @@ export interface LogEntry {
   user_display: { display_name: string; email: string } | null;
 }
 
-const FALLBACK_CONFIG = { restUrl: '', nonce: '', version: '', adminUrl: '', isPremium: false, roles: {} as Record<string, string>, area: 'auth' as const };
+const FALLBACK_CONFIG = { restUrl: '', nonce: '', version: '', adminUrl: '', isPremium: false, roles: {} as Record<string, string>, timezone: 'UTC', area: 'auth' as const };
 
 export function getConfig() {
   return window.wpSmsSettings ?? FALLBACK_CONFIG;
@@ -545,6 +546,83 @@ export interface FlowTemplate {
 export interface ListResponse<T> {
   items: T[];
   total: number;
+}
+
+// --- Campaign Types ---
+
+export type CampaignStatus = 'draft' | 'scheduled' | 'sending' | 'paused' | 'sent' | 'cancelled' | 'failed';
+
+export interface CampaignAudienceSource {
+  type: 'segment' | 'tags' | 'wp_roles' | 'manual';
+  conditions?: SegmentConditionGroup;
+  tag_ids?: string[];
+  roles?: string[];
+  recipients?: string[];
+}
+
+export interface CampaignAudience {
+  sources: CampaignAudienceSource[];
+  exclude_unsubscribed?: boolean;
+}
+
+export interface CampaignCompliance {
+  append_opt_out?: boolean;
+  opt_out_text?: string;
+}
+
+export interface CampaignRecurrence {
+  frequency: 'daily' | 'weekly' | 'monthly';
+  end_date?: string;
+}
+
+export interface CampaignQuietHours {
+  start: string;
+  end: string;
+  timezone: string;
+}
+
+export interface Campaign {
+  id: string;
+  name: string;
+  channel: string;
+  gateway_id: string | null;
+  status: CampaignStatus;
+  subject: string | null;
+  body: string;
+  media_url?: string;
+  audience: CampaignAudience;
+  compliance: CampaignCompliance | null;
+  send_at: string | null;
+  timezone: string;
+  recurrence: CampaignRecurrence | null;
+  quiet_hours: CampaignQuietHours | null;
+  parent_id: string | null;
+  total_recipients: number;
+  sent_count: number;
+  delivered_count: number;
+  failed_count: number;
+  skipped_count: number;
+  total_cost: number;
+  last_processed_id: string | null;
+  created_by: number | null;
+  started_at: string | null;
+  completed_at: string | null;
+  cancelled_at: string | null;
+}
+
+export interface CampaignStats {
+  total_recipients: number;
+  skipped_count: number;
+  total: number;
+  delivered: number;
+  failed: number;
+  sent: number;
+  queued: number;
+  total_cost: number;
+}
+
+export interface CampaignRecipient extends MessageLogEntry {
+  campaign_id: string;
 }
 
 // --- Flow Execution Types ---

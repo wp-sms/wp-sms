@@ -14,6 +14,7 @@ class Message implements MessageInterface
         private readonly string $body,
         private readonly ?string $flowExecutionId = null,
         private readonly array $meta = [],
+        private readonly ?string $campaignId = null,
     ) {
     }
 
@@ -40,5 +41,10 @@ class Message implements MessageInterface
     public function getFlowExecutionId(): ?string
     {
         return $this->flowExecutionId;
+    }
+
+    public function getCampaignId(): ?string
+    {
+        return $this->campaignId;
     }
 }

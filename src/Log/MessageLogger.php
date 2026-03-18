@@ -21,6 +21,7 @@ class MessageLogger implements MessageLoggerInterface
         ?string $error = null,
         ?float $cost = null,
         string $type = 'transactional',
+        ?string $campaignId = null,
     ): string {
         global $wpdb;
 
@@ -30,6 +31,7 @@ class MessageLogger implements MessageLoggerInterface
         $wpdb->insert($wpdb->prefix . 'wsms_message_logs', [
             'id'            => $id,
             'execution_id'  => $executionId,
+            'campaign_id'   => $campaignId,
             'gateway_id'    => $gatewayId,
             'channel'       => $channel,
             'type'          => $type,
@@ -73,15 +75,16 @@ class MessageLogger implements MessageLoggerInterface
         global $wpdb;
         $table = $wpdb->prefix . 'wsms_message_logs';
 
-        $id = $wpdb->get_var(
+        $row = $wpdb->get_row(
             $wpdb->prepare(
-                "SELECT id FROM {$table} WHERE gateway_id = %s AND provider_id = %s ORDER BY created_at DESC LIMIT 1",
+                "SELECT id, campaign_id FROM {$table} WHERE gateway_id = %s AND provider_id = %s ORDER BY created_at DESC LIMIT 1",
                 $gatewayId,
                 $providerId,
             ),
+            ARRAY_A,
         );
 
-        return $id ? ['id' => $id] : null;
+        return $row ?: null;
     }
 
     public function findByExecution(string $executionId): array
@@ -160,6 +163,10 @@ class MessageLogger implements MessageLoggerInterface
         if (!empty($filters['gateway_id'])) {
             $where .= ' AND gateway_id = %s';
             $params[] = $filters['gateway_id'];
+        }
+        if (!empty($filters['campaign_id'])) {
+            $where .= ' AND campaign_id = %s';
+            $params[] = $filters['campaign_id'];
         }
         if (!empty($filters['date_from'])) {
             $where .= ' AND created_at >= %s';

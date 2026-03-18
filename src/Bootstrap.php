@@ -17,6 +17,7 @@ use WSms\Container\QueueServiceProvider;
 use WSms\Container\MessagingServiceProvider;
 use WSms\Container\ContactServiceProvider;
 use WSms\Container\FlowServiceProvider;
+use WSms\Container\CampaignServiceProvider;
 use WSms\Container\IntegrationServiceProvider;
 use WSms\Verification\Plugin\ContactForm7\CF7ServiceProvider;
 use WSms\Verification\Plugin\WPForms\WPFormsServiceProvider;
@@ -57,6 +58,7 @@ class Bootstrap
         MessagingServiceProvider::class,
         ContactServiceProvider::class,
         FlowServiceProvider::class,
+        CampaignServiceProvider::class,
         IntegrationServiceProvider::class,
         // REST must come after all services are registered
         RestServiceProvider::class,

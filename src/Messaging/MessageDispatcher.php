@@ -57,6 +57,8 @@ class MessageDispatcher
             providerId: $result->providerId,
             error: $result->error,
             cost: $result->cost,
+            type: $message->getCampaignId() ? 'campaign' : 'transactional',
+            campaignId: $message->getCampaignId(),
         );
 
         if ($result->success) {
@@ -97,6 +99,8 @@ class MessageDispatcher
             status: 'queued',
             executionId: $message->getFlowExecutionId(),
             subject: $message->getMeta()['subject'] ?? null,
+            type: $message->getCampaignId() ? 'campaign' : 'transactional',
+            campaignId: $message->getCampaignId(),
         );
 
         $this->queue->dispatch(new SendMessageJob(

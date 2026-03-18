@@ -15,4 +15,6 @@ interface MessageInterface
     public function getMeta(): array;
 
     public function getFlowExecutionId(): ?string;
+
+    public function getCampaignId(): ?string;
 }

@@ -11,16 +11,18 @@ interface SegmentBuilderProps {
   conditions: SegmentConditionGroup;
   tags: Tag[];
   onChange: (conditions: SegmentConditionGroup) => void;
+  hideCount?: boolean;
 }
 
-export function SegmentBuilder({ conditions, tags, onChange }: SegmentBuilderProps) {
+export function SegmentBuilder({ conditions, tags, onChange, hideCount }: SegmentBuilderProps) {
   const { count, loading, evaluate } = useSegmentPreview();
 
   useEffect(() => {
+    if (hideCount) return;
     if (conditions.conditions?.length || conditions.groups?.length) {
       evaluate(conditions);
     }
-  }, [conditions, evaluate]);
+  }, [conditions, evaluate, hideCount]);
 
   const handleTemplate = (templateName: string) => {
     const template = SEGMENT_TEMPLATES.find((t) => t.name === templateName);
@@ -43,15 +45,17 @@ export function SegmentBuilder({ conditions, tags, onChange }: SegmentBuilderPro
           </SelectContent>
         </Select>
 
-        <div className="flex items-center gap-2">
-          {loading ? (
-            <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
-          ) : (
-            <Badge variant="secondary" className="text-xs">
-              {count} {count === 1 ? 'contact' : 'contacts'} match
-            </Badge>
-          )}
-        </div>
+        {!hideCount && (
+          <div className="flex items-center gap-2">
+            {loading ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin text-muted-foreground" />
+            ) : (
+              <Badge variant="secondary" className="text-xs">
+                {count} {count === 1 ? 'contact' : 'contacts'} match
+              </Badge>
+            )}
+          </div>
+        )}
       </div>
 
       <ConditionGroupComponent group={conditions} tags={tags} onChange={onChange} />

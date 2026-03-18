@@ -44,4 +44,9 @@ class EmailMessage implements MessageInterface
     {
         return $this->flowExecutionId;
     }
+
+    public function getCampaignId(): ?string
+    {
+        return null;
+    }
 }

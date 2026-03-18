@@ -9,6 +9,7 @@ use WSms\Rest\AdminUserController;
 use WSms\Rest\AuthController;
 use WSms\Rest\ContactController;
 use WSms\Rest\FlowController;
+use WSms\Rest\CampaignController;
 use WSms\Rest\GatewayController;
 use WSms\Rest\IntegrationController;
 use WSms\Rest\MessageLogController;
@@ -134,6 +135,13 @@ class RestServiceProvider implements ServiceProvider
         $container->register('rest.message_logs', fn($c) => new MessageLogController(
             $c->get('log.message'),
         ));
+        $container->register('rest.campaigns', fn($c) => new CampaignController(
+            $c->get('campaign.repository'),
+            $c->get('campaign.dispatcher'),
+            $c->get('campaign.audience_resolver'),
+            $c->get('log.message'),
+            $c->get('message.dispatcher'),
+        ));
         $container->register('rest.integrations', fn($c) => new IntegrationController(
             $c->get('integration.registry'),
             $c->get('flow.triggers'),
@@ -143,6 +151,7 @@ class RestServiceProvider implements ServiceProvider
             $c->get('gateway.registry'),
             $c->get('log.message'),
             $c->get('auth.rate_limiter'),
+            $c->get('campaign.repository'),
         ));
         $container->register('rest.webhook_receiver', fn($c) => new WebhookReceiverController(
             $c->get('auth.rate_limiter'),
@@ -168,6 +177,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.tags')->registerRoutes();
             $container->get('rest.lists')->registerRoutes();
             $container->get('rest.message_logs')->registerRoutes();
+            $container->get('rest.campaigns')->registerRoutes();
             $container->get('rest.integrations')->registerRoutes();
             $container->get('rest.gateway_callbacks')->registerRoutes();
             $container->get('rest.webhook_receiver')->registerRoutes();

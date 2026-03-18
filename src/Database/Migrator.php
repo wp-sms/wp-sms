@@ -24,7 +24,8 @@ class Migrator
              . self::getContactsSchema($wpdb->prefix, $charsetCollate)
              . self::getTagsSchema($wpdb->prefix, $charsetCollate)
              . self::getContactTagSchema($wpdb->prefix, $charsetCollate)
-             . self::getListsSchema($wpdb->prefix, $charsetCollate);
+             . self::getListsSchema($wpdb->prefix, $charsetCollate)
+             . self::getCampaignsSchema($wpdb->prefix, $charsetCollate);
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
         dbDelta($sql);
@@ -38,6 +39,7 @@ class Migrator
         global $wpdb;
 
         $tables = [
+            $wpdb->prefix . 'wsms_campaigns',
             $wpdb->prefix . 'wsms_contact_tag',
             $wpdb->prefix . 'wsms_lists',
             $wpdb->prefix . 'wsms_tags',
@@ -170,6 +172,7 @@ class Migrator
         return "CREATE TABLE {$prefix}wsms_message_logs (
             id              CHAR(26) NOT NULL,
             execution_id    CHAR(26),
+            campaign_id     CHAR(26),
             gateway_id      VARCHAR(50) NOT NULL,
             channel         VARCHAR(20) NOT NULL,
             type            VARCHAR(20) DEFAULT 'transactional',
@@ -185,6 +188,7 @@ class Migrator
             created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             INDEX idx_execution (execution_id),
+            INDEX idx_campaign (campaign_id),
             INDEX idx_channel_status (channel, status),
             INDEX idx_recipient (recipient),
             INDEX idx_created (created_at),
@@ -251,6 +255,44 @@ class Migrator
             updated_at      DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             INDEX idx_type (type)
+        ) {$charsetCollate};\n";
+    }
+
+    private static function getCampaignsSchema(string $prefix, string $charsetCollate): string
+    {
+        return "CREATE TABLE {$prefix}wsms_campaigns (
+            id                  CHAR(26) NOT NULL,
+            name                VARCHAR(255) NOT NULL,
+            channel             VARCHAR(20) NOT NULL,
+            gateway_id          VARCHAR(50),
+            status              VARCHAR(20) NOT NULL DEFAULT 'draft',
+            subject             VARCHAR(500),
+            body                LONGTEXT NOT NULL,
+            audience            LONGTEXT NOT NULL,
+            compliance          TEXT,
+            send_at             DATETIME,
+            timezone            VARCHAR(50) DEFAULT 'UTC',
+            recurrence          TEXT,
+            quiet_hours         TEXT,
+            parent_id           CHAR(26),
+            total_recipients    INT UNSIGNED DEFAULT 0,
+            sent_count          INT UNSIGNED DEFAULT 0,
+            delivered_count     INT UNSIGNED DEFAULT 0,
+            failed_count        INT UNSIGNED DEFAULT 0,
+            skipped_count       INT UNSIGNED DEFAULT 0,
+            total_cost          DECIMAL(10,6) DEFAULT 0,
+            last_processed_id   CHAR(26),
+            created_by          BIGINT,
+            started_at          DATETIME,
+            completed_at        DATETIME,
+            cancelled_at        DATETIME,
+            created_at          DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at          DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (id),
+            INDEX idx_status (status),
+            INDEX idx_channel (channel),
+            INDEX idx_send_at (send_at),
+            INDEX idx_parent (parent_id)
         ) {$charsetCollate};\n";
     }
 }

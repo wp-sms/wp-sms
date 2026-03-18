@@ -48,6 +48,7 @@ export const NAV_ITEMS = [
     label: 'Messaging',
     icon: Send,
     children: [
+      { id: 'campaigns', label: 'Campaigns' },
       { id: 'flows', label: 'Flows' },
       { id: 'contacts', label: 'Contacts' },
       { id: 'gateways', label: 'Gateways' },
@@ -102,6 +103,7 @@ export const NAV_ITEMS = [
 ] as const;
 
 const SECTION_DESCRIPTIONS: Record<string, string> = {
+  'campaigns': 'Create and send broadcast messages to your audience segments.',
   'flows': 'Create and manage automation flows with triggers and action steps.',
   'contacts': 'Manage your contacts, tags, and segments for targeted messaging.',
   'gateways': 'Configure messaging gateways for SMS, email, webhooks, and more.',

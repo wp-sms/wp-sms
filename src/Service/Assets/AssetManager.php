@@ -66,6 +66,7 @@ class AssetManager
             'adminUrl'  => admin_url(),
             'isPremium' => defined('WP_SMS_PREMIUM_FILE'),
             'roles'     => wp_list_pluck(get_editable_roles(), 'name'),
+            'timezone'  => wp_timezone_string(),
             'area'      => $this->resolveArea($hook),
         ];
     }
