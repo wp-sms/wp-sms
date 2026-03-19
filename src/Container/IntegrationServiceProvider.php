@@ -9,7 +9,10 @@ use WSms\Integration\Webhook\WebhookIntegration;
 use WSms\Integration\WooCommerce\WooCommerceIntegration;
 use WSms\Integration\WordPress\WordPressIntegration;
 use WSms\Integration\Telegram\TelegramIntegration;
+use WSms\Integration\Contracts\IntegrationInterface;
 use WSms\Integration\WpSms\WpSmsIntegration;
+use WSms\Flow\Trigger\TriggerRegistry;
+use WSms\Flow\Action\ActionRegistry;
 
 defined('ABSPATH') || exit;
 
@@ -37,31 +40,26 @@ class IntegrationServiceProvider implements ServiceProvider
             $actions = $container->get('flow.actions');
 
             // Register WpSmsIntegration first (needs constructor injection)
-            $wpsms = new WpSmsIntegration(
-                $container->get('message.dispatcher'),
-                $container->get('gateway.registry'),
-                $container->get('event.dispatcher'),
+            $this->registerIntegration(
+                new WpSmsIntegration(
+                    $container->get('message.dispatcher'),
+                    $container->get('gateway.registry'),
+                    $container->get('event.dispatcher'),
+                ),
+                $registry,
+                $triggers,
+                $actions,
             );
-            $registry->register($wpsms);
-            foreach ($wpsms->getTriggers() as $trigger) {
-                $triggers->register($trigger);
-            }
-            foreach ($wpsms->getActions() as $action) {
-                $actions->register($action);
-            }
-            $wpsms->boot();
 
             // Register TelegramIntegration (needs constructor injection)
-            $telegram = new TelegramIntegration($container->get('telegram.bot_client'));
-            $registry->register($telegram);
-            foreach ($telegram->getTriggers() as $trigger) {
-                $triggers->register($trigger);
-            }
-            foreach ($telegram->getActions() as $action) {
-                $actions->register($action);
-            }
-            $telegram->boot();
+            $this->registerIntegration(
+                new TelegramIntegration($container->get('telegram.bot_client')),
+                $registry,
+                $triggers,
+                $actions,
+            );
 
+            // Simple integrations (no constructor injection)
             foreach ($this->integrations as $integrationClass) {
                 $integration = new $integrationClass();
 
@@ -69,19 +67,30 @@ class IntegrationServiceProvider implements ServiceProvider
                     continue;
                 }
 
-                $registry->register($integration);
-
-                foreach ($integration->getTriggers() as $trigger) {
-                    $triggers->register($trigger);
-                }
-                foreach ($integration->getActions() as $action) {
-                    $actions->register($action);
-                }
-
-                $integration->boot();
+                $this->registerIntegration($integration, $registry, $triggers, $actions);
             }
 
             do_action('wsms_register_integrations', $registry, $triggers, $actions);
         });
+    }
+
+    private function registerIntegration(
+        IntegrationInterface $integration,
+        IntegrationRegistry $registry,
+        TriggerRegistry $triggers,
+        ActionRegistry $actions,
+    ): void {
+        $registry->register($integration);
+
+        if ($integration->isConnected()) {
+            foreach ($integration->getTriggers() as $trigger) {
+                $triggers->register($trigger);
+            }
+            foreach ($integration->getActions() as $action) {
+                $actions->register($action);
+            }
+        }
+
+        $integration->boot();
     }
 }
