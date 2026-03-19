@@ -83,11 +83,12 @@ export default [
     },
   },
 
-  // 5. Preact layer — hooks plugin only, no react rules
+  // 5. Preact layer — hooks + jsx-uses-vars to avoid false "unused" on JSX imports
   {
     files: ["resources/preact/src/**/*.{js,jsx}"],
     plugins: {
       "react-hooks": reactHooksPlugin,
+      react: reactPlugin,
     },
     languageOptions: {
       globals: {
@@ -97,7 +98,10 @@ export default [
         ecmaFeatures: { jsx: true },
       },
     },
-    rules: { ...hooksRules },
+    rules: {
+      ...hooksRules,
+      "react/jsx-uses-vars": "error",
+    },
   },
 
   // 6. WordPress blocks layer

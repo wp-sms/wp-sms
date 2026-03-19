@@ -7,6 +7,6 @@ interface IntegrationsPageProps {
   onUpdate: <K extends keyof AuthSettings>(key: K, value: AuthSettings[K]) => void;
 }
 
-export function IntegrationsPage({ section, settings, onUpdate }: IntegrationsPageProps) {
+export function IntegrationsPage({ section: _section, settings, onUpdate }: IntegrationsPageProps) {
   return <WooCommerce settings={settings} onUpdate={onUpdate} />;
 }

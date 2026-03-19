@@ -5,7 +5,6 @@ import { api } from '../../api/client';
 import {
     authError,
     authLoading,
-    authStep,
     identifyResult,
     enteredIdentifier,
     selectedMethod,

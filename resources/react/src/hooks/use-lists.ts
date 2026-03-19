@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { api, type ContactList, type ListResponse } from '@/lib/api';
+import { api, type ContactList } from '@/lib/api';
 
 export interface UseListsReturn {
   lists: ContactList[];

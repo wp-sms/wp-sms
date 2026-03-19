@@ -1,4 +1,3 @@
-import type { LucideIcon } from 'lucide-react';
 import { Smartphone, Mail } from 'lucide-react';
 import type { AuthSettings } from './api';
 

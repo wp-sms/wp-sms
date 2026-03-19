@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import type {
   Campaign, CampaignAudience, CampaignAudienceSource, CampaignCompliance,
-  CampaignRecurrence, CampaignQuietHours, SegmentConditionGroup, Tag, Gateway,
+  CampaignRecurrence, CampaignQuietHours, Tag, Gateway,
   JsonSchema,
 } from '@/lib/api';
 import { api, getConfig } from '@/lib/api';
@@ -10,7 +10,7 @@ import { useAudiencePreview } from '@/hooks/use-audience-preview';
 import { SmsSegmentCounter, calculateSegments } from '@/components/campaigns/sms-segment-counter';
 import { SegmentBuilder } from '@/components/lists/segment-builder';
 import { TemplateVariablePicker } from '@/components/flow-editor/template-variable-picker';
-import { CHANNEL_LABELS, channelLabel } from '@/components/gateway-config-form';
+import { channelLabel } from '@/components/gateway-config-form';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

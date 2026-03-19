@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { api, type Tag, type ListResponse } from '@/lib/api';
+import { api, type Tag } from '@/lib/api';
 
 export interface UseTagsReturn {
   tags: Tag[];

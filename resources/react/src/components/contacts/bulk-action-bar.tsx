@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { Tag } from '@/lib/api';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
 import { CONTACT_STATUSES } from '@/lib/constants';
 import { Trash2, Tag as TagIcon, CircleDot, X } from 'lucide-react';
 

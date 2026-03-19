@@ -1,7 +1,7 @@
 import { challengeToken, challengeMeta, pendingMfa, pendingVerifications, authStep, clearAuth } from '../signals/auth';
-import { authUrl, getBaseUrl } from './urls';
+import { getBaseUrl } from './urls';
 
-export function handleAuthResponse(res, route) {
+export function handleAuthResponse(res, _route) {
     if (res.status === 'authenticated') {
         clearAuth();
         if (res.meta?.grace_period) {

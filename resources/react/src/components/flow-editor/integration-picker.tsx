@@ -23,11 +23,6 @@ interface IntegrationPickerProps {
   searchPlaceholder: string;
 }
 
-interface IntegrationGroup {
-  name: string;
-  icon: string;
-  items: PickerItem[];
-}
 
 /** Combined TokenBadge + IntegrationPicker for selecting a trigger or action. */
 export function IntegrationPickerToken({

@@ -17,7 +17,7 @@ interface ActionSentenceProps {
   sampleData?: Record<string, unknown>;
 }
 
-function resolveTokenMode(prop: JsonSchemaProperty | undefined, fieldKey: string, actionId: string): 'select' | 'dynamic-select' | 'text' | 'textarea' | 'number' {
+function resolveTokenMode(prop: JsonSchemaProperty | undefined, fieldKey: string, _actionId: string): 'select' | 'dynamic-select' | 'text' | 'textarea' | 'number' {
   if (!prop) return 'text';
   if (prop.dynamic) return 'dynamic-select';
   if (prop.enum && prop.enum.length > 0) return 'select';

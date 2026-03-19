@@ -16,7 +16,7 @@ const CHANNEL_META = {
     backup_codes: { label: 'Backup Codes', icon: ClipboardList,  description: 'One-time use recovery codes' },
 };
 
-export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, onRefresh, onBackupCodes }) {
+export function MfaFactorCard({ method, enrolled, info: _info, onEnroll, onUnenroll, onRefresh, onBackupCodes }) {
     const meta = CHANNEL_META[method.id] || { label: method.name, icon: Lock, description: '' };
     const [expanding, setExpanding] = useState(false);
     const [phone, setPhone] = useState('');

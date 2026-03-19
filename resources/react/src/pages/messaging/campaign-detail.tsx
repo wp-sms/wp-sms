@@ -17,8 +17,8 @@ import {
 } from '@/components/ui/table';
 import { PageNumbers } from '@/components/ui/pagination';
 import {
-  ArrowLeft, Send, CheckCircle, XCircle, Clock, Users, AlertTriangle,
-  Pause, Play, Ban, DollarSign, Loader2, SkipForward,
+  ArrowLeft, CheckCircle, XCircle, Clock, Users,
+  Pause, Play, Ban, DollarSign, SkipForward,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
