@@ -32,6 +32,16 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
         return () => { if (pollRef.current) clearInterval(pollRef.current); };
     }, []);
 
+    // Stop polling once enrolled.
+    useEffect(() => {
+        if (enrolled && pollRef.current) {
+            clearInterval(pollRef.current);
+            pollRef.current = null;
+            setExpanding(false);
+            setTelegramLink('');
+        }
+    }, [enrolled]);
+
     if (method.id === 'backup_codes') return null;
 
     async function handleEnable() {
@@ -111,16 +121,6 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
         setTelegramLink('');
         if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
     }
-
-    // Stop polling once enrolled.
-    useEffect(() => {
-        if (enrolled && pollRef.current) {
-            clearInterval(pollRef.current);
-            pollRef.current = null;
-            setExpanding(false);
-            setTelegramLink('');
-        }
-    }, [enrolled]);
 
     return (
         <div

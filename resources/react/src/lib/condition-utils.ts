@@ -75,7 +75,7 @@ export function getOperatorsForType(type: string): OperatorDef[] {
 
 /** Escape a value for safe use inside a regex pattern. */
 function escapeRegex(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&');
+  return value.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
 }
 
 /** Convert a dot-path field name to ExpressionLanguage syntax. */

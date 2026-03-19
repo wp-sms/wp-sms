@@ -176,7 +176,7 @@ export function IntegrationPicker({
   const renderItem = (item: PickerItem, i: number, showIcon: boolean) => (
     <button
       key={item.value}
-      ref={(el) => { el ? itemRefs.current.set(i, el) : itemRefs.current.delete(i); }}
+      ref={(el) => { if (el) { itemRefs.current.set(i, el); } else { itemRefs.current.delete(i); } }}
       type="button"
       className={cn(
         'flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left transition-colors',
