@@ -78,6 +78,7 @@ class TestGateway implements GatewayInterface
             'delivery_receipt' => false,
             'incoming'         => false,
             'unicode'          => true,
+            'test_connection'  => true,
         ];
     }
 

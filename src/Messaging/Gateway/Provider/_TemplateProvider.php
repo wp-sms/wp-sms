@@ -159,6 +159,7 @@ class _TemplateProvider extends AbstractProvider implements SupportsStatusCallba
     {
         return array_merge(parent::getFeatures(), [
             'delivery_receipt' => true,
+            'test_connection'  => true, // Enable when your provider implements testConnection()
         ]);
     }
 

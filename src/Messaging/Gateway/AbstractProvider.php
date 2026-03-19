@@ -119,6 +119,7 @@ abstract class AbstractProvider implements GatewayInterface
             'delivery_receipt' => false,
             'incoming'         => false,
             'unicode'          => true,
+            'test_connection'  => false,
         ];
     }
 

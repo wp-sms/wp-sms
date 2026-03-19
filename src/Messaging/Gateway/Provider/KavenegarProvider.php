@@ -123,6 +123,13 @@ class KavenegarProvider extends AbstractProvider
         return (string) ($data['entries']['remaincredit'] ?? '');
     }
 
+    public function getFeatures(): array
+    {
+        return array_merge(parent::getFeatures(), [
+            'test_connection' => true,
+        ]);
+    }
+
     public function testConnection(): TestConnectionResult
     {
         $apiKey = $this->getSharedConfig('api_key');

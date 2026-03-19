@@ -176,6 +176,13 @@ class OvhProvider extends AbstractProvider
         return isset($data['creditsLeft']) ? (string) $data['creditsLeft'] : null;
     }
 
+    public function getFeatures(): array
+    {
+        return array_merge(parent::getFeatures(), [
+            'test_connection' => true,
+        ]);
+    }
+
     public function testConnection(): TestConnectionResult
     {
         $appKey = $this->getSharedConfig('application_key');

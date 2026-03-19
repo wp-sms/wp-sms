@@ -151,6 +151,13 @@ class NetGsmProvider extends AbstractProvider
         return $parts[0] ?? null;
     }
 
+    public function getFeatures(): array
+    {
+        return array_merge(parent::getFeatures(), [
+            'test_connection' => true,
+        ]);
+    }
+
     public function testConnection(): TestConnectionResult
     {
         $username = $this->getSharedConfig('username');

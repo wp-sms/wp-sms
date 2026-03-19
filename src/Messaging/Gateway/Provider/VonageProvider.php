@@ -83,6 +83,7 @@ class VonageProvider extends AbstractProvider
         return array_merge(parent::getFeatures(), [
             'delivery_receipt' => true,
             'incoming'         => true,
+            'test_connection'  => true,
         ]);
     }
 

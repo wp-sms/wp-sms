@@ -184,7 +184,7 @@ export function GatewayConfigSheet({
           <Separator />
 
           {/* Test Connection */}
-          {onTestConnection && (
+          {onTestConnection && gateway.features?.test_connection && (
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <Button

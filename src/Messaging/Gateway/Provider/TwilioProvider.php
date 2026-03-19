@@ -94,6 +94,7 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback
             'mms'              => true,
             'delivery_receipt' => true,
             'incoming'         => true,
+            'test_connection'  => true,
         ]);
     }
 
