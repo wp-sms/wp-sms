@@ -17,7 +17,7 @@ import { ExportDialog } from './export-dialog';
 import { Plus, Search, Users, Pencil, Trash2, Eye, Upload, Download } from 'lucide-react';
 import { CONTACT_STATUSES, formatLabel } from '@/lib/constants';
 import { toast } from 'sonner';
-import { useDeleteConfirm } from '@/hooks/use-delete-confirm';
+import { useConfirm } from '@/components/confirm-provider';
 
 interface ContactsListProps {
   hook: UseContactsReturn;
@@ -45,10 +45,19 @@ export function ContactsList({ hook, tags, onImport }: ContactsListProps) {
   const [detailId, setDetailId] = useState<string | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
 
-  const { handleDelete, isConfirming } = useDeleteConfirm(async (id) => {
+  const confirm = useConfirm();
+
+  const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      title: 'Delete contact?',
+      description: 'This contact and all associated data will be permanently removed.',
+      confirmLabel: 'Delete',
+      variant: 'destructive',
+    });
+    if (!ok) return;
     await deleteContact(id);
     toast.success('Contact deleted.');
-  });
+  };
 
   const totalPages = Math.ceil(total / perPage);
 
@@ -212,7 +221,7 @@ export function ContactsList({ hook, tags, onImport }: ContactsListProps) {
                               size="sm"
                               className="h-7 w-7 p-0 text-destructive hover:text-destructive"
                               onClick={() => void handleDelete(contact.id)}
-                              title={isConfirming(contact.id) ? 'Click again to confirm' : 'Delete'}
+                              title="Delete"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
                             </Button>

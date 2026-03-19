@@ -186,6 +186,12 @@
   z-index: 100100 !important;
 }
 
+/* AlertDialog must sit above Sheet/Drawer so it works when triggered from inside one */
+[data-slot="alert-dialog-overlay"],
+[data-slot="alert-dialog-content"] {
+  z-index: 100200 !important;
+}
+
 /* ─── Visual Polish: Surfaces & Depth ─── */
 
 /* Sidebar wrapper — override min-h-svh so it matches content height.

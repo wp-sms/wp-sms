@@ -40,6 +40,7 @@ import {
 import { formatLabel } from '@/lib/constants';
 import { countSteps } from '@/lib/flow-utils';
 import { toast } from 'sonner';
+import { useConfirm } from '@/components/confirm-provider';
 
 type View =
   | { mode: 'list' }
@@ -67,6 +68,7 @@ export function Flows() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
 
+  const confirm = useConfirm();
   const totalPages = Math.ceil(total / perPage);
 
   // Load templates
@@ -102,6 +104,13 @@ export function Flows() {
   }, [templates, activeCategory, searchQuery]);
 
   const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      title: 'Delete flow?',
+      description: 'This automation flow and its execution history will be permanently removed.',
+      confirmLabel: 'Delete',
+      variant: 'destructive',
+    });
+    if (!ok) return;
     setDeleting(id);
     try {
       await deleteFlow(id);
@@ -114,6 +123,12 @@ export function Flows() {
   };
 
   const handlePublish = async (id: string) => {
+    const ok = await confirm({
+      title: 'Publish flow?',
+      description: 'This flow will become active and start processing events immediately.',
+      confirmLabel: 'Publish',
+    });
+    if (!ok) return;
     setPublishing(id);
     try {
       await publishFlow(id);

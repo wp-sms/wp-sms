@@ -28,6 +28,7 @@ import { PageNumbers } from '@/components/ui/pagination';
 import { CHANNEL_LABELS } from '@/components/gateway-config-form';
 import { Plus, Megaphone, Pencil, Trash2, Copy, Eye } from 'lucide-react';
 import { toast } from 'sonner';
+import { useConfirm } from '@/components/confirm-provider';
 
 type View =
   | { mode: 'list' }
@@ -51,10 +52,18 @@ export function Campaigns() {
   const [view, setView] = useState<View>({ mode: 'list' });
   const [deleting, setDeleting] = useState<string | null>(null);
   const [duplicating, setDuplicating] = useState<string | null>(null);
+  const confirm = useConfirm();
 
   const totalPages = Math.ceil(total / perPage);
 
   const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      title: 'Delete campaign?',
+      description: 'This campaign and its delivery history will be permanently removed.',
+      confirmLabel: 'Delete',
+      variant: 'destructive',
+    });
+    if (!ok) return;
     setDeleting(id);
     try {
       await deleteCampaign(id);

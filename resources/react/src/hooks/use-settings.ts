@@ -101,5 +101,16 @@ export function useSettings(): UseSettingsReturn {
     return () => clearTimeout(statusTimer.current);
   }, []);
 
+  // Warn on browser tab close / page navigation when settings are dirty
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (JSON.stringify(draftRef.current) !== JSON.stringify(savedRef.current)) {
+        e.preventDefault();
+      }
+    };
+    window.addEventListener('beforeunload', handler);
+    return () => window.removeEventListener('beforeunload', handler);
+  }, []);
+
   return { settings: draftSettings, updateSetting, isDirty, saveStatus, save, loading, error };
 }

@@ -16,6 +16,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Toaster } from '@/components/ui/sonner';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { ConfirmProvider } from '@/components/confirm-provider';
 import { AlertCircle } from 'lucide-react';
 
 const { roles, version, area } = getConfig();
@@ -72,16 +73,18 @@ export default function App() {
 
   return (
     <TooltipProvider>
-      <div className="wsms-app">
-        <div className="border border-border overflow-hidden">
-          <AppShell activeSection={section} onNavigate={setSection} version={version} navItems={navItems}>
-            {renderContent()}
-          </AppShell>
-        </div>
+      <ConfirmProvider>
+        <div className="wsms-app">
+          <div className="border border-border overflow-hidden">
+            <AppShell activeSection={section} onNavigate={setSection} version={version} navItems={navItems}>
+              {renderContent()}
+            </AppShell>
+          </div>
 
-        <SaveBar isDirty={isDirty} saveStatus={saveStatus} onSave={handleSave} />
-        <Toaster richColors position="bottom-right" />
-      </div>
+          <SaveBar isDirty={isDirty} saveStatus={saveStatus} onSave={handleSave} />
+          <Toaster richColors position="bottom-right" />
+        </div>
+      </ConfirmProvider>
     </TooltipProvider>
   );
 }

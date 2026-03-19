@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import type { ImportPreview, ImportResult } from '@/lib/api';
+import { useConfirm } from '@/components/confirm-provider';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,6 +28,7 @@ interface ImportWizardProps {
 }
 
 export function ImportWizard({ open, onOpenChange, onPreview, onImport }: ImportWizardProps) {
+  const confirm = useConfirm();
   const [step, setStep] = useState<Step>('upload');
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<ImportPreview | null>(null);
@@ -97,7 +99,19 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
   };
 
   return (
-    <Sheet open={open} onOpenChange={(o) => { onOpenChange(o); if (!o) reset(); }}>
+    <Sheet open={open} onOpenChange={async (o) => {
+      if (!o && step !== 'upload' && step !== 'results') {
+        const ok = await confirm({
+          title: 'Close import wizard?',
+          description: 'Your import progress will be lost.',
+          confirmLabel: 'Close',
+          variant: 'destructive',
+        });
+        if (!ok) return;
+      }
+      onOpenChange(o);
+      if (!o) reset();
+    }}>
       <SheetContent className="sm:max-w-lg overflow-y-auto">
         <SheetHeader>
           <SheetTitle>Import Contacts</SheetTitle>

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import type { Flow, FlowNode, JsonSchema } from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -11,6 +11,8 @@ import { getCachedActions } from '@/hooks/use-actions';
 import { validateFlowSteps, flattenSteps, nestSteps } from '@/lib/flow-utils';
 import { ArrowLeft, Save, Rocket, Pause } from 'lucide-react';
 import { toast } from 'sonner';
+import { useConfirm } from '@/components/confirm-provider';
+import { useUnsavedChanges } from '@/hooks/use-unsaved-changes';
 
 interface FlowEditorProps {
   flow?: Flow;
@@ -34,8 +36,20 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
   const [deactivating, setDeactivating] = useState(false);
   const [payloadSchema, setPayloadSchema] = useState<JsonSchema | undefined>();
   const [sampleData, setSampleData] = useState<Record<string, unknown> | undefined>();
+  const confirm = useConfirm();
 
   const isEdit = !!flow;
+
+  // Refs for stable dirty detection — avoids re-creating isDirty on every keystroke
+  const stateRef = useRef({ name: source?.name ?? '', description: source?.description ?? '' });
+  stateRef.current = { name, description };
+  const initialRef = useRef({ name: source?.name ?? '', description: source?.description ?? '' });
+  const isDirty = useCallback(() => {
+    return stateRef.current.name !== initialRef.current.name
+      || stateRef.current.description !== initialRef.current.description;
+  }, []);
+
+  const { guardedBack } = useUnsavedChanges({ isDirty, onLeave: onBack });
 
   const handleChangeTrigger = useCallback((type: string, config: Record<string, unknown>) => {
     setTriggerType(type);
@@ -80,6 +94,12 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
 
   const handlePublish = async () => {
     if (!flow?.id || !onPublish) return;
+    const ok = await confirm({
+      title: 'Publish flow?',
+      description: 'This flow will become active and start processing events immediately.',
+      confirmLabel: 'Publish',
+    });
+    if (!ok) return;
     setPublishing(true);
     try {
       await onPublish(flow.id);
@@ -183,7 +203,7 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="sm" onClick={onBack}>
+        <Button variant="ghost" size="sm" onClick={() => void guardedBack()}>
           <ArrowLeft className="mr-1 h-4 w-4" />
           Back
         </Button>

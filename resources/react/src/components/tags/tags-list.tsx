@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { TagForm } from './tag-form';
 import { Plus, Tags, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useDeleteConfirm } from '@/hooks/use-delete-confirm';
+import { useConfirm } from '@/components/confirm-provider';
 
 interface TagsListProps {
   hook: UseTagsReturn;
@@ -31,10 +31,19 @@ export function TagsList({ hook }: TagsListProps) {
     toast.success('Tag updated.');
   };
 
-  const { handleDelete, isConfirming } = useDeleteConfirm(async (id) => {
+  const confirm = useConfirm();
+
+  const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      title: 'Delete tag?',
+      description: 'This tag will be removed from all contacts.',
+      confirmLabel: 'Delete',
+      variant: 'destructive',
+    });
+    if (!ok) return;
     await deleteTag(id);
     toast.success('Tag deleted.');
-  });
+  };
 
   return (
     <Card>

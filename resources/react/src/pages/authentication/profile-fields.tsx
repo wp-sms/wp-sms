@@ -6,6 +6,7 @@ import { MethodCard } from '@/components/method-card';
 import { ProfileFieldSheet } from '@/components/profile-field-sheet';
 import { UserPlus, Plus, GripVertical, Pencil, Trash2, ArrowUp, ArrowDown, ListChecks } from 'lucide-react';
 import { FIELD_TYPES, formatLabel } from '@/lib/constants';
+import { useConfirm } from '@/components/confirm-provider';
 import type { AuthSettings, ProfileFieldDefinition } from '@/lib/api';
 
 interface ProfileFieldsProps {
@@ -60,6 +61,7 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
   const [sheetOpen, setSheetOpen] = useState(false);
   const [editingField, setEditingField] = useState<ProfileFieldDefinition | null>(null);
   const [sheetMode, setSheetMode] = useState<'create' | 'meta' | 'edit'>('create');
+  const confirm = useConfirm();
 
   const allFields = useMemo(() => mergeFields(settings.profile_fields ?? []), [settings.profile_fields]);
 
@@ -79,7 +81,14 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
     setSheetOpen(true);
   }
 
-  function handleDelete(id: string) {
+  async function handleDelete(id: string) {
+    const ok = await confirm({
+      title: 'Delete field?',
+      description: 'This field will be removed from registration and profile forms.',
+      confirmLabel: 'Delete',
+      variant: 'destructive',
+    });
+    if (!ok) return;
     saveFields(allFields.filter((f) => f.id !== id));
   }
 

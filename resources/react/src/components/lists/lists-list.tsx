@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { ListFormSheet } from './list-form-sheet';
 import { Plus, List, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
-import { useDeleteConfirm } from '@/hooks/use-delete-confirm';
+import { useConfirm } from '@/components/confirm-provider';
 
 interface ListsListProps {
   hook: UseListsReturn;
@@ -41,10 +41,19 @@ export function ListsList({ hook, tags }: ListsListProps) {
     }
   };
 
-  const { handleDelete, isConfirming } = useDeleteConfirm(async (id) => {
+  const confirm = useConfirm();
+
+  const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      title: 'Delete list?',
+      description: 'This list will be permanently removed. Contacts in this list will not be deleted.',
+      confirmLabel: 'Delete',
+      variant: 'destructive',
+    });
+    if (!ok) return;
     await deleteList(id);
     toast.success('List deleted.');
-  });
+  };
 
   return (
     <>

@@ -31,6 +31,8 @@ import {
   AlertTriangle, Loader2, Upload,
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { useConfirm } from '@/components/confirm-provider';
+import { useUnsavedChanges } from '@/hooks/use-unsaved-changes';
 
 function isSmsChannel(ch: string): boolean {
   return ch === 'sms' || ch === 'whatsapp';
@@ -134,36 +136,34 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
   const draftRef = useRef(draft);
   draftRef.current = draft;
   const savedDraftRef = useRef(draft);
+  const confirm = useConfirm();
 
-  // beforeunload — single stable handler, no churn
-  useEffect(() => {
-    const handler = (e: BeforeUnloadEvent) => {
-      const current = draftRef.current;
-      const saved = savedDraftRef.current;
-      const hasChanges = current.name !== saved.name || current.body !== saved.body
-        || current.channel !== saved.channel || current.subject !== saved.subject;
-      if (hasChanges) {
-        e.preventDefault();
-      }
-    };
-    window.addEventListener('beforeunload', handler);
-    return () => window.removeEventListener('beforeunload', handler);
+  // Unsaved changes guard for back navigation + beforeunload
+  const isDirtyCheck = useCallback(() => {
+    const current = draftRef.current;
+    const saved = savedDraftRef.current;
+    return current.name !== saved.name || current.body !== saved.body
+      || current.channel !== saved.channel || current.subject !== saved.subject;
   }, []);
+  const { guardedBack } = useUnsavedChanges({ isDirty: isDirtyCheck, onLeave: onBack });
 
   const updateDraft = useCallback(<K extends keyof CampaignDraft>(key: K, value: CampaignDraft[K]) => {
     setDraft((prev) => ({ ...prev, [key]: value }));
   }, []);
 
-  // Channel change with confirmation — confirm is outside state updater
-  const handleChannelChange = useCallback((ch: string, defaultGatewayId?: string) => {
+  // Channel change with confirmation via AlertDialog
+  const handleChannelChange = useCallback(async (ch: string, defaultGatewayId?: string) => {
     const prev = draftRef.current;
     if (prev.body && prev.channel && prev.channel !== ch) {
-      if (!window.confirm('Switching channels will keep your message text but the format may differ. Continue?')) {
-        return;
-      }
+      const ok = await confirm({
+        title: 'Switch channel?',
+        description: 'Switching channels will keep your message text but the format may differ.',
+        confirmLabel: 'Switch',
+      });
+      if (!ok) return;
     }
     setDraft((d) => ({ ...d, channel: ch, gateway_id: defaultGatewayId ?? '' }));
-  }, []);
+  }, [confirm]);
 
   // Build the save payload from draft — always uses WP timezone
   const buildSavePayload = useCallback((): Partial<Campaign> => {
@@ -207,6 +207,16 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
   }, [currentStep, saveDraft]);
 
   const handleSendNow = async () => {
+    const count = audienceCount ?? 0;
+    const ok = await confirm({
+      title: 'Send campaign now?',
+      description: count > 0
+        ? `This will immediately send messages to ${count.toLocaleString()} recipient${count === 1 ? '' : 's'}.`
+        : 'This will immediately start sending the campaign.',
+      confirmLabel: 'Send Now',
+    });
+    if (!ok) return;
+
     if (!savedId) {
       setSaving(true);
       try {
@@ -331,7 +341,7 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center gap-3">
-        <Button variant="ghost" size="sm" onClick={onBack}>
+        <Button variant="ghost" size="sm" onClick={() => void guardedBack()}>
           <ArrowLeft className="mr-1 h-4 w-4" />
           Back
         </Button>

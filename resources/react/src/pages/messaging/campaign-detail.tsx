@@ -22,6 +22,7 @@ import {
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 import { useState } from 'react';
+import { useConfirm } from '@/components/confirm-provider';
 
 interface CampaignDetailProps {
   campaign: Campaign;
@@ -34,6 +35,7 @@ export function CampaignDetail({ campaign: initialCampaign, onBack }: CampaignDe
     refetch,
   } = useCampaignDetail(initialCampaign.id, true);
   const [actionLoading, setActionLoading] = useState('');
+  const confirm = useConfirm();
 
   const data = campaign ?? initialCampaign;
 
@@ -46,6 +48,15 @@ export function CampaignDetail({ campaign: initialCampaign, onBack }: CampaignDe
     : 0;
 
   const handleAction = async (action: string) => {
+    if (action === 'cancel') {
+      const ok = await confirm({
+        title: 'Cancel campaign?',
+        description: 'This will stop the campaign and no further messages will be sent. This cannot be undone.',
+        confirmLabel: 'Cancel Campaign',
+        variant: 'destructive',
+      });
+      if (!ok) return;
+    }
     setActionLoading(action);
     try {
       await api.post(`campaigns/${data.id}/${action}`, {});

@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useConfirm } from '@/components/confirm-provider';
 import {
   Drawer,
   DrawerContent,
@@ -41,7 +42,9 @@ export function GatewayConfigSheet({
   onSave,
   onTest,
 }: GatewayConfigSheetProps) {
+  const confirm = useConfirm();
   const [draftConfig, setDraftConfig] = useState<GatewayConfig>({ shared: {}, channels: {}, is_default: {} });
+  const initialConfigRef = useRef<string>('');
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
   const [testChannel, setTestChannel] = useState('');
@@ -52,7 +55,9 @@ export function GatewayConfigSheet({
   // Reset state when sheet opens with a new gateway
   useEffect(() => {
     if (open && gateway) {
-      setDraftConfig(ensureConfig(gateway.config));
+      const cfg = ensureConfig(gateway.config);
+      setDraftConfig(cfg);
+      initialConfigRef.current = JSON.stringify(cfg);
       setTestChannel(gateway.supported_channels[0] ?? '');
       setTestTo('');
       setTestBody('');
@@ -103,7 +108,18 @@ export function GatewayConfigSheet({
   const recipientPlaceholder = testChannel === 'email' ? 'user@example.com' : '+1234567890';
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
+    <Drawer open={open} onOpenChange={async (o) => {
+      if (!o && JSON.stringify(draftConfig) !== initialConfigRef.current) {
+        const ok = await confirm({
+          title: 'Discard changes?',
+          description: 'You have unsaved configuration changes that will be lost.',
+          confirmLabel: 'Discard',
+          variant: 'destructive',
+        });
+        if (!ok) return;
+      }
+      onOpenChange(o);
+    }} direction="right">
       <DrawerContent className="sm:max-w-md overflow-y-auto">
         <DrawerHeader>
           <DrawerTitle>{gateway.name}</DrawerTitle>

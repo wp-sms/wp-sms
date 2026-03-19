@@ -2,6 +2,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Pencil, ChevronUp, Trash2 } from 'lucide-react';
 import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
 import { cn } from '@/lib/utils';
+import { useConfirm } from '@/components/confirm-provider';
 
 interface CollapsibleCardProps {
   icon: LucideIcon;
@@ -34,6 +35,19 @@ export function CollapsibleCard({
   number,
   children,
 }: CollapsibleCardProps) {
+  const confirm = useConfirm();
+
+  const handleDelete = async () => {
+    if (!onDelete) return;
+    const ok = await confirm({
+      title: 'Delete step?',
+      description: 'This step will be permanently removed from the flow.',
+      confirmLabel: 'Delete',
+      variant: 'destructive',
+    });
+    if (ok) onDelete();
+  };
+
   return (
     <Collapsible open={isExpanded} onOpenChange={onToggle}>
       <div
@@ -81,7 +95,7 @@ export function CollapsibleCard({
               <button
                 type="button"
                 className="inline-flex h-6 w-6 items-center justify-center rounded text-muted-foreground hover:text-destructive transition-colors"
-                onClick={(e) => { e.stopPropagation(); onDelete(); }}
+                onClick={(e) => { e.stopPropagation(); void handleDelete(); }}
               >
                 <Trash2 className="h-3 w-3" />
               </button>
