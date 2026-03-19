@@ -115,7 +115,7 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
 }
 
 export function Gateways() {
-  const { gateways, loading, updateConfig, testGateway, getCredit } = useGateways();
+  const { gateways, loading, updateConfig, testGateway, testConnection, getCredit } = useGateways();
   const [selectedGatewayId, setSelectedGatewayId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [channelFilter, setChannelFilter] = useState('all');
@@ -288,6 +288,7 @@ export function Gateways() {
         gateway={selectedGateway}
         onSave={updateConfig}
         onTest={testGateway}
+        onTestConnection={testConnection}
       />
     </div>
   );

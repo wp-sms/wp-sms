@@ -5,6 +5,7 @@ namespace WSms\Messaging\Gateway\Provider;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Gateway\AbstractProvider;
+use WSms\Messaging\Contracts\TestConnectionResult;
 
 defined('ABSPATH') || exit;
 
@@ -120,5 +121,35 @@ class KavenegarProvider extends AbstractProvider
 
         $data = json_decode($result['body'], true);
         return (string) ($data['entries']['remaincredit'] ?? '');
+    }
+
+    public function testConnection(): TestConnectionResult
+    {
+        $apiKey = $this->getSharedConfig('api_key');
+
+        if (!$apiKey) {
+            return TestConnectionResult::error(__('API Key is required', 'wp-sms'));
+        }
+
+        $url = self::API_BASE . "/{$apiKey}/account/info.json";
+        $result = $this->httpGet($url);
+
+        $data = $this->validateTestResponse($result, 'Kavenegar');
+        if ($data instanceof TestConnectionResult) {
+            return $data;
+        }
+
+        $status = $data['return']['status'] ?? 0;
+        if ($status !== 200) {
+            $message = $data['return']['message'] ?? __('Unknown error', 'wp-sms');
+            return TestConnectionResult::error($message);
+        }
+
+        $credit = (string) ($data['entries']['remaincredit'] ?? 'N/A');
+
+        return TestConnectionResult::ok(
+            sprintf(__('Connected — Credit: %s', 'wp-sms'), $credit),
+            ['credit' => $credit],
+        );
     }
 }

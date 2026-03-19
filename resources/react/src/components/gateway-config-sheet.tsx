@@ -22,10 +22,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ExternalLink, Send, Loader2, ChevronDown, CheckCircle2, CircleAlert } from 'lucide-react';
+import { ExternalLink, Send, Loader2, ChevronDown, CheckCircle2, CircleAlert, Plug } from 'lucide-react';
 import { toast } from 'sonner';
 import { GatewayConfigForm, channelLabel, ensureConfig } from '@/components/gateway-config-form';
-import type { Gateway, GatewayConfig, GatewayTestResult } from '@/lib/api';
+import type { Gateway, GatewayConfig, GatewayTestResult, TestConnectionResult } from '@/lib/api';
 
 interface GatewayConfigSheetProps {
   open: boolean;
@@ -33,6 +33,7 @@ interface GatewayConfigSheetProps {
   gateway: Gateway | null;
   onSave: (config: Record<string, Record<string, unknown>>) => Promise<void>;
   onTest: (id: string, data: { channel?: string; to: string; body?: string }) => Promise<GatewayTestResult>;
+  onTestConnection?: (id: string) => Promise<TestConnectionResult>;
 }
 
 export function GatewayConfigSheet({
@@ -41,6 +42,7 @@ export function GatewayConfigSheet({
   gateway,
   onSave,
   onTest,
+  onTestConnection,
 }: GatewayConfigSheetProps) {
   const confirm = useConfirm();
   const [draftConfig, setDraftConfig] = useState<GatewayConfig>({ shared: {}, channels: {}, is_default: {} });
@@ -51,6 +53,8 @@ export function GatewayConfigSheet({
   const [testTo, setTestTo] = useState('');
   const [testBody, setTestBody] = useState('');
   const [testResult, setTestResult] = useState<GatewayTestResult | null>(null);
+  const [connectionTesting, setConnectionTesting] = useState(false);
+  const [connectionResult, setConnectionResult] = useState<TestConnectionResult | null>(null);
 
   // Reset state when sheet opens with a new gateway
   useEffect(() => {
@@ -62,8 +66,12 @@ export function GatewayConfigSheet({
       setTestTo('');
       setTestBody('');
       setTestResult(null);
+      setConnectionResult(null);
     }
   }, [open, gateway]);
+
+  // Clear stale connection result when config changes
+  useEffect(() => { setConnectionResult(null); }, [draftConfig]);
 
   if (!gateway) return null;
 
@@ -102,6 +110,20 @@ export function GatewayConfigSheet({
       setTestResult({ success: false, data: { status: 'error', provider_id: null, error: 'Request failed' } });
     } finally {
       setTesting(false);
+    }
+  }
+
+  async function handleTestConnection() {
+    if (!gateway || !onTestConnection) return;
+    setConnectionTesting(true);
+    setConnectionResult(null);
+    try {
+      const result = await onTestConnection(gateway.id);
+      setConnectionResult(result);
+    } catch {
+      setConnectionResult({ success: false, message: 'Request failed', details: {} });
+    } finally {
+      setConnectionTesting(false);
     }
   }
 
@@ -160,6 +182,46 @@ export function GatewayConfigSheet({
           />
 
           <Separator />
+
+          {/* Test Connection */}
+          {onTestConnection && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleTestConnection}
+                  disabled={!gateway.is_configured || connectionTesting}
+                >
+                  {connectionTesting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plug className="h-4 w-4" />}
+                  Test Connection
+                </Button>
+                {!gateway.is_configured && (
+                  <span className="text-xs text-muted-foreground">Save configuration to enable connection testing</span>
+                )}
+              </div>
+
+              {connectionResult && (
+                connectionResult.success ? (
+                  <Alert>
+                    <CheckCircle2 className="h-4 w-4 text-green-600" />
+                    <AlertTitle>{connectionResult.message}</AlertTitle>
+                    {Object.keys(connectionResult.details).length > 0 && (
+                      <AlertDescription>
+                        {Object.entries(connectionResult.details).map(([k, v]) => `${k}: ${v}`).join(' · ')}
+                      </AlertDescription>
+                    )}
+                  </Alert>
+                ) : (
+                  <Alert variant="destructive">
+                    <CircleAlert className="h-4 w-4" />
+                    <AlertTitle>Connection failed</AlertTitle>
+                    <AlertDescription>{connectionResult.message}</AlertDescription>
+                  </Alert>
+                )
+              )}
+            </div>
+          )}
 
           {/* Test Send — collapsible, visually distinct */}
           <Collapsible>

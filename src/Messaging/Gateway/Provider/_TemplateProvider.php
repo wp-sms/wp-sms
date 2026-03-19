@@ -21,6 +21,7 @@ use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Contracts\StatusUpdate;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
 use WSms\Messaging\Gateway\AbstractProvider;
+use WSms\Messaging\Contracts\TestConnectionResult;
 
 defined('ABSPATH') || exit;
 
@@ -342,5 +343,43 @@ class _TemplateProvider extends AbstractProvider implements SupportsStatusCallba
 
         $data = json_decode($result['body'], true);
         return $data['balance'] ?? null;
+    }
+
+    /**
+     * Test the gateway connection without sending a message.
+     * Typically calls a lightweight read-only API endpoint (e.g., account info, balance).
+     * Reuse the same HTTP call as getCredit() but with proper error handling.
+     *
+     * Use $this->validateTestResponse() to handle common error patterns
+     * (network errors, rate-limiting, non-2xx, malformed JSON).
+     * Check provider-specific HTTP codes (401, 403, 404) before calling it.
+     */
+    public function testConnection(): TestConnectionResult
+    {
+        $apiKey = $this->getSharedConfig('api_key');
+        if (!$apiKey) {
+            return TestConnectionResult::error(__('API Key is not configured', 'wp-sms'));
+        }
+
+        $result = $this->httpGet('https://api.example.com/account', [
+            'headers' => ['Authorization' => 'Bearer ' . $apiKey],
+        ]);
+
+        // Check provider-specific error codes before common validation
+        if (!$result instanceof DeliveryResult) {
+            if ($result['code'] === 401 || $result['code'] === 403) {
+                return TestConnectionResult::error(__('Invalid API credentials', 'wp-sms'));
+            }
+        }
+
+        // Handles: network errors, 429, generic non-2xx, malformed JSON
+        $data = $this->validateTestResponse($result, 'Example Provider');
+        if ($data instanceof TestConnectionResult) {
+            return $data;
+        }
+
+        return TestConnectionResult::ok(__('Connection successful', 'wp-sms'), [
+            'balance' => $data['balance'] ?? 'N/A',
+        ]);
     }
 }

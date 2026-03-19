@@ -5,6 +5,7 @@ namespace WSms\Messaging\Gateway\Provider;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Gateway\AbstractProvider;
+use WSms\Messaging\Contracts\TestConnectionResult;
 
 defined('ABSPATH') || exit;
 
@@ -141,5 +142,37 @@ class VonageProvider extends AbstractProvider
 
         $data = json_decode($result['body'], true);
         return isset($data['value']) ? number_format((float) $data['value'], 2) : null;
+    }
+
+    public function testConnection(): TestConnectionResult
+    {
+        $apiKey = $this->getSharedConfig('api_key');
+        $apiSecret = $this->getSharedConfig('api_secret');
+
+        if (!$apiKey || !$apiSecret) {
+            return TestConnectionResult::error(__('API Key and API Secret are required', 'wp-sms'));
+        }
+
+        $result = $this->httpGet(self::BALANCE_URL . "?api_key={$apiKey}&api_secret={$apiSecret}");
+
+        if (!$result instanceof DeliveryResult && $result['code'] === 401) {
+            return TestConnectionResult::error(__('Invalid API Key or Secret', 'wp-sms'));
+        }
+
+        $data = $this->validateTestResponse($result, 'Vonage');
+        if ($data instanceof TestConnectionResult) {
+            return $data;
+        }
+
+        if (isset($data['error-text'])) {
+            return TestConnectionResult::error($data['error-text']);
+        }
+
+        $balance = isset($data['value']) ? number_format((float) $data['value'], 2) : 'N/A';
+
+        return TestConnectionResult::ok(
+            sprintf(__('Connected — Balance: %s EUR', 'wp-sms'), $balance),
+            ['balance' => $balance],
+        );
     }
 }

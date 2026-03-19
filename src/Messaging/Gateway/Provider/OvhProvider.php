@@ -5,6 +5,7 @@ namespace WSms\Messaging\Gateway\Provider;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Gateway\AbstractProvider;
+use WSms\Messaging\Contracts\TestConnectionResult;
 
 defined('ABSPATH') || exit;
 
@@ -173,5 +174,52 @@ class OvhProvider extends AbstractProvider
 
         $data = json_decode($result['body'], true);
         return isset($data['creditsLeft']) ? (string) $data['creditsLeft'] : null;
+    }
+
+    public function testConnection(): TestConnectionResult
+    {
+        $appKey = $this->getSharedConfig('application_key');
+        $appSecret = $this->getSharedConfig('application_secret');
+        $consumerKey = $this->getSharedConfig('consumer_key');
+        $serviceName = $this->getSharedConfig('service_name');
+
+        if (!$appKey || !$appSecret || !$consumerKey || !$serviceName) {
+            return TestConnectionResult::error(__('Application Key, Application Secret, Consumer Key, and Service Name are all required', 'wp-sms'));
+        }
+
+        $url = self::API_BASE . "/sms/{$serviceName}";
+        $timestamp = time();
+        $signature = '$1$' . sha1($appSecret . '+' . $consumerKey . '+GET+' . $url . '++' . $timestamp);
+
+        $result = $this->httpGet($url, [
+            'headers' => [
+                'X-Ovh-Application' => $appKey,
+                'X-Ovh-Consumer'    => $consumerKey,
+                'X-Ovh-Timestamp'   => (string) $timestamp,
+                'X-Ovh-Signature'   => $signature,
+            ],
+        ]);
+
+        // Provider-specific error codes before common validation
+        if (!$result instanceof DeliveryResult) {
+            if ($result['code'] === 403) {
+                return TestConnectionResult::error(__('Invalid credentials or server clock is out of sync — check Application Key, Secret, Consumer Key, and server time', 'wp-sms'));
+            }
+            if ($result['code'] === 404) {
+                return TestConnectionResult::error(__('Service not found — check your Service Name', 'wp-sms'));
+            }
+        }
+
+        $data = $this->validateTestResponse($result, 'OVH');
+        if ($data instanceof TestConnectionResult) {
+            return $data;
+        }
+
+        $credits = isset($data['creditsLeft']) ? (string) $data['creditsLeft'] : 'N/A';
+
+        return TestConnectionResult::ok(
+            sprintf(__('Connected — Credits: %s', 'wp-sms'), $credits),
+            ['credits' => $credits],
+        );
     }
 }

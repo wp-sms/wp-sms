@@ -7,6 +7,7 @@ use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Contracts\StatusUpdate;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
 use WSms\Messaging\Gateway\AbstractProvider;
+use WSms\Messaging\Contracts\TestConnectionResult;
 
 defined('ABSPATH') || exit;
 
@@ -249,5 +250,46 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback
         }
         $currency = $data['currency'] ?? 'USD';
         return "{$balance} {$currency}";
+    }
+
+    public function testConnection(): TestConnectionResult
+    {
+        $accountSid = $this->getSharedConfig('account_sid');
+        $authToken = $this->getSharedConfig('auth_token');
+
+        if (!$accountSid || !$authToken) {
+            return TestConnectionResult::error(__('Account SID and Auth Token are required', 'wp-sms'));
+        }
+
+        $url = self::API_BASE . "/Accounts/{$accountSid}/Balance.json";
+
+        $result = $this->httpGet($url, [
+            'headers' => [
+                'Authorization' => 'Basic ' . base64_encode("{$accountSid}:{$authToken}"),
+            ],
+        ]);
+
+        // Provider-specific error codes before common validation
+        if (!$result instanceof DeliveryResult) {
+            if ($result['code'] === 401) {
+                return TestConnectionResult::error(__('Invalid Account SID or Auth Token', 'wp-sms'));
+            }
+            if ($result['code'] === 404) {
+                return TestConnectionResult::error(__('Account not found — check your Account SID', 'wp-sms'));
+            }
+        }
+
+        $data = $this->validateTestResponse($result, 'Twilio');
+        if ($data instanceof TestConnectionResult) {
+            return $data;
+        }
+
+        $balance = $data['balance'] ?? 'N/A';
+        $currency = $data['currency'] ?? 'USD';
+
+        return TestConnectionResult::ok(
+            sprintf(__('Connected — Balance: %s %s', 'wp-sms'), $balance, $currency),
+            ['balance' => $balance, 'currency' => $currency],
+        );
     }
 }

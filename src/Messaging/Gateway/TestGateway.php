@@ -5,6 +5,7 @@ namespace WSms\Messaging\Gateway;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\GatewayInterface;
 use WSms\Messaging\Contracts\MessageInterface;
+use WSms\Messaging\Contracts\TestConnectionResult;
 
 defined('ABSPATH') || exit;
 
@@ -83,6 +84,11 @@ class TestGateway implements GatewayInterface
     public function getCredit(): ?string
     {
         return '999';
+    }
+
+    public function testConnection(): TestConnectionResult
+    {
+        return TestConnectionResult::ok('Test gateway connected', ['credit' => '999']);
     }
 
     public static function reset(): void

@@ -5,6 +5,7 @@ namespace WSms\Messaging\Gateway\Webhook;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\GatewayInterface;
 use WSms\Messaging\Contracts\MessageInterface;
+use WSms\Messaging\Contracts\TestConnectionResult;
 
 defined('ABSPATH') || exit;
 
@@ -92,5 +93,10 @@ class HttpWebhookGateway implements GatewayInterface
     public function getCredit(): ?string
     {
         return null;
+    }
+
+    public function testConnection(): TestConnectionResult
+    {
+        return TestConnectionResult::error(__('Connection testing is not supported for this gateway', 'wp-sms'));
     }
 }

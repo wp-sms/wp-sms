@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { api, type Gateway, type ListResponse, type GatewayTestResult } from '@/lib/api';
+import { api, type Gateway, type ListResponse, type GatewayTestResult, type TestConnectionResult } from '@/lib/api';
 
 export interface UseGatewaysReturn {
   gateways: Gateway[];
   loading: boolean;
   updateConfig: (config: Record<string, Record<string, unknown>>) => Promise<void>;
   testGateway: (id: string, data: { channel?: string; to: string; body?: string }) => Promise<GatewayTestResult>;
+  testConnection: (id: string) => Promise<TestConnectionResult>;
   getCredit: (id: string) => Promise<string | null>;
   refetch: () => void;
 }
@@ -45,6 +46,10 @@ export function useGateways(): UseGatewaysReturn {
     return api.post<GatewayTestResult>(`gateways/${id}/test`, data);
   }, []);
 
+  const testConnection = useCallback(async (id: string): Promise<TestConnectionResult> => {
+    return api.post<TestConnectionResult>(`gateways/${id}/test-connection`, null);
+  }, []);
+
   const getCredit = useCallback(async (id: string): Promise<string | null> => {
     try {
       const res = await api.get<{ credit: string | null }>(`gateways/${id}/credit`);
@@ -59,5 +64,5 @@ export function useGateways(): UseGatewaysReturn {
     return () => { abortRef.current?.abort(); };
   }, [fetchGateways]);
 
-  return { gateways, loading, updateConfig, testGateway, getCredit, refetch: fetchGateways };
+  return { gateways, loading, updateConfig, testGateway, testConnection, getCredit, refetch: fetchGateways };
 }

@@ -45,4 +45,7 @@ interface GatewayInterface
 
     /** Account credit/balance, or null if not supported. */
     public function getCredit(): ?string;
+
+    /** Test gateway connection without sending a message. */
+    public function testConnection(): TestConnectionResult;
 }

@@ -194,6 +194,7 @@ class GatewayRegistryTest extends TestCase
             public function getMetadata(): array { return []; }
             public function getFeatures(): array { return []; }
             public function getCredit(): ?string { return null; }
+            public function testConnection(): \WSms\Messaging\Contracts\TestConnectionResult { return \WSms\Messaging\Contracts\TestConnectionResult::error('Not supported'); }
         };
     }
 }

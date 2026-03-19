@@ -61,6 +61,14 @@ class GatewayController
             ],
         ]);
 
+        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/test-connection', [
+            [
+                'methods'             => 'POST',
+                'callback'            => [$this, 'testConnection'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
         register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/credit', [
             [
                 'methods'             => 'GET',
@@ -183,6 +191,22 @@ class GatewayController
                 'provider_id' => $result->providerId,
                 'error'       => $result->error,
             ],
+        ]);
+    }
+
+    public function testConnection(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $gateway = $this->resolveGateway($request);
+        if ($gateway instanceof \WP_REST_Response) {
+            return $gateway;
+        }
+
+        $result = $gateway->testConnection();
+
+        return new \WP_REST_Response([
+            'success' => $result->success,
+            'message' => $result->message,
+            'details' => $result->details,
         ]);
     }
 

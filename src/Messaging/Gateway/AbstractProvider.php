@@ -5,6 +5,7 @@ namespace WSms\Messaging\Gateway;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\GatewayInterface;
 use WSms\Messaging\Contracts\MessageInterface;
+use WSms\Messaging\Contracts\TestConnectionResult;
 
 defined('ABSPATH') || exit;
 
@@ -126,6 +127,11 @@ abstract class AbstractProvider implements GatewayInterface
         return null;
     }
 
+    public function testConnection(): TestConnectionResult
+    {
+        return TestConnectionResult::error(__('Connection testing is not supported for this gateway', 'wp-sms'));
+    }
+
     protected function getConfig(): array
     {
         if ($this->configCache === null) {
@@ -183,6 +189,46 @@ abstract class AbstractProvider implements GatewayInterface
             'body'     => wp_remote_retrieve_body($response),
             'code'     => (int) wp_remote_retrieve_response_code($response),
         ];
+    }
+
+    /**
+     * Validate an HTTP response for test-connection, handling common error patterns.
+     *
+     * Handles network failures, rate-limiting, and malformed JSON.
+     * For non-2xx responses, returns a generic error — providers should check
+     * provider-specific status codes (401, 403, 404) BEFORE calling this.
+     *
+     * @param array|DeliveryResult $result   Return value from httpGet/httpPost
+     * @param string               $provider Human-readable provider name for error messages
+     *
+     * @return array|TestConnectionResult Decoded JSON array on 2xx success, or error result
+     */
+    protected function validateTestResponse(array|DeliveryResult $result, string $provider): array|TestConnectionResult
+    {
+        if ($result instanceof DeliveryResult) {
+            return TestConnectionResult::error(
+                sprintf(__('Could not reach the %s API. Check your server\'s internet connection.', 'wp-sms'), $provider)
+            );
+        }
+
+        if ($result['code'] === 429) {
+            return TestConnectionResult::error(__('Rate limited — please wait a moment and try again', 'wp-sms'));
+        }
+
+        if ($result['code'] < 200 || $result['code'] >= 300) {
+            return TestConnectionResult::error(
+                sprintf(__('Unexpected response from %s (HTTP %d)', 'wp-sms'), $provider, $result['code'])
+            );
+        }
+
+        $data = json_decode($result['body'], true);
+        if (!is_array($data)) {
+            return TestConnectionResult::error(
+                sprintf(__('Invalid response from %s', 'wp-sms'), $provider)
+            );
+        }
+
+        return $data;
     }
 
     private function isChannelConfigComplete(array $config, array $channelSchema, ?string $channel = null): bool

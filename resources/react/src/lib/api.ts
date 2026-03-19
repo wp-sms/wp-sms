@@ -488,6 +488,12 @@ export interface GatewayTestResult {
   };
 }
 
+export interface TestConnectionResult {
+  success: boolean;
+  message: string;
+  details: Record<string, string>;
+}
+
 export interface MessageLogEntry {
   id: string;
   execution_id: string | null;
