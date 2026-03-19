@@ -11,9 +11,17 @@ class EventDispatcher implements EventDispatcherInterface
     /** @var array<string, array{callable, int}[]> */
     private array $listeners = [];
 
+    /** @var array<string, true> */
+    private array $sorted = [];
+
     public function dispatch(object $event): object
     {
         $class = get_class($event);
+
+        if (!isset($this->sorted[$class]) && isset($this->listeners[$class])) {
+            usort($this->listeners[$class], fn($a, $b) => $a[1] <=> $b[1]);
+            $this->sorted[$class] = true;
+        }
 
         foreach ($this->listeners[$class] ?? [] as [$listener, $priority]) {
             if ($event instanceof Event && $event->isPropagationStopped()) {
@@ -32,7 +40,7 @@ class EventDispatcher implements EventDispatcherInterface
     public function listen(string $eventClass, callable $listener, int $priority = 10): void
     {
         $this->listeners[$eventClass][] = [$listener, $priority];
-        usort($this->listeners[$eventClass], fn($a, $b) => $a[1] <=> $b[1]);
+        unset($this->sorted[$eventClass]);
     }
 
     private function classToHookName(string $class): string

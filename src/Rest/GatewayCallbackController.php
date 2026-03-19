@@ -12,9 +12,8 @@ use WSms\Messaging\Inbound\OptOutManager;
 
 defined('ABSPATH') || exit;
 
-class GatewayCallbackController
+class GatewayCallbackController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
     private const RATE_LIMIT = 120;
     private const RATE_WINDOW = 60;
 

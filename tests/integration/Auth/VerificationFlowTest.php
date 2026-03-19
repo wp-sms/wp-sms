@@ -24,14 +24,14 @@ class VerificationFlowTest extends IntegrationTestCase
             'email'    => 'verify@example.com',
             'password' => 'Pass1!',
         ]);
-        $this->assertTrue($regResult['success']);
-        $userId = $regResult['user_id'];
+        $this->assertTrue($regResult->success);
+        $userId = $regResult->userId;
 
         // Verify the email OTP.
         $verifyResult = $this->accountManager->verifyChannelOtp($userId, 'email', '456789');
 
-        $this->assertTrue($verifyResult['success']);
-        $this->assertSame('Email verified successfully.', $verifyResult['message']);
+        $this->assertTrue($verifyResult->success);
+        $this->assertSame('Email verified successfully.', $verifyResult->message);
         $this->assertSame('1', $GLOBALS['_test_user_meta'][$userId]['wsms_email_verified']);
     }
 
@@ -45,12 +45,12 @@ class VerificationFlowTest extends IntegrationTestCase
             'email'    => 'verify@example.com',
             'password' => 'Pass1!',
         ]);
-        $userId = $regResult['user_id'];
+        $userId = $regResult->userId;
 
         $verifyResult = $this->accountManager->verifyChannelOtp($userId, 'email', 'wrong');
 
-        $this->assertFalse($verifyResult['success']);
-        $this->assertSame('invalid_code', $verifyResult['error']);
+        $this->assertFalse($verifyResult->success);
+        $this->assertSame('invalid_code', $verifyResult->error);
     }
 
     public function testVerifyEmailOtpFailsWhenExpired(): void
@@ -63,14 +63,14 @@ class VerificationFlowTest extends IntegrationTestCase
             'email'    => 'verify@example.com',
             'password' => 'Pass1!',
         ]);
-        $userId = $regResult['user_id'];
+        $userId = $regResult->userId;
 
         $this->wpdb->expireVerification(1);
 
         $verifyResult = $this->accountManager->verifyChannelOtp($userId, 'email', '456789');
 
-        $this->assertFalse($verifyResult['success']);
-        $this->assertSame('expired', $verifyResult['error']);
+        $this->assertFalse($verifyResult->success);
+        $this->assertSame('expired', $verifyResult->error);
     }
 
     public function testVerifyEmailOtpFailsAfterMaxAttempts(): void
@@ -83,14 +83,14 @@ class VerificationFlowTest extends IntegrationTestCase
             'email'    => 'verify@example.com',
             'password' => 'Pass1!',
         ]);
-        $userId = $regResult['user_id'];
+        $userId = $regResult->userId;
 
         $this->wpdb->exhaustVerificationAttempts(1);
 
         $verifyResult = $this->accountManager->verifyChannelOtp($userId, 'email', '456789');
 
-        $this->assertFalse($verifyResult['success']);
-        $this->assertSame('max_attempts', $verifyResult['error']);
+        $this->assertFalse($verifyResult->success);
+        $this->assertSame('max_attempts', $verifyResult->error);
     }
 
     // ──────────────────────────────────────────────
@@ -108,13 +108,13 @@ class VerificationFlowTest extends IntegrationTestCase
             'password' => 'Pass1!',
             'phone'    => '+1234567890',
         ]);
-        $this->assertTrue($regResult['success']);
-        $userId = $regResult['user_id'];
+        $this->assertTrue($regResult->success);
+        $userId = $regResult->userId;
 
         $verifyResult = $this->accountManager->verifyChannelOtp($userId, 'phone', '112233');
 
-        $this->assertTrue($verifyResult['success']);
-        $this->assertSame('Phone verified successfully.', $verifyResult['message']);
+        $this->assertTrue($verifyResult->success);
+        $this->assertSame('Phone verified successfully.', $verifyResult->message);
         $this->assertSame('1', $GLOBALS['_test_user_meta'][$userId]['wsms_phone_verified']);
     }
 
@@ -130,10 +130,10 @@ class VerificationFlowTest extends IntegrationTestCase
             'phone'    => '+1234567890',
         ]);
 
-        $verifyResult = $this->accountManager->verifyChannelOtp($regResult['user_id'], 'phone', 'wrong');
+        $verifyResult = $this->accountManager->verifyChannelOtp($regResult->userId, 'phone', 'wrong');
 
-        $this->assertFalse($verifyResult['success']);
-        $this->assertSame('invalid_code', $verifyResult['error']);
+        $this->assertFalse($verifyResult->success);
+        $this->assertSame('invalid_code', $verifyResult->error);
     }
 
     public function testVerifyPhoneFailsWhenExpired(): void
@@ -150,10 +150,10 @@ class VerificationFlowTest extends IntegrationTestCase
 
         $this->wpdb->expireVerification(1);
 
-        $verifyResult = $this->accountManager->verifyChannelOtp($regResult['user_id'], 'phone', '112233');
+        $verifyResult = $this->accountManager->verifyChannelOtp($regResult->userId, 'phone', '112233');
 
-        $this->assertFalse($verifyResult['success']);
-        $this->assertSame('expired', $verifyResult['error']);
+        $this->assertFalse($verifyResult->success);
+        $this->assertSame('expired', $verifyResult->error);
     }
 
     // ──────────────────────────────────────────────
@@ -172,13 +172,13 @@ class VerificationFlowTest extends IntegrationTestCase
             'email'    => 'ml@example.com',
             'password' => 'Pass1!',
         ]);
-        $this->assertTrue($regResult['success']);
-        $userId = $regResult['user_id'];
+        $this->assertTrue($regResult->success);
+        $userId = $regResult->userId;
 
         $verifyResult = $this->accountManager->verifyEmail($this->getGeneratedToken());
 
-        $this->assertTrue($verifyResult['success']);
-        $this->assertSame('Email verified successfully.', $verifyResult['message']);
+        $this->assertTrue($verifyResult->success);
+        $this->assertSame('Email verified successfully.', $verifyResult->message);
         $this->assertSame('1', $GLOBALS['_test_user_meta'][$userId]['wsms_email_verified']);
     }
 
@@ -197,8 +197,8 @@ class VerificationFlowTest extends IntegrationTestCase
 
         $verifyResult = $this->accountManager->verifyEmail('invalid-token');
 
-        $this->assertFalse($verifyResult['success']);
-        $this->assertSame('invalid_token', $verifyResult['error']);
+        $this->assertFalse($verifyResult->success);
+        $this->assertSame('invalid_token', $verifyResult->error);
     }
 
     // ──────────────────────────────────────────────
@@ -219,12 +219,12 @@ class VerificationFlowTest extends IntegrationTestCase
             'password' => 'Pass1!',
             'phone'    => '+1234567890',
         ]);
-        $userId = $regResult['user_id'];
+        $userId = $regResult->userId;
 
         // Resend should invalidate old and create new.
         $resendResult = $this->accountManager->resendVerification($userId, 'phone');
 
-        $this->assertTrue($resendResult['success']);
+        $this->assertTrue($resendResult->success);
         // Should have 2 inserts for phone_verify (original + resend).
         $phoneVerifications = $this->wpdb->getVerificationsByType(VerificationType::PhoneVerify->value);
         $this->assertCount(2, $phoneVerifications);
@@ -249,7 +249,7 @@ class VerificationFlowTest extends IntegrationTestCase
 
         $resendResult = $this->accountManager->resendVerification(41, 'email');
 
-        $this->assertTrue($resendResult['success']);
+        $this->assertTrue($resendResult->success);
         $emailVerifications = $this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value);
         $this->assertCount(2, $emailVerifications);
     }
@@ -264,8 +264,8 @@ class VerificationFlowTest extends IntegrationTestCase
 
         $result = $this->accountManager->updateProfile(1, ['email' => 'new@example.com']);
 
-        $this->assertTrue($result['success']);
-        $this->assertTrue($result['email_verification_required']);
+        $this->assertTrue($result->success);
+        $this->assertTrue($result->meta['email_verification_required']);
 
         $emailVerifications = $this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value);
         $this->assertCount(1, $emailVerifications);
@@ -286,8 +286,8 @@ class VerificationFlowTest extends IntegrationTestCase
 
         $result = $this->accountManager->updateProfile(1, ['phone' => '+4476543210']);
 
-        $this->assertTrue($result['success']);
-        $this->assertTrue($result['phone_verification_required']);
+        $this->assertTrue($result->success);
+        $this->assertTrue($result->meta['phone_verification_required']);
         // Old phone preserved.
         $this->assertSame('+1111111111', $GLOBALS['_test_user_meta'][1]['wsms_phone']);
         $this->assertSame('1', $GLOBALS['_test_user_meta'][1]['wsms_phone_verified']);
@@ -313,7 +313,7 @@ class VerificationFlowTest extends IntegrationTestCase
         // Verify the OTP.
         $verifyResult = $this->accountManager->verifyChannelOtp(1, 'phone', '999999');
 
-        $this->assertTrue($verifyResult['success']);
+        $this->assertTrue($verifyResult->success);
         // Pending phone applied as canonical.
         $this->assertSame('+4476543210', $GLOBALS['_test_user_meta'][1]['wsms_phone']);
         $this->assertSame('1', $GLOBALS['_test_user_meta'][1]['wsms_phone_verified']);
@@ -332,8 +332,8 @@ class VerificationFlowTest extends IntegrationTestCase
 
         $result = $this->accountManager->updateProfile(1, ['phone' => '+4476543210']);
 
-        $this->assertTrue($result['success']);
-        $this->assertArrayNotHasKey('phone_verification_required', $result);
+        $this->assertTrue($result->success);
+        $this->assertArrayNotHasKey('phone_verification_required', $result->meta);
         // No verification records created.
         $this->assertCount(0, $this->wpdb->getVerificationsByType(VerificationType::PhoneVerify->value));
     }
@@ -352,7 +352,7 @@ class VerificationFlowTest extends IntegrationTestCase
 
         // Resend should use the pending email, not the old one.
         $resendResult = $this->accountManager->resendVerification(50, 'email');
-        $this->assertTrue($resendResult['success']);
+        $this->assertTrue($resendResult->success);
 
         // All email verifications should target the pending address.
         $verifications = $this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value);

@@ -1,0 +1,709 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Match expression does not handle remaining value\: string$#'
+			identifier: match.unhandled
+			count: 1
+			path: src/Auth/AccountManager.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>user_email" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 2
+			path: src/Auth/AccountManager.php
+
+		-
+			message: '#^Using nullsafe property access on non\-nullable type WP_User\|false\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Auth/AccountManager.php
+
+		-
+			message: '#^Variable \$newEmail might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: src/Auth/AccountManager.php
+
+		-
+			message: '#^Property WSms\\Campaign\\AudienceResolver\:\:\$segmentEvaluator is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/Campaign/AudienceResolver.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\Symfony\\Component\\Uid\\Ulid not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Campaign/Campaign.php
+
+		-
+			message: '#^Call to an undefined method DateTimeInterface\:\:modify\(\)\.$#'
+			identifier: method.notFound
+			count: 3
+			path: src/Campaign/CampaignDispatcher.php
+
+		-
+			message: '#^Property WSms\\Campaign\\CampaignDispatcher\:\:\$throttler is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/Campaign/CampaignDispatcher.php
+
+		-
+			message: '#^Call to static method createFromPath\(\) on an unknown class WSms\\Dependencies\\League\\Csv\\Writer\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Contact/ContactExporter.php
+
+		-
+			message: '#^Call to method getHeader\(\) on an unknown class WSms\\Dependencies\\League\\Csv\\Reader\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Contact/ContactImporter.php
+
+		-
+			message: '#^Call to method getRecords\(\) on an unknown class WSms\\Dependencies\\League\\Csv\\Reader\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/Contact/ContactImporter.php
+
+		-
+			message: '#^Call to static method createFromPath\(\) on an unknown class WSms\\Dependencies\\League\\Csv\\Reader\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Contact/ContactImporter.php
+
+		-
+			message: '#^Method WSms\\Contact\\ContactImporter\:\:openCsv\(\) has invalid return type WSms\\Dependencies\\League\\Csv\\Reader\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Contact/ContactImporter.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\Symfony\\Component\\Uid\\Ulid not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Contact/ContactRepository.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\Symfony\\Component\\Uid\\Ulid not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Contact/ListRepository.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\Symfony\\Component\\Uid\\Ulid not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Contact/TagRepository.php
+
+		-
+			message: '#^Undefined variable\: \$avatarManager$#'
+			identifier: variable.undefined
+			count: 2
+			path: src/Container/AuthServiceProvider.php
+
+		-
+			message: '#^Function as_schedule_recurring_action not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Container/CampaignServiceProvider.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\Symfony\\Component\\Uid\\Ulid not found\.$#'
+			identifier: class.notFound
+			count: 5
+			path: src/Flow/Builder/FlowBuilder.php
+
+		-
+			message: '#^Call to method evaluate\(\) on an unknown class WSms\\Dependencies\\Symfony\\Component\\ExpressionLanguage\\ExpressionLanguage\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Flow/Condition/ExpressionLanguageEvaluator.php
+
+		-
+			message: '#^Call to method lint\(\) on an unknown class WSms\\Dependencies\\Symfony\\Component\\ExpressionLanguage\\ExpressionLanguage\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Flow/Condition/ExpressionLanguageEvaluator.php
+
+		-
+			message: '#^Caught class WSms\\Dependencies\\Symfony\\Component\\ExpressionLanguage\\SyntaxError not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Flow/Condition/ExpressionLanguageEvaluator.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\Symfony\\Component\\ExpressionLanguage\\ExpressionLanguage not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Flow/Condition/ExpressionLanguageEvaluator.php
+
+		-
+			message: '#^Property WSms\\Flow\\Condition\\ExpressionLanguageEvaluator\:\:\$language has unknown class WSms\\Dependencies\\Symfony\\Component\\ExpressionLanguage\\ExpressionLanguage as its type\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Flow/Condition/ExpressionLanguageEvaluator.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\Symfony\\Component\\Uid\\Ulid not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Flow/Contracts/Flow.php
+
+		-
+			message: '#^Call to method warning\(\) on an unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Flow/Engine/FlowExecutor.php
+
+		-
+			message: '#^Parameter \$logger of method WSms\\Flow\\Engine\\FlowExecutor\:\:__construct\(\) has invalid type WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Flow/Engine/FlowExecutor.php
+
+		-
+			message: '#^Property WSms\\Flow\\Engine\\FlowExecutor\:\:\$logger has unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface as its type\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Flow/Engine/FlowExecutor.php
+
+		-
+			message: '#^Call to method debug\(\) on an unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/Flow/Engine/FlowRunner.php
+
+		-
+			message: '#^Call to method error\(\) on an unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Flow/Engine/FlowRunner.php
+
+		-
+			message: '#^Parameter \$logger of method WSms\\Flow\\Engine\\FlowRunner\:\:__construct\(\) has invalid type WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Flow/Engine/FlowRunner.php
+
+		-
+			message: '#^Property WSms\\Flow\\Engine\\FlowRunner\:\:\$logger has unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface as its type\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Flow/Engine/FlowRunner.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\Symfony\\Component\\Uid\\Ulid not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Flow/Storage/FlowExecutionRepository.php
+
+		-
+			message: '#^Call to static method get_instance\(\) on an unknown class WPCF7_ContactForm\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Integration/ContactForm7/Triggers/FormSubmittedTrigger.php
+
+		-
+			message: '#^Call to static method get_instance\(\) on an unknown class WPCF7_Submission\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Integration/ContactForm7/Triggers/FormSubmittedTrigger.php
+
+		-
+			message: '#^Function wc_get_order not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Integration/WooCommerce/Actions/AddOrderNoteAction.php
+
+		-
+			message: '#^Function wc_get_order not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Integration/WooCommerce/Actions/UpdateOrderStatusAction.php
+
+		-
+			message: '#^Function wc_get_order not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Integration/WooCommerce/Triggers/OrderCompletedTrigger.php
+
+		-
+			message: '#^Function wc_get_order not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Integration/WooCommerce/Triggers/OrderCreatedTrigger.php
+
+		-
+			message: '#^Function wc_get_order not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Integration/WooCommerce/Triggers/OrderStatusChangedTrigger.php
+
+		-
+			message: '#^Function wc_get_order not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Integration/WooCommerce/Triggers/PaymentFailedTrigger.php
+
+		-
+			message: '#^Function wc_get_order not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Integration/WooCommerce/Triggers/ProductPurchasedTrigger.php
+
+		-
+			message: '#^Function wc_get_products not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Integration/WooCommerce/Triggers/ProductPurchasedTrigger.php
+
+		-
+			message: '#^Call to method debug\(\) on an unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/Log/FlowLogger.php
+
+		-
+			message: '#^Call to method error\(\) on an unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Log/FlowLogger.php
+
+		-
+			message: '#^Call to method info\(\) on an unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Log/FlowLogger.php
+
+		-
+			message: '#^Parameter \$logger of method WSms\\Log\\FlowLogger\:\:__construct\(\) has invalid type WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Log/FlowLogger.php
+
+		-
+			message: '#^Property WSms\\Log\\FlowLogger\:\:\$logger has unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface as its type\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Log/FlowLogger.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\Symfony\\Component\\Uid\\Ulid not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Log/MessageLogger.php
+
+		-
+			message: '#^Access to constant ALERT on an unknown class WSms\\Dependencies\\Psr\\Log\\LogLevel\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Log/WpLogger.php
+
+		-
+			message: '#^Access to constant CRITICAL on an unknown class WSms\\Dependencies\\Psr\\Log\\LogLevel\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Log/WpLogger.php
+
+		-
+			message: '#^Access to constant DEBUG on an unknown class WSms\\Dependencies\\Psr\\Log\\LogLevel\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/Log/WpLogger.php
+
+		-
+			message: '#^Access to constant EMERGENCY on an unknown class WSms\\Dependencies\\Psr\\Log\\LogLevel\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Log/WpLogger.php
+
+		-
+			message: '#^Access to constant ERROR on an unknown class WSms\\Dependencies\\Psr\\Log\\LogLevel\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Log/WpLogger.php
+
+		-
+			message: '#^Access to constant INFO on an unknown class WSms\\Dependencies\\Psr\\Log\\LogLevel\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Log/WpLogger.php
+
+		-
+			message: '#^Access to constant NOTICE on an unknown class WSms\\Dependencies\\Psr\\Log\\LogLevel\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Log/WpLogger.php
+
+		-
+			message: '#^Access to constant WARNING on an unknown class WSms\\Dependencies\\Psr\\Log\\LogLevel\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Log/WpLogger.php
+
+		-
+			message: '#^Call to method writeString\(\) on an unknown class WSms\\Dependencies\\BaconQrCode\\Writer\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/TotpChannel.php
+
+		-
+			message: '#^Call to static method createFromSecret\(\) on an unknown class WSms\\Dependencies\\OTPHP\\TOTP\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/Mfa/Channels/TotpChannel.php
+
+		-
+			message: '#^Call to static method generate\(\) on an unknown class WSms\\Dependencies\\OTPHP\\TOTP\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/TotpChannel.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\BaconQrCode\\Renderer\\ImageRenderer not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/TotpChannel.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\BaconQrCode\\Renderer\\Image\\SvgImageBackEnd not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/TotpChannel.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\BaconQrCode\\Renderer\\RendererStyle\\RendererStyle not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/TotpChannel.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\BaconQrCode\\Writer not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/TotpChannel.php
+
+		-
+			message: '#^Access to constant STATUS_PENDING on an unknown class ActionScheduler_Store\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Queue/ActionSchedulerQueue.php
+
+		-
+			message: '#^Function as_enqueue_async_action not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Queue/ActionSchedulerQueue.php
+
+		-
+			message: '#^Function as_get_scheduled_actions not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Queue/ActionSchedulerQueue.php
+
+		-
+			message: '#^Function as_schedule_single_action not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Queue/ActionSchedulerQueue.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\Symfony\\Component\\Uid\\Ulid not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/Queue/ActionSchedulerQueue.php
+
+		-
+			message: '#^Call to method error\(\) on an unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/Queue/JobProcessor.php
+
+		-
+			message: '#^Function as_schedule_single_action not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Queue/JobProcessor.php
+
+		-
+			message: '#^Parameter \$logger of method WSms\\Queue\\JobProcessor\:\:__construct\(\) has invalid type WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Queue/JobProcessor.php
+
+		-
+			message: '#^Property WSms\\Queue\\JobProcessor\:\:\$logger has unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface as its type\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Queue/JobProcessor.php
+
+		-
+			message: '#^Cannot access property \$success on array\<string, bool\|string\>\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: src/Rest/AccountController.php
+
+		-
+			message: '#^Cannot call method toArray\(\) on array\<string, bool\|string\>\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: src/Rest/AccountController.php
+
+		-
+			message: '#^PHPDoc tag @var with type WSms\\Messaging\\Contracts\\SupportsInboundMessage is not subtype of native type WSms\\Messaging\\Contracts\\GatewayInterface\|null\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: src/Rest/GatewayCallbackController.php
+
+		-
+			message: '#^PHPDoc tag @var with type WSms\\Messaging\\Contracts\\SupportsStatusCallback is not subtype of native type WSms\\Messaging\\Contracts\\GatewayInterface\|null\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: src/Rest/GatewayCallbackController.php
+
+		-
+			message: '#^Access to private property WSms\\Messaging\\Message\\EmailMessage\:\:\$subject\.$#'
+			identifier: property.private
+			count: 1
+			path: src/Rest/GatewayController.php
+
+		-
+			message: '#^Property WSms\\Rest\\SocialAuthController\:\:\$socialManager is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/Rest/SocialAuthController.php
+
+		-
+			message: '#^Access to static property \$leeway on an unknown class WSms\\Dependencies\\Firebase\\JWT\\JWT\.$#'
+			identifier: class.notFound
+			count: 5
+			path: src/Social/Oidc/JwtValidator.php
+
+		-
+			message: '#^Call to static method decode\(\) on an unknown class WSms\\Dependencies\\Firebase\\JWT\\JWT\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Social/Oidc/JwtValidator.php
+
+		-
+			message: '#^Call to static method parseKeySet\(\) on an unknown class WSms\\Dependencies\\Firebase\\JWT\\JWK\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Social/Oidc/JwtValidator.php
+
+		-
+			message: '#^Caught class WSms\\Dependencies\\Firebase\\JWT\\BeforeValidException not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Social/Oidc/JwtValidator.php
+
+		-
+			message: '#^Caught class WSms\\Dependencies\\Firebase\\JWT\\ExpiredException not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Social/Oidc/JwtValidator.php
+
+		-
+			message: '#^Caught class WSms\\Dependencies\\Firebase\\JWT\\SignatureInvalidException not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Social/Oidc/JwtValidator.php
+
+		-
+			message: '#^PHPDoc tag @throws with type InvalidArgumentException\|UnexpectedValueException\|WSms\\Dependencies\\Firebase\\JWT\\BeforeValidException\|WSms\\Dependencies\\Firebase\\JWT\\ExpiredException\|WSms\\Dependencies\\Firebase\\JWT\\SignatureInvalidException is not subtype of Throwable$#'
+			identifier: throws.notThrowable
+			count: 1
+			path: src/Social/Oidc/JwtValidator.php
+
+		-
+			message: '#^Property WSms\\Social\\SocialAuthOrchestrator\:\:\$session is never read, only written\.$#'
+			identifier: property.onlyWritten
+			count: 1
+			path: src/Social/SocialAuthOrchestrator.php
+
+		-
+			message: '#^Call to method print\(\) on an unknown class WPCF7_TagGeneratorGenerator\.$#'
+			identifier: class.notFound
+			count: 6
+			path: src/Verification/Plugin/ContactForm7/CF7Integration.php
+
+		-
+			message: '#^Function wpcf7_add_form_tag not found\.$#'
+			identifier: function.notFound
+			count: 2
+			path: src/Verification/Plugin/ContactForm7/CF7Integration.php
+
+		-
+			message: '#^Function wpcf7_get_message not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Verification/Plugin/ContactForm7/CF7Integration.php
+
+		-
+			message: '#^Function wpcf7_swv_create_rule not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Verification/Plugin/ContactForm7/CF7Integration.php
+
+		-
+			message: '#^Instantiated class WPCF7_TagGeneratorGenerator not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Verification/Plugin/ContactForm7/CF7Integration.php
+
+		-
+			message: '#^Access to an undefined property WSms\\Verification\\Plugin\\WPForms\\VerifyEmailField\:\:\$group\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/VerifyEmailField.php
+
+		-
+			message: '#^Access to an undefined property WSms\\Verification\\Plugin\\WPForms\\VerifyEmailField\:\:\$icon\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/VerifyEmailField.php
+
+		-
+			message: '#^Access to an undefined property WSms\\Verification\\Plugin\\WPForms\\VerifyEmailField\:\:\$keywords\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/VerifyEmailField.php
+
+		-
+			message: '#^Access to an undefined property WSms\\Verification\\Plugin\\WPForms\\VerifyEmailField\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/VerifyEmailField.php
+
+		-
+			message: '#^Access to an undefined property WSms\\Verification\\Plugin\\WPForms\\VerifyEmailField\:\:\$order\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/VerifyEmailField.php
+
+		-
+			message: '#^Access to an undefined property WSms\\Verification\\Plugin\\WPForms\\VerifyEmailField\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/VerifyEmailField.php
+
+		-
+			message: '#^Access to an undefined property WSms\\Verification\\Plugin\\WPForms\\VerifyPhoneField\:\:\$group\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/VerifyPhoneField.php
+
+		-
+			message: '#^Access to an undefined property WSms\\Verification\\Plugin\\WPForms\\VerifyPhoneField\:\:\$icon\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/VerifyPhoneField.php
+
+		-
+			message: '#^Access to an undefined property WSms\\Verification\\Plugin\\WPForms\\VerifyPhoneField\:\:\$keywords\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/VerifyPhoneField.php
+
+		-
+			message: '#^Access to an undefined property WSms\\Verification\\Plugin\\WPForms\\VerifyPhoneField\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/VerifyPhoneField.php
+
+		-
+			message: '#^Access to an undefined property WSms\\Verification\\Plugin\\WPForms\\VerifyPhoneField\:\:\$order\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/VerifyPhoneField.php
+
+		-
+			message: '#^Access to an undefined property WSms\\Verification\\Plugin\\WPForms\\VerifyPhoneField\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/VerifyPhoneField.php
+
+		-
+			message: '#^Access to an undefined property WSms\\Verification\\Plugin\\WPForms\\WPFormsVerifyField\:\:\$type\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/WPFormsVerifyField.php
+
+		-
+			message: '#^Call to an undefined method WSms\\Verification\\Plugin\\WPForms\\WPFormsVerifyField\:\:field_display_error\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/WPFormsVerifyField.php
+
+		-
+			message: '#^Call to an undefined method WSms\\Verification\\Plugin\\WPForms\\WPFormsVerifyField\:\:field_option\(\)\.$#'
+			identifier: method.notFound
+			count: 10
+			path: src/Verification/Plugin/WPForms/WPFormsVerifyField.php
+
+		-
+			message: '#^Call to an undefined method WSms\\Verification\\Plugin\\WPForms\\WPFormsVerifyField\:\:field_preview_option\(\)\.$#'
+			identifier: method.notFound
+			count: 2
+			path: src/Verification/Plugin/WPForms/WPFormsVerifyField.php
+
+		-
+			message: '#^Call to an undefined static method WPForms_Field\:\:__construct\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/WPFormsVerifyField.php
+
+		-
+			message: '#^Call to an undefined static method WPForms_Field\:\:validate\(\)\.$#'
+			identifier: staticMethod.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/WPFormsVerifyField.php
+
+		-
+			message: '#^Function wpforms not found\.$#'
+			identifier: function.notFound
+			count: 2
+			path: src/Verification/Plugin/WPForms/WPFormsVerifyField.php
+
+		-
+			message: '#^Function wpforms_html_attributes not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Verification/Plugin/WPForms/WPFormsVerifyField.php
+
+		-
+			message: '#^Instantiated class Automattic\\WooCommerce\\StoreApi\\Exceptions\\RouteException not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/Verification/Plugin/WooCommerce/WooBlockCheckoutValidation.php
+
+		-
+			message: '#^Throwing object of an unknown class Automattic\\WooCommerce\\StoreApi\\Exceptions\\RouteException\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/Verification/Plugin/WooCommerce/WooBlockCheckoutValidation.php
+
+		-
+			message: '#^Function wc_get_order not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Verification/Plugin/WooCommerce/WooClassicCheckoutVerification.php
+
+		-
+			message: '#^Anonymous function has an unused use \$config\.$#'
+			identifier: closure.unusedUse
+			count: 1
+			path: src/Verification/Plugin/WooCommerce/WooCommerceServiceProvider.php
+
+		-
+			message: '#^Function wc_get_page_permalink not found\.$#'
+			identifier: function.notFound
+			count: 1
+			path: src/Verification/Plugin/WooCommerce/WooCommerceServiceProvider.php
+
+		-
+			message: '#^Function wc_add_notice not found\.$#'
+			identifier: function.notFound
+			count: 2
+			path: src/Verification/ProfileReverification.php

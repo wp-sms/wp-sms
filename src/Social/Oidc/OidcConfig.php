@@ -4,18 +4,18 @@ namespace WSms\Social\Oidc;
 
 defined('ABSPATH') || exit;
 
-readonly class OidcConfig
+class OidcConfig
 {
     public function __construct(
-        public string $id,
-        public string $name,
-        public string $discoveryUrl,
-        public string $clientId,
-        public string $clientSecret,
-        public array  $scopes = ['openid', 'profile', 'email'],
-        public ?string $tokenAuthMethod = null,
-        public bool   $isTrustedEmail = false,
-        public string $iconSvg = '',
+        public readonly string $id,
+        public readonly string $name,
+        public readonly string $discoveryUrl,
+        public readonly string $clientId,
+        public readonly string $clientSecret,
+        public readonly array  $scopes = ['openid', 'profile', 'email'],
+        public readonly ?string $tokenAuthMethod = null,
+        public readonly bool   $isTrustedEmail = false,
+        public readonly string $iconSvg = '',
     ) {
     }
 }

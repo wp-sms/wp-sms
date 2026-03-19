@@ -2,6 +2,8 @@
 
 namespace WSms\Auth;
 
+use WSms\Support\UserMeta;
+
 defined('ABSPATH') || exit;
 
 class AvatarManager
@@ -17,8 +19,6 @@ class AvatarManager
         'gif'          => 'image/gif',
         'webp'         => 'image/webp',
     ];
-    private const META_CUSTOM_AVATAR = 'wsms_custom_avatar';
-    private const META_SOCIAL_AVATAR = 'wsms_social_avatar';
     private const RESIZE_PX = 256;
 
     /**
@@ -78,7 +78,7 @@ class AvatarManager
         }
 
         $url = $this->getUploadUrl() . '/' . $filename;
-        update_user_meta($userId, self::META_CUSTOM_AVATAR, $url);
+        update_user_meta($userId, UserMeta::CUSTOM_AVATAR, $url);
         unset($this->avatarUrlCache[$userId]);
 
         return [
@@ -94,7 +94,7 @@ class AvatarManager
     public function deleteAvatar(int $userId): void
     {
         $this->deleteAvatarFile($userId);
-        delete_user_meta($userId, self::META_CUSTOM_AVATAR);
+        delete_user_meta($userId, UserMeta::CUSTOM_AVATAR);
         unset($this->avatarUrlCache[$userId]);
     }
 
@@ -107,12 +107,12 @@ class AvatarManager
             return $this->avatarUrlCache[$userId];
         }
 
-        $custom = get_user_meta($userId, self::META_CUSTOM_AVATAR, true);
+        $custom = get_user_meta($userId, UserMeta::CUSTOM_AVATAR, true);
         if (!empty($custom)) {
             return $this->avatarUrlCache[$userId] = $custom;
         }
 
-        $social = get_user_meta($userId, self::META_SOCIAL_AVATAR, true);
+        $social = get_user_meta($userId, UserMeta::SOCIAL_AVATAR, true);
 
         return $this->avatarUrlCache[$userId] = (!empty($social) ? $social : null);
     }
@@ -126,7 +126,7 @@ class AvatarManager
             return;
         }
 
-        update_user_meta($userId, self::META_SOCIAL_AVATAR, esc_url_raw($url));
+        update_user_meta($userId, UserMeta::SOCIAL_AVATAR, esc_url_raw($url));
     }
 
     /**
@@ -139,7 +139,7 @@ class AvatarManager
     public function downloadAndStoreAvatar(int $userId, string $url): bool
     {
         // Don't overwrite user-uploaded avatars.
-        $existing = get_user_meta($userId, self::META_CUSTOM_AVATAR, true);
+        $existing = get_user_meta($userId, UserMeta::CUSTOM_AVATAR, true);
 
         if (!empty($existing)) {
             return false;
@@ -209,7 +209,7 @@ class AvatarManager
             }
 
             $localUrl = $this->getUploadUrl() . '/' . $filename;
-            update_user_meta($userId, self::META_CUSTOM_AVATAR, $localUrl);
+            update_user_meta($userId, UserMeta::CUSTOM_AVATAR, $localUrl);
             unset($this->avatarUrlCache[$userId]);
 
             return true;
@@ -287,8 +287,8 @@ class AvatarManager
             return $exportItems;
         }
 
-        $customAvatar = get_user_meta($user->ID, self::META_CUSTOM_AVATAR, true);
-        $socialAvatar = get_user_meta($user->ID, self::META_SOCIAL_AVATAR, true);
+        $customAvatar = get_user_meta($user->ID, UserMeta::CUSTOM_AVATAR, true);
+        $socialAvatar = get_user_meta($user->ID, UserMeta::SOCIAL_AVATAR, true);
 
         if (!empty($customAvatar) || !empty($socialAvatar)) {
             $data = [];
@@ -323,11 +323,11 @@ class AvatarManager
             return ['items_removed' => false, 'items_retained' => false, 'messages' => [], 'done' => true];
         }
 
-        $hadCustom = !empty(get_user_meta($user->ID, self::META_CUSTOM_AVATAR, true));
-        $hadSocial = !empty(get_user_meta($user->ID, self::META_SOCIAL_AVATAR, true));
+        $hadCustom = !empty(get_user_meta($user->ID, UserMeta::CUSTOM_AVATAR, true));
+        $hadSocial = !empty(get_user_meta($user->ID, UserMeta::SOCIAL_AVATAR, true));
 
         $this->deleteAvatar($user->ID);
-        delete_user_meta($user->ID, self::META_SOCIAL_AVATAR);
+        delete_user_meta($user->ID, UserMeta::SOCIAL_AVATAR);
 
         return [
             'items_removed'  => $hadCustom || $hadSocial,

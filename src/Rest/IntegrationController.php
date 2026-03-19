@@ -9,9 +9,8 @@ use WSms\Integration\Contracts\IntegrationInterface;
 
 defined('ABSPATH') || exit;
 
-class IntegrationController
+class IntegrationController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
     private const CONFIG_OPTION = 'wsms_integration_configs';
 
     public function __construct(
@@ -83,11 +82,6 @@ class IntegrationController
                 'permission_callback' => [$this, 'canManage'],
             ],
         ]);
-    }
-
-    public function canManage(): bool
-    {
-        return current_user_can('manage_options');
     }
 
     public function index(): \WP_REST_Response

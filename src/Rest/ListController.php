@@ -8,10 +8,8 @@ use WSms\Contact\Contracts\ContactRepositoryInterface;
 
 defined('ABSPATH') || exit;
 
-class ListController
+class ListController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
-
     public function __construct(
         private readonly ListRepositoryInterface $lists,
         private readonly SegmentEvaluatorInterface $segmentEvaluator,
@@ -84,11 +82,6 @@ class ListController
                 ],
             ],
         ]);
-    }
-
-    public function canManage(): bool
-    {
-        return current_user_can('manage_options');
     }
 
     public function index(\WP_REST_Request $request): \WP_REST_Response

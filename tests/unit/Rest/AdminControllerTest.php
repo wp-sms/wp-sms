@@ -40,18 +40,16 @@ class AdminControllerTest extends TestCase
         );
     }
 
-    public function testCheckAdminReturnsTrueWhenCapable(): void
+    public function testCanManageReturnsTrueWhenCapable(): void
     {
         $GLOBALS['_test_current_user_can'] = true;
-        $request = new \WP_REST_Request();
-        $this->assertTrue($this->controller->checkAdmin($request));
+        $this->assertTrue($this->controller->canManage());
     }
 
-    public function testCheckAdminReturnsFalseWhenNotCapable(): void
+    public function testCanManageReturnsFalseWhenNotCapable(): void
     {
         $GLOBALS['_test_current_user_can'] = false;
-        $request = new \WP_REST_Request();
-        $this->assertFalse($this->controller->checkAdmin($request));
+        $this->assertFalse($this->controller->canManage());
     }
 
     public function testGetSettingsReturnsCurrentSettings(): void

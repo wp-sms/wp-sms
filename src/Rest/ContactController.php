@@ -9,9 +9,8 @@ use WSms\Contact\Contracts\SegmentEvaluatorInterface;
 
 defined('ABSPATH') || exit;
 
-class ContactController
+class ContactController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
     private const ALLOWED_STATUSES = ['subscribed', 'unsubscribed', 'bounced', 'complained'];
 
     public function __construct(
@@ -159,11 +158,6 @@ class ContactController
                 ],
             ],
         ]);
-    }
-
-    public function canManage(): bool
-    {
-        return current_user_can('manage_options');
     }
 
     public function index(\WP_REST_Request $request): \WP_REST_Response

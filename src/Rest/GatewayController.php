@@ -10,10 +10,8 @@ use WSms\Messaging\Message\WebhookMessage;
 
 defined('ABSPATH') || exit;
 
-class GatewayController
+class GatewayController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
-
     public function __construct(
         private readonly GatewayRegistry $gatewayRegistry,
         private readonly MessageLoggerInterface $messageLogger,
@@ -76,11 +74,6 @@ class GatewayController
                 'permission_callback' => [$this, 'canManage'],
             ],
         ]);
-    }
-
-    public function canManage(): bool
-    {
-        return current_user_can('manage_options');
     }
 
     public function index(\WP_REST_Request $request): \WP_REST_Response

@@ -2,6 +2,8 @@
 
 namespace WSms\Auth;
 
+use WSms\Support\UserMeta;
+
 defined('ABSPATH') || exit;
 
 class AuthRouter
@@ -115,7 +117,7 @@ class AuthRouter
             'isLoggedIn'       => is_user_logged_in(),
             'route'            => get_query_var('wsms_auth_route', ''),
             'enrollmentGated'  => is_user_logged_in()
-                && (bool) get_user_meta(get_current_user_id(), 'wsms_mfa_enrollment_pending', true),
+                && (bool) get_user_meta(get_current_user_id(), UserMeta::MFA_ENROLLMENT_PENDING, true),
         ]);
 
         // Enqueue CAPTCHA provider script if enabled.

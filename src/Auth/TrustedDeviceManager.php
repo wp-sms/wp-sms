@@ -3,12 +3,12 @@
 namespace WSms\Auth;
 
 use WSms\Support\SigningKey;
+use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
 
 class TrustedDeviceManager
 {
-    private const META_KEY = 'wsms_trusted_devices';
     private const COOKIE_NAME = 'wsms_td';
     private const MAX_DEVICES = 5;
     private const DEFAULT_TTL = 2592000; // 30 days
@@ -83,7 +83,7 @@ class TrustedDeviceManager
 
     public function revokeAll(int $userId): void
     {
-        delete_user_meta($userId, self::META_KEY);
+        delete_user_meta($userId, UserMeta::TRUSTED_DEVICES);
         $this->writeCookie('', time() - 3600);
     }
 
@@ -108,7 +108,7 @@ class TrustedDeviceManager
             array_shift($devices);
         }
 
-        update_user_meta($userId, self::META_KEY, wp_json_encode($devices));
+        update_user_meta($userId, UserMeta::TRUSTED_DEVICES, wp_json_encode($devices));
 
         // Set new cookie.
         $payload = $this->buildPayload($userId, $token, $expiresAt);
@@ -201,12 +201,12 @@ class TrustedDeviceManager
             array_shift($devices);
         }
 
-        update_user_meta($userId, self::META_KEY, wp_json_encode($devices));
+        update_user_meta($userId, UserMeta::TRUSTED_DEVICES, wp_json_encode($devices));
     }
 
     private function getDevices(int $userId): array
     {
-        $raw = get_user_meta($userId, self::META_KEY, true);
+        $raw = get_user_meta($userId, UserMeta::TRUSTED_DEVICES, true);
 
         if (empty($raw)) {
             return [];

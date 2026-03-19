@@ -6,10 +6,8 @@ use WSms\Contact\Contracts\TagRepositoryInterface;
 
 defined('ABSPATH') || exit;
 
-class TagController
+class TagController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
-
     public function __construct(
         private readonly TagRepositoryInterface $tags,
     ) {
@@ -52,11 +50,6 @@ class TagController
                 'permission_callback' => [$this, 'canManage'],
             ],
         ]);
-    }
-
-    public function canManage(): bool
-    {
-        return current_user_can('manage_options');
     }
 
     public function index(): \WP_REST_Response

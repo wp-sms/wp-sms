@@ -6,6 +6,7 @@ use WSms\Enums\ChannelUsage;
 use WSms\Enums\EnrollmentTiming;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\MfaManager;
+use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
 
@@ -28,7 +29,7 @@ class PolicyEngine
         }
 
         // Voluntary enrollment: if user has explicitly enrolled, always require MFA.
-        if ((bool) get_user_meta($userId, 'wsms_mfa_enabled', true)) {
+        if ((bool) get_user_meta($userId, UserMeta::MFA_ENABLED, true)) {
             return true;
         }
 
@@ -57,7 +58,7 @@ class PolicyEngine
     public function getGracePeriodInfo(int $userId): ?array
     {
         // Cheap check first: enrolled users don't need grace info.
-        if ((bool) get_user_meta($userId, 'wsms_mfa_enabled', true)) {
+        if ((bool) get_user_meta($userId, UserMeta::MFA_ENABLED, true)) {
             return null;
         }
 

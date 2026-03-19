@@ -11,10 +11,8 @@ use WSms\Auth\ValueObjects\AuthResult;
 
 defined('ABSPATH') || exit;
 
-class MfaController
+class MfaController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
-
     public function __construct(
         private AuthOrchestrator $orchestrator,
         private RateLimiter $rateLimiter,

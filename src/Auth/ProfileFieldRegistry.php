@@ -3,6 +3,7 @@
 namespace WSms\Auth;
 
 use WSms\Auth\ValueObjects\ProfileFieldDefinition;
+use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
 
@@ -45,7 +46,7 @@ class ProfileFieldRegistry
             ),
             new ProfileFieldDefinition(
                 id: 'phone', type: 'text', label: 'Phone Number',
-                source: 'system', metaKey: 'wsms_phone',
+                source: 'system', metaKey: UserMeta::PHONE,
                 visibility: 'both', required: false, sortOrder: 3,
             ),
             new ProfileFieldDefinition(

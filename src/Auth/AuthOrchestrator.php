@@ -9,6 +9,7 @@ use WSms\Enums\EventType;
 use WSms\Enums\SessionStage;
 use WSms\Mfa\Contracts\SupportsTokenVerification;
 use WSms\Mfa\MfaManager;
+use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
 
@@ -407,7 +408,7 @@ class AuthOrchestrator
 
     private function gateForEnrollment(int $userId, string $method): AuthResult
     {
-        update_user_meta($userId, 'wsms_mfa_enrollment_pending', '1');
+        update_user_meta($userId, UserMeta::MFA_ENROLLMENT_PENDING, '1');
         wp_set_auth_cookie($userId, true);
         wp_set_current_user($userId);
 
@@ -551,7 +552,7 @@ class AuthOrchestrator
     {
         if ($channel === 'phone') {
             $users = get_users([
-                'meta_key'   => 'wsms_phone',
+                'meta_key'   => UserMeta::PHONE,
                 'meta_value' => $identifier,
                 'number'     => 1,
             ]);
@@ -577,7 +578,7 @@ class AuthOrchestrator
 
         if ($type === 'phone') {
             $users = get_users([
-                'meta_key'   => 'wsms_phone',
+                'meta_key'   => UserMeta::PHONE,
                 'meta_value' => $identifier,
                 'number'     => 1,
             ]);

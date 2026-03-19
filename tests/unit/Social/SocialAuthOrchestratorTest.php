@@ -11,6 +11,7 @@ use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthSession;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\ValueObjects\AuthResult;
+use WSms\Auth\ValueObjects\OperationResult;
 use WSms\Social\Contracts\SocialProviderInterface;
 use WSms\Social\OAuthStateManager;
 use WSms\Social\SocialAccountRepository;
@@ -231,11 +232,9 @@ class SocialAuthOrchestratorTest extends TestCase
         $this->policyEngine->method('getSetting')
             ->willReturnMap([['auto_create_users', false, true]]);
 
-        $this->accountManager->method('registerUser')->willReturn([
-            'success' => true,
-            'user_id' => 99,
-            'message' => 'Registration successful.',
-        ]);
+        $this->accountManager->method('registerUser')->willReturn(
+            new OperationResult(success: true, message: 'Registration successful.', userId: 99)
+        );
 
         $this->authOrchestrator->method('resolveAuthFromSocial')->willReturn(
             AuthResult::authenticated(99, ['id' => 99, 'email' => 'brand-new@gmail.com', 'username' => 'wsms_test', 'display_name' => 'Brand New', 'first_name' => 'Brand', 'last_name' => 'New', 'roles' => ['subscriber']])
@@ -368,11 +367,9 @@ class SocialAuthOrchestratorTest extends TestCase
         $this->policyEngine->method('getSetting')
             ->willReturnMap([['auto_create_users', false, true]]);
 
-        $this->accountManager->method('registerUser')->willReturn([
-            'success' => true,
-            'user_id' => 77,
-            'message' => 'Registration successful.',
-        ]);
+        $this->accountManager->method('registerUser')->willReturn(
+            new OperationResult(success: true, message: 'Registration successful.', userId: 77)
+        );
 
         $this->authOrchestrator->method('resolveAuthFromSocial')->willReturn(
             AuthResult::authenticated(77, ['id' => 77, 'email' => '', 'username' => 'wsms_tg', 'display_name' => 'New TG User', 'first_name' => '', 'last_name' => '', 'roles' => ['subscriber']])
@@ -419,11 +416,9 @@ class SocialAuthOrchestratorTest extends TestCase
                 }),
                 true, // socialLogin
             )
-            ->willReturn([
-                'success' => true,
-                'user_id' => 88,
-                'message' => 'Registration successful.',
-            ]);
+            ->willReturn(
+                new OperationResult(success: true, message: 'Registration successful.', userId: 88)
+            );
 
         $this->authOrchestrator->method('resolveAuthFromSocial')->willReturn(
             AuthResult::authenticated(88, ['id' => 88, 'email' => '', 'username' => 'wsms_tg2', 'display_name' => 'TG No Email', 'first_name' => '', 'last_name' => '', 'roles' => ['subscriber']])
@@ -470,11 +465,9 @@ class SocialAuthOrchestratorTest extends TestCase
         $this->policyEngine->method('getSetting')
             ->willReturnMap([['auto_create_users', false, false]]);
 
-        $this->accountManager->method('registerUser')->willReturn([
-            'success' => true,
-            'user_id' => 101,
-            'message' => 'Registration successful.',
-        ]);
+        $this->accountManager->method('registerUser')->willReturn(
+            new OperationResult(success: true, message: 'Registration successful.', userId: 101)
+        );
 
         $this->authOrchestrator->method('resolveAuthFromSocial')->willReturn(
             AuthResult::authenticated(101, ['id' => 101, 'email' => 'register-intent@gmail.com', 'username' => 'wsms_reg', 'display_name' => 'Register User', 'first_name' => 'Register', 'last_name' => 'User', 'roles' => ['subscriber']])
@@ -570,11 +563,9 @@ class SocialAuthOrchestratorTest extends TestCase
                 }),
                 true,
             )
-            ->willReturn([
-                'success' => true,
-                'user_id' => 200,
-                'message' => 'Registration successful.',
-            ]);
+            ->willReturn(
+                new OperationResult(success: true, message: 'Registration successful.', userId: 200)
+            );
 
         $this->authOrchestrator->method('resolveAuthFromSocial')->willReturn(
             AuthResult::authenticated(200, ['id' => 200, 'email' => '', 'username' => 'wsms_tg', 'display_name' => 'Navid Kashani', 'first_name' => 'Navid', 'last_name' => 'Kashani', 'roles' => ['subscriber']])
@@ -614,11 +605,9 @@ class SocialAuthOrchestratorTest extends TestCase
                 }),
                 true,
             )
-            ->willReturn([
-                'success' => true,
-                'user_id' => 201,
-                'message' => 'Registration successful.',
-            ]);
+            ->willReturn(
+                new OperationResult(success: true, message: 'Registration successful.', userId: 201)
+            );
 
         $this->authOrchestrator->method('resolveAuthFromSocial')->willReturn(
             AuthResult::authenticated(201, ['id' => 201, 'email' => 'john@gmail.com', 'username' => 'john', 'display_name' => 'John Doe', 'first_name' => 'John', 'last_name' => 'Doe', 'roles' => ['subscriber']])
@@ -662,11 +651,9 @@ class SocialAuthOrchestratorTest extends TestCase
                 }),
                 true,
             )
-            ->willReturn([
-                'success' => true,
-                'user_id' => 202,
-                'message' => 'Registration successful.',
-            ]);
+            ->willReturn(
+                new OperationResult(success: true, message: 'Registration successful.', userId: 202)
+            );
 
         $this->authOrchestrator->method('resolveAuthFromSocial')->willReturn(
             AuthResult::authenticated(202, ['id' => 202, 'email' => '', 'username' => 'wsms_tg', 'display_name' => 'Madonna', 'first_name' => 'Madonna', 'last_name' => '', 'roles' => ['subscriber']])

@@ -2,13 +2,12 @@
 
 namespace WSms\Auth;
 
+use WSms\Support\UserMeta;
+
 defined('ABSPATH') || exit;
 
 class AccountLockout
 {
-    private const META_ATTEMPTS = 'wsms_failed_attempts';
-    private const META_LOCKOUT_UNTIL = 'wsms_lockout_until';
-
     private const DEFAULT_THRESHOLDS = [
         5  => 300,   // 5 min
         10 => 900,   // 15 min
@@ -22,14 +21,14 @@ class AccountLockout
 
     public function recordFailure(int $userId): void
     {
-        $attempts = (int) get_user_meta($userId, self::META_ATTEMPTS, true);
+        $attempts = (int) get_user_meta($userId, UserMeta::FAILED_ATTEMPTS, true);
         $attempts++;
-        update_user_meta($userId, self::META_ATTEMPTS, $attempts);
+        update_user_meta($userId, UserMeta::FAILED_ATTEMPTS, $attempts);
 
         $thresholds = $this->getThresholds();
 
         if (isset($thresholds[$attempts])) {
-            update_user_meta($userId, self::META_LOCKOUT_UNTIL, time() + $thresholds[$attempts]);
+            update_user_meta($userId, UserMeta::LOCKOUT_UNTIL, time() + $thresholds[$attempts]);
         }
     }
 
@@ -38,8 +37,8 @@ class AccountLockout
      */
     public function isLocked(int $userId): array
     {
-        $attempts = (int) get_user_meta($userId, self::META_ATTEMPTS, true);
-        $lockoutUntil = (int) get_user_meta($userId, self::META_LOCKOUT_UNTIL, true);
+        $attempts = (int) get_user_meta($userId, UserMeta::FAILED_ATTEMPTS, true);
+        $lockoutUntil = (int) get_user_meta($userId, UserMeta::LOCKOUT_UNTIL, true);
 
         if ($lockoutUntil > 0 && $lockoutUntil > time()) {
             return [
@@ -51,7 +50,7 @@ class AccountLockout
 
         // Auto-clear expired lockout.
         if ($lockoutUntil > 0) {
-            delete_user_meta($userId, self::META_LOCKOUT_UNTIL);
+            delete_user_meta($userId, UserMeta::LOCKOUT_UNTIL);
         }
 
         return [
@@ -63,8 +62,8 @@ class AccountLockout
 
     public function reset(int $userId): void
     {
-        delete_user_meta($userId, self::META_ATTEMPTS);
-        delete_user_meta($userId, self::META_LOCKOUT_UNTIL);
+        delete_user_meta($userId, UserMeta::FAILED_ATTEMPTS);
+        delete_user_meta($userId, UserMeta::LOCKOUT_UNTIL);
     }
 
     private function getThresholds(): array

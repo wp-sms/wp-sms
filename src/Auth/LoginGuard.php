@@ -4,6 +4,7 @@ namespace WSms\Auth;
 
 use WSms\Enums\SessionStage;
 use WSms\Mfa\MfaManager;
+use WSms\Support\UserMeta;
 use WP_User;
 use WP_Error;
 
@@ -78,7 +79,7 @@ class LoginGuard
             return $user;
         }
 
-        $status = get_user_meta($user->ID, 'wsms_registration_status', true);
+        $status = get_user_meta($user->ID, UserMeta::REGISTRATION_STATUS, true);
         if ($status === 'pending') {
             return new \WP_Error(
                 'account_pending_verification',
@@ -106,7 +107,7 @@ class LoginGuard
         }
 
         if (empty($this->mfaManager->getActiveMfaFactors($user->ID))) {
-            update_user_meta($user->ID, 'wsms_mfa_enrollment_pending', '1');
+            update_user_meta($user->ID, UserMeta::MFA_ENROLLMENT_PENDING, '1');
             $authBaseUrl = $this->settingsRepo->get('auth_base_url', '/account');
             $this->redirect(home_url($authBaseUrl . '/security?mfa_enroll=required'));
             return;
@@ -154,7 +155,7 @@ class LoginGuard
             return;
         }
 
-        update_user_meta($customerId, 'wsms_registration_status', 'pending');
+        update_user_meta($customerId, UserMeta::REGISTRATION_STATUS, 'pending');
 
         $this->interceptLogin($customerId, 'registration', SessionStage::RegistrationVerify, 'wp_verify');
     }
@@ -170,7 +171,7 @@ class LoginGuard
             !empty($settings['email']['enabled'])
             && ($settings['email']['usage'] ?? '') === 'login'
             && !empty($settings['email']['verify_at_login'])
-            && empty(get_user_meta($userId, 'wsms_email_verified', true))
+            && empty(get_user_meta($userId, UserMeta::EMAIL_VERIFIED, true))
         ) {
             return true;
         }
@@ -179,7 +180,7 @@ class LoginGuard
             !empty($settings['phone']['enabled'])
             && ($settings['phone']['usage'] ?? '') === 'login'
             && !empty($settings['phone']['verify_at_login'])
-            && empty(get_user_meta($userId, 'wsms_phone_verified', true))
+            && empty(get_user_meta($userId, UserMeta::PHONE_VERIFIED, true))
         ) {
             return true;
         }
@@ -224,7 +225,7 @@ class LoginGuard
     public function enforceEnrollmentGate($result, $server, $request)
     {
         $userId = get_current_user_id();
-        if (!$userId || !get_user_meta($userId, 'wsms_mfa_enrollment_pending', true)) {
+        if (!$userId || !get_user_meta($userId, UserMeta::MFA_ENROLLMENT_PENDING, true)) {
             return $result;
         }
 
@@ -253,7 +254,7 @@ class LoginGuard
     public function redirectEnrollmentGatedUsers(): void
     {
         $userId = get_current_user_id();
-        if (!$userId || !get_user_meta($userId, 'wsms_mfa_enrollment_pending', true)) {
+        if (!$userId || !get_user_meta($userId, UserMeta::MFA_ENROLLMENT_PENDING, true)) {
             return;
         }
 
@@ -279,7 +280,7 @@ class LoginGuard
     {
         $userId = get_current_user_id();
         if ($userId) {
-            delete_user_meta($userId, 'wsms_mfa_enrollment_pending');
+            delete_user_meta($userId, UserMeta::MFA_ENROLLMENT_PENDING);
         }
     }
 
@@ -293,7 +294,7 @@ class LoginGuard
     {
         if (!$this->policy->isMfaRequired($userId)
             || !empty($this->mfaManager->getActiveMfaFactors($userId))) {
-            delete_user_meta($userId, 'wsms_mfa_enrollment_pending');
+            delete_user_meta($userId, UserMeta::MFA_ENROLLMENT_PENDING);
             return false;
         }
 

@@ -13,7 +13,9 @@ use WSms\Messaging\Message\EmailMessage;
 use WSms\Messaging\Message\Message;
 use WSms\Messaging\OtpEmailBuilder;
 use WSms\Mfa\MfaManager;
+use WSms\Auth\ValueObjects\OperationResult;
 use WSms\Support\IpResolver;
+use WSms\Support\UserMeta;
 use WSms\Verification\OtpService;
 use WSms\Verification\VerificationRepository;
 
@@ -24,7 +26,6 @@ class AccountManager
     public const PLACEHOLDER_EMAIL_DOMAIN = 'noreply.wsms.local';
     public const PLACEHOLDER_USERNAME_PREFIX = 'wsms_';
     public const DEFAULT_PENDING_USER_TTL_HOURS = 24;
-    private const META_HAS_USABLE_PASSWORD = 'wsms_has_usable_password';
 
     public function __construct(
         private AuditLogger $auditLogger,
@@ -56,7 +57,7 @@ class AccountManager
      */
     public static function hasUsablePassword(int $userId): bool
     {
-        $meta = get_user_meta($userId, self::META_HAS_USABLE_PASSWORD, true);
+        $meta = get_user_meta($userId, UserMeta::HAS_USABLE_PASSWORD, true);
 
         return $meta === '' || $meta === '1';
     }
@@ -73,11 +74,11 @@ class AccountManager
         return [
             'email' => [
                 'has'      => !empty($userEmail) && !self::isPlaceholderEmail($userEmail),
-                'verified' => (bool) get_user_meta($userId, 'wsms_email_verified', true),
+                'verified' => (bool) get_user_meta($userId, UserMeta::EMAIL_VERIFIED, true),
             ],
             'phone' => [
-                'has'      => !empty(get_user_meta($userId, 'wsms_phone', true)),
-                'verified' => (bool) get_user_meta($userId, 'wsms_phone_verified', true),
+                'has'      => !empty(get_user_meta($userId, UserMeta::PHONE, true)),
+                'verified' => (bool) get_user_meta($userId, UserMeta::PHONE_VERIFIED, true),
             ],
         ];
     }
@@ -94,10 +95,8 @@ class AccountManager
 
     /**
      * Register a new user.
-     *
-     * @return array{success: bool, user_id?: int, mfa_required?: bool, error?: string, message: string}
      */
-    public function registerUser(array $data, bool $socialLogin = false): array
+    public function registerUser(array $data, bool $socialLogin = false): OperationResult
     {
         $settings = $this->settingsRepo->all();
 
@@ -116,17 +115,13 @@ class AccountManager
         $this->cleanupExpiredPendingUsers($data, $email, $emailVerifyEnabled, $phoneVerifyEnabled, $settings);
 
         if (!empty($data['phone']) && self::isPhoneTaken(sanitize_text_field($data['phone']))) {
-            return ['success' => false, 'error' => 'phone_exists', 'message' => __('This phone number is already associated with another account.', 'wp-sms')];
+            return OperationResult::fail('phone_exists', __('This phone number is already associated with another account.', 'wp-sms'));
         }
 
         $userId = wp_insert_user($userdata);
 
         if (is_wp_error($userId)) {
-            return [
-                'success' => false,
-                'error'   => $userId->get_error_code(),
-                'message' => $userId->get_error_message(),
-            ];
+            return OperationResult::fail($userId->get_error_code(), $userId->get_error_message());
         }
 
         $this->storeUserMeta($userId, $data, $isPlaceholder, $emailVerifyEnabled, $phoneVerifyEnabled);
@@ -142,39 +137,39 @@ class AccountManager
     }
 
     /**
-     * @return array|null Error array if validation fails, null if all checks pass.
+     * @return OperationResult|null Error result if validation fails, null if all checks pass.
      */
-    private function validateRegistrationFields(array $data, array $settings, bool $socialLogin, bool $emailRequired): ?array
+    private function validateRegistrationFields(array $data, array $settings, bool $socialLogin, bool $emailRequired): ?OperationResult
     {
         $requiredFields = $settings['registration_fields'] ?? ['email', 'password'];
 
         if ($emailRequired && empty($data['email'])) {
-            return ['success' => false, 'error' => 'missing_email', 'message' => __('Email is required.', 'wp-sms')];
+            return OperationResult::fail('missing_email', __('Email is required.', 'wp-sms'));
         }
 
         $passwordRequired = $socialLogin ? false : (!empty($settings['password']['enabled']) && ($settings['password']['required_at_signup'] ?? true));
         if ($passwordRequired && empty($data['password'])) {
-            return ['success' => false, 'error' => 'missing_password', 'message' => __('Password is required.', 'wp-sms')];
+            return OperationResult::fail('missing_password', __('Password is required.', 'wp-sms'));
         }
 
         $phoneRequired = $socialLogin ? false : (!empty($settings['phone']['enabled']) && !empty($settings['phone']['required_at_signup']));
         if ($phoneRequired && empty($data['phone'])) {
-            return ['success' => false, 'error' => 'missing_phone', 'message' => __('Phone number is required.', 'wp-sms')];
+            return OperationResult::fail('missing_phone', __('Phone number is required.', 'wp-sms'));
         }
 
         if (in_array('first_name', $requiredFields, true) && empty($data['first_name'])) {
-            return ['success' => false, 'error' => 'missing_first_name', 'message' => __('First name is required.', 'wp-sms')];
+            return OperationResult::fail('missing_first_name', __('First name is required.', 'wp-sms'));
         }
 
         if (in_array('last_name', $requiredFields, true) && empty($data['last_name'])) {
-            return ['success' => false, 'error' => 'missing_last_name', 'message' => __('Last name is required.', 'wp-sms')];
+            return OperationResult::fail('missing_last_name', __('Last name is required.', 'wp-sms'));
         }
 
         // Validate email format when provided.
         if (!empty($data['email'])) {
             $sanitized = sanitize_email($data['email']);
             if (!empty($sanitized) && !is_email($sanitized)) {
-                return ['success' => false, 'error' => 'invalid_email', 'message' => __('Invalid email address.', 'wp-sms')];
+                return OperationResult::fail('invalid_email', __('Invalid email address.', 'wp-sms'));
             }
         }
 
@@ -185,11 +180,7 @@ class AccountManager
                     continue;
                 }
                 if (empty($data[$field->id])) {
-                    return [
-                        'success' => false,
-                        'error'   => 'missing_' . $field->id,
-                        'message' => sprintf(__('%s is required.', 'wp-sms'), $field->label),
-                    ];
+                    return OperationResult::fail('missing_' . $field->id, sprintf(__('%s is required.', 'wp-sms'), $field->label));
                 }
             }
         }
@@ -253,7 +244,7 @@ class AccountManager
 
         if ($phoneVerifyEnabled && !empty($data['phone'])) {
             $phoneUsers = get_users([
-                'meta_key'   => 'wsms_phone',
+                'meta_key'   => UserMeta::PHONE,
                 'meta_value' => sanitize_text_field($data['phone']),
                 'number'     => 1,
             ]);
@@ -266,20 +257,20 @@ class AccountManager
     private function storeUserMeta(int $userId, array $data, bool $isPlaceholder, bool $emailVerifyEnabled, bool $phoneVerifyEnabled): void
     {
         if ($isPlaceholder) {
-            update_user_meta($userId, 'wsms_email_placeholder', '1');
+            update_user_meta($userId, UserMeta::EMAIL_PLACEHOLDER, '1');
         }
 
-        update_user_meta($userId, self::META_HAS_USABLE_PASSWORD, !empty($data['password']) ? '1' : '0');
+        update_user_meta($userId, UserMeta::HAS_USABLE_PASSWORD, !empty($data['password']) ? '1' : '0');
 
         $needsVerification = $emailVerifyEnabled || (!empty($data['phone']) && $phoneVerifyEnabled);
 
-        update_user_meta($userId, 'wsms_registration_status', $needsVerification ? 'pending' : 'active');
+        update_user_meta($userId, UserMeta::REGISTRATION_STATUS, $needsVerification ? 'pending' : 'active');
         if ($needsVerification) {
-            update_user_meta($userId, 'wsms_registration_created_at', gmdate('Y-m-d H:i:s'));
+            update_user_meta($userId, UserMeta::REGISTRATION_CREATED_AT, gmdate('Y-m-d H:i:s'));
         }
 
         if (!empty($data['phone'])) {
-            update_user_meta($userId, 'wsms_phone', sanitize_text_field($data['phone']));
+            update_user_meta($userId, UserMeta::PHONE, sanitize_text_field($data['phone']));
         }
     }
 
@@ -342,17 +333,13 @@ class AccountManager
         return $pendingVerifications;
     }
 
-    private function buildRegistrationResult(int $userId, array $pendingVerifications, array $settings): array
+    private function buildRegistrationResult(int $userId, array $pendingVerifications, array $settings): OperationResult
     {
-        $result = [
-            'success' => true,
-            'user_id' => $userId,
-            'message' => __('Registration successful.', 'wp-sms'),
-        ];
+        $meta = [];
 
         if (!empty($pendingVerifications)) {
-            $result['pending_verifications'] = $pendingVerifications;
-            $result['session_token'] = $this->authSession->create(
+            $meta['pending_verifications'] = $pendingVerifications;
+            $meta['session_token'] = $this->authSession->create(
                 $userId,
                 'registration',
                 SessionStage::RegistrationVerify,
@@ -362,10 +349,15 @@ class AccountManager
         $timing = EnrollmentTiming::tryFrom($settings['enrollment_timing'] ?? 'voluntary');
 
         if ($timing === EnrollmentTiming::OnRegistration) {
-            $result['mfa_required'] = true;
+            $meta['mfa_required'] = true;
         }
 
-        return $result;
+        return new OperationResult(
+            success: true,
+            message: __('Registration successful.', 'wp-sms'),
+            userId: $userId,
+            meta: $meta,
+        );
     }
 
     /**
@@ -386,38 +378,34 @@ class AccountManager
 
     /**
      * Complete a password reset.
-     *
-     * @return array{success: bool, error?: string, message: string}
      */
-    public function completePasswordReset(string $token, string $newPassword): array
+    public function completePasswordReset(string $token, string $newPassword): OperationResult
     {
         $verification = $this->consumeVerification($token, VerificationType::PasswordReset->value);
 
-        if (is_array($verification)) {
+        if ($verification instanceof OperationResult) {
             return $verification;
         }
 
         $userId = (int) $verification->user_id;
 
         wp_set_password($newPassword, $userId);
-        update_user_meta($userId, self::META_HAS_USABLE_PASSWORD, '1');
+        update_user_meta($userId, UserMeta::HAS_USABLE_PASSWORD, '1');
         $this->trustedDevices?->revokeAll($userId);
 
         $this->auditLogger->log(EventType::PasswordResetComplete, 'success', $userId);
 
-        return ['success' => true, 'message' => __('Password has been reset successfully.', 'wp-sms')];
+        return OperationResult::ok(__('Password has been reset successfully.', 'wp-sms'));
     }
 
     /**
      * Verify an email address using a token.
-     *
-     * @return array{success: bool, error?: string, message: string}
      */
-    public function verifyEmail(string $token): array
+    public function verifyEmail(string $token): OperationResult
     {
         $verification = $this->consumeVerification($token, VerificationType::EmailVerify->value);
 
-        if (is_array($verification)) {
+        if ($verification instanceof OperationResult) {
             return $verification;
         }
 
@@ -426,22 +414,20 @@ class AccountManager
         $this->auditLogger->log(EventType::EmailVerified, 'success', $userId);
         $this->maybeActivateUser($userId);
 
-        return ['success' => true, 'message' => __('Email verified successfully.', 'wp-sms')];
+        return OperationResult::ok(__('Email verified successfully.', 'wp-sms'));
     }
 
     /**
      * Update user profile.
-     *
-     * @return array{success: bool, error?: string, message: string, phone_verification_required?: bool, email_verification_required?: bool}
      */
-    public function updateProfile(int $userId, array $data): array
+    public function updateProfile(int $userId, array $data): OperationResult
     {
         // Validate all inputs before writing anything.
         if (isset($data['email'])) {
             $newEmail = sanitize_email($data['email']);
 
             if (!is_email($newEmail)) {
-                return ['success' => false, 'error' => 'invalid_email', 'message' => __('Invalid email address.', 'wp-sms')];
+                return OperationResult::fail('invalid_email', __('Invalid email address.', 'wp-sms'));
             }
         }
 
@@ -452,7 +438,7 @@ class AccountManager
 
         if (isset($data['phone'])) {
             $phone = sanitize_text_field($data['phone']);
-            $currentPhone = get_user_meta($userId, 'wsms_phone', true);
+            $currentPhone = get_user_meta($userId, UserMeta::PHONE, true);
             $phoneChanged = ($phone !== $currentPhone);
         }
 
@@ -467,23 +453,23 @@ class AccountManager
         if ($phoneChanged) {
             $cooldown = (int) ($settings['phone']['cooldown'] ?? 60);
             if ($this->isVerificationOnCooldown($userId, VerificationType::PhoneVerify->value, $cooldown)) {
-                return ['success' => false, 'error' => 'cooldown', 'message' => __('Please wait before changing your phone number.', 'wp-sms')];
+                return OperationResult::fail('cooldown', __('Please wait before changing your phone number.', 'wp-sms'));
             }
 
             if (self::isPhoneTaken($phone, $userId)) {
-                return ['success' => false, 'error' => 'phone_exists', 'message' => __('This phone number is already associated with another account.', 'wp-sms')];
+                return OperationResult::fail('phone_exists', __('This phone number is already associated with another account.', 'wp-sms'));
             }
         }
 
         if ($emailChanged) {
             $cooldown = (int) ($settings['email']['cooldown'] ?? 60);
             if ($this->isVerificationOnCooldown($userId, VerificationType::EmailVerify->value, $cooldown)) {
-                return ['success' => false, 'error' => 'cooldown', 'message' => __('Please wait before changing your email.', 'wp-sms')];
+                return OperationResult::fail('cooldown', __('Please wait before changing your email.', 'wp-sms'));
             }
         }
 
         // All validations passed — apply writes.
-        $result = ['success' => true, 'message' => __('Profile updated.', 'wp-sms')];
+        $meta = [];
 
         $userUpdate = ['ID' => $userId];
 
@@ -504,55 +490,53 @@ class AccountManager
         }
 
         if ($phoneChanged) {
-            update_user_meta($userId, 'wsms_pending_phone', $phone);
+            update_user_meta($userId, UserMeta::PENDING_PHONE, $phone);
             $this->invalidateVerifications($userId, VerificationType::PhoneVerify->value);
             $this->createChannelVerification($userId, 'phone', $phone);
-            $result['phone_verification_required'] = true;
+            $meta['phone_verification_required'] = true;
         }
 
         if ($emailChanged) {
             $this->invalidateVerifications($userId, VerificationType::EmailVerify->value);
-            update_user_meta($userId, 'wsms_pending_email', $newEmail);
+            update_user_meta($userId, UserMeta::PENDING_EMAIL, $newEmail);
             $this->createChannelVerification($userId, 'email', $newEmail);
-            $result['email_verification_required'] = true;
+            $meta['email_verification_required'] = true;
         }
 
         // Write custom profile fields.
         $this->writeCustomFields($userId, $data);
 
-        return $result;
+        return OperationResult::ok(__('Profile updated.', 'wp-sms'), $meta);
     }
 
     /**
      * Change user password.
-     *
-     * @return array{success: bool, error?: string, message: string}
      */
-    public function changePassword(int $userId, ?string $currentPassword, string $newPassword): array
+    public function changePassword(int $userId, ?string $currentPassword, string $newPassword): OperationResult
     {
         $user = get_userdata($userId);
 
         if (!$user) {
-            return ['success' => false, 'error' => 'user_not_found', 'message' => __('User not found.', 'wp-sms')];
+            return OperationResult::fail('user_not_found', __('User not found.', 'wp-sms'));
         }
 
         $hasUsablePassword = self::hasUsablePassword($userId);
 
         if ($hasUsablePassword) {
             if (empty($currentPassword) || !wp_check_password($currentPassword, $user->user_pass, $userId)) {
-                return ['success' => false, 'error' => 'wrong_password', 'message' => __('Current password is incorrect.', 'wp-sms')];
+                return OperationResult::fail('wrong_password', __('Current password is incorrect.', 'wp-sms'));
             }
         }
 
         wp_set_password($newPassword, $userId);
-        update_user_meta($userId, self::META_HAS_USABLE_PASSWORD, '1');
+        update_user_meta($userId, UserMeta::HAS_USABLE_PASSWORD, '1');
         $this->trustedDevices?->revokeAll($userId);
         wp_set_auth_cookie($userId, false);
         wp_set_current_user($userId);
 
         $this->auditLogger->log(EventType::PasswordChange, 'success', $userId);
 
-        return ['success' => true, 'message' => __('Password changed successfully.', 'wp-sms')];
+        return OperationResult::ok(__('Password changed successfully.', 'wp-sms'));
     }
 
     /**
@@ -571,10 +555,8 @@ class AccountManager
      * Verify a channel using an OTP code.
      *
      * Verify any channel that stores OTP verifications with type '{channel}_verify'.
-     *
-     * @return array{success: bool, error?: string, message: string}
      */
-    public function verifyChannelOtp(int $userId, string $channel, string $code): array
+    public function verifyChannelOtp(int $userId, string $channel, string $code): OperationResult
     {
         $verifyType = VerificationType::forChannel($channel)->value;
         $where = ['user_id' => $userId, 'type' => $verifyType];
@@ -582,12 +564,12 @@ class AccountManager
         $result = $this->otpService->verifyOtpDetailed($code, $where);
 
         if ($result['error'] !== null) {
-            return ['success' => false, 'error' => $result['error'], 'message' => match ($result['error']) {
+            return OperationResult::fail($result['error'], match ($result['error']) {
                 'no_verification' => sprintf(__('No pending %s verification.', 'wp-sms'), $channel),
                 'expired'         => __('Verification code has expired.', 'wp-sms'),
                 'max_attempts'    => __('Too many attempts.', 'wp-sms'),
                 'invalid_code'    => __('Invalid verification code.', 'wp-sms'),
-            }];
+            });
         }
 
         // Apply channel-specific post-verification actions.
@@ -596,22 +578,18 @@ class AccountManager
 
         $channelLabel = ucfirst($channel);
 
-        return ['success' => true, 'message' => sprintf(__('%s verified successfully.', 'wp-sms'), $channelLabel)];
+        return OperationResult::ok(sprintf(__('%s verified successfully.', 'wp-sms'), $channelLabel));
     }
 
     /**
-     * Resend a verification code/link for any channel.
-     *
      * Resend a verification code/link for the given channel.
-     *
-     * @return array{success: bool, error?: string, message: string}
      */
-    public function resendVerification(int $userId, string $channel): array
+    public function resendVerification(int $userId, string $channel): OperationResult
     {
         $identifier = $this->getChannelIdentifier($userId, $channel);
 
         if ($identifier === null) {
-            return ['success' => false, 'error' => "no_{$channel}", 'message' => sprintf(__('No %s on file.', 'wp-sms'), $channel)];
+            return OperationResult::fail("no_{$channel}", sprintf(__('No %s on file.', 'wp-sms'), $channel));
         }
 
         $settings = $this->settingsRepo->all();
@@ -619,13 +597,13 @@ class AccountManager
         $cooldown = (int) ($settings[$channel]['cooldown'] ?? 60);
 
         if ($this->isVerificationOnCooldown($userId, $verifyType, $cooldown)) {
-            return ['success' => false, 'error' => 'cooldown', 'message' => __('Please wait before requesting a new code.', 'wp-sms')];
+            return OperationResult::fail('cooldown', __('Please wait before requesting a new code.', 'wp-sms'));
         }
 
         $this->invalidateVerifications($userId, $verifyType);
         $this->createChannelVerification($userId, $channel, $identifier);
 
-        return ['success' => true, 'message' => __('Verification resent.', 'wp-sms')];
+        return OperationResult::ok(__('Verification resent.', 'wp-sms'));
     }
 
     /**
@@ -674,14 +652,14 @@ class AccountManager
     private function getChannelIdentifier(int $userId, string $channel): ?string
     {
         if ($channel === 'phone') {
-            $pending = get_user_meta($userId, 'wsms_pending_phone', true);
+            $pending = get_user_meta($userId, UserMeta::PENDING_PHONE, true);
             if (!empty($pending)) {
                 return $pending;
             }
         }
 
         if ($channel === 'email') {
-            $pending = get_user_meta($userId, 'wsms_pending_email', true);
+            $pending = get_user_meta($userId, UserMeta::PENDING_EMAIL, true);
             if (!empty($pending)) {
                 return $pending;
             }
@@ -696,7 +674,7 @@ class AccountManager
     private function getConfirmedIdentifier(int $userId, string $channel): ?string
     {
         if ($channel === 'phone') {
-            $phone = get_user_meta($userId, 'wsms_phone', true);
+            $phone = get_user_meta($userId, UserMeta::PHONE, true);
             return !empty($phone) ? $phone : null;
         }
 
@@ -808,7 +786,7 @@ class AccountManager
      */
     public function maybeActivateUser(int $userId): void
     {
-        $status = get_user_meta($userId, 'wsms_registration_status', true);
+        $status = get_user_meta($userId, UserMeta::REGISTRATION_STATUS, true);
         if ($status !== 'pending') {
             return;
         }
@@ -842,8 +820,8 @@ class AccountManager
 
     private function activateUser(int $userId): void
     {
-        update_user_meta($userId, 'wsms_registration_status', 'active');
-        delete_user_meta($userId, 'wsms_registration_created_at');
+        update_user_meta($userId, UserMeta::REGISTRATION_STATUS, 'active');
+        delete_user_meta($userId, UserMeta::REGISTRATION_CREATED_AT);
     }
 
     private function deleteExpiredPendingUser($user, int $ttlHours): void
@@ -852,8 +830,8 @@ class AccountManager
             return;
         }
 
-        $status = get_user_meta($user->ID, 'wsms_registration_status', true);
-        $createdAt = get_user_meta($user->ID, 'wsms_registration_created_at', true);
+        $status = get_user_meta($user->ID, UserMeta::REGISTRATION_STATUS, true);
+        $createdAt = get_user_meta($user->ID, UserMeta::REGISTRATION_CREATED_AT, true);
 
         if ($status === 'pending' && !empty($createdAt)) {
             if (time() > strtotime($createdAt) + ($ttlHours * 3600)) {
@@ -870,17 +848,17 @@ class AccountManager
      */
     private function markEmailVerified(int $userId, string $verifiedAddress): void
     {
-        update_user_meta($userId, 'wsms_email_verified', '1');
-        delete_user_meta($userId, 'wsms_email_placeholder');
+        update_user_meta($userId, UserMeta::EMAIL_VERIFIED, '1');
+        delete_user_meta($userId, UserMeta::EMAIL_PLACEHOLDER);
 
-        $pendingEmail = get_user_meta($userId, 'wsms_pending_email', true);
+        $pendingEmail = get_user_meta($userId, UserMeta::PENDING_EMAIL, true);
 
         if (!empty($pendingEmail) && $pendingEmail === $verifiedAddress) {
             wp_update_user([
                 'ID'         => $userId,
                 'user_email' => $pendingEmail,
             ]);
-            delete_user_meta($userId, 'wsms_pending_email');
+            delete_user_meta($userId, UserMeta::PENDING_EMAIL);
         }
     }
 
@@ -889,13 +867,13 @@ class AccountManager
      */
     private function markPhoneVerified(int $userId, string $verifiedPhone): void
     {
-        update_user_meta($userId, 'wsms_phone_verified', '1');
+        update_user_meta($userId, UserMeta::PHONE_VERIFIED, '1');
 
-        $pendingPhone = get_user_meta($userId, 'wsms_pending_phone', true);
+        $pendingPhone = get_user_meta($userId, UserMeta::PENDING_PHONE, true);
 
         if (!empty($pendingPhone) && $pendingPhone === $verifiedPhone) {
-            update_user_meta($userId, 'wsms_phone', $pendingPhone);
-            delete_user_meta($userId, 'wsms_pending_phone');
+            update_user_meta($userId, UserMeta::PHONE, $pendingPhone);
+            delete_user_meta($userId, UserMeta::PENDING_PHONE);
 
             // Sync MFA phone factor if enrolled.
             $this->mfaManager->updateFactorMeta($userId, 'phone', ['phone' => $pendingPhone]);
@@ -907,7 +885,10 @@ class AccountManager
      */
     public function cancelPendingChange(int $userId, string $channel): void
     {
-        $metaKey = 'wsms_pending_' . $channel;
+        $metaKey = match ($channel) {
+            'phone' => UserMeta::PENDING_PHONE,
+            'email' => UserMeta::PENDING_EMAIL,
+        };
         delete_user_meta($userId, $metaKey);
         $this->invalidateVerifications($userId, VerificationType::forChannel($channel)->value);
     }
@@ -915,18 +896,18 @@ class AccountManager
     /**
      * Look up, validate, and consume a verification token.
      *
-     * @return object|array The verification record on success, or an error array on failure.
+     * @return \stdClass|OperationResult The verification record on success, or an error result on failure.
      */
-    private function consumeVerification(string $token, string $type): object|array
+    private function consumeVerification(string $token, string $type): \stdClass|OperationResult
     {
         $result = $this->otpService->consumeTokenDetailed($token, $type);
 
         if ($result['error'] !== null) {
-            return ['success' => false, 'error' => $result['error'], 'message' => match ($result['error']) {
+            return OperationResult::fail($result['error'], match ($result['error']) {
                 'expired_token'  => __('This token has expired.', 'wp-sms'),
                 'used_token'     => __('This token has already been used.', 'wp-sms'),
                 default          => __('Invalid or expired token.', 'wp-sms'),
-            }];
+            });
         }
 
         return $result['verification'];
@@ -1004,7 +985,7 @@ class AccountManager
     public static function isPhoneTaken(string $phone, ?int $excludeUserId = null): bool
     {
         $args = [
-            'meta_key'   => 'wsms_phone',
+            'meta_key'   => UserMeta::PHONE,
             'meta_value' => $phone,
             'number'     => 1,
             'fields'     => 'ID',

@@ -5,6 +5,7 @@ namespace WSms\Service\Admin;
 use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountSuspension;
 use WSms\Mfa\MfaManager;
+use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
 
@@ -60,7 +61,7 @@ class UserListManager
         }
 
         // Pending registration
-        $regStatus = get_user_meta($userId, 'wsms_registration_status', true);
+        $regStatus = get_user_meta($userId, UserMeta::REGISTRATION_STATUS, true);
         if ($regStatus === 'pending') {
             $pills[] = '<span class="wsms-pill wsms-pill--pending" title="' . esc_attr(__('Registration pending activation', 'wp-sms')) . '">'
                 . esc_html__('Pending', 'wp-sms')
@@ -68,7 +69,7 @@ class UserListManager
         }
 
         // Email verification
-        $emailVerified = (bool) get_user_meta($userId, 'wsms_email_verified', true);
+        $emailVerified = (bool) get_user_meta($userId, UserMeta::EMAIL_VERIFIED, true);
         $pills[] = $this->renderPill(
             $emailVerified,
             __('Email', 'wp-sms'),
@@ -76,9 +77,9 @@ class UserListManager
         );
 
         // Phone verification (only shown if user has a phone)
-        $phone = get_user_meta($userId, 'wsms_phone', true);
+        $phone = get_user_meta($userId, UserMeta::PHONE, true);
         if ($phone) {
-            $phoneVerified = (bool) get_user_meta($userId, 'wsms_phone_verified', true);
+            $phoneVerified = (bool) get_user_meta($userId, UserMeta::PHONE_VERIFIED, true);
             $pills[] = $this->renderPill(
                 $phoneVerified,
                 __('Phone', 'wp-sms'),

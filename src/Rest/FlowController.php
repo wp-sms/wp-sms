@@ -10,10 +10,8 @@ use WSms\Flow\Trigger\TriggerRegistry;
 
 defined('ABSPATH') || exit;
 
-class FlowController
+class FlowController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
-
     public function __construct(
         private readonly FlowRepositoryInterface $flowRepository,
         private readonly FlowExecutionRepository $executionRepository,
@@ -117,11 +115,6 @@ class FlowController
                 'permission_callback' => [$this, 'canManage'],
             ],
         ]);
-    }
-
-    public function canManage(): bool
-    {
-        return current_user_can('manage_options');
     }
 
     public function index(\WP_REST_Request $request): \WP_REST_Response

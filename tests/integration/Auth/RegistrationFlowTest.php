@@ -23,10 +23,10 @@ class RegistrationFlowTest extends IntegrationTestCase
             'password' => 'StrongPass1!',
         ]);
 
-        $this->assertTrue($result['success']);
-        $this->assertSame(42, $result['user_id']);
-        $this->assertArrayNotHasKey('pending_verifications', $result);
-        $this->assertArrayNotHasKey('session_token', $result);
+        $this->assertTrue($result->success);
+        $this->assertSame(42, $result->userId);
+        $this->assertArrayNotHasKey('pending_verifications', $result->meta);
+        $this->assertArrayNotHasKey('session_token', $result->meta);
         $this->assertEmpty($this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value));
         $this->assertEmpty($this->wpdb->getVerificationsByType(VerificationType::PhoneVerify->value));
     }
@@ -39,8 +39,8 @@ class RegistrationFlowTest extends IntegrationTestCase
             'password' => 'StrongPass1!',
         ]);
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('missing_email', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('missing_email', $result->error);
     }
 
     public function testRegisterFailsWithMissingPassword(): void
@@ -51,8 +51,8 @@ class RegistrationFlowTest extends IntegrationTestCase
             'email' => 'test@example.com',
         ]);
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('missing_password', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('missing_password', $result->error);
     }
 
     public function testRegisterFailsWhenPhoneRequiredButMissing(): void
@@ -67,8 +67,8 @@ class RegistrationFlowTest extends IntegrationTestCase
             'password' => 'StrongPass1!',
         ]);
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('missing_phone', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('missing_phone', $result->error);
     }
 
     // ──────────────────────────────────────────────
@@ -86,11 +86,11 @@ class RegistrationFlowTest extends IntegrationTestCase
 
         $result = $this->accountManager->registerUser($regData);
 
-        $this->assertTrue($result['success']);
-        $this->assertNotEmpty($result['pending_verifications']);
-        $this->assertArrayHasKey('session_token', $result);
+        $this->assertTrue($result->success);
+        $this->assertNotEmpty($result->meta['pending_verifications']);
+        $this->assertArrayHasKey('session_token', $result->meta);
 
-        $pendingTypes = array_column($result['pending_verifications'], 'type');
+        $pendingTypes = array_column($result->meta['pending_verifications'], 'type');
 
         if ($expectedChannel === 'both') {
             $this->assertContains('email', $pendingTypes);
@@ -140,7 +140,7 @@ class RegistrationFlowTest extends IntegrationTestCase
             'password' => 'Pass1!',
         ]);
 
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
 
         $emailVerifications = $this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value);
         $this->assertCount(1, $emailVerifications);
@@ -163,7 +163,7 @@ class RegistrationFlowTest extends IntegrationTestCase
             'password' => 'Pass1!',
         ]);
 
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
 
         $emailVerifications = $this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value);
         $this->assertCount(1, $emailVerifications);
@@ -182,7 +182,7 @@ class RegistrationFlowTest extends IntegrationTestCase
             'phone'    => '+1234567890',
         ]);
 
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
 
         $phoneVerifications = $this->wpdb->getVerificationsByType(VerificationType::PhoneVerify->value);
         $this->assertCount(1, $phoneVerifications);
@@ -202,8 +202,8 @@ class RegistrationFlowTest extends IntegrationTestCase
             'phone'    => '+4476543210',
         ]);
 
-        $this->assertTrue($result['success']);
-        $this->assertCount(2, $result['pending_verifications']);
+        $this->assertTrue($result->success);
+        $this->assertCount(2, $result->meta['pending_verifications']);
 
         $phoneVerifications = $this->wpdb->getVerificationsByType(VerificationType::PhoneVerify->value);
         $emailVerifications = $this->wpdb->getVerificationsByType(VerificationType::EmailVerify->value);
@@ -228,8 +228,8 @@ class RegistrationFlowTest extends IntegrationTestCase
             'password' => 'Pass1!',
         ]);
 
-        $this->assertTrue($result['success']);
-        $this->assertTrue($result['mfa_required'] ?? false);
+        $this->assertTrue($result->success);
+        $this->assertTrue($result->meta['mfa_required'] ?? false);
     }
 
     public function testRegisterWithVoluntaryEnrollmentDoesNotFlagMfa(): void
@@ -245,8 +245,8 @@ class RegistrationFlowTest extends IntegrationTestCase
             'password' => 'Pass1!',
         ]);
 
-        $this->assertTrue($result['success']);
-        $this->assertArrayNotHasKey('mfa_required', $result);
+        $this->assertTrue($result->success);
+        $this->assertArrayNotHasKey('mfa_required', $result->meta);
     }
 
     // ──────────────────────────────────────────────
@@ -265,8 +265,8 @@ class RegistrationFlowTest extends IntegrationTestCase
             'password' => 'Pass1!',
         ]);
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('missing_first_name', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('missing_first_name', $result->error);
     }
 
     public function testRegisterFailsWhenLastNameRequired(): void
@@ -281,8 +281,8 @@ class RegistrationFlowTest extends IntegrationTestCase
             'password' => 'Pass1!',
         ]);
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('missing_last_name', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('missing_last_name', $result->error);
     }
 
     public function testRegisterWithInvalidEmailFails(): void
@@ -295,8 +295,8 @@ class RegistrationFlowTest extends IntegrationTestCase
             'password' => 'Pass1!',
         ]);
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('invalid_email', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('invalid_email', $result->error);
     }
 
     // ──────────────────────────────────────────────
@@ -312,8 +312,8 @@ class RegistrationFlowTest extends IntegrationTestCase
             'phone' => '+1234567890',
         ]);
 
-        $this->assertTrue($result['success']);
-        $this->assertSame(90, $result['user_id']);
+        $this->assertTrue($result->success);
+        $this->assertSame(90, $result->userId);
         $this->assertSame('1', $GLOBALS['_test_user_meta'][90]['wsms_email_placeholder'] ?? '');
 
         $capturedUsername = $GLOBALS['_test_wp_insert_user_data']['user_login'] ?? '';
@@ -347,8 +347,8 @@ class RegistrationFlowTest extends IntegrationTestCase
             'phone' => '+1234567890',
         ]);
 
-        $this->assertTrue($result['success']);
-        $pendingTypes = array_column($result['pending_verifications'] ?? [], 'type');
+        $this->assertTrue($result->success);
+        $pendingTypes = array_column($result->meta['pending_verifications'] ?? [], 'type');
         $this->assertContains('phone', $pendingTypes);
         $this->assertNotContains('email', $pendingTypes);
 
@@ -364,8 +364,8 @@ class RegistrationFlowTest extends IntegrationTestCase
 
         $result = $this->accountManager->registerUser([]);
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('missing_phone', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('missing_phone', $result->error);
     }
 
     public function testPlaceholderEmailExcludedFromVerificationStatus(): void
@@ -425,7 +425,7 @@ class RegistrationFlowTest extends IntegrationTestCase
             'password' => 'Pass1!',
         ]);
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('existing_user_email', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('existing_user_email', $result->error);
     }
 }

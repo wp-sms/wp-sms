@@ -2,12 +2,12 @@
 
 namespace WSms\Mfa\ValueObjects;
 
-readonly class EnrollmentResult
+class EnrollmentResult
 {
     public function __construct(
-        public bool $success,
-        public string $message = '',
-        public array $data = [],
+        public readonly bool $success,
+        public readonly string $message = '',
+        public readonly array $data = [],
     ) {
     }
 }

@@ -6,9 +6,8 @@ use WSms\Auth\RateLimiter;
 
 defined('ABSPATH') || exit;
 
-class WebhookReceiverController
+class WebhookReceiverController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
     private const RATE_LIMIT = 60;
     private const RATE_WINDOW = 60;
 

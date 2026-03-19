@@ -3,6 +3,7 @@
 namespace WSms\Audit;
 
 use WSms\Enums\EventType;
+use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
 
@@ -147,17 +148,17 @@ class ReportAggregator
 
         $emailVerified = (int) $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = '1'",
-            'wsms_email_verified',
+            UserMeta::EMAIL_VERIFIED,
         ));
 
         $phoneVerified = (int) $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = '1'",
-            'wsms_phone_verified',
+            UserMeta::PHONE_VERIFIED,
         ));
 
         $suspendedUsers = (int) $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM {$wpdb->usermeta} WHERE meta_key = %s",
-            'wsms_suspended',
+            UserMeta::SUSPENDED,
         ));
 
         return [

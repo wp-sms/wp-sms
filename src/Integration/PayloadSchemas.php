@@ -2,6 +2,8 @@
 
 namespace WSms\Integration;
 
+use WSms\Support\UserMeta;
+
 defined('ABSPATH') || exit;
 
 class PayloadSchemas
@@ -113,7 +115,7 @@ class PayloadSchemas
     {
         $all = [
             'email'        => $user->user_email,
-            'phone'        => get_user_meta($user->ID, 'wsms_phone', true) ?: '',
+            'phone'        => get_user_meta($user->ID, UserMeta::PHONE, true) ?: '',
             'login'        => $user->user_login,
             'display_name' => $user->display_name,
             'first_name'   => $user->first_name,

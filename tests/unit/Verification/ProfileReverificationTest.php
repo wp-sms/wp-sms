@@ -6,6 +6,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Auth\AccountManager;
 use WSms\Auth\SettingsRepository;
+use WSms\Auth\ValueObjects\OperationResult;
 use WSms\Verification\ProfileReverification;
 
 class ProfileReverificationTest extends TestCase
@@ -35,7 +36,7 @@ class ProfileReverificationTest extends TestCase
         $this->accountManager->expects($this->once())
             ->method('updateProfile')
             ->with(1, ['email' => 'new@example.com'])
-            ->willReturn(['success' => true, 'message' => 'OK', 'email_verification_required' => true]);
+            ->willReturn(OperationResult::ok('OK', ['email_verification_required' => true]));
 
         $data = ['user_email' => 'new@example.com', 'user_login' => 'test'];
         $result = $this->reverification->interceptWpEmailChange($data, true, 1, []);
@@ -86,7 +87,7 @@ class ProfileReverificationTest extends TestCase
         $this->accountManager->expects($this->once())
             ->method('updateProfile')
             ->with(1, ['email' => 'new@example.com'])
-            ->willReturn(['success' => true, 'message' => 'OK', 'email_verification_required' => true]);
+            ->willReturn(OperationResult::ok('OK', ['email_verification_required' => true]));
 
         $errors = new \WP_Error();
         $this->reverification->interceptWcEmailChange($errors, $user);
@@ -129,7 +130,7 @@ class ProfileReverificationTest extends TestCase
         $_POST['account_email'] = 'new@example.com';
 
         $this->accountManager->method('updateProfile')
-            ->willReturn(['success' => false, 'error' => 'cooldown', 'message' => 'Please wait.']);
+            ->willReturn(OperationResult::fail('cooldown', 'Please wait.'));
 
         $errors = new \WP_Error();
         $this->reverification->interceptWcEmailChange($errors, $user);
@@ -147,7 +148,7 @@ class ProfileReverificationTest extends TestCase
         $this->accountManager->expects($this->once())
             ->method('updateProfile')
             ->with(1, ['phone' => '+0987654321'])
-            ->willReturn(['success' => true, 'message' => 'OK', 'phone_verification_required' => true]);
+            ->willReturn(OperationResult::ok('OK', ['phone_verification_required' => true]));
 
         $this->reverification->interceptWcPhoneChange(1, 'billing', [], null);
 
@@ -182,7 +183,7 @@ class ProfileReverificationTest extends TestCase
         $_POST['billing_phone'] = '+0987654321';
 
         $this->accountManager->method('updateProfile')
-            ->willReturn(['success' => false, 'error' => 'phone_exists', 'message' => 'Phone taken.']);
+            ->willReturn(OperationResult::fail('phone_exists', 'Phone taken.'));
 
         $this->reverification->interceptWcPhoneChange(1, 'billing', [], null);
 

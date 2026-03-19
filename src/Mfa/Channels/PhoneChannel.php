@@ -4,6 +4,7 @@ namespace WSms\Mfa\Channels;
 
 use WSms\Auth\AccountManager;
 use WSms\Enums\ChannelStatus;
+use WSms\Support\UserMeta;
 use WSms\Enums\EventType;
 use WSms\Audit\AuditLogger;
 use WSms\Messaging\MessageDispatcher;
@@ -122,8 +123,8 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         ]);
 
         // Sync phone meta.
-        update_user_meta($userId, 'wsms_phone', $phone);
-        update_user_meta($userId, 'wsms_phone_verified', '1');
+        update_user_meta($userId, UserMeta::PHONE, $phone);
+        update_user_meta($userId, UserMeta::PHONE_VERIFIED, '1');
 
         $this->auditLogger->log(EventType::MfaEnrolled, 'success', $userId, [
             'channel' => $this->getId(),
@@ -138,9 +139,9 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         $result = parent::unenroll($userId);
 
         if ($result) {
-            delete_user_meta($userId, 'wsms_phone');
-            delete_user_meta($userId, 'wsms_phone_verified');
-            delete_user_meta($userId, 'wsms_pending_phone');
+            delete_user_meta($userId, UserMeta::PHONE);
+            delete_user_meta($userId, UserMeta::PHONE_VERIFIED);
+            delete_user_meta($userId, UserMeta::PENDING_PHONE);
         }
 
         return $result;
@@ -252,7 +253,7 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
             return $factor->meta['phone'];
         }
 
-        $phone = get_user_meta($userId, 'wsms_phone', true);
+        $phone = get_user_meta($userId, UserMeta::PHONE, true);
 
         return $phone ?: null;
     }

@@ -4,7 +4,7 @@ namespace WSms\Auth\ValueObjects;
 
 defined('ABSPATH') || exit;
 
-readonly class ProfileFieldDefinition
+class ProfileFieldDefinition
 {
     public const TYPE_TEXT = 'text';
     public const TYPE_TEXTAREA = 'textarea';
@@ -27,18 +27,18 @@ readonly class ProfileFieldDefinition
     public const VALID_VISIBILITY = [self::VISIBILITY_REGISTRATION, self::VISIBILITY_PROFILE, self::VISIBILITY_BOTH, self::VISIBILITY_HIDDEN];
 
     public function __construct(
-        public string $id,
-        public string $type,
-        public string $label,
-        public string $source,
-        public string $metaKey,
-        public string $visibility = self::VISIBILITY_BOTH,
-        public bool $required = false,
-        public int $sortOrder = 10,
-        public string $placeholder = '',
-        public array $options = [],
-        public string $description = '',
-        public mixed $defaultValue = '',
+        public readonly string $id,
+        public readonly string $type,
+        public readonly string $label,
+        public readonly string $source,
+        public readonly string $metaKey,
+        public readonly string $visibility = self::VISIBILITY_BOTH,
+        public readonly bool $required = false,
+        public readonly int $sortOrder = 10,
+        public readonly string $placeholder = '',
+        public readonly array $options = [],
+        public readonly string $description = '',
+        public readonly mixed $defaultValue = '',
     ) {
     }
 

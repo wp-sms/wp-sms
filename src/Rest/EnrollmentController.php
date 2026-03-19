@@ -14,13 +14,12 @@ use WSms\Mfa\Channels\BackupCodesChannel;
 use WSms\Mfa\Contracts\SupportsEnrollmentConfirmation;
 use WSms\Mfa\MfaManager;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
+use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
 
-class EnrollmentController
+class EnrollmentController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
-
     public function __construct(
         private MfaManager $mfaManager,
         private PolicyEngine $policy,
@@ -222,7 +221,7 @@ class EnrollmentController
         $result = $channel->unenroll($userId);
 
         if (!$this->mfaManager->hasActiveFactors($userId)) {
-            update_user_meta($userId, 'wsms_mfa_enabled', '0');
+            update_user_meta($userId, UserMeta::MFA_ENABLED, '0');
         }
 
         if ($result) {
@@ -286,8 +285,8 @@ class EnrollmentController
 
         $isPlaceholder = AccountManager::isPlaceholderEmail($user->user_email);
 
-        $pendingPhone = get_user_meta($userId, 'wsms_pending_phone', true) ?: null;
-        $pendingEmail = get_user_meta($userId, 'wsms_pending_email', true) ?: null;
+        $pendingPhone = get_user_meta($userId, UserMeta::PENDING_PHONE, true) ?: null;
+        $pendingEmail = get_user_meta($userId, UserMeta::PENDING_EMAIL, true) ?: null;
 
         return new WP_REST_Response([
             'user' => [
@@ -298,9 +297,9 @@ class EnrollmentController
                 'first_name'            => $user->first_name,
                 'last_name'             => $user->last_name,
                 'avatar_url'            => $this->resolveAvatarUrl($userId),
-                'phone'                 => get_user_meta($userId, 'wsms_phone', true) ?: null,
-                'phone_verified'        => (bool) get_user_meta($userId, 'wsms_phone_verified', true),
-                'email_verified'        => $isPlaceholder ? true : (bool) get_user_meta($userId, 'wsms_email_verified', true),
+                'phone'                 => get_user_meta($userId, UserMeta::PHONE, true) ?: null,
+                'phone_verified'        => (bool) get_user_meta($userId, UserMeta::PHONE_VERIFIED, true),
+                'email_verified'        => $isPlaceholder ? true : (bool) get_user_meta($userId, UserMeta::EMAIL_VERIFIED, true),
                 'has_placeholder_email' => $isPlaceholder,
                 'has_usable_password'   => AccountManager::hasUsablePassword($userId),
                 'pending_phone'         => $pendingPhone,
@@ -346,8 +345,8 @@ class EnrollmentController
 
     private function markEnrollmentComplete(int $userId): void
     {
-        update_user_meta($userId, 'wsms_mfa_enabled', '1');
-        delete_user_meta($userId, 'wsms_mfa_enrollment_pending');
+        update_user_meta($userId, UserMeta::MFA_ENABLED, '1');
+        delete_user_meta($userId, UserMeta::MFA_ENROLLMENT_PENDING);
     }
 
     private function destroyOtherSessions(): void

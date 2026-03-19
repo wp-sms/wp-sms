@@ -4,16 +4,16 @@ namespace WSms\Mfa\ValueObjects;
 
 use WSms\Enums\ChannelStatus;
 
-readonly class UserFactor
+class UserFactor
 {
     public function __construct(
-        public int $id,
-        public int $userId,
-        public string $channelId,
-        public ChannelStatus $status,
-        public array $meta,
-        public string $createdAt,
-        public string $updatedAt,
+        public readonly int $id,
+        public readonly int $userId,
+        public readonly string $channelId,
+        public readonly ChannelStatus $status,
+        public readonly array $meta,
+        public readonly string $createdAt,
+        public readonly string $updatedAt,
     ) {
     }
 

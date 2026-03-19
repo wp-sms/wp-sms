@@ -12,10 +12,8 @@ use WSms\Messaging\Message\Message;
 
 defined('ABSPATH') || exit;
 
-class CampaignController
+class CampaignController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
-
     public function __construct(
         private readonly CampaignRepository $campaignRepository,
         private readonly CampaignDispatcher $campaignDispatcher,
@@ -191,11 +189,6 @@ class CampaignController
                 ],
             ],
         ]);
-    }
-
-    public function canManage(): bool
-    {
-        return current_user_can('manage_options');
     }
 
     public function index(\WP_REST_Request $request): \WP_REST_Response

@@ -11,10 +11,8 @@ use WSms\Telegram\TelegramBotClient;
 
 defined('ABSPATH') || exit;
 
-class TelegramController
+class TelegramController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
-
     public function __construct(
         private TelegramChannel $telegramChannel,
         private MessageDispatcher $messageDispatcher,

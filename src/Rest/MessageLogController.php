@@ -6,10 +6,8 @@ use WSms\Log\Contracts\MessageLoggerInterface;
 
 defined('ABSPATH') || exit;
 
-class MessageLogController
+class MessageLogController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
-
     public function __construct(
         private readonly MessageLoggerInterface $messageLogger,
     ) {
@@ -34,11 +32,6 @@ class MessageLogController
                 ],
             ],
         ]);
-    }
-
-    public function canManage(): bool
-    {
-        return current_user_can('manage_options');
     }
 
     public function index(\WP_REST_Request $request): \WP_REST_Response

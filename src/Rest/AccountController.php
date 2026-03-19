@@ -15,10 +15,8 @@ use WSms\Enums\SessionStage;
 
 defined('ABSPATH') || exit;
 
-class AccountController
+class AccountController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
-
     public function __construct(
         private AccountManager $accountManager,
         private RateLimiter $rateLimiter,
@@ -199,7 +197,7 @@ class AccountController
 
         $result = $this->accountManager->registerUser($data);
 
-        return new WP_REST_Response($result, $result['success'] ? 201 : 400);
+        return new WP_REST_Response($result->toArray(), $result->success ? 201 : 400);
     }
 
     // --- Password ---
@@ -238,7 +236,7 @@ class AccountController
             $request->get_param('password'),
         );
 
-        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
     }
 
     public function handleVerifyEmail(WP_REST_Request $request): WP_REST_Response
@@ -251,7 +249,7 @@ class AccountController
 
         $result = $this->accountManager->verifyEmail($request->get_param('token'));
 
-        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
     }
 
     // --- Profile ---
@@ -281,7 +279,7 @@ class AccountController
 
         $result = $this->accountManager->updateProfile(get_current_user_id(), $data);
 
-        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
     }
 
     public function handleChangePassword(WP_REST_Request $request): WP_REST_Response
@@ -298,7 +296,7 @@ class AccountController
             $request->get_param('new_password'),
         );
 
-        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
     }
 
     public function handleLogout(WP_REST_Request $request): WP_REST_Response
@@ -330,7 +328,7 @@ class AccountController
 
         $result = $this->accountManager->verifyChannelOtp($session['user_id'], $channel, $request->get_param('code'));
 
-        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
     }
 
     public function handleRegisterResendChannel(WP_REST_Request $request): WP_REST_Response
@@ -350,7 +348,7 @@ class AccountController
 
         $result = $this->accountManager->resendVerification($session['user_id'], $channel);
 
-        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
     }
 
     // --- Pending change cancellation ---
@@ -403,7 +401,7 @@ class AccountController
             $request->get_param('code'),
         );
 
-        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
     }
 
     public function handleVerificationStatus(WP_REST_Request $request): WP_REST_Response

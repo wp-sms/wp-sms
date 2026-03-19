@@ -9,10 +9,8 @@ use WSms\Verification\VerificationService;
 
 defined('ABSPATH') || exit;
 
-class VerificationController
+class VerificationController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
-
     public function __construct(
         private VerificationService $verificationService,
         private RateLimiter $rateLimiter,

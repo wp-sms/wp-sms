@@ -10,10 +10,8 @@ use WSms\Social\SocialAuthManager;
 
 defined('ABSPATH') || exit;
 
-class SocialAuthController
+class SocialAuthController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
-
     public function __construct(
         private SocialAuthOrchestrator $orchestrator,
         private SocialAuthManager $socialManager,

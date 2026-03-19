@@ -7,10 +7,8 @@ use WSms\Messaging\Inbound\OptOutManager;
 
 defined('ABSPATH') || exit;
 
-class OptOutSettingsController
+class OptOutSettingsController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
-
     public function registerRoutes(): void
     {
         register_rest_route(self::NAMESPACE, '/optout/settings', [
@@ -25,11 +23,6 @@ class OptOutSettingsController
                 'permission_callback' => [$this, 'canManage'],
             ],
         ]);
-    }
-
-    public function canManage(): bool
-    {
-        return current_user_can('manage_options');
     }
 
     public function index(): \WP_REST_Response

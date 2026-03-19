@@ -5,6 +5,7 @@ namespace WSms\Database;
 use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountManager;
 use WSms\Flow\Storage\FlowExecutionRepository;
+use WSms\Support\UserMeta;
 use WSms\Log\MessageLogger;
 use WSms\Verification\VerificationRepository;
 
@@ -72,8 +73,8 @@ class CleanupScheduler
         $users = get_users([
             'meta_query' => [
                 'relation' => 'AND',
-                ['key' => 'wsms_registration_status', 'value' => 'pending'],
-                ['key' => 'wsms_registration_created_at', 'value' => $cutoff, 'compare' => '<', 'type' => 'DATETIME'],
+                ['key' => UserMeta::REGISTRATION_STATUS, 'value' => 'pending'],
+                ['key' => UserMeta::REGISTRATION_CREATED_AT, 'value' => $cutoff, 'compare' => '<', 'type' => 'DATETIME'],
             ],
             'number' => 100,
         ]);

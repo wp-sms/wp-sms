@@ -11,6 +11,7 @@ use WSms\Auth\SettingsRepository;
 use WSms\Components\View;
 use WSms\Mfa\MfaManager;
 use WSms\Social\SocialAccountRepository;
+use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
 
@@ -33,9 +34,9 @@ class UserProfileSection
     {
         $userId = $user->ID;
 
-        $emailVerified = (bool) get_user_meta($userId, 'wsms_email_verified', true);
-        $phoneVerified = (bool) get_user_meta($userId, 'wsms_phone_verified', true);
-        $phone = get_user_meta($userId, 'wsms_phone', true);
+        $emailVerified = (bool) get_user_meta($userId, UserMeta::EMAIL_VERIFIED, true);
+        $phoneVerified = (bool) get_user_meta($userId, UserMeta::PHONE_VERIFIED, true);
+        $phone = get_user_meta($userId, UserMeta::PHONE, true);
 
         $mfaFactors = $this->mfaManager->getActiveMfaFactors($userId);
 
@@ -55,8 +56,8 @@ class UserProfileSection
         $lockout = $this->lockout->isLocked($userId);
         $hasPassword = AccountManager::hasUsablePassword($userId);
         $isPlaceholderEmail = AccountManager::isPlaceholderEmail($user->user_email);
-        $registrationStatus = get_user_meta($userId, 'wsms_registration_status', true) ?: null;
-        $registrationCreatedAt = get_user_meta($userId, 'wsms_registration_created_at', true) ?: null;
+        $registrationStatus = get_user_meta($userId, UserMeta::REGISTRATION_STATUS, true) ?: null;
+        $registrationCreatedAt = get_user_meta($userId, UserMeta::REGISTRATION_CREATED_AT, true) ?: null;
 
         $phoneEnabled = !empty($this->settingsRepo->channel('phone')['enabled']);
         $emailEnabled = !empty($this->settingsRepo->channel('email')['enabled']);

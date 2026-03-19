@@ -85,7 +85,7 @@ class ProfileReverification
         // pending meta, and OTP delivery.
         $result = $this->accountManager->updateProfile($userId, ['email' => $newEmail]);
 
-        if (!empty($result['email_verification_required'])) {
+        if (!empty($result->meta['email_verification_required'])) {
             // Revert email so WP doesn't save the unverified address.
             $data['user_email'] = $currentEmail;
         }
@@ -114,7 +114,7 @@ class ProfileReverification
 
         $result = $this->accountManager->updateProfile($user->ID, ['email' => $newEmail]);
 
-        if (!empty($result['email_verification_required'])) {
+        if (!empty($result->meta['email_verification_required'])) {
             $verifyUrl = home_url($this->settingsRepo->get('auth_base_url', '/account') . '/profile');
 
             $errors->add(
@@ -129,8 +129,8 @@ class ProfileReverification
             // Revert both the $user object and POST so WC doesn't save the unverified address.
             $user->user_email = $currentEmail;
             $_POST['account_email'] = $currentEmail;
-        } elseif (!$result['success']) {
-            $errors->add('wsms_email_change_failed', $result['message']);
+        } elseif (!$result->success) {
+            $errors->add('wsms_email_change_failed', $result->message);
         }
     }
 
@@ -155,7 +155,7 @@ class ProfileReverification
 
         $result = $this->accountManager->updateProfile($userId, ['phone' => $newPhone]);
 
-        if (!empty($result['phone_verification_required'])) {
+        if (!empty($result->meta['phone_verification_required'])) {
             $verifyUrl = home_url($this->settingsRepo->get('auth_base_url', '/account') . '/profile');
 
             wc_add_notice(
@@ -166,8 +166,8 @@ class ProfileReverification
                 ),
                 'notice',
             );
-        } elseif (!$result['success']) {
-            wc_add_notice($result['message'], 'error');
+        } elseif (!$result->success) {
+            wc_add_notice($result->message, 'error');
         }
     }
 }

@@ -2,11 +2,12 @@
 
 namespace WSms\Auth;
 
+use WSms\Support\UserMeta;
+
 defined('ABSPATH') || exit;
 
 class AccountSuspension
 {
-    private const META_KEY = 'wsms_suspended';
 
     public const NOT_SUSPENDED = ['suspended' => false, 'at' => null, 'by' => null];
     public static function errorMessage(): string
@@ -16,7 +17,7 @@ class AccountSuspension
 
     public function suspend(int $userId, int $adminId): void
     {
-        update_user_meta($userId, self::META_KEY, wp_json_encode([
+        update_user_meta($userId, UserMeta::SUSPENDED, wp_json_encode([
             'at' => gmdate('Y-m-d\TH:i:s\Z'),
             'by' => $adminId,
         ]));
@@ -26,7 +27,7 @@ class AccountSuspension
 
     public function unsuspend(int $userId): void
     {
-        delete_user_meta($userId, self::META_KEY);
+        delete_user_meta($userId, UserMeta::SUSPENDED);
     }
 
     /**
@@ -34,7 +35,7 @@ class AccountSuspension
      */
     public function isSuspended(int $userId): array
     {
-        $raw = get_user_meta($userId, self::META_KEY, true);
+        $raw = get_user_meta($userId, UserMeta::SUSPENDED, true);
 
         if (empty($raw)) {
             return self::NOT_SUSPENDED;

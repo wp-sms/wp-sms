@@ -16,10 +16,8 @@ use WSms\Social\SocialAccountRepository;
 
 defined('ABSPATH') || exit;
 
-class AdminController
+class AdminController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
-
     /** Top-level scalar/array setting keys allowed for direct writes. */
     private const ALLOWED_SCALAR_SETTINGS = [
         'mfa_required_roles',
@@ -65,12 +63,12 @@ class AdminController
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'handleGetSettings'],
-                'permission_callback' => [$this, 'checkAdmin'],
+                'permission_callback' => [$this, 'canManage'],
             ],
             [
                 'methods'             => 'PUT',
                 'callback'            => [$this, 'handleUpdateSettings'],
-                'permission_callback' => [$this, 'checkAdmin'],
+                'permission_callback' => [$this, 'canManage'],
             ],
         ]);
 
@@ -78,7 +76,7 @@ class AdminController
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'handleGetLogs'],
-                'permission_callback' => [$this, 'checkAdmin'],
+                'permission_callback' => [$this, 'canManage'],
                 'args'                => [
                     'page'      => ['required' => false, 'type' => 'integer', 'default' => 1],
                     'per_page'  => ['required' => false, 'type' => 'integer', 'default' => 50],
@@ -92,7 +90,7 @@ class AdminController
             [
                 'methods'             => 'DELETE',
                 'callback'            => [$this, 'handleDeleteLogs'],
-                'permission_callback' => [$this, 'checkAdmin'],
+                'permission_callback' => [$this, 'canManage'],
                 'args'                => [
                     'event'     => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'status'    => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -105,7 +103,7 @@ class AdminController
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/mfa', [
             'methods'             => 'DELETE',
             'callback'            => [$this, 'handleDisableUserMfa'],
-            'permission_callback' => [$this, 'checkAdmin'],
+            'permission_callback' => [$this, 'canManage'],
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
             ],
@@ -114,7 +112,7 @@ class AdminController
         register_rest_route(self::NAMESPACE, '/auth/admin/reports', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleGetReports'],
-            'permission_callback' => [$this, 'checkAdmin'],
+            'permission_callback' => [$this, 'canManage'],
             'args'                => [
                 'range' => [
                     'required'          => false,
@@ -130,13 +128,8 @@ class AdminController
         register_rest_route(self::NAMESPACE, '/auth/admin/meta-keys', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleGetMetaKeys'],
-            'permission_callback' => [$this, 'checkAdmin'],
+            'permission_callback' => [$this, 'canManage'],
         ]);
-    }
-
-    public function checkAdmin(WP_REST_Request $request): bool
-    {
-        return current_user_can('manage_options');
     }
 
     public function handleGetSettings(WP_REST_Request $request): WP_REST_Response

@@ -8,6 +8,7 @@ use WSms\Auth\AccountManager;
 use WSms\Auth\AuthSession;
 use WSms\Auth\CaptchaGuard;
 use WSms\Auth\RateLimiter;
+use WSms\Auth\ValueObjects\OperationResult;
 use WSms\Rest\AccountController;
 
 class AccountControllerTest extends TestCase
@@ -48,11 +49,9 @@ class AccountControllerTest extends TestCase
 
     public function testRegisterDelegatesToAccountManager(): void
     {
-        $this->accountManager->method('registerUser')->willReturn([
-            'success' => true,
-            'user_id' => 1,
-            'message' => 'Registration successful.',
-        ]);
+        $this->accountManager->method('registerUser')->willReturn(
+            new OperationResult(success: true, message: 'Registration successful.', userId: 1)
+        );
 
         $request = new \WP_REST_Request('POST', '/auth/register');
         $request->set_param('email', 'test@example.com');
@@ -66,11 +65,9 @@ class AccountControllerTest extends TestCase
 
     public function testRegisterReturns400OnFailure(): void
     {
-        $this->accountManager->method('registerUser')->willReturn([
-            'success' => false,
-            'error'   => 'missing_email',
-            'message' => 'Email is required.',
-        ]);
+        $this->accountManager->method('registerUser')->willReturn(
+            OperationResult::fail('missing_email', 'Email is required.')
+        );
 
         $request = new \WP_REST_Request('POST', '/auth/register');
         $request->set_param('email', '');
@@ -117,10 +114,9 @@ class AccountControllerTest extends TestCase
 
     public function testResetPasswordDelegatesToAccountManager(): void
     {
-        $this->accountManager->method('completePasswordReset')->willReturn([
-            'success' => true,
-            'message' => 'Password has been reset successfully.',
-        ]);
+        $this->accountManager->method('completePasswordReset')->willReturn(
+            OperationResult::ok('Password has been reset successfully.')
+        );
 
         $request = new \WP_REST_Request('POST', '/auth/reset-password');
         $request->set_param('token', 'some-token');
@@ -133,10 +129,9 @@ class AccountControllerTest extends TestCase
 
     public function testVerifyEmailDelegatesToAccountManager(): void
     {
-        $this->accountManager->method('verifyEmail')->willReturn([
-            'success' => true,
-            'message' => 'Email verified successfully.',
-        ]);
+        $this->accountManager->method('verifyEmail')->willReturn(
+            OperationResult::ok('Email verified successfully.')
+        );
 
         $request = new \WP_REST_Request('POST', '/auth/verify-email');
         $request->set_param('token', 'some-token');
@@ -150,10 +145,9 @@ class AccountControllerTest extends TestCase
     {
         $GLOBALS['_test_current_user_id'] = 1;
 
-        $this->accountManager->method('updateProfile')->willReturn([
-            'success' => true,
-            'message' => 'Profile updated.',
-        ]);
+        $this->accountManager->method('updateProfile')->willReturn(
+            OperationResult::ok('Profile updated.')
+        );
 
         $request = new \WP_REST_Request('PUT', '/auth/profile');
         $request->set_param('display_name', 'New Name');
@@ -167,10 +161,9 @@ class AccountControllerTest extends TestCase
     {
         $GLOBALS['_test_current_user_id'] = 1;
 
-        $this->accountManager->method('changePassword')->willReturn([
-            'success' => true,
-            'message' => 'Password changed successfully.',
-        ]);
+        $this->accountManager->method('changePassword')->willReturn(
+            OperationResult::ok('Password changed successfully.')
+        );
 
         $request = new \WP_REST_Request('PUT', '/auth/password');
         $request->set_param('current_password', 'old');

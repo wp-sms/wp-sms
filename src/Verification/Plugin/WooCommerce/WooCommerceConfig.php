@@ -3,6 +3,7 @@
 namespace WSms\Verification\Plugin\WooCommerce;
 
 use WSms\Auth\SettingsRepository;
+use WSms\Support\UserMeta;
 use WSms\Verification\VerificationConfig;
 
 defined('ABSPATH') || exit;
@@ -84,7 +85,7 @@ class WooCommerceConfig
         if ($channel === 'phone') {
             // Use wsms_phone (the WSMS-verified phone), not billing_phone
             // (which is WooCommerce-specific and may differ).
-            $phone = get_user_meta($userId, 'wsms_phone', true);
+            $phone = get_user_meta($userId, UserMeta::PHONE, true);
             return !empty($phone) ? $phone : null;
         }
 

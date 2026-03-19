@@ -4,16 +4,16 @@ namespace WSms\Auth\ValueObjects;
 
 defined('ABSPATH') || exit;
 
-readonly class IdentifyResult
+class IdentifyResult
 {
     public function __construct(
-        public string $identifierType,
-        public bool $userFound,
-        public array $availableMethods,
-        public ?string $defaultMethod,
-        public bool $registrationAvailable,
-        public array $registrationFields,
-        public array $meta,
+        public readonly string $identifierType,
+        public readonly bool $userFound,
+        public readonly array $availableMethods,
+        public readonly ?string $defaultMethod,
+        public readonly bool $registrationAvailable,
+        public readonly array $registrationFields,
+        public readonly array $meta,
     ) {
     }
 

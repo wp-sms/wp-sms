@@ -2,17 +2,17 @@
 
 namespace WSms\Auth\ValueObjects;
 
-readonly class AuthResult
+class AuthResult
 {
     public function __construct(
-        public bool $success,
-        public string $status,
-        public ?string $sessionToken = null,
-        public ?int $userId = null,
-        public ?array $user = null,
-        public string $message = '',
-        public string $error = '',
-        public array $meta = [],
+        public readonly bool $success,
+        public readonly string $status,
+        public readonly ?string $sessionToken = null,
+        public readonly ?int $userId = null,
+        public readonly ?array $user = null,
+        public readonly string $message = '',
+        public readonly string $error = '',
+        public readonly array $meta = [],
     ) {
     }
 

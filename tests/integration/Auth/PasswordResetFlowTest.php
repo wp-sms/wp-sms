@@ -43,8 +43,8 @@ class PasswordResetFlowTest extends IntegrationTestCase
 
         $result = $this->accountManager->completePasswordReset($this->getGeneratedToken(), 'NewSecurePass1!');
 
-        $this->assertTrue($result['success']);
-        $this->assertSame('Password has been reset successfully.', $result['message']);
+        $this->assertTrue($result->success);
+        $this->assertSame('Password has been reset successfully.', $result->message);
 
         $verifications = $this->wpdb->getVerificationsByType(VerificationType::PasswordReset->value);
         $this->assertNotNull($verifications[0]->used_at);
@@ -56,8 +56,8 @@ class PasswordResetFlowTest extends IntegrationTestCase
 
         $result = $this->accountManager->completePasswordReset('bad-token', 'NewPass1!');
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('invalid_token', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('invalid_token', $result->error);
     }
 
     public function testCompletePasswordResetFailsWithExpiredToken(): void
@@ -72,8 +72,8 @@ class PasswordResetFlowTest extends IntegrationTestCase
 
         $result = $this->accountManager->completePasswordReset($this->getGeneratedToken(), 'NewPass1!');
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('expired_token', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('expired_token', $result->error);
     }
 
     public function testCompletePasswordResetFailsWithUsedToken(): void
@@ -88,8 +88,8 @@ class PasswordResetFlowTest extends IntegrationTestCase
 
         $result = $this->accountManager->completePasswordReset($this->getGeneratedToken(), 'NewPass1!');
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('used_token', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('used_token', $result->error);
     }
 
     public function testResetTokenCannotBeReused(): void
@@ -103,12 +103,12 @@ class PasswordResetFlowTest extends IntegrationTestCase
 
         // First use succeeds.
         $result1 = $this->accountManager->completePasswordReset($token, 'NewPass1!');
-        $this->assertTrue($result1['success']);
+        $this->assertTrue($result1->success);
 
         // Second use fails (token already used).
         $result2 = $this->accountManager->completePasswordReset($token, 'AnotherPass1!');
-        $this->assertFalse($result2['success']);
-        $this->assertSame('used_token', $result2['error']);
+        $this->assertFalse($result2->success);
+        $this->assertSame('used_token', $result2->error);
     }
 
     /**

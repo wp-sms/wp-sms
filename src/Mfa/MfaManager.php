@@ -4,6 +4,7 @@ namespace WSms\Mfa;
 
 use WSms\Auth\SettingsRepository;
 use WSms\Enums\ChannelStatus;
+use WSms\Support\UserMeta;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\ValueObjects\UserFactor;
 
@@ -127,7 +128,7 @@ class MfaManager
     public function disableAllFactors(int $userId): void
     {
         $this->getFactorRepo()->disableAllForUser($userId);
-        update_user_meta($userId, 'wsms_mfa_enabled', '0');
+        update_user_meta($userId, UserMeta::MFA_ENABLED, '0');
     }
 
     /**

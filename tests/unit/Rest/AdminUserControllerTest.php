@@ -8,6 +8,7 @@ use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountManager;
 use WSms\Auth\SettingsRepository;
+use WSms\Auth\ValueObjects\OperationResult;
 use WSms\Enums\EventType;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\MfaManager;
@@ -64,16 +65,16 @@ class AdminUserControllerTest extends TestCase
 
     // --- Permission ---
 
-    public function testCheckAdminReturnsTrueWhenCapable(): void
+    public function testCanManageReturnsTrueWhenCapable(): void
     {
         $GLOBALS['_test_current_user_can'] = true;
-        $this->assertTrue($this->controller->checkAdmin(new \WP_REST_Request()));
+        $this->assertTrue($this->controller->canManage());
     }
 
-    public function testCheckAdminReturnsFalseWhenNotCapable(): void
+    public function testCanManageReturnsFalseWhenNotCapable(): void
     {
         $GLOBALS['_test_current_user_can'] = false;
-        $this->assertFalse($this->controller->checkAdmin(new \WP_REST_Request()));
+        $this->assertFalse($this->controller->canManage());
     }
 
     // --- Auth Summary ---
@@ -739,7 +740,7 @@ class AdminUserControllerTest extends TestCase
         $this->accountManager->expects($this->once())
             ->method('resendVerification')
             ->with(5, 'email')
-            ->willReturn(['success' => true, 'message' => 'Verification resent.']);
+            ->willReturn(OperationResult::ok('Verification resent.'));
 
         $request = new \WP_REST_Request('POST', '/auth/admin/users/5/send-verification');
         $request->set_param('id', 5);
@@ -760,7 +761,7 @@ class AdminUserControllerTest extends TestCase
         $this->accountManager->expects($this->once())
             ->method('resendVerification')
             ->with(5, 'phone')
-            ->willReturn(['success' => true, 'message' => 'Verification resent.']);
+            ->willReturn(OperationResult::ok('Verification resent.'));
 
         $request = new \WP_REST_Request('POST', '/auth/admin/users/5/send-verification');
         $request->set_param('id', 5);
@@ -780,7 +781,7 @@ class AdminUserControllerTest extends TestCase
         $this->accountManager->expects($this->once())
             ->method('resendVerification')
             ->with(5, 'email')
-            ->willReturn(['success' => false, 'error' => 'cooldown', 'message' => 'Please wait before requesting a new code.']);
+            ->willReturn(OperationResult::fail('cooldown', 'Please wait before requesting a new code.'));
 
         $request = new \WP_REST_Request('POST', '/auth/admin/users/5/send-verification');
         $request->set_param('id', 5);

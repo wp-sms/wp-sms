@@ -81,9 +81,9 @@ class AccountManagerTest extends TestCase
             'password' => 'StrongPass1!',
         ]);
 
-        $this->assertTrue($result['success']);
-        $this->assertSame(42, $result['user_id']);
-        $this->assertSame('Registration successful.', $result['message']);
+        $this->assertTrue($result->success);
+        $this->assertSame(42, $result->userId);
+        $this->assertSame('Registration successful.', $result->message);
     }
 
     public function testRegisterUserRequiresMfaOnRegistration(): void
@@ -102,7 +102,7 @@ class AccountManagerTest extends TestCase
             'password' => 'StrongPass1!',
         ]);
 
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
     }
 
     public function testRegisterUserFailsWithDuplicateEmail(): void
@@ -114,8 +114,8 @@ class AccountManagerTest extends TestCase
             'password' => 'Pass123!',
         ]);
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('existing_user_email', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('existing_user_email', $result->error);
     }
 
     public function testRegisterUserFailsWhenPhoneRequiredButMissing(): void
@@ -130,8 +130,8 @@ class AccountManagerTest extends TestCase
             'password' => 'StrongPass1!',
         ]);
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('missing_phone', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('missing_phone', $result->error);
     }
 
     public function testRegisterUserSucceedsWhenPhoneRequiredAndProvided(): void
@@ -149,7 +149,7 @@ class AccountManagerTest extends TestCase
             'phone'    => '+1234567890',
         ]);
 
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
     }
 
     public function testRegisterUserFailsWhenFirstNameRequired(): void
@@ -163,8 +163,8 @@ class AccountManagerTest extends TestCase
             'password' => 'StrongPass1!',
         ]);
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('missing_first_name', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('missing_first_name', $result->error);
     }
 
     public function testRegisterUserFailsWithMissingEmail(): void
@@ -173,8 +173,8 @@ class AccountManagerTest extends TestCase
             'password' => 'Pass123!',
         ]);
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('missing_email', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('missing_email', $result->error);
     }
 
     public function testRegisterUserFailsWithMissingPassword(): void
@@ -183,8 +183,8 @@ class AccountManagerTest extends TestCase
             'email' => 'test@example.com',
         ]);
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('missing_password', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('missing_password', $result->error);
     }
 
     public function testRegisterUserSocialLoginSkipsEmailRequirement(): void
@@ -199,8 +199,8 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->registerUser(['phone' => '+971500000000'], socialLogin: true);
 
-        $this->assertTrue($result['success']);
-        $this->assertSame(50, $result['user_id']);
+        $this->assertTrue($result->success);
+        $this->assertSame(50, $result->userId);
     }
 
     public function testRegisterUserSocialLoginSkipsPasswordRequirement(): void
@@ -216,8 +216,8 @@ class AccountManagerTest extends TestCase
             'email' => 'social@example.com',
         ], socialLogin: true);
 
-        $this->assertTrue($result['success']);
-        $this->assertSame(51, $result['user_id']);
+        $this->assertTrue($result->success);
+        $this->assertSame(51, $result->userId);
     }
 
     public function testRegisterUserNoPendingWhenVerifyAtSignupDisabled(): void
@@ -236,9 +236,9 @@ class AccountManagerTest extends TestCase
             'phone'    => '+1234567890',
         ]);
 
-        $this->assertTrue($result['success']);
-        $this->assertArrayNotHasKey('pending_verifications', $result);
-        $this->assertArrayNotHasKey('session_token', $result);
+        $this->assertTrue($result->success);
+        $this->assertArrayNotHasKey('pending_verifications', $result->meta);
+        $this->assertArrayNotHasKey('session_token', $result->meta);
     }
 
     public function testRegisterUserPendingEmailWhenVerifyAtSignupEnabled(): void
@@ -255,10 +255,10 @@ class AccountManagerTest extends TestCase
             'password' => 'StrongPass1!',
         ]);
 
-        $this->assertTrue($result['success']);
-        $this->assertCount(1, $result['pending_verifications']);
-        $this->assertSame('email', $result['pending_verifications'][0]['type']);
-        $this->assertArrayHasKey('session_token', $result);
+        $this->assertTrue($result->success);
+        $this->assertCount(1, $result->meta['pending_verifications']);
+        $this->assertSame('email', $result->meta['pending_verifications'][0]['type']);
+        $this->assertArrayHasKey('session_token', $result->meta);
     }
 
     public function testRegisterUserPendingPhoneWhenVerifyAtSignupEnabled(): void
@@ -276,10 +276,10 @@ class AccountManagerTest extends TestCase
             'phone'    => '+1234567890',
         ]);
 
-        $this->assertTrue($result['success']);
-        $this->assertCount(1, $result['pending_verifications']);
-        $this->assertSame('phone', $result['pending_verifications'][0]['type']);
-        $this->assertArrayHasKey('session_token', $result);
+        $this->assertTrue($result->success);
+        $this->assertCount(1, $result->meta['pending_verifications']);
+        $this->assertSame('phone', $result->meta['pending_verifications'][0]['type']);
+        $this->assertArrayHasKey('session_token', $result->meta);
     }
 
     public function testRegisterUserBothPendingWhenBothEnabled(): void
@@ -298,13 +298,13 @@ class AccountManagerTest extends TestCase
             'phone'    => '+1234567890',
         ]);
 
-        $this->assertTrue($result['success']);
-        $this->assertCount(2, $result['pending_verifications']);
+        $this->assertTrue($result->success);
+        $this->assertCount(2, $result->meta['pending_verifications']);
 
-        $types = array_column($result['pending_verifications'], 'type');
+        $types = array_column($result->meta['pending_verifications'], 'type');
         $this->assertContains('phone', $types);
         $this->assertContains('email', $types);
-        $this->assertArrayHasKey('session_token', $result);
+        $this->assertArrayHasKey('session_token', $result->meta);
     }
 
     // --- initiatePasswordReset ---
@@ -344,8 +344,8 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->completePasswordReset('test-token-abc', 'NewPass1!');
 
-        $this->assertTrue($result['success']);
-        $this->assertSame('Password has been reset successfully.', $result['message']);
+        $this->assertTrue($result->success);
+        $this->assertSame('Password has been reset successfully.', $result->message);
     }
 
     public function testCompletePasswordResetFailsWithExpiredToken(): void
@@ -354,8 +354,8 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->completePasswordReset('test-token-abc', 'NewPass1!');
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('expired_token', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('expired_token', $result->error);
     }
 
     public function testCompletePasswordResetFailsWithUsedToken(): void
@@ -364,8 +364,8 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->completePasswordReset('test-token-abc', 'NewPass1!');
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('used_token', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('used_token', $result->error);
     }
 
     public function testCompletePasswordResetFailsWithInvalidToken(): void
@@ -374,8 +374,8 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->completePasswordReset('bad-token', 'NewPass1!');
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('invalid_token', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('invalid_token', $result->error);
     }
 
     // --- verifyEmail ---
@@ -389,8 +389,8 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->verifyEmail('test-token-abc');
 
-        $this->assertTrue($result['success']);
-        $this->assertSame('Email verified successfully.', $result['message']);
+        $this->assertTrue($result->success);
+        $this->assertSame('Email verified successfully.', $result->message);
     }
 
     // --- updateProfile ---
@@ -399,7 +399,7 @@ class AccountManagerTest extends TestCase
     {
         $result = $this->manager->updateProfile(1, ['display_name' => 'New Name']);
 
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
     }
 
     public function testUpdateProfilePhoneTriggersVerification(): void
@@ -410,8 +410,8 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->updateProfile(1, ['phone' => '+1234567890']);
 
-        $this->assertTrue($result['success']);
-        $this->assertTrue($result['phone_verification_required']);
+        $this->assertTrue($result->success);
+        $this->assertTrue($result->meta['phone_verification_required']);
         // Phone should be stored as pending, NOT overwritten.
         $this->assertSame('+1234567890', $GLOBALS['_test_user_meta'][1]['wsms_pending_phone']);
         // Original phone should be preserved.
@@ -428,16 +428,16 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->updateProfile(1, ['email' => 'new@example.com']);
 
-        $this->assertTrue($result['success']);
-        $this->assertTrue($result['email_verification_required']);
+        $this->assertTrue($result->success);
+        $this->assertTrue($result->meta['email_verification_required']);
     }
 
     public function testUpdateProfileRejectsInvalidEmail(): void
     {
         $result = $this->manager->updateProfile(1, ['email' => 'not-an-email']);
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('invalid_email', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('invalid_email', $result->error);
     }
 
     public function testUpdateProfilePhoneSameValueSkipsVerification(): void
@@ -446,8 +446,8 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->updateProfile(1, ['phone' => '+1234567890']);
 
-        $this->assertTrue($result['success']);
-        $this->assertArrayNotHasKey('phone_verification_required', $result);
+        $this->assertTrue($result->success);
+        $this->assertArrayNotHasKey('phone_verification_required', $result->meta);
     }
 
     public function testUpdateProfileEmailSameValueSkipsVerification(): void
@@ -458,8 +458,8 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->updateProfile(1, ['email' => 'same@example.com']);
 
-        $this->assertTrue($result['success']);
-        $this->assertArrayNotHasKey('email_verification_required', $result);
+        $this->assertTrue($result->success);
+        $this->assertArrayNotHasKey('email_verification_required', $result->meta);
     }
 
     public function testUpdateProfilePhonePreservesOldPhone(): void
@@ -468,7 +468,7 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->updateProfile(1, ['phone' => '+2222222222']);
 
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
         // Old phone preserved.
         $this->assertSame('+1111111111', $GLOBALS['_test_user_meta'][1]['wsms_phone']);
         // Verified status NOT reset (old phone still verified).
@@ -504,8 +504,8 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->changePassword(1, 'oldPass', 'newPass');
 
-        $this->assertTrue($result['success']);
-        $this->assertSame('Password changed successfully.', $result['message']);
+        $this->assertTrue($result->success);
+        $this->assertSame('Password changed successfully.', $result->message);
     }
 
     public function testChangePasswordFailsWithWrongPassword(): void
@@ -518,8 +518,8 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->changePassword(1, 'wrongPass', 'newPass');
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('wrong_password', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('wrong_password', $result->error);
     }
 
     // --- logout ---
@@ -569,8 +569,8 @@ class AccountManagerTest extends TestCase
             'phone' => '+1234567890',
         ]);
 
-        $this->assertTrue($result['success']);
-        $this->assertSame(100, $result['user_id']);
+        $this->assertTrue($result->success);
+        $this->assertSame(100, $result->userId);
 
         // Placeholder meta should be stored.
         $this->assertSame('1', $GLOBALS['_test_user_meta'][100]['wsms_email_placeholder'] ?? '');
@@ -591,10 +591,10 @@ class AccountManagerTest extends TestCase
             'phone' => '+1234567890',
         ]);
 
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
 
         // Only phone should be pending, not email (since email is a placeholder).
-        $pendingTypes = array_column($result['pending_verifications'] ?? [], 'type');
+        $pendingTypes = array_column($result->meta['pending_verifications'] ?? [], 'type');
         $this->assertContains('phone', $pendingTypes);
         $this->assertNotContains('email', $pendingTypes);
     }
@@ -614,7 +614,7 @@ class AccountManagerTest extends TestCase
             'phone' => '+1234567890',
         ]);
 
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
         $this->assertSame('1', $GLOBALS['_test_user_meta'][102]['wsms_email_placeholder'] ?? '');
 
         $capturedUsername = $GLOBALS['_test_wp_insert_user_data']['user_login'] ?? '';
@@ -632,8 +632,8 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->resendVerification(200, 'email');
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('no_email', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('no_email', $result->error);
     }
 
     public function testGetVerificationStatusExcludesPlaceholderEmail(): void
@@ -664,7 +664,7 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->verifyEmail('test-token-abc');
 
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
         $this->assertArrayNotHasKey('wsms_email_placeholder', $GLOBALS['_test_user_meta'][202] ?? []);
     }
 
@@ -881,7 +881,7 @@ class AccountManagerTest extends TestCase
         ]);
 
         $this->assertContains(90, $GLOBALS['_test_deleted_users']);
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
     }
 
     public function testRegisterDoesNotDeleteNonExpiredPendingUser(): void
@@ -911,7 +911,7 @@ class AccountManagerTest extends TestCase
         ]);
 
         $this->assertEmpty($GLOBALS['_test_deleted_users']);
-        $this->assertFalse($result['success']);
+        $this->assertFalse($result->success);
     }
 
     public function testRegisterDeletesExpiredPendingUserByPhone(): void
@@ -943,7 +943,7 @@ class AccountManagerTest extends TestCase
         ]);
 
         $this->assertContains(93, $GLOBALS['_test_deleted_users']);
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
     }
 
     // --- changePassword with usable password flag ---
@@ -960,7 +960,7 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->changePassword(500, null, 'NewPass1!');
 
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
         $this->assertSame('1', $GLOBALS['_test_user_meta'][500]['wsms_has_usable_password'] ?? '');
     }
 
@@ -973,8 +973,8 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->changePassword(501, null, 'NewPass1!');
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('wrong_password', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('wrong_password', $result->error);
     }
 
     public function testRegisterUserSetsUsablePasswordFlag(): void
@@ -989,7 +989,7 @@ class AccountManagerTest extends TestCase
             'password' => 'StrongPass1!',
         ]);
 
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
         $this->assertSame('1', $GLOBALS['_test_user_meta'][120]['wsms_has_usable_password'] ?? '');
     }
 
@@ -999,7 +999,7 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->registerUser(['phone' => '+971500000000'], socialLogin: true);
 
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
         $this->assertSame('0', $GLOBALS['_test_user_meta'][121]['wsms_has_usable_password'] ?? '');
     }
 
@@ -1013,8 +1013,8 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->changePassword(502, null, 'NewPass1!');
 
-        $this->assertFalse($result['success']);
-        $this->assertSame('wrong_password', $result['error']);
+        $this->assertFalse($result->success);
+        $this->assertSame('wrong_password', $result->error);
     }
 
     public function testCompletePasswordResetSetsUsablePasswordFlag(): void
@@ -1026,7 +1026,7 @@ class AccountManagerTest extends TestCase
 
         $result = $this->manager->completePasswordReset('test-token-abc', 'NewPass1!');
 
-        $this->assertTrue($result['success']);
+        $this->assertTrue($result->success);
         $this->assertSame('1', $GLOBALS['_test_user_meta'][503]['wsms_has_usable_password'] ?? '');
     }
 

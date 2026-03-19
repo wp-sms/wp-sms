@@ -23,7 +23,11 @@
   "require-dev": {
     "veronalabs/wp-scoper": "^1.2.4",
     "fakerphp/faker": "^1.23",
-    "phpunit/phpunit": "^9.6"
+    "phpunit/phpunit": "^9.6",
+    "phpstan/phpstan": "*",
+    "phpstan/extension-installer": "*",
+    "szepeviktor/phpstan-wordpress": "*",
+    "phpstan/phpstan-deprecation-rules": "*"
   },
   "autoload": {
     "psr-4": {
@@ -49,6 +53,7 @@
     "post-install-cmd": "@fix-autoload",
     "fix-autoload": "php bin/fix-autoload.php",
     "test": "phpunit --testdox",
+    "phpstan": "vendor/bin/phpstan analyse --memory-limit=1G",
     "dist": "bash bin/build-zip.sh"
   },
   "config": {
@@ -57,7 +62,8 @@
       "php": "8.1"
     },
     "allow-plugins": {
-      "veronalabs/wp-scoper": true
+      "veronalabs/wp-scoper": true,
+      "phpstan/extension-installer": true
     }
   }
 }

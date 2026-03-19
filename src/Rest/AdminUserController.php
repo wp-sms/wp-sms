@@ -12,12 +12,12 @@ use WSms\Auth\SettingsRepository;
 use WSms\Enums\EventType;
 use WSms\Mfa\MfaManager;
 use WSms\Social\SocialAccountRepository;
+use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
 
-class AdminUserController
+class AdminUserController extends Controller
 {
-    private const NAMESPACE = 'wsms/v1';
     private const PHONE_PATTERN = '/^\+[1-9]\d{1,14}$/';
     private const VERIFICATION_CHANNELS = ['email', 'phone'];
 
@@ -37,7 +37,7 @@ class AdminUserController
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/auth-summary', [
             'methods'             => 'GET',
             'callback'            => [$this, 'handleGetAuthSummary'],
-            'permission_callback' => [$this, 'checkAdmin'],
+            'permission_callback' => [$this, 'canManage'],
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
             ],
@@ -46,7 +46,7 @@ class AdminUserController
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/mfa/(?P<channel>[a-z_]+)', [
             'methods'             => 'DELETE',
             'callback'            => [$this, 'handleResetMfaChannel'],
-            'permission_callback' => [$this, 'checkAdmin'],
+            'permission_callback' => [$this, 'canManage'],
             'args'                => [
                 'id'      => ['required' => true, 'type' => 'integer'],
                 'channel' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -56,7 +56,7 @@ class AdminUserController
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/verification', [
             'methods'             => 'PUT',
             'callback'            => [$this, 'handleSetVerification'],
-            'permission_callback' => [$this, 'checkAdmin'],
+            'permission_callback' => [$this, 'canManage'],
             'args'                => [
                 'id'       => ['required' => true, 'type' => 'integer'],
                 'channel'  => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -67,7 +67,7 @@ class AdminUserController
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/social/(?P<provider>[a-z]+)', [
             'methods'             => 'DELETE',
             'callback'            => [$this, 'handleDisconnectSocial'],
-            'permission_callback' => [$this, 'checkAdmin'],
+            'permission_callback' => [$this, 'canManage'],
             'args'                => [
                 'id'       => ['required' => true, 'type' => 'integer'],
                 'provider' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -77,7 +77,7 @@ class AdminUserController
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/lockout', [
             'methods'             => 'DELETE',
             'callback'            => [$this, 'handleUnlockAccount'],
-            'permission_callback' => [$this, 'checkAdmin'],
+            'permission_callback' => [$this, 'canManage'],
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
             ],
@@ -86,7 +86,7 @@ class AdminUserController
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/phone', [
             'methods'             => 'PUT',
             'callback'            => [$this, 'handleSetPhone'],
-            'permission_callback' => [$this, 'checkAdmin'],
+            'permission_callback' => [$this, 'canManage'],
             'args'                => [
                 'id'    => ['required' => true, 'type' => 'integer'],
                 'phone' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -96,7 +96,7 @@ class AdminUserController
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/password-reset', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handlePasswordReset'],
-            'permission_callback' => [$this, 'checkAdmin'],
+            'permission_callback' => [$this, 'canManage'],
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
             ],
@@ -105,7 +105,7 @@ class AdminUserController
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/activate', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleActivateUser'],
-            'permission_callback' => [$this, 'checkAdmin'],
+            'permission_callback' => [$this, 'canManage'],
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
             ],
@@ -114,7 +114,7 @@ class AdminUserController
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/send-verification', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleSendVerification'],
-            'permission_callback' => [$this, 'checkAdmin'],
+            'permission_callback' => [$this, 'canManage'],
             'args'                => [
                 'id'      => ['required' => true, 'type' => 'integer'],
                 'channel' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
@@ -124,7 +124,7 @@ class AdminUserController
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/suspend', [
             'methods'             => 'POST',
             'callback'            => [$this, 'handleSuspendUser'],
-            'permission_callback' => [$this, 'checkAdmin'],
+            'permission_callback' => [$this, 'canManage'],
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
             ],
@@ -133,16 +133,11 @@ class AdminUserController
         register_rest_route(self::NAMESPACE, '/auth/admin/users/(?P<id>\d+)/suspension', [
             'methods'             => 'DELETE',
             'callback'            => [$this, 'handleUnsuspendUser'],
-            'permission_callback' => [$this, 'checkAdmin'],
+            'permission_callback' => [$this, 'canManage'],
             'args'                => [
                 'id' => ['required' => true, 'type' => 'integer'],
             ],
         ]);
-    }
-
-    public function checkAdmin(WP_REST_Request $request): bool
-    {
-        return current_user_can('manage_options');
     }
 
     public function handleGetAuthSummary(WP_REST_Request $request): WP_REST_Response
@@ -153,9 +148,9 @@ class AdminUserController
             return $user;
         }
 
-        $emailVerified = (bool) get_user_meta($userId, 'wsms_email_verified', true);
-        $phoneVerified = (bool) get_user_meta($userId, 'wsms_phone_verified', true);
-        $phone = get_user_meta($userId, 'wsms_phone', true);
+        $emailVerified = (bool) get_user_meta($userId, UserMeta::EMAIL_VERIFIED, true);
+        $phoneVerified = (bool) get_user_meta($userId, UserMeta::PHONE_VERIFIED, true);
+        $phone = get_user_meta($userId, UserMeta::PHONE, true);
 
         $mfaFactors = $this->mfaManager->getActiveMfaFactors($userId);
 
@@ -170,8 +165,8 @@ class AdminUserController
 
         $logs = $this->auditLogger->getEvents(['user_id' => $userId], 1, 10);
         $lockout = $this->lockout->isLocked($userId);
-        $registrationStatus = get_user_meta($userId, 'wsms_registration_status', true) ?: null;
-        $registrationCreatedAt = get_user_meta($userId, 'wsms_registration_created_at', true) ?: null;
+        $registrationStatus = get_user_meta($userId, UserMeta::REGISTRATION_STATUS, true) ?: null;
+        $registrationCreatedAt = get_user_meta($userId, UserMeta::REGISTRATION_CREATED_AT, true) ?: null;
         $hasPassword = AccountManager::hasUsablePassword($userId);
         $isPlaceholderEmail = AccountManager::isPlaceholderEmail($user->user_email);
 
@@ -221,7 +216,7 @@ class AdminUserController
         $channel->unenroll($userId);
 
         if (!$this->mfaManager->hasActiveFactors($userId)) {
-            update_user_meta($userId, 'wsms_mfa_enabled', '0');
+            update_user_meta($userId, UserMeta::MFA_ENABLED, '0');
         }
 
         $this->auditLogger->log(EventType::MfaAdminBypass, 'success', $userId, [
@@ -254,7 +249,7 @@ class AdminUserController
             ], 400);
         }
 
-        $metaKey = $channel === 'email' ? 'wsms_email_verified' : 'wsms_phone_verified';
+        $metaKey = $channel === 'email' ? UserMeta::EMAIL_VERIFIED : UserMeta::PHONE_VERIFIED;
         update_user_meta($userId, $metaKey, $verified ? '1' : '0');
 
         $eventType = $channel === 'email' ? EventType::EmailVerified : EventType::PhoneVerified;
@@ -333,8 +328,8 @@ class AdminUserController
         }
 
         if ($phone === '') {
-            delete_user_meta($userId, 'wsms_phone');
-            delete_user_meta($userId, 'wsms_phone_verified');
+            delete_user_meta($userId, UserMeta::PHONE);
+            delete_user_meta($userId, UserMeta::PHONE_VERIFIED);
 
             $this->auditLogger->log(EventType::EmailChange, 'success', $userId, [
                 'admin_override' => true,
@@ -364,8 +359,8 @@ class AdminUserController
             ], 409);
         }
 
-        update_user_meta($userId, 'wsms_phone', $phone);
-        update_user_meta($userId, 'wsms_phone_verified', '0');
+        update_user_meta($userId, UserMeta::PHONE, $phone);
+        update_user_meta($userId, UserMeta::PHONE_VERIFIED, '0');
 
         $this->auditLogger->log(EventType::EmailChange, 'success', $userId, [
             'admin_override' => true,
@@ -419,7 +414,7 @@ class AdminUserController
             return $user;
         }
 
-        $status = get_user_meta($userId, 'wsms_registration_status', true);
+        $status = get_user_meta($userId, UserMeta::REGISTRATION_STATUS, true);
         if ($status !== 'pending') {
             return new WP_REST_Response([
                 'success' => false,
@@ -428,8 +423,8 @@ class AdminUserController
             ], 400);
         }
 
-        update_user_meta($userId, 'wsms_registration_status', 'active');
-        delete_user_meta($userId, 'wsms_registration_created_at');
+        update_user_meta($userId, UserMeta::REGISTRATION_STATUS, 'active');
+        delete_user_meta($userId, UserMeta::REGISTRATION_CREATED_AT);
 
         $this->auditLogger->log(EventType::Register, 'success', $userId, [
             'admin_override' => true,
@@ -477,7 +472,7 @@ class AdminUserController
             ], 400);
         }
 
-        if ($channel === 'phone' && empty(get_user_meta($userId, 'wsms_phone', true))) {
+        if ($channel === 'phone' && empty(get_user_meta($userId, UserMeta::PHONE, true))) {
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'no_phone',
@@ -487,7 +482,7 @@ class AdminUserController
 
         $result = $this->accountManager->resendVerification($userId, $channel);
 
-        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
     }
 
     public function handleSuspendUser(WP_REST_Request $request): WP_REST_Response

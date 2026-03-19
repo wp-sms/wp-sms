@@ -12,3 +12,4 @@ docs/
 .agents/
 .claude/
 skills-lock.json
+phpstan.neon

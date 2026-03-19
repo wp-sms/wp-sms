@@ -13,6 +13,7 @@ use WSms\Auth\PolicyEngine;
 use WSms\Auth\ValueObjects\AuthResult;
 use WSms\Enums\EventType;
 use WSms\Mfa\Channels\TelegramChannel;
+use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
 
@@ -240,7 +241,7 @@ class SocialAuthOrchestrator
         // Case 2b: Phone number match (for providers like Telegram with phone but no email).
         if (empty($userInfo['email']) && !empty($userInfo['phone_number'])) {
             $phoneUsers = get_users([
-                'meta_key'   => 'wsms_phone',
+                'meta_key'   => UserMeta::PHONE,
                 'meta_value' => $userInfo['phone_number'],
                 'number'     => 1,
             ]);
@@ -289,22 +290,22 @@ class SocialAuthOrchestrator
 
         $regResult = $this->accountManager->registerUser($regData, socialLogin: true);
 
-        if (!$regResult['success']) {
-            return ['result' => AuthResult::failed($regResult['error'] ?? 'registration_failed', $regResult['message'])];
+        if (!$regResult->success) {
+            return ['result' => AuthResult::failed($regResult->error ?? 'registration_failed', $regResult->message)];
         }
 
-        $userId = $regResult['user_id'];
+        $userId = $regResult->userId;
 
         // Mark email as verified since provider verified it.
         if (!empty($userInfo['email']) && !empty($userInfo['email_verified'])) {
-            update_user_meta($userId, 'wsms_email_verified', '1');
-            update_user_meta($userId, 'wsms_registration_status', 'active');
+            update_user_meta($userId, UserMeta::EMAIL_VERIFIED, '1');
+            update_user_meta($userId, UserMeta::REGISTRATION_STATUS, 'active');
         }
 
         // Store phone number from provider (e.g. Telegram).
         if (!empty($userInfo['phone_number'])) {
-            update_user_meta($userId, 'wsms_phone', $userInfo['phone_number']);
-            update_user_meta($userId, 'wsms_phone_verified', '1');
+            update_user_meta($userId, UserMeta::PHONE, $userInfo['phone_number']);
+            update_user_meta($userId, UserMeta::PHONE_VERIFIED, '1');
         }
 
         // Download and store social avatar locally for new user.
