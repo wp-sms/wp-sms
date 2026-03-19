@@ -3,6 +3,7 @@
 namespace WSms\Container;
 
 use WSms\Integration\Auth\AuthIntegration;
+use WSms\Integration\ContactForm7\ContactForm7Integration;
 use WSms\Integration\IntegrationRegistry;
 use WSms\Integration\Webhook\WebhookIntegration;
 use WSms\Integration\WooCommerce\WooCommerceIntegration;
@@ -19,6 +20,7 @@ class IntegrationServiceProvider implements ServiceProvider
         AuthIntegration::class,
         WebhookIntegration::class,
         WooCommerceIntegration::class,
+        ContactForm7Integration::class,
     ];
 
     public function register(ServiceContainer $container): void

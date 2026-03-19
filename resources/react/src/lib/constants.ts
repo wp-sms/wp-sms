@@ -264,6 +264,7 @@ export const INTEGRATION_CATEGORY_LABELS: Record<string, string> = {
   communication: 'Communication',
   messaging: 'Messaging',
   security: 'Security',
+  forms: 'Forms',
 };
 
 /** Toggle an item in/out of an array. */

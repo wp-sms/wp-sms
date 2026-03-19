@@ -1,5 +1,6 @@
 import { cn } from '@/lib/utils';
 import {
+  FileText,
   Globe,
   ShoppingCart,
   Shield,
@@ -27,6 +28,7 @@ const ICON_MAP: Record<string, IconConfig> = {
   'shield':         { icon: Shield,       color: 'text-green-600',  bg: 'bg-green-50' },
   'webhook':        { icon: Webhook,      color: 'text-amber-600',  bg: 'bg-amber-50' },
   'message-square': { icon: MessageSquare, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+  'file-text':      { icon: FileText,      color: 'text-orange-600', bg: 'bg-orange-50' },
 };
 
 const FALLBACK: IconConfig = { icon: Puzzle, color: 'text-muted-foreground', bg: 'bg-muted' };
