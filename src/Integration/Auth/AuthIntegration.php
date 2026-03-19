@@ -133,4 +133,18 @@ class AuthIntegration implements IntegrationInterface
     public function boot(): void
     {
     }
+
+    public function connect(array $credentials): array
+    {
+        return $credentials;
+    }
+
+    public function disconnect(): void
+    {
+    }
+
+    public function isConnected(): bool
+    {
+        return true;
+    }
 }

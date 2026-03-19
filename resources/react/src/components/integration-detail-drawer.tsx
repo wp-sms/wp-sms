@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useIntegrationDetail, useIntegrationConfig } from '@/hooks/use-integrations';
 import { IntegrationIcon } from '@/components/integration-icon';
 import { IntegrationStatusBadge } from '@/components/integration-status-badge';
+import { SchemaForm } from '@/components/schema-form';
 import {
   Drawer,
   DrawerContent,
@@ -16,6 +17,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Loader2, Zap, Play, type LucideIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { INTEGRATION_CATEGORY_LABELS } from '@/lib/constants';
+import type { JsonSchema } from '@/lib/api';
 
 interface IntegrationDetailDrawerProps {
   open: boolean;
@@ -45,6 +47,63 @@ function CapabilityList({ title, icon: Icon, iconClass, items }: {
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function ConnectionForm({ detail, onConfigChange, onOpenChange }: {
+  detail: { id: string; name: string; auth_schema: JsonSchema };
+  onConfigChange: () => void;
+  onOpenChange: (open: boolean) => void;
+}) {
+  const [credentials, setCredentials] = useState<Record<string, unknown>>({});
+  const [connecting, setConnecting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const { saveConfig } = useIntegrationConfig(onConfigChange);
+
+  const schema: JsonSchema = {
+    type: 'object',
+    properties: detail.auth_schema.properties ?? detail.auth_schema as Record<string, never>,
+    required: Object.entries(detail.auth_schema.properties ?? detail.auth_schema)
+      .filter(([, v]) => (v as Record<string, unknown>).required)
+      .map(([k]) => k),
+  };
+
+  async function handleConnect() {
+    setConnecting(true);
+    setError(null);
+    try {
+      await saveConfig(detail.id, credentials);
+      toast.success(`${detail.name} connected`);
+      onOpenChange(false);
+    } catch (e: unknown) {
+      const err = e as Record<string, unknown> | null;
+      const message = err?.message ? String(err.message) : 'Connection failed';
+      setError(message);
+    } finally {
+      setConnecting(false);
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      <h3 className="text-sm font-medium">Connect</h3>
+      <SchemaForm
+        schema={schema}
+        values={credentials}
+        onChange={setCredentials}
+      />
+      {error && (
+        <p className="text-sm text-destructive">{error}</p>
+      )}
+      <Button
+        size="sm"
+        onClick={handleConnect}
+        disabled={connecting}
+      >
+        {connecting && <Loader2 className="h-4 w-4 animate-spin" />}
+        Connect
+      </Button>
     </div>
   );
 }
@@ -110,9 +169,16 @@ export function IntegrationDetailDrawer({
                 <>
                   <div className="space-y-3">
                     <h3 className="text-sm font-medium">Connection</h3>
-                    <p className="text-xs text-muted-foreground">
-                      This integration is connected and active.
-                    </p>
+                    {detail.config?.bot_username && (
+                      <p className="text-xs text-muted-foreground">
+                        Connected as <span className="font-medium">@{String(detail.config.bot_username)}</span>
+                      </p>
+                    )}
+                    {!detail.config?.bot_username && (
+                      <p className="text-xs text-muted-foreground">
+                        This integration is connected and active.
+                      </p>
+                    )}
                     <Button
                       variant="outline"
                       size="sm"
@@ -123,6 +189,17 @@ export function IntegrationDetailDrawer({
                       Disconnect
                     </Button>
                   </div>
+                  <Separator />
+                </>
+              )}
+
+              {detail.auth_type !== 'none' && !detail.connected && (
+                <>
+                  <ConnectionForm
+                    detail={detail}
+                    onConfigChange={onConfigChange}
+                    onOpenChange={onOpenChange}
+                  />
                   <Separator />
                 </>
               )}

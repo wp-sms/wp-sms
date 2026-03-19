@@ -139,10 +139,21 @@ class IntegrationController
 
         $id = $integration->getId();
         $body = $request->get_json_params();
+        $credentials = $body['credentials'] ?? [];
+
+        try {
+            $credentials = $integration->connect($credentials);
+        } catch (\RuntimeException $e) {
+            return new \WP_REST_Response([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 400);
+        }
+
         $configs = get_option(self::CONFIG_OPTION, []);
         $configs[$id] = [
             'enabled'     => true,
-            'credentials' => $body['credentials'] ?? [],
+            'credentials' => $credentials,
         ];
         update_option(self::CONFIG_OPTION, $configs);
 
@@ -155,6 +166,8 @@ class IntegrationController
         if ($integration instanceof \WP_REST_Response) {
             return $integration;
         }
+
+        $integration->disconnect();
 
         $id = $integration->getId();
         $configs = get_option(self::CONFIG_OPTION, []);
@@ -293,17 +306,28 @@ class IntegrationController
 
     private function formatIntegrationBase(IntegrationInterface $integration, array $configs): array
     {
-        return [
+        $base = [
             'id'          => $integration->getId(),
             'name'        => $integration->getName(),
             'description' => $integration->getDescription(),
             'category'    => $integration->getCategory(),
             'icon'        => $integration->getIcon(),
             'available'   => $integration->isAvailable(),
-            'connected'   => $this->isConnected($integration, $configs),
+            'connected'   => $this->isConnected($integration),
             'auth_type'   => $integration->getAuthType(),
             'auth_schema' => $integration->getAuthSchema(),
         ];
+
+        $config = $configs[$integration->getId()] ?? null;
+        if ($config && !empty($config['credentials'])) {
+            // Only expose non-sensitive display fields to the frontend.
+            $safe = array_diff_key($config['credentials'], array_flip(['bot_token', 'webhook_secret']));
+            if ($safe) {
+                $base['config'] = $safe;
+            }
+        }
+
+        return $base;
     }
 
     private function formatIntegrationSummary(IntegrationInterface $integration, array $configs): array
@@ -314,13 +338,8 @@ class IntegrationController
         ];
     }
 
-    private function isConnected(IntegrationInterface $integration, array $configs): bool
+    private function isConnected(IntegrationInterface $integration): bool
     {
-        if ($integration->getAuthType() === 'none') {
-            return $integration->isAvailable();
-        }
-
-        $config = $configs[$integration->getId()] ?? null;
-        return $config !== null && !empty($config['credentials']);
+        return $integration->isConnected();
     }
 }

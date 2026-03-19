@@ -124,6 +124,90 @@ class PayloadSchemas
         return array_intersect_key($all, array_flip($fields));
     }
 
+    /** @return array<string, array> Telegram user sub-properties: id, first_name, last_name, username */
+    public static function telegramUser(): array
+    {
+        return [
+            'id' => [
+                'type' => 'integer',
+                'label' => __('User ID', 'wp-sms'),
+                'example' => 123456789,
+            ],
+            'first_name' => [
+                'type' => 'string',
+                'label' => __('First Name', 'wp-sms'),
+                'example' => 'John',
+            ],
+            'last_name' => [
+                'type' => 'string',
+                'label' => __('Last Name', 'wp-sms'),
+                'example' => 'Doe',
+            ],
+            'username' => [
+                'type' => 'string',
+                'label' => __('Username', 'wp-sms'),
+                'example' => 'johndoe',
+            ],
+        ];
+    }
+
+    /** @return array<string, array> Telegram chat sub-properties: id, type, title */
+    public static function telegramChat(): array
+    {
+        return [
+            'id' => [
+                'type' => 'integer',
+                'label' => __('Chat ID', 'wp-sms'),
+                'example' => -1001234567890,
+            ],
+            'type' => [
+                'type' => 'string',
+                'label' => __('Type', 'wp-sms'),
+                'example' => 'private',
+            ],
+            'title' => [
+                'type' => 'string',
+                'label' => __('Title', 'wp-sms'),
+                'example' => 'My Group',
+            ],
+        ];
+    }
+
+    /** Extract Telegram user data from a raw update user object. */
+    public static function extractTelegramUser(array $from): array
+    {
+        return [
+            'id'         => $from['id'] ?? 0,
+            'first_name' => $from['first_name'] ?? '',
+            'last_name'  => $from['last_name'] ?? '',
+            'username'   => $from['username'] ?? '',
+        ];
+    }
+
+    /** Extract Telegram chat data from a raw update chat object. */
+    public static function extractTelegramChat(array $chat): array
+    {
+        return [
+            'id'    => $chat['id'] ?? 0,
+            'type'  => $chat['type'] ?? '',
+            'title' => $chat['title'] ?? '',
+        ];
+    }
+
+    /** Detect media type from a Telegram message/post array. Returns empty string if no media. */
+    public static function detectTelegramMediaType(array $message): string
+    {
+        $types = ['photo', 'video', 'audio', 'voice', 'document', 'animation', 'sticker', 'video_note'];
+
+        foreach ($types as $type) {
+            if (!empty($message[$type])) {
+                return $type;
+            }
+        }
+
+        return '';
+    }
+
     /**
      * Extract post payload data from a WP_Post object.
      *

@@ -64,4 +64,19 @@ class WebhookIntegration implements IntegrationInterface
     public function boot(): void
     {
     }
+
+    public function connect(array $credentials): array
+    {
+        return $credentials;
+    }
+
+    public function disconnect(): void
+    {
+    }
+
+    public function isConnected(): bool
+    {
+        $configs = get_option('wsms_integration_configs', []);
+        return !empty($configs[$this->getId()]['credentials']);
+    }
 }

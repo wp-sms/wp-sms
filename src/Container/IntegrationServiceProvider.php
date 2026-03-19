@@ -8,6 +8,7 @@ use WSms\Integration\IntegrationRegistry;
 use WSms\Integration\Webhook\WebhookIntegration;
 use WSms\Integration\WooCommerce\WooCommerceIntegration;
 use WSms\Integration\WordPress\WordPressIntegration;
+use WSms\Integration\Telegram\TelegramIntegration;
 use WSms\Integration\WpSms\WpSmsIntegration;
 
 defined('ABSPATH') || exit;
@@ -49,6 +50,17 @@ class IntegrationServiceProvider implements ServiceProvider
                 $actions->register($action);
             }
             $wpsms->boot();
+
+            // Register TelegramIntegration (needs constructor injection)
+            $telegram = new TelegramIntegration($container->get('telegram.bot_client'));
+            $registry->register($telegram);
+            foreach ($telegram->getTriggers() as $trigger) {
+                $triggers->register($trigger);
+            }
+            foreach ($telegram->getActions() as $action) {
+                $actions->register($action);
+            }
+            $telegram->boot();
 
             foreach ($this->integrations as $integrationClass) {
                 $integration = new $integrationClass();

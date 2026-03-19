@@ -31,11 +31,12 @@ class TelegramControllerTest extends TestCase
                 ],
             ],
         ];
+        $GLOBALS['_test_do_action_calls'] = [];
     }
 
     protected function tearDown(): void
     {
-        unset($GLOBALS['_test_options']);
+        unset($GLOBALS['_test_options'], $GLOBALS['_test_do_action_calls']);
     }
 
     public function testWebhookRejectsInvalidSecret(): void
@@ -182,5 +183,111 @@ class TelegramControllerTest extends TestCase
         $this->assertSame(400, $response->get_status());
         $data = $response->get_data();
         $this->assertSame('invalid_bot_token', $data['error']);
+    }
+
+    public function testWebhookDispatchesMessageAction(): void
+    {
+        $request = new \WP_REST_Request();
+        $request->set_header('X-Telegram-Bot-Api-Secret-Token', 'valid-secret-token');
+        $request->set_body(json_encode([
+            'message' => [
+                'text' => 'Hello!',
+                'chat' => ['id' => 12345],
+                'from' => ['username' => 'testuser'],
+            ],
+        ]));
+
+        $this->controller->handleWebhook($request);
+
+        $hooks = array_column($GLOBALS['_test_do_action_calls'], 'hook');
+        $this->assertContains('wsms_telegram_message', $hooks);
+        $this->assertContains('wsms_telegram_update', $hooks);
+    }
+
+    public function testWebhookDispatchesCallbackQueryAction(): void
+    {
+        $request = new \WP_REST_Request();
+        $request->set_header('X-Telegram-Bot-Api-Secret-Token', 'valid-secret-token');
+        $request->set_body(json_encode([
+            'callback_query' => [
+                'id'   => 'cb1',
+                'from' => ['id' => 99],
+                'data' => 'test',
+                'message' => ['message_id' => 1, 'chat' => ['id' => 123]],
+            ],
+        ]));
+
+        $this->controller->handleWebhook($request);
+
+        $hooks = array_column($GLOBALS['_test_do_action_calls'], 'hook');
+        $this->assertContains('wsms_telegram_callback_query', $hooks);
+    }
+
+    public function testWebhookDispatchesChannelPostAction(): void
+    {
+        $request = new \WP_REST_Request();
+        $request->set_header('X-Telegram-Bot-Api-Secret-Token', 'valid-secret-token');
+        $request->set_body(json_encode([
+            'channel_post' => [
+                'chat' => ['id' => -100123, 'type' => 'channel'],
+                'text' => 'Announcement',
+                'message_id' => 5,
+            ],
+        ]));
+
+        $this->controller->handleWebhook($request);
+
+        $hooks = array_column($GLOBALS['_test_do_action_calls'], 'hook');
+        $this->assertContains('wsms_telegram_channel_post', $hooks);
+    }
+
+    public function testWebhookAcceptsIntegrationConfigSecret(): void
+    {
+        // Only integration config secret, no auth settings secret
+        $GLOBALS['_test_options'] = [
+            'wsms_auth_settings' => [],
+            'wsms_integration_configs' => [
+                'telegram' => [
+                    'credentials' => ['webhook_secret' => 'apps-secret'],
+                ],
+            ],
+        ];
+
+        $request = new \WP_REST_Request();
+        $request->set_header('X-Telegram-Bot-Api-Secret-Token', 'apps-secret');
+        $request->set_body(json_encode([
+            'message' => [
+                'text' => 'Hello!',
+                'chat' => ['id' => 12345],
+                'from' => ['username' => 'testuser'],
+            ],
+        ]));
+
+        $response = $this->controller->handleWebhook($request);
+
+        $this->assertSame(200, $response->get_status());
+    }
+
+    public function testMfaStartReturnsEarlyWithoutDispatch(): void
+    {
+        $token = str_repeat('ab', 16); // 32 hex chars.
+
+        $request = new \WP_REST_Request();
+        $request->set_header('X-Telegram-Bot-Api-Secret-Token', 'valid-secret-token');
+        $request->set_body(json_encode([
+            'message' => [
+                'text' => "/start {$token}",
+                'chat' => ['id' => 99999],
+                'from' => ['username' => 'newuser'],
+            ],
+        ]));
+
+        $this->telegramChannel->method('completeLinking')->willReturn(true);
+
+        $this->controller->handleWebhook($request);
+
+        // MFA start should NOT dispatch wsms_telegram_message
+        $hooks = array_column($GLOBALS['_test_do_action_calls'], 'hook');
+        $this->assertNotContains('wsms_telegram_message', $hooks);
     }
 }

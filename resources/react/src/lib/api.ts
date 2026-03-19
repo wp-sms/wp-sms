@@ -550,6 +550,7 @@ export interface PlatformIntegration {
 export interface IntegrationDetail extends Omit<PlatformIntegration, 'triggers' | 'actions'> {
   triggers: Array<{ id: string; name: string; description: string }>;
   actions: Array<{ id: string; name: string; description: string }>;
+  config?: Record<string, unknown>;
 }
 
 export interface FlowTemplate {

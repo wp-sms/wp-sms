@@ -29,4 +29,13 @@ interface IntegrationInterface
     public function getActions(): array;
 
     public function boot(): void;
+
+    /** Validate credentials and set up external resources (webhooks, etc). Throw \RuntimeException on failure. */
+    public function connect(array $credentials): array;
+
+    /** Clean up on disconnect (delete webhooks, revoke tokens, etc). */
+    public function disconnect(): void;
+
+    /** Whether the integration has valid credentials / is connected. */
+    public function isConnected(): bool;
 }

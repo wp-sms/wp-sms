@@ -19,13 +19,11 @@ class TelegramBotClient
      */
     public function sendMessage(int $chatId, string $text): bool
     {
-        $response = $this->post('sendMessage', [
+        return $this->isOk($this->post('sendMessage', [
             'chat_id'    => $chatId,
             'text'       => $text,
             'parse_mode' => 'HTML',
-        ]);
-
-        return $response !== null && ($response['ok'] ?? false);
+        ]));
     }
 
     /**
@@ -33,12 +31,10 @@ class TelegramBotClient
      */
     public function setWebhook(string $url, string $secretToken): bool
     {
-        $response = $this->post('setWebhook', [
+        return $this->isOk($this->post('setWebhook', [
             'url'          => $url,
             'secret_token' => $secretToken,
-        ]);
-
-        return $response !== null && ($response['ok'] ?? false);
+        ]));
     }
 
     /**
@@ -46,9 +42,7 @@ class TelegramBotClient
      */
     public function deleteWebhook(): bool
     {
-        $response = $this->post('deleteWebhook');
-
-        return $response !== null && ($response['ok'] ?? false);
+        return $this->isOk($this->post('deleteWebhook'));
     }
 
     /**
@@ -56,13 +50,127 @@ class TelegramBotClient
      */
     public function getMe(): ?array
     {
-        $response = $this->post('getMe');
+        return $this->extractResult($this->post('getMe'));
+    }
 
-        if ($response === null || !($response['ok'] ?? false)) {
+    /**
+     * Send a text message with full options (parse mode, reply markup, reply-to).
+     */
+    public function sendMessageAdvanced(int $chatId, string $text, array $options = []): ?array
+    {
+        $body = [
+            'chat_id'    => $chatId,
+            'text'       => $text,
+            'parse_mode' => $options['parse_mode'] ?? 'HTML',
+        ];
+
+        if (!empty($options['reply_to_message_id'])) {
+            $body['reply_to_message_id'] = (int) $options['reply_to_message_id'];
+        }
+
+        if (!empty($options['reply_markup'])) {
+            $body['reply_markup'] = $this->encodeReplyMarkup($options['reply_markup']);
+        }
+
+        return $this->extractResult($this->post('sendMessage', $body));
+    }
+
+    /**
+     * Send a photo by URL with optional caption and reply markup.
+     */
+    public function sendPhoto(int $chatId, string $photoUrl, array $options = []): ?array
+    {
+        $body = [
+            'chat_id' => $chatId,
+            'photo'   => $photoUrl,
+        ];
+
+        if (!empty($options['caption'])) {
+            $body['caption'] = $options['caption'];
+        }
+        if (!empty($options['parse_mode'])) {
+            $body['parse_mode'] = $options['parse_mode'];
+        }
+        if (!empty($options['reply_markup'])) {
+            $body['reply_markup'] = $this->encodeReplyMarkup($options['reply_markup']);
+        }
+
+        return $this->extractResult($this->post('sendPhoto', $body));
+    }
+
+    /**
+     * Send a document by URL with optional caption.
+     */
+    public function sendDocument(int $chatId, string $documentUrl, array $options = []): ?array
+    {
+        $body = [
+            'chat_id'  => $chatId,
+            'document' => $documentUrl,
+        ];
+
+        if (!empty($options['caption'])) {
+            $body['caption'] = $options['caption'];
+        }
+        if (!empty($options['parse_mode'])) {
+            $body['parse_mode'] = $options['parse_mode'];
+        }
+
+        return $this->extractResult($this->post('sendDocument', $body));
+    }
+
+    /**
+     * Edit an existing message's text and/or reply markup.
+     */
+    public function editMessageText(int $chatId, int $messageId, string $text, array $options = []): ?array
+    {
+        $body = [
+            'chat_id'    => $chatId,
+            'message_id' => $messageId,
+            'text'       => $text,
+            'parse_mode' => $options['parse_mode'] ?? 'HTML',
+        ];
+
+        if (!empty($options['reply_markup'])) {
+            $body['reply_markup'] = $this->encodeReplyMarkup($options['reply_markup']);
+        }
+
+        return $this->extractResult($this->post('editMessageText', $body));
+    }
+
+    /**
+     * Answer a callback query (stop button loading spinner).
+     */
+    public function answerCallbackQuery(string $callbackQueryId, ?string $text = null, bool $showAlert = false): bool
+    {
+        $body = [
+            'callback_query_id' => $callbackQueryId,
+            'show_alert'        => $showAlert,
+        ];
+
+        if ($text !== null) {
+            $body['text'] = $text;
+        }
+
+        return $this->isOk($this->post('answerCallbackQuery', $body));
+    }
+
+    private function isOk(?array $response): bool
+    {
+        return $response !== null && ($response['ok'] ?? false);
+    }
+
+    private function extractResult(?array $response): ?array
+    {
+        if (!$this->isOk($response)) {
             return null;
         }
 
         return $response['result'] ?? null;
+    }
+
+    private function encodeReplyMarkup(string|array $markup): string
+    {
+        return is_string($markup) ? $markup : json_encode($markup);
     }
 
     private function post(string $method, array $body = []): ?array

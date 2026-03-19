@@ -44,40 +44,84 @@ class TelegramController
      */
     public function handleWebhook(WP_REST_Request $request): WP_REST_Response
     {
-        $settings = get_option('wsms_auth_settings', []);
-        $expectedSecret = $settings['telegram']['webhook_secret'] ?? '';
-
-        // Validate webhook secret.
+        // Validate webhook secret (check both MFA auth settings and Apps integration config).
         $headerSecret = $request->get_header('X-Telegram-Bot-Api-Secret-Token');
 
-        if (empty($expectedSecret) || !is_string($headerSecret) || !hash_equals($expectedSecret, $headerSecret)) {
+        if (!is_string($headerSecret) || !$this->isValidWebhookSecret($headerSecret)) {
             return new WP_REST_Response(['ok' => false], 403);
         }
 
         $body = $request->get_json_params();
         $message = $body['message'] ?? null;
 
-        if (!$message || empty($message['text'])) {
-            return new WP_REST_Response(['ok' => true]);
-        }
+        // Handle /start TOKEN for deep link MFA enrollment (highest priority).
+        if ($message && !empty($message['text'])) {
+            $text = trim($message['text']);
+            $chatId = (int) ($message['chat']['id'] ?? 0);
+            $username = $message['from']['username'] ?? null;
 
-        $text = trim($message['text']);
-        $chatId = (int) ($message['chat']['id'] ?? 0);
-        $username = $message['from']['username'] ?? null;
+            if (preg_match('/^\/start\s+([a-f0-9]{32})$/', $text, $matches)) {
+                $token = $matches[1];
+                $linked = $this->telegramChannel->completeLinking($token, $chatId, $username);
 
-        // Handle /start TOKEN for deep link enrollment.
-        if (preg_match('/^\/start\s+([a-f0-9]{32})$/', $text, $matches)) {
-            $token = $matches[1];
-            $linked = $this->telegramChannel->completeLinking($token, $chatId, $username);
+                if ($linked) {
+                    $this->messageDispatcher->sendImmediate(
+                        new Message('telegram', (string) $chatId, __('Your Telegram account has been linked for MFA verification.', 'wp-sms'))
+                    );
+                }
 
-            if ($linked) {
-                $this->messageDispatcher->sendImmediate(
-                    new Message('telegram', (string) $chatId, __('Your Telegram account has been linked for MFA verification.', 'wp-sms'))
-                );
+                return new WP_REST_Response(['ok' => true]);
             }
         }
 
+        // Dispatch typed WordPress actions for all update types.
+        $this->dispatchUpdate($body);
+
         return new WP_REST_Response(['ok' => true]);
+    }
+
+    private function isValidWebhookSecret(string $headerSecret): bool
+    {
+        $secrets = [];
+
+        $authSettings = get_option('wsms_auth_settings', []);
+        if (!empty($authSettings['telegram']['webhook_secret'])) {
+            $secrets[] = $authSettings['telegram']['webhook_secret'];
+        }
+
+        $configs = get_option('wsms_integration_configs', []);
+        if (!empty($configs['telegram']['credentials']['webhook_secret'])) {
+            $secrets[] = $configs['telegram']['credentials']['webhook_secret'];
+        }
+
+        foreach ($secrets as $secret) {
+            if (hash_equals($secret, $headerSecret)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function dispatchUpdate(array $body): void
+    {
+        $typeMap = [
+            'message'           => 'wsms_telegram_message',
+            'edited_message'    => 'wsms_telegram_edited_message',
+            'channel_post'      => 'wsms_telegram_channel_post',
+            'callback_query'    => 'wsms_telegram_callback_query',
+            'my_chat_member'    => 'wsms_telegram_chat_member',
+            'chat_member'       => 'wsms_telegram_chat_member',
+            'chat_join_request' => 'wsms_telegram_chat_join_request',
+        ];
+
+        foreach ($typeMap as $key => $action) {
+            if (isset($body[$key])) {
+                do_action($action, $body[$key]);
+            }
+        }
+
+        do_action('wsms_telegram_update', $body);
     }
 
     /**

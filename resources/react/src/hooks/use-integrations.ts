@@ -82,7 +82,10 @@ export function useIntegrationConfig(onSuccess?: () => void): {
   disconnect: (id: string) => Promise<void>;
 } {
   const saveConfig = useCallback(async (id: string, credentials: Record<string, unknown>) => {
-    await api.put(`integrations/${id}/config`, { credentials });
+    const res = await api.put<{ success: boolean; message?: string }>(`integrations/${id}/config`, { credentials });
+    if (res.success === false) {
+      throw new Error(res.message ?? 'Connection failed');
+    }
     onSuccess?.();
   }, [onSuccess]);
 

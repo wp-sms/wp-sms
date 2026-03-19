@@ -67,6 +67,9 @@ class IntegrationRegistryTest extends TestCase
             public function getTriggers(): array { return []; }
             public function getActions(): array { return []; }
             public function boot(): void {}
+            public function connect(array $credentials): array { return $credentials; }
+            public function disconnect(): void {}
+            public function isConnected(): bool { return $this->available; }
         };
     }
 }

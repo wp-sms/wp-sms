@@ -6,6 +6,7 @@ import {
   Shield,
   Webhook,
   MessageSquare,
+  Send,
   Puzzle,
   type LucideIcon,
 } from 'lucide-react';
@@ -29,6 +30,7 @@ const ICON_MAP: Record<string, IconConfig> = {
   'webhook':        { icon: Webhook,      color: 'text-amber-600',  bg: 'bg-amber-50' },
   'message-square': { icon: MessageSquare, color: 'text-indigo-600', bg: 'bg-indigo-50' },
   'file-text':      { icon: FileText,      color: 'text-orange-600', bg: 'bg-orange-50' },
+  'send':           { icon: Send,          color: 'text-sky-600',    bg: 'bg-sky-50' },
 };
 
 const FALLBACK: IconConfig = { icon: Puzzle, color: 'text-muted-foreground', bg: 'bg-muted' };
