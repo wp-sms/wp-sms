@@ -220,4 +220,198 @@ class FlowExecutorTest extends TestCase
         $this->assertSame('a@b.com', $receivedConfig['to']);
         $this->assertSame('Hello Alice!', $receivedConfig['body']);
     }
+
+    public function testActionStepLogsResolvedConfig(): void
+    {
+        $loggedInputs = [];
+
+        $flowLogger = $this->createMock(FlowLogger::class);
+        $flowLogger->method('logStepStart')->willReturnCallback(
+            function ($execId, $nodeId, $type, $input) use (&$loggedInputs) {
+                $loggedInputs[] = $input;
+            }
+        );
+
+        $executor = $this->createExecutorWithLogger($flowLogger);
+
+        $this->actionRegistry->register(new class implements ActionInterface {
+            public function getId(): string { return 'log_test'; }
+            public function getName(): string { return 'LogTest'; }
+            public function getDescription(): string { return ''; }
+            public function getGroup(): string { return 'Test'; }
+            public function getConfigSchema(): array { return []; }
+            public function getConfigOptions(string $fieldKey, array $context = []): array { return []; }
+            public function getPlaceholders(string $triggerType): array { return []; }
+            public function execute(array $payload, array $config): ActionResult {
+                return ActionResult::success();
+            }
+        });
+
+        $executor->executeNode([
+            'id'     => 'step_1',
+            'type'   => 'action',
+            'action' => 'log_test',
+            'config' => ['to' => '+1234567890', 'body' => 'Hello'],
+        ], [], 'exec-1');
+
+        $this->assertArrayHasKey('resolved_config', $loggedInputs[0]);
+        $this->assertSame('+1234567890', $loggedInputs[0]['resolved_config']['to']);
+        $this->assertSame('Hello', $loggedInputs[0]['resolved_config']['body']);
+    }
+
+    public function testRedactSensitiveKeys(): void
+    {
+        $loggedInputs = [];
+
+        $flowLogger = $this->createMock(FlowLogger::class);
+        $flowLogger->method('logStepStart')->willReturnCallback(
+            function ($execId, $nodeId, $type, $input) use (&$loggedInputs) {
+                $loggedInputs[] = $input;
+            }
+        );
+
+        $executor = $this->createExecutorWithLogger($flowLogger);
+
+        $this->actionRegistry->register(new class implements ActionInterface {
+            public function getId(): string { return 'redact_test'; }
+            public function getName(): string { return 'RedactTest'; }
+            public function getDescription(): string { return ''; }
+            public function getGroup(): string { return 'Test'; }
+            public function getConfigSchema(): array { return []; }
+            public function getConfigOptions(string $fieldKey, array $context = []): array { return []; }
+            public function getPlaceholders(string $triggerType): array { return []; }
+            public function execute(array $payload, array $config): ActionResult {
+                return ActionResult::success();
+            }
+        });
+
+        $executor->executeNode([
+            'id'     => 'step_1',
+            'type'   => 'action',
+            'action' => 'redact_test',
+            'config' => [
+                'url'     => 'https://example.com',
+                'headers' => [
+                    'Authorization' => 'Bearer secret-token',
+                    'Content-Type'  => 'application/json',
+                ],
+                'api_key' => 'my-key-123',
+                'body'    => 'safe content',
+            ],
+        ], [], 'exec-1');
+
+        $config = $loggedInputs[0]['resolved_config'];
+        $this->assertSame('https://example.com', $config['url']);
+        $this->assertSame('***REDACTED***', $config['headers']['Authorization']);
+        $this->assertSame('application/json', $config['headers']['Content-Type']);
+        $this->assertSame('***REDACTED***', $config['api_key']);
+        $this->assertSame('safe content', $config['body']);
+    }
+
+    public function testConditionStepLogsEvaluatedVariables(): void
+    {
+        $loggedInputs = [];
+
+        $flowLogger = $this->createMock(FlowLogger::class);
+        $flowLogger->method('logStepStart')->willReturnCallback(
+            function ($execId, $nodeId, $type, $input) use (&$loggedInputs) {
+                $loggedInputs[] = $input;
+            }
+        );
+
+        $executor = $this->createExecutorWithLogger($flowLogger);
+
+        $executor->executeNode([
+            'id'         => 'cond_1',
+            'type'       => 'condition',
+            'expression' => 'true',
+            'rules'      => [
+                ['field' => 'user.role', 'operator' => 'equals', 'value' => 'admin'],
+            ],
+            'then'       => [],
+            'else'       => [],
+        ], ['user' => ['role' => 'subscriber', 'email' => 'a@b.com']], 'exec-1');
+
+        $this->assertArrayHasKey('variables', $loggedInputs[0]);
+        $this->assertSame('subscriber', $loggedInputs[0]['variables']['user.role']);
+    }
+
+    public function testConditionLogsResultWithBranch(): void
+    {
+        $loggedOutputs = [];
+
+        $flowLogger = $this->createMock(FlowLogger::class);
+        $flowLogger->method('logStepComplete')->willReturnCallback(
+            function ($execId, $nodeId, $type, $output) use (&$loggedOutputs) {
+                $loggedOutputs[] = $output;
+            }
+        );
+
+        $executor = $this->createExecutorWithLogger($flowLogger);
+
+        $executor->executeNode([
+            'id'         => 'cond_1',
+            'type'       => 'condition',
+            'expression' => 'false',
+            'then'       => [],
+            'else'       => [],
+        ], [], 'exec-1');
+
+        $this->assertFalse($loggedOutputs[0]['result']);
+        $this->assertSame('else', $loggedOutputs[0]['branch']);
+    }
+
+    public function testResolveFieldValueHandlesMissingPaths(): void
+    {
+        $loggedInputs = [];
+
+        $flowLogger = $this->createMock(FlowLogger::class);
+        $flowLogger->method('logStepStart')->willReturnCallback(
+            function ($execId, $nodeId, $type, $input) use (&$loggedInputs) {
+                $loggedInputs[] = $input;
+            }
+        );
+
+        $executor = $this->createExecutorWithLogger($flowLogger);
+
+        $executor->executeNode([
+            'id'         => 'cond_1',
+            'type'       => 'condition',
+            'expression' => 'true',
+            'rules'      => [
+                ['field' => 'user.nonexistent.deep', 'operator' => 'equals', 'value' => 'x'],
+            ],
+            'then'       => [],
+            'else'       => [],
+        ], ['user' => ['role' => 'admin']], 'exec-1');
+
+        $this->assertNull($loggedInputs[0]['variables']['user.nonexistent.deep']);
+    }
+
+    private function createExecutorWithLogger(FlowLogger $flowLogger): FlowExecutor
+    {
+        $queue = new class implements QueueInterface {
+            public function dispatch(JobInterface $job): string { return 'job-id'; }
+            public function schedule(JobInterface $job, \DateTimeInterface $runAt): string { return 'scheduled-job-id'; }
+            public function cancel(string $jobId): bool { return true; }
+        };
+
+        $conditionEvaluator = new class implements ConditionEvaluatorInterface {
+            public function evaluate(string $expression, array $payload): bool {
+                return (bool) eval("return {$expression};");
+            }
+            public function validate(string $expression): bool { return true; }
+        };
+
+        return new FlowExecutor(
+            $queue,
+            $conditionEvaluator,
+            $this->createMock(FlowExecutionRepository::class),
+            new PayloadResolver(new MustacheEngine()),
+            new EventDispatcher(),
+            $this->actionRegistry,
+            $flowLogger,
+            new WpLogger(),
+        );
+    }
 }

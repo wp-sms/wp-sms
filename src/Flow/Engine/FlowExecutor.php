@@ -68,7 +68,10 @@ class FlowExecutor
         $actionId = $node['action'];
         $config = $this->payloadResolver->resolveConfig($node['config'] ?? [], $payload);
 
-        $this->flowLogger->logStepStart($executionId, $nodeId, 'action', ['action' => $actionId]);
+        $this->flowLogger->logStepStart($executionId, $nodeId, 'action', [
+            'action'          => $actionId,
+            'resolved_config' => $this->redactSensitive($config),
+        ]);
 
         $action = $this->actionRegistry->get($actionId);
         if (!$action) {
@@ -117,12 +120,29 @@ class FlowExecutor
     {
         $nodeId = $node['id'];
         $expression = $node['expression'];
+        $rules = $node['rules'] ?? [];
 
-        $this->flowLogger->logStepStart($executionId, $nodeId, 'condition', ['expression' => $expression]);
+        $evaluatedVars = [];
+        foreach ($rules as $rule) {
+            $field = $rule['field'] ?? '';
+            if ($field) {
+                $evaluatedVars[$field] = $this->resolveFieldValue($field, $payload);
+            }
+        }
+
+        $input = ['expression' => $expression];
+        if (!empty($evaluatedVars)) {
+            $input['variables'] = $evaluatedVars;
+        }
+
+        $this->flowLogger->logStepStart($executionId, $nodeId, 'condition', $input);
 
         $result = $this->conditionEvaluator->evaluate($expression, $payload);
 
-        $this->flowLogger->logStepComplete($executionId, $nodeId, 'condition', ['result' => $result]);
+        $this->flowLogger->logStepComplete($executionId, $nodeId, 'condition', [
+            'result' => $result,
+            'branch' => $result ? 'then' : 'else',
+        ]);
 
         $branch = $result ? ($node['then'] ?? []) : ($node['else'] ?? []);
 
@@ -215,6 +235,34 @@ class FlowExecutor
         foreach ($node['steps'] ?? [] as $step) {
             $this->executeNode($step, $payload, $executionId);
         }
+    }
+
+    private function redactSensitive(array $config): array
+    {
+        $sensitiveKeys = ['authorization', 'x-api-key', 'api_key', 'api_secret', 'secret', 'token', 'password', 'auth_token'];
+        $result = [];
+        foreach ($config as $key => $value) {
+            if (is_array($value)) {
+                $result[$key] = $this->redactSensitive($value);
+            } elseif (is_string($key) && in_array(strtolower($key), $sensitiveKeys, true)) {
+                $result[$key] = '***REDACTED***';
+            } else {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
+    }
+
+    private function resolveFieldValue(string $dotPath, array $payload): mixed
+    {
+        $current = $payload;
+        foreach (explode('.', $dotPath) as $part) {
+            if (!is_array($current) || !array_key_exists($part, $current)) {
+                return null;
+            }
+            $current = $current[$part];
+        }
+        return $current;
     }
 
     private function expandEntities(array $payload): array

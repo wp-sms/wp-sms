@@ -127,6 +127,17 @@ class FlowExecutionRepository
         ) ?: [];
     }
 
+    public function countByFlow(string $flowId): int
+    {
+        global $wpdb;
+        $table = $wpdb->prefix . 'wsms_flow_executions';
+
+        return (int) $wpdb->get_var($wpdb->prepare(
+            "SELECT COUNT(*) FROM {$table} WHERE flow_id = %s",
+            $flowId,
+        ));
+    }
+
     public function cleanupExpiredWaits(): int
     {
         global $wpdb;

@@ -109,6 +109,14 @@ class FlowController
                 ],
             ],
         ]);
+
+        register_rest_route(self::NAMESPACE, '/flows/(?P<id>[A-Za-z0-9]+)/executions/(?P<execution_id>[A-Za-z0-9]+)', [
+            [
+                'methods'             => 'GET',
+                'callback'            => [$this, 'executionDetail'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
     }
 
     public function canManage(): bool
@@ -298,16 +306,49 @@ class FlowController
 
     public function executions(\WP_REST_Request $request): \WP_REST_Response
     {
+        $flowId = $request->get_param('id');
         $executions = $this->executionRepository->findByFlow(
-            $request->get_param('id'),
+            $flowId,
             (int) $request->get_param('per_page'),
             (int) $request->get_param('offset'),
         );
 
         return new \WP_REST_Response([
-            'items' => $executions,
-            'total' => count($executions),
+            'items' => array_map([$this, 'formatExecution'], $executions),
+            'total' => $this->executionRepository->countByFlow($flowId),
         ]);
+    }
+
+    public function executionDetail(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $execution = $this->executionRepository->find($request->get_param('execution_id'));
+
+        if (!$execution || $execution['flow_id'] !== $request->get_param('id')) {
+            return new \WP_REST_Response([
+                'success' => false,
+                'error'   => 'not_found',
+                'message' => __('Execution not found', 'wp-sms'),
+            ], 404);
+        }
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'data'    => $this->formatExecution($execution),
+        ]);
+    }
+
+    private function formatExecution(array $row): array
+    {
+        return [
+            'id'           => $row['id'],
+            'flow_id'      => $row['flow_id'],
+            'status'       => $row['status'],
+            'trigger_data' => json_decode($row['trigger_data'] ?? '{}', true),
+            'step_logs'    => json_decode($row['step_logs'] ?? '[]', true),
+            'error'        => $row['error'] ?? null,
+            'started_at'   => $row['started_at'],
+            'completed_at' => $row['completed_at'] ?? null,
+        ];
     }
 
     private function extractExamplesFromSchema(array $schema): array

@@ -652,6 +652,8 @@ export interface StepLog {
   input?: Record<string, unknown>;
   output?: Record<string, unknown>;
   error?: string;
+  attempt?: number;
+  max_attempts?: number;
   at: string;
 }
 
@@ -659,7 +661,7 @@ export interface FlowExecution {
   id: string;
   flow_id: string;
   trigger_data: Record<string, unknown>;
-  status: 'pending' | 'running' | 'completed' | 'failed' | 'waiting';
+  status: 'pending' | 'running' | 'completed' | 'failed' | 'waiting' | 'cancelled';
   step_logs: StepLog[];
   error: string | null;
   started_at: string;
