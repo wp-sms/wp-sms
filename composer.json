@@ -23,7 +23,7 @@
   "require-dev": {
     "veronalabs/wp-scoper": "^1.2.4",
     "fakerphp/faker": "^1.23",
-    "phpunit/phpunit": "^9.6",
+    "phpunit/phpunit": "^10.5",
     "phpstan/phpstan": "*",
     "phpstan/extension-installer": "*",
     "szepeviktor/phpstan-wordpress": "*",

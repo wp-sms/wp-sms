@@ -3,7 +3,7 @@ parameters:
 		-
 			message: '#^Match expression does not handle remaining value\: string$#'
 			identifier: match.unhandled
-			count: 1
+			count: 2
 			path: src/Auth/AccountManager.php
 
 		-
@@ -437,18 +437,6 @@ parameters:
 			identifier: class.notFound
 			count: 1
 			path: src/Queue/JobProcessor.php
-
-		-
-			message: '#^Cannot access property \$success on array\<string, bool\|string\>\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Rest/AccountController.php
-
-		-
-			message: '#^Cannot call method toArray\(\) on array\<string, bool\|string\>\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: src/Rest/AccountController.php
 
 		-
 			message: '#^PHPDoc tag @var with type WSms\\Messaging\\Contracts\\SupportsInboundMessage is not subtype of native type WSms\\Messaging\\Contracts\\GatewayInterface\|null\.$#'

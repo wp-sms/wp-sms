@@ -17,7 +17,7 @@ export default defineConfig({
         outDir: resolve(__dirname, 'public/app'),
         emptyOutDir: true,
         manifest: true,
-        rollupOptions: {
+        rolldownOptions: {
             input: resolve(__dirname, 'resources/react/src/main.tsx'),
         },
     },

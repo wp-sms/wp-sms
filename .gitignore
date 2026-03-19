@@ -4,6 +4,7 @@ node_modules
 /packages
 .DS_Store
 .phpunit.result.cache
+.phpunit.cache
 /public/
 CLAUDE.md
 SPEC.md
