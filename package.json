@@ -21,7 +21,9 @@
     "build:pot": "wp i18n make-pot . public/languages/wp-sms.pot --slug=wp-sms --domain=wp-sms",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:e2e": "vitest run --config tests/e2e/vitest.config.e2e.ts"
+    "test:e2e": "vitest run --config tests/e2e/vitest.config.e2e.ts",
+    "lint": "eslint resources/",
+    "lint:fix": "eslint resources/ --fix"
   },
   "dependencies": {
     "@preact/signals": "^2.8.2",
@@ -43,6 +45,7 @@
     "vaul": "^1.1.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@preact/preset-vite": "^2.10.3",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -53,11 +56,16 @@
     "@vitejs/plugin-react": "^4.4.0",
     "@wordpress/scripts": "^30.0.0",
     "concurrently": "^9.1.0",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "globals": "^17.4.0",
     "jsdom": "^28.1.0",
     "msw": "^2.12.10",
     "otpauth": "^9.5.0",
     "sass": "^1.83.0",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.1",
     "vite": "^6.2.0",
     "vitest": "^4.0.18"
   }
