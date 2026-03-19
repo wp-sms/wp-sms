@@ -509,6 +509,16 @@ class ContactController
                 'created_at'  => $contact['created_at'],
             ];
 
+            if ($contact['status'] === 'unsubscribed' && !empty($contact['opted_out_at'])) {
+                $activities[] = [
+                    'id'          => 'opted-out-' . $contact['id'],
+                    'type'        => 'contact_opted_out',
+                    'description' => 'Unsubscribed',
+                    'meta'        => [],
+                    'created_at'  => $contact['opted_out_at'],
+                ];
+            }
+
             if (($contact['updated_at'] ?? '') !== ($contact['created_at'] ?? '')) {
                 $activities[] = [
                     'id'          => 'updated-' . $contact['id'],

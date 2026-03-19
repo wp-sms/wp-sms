@@ -19,6 +19,7 @@ use WSms\Rest\SocialAuthController;
 use WSms\Rest\TelegramController;
 use WSms\Rest\GatewayCallbackController;
 use WSms\Rest\ListController;
+use WSms\Rest\OptOutSettingsController;
 use WSms\Rest\TagController;
 use WSms\Rest\WebhookReceiverController;
 
@@ -153,7 +154,9 @@ class RestServiceProvider implements ServiceProvider
             $c->get('log.message'),
             $c->get('auth.rate_limiter'),
             $c->get('campaign.repository'),
+            $c->get('messaging.optout_manager'),
         ));
+        $container->register('rest.optout_settings', fn() => new OptOutSettingsController());
         $container->register('rest.webhook_receiver', fn($c) => new WebhookReceiverController(
             $c->get('auth.rate_limiter'),
         ));
@@ -181,6 +184,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.campaigns')->registerRoutes();
             $container->get('rest.integrations')->registerRoutes();
             $container->get('rest.gateway_callbacks')->registerRoutes();
+            $container->get('rest.optout_settings')->registerRoutes();
             $container->get('rest.webhook_receiver')->registerRoutes();
         });
     }

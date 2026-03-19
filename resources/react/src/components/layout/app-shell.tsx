@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks } from 'lucide-react';
+import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks, Settings2 } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import {
   Sidebar,
@@ -87,6 +87,14 @@ export const NAV_ITEMS = [
     icon: ScrollText,
   },
   {
+    id: 'settings',
+    label: 'Settings',
+    icon: Settings2,
+    children: [
+      { id: 'opt-out', label: 'Opt-Out' },
+    ],
+  },
+  {
     id: 'authentication',
     label: 'Authentication',
     icon: LogIn,
@@ -139,6 +147,7 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   'gateways': 'Configure messaging gateways for SMS, email, webhooks, and more.',
   'apps': 'Browse available apps and their triggers and actions for automation flows.',
   'message-logs': 'View sent messages, delivery status, and error details.',
+  'opt-out': 'Configure STOP/START keyword handling, auto-replies, and unsubscribe settings.',
   'channels': 'Configure authentication channels — Phone, Email, and Password.',
   'registration': 'Configure how new users register through the authentication pages.',
   'profile-fields': 'Manage which fields appear on registration and profile forms.',

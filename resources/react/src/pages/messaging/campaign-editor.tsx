@@ -896,13 +896,20 @@ function MessageStep({
                 Append opt-out instructions
               </label>
               {compliance.append_opt_out && (
-                <Input
-                  value={compliance.opt_out_text ?? 'Reply STOP to unsubscribe'}
-                  onChange={(e) =>
-                    updateDraft('compliance', { ...compliance, opt_out_text: e.target.value })
-                  }
-                  placeholder="Reply STOP to unsubscribe"
-                />
+                <>
+                  <Input
+                    value={compliance.opt_out_text ?? 'Reply STOP to unsubscribe'}
+                    onChange={(e) =>
+                      updateDraft('compliance', { ...compliance, opt_out_text: e.target.value })
+                    }
+                    placeholder="Reply STOP to unsubscribe"
+                  />
+                  {selectedGateway && !selectedGateway.features.incoming && (
+                    <p className="text-xs text-amber-600">
+                      This gateway does not support inbound SMS. Recipients won&apos;t be able to reply STOP to unsubscribe automatically.
+                    </p>
+                  )}
+                </>
               )}
             </div>
           )}

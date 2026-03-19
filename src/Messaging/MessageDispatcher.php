@@ -9,7 +9,9 @@ use WSms\Log\Contracts\MessageLoggerInterface;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\GatewayInterface;
 use WSms\Messaging\Contracts\MessageInterface;
+use WSms\Messaging\Contracts\SupportsOptOutDetection;
 use WSms\Messaging\Gateway\GatewayRegistry;
+use WSms\Messaging\Inbound\OptOutManager;
 use WSms\Queue\Contracts\QueueInterface;
 use WSms\Queue\Job\SendMessageJob;
 
@@ -17,12 +19,21 @@ defined('ABSPATH') || exit;
 
 class MessageDispatcher
 {
+    /** @var (\Closure(): OptOutManager)|null */
+    private ?\Closure $optOutManagerResolver = null;
+
     public function __construct(
         private readonly GatewayRegistry $gatewayRegistry,
         private readonly MessageLoggerInterface $messageLogger,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly QueueInterface $queue,
     ) {
+    }
+
+    /** @param \Closure(): OptOutManager $resolver */
+    public function setOptOutManagerResolver(\Closure $resolver): void
+    {
+        $this->optOutManagerResolver = $resolver;
     }
 
     /**
@@ -78,6 +89,14 @@ class MessageDispatcher
                 error: $result->error ?? __('Unknown error', 'wp-sms'),
                 executionId: $message->getFlowExecutionId(),
             ));
+
+            // Detect gateway-level opt-out from send errors (e.g., Twilio 21610)
+            if ($this->optOutManagerResolver !== null
+                && $gateway instanceof SupportsOptOutDetection
+                && $gateway->isOptOutError($result)
+            ) {
+                ($this->optOutManagerResolver)()->processGatewayOptOut($message->getRecipient(), $gateway->getId());
+            }
         }
 
         return $result;

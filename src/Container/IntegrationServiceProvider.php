@@ -37,8 +37,12 @@ class IntegrationServiceProvider implements ServiceProvider
             $wpsms = new WpSmsIntegration(
                 $container->get('message.dispatcher'),
                 $container->get('gateway.registry'),
+                $container->get('event.dispatcher'),
             );
             $registry->register($wpsms);
+            foreach ($wpsms->getTriggers() as $trigger) {
+                $triggers->register($trigger);
+            }
             foreach ($wpsms->getActions() as $action) {
                 $actions->register($action);
             }

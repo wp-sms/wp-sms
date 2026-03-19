@@ -206,6 +206,7 @@ class Migrator
             last_name       VARCHAR(100),
             wp_user_id      BIGINT,
             status          VARCHAR(20) DEFAULT 'subscribed',
+            opted_out_at    DATETIME,
             custom_fields   JSON,
             source          VARCHAR(50),
             created_at      DATETIME DEFAULT CURRENT_TIMESTAMP,

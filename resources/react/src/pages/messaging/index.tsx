@@ -4,6 +4,7 @@ import { Gateways } from './gateways';
 import { Apps } from './apps';
 import { MessageLogs } from './message-logs';
 import { Campaigns } from './campaigns';
+import { OptOutSettings } from './opt-out-settings';
 
 interface MessagingPageProps {
   section: string;
@@ -23,6 +24,8 @@ export function MessagingPage({ section, subTab, onNavigate }: MessagingPageProp
       return <Apps />;
     case 'message-logs':
       return <MessageLogs />;
+    case 'opt-out':
+      return <OptOutSettings />;
     default:
       return <Flows />;
   }

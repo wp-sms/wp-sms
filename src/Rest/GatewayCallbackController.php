@@ -5,8 +5,10 @@ namespace WSms\Rest;
 use WSms\Auth\RateLimiter;
 use WSms\Campaign\CampaignRepository;
 use WSms\Log\Contracts\MessageLoggerInterface;
+use WSms\Messaging\Contracts\SupportsInboundMessage;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
 use WSms\Messaging\Gateway\GatewayRegistry;
+use WSms\Messaging\Inbound\OptOutManager;
 
 defined('ABSPATH') || exit;
 
@@ -21,6 +23,7 @@ class GatewayCallbackController
         private readonly MessageLoggerInterface $messageLogger,
         private readonly RateLimiter $rateLimiter,
         private readonly ?CampaignRepository $campaignRepository = null,
+        private readonly ?OptOutManager $optOutManager = null,
     ) {
     }
 
@@ -31,6 +34,14 @@ class GatewayCallbackController
                 'methods'             => ['POST', 'GET'],
                 'callback'            => [$this, 'handleStatusCallback'],
                 'permission_callback' => [$this, 'checkPermission'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/callbacks/(?P<gateway_id>[a-z_]+)/inbound', [
+            [
+                'methods'             => ['POST', 'GET'],
+                'callback'            => [$this, 'handleInboundCallback'],
+                'permission_callback' => [$this, 'checkInboundPermission'],
             ],
         ]);
     }
@@ -85,6 +96,51 @@ class GatewayCallbackController
                     $this->campaignRepository->incrementCounters($logEntry['campaign_id'], 'failed_count');
                 }
             }
+        }
+
+        return new \WP_REST_Response(['success' => true]);
+    }
+
+    public function checkInboundPermission(\WP_REST_Request $request): bool
+    {
+        $gatewayId = $request->get_param('gateway_id');
+        $gateway = $this->gatewayRegistry->get($gatewayId);
+
+        if (!$gateway) {
+            return false;
+        }
+
+        if (!$gateway instanceof SupportsInboundMessage) {
+            return false;
+        }
+
+        return $gateway->validateInboundCallback($request);
+    }
+
+    public function handleInboundCallback(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $gatewayId = $request->get_param('gateway_id');
+
+        $rateCheck = $this->rateLimiter->check('gateway_inbound_' . $gatewayId, self::RATE_LIMIT, self::RATE_WINDOW);
+        if (!$rateCheck['allowed']) {
+            return new \WP_REST_Response([
+                'success'     => false,
+                'error'       => 'rate_limited',
+                'retry_after' => $rateCheck['retry_after'],
+            ], 429);
+        }
+
+        if ($this->optOutManager === null) {
+            return new \WP_REST_Response(['success' => false, 'error' => 'not_configured'], 500);
+        }
+
+        $gateway = $this->gatewayRegistry->get($gatewayId);
+
+        /** @var SupportsInboundMessage $gateway */
+        $messages = $gateway->parseInboundCallback($request);
+
+        foreach ($messages as $message) {
+            $this->optOutManager->processInboundMessage($message, $gatewayId);
         }
 
         return new \WP_REST_Response(['success' => true]);

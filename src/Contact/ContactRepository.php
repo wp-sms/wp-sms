@@ -39,7 +39,7 @@ class ContactRepository implements ContactRepositoryInterface
 
         $update = ['updated_at' => current_time('mysql')];
 
-        foreach (['email', 'phone', 'first_name', 'last_name', 'wp_user_id', 'status', 'source'] as $field) {
+        foreach (['email', 'phone', 'first_name', 'last_name', 'wp_user_id', 'status', 'source', 'opted_out_at'] as $field) {
             if (array_key_exists($field, $data)) {
                 if ($field === 'email' && $data[$field] !== null) {
                     $update[$field] = strtolower($data[$field]);
@@ -87,6 +87,18 @@ class ContactRepository implements ContactRepositoryInterface
             ARRAY_A,
         );
         return $row ? self::decodeRow($row) : null;
+    }
+
+    public function findAllByPhone(string $phone): array
+    {
+        global $wpdb;
+        $normalized = self::normalizePhone($phone);
+        $rows = $wpdb->get_results(
+            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wsms_contacts WHERE phone = %s", $normalized),
+            ARRAY_A,
+        ) ?: [];
+
+        return array_map([self::class, 'decodeRow'], $rows);
     }
 
     public function findByWpUser(int $userId): ?array

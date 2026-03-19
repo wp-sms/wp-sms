@@ -3,15 +3,18 @@
 namespace WSms\Messaging\Gateway\Provider;
 
 use WSms\Messaging\Contracts\DeliveryResult;
+use WSms\Messaging\Contracts\InboundMessage;
 use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Contracts\StatusUpdate;
+use WSms\Messaging\Contracts\SupportsInboundMessage;
+use WSms\Messaging\Contracts\SupportsOptOutDetection;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
 use WSms\Messaging\Gateway\AbstractProvider;
 use WSms\Messaging\Contracts\TestConnectionResult;
 
 defined('ABSPATH') || exit;
 
-class TwilioProvider extends AbstractProvider implements SupportsStatusCallback
+class TwilioProvider extends AbstractProvider implements SupportsStatusCallback, SupportsInboundMessage, SupportsOptOutDetection
 {
     private const API_BASE = 'https://api.twilio.com/2010-04-01';
 
@@ -191,29 +194,7 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback
 
     public function validateStatusCallback(\WP_REST_Request $request): bool
     {
-        $authToken = $this->getSharedConfig('auth_token');
-        if (!$authToken) {
-            return false;
-        }
-
-        $signature = $request->get_header('x-twilio-signature');
-        if (empty($signature)) {
-            return false;
-        }
-
-        $url = $this->getStatusCallbackUrl();
-        $params = $request->get_params();
-        unset($params['gateway_id']);
-
-        ksort($params);
-        $data = $url;
-        foreach ($params as $key => $value) {
-            $data .= $key . $value;
-        }
-
-        $expected = base64_encode(hash_hmac('sha1', $data, $authToken, true));
-
-        return hash_equals($expected, $signature);
+        return $this->verifyTwilioSignature($request, $this->getStatusCallbackUrl());
     }
 
     /** @return StatusUpdate[] */
@@ -317,5 +298,79 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback
             sprintf(__('Connected — Balance: %s %s', 'wp-sms'), $balance, $currency),
             ['balance' => $balance, 'currency' => $currency],
         );
+    }
+
+    // --- SupportsInboundMessage ---
+
+    public function validateInboundCallback(\WP_REST_Request $request): bool
+    {
+        return $this->verifyTwilioSignature($request, $this->getInboundCallbackUrl());
+    }
+
+    /** @return InboundMessage[] */
+    public function parseInboundCallback(\WP_REST_Request $request): array
+    {
+        $from = $request->get_param('From');
+        $to = $request->get_param('To');
+        $body = $request->get_param('Body') ?? '';
+        $messageSid = $request->get_param('MessageSid');
+        $optOutType = $request->get_param('OptOutType');
+
+        if (empty($from)) {
+            return [];
+        }
+
+        return [new InboundMessage(
+            from: $from,
+            to: $to ?? '',
+            body: $body,
+            providerId: $messageSid,
+            optOutType: $optOutType,
+            meta: array_filter([
+                'num_media' => $request->get_param('NumMedia'),
+                'account_sid' => $request->get_param('AccountSid'),
+            ]),
+        )];
+    }
+
+    public function getInboundCallbackUrl(): string
+    {
+        return rest_url('wsms/v1/callbacks/twilio/inbound');
+    }
+
+    // --- SupportsOptOutDetection ---
+
+    public function isOptOutError(DeliveryResult $result): bool
+    {
+        // Twilio error 21610: "Attempt to send to unsubscribed recipient"
+        return ($result->meta['twilio_code'] ?? null) == 21610;
+    }
+
+    // --- Internal ---
+
+    private function verifyTwilioSignature(\WP_REST_Request $request, string $callbackUrl): bool
+    {
+        $authToken = $this->getSharedConfig('auth_token');
+        if (!$authToken) {
+            return false;
+        }
+
+        $signature = $request->get_header('x-twilio-signature');
+        if (empty($signature)) {
+            return false;
+        }
+
+        $params = $request->get_params();
+        unset($params['gateway_id']);
+
+        ksort($params);
+        $data = $callbackUrl;
+        foreach ($params as $key => $value) {
+            $data .= $key . $value;
+        }
+
+        $expected = base64_encode(hash_hmac('sha1', $data, $authToken, true));
+
+        return hash_equals($expected, $signature);
     }
 }

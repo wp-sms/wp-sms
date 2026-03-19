@@ -2,9 +2,12 @@
 
 namespace WSms\Integration\WpSms;
 
+use WSms\Event\Contracts\EventDispatcherInterface;
 use WSms\Flow\Action\HttpRequestAction;
 use WSms\Flow\Action\SendMessageAction;
 use WSms\Integration\Contracts\IntegrationInterface;
+use WSms\Integration\WpSms\Triggers\ContactOptedOutTrigger;
+use WSms\Integration\WpSms\Triggers\InboundSmsReceivedTrigger;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\MessageDispatcher;
 
@@ -15,6 +18,7 @@ class WpSmsIntegration implements IntegrationInterface
     public function __construct(
         private readonly MessageDispatcher $messageDispatcher,
         private readonly GatewayRegistry $gatewayRegistry,
+        private readonly EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -60,7 +64,10 @@ class WpSmsIntegration implements IntegrationInterface
 
     public function getTriggers(): array
     {
-        return [];
+        return [
+            new ContactOptedOutTrigger($this->eventDispatcher),
+            new InboundSmsReceivedTrigger($this->eventDispatcher),
+        ];
     }
 
     public function getActions(): array

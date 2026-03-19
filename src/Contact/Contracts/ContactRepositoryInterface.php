@@ -16,6 +16,9 @@ interface ContactRepositoryInterface
 
     public function findByPhone(string $phone): ?array;
 
+    /** @return array[] All contacts matching the phone number */
+    public function findAllByPhone(string $phone): array;
+
     public function findByWpUser(int $userId): ?array;
 
     public function findAll(array $filters = [], int $limit = 50, int $offset = 0): array;

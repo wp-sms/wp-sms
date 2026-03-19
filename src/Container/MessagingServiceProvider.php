@@ -12,6 +12,8 @@ use WSms\Messaging\Gateway\Provider\VonageProvider;
 use WSms\Messaging\Gateway\Telegram\TelegramGateway;
 use WSms\Messaging\Gateway\TestGateway;
 use WSms\Messaging\Gateway\Webhook\HttpWebhookGateway;
+use WSms\Messaging\Inbound\KeywordMatcher;
+use WSms\Messaging\Inbound\OptOutManager;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Template\MustacheEngine;
 
@@ -45,10 +47,30 @@ class MessagingServiceProvider implements ServiceProvider
             $c->get('event.dispatcher'),
             $c->get('queue'),
         ));
+
+        $container->register('messaging.keyword_matcher', function () {
+            $settings = get_option('wsms_optout_settings', []);
+            return new KeywordMatcher(
+                $settings['custom_stop_keywords'] ?? [],
+                $settings['custom_start_keywords'] ?? [],
+            );
+        });
+
+        $container->register('messaging.optout_manager', fn($c) => new OptOutManager(
+            $c->get('contact.repository'),
+            $c->get('event.dispatcher'),
+            $c->get('message.dispatcher'),
+            $c->get('messaging.keyword_matcher'),
+        ));
     }
 
     public function boot(ServiceContainer $container): void
     {
+        // Lazy wire: OptOutManager is only resolved if a send failure looks like an opt-out
+        $container->get('message.dispatcher')->setOptOutManagerResolver(
+            fn() => $container->get('messaging.optout_manager'),
+        );
+
         $registry = $container->get('gateway.registry');
 
         // Eager: built-in gateways (always available, no external API deps)

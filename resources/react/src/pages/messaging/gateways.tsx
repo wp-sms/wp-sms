@@ -103,6 +103,14 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
           </div>
         )}
 
+        {gateway.is_configured && gateway.supported_channels.includes('sms') && (
+          <p className="text-xs text-muted-foreground">
+            {gateway.features.incoming
+              ? 'Supports inbound SMS — STOP/START keyword handling works automatically.'
+              : 'Does not support inbound SMS — recipients cannot reply STOP to unsubscribe automatically.'}
+          </p>
+        )}
+
         <CreditDisplay gatewayId={gateway.id} isConfigured={gateway.is_configured} getCredit={getCredit} />
 
         <Button variant="outline" size="sm" onClick={onConfigure} className="w-full">
