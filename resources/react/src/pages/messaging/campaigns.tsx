@@ -91,7 +91,7 @@ export function Campaigns() {
   if (view.mode === 'create') {
     return (
       <CampaignEditor
-        onSave={createCampaign}
+        onSave={(data, id) => id ? updateCampaign(id, data) : createCampaign(data)}
         onBack={() => { setView({ mode: 'list' }); refetch(); }}
       />
     );
@@ -101,7 +101,7 @@ export function Campaigns() {
     return (
       <CampaignEditor
         campaign={view.campaign}
-        onSave={(data) => updateCampaign(view.campaign.id, data)}
+        onSave={(data, id) => updateCampaign(id ?? view.campaign.id, data)}
         onBack={() => { setView({ mode: 'list' }); refetch(); }}
       />
     );

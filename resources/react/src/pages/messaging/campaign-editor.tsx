@@ -80,7 +80,7 @@ interface CampaignDraft {
 
 interface CampaignEditorProps {
   campaign?: Campaign;
-  onSave: (data: Partial<Campaign>) => Promise<Campaign>;
+  onSave: (data: Partial<Campaign>, id?: string) => Promise<Campaign>;
   onBack: () => void;
 }
 
@@ -119,7 +119,7 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
   const [currentStep, setCurrentStep] = useState(0);
   const [saving, setSaving] = useState(false);
   const [sending, setSending] = useState(false);
-  const [savedId, setSavedId] = useState(campaign?.id ?? '');
+  const [savedId, setSavedId] = useState<string | undefined>(campaign?.id);
   const [tags, setTags] = useState<Tag[]>([]);
   const { gateways, loading: gatewaysLoading } = useGateways();
   const { count: audienceCount, loading: audienceLoading } = useAudiencePreview(
@@ -136,6 +136,8 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
   const draftRef = useRef(draft);
   draftRef.current = draft;
   const savedDraftRef = useRef(draft);
+  const savedIdRef = useRef(savedId);
+  savedIdRef.current = savedId;
   const confirm = useConfirm();
 
   // Unsaved changes guard for back navigation + beforeunload
@@ -183,17 +185,21 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
   }, []);
 
   // Auto-save draft on step change
+  const savingRef = useRef(false);
   const saveDraft = useCallback(async () => {
     const d = draftRef.current;
     if (!d.name || !d.channel) return;
+    if (savingRef.current) return;
+    savingRef.current = true;
     setSaving(true);
     try {
-      const saved = await onSave(buildSavePayload());
+      const saved = await onSave(buildSavePayload(), savedIdRef.current);
       setSavedId(saved.id);
       savedDraftRef.current = draftRef.current;
     } catch {
       // Silent fail on auto-save
     } finally {
+      savingRef.current = false;
       setSaving(false);
     }
   }, [buildSavePayload, onSave]);
