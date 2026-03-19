@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
-import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Send } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import {
   Sidebar,
@@ -16,12 +16,20 @@ import {
   SidebarMenuSubItem,
   SidebarMenuSubButton,
   SidebarProvider,
+  SidebarTrigger,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -31,6 +39,11 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 
+
+const SIDEBAR_DEFAULT_OPEN = (() => {
+  const match = document.cookie.match(/(?:^|;\s*)sidebar_state=([^;]*)/);
+  return match ? match[1] === 'true' : true;
+})();
 
 type NavItemList = readonly (typeof NAV_ITEMS)[number][];
 
@@ -44,16 +57,29 @@ interface AppShellProps {
 
 export const NAV_ITEMS = [
   {
-    id: 'messaging',
-    label: 'Messaging',
-    icon: Send,
-    children: [
-      { id: 'campaigns', label: 'Campaigns' },
-      { id: 'flows', label: 'Flows' },
-      { id: 'contacts', label: 'Contacts' },
-      { id: 'gateways', label: 'Gateways' },
-      { id: 'message-logs', label: 'Message Logs' },
-    ],
+    id: 'campaigns',
+    label: 'Campaigns',
+    icon: Megaphone,
+  },
+  {
+    id: 'flows',
+    label: 'Flows',
+    icon: Workflow,
+  },
+  {
+    id: 'contacts',
+    label: 'Contacts',
+    icon: Users,
+  },
+  {
+    id: 'gateways',
+    label: 'Gateways',
+    icon: Radio,
+  },
+  {
+    id: 'message-logs',
+    label: 'Message Logs',
+    icon: ScrollText,
   },
   {
     id: 'authentication',
@@ -91,14 +117,13 @@ export const NAV_ITEMS = [
     icon: Paintbrush,
   },
   {
-    id: 'logs',
-    label: 'Logs',
-    icon: ScrollText,
-  },
-  {
-    id: 'reports',
-    label: 'Reports',
+    id: 'monitoring',
+    label: 'Monitoring',
     icon: BarChart3,
+    children: [
+      { id: 'logs', label: 'Logs' },
+      { id: 'reports', label: 'Reports' },
+    ],
   },
 ] as const;
 
@@ -175,19 +200,154 @@ function getBreadcrumb(sectionId: string, onNavigate: (section: string) => void,
   );
 }
 
+function CollapsedGroupItem({ item, activeSection, isActive, onNavigate }: {
+  item: Extract<(typeof NAV_ITEMS)[number], { children: unknown }>;
+  activeSection: string;
+  isActive: boolean;
+  onNavigate: (s: string) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const Icon = item.icon;
+
+  useEffect(() => () => clearTimeout(closeTimer.current), []);
+
+  const scheduleOpen = useCallback(() => {
+    clearTimeout(closeTimer.current);
+    setOpen(true);
+  }, []);
+
+  const scheduleClose = useCallback(() => {
+    clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setOpen(false), 150);
+  }, []);
+
+  return (
+    <SidebarMenuItem
+      onMouseEnter={scheduleOpen}
+      onMouseLeave={scheduleClose}
+    >
+      <DropdownMenu open={open} onOpenChange={(v) => { if (!v) scheduleClose(); }} modal={false}>
+        <DropdownMenuTrigger asChild>
+          <SidebarMenuButton tooltip={!open ? item.label : undefined} isActive={isActive}>
+            <Icon />
+            <span>{item.label}</span>
+            <ChevronRight className="ml-auto" />
+          </SidebarMenuButton>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          side="right"
+          align="start"
+          sideOffset={4}
+          onMouseEnter={scheduleOpen}
+          onMouseLeave={scheduleClose}
+          onCloseAutoFocus={(e) => e.preventDefault()}
+        >
+          {item.children.map((child) => (
+            <DropdownMenuItem
+              key={child.id}
+              onClick={() => { setOpen(false); onNavigate(child.id); }}
+              className={activeSection === child.id ? 'bg-accent' : ''}
+            >
+              {child.label}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </SidebarMenuItem>
+  );
+}
+
+function NavMenu({ activeSection, onNavigate, navItems }: { activeSection: string; onNavigate: (s: string) => void; navItems: NavItemList }) {
+  const { state, isMobile } = useSidebar();
+  const isCollapsed = !isMobile && state === 'collapsed';
+
+  return (
+    <SidebarMenu>
+      {navItems.map((item) => {
+        const Icon = item.icon;
+        const hasChildren = 'children' in item && item.children;
+
+        if (!hasChildren) {
+          return (
+            <SidebarMenuItem key={item.id}>
+              <SidebarMenuButton
+                tooltip={item.label}
+                isActive={activeSection === item.id}
+                onClick={() => onNavigate(item.id)}
+              >
+                <Icon />
+                <span>{item.label}</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          );
+        }
+
+        const isParentActive =
+          activeSection === item.id ||
+          item.children.some((c) => c.id === activeSection);
+
+        if (isCollapsed) {
+          return (
+            <CollapsedGroupItem
+              key={item.id}
+              item={item}
+              activeSection={activeSection}
+              isActive={isParentActive}
+              onNavigate={onNavigate}
+            />
+          );
+        }
+
+        return (
+          <Collapsible
+            key={item.id}
+            defaultOpen={isParentActive}
+            className="group/collapsible"
+          >
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <SidebarMenuButton tooltip={item.label}>
+                  <Icon />
+                  <span>{item.label}</span>
+                  <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
+                </SidebarMenuButton>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  {item.children.map((child) => (
+                    <SidebarMenuSubItem key={child.id}>
+                      <SidebarMenuSubButton
+                        isActive={activeSection === child.id}
+                        onClick={() => onNavigate(child.id)}
+                      >
+                        <span>{child.label}</span>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                  ))}
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+        );
+      })}
+    </SidebarMenu>
+  );
+}
+
 export function AppShell({ activeSection, onNavigate, version, children, navItems }: AppShellProps) {
   const pageTitle = getPageTitle(activeSection, navItems);
   const pageDescription = SECTION_DESCRIPTIONS[activeSection];
 
   return (
-    <SidebarProvider defaultOpen={true}>
-      <Sidebar collapsible="none">
+    <SidebarProvider defaultOpen={SIDEBAR_DEFAULT_OPEN}>
+      <Sidebar collapsible="icon">
         <SidebarHeader className="border-b border-sidebar-border px-4 py-3">
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary">
               <Logo className="h-6 w-6 text-primary-foreground" />
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col group-data-[collapsible=icon]:hidden">
               <span className="text-sm font-semibold leading-none">WSMS</span>
               <span className="text-xs text-muted-foreground">v{version}</span>
             </div>
@@ -197,62 +357,7 @@ export function AppShell({ activeSection, onNavigate, version, children, navItem
           <SidebarGroup>
             <SidebarGroupLabel>Settings</SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu>
-                {navItems.map((item) => {
-                  const Icon = item.icon;
-                  const hasChildren = 'children' in item && item.children;
-
-                  if (!hasChildren) {
-                    return (
-                      <SidebarMenuItem key={item.id}>
-                        <SidebarMenuButton
-                          isActive={activeSection === item.id}
-                          onClick={() => onNavigate(item.id)}
-                        >
-                          <Icon />
-                          <span>{item.label}</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    );
-                  }
-
-                  const isParentActive =
-                    activeSection === item.id ||
-                    item.children.some((c) => c.id === activeSection);
-
-                  return (
-                    <Collapsible
-                      key={item.id}
-                      defaultOpen={isParentActive}
-                      className="group/collapsible"
-                    >
-                      <SidebarMenuItem>
-                        <CollapsibleTrigger asChild>
-                          <SidebarMenuButton>
-                            <Icon />
-                            <span>{item.label}</span>
-                            <ChevronRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
-                          </SidebarMenuButton>
-                        </CollapsibleTrigger>
-                        <CollapsibleContent>
-                          <SidebarMenuSub>
-                            {item.children.map((child) => (
-                              <SidebarMenuSubItem key={child.id}>
-                                <SidebarMenuSubButton
-                                  isActive={activeSection === child.id}
-                                  onClick={() => onNavigate(child.id)}
-                                >
-                                  <span>{child.label}</span>
-                                </SidebarMenuSubButton>
-                              </SidebarMenuSubItem>
-                            ))}
-                          </SidebarMenuSub>
-                        </CollapsibleContent>
-                      </SidebarMenuItem>
-                    </Collapsible>
-                  );
-                })}
-              </SidebarMenu>
+              <NavMenu activeSection={activeSection} onNavigate={onNavigate} navItems={navItems} />
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
@@ -260,6 +365,7 @@ export function AppShell({ activeSection, onNavigate, version, children, navItem
 
       <SidebarInset>
         <header className="flex h-14 items-center gap-2 border-b px-6">
+          <SidebarTrigger className="-ml-1" />
           <Breadcrumb>
             <BreadcrumbList>
               {getBreadcrumb(activeSection, onNavigate, navItems)}

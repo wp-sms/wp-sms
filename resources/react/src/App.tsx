@@ -52,7 +52,11 @@ export default function App() {
     const parent = getParentSection(section, navItems);
 
     switch (parent) {
-      case 'messaging':
+      case 'campaigns':
+      case 'flows':
+      case 'contacts':
+      case 'gateways':
+      case 'message-logs':
         return <MessagingPage section={section} subTab={subTab} onNavigate={setSection} />;
       case 'authentication':
         return <AuthenticationPage section={section} settings={settings} onUpdate={updateSetting} />;
@@ -62,10 +66,9 @@ export default function App() {
         return <IntegrationsPage section={section} settings={settings} onUpdate={updateSetting} />;
       case 'branding':
         return <BrandingPage settings={settings} onUpdate={updateSetting} />;
-      case 'logs':
+      case 'monitoring':
+        if (section === 'reports') return <ReportsPage />;
         return <LogsPage settings={settings} onUpdate={updateSetting} />;
-      case 'reports':
-        return <ReportsPage />;
       default:
         return null;
     }
