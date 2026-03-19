@@ -254,6 +254,16 @@ export const SEGMENT_TEMPLATES = [
   { name: 'WordPress users', conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'source', operator: 'equals', value: 'sync' }] } },
 ] as const;
 
+// --- Integration Category Constants ---
+
+export const INTEGRATION_CATEGORY_LABELS: Record<string, string> = {
+  ecommerce: 'E-Commerce',
+  cms: 'CMS',
+  communication: 'Communication',
+  messaging: 'Messaging',
+  security: 'Security',
+};
+
 /** Toggle an item in/out of an array. */
 export function toggleArrayItem<T>(arr: T[], item: T, enabled: boolean): T[] {
   return enabled ? [...arr, item] : arr.filter((x) => x !== item);

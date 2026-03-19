@@ -26,6 +26,11 @@ class WooCommerceIntegration implements IntegrationInterface
         return 'WooCommerce';
     }
 
+    public function getDescription(): string
+    {
+        return 'E-commerce triggers and actions for orders, customers, and products.';
+    }
+
     public function getCategory(): string
     {
         return 'ecommerce';

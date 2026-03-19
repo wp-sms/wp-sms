@@ -535,12 +535,20 @@ export interface ActionDefinition {
 export interface PlatformIntegration {
   id: string;
   name: string;
+  description: string;
   category: string;
   icon: string;
   available: boolean;
+  connected: boolean;
   auth_type: string;
+  auth_schema: JsonSchema;
   triggers: number;
   actions: number;
+}
+
+export interface IntegrationDetail extends Omit<PlatformIntegration, 'triggers' | 'actions'> {
+  triggers: Array<{ id: string; name: string; description: string }>;
+  actions: Array<{ id: string; name: string; description: string }>;
 }
 
 export interface FlowTemplate {

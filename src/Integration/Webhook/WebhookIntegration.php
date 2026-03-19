@@ -19,6 +19,11 @@ class WebhookIntegration implements IntegrationInterface
         return 'Webhook';
     }
 
+    public function getDescription(): string
+    {
+        return 'Receive external events via inbound HTTP webhooks.';
+    }
+
     public function getCategory(): string
     {
         return 'communication';

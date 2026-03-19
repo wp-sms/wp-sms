@@ -5,12 +5,14 @@ namespace WSms\Rest;
 use WSms\Flow\Action\ActionRegistry;
 use WSms\Flow\Trigger\TriggerRegistry;
 use WSms\Integration\IntegrationRegistry;
+use WSms\Integration\Contracts\IntegrationInterface;
 
 defined('ABSPATH') || exit;
 
 class IntegrationController
 {
     private const NAMESPACE = 'wsms/v1';
+    private const CONFIG_OPTION = 'wsms_integration_configs';
 
     public function __construct(
         private readonly IntegrationRegistry $integrationRegistry,
@@ -25,6 +27,27 @@ class IntegrationController
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'index'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/integrations/(?P<id>[\w]+)', [
+            [
+                'methods'             => 'GET',
+                'callback'            => [$this, 'show'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/integrations/(?P<id>[\w]+)/config', [
+            [
+                'methods'             => 'PUT',
+                'callback'            => [$this, 'saveConfig'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+            [
+                'methods'             => 'DELETE',
+                'callback'            => [$this, 'deleteConfig'],
                 'permission_callback' => [$this, 'canManage'],
             ],
         ]);
@@ -69,25 +92,88 @@ class IntegrationController
 
     public function index(): \WP_REST_Response
     {
+        $configs = get_option(self::CONFIG_OPTION, []);
         $integrations = [];
 
         foreach ($this->integrationRegistry->getAll() as $integration) {
-            $integrations[] = [
-                'id'         => $integration->getId(),
-                'name'       => $integration->getName(),
-                'category'   => $integration->getCategory(),
-                'icon'       => $integration->getIcon(),
-                'available'  => $integration->isAvailable(),
-                'auth_type'  => $integration->getAuthType(),
-                'triggers'   => count($integration->getTriggers()),
-                'actions'    => count($integration->getActions()),
-            ];
+            $integrations[] = $this->formatIntegrationSummary($integration, $configs);
         }
 
         return new \WP_REST_Response([
             'items' => $integrations,
             'total' => count($integrations),
         ]);
+    }
+
+    public function show(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $integration = $this->resolveIntegration($request);
+        if ($integration instanceof \WP_REST_Response) {
+            return $integration;
+        }
+
+        $configs = get_option(self::CONFIG_OPTION, []);
+        $base = $this->formatIntegrationBase($integration, $configs);
+
+        $base['triggers'] = array_values(array_map(fn($t) => [
+            'id'          => $t->getId(),
+            'name'        => $t->getName(),
+            'description' => $t->getDescription(),
+        ], $integration->getTriggers()));
+
+        $base['actions'] = array_values(array_map(fn($a) => [
+            'id'          => $a->getId(),
+            'name'        => $a->getName(),
+            'description' => $a->getDescription(),
+        ], $integration->getActions()));
+
+        return new \WP_REST_Response($base);
+    }
+
+    public function saveConfig(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $integration = $this->resolveIntegration($request);
+        if ($integration instanceof \WP_REST_Response) {
+            return $integration;
+        }
+
+        $id = $integration->getId();
+        $body = $request->get_json_params();
+        $configs = get_option(self::CONFIG_OPTION, []);
+        $configs[$id] = [
+            'enabled'     => true,
+            'credentials' => $body['credentials'] ?? [],
+        ];
+        update_option(self::CONFIG_OPTION, $configs);
+
+        return new \WP_REST_Response(['success' => true]);
+    }
+
+    public function deleteConfig(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $integration = $this->resolveIntegration($request);
+        if ($integration instanceof \WP_REST_Response) {
+            return $integration;
+        }
+
+        $id = $integration->getId();
+        $configs = get_option(self::CONFIG_OPTION, []);
+        unset($configs[$id]);
+        update_option(self::CONFIG_OPTION, $configs);
+
+        return new \WP_REST_Response(['success' => true]);
+    }
+
+    private function resolveIntegration(\WP_REST_Request $request): IntegrationInterface|\WP_REST_Response
+    {
+        $id = $request->get_param('id');
+        $integration = $this->integrationRegistry->get($id);
+
+        if (!$integration) {
+            return new \WP_REST_Response(['error' => 'Integration not found'], 404);
+        }
+
+        return $integration;
     }
 
     public function triggers(): \WP_REST_Response
@@ -203,5 +289,38 @@ class IntegrationController
         return new \WP_REST_Response([
             'options' => $options,
         ]);
+    }
+
+    private function formatIntegrationBase(IntegrationInterface $integration, array $configs): array
+    {
+        return [
+            'id'          => $integration->getId(),
+            'name'        => $integration->getName(),
+            'description' => $integration->getDescription(),
+            'category'    => $integration->getCategory(),
+            'icon'        => $integration->getIcon(),
+            'available'   => $integration->isAvailable(),
+            'connected'   => $this->isConnected($integration, $configs),
+            'auth_type'   => $integration->getAuthType(),
+            'auth_schema' => $integration->getAuthSchema(),
+        ];
+    }
+
+    private function formatIntegrationSummary(IntegrationInterface $integration, array $configs): array
+    {
+        return $this->formatIntegrationBase($integration, $configs) + [
+            'triggers' => count($integration->getTriggers()),
+            'actions'  => count($integration->getActions()),
+        ];
+    }
+
+    private function isConnected(IntegrationInterface $integration, array $configs): bool
+    {
+        if ($integration->getAuthType() === 'none') {
+            return $integration->isAvailable();
+        }
+
+        $config = $configs[$integration->getId()] ?? null;
+        return $config !== null && !empty($config['credentials']);
     }
 }

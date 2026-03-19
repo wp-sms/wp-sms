@@ -29,6 +29,11 @@ class WordPressIntegration implements IntegrationInterface
         return 'WordPress';
     }
 
+    public function getDescription(): string
+    {
+        return 'Core WordPress hooks for users, posts, and comments.';
+    }
+
     public function getCategory(): string
     {
         return 'cms';

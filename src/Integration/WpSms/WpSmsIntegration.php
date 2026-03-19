@@ -28,6 +28,11 @@ class WpSmsIntegration implements IntegrationInterface
         return 'WSMS';
     }
 
+    public function getDescription(): string
+    {
+        return 'Send messages and make HTTP requests from your automation flows.';
+    }
+
     public function getCategory(): string
     {
         return 'messaging';

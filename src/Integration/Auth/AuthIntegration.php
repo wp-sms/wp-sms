@@ -19,6 +19,11 @@ class AuthIntegration implements IntegrationInterface
         return 'WSMS Auth';
     }
 
+    public function getDescription(): string
+    {
+        return 'Security event triggers for logins, failures, and account lockouts.';
+    }
+
     public function getCategory(): string
     {
         return 'security';

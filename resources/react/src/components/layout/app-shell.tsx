@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio } from 'lucide-react';
+import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import {
   Sidebar,
@@ -77,6 +77,11 @@ export const NAV_ITEMS = [
     icon: Radio,
   },
   {
+    id: 'apps',
+    label: 'Apps',
+    icon: Blocks,
+  },
+  {
     id: 'message-logs',
     label: 'Message Logs',
     icon: ScrollText,
@@ -132,6 +137,7 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   'flows': 'Create and manage automation flows with triggers and action steps.',
   'contacts': 'Manage your contacts, tags, and segments for targeted messaging.',
   'gateways': 'Configure messaging gateways for SMS, email, webhooks, and more.',
+  'apps': 'Browse available apps and their triggers and actions for automation flows.',
   'message-logs': 'View sent messages, delivery status, and error details.',
   'channels': 'Configure authentication channels — Phone, Email, and Password.',
   'registration': 'Configure how new users register through the authentication pages.',

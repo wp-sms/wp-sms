@@ -58,6 +58,7 @@ class IntegrationRegistryTest extends TestCase
             public function __construct(private string $id, private bool $available, private string $category) {}
             public function getId(): string { return $this->id; }
             public function getName(): string { return $this->id; }
+            public function getDescription(): string { return ''; }
             public function getCategory(): string { return $this->category; }
             public function getIcon(): string { return ''; }
             public function isAvailable(): bool { return $this->available; }

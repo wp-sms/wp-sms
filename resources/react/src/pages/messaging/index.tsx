@@ -1,6 +1,7 @@
 import { Flows } from './flows';
 import { Contacts } from './contacts';
 import { Gateways } from './gateways';
+import { Apps } from './apps';
 import { MessageLogs } from './message-logs';
 import { Campaigns } from './campaigns';
 
@@ -18,6 +19,8 @@ export function MessagingPage({ section, subTab, onNavigate }: MessagingPageProp
       return <Contacts subTab={subTab} onNavigate={onNavigate} />;
     case 'gateways':
       return <Gateways />;
+    case 'apps':
+      return <Apps />;
     case 'message-logs':
       return <MessageLogs />;
     default:

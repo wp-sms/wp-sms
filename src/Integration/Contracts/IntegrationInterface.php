@@ -10,6 +10,8 @@ interface IntegrationInterface
 
     public function getName(): string;
 
+    public function getDescription(): string;
+
     public function getCategory(): string;
 
     public function getIcon(): string;
