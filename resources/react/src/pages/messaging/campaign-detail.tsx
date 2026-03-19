@@ -1,5 +1,6 @@
 import { useCampaignDetail } from '@/hooks/use-campaign-detail';
-import type { Campaign } from '@/lib/api';
+import type { Campaign, CampaignRecipient } from '@/lib/api';
+import { MessageLogDetailDrawer } from '@/components/messaging/message-log-detail-drawer';
 import { CampaignStatusBadge } from '@/components/campaigns/campaign-status-badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -35,6 +36,7 @@ export function CampaignDetail({ campaign: initialCampaign, onBack }: CampaignDe
     refetch,
   } = useCampaignDetail(initialCampaign.id, true);
   const [actionLoading, setActionLoading] = useState('');
+  const [selectedLog, setSelectedLog] = useState<CampaignRecipient | null>(null);
   const confirm = useConfirm();
 
   const data = campaign ?? initialCampaign;
@@ -237,7 +239,11 @@ export function CampaignDetail({ campaign: initialCampaign, onBack }: CampaignDe
                   </TableHeader>
                   <TableBody>
                     {recipients.map((log) => (
-                      <TableRow key={log.id} className="even:bg-muted/30">
+                      <TableRow
+                        key={log.id}
+                        className={`cursor-pointer even:bg-muted/30 ${selectedLog?.id === log.id ? 'bg-accent' : ''}`}
+                        onClick={() => setSelectedLog(log)}
+                      >
                         <TableCell className="font-mono text-sm">{log.recipient}</TableCell>
                         <TableCell>
                           <RecipientStatusBadge status={log.status} />
@@ -262,6 +268,8 @@ export function CampaignDetail({ campaign: initialCampaign, onBack }: CampaignDe
           )}
         </CardContent>
       </Card>
+
+      <MessageLogDetailDrawer log={selectedLog} onClose={() => setSelectedLog(null)} />
     </div>
   );
 }
