@@ -170,6 +170,14 @@ class AdminController
             }
         }
 
+        // WhatsApp doesn't support magic links — strip it server-side.
+        $phoneDelivery = $updated['phone']['delivery_channel'] ?? 'sms';
+        if ($phoneDelivery === 'whatsapp') {
+            $methods = $updated['phone']['verification_methods'] ?? ['otp'];
+            $methods = array_values(array_filter($methods, fn($m) => $m !== 'magic_link'));
+            $updated['phone']['verification_methods'] = $methods ?: ['otp'];
+        }
+
         $errors = $this->validateSettings($updated);
 
         if (!empty($errors)) {
@@ -351,6 +359,13 @@ class AdminController
                 $gateway = $this->gatewayRegistry->get($ch['otp_gateway']);
                 if ($gateway === null) {
                     $errors[] = "{$channel}.otp_gateway references an unknown gateway.";
+                }
+            }
+
+            if ($channel === 'phone' && isset($ch['delivery_channel'])) {
+                $allowedDeliveryChannels = ['sms', 'whatsapp', 'viber'];
+                if (!in_array($ch['delivery_channel'], $allowedDeliveryChannels, true)) {
+                    $errors[] = "phone.delivery_channel must be one of: " . implode(', ', $allowedDeliveryChannels) . '.';
                 }
             }
         }

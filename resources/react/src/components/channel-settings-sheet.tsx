@@ -83,9 +83,12 @@ function ChannelContent({
 }) {
   const channelConfig = CHANNELS.find((c) => c.id === channelId)!;
   const { gateways } = useGateways();
-  const gatewayChannel = channelId === 'phone' ? 'sms' : 'email';
+  const deliveryChannel = channelId === 'phone'
+    ? ((settings as PhoneChannelSettings).delivery_channel ?? 'sms')
+    : 'email';
+  const isWhatsApp = deliveryChannel === 'whatsapp';
   const configuredGateways = gateways.filter(
-    (g) => g.is_configured && g.supported_channels.includes(gatewayChannel),
+    (g) => g.is_configured && g.supported_channels.includes(deliveryChannel),
   );
 
   return (
@@ -117,7 +120,9 @@ function ChannelContent({
       <div className="space-y-2">
         <Label className="text-sm font-medium">Verification Methods</Label>
         <div className="space-y-2">
-          {channelConfig.verificationMethods.map((vm) => (
+          {channelConfig.verificationMethods
+            .filter((vm) => !(isWhatsApp && vm.value === 'magic_link'))
+            .map((vm) => (
             <label key={vm.value} className="flex items-center gap-2 cursor-pointer">
               <Checkbox
                 checked={settings.verification_methods?.includes(vm.value as 'otp' | 'magic_link')}
@@ -134,6 +139,9 @@ function ChannelContent({
               <span className="text-sm">{vm.label}</span>
             </label>
           ))}
+          {isWhatsApp && (
+            <p className="text-xs text-muted-foreground">WhatsApp supports OTP codes only</p>
+          )}
         </div>
       </div>
 
@@ -145,26 +153,50 @@ function ChannelContent({
             <Label className="text-sm font-medium">Delivery Channel</Label>
             <RadioGroup
               value={(settings as PhoneChannelSettings).delivery_channel}
-              onValueChange={(v) => onUpdate({ delivery_channel: v as 'sms' | 'whatsapp' | 'viber' })}
+              onValueChange={(v) => {
+                const update: Partial<PhoneChannelSettings> = { delivery_channel: v as 'sms' | 'whatsapp' | 'viber' };
+                // WhatsApp doesn't support magic links — strip it and reset incompatible gateway.
+                if (v === 'whatsapp') {
+                  const methods = (settings.verification_methods ?? ['otp']).filter((m) => m !== 'magic_link');
+                  update.verification_methods = methods.length > 0 ? methods : ['otp'];
+                }
+                // Clear otp_gateway if it doesn't support the new delivery channel.
+                if (settings.otp_gateway) {
+                  const gw = gateways.find((g) => g.id === settings.otp_gateway);
+                  if (gw && !gw.supported_channels.includes(v)) {
+                    update.otp_gateway = null;
+                  }
+                }
+                onUpdate(update);
+              }}
               className="space-y-2"
             >
-              {channelConfig.deliveryChannels.map((dc) => (
-                <label
-                  key={dc.value}
-                  className={cn(
-                    'flex items-center gap-2',
-                    dc.available ? 'cursor-pointer' : 'cursor-not-allowed opacity-50',
-                  )}
-                >
-                  <RadioGroupItem value={dc.value} disabled={!dc.available} />
-                  <span className="text-sm">{dc.label}</span>
-                  {!dc.available && (
-                    <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
-                      Coming Soon
-                    </Badge>
-                  )}
-                </label>
-              ))}
+              {channelConfig.deliveryChannels.map((dc) => {
+                const hasGateway = dc.available && gateways.some((g) => g.is_configured && g.supported_channels.includes(dc.value));
+                const enabled = dc.available && hasGateway;
+                return (
+                  <label
+                    key={dc.value}
+                    className={cn(
+                      'flex items-center gap-2',
+                      enabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-50',
+                    )}
+                  >
+                    <RadioGroupItem value={dc.value} disabled={!enabled} />
+                    <span className="text-sm">{dc.label}</span>
+                    {!dc.available && (
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                        Coming Soon
+                      </Badge>
+                    )}
+                    {dc.available && !hasGateway && (
+                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                        No gateway
+                      </Badge>
+                    )}
+                  </label>
+                );
+              })}
             </RadioGroup>
           </div>
         </>

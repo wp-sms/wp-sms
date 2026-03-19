@@ -67,6 +67,13 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback
                         'description' => __('Your Twilio WhatsApp-enabled number. For sandbox testing, use +14155238886', 'wp-sms'),
                         'placeholder' => '+14155238886',
                     ],
+                    'otp_content_sid' => [
+                        'type'        => 'string',
+                        'label'       => __('OTP Template SID', 'wp-sms'),
+                        'required'    => false,
+                        'description' => __('Content Template SID (HX...) for OTP messages. Create an Authentication template in Twilio Console. Leave empty for sandbox mode.', 'wp-sms'),
+                        'placeholder' => 'HXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+                    ],
                 ],
             ],
         ];
@@ -118,14 +125,32 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback
 
         $url = self::API_BASE . "/Accounts/{$accountSid}/Messages.json";
 
+        $meta = $message->getMeta();
+
+        // Determine if we should use a Content Template (WhatsApp OTP with configured SID).
+        $contentSid = null;
+        if ($channel === 'whatsapp' && ($meta['purpose'] ?? null) === 'otp') {
+            $contentSid = $this->getChannelConfig('whatsapp', 'otp_content_sid');
+        }
+
         $body = [
             'From'           => $from,
             'To'             => $to,
-            'Body'           => $message->getBody(),
             'StatusCallback' => $this->getStatusCallbackUrl(),
         ];
 
-        $mediaUrls = $message->getMeta()['media_urls'] ?? [];
+        if ($contentSid) {
+            // Production: Content Template (Body and ContentSid are mutually exclusive).
+            $body['ContentSid'] = $contentSid;
+            if (isset($meta['otp_code'])) {
+                $body['ContentVariables'] = wp_json_encode(['1' => $meta['otp_code']]);
+            }
+        } else {
+            // Sandbox / SMS / non-OTP: free-form text body.
+            $body['Body'] = $message->getBody();
+        }
+
+        $mediaUrls = $meta['media_urls'] ?? [];
         foreach ($mediaUrls as $mediaUrl) {
             $body['MediaUrl'][] = $mediaUrl;
         }

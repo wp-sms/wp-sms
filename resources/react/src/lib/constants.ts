@@ -13,7 +13,7 @@ export const CHANNELS = [
     ],
     deliveryChannels: [
       { value: 'sms', label: 'SMS', available: true },
-      { value: 'whatsapp', label: 'WhatsApp', available: false },
+      { value: 'whatsapp', label: 'WhatsApp', available: true },
       { value: 'viber', label: 'Viber', available: false },
     ],
   },

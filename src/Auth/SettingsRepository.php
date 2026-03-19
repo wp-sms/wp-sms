@@ -22,6 +22,7 @@ class SettingsRepository
             'enabled'              => false,
             'usage'                => 'login',
             'verification_methods' => ['otp'],
+            'delivery_channel'     => 'sms',
             'allow_sign_in'        => true,
             'reverify_on_change'   => false,
             'otp_gateway'          => null,

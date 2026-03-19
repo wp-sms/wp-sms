@@ -148,10 +148,18 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
 
     /**
      * Send challenge with OTP, magic link, or both based on verification_methods setting.
+     * WhatsApp delivery forces OTP-only (no magic link support due to template limitations).
      */
     public function sendChallenge(int $userId, array $context = []): ChallengeResult
     {
+        $deliveryChannel = $this->getConfigValue('delivery_channel', 'sms');
         $verificationMethods = (array) $this->getConfigValue('verification_methods', ['otp']);
+
+        // WhatsApp only supports OTP — force it regardless of saved setting.
+        if ($deliveryChannel === 'whatsapp') {
+            $verificationMethods = ['otp'];
+        }
+
         $hasOtp = in_array('otp', $verificationMethods, true);
         $hasMagicLink = in_array('magic_link', $verificationMethods, true);
 
@@ -214,14 +222,21 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
     /** {@inheritDoc} */
     protected function deliver(int $userId, string $code, string $identifier): bool
     {
+        $expiry = (int) $this->getConfigValue('expiry', 300);
+        $channel = $this->getConfigValue('delivery_channel', 'sms');
+
         $message = sprintf(
             __('Your verification code is: %s. It expires in %d minutes.', 'wp-sms'),
             $code,
-            (int) ($this->getConfigValue('expiry', 300) / 60),
+            (int) ($expiry / 60),
         );
 
         $result = $this->messageDispatcher->sendImmediate(
-            new Message('sms', $identifier, $message),
+            new Message($channel, $identifier, $message, meta: [
+                'purpose'  => 'otp',
+                'otp_code' => $code,
+                'expiry'   => $expiry,
+            ]),
             $this->resolveOtpGatewayId(),
         );
 
@@ -255,10 +270,11 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
     }
 
     /**
-     * Send a single SMS containing OTP code, magic link, or both.
+     * Send a single message containing OTP code, magic link, or both.
      */
     private function deliverCombined(string $identifier, ?string $otpCode, ?string $magicLinkUrl, int $expiry): bool
     {
+        $channel = $this->getConfigValue('delivery_channel', 'sms');
         $parts = [];
 
         if ($otpCode !== null) {
@@ -273,8 +289,17 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
 
         $body = implode(' ', $parts);
 
+        $meta = [];
+        if ($otpCode !== null) {
+            $meta = [
+                'purpose'  => 'otp',
+                'otp_code' => $otpCode,
+                'expiry'   => $expiry,
+            ];
+        }
+
         $result = $this->messageDispatcher->sendImmediate(
-            new Message('sms', $identifier, $body),
+            new Message($channel, $identifier, $body, meta: $meta),
             $this->resolveOtpGatewayId(),
         );
 
