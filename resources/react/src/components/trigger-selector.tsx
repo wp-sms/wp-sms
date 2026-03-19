@@ -53,7 +53,7 @@ export function TriggerSelector({ triggerType, triggerConfig, onChangeTrigger, o
   // Notify parent of payload schema changes (use stable primitive dep to avoid infinite loops)
   useEffect(() => {
     onPayloadSchemaChange?.(selected?.payload_schema);
-  }, [selected?.id, onPayloadSchemaChange]);
+  }, [selected?.id, onPayloadSchemaChange]); // eslint-disable-line react-hooks/exhaustive-deps -- selected.id is stable proxy for payload_schema
 
   // Build a JsonSchema wrapper from the flat filter_schema record
   const filterSchema = useMemo(() => {
@@ -62,7 +62,7 @@ export function TriggerSelector({ triggerType, triggerConfig, onChangeTrigger, o
       type: 'object' as const,
       properties: selected.filter_schema,
     };
-  }, [selected?.id, selected?.filter_schema]);
+  }, [selected?.id, selected?.filter_schema]); // eslint-disable-line react-hooks/exhaustive-deps -- selected.id is unnecessary per ESLint but kept as defensive invalidation guard
 
   // Build dynamic options URL resolver for this trigger
   const dynamicOptionsUrl = useCallback(

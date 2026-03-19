@@ -40,9 +40,10 @@ export function ConditionBuilder({ rules, onChange, payloadSchema, triggerType }
   }, [triggers, triggerType]);
 
   const merged = useMemo(() => buildMergedSchema(payloadSchema), [payloadSchema]);
-  const fields = merged.properties
-    ? flattenSchemaFields(merged.properties)
-    : [];
+  const fields = useMemo(
+    () => (merged.properties ? flattenSchemaFields(merged.properties) : []),
+    [merged],
+  );
 
   const grouped = groupBy(fields, (f) => f.group ?? 'Fields');
   const fieldMap = useMemo(() => new Map(fields.map((f) => [f.path, f])), [fields]);

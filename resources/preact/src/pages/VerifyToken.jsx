@@ -47,7 +47,7 @@ export function VerifyToken({
                 setStatus('error');
                 setMessage(err.message || errorText);
             });
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps -- fire-once on mount, props are static
 
     return (
         <AuthLayout

@@ -55,7 +55,7 @@ export function Register() {
                 setForm((prev) => ({ ...prev, ...customDefaults }));
             }
         }
-    }, [fieldDefs]);
+    }, [fieldDefs]); // eslint-disable-line react-hooks/exhaustive-deps -- reads form as guard, adding it would loop
 
     useEffect(() => {
         const socialError = getQueryParam('social_error');

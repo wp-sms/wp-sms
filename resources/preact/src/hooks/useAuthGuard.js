@@ -7,7 +7,7 @@ export function useAuthGuard() {
 
     useEffect(() => {
         if (!window.wsmsAuth?.isLoggedIn) route(authUrl('/login'));
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps -- mount-only redirect guard
 
     return window.wsmsAuth?.isLoggedIn;
 }

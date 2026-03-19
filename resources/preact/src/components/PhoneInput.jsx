@@ -51,7 +51,7 @@ export function PhoneInput({ value = '', onChange, disabled, autoFocus = false }
             const detected = detectCountry(value);
             if (detected && detected.code !== country.code) setCountry(detected);
         }
-    }, [value]);
+    }, [value]); // eslint-disable-line react-hooks/exhaustive-deps -- adding country.code would loop
 
     function handleCountryChange(e) {
         const selected = COUNTRIES.find((c) => c.code === e.target.value);
