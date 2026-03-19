@@ -86,6 +86,7 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('mfa.manager'),
                 $container->get('auth.field_registry'),
                 $container->get('audit.reports'),
+                $container->get('gateway.registry'),
             );
         });
 

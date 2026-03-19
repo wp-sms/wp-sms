@@ -24,6 +24,7 @@ class SettingsRepository
             'verification_methods' => ['otp'],
             'allow_sign_in'        => true,
             'reverify_on_change'   => false,
+            'otp_gateway'          => null,
         ],
         'email' => [
             'enabled'              => true,
@@ -32,6 +33,7 @@ class SettingsRepository
             'allow_sign_in'        => true,
             'required_at_signup'   => true,
             'reverify_on_change'   => false,
+            'otp_gateway'          => null,
         ],
         'backup_codes' => [
             'enabled' => false,

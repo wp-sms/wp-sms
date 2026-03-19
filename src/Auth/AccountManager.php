@@ -725,7 +725,8 @@ class AccountManager
 
         if ($channel === 'phone') {
             $this->messageDispatcher->sendImmediate(
-                new Message('sms', $identifier, sprintf(__('Your verification code is: %s', 'wp-sms'), $otp))
+                new Message('sms', $identifier, sprintf(__('Your verification code is: %s', 'wp-sms'), $otp)),
+                $this->getOtpGatewayId('phone'),
             );
         } elseif ($channel === 'email') {
             $this->sendVerificationEmail($identifier, $otp, $channel);
@@ -795,7 +796,10 @@ class AccountManager
         $settings = $this->settingsRepo->all();
         $expiry = (int) (($settings[$channel] ?? [])['expiry'] ?? 300);
 
-        $this->messageDispatcher->sendImmediate(OtpEmailBuilder::build($email, $otp, $expiry));
+        $this->messageDispatcher->sendImmediate(
+            OtpEmailBuilder::build($email, $otp, $expiry),
+            $this->getOtpGatewayId('email'),
+        );
     }
 
     /**
@@ -985,6 +989,13 @@ class AccountManager
             'user_id' => $userId,
             'type'    => $type,
         ]);
+    }
+
+    private function getOtpGatewayId(string $channel): ?string
+    {
+        $gatewayId = $this->settingsRepo->channel($channel)['otp_gateway'] ?? null;
+
+        return !empty($gatewayId) ? $gatewayId : null;
     }
 
     /**

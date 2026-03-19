@@ -232,7 +232,8 @@ class EmailChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         $headers = ['Content-Type: text/html; charset=UTF-8'];
 
         $result = $this->messageDispatcher->sendImmediate(
-            new EmailMessage($identifier, $body, $subject, $headers)
+            new EmailMessage($identifier, $body, $subject, $headers),
+            $this->resolveOtpGatewayId(),
         );
 
         return $result->success;

@@ -50,6 +50,7 @@ export interface ChannelSettings {
   max_attempts?: number;
   cooldown?: number;
   reverify_on_change?: boolean;
+  otp_gateway?: string | null;
 }
 
 export interface PhoneChannelSettings extends ChannelSettings {

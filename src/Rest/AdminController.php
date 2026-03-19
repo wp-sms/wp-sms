@@ -10,6 +10,7 @@ use WSms\Auth\ProfileFieldRegistry;
 use WSms\Enums\EnrollmentTiming;
 use WSms\Enums\EventType;
 use WSms\Enums\LogVerbosity;
+use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Mfa\MfaManager;
 use WSms\Social\SocialAccountRepository;
 
@@ -54,6 +55,7 @@ class AdminController
         private MfaManager $mfaManager,
         private ?ProfileFieldRegistry $fieldRegistry = null,
         private ?ReportAggregator $reportAggregator = null,
+        private ?GatewayRegistry $gatewayRegistry = null,
     ) {
     }
 
@@ -342,6 +344,13 @@ class AdminController
                 $v = (int) $ch['cooldown'];
                 if ($v < 10 || $v > 300) {
                     $errors[] = "{$channel}.cooldown must be between 10 and 300.";
+                }
+            }
+
+            if ($channel !== 'telegram' && !empty($ch['otp_gateway']) && $this->gatewayRegistry) {
+                $gateway = $this->gatewayRegistry->get($ch['otp_gateway']);
+                if ($gateway === null) {
+                    $errors[] = "{$channel}.otp_gateway references an unknown gateway.";
                 }
             }
         }

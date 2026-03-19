@@ -226,6 +226,16 @@ abstract class AbstractOtpChannel implements ChannelInterface
     }
 
     /**
+     * Resolve the OTP-specific gateway ID from channel settings, if configured.
+     */
+    protected function resolveOtpGatewayId(): ?string
+    {
+        $gatewayId = $this->getConfigValue('otp_gateway');
+
+        return !empty($gatewayId) ? $gatewayId : null;
+    }
+
+    /**
      * Check if a cooldown is active for this user/channel.
      */
     protected function hasCooldownActive(int $userId, int $cooldown): bool

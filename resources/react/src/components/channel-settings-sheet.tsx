@@ -11,11 +11,19 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { CHANNELS } from '@/lib/constants';
 import type { ChannelId } from '@/lib/constants';
 import { cn } from '@/lib/utils';
+import { useGateways } from '@/hooks/use-gateways';
 import type { PhoneChannelSettings, EmailChannelSettings, PasswordSettings } from '@/lib/api';
 
 interface ChannelSettingsSheetProps {
@@ -74,6 +82,11 @@ function ChannelContent({
   onUpdate: (partial: Partial<PhoneChannelSettings & EmailChannelSettings>) => void;
 }) {
   const channelConfig = CHANNELS.find((c) => c.id === channelId)!;
+  const { gateways } = useGateways();
+  const gatewayChannel = channelId === 'phone' ? 'sms' : 'email';
+  const configuredGateways = gateways.filter(
+    (g) => g.is_configured && g.supported_channels.includes(gatewayChannel),
+  );
 
   return (
     <div className="space-y-6 px-4 pb-4">
@@ -154,6 +167,33 @@ function ChannelContent({
               ))}
             </RadioGroup>
           </div>
+        </>
+      )}
+
+      {/* OTP Gateway Override */}
+      {configuredGateways.length > 0 && (
+        <>
+          <Separator />
+          <Field>
+            <FieldLabel>OTP Gateway</FieldLabel>
+            <Select
+              value={settings.otp_gateway ?? '__default__'}
+              onValueChange={(v) => onUpdate({ otp_gateway: v === '__default__' ? null : v })}
+            >
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__default__">Use default gateway</SelectItem>
+                {configuredGateways.map((g) => (
+                  <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FieldDescription>
+              Route OTP/verification messages through a dedicated gateway instead of the channel default
+            </FieldDescription>
+          </Field>
         </>
       )}
 

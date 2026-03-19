@@ -116,6 +116,7 @@ export const DEFAULTS: Required<AuthSettings> = {
     max_attempts: 3,
     cooldown: 60,
     reverify_on_change: false,
+    otp_gateway: null,
   },
   email: {
     enabled: true,
@@ -129,6 +130,7 @@ export const DEFAULTS: Required<AuthSettings> = {
     max_attempts: 3,
     cooldown: 60,
     reverify_on_change: false,
+    otp_gateway: null,
   },
   password: {
     enabled: true,

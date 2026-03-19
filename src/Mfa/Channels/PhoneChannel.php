@@ -220,7 +220,10 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
             (int) ($this->getConfigValue('expiry', 300) / 60),
         );
 
-        $result = $this->messageDispatcher->sendImmediate(new Message('sms', $identifier, $message));
+        $result = $this->messageDispatcher->sendImmediate(
+            new Message('sms', $identifier, $message),
+            $this->resolveOtpGatewayId(),
+        );
 
         return $result->success;
     }
@@ -270,7 +273,10 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
 
         $body = implode(' ', $parts);
 
-        $result = $this->messageDispatcher->sendImmediate(new Message('sms', $identifier, $body));
+        $result = $this->messageDispatcher->sendImmediate(
+            new Message('sms', $identifier, $body),
+            $this->resolveOtpGatewayId(),
+        );
 
         return $result->success;
     }
