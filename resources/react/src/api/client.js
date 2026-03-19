@@ -204,7 +204,9 @@ class ApiClient {
           }
         }
 
-        throw new Error(errorMessage)
+        const err = new Error(errorMessage)
+        err.fieldErrors = fieldErrors || null
+        throw err
       }
 
       if (!data) {
@@ -236,7 +238,9 @@ class ApiClient {
       }
 
       console.error('API Error:', error)
-      throw new Error(userMessage)
+      const rethrown = new Error(userMessage)
+      rethrown.fieldErrors = error.fieldErrors || null
+      throw rethrown
     }
   }
 

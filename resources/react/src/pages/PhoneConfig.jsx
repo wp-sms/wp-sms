@@ -6,14 +6,14 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { InputField, MultiSelectField, SettingRow } from '@/components/ui/form-field'
 import { InternationalPhoneInput } from '@/components/ui/InternationalPhoneInput'
 import { useSetting, useSettings } from '@/context/SettingsContext'
-import { getWpSettings, __ } from '@/lib/utils'
+import { getWpSettings, cn, __ } from '@/lib/utils'
 
 export default function PhoneConfig() {
   const { countriesByCode = {}, countriesByDialCode = {}, mobileFieldSources = [] } = getWpSettings()
   const { getSetting, updateSetting } = useSettings()
 
   // Admin mobile
-  const [adminMobile, setAdminMobile] = useSetting('admin_mobile_number', '')
+  const [adminMobile, setAdminMobile, adminMobileError] = useSetting('admin_mobile_number', '')
 
   // Mobile field configuration
   const [addMobileField, setAddMobileField] = useSetting('add_mobile_field', 'add_mobile_field_in_profile')
@@ -59,17 +59,22 @@ export default function PhoneConfig() {
           </CardDescription>
         </CardHeader>
         <CardContent className="wsms-space-y-4">
-          <div className="wsms-space-y-2">
-            <Label htmlFor="adminPhone">{__('Admin Phone Number')}</Label>
+          <div className="wsms-space-y-2" data-setting-key="admin_mobile_number">
+            <Label htmlFor="adminPhone" className={cn(adminMobileError && 'wsms-text-destructive')}>{__('Admin Phone Number')}</Label>
             <InternationalPhoneInput
               id="adminPhone"
               value={adminMobile}
               onChange={setAdminMobile}
               placeholder="+1 555 123 4567"
+              className={cn(adminMobileError && 'wsms-border-destructive')}
             />
-            <p className="wsms-text-[12px] wsms-text-muted-foreground">
-              {__('Enter the full phone number including country code.')}
-            </p>
+            {adminMobileError ? (
+              <p role="alert" className="wsms-text-[12px] wsms-text-destructive">{adminMobileError}</p>
+            ) : (
+              <p className="wsms-text-[12px] wsms-text-muted-foreground">
+                {__('Enter the full phone number including country code.')}
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
