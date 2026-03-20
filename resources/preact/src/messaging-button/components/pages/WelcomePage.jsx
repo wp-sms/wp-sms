@@ -4,6 +4,7 @@ import { AvatarImage } from '../AvatarImage';
 export function WelcomePage({ config, enabledPages, teamMembers, onNavigate }) {
     const greeting = config.greeting ?? 'Welcome! Choose an option below to get started.';
     const ctaLabel = config.cta_label ?? 'Send a message';
+    const ctaDescription = config.cta_description ?? 'We typically reply within a few hours';
 
     return (
         <div class="wsms-mb-page wsms-mb-page--welcome">
@@ -17,8 +18,13 @@ export function WelcomePage({ config, enabledPages, teamMembers, onNavigate }) {
                         class="wsms-mb-welcome__cta"
                         onClick={() => onNavigate('contact_form')}
                     >
-                        <MessageIcon size={20} />
-                        <span>{ctaLabel}</span>
+                        <div class="wsms-mb-welcome__cta-icon">
+                            <MessageIcon size={18} />
+                        </div>
+                        <div class="wsms-mb-welcome__cta-content">
+                            <span>{ctaLabel}</span>
+                            {ctaDescription && <p class="wsms-mb-welcome__cta-desc">{ctaDescription}</p>}
+                        </div>
                         <ChevronRightIcon size={16} class="wsms-mb-welcome__arrow" />
                     </button>
                 )}

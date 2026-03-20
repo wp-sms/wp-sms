@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 import { submitMessage } from '../../api/widget-client';
-import { CheckCircleIcon } from '../icons';
+import { CheckCircleIcon, AlertCircleIcon } from '../icons';
 
 const FIELD_CONFIG = [
     { id: 'name', label: 'Name', type: 'text', placeholder: 'Your name' },
@@ -113,7 +113,10 @@ export function ContactFormPage({ config, gdpr, onClose }) {
                 )}
 
                 {errorMsg && (
-                    <div class="wsms-mb-form__error" role="alert">{errorMsg}</div>
+                    <div class="wsms-mb-form__error" role="alert">
+                        <AlertCircleIcon size={16} class="wsms-mb-form__error-icon" />
+                        <span>{errorMsg}</span>
+                    </div>
                 )}
 
                 <button

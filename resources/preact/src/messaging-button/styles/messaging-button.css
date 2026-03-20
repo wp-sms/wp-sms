@@ -4,8 +4,9 @@
 /* === CSS Variables (Light) === */
 :host {
     --mb-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-    --mb-radius: 12px;
-    --mb-radius-sm: 8px;
+    --mb-radius: 14px;
+    --mb-radius-sm: 10px;
+    --mb-accent-soft: #dbeafe;
     --mb-shadow: 0 5px 40px rgba(0, 0, 0, 0.16);
     --mb-shadow-fab: 0 4px 20px rgba(0, 0, 0, 0.2);
     --mb-text: #1a1a2e;
@@ -18,7 +19,7 @@
     --mb-accent: var(--panel-accent, #2563eb);
     --mb-panel-width: 380px;
     --mb-panel-height: 520px;
-    --mb-fab-size: 56px;
+    --mb-fab-size: 52px;
     --mb-gap: 16px;
 }
 
@@ -30,6 +31,7 @@
     --mb-bg-secondary: #0f172a;
     --mb-border: #334155;
     --mb-shadow: 0 5px 40px rgba(0, 0, 0, 0.4);
+    --mb-accent-soft: rgba(37, 99, 235, 0.15);
 }
 
 /* System theme — follow OS preference */
@@ -41,6 +43,7 @@
         --mb-bg-secondary: #0f172a;
         --mb-border: #334155;
         --mb-shadow: 0 5px 40px rgba(0, 0, 0, 0.4);
+        --mb-accent-soft: rgba(37, 99, 235, 0.15);
     }
 }
 
@@ -66,7 +69,7 @@
     color: var(--fab-color, #ffffff);
     font-family: var(--mb-font);
     font-size: 15px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     box-shadow: var(--mb-shadow-fab);
     transition: transform 0.2s ease, box-shadow 0.2s ease, gap 0.3s ease, padding 0.3s ease;
@@ -206,7 +209,32 @@
     font-size: 18px;
     font-weight: 600;
     line-height: 1.3;
+    letter-spacing: -0.01em;
     margin: 0;
+}
+
+.wsms-mb-panel__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    margin-top: 8px;
+    opacity: 0.9;
+}
+
+.wsms-mb-panel__status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.wsms-mb-panel__status-dot--online {
+    background: #4ade80;
+}
+
+.wsms-mb-panel__status-dot--offline {
+    background: #94a3b8;
 }
 
 .wsms-mb-panel__subtitle {
@@ -216,24 +244,15 @@
     line-height: 1.4;
 }
 
-.wsms-mb-panel__offline {
-    font-size: 12px;
-    margin-top: 8px;
-    padding: 4px 10px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 6px;
-    display: inline-block;
-}
-
 .wsms-mb-panel__close {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     padding: 0;
     border: none;
-    border-radius: 8px;
+    border-radius: 50%;
     background: rgba(255, 255, 255, 0.15);
     color: #ffffff;
     cursor: pointer;
@@ -275,6 +294,7 @@
     font-size: 10px;
     cursor: pointer;
     transition: color 0.15s ease;
+    position: relative;
 }
 
 .wsms-mb-nav-tab:hover {
@@ -283,6 +303,17 @@
 
 .wsms-mb-nav-tab--active {
     color: var(--mb-accent);
+}
+
+.wsms-mb-nav-tab--active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 25%;
+    right: 25%;
+    height: 2px;
+    background: var(--mb-accent);
+    border-radius: 0 0 1px 1px;
 }
 
 .wsms-mb-nav-tab__label {
@@ -331,9 +362,34 @@
     background: var(--mb-bg-secondary);
 }
 
+.wsms-mb-welcome__cta-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--mb-accent-soft);
+    border-radius: var(--mb-radius-sm);
+    color: var(--mb-accent);
+    flex-shrink: 0;
+}
+
+.wsms-mb-welcome__cta-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.wsms-mb-welcome__cta-desc {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--mb-text-secondary);
+    margin: 2px 0 0;
+}
+
 .wsms-mb-welcome__arrow {
     margin-left: auto;
     color: var(--mb-text-secondary);
+    flex-shrink: 0;
 }
 
 .wsms-mb-welcome__team-preview {
@@ -441,21 +497,20 @@
 .wsms-mb-input,
 .wsms-mb-textarea {
     width: 100%;
-    padding: 8px 12px;
+    padding: 10px 14px;
     border: 1px solid var(--mb-border);
     border-radius: var(--mb-radius-sm);
     font-family: var(--mb-font);
     font-size: 14px;
     color: var(--mb-text);
     background: var(--mb-bg);
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    transition: border-color 0.15s ease;
     outline: none;
 }
 
 .wsms-mb-input:focus,
 .wsms-mb-textarea:focus {
     border-color: var(--mb-accent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mb-accent) 10%, transparent);
 }
 
 .wsms-mb-input::placeholder,
@@ -494,12 +549,21 @@
 }
 
 .wsms-mb-form__error {
-    padding: 8px 12px;
-    background: color-mix(in srgb, var(--mb-error) 8%, var(--mb-bg));
-    border: 1px solid color-mix(in srgb, var(--mb-error) 25%, var(--mb-bg));
-    border-radius: var(--mb-radius-sm);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 12px;
+    background: var(--mb-bg);
+    border: none;
+    border-left: 3px solid var(--mb-error);
+    border-radius: 0 var(--mb-radius-sm) var(--mb-radius-sm) 0;
     color: var(--mb-error);
     font-size: 13px;
+}
+
+.wsms-mb-form__error-icon {
+    flex-shrink: 0;
+    margin-top: 1px;
 }
 
 .wsms-mb-form__success {
@@ -512,12 +576,20 @@
 }
 
 .wsms-mb-form__success-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--mb-success) 12%, var(--mb-bg));
     color: var(--mb-success);
 }
 
 .wsms-mb-form__success h3 {
     font-size: 16px;
     font-weight: 600;
+    letter-spacing: -0.01em;
     margin: 0;
 }
 
@@ -579,13 +651,6 @@
     gap: 12px;
 }
 
-.wsms-mb-team__empty {
-    text-align: center;
-    color: var(--mb-text-secondary);
-    font-size: 13px;
-    padding: 20px 0;
-}
-
 .wsms-mb-team-card {
     display: flex;
     align-items: center;
@@ -593,6 +658,11 @@
     padding: 12px;
     border: 1px solid var(--mb-border);
     border-radius: var(--mb-radius-sm);
+    transition: border-color 0.15s ease;
+}
+
+.wsms-mb-team-card:hover {
+    border-color: var(--mb-accent);
 }
 
 .wsms-mb-team-card__avatar {
@@ -644,22 +714,24 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 6px;
+    border: 1px solid transparent;
     background: var(--mb-bg-secondary);
     color: var(--mb-text-secondary);
     text-decoration: none;
-    transition: background 0.15s ease, color 0.15s ease;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
 }
 
 .wsms-mb-channel-btn:hover {
-    background: var(--mb-accent);
-    color: #ffffff;
+    background: var(--mb-bg-secondary);
+    border-color: var(--mb-accent);
+    color: var(--mb-accent);
 }
 
-.wsms-mb-channel-btn--whatsapp:hover { background: #25d366; }
-.wsms-mb-channel-btn--telegram:hover { background: #0088cc; }
+.wsms-mb-channel-btn--whatsapp:hover { border-color: #25d366; color: #25d366; }
+.wsms-mb-channel-btn--telegram:hover { border-color: #0088cc; color: #0088cc; }
 
 /* Resources page */
 .wsms-mb-resources__list {
@@ -668,11 +740,26 @@
     gap: 8px;
 }
 
-.wsms-mb-resources__empty {
+.wsms-mb-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
     text-align: center;
     color: var(--mb-text-secondary);
     font-size: 13px;
-    padding: 20px 0;
+    padding: 32px 20px;
+}
+
+.wsms-mb-empty__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--mb-accent-soft);
+    color: var(--mb-accent);
 }
 
 .wsms-mb-resource-link {
@@ -698,7 +785,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--mb-bg-secondary);
+    background: var(--mb-accent-soft);
     border-radius: var(--mb-radius-sm);
     color: var(--mb-accent);
     flex-shrink: 0;
@@ -770,8 +857,8 @@
 /* === Mobile: increased touch targets === */
 @media (max-width: 480px) {
     .wsms-mb-channel-btn {
-        width: 36px;
-        height: 36px;
+        width: 38px;
+        height: 38px;
     }
 
     .wsms-mb-nav-tab {

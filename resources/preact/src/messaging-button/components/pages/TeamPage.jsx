@@ -1,4 +1,4 @@
-import { MessageIcon } from '../icons';
+import { MessageIcon, UsersIcon } from '../icons';
 import { AvatarImage } from '../AvatarImage';
 
 // Brand icons (WhatsApp, Telegram) are unique to this component and use fill
@@ -34,7 +34,10 @@ export function TeamPage({ members }) {
     if (!members || members.length === 0) {
         return (
             <div class="wsms-mb-page wsms-mb-page--team">
-                <p class="wsms-mb-team__empty">No team members configured.</p>
+                <div class="wsms-mb-empty">
+                    <div class="wsms-mb-empty__icon"><UsersIcon size={22} /></div>
+                    <p>No team members configured.</p>
+                </div>
             </div>
         );
     }

@@ -1,4 +1,4 @@
-import { FileTextIcon, ExternalLinkIcon } from '../icons';
+import { FileTextIcon, ExternalLinkIcon, HelpCircleIcon } from '../icons';
 
 export function ResourcesPage({ config }) {
     const links = config.links ?? [];
@@ -6,7 +6,10 @@ export function ResourcesPage({ config }) {
     if (links.length === 0) {
         return (
             <div class="wsms-mb-page wsms-mb-page--resources">
-                <p class="wsms-mb-resources__empty">No resources available.</p>
+                <div class="wsms-mb-empty">
+                    <div class="wsms-mb-empty__icon"><HelpCircleIcon size={22} /></div>
+                    <p>No resources available.</p>
+                </div>
             </div>
         );
     }

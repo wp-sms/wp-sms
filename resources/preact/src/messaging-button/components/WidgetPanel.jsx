@@ -121,9 +121,10 @@ export function WidgetPanel({ isOpen, currentPage, config, isOnline, offlineMess
                 <div class="wsms-mb-panel__header-content">
                     <h2 id={titleId} class="wsms-mb-panel__title">{widgetTitle}</h2>
                     <p class="wsms-mb-panel__subtitle">{widgetSubtitle}</p>
-                    {!isOnline && offlineMessage && (
-                        <p class="wsms-mb-panel__offline">{offlineMessage}</p>
-                    )}
+                    <div class="wsms-mb-panel__status">
+                        <span class={`wsms-mb-panel__status-dot ${isOnline ? 'wsms-mb-panel__status-dot--online' : 'wsms-mb-panel__status-dot--offline'}`} />
+                        <span>{isOnline ? 'Online now' : (offlineMessage || 'Away')}</span>
+                    </div>
                 </div>
                 <button
                     ref={closeButtonRef}
