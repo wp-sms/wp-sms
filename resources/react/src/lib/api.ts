@@ -35,6 +35,7 @@ export interface LogsResponse {
 
 export type VerificationMethod = 'otp' | 'magic_link';
 export type DeliveryChannel = 'sms' | 'whatsapp' | 'viber';
+export type SitePhoneChannel = 'sms' | 'whatsapp' | 'telegram';
 export type EnrollmentTiming = 'on_registration' | 'grace_period' | 'voluntary';
 export type LogVerbosity = 'minimal' | 'standard' | 'verbose';
 
@@ -161,6 +162,8 @@ export interface AuthSettings {
   pending_user_ttl_hours?: number;
   social?: Record<string, SocialProviderSettings>;
   social_profile_sync?: SocialProfileSync;
+  site_phone?: string;
+  site_phone_channel?: SitePhoneChannel;
 }
 
 export interface ReportsResponse {

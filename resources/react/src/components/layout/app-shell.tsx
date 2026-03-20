@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks, Settings2, MessageSquare } from 'lucide-react';
+import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks, Settings2, MessageSquare, SlidersHorizontal } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import {
   Sidebar,
@@ -106,6 +106,11 @@ export const NAV_ITEMS = [
     ],
   },
   {
+    id: 'general',
+    label: 'General',
+    icon: SlidersHorizontal,
+  },
+  {
     id: 'authentication',
     label: 'Authentication',
     icon: LogIn,
@@ -164,6 +169,7 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   'mb-pages': 'Configure widget pages: welcome screen, contact form, and resources.',
   'mb-team': 'Manage team members displayed in the messaging widget.',
   'mb-display-rules': 'Control where and when the messaging button appears on your site.',
+  'general': 'Configure site-level settings like admin phone number and notification preferences.',
   'channels': 'Configure authentication channels — Phone, Email, and Password.',
   'registration': 'Configure how new users register through the authentication pages.',
   'profile-fields': 'Manage which fields appear on registration and profile forms.',

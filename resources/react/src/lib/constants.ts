@@ -186,9 +186,17 @@ export const DEFAULTS: Required<AuthSettings> = {
     telegram: { enabled: false, client_id: '', client_secret: '' },
   },
   social_profile_sync: 'registration_only',
+  site_phone: '',
+  site_phone_channel: 'sms',
 };
 
 export type ChannelId = 'phone' | 'email' | 'password';
+
+export const SITE_PHONE_CHANNELS = [
+  { value: 'sms', label: 'SMS' },
+  { value: 'whatsapp', label: 'WhatsApp' },
+  { value: 'telegram', label: 'Telegram' },
+] as const;
 
 export const SOCIAL_METHODS = [
   { id: 'google', label: 'Google', comingSoon: false },

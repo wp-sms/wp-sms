@@ -10,7 +10,7 @@ interface AreaConfig {
 
 const AREA_CONFIG: Record<Area, AreaConfig> = {
   auth: {
-    sections: ['authentication', 'security', 'integrations', 'branding', 'monitoring'],
+    sections: ['general', 'authentication', 'security', 'integrations', 'branding', 'monitoring'],
     defaultSection: 'channels',
   },
   messaging: {

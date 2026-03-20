@@ -131,8 +131,19 @@ class MessageHandler
         $gatewayId = $formSettings['gateway_id'] ?? null;
 
         if (empty($recipients)) {
-            // Fallback to site admin email
-            $recipients = [get_option('admin_email')];
+            if ($channel !== 'email') {
+                $authSettings = get_option('wsms_auth_settings', []);
+                $sitePhone = $authSettings['site_phone'] ?? '';
+                $sitePhoneChannel = $authSettings['site_phone_channel'] ?? 'sms';
+                if ($sitePhone) {
+                    $recipients = [$sitePhone];
+                    $channel = $sitePhoneChannel;
+                }
+            }
+            if (empty($recipients)) {
+                $recipients = [get_option('admin_email')];
+                $channel = 'email';
+            }
         }
 
         $senderName = $data['name'] ?? __('Anonymous', 'wp-sms');

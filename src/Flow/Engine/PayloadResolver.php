@@ -44,6 +44,7 @@ class PayloadResolver
                 'name'  => get_bloginfo('name'),
                 'url'   => get_site_url(),
                 'email' => get_option('admin_email'),
+                'phone' => (get_option('wsms_auth_settings', []))['site_phone'] ?? '',
             ],
             'now' => [
                 'date'     => current_time('Y-m-d'),

@@ -33,6 +33,8 @@ class AdminController extends Controller
         'pending_user_cleanup_enabled',
         'pending_user_ttl_hours',
         'profile_fields',
+        'site_phone',
+        'site_phone_channel',
     ];
 
     /** Channel keys that accept nested sub-objects. */
@@ -391,6 +393,17 @@ class AdminController extends Controller
             $url = $settings['auth_base_url'];
             if (!preg_match('#^/[a-zA-Z0-9\-/]*$#', $url)) {
                 $errors[] = 'auth_base_url must start with / and contain only alphanumeric characters and hyphens.';
+            }
+        }
+
+        if (isset($settings['site_phone']) && !is_string($settings['site_phone'])) {
+            $errors[] = 'site_phone must be a string.';
+        }
+
+        if (isset($settings['site_phone_channel'])) {
+            $allowed = ['sms', 'whatsapp', 'telegram'];
+            if (!in_array($settings['site_phone_channel'], $allowed, true)) {
+                $errors[] = 'site_phone_channel must be one of: ' . implode(', ', $allowed) . '.';
             }
         }
 
