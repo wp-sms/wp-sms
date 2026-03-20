@@ -5,7 +5,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
-import { Eye, Clock, Plus, Trash2, AlertTriangle } from 'lucide-react';
+import { Eye, Clock, Plus, Trash2, AlertTriangle, Zap } from 'lucide-react';
 import type { MessagingButtonSettings } from './use-mb-settings';
 
 interface DisplayRulesPageProps {
@@ -17,7 +17,7 @@ interface DisplayRulesPageProps {
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRulesPageProps) {
-  const { display_rules, business_hours } = settings;
+  const { display_rules, business_hours, triggers } = settings;
   const usedDays = business_hours.schedule.map((s) => s.day);
 
   const addScheduleDay = () => {
@@ -43,6 +43,54 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
 
   return (
     <div className="space-y-4">
+      {/* Auto-Open Triggers */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Zap className="h-4 w-4 text-muted-foreground" />
+            Auto-Open Triggers
+          </CardTitle>
+          <CardDescription>Automatically open the widget based on visitor behavior. Each trigger has a 24-hour cooldown.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <Field>
+              <FieldLabel htmlFor="mb-auto-open-delay">Auto-open delay (seconds)</FieldLabel>
+              <Input
+                id="mb-auto-open-delay"
+                type="number"
+                min={0}
+                value={triggers.auto_open_delay}
+                onChange={(e) => onUpdate('triggers.auto_open_delay', Number(e.target.value))}
+              />
+              <FieldDescription>Open the widget after this many seconds. 0 to disable.</FieldDescription>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="mb-scroll-percent">Scroll percentage</FieldLabel>
+              <Input
+                id="mb-scroll-percent"
+                type="number"
+                min={0}
+                max={100}
+                value={triggers.scroll_percent}
+                onChange={(e) => onUpdate('triggers.scroll_percent', Number(e.target.value))}
+              />
+              <FieldDescription>Open when visitor scrolls past this percentage. 0 to disable.</FieldDescription>
+            </Field>
+
+            <Field orientation="horizontal">
+              <FieldLabel>Exit intent</FieldLabel>
+              <Switch
+                checked={triggers.exit_intent}
+                onCheckedChange={(checked) => onUpdate('triggers.exit_intent', checked)}
+              />
+              <FieldDescription>Open when the cursor moves toward closing the tab (desktop only)</FieldDescription>
+            </Field>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Display Rules */}
       <Card>
         <CardHeader>

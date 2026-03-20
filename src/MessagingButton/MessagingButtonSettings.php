@@ -51,6 +51,14 @@ class MessagingButtonSettings
             'exclude_urls' => [],
             'visibility' => 'everyone',
         ],
+        'greeting_bubble' => [
+            'enabled' => false,
+            'message' => 'Need help? We\'re online!',
+            'delay' => 3,
+            'duration' => 8,
+            'open_on_click' => true,
+        ],
+        'default_message' => '',
         'triggers' => [
             'auto_open_delay' => 0,
             'scroll_percent' => 0,

@@ -51,6 +51,14 @@ export interface MessagingButtonSettings extends Record<string, unknown> {
     exclude_urls: string[];
     visibility: 'everyone' | 'logged_in' | 'logged_out';
   };
+  greeting_bubble: {
+    enabled: boolean;
+    message: string;
+    delay: number;
+    duration: number;
+    open_on_click: boolean;
+  };
+  default_message: string;
   triggers: {
     auto_open_delay: number;
     scroll_percent: number;
@@ -91,6 +99,8 @@ const DEFAULTS: MessagingButtonSettings = {
   },
   team_members: [],
   display_rules: { auto_inject: true, include_urls: [], exclude_urls: [], visibility: 'everyone' },
+  greeting_bubble: { enabled: false, message: 'Need help? We\'re online!', delay: 3, duration: 8, open_on_click: true },
+  default_message: '',
   triggers: { auto_open_delay: 0, scroll_percent: 0, exit_intent: false },
   business_hours: { enabled: false, schedule: [], offline_message: 'We are currently offline.' },
   gdpr: { enabled: false, consent_text: 'I agree to the privacy policy.', link_url: '' },

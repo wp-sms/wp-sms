@@ -100,7 +100,7 @@ export function WidgetPanel({ isOpen, currentPage, config, isOnline, offlineMess
             case 'contact_form':
                 return <ContactFormPage config={pages.contact_form ?? {}} gdpr={config.gdpr ?? {}} onClose={onClose} />;
             case 'team':
-                return <TeamPage members={config.team_members ?? []} />;
+                return <TeamPage members={config.team_members ?? []} defaultMessage={config.default_message ?? ''} />;
             case 'resources':
                 return <ResourcesPage config={pages.resources ?? {}} />;
             default:

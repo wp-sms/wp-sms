@@ -157,6 +157,7 @@ class MessagingButtonController extends Controller
         $textFields = [
             'button.text', 'widget.title', 'widget.subtitle',
             'pages.welcome.greeting', 'pages.welcome.cta_label',
+            'greeting_bubble.message', 'default_message',
             'business_hours.offline_message', 'gdpr.consent_text',
         ];
         $urlFields = ['gdpr.link_url'];

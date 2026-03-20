@@ -1,9 +1,9 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Field, FieldLabel } from '@/components/ui/field';
+import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
-import { Users, Plus, Trash2, ChevronUp, ChevronDown, Upload } from 'lucide-react';
+import { Users, Plus, Trash2, ChevronUp, ChevronDown, Upload, MessageSquareText } from 'lucide-react';
 import type { MessagingButtonSettings } from './use-mb-settings';
 
 interface TeamPageProps {
@@ -242,6 +242,32 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
               <Plus className="mr-1 h-4 w-4" /> Add Team Member
             </Button>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <MessageSquareText className="h-4 w-4 text-muted-foreground" />
+            Pre-filled Message
+          </CardTitle>
+          <CardDescription>
+            Pre-fill a message when visitors click contact links
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Field>
+            <FieldLabel htmlFor="mb-default-message">Default Message</FieldLabel>
+            <Input
+              id="mb-default-message"
+              value={settings.default_message}
+              onChange={(e) => onUpdate('default_message', e.target.value)}
+              placeholder="Hi! I'm visiting {page_title} and have a question."
+            />
+            <FieldDescription>
+              Placeholders: {'{page_title}'}, {'{page_url}'}, {'{member_name}'}. Leave empty to disable.
+            </FieldDescription>
+          </Field>
         </CardContent>
       </Card>
     </div>

@@ -19,18 +19,39 @@ const CHANNEL_ICONS = {
     ),
 };
 
-function getChannelUrl(type, value) {
+function resolveMessage(template, memberName) {
+    if (!template) return '';
+    return template
+        .replace(/\{page_title\}/g, document.title || '')
+        .replace(/\{page_url\}/g, window.location.href || '')
+        .replace(/\{member_name\}/g, memberName || '');
+}
+
+function getChannelUrl(type, value, message) {
+    const base = (() => {
+        switch (type) {
+            case 'whatsapp': return `https://wa.me/${value.replace(/[^0-9+]/g, '')}`;
+            case 'telegram': return `https://t.me/${value.replace('@', '')}`;
+            case 'email': return `mailto:${value}`;
+            case 'phone': return `tel:${value}`;
+            case 'sms': return `sms:${value}`;
+            default: return '#';
+        }
+    })();
+
+    if (!message || type === 'phone') return base;
+
+    const encoded = encodeURIComponent(message);
     switch (type) {
-        case 'whatsapp': return `https://wa.me/${value.replace(/[^0-9+]/g, '')}`;
-        case 'telegram': return `https://t.me/${value.replace('@', '')}`;
-        case 'email': return `mailto:${value}`;
-        case 'phone': return `tel:${value}`;
-        case 'sms': return `sms:${value}`;
-        default: return '#';
+        case 'whatsapp':
+        case 'telegram': return `${base}?text=${encoded}`;
+        case 'email': return `${base}?subject=${encodeURIComponent('Question from website')}&body=${encoded}`;
+        case 'sms': return `${base}?body=${encoded}`;
+        default: return base;
     }
 }
 
-export function TeamPage({ members }) {
+export function TeamPage({ members, defaultMessage }) {
     if (!members || members.length === 0) {
         return (
             <div class="wsms-mb-page wsms-mb-page--team">
@@ -64,7 +85,7 @@ export function TeamPage({ members }) {
                             {(member.contact_methods ?? []).map((method, j) => (
                                 <a
                                     key={j}
-                                    href={getChannelUrl(method.type, method.value)}
+                                    href={getChannelUrl(method.type, method.value, resolveMessage(defaultMessage, member.name))}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     class={`wsms-mb-channel-btn wsms-mb-channel-btn--${method.type}`}

@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { Paintbrush, MousePointerClick, Sun, Moon, Monitor } from 'lucide-react';
+import { Paintbrush, MousePointerClick, Sun, Moon, Monitor, MessageCircle } from 'lucide-react';
 import type { MessagingButtonSettings } from './use-mb-settings';
 
 interface AppearancePageProps {
@@ -14,7 +14,7 @@ interface AppearancePageProps {
 }
 
 export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
-  const { button, widget, enabled } = settings;
+  const { button, widget, enabled, greeting_bubble } = settings;
 
   return (
     <div className="space-y-4">
@@ -196,6 +196,68 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
             </Field>
           </div>
         </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2 text-base">
+              <MessageCircle className="h-4 w-4 text-muted-foreground" />
+              Greeting Bubble
+            </CardTitle>
+            <Switch
+              checked={greeting_bubble.enabled}
+              onCheckedChange={(checked) => onUpdate('greeting_bubble.enabled', checked)}
+            />
+          </div>
+          <CardDescription>Show a speech bubble above the button to greet visitors</CardDescription>
+        </CardHeader>
+        {greeting_bubble.enabled && (
+          <CardContent>
+            <div className="space-y-4">
+              <Field>
+                <FieldLabel htmlFor="mb-greeting-message">Message</FieldLabel>
+                <Input
+                  id="mb-greeting-message"
+                  value={greeting_bubble.message}
+                  onChange={(e) => onUpdate('greeting_bubble.message', e.target.value)}
+                  placeholder="Need help? We're online!"
+                />
+              </Field>
+
+              <div className="grid grid-cols-2 gap-4">
+                <Field>
+                  <FieldLabel htmlFor="mb-greeting-delay">Show After (seconds)</FieldLabel>
+                  <Input
+                    id="mb-greeting-delay"
+                    type="number"
+                    min={0}
+                    value={greeting_bubble.delay}
+                    onChange={(e) => onUpdate('greeting_bubble.delay', Number(e.target.value))}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="mb-greeting-duration">Auto-dismiss (seconds)</FieldLabel>
+                  <Input
+                    id="mb-greeting-duration"
+                    type="number"
+                    min={0}
+                    value={greeting_bubble.duration}
+                    onChange={(e) => onUpdate('greeting_bubble.duration', Number(e.target.value))}
+                  />
+                  <FieldDescription>0 = stay until clicked</FieldDescription>
+                </Field>
+              </div>
+
+              <Field orientation="horizontal">
+                <FieldLabel>Open widget on click</FieldLabel>
+                <Switch
+                  checked={greeting_bubble.open_on_click}
+                  onCheckedChange={(checked) => onUpdate('greeting_bubble.open_on_click', checked)}
+                />
+              </Field>
+            </div>
+          </CardContent>
+        )}
       </Card>
     </div>
   );
