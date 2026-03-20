@@ -2,6 +2,11 @@
 
 namespace WSms\Messaging\Gateway\Provider;
 
+use WSms\Messaging\Catalog\ProviderTemplate;
+use WSms\Messaging\Catalog\TemplateCatalogException;
+use WSms\Messaging\Catalog\TemplateCatalogManager;
+use WSms\Messaging\Catalog\TemplateMapping;
+use WSms\Messaging\Catalog\TemplateStatus;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\InboundMessage;
 use WSms\Messaging\Contracts\MessageInterface;
@@ -9,14 +14,23 @@ use WSms\Messaging\Contracts\StatusUpdate;
 use WSms\Messaging\Contracts\SupportsInboundMessage;
 use WSms\Messaging\Contracts\SupportsOptOutDetection;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
+use WSms\Messaging\Contracts\SupportsTemplateCatalog;
 use WSms\Messaging\Gateway\AbstractProvider;
 use WSms\Messaging\Contracts\TestConnectionResult;
 
 defined('ABSPATH') || exit;
 
-class TwilioProvider extends AbstractProvider implements SupportsStatusCallback, SupportsInboundMessage, SupportsOptOutDetection
+class TwilioProvider extends AbstractProvider implements SupportsStatusCallback, SupportsInboundMessage, SupportsOptOutDetection, SupportsTemplateCatalog
 {
     private const API_BASE = 'https://api.twilio.com/2010-04-01';
+    private const CONTENT_API_BASE = 'https://content.twilio.com/v1';
+
+    private ?TemplateCatalogManager $catalogManager = null;
+
+    public function setCatalogManager(TemplateCatalogManager $manager): void
+    {
+        $this->catalogManager = $manager;
+    }
 
     public function getId(): string
     {
@@ -130,26 +144,40 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
 
         $meta = $message->getMeta();
 
-        // Determine if we should use a Content Template (WhatsApp OTP with configured SID).
-        $contentSid = null;
-        if ($channel === 'whatsapp' && ($meta['purpose'] ?? null) === 'otp') {
-            $contentSid = $this->getChannelConfig('whatsapp', 'otp_content_sid');
-        }
-
         $body = [
             'From'           => $from,
             'To'             => $to,
             'StatusCallback' => $this->getStatusCallbackUrl(),
         ];
 
-        if ($contentSid) {
-            // Production: Content Template (Body and ContentSid are mutually exclusive).
-            $body['ContentSid'] = $contentSid;
-            if (isset($meta['otp_code'])) {
-                $body['ContentVariables'] = wp_json_encode(['1' => $meta['otp_code']]);
+        $contentPayload = null;
+
+        if ($channel === 'whatsapp') {
+            // Catalog-based template resolution (new path)
+            $templateType = $meta['template_type'] ?? null;
+            if ($templateType && $this->catalogManager) {
+                $mapping = $this->catalogManager->resolveMapping($templateType, $this->getId());
+                if ($mapping) {
+                    $resolved = $mapping->resolveVariables($meta['template_variables'] ?? []);
+                    $contentPayload = $this->buildTemplatePayload($mapping, $resolved);
+                }
             }
+
+            // Legacy fallback: hardcoded otp_content_sid config
+            if (!$contentPayload && ($meta['purpose'] ?? null) === 'otp') {
+                $contentSid = $this->getChannelConfig('whatsapp', 'otp_content_sid');
+                if ($contentSid && isset($meta['otp_code'])) {
+                    $contentPayload = [
+                        'ContentSid' => $contentSid,
+                        'ContentVariables' => wp_json_encode(['1' => $meta['otp_code']]),
+                    ];
+                }
+            }
+        }
+
+        if ($contentPayload) {
+            $body = array_merge($body, $contentPayload);
         } else {
-            // Sandbox / SMS / non-OTP: free-form text body.
             $body['Body'] = $message->getBody();
         }
 
@@ -159,9 +187,7 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
         }
 
         $result = $this->httpPost($url, [
-            'headers' => [
-                'Authorization' => 'Basic ' . base64_encode("{$accountSid}:{$authToken}"),
-            ],
+            'headers' => $this->authHeaders(),
             'body' => $body,
         ]);
 
@@ -240,9 +266,7 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
         $url = self::API_BASE . "/Accounts/{$accountSid}/Balance.json";
 
         $result = $this->httpGet($url, [
-            'headers' => [
-                'Authorization' => 'Basic ' . base64_encode("{$accountSid}:{$authToken}"),
-            ],
+            'headers' => $this->authHeaders(),
         ]);
 
         if ($result instanceof DeliveryResult) {
@@ -271,9 +295,7 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
         $url = self::API_BASE . "/Accounts/{$accountSid}/Balance.json";
 
         $result = $this->httpGet($url, [
-            'headers' => [
-                'Authorization' => 'Basic ' . base64_encode("{$accountSid}:{$authToken}"),
-            ],
+            'headers' => $this->authHeaders(),
         ]);
 
         // Provider-specific error codes before common validation
@@ -346,7 +368,84 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
         return ($result->meta['twilio_code'] ?? null) == 21610;
     }
 
+    // --- SupportsTemplateCatalog ---
+
+    /** @return ProviderTemplate[] */
+    public function fetchTemplates(): array
+    {
+        $accountSid = $this->getSharedConfig('account_sid');
+        $authToken = $this->getSharedConfig('auth_token');
+
+        if (!$accountSid || !$authToken) {
+            throw new TemplateCatalogException(__('Twilio credentials not configured', 'wp-sms'));
+        }
+
+        $url = self::CONTENT_API_BASE . '/Content';
+
+        $result = $this->httpGet($url, [
+            'headers' => $this->authHeaders(),
+        ]);
+
+        if ($result instanceof DeliveryResult) {
+            throw new TemplateCatalogException(
+                $result->error ?? __('Failed to fetch templates from Twilio', 'wp-sms'),
+            );
+        }
+
+        $data = json_decode($result['body'], true);
+
+        if ($result['code'] < 200 || $result['code'] >= 300) {
+            throw new TemplateCatalogException(
+                $data['message'] ?? "HTTP {$result['code']}",
+            );
+        }
+
+        $templates = [];
+        foreach ($data['contents'] ?? [] as $content) {
+            $template = $this->parseTwilioContent($content);
+            if ($template && $template->isUsable()) {
+                $templates[] = $template;
+            }
+        }
+
+        return $templates;
+    }
+
+    public function requiresTemplateForChannel(string $channel): bool
+    {
+        if ($channel !== 'whatsapp') {
+            return false;
+        }
+
+        // Sandbox number doesn't require templates
+        $from = $this->getChannelConfig('whatsapp', 'from_number');
+        return $from !== '+14155238886';
+    }
+
+    public function buildTemplatePayload(TemplateMapping $mapping, array $resolvedVariables): array
+    {
+        $payload = [
+            'ContentSid' => $mapping->providerTemplateId,
+        ];
+
+        if (!empty($resolvedVariables)) {
+            $payload['ContentVariables'] = wp_json_encode($resolvedVariables);
+        }
+
+        return $payload;
+    }
+
     // --- Internal ---
+
+    private function authHeaders(): array
+    {
+        $accountSid = $this->getSharedConfig('account_sid');
+        $authToken = $this->getSharedConfig('auth_token');
+
+        return [
+            'Authorization' => 'Basic ' . base64_encode("{$accountSid}:{$authToken}"),
+        ];
+    }
 
     private function verifyTwilioSignature(\WP_REST_Request $request, string $callbackUrl): bool
     {
@@ -372,5 +471,59 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
         $expected = base64_encode(hash_hmac('sha1', $data, $authToken, true));
 
         return hash_equals($expected, $signature);
+    }
+
+    private function parseTwilioContent(array $content): ?ProviderTemplate
+    {
+        $types = $content['types'] ?? [];
+
+        // Only include templates that have a WhatsApp type
+        $whatsappType = $types['twilio/whatsapp'] ?? null;
+        if (!$whatsappType) {
+            return null;
+        }
+
+        $bodyText = $whatsappType['body'] ?? '';
+        $variableCount = 0;
+
+        // Count positional variables {{1}}, {{2}}, etc.
+        if (preg_match_all('/\{\{(\d+)\}\}/', $bodyText, $matches)) {
+            $variableCount = count(array_unique($matches[1]));
+        }
+
+        // Normalize approval status
+        $approvalRequests = $content['approval_requests'] ?? [];
+        $status = 'approved'; // Default for content templates in Twilio
+        foreach ($approvalRequests as $provider => $request) {
+            if (str_contains($provider, 'whatsapp')) {
+                $status = $request['status'] ?? 'approved';
+                break;
+            }
+        }
+
+        // Determine category from Twilio's content type
+        $category = 'utility';
+        foreach ($types as $typeName => $typeData) {
+            if (str_contains($typeName, 'authentication')) {
+                $category = 'authentication';
+                break;
+            }
+        }
+
+        return new ProviderTemplate(
+            id: $content['sid'],
+            name: $content['friendly_name'] ?? $content['sid'],
+            language: $content['language'] ?? 'en',
+            category: $category,
+            status: TemplateStatus::fromProviderStatus($status),
+            bodyText: $bodyText,
+            variableCount: $variableCount,
+            providerMeta: [
+                'types'             => array_keys($types),
+                'date_created'      => $content['date_created'] ?? null,
+                'date_updated'      => $content['date_updated'] ?? null,
+                'approval_requests' => $approvalRequests,
+            ],
+        );
     }
 }

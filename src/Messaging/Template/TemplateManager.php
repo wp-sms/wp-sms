@@ -71,6 +71,12 @@ class TemplateManager
     ): MessageInterface {
         $rendered = $this->render($templateId, $channel, $variables);
 
+        // Enrich meta for provider-side template resolution (WhatsApp requires pre-approved templates)
+        if ($channel === 'whatsapp') {
+            $messageMeta['template_type'] = $templateId;
+            $messageMeta['template_variables'] = $variables;
+        }
+
         return $rendered->toMessage($channel, $recipient, $messageMeta);
     }
 

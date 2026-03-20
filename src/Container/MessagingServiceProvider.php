@@ -2,6 +2,7 @@
 
 namespace WSms\Container;
 
+use WSms\Messaging\Catalog\TemplateCatalogManager;
 use WSms\Messaging\Gateway\Email\WpMailGateway;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
@@ -62,6 +63,10 @@ class MessagingServiceProvider implements ServiceProvider
             $c->get('message.dispatcher'),
             $c->get('messaging.keyword_matcher'),
         ));
+
+        $container->register('template.catalog_manager', fn($c) => new TemplateCatalogManager(
+            $c->get('gateway.registry'),
+        ));
     }
 
     public function boot(ServiceContainer $container): void
@@ -82,7 +87,16 @@ class MessagingServiceProvider implements ServiceProvider
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
         foreach (self::PROVIDERS as $id => $class) {
-            $registry->registerDeferred($id, $class);
+            if ($id === 'twilio') {
+                // Twilio needs the catalog manager injected
+                $registry->registerDeferred($id, function () use ($container) {
+                    $provider = new TwilioProvider();
+                    $provider->setCatalogManager($container->get('template.catalog_manager'));
+                    return $provider;
+                });
+            } else {
+                $registry->registerDeferred($id, $class);
+            }
         }
 
         // Test gateway: only in debug mode

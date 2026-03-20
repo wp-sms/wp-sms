@@ -22,6 +22,7 @@ use WSms\Rest\ListController;
 use WSms\Rest\OptOutSettingsController;
 use WSms\Rest\TagController;
 use WSms\Rest\MessagingButtonController;
+use WSms\Rest\TemplateCatalogController;
 use WSms\Rest\TemplateController;
 use WSms\Rest\WebhookReceiverController;
 
@@ -163,6 +164,10 @@ class RestServiceProvider implements ServiceProvider
             $c->get('template.manager'),
             $c->get('template.storage'),
             $c->get('auth.settings'),
+            $c->get('template.catalog_manager'),
+        ));
+        $container->register('rest.template_catalog', fn($c) => new TemplateCatalogController(
+            $c->get('template.catalog_manager'),
         ));
         $container->register('rest.webhook_receiver', fn($c) => new WebhookReceiverController(
             $c->get('auth.rate_limiter'),
@@ -201,6 +206,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.webhook_receiver')->registerRoutes();
             $container->get('rest.messaging_button')->registerRoutes();
             $container->get('rest.templates')->registerRoutes();
+            $container->get('rest.template_catalog')->registerRoutes();
         });
     }
 }

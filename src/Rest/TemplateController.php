@@ -3,6 +3,7 @@
 namespace WSms\Rest;
 
 use WSms\Auth\SettingsRepository;
+use WSms\Messaging\Catalog\TemplateCatalogManager;
 use WSms\Messaging\Template\Contracts\TemplateStorageInterface;
 use WSms\Messaging\Template\TemplateManager;
 use WSms\Messaging\Template\ValueObjects\ChannelContent;
@@ -15,6 +16,7 @@ class TemplateController extends Controller
         private TemplateManager $templateManager,
         private TemplateStorageInterface $storage,
         private SettingsRepository $settingsRepo,
+        private ?TemplateCatalogManager $catalogManager = null,
     ) {
     }
 
@@ -69,13 +71,16 @@ class TemplateController extends Controller
     public function handleList(\WP_REST_Request $request): \WP_REST_Response
     {
         $enabledChannels = $this->getEnabledChannels();
+        $whatsappGatewayId = $this->catalogManager
+            ? $this->catalogManager->getDefaultCatalogGatewayId('whatsapp')
+            : null;
         $templates = [];
 
         foreach ($this->templateManager->getTemplates() as $template) {
             $visibleChannels = $this->templateManager->getVisibleChannels($template->getId(), $enabledChannels);
             $editData = $this->templateManager->getTemplateForEditing($template->getId());
 
-            $templates[] = [
+            $entry = [
                 'id'               => $template->getId(),
                 'label'            => $template->getLabel(),
                 'description'      => $template->getDescription(),
@@ -84,6 +89,14 @@ class TemplateController extends Controller
                 'variables'        => $editData['variables'],
                 'channels'         => $editData['channels'],
             ];
+
+            if ($whatsappGatewayId && in_array('whatsapp', $visibleChannels, true)) {
+                $entry['whatsapp_gateway_id'] = $whatsappGatewayId;
+                $mapping = $this->catalogManager->resolveMapping($template->getId(), $whatsappGatewayId);
+                $entry['whatsapp_mapping'] = $mapping?->toArray();
+            }
+
+            $templates[] = $entry;
         }
 
         return new \WP_REST_Response($templates);
@@ -101,6 +114,15 @@ class TemplateController extends Controller
 
         $enabledChannels = $this->getEnabledChannels();
         $editData['visible_channels'] = $this->templateManager->getVisibleChannels($id, $enabledChannels);
+
+        if ($this->catalogManager && in_array('whatsapp', $editData['visible_channels'], true)) {
+            $whatsappGatewayId = $this->catalogManager->getDefaultCatalogGatewayId('whatsapp');
+            if ($whatsappGatewayId) {
+                $editData['whatsapp_gateway_id'] = $whatsappGatewayId;
+                $mapping = $this->catalogManager->resolveMapping($id, $whatsappGatewayId);
+                $editData['whatsapp_mapping'] = $mapping?->toArray();
+            }
+        }
 
         return new \WP_REST_Response($editData);
     }

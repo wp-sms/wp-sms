@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
@@ -14,7 +15,7 @@ import { insertVariableAtCursor } from '@/lib/text-utils';
 import type { FieldOption } from '@/lib/condition-utils';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
-import { Mail, MessageSquare, Send, Smartphone, Eye, RotateCcw, Settings } from 'lucide-react';
+import { Mail, MessageSquare, Send, Smartphone, Eye, RotateCcw, Settings, RefreshCw, AlertTriangle, ExternalLink } from 'lucide-react';
 
 interface VariableInfo {
   name: string;
@@ -37,6 +38,27 @@ interface ChannelEditData {
   current: ChannelContentData | null;
 }
 
+interface TemplateMappingData {
+  template_type: string;
+  provider_template_id: string;
+  gateway_id: string;
+  language: string;
+  variable_map: Record<string, string>;
+  provider_template_name: string;
+  provider_template_body: string;
+  last_verified_at: number | null;
+}
+
+interface ProviderTemplate {
+  id: string;
+  name: string;
+  language: string;
+  category: string;
+  status: 'approved' | 'pending' | 'rejected' | 'paused' | 'disabled';
+  body_text: string;
+  variable_count: number;
+}
+
 interface TemplateData {
   id: string;
   label: string;
@@ -45,6 +67,8 @@ interface TemplateData {
   visible_channels: string[];
   variables: Record<string, VariableInfo>;
   channels: Record<string, ChannelEditData>;
+  whatsapp_gateway_id?: string;
+  whatsapp_mapping?: TemplateMappingData | null;
 }
 
 interface PreviewData {
@@ -219,6 +243,252 @@ export function Templates() {
   );
 }
 
+// --- WhatsApp Provider Template Picker ---
+
+function WhatsAppTemplatePicker({
+  template,
+  existingMapping,
+  onMappingSaved,
+}: {
+  template: TemplateData;
+  existingMapping?: TemplateMappingData | null;
+  onMappingSaved: () => void;
+}) {
+  const [providerTemplates, setProviderTemplates] = useState<ProviderTemplate[]>([]);
+  const [loadingTemplates, setLoadingTemplates] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [selectedTemplateId, setSelectedTemplateId] = useState(existingMapping?.provider_template_id ?? '');
+  const [variableMap, setVariableMap] = useState<Record<string, string>>(existingMapping?.variable_map ?? {});
+  const [saving, setSaving] = useState(false);
+
+  const gatewayId = template.whatsapp_gateway_id ?? existingMapping?.gateway_id;
+
+  // No gateway configured for WhatsApp
+  if (!gatewayId) {
+    return (
+      <p className="text-sm text-muted-foreground">
+        Configure a WhatsApp gateway first to manage templates.
+      </p>
+    );
+  }
+
+  const selectedTemplate = useMemo(
+    () => providerTemplates.find((t) => t.id === selectedTemplateId),
+    [providerTemplates, selectedTemplateId],
+  );
+
+  const templateVariables = useMemo(() => {
+    return Object.entries(template.variables).map(([key, v]) => ({
+      key,
+      label: v.label,
+      example: v.example,
+    }));
+  }, [template.variables]);
+
+  const previewBody = useMemo(() => {
+    if (!selectedTemplate) return '';
+    let body = selectedTemplate.body_text;
+    for (const [varName, position] of Object.entries(variableMap)) {
+      const varInfo = template.variables[varName];
+      if (varInfo) {
+        body = body.replace(`{{${position}}}`, varInfo.example);
+      }
+    }
+    return body;
+  }, [selectedTemplate, variableMap, template.variables]);
+
+  const loadProviderTemplates = useCallback(async (refresh = false) => {
+    setLoadingTemplates(true);
+    setLoadError(null);
+    try {
+      const endpoint = refresh
+        ? `gateways/${gatewayId}/templates/refresh`
+        : `gateways/${gatewayId}/templates`;
+      const data = refresh
+        ? await api.post<ProviderTemplate[]>(endpoint, {})
+        : await api.get<ProviderTemplate[]>(endpoint);
+      setProviderTemplates(data);
+    } catch {
+      setLoadError('Failed to load templates from provider');
+    } finally {
+      setLoadingTemplates(false);
+    }
+  }, [gatewayId]);
+
+  useEffect(() => {
+    void loadProviderTemplates();
+  }, [loadProviderTemplates]);
+
+  async function handleSaveMapping() {
+    if (!selectedTemplateId) return;
+    setSaving(true);
+    try {
+      await api.put(`gateways/${gatewayId}/template-mappings/${template.id}`, {
+        provider_template_id: selectedTemplateId,
+        language: selectedTemplate?.language ?? 'en',
+        variable_map: variableMap,
+      });
+      toast.success('Template mapping saved');
+      onMappingSaved();
+    } catch {
+      toast.error('Failed to save template mapping');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleRemoveMapping() {
+    try {
+      await api.del(`gateways/${gatewayId}/template-mappings/${template.id}`);
+      setSelectedTemplateId('');
+      setVariableMap({});
+      toast.success('Template mapping removed');
+      onMappingSaved();
+    } catch {
+      toast.error('Failed to remove mapping');
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      <FieldDescription>
+        Select a pre-approved WhatsApp template from your provider. If no mapping is configured, the plugin falls back to free-form messages (works in sandbox mode).
+      </FieldDescription>
+
+      {loadError && (
+        <div className="flex items-center gap-2 rounded-md border border-destructive/50 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+          <AlertTriangle className="h-4 w-4 shrink-0" />
+          {loadError}
+        </div>
+      )}
+
+      <Field>
+        <div className="flex items-center justify-between">
+          <FieldLabel>Provider template</FieldLabel>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => loadProviderTemplates(true)}
+            disabled={loadingTemplates}
+            className="h-7 gap-1.5 text-xs"
+          >
+            <RefreshCw className={`h-3 w-3 ${loadingTemplates ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
+
+        {loadingTemplates && providerTemplates.length === 0 ? (
+          <Skeleton className="h-9 w-full" />
+        ) : providerTemplates.length === 0 && !loadError ? (
+          <div className="rounded-md border border-border/50 px-3 py-4 text-center text-sm text-muted-foreground">
+            <p>No approved templates found.</p>
+            <p className="mt-1 text-xs">
+              Create templates in your{' '}
+              <a
+                href="https://console.twilio.com/us1/develop/sms/content-editor"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-0.5 text-primary underline underline-offset-2"
+              >
+                provider console
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            </p>
+          </div>
+        ) : (
+          <Select value={selectedTemplateId} onValueChange={(id) => { setSelectedTemplateId(id); setVariableMap({}); }}>
+            <SelectTrigger>
+              <SelectValue placeholder="None (free-form fallback)" />
+            </SelectTrigger>
+            <SelectContent className="z-[10000]">
+              {providerTemplates.map((pt) => (
+                <SelectItem key={pt.id} value={pt.id}>
+                  <span className="flex items-center gap-2">
+                    {pt.name}
+                    <span className="text-xs text-muted-foreground">({pt.language})</span>
+                    {pt.variable_count > 0 && (
+                      <Badge variant="outline" className="text-[10px] px-1 py-0">
+                        {pt.variable_count} var{pt.variable_count !== 1 ? 's' : ''}
+                      </Badge>
+                    )}
+                  </span>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        )}
+      </Field>
+
+      {selectedTemplate && selectedTemplate.variable_count > 0 && (
+        <Field>
+          <FieldLabel>Variable mapping</FieldLabel>
+          <FieldDescription>
+            Map each template variable to a plugin variable.
+          </FieldDescription>
+          <div className="space-y-2 mt-2">
+            {Array.from({ length: selectedTemplate.variable_count }, (_, i) => i + 1).map((pos) => (
+              <div key={pos} className="flex items-center gap-2">
+                <span className="text-xs font-mono text-muted-foreground w-12 shrink-0">
+                  {`{{${pos}}}`}
+                </span>
+                <Select
+                  value={Object.entries(variableMap).find(([, p]) => p === String(pos))?.[0] ?? ''}
+                  onValueChange={(varName) => {
+                    setVariableMap((prev) => {
+                      const next = { ...prev };
+                      for (const [k, v] of Object.entries(next)) {
+                        if (v === String(pos)) delete next[k];
+                      }
+                      if (varName) next[varName] = String(pos);
+                      return next;
+                    });
+                  }}
+                >
+                  <SelectTrigger className="flex-1">
+                    <SelectValue placeholder="Select variable" />
+                  </SelectTrigger>
+                  <SelectContent className="z-[10000]">
+                    {templateVariables.map((v) => (
+                      <SelectItem key={v.key} value={v.key}>
+                        {v.label}
+                        <span className="ml-1 text-xs text-muted-foreground">({v.example})</span>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            ))}
+          </div>
+        </Field>
+      )}
+
+      {selectedTemplate && (
+        <Field>
+          <FieldLabel>Preview</FieldLabel>
+          <div className="rounded-2xl rounded-tl-sm bg-muted px-4 py-3 shadow-sm">
+            <p className="text-sm whitespace-pre-wrap leading-relaxed">{previewBody}</p>
+          </div>
+        </Field>
+      )}
+
+      {selectedTemplate && (
+        <div className="flex gap-2">
+          <Button onClick={handleSaveMapping} disabled={saving} className="flex-1">
+            {saving ? 'Saving...' : 'Save Mapping'}
+          </Button>
+          {existingMapping && (
+            <Button variant="ghost" onClick={handleRemoveMapping}>
+              Remove
+            </Button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// --- Template Editor ---
+
 function TemplateEditor({
   template,
   onClose,
@@ -255,6 +525,7 @@ function TemplateEditor({
   const channelData = template.channels[activeChannel];
   const hasOverride = channelData?.override != null;
   const isEmailChannel = activeChannel === 'email';
+  const isWhatsAppChannel = activeChannel === 'whatsapp';
   const fieldOptions = useMemo(() => toFieldOptions(template.variables), [template.variables]);
 
   function updateDraft(field: keyof ChannelContentData, value: string) {
@@ -337,7 +608,13 @@ function TemplateEditor({
 
                   {visibleChannels.map((ch) => (
                     <TabsContent key={ch} value={ch} className="mt-4 space-y-4">
-                      {currentDraft && (
+                      {ch === 'whatsapp' ? (
+                        <WhatsAppTemplatePicker
+                          template={template}
+                          existingMapping={template.whatsapp_mapping}
+                          onMappingSaved={onSaved}
+                        />
+                      ) : currentDraft ? (
                         <>
                           {isEmailChannel && (
                             <Field>
@@ -419,28 +696,32 @@ function TemplateEditor({
                             </>
                           )}
                         </>
-                      )}
+                      ) : null}
                     </TabsContent>
                   ))}
                 </Tabs>
 
-                <Separator />
+                {!isWhatsAppChannel && (
+                  <>
+                    <Separator />
 
-                <div className="flex gap-2">
-                  <Button onClick={handleSave} disabled={saving || !currentDraft} className="flex-1">
-                    {saving ? 'Saving...' : 'Save'}
-                  </Button>
-                  <Button variant="outline" onClick={handlePreview} disabled={previewing}>
-                    <Eye className="h-3.5 w-3.5 mr-1.5" />
-                    {previewing ? 'Loading...' : 'Preview'}
-                  </Button>
-                  {hasOverride && (
-                    <Button variant="ghost" onClick={handleReset}>
-                      <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
-                      Reset
-                    </Button>
-                  )}
-                </div>
+                    <div className="flex gap-2">
+                      <Button onClick={handleSave} disabled={saving || !currentDraft} className="flex-1">
+                        {saving ? 'Saving...' : 'Save'}
+                      </Button>
+                      <Button variant="outline" onClick={handlePreview} disabled={previewing}>
+                        <Eye className="h-3.5 w-3.5 mr-1.5" />
+                        {previewing ? 'Loading...' : 'Preview'}
+                      </Button>
+                      {hasOverride && (
+                        <Button variant="ghost" onClick={handleReset}>
+                          <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+                          Reset
+                        </Button>
+                      )}
+                    </div>
+                  </>
+                )}
               </>
             ) : (
               <p className="text-sm text-muted-foreground">
