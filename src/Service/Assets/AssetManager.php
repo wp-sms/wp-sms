@@ -44,6 +44,7 @@ class AssetManager
             return;
         }
 
+        wp_enqueue_media();
         ViteHelper::enqueueFromManifest($manifest, 'src/main.tsx', 'wsms-dashboard');
 
         wp_print_inline_script_tag(

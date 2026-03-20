@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks, Settings2 } from 'lucide-react';
+import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks, Settings2, MessageSquare } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import {
   Sidebar,
@@ -87,6 +87,17 @@ export const NAV_ITEMS = [
     icon: ScrollText,
   },
   {
+    id: 'messaging-button',
+    label: 'Messaging Button',
+    icon: MessageSquare,
+    children: [
+      { id: 'mb-appearance', label: 'Appearance' },
+      { id: 'mb-pages', label: 'Pages' },
+      { id: 'mb-team', label: 'Team' },
+      { id: 'mb-display-rules', label: 'Display Rules' },
+    ],
+  },
+  {
     id: 'settings',
     label: 'Settings',
     icon: Settings2,
@@ -148,6 +159,10 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   'apps': 'Browse available apps and their triggers and actions for automation flows.',
   'message-logs': 'View sent messages, delivery status, and error details.',
   'opt-out': 'Configure STOP/START keyword handling, auto-replies, and unsubscribe settings.',
+  'mb-appearance': 'Customize the floating button style, colors, position, and widget header.',
+  'mb-pages': 'Configure widget pages: welcome screen, contact form, and resources.',
+  'mb-team': 'Manage team members displayed in the messaging widget.',
+  'mb-display-rules': 'Control where and when the messaging button appears on your site.',
   'channels': 'Configure authentication channels — Phone, Email, and Password.',
   'registration': 'Configure how new users register through the authentication pages.',
   'profile-fields': 'Manage which fields appear on registration and profile forms.',

@@ -21,6 +21,7 @@ use WSms\Rest\GatewayCallbackController;
 use WSms\Rest\ListController;
 use WSms\Rest\OptOutSettingsController;
 use WSms\Rest\TagController;
+use WSms\Rest\MessagingButtonController;
 use WSms\Rest\WebhookReceiverController;
 
 defined('ABSPATH') || exit;
@@ -160,6 +161,12 @@ class RestServiceProvider implements ServiceProvider
         $container->register('rest.webhook_receiver', fn($c) => new WebhookReceiverController(
             $c->get('auth.rate_limiter'),
         ));
+        $container->register('rest.messaging_button', fn($c) => new MessagingButtonController(
+            $c->get('messaging_button.settings'),
+            $c->get('messaging_button.handler'),
+            $c->get('gateway.registry'),
+            $c->get('auth.rate_limiter'),
+        ));
     }
 
     /** {@inheritDoc} */
@@ -186,6 +193,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.gateway_callbacks')->registerRoutes();
             $container->get('rest.optout_settings')->registerRoutes();
             $container->get('rest.webhook_receiver')->registerRoutes();
+            $container->get('rest.messaging_button')->registerRoutes();
         });
     }
 }

@@ -6,6 +6,7 @@ import { useHashSection } from '@/hooks/use-hash-section';
 import { getConfig } from '@/lib/api';
 import { getNavItemsForArea, getDefaultSection, getValidSections } from '@/lib/area-nav';
 import { MessagingPage } from '@/pages/messaging';
+import { MessagingButtonPage } from '@/pages/messaging-button';
 import { AuthenticationPage } from '@/pages/authentication';
 import { SecurityPage } from '@/pages/security';
 import { IntegrationsPage } from '@/pages/integrations';
@@ -60,6 +61,8 @@ export default function App() {
       case 'message-logs':
       case 'settings':
         return <MessagingPage section={section} subTab={subTab} onNavigate={setSection} />;
+      case 'messaging-button':
+        return <MessagingButtonPage section={section} />;
       case 'authentication':
         return <AuthenticationPage section={section} settings={settings} onUpdate={updateSetting} />;
       case 'security':

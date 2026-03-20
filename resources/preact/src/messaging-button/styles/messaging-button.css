@@ -1,0 +1,785 @@
+@import 'tailwindcss';
+@source "../";
+
+/* === CSS Variables (Light) === */
+:host {
+    --mb-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    --mb-radius: 12px;
+    --mb-radius-sm: 8px;
+    --mb-shadow: 0 5px 40px rgba(0, 0, 0, 0.16);
+    --mb-shadow-fab: 0 4px 20px rgba(0, 0, 0, 0.2);
+    --mb-text: #1a1a2e;
+    --mb-text-secondary: #64748b;
+    --mb-bg: #ffffff;
+    --mb-bg-secondary: #f8fafc;
+    --mb-border: #e2e8f0;
+    --mb-success: #22c55e;
+    --mb-error: #ef4444;
+    --mb-accent: var(--panel-accent, #2563eb);
+    --mb-panel-width: 380px;
+    --mb-panel-height: 520px;
+    --mb-fab-size: 56px;
+    --mb-gap: 16px;
+}
+
+/* Dark theme */
+:host(.wsms-mb-dark) {
+    --mb-text: #e2e8f0;
+    --mb-text-secondary: #94a3b8;
+    --mb-bg: #1e293b;
+    --mb-bg-secondary: #0f172a;
+    --mb-border: #334155;
+    --mb-shadow: 0 5px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* System theme — follow OS preference */
+@media (prefers-color-scheme: dark) {
+    :host(.wsms-mb-system) {
+        --mb-text: #e2e8f0;
+        --mb-text-secondary: #94a3b8;
+        --mb-bg: #1e293b;
+        --mb-bg-secondary: #0f172a;
+        --mb-border: #334155;
+        --mb-shadow: 0 5px 40px rgba(0, 0, 0, 0.4);
+    }
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* === Floating Action Button === */
+.wsms-mb-fab {
+    position: fixed;
+    bottom: 24px;
+    z-index: 2147483646;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: var(--mb-fab-size);
+    padding: 0 20px;
+    border: none;
+    border-radius: 28px;
+    background: var(--fab-bg, #2563eb);
+    color: var(--fab-color, #ffffff);
+    font-family: var(--mb-font);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: var(--mb-shadow-fab);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, gap 0.3s ease, padding 0.3s ease;
+    white-space: nowrap;
+    line-height: 1;
+}
+
+.wsms-mb-fab:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.25);
+}
+
+.wsms-mb-fab:active {
+    transform: scale(0.97);
+}
+
+.wsms-mb-fab--right { right: 24px; }
+.wsms-mb-fab--left { left: 24px; }
+
+.wsms-mb-fab__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.wsms-mb-fab__icon--close {
+    transform: rotate(90deg);
+}
+
+.wsms-mb-fab__text {
+    overflow: hidden;
+}
+
+/* Text-only style: no icon, adjusted padding */
+.wsms-mb-fab--text-only {
+    padding: 0 24px;
+}
+
+/* Attention animations */
+@keyframes wsms-pulse {
+    0%, 100% { box-shadow: var(--mb-shadow-fab); }
+    50% { box-shadow: 0 0 0 8px color-mix(in srgb, var(--fab-bg, #2563eb) 30%, transparent), var(--mb-shadow-fab); }
+}
+
+@keyframes wsms-bounce {
+    0%, 100% { transform: translateY(0); }
+    25% { transform: translateY(-6px); }
+    50% { transform: translateY(0); }
+    75% { transform: translateY(-3px); }
+}
+
+.wsms-mb-fab--pulse { animation: wsms-pulse 2s ease-in-out infinite; }
+.wsms-mb-fab--bounce { animation: wsms-bounce 2s ease-in-out infinite; }
+
+.wsms-mb-fab--badge::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 12px;
+    height: 12px;
+    background: var(--mb-error);
+    border-radius: 50%;
+    border: 2px solid var(--fab-bg, #2563eb);
+}
+
+/* === Widget Panel === */
+.wsms-mb-panel {
+    position: fixed;
+    bottom: calc(24px + var(--mb-fab-size) + var(--mb-gap));
+    z-index: 2147483645;
+    width: var(--mb-panel-width);
+    max-height: var(--mb-panel-height);
+    background: var(--mb-bg);
+    border-radius: var(--mb-radius);
+    box-shadow: var(--mb-shadow);
+    font-family: var(--mb-font);
+    color: var(--mb-text);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(16px) scale(0.95);
+    pointer-events: none;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.wsms-mb-panel--open {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+}
+
+.wsms-mb-panel--right { right: 24px; }
+.wsms-mb-panel--left { left: 24px; }
+
+/* Mobile: full screen */
+@media (max-width: 480px) {
+    .wsms-mb-panel {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        max-height: 100%;
+        border-radius: 0;
+        transform: translateY(100%);
+    }
+
+    .wsms-mb-panel--open {
+        transform: translateY(0);
+    }
+}
+
+/* Header */
+.wsms-mb-panel__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 20px;
+    background: var(--mb-accent);
+    color: #ffffff;
+    flex-shrink: 0;
+}
+
+.wsms-mb-panel__header-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.wsms-mb-panel__title {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+    margin: 0;
+}
+
+.wsms-mb-panel__subtitle {
+    font-size: 13px;
+    opacity: 0.85;
+    margin: 4px 0 0;
+    line-height: 1.4;
+}
+
+.wsms-mb-panel__offline {
+    font-size: 12px;
+    margin-top: 8px;
+    padding: 4px 10px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    display: inline-block;
+}
+
+.wsms-mb-panel__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    flex-shrink: 0;
+    margin-left: 12px;
+}
+
+.wsms-mb-panel__close:hover {
+    background: rgba(255, 255, 255, 0.25);
+}
+
+/* Body */
+.wsms-mb-panel__body {
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+/* Navigation */
+.wsms-mb-panel__nav {
+    display: flex;
+    border-top: 1px solid var(--mb-border);
+    flex-shrink: 0;
+    background: var(--mb-bg);
+}
+
+.wsms-mb-nav-tab {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 8px 4px;
+    border: none;
+    background: none;
+    color: var(--mb-text-secondary);
+    font-family: var(--mb-font);
+    font-size: 10px;
+    cursor: pointer;
+    transition: color 0.15s ease;
+}
+
+.wsms-mb-nav-tab:hover {
+    color: var(--mb-text);
+}
+
+.wsms-mb-nav-tab--active {
+    color: var(--mb-accent);
+}
+
+.wsms-mb-nav-tab__label {
+    line-height: 1;
+}
+
+/* === Page Styles === */
+.wsms-mb-page {
+    padding: 20px;
+}
+
+/* Welcome page */
+.wsms-mb-welcome__greeting {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--mb-text-secondary);
+    margin-bottom: 16px;
+}
+
+.wsms-mb-welcome__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wsms-mb-welcome__cta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--mb-border);
+    border-radius: var(--mb-radius-sm);
+    background: var(--mb-bg);
+    font-family: var(--mb-font);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--mb-text);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    text-align: left;
+}
+
+.wsms-mb-welcome__cta:hover {
+    border-color: var(--mb-accent);
+    background: var(--mb-bg-secondary);
+}
+
+.wsms-mb-welcome__arrow {
+    margin-left: auto;
+    color: var(--mb-text-secondary);
+}
+
+.wsms-mb-welcome__team-preview {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--mb-border);
+}
+
+.wsms-mb-welcome__team-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    font-family: var(--mb-font);
+    cursor: pointer;
+    text-align: left;
+}
+
+.wsms-mb-welcome__avatars {
+    display: flex;
+}
+
+.wsms-mb-welcome__avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--mb-accent);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    overflow: hidden;
+    border: 2px solid var(--mb-bg);
+    margin-left: -8px;
+}
+
+.wsms-mb-welcome__avatar:first-child {
+    margin-left: 0;
+}
+
+.wsms-mb-welcome__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.wsms-mb-welcome__team-text {
+    font-size: 13px;
+    color: var(--mb-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.wsms-mb-welcome__team-text:hover {
+    color: var(--mb-accent);
+}
+
+.wsms-mb-welcome__resources-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    padding: 0;
+    border: none;
+    background: none;
+    font-family: var(--mb-font);
+    font-size: 13px;
+    color: var(--mb-text-secondary);
+    cursor: pointer;
+}
+
+.wsms-mb-welcome__resources-link:hover {
+    color: var(--mb-accent);
+}
+
+/* Contact form */
+.wsms-mb-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.wsms-mb-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.wsms-mb-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--mb-text);
+}
+
+.wsms-mb-required {
+    color: var(--mb-error);
+}
+
+.wsms-mb-input,
+.wsms-mb-textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--mb-border);
+    border-radius: var(--mb-radius-sm);
+    font-family: var(--mb-font);
+    font-size: 14px;
+    color: var(--mb-text);
+    background: var(--mb-bg);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    outline: none;
+}
+
+.wsms-mb-input:focus,
+.wsms-mb-textarea:focus {
+    border-color: var(--mb-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mb-accent) 10%, transparent);
+}
+
+.wsms-mb-input::placeholder,
+.wsms-mb-textarea::placeholder {
+    color: var(--mb-text-secondary);
+    opacity: 0.6;
+}
+
+.wsms-mb-textarea {
+    resize: vertical;
+    min-height: 72px;
+}
+
+.wsms-mb-field--checkbox {
+    flex-direction: row;
+}
+
+.wsms-mb-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--mb-text-secondary);
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+.wsms-mb-checkbox-label input[type="checkbox"] {
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.wsms-mb-checkbox-label a {
+    color: var(--mb-accent);
+    text-decoration: underline;
+}
+
+.wsms-mb-form__error {
+    padding: 8px 12px;
+    background: color-mix(in srgb, var(--mb-error) 8%, var(--mb-bg));
+    border: 1px solid color-mix(in srgb, var(--mb-error) 25%, var(--mb-bg));
+    border-radius: var(--mb-radius-sm);
+    color: var(--mb-error);
+    font-size: 13px;
+}
+
+.wsms-mb-form__success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 24px 0;
+    gap: 12px;
+}
+
+.wsms-mb-form__success-icon {
+    color: var(--mb-success);
+}
+
+.wsms-mb-form__success h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.wsms-mb-form__success p {
+    font-size: 13px;
+    color: var(--mb-text-secondary);
+    margin: 0;
+}
+
+/* Buttons */
+.wsms-mb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--mb-radius-sm);
+    font-family: var(--mb-font);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.wsms-mb-btn--primary {
+    background: var(--mb-accent);
+    color: #ffffff;
+}
+
+.wsms-mb-btn--primary:hover {
+    opacity: 0.9;
+}
+
+.wsms-mb-btn--primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.wsms-mb-btn--secondary {
+    background: var(--mb-bg-secondary);
+    color: var(--mb-text);
+    border: 1px solid var(--mb-border);
+}
+
+.wsms-mb-btn--secondary:hover {
+    background: var(--mb-border);
+}
+
+.wsms-mb-btn__loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Team page */
+.wsms-mb-team__list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.wsms-mb-team__empty {
+    text-align: center;
+    color: var(--mb-text-secondary);
+    font-size: 13px;
+    padding: 20px 0;
+}
+
+.wsms-mb-team-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--mb-border);
+    border-radius: var(--mb-radius-sm);
+}
+
+.wsms-mb-team-card__avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--mb-accent);
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.wsms-mb-team-card__avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.wsms-mb-team-card__info {
+    flex: 1;
+    min-width: 0;
+}
+
+.wsms-mb-team-card__name {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.3;
+    margin: 0;
+}
+
+.wsms-mb-team-card__role {
+    font-size: 12px;
+    color: var(--mb-text-secondary);
+    margin: 0;
+}
+
+.wsms-mb-team-card__channels {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.wsms-mb-channel-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    background: var(--mb-bg-secondary);
+    color: var(--mb-text-secondary);
+    text-decoration: none;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.wsms-mb-channel-btn:hover {
+    background: var(--mb-accent);
+    color: #ffffff;
+}
+
+.wsms-mb-channel-btn--whatsapp:hover { background: #25d366; }
+.wsms-mb-channel-btn--telegram:hover { background: #0088cc; }
+
+/* Resources page */
+.wsms-mb-resources__list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wsms-mb-resources__empty {
+    text-align: center;
+    color: var(--mb-text-secondary);
+    font-size: 13px;
+    padding: 20px 0;
+}
+
+.wsms-mb-resource-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border: 1px solid var(--mb-border);
+    border-radius: var(--mb-radius-sm);
+    text-decoration: none;
+    color: var(--mb-text);
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.wsms-mb-resource-link:hover {
+    border-color: var(--mb-accent);
+    background: var(--mb-bg-secondary);
+}
+
+.wsms-mb-resource-link__icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--mb-bg-secondary);
+    border-radius: var(--mb-radius-sm);
+    color: var(--mb-accent);
+    flex-shrink: 0;
+}
+
+.wsms-mb-resource-link__content {
+    flex: 1;
+    min-width: 0;
+}
+
+.wsms-mb-resource-link__title {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0;
+}
+
+.wsms-mb-resource-link__desc {
+    font-size: 12px;
+    color: var(--mb-text-secondary);
+    margin: 2px 0 0;
+}
+
+.wsms-mb-resource-link__arrow {
+    color: var(--mb-text-secondary);
+    flex-shrink: 0;
+}
+
+/* === Focus-visible styles === */
+.wsms-mb-fab:focus-visible,
+.wsms-mb-btn:focus-visible,
+.wsms-mb-nav-tab:focus-visible,
+.wsms-mb-panel__close:focus-visible,
+.wsms-mb-welcome__cta:focus-visible,
+.wsms-mb-welcome__team-link:focus-visible,
+.wsms-mb-welcome__resources-link:focus-visible,
+.wsms-mb-channel-btn:focus-visible {
+    outline: 2px solid var(--mb-accent);
+    outline-offset: 2px;
+}
+
+.wsms-mb-input:focus-visible,
+.wsms-mb-textarea:focus-visible {
+    outline: none;
+}
+
+/* GDPR checkbox dark-mode accent */
+.wsms-mb-checkbox-label input[type="checkbox"] {
+    accent-color: var(--mb-accent);
+}
+
+/* === Text overflow handling === */
+.wsms-mb-panel__title,
+.wsms-mb-panel__subtitle,
+.wsms-mb-welcome__greeting,
+.wsms-mb-team-card__name,
+.wsms-mb-team-card__role,
+.wsms-mb-resource-link__title,
+.wsms-mb-resource-link__desc {
+    word-break: break-word;
+}
+
+.wsms-mb-team-card__name,
+.wsms-mb-team-card__role {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* === Mobile: increased touch targets === */
+@media (max-width: 480px) {
+    .wsms-mb-channel-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .wsms-mb-nav-tab {
+        padding: 10px 4px;
+    }
+
+    /* Hide FAB when panel is open on mobile */
+    .wsms-mb-fab--hidden-mobile {
+        display: none;
+    }
+}

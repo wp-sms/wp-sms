@@ -56,7 +56,7 @@ describe('useSettings', () => {
     expect(result.current.settings.phone.enabled).toBe(true);
   });
 
-  it('saves only specified keys when keys parameter is provided', async () => {
+  it('saves only changed keys via diff-based payload', async () => {
     const { result } = renderHook(() => useSettings());
 
     await waitFor(() => {
@@ -65,11 +65,10 @@ describe('useSettings', () => {
 
     act(() => {
       result.current.updateSetting('phone', { ...result.current.settings.phone, code_length: 8 });
-      result.current.updateSetting('email', { ...result.current.settings.email, code_length: 4 });
     });
 
     await act(async () => {
-      await result.current.save(['phone']);
+      await result.current.save();
     });
 
     expect(result.current.saveStatus).toBe('saved');

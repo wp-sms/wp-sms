@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import type { SaveStatus } from '@/hooks/use-settings';
+import type { SaveStatus } from '@/hooks/use-resource-settings';
 import { Loader2 } from 'lucide-react';
 
 interface SaveBarProps {
