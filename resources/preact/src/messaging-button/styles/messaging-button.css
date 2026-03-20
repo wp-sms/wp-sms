@@ -6,7 +6,7 @@
     --mb-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
     --mb-radius: 14px;
     --mb-radius-sm: 10px;
-    --mb-accent-soft: #dbeafe;
+    --mb-accent-soft: color-mix(in srgb, var(--mb-accent) 12%, var(--mb-bg));
     --mb-shadow: 0 5px 40px rgba(0, 0, 0, 0.16);
     --mb-shadow-fab: 0 4px 20px rgba(0, 0, 0, 0.2);
     --mb-text: #1a1a2e;
@@ -21,30 +21,6 @@
     --mb-panel-height: 520px;
     --mb-fab-size: 52px;
     --mb-gap: 16px;
-}
-
-/* Dark theme */
-:host(.wsms-mb-dark) {
-    --mb-text: #e2e8f0;
-    --mb-text-secondary: #94a3b8;
-    --mb-bg: #1e293b;
-    --mb-bg-secondary: #0f172a;
-    --mb-border: #334155;
-    --mb-shadow: 0 5px 40px rgba(0, 0, 0, 0.4);
-    --mb-accent-soft: rgba(37, 99, 235, 0.15);
-}
-
-/* System theme — follow OS preference */
-@media (prefers-color-scheme: dark) {
-    :host(.wsms-mb-system) {
-        --mb-text: #e2e8f0;
-        --mb-text-secondary: #94a3b8;
-        --mb-bg: #1e293b;
-        --mb-bg-secondary: #0f172a;
-        --mb-border: #334155;
-        --mb-shadow: 0 5px 40px rgba(0, 0, 0, 0.4);
-        --mb-accent-soft: rgba(37, 99, 235, 0.15);
-    }
 }
 
 *, *::before, *::after {

@@ -16,54 +16,35 @@ const PREVIEW_HTML = `<!DOCTYPE html>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;height:100vh;overflow:hidden;position:relative}
-body.light{background:#f8fafc}
-body.dark{background:#1e293b}
+body{background:var(--p-bg);color:var(--p-text)}
 .site{padding:16px;opacity:.25}
-.site .bar{height:20px;border-radius:3px;margin-bottom:12px}
-.site .block{height:32px;border-radius:3px;margin-bottom:6px}
-.light .site .bar,.light .site .block{background:#e2e8f0}
-.dark .site .bar,.dark .site .block{background:#334155}
-.site h1{font-size:12px;margin-bottom:6px}
-.site p{font-size:10px;line-height:1.4}
-.light .site h1{color:#1a1a2e}.light .site p{color:#64748b}
-.dark .site h1{color:#e2e8f0}.dark .site p{color:#94a3b8}
+.site .bar{height:20px;border-radius:3px;margin-bottom:12px;background:var(--p-border)}
+.site .block{height:32px;border-radius:3px;margin-bottom:6px;background:var(--p-border)}
+.site h1{font-size:12px;margin-bottom:6px;color:var(--p-text)}
+.site p{font-size:10px;line-height:1.4;color:var(--p-muted)}
 
 .fab{position:fixed;bottom:12px;display:inline-flex;align-items:center;gap:5px;height:38px;padding:0 14px;border:none;border-radius:19px;font-size:12px;font-weight:500;cursor:pointer;box-shadow:0 3px 14px rgba(0,0,0,.2);font-family:inherit;z-index:10;white-space:nowrap}
 .fab svg{width:18px;height:18px;flex-shrink:0}
 
-.panel{position:fixed;bottom:56px;width:260px;max-height:320px;border-radius:8px;box-shadow:0 4px 30px rgba(0,0,0,.15);overflow:hidden;display:flex;flex-direction:column;font-family:inherit;z-index:9;transition:opacity .2s}
-.light .panel{background:#fff;color:#1a1a2e}
-.dark .panel{background:#1e293b;color:#e2e8f0}
+.panel{position:fixed;bottom:56px;width:260px;max-height:320px;border-radius:8px;overflow:hidden;display:flex;flex-direction:column;font-family:inherit;z-index:9;transition:opacity .2s;background:var(--p-card);color:var(--p-text);box-shadow:var(--p-shadow)}
 .panel-header{padding:12px 14px;color:#fff}
 .panel-header h2{font-size:13px;font-weight:600}
 .panel-header p{font-size:10px;opacity:.85;margin-top:2px}
 .panel-body{padding:12px 14px;flex:1;overflow-y:auto}
-.panel-body .greeting{font-size:11px;margin-bottom:8px}
-.light .panel-body .greeting{color:#64748b}
-.dark .panel-body .greeting{color:#94a3b8}
-.cta-btn{display:flex;align-items:center;gap:6px;width:100%;padding:8px 10px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;text-align:left}
-.light .cta-btn{border:1px solid #e2e8f0;background:#fff;color:#1a1a2e}
-.dark .cta-btn{border:1px solid #334155;background:#1e293b;color:#e2e8f0}
+.panel-body .greeting{font-size:11px;margin-bottom:8px;color:var(--p-muted)}
+.cta-btn{display:flex;align-items:center;gap:6px;width:100%;padding:8px 10px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit;text-align:left;border:1px solid var(--p-border);background:var(--p-card);color:var(--p-text)}
 .cta-btn svg{width:16px;height:16px;flex-shrink:0}
-.team-row{display:flex;align-items:center;gap:5px;padding-top:8px;margin-top:8px}
-.light .team-row{border-top:1px solid #e2e8f0}
-.dark .team-row{border-top:1px solid #334155}
+.team-row{display:flex;align-items:center;gap:5px;padding-top:8px;margin-top:8px;border-top:1px solid var(--p-border)}
 .avatar{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:600;color:#fff;overflow:hidden}
 .avatar+.avatar{margin-left:-5px}
 .avatar img{width:100%;height:100%;object-fit:cover}
-.team-label{font-size:9px}
-.light .team-label{color:#64748b}
-.dark .team-label{color:#94a3b8}
-.nav{display:flex;flex-shrink:0}
-.light .nav{border-top:1px solid #e2e8f0}
-.dark .nav{border-top:1px solid #334155}
-.nav-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px;border:none;background:none;font-family:inherit;font-size:8px;cursor:pointer}
-.light .nav-tab{color:#64748b}
-.dark .nav-tab{color:#94a3b8}
+.team-label{font-size:9px;color:var(--p-muted)}
+.nav{display:flex;flex-shrink:0;border-top:1px solid var(--p-border)}
+.nav-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px;border:none;background:none;font-family:inherit;font-size:8px;cursor:pointer;color:var(--p-muted)}
 .nav-tab.active{color:var(--accent)}
 .nav-tab svg{width:14px;height:14px}
 </style></head>
-<body class="light">
+<body>
 <div class="site">
   <div class="bar"></div>
   <h1>Your Website</h1>
@@ -81,6 +62,32 @@ var helpIcon='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="
 
 function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
 
+/* Parse hex to [r,g,b] 0-255 */
+function hexRgb(hex){return[parseInt(hex.slice(1,3),16),parseInt(hex.slice(3,5),16),parseInt(hex.slice(5,7),16)]}
+/* Mix two [r,g,b] arrays: amount 0=a, 1=b */
+function mix(a,b,t){return'#'+a.map(function(v,i){return Math.round(v+(b[i]-v)*t).toString(16).padStart(2,'0')}).join('')}
+
+function setThemeVars(accent,theme){
+  var s=document.body.style;
+  var ac=hexRgb(accent);
+  s.setProperty('--accent',accent);
+  if(theme==='dark'){
+    s.setProperty('--p-bg',mix(ac,[15,23,42],.85));
+    s.setProperty('--p-card',mix(ac,[30,41,59],.88));
+    s.setProperty('--p-text','#e2e8f0');
+    s.setProperty('--p-muted','#94a3b8');
+    s.setProperty('--p-border',mix(ac,[51,65,85],.82));
+    s.setProperty('--p-shadow','0 4px 30px rgba(0,0,0,.3)');
+  }else{
+    s.setProperty('--p-bg',mix(ac,[248,250,252],.92));
+    s.setProperty('--p-card','#ffffff');
+    s.setProperty('--p-text','#1a1a2e');
+    s.setProperty('--p-muted','#64748b');
+    s.setProperty('--p-border',mix(ac,[226,232,240],.85));
+    s.setProperty('--p-shadow','0 4px 30px rgba(0,0,0,.15)');
+  }
+}
+
 function render(cfg){
   var c=cfg||{};
   var btn=c.button||{};
@@ -97,8 +104,7 @@ function render(cfg){
   if(!/^#[0-9a-fA-F]{6}$/.test(textColor))textColor='#ffffff';
 
   if(theme==='system'){theme=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}
-  document.body.className=theme;
-  document.body.style.setProperty('--accent',accent);
+  setThemeVars(accent,theme);
 
   var root=document.getElementById('root');
   var showIcon=btn.style!=='text';

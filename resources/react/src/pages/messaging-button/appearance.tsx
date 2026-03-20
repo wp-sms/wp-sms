@@ -3,9 +3,9 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
+import { SegmentedGroup } from '@/components/ui/segmented-group';
 import { Paintbrush, MousePointerClick, Sun, Moon, Monitor, MessageCircle } from 'lucide-react';
+import { MB_COLOR_PRESETS, getActivePresetId } from './color-presets';
 import type { MessagingButtonSettings } from './use-mb-settings';
 
 interface AppearancePageProps {
@@ -82,6 +82,47 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
               />
               <FieldDescription>Displayed when style includes text</FieldDescription>
             </Field>
+
+            {/* Color presets */}
+            <div className="space-y-2">
+              <span className="text-sm font-medium">Color Preset</span>
+              <div className="flex flex-wrap gap-2">
+                {(() => {
+                  const activeId = getActivePresetId(settings);
+                  return (
+                    <>
+                      {MB_COLOR_PRESETS.map((preset) => (
+                        <button
+                          key={preset.id}
+                          type="button"
+                          title={preset.name}
+                          onClick={() => {
+                            onUpdate('button.primary_color', preset.primary_color);
+                            onUpdate('button.text_color', preset.text_color);
+                          }}
+                          className={`flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                            activeId === preset.id
+                              ? 'border-primary bg-primary/10 text-primary'
+                              : 'border-input text-muted-foreground hover:border-foreground/20 hover:text-foreground'
+                          }`}
+                        >
+                          <span
+                            className="h-3.5 w-3.5 rounded-full border border-black/10"
+                            style={{ backgroundColor: preset.primary_color }}
+                          />
+                          {preset.name}
+                        </button>
+                      ))}
+                      {activeId === 'custom' && (
+                        <span className="flex items-center gap-1.5 rounded-md border border-dashed border-input px-2.5 py-1.5 text-xs font-medium text-muted-foreground">
+                          Custom
+                        </span>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
+            </div>
 
             <div className="grid grid-cols-2 gap-4">
               <Field>
@@ -166,34 +207,19 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
               />
             </Field>
 
-            <Field>
-              <FieldLabel>Theme</FieldLabel>
-              <RadioGroup
+            <div className="space-y-2">
+              <span className="text-sm font-medium">Theme</span>
+              <SegmentedGroup
                 value={widget.theme}
-                onValueChange={(v) => onUpdate('widget.theme', v)}
-                className="flex gap-3"
-              >
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="light" id="theme-light" />
-                  <Label htmlFor="theme-light" className="flex items-center gap-1.5 text-sm font-normal cursor-pointer">
-                    <Sun className="h-3.5 w-3.5" /> Light
-                  </Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="dark" id="theme-dark" />
-                  <Label htmlFor="theme-dark" className="flex items-center gap-1.5 text-sm font-normal cursor-pointer">
-                    <Moon className="h-3.5 w-3.5" /> Dark
-                  </Label>
-                </div>
-                <div className="flex items-center gap-2">
-                  <RadioGroupItem value="system" id="theme-system" />
-                  <Label htmlFor="theme-system" className="flex items-center gap-1.5 text-sm font-normal cursor-pointer">
-                    <Monitor className="h-3.5 w-3.5" /> System
-                  </Label>
-                </div>
-              </RadioGroup>
-              <FieldDescription>Controls the widget panel color scheme</FieldDescription>
-            </Field>
+                onChange={(v) => onUpdate('widget.theme', v)}
+                options={[
+                  { value: 'light', label: 'Light', icon: <Sun className="h-4 w-4" /> },
+                  { value: 'dark', label: 'Dark', icon: <Moon className="h-4 w-4" /> },
+                  { value: 'system', label: 'System', icon: <Monitor className="h-4 w-4" /> },
+                ]}
+                size="labeled"
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
