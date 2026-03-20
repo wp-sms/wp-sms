@@ -651,6 +651,27 @@
     text-decoration: underline;
 }
 
+.wsms-mb-form__identity {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px 12px;
+    background: color-mix(in srgb, var(--mb-accent) 8%, var(--mb-bg));
+    border-radius: var(--mb-radius-sm);
+    font-size: 13px;
+    color: var(--mb-text);
+    margin-bottom: 4px;
+}
+
+.wsms-mb-form__identity strong {
+    font-weight: 600;
+}
+
+.wsms-mb-form__identity-email {
+    font-size: 12px;
+    color: var(--mb-text-secondary);
+}
+
 .wsms-mb-form__error {
     display: flex;
     align-items: flex-start;

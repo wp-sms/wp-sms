@@ -49,6 +49,7 @@ class MessageHandler
         // Fire action for flow triggers
         do_action('wsms_messaging_button_message', [
             'contact_id' => $contactId,
+            'user_id' => $data['user_id'] ?? null,
             'name' => $data['name'] ?? '',
             'email' => $data['email'] ?? '',
             'phone' => $data['phone'] ?? '',

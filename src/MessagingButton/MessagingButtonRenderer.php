@@ -2,6 +2,8 @@
 
 namespace WSms\MessagingButton;
 
+use WSms\Support\UserMeta;
+
 defined('ABSPATH') || exit;
 
 class MessagingButtonRenderer
@@ -47,10 +49,23 @@ class MessagingButtonRenderer
             true,
         );
 
-        wp_localize_script('wsms-messaging-button', 'wsmsMessagingButtonConfig', [
+        $scriptData = [
             'restUrl' => rest_url('wsms/v1/'),
             'nonce' => wp_create_nonce('wp_rest'),
             'config' => $this->settings->getPublicConfig(),
-        ]);
+        ];
+
+        if (is_user_logged_in()) {
+            $user = wp_get_current_user();
+            $name = UserMeta::displayName($user);
+            $phone = get_user_meta($user->ID, UserMeta::PHONE, true);
+            $scriptData['currentUser'] = array_filter([
+                'name' => $name,
+                'email' => $user->user_email,
+                'phone' => $phone,
+            ]);
+        }
+
+        wp_localize_script('wsms-messaging-button', 'wsmsMessagingButtonConfig', $scriptData);
     }
 }

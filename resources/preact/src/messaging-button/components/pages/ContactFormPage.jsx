@@ -15,8 +15,17 @@ export function ContactFormPage({ config, gdpr, onClose }) {
     const [status, setStatus] = useState('idle'); // idle | sending | sent | error
     const [errorMsg, setErrorMsg] = useState('');
 
+    const currentUser = window.wsmsMessagingButtonConfig?.currentUser;
+
     const fields = config.fields ?? ['name', 'email', 'phone', 'message'];
     const requiredFields = config.required_fields ?? ['email', 'message'];
+
+    // Hide fields we already know from the logged-in user
+    const hiddenFields = currentUser
+        ? Object.keys(currentUser).filter((k) => currentUser[k])
+        : [];
+    const visibleFields = fields.filter((id) => !hiddenFields.includes(id));
+    const visibleRequired = requiredFields.filter((id) => !hiddenFields.includes(id));
 
     const handleChange = (field, value) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -31,9 +40,12 @@ export function ContactFormPage({ config, gdpr, onClose }) {
             Object.entries(formData).map(([k, v]) => [k, v.trim()])
         );
 
+        // Merge logged-in user data into payload (overrides empty form fields)
+        const payload = { ...trimmed, ...currentUser };
+
         try {
             await submitMessage({
-                ...trimmed,
+                ...payload,
                 page_url: window.location.href,
                 gdpr_consent: gdpr.enabled ? gdprConsent : true,
             });
@@ -68,8 +80,17 @@ export function ContactFormPage({ config, gdpr, onClose }) {
     return (
         <div class="wsms-mb-page wsms-mb-page--form">
             <form onSubmit={handleSubmit} class="wsms-mb-form" noValidate>
-                {FIELD_CONFIG.filter(({ id }) => fields.includes(id)).map(({ id, label, type, placeholder }) => {
-                    const isRequired = requiredFields.includes(id);
+                {currentUser && (
+                    <div class="wsms-mb-form__identity">
+                        <span>Sending as <strong>{currentUser.name || currentUser.email}</strong></span>
+                        {currentUser.name && currentUser.email && (
+                            <span class="wsms-mb-form__identity-email">{currentUser.email}</span>
+                        )}
+                    </div>
+                )}
+
+                {FIELD_CONFIG.filter(({ id }) => visibleFields.includes(id)).map(({ id, label, type, placeholder }) => {
+                    const isRequired = visibleRequired.includes(id);
                     const htmlId = `wsms-mb-${id}`;
                     const InputTag = type === 'textarea' ? 'textarea' : 'input';
                     return (

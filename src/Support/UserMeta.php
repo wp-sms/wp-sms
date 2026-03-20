@@ -29,4 +29,9 @@ final class UserMeta
     public const LOCKOUT_UNTIL = 'wsms_lockout_until';
     public const CUSTOM_AVATAR = 'wsms_custom_avatar';
     public const SOCIAL_AVATAR = 'wsms_social_avatar';
+
+    public static function displayName(\WP_User $user): string
+    {
+        return trim($user->first_name . ' ' . $user->last_name) ?: $user->display_name;
+    }
 }

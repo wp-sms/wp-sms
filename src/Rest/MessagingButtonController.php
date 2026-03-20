@@ -6,6 +6,7 @@ use WSms\Auth\RateLimiter;
 use WSms\MessagingButton\MessageHandler;
 use WSms\MessagingButton\MessagingButtonSettings;
 use WSms\Messaging\Gateway\GatewayRegistry;
+use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
 
@@ -101,6 +102,16 @@ class MessagingButtonController extends Controller
             'message' => $request->get_param('message') ?? '',
             'page_url' => $request->get_param('page_url') ?? '',
         ];
+
+        // Merge WP user data as fallback for logged-in users
+        if (is_user_logged_in()) {
+            $user = wp_get_current_user();
+            $userName = UserMeta::displayName($user);
+            $data['name'] = $data['name'] ?: $userName;
+            $data['email'] = $data['email'] ?: $user->user_email;
+            $data['phone'] = $data['phone'] ?: (get_user_meta($user->ID, UserMeta::PHONE, true) ?: '');
+            $data['user_id'] = $user->ID;
+        }
 
         $result = $this->messageHandler->handle($data);
 
