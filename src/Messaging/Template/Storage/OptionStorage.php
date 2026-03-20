@@ -10,12 +10,13 @@ defined('ABSPATH') || exit;
 class OptionStorage implements TemplateStorageInterface
 {
     private const OPTION_KEY = 'wsms_message_templates';
+    private const ENABLED_KEY = '_enabled';
 
     private ?array $cache = null;
 
     public function getOverride(string $templateId, string $channel): ?ChannelContent
     {
-        if ($channel === '_enabled') {
+        if ($channel === self::ENABLED_KEY) {
             return null;
         }
 
@@ -35,8 +36,13 @@ class OptionStorage implements TemplateStorageInterface
         if ($content === null) {
             unset($all[$templateId][$channel]);
 
-            if (empty($all[$templateId])) {
-                unset($all[$templateId]);
+            $channelKeys = array_diff(array_keys($all[$templateId] ?? []), [self::ENABLED_KEY]);
+            if (empty($channelKeys)) {
+                if (isset($all[$templateId][self::ENABLED_KEY])) {
+                    $all[$templateId] = [self::ENABLED_KEY => $all[$templateId][self::ENABLED_KEY]];
+                } else {
+                    unset($all[$templateId]);
+                }
             }
         } else {
             $all[$templateId][$channel] = $content->toArray();
@@ -53,7 +59,7 @@ class OptionStorage implements TemplateStorageInterface
 
         foreach ($all as $templateId => $channels) {
             foreach ($channels as $channel => $data) {
-                if ($channel === '_enabled') {
+                if ($channel === self::ENABLED_KEY) {
                     continue;
                 }
                 $result[$templateId][$channel] = ChannelContent::fromArray($data);
@@ -67,17 +73,17 @@ class OptionStorage implements TemplateStorageInterface
     {
         $all = $this->load();
 
-        if (!isset($all[$templateId]['_enabled'])) {
+        if (!isset($all[$templateId][self::ENABLED_KEY])) {
             return null;
         }
 
-        return (bool) $all[$templateId]['_enabled'];
+        return (bool) $all[$templateId][self::ENABLED_KEY];
     }
 
     public function setEnabled(string $templateId, bool $enabled): void
     {
         $all = $this->load();
-        $all[$templateId]['_enabled'] = $enabled;
+        $all[$templateId][self::ENABLED_KEY] = $enabled;
 
         update_option(self::OPTION_KEY, $all);
         $this->cache = $all;

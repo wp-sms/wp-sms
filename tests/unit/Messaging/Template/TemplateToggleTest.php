@@ -149,19 +149,27 @@ class TemplateToggleTest extends TestCase
 
     // --- OptionStorage: isEnabled / setEnabled ---
 
-    public function testOptionStorageIsEnabledReturnsNullForUnknown(): void
+    private function makeOptionStorage(): OptionStorage
     {
         $GLOBALS['_test_options'] = [];
-        $storage = new OptionStorage();
+        return new OptionStorage();
+    }
 
-        $this->assertNull($storage->isEnabled('nonexistent'));
+    private function cleanupOptionStorage(): void
+    {
         unset($GLOBALS['_test_options']);
+    }
+
+    public function testOptionStorageIsEnabledReturnsNullForUnknown(): void
+    {
+        $storage = $this->makeOptionStorage();
+        $this->assertNull($storage->isEnabled('nonexistent'));
+        $this->cleanupOptionStorage();
     }
 
     public function testOptionStorageSetAndGetEnabled(): void
     {
-        $GLOBALS['_test_options'] = [];
-        $storage = new OptionStorage();
+        $storage = $this->makeOptionStorage();
 
         $storage->setEnabled('welcome', true);
         $this->assertTrue($storage->isEnabled('welcome'));
@@ -169,13 +177,12 @@ class TemplateToggleTest extends TestCase
         $storage->setEnabled('welcome', false);
         $this->assertFalse($storage->isEnabled('welcome'));
 
-        unset($GLOBALS['_test_options']);
+        $this->cleanupOptionStorage();
     }
 
     public function testOptionStorageEnabledDoesNotAffectOverrides(): void
     {
-        $GLOBALS['_test_options'] = [];
-        $storage = new OptionStorage();
+        $storage = $this->makeOptionStorage();
 
         $storage->saveOverride('welcome', 'email', new ChannelContent(body: 'Custom welcome'));
         $storage->setEnabled('welcome', true);
@@ -185,13 +192,12 @@ class TemplateToggleTest extends TestCase
         $this->assertEquals('Custom welcome', $override->body);
         $this->assertTrue($storage->isEnabled('welcome'));
 
-        unset($GLOBALS['_test_options']);
+        $this->cleanupOptionStorage();
     }
 
     public function testOptionStorageGetAllOverridesExcludesEnabledKey(): void
     {
-        $GLOBALS['_test_options'] = [];
-        $storage = new OptionStorage();
+        $storage = $this->makeOptionStorage();
 
         $storage->saveOverride('welcome', 'email', new ChannelContent(body: 'Custom'));
         $storage->setEnabled('welcome', true);
@@ -201,7 +207,33 @@ class TemplateToggleTest extends TestCase
         $this->assertArrayHasKey('email', $all['welcome']);
         $this->assertArrayNotHasKey('_enabled', $all['welcome']);
 
-        unset($GLOBALS['_test_options']);
+        $this->cleanupOptionStorage();
+    }
+
+    // --- ChannelContent::equals ---
+
+    public function testChannelContentEqualsIdenticalContent(): void
+    {
+        $a = new ChannelContent(body: 'Hello', subject: 'Sub', cta: 'Click', ctaUrl: 'http://example.com');
+        $b = new ChannelContent(body: 'Hello', subject: 'Sub', cta: 'Click', ctaUrl: 'http://example.com');
+
+        $this->assertTrue($a->equals($b));
+    }
+
+    public function testChannelContentNotEqualsDifferentBody(): void
+    {
+        $a = new ChannelContent(body: 'Hello');
+        $b = new ChannelContent(body: 'World');
+
+        $this->assertFalse($a->equals($b));
+    }
+
+    public function testChannelContentNotEqualsDifferentSubject(): void
+    {
+        $a = new ChannelContent(body: 'Hello', subject: 'Sub A');
+        $b = new ChannelContent(body: 'Hello', subject: 'Sub B');
+
+        $this->assertFalse($a->equals($b));
     }
 
     // --- Real template definitions ---

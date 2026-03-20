@@ -24,6 +24,14 @@ class ChannelContent
         ], fn ($v) => $v !== null);
     }
 
+    public function equals(self $other): bool
+    {
+        return $this->body === $other->body
+            && $this->subject === $other->subject
+            && $this->cta === $other->cta
+            && $this->ctaUrl === $other->ctaUrl;
+    }
+
     public static function fromArray(array $data): self
     {
         return new self(

@@ -178,7 +178,14 @@ class TemplateController extends Controller
             ctaUrl: $request->get_param('cta_url'),
         );
 
-        $this->storage->saveOverride($id, $channel, $content);
+        $defaults = $template->getDefaults();
+        $defaultContent = $defaults[$channel] ?? null;
+
+        if ($defaultContent !== null && $content->equals($defaultContent)) {
+            $this->storage->saveOverride($id, $channel, null);
+        } else {
+            $this->storage->saveOverride($id, $channel, $content);
+        }
 
         $enabled = $request->get_param('enabled');
         if ($enabled !== null && $template instanceof ToggleableTemplateInterface) {

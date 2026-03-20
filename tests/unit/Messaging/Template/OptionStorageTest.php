@@ -68,6 +68,21 @@ class OptionStorageTest extends TestCase
         $this->assertEquals('OTP email', $all['otp']['email']->body);
     }
 
+    public function testSaveOverrideNullPreservesEnabledFlag(): void
+    {
+        $storage = new OptionStorage();
+
+        $storage->setEnabled('welcome', true);
+        $storage->saveOverride('welcome', 'email', new ChannelContent(body: 'Custom'));
+
+        // Reset the channel override
+        $storage->saveOverride('welcome', 'email', null);
+
+        // _enabled should still be preserved
+        $this->assertTrue($storage->isEnabled('welcome'));
+        $this->assertNull($storage->getOverride('welcome', 'email'));
+    }
+
     public function testPersistsAcrossInstances(): void
     {
         $storage1 = new OptionStorage();
