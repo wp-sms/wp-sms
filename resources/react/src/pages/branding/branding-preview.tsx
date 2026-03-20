@@ -33,7 +33,7 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
   const [ready, setReady] = useState(false);
   const [error, setError] = useState(false);
   const [page, setPage] = useState<PageRoute>('/login');
-  const [device, setDevice] = useState<DevicePreset>('desktop');
+  const [device, setDevice] = useState<DevicePreset>('mobile');
   const [containerWidth, setContainerWidth] = useState(540);
 
   const selectedPreset = DEVICE_PRESETS.find((d) => d.value === device)!;

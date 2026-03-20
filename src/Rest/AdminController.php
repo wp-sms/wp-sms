@@ -35,6 +35,8 @@ class AdminController extends Controller
         'profile_fields',
         'site_phone',
         'site_phone_channel',
+        'terms_url',
+        'privacy_url',
     ];
 
     /** Channel keys that accept nested sub-objects. */
@@ -495,7 +497,7 @@ class AdminController extends Controller
         // Branding settings validation.
         $branding = $settings['branding'] ?? [];
 
-        foreach (['primary_color', 'background_color', 'split_panel_bg_color'] as $colorKey) {
+        foreach (['primary_color', 'accent_color', 'text_color', 'error_color', 'background_color', 'split_panel_bg_color'] as $colorKey) {
             if (isset($branding[$colorKey]) && !preg_match('/^#[0-9a-fA-F]{6}$/', $branding[$colorKey])) {
                 $errors[] = "branding.{$colorKey} must be a valid hex color (e.g. #2563eb).";
             }
@@ -505,6 +507,14 @@ class AdminController extends Controller
             if (!empty($branding[$urlKey]) && !filter_var($branding[$urlKey], FILTER_VALIDATE_URL)) {
                 $errors[] = "branding.{$urlKey} must be a valid URL.";
             }
+        }
+
+        if (isset($branding['color_mode']) && !in_array($branding['color_mode'], ['light', 'dark', 'auto'], true)) {
+            $errors[] = 'branding.color_mode must be one of: light, dark, auto.';
+        }
+
+        if (isset($branding['button_style']) && !in_array($branding['button_style'], ['filled', 'outline', 'ghost'], true)) {
+            $errors[] = 'branding.button_style must be one of: filled, outline, ghost.';
         }
 
         if (isset($branding['layout']) && !in_array($branding['layout'], ['centered', 'split'], true)) {
@@ -540,6 +550,13 @@ class AdminController extends Controller
         foreach (['site_name', 'split_welcome_heading', 'split_subtitle'] as $textKey) {
             if (isset($branding[$textKey]) && !is_string($branding[$textKey])) {
                 $errors[] = "branding.{$textKey} must be a string.";
+            }
+        }
+
+        // Legal link URL validation.
+        foreach (['terms_url', 'privacy_url'] as $urlKey) {
+            if (!empty($settings[$urlKey]) && !filter_var($settings[$urlKey], FILTER_VALIDATE_URL)) {
+                $errors[] = "{$urlKey} must be a valid URL.";
             }
         }
 

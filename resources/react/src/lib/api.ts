@@ -95,6 +95,8 @@ export interface SocialProviderSettings {
 }
 
 export type SocialProfileSync = 'registration_only' | 'every_login';
+export type ColorMode = 'light' | 'dark' | 'auto';
+export type ButtonStyle = 'filled' | 'outline' | 'ghost';
 
 export interface TelegramSettings {
   bot_token?: string;
@@ -150,9 +152,13 @@ export interface BrandingSettings {
   logo_position: LogoPosition;
   logo_size: number;
   primary_color: string;
+  accent_color: string;
+  text_color: string;
+  error_color: string;
   background_color: string;
   background_image_url: string;
-  dark_mode: boolean;
+  color_mode: ColorMode;
+  button_style: ButtonStyle;
   font_family: string;
   google_font: boolean;
   layout: BrandingLayout;
@@ -190,6 +196,8 @@ export interface AuthSettings {
   social_profile_sync?: SocialProfileSync;
   site_phone?: string;
   site_phone_channel?: SitePhoneChannel;
+  terms_url?: string;
+  privacy_url?: string;
   branding?: BrandingSettings;
 }
 

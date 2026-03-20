@@ -1,6 +1,13 @@
 import { useEffect, useRef } from 'preact/hooks';
 import { brandingConfig, cssPalette, isPreviewMode } from '../signals/branding';
 import { authUrl } from '../utils/urls';
+import {
+    isAutoModePalette,
+    flattenLightPalette,
+    injectDarkModeSheet,
+    removeDarkModeSheet,
+    applyVarsToRoot,
+} from '../utils/branding-dom';
 
 /**
  * Applies branding CSS variables to :root and manages preview-mode postMessage.
@@ -11,30 +18,38 @@ export function BrandingProvider({ children }) {
 
     // Apply CSS variables whenever palette changes
     useEffect(() => {
-        const vars = cssPalette.value;
+        const palette = cssPalette.value;
         const root = document.documentElement;
-        const newKeys = Object.keys(vars);
 
-        // Remove vars that were in the old palette but not the new one
-        for (const key of appliedKeysRef.current) {
-            if (!(key in vars)) {
-                root.style.removeProperty(key);
+        if (isAutoModePalette(palette)) {
+            applyVarsToRoot(flattenLightPalette(palette), root, appliedKeysRef);
+            injectDarkModeSheet(palette.dark);
+        } else {
+            removeDarkModeSheet();
+            if (palette) {
+                applyVarsToRoot(palette, root, appliedKeysRef);
             }
         }
-
-        for (const [key, value] of Object.entries(vars)) {
-            root.style.setProperty(key, value);
-        }
-
-        appliedKeysRef.current = newKeys;
 
         return () => {
             for (const key of appliedKeysRef.current) {
                 root.style.removeProperty(key);
             }
             appliedKeysRef.current = [];
+            removeDarkModeSheet();
         };
     }, [cssPalette.value]);
+
+    // Apply button style data attribute
+    useEffect(() => {
+        const config = brandingConfig.value;
+        const style = config?.button_style ?? 'filled';
+        document.documentElement.dataset.btnStyle = style;
+
+        return () => {
+            delete document.documentElement.dataset.btnStyle;
+        };
+    }, [brandingConfig.value?.button_style]);
 
     // Apply background image on body
     useEffect(() => {

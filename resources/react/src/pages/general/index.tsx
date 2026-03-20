@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
-import { Phone, Globe } from 'lucide-react';
+import { Phone, Globe, Scale } from 'lucide-react';
 import { SITE_PHONE_CHANNELS } from '@/lib/constants';
 import type { AuthSettings, SitePhoneChannel } from '@/lib/api';
 
@@ -119,6 +119,46 @@ export function GeneralPage({ settings, onUpdate }: GeneralPageProps) {
                 Telegram requires a configured Telegram bot in Authentication &rarr; Channels.
               </p>
             )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Scale className="h-4 w-4 text-muted-foreground" />
+            Legal Links
+          </CardTitle>
+          <CardDescription>
+            Terms of Service and Privacy Policy links shown on auth pages
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4 max-w-md">
+            <Field>
+              <FieldLabel htmlFor="terms_url">Terms of Service URL</FieldLabel>
+              <Input
+                id="terms_url"
+                type="url"
+                value={settings.terms_url}
+                onChange={(e) => onUpdate('terms_url', e.target.value)}
+                placeholder="https://example.com/terms"
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="privacy_url">Privacy Policy URL</FieldLabel>
+              <Input
+                id="privacy_url"
+                type="url"
+                value={settings.privacy_url}
+                onChange={(e) => onUpdate('privacy_url', e.target.value)}
+                placeholder="https://example.com/privacy"
+              />
+              <FieldDescription>
+                When set, a consent line appears on the registration page.
+              </FieldDescription>
+            </Field>
           </div>
         </CardContent>
       </Card>

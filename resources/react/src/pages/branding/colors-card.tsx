@@ -1,19 +1,72 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
-import { Palette, X, Image } from 'lucide-react';
+import { SegmentedGroup } from '@/components/ui/segmented-group';
+import { Palette, X, Image, Sun, Moon, Monitor } from 'lucide-react';
 import { openMediaLibrary } from '@/lib/media';
-import type { BrandingSettings } from '@/lib/api';
+import { COLOR_PRESETS, getActivePresetId } from './color-presets';
+import type { BrandingSettings, ColorMode } from '@/lib/api';
+
+const COLOR_MODE_OPTIONS = [
+  { value: 'light' as ColorMode, label: 'Light', icon: <Sun className="h-4 w-4" /> },
+  { value: 'dark' as ColorMode, label: 'Dark', icon: <Moon className="h-4 w-4" /> },
+  { value: 'auto' as ColorMode, label: 'Auto', icon: <Monitor className="h-4 w-4" /> },
+];
+
+interface ColorPickerFieldProps {
+  id: string;
+  label: string;
+  value: string;
+  placeholder: string;
+  onChange: (value: string) => void;
+}
+
+function ColorPickerField({ id, label, value, placeholder, onChange }: ColorPickerFieldProps) {
+  return (
+    <Field>
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
+      <div className="flex gap-2">
+        <input
+          type="color"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-9 w-12 cursor-pointer rounded border border-input p-1"
+        />
+        <Input
+          id={id}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className="font-mono"
+        />
+      </div>
+    </Field>
+  );
+}
 
 interface ColorsCardProps {
   branding: BrandingSettings;
   onChange: (patch: Partial<BrandingSettings>) => void;
-  showBackground: boolean;
 }
 
-export function ColorsCard({ branding, onChange, showBackground }: ColorsCardProps) {
+export function ColorsCard({ branding, onChange }: ColorsCardProps) {
+  const activePresetId = getActivePresetId(branding);
+  const isCentered = branding.layout === 'centered';
+
+  function applyPreset(presetId: string) {
+    const preset = COLOR_PRESETS.find((p) => p.id === presetId);
+    if (!preset) return;
+    onChange({
+      primary_color: preset.primary_color,
+      accent_color: preset.accent_color,
+      text_color: preset.text_color,
+      error_color: preset.error_color,
+      background_color: preset.background_color,
+      split_panel_bg_color: preset.split_panel_bg_color,
+    });
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -22,55 +75,100 @@ export function ColorsCard({ branding, onChange, showBackground }: ColorsCardPro
           Colors
         </CardTitle>
         <CardDescription>
-          Set the primary brand color, background, and dark mode
+          Pick a preset theme or customize individual colors
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="max-w-md">
-          <Field>
-            <FieldLabel htmlFor="branding-primary-color">Primary Color</FieldLabel>
-            <div className="flex gap-2">
-              <input
-                type="color"
-                value={branding.primary_color}
-                onChange={(e) => onChange({ primary_color: e.target.value })}
-                className="h-9 w-12 cursor-pointer rounded border border-input p-1"
-              />
-              <Input
-                id="branding-primary-color"
-                value={branding.primary_color}
-                onChange={(e) => onChange({ primary_color: e.target.value })}
-                placeholder="#8b5320"
-                className="font-mono"
-              />
-            </div>
-            <FieldDescription>
-              Used for buttons, links, and interactive elements
-            </FieldDescription>
-          </Field>
+      <CardContent className="space-y-5">
+        {/* Preset swatches */}
+        <div className="space-y-2">
+          <span className="text-sm font-medium">Theme Preset</span>
+          <div className="flex flex-wrap gap-2">
+            {COLOR_PRESETS.map((preset) => (
+              <button
+                key={preset.id}
+                type="button"
+                title={preset.name}
+                onClick={() => applyPreset(preset.id)}
+                className={`flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium transition-colors ${
+                  activePresetId === preset.id
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-input text-muted-foreground hover:border-foreground/20 hover:text-foreground'
+                }`}
+              >
+                <span
+                  className="h-3.5 w-3.5 rounded-full border border-black/10"
+                  style={{ backgroundColor: preset.primary_color }}
+                />
+                {preset.name}
+              </button>
+            ))}
+            {activePresetId === 'custom' && (
+              <span className="flex items-center gap-1.5 rounded-md border border-dashed border-input px-2.5 py-1.5 text-xs font-medium text-muted-foreground">
+                Custom
+              </span>
+            )}
+          </div>
         </div>
 
-        {showBackground && (
+        {/* Color mode */}
+        <div className="space-y-2">
+          <span className="text-sm font-medium">Color Mode</span>
+          <SegmentedGroup
+            value={branding.color_mode}
+            onChange={(v) => onChange({ color_mode: v })}
+            options={COLOR_MODE_OPTIONS}
+            size="labeled"
+          />
+          {branding.color_mode === 'auto' && (
+            <p className="text-xs text-muted-foreground">
+              Automatically switches between light and dark based on visitor's system preference.
+            </p>
+          )}
+        </div>
+
+        {/* Color grid */}
+        <div className="grid grid-cols-2 gap-4 max-w-md">
+          <ColorPickerField
+            id="branding-primary-color"
+            label="Primary"
+            value={branding.primary_color}
+            placeholder="#8b5320"
+            onChange={(v) => onChange({ primary_color: v })}
+          />
+          <ColorPickerField
+            id="branding-accent-color"
+            label="Accent"
+            value={branding.accent_color}
+            placeholder="#6366f1"
+            onChange={(v) => onChange({ accent_color: v })}
+          />
+          <ColorPickerField
+            id="branding-text-color"
+            label="Text"
+            value={branding.text_color}
+            placeholder="#1c1917"
+            onChange={(v) => onChange({ text_color: v })}
+          />
+          <ColorPickerField
+            id="branding-error-color"
+            label="Error"
+            value={branding.error_color}
+            placeholder="#dc2626"
+            onChange={(v) => onChange({ error_color: v })}
+          />
+        </div>
+
+        {/* Background section — only for centered layout */}
+        {isCentered && (
           <>
             <div className="max-w-md">
-              <Field>
-                <FieldLabel htmlFor="branding-bg-color">Background Color</FieldLabel>
-                <div className="flex gap-2">
-                  <input
-                    type="color"
-                    value={branding.background_color}
-                    onChange={(e) => onChange({ background_color: e.target.value })}
-                    className="h-9 w-12 cursor-pointer rounded border border-input p-1"
-                  />
-                  <Input
-                    id="branding-bg-color"
-                    value={branding.background_color}
-                    onChange={(e) => onChange({ background_color: e.target.value })}
-                    placeholder="#f5f5f4"
-                    className="font-mono"
-                  />
-                </div>
-              </Field>
+              <ColorPickerField
+                id="branding-bg-color"
+                label="Background Color"
+                value={branding.background_color}
+                placeholder="#f5f5f4"
+                onChange={(v) => onChange({ background_color: v })}
+              />
             </div>
 
             <Field>
@@ -111,19 +209,6 @@ export function ColorsCard({ branding, onChange, showBackground }: ColorsCardPro
             </Field>
           </>
         )}
-
-        <Field orientation="horizontal">
-          <FieldLabel htmlFor="branding-dark-mode">Dark Mode</FieldLabel>
-          <Switch
-            id="branding-dark-mode"
-            checked={branding.dark_mode}
-            onCheckedChange={(checked) => onChange({ dark_mode: checked })}
-            aria-label="Toggle dark mode"
-          />
-          <FieldDescription>
-            Inverts the color scheme for a dark appearance
-          </FieldDescription>
-        </Field>
       </CardContent>
     </Card>
   );

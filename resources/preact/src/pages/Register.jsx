@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 import { api } from '../api/client';
-import { registrationFields, registrationFieldDefs, socialProviders } from '../signals/config';
+import { registrationFields, registrationFieldDefs, socialProviders, legalLinks } from '../signals/config';
 import { authError, authLoading, registrationToken, pendingVerifications } from '../signals/auth';
 import { extractError, friendlySocialError } from '../utils/auth';
 import { authUrl, getQueryParam } from '../utils/urls';
@@ -274,6 +274,23 @@ export function Register() {
                 <Button className="w-full" type="submit" disabled={authLoading.value || (needsCaptcha && !captcha.token)}>
                     {authLoading.value ? 'Creating account\u2026' : 'Create Account'}
                 </Button>
+                {legalLinks.value && (legalLinks.value.terms_url || legalLinks.value.privacy_url) && (
+                    <p className="text-center text-xs text-muted-foreground">
+                        {'By creating an account, you agree to our '}
+                        {legalLinks.value.terms_url && (
+                            <a href={legalLinks.value.terms_url} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+                                Terms of Service
+                            </a>
+                        )}
+                        {legalLinks.value.terms_url && legalLinks.value.privacy_url && ' and '}
+                        {legalLinks.value.privacy_url && (
+                            <a href={legalLinks.value.privacy_url} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+                                Privacy Policy
+                            </a>
+                        )}
+                        .
+                    </p>
+                )}
             </form>
 
             {socialPos === 'bottom' && socialBlock}

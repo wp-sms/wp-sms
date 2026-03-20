@@ -12,6 +12,7 @@ export const profileFieldDefs = computed(() => authConfig.value?.profile_field_d
 export const captchaConfig = computed(() => authConfig.value?.captcha ?? null);
 export const enabledChannels = computed(() => authConfig.value?.enabled_channels ?? []);
 export const socialProviders = computed(() => authConfig.value?.social_providers ?? []);
+export const legalLinks = computed(() => authConfig.value?.legal_links ?? null);
 
 export async function loadConfig() {
     if (authConfig.value || configLoading.value) return;

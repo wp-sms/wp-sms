@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, Eye, EyeOff } from 'lucide-react';
 import { DEFAULTS } from '@/lib/constants';
 import { LogoCard } from './logo-card';
 import { ColorsCard } from './colors-card';
@@ -17,6 +17,7 @@ interface BrandingPageProps {
 
 export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
   const branding = settings.branding;
+  const [previewVisible, setPreviewVisible] = useState(true);
 
   const handleBrandingChange = useCallback(
     (patch: Partial<BrandingSettings>) => {
@@ -39,7 +40,7 @@ export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
       {/* Settings panel */}
       <div className="min-w-0 flex-1 space-y-4">
         <LogoCard branding={branding} onChange={handleBrandingChange} />
-        <ColorsCard branding={branding} onChange={handleBrandingChange} showBackground={isCentered} />
+        <ColorsCard branding={branding} onChange={handleBrandingChange} />
         <LayoutCard branding={branding} onChange={handleBrandingChange} />
         <TypographyCard branding={branding} onChange={handleBrandingChange} />
 
@@ -52,7 +53,19 @@ export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
           </>
         )}
 
-        <div className="flex justify-end pt-2">
+        <div className="flex items-center justify-between pt-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="hidden xl:inline-flex"
+            onClick={() => setPreviewVisible((v) => !v)}
+          >
+            {previewVisible ? (
+              <><EyeOff className="mr-1.5 h-3.5 w-3.5" /> Hide Preview</>
+            ) : (
+              <><Eye className="mr-1.5 h-3.5 w-3.5" /> Show Preview</>
+            )}
+          </Button>
           <Button variant="outline" size="sm" onClick={handleReset}>
             <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
             Reset Branding
@@ -60,10 +73,12 @@ export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
         </div>
       </div>
 
-      {/* Live preview (desktop only) */}
-      <div className="hidden xl:block sticky top-4 h-fit shrink-0">
-        <BrandingPreview branding={branding} baseUrl={baseUrl} />
-      </div>
+      {/* Live preview (desktop only, fixed width, collapsible) */}
+      {previewVisible && (
+        <div className="hidden xl:block sticky top-4 h-fit w-[400px] shrink-0">
+          <BrandingPreview branding={branding} baseUrl={baseUrl} />
+        </div>
+      )}
     </div>
   );
 }

@@ -257,6 +257,15 @@ class AuthController extends Controller
             $config['branding'] = $branding;
         }
 
+        $termsUrl = $this->policy->getSetting('terms_url', '');
+        $privacyUrl = $this->policy->getSetting('privacy_url', '');
+        if ($termsUrl || $privacyUrl) {
+            $config['legal_links'] = [
+                'terms_url'   => $termsUrl,
+                'privacy_url' => $privacyUrl,
+            ];
+        }
+
         return new WP_REST_Response($config);
     }
 
