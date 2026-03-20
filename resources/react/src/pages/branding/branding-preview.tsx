@@ -21,6 +21,12 @@ const DEVICE_PRESETS = [
 type DevicePreset = (typeof DEVICE_PRESETS)[number]['value'];
 
 const CONTAINER_HEIGHT = 700;
+const PREVIEW_BRANDING_KEY = 'wsms-preview-branding';
+
+function openBrandingPreview(url: string, branding: BrandingSettings) {
+  sessionStorage.setItem(PREVIEW_BRANDING_KEY, JSON.stringify(branding));
+  window.open(url, '_blank');
+}
 
 interface BrandingPreviewProps {
   branding: BrandingSettings;
@@ -105,14 +111,13 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
           <p className="mt-1 text-xs text-muted-foreground/70">
             Your security settings may block iframe loading.
           </p>
-          <a
-            href={previewUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            type="button"
+            onClick={() => openBrandingPreview(previewUrl, branding)}
             className="mt-2 inline-block text-xs text-primary hover:underline"
           >
             Open auth page in new tab
-          </a>
+          </button>
         </div>
       </div>
     );
@@ -149,7 +154,7 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
         <button
           type="button"
           title="Open in new tab"
-          onClick={() => window.open(fullscreenUrl, '_blank')}
+          onClick={() => openBrandingPreview(fullscreenUrl, branding)}
           className="flex h-9 w-9 items-center justify-center rounded-md border border-input text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
           <ExternalLink className="h-4 w-4" />
