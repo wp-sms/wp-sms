@@ -336,7 +336,7 @@ class AdminUserController extends Controller
             delete_user_meta($userId, UserMeta::PHONE);
             delete_user_meta($userId, UserMeta::PHONE_VERIFIED);
 
-            $this->auditLogger->log(EventType::EmailChange, 'success', $userId, [
+            $this->auditLogger->log(EventType::PhoneChange, 'success', $userId, [
                 'admin_override' => true,
                 'action'         => 'phone_removed',
                 'admin_id'       => get_current_user_id(),
@@ -367,7 +367,7 @@ class AdminUserController extends Controller
         update_user_meta($userId, UserMeta::PHONE, $phone);
         update_user_meta($userId, UserMeta::PHONE_VERIFIED, '0');
 
-        $this->auditLogger->log(EventType::EmailChange, 'success', $userId, [
+        $this->auditLogger->log(EventType::PhoneChange, 'success', $userId, [
             'admin_override' => true,
             'action'         => 'phone_set',
             'phone'          => $phone,

@@ -55,12 +55,7 @@ class VerificationController extends Controller
     {
         $rateCheck = $this->rateLimiter->check('verify_send', 5, 60);
         if (!$rateCheck['allowed']) {
-            return new WP_REST_Response([
-                'success'     => false,
-                'error'       => 'rate_limited',
-                'message'     => __('Too many requests. Please try again later.', 'wp-sms'),
-                'retry_after' => $rateCheck['retry_after'],
-            ], 429);
+            return $this->tooManyRequestsResponse($rateCheck['retry_after']);
         }
 
         $channel = $request->get_param('channel');
@@ -79,12 +74,7 @@ class VerificationController extends Controller
     {
         $rateCheck = $this->rateLimiter->check('verify_check', 10, 60);
         if (!$rateCheck['allowed']) {
-            return new WP_REST_Response([
-                'success'     => false,
-                'error'       => 'rate_limited',
-                'message'     => __('Too many requests. Please try again later.', 'wp-sms'),
-                'retry_after' => $rateCheck['retry_after'],
-            ], 429);
+            return $this->tooManyRequestsResponse($rateCheck['retry_after']);
         }
 
         $channel = $request->get_param('channel');
@@ -112,12 +102,7 @@ class VerificationController extends Controller
     {
         $rateCheck = $this->rateLimiter->check('verify_status', 20, 60);
         if (!$rateCheck['allowed']) {
-            return new WP_REST_Response([
-                'success'     => false,
-                'error'       => 'rate_limited',
-                'message'     => __('Too many requests. Please try again later.', 'wp-sms'),
-                'retry_after' => $rateCheck['retry_after'],
-            ], 429);
+            return $this->tooManyRequestsResponse($rateCheck['retry_after']);
         }
 
         $channel = $request->get_param('channel');
@@ -138,5 +123,15 @@ class VerificationController extends Controller
             'success'  => true,
             'verified' => $verified,
         ]);
+    }
+
+    private function tooManyRequestsResponse(int $retryAfter): WP_REST_Response
+    {
+        return new WP_REST_Response([
+            'success'     => false,
+            'error'       => 'rate_limited',
+            'message'     => __('Too many requests. Please try again later.', 'wp-sms'),
+            'retry_after' => $retryAfter,
+        ], 429);
     }
 }

@@ -7,7 +7,6 @@ use WP_REST_Response;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\TrustedDeviceManager;
-use WSms\Auth\ValueObjects\AuthResult;
 
 defined('ABSPATH') || exit;
 
@@ -59,14 +58,14 @@ class MfaController extends Controller
         $rl = $this->rateLimiter->check('mfa_factors', 5, 60);
 
         if (!$rl['allowed']) {
-            return $this->toResponse(AuthResult::rateLimited($rl['retry_after']));
+            return $this->rateLimitedResponse($rl['retry_after']);
         }
 
         $result = $this->orchestrator->getSessionMfaFactors(
             $request->get_param('session_token'),
         );
 
-        return $this->toResponse($result);
+        return $this->toAuthResponse($result);
     }
 
     public function handleSendChallenge(WP_REST_Request $request): WP_REST_Response
@@ -74,7 +73,7 @@ class MfaController extends Controller
         $rl = $this->rateLimiter->check('mfa_send', 3, 60);
 
         if (!$rl['allowed']) {
-            return $this->toResponse(AuthResult::rateLimited($rl['retry_after']));
+            return $this->rateLimitedResponse($rl['retry_after']);
         }
 
         $result = $this->orchestrator->sendMfaChallenge(
@@ -82,7 +81,7 @@ class MfaController extends Controller
             $request->get_param('channel_id'),
         );
 
-        return $this->toResponse($result);
+        return $this->toAuthResponse($result);
     }
 
     public function handleVerify(WP_REST_Request $request): WP_REST_Response
@@ -90,7 +89,7 @@ class MfaController extends Controller
         $rl = $this->rateLimiter->check('mfa_verify', 3, 10);
 
         if (!$rl['allowed']) {
-            return $this->toResponse(AuthResult::rateLimited($rl['retry_after']));
+            return $this->rateLimitedResponse($rl['retry_after']);
         }
 
         $result = $this->orchestrator->verifyMfa(
@@ -103,11 +102,6 @@ class MfaController extends Controller
             $this->trustedDevices->trust($result->userId);
         }
 
-        return $this->toResponse($result);
-    }
-
-    private function toResponse(AuthResult $result): WP_REST_Response
-    {
-        return new WP_REST_Response($result->toArray(), $result->toHttpStatus());
+        return $this->toAuthResponse($result);
     }
 }

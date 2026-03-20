@@ -2,6 +2,8 @@
 
 namespace WSms\Rest;
 
+use WP_REST_Request;
+use WP_REST_Response;
 use WSms\Auth\SettingsRepository;
 use WSms\Messaging\Catalog\TemplateCatalogManager;
 use WSms\Messaging\Template\Contracts\TemplateStorageInterface;
@@ -79,7 +81,7 @@ class TemplateController extends Controller
         ]);
     }
 
-    public function handleList(\WP_REST_Request $request): \WP_REST_Response
+    public function handleList(WP_REST_Request $request): WP_REST_Response
     {
         $enabledChannels = $this->getEnabledChannels();
         $whatsappGatewayId = $this->catalogManager
@@ -112,17 +114,17 @@ class TemplateController extends Controller
             $templates[] = $entry;
         }
 
-        return new \WP_REST_Response($templates);
+        return new WP_REST_Response($templates);
     }
 
-    public function handleGet(\WP_REST_Request $request): \WP_REST_Response
+    public function handleGet(WP_REST_Request $request): WP_REST_Response
     {
         $id = $request->get_param('id');
 
         try {
             $editData = $this->templateManager->getTemplateForEditing($id);
         } catch (\InvalidArgumentException $e) {
-            return new \WP_REST_Response(['error' => 'not_found', 'message' => $e->getMessage()], 404);
+            return new WP_REST_Response(['success' => false, 'error' => 'not_found', 'message' => $e->getMessage()], 404);
         }
 
         $enabledChannels = $this->getEnabledChannels();
@@ -137,10 +139,10 @@ class TemplateController extends Controller
             }
         }
 
-        return new \WP_REST_Response($editData);
+        return new WP_REST_Response($editData);
     }
 
-    public function handleSave(\WP_REST_Request $request): \WP_REST_Response
+    public function handleSave(WP_REST_Request $request): WP_REST_Response
     {
         $id = $request->get_param('id');
         $channel = $request->get_param('channel');
@@ -148,11 +150,12 @@ class TemplateController extends Controller
         try {
             $template = $this->templateManager->getTemplate($id);
         } catch (\InvalidArgumentException $e) {
-            return new \WP_REST_Response(['error' => 'not_found', 'message' => $e->getMessage()], 404);
+            return new WP_REST_Response(['success' => false, 'error' => 'not_found', 'message' => $e->getMessage()], 404);
         }
 
         if (!in_array($channel, $template->getSupportedChannels(), true)) {
-            return new \WP_REST_Response([
+            return new WP_REST_Response([
+                'success' => false,
                 'error'   => 'unsupported_channel',
                 'message' => sprintf('Channel "%s" is not supported by this template.', $channel),
             ], 400);
@@ -161,7 +164,8 @@ class TemplateController extends Controller
         $body = $request->get_param('body');
 
         if (empty(trim($body))) {
-            return new \WP_REST_Response([
+            return new WP_REST_Response([
+                'success' => false,
                 'error'   => 'empty_body',
                 'message' => __('Template body cannot be empty.', 'wp-sms'),
             ], 400);
@@ -181,10 +185,10 @@ class TemplateController extends Controller
             $this->storage->setEnabled($id, $enabled);
         }
 
-        return new \WP_REST_Response(['success' => true]);
+        return new WP_REST_Response(['success' => true]);
     }
 
-    public function handleReset(\WP_REST_Request $request): \WP_REST_Response
+    public function handleReset(WP_REST_Request $request): WP_REST_Response
     {
         $id = $request->get_param('id');
         $channel = $request->get_param('channel');
@@ -192,15 +196,15 @@ class TemplateController extends Controller
         try {
             $this->templateManager->getTemplate($id);
         } catch (\InvalidArgumentException $e) {
-            return new \WP_REST_Response(['error' => 'not_found', 'message' => $e->getMessage()], 404);
+            return new WP_REST_Response(['success' => false, 'error' => 'not_found', 'message' => $e->getMessage()], 404);
         }
 
         $this->storage->saveOverride($id, $channel, null);
 
-        return new \WP_REST_Response(['success' => true]);
+        return new WP_REST_Response(['success' => true]);
     }
 
-    public function handleToggle(\WP_REST_Request $request): \WP_REST_Response
+    public function handleToggle(WP_REST_Request $request): WP_REST_Response
     {
         $id = $request->get_param('id');
         $enabled = (bool) $request->get_param('enabled');
@@ -208,11 +212,12 @@ class TemplateController extends Controller
         try {
             $template = $this->templateManager->getTemplate($id);
         } catch (\InvalidArgumentException $e) {
-            return new \WP_REST_Response(['error' => 'not_found', 'message' => $e->getMessage()], 404);
+            return new WP_REST_Response(['success' => false, 'error' => 'not_found', 'message' => $e->getMessage()], 404);
         }
 
         if (!$template instanceof ToggleableTemplateInterface) {
-            return new \WP_REST_Response([
+            return new WP_REST_Response([
+                'success' => false,
                 'error'   => 'not_toggleable',
                 'message' => __('This template cannot be toggled.', 'wp-sms'),
             ], 400);
@@ -220,10 +225,10 @@ class TemplateController extends Controller
 
         $this->storage->setEnabled($id, $enabled);
 
-        return new \WP_REST_Response(['success' => true, 'enabled' => $enabled]);
+        return new WP_REST_Response(['success' => true, 'enabled' => $enabled]);
     }
 
-    public function handlePreview(\WP_REST_Request $request): \WP_REST_Response
+    public function handlePreview(WP_REST_Request $request): WP_REST_Response
     {
         $id = $request->get_param('template_id');
         $channel = $request->get_param('channel');
@@ -231,11 +236,12 @@ class TemplateController extends Controller
         try {
             $template = $this->templateManager->getTemplate($id);
         } catch (\InvalidArgumentException $e) {
-            return new \WP_REST_Response(['error' => 'not_found', 'message' => $e->getMessage()], 404);
+            return new WP_REST_Response(['success' => false, 'error' => 'not_found', 'message' => $e->getMessage()], 404);
         }
 
         if (!in_array($channel, $template->getSupportedChannels(), true)) {
-            return new \WP_REST_Response([
+            return new WP_REST_Response([
+                'success' => false,
                 'error'   => 'unsupported_channel',
                 'message' => sprintf('Channel "%s" is not supported by this template.', $channel),
             ], 400);
@@ -249,7 +255,7 @@ class TemplateController extends Controller
 
         $rendered = $this->templateManager->render($id, $channel, $variables);
 
-        return new \WP_REST_Response([
+        return new WP_REST_Response([
             'subject' => $rendered->subject,
             'body'    => wp_kses_post($rendered->body),
             'meta'    => $rendered->meta,

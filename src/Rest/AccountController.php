@@ -10,7 +10,6 @@ use WSms\Auth\AvatarManager;
 use WSms\Auth\CaptchaGuard;
 use WSms\Auth\ProfileFieldRegistry;
 use WSms\Auth\RateLimiter;
-use WSms\Auth\ValueObjects\AuthResult;
 use WSms\Enums\SessionStage;
 
 defined('ABSPATH') || exit;
@@ -497,12 +496,5 @@ class AccountController extends Controller
         }
 
         return $session;
-    }
-
-    private function rateLimitedResponse(int $retryAfter): WP_REST_Response
-    {
-        $result = AuthResult::rateLimited($retryAfter);
-
-        return new WP_REST_Response($result->toArray(), 429);
     }
 }

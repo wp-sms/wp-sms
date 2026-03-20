@@ -468,7 +468,7 @@ class AdminUserControllerTest extends TestCase
         $GLOBALS['_test_get_users_result'] = [];
 
         $this->auditLogger->expects($this->once())->method('log')
-            ->with(EventType::EmailChange, 'success', 5, $this->callback(function (array $meta) {
+            ->with(EventType::PhoneChange, 'success', 5, $this->callback(function (array $meta) {
                 return $meta['admin_override'] === true
                     && $meta['action'] === 'phone_set'
                     && $meta['phone'] === '+1234567890';
@@ -527,7 +527,7 @@ class AdminUserControllerTest extends TestCase
         ];
 
         $this->auditLogger->expects($this->once())->method('log')
-            ->with(EventType::EmailChange, 'success', 5, $this->callback(function (array $meta) {
+            ->with(EventType::PhoneChange, 'success', 5, $this->callback(function (array $meta) {
                 return $meta['action'] === 'phone_removed';
             }));
 

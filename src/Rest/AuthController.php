@@ -8,7 +8,6 @@ use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\CaptchaGuard;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\RateLimiter;
-use WSms\Auth\ValueObjects\AuthResult;
 use WSms\Social\SocialAuthManager;
 
 defined('ABSPATH') || exit;
@@ -114,7 +113,7 @@ class AuthController extends Controller
             $request->get_param('password'),
         );
 
-        return $this->toResponse($result);
+        return $this->toAuthResponse($result);
     }
 
     public function handlePasswordless(WP_REST_Request $request): WP_REST_Response
@@ -135,7 +134,7 @@ class AuthController extends Controller
             $request->get_param('identifier'),
         );
 
-        return $this->toResponse($result);
+        return $this->toAuthResponse($result);
     }
 
     public function handleVerify(WP_REST_Request $request): WP_REST_Response
@@ -151,7 +150,7 @@ class AuthController extends Controller
             $request->get_param('code'),
         );
 
-        return $this->toResponse($result);
+        return $this->toAuthResponse($result);
     }
 
     public function handleVerifyMagicLink(WP_REST_Request $request): WP_REST_Response
@@ -166,7 +165,7 @@ class AuthController extends Controller
             $request->get_param('token'),
         );
 
-        return $this->toResponse($result);
+        return $this->toAuthResponse($result);
     }
 
     public function handleResend(WP_REST_Request $request): WP_REST_Response
@@ -181,7 +180,7 @@ class AuthController extends Controller
             $request->get_param('session_token'),
         );
 
-        return $this->toResponse($result);
+        return $this->toAuthResponse($result);
     }
 
     public function handleIdentify(WP_REST_Request $request): WP_REST_Response
@@ -210,7 +209,7 @@ class AuthController extends Controller
 
         $result = $this->orchestrator->completeVerification($token);
 
-        return $this->toResponse($result);
+        return $this->toAuthResponse($result);
     }
 
     public function handleConfig(WP_REST_Request $request): WP_REST_Response
@@ -267,17 +266,5 @@ class AuthController extends Controller
         }
 
         return new WP_REST_Response($config);
-    }
-
-    private function toResponse(AuthResult $result): WP_REST_Response
-    {
-        return new WP_REST_Response($result->toArray(), $result->toHttpStatus());
-    }
-
-    private function rateLimitedResponse(int $retryAfter): WP_REST_Response
-    {
-        $result = AuthResult::rateLimited($retryAfter);
-
-        return new WP_REST_Response($result->toArray(), 429);
     }
 }

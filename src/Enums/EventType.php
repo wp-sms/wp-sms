@@ -12,6 +12,7 @@ enum EventType: string
     case PasswordResetComplete = 'password_reset_complete';
     case PasswordChange = 'password_change';
     case EmailChange = 'email_change';
+    case PhoneChange = 'phone_change';
     case EmailVerified = 'email_verified';
     case OtpSent = 'otp_sent';
     case OtpVerified = 'otp_verified';

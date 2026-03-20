@@ -2,6 +2,8 @@
 
 namespace WSms\Rest;
 
+use WP_REST_Request;
+use WP_REST_Response;
 use WSms\Messaging\Catalog\TemplateCatalogException;
 use WSms\Messaging\Catalog\TemplateCatalogManager;
 use WSms\Messaging\Catalog\TemplateMapping;
@@ -60,25 +62,25 @@ class TemplateCatalogController extends Controller
         ]);
     }
 
-    public function handleFetchTemplates(\WP_REST_Request $request): \WP_REST_Response
+    public function handleFetchTemplates(WP_REST_Request $request): WP_REST_Response
     {
         return $this->fetchTemplatesFromGateway($request->get_param('id'), forceRefresh: false);
     }
 
-    public function handleRefreshTemplates(\WP_REST_Request $request): \WP_REST_Response
+    public function handleRefreshTemplates(WP_REST_Request $request): WP_REST_Response
     {
         return $this->fetchTemplatesFromGateway($request->get_param('id'), forceRefresh: true);
     }
 
-    public function handleGetMappings(\WP_REST_Request $request): \WP_REST_Response
+    public function handleGetMappings(WP_REST_Request $request): WP_REST_Response
     {
         $gatewayId = $request->get_param('id');
         $mappings = $this->catalogManager->getMappingsForGateway($gatewayId);
 
-        return new \WP_REST_Response(array_map(fn($m) => $m->toArray(), $mappings));
+        return new WP_REST_Response(array_map(fn($m) => $m->toArray(), $mappings));
     }
 
-    public function handleSaveMapping(\WP_REST_Request $request): \WP_REST_Response
+    public function handleSaveMapping(WP_REST_Request $request): WP_REST_Response
     {
         $gatewayId = $request->get_param('id');
         $templateType = $request->get_param('type');
@@ -109,7 +111,8 @@ class TemplateCatalogController extends Controller
         $mappedPositions = array_values($variableMap);
         for ($i = 1; $i <= $variableCount; $i++) {
             if (!in_array((string) $i, $mappedPositions, true)) {
-                return new \WP_REST_Response([
+                return new WP_REST_Response([
+                    'success' => false,
                     'error'   => 'incomplete_mapping',
                     'message' => sprintf('Provider variable {{%d}} is not mapped.', $i),
                 ], 400);
@@ -129,35 +132,36 @@ class TemplateCatalogController extends Controller
 
         $this->catalogManager->saveMapping($mapping);
 
-        return new \WP_REST_Response($mapping->toArray());
+        return new WP_REST_Response($mapping->toArray());
     }
 
-    public function handleRemoveMapping(\WP_REST_Request $request): \WP_REST_Response
+    public function handleRemoveMapping(WP_REST_Request $request): WP_REST_Response
     {
         $gatewayId = $request->get_param('id');
         $templateType = $request->get_param('type');
 
         $this->catalogManager->removeMapping($templateType, $gatewayId);
 
-        return new \WP_REST_Response(['success' => true]);
+        return new WP_REST_Response(['success' => true]);
     }
 
-    public function handleVerifyMappings(\WP_REST_Request $request): \WP_REST_Response
+    public function handleVerifyMappings(WP_REST_Request $request): WP_REST_Response
     {
         $gatewayId = $request->get_param('id');
 
         $result = $this->catalogManager->verifyMappings($gatewayId);
 
-        return new \WP_REST_Response([
+        return new WP_REST_Response([
             'valid' => array_map(fn($m) => $m->toArray(), $result['valid']),
             'stale' => array_map(fn($m) => $m->toArray(), $result['stale']),
         ]);
     }
 
-    private function fetchTemplatesFromGateway(string $gatewayId, bool $forceRefresh): \WP_REST_Response
+    private function fetchTemplatesFromGateway(string $gatewayId, bool $forceRefresh): WP_REST_Response
     {
         if (!$this->catalogManager->gatewaySupportsTemplates($gatewayId)) {
-            return new \WP_REST_Response([
+            return new WP_REST_Response([
+                'success' => false,
                 'error'   => 'not_supported',
                 'message' => 'This gateway does not support template catalog.',
             ], 400);
@@ -166,12 +170,13 @@ class TemplateCatalogController extends Controller
         try {
             $templates = $this->catalogManager->getTemplates($gatewayId, $forceRefresh);
         } catch (TemplateCatalogException $e) {
-            return new \WP_REST_Response([
+            return new WP_REST_Response([
+                'success' => false,
                 'error'   => 'fetch_failed',
                 'message' => $e->getMessage(),
             ], 502);
         }
 
-        return new \WP_REST_Response(array_map(fn($t) => $t->toArray(), $templates));
+        return new WP_REST_Response(array_map(fn($t) => $t->toArray(), $templates));
     }
 }
