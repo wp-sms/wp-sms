@@ -516,6 +516,12 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('show_admin_bar')) {
+        function show_admin_bar(bool $show): void {
+            // No-op in tests.
+        }
+    }
+
     if (!function_exists('wp_login_url')) {
         function wp_login_url(string $redirect = '', bool $forceReauth = false): string {
             return 'http://localhost/wp-login.php';
