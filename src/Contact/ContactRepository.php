@@ -311,6 +311,10 @@ class ContactRepository implements ContactRepositoryInterface
             $where .= ' AND status = %s';
             $params[] = $filters['status'];
         }
+        if (!empty($filters['source'])) {
+            $where .= ' AND source = %s';
+            $params[] = $filters['source'];
+        }
         if (!empty($filters['search'])) {
             $where .= ' AND (email LIKE %s OR phone LIKE %s OR first_name LIKE %s OR last_name LIKE %s)';
             $like = '%' . $wpdb->esc_like($filters['search']) . '%';

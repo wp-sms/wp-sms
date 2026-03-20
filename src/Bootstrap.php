@@ -20,6 +20,7 @@ use WSms\Container\FlowServiceProvider;
 use WSms\Container\CampaignServiceProvider;
 use WSms\Container\IntegrationServiceProvider;
 use WSms\Container\MessagingButtonServiceProvider;
+use WSms\Container\ContactSourceServiceProvider;
 use WSms\Container\TemplateServiceProvider;
 use WSms\Verification\Plugin\ContactForm7\CF7ServiceProvider;
 use WSms\Verification\Plugin\WPForms\WPFormsServiceProvider;
@@ -59,6 +60,7 @@ class Bootstrap
         QueueServiceProvider::class,
         MessagingServiceProvider::class,
         ContactServiceProvider::class,
+        ContactSourceServiceProvider::class,
         FlowServiceProvider::class,
         CampaignServiceProvider::class,
         IntegrationServiceProvider::class,

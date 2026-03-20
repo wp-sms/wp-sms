@@ -665,6 +665,12 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('remove_action')) {
+        function remove_action(string $hookName, $callback, int $priority = 10): bool {
+            return true;
+        }
+    }
+
     if (!function_exists('add_filter')) {
         function add_filter(string $hookName, $callback, int $priority = 10, int $acceptedArgs = 1) {
             // No-op in tests.
@@ -840,6 +846,21 @@ if (!class_exists('WP_User')) {
 
         public function __construct(int $id = 0) {
             $this->ID = $id;
+        }
+    }
+}
+
+// WP_User_Query stub.
+if (!class_exists('WP_User_Query')) {
+    class WP_User_Query {
+        private int $total = 0;
+
+        public function __construct(array $args = []) {
+            $this->total = $GLOBALS['_test_user_query_total'] ?? 0;
+        }
+
+        public function get_total(): int {
+            return $this->total;
         }
     }
 }

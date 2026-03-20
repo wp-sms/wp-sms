@@ -683,6 +683,46 @@ export interface CampaignRecipient extends MessageLogEntry {
   campaign_id: string;
 }
 
+// --- Contact Source Types ---
+
+export interface ContactSource {
+  type: string;
+  name: string;
+  description: string;
+  icon: string;
+  available: boolean;
+  status: 'connected' | 'disconnected' | 'syncing' | 'error';
+  config: ContactSourceConfig | null;
+  stats: ContactSourceStats | null;
+  contact_count: number;
+}
+
+export interface ContactSourceConfig {
+  roles?: string[];
+  field_mapping: Record<string, string>;
+  auto_sync: boolean;
+}
+
+export interface ContactSourceStats {
+  total_synced: number;
+  last_synced_at: string | null;
+  sync_in_progress: boolean;
+  sync_progress: { synced: number } | null;
+  last_error: string | null;
+}
+
+export interface ContactSourceFields {
+  fields: Record<string, { label: string; type: string }>;
+  default_mapping: Record<string, string>;
+  config_schema: Record<string, unknown>;
+}
+
+export interface ContactSourceStatus {
+  status: ContactSource['status'];
+  stats: ContactSourceStats | null;
+  contact_count: number;
+}
+
 // --- Flow Execution Types ---
 
 export interface StepLog {

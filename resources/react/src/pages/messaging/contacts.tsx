@@ -7,8 +7,9 @@ import { ContactsList } from '@/components/contacts/contacts-list';
 import { ImportWizard } from '@/components/contacts/import-wizard';
 import { TagsList } from '@/components/tags/tags-list';
 import { ListsList } from '@/components/lists/lists-list';
+import { SourcesList } from '@/components/sources/sources-list';
 
-const VALID_TABS = ['contacts', 'tags', 'lists'];
+const VALID_TABS = ['contacts', 'tags', 'lists', 'sources'];
 
 interface ContactsProps {
   subTab?: string;
@@ -33,6 +34,7 @@ export function Contacts({ subTab, onNavigate }: ContactsProps) {
           <TabsTrigger value="contacts">Contacts</TabsTrigger>
           <TabsTrigger value="tags">Tags</TabsTrigger>
           <TabsTrigger value="lists">Lists</TabsTrigger>
+          <TabsTrigger value="sources">Sources</TabsTrigger>
         </TabsList>
 
         <TabsContent value="contacts">
@@ -49,6 +51,10 @@ export function Contacts({ subTab, onNavigate }: ContactsProps) {
 
         <TabsContent value="lists">
           {activeTab === 'lists' && <LazyListsList tags={tagsHook.tags} />}
+        </TabsContent>
+
+        <TabsContent value="sources">
+          {activeTab === 'sources' && <SourcesList />}
         </TabsContent>
       </Tabs>
 
