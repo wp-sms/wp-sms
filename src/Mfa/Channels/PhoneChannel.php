@@ -4,11 +4,12 @@ namespace WSms\Mfa\Channels;
 
 use WSms\Auth\AccountManager;
 use WSms\Enums\ChannelStatus;
+use WSms\Enums\TemplateType;
 use WSms\Support\UserMeta;
 use WSms\Enums\EventType;
 use WSms\Audit\AuditLogger;
 use WSms\Messaging\MessageDispatcher;
-use WSms\Messaging\Message\Message;
+use WSms\Messaging\Template\TemplateManager;
 use WSms\Mfa\Contracts\SupportsEnrollmentConfirmation;
 use WSms\Mfa\Contracts\SupportsTokenVerification;
 use WSms\Verification\OtpGenerator;
@@ -23,6 +24,7 @@ defined('ABSPATH') || exit;
 class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerification, SupportsEnrollmentConfirmation
 {
     private MagicLinkChannel $magicLink;
+    private TemplateManager $templateManager;
 
     public function __construct(
         OtpGenerator $otpGenerator,
@@ -30,10 +32,12 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         MessageDispatcher $messageDispatcher,
         MagicLinkChannel $magicLink,
         VerificationRepository $verificationRepo,
+        TemplateManager $templateManager,
         ?OtpService $otpService = null,
     ) {
         parent::__construct($otpGenerator, $auditLogger, $messageDispatcher, $verificationRepo, $otpService);
         $this->magicLink = $magicLink;
+        $this->templateManager = $templateManager;
     }
 
     public function getId(): string
@@ -226,20 +230,22 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         $expiry = (int) $this->getConfigValue('expiry', 300);
         $channel = $this->getConfigValue('delivery_channel', 'sms');
 
-        $message = sprintf(
-            __('Your verification code is: %s. It expires in %d minutes.', 'wp-sms'),
-            $code,
-            (int) ($expiry / 60),
-        );
-
-        $result = $this->messageDispatcher->sendImmediate(
-            new Message($channel, $identifier, $message, meta: [
+        $message = $this->templateManager->renderToMessage(
+            TemplateType::Otp->value,
+            $channel,
+            $identifier,
+            [
+                'otp_code'       => $code,
+                'expiry_minutes' => (string) (int) ($expiry / 60),
+            ],
+            [
                 'purpose'  => 'otp',
                 'otp_code' => $code,
                 'expiry'   => $expiry,
-            ]),
-            $this->resolveOtpGatewayId(),
+            ],
         );
+
+        $result = $this->messageDispatcher->sendImmediate($message, $this->resolveOtpGatewayId());
 
         return $result->success;
     }
@@ -276,33 +282,22 @@ class PhoneChannel extends AbstractOtpChannel implements SupportsTokenVerificati
     private function deliverCombined(string $identifier, ?string $otpCode, ?string $magicLinkUrl, int $expiry): bool
     {
         $channel = $this->getConfigValue('delivery_channel', 'sms');
-        $parts = [];
+        $templateType = TemplateType::forCombinedDelivery($otpCode, $magicLinkUrl);
 
+        $variables = ['expiry_minutes' => (string) (int) ($expiry / 60)];
         if ($otpCode !== null) {
-            $parts[] = sprintf(__('Your verification code is: %s.', 'wp-sms'), $otpCode);
+            $variables['otp_code'] = $otpCode;
         }
-
         if ($magicLinkUrl !== null) {
-            $parts[] = sprintf(__('Or log in: %s', 'wp-sms'), $magicLinkUrl);
+            $variables['magic_link_url'] = $magicLinkUrl;
         }
 
-        $parts[] = sprintf(__('Expires in %d minutes.', 'wp-sms'), (int) ($expiry / 60));
+        $meta = $otpCode !== null
+            ? ['purpose' => 'otp', 'otp_code' => $otpCode, 'expiry' => $expiry]
+            : [];
 
-        $body = implode(' ', $parts);
-
-        $meta = [];
-        if ($otpCode !== null) {
-            $meta = [
-                'purpose'  => 'otp',
-                'otp_code' => $otpCode,
-                'expiry'   => $expiry,
-            ];
-        }
-
-        $result = $this->messageDispatcher->sendImmediate(
-            new Message($channel, $identifier, $body, meta: $meta),
-            $this->resolveOtpGatewayId(),
-        );
+        $message = $this->templateManager->renderToMessage($templateType->value, $channel, $identifier, $variables, $meta);
+        $result = $this->messageDispatcher->sendImmediate($message, $this->resolveOtpGatewayId());
 
         return $result->success;
     }

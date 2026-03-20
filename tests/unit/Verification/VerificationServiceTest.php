@@ -6,9 +6,11 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Messaging\Contracts\DeliveryResult;
+use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Contracts\TemplateEngineInterface;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Template\MustacheEngine;
+use WSms\Messaging\Template\TemplateManager;
 use WSms\Verification\OtpGenerator;
 use WSms\Verification\VerificationConfig;
 use WSms\Verification\VerificationRepository;
@@ -40,6 +42,12 @@ class VerificationServiceTest extends TestCase
         $messageDispatcher = $this->createMock(MessageDispatcher::class);
         $messageDispatcher->method('sendImmediate')->willReturn(DeliveryResult::sent());
 
+        $templateManager = $this->createMock(TemplateManager::class);
+        $defaultMsg = $this->createMock(MessageInterface::class);
+        $defaultMsg->method('getRecipient')->willReturn('test@example.com');
+        $defaultMsg->method('getBody')->willReturn('test');
+        $templateManager->method('renderToMessage')->willReturn($defaultMsg);
+
         $this->service = new VerificationService(
             $this->otpGenerator,
             $this->session,
@@ -48,6 +56,7 @@ class VerificationServiceTest extends TestCase
             $messageDispatcher,
             new MustacheEngine(),
             new VerificationRepository(),
+            $templateManager,
         );
     }
 
@@ -412,6 +421,12 @@ class VerificationServiceTest extends TestCase
         $messageDispatcher = $this->createMock(MessageDispatcher::class);
         $messageDispatcher->method('sendImmediate')->willReturn(DeliveryResult::sent());
 
+        $templateManager = $this->createMock(TemplateManager::class);
+        $defaultMsg = $this->createMock(MessageInterface::class);
+        $defaultMsg->method('getRecipient')->willReturn('test@example.com');
+        $defaultMsg->method('getBody')->willReturn('test');
+        $templateManager->method('renderToMessage')->willReturn($defaultMsg);
+
         return new VerificationService(
             $this->otpGenerator,
             new VerificationSession($config),
@@ -420,6 +435,7 @@ class VerificationServiceTest extends TestCase
             $messageDispatcher,
             new MustacheEngine(),
             new VerificationRepository(),
+            $templateManager,
         );
     }
 }

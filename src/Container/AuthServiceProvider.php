@@ -104,6 +104,7 @@ class AuthServiceProvider implements ServiceProvider
                 $container->get('auth.session'),
                 $container->get('auth.settings'),
                 $container->get('message.dispatcher'),
+                $container->get('template.manager'),
                 $container->get('auth.field_registry'),
                 $container->get('auth.trusted_devices'),
             );

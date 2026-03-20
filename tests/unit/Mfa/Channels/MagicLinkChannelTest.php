@@ -7,11 +7,13 @@ use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
 use WSms\Messaging\Contracts\DeliveryResult;
+use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Message\EmailMessage;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Channels\MagicLinkChannel;
 use WSms\Verification\OtpGenerator;
 use WSms\Verification\OtpService;
+use WSms\Messaging\Template\TemplateManager;
 use WSms\Verification\VerificationRepository;
 
 class MagicLinkChannelTest extends TestCase
@@ -31,7 +33,12 @@ class MagicLinkChannelTest extends TestCase
         $this->verificationRepo = $this->createMock(VerificationRepository::class);
         $otpService = $this->createMock(OtpService::class);
         $otpService->method('createToken')->willReturn('abc123token');
-        $this->channel = new MagicLinkChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->verificationRepo, $otpService);
+        $templateManager = $this->createMock(TemplateManager::class);
+        $defaultMsg = $this->createMock(MessageInterface::class);
+        $defaultMsg->method('getRecipient')->willReturn('user@example.com');
+        $defaultMsg->method('getBody')->willReturn('test');
+        $templateManager->method('renderToMessage')->willReturn($defaultMsg);
+        $this->channel = new MagicLinkChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->verificationRepo, $templateManager, $otpService);
 
         $this->setupWpdbMock(null);
     }
@@ -205,10 +212,13 @@ class MagicLinkChannelTest extends TestCase
         $this->otpGenerator->method('generateToken')->willReturn('abc123token');
         $this->otpGenerator->method('hash')->willReturn('hashed');
 
+        $mockMessage = $this->createMock(MessageInterface::class);
+        $mockMessage->method('getRecipient')->willReturn('user@example.com');
+
         $dispatcher = $this->createMock(MessageDispatcher::class);
         $dispatcher->expects($this->once())
             ->method('sendImmediate')
-            ->with($this->callback(fn($msg) => $msg instanceof EmailMessage
+            ->with($this->callback(fn($msg) => $msg instanceof MessageInterface
                 && $msg->getRecipient() === 'user@example.com'
             ))
             ->willReturn(DeliveryResult::sent());
@@ -216,7 +226,9 @@ class MagicLinkChannelTest extends TestCase
         $verificationRepo = $this->createMock(VerificationRepository::class);
         $otpSvc = $this->createMock(OtpService::class);
         $otpSvc->method('createToken')->willReturn('abc123token');
-        $channel = new MagicLinkChannel($this->otpGenerator, $this->auditLogger, $dispatcher, $verificationRepo, $otpSvc);
+        $templateManager = $this->createMock(TemplateManager::class);
+        $templateManager->method('renderToMessage')->willReturn($mockMessage);
+        $channel = new MagicLinkChannel($this->otpGenerator, $this->auditLogger, $dispatcher, $verificationRepo, $templateManager, $otpSvc);
         $channel->sendChallenge(1);
     }
 

@@ -4,11 +4,11 @@ namespace WSms\Verification;
 
 use WSms\Audit\AuditLogger;
 use WSms\Enums\EventType;
+use WSms\Enums\TemplateType;
 use WSms\Enums\VerificationType;
 use WSms\Messaging\Contracts\TemplateEngineInterface;
 use WSms\Messaging\MessageDispatcher;
-use WSms\Messaging\Message\Message;
-use WSms\Messaging\OtpEmailBuilder;
+use WSms\Messaging\Template\TemplateManager;
 use WSms\Verification\OtpGenerator;
 use WSms\Mfa\Support\EmailMasker;
 use WSms\Mfa\Support\PhoneMasker;
@@ -29,6 +29,7 @@ class VerificationService
         private MessageDispatcher $messageDispatcher,
         private TemplateEngineInterface $templateEngine,
         private VerificationRepository $verificationRepo,
+        private TemplateManager $templateManager,
     ) {
     }
 
@@ -110,16 +111,26 @@ class VerificationService
         set_transient($rateLimitKey, $identifierSendCount + 1, self::IDENTIFIER_RATE_LIMIT_WINDOW);
 
         // Deliver.
+        $expiryMinutes = (string) (int) ceil($expiry / 60);
+        $vars = ['otp_code' => $otp, 'expiry_minutes' => $expiryMinutes];
+
         if ($channel === 'phone') {
-            $smsBody = $this->templateEngine->render(
-                __('Your code: {{code}}. Expires in {{minutes}} min.', 'wp-sms'),
-                ['code' => $otp, 'minutes' => (int) ceil($expiry / 60)],
+            $message = $this->templateManager->renderToMessage(
+                TemplateType::PhoneVerification->value,
+                'sms',
+                $identifier,
+                $vars,
+                ['purpose' => 'otp', 'otp_code' => $otp, 'expiry' => $expiry],
             );
-            $this->messageDispatcher->sendImmediate(new Message('sms', $identifier, $smsBody));
+            $this->messageDispatcher->sendImmediate($message);
         } elseif ($channel === 'email') {
-            $result = $this->messageDispatcher->sendImmediate(
-                OtpEmailBuilder::build($identifier, $otp, $expiry)
+            $message = $this->templateManager->renderToMessage(
+                TemplateType::Otp->value,
+                'email',
+                $identifier,
+                $vars,
             );
+            $result = $this->messageDispatcher->sendImmediate($message);
 
             if (!$result->success) {
                 $this->auditLogger->log(EventType::StandaloneVerificationFailed, 'failure', $userId, [

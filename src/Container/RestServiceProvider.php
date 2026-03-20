@@ -22,6 +22,7 @@ use WSms\Rest\ListController;
 use WSms\Rest\OptOutSettingsController;
 use WSms\Rest\TagController;
 use WSms\Rest\MessagingButtonController;
+use WSms\Rest\TemplateController;
 use WSms\Rest\WebhookReceiverController;
 
 defined('ABSPATH') || exit;
@@ -158,6 +159,11 @@ class RestServiceProvider implements ServiceProvider
             $c->get('messaging.optout_manager'),
         ));
         $container->register('rest.optout_settings', fn() => new OptOutSettingsController());
+        $container->register('rest.templates', fn($c) => new TemplateController(
+            $c->get('template.manager'),
+            $c->get('template.storage'),
+            $c->get('auth.settings'),
+        ));
         $container->register('rest.webhook_receiver', fn($c) => new WebhookReceiverController(
             $c->get('auth.rate_limiter'),
         ));
@@ -194,6 +200,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.optout_settings')->registerRoutes();
             $container->get('rest.webhook_receiver')->registerRoutes();
             $container->get('rest.messaging_button')->registerRoutes();
+            $container->get('rest.templates')->registerRoutes();
         });
     }
 }

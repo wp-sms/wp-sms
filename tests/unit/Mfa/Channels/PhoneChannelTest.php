@@ -7,12 +7,14 @@ use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
 use WSms\Messaging\Contracts\DeliveryResult;
+use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Message\Message;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Channels\MagicLinkChannel;
 use WSms\Mfa\Channels\PhoneChannel;
 use WSms\Verification\OtpGenerator;
 use WSms\Verification\OtpService;
+use WSms\Messaging\Template\TemplateManager;
 use WSms\Verification\VerificationRepository;
 
 class PhoneChannelTest extends TestCase
@@ -35,7 +37,12 @@ class PhoneChannelTest extends TestCase
         $this->verificationRepo = $this->createMock(VerificationRepository::class);
         $otpService = $this->createMock(OtpService::class);
         $otpService->method('createOtp')->willReturn('123456');
-        $this->channel = new PhoneChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->magicLink, $this->verificationRepo, $otpService);
+        $templateManager = $this->createMock(TemplateManager::class);
+        $defaultMsg = $this->createMock(MessageInterface::class);
+        $defaultMsg->method('getRecipient')->willReturn('+12025551234');
+        $defaultMsg->method('getBody')->willReturn('test');
+        $templateManager->method('renderToMessage')->willReturn($defaultMsg);
+        $this->channel = new PhoneChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->magicLink, $this->verificationRepo, $templateManager, $otpService);
 
         // Mock global $wpdb (still needed for HasUserFactor trait).
         $this->setupWpdbMock(null);
@@ -102,17 +109,22 @@ class PhoneChannelTest extends TestCase
         $this->otpGenerator->method('generate')->willReturn('999888');
         $this->otpGenerator->method('hash')->willReturn('hashed');
 
+        $mockMessage = $this->createMock(MessageInterface::class);
+        $mockMessage->method('getRecipient')->willReturn('+12025551234');
+        $mockMessage->method('getBody')->willReturn('Your code is 999888');
+
         $this->dispatcher->expects($this->once())
             ->method('sendImmediate')
-            ->with($this->callback(fn($msg) => $msg instanceof Message
+            ->with($this->callback(fn($msg) => $msg instanceof MessageInterface
                 && $msg->getRecipient() === '+12025551234'
-                && str_contains($msg->getBody(), '999888')
             ))
             ->willReturn(DeliveryResult::sent());
 
         $otpSvc = $this->createMock(OtpService::class);
         $otpSvc->method('createOtp')->willReturn('999888');
-        $channel = new PhoneChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->magicLink, $this->verificationRepo, $otpSvc);
+        $templateManager = $this->createMock(TemplateManager::class);
+        $templateManager->method('renderToMessage')->willReturn($mockMessage);
+        $channel = new PhoneChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->magicLink, $this->verificationRepo, $templateManager, $otpSvc);
         $channel->enroll(1, ['phone' => '+12025551234']);
     }
 

@@ -5,8 +5,9 @@ namespace WSms\Mfa\Channels;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
+use WSms\Enums\TemplateType;
 use WSms\Messaging\MessageDispatcher;
-use WSms\Messaging\Message\Message;
+use WSms\Messaging\Template\TemplateManager;
 use WSms\Verification\OtpGenerator;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
 use WSms\Verification\OtpService;
@@ -19,14 +20,18 @@ class TelegramChannel extends AbstractOtpChannel
     private const LINKING_TOKEN_PREFIX = 'wsms_tg_link_';
     private const LINKING_TOKEN_TTL = 300; // 5 minutes
 
+    private TemplateManager $templateManager;
+
     public function __construct(
         OtpGenerator $otpGenerator,
         AuditLogger $auditLogger,
         MessageDispatcher $messageDispatcher,
         VerificationRepository $verificationRepo,
+        TemplateManager $templateManager,
         ?OtpService $otpService = null,
     ) {
         parent::__construct($otpGenerator, $auditLogger, $messageDispatcher, $verificationRepo, $otpService);
+        $this->templateManager = $templateManager;
     }
 
     public function getId(): string
@@ -163,12 +168,19 @@ class TelegramChannel extends AbstractOtpChannel
     /** {@inheritDoc} */
     protected function deliver(int $userId, string $code, string $identifier): bool
     {
-        $expiryMinutes = (int) ($this->getConfigValue('expiry', 300) / 60);
+        $expiry = (int) $this->getConfigValue('expiry', 300);
 
-        $body = '<b>' . sprintf(__('Your verification code is: %s', 'wp-sms'), $code) . '</b>'
-            . "\n" . sprintf(__('It expires in %d minutes.', 'wp-sms'), $expiryMinutes);
+        $message = $this->templateManager->renderToMessage(
+            TemplateType::Otp->value,
+            'telegram',
+            $identifier,
+            [
+                'otp_code'       => $code,
+                'expiry_minutes' => (string) (int) ($expiry / 60),
+            ],
+        );
 
-        $result = $this->messageDispatcher->sendImmediate(new Message('telegram', $identifier, $body));
+        $result = $this->messageDispatcher->sendImmediate($message);
 
         return $result->success;
     }

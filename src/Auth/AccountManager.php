@@ -7,14 +7,12 @@ use WSms\Auth\AuthSession;
 use WSms\Enums\EnrollmentTiming;
 use WSms\Enums\EventType;
 use WSms\Enums\SessionStage;
+use WSms\Enums\TemplateType;
 use WSms\Enums\VerificationType;
 use WSms\Messaging\MessageDispatcher;
-use WSms\Messaging\Message\EmailMessage;
-use WSms\Messaging\Message\Message;
-use WSms\Messaging\OtpEmailBuilder;
+use WSms\Messaging\Template\TemplateManager;
 use WSms\Mfa\MfaManager;
 use WSms\Auth\ValueObjects\OperationResult;
-use WSms\Support\IpResolver;
 use WSms\Support\UserMeta;
 use WSms\Verification\OtpService;
 use WSms\Verification\VerificationRepository;
@@ -34,6 +32,7 @@ class AccountManager
         private AuthSession $authSession,
         private SettingsRepository $settingsRepo,
         private MessageDispatcher $messageDispatcher,
+        private TemplateManager $templateManager,
         private ?ProfileFieldRegistry $fieldRegistry = null,
         private ?TrustedDeviceManager $trustedDevices = null,
     ) {
@@ -700,14 +699,37 @@ class AccountManager
         }
 
         $otp = $this->createOtpVerification($userId, $channel, $identifier);
+        $settings = $this->settingsRepo->all();
+        $expiry = (int) (($settings[$channel] ?? [])['expiry'] ?? 300);
 
         if ($channel === 'phone') {
-            $this->messageDispatcher->sendImmediate(
-                new Message('sms', $identifier, sprintf(__('Your verification code is: %s', 'wp-sms'), $otp)),
-                $this->getOtpGatewayId('phone'),
+            $deliveryChannel = $settings['phone']['delivery_channel'] ?? 'sms';
+            $message = $this->templateManager->renderToMessage(
+                TemplateType::PhoneVerification->value,
+                $deliveryChannel,
+                $identifier,
+                [
+                    'otp_code'       => $otp,
+                    'expiry_minutes' => (string) (int) ($expiry / 60),
+                ],
+                [
+                    'purpose'  => 'otp',
+                    'otp_code' => $otp,
+                    'expiry'   => $expiry,
+                ],
             );
+            $this->messageDispatcher->sendImmediate($message, $this->getOtpGatewayId('phone'));
         } elseif ($channel === 'email') {
-            $this->sendVerificationEmail($identifier, $otp, $channel);
+            $message = $this->templateManager->renderToMessage(
+                TemplateType::Otp->value,
+                'email',
+                $identifier,
+                [
+                    'otp_code'       => $otp,
+                    'expiry_minutes' => (string) (int) ($expiry / 60),
+                ],
+            );
+            $this->messageDispatcher->sendImmediate($message, $this->getOtpGatewayId('email'));
         }
     }
 
@@ -764,20 +786,6 @@ class AccountManager
         $methods = (array) ($settings['email']['verification_methods'] ?? ['otp']);
 
         return in_array('otp', $methods, true);
-    }
-
-    /**
-     * Send a verification OTP via email.
-     */
-    private function sendVerificationEmail(string $email, string $otp, string $channel): void
-    {
-        $settings = $this->settingsRepo->all();
-        $expiry = (int) (($settings[$channel] ?? [])['expiry'] ?? 300);
-
-        $this->messageDispatcher->sendImmediate(
-            OtpEmailBuilder::build($email, $otp, $expiry),
-            $this->getOtpGatewayId('email'),
-        );
     }
 
     /**
@@ -924,36 +932,31 @@ class AccountManager
         $authSettings = $this->settingsRepo->all();
         $authBase = $authSettings['auth_base_url'] ?? '/account';
 
-        $siteName = get_bloginfo('name');
-        $headers = ['Content-Type: text/html; charset=UTF-8'];
-
         if ($type === VerificationType::EmailVerify->value) {
             $link = $baseUrl . $authBase . '/verify-email?token=' . $token;
-            $subject = sprintf(__('[%s] Verify your email address', 'wp-sms'), $siteName);
-            $message = sprintf(
-                '<p>' . __('Please verify your email address by clicking the link below:', 'wp-sms') . '</p>'
-                . '<p><a href="%s">' . __('Verify Email', 'wp-sms') . '</a></p>'
-                . '<p>' . __('This link expires in 60 minutes.', 'wp-sms') . '</p>'
-                . '<p>' . __('If you did not create an account, please ignore this email.', 'wp-sms') . '</p>',
-                esc_url($link),
+            $message = $this->templateManager->renderToMessage(
+                TemplateType::EmailVerification->value,
+                'email',
+                $identifier,
+                [
+                    'verify_url'     => $link,
+                    'expiry_minutes' => '60',
+                ],
             );
         } else {
             $link = $baseUrl . $authBase . '/reset-password?token=' . $token;
-            $subject = sprintf(__('[%s] Reset your password', 'wp-sms'), $siteName);
-            $message = sprintf(
-                '<p>' . __('Click the link below to reset your password:', 'wp-sms') . '</p>'
-                . '<p><a href="%s">' . __('Reset Password', 'wp-sms') . '</a></p>'
-                . '<p>' . __('This link expires in 60 minutes.', 'wp-sms') . '</p>'
-                . '%s'
-                . '<p>' . __('If you did not request this, please ignore this email.', 'wp-sms') . '</p>',
-                esc_url($link),
-                IpResolver::renderIpWarningHtml(__('This request was made', 'wp-sms')),
+            $message = $this->templateManager->renderToMessage(
+                TemplateType::PasswordReset->value,
+                'email',
+                $identifier,
+                [
+                    'reset_url'      => $link,
+                    'expiry_minutes' => '60',
+                ],
             );
         }
 
-        $this->messageDispatcher->sendImmediate(
-            new EmailMessage($identifier, $message, $subject, $headers)
-        );
+        $this->messageDispatcher->sendImmediate($message);
     }
 
     private function isVerificationOnCooldown(int $userId, string $type, int $cooldownSeconds = 60): bool

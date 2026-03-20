@@ -21,6 +21,7 @@ use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
 use WSms\Mfa\ValueObjects\UserFactor;
 use WSms\Verification\OtpService;
+use WSms\Messaging\Template\TemplateManager;
 use WSms\Verification\VerificationRepository;
 
 /**
@@ -115,6 +116,7 @@ abstract class IntegrationTestCase extends TestCase
 
         // Real AccountManager.
         $otpService = new OtpService(new VerificationRepository(), $this->otpGenerator);
+        $templateManager = $this->createMock(TemplateManager::class);
         $this->accountManager = new AccountManager(
             $this->auditLogger,
             $otpService,
@@ -122,6 +124,7 @@ abstract class IntegrationTestCase extends TestCase
             $this->session,
             $settingsRepo,
             $messageDispatcher,
+            $templateManager,
         );
 
         // Real AuthOrchestrator with full dependency graph.

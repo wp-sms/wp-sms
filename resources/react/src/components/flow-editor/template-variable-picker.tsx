@@ -9,19 +9,22 @@ import { buildMergedSchema } from '@/lib/flow-utils';
 
 interface TemplateVariablePickerProps {
   payloadSchema?: JsonSchema;
+  variables?: FieldOption[];
   onInsert: (variable: string) => void;
+  popoverClassName?: string;
 }
 
-export function TemplateVariablePicker({ payloadSchema, onInsert }: TemplateVariablePickerProps) {
-  const merged = useMemo(() => buildMergedSchema(payloadSchema), [payloadSchema]);
+export function TemplateVariablePicker({ payloadSchema, variables: variablesProp, onInsert, popoverClassName }: TemplateVariablePickerProps) {
+  const schemaVariables = useMemo(() => {
+    if (variablesProp) return null;
+    const merged = buildMergedSchema(payloadSchema);
+    if (!merged.properties || Object.keys(merged.properties).length === 0) return null;
+    return flattenSchemaFields(merged.properties);
+  }, [payloadSchema, variablesProp]);
 
-  if (!merged.properties || Object.keys(merged.properties).length === 0) {
-    return null;
-  }
+  const variables = variablesProp ?? schemaVariables;
 
-  const variables = flattenSchemaFields(merged.properties);
-
-  if (variables.length === 0) return null;
+  if (!variables || variables.length === 0) return null;
 
   const grouped = groupBy(variables, (v) => v.group ?? 'Fields');
   const groupNames = Object.keys(grouped);
@@ -40,7 +43,7 @@ export function TemplateVariablePicker({ payloadSchema, onInsert }: TemplateVari
           <Braces className="h-3.5 w-3.5" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="w-72 p-2">
+      <PopoverContent align="end" className={popoverClassName ?? 'w-72 p-2'}>
         <p className="mb-2 px-2 text-xs font-medium text-muted-foreground">Insert variable</p>
         <div className="max-h-48 overflow-y-auto space-y-0.5">
           {hasMultipleGroups

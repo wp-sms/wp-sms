@@ -12,6 +12,7 @@ use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\MfaManager;
 use WSms\Auth\SettingsRepository;
+use WSms\Messaging\Template\TemplateManager;
 use WSms\Verification\OtpService;
 
 class AccountManagerTest extends TestCase
@@ -40,6 +41,7 @@ class AccountManagerTest extends TestCase
                 $d->method('sendImmediate')->willReturn(DeliveryResult::sent());
                 return $d;
             })(),
+            $this->createMock(TemplateManager::class),
         );
 
         $this->otpService->method('createToken')->willReturn('test-token-abc');

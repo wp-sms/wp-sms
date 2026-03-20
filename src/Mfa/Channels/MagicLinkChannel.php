@@ -5,9 +5,10 @@ namespace WSms\Mfa\Channels;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
+use WSms\Enums\TemplateType;
 use WSms\Enums\VerificationType;
 use WSms\Messaging\MessageDispatcher;
-use WSms\Messaging\Message\EmailMessage;
+use WSms\Messaging\Template\TemplateManager;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Verification\OtpGenerator;
 use WSms\Mfa\Support\EmailMasker;
@@ -31,6 +32,7 @@ class MagicLinkChannel implements ChannelInterface
         private AuditLogger $auditLogger,
         private MessageDispatcher $messageDispatcher,
         private VerificationRepository $verificationRepo,
+        private TemplateManager $templateManager,
         private ?OtpService $otpService = null,
     ) {
     }
@@ -129,22 +131,17 @@ class MagicLinkChannel implements ChannelInterface
 
         $url = get_site_url() . '/account/verify-magic-link?token=' . $token;
 
-        $siteName = get_bloginfo('name');
-        $expiryMinutes = (int) ($expiry / 60);
-
-        $subject = sprintf(__('[%s] Your login link', 'wp-sms'), $siteName);
-
-        $body = '<p>' . __('Click the link below to log in:', 'wp-sms') . '</p>'
-            . '<p><a href="' . esc_url($url) . '">'
-            . sprintf(__('Log in to %s', 'wp-sms'), esc_html($siteName))
-            . '</a></p>'
-            . '<p>' . sprintf(__('This link expires in %d minutes.', 'wp-sms'), $expiryMinutes) . '</p>'
-            . '<p>' . __('If you did not request this, please ignore this email.', 'wp-sms') . '</p>';
-
-        $headers = ['Content-Type: text/html; charset=UTF-8'];
-        $result = $this->messageDispatcher->sendImmediate(
-            new EmailMessage($email, $body, $subject, $headers)
+        $message = $this->templateManager->renderToMessage(
+            TemplateType::MagicLink->value,
+            'email',
+            $email,
+            [
+                'magic_link_url' => $url,
+                'expiry_minutes' => (string) (int) ($expiry / 60),
+            ],
         );
+
+        $result = $this->messageDispatcher->sendImmediate($message);
 
         if (!$result->success) {
             $this->auditLogger->log(EventType::MagicLinkSent, 'failure', $userId, [

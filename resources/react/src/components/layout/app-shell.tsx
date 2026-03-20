@@ -113,6 +113,7 @@ export const NAV_ITEMS = [
       { id: 'channels', label: 'Channels' },
       { id: 'registration', label: 'Registration' },
       { id: 'profile-fields', label: 'Profile Fields' },
+      { id: 'templates', label: 'Message Templates' },
     ],
   },
   {
@@ -166,6 +167,7 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   'channels': 'Configure authentication channels — Phone, Email, and Password.',
   'registration': 'Configure how new users register through the authentication pages.',
   'profile-fields': 'Manage which fields appear on registration and profile forms.',
+  'templates': 'Customize the content of emails, SMS, and other messages sent by the authentication system.',
   'mfa-policies': 'Manage MFA policies, backup codes, required roles, and enrollment timing.',
   'rate-limiting': 'Configure rate limits to prevent brute-force attacks on OTP verification.',
   'captcha': 'Add CAPTCHA verification to protect authentication endpoints from bots.',

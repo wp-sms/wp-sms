@@ -18,6 +18,7 @@ import { TemplateVariablePicker } from '@/components/flow-editor/template-variab
 import { Skeleton } from '@/components/ui/skeleton';
 import { Plus, X } from 'lucide-react';
 import { resolveTemplatePreview, extractExampleData } from '@/lib/template-preview';
+import { insertVariableAtCursor } from '@/lib/text-utils';
 
 interface SchemaFormProps {
   schema: JsonSchema;
@@ -65,26 +66,6 @@ export function isFieldVisible(prop: JsonSchemaProperty, values: Record<string, 
     );
   }
   return true;
-}
-
-function insertVariableAtCursor(
-  el: HTMLInputElement | HTMLTextAreaElement | null,
-  variable: string,
-  currentValue: string,
-  onChange: (value: string) => void,
-) {
-  if (el) {
-    const start = el.selectionStart ?? el.value.length;
-    const end = el.selectionEnd ?? start;
-    onChange(currentValue.slice(0, start) + variable + currentValue.slice(end));
-    requestAnimationFrame(() => {
-      el.focus();
-      const pos = start + variable.length;
-      el.setSelectionRange(pos, pos);
-    });
-  } else {
-    onChange(variable);
-  }
 }
 
 function resolvePlaceholder(

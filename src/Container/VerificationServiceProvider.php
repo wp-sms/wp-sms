@@ -41,6 +41,7 @@ class VerificationServiceProvider implements ServiceProvider
             $container->get('message.dispatcher'),
             $container->get('template.engine'),
             $container->get('verification.repository'),
+            $container->get('template.manager'),
         ));
 
         $container->register('rest.verification', fn () => new VerificationController(

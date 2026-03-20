@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
 use WSms\Messaging\Contracts\DeliveryResult;
+use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Message\Message;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Channels\TelegramChannel;
@@ -14,6 +15,7 @@ use WSms\Verification\OtpGenerator;
 use WSms\Auth\SettingsRepository;
 use WSms\Telegram\TelegramBotClient;
 use WSms\Verification\OtpService;
+use WSms\Messaging\Template\TemplateManager;
 use WSms\Verification\VerificationRepository;
 
 class TelegramChannelTest extends TestCase
@@ -36,7 +38,12 @@ class TelegramChannelTest extends TestCase
         $this->verificationRepo = $this->createMock(VerificationRepository::class);
         $otpService = $this->createMock(OtpService::class);
         $otpService->method('createOtp')->willReturn('654321');
-        $this->channel = new TelegramChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->verificationRepo, $otpService);
+        $templateManager = $this->createMock(TemplateManager::class);
+        $defaultMsg = $this->createMock(MessageInterface::class);
+        $defaultMsg->method('getRecipient')->willReturn('12345');
+        $defaultMsg->method('getBody')->willReturn('test');
+        $templateManager->method('renderToMessage')->willReturn($defaultMsg);
+        $this->channel = new TelegramChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->verificationRepo, $templateManager, $otpService);
 
         $this->setupWpdbMock(null);
         $GLOBALS['_test_options'] = ['wsms_auth_settings' => ['telegram' => ['bot_username' => 'test_bot']]];
@@ -248,18 +255,23 @@ class TelegramChannelTest extends TestCase
         $this->otpGenerator->method('generate')->willReturn('654321');
         $this->otpGenerator->method('hash')->willReturn('hashed');
 
+        $mockMessage = $this->createMock(MessageInterface::class);
+        $mockMessage->method('getRecipient')->willReturn('12345');
+        $mockMessage->method('getBody')->willReturn('Your code is 654321');
+
         $dispatcher = $this->createMock(MessageDispatcher::class);
         $dispatcher->expects($this->once())
             ->method('sendImmediate')
-            ->with($this->callback(fn($msg) => $msg instanceof Message
+            ->with($this->callback(fn($msg) => $msg instanceof MessageInterface
                 && $msg->getRecipient() === '12345'
-                && str_contains($msg->getBody(), '654321')
             ))
             ->willReturn(DeliveryResult::sent());
 
         $otpSvc = $this->createMock(OtpService::class);
         $otpSvc->method('createOtp')->willReturn('654321');
-        $channel = new TelegramChannel($this->otpGenerator, $this->auditLogger, $dispatcher, $this->verificationRepo, $otpSvc);
+        $templateManager = $this->createMock(TemplateManager::class);
+        $templateManager->method('renderToMessage')->willReturn($mockMessage);
+        $channel = new TelegramChannel($this->otpGenerator, $this->auditLogger, $dispatcher, $this->verificationRepo, $templateManager, $otpSvc);
         $channel->sendChallenge(1);
     }
 

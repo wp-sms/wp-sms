@@ -4,16 +4,16 @@ namespace WSms\Mfa\Channels;
 
 use WSms\Enums\ChannelStatus;
 use WSms\Enums\EventType;
+use WSms\Enums\TemplateType;
 use WSms\Audit\AuditLogger;
 use WSms\Auth\AccountManager;
 use WSms\Messaging\MessageDispatcher;
-use WSms\Messaging\Message\EmailMessage;
+use WSms\Messaging\Template\TemplateManager;
 use WSms\Mfa\Contracts\SupportsTokenVerification;
 use WSms\Verification\OtpGenerator;
 use WSms\Mfa\Support\EmailMasker;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
-use WSms\Support\IpResolver;
 use WSms\Verification\OtpService;
 use WSms\Verification\VerificationRepository;
 
@@ -22,6 +22,7 @@ defined('ABSPATH') || exit;
 class EmailChannel extends AbstractOtpChannel implements SupportsTokenVerification
 {
     private MagicLinkChannel $magicLink;
+    private TemplateManager $templateManager;
 
     public function __construct(
         OtpGenerator $otpGenerator,
@@ -29,10 +30,12 @@ class EmailChannel extends AbstractOtpChannel implements SupportsTokenVerificati
         MessageDispatcher $messageDispatcher,
         MagicLinkChannel $magicLink,
         VerificationRepository $verificationRepo,
+        TemplateManager $templateManager,
         ?OtpService $otpService = null,
     ) {
         parent::__construct($otpGenerator, $auditLogger, $messageDispatcher, $verificationRepo, $otpService);
         $this->magicLink = $magicLink;
+        $this->templateManager = $templateManager;
     }
 
     public function getId(): string
@@ -202,39 +205,18 @@ class EmailChannel extends AbstractOtpChannel implements SupportsTokenVerificati
      */
     private function deliverCombined(int $userId, string $identifier, ?string $otpCode, ?string $magicLinkUrl, int $expiry): bool
     {
-        $siteName = get_bloginfo('name');
-        $expiryMinutes = (int) ($expiry / 60);
-        $subject = sprintf(__('[%s] Your verification code', 'wp-sms'), $siteName);
+        $templateType = TemplateType::forCombinedDelivery($otpCode, $magicLinkUrl);
 
-        $bodyParts = [];
-
+        $variables = ['expiry_minutes' => (string) (int) ($expiry / 60)];
         if ($otpCode !== null) {
-            $bodyParts[] = '<p>' . sprintf(__('Your verification code is: %s', 'wp-sms'), '<strong>' . $otpCode . '</strong>') . '</p>';
+            $variables['otp_code'] = $otpCode;
         }
-
         if ($magicLinkUrl !== null) {
-            $bodyParts[] = '<p>' . __('Or click the link below to log in:', 'wp-sms') . '</p>'
-                . '<p><a href="' . esc_url($magicLinkUrl) . '">'
-                . sprintf(__('Log in to %s', 'wp-sms'), esc_html($siteName))
-                . '</a></p>';
+            $variables['magic_link_url'] = $magicLinkUrl;
         }
 
-        $bodyParts[] = '<p>' . sprintf(__('This expires in %d minutes.', 'wp-sms'), $expiryMinutes) . '</p>';
-
-        $ipWarning = IpResolver::renderIpWarningHtml(__('This code was requested', 'wp-sms'));
-        if ($ipWarning !== '') {
-            $bodyParts[] = $ipWarning;
-        } else {
-            $bodyParts[] = '<p>' . __('If you did not request this, please ignore this email.', 'wp-sms') . '</p>';
-        }
-
-        $body = implode("\n", $bodyParts);
-        $headers = ['Content-Type: text/html; charset=UTF-8'];
-
-        $result = $this->messageDispatcher->sendImmediate(
-            new EmailMessage($identifier, $body, $subject, $headers),
-            $this->resolveOtpGatewayId(),
-        );
+        $message = $this->templateManager->renderToMessage($templateType->value, 'email', $identifier, $variables);
+        $result = $this->messageDispatcher->sendImmediate($message, $this->resolveOtpGatewayId());
 
         return $result->success;
     }

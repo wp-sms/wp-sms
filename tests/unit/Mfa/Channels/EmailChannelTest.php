@@ -7,12 +7,14 @@ use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
 use WSms\Messaging\Contracts\DeliveryResult;
+use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Message\EmailMessage;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Mfa\Channels\EmailChannel;
 use WSms\Mfa\Channels\MagicLinkChannel;
 use WSms\Verification\OtpGenerator;
 use WSms\Verification\OtpService;
+use WSms\Messaging\Template\TemplateManager;
 use WSms\Verification\VerificationRepository;
 
 class EmailChannelTest extends TestCase
@@ -34,7 +36,12 @@ class EmailChannelTest extends TestCase
         $this->verificationRepo = $this->createMock(VerificationRepository::class);
         $otpService = $this->createMock(OtpService::class);
         $otpService->method('createOtp')->willReturn('123456');
-        $this->channel = new EmailChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->magicLink, $this->verificationRepo, $otpService);
+        $templateManager = $this->createMock(TemplateManager::class);
+        $defaultMsg = $this->createMock(MessageInterface::class);
+        $defaultMsg->method('getRecipient')->willReturn('user@example.com');
+        $defaultMsg->method('getBody')->willReturn('test');
+        $templateManager->method('renderToMessage')->willReturn($defaultMsg);
+        $this->channel = new EmailChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->magicLink, $this->verificationRepo, $templateManager, $otpService);
 
         unset($GLOBALS['_test_userdata']);
         $this->setupWpdbMock(null);
@@ -156,12 +163,15 @@ class EmailChannelTest extends TestCase
         $this->otpGenerator->method('generate')->willReturn('112233');
         $this->otpGenerator->method('hash')->willReturn('hashed');
 
+        $mockMessage = $this->createMock(MessageInterface::class);
+        $mockMessage->method('getRecipient')->willReturn('user@example.com');
+        $mockMessage->method('getBody')->willReturn('Your code is 112233');
+
         $dispatcher = $this->createMock(MessageDispatcher::class);
         $dispatcher->expects($this->once())
             ->method('sendImmediate')
-            ->with($this->callback(fn($msg) => $msg instanceof EmailMessage
+            ->with($this->callback(fn($msg) => $msg instanceof MessageInterface
                 && $msg->getRecipient() === 'user@example.com'
-                && str_contains($msg->getBody(), '112233')
             ))
             ->willReturn(DeliveryResult::sent());
 
@@ -169,7 +179,9 @@ class EmailChannelTest extends TestCase
         $verificationRepo = $this->createMock(VerificationRepository::class);
         $otpSvc = $this->createMock(OtpService::class);
         $otpSvc->method('createOtp')->willReturn('112233');
-        $channel = new EmailChannel($this->otpGenerator, $this->auditLogger, $dispatcher, $magicLink, $verificationRepo, $otpSvc);
+        $templateManager = $this->createMock(TemplateManager::class);
+        $templateManager->method('renderToMessage')->willReturn($mockMessage);
+        $channel = new EmailChannel($this->otpGenerator, $this->auditLogger, $dispatcher, $magicLink, $verificationRepo, $templateManager, $otpSvc);
         $result = $channel->sendChallenge(1);
 
         $this->assertTrue($result->success);

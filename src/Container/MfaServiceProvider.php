@@ -41,6 +41,7 @@ class MfaServiceProvider implements ServiceProvider
                 $container->get('audit.logger'),
                 $container->get('message.dispatcher'),
                 $container->get('verification.repository'),
+                $container->get('template.manager'),
                 $container->get('verification.otp_service'),
             );
         });
@@ -52,6 +53,7 @@ class MfaServiceProvider implements ServiceProvider
                 $container->get('message.dispatcher'),
                 $container->get('mfa.channel.magic'),
                 $container->get('verification.repository'),
+                $container->get('template.manager'),
                 $container->get('verification.otp_service'),
             );
         });
@@ -63,6 +65,7 @@ class MfaServiceProvider implements ServiceProvider
                 $container->get('message.dispatcher'),
                 $container->get('mfa.channel.magic'),
                 $container->get('verification.repository'),
+                $container->get('template.manager'),
                 $container->get('verification.otp_service'),
             );
         });
@@ -87,6 +90,7 @@ class MfaServiceProvider implements ServiceProvider
                 $container->get('audit.logger'),
                 $container->get('message.dispatcher'),
                 $container->get('verification.repository'),
+                $container->get('template.manager'),
                 $container->get('verification.otp_service'),
             );
         });
