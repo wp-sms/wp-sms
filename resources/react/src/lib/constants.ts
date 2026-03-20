@@ -188,6 +188,26 @@ export const DEFAULTS: Required<AuthSettings> = {
   social_profile_sync: 'registration_only',
   site_phone: '',
   site_phone_channel: 'sms',
+  branding: {
+    logo_url: '',
+    site_name: '',
+    logo_position: 'center',
+    logo_size: 40,
+    primary_color: '#8b5320',
+    background_color: '#f5f5f4',
+    background_image_url: '',
+    dark_mode: false,
+    font_family: 'system-ui',
+    google_font: false,
+    layout: 'centered',
+    border_radius: 8,
+    social_position: 'top',
+    split_panel_position: 'left',
+    split_panel_bg_color: '#1e293b',
+    split_panel_bg_image_url: '',
+    split_welcome_heading: 'Welcome back',
+    split_subtitle: 'Sign in to continue',
+  },
 };
 
 export type ChannelId = 'phone' | 'email' | 'password';

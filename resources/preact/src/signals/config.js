@@ -1,5 +1,6 @@
 import { signal, computed } from '@preact/signals';
 import { api } from '../api/client';
+import { isPreviewMode } from './branding';
 
 export const authConfig = signal(null);
 export const configLoading = signal(false);
@@ -14,6 +15,10 @@ export const socialProviders = computed(() => authConfig.value?.social_providers
 
 export async function loadConfig() {
     if (authConfig.value || configLoading.value) return;
+
+    // In preview mode, skip the REST call — branding is set via postMessage
+    if (isPreviewMode.value) return;
+
     configLoading.value = true;
     try {
         const data = await api.get('/auth/config');

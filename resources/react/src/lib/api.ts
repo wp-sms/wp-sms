@@ -139,6 +139,32 @@ export interface WooCommerceSettings {
   redirect_auth?: boolean;
 }
 
+export type BrandingLayout = 'centered' | 'split';
+export type SplitPanelPosition = 'left' | 'right';
+export type LogoPosition = 'left' | 'center' | 'right' | 'hidden';
+export type SocialPosition = 'top' | 'bottom';
+
+export interface BrandingSettings {
+  logo_url: string;
+  site_name: string;
+  logo_position: LogoPosition;
+  logo_size: number;
+  primary_color: string;
+  background_color: string;
+  background_image_url: string;
+  dark_mode: boolean;
+  font_family: string;
+  google_font: boolean;
+  layout: BrandingLayout;
+  border_radius: number;
+  social_position: SocialPosition;
+  split_panel_position: SplitPanelPosition;
+  split_panel_bg_color: string;
+  split_panel_bg_image_url: string;
+  split_welcome_heading: string;
+  split_subtitle: string;
+}
+
 export interface AuthSettings {
   phone?: PhoneChannelSettings;
   email?: EmailChannelSettings;
@@ -164,6 +190,7 @@ export interface AuthSettings {
   social_profile_sync?: SocialProfileSync;
   site_phone?: string;
   site_phone_channel?: SitePhoneChannel;
+  branding?: BrandingSettings;
 }
 
 export interface ReportsResponse {

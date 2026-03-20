@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { UserAvatar } from '@/components/ui/UserAvatar';
-import { Logo } from '@/components/Logo';
+import { BrandLogo } from '@/components/BrandLogo';
 import { SecuredByFooter } from '@/components/SecuredByFooter';
 import { authUrl } from '@/utils/urls';
 import { logout } from '@/utils/auth';
@@ -22,12 +22,7 @@ export function AccountLayout({ title, subtitle, currentPath, hideNav, children 
             <div className="mx-auto w-full max-w-3xl flex-1 space-y-6">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2">
-                            <div className="flex size-7 items-center justify-center rounded-md bg-primary">
-                                <Logo className="size-4 text-primary-foreground" />
-                            </div>
-                            <span className="hidden text-sm font-semibold tracking-tight sm:inline">WSMS</span>
-                        </div>
+                        <BrandLogo size="sm" />
                         {!hideNav && (
                             <>
                                 <div className="h-5 w-px bg-border" />

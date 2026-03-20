@@ -48,6 +48,7 @@ class AdminController extends Controller
         'social',
         'telegram',
         'woocommerce',
+        'branding',
     ];
 
     public function __construct(
@@ -488,6 +489,57 @@ class AdminController extends Controller
             $v = (int) $bc['length'];
             if ($v < 6 || $v > 12) {
                 $errors[] = 'backup_codes.length must be between 6 and 12.';
+            }
+        }
+
+        // Branding settings validation.
+        $branding = $settings['branding'] ?? [];
+
+        foreach (['primary_color', 'background_color', 'split_panel_bg_color'] as $colorKey) {
+            if (isset($branding[$colorKey]) && !preg_match('/^#[0-9a-fA-F]{6}$/', $branding[$colorKey])) {
+                $errors[] = "branding.{$colorKey} must be a valid hex color (e.g. #2563eb).";
+            }
+        }
+
+        foreach (['logo_url', 'background_image_url', 'split_panel_bg_image_url'] as $urlKey) {
+            if (!empty($branding[$urlKey]) && !filter_var($branding[$urlKey], FILTER_VALIDATE_URL)) {
+                $errors[] = "branding.{$urlKey} must be a valid URL.";
+            }
+        }
+
+        if (isset($branding['layout']) && !in_array($branding['layout'], ['centered', 'split'], true)) {
+            $errors[] = 'branding.layout must be "centered" or "split".';
+        }
+
+        if (isset($branding['logo_position']) && !in_array($branding['logo_position'], ['left', 'center', 'right', 'hidden'], true)) {
+            $errors[] = 'branding.logo_position must be one of: left, center, right, hidden.';
+        }
+
+        if (isset($branding['logo_size'])) {
+            $v = (int) $branding['logo_size'];
+            if ($v < 20 || $v > 80) {
+                $errors[] = 'branding.logo_size must be between 20 and 80.';
+            }
+        }
+
+        if (isset($branding['social_position']) && !in_array($branding['social_position'], ['top', 'bottom'], true)) {
+            $errors[] = 'branding.social_position must be "top" or "bottom".';
+        }
+
+        if (isset($branding['border_radius'])) {
+            $v = (int) $branding['border_radius'];
+            if ($v < 0 || $v > 32) {
+                $errors[] = 'branding.border_radius must be between 0 and 32.';
+            }
+        }
+
+        if (isset($branding['split_panel_position']) && !in_array($branding['split_panel_position'], ['left', 'right'], true)) {
+            $errors[] = 'branding.split_panel_position must be "left" or "right".';
+        }
+
+        foreach (['site_name', 'split_welcome_heading', 'split_subtitle'] as $textKey) {
+            if (isset($branding[$textKey]) && !is_string($branding[$textKey])) {
+                $errors[] = "branding.{$textKey} must be a string.";
             }
         }
 

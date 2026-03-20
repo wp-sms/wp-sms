@@ -83,6 +83,12 @@ class AuthRouter
         // Pass page title to template.
         $GLOBALS['wsmsPageTitle'] = $this->getPageTitle();
 
+        // Pass custom site name for <title> if set.
+        $branding = $this->settingsRepo->channel('branding');
+        if (!empty($branding['site_name'])) {
+            $GLOBALS['wsmsSiteName'] = $branding['site_name'];
+        }
+
         return dirname(__DIR__, 2) . '/views/auth/app.php';
     }
 
@@ -110,6 +116,8 @@ class AuthRouter
             true,
         );
 
+        $branding = $this->settingsRepo->channel('branding');
+
         wp_localize_script('wsms-auth', 'wsmsAuth', [
             'restUrl'          => rest_url('wsms/v1/'),
             'nonce'            => wp_create_nonce('wp_rest'),
@@ -118,7 +126,19 @@ class AuthRouter
             'route'            => get_query_var('wsms_auth_route', ''),
             'enrollmentGated'  => is_user_logged_in()
                 && (bool) get_user_meta(get_current_user_id(), UserMeta::MFA_ENROLLMENT_PENDING, true),
+            'branding'         => $branding,
         ]);
+
+        // Enqueue Google Font if configured.
+        if (!empty($branding['google_font']) && !empty($branding['font_family'])) {
+            $fontFamily = urlencode($branding['font_family']);
+            wp_enqueue_style(
+                'wsms-google-font',
+                "https://fonts.googleapis.com/css2?family={$fontFamily}:wght@400;500;600;700&display=swap",
+                [],
+                null,
+            );
+        }
 
         // Enqueue CAPTCHA provider script if enabled.
         $this->enqueueCaptchaScript();
@@ -154,7 +174,7 @@ class AuthRouter
 
         global $wp_styles, $wp_scripts;
 
-        $allowedStyles = ['wsms-auth-style'];
+        $allowedStyles = ['wsms-auth-style', 'wsms-google-font'];
         $allowedScripts = ['wsms-auth', 'wp-hooks', 'wsms-captcha-provider'];
 
         if ($wp_styles instanceof \WP_Styles) {

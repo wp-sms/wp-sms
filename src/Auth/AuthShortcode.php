@@ -75,6 +75,7 @@ class AuthShortcode
             'nonce'      => wp_create_nonce('wp_rest'),
             'baseUrl'    => '/' . ltrim($this->getBaseUrl(), '/'),
             'isLoggedIn' => is_user_logged_in(),
+            'branding'   => $this->settingsRepo->channel('branding'),
         ]);
     }
 

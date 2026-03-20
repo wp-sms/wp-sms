@@ -2,7 +2,7 @@
 defined('ABSPATH') || exit;
 
 $pageTitle = apply_filters('wsms_auth_page_title', $wsmsPageTitle ?? 'Account');
-$siteName  = get_bloginfo('name');
+$siteName  = $wsmsSiteName ?? get_bloginfo('name');
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>

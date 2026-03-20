@@ -11,7 +11,7 @@
     "dev:auth": "vite build -c vite.config.auth.mjs --watch",
     "dev:auth-popup": "vite build -c vite.config.auth-popup.mjs --watch",
     "dev:messaging-button": "vite build -c vite.config.messaging-button.mjs --watch",
-    "build": "npm run build:dashboard && npm run build:scripts && npm run build:sass && npm run build:blocks && npm run build:auth && npm run build:auth-popup && npm run build:verify-widget && npm run build:messaging-button",
+    "build": "npm run build:dashboard && npm run build:scripts && npm run build:sass && npm run build:blocks && rm -rf public/auth && npm run build:auth && npm run build:auth-popup && npm run build:verify-widget && npm run build:messaging-button",
     "build:dashboard": "vite build",
     "build:scripts": "ENTRY=admin vite build -c vite.config.entries.mjs && ENTRY=frontend vite build -c vite.config.entries.mjs",
     "build:sass": "sass resources/scss/admin.scss:public/css/admin.css resources/scss/frontend.scss:public/css/frontend.css --style=compressed --no-source-map",

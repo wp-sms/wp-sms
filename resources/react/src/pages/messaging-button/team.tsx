@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
 import { Users, Plus, Trash2, ChevronUp, ChevronDown, Upload, MessageSquareText } from 'lucide-react';
+import { openMediaLibrary } from '@/lib/media';
 import type { MessagingButtonSettings } from './use-mb-settings';
 
 interface TeamPageProps {
@@ -18,33 +19,6 @@ const CHANNEL_TYPES = [
   { value: 'phone', label: 'Phone' },
   { value: 'sms', label: 'SMS' },
 ];
-
-function openMediaLibrary(onSelect: (url: string) => void) {
-  const win = window as unknown as Record<string, unknown>;
-  if (typeof window === 'undefined' || !win.wp) return;
-  const wp = win.wp as Record<string, unknown>;
-  const media = wp.media as ((opts: Record<string, unknown>) => Record<string, unknown>) | undefined;
-  if (!media) return;
-
-  const frame = media({
-    title: 'Select Avatar',
-    button: { text: 'Use this image' },
-    multiple: false,
-    library: { type: 'image' },
-  });
-
-  (frame.on as (evt: string, cb: () => void) => void)('select', () => {
-    const state = (frame.state as () => Record<string, unknown>)();
-    const selection = (state.get as (key: string) => Record<string, unknown>)('selection');
-    const attachment = (selection.first as () => Record<string, unknown>)();
-    const json = (attachment.toJSON as () => Record<string, unknown>)();
-    const sizes = json.sizes as Record<string, { url: string }> | undefined;
-    const url = sizes?.thumbnail?.url ?? sizes?.medium?.url ?? (json.url as string);
-    onSelect(url);
-  });
-
-  (frame.open as () => void)();
-}
 
 export function TeamPage({ settings, onUpdate }: TeamPageProps) {
   const members = settings.team_members;
@@ -189,7 +163,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                         variant="outline"
                         size="icon"
                         type="button"
-                        onClick={() => openMediaLibrary((url) => updateMember(i, 'avatar_url', url))}
+                        onClick={() => openMediaLibrary('Select Avatar', (url) => updateMember(i, 'avatar_url', url))}
                         title="Upload from Media Library"
                       >
                         <Upload className="h-4 w-4" />

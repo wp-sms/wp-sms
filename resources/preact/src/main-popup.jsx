@@ -1,6 +1,11 @@
 import { render } from 'preact';
 import { App, popupOpen, popupView } from './App';
+import { applyBrandingVars } from './utils/apply-branding';
 import popupStyles from './styles/auth.css?inline';
+
+// Apply branding CSS vars on document.documentElement BEFORE shadow DOM
+// CSS custom properties inherit through shadow DOM boundaries
+applyBrandingVars(window.wsmsAuth?.branding);
 
 let mounted = false;
 let hostEl = null;

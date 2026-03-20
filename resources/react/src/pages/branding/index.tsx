@@ -1,10 +1,14 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
-import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
-import { Globe } from 'lucide-react';
-import { ComingSoon } from '@/components/coming-soon';
-import type { AuthSettings } from '@/lib/api';
+import { useCallback } from 'react';
+import { Button } from '@/components/ui/button';
+import { RotateCcw } from 'lucide-react';
+import { DEFAULTS } from '@/lib/constants';
+import { LogoCard } from './logo-card';
+import { ColorsCard } from './colors-card';
+import { LayoutCard } from './layout-card';
+import { TypographyCard } from './typography-card';
+import { SplitPanelCard } from './split-panel-card';
+import { BrandingPreview } from './branding-preview';
+import type { AuthSettings, BrandingSettings } from '@/lib/api';
 
 interface BrandingPageProps {
   settings: Required<AuthSettings>;
@@ -12,67 +16,54 @@ interface BrandingPageProps {
 }
 
 export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
+  const branding = settings.branding;
+
+  const handleBrandingChange = useCallback(
+    (patch: Partial<BrandingSettings>) => {
+      onUpdate('branding', { ...branding, ...patch });
+    },
+    [branding, onUpdate]
+  );
+
+  const handleReset = useCallback(() => {
+    if (confirm('Reset all branding settings to defaults?')) {
+      onUpdate('branding', DEFAULTS.branding);
+    }
+  }, [onUpdate]);
+
+  const isCentered = branding.layout === 'centered';
+  const baseUrl = settings.auth_base_url || '/account';
+
   return (
-    <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Globe className="h-4 w-4 text-muted-foreground" />
-            Auth Pages
-          </CardTitle>
-          <CardDescription>
-            Configure authentication page URLs and login behavior
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="max-w-md">
-              <Field>
-                <FieldLabel htmlFor="auth_base_url">Base URL</FieldLabel>
-                <Input
-                  id="auth_base_url"
-                  type="text"
-                  value={settings.auth_base_url}
-                  onChange={(e) => onUpdate('auth_base_url', e.target.value)}
-                  placeholder="/auth"
-                />
-                <FieldDescription>
-                  The base path for authentication pages (e.g., /auth, /login)
-                </FieldDescription>
-              </Field>
-            </div>
+    <div className="flex gap-6">
+      {/* Settings panel */}
+      <div className="min-w-0 flex-1 space-y-4">
+        <LogoCard branding={branding} onChange={handleBrandingChange} />
+        <ColorsCard branding={branding} onChange={handleBrandingChange} showBackground={isCentered} />
+        <LayoutCard branding={branding} onChange={handleBrandingChange} />
+        <TypographyCard branding={branding} onChange={handleBrandingChange} />
 
-            <Field orientation="horizontal">
-              <FieldLabel htmlFor="redirect_login">Redirect WordPress Login</FieldLabel>
-              <Switch
-                id="redirect_login"
-                checked={settings.redirect_login}
-                onCheckedChange={(checked) => onUpdate('redirect_login', checked)}
-                aria-label="Toggle redirect login"
-              />
-              <FieldDescription>
-                Redirect wp-login.php to your custom auth pages
-              </FieldDescription>
-            </Field>
+        {!isCentered && (
+          <>
+            <SplitPanelCard branding={branding} onChange={handleBrandingChange} />
+            <p className="text-xs text-muted-foreground rounded-md bg-muted/50 p-3">
+              Background image/color applies to the centered layout. In split layout, use the panel background above instead.
+            </p>
+          </>
+        )}
 
-            {settings.redirect_login && (
-              <p className="text-xs text-muted-foreground mt-3 rounded-md bg-muted/50 p-3">
-                When enabled, visitors to <code className="rounded bg-muted px-1 py-0.5 font-mono text-[0.6875rem]">wp-login.php</code> will be redirected to <code className="rounded bg-muted px-1 py-0.5 font-mono text-[0.6875rem]">{settings.auth_base_url}/login</code>
-              </p>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+        <div className="flex justify-end pt-2">
+          <Button variant="outline" size="sm" onClick={handleReset}>
+            <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+            Reset Branding
+          </Button>
+        </div>
+      </div>
 
-      <ComingSoon
-        title="Custom Logo & Colors"
-        description="Upload your logo and customize the color scheme of auth pages"
-      />
-
-      <ComingSoon
-        title="Email Templates"
-        description="Customize the email templates for OTP codes and magic links"
-      />
+      {/* Live preview (desktop only) */}
+      <div className="hidden xl:block sticky top-4 h-fit shrink-0">
+        <BrandingPreview branding={branding} baseUrl={baseUrl} />
+      </div>
     </div>
   );
 }

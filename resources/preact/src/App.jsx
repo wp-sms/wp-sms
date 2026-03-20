@@ -2,6 +2,7 @@ import { LocationProvider, Router, Route, ErrorBoundary } from 'preact-iso';
 import { useEffect } from 'preact/hooks';
 import { signal } from '@preact/signals';
 import { loadConfig } from './signals/config';
+import { isPreviewMode } from './signals/branding';
 import { authUrl, getBaseUrl } from './utils/urls';
 import { Dialog } from './components/ui/Dialog';
 import { Login } from './pages/Login';
@@ -86,7 +87,10 @@ function PopupApp() {
 }
 
 function AccountOrLogin() {
-    return window.wsmsAuth?.isLoggedIn ? <Account /> : <Login />;
+    if (isPreviewMode.value || window.wsmsAuth?.isLoggedIn) {
+        return <Account />;
+    }
+    return <Login />;
 }
 
 function VerifyMagicLinkPage() {

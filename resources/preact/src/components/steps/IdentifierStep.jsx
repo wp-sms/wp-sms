@@ -14,6 +14,7 @@ import {
 } from '../../signals/auth';
 import { extractError } from '../../utils/auth';
 import { socialProviders } from '../../signals/config';
+import { brandingConfig } from '../../signals/branding';
 import { Alert } from '../ui/Alert';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
@@ -104,13 +105,20 @@ export function IdentifierStep() {
     }
 
     const hasSocial = socialProviders.value.length > 0;
+    const socialPos = brandingConfig.value?.social_position ?? 'top';
+
+    const socialBlock = hasSocial && (
+        <>
+            <SocialLoginButtons intent="login" />
+            <SocialDivider />
+        </>
+    );
 
     return (
         <div className="space-y-4">
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
 
-            {hasSocial && <SocialLoginButtons intent="login" />}
-            {hasSocial && <SocialDivider />}
+            {socialPos === 'top' && socialBlock}
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="space-y-2">
@@ -131,6 +139,8 @@ export function IdentifierStep() {
                     {authLoading.value ? 'Checking...' : 'Continue'}
                 </Button>
             </form>
+
+            {socialPos === 'bottom' && socialBlock}
 
             {remembered && !authLoading.value && (
                 <div className="text-center">

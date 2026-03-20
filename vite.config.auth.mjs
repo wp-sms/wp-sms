@@ -5,6 +5,6 @@ export default defineConfig(createAuthConfig({
     entry: 'resources/preact/src/main.jsx',
     name: 'wsmsAuthApp',
     fileName: 'app.js',
-    emptyOutDir: true,
+    emptyOutDir: false,
     assetFileNames: 'style[extname]',
 }));

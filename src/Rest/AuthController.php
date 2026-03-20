@@ -252,6 +252,11 @@ class AuthController extends Controller
             $config['captcha'] = $captchaConfig;
         }
 
+        $branding = $this->policy->getSetting('branding', []);
+        if (!empty($branding)) {
+            $config['branding'] = $branding;
+        }
+
         return new WP_REST_Response($config);
     }
 

@@ -18,6 +18,7 @@ import { CaptchaWidget } from '../components/CaptchaWidget';
 import { useCaptcha } from '../hooks/useCaptcha';
 import { SocialLoginButtons } from '../components/SocialLoginButtons';
 import { SocialDivider } from '../components/SocialDivider';
+import { brandingConfig } from '../signals/branding';
 import { SYSTEM_FIELD_IDS } from '../utils/fields';
 
 export function Register() {
@@ -130,6 +131,15 @@ export function Register() {
     // Separate custom field defs from system fields, maintaining sort order.
     const customFieldDefs = fieldDefs.filter((def) => !SYSTEM_FIELD_IDS.includes(def.id));
 
+    const hasSocial = socialProviders.value.length > 0;
+    const socialPos = brandingConfig.value?.social_position ?? 'top';
+    const socialBlock = hasSocial && (
+        <>
+            <SocialLoginButtons intent="register" />
+            <SocialDivider />
+        </>
+    );
+
     return (
         <AuthLayout
             title="Create Account"
@@ -137,10 +147,7 @@ export function Register() {
         >
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
 
-            {socialProviders.value.length > 0 && <>
-                <SocialLoginButtons intent="register" />
-                <SocialDivider />
-            </>}
+            {socialPos === 'top' && socialBlock}
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 {fields.includes('username') && (
@@ -268,6 +275,8 @@ export function Register() {
                     {authLoading.value ? 'Creating account\u2026' : 'Create Account'}
                 </Button>
             </form>
+
+            {socialPos === 'bottom' && socialBlock}
         </AuthLayout>
     );
 }
