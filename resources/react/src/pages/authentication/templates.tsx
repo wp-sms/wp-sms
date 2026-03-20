@@ -376,7 +376,7 @@ function TemplateEditor({
                             />
                           </Field>
 
-                          {isEmailChannel && (
+                          {isEmailChannel && (channelData?.default?.cta != null || channelData?.default?.cta_url != null) && (
                             <>
                               <Separator />
 
