@@ -100,9 +100,10 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
     if (!function_exists('get_bloginfo')) {
         function get_bloginfo(string $show = '', string $filter = 'raw') {
             return match ($show) {
-                'name' => 'Test Site',
-                'url'  => 'http://localhost',
-                default => '',
+                'name'        => 'Test Site',
+                'url'         => 'http://localhost',
+                'description' => 'Just a test site',
+                default       => '',
             };
         }
     }
@@ -134,9 +135,9 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
     if (!function_exists('current_time')) {
         function current_time(string $type, bool $gmt = false) {
             return match ($type) {
-                'mysql' => gmdate('Y-m-d H:i:s'),
+                'mysql'     => gmdate('Y-m-d H:i:s'),
                 'timestamp' => time(),
-                default => time(),
+                default     => gmdate($type),
             };
         }
     }
@@ -512,6 +513,18 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
     if (!function_exists('admin_url')) {
         function admin_url(string $path = ''): string {
             return 'http://localhost/wp-admin/' . ltrim($path, '/');
+        }
+    }
+
+    if (!function_exists('wp_login_url')) {
+        function wp_login_url(string $redirect = '', bool $forceReauth = false): string {
+            return 'http://localhost/wp-login.php';
+        }
+    }
+
+    if (!function_exists('wp_timezone')) {
+        function wp_timezone(): \DateTimeZone {
+            return new \DateTimeZone('UTC');
         }
     }
 

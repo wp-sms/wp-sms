@@ -3,8 +3,10 @@
 namespace WSms\Container;
 
 use WSms\Integration\Auth\AuthIntegration;
+use WSms\Integration\Contact\ContactIntegration;
 use WSms\Integration\ContactForm7\ContactForm7Integration;
 use WSms\Integration\IntegrationRegistry;
+use WSms\Integration\Schedule\ScheduleIntegration;
 use WSms\Integration\Webhook\WebhookIntegration;
 use WSms\Integration\WooCommerce\WooCommerceIntegration;
 use WSms\Integration\WordPress\WordPressIntegration;
@@ -54,6 +56,30 @@ class IntegrationServiceProvider implements ServiceProvider
             // Register TelegramIntegration (needs constructor injection)
             $this->registerIntegration(
                 new TelegramIntegration($container->get('telegram.bot_client')),
+                $registry,
+                $triggers,
+                $actions,
+            );
+
+            // Register ContactIntegration (needs constructor injection)
+            $this->registerIntegration(
+                new ContactIntegration(
+                    $container->get('contact.repository'),
+                    $container->get('contact.tag_repository'),
+                    $container->get('flow.repository'),
+                    $container->get('flow.runner'),
+                ),
+                $registry,
+                $triggers,
+                $actions,
+            );
+
+            // Register ScheduleIntegration (needs constructor injection)
+            $this->registerIntegration(
+                new ScheduleIntegration(
+                    $container->get('flow.repository'),
+                    $container->get('flow.runner'),
+                ),
                 $registry,
                 $triggers,
                 $actions,

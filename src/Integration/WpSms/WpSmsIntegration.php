@@ -8,6 +8,7 @@ use WSms\Flow\Action\SendMessageAction;
 use WSms\Integration\Contracts\IntegrationInterface;
 use WSms\Integration\WpSms\Triggers\ContactOptedOutTrigger;
 use WSms\Integration\WpSms\Triggers\InboundSmsReceivedTrigger;
+use WSms\Integration\WpSms\Triggers\ManualTrigger;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\MessageDispatcher;
 
@@ -67,6 +68,7 @@ class WpSmsIntegration implements IntegrationInterface
         return [
             new ContactOptedOutTrigger($this->eventDispatcher),
             new InboundSmsReceivedTrigger($this->eventDispatcher),
+            new ManualTrigger(),
         ];
     }
 

@@ -47,12 +47,12 @@ class AuthIntegrationTest extends TestCase
         $this->assertSame([], $event->meta);
     }
 
-    public function testGetTriggersReturnsThreeTriggers(): void
+    public function testGetTriggersReturnsSevenTriggers(): void
     {
         $integration = new AuthIntegration();
         $triggers = $integration->getTriggers();
 
-        $this->assertCount(3, $triggers);
+        $this->assertCount(7, $triggers);
     }
 
     public function testTriggerIdsAreCorrect(): void
@@ -64,6 +64,10 @@ class AuthIntegrationTest extends TestCase
         $this->assertContains('auth.login_success', $ids);
         $this->assertContains('auth.login_failure', $ids);
         $this->assertContains('auth.account_locked', $ids);
+        $this->assertContains('auth.registration', $ids);
+        $this->assertContains('auth.password_reset', $ids);
+        $this->assertContains('auth.email_verified', $ids);
+        $this->assertContains('auth.phone_verified', $ids);
     }
 
     public function testSubscribeRegistersWordPressAction(): void

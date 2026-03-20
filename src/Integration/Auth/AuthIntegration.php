@@ -122,6 +122,66 @@ class AuthIntegration implements IntegrationInterface
                 [],
                 __('Fires when an account is locked out', 'wp-sms'),
             ),
+            new AuthEventTrigger(
+                'auth.registration',
+                __('User Registered', 'wp-sms'),
+                [
+                    'user_id' => [
+                        'type' => 'integer',
+                        'label' => __('User ID', 'wp-sms'),
+                        'description' => __('The WordPress user ID of the new user', 'wp-sms'),
+                        'example' => 42,
+                    ],
+                ],
+                [EventType::Register, EventType::SocialRegistration],
+                [],
+                __('Fires when a new user registers (form or social)', 'wp-sms'),
+            ),
+            new AuthEventTrigger(
+                'auth.password_reset',
+                __('Password Changed', 'wp-sms'),
+                [
+                    'user_id' => [
+                        'type' => 'integer',
+                        'label' => __('User ID', 'wp-sms'),
+                        'description' => __('The WordPress user ID whose password was changed', 'wp-sms'),
+                        'example' => 42,
+                    ],
+                ],
+                [EventType::PasswordResetComplete, EventType::PasswordChange],
+                [],
+                __('Fires when a user changes or resets their password', 'wp-sms'),
+            ),
+            new AuthEventTrigger(
+                'auth.email_verified',
+                __('Email Verified', 'wp-sms'),
+                [
+                    'user_id' => [
+                        'type' => 'integer',
+                        'label' => __('User ID', 'wp-sms'),
+                        'description' => __('The WordPress user ID who verified their email', 'wp-sms'),
+                        'example' => 42,
+                    ],
+                ],
+                [EventType::EmailVerified],
+                [],
+                __('Fires when a user verifies their email address', 'wp-sms'),
+            ),
+            new AuthEventTrigger(
+                'auth.phone_verified',
+                __('Phone Verified', 'wp-sms'),
+                [
+                    'user_id' => [
+                        'type' => 'integer',
+                        'label' => __('User ID', 'wp-sms'),
+                        'description' => __('The WordPress user ID who verified their phone', 'wp-sms'),
+                        'example' => 42,
+                    ],
+                ],
+                [EventType::PhoneVerified],
+                [],
+                __('Fires when a user verifies their phone number', 'wp-sms'),
+            ),
         ];
     }
 

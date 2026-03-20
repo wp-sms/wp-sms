@@ -4,6 +4,7 @@ namespace WSms\Rest;
 
 use WSms\Flow\Contracts\FlowRepositoryInterface;
 use WSms\Flow\Contracts\Flow;
+use WSms\Flow\Engine\FlowRunner;
 use WSms\Flow\FlowTemplateRegistry;
 use WSms\Flow\Storage\FlowExecutionRepository;
 use WSms\Flow\Trigger\TriggerRegistry;
@@ -16,6 +17,7 @@ class FlowController extends Controller
         private readonly FlowRepositoryInterface $flowRepository,
         private readonly FlowExecutionRepository $executionRepository,
         private readonly TriggerRegistry $triggerRegistry,
+        private readonly FlowRunner $flowRunner,
     ) {
     }
 
@@ -92,6 +94,14 @@ class FlowController extends Controller
             [
                 'methods'             => 'POST',
                 'callback'            => [$this, 'testTrigger'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/flows/(?P<id>[A-Za-z0-9]+)/run', [
+            [
+                'methods'             => 'POST',
+                'callback'            => [$this, 'run'],
                 'permission_callback' => [$this, 'canManage'],
             ],
         ]);
@@ -294,6 +304,36 @@ class FlowController extends Controller
         return new \WP_REST_Response([
             'success' => true,
             'data'    => $samplePayload,
+        ]);
+    }
+
+    public function run(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $flow = $this->flowRepository->find($request->get_param('id'));
+
+        if (!$flow) {
+            return new \WP_REST_Response([
+                'success' => false,
+                'error'   => 'not_found',
+                'message' => __('Flow not found', 'wp-sms'),
+            ], 404);
+        }
+
+        if ($flow->getStatus() !== 'active') {
+            return new \WP_REST_Response([
+                'success' => false,
+                'error'   => 'flow_not_active',
+                'message' => __('Flow must be active to run manually', 'wp-sms'),
+            ], 400);
+        }
+
+        $this->flowRunner->runSingleFlow($flow->getId(), [
+            'triggered_by' => get_current_user_id(),
+        ]);
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'message' => __('Flow execution started', 'wp-sms'),
         ]);
     }
 

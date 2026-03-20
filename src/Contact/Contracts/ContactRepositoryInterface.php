@@ -6,7 +6,7 @@ defined('ABSPATH') || exit;
 
 interface ContactRepositoryInterface
 {
-    public function create(array $data): string;
+    public function create(array $data, bool $suppressEvents = false): string;
 
     public function update(string $id, array $data): bool;
 

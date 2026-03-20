@@ -41,16 +41,24 @@ class PayloadResolver
     {
         return [
             'site' => [
-                'name'  => get_bloginfo('name'),
-                'url'   => get_site_url(),
-                'email' => get_option('admin_email'),
-                'phone' => (get_option('wsms_auth_settings', []))['site_phone'] ?? '',
+                'name'      => get_bloginfo('name'),
+                'url'       => get_site_url(),
+                'email'     => get_option('admin_email'),
+                'phone'     => (get_option('wsms_auth_settings', []))['site_phone'] ?? '',
+                'login_url' => wp_login_url(),
+                'admin_url' => admin_url(),
+                'tagline'   => get_bloginfo('description'),
             ],
             'now' => [
-                'date'     => current_time('Y-m-d'),
-                'time'     => current_time('H:i'),
-                'datetime' => current_time('Y-m-d H:i:s'),
-                'year'     => current_time('Y'),
+                'date'       => current_time('Y-m-d'),
+                'time'       => current_time('H:i'),
+                'datetime'   => current_time('Y-m-d H:i:s'),
+                'year'       => current_time('Y'),
+                'day_name'   => current_time('l'),
+                'month_name' => current_time('F'),
+                'day'        => current_time('d'),
+                'month'      => current_time('m'),
+                'hour'       => current_time('H'),
             ],
         ];
     }

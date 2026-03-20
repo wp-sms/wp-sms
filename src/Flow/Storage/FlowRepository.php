@@ -102,17 +102,29 @@ class FlowRepository implements FlowRepositoryInterface
     public function delete(string $id): bool
     {
         global $wpdb;
-        return (bool) $wpdb->delete($wpdb->prefix . 'wsms_flows', ['id' => $id]);
+        $result = (bool) $wpdb->delete($wpdb->prefix . 'wsms_flows', ['id' => $id]);
+
+        if ($result) {
+            do_action('wsms_flow_deleted', $id);
+        }
+
+        return $result;
     }
 
     public function updateStatus(string $id, string $status): bool
     {
         global $wpdb;
-        return (bool) $wpdb->update(
+        $result = (bool) $wpdb->update(
             $wpdb->prefix . 'wsms_flows',
             ['status' => $status, 'updated_at' => current_time('mysql')],
             ['id' => $id],
         );
+
+        if ($result && $status !== 'active') {
+            do_action('wsms_flow_deactivated', $id);
+        }
+
+        return $result;
     }
 
     public function publish(string $id): bool
@@ -120,16 +132,23 @@ class FlowRepository implements FlowRepositoryInterface
         global $wpdb;
         $table = $wpdb->prefix . 'wsms_flows';
 
-        $steps = $wpdb->get_var($wpdb->prepare("SELECT steps FROM {$table} WHERE id = %s", $id));
-        if (!$steps) {
+        $row = $wpdb->get_row($wpdb->prepare("SELECT steps, trigger_type, trigger_config FROM {$table} WHERE id = %s", $id), ARRAY_A);
+        if (!$row || !$row['steps']) {
             return false;
         }
 
-        return (bool) $wpdb->update($table, [
-            'published_steps' => $steps,
+        $result = (bool) $wpdb->update($table, [
+            'published_steps' => $row['steps'],
             'published_at'    => current_time('mysql'),
             'status'          => 'active',
             'updated_at'      => current_time('mysql'),
         ], ['id' => $id]);
+
+        if ($result) {
+            $triggerConfig = json_decode($row['trigger_config'] ?? '{}', true) ?: [];
+            do_action('wsms_flow_published', $id, $row['trigger_type'], $triggerConfig);
+        }
+
+        return $result;
     }
 }

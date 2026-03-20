@@ -9,7 +9,7 @@ defined('ABSPATH') || exit;
 
 class ContactRepository implements ContactRepositoryInterface
 {
-    public function create(array $data): string
+    public function create(array $data, bool $suppressEvents = false): string
     {
         global $wpdb;
 
@@ -30,12 +30,24 @@ class ContactRepository implements ContactRepositoryInterface
             'updated_at'    => $now,
         ]);
 
+        if (!$suppressEvents) {
+            do_action('wsms_contact_created', $id, $data);
+        }
+
         return $id;
     }
 
     public function update(string $id, array $data): bool
     {
         global $wpdb;
+
+        $oldStatus = null;
+        if (array_key_exists('status', $data)) {
+            $oldStatus = $wpdb->get_var($wpdb->prepare(
+                "SELECT status FROM {$wpdb->prefix}wsms_contacts WHERE id = %s",
+                $id,
+            ));
+        }
 
         $update = ['updated_at' => current_time('mysql')];
 
@@ -55,7 +67,13 @@ class ContactRepository implements ContactRepositoryInterface
             $update['custom_fields'] = wp_json_encode($data['custom_fields']);
         }
 
-        return (bool) $wpdb->update($wpdb->prefix . 'wsms_contacts', $update, ['id' => $id]);
+        $result = (bool) $wpdb->update($wpdb->prefix . 'wsms_contacts', $update, ['id' => $id]);
+
+        if ($result && $oldStatus !== null && $oldStatus !== ($data['status'] ?? $oldStatus)) {
+            do_action('wsms_contact_status_changed', $id, $oldStatus, $data['status']);
+        }
+
+        return $result;
     }
 
     public function find(string $id): ?array
@@ -151,11 +169,19 @@ class ContactRepository implements ContactRepositoryInterface
     public function addTag(string $contactId, string $tagId): void
     {
         global $wpdb;
-        $wpdb->replace($wpdb->prefix . 'wsms_contact_tag', [
-            'contact_id' => $contactId,
-            'tag_id'     => $tagId,
-            'created_at' => current_time('mysql'),
-        ]);
+        $table = $wpdb->prefix . 'wsms_contact_tag';
+
+        $wpdb->query($wpdb->prepare(
+            "INSERT IGNORE INTO {$table} (contact_id, tag_id, created_at) VALUES (%s, %s, %s)",
+            $contactId,
+            $tagId,
+            current_time('mysql'),
+        ));
+
+        // Only fire event if a new row was actually inserted
+        if ($wpdb->rows_affected > 0) {
+            do_action('wsms_contact_tagged', $contactId, $tagId);
+        }
     }
 
     public function removeTag(string $contactId, string $tagId): void

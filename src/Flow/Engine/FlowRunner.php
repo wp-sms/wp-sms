@@ -46,34 +46,55 @@ class FlowRunner
                 continue;
             }
 
-            $steps = $flow->getPublishedSteps();
+            $this->executeFlow($flow, $triggerType, $payload);
+        }
+    }
 
-            if (empty($steps)) {
-                $this->logger->debug("Flow {$flow->getId()} has no published steps, skipping.");
-                continue;
-            }
+    /**
+     * Run a single flow by ID with the given payload.
+     * Use this for manual triggers, schedule triggers, and trigger_flow actions
+     * where you want to execute one specific flow, not broadcast to all matching.
+     */
+    public function runSingleFlow(string $flowId, array $payload): void
+    {
+        $flow = $this->flowRepository->find($flowId);
 
-            $executionId = $this->executionRepository->create($flow->getId(), $payload);
+        if (!$flow || $flow->getStatus() !== 'active') {
+            $this->logger->debug("runSingleFlow: Flow {$flowId} not found or not active.");
+            return;
+        }
 
-            $this->eventDispatcher->dispatch(new FlowStartedEvent(
-                $flow->getId(),
-                $executionId,
-                $triggerType,
-                $payload,
-            ));
+        $this->executeFlow($flow, $flow->getTriggerType(), $payload);
+    }
 
-            try {
-                // Don't mark completed here — async steps (delay, parallel) may
-                // still be pending in the queue. Completion is tracked by checking
-                // whether all dispatched steps have finished.
-                $this->flowExecutor->execute($executionId, $steps, $payload);
-            } catch (\Throwable $e) {
-                $this->logger->error("Flow execution failed: {$e->getMessage()}", [
-                    'flow_id'      => $flow->getId(),
-                    'execution_id' => $executionId,
-                ]);
-                $this->executionRepository->setError($executionId, $e->getMessage());
-            }
+    private function executeFlow(\WSms\Flow\Contracts\Flow $flow, string $triggerType, array $payload): void
+    {
+        $steps = $flow->getPublishedSteps();
+
+        if (empty($steps)) {
+            $this->logger->debug("Flow {$flow->getId()} has no published steps, skipping.");
+            return;
+        }
+
+        $payload['_flow_id'] = $flow->getId();
+
+        $executionId = $this->executionRepository->create($flow->getId(), $payload);
+
+        $this->eventDispatcher->dispatch(new FlowStartedEvent(
+            $flow->getId(),
+            $executionId,
+            $triggerType,
+            $payload,
+        ));
+
+        try {
+            $this->flowExecutor->execute($executionId, $steps, $payload);
+        } catch (\Throwable $e) {
+            $this->logger->error("Flow execution failed: {$e->getMessage()}", [
+                'flow_id'      => $flow->getId(),
+                'execution_id' => $executionId,
+            ]);
+            $this->executionRepository->setError($executionId, $e->getMessage());
         }
     }
 
