@@ -3,7 +3,7 @@ import { WelcomePage } from './pages/WelcomePage';
 import { ContactFormPage } from './pages/ContactFormPage';
 import { TeamPage } from './pages/TeamPage';
 import { ResourcesPage } from './pages/ResourcesPage';
-import { CloseIcon, HomeIcon, MessageIcon, UsersIcon, HelpCircleIcon } from './icons';
+import { CloseIcon, HomeIcon, MessageIcon, UsersIcon, HelpCircleIcon, WsmsLogo } from './icons';
 
 const NAV_TAB_CONFIG = [
     { page: 'welcome', label: 'Home', Icon: HomeIcon },
@@ -164,6 +164,17 @@ export function WidgetPanel({ isOpen, currentPage, config, isOnline, offlineMess
                     }
                 </div>
             )}
+
+            {/* Branding */}
+            <a
+                href="https://wsms.io"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="wsms-mb-panel__branding"
+            >
+                <WsmsLogo size={12} />
+                <span>Powered by <strong>WSMS</strong></span>
+            </a>
         </div>
     );
 }

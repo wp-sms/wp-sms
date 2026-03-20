@@ -398,6 +398,31 @@
     line-height: 1;
 }
 
+/* Branding */
+.wsms-mb-panel__branding {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 6px 0;
+    border-top: 1px solid var(--mb-border);
+    font-family: var(--mb-font);
+    font-size: 11px;
+    color: var(--mb-text-secondary);
+    opacity: 0.5;
+    text-decoration: none;
+    flex-shrink: 0;
+    transition: opacity 0.15s ease;
+}
+
+.wsms-mb-panel__branding:hover {
+    opacity: 0.8;
+}
+
+.wsms-mb-panel__branding strong {
+    font-weight: 600;
+}
+
 /* === Page Styles === */
 .wsms-mb-page {
     padding: 20px;
