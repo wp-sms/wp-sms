@@ -80,6 +80,9 @@ class AuthRouter
             return $template;
         }
 
+        // Hide WP admin bar on standalone auth pages.
+        show_admin_bar(false);
+
         // Pass page title to template.
         $GLOBALS['wsmsPageTitle'] = $this->getPageTitle();
 
