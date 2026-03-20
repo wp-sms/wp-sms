@@ -7,6 +7,7 @@ use WSms\Messaging\Contracts\TemplateEngineInterface;
 use WSms\Messaging\Template\Contracts\ChannelRendererInterface;
 use WSms\Messaging\Template\Contracts\TemplateDefinitionInterface;
 use WSms\Messaging\Template\Contracts\TemplateStorageInterface;
+use WSms\Messaging\Template\Contracts\ToggleableTemplateInterface;
 use WSms\Messaging\Template\ValueObjects\ChannelContent;
 use WSms\Messaging\Template\ValueObjects\RenderedMessage;
 use WSms\Support\IpResolver;
@@ -122,7 +123,27 @@ class TemplateManager
             'description' => $template->getDescription(),
             'variables'   => array_map(fn ($v) => $v->toArray(), $template->getVariables()),
             'channels'    => $channels,
+            'toggleable'  => $this->isToggleable($templateId),
+            'enabled'     => $this->isEnabled($templateId),
         ];
+    }
+
+    public function isToggleable(string $templateId): bool
+    {
+        return $this->getTemplate($templateId) instanceof ToggleableTemplateInterface;
+    }
+
+    public function isEnabled(string $templateId): bool
+    {
+        $template = $this->getTemplate($templateId);
+
+        if (!$template instanceof ToggleableTemplateInterface) {
+            return true;
+        }
+
+        $stored = $this->storage->isEnabled($templateId);
+
+        return $stored ?? $template->isEnabledByDefault();
     }
 
     /**

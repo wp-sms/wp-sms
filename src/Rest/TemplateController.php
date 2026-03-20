@@ -5,6 +5,7 @@ namespace WSms\Rest;
 use WSms\Auth\SettingsRepository;
 use WSms\Messaging\Catalog\TemplateCatalogManager;
 use WSms\Messaging\Template\Contracts\TemplateStorageInterface;
+use WSms\Messaging\Template\Contracts\ToggleableTemplateInterface;
 use WSms\Messaging\Template\TemplateManager;
 use WSms\Messaging\Template\ValueObjects\ChannelContent;
 
@@ -41,9 +42,10 @@ class TemplateController extends Controller
                 'args'                => [
                     'channel'  => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'body'     => ['required' => true, 'type' => 'string'],
-                    'subject'  => ['required' => false, 'type' => 'string'],
-                    'cta'      => ['required' => false, 'type' => 'string'],
-                    'cta_url'  => ['required' => false, 'type' => 'string'],
+                    'subject'  => ['required' => false, 'type' => ['string', 'null']],
+                    'cta'      => ['required' => false, 'type' => ['string', 'null']],
+                    'cta_url'  => ['required' => false, 'type' => ['string', 'null']],
+                    'enabled'  => ['required' => false, 'type' => 'boolean'],
                 ],
             ],
         ]);
@@ -54,6 +56,15 @@ class TemplateController extends Controller
             'permission_callback' => [$this, 'canManage'],
             'args'                => [
                 'channel' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/auth/admin/templates/(?P<id>[a-z_]+)/toggle', [
+            'methods'             => 'POST',
+            'callback'            => [$this, 'handleToggle'],
+            'permission_callback' => [$this, 'canManage'],
+            'args'                => [
+                'enabled' => ['required' => true, 'type' => 'boolean'],
             ],
         ]);
 
@@ -88,6 +99,8 @@ class TemplateController extends Controller
                 'visible_channels' => $visibleChannels,
                 'variables'        => $editData['variables'],
                 'channels'         => $editData['channels'],
+                'toggleable'       => $editData['toggleable'],
+                'enabled'          => $editData['enabled'],
             ];
 
             if ($whatsappGatewayId && in_array('whatsapp', $visibleChannels, true)) {
@@ -163,6 +176,11 @@ class TemplateController extends Controller
 
         $this->storage->saveOverride($id, $channel, $content);
 
+        $enabled = $request->get_param('enabled');
+        if ($enabled !== null && $template instanceof ToggleableTemplateInterface) {
+            $this->storage->setEnabled($id, $enabled);
+        }
+
         return new \WP_REST_Response(['success' => true]);
     }
 
@@ -180,6 +198,29 @@ class TemplateController extends Controller
         $this->storage->saveOverride($id, $channel, null);
 
         return new \WP_REST_Response(['success' => true]);
+    }
+
+    public function handleToggle(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $id = $request->get_param('id');
+        $enabled = (bool) $request->get_param('enabled');
+
+        try {
+            $template = $this->templateManager->getTemplate($id);
+        } catch (\InvalidArgumentException $e) {
+            return new \WP_REST_Response(['error' => 'not_found', 'message' => $e->getMessage()], 404);
+        }
+
+        if (!$template instanceof ToggleableTemplateInterface) {
+            return new \WP_REST_Response([
+                'error'   => 'not_toggleable',
+                'message' => __('This template cannot be toggled.', 'wp-sms'),
+            ], 400);
+        }
+
+        $this->storage->setEnabled($id, $enabled);
+
+        return new \WP_REST_Response(['success' => true, 'enabled' => $enabled]);
     }
 
     public function handlePreview(\WP_REST_Request $request): \WP_REST_Response

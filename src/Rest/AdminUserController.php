@@ -10,6 +10,9 @@ use WSms\Auth\AccountManager;
 use WSms\Auth\AccountSuspension;
 use WSms\Auth\SettingsRepository;
 use WSms\Enums\EventType;
+use WSms\Enums\TemplateType;
+use WSms\Messaging\MessageDispatcher;
+use WSms\Messaging\Template\TemplateManager;
 use WSms\Mfa\MfaManager;
 use WSms\Social\SocialAccountRepository;
 use WSms\Support\UserMeta;
@@ -28,6 +31,8 @@ class AdminUserController extends Controller
         private AccountLockout $lockout,
         private AccountManager $accountManager,
         private SettingsRepository $settingsRepo,
+        private TemplateManager $templateManager,
+        private MessageDispatcher $messageDispatcher,
         private ?AccountSuspension $suspension = null,
     ) {
     }
@@ -526,6 +531,8 @@ class AdminUserController extends Controller
             'admin_id' => $adminId,
         ]);
 
+        $this->sendSuspensionNotification($user);
+
         return new WP_REST_Response([
             'success' => true,
             'message' => __('User suspended.', 'wp-sms'),
@@ -568,6 +575,31 @@ class AdminUserController extends Controller
             'success' => true,
             'message' => __('User unsuspended.', 'wp-sms'),
         ]);
+    }
+
+    private function sendSuspensionNotification(object $user): void
+    {
+        if (!$this->templateManager->isEnabled(TemplateType::AccountSuspended->value)) {
+            return;
+        }
+
+        if (AccountManager::isPlaceholderEmail($user->user_email)) {
+            return;
+        }
+
+        try {
+            $message = $this->templateManager->renderToMessage(
+                TemplateType::AccountSuspended->value,
+                'email',
+                $user->user_email,
+                ['user_name' => $user->display_name],
+            );
+            $this->messageDispatcher->sendImmediate($message);
+        } catch (\Throwable $e) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('[WP-SMS] Failed to send suspension notification: ' . $e->getMessage());
+            }
+        }
     }
 
     /**

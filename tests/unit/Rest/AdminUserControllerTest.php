@@ -10,6 +10,8 @@ use WSms\Auth\AccountManager;
 use WSms\Auth\SettingsRepository;
 use WSms\Auth\ValueObjects\OperationResult;
 use WSms\Enums\EventType;
+use WSms\Messaging\MessageDispatcher;
+use WSms\Messaging\Template\TemplateManager;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\MfaManager;
 use WSms\Rest\AdminUserController;
@@ -24,6 +26,8 @@ class AdminUserControllerTest extends TestCase
     private MockObject&AccountLockout $lockout;
     private MockObject&AccountManager $accountManager;
     private MockObject&SettingsRepository $settingsRepo;
+    private MockObject&TemplateManager $templateManager;
+    private MockObject&MessageDispatcher $messageDispatcher;
 
     protected function setUp(): void
     {
@@ -33,6 +37,8 @@ class AdminUserControllerTest extends TestCase
         $this->lockout = $this->createMock(AccountLockout::class);
         $this->accountManager = $this->createMock(AccountManager::class);
         $this->settingsRepo = $this->createMock(SettingsRepository::class);
+        $this->templateManager = $this->createMock(TemplateManager::class);
+        $this->messageDispatcher = $this->createMock(MessageDispatcher::class);
 
         $this->controller = new AdminUserController(
             $this->auditLogger,
@@ -41,6 +47,8 @@ class AdminUserControllerTest extends TestCase
             $this->lockout,
             $this->accountManager,
             $this->settingsRepo,
+            $this->templateManager,
+            $this->messageDispatcher,
         );
 
         $GLOBALS['_test_user_meta'] = [];

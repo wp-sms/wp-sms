@@ -12,6 +12,7 @@ enum TemplateType: string
     case PasswordReset = 'password_reset';
     case Welcome = 'welcome';
     case AccountAlert = 'account_alert';
+    case AccountSuspended = 'account_suspended';
 
     /**
      * Resolve the template type for a combined OTP / magic-link delivery.

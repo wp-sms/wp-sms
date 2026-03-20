@@ -3,6 +3,7 @@
 namespace WSms\Container;
 
 use WSms\Messaging\Template\Definitions\AccountAlertTemplate;
+use WSms\Messaging\Template\Definitions\AccountSuspendedTemplate;
 use WSms\Messaging\Template\Definitions\EmailVerificationTemplate;
 use WSms\Messaging\Template\Definitions\MagicLinkTemplate;
 use WSms\Messaging\Template\Definitions\OtpTemplate;
@@ -52,5 +53,6 @@ class TemplateServiceProvider implements ServiceProvider
         $manager->registerTemplate(new PasswordResetTemplate());
         $manager->registerTemplate(new WelcomeTemplate());
         $manager->registerTemplate(new AccountAlertTemplate());
+        $manager->registerTemplate(new AccountSuspendedTemplate());
     }
 }

@@ -16,4 +16,8 @@ interface TemplateStorageInterface
      * @return array<string, array<string, ChannelContent>>
      */
     public function getAllOverrides(): array;
+
+    public function isEnabled(string $templateId): ?bool;
+
+    public function setEnabled(string $templateId, bool $enabled): void;
 }

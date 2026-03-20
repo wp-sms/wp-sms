@@ -15,6 +15,10 @@ class OptionStorage implements TemplateStorageInterface
 
     public function getOverride(string $templateId, string $channel): ?ChannelContent
     {
+        if ($channel === '_enabled') {
+            return null;
+        }
+
         $all = $this->load();
 
         if (!isset($all[$templateId][$channel])) {
@@ -49,11 +53,34 @@ class OptionStorage implements TemplateStorageInterface
 
         foreach ($all as $templateId => $channels) {
             foreach ($channels as $channel => $data) {
+                if ($channel === '_enabled') {
+                    continue;
+                }
                 $result[$templateId][$channel] = ChannelContent::fromArray($data);
             }
         }
 
         return $result;
+    }
+
+    public function isEnabled(string $templateId): ?bool
+    {
+        $all = $this->load();
+
+        if (!isset($all[$templateId]['_enabled'])) {
+            return null;
+        }
+
+        return (bool) $all[$templateId]['_enabled'];
+    }
+
+    public function setEnabled(string $templateId, bool $enabled): void
+    {
+        $all = $this->load();
+        $all[$templateId]['_enabled'] = $enabled;
+
+        update_option(self::OPTION_KEY, $all);
+        $this->cache = $all;
     }
 
     private function load(): array

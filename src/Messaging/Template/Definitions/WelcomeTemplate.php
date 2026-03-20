@@ -3,13 +3,13 @@
 namespace WSms\Messaging\Template\Definitions;
 
 use WSms\Enums\TemplateType;
-use WSms\Messaging\Template\Contracts\TemplateDefinitionInterface;
+use WSms\Messaging\Template\Contracts\ToggleableTemplateInterface;
 use WSms\Messaging\Template\ValueObjects\ChannelContent;
 use WSms\Messaging\Template\ValueObjects\VariableDefinition;
 
 defined('ABSPATH') || exit;
 
-class WelcomeTemplate implements TemplateDefinitionInterface
+class WelcomeTemplate implements ToggleableTemplateInterface
 {
     public function getId(): string
     {
@@ -29,13 +29,7 @@ class WelcomeTemplate implements TemplateDefinitionInterface
     public function getVariables(): array
     {
         return [
-            'user_name' => new VariableDefinition(
-                'user_name',
-                __('User Name', 'wp-sms'),
-                __('The display name of the registered user.', 'wp-sms'),
-                false,
-                'John',
-            ),
+            'user_name' => CommonVariables::userName(),
             'site_name' => CommonVariables::siteName(),
             'login_url' => new VariableDefinition(
                 'login_url',
@@ -71,5 +65,10 @@ class WelcomeTemplate implements TemplateDefinitionInterface
                 body: __('<b>Welcome to {{site_name}}, {{user_name}}!</b>' . "\n" . 'Your account is ready.', 'wp-sms'),
             ),
         ];
+    }
+
+    public function isEnabledByDefault(): bool
+    {
+        return false;
     }
 }

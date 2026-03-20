@@ -3,13 +3,13 @@
 namespace WSms\Messaging\Template\Definitions;
 
 use WSms\Enums\TemplateType;
-use WSms\Messaging\Template\Contracts\TemplateDefinitionInterface;
+use WSms\Messaging\Template\Contracts\ToggleableTemplateInterface;
 use WSms\Messaging\Template\ValueObjects\ChannelContent;
 use WSms\Messaging\Template\ValueObjects\VariableDefinition;
 
 defined('ABSPATH') || exit;
 
-class AccountAlertTemplate implements TemplateDefinitionInterface
+class AccountAlertTemplate implements ToggleableTemplateInterface
 {
     public function getId(): string
     {
@@ -60,5 +60,10 @@ class AccountAlertTemplate implements TemplateDefinitionInterface
                 body: __('<b>[{{site_name}}] Security Alert</b>' . "\n" . '{{alert_message}}', 'wp-sms'),
             ),
         ];
+    }
+
+    public function isEnabledByDefault(): bool
+    {
+        return false;
     }
 }

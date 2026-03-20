@@ -8,6 +8,17 @@ defined('ABSPATH') || exit;
 
 class CommonVariables
 {
+    public static function userName(): VariableDefinition
+    {
+        return new VariableDefinition(
+            'user_name',
+            __('User Name', 'wp-sms'),
+            __("The user's display name.", 'wp-sms'),
+            false,
+            'John',
+        );
+    }
+
     public static function siteName(): VariableDefinition
     {
         return new VariableDefinition(

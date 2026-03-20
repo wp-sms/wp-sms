@@ -15,6 +15,7 @@ import { insertVariableAtCursor } from '@/lib/text-utils';
 import type { FieldOption } from '@/lib/condition-utils';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
+import { Switch } from '@/components/ui/switch';
 import { Mail, MessageSquare, Send, Smartphone, Eye, RotateCcw, Settings, RefreshCw, AlertTriangle, ExternalLink } from 'lucide-react';
 
 interface VariableInfo {
@@ -67,6 +68,8 @@ interface TemplateData {
   visible_channels: string[];
   variables: Record<string, VariableInfo>;
   channels: Record<string, ChannelEditData>;
+  toggleable: boolean;
+  enabled: boolean;
   whatsapp_gateway_id?: string;
   whatsapp_mapping?: TemplateMappingData | null;
 }
@@ -201,6 +204,11 @@ export function Templates() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-medium">{template.label}</span>
+                  {template.toggleable && !template.enabled && (
+                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-muted-foreground">
+                      off
+                    </Badge>
+                  )}
                   {customizedChannels.length > 0 && (
                     <Badge variant="default" className="text-[10px] px-1.5 py-0">
                       customized
@@ -504,6 +512,7 @@ function TemplateEditor({
   const [saving, setSaving] = useState(false);
   const [preview, setPreview] = useState<PreviewData | null>(null);
   const [previewing, setPreviewing] = useState(false);
+  const [enabled, setEnabled] = useState(template.enabled);
 
   const bodyRef = useRef<HTMLTextAreaElement>(null);
   const subjectRef = useRef<HTMLInputElement>(null);
@@ -539,13 +548,17 @@ function TemplateEditor({
     if (!currentDraft) return;
     setSaving(true);
     try {
-      await api.put(`auth/admin/templates/${template.id}`, {
+      const payload: Record<string, unknown> = {
         channel: activeChannel,
         body: currentDraft.body,
         subject: currentDraft.subject ?? null,
         cta: currentDraft.cta ?? null,
         cta_url: currentDraft.cta_url ?? null,
-      });
+      };
+      if (template.toggleable) {
+        payload.enabled = enabled;
+      }
+      await api.put(`auth/admin/templates/${template.id}`, payload);
       toast.success(`${CHANNEL_LABELS[activeChannel]} template saved`);
       onSaved();
     } catch {
@@ -592,6 +605,19 @@ function TemplateEditor({
             <DrawerTitle>{template.label}</DrawerTitle>
             <DrawerDescription>{template.description}</DrawerDescription>
           </DrawerHeader>
+
+          {template.toggleable && (
+            <div className="flex items-center justify-between px-4 pb-2">
+              <span className="text-sm font-medium">
+                {enabled ? 'Enabled' : 'Disabled'}
+              </span>
+              <Switch
+                checked={enabled}
+                onCheckedChange={setEnabled}
+                aria-label={enabled ? 'Disable template' : 'Enable template'}
+              />
+            </div>
+          )}
 
           <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-6">
             {visibleChannels.length > 0 ? (

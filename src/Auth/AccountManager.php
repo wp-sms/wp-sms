@@ -343,6 +343,8 @@ class AccountManager
                 'registration',
                 SessionStage::RegistrationVerify,
             );
+        } else {
+            $this->sendWelcomeMessage($userId);
         }
 
         $timing = EnrollmentTiming::tryFrom($settings['enrollment_timing'] ?? 'voluntary');
@@ -830,6 +832,40 @@ class AccountManager
     {
         update_user_meta($userId, UserMeta::REGISTRATION_STATUS, 'active');
         delete_user_meta($userId, UserMeta::REGISTRATION_CREATED_AT);
+        $this->sendWelcomeMessage($userId);
+    }
+
+    private function sendWelcomeMessage(int $userId): void
+    {
+        if (!$this->templateManager->isEnabled(TemplateType::Welcome->value)) {
+            return;
+        }
+
+        $user = get_userdata($userId);
+        if (!$user || self::isPlaceholderEmail($user->user_email)) {
+            return;
+        }
+
+        try {
+            $settings = $this->settingsRepo->all();
+            $authBase = $settings['auth_base_path'] ?? '/account';
+            $loginUrl = get_site_url() . $authBase . '/login';
+
+            $message = $this->templateManager->renderToMessage(
+                TemplateType::Welcome->value,
+                'email',
+                $user->user_email,
+                [
+                    'user_name' => $user->display_name,
+                    'login_url' => $loginUrl,
+                ],
+            );
+            $this->messageDispatcher->sendImmediate($message);
+        } catch (\Throwable $e) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('[WP-SMS] Failed to send welcome email: ' . $e->getMessage());
+            }
+        }
     }
 
     private function deleteExpiredPendingUser($user, int $ttlHours): void
