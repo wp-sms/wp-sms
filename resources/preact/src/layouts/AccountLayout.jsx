@@ -44,7 +44,7 @@ export function AccountLayout({ title, subtitle, currentPath, hideNav, children 
         <div className="min-h-screen flex flex-col bg-muted p-4 md:p-8 font-sans text-foreground antialiased">
             <div className="mx-auto w-full max-w-3xl flex-1 space-y-6">
                 <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                    <div className="flex items-center justify-between">
+                    <div className="flex w-full items-center justify-between">
                         <div className="flex items-center gap-3">
                             <BrandLogo size="sm" />
                             {!hideNav && (
