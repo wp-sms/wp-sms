@@ -13,6 +13,7 @@ use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Template\TemplateManager;
 use WSms\Mfa\MfaManager;
 use WSms\Auth\ValueObjects\OperationResult;
+use WSms\PhoneRestriction\SendingPolicyGuard;
 use WSms\Support\UserMeta;
 use WSms\Verification\OtpService;
 use WSms\Verification\VerificationRepository;
@@ -25,6 +26,9 @@ class AccountManager
     public const PLACEHOLDER_USERNAME_PREFIX = 'wsms_';
     public const DEFAULT_PENDING_USER_TTL_HOURS = 24;
 
+    /** @var (\Closure(): SendingPolicyGuard)|null */
+    private ?\Closure $sendingPolicyGuardResolver = null;
+
     public function __construct(
         private AuditLogger $auditLogger,
         private OtpService $otpService,
@@ -36,6 +40,12 @@ class AccountManager
         private ?ProfileFieldRegistry $fieldRegistry = null,
         private ?TrustedDeviceManager $trustedDevices = null,
     ) {
+    }
+
+    /** @param \Closure(): SendingPolicyGuard $resolver */
+    public function setSendingPolicyGuardResolver(\Closure $resolver): void
+    {
+        $this->sendingPolicyGuardResolver = $resolver;
     }
 
     public static function isPlaceholderEmail(string $email): bool
@@ -115,6 +125,12 @@ class AccountManager
 
         if (!empty($data['phone']) && self::isPhoneTaken(sanitize_text_field($data['phone']))) {
             return OperationResult::fail('phone_exists', __('This phone number is already associated with another account.', 'wp-sms'));
+        }
+
+        $phoneRestriction = $this->checkPhoneRestriction($data['phone'] ?? '');
+
+        if ($phoneRestriction !== null) {
+            return $phoneRestriction;
         }
 
         $userId = wp_insert_user($userdata);
@@ -320,8 +336,10 @@ class AccountManager
 
         if (!empty($data['phone']) && $phoneVerifyEnabled) {
             $phone = sanitize_text_field($data['phone']);
-            $this->createChannelVerification($userId, 'phone', $phone);
-            $pendingVerifications[] = ['type' => 'phone', 'status' => 'pending'];
+
+            if ($this->createChannelVerification($userId, 'phone', $phone)) {
+                $pendingVerifications[] = ['type' => 'phone', 'status' => 'pending'];
+            }
         }
 
         if (!empty($email) && $emailVerifyEnabled) {
@@ -459,6 +477,12 @@ class AccountManager
 
             if (self::isPhoneTaken($phone, $userId)) {
                 return OperationResult::fail('phone_exists', __('This phone number is already associated with another account.', 'wp-sms'));
+            }
+
+            $phoneRestriction = $this->checkPhoneRestriction($phone);
+
+            if ($phoneRestriction !== null) {
+                return $phoneRestriction;
             }
         }
 
@@ -692,12 +716,23 @@ class AccountManager
     /**
      * Create a verification record for any channel and deliver it.
      */
-    private function createChannelVerification(int $userId, string $channel, string $identifier): void
+    /**
+     * @return bool Whether the verification was actually created and sent.
+     */
+    private function createChannelVerification(int $userId, string $channel, string $identifier): bool
     {
+        if ($channel === 'phone' && $this->sendingPolicyGuardResolver !== null) {
+            $restriction = ($this->sendingPolicyGuardResolver)()->isAllowedForAuth($identifier);
+
+            if (!$restriction->allowed) {
+                return false;
+            }
+        }
+
         if ($channel === 'email' && !$this->emailUsesOtp()) {
             $this->createVerification($userId, VerificationType::EmailVerify->value, $identifier);
 
-            return;
+            return true;
         }
 
         $otp = $this->createOtpVerification($userId, $channel, $identifier);
@@ -733,6 +768,23 @@ class AccountManager
             );
             $this->messageDispatcher->sendImmediate($message, $this->getOtpGatewayId('email'));
         }
+
+        return true;
+    }
+
+    private function checkPhoneRestriction(string $phone): ?OperationResult
+    {
+        if ($phone === '' || $this->sendingPolicyGuardResolver === null) {
+            return null;
+        }
+
+        $restriction = ($this->sendingPolicyGuardResolver)()->isAllowedForAuth($phone);
+
+        if ($restriction->allowed) {
+            return null;
+        }
+
+        return OperationResult::fail('phone_restricted', $restriction->message);
     }
 
     /**

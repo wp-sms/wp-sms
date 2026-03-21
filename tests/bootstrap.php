@@ -786,6 +786,10 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         define('DAY_IN_SECONDS', 86400);
     }
 
+    if (!defined('WEEK_IN_SECONDS')) {
+        define('WEEK_IN_SECONDS', 604800);
+    }
+
     // Multisite stubs.
 
     if (!function_exists('is_multisite')) {
@@ -846,6 +850,41 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         define('WP_SMS_MAIN_FILE', dirname(__DIR__) . '/wp-sms.php');
     }
 
+    // Action Scheduler stubs.
+
+    if (!function_exists('as_has_scheduled_action')) {
+        function as_has_scheduled_action(string $hook, array $args = [], string $group = ''): bool {
+            foreach ($GLOBALS['_test_as_scheduled_actions'] ?? [] as $action) {
+                if ($action['hook'] === $hook && $action['args'] === $args && $action['group'] === $group) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    if (!function_exists('as_schedule_recurring_action')) {
+        function as_schedule_recurring_action(int $timestamp, int $interval, string $hook, array $args = [], string $group = ''): int {
+            $GLOBALS['_test_as_scheduled_actions'][] = [
+                'timestamp' => $timestamp,
+                'interval'  => $interval,
+                'hook'      => $hook,
+                'args'      => $args,
+                'group'     => $group,
+            ];
+            return count($GLOBALS['_test_as_scheduled_actions']);
+        }
+    }
+
+    if (!function_exists('as_unschedule_all_actions')) {
+        function as_unschedule_all_actions(string $hook, array $args = [], string $group = ''): void {
+            $GLOBALS['_test_as_scheduled_actions'] = array_values(array_filter(
+                $GLOBALS['_test_as_scheduled_actions'] ?? [],
+                fn($a) => !($a['hook'] === $hook && $a['args'] === $args && $a['group'] === $group),
+            ));
+        }
+    }
+
     // Initialize test globals.
     $GLOBALS['_test_options'] = [];
     $GLOBALS['_test_query_vars'] = [];
@@ -853,6 +892,7 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
     $GLOBALS['_test_apply_filters'] = [];
     $GLOBALS['_test_switched_blog_calls'] = [];
     $GLOBALS['_test_restore_blog_calls'] = 0;
+    $GLOBALS['_test_as_scheduled_actions'] = [];
 
 }
 

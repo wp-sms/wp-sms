@@ -5,6 +5,7 @@ import { Apps } from './apps';
 import { MessageLogs } from './message-logs';
 import { Campaigns } from './campaigns';
 import { OptOutSettings } from './opt-out-settings';
+import { PhoneRestriction } from './phone-restriction';
 import type { AuthSettings } from '@/lib/api';
 
 interface MessagingPageProps {
@@ -29,6 +30,8 @@ export function MessagingPage({ section, subTab, onNavigate, settings, onUpdate 
       return <MessageLogs />;
     case 'opt-out':
       return <OptOutSettings />;
+    case 'phone-restriction':
+      return <PhoneRestriction />;
     default:
       return <Flows />;
   }

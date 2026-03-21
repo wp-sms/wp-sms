@@ -19,6 +19,7 @@ use WSms\Container\ContactServiceProvider;
 use WSms\Container\FlowServiceProvider;
 use WSms\Container\CampaignServiceProvider;
 use WSms\Container\IntegrationServiceProvider;
+use WSms\Container\PhoneRestrictionServiceProvider;
 use WSms\Container\MessagingButtonServiceProvider;
 use WSms\Container\ContactSourceServiceProvider;
 use WSms\Container\TemplateServiceProvider;
@@ -64,6 +65,7 @@ class Bootstrap
         ContactSourceServiceProvider::class,
         FlowServiceProvider::class,
         CampaignServiceProvider::class,
+        PhoneRestrictionServiceProvider::class,
         IntegrationServiceProvider::class,
         MessagingButtonServiceProvider::class,
         TemplateServiceProvider::class,

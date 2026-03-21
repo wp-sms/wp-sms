@@ -12,6 +12,7 @@ use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Contracts\SupportsOptOutDetection;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Inbound\OptOutManager;
+use WSms\PhoneRestriction\SendingPolicyGuard;
 use WSms\Queue\Contracts\QueueInterface;
 use WSms\Queue\Job\SendMessageJob;
 
@@ -21,6 +22,9 @@ class MessageDispatcher
 {
     /** @var (\Closure(): OptOutManager)|null */
     private ?\Closure $optOutManagerResolver = null;
+
+    /** @var (\Closure(): SendingPolicyGuard)|null */
+    private ?\Closure $sendingPolicyGuardResolver = null;
 
     public function __construct(
         private readonly GatewayRegistry $gatewayRegistry,
@@ -36,6 +40,12 @@ class MessageDispatcher
         $this->optOutManagerResolver = $resolver;
     }
 
+    /** @param \Closure(): SendingPolicyGuard $resolver */
+    public function setSendingPolicyGuardResolver(\Closure $resolver): void
+    {
+        $this->sendingPolicyGuardResolver = $resolver;
+    }
+
     /**
      * Send a message immediately (synchronous).
      *
@@ -43,6 +53,12 @@ class MessageDispatcher
      */
     public function sendImmediate(MessageInterface $message, ?string $gatewayId = null): DeliveryResult
     {
+        $restriction = $this->checkPhoneRestriction($message);
+
+        if ($restriction !== null) {
+            return $restriction;
+        }
+
         $gateway = $gatewayId
             ? $this->gatewayRegistry->get($gatewayId)
             : $this->resolveGateway($message->getChannel());
@@ -107,6 +123,23 @@ class MessageDispatcher
      */
     public function sendQueued(MessageInterface $message): string
     {
+        $restriction = $this->checkPhoneRestriction($message);
+
+        if ($restriction !== null) {
+            return $this->messageLogger->logSend(
+                gatewayId: 'none',
+                channel: $message->getChannel(),
+                recipient: $message->getRecipient(),
+                body: $message->getBody(),
+                status: 'blocked',
+                executionId: $message->getFlowExecutionId(),
+                subject: $message->getMeta()['subject'] ?? null,
+                error: $restriction->error,
+                type: $message->getCampaignId() ? 'campaign' : 'transactional',
+                campaignId: $message->getCampaignId(),
+            );
+        }
+
         $gateway = $this->resolveGateway($message->getChannel());
         $gatewayId = $gateway ? $gateway->getId() : 'default';
 
@@ -133,6 +166,27 @@ class MessageDispatcher
         ));
 
         return $logId;
+    }
+
+    private function checkPhoneRestriction(MessageInterface $message): ?DeliveryResult
+    {
+        if ($this->sendingPolicyGuardResolver === null) {
+            return null;
+        }
+
+        $channel = $message->getChannel();
+
+        if (!in_array($channel, ['sms', 'whatsapp'], true)) {
+            return null;
+        }
+
+        $result = ($this->sendingPolicyGuardResolver)()->check($message->getRecipient(), 'messaging');
+
+        if ($result->allowed) {
+            return null;
+        }
+
+        return DeliveryResult::failed($result->message ?? 'Phone number restricted');
     }
 
     private function resolveGateway(string $channel): ?GatewayInterface

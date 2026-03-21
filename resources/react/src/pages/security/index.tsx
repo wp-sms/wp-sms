@@ -2,6 +2,7 @@ import { MfaPolicies } from './mfa-policies';
 import { RateLimiting } from './rate-limiting';
 import { AccountCleanup } from './account-cleanup';
 import { Captcha } from './captcha';
+import { PhoneRestrictionNotice } from './phone-restriction-notice';
 import type { AuthSettings } from '@/lib/api';
 
 interface SecurityPageProps {
@@ -22,6 +23,10 @@ export function SecurityPage({ section, settings, onUpdate, roles }: SecurityPag
 
   if (section === 'captcha') {
     return <Captcha settings={settings} onUpdate={onUpdate} />;
+  }
+
+  if (section === 'phone-restriction') {
+    return <PhoneRestrictionNotice />;
   }
 
   return <MfaPolicies settings={settings} onUpdate={onUpdate} roles={roles} />;

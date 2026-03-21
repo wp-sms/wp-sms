@@ -60,6 +60,16 @@ class FlowServiceProvider implements ServiceProvider
         $processor->registerHandler('send_message', function (array $payload) use ($container) {
             $registry = $container->get('gateway.registry');
             $logger = $container->get('log.message');
+
+            if (in_array($payload['channel'], ['sms', 'whatsapp'], true)) {
+                $restriction = $container->get('phone_restriction.guard')->check($payload['recipient'], 'messaging');
+
+                if (!$restriction->allowed) {
+                    $logger->updateStatus($payload['log_id'], 'blocked', $restriction->message);
+                    return;
+                }
+            }
+
             $gateway = $registry->get($payload['gateway_id']);
 
             if (!$gateway) {

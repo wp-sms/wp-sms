@@ -106,6 +106,7 @@ export const NAV_ITEMS = [
     icon: Settings2,
     children: [
       { id: 'opt-out', label: 'Opt-Out' },
+      { id: 'phone-restriction', label: 'Phone Restrictions' },
     ],
   },
   {
@@ -132,6 +133,7 @@ export const NAV_ITEMS = [
       { id: 'rate-limiting', label: 'Rate Limiting' },
       { id: 'captcha', label: 'CAPTCHA' },
       { id: 'account-cleanup', label: 'Account Cleanup' },
+      { id: 'phone-restriction', label: 'Phone Restrictions' },
     ],
   },
   {
@@ -163,6 +165,7 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   'apps': 'Browse available apps and their triggers and actions for automation flows.',
   'message-logs': 'View sent messages, delivery status, and error details.',
   'opt-out': 'Configure STOP/START keyword handling, auto-replies, and unsubscribe settings.',
+  'phone-restriction': 'Restrict phone numbers by country and number type for authentication and messaging.',
   'mb-appearance': 'Customize the floating button style, colors, position, and widget header.',
   'mb-pages': 'Configure widget pages: welcome screen, contact form, and resources.',
   'mb-team': 'Manage team members displayed in the messaging widget.',

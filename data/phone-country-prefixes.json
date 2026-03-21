@@ -1,0 +1,1527 @@
+{
+  "prefixes": {
+    "1": {
+      "countries": [
+        "AG",
+        "AI",
+        "AS",
+        "BB",
+        "BM",
+        "BS",
+        "CA",
+        "DM",
+        "DO",
+        "GD",
+        "GU",
+        "JM",
+        "KN",
+        "KY",
+        "LC",
+        "MP",
+        "MS",
+        "PR",
+        "SX",
+        "TC",
+        "TT",
+        "US",
+        "VC",
+        "VG",
+        "VI"
+      ],
+      "primary": "US"
+    },
+    "7": {
+      "countries": [
+        "KZ",
+        "RU"
+      ],
+      "primary": "RU"
+    },
+    "20": {
+      "countries": [
+        "EG"
+      ],
+      "primary": "EG"
+    },
+    "27": {
+      "countries": [
+        "ZA"
+      ],
+      "primary": "ZA"
+    },
+    "30": {
+      "countries": [
+        "GR"
+      ],
+      "primary": "GR"
+    },
+    "31": {
+      "countries": [
+        "NL"
+      ],
+      "primary": "NL"
+    },
+    "32": {
+      "countries": [
+        "BE"
+      ],
+      "primary": "BE"
+    },
+    "33": {
+      "countries": [
+        "FR"
+      ],
+      "primary": "FR"
+    },
+    "34": {
+      "countries": [
+        "ES"
+      ],
+      "primary": "ES"
+    },
+    "36": {
+      "countries": [
+        "HU"
+      ],
+      "primary": "HU"
+    },
+    "39": {
+      "countries": [
+        "IT",
+        "VA"
+      ],
+      "primary": "IT"
+    },
+    "40": {
+      "countries": [
+        "RO"
+      ],
+      "primary": "RO"
+    },
+    "41": {
+      "countries": [
+        "CH"
+      ],
+      "primary": "CH"
+    },
+    "43": {
+      "countries": [
+        "AT"
+      ],
+      "primary": "AT"
+    },
+    "44": {
+      "countries": [
+        "GB",
+        "GG",
+        "IM",
+        "JE"
+      ],
+      "primary": "GB"
+    },
+    "45": {
+      "countries": [
+        "DK"
+      ],
+      "primary": "DK"
+    },
+    "46": {
+      "countries": [
+        "SE"
+      ],
+      "primary": "SE"
+    },
+    "47": {
+      "countries": [
+        "NO",
+        "SJ"
+      ],
+      "primary": "NO"
+    },
+    "48": {
+      "countries": [
+        "PL"
+      ],
+      "primary": "PL"
+    },
+    "49": {
+      "countries": [
+        "DE"
+      ],
+      "primary": "DE"
+    },
+    "51": {
+      "countries": [
+        "PE"
+      ],
+      "primary": "PE"
+    },
+    "52": {
+      "countries": [
+        "MX"
+      ],
+      "primary": "MX"
+    },
+    "53": {
+      "countries": [
+        "CU"
+      ],
+      "primary": "CU"
+    },
+    "54": {
+      "countries": [
+        "AR"
+      ],
+      "primary": "AR"
+    },
+    "55": {
+      "countries": [
+        "BR"
+      ],
+      "primary": "BR"
+    },
+    "56": {
+      "countries": [
+        "CL"
+      ],
+      "primary": "CL"
+    },
+    "57": {
+      "countries": [
+        "CO"
+      ],
+      "primary": "CO"
+    },
+    "58": {
+      "countries": [
+        "VE"
+      ],
+      "primary": "VE"
+    },
+    "60": {
+      "countries": [
+        "MY"
+      ],
+      "primary": "MY"
+    },
+    "61": {
+      "countries": [
+        "AU",
+        "CC",
+        "CX"
+      ],
+      "primary": "AU"
+    },
+    "62": {
+      "countries": [
+        "ID"
+      ],
+      "primary": "ID"
+    },
+    "63": {
+      "countries": [
+        "PH"
+      ],
+      "primary": "PH"
+    },
+    "64": {
+      "countries": [
+        "NZ"
+      ],
+      "primary": "NZ"
+    },
+    "65": {
+      "countries": [
+        "SG"
+      ],
+      "primary": "SG"
+    },
+    "66": {
+      "countries": [
+        "TH"
+      ],
+      "primary": "TH"
+    },
+    "81": {
+      "countries": [
+        "JP"
+      ],
+      "primary": "JP"
+    },
+    "82": {
+      "countries": [
+        "KR"
+      ],
+      "primary": "KR"
+    },
+    "84": {
+      "countries": [
+        "VN"
+      ],
+      "primary": "VN"
+    },
+    "86": {
+      "countries": [
+        "CN"
+      ],
+      "primary": "CN"
+    },
+    "90": {
+      "countries": [
+        "TR"
+      ],
+      "primary": "TR"
+    },
+    "91": {
+      "countries": [
+        "IN"
+      ],
+      "primary": "IN"
+    },
+    "92": {
+      "countries": [
+        "PK"
+      ],
+      "primary": "PK"
+    },
+    "93": {
+      "countries": [
+        "AF"
+      ],
+      "primary": "AF"
+    },
+    "94": {
+      "countries": [
+        "LK"
+      ],
+      "primary": "LK"
+    },
+    "95": {
+      "countries": [
+        "MM"
+      ],
+      "primary": "MM"
+    },
+    "98": {
+      "countries": [
+        "IR"
+      ],
+      "primary": "IR"
+    },
+    "211": {
+      "countries": [
+        "SS"
+      ],
+      "primary": "SS"
+    },
+    "212": {
+      "countries": [
+        "EH",
+        "MA"
+      ],
+      "primary": "MA"
+    },
+    "213": {
+      "countries": [
+        "DZ"
+      ],
+      "primary": "DZ"
+    },
+    "216": {
+      "countries": [
+        "TN"
+      ],
+      "primary": "TN"
+    },
+    "218": {
+      "countries": [
+        "LY"
+      ],
+      "primary": "LY"
+    },
+    "220": {
+      "countries": [
+        "GM"
+      ],
+      "primary": "GM"
+    },
+    "221": {
+      "countries": [
+        "SN"
+      ],
+      "primary": "SN"
+    },
+    "222": {
+      "countries": [
+        "MR"
+      ],
+      "primary": "MR"
+    },
+    "223": {
+      "countries": [
+        "ML"
+      ],
+      "primary": "ML"
+    },
+    "224": {
+      "countries": [
+        "GN"
+      ],
+      "primary": "GN"
+    },
+    "225": {
+      "countries": [
+        "CI"
+      ],
+      "primary": "CI"
+    },
+    "226": {
+      "countries": [
+        "BF"
+      ],
+      "primary": "BF"
+    },
+    "227": {
+      "countries": [
+        "NE"
+      ],
+      "primary": "NE"
+    },
+    "228": {
+      "countries": [
+        "TG"
+      ],
+      "primary": "TG"
+    },
+    "229": {
+      "countries": [
+        "BJ"
+      ],
+      "primary": "BJ"
+    },
+    "230": {
+      "countries": [
+        "MU"
+      ],
+      "primary": "MU"
+    },
+    "231": {
+      "countries": [
+        "LR"
+      ],
+      "primary": "LR"
+    },
+    "232": {
+      "countries": [
+        "SL"
+      ],
+      "primary": "SL"
+    },
+    "233": {
+      "countries": [
+        "GH"
+      ],
+      "primary": "GH"
+    },
+    "234": {
+      "countries": [
+        "NG"
+      ],
+      "primary": "NG"
+    },
+    "235": {
+      "countries": [
+        "TD"
+      ],
+      "primary": "TD"
+    },
+    "236": {
+      "countries": [
+        "CF"
+      ],
+      "primary": "CF"
+    },
+    "237": {
+      "countries": [
+        "CM"
+      ],
+      "primary": "CM"
+    },
+    "238": {
+      "countries": [
+        "CV"
+      ],
+      "primary": "CV"
+    },
+    "239": {
+      "countries": [
+        "ST"
+      ],
+      "primary": "ST"
+    },
+    "240": {
+      "countries": [
+        "GQ"
+      ],
+      "primary": "GQ"
+    },
+    "241": {
+      "countries": [
+        "GA"
+      ],
+      "primary": "GA"
+    },
+    "242": {
+      "countries": [
+        "CG"
+      ],
+      "primary": "CG"
+    },
+    "243": {
+      "countries": [
+        "CD"
+      ],
+      "primary": "CD"
+    },
+    "244": {
+      "countries": [
+        "AO"
+      ],
+      "primary": "AO"
+    },
+    "245": {
+      "countries": [
+        "GW"
+      ],
+      "primary": "GW"
+    },
+    "246": {
+      "countries": [
+        "IO"
+      ],
+      "primary": "IO"
+    },
+    "247": {
+      "countries": [
+        "AC"
+      ],
+      "primary": "AC"
+    },
+    "248": {
+      "countries": [
+        "SC"
+      ],
+      "primary": "SC"
+    },
+    "249": {
+      "countries": [
+        "SD"
+      ],
+      "primary": "SD"
+    },
+    "250": {
+      "countries": [
+        "RW"
+      ],
+      "primary": "RW"
+    },
+    "251": {
+      "countries": [
+        "ET"
+      ],
+      "primary": "ET"
+    },
+    "252": {
+      "countries": [
+        "SO"
+      ],
+      "primary": "SO"
+    },
+    "253": {
+      "countries": [
+        "DJ"
+      ],
+      "primary": "DJ"
+    },
+    "254": {
+      "countries": [
+        "KE"
+      ],
+      "primary": "KE"
+    },
+    "255": {
+      "countries": [
+        "TZ"
+      ],
+      "primary": "TZ"
+    },
+    "256": {
+      "countries": [
+        "UG"
+      ],
+      "primary": "UG"
+    },
+    "257": {
+      "countries": [
+        "BI"
+      ],
+      "primary": "BI"
+    },
+    "258": {
+      "countries": [
+        "MZ"
+      ],
+      "primary": "MZ"
+    },
+    "260": {
+      "countries": [
+        "ZM"
+      ],
+      "primary": "ZM"
+    },
+    "261": {
+      "countries": [
+        "MG"
+      ],
+      "primary": "MG"
+    },
+    "262": {
+      "countries": [
+        "RE",
+        "YT"
+      ],
+      "primary": "RE"
+    },
+    "263": {
+      "countries": [
+        "ZW"
+      ],
+      "primary": "ZW"
+    },
+    "264": {
+      "countries": [
+        "NA"
+      ],
+      "primary": "NA"
+    },
+    "265": {
+      "countries": [
+        "MW"
+      ],
+      "primary": "MW"
+    },
+    "266": {
+      "countries": [
+        "LS"
+      ],
+      "primary": "LS"
+    },
+    "267": {
+      "countries": [
+        "BW"
+      ],
+      "primary": "BW"
+    },
+    "268": {
+      "countries": [
+        "SZ"
+      ],
+      "primary": "SZ"
+    },
+    "269": {
+      "countries": [
+        "KM"
+      ],
+      "primary": "KM"
+    },
+    "290": {
+      "countries": [
+        "SH",
+        "TA"
+      ],
+      "primary": "SH"
+    },
+    "291": {
+      "countries": [
+        "ER"
+      ],
+      "primary": "ER"
+    },
+    "297": {
+      "countries": [
+        "AW"
+      ],
+      "primary": "AW"
+    },
+    "298": {
+      "countries": [
+        "FO"
+      ],
+      "primary": "FO"
+    },
+    "299": {
+      "countries": [
+        "GL"
+      ],
+      "primary": "GL"
+    },
+    "350": {
+      "countries": [
+        "GI"
+      ],
+      "primary": "GI"
+    },
+    "351": {
+      "countries": [
+        "PT"
+      ],
+      "primary": "PT"
+    },
+    "352": {
+      "countries": [
+        "LU"
+      ],
+      "primary": "LU"
+    },
+    "353": {
+      "countries": [
+        "IE"
+      ],
+      "primary": "IE"
+    },
+    "354": {
+      "countries": [
+        "IS"
+      ],
+      "primary": "IS"
+    },
+    "355": {
+      "countries": [
+        "AL"
+      ],
+      "primary": "AL"
+    },
+    "356": {
+      "countries": [
+        "MT"
+      ],
+      "primary": "MT"
+    },
+    "357": {
+      "countries": [
+        "CY"
+      ],
+      "primary": "CY"
+    },
+    "358": {
+      "countries": [
+        "AX",
+        "FI"
+      ],
+      "primary": "FI"
+    },
+    "359": {
+      "countries": [
+        "BG"
+      ],
+      "primary": "BG"
+    },
+    "370": {
+      "countries": [
+        "LT"
+      ],
+      "primary": "LT"
+    },
+    "371": {
+      "countries": [
+        "LV"
+      ],
+      "primary": "LV"
+    },
+    "372": {
+      "countries": [
+        "EE"
+      ],
+      "primary": "EE"
+    },
+    "373": {
+      "countries": [
+        "MD"
+      ],
+      "primary": "MD"
+    },
+    "374": {
+      "countries": [
+        "AM"
+      ],
+      "primary": "AM"
+    },
+    "375": {
+      "countries": [
+        "BY"
+      ],
+      "primary": "BY"
+    },
+    "376": {
+      "countries": [
+        "AD"
+      ],
+      "primary": "AD"
+    },
+    "377": {
+      "countries": [
+        "MC"
+      ],
+      "primary": "MC"
+    },
+    "378": {
+      "countries": [
+        "SM"
+      ],
+      "primary": "SM"
+    },
+    "380": {
+      "countries": [
+        "UA"
+      ],
+      "primary": "UA"
+    },
+    "381": {
+      "countries": [
+        "RS"
+      ],
+      "primary": "RS"
+    },
+    "382": {
+      "countries": [
+        "ME"
+      ],
+      "primary": "ME"
+    },
+    "383": {
+      "countries": [
+        "XK"
+      ],
+      "primary": "XK"
+    },
+    "385": {
+      "countries": [
+        "HR"
+      ],
+      "primary": "HR"
+    },
+    "386": {
+      "countries": [
+        "SI"
+      ],
+      "primary": "SI"
+    },
+    "387": {
+      "countries": [
+        "BA"
+      ],
+      "primary": "BA"
+    },
+    "389": {
+      "countries": [
+        "MK"
+      ],
+      "primary": "MK"
+    },
+    "420": {
+      "countries": [
+        "CZ"
+      ],
+      "primary": "CZ"
+    },
+    "421": {
+      "countries": [
+        "SK"
+      ],
+      "primary": "SK"
+    },
+    "423": {
+      "countries": [
+        "LI"
+      ],
+      "primary": "LI"
+    },
+    "500": {
+      "countries": [
+        "FK"
+      ],
+      "primary": "FK"
+    },
+    "501": {
+      "countries": [
+        "BZ"
+      ],
+      "primary": "BZ"
+    },
+    "502": {
+      "countries": [
+        "GT"
+      ],
+      "primary": "GT"
+    },
+    "503": {
+      "countries": [
+        "SV"
+      ],
+      "primary": "SV"
+    },
+    "504": {
+      "countries": [
+        "HN"
+      ],
+      "primary": "HN"
+    },
+    "505": {
+      "countries": [
+        "NI"
+      ],
+      "primary": "NI"
+    },
+    "506": {
+      "countries": [
+        "CR"
+      ],
+      "primary": "CR"
+    },
+    "507": {
+      "countries": [
+        "PA"
+      ],
+      "primary": "PA"
+    },
+    "508": {
+      "countries": [
+        "PM"
+      ],
+      "primary": "PM"
+    },
+    "509": {
+      "countries": [
+        "HT"
+      ],
+      "primary": "HT"
+    },
+    "590": {
+      "countries": [
+        "BL",
+        "GP",
+        "MF"
+      ],
+      "primary": "GP"
+    },
+    "591": {
+      "countries": [
+        "BO"
+      ],
+      "primary": "BO"
+    },
+    "592": {
+      "countries": [
+        "GY"
+      ],
+      "primary": "GY"
+    },
+    "593": {
+      "countries": [
+        "EC"
+      ],
+      "primary": "EC"
+    },
+    "594": {
+      "countries": [
+        "GF"
+      ],
+      "primary": "GF"
+    },
+    "595": {
+      "countries": [
+        "PY"
+      ],
+      "primary": "PY"
+    },
+    "596": {
+      "countries": [
+        "MQ"
+      ],
+      "primary": "MQ"
+    },
+    "597": {
+      "countries": [
+        "SR"
+      ],
+      "primary": "SR"
+    },
+    "598": {
+      "countries": [
+        "UY"
+      ],
+      "primary": "UY"
+    },
+    "599": {
+      "countries": [
+        "BQ",
+        "CW"
+      ],
+      "primary": "CW"
+    },
+    "670": {
+      "countries": [
+        "TL"
+      ],
+      "primary": "TL"
+    },
+    "672": {
+      "countries": [
+        "NF"
+      ],
+      "primary": "NF"
+    },
+    "673": {
+      "countries": [
+        "BN"
+      ],
+      "primary": "BN"
+    },
+    "674": {
+      "countries": [
+        "NR"
+      ],
+      "primary": "NR"
+    },
+    "675": {
+      "countries": [
+        "PG"
+      ],
+      "primary": "PG"
+    },
+    "676": {
+      "countries": [
+        "TO"
+      ],
+      "primary": "TO"
+    },
+    "677": {
+      "countries": [
+        "SB"
+      ],
+      "primary": "SB"
+    },
+    "678": {
+      "countries": [
+        "VU"
+      ],
+      "primary": "VU"
+    },
+    "679": {
+      "countries": [
+        "FJ"
+      ],
+      "primary": "FJ"
+    },
+    "680": {
+      "countries": [
+        "PW"
+      ],
+      "primary": "PW"
+    },
+    "681": {
+      "countries": [
+        "WF"
+      ],
+      "primary": "WF"
+    },
+    "682": {
+      "countries": [
+        "CK"
+      ],
+      "primary": "CK"
+    },
+    "683": {
+      "countries": [
+        "NU"
+      ],
+      "primary": "NU"
+    },
+    "685": {
+      "countries": [
+        "WS"
+      ],
+      "primary": "WS"
+    },
+    "686": {
+      "countries": [
+        "KI"
+      ],
+      "primary": "KI"
+    },
+    "687": {
+      "countries": [
+        "NC"
+      ],
+      "primary": "NC"
+    },
+    "688": {
+      "countries": [
+        "TV"
+      ],
+      "primary": "TV"
+    },
+    "689": {
+      "countries": [
+        "PF"
+      ],
+      "primary": "PF"
+    },
+    "690": {
+      "countries": [
+        "TK"
+      ],
+      "primary": "TK"
+    },
+    "691": {
+      "countries": [
+        "FM"
+      ],
+      "primary": "FM"
+    },
+    "692": {
+      "countries": [
+        "MH"
+      ],
+      "primary": "MH"
+    },
+    "850": {
+      "countries": [
+        "KP"
+      ],
+      "primary": "KP"
+    },
+    "852": {
+      "countries": [
+        "HK"
+      ],
+      "primary": "HK"
+    },
+    "853": {
+      "countries": [
+        "MO"
+      ],
+      "primary": "MO"
+    },
+    "855": {
+      "countries": [
+        "KH"
+      ],
+      "primary": "KH"
+    },
+    "856": {
+      "countries": [
+        "LA"
+      ],
+      "primary": "LA"
+    },
+    "880": {
+      "countries": [
+        "BD"
+      ],
+      "primary": "BD"
+    },
+    "886": {
+      "countries": [
+        "TW"
+      ],
+      "primary": "TW"
+    },
+    "960": {
+      "countries": [
+        "MV"
+      ],
+      "primary": "MV"
+    },
+    "961": {
+      "countries": [
+        "LB"
+      ],
+      "primary": "LB"
+    },
+    "962": {
+      "countries": [
+        "JO"
+      ],
+      "primary": "JO"
+    },
+    "963": {
+      "countries": [
+        "SY"
+      ],
+      "primary": "SY"
+    },
+    "964": {
+      "countries": [
+        "IQ"
+      ],
+      "primary": "IQ"
+    },
+    "965": {
+      "countries": [
+        "KW"
+      ],
+      "primary": "KW"
+    },
+    "966": {
+      "countries": [
+        "SA"
+      ],
+      "primary": "SA"
+    },
+    "967": {
+      "countries": [
+        "YE"
+      ],
+      "primary": "YE"
+    },
+    "968": {
+      "countries": [
+        "OM"
+      ],
+      "primary": "OM"
+    },
+    "970": {
+      "countries": [
+        "PS"
+      ],
+      "primary": "PS"
+    },
+    "971": {
+      "countries": [
+        "AE"
+      ],
+      "primary": "AE"
+    },
+    "972": {
+      "countries": [
+        "IL"
+      ],
+      "primary": "IL"
+    },
+    "973": {
+      "countries": [
+        "BH"
+      ],
+      "primary": "BH"
+    },
+    "974": {
+      "countries": [
+        "QA"
+      ],
+      "primary": "QA"
+    },
+    "975": {
+      "countries": [
+        "BT"
+      ],
+      "primary": "BT"
+    },
+    "976": {
+      "countries": [
+        "MN"
+      ],
+      "primary": "MN"
+    },
+    "977": {
+      "countries": [
+        "NP"
+      ],
+      "primary": "NP"
+    },
+    "992": {
+      "countries": [
+        "TJ"
+      ],
+      "primary": "TJ"
+    },
+    "993": {
+      "countries": [
+        "TM"
+      ],
+      "primary": "TM"
+    },
+    "994": {
+      "countries": [
+        "AZ"
+      ],
+      "primary": "AZ"
+    },
+    "995": {
+      "countries": [
+        "GE"
+      ],
+      "primary": "GE"
+    },
+    "996": {
+      "countries": [
+        "KG"
+      ],
+      "primary": "KG"
+    },
+    "998": {
+      "countries": [
+        "UZ"
+      ],
+      "primary": "UZ"
+    }
+  },
+  "country_names": {
+    "001": "International",
+    "AC": "Ascension Island",
+    "AD": "Andorra",
+    "AE": "United Arab Emirates",
+    "AF": "Afghanistan",
+    "AG": "Antigua & Barbuda",
+    "AI": "Anguilla",
+    "AL": "Albania",
+    "AM": "Armenia",
+    "AO": "Angola",
+    "AR": "Argentina",
+    "AS": "American Samoa",
+    "AT": "Austria",
+    "AU": "Australia",
+    "AW": "Aruba",
+    "AX": "Åland Islands",
+    "AZ": "Azerbaijan",
+    "BA": "Bosnia & Herzegovina",
+    "BB": "Barbados",
+    "BD": "Bangladesh",
+    "BE": "Belgium",
+    "BF": "Burkina Faso",
+    "BG": "Bulgaria",
+    "BH": "Bahrain",
+    "BI": "Burundi",
+    "BJ": "Benin",
+    "BL": "St. Barthélemy",
+    "BM": "Bermuda",
+    "BN": "Brunei",
+    "BO": "Bolivia",
+    "BQ": "Caribbean Netherlands",
+    "BR": "Brazil",
+    "BS": "Bahamas",
+    "BT": "Bhutan",
+    "BW": "Botswana",
+    "BY": "Belarus",
+    "BZ": "Belize",
+    "CA": "Canada",
+    "CC": "Cocos (Keeling) Islands",
+    "CD": "Congo - Kinshasa",
+    "CF": "Central African Republic",
+    "CG": "Congo - Brazzaville",
+    "CH": "Switzerland",
+    "CI": "Côte d’Ivoire",
+    "CK": "Cook Islands",
+    "CL": "Chile",
+    "CM": "Cameroon",
+    "CN": "China",
+    "CO": "Colombia",
+    "CR": "Costa Rica",
+    "CU": "Cuba",
+    "CV": "Cape Verde",
+    "CW": "Curaçao",
+    "CX": "Christmas Island",
+    "CY": "Cyprus",
+    "CZ": "Czechia",
+    "DE": "Germany",
+    "DJ": "Djibouti",
+    "DK": "Denmark",
+    "DM": "Dominica",
+    "DO": "Dominican Republic",
+    "DZ": "Algeria",
+    "EC": "Ecuador",
+    "EE": "Estonia",
+    "EG": "Egypt",
+    "EH": "Western Sahara",
+    "ER": "Eritrea",
+    "ES": "Spain",
+    "ET": "Ethiopia",
+    "FI": "Finland",
+    "FJ": "Fiji",
+    "FK": "Falkland Islands",
+    "FM": "Micronesia",
+    "FO": "Faroe Islands",
+    "FR": "France",
+    "GA": "Gabon",
+    "GB": "United Kingdom",
+    "GD": "Grenada",
+    "GE": "Georgia",
+    "GF": "French Guiana",
+    "GG": "Guernsey",
+    "GH": "Ghana",
+    "GI": "Gibraltar",
+    "GL": "Greenland",
+    "GM": "Gambia",
+    "GN": "Guinea",
+    "GP": "Guadeloupe",
+    "GQ": "Equatorial Guinea",
+    "GR": "Greece",
+    "GT": "Guatemala",
+    "GU": "Guam",
+    "GW": "Guinea-Bissau",
+    "GY": "Guyana",
+    "HK": "Hong Kong SAR China",
+    "HN": "Honduras",
+    "HR": "Croatia",
+    "HT": "Haiti",
+    "HU": "Hungary",
+    "ID": "Indonesia",
+    "IE": "Ireland",
+    "IL": "Israel",
+    "IM": "Isle of Man",
+    "IN": "India",
+    "IO": "British Indian Ocean Territory",
+    "IQ": "Iraq",
+    "IR": "Iran",
+    "IS": "Iceland",
+    "IT": "Italy",
+    "JE": "Jersey",
+    "JM": "Jamaica",
+    "JO": "Jordan",
+    "JP": "Japan",
+    "KE": "Kenya",
+    "KG": "Kyrgyzstan",
+    "KH": "Cambodia",
+    "KI": "Kiribati",
+    "KM": "Comoros",
+    "KN": "St. Kitts & Nevis",
+    "KP": "North Korea",
+    "KR": "South Korea",
+    "KW": "Kuwait",
+    "KY": "Cayman Islands",
+    "KZ": "Kazakhstan",
+    "LA": "Laos",
+    "LB": "Lebanon",
+    "LC": "St. Lucia",
+    "LI": "Liechtenstein",
+    "LK": "Sri Lanka",
+    "LR": "Liberia",
+    "LS": "Lesotho",
+    "LT": "Lithuania",
+    "LU": "Luxembourg",
+    "LV": "Latvia",
+    "LY": "Libya",
+    "MA": "Morocco",
+    "MC": "Monaco",
+    "MD": "Moldova",
+    "ME": "Montenegro",
+    "MF": "St. Martin",
+    "MG": "Madagascar",
+    "MH": "Marshall Islands",
+    "MK": "North Macedonia",
+    "ML": "Mali",
+    "MM": "Myanmar (Burma)",
+    "MN": "Mongolia",
+    "MO": "Macao SAR China",
+    "MP": "Northern Mariana Islands",
+    "MQ": "Martinique",
+    "MR": "Mauritania",
+    "MS": "Montserrat",
+    "MT": "Malta",
+    "MU": "Mauritius",
+    "MV": "Maldives",
+    "MW": "Malawi",
+    "MX": "Mexico",
+    "MY": "Malaysia",
+    "MZ": "Mozambique",
+    "NA": "Namibia",
+    "NC": "New Caledonia",
+    "NE": "Niger",
+    "NF": "Norfolk Island",
+    "NG": "Nigeria",
+    "NI": "Nicaragua",
+    "NL": "Netherlands",
+    "NO": "Norway",
+    "NP": "Nepal",
+    "NR": "Nauru",
+    "NU": "Niue",
+    "NZ": "New Zealand",
+    "OM": "Oman",
+    "PA": "Panama",
+    "PE": "Peru",
+    "PF": "French Polynesia",
+    "PG": "Papua New Guinea",
+    "PH": "Philippines",
+    "PK": "Pakistan",
+    "PL": "Poland",
+    "PM": "St. Pierre & Miquelon",
+    "PR": "Puerto Rico",
+    "PS": "Palestinian Territories",
+    "PT": "Portugal",
+    "PW": "Palau",
+    "PY": "Paraguay",
+    "QA": "Qatar",
+    "RE": "Réunion",
+    "RO": "Romania",
+    "RS": "Serbia",
+    "RU": "Russia",
+    "RW": "Rwanda",
+    "SA": "Saudi Arabia",
+    "SB": "Solomon Islands",
+    "SC": "Seychelles",
+    "SD": "Sudan",
+    "SE": "Sweden",
+    "SG": "Singapore",
+    "SH": "St. Helena",
+    "SI": "Slovenia",
+    "SJ": "Svalbard & Jan Mayen",
+    "SK": "Slovakia",
+    "SL": "Sierra Leone",
+    "SM": "San Marino",
+    "SN": "Senegal",
+    "SO": "Somalia",
+    "SR": "Suriname",
+    "SS": "South Sudan",
+    "ST": "São Tomé & Príncipe",
+    "SV": "El Salvador",
+    "SX": "Sint Maarten",
+    "SY": "Syria",
+    "SZ": "Eswatini",
+    "TA": "Tristan da Cunha",
+    "TC": "Turks & Caicos Islands",
+    "TD": "Chad",
+    "TG": "Togo",
+    "TH": "Thailand",
+    "TJ": "Tajikistan",
+    "TK": "Tokelau",
+    "TL": "Timor-Leste",
+    "TM": "Turkmenistan",
+    "TN": "Tunisia",
+    "TO": "Tonga",
+    "TR": "Türkiye",
+    "TT": "Trinidad & Tobago",
+    "TV": "Tuvalu",
+    "TW": "Taiwan",
+    "TZ": "Tanzania",
+    "UA": "Ukraine",
+    "UG": "Uganda",
+    "US": "United States",
+    "UY": "Uruguay",
+    "UZ": "Uzbekistan",
+    "VA": "Vatican City",
+    "VC": "St. Vincent & Grenadines",
+    "VE": "Venezuela",
+    "VG": "British Virgin Islands",
+    "VI": "U.S. Virgin Islands",
+    "VN": "Vietnam",
+    "VU": "Vanuatu",
+    "WF": "Wallis & Futuna",
+    "WS": "Samoa",
+    "XK": "Kosovo",
+    "YE": "Yemen",
+    "YT": "Mayotte",
+    "ZA": "South Africa",
+    "ZM": "Zambia",
+    "ZW": "Zimbabwe"
+  }
+}

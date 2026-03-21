@@ -4,6 +4,7 @@ namespace WSms\Service\Installation;
 
 use WSms\Database\CleanupScheduler;
 use WSms\Database\Migrator;
+use WSms\PhoneRestriction\DatabaseUpdater;
 
 defined('ABSPATH') || exit;
 
@@ -141,6 +142,10 @@ class InstallManager
     protected static function deactivateSingleSite(): void
     {
         wp_clear_scheduled_hook(CleanupScheduler::HOOK_NAME);
+
+        if (function_exists('as_unschedule_all_actions')) {
+            as_unschedule_all_actions(DatabaseUpdater::CRON_HOOK, [], DatabaseUpdater::AS_GROUP);
+        }
     }
 
     /**

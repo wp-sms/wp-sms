@@ -21,6 +21,7 @@ use WSms\Rest\TelegramController;
 use WSms\Rest\GatewayCallbackController;
 use WSms\Rest\ListController;
 use WSms\Rest\OptOutSettingsController;
+use WSms\Rest\PhoneRestrictionController;
 use WSms\Rest\TagController;
 use WSms\Rest\MessagingButtonController;
 use WSms\Rest\TemplateCatalogController;
@@ -168,6 +169,12 @@ class RestServiceProvider implements ServiceProvider
             $c->get('messaging.optout_manager'),
         ));
         $container->register('rest.optout_settings', fn() => new OptOutSettingsController());
+        $container->register('rest.phone_restriction', fn($c) => new PhoneRestrictionController(
+            $c->get('phone_restriction.settings'),
+            $c->get('phone_restriction.resolver'),
+            $c->get('phone_restriction.guard'),
+            $c->get('phone_restriction.db_updater'),
+        ));
         $container->register('rest.templates', fn($c) => new TemplateController(
             $c->get('template.manager'),
             $c->get('template.storage'),
@@ -212,6 +219,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.integrations')->registerRoutes();
             $container->get('rest.gateway_callbacks')->registerRoutes();
             $container->get('rest.optout_settings')->registerRoutes();
+            $container->get('rest.phone_restriction')->registerRoutes();
             $container->get('rest.webhook_receiver')->registerRoutes();
             $container->get('rest.messaging_button')->registerRoutes();
             $container->get('rest.templates')->registerRoutes();
