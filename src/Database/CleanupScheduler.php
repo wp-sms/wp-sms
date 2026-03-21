@@ -14,6 +14,7 @@ defined('ABSPATH') || exit;
 class CleanupScheduler
 {
     public const HOOK_NAME = 'wsms_daily_cleanup';
+    public const AS_GROUP = 'wsms';
 
     public function __construct(
         private AuditLogger $auditLogger,
@@ -24,14 +25,14 @@ class CleanupScheduler
 
     public function schedule(): void
     {
-        if (!wp_next_scheduled(self::HOOK_NAME)) {
-            wp_schedule_event(time(), 'daily', self::HOOK_NAME);
+        if (!as_has_scheduled_action(self::HOOK_NAME, [], self::AS_GROUP)) {
+            as_schedule_recurring_action(time(), DAY_IN_SECONDS, self::HOOK_NAME, [], self::AS_GROUP);
         }
     }
 
     public function unschedule(): void
     {
-        wp_clear_scheduled_hook(self::HOOK_NAME);
+        as_unschedule_all_actions(self::HOOK_NAME, [], self::AS_GROUP);
     }
 
     public function run(): void

@@ -23,8 +23,7 @@ class CleanupSchedulerTest extends TestCase
         $this->verificationRepo = $this->createMock(VerificationRepository::class);
         $this->scheduler = new CleanupScheduler($this->auditLogger, $flowExecRepo, $messageLogger, $this->verificationRepo);
 
-        $GLOBALS['_test_wp_next_scheduled'] = [];
-        $GLOBALS['_test_wp_scheduled_events'] = [];
+        $GLOBALS['_test_as_scheduled_actions'] = [];
         $GLOBALS['_test_options'] = [];
         $GLOBALS['_test_deleted_users'] = [];
         $GLOBALS['_test_get_users_result'] = [];
@@ -34,8 +33,7 @@ class CleanupSchedulerTest extends TestCase
     protected function tearDown(): void
     {
         unset(
-            $GLOBALS['_test_wp_next_scheduled'],
-            $GLOBALS['_test_wp_scheduled_events'],
+            $GLOBALS['_test_as_scheduled_actions'],
             $GLOBALS['_test_options'],
             $GLOBALS['_test_deleted_users'],
             $GLOBALS['_test_get_users_result'],
@@ -47,43 +45,39 @@ class CleanupSchedulerTest extends TestCase
     {
         $this->scheduler->schedule();
 
-        $this->assertArrayHasKey(
-            CleanupScheduler::HOOK_NAME,
-            $GLOBALS['_test_wp_scheduled_events'],
-        );
-        $this->assertSame(
-            'daily',
-            $GLOBALS['_test_wp_scheduled_events'][CleanupScheduler::HOOK_NAME]['recurrence'],
-        );
+        $this->assertCount(1, $GLOBALS['_test_as_scheduled_actions']);
+        $action = $GLOBALS['_test_as_scheduled_actions'][0];
+        $this->assertSame(CleanupScheduler::HOOK_NAME, $action['hook']);
+        $this->assertSame('wsms', $action['group']);
+        $this->assertSame(DAY_IN_SECONDS, $action['interval']);
     }
 
     public function testScheduleDoesNotReRegisterWhenAlreadyScheduled(): void
     {
-        $GLOBALS['_test_wp_next_scheduled'][CleanupScheduler::HOOK_NAME] = time() + 3600;
+        $GLOBALS['_test_as_scheduled_actions'][] = [
+            'hook'     => CleanupScheduler::HOOK_NAME,
+            'args'     => [],
+            'group'    => 'wsms',
+            'interval' => DAY_IN_SECONDS,
+        ];
 
         $this->scheduler->schedule();
 
-        $this->assertArrayNotHasKey(
-            CleanupScheduler::HOOK_NAME,
-            $GLOBALS['_test_wp_scheduled_events'] ?? [],
-        );
+        $this->assertCount(1, $GLOBALS['_test_as_scheduled_actions']);
     }
 
     public function testUnscheduleRemovesHook(): void
     {
-        $GLOBALS['_test_wp_scheduled_events'][CleanupScheduler::HOOK_NAME] = [
-            'timestamp'  => time(),
-            'recurrence' => 'daily',
-            'args'       => [],
+        $GLOBALS['_test_as_scheduled_actions'][] = [
+            'hook'     => CleanupScheduler::HOOK_NAME,
+            'args'     => [],
+            'group'    => 'wsms',
+            'interval' => DAY_IN_SECONDS,
         ];
-        $GLOBALS['_test_wp_next_scheduled'][CleanupScheduler::HOOK_NAME] = time();
 
         $this->scheduler->unschedule();
 
-        $this->assertArrayNotHasKey(
-            CleanupScheduler::HOOK_NAME,
-            $GLOBALS['_test_wp_scheduled_events'],
-        );
+        $this->assertEmpty($GLOBALS['_test_as_scheduled_actions']);
     }
 
     public function testRunCallsDeleteOlderThanWithConfiguredDays(): void

@@ -26,8 +26,7 @@ class InstallManagerTest extends TestCase
         $GLOBALS['_test_restore_blog_calls'] = 0;
         $GLOBALS['_test_options'] = [];
         $GLOBALS['_test_transients'] = [];
-        $GLOBALS['_test_wp_next_scheduled'] = [];
-        $GLOBALS['_test_wp_scheduled_events'] = [];
+        $GLOBALS['_test_as_scheduled_actions'] = [];
         $GLOBALS['_test_active_sitewide_plugins'] = [];
 
         TestableInstallManager::$activateCalls = 0;
@@ -100,11 +99,16 @@ class InstallManagerTest extends TestCase
 
     public function testDeactivateSingleSiteClearsScheduledHook(): void
     {
-        $GLOBALS['_test_wp_next_scheduled'][CleanupScheduler::HOOK_NAME] = time();
+        $GLOBALS['_test_as_scheduled_actions'][] = [
+            'hook'     => CleanupScheduler::HOOK_NAME,
+            'args'     => [],
+            'group'    => 'wsms',
+            'interval' => DAY_IN_SECONDS,
+        ];
 
         TestableInstallManager::deactivate(false);
 
-        $this->assertArrayNotHasKey(CleanupScheduler::HOOK_NAME, $GLOBALS['_test_wp_next_scheduled']);
+        $this->assertEmpty($GLOBALS['_test_as_scheduled_actions']);
         $this->assertSame([], $GLOBALS['_test_switched_blog_calls']);
         $this->assertSame(1, TestableInstallManager::$deactivateCalls);
     }
@@ -220,8 +224,8 @@ class TestableInstallManager extends InstallManager
         // Run everything except Migrator::createTables() (needs real DB).
         set_transient('wsms_flush_rewrite', '1');
 
-        if (!wp_next_scheduled(CleanupScheduler::HOOK_NAME)) {
-            wp_schedule_event(time(), 'daily', CleanupScheduler::HOOK_NAME);
+        if (!as_has_scheduled_action(CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP)) {
+            as_schedule_recurring_action(time(), DAY_IN_SECONDS, CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP);
         }
 
         add_option('wsms_auth_settings', [
@@ -234,6 +238,6 @@ class TestableInstallManager extends InstallManager
     protected static function deactivateSingleSite(): void
     {
         self::$deactivateCalls++;
-        wp_clear_scheduled_hook(CleanupScheduler::HOOK_NAME);
+        as_unschedule_all_actions(CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP);
     }
 }

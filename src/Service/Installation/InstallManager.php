@@ -81,8 +81,8 @@ class InstallManager
 
         set_transient('wsms_flush_rewrite', '1');
 
-        if (!wp_next_scheduled(CleanupScheduler::HOOK_NAME)) {
-            wp_schedule_event(time(), 'daily', CleanupScheduler::HOOK_NAME);
+        if (!as_has_scheduled_action(CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP)) {
+            as_schedule_recurring_action(time(), DAY_IN_SECONDS, CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP);
         }
 
         add_option('wsms_auth_settings', [
@@ -141,11 +141,8 @@ class InstallManager
      */
     protected static function deactivateSingleSite(): void
     {
-        wp_clear_scheduled_hook(CleanupScheduler::HOOK_NAME);
-
-        if (function_exists('as_unschedule_all_actions')) {
-            as_unschedule_all_actions(DatabaseUpdater::CRON_HOOK, [], DatabaseUpdater::AS_GROUP);
-        }
+        as_unschedule_all_actions(CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP);
+        as_unschedule_all_actions(DatabaseUpdater::CRON_HOOK, [], DatabaseUpdater::AS_GROUP);
     }
 
     /**

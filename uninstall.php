@@ -16,7 +16,7 @@ use WSms\Database\CleanupScheduler;
 use WSms\Database\Migrator;
 
 /**
- * Clean up a single site's plugin data (tables, options, transients, cron).
+ * Clean up a single site's plugin data (tables, options, transients, scheduled actions).
  */
 function wsms_uninstall_single_site(): void
 {
@@ -26,7 +26,9 @@ function wsms_uninstall_single_site(): void
 
     delete_option('wsms_auth_settings');
 
-    wp_clear_scheduled_hook(CleanupScheduler::HOOK_NAME);
+    if (function_exists('as_unschedule_all_actions')) {
+        as_unschedule_all_actions(CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP);
+    }
 
     $wpdb->query(
         "DELETE FROM {$wpdb->options} WHERE option_name LIKE '%wsms_auth_session_%'"
