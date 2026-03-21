@@ -61,7 +61,7 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
   );
 
   return (
-    <Card className={gateway.is_configured ? 'border-l-2 border-l-primary' : ''}>
+    <Card active={gateway.is_configured}>
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="text-base">{gateway.name}</CardTitle>

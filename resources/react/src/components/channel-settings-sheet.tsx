@@ -179,7 +179,7 @@ function ChannelContent({
                     key={dc.value}
                     className={cn(
                       'flex items-center gap-2',
-                      enabled ? 'cursor-pointer' : 'cursor-not-allowed opacity-50',
+                      enabled ? 'cursor-pointer' : 'cursor-not-allowed',
                     )}
                   >
                     <RadioGroupItem value={dc.value} disabled={!enabled} />

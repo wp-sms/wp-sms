@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ShieldAlert, CloudCog } from 'lucide-react';
 import { toggleArrayItem } from '@/lib/constants';
+import { cn } from '@/lib/utils';
 import type { AuthSettings, CaptchaProvider, CaptchaAction, CaptchaSettings } from '@/lib/api';
 
 interface CaptchaPageProps {
@@ -40,7 +41,7 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
   return (
     <div className="space-y-4">
       {/* Enable / Provider */}
-      <Card className={captcha.enabled ? 'border-l-2 border-l-primary' : 'opacity-50'}>
+      <Card active={captcha.enabled}>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <ShieldAlert className="h-4 w-4 text-muted-foreground" />
@@ -64,9 +65,11 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
                 {PROVIDERS.map((p) => (
                   <label
                     key={p.id}
-                    className={`flex items-center gap-3 rounded-md border p-3 transition-colors ${
-                      captcha.provider === p.id ? 'border-primary bg-primary/5 cursor-pointer' : 'border-border cursor-pointer'
-                    } ${p.comingSoon ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    className={cn(
+                      'flex items-center gap-3 rounded-md border p-3 transition-colors cursor-pointer',
+                      captcha.provider === p.id ? 'border-primary bg-primary/5' : 'border-border',
+                      p.comingSoon && 'cursor-not-allowed',
+                    )}
                   >
                     <input
                       type="radio"
@@ -84,9 +87,10 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
                       </div>
                       <p className="text-xs text-muted-foreground">{p.description}</p>
                     </div>
-                    <div className={`h-4 w-4 rounded-full border-2 flex items-center justify-center ${
-                      captcha.provider === p.id ? 'border-primary' : 'border-muted-foreground/30'
-                    }`}>
+                    <div className={cn(
+                      'h-4 w-4 rounded-full border-2 flex items-center justify-center',
+                      captcha.provider === p.id ? 'border-primary' : 'border-muted-foreground/30',
+                    )}>
                       {captcha.provider === p.id && <div className="h-2 w-2 rounded-full bg-primary" />}
                     </div>
                   </label>

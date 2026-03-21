@@ -201,9 +201,7 @@ function CountryRestrictionsCard({ draft, countries, updateSection }: {
   updateSection: <S extends keyof PhoneRestrictionSettings>(s: S, p: Partial<PhoneRestrictionSettings[S]>) => void;
 }) {
   return (
-    <Card className={
-      (draft.auth.enabled || draft.messaging.enabled) ? 'border-l-2 border-l-primary' : ''
-    }>
+    <Card active={draft.auth.enabled || draft.messaging.enabled}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Globe className="h-4 w-4 text-muted-foreground" />
@@ -410,7 +408,7 @@ function NumberTypeBlockingCard({ draft, dbStatus, updateSection, onDownload, do
   const dbInstalled = dbStatus?.installed ?? false;
 
   return (
-    <Card className={ntb.enabled ? 'border-l-2 border-l-primary' : ''}>
+    <Card active={ntb.enabled}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <ShieldBan className="h-4 w-4 text-muted-foreground" />

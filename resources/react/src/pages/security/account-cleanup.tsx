@@ -22,7 +22,7 @@ export function AccountCleanup({ settings, onUpdate }: AccountCleanupProps) {
   const enabled = settings.pending_user_cleanup_enabled;
 
   return (
-    <Card className={enabled ? 'border-l-2 border-l-primary' : 'opacity-50'}>
+    <Card active={enabled}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Trash2 className="h-4 w-4 text-muted-foreground" />

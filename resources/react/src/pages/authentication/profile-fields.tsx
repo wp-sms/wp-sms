@@ -153,7 +153,7 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
         <CardContent>
           <div className="rounded-lg border border-border/50 divide-y divide-border/50">
             {allFields.map((field, index) => (
-                <div key={field.id} className={`flex items-center gap-3 px-4 py-3 ${field.visibility === 'hidden' ? 'opacity-50' : ''}`}>
+                <div key={field.id} className="flex items-center gap-3 px-4 py-3">
                   <GripVertical className="h-4 w-4 shrink-0 text-muted-foreground/50" />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2">

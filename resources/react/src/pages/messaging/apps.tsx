@@ -32,7 +32,7 @@ function IntegrationCard({ integration, onClick }: {
   onClick: () => void;
 }) {
   return (
-    <Card className={integration.connected ? 'border-l-2 border-l-primary' : ''}>
+    <Card active={integration.connected}>
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">

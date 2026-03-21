@@ -17,7 +17,7 @@ export function CF7Verification({ settings, onUpdate }: CF7VerificationProps) {
   }
 
   return (
-    <Card className={enabled ? 'border-l-2 border-l-primary' : 'opacity-50'}>
+    <Card active={enabled}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <FileCheck className="h-4 w-4 text-muted-foreground" />

@@ -2,7 +2,6 @@ import type { LucideIcon } from 'lucide-react';
 import { Settings } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
 
 interface ChannelRowProps {
   icon: LucideIcon | React.ComponentType<React.SVGProps<SVGSVGElement>>;
@@ -34,10 +33,7 @@ export function ChannelRow({
   const isInteractive = !comingSoon && !disabled;
 
   return (
-    <div className={cn(
-      'flex items-center gap-3 py-3',
-      !isInteractive && 'opacity-50',
-    )}>
+    <div className="flex items-center gap-3 py-3">
       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-muted">
         <Icon className="h-4 w-4 text-muted-foreground" />
       </div>
