@@ -141,7 +141,6 @@ export const NAV_ITEMS = [
     icon: Plug,
     children: [
       { id: 'woocommerce', label: 'WooCommerce' },
-      { id: 'platform', label: 'Platform' },
     ],
   },
   {
@@ -182,7 +181,6 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   'captcha': 'Add CAPTCHA verification to protect authentication endpoints from bots.',
   'account-cleanup': 'Manage automatic cleanup of unverified pending registrations.',
   'woocommerce': 'Add email and phone OTP verification to WooCommerce checkout, registration, and account pages.',
-  'platform': 'Browse available triggers and actions for building automation flows.',
   'branding': 'Customize the appearance and behavior of your authentication pages.',
   'logs': 'View authentication events and configure logging preferences.',
   'reports': 'View authentication activity statistics, security insights, and usage trends.',
