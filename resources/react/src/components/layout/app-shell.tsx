@@ -38,6 +38,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
+import { AREA_LABELS } from '@/lib/constants';
+import type { Area } from '@/lib/area-nav';
 
 
 const SIDEBAR_DEFAULT_OPEN = (() => {
@@ -51,6 +53,7 @@ interface AppShellProps {
   activeSection: string;
   onNavigate: (section: string) => void;
   version: string;
+  area: Area;
   children: ReactNode;
   navItems: NavItemList;
 }
@@ -373,7 +376,7 @@ function NavMenu({ activeSection, onNavigate, navItems }: { activeSection: strin
   );
 }
 
-export function AppShell({ activeSection, onNavigate, version, children, navItems }: AppShellProps) {
+export function AppShell({ activeSection, onNavigate, version, area, children, navItems }: AppShellProps) {
   const pageTitle = getPageTitle(activeSection, navItems);
   const pageDescription = SECTION_DESCRIPTIONS[activeSection];
 
@@ -387,7 +390,7 @@ export function AppShell({ activeSection, onNavigate, version, children, navItem
             </div>
             <div className="flex flex-col group-data-[collapsible=icon]:hidden">
               <span className="text-sm font-semibold leading-none">WSMS</span>
-              <span className="text-xs text-muted-foreground">v{version}</span>
+              <span className="text-xs text-muted-foreground">{AREA_LABELS[area] ?? area}</span>
             </div>
           </div>
         </SidebarHeader>

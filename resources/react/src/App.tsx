@@ -87,7 +87,7 @@ export default function App() {
       <ConfirmProvider>
         <div className="wsms-app">
           <div className="border border-border overflow-hidden">
-            <AppShell activeSection={section} onNavigate={setSection} version={version} navItems={navItems}>
+            <AppShell activeSection={section} onNavigate={setSection} version={version} area={area} navItems={navItems}>
               {renderContent()}
             </AppShell>
           </div>

@@ -1,7 +1,7 @@
 import { NAV_ITEMS } from '@/components/layout/app-shell';
 
 export type NavItem = (typeof NAV_ITEMS)[number];
-type Area = 'auth' | 'messaging';
+export type Area = 'auth' | 'messaging';
 
 interface AreaConfig {
   sections: string[];

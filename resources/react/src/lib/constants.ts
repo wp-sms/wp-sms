@@ -289,6 +289,13 @@ export const SEGMENT_TEMPLATES = [
   { name: 'WordPress users', conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'source', operator: 'equals', value: 'sync' }] } },
 ] as const;
 
+// --- Area Labels ---
+
+export const AREA_LABELS: Record<string, string> = {
+  auth: 'Authentication',
+  messaging: 'Messaging',
+};
+
 // --- Integration Category Constants ---
 
 export const INTEGRATION_CATEGORY_LABELS: Record<string, string> = {
