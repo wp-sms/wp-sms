@@ -73,15 +73,18 @@ function ConfigField({ fieldKey, field, value, onChange }: {
 
   if (field.type === 'boolean') {
     return (
-      <Field orientation="horizontal">
-        <FieldLabel htmlFor={id}>{field.label}</FieldLabel>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <label htmlFor={id} className="text-sm font-medium leading-snug">{field.label}</label>
+          {field.description && <p className="text-sm text-muted-foreground">{field.description}</p>}
+        </div>
         <Switch
           id={id}
+          className="mt-0.5"
           checked={Boolean(value ?? field.default ?? false)}
           onCheckedChange={(v) => onChange(fieldKey, v)}
         />
-        {field.description && <FieldDescription>{field.description}</FieldDescription>}
-      </Field>
+      </div>
     );
   }
 

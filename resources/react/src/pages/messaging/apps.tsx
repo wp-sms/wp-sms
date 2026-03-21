@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
-import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -201,19 +200,20 @@ function SettingsSection({ integrationId, settings, onUpdate }: {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Field className="flex items-center justify-between">
+            <div className="flex items-start justify-between gap-4">
               <div>
-                <FieldLabel htmlFor="cf7_notifications_enabled">Enable notifications</FieldLabel>
-                <FieldDescription>
+                <label htmlFor="cf7_notifications_enabled" className="text-sm font-medium leading-snug">Enable notifications</label>
+                <p className="text-sm text-muted-foreground">
                   Show the WSMS notification panel in the Contact Form 7 editor for configuring SMS, email, WhatsApp, or Telegram notifications per form.
-                </FieldDescription>
+                </p>
               </div>
               <Switch
                 id="cf7_notifications_enabled"
+                className="mt-0.5"
                 checked={cf7.notifications_enabled !== false}
                 onCheckedChange={(v) => update({ notifications_enabled: v })}
               />
-            </Field>
+            </div>
           </CardContent>
         </Card>
       );

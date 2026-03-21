@@ -45,18 +45,19 @@ export function GeneralPage({ settings, onUpdate }: GeneralPageProps) {
               </Field>
             </div>
 
-            <Field orientation="horizontal">
-              <FieldLabel htmlFor="redirect_login">Redirect WordPress Login</FieldLabel>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <label htmlFor="redirect_login" className="text-sm font-medium leading-snug">Redirect WordPress Login</label>
+                <p className="text-sm text-muted-foreground">Redirect wp-login.php to your custom auth pages</p>
+              </div>
               <Switch
                 id="redirect_login"
+                className="mt-0.5"
                 checked={settings.redirect_login}
                 onCheckedChange={(checked) => onUpdate('redirect_login', checked)}
                 aria-label="Toggle redirect login"
               />
-              <FieldDescription>
-                Redirect wp-login.php to your custom auth pages
-              </FieldDescription>
-            </Field>
+            </div>
 
             {settings.redirect_login && (
               <p className="text-xs text-muted-foreground mt-3 rounded-md bg-muted/50 p-3">

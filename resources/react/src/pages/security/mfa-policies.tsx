@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import {
@@ -32,19 +32,19 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
         ? 'border-l-2 border-l-primary'
         : 'opacity-50'
       }>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <div className="space-y-1">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <KeySquare className="h-4 w-4 text-muted-foreground" />
-              Backup Codes
-            </CardTitle>
-            <CardDescription>Single-use recovery codes for MFA fallback</CardDescription>
-          </div>
-          <Switch
-            checked={settings.backup_codes.enabled}
-            onCheckedChange={(v) => onUpdate('backup_codes', { ...settings.backup_codes, enabled: v })}
-            aria-label="Toggle Backup Codes"
-          />
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <KeySquare className="h-4 w-4 text-muted-foreground" />
+            Backup Codes
+          </CardTitle>
+          <CardDescription>Single-use recovery codes for MFA fallback</CardDescription>
+          <CardAction>
+            <Switch
+              checked={settings.backup_codes.enabled}
+              onCheckedChange={(v) => onUpdate('backup_codes', { ...settings.backup_codes, enabled: v })}
+              aria-label="Toggle Backup Codes"
+            />
+          </CardAction>
         </CardHeader>
         {settings.backup_codes.enabled && (
           <CardContent className="border-t pt-4">

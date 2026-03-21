@@ -1,7 +1,8 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
+import { Trash2 } from 'lucide-react';
 import type { AuthSettings } from '@/lib/api';
 
 interface AccountCleanupProps {
@@ -18,28 +19,29 @@ function formatTtl(hours: number): string {
 }
 
 export function AccountCleanup({ settings, onUpdate }: AccountCleanupProps) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-base">Pending Registration Cleanup</CardTitle>
-        <CardDescription>
-          When verification is required at signup, users who never complete verification are automatically cleaned up after the TTL expires. This frees their email/phone for re-registration.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <Field className="flex items-center justify-between">
-          <div>
-            <FieldLabel htmlFor="cleanup_enabled">Enable automatic cleanup</FieldLabel>
-            <FieldDescription>Automatically delete pending users who never verified their account</FieldDescription>
-          </div>
-          <Switch
-            id="cleanup_enabled"
-            checked={settings.pending_user_cleanup_enabled}
-            onCheckedChange={(v) => onUpdate('pending_user_cleanup_enabled', v)}
-          />
-        </Field>
+  const enabled = settings.pending_user_cleanup_enabled;
 
-        {settings.pending_user_cleanup_enabled && (
+  return (
+    <Card className={enabled ? 'border-l-2 border-l-primary' : 'opacity-50'}>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Trash2 className="h-4 w-4 text-muted-foreground" />
+          Pending Registration Cleanup
+        </CardTitle>
+        <CardDescription>
+          Automatically delete pending users who never verified their account.
+          When verification is required at signup, users who never complete verification are cleaned up after the TTL expires, freeing their email/phone for re-registration.
+        </CardDescription>
+        <CardAction>
+          <Switch
+            checked={enabled}
+            onCheckedChange={(v) => onUpdate('pending_user_cleanup_enabled', v)}
+            aria-label="Toggle pending registration cleanup"
+          />
+        </CardAction>
+      </CardHeader>
+      {enabled && (
+        <CardContent className="border-t pt-4">
           <Field>
             <FieldLabel htmlFor="ttl_hours">Cleanup TTL (hours)</FieldLabel>
             <Input
@@ -55,8 +57,8 @@ export function AccountCleanup({ settings, onUpdate }: AccountCleanupProps) {
               Hours before an unverified registration is eligible for cleanup and re-registration ({formatTtl(settings.pending_user_ttl_hours)})
             </FieldDescription>
           </Field>
-        )}
-      </CardContent>
+        </CardContent>
+      )}
     </Card>
   );
 }

@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -24,17 +24,15 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
             <MousePointerClick className="h-4 w-4 text-muted-foreground" />
             Enable Widget
           </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <Field orientation="horizontal">
-            <FieldLabel htmlFor="mb-enabled">Show messaging button on your site</FieldLabel>
+          <CardDescription>Show messaging button on your site</CardDescription>
+          <CardAction>
             <Switch
-              id="mb-enabled"
               checked={enabled}
               onCheckedChange={(checked) => onUpdate('enabled', checked)}
+              aria-label="Toggle widget"
             />
-          </Field>
-        </CardContent>
+          </CardAction>
+        </CardHeader>
       </Card>
 
       <Card>
@@ -225,17 +223,18 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
       </Card>
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <MessageCircle className="h-4 w-4 text-muted-foreground" />
-              Greeting Bubble
-            </CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <MessageCircle className="h-4 w-4 text-muted-foreground" />
+            Greeting Bubble
+          </CardTitle>
+          <CardDescription>Show a speech bubble above the button to greet visitors</CardDescription>
+          <CardAction>
             <Switch
               checked={greeting_bubble.enabled}
               onCheckedChange={(checked) => onUpdate('greeting_bubble.enabled', checked)}
+              aria-label="Toggle greeting bubble"
             />
-          </div>
-          <CardDescription>Show a speech bubble above the button to greet visitors</CardDescription>
+          </CardAction>
         </CardHeader>
         {greeting_bubble.enabled && (
           <CardContent>

@@ -477,16 +477,19 @@ function PropertyField({
 
   if (prop.type === 'boolean') {
     return (
-      <Field key={fieldKey} orientation="horizontal">
-        <FieldLabel htmlFor={`schema-${fieldKey}`}>{label}</FieldLabel>
+      <div key={fieldKey} className="flex items-start justify-between gap-4">
+        <div>
+          <label htmlFor={`schema-${fieldKey}`} className="text-sm font-medium leading-snug">{label}</label>
+          {prop.hint && <p className="text-xs italic text-muted-foreground/80">{prop.hint}</p>}
+          {prop.description && <p className="text-sm text-muted-foreground">{prop.description}</p>}
+        </div>
         <Switch
           id={`schema-${fieldKey}`}
+          className="mt-0.5"
           checked={Boolean(value ?? prop.default ?? false)}
           onCheckedChange={(v) => onChange(fieldKey, v)}
         />
-        {prop.hint && <FieldHint>{prop.hint}</FieldHint>}
-        {prop.description && <FieldDescription>{prop.description}</FieldDescription>}
-      </Field>
+      </div>
     );
   }
 

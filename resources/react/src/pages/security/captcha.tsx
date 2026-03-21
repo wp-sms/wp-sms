@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { Switch } from '@/components/ui/switch';
@@ -40,20 +40,20 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
   return (
     <div className="space-y-4">
       {/* Enable / Provider */}
-      <Card className={captcha.enabled ? 'border-l-2 border-l-primary' : 'opacity-60'}>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <div className="space-y-1">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <ShieldAlert className="h-4 w-4 text-muted-foreground" />
-              CAPTCHA Protection
-            </CardTitle>
-            <CardDescription>Protect authentication endpoints from bots and automated attacks</CardDescription>
-          </div>
-          <Switch
-            checked={captcha.enabled}
-            onCheckedChange={(v) => update({ enabled: v })}
-            aria-label="Toggle CAPTCHA"
-          />
+      <Card className={captcha.enabled ? 'border-l-2 border-l-primary' : 'opacity-50'}>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <ShieldAlert className="h-4 w-4 text-muted-foreground" />
+            CAPTCHA Protection
+          </CardTitle>
+          <CardDescription>Protect authentication endpoints from bots and automated attacks</CardDescription>
+          <CardAction>
+            <Switch
+              checked={captcha.enabled}
+              onCheckedChange={(v) => update({ enabled: v })}
+              aria-label="Toggle CAPTCHA"
+            />
+          </CardAction>
         </CardHeader>
         {captcha.enabled && (
           <CardContent className="border-t pt-4 space-y-6">
@@ -148,22 +148,21 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
               </label>
             ))}
 
-            {/* Fail behavior */}
-            <div className="border-t pt-4 mt-4">
-              <label className="flex items-start gap-3">
-                <Switch
-                  checked={captcha.fail_open}
-                  onCheckedChange={(v) => update({ fail_open: v })}
-                />
-                <div>
-                  <span className="text-sm font-medium">Fail Open</span>
-                  <p className="text-xs text-muted-foreground">
-                    {captcha.fail_open
-                      ? 'If the CAPTCHA service is unreachable, users will be allowed through. Less secure but avoids lockouts.'
-                      : 'If the CAPTCHA service is unreachable, users will be blocked. More secure but may cause lockouts during outages.'}
-                  </p>
-                </div>
-              </label>
+            <div className="flex items-start justify-between gap-4 border-t pt-4 mt-4">
+              <div>
+                <label htmlFor="captcha-fail-open" className="text-sm font-medium leading-snug">Fail Open</label>
+                <p className="text-sm text-muted-foreground">
+                  {captcha.fail_open
+                    ? 'If the CAPTCHA service is unreachable, users will be allowed through. Less secure but avoids lockouts.'
+                    : 'If the CAPTCHA service is unreachable, users will be blocked. More secure but may cause lockouts during outages.'}
+                </p>
+              </div>
+              <Switch
+                id="captcha-fail-open"
+                className="mt-0.5"
+                checked={captcha.fail_open}
+                onCheckedChange={(v) => update({ fail_open: v })}
+              />
             </div>
           </CardContent>
         </Card>

@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
@@ -55,17 +55,18 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
       {/* Welcome Page */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Home className="h-4 w-4 text-muted-foreground" />
-              Welcome Page
-            </CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Home className="h-4 w-4 text-muted-foreground" />
+            Welcome Page
+          </CardTitle>
+          <CardDescription>The first page visitors see when opening the widget</CardDescription>
+          <CardAction>
             <Switch
               checked={pages.welcome.enabled}
               onCheckedChange={(checked) => onUpdate('pages.welcome.enabled', checked)}
+              aria-label="Toggle welcome page"
             />
-          </div>
-          <CardDescription>The first page visitors see when opening the widget</CardDescription>
+          </CardAction>
         </CardHeader>
         {pages.welcome.enabled && (
           <CardContent>
@@ -97,17 +98,18 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
       {/* Contact Form */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <MessageSquare className="h-4 w-4 text-muted-foreground" />
-              Contact Form
-            </CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            Contact Form
+          </CardTitle>
+          <CardDescription>Capture messages and contact information from visitors</CardDescription>
+          <CardAction>
             <Switch
               checked={pages.contact_form.enabled}
               onCheckedChange={(checked) => onUpdate('pages.contact_form.enabled', checked)}
+              aria-label="Toggle contact form"
             />
-          </div>
-          <CardDescription>Capture messages and contact information from visitors</CardDescription>
+          </CardAction>
         </CardHeader>
         {pages.contact_form.enabled && (
           <CardContent>
@@ -177,17 +179,18 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
       {/* Resources */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Link className="h-4 w-4 text-muted-foreground" />
-              Resources & Links
-            </CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Link className="h-4 w-4 text-muted-foreground" />
+            Resources & Links
+          </CardTitle>
+          <CardDescription>Add helpful links and resources to the widget</CardDescription>
+          <CardAction>
             <Switch
               checked={pages.resources.enabled}
               onCheckedChange={(checked) => onUpdate('pages.resources.enabled', checked)}
+              aria-label="Toggle resources"
             />
-          </div>
-          <CardDescription>Add helpful links and resources to the widget</CardDescription>
+          </CardAction>
         </CardHeader>
         {pages.resources.enabled && (
           <CardContent>
@@ -233,17 +236,18 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
       {/* GDPR */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Shield className="h-4 w-4 text-muted-foreground" />
-              GDPR Consent
-            </CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Shield className="h-4 w-4 text-muted-foreground" />
+            GDPR Consent
+          </CardTitle>
+          <CardDescription>Require privacy consent before form submission</CardDescription>
+          <CardAction>
             <Switch
               checked={gdpr.enabled}
               onCheckedChange={(checked) => onUpdate('gdpr.enabled', checked)}
+              aria-label="Toggle GDPR consent"
             />
-          </div>
-          <CardDescription>Require privacy consent before form submission</CardDescription>
+          </CardAction>
         </CardHeader>
         {gdpr.enabled && (
           <CardContent>

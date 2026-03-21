@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
@@ -79,14 +79,18 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
               <FieldDescription>Open when visitor scrolls past this percentage. 0 to disable.</FieldDescription>
             </Field>
 
-            <Field orientation="horizontal">
-              <FieldLabel>Exit intent</FieldLabel>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <label htmlFor="exit-intent" className="text-sm font-medium leading-snug">Exit intent</label>
+                <p className="text-sm text-muted-foreground">Open when the cursor moves toward closing the tab (desktop only)</p>
+              </div>
               <Switch
+                id="exit-intent"
+                className="mt-0.5"
                 checked={triggers.exit_intent}
                 onCheckedChange={(checked) => onUpdate('triggers.exit_intent', checked)}
               />
-              <FieldDescription>Open when the cursor moves toward closing the tab (desktop only)</FieldDescription>
-            </Field>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -102,16 +106,18 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <Field orientation="horizontal">
-              <FieldLabel>Auto-inject on all pages</FieldLabel>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <label htmlFor="auto-inject" className="text-sm font-medium leading-snug">Auto-inject on all pages</label>
+                <p className="text-sm text-muted-foreground">When enabled, the widget appears on all frontend pages (unless excluded)</p>
+              </div>
               <Switch
+                id="auto-inject"
+                className="mt-0.5"
                 checked={display_rules.auto_inject}
                 onCheckedChange={(checked) => onUpdate('display_rules.auto_inject', checked)}
               />
-              <FieldDescription>
-                When enabled, the widget appears on all frontend pages (unless excluded)
-              </FieldDescription>
-            </Field>
+            </div>
 
             <Field>
               <FieldLabel>Visibility</FieldLabel>
@@ -166,20 +172,21 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
       {/* Business Hours */}
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-2 text-base">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              Business Hours
-            </CardTitle>
-            <Switch
-              checked={business_hours.enabled}
-              onCheckedChange={(checked) => onUpdate('business_hours.enabled', checked)}
-            />
-          </div>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            Business Hours
+          </CardTitle>
           <CardDescription>
             Show different messaging when you're offline.
             {wpTimezone && <> Hours are evaluated in your WordPress timezone ({wpTimezone}).</>}
           </CardDescription>
+          <CardAction>
+            <Switch
+              checked={business_hours.enabled}
+              onCheckedChange={(checked) => onUpdate('business_hours.enabled', checked)}
+              aria-label="Toggle business hours"
+            />
+          </CardAction>
         </CardHeader>
         {business_hours.enabled && (
           <CardContent>
