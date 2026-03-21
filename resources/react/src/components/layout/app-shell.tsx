@@ -376,7 +376,7 @@ export function AppShell({ activeSection, onNavigate, version, area, children, n
   return (
     <SidebarProvider defaultOpen={SIDEBAR_DEFAULT_OPEN}>
       <Sidebar collapsible="icon">
-        <SidebarHeader className="border-b border-sidebar-border px-4 py-3 group-data-[collapsible=icon]:px-2">
+        <SidebarHeader className="h-14 border-b border-sidebar-border px-4 justify-center group-data-[collapsible=icon]:px-2">
           <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary">
               <Logo className="h-6 w-6 text-primary-foreground" />
