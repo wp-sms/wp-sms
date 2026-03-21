@@ -126,6 +126,31 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('sanitize_textarea_field')) {
+        function sanitize_textarea_field($str) {
+            return trim(strip_tags((string) $str));
+        }
+    }
+
+    if (!function_exists('wp_parse_args')) {
+        function wp_parse_args($args, $defaults = []) {
+            if (is_object($args)) {
+                $parsed = get_object_vars($args);
+            } elseif (is_array($args)) {
+                $parsed = &$args;
+            } else {
+                parse_str($args, $parsed);
+            }
+            return array_merge($defaults, $parsed);
+        }
+    }
+
+    if (!function_exists('esc_textarea')) {
+        function esc_textarea(string $text): string {
+            return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
+        }
+    }
+
     if (!function_exists('wp_unslash')) {
         function wp_unslash($value) {
             return is_string($value) ? stripslashes($value) : $value;
@@ -829,6 +854,25 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
     $GLOBALS['_test_switched_blog_calls'] = [];
     $GLOBALS['_test_restore_blog_calls'] = 0;
 
+}
+
+// WPCF7_ContactForm stub for CF7 integration tests.
+if (!class_exists('WPCF7_ContactForm')) {
+    class WPCF7_ContactForm {
+        private array $properties = [];
+
+        public function prop(string $name) {
+            return $this->properties[$name] ?? null;
+        }
+
+        public function set_properties(array $properties): void {
+            $this->properties = array_merge($this->properties, $properties);
+        }
+
+        public function suggest_mail_tags(string $name = ''): string {
+            return '';
+        }
+    }
 }
 
 // WP_User stub.
