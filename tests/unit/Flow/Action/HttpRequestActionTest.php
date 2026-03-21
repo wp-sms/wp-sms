@@ -39,6 +39,14 @@ class HttpRequestActionTest extends TestCase
         $this->assertArrayHasKey('example', $schema['url']);
     }
 
+    public function testOutputSchemaHasExpectedFields(): void
+    {
+        $schema = $this->action->getOutputSchema();
+        $this->assertArrayHasKey('http_status', $schema);
+        $this->assertArrayHasKey('body', $schema);
+        $this->assertSame('integer', $schema['http_status']['type']);
+    }
+
     public function testExecuteSuccessReturnsStatusAndBody(): void
     {
         $GLOBALS['_test_wp_remote_post'] = [
@@ -54,7 +62,57 @@ class HttpRequestActionTest extends TestCase
 
         $this->assertTrue($result->success);
         $this->assertSame(200, $result->output['http_status']);
-        $this->assertSame('{"ok":true}', $result->output['body']);
+    }
+
+    public function testJsonResponseBodyIsParsed(): void
+    {
+        $GLOBALS['_test_wp_remote_post'] = [
+            'response' => ['code' => 200],
+            'body' => '{"tracking_url":"https://example.com/track/123","status":"shipped"}',
+        ];
+
+        $result = $this->action->execute([], [
+            'url' => 'https://example.com/api',
+            'method' => 'GET',
+        ]);
+
+        $this->assertTrue($result->success);
+        $this->assertIsArray($result->output['body']);
+        $this->assertSame('https://example.com/track/123', $result->output['body']['tracking_url']);
+        $this->assertSame('shipped', $result->output['body']['status']);
+    }
+
+    public function testNonJsonResponseBodyRemainsString(): void
+    {
+        $GLOBALS['_test_wp_remote_post'] = [
+            'response' => ['code' => 200],
+            'body' => '<html>Not JSON</html>',
+        ];
+
+        $result = $this->action->execute([], [
+            'url' => 'https://example.com/page',
+            'method' => 'GET',
+        ]);
+
+        $this->assertTrue($result->success);
+        $this->assertIsString($result->output['body']);
+        $this->assertSame('<html>Not JSON</html>', $result->output['body']);
+    }
+
+    public function testEmptyResponseBodyRemainsString(): void
+    {
+        $GLOBALS['_test_wp_remote_post'] = [
+            'response' => ['code' => 204],
+            'body' => '',
+        ];
+
+        $result = $this->action->execute([], [
+            'url' => 'https://example.com/api',
+            'method' => 'DELETE',
+        ]);
+
+        $this->assertTrue($result->success);
+        $this->assertSame('', $result->output['body']);
     }
 
     public function testExecuteFailureOnWpError(): void

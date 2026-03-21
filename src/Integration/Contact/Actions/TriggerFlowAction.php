@@ -39,6 +39,14 @@ class TriggerFlowAction extends AbstractAction
         return 'WSMS';
     }
 
+    public function getOutputSchema(): array
+    {
+        return [
+            'flow_id'   => ['type' => 'string', 'title' => 'Flow ID'],
+            'flow_name' => ['type' => 'string', 'title' => 'Flow Name'],
+        ];
+    }
+
     public function getConfigSchema(): array
     {
         return [

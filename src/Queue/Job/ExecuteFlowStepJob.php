@@ -11,7 +11,7 @@ class ExecuteFlowStepJob implements JobInterface
     public function __construct(
         private readonly string $executionId,
         private readonly array $node,
-        private readonly array $payload,
+        private readonly array $contextData,
     ) {
     }
 
@@ -25,7 +25,7 @@ class ExecuteFlowStepJob implements JobInterface
         return [
             'execution_id' => $this->executionId,
             'node'         => $this->node,
-            'payload'      => $this->payload,
+            'context'      => $this->contextData,
         ];
     }
 

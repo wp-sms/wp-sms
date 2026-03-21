@@ -43,6 +43,15 @@ class UpdateContactStatusAction extends AbstractAction
         return 'Contacts';
     }
 
+    public function getOutputSchema(): array
+    {
+        return [
+            'contact_id'  => ['type' => 'string', 'title' => 'Contact ID'],
+            'old_status'  => ['type' => 'string', 'title' => 'Old Status'],
+            'new_status'  => ['type' => 'string', 'title' => 'New Status'],
+        ];
+    }
+
     public function getConfigSchema(): array
     {
         return [

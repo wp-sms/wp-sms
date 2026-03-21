@@ -4,6 +4,7 @@ namespace WSms\Container;
 
 use WSms\Flow\Action\ActionRegistry;
 use WSms\Flow\Condition\ExpressionLanguageEvaluator;
+use WSms\Flow\Engine\ExecutionContext;
 use WSms\Flow\Engine\FlowExecutor;
 use WSms\Flow\Engine\FlowRunner;
 use WSms\Flow\Engine\PayloadResolver;
@@ -54,7 +55,8 @@ class FlowServiceProvider implements ServiceProvider
         $processor = $container->get('queue.processor');
         $processor->registerHandler('execute_flow_step', function (array $payload) use ($container) {
             $executor = $container->get('flow.executor');
-            $executor->executeNode($payload['node'], $payload['payload'], $payload['execution_id']);
+            $context = ExecutionContext::fromArray($payload['context']);
+            $executor->executeNode($payload['node'], $context, $payload['execution_id']);
         });
 
         $processor->registerHandler('send_message', function (array $payload) use ($container) {

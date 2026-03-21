@@ -42,6 +42,14 @@ class UpdateContactAction extends AbstractAction
         return 'Contacts';
     }
 
+    public function getOutputSchema(): array
+    {
+        return [
+            'contact_id'     => ['type' => 'string', 'title' => 'Contact ID'],
+            'updated_fields' => ['type' => 'array', 'title' => 'Updated Fields'],
+        ];
+    }
+
     public function getConfigSchema(): array
     {
         return [

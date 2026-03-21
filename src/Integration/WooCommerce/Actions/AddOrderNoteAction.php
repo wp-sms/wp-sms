@@ -29,6 +29,14 @@ class AddOrderNoteAction extends AbstractAction
         return 'WooCommerce';
     }
 
+    public function getOutputSchema(): array
+    {
+        return [
+            'order_id' => ['type' => 'integer', 'title' => 'Order ID'],
+            'note_id'  => ['type' => 'integer', 'title' => 'Note ID'],
+        ];
+    }
+
     public function getConfigSchema(): array
     {
         return [

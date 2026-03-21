@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import type { FlowNode, JsonSchema } from '@/lib/api';
+import { useState, useMemo } from 'react';
+import type { FlowNode, JsonSchema, JsonSchemaProperty } from '@/lib/api';
 import { createNode, type StepType } from '@/lib/flow-utils';
 import { useActions } from '@/hooks/use-actions';
 import { StepCard } from './step-card';
@@ -23,6 +23,47 @@ export function SentenceStepList({
 }: SentenceStepListProps) {
   const { actions } = useActions();
   const [expandedStepId, setExpandedStepId] = useState<string | null>(null);
+
+  // Compute per-step enriched payload schemas that include previous action outputs.
+  // This lets downstream variable pickers show {{actions.<action_id>.<field>}} without changes.
+  const stepSchemas = useMemo(() => {
+    const actionMap = new Map(actions.map((a) => [a.id, a]));
+    const accumulated: Record<string, JsonSchemaProperty> = {};
+    let hasOutputs = false;
+
+    return steps.map((step, index) => {
+      if (index === 0) return payloadSchema;
+
+      // Accumulate the previous step's output (index - 1) into the running map
+      const prev = steps[index - 1];
+      if (prev.type === 'action' && prev.action) {
+        const def = actionMap.get(prev.action);
+        if (def?.output_schema?.properties && Object.keys(def.output_schema.properties).length) {
+          accumulated[prev.action] = {
+            type: 'object',
+            title: def.name,
+            properties: def.output_schema.properties,
+          };
+          hasOutputs = true;
+        }
+      }
+
+      if (!hasOutputs) return payloadSchema;
+
+      return {
+        ...payloadSchema,
+        type: payloadSchema?.type ?? 'object',
+        properties: {
+          ...payloadSchema?.properties,
+          actions: {
+            type: 'object' as const,
+            title: 'Previous Actions',
+            properties: { ...accumulated },
+          },
+        },
+      } satisfies JsonSchema;
+    });
+  }, [steps, actions, payloadSchema]);
 
   const addStep = (type: StepType) => {
     const node = createNode(type);
@@ -63,7 +104,7 @@ export function SentenceStepList({
             onDelete={() => removeStep(i)}
             onChange={(updated) => updateStep(i, updated)}
             actions={actions}
-            payloadSchema={payloadSchema}
+            payloadSchema={stepSchemas[i]}
             triggerType={triggerType}
             sampleData={sampleData}
           />

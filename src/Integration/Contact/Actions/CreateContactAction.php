@@ -35,6 +35,14 @@ class CreateContactAction extends AbstractAction
         return 'Contacts';
     }
 
+    public function getOutputSchema(): array
+    {
+        return [
+            'contact_id' => ['type' => 'integer', 'title' => 'Contact ID'],
+            'action'     => ['type' => 'string', 'title' => 'Action Taken'],
+        ];
+    }
+
     public function getConfigSchema(): array
     {
         return [

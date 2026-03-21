@@ -30,30 +30,30 @@ class FlowExecutor
     ) {
     }
 
-    public function execute(string $executionId, array $steps, array $payload): void
+    public function execute(string $executionId, array $steps, ExecutionContext $context): void
     {
         $this->executionRepository->updateStatus($executionId, ExecutionStatus::Running->value);
 
-        $payload = $this->expandEntities($payload);
+        $this->expandEntities($context);
 
         foreach ($steps as $step) {
-            $this->executeNode($step, $payload, $executionId);
+            $this->executeNode($step, $context, $executionId);
         }
     }
 
-    public function executeNode(array $node, array $payload, string $executionId): void
+    public function executeNode(array $node, ExecutionContext $context, string $executionId): void
     {
         $type = $node['type'] ?? '';
         $nodeId = $node['id'] ?? 'unknown';
 
         try {
             match ($type) {
-                'action'         => $this->executeAction($node, $payload, $executionId),
-                'condition'      => $this->executeCondition($node, $payload, $executionId),
-                'parallel'       => $this->executeParallel($node, $payload, $executionId),
-                'delay'          => $this->executeDelay($node, $payload, $executionId),
-                'wait_for_event' => $this->executeWaitForEvent($node, $payload, $executionId),
-                '_branch'        => $this->executeBranch($node, $payload, $executionId),
+                'action'         => $this->executeAction($node, $context, $executionId),
+                'condition'      => $this->executeCondition($node, $context, $executionId),
+                'parallel'       => $this->executeParallel($node, $context, $executionId),
+                'delay'          => $this->executeDelay($node, $context, $executionId),
+                'wait_for_event' => $this->executeWaitForEvent($node, $context, $executionId),
+                '_branch'        => $this->executeBranch($node, $context, $executionId),
                 default          => $this->logger->warning("Unknown node type: {$type}", ['node_id' => $nodeId]),
             };
         } catch (\Throwable $e) {
@@ -62,11 +62,12 @@ class FlowExecutor
         }
     }
 
-    private function executeAction(array $node, array $payload, string $executionId): void
+    private function executeAction(array $node, ExecutionContext $context, string $executionId): void
     {
         $nodeId = $node['id'];
         $actionId = $node['action'];
-        $config = $this->payloadResolver->resolveConfig($node['config'] ?? [], $payload);
+        $resolverData = $context->getResolverData();
+        $config = $this->payloadResolver->resolveConfig($node['config'] ?? [], $resolverData);
 
         $this->flowLogger->logStepStart($executionId, $nodeId, 'action', [
             'action'          => $actionId,
@@ -87,9 +88,12 @@ class FlowExecutor
 
         $lastError = null;
         for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
-            $result = $action->execute($payload, $config);
+            $result = $action->execute($resolverData, $config);
 
             if ($result->success) {
+                if ($result->output) {
+                    $context->setActionOutput($actionId, $result->output);
+                }
                 $this->flowLogger->logStepComplete($executionId, $nodeId, 'action', $result->output);
                 return;
             }
@@ -116,17 +120,18 @@ class FlowExecutor
         }
     }
 
-    private function executeCondition(array $node, array $payload, string $executionId): void
+    private function executeCondition(array $node, ExecutionContext $context, string $executionId): void
     {
         $nodeId = $node['id'];
         $expression = $node['expression'];
         $rules = $node['rules'] ?? [];
+        $resolverData = $context->getResolverData();
 
         $evaluatedVars = [];
         foreach ($rules as $rule) {
             $field = $rule['field'] ?? '';
             if ($field) {
-                $evaluatedVars[$field] = $this->resolveFieldValue($field, $payload);
+                $evaluatedVars[$field] = $this->resolveFieldValue($field, $resolverData);
             }
         }
 
@@ -137,7 +142,7 @@ class FlowExecutor
 
         $this->flowLogger->logStepStart($executionId, $nodeId, 'condition', $input);
 
-        $result = $this->conditionEvaluator->evaluate($expression, $payload);
+        $result = $this->conditionEvaluator->evaluate($expression, $resolverData);
 
         $this->flowLogger->logStepComplete($executionId, $nodeId, 'condition', [
             'result' => $result,
@@ -147,16 +152,19 @@ class FlowExecutor
         $branch = $result ? ($node['then'] ?? []) : ($node['else'] ?? []);
 
         foreach ($branch as $step) {
-            $this->executeNode($step, $payload, $executionId);
+            $this->executeNode($step, $context, $executionId);
         }
     }
 
-    private function executeParallel(array $node, array $payload, string $executionId): void
+    private function executeParallel(array $node, ExecutionContext $context, string $executionId): void
     {
         $nodeId = $node['id'];
         $branches = $node['branches'] ?? [];
 
         $this->flowLogger->logStepStart($executionId, $nodeId, 'parallel', ['branch_count' => count($branches)]);
+
+        // Each branch gets a frozen snapshot of current state.
+        $contextData = $context->toArray();
 
         // Dispatch one job per branch (not per step) so steps within a branch
         // execute sequentially while branches run concurrently.
@@ -170,13 +178,13 @@ class FlowExecutor
                 'type'  => '_branch',
                 'steps' => $branch,
             ];
-            $this->queue->dispatch(new ExecuteFlowStepJob($executionId, $branchNode, $payload));
+            $this->queue->dispatch(new ExecuteFlowStepJob($executionId, $branchNode, $contextData));
         }
 
         $this->flowLogger->logStepComplete($executionId, $nodeId, 'parallel');
     }
 
-    private function executeDelay(array $node, array $payload, string $executionId): void
+    private function executeDelay(array $node, ExecutionContext $context, string $executionId): void
     {
         $nodeId = $node['id'];
         $duration = (int) ($node['duration'] ?? 0);
@@ -190,15 +198,16 @@ class FlowExecutor
         }
 
         $runAt = new \DateTimeImmutable('+' . $duration . ' seconds');
+        $contextData = $context->toArray();
 
         foreach ($thenSteps as $step) {
-            $this->queue->schedule(new ExecuteFlowStepJob($executionId, $step, $payload), $runAt);
+            $this->queue->schedule(new ExecuteFlowStepJob($executionId, $step, $contextData), $runAt);
         }
 
         $this->flowLogger->logStepComplete($executionId, $nodeId, 'delay', ['scheduled_at' => $runAt->format('Y-m-d H:i:s')]);
     }
 
-    private function executeWaitForEvent(array $node, array $payload, string $executionId): void
+    private function executeWaitForEvent(array $node, ExecutionContext $context, string $executionId): void
     {
         $nodeId = $node['id'];
 
@@ -212,28 +221,28 @@ class FlowExecutor
             $node['event'],
             $node['match'] ?? '',
             $nodeId,
-            $payload,
+            $context->toArray(),
             (int) ($node['timeout'] ?? 86400),
             $node['timeout_action'] ?? 'cancel',
         );
     }
 
-    public function resumeFromWait(string $executionId, array $node, array $payload, array $eventData): void
+    public function resumeFromWait(string $executionId, array $node, ExecutionContext $context, array $eventData): void
     {
         $this->executionRepository->clearWaitState($executionId);
 
-        $mergedPayload = array_merge($payload, ['event' => $eventData]);
+        $context->mergePayload(['event' => $eventData]);
 
         $thenSteps = $node['then'] ?? [];
         foreach ($thenSteps as $step) {
-            $this->executeNode($step, $mergedPayload, $executionId);
+            $this->executeNode($step, $context, $executionId);
         }
     }
 
-    private function executeBranch(array $node, array $payload, string $executionId): void
+    private function executeBranch(array $node, ExecutionContext $context, string $executionId): void
     {
         foreach ($node['steps'] ?? [] as $step) {
-            $this->executeNode($step, $payload, $executionId);
+            $this->executeNode($step, $context, $executionId);
         }
     }
 
@@ -265,30 +274,35 @@ class FlowExecutor
         return $current;
     }
 
-    private function expandEntities(array $payload): array
+    private function expandEntities(ExecutionContext $context): void
     {
+        $payload = $context->getPayload();
+        $additions = [];
+
         if (isset($payload['user_id']) && !isset($payload['user'])) {
             $user = get_userdata((int) $payload['user_id']);
             if ($user) {
-                $payload['user'] = PayloadSchemas::extractWpUser($user);
+                $additions['user'] = PayloadSchemas::extractWpUser($user);
             }
         }
 
         if (isset($payload['author_id']) && !isset($payload['author'])) {
             $user = get_userdata((int) $payload['author_id']);
             if ($user) {
-                $payload['author'] = PayloadSchemas::extractWpUser($user, ['email', 'phone', 'display_name']);
+                $additions['author'] = PayloadSchemas::extractWpUser($user, ['email', 'phone', 'display_name']);
             }
         }
 
         if (isset($payload['post_id']) && !isset($payload['post'])) {
             $post = get_post((int) $payload['post_id']);
             if ($post) {
-                $payload['post'] = PayloadSchemas::extractPost($post);
+                $additions['post'] = PayloadSchemas::extractPost($post);
             }
         }
 
-        return $payload;
+        if ($additions) {
+            $context->mergePayload($additions);
+        }
     }
 
     public function markCompleted(string $executionId, string $flowId): void

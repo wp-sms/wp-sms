@@ -30,4 +30,9 @@ abstract class AbstractAction implements ActionInterface
     {
         return [];
     }
+
+    public function getOutputSchema(): array
+    {
+        return [];
+    }
 }

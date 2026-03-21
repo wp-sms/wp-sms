@@ -87,8 +87,10 @@ class FlowRunner
             $payload,
         ));
 
+        $context = new ExecutionContext($payload);
+
         try {
-            $this->flowExecutor->execute($executionId, $steps, $payload);
+            $this->flowExecutor->execute($executionId, $steps, $context);
         } catch (\Throwable $e) {
             $this->logger->error("Flow execution failed: {$e->getMessage()}", [
                 'flow_id'      => $flow->getId(),

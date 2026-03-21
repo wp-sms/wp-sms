@@ -30,6 +30,13 @@ class CreatePostAction extends AbstractAction
         return 'WordPress';
     }
 
+    public function getOutputSchema(): array
+    {
+        return [
+            'post_id' => ['type' => 'integer', 'title' => 'Post ID'],
+        ];
+    }
+
     public function getConfigSchema(): array
     {
         return [

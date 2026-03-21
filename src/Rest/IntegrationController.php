@@ -245,6 +245,10 @@ class IntegrationController extends Controller
                     'properties' => $schema,
                     'required'   => array_keys(array_filter($schema, fn($prop) => ($prop['required'] ?? false) === true)),
                 ],
+                'output_schema' => [
+                    'type'       => 'object',
+                    'properties' => $action->getOutputSchema(),
+                ],
                 'placeholders'  => $this->collectPlaceholders($action, $triggerIds),
             ];
         }

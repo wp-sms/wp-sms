@@ -44,6 +44,14 @@ class RemoveTagAction extends AbstractAction
         return 'Contacts';
     }
 
+    public function getOutputSchema(): array
+    {
+        return [
+            'contact_id' => ['type' => 'string', 'title' => 'Contact ID'],
+            'tag_id'     => ['type' => 'string', 'title' => 'Tag ID'],
+        ];
+    }
+
     public function getConfigSchema(): array
     {
         return [

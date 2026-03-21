@@ -72,6 +72,14 @@ class HttpRequestAction extends AbstractAction
         ];
     }
 
+    public function getOutputSchema(): array
+    {
+        return [
+            'http_status' => ['type' => 'integer', 'title' => 'HTTP Status Code'],
+            'body'        => ['type' => 'object', 'title' => 'Response Body'],
+        ];
+    }
+
     public function getPlaceholders(string $triggerType): array
     {
         return [
@@ -104,10 +112,11 @@ class HttpRequestAction extends AbstractAction
 
         $code = wp_remote_retrieve_response_code($response);
         $responseBody = wp_remote_retrieve_body($response);
+        $parsed = json_decode($responseBody, true);
 
         return ActionResult::success([
             'http_status' => $code,
-            'body' => $responseBody,
+            'body'        => is_array($parsed) ? $parsed : $responseBody,
         ]);
     }
 }

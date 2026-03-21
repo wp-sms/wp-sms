@@ -29,6 +29,14 @@ class UpdateOrderStatusAction extends AbstractAction
         return 'WooCommerce';
     }
 
+    public function getOutputSchema(): array
+    {
+        return [
+            'order_id' => ['type' => 'integer', 'title' => 'Order ID'],
+            'status'   => ['type' => 'string', 'title' => 'Status'],
+        ];
+    }
+
     public function getConfigSchema(): array
     {
         return [

@@ -29,6 +29,14 @@ class DeleteUserAction extends AbstractAction
         return 'WordPress';
     }
 
+    public function getOutputSchema(): array
+    {
+        return [
+            'user_id'      => ['type' => 'integer', 'title' => 'User ID'],
+            'reassign_to'  => ['type' => 'integer', 'title' => 'Reassigned To User ID'],
+        ];
+    }
+
     public function getConfigSchema(): array
     {
         return [

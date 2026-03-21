@@ -134,6 +134,14 @@ class SendMessageAction extends AbstractAction
         return [];
     }
 
+    public function getOutputSchema(): array
+    {
+        return [
+            'status'      => ['type' => 'string', 'title' => 'Status'],
+            'provider_id' => ['type' => 'string', 'title' => 'Provider ID'],
+        ];
+    }
+
     public function getPlaceholders(string $triggerType): array
     {
         return match ($triggerType) {

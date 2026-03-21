@@ -577,6 +577,7 @@ export interface ActionDefinition {
   group: string;
   icon: string;
   config_schema: JsonSchema;
+  output_schema?: JsonSchema;
   placeholders?: Record<string, Record<string, string>>;
 }
 

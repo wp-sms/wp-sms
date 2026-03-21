@@ -30,6 +30,14 @@ class SetUserRoleAction extends AbstractAction
         return 'WordPress';
     }
 
+    public function getOutputSchema(): array
+    {
+        return [
+            'user_id' => ['type' => 'integer', 'title' => 'User ID'],
+            'role'    => ['type' => 'string', 'title' => 'Role'],
+        ];
+    }
+
     public function getConfigSchema(): array
     {
         return [

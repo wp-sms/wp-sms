@@ -20,5 +20,7 @@ interface ActionInterface
 
     public function getPlaceholders(string $triggerType): array;
 
+    public function getOutputSchema(): array;
+
     public function execute(array $payload, array $config): ActionResult;
 }

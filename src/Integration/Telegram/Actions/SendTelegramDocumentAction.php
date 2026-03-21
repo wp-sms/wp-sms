@@ -35,6 +35,13 @@ class SendTelegramDocumentAction extends AbstractAction
         return 'Telegram';
     }
 
+    public function getOutputSchema(): array
+    {
+        return [
+            'message_id' => ['type' => 'integer', 'title' => 'Message ID'],
+        ];
+    }
+
     public function getConfigSchema(): array
     {
         return [

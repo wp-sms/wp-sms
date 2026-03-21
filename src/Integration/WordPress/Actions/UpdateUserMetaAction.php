@@ -29,6 +29,14 @@ class UpdateUserMetaAction extends AbstractAction
         return 'WordPress';
     }
 
+    public function getOutputSchema(): array
+    {
+        return [
+            'user_id'  => ['type' => 'integer', 'title' => 'User ID'],
+            'meta_key' => ['type' => 'string', 'title' => 'Meta Key'],
+        ];
+    }
+
     public function getConfigSchema(): array
     {
         return [
