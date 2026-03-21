@@ -264,7 +264,7 @@ class TemplateController extends Controller
 
         return new WP_REST_Response([
             'subject' => $rendered->subject,
-            'body'    => wp_kses_post($rendered->body),
+            'body'    => $rendered->body,
             'meta'    => $rendered->meta,
         ]);
     }

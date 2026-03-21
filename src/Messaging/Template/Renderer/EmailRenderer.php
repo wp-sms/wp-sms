@@ -48,7 +48,7 @@ class EmailRenderer implements ChannelRendererInterface
             if (str_starts_with($line, '<')) {
                 $html .= $line . "\n";
             } else {
-                $html .= '<p style="margin:0 0 16px 0;font-size:16px;line-height:1.5;color:#1a1a1a;">' . $line . '</p>' . "\n";
+                $html .= '<p style="margin:0 0 16px 0;font-size:15px;line-height:1.6;color:#374151;">' . $line . '</p>' . "\n";
             }
         }
 
@@ -58,10 +58,10 @@ class EmailRenderer implements ChannelRendererInterface
     private function renderCtaButton(string $label, string $url): string
     {
         return <<<HTML
-<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:24px auto;">
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:8px 0 0 0;">
 <tr>
-<td style="border-radius:6px;background-color:#2563eb;">
-<a href="{$url}" target="_blank" style="display:inline-block;padding:12px 32px;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:6px;">{$label}</a>
+<td style="border-radius:8px;background-color:#1a1a1a;">
+<a href="{$url}" target="_blank" style="display:inline-block;padding:12px 28px;font-size:14px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:8px;">{$label}</a>
 </td>
 </tr>
 </table>
@@ -70,13 +70,20 @@ HTML;
 
     private function wrapInLayout(string $bodyHtml, string $ctaHtml, string $siteName, string $logoUrl): string
     {
-        $headerContent = '';
+        $headerCells = '';
         if (!empty($logoUrl)) {
-            $headerContent = '<img src="' . esc_url($logoUrl) . '" alt="' . esc_attr($siteName) . '" style="max-height:40px;margin-right:12px;" />';
+            $headerCells .= '<td style="vertical-align:middle;padding-right:10px;">'
+                . '<img src="' . esc_url($logoUrl) . '" alt="' . esc_attr($siteName) . '" width="28" height="28" style="width:28px;height:28px;border-radius:6px;display:block;" />'
+                . '</td>';
         }
         if (!empty($siteName)) {
-            $headerContent .= '<span style="font-size:18px;font-weight:600;color:#1a1a1a;">' . esc_html($siteName) . '</span>';
+            $headerCells .= '<td style="vertical-align:middle;">'
+                . '<span style="font-size:15px;font-weight:600;color:#1a1a1a;letter-spacing:-0.01em;">' . esc_html($siteName) . '</span>'
+                . '</td>';
         }
+
+        $preheader = esc_html($siteName);
+        $wsmsLogoUrl = esc_url(WP_SMS_URL . 'public/images/icon-128x128.png');
 
         return <<<HTML
 <!DOCTYPE html>
@@ -84,19 +91,38 @@ HTML;
 <head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /></head>
 <body style="margin:0;padding:0;background-color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;">
 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color:#f3f4f6;">
-<tr><td style="padding:32px 16px;">
-<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" style="margin:0 auto;max-width:600px;background-color:#ffffff;border-radius:8px;overflow:hidden;">
-<tr><td style="padding:24px 32px;background-color:#f8f9fa;border-bottom:1px solid #e5e7eb;">
-{$headerContent}
+<tr><td style="padding:40px 16px;">
+
+<div style="display:none;font-size:1px;color:#f3f4f6;line-height:1px;max-height:0;max-width:0;opacity:0;overflow:hidden;">{$preheader}</div>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="560" style="margin:0 auto;max-width:560px;background-color:#ffffff;border-radius:12px;">
+
+<tr><td style="padding:28px 36px 24px 36px;">
+<table role="presentation" cellspacing="0" cellpadding="0" border="0"><tr>
+{$headerCells}
+</tr></table>
 </td></tr>
-<tr><td style="padding:32px;">
+
+<tr><td style="padding:0 36px 32px 36px;">
 {$bodyHtml}
 {$ctaHtml}
 </td></tr>
-<tr><td style="padding:16px 32px;background-color:#f8f9fa;border-top:1px solid #e5e7eb;text-align:center;">
-<p style="margin:0;font-size:13px;color:#6b7280;">Sent by {$siteName}</p>
+
+<tr><td style="padding:20px 36px;border-top:1px solid #f0f0f0;">
+<p style="margin:0;font-size:12px;line-height:1.5;color:#9ca3af;">If you didn't request this, you can safely ignore this email.</p>
+</td></tr>
+
+</table>
+
+<table role="presentation" cellspacing="0" cellpadding="0" border="0" width="560" style="margin:16px auto 0 auto;max-width:560px;">
+<tr><td style="text-align:center;">
+<p style="margin:0;">
+<img src="{$wsmsLogoUrl}" width="12" height="12" alt="WSMS" style="vertical-align:middle;display:inline-block;border-radius:2px;" />
+<span style="font-size:11px;color:#b0b0b0;vertical-align:middle;padding-left:3px;">Powered by WSMS</span>
+</p>
 </td></tr>
 </table>
+
 </td></tr>
 </table>
 </body>

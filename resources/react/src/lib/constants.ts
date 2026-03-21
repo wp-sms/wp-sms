@@ -1,4 +1,5 @@
 import { Smartphone, Mail } from 'lucide-react';
+import type { Area } from './area-nav';
 import type { AuthSettings } from './api';
 
 export const CHANNELS = [
@@ -291,7 +292,7 @@ export const SEGMENT_TEMPLATES = [
 
 // --- Area Labels ---
 
-export const AREA_LABELS: Record<string, string> = {
+export const AREA_LABELS: Record<Area, string> = {
   auth: 'Authentication',
   messaging: 'Messaging',
 };

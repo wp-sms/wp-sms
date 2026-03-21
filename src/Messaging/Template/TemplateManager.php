@@ -22,10 +22,15 @@ class TemplateManager
     /** @var array<string, ChannelRendererInterface> */
     private array $renderers = [];
 
+    /** @var \Closure(): string */
+    private \Closure $logoUrlResolver;
+
     public function __construct(
         private readonly TemplateStorageInterface $storage,
         private readonly TemplateEngineInterface $engine,
+        ?\Closure $logoUrlResolver = null,
     ) {
+        $this->logoUrlResolver = $logoUrlResolver ?? static fn () => '';
     }
 
     public function registerTemplate(TemplateDefinitionInterface $template): void
@@ -55,6 +60,7 @@ class TemplateManager
         }
 
         $variables = $this->injectCommonVariables($variables, $template);
+        $context = $this->injectCommonContext($context);
         $content = $this->resolveContent($template, $channel);
         $substituted = $this->substituteVariables($content, $variables);
 
@@ -179,6 +185,15 @@ class TemplateManager
             cta: $content->cta !== null ? $this->engine->render($content->cta, $variables) : null,
             ctaUrl: $content->ctaUrl !== null ? $this->engine->render($content->ctaUrl, $variables) : null,
         );
+    }
+
+    private function injectCommonContext(array $context): array
+    {
+        if (!isset($context['logo_url'])) {
+            $context['logo_url'] = ($this->logoUrlResolver)();
+        }
+
+        return $context;
     }
 
     private function injectCommonVariables(array $variables, TemplateDefinitionInterface $template): array

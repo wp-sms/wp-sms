@@ -390,7 +390,7 @@ export function AppShell({ activeSection, onNavigate, version, area, children, n
             </div>
             <div className="flex flex-col group-data-[collapsible=icon]:hidden">
               <span className="text-sm font-semibold leading-none">WSMS</span>
-              <span className="text-xs text-muted-foreground">{AREA_LABELS[area] ?? area}</span>
+              <span className="text-xs text-muted-foreground">{AREA_LABELS[area]}</span>
             </div>
           </div>
         </SidebarHeader>

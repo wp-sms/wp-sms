@@ -149,7 +149,7 @@ function PreviewDialog({
               title="Email preview"
               className="w-full border-0"
               style={{ minHeight: 520, height: '100%' }}
-              sandbox=""
+              sandbox="allow-same-origin"
             />
           ) : (
             <div className="flex justify-center p-6">

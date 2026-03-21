@@ -30,6 +30,7 @@ class TemplateServiceProvider implements ServiceProvider
             return new TemplateManager(
                 $container->get('template.storage'),
                 $container->get('template.engine'),
+                static fn () => $container->get('auth.settings')->get('branding')['logo_url'] ?? '',
             );
         });
     }
