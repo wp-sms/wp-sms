@@ -181,6 +181,10 @@ export const DEFAULTS: Required<AuthSettings> = {
     skip_verified_users: true,
     redirect_auth: false,
   },
+  contact_form_7: {
+    verification_enabled: true,
+    notifications_enabled: true,
+  },
   social: {
     google: { enabled: false, client_id: '', client_secret: '' },
     github: { enabled: false, client_id: '', client_secret: '' },
@@ -307,6 +311,9 @@ export const INTEGRATION_CATEGORY_LABELS: Record<string, string> = {
   security: 'Security',
   forms: 'Forms',
 };
+
+/** Integration IDs that have auth-area settings (used for cross-reference notes). */
+export const AUTH_INTEGRATION_IDS = new Set(['contactform7', 'woocommerce']);
 
 /** Toggle an item in/out of an array. */
 export function toggleArrayItem<T>(arr: T[], item: T, enabled: boolean): T[] {

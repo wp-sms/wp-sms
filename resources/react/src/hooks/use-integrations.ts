@@ -42,13 +42,17 @@ export function useIntegrations(): {
 export function useIntegrationDetail(id: string | null): {
   detail: IntegrationDetail | null;
   loading: boolean;
+  refetch: () => void;
 } {
   const [detail, setDetail] = useState<IntegrationDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const abortRef = useRef<AbortController>();
+  const idRef = useRef(id);
+  idRef.current = id;
 
-  useEffect(() => {
-    if (!id) {
+  const fetchDetail = useCallback(async () => {
+    const currentId = idRef.current;
+    if (!currentId) {
       setDetail(null);
       return;
     }
@@ -57,24 +61,24 @@ export function useIntegrationDetail(id: string | null): {
     const controller = new AbortController();
     abortRef.current = controller;
 
-    async function fetch() {
-      setLoading(true);
-      try {
-        const res = await api.get<IntegrationDetail>(`integrations/${id}`, { signal: controller.signal });
-        if (!controller.signal.aborted) setDetail(res);
-      } catch (e) {
-        if (e instanceof DOMException && e.name === 'AbortError') return;
-        setDetail(null);
-      } finally {
-        if (!controller.signal.aborted) setLoading(false);
-      }
+    setLoading(true);
+    try {
+      const res = await api.get<IntegrationDetail>(`integrations/${currentId}`, { signal: controller.signal });
+      if (!controller.signal.aborted) setDetail(res);
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'AbortError') return;
+      setDetail(null);
+    } finally {
+      if (!controller.signal.aborted) setLoading(false);
     }
+  }, []);
 
-    void fetch();
-    return () => { controller.abort(); };
-  }, [id]);
+  useEffect(() => {
+    void fetchDetail();
+    return () => { abortRef.current?.abort(); };
+  }, [id, fetchDetail]);
 
-  return { detail, loading };
+  return { detail, loading, refetch: fetchDetail };
 }
 
 export function useIntegrationConfig(onSuccess?: () => void): {
@@ -95,4 +99,48 @@ export function useIntegrationConfig(onSuccess?: () => void): {
   }, [onSuccess]);
 
   return { saveConfig, disconnect };
+}
+
+/**
+ * Fetches availability status for a fixed set of integration IDs.
+ * Uses individual detail endpoints instead of loading the full integrations list.
+ */
+export function useIntegrationAvailability(ids: readonly string[]): {
+  availabilityMap: Map<string, boolean>;
+  loading: boolean;
+} {
+  const [availabilityMap, setAvailabilityMap] = useState<Map<string, boolean>>(new Map());
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function fetchAll() {
+      setLoading(true);
+      const map = new Map<string, boolean>();
+
+      const results = await Promise.allSettled(
+        ids.map((id) =>
+          api.get<IntegrationDetail>(`integrations/${id}`, { signal: controller.signal })
+        ),
+      );
+
+      for (let i = 0; i < ids.length; i++) {
+        const result = results[i];
+        if (result.status === 'fulfilled') {
+          map.set(ids[i], result.value.available);
+        }
+      }
+
+      if (!controller.signal.aborted) {
+        setAvailabilityMap(map);
+        setLoading(false);
+      }
+    }
+
+    void fetchAll();
+    return () => { controller.abort(); };
+  }, [ids]);
+
+  return { availabilityMap, loading };
 }

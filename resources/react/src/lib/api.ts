@@ -141,6 +141,11 @@ export interface WooCommerceSettings {
   redirect_auth?: boolean;
 }
 
+export interface ContactForm7Settings {
+  verification_enabled?: boolean;
+  notifications_enabled?: boolean;
+}
+
 export type BrandingLayout = 'centered' | 'split';
 export type SplitPanelPosition = 'left' | 'right';
 export type LogoPosition = 'left' | 'center' | 'right' | 'hidden';
@@ -180,6 +185,7 @@ export interface AuthSettings {
   captcha?: CaptchaSettings;
   telegram?: TelegramSettings;
   woocommerce?: WooCommerceSettings;
+  contact_form_7?: ContactForm7Settings;
   mfa_required_roles?: string[];
   enrollment_timing?: EnrollmentTiming;
   grace_period_days?: number;

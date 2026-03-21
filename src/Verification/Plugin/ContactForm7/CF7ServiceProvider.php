@@ -28,6 +28,11 @@ class CF7ServiceProvider implements ServiceProvider
             return;
         }
 
+        $cf7Settings = $container->get('auth.settings')->channel('contact_form_7');
+        if (empty($cf7Settings['verification_enabled'])) {
+            return;
+        }
+
         $container->get('integration.cf7')->registerHooks();
     }
 }

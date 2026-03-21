@@ -70,6 +70,10 @@ class SettingsRepository
             'skip_verified_users'      => true,
             'redirect_auth'            => false,
         ],
+        'contact_form_7' => [
+            'verification_enabled'  => true,
+            'notifications_enabled' => true,
+        ],
         'trusted_devices' => [
             'enabled' => false,
             'ttl'     => 2592000, // 30 days

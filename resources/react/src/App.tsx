@@ -58,10 +58,11 @@ export default function App() {
       case 'flows':
       case 'contacts':
       case 'gateways':
-      case 'apps':
       case 'message-logs':
       case 'settings':
         return <MessagingPage section={section} subTab={subTab} onNavigate={setSection} />;
+      case 'apps':
+        return <MessagingPage section={section} subTab={subTab} onNavigate={setSection} settings={settings} onUpdate={updateSetting} />;
       case 'messaging-button':
         return <MessagingButtonPage section={section} />;
       case 'authentication':

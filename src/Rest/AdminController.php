@@ -50,6 +50,7 @@ class AdminController extends Controller
         'social',
         'telegram',
         'woocommerce',
+        'contact_form_7',
         'branding',
     ];
 
