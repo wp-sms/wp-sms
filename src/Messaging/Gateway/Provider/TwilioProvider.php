@@ -12,6 +12,7 @@ use WSms\Messaging\Contracts\InboundMessage;
 use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Contracts\StatusUpdate;
 use WSms\Messaging\Contracts\SupportsInboundMessage;
+use WSms\Messaging\Contracts\SupportsDynamicOptions;
 use WSms\Messaging\Contracts\SupportsOptOutDetection;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
 use WSms\Messaging\Contracts\SupportsTemplateCatalog;
@@ -20,7 +21,7 @@ use WSms\Messaging\Contracts\TestConnectionResult;
 
 defined('ABSPATH') || exit;
 
-class TwilioProvider extends AbstractProvider implements SupportsStatusCallback, SupportsInboundMessage, SupportsOptOutDetection, SupportsTemplateCatalog
+class TwilioProvider extends AbstractProvider implements SupportsStatusCallback, SupportsInboundMessage, SupportsOptOutDetection, SupportsTemplateCatalog, SupportsDynamicOptions
 {
     private const API_BASE = 'https://api.twilio.com/2010-04-01';
     private const CONTENT_API_BASE = 'https://content.twilio.com/v1';
@@ -74,6 +75,7 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
                         'required'    => true,
                         'description' => __('Your Twilio phone number in E.164 format (e.g., +15551234567)', 'wp-sms'),
                         'placeholder' => '+15551234567',
+                        'dynamic'     => true,
                     ],
                 ],
                 'whatsapp' => [
@@ -83,6 +85,7 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
                         'required'    => true,
                         'description' => __('Your Twilio WhatsApp-enabled number. For sandbox testing, use +14155238886', 'wp-sms'),
                         'placeholder' => '+14155238886',
+                        'dynamic'     => true,
                     ],
                     'otp_content_sid' => [
                         'type'        => 'string',
@@ -433,6 +436,44 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
         }
 
         return $payload;
+    }
+
+    // --- SupportsDynamicOptions ---
+
+    public function getConfigOptions(string $fieldKey, string $section, array $config, array $context = []): array
+    {
+        if ($fieldKey !== 'from_number') {
+            return [];
+        }
+
+        return $this->withConfig($config, function () use ($section) {
+            $accountSid = $this->getSharedConfig('account_sid');
+            $url = self::API_BASE . "/Accounts/{$accountSid}/IncomingPhoneNumbers.json?PageSize=100";
+            $data = $this->fetchJsonOrFail($url, ['headers' => $this->authHeaders()]);
+
+            $options = [];
+            foreach ($data['incoming_phone_numbers'] ?? [] as $number) {
+                $phoneNumber = $number['phone_number'] ?? '';
+                if (!$phoneNumber) {
+                    continue;
+                }
+
+                // Filter by channel capability
+                $capabilities = $number['capabilities'] ?? [];
+                if ($section === 'sms' && empty($capabilities['sms'])) {
+                    continue;
+                }
+
+                $friendlyName = $number['friendly_name'] ?? '';
+                $label = $friendlyName && $friendlyName !== $phoneNumber
+                    ? "{$phoneNumber} ({$friendlyName})"
+                    : $phoneNumber;
+
+                $options[] = ['value' => $phoneNumber, 'label' => $label];
+            }
+
+            return $options;
+        });
     }
 
     // --- Internal ---

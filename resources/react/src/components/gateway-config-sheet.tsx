@@ -175,6 +175,7 @@ export function GatewayConfigSheet({
           )}
 
           <GatewayConfigForm
+            gatewayId={gateway.id}
             schema={gateway.config_schema}
             values={draftConfig}
             supportedChannels={gateway.supported_channels}

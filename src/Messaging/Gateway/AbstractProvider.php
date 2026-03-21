@@ -232,6 +232,70 @@ abstract class AbstractProvider implements GatewayInterface
         return $data;
     }
 
+    /**
+     * Temporarily use the given config (e.g., unsaved draft from the admin form)
+     * so that getSharedConfig(), getChannelConfig(), and provider-specific auth
+     * helpers work against it instead of the DB-stored config.
+     *
+     * @template T
+     * @param array    $config Gateway config array with 'shared' and 'channels' keys
+     * @param callable(): T $fn Callback to run with the temporary config
+     * @return T
+     */
+    protected function withConfig(array $config, callable $fn): mixed
+    {
+        $previous = $this->configCache;
+        $this->configCache = $config;
+        try {
+            return $fn();
+        } finally {
+            $this->configCache = $previous;
+        }
+    }
+
+    /**
+     * HTTP GET that decodes JSON and throws on any error.
+     *
+     * Handles network failures, 401/403, 429 rate-limiting, non-2xx, and
+     * malformed JSON — the common boilerplate every provider repeats.
+     *
+     * @throws \RuntimeException with a user-facing error message
+     */
+    protected function fetchJsonOrFail(string $url, array $args = []): array
+    {
+        $result = $this->httpGet($url, $args);
+
+        if ($result instanceof DeliveryResult) {
+            throw new \RuntimeException(
+                sprintf(__('Could not reach the %s API. Check your server\'s internet connection.', 'wp-sms'), $this->getName()),
+            );
+        }
+
+        if ($result['code'] === 401 || $result['code'] === 403) {
+            throw new \RuntimeException(__('Invalid credentials', 'wp-sms'));
+        }
+
+        if ($result['code'] === 429) {
+            throw new \RuntimeException(__('Rate limited — please wait a moment and try again', 'wp-sms'));
+        }
+
+        $data = json_decode($result['body'], true);
+
+        if ($result['code'] < 200 || $result['code'] >= 300) {
+            throw new \RuntimeException(
+                $data['message'] ?? $data['error-text'] ?? sprintf("HTTP %d", $result['code']),
+            );
+        }
+
+        if (!is_array($data)) {
+            throw new \RuntimeException(
+                sprintf(__('Invalid response from %s', 'wp-sms'), $this->getName()),
+            );
+        }
+
+        return $data;
+    }
+
     private function isChannelConfigComplete(array $config, array $channelSchema, ?string $channel = null): bool
     {
         if (empty($channelSchema)) {

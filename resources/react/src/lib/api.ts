@@ -491,6 +491,8 @@ export interface GatewayConfigField {
   placeholder?: string;
   default?: unknown;
   options?: { value: string; label: string }[];
+  dynamic?: boolean;
+  depends_on?: string[];
 }
 
 export interface GatewayConfigSchema {

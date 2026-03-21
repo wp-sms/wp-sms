@@ -4,15 +4,17 @@ namespace WSms\Messaging\Gateway\Provider;
 
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\MessageInterface;
+use WSms\Messaging\Contracts\SupportsDynamicOptions;
 use WSms\Messaging\Gateway\AbstractProvider;
 use WSms\Messaging\Contracts\TestConnectionResult;
 
 defined('ABSPATH') || exit;
 
-class VonageProvider extends AbstractProvider
+class VonageProvider extends AbstractProvider implements SupportsDynamicOptions
 {
     private const API_URL = 'https://rest.nexmo.com/sms/json';
     private const BALANCE_URL = 'https://rest.nexmo.com/account/get-balance';
+    private const NUMBERS_URL = 'https://rest.nexmo.com/account/numbers';
 
     public function getId(): string
     {
@@ -56,6 +58,7 @@ class VonageProvider extends AbstractProvider
                         'required'    => true,
                         'description' => __('A Vonage virtual number or an alphanumeric sender ID (max 11 chars)', 'wp-sms'),
                         'placeholder' => '+15551234567',
+                        'dynamic'     => true,
                     ],
                 ],
             ],
@@ -143,6 +146,44 @@ class VonageProvider extends AbstractProvider
 
         $data = json_decode($result['body'], true);
         return isset($data['value']) ? number_format((float) $data['value'], 2) : null;
+    }
+
+    public function getConfigOptions(string $fieldKey, string $section, array $config, array $context = []): array
+    {
+        if ($fieldKey !== 'from') {
+            return [];
+        }
+
+        return $this->withConfig($config, function () {
+            $apiKey = $this->getSharedConfig('api_key');
+            $apiSecret = $this->getSharedConfig('api_secret');
+            $url = self::NUMBERS_URL . "?api_key={$apiKey}&api_secret={$apiSecret}&size=100";
+            $data = $this->fetchJsonOrFail($url);
+
+            if (isset($data['error-text'])) {
+                throw new \RuntimeException($data['error-text']);
+            }
+
+            $options = [];
+            foreach ($data['numbers'] ?? [] as $number) {
+                $msisdn = $number['msisdn'] ?? '';
+                if (!$msisdn) {
+                    continue;
+                }
+
+                $country = $number['country'] ?? '';
+                $features = implode(', ', $number['features'] ?? []);
+                $parts = ["+{$msisdn}"];
+                if ($country || $features) {
+                    $detail = array_filter([$country, $features]);
+                    $parts[] = '(' . implode(' — ', $detail) . ')';
+                }
+
+                $options[] = ['value' => "+{$msisdn}", 'label' => implode(' ', $parts)];
+            }
+
+            return $options;
+        });
     }
 
     public function testConnection(): TestConnectionResult

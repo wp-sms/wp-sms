@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
+import { DynamicConfigField } from '@/components/dynamic-config-field';
 import type { GatewayConfigSchema, GatewayConfigField, GatewayConfig } from '@/lib/api';
 
 const CHANNEL_LABELS: Record<string, string> = {
@@ -27,6 +28,7 @@ function channelLabel(channel: string): string {
 }
 
 interface GatewayConfigFormProps {
+  gatewayId: string;
   schema: GatewayConfigSchema;
   values: GatewayConfig;
   supportedChannels: string[];
@@ -157,7 +159,7 @@ function ConfigField({ fieldKey, field, value, onChange }: {
   );
 }
 
-export function GatewayConfigForm({ schema, values, supportedChannels, onChange }: GatewayConfigFormProps) {
+export function GatewayConfigForm({ gatewayId, schema, values, supportedChannels, onChange }: GatewayConfigFormProps) {
   const shared = values.shared ?? {};
   const channels = values.channels ?? {};
 
@@ -201,15 +203,29 @@ export function GatewayConfigForm({ schema, values, supportedChannels, onChange 
       {channelSections.map((channel) => (
         <div key={channel} className="space-y-4">
           <h4 className="text-sm font-medium">{channelLabel(channel)} Settings</h4>
-          {Object.entries(schema.channels[channel]).map(([key, field]) => (
-            <ConfigField
-              key={key}
-              fieldKey={key}
-              field={field}
-              value={(channels[channel] ?? {})[key]}
-              onChange={(k, v) => updateChannel(channel, k, v)}
-            />
-          ))}
+          {Object.entries(schema.channels[channel]).map(([key, field]) =>
+            field.dynamic ? (
+              <DynamicConfigField
+                key={key}
+                fieldKey={key}
+                field={field}
+                value={(channels[channel] ?? {})[key]}
+                onChange={(k, v) => updateChannel(channel, k, v)}
+                gatewayId={gatewayId}
+                section={channel}
+                draftConfig={values}
+                sharedSchema={schema.shared}
+              />
+            ) : (
+              <ConfigField
+                key={key}
+                fieldKey={key}
+                field={field}
+                value={(channels[channel] ?? {})[key]}
+                onChange={(k, v) => updateChannel(channel, k, v)}
+              />
+            )
+          )}
         </div>
       ))}
 

@@ -3,6 +3,7 @@
 namespace WSms\Rest;
 
 use WSms\Log\Contracts\MessageLoggerInterface;
+use WSms\Messaging\Contracts\SupportsDynamicOptions;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Message\EmailMessage;
 use WSms\Messaging\Message\Message;
@@ -71,6 +72,14 @@ class GatewayController extends Controller
             [
                 'methods'             => 'GET',
                 'callback'            => [$this, 'getCredit'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/gateways/(?P<id>[a-z_]+)/config-options/(?P<section>[a-z_]+)/(?P<field>[a-z_]+)', [
+            [
+                'methods'             => 'POST',
+                'callback'            => [$this, 'configOptions'],
                 'permission_callback' => [$this, 'canManage'],
             ],
         ]);
@@ -218,6 +227,66 @@ class GatewayController extends Controller
                 'credit' => $credit,
             ],
         ]);
+    }
+
+    public function configOptions(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $gateway = $this->resolveGateway($request);
+        if ($gateway instanceof \WP_REST_Response) {
+            return $gateway;
+        }
+
+        if (!$gateway instanceof SupportsDynamicOptions) {
+            return new \WP_REST_Response([
+                'success' => false,
+                'error'   => 'not_supported',
+                'message' => __('This gateway does not support dynamic options', 'wp-sms'),
+            ], 400);
+        }
+
+        $section = $request->get_param('section');
+        $field = $request->get_param('field');
+        $body = $request->get_json_params();
+
+        // Use draft config from request body, fall back to saved config
+        $config = $body['config'] ?? get_option('wsms_gateway_configs', [])[$gateway->getId()] ?? [];
+        $context = $body['context'] ?? [];
+
+        // Verify the field exists and is marked as dynamic
+        $schema = $gateway->getConfigSchema();
+        $fieldSchema = $section === 'shared'
+            ? ($schema['shared'][$field] ?? null)
+            : ($schema['channels'][$section][$field] ?? null);
+
+        if (!$fieldSchema || empty($fieldSchema['dynamic'])) {
+            return new \WP_REST_Response([
+                'success' => false,
+                'error'   => 'not_dynamic',
+                'message' => __('This field does not support dynamic options', 'wp-sms'),
+            ], 400);
+        }
+
+        if (!$gateway->validateConfig($config)) {
+            return new \WP_REST_Response([
+                'success' => false,
+                'error'   => 'credentials_missing',
+                'message' => __('Required credentials are missing', 'wp-sms'),
+            ], 422);
+        }
+
+        try {
+            $options = $gateway->getConfigOptions($field, $section, $config, $context);
+
+            return new \WP_REST_Response([
+                'options' => $options,
+            ]);
+        } catch (\RuntimeException $e) {
+            return new \WP_REST_Response([
+                'success' => false,
+                'error'   => 'provider_error',
+                'message' => $e->getMessage(),
+            ], 502);
+        }
     }
 
     private function resolveGateway(\WP_REST_Request $request): \WSms\Messaging\Contracts\GatewayInterface|\WP_REST_Response
