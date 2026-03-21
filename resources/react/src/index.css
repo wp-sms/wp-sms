@@ -125,7 +125,7 @@
 #wpsms-app h6,
 #wpsms-app ul,
 #wpsms-app ol,
-#wpsms-app li {
+#wpsms-app li:not([data-sonner-toast]) {
   @apply p-0 m-0;
 }
 
