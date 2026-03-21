@@ -329,6 +329,7 @@ export interface JsonSchemaProperty {
   title?: string;
   description?: string;
   hint?: string;
+  format?: string;
   enum?: string[];
   enumLabels?: Record<string, string>;
   default?: unknown;

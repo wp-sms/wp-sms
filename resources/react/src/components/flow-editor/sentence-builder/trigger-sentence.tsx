@@ -42,8 +42,17 @@ export function TriggerSentence({
   }, [triggers]);
 
   const handleTriggerChange = useCallback((type: string) => {
-    onChangeTrigger(type, {});
-  }, [onChangeTrigger]);
+    const trigger = triggers.find((t) => t.id === type);
+    const defaults: Record<string, unknown> = {};
+    if (trigger?.filter_schema) {
+      for (const [key, prop] of Object.entries(trigger.filter_schema)) {
+        if (prop.default !== undefined) {
+          defaults[key] = prop.default;
+        }
+      }
+    }
+    onChangeTrigger(type, defaults);
+  }, [onChangeTrigger, triggers]);
 
   const filterSchema = useMemo(() => {
     if (!selected?.filter_schema || Object.keys(selected.filter_schema).length === 0) return null;

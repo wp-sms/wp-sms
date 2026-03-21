@@ -21,6 +21,23 @@ class DateScheduleTrigger extends AbstractScheduleTrigger
         return __('Run this flow once at a specific date and time', 'wp-sms');
     }
 
+    public function getFilterSchema(): array
+    {
+        return [
+            'date' => [
+                'type'   => 'string',
+                'format' => 'date',
+                'label'  => __('Date', 'wp-sms'),
+            ],
+            'time' => [
+                'type'    => 'string',
+                'format'  => 'time',
+                'label'   => __('Time', 'wp-sms'),
+                'default' => '09:00',
+            ],
+        ];
+    }
+
     public function getPayloadSchema(): array
     {
         return [

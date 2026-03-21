@@ -566,6 +566,22 @@ function PropertyField({
     );
   }
 
+  if (prop.format === 'date' || prop.format === 'time') {
+    return (
+      <Field key={fieldKey}>
+        <FieldLabel htmlFor={`schema-${fieldKey}`}>{label}{required && ' *'}</FieldLabel>
+        <Input
+          id={`schema-${fieldKey}`}
+          type={prop.format}
+          value={strValue}
+          onChange={(e) => onChange(fieldKey, e.target.value)}
+        />
+        {prop.hint && <FieldHint>{prop.hint}</FieldHint>}
+        {prop.description && <FieldDescription>{prop.description}</FieldDescription>}
+      </Field>
+    );
+  }
+
   return (
     <StringField
       fieldKey={fieldKey}

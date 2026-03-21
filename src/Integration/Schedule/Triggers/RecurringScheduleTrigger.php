@@ -21,6 +21,53 @@ class RecurringScheduleTrigger extends AbstractScheduleTrigger
         return __('Run this flow on a recurring schedule (hourly, daily, weekly, monthly)', 'wp-sms');
     }
 
+    public function getFilterSchema(): array
+    {
+        return [
+            'frequency' => [
+                'type'        => 'string',
+                'label'       => __('Frequency', 'wp-sms'),
+                'description' => __('How often this flow should run', 'wp-sms'),
+                'enum'        => ['hourly', 'daily', 'weekly', 'monthly'],
+                'enumLabels'  => [
+                    'hourly'  => __('Every hour', 'wp-sms'),
+                    'daily'   => __('Every day', 'wp-sms'),
+                    'weekly'  => __('Every week', 'wp-sms'),
+                    'monthly' => __('Every month', 'wp-sms'),
+                ],
+                'default' => 'daily',
+            ],
+            'time' => [
+                'type'           => 'string',
+                'format'         => 'time',
+                'label'          => __('Time', 'wp-sms'),
+                'description'    => __('Time of day to run', 'wp-sms'),
+                'default'        => '09:00',
+                'displayOptions' => [
+                    'hide' => ['frequency' => ['hourly']],
+                ],
+            ],
+            'day' => [
+                'type'           => 'string',
+                'label'          => __('Day of Week', 'wp-sms'),
+                'enum'           => ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
+                'enumLabels'     => [
+                    'monday'    => __('Monday', 'wp-sms'),
+                    'tuesday'   => __('Tuesday', 'wp-sms'),
+                    'wednesday' => __('Wednesday', 'wp-sms'),
+                    'thursday'  => __('Thursday', 'wp-sms'),
+                    'friday'    => __('Friday', 'wp-sms'),
+                    'saturday'  => __('Saturday', 'wp-sms'),
+                    'sunday'    => __('Sunday', 'wp-sms'),
+                ],
+                'default'        => 'monday',
+                'displayOptions' => [
+                    'show' => ['frequency' => ['weekly']],
+                ],
+            ],
+        ];
+    }
+
     public function getPayloadSchema(): array
     {
         return [
