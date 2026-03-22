@@ -46,6 +46,10 @@ class IntegrationServiceProvider implements ServiceProvider
                     $container->get('message.dispatcher'),
                     $container->get('gateway.registry'),
                     $container->get('event.dispatcher'),
+                    $container->get('contact.tag_repository'),
+                    $container->get('contact.list_repository'),
+                    $container->get('campaign.audience_resolver'),
+                    $container->get('template.engine'),
                 ),
                 $registry,
                 $triggers,
@@ -65,6 +69,7 @@ class IntegrationServiceProvider implements ServiceProvider
                 new ContactIntegration(
                     $container->get('contact.repository'),
                     $container->get('contact.tag_repository'),
+                    $container->get('contact.list_repository'),
                     $container->get('flow.repository'),
                     $container->get('flow.runner'),
                 ),

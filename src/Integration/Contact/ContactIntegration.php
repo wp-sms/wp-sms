@@ -3,13 +3,16 @@
 namespace WSms\Integration\Contact;
 
 use WSms\Contact\Contracts\ContactRepositoryInterface;
+use WSms\Contact\Contracts\ListRepositoryInterface;
 use WSms\Contact\Contracts\TagRepositoryInterface;
 use WSms\Flow\Contracts\FlowRepositoryInterface;
 use WSms\Flow\Engine\FlowRunner;
 use WSms\Integration\Contact\Actions\AddTagAction;
 use WSms\Integration\Contact\Actions\CreateContactAction;
 use WSms\Integration\Contact\Actions\RemoveTagAction;
+use WSms\Integration\Contact\Actions\SubscribeToListAction;
 use WSms\Integration\Contact\Actions\TriggerFlowAction;
+use WSms\Integration\Contact\Actions\UnsubscribeFromListAction;
 use WSms\Integration\Contact\Actions\UpdateContactAction;
 use WSms\Integration\Contact\Actions\UpdateContactStatusAction;
 use WSms\Integration\Contact\Triggers\ContactCreatedTrigger;
@@ -24,6 +27,7 @@ class ContactIntegration implements IntegrationInterface
     public function __construct(
         private readonly ContactRepositoryInterface $contactRepository,
         private readonly TagRepositoryInterface $tagRepository,
+        private readonly ListRepositoryInterface $listRepository,
         private readonly FlowRepositoryInterface $flowRepository,
         private readonly FlowRunner $flowRunner,
     ) {
@@ -87,6 +91,8 @@ class ContactIntegration implements IntegrationInterface
             new CreateContactAction($this->contactRepository),
             new UpdateContactAction($this->contactRepository),
             new TriggerFlowAction($this->flowRepository, $this->flowRunner),
+            new SubscribeToListAction($this->contactRepository, $this->listRepository),
+            new UnsubscribeFromListAction($this->contactRepository, $this->listRepository),
         ];
     }
 

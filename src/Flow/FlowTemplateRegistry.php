@@ -2,6 +2,8 @@
 
 namespace WSms\Flow;
 
+use WSms\Flow\Action\SendMessageAction;
+
 defined('ABSPATH') || exit;
 
 class FlowTemplateRegistry
@@ -25,9 +27,11 @@ class FlowTemplateRegistry
                         'type'   => 'action',
                         'action' => 'send_message',
                         'config' => [
-                            'channel' => 'sms',
-                            'to'      => '{{user.phone}}',
-                            'body'    => 'Welcome {{user.display_name}}! Thanks for joining us.',
+                            'channel'        => 'sms',
+                            'gateway'        => SendMessageAction::DEFAULT_GATEWAY,
+                            'recipient_mode' => 'custom',
+                            'to'             => '{{user.phone}}',
+                            'body'           => 'Welcome {{user.display_name}}! Thanks for joining us.',
                         ],
                     ],
                 ],
@@ -46,9 +50,11 @@ class FlowTemplateRegistry
                         'type'   => 'action',
                         'action' => 'send_message',
                         'config' => [
-                            'channel' => 'sms',
-                            'to'      => '{{customer.phone}}',
-                            'body'    => 'Hi {{customer.name}}, your order #{{order_id}} has been received! Total: ${{order.total}}',
+                            'channel'        => 'sms',
+                            'gateway'        => SendMessageAction::DEFAULT_GATEWAY,
+                            'recipient_mode' => 'custom',
+                            'to'             => '{{customer.phone}}',
+                            'body'           => 'Hi {{customer.name}}, your order #{{order_id}} has been received! Total: ${{order.total}}',
                         ],
                     ],
                 ],
@@ -67,9 +73,11 @@ class FlowTemplateRegistry
                         'type'   => 'action',
                         'action' => 'send_message',
                         'config' => [
-                            'channel' => 'sms',
-                            'to'      => '{{customer.phone}}',
-                            'body'    => 'Great news {{customer.name}}! Your order #{{order_id}} is now complete.',
+                            'channel'        => 'sms',
+                            'gateway'        => SendMessageAction::DEFAULT_GATEWAY,
+                            'recipient_mode' => 'custom',
+                            'to'             => '{{customer.phone}}',
+                            'body'           => 'Great news {{customer.name}}! Your order #{{order_id}} is now complete.',
                         ],
                     ],
                 ],
@@ -88,9 +96,10 @@ class FlowTemplateRegistry
                         'type'   => 'action',
                         'action' => 'send_message',
                         'config' => [
-                            'channel' => 'sms',
-                            'to'      => '',
-                            'body'    => 'Payment failed for order #{{order_id}} from {{customer.name}} ({{customer.email}}). Total: ${{order.total}}',
+                            'channel'        => 'sms',
+                            'gateway'        => SendMessageAction::DEFAULT_GATEWAY,
+                            'recipient_mode' => 'admin',
+                            'body'           => 'Payment failed for order #{{order_id}} from {{customer.name}} ({{customer.email}}). Total: ${{order.total}}',
                         ],
                     ],
                 ],
@@ -109,9 +118,10 @@ class FlowTemplateRegistry
                         'type'   => 'action',
                         'action' => 'send_message',
                         'config' => [
-                            'channel' => 'sms',
-                            'to'      => '',
-                            'body'    => 'New user registered: {{user.display_name}} ({{user.email}}) with role: {{role}}',
+                            'channel'        => 'sms',
+                            'gateway'        => SendMessageAction::DEFAULT_GATEWAY,
+                            'recipient_mode' => 'admin',
+                            'body'           => 'New user registered: {{user.display_name}} ({{user.email}}) with role: {{role}}',
                         ],
                     ],
                 ],
@@ -130,9 +140,10 @@ class FlowTemplateRegistry
                         'type'   => 'action',
                         'action' => 'send_message',
                         'config' => [
-                            'channel' => 'sms',
-                            'to'      => '',
-                            'body'    => 'User {{user.display_name}} role changed from {{old_role}} to {{new_role}}.',
+                            'channel'        => 'sms',
+                            'gateway'        => SendMessageAction::DEFAULT_GATEWAY,
+                            'recipient_mode' => 'admin',
+                            'body'           => 'User {{user.display_name}} role changed from {{old_role}} to {{new_role}}.',
                         ],
                     ],
                 ],
@@ -151,9 +162,10 @@ class FlowTemplateRegistry
                         'type'   => 'action',
                         'action' => 'send_message',
                         'config' => [
-                            'channel' => 'sms',
-                            'to'      => '',
-                            'body'    => 'New comment on "{{post.title}}" by {{comment.author}}: {{comment.content}}',
+                            'channel'        => 'sms',
+                            'gateway'        => SendMessageAction::DEFAULT_GATEWAY,
+                            'recipient_mode' => 'admin',
+                            'body'           => 'New comment on "{{post.title}}" by {{comment.author}}: {{comment.content}}',
                         ],
                     ],
                 ],
@@ -172,9 +184,11 @@ class FlowTemplateRegistry
                         'type'   => 'action',
                         'action' => 'send_message',
                         'config' => [
-                            'channel' => 'sms',
-                            'to'      => '',
-                            'body'    => 'New post published: "{{post.title}}" by {{post.author}}. Read it at {{post.url}}',
+                            'channel'        => 'sms',
+                            'gateway'        => SendMessageAction::DEFAULT_GATEWAY,
+                            'recipient_mode' => 'tag',
+                            'tag_id'         => '',
+                            'body'           => 'New post published: "{{post.title}}" by {{post.author}}. Read it at {{post.url}}',
                         ],
                     ],
                 ],
@@ -226,14 +240,126 @@ class FlowTemplateRegistry
                                         'type'   => 'action',
                                         'action' => 'send_message',
                                         'config' => [
-                                            'channel' => 'sms',
-                                            'to'      => '{{customer.phone}}',
-                                            'body'    => 'Hi {{customer.name}}, you have an incomplete order #{{order_id}} for ${{order.total}}. Complete your purchase today!',
+                                            'channel'        => 'sms',
+                                            'gateway'        => SendMessageAction::DEFAULT_GATEWAY,
+                                            'recipient_mode' => 'custom',
+                                            'to'             => '{{customer.phone}}',
+                                            'body'           => 'Hi {{customer.name}}, you have an incomplete order #{{order_id}} for ${{order.total}}. Complete your purchase today!',
                                         ],
                                     ],
                                 ],
                                 'else' => [],
                             ],
+                        ],
+                    ],
+                ],
+            ],
+
+            'blog_post_broadcast' => [
+                'id'          => 'blog_post_broadcast',
+                'name'        => __('Blog Post Broadcast', 'wp-sms'),
+                'description' => __('Broadcast a message to a tag group when a new blog post is published.', 'wp-sms'),
+                'category'    => 'Engagement',
+                'trigger_type'   => 'wordpress.post_published',
+                'trigger_config' => [],
+                'steps' => [
+                    [
+                        'id'     => 'broadcast_action',
+                        'type'   => 'action',
+                        'action' => 'send_message',
+                        'config' => [
+                            'channel'        => 'sms',
+                            'gateway'        => SendMessageAction::DEFAULT_GATEWAY,
+                            'recipient_mode' => 'tag',
+                            'tag_id'         => '',
+                            'body'           => 'New on our blog: "{{post.title}}". Read it here: {{post.url}}',
+                        ],
+                    ],
+                ],
+            ],
+
+            'contact_welcome_sequence' => [
+                'id'          => 'contact_welcome_sequence',
+                'name'        => __('Contact Welcome Sequence', 'wp-sms'),
+                'description' => __('Send a welcome SMS when a contact is created, then a follow-up 24 hours later.', 'wp-sms'),
+                'category'    => 'Welcome & Onboarding',
+                'trigger_type'   => 'wsms.contact_created',
+                'trigger_config' => [],
+                'steps' => [
+                    [
+                        'id'     => 'welcome_msg',
+                        'type'   => 'action',
+                        'action' => 'send_message',
+                        'config' => [
+                            'channel'        => 'sms',
+                            'gateway'        => SendMessageAction::DEFAULT_GATEWAY,
+                            'recipient_mode' => 'custom',
+                            'to'             => '{{phone}}',
+                            'body'           => 'Welcome {{first_name}}! Thanks for subscribing.',
+                        ],
+                    ],
+                    [
+                        'id'       => 'delay_24h',
+                        'type'     => 'delay',
+                        'duration' => 86400,
+                        'then' => [
+                            [
+                                'id'     => 'followup_msg',
+                                'type'   => 'action',
+                                'action' => 'send_message',
+                                'config' => [
+                                    'channel'        => 'sms',
+                                    'gateway'        => SendMessageAction::DEFAULT_GATEWAY,
+                                    'recipient_mode' => 'custom',
+                                    'to'             => '{{phone}}',
+                                    'body'           => 'Hi {{first_name}}, just checking in! Reply if you need any help.',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+
+            'inbound_sms_auto_reply' => [
+                'id'          => 'inbound_sms_auto_reply',
+                'name'        => __('Inbound SMS Auto-Reply', 'wp-sms'),
+                'description' => __('Automatically reply when an inbound SMS is received.', 'wp-sms'),
+                'category'    => 'Engagement',
+                'trigger_type'   => 'wsms.inbound_sms_received',
+                'trigger_config' => [],
+                'steps' => [
+                    [
+                        'id'     => 'auto_reply_action',
+                        'type'   => 'action',
+                        'action' => 'send_message',
+                        'config' => [
+                            'channel'        => 'sms',
+                            'gateway'        => SendMessageAction::DEFAULT_GATEWAY,
+                            'recipient_mode' => 'custom',
+                            'to'             => '{{from}}',
+                            'body'           => 'Thanks for your message! We received: "{{body}}". We\'ll get back to you shortly.',
+                        ],
+                    ],
+                ],
+            ],
+
+            'daily_digest_admin' => [
+                'id'          => 'daily_digest_admin',
+                'name'        => __('Daily Digest to Admin', 'wp-sms'),
+                'description' => __('Send a daily digest SMS to the admin every morning at 9 AM.', 'wp-sms'),
+                'category'    => 'Notifications',
+                'trigger_type'   => 'schedule.recurring',
+                'trigger_config' => ['frequency' => 'daily', 'time' => '09:00'],
+                'steps' => [
+                    [
+                        'id'     => 'digest_action',
+                        'type'   => 'action',
+                        'action' => 'send_message',
+                        'config' => [
+                            'channel'        => 'sms',
+                            'gateway'        => SendMessageAction::DEFAULT_GATEWAY,
+                            'recipient_mode' => 'admin',
+                            'body'           => 'Daily digest: Check your dashboard at {{site.url}}/wp-admin/ for updates.',
                         ],
                     ],
                 ],

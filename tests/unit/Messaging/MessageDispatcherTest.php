@@ -170,4 +170,67 @@ class MessageDispatcherTest extends TestCase
 
         $this->assertSame('log-3', $logId);
     }
+
+    public function testSendQueuedWithSpecificGatewayUsesIt(): void
+    {
+        $message = new Message('sms', '+12025551234', 'Queued msg', 'exec-2');
+        $gateway = $this->createMock(GatewayInterface::class);
+        $gateway->method('getId')->willReturn('vonage');
+
+        $this->gatewayRegistry->expects($this->once())
+            ->method('get')
+            ->with('vonage')
+            ->willReturn($gateway);
+
+        // getDefault should NOT be called when explicit gateway is provided
+        $this->gatewayRegistry->expects($this->never())
+            ->method('getDefault');
+
+        $this->messageLogger->expects($this->once())
+            ->method('logSend')
+            ->with(
+                'vonage',
+                'sms',
+                '+12025551234',
+                'Queued msg',
+                'queued',
+                'exec-2',
+                $this->anything(),
+            )
+            ->willReturn('log-4');
+
+        $this->queue->expects($this->once())
+            ->method('dispatch')
+            ->with($this->callback(function ($job) {
+                return $job instanceof SendMessageJob
+                    && $job->getPayload()['gateway_id'] === 'vonage';
+            }))
+            ->willReturn('job-2');
+
+        $logId = $this->dispatcher->sendQueued($message, 'vonage');
+
+        $this->assertSame('log-4', $logId);
+    }
+
+    public function testSendQueuedWithNullGatewayUsesChannelDefault(): void
+    {
+        $message = new Message('sms', '+12025551234', 'Queued msg');
+        $gateway = $this->createMock(GatewayInterface::class);
+        $gateway->method('getId')->willReturn('twilio');
+
+        $this->gatewayRegistry->expects($this->once())
+            ->method('getDefault')
+            ->with('sms')
+            ->willReturn($gateway);
+
+        $this->gatewayRegistry->expects($this->never())
+            ->method('get');
+
+        $this->messageLogger->method('logSend')->willReturn('log-5');
+        $this->queue->method('dispatch')->willReturn('job-3');
+
+        $logId = $this->dispatcher->sendQueued($message, null);
+
+        $this->assertSame('log-5', $logId);
+    }
 }

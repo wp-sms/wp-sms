@@ -137,18 +137,23 @@ function DynamicSelectContent({
   optionsUrl,
   onSelect,
   onClose,
+  initialOptions,
+  onOptionsLoaded,
 }: {
   optionsUrl: string;
   onSelect: (value: string) => void;
   onClose: () => void;
+  initialOptions?: TokenOption[];
+  onOptionsLoaded?: (options: TokenOption[]) => void;
 }) {
-  const [options, setOptions] = useState<TokenOption[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [options, setOptions] = useState<TokenOption[]>(initialOptions ?? []);
+  const [loading, setLoading] = useState(!initialOptions?.length);
 
   useEffect(() => {
+    if (initialOptions?.length) return;
     const controller = new AbortController();
     api.get<{ options: TokenOption[] }>(optionsUrl, { signal: controller.signal })
-      .then((res) => { setOptions(res.options); setLoading(false); })
+      .then((res) => { setOptions(res.options); onOptionsLoaded?.(res.options); setLoading(false); })
       .catch((e) => { if (!(e instanceof DOMException && e.name === 'AbortError')) setLoading(false); });
     return () => { controller.abort(); };
   }, [optionsUrl]);
@@ -235,6 +240,58 @@ function TextPopoverContent({
   );
 }
 
+function DynamicSelectToken({
+  value,
+  optionsUrl,
+  onChange,
+  placeholder,
+  error,
+  className,
+}: {
+  value: string;
+  optionsUrl: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+  error?: boolean;
+  className?: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const [cachedOptions, setCachedOptions] = useState<TokenOption[]>([]);
+  const hasValue = value !== '' && value != null;
+
+  useEffect(() => {
+    if (value === '' || value == null) return;
+    const controller = new AbortController();
+    api.get<{ options: TokenOption[] }>(optionsUrl, { signal: controller.signal })
+      .then((res) => setCachedOptions(res.options))
+      .catch((e) => { if (!(e instanceof DOMException && e.name === 'AbortError')) { /* label stays as raw value */ } });
+    return () => { controller.abort(); };
+  }, [optionsUrl]);
+
+  const displayLabel = hasValue
+    ? getDisplayLabel(value, cachedOptions)
+    : placeholder ?? '...';
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <TokenBadge hasValue={hasValue} error={error} className={className}>
+          {displayLabel}
+        </TokenBadge>
+      </PopoverTrigger>
+      <PopoverContent className="w-64 p-2" align="start">
+        <DynamicSelectContent
+          optionsUrl={optionsUrl}
+          initialOptions={cachedOptions}
+          onSelect={onChange}
+          onClose={() => setOpen(false)}
+          onOptionsLoaded={setCachedOptions}
+        />
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 function UnresolvedVarWarning({ value, payloadSchema }: { value: string; payloadSchema?: JsonSchema }) {
   const unresolved = useMemo(() => {
     if (!value.includes('{{')) return [];
@@ -291,20 +348,14 @@ export function SentenceToken(props: SentenceTokenProps) {
 
   if (props.mode === 'dynamic-select') {
     return (
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <TokenBadge hasValue={hasValue} error={props.error} className={props.className}>
-            {displayValue}
-          </TokenBadge>
-        </PopoverTrigger>
-        <PopoverContent className="w-64 p-2" align="start">
-          <DynamicSelectContent
-            optionsUrl={props.optionsUrl}
-            onSelect={props.onChange}
-            onClose={() => setOpen(false)}
-          />
-        </PopoverContent>
-      </Popover>
+      <DynamicSelectToken
+        value={props.value}
+        optionsUrl={props.optionsUrl}
+        onChange={props.onChange}
+        placeholder={props.placeholder}
+        error={props.error}
+        className={props.className}
+      />
     );
   }
 

@@ -7,12 +7,20 @@ export interface SentenceTemplate {
 
 export const SENTENCE_TEMPLATES: Record<string, SentenceTemplate> = {
   send_message: {
-    lines: ['Send {channel} to {to}', 'Saying: {body}'],
+    lines: ['Send {channel} to {recipient_mode} {to} {tag_id} {list_id}', 'Saying: {body}'],
     advancedFields: ['gateway', 'subject', 'media_url'],
   },
   http_request: {
     lines: ['Make a {method} request to {url}', 'Body: {body}'],
     advancedFields: ['headers'],
+  },
+  subscribe_to_list: {
+    lines: ['Subscribe {contact_id} to list {list_id}'],
+    advancedFields: [],
+  },
+  unsubscribe_from_list: {
+    lines: ['Unsubscribe {contact_id} from list {list_id}'],
+    advancedFields: [],
   },
 };
 

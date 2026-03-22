@@ -120,8 +120,10 @@ class MessageDispatcher
 
     /**
      * Queue a message for async delivery. Used for flows and bulk sends.
+     *
+     * @param string|null $gatewayId Specific gateway to use, or null for channel default
      */
-    public function sendQueued(MessageInterface $message): string
+    public function sendQueued(MessageInterface $message, ?string $gatewayId = null): string
     {
         $restriction = $this->checkPhoneRestriction($message);
 
@@ -140,11 +142,13 @@ class MessageDispatcher
             );
         }
 
-        $gateway = $this->resolveGateway($message->getChannel());
-        $gatewayId = $gateway ? $gateway->getId() : 'default';
+        $gateway = $gatewayId
+            ? $this->gatewayRegistry->get($gatewayId)
+            : $this->resolveGateway($message->getChannel());
+        $resolvedGatewayId = $gateway ? $gateway->getId() : 'default';
 
         $logId = $this->messageLogger->logSend(
-            gatewayId: $gatewayId,
+            gatewayId: $resolvedGatewayId,
             channel: $message->getChannel(),
             recipient: $message->getRecipient(),
             body: $message->getBody(),
@@ -156,7 +160,7 @@ class MessageDispatcher
         );
 
         $this->queue->dispatch(new SendMessageJob(
-            gatewayId: $gatewayId,
+            gatewayId: $resolvedGatewayId,
             channel: $message->getChannel(),
             recipient: $message->getRecipient(),
             body: $message->getBody(),
