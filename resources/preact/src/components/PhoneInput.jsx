@@ -9,7 +9,8 @@ export function PhoneInput({ value = '', onChange, disabled, autoFocus = false }
         const root = node.getRootNode();
         if (root instanceof ShadowRoot) {
             const mount = root.querySelector('#wsms-auth-popup')
-                || root.querySelector('#wsms-auth-embed');
+                || root.querySelector('#wsms-auth-embed')
+                || root.querySelector('#wsms-messaging-button');
             setDropdownTarget(mount || node);
         } else {
             setDropdownTarget(node);

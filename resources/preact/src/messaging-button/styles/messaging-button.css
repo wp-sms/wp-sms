@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'lite-phone-input/styles';
 @source "../";
 
 /* === CSS Variables (Light) === */
@@ -934,6 +935,38 @@
 /* GDPR checkbox dark-mode accent */
 .wsms-mb-checkbox-label input[type="checkbox"] {
     accent-color: var(--mb-accent);
+}
+
+/* === Phone Input (lite-phone-input) === */
+.wsms-phone-input {
+    position: relative;
+    --lpi-bg: var(--mb-bg);
+    --lpi-text-color: var(--mb-text);
+    --lpi-border-color: var(--mb-border);
+    --lpi-border-radius: var(--mb-radius-sm);
+    --lpi-input-height: auto;
+    --lpi-font-size: 14px;
+    --lpi-hover-bg: var(--mb-accent-soft);
+    --lpi-selected-bg: var(--mb-accent-soft);
+    --lpi-highlight-bg: var(--mb-accent-soft);
+    --lpi-dropdown-bg: var(--mb-bg);
+    --lpi-dropdown-shadow: var(--mb-shadow);
+    --lpi-dropdown-max-height: 200px;
+}
+
+.wsms-phone-input :is(.lpi__input, .lpi__trigger):focus-visible {
+    border-color: var(--mb-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mb-accent) 30%, transparent);
+    outline: none;
+}
+
+.wsms-phone-input .lpi__input {
+    padding: 10px 14px;
+    font-family: var(--mb-font);
+}
+
+.lpi__dropdown {
+    z-index: 2147483647;
 }
 
 /* === Text overflow handling === */

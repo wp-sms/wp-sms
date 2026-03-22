@@ -1,6 +1,7 @@
 import { useState } from 'preact/hooks';
 import { submitMessage } from '../../api/widget-client';
 import { CheckCircleIcon, AlertCircleIcon } from '../icons';
+import { PhoneInput } from '../../../components/PhoneInput';
 
 const FIELD_CONFIG = [
     { id: 'name', label: 'Name', type: 'text', placeholder: 'Your name' },
@@ -92,6 +93,20 @@ export function ContactFormPage({ config, gdpr, onClose }) {
                 {FIELD_CONFIG.filter(({ id }) => visibleFields.includes(id)).map(({ id, label, type, placeholder }) => {
                     const isRequired = visibleRequired.includes(id);
                     const htmlId = `wsms-mb-${id}`;
+                    if (id === 'phone') {
+                        return (
+                            <div key={id} class="wsms-mb-field">
+                                <label class="wsms-mb-label">
+                                    {label} {isRequired && <span class="wsms-mb-required">*</span>}
+                                </label>
+                                <PhoneInput
+                                    value={formData.phone}
+                                    onChange={(e164) => handleChange('phone', e164)}
+                                    disabled={status === 'sending'}
+                                />
+                            </div>
+                        );
+                    }
                     const InputTag = type === 'textarea' ? 'textarea' : 'input';
                     return (
                         <div key={id} class="wsms-mb-field">
