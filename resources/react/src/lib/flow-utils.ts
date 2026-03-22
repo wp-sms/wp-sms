@@ -264,7 +264,18 @@ export const CONTACT_SCHEMA: JsonSchemaProperty = {
     phone:      { type: 'string', title: 'Phone', example: '+1234567890' },
     first_name: { type: 'string', title: 'First Name', example: 'John' },
     last_name:  { type: 'string', title: 'Last Name', example: 'Doe' },
-    status:     { type: 'string', title: 'Status', example: 'active' },
+    status:     {
+      type: 'string',
+      title: 'Status',
+      example: 'subscribed',
+      enum: ['subscribed', 'unsubscribed', 'bounced', 'complained'],
+      enumLabels: {
+        subscribed: 'Subscribed',
+        unsubscribed: 'Unsubscribed',
+        bounced: 'Bounced',
+        complained: 'Complained',
+      },
+    },
     source:     { type: 'string', title: 'Source', example: 'form' },
   },
 };

@@ -7,7 +7,7 @@ export type { ConditionRule };
 export interface OperatorDef {
   value: string;
   label: string;
-  category: 'string' | 'number' | 'any';
+  category: 'string' | 'number' | 'array' | 'any';
   hideValue?: boolean;
 }
 
@@ -22,6 +22,8 @@ export const OPERATORS: OperatorDef[] = [
   { value: 'is_not_empty', label: 'is not empty', category: 'any', hideValue: true },
   { value: 'greater_than', label: 'is greater than', category: 'number' },
   { value: 'less_than', label: 'is less than', category: 'number' },
+  { value: 'has', label: 'has', category: 'array' },
+  { value: 'does_not_have', label: 'does not have', category: 'array' },
 ];
 
 export interface FieldOption {
@@ -67,10 +69,18 @@ export function flattenSchemaFields(
 
 /** Get operators available for a given field type. */
 export function getOperatorsForType(type: string): OperatorDef[] {
+  if (type === 'array') {
+    return OPERATORS.filter((o) => o.category === 'array' || o.value === 'is_empty' || o.value === 'is_not_empty');
+  }
   if (type === 'integer' || type === 'number') {
     return OPERATORS.filter((o) => o.category === 'number' || o.category === 'any');
   }
-  return OPERATORS;
+  return OPERATORS.filter((o) => o.category !== 'array');
+}
+
+/** Get the default operator for a given field type. */
+export function getDefaultOperator(type: string): string {
+  return type === 'array' ? 'has' : 'equals';
 }
 
 /** Escape a value for safe use inside a regex pattern. */
@@ -86,15 +96,16 @@ function fieldToExpr(field: string): string {
 }
 
 /** Convert a single rule to an ExpressionLanguage expression fragment. */
-function ruleToExpr(rule: ConditionRule): string {
+function ruleToExpr(rule: ConditionRule, fieldType?: string): string {
   const field = fieldToExpr(rule.field);
   const val = rule.value;
+  const isNumeric = (fieldType === 'integer' || fieldType === 'number') && !isNaN(Number(val)) && val !== '';
 
   switch (rule.operator) {
     case 'equals':
-      return `${field} == "${val}"`;
+      return isNumeric ? `${field} == ${val}` : `${field} == "${val}"`;
     case 'not_equals':
-      return `${field} != "${val}"`;
+      return isNumeric ? `${field} != ${val}` : `${field} != "${val}"`;
     case 'contains':
       return `${field} matches "/${escapeRegex(val)}/i"`;
     case 'not_contains':
@@ -111,16 +122,23 @@ function ruleToExpr(rule: ConditionRule): string {
       return `${field} > ${val}`;
     case 'less_than':
       return `${field} < ${val}`;
+    case 'has':
+      return `"${val}" in ${field}`;
+    case 'does_not_have':
+      return `"${val}" not in ${field}`;
     default:
       return `${field} == "${val}"`;
   }
 }
 
 /** Convert an array of rules to an ExpressionLanguage expression (AND-joined). */
-export function rulesToExpression(rules: ConditionRule[]): string {
+export function rulesToExpression(
+  rules: ConditionRule[],
+  typeResolver?: (fieldPath: string) => string | undefined,
+): string {
   const valid = rules.filter((r) => r.field);
   if (valid.length === 0) return '';
-  return valid.map(ruleToExpr).join(' and ');
+  return valid.map((r) => ruleToExpr(r, typeResolver?.(r.field))).join(' and ');
 }
 
 /** Get the human-readable label for an operator value. */

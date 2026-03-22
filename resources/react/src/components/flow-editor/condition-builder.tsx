@@ -5,6 +5,7 @@ import {
   type FieldOption,
   flattenSchemaFields,
   getOperatorsForType,
+  getDefaultOperator,
   createEmptyRule,
   getConditionValueOptions,
   OPERATORS,
@@ -91,7 +92,7 @@ export function ConditionBuilder({ rules, onChange, payloadSchema, triggerType }
             {/* Field select */}
             <Select
               value={rule.field}
-              onValueChange={(v) => updateRule(index, { field: v, operator: 'equals', value: '' })}
+              onValueChange={(v) => updateRule(index, { field: v, operator: getDefaultOperator(fieldMap.get(v)?.type ?? 'string'), value: '' })}
             >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select field">

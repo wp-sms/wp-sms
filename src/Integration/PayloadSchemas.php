@@ -58,6 +58,16 @@ class PayloadSchemas
                 'type' => 'string',
                 'label' => __('Status', 'wp-sms'),
                 'example' => 'pending',
+                'enum' => ['pending', 'processing', 'on-hold', 'completed', 'cancelled', 'refunded', 'failed'],
+                'enumLabels' => [
+                    'pending'    => __('Pending payment', 'wp-sms'),
+                    'processing' => __('Processing', 'wp-sms'),
+                    'on-hold'    => __('On hold', 'wp-sms'),
+                    'completed'  => __('Completed', 'wp-sms'),
+                    'cancelled'  => __('Cancelled', 'wp-sms'),
+                    'refunded'   => __('Refunded', 'wp-sms'),
+                    'failed'     => __('Failed', 'wp-sms'),
+                ],
             ],
             'currency' => [
                 'type' => 'string',
@@ -147,7 +157,14 @@ class PayloadSchemas
             'status' => [
                 'type' => 'string',
                 'label' => __('Status', 'wp-sms'),
-                'example' => 'active',
+                'example' => 'subscribed',
+                'enum' => ['subscribed', 'unsubscribed', 'bounced', 'complained'],
+                'enumLabels' => [
+                    'subscribed'   => __('Subscribed', 'wp-sms'),
+                    'unsubscribed' => __('Unsubscribed', 'wp-sms'),
+                    'bounced'      => __('Bounced', 'wp-sms'),
+                    'complained'   => __('Complained', 'wp-sms'),
+                ],
             ],
             'source' => [
                 'type' => 'string',

@@ -4,6 +4,7 @@ import type { ConditionRule } from '@/lib/condition-utils';
 import {
   flattenSchemaFields,
   getOperatorsForType,
+  getDefaultOperator,
   OPERATORS,
   createEmptyRule,
   rulesToExpression,
@@ -44,11 +45,13 @@ export function ConditionSentence({ step, onChange, payloadSchema, triggerType }
 
   const fieldMap = useMemo(() => new Map(fields.map((f) => [f.path, f])), [fields]);
 
+  const resolveFieldType = (path: string) => fieldMap.get(path)?.type;
+
   const updateRules = (newRules: ConditionRule[]) => {
     onChange({
       ...step,
       rules: newRules,
-      expression: rulesToExpression(newRules),
+      expression: rulesToExpression(newRules, resolveFieldType),
     });
   };
 
@@ -65,10 +68,10 @@ export function ConditionSentence({ step, onChange, payloadSchema, triggerType }
     updateRules([...rules, createEmptyRule()]);
   };
 
+  const fieldTypeOf = (path: string) => fieldMap.get(path)?.type ?? 'string';
+
   const getOperatorOptions = (fieldPath: string) => {
-    const field = fieldMap.get(fieldPath);
-    const fieldType = field?.type ?? 'string';
-    return getOperatorsForType(fieldType).map((op) => ({ value: op.value, label: op.label }));
+    return getOperatorsForType(fieldTypeOf(fieldPath)).map((op) => ({ value: op.value, label: op.label }));
   };
 
   const currentOpHidesValue = (operator: string) => {
@@ -92,7 +95,7 @@ export function ConditionSentence({ step, onChange, payloadSchema, triggerType }
             mode="select"
             value={rule.field}
             options={fieldOptions}
-            onChange={(v) => updateRule(index, { field: v, operator: 'equals', value: '' })}
+            onChange={(v) => updateRule(index, { field: v, operator: getDefaultOperator(fieldTypeOf(v)), value: '' })}
             placeholder="field"
           />
           {rule.field && (
@@ -156,7 +159,7 @@ export function ConditionSentence({ step, onChange, payloadSchema, triggerType }
             mode="select"
             value=""
             options={fieldOptions}
-            onChange={(v) => updateRules([{ field: v, operator: 'equals', value: '' }])}
+            onChange={(v) => updateRules([{ field: v, operator: getDefaultOperator(fieldTypeOf(v)), value: '' }])}
             placeholder="choose a field"
           />
         </div>
