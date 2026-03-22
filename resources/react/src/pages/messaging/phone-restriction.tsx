@@ -15,7 +15,7 @@ import { Label } from '@/components/ui/label';
 import {
   Globe, ShieldBan, Database, Search as SearchIcon,
   Phone, X, Check, ChevronDown, AlertTriangle, Loader2,
-  Download, RefreshCw,
+  Download, RefreshCw, Info, Smartphone,
 } from 'lucide-react';
 import { toggleArrayItem } from '@/lib/constants';
 
@@ -40,11 +40,17 @@ interface EnhancedDbSettings {
   auto_update: boolean;
 }
 
+interface PhoneInputSettings {
+  default_country: string;
+  preferred_countries: string[];
+}
+
 interface PhoneRestrictionSettings {
   auth: SectionSettings;
   messaging: SectionSettings;
   number_type_blocking: NumberTypeSettings;
   enhanced_db: EnhancedDbSettings;
+  phone_input: PhoneInputSettings;
 }
 
 interface DbStatus {
@@ -162,6 +168,12 @@ export function PhoneRestriction() {
 
   return (
     <div className="space-y-6">
+      <PhoneInputConfigCard
+        draft={draft}
+        countries={countries}
+        updateSection={updateSection}
+      />
+
       <CountryRestrictionsCard
         draft={draft}
         countries={countries}
@@ -191,6 +203,90 @@ export function PhoneRestriction() {
           {saving ? 'Saving...' : 'Save Settings'}
         </Button>
       </div>
+    </div>
+  );
+}
+
+function PhoneInputConfigCard({ draft, countries, updateSection }: {
+  draft: PhoneRestrictionSettings;
+  countries: Record<string, string>;
+  updateSection: <S extends keyof PhoneRestrictionSettings>(s: S, p: Partial<PhoneRestrictionSettings[S]>) => void;
+}) {
+  const hasRestrictions = draft.auth.enabled || draft.messaging.enabled;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-base">
+          <Smartphone className="h-4 w-4 text-muted-foreground" />
+          Phone Input Defaults
+        </CardTitle>
+        <CardDescription>
+          Configure the default country and preferred countries for phone number inputs across your site
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="border-t pt-4 space-y-4">
+        <Field>
+          <FieldLabel>Default Country</FieldLabel>
+          <FieldDescription>Pre-selected country when the phone input loads</FieldDescription>
+          <SingleCountryPicker
+            countries={countries}
+            value={draft.phone_input.default_country}
+            onChange={(v) => updateSection('phone_input', { default_country: v })}
+          />
+        </Field>
+
+        <Field>
+          <FieldLabel>Preferred Countries</FieldLabel>
+          <FieldDescription>These countries appear at the top of the dropdown for quick access</FieldDescription>
+          <CountryPicker
+            countries={countries}
+            selected={draft.phone_input.preferred_countries}
+            onChange={(v) => updateSection('phone_input', { preferred_countries: v })}
+            buttonLabel="Add preferred countries"
+          />
+        </Field>
+
+        {hasRestrictions && (
+          <div className="flex items-start gap-2 rounded-md border bg-muted/50 p-3">
+            <Info className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
+            <p className="text-sm text-muted-foreground">
+              The phone input dropdown is automatically filtered based on your Country Restriction settings below.
+            </p>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+function SingleCountryPicker({ countries, value, onChange }: {
+  countries: Record<string, string>;
+  value: string;
+  onChange: (code: string) => void;
+}) {
+  const selectedName = value ? (countries[value] ?? value) : null;
+
+  return (
+    <div className="flex items-center gap-2">
+      <CountryDropdown
+        countries={countries}
+        buttonLabel={selectedName ?? 'Select country'}
+        isSelected={(code) => code === value}
+        onSelect={(code) => onChange(code)}
+        indicatorShape="radio"
+        closeOnSelect
+      />
+      {value && (
+        <button
+          type="button"
+          onClick={() => onChange('')}
+          className="rounded-full p-1 hover:bg-muted text-muted-foreground"
+          title="Clear selection"
+        >
+          <X className="h-3.5 w-3.5" />
+        </button>
+      )}
     </div>
   );
 }
@@ -306,22 +402,6 @@ function CountryPicker({ countries, selected, onChange, buttonLabel = 'Add count
   onChange: (codes: string[]) => void;
   buttonLabel?: string;
 }) {
-  const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState('');
-  const searchRef = useRef<HTMLInputElement>(null);
-
-  const sortedEntries = useMemo(() => {
-    return Object.entries(countries).sort((a, b) => a[1].localeCompare(b[1]));
-  }, [countries]);
-
-  const filtered = useMemo(() => {
-    if (!search) return sortedEntries;
-    const q = search.toLowerCase();
-    return sortedEntries.filter(
-      ([code, name]) => name.toLowerCase().includes(q) || code.toLowerCase().includes(q),
-    );
-  }, [sortedEntries, search]);
-
   const toggle = useCallback((code: string) => {
     onChange(
       selected.includes(code)
@@ -349,51 +429,85 @@ function CountryPicker({ countries, selected, onChange, buttonLabel = 'Add count
         </div>
       )}
 
-      <Popover open={open} onOpenChange={(v) => { setOpen(v); if (v) setTimeout(() => searchRef.current?.focus(), 0); }}>
-        <PopoverTrigger asChild>
-          <Button variant="outline" size="sm" className="gap-2">
-            <Globe className="h-3.5 w-3.5" />
-            {buttonLabel}
-            <ChevronDown className="h-3.5 w-3.5 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-72 p-0" align="start">
-          <div className="flex items-center border-b px-3">
-            <SearchIcon className="h-4 w-4 shrink-0 opacity-50" />
-            <input
-              ref={searchRef}
-              className="flex h-9 w-full bg-transparent py-2 px-2 text-sm outline-none placeholder:text-muted-foreground"
-              placeholder="Search countries..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-          <div className="max-h-60 overflow-y-auto p-1">
-            {filtered.length === 0 ? (
-              <p className="px-3 py-4 text-center text-sm text-muted-foreground">No countries found</p>
-            ) : (
-              filtered.map(([code, name]) => {
-                const isSelected = selected.includes(code);
-                return (
-                  <button
-                    key={code}
-                    type="button"
-                    onClick={() => toggle(code)}
-                    className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-accent cursor-pointer"
-                  >
-                    <div className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border ${isSelected ? 'border-primary bg-primary text-primary-foreground' : 'border-muted-foreground/30'}`}>
-                      {isSelected && <Check className="h-3 w-3" />}
-                    </div>
-                    <span className="truncate">{name}</span>
-                    <span className="ml-auto text-xs text-muted-foreground">{code}</span>
-                  </button>
-                );
-              })
-            )}
-          </div>
-        </PopoverContent>
-      </Popover>
+      <CountryDropdown
+        countries={countries}
+        buttonLabel={buttonLabel}
+        isSelected={(code) => selected.includes(code)}
+        onSelect={toggle}
+      />
     </div>
+  );
+}
+
+function CountryDropdown({ countries, buttonLabel, isSelected, onSelect, indicatorShape = 'checkbox', closeOnSelect = false }: {
+  countries: Record<string, string>;
+  buttonLabel: React.ReactNode;
+  isSelected: (code: string) => boolean;
+  onSelect: (code: string) => void;
+  indicatorShape?: 'radio' | 'checkbox';
+  closeOnSelect?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  const sortedEntries = useMemo(() => {
+    return Object.entries(countries).sort((a, b) => a[1].localeCompare(b[1]));
+  }, [countries]);
+
+  const filtered = useMemo(() => {
+    if (!search) return sortedEntries;
+    const q = search.toLowerCase();
+    return sortedEntries.filter(
+      ([code, name]) => name.toLowerCase().includes(q) || code.toLowerCase().includes(q),
+    );
+  }, [sortedEntries, search]);
+
+  return (
+    <Popover open={open} onOpenChange={(v) => { setOpen(v); if (v) setTimeout(() => searchRef.current?.focus(), 0); }}>
+      <PopoverTrigger asChild>
+        <Button variant="outline" size="sm" className="gap-2">
+          <Globe className="h-3.5 w-3.5" />
+          {buttonLabel}
+          <ChevronDown className="h-3.5 w-3.5 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-72 p-0" align="start">
+        <div className="flex items-center border-b px-3">
+          <SearchIcon className="h-4 w-4 shrink-0 opacity-50" />
+          <input
+            ref={searchRef}
+            className="flex h-9 w-full bg-transparent py-2 px-2 text-sm outline-none placeholder:text-muted-foreground"
+            placeholder="Search countries..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="max-h-60 overflow-y-auto p-1">
+          {filtered.length === 0 ? (
+            <p className="px-3 py-4 text-center text-sm text-muted-foreground">No countries found</p>
+          ) : (
+            filtered.map(([code, name]) => {
+              const selected = isSelected(code);
+              return (
+                <button
+                  key={code}
+                  type="button"
+                  onClick={() => { onSelect(code); if (closeOnSelect) { setOpen(false); setSearch(''); } }}
+                  className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-accent cursor-pointer"
+                >
+                  <div className={`flex h-4 w-4 shrink-0 items-center justify-center ${indicatorShape === 'radio' ? 'rounded-full' : 'rounded-sm'} border ${selected ? 'border-primary bg-primary text-primary-foreground' : 'border-muted-foreground/30'}`}>
+                    {selected && <Check className="h-3 w-3" />}
+                  </div>
+                  <span className="truncate">{name}</span>
+                  <span className="ml-auto text-xs text-muted-foreground">{code}</span>
+                </button>
+              );
+            })
+          )}
+        </div>
+      </PopoverContent>
+    </Popover>
   );
 }
 

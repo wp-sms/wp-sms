@@ -25,8 +25,10 @@ class AdminServiceProvider implements ServiceProvider
             return new AdminManager();
         });
 
-        $container->register('assets', function () {
-            return new AssetManager();
+        $container->register('assets', function () use ($container) {
+            return new AssetManager(
+                $container->get('phone_restriction.settings'),
+            );
         });
 
         $container->register('admin.user_list', function () use ($container) {

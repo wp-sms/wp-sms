@@ -2,6 +2,8 @@
 
 namespace WSms\Service\Assets;
 
+use WSms\PhoneRestriction\RestrictionSettings;
+
 defined('ABSPATH') || exit;
 
 /**
@@ -14,8 +16,9 @@ defined('ABSPATH') || exit;
  */
 class AssetManager
 {
-    public function __construct()
-    {
+    public function __construct(
+        private readonly RestrictionSettings $restrictionSettings,
+    ) {
         add_action('admin_enqueue_scripts', [$this, 'enqueueAdmin']);
     }
 
@@ -69,6 +72,7 @@ class AssetManager
             'roles'     => wp_list_pluck(get_editable_roles(), 'name'),
             'timezone'  => wp_timezone_string(),
             'area'      => $this->resolveArea($hook),
+            'phoneInput' => $this->restrictionSettings->getPhoneInputDisplayConfig(),
         ];
     }
 

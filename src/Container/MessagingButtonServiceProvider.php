@@ -21,6 +21,7 @@ class MessagingButtonServiceProvider implements ServiceProvider
         $container->register('messaging_button.renderer', fn($c) => new MessagingButtonRenderer(
             $c->get('messaging_button.settings'),
             $c->get('messaging_button.display_rules'),
+            $c->get('phone_restriction.settings'),
         ));
 
         $container->register('messaging_button.handler', fn($c) => new MessageHandler(

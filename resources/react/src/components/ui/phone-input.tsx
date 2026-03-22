@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { PhoneInput as LitePhoneInput } from 'lite-phone-input/react';
 
+const globalConfig = (window as any).wpSmsSettings?.phoneInput ?? {};
+
 interface PhoneInputProps {
   value: string;
   onChange: (e164: string) => void;
@@ -17,7 +19,10 @@ export function PhoneInput({ value, onChange, disabled }: PhoneInputProps) {
           initialValue={value}
           onChange={onChange}
           disabled={disabled}
-          defaultCountry="US"
+          defaultCountry={globalConfig.defaultCountry || 'US'}
+          preferredCountries={globalConfig.preferredCountries}
+          allowedCountries={globalConfig.allowedCountries}
+          excludedCountries={globalConfig.excludedCountries}
           dropdownContainer={container}
         />
       )}

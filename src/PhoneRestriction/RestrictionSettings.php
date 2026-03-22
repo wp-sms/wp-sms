@@ -26,6 +26,10 @@ class RestrictionSettings
         'enhanced_db' => [
             'auto_update' => true,
         ],
+        'phone_input' => [
+            'default_country'     => '',
+            'preferred_countries' => [],
+        ],
     ];
 
     private ?array $cached = null;
@@ -86,6 +90,66 @@ class RestrictionSettings
     public function isAutoUpdateEnabled(): bool
     {
         return !empty($this->all()['enhanced_db']['auto_update']);
+    }
+
+    public function getPhoneInputDisplayConfig(string $context = ''): array
+    {
+        $all = $this->all();
+        $pi  = $all['phone_input'];
+
+        $defaultCountry     = $pi['default_country'] ?: 'US';
+        $preferredCountries = $pi['preferred_countries'];
+        $allowedCountries   = null;
+        $excludedCountries  = null;
+
+        if ($context !== '' && !empty($all[$context]['enabled'])) {
+            $countries = $all[$context]['allowed_countries'] ?? [];
+            if (!empty($countries)) {
+                if ($all[$context]['mode'] === 'allow') {
+                    $allowedCountries = $countries;
+                } else {
+                    $excludedCountries = $countries;
+                }
+            }
+        }
+
+        // Default country not in allowed list → fall back to first allowed
+        if ($allowedCountries !== null && !in_array($defaultCountry, $allowedCountries, true)) {
+            $defaultCountry = $allowedCountries[0] ?? 'US';
+        }
+        // Default country is in excluded list → fall back to 'US', or empty if US also excluded
+        if ($excludedCountries !== null && in_array($defaultCountry, $excludedCountries, true)) {
+            $defaultCountry = 'US';
+            if (in_array('US', $excludedCountries, true)) {
+                $defaultCountry = '';
+            }
+        }
+
+        // Filter preferred countries against restrictions
+        if ($allowedCountries !== null) {
+            $preferredCountries = array_values(
+                array_intersect($preferredCountries, $allowedCountries)
+            );
+        }
+        if ($excludedCountries !== null) {
+            $preferredCountries = array_values(
+                array_diff($preferredCountries, $excludedCountries)
+            );
+        }
+
+        $config = [
+            'defaultCountry'     => $defaultCountry,
+            'preferredCountries' => $preferredCountries,
+        ];
+
+        if ($allowedCountries !== null && !empty($allowedCountries)) {
+            $config['allowedCountries'] = $allowedCountries;
+        }
+        if ($excludedCountries !== null && !empty($excludedCountries)) {
+            $config['excludedCountries'] = $excludedCountries;
+        }
+
+        return $config;
     }
 
     public static function defaults(): array

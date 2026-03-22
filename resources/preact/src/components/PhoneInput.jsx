@@ -1,8 +1,12 @@
 import { useState, useCallback } from 'preact/hooks';
 import { PhoneInput as LitePhoneInput } from 'lite-phone-input/preact';
+import { authConfig } from '../signals/config';
 
 export function PhoneInput({ value = '', onChange, disabled, autoFocus = false }) {
     const [dropdownTarget, setDropdownTarget] = useState(null);
+    const config = authConfig.value?.phone_input
+        || window.wsmsMessagingButtonConfig?.phoneInput
+        || {};
 
     const containerRef = useCallback((node) => {
         if (!node) return;
@@ -25,7 +29,10 @@ export function PhoneInput({ value = '', onChange, disabled, autoFocus = false }
                     onChange={onChange}
                     disabled={disabled}
                     autoFocus={autoFocus}
-                    defaultCountry="US"
+                    defaultCountry={config.defaultCountry || 'US'}
+                    preferredCountries={config.preferredCountries}
+                    allowedCountries={config.allowedCountries}
+                    excludedCountries={config.excludedCountries}
                     dropdownContainer={dropdownTarget}
                 />
             )}

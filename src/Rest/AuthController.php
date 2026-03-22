@@ -9,6 +9,7 @@ use WSms\Auth\CaptchaGuard;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\RegistrationFormRepository;
+use WSms\PhoneRestriction\RestrictionSettings;
 use WSms\Social\SocialAuthManager;
 
 defined('ABSPATH') || exit;
@@ -22,6 +23,7 @@ class AuthController extends Controller
         private CaptchaGuard $captchaGuard,
         private SocialAuthManager $socialManager,
         private ?RegistrationFormRepository $formRepository = null,
+        private ?RestrictionSettings $restrictionSettings = null,
     ) {
     }
 
@@ -318,6 +320,10 @@ class AuthController extends Controller
                 'enabled' => true,
                 'ttl'     => (int) ($trustedDevices['ttl'] ?? 2592000),
             ];
+        }
+
+        if ($this->restrictionSettings) {
+            $config['phone_input'] = $this->restrictionSettings->getPhoneInputDisplayConfig('auth');
         }
 
         return $config;

@@ -2,6 +2,7 @@
 
 namespace WSms\MessagingButton;
 
+use WSms\PhoneRestriction\RestrictionSettings;
 use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
@@ -11,6 +12,7 @@ class MessagingButtonRenderer
     public function __construct(
         private readonly MessagingButtonSettings $settings,
         private readonly DisplayRuleEvaluator $displayRules,
+        private readonly RestrictionSettings $restrictionSettings,
     ) {
     }
 
@@ -54,6 +56,8 @@ class MessagingButtonRenderer
             'nonce' => wp_create_nonce('wp_rest'),
             'config' => $this->settings->getPublicConfig(),
         ];
+
+        $scriptData['phoneInput'] = $this->restrictionSettings->getPhoneInputDisplayConfig('messaging');
 
         if (is_user_logged_in()) {
             $user = wp_get_current_user();

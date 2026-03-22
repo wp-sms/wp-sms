@@ -177,13 +177,17 @@ class PhoneRestrictionController extends Controller
     {
         $sanitized     = [];
         $booleanFields = ['enabled', 'auto_update'];
-        $arrayFields   = ['allowed_countries', 'blocked_types'];
+        $arrayFields   = ['allowed_countries', 'blocked_types', 'preferred_countries'];
 
         foreach ($values as $key => $value) {
             if ($key === 'mode') {
                 $sanitized[$key] = in_array($value, ['allow', 'block'], true) ? $value : 'allow';
             } elseif (in_array($key, $booleanFields, true)) {
                 $sanitized[$key] = (bool) $value;
+            } elseif ($key === 'default_country') {
+                $sanitized[$key] = is_string($value)
+                    ? strtoupper(substr(sanitize_text_field($value), 0, 2))
+                    : '';
             } elseif (in_array($key, $arrayFields, true)) {
                 $sanitized[$key] = is_array($value)
                     ? array_values(array_filter(array_map('sanitize_text_field', $value)))

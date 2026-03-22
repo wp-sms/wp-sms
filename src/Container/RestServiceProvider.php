@@ -44,6 +44,7 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('auth.captcha_guard'),
                 $container->get('social.manager'),
                 $container->get('auth.form_repository'),
+                $container->get('phone_restriction.settings'),
             );
         });
 
