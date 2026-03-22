@@ -1,6 +1,6 @@
 import { useBlockProps, InspectorControls, RichText } from '@wordpress/block-editor';
 import { PanelBody, SelectControl, TextControl, Placeholder } from '@wordpress/components';
-import ServerSideRender from '@wordpress/server-side-render';
+
 import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
@@ -41,7 +41,7 @@ export default function Edit({ attributes, setAttributes }) {
             });
 
         return () => controller.abort();
-    }, [view]);
+    }, []);
 
     const formOptions = [{ label: 'Default form', value: '' }];
     if (forms) {
@@ -102,15 +102,12 @@ export default function Edit({ attributes, setAttributes }) {
                     />
                 </div>
             ) : (
-                <ServerSideRender
-                    block="wsms/auth-form"
-                    attributes={attributes}
-                    EmptyResponsePlaceholder={() => (
-                        <Placeholder icon="lock" label="WSMS Auth Form">
-                            <p>Configure this block in the sidebar.</p>
-                        </Placeholder>
-                    )}
-                />
+                <Placeholder icon="lock" label={`Auth Form — ${VIEW_OPTIONS.find(o => o.value === view)?.label ?? view}`}>
+                    <p style={{ margin: 0 }}>
+                        {formSlug ? `Form: ${formSlug}` : 'Default form'}
+                        {' · '}Embedded
+                    </p>
+                </Placeholder>
             )}
         </div>
     );
