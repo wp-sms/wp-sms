@@ -41,5 +41,6 @@ class ControllerManager
         LicenseManagerAjax::listen(false);
         RecipientCountsAjax::listen(false);
         UserRolesMobileCountAjax::listen(false);
+        NumberMigrationAjax::listen(false);
     }
 }

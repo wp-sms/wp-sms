@@ -160,8 +160,13 @@ class Dashboard extends Singleton
         return [
             'apiUrl'        => rest_url('wpsms/v1/'),
             'nonce'         => wp_create_nonce('wp_rest'),
+            'ajaxUrl'       => admin_url('admin-ajax.php'),
             'ajaxUrls'      => [
                 'recipientCounts' => \WP_SMS\Controller\RecipientCountsAjax::url(),
+            ],
+            'ajaxNonces'    => [
+                'numberMigration' => wp_create_nonce('wp_sms_number_migration'),
+                'testGateway'     => wp_create_nonce('wp_sms_test_gateway'),
             ],
             'settings'      => $this->maskSensitiveSettings($this->getSettingsWithDefaults()),
             'proSettings'   => $this->maskSensitiveSettings(Option::getOptions(true)),
@@ -346,6 +351,42 @@ class Dashboard extends Singleton
                     ],
                 ],
             ];
+        }
+
+        // 3. Number migration notice — show if there are local numbers without country code
+        if (
+            current_user_can('manage_options') &&
+            !in_array('number_migration', $dismissedHandler)
+        ) {
+            // Quick check: any subscriber numbers without + prefix? (cached for 1 hour)
+            $localNumberCount = get_transient('wpsms_local_number_count');
+            if ($localNumberCount === false) {
+                global $wpdb;
+                $localNumberCount = (int) $wpdb->get_var(
+                    "SELECT COUNT(*) FROM {$wpdb->prefix}sms_subscribes WHERE mobile NOT LIKE '+%'"
+                );
+                set_transient('wpsms_local_number_count', $localNumberCount, HOUR_IN_SECONDS);
+            }
+
+            if ($localNumberCount > 0) {
+                $result[] = [
+                    'id'           => 'number_migration',
+                    'type'         => 'action',
+                    'variant'      => 'info',
+                    'message'      => __('We recently improved how phone numbers are processed. Some of your existing numbers need a quick update to include the country code. This only takes a moment.', 'wp-sms'),
+                    'title'        => __('Phone Number Improvement Available', 'wp-sms'),
+                    'dismissible'  => true,
+                    'dismissStore' => 'handler',
+                    'link'         => null,
+                    'showOnTab'    => null,
+                    'actions'      => [
+                        [
+                            'label'    => __('Update Numbers', 'wp-sms'),
+                            'navigate' => 'migration-wizard',
+                        ],
+                    ],
+                ];
+            }
         }
 
         /**

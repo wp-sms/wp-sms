@@ -328,7 +328,7 @@ class Newsletter
             $wpdb->prefix . "sms_subscribes",
             array(
                 'name'     => $name,
-                'mobile'   => Helper::sanitizeMobileNumber($mobile),
+                'mobile'   => Helper::normalizeToE164($mobile),
                 'group_ID' => $group_id,
                 'status'   => $status,
             ),
@@ -633,7 +633,7 @@ class Newsletter
             array(
                 'date'     => $date,
                 'name'     => $name,
-                'mobile'   => Helper::sanitizeMobileNumber($mobile),
+                'mobile'   => Helper::normalizeToE164($mobile),
                 'status'   => $status,
                 'group_ID' => $group_id
             )

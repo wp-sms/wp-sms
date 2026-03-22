@@ -12,13 +12,19 @@ export function useAdminNotices() {
     return Array.isArray(adminNotices) ? adminNotices : []
   })
 
-  // Auto-dismiss gateway attention notices when gateway test succeeds
+  // Auto-dismiss notices when specific events fire
+  const autoDismissRules = [
+    { event: 'wpsms:gateway-test-success', filter: (n) => !n.id.startsWith('gateway_attention_') },
+    { event: 'wpsms:number-migration-done', filter: (n) => n.id !== 'number_migration' },
+  ]
+
   useEffect(() => {
-    const handler = () => {
-      setNotices((prev) => prev.filter((n) => !n.id.startsWith('gateway_attention_')))
-    }
-    window.addEventListener('wpsms:gateway-test-success', handler)
-    return () => window.removeEventListener('wpsms:gateway-test-success', handler)
+    const handlers = autoDismissRules.map(({ event, filter }) => {
+      const handler = () => setNotices((prev) => prev.filter(filter))
+      window.addEventListener(event, handler)
+      return { event, handler }
+    })
+    return () => handlers.forEach(({ event, handler }) => window.removeEventListener(event, handler))
   }, [])
 
   const hasNotices = notices.length > 0

@@ -92,6 +92,7 @@ class WooCommerceUsePhoneFieldHandler extends AbstractFieldHandler
     {
         if (isset($data['billing_phone'])) {
             $data['billing_phone'] = str_replace(' ', '', $data['billing_phone']);
+            $data['billing_phone'] = Helper::normalizeToE164($data['billing_phone']);
         }
 
         return $data;
