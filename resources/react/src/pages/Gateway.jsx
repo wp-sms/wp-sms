@@ -26,7 +26,7 @@ export default function Gateway() {
   const gatewayHelp = gatewayCapabilities.help || ''
   const gatewayDocumentUrl = gatewayCapabilities.documentUrl || ''
 
-  const [gatewayName, setGatewayName] = useSetting('gateway_name', '')
+  const [gatewayName, setGatewayName, gatewayNameError] = useSetting('gateway_name', '')
 
   // Track the saved gateway (the one capabilities/fields are loaded for)
   const savedGatewayRef = useRef(gatewayName)
@@ -451,11 +451,13 @@ export default function Gateway() {
           )}
 
           {/* Selection Status Bar */}
-          <div className={cn(
+          <div data-setting-key="gateway_name" className={cn(
             "wsms-rounded-lg wsms-border wsms-transition-all wsms-duration-200",
-            gatewayName
-              ? "wsms-border-primary/30 wsms-bg-primary/5"
-              : "wsms-border-dashed wsms-border-border wsms-bg-muted/30"
+            gatewayNameError
+              ? "wsms-border-destructive"
+              : gatewayName
+                ? "wsms-border-primary/30 wsms-bg-primary/5"
+                : "wsms-border-dashed wsms-border-border wsms-bg-muted/30"
           )}>
             {gatewayName ? (
               <>
@@ -613,6 +615,9 @@ export default function Gateway() {
               </div>
             )}
           </div>
+          {gatewayNameError && (
+            <p role="alert" className="wsms-text-[12px] wsms-text-destructive">{gatewayNameError}</p>
+          )}
         </CardContent>
       </Card>
 
