@@ -22,17 +22,13 @@ export const formName = computed(() => authConfig.value?.form_name ?? null);
 export async function loadConfig(fSlug = null, { force = false } = {}) {
     if (!force && (authConfig.value || configLoading.value)) return;
 
-    // In preview mode, skip the REST call — branding is set via postMessage
-    if (isPreviewMode.value) return;
-
     configLoading.value = true;
     try {
         const params = fSlug ? `?form=${encodeURIComponent(fSlug)}` : '';
         const data = await api.get(`/auth/config${params}`);
         authConfig.value = data;
 
-        // Apply form-specific branding if present
-        if (data.branding) {
+        if (!isPreviewMode.value && data.branding) {
             brandingConfig.value = data.branding;
         }
     } finally {

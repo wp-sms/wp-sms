@@ -5,6 +5,7 @@ import { authError, authLoading } from '../signals/auth';
 import { extractError } from '../utils/auth';
 import { authUrl } from '../utils/urls';
 import { AuthLayout } from '../layouts/AuthLayout';
+import { alreadySignedIn } from '../components/AlreadySignedIn';
 import { Alert } from '../components/ui/Alert';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -19,6 +20,9 @@ export function ForgotPassword() {
     const emailRef = useAutoFocus();
     const captcha = useCaptcha();
     const needsCaptcha = captcha.isRequiredFor('forgot_password');
+
+    const guard = alreadySignedIn();
+    if (guard) return guard;
 
     async function handleSubmit(e) {
         e.preventDefault();

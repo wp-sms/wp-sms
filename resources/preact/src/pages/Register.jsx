@@ -19,6 +19,7 @@ import { useCaptcha } from '../hooks/useCaptcha';
 import { SocialLoginButtons } from '../components/SocialLoginButtons';
 import { SocialDivider } from '../components/SocialDivider';
 import { brandingConfig } from '../signals/branding';
+import { alreadySignedIn } from '../components/AlreadySignedIn';
 import { SYSTEM_FIELD_IDS } from '../utils/fields';
 
 export function Register() {
@@ -66,15 +67,8 @@ export function Register() {
         }
     }, []);
 
-    if (Number(window.wsmsAuth?.isLoggedIn)) {
-        return (
-            <AuthLayout title="Already Signed In">
-                <p className="text-center text-sm text-muted-foreground">
-                    You are already logged in.
-                </p>
-            </AuthLayout>
-        );
-    }
+    const guard = alreadySignedIn();
+    if (guard) return guard;
 
     function updateField(name, value) {
         setForm((prev) => ({ ...prev, [name]: value }));

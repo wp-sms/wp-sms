@@ -6,6 +6,7 @@ import { friendlySocialError, handleAuthResponse } from '../utils/auth';
 import { api } from '../api/client';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { AuthLink } from '../components/AuthLink';
+import { alreadySignedIn } from '../components/AlreadySignedIn';
 import { IdentifierStep } from '../components/steps/IdentifierStep';
 import { AuthenticateStep } from '../components/steps/AuthenticateStep';
 import { MfaStep } from '../components/steps/MfaStep';
@@ -43,6 +44,9 @@ export function Login() {
             resolveVerifySession(verifyToken);
         }
     }, []);
+
+    const guard = alreadySignedIn();
+    if (guard) return guard;
 
     const footer = step === 'register' ? (
         <AuthLink href={authUrl('/login')} onClick={() => resetIdentifyFlow()}>
