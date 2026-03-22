@@ -236,7 +236,7 @@ export default function PhoneConfig() {
                   </SelectContent>
                 </Select>
                 <p className="wsms-text-[12px] wsms-text-muted-foreground">
-                  {__('Automatically prepend this country code to all phone numbers. This setting is required.')}
+                  {__('Automatically prepend this country code to new phone numbers. Changing this will not update numbers already stored in the database.')}
                 </p>
                 {(!countryCode || countryCode === '0') && (
                   <p className="wsms-text-[12px] wsms-text-destructive wsms-font-medium">
