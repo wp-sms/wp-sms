@@ -6,7 +6,7 @@ import { PhoneInput } from '../../../components/PhoneInput';
 const FIELD_CONFIG = [
     { id: 'name', label: 'Name', type: 'text', placeholder: 'Your name' },
     { id: 'email', label: 'Email', type: 'email', placeholder: 'your@email.com' },
-    { id: 'phone', label: 'Phone', type: 'tel', placeholder: '+1 (555) 000-0000' },
+    { id: 'phone', label: 'Phone', type: 'tel' },
     { id: 'message', label: 'Message', type: 'textarea', placeholder: 'How can we help?' },
 ];
 
