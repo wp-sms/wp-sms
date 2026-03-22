@@ -132,6 +132,15 @@ class NumberMigrationAjax extends AjaxControllerAbstract
                 'name_column' => null,
                 'type'        => 'csv',
             ],
+            [
+                'key'         => 'outbox',
+                'label'       => __('Outbox', 'wp-sms'),
+                'table'       => "{$wpdb->prefix}sms_send",
+                'column'      => 'recipient',
+                'pk'          => 'ID',
+                'name_column' => null,
+                'type'        => 'csv',
+            ],
         ];
 
         // Filter out tables that don't exist (cached for this request)
@@ -227,12 +236,9 @@ class NumberMigrationAjax extends AjaxControllerAbstract
         $offset  = ($page - 1) * $perPage;
 
         $sources = $this->getPhoneSources();
-        $preview = [];
-        $remaining = $perPage;
+        $allRows = [];
 
         foreach ($sources as $source) {
-            if ($remaining <= 0) break;
-
             $whereBase = isset($source['where_extra']) ? $source['where_extra'] : "{$source['column']} != ''";
 
             if ($source['type'] === 'single') {
@@ -240,29 +246,25 @@ class NumberMigrationAjax extends AjaxControllerAbstract
 
                 // For usermeta, join with users table for name
                 if ($source['key'] === 'usermeta') {
-                    $rows = $wpdb->get_results($wpdb->prepare(
+                    $rows = $wpdb->get_results(
                         "SELECT t.{$source['pk']} AS pk_val, t.{$source['column']} AS phone, u.display_name
                          FROM {$source['table']} t
                          LEFT JOIN {$wpdb->users} u ON t.user_id = u.ID
-                         WHERE {$whereBase} AND t.{$source['column']} NOT LIKE '+%%'
-                         ORDER BY t.{$source['pk']} ASC LIMIT %d OFFSET %d",
-                        $remaining,
-                        $offset
-                    ));
+                         WHERE {$whereBase} AND t.{$source['column']} NOT LIKE '+%'
+                         ORDER BY t.{$source['pk']} ASC"
+                    );
                 } else {
-                    $rows = $wpdb->get_results($wpdb->prepare(
+                    $rows = $wpdb->get_results(
                         "SELECT {$source['pk']} AS pk_val, {$source['column']} AS phone {$nameSelect}
                          FROM {$source['table']}
-                         WHERE {$whereBase} AND {$source['column']} NOT LIKE '+%%'
-                         ORDER BY {$source['pk']} ASC LIMIT %d OFFSET %d",
-                        $remaining,
-                        $offset
-                    ));
+                         WHERE {$whereBase} AND {$source['column']} NOT LIKE '+%'
+                         ORDER BY {$source['pk']} ASC"
+                    );
                 }
 
                 foreach ($rows as $row) {
                     $migrated = $this->migrateNumber($row->phone, $countryCode);
-                    $preview[] = [
+                    $allRows[] = [
                         'source'   => $source['key'],
                         'label'    => $source['label'],
                         'id'       => (int) $row->pk_val,
@@ -272,18 +274,14 @@ class NumberMigrationAjax extends AjaxControllerAbstract
                         'changed'  => $row->phone !== $migrated,
                     ];
                 }
-
-                $remaining -= count($rows);
             } else {
                 // CSV type
-                $rows = $wpdb->get_results($wpdb->prepare(
+                $rows = $wpdb->get_results(
                     "SELECT {$source['pk']} AS pk_val, {$source['column']} AS phone
                      FROM {$source['table']}
                      WHERE {$source['column']} IS NOT NULL AND {$source['column']} != ''
-                     ORDER BY {$source['pk']} ASC LIMIT %d OFFSET %d",
-                    $remaining,
-                    $offset
-                ));
+                     ORDER BY {$source['pk']} ASC"
+                );
 
                 foreach ($rows as $row) {
                     $numbers  = array_map('trim', explode(',', $row->phone));
@@ -293,7 +291,7 @@ class NumberMigrationAjax extends AjaxControllerAbstract
                     $migratedStr = implode(',', $migrated);
 
                     if ($row->phone !== $migratedStr) {
-                        $preview[] = [
+                        $allRows[] = [
                             'source'   => $source['key'],
                             'label'    => $source['label'],
                             'id'       => (int) $row->pk_val,
@@ -304,15 +302,17 @@ class NumberMigrationAjax extends AjaxControllerAbstract
                         ];
                     }
                 }
-
-                $remaining -= count($rows);
             }
         }
+
+        // Paginate the combined results
+        $preview = array_slice($allRows, $offset, $perPage);
 
         wp_send_json_success([
             'preview'      => $preview,
             'page'         => $page,
             'per_page'     => $perPage,
+            'total'        => count($allRows),
             'country_code' => $countryCode,
         ]);
     }

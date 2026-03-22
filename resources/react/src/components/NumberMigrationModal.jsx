@@ -361,7 +361,7 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
                   <Button
                     variant="outline"
                     size="sm"
-                    disabled={previewData.preview.length < 20 || loading}
+                    disabled={previewPage * (previewData.per_page || 20) >= (previewData.total || 0) || loading}
                     onClick={() => handlePreview(previewPage + 1)}
                   >
                     {__('Next')}
