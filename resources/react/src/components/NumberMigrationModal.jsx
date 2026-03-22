@@ -18,6 +18,7 @@ import {
   CheckCircle2,
   AlertTriangle,
   ArrowRight,
+  Info,
 } from 'lucide-react'
 import { getWpSettings, __ } from '@/lib/utils'
 import { adminNoticesApi } from '@/api/adminNoticesApi'
@@ -186,9 +187,9 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent size="xl">
         <DialogHeader>
-          <DialogTitle>{__('Phone Number Migration Wizard')}</DialogTitle>
+          <DialogTitle>{__('Phone Number Improvement')}</DialogTitle>
           <DialogDescription>
-            {__('Convert all stored phone numbers to international format (E.164) with country code prefix.')}
+            {__('Standardize your phone numbers by adding the country code for more reliable delivery.')}
           </DialogDescription>
         </DialogHeader>
 
@@ -207,17 +208,17 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
                 <div className="wsms-text-center wsms-py-8">
                   <Search className="wsms-h-10 wsms-w-10 wsms-text-muted-foreground wsms-mx-auto wsms-mb-3" />
                   <p className="wsms-text-[14px] wsms-text-foreground wsms-font-medium wsms-mb-1">
-                    {__('Scan your database')}
+                    {__('Check your phone numbers')}
                   </p>
                   <p className="wsms-text-[13px] wsms-text-muted-foreground wsms-mb-4">
-                    {__('Check all phone numbers across subscribers, users, OTP records, campaigns, and scheduled messages.')}
+                    {__('We\'ll review your stored phone numbers and find any that need a country code added.')}
                   </p>
 
                   {/* Country code selector — shown when CC is not configured */}
                   {needsCC && (
                     <div className="wsms-mb-4 wsms-mx-auto wsms-max-w-xs wsms-text-start">
                       <label className="wsms-block wsms-text-[13px] wsms-font-medium wsms-mb-1">
-                        {__('Select a country code for the migration')}
+                        {__('Select your default country code')}
                       </label>
                       <select
                         className="wsms-w-full wsms-border wsms-rounded-md wsms-px-3 wsms-py-2 wsms-text-[13px]"
@@ -270,18 +271,18 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
                   {scanData.total_need_fix === 0 ? (
                     <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-3 wsms-rounded-lg wsms-bg-green-50 wsms-text-green-700 wsms-text-[13px]">
                       <CheckCircle2 className="wsms-h-4 wsms-w-4" />
-                      {__('All numbers are already in international format. No migration needed.')}
+                      {__('All your phone numbers already include a country code. No update needed!')}
                     </div>
                   ) : (
-                    <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-3 wsms-rounded-lg wsms-bg-orange-50 wsms-text-orange-700 wsms-text-[13px]">
-                      <AlertTriangle className="wsms-h-4 wsms-w-4" />
-                      {scanData.total_need_fix} {__('numbers need to be migrated.')}
+                    <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-3 wsms-rounded-lg wsms-bg-blue-50 wsms-text-blue-700 wsms-text-[13px]">
+                      <Info className="wsms-h-4 wsms-w-4" />
+                      {scanData.total_need_fix} {__('numbers can be improved.')}
                     </div>
                   )}
 
                   {scanData.backup_exists && (
                     <div className="wsms-flex wsms-items-center wsms-justify-between wsms-p-3 wsms-rounded-lg wsms-bg-blue-50 wsms-text-blue-700 wsms-text-[13px]">
-                      <span>{__('A previous migration backup exists.')}</span>
+                      <span>{__('A previous backup exists.')}</span>
                       <Button variant="outline" size="sm" onClick={handleRevert} disabled={loading}>
                         <Undo2 className="wsms-h-3.5 wsms-w-3.5 wsms-me-1" />
                         {__('Revert')}
@@ -297,7 +298,7 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
           {step === STEP_PREVIEW && previewData && (
             <div className="wsms-space-y-4">
               <p className="wsms-text-[13px] wsms-text-muted-foreground">
-                {__('Review the changes below. Numbers will be converted using country code')}{' '}
+                {__('Here\'s a preview of how your numbers will look. Country code:')}{' '}
                 <code className="wsms-bg-muted wsms-px-1 wsms-rounded wsms-font-mono">{previewData.country_code}</code>
               </p>
 
@@ -309,7 +310,7 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
                       <th className="wsms-text-start wsms-px-3 wsms-py-2 wsms-font-medium">{__('Name')}</th>
                       <th className="wsms-text-start wsms-px-3 wsms-py-2 wsms-font-medium">{__('Current')}</th>
                       <th className="wsms-text-center wsms-px-1 wsms-py-2"></th>
-                      <th className="wsms-text-start wsms-px-3 wsms-py-2 wsms-font-medium">{__('After Migration')}</th>
+                      <th className="wsms-text-start wsms-px-3 wsms-py-2 wsms-font-medium">{__('Updated')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -374,9 +375,9 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
             <div className="wsms-space-y-4">
               <div className="wsms-text-center wsms-py-4">
                 <CheckCircle2 className="wsms-h-12 wsms-w-12 wsms-text-green-500 wsms-mx-auto wsms-mb-3" />
-                <h3 className="wsms-text-[16px] wsms-font-semibold wsms-mb-1">{__('Migration Complete')}</h3>
+                <h3 className="wsms-text-[16px] wsms-font-semibold wsms-mb-1">{__('Update Complete!')}</h3>
                 <p className="wsms-text-[13px] wsms-text-muted-foreground">
-                  {__('Successfully migrated')} {executeData.total_migrated} {__('phone numbers.')}
+                  {__('Successfully updated')} {executeData.total_migrated} {__('phone numbers.')}
                 </p>
               </div>
 
@@ -406,7 +407,7 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
               )}
 
               <div className="wsms-flex wsms-items-center wsms-gap-2 wsms-p-3 wsms-rounded-lg wsms-bg-blue-50 wsms-text-blue-700 wsms-text-[13px]">
-                <span>{__('A backup has been created. You can revert all changes if needed.')}</span>
+                <span>{__('A backup was created automatically. You can undo this update anytime if needed.')}</span>
               </div>
             </div>
           )}
@@ -445,12 +446,12 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
                 {loading ? (
                   <>
                     <Loader2 className="wsms-h-4 wsms-w-4 wsms-me-1.5 wsms-animate-spin" />
-                    {__('Migrating...')}
+                    {__('Updating...')}
                   </>
                 ) : (
                   <>
                     <Play className="wsms-h-4 wsms-w-4 wsms-me-1.5" />
-                    {__('Execute Migration')}
+                    {__('Apply Changes')}
                   </>
                 )}
               </Button>

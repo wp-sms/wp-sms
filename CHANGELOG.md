@@ -1,3 +1,6 @@
+= v7.2.2 - 2026-03-22 =
+- **New:** Added phone number normalization wizard to standardize numbers with country code for reliable delivery.
+
 = v7.2.1 - 2026-03-17 =
 - **New:** Added Contact column to the Two-Way inbox, showing subscriber name or WordPress user display name for each sender.
 - **Fix:** Fixed gateway initialization issue for 4jawaly, 1s2u, 160au, 0098sms, and 18sms gateways.

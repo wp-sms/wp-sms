@@ -273,15 +273,15 @@ export default function PhoneConfig() {
         <CardHeader>
           <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
             <DatabaseZap className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Phone Number Migration')}
+            {__('Phone Number Improvement')}
           </CardTitle>
           <CardDescription>
-            {__('Scan and fix phone numbers stored without country code. Converts all numbers to international format (E.164).')}
+            {__('Review and update your phone numbers to include the country code for better delivery reliability.')}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Button onClick={() => window.dispatchEvent(new CustomEvent('wpsms:open-migration-wizard'))} variant="outline">
-            {__('Open Migration Wizard')}
+            {__('Open Update Wizard')}
           </Button>
         </CardContent>
       </Card>

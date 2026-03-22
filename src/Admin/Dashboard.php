@@ -372,16 +372,16 @@ class Dashboard extends Singleton
                 $result[] = [
                     'id'           => 'number_migration',
                     'type'         => 'action',
-                    'variant'      => 'warning',
-                    'message'      => __('Some phone numbers in your database are stored without a country code. Run the migration wizard to convert them to international format (E.164).', 'wp-sms'),
-                    'title'        => __('Phone Number Migration Available', 'wp-sms'),
+                    'variant'      => 'info',
+                    'message'      => __('We recently improved how phone numbers are processed. Some of your existing numbers need a quick update to include the country code. This only takes a moment.', 'wp-sms'),
+                    'title'        => __('Phone Number Improvement Available', 'wp-sms'),
                     'dismissible'  => true,
                     'dismissStore' => 'handler',
                     'link'         => null,
                     'showOnTab'    => null,
                     'actions'      => [
                         [
-                            'label'    => __('Run Migration Wizard', 'wp-sms'),
+                            'label'    => __('Update Numbers', 'wp-sms'),
                             'navigate' => 'migration-wizard',
                         ],
                     ],
