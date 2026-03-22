@@ -1,4 +1,5 @@
 import { challengeToken, challengeMeta, pendingMfa, pendingVerifications, authStep, clearAuth } from '../signals/auth';
+import { formRedirectUrl } from '../signals/config';
 import { getBaseUrl } from './urls';
 
 export function handleAuthResponse(res, _route) {
@@ -7,7 +8,7 @@ export function handleAuthResponse(res, _route) {
         if (res.meta?.grace_period) {
             sessionStorage.setItem('wsms_grace_period', JSON.stringify(res.meta.grace_period));
         }
-        window.location.href = res.redirect || getBaseUrl();
+        window.location.href = formRedirectUrl.value || res.redirect || getBaseUrl();
         return;
     }
 

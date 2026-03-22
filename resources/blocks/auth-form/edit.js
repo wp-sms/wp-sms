@@ -23,9 +23,8 @@ export default function Edit({ attributes, setAttributes }) {
     const [formsError, setFormsError] = useState(false);
 
     useEffect(() => {
-        if (view !== 'register') {
-            return;
-        }
+        setForms(null);
+        setFormsError(false);
 
         const controller = new AbortController();
 
@@ -44,7 +43,7 @@ export default function Edit({ attributes, setAttributes }) {
         return () => controller.abort();
     }, [view]);
 
-    const formOptions = [{ label: 'Default registration form', value: '' }];
+    const formOptions = [{ label: 'Default form', value: '' }];
     if (forms) {
         forms.forEach((form) => {
             formOptions.push({ label: form.name, value: form.slug });
@@ -59,32 +58,28 @@ export default function Edit({ attributes, setAttributes }) {
                         label="View"
                         value={view}
                         options={VIEW_OPTIONS}
-                        onChange={(val) => setAttributes({ view: val })}
+                        onChange={(val) => setAttributes({ view: val, formSlug: '' })}
                     />
-                    {view === 'register' && (
-                        <>
-                            <SelectControl
-                                label="Registration Form"
-                                value={formSlug}
-                                options={formOptions}
-                                onChange={(val) => setAttributes({ formSlug: val })}
-                                help={
-                                    formsError
-                                        ? 'Could not load forms. You can type a form slug manually below.'
-                                        : forms === null
-                                          ? 'Loading forms…'
-                                          : 'Create forms in WP SMS → Authentication → Registration Forms'
-                                }
-                            />
-                            {formsError && (
-                                <TextControl
-                                    label="Form Slug"
-                                    value={formSlug}
-                                    onChange={(val) => setAttributes({ formSlug: val })}
-                                    help="Enter the registration form slug manually."
-                                />
-                            )}
-                        </>
+                    <SelectControl
+                        label="Form"
+                        value={formSlug}
+                        options={formOptions}
+                        onChange={(val) => setAttributes({ formSlug: val })}
+                        help={
+                            formsError
+                                ? 'Could not load forms. You can type a form slug manually below.'
+                                : forms === null
+                                  ? 'Loading forms…'
+                                  : 'Apply custom branding and redirect from a form'
+                        }
+                    />
+                    {formsError && (
+                        <TextControl
+                            label="Form Slug"
+                            value={formSlug}
+                            onChange={(val) => setAttributes({ formSlug: val })}
+                            help="Enter the form slug manually."
+                        />
                     )}
                     <SelectControl
                         label="Mode"
