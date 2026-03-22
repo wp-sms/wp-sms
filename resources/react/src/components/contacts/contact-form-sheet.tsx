@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { PhoneInput } from '@/components/ui/phone-input';
 import { ContactCustomFields } from './contact-custom-fields';
 import { CONTACT_STATUSES } from '@/lib/constants';
 
@@ -79,7 +80,11 @@ export function ContactFormSheet({ open, onOpenChange, contact, onSave }: Contac
 
           <Field>
             <FieldLabel htmlFor="cf-phone">Phone</FieldLabel>
-            <Input id="cf-phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+            <PhoneInput
+              key={contact?.id ?? 'new'}
+              value={form.phone}
+              onChange={(e164: string) => setForm({ ...form, phone: e164 })}
+            />
           </Field>
 
           <Field>

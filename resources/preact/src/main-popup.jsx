@@ -76,8 +76,10 @@ if (typeof window !== 'undefined') {
     window.wsmsAuth = Object.assign(window.wsmsAuth || {}, popupApi);
 }
 
-// Mount inline embed containers
-document.querySelectorAll('[data-wsms-embed-view]').forEach((container) => {
+// Mount a single embed container into Shadow DOM
+function mountEmbed(container) {
+    if (container.shadowRoot) return; // already mounted
+
     const view = container.dataset.wsmsEmbedView || 'register';
     const embedFormSlug = container.dataset.wsmsEmbedForm || null;
 
@@ -92,7 +94,21 @@ document.querySelectorAll('[data-wsms-embed-view]').forEach((container) => {
     shadow.appendChild(mountEl);
 
     render(<EmbedApp view={view} formSlug={embedFormSlug} />, mountEl);
-});
+}
+
+// Mount embeds already in DOM
+document.querySelectorAll('[data-wsms-embed-view]').forEach(mountEmbed);
+
+// Watch for dynamically added embeds (page builders, AJAX, tabs/accordions)
+new MutationObserver((mutations) => {
+    for (const { addedNodes } of mutations) {
+        for (const node of addedNodes) {
+            if (node.nodeType !== 1) continue;
+            if (node.matches?.('[data-wsms-embed-view]')) mountEmbed(node);
+            node.querySelectorAll?.('[data-wsms-embed-view]').forEach(mountEmbed);
+        }
+    }
+}).observe(document.body, { childList: true, subtree: true });
 
 // Event delegation: clicks on [data-wsms-auth-view] elements open the popup
 document.addEventListener('click', (e) => {

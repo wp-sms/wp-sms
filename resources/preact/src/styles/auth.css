@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'lite-phone-input/styles';
 
 @source "../";
 
@@ -113,4 +114,40 @@
 @keyframes wsms-blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
+}
+
+/* lite-phone-input theme mapping */
+.wsms-phone-input {
+    position: relative;
+    --lpi-bg: transparent;
+    --lpi-text-color: var(--foreground);
+    --lpi-border-color: var(--input);
+    --lpi-border-radius: calc(var(--radius) - 2px);
+    --lpi-input-height: 2.25rem;
+    --lpi-font-size: 0.875rem;
+    --lpi-hover-bg: var(--accent);
+    --lpi-selected-bg: var(--accent);
+    --lpi-highlight-bg: var(--accent);
+    --lpi-dropdown-bg: var(--popover);
+    --lpi-dropdown-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --lpi-dropdown-max-height: 300px;
+}
+
+.wsms-phone-input :is(.lpi__input, .lpi__trigger):focus-visible {
+    border-color: var(--ring);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--ring) 50%, transparent);
+    outline: none;
+}
+
+/* Ensure dropdown renders above the Dialog overlay (z-[99999]) */
+.lpi__dropdown {
+    z-index: 100000;
+}
+
+/* WordPress replaces emoji flags with <img> on standalone pages (not shadow DOM) */
+.wsms-phone-input .lpi__flag img.emoji {
+    width: 1.2em;
+    height: 1.2em;
+    display: inline;
+    vertical-align: text-bottom;
 }
