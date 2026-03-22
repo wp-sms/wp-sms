@@ -17,7 +17,8 @@ class CustomerCreatedTriggerTest extends TestCase
 
     protected function tearDown(): void
     {
-        unset($GLOBALS['_test_actions']);
+        unset($GLOBALS['_test_actions'], $GLOBALS['_test_user_meta']);
+        $GLOBALS['_test_user_meta'] = [];
     }
 
     public function testMetadata(): void
@@ -34,6 +35,7 @@ class CustomerCreatedTriggerTest extends TestCase
         $this->assertArrayHasKey('email', $schema);
         $this->assertArrayHasKey('first_name', $schema);
         $this->assertArrayHasKey('last_name', $schema);
+        $this->assertArrayHasKey('phone', $schema);
         $this->assertSame('email', $schema['email']['format']);
     }
 
@@ -45,6 +47,8 @@ class CustomerCreatedTriggerTest extends TestCase
 
     public function testProducesCorrectPayload(): void
     {
+        $GLOBALS['_test_user_meta'][42]['billing_phone'] = '+1234567890';
+
         $captured = null;
         $this->trigger->subscribe(function (array $payload) use (&$captured) {
             $captured = $payload;
@@ -61,6 +65,7 @@ class CustomerCreatedTriggerTest extends TestCase
         $this->assertSame('customer@example.com', $captured['email']);
         $this->assertSame('John', $captured['first_name']);
         $this->assertSame('Doe', $captured['last_name']);
+        $this->assertSame('+1234567890', $captured['phone']);
     }
 
     private function fireAction(string $hook, ...$args): void

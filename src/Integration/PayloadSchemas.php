@@ -8,7 +8,7 @@ defined('ABSPATH') || exit;
 
 class PayloadSchemas
 {
-    /** @return array<string, array> Customer sub-properties: email, phone, name */
+    /** @return array<string, array> Customer sub-properties */
     public static function wooCustomer(): array
     {
         return [
@@ -27,13 +27,23 @@ class PayloadSchemas
                 'label' => __('Name', 'wp-sms'),
                 'example' => 'John Doe',
             ],
+            'first_name' => [
+                'type' => 'string',
+                'label' => __('First Name', 'wp-sms'),
+                'example' => 'John',
+            ],
+            'last_name' => [
+                'type' => 'string',
+                'label' => __('Last Name', 'wp-sms'),
+                'example' => 'Doe',
+            ],
         ];
     }
 
-    /** @return array<string, array> Order sub-properties: id, total, and optionally status */
-    public static function wooOrder(bool $includeStatus = true): array
+    /** @return array<string, array> Order sub-properties */
+    public static function wooOrder(): array
     {
-        $props = [
+        return [
             'id' => [
                 'type' => 'integer',
                 'label' => __('ID', 'wp-sms'),
@@ -44,17 +54,125 @@ class PayloadSchemas
                 'label' => __('Total', 'wp-sms'),
                 'example' => '59.99',
             ],
-        ];
-
-        if ($includeStatus) {
-            $props['status'] = [
+            'status' => [
                 'type' => 'string',
                 'label' => __('Status', 'wp-sms'),
                 'example' => 'pending',
-            ];
-        }
+            ],
+            'currency' => [
+                'type' => 'string',
+                'label' => __('Currency', 'wp-sms'),
+                'example' => 'USD',
+            ],
+            'payment_method' => [
+                'type' => 'string',
+                'label' => __('Payment Method', 'wp-sms'),
+                'example' => 'Credit Card',
+            ],
+            'date_created' => [
+                'type' => 'string',
+                'label' => __('Date Created', 'wp-sms'),
+                'example' => '2026-03-18 14:30:00',
+            ],
+            'items_count' => [
+                'type' => 'integer',
+                'label' => __('Items Count', 'wp-sms'),
+                'example' => 3,
+            ],
+        ];
+    }
 
-        return $props;
+    /**
+     * Extract order payload data from a WC_Order object.
+     *
+     * @param \WC_Order $order
+     * @return array<string, mixed>
+     */
+    public static function extractWooOrder($order): array
+    {
+        $dateCreated = $order->get_date_created();
+
+        return [
+            'id'             => $order->get_id(),
+            'total'          => $order->get_total(),
+            'status'         => $order->get_status(),
+            'currency'       => $order->get_currency(),
+            'payment_method' => $order->get_payment_method_title(),
+            'date_created'   => $dateCreated ? $dateCreated->format('Y-m-d H:i:s') : '',
+            'items_count'    => $order->get_item_count(),
+        ];
+    }
+
+    /**
+     * Extract customer payload data from a WC_Order object.
+     *
+     * @param \WC_Order $order
+     * @return array<string, mixed>
+     */
+    public static function extractWooCustomer($order): array
+    {
+        return [
+            'email'      => $order->get_billing_email(),
+            'phone'      => $order->get_billing_phone(),
+            'name'       => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
+            'first_name' => $order->get_billing_first_name(),
+            'last_name'  => $order->get_billing_last_name(),
+        ];
+    }
+
+    /** @return array<string, array> WSMS Contact sub-properties */
+    public static function wsmsContact(): array
+    {
+        return [
+            'email' => [
+                'type' => 'string',
+                'label' => __('Email', 'wp-sms'),
+                'example' => 'contact@example.com',
+            ],
+            'phone' => [
+                'type' => 'string',
+                'label' => __('Phone', 'wp-sms'),
+                'example' => '+1234567890',
+            ],
+            'first_name' => [
+                'type' => 'string',
+                'label' => __('First Name', 'wp-sms'),
+                'example' => 'John',
+            ],
+            'last_name' => [
+                'type' => 'string',
+                'label' => __('Last Name', 'wp-sms'),
+                'example' => 'Doe',
+            ],
+            'status' => [
+                'type' => 'string',
+                'label' => __('Status', 'wp-sms'),
+                'example' => 'active',
+            ],
+            'source' => [
+                'type' => 'string',
+                'label' => __('Source', 'wp-sms'),
+                'example' => 'form',
+            ],
+        ];
+    }
+
+    /**
+     * Extract contact payload data from a contact array.
+     *
+     * @param array $contact Contact data as returned by ContactRepositoryInterface::find()
+     * @return array<string, mixed>
+     */
+    public static function extractContact(array $contact): array
+    {
+        return [
+            'email'      => $contact['email'] ?? '',
+            'phone'      => $contact['phone'] ?? '',
+            'first_name' => $contact['first_name'] ?? '',
+            'last_name'  => $contact['last_name'] ?? '',
+            'status'     => $contact['status'] ?? '',
+            'source'     => $contact['source'] ?? '',
+        ];
     }
 
     /**

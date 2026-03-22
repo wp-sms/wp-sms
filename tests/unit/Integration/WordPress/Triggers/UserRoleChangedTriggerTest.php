@@ -17,7 +17,8 @@ class UserRoleChangedTriggerTest extends TestCase
 
     protected function tearDown(): void
     {
-        unset($GLOBALS['_test_actions'], $GLOBALS['_test_userdata']);
+        unset($GLOBALS['_test_actions'], $GLOBALS['_test_userdata'], $GLOBALS['_test_user_meta']);
+        $GLOBALS['_test_user_meta'] = [];
     }
 
     public function testMetadata(): void
@@ -48,7 +49,11 @@ class UserRoleChangedTriggerTest extends TestCase
         $user->user_email = 'test@example.com';
         $user->user_login = 'testuser';
         $user->display_name = 'Test User';
+        $user->first_name = 'Test';
+        $user->last_name = 'User';
+        $user->roles = ['editor'];
         $GLOBALS['_test_userdata'] = $user;
+        $GLOBALS['_test_user_meta'][42]['wsms_phone'] = '+1234567890';
 
         $captured = null;
         $this->trigger->subscribe(function (array $payload) use (&$captured) {
@@ -62,6 +67,10 @@ class UserRoleChangedTriggerTest extends TestCase
         $this->assertSame('editor', $captured['new_role']);
         $this->assertSame('subscriber', $captured['old_role']);
         $this->assertSame('test@example.com', $captured['user']['email']);
+        $this->assertSame('+1234567890', $captured['user']['phone']);
+        $this->assertSame('Test', $captured['user']['first_name']);
+        $this->assertSame('User', $captured['user']['last_name']);
+        $this->assertSame(['editor'], $captured['user']['roles']);
     }
 
     public function testHandlesEmptyOldRoles(): void

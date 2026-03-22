@@ -62,6 +62,12 @@ class PostStatusChangedTrigger extends AbstractTrigger
                 'description' => __('The new status of the post', 'wp-sms'),
                 'example' => 'publish',
             ],
+            'author_id' => [
+                'type' => 'integer',
+                'label' => __('Author ID', 'wp-sms'),
+                'description' => __('The user ID of the post author', 'wp-sms'),
+                'example' => 1,
+            ],
         ];
     }
 
@@ -106,11 +112,12 @@ class PostStatusChangedTrigger extends AbstractTrigger
             }
 
             $callback([
-                'post_id' => $post->ID,
+                'post_id'    => $post->ID,
                 'post_title' => $post->post_title,
-                'post_type' => $post->post_type,
+                'post_type'  => $post->post_type,
                 'old_status' => $oldStatus,
                 'new_status' => $newStatus,
+                'author_id'  => (int) $post->post_author,
             ]);
         }, 10, 3);
     }

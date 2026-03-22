@@ -45,15 +45,17 @@ class ProductPurchasedTriggerTest extends TestCase
 
     public function testFiresOncePerItem(): void
     {
+        $item1 = new \WC_Order_Item_Stub(55, 'Widget', 2);
+        $item1->set_total('29.98');
+        $item2 = new \WC_Order_Item_Stub(66, 'Gadget', 1);
+        $item2->set_total('15.00');
+
         $order = new \WC_Order_Stub(1001);
         $order->set_billing_email('test@example.com');
         $order->set_billing_phone('+1');
         $order->set_billing_first_name('John');
         $order->set_billing_last_name('Doe');
-        $order->set_items([
-            new \WC_Order_Item_Stub(55, 'Widget', 2),
-            new \WC_Order_Item_Stub(66, 'Gadget', 1),
-        ]);
+        $order->set_items([$item1, $item2]);
         $GLOBALS['_test_wc_order'] = $order;
 
         $payloads = [];
@@ -67,7 +69,11 @@ class ProductPurchasedTriggerTest extends TestCase
         $this->assertSame(55, $payloads[0]['product_id']);
         $this->assertSame('Widget', $payloads[0]['product_name']);
         $this->assertSame(2, $payloads[0]['quantity']);
+        $this->assertSame('29.98', $payloads[0]['item_total']);
+        $this->assertSame('John', $payloads[0]['customer']['first_name']);
+        $this->assertSame('Doe', $payloads[0]['customer']['last_name']);
         $this->assertSame(66, $payloads[1]['product_id']);
+        $this->assertSame('15.00', $payloads[1]['item_total']);
     }
 
     public function testDoesNotFireIfOrderNotFound(): void

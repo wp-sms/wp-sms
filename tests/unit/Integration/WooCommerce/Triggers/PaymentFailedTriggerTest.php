@@ -49,6 +49,8 @@ class PaymentFailedTriggerTest extends TestCase
         $order->set_billing_phone('+1');
         $order->set_billing_first_name('A');
         $order->set_billing_last_name('B');
+        $order->set_currency('USD');
+        $order->set_payment_method_title('Credit Card');
         $GLOBALS['_test_wc_order'] = $order;
 
         $captured = null;
@@ -59,7 +61,11 @@ class PaymentFailedTriggerTest extends TestCase
         $this->fireAction('woocommerce_order_status_failed', 1001);
 
         $this->assertSame(1001, $captured['order_id']);
-        $this->assertSame('failed', $captured['order']['status']);
+        $this->assertSame('pending', $captured['order']['status']);
+        $this->assertSame('USD', $captured['order']['currency']);
+        $this->assertSame('Credit Card', $captured['order']['payment_method']);
+        $this->assertSame('A', $captured['customer']['first_name']);
+        $this->assertSame('B', $captured['customer']['last_name']);
     }
 
     public function testDoesNotFireIfOrderNotFound(): void

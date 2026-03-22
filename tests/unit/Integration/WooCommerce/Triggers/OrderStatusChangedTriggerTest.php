@@ -51,6 +51,8 @@ class OrderStatusChangedTriggerTest extends TestCase
         $order->set_billing_phone('+1');
         $order->set_billing_first_name('John');
         $order->set_billing_last_name('Doe');
+        $order->set_currency('USD');
+        $order->set_payment_method_title('Stripe');
         $GLOBALS['_test_wc_order'] = $order;
 
         $captured = null;
@@ -64,6 +66,10 @@ class OrderStatusChangedTriggerTest extends TestCase
         $this->assertSame('pending', $captured['old_status']);
         $this->assertSame('processing', $captured['new_status']);
         $this->assertSame('75.00', $captured['order']['total']);
+        $this->assertSame('USD', $captured['order']['currency']);
+        $this->assertSame('Stripe', $captured['order']['payment_method']);
+        $this->assertSame('John', $captured['customer']['first_name']);
+        $this->assertSame('Doe', $captured['customer']['last_name']);
     }
 
     public function testDoesNotFireIfOrderNotFound(): void

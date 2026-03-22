@@ -2,6 +2,7 @@
 
 namespace WSms\Flow\Engine;
 
+use WSms\Contact\Contracts\ContactRepositoryInterface;
 use WSms\Dependencies\Psr\Log\LoggerInterface;
 use WSms\Enums\ExecutionStatus;
 use WSms\Event\Contracts\EventDispatcherInterface;
@@ -27,6 +28,7 @@ class FlowExecutor
         private readonly ActionRegistry $actionRegistry,
         private readonly FlowLogger $flowLogger,
         private readonly LoggerInterface $logger,
+        private readonly ?ContactRepositoryInterface $contactRepository = null,
     ) {
     }
 
@@ -297,6 +299,23 @@ class FlowExecutor
             $post = get_post((int) $payload['post_id']);
             if ($post) {
                 $additions['post'] = PayloadSchemas::extractPost($post);
+            }
+        }
+
+        if (isset($payload['contact_id']) && !isset($payload['contact']) && is_string($payload['contact_id']) && $this->contactRepository) {
+            $contact = $this->contactRepository->find($payload['contact_id']);
+            if ($contact) {
+                $additions['contact'] = PayloadSchemas::extractContact($contact);
+            }
+        }
+
+        if (isset($payload['order_id']) && !isset($payload['order']) && function_exists('wc_get_order')) {
+            $order = wc_get_order((int) $payload['order_id']);
+            if ($order) {
+                $additions['order'] = PayloadSchemas::extractWooOrder($order);
+                if (!isset($payload['customer'])) {
+                    $additions['customer'] = PayloadSchemas::extractWooCustomer($order);
+                }
             }
         }
 

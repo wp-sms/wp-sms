@@ -54,8 +54,8 @@ class OrderStatusChangedTrigger extends AbstractTrigger
                 'type' => 'object',
                 'label' => __('Order Data', 'wp-sms'),
                 'description' => __('Order details', 'wp-sms'),
-                'properties' => PayloadSchemas::wooOrder(false),
-                'example' => ['id' => 1001, 'total' => '59.99'],
+                'properties' => PayloadSchemas::wooOrder(),
+                'example' => ['id' => 1001, 'total' => '59.99', 'status' => 'processing'],
             ],
             'customer' => [
                 'type' => 'object',
@@ -93,18 +93,11 @@ class OrderStatusChangedTrigger extends AbstractTrigger
                 return;
             }
             $callback([
-                'order_id' => $orderId,
+                'order_id'   => $orderId,
                 'old_status' => $oldStatus,
                 'new_status' => $newStatus,
-                'order' => [
-                    'id' => $orderId,
-                    'total' => $order->get_total(),
-                ],
-                'customer' => [
-                    'email' => $order->get_billing_email(),
-                    'phone' => $order->get_billing_phone(),
-                    'name' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
-                ],
+                'order'      => PayloadSchemas::extractWooOrder($order),
+                'customer'   => PayloadSchemas::extractWooCustomer($order),
             ]);
         }, 10, 3);
     }

@@ -5,6 +5,7 @@ namespace WSms\Tests\Unit\Flow\Engine;
 use PHPUnit\Framework\TestCase;
 use WSms\Event\EventDispatcher;
 use WSms\Flow\Action\ActionRegistry;
+use WSms\Contact\Contracts\ContactRepositoryInterface;
 use WSms\Flow\Contracts\ActionInterface;
 use WSms\Flow\Contracts\ActionResult;
 use WSms\Flow\Contracts\ConditionEvaluatorInterface;
@@ -22,6 +23,7 @@ class FlowExecutorTest extends TestCase
 {
     private FlowExecutor $executor;
     private ActionRegistry $actionRegistry;
+    private ContactRepositoryInterface $contactRepository;
     private array $dispatched = [];
 
     protected function setUp(): void
@@ -51,6 +53,7 @@ class FlowExecutorTest extends TestCase
         $executionRepo = $this->createMock(FlowExecutionRepository::class);
         $eventDispatcher = new EventDispatcher();
         $this->actionRegistry = new ActionRegistry();
+        $this->contactRepository = $this->createMock(ContactRepositoryInterface::class);
         $logger = new WpLogger();
         $flowLogger = $this->createMock(FlowLogger::class);
         $payloadResolver = new PayloadResolver(new MustacheEngine());
@@ -64,6 +67,7 @@ class FlowExecutorTest extends TestCase
             $this->actionRegistry,
             $flowLogger,
             $logger,
+            $this->contactRepository,
         );
     }
 
@@ -615,6 +619,98 @@ class FlowExecutorTest extends TestCase
         $this->assertSame('shared', $job1Context['action_outputs']['before_parallel']['data']);
     }
 
+    // --- Contact Expansion Tests ---
+
+    public function testExpandEntitiesExpandsContactId(): void
+    {
+        $this->contactRepository->method('find')
+            ->with('01HY-ABC')
+            ->willReturn([
+                'id'         => '01HY-ABC',
+                'email'      => 'contact@example.com',
+                'phone'      => '+9876543210',
+                'first_name' => 'Jane',
+                'last_name'  => 'Smith',
+                'status'     => 'active',
+                'source'     => 'form',
+            ]);
+
+        $receivedPayload = [];
+        $this->actionRegistry->register($this->makeAction('capture', function (array $payload) use (&$receivedPayload) {
+            $receivedPayload = $payload;
+            return ActionResult::success();
+        }));
+
+        $context = new ExecutionContext(['contact_id' => '01HY-ABC']);
+        $this->executor->execute('exec-1', [
+            ['id' => 's1', 'type' => 'action', 'action' => 'capture', 'config' => []],
+        ], $context);
+
+        $this->assertSame('contact@example.com', $receivedPayload['contact']['email']);
+        $this->assertSame('+9876543210', $receivedPayload['contact']['phone']);
+        $this->assertSame('Jane', $receivedPayload['contact']['first_name']);
+        $this->assertSame('Smith', $receivedPayload['contact']['last_name']);
+        $this->assertSame('active', $receivedPayload['contact']['status']);
+        $this->assertSame('form', $receivedPayload['contact']['source']);
+    }
+
+    public function testExpandEntitiesSkipsWhenContactNotFound(): void
+    {
+        $this->contactRepository->method('find')->willReturn(null);
+
+        $receivedPayload = [];
+        $this->actionRegistry->register($this->makeAction('capture', function (array $payload) use (&$receivedPayload) {
+            $receivedPayload = $payload;
+            return ActionResult::success();
+        }));
+
+        $context = new ExecutionContext(['contact_id' => '01HY-MISSING']);
+        $this->executor->execute('exec-1', [
+            ['id' => 's1', 'type' => 'action', 'action' => 'capture', 'config' => []],
+        ], $context);
+
+        $this->assertArrayNotHasKey('contact', $receivedPayload);
+    }
+
+    public function testExpandEntitiesSkipsArrayContactIds(): void
+    {
+        $this->contactRepository->expects($this->never())->method('find');
+
+        $receivedPayload = [];
+        $this->actionRegistry->register($this->makeAction('capture', function (array $payload) use (&$receivedPayload) {
+            $receivedPayload = $payload;
+            return ActionResult::success();
+        }));
+
+        $context = new ExecutionContext(['contact_ids' => ['01HY-A', '01HY-B']]);
+        $this->executor->execute('exec-1', [
+            ['id' => 's1', 'type' => 'action', 'action' => 'capture', 'config' => []],
+        ], $context);
+
+        $this->assertArrayNotHasKey('contact', $receivedPayload);
+    }
+
+    public function testExpandEntitiesSkipsWhenContactAlreadyExists(): void
+    {
+        $this->contactRepository->expects($this->never())->method('find');
+
+        $receivedPayload = [];
+        $this->actionRegistry->register($this->makeAction('capture', function (array $payload) use (&$receivedPayload) {
+            $receivedPayload = $payload;
+            return ActionResult::success();
+        }));
+
+        $context = new ExecutionContext([
+            'contact_id' => '01HY-ABC',
+            'contact'    => ['email' => 'original@example.com'],
+        ]);
+        $this->executor->execute('exec-1', [
+            ['id' => 's1', 'type' => 'action', 'action' => 'capture', 'config' => []],
+        ], $context);
+
+        $this->assertSame('original@example.com', $receivedPayload['contact']['email']);
+    }
+
     // --- Helpers ---
 
     private function makeAction(string $id, \Closure $execute): ActionInterface
@@ -659,6 +755,7 @@ class FlowExecutorTest extends TestCase
             $this->actionRegistry,
             $flowLogger,
             new WpLogger(),
+            $this->contactRepository,
         );
     }
 }

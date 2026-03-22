@@ -42,7 +42,7 @@ class UserDeletedTrigger extends AbstractTrigger
                 'type' => 'object',
                 'label' => __('User Data', 'wp-sms'),
                 'description' => __('User data captured before deletion', 'wp-sms'),
-                'properties' => PayloadSchemas::wpUser(['email', 'login']),
+                'properties' => PayloadSchemas::wpUser(),
                 'example' => [
                     'email' => 'user@example.com',
                     'login' => 'johndoe',
@@ -62,11 +62,8 @@ class UserDeletedTrigger extends AbstractTrigger
         add_action('delete_user', function (int $userId, ?int $reassign) use ($callback) {
             $user = get_userdata($userId);
             $callback([
-                'user_id' => $userId,
-                'user' => $user ? [
-                    'email' => $user->user_email,
-                    'login' => $user->user_login,
-                ] : [],
+                'user_id'     => $userId,
+                'user'        => $user ? PayloadSchemas::extractWpUser($user) : [],
                 'reassign_to' => $reassign,
             ]);
         }, 10, 2);

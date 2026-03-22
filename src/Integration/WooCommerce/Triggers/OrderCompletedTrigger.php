@@ -64,16 +64,8 @@ class OrderCompletedTrigger extends AbstractTrigger
             }
             $callback([
                 'order_id' => $orderId,
-                'order' => [
-                    'id' => $orderId,
-                    'total' => $order->get_total(),
-                    'status' => 'completed',
-                ],
-                'customer' => [
-                    'email' => $order->get_billing_email(),
-                    'phone' => $order->get_billing_phone(),
-                    'name' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
-                ],
+                'order'    => PayloadSchemas::extractWooOrder($order),
+                'customer' => PayloadSchemas::extractWooCustomer($order),
             ]);
         });
     }

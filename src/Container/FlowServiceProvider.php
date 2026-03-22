@@ -37,6 +37,7 @@ class FlowServiceProvider implements ServiceProvider
             $c->get('flow.actions'),
             $c->get('log.flow'),
             $c->get('log.app'),
+            $c->get('contact.repository'),
         ));
 
         $container->register('flow.runner', fn($c) => new FlowRunner(

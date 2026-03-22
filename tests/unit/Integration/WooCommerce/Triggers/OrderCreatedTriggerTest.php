@@ -50,6 +50,10 @@ class OrderCreatedTriggerTest extends TestCase
         $order->set_billing_phone('+1234567890');
         $order->set_billing_first_name('John');
         $order->set_billing_last_name('Doe');
+        $order->set_currency('EUR');
+        $order->set_payment_method_title('PayPal');
+        $order->set_date_created(new \DateTimeImmutable('2026-03-18 14:30:00'));
+        $order->set_items([new \WC_Order_Item_Stub(1, 'Widget'), new \WC_Order_Item_Stub(2, 'Gadget')]);
         $GLOBALS['_test_wc_order'] = $order;
 
         $captured = null;
@@ -62,8 +66,14 @@ class OrderCreatedTriggerTest extends TestCase
         $this->assertNotNull($captured);
         $this->assertSame(1001, $captured['order_id']);
         $this->assertSame('59.99', $captured['order']['total']);
+        $this->assertSame('EUR', $captured['order']['currency']);
+        $this->assertSame('PayPal', $captured['order']['payment_method']);
+        $this->assertSame('2026-03-18 14:30:00', $captured['order']['date_created']);
+        $this->assertSame(2, $captured['order']['items_count']);
         $this->assertSame('customer@example.com', $captured['customer']['email']);
         $this->assertSame('John Doe', $captured['customer']['name']);
+        $this->assertSame('John', $captured['customer']['first_name']);
+        $this->assertSame('Doe', $captured['customer']['last_name']);
     }
 
     public function testDoesNotFireIfOrderNotFound(): void

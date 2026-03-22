@@ -1207,6 +1207,9 @@ if (!class_exists('WC_Order_Stub')) {
         private string $billingLastName = '';
         private string $total = '0.00';
         private string $status = 'pending';
+        private string $currency = 'USD';
+        private string $paymentMethodTitle = 'Credit Card';
+        private ?object $dateCreated = null;
         private array $items = [];
         private array $notes = [];
 
@@ -1269,6 +1272,34 @@ if (!class_exists('WC_Order_Stub')) {
             }
         }
 
+        public function get_currency(): string {
+            return $this->currency;
+        }
+
+        public function set_currency(string $currency): void {
+            $this->currency = $currency;
+        }
+
+        public function get_payment_method_title(): string {
+            return $this->paymentMethodTitle;
+        }
+
+        public function set_payment_method_title(string $title): void {
+            $this->paymentMethodTitle = $title;
+        }
+
+        public function get_date_created(): ?object {
+            return $this->dateCreated;
+        }
+
+        public function set_date_created(?object $date): void {
+            $this->dateCreated = $date;
+        }
+
+        public function get_item_count(): int {
+            return count($this->items);
+        }
+
         public function get_items(): array {
             return $this->items;
         }
@@ -1307,6 +1338,7 @@ if (!class_exists('WC_Order_Item_Stub')) {
         private int $productId;
         private string $name;
         private int $quantity;
+        private string $total = '0.00';
 
         public function __construct(int $productId, string $name, int $quantity = 1) {
             $this->productId = $productId;
@@ -1324,6 +1356,14 @@ if (!class_exists('WC_Order_Item_Stub')) {
 
         public function get_quantity(): int {
             return $this->quantity;
+        }
+
+        public function get_total(): string {
+            return $this->total;
+        }
+
+        public function set_total(string $total): void {
+            $this->total = $total;
         }
     }
 }

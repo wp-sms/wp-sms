@@ -255,6 +255,20 @@ export const AUTHOR_SCHEMA: JsonSchemaProperty = {
   },
 };
 
+// Keep in sync with PayloadSchemas::extractContact() in src/Integration/PayloadSchemas.php
+export const CONTACT_SCHEMA: JsonSchemaProperty = {
+  type: 'object',
+  title: 'Contact',
+  properties: {
+    email:      { type: 'string', title: 'Email', example: 'contact@example.com' },
+    phone:      { type: 'string', title: 'Phone', example: '+1234567890' },
+    first_name: { type: 'string', title: 'First Name', example: 'John' },
+    last_name:  { type: 'string', title: 'Last Name', example: 'Doe' },
+    status:     { type: 'string', title: 'Status', example: 'active' },
+    source:     { type: 'string', title: 'Source', example: 'form' },
+  },
+};
+
 // Keep in sync with PayloadSchemas::extractPost() in src/Integration/PayloadSchemas.php
 export const POST_SCHEMA: JsonSchemaProperty = {
   type: 'object',
@@ -287,6 +301,9 @@ export function buildMergedSchema(payloadSchema?: JsonSchema): JsonSchema {
     }
     if (payloadSchema.properties.post_id && !payloadSchema.properties.post) {
       properties.post = POST_SCHEMA;
+    }
+    if (payloadSchema.properties.contact_id && !payloadSchema.properties.contact) {
+      properties.contact = CONTACT_SCHEMA;
     }
   }
 

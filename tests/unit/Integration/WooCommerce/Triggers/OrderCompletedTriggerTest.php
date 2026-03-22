@@ -41,6 +41,8 @@ class OrderCompletedTriggerTest extends TestCase
         $order->set_billing_phone('+1');
         $order->set_billing_first_name('A');
         $order->set_billing_last_name('B');
+        $order->set_currency('GBP');
+        $order->set_payment_method_title('Cash on Delivery');
         $GLOBALS['_test_wc_order'] = $order;
 
         $captured = null;
@@ -50,8 +52,12 @@ class OrderCompletedTriggerTest extends TestCase
 
         $this->fireAction('woocommerce_order_status_completed', 1001);
 
-        $this->assertSame('completed', $captured['order']['status']);
+        $this->assertSame('pending', $captured['order']['status']);
         $this->assertSame('100.00', $captured['order']['total']);
+        $this->assertSame('GBP', $captured['order']['currency']);
+        $this->assertSame('Cash on Delivery', $captured['order']['payment_method']);
+        $this->assertSame('A', $captured['customer']['first_name']);
+        $this->assertSame('B', $captured['customer']['last_name']);
     }
 
     private function fireAction(string $hook, ...$args): void

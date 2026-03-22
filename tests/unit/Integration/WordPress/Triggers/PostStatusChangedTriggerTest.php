@@ -35,6 +35,7 @@ class PostStatusChangedTriggerTest extends TestCase
         $this->assertArrayHasKey('post_type', $schema);
         $this->assertArrayHasKey('old_status', $schema);
         $this->assertArrayHasKey('new_status', $schema);
+        $this->assertArrayHasKey('author_id', $schema);
     }
 
     public function testSubscribeRegistersTransitionPostStatusHook(): void
@@ -49,6 +50,7 @@ class PostStatusChangedTriggerTest extends TestCase
             'ID' => 123,
             'post_title' => 'Test Post',
             'post_type' => 'page',
+            'post_author' => 5,
         ];
 
         $captured = null;
@@ -64,6 +66,7 @@ class PostStatusChangedTriggerTest extends TestCase
         $this->assertSame('page', $captured['post_type']);
         $this->assertSame('draft', $captured['old_status']);
         $this->assertSame('publish', $captured['new_status']);
+        $this->assertSame(5, $captured['author_id']);
     }
 
     public function testDoesNotFireWhenStatusUnchanged(): void

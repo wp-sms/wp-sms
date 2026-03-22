@@ -56,6 +56,12 @@ class CustomerCreatedTrigger extends AbstractTrigger
                 'description' => __('Customer last name', 'wp-sms'),
                 'example' => 'Doe',
             ],
+            'phone' => [
+                'type' => 'string',
+                'label' => __('Phone', 'wp-sms'),
+                'description' => __('Customer phone number', 'wp-sms'),
+                'example' => '+1234567890',
+            ],
         ];
     }
 
@@ -67,6 +73,7 @@ class CustomerCreatedTrigger extends AbstractTrigger
                 'email' => $newCustomerData['user_email'] ?? '',
                 'first_name' => $newCustomerData['first_name'] ?? '',
                 'last_name' => $newCustomerData['last_name'] ?? '',
+                'phone' => get_user_meta($customerId, 'billing_phone', true) ?: '',
             ]);
         }, 10, 2);
     }

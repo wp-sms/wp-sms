@@ -56,6 +56,12 @@ class ProductPurchasedTrigger extends AbstractTrigger
                 'description' => __('Number of items purchased', 'wp-sms'),
                 'example' => 2,
             ],
+            'item_total' => [
+                'type' => 'string',
+                'label' => __('Item Total', 'wp-sms'),
+                'description' => __('Total price for this line item', 'wp-sms'),
+                'example' => '29.99',
+            ],
             'customer' => [
                 'type' => 'object',
                 'label' => __('Customer Data', 'wp-sms'),
@@ -99,19 +105,16 @@ class ProductPurchasedTrigger extends AbstractTrigger
                 return;
             }
 
-            $customer = [
-                'email' => $order->get_billing_email(),
-                'phone' => $order->get_billing_phone(),
-                'name' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
-            ];
+            $customer = PayloadSchemas::extractWooCustomer($order);
 
             foreach ($order->get_items() as $item) {
                 $callback([
-                    'order_id' => $orderId,
-                    'product_id' => $item->get_product_id(),
+                    'order_id'     => $orderId,
+                    'product_id'   => $item->get_product_id(),
                     'product_name' => $item->get_name(),
-                    'quantity' => $item->get_quantity(),
-                    'customer' => $customer,
+                    'quantity'     => $item->get_quantity(),
+                    'item_total'   => $item->get_total(),
+                    'customer'     => $customer,
                 ]);
             }
         });

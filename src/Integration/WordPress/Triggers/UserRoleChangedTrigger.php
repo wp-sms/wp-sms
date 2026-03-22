@@ -55,7 +55,7 @@ class UserRoleChangedTrigger extends AbstractTrigger
                 'type' => 'object',
                 'label' => __('User Data', 'wp-sms'),
                 'description' => __('User profile data', 'wp-sms'),
-                'properties' => PayloadSchemas::wpUser(['email', 'login', 'display_name']),
+                'properties' => PayloadSchemas::wpUser(),
                 'example' => [
                     'email' => 'user@example.com',
                     'login' => 'johndoe',
@@ -97,14 +97,10 @@ class UserRoleChangedTrigger extends AbstractTrigger
         add_action('set_user_role', function (int $userId, string $role, array $oldRoles) use ($callback) {
             $user = get_userdata($userId);
             $callback([
-                'user_id' => $userId,
+                'user_id'  => $userId,
                 'new_role' => $role,
                 'old_role' => $oldRoles[0] ?? '',
-                'user' => $user ? [
-                    'email' => $user->user_email,
-                    'login' => $user->user_login,
-                    'display_name' => $user->display_name,
-                ] : [],
+                'user'     => $user ? PayloadSchemas::extractWpUser($user) : [],
             ]);
         }, 10, 3);
     }
