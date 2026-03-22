@@ -1,0 +1,42 @@
+/* CF7-specific lite-phone-input theme.
+   CF7 pages don't have Tailwind vars, so provide sensible defaults
+   that inherit from the host theme where possible. */
+.wpcf7 .wsms-phone-input {
+    display: block;
+    --lpi-bg: #fff;
+    --lpi-text-color: inherit;
+    --lpi-border-color: #8c8f94;
+    --lpi-border-radius: 4px;
+    --lpi-input-height: 40px;
+    --lpi-font-size: inherit;
+    --lpi-hover-bg: #f0f0f1;
+    --lpi-selected-bg: #e8f0fe;
+    --lpi-highlight-bg: #e8f0fe;
+    --lpi-dropdown-bg: #fff;
+    --lpi-dropdown-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    --lpi-dropdown-max-height: 250px;
+}
+
+.wpcf7 .wsms-phone-input :is(.lpi__input, .lpi__trigger):focus-visible {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: none;
+}
+
+/* Validation error state */
+.wpcf7 .wsms-phone-wrap.wpcf7-not-valid .lpi__input {
+    border-color: #dc3232;
+}
+
+/* WordPress emoji filter fix (WP converts emoji to img tags) */
+.wsms-phone-input .lpi__flag img.emoji {
+    width: 1.2em;
+    height: 1.2em;
+    display: inline;
+    vertical-align: text-bottom;
+}
+
+/* Dropdown z-index for CF7 context */
+.wpcf7 .wsms-phone-input .lpi__dropdown {
+    z-index: 100000;
+}

@@ -24,9 +24,9 @@ export function CF7Verification({ settings, onUpdate }: CF7VerificationProps) {
           Form Verification
         </CardTitle>
         <CardDescription>
-          Add email and phone OTP verification fields to Contact Form 7 forms.
-          Registers <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">[wsms_verify_email]</code> and <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">[wsms_verify_phone]</code> form
-          tags in the Contact Form 7 editor. Visitors must verify before the form can be submitted.
+          Add international phone fields and email verification to Contact Form 7 forms.
+          Registers <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">[wsms_phone]</code> and <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">[wsms_verify_email]</code> form
+          tags. Use <code className="rounded bg-muted px-1 py-0.5 font-mono text-xs">[wsms_phone verify]</code> to require SMS verification.
         </CardDescription>
         <CardAction>
           <Switch

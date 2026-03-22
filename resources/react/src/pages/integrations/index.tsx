@@ -38,7 +38,7 @@ const AUTH_INTEGRATIONS: AuthIntegrationDef[] = [
   {
     id: 'contactform7',
     name: 'Contact Form 7',
-    description: 'Email and phone OTP verification fields for Contact Form 7 forms.',
+    description: 'International phone fields and email verification for Contact Form 7 forms.',
     icon: 'file-text',
     component: CF7Verification,
   },
