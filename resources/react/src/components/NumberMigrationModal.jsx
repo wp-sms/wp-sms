@@ -159,6 +159,7 @@ export default function NumberMigrationModal({ open, onOpenChange }) {
       setStep(STEP_DONE)
       // Dismiss the admin notice banner after successful migration
       try { await adminNoticesApi.dismiss('number_migration', 'handler') } catch (_) { /* ignore */ }
+      window.dispatchEvent(new CustomEvent('wpsms:number-migration-done'))
     } catch (err) {
       setError(err.message)
     } finally {

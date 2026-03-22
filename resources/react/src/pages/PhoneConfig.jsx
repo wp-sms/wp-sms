@@ -270,20 +270,24 @@ export default function PhoneConfig() {
 
       {/* Number Migration Tool */}
       <Card>
-        <CardHeader>
-          <CardTitle className="wsms-flex wsms-items-center wsms-gap-2">
-            <DatabaseZap className="wsms-h-4 wsms-w-4 wsms-text-primary" />
-            {__('Phone Number Improvement')}
-          </CardTitle>
-          <CardDescription>
-            {__('Review and update your phone numbers to include the country code for better delivery reliability.')}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button onClick={() => window.dispatchEvent(new CustomEvent('wpsms:open-migration-wizard'))} variant="outline">
+        <div className="wsms-flex wsms-items-center wsms-justify-between wsms-gap-4 wsms-px-5 wsms-py-4">
+          <div>
+            <p className="wsms-text-[13px] wsms-font-medium wsms-text-foreground">
+              {__('Phone Number Improvement')}
+            </p>
+            <p className="wsms-text-[12px] wsms-text-muted-foreground wsms-mt-0.5">
+              {__('Review and update your phone numbers to include the country code for better delivery reliability.')}
+            </p>
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.dispatchEvent(new CustomEvent('wpsms:open-migration-wizard'))}
+          >
+            <DatabaseZap className="wsms-h-4 wsms-w-4 wsms-me-1" />
             {__('Open Update Wizard')}
           </Button>
-        </CardContent>
+        </div>
       </Card>
 
       {/* GDPR Compliance */}
