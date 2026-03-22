@@ -55,11 +55,11 @@ class AuthShortcode
     private function renderPopupTrigger(array $atts): string
     {
         $view = esc_attr($atts['view']);
-        $text = esc_html($atts['text']);
+        $text = esc_html($atts['text'] ?: 'Sign In');
         $formAttr = $atts['id'] ? sprintf(' data-wsms-form-id="%s"', esc_attr($atts['id'])) : '';
 
         return sprintf(
-            '<button type="button" data-wsms-auth-view="%s"%s class="wsms-auth-trigger">%s</button>',
+            '<div class="wp-block-button"><button type="button" data-wsms-auth-view="%s"%s class="wsms-auth-trigger wp-block-button__link wp-element-button">%s</button></div>',
             $view,
             $formAttr,
             $text,

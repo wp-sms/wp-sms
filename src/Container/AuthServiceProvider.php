@@ -9,6 +9,7 @@ use WSms\Auth\ApiAuthGuard;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthRouter;
 use WSms\Auth\AuthSession;
+use WSms\Auth\AuthBlock;
 use WSms\Auth\AuthShortcode;
 use WSms\Auth\AvatarManager;
 use WSms\Auth\CaptchaGuard;
@@ -131,6 +132,12 @@ class AuthServiceProvider implements ServiceProvider
             );
         });
 
+        $container->register('auth.block', function () use ($container) {
+            return new AuthBlock(
+                $container->get('auth.shortcode'),
+            );
+        });
+
         $container->register('auth.form_repository', function () {
             return new RegistrationFormRepository();
         });
@@ -159,6 +166,7 @@ class AuthServiceProvider implements ServiceProvider
         $container->get('auth.router')->setCaptchaGuard($container->get('auth.captcha_guard'));
         $container->get('auth.router')->registerHooks();
         $container->get('auth.shortcode')->registerHooks();
+        $container->get('auth.block')->registerHooks();
 
         $container->get('auth.login_guard')->registerHooks();
         $container->get('auth.api_guard')->registerHooks();

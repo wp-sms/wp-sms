@@ -1,0 +1,16 @@
+/* Editor preview styles for the auth-form block */
+.wsms-auth-trigger {
+    cursor: text;
+}
+
+.wsms-auth-embed {
+    min-height: 60px;
+    padding: 16px;
+    border: 1px dashed #c3c4c7;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #757575;
+    font-size: 13px;
+}

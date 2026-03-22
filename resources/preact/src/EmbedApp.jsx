@@ -3,6 +3,7 @@ import { ErrorBoundary } from 'preact-iso';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { ForgotPassword } from './pages/ForgotPassword';
+import { AuthLayout } from './layouts/AuthLayout';
 import { BrandingProvider } from './components/BrandingProvider';
 import { authConfig, formSlug as formSlugSignal, loadConfig, renderMode } from './signals/config';
 
@@ -12,13 +13,28 @@ const VIEW_COMPONENTS = {
     'forgot-password': ForgotPassword,
 };
 
+const LOGGED_IN_VIEWS = new Set(['login', 'forgot-password']);
+
 export function EmbedApp({ view = 'register', formSlug = null }) {
     useEffect(() => {
         renderMode.value = 'embed';
+        if (window.wsmsAuth?.isLoggedIn && LOGGED_IN_VIEWS.has(view)) return;
         formSlugSignal.value = formSlug;
         authConfig.value = null;
         loadConfig(formSlug, { force: true });
-    }, [formSlug]);
+    }, [formSlug, view]);
+
+    if (window.wsmsAuth?.isLoggedIn && LOGGED_IN_VIEWS.has(view)) {
+        return (
+            <BrandingProvider>
+                <AuthLayout title="Already Signed In">
+                    <p className="text-center text-sm text-muted-foreground">
+                        You are already logged in.
+                    </p>
+                </AuthLayout>
+            </BrandingProvider>
+        );
+    }
 
     const ViewComponent = VIEW_COMPONENTS[view] || Register;
 
