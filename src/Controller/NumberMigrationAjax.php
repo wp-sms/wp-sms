@@ -440,6 +440,9 @@ class NumberMigrationAjax extends AjaxControllerAbstract
         update_option(self::BACKUP_OPTION_KEY, $backup, false);
         delete_transient('wpsms_local_number_count');
 
+        // Persist the country code to plugin settings so future numbers use it
+        Option::updateOption('mobile_county_code', $countryCode);
+
         // Save migration status
         update_option(self::STATUS_OPTION_KEY, [
             'status'          => 'completed',
