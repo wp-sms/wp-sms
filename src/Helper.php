@@ -155,8 +155,9 @@ class Helper
         }
 
         $users = get_users([
-            'meta_key'   => self::getUserMobileFieldName(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-            'meta_value' => self::prepareMobileNumberQuery($number) // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+            'meta_key'     => self::getUserMobileFieldName(), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+            'meta_value'   => self::prepareMobileNumberQuery($number), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+            'meta_compare' => 'IN',
         ]);
 
         return !empty($users) ? array_values($users)[0] : null;
