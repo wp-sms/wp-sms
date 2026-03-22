@@ -2,13 +2,20 @@
 
 namespace WSms\Integration\Auth;
 
+use WSms\Auth\RegistrationFormRepository;
 use WSms\Enums\EventType;
+use WSms\Integration\Auth\Triggers\FormRegistrationTrigger;
 use WSms\Integration\Contracts\IntegrationInterface;
 
 defined('ABSPATH') || exit;
 
 class AuthIntegration implements IntegrationInterface
 {
+    public function __construct(
+        private ?RegistrationFormRepository $formRepo = null,
+    ) {
+    }
+
     public function getId(): string
     {
         return 'wsms_auth';
@@ -51,7 +58,7 @@ class AuthIntegration implements IntegrationInterface
 
     public function getTriggers(): array
     {
-        return [
+        $triggers = [
             new AuthEventTrigger(
                 'auth.login_success',
                 __('Login Success', 'wp-sms'),
@@ -183,6 +190,12 @@ class AuthIntegration implements IntegrationInterface
                 __('Fires when a user verifies their phone number', 'wp-sms'),
             ),
         ];
+
+        if ($this->formRepo) {
+            $triggers[] = new FormRegistrationTrigger($this->formRepo);
+        }
+
+        return $triggers;
     }
 
     public function getActions(): array

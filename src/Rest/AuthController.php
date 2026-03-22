@@ -8,6 +8,7 @@ use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\CaptchaGuard;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\RateLimiter;
+use WSms\Auth\RegistrationFormRepository;
 use WSms\Social\SocialAuthManager;
 
 defined('ABSPATH') || exit;
@@ -20,6 +21,7 @@ class AuthController extends Controller
         private PolicyEngine $policy,
         private CaptchaGuard $captchaGuard,
         private SocialAuthManager $socialManager,
+        private ?RegistrationFormRepository $formRepository = null,
     ) {
     }
 
@@ -92,6 +94,9 @@ class AuthController extends Controller
             'methods'             => 'GET',
             'callback'            => [$this, 'handleConfig'],
             'permission_callback' => '__return_true',
+            'args'                => [
+                'form' => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+            ],
         ]);
     }
 
@@ -214,24 +219,27 @@ class AuthController extends Controller
 
     public function handleConfig(WP_REST_Request $request): WP_REST_Response
     {
-        $primaryMethods = $this->policy->getAvailablePrimaryMethods();
+        $formSlug = $request->get_param('form');
 
-        $regFieldDefs = $this->policy->getRegistrationFieldDefinitions();
-        $profileFieldDefs = $this->policy->getProfileFieldDefinitions();
+        if ($formSlug && $this->formRepository) {
+            $form = $this->formRepository->findBySlug($formSlug);
+            if (!$form || $form->getStatus() !== 'active') {
+                return new WP_REST_Response(['error' => 'form_not_found'], 404);
+            }
 
-        $config = array_merge(
-            [
-                'primary_methods'              => $primaryMethods,
-                'method_details'               => $this->policy->getMethodDetails($primaryMethods),
-                'mfa_enabled'                  => !empty($this->policy->getAvailableMfaFactors()),
-                'enabled_channels'             => $this->policy->getVerificationChannelKeys(),
-                'base_url'                     => $this->policy->getSetting('auth_base_url', '/account'),
-                'registration_fields'          => $this->policy->getEffectiveRegistrationFields(),
-                'registration_field_definitions' => $regFieldDefs,
-                'profile_field_definitions'    => $profileFieldDefs,
-            ],
-            $this->policy->getVerificationRequirements(),
-        );
+            return $this->buildFormConfig($form);
+        }
+
+        return $this->buildGlobalConfig();
+    }
+
+    private function buildGlobalConfig(): WP_REST_Response
+    {
+        $config = $this->buildBaseConfig();
+
+        $config['registration_fields'] = $this->policy->getEffectiveRegistrationFields();
+        $config['registration_field_definitions'] = $this->policy->getRegistrationFieldDefinitions();
+        $config = array_merge($config, $this->policy->getVerificationRequirements());
 
         $socialProviders = [];
         foreach ($this->socialManager->getEnabledProviders() as $p) {
@@ -245,6 +253,45 @@ class AuthController extends Controller
         if (!empty($socialProviders)) {
             $config['social_providers'] = $socialProviders;
         }
+
+        return new WP_REST_Response($config);
+    }
+
+    private function buildFormConfig(\WSms\Auth\RegistrationForm $form): WP_REST_Response
+    {
+        $config = $this->buildBaseConfig();
+
+        $config['registration_fields'] = $this->policy->getFormEffectiveRegistrationFields($form);
+        $config['registration_field_definitions'] = $this->policy->getFormRegistrationFieldDefinitions($form);
+        $config['form_id'] = $form->getId();
+        $config['form_name'] = $form->getName();
+        $config['form_slug'] = $form->getSlug();
+        $config = array_merge($config, $this->policy->getFormVerificationRequirements($form));
+
+        if ($form->getRedirectUrl() !== '') {
+            $config['form_redirect_url'] = $form->getRedirectUrl();
+        }
+
+        $formBranding = $form->getBrandingOverrides();
+        if (!empty($formBranding)) {
+            $config['branding'] = array_merge($config['branding'] ?? [], $formBranding);
+        }
+
+        return new WP_REST_Response($config);
+    }
+
+    private function buildBaseConfig(): array
+    {
+        $primaryMethods = $this->policy->getAvailablePrimaryMethods();
+
+        $config = [
+            'primary_methods'           => $primaryMethods,
+            'method_details'            => $this->policy->getMethodDetails($primaryMethods),
+            'mfa_enabled'               => !empty($this->policy->getAvailableMfaFactors()),
+            'enabled_channels'          => $this->policy->getVerificationChannelKeys(),
+            'base_url'                  => $this->policy->getSetting('auth_base_url', '/account'),
+            'profile_field_definitions' => $this->policy->getProfileFieldDefinitions(),
+        ];
 
         $captchaConfig = $this->captchaGuard->getPublicConfig();
         if ($captchaConfig) {
@@ -265,6 +312,6 @@ class AuthController extends Controller
             ];
         }
 
-        return new WP_REST_Response($config);
+        return $config;
     }
 }

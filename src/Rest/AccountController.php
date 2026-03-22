@@ -10,6 +10,7 @@ use WSms\Auth\AvatarManager;
 use WSms\Auth\CaptchaGuard;
 use WSms\Auth\ProfileFieldRegistry;
 use WSms\Auth\RateLimiter;
+use WSms\Auth\RegistrationFormRepository;
 use WSms\Enums\SessionStage;
 
 defined('ABSPATH') || exit;
@@ -23,6 +24,7 @@ class AccountController extends Controller
         private CaptchaGuard $captchaGuard,
         private ?ProfileFieldRegistry $fieldRegistry = null,
         private ?AvatarManager $avatarManager = null,
+        private ?RegistrationFormRepository $formRepository = null,
     ) {
     }
 
@@ -40,6 +42,7 @@ class AccountController extends Controller
                 'first_name'   => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 'last_name'    => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 'phone'        => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                'form_id'      => ['required' => false, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
             ],
         ]);
 
@@ -174,6 +177,23 @@ class AccountController extends Controller
             return CaptchaGuard::failedResponse();
         }
 
+        // Resolve registration form if specified.
+        $formId = $request->get_param('form_id');
+        $form = null;
+
+        if ($formId && $this->formRepository) {
+            $form = $this->formRepository->findBySlug($formId)
+                 ?? $this->formRepository->find($formId);
+
+            if (!$form || $form->getStatus() !== 'active') {
+                return new WP_REST_Response([
+                    'success' => false,
+                    'code'    => 'invalid_form',
+                    'message' => __('The specified registration form is not available.', 'wp-sms'),
+                ], 400);
+            }
+        }
+
         $data = [
             'email'        => $request->get_param('email'),
             'password'     => $request->get_param('password'),
@@ -194,7 +214,7 @@ class AccountController extends Controller
             }
         }
 
-        $result = $this->accountManager->registerUser($data);
+        $result = $this->accountManager->registerUser($data, false, $form);
 
         return new WP_REST_Response($result->toArray(), $result->success ? 201 : 400);
     }

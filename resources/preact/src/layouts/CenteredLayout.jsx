@@ -3,6 +3,7 @@ import { Separator } from '@/components/ui/Separator';
 import { BrandLogo } from '@/components/BrandLogo';
 import { SecuredByFooter } from '@/components/SecuredByFooter';
 import { brandingConfig } from '@/signals/branding';
+import { renderMode } from '@/signals/config';
 
 const ALIGN_MAP = {
     left: 'justify-start',
@@ -13,6 +14,31 @@ const ALIGN_MAP = {
 export function CenteredLayout({ title, subtitle, children, footer }) {
     const logoPosition = brandingConfig.value?.logo_position ?? 'center';
     const alignClass = ALIGN_MAP[logoPosition] ?? 'justify-center';
+    const isCompact = renderMode.value === 'popup' || renderMode.value === 'embed';
+
+    if (isCompact) {
+        return (
+            <div className="font-sans text-foreground antialiased p-6">
+                {logoPosition !== 'hidden' && (
+                    <div className={`mb-4 flex ${alignClass}`}>
+                        <BrandLogo />
+                    </div>
+                )}
+                <div className="text-center mb-4">
+                    <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
+                    {subtitle && <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>}
+                </div>
+                {children}
+                {footer && (
+                    <>
+                        <Separator className="my-4" />
+                        <div className="text-center text-sm text-muted-foreground">{footer}</div>
+                    </>
+                )}
+                <SecuredByFooter className="mt-4" />
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-muted p-4 font-sans text-foreground antialiased">

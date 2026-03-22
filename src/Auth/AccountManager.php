@@ -105,21 +105,40 @@ class AccountManager
     /**
      * Register a new user.
      */
-    public function registerUser(array $data, bool $socialLogin = false): OperationResult
+    public function registerUser(array $data, bool $socialLogin = false, ?RegistrationForm $form = null): OperationResult
     {
         $settings = $this->settingsRepo->all();
+        if ($form) {
+            $settings = RegistrationForm::applyOverrides($settings, $form->getAuthOverrides());
+        }
 
         $emailRequired = $socialLogin ? false : ($settings['email']['required_at_signup'] ?? true);
 
-        $validationError = $this->validateRegistrationFields($data, $settings, $socialLogin, $emailRequired);
+        $validationError = $this->validateRegistrationFields($data, $settings, $socialLogin, $emailRequired, $form);
         if ($validationError !== null) {
             return $validationError;
         }
 
         [$email, $isPlaceholder, $username, $userdata] = $this->resolveEmailAndUsername($data, $emailRequired);
 
+        if ($form && $form->getUserRole() !== '') {
+            $role = $form->getUserRole();
+            // Validate role still exists; fall back to WP default if not.
+            if (wp_roles()->is_role($role)) {
+                $userdata['role'] = $role;
+            }
+        }
+
         $emailVerifyEnabled = !$isPlaceholder && !empty($settings['email']['enabled']) && !empty($settings['email']['verify_at_signup']);
         $phoneVerifyEnabled = !empty($settings['phone']['enabled']) && !empty($settings['phone']['verify_at_signup']);
+
+        // Only verify channels included in the form's field list.
+        if ($form && $emailVerifyEnabled) {
+            $emailVerifyEnabled = $form->hasField('email');
+        }
+        if ($form && $phoneVerifyEnabled) {
+            $phoneVerifyEnabled = $form->hasField('phone');
+        }
 
         $this->cleanupExpiredPendingUsers($data, $email, $emailVerifyEnabled, $phoneVerifyEnabled, $settings);
 
@@ -142,41 +161,62 @@ class AccountManager
         $this->storeUserMeta($userId, $data, $isPlaceholder, $emailVerifyEnabled, $phoneVerifyEnabled);
         $this->writeCustomFields($userId, $data);
 
+        if ($form) {
+            update_user_meta($userId, 'wsms_registration_form_id', $form->getId());
+            do_action('wsms_form_registration', $userId, $form);
+        }
+
         $pendingVerifications = $this->setupVerifications($userId, $data, $email, $emailVerifyEnabled, $phoneVerifyEnabled);
 
         $this->auditLogger->log(EventType::Register, 'success', $userId, [
             'method' => 'registration',
         ]);
 
-        return $this->buildRegistrationResult($userId, $pendingVerifications, $settings);
+        return $this->buildRegistrationResult($userId, $pendingVerifications, $settings, $form);
     }
 
     /**
      * @return OperationResult|null Error result if validation fails, null if all checks pass.
      */
-    private function validateRegistrationFields(array $data, array $settings, bool $socialLogin, bool $emailRequired): ?OperationResult
+    private function validateRegistrationFields(array $data, array $settings, bool $socialLogin, bool $emailRequired, ?RegistrationForm $form = null): ?OperationResult
     {
         $requiredFields = $settings['registration_fields'] ?? ['email', 'password'];
+
+        if ($form) {
+            $emailRequired = $emailRequired && $form->hasField('email') && $form->isFieldRequired('email');
+        }
 
         if ($emailRequired && empty($data['email'])) {
             return OperationResult::fail('missing_email', __('Email is required.', 'wp-sms'));
         }
 
         $passwordRequired = $socialLogin ? false : (!empty($settings['password']['enabled']) && ($settings['password']['required_at_signup'] ?? true));
+        if ($form) {
+            $passwordRequired = $passwordRequired && $form->hasField('password') && $form->isFieldRequired('password');
+        }
         if ($passwordRequired && empty($data['password'])) {
             return OperationResult::fail('missing_password', __('Password is required.', 'wp-sms'));
         }
 
         $phoneRequired = $socialLogin ? false : (!empty($settings['phone']['enabled']) && !empty($settings['phone']['required_at_signup']));
+        if ($form) {
+            $phoneRequired = $phoneRequired && $form->hasField('phone') && $form->isFieldRequired('phone');
+        }
         if ($phoneRequired && empty($data['phone'])) {
             return OperationResult::fail('missing_phone', __('Phone number is required.', 'wp-sms'));
         }
 
-        if (in_array('first_name', $requiredFields, true) && empty($data['first_name'])) {
+        $checkFirstName = $form
+            ? $form->hasField('first_name') && $form->isFieldRequired('first_name')
+            : in_array('first_name', $requiredFields, true);
+        if ($checkFirstName && empty($data['first_name'])) {
             return OperationResult::fail('missing_first_name', __('First name is required.', 'wp-sms'));
         }
 
-        if (in_array('last_name', $requiredFields, true) && empty($data['last_name'])) {
+        $checkLastName = $form
+            ? $form->hasField('last_name') && $form->isFieldRequired('last_name')
+            : in_array('last_name', $requiredFields, true);
+        if ($checkLastName && empty($data['last_name'])) {
             return OperationResult::fail('missing_last_name', __('Last name is required.', 'wp-sms'));
         }
 
@@ -191,10 +231,20 @@ class AccountManager
         // Validate required custom fields.
         if (!$socialLogin && $this->fieldRegistry) {
             foreach ($this->fieldRegistry->getFieldsForContext('registration') as $field) {
-                if ($field->isSystem() || !$field->required) {
+                if ($field->isSystem()) {
                     continue;
                 }
-                if (empty($data[$field->id])) {
+
+                if ($form) {
+                    if (!$form->hasField($field->id)) {
+                        continue;
+                    }
+                    $isRequired = $form->isFieldRequired($field->id);
+                } else {
+                    $isRequired = $field->required;
+                }
+
+                if ($isRequired && empty($data[$field->id])) {
                     return OperationResult::fail('missing_' . $field->id, sprintf(__('%s is required.', 'wp-sms'), $field->label));
                 }
             }
@@ -350,7 +400,7 @@ class AccountManager
         return $pendingVerifications;
     }
 
-    private function buildRegistrationResult(int $userId, array $pendingVerifications, array $settings): OperationResult
+    private function buildRegistrationResult(int $userId, array $pendingVerifications, array $settings, ?RegistrationForm $form = null): OperationResult
     {
         $meta = [];
 
@@ -369,6 +419,10 @@ class AccountManager
 
         if ($timing === EnrollmentTiming::OnRegistration) {
             $meta['mfa_required'] = true;
+        }
+
+        if ($form && $form->getRedirectUrl() !== '') {
+            $meta['redirect_url'] = $form->getRedirectUrl();
         }
 
         return new OperationResult(

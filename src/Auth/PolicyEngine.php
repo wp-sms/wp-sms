@@ -524,6 +524,102 @@ class PolicyEngine
     }
 
     /**
+     * Resolve effective settings for a registration form.
+     *
+     * Starts from global settings and applies the form's auth_overrides using
+     * a restrict-only model: forms can only disable globally-enabled flags,
+     * never enable globally-disabled ones.
+     */
+    public function resolveFormConfig(RegistrationForm $form): array
+    {
+        return RegistrationForm::applyOverrides(
+            $this->settingsRepo->all(),
+            $form->getAuthOverrides(),
+        );
+    }
+
+    /**
+     * Get full field definitions for a registration form (for frontend).
+     *
+     * Cross-references the form's field list with ProfileFieldRegistry,
+     * applies per-form required overrides, and sorts by form sort_order.
+     *
+     * @return array[]
+     */
+    public function getFormRegistrationFieldDefinitions(RegistrationForm $form): array
+    {
+        if (!$this->fieldRegistry) {
+            return [];
+        }
+
+        $formFields = $form->getFields();
+
+        $allDefs = $this->fieldRegistry->getAllFields();
+        $defMap = [];
+        foreach ($allDefs as $def) {
+            $defMap[$def->id] = $def;
+        }
+
+        $result = [];
+
+        foreach ($formFields as $ff) {
+            $fieldId = $ff['id'];
+            if (!isset($defMap[$fieldId])) {
+                continue;
+            }
+
+            $def = $defMap[$fieldId];
+            $arr = $def->toArray();
+            $arr['required'] = !empty($ff['required']);
+            $arr['sort_order'] = $ff['sort_order'] ?? 0;
+            $result[] = $arr;
+        }
+
+        usort($result, fn($a, $b) => ($a['sort_order'] ?? 0) <=> ($b['sort_order'] ?? 0));
+
+        return $result;
+    }
+
+    /**
+     * Get verification requirement flags for a registration form.
+     *
+     * @return array<string, bool>
+     */
+    public function getFormVerificationRequirements(RegistrationForm $form): array
+    {
+        $resolvedSettings = $this->resolveFormConfig($form);
+        $requirements = [];
+
+        foreach ($this->getVerificationChannelKeys() as $channelKey) {
+            // Channel must be enabled globally; form can only restrict.
+            $requirements['require_' . $channelKey . '_verification'] =
+                !empty($resolvedSettings[$channelKey]['verify_at_signup']);
+        }
+
+        return $requirements;
+    }
+
+    /**
+     * Get simple list of field IDs for a registration form.
+     *
+     * @return string[]
+     */
+    public function getFormEffectiveRegistrationFields(RegistrationForm $form): array
+    {
+        if (!$this->fieldRegistry) {
+            return $form->getFieldIds();
+        }
+
+        $allDefs = $this->fieldRegistry->getAllFields();
+        $validIds = array_map(fn($d) => $d->id, $allDefs);
+
+        return array_values(array_filter(
+            $form->getFieldIds(),
+            fn(string $id) => in_array($id, $validIds, true),
+        ));
+    }
+
+    /**
      * Build verification requirement flags for each channel.
      *
      * Always emits both true and false values so the API response shape is stable.

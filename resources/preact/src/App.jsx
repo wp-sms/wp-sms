@@ -1,7 +1,7 @@
 import { LocationProvider, Router, Route, ErrorBoundary } from 'preact-iso';
 import { useEffect } from 'preact/hooks';
 import { signal } from '@preact/signals';
-import { loadConfig } from './signals/config';
+import { loadConfig, formSlug } from './signals/config';
 import { isPreviewMode } from './signals/branding';
 import { authUrl, getBaseUrl } from './utils/urls';
 import { Dialog } from './components/ui/Dialog';
@@ -36,8 +36,16 @@ const VIEW_COMPONENTS = {
 
 export function App({ mode = 'fullpage' }) {
     useEffect(() => {
-        loadConfig();
-    }, []);
+        // In popup mode, config loading is managed by the click handler in main-popup.jsx
+        // which reads data-wsms-form-id from the trigger button before mounting.
+        if (mode === 'popup') return;
+
+        const fSlug = window.wsmsAuth?.formSlug
+            || new URLSearchParams(location.search).get('form')
+            || null;
+        formSlug.value = fSlug;
+        loadConfig(fSlug);
+    }, [mode]);
 
     if (mode === 'popup') {
         return <PopupApp />;

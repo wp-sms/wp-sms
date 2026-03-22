@@ -24,6 +24,7 @@ use WSms\Rest\OptOutSettingsController;
 use WSms\Rest\PhoneRestrictionController;
 use WSms\Rest\TagController;
 use WSms\Rest\MessagingButtonController;
+use WSms\Rest\RegistrationFormController;
 use WSms\Rest\TemplateCatalogController;
 use WSms\Rest\TemplateController;
 use WSms\Rest\WebhookReceiverController;
@@ -42,6 +43,7 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('auth.policy'),
                 $container->get('auth.captcha_guard'),
                 $container->get('social.manager'),
+                $container->get('auth.form_repository'),
             );
         });
 
@@ -79,6 +81,7 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('auth.captcha_guard'),
                 $container->get('auth.field_registry'),
                 $container->get('auth.avatar_manager'),
+                $container->get('auth.form_repository'),
             );
         });
 
@@ -187,6 +190,10 @@ class RestServiceProvider implements ServiceProvider
         $container->register('rest.webhook_receiver', fn($c) => new WebhookReceiverController(
             $c->get('auth.rate_limiter'),
         ));
+        $container->register('rest.registration_forms', fn($c) => new RegistrationFormController(
+            $c->get('auth.form_repository'),
+            $c->get('auth.field_registry'),
+        ));
         $container->register('rest.messaging_button', fn($c) => new MessagingButtonController(
             $c->get('messaging_button.settings'),
             $c->get('messaging_button.handler'),
@@ -222,6 +229,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.phone_restriction')->registerRoutes();
             $container->get('rest.webhook_receiver')->registerRoutes();
             $container->get('rest.messaging_button')->registerRoutes();
+            $container->get('rest.registration_forms')->registerRoutes();
             $container->get('rest.templates')->registerRoutes();
             $container->get('rest.template_catalog')->registerRoutes();
         });

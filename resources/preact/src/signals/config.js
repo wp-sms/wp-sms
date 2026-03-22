@@ -1,9 +1,12 @@
 import { signal, computed } from '@preact/signals';
 import { api } from '../api/client';
-import { isPreviewMode } from './branding';
+import { isPreviewMode, brandingConfig } from './branding';
 
 export const authConfig = signal(null);
 export const configLoading = signal(false);
+export const formSlug = signal(null);
+/** @type {import('@preact/signals').Signal<'fullpage'|'popup'|'embed'>} */
+export const renderMode = signal('fullpage');
 export const primaryMethods = computed(() => authConfig.value?.primary_methods ?? ['password']);
 export const methodDetails = computed(() => authConfig.value?.method_details ?? {});
 export const registrationFields = computed(() => authConfig.value?.registration_fields ?? ['email', 'password']);
@@ -13,17 +16,25 @@ export const captchaConfig = computed(() => authConfig.value?.captcha ?? null);
 export const enabledChannels = computed(() => authConfig.value?.enabled_channels ?? []);
 export const socialProviders = computed(() => authConfig.value?.social_providers ?? []);
 export const legalLinks = computed(() => authConfig.value?.legal_links ?? null);
+export const formRedirectUrl = computed(() => authConfig.value?.form_redirect_url ?? null);
+export const formName = computed(() => authConfig.value?.form_name ?? null);
 
-export async function loadConfig() {
-    if (authConfig.value || configLoading.value) return;
+export async function loadConfig(fSlug = null, { force = false } = {}) {
+    if (!force && (authConfig.value || configLoading.value)) return;
 
     // In preview mode, skip the REST call — branding is set via postMessage
     if (isPreviewMode.value) return;
 
     configLoading.value = true;
     try {
-        const data = await api.get('/auth/config');
+        const params = fSlug ? `?form=${encodeURIComponent(fSlug)}` : '';
+        const data = await api.get(`/auth/config${params}`);
         authConfig.value = data;
+
+        // Apply form-specific branding if present
+        if (data.branding) {
+            brandingConfig.value = data.branding;
+        }
     } finally {
         configLoading.value = false;
     }

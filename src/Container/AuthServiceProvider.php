@@ -19,6 +19,7 @@ use WSms\Auth\LoginGuard;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\ProfileFieldRegistry;
 use WSms\Auth\RateLimiter;
+use WSms\Auth\RegistrationFormRepository;
 use WSms\Auth\SettingsRepository;
 use WSms\Auth\TrustedDeviceManager;
 
@@ -128,6 +129,10 @@ class AuthServiceProvider implements ServiceProvider
             return new AuthShortcode(
                 $container->get('auth.settings'),
             );
+        });
+
+        $container->register('auth.form_repository', function () {
+            return new RegistrationFormRepository();
         });
 
         $container->register('auth.login_guard', function () use ($container) {

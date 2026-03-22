@@ -71,7 +71,12 @@
 }
 
 @layer base {
-    * {
+    *,
+    *::before,
+    *::after {
+        --tw-border-style: solid;
+        border-width: 0;
+        border-style: solid;
         @apply border-border outline-ring/50;
     }
 }

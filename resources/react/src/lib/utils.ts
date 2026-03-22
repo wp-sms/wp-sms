@@ -41,3 +41,15 @@ export function deepMerge<T extends Record<string, unknown>>(base: T, override: 
   }
   return result;
 }
+
+export function generateSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+export function getAvailableRoles(): { value: string; label: string }[] {
+  const roles = window.wpSmsSettings?.roles ?? {};
+  return Object.entries(roles).map(([value, label]) => ({ value, label: label as string }));
+}

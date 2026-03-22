@@ -358,6 +358,20 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('wp_roles')) {
+        function wp_roles() {
+            return new class {
+                public function get_names(): array {
+                    return $GLOBALS['_test_wp_roles'] ?? ['subscriber' => 'Subscriber', 'editor' => 'Editor', 'administrator' => 'Administrator'];
+                }
+                public function is_role(string $role): bool {
+                    $names = $this->get_names();
+                    return isset($names[$role]);
+                }
+            };
+        }
+    }
+
     if (!function_exists('wp_check_password')) {
         function wp_check_password(string $password, string $hash, $userId = ''): bool {
             return $GLOBALS['_test_wp_check_password_result'] ?? false;

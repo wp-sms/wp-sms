@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 import { api } from '../api/client';
-import { registrationFields, registrationFieldDefs, socialProviders, legalLinks } from '../signals/config';
+import { registrationFields, registrationFieldDefs, socialProviders, legalLinks, formSlug, formRedirectUrl, formName } from '../signals/config';
 import { authError, authLoading, registrationToken, pendingVerifications } from '../signals/auth';
 import { extractError, friendlySocialError } from '../utils/auth';
 import { authUrl, getQueryParam } from '../utils/urls';
@@ -66,6 +66,16 @@ export function Register() {
         }
     }, []);
 
+    if (Number(window.wsmsAuth?.isLoggedIn)) {
+        return (
+            <AuthLayout title="Already Signed In">
+                <p className="text-center text-sm text-muted-foreground">
+                    You are already logged in.
+                </p>
+            </AuthLayout>
+        );
+    }
+
     function updateField(name, value) {
         setForm((prev) => ({ ...prev, [name]: value }));
     }
@@ -87,6 +97,10 @@ export function Register() {
             }
         }
 
+        if (formSlug.value) {
+            body.form_id = formSlug.value;
+        }
+
         try {
             const res = await api.post('/auth/register', body, captcha.getHeaders());
             if (res.success) {
@@ -94,6 +108,9 @@ export function Register() {
                     registrationToken.value = res.session_token;
                     pendingVerifications.value = res.pending_verifications;
                     setVerifying(true);
+                } else if (formRedirectUrl.value) {
+                    window.location.href = formRedirectUrl.value;
+                    return;
                 } else {
                     setSuccess(res.message || 'Account created successfully.');
                 }
@@ -107,12 +124,20 @@ export function Register() {
     }
 
     if (verifying) {
+        const onVerifyComplete = () => {
+            if (formRedirectUrl.value) {
+                window.location.href = formRedirectUrl.value;
+            } else {
+                window.location.href = authUrl('/login');
+            }
+        };
+
         return (
             <AuthLayout
                 title="Verify Your Account"
                 footer={<AuthLink href={authUrl('/login')}>Back to login</AuthLink>}
             >
-                <RegisterVerifyStep onComplete={() => { window.location.href = authUrl('/login'); }} />
+                <RegisterVerifyStep onComplete={onVerifyComplete} />
             </AuthLayout>
         );
     }
@@ -128,9 +153,6 @@ export function Register() {
         );
     }
 
-    // Separate custom field defs from system fields, maintaining sort order.
-    const customFieldDefs = fieldDefs.filter((def) => !SYSTEM_FIELD_IDS.includes(def.id));
-
     const hasSocial = socialProviders.value.length > 0;
     const socialPos = brandingConfig.value?.social_position ?? 'top';
     const socialBlock = hasSocial && (
@@ -140,21 +162,17 @@ export function Register() {
         </>
     );
 
-    return (
-        <AuthLayout
-            title="Create Account"
-            footer={<AuthLink href={authUrl('/login')}>Already have an account? Sign in</AuthLink>}
-        >
-            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
+    const title = formName.value || 'Create Account';
 
-            {socialPos === 'top' && socialBlock}
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-                {fields.includes('username') && (
-                    <div className="space-y-2">
+    // Render a system field by ID
+    function renderSystemField(id, isFirst) {
+        switch (id) {
+            case 'username':
+                return (
+                    <div className="space-y-2" key="username">
                         <Label for="wsms-reg-username">Username</Label>
                         <Input
-                            ref={fields[0] === 'username' ? firstFieldRef : undefined}
+                            ref={isFirst ? firstFieldRef : undefined}
                             id="wsms-reg-username"
                             type="text"
                             value={form.username}
@@ -163,13 +181,13 @@ export function Register() {
                             autoComplete="username"
                         />
                     </div>
-                )}
-
-                {fields.includes('display_name') && (
-                    <div className="space-y-2">
+                );
+            case 'display_name':
+                return (
+                    <div className="space-y-2" key="display_name">
                         <Label for="wsms-reg-name">Display Name</Label>
                         <Input
-                            ref={fields[0] === 'display_name' ? firstFieldRef : undefined}
+                            ref={isFirst ? firstFieldRef : undefined}
                             id="wsms-reg-name"
                             type="text"
                             value={form.display_name}
@@ -178,13 +196,13 @@ export function Register() {
                             autoComplete="name"
                         />
                     </div>
-                )}
-
-                {fields.includes('first_name') && (
-                    <div className="space-y-2">
+                );
+            case 'first_name':
+                return (
+                    <div className="space-y-2" key="first_name">
                         <Label for="wsms-reg-first-name">First Name</Label>
                         <Input
-                            ref={fields[0] === 'first_name' ? firstFieldRef : undefined}
+                            ref={isFirst ? firstFieldRef : undefined}
                             id="wsms-reg-first-name"
                             type="text"
                             value={form.first_name}
@@ -193,12 +211,13 @@ export function Register() {
                             autoComplete="given-name"
                         />
                     </div>
-                )}
-
-                {fields.includes('last_name') && (
-                    <div className="space-y-2">
+                );
+            case 'last_name':
+                return (
+                    <div className="space-y-2" key="last_name">
                         <Label for="wsms-reg-last-name">Last Name</Label>
                         <Input
+                            ref={isFirst ? firstFieldRef : undefined}
                             id="wsms-reg-last-name"
                             type="text"
                             value={form.last_name}
@@ -207,13 +226,13 @@ export function Register() {
                             autoComplete="family-name"
                         />
                     </div>
-                )}
-
-                {fields.includes('email') && (
-                    <div className="space-y-2">
+                );
+            case 'email':
+                return (
+                    <div className="space-y-2" key="email">
                         <Label for="wsms-reg-email">Email</Label>
                         <Input
-                            ref={fields[0] === 'email' ? firstFieldRef : undefined}
+                            ref={isFirst ? firstFieldRef : undefined}
                             id="wsms-reg-email"
                             type="email"
                             value={form.email}
@@ -223,22 +242,22 @@ export function Register() {
                             autoComplete="email"
                         />
                     </div>
-                )}
-
-                {fields.includes('phone') && (
-                    <div className="space-y-2">
+                );
+            case 'phone':
+                return (
+                    <div className="space-y-2" key="phone">
                         <Label>Phone Number</Label>
                         <PhoneInput
                             value={form.phone}
                             onChange={(val) => updateField('phone', val)}
                             disabled={authLoading.value}
-                            autoFocus={fields[0] === 'phone'}
+                            autoFocus={isFirst}
                         />
                     </div>
-                )}
-
-                {fields.includes('password') && (
-                    <div className="space-y-2">
+                );
+            case 'password':
+                return (
+                    <div className="space-y-2" key="password">
                         <Label for="wsms-reg-password">Password</Label>
                         <Input
                             id="wsms-reg-password"
@@ -250,18 +269,37 @@ export function Register() {
                             autoComplete="new-password"
                         />
                     </div>
-                )}
+                );
+            default:
+                return null;
+        }
+    }
 
-                {/* Custom/meta fields from field definitions */}
-                {customFieldDefs.map((def) => (
-                    <DynamicField
-                        key={def.id}
-                        field={def}
-                        value={form[def.id]}
-                        onChange={(val) => updateField(def.id, val)}
-                        disabled={authLoading.value}
-                    />
-                ))}
+    return (
+        <AuthLayout
+            title={title}
+            footer={<AuthLink href={authUrl('/login')}>Already have an account? Sign in</AuthLink>}
+        >
+            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
+
+            {socialPos === 'top' && socialBlock}
+
+            <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Render fields in definition order (respects sort_order from API) */}
+                {fieldDefs.map((def, idx) => {
+                    if (SYSTEM_FIELD_IDS.includes(def.id)) {
+                        return renderSystemField(def.id, idx === 0);
+                    }
+                    return (
+                        <DynamicField
+                            key={def.id}
+                            field={def}
+                            value={form[def.id]}
+                            onChange={(val) => updateField(def.id, val)}
+                            disabled={authLoading.value}
+                        />
+                    );
+                })}
 
                 {needsCaptcha && (
                     <CaptchaWidget

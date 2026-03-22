@@ -121,6 +121,7 @@ export const NAV_ITEMS = [
     children: [
       { id: 'channels', label: 'Channels' },
       { id: 'profile-fields', label: 'Profile Fields' },
+      { id: 'registration-forms', label: 'Registration Forms' },
       { id: 'templates', label: 'Message Templates' },
     ],
   },
@@ -173,6 +174,7 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   'general': 'Configure site-level settings like admin phone number and notification preferences.',
   'channels': 'Configure authentication channels — Phone, Email, and Password.',
   'profile-fields': 'Manage which fields appear on registration and profile forms.',
+  'registration-forms': 'Create multiple registration forms with different fields, roles, and verification settings.',
   'templates': 'Customize the content of emails, SMS, and other messages sent by the authentication system.',
   'mfa-policies': 'Manage MFA policies, backup codes, required roles, and enrollment timing.',
   'rate-limiting': 'Configure rate limits to prevent brute-force attacks on OTP verification.',

@@ -23,7 +23,6 @@ class IntegrationServiceProvider implements ServiceProvider
     /** @var class-string[] */
     private array $integrations = [
         WordPressIntegration::class,
-        AuthIntegration::class,
         WebhookIntegration::class,
         WooCommerceIntegration::class,
         ContactForm7Integration::class,
@@ -79,6 +78,16 @@ class IntegrationServiceProvider implements ServiceProvider
                 new ScheduleIntegration(
                     $container->get('flow.repository'),
                     $container->get('flow.runner'),
+                ),
+                $registry,
+                $triggers,
+                $actions,
+            );
+
+            // Register AuthIntegration (needs form repository for FormRegistrationTrigger)
+            $this->registerIntegration(
+                new AuthIntegration(
+                    $container->get('auth.form_repository'),
                 ),
                 $registry,
                 $triggers,

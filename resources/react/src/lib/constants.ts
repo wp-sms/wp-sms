@@ -101,6 +101,16 @@ export const FIELD_SOURCES = [
   { value: 'meta', label: 'Existing Meta' },
 ] as const;
 
+export const SYSTEM_FIELD_OPTIONS = [
+  { id: 'email', label: 'Email' },
+  { id: 'password', label: 'Password' },
+  { id: 'phone', label: 'Phone Number' },
+  { id: 'first_name', label: 'First Name' },
+  { id: 'last_name', label: 'Last Name' },
+  { id: 'display_name', label: 'Display Name' },
+  { id: 'username', label: 'Username' },
+] as const;
+
 /** Matches PHP InstallManager defaults exactly. */
 export const DEFAULTS: Required<AuthSettings> = {
   phone: {

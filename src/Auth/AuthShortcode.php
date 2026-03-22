@@ -5,19 +5,21 @@ namespace WSms\Auth;
 defined('ABSPATH') || exit;
 
 /**
- * [wsms_auth] shortcode — renders a trigger button that opens the auth popup.
+ * [wsms_auth] shortcode — renders a trigger button (popup) or inline embed.
  *
  * Usage:
- *   [wsms_auth]                             → "Sign In" button opening login popup
- *   [wsms_auth view="register"]             → "Sign In" button opening register popup
- *   [wsms_auth text="Get Started"]          → Custom button text
- *   [wsms_auth view="login" text="Log In"]  → Custom view + text
+ *   [wsms_auth]                                        → "Sign In" button opening login popup
+ *   [wsms_auth view="register"]                        → "Sign In" button opening register popup
+ *   [wsms_auth text="Get Started"]                     → Custom button text
+ *   [wsms_auth id="vendor-reg" view="register"]        → Popup with specific registration form
+ *   [wsms_auth id="vendor-reg" view="register" mode="embed"]  → Inline embedded registration form
  *
  * @since 8.0
  */
 class AuthShortcode
 {
     private bool $enqueued = false;
+    private int $embedCount = 0;
 
     public function __construct(
         private SettingsRepository $settingsRepo,
@@ -37,17 +39,45 @@ class AuthShortcode
         $atts = shortcode_atts([
             'view' => 'login',
             'text' => 'Sign In',
+            'id'   => '',
+            'mode' => 'popup',
         ], $atts, 'wsms_auth');
 
         $this->maybeEnqueueAssets();
 
+        if ($atts['mode'] === 'embed') {
+            return $this->renderEmbed($atts);
+        }
+
+        return $this->renderPopupTrigger($atts);
+    }
+
+    private function renderPopupTrigger(array $atts): string
+    {
         $view = esc_attr($atts['view']);
         $text = esc_html($atts['text']);
+        $formAttr = $atts['id'] ? sprintf(' data-wsms-form-id="%s"', esc_attr($atts['id'])) : '';
 
         return sprintf(
-            '<button type="button" data-wsms-auth-view="%s" class="wsms-auth-trigger">%s</button>',
+            '<button type="button" data-wsms-auth-view="%s"%s class="wsms-auth-trigger">%s</button>',
             $view,
+            $formAttr,
             $text,
+        );
+    }
+
+    private function renderEmbed(array $atts): string
+    {
+        $this->embedCount++;
+        $containerId = 'wsms-auth-embed-' . $this->embedCount;
+        $view = esc_attr($atts['view']);
+        $formSlug = esc_attr($atts['id']);
+
+        return sprintf(
+            '<div id="%s" class="wsms-auth-embed" data-wsms-embed-view="%s" data-wsms-embed-form="%s" style="outline:none"></div>',
+            $containerId,
+            $view,
+            $formSlug,
         );
     }
 

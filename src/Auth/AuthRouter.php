@@ -121,6 +121,8 @@ class AuthRouter
 
         $branding = $this->settingsRepo->channel('branding');
 
+        $formSlug = isset($_GET['form']) ? sanitize_text_field($_GET['form']) : '';
+
         wp_localize_script('wsms-auth', 'wsmsAuth', [
             'restUrl'          => rest_url('wsms/v1/'),
             'nonce'            => wp_create_nonce('wp_rest'),
@@ -130,6 +132,7 @@ class AuthRouter
             'enrollmentGated'  => is_user_logged_in()
                 && (bool) get_user_meta(get_current_user_id(), UserMeta::MFA_ENROLLMENT_PENDING, true),
             'branding'         => $branding,
+            'formSlug'         => $formSlug,
         ]);
 
         // Enqueue Google Font if configured.
