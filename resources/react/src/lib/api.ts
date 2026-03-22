@@ -205,6 +205,12 @@ export interface AuthSettings {
   terms_url?: string;
   privacy_url?: string;
   branding?: BrandingSettings;
+  trusted_devices?: TrustedDevicesSettings;
+}
+
+export interface TrustedDevicesSettings {
+  enabled: boolean;
+  ttl: number;
 }
 
 export interface ReportsResponse {

@@ -155,6 +155,10 @@ export const DEFAULTS: Required<AuthSettings> = {
   totp: {
     enabled: false,
   },
+  trusted_devices: {
+    enabled: false,
+    ttl: 2592000,
+  },
   mfa_required_roles: [],
   enrollment_timing: 'voluntary',
   grace_period_days: 7,
@@ -232,6 +236,14 @@ export const DEFAULTS: Required<AuthSettings> = {
 };
 
 export type ChannelId = 'phone' | 'email' | 'password';
+
+export const TRUSTED_DEVICE_TTL_OPTIONS = [
+  { value: 604800, label: '7 days' },
+  { value: 1209600, label: '14 days' },
+  { value: 2592000, label: '30 days' },
+  { value: 5184000, label: '60 days' },
+  { value: 7776000, label: '90 days' },
+] as const;
 
 export const SITE_PHONE_CHANNELS = [
   { value: 'sms', label: 'SMS' },

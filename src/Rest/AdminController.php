@@ -51,6 +51,7 @@ class AdminController extends Controller
         'telegram',
         'woocommerce',
         'contact_form_7',
+        'trusted_devices',
         'branding',
     ];
 

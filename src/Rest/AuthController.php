@@ -312,6 +312,14 @@ class AuthController extends Controller
             ];
         }
 
+        $trustedDevices = $this->policy->getSetting('trusted_devices', []);
+        if (!empty($trustedDevices['enabled'])) {
+            $config['trusted_devices'] = [
+                'enabled' => true,
+                'ttl'     => (int) ($trustedDevices['ttl'] ?? 2592000),
+            ];
+        }
+
         return $config;
     }
 }

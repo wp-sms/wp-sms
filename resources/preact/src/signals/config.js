@@ -16,6 +16,7 @@ export const captchaConfig = computed(() => authConfig.value?.captcha ?? null);
 export const enabledChannels = computed(() => authConfig.value?.enabled_channels ?? []);
 export const socialProviders = computed(() => authConfig.value?.social_providers ?? []);
 export const legalLinks = computed(() => authConfig.value?.legal_links ?? null);
+export const trustedDevicesConfig = computed(() => authConfig.value?.trusted_devices ?? null);
 export const formRedirectUrl = computed(() => authConfig.value?.form_redirect_url ?? null);
 export const formName = computed(() => authConfig.value?.form_name ?? null);
 

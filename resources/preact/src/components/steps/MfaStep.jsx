@@ -10,12 +10,35 @@ import {
     challengeMeta,
     selectedMethod as selectedAuthMethod,
 } from '../../signals/auth';
+import { trustedDevicesConfig } from '../../signals/config';
 import { handleAuthResponse, extractError } from '../../utils/auth';
 import { Alert } from '../ui/Alert';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Label } from '../ui/Label';
 import { OtpInput } from '../OtpInput';
+
+function formatTtl(seconds) {
+    const days = Math.round((seconds || 2592000) / 86400);
+    return `${days} day${days !== 1 ? 's' : ''}`;
+}
+
+function TrustDeviceCheckbox({ id, checked, onChange, disabled, ttl }) {
+    return (
+        <div className="flex items-center gap-2 justify-center">
+            <input type="checkbox" id={id} checked={checked}
+                onChange={onChange}
+                disabled={disabled}
+                className="h-4 w-4 rounded border-input text-primary focus:ring-primary" />
+            <label for={id} className="text-sm text-muted-foreground cursor-pointer select-none">
+                Remember this device
+                <span className="block text-xs text-muted-foreground/70">
+                    Skip verification for {formatTtl(ttl)}
+                </span>
+            </label>
+        </div>
+    );
+}
 
 export function MfaStep() {
     const { route } = useLocation();
@@ -29,7 +52,11 @@ export function MfaStep() {
     const [backupCode, setBackupCode] = useState('');
     const [showFactorPicker, setShowFactorPicker] = useState(false);
     const [resendCooldown, setResendCooldown] = useState(0);
+    const [trustDevice, setTrustDevice] = useState(false);
     const backupRef = useAutoFocus(useBackup);
+
+    const trustedDevices = trustedDevicesConfig.value;
+    const showTrustCheckbox = trustedDevices?.enabled;
 
     // Auto-select the best MFA factor and send challenge on mount.
     useEffect(() => {
@@ -87,6 +114,7 @@ export function MfaStep() {
                 session_token: token,
                 code,
                 channel_id: activeFactor,
+                ...(trustDevice && { trust_device: true }),
             });
             handleAuthResponse(res, route);
         } catch (err) {
@@ -170,6 +198,11 @@ export function MfaStep() {
                             autoComplete="one-time-code"
                         />
                     </div>
+                    {showTrustCheckbox && (
+                        <TrustDeviceCheckbox id="wsms-trust-device-backup" checked={trustDevice}
+                            onChange={(e) => setTrustDevice(e.target.checked)}
+                            disabled={authLoading.value} ttl={trustedDevices?.ttl} />
+                    )}
                     <Button className="w-full" type="submit" disabled={authLoading.value || !backupCode.trim()}>
                         {authLoading.value ? 'Verifying...' : 'Verify Backup Code'}
                     </Button>
@@ -180,6 +213,12 @@ export function MfaStep() {
             ) : (
                 <div className="space-y-4">
                     {challengeSent && <OtpInput autoFocus onComplete={handleVerify} disabled={authLoading.value} />}
+
+                    {challengeSent && showTrustCheckbox && (
+                        <TrustDeviceCheckbox id="wsms-trust-device" checked={trustDevice}
+                            onChange={(e) => setTrustDevice(e.target.checked)}
+                            disabled={authLoading.value} ttl={trustedDevices?.ttl} />
+                    )}
 
                     <div className="flex justify-center gap-4 flex-wrap">
                         {challengeSent && challengeMeta.value?.requires_delivery !== false && (

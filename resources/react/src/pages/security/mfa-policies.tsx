@@ -9,9 +9,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { ShieldCheck, Clock, KeySquare } from 'lucide-react';
+import { ShieldCheck, Clock, KeySquare, Monitor } from 'lucide-react';
 import { RoleMatrix } from '@/components/role-matrix';
-import { ENROLLMENT_TIMING, toggleArrayItem } from '@/lib/constants';
+import { ENROLLMENT_TIMING, TRUSTED_DEVICE_TTL_OPTIONS, toggleArrayItem } from '@/lib/constants';
 import type { AuthSettings } from '@/lib/api';
 
 interface MfaPoliciesProps {
@@ -69,6 +69,49 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
                   onChange={(e) => onUpdate('backup_codes', { ...settings.backup_codes, length: Number(e.target.value) })}
                 />
                 <FieldDescription>Number of characters per code (6-12)</FieldDescription>
+              </Field>
+            </div>
+          </CardContent>
+        )}
+      </Card>
+
+      {/* Trusted Devices */}
+      <Card active={settings.trusted_devices.enabled}>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Monitor className="h-4 w-4 text-muted-foreground" />
+            Trusted Devices
+          </CardTitle>
+          <CardDescription>Allow users to skip MFA on recognized browsers</CardDescription>
+          <CardAction>
+            <Switch
+              checked={settings.trusted_devices.enabled}
+              onCheckedChange={(v) => onUpdate('trusted_devices', { ...settings.trusted_devices, enabled: v })}
+              aria-label="Toggle Trusted Devices"
+            />
+          </CardAction>
+        </CardHeader>
+        {settings.trusted_devices.enabled && (
+          <CardContent className="border-t pt-4">
+            <div className="max-w-sm">
+              <Field>
+                <FieldLabel htmlFor="trusted_device_ttl">Trust Duration</FieldLabel>
+                <Select
+                  value={String(settings.trusted_devices.ttl)}
+                  onValueChange={(v) => onUpdate('trusted_devices', { ...settings.trusted_devices, ttl: Number(v) })}
+                >
+                  <SelectTrigger id="trusted_device_ttl">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TRUSTED_DEVICE_TTL_OPTIONS.map((opt) => (
+                      <SelectItem key={opt.value} value={String(opt.value)}>
+                        {opt.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FieldDescription>How long a device stays trusted before MFA is required again</FieldDescription>
               </Field>
             </div>
           </CardContent>
