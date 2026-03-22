@@ -1,6 +1,6 @@
 import { render, h } from 'preact';
 import { useState, useCallback, useEffect, useRef } from 'preact/hooks';
-import { OtpInputLight } from './components/OtpInputLight';
+import { OtpInput } from './components/OtpInput';
 import { useResendCooldown } from './hooks/useResendCooldown';
 import './styles/verify-widget.css';
 
@@ -160,7 +160,8 @@ function VerifyWidget({ channel, identifier, onVerified, onError, codeLength = 6
                     <p className="wsms-vw-error-msg" role="alert">{errorMsg}</p>
                 )}
 
-                <OtpInputLight
+                <OtpInput
+                    variant="widget"
                     length={codeLength}
                     onComplete={handleVerify}
                     disabled={state === 'verifying'}

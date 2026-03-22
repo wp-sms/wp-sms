@@ -95,10 +95,20 @@
     text-align: center;
 }
 
-/* OTP input */
+/* OTP container (input-otp wrapper) */
 .wsms-vw.wsms-vw .wsms-vw-otp {
     display: flex;
     justify-content: center;
+}
+
+/* Protect the hidden input from CSS resets */
+.wsms-vw.wsms-vw [data-input-otp] {
+    position: relative !important;
+    display: flex !important;
+}
+
+.wsms-vw.wsms-vw .wsms-vw-otp-slots {
+    display: flex;
     align-items: center;
     gap: 6px;
 }
@@ -110,37 +120,42 @@
     user-select: none;
 }
 
-.wsms-vw.wsms-vw .wsms-vw-otp-box {
+.wsms-vw.wsms-vw .wsms-vw-otp-slot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 40px;
     height: 40px;
     border: 1px solid var(--wsms-vw-border);
     border-radius: var(--wsms-vw-radius);
-    text-align: center;
     font-size: 18px;
     font-weight: 600;
     font-family: inherit;
     color: var(--wsms-vw-text);
     background: #fff;
-    outline: none;
     transition: border-color 0.15s, box-shadow 0.15s;
-    padding: 0;
-    -moz-appearance: textfield;
 }
 
-.wsms-vw.wsms-vw .wsms-vw-otp-box::-webkit-inner-spin-button,
-.wsms-vw.wsms-vw .wsms-vw-otp-box::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-.wsms-vw.wsms-vw .wsms-vw-otp-box:focus {
+.wsms-vw.wsms-vw .wsms-vw-otp-slot--active {
     border-color: var(--wsms-vw-link);
     box-shadow: 0 0 0 2px rgba(34, 113, 177, 0.25);
 }
 
-.wsms-vw.wsms-vw .wsms-vw-otp-box:disabled {
+.wsms-vw.wsms-vw .wsms-vw-otp-caret {
+    display: inline-block;
+    width: 2px;
+    height: 20px;
+    background: var(--wsms-vw-text);
+    animation: wsms-vw-blink 1s step-end infinite;
+}
+
+@keyframes wsms-vw-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.wsms-vw.wsms-vw .wsms-vw-verifying .wsms-vw-otp-slot {
     opacity: 0.5;
-    cursor: default;
 }
 
 /* Resend button */
@@ -236,12 +251,12 @@
 }
 
 @media (max-width: 380px) {
-    .wsms-vw.wsms-vw .wsms-vw-otp-box {
+    .wsms-vw.wsms-vw .wsms-vw-otp-slot {
         width: 32px;
         height: 32px;
         font-size: 16px;
     }
-    .wsms-vw.wsms-vw .wsms-vw-otp { gap: 4px; }
+    .wsms-vw.wsms-vw .wsms-vw-otp-slots { gap: 4px; }
 }
 
 .wsms-vw.wsms-vw .wsms-vw-verifying-indicator {
