@@ -70,6 +70,10 @@ class MessagingButtonRenderer
             ]);
         }
 
-        wp_localize_script('wsms-messaging-button', 'wsmsMessagingButtonConfig', $scriptData);
+        wp_add_inline_script(
+            'wsms-messaging-button',
+            'window.wsmsMessagingButtonConfig=' . wp_json_encode($scriptData) . ';',
+            'before',
+        );
     }
 }

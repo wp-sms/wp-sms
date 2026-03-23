@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef, Fragment } from 'react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,7 +17,7 @@ import {
   Phone, X, Check, ChevronDown, AlertTriangle, Loader2,
   Download, RefreshCw, Info, Smartphone,
 } from 'lucide-react';
-import { toggleArrayItem } from '@/lib/constants';
+import { toggleArrayItem, PHONE_DISPLAY_MODES, type PhoneDisplayMode } from '@/lib/constants';
 
 function getErrorMessage(err: unknown, fallback: string): string {
   return (err && typeof err === 'object' && 'message' in err)
@@ -43,6 +43,7 @@ interface EnhancedDbSettings {
 interface PhoneInputSettings {
   default_country: string;
   preferred_countries: string[];
+  display_mode: PhoneDisplayMode;
 }
 
 interface PhoneRestrictionSettings {
@@ -67,11 +68,11 @@ interface SettingsResponse {
 
 interface CheckResult {
   success: boolean;
-  allowed: boolean;
   country: string | null;
   country_name: string | null;
   number_type: string | null;
-  reason: string | null;
+  auth: { allowed: boolean; reason: string | null };
+  messaging: { allowed: boolean; reason: string | null };
 }
 
 const BLOCKABLE_TYPES = [
@@ -226,6 +227,33 @@ function PhoneInputConfigCard({ draft, countries, updateSection }: {
         </CardDescription>
       </CardHeader>
       <CardContent className="border-t pt-4 space-y-4">
+        <Field>
+          <FieldLabel>Display Mode</FieldLabel>
+          <FieldDescription>How the phone number and dial code are displayed in the input</FieldDescription>
+          <RadioGroup
+            value={draft.phone_input.display_mode}
+            onValueChange={(v) => updateSection('phone_input', { display_mode: v as PhoneDisplayMode })}
+            className="space-y-2 mt-1"
+          >
+            {PHONE_DISPLAY_MODES.map((mode) => (
+              <div key={mode.value} className="flex items-center gap-2">
+                <RadioGroupItem value={mode.value} id={`dm-${mode.value}`} />
+                <Label htmlFor={`dm-${mode.value}`} className="text-sm font-normal">
+                  {mode.label} — {mode.description}
+                </Label>
+              </div>
+            ))}
+          </RadioGroup>
+          {draft.phone_input.display_mode === 'national' && !draft.phone_input.default_country && (
+            <div className="flex items-start gap-2 rounded-md border border-destructive/50 bg-destructive/10 p-3 mt-2">
+              <AlertTriangle className="h-4 w-4 mt-0.5 text-destructive shrink-0" />
+              <p className="text-sm text-destructive">
+                National mode works best with a default country set. Without one, the input will use the first available country which may confuse users.
+              </p>
+            </div>
+          )}
+        </Field>
+
         <Field>
           <FieldLabel>Default Country</FieldLabel>
           <FieldDescription>Pre-selected country when the phone input loads</FieldDescription>
@@ -660,7 +688,6 @@ function EnhancedDatabaseCard({ dbStatus, autoUpdate, onToggleAutoUpdate, onDown
 
 function PhoneCheckerCard() {
   const [phone, setPhone] = useState('');
-  const [context, setContext] = useState<'auth' | 'messaging'>('auth');
   const [checking, setChecking] = useState(false);
   const [result, setResult] = useState<CheckResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -671,14 +698,14 @@ function PhoneCheckerCard() {
     setResult(null);
     setError(null);
     try {
-      const res = await api.post<CheckResult>('phone-restriction/check', { phone: phone.trim(), context });
+      const res = await api.post<CheckResult>('phone-restriction/check', { phone: phone.trim() });
       setResult(res);
     } catch (err: unknown) {
       setError(getErrorMessage(err, 'Failed to check phone number'));
     } finally {
       setChecking(false);
     }
-  }, [phone, context]);
+  }, [phone]);
 
   return (
     <Card>
@@ -708,20 +735,6 @@ function PhoneCheckerCard() {
           </div>
           <FieldDescription>Use E.164 format (e.g. +12025551234)</FieldDescription>
         </Field>
-        <Field orientation="horizontal" className="max-w-md">
-          <FieldLabel>Context</FieldLabel>
-          <RadioGroup value={context} onValueChange={(v) => setContext(v as 'auth' | 'messaging')} className="flex gap-4">
-            <div className="flex items-center gap-1.5">
-              <RadioGroupItem value="auth" id="ctx-auth" />
-              <Label htmlFor="ctx-auth" className="text-sm font-normal">Auth</Label>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <RadioGroupItem value="messaging" id="ctx-messaging" />
-              <Label htmlFor="ctx-messaging" className="text-sm font-normal">Messaging</Label>
-            </div>
-          </RadioGroup>
-        </Field>
-
         {error && (
           <div className="rounded-md border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
             {error}
@@ -730,21 +743,26 @@ function PhoneCheckerCard() {
 
         {result && (
           <div className="rounded-md border bg-muted/50 p-3 space-y-2">
-            <div className="flex items-center gap-2">
-              {result.allowed ? (
-                <Badge className="bg-primary hover:bg-primary">Allowed</Badge>
-              ) : (
-                <Badge variant="destructive">Blocked</Badge>
-              )}
-              {result.reason && !result.allowed && (
-                <span className="text-sm text-muted-foreground">{result.reason}</span>
-              )}
-            </div>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm max-w-md">
               <span className="text-muted-foreground">Country</span>
               <span>{result.country_name ? `${result.country_name} (${result.country})` : result.country ?? 'Unknown'}</span>
               <span className="text-muted-foreground">Number type</span>
               <span>{result.number_type ?? 'Unknown'}</span>
+              {(['auth', 'messaging'] as const).map((ctx) => (
+                <Fragment key={ctx}>
+                  <span className="text-muted-foreground capitalize">{ctx}</span>
+                  <span className="flex items-center gap-2">
+                    {result[ctx].allowed ? (
+                      <Badge className="bg-primary hover:bg-primary">Allowed</Badge>
+                    ) : (
+                      <Badge variant="destructive">Blocked</Badge>
+                    )}
+                    {!result[ctx].allowed && result[ctx].reason && (
+                      <span className="text-muted-foreground">{result[ctx].reason}</span>
+                    )}
+                  </span>
+                </Fragment>
+              ))}
             </div>
             <p className="text-xs text-muted-foreground mt-1">Results reflect saved settings</p>
           </div>

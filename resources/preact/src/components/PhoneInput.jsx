@@ -33,7 +33,9 @@ export function PhoneInput({ value = '', onChange, disabled, autoFocus = false }
                     preferredCountries={config.preferredCountries}
                     allowedCountries={config.allowedCountries}
                     excludedCountries={config.excludedCountries}
-                    separateDialCode
+                    separateDialCode={config.separateDialCode ?? false}
+                    nationalMode={config.nationalMode ?? false}
+                    allowDropdown={config.allowDropdown ?? true}
                     dropdownContainer={dropdownTarget}
                 />
             )}

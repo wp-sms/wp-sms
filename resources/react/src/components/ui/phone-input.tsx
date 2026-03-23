@@ -23,6 +23,9 @@ export function PhoneInput({ value, onChange, disabled }: PhoneInputProps) {
           preferredCountries={globalConfig.preferredCountries}
           allowedCountries={globalConfig.allowedCountries}
           excludedCountries={globalConfig.excludedCountries}
+          separateDialCode={globalConfig.separateDialCode ?? false}
+          nationalMode={globalConfig.nationalMode ?? false}
+          allowDropdown={globalConfig.allowDropdown ?? true}
           dropdownContainer={container}
         />
       )}

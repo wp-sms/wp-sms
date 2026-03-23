@@ -118,9 +118,8 @@ class PhoneRestrictionController extends Controller
 
     public function checkPhone(\WP_REST_Request $request): \WP_REST_Response
     {
-        $body    = $request->get_json_params();
-        $phone   = $body['phone'] ?? '';
-        $context = $body['context'] ?? 'auth';
+        $body  = $request->get_json_params();
+        $phone = $body['phone'] ?? '';
 
         if (empty($phone) || !is_string($phone)) {
             return new \WP_REST_Response([
@@ -129,23 +128,23 @@ class PhoneRestrictionController extends Controller
             ], 400);
         }
 
-        if (!in_array($context, ['auth', 'messaging'], true)) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'message' => __('Context must be "auth" or "messaging".', 'wp-sms'),
-            ], 400);
-        }
-
-        $result    = $this->guard->check($phone, $context);
-        $countries = $this->resolver->getAllCountries();
+        $authResult      = $this->guard->check($phone, 'auth');
+        $messagingResult = $this->guard->check($phone, 'messaging');
+        $countries       = $this->resolver->getAllCountries();
 
         return new \WP_REST_Response([
             'success'      => true,
-            'allowed'      => $result->allowed,
-            'country'      => $result->country,
-            'country_name' => $countries[$result->country] ?? null,
-            'number_type'  => $result->numberType,
-            'reason'       => $result->reason,
+            'country'      => $authResult->country,
+            'country_name' => $countries[$authResult->country] ?? null,
+            'number_type'  => $authResult->numberType,
+            'auth'         => [
+                'allowed' => $authResult->allowed,
+                'reason'  => $authResult->reason,
+            ],
+            'messaging'    => [
+                'allowed' => $messagingResult->allowed,
+                'reason'  => $messagingResult->reason,
+            ],
         ]);
     }
 
@@ -178,10 +177,15 @@ class PhoneRestrictionController extends Controller
         $sanitized     = [];
         $booleanFields = ['enabled', 'auto_update'];
         $arrayFields   = ['allowed_countries', 'blocked_types', 'preferred_countries'];
+        $enumFields    = [
+            'mode'         => ['allow', 'block'],
+            'display_mode' => ['international', 'separate_dial_code', 'national'],
+        ];
 
         foreach ($values as $key => $value) {
-            if ($key === 'mode') {
-                $sanitized[$key] = in_array($value, ['allow', 'block'], true) ? $value : 'allow';
+            if (isset($enumFields[$key])) {
+                $allowed = $enumFields[$key];
+                $sanitized[$key] = in_array($value, $allowed, true) ? $value : $allowed[0];
             } elseif (in_array($key, $booleanFields, true)) {
                 $sanitized[$key] = (bool) $value;
             } elseif ($key === 'default_country') {

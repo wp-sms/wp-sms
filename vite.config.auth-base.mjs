@@ -31,6 +31,9 @@ export function createAuthConfig({ entry, name, fileName, emptyOutDir = true, as
         resolve: {
             alias: {
                 '@': resolve(__dirname, 'resources/preact/src'),
+                'preact': resolve(__dirname, 'node_modules/preact'),
+                'preact/hooks': resolve(__dirname, 'node_modules/preact/hooks'),
+                'preact/compat': resolve(__dirname, 'node_modules/preact/compat'),
             },
         },
     };

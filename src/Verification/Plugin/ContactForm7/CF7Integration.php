@@ -341,8 +341,9 @@ class CF7Integration
         wp_enqueue_script('wsms-cf7-phone', $baseUrl . 'public/js/cf7-phone.js', [], $version, true);
 
         // Phone input config (default country, preferred, restrictions)
-        wp_localize_script('wsms-cf7-phone', 'wsmsCf7PhoneConfig',
-            $this->restrictionSettings->getPhoneInputDisplayConfig()
+        wp_add_inline_script('wsms-cf7-phone',
+            'window.wsmsCf7PhoneConfig=' . wp_json_encode($this->restrictionSettings->getPhoneInputDisplayConfig()) . ';',
+            'before',
         );
 
         // Verify widget (for both email tags and phone verify)

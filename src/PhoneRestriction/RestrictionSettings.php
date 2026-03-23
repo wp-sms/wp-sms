@@ -29,6 +29,7 @@ class RestrictionSettings
         'phone_input' => [
             'default_country'     => '',
             'preferred_countries' => [],
+            'display_mode'        => 'separate_dial_code',
         ],
     ];
 
@@ -137,9 +138,14 @@ class RestrictionSettings
             );
         }
 
+        $displayMode = $pi['display_mode'] ?? 'separate_dial_code';
+
         $config = [
             'defaultCountry'     => $defaultCountry,
             'preferredCountries' => $preferredCountries,
+            'separateDialCode'   => $displayMode === 'separate_dial_code',
+            'nationalMode'       => $displayMode === 'national',
+            'allowDropdown'      => $displayMode !== 'national',
         ];
 
         if ($allowedCountries !== null && !empty($allowedCountries)) {
