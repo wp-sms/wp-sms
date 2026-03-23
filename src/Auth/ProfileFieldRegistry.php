@@ -16,7 +16,7 @@ class ProfileFieldRegistry
     private const META_KEY_BLACKLIST_EXACT = [
         'session_tokens', 'rich_editing', 'syntax_highlighting',
         'comment_shortcuts', 'admin_color', 'locale', 'dismissed_wp_pointers',
-        'show_admin_bar_front', 'use_ssl',
+        'show_admin_bar_front', 'use_ssl', 'nickname',
     ];
 
     private ?array $allFieldsCache = null;
@@ -221,17 +221,12 @@ class ProfileFieldRegistry
 
     /**
      * Scan existing meta keys from wp_usermeta for the meta picker.
-     * Admin-only. Results cached in a transient (1 hour).
+     * Admin-only. Excludes blacklisted keys and keys already mapped to fields.
      *
      * @return array<int, array{key: string, sample_value: string, count: int}>
      */
     public function scanMetaKeys(): array
     {
-        $cached = get_transient('wsms_meta_keys_scan');
-        if ($cached !== false) {
-            return $cached;
-        }
-
         global $wpdb;
 
         $rows = $wpdb->get_results(
@@ -242,9 +237,18 @@ class ProfileFieldRegistry
              LIMIT 500",
         );
 
+        $usedMetaKeys = array_flip(array_map(
+            fn(ProfileFieldDefinition $f) => $f->metaKey,
+            $this->getAllFields(),
+        ));
+
         $results = [];
         foreach ($rows as $row) {
             if ($this->isBlacklistedMetaKey($row->meta_key)) {
+                continue;
+            }
+
+            if (isset($usedMetaKeys[$row->meta_key])) {
                 continue;
             }
 
@@ -254,8 +258,6 @@ class ProfileFieldRegistry
                 'count'        => (int) $row->cnt,
             ];
         }
-
-        set_transient('wsms_meta_keys_scan', $results, HOUR_IN_SECONDS);
 
         return $results;
     }
