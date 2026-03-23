@@ -852,6 +852,18 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('as_schedule_single_action')) {
+        function as_schedule_single_action(int $timestamp, string $hook, array $args = [], string $group = ''): int {
+            $GLOBALS['_test_as_scheduled_actions'][] = [
+                'timestamp' => $timestamp,
+                'hook'      => $hook,
+                'args'      => $args,
+                'group'     => $group,
+            ];
+            return count($GLOBALS['_test_as_scheduled_actions']);
+        }
+    }
+
     if (!function_exists('as_schedule_recurring_action')) {
         function as_schedule_recurring_action(int $timestamp, int $interval, string $hook, array $args = [], string $group = ''): int {
             $GLOBALS['_test_as_scheduled_actions'][] = [

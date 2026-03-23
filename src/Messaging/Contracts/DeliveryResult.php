@@ -13,6 +13,7 @@ class DeliveryResult
         public readonly ?string $error = null,
         public readonly ?float $cost = null,
         public readonly array $meta = [],
+        public readonly bool $retryable = false,
     ) {
     }
 
@@ -21,9 +22,9 @@ class DeliveryResult
         return new self(true, 'sent', $providerId, null, $cost, $meta);
     }
 
-    public static function failed(string $error, array $meta = []): self
+    public static function failed(string $error, array $meta = [], bool $retryable = false): self
     {
-        return new self(false, 'failed', null, $error, null, $meta);
+        return new self(false, 'failed', null, $error, null, $meta, $retryable);
     }
 
     public static function queued(?string $providerId = null): self

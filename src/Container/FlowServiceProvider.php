@@ -89,6 +89,11 @@ class FlowServiceProvider implements ServiceProvider
             );
 
             $result = $gateway->send($message);
+
+            if ($result->retryable) {
+                throw new \RuntimeException("Transient delivery failure: {$result->error}");
+            }
+
             $logger->updateStatus(
                 $payload['log_id'],
                 $result->success ? $result->status : 'failed',
@@ -96,6 +101,18 @@ class FlowServiceProvider implements ServiceProvider
                 $result->providerId,
             );
         });
+
+        // Mark message log as failed when all retries are exhausted
+        add_action('wsms_job_failed', function (array $args, \Throwable $e) use ($container) {
+            if (($args['type'] ?? '') !== 'send_message') {
+                return;
+            }
+
+            $logId = $args['payload']['log_id'] ?? null;
+            if ($logId) {
+                $container->get('log.message')->updateStatus($logId, 'failed', $e->getMessage());
+            }
+        }, 10, 2);
 
         // Subscribe active triggers
         $container->get('flow.runner')->subscribeActiveTriggers();

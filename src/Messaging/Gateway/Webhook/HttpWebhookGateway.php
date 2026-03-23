@@ -42,16 +42,21 @@ class HttpWebhookGateway implements GatewayInterface
         $response = wp_remote_post($message->getRecipient(), $args);
 
         if (is_wp_error($response)) {
-            return DeliveryResult::failed($response->get_error_message());
+            return DeliveryResult::failed($response->get_error_message(), [], true);
         }
 
         $code = wp_remote_retrieve_response_code($response);
+
         if ($code >= 200 && $code < 300) {
             return DeliveryResult::sent(null, null, ['http_status' => $code]);
         }
 
+        $retryable = $code >= 500 || $code === 429;
+
         return DeliveryResult::failed(
-            sprintf(__('HTTP %d: %s', 'wp-sms'), $code, wp_remote_retrieve_body($response))
+            sprintf('HTTP %d: %s', $code, mb_substr(wp_remote_retrieve_body($response), 0, 500)),
+            ['http_status' => $code],
+            $retryable,
         );
     }
 
