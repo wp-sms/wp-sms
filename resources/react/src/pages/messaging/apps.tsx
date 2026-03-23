@@ -445,7 +445,7 @@ function CapabilitiesSection({ capabilities }: { capabilities: IntegrationCapabi
                 ) : (
                   <>
                     <X className="h-3.5 w-3.5 text-muted-foreground" />
-                    <span className="text-muted-foreground">Not supported</span>
+                    <span className="text-muted-foreground">{cap.note ?? 'Not supported'}</span>
                   </>
                 )}
               </span>

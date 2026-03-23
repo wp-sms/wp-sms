@@ -15,6 +15,7 @@ final class IntegrationCapability
     public const ENGAGEMENT_DATA     = 'engagement_data';
     public const TAGS                = 'tags';
     public const WEBHOOKS            = 'webhooks';
+    public const EMAIL_GATEWAY       = 'email_gateway';
 
     public const LABELS = [
         self::CONTACT_SYNC        => 'Contact Sync',
@@ -26,5 +27,6 @@ final class IntegrationCapability
         self::ENGAGEMENT_DATA     => 'Engagement Data',
         self::TAGS                => 'Tags',
         self::WEBHOOKS            => 'Webhooks',
+        self::EMAIL_GATEWAY       => 'Email Gateway',
     ];
 }

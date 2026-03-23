@@ -144,14 +144,13 @@ class EmailOctopusIntegration implements
     public function getCapabilities(): array
     {
         return [
-            ['id' => IntegrationCapability::CONTACT_SYNC,        'supported' => true],
-            ['id' => IntegrationCapability::LIST_MANAGEMENT,      'supported' => true],
-            ['id' => IntegrationCapability::CAMPAIGNS,            'supported' => true, 'note' => 'Via EmailOctopus'],
-            ['id' => IntegrationCapability::AUTOMATIONS,          'supported' => true, 'note' => 'Manual ID'],
-            ['id' => IntegrationCapability::TAGS,                 'supported' => true],
-            ['id' => IntegrationCapability::SUPPRESSION_SYNC,     'supported' => true],
-            ['id' => IntegrationCapability::TRANSACTIONAL_EMAIL,  'supported' => false],
-            ['id' => IntegrationCapability::ENGAGEMENT_DATA,      'supported' => false],
+            ['id' => IntegrationCapability::CONTACT_SYNC,       'supported' => true],
+            ['id' => IntegrationCapability::LIST_MANAGEMENT,     'supported' => true],
+            ['id' => IntegrationCapability::TAGS,                'supported' => true],
+            ['id' => IntegrationCapability::AUTOMATIONS,         'supported' => true, 'note' => 'Manual ID'],
+            ['id' => IntegrationCapability::SUPPRESSION_SYNC,    'supported' => true],
+            ['id' => IntegrationCapability::EMAIL_GATEWAY,       'supported' => false, 'note' => 'No OTP, auth, or transactional emails'],
+            ['id' => IntegrationCapability::ENGAGEMENT_DATA,     'supported' => false, 'note' => 'No open/click tracking'],
         ];
     }
 
