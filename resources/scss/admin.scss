@@ -1,1 +1,97 @@
-// WSMS Admin Styles
+/* WSMS Admin — Auth status pills & profile badges */
+
+/* Shared pill / badge base */
+.wsms-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.wsms-pill svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+}
+
+.wsms-pill--verified {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #b1dfbb;
+}
+
+.wsms-pill--unverified,
+.wsms-pill--locked {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f1aeb5;
+}
+
+.wsms-pill--suspended {
+    background: #f5c6cb;
+    color: #721c24;
+    border: 1px solid #f1aeb5;
+}
+
+.wsms-pill--mfa {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #a8d8ea;
+}
+
+.wsms-pill--social,
+.wsms-pill--neutral {
+    background: #e2e3e5;
+    color: #383d41;
+    border: 1px solid #d3d6d8;
+}
+
+/* Users list column */
+.column-wsms_auth {
+    width: 110px;
+}
+
+.wsms-auth-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* Profile section */
+.wsms-profile-actions {
+    margin-top: 4px;
+}
+
+.wsms-profile-actions .button {
+    margin-right: 4px;
+}
+
+.wsms-profile-badge {
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 12px;
+}
+
+.wsms-pill--pending {
+    background: #fff3cd;
+    color: #664d03;
+    border: 1px solid #ffe69c;
+}
+
+.wsms-mfa-row,
+.wsms-social-row {
+    margin-bottom: 6px;
+}
+
+.wsms-phone-edit {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
