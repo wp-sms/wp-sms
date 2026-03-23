@@ -5,6 +5,7 @@ namespace WSms\Container;
 use WSms\Contact\Source\ContactSourceManager;
 use WSms\Contact\Source\ContactSourceRegistry;
 use WSms\Contact\Source\WordPressUsersSource;
+use WSms\Integration\EmailOctopus\EmailOctopusContactSource;
 
 defined('ABSPATH') || exit;
 
@@ -15,6 +16,12 @@ class ContactSourceServiceProvider implements ServiceProvider
         $container->register('contact_source.registry', function () use ($container) {
             $registry = new ContactSourceRegistry();
             $registry->register(new WordPressUsersSource($container->get('contact.repository')));
+
+            $eoSource = new EmailOctopusContactSource($container->get('contact.repository'));
+            if ($eoSource->isAvailable()) {
+                $registry->register($eoSource);
+            }
+
             return $registry;
         });
 

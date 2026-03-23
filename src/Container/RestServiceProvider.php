@@ -165,6 +165,7 @@ class RestServiceProvider implements ServiceProvider
             $c->get('flow.triggers'),
             $c->get('flow.actions'),
             $c->get('queue'),
+            $c->has('marketing.suppression_poller') ? $c->get('marketing.suppression_poller') : null,
         ));
         $container->register('rest.gateway_callbacks', fn($c) => new GatewayCallbackController(
             $c->get('gateway.registry'),

@@ -340,6 +340,7 @@ export const INTEGRATION_CATEGORY_LABELS: Record<string, string> = {
   messaging: 'Messaging',
   security: 'Security',
   forms: 'Forms',
+  email_marketing: 'Email Marketing',
 };
 
 /** Integration IDs that have auth-area settings (used for cross-reference notes). */

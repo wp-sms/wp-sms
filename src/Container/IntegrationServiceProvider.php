@@ -146,7 +146,6 @@ class IntegrationServiceProvider implements ServiceProvider
         $outbound = new OutboundSyncManager($syncIntegrations, $container->get('queue'), $container->get('contact.repository'));
         $outbound->listen();
 
-        // Wire suppression polling for integrations that support it
         $suppressionIntegrations = array_filter(
             $syncIntegrations,
             fn($i) => $i instanceof SupportsSuppressionSync,
@@ -154,13 +153,12 @@ class IntegrationServiceProvider implements ServiceProvider
 
         if (!empty($suppressionIntegrations)) {
             $poller = new SuppressionPoller($suppressionIntegrations, $container->get('contact.repository'));
+            $container->register('marketing.suppression_poller', fn() => $poller);
 
-            // Register direct Action Scheduler hook for recurring suppression polls
             add_action('wsms_suppression_poll', function (array $args) use ($poller) {
                 $poller->poll($args['integration_id'] ?? '');
             });
 
-            // Schedule recurring polls for each integration
             $state = get_option('wsms_marketing_sync_state', []);
             foreach ($suppressionIntegrations as $integration) {
                 $settings = $state[$integration->getId()]['sync_settings'] ?? [];
@@ -179,7 +177,6 @@ class IntegrationServiceProvider implements ServiceProvider
             }
         }
 
-        // Register marketing push job handler
         $container->get('queue.processor')->registerHandler(
             'marketing_push_contact',
             function (array $payload) use ($registry) {

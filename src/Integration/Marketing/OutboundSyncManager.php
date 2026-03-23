@@ -11,6 +11,9 @@ defined('ABSPATH') || exit;
 
 class OutboundSyncManager
 {
+    /** @var array<string, true> Contacts already dispatched in this request */
+    private array $dispatched = [];
+
     /** @param SupportsContactSync[] $integrations */
     public function __construct(
         private readonly array $integrations,
@@ -49,8 +52,21 @@ class OutboundSyncManager
 
     private function dispatchPushJobs(string $contactId): void
     {
+        if (isset($this->dispatched[$contactId])) {
+            return;
+        }
+
         $state = get_option('wsms_marketing_sync_state', []);
         $contact = null;
+        $anyNeedsTags = false;
+
+        foreach ($this->integrations as $integration) {
+            $settings = $state[$integration->getId()]['sync_settings'] ?? [];
+            if (!empty($settings['auto_push']) && !empty($settings['push_tags'])) {
+                $anyNeedsTags = true;
+                break;
+            }
+        }
 
         foreach ($this->integrations as $integration) {
             $integrationId = $integration->getId();
@@ -60,9 +76,8 @@ class OutboundSyncManager
                 continue;
             }
 
-            // Resolve contact once, reuse across integrations
             if ($contact === null) {
-                $contact = $this->resolveContact($contactId, $settings);
+                $contact = $this->resolveContact($contactId, $anyNeedsTags);
                 if ($contact === null) {
                     return;
                 }
@@ -70,16 +85,18 @@ class OutboundSyncManager
 
             $this->queue->dispatch(new MarketingPushContactJob($integrationId, $contact));
         }
+
+        $this->dispatched[$contactId] = true;
     }
 
-    private function resolveContact(string $contactId, array $settings): ?array
+    private function resolveContact(string $contactId, bool $includeTags): ?array
     {
         $contact = $this->contactRepository->find($contactId);
         if (!$contact || empty($contact['email'])) {
             return null;
         }
 
-        if (!empty($settings['push_tags'])) {
+        if ($includeTags) {
             $contact['tags'] = $this->contactRepository->getTags($contactId);
         }
 

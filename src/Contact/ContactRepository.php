@@ -69,8 +69,11 @@ class ContactRepository implements ContactRepositoryInterface
 
         $result = (bool) $wpdb->update($wpdb->prefix . 'wsms_contacts', $update, ['id' => $id]);
 
-        if ($result && $oldStatus !== null && $oldStatus !== ($data['status'] ?? $oldStatus)) {
-            do_action('wsms_contact_status_changed', $id, $oldStatus, $data['status']);
+        if ($result) {
+            if ($oldStatus !== null && $oldStatus !== ($data['status'] ?? $oldStatus)) {
+                do_action('wsms_contact_status_changed', $id, $oldStatus, $data['status']);
+            }
+            do_action('wsms_contact_updated', $id, $data);
         }
 
         return $result;

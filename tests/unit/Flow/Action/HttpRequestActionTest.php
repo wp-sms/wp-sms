@@ -17,7 +17,7 @@ class HttpRequestActionTest extends TestCase
 
     protected function tearDown(): void
     {
-        unset($GLOBALS['_test_wp_remote_post']);
+        unset($GLOBALS['_test_wp_remote_request']);
     }
 
     public function testMetadata(): void
@@ -49,7 +49,7 @@ class HttpRequestActionTest extends TestCase
 
     public function testExecuteSuccessReturnsStatusAndBody(): void
     {
-        $GLOBALS['_test_wp_remote_post'] = [
+        $GLOBALS['_test_wp_remote_request'] = [
             'response' => ['code' => 200],
             'body' => '{"ok":true}',
         ];
@@ -66,7 +66,7 @@ class HttpRequestActionTest extends TestCase
 
     public function testJsonResponseBodyIsParsed(): void
     {
-        $GLOBALS['_test_wp_remote_post'] = [
+        $GLOBALS['_test_wp_remote_request'] = [
             'response' => ['code' => 200],
             'body' => '{"tracking_url":"https://example.com/track/123","status":"shipped"}',
         ];
@@ -84,7 +84,7 @@ class HttpRequestActionTest extends TestCase
 
     public function testNonJsonResponseBodyRemainsString(): void
     {
-        $GLOBALS['_test_wp_remote_post'] = [
+        $GLOBALS['_test_wp_remote_request'] = [
             'response' => ['code' => 200],
             'body' => '<html>Not JSON</html>',
         ];
@@ -101,7 +101,7 @@ class HttpRequestActionTest extends TestCase
 
     public function testEmptyResponseBodyRemainsString(): void
     {
-        $GLOBALS['_test_wp_remote_post'] = [
+        $GLOBALS['_test_wp_remote_request'] = [
             'response' => ['code' => 204],
             'body' => '',
         ];
@@ -117,7 +117,7 @@ class HttpRequestActionTest extends TestCase
 
     public function testExecuteFailureOnWpError(): void
     {
-        $GLOBALS['_test_wp_remote_post'] = new \WP_Error('timeout', 'Connection timed out');
+        $GLOBALS['_test_wp_remote_request'] = new \WP_Error('timeout', 'Connection timed out');
 
         $result = $this->action->execute([], ['url' => 'https://example.com']);
 

@@ -10,6 +10,7 @@ use WSms\Integration\Contracts\IntegrationInterface;
 use WSms\Integration\Contracts\SupportsContactSync;
 use WSms\Integration\Contracts\SupportsListManagement;
 use WSms\Integration\Contracts\SupportsSuppressionSync;
+use WSms\Integration\Marketing\SuppressionPoller;
 use WSms\Integration\Webhook\WebhookIntegration;
 use WSms\Queue\Contracts\QueueInterface;
 use WSms\Queue\Job\MarketingPushContactJob;
@@ -26,6 +27,7 @@ class IntegrationController extends Controller
         private readonly TriggerRegistry $triggerRegistry,
         private readonly ActionRegistry $actionRegistry,
         private readonly ?QueueInterface $queue = null,
+        private readonly ?SuppressionPoller $suppressionPoller = null,
     ) {
     }
 
@@ -426,7 +428,6 @@ class IntegrationController extends Controller
             return new \WP_REST_Response(['error' => 'No default list configured'], 400);
         }
 
-        // Paginate through contacts to avoid loading all into memory
         global $wpdb;
         $table = $wpdb->prefix . 'wsms_contacts';
         $dispatched = 0;
@@ -455,29 +456,15 @@ class IntegrationController extends Controller
             return $integration;
         }
 
-        if (!$integration instanceof SupportsSuppressionSync) {
+        if (!$integration instanceof SupportsSuppressionSync || !$this->suppressionPoller) {
             return new \WP_REST_Response(['error' => 'Integration does not support suppression polling'], 400);
         }
 
-        $id = $integration->getId();
-        $state = get_option(self::SYNC_STATE_OPTION, []);
-        $config = $state[$id]['sync_settings'] ?? [];
-        $cursor = $state[$id]['stats']['poll_cursor'] ?? null;
-
-        $result = $integration->pollSuppressions($config, $cursor);
-        $events = $result['events'] ?? [];
-
-        $stats = $state[$id]['stats'] ?? [];
-        $stats['last_poll_at'] = gmdate('c');
-        if ($result['cursor'] !== null) {
-            $stats['poll_cursor'] = $result['cursor'];
-        }
-        $state[$id]['stats'] = $stats;
-        update_option(self::SYNC_STATE_OPTION, $state);
+        $events = $this->suppressionPoller->poll($integration->getId());
 
         return new \WP_REST_Response([
             'success' => true,
-            'events'  => count($events),
+            'events'  => $events,
         ]);
     }
 

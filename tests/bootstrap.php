@@ -558,9 +558,11 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
 
     if (!function_exists('wp_remote_request')) {
         function wp_remote_request(string $url, array $args = []) {
-            $GLOBALS['_test_wp_remote_post_last_url'] = $url;
-            $GLOBALS['_test_wp_remote_post_last_args'] = $args;
-            return $GLOBALS['_test_wp_remote_post'] ?? new \WP_Error('not_configured', 'Test not configured');
+            $GLOBALS['_test_wp_remote_request_last_url'] = $url;
+            $GLOBALS['_test_wp_remote_request_last_args'] = $args;
+            $mock = $GLOBALS['_test_wp_remote_request'] ?? new \WP_Error('not_configured', 'Test not configured');
+
+            return is_callable($mock) ? $mock($url, $args) : $mock;
         }
     }
 

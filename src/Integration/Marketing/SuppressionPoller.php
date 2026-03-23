@@ -16,7 +16,8 @@ class SuppressionPoller
     ) {
     }
 
-    public function poll(string $integrationId): void
+    /** @return int Number of suppression events processed */
+    public function poll(string $integrationId): int
     {
         $integration = null;
         foreach ($this->integrations as $i) {
@@ -27,7 +28,7 @@ class SuppressionPoller
         }
 
         if (!$integration) {
-            return;
+            return 0;
         }
 
         $state = get_option('wsms_marketing_sync_state', []);
@@ -40,7 +41,6 @@ class SuppressionPoller
         $events = $result['events'] ?? [];
         $newCursor = $result['cursor'] ?? $cursor;
 
-        // Batch-process: collect emails, look up once, update changed
         $emailToStatus = [];
         foreach ($events as $event) {
             $email = $event['email'] ?? '';
@@ -63,5 +63,7 @@ class SuppressionPoller
 
         $state[$integrationId]['stats'] = $stats;
         update_option('wsms_marketing_sync_state', $state);
+
+        return count($events);
     }
 }
