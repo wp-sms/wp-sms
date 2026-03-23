@@ -283,10 +283,10 @@ class PhoneRestrictionControllerTest extends TestCase
         $data     = $response->get_data();
 
         $this->assertTrue($data['success']);
-        $this->assertTrue($data['allowed']);
+        $this->assertTrue($data['auth']['allowed']);
         $this->assertSame('US', $data['country']);
         $this->assertSame('United States', $data['country_name']);
-        $this->assertNull($data['reason']);
+        $this->assertNull($data['auth']['reason']);
     }
 
     public function test_check_phone_blocked_by_country(): void
@@ -306,12 +306,12 @@ class PhoneRestrictionControllerTest extends TestCase
         $data     = $response->get_data();
 
         $this->assertTrue($data['success']);
-        $this->assertFalse($data['allowed']);
+        $this->assertFalse($data['auth']['allowed']);
         $this->assertSame('GB', $data['country']);
-        $this->assertSame('country_blocked', $data['reason']);
+        $this->assertSame('country_blocked', $data['auth']['reason']);
     }
 
-    public function test_check_phone_defaults_to_auth_context(): void
+    public function test_check_phone_returns_both_contexts(): void
     {
         $request = new \WP_REST_Request('POST');
         $request->set_header('Content-Type', 'application/json');
@@ -323,7 +323,9 @@ class PhoneRestrictionControllerTest extends TestCase
         $data     = $response->get_data();
 
         $this->assertTrue($data['success']);
-        $this->assertTrue($data['allowed']);
+        $this->assertArrayHasKey('auth', $data);
+        $this->assertArrayHasKey('messaging', $data);
+        $this->assertTrue($data['auth']['allowed']);
     }
 
     public function test_check_phone_rejects_empty_phone(): void
@@ -352,20 +354,6 @@ class PhoneRestrictionControllerTest extends TestCase
         $this->assertSame(400, $response->get_status());
     }
 
-    public function test_check_phone_rejects_invalid_context(): void
-    {
-        $request = new \WP_REST_Request('POST');
-        $request->set_header('Content-Type', 'application/json');
-        $request->set_body(json_encode([
-            'phone'   => '+12025551234',
-            'context' => 'invalid',
-        ]));
-
-        $response = $this->controller->checkPhone($request);
-
-        $this->assertSame(400, $response->get_status());
-    }
-
     public function test_check_phone_messaging_context(): void
     {
         $this->settings->save([
@@ -375,15 +363,14 @@ class PhoneRestrictionControllerTest extends TestCase
         $request = new \WP_REST_Request('POST');
         $request->set_header('Content-Type', 'application/json');
         $request->set_body(json_encode([
-            'phone'   => '+447911123456',
-            'context' => 'messaging',
+            'phone' => '+447911123456',
         ]));
 
         $response = $this->controller->checkPhone($request);
         $data     = $response->get_data();
 
-        $this->assertFalse($data['allowed']);
-        $this->assertSame('country_blocked', $data['reason']);
+        $this->assertFalse($data['messaging']['allowed']);
+        $this->assertSame('country_blocked', $data['messaging']['reason']);
     }
 
     // --- GET /countries ---

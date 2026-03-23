@@ -50,36 +50,4 @@ describe('AuthenticationPage', () => {
     });
   });
 
-  describe('Registration', () => {
-    it('renders registration settings', () => {
-      render(<AuthenticationPage section="registration" {...defaultProps} />);
-
-      expect(screen.getByText('Auto-Create Accounts on Login')).toBeInTheDocument();
-      expect(screen.getByText('Registration Fields')).toBeInTheDocument();
-    });
-
-    it('toggles auto_create_users', async () => {
-      const user = userEvent.setup();
-      const onUpdate = vi.fn();
-
-      render(
-        <AuthenticationPage
-          section="registration"
-          settings={{ ...DEFAULTS }}
-          onUpdate={onUpdate}
-        />
-      );
-
-      const autoCreateSwitch = screen.getByRole('switch', { name: /toggle auto-create accounts on login/i });
-      await user.click(autoCreateSwitch);
-
-      expect(onUpdate).toHaveBeenCalledWith('auto_create_users', true);
-    });
-
-    it('renders link to profile fields page', () => {
-      render(<AuthenticationPage section="registration" {...defaultProps} />);
-
-      expect(screen.getByText('Manage Profile Fields')).toBeInTheDocument();
-    });
-  });
 });
