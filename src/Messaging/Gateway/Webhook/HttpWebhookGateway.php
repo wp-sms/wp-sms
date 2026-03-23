@@ -32,6 +32,10 @@ class HttpWebhookGateway implements GatewayInterface
         $method = strtoupper($meta['method'] ?? 'POST');
         $headers = $meta['headers'] ?? ['Content-Type' => 'application/json'];
 
+        if (isset($meta['log_id'])) {
+            $headers['X-WSMS-Delivery-Id'] = $meta['log_id'];
+        }
+
         $args = [
             'method'  => $method,
             'headers' => $headers,

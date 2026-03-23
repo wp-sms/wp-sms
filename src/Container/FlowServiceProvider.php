@@ -85,7 +85,7 @@ class FlowServiceProvider implements ServiceProvider
                 $payload['recipient'],
                 $payload['body'],
                 $payload['execution_id'] ?? null,
-                $payload['meta'] ?? [],
+                array_merge($payload['meta'] ?? [], ['log_id' => $payload['log_id'] ?? null]),
             );
 
             $result = $gateway->send($message);

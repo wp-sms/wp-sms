@@ -107,6 +107,21 @@ class SendMessageHandlerTest extends TestCase
         ]));
     }
 
+    public function testLogIdIsPassedInMessageMeta(): void
+    {
+        $gateway = $this->createMock(GatewayInterface::class);
+        $gateway->expects($this->once())->method('send')
+            ->with($this->callback(function ($message) {
+                $meta = $message->getMeta();
+                return isset($meta['log_id']) && $meta['log_id'] === 'log-123';
+            }))
+            ->willReturn(DeliveryResult::sent());
+
+        $this->registry->method('get')->with('webhook')->willReturn($gateway);
+
+        $this->processor->process($this->makePayload());
+    }
+
     public function testGatewayNotFoundUpdatesLogToFailed(): void
     {
         $this->registry->method('get')->willReturn(null);

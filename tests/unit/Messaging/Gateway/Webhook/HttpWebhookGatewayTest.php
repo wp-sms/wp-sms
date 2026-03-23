@@ -112,6 +112,37 @@ class HttpWebhookGatewayTest extends TestCase
         ];
     }
 
+    public function testDeliveryIdHeaderSentWhenLogIdInMeta(): void
+    {
+        $GLOBALS['_test_wp_remote_post'] = [
+            'response' => ['code' => 200],
+            'body'     => 'OK',
+        ];
+
+        $message = new Message('webhook', 'https://example.com/hook', '{"data":"test"}', null, [
+            'log_id' => 'log-abc-123',
+        ]);
+        $this->gateway->send($message);
+
+        $args = $GLOBALS['_test_wp_remote_post_last_args'];
+        $this->assertArrayHasKey('X-WSMS-Delivery-Id', $args['headers']);
+        $this->assertSame('log-abc-123', $args['headers']['X-WSMS-Delivery-Id']);
+    }
+
+    public function testDeliveryIdHeaderNotSentWhenLogIdMissing(): void
+    {
+        $GLOBALS['_test_wp_remote_post'] = [
+            'response' => ['code' => 200],
+            'body'     => 'OK',
+        ];
+
+        $message = new Message('webhook', 'https://example.com/hook', '{"data":"test"}');
+        $this->gateway->send($message);
+
+        $args = $GLOBALS['_test_wp_remote_post_last_args'];
+        $this->assertArrayNotHasKey('X-WSMS-Delivery-Id', $args['headers']);
+    }
+
     public function testHttp201IsSuccess(): void
     {
         $GLOBALS['_test_wp_remote_post'] = [
