@@ -425,11 +425,38 @@ export interface Contact {
   last_name: string;
   status: string;
   source: string;
+  source_ref?: string | null;
   custom_fields: Record<string, unknown>;
   wp_user_id?: string | null;
+  email_verified?: boolean;
+  phone_verified?: boolean;
   created_at?: string;
   updated_at?: string;
   tags?: Tag[];
+}
+
+export interface SubscriptionFormField {
+  key: string;
+  required: boolean;
+  label: string;
+}
+
+export interface SubscriptionFormData {
+  id: string;
+  name: string;
+  slug: string;
+  status: string;
+  fields: SubscriptionFormField[];
+  list_id: string | null;
+  tag_id: string | null;
+  double_optin: boolean;
+  optin_channel: string;
+  appearance: Record<string, string>;
+  success_message: string;
+  redirect_url: string | null;
+  created_by: number | null;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 export interface ContactDetail extends Contact {

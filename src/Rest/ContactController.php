@@ -46,7 +46,9 @@ class ContactController extends Controller
                     'last_name'     => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'status'        => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'source'        => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                    'custom_fields' => ['type' => 'object'],
+                    'custom_fields'   => ['type' => 'object'],
+                    'email_verified'  => ['type' => 'boolean'],
+                    'phone_verified'  => ['type' => 'boolean'],
                 ],
             ],
         ]);
@@ -101,13 +103,15 @@ class ContactController extends Controller
                 'callback'            => [$this, 'update'],
                 'permission_callback' => [$this, 'canManage'],
                 'args'                => [
-                    'email'         => ['type' => 'string', 'sanitize_callback' => 'sanitize_email'],
-                    'phone'         => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                    'first_name'    => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                    'last_name'     => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                    'status'        => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                    'source'        => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                    'custom_fields' => ['type' => 'object'],
+                    'email'           => ['type' => 'string', 'sanitize_callback' => 'sanitize_email'],
+                    'phone'           => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'first_name'      => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'last_name'       => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'status'          => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'source'          => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'custom_fields'   => ['type' => 'object'],
+                    'email_verified'  => ['type' => 'boolean'],
+                    'phone_verified'  => ['type' => 'boolean'],
                 ],
             ],
             [
@@ -187,7 +191,7 @@ class ContactController extends Controller
     public function store(\WP_REST_Request $request): \WP_REST_Response
     {
         $data = [];
-        foreach (['email', 'phone', 'first_name', 'last_name', 'status', 'source', 'custom_fields'] as $field) {
+        foreach (['email', 'phone', 'first_name', 'last_name', 'status', 'source', 'custom_fields', 'email_verified', 'phone_verified'] as $field) {
             $value = $request->get_param($field);
             if ($value !== null) {
                 $data[$field] = $value;
@@ -250,7 +254,7 @@ class ContactController extends Controller
         }
 
         $data = [];
-        foreach (['email', 'phone', 'first_name', 'last_name', 'status', 'source', 'custom_fields'] as $field) {
+        foreach (['email', 'phone', 'first_name', 'last_name', 'status', 'source', 'custom_fields', 'email_verified', 'phone_verified'] as $field) {
             $value = $request->get_param($field);
             if ($value !== null) {
                 $data[$field] = $value;

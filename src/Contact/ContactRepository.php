@@ -17,17 +17,20 @@ class ContactRepository implements ContactRepositoryInterface
         $now = current_time('mysql');
 
         $wpdb->insert($wpdb->prefix . 'wsms_contacts', [
-            'id'            => $id,
-            'email'         => isset($data['email']) ? strtolower($data['email']) : null,
-            'phone'         => isset($data['phone']) ? self::normalizePhone($data['phone']) : null,
-            'first_name'    => $data['first_name'] ?? null,
-            'last_name'     => $data['last_name'] ?? null,
-            'wp_user_id'    => $data['wp_user_id'] ?? null,
-            'status'        => $data['status'] ?? 'subscribed',
-            'custom_fields' => isset($data['custom_fields']) ? wp_json_encode($data['custom_fields']) : null,
-            'source'        => $data['source'] ?? 'manual',
-            'created_at'    => $now,
-            'updated_at'    => $now,
+            'id'             => $id,
+            'email'          => isset($data['email']) ? strtolower($data['email']) : null,
+            'phone'          => isset($data['phone']) ? self::normalizePhone($data['phone']) : null,
+            'first_name'     => $data['first_name'] ?? null,
+            'last_name'      => $data['last_name'] ?? null,
+            'wp_user_id'     => $data['wp_user_id'] ?? null,
+            'status'         => $data['status'] ?? 'subscribed',
+            'email_verified' => !empty($data['email_verified']) ? 1 : 0,
+            'phone_verified' => !empty($data['phone_verified']) ? 1 : 0,
+            'custom_fields'  => isset($data['custom_fields']) ? wp_json_encode($data['custom_fields']) : null,
+            'source'         => $data['source'] ?? 'manual',
+            'source_ref'     => $data['source_ref'] ?? null,
+            'created_at'     => $now,
+            'updated_at'     => $now,
         ]);
 
         if (!$suppressEvents) {
@@ -41,24 +44,49 @@ class ContactRepository implements ContactRepositoryInterface
     {
         global $wpdb;
 
+        // Pre-fetch current row fields needed for change detection (status, email, phone).
+        $needsCurrentRow = array_key_exists('status', $data)
+            || array_key_exists('email', $data)
+            || array_key_exists('phone', $data);
+
+        $currentRow = null;
         $oldStatus = null;
-        if (array_key_exists('status', $data)) {
-            $oldStatus = $wpdb->get_var($wpdb->prepare(
-                "SELECT status FROM {$wpdb->prefix}wsms_contacts WHERE id = %s",
+        if ($needsCurrentRow) {
+            $currentRow = $wpdb->get_row($wpdb->prepare(
+                "SELECT status, email, phone FROM {$wpdb->prefix}wsms_contacts WHERE id = %s",
                 $id,
-            ));
+            ), ARRAY_A);
+            $oldStatus = $currentRow['status'] ?? null;
         }
 
         $update = ['updated_at' => current_time('mysql')];
 
-        foreach (['email', 'phone', 'first_name', 'last_name', 'wp_user_id', 'status', 'source', 'opted_out_at'] as $field) {
+        foreach (['email', 'phone', 'first_name', 'last_name', 'wp_user_id', 'status', 'source', 'source_ref', 'opted_out_at', 'email_verified', 'phone_verified'] as $field) {
             if (array_key_exists($field, $data)) {
                 if ($field === 'email' && $data[$field] !== null) {
                     $update[$field] = strtolower($data[$field]);
                 } elseif ($field === 'phone' && $data[$field] !== null) {
                     $update[$field] = self::normalizePhone($data[$field]);
+                } elseif ($field === 'email_verified' || $field === 'phone_verified') {
+                    $update[$field] = $data[$field] ? 1 : 0;
                 } else {
                     $update[$field] = $data[$field];
+                }
+            }
+        }
+
+        // Auto-reset verification flags when identifier changes.
+        if ($currentRow !== null) {
+            if (array_key_exists('email', $data)) {
+                $newEmail = $update['email'] ?? null;
+                if ($newEmail !== ($currentRow['email'] ?? null) && !array_key_exists('email_verified', $data)) {
+                    $update['email_verified'] = 0;
+                }
+            }
+            if (array_key_exists('phone', $data)) {
+                $newPhone = $update['phone'] ?? null;
+                if ($newPhone !== ($currentRow['phone'] ?? null) && !array_key_exists('phone_verified', $data)) {
+                    $update['phone_verified'] = 0;
                 }
             }
         }
@@ -318,6 +346,18 @@ class ContactRepository implements ContactRepositoryInterface
             $where .= ' AND source = %s';
             $params[] = $filters['source'];
         }
+        if (!empty($filters['source_ref'])) {
+            $where .= ' AND source_ref = %s';
+            $params[] = $filters['source_ref'];
+        }
+        if (isset($filters['email_verified'])) {
+            $where .= ' AND email_verified = %d';
+            $params[] = $filters['email_verified'] ? 1 : 0;
+        }
+        if (isset($filters['phone_verified'])) {
+            $where .= ' AND phone_verified = %d';
+            $params[] = $filters['phone_verified'] ? 1 : 0;
+        }
         if (!empty($filters['search'])) {
             $where .= ' AND (email LIKE %s OR phone LIKE %s OR first_name LIKE %s OR last_name LIKE %s)';
             $like = '%' . $wpdb->esc_like($filters['search']) . '%';
@@ -331,6 +371,12 @@ class ContactRepository implements ContactRepositoryInterface
     {
         if (isset($row['custom_fields']) && is_string($row['custom_fields'])) {
             $row['custom_fields'] = json_decode($row['custom_fields'], true) ?? [];
+        }
+        if (array_key_exists('email_verified', $row)) {
+            $row['email_verified'] = (bool) $row['email_verified'];
+        }
+        if (array_key_exists('phone_verified', $row)) {
+            $row['phone_verified'] = (bool) $row['phone_verified'];
         }
         return $row;
     }

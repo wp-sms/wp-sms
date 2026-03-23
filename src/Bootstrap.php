@@ -21,6 +21,7 @@ use WSms\Container\CampaignServiceProvider;
 use WSms\Container\IntegrationServiceProvider;
 use WSms\Container\PhoneRestrictionServiceProvider;
 use WSms\Container\MessagingButtonServiceProvider;
+use WSms\Container\SubscriptionFormServiceProvider;
 use WSms\Container\ContactSourceServiceProvider;
 use WSms\Container\TemplateServiceProvider;
 use WSms\Integration\ContactForm7\CF7NotificationServiceProvider;
@@ -68,6 +69,7 @@ class Bootstrap
         PhoneRestrictionServiceProvider::class,
         IntegrationServiceProvider::class,
         MessagingButtonServiceProvider::class,
+        SubscriptionFormServiceProvider::class,
         TemplateServiceProvider::class,
         // REST must come after all services are registered
         RestServiceProvider::class,

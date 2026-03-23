@@ -275,6 +275,7 @@ export const SOCIAL_METHODS = [
 export const CONTACT_STATUSES = [
   { value: 'subscribed', label: 'Subscribed' },
   { value: 'unsubscribed', label: 'Unsubscribed' },
+  { value: 'pending', label: 'Pending' },
   { value: 'bounced', label: 'Bounced' },
   { value: 'complained', label: 'Complained' },
 ] as const;

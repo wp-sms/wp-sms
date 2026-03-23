@@ -28,6 +28,7 @@ interface ContactsListProps {
 const STATUS_STYLES: Record<string, string> = {
   subscribed: 'border-emerald-200 bg-emerald-50 text-emerald-700',
   unsubscribed: 'border-gray-200 bg-gray-50 text-gray-600',
+  pending: 'border-yellow-200 bg-yellow-50 text-yellow-700',
   bounced: 'border-amber-200 bg-amber-50 text-amber-700',
   complained: 'border-red-200 bg-red-50 text-red-700',
 };

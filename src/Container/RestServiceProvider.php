@@ -25,6 +25,8 @@ use WSms\Rest\PhoneRestrictionController;
 use WSms\Rest\TagController;
 use WSms\Rest\MessagingButtonController;
 use WSms\Rest\RegistrationFormController;
+use WSms\Rest\SubscriptionFormController;
+use WSms\Rest\SubscriptionFormPublicController;
 use WSms\Rest\TemplateCatalogController;
 use WSms\Rest\TemplateController;
 use WSms\Rest\WebhookReceiverController;
@@ -203,6 +205,14 @@ class RestServiceProvider implements ServiceProvider
             $c->get('gateway.registry'),
             $c->get('auth.rate_limiter'),
         ));
+        $container->register('rest.subscription_forms', fn($c) => new SubscriptionFormController(
+            $c->get('subscription_form.repository'),
+        ));
+        $container->register('rest.subscription_forms_public', fn($c) => new SubscriptionFormPublicController(
+            $c->get('subscription_form.repository'),
+            $c->get('subscription_form.handler'),
+            $c->get('auth.rate_limiter'),
+        ));
     }
 
     /** {@inheritDoc} */
@@ -233,6 +243,8 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.webhook_receiver')->registerRoutes();
             $container->get('rest.messaging_button')->registerRoutes();
             $container->get('rest.registration_forms')->registerRoutes();
+            $container->get('rest.subscription_forms')->registerRoutes();
+            $container->get('rest.subscription_forms_public')->registerRoutes();
             $container->get('rest.templates')->registerRoutes();
             $container->get('rest.template_catalog')->registerRoutes();
         });

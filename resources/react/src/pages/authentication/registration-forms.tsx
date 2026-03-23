@@ -41,7 +41,7 @@ import {
 import { Plus, MoreHorizontal, Pencil, Copy, Trash2, ClipboardCopy, FileText, ArrowUp, ArrowDown } from 'lucide-react';
 import { useConfirm } from '@/components/confirm-provider';
 import { useRegistrationForms, type RegistrationFormData, type RegistrationFormField } from '@/hooks/use-registration-forms';
-import { generateSlug, getAvailableRoles } from '@/lib/utils';
+import { copyToClipboard, generateSlug, getAvailableRoles } from '@/lib/utils';
 import { SYSTEM_FIELD_OPTIONS } from '@/lib/constants';
 import { toast } from 'sonner';
 
@@ -141,28 +141,17 @@ export function RegistrationForms() {
     }
   }
 
-  async function copyToClipboard(text: string) {
-    try {
-      await navigator.clipboard.writeText(text);
-    } catch {
-      const textarea = document.createElement('textarea');
-      textarea.value = text;
-      textarea.style.position = 'fixed';
-      textarea.style.opacity = '0';
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand('copy');
-      document.body.removeChild(textarea);
-    }
+  async function copyShortcode(text: string) {
+    await copyToClipboard(text);
     toast.success('Shortcode copied to clipboard');
   }
 
   function copyPopupShortcode(slug: string) {
-    copyToClipboard(`[wsms_auth id="${slug}" view="register"]`);
+    copyShortcode(`[wsms_auth id="${slug}" view="register"]`);
   }
 
   function copyEmbedShortcode(slug: string) {
-    copyToClipboard(`[wsms_auth id="${slug}" view="register" mode="embed"]`);
+    copyShortcode(`[wsms_auth id="${slug}" view="register" mode="embed"]`);
   }
 
   function toggleField(fieldId: string) {

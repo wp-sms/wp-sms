@@ -103,6 +103,14 @@ class WordPressUsersSource extends AbstractContactSource
         $contactData['wp_user_id'] = $user->ID;
         $contactData['source'] = $this->getType();
 
+        // Copy verification status from WP user meta.
+        if (get_user_meta($user->ID, 'wsms_email_verified', true)) {
+            $contactData['email_verified'] = 1;
+        }
+        if (get_user_meta($user->ID, 'wsms_phone_verified', true)) {
+            $contactData['phone_verified'] = 1;
+        }
+
         return $this->upsertContact($contactData, $suppressEvents);
     }
 

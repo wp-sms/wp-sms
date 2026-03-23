@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks, Settings2, MessageSquare, SlidersHorizontal } from 'lucide-react';
+import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks, Settings2, MessageSquare, SlidersHorizontal, ClipboardList } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import {
   Sidebar,
@@ -101,6 +101,11 @@ export const NAV_ITEMS = [
     ],
   },
   {
+    id: 'subscription-forms',
+    label: 'Subscription Forms',
+    icon: ClipboardList,
+  },
+  {
     id: 'settings',
     label: 'Settings',
     icon: Settings2,
@@ -171,6 +176,7 @@ const SECTION_DESCRIPTIONS: Record<string, string> = {
   'mb-pages': 'Configure widget pages: welcome screen, contact form, and resources.',
   'mb-team': 'Manage team members displayed in the messaging widget.',
   'mb-display-rules': 'Control where and when the messaging button appears on your site.',
+  'subscription-forms': 'Create embeddable forms to collect subscriber contacts with optional double opt-in verification.',
   'general': 'Configure site-level settings like admin phone number and notification preferences.',
   'channels': 'Configure authentication channels — Phone, Email, and Password.',
   'profile-fields': 'Manage which fields appear on registration and profile forms.',

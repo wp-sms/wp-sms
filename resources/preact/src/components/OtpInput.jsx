@@ -23,13 +23,29 @@ function WidgetSlot({ char, isActive, hasFakeCaret }) {
     );
 }
 
+function SubscriptionSlot({ char, isActive, hasFakeCaret }) {
+    return (
+        <div className={`wsms-sub-form__otp-slot${isActive ? ' wsms-sub-form__otp-slot--active' : ''}`}>
+            {char || (hasFakeCaret && (
+                <span className="wsms-sub-form__otp-caret" />
+            ))}
+        </div>
+    );
+}
+
+const VARIANT_CONFIG = {
+    default: { Slot, container: 'flex justify-center', slots: 'flex items-center gap-1.5', separator: 'text-lg text-muted-foreground mx-0.5' },
+    widget: { Slot: WidgetSlot, container: 'wsms-vw-otp', slots: 'wsms-vw-otp-slots', separator: 'wsms-vw-otp-separator' },
+    subscription: { Slot: SubscriptionSlot, container: 'wsms-sub-form__otp', slots: 'wsms-sub-form__otp-slots', separator: 'wsms-sub-form__otp-separator' },
+};
+
 const stripNonDigits = (text) => text.replace(/\D/g, '');
 
 export function OtpInput({ length = 6, onComplete, disabled, autoFocus = false, variant = 'default' }) {
     const focusRef = useAutoFocus(autoFocus);
     const half = Math.ceil(length / 2);
-    const isWidget = variant === 'widget';
-    const SlotComponent = isWidget ? WidgetSlot : Slot;
+    const cfg = VARIANT_CONFIG[variant] || VARIANT_CONFIG.default;
+    const SlotComponent = cfg.Slot;
 
     return (
         <OTPInput
@@ -42,13 +58,13 @@ export function OtpInput({ length = 6, onComplete, disabled, autoFocus = false, 
             pattern={REGEXP_ONLY_DIGITS}
             pushPasswordManagerStrategy="increase-width"
             pasteTransformer={stripNonDigits}
-            containerClassName={isWidget ? 'wsms-vw-otp' : 'flex justify-center'}
+            containerClassName={cfg.container}
             render={({ slots }) => (
-                <div className={isWidget ? 'wsms-vw-otp-slots' : 'flex items-center gap-1.5'}>
+                <div className={cfg.slots}>
                     {slots.slice(0, half).map((slot, i) => (
                         <SlotComponent key={i} {...slot} />
                     ))}
-                    <span className={isWidget ? 'wsms-vw-otp-separator' : 'text-lg text-muted-foreground mx-0.5'} aria-hidden="true">&ndash;</span>
+                    <span className={cfg.separator} aria-hidden="true">&ndash;</span>
                     {slots.slice(half).map((slot, i) => (
                         <SlotComponent key={i + half} {...slot} />
                     ))}

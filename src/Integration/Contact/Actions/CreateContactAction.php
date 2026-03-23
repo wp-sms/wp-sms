@@ -79,6 +79,18 @@ class CreateContactAction extends AbstractAction
                 'default'     => 'flow',
                 'example'     => 'flow',
             ],
+            'email_verified' => [
+                'type'        => 'boolean',
+                'label'       => __('Email Verified', 'wp-sms'),
+                'description' => __('Mark the contact email as verified', 'wp-sms'),
+                'default'     => false,
+            ],
+            'phone_verified' => [
+                'type'        => 'boolean',
+                'label'       => __('Phone Verified', 'wp-sms'),
+                'description' => __('Mark the contact phone as verified', 'wp-sms'),
+                'default'     => false,
+            ],
             'on_duplicate' => [
                 'type'        => 'string',
                 'label'       => __('On Duplicate', 'wp-sms'),
@@ -113,6 +125,13 @@ class CreateContactAction extends AbstractAction
             'last_name'  => $config['last_name'] ?? null,
             'source'     => $config['source'] ?? 'flow',
         ], fn($v) => $v !== null && $v !== '');
+
+        if (!empty($config['email_verified'])) {
+            $data['email_verified'] = 1;
+        }
+        if (!empty($config['phone_verified'])) {
+            $data['phone_verified'] = 1;
+        }
 
         // Auto-link WP user if email matches
         if (!empty($email)) {
@@ -152,6 +171,13 @@ class CreateContactAction extends AbstractAction
             'first_name' => $config['first_name'] ?? null,
             'last_name'  => $config['last_name'] ?? null,
         ], fn($v) => $v !== null && $v !== '');
+
+        if (!empty($config['email_verified'])) {
+            $updateData['email_verified'] = 1;
+        }
+        if (!empty($config['phone_verified'])) {
+            $updateData['phone_verified'] = 1;
+        }
 
         if (!empty($updateData)) {
             $this->contactRepository->update($existing['id'], $updateData);

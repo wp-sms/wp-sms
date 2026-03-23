@@ -90,6 +90,18 @@ class UpdateContactAction extends AbstractAction
                 'label'       => __('Custom Fields', 'wp-sms'),
                 'description' => __('Key-value pairs to merge into custom fields', 'wp-sms'),
             ],
+            'email_verified' => [
+                'type'        => 'boolean',
+                'label'       => __('Email Verified', 'wp-sms'),
+                'description' => __('Mark the contact email as verified', 'wp-sms'),
+                'default'     => false,
+            ],
+            'phone_verified' => [
+                'type'        => 'boolean',
+                'label'       => __('Phone Verified', 'wp-sms'),
+                'description' => __('Mark the contact phone as verified', 'wp-sms'),
+                'default'     => false,
+            ],
         ];
     }
 
@@ -118,6 +130,13 @@ class UpdateContactAction extends AbstractAction
         if (!empty($config['custom_fields']) && is_array($config['custom_fields'])) {
             $existing = $contact['custom_fields'] ?? [];
             $updateData['custom_fields'] = array_merge($existing, $config['custom_fields']);
+        }
+
+        if (!empty($config['email_verified'])) {
+            $updateData['email_verified'] = 1;
+        }
+        if (!empty($config['phone_verified'])) {
+            $updateData['phone_verified'] = 1;
         }
 
         if (empty($updateData)) {

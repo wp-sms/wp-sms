@@ -9,6 +9,7 @@ import { ContactCustomFields } from './contact-custom-fields';
 import { ContactWpUserInfo } from './contact-wp-user-info';
 import { ContactActivity } from './contact-activity';
 import { formatLabel } from '@/lib/constants';
+import { CheckCircle2, XCircle } from 'lucide-react';
 
 interface ContactDetailSheetProps {
   open: boolean;
@@ -18,6 +19,23 @@ interface ContactDetailSheetProps {
   allTags: Tag[];
   onAddTag: (contactId: string, tagId: string) => Promise<void>;
   onRemoveTag: (contactId: string, tagId: string) => Promise<void>;
+}
+
+function VerifiedBadge({ verified }: { verified: boolean }) {
+  if (verified) {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs text-emerald-600">
+        <CheckCircle2 className="h-3.5 w-3.5" />
+        Verified
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+      <XCircle className="h-3.5 w-3.5" />
+      Not verified
+    </span>
+  );
 }
 
 export function ContactDetailSheet({
@@ -39,16 +57,20 @@ export function ContactDetailSheet({
       .finally(() => setLoading(false));
   }, [contactId, open, fetchContact]);
 
+  const refreshContact = useCallback(async () => {
+    if (contactId) {
+      const updated = await fetchContact(contactId);
+      setContact(updated);
+    }
+  }, [contactId, fetchContact]);
+
   const withRefresh = useCallback(
     (fn: (cId: string, tagId: string) => Promise<void>) =>
       async (cId: string, tagId: string) => {
         await fn(cId, tagId);
-        if (contactId) {
-          const updated = await fetchContact(contactId);
-          setContact(updated);
-        }
+        await refreshContact();
       },
-    [contactId, fetchContact],
+    [refreshContact],
   );
 
   const handleAddTag = withRefresh(onAddTag);
@@ -75,9 +97,19 @@ export function ContactDetailSheet({
               <h3 className="text-lg font-semibold">
                 {[contact.first_name, contact.last_name].filter(Boolean).join(' ') || 'Unnamed'}
               </h3>
-              <div className="mt-2 space-y-1 text-sm">
-                {contact.email && <p className="text-muted-foreground">{contact.email}</p>}
-                {contact.phone && <p className="text-muted-foreground">{contact.phone}</p>}
+              <div className="mt-2 space-y-1.5 text-sm">
+                {contact.email && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">{contact.email}</span>
+                    <VerifiedBadge verified={!!contact.email_verified} />
+                  </div>
+                )}
+                {contact.phone && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-muted-foreground">{contact.phone}</span>
+                    <VerifiedBadge verified={!!contact.phone_verified} />
+                  </div>
+                )}
               </div>
               <div className="mt-2 flex items-center gap-2">
                 <Badge variant="outline">{formatLabel(contact.status)}</Badge>

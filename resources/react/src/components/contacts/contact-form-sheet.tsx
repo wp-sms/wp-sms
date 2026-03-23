@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PhoneInput } from '@/components/ui/phone-input';
+import { Checkbox } from '@/components/ui/checkbox';
 import { ContactCustomFields } from './contact-custom-fields';
 import { CONTACT_STATUSES } from '@/lib/constants';
 
@@ -16,16 +17,20 @@ interface ContactFormSheetProps {
   onSave: (data: Partial<Contact>) => Promise<unknown>;
 }
 
+const EMPTY_FORM = {
+  first_name: '',
+  last_name: '',
+  email: '',
+  phone: '',
+  status: 'subscribed',
+  custom_fields: {} as Record<string, unknown>,
+  email_verified: false,
+  phone_verified: false,
+};
+
 export function ContactFormSheet({ open, onOpenChange, contact, onSave }: ContactFormSheetProps) {
   const isEdit = !!contact;
-  const [form, setForm] = useState({
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone: '',
-    status: 'subscribed',
-    custom_fields: {} as Record<string, unknown>,
-  });
+  const [form, setForm] = useState({ ...EMPTY_FORM });
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -37,9 +42,11 @@ export function ContactFormSheet({ open, onOpenChange, contact, onSave }: Contac
         phone: contact.phone || '',
         status: contact.status || 'subscribed',
         custom_fields: contact.custom_fields || {},
+        email_verified: !!contact.email_verified,
+        phone_verified: !!contact.phone_verified,
       });
     } else {
-      setForm({ first_name: '', last_name: '', email: '', phone: '', status: 'subscribed', custom_fields: {} });
+      setForm({ ...EMPTY_FORM });
     }
   }, [contact, open]);
 
@@ -76,6 +83,12 @@ export function ContactFormSheet({ open, onOpenChange, contact, onSave }: Contac
           <Field>
             <FieldLabel htmlFor="cf-email">Email</FieldLabel>
             <Input id="cf-email" type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+            {form.email && (
+              <label className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                <Checkbox checked={form.email_verified} onCheckedChange={(v) => setForm({ ...form, email_verified: !!v })} />
+                Email verified
+              </label>
+            )}
           </Field>
 
           <Field>
@@ -85,6 +98,12 @@ export function ContactFormSheet({ open, onOpenChange, contact, onSave }: Contac
               value={form.phone}
               onChange={(e164: string) => setForm({ ...form, phone: e164 })}
             />
+            {form.phone && (
+              <label className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+                <Checkbox checked={form.phone_verified} onCheckedChange={(v) => setForm({ ...form, phone_verified: !!v })} />
+                Phone verified
+              </label>
+            )}
           </Field>
 
           <Field>
