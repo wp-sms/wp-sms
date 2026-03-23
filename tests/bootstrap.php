@@ -556,6 +556,14 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('wp_remote_request')) {
+        function wp_remote_request(string $url, array $args = []) {
+            $GLOBALS['_test_wp_remote_post_last_url'] = $url;
+            $GLOBALS['_test_wp_remote_post_last_args'] = $args;
+            return $GLOBALS['_test_wp_remote_post'] ?? new \WP_Error('not_configured', 'Test not configured');
+        }
+    }
+
     if (!function_exists('wp_remote_get')) {
         function wp_remote_get(string $url, array $args = []) {
             $mock = $GLOBALS['_test_wp_remote_get'] ?? new \WP_Error('not_configured', 'Test not configured');

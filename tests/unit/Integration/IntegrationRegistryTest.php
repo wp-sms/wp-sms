@@ -66,6 +66,7 @@ class IntegrationRegistryTest extends TestCase
             public function getAuthSchema(): array { return []; }
             public function getTriggers(): array { return []; }
             public function getActions(): array { return []; }
+            public function getCapabilities(): array { return []; }
             public function boot(): void {}
             public function connect(array $credentials): array { return $credentials; }
             public function disconnect(): void {}

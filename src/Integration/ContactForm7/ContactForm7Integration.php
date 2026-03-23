@@ -61,6 +61,11 @@ class ContactForm7Integration implements IntegrationInterface
         return [];
     }
 
+    public function getCapabilities(): array
+    {
+        return [];
+    }
+
     public function boot(): void
     {
     }

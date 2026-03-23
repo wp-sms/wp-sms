@@ -54,9 +54,6 @@ class HttpRequestAction extends AbstractAction
                 'label' => __('Headers', 'wp-sms'),
                 'description' => __('HTTP headers to include in the request', 'wp-sms'),
                 'example' => ['Authorization' => 'Bearer token123'],
-                'displayOptions' => [
-                    'show' => ['method' => ['POST', 'PUT', 'PATCH']],
-                ],
             ],
             'body' => [
                 'type' => 'text',
@@ -91,8 +88,13 @@ class HttpRequestAction extends AbstractAction
     {
         $url = $config['url'] ?? '';
         $method = strtoupper($config['method'] ?? 'POST');
-        $headers = $config['headers'] ?? ['Content-Type' => 'application/json'];
+        $headers = $config['headers'] ?? [];
         $body = $config['body'] ?? '';
+        $hasBody = in_array($method, ['POST', 'PUT', 'PATCH']);
+
+        if ($hasBody) {
+            $headers = array_merge(['Content-Type' => 'application/json'], $headers);
+        }
 
         $args = [
             'method' => $method,
@@ -100,11 +102,11 @@ class HttpRequestAction extends AbstractAction
             'timeout' => 30,
         ];
 
-        if (in_array($method, ['POST', 'PUT', 'PATCH'])) {
+        if ($hasBody) {
             $args['body'] = $body;
         }
 
-        $response = wp_remote_post($url, $args);
+        $response = wp_remote_request($url, $args);
 
         if (is_wp_error($response)) {
             return ActionResult::failure($response->get_error_message());
@@ -114,9 +116,18 @@ class HttpRequestAction extends AbstractAction
         $responseBody = wp_remote_retrieve_body($response);
         $parsed = json_decode($responseBody, true);
 
-        return ActionResult::success([
+        $output = [
             'http_status' => $code,
             'body'        => is_array($parsed) ? $parsed : $responseBody,
-        ]);
+        ];
+
+        if ($code >= 200 && $code < 300) {
+            return ActionResult::success($output);
+        }
+
+        return ActionResult::failure(
+            sprintf('HTTP %d: %s', $code, mb_substr($responseBody, 0, 500)),
+            $output,
+        );
     }
 }

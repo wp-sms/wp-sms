@@ -5,6 +5,7 @@ namespace WSms\Container;
 use WSms\Integration\Auth\AuthIntegration;
 use WSms\Integration\Contact\ContactIntegration;
 use WSms\Integration\ContactForm7\ContactForm7Integration;
+use WSms\Integration\EmailOctopus\EmailOctopusIntegration;
 use WSms\Integration\IntegrationRegistry;
 use WSms\Integration\Schedule\ScheduleIntegration;
 use WSms\Integration\Webhook\WebhookIntegration;
@@ -12,6 +13,10 @@ use WSms\Integration\WooCommerce\WooCommerceIntegration;
 use WSms\Integration\WordPress\WordPressIntegration;
 use WSms\Integration\Telegram\TelegramIntegration;
 use WSms\Integration\Contracts\IntegrationInterface;
+use WSms\Integration\Contracts\SupportsContactSync;
+use WSms\Integration\Contracts\SupportsSuppressionSync;
+use WSms\Integration\Marketing\OutboundSyncManager;
+use WSms\Integration\Marketing\SuppressionPoller;
 use WSms\Integration\WpSms\WpSmsIntegration;
 use WSms\Flow\Trigger\TriggerRegistry;
 use WSms\Flow\Action\ActionRegistry;
@@ -99,6 +104,14 @@ class IntegrationServiceProvider implements ServiceProvider
                 $actions,
             );
 
+            // Register EmailOctopusIntegration (no constructor injection)
+            $this->registerIntegration(
+                new EmailOctopusIntegration(),
+                $registry,
+                $triggers,
+                $actions,
+            );
+
             // Simple integrations (no constructor injection)
             foreach ($this->integrations as $integrationClass) {
                 $integration = new $integrationClass();
@@ -111,7 +124,94 @@ class IntegrationServiceProvider implements ServiceProvider
             }
 
             do_action('wsms_register_integrations', $registry, $triggers, $actions);
+
+            // Wire marketing sync for sync-capable integrations
+            $this->wireMarketingSync($registry, $container);
         });
+    }
+
+    private function wireMarketingSync(IntegrationRegistry $registry, ServiceContainer $container): void
+    {
+        $syncIntegrations = [];
+        foreach ($registry->getAll() as $integration) {
+            if ($integration->isConnected() && $integration instanceof SupportsContactSync) {
+                $syncIntegrations[] = $integration;
+            }
+        }
+
+        if (empty($syncIntegrations)) {
+            return;
+        }
+
+        $outbound = new OutboundSyncManager($syncIntegrations, $container->get('queue'), $container->get('contact.repository'));
+        $outbound->listen();
+
+        // Wire suppression polling for integrations that support it
+        $suppressionIntegrations = array_filter(
+            $syncIntegrations,
+            fn($i) => $i instanceof SupportsSuppressionSync,
+        );
+
+        if (!empty($suppressionIntegrations)) {
+            $poller = new SuppressionPoller($suppressionIntegrations, $container->get('contact.repository'));
+
+            // Register direct Action Scheduler hook for recurring suppression polls
+            add_action('wsms_suppression_poll', function (array $args) use ($poller) {
+                $poller->poll($args['integration_id'] ?? '');
+            });
+
+            // Schedule recurring polls for each integration
+            $state = get_option('wsms_marketing_sync_state', []);
+            foreach ($suppressionIntegrations as $integration) {
+                $settings = $state[$integration->getId()]['sync_settings'] ?? [];
+                $pollEnabled = $settings['poll_enabled'] ?? true;
+                $pollInterval = $settings['poll_interval'] ?? 3600;
+
+                if ($pollEnabled && !as_has_scheduled_action('wsms_suppression_poll', ['integration_id' => $integration->getId()], 'wsms')) {
+                    as_schedule_recurring_action(
+                        time() + $pollInterval,
+                        $pollInterval,
+                        'wsms_suppression_poll',
+                        ['integration_id' => $integration->getId()],
+                        'wsms',
+                    );
+                }
+            }
+        }
+
+        // Register marketing push job handler
+        $container->get('queue.processor')->registerHandler(
+            'marketing_push_contact',
+            function (array $payload) use ($registry) {
+                $integrationId = $payload['integration_id'] ?? '';
+                $integration = $registry->get($integrationId);
+
+                if (!$integration || !$integration instanceof SupportsContactSync) {
+                    return;
+                }
+
+                $contact = $payload['contact'] ?? [];
+                $state = get_option('wsms_marketing_sync_state', []);
+                $config = $state[$integrationId]['sync_settings'] ?? [];
+
+                $result = $integration->pushContact($contact, $config);
+
+                // Update stats
+                $stats = $state[$integrationId]['stats'] ?? [];
+                $stats['last_push_at'] = gmdate('c');
+                if ($result->success) {
+                    $stats['total_pushed'] = ($stats['total_pushed'] ?? 0) + 1;
+                    $stats['last_error'] = null;
+                } else {
+                    $stats['last_error'] = $result->error;
+                    if ($result->retryable) {
+                        throw new \RuntimeException('Retryable push failure: ' . $result->error);
+                    }
+                }
+                $state[$integrationId]['stats'] = $stats;
+                update_option('wsms_marketing_sync_state', $state);
+            },
+        );
     }
 
     private function registerIntegration(

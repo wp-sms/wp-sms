@@ -3,6 +3,7 @@
 namespace WSms\Integration\Webhook\Triggers;
 
 use WSms\Flow\Contracts\AbstractTrigger;
+use WSms\Integration\Webhook\WebhookIntegration;
 
 defined('ABSPATH') || exit;
 
@@ -31,6 +32,18 @@ class InboundWebhookTrigger extends AbstractTrigger
     public function getPayloadSchema(): array
     {
         return [
+            'webhook_id' => [
+                'type' => 'string',
+                'label' => __('Webhook ID', 'wp-sms'),
+                'description' => __('The ID of the webhook endpoint that received the request', 'wp-sms'),
+                'example' => 'a1b2c3d4',
+            ],
+            'method' => [
+                'type' => 'string',
+                'label' => __('HTTP Method', 'wp-sms'),
+                'description' => __('The HTTP method used for the request (POST, PUT)', 'wp-sms'),
+                'example' => 'POST',
+            ],
             'body' => [
                 'type' => 'object',
                 'label' => __('Request Body', 'wp-sms'),
@@ -44,6 +57,37 @@ class InboundWebhookTrigger extends AbstractTrigger
                 'example' => ['content-type' => 'application/json'],
             ],
         ];
+    }
+
+    public function getFilterSchema(): array
+    {
+        return [
+            'webhook_id' => [
+                'type' => 'string',
+                'label' => __('Webhook Endpoint', 'wp-sms'),
+                'description' => __('Only trigger for this specific webhook endpoint', 'wp-sms'),
+                'dynamic' => true,
+            ],
+        ];
+    }
+
+    public function getFilterOptions(string $fieldKey): array
+    {
+        if ($fieldKey !== 'webhook_id') {
+            return [];
+        }
+
+        $secrets = get_option(WebhookIntegration::SECRETS_OPTION, []);
+        $options = [];
+
+        foreach ($secrets as $id => $entry) {
+            $options[] = [
+                'value' => $id,
+                'label' => $entry['label'] ?? $id,
+            ];
+        }
+
+        return $options;
     }
 
     public function subscribe(callable $callback): void

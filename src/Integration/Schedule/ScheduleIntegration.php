@@ -77,6 +77,11 @@ class ScheduleIntegration implements IntegrationInterface
         return [];
     }
 
+    public function getCapabilities(): array
+    {
+        return [];
+    }
+
     public function boot(): void
     {
         $this->registerScheduleHooks();

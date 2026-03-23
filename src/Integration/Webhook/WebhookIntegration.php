@@ -9,6 +9,7 @@ defined('ABSPATH') || exit;
 
 class WebhookIntegration implements IntegrationInterface
 {
+    public const SECRETS_OPTION = 'wsms_webhook_secrets';
     public function getId(): string
     {
         return 'webhook';
@@ -61,6 +62,11 @@ class WebhookIntegration implements IntegrationInterface
         return [];
     }
 
+    public function getCapabilities(): array
+    {
+        return [];
+    }
+
     public function boot(): void
     {
     }
@@ -76,7 +82,6 @@ class WebhookIntegration implements IntegrationInterface
 
     public function isConnected(): bool
     {
-        $configs = get_option('wsms_integration_configs', []);
-        return !empty($configs[$this->getId()]['credentials']);
+        return !empty(get_option(self::SECRETS_OPTION, []));
     }
 }

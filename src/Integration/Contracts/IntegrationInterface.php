@@ -28,6 +28,9 @@ interface IntegrationInterface
     /** @return \WSms\Flow\Contracts\ActionInterface[] */
     public function getActions(): array;
 
+    /** @return array<array{id: string, supported: bool, note?: string, gateway_id?: string}> */
+    public function getCapabilities(): array;
+
     public function boot(): void;
 
     /** Validate credentials and set up external resources (webhooks, etc). Throw \RuntimeException on failure. */

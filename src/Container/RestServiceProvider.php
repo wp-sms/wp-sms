@@ -164,6 +164,7 @@ class RestServiceProvider implements ServiceProvider
             $c->get('integration.registry'),
             $c->get('flow.triggers'),
             $c->get('flow.actions'),
+            $c->get('queue'),
         ));
         $container->register('rest.gateway_callbacks', fn($c) => new GatewayCallbackController(
             $c->get('gateway.registry'),

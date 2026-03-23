@@ -5,18 +5,27 @@ namespace WSms\Rest;
 use WSms\Flow\Action\ActionRegistry;
 use WSms\Flow\Trigger\TriggerRegistry;
 use WSms\Integration\IntegrationRegistry;
+use WSms\Integration\Contracts\IntegrationCapability;
 use WSms\Integration\Contracts\IntegrationInterface;
+use WSms\Integration\Contracts\SupportsContactSync;
+use WSms\Integration\Contracts\SupportsListManagement;
+use WSms\Integration\Contracts\SupportsSuppressionSync;
+use WSms\Integration\Webhook\WebhookIntegration;
+use WSms\Queue\Contracts\QueueInterface;
+use WSms\Queue\Job\MarketingPushContactJob;
 
 defined('ABSPATH') || exit;
 
 class IntegrationController extends Controller
 {
     private const CONFIG_OPTION = 'wsms_integration_configs';
+    private const SYNC_STATE_OPTION = 'wsms_marketing_sync_state';
 
     public function __construct(
         private readonly IntegrationRegistry $integrationRegistry,
         private readonly TriggerRegistry $triggerRegistry,
         private readonly ActionRegistry $actionRegistry,
+        private readonly ?QueueInterface $queue = null,
     ) {
     }
 
@@ -82,15 +91,69 @@ class IntegrationController extends Controller
                 'permission_callback' => [$this, 'canManage'],
             ],
         ]);
+
+        register_rest_route(self::NAMESPACE, '/integrations/(?P<id>[\w]+)/sync-settings', [
+            [
+                'methods'             => 'PUT',
+                'callback'            => [$this, 'saveSyncSettings'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/integrations/(?P<id>[\w]+)/sync', [
+            [
+                'methods'             => 'POST',
+                'callback'            => [$this, 'triggerSync'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/integrations/(?P<id>[\w]+)/poll', [
+            [
+                'methods'             => 'POST',
+                'callback'            => [$this, 'triggerPoll'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/integrations/(?P<id>[\w]+)/lists', [
+            [
+                'methods'             => 'GET',
+                'callback'            => [$this, 'integrationLists'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/integrations/webhook/endpoints', [
+            [
+                'methods'             => 'GET',
+                'callback'            => [$this, 'listWebhookEndpoints'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+            [
+                'methods'             => 'POST',
+                'callback'            => [$this, 'createWebhookEndpoint'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/integrations/webhook/endpoints/(?P<endpointId>[A-Za-z0-9]+)', [
+            [
+                'methods'             => 'DELETE',
+                'callback'            => [$this, 'deleteWebhookEndpoint'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
     }
 
     public function index(): \WP_REST_Response
     {
         $configs = get_option(self::CONFIG_OPTION, []);
+        $syncState = get_option(self::SYNC_STATE_OPTION, []);
         $integrations = [];
 
         foreach ($this->integrationRegistry->getAll() as $integration) {
-            $integrations[] = $this->formatIntegrationSummary($integration, $configs);
+            $integrations[] = $this->formatIntegrationSummary($integration, $configs, $syncState);
         }
 
         return new \WP_REST_Response([
@@ -302,7 +365,204 @@ class IntegrationController extends Controller
         ]);
     }
 
-    private function formatIntegrationBase(IntegrationInterface $integration, array $configs): array
+    public function saveSyncSettings(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $integration = $this->resolveIntegration($request);
+        if ($integration instanceof \WP_REST_Response) {
+            return $integration;
+        }
+
+        if (!$integration instanceof SupportsContactSync) {
+            return new \WP_REST_Response(['error' => 'Integration does not support sync'], 400);
+        }
+
+        $body = $request->get_json_params();
+        $id = $integration->getId();
+
+        $state = get_option(self::SYNC_STATE_OPTION, []);
+        $state[$id]['sync_settings'] = [
+            'auto_push'        => !empty($body['auto_push']),
+            'push_tags'        => !empty($body['push_tags']),
+            'poll_interval'    => (int) ($body['poll_interval'] ?? 3600),
+            'poll_enabled'     => !empty($body['poll_enabled']),
+            'default_list_id'  => sanitize_text_field($body['default_list_id'] ?? ''),
+            'remove_on_delete' => !empty($body['remove_on_delete']),
+        ];
+        update_option(self::SYNC_STATE_OPTION, $state);
+
+        if ($integration instanceof SupportsSuppressionSync) {
+            as_unschedule_all_actions('wsms_suppression_poll', ['integration_id' => $id], 'wsms');
+            if (!empty($body['poll_enabled'])) {
+                $interval = (int) ($body['poll_interval'] ?? 3600);
+                as_schedule_recurring_action(
+                    time() + $interval,
+                    $interval,
+                    'wsms_suppression_poll',
+                    ['integration_id' => $id],
+                    'wsms',
+                );
+            }
+        }
+
+        return new \WP_REST_Response(['success' => true]);
+    }
+
+    public function triggerSync(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $integration = $this->resolveIntegration($request);
+        if ($integration instanceof \WP_REST_Response) {
+            return $integration;
+        }
+
+        if (!$integration instanceof SupportsContactSync || !$this->queue) {
+            return new \WP_REST_Response(['error' => 'Integration does not support sync'], 400);
+        }
+
+        $id = $integration->getId();
+        $state = get_option(self::SYNC_STATE_OPTION, []);
+        $config = $state[$id]['sync_settings'] ?? [];
+
+        if (empty($config['default_list_id'])) {
+            return new \WP_REST_Response(['error' => 'No default list configured'], 400);
+        }
+
+        // Paginate through contacts to avoid loading all into memory
+        global $wpdb;
+        $table = $wpdb->prefix . 'wsms_contacts';
+        $dispatched = 0;
+        $lastId = '';
+
+        do {
+            $batch = $wpdb->get_results($wpdb->prepare(
+                "SELECT * FROM {$table} WHERE email IS NOT NULL AND email != '' AND status = 'subscribed' AND id > %s ORDER BY id ASC LIMIT 500",
+                $lastId,
+            ), ARRAY_A) ?: [];
+
+            foreach ($batch as $contact) {
+                $this->queue->dispatch(new MarketingPushContactJob($id, $contact));
+                $dispatched++;
+                $lastId = $contact['id'];
+            }
+        } while (count($batch) === 500);
+
+        return new \WP_REST_Response(['success' => true, 'dispatched' => $dispatched]);
+    }
+
+    public function triggerPoll(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $integration = $this->resolveIntegration($request);
+        if ($integration instanceof \WP_REST_Response) {
+            return $integration;
+        }
+
+        if (!$integration instanceof SupportsSuppressionSync) {
+            return new \WP_REST_Response(['error' => 'Integration does not support suppression polling'], 400);
+        }
+
+        $id = $integration->getId();
+        $state = get_option(self::SYNC_STATE_OPTION, []);
+        $config = $state[$id]['sync_settings'] ?? [];
+        $cursor = $state[$id]['stats']['poll_cursor'] ?? null;
+
+        $result = $integration->pollSuppressions($config, $cursor);
+        $events = $result['events'] ?? [];
+
+        $stats = $state[$id]['stats'] ?? [];
+        $stats['last_poll_at'] = gmdate('c');
+        if ($result['cursor'] !== null) {
+            $stats['poll_cursor'] = $result['cursor'];
+        }
+        $state[$id]['stats'] = $stats;
+        update_option(self::SYNC_STATE_OPTION, $state);
+
+        return new \WP_REST_Response([
+            'success' => true,
+            'events'  => count($events),
+        ]);
+    }
+
+    public function integrationLists(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $integration = $this->resolveIntegration($request);
+        if ($integration instanceof \WP_REST_Response) {
+            return $integration;
+        }
+
+        if (!$integration instanceof SupportsListManagement) {
+            return new \WP_REST_Response(['error' => 'Integration does not support list management'], 400);
+        }
+
+        $state = get_option(self::SYNC_STATE_OPTION, []);
+        $config = $state[$integration->getId()]['sync_settings'] ?? [];
+
+        return new \WP_REST_Response([
+            'lists' => $integration->getLists($config),
+        ]);
+    }
+
+    public function listWebhookEndpoints(): \WP_REST_Response
+    {
+        $secrets = get_option(WebhookIntegration::SECRETS_OPTION, []);
+        $endpoints = [];
+
+        foreach ($secrets as $id => $entry) {
+            $endpoints[] = [
+                'id'         => $id,
+                'label'      => $entry['label'] ?? '',
+                'url'        => rest_url('wsms/v1/webhook/' . $id),
+                'created_at' => $entry['created_at'] ?? '',
+            ];
+        }
+
+        return new \WP_REST_Response(['endpoints' => $endpoints]);
+    }
+
+    public function createWebhookEndpoint(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $body = $request->get_json_params();
+        $label = sanitize_text_field($body['label'] ?? '');
+
+        if (empty($label)) {
+            return new \WP_REST_Response(['error' => 'Label is required'], 400);
+        }
+
+        $id = bin2hex(random_bytes(4));
+        $secret = bin2hex(random_bytes(32));
+        $createdAt = gmdate('c');
+
+        $secrets = get_option(WebhookIntegration::SECRETS_OPTION, []);
+        $secrets[$id] = [
+            'secret'     => $secret,
+            'label'      => $label,
+            'created_at' => $createdAt,
+        ];
+        update_option(WebhookIntegration::SECRETS_OPTION, $secrets);
+
+        return new \WP_REST_Response([
+            'id'         => $id,
+            'label'      => $label,
+            'url'        => rest_url('wsms/v1/webhook/' . $id),
+            'secret'     => $secret,
+            'created_at' => $createdAt,
+        ], 201);
+    }
+
+    public function deleteWebhookEndpoint(\WP_REST_Request $request): \WP_REST_Response
+    {
+        $endpointId = $request->get_param('endpointId');
+        $secrets = get_option(WebhookIntegration::SECRETS_OPTION, []);
+
+        if (!isset($secrets[$endpointId])) {
+            return new \WP_REST_Response(['error' => 'Endpoint not found'], 404);
+        }
+
+        unset($secrets[$endpointId]);
+        update_option(WebhookIntegration::SECRETS_OPTION, $secrets);
+
+        return new \WP_REST_Response(['success' => true]);
+    }
+
+    private function formatIntegrationBase(IntegrationInterface $integration, array $configs, ?array $syncState = null): array
     {
         $base = [
             'id'          => $integration->getId(),
@@ -311,33 +571,47 @@ class IntegrationController extends Controller
             'category'    => $integration->getCategory(),
             'icon'        => $integration->getIcon(),
             'available'   => $integration->isAvailable(),
-            'connected'   => $this->isConnected($integration),
+            'connected'   => $integration->isConnected(),
             'auth_type'   => $integration->getAuthType(),
             'auth_schema' => $integration->getAuthSchema(),
         ];
 
         $config = $configs[$integration->getId()] ?? null;
         if ($config && !empty($config['credentials'])) {
-            // Only expose non-sensitive display fields to the frontend.
-            $safe = array_diff_key($config['credentials'], array_flip(['bot_token', 'webhook_secret']));
+            $safe = array_diff_key($config['credentials'], array_flip(['bot_token', 'webhook_secret', 'api_key']));
             if ($safe) {
                 $base['config'] = $safe;
             }
         }
 
+        $base['capabilities'] = $this->getCapabilities($integration);
+
+        if ($integration instanceof SupportsContactSync) {
+            $syncState ??= get_option(self::SYNC_STATE_OPTION, []);
+            $intState = $syncState[$integration->getId()] ?? [];
+            $base['sync_settings'] = $intState['sync_settings'] ?? null;
+            $base['sync_status'] = $intState['stats'] ?? null;
+        }
+
         return $base;
     }
 
-    private function formatIntegrationSummary(IntegrationInterface $integration, array $configs): array
+    private function formatIntegrationSummary(IntegrationInterface $integration, array $configs, ?array $syncState = null): array
     {
-        return $this->formatIntegrationBase($integration, $configs) + [
+        return $this->formatIntegrationBase($integration, $configs, $syncState) + [
             'triggers' => count($integration->getTriggers()),
             'actions'  => count($integration->getActions()),
         ];
     }
 
-    private function isConnected(IntegrationInterface $integration): bool
+    private function getCapabilities(IntegrationInterface $integration): array
     {
-        return $integration->isConnected();
+        return array_map(fn(array $cap) => [
+            'id'         => $cap['id'],
+            'name'       => IntegrationCapability::LABELS[$cap['id']] ?? $cap['id'],
+            'supported'  => $cap['supported'],
+            'note'       => $cap['note'] ?? null,
+            'gateway_id' => $cap['gateway_id'] ?? null,
+        ], $integration->getCapabilities());
     }
 }

@@ -30,10 +30,43 @@ class InboundWebhookTriggerTest extends TestCase
     public function testPayloadSchemaHasExpectedFields(): void
     {
         $schema = $this->trigger->getPayloadSchema();
+        $this->assertArrayHasKey('webhook_id', $schema);
+        $this->assertArrayHasKey('method', $schema);
         $this->assertArrayHasKey('body', $schema);
         $this->assertArrayHasKey('headers', $schema);
+        $this->assertSame('string', $schema['webhook_id']['type']);
+        $this->assertSame('string', $schema['method']['type']);
         $this->assertSame('object', $schema['body']['type']);
         $this->assertArrayHasKey('example', $schema['body']);
+    }
+
+    public function testFilterSchemaHasWebhookId(): void
+    {
+        $schema = $this->trigger->getFilterSchema();
+        $this->assertArrayHasKey('webhook_id', $schema);
+        $this->assertSame('string', $schema['webhook_id']['type']);
+        $this->assertTrue($schema['webhook_id']['dynamic']);
+    }
+
+    public function testFilterOptionsReturnsEndpoints(): void
+    {
+        $GLOBALS['_test_options']['wsms_webhook_secrets'] = [
+            'abc123' => ['secret' => 's', 'label' => 'Stripe', 'created_at' => '2026-01-01T00:00:00+00:00'],
+            'def456' => ['secret' => 's', 'label' => 'GitHub', 'created_at' => '2026-01-01T00:00:00+00:00'],
+        ];
+
+        $options = $this->trigger->getFilterOptions('webhook_id');
+        $this->assertCount(2, $options);
+        $this->assertSame('abc123', $options[0]['value']);
+        $this->assertSame('Stripe', $options[0]['label']);
+        $this->assertSame('def456', $options[1]['value']);
+
+        unset($GLOBALS['_test_options']['wsms_webhook_secrets']);
+    }
+
+    public function testFilterOptionsReturnsEmptyForUnknownField(): void
+    {
+        $this->assertSame([], $this->trigger->getFilterOptions('unknown'));
     }
 
     public function testSubscribeRegistersCorrectHook(): void

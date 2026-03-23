@@ -82,6 +82,11 @@ class WordPressIntegration implements IntegrationInterface
         ];
     }
 
+    public function getCapabilities(): array
+    {
+        return [];
+    }
+
     public function boot(): void
     {
     }

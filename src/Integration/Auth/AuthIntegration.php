@@ -203,6 +203,11 @@ class AuthIntegration implements IntegrationInterface
         return [];
     }
 
+    public function getCapabilities(): array
+    {
+        return [];
+    }
+
     public function boot(): void
     {
     }

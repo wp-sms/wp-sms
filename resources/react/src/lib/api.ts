@@ -601,10 +601,44 @@ export interface PlatformIntegration {
   actions: number;
 }
 
+export interface IntegrationCapability {
+  id: string;
+  name: string;
+  supported: boolean;
+  note?: string | null;
+  gateway_id?: string | null;
+}
+
+export interface SyncSettings {
+  auto_push: boolean;
+  push_tags: boolean;
+  poll_interval: number;
+  poll_enabled: boolean;
+  default_list_id: string;
+  remove_on_delete: boolean;
+}
+
+export interface SyncStatus {
+  last_push_at: string | null;
+  last_poll_at: string | null;
+  total_pushed: number;
+  poll_cursor: string | null;
+  last_error: string | null;
+}
+
+export interface ProviderList {
+  id: string;
+  name: string;
+  contact_count: number;
+}
+
 export interface IntegrationDetail extends Omit<PlatformIntegration, 'triggers' | 'actions'> {
   triggers: Array<{ id: string; name: string; description: string }>;
   actions: Array<{ id: string; name: string; description: string }>;
   config?: Record<string, unknown>;
+  capabilities?: IntegrationCapability[];
+  sync_settings?: SyncSettings | null;
+  sync_status?: SyncStatus | null;
 }
 
 export interface FlowTemplate {
@@ -615,6 +649,14 @@ export interface FlowTemplate {
   trigger_type: string;
   trigger_config: Record<string, unknown>;
   steps: FlowNode[];
+}
+
+export interface WebhookEndpoint {
+  id: string;
+  label: string;
+  url: string;
+  created_at: string;
+  secret?: string;
 }
 
 export interface ListResponse<T> {

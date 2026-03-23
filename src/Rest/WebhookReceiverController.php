@@ -3,6 +3,7 @@
 namespace WSms\Rest;
 
 use WSms\Auth\RateLimiter;
+use WSms\Integration\Webhook\WebhookIntegration;
 
 defined('ABSPATH') || exit;
 
@@ -30,8 +31,8 @@ class WebhookReceiverController extends Controller
     public function verifyWebhookSignature(\WP_REST_Request $request): bool
     {
         $webhookId = $request->get_param('id');
-        $configs = get_option('wsms_webhook_secrets', []);
-        $secret = $configs[$webhookId] ?? '';
+        $configs = get_option(WebhookIntegration::SECRETS_OPTION, []);
+        $secret = $configs[$webhookId]['secret'] ?? '';
 
         if (empty($secret)) {
             return false;
@@ -50,7 +51,8 @@ class WebhookReceiverController extends Controller
 
     public function receive(\WP_REST_Request $request): \WP_REST_Response
     {
-        $rateCheck = $this->rateLimiter->check('webhook_receive', self::RATE_LIMIT, self::RATE_WINDOW);
+        $webhookId = $request->get_param('id');
+        $rateCheck = $this->rateLimiter->check('webhook_receive_' . $webhookId, self::RATE_LIMIT, self::RATE_WINDOW);
 
         if (!$rateCheck['allowed']) {
             return new \WP_REST_Response([
@@ -60,8 +62,6 @@ class WebhookReceiverController extends Controller
                 'retry_after' => $rateCheck['retry_after'],
             ], 429);
         }
-
-        $webhookId = $request->get_param('id');
 
         do_action('wsms_webhook_received', [
             'webhook_id' => $webhookId,
