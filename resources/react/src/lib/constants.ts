@@ -88,6 +88,14 @@ export const FIELD_TYPES = [
   { value: 'checkbox', label: 'Checkbox' },
 ] as const;
 
+export const PHONE_DISPLAY_MODES = [
+  { value: 'international', label: 'International', description: 'Full number with dial code inline (e.g. +44 20 7946 0958)' },
+  { value: 'separate_dial_code', label: 'Separate Dial Code', description: 'Dial code shown separately before the input (e.g. [+44] 20 7946 0958)' },
+  { value: 'national', label: 'National Only', description: 'Local format only, no dial code (e.g. 020 7946 0958)' },
+] as const;
+
+export type PhoneDisplayMode = typeof PHONE_DISPLAY_MODES[number]['value'];
+
 export const FIELD_VISIBILITY = [
   { value: 'both', label: 'Registration & Profile' },
   { value: 'registration', label: 'Registration Only' },
