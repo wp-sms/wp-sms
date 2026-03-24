@@ -6,7 +6,7 @@ namespace WSms\Tests\Support;
  * Assertable wpdb replacement that tracks inserts/updates and stores
  * verification rows for multi-step flow testing.
  */
-class WpdbFake
+class WpdbFake extends \wpdb
 {
     public string $prefix = 'wp_';
     public int $insert_id = 0;
@@ -56,11 +56,12 @@ class WpdbFake
         return true;
     }
 
-    public function get_row($query): ?object
+    public function get_row($query, $output = null, $y = 0): object|array|null
     {
         // Return pre-loaded rows first (FIFO).
         if (!empty($this->preloadedRows)) {
-            return array_shift($this->preloadedRows);
+            $row = array_shift($this->preloadedRows);
+            return ($output === ARRAY_A && is_object($row)) ? (array) $row : $row;
         }
 
         // Extract query conditions once, then compare per row.
@@ -73,19 +74,34 @@ class WpdbFake
             $row = $this->verifications[$keys[$i]];
 
             if (self::rowMatchesConditions($row, $conditions)) {
-                return clone $row;
+                $cloned = clone $row;
+                return ($output === ARRAY_A) ? (array) $cloned : $cloned;
             }
         }
 
         return null;
     }
 
-    public function get_results($query): array
+    public function get_results($query, $output = null): array
     {
+        // If ARRAY_A output requested and we have verifications, return matching ones as arrays.
+        if ($output === ARRAY_A) {
+            $conditions = self::parseQueryConditions($query);
+            $results = [];
+
+            foreach ($this->verifications as $row) {
+                if (self::rowMatchesConditions($row, $conditions)) {
+                    $results[] = (array) clone $row;
+                }
+            }
+
+            return $results;
+        }
+
         return [];
     }
 
-    public function get_var($query)
+    public function get_var($query, $x = 0, $y = 0)
     {
         return 0;
     }
@@ -170,7 +186,7 @@ class WpdbFake
         return $this->rows_affected;
     }
 
-    public function prepare(string $query, ...$args): string
+    public function prepare($query, ...$args): string
     {
         $result = $query;
 

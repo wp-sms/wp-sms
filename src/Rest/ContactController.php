@@ -8,6 +8,7 @@ use WSms\Contact\Contracts\ContactRepositoryInterface;
 use WSms\Contact\Contracts\SegmentEvaluatorInterface;
 use WSms\Exception\NotFoundException;
 use WSms\Exception\ValidationException;
+use WSms\Log\Contracts\MessageLoggerInterface;
 
 defined('ABSPATH') || exit;
 
@@ -20,6 +21,7 @@ class ContactController extends Controller
         private readonly SegmentEvaluatorInterface $segmentEvaluator,
         private readonly ContactImporter $importer,
         private readonly ContactExporter $exporter,
+        private readonly MessageLoggerInterface $messageLogger,
     ) {
     }
 
@@ -412,8 +414,6 @@ class ContactController extends Controller
 
     private function getContactActivities(array $contact, int $limit, int $offset): array
     {
-        global $wpdb;
-
         $activities = [];
 
         // Contact lifecycle events
@@ -448,51 +448,26 @@ class ContactController extends Controller
         }
 
         // Message logs matching this contact's email or phone
-        $logTable = $wpdb->prefix . 'wsms_message_logs';
-        static $logTableExists = null;
-        if ($logTableExists === null) {
-            $logTableExists = (bool) $wpdb->get_var($wpdb->prepare("SHOW TABLES LIKE %s", $logTable));
-        }
+        $recipients = array_filter([
+            $contact['email'] ?? null,
+            $contact['phone'] ?? null,
+        ]);
 
-        if ($logTableExists) {
-            $conditions = [];
-            $params = [];
+        if (!empty($recipients)) {
+            $logs = $this->messageLogger->findByRecipients($recipients, $limit, $offset);
 
-            if (!empty($contact['email'])) {
-                $conditions[] = 'recipient = %s';
-                $params[] = $contact['email'];
-            }
-            if (!empty($contact['phone'])) {
-                $conditions[] = 'recipient = %s';
-                $params[] = $contact['phone'];
-            }
-
-            if (!empty($conditions)) {
-                $where = implode(' OR ', $conditions);
-                $params[] = $limit;
-                $params[] = $offset;
-
-                $logs = $wpdb->get_results(
-                    $wpdb->prepare(
-                        "SELECT id, status, channel, gateway_id, body_preview, sent_at, created_at FROM {$logTable} WHERE ({$where}) ORDER BY created_at DESC LIMIT %d OFFSET %d",
-                        ...$params,
-                    ),
-                    ARRAY_A,
-                ) ?: [];
-
-                foreach ($logs as $log) {
-                    $activities[] = [
-                        'id'          => 'msg-' . $log['id'],
-                        'type'        => 'message_' . ($log['status'] ?? 'sent'),
-                        'description' => 'Message ' . ($log['status'] ?? 'sent') . ' via ' . ($log['channel'] ?? 'unknown'),
-                        'meta'        => [
-                            'channel'      => $log['channel'] ?? '',
-                            'gateway_id'   => $log['gateway_id'] ?? '',
-                            'body_preview' => mb_substr($log['body_preview'] ?? '', 0, 100),
-                        ],
-                        'created_at' => $log['sent_at'] ?? $log['created_at'],
-                    ];
-                }
+            foreach ($logs as $log) {
+                $activities[] = [
+                    'id'          => 'msg-' . $log['id'],
+                    'type'        => 'message_' . ($log['status'] ?? 'sent'),
+                    'description' => 'Message ' . ($log['status'] ?? 'sent') . ' via ' . ($log['channel'] ?? 'unknown'),
+                    'meta'        => [
+                        'channel'      => $log['channel'] ?? '',
+                        'gateway_id'   => $log['gateway_id'] ?? '',
+                        'body_preview' => mb_substr($log['body_preview'] ?? '', 0, 100),
+                    ],
+                    'created_at' => $log['sent_at'] ?? $log['created_at'],
+                ];
             }
         }
 

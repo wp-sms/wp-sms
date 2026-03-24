@@ -12,6 +12,7 @@ use WSms\Auth\ProfileFieldRegistry;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\RegistrationFormRepository;
 use WSms\Enums\SessionStage;
+use WSms\Exception\ValidationException;
 
 defined('ABSPATH') || exit;
 
@@ -166,326 +167,335 @@ class AccountController extends Controller
 
     public function handleRegister(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('register', 3, 60);
+        return $this->handle(function () use ($request) {
+            $rl = $this->rateLimiter->check('register', 3, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
-
-        $captcha = $this->captchaGuard->verify($request, 'register');
-        if ($captcha === false) {
-            return CaptchaGuard::failedResponse();
-        }
-
-        // Resolve registration form if specified.
-        $formId = $request->get_param('form_id');
-        $form = null;
-
-        if ($formId && $this->formRepository) {
-            $form = $this->formRepository->findBySlug($formId)
-                 ?? $this->formRepository->find($formId);
-
-            if (!$form || $form->getStatus() !== 'active') {
-                return new WP_REST_Response([
-                    'success' => false,
-                    'code'    => 'invalid_form',
-                    'message' => __('The specified registration form is not available.', 'wp-sms'),
-                ], 400);
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
             }
-        }
 
-        $data = [
-            'email'        => $request->get_param('email'),
-            'password'     => $request->get_param('password'),
-            'username'     => $request->get_param('username'),
-            'display_name' => $request->get_param('display_name'),
-            'first_name'   => $request->get_param('first_name'),
-            'last_name'    => $request->get_param('last_name'),
-            'phone'        => $request->get_param('phone'),
-        ];
+            $captcha = $this->captchaGuard->verify($request, 'register');
+            if ($captcha === false) {
+                return CaptchaGuard::failedResponse();
+            }
 
-        // Include custom field values from request body.
-        if ($this->fieldRegistry) {
-            foreach ($this->fieldRegistry->getCustomFields() as $field) {
-                $value = $request->get_param($field->id);
-                if ($value !== null) {
-                    $data[$field->id] = $value;
+            // Resolve registration form if specified.
+            $formId = $request->get_param('form_id');
+            $form = null;
+
+            if ($formId && $this->formRepository) {
+                $form = $this->formRepository->findBySlug($formId)
+                     ?? $this->formRepository->find($formId);
+
+                if (!$form || $form->getStatus() !== 'active') {
+                    throw ValidationException::field('form_id', __('The specified registration form is not available.', 'wp-sms'));
                 }
             }
-        }
 
-        $result = $this->accountManager->registerUser($data, false, $form);
+            $data = [
+                'email'        => $request->get_param('email'),
+                'password'     => $request->get_param('password'),
+                'username'     => $request->get_param('username'),
+                'display_name' => $request->get_param('display_name'),
+                'first_name'   => $request->get_param('first_name'),
+                'last_name'    => $request->get_param('last_name'),
+                'phone'        => $request->get_param('phone'),
+            ];
 
-        return new WP_REST_Response($result->toArray(), $result->success ? 201 : 400);
+            // Include custom field values from request body.
+            if ($this->fieldRegistry) {
+                foreach ($this->fieldRegistry->getCustomFields() as $field) {
+                    $value = $request->get_param($field->id);
+                    if ($value !== null) {
+                        $data[$field->id] = $value;
+                    }
+                }
+            }
+
+            $result = $this->accountManager->registerUser($data, false, $form);
+
+            return new WP_REST_Response($result->toArray(), $result->success ? 201 : 400);
+        });
     }
 
     // --- Password ---
 
     public function handleForgotPassword(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('forgot_password', 3, 60);
+        return $this->handle(function () use ($request) {
+            $rl = $this->rateLimiter->check('forgot_password', 3, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $captcha = $this->captchaGuard->verify($request, 'forgot_password');
-        if ($captcha === false) {
-            return CaptchaGuard::failedResponse();
-        }
+            $captcha = $this->captchaGuard->verify($request, 'forgot_password');
+            if ($captcha === false) {
+                return CaptchaGuard::failedResponse();
+            }
 
-        $this->accountManager->initiatePasswordReset($request->get_param('email'));
+            $this->accountManager->initiatePasswordReset($request->get_param('email'));
 
-        return new WP_REST_Response([
-            'success' => true,
-            'message' => __('If that email exists, a reset link has been sent.', 'wp-sms'),
-        ]);
+            return $this->ok(['message' => __('If that email exists, a reset link has been sent.', 'wp-sms')]);
+        });
     }
 
     public function handleResetPassword(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('reset_password', 5, 60);
+        return $this->handle(function () use ($request) {
+            $rl = $this->rateLimiter->check('reset_password', 5, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $result = $this->accountManager->completePasswordReset(
-            $request->get_param('token'),
-            $request->get_param('password'),
-        );
+            $result = $this->accountManager->completePasswordReset(
+                $request->get_param('token'),
+                $request->get_param('password'),
+            );
 
-        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+            return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+        });
     }
 
     public function handleVerifyEmail(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('verify_email', 5, 60);
+        return $this->handle(function () use ($request) {
+            $rl = $this->rateLimiter->check('verify_email', 5, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $result = $this->accountManager->verifyEmail($request->get_param('token'));
+            $result = $this->accountManager->verifyEmail($request->get_param('token'));
 
-        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+            return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+        });
     }
 
     // --- Profile ---
 
     public function handleUpdateProfile(WP_REST_Request $request): WP_REST_Response
     {
-        $data = array_filter([
-            'display_name' => $request->get_param('display_name'),
-            'first_name'   => $request->get_param('first_name'),
-            'last_name'    => $request->get_param('last_name'),
-            'phone'        => $request->get_param('phone'),
-            'email'        => $request->get_param('email'),
-        ], fn($v) => $v !== null);
+        return $this->handle(function () use ($request) {
+            $data = array_filter([
+                'display_name' => $request->get_param('display_name'),
+                'first_name'   => $request->get_param('first_name'),
+                'last_name'    => $request->get_param('last_name'),
+                'phone'        => $request->get_param('phone'),
+                'email'        => $request->get_param('email'),
+            ], fn($v) => $v !== null);
 
-        // Include custom field values from request body.
-        if ($this->fieldRegistry) {
-            foreach ($this->fieldRegistry->getFieldsForContext('profile') as $field) {
-                if ($field->isSystem()) {
-                    continue;
-                }
-                $value = $request->get_param($field->id);
-                if ($value !== null) {
-                    $data[$field->id] = $value;
+            // Include custom field values from request body.
+            if ($this->fieldRegistry) {
+                foreach ($this->fieldRegistry->getFieldsForContext('profile') as $field) {
+                    if ($field->isSystem()) {
+                        continue;
+                    }
+                    $value = $request->get_param($field->id);
+                    if ($value !== null) {
+                        $data[$field->id] = $value;
+                    }
                 }
             }
-        }
 
-        $result = $this->accountManager->updateProfile(get_current_user_id(), $data);
+            $result = $this->accountManager->updateProfile(get_current_user_id(), $data);
 
-        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+            return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+        });
     }
 
     public function handleChangePassword(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('change_password', 5, 60);
+        return $this->handle(function () use ($request) {
+            $rl = $this->rateLimiter->check('change_password', 5, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $result = $this->accountManager->changePassword(
-            get_current_user_id(),
-            $request->get_param('current_password'),
-            $request->get_param('new_password'),
-        );
+            $result = $this->accountManager->changePassword(
+                get_current_user_id(),
+                $request->get_param('current_password'),
+                $request->get_param('new_password'),
+            );
 
-        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+            return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+        });
     }
 
     public function handleLogout(WP_REST_Request $request): WP_REST_Response
     {
-        $this->accountManager->logout();
+        return $this->handle(function () use ($request) {
+            $this->accountManager->logout();
 
-        return new WP_REST_Response([
-            'success' => true,
-            'message' => __('Logged out successfully.', 'wp-sms'),
-        ]);
+            return $this->ok(['message' => __('Logged out successfully.', 'wp-sms')]);
+        });
     }
 
     // --- Generic registration verification ---
 
     public function handleRegisterVerifyChannel(WP_REST_Request $request): WP_REST_Response
     {
-        $channel = $request->get_param('channel');
-        $rl = $this->rateLimiter->check("register_verify_{$channel}", 10, 60);
+        return $this->handle(function () use ($request) {
+            $channel = $request->get_param('channel');
+            $rl = $this->rateLimiter->check("register_verify_{$channel}", 10, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $session = $this->validateVerificationToken($request);
+            $session = $this->validateVerificationToken($request);
 
-        if (!$session) {
-            return $this->invalidTokenResponse();
-        }
+            if (!$session) {
+                return $this->invalidTokenResponse();
+            }
 
-        $result = $this->accountManager->verifyChannelOtp($session['user_id'], $channel, $request->get_param('code'));
+            $result = $this->accountManager->verifyChannelOtp($session['user_id'], $channel, $request->get_param('code'));
 
-        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+            return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+        });
     }
 
     public function handleRegisterResendChannel(WP_REST_Request $request): WP_REST_Response
     {
-        $channel = $request->get_param('channel');
-        $rl = $this->rateLimiter->check("register_resend_{$channel}", 3, 60);
+        return $this->handle(function () use ($request) {
+            $channel = $request->get_param('channel');
+            $rl = $this->rateLimiter->check("register_resend_{$channel}", 3, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $session = $this->validateVerificationToken($request);
+            $session = $this->validateVerificationToken($request);
 
-        if (!$session) {
-            return $this->invalidTokenResponse();
-        }
+            if (!$session) {
+                return $this->invalidTokenResponse();
+            }
 
-        $result = $this->accountManager->resendVerification($session['user_id'], $channel);
+            $result = $this->accountManager->resendVerification($session['user_id'], $channel);
 
-        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+            return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+        });
     }
 
     // --- Pending change cancellation ---
 
     public function handleCancelPendingChange(WP_REST_Request $request): WP_REST_Response
     {
-        $channel = $request->get_param('channel');
+        return $this->handle(function () use ($request) {
+            $channel = $request->get_param('channel');
 
-        if (!in_array($channel, ['phone', 'email'], true)) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'invalid_channel',
-                'message' => __('Invalid channel.', 'wp-sms'),
-            ], 400);
-        }
+            if (!in_array($channel, ['phone', 'email'], true)) {
+                throw ValidationException::field('channel', __('Invalid channel.', 'wp-sms'));
+            }
 
-        $this->accountManager->cancelPendingChange(get_current_user_id(), $channel);
+            $this->accountManager->cancelPendingChange(get_current_user_id(), $channel);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Pending change cancelled.', 'wp-sms')]);
+            return $this->ok(['message' => __('Pending change cancelled.', 'wp-sms')]);
+        });
     }
 
     // --- Generic profile verification ---
 
     public function handleProfileSendVerification(WP_REST_Request $request): WP_REST_Response
     {
-        $channel = $request->get_param('channel');
-        $rl = $this->rateLimiter->check("profile_send_{$channel}", 3, 60);
+        return $this->handle(function () use ($request) {
+            $channel = $request->get_param('channel');
+            $rl = $this->rateLimiter->check("profile_send_{$channel}", 3, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $this->accountManager->sendVerificationChallenge(get_current_user_id(), $channel);
+            $this->accountManager->sendVerificationChallenge(get_current_user_id(), $channel);
 
-        return new WP_REST_Response(['success' => true, 'message' => __('Verification sent.', 'wp-sms')]);
+            return $this->ok(['message' => __('Verification sent.', 'wp-sms')]);
+        });
     }
 
     public function handleProfileVerifyChannel(WP_REST_Request $request): WP_REST_Response
     {
-        $channel = $request->get_param('channel');
-        $rl = $this->rateLimiter->check("profile_verify_{$channel}", 10, 60);
+        return $this->handle(function () use ($request) {
+            $channel = $request->get_param('channel');
+            $rl = $this->rateLimiter->check("profile_verify_{$channel}", 10, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $result = $this->accountManager->verifyChannelOtp(
-            get_current_user_id(),
-            $channel,
-            $request->get_param('code'),
-        );
+            $result = $this->accountManager->verifyChannelOtp(
+                get_current_user_id(),
+                $channel,
+                $request->get_param('code'),
+            );
 
-        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+            return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+        });
     }
 
     public function handleVerificationStatus(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('register_status', 20, 60);
+        return $this->handle(function () use ($request) {
+            $rl = $this->rateLimiter->check('register_status', 20, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $session = $this->validateVerificationToken($request);
+            $session = $this->validateVerificationToken($request);
 
-        if (!$session) {
-            return $this->invalidTokenResponse();
-        }
+            if (!$session) {
+                return $this->invalidTokenResponse();
+            }
 
-        $result = $this->accountManager->getVerificationStatus($session['user_id']);
+            $result = $this->accountManager->getVerificationStatus($session['user_id']);
 
-        return new WP_REST_Response(array_merge(['success' => true], $result));
+            return $this->ok($result);
+        });
     }
 
     // --- Avatar ---
 
     public function handleUploadAvatar(WP_REST_Request $request): WP_REST_Response
     {
-        if (!$this->avatarManager) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'unavailable',
-                'message' => __('Avatar uploads not available.', 'wp-sms'),
-            ], 500);
-        }
+        return $this->handle(function () use ($request) {
+            if (!$this->avatarManager) {
+                return new WP_REST_Response([
+                    'success' => false,
+                    'error'   => 'unavailable',
+                    'message' => __('Avatar uploads not available.', 'wp-sms'),
+                ], 500);
+            }
 
-        $files = $request->get_file_params();
-        $file = $files['avatar'] ?? null;
+            $files = $request->get_file_params();
+            $file = $files['avatar'] ?? null;
 
-        if (!$file) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'no_file',
-                'message' => __('No avatar file provided.', 'wp-sms'),
-            ], 400);
-        }
+            if (!$file) {
+                throw ValidationException::field('avatar', __('No avatar file provided.', 'wp-sms'));
+            }
 
-        $result = $this->avatarManager->uploadAvatar(get_current_user_id(), $file);
+            $result = $this->avatarManager->uploadAvatar(get_current_user_id(), $file);
 
-        return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+            return new WP_REST_Response($result, $result['success'] ? 200 : 400);
+        });
     }
 
     public function handleDeleteAvatar(WP_REST_Request $request): WP_REST_Response
     {
-        if (!$this->avatarManager) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'unavailable',
-                'message' => __('Avatar management not available.', 'wp-sms'),
-            ], 500);
-        }
+        return $this->handle(function () use ($request) {
+            if (!$this->avatarManager) {
+                return new WP_REST_Response([
+                    'success' => false,
+                    'error'   => 'unavailable',
+                    'message' => __('Avatar management not available.', 'wp-sms'),
+                ], 500);
+            }
 
-        $this->avatarManager->deleteAvatar(get_current_user_id());
+            $this->avatarManager->deleteAvatar(get_current_user_id());
 
-        return new WP_REST_Response([
-            'success' => true,
-            'message' => __('Avatar removed.', 'wp-sms'),
-        ]);
+            return $this->ok(['message' => __('Avatar removed.', 'wp-sms')]);
+        });
     }
 
     // --- Shared helpers ---

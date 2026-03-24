@@ -53,76 +53,82 @@ class VerificationController extends Controller
 
     public function handleSend(WP_REST_Request $request): WP_REST_Response
     {
-        $rateCheck = $this->rateLimiter->check('verify_send', 5, 60);
-        if (!$rateCheck['allowed']) {
-            return $this->tooManyRequestsResponse($rateCheck['retry_after']);
-        }
+        return $this->handle(function () use ($request) {
+            $rateCheck = $this->rateLimiter->check('verify_send', 5, 60);
+            if (!$rateCheck['allowed']) {
+                return $this->tooManyRequestsResponse($rateCheck['retry_after']);
+            }
 
-        $channel = $request->get_param('channel');
-        $identifier = $request->get_param('identifier');
-        $sessionToken = $request->get_header('X-Verification-Session');
-        $userId = get_current_user_id() ?: null;
+            $channel = $request->get_param('channel');
+            $identifier = $request->get_param('identifier');
+            $sessionToken = $request->get_header('X-Verification-Session');
+            $userId = get_current_user_id() ?: null;
 
-        $result = $this->verificationService->sendCode($channel, $identifier, $sessionToken, $userId);
+            $result = $this->verificationService->sendCode($channel, $identifier, $sessionToken, $userId);
 
-        $status = $result->success ? 200 : (in_array($result->error, ['rate_limited', 'cooldown'], true) ? 429 : 400);
+            $status = $result->success ? 200 : (in_array($result->error, ['rate_limited', 'cooldown'], true) ? 429 : 400);
 
-        return new WP_REST_Response($result->toArray(), $status);
+            return new WP_REST_Response($result->toArray(), $status);
+        });
     }
 
     public function handleCheck(WP_REST_Request $request): WP_REST_Response
     {
-        $rateCheck = $this->rateLimiter->check('verify_check', 10, 60);
-        if (!$rateCheck['allowed']) {
-            return $this->tooManyRequestsResponse($rateCheck['retry_after']);
-        }
+        return $this->handle(function () use ($request) {
+            $rateCheck = $this->rateLimiter->check('verify_check', 10, 60);
+            if (!$rateCheck['allowed']) {
+                return $this->tooManyRequestsResponse($rateCheck['retry_after']);
+            }
 
-        $channel = $request->get_param('channel');
-        $identifier = $request->get_param('identifier');
-        $code = $request->get_param('code');
-        $sessionToken = $request->get_header('X-Verification-Session');
-        $userId = get_current_user_id() ?: null;
+            $channel = $request->get_param('channel');
+            $identifier = $request->get_param('identifier');
+            $code = $request->get_param('code');
+            $sessionToken = $request->get_header('X-Verification-Session');
+            $userId = get_current_user_id() ?: null;
 
-        if (empty($sessionToken)) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'missing_session',
-                'message' => __('Session token is required.', 'wp-sms'),
-            ], 400);
-        }
+            if (empty($sessionToken)) {
+                return new WP_REST_Response([
+                    'success' => false,
+                    'error'   => 'missing_session',
+                    'message' => __('Session token is required.', 'wp-sms'),
+                ], 400);
+            }
 
-        $result = $this->verificationService->verifyCode($channel, $identifier, $code, $sessionToken, $userId);
+            $result = $this->verificationService->verifyCode($channel, $identifier, $code, $sessionToken, $userId);
 
-        $status = $result->success ? 200 : 400;
+            $status = $result->success ? 200 : 400;
 
-        return new WP_REST_Response($result->toArray(), $status);
+            return new WP_REST_Response($result->toArray(), $status);
+        });
     }
 
     public function handleStatus(WP_REST_Request $request): WP_REST_Response
     {
-        $rateCheck = $this->rateLimiter->check('verify_status', 20, 60);
-        if (!$rateCheck['allowed']) {
-            return $this->tooManyRequestsResponse($rateCheck['retry_after']);
-        }
+        return $this->handle(function () use ($request) {
+            $rateCheck = $this->rateLimiter->check('verify_status', 20, 60);
+            if (!$rateCheck['allowed']) {
+                return $this->tooManyRequestsResponse($rateCheck['retry_after']);
+            }
 
-        $channel = $request->get_param('channel');
-        $identifier = $request->get_param('identifier');
-        $sessionToken = $request->get_header('X-Verification-Session');
+            $channel = $request->get_param('channel');
+            $identifier = $request->get_param('identifier');
+            $sessionToken = $request->get_header('X-Verification-Session');
 
-        if (empty($sessionToken)) {
+            if (empty($sessionToken)) {
+                return new WP_REST_Response([
+                    'success'  => false,
+                    'verified' => false,
+                    'message'  => __('Session token is required.', 'wp-sms'),
+                ], 400);
+            }
+
+            $verified = $this->verificationService->isVerified($channel, $identifier, $sessionToken);
+
             return new WP_REST_Response([
-                'success'  => false,
-                'verified' => false,
-                'message'  => __('Session token is required.', 'wp-sms'),
-            ], 400);
-        }
-
-        $verified = $this->verificationService->isVerified($channel, $identifier, $sessionToken);
-
-        return new WP_REST_Response([
-            'success'  => true,
-            'verified' => $verified,
-        ]);
+                'success'  => true,
+                'verified' => $verified,
+            ]);
+        });
     }
 
     private function tooManyRequestsResponse(int $retryAfter): WP_REST_Response

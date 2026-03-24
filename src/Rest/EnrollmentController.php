@@ -10,6 +10,7 @@ use WSms\Auth\PolicyEngine;
 use WSms\Auth\ProfileFieldRegistry;
 use WSms\Auth\TrustedDeviceManager;
 use WSms\Enums\ChannelStatus;
+use WSms\Exception\ValidationException;
 use WSms\Mfa\Channels\BackupCodesChannel;
 use WSms\Mfa\Contracts\SupportsEnrollmentConfirmation;
 use WSms\Mfa\MfaManager;
@@ -87,106 +88,75 @@ class EnrollmentController extends Controller
 
     public function handleListMethods(WP_REST_Request $request): WP_REST_Response
     {
-        $mfaFactorIds = $this->policy->getAvailableMfaFactors();
-        $methods = [];
+        return $this->handle(function () use ($request) {
+            $mfaFactorIds = $this->policy->getAvailableMfaFactors();
+            $methods = [];
 
-        foreach ($mfaFactorIds as $channelId) {
-            $channel = $this->mfaManager->getChannel($channelId);
+            foreach ($mfaFactorIds as $channelId) {
+                $channel = $this->mfaManager->getChannel($channelId);
 
-            if (!$channel) {
-                continue;
+                if (!$channel) {
+                    continue;
+                }
+
+                $methods[] = [
+                    'id'                   => $channel->getId(),
+                    'name'                 => $channel->getName(),
+                    'supports_primary'     => $channel->supportsPrimaryAuth(),
+                    'supports_mfa'         => $channel->supportsMfa(),
+                ];
             }
 
-            $methods[] = [
-                'id'                   => $channel->getId(),
-                'name'                 => $channel->getName(),
-                'supports_primary'     => $channel->supportsPrimaryAuth(),
-                'supports_mfa'         => $channel->supportsMfa(),
-            ];
-        }
-
-        return new WP_REST_Response(['methods' => $methods]);
+            return new WP_REST_Response(['methods' => $methods]);
+        });
     }
 
     public function handleListFactors(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = get_current_user_id();
-        $factors = $this->mfaManager->getUserFactors($userId);
-        $enrolled = [];
+        return $this->handle(function () use ($request) {
+            $userId = get_current_user_id();
+            $factors = $this->mfaManager->getUserFactors($userId);
+            $enrolled = [];
 
-        foreach ($factors as $factor) {
-            if ($factor->status !== ChannelStatus::Active) {
-                continue;
+            foreach ($factors as $factor) {
+                if ($factor->status !== ChannelStatus::Active) {
+                    continue;
+                }
+
+                $channel = $this->mfaManager->getChannel($factor->channelId);
+                $enrolled[] = [
+                    'channel_id' => $factor->channelId,
+                    'name'       => $channel ? $channel->getName() : $factor->channelId,
+                    'info'       => $channel ? $channel->getEnrollmentInfo($userId) : [],
+                ];
             }
 
-            $channel = $this->mfaManager->getChannel($factor->channelId);
-            $enrolled[] = [
-                'channel_id' => $factor->channelId,
-                'name'       => $channel ? $channel->getName() : $factor->channelId,
-                'info'       => $channel ? $channel->getEnrollmentInfo($userId) : [],
-            ];
-        }
-
-        return new WP_REST_Response(['factors' => $enrolled]);
+            return new WP_REST_Response(['factors' => $enrolled]);
+        });
     }
 
     public function handleEnroll(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = get_current_user_id();
-        $channelId = $request->get_param('channel_id');
-        $data = $request->get_param('data') ?? [];
+        return $this->handle(function () use ($request) {
+            $userId = get_current_user_id();
+            $channelId = $request->get_param('channel_id');
+            $data = $request->get_param('data') ?? [];
 
-        $channel = $this->mfaManager->getChannel($channelId);
+            $channel = $this->mfaManager->getChannel($channelId);
 
-        if (!$channel) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'invalid_channel',
-                'message' => __('Unknown channel.', 'wp-sms'),
-            ], 400);
-        }
-
-        $result = $channel->enroll($userId, $data);
-
-        if ($result->success) {
-            $this->markEnrollmentComplete($userId);
-            $result = $this->autoEnrollBackupCodes($userId, $channelId, $result);
-
-            if (empty($result->data['requires_confirmation'])) {
-                $this->destroyOtherSessions();
+            if (!$channel) {
+                throw ValidationException::field('channel_id', __('Unknown channel.', 'wp-sms'));
             }
-        }
 
-        return new WP_REST_Response([
-            'success' => $result->success,
-            'message' => $result->message,
-            'data'    => $result->data,
-        ], $result->success ? 200 : 400);
-    }
-
-    public function handleEnrollVerify(WP_REST_Request $request): WP_REST_Response
-    {
-        $userId = get_current_user_id();
-        $channelId = $request->get_param('channel_id');
-        $code = $request->get_param('code');
-
-        $channel = $this->mfaManager->getChannel($channelId);
-
-        if (!$channel) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'invalid_channel',
-                'message' => __('Unknown channel.', 'wp-sms'),
-            ], 400);
-        }
-
-        if ($channel instanceof SupportsEnrollmentConfirmation) {
-            $result = $channel->confirmEnrollment($userId, $code);
+            $result = $channel->enroll($userId, $data);
 
             if ($result->success) {
                 $this->markEnrollmentComplete($userId);
                 $result = $this->autoEnrollBackupCodes($userId, $channelId, $result);
-                $this->destroyOtherSessions();
+
+                if (empty($result->data['requires_confirmation'])) {
+                    $this->destroyOtherSessions();
+                }
             }
 
             return new WP_REST_Response([
@@ -194,122 +164,147 @@ class EnrollmentController extends Controller
                 'message' => $result->message,
                 'data'    => $result->data,
             ], $result->success ? 200 : 400);
-        }
+        });
+    }
 
-        return new WP_REST_Response([
-            'success' => false,
-            'error'   => 'not_applicable',
-            'message' => __('This channel does not require enrollment verification.', 'wp-sms'),
-        ], 400);
+    public function handleEnrollVerify(WP_REST_Request $request): WP_REST_Response
+    {
+        return $this->handle(function () use ($request) {
+            $userId = get_current_user_id();
+            $channelId = $request->get_param('channel_id');
+            $code = $request->get_param('code');
+
+            $channel = $this->mfaManager->getChannel($channelId);
+
+            if (!$channel) {
+                throw ValidationException::field('channel_id', __('Unknown channel.', 'wp-sms'));
+            }
+
+            if ($channel instanceof SupportsEnrollmentConfirmation) {
+                $result = $channel->confirmEnrollment($userId, $code);
+
+                if ($result->success) {
+                    $this->markEnrollmentComplete($userId);
+                    $result = $this->autoEnrollBackupCodes($userId, $channelId, $result);
+                    $this->destroyOtherSessions();
+                }
+
+                return new WP_REST_Response([
+                    'success' => $result->success,
+                    'message' => $result->message,
+                    'data'    => $result->data,
+                ], $result->success ? 200 : 400);
+            }
+
+            throw ValidationException::field('channel_id', __('This channel does not require enrollment verification.', 'wp-sms'));
+        });
     }
 
     public function handleUnenroll(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = get_current_user_id();
-        $channelId = $request->get_param('channel_id');
+        return $this->handle(function () use ($request) {
+            $userId = get_current_user_id();
+            $channelId = $request->get_param('channel_id');
 
-        $channel = $this->mfaManager->getChannel($channelId);
+            $channel = $this->mfaManager->getChannel($channelId);
 
-        if (!$channel) {
+            if (!$channel) {
+                throw ValidationException::field('channel_id', __('Unknown channel.', 'wp-sms'));
+            }
+
+            $result = $channel->unenroll($userId);
+
+            if (!$this->mfaManager->hasActiveFactors($userId)) {
+                update_user_meta($userId, UserMeta::MFA_ENABLED, '0');
+            }
+
+            if ($result) {
+                $this->trustedDevices?->revokeAll($userId);
+                $this->destroyOtherSessions();
+            }
+
             return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'invalid_channel',
-                'message' => __('Unknown channel.', 'wp-sms'),
-            ], 400);
-        }
-
-        $result = $channel->unenroll($userId);
-
-        if (!$this->mfaManager->hasActiveFactors($userId)) {
-            update_user_meta($userId, UserMeta::MFA_ENABLED, '0');
-        }
-
-        if ($result) {
-            $this->trustedDevices?->revokeAll($userId);
-            $this->destroyOtherSessions();
-        }
-
-        return new WP_REST_Response([
-            'success' => $result,
-            'message' => $result ? sprintf(__('%s has been disabled.', 'wp-sms'), $channel->getName()) : __('Failed to unenroll.', 'wp-sms'),
-        ], $result ? 200 : 400);
+                'success' => $result,
+                'message' => $result ? sprintf(__('%s has been disabled.', 'wp-sms'), $channel->getName()) : __('Failed to unenroll.', 'wp-sms'),
+            ], $result ? 200 : 400);
+        });
     }
 
     public function handleRegenerateBackupCodes(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = get_current_user_id();
-        $channel = $this->mfaManager->getChannel('backup_codes');
+        return $this->handle(function () use ($request) {
+            $userId = get_current_user_id();
+            $channel = $this->mfaManager->getChannel('backup_codes');
 
-        if (!$channel || !($channel instanceof BackupCodesChannel)) {
+            if (!$channel || !($channel instanceof BackupCodesChannel)) {
+                throw ValidationException::field('channel_id', __('Backup codes channel is not available.', 'wp-sms'));
+            }
+
+            $result = $channel->regenerate($userId);
+
             return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'unavailable',
-                'message' => __('Backup codes channel is not available.', 'wp-sms'),
-            ], 400);
-        }
-
-        $result = $channel->regenerate($userId);
-
-        return new WP_REST_Response([
-            'success' => $result->success,
-            'message' => $result->message,
-            'data'    => $result->data,
-        ], $result->success ? 200 : 400);
+                'success' => $result->success,
+                'message' => $result->message,
+                'data'    => $result->data,
+            ], $result->success ? 200 : 400);
+        });
     }
 
     public function handleMe(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = get_current_user_id();
-        $user = get_userdata($userId);
+        return $this->handle(function () use ($request) {
+            $userId = get_current_user_id();
+            $user = get_userdata($userId);
 
-        $factors = $this->mfaManager->getUserFactors($userId);
-        $availableMfaIds = $this->policy->getAvailableMfaFactors();
-        $enrolledFactors = [];
+            $factors = $this->mfaManager->getUserFactors($userId);
+            $availableMfaIds = $this->policy->getAvailableMfaFactors();
+            $enrolledFactors = [];
 
-        foreach ($factors as $factor) {
-            if ($factor->status !== ChannelStatus::Active) {
-                continue;
+            foreach ($factors as $factor) {
+                if ($factor->status !== ChannelStatus::Active) {
+                    continue;
+                }
+
+                // Only include factors whose channels are currently enabled for MFA.
+                if (!in_array($factor->channelId, $availableMfaIds, true)) {
+                    continue;
+                }
+
+                $channel = $this->mfaManager->getChannel($factor->channelId);
+                $enrolledFactors[] = array_merge(
+                    ['channel_id' => $factor->channelId],
+                    $channel ? $channel->getEnrollmentInfo($userId) : [],
+                );
             }
 
-            // Only include factors whose channels are currently enabled for MFA.
-            if (!in_array($factor->channelId, $availableMfaIds, true)) {
-                continue;
-            }
+            $isPlaceholder = AccountManager::isPlaceholderEmail($user->user_email);
 
-            $channel = $this->mfaManager->getChannel($factor->channelId);
-            $enrolledFactors[] = array_merge(
-                ['channel_id' => $factor->channelId],
-                $channel ? $channel->getEnrollmentInfo($userId) : [],
-            );
-        }
+            $pendingPhone = get_user_meta($userId, UserMeta::PENDING_PHONE, true) ?: null;
+            $pendingEmail = get_user_meta($userId, UserMeta::PENDING_EMAIL, true) ?: null;
 
-        $isPlaceholder = AccountManager::isPlaceholderEmail($user->user_email);
-
-        $pendingPhone = get_user_meta($userId, UserMeta::PENDING_PHONE, true) ?: null;
-        $pendingEmail = get_user_meta($userId, UserMeta::PENDING_EMAIL, true) ?: null;
-
-        return new WP_REST_Response([
-            'user' => [
-                'id'                    => $userId,
-                'email'                 => $isPlaceholder ? '' : $user->user_email,
-                'username'              => $user->user_login,
-                'display_name'          => $user->display_name,
-                'first_name'            => $user->first_name,
-                'last_name'             => $user->last_name,
-                'avatar_url'            => $this->resolveAvatarUrl($userId),
-                'phone'                 => get_user_meta($userId, UserMeta::PHONE, true) ?: null,
-                'phone_verified'        => (bool) get_user_meta($userId, UserMeta::PHONE_VERIFIED, true),
-                'email_verified'        => $isPlaceholder ? true : (bool) get_user_meta($userId, UserMeta::EMAIL_VERIFIED, true),
-                'has_placeholder_email' => $isPlaceholder,
-                'has_usable_password'   => AccountManager::hasUsablePassword($userId),
-                'pending_phone'         => $pendingPhone,
-                'pending_email'         => $pendingEmail,
-                'roles'                 => $user->roles,
-                'mfa_enabled'           => !empty($enrolledFactors),
-                'enrolled_factors'      => $enrolledFactors,
-                'custom_fields'         => $this->readCustomFields($userId),
-            ],
-        ]);
+            return new WP_REST_Response([
+                'user' => [
+                    'id'                    => $userId,
+                    'email'                 => $isPlaceholder ? '' : $user->user_email,
+                    'username'              => $user->user_login,
+                    'display_name'          => $user->display_name,
+                    'first_name'            => $user->first_name,
+                    'last_name'             => $user->last_name,
+                    'avatar_url'            => $this->resolveAvatarUrl($userId),
+                    'phone'                 => get_user_meta($userId, UserMeta::PHONE, true) ?: null,
+                    'phone_verified'        => (bool) get_user_meta($userId, UserMeta::PHONE_VERIFIED, true),
+                    'email_verified'        => $isPlaceholder ? true : (bool) get_user_meta($userId, UserMeta::EMAIL_VERIFIED, true),
+                    'has_placeholder_email' => $isPlaceholder,
+                    'has_usable_password'   => AccountManager::hasUsablePassword($userId),
+                    'pending_phone'         => $pendingPhone,
+                    'pending_email'         => $pendingEmail,
+                    'roles'                 => $user->roles,
+                    'mfa_enabled'           => !empty($enrolledFactors),
+                    'enrolled_factors'      => $enrolledFactors,
+                    'custom_fields'         => $this->readCustomFields($userId),
+                ],
+            ]);
+        });
     }
 
     private function resolveAvatarUrl(int $userId): string

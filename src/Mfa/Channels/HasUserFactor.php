@@ -137,7 +137,7 @@ trait HasUserFactor
     private function getFactorRepo(): UserFactorRepository
     {
         if ($this->factorRepo === null) {
-            $this->factorRepo = new UserFactorRepository();
+            throw new \LogicException('UserFactorRepository was not injected. Call setUserFactorRepository() before using factor methods.');
         }
 
         return $this->factorRepo;

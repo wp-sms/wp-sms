@@ -19,4 +19,10 @@ interface TagRepositoryInterface
     public function delete(string $id): bool;
 
     public function getContactCount(string $id): int;
+
+    /**
+     * Get contact counts for all tags in a single query.
+     * @return array<string, int> Tag ID => count
+     */
+    public function getContactCounts(): array;
 }

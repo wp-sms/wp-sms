@@ -11,6 +11,10 @@ use WSms\Auth\AccountSuspension;
 use WSms\Auth\SettingsRepository;
 use WSms\Enums\EventType;
 use WSms\Enums\TemplateType;
+use WSms\Exception\ConflictException;
+use WSms\Exception\NotFoundException;
+use WSms\Exception\ValidationException;
+use WSms\Dependencies\Psr\Log\LoggerInterface;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Template\TemplateManager;
 use WSms\Mfa\MfaManager;
@@ -33,6 +37,7 @@ class AdminUserController extends Controller
         private SettingsRepository $settingsRepo,
         private TemplateManager $templateManager,
         private MessageDispatcher $messageDispatcher,
+        private LoggerInterface $logger,
         private ?AccountSuspension $suspension = null,
     ) {
     }
@@ -147,434 +152,328 @@ class AdminUserController extends Controller
 
     public function handleGetAuthSummary(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = (int) $request->get_param('id');
-        $user = $this->resolveUser($userId);
-        if ($user instanceof WP_REST_Response) {
-            return $user;
-        }
+        return $this->handle(function () use ($request) {
+            $userId = (int) $request->get_param('id');
+            $user = $this->resolveUser($userId);
 
-        $emailVerified = (bool) get_user_meta($userId, UserMeta::EMAIL_VERIFIED, true);
-        $phoneVerified = (bool) get_user_meta($userId, UserMeta::PHONE_VERIFIED, true);
-        $phone = get_user_meta($userId, UserMeta::PHONE, true);
+            $emailVerified = (bool) get_user_meta($userId, UserMeta::EMAIL_VERIFIED, true);
+            $phoneVerified = (bool) get_user_meta($userId, UserMeta::PHONE_VERIFIED, true);
+            $phone = get_user_meta($userId, UserMeta::PHONE, true);
 
-        $mfaFactors = $this->mfaManager->getActiveMfaFactors($userId);
+            $mfaFactors = $this->mfaManager->getActiveMfaFactors($userId);
 
-        $socialAccounts = array_map(function (object $account) {
-            $meta = json_decode($account->meta ?: '{}', true) ?? [];
-            return [
-                'provider'  => $account->channel_id,
-                'email'     => $meta['email'] ?? null,
-                'linked_at' => $account->created_at,
-            ];
-        }, $this->socialRepository->findByUserId($userId));
+            $socialAccounts = array_map(function (object $account) {
+                $meta = json_decode($account->meta ?: '{}', true) ?? [];
+                return [
+                    'provider'  => $account->channel_id,
+                    'email'     => $meta['email'] ?? null,
+                    'linked_at' => $account->created_at,
+                ];
+            }, $this->socialRepository->findByUserId($userId));
 
-        $logs = $this->auditLogger->getEvents(['user_id' => $userId], 1, 10);
-        $lockout = $this->lockout->isLocked($userId);
-        $registrationStatus = get_user_meta($userId, UserMeta::REGISTRATION_STATUS, true) ?: null;
-        $registrationCreatedAt = get_user_meta($userId, UserMeta::REGISTRATION_CREATED_AT, true) ?: null;
-        $hasPassword = AccountManager::hasUsablePassword($userId);
-        $isPlaceholderEmail = AccountManager::isPlaceholderEmail($user->user_email);
+            $logs = $this->auditLogger->getEvents(['user_id' => $userId], 1, 10);
+            $lockout = $this->lockout->isLocked($userId);
+            $registrationStatus = get_user_meta($userId, UserMeta::REGISTRATION_STATUS, true) ?: null;
+            $registrationCreatedAt = get_user_meta($userId, UserMeta::REGISTRATION_CREATED_AT, true) ?: null;
+            $hasPassword = AccountManager::hasUsablePassword($userId);
+            $isPlaceholderEmail = AccountManager::isPlaceholderEmail($user->user_email);
 
-        return new WP_REST_Response([
-            'success' => true,
-            'verification' => [
-                'email' => [
-                    'verified' => $emailVerified,
-                    'address'  => $user->user_email,
+            return $this->ok([
+                'verification' => [
+                    'email' => [
+                        'verified' => $emailVerified,
+                        'address'  => $user->user_email,
+                    ],
+                    'phone' => [
+                        'verified' => $phoneVerified,
+                        'number'   => $phone ?: null,
+                    ],
                 ],
-                'phone' => [
-                    'verified' => $phoneVerified,
-                    'number'   => $phone ?: null,
-                ],
-            ],
-            'mfa_factors'          => $mfaFactors,
-            'social_accounts'      => $socialAccounts,
-            'recent_activity'      => $logs['items'],
-            'lockout'              => $lockout,
-            'suspension'           => $this->suspension ? $this->suspension->isSuspended($userId) : AccountSuspension::NOT_SUSPENDED,
-            'registration_status'  => $registrationStatus,
-            'registration_created' => $registrationCreatedAt,
-            'has_password'         => $hasPassword,
-            'is_placeholder_email' => $isPlaceholderEmail,
-        ]);
+                'mfa_factors'          => $mfaFactors,
+                'social_accounts'      => $socialAccounts,
+                'recent_activity'      => $logs['items'],
+                'lockout'              => $lockout,
+                'suspension'           => $this->suspension ? $this->suspension->isSuspended($userId) : AccountSuspension::NOT_SUSPENDED,
+                'registration_status'  => $registrationStatus,
+                'registration_created' => $registrationCreatedAt,
+                'has_password'         => $hasPassword,
+                'is_placeholder_email' => $isPlaceholderEmail,
+            ]);
+        });
     }
 
     public function handleResetMfaChannel(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = (int) $request->get_param('id');
-        $channelId = $request->get_param('channel');
+        return $this->handle(function () use ($request) {
+            $userId = (int) $request->get_param('id');
+            $channelId = $request->get_param('channel');
 
-        $user = $this->resolveUser($userId);
-        if ($user instanceof WP_REST_Response) {
-            return $user;
-        }
+            $this->resolveUser($userId);
 
-        $channel = $this->mfaManager->getChannel($channelId);
-        if (!$channel) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'channel_not_found',
-                'message' => sprintf(__('MFA channel \'%s\' not found.', 'wp-sms'), $channelId),
-            ], 404);
-        }
+            $channel = $this->mfaManager->getChannel($channelId);
+            if (!$channel) {
+                throw NotFoundException::entity('MFA channel', $channelId);
+            }
 
-        $channel->unenroll($userId);
+            $channel->unenroll($userId);
 
-        if (!$this->mfaManager->hasActiveFactors($userId)) {
-            update_user_meta($userId, UserMeta::MFA_ENABLED, '0');
-        }
+            if (!$this->mfaManager->hasActiveFactors($userId)) {
+                update_user_meta($userId, UserMeta::MFA_ENABLED, '0');
+            }
 
-        $this->auditLogger->log(EventType::MfaAdminBypass, 'success', $userId, [
-            'channel'  => $channelId,
-            'admin_id' => get_current_user_id(),
-        ], $channelId);
+            $this->auditLogger->log(EventType::MfaAdminBypass, 'success', $userId, [
+                'channel'  => $channelId,
+                'admin_id' => get_current_user_id(),
+            ], $channelId);
 
-        return new WP_REST_Response([
-            'success' => true,
-            'message' => sprintf(__('MFA channel \'%s\' has been reset for this user.', 'wp-sms'), $channel->getName()),
-        ]);
+            return $this->ok(['message' => sprintf(__('MFA channel \'%s\' has been reset for this user.', 'wp-sms'), $channel->getName())]);
+        });
     }
 
     public function handleSetVerification(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = (int) $request->get_param('id');
-        $channel = $request->get_param('channel');
-        $verified = (bool) $request->get_param('verified');
+        return $this->handle(function () use ($request) {
+            $userId = (int) $request->get_param('id');
+            $channel = $request->get_param('channel');
+            $verified = (bool) $request->get_param('verified');
 
-        $user = $this->resolveUser($userId);
-        if ($user instanceof WP_REST_Response) {
-            return $user;
-        }
+            $this->resolveUser($userId);
 
-        if (!in_array($channel, self::VERIFICATION_CHANNELS, true)) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'invalid_channel',
-                'message' => __("Channel must be 'email' or 'phone'.", 'wp-sms'),
-            ], 400);
-        }
+            if (!in_array($channel, self::VERIFICATION_CHANNELS, true)) {
+                throw ValidationException::field('channel', __("Channel must be 'email' or 'phone'.", 'wp-sms'));
+            }
 
-        $metaKey = $channel === 'email' ? UserMeta::EMAIL_VERIFIED : UserMeta::PHONE_VERIFIED;
-        update_user_meta($userId, $metaKey, $verified ? '1' : '0');
+            $metaKey = $channel === 'email' ? UserMeta::EMAIL_VERIFIED : UserMeta::PHONE_VERIFIED;
+            update_user_meta($userId, $metaKey, $verified ? '1' : '0');
 
-        $eventType = $channel === 'email' ? EventType::EmailVerified : EventType::PhoneVerified;
-        $this->auditLogger->log($eventType, 'success', $userId, [
-            'admin_override' => true,
-            'admin_id'       => get_current_user_id(),
-            'verified'       => $verified,
-        ], $channel);
+            $eventType = $channel === 'email' ? EventType::EmailVerified : EventType::PhoneVerified;
+            $this->auditLogger->log($eventType, 'success', $userId, [
+                'admin_override' => true,
+                'admin_id'       => get_current_user_id(),
+                'verified'       => $verified,
+            ], $channel);
 
-        return new WP_REST_Response([
-            'success' => true,
-            'message' => sprintf(__('%s marked as %s.', 'wp-sms'), ucfirst($channel), $verified ? __('verified', 'wp-sms') : __('unverified', 'wp-sms')),
-        ]);
+            return $this->ok(['message' => sprintf(__('%s marked as %s.', 'wp-sms'), ucfirst($channel), $verified ? __('verified', 'wp-sms') : __('unverified', 'wp-sms'))]);
+        });
     }
 
     public function handleDisconnectSocial(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = (int) $request->get_param('id');
-        $provider = $request->get_param('provider');
+        return $this->handle(function () use ($request) {
+            $userId = (int) $request->get_param('id');
+            $provider = $request->get_param('provider');
 
-        $user = $this->resolveUser($userId);
-        if ($user instanceof WP_REST_Response) {
-            return $user;
-        }
+            $this->resolveUser($userId);
 
-        if (!in_array($provider, SocialAccountRepository::SOCIAL_PROVIDERS, true)) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'invalid_provider',
-                'message' => sprintf(__('Unknown social provider \'%s\'.', 'wp-sms'), $provider),
-            ], 400);
-        }
+            if (!in_array($provider, SocialAccountRepository::SOCIAL_PROVIDERS, true)) {
+                throw ValidationException::field('provider', sprintf(__('Unknown social provider \'%s\'.', 'wp-sms'), $provider));
+            }
 
-        $this->socialRepository->unlinkAccount($userId, $provider);
+            $this->socialRepository->unlinkAccount($userId, $provider);
 
-        $this->auditLogger->log(EventType::SocialAccountUnlinked, 'success', $userId, [
-            'provider' => $provider,
-            'admin_id' => get_current_user_id(),
-        ]);
+            $this->auditLogger->log(EventType::SocialAccountUnlinked, 'success', $userId, [
+                'provider' => $provider,
+                'admin_id' => get_current_user_id(),
+            ]);
 
-        return new WP_REST_Response([
-            'success' => true,
-            'message' => sprintf(__('%s account disconnected.', 'wp-sms'), ucfirst($provider)),
-        ]);
+            return $this->ok(['message' => sprintf(__('%s account disconnected.', 'wp-sms'), ucfirst($provider))]);
+        });
     }
 
     public function handleUnlockAccount(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = (int) $request->get_param('id');
+        return $this->handle(function () use ($request) {
+            $userId = (int) $request->get_param('id');
 
-        $user = $this->resolveUser($userId);
-        if ($user instanceof WP_REST_Response) {
-            return $user;
-        }
+            $this->resolveUser($userId);
 
-        $this->lockout->reset($userId);
+            $this->lockout->reset($userId);
 
-        $this->auditLogger->log(EventType::AccountUnlocked, 'success', $userId, [
-            'admin_id' => get_current_user_id(),
-        ]);
+            $this->auditLogger->log(EventType::AccountUnlocked, 'success', $userId, [
+                'admin_id' => get_current_user_id(),
+            ]);
 
-        return new WP_REST_Response([
-            'success' => true,
-            'message' => __('Account unlocked.', 'wp-sms'),
-        ]);
+            return $this->ok(['message' => __('Account unlocked.', 'wp-sms')]);
+        });
     }
 
     public function handleSetPhone(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = (int) $request->get_param('id');
-        $phone = (string) $request->get_param('phone');
+        return $this->handle(function () use ($request) {
+            $userId = (int) $request->get_param('id');
+            $phone = (string) $request->get_param('phone');
 
-        $user = $this->resolveUser($userId);
-        if ($user instanceof WP_REST_Response) {
-            return $user;
-        }
+            $this->resolveUser($userId);
 
-        if ($phone === '') {
-            delete_user_meta($userId, UserMeta::PHONE);
-            delete_user_meta($userId, UserMeta::PHONE_VERIFIED);
+            if ($phone === '') {
+                delete_user_meta($userId, UserMeta::PHONE);
+                delete_user_meta($userId, UserMeta::PHONE_VERIFIED);
+
+                $this->auditLogger->log(EventType::PhoneChange, 'success', $userId, [
+                    'admin_override' => true,
+                    'action'         => 'phone_removed',
+                    'admin_id'       => get_current_user_id(),
+                ]);
+
+                return $this->ok(['message' => __('Phone number removed.', 'wp-sms')]);
+            }
+
+            if (!preg_match(self::PHONE_PATTERN, $phone)) {
+                throw ValidationException::field('phone', __('Phone number must be in E.164 format (e.g. +1234567890).', 'wp-sms'));
+            }
+
+            if (AccountManager::isPhoneTaken($phone, $userId)) {
+                throw ConflictException::duplicate('Phone number', $phone);
+            }
+
+            update_user_meta($userId, UserMeta::PHONE, $phone);
+            update_user_meta($userId, UserMeta::PHONE_VERIFIED, '0');
 
             $this->auditLogger->log(EventType::PhoneChange, 'success', $userId, [
                 'admin_override' => true,
-                'action'         => 'phone_removed',
+                'action'         => 'phone_set',
+                'phone'          => $phone,
                 'admin_id'       => get_current_user_id(),
             ]);
 
-            return new WP_REST_Response([
-                'success' => true,
-                'message' => __('Phone number removed.', 'wp-sms'),
-            ]);
-        }
-
-        if (!preg_match(self::PHONE_PATTERN, $phone)) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'invalid_phone',
-                'message' => __('Phone number must be in E.164 format (e.g. +1234567890).', 'wp-sms'),
-            ], 400);
-        }
-
-        if (AccountManager::isPhoneTaken($phone, $userId)) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'phone_taken',
-                'message' => __('This phone number is already associated with another account.', 'wp-sms'),
-            ], 409);
-        }
-
-        update_user_meta($userId, UserMeta::PHONE, $phone);
-        update_user_meta($userId, UserMeta::PHONE_VERIFIED, '0');
-
-        $this->auditLogger->log(EventType::PhoneChange, 'success', $userId, [
-            'admin_override' => true,
-            'action'         => 'phone_set',
-            'phone'          => $phone,
-            'admin_id'       => get_current_user_id(),
-        ]);
-
-        return new WP_REST_Response([
-            'success' => true,
-            'message' => __('Phone number updated.', 'wp-sms'),
-        ]);
+            return $this->ok(['message' => __('Phone number updated.', 'wp-sms')]);
+        });
     }
 
     public function handlePasswordReset(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = (int) $request->get_param('id');
+        return $this->handle(function () use ($request) {
+            $userId = (int) $request->get_param('id');
 
-        $user = $this->resolveUser($userId);
-        if ($user instanceof WP_REST_Response) {
-            return $user;
-        }
+            $user = $this->resolveUser($userId);
 
-        if (AccountManager::isPlaceholderEmail($user->user_email)) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'no_email',
-                'message' => __('User has no real email address.', 'wp-sms'),
-            ], 400);
-        }
+            if (AccountManager::isPlaceholderEmail($user->user_email)) {
+                throw ValidationException::field('email', __('User has no real email address.', 'wp-sms'));
+            }
 
-        $this->accountManager->initiatePasswordReset($user->user_email);
+            $this->accountManager->initiatePasswordReset($user->user_email);
 
-        $this->auditLogger->log(EventType::PasswordResetRequest, 'success', $userId, [
-            'admin_id'        => get_current_user_id(),
-            'admin_initiated' => true,
-        ]);
+            $this->auditLogger->log(EventType::PasswordResetRequest, 'success', $userId, [
+                'admin_id'        => get_current_user_id(),
+                'admin_initiated' => true,
+            ]);
 
-        return new WP_REST_Response([
-            'success' => true,
-            'message' => __('Password reset email sent.', 'wp-sms'),
-        ]);
+            return $this->ok(['message' => __('Password reset email sent.', 'wp-sms')]);
+        });
     }
 
     public function handleActivateUser(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = (int) $request->get_param('id');
+        return $this->handle(function () use ($request) {
+            $userId = (int) $request->get_param('id');
 
-        $user = $this->resolveUser($userId);
-        if ($user instanceof WP_REST_Response) {
-            return $user;
-        }
+            $this->resolveUser($userId);
 
-        $status = get_user_meta($userId, UserMeta::REGISTRATION_STATUS, true);
-        if ($status !== 'pending') {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_pending',
-                'message' => __('User is already active.', 'wp-sms'),
-            ], 400);
-        }
+            $status = get_user_meta($userId, UserMeta::REGISTRATION_STATUS, true);
+            if ($status !== 'pending') {
+                throw ValidationException::field('status', __('User is already active.', 'wp-sms'));
+            }
 
-        update_user_meta($userId, UserMeta::REGISTRATION_STATUS, 'active');
-        delete_user_meta($userId, UserMeta::REGISTRATION_CREATED_AT);
+            update_user_meta($userId, UserMeta::REGISTRATION_STATUS, 'active');
+            delete_user_meta($userId, UserMeta::REGISTRATION_CREATED_AT);
 
-        $this->auditLogger->log(EventType::Register, 'success', $userId, [
-            'admin_override' => true,
-            'admin_id'       => get_current_user_id(),
-        ]);
+            $this->auditLogger->log(EventType::Register, 'success', $userId, [
+                'admin_override' => true,
+                'admin_id'       => get_current_user_id(),
+            ]);
 
-        return new WP_REST_Response([
-            'success' => true,
-            'message' => __('User activated.', 'wp-sms'),
-        ]);
+            return $this->ok(['message' => __('User activated.', 'wp-sms')]);
+        });
     }
 
     public function handleSendVerification(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = (int) $request->get_param('id');
-        $channel = (string) $request->get_param('channel');
+        return $this->handle(function () use ($request) {
+            $userId = (int) $request->get_param('id');
+            $channel = (string) $request->get_param('channel');
 
-        $user = $this->resolveUser($userId);
-        if ($user instanceof WP_REST_Response) {
-            return $user;
-        }
+            $user = $this->resolveUser($userId);
 
-        if (!in_array($channel, self::VERIFICATION_CHANNELS, true)) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'invalid_channel',
-                'message' => __("Channel must be 'email' or 'phone'.", 'wp-sms'),
-            ], 400);
-        }
+            if (!in_array($channel, self::VERIFICATION_CHANNELS, true)) {
+                throw ValidationException::field('channel', __("Channel must be 'email' or 'phone'.", 'wp-sms'));
+            }
 
-        $channelSettings = $this->settingsRepo->channel($channel);
-        if (empty($channelSettings['enabled'])) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'channel_disabled',
-                'message' => sprintf(__('The %s channel is disabled in settings.', 'wp-sms'), $channel),
-            ], 400);
-        }
+            $channelSettings = $this->settingsRepo->channel($channel);
+            if (empty($channelSettings['enabled'])) {
+                throw ValidationException::field('channel', sprintf(__('The %s channel is disabled in settings.', 'wp-sms'), $channel));
+            }
 
-        if ($channel === 'email' && AccountManager::isPlaceholderEmail($user->user_email)) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'no_email',
-                'message' => __('No email on file.', 'wp-sms'),
-            ], 400);
-        }
+            if ($channel === 'email' && AccountManager::isPlaceholderEmail($user->user_email)) {
+                throw ValidationException::field('email', __('No email on file.', 'wp-sms'));
+            }
 
-        if ($channel === 'phone' && empty(get_user_meta($userId, UserMeta::PHONE, true))) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'no_phone',
-                'message' => __('No phone on file.', 'wp-sms'),
-            ], 400);
-        }
+            if ($channel === 'phone' && empty(get_user_meta($userId, UserMeta::PHONE, true))) {
+                throw ValidationException::field('phone', __('No phone on file.', 'wp-sms'));
+            }
 
-        $result = $this->accountManager->resendVerification($userId, $channel);
+            $result = $this->accountManager->resendVerification($userId, $channel);
 
-        return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+            return new WP_REST_Response($result->toArray(), $result->success ? 200 : 400);
+        });
     }
 
     public function handleSuspendUser(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = (int) $request->get_param('id');
+        return $this->handle(function () use ($request) {
+            $userId = (int) $request->get_param('id');
 
-        $user = $this->resolveUser($userId);
-        if ($user instanceof WP_REST_Response) {
-            return $user;
-        }
+            $user = $this->resolveUser($userId);
 
-        if ($userId === get_current_user_id()) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'self_suspension',
-                'message' => __('You cannot suspend your own account.', 'wp-sms'),
-            ], 400);
-        }
+            if ($userId === get_current_user_id()) {
+                throw ValidationException::field('id', __('You cannot suspend your own account.', 'wp-sms'));
+            }
 
-        if (!$this->suspension) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_available',
-                'message' => __('Suspension feature is not available.', 'wp-sms'),
-            ], 400);
-        }
+            if (!$this->suspension) {
+                throw ValidationException::field('suspension', __('Suspension feature is not available.', 'wp-sms'));
+            }
 
-        $status = $this->suspension->isSuspended($userId);
-        if ($status['suspended']) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'already_suspended',
-                'message' => __('User is already suspended.', 'wp-sms'),
-            ], 400);
-        }
+            $status = $this->suspension->isSuspended($userId);
+            if ($status['suspended']) {
+                throw ValidationException::field('id', __('User is already suspended.', 'wp-sms'));
+            }
 
-        $adminId = get_current_user_id();
-        $this->suspension->suspend($userId, $adminId);
+            $adminId = get_current_user_id();
+            $this->suspension->suspend($userId, $adminId);
 
-        $this->auditLogger->log(EventType::AccountSuspended, 'success', $userId, [
-            'admin_id' => $adminId,
-        ]);
+            $this->auditLogger->log(EventType::AccountSuspended, 'success', $userId, [
+                'admin_id' => $adminId,
+            ]);
 
-        $this->sendSuspensionNotification($user);
+            $this->sendSuspensionNotification($user);
 
-        return new WP_REST_Response([
-            'success' => true,
-            'message' => __('User suspended.', 'wp-sms'),
-        ]);
+            return $this->ok(['message' => __('User suspended.', 'wp-sms')]);
+        });
     }
 
     public function handleUnsuspendUser(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = (int) $request->get_param('id');
+        return $this->handle(function () use ($request) {
+            $userId = (int) $request->get_param('id');
 
-        $user = $this->resolveUser($userId);
-        if ($user instanceof WP_REST_Response) {
-            return $user;
-        }
+            $this->resolveUser($userId);
 
-        if (!$this->suspension) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_available',
-                'message' => __('Suspension feature is not available.', 'wp-sms'),
-            ], 400);
-        }
+            if (!$this->suspension) {
+                throw ValidationException::field('suspension', __('Suspension feature is not available.', 'wp-sms'));
+            }
 
-        $status = $this->suspension->isSuspended($userId);
-        if (!$status['suspended']) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_suspended',
-                'message' => __('User is not suspended.', 'wp-sms'),
-            ], 400);
-        }
+            $status = $this->suspension->isSuspended($userId);
+            if (!$status['suspended']) {
+                throw ValidationException::field('id', __('User is not suspended.', 'wp-sms'));
+            }
 
-        $this->suspension->unsuspend($userId);
+            $this->suspension->unsuspend($userId);
 
-        $this->auditLogger->log(EventType::AccountUnsuspended, 'success', $userId, [
-            'admin_id' => get_current_user_id(),
-        ]);
+            $this->auditLogger->log(EventType::AccountUnsuspended, 'success', $userId, [
+                'admin_id' => get_current_user_id(),
+            ]);
 
-        return new WP_REST_Response([
-            'success' => true,
-            'message' => __('User unsuspended.', 'wp-sms'),
-        ]);
+            return $this->ok(['message' => __('User unsuspended.', 'wp-sms')]);
+        });
     }
 
     private function sendSuspensionNotification(object $user): void
@@ -597,24 +496,20 @@ class AdminUserController extends Controller
             $this->messageDispatcher->sendImmediate($message);
         } catch (\Throwable $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('[WP-SMS] Failed to send suspension notification: ' . $e->getMessage());
+                $this->logger->error('Failed to send suspension notification: ' . $e->getMessage(), ['exception' => $e]);
             }
         }
     }
 
     /**
-     * Resolve a user by ID or return a 404 response.
+     * Resolve a user by ID or throw a NotFoundException.
      */
     private function resolveUser(int $userId): object
     {
         $user = get_userdata($userId);
 
         if (!$user) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'user_not_found',
-                'message' => __('User not found.', 'wp-sms'),
-            ], 404);
+            throw NotFoundException::entity('User', (string) $userId);
         }
 
         return $user;

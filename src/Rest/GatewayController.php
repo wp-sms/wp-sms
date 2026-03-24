@@ -2,6 +2,8 @@
 
 namespace WSms\Rest;
 
+use WSms\Exception\NotFoundException;
+use WSms\Exception\ValidationException;
 use WSms\Log\Contracts\MessageLoggerInterface;
 use WSms\Messaging\Contracts\SupportsDynamicOptions;
 use WSms\Messaging\Gateway\GatewayRegistry;
@@ -87,218 +89,197 @@ class GatewayController extends Controller
 
     public function index(\WP_REST_Request $request): \WP_REST_Response
     {
-        $filterChannel = $request->get_param('channel');
-        $filterRegion = $request->get_param('region');
-        $filterSearch = $request->get_param('search');
+        return $this->handle(function () use ($request) {
+            $filterChannel = $request->get_param('channel');
+            $filterRegion = $request->get_param('region');
+            $filterSearch = $request->get_param('search');
 
-        $gateways = [];
-        $configs = get_option('wsms_gateway_configs', []);
+            $gateways = [];
+            $configs = get_option('wsms_gateway_configs', []);
 
-        foreach ($this->gatewayRegistry->all() as $id => $gateway) {
-            if ($filterChannel && !in_array($filterChannel, $gateway->getSupportedChannels())) {
-                continue;
-            }
-
-            $metadata = $gateway->getMetadata();
-
-            if ($filterRegion) {
-                $regions = $metadata['regions'] ?? [];
-                if (!empty($regions) && !in_array($filterRegion, $regions) && !in_array('global', $regions)) {
+            foreach ($this->gatewayRegistry->all() as $id => $gateway) {
+                if ($filterChannel && !in_array($filterChannel, $gateway->getSupportedChannels())) {
                     continue;
                 }
-            }
 
-            if ($filterSearch) {
-                $haystack = strtolower($gateway->getName() . ' ' . ($metadata['description'] ?? ''));
-                if (!str_contains($haystack, strtolower($filterSearch))) {
-                    continue;
+                $metadata = $gateway->getMetadata();
+
+                if ($filterRegion) {
+                    $regions = $metadata['regions'] ?? [];
+                    if (!empty($regions) && !in_array($filterRegion, $regions) && !in_array('global', $regions)) {
+                        continue;
+                    }
                 }
+
+                if ($filterSearch) {
+                    $haystack = strtolower($gateway->getName() . ' ' . ($metadata['description'] ?? ''));
+                    if (!str_contains($haystack, strtolower($filterSearch))) {
+                        continue;
+                    }
+                }
+
+                $gateways[] = [
+                    'id'                 => $id,
+                    'name'               => $gateway->getName(),
+                    'supported_channels' => $gateway->getSupportedChannels(),
+                    'config_schema'      => $gateway->getConfigSchema(),
+                    'is_configured'      => $gateway->isConfigured(),
+                    'config'             => $configs[$id] ?? [],
+                    'metadata'           => $metadata,
+                    'features'           => $gateway->getFeatures(),
+                ];
             }
 
-            $gateways[] = [
-                'id'                 => $id,
-                'name'               => $gateway->getName(),
-                'supported_channels' => $gateway->getSupportedChannels(),
-                'config_schema'      => $gateway->getConfigSchema(),
-                'is_configured'      => $gateway->isConfigured(),
-                'config'             => $configs[$id] ?? [],
-                'metadata'           => $metadata,
-                'features'           => $gateway->getFeatures(),
-            ];
-        }
-
-        return new \WP_REST_Response([
-            'items' => $gateways,
-            'total' => count($gateways),
-        ]);
+            return $this->paginated($gateways, count($gateways));
+        });
     }
 
     public function getConfig(): \WP_REST_Response
     {
-        return new \WP_REST_Response([
-            'success' => true,
-            'data'    => get_option('wsms_gateway_configs', []),
-        ]);
+        return $this->handle(function () {
+            return $this->ok(get_option('wsms_gateway_configs', []));
+        });
     }
 
     public function updateConfig(\WP_REST_Request $request): \WP_REST_Response
     {
-        $config = $request->get_json_params();
+        return $this->handle(function () use ($request) {
+            $config = $request->get_json_params();
 
-        update_option('wsms_gateway_configs', $config);
+            update_option('wsms_gateway_configs', $config);
 
-        return new \WP_REST_Response(['success' => true]);
+            return $this->ok();
+        });
     }
 
     public function testSend(\WP_REST_Request $request): \WP_REST_Response
     {
-        $gateway = $this->resolveGateway($request);
-        if ($gateway instanceof \WP_REST_Response) {
-            return $gateway;
-        }
+        return $this->handle(function () use ($request) {
+            $gateway = $this->resolveGatewayOrFail($request);
 
-        $channel = $request->get_param('channel') ?? $gateway->getSupportedChannels()[0] ?? 'sms';
-        $to = $request->get_param('to') ?? '';
-        $body = $request->get_param('body') ?? __('Test message from WSMS', 'wp-sms');
+            $channel = $request->get_param('channel') ?? $gateway->getSupportedChannels()[0] ?? 'sms';
+            $to = $request->get_param('to') ?? '';
+            $body = $request->get_param('body') ?? __('Test message from WSMS', 'wp-sms');
 
-        $message = match ($channel) {
-            'email'   => new EmailMessage($to, $body, __('WSMS Test', 'wp-sms')),
-            'webhook' => new WebhookMessage($to, $body),
-            default   => new Message($channel, $to, $body),
-        };
+            $message = match ($channel) {
+                'email'   => new EmailMessage($to, $body, __('WSMS Test', 'wp-sms')),
+                'webhook' => new WebhookMessage($to, $body),
+                default   => new Message($channel, $to, $body),
+            };
 
-        $result = $gateway->send($message);
+            $result = $gateway->send($message);
 
-        try {
-            $this->messageLogger->logSend(
-                gatewayId:  $request->get_param('id'),
-                channel:    $channel,
-                recipient:  $to,
-                body:       $body,
-                status:     $result->success ? $result->status : 'failed',
-                subject:    $message instanceof EmailMessage ? $message->subject : null,
-                providerId: $result->providerId,
-                error:      $result->error,
-                cost:       $result->cost,
-                type:       'test',
-            );
-        } catch (\Throwable $e) {
-            // Logging is best-effort — don't fail the test-send response.
-        }
+            try {
+                $this->messageLogger->logSend(
+                    gatewayId:  $request->get_param('id'),
+                    channel:    $channel,
+                    recipient:  $to,
+                    body:       $body,
+                    status:     $result->success ? $result->status : 'failed',
+                    subject:    $message instanceof EmailMessage ? $message->subject : null,
+                    providerId: $result->providerId,
+                    error:      $result->error,
+                    cost:       $result->cost,
+                    type:       'test',
+                );
+            } catch (\Throwable $e) {
+                // Logging is best-effort — don't fail the test-send response.
+            }
 
-        return new \WP_REST_Response([
-            'success'     => $result->success,
-            'data'        => [
-                'status'      => $result->status,
-                'provider_id' => $result->providerId,
-                'error'       => $result->error,
-            ],
-        ]);
+            return new \WP_REST_Response([
+                'success'     => $result->success,
+                'data'        => [
+                    'status'      => $result->status,
+                    'provider_id' => $result->providerId,
+                    'error'       => $result->error,
+                ],
+            ]);
+        });
     }
 
     public function testConnection(\WP_REST_Request $request): \WP_REST_Response
     {
-        $gateway = $this->resolveGateway($request);
-        if ($gateway instanceof \WP_REST_Response) {
-            return $gateway;
-        }
+        return $this->handle(function () use ($request) {
+            $gateway = $this->resolveGatewayOrFail($request);
 
-        $result = $gateway->testConnection();
+            $result = $gateway->testConnection();
 
-        return new \WP_REST_Response([
-            'success' => $result->success,
-            'message' => $result->message,
-            'details' => $result->details,
-        ]);
+            return new \WP_REST_Response([
+                'success' => $result->success,
+                'message' => $result->message,
+                'details' => $result->details,
+            ]);
+        });
     }
 
     public function getCredit(\WP_REST_Request $request): \WP_REST_Response
     {
-        $gateway = $this->resolveGateway($request);
-        if ($gateway instanceof \WP_REST_Response) {
-            return $gateway;
-        }
+        return $this->handle(function () use ($request) {
+            $gateway = $this->resolveGatewayOrFail($request);
 
-        $credit = $gateway->getCredit();
+            $credit = $gateway->getCredit();
 
-        return new \WP_REST_Response([
-            'success' => true,
-            'data'    => [
-                'credit' => $credit,
-            ],
-        ]);
+            return $this->ok(['credit' => $credit]);
+        });
     }
 
     public function configOptions(\WP_REST_Request $request): \WP_REST_Response
     {
-        $gateway = $this->resolveGateway($request);
-        if ($gateway instanceof \WP_REST_Response) {
-            return $gateway;
-        }
+        return $this->handle(function () use ($request) {
+            $gateway = $this->resolveGatewayOrFail($request);
 
-        if (!$gateway instanceof SupportsDynamicOptions) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_supported',
-                'message' => __('This gateway does not support dynamic options', 'wp-sms'),
-            ], 400);
-        }
+            if (!$gateway instanceof SupportsDynamicOptions) {
+                throw ValidationException::field('gateway', __('This gateway does not support dynamic options', 'wp-sms'));
+            }
 
-        $section = $request->get_param('section');
-        $field = $request->get_param('field');
-        $body = $request->get_json_params();
+            $section = $request->get_param('section');
+            $field = $request->get_param('field');
+            $body = $request->get_json_params();
 
-        // Use draft config from request body, fall back to saved config
-        $config = $body['config'] ?? get_option('wsms_gateway_configs', [])[$gateway->getId()] ?? [];
-        $context = $body['context'] ?? [];
+            // Use draft config from request body, fall back to saved config
+            $config = $body['config'] ?? get_option('wsms_gateway_configs', [])[$gateway->getId()] ?? [];
+            $context = $body['context'] ?? [];
 
-        // Verify the field exists and is marked as dynamic
-        $schema = $gateway->getConfigSchema();
-        $fieldSchema = $section === 'shared'
-            ? ($schema['shared'][$field] ?? null)
-            : ($schema['channels'][$section][$field] ?? null);
+            // Verify the field exists and is marked as dynamic
+            $schema = $gateway->getConfigSchema();
+            $fieldSchema = $section === 'shared'
+                ? ($schema['shared'][$field] ?? null)
+                : ($schema['channels'][$section][$field] ?? null);
 
-        if (!$fieldSchema || empty($fieldSchema['dynamic'])) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_dynamic',
-                'message' => __('This field does not support dynamic options', 'wp-sms'),
-            ], 400);
-        }
+            if (!$fieldSchema || empty($fieldSchema['dynamic'])) {
+                throw ValidationException::field('field', __('This field does not support dynamic options', 'wp-sms'));
+            }
 
-        if (!$gateway->validateConfig($config)) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'credentials_missing',
-                'message' => __('Required credentials are missing', 'wp-sms'),
-            ], 422);
-        }
+            if (!$gateway->validateConfig($config)) {
+                throw new ValidationException(['credentials' => __('Required credentials are missing', 'wp-sms')]);
+            }
 
-        try {
-            $options = $gateway->getConfigOptions($field, $section, $config, $context);
+            try {
+                $options = $gateway->getConfigOptions($field, $section, $config, $context);
 
-            return new \WP_REST_Response([
-                'options' => $options,
-            ]);
-        } catch (\RuntimeException $e) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'provider_error',
-                'message' => $e->getMessage(),
-            ], 502);
-        }
+                return new \WP_REST_Response([
+                    'options' => $options,
+                ]);
+            } catch (\RuntimeException $e) {
+                return new \WP_REST_Response([
+                    'success' => false,
+                    'error'   => 'provider_error',
+                    'message' => $e->getMessage(),
+                ], 502);
+            }
+        });
     }
 
-    private function resolveGateway(\WP_REST_Request $request): \WSms\Messaging\Contracts\GatewayInterface|\WP_REST_Response
+    /**
+     * Resolve gateway from request or throw NotFoundException.
+     */
+    private function resolveGatewayOrFail(\WP_REST_Request $request): \WSms\Messaging\Contracts\GatewayInterface
     {
-        $gateway = $this->gatewayRegistry->get($request->get_param('id'));
+        $id = $request->get_param('id');
+        $gateway = $this->gatewayRegistry->get($id);
 
         if (!$gateway) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Gateway not found', 'wp-sms'),
-            ], 404);
+            throw NotFoundException::entity('Gateway', $id);
         }
 
         return $gateway;

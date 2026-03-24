@@ -10,8 +10,10 @@ use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Message\EmailMessage;
 use WSms\Messaging\MessageDispatcher;
+use WSms\Database\Connection;
 use WSms\Mfa\Channels\EmailChannel;
 use WSms\Mfa\Channels\MagicLinkChannel;
+use WSms\Mfa\UserFactorRepository;
 use WSms\Verification\OtpGenerator;
 use WSms\Verification\OtpService;
 use WSms\Messaging\Template\TemplateManager;
@@ -146,14 +148,16 @@ class EmailChannelTest extends TestCase
         $factorRow = $this->makeFactorRow(ChannelStatus::Active);
 
         // Factor lookup returns active row, then no cooldown.
-        $wpdb = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var'])
+        $wpdb = $this->getMockBuilder(\wpdb::class)
+            ->onlyMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var'])
             ->getMock();
         $wpdb->prefix = 'wp_';
         $wpdb->insert_id = 1;
         $wpdb->rows_affected = 1;
         $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturn($factorRow);
+        $wpdb->method('get_row')->willReturnCallback(
+            fn($query, $output = null) => $factorRow !== null && $output === ARRAY_A ? (array) $factorRow : $factorRow,
+        );
         $wpdb->method('insert')->willReturn(1);
         $wpdb->method('update')->willReturn(1);
         $wpdb->method('query')->willReturn(1);
@@ -182,6 +186,7 @@ class EmailChannelTest extends TestCase
         $templateManager = $this->createMock(TemplateManager::class);
         $templateManager->method('renderToMessage')->willReturn($mockMessage);
         $channel = new EmailChannel($this->otpGenerator, $this->auditLogger, $dispatcher, $magicLink, $verificationRepo, $templateManager, $otpSvc);
+        $channel->setUserFactorRepository(new UserFactorRepository(new Connection($wpdb)));
         $result = $channel->sendChallenge(1);
 
         $this->assertTrue($result->success);
@@ -204,21 +209,24 @@ class EmailChannelTest extends TestCase
 
     private function setupWpdbMock(?object $getRowReturn): void
     {
-        $wpdb = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var'])
+        $wpdb = $this->getMockBuilder(\wpdb::class)
+            ->onlyMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var'])
             ->getMock();
         $wpdb->prefix = 'wp_';
         $wpdb->insert_id = 1;
         $wpdb->rows_affected = 1;
 
         $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturn($getRowReturn);
+        $wpdb->method('get_row')->willReturnCallback(
+            fn($query, $output = null) => $getRowReturn !== null && $output === ARRAY_A ? (array) $getRowReturn : $getRowReturn,
+        );
         $wpdb->method('insert')->willReturn(1);
         $wpdb->method('update')->willReturn(1);
         $wpdb->method('query')->willReturn(1);
         $wpdb->method('get_var')->willReturn(0);
 
         $GLOBALS['wpdb'] = $wpdb;
+        $this->channel->setUserFactorRepository(new UserFactorRepository(new Connection($wpdb)));
     }
 
     private function overrideGetUserdata(int $userId, string $email): void

@@ -2,6 +2,7 @@
 
 namespace WSms\Rest;
 
+use WSms\Exception\ValidationException;
 use WSms\PhoneRestriction\CountryResolver;
 use WSms\PhoneRestriction\DatabaseUpdater;
 use WSms\PhoneRestriction\EnhancedPhoneDatabase;
@@ -70,90 +71,96 @@ class PhoneRestrictionController extends Controller
 
     public function getSettings(): \WP_REST_Response
     {
-        return new \WP_REST_Response([
-            'success'   => true,
-            'settings'  => $this->settings->all(),
-            'db_status' => EnhancedPhoneDatabase::getStatus(),
-        ]);
+        return $this->handle(function () {
+            return new \WP_REST_Response([
+                'success'   => true,
+                'settings'  => $this->settings->all(),
+                'db_status' => EnhancedPhoneDatabase::getStatus(),
+            ]);
+        });
     }
 
     public function updateSettings(\WP_REST_Request $request): \WP_REST_Response
     {
-        $body = $request->get_json_params();
+        return $this->handle(function () use ($request) {
+            $body = $request->get_json_params();
 
-        if (!is_array($body) || empty($body)) {
+            if (!is_array($body) || empty($body)) {
+                throw ValidationException::field('settings', __('Invalid settings data.', 'wp-sms'));
+            }
+
+            $sanitized = $this->sanitizeSettings($body);
+            $this->settings->save($sanitized);
+
             return new \WP_REST_Response([
-                'success' => false,
-                'message' => __('Invalid settings data.', 'wp-sms'),
-            ], 400);
-        }
-
-        $sanitized = $this->sanitizeSettings($body);
-        $this->settings->save($sanitized);
-
-        return new \WP_REST_Response([
-            'success'  => true,
-            'settings' => $this->settings->all(),
-        ]);
+                'success'  => true,
+                'settings' => $this->settings->all(),
+            ]);
+        });
     }
 
     public function downloadDb(): \WP_REST_Response
     {
-        $result = $this->dbUpdater->download();
+        return $this->handle(function () {
+            $result = $this->dbUpdater->download();
 
-        return new \WP_REST_Response([
-            'success'   => $result['success'],
-            'message'   => $result['message'],
-            'db_status' => EnhancedPhoneDatabase::getStatus(),
-        ], $result['success'] ? 200 : 502);
+            return new \WP_REST_Response([
+                'success'   => $result['success'],
+                'message'   => $result['message'],
+                'db_status' => EnhancedPhoneDatabase::getStatus(),
+            ], $result['success'] ? 200 : 502);
+        });
     }
 
     public function dbStatus(): \WP_REST_Response
     {
-        return new \WP_REST_Response([
-            'success'   => true,
-            'db_status' => EnhancedPhoneDatabase::getStatus(),
-        ]);
+        return $this->handle(function () {
+            return new \WP_REST_Response([
+                'success'   => true,
+                'db_status' => EnhancedPhoneDatabase::getStatus(),
+            ]);
+        });
     }
 
     public function checkPhone(\WP_REST_Request $request): \WP_REST_Response
     {
-        $body  = $request->get_json_params();
-        $phone = $body['phone'] ?? '';
+        return $this->handle(function () use ($request) {
+            $body  = $request->get_json_params();
+            $phone = $body['phone'] ?? '';
 
-        if (empty($phone) || !is_string($phone)) {
+            if (empty($phone) || !is_string($phone)) {
+                throw ValidationException::field('phone', __('Phone number is required.', 'wp-sms'));
+            }
+
+            $authResult      = $this->guard->check($phone, 'auth');
+            $messagingResult = $this->guard->check($phone, 'messaging');
+            $countries       = $this->resolver->getAllCountries();
+
             return new \WP_REST_Response([
-                'success' => false,
-                'message' => __('Phone number is required.', 'wp-sms'),
-            ], 400);
-        }
-
-        $authResult      = $this->guard->check($phone, 'auth');
-        $messagingResult = $this->guard->check($phone, 'messaging');
-        $countries       = $this->resolver->getAllCountries();
-
-        return new \WP_REST_Response([
-            'success'      => true,
-            'country'      => $authResult->country,
-            'country_name' => $countries[$authResult->country] ?? null,
-            'number_type'  => $authResult->numberType,
-            'auth'         => [
-                'allowed' => $authResult->allowed,
-                'reason'  => $authResult->reason,
-            ],
-            'messaging'    => [
-                'allowed' => $messagingResult->allowed,
-                'reason'  => $messagingResult->reason,
-            ],
-        ]);
+                'success'      => true,
+                'country'      => $authResult->country,
+                'country_name' => $countries[$authResult->country] ?? null,
+                'number_type'  => $authResult->numberType,
+                'auth'         => [
+                    'allowed' => $authResult->allowed,
+                    'reason'  => $authResult->reason,
+                ],
+                'messaging'    => [
+                    'allowed' => $messagingResult->allowed,
+                    'reason'  => $messagingResult->reason,
+                ],
+            ]);
+        });
     }
 
     public function countries(): \WP_REST_Response
     {
-        return new \WP_REST_Response([
-            'success'   => true,
-            'countries' => $this->resolver->getAllCountries(),
-        ]);
+        return $this->handle(function () {
+            return new \WP_REST_Response([
+                'success'   => true,
+                'countries' => $this->resolver->getAllCountries(),
+            ]);
+        });
     }
 
     private function sanitizeSettings(array $body): array

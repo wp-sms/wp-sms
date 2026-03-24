@@ -7,6 +7,7 @@ use WSms\Campaign\CampaignDispatcher;
 use WSms\Campaign\CampaignRepository;
 use WSms\Campaign\GatewayThrottler;
 use WSms\Campaign\QuietHoursGuard;
+use WSms\Database\Connection;
 
 defined('ABSPATH') || exit;
 
@@ -14,12 +15,13 @@ class CampaignServiceProvider implements ServiceProvider
 {
     public function register(ServiceContainer $container): void
     {
-        $container->register('campaign.repository', fn() => new CampaignRepository());
+        $container->register('campaign.repository', fn($c) => new CampaignRepository($c->get(Connection::class)));
         $container->register('campaign.quiet_hours', fn() => new QuietHoursGuard());
         $container->register('campaign.throttler', fn() => new GatewayThrottler());
 
         $container->register('campaign.audience_resolver', fn($c) => new AudienceResolver(
             $c->get('contact.segment_evaluator'),
+            $c->get(Connection::class),
         ));
 
         $container->register('campaign.dispatcher', fn($c) => new CampaignDispatcher(

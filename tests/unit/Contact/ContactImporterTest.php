@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use WSms\Contact\ContactImporter;
 use WSms\Contact\Contracts\ContactRepositoryInterface;
+use WSms\Database\Connection;
 
 class ContactImporterTest extends TestCase
 {
@@ -16,13 +17,14 @@ class ContactImporterTest extends TestCase
     protected function setUp(): void
     {
         $this->contacts = $this->createMock(ContactRepositoryInterface::class);
-        $this->importer = new ContactImporter($this->contacts);
 
         // Mock wpdb for transactions
-        $GLOBALS['wpdb'] = new class {
+        $GLOBALS['wpdb'] = new class extends \wpdb {
             public array $queries = [];
-            public function query(string $q): bool { $this->queries[] = $q; return true; }
+            public function query($query) { $this->queries[] = $query; return true; }
         };
+
+        $this->importer = new ContactImporter($this->contacts, new Connection($GLOBALS['wpdb']));
 
         $this->tempDir = sys_get_temp_dir();
     }

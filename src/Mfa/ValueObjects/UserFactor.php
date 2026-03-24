@@ -18,18 +18,18 @@ class UserFactor
     }
 
     /**
-     * Create from a database row object.
+     * Create from a database row (associative array).
      */
-    public static function fromRow(object $row): self
+    public static function fromRow(array $row): self
     {
         return new self(
-            id: (int) $row->id,
-            userId: (int) $row->user_id,
-            channelId: $row->channel_id,
-            status: ChannelStatus::from($row->status),
-            meta: json_decode($row->meta ?: '{}', true) ?? [],
-            createdAt: $row->created_at,
-            updatedAt: $row->updated_at,
+            id: (int) $row['id'],
+            userId: (int) $row['user_id'],
+            channelId: $row['channel_id'],
+            status: ChannelStatus::from($row['status']),
+            meta: json_decode($row['meta'] ?: '{}', true) ?? [],
+            createdAt: $row['created_at'],
+            updatedAt: $row['updated_at'],
         );
     }
 }

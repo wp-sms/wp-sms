@@ -2,7 +2,8 @@
 
 namespace WSms\Flow\Storage;
 
-use WSms\Dependencies\Symfony\Component\Uid\Ulid;
+use WSms\Database\Connection;
+use WSms\Exception\NotFoundException;
 use WSms\Flow\Contracts\Flow;
 use WSms\Flow\Contracts\FlowRepositoryInterface;
 
@@ -10,10 +11,11 @@ defined('ABSPATH') || exit;
 
 class FlowRepository implements FlowRepositoryInterface
 {
+    public function __construct(private readonly Connection $db) {}
+
     public function save(Flow $flow): string
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_flows';
+        $table = $this->db->table(Connection::TABLE_FLOWS);
 
         $data = [
             'id'             => $flow->getId(),
@@ -32,16 +34,16 @@ class FlowRepository implements FlowRepositoryInterface
             $data['published_at'] = $flow->getPublishedAt()?->format('Y-m-d H:i:s');
         }
 
-        $existing = $wpdb->get_var($wpdb->prepare("SELECT id FROM {$table} WHERE id = %s", $flow->getId()));
+        $existing = $this->db->getVar("SELECT id FROM {$table} WHERE id = %s", $flow->getId());
 
         if ($existing) {
             unset($data['id']);
             $data['updated_at'] = current_time('mysql');
-            $wpdb->update($table, $data, ['id' => $flow->getId()]);
+            $this->db->update(Connection::TABLE_FLOWS, $data, ['id' => $flow->getId()]);
         } else {
             $data['created_at'] = current_time('mysql');
             $data['updated_at'] = current_time('mysql');
-            $wpdb->insert($table, $data);
+            $this->db->insert(Connection::TABLE_FLOWS, $data);
         }
 
         return $flow->getId();
@@ -49,34 +51,39 @@ class FlowRepository implements FlowRepositoryInterface
 
     public function find(string $id): ?Flow
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_flows';
+        $table = $this->db->table(Connection::TABLE_FLOWS);
 
-        $row = $wpdb->get_row($wpdb->prepare("SELECT * FROM {$table} WHERE id = %s", $id), ARRAY_A);
+        $row = $this->db->getRow("SELECT * FROM {$table} WHERE id = %s", $id);
 
         return $row ? Flow::fromArray($row) : null;
     }
 
+    public function findOrFail(string $id): Flow
+    {
+        $flow = $this->find($id);
+
+        if ($flow === null) {
+            throw NotFoundException::entity('Flow', $id);
+        }
+
+        return $flow;
+    }
+
     public function findByTrigger(string $triggerType): array
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_flows';
+        $table = $this->db->table(Connection::TABLE_FLOWS);
 
-        $rows = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT * FROM {$table} WHERE trigger_type = %s AND status = 'active' ORDER BY priority DESC",
-                $triggerType,
-            ),
-            ARRAY_A,
+        $rows = $this->db->getResults(
+            "SELECT * FROM {$table} WHERE trigger_type = %s AND status = 'active' ORDER BY priority DESC",
+            $triggerType,
         );
 
-        return array_map(fn($row) => Flow::fromArray($row), $rows ?: []);
+        return array_map(fn($row) => Flow::fromArray($row), $rows);
     }
 
     public function findAll(array $filters = [], int $limit = 50, int $offset = 0): array
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_flows';
+        $table = $this->db->table(Connection::TABLE_FLOWS);
 
         $where = '1=1';
         $params = [];
@@ -94,15 +101,14 @@ class FlowRepository implements FlowRepositoryInterface
         $params[] = $limit;
         $params[] = $offset;
 
-        $rows = $wpdb->get_results($wpdb->prepare($sql, ...$params), ARRAY_A);
+        $rows = $this->db->getResults($sql, ...$params);
 
-        return array_map(fn($row) => Flow::fromArray($row), $rows ?: []);
+        return array_map(fn($row) => Flow::fromArray($row), $rows);
     }
 
     public function delete(string $id): bool
     {
-        global $wpdb;
-        $result = (bool) $wpdb->delete($wpdb->prefix . 'wsms_flows', ['id' => $id]);
+        $result = (bool) $this->db->delete(Connection::TABLE_FLOWS, ['id' => $id]);
 
         if ($result) {
             do_action('wsms_flow_deleted', $id);
@@ -113,9 +119,8 @@ class FlowRepository implements FlowRepositoryInterface
 
     public function updateStatus(string $id, string $status): bool
     {
-        global $wpdb;
-        $result = (bool) $wpdb->update(
-            $wpdb->prefix . 'wsms_flows',
+        $result = (bool) $this->db->update(
+            Connection::TABLE_FLOWS,
             ['status' => $status, 'updated_at' => current_time('mysql')],
             ['id' => $id],
         );
@@ -129,15 +134,14 @@ class FlowRepository implements FlowRepositoryInterface
 
     public function publish(string $id): bool
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_flows';
+        $table = $this->db->table(Connection::TABLE_FLOWS);
 
-        $row = $wpdb->get_row($wpdb->prepare("SELECT steps, trigger_type, trigger_config FROM {$table} WHERE id = %s", $id), ARRAY_A);
+        $row = $this->db->getRow("SELECT steps, trigger_type, trigger_config FROM {$table} WHERE id = %s", $id);
         if (!$row || !$row['steps']) {
             return false;
         }
 
-        $result = (bool) $wpdb->update($table, [
+        $result = (bool) $this->db->update(Connection::TABLE_FLOWS, [
             'published_steps' => $row['steps'],
             'published_at'    => current_time('mysql'),
             'status'          => 'active',

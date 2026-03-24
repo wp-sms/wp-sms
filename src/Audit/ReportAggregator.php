@@ -2,6 +2,7 @@
 
 namespace WSms\Audit;
 
+use WSms\Database\Connection;
 use WSms\Enums\EventType;
 use WSms\Support\UserMeta;
 
@@ -25,6 +26,10 @@ class ReportAggregator
         EventType::TotpFailed,
         EventType::OtpExpired,
     ];
+
+    public function __construct(private readonly Connection $db)
+    {
+    }
 
     /**
      * Get aggregated report data for the given time range.
@@ -55,14 +60,13 @@ class ReportAggregator
 
     private function getAuthActivity(int $rangeDays): array
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_auth_logs';
+        $table = $this->db->table(Connection::TABLE_AUTH_LOGS);
+        $usersTable = $this->db->wpdb()->users;
         $successIn = self::eventIn(self::LOGIN_SUCCESS_EVENTS);
         $failureIn = self::eventIn(self::LOGIN_FAILURE_EVENTS);
 
         // Timeline: logins/failures from logs
-        $logTimeline = $wpdb->get_results($wpdb->prepare(
+        $logTimeline = $this->db->getResults(
             "SELECT
                 DATE(created_at) AS date,
                 SUM(CASE WHEN event IN ({$successIn}) THEN 1 ELSE 0 END) AS logins,
@@ -71,43 +75,43 @@ class ReportAggregator
             WHERE created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)
             GROUP BY DATE(created_at)",
             $rangeDays,
-        ));
+        );
 
         // Registrations from wp_users (survives log cleanup)
-        $regTimeline = $wpdb->get_results($wpdb->prepare(
+        $regTimeline = $this->db->getResults(
             "SELECT DATE(user_registered) AS date, COUNT(*) AS registrations
-            FROM {$wpdb->users}
+            FROM {$usersTable}
             WHERE user_registered >= DATE_SUB(NOW(), INTERVAL %d DAY)
             GROUP BY DATE(user_registered)",
             $rangeDays,
-        ));
+        );
 
         // Password resets (scalar, no per-day breakdown needed)
-        $passwordResets = (int) $wpdb->get_var($wpdb->prepare(
+        $passwordResets = (int) $this->db->getVar(
             "SELECT COUNT(*) FROM {$table} WHERE event = %s AND created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)",
             EventType::PasswordResetComplete->value,
             $rangeDays,
-        ));
+        );
 
         // Merge both timelines by date
         $dates = [];
         foreach ($logTimeline as $row) {
-            $dates[$row->date] = [
-                'date'          => $row->date,
-                'logins'        => (int) $row->logins,
-                'failures'      => (int) $row->failures,
+            $dates[$row['date']] = [
+                'date'          => $row['date'],
+                'logins'        => (int) $row['logins'],
+                'failures'      => (int) $row['failures'],
                 'registrations' => 0,
             ];
         }
         foreach ($regTimeline as $row) {
-            if (isset($dates[$row->date])) {
-                $dates[$row->date]['registrations'] = (int) $row->registrations;
+            if (isset($dates[$row['date']])) {
+                $dates[$row['date']]['registrations'] = (int) $row['registrations'];
             } else {
-                $dates[$row->date] = [
-                    'date'          => $row->date,
+                $dates[$row['date']] = [
+                    'date'          => $row['date'],
                     'logins'        => 0,
                     'failures'      => 0,
-                    'registrations' => (int) $row->registrations,
+                    'registrations' => (int) $row['registrations'],
                 ];
             }
         }
@@ -133,33 +137,33 @@ class ReportAggregator
 
     private function getUserSecurity(): array
     {
-        global $wpdb;
+        $factorsTable = $this->db->table(Connection::TABLE_USER_FACTORS);
+        $usersTable = $this->db->wpdb()->users;
+        $usermetaTable = $this->db->wpdb()->usermeta;
 
-        $factorsTable = $wpdb->prefix . 'wsms_user_factors';
+        $totalUsers = (int) $this->db->getVar("SELECT COUNT(*) FROM {$usersTable}");
 
-        $totalUsers = (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->users}");
-
-        $mfaEnrolled = (int) $wpdb->get_var(
+        $mfaEnrolled = (int) $this->db->getVar(
             "SELECT COUNT(DISTINCT f.user_id)
             FROM {$factorsTable} f
-            INNER JOIN {$wpdb->users} u ON u.ID = f.user_id
+            INNER JOIN {$usersTable} u ON u.ID = f.user_id
             WHERE f.status = 'active' AND f.channel_id != 'backup_codes'",
         );
 
-        $emailVerified = (int) $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = '1'",
+        $emailVerified = (int) $this->db->getVar(
+            "SELECT COUNT(*) FROM {$usermetaTable} WHERE meta_key = %s AND meta_value = '1'",
             UserMeta::EMAIL_VERIFIED,
-        ));
+        );
 
-        $phoneVerified = (int) $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->usermeta} WHERE meta_key = %s AND meta_value = '1'",
+        $phoneVerified = (int) $this->db->getVar(
+            "SELECT COUNT(*) FROM {$usermetaTable} WHERE meta_key = %s AND meta_value = '1'",
             UserMeta::PHONE_VERIFIED,
-        ));
+        );
 
-        $suspendedUsers = (int) $wpdb->get_var($wpdb->prepare(
-            "SELECT COUNT(*) FROM {$wpdb->usermeta} WHERE meta_key = %s",
+        $suspendedUsers = (int) $this->db->getVar(
+            "SELECT COUNT(*) FROM {$usermetaTable} WHERE meta_key = %s",
             UserMeta::SUSPENDED,
-        ));
+        );
 
         return [
             'total_users'              => $totalUsers,
@@ -175,16 +179,15 @@ class ReportAggregator
 
     private function getChannelUsage(int $rangeDays): array
     {
-        global $wpdb;
-
-        $logsTable = $wpdb->prefix . 'wsms_auth_logs';
-        $factorsTable = $wpdb->prefix . 'wsms_user_factors';
+        $logsTable = $this->db->table(Connection::TABLE_AUTH_LOGS);
+        $factorsTable = $this->db->table(Connection::TABLE_USER_FACTORS);
+        $usersTable = $this->db->wpdb()->users;
         $successIn = self::eventIn(self::LOGIN_SUCCESS_EVENTS);
 
         // Login methods
         $socialEvent = EventType::SocialLoginSuccess->value;
         $magicEvent = EventType::MagicLinkVerified->value;
-        $loginRows = $wpdb->get_results($wpdb->prepare(
+        $loginRows = $this->db->getResults(
             "SELECT
                 CASE
                     WHEN event = '{$socialEvent}' THEN 'social'
@@ -199,18 +202,18 @@ class ReportAggregator
             GROUP BY method
             ORDER BY count DESC",
             $rangeDays,
-        ));
+        );
 
         $loginMethods = [];
         foreach ($loginRows as $row) {
-            $loginMethods[] = ['method' => $row->method, 'count' => (int) $row->count];
+            $loginMethods[] = ['method' => $row['method'], 'count' => (int) $row['count']];
         }
 
         // MFA methods (only for existing users)
-        $mfaRows = $wpdb->get_results(
+        $mfaRows = $this->db->getResults(
             "SELECT f.channel_id AS method, COUNT(*) AS count
             FROM {$factorsTable} f
-            INNER JOIN {$wpdb->users} u ON u.ID = f.user_id
+            INNER JOIN {$usersTable} u ON u.ID = f.user_id
             WHERE f.status = 'active' AND f.channel_id != 'backup_codes'
             GROUP BY f.channel_id
             ORDER BY count DESC",
@@ -218,11 +221,11 @@ class ReportAggregator
 
         $mfaMethods = [];
         foreach ($mfaRows as $row) {
-            $mfaMethods[] = ['method' => $row->method, 'count' => (int) $row->count];
+            $mfaMethods[] = ['method' => $row['method'], 'count' => (int) $row['count']];
         }
 
         // Social providers
-        $socialRows = $wpdb->get_results($wpdb->prepare(
+        $socialRows = $this->db->getResults(
             "SELECT
                 COALESCE(channel_id, 'unknown') AS provider,
                 COUNT(*) AS count
@@ -233,11 +236,11 @@ class ReportAggregator
             ORDER BY count DESC",
             EventType::SocialLoginSuccess->value,
             $rangeDays,
-        ));
+        );
 
         $socialProviders = [];
         foreach ($socialRows as $row) {
-            $socialProviders[] = ['provider' => $row->provider, 'count' => (int) $row->count];
+            $socialProviders[] = ['provider' => $row['provider'], 'count' => (int) $row['count']];
         }
 
         return [
@@ -249,14 +252,12 @@ class ReportAggregator
 
     private function getSecurityAlerts(int $rangeDays): array
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_auth_logs';
+        $table = $this->db->table(Connection::TABLE_AUTH_LOGS);
         $failureIn = self::eventIn(self::LOGIN_FAILURE_EVENTS);
         $otpFailureIn = self::eventIn(self::OTP_FAILURE_EVENTS);
 
         // Summary counts in a single query
-        $summary = $wpdb->get_row($wpdb->prepare(
+        $summary = $this->db->getRow(
             "SELECT
                 SUM(CASE WHEN event IN ({$failureIn}) THEN 1 ELSE 0 END) AS failed_logins,
                 SUM(CASE WHEN event = %s THEN 1 ELSE 0 END) AS accounts_locked,
@@ -267,10 +268,10 @@ class ReportAggregator
             EventType::AccountLocked->value,
             EventType::AccountSuspended->value,
             $rangeDays,
-        ));
+        );
 
         // Top failed IPs
-        $topIps = $wpdb->get_results($wpdb->prepare(
+        $topIps = $this->db->getResults(
             "SELECT ip_address AS ip, COUNT(*) AS count
             FROM {$table}
             WHERE event IN ({$failureIn})
@@ -281,21 +282,21 @@ class ReportAggregator
             ORDER BY count DESC
             LIMIT 10",
             $rangeDays,
-        ));
+        );
 
         $topFailedIps = [];
         foreach ($topIps as $row) {
-            $topFailedIps[] = ['ip' => $row->ip, 'count' => (int) $row->count];
+            $topFailedIps[] = ['ip' => $row['ip'], 'count' => (int) $row['count']];
         }
 
         $recentLockouts = $this->getRecentUserEvents($table, EventType::AccountLocked, 'locked_at', $rangeDays);
         $recentSuspensions = $this->getRecentUserEvents($table, EventType::AccountSuspended, 'suspended_at', $rangeDays);
 
         return [
-            'failed_login_attempts' => (int) ($summary->failed_logins ?? 0),
-            'accounts_locked'       => (int) ($summary->accounts_locked ?? 0),
-            'accounts_suspended'    => (int) ($summary->accounts_suspended ?? 0),
-            'otp_failures'          => (int) ($summary->otp_failures ?? 0),
+            'failed_login_attempts' => (int) ($summary['failed_logins'] ?? 0),
+            'accounts_locked'       => (int) ($summary['accounts_locked'] ?? 0),
+            'accounts_suspended'    => (int) ($summary['accounts_suspended'] ?? 0),
+            'otp_failures'          => (int) ($summary['otp_failures'] ?? 0),
             'top_failed_ips'        => $topFailedIps,
             'recent_lockouts'       => $recentLockouts,
             'recent_suspensions'    => $recentSuspensions,
@@ -304,9 +305,7 @@ class ReportAggregator
 
     private function getRecentUserEvents(string $table, EventType $event, string $dateKey, int $rangeDays, int $limit = 10): array
     {
-        global $wpdb;
-
-        $rows = $wpdb->get_results($wpdb->prepare(
+        $rows = $this->db->getResults(
             "SELECT l.user_id, l.ip_address AS ip, l.created_at AS event_at
             FROM {$table} l
             WHERE l.event = %s
@@ -316,7 +315,7 @@ class ReportAggregator
             $event->value,
             $rangeDays,
             $limit,
-        ));
+        );
 
         $userIds = array_unique(array_filter(array_column($rows, 'user_id')));
 
@@ -326,12 +325,12 @@ class ReportAggregator
 
         $result = [];
         foreach ($rows as $row) {
-            $user = get_userdata((int) $row->user_id);
+            $user = get_userdata((int) $row['user_id']);
             $result[] = [
-                'user_id'      => (int) $row->user_id,
+                'user_id'      => (int) $row['user_id'],
                 'display_name' => $user ? $user->display_name : 'Unknown',
-                $dateKey        => $row->event_at,
-                'ip'           => $row->ip ?? '',
+                $dateKey        => $row['event_at'],
+                'ip'           => $row['ip'] ?? '',
             ];
         }
 

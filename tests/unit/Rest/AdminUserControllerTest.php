@@ -14,6 +14,7 @@ use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Template\TemplateManager;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\MfaManager;
+use WSms\Dependencies\Psr\Log\LoggerInterface;
 use WSms\Rest\AdminUserController;
 use WSms\Social\SocialAccountRepository;
 
@@ -49,6 +50,7 @@ class AdminUserControllerTest extends TestCase
             $this->settingsRepo,
             $this->templateManager,
             $this->messageDispatcher,
+            $this->createMock(LoggerInterface::class),
         );
 
         $GLOBALS['_test_user_meta'] = [];
@@ -97,7 +99,7 @@ class AdminUserControllerTest extends TestCase
         $response = $this->controller->handleGetAuthSummary($request);
 
         $this->assertSame(404, $response->get_status());
-        $this->assertSame('user_not_found', $response->get_data()['error']);
+        $this->assertSame('not_found', $response->get_data()['error']);
     }
 
     public function testGetAuthSummaryReturnsFullData(): void
@@ -137,8 +139,9 @@ class AdminUserControllerTest extends TestCase
         $response = $this->controller->handleGetAuthSummary($request);
 
         $this->assertSame(200, $response->get_status());
-        $data = $response->get_data();
-        $this->assertTrue($data['success']);
+        $responseData = $response->get_data();
+        $this->assertTrue($responseData['success']);
+        $data = $responseData['data'];
 
         // Verification
         $this->assertTrue($data['verification']['email']['verified']);
@@ -182,7 +185,7 @@ class AdminUserControllerTest extends TestCase
         $request->set_param('id', 5);
 
         $response = $this->controller->handleGetAuthSummary($request);
-        $data = $response->get_data();
+        $data = $response->get_data()['data'];
 
         $this->assertNull($data['verification']['phone']['number']);
         $this->assertEmpty($data['mfa_factors']);
@@ -202,7 +205,7 @@ class AdminUserControllerTest extends TestCase
         $response = $this->controller->handleResetMfaChannel($request);
 
         $this->assertSame(404, $response->get_status());
-        $this->assertSame('user_not_found', $response->get_data()['error']);
+        $this->assertSame('not_found', $response->get_data()['error']);
     }
 
     public function testResetMfaChannelReturns404ForUnknownChannel(): void
@@ -218,7 +221,7 @@ class AdminUserControllerTest extends TestCase
         $response = $this->controller->handleResetMfaChannel($request);
 
         $this->assertSame(404, $response->get_status());
-        $this->assertSame('channel_not_found', $response->get_data()['error']);
+        $this->assertSame('not_found', $response->get_data()['error']);
     }
 
     public function testResetMfaChannelSucceeds(): void
@@ -297,8 +300,8 @@ class AdminUserControllerTest extends TestCase
 
         $response = $this->controller->handleSetVerification($request);
 
-        $this->assertSame(400, $response->get_status());
-        $this->assertSame('invalid_channel', $response->get_data()['error']);
+        $this->assertSame(422, $response->get_status());
+        $this->assertSame('validation_failed', $response->get_data()['error']);
     }
 
     public function testSetEmailVerifiedSucceeds(): void
@@ -368,8 +371,8 @@ class AdminUserControllerTest extends TestCase
 
         $response = $this->controller->handleDisconnectSocial($request);
 
-        $this->assertSame(400, $response->get_status());
-        $this->assertSame('invalid_provider', $response->get_data()['error']);
+        $this->assertSame(422, $response->get_status());
+        $this->assertSame('validation_failed', $response->get_data()['error']);
     }
 
     public function testDisconnectSocialSucceeds(): void
@@ -405,7 +408,7 @@ class AdminUserControllerTest extends TestCase
         $response = $this->controller->handleUnlockAccount($request);
 
         $this->assertSame(404, $response->get_status());
-        $this->assertSame('user_not_found', $response->get_data()['error']);
+        $this->assertSame('not_found', $response->get_data()['error']);
     }
 
     public function testUnlockSucceeds(): void
@@ -426,7 +429,7 @@ class AdminUserControllerTest extends TestCase
 
         $this->assertSame(200, $response->get_status());
         $this->assertTrue($response->get_data()['success']);
-        $this->assertSame('Account unlocked.', $response->get_data()['message']);
+        $this->assertSame('Account unlocked.', $response->get_data()['data']['message']);
     }
 
     public function testUnlockIsIdempotent(): void
@@ -496,8 +499,8 @@ class AdminUserControllerTest extends TestCase
 
         $response = $this->controller->handleSetPhone($request);
 
-        $this->assertSame(400, $response->get_status());
-        $this->assertSame('invalid_phone', $response->get_data()['error']);
+        $this->assertSame(422, $response->get_status());
+        $this->assertSame('validation_failed', $response->get_data()['error']);
     }
 
     public function testSetPhoneRejectsTakenNumber(): void
@@ -514,7 +517,7 @@ class AdminUserControllerTest extends TestCase
         $response = $this->controller->handleSetPhone($request);
 
         $this->assertSame(409, $response->get_status());
-        $this->assertSame('phone_taken', $response->get_data()['error']);
+        $this->assertSame('conflict', $response->get_data()['error']);
     }
 
     public function testRemovePhoneSucceeds(): void
@@ -568,8 +571,8 @@ class AdminUserControllerTest extends TestCase
 
         $response = $this->controller->handlePasswordReset($request);
 
-        $this->assertSame(400, $response->get_status());
-        $this->assertSame('no_email', $response->get_data()['error']);
+        $this->assertSame(422, $response->get_status());
+        $this->assertSame('validation_failed', $response->get_data()['error']);
     }
 
     public function testPasswordResetSucceeds(): void
@@ -593,7 +596,7 @@ class AdminUserControllerTest extends TestCase
 
         $this->assertSame(200, $response->get_status());
         $this->assertTrue($response->get_data()['success']);
-        $this->assertSame('Password reset email sent.', $response->get_data()['message']);
+        $this->assertSame('Password reset email sent.', $response->get_data()['data']['message']);
     }
 
     // --- Activate User ---
@@ -620,8 +623,8 @@ class AdminUserControllerTest extends TestCase
 
         $response = $this->controller->handleActivateUser($request);
 
-        $this->assertSame(400, $response->get_status());
-        $this->assertSame('not_pending', $response->get_data()['error']);
+        $this->assertSame(422, $response->get_status());
+        $this->assertSame('validation_failed', $response->get_data()['error']);
     }
 
     public function testActivateRejectsUserWithNoStatus(): void
@@ -634,8 +637,8 @@ class AdminUserControllerTest extends TestCase
 
         $response = $this->controller->handleActivateUser($request);
 
-        $this->assertSame(400, $response->get_status());
-        $this->assertSame('not_pending', $response->get_data()['error']);
+        $this->assertSame(422, $response->get_status());
+        $this->assertSame('validation_failed', $response->get_data()['error']);
     }
 
     public function testActivateSucceeds(): void
@@ -688,8 +691,8 @@ class AdminUserControllerTest extends TestCase
 
         $response = $this->controller->handleSendVerification($request);
 
-        $this->assertSame(400, $response->get_status());
-        $this->assertSame('invalid_channel', $response->get_data()['error']);
+        $this->assertSame(422, $response->get_status());
+        $this->assertSame('validation_failed', $response->get_data()['error']);
     }
 
     public function testSendVerificationRejectsDisabledChannel(): void
@@ -703,8 +706,8 @@ class AdminUserControllerTest extends TestCase
 
         $response = $this->controller->handleSendVerification($request);
 
-        $this->assertSame(400, $response->get_status());
-        $this->assertSame('channel_disabled', $response->get_data()['error']);
+        $this->assertSame(422, $response->get_status());
+        $this->assertSame('validation_failed', $response->get_data()['error']);
     }
 
     public function testSendVerificationRejectsPlaceholderEmail(): void
@@ -720,8 +723,8 @@ class AdminUserControllerTest extends TestCase
 
         $response = $this->controller->handleSendVerification($request);
 
-        $this->assertSame(400, $response->get_status());
-        $this->assertSame('no_email', $response->get_data()['error']);
+        $this->assertSame(422, $response->get_status());
+        $this->assertSame('validation_failed', $response->get_data()['error']);
     }
 
     public function testSendVerificationRejectsNoPhone(): void
@@ -736,8 +739,8 @@ class AdminUserControllerTest extends TestCase
 
         $response = $this->controller->handleSendVerification($request);
 
-        $this->assertSame(400, $response->get_status());
-        $this->assertSame('no_phone', $response->get_data()['error']);
+        $this->assertSame(422, $response->get_status());
+        $this->assertSame('validation_failed', $response->get_data()['error']);
     }
 
     public function testSendEmailVerificationSucceeds(): void

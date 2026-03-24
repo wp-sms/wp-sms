@@ -2,21 +2,23 @@
 
 namespace WSms\Contact;
 
+use WSms\Database\Connection;
 use WSms\Dependencies\Symfony\Component\Uid\Ulid;
 use WSms\Contact\Contracts\ListRepositoryInterface;
+use WSms\Exception\NotFoundException;
 
 defined('ABSPATH') || exit;
 
 class ListRepository implements ListRepositoryInterface
 {
+    public function __construct(private readonly Connection $db) {}
+
     public function create(array $data): string
     {
-        global $wpdb;
-
         $id = (string) new Ulid();
         $now = current_time('mysql');
 
-        $wpdb->insert($wpdb->prefix . 'wsms_lists', [
+        $this->db->insert(Connection::TABLE_LISTS, [
             'id'            => $id,
             'name'          => $data['name'],
             'type'          => $data['type'] ?? 'dynamic',
@@ -33,8 +35,6 @@ class ListRepository implements ListRepositoryInterface
 
     public function update(string $id, array $data): bool
     {
-        global $wpdb;
-
         $update = ['updated_at' => current_time('mysql')];
 
         foreach (['name', 'type', 'tag_id', 'description'] as $field) {
@@ -47,34 +47,33 @@ class ListRepository implements ListRepositoryInterface
             $update['conditions'] = $data['conditions'] !== null ? wp_json_encode($data['conditions']) : null;
         }
 
-        return (bool) $wpdb->update($wpdb->prefix . 'wsms_lists', $update, ['id' => $id]);
+        return (bool) $this->db->update(Connection::TABLE_LISTS, $update, ['id' => $id]);
     }
 
     public function find(string $id): ?array
     {
-        global $wpdb;
-        $row = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wsms_lists WHERE id = %s", $id),
-            ARRAY_A,
-        );
+        $table = $this->db->table(Connection::TABLE_LISTS);
+        $row = $this->db->getRow("SELECT * FROM {$table} WHERE id = %s", $id);
         return $row ? self::decodeRow($row) : null;
+    }
+
+    public function findOrFail(string $id): array
+    {
+        $row = $this->find($id);
+        if ($row === null) {
+            throw NotFoundException::entity('List', $id);
+        }
+        return $row;
     }
 
     public function findAll(?string $type = null): array
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_lists';
+        $table = $this->db->table(Connection::TABLE_LISTS);
 
         if ($type !== null) {
-            $rows = $wpdb->get_results(
-                $wpdb->prepare("SELECT * FROM {$table} WHERE type = %s ORDER BY created_at DESC", $type),
-                ARRAY_A,
-            ) ?: [];
+            $rows = $this->db->getResults("SELECT * FROM {$table} WHERE type = %s ORDER BY created_at DESC", $type);
         } else {
-            $rows = $wpdb->get_results(
-                "SELECT * FROM {$table} ORDER BY created_at DESC",
-                ARRAY_A,
-            ) ?: [];
+            $rows = $this->db->getResults("SELECT * FROM {$table} ORDER BY created_at DESC");
         }
 
         return array_map([self::class, 'decodeRow'], $rows);
@@ -82,15 +81,13 @@ class ListRepository implements ListRepositoryInterface
 
     public function delete(string $id): bool
     {
-        global $wpdb;
-        return (bool) $wpdb->delete($wpdb->prefix . 'wsms_lists', ['id' => $id]);
+        return (bool) $this->db->delete(Connection::TABLE_LISTS, ['id' => $id]);
     }
 
     public function updateContactCount(string $id, int $count): bool
     {
-        global $wpdb;
-        return (bool) $wpdb->update(
-            $wpdb->prefix . 'wsms_lists',
+        return (bool) $this->db->update(
+            Connection::TABLE_LISTS,
             ['contact_count' => $count, 'updated_at' => current_time('mysql')],
             ['id' => $id],
         );

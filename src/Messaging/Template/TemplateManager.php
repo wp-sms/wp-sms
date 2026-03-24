@@ -10,6 +10,7 @@ use WSms\Messaging\Template\Contracts\TemplateStorageInterface;
 use WSms\Messaging\Template\Contracts\ToggleableTemplateInterface;
 use WSms\Messaging\Template\ValueObjects\ChannelContent;
 use WSms\Messaging\Template\ValueObjects\RenderedMessage;
+use WSms\Dependencies\Psr\Log\LoggerInterface;
 use WSms\Support\IpResolver;
 
 defined('ABSPATH') || exit;
@@ -29,6 +30,7 @@ class TemplateManager
         private readonly TemplateStorageInterface $storage,
         private readonly TemplateEngineInterface $engine,
         ?\Closure $logoUrlResolver = null,
+        private readonly ?LoggerInterface $logger = null,
     ) {
         $this->logoUrlResolver = $logoUrlResolver ?? static fn () => '';
     }
@@ -229,8 +231,8 @@ class TemplateManager
 
         foreach ($template->getVariables() as $name => $definition) {
             if ($definition->required && !isset($variables[$name])) {
-                error_log(sprintf(
-                    '[WP-SMS] Template "%s": required variable "%s" was not provided.',
+                $this->logger?->warning(sprintf(
+                    'Template "%s": required variable "%s" was not provided.',
                     $template->getId(),
                     $name,
                 ));

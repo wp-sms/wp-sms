@@ -4,6 +4,7 @@ namespace WSms\Contact;
 
 use WSms\Dependencies\League\Csv\Reader;
 use WSms\Contact\Contracts\ContactRepositoryInterface;
+use WSms\Database\Connection;
 
 defined('ABSPATH') || exit;
 
@@ -11,6 +12,7 @@ class ContactImporter
 {
     public function __construct(
         private readonly ContactRepositoryInterface $contacts,
+        private readonly Connection $db,
     ) {
     }
 
@@ -29,8 +31,7 @@ class ContactImporter
         $skipped = 0;
         $errors = [];
 
-        global $wpdb;
-        $wpdb->query('START TRANSACTION');
+        $this->db->query('START TRANSACTION');
 
         try {
             foreach ($reader->getRecords() as $offset => $record) {
@@ -77,9 +78,9 @@ class ContactImporter
                 }
             }
 
-            $wpdb->query('COMMIT');
+            $this->db->query('COMMIT');
         } catch (\Throwable $e) {
-            $wpdb->query('ROLLBACK');
+            $this->db->query('ROLLBACK');
             throw $e;
         }
 

@@ -6,7 +6,9 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use WSms\Audit\AuditLogger;
 use WSms\Enums\ChannelStatus;
+use WSms\Database\Connection;
 use WSms\Mfa\Channels\BackupCodesChannel;
+use WSms\Mfa\UserFactorRepository;
 use WSms\Verification\OtpGenerator;
 
 class BackupCodesChannelTest extends TestCase
@@ -129,14 +131,17 @@ class BackupCodesChannelTest extends TestCase
 
         $factorRow = $this->makeFactorRow(ChannelStatus::Active, ['codes' => [$hashed, 'otherhash']]);
 
-        $wpdb = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get_row', 'prepare', 'update'])
+        $wpdb = $this->getMockBuilder(\wpdb::class)
+            ->onlyMethods(['get_row', 'prepare', 'update'])
             ->getMock();
         $wpdb->prefix = 'wp_';
         $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturn($factorRow);
+        $wpdb->method('get_row')->willReturnCallback(
+            fn($query, $output = null) => $factorRow !== null && $output === ARRAY_A ? (array) $factorRow : $factorRow,
+        );
         $wpdb->method('update')->willReturn(1);
         $GLOBALS['wpdb'] = $wpdb;
+        $this->channel->setUserFactorRepository(new UserFactorRepository(new Connection($wpdb)));
 
         $this->assertTrue($this->channel->verify(1, $plainCode));
     }
@@ -230,20 +235,23 @@ class BackupCodesChannelTest extends TestCase
 
     private function setupWpdbMock(?object $getRowReturn): void
     {
-        $wpdb = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var'])
+        $wpdb = $this->getMockBuilder(\wpdb::class)
+            ->onlyMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var'])
             ->getMock();
         $wpdb->prefix = 'wp_';
         $wpdb->insert_id = 1;
         $wpdb->rows_affected = 1;
 
         $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturn($getRowReturn);
+        $wpdb->method('get_row')->willReturnCallback(
+            fn($query, $output = null) => $getRowReturn !== null && $output === ARRAY_A ? (array) $getRowReturn : $getRowReturn,
+        );
         $wpdb->method('insert')->willReturn(1);
         $wpdb->method('update')->willReturn(1);
         $wpdb->method('query')->willReturn(1);
         $wpdb->method('get_var')->willReturn(0);
 
         $GLOBALS['wpdb'] = $wpdb;
+        $this->channel->setUserFactorRepository(new UserFactorRepository(new Connection($wpdb)));
     }
 }

@@ -5,6 +5,7 @@ namespace WSms\Tests\Unit\Mfa;
 use PHPUnit\Framework\TestCase;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\MfaManager;
+use WSms\Mfa\UserFactorRepository;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
 
@@ -14,7 +15,8 @@ class MfaManagerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->manager = new MfaManager();
+        $factorRepo = $this->createMock(UserFactorRepository::class);
+        $this->manager = new MfaManager($factorRepo);
     }
 
     public function testRegisterChannelStoresChannel(): void

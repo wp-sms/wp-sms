@@ -51,25 +51,27 @@ class WebhookReceiverController extends Controller
 
     public function receive(\WP_REST_Request $request): \WP_REST_Response
     {
-        $webhookId = $request->get_param('id');
-        $rateCheck = $this->rateLimiter->check('webhook_receive_' . $webhookId, self::RATE_LIMIT, self::RATE_WINDOW);
+        return $this->handle(function () use ($request) {
+            $webhookId = $request->get_param('id');
+            $rateCheck = $this->rateLimiter->check('webhook_receive_' . $webhookId, self::RATE_LIMIT, self::RATE_WINDOW);
 
-        if (!$rateCheck['allowed']) {
-            return new \WP_REST_Response([
-                'success'     => false,
-                'error'       => 'rate_limited',
-                'message'     => __('Too many requests. Please try again later.', 'wp-sms'),
-                'retry_after' => $rateCheck['retry_after'],
-            ], 429);
-        }
+            if (!$rateCheck['allowed']) {
+                return new \WP_REST_Response([
+                    'success'     => false,
+                    'error'       => 'rate_limited',
+                    'message'     => __('Too many requests. Please try again later.', 'wp-sms'),
+                    'retry_after' => $rateCheck['retry_after'],
+                ], 429);
+            }
 
-        do_action('wsms_webhook_received', [
-            'webhook_id' => $webhookId,
-            'body'       => $request->get_json_params() ?: $request->get_params(),
-            'headers'    => $request->get_headers(),
-            'method'     => $request->get_method(),
-        ]);
+            do_action('wsms_webhook_received', [
+                'webhook_id' => $webhookId,
+                'body'       => $request->get_json_params() ?: $request->get_params(),
+                'headers'    => $request->get_headers(),
+                'method'     => $request->get_method(),
+            ]);
 
-        return new \WP_REST_Response(['success' => true]);
+            return $this->ok();
+        });
     }
 }

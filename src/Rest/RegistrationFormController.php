@@ -5,6 +5,8 @@ namespace WSms\Rest;
 use WSms\Auth\ProfileFieldRegistry;
 use WSms\Auth\RegistrationForm;
 use WSms\Auth\RegistrationFormRepository;
+use WSms\Exception\NotFoundException;
+use WSms\Exception\ValidationException;
 
 defined('ABSPATH') || exit;
 
@@ -76,208 +78,152 @@ class RegistrationFormController extends Controller
 
     public function index(\WP_REST_Request $request): \WP_REST_Response
     {
-        $forms = $this->formRepository->findAll();
+        return $this->handle(function () use ($request) {
+            $forms = $this->formRepository->findAll();
 
-        return new \WP_REST_Response([
-            'items' => array_map(fn(RegistrationForm $f) => $f->toArray(), $forms),
-            'total' => count($forms),
-        ]);
+            return $this->paginated(
+                array_map(fn(RegistrationForm $f) => $f->toArray(), $forms),
+                count($forms),
+            );
+        });
     }
 
     public function store(\WP_REST_Request $request): \WP_REST_Response
     {
-        $params = $request->get_params();
+        return $this->handle(function () use ($request) {
+            $params = $request->get_params();
 
-        $error = $this->validateFormData($params);
-        if ($error) {
-            return $error;
-        }
+            $this->validateFormData($params);
 
-        $slug = !empty($params['slug'])
-            ? sanitize_title($params['slug'])
-            : sanitize_title($params['name']);
+            $slug = !empty($params['slug'])
+                ? sanitize_title($params['slug'])
+                : sanitize_title($params['name']);
 
-        $form = new RegistrationForm(
-            id: '',
-            name: $params['name'],
-            slug: $slug,
-            fields: $params['fields'] ?? [],
-            authOverrides: $params['auth_overrides'] ?? [],
-            userRole: $params['user_role'] ?? '',
-            redirectUrl: !empty($params['redirect_url']) ? esc_url_raw($params['redirect_url']) : '',
-            branding: $params['branding'] ?? [],
-            status: $params['status'] ?? 'active',
-            description: $params['description'] ?? null,
-            createdBy: get_current_user_id(),
-        );
+            $form = new RegistrationForm(
+                id: '',
+                name: $params['name'],
+                slug: $slug,
+                fields: $params['fields'] ?? [],
+                authOverrides: $params['auth_overrides'] ?? [],
+                userRole: $params['user_role'] ?? '',
+                redirectUrl: !empty($params['redirect_url']) ? esc_url_raw($params['redirect_url']) : '',
+                branding: $params['branding'] ?? [],
+                status: $params['status'] ?? 'active',
+                description: $params['description'] ?? null,
+                createdBy: get_current_user_id(),
+            );
 
-        try {
             $id = $this->formRepository->save($form);
-        } catch (\InvalidArgumentException $e) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'validation_error',
-                'message' => $e->getMessage(),
-            ], 400);
-        }
+            $saved = $this->formRepository->find($id);
 
-        $saved = $this->formRepository->find($id);
-
-        return new \WP_REST_Response([
-            'success' => true,
-            'data'    => $saved->toArray(),
-        ], 201);
+            return $this->created($saved->toArray());
+        });
     }
 
     public function show(\WP_REST_Request $request): \WP_REST_Response
     {
-        $form = $this->formRepository->find($request->get_param('id'));
+        return $this->handle(function () use ($request) {
+            $form = $this->formRepository->findOrFail($request->get_param('id'));
 
-        if (!$form) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Registration form not found', 'wp-sms'),
-            ], 404);
-        }
-
-        return new \WP_REST_Response([
-            'success' => true,
-            'data'    => $form->toArray(),
-        ]);
+            return $this->ok($form->toArray());
+        });
     }
 
     public function update(\WP_REST_Request $request): \WP_REST_Response
     {
-        $id = $request->get_param('id');
-        $existing = $this->formRepository->find($id);
+        return $this->handle(function () use ($request) {
+            $id = $request->get_param('id');
+            $existing = $this->formRepository->findOrFail($id);
 
-        if (!$existing) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Registration form not found', 'wp-sms'),
-            ], 404);
-        }
+            $params = $request->get_params();
 
-        $params = $request->get_params();
+            $this->validateFormData($params, $id);
 
-        $error = $this->validateFormData($params, $id);
-        if ($error) {
-            return $error;
-        }
+            $form = new RegistrationForm(
+                id: $id,
+                name: $params['name'] ?? $existing->getName(),
+                slug: isset($params['slug']) ? sanitize_title($params['slug']) : $existing->getSlug(),
+                fields: $params['fields'] ?? $existing->getFields(),
+                authOverrides: $params['auth_overrides'] ?? $existing->getAuthOverrides(),
+                userRole: $params['user_role'] ?? $existing->getUserRole(),
+                redirectUrl: isset($params['redirect_url']) ? esc_url_raw($params['redirect_url']) : $existing->getRedirectUrl(),
+                branding: $params['branding'] ?? $existing->getBrandingOverrides(),
+                status: $params['status'] ?? $existing->getStatus(),
+                description: array_key_exists('description', $params) ? $params['description'] : $existing->getDescription(),
+                createdBy: $existing->getCreatedBy(),
+                createdAt: $existing->getCreatedAt(),
+                updatedAt: gmdate('c'),
+            );
 
-        $form = new RegistrationForm(
-            id: $id,
-            name: $params['name'] ?? $existing->getName(),
-            slug: isset($params['slug']) ? sanitize_title($params['slug']) : $existing->getSlug(),
-            fields: $params['fields'] ?? $existing->getFields(),
-            authOverrides: $params['auth_overrides'] ?? $existing->getAuthOverrides(),
-            userRole: $params['user_role'] ?? $existing->getUserRole(),
-            redirectUrl: isset($params['redirect_url']) ? esc_url_raw($params['redirect_url']) : $existing->getRedirectUrl(),
-            branding: $params['branding'] ?? $existing->getBrandingOverrides(),
-            status: $params['status'] ?? $existing->getStatus(),
-            description: array_key_exists('description', $params) ? $params['description'] : $existing->getDescription(),
-            createdBy: $existing->getCreatedBy(),
-            createdAt: $existing->getCreatedAt(),
-            updatedAt: gmdate('c'),
-        );
-
-        try {
             $this->formRepository->save($form);
-        } catch (\InvalidArgumentException $e) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'validation_error',
-                'message' => $e->getMessage(),
-            ], 400);
-        }
 
-        return new \WP_REST_Response([
-            'success' => true,
-            'data'    => $form->toArray(),
-        ]);
+            return $this->ok($form->toArray());
+        });
     }
 
     public function destroy(\WP_REST_Request $request): \WP_REST_Response
     {
-        $deleted = $this->formRepository->delete($request->get_param('id'));
+        return $this->handle(function () use ($request) {
+            $deleted = $this->formRepository->delete($request->get_param('id'));
 
-        if (!$deleted) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Registration form not found', 'wp-sms'),
-            ], 404);
-        }
+            if (!$deleted) {
+                throw new NotFoundException(__('Registration form not found', 'wp-sms'));
+            }
 
-        return new \WP_REST_Response(['success' => true]);
+            return $this->ok();
+        });
     }
 
     public function duplicate(\WP_REST_Request $request): \WP_REST_Response
     {
-        $original = $this->formRepository->find($request->get_param('id'));
+        return $this->handle(function () use ($request) {
+            $original = $this->formRepository->findOrFail($request->get_param('id'));
 
-        if (!$original) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Registration form not found', 'wp-sms'),
-            ], 404);
-        }
+            $baseName = $original->getName() . ' (Copy)';
+            $baseSlug = $original->getSlug() . '-copy';
 
-        $baseName = $original->getName() . ' (Copy)';
-        $baseSlug = $original->getSlug() . '-copy';
+            // Ensure unique slug.
+            $slug = $baseSlug;
+            $counter = 1;
+            while ($this->formRepository->findBySlug($slug)) {
+                $counter++;
+                $slug = $baseSlug . '-' . $counter;
+            }
 
-        // Ensure unique slug.
-        $slug = $baseSlug;
-        $counter = 1;
-        while ($this->formRepository->findBySlug($slug)) {
-            $counter++;
-            $slug = $baseSlug . '-' . $counter;
-        }
+            $copy = new RegistrationForm(
+                id: '',
+                name: $baseName,
+                slug: $slug,
+                fields: $original->getFields(),
+                authOverrides: $original->getAuthOverrides(),
+                userRole: $original->getUserRole(),
+                redirectUrl: $original->getRedirectUrl(),
+                branding: $original->getBrandingOverrides(),
+                status: 'draft',
+                description: $original->getDescription(),
+                createdBy: get_current_user_id(),
+            );
 
-        $copy = new RegistrationForm(
-            id: '',
-            name: $baseName,
-            slug: $slug,
-            fields: $original->getFields(),
-            authOverrides: $original->getAuthOverrides(),
-            userRole: $original->getUserRole(),
-            redirectUrl: $original->getRedirectUrl(),
-            branding: $original->getBrandingOverrides(),
-            status: 'draft',
-            description: $original->getDescription(),
-            createdBy: get_current_user_id(),
-        );
+            $id = $this->formRepository->save($copy);
+            $saved = $this->formRepository->find($id);
 
-        $id = $this->formRepository->save($copy);
-        $saved = $this->formRepository->find($id);
-
-        return new \WP_REST_Response([
-            'success' => true,
-            'data'    => $saved->toArray(),
-        ], 201);
+            return $this->created($saved->toArray());
+        });
     }
 
-    private function validateFormData(array $params, ?string $existingId = null): ?\WP_REST_Response
+    /**
+     * @throws ValidationException
+     */
+    private function validateFormData(array $params, ?string $existingId = null): void
     {
         // Name required on create.
         if ($existingId === null && empty($params['name'])) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'missing_name',
-                'message' => __('Form name is required.', 'wp-sms'),
-            ], 400);
+            throw ValidationException::field('name', __('Form name is required.', 'wp-sms'));
         }
 
         // Fields must not be empty on create.
         if ($existingId === null && (empty($params['fields']) || !is_array($params['fields']))) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'missing_fields',
-                'message' => __('At least one field is required.', 'wp-sms'),
-            ], 400);
+            throw ValidationException::field('fields', __('At least one field is required.', 'wp-sms'));
         }
 
         // Validate field IDs exist in registry.
@@ -287,11 +233,7 @@ class RegistrationFormController extends Controller
 
             foreach ($params['fields'] as $field) {
                 if (!isset($field['id']) || !in_array($field['id'], $validIds, true)) {
-                    return new \WP_REST_Response([
-                        'success' => false,
-                        'error'   => 'invalid_field',
-                        'message' => sprintf(__('Field "%s" does not exist.', 'wp-sms'), $field['id'] ?? ''),
-                    ], 400);
+                    throw ValidationException::field('fields', sprintf(__('Field "%s" does not exist.', 'wp-sms'), $field['id'] ?? ''));
                 }
             }
         }
@@ -300,14 +242,8 @@ class RegistrationFormController extends Controller
         if (!empty($params['user_role'])) {
             $roles = wp_roles()->get_names();
             if (!isset($roles[$params['user_role']])) {
-                return new \WP_REST_Response([
-                    'success' => false,
-                    'error'   => 'invalid_role',
-                    'message' => __('The specified user role does not exist.', 'wp-sms'),
-                ], 400);
+                throw ValidationException::field('user_role', __('The specified user role does not exist.', 'wp-sms'));
             }
         }
-
-        return null;
     }
 }

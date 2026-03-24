@@ -2,6 +2,7 @@
 
 namespace WSms\Log;
 
+use WSms\Database\Connection;
 use WSms\Dependencies\Psr\Log\LoggerInterface;
 
 defined('ABSPATH') || exit;
@@ -10,21 +11,21 @@ class FlowLogger
 {
     public function __construct(
         private readonly LoggerInterface $logger,
+        private readonly Connection $db,
     ) {
     }
 
     public function appendStepLog(string $executionId, array $stepLog): void
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_flow_executions';
+        $table = $this->db->table(Connection::TABLE_FLOW_EXECUTIONS);
 
         // Atomic append using JSON_ARRAY_APPEND to avoid read-modify-write race
         // condition when parallel branches log concurrently.
-        $wpdb->query($wpdb->prepare(
+        $this->db->query(
             "UPDATE {$table} SET step_logs = JSON_ARRAY_APPEND(COALESCE(step_logs, '[]'), '$', CAST(%s AS JSON)) WHERE id = %s",
             wp_json_encode($stepLog),
             $executionId,
-        ));
+        );
     }
 
     public function logStepStart(string $executionId, string $nodeId, string $type, array $input = []): void

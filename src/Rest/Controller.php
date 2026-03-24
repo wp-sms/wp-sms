@@ -8,6 +8,7 @@ use WSms\Exception\ConflictException;
 use WSms\Exception\NotFoundException;
 use WSms\Exception\PersistenceException;
 use WSms\Exception\ValidationException;
+use WSms\Log\WpLogger;
 
 defined('ABSPATH') || exit;
 
@@ -51,7 +52,7 @@ abstract class Controller
                 'message' => $e->getMessage(),
             ], 409);
         } catch (PersistenceException $e) {
-            error_log('[WSMS] ' . $e->getMessage());
+            (new WpLogger('wsms'))->error($e->getMessage(), ['exception' => $e]);
             return new WP_REST_Response([
                 'success' => false,
                 'error'   => 'internal_error',

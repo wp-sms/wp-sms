@@ -4,6 +4,7 @@ namespace WSms\Auth;
 
 use WSms\Audit\AuditLogger;
 use WSms\Auth\AuthSession;
+use WSms\Dependencies\Psr\Log\LoggerInterface;
 use WSms\Enums\EnrollmentTiming;
 use WSms\Enums\EventType;
 use WSms\Enums\SessionStage;
@@ -39,6 +40,7 @@ class AccountManager
         private TemplateManager $templateManager,
         private ?ProfileFieldRegistry $fieldRegistry = null,
         private ?TrustedDeviceManager $trustedDevices = null,
+        private ?LoggerInterface $logger = null,
     ) {
     }
 
@@ -969,7 +971,7 @@ class AccountManager
             $this->messageDispatcher->sendImmediate($message);
         } catch (\Throwable $e) {
             if (defined('WP_DEBUG') && WP_DEBUG) {
-                error_log('[WP-SMS] Failed to send welcome email: ' . $e->getMessage());
+                $this->logger?->error('Failed to send welcome email: ' . $e->getMessage(), ['exception' => $e]);
             }
         }
     }

@@ -9,6 +9,8 @@ use WSms\Auth\CaptchaGuard;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\RegistrationFormRepository;
+use WSms\Exception\NotFoundException;
+use WSms\Exception\ValidationException;
 use WSms\PhoneRestriction\RestrictionSettings;
 use WSms\Social\SocialAuthManager;
 
@@ -104,135 +106,151 @@ class AuthController extends Controller
 
     public function handleLogin(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('login', 5, 60);
+        return $this->handle(function () use ($request) {
+            $rl = $this->rateLimiter->check('login', 5, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $captcha = $this->captchaGuard->verify($request, 'login');
-        if ($captcha === false) {
-            return CaptchaGuard::failedResponse();
-        }
+            $captcha = $this->captchaGuard->verify($request, 'login');
+            if ($captcha === false) {
+                return CaptchaGuard::failedResponse();
+            }
 
-        $result = $this->orchestrator->loginWithPassword(
-            $request->get_param('username'),
-            $request->get_param('password'),
-        );
+            $result = $this->orchestrator->loginWithPassword(
+                $request->get_param('username'),
+                $request->get_param('password'),
+            );
 
-        return $this->toAuthResponse($result);
+            return $this->toAuthResponse($result);
+        });
     }
 
     public function handlePasswordless(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('login_passwordless', 3, 60);
+        return $this->handle(function () use ($request) {
+            $rl = $this->rateLimiter->check('login_passwordless', 3, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $captcha = $this->captchaGuard->verify($request, 'login');
-        if ($captcha === false) {
-            return CaptchaGuard::failedResponse();
-        }
+            $captcha = $this->captchaGuard->verify($request, 'login');
+            if ($captcha === false) {
+                return CaptchaGuard::failedResponse();
+            }
 
-        $result = $this->orchestrator->loginPasswordless(
-            $request->get_param('method'),
-            $request->get_param('identifier'),
-        );
+            $result = $this->orchestrator->loginPasswordless(
+                $request->get_param('method'),
+                $request->get_param('identifier'),
+            );
 
-        return $this->toAuthResponse($result);
+            return $this->toAuthResponse($result);
+        });
     }
 
     public function handleVerify(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('verify', 3, 10);
+        return $this->handle(function () use ($request) {
+            $rl = $this->rateLimiter->check('verify', 3, 10);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $result = $this->orchestrator->verifyPrimary(
-            $request->get_param('session_token'),
-            $request->get_param('code'),
-        );
+            $result = $this->orchestrator->verifyPrimary(
+                $request->get_param('session_token'),
+                $request->get_param('code'),
+            );
 
-        return $this->toAuthResponse($result);
+            return $this->toAuthResponse($result);
+        });
     }
 
     public function handleVerifyMagicLink(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('verify', 3, 10);
+        return $this->handle(function () use ($request) {
+            $rl = $this->rateLimiter->check('verify', 3, 10);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $result = $this->orchestrator->verifyMagicLink(
-            $request->get_param('token'),
-        );
+            $result = $this->orchestrator->verifyMagicLink(
+                $request->get_param('token'),
+            );
 
-        return $this->toAuthResponse($result);
+            return $this->toAuthResponse($result);
+        });
     }
 
     public function handleResend(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('resend', 1, 60);
+        return $this->handle(function () use ($request) {
+            $rl = $this->rateLimiter->check('resend', 1, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $result = $this->orchestrator->resendChallenge(
-            $request->get_param('session_token'),
-        );
+            $result = $this->orchestrator->resendChallenge(
+                $request->get_param('session_token'),
+            );
 
-        return $this->toAuthResponse($result);
+            return $this->toAuthResponse($result);
+        });
     }
 
     public function handleIdentify(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('identify', 10, 60);
+        return $this->handle(function () use ($request) {
+            $rl = $this->rateLimiter->check('identify', 10, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $result = $this->orchestrator->identify(
-            $request->get_param('identifier'),
-        );
+            $result = $this->orchestrator->identify(
+                $request->get_param('identifier'),
+            );
 
-        return new WP_REST_Response($result->toArray(), 200);
+            return new WP_REST_Response($result->toArray(), 200);
+        });
     }
 
     public function handleVerificationComplete(WP_REST_Request $request): WP_REST_Response
     {
-        $token = $request->get_header('X-Auth-Session')
-              ?? $request->get_header('X-Verification-Token');
+        return $this->handle(function () use ($request) {
+            $token = $request->get_header('X-Auth-Session')
+                  ?? $request->get_header('X-Verification-Token');
 
-        if (empty($token)) {
-            return new WP_REST_Response(['success' => false, 'error' => 'missing_token'], 400);
-        }
+            if (empty($token)) {
+                throw ValidationException::field('token', __('Missing authentication token.', 'wp-sms'));
+            }
 
-        $result = $this->orchestrator->completeVerification($token);
+            $result = $this->orchestrator->completeVerification($token);
 
-        return $this->toAuthResponse($result);
+            return $this->toAuthResponse($result);
+        });
     }
 
     public function handleConfig(WP_REST_Request $request): WP_REST_Response
     {
-        $formSlug = $request->get_param('form');
+        return $this->handle(function () use ($request) {
+            $formSlug = $request->get_param('form');
 
-        if ($formSlug && $this->formRepository) {
-            $form = $this->formRepository->findBySlug($formSlug);
-            if (!$form || $form->getStatus() !== 'active') {
-                return new WP_REST_Response(['error' => 'form_not_found'], 404);
+            if ($formSlug && $this->formRepository) {
+                $form = $this->formRepository->findBySlug($formSlug);
+                if (!$form || $form->getStatus() !== 'active') {
+                    throw NotFoundException::entity('Form', $formSlug);
+                }
+
+                return $this->buildFormConfig($form);
             }
 
-            return $this->buildFormConfig($form);
-        }
-
-        return $this->buildGlobalConfig();
+            return $this->buildGlobalConfig();
+        });
     }
 
     private function buildGlobalConfig(): WP_REST_Response

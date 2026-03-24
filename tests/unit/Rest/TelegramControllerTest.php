@@ -163,9 +163,9 @@ class TelegramControllerTest extends TestCase
 
         $response = $this->controller->handleSetup($request);
 
-        $this->assertSame(400, $response->get_status());
+        $this->assertSame(422, $response->get_status());
         $data = $response->get_data();
-        $this->assertSame('missing_bot_token', $data['error']);
+        $this->assertSame('validation_failed', $data['error']);
     }
 
     public function testSetupRejectsInvalidBotToken(): void
@@ -180,9 +180,9 @@ class TelegramControllerTest extends TestCase
 
         $response = $this->controller->handleSetup($request);
 
-        $this->assertSame(400, $response->get_status());
+        $this->assertSame(422, $response->get_status());
         $data = $response->get_data();
-        $this->assertSame('invalid_bot_token', $data['error']);
+        $this->assertSame('validation_failed', $data['error']);
     }
 
     public function testWebhookDispatchesMessageAction(): void

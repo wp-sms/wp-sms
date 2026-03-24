@@ -2,6 +2,9 @@
 
 namespace WSms\Rest;
 
+use WSms\Contact\Contracts\ContactRepositoryInterface;
+use WSms\Exception\NotFoundException;
+use WSms\Exception\ValidationException;
 use WSms\Flow\Action\ActionRegistry;
 use WSms\Flow\Trigger\TriggerRegistry;
 use WSms\Integration\IntegrationRegistry;
@@ -26,6 +29,7 @@ class IntegrationController extends Controller
         private readonly IntegrationRegistry $integrationRegistry,
         private readonly TriggerRegistry $triggerRegistry,
         private readonly ActionRegistry $actionRegistry,
+        private readonly ?ContactRepositoryInterface $contacts = null,
         private readonly ?QueueInterface $queue = null,
         private readonly ?SuppressionPoller $suppressionPoller = null,
     ) {
@@ -150,99 +154,95 @@ class IntegrationController extends Controller
 
     public function index(): \WP_REST_Response
     {
-        $configs = get_option(self::CONFIG_OPTION, []);
-        $syncState = get_option(self::SYNC_STATE_OPTION, []);
-        $integrations = [];
+        return $this->handle(function () {
+            $configs = get_option(self::CONFIG_OPTION, []);
+            $syncState = get_option(self::SYNC_STATE_OPTION, []);
+            $integrations = [];
 
-        foreach ($this->integrationRegistry->getAll() as $integration) {
-            $integrations[] = $this->formatIntegrationSummary($integration, $configs, $syncState);
-        }
+            foreach ($this->integrationRegistry->getAll() as $integration) {
+                $integrations[] = $this->formatIntegrationSummary($integration, $configs, $syncState);
+            }
 
-        return new \WP_REST_Response([
-            'items' => $integrations,
-            'total' => count($integrations),
-        ]);
+            return $this->paginated($integrations, count($integrations));
+        });
     }
 
     public function show(\WP_REST_Request $request): \WP_REST_Response
     {
-        $integration = $this->resolveIntegration($request);
-        if ($integration instanceof \WP_REST_Response) {
-            return $integration;
-        }
+        return $this->handle(function () use ($request) {
+            $integration = $this->resolveIntegrationOrFail($request);
 
-        $configs = get_option(self::CONFIG_OPTION, []);
-        $base = $this->formatIntegrationBase($integration, $configs);
+            $configs = get_option(self::CONFIG_OPTION, []);
+            $base = $this->formatIntegrationBase($integration, $configs);
 
-        $base['triggers'] = array_values(array_map(fn($t) => [
-            'id'          => $t->getId(),
-            'name'        => $t->getName(),
-            'description' => $t->getDescription(),
-        ], $integration->getTriggers()));
+            $base['triggers'] = array_values(array_map(fn($t) => [
+                'id'          => $t->getId(),
+                'name'        => $t->getName(),
+                'description' => $t->getDescription(),
+            ], $integration->getTriggers()));
 
-        $base['actions'] = array_values(array_map(fn($a) => [
-            'id'          => $a->getId(),
-            'name'        => $a->getName(),
-            'description' => $a->getDescription(),
-        ], $integration->getActions()));
+            $base['actions'] = array_values(array_map(fn($a) => [
+                'id'          => $a->getId(),
+                'name'        => $a->getName(),
+                'description' => $a->getDescription(),
+            ], $integration->getActions()));
 
-        return new \WP_REST_Response($base);
+            return new \WP_REST_Response($base);
+        });
     }
 
     public function saveConfig(\WP_REST_Request $request): \WP_REST_Response
     {
-        $integration = $this->resolveIntegration($request);
-        if ($integration instanceof \WP_REST_Response) {
-            return $integration;
-        }
+        return $this->handle(function () use ($request) {
+            $integration = $this->resolveIntegrationOrFail($request);
 
-        $id = $integration->getId();
-        $body = $request->get_json_params();
-        $credentials = $body['credentials'] ?? [];
+            $id = $integration->getId();
+            $body = $request->get_json_params();
+            $credentials = $body['credentials'] ?? [];
 
-        try {
-            $credentials = $integration->connect($credentials);
-        } catch (\RuntimeException $e) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'message' => $e->getMessage(),
-            ], 400);
-        }
+            try {
+                $credentials = $integration->connect($credentials);
+            } catch (\RuntimeException $e) {
+                throw ValidationException::field('credentials', $e->getMessage());
+            }
 
-        $configs = get_option(self::CONFIG_OPTION, []);
-        $configs[$id] = [
-            'enabled'     => true,
-            'credentials' => $credentials,
-        ];
-        update_option(self::CONFIG_OPTION, $configs);
+            $configs = get_option(self::CONFIG_OPTION, []);
+            $configs[$id] = [
+                'enabled'     => true,
+                'credentials' => $credentials,
+            ];
+            update_option(self::CONFIG_OPTION, $configs);
 
-        return new \WP_REST_Response(['success' => true]);
+            return $this->ok();
+        });
     }
 
     public function deleteConfig(\WP_REST_Request $request): \WP_REST_Response
     {
-        $integration = $this->resolveIntegration($request);
-        if ($integration instanceof \WP_REST_Response) {
-            return $integration;
-        }
+        return $this->handle(function () use ($request) {
+            $integration = $this->resolveIntegrationOrFail($request);
 
-        $integration->disconnect();
+            $integration->disconnect();
 
-        $id = $integration->getId();
-        $configs = get_option(self::CONFIG_OPTION, []);
-        unset($configs[$id]);
-        update_option(self::CONFIG_OPTION, $configs);
+            $id = $integration->getId();
+            $configs = get_option(self::CONFIG_OPTION, []);
+            unset($configs[$id]);
+            update_option(self::CONFIG_OPTION, $configs);
 
-        return new \WP_REST_Response(['success' => true]);
+            return $this->ok();
+        });
     }
 
-    private function resolveIntegration(\WP_REST_Request $request): IntegrationInterface|\WP_REST_Response
+    /**
+     * Resolve integration from request or throw NotFoundException.
+     */
+    private function resolveIntegrationOrFail(\WP_REST_Request $request): IntegrationInterface
     {
         $id = $request->get_param('id');
         $integration = $this->integrationRegistry->get($id);
 
         if (!$integration) {
-            return new \WP_REST_Response(['error' => 'Integration not found'], 404);
+            throw NotFoundException::entity('Integration', $id);
         }
 
         return $integration;
@@ -250,78 +250,78 @@ class IntegrationController extends Controller
 
     public function triggers(): \WP_REST_Response
     {
-        $iconMap = $this->buildIconMap('getTriggers');
-        $triggers = [];
+        return $this->handle(function () {
+            $iconMap = $this->buildIconMap('getTriggers');
+            $triggers = [];
 
-        foreach ($this->triggerRegistry->all() as $trigger) {
-            $triggers[] = [
-                'id'             => $trigger->getId(),
-                'name'           => $trigger->getName(),
-                'description'    => $trigger->getDescription(),
-                'group'          => $trigger->getGroup(),
-                'icon'           => $iconMap[$trigger->getId()] ?? '',
-                'payload_schema' => ['type' => 'object', 'properties' => $trigger->getPayloadSchema()],
-                'filter_schema'  => $trigger->getFilterSchema(),
-            ];
-        }
+            foreach ($this->triggerRegistry->all() as $trigger) {
+                $triggers[] = [
+                    'id'             => $trigger->getId(),
+                    'name'           => $trigger->getName(),
+                    'description'    => $trigger->getDescription(),
+                    'group'          => $trigger->getGroup(),
+                    'icon'           => $iconMap[$trigger->getId()] ?? '',
+                    'payload_schema' => ['type' => 'object', 'properties' => $trigger->getPayloadSchema()],
+                    'filter_schema'  => $trigger->getFilterSchema(),
+                ];
+            }
 
-        return new \WP_REST_Response([
-            'items' => $triggers,
-            'total' => count($triggers),
-        ]);
+            return $this->paginated($triggers, count($triggers));
+        });
     }
 
     public function triggerFilterOptions(\WP_REST_Request $request): \WP_REST_Response
     {
-        $triggerId = $request->get_param('triggerId');
-        $field = $request->get_param('field');
+        return $this->handle(function () use ($request) {
+            $triggerId = $request->get_param('triggerId');
+            $field = $request->get_param('field');
 
-        $trigger = $this->triggerRegistry->get($triggerId);
-        if (!$trigger) {
-            return new \WP_REST_Response(['error' => 'Trigger not found'], 404);
-        }
+            $trigger = $this->triggerRegistry->get($triggerId);
+            if (!$trigger) {
+                throw NotFoundException::entity('Trigger', $triggerId);
+            }
 
-        $options = $trigger->getFilterOptions($field);
+            $options = $trigger->getFilterOptions($field);
 
-        return new \WP_REST_Response([
-            'options' => $options,
-        ]);
+            return new \WP_REST_Response([
+                'options' => $options,
+            ]);
+        });
     }
 
     public function actions(): \WP_REST_Response
     {
-        $iconMap = $this->buildIconMap('getActions');
-        $actions = [];
-        $triggerIds = array_map(
-            fn ($t) => $t->getId(),
-            $this->triggerRegistry->all(),
-        );
+        return $this->handle(function () {
+            $iconMap = $this->buildIconMap('getActions');
+            $actions = [];
+            $triggerIds = array_map(
+                fn ($t) => $t->getId(),
+                $this->triggerRegistry->all(),
+            );
 
-        foreach ($this->actionRegistry->all() as $action) {
-            $schema = $action->getConfigSchema();
-            $actions[] = [
-                'id'            => $action->getId(),
-                'name'          => $action->getName(),
-                'description'   => $action->getDescription(),
-                'group'         => $action->getGroup(),
-                'icon'          => $iconMap[$action->getId()] ?? '',
-                'config_schema' => [
-                    'type'       => 'object',
-                    'properties' => $schema,
-                    'required'   => array_keys(array_filter($schema, fn($prop) => ($prop['required'] ?? false) === true)),
-                ],
-                'output_schema' => [
-                    'type'       => 'object',
-                    'properties' => $action->getOutputSchema(),
-                ],
-                'placeholders'  => $this->collectPlaceholders($action, $triggerIds),
-            ];
-        }
+            foreach ($this->actionRegistry->all() as $action) {
+                $schema = $action->getConfigSchema();
+                $actions[] = [
+                    'id'            => $action->getId(),
+                    'name'          => $action->getName(),
+                    'description'   => $action->getDescription(),
+                    'group'         => $action->getGroup(),
+                    'icon'          => $iconMap[$action->getId()] ?? '',
+                    'config_schema' => [
+                        'type'       => 'object',
+                        'properties' => $schema,
+                        'required'   => array_keys(array_filter($schema, fn($prop) => ($prop['required'] ?? false) === true)),
+                    ],
+                    'output_schema' => [
+                        'type'       => 'object',
+                        'properties' => $action->getOutputSchema(),
+                    ],
+                    'placeholders'  => $this->collectPlaceholders($action, $triggerIds),
+                ];
+            }
 
-        return new \WP_REST_Response([
-            'items' => $actions,
-            'total' => count($actions),
-        ]);
+            return $this->paginated($actions, count($actions));
+        });
     }
 
     /** @param 'getTriggers'|'getActions' $method */
@@ -350,203 +350,196 @@ class IntegrationController extends Controller
 
     public function actionConfigOptions(\WP_REST_Request $request): \WP_REST_Response
     {
-        $actionId = $request->get_param('actionId');
-        $field = $request->get_param('field');
+        return $this->handle(function () use ($request) {
+            $actionId = $request->get_param('actionId');
+            $field = $request->get_param('field');
 
-        $action = $this->actionRegistry->get($actionId);
-        if (!$action) {
-            return new \WP_REST_Response(['error' => 'Action not found'], 404);
-        }
+            $action = $this->actionRegistry->get($actionId);
+            if (!$action) {
+                throw NotFoundException::entity('Action', $actionId);
+            }
 
-        $context = $request->get_query_params();
-        unset($context['actionId'], $context['field']);
-        $options = $action->getConfigOptions($field, $context);
+            $context = $request->get_query_params();
+            unset($context['actionId'], $context['field']);
+            $options = $action->getConfigOptions($field, $context);
 
-        return new \WP_REST_Response([
-            'options' => $options,
-        ]);
+            return new \WP_REST_Response([
+                'options' => $options,
+            ]);
+        });
     }
 
     public function saveSyncSettings(\WP_REST_Request $request): \WP_REST_Response
     {
-        $integration = $this->resolveIntegration($request);
-        if ($integration instanceof \WP_REST_Response) {
-            return $integration;
-        }
+        return $this->handle(function () use ($request) {
+            $integration = $this->resolveIntegrationOrFail($request);
 
-        if (!$integration instanceof SupportsContactSync) {
-            return new \WP_REST_Response(['error' => 'Integration does not support sync'], 400);
-        }
-
-        $body = $request->get_json_params();
-        $id = $integration->getId();
-
-        $state = get_option(self::SYNC_STATE_OPTION, []);
-        $state[$id]['sync_settings'] = [
-            'auto_push'        => !empty($body['auto_push']),
-            'push_tags'        => !empty($body['push_tags']),
-            'poll_interval'    => (int) ($body['poll_interval'] ?? 3600),
-            'poll_enabled'     => !empty($body['poll_enabled']),
-            'default_list_id'  => sanitize_text_field($body['default_list_id'] ?? ''),
-            'remove_on_delete' => !empty($body['remove_on_delete']),
-        ];
-        update_option(self::SYNC_STATE_OPTION, $state);
-
-        if ($integration instanceof SupportsSuppressionSync) {
-            as_unschedule_all_actions('wsms_suppression_poll', ['integration_id' => $id], 'wsms');
-            if (!empty($body['poll_enabled'])) {
-                $interval = (int) ($body['poll_interval'] ?? 3600);
-                as_schedule_recurring_action(
-                    time() + $interval,
-                    $interval,
-                    'wsms_suppression_poll',
-                    ['integration_id' => $id],
-                    'wsms',
-                );
+            if (!$integration instanceof SupportsContactSync) {
+                throw ValidationException::field('integration', __('Integration does not support sync', 'wp-sms'));
             }
-        }
 
-        return new \WP_REST_Response(['success' => true]);
+            $body = $request->get_json_params();
+            $id = $integration->getId();
+
+            $state = get_option(self::SYNC_STATE_OPTION, []);
+            $state[$id]['sync_settings'] = [
+                'auto_push'        => !empty($body['auto_push']),
+                'push_tags'        => !empty($body['push_tags']),
+                'poll_interval'    => (int) ($body['poll_interval'] ?? 3600),
+                'poll_enabled'     => !empty($body['poll_enabled']),
+                'default_list_id'  => sanitize_text_field($body['default_list_id'] ?? ''),
+                'remove_on_delete' => !empty($body['remove_on_delete']),
+            ];
+            update_option(self::SYNC_STATE_OPTION, $state);
+
+            if ($integration instanceof SupportsSuppressionSync) {
+                as_unschedule_all_actions('wsms_suppression_poll', ['integration_id' => $id], 'wsms');
+                if (!empty($body['poll_enabled'])) {
+                    $interval = (int) ($body['poll_interval'] ?? 3600);
+                    as_schedule_recurring_action(
+                        time() + $interval,
+                        $interval,
+                        'wsms_suppression_poll',
+                        ['integration_id' => $id],
+                        'wsms',
+                    );
+                }
+            }
+
+            return $this->ok();
+        });
     }
 
     public function triggerSync(\WP_REST_Request $request): \WP_REST_Response
     {
-        $integration = $this->resolveIntegration($request);
-        if ($integration instanceof \WP_REST_Response) {
-            return $integration;
-        }
+        return $this->handle(function () use ($request) {
+            $integration = $this->resolveIntegrationOrFail($request);
 
-        if (!$integration instanceof SupportsContactSync || !$this->queue) {
-            return new \WP_REST_Response(['error' => 'Integration does not support sync'], 400);
-        }
-
-        $id = $integration->getId();
-        $state = get_option(self::SYNC_STATE_OPTION, []);
-        $config = $state[$id]['sync_settings'] ?? [];
-
-        if (empty($config['default_list_id'])) {
-            return new \WP_REST_Response(['error' => 'No default list configured'], 400);
-        }
-
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_contacts';
-        $dispatched = 0;
-        $lastId = '';
-
-        do {
-            $batch = $wpdb->get_results($wpdb->prepare(
-                "SELECT * FROM {$table} WHERE email IS NOT NULL AND email != '' AND status = 'subscribed' AND id > %s ORDER BY id ASC LIMIT 500",
-                $lastId,
-            ), ARRAY_A) ?: [];
-
-            foreach ($batch as $contact) {
-                $this->queue->dispatch(new MarketingPushContactJob($id, $contact));
-                $dispatched++;
-                $lastId = $contact['id'];
+            if (!$integration instanceof SupportsContactSync || !$this->queue || !$this->contacts) {
+                throw ValidationException::field('integration', __('Integration does not support sync', 'wp-sms'));
             }
-        } while (count($batch) === 500);
 
-        return new \WP_REST_Response(['success' => true, 'dispatched' => $dispatched]);
+            $id = $integration->getId();
+            $state = get_option(self::SYNC_STATE_OPTION, []);
+            $config = $state[$id]['sync_settings'] ?? [];
+
+            if (empty($config['default_list_id'])) {
+                throw ValidationException::field('default_list_id', __('No default list configured', 'wp-sms'));
+            }
+
+            $dispatched = 0;
+            $queue = $this->queue;
+
+            $this->contacts->eachSubscribedWithEmail(function (array $batch) use ($id, $queue, &$dispatched) {
+                foreach ($batch as $contact) {
+                    $queue->dispatch(new MarketingPushContactJob($id, $contact));
+                    $dispatched++;
+                }
+            });
+
+            return $this->ok(['dispatched' => $dispatched]);
+        });
     }
 
     public function triggerPoll(\WP_REST_Request $request): \WP_REST_Response
     {
-        $integration = $this->resolveIntegration($request);
-        if ($integration instanceof \WP_REST_Response) {
-            return $integration;
-        }
+        return $this->handle(function () use ($request) {
+            $integration = $this->resolveIntegrationOrFail($request);
 
-        if (!$integration instanceof SupportsSuppressionSync || !$this->suppressionPoller) {
-            return new \WP_REST_Response(['error' => 'Integration does not support suppression polling'], 400);
-        }
+            if (!$integration instanceof SupportsSuppressionSync || !$this->suppressionPoller) {
+                throw ValidationException::field('integration', __('Integration does not support suppression polling', 'wp-sms'));
+            }
 
-        $events = $this->suppressionPoller->poll($integration->getId());
+            $events = $this->suppressionPoller->poll($integration->getId());
 
-        return new \WP_REST_Response([
-            'success' => true,
-            'events'  => $events,
-        ]);
+            return $this->ok(['events' => $events]);
+        });
     }
 
     public function integrationLists(\WP_REST_Request $request): \WP_REST_Response
     {
-        $integration = $this->resolveIntegration($request);
-        if ($integration instanceof \WP_REST_Response) {
-            return $integration;
-        }
+        return $this->handle(function () use ($request) {
+            $integration = $this->resolveIntegrationOrFail($request);
 
-        if (!$integration instanceof SupportsListManagement) {
-            return new \WP_REST_Response(['error' => 'Integration does not support list management'], 400);
-        }
+            if (!$integration instanceof SupportsListManagement) {
+                throw ValidationException::field('integration', __('Integration does not support list management', 'wp-sms'));
+            }
 
-        $state = get_option(self::SYNC_STATE_OPTION, []);
-        $config = $state[$integration->getId()]['sync_settings'] ?? [];
+            $state = get_option(self::SYNC_STATE_OPTION, []);
+            $config = $state[$integration->getId()]['sync_settings'] ?? [];
 
-        return new \WP_REST_Response([
-            'lists' => $integration->getLists($config),
-        ]);
+            return new \WP_REST_Response([
+                'lists' => $integration->getLists($config),
+            ]);
+        });
     }
 
     public function listWebhookEndpoints(): \WP_REST_Response
     {
-        $secrets = get_option(WebhookIntegration::SECRETS_OPTION, []);
-        $endpoints = [];
+        return $this->handle(function () {
+            $secrets = get_option(WebhookIntegration::SECRETS_OPTION, []);
+            $endpoints = [];
 
-        foreach ($secrets as $id => $entry) {
-            $endpoints[] = [
-                'id'         => $id,
-                'label'      => $entry['label'] ?? '',
-                'url'        => rest_url('wsms/v1/webhook/' . $id),
-                'created_at' => $entry['created_at'] ?? '',
-            ];
-        }
+            foreach ($secrets as $id => $entry) {
+                $endpoints[] = [
+                    'id'         => $id,
+                    'label'      => $entry['label'] ?? '',
+                    'url'        => rest_url('wsms/v1/webhook/' . $id),
+                    'created_at' => $entry['created_at'] ?? '',
+                ];
+            }
 
-        return new \WP_REST_Response(['endpoints' => $endpoints]);
+            return new \WP_REST_Response(['endpoints' => $endpoints]);
+        });
     }
 
     public function createWebhookEndpoint(\WP_REST_Request $request): \WP_REST_Response
     {
-        $body = $request->get_json_params();
-        $label = sanitize_text_field($body['label'] ?? '');
+        return $this->handle(function () use ($request) {
+            $body = $request->get_json_params();
+            $label = sanitize_text_field($body['label'] ?? '');
 
-        if (empty($label)) {
-            return new \WP_REST_Response(['error' => 'Label is required'], 400);
-        }
+            if (empty($label)) {
+                throw ValidationException::field('label', __('Label is required', 'wp-sms'));
+            }
 
-        $id = bin2hex(random_bytes(4));
-        $secret = bin2hex(random_bytes(32));
-        $createdAt = gmdate('c');
+            $id = bin2hex(random_bytes(4));
+            $secret = bin2hex(random_bytes(32));
+            $createdAt = gmdate('c');
 
-        $secrets = get_option(WebhookIntegration::SECRETS_OPTION, []);
-        $secrets[$id] = [
-            'secret'     => $secret,
-            'label'      => $label,
-            'created_at' => $createdAt,
-        ];
-        update_option(WebhookIntegration::SECRETS_OPTION, $secrets);
+            $secrets = get_option(WebhookIntegration::SECRETS_OPTION, []);
+            $secrets[$id] = [
+                'secret'     => $secret,
+                'label'      => $label,
+                'created_at' => $createdAt,
+            ];
+            update_option(WebhookIntegration::SECRETS_OPTION, $secrets);
 
-        return new \WP_REST_Response([
-            'id'         => $id,
-            'label'      => $label,
-            'url'        => rest_url('wsms/v1/webhook/' . $id),
-            'secret'     => $secret,
-            'created_at' => $createdAt,
-        ], 201);
+            return $this->created([
+                'id'         => $id,
+                'label'      => $label,
+                'url'        => rest_url('wsms/v1/webhook/' . $id),
+                'secret'     => $secret,
+                'created_at' => $createdAt,
+            ]);
+        });
     }
 
     public function deleteWebhookEndpoint(\WP_REST_Request $request): \WP_REST_Response
     {
-        $endpointId = $request->get_param('endpointId');
-        $secrets = get_option(WebhookIntegration::SECRETS_OPTION, []);
+        return $this->handle(function () use ($request) {
+            $endpointId = $request->get_param('endpointId');
+            $secrets = get_option(WebhookIntegration::SECRETS_OPTION, []);
 
-        if (!isset($secrets[$endpointId])) {
-            return new \WP_REST_Response(['error' => 'Endpoint not found'], 404);
-        }
+            if (!isset($secrets[$endpointId])) {
+                throw NotFoundException::entity('WebhookEndpoint', $endpointId);
+            }
 
-        unset($secrets[$endpointId]);
-        update_option(WebhookIntegration::SECRETS_OPTION, $secrets);
+            unset($secrets[$endpointId]);
+            update_option(WebhookIntegration::SECRETS_OPTION, $secrets);
 
-        return new \WP_REST_Response(['success' => true]);
+            return $this->ok();
+        });
     }
 
     private function formatIntegrationBase(IntegrationInterface $integration, array $configs, ?array $syncState = null): array

@@ -4,15 +4,18 @@ namespace WSms\Tests\Unit\Contact;
 
 use PHPUnit\Framework\TestCase;
 use WSms\Contact\ContactRepository;
+use WSms\Database\Connection;
 
 class ContactRepositoryTest extends TestCase
 {
     private object $wpdb;
+    private Connection $connection;
 
     protected function setUp(): void
     {
         $this->wpdb = $this->createWpdb();
         $GLOBALS['wpdb'] = $this->wpdb;
+        $this->connection = new Connection($this->wpdb);
     }
 
     protected function tearDown(): void
@@ -24,7 +27,7 @@ class ContactRepositoryTest extends TestCase
     {
         $this->wpdb->insertResult = true;
 
-        $repo = new ContactRepository();
+        $repo = new ContactRepository($this->connection);
         $repo->create(['email' => 'John@Example.COM', 'phone' => '+1 (234) 567-8900']);
 
         $insert = $this->wpdb->inserts[0];
@@ -35,7 +38,7 @@ class ContactRepositoryTest extends TestCase
     {
         $this->wpdb->insertResult = true;
 
-        $repo = new ContactRepository();
+        $repo = new ContactRepository($this->connection);
         $repo->create(['phone' => '+1 (234) 567-8900']);
 
         $insert = $this->wpdb->inserts[0];
@@ -46,7 +49,7 @@ class ContactRepositoryTest extends TestCase
     {
         $this->wpdb->updateResult = true;
 
-        $repo = new ContactRepository();
+        $repo = new ContactRepository($this->connection);
         $repo->update('C1', ['email' => 'Test@Email.COM', 'phone' => '+1 (555) 123-4567']);
 
         $update = $this->wpdb->updates[0];
@@ -64,7 +67,7 @@ class ContactRepositoryTest extends TestCase
             'wp_user_id' => null, 'created_at' => '2026-01-01', 'updated_at' => '2026-01-01',
         ];
 
-        $repo = new ContactRepository();
+        $repo = new ContactRepository($this->connection);
         $contact = $repo->find('C1');
 
         $this->assertIsArray($contact['custom_fields']);
@@ -78,7 +81,7 @@ class ContactRepositoryTest extends TestCase
             ['id' => 'C2', 'custom_fields' => '{"key":"val2"}', 'email' => 'c@d.com', 'status' => 'subscribed'],
         ];
 
-        $repo = new ContactRepository();
+        $repo = new ContactRepository($this->connection);
         $contacts = $repo->findAll();
 
         $this->assertIsArray($contacts[0]['custom_fields']);
@@ -90,7 +93,7 @@ class ContactRepositoryTest extends TestCase
     {
         $this->wpdb->getRowResult = null;
 
-        $repo = new ContactRepository();
+        $repo = new ContactRepository($this->connection);
         $repo->findByEmail('Test@Example.com');
 
         $this->assertStringContainsString('test@example.com', $this->wpdb->lastQuery);
@@ -100,7 +103,7 @@ class ContactRepositoryTest extends TestCase
     {
         $this->wpdb->getRowResult = null;
 
-        $repo = new ContactRepository();
+        $repo = new ContactRepository($this->connection);
         $repo->findByPhone('+1 (234) 567-8900');
 
         $this->assertStringContainsString('+12345678900', $this->wpdb->lastQuery);
@@ -110,7 +113,7 @@ class ContactRepositoryTest extends TestCase
     {
         $this->wpdb->deleteResult = true;
 
-        $repo = new ContactRepository();
+        $repo = new ContactRepository($this->connection);
         $repo->delete('C1');
 
         $this->assertCount(2, $this->wpdb->deletes);
@@ -122,7 +125,7 @@ class ContactRepositoryTest extends TestCase
     {
         $this->wpdb->queryResult = 3;
 
-        $repo = new ContactRepository();
+        $repo = new ContactRepository($this->connection);
         $count = $repo->bulkDelete(['C1', 'C2', 'C3']);
 
         $this->assertSame(3, $count);
@@ -131,7 +134,7 @@ class ContactRepositoryTest extends TestCase
 
     public function test_bulkDelete_with_empty_ids_returns_zero(): void
     {
-        $repo = new ContactRepository();
+        $repo = new ContactRepository($this->connection);
         $this->assertSame(0, $repo->bulkDelete([]));
     }
 
@@ -139,7 +142,7 @@ class ContactRepositoryTest extends TestCase
     {
         $this->wpdb->queryResult = 2;
 
-        $repo = new ContactRepository();
+        $repo = new ContactRepository($this->connection);
         $count = $repo->bulkUpdateStatus(['C1', 'C2'], 'unsubscribed');
 
         $this->assertSame(2, $count);
@@ -152,7 +155,7 @@ class ContactRepositoryTest extends TestCase
             ['id' => 'C1', 'custom_fields' => '{"k":"v"}', 'email' => 'a@b.com'],
         ];
 
-        $repo = new ContactRepository();
+        $repo = new ContactRepository($this->connection);
         $contacts = $repo->findByIds(['C1']);
 
         $this->assertCount(1, $contacts);
@@ -161,7 +164,7 @@ class ContactRepositoryTest extends TestCase
 
     public function test_findByIds_with_empty_array(): void
     {
-        $repo = new ContactRepository();
+        $repo = new ContactRepository($this->connection);
         $this->assertSame([], $repo->findByIds([]));
     }
 
@@ -171,7 +174,7 @@ class ContactRepositoryTest extends TestCase
             ['id' => 'C1', 'custom_fields' => null, 'email' => 'a@b.com'],
         ];
 
-        $repo = new ContactRepository();
+        $repo = new ContactRepository($this->connection);
         $contacts = $repo->findByTag('T1', 50, 0);
 
         $this->assertCount(1, $contacts);
@@ -182,7 +185,7 @@ class ContactRepositoryTest extends TestCase
     {
         $this->wpdb->getVarResult = '7';
 
-        $repo = new ContactRepository();
+        $repo = new ContactRepository($this->connection);
         $this->assertSame(7, $repo->countByTag('T1'));
     }
 
@@ -203,9 +206,9 @@ class ContactRepositoryTest extends TestCase
         ];
     }
 
-    private function createWpdb(): object
+    private function createWpdb(): \wpdb
     {
-        return new class {
+        return new class extends \wpdb {
             public string $prefix = 'test_';
             public array $inserts = [];
             public array $deletes = [];
@@ -220,52 +223,52 @@ class ContactRepositoryTest extends TestCase
             public $getVarResult = null;
             public string $lastQuery = '';
 
-            public function insert(string $table, array $data): bool {
+            public function insert($table, $data, $format = null) {
                 $this->inserts[] = ['table' => $table, 'data' => $data];
                 return $this->insertResult;
             }
 
-            public function delete(string $table, array $where): bool {
+            public function delete($table, $where, $format = null) {
                 $this->deletes[] = ['table' => $table, 'where' => $where];
                 return $this->deleteResult;
             }
 
-            public function update(string $table, array $data, array $where): bool {
+            public function update($table, $data, $where, $format = null, $whereFormat = null) {
                 $this->updates[] = ['table' => $table, 'data' => $data, 'where' => $where];
                 return $this->updateResult;
             }
 
-            public function replace(string $table, array $data): bool {
+            public function replace($table, $data, $format = null) {
                 $this->inserts[] = ['table' => $table, 'data' => $data];
                 return true;
             }
 
-            public function query(string $query) {
+            public function query($query) {
                 $this->queries[] = $query;
                 return $this->queryResult;
             }
 
-            public function get_row($query, $output = 'OBJECT') {
+            public function get_row($query, $output = null, $y = 0) {
                 $this->lastQuery = $query;
                 return $this->getRowResult;
             }
 
-            public function get_results($query, $output = 'OBJECT') {
+            public function get_results($query, $output = null) {
                 $this->lastQuery = $query;
                 return $this->getResultsResult;
             }
 
-            public function get_var($query) {
+            public function get_var($query, $x = 0, $y = 0) {
                 $this->lastQuery = $query;
                 return $this->getVarResult;
             }
 
-            public function prepare(string $query, ...$args): string {
+            public function prepare($query, ...$args) {
                 $this->lastQuery = $query;
                 return vsprintf(str_replace(['%s', '%d'], ["'%s'", '%d'], $query), $args);
             }
 
-            public function esc_like(string $text): string {
+            public function esc_like($text) {
                 return addcslashes($text, '_%\\');
             }
         };

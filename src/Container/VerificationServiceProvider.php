@@ -10,6 +10,7 @@ use WSms\Verification\VerificationConfig;
 use WSms\Verification\VerificationRepository;
 use WSms\Verification\VerificationService;
 use WSms\Verification\VerificationSession;
+use WSms\Database\Connection;
 
 defined('ABSPATH') || exit;
 
@@ -18,7 +19,7 @@ class VerificationServiceProvider implements ServiceProvider
     /** {@inheritDoc} */
     public function register(ServiceContainer $container): void
     {
-        $container->register('verification.repository', fn () => new VerificationRepository());
+        $container->register('verification.repository', fn ($c) => new VerificationRepository($c->get(Connection::class)));
 
         $container->register('verification.otp_generator', fn () => new OtpGenerator());
 

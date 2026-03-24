@@ -112,7 +112,8 @@ class CampaignDispatcher
         $failedInBatch = 0;
 
         // Batch dedup: load all already-sent recipients in one query
-        $alreadySent = $this->loadSentRecipients($campaignId, $batch->recipients);
+        $addresses = array_unique(array_filter(array_column($batch->recipients, 'recipient')));
+        $alreadySent = $this->messageLogger->findSentRecipients($campaignId, $addresses);
 
         // Compute opt-out text once (same for all recipients)
         $compliance = $campaign->getCompliance() ?? [];
@@ -358,34 +359,4 @@ class CampaignDispatcher
         }
     }
 
-    /**
-     * Load all already-sent recipients for a campaign in one query (batch dedup).
-     * @return array<string, true> keyed by recipient address
-     */
-    private function loadSentRecipients(string $campaignId, array $recipients): array
-    {
-        if (empty($recipients)) {
-            return [];
-        }
-
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_message_logs';
-
-        $addresses = array_unique(array_filter(array_column($recipients, 'recipient')));
-        if (empty($addresses)) {
-            return [];
-        }
-
-        $placeholders = implode(',', array_fill(0, count($addresses), '%s'));
-        $params = array_merge([$campaignId], $addresses);
-
-        $rows = $wpdb->get_col(
-            $wpdb->prepare(
-                "SELECT DISTINCT recipient FROM {$table} WHERE campaign_id = %s AND recipient IN ({$placeholders})",
-                ...$params,
-            ),
-        );
-
-        return array_flip($rows ?: []);
-    }
 }

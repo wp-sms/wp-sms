@@ -931,12 +931,6 @@ parameters:
 			path: src/Campaign/CampaignDispatcher.php
 
 		-
-			message: '#^Method WSms\\Campaign\\CampaignDispatcher\:\:loadSentRecipients\(\) has parameter \$recipients with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Campaign/CampaignDispatcher.php
-
-		-
 			message: '#^Property WSms\\Campaign\\CampaignDispatcher\:\:\$throttler is never read, only written\.$#'
 			identifier: property.onlyWritten
 			count: 1

@@ -3,6 +3,7 @@
 namespace WSms\Campaign;
 
 use WSms\Contact\Contracts\SegmentEvaluatorInterface;
+use WSms\Database\Connection;
 
 defined('ABSPATH') || exit;
 
@@ -10,6 +11,7 @@ class AudienceResolver
 {
     public function __construct(
         private readonly SegmentEvaluatorInterface $segmentEvaluator,
+        private readonly Connection $db,
     ) {
     }
 
@@ -18,8 +20,6 @@ class AudienceResolver
      */
     public function resolve(array $audience, string $channel, int $batchSize = 500, ?string $afterId = null): AudienceBatch
     {
-        global $wpdb;
-
         $channelField = $this->getChannelField($channel);
         $excludeUnsubscribed = $audience['exclude_unsubscribed'] ?? true;
 
@@ -28,11 +28,11 @@ class AudienceResolver
 
         foreach ($audience['sources'] ?? [] as $source) {
             $sql = match ($source['type'] ?? '') {
-                'segment' => $this->buildSegmentQuery($source, $channelField, $excludeUnsubscribed, $wpdb),
-                'tags'    => $this->buildTagsQuery($source, $channelField, $excludeUnsubscribed, $wpdb),
-                'wp_roles' => $this->buildRolesQuery($source, $channelField, $wpdb),
-                'manual'  => null, // handled separately
-                default   => null,
+                'segment'  => $this->buildSegmentQuery($source, $channelField, $excludeUnsubscribed),
+                'tags'     => $this->buildTagsQuery($source, $channelField, $excludeUnsubscribed),
+                'wp_roles' => $this->buildRolesQuery($source, $channelField),
+                'manual'   => null, // handled separately
+                default    => null,
             };
 
             if ($sql) {
@@ -54,11 +54,11 @@ class AudienceResolver
 
             $cursorClause = '';
             if ($afterId) {
-                $cursorClause = $wpdb->prepare(' AND id > %s', $afterId);
+                $cursorClause = $this->db->prepare(' AND id > %s', $afterId);
             }
 
             $query = "SELECT * FROM ({$unionSql}) AS audience WHERE 1=1 {$cursorClause} ORDER BY id ASC LIMIT %d";
-            $rows = $wpdb->get_results($wpdb->prepare($query, $batchSize + 1), ARRAY_A) ?: [];
+            $rows = $this->db->getResults($query, $batchSize + 1);
 
             if (count($rows) > $batchSize) {
                 $hasMore = true;
@@ -108,8 +108,6 @@ class AudienceResolver
      */
     public function count(array $audience, string $channel): int
     {
-        global $wpdb;
-
         $channelField = $this->getChannelField($channel);
         $excludeUnsubscribed = $audience['exclude_unsubscribed'] ?? true;
 
@@ -118,9 +116,9 @@ class AudienceResolver
 
         foreach ($audience['sources'] ?? [] as $source) {
             $sql = match ($source['type'] ?? '') {
-                'segment'  => $this->buildSegmentQuery($source, $channelField, $excludeUnsubscribed, $wpdb),
-                'tags'     => $this->buildTagsQuery($source, $channelField, $excludeUnsubscribed, $wpdb),
-                'wp_roles' => $this->buildRolesQuery($source, $channelField, $wpdb),
+                'segment'  => $this->buildSegmentQuery($source, $channelField, $excludeUnsubscribed),
+                'tags'     => $this->buildTagsQuery($source, $channelField, $excludeUnsubscribed),
+                'wp_roles' => $this->buildRolesQuery($source, $channelField),
                 'manual'   => null,
                 default    => null,
             };
@@ -137,7 +135,7 @@ class AudienceResolver
         $contactCount = 0;
         if (!empty($unionParts)) {
             $unionSql = implode(' UNION ', $unionParts);
-            $contactCount = (int) $wpdb->get_var("SELECT COUNT(*) FROM ({$unionSql}) AS audience");
+            $contactCount = (int) $this->db->getVar("SELECT COUNT(*) FROM ({$unionSql}) AS audience");
         }
 
         return $contactCount + $manualCount;
@@ -148,8 +146,6 @@ class AudienceResolver
      */
     public function countSkipped(array $audience, string $channel): int
     {
-        global $wpdb;
-
         $channelField = $this->getChannelField($channel);
         $excludeUnsubscribed = $audience['exclude_unsubscribed'] ?? true;
 
@@ -159,9 +155,9 @@ class AudienceResolver
         $unionParts = [];
         foreach ($audience['sources'] ?? [] as $source) {
             $sql = match ($source['type'] ?? '') {
-                'segment'  => $this->buildSegmentQuery($source, null, $excludeUnsubscribed, $wpdb),
-                'tags'     => $this->buildTagsQuery($source, null, $excludeUnsubscribed, $wpdb),
-                'wp_roles' => $this->buildRolesQuery($source, null, $wpdb),
+                'segment'  => $this->buildSegmentQuery($source, null, $excludeUnsubscribed),
+                'tags'     => $this->buildTagsQuery($source, null, $excludeUnsubscribed),
+                'wp_roles' => $this->buildRolesQuery($source, null),
                 default    => null,
             };
             if ($sql) {
@@ -172,7 +168,7 @@ class AudienceResolver
         $totalWithout = 0;
         if (!empty($unionParts)) {
             $unionSql = implode(' UNION ', $unionParts);
-            $totalWithout = (int) $wpdb->get_var("SELECT COUNT(*) FROM ({$unionSql}) AS audience");
+            $totalWithout = (int) $this->db->getVar("SELECT COUNT(*) FROM ({$unionSql}) AS audience");
         }
 
         return max(0, $totalWithout - $totalWithField);
@@ -187,15 +183,14 @@ class AudienceResolver
         };
     }
 
-    private function buildSegmentQuery(array $source, ?string $channelField, bool $excludeUnsubscribed, object $wpdb): string
+    private function buildSegmentQuery(array $source, ?string $channelField, bool $excludeUnsubscribed): string
     {
-        $table = $wpdb->prefix . 'wsms_contacts';
+        $table = $this->db->table(Connection::TABLE_CONTACTS);
         $conditions = $source['conditions'] ?? [];
 
         $segmentWhere = '1=1';
         if (!empty($conditions)) {
-            // Build WHERE clause from segment conditions using the same logic as SegmentEvaluator
-            $segmentWhere = $this->buildSegmentWhere($conditions, $wpdb);
+            $segmentWhere = $this->buildSegmentWhere($conditions);
         }
 
         $channelClause = $channelField ? " AND c.{$channelField} IS NOT NULL AND c.{$channelField} != ''" : '';
@@ -204,40 +199,40 @@ class AudienceResolver
         return "SELECT DISTINCT c.id, c.phone, c.email, c.first_name, c.last_name, c.custom_fields FROM {$table} c WHERE {$segmentWhere}{$channelClause}{$statusClause}";
     }
 
-    private function buildTagsQuery(array $source, ?string $channelField, bool $excludeUnsubscribed, object $wpdb): ?string
+    private function buildTagsQuery(array $source, ?string $channelField, bool $excludeUnsubscribed): ?string
     {
         $tagIds = $source['tag_ids'] ?? [];
         if (empty($tagIds)) {
             return null;
         }
 
-        $table = $wpdb->prefix . 'wsms_contacts';
-        $pivotTable = $wpdb->prefix . 'wsms_contact_tag';
+        $table = $this->db->table(Connection::TABLE_CONTACTS);
+        $pivotTable = $this->db->table(Connection::TABLE_CONTACT_TAG);
         $placeholders = implode(',', array_fill(0, count($tagIds), '%s'));
 
         $channelClause = $channelField ? " AND c.{$channelField} IS NOT NULL AND c.{$channelField} != ''" : '';
         $statusClause = $excludeUnsubscribed ? " AND c.status = 'subscribed'" : '';
 
-        return $wpdb->prepare(
+        return $this->db->prepare(
             "SELECT DISTINCT c.id, c.phone, c.email, c.first_name, c.last_name, c.custom_fields FROM {$table} c INNER JOIN {$pivotTable} ct ON c.id = ct.contact_id WHERE ct.tag_id IN ({$placeholders}){$channelClause}{$statusClause}",
             ...$tagIds,
         );
     }
 
-    private function buildRolesQuery(array $source, ?string $channelField, object $wpdb): ?string
+    private function buildRolesQuery(array $source, ?string $channelField): ?string
     {
         $roles = $source['roles'] ?? [];
         if (empty($roles)) {
             return null;
         }
 
-        $table = $wpdb->prefix . 'wsms_contacts';
+        $wpdb = $this->db->wpdb();
+        $table = $this->db->table(Connection::TABLE_CONTACTS);
         $usermeta = $wpdb->usermeta;
 
-        // Join contacts to WP users via wp_user_id, filter by role in usermeta
         $roleClauses = [];
         foreach ($roles as $role) {
-            $roleClauses[] = $wpdb->prepare("um.meta_value LIKE %s", '%' . $wpdb->esc_like('"' . $role . '"') . '%');
+            $roleClauses[] = $this->db->prepare("um.meta_value LIKE %s", '%' . $this->db->escLike('"' . $role . '"') . '%');
         }
         $roleWhere = '(' . implode(' OR ', $roleClauses) . ')';
 
@@ -246,7 +241,7 @@ class AudienceResolver
         return "SELECT DISTINCT c.id, c.phone, c.email, c.first_name, c.last_name, c.custom_fields FROM {$table} c INNER JOIN {$usermeta} um ON c.wp_user_id = um.user_id AND um.meta_key = '{$wpdb->prefix}capabilities' WHERE {$roleWhere}{$channelClause}";
     }
 
-    private function buildSegmentWhere(array $conditions, object $wpdb): string
+    private function buildSegmentWhere(array $conditions): string
     {
         $match = $conditions['match'] ?? 'all';
         $joiner = $match === 'all' ? ' AND ' : ' OR ';
@@ -254,14 +249,14 @@ class AudienceResolver
         $clauses = [];
 
         foreach ($conditions['conditions'] ?? [] as $condition) {
-            $clause = $this->buildConditionClause($condition, $wpdb);
+            $clause = $this->buildConditionClause($condition);
             if ($clause) {
                 $clauses[] = $clause;
             }
         }
 
         foreach ($conditions['groups'] ?? [] as $group) {
-            $subWhere = $this->buildSegmentWhere($group, $wpdb);
+            $subWhere = $this->buildSegmentWhere($group);
             if ($subWhere && $subWhere !== '1=1') {
                 $clauses[] = "({$subWhere})";
             }
@@ -270,18 +265,18 @@ class AudienceResolver
         return $clauses ? implode($joiner, $clauses) : '1=1';
     }
 
-    private function buildConditionClause(array $condition, object $wpdb): ?string
+    private function buildConditionClause(array $condition): ?string
     {
         $type = $condition['type'] ?? '';
 
         return match ($type) {
-            'attribute' => $this->buildAttributeClause($condition, $wpdb),
-            'tag'       => $this->buildTagConditionClause($condition, $wpdb),
+            'attribute' => $this->buildAttributeClause($condition),
+            'tag'       => $this->buildTagConditionClause($condition),
             default     => null,
         };
     }
 
-    private function buildAttributeClause(array $condition, object $wpdb): ?string
+    private function buildAttributeClause(array $condition): ?string
     {
         $field = $condition['field'] ?? '';
         $operator = $condition['operator'] ?? 'equals';
@@ -302,24 +297,24 @@ class AudienceResolver
         }
 
         return match ($operator) {
-            'equals'       => $wpdb->prepare("{$column} = %s", $value),
-            'not_equals'   => $wpdb->prepare("{$column} != %s", $value),
-            'contains'     => $wpdb->prepare("{$column} LIKE %s", '%' . $wpdb->esc_like($value) . '%'),
-            'starts_with'  => $wpdb->prepare("{$column} LIKE %s", $wpdb->esc_like($value) . '%'),
+            'equals'       => $this->db->prepare("{$column} = %s", $value),
+            'not_equals'   => $this->db->prepare("{$column} != %s", $value),
+            'contains'     => $this->db->prepare("{$column} LIKE %s", '%' . $this->db->escLike($value) . '%'),
+            'starts_with'  => $this->db->prepare("{$column} LIKE %s", $this->db->escLike($value) . '%'),
             'is_empty'     => "({$column} IS NULL OR {$column} = '')",
             'is_not_empty' => "({$column} IS NOT NULL AND {$column} != '')",
             default        => null,
         };
     }
 
-    private function buildTagConditionClause(array $condition, object $wpdb): ?string
+    private function buildTagConditionClause(array $condition): ?string
     {
         $operator = $condition['operator'] ?? 'has';
         $tagSlug = $condition['value'] ?? '';
-        $tagsTable = $wpdb->prefix . 'wsms_tags';
-        $pivotTable = $wpdb->prefix . 'wsms_contact_tag';
+        $tagsTable = $this->db->table(Connection::TABLE_TAGS);
+        $pivotTable = $this->db->table(Connection::TABLE_CONTACT_TAG);
 
-        $subquery = $wpdb->prepare(
+        $subquery = $this->db->prepare(
             "SELECT 1 FROM {$pivotTable} ct_sub INNER JOIN {$tagsTable} t_sub ON ct_sub.tag_id = t_sub.id WHERE ct_sub.contact_id = c.id AND t_sub.slug = %s",
             $tagSlug,
         );

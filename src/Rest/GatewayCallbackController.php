@@ -63,41 +63,43 @@ class GatewayCallbackController extends Controller
 
     public function handleStatusCallback(\WP_REST_Request $request): \WP_REST_Response
     {
-        $gatewayId = $request->get_param('gateway_id');
+        return $this->handle(function () use ($request) {
+            $gatewayId = $request->get_param('gateway_id');
 
-        $rateCheck = $this->rateLimiter->check('gateway_callback_' . $gatewayId, self::RATE_LIMIT, self::RATE_WINDOW);
-        if (!$rateCheck['allowed']) {
-            return new \WP_REST_Response([
-                'success'     => false,
-                'error'       => 'rate_limited',
-                'retry_after' => $rateCheck['retry_after'],
-            ], 429);
-        }
-
-        $gateway = $this->gatewayRegistry->get($gatewayId);
-
-        /** @var SupportsStatusCallback $gateway */
-        $updates = $gateway->parseStatusCallback($request);
-
-        foreach ($updates as $update) {
-            $logEntry = $this->messageLogger->findByProviderId($gatewayId, $update->providerId);
-            if ($logEntry === null) {
-                continue;
+            $rateCheck = $this->rateLimiter->check('gateway_callback_' . $gatewayId, self::RATE_LIMIT, self::RATE_WINDOW);
+            if (!$rateCheck['allowed']) {
+                return new \WP_REST_Response([
+                    'success'     => false,
+                    'error'       => 'rate_limited',
+                    'retry_after' => $rateCheck['retry_after'],
+                ], 429);
             }
 
-            $this->messageLogger->updateStatus($logEntry['id'], $update->status, $update->getDisplayError());
+            $gateway = $this->gatewayRegistry->get($gatewayId);
 
-            // Increment campaign counters on delivery receipt
-            if ($this->campaignRepository && ($logEntry['campaign_id'] ?? null)) {
-                if ($update->status === 'delivered') {
-                    $this->campaignRepository->incrementCounters($logEntry['campaign_id'], 'delivered_count');
-                } elseif ($update->status === 'failed') {
-                    $this->campaignRepository->incrementCounters($logEntry['campaign_id'], 'failed_count');
+            /** @var SupportsStatusCallback $gateway */
+            $updates = $gateway->parseStatusCallback($request);
+
+            foreach ($updates as $update) {
+                $logEntry = $this->messageLogger->findByProviderId($gatewayId, $update->providerId);
+                if ($logEntry === null) {
+                    continue;
+                }
+
+                $this->messageLogger->updateStatus($logEntry['id'], $update->status, $update->getDisplayError());
+
+                // Increment campaign counters on delivery receipt
+                if ($this->campaignRepository && ($logEntry['campaign_id'] ?? null)) {
+                    if ($update->status === 'delivered') {
+                        $this->campaignRepository->incrementCounters($logEntry['campaign_id'], 'delivered_count');
+                    } elseif ($update->status === 'failed') {
+                        $this->campaignRepository->incrementCounters($logEntry['campaign_id'], 'failed_count');
+                    }
                 }
             }
-        }
 
-        return new \WP_REST_Response(['success' => true]);
+            return $this->ok();
+        });
     }
 
     public function checkInboundPermission(\WP_REST_Request $request): bool
@@ -118,30 +120,32 @@ class GatewayCallbackController extends Controller
 
     public function handleInboundCallback(\WP_REST_Request $request): \WP_REST_Response
     {
-        $gatewayId = $request->get_param('gateway_id');
+        return $this->handle(function () use ($request) {
+            $gatewayId = $request->get_param('gateway_id');
 
-        $rateCheck = $this->rateLimiter->check('gateway_inbound_' . $gatewayId, self::RATE_LIMIT, self::RATE_WINDOW);
-        if (!$rateCheck['allowed']) {
-            return new \WP_REST_Response([
-                'success'     => false,
-                'error'       => 'rate_limited',
-                'retry_after' => $rateCheck['retry_after'],
-            ], 429);
-        }
+            $rateCheck = $this->rateLimiter->check('gateway_inbound_' . $gatewayId, self::RATE_LIMIT, self::RATE_WINDOW);
+            if (!$rateCheck['allowed']) {
+                return new \WP_REST_Response([
+                    'success'     => false,
+                    'error'       => 'rate_limited',
+                    'retry_after' => $rateCheck['retry_after'],
+                ], 429);
+            }
 
-        if ($this->optOutManager === null) {
-            return new \WP_REST_Response(['success' => false, 'error' => 'not_configured'], 500);
-        }
+            if ($this->optOutManager === null) {
+                return new \WP_REST_Response(['success' => false, 'error' => 'not_configured'], 500);
+            }
 
-        $gateway = $this->gatewayRegistry->get($gatewayId);
+            $gateway = $this->gatewayRegistry->get($gatewayId);
 
-        /** @var SupportsInboundMessage $gateway */
-        $messages = $gateway->parseInboundCallback($request);
+            /** @var SupportsInboundMessage $gateway */
+            $messages = $gateway->parseInboundCallback($request);
 
-        foreach ($messages as $message) {
-            $this->optOutManager->processInboundMessage($message, $gatewayId);
-        }
+            foreach ($messages as $message) {
+                $this->optOutManager->processInboundMessage($message, $gatewayId);
+            }
 
-        return new \WP_REST_Response(['success' => true]);
+            return $this->ok();
+        });
     }
 }

@@ -42,6 +42,30 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         require_once $scopedAutoloader;
     }
 
+    // Minimal wpdb stub so WpdbFake can extend it and satisfy Connection type hints.
+    if (!class_exists('wpdb')) {
+        // @phpcs:ignore
+        class wpdb
+        {
+            public string $prefix = 'wp_';
+            public string $users = 'wp_users';
+            public string $usermeta = 'wp_usermeta';
+            public int $insert_id = 0;
+            public int $rows_affected = 0;
+            public string $last_error = '';
+
+            public function insert($table, $data, $format = null) { return false; }
+            public function update($table, $data, $where, $format = null, $whereFormat = null) { return false; }
+            public function delete($table, $where, $format = null) { return 0; }
+            public function get_row($query, $output = null, $y = 0) { return null; }
+            public function get_results($query, $output = null) { return []; }
+            public function get_var($query, $x = 0, $y = 0) { return null; }
+            public function query($query) { return 0; }
+            public function prepare($query, ...$args) { return $query; }
+            public function esc_like($text) { return $text; }
+        }
+    }
+
     // Stub WordPress functions used by unit-tested classes.
     if (!function_exists('get_option')) {
         function get_option(string $option, $default = false) {

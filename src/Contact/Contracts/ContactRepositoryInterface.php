@@ -59,4 +59,14 @@ interface ContactRepositoryInterface
 
     /** @return int Number of tag associations removed */
     public function bulkRemoveTag(array $contactIds, string $tagId): int;
+
+    /**
+     * Iterate subscribed contacts with a non-empty email in batches.
+     *
+     * The callback receives each batch (array of contact rows).
+     * Useful for large-scale operations like marketing sync.
+     *
+     * @param callable(list<array<string, mixed>>): void $callback
+     */
+    public function eachSubscribedWithEmail(callable $callback, int $batchSize = 500): void;
 }

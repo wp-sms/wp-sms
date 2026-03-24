@@ -36,6 +36,11 @@ class MessagingButtonServiceProvider implements ServiceProvider
 
     public function boot(ServiceContainer $container): void
     {
+        // Skip all hooks if the messaging button feature is disabled.
+        if (!$container->get('messaging_button.settings')->isEnabled()) {
+            return;
+        }
+
         // Defer renderer initialization to template_redirect so the
         // renderer (+ settings + display-rule evaluator) is only
         // instantiated on actual frontend page loads.

@@ -5,6 +5,7 @@ namespace WSms\Container;
 use WSms\Auth\AccountLockout;
 use WSms\Auth\AccountManager;
 use WSms\Auth\AccountSuspension;
+use WSms\Database\Connection;
 use WSms\Auth\ApiAuthGuard;
 use WSms\Auth\AuthOrchestrator;
 use WSms\Auth\AuthRouter;
@@ -109,6 +110,7 @@ class AuthServiceProvider implements ServiceProvider
                 $container->get('template.manager'),
                 $container->get('auth.field_registry'),
                 $container->get('auth.trusted_devices'),
+                $container->get('log.app'),
             );
         });
 
@@ -183,11 +185,10 @@ class AuthServiceProvider implements ServiceProvider
         add_action('delete_user', [$avatarManager, 'cleanupOnUserDelete']);
 
         // Clean up custom table rows when a user is deleted.
-        add_action('delete_user', function (int $userId) {
-            global $wpdb;
-
-            $wpdb->delete($wpdb->prefix . 'wsms_user_factors', ['user_id' => $userId], ['%d']);
-            $wpdb->delete($wpdb->prefix . 'wsms_verifications', ['user_id' => $userId], ['%d']);
+        add_action('delete_user', function (int $userId) use ($container) {
+            $db = $container->get(Connection::class);
+            $db->delete(Connection::TABLE_USER_FACTORS, ['user_id' => $userId]);
+            $db->delete(Connection::TABLE_VERIFICATIONS, ['user_id' => $userId]);
         });
 
         // GDPR: profile fields data exporter.

@@ -2,19 +2,21 @@
 
 namespace WSms\Verification;
 
+use WSms\Database\Connection;
+
 defined('ABSPATH') || exit;
 
 class VerificationRepository
 {
     private const ALLOWED_WHERE_COLUMNS = ['user_id', 'session_id', 'type', 'channel_id', 'identifier'];
 
+    public function __construct(private readonly Connection $db) {}
+
     public function insert(array $data): int
     {
-        global $wpdb;
+        $this->db->insert(Connection::TABLE_VERIFICATIONS, $data);
 
-        $wpdb->insert($wpdb->prefix . 'wsms_verifications', $data);
-
-        return (int) $wpdb->insert_id;
+        return $this->db->insertId();
     }
 
     /**
@@ -24,19 +26,17 @@ class VerificationRepository
      */
     public function findLatestPending(array $where): ?object
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_verifications';
+        $table = $this->db->table(Connection::TABLE_VERIFICATIONS);
         $sql = "SELECT * FROM {$table} WHERE used_at IS NULL";
         $params = [];
         $sql = $this->appendWhereConditions($sql, $where, $params);
         $sql .= ' ORDER BY created_at DESC LIMIT 1';
 
-        $row = $wpdb->get_row(
-            empty($params) ? $sql : $wpdb->prepare($sql, ...$params),
-        );
+        $row = empty($params)
+            ? $this->db->getRow($sql)
+            : $this->db->getRow($sql, ...$params);
 
-        return $row ?: null;
+        return $row ? (object) $row : null;
     }
 
     /**
@@ -45,17 +45,15 @@ class VerificationRepository
      */
     public function findByCode(string $hashedCode, string $type): ?object
     {
-        global $wpdb;
+        $table = $this->db->table(Connection::TABLE_VERIFICATIONS);
 
-        $table = $wpdb->prefix . 'wsms_verifications';
-
-        $row = $wpdb->get_row($wpdb->prepare(
+        $row = $this->db->getRow(
             "SELECT * FROM {$table} WHERE code = %s AND type = %s LIMIT 1",
             $hashedCode,
             $type,
-        ));
+        );
 
-        return $row ?: null;
+        return $row ? (object) $row : null;
     }
 
     /**
@@ -64,18 +62,16 @@ class VerificationRepository
      */
     public function findByCodeAndChannel(string $hashedCode, string $type, string $channelId): ?object
     {
-        global $wpdb;
+        $table = $this->db->table(Connection::TABLE_VERIFICATIONS);
 
-        $table = $wpdb->prefix . 'wsms_verifications';
-
-        $row = $wpdb->get_row($wpdb->prepare(
+        $row = $this->db->getRow(
             "SELECT * FROM {$table} WHERE channel_id = %s AND type = %s AND code = %s AND used_at IS NULL LIMIT 1",
             $channelId,
             $type,
             $hashedCode,
-        ));
+        );
 
-        return $row ?: null;
+        return $row ? (object) $row : null;
     }
 
     /**
@@ -85,29 +81,25 @@ class VerificationRepository
      */
     public function incrementAttempts(int $id): bool
     {
-        global $wpdb;
+        $table = $this->db->table(Connection::TABLE_VERIFICATIONS);
 
-        $table = $wpdb->prefix . 'wsms_verifications';
-
-        $wpdb->query($wpdb->prepare(
+        $this->db->query(
             "UPDATE {$table} SET attempts = attempts + 1 WHERE id = %d AND attempts < max_attempts",
             $id,
-        ));
+        );
 
-        return $wpdb->rows_affected > 0;
+        return $this->db->rowsAffected() > 0;
     }
 
     public function markUsed(int $id): bool
     {
-        global $wpdb;
+        $table = $this->db->table(Connection::TABLE_VERIFICATIONS);
 
-        $table = $wpdb->prefix . 'wsms_verifications';
-
-        $affected = $wpdb->query($wpdb->prepare(
+        $affected = $this->db->query(
             "UPDATE {$table} SET used_at = %s WHERE id = %d AND used_at IS NULL",
             gmdate('Y-m-d H:i:s'),
             $id,
-        ));
+        );
 
         return $affected > 0;
     }
@@ -118,16 +110,14 @@ class VerificationRepository
      */
     public function markUsedWithAttempts(int $id, int $attempts): bool
     {
-        global $wpdb;
+        $table = $this->db->table(Connection::TABLE_VERIFICATIONS);
 
-        $table = $wpdb->prefix . 'wsms_verifications';
-
-        $affected = $wpdb->query($wpdb->prepare(
+        $affected = $this->db->query(
             "UPDATE {$table} SET attempts = %d, used_at = %s WHERE id = %d AND used_at IS NULL",
             $attempts,
             gmdate('Y-m-d H:i:s'),
             $id,
-        ));
+        );
 
         return $affected > 0;
     }
@@ -137,10 +127,8 @@ class VerificationRepository
      */
     public function updateAttempts(int $id, int $attempts): void
     {
-        global $wpdb;
-
-        $wpdb->update(
-            $wpdb->prefix . 'wsms_verifications',
+        $this->db->update(
+            Connection::TABLE_VERIFICATIONS,
             ['attempts' => $attempts],
             ['id' => $id],
         );
@@ -153,14 +141,12 @@ class VerificationRepository
      */
     public function invalidatePending(array $where): void
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_verifications';
+        $table = $this->db->table(Connection::TABLE_VERIFICATIONS);
         $sql = "UPDATE {$table} SET used_at = %s WHERE used_at IS NULL";
         $params = [gmdate('Y-m-d H:i:s')];
         $sql = $this->appendWhereConditions($sql, $where, $params);
 
-        $wpdb->query($wpdb->prepare($sql, ...$params));
+        $this->db->query($sql, ...$params);
     }
 
     /**
@@ -170,9 +156,7 @@ class VerificationRepository
      */
     public function hasPendingWithinCooldown(array $where, int $cooldownSeconds): bool
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_verifications';
+        $table = $this->db->table(Connection::TABLE_VERIFICATIONS);
         $cutoff = gmdate('Y-m-d H:i:s', time() - $cooldownSeconds);
 
         $sql = "SELECT id FROM {$table} WHERE used_at IS NULL AND created_at > %s";
@@ -180,23 +164,19 @@ class VerificationRepository
         $sql = $this->appendWhereConditions($sql, $where, $params);
         $sql .= ' LIMIT 1';
 
-        return (bool) $wpdb->get_row($wpdb->prepare($sql, ...$params));
+        return (bool) $this->db->getRow($sql, ...$params);
     }
 
     public function deleteExpired(): int
     {
-        global $wpdb;
+        $table = $this->db->table(Connection::TABLE_VERIFICATIONS);
 
-        $table = $wpdb->prefix . 'wsms_verifications';
-
-        return (int) $wpdb->query("DELETE FROM {$table} WHERE expires_at < NOW()");
+        return $this->db->query("DELETE FROM {$table} WHERE expires_at < NOW()");
     }
 
     public function delete(int $id): void
     {
-        global $wpdb;
-
-        $wpdb->delete($wpdb->prefix . 'wsms_verifications', ['id' => $id]);
+        $this->db->delete(Connection::TABLE_VERIFICATIONS, ['id' => $id]);
     }
 
     private function appendWhereConditions(string $sql, array $where, array &$params): string

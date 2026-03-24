@@ -73,25 +73,27 @@ class SocialAuthController extends Controller
      */
     public function handleAuthorize(WP_REST_Request $request): WP_REST_Response
     {
-        $intent = $request->get_param('intent');
-        $intent = in_array($intent, ['login', 'register'], true) ? $intent : 'login';
-        $errorPage = $intent === 'register' ? '/register' : '/login';
+        return $this->handle(function () use ($request) {
+            $intent = $request->get_param('intent');
+            $intent = in_array($intent, ['login', 'register'], true) ? $intent : 'login';
+            $errorPage = $intent === 'register' ? '/register' : '/login';
 
-        $rl = $this->rateLimiter->check('social_auth', 10, 60);
+            $rl = $this->rateLimiter->check('social_auth', 10, 60);
 
-        if (!$rl['allowed']) {
-            return $this->redirectTo($this->getAuthBaseUrl() . $errorPage . '?social_error=rate_limited');
-        }
+            if (!$rl['allowed']) {
+                return $this->redirectTo($this->getAuthBaseUrl() . $errorPage . '?social_error=rate_limited');
+            }
 
-        $providerId = $request->get_param('provider');
+            $providerId = $request->get_param('provider');
 
-        try {
-            $data = $this->orchestrator->initiateAuthorize($providerId, null, $intent);
-        } catch (\InvalidArgumentException $e) {
-            return $this->redirectTo($this->getAuthBaseUrl() . $errorPage . '?social_error=invalid_provider');
-        }
+            try {
+                $data = $this->orchestrator->initiateAuthorize($providerId, null, $intent);
+            } catch (\InvalidArgumentException $e) {
+                return $this->redirectTo($this->getAuthBaseUrl() . $errorPage . '?social_error=invalid_provider');
+            }
 
-        return $this->redirectTo($data['authorize_url']);
+            return $this->redirectTo($data['authorize_url']);
+        });
     }
 
     /**
@@ -99,95 +101,100 @@ class SocialAuthController extends Controller
      */
     public function handleCallback(WP_REST_Request $request): WP_REST_Response
     {
-        $providerId = $request->get_param('provider');
-        $baseUrl  = $this->getAuthBaseUrl();
-        $loginUrl = $baseUrl . '/login';
+        return $this->handle(function () use ($request) {
+            $providerId = $request->get_param('provider');
+            $baseUrl  = $this->getAuthBaseUrl();
+            $loginUrl = $baseUrl . '/login';
 
-        // Provider returned an error.
-        if ($request->get_param('error')) {
-            $errorCode = sanitize_text_field($request->get_param('error'));
+            // Provider returned an error.
+            if ($request->get_param('error')) {
+                $errorCode = sanitize_text_field($request->get_param('error'));
 
-            return $this->redirectTo($loginUrl . '?social_error=' . urlencode($errorCode));
-        }
+                return $this->redirectTo($loginUrl . '?social_error=' . urlencode($errorCode));
+            }
 
-        $code = $request->get_param('code');
-        $state = $request->get_param('state');
+            $code = $request->get_param('code');
+            $state = $request->get_param('state');
 
-        if (empty($code) || empty($state)) {
-            return $this->redirectTo($loginUrl . '?social_error=missing_params');
-        }
+            if (empty($code) || empty($state)) {
+                return $this->redirectTo($loginUrl . '?social_error=missing_params');
+            }
 
-        $callbackResult = $this->orchestrator->handleCallback($providerId, $code, $state);
-        $result = $callbackResult['result'];
-        $resultArray = $result->toArray();
-        $intent = $callbackResult['intent'] ?? 'login';
+            $callbackResult = $this->orchestrator->handleCallback($providerId, $code, $state);
+            $result = $callbackResult['result'];
+            $resultArray = $result->toArray();
+            $intent = $callbackResult['intent'] ?? 'login';
 
-        // Success — user is authenticated.
-        if (!empty($resultArray['success']) && ($resultArray['status'] ?? '') === 'authenticated') {
-            return $this->redirectTo($baseUrl . '/profile');
-        }
+            // Success — user is authenticated.
+            if (!empty($resultArray['success']) && ($resultArray['status'] ?? '') === 'authenticated') {
+                return $this->redirectTo($baseUrl . '/profile');
+            }
 
-        // MFA required — redirect with session token.
-        if (($resultArray['status'] ?? '') === 'mfa_required') {
-            return $this->redirectTo($loginUrl . '?social_mfa=' . urlencode($resultArray['session_token']));
-        }
+            // MFA required — redirect with session token.
+            if (($resultArray['status'] ?? '') === 'mfa_required') {
+                return $this->redirectTo($loginUrl . '?social_mfa=' . urlencode($resultArray['session_token']));
+            }
 
-        // MFA enrollment required — redirect to security page.
-        if (($resultArray['status'] ?? '') === 'mfa_enrollment_required') {
-            return $this->redirectTo($baseUrl . '/security?mfa_enroll=required');
-        }
+            // MFA enrollment required — redirect to security page.
+            if (($resultArray['status'] ?? '') === 'mfa_enrollment_required') {
+                return $this->redirectTo($baseUrl . '/security?mfa_enroll=required');
+            }
 
-        // Account linking success — redirect to security page.
-        if (!empty($resultArray['success']) && isset($callbackResult['user_id'])) {
-            return $this->redirectTo($baseUrl . '/security?linked=' . $providerId);
-        }
+            // Account linking success — redirect to security page.
+            if (!empty($resultArray['success']) && isset($callbackResult['user_id'])) {
+                return $this->redirectTo($baseUrl . '/security?linked=' . $providerId);
+            }
 
-        // Error — redirect to the page matching the original intent.
-        $errorCode = $resultArray['error'] ?? 'unknown_error';
-        $errorPage = $intent === 'register' ? '/register' : '/login';
+            // Error — redirect to the page matching the original intent.
+            $errorCode = $resultArray['error'] ?? 'unknown_error';
+            $errorPage = $intent === 'register' ? '/register' : '/login';
 
-        return $this->redirectTo($baseUrl . $errorPage . '?social_error=' . urlencode($errorCode));
+            return $this->redirectTo($baseUrl . $errorPage . '?social_error=' . urlencode($errorCode));
+        });
     }
 
     public function handleLink(WP_REST_Request $request): WP_REST_Response
     {
-        $providerId = $request->get_param('provider');
-        $userId = get_current_user_id();
+        return $this->handle(function () use ($request) {
+            $providerId = $request->get_param('provider');
+            $userId = get_current_user_id();
 
-        try {
-            $data = $this->orchestrator->initiateAuthorize($providerId, $userId);
-        } catch (\InvalidArgumentException $e) {
-            return new WP_REST_Response(['success' => false, 'error' => 'invalid_provider', 'message' => $e->getMessage()], 400);
-        }
+            try {
+                $data = $this->orchestrator->initiateAuthorize($providerId, $userId);
+            } catch (\InvalidArgumentException $e) {
+                return new WP_REST_Response(['success' => false, 'error' => 'invalid_provider', 'message' => $e->getMessage()], 400);
+            }
 
-        return new WP_REST_Response([
-            'success'       => true,
-            'authorize_url' => $data['authorize_url'],
-        ]);
+            return new WP_REST_Response([
+                'success'       => true,
+                'authorize_url' => $data['authorize_url'],
+            ]);
+        });
     }
 
     public function handleUnlink(WP_REST_Request $request): WP_REST_Response
     {
-        $providerId = $request->get_param('provider');
-        $userId = get_current_user_id();
+        return $this->handle(function () use ($request) {
+            $providerId = $request->get_param('provider');
+            $userId = get_current_user_id();
 
-        $result = $this->orchestrator->unlinkAccount($userId, $providerId);
+            $result = $this->orchestrator->unlinkAccount($userId, $providerId);
 
-        $status = $result['success'] ? 200 : 400;
+            $status = $result['success'] ? 200 : 400;
 
-        return new WP_REST_Response($result, $status);
+            return new WP_REST_Response($result, $status);
+        });
     }
 
     public function handleListAccounts(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = get_current_user_id();
+        return $this->handle(function () use ($request) {
+            $userId = get_current_user_id();
 
-        $accounts = $this->orchestrator->getLinkedAccounts($userId);
+            $accounts = $this->orchestrator->getLinkedAccounts($userId);
 
-        return new WP_REST_Response([
-            'success'  => true,
-            'accounts' => $accounts,
-        ]);
+            return $this->ok(['accounts' => $accounts]);
+        });
     }
 
     private function getAuthBaseUrl(): string

@@ -11,6 +11,7 @@ use WSms\Messaging\Contracts\TemplateEngineInterface;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Template\MustacheEngine;
 use WSms\Messaging\Template\TemplateManager;
+use WSms\Database\Connection;
 use WSms\Verification\OtpGenerator;
 use WSms\Verification\VerificationConfig;
 use WSms\Verification\VerificationRepository;
@@ -55,7 +56,7 @@ class VerificationServiceTest extends TestCase
             $config,
             $messageDispatcher,
             new MustacheEngine(),
-            new VerificationRepository(),
+            new VerificationRepository(new Connection($GLOBALS['wpdb'])),
             $templateManager,
         );
     }
@@ -434,7 +435,7 @@ class VerificationServiceTest extends TestCase
             $config,
             $messageDispatcher,
             new MustacheEngine(),
-            new VerificationRepository(),
+            new VerificationRepository(new Connection($GLOBALS['wpdb'])),
             $templateManager,
         );
     }

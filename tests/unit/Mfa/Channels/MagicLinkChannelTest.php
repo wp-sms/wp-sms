@@ -10,7 +10,9 @@ use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Message\EmailMessage;
 use WSms\Messaging\MessageDispatcher;
+use WSms\Database\Connection;
 use WSms\Mfa\Channels\MagicLinkChannel;
+use WSms\Mfa\UserFactorRepository;
 use WSms\Verification\OtpGenerator;
 use WSms\Verification\OtpService;
 use WSms\Messaging\Template\TemplateManager;
@@ -195,14 +197,21 @@ class MagicLinkChannelTest extends TestCase
 
         $factorRow = $this->makeFactorRow(ChannelStatus::Active);
 
-        $wpdb = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var'])
+        $callCount = 0;
+        $wpdb = $this->getMockBuilder(\wpdb::class)
+            ->onlyMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var'])
             ->getMock();
         $wpdb->prefix = 'wp_';
         $wpdb->insert_id = 1;
         $wpdb->rows_affected = 1;
         $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturnOnConsecutiveCalls($factorRow, null);
+        $wpdb->method('get_row')->willReturnCallback(
+            function ($query, $output = null) use ($factorRow, &$callCount) {
+                $callCount++;
+                $row = $callCount === 1 ? $factorRow : null;
+                return $row !== null && $output === ARRAY_A ? (array) $row : $row;
+            },
+        );
         $wpdb->method('insert')->willReturn(1);
         $wpdb->method('update')->willReturn(1);
         $wpdb->method('query')->willReturn(1);
@@ -229,6 +238,7 @@ class MagicLinkChannelTest extends TestCase
         $templateManager = $this->createMock(TemplateManager::class);
         $templateManager->method('renderToMessage')->willReturn($mockMessage);
         $channel = new MagicLinkChannel($this->otpGenerator, $this->auditLogger, $dispatcher, $verificationRepo, $templateManager, $otpSvc);
+        $channel->setUserFactorRepository(new UserFactorRepository(new Connection($wpdb)));
         $channel->sendChallenge(1);
     }
 
@@ -288,21 +298,24 @@ class MagicLinkChannelTest extends TestCase
 
     private function setupWpdbMock(?object $getRowReturn): void
     {
-        $wpdb = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var'])
+        $wpdb = $this->getMockBuilder(\wpdb::class)
+            ->onlyMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var'])
             ->getMock();
         $wpdb->prefix = 'wp_';
         $wpdb->insert_id = 1;
         $wpdb->rows_affected = 1;
 
         $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturn($getRowReturn);
+        $wpdb->method('get_row')->willReturnCallback(
+            fn($query, $output = null) => $getRowReturn !== null && $output === ARRAY_A ? (array) $getRowReturn : $getRowReturn,
+        );
         $wpdb->method('insert')->willReturn(1);
         $wpdb->method('update')->willReturn(1);
         $wpdb->method('query')->willReturn(1);
         $wpdb->method('get_var')->willReturn(0);
 
         $GLOBALS['wpdb'] = $wpdb;
+        $this->channel->setUserFactorRepository(new UserFactorRepository(new Connection($wpdb)));
     }
 
     private function overrideGetUserdata(int $userId, string $email): void

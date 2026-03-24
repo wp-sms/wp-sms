@@ -28,8 +28,11 @@ class SubscriptionFormServiceProvider implements ServiceProvider
 
     public function boot(ServiceContainer $container): void
     {
+        // Only register shortcodes/blocks if at least one form exists.
         add_action('init', function () use ($container) {
-            $container->get('subscription_form.renderer')->init();
+            if (!empty(get_option('wsms_subscription_forms', []))) {
+                $container->get('subscription_form.renderer')->init();
+            }
         });
 
         // Sync auth verification status to linked contacts.

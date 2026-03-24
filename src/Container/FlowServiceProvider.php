@@ -11,6 +11,7 @@ use WSms\Flow\Engine\PayloadResolver;
 use WSms\Flow\Storage\FlowExecutionRepository;
 use WSms\Flow\Storage\FlowRepository;
 use WSms\Flow\Trigger\TriggerRegistry;
+use WSms\Database\Connection;
 
 defined('ABSPATH') || exit;
 
@@ -21,8 +22,8 @@ class FlowServiceProvider implements ServiceProvider
         $container->register('flow.triggers', fn() => new TriggerRegistry());
         $container->register('flow.actions', fn() => new ActionRegistry());
         $container->register('flow.conditions', fn() => new ExpressionLanguageEvaluator());
-        $container->register('flow.repository', fn() => new FlowRepository());
-        $container->register('flow.execution_repository', fn() => new FlowExecutionRepository());
+        $container->register('flow.repository', fn($c) => new FlowRepository($c->get(Connection::class)));
+        $container->register('flow.execution_repository', fn($c) => new FlowExecutionRepository($c->get(Connection::class)));
 
         $container->register('flow.payload_resolver', fn($c) => new PayloadResolver(
             $c->get('template.engine'),

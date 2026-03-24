@@ -3,6 +3,7 @@
 namespace WSms\Container;
 
 use WSms\Audit\AuditLogger;
+use WSms\Database\Connection;
 
 defined('ABSPATH') || exit;
 
@@ -16,8 +17,8 @@ class AuditServiceProvider implements ServiceProvider
     /** {@inheritDoc} */
     public function register(ServiceContainer $container): void
     {
-        $container->register('audit.logger', function () {
-            return new AuditLogger();
+        $container->register('audit.logger', function () use ($container) {
+            return new AuditLogger($container->get(Connection::class));
         });
     }
 

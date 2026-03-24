@@ -147,7 +147,7 @@ class PhoneRestrictionControllerTest extends TestCase
 
         $response = $this->controller->updateSettings($request);
 
-        $this->assertSame(400, $response->get_status());
+        $this->assertSame(422, $response->get_status());
     }
 
     public function test_update_settings_ignores_unknown_sections(): void
@@ -338,7 +338,7 @@ class PhoneRestrictionControllerTest extends TestCase
 
         $response = $this->controller->checkPhone($request);
 
-        $this->assertSame(400, $response->get_status());
+        $this->assertSame(422, $response->get_status());
     }
 
     public function test_check_phone_rejects_missing_phone(): void
@@ -351,7 +351,7 @@ class PhoneRestrictionControllerTest extends TestCase
 
         $response = $this->controller->checkPhone($request);
 
-        $this->assertSame(400, $response->get_status());
+        $this->assertSame(422, $response->get_status());
     }
 
     public function test_check_phone_messaging_context(): void

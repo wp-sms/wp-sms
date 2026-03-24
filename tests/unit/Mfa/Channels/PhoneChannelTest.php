@@ -10,8 +10,10 @@ use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Message\Message;
 use WSms\Messaging\MessageDispatcher;
+use WSms\Database\Connection;
 use WSms\Mfa\Channels\MagicLinkChannel;
 use WSms\Mfa\Channels\PhoneChannel;
+use WSms\Mfa\UserFactorRepository;
 use WSms\Verification\OtpGenerator;
 use WSms\Verification\OtpService;
 use WSms\Messaging\Template\TemplateManager;
@@ -125,6 +127,7 @@ class PhoneChannelTest extends TestCase
         $templateManager = $this->createMock(TemplateManager::class);
         $templateManager->method('renderToMessage')->willReturn($mockMessage);
         $channel = new PhoneChannel($this->otpGenerator, $this->auditLogger, $this->dispatcher, $this->magicLink, $this->verificationRepo, $templateManager, $otpSvc);
+        $channel->setUserFactorRepository(new UserFactorRepository(new Connection($this->wpdb)));
         $channel->enroll(1, ['phone' => '+12025551234']);
     }
 
@@ -204,15 +207,17 @@ class PhoneChannelTest extends TestCase
 
     private function setupWpdbMock(?object $getRowReturn): void
     {
-        $wpdb = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var', 'get_results'])
+        $wpdb = $this->getMockBuilder(\wpdb::class)
+            ->onlyMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var', 'get_results'])
             ->getMock();
         $wpdb->prefix = 'wp_';
         $wpdb->insert_id = 1;
         $wpdb->rows_affected = 1;
 
         $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturn($getRowReturn);
+        $wpdb->method('get_row')->willReturnCallback(
+            fn($query, $output = null) => $getRowReturn !== null && $output === ARRAY_A ? (array) $getRowReturn : $getRowReturn,
+        );
         $wpdb->method('insert')->willReturn(1);
         $wpdb->method('update')->willReturn(1);
         $wpdb->method('query')->willReturn(1);
@@ -220,5 +225,6 @@ class PhoneChannelTest extends TestCase
 
         $this->wpdb = $wpdb;
         $GLOBALS['wpdb'] = $wpdb;
+        $this->channel->setUserFactorRepository(new UserFactorRepository(new Connection($wpdb)));
     }
 }

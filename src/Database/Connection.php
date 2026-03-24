@@ -14,6 +14,18 @@ defined('ABSPATH') || exit;
  */
 class Connection
 {
+    public const TABLE_CONTACTS        = 'wsms_contacts';
+    public const TABLE_CONTACT_TAG     = 'wsms_contact_tag';
+    public const TABLE_TAGS            = 'wsms_tags';
+    public const TABLE_LISTS           = 'wsms_lists';
+    public const TABLE_CAMPAIGNS       = 'wsms_campaigns';
+    public const TABLE_FLOWS           = 'wsms_flows';
+    public const TABLE_FLOW_EXECUTIONS = 'wsms_flow_executions';
+    public const TABLE_VERIFICATIONS   = 'wsms_verifications';
+    public const TABLE_USER_FACTORS    = 'wsms_user_factors';
+    public const TABLE_AUTH_LOGS       = 'wsms_auth_logs';
+    public const TABLE_MESSAGE_LOGS    = 'wsms_message_logs';
+
     private \wpdb $wpdb;
 
     public function __construct(?\wpdb $wpdb = null)
@@ -24,6 +36,11 @@ class Connection
     public function table(string $name): string
     {
         return $this->wpdb->prefix . $name;
+    }
+
+    public function escLike(string $value): string
+    {
+        return $this->wpdb->esc_like($value);
     }
 
     /**
@@ -112,6 +129,26 @@ class Connection
     public function lastError(): string
     {
         return $this->wpdb->last_error;
+    }
+
+    /**
+     * Prepare a SQL fragment with format strings.
+     * Delegates to wpdb::prepare() for building SQL fragments
+     * (e.g., WHERE clauses, subqueries) that will be composed into larger queries.
+     */
+    public function prepare(string $sql, mixed ...$args): string
+    {
+        return $this->wpdb->prepare($sql, ...$args);
+    }
+
+    /**
+     * Get a single column from query results.
+     * @return list<string>
+     */
+    public function getCol(string $sql, mixed ...$args): array
+    {
+        $prepared = empty($args) ? $sql : $this->wpdb->prepare($sql, ...$args);
+        return $this->wpdb->get_col($prepared) ?: [];
     }
 
     public function wpdb(): \wpdb

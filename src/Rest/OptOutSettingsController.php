@@ -25,43 +25,45 @@ class OptOutSettingsController extends Controller
         ]);
     }
 
-    public function index(): \WP_REST_Response
+    public function index(\WP_REST_Request $request): \WP_REST_Response
     {
-        $settings = get_option('wsms_optout_settings', []);
-        $defaults = OptOutManager::getDefaults();
+        return $this->handle(function () use ($request) {
+            $settings = get_option('wsms_optout_settings', []);
+            $defaults = OptOutManager::getDefaults();
 
-        return new \WP_REST_Response([
-            'success'  => true,
-            'settings' => array_merge($defaults, $settings),
-            'defaults' => [
-                'stop_keywords'  => KeywordMatcher::getDefaultStopKeywords(),
-                'start_keywords' => KeywordMatcher::getDefaultStartKeywords(),
-                'help_keywords'  => KeywordMatcher::getDefaultHelpKeywords(),
-            ],
-        ]);
+            return $this->ok([
+                'settings' => array_merge($defaults, $settings),
+                'defaults' => [
+                    'stop_keywords'  => KeywordMatcher::getDefaultStopKeywords(),
+                    'start_keywords' => KeywordMatcher::getDefaultStartKeywords(),
+                    'help_keywords'  => KeywordMatcher::getDefaultHelpKeywords(),
+                ],
+            ]);
+        });
     }
 
     public function update(\WP_REST_Request $request): \WP_REST_Response
     {
-        $body = $request->get_json_params();
-        $defaults = OptOutManager::getDefaults();
-        $current = get_option('wsms_optout_settings', []);
+        return $this->handle(function () use ($request) {
+            $body = $request->get_json_params();
+            $defaults = OptOutManager::getDefaults();
+            $current = get_option('wsms_optout_settings', []);
 
-        $allowedKeys = array_keys($defaults);
-        $update = $current;
+            $allowedKeys = array_keys($defaults);
+            $update = $current;
 
-        foreach ($allowedKeys as $key) {
-            if (array_key_exists($key, $body)) {
-                $update[$key] = $this->sanitizeValue($key, $body[$key]);
+            foreach ($allowedKeys as $key) {
+                if (array_key_exists($key, $body)) {
+                    $update[$key] = $this->sanitizeValue($key, $body[$key]);
+                }
             }
-        }
 
-        update_option('wsms_optout_settings', $update);
+            update_option('wsms_optout_settings', $update);
 
-        return new \WP_REST_Response([
-            'success'  => true,
-            'settings' => array_merge($defaults, $update),
-        ]);
+            return $this->ok([
+                'settings' => array_merge($defaults, $update),
+            ]);
+        });
     }
 
     private function sanitizeValue(string $key, mixed $value): mixed

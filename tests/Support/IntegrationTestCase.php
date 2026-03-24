@@ -20,6 +20,7 @@ use WSms\Verification\OtpGenerator;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
 use WSms\Mfa\ValueObjects\UserFactor;
+use WSms\Database\Connection;
 use WSms\Verification\OtpService;
 use WSms\Messaging\Template\TemplateManager;
 use WSms\Verification\VerificationRepository;
@@ -80,11 +81,10 @@ abstract class IntegrationTestCase extends TestCase
 
         // Partial mock: real channel registry (registerChannel/getChannel/getAvailableChannels),
         // mocked DB methods (getUserFactors/hasActiveFactors/disableAllFactors).
-        $this->mfaManager = $this->createPartialMock(MfaManager::class, [
-            'getUserFactors',
-            'hasActiveFactors',
-            'disableAllFactors',
-        ]);
+        $this->mfaManager = $this->getMockBuilder(MfaManager::class)
+            ->setConstructorArgs([$this->createMock(\WSms\Mfa\UserFactorRepository::class)])
+            ->onlyMethods(['getUserFactors', 'hasActiveFactors', 'disableAllFactors'])
+            ->getMock();
 
         // Shared settings repository — all classes see the same cached settings.
         $settingsRepo = new SettingsRepository();
@@ -115,7 +115,7 @@ abstract class IntegrationTestCase extends TestCase
         $messageDispatcher->method('sendImmediate')->willReturn(DeliveryResult::sent());
 
         // Real AccountManager.
-        $otpService = new OtpService(new VerificationRepository(), $this->otpGenerator);
+        $otpService = new OtpService(new VerificationRepository(new Connection($this->wpdb)), $this->otpGenerator);
         $templateManager = $this->createMock(TemplateManager::class);
         $this->accountManager = new AccountManager(
             $this->auditLogger,

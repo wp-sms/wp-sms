@@ -12,6 +12,7 @@ use WSms\Social\Providers\GoogleProvider;
 use WSms\Social\SocialAccountRepository;
 use WSms\Social\SocialAuthManager;
 use WSms\Social\SocialAuthOrchestrator;
+use WSms\Database\Connection;
 
 defined('ABSPATH') || exit;
 
@@ -20,8 +21,8 @@ class SocialServiceProvider implements ServiceProvider
     /** {@inheritDoc} */
     public function register(ServiceContainer $container): void
     {
-        $container->register('social.repository', function () {
-            return new SocialAccountRepository();
+        $container->register('social.repository', function () use ($container) {
+            return new SocialAccountRepository($container->get(Connection::class));
         });
 
         $container->register('social.state_manager', function () {
@@ -82,6 +83,21 @@ class SocialServiceProvider implements ServiceProvider
     /** {@inheritDoc} */
     public function boot(ServiceContainer $container): void
     {
+        // Skip provider registration if no social provider has credentials configured.
+        $settings = get_option('wsms_auth_settings', []);
+        $social = $settings['social'] ?? [];
+        $hasConfigured = false;
+        foreach ($social as $provider) {
+            if (!empty($provider['client_id'])) {
+                $hasConfigured = true;
+                break;
+            }
+        }
+
+        if (!$hasConfigured) {
+            return;
+        }
+
         $manager = $container->get('social.manager');
 
         $manager->registerProvider($container->get('social.provider.google'));

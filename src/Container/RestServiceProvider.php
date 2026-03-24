@@ -4,6 +4,7 @@ namespace WSms\Container;
 
 use WSms\Rest\AccountController;
 use WSms\Audit\ReportAggregator;
+use WSms\Database\Connection;
 use WSms\Rest\AdminController;
 use WSms\Rest\AdminUserController;
 use WSms\Rest\AuthController;
@@ -88,8 +89,8 @@ class RestServiceProvider implements ServiceProvider
             );
         });
 
-        $container->register('audit.reports', function () {
-            return new ReportAggregator();
+        $container->register('audit.reports', function () use ($container) {
+            return new ReportAggregator($container->get(Connection::class));
         });
 
         $container->register('rest.admin', function () use ($container) {
@@ -119,6 +120,7 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('auth.settings'),
                 $container->get('template.manager'),
                 $container->get('message.dispatcher'),
+                $container->get('log.app'),
                 $container->get('auth.suspension'),
             );
         });
@@ -143,6 +145,7 @@ class RestServiceProvider implements ServiceProvider
             $c->get('contact.segment_evaluator'),
             $c->get('contact.importer'),
             $c->get('contact.exporter'),
+            $c->get('log.message'),
         ));
         $container->register('rest.tags', fn($c) => new TagController(
             $c->get('contact.tag_repository'),
@@ -166,6 +169,7 @@ class RestServiceProvider implements ServiceProvider
             $c->get('integration.registry'),
             $c->get('flow.triggers'),
             $c->get('flow.actions'),
+            $c->get('contact.repository'),
             $c->get('queue'),
             $c->has('marketing.suppression_poller') ? $c->get('marketing.suppression_poller') : null,
         ));

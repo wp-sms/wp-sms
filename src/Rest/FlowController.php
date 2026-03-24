@@ -2,6 +2,9 @@
 
 namespace WSms\Rest;
 
+use WSms\Exception\NotFoundException;
+use WSms\Exception\PersistenceException;
+use WSms\Exception\ValidationException;
 use WSms\Flow\Contracts\FlowRepositoryInterface;
 use WSms\Flow\Contracts\Flow;
 use WSms\Flow\Engine\FlowRunner;
@@ -129,245 +132,209 @@ class FlowController extends Controller
 
     public function index(\WP_REST_Request $request): \WP_REST_Response
     {
-        $filters = [];
-        if ($request->get_param('status')) {
-            $filters['status'] = $request->get_param('status');
-        }
+        return $this->handle(function () use ($request) {
+            $filters = [];
+            if ($request->get_param('status')) {
+                $filters['status'] = $request->get_param('status');
+            }
 
-        $flows = $this->flowRepository->findAll($filters);
+            $flows = $this->flowRepository->findAll($filters);
 
-        return new \WP_REST_Response([
-            'items' => array_map(fn(Flow $f) => $f->toArray(), $flows),
-            'total' => count($flows),
-        ]);
+            return $this->paginated(
+                array_map(fn(Flow $f) => $f->toArray(), $flows),
+                count($flows),
+            );
+        });
     }
 
     public function store(\WP_REST_Request $request): \WP_REST_Response
     {
-        $params = $request->get_params();
+        return $this->handle(function () use ($request) {
+            $params = $request->get_params();
 
-        $flow = new Flow(
-            id: '',
-            name: $params['name'] ?? '',
-            triggerType: $params['trigger_type'] ?? '',
-            triggerConfig: $params['trigger_config'] ?? [],
-            steps: $params['steps'] ?? [],
-            description: $params['description'] ?? null,
-            priority: (int) ($params['priority'] ?? 0),
-            createdBy: get_current_user_id(),
-        );
+            $flow = new Flow(
+                id: '',
+                name: $params['name'] ?? '',
+                triggerType: $params['trigger_type'] ?? '',
+                triggerConfig: $params['trigger_config'] ?? [],
+                steps: $params['steps'] ?? [],
+                description: $params['description'] ?? null,
+                priority: (int) ($params['priority'] ?? 0),
+                createdBy: get_current_user_id(),
+            );
 
-        $id = $this->flowRepository->save($flow);
-        $saved = $this->flowRepository->find($id);
+            $id = $this->flowRepository->save($flow);
+            $saved = $this->flowRepository->find($id);
 
-        if (!$saved) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'save_failed',
-                'message' => __('Failed to save flow', 'wp-sms'),
-            ], 500);
-        }
+            if (!$saved) {
+                throw new PersistenceException(__('Failed to save flow', 'wp-sms'));
+            }
 
-        return new \WP_REST_Response([
-            'success' => true,
-            'data'    => $saved->toArray(),
-        ], 201);
+            return $this->created($saved->toArray());
+        });
     }
 
     public function show(\WP_REST_Request $request): \WP_REST_Response
     {
-        $flow = $this->flowRepository->find($request->get_param('id'));
+        return $this->handle(function () use ($request) {
+            $id = $request->get_param('id');
+            $flow = $this->flowRepository->find($id);
 
-        if (!$flow) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Flow not found', 'wp-sms'),
-            ], 404);
-        }
+            if (!$flow) {
+                throw NotFoundException::entity('Flow', $id);
+            }
 
-        return new \WP_REST_Response([
-            'success' => true,
-            'data'    => $flow->toArray(),
-        ]);
+            return $this->ok($flow->toArray());
+        });
     }
 
     public function update(\WP_REST_Request $request): \WP_REST_Response
     {
-        $id = $request->get_param('id');
-        $existing = $this->flowRepository->find($id);
+        return $this->handle(function () use ($request) {
+            $id = $request->get_param('id');
+            $existing = $this->flowRepository->find($id);
 
-        if (!$existing) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Flow not found', 'wp-sms'),
-            ], 404);
-        }
+            if (!$existing) {
+                throw NotFoundException::entity('Flow', $id);
+            }
 
-        $params = $request->get_params();
+            $params = $request->get_params();
 
-        $flow = new Flow(
-            id: $id,
-            name: $params['name'] ?? $existing->getName(),
-            triggerType: $params['trigger_type'] ?? $existing->getTriggerType(),
-            triggerConfig: $params['trigger_config'] ?? $existing->getTriggerConfig(),
-            steps: $params['steps'] ?? $existing->getSteps(),
-            status: $params['status'] ?? $existing->getStatus(),
-            publishedSteps: $existing->getPublishedSteps(),
-            publishedAt: $existing->getPublishedAt(),
-            description: $params['description'] ?? $existing->getDescription(),
-            priority: (int) ($params['priority'] ?? $existing->getPriority()),
-            createdBy: $existing->getCreatedBy(),
-        );
+            $flow = new Flow(
+                id: $id,
+                name: $params['name'] ?? $existing->getName(),
+                triggerType: $params['trigger_type'] ?? $existing->getTriggerType(),
+                triggerConfig: $params['trigger_config'] ?? $existing->getTriggerConfig(),
+                steps: $params['steps'] ?? $existing->getSteps(),
+                status: $params['status'] ?? $existing->getStatus(),
+                publishedSteps: $existing->getPublishedSteps(),
+                publishedAt: $existing->getPublishedAt(),
+                description: $params['description'] ?? $existing->getDescription(),
+                priority: (int) ($params['priority'] ?? $existing->getPriority()),
+                createdBy: $existing->getCreatedBy(),
+            );
 
-        $this->flowRepository->save($flow);
+            $this->flowRepository->save($flow);
 
-        return new \WP_REST_Response([
-            'success' => true,
-            'data'    => $flow->toArray(),
-        ]);
+            return $this->ok($flow->toArray());
+        });
     }
 
     public function destroy(\WP_REST_Request $request): \WP_REST_Response
     {
-        $deleted = $this->flowRepository->delete($request->get_param('id'));
+        return $this->handle(function () use ($request) {
+            $deleted = $this->flowRepository->delete($request->get_param('id'));
 
-        if (!$deleted) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Flow not found', 'wp-sms'),
-            ], 404);
-        }
+            if (!$deleted) {
+                throw NotFoundException::entity('Flow', $request->get_param('id'));
+            }
 
-        return new \WP_REST_Response(['success' => true]);
+            return $this->ok();
+        });
     }
 
     public function publish(\WP_REST_Request $request): \WP_REST_Response
     {
-        $published = $this->flowRepository->publish($request->get_param('id'));
+        return $this->handle(function () use ($request) {
+            $published = $this->flowRepository->publish($request->get_param('id'));
 
-        if (!$published) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'invalid_flow',
-                'message' => __('Flow not found or has no steps', 'wp-sms'),
-            ], 400);
-        }
+            if (!$published) {
+                throw ValidationException::field('flow', __('Flow not found or has no steps', 'wp-sms'));
+            }
 
-        $flow = $this->flowRepository->find($request->get_param('id'));
+            $flow = $this->flowRepository->find($request->get_param('id'));
 
-        return new \WP_REST_Response([
-            'success' => true,
-            'data'    => $flow->toArray(),
-        ]);
+            return $this->ok($flow->toArray());
+        });
     }
 
     public function templates(): \WP_REST_Response
     {
-        return new \WP_REST_Response([
-            'items' => array_values(FlowTemplateRegistry::all()),
-        ]);
+        return $this->handle(function () {
+            return new \WP_REST_Response([
+                'items' => array_values(FlowTemplateRegistry::all()),
+            ]);
+        });
     }
 
     public function testTrigger(\WP_REST_Request $request): \WP_REST_Response
     {
-        $flow = $this->flowRepository->find($request->get_param('id'));
+        return $this->handle(function () use ($request) {
+            $id = $request->get_param('id');
+            $flow = $this->flowRepository->find($id);
 
-        if (!$flow) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Flow not found', 'wp-sms'),
-            ], 404);
-        }
+            if (!$flow) {
+                throw NotFoundException::entity('Flow', $id);
+            }
 
-        $trigger = $this->triggerRegistry->get($flow->getTriggerType());
+            $trigger = $this->triggerRegistry->get($flow->getTriggerType());
 
-        if (!$trigger) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'trigger_not_found',
-                'message' => __('Trigger not found', 'wp-sms'),
-            ], 404);
-        }
+            if (!$trigger) {
+                throw NotFoundException::entity('Trigger', $flow->getTriggerType());
+            }
 
-        // Try to get real sample data from the trigger
-        $samplePayload = $trigger->getSamplePayload();
+            // Try to get real sample data from the trigger
+            $samplePayload = $trigger->getSamplePayload();
 
-        // Fall back to example values from the payload schema
-        if ($samplePayload === null) {
-            $samplePayload = $this->extractExamplesFromSchema($trigger->getPayloadSchema());
-        }
+            // Fall back to example values from the payload schema
+            if ($samplePayload === null) {
+                $samplePayload = $this->extractExamplesFromSchema($trigger->getPayloadSchema());
+            }
 
-        return new \WP_REST_Response([
-            'success' => true,
-            'data'    => $samplePayload,
-        ]);
+            return $this->ok($samplePayload);
+        });
     }
 
     public function run(\WP_REST_Request $request): \WP_REST_Response
     {
-        $flow = $this->flowRepository->find($request->get_param('id'));
+        return $this->handle(function () use ($request) {
+            $id = $request->get_param('id');
+            $flow = $this->flowRepository->find($id);
 
-        if (!$flow) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Flow not found', 'wp-sms'),
-            ], 404);
-        }
+            if (!$flow) {
+                throw NotFoundException::entity('Flow', $id);
+            }
 
-        if ($flow->getStatus() !== 'active') {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'flow_not_active',
-                'message' => __('Flow must be active to run manually', 'wp-sms'),
-            ], 400);
-        }
+            if ($flow->getStatus() !== 'active') {
+                throw ValidationException::field('flow', __('Flow must be active to run manually', 'wp-sms'));
+            }
 
-        $this->flowRunner->runSingleFlow($flow->getId(), [
-            'triggered_by' => get_current_user_id(),
-        ]);
+            $this->flowRunner->runSingleFlow($flow->getId(), [
+                'triggered_by' => get_current_user_id(),
+            ]);
 
-        return new \WP_REST_Response([
-            'success' => true,
-            'message' => __('Flow execution started', 'wp-sms'),
-        ]);
+            return $this->ok();
+        });
     }
 
     public function executions(\WP_REST_Request $request): \WP_REST_Response
     {
-        $flowId = $request->get_param('id');
-        $executions = $this->executionRepository->findByFlow(
-            $flowId,
-            (int) $request->get_param('per_page'),
-            (int) $request->get_param('offset'),
-        );
+        return $this->handle(function () use ($request) {
+            $flowId = $request->get_param('id');
+            $executions = $this->executionRepository->findByFlow(
+                $flowId,
+                (int) $request->get_param('per_page'),
+                (int) $request->get_param('offset'),
+            );
 
-        return new \WP_REST_Response([
-            'items' => array_map([$this, 'formatExecution'], $executions),
-            'total' => $this->executionRepository->countByFlow($flowId),
-        ]);
+            return $this->paginated(
+                array_map([$this, 'formatExecution'], $executions),
+                $this->executionRepository->countByFlow($flowId),
+            );
+        });
     }
 
     public function executionDetail(\WP_REST_Request $request): \WP_REST_Response
     {
-        $execution = $this->executionRepository->find($request->get_param('execution_id'));
+        return $this->handle(function () use ($request) {
+            $execution = $this->executionRepository->find($request->get_param('execution_id'));
 
-        if (!$execution || $execution['flow_id'] !== $request->get_param('id')) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Execution not found', 'wp-sms'),
-            ], 404);
-        }
+            if (!$execution || $execution['flow_id'] !== $request->get_param('id')) {
+                throw NotFoundException::entity('Execution', $request->get_param('execution_id'));
+            }
 
-        return new \WP_REST_Response([
-            'success' => true,
-            'data'    => $this->formatExecution($execution),
-        ]);
+            return $this->ok($this->formatExecution($execution));
+        });
     }
 
     private function formatExecution(array $row): array

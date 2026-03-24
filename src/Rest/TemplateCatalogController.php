@@ -4,6 +4,7 @@ namespace WSms\Rest;
 
 use WP_REST_Request;
 use WP_REST_Response;
+use WSms\Exception\ValidationException;
 use WSms\Messaging\Catalog\TemplateCatalogException;
 use WSms\Messaging\Catalog\TemplateCatalogManager;
 use WSms\Messaging\Catalog\TemplateMapping;
@@ -64,107 +65,114 @@ class TemplateCatalogController extends Controller
 
     public function handleFetchTemplates(WP_REST_Request $request): WP_REST_Response
     {
-        return $this->fetchTemplatesFromGateway($request->get_param('id'), forceRefresh: false);
+        return $this->handle(function () use ($request) {
+            return $this->fetchTemplatesFromGateway($request->get_param('id'), forceRefresh: false);
+        });
     }
 
     public function handleRefreshTemplates(WP_REST_Request $request): WP_REST_Response
     {
-        return $this->fetchTemplatesFromGateway($request->get_param('id'), forceRefresh: true);
+        return $this->handle(function () use ($request) {
+            return $this->fetchTemplatesFromGateway($request->get_param('id'), forceRefresh: true);
+        });
     }
 
     public function handleGetMappings(WP_REST_Request $request): WP_REST_Response
     {
-        $gatewayId = $request->get_param('id');
-        $mappings = $this->catalogManager->getMappingsForGateway($gatewayId);
+        return $this->handle(function () use ($request) {
+            $gatewayId = $request->get_param('id');
+            $mappings = $this->catalogManager->getMappingsForGateway($gatewayId);
 
-        return new WP_REST_Response(array_map(fn($m) => $m->toArray(), $mappings));
+            return $this->ok(array_map(fn($m) => $m->toArray(), $mappings));
+        });
     }
 
     public function handleSaveMapping(WP_REST_Request $request): WP_REST_Response
     {
-        $gatewayId = $request->get_param('id');
-        $templateType = $request->get_param('type');
-        $providerTemplateId = $request->get_param('provider_template_id');
-        $variableMap = $request->get_param('variable_map') ?? [];
-        $language = $request->get_param('language') ?? 'en';
+        return $this->handle(function () use ($request) {
+            $gatewayId = $request->get_param('id');
+            $templateType = $request->get_param('type');
+            $providerTemplateId = $request->get_param('provider_template_id');
+            $variableMap = $request->get_param('variable_map') ?? [];
+            $language = $request->get_param('language') ?? 'en';
 
-        // Look up the provider template to cache its name and body
-        $providerTemplateName = '';
-        $providerTemplateBody = '';
-        $variableCount = 0;
+            // Look up the provider template to cache its name and body
+            $providerTemplateName = '';
+            $providerTemplateBody = '';
+            $variableCount = 0;
 
-        try {
-            $templates = $this->catalogManager->getTemplates($gatewayId);
-            foreach ($templates as $template) {
-                if ($template->id === $providerTemplateId) {
-                    $providerTemplateName = $template->name;
-                    $providerTemplateBody = $template->bodyText;
-                    $variableCount = $template->variableCount;
-                    break;
+            try {
+                $templates = $this->catalogManager->getTemplates($gatewayId);
+                foreach ($templates as $template) {
+                    if ($template->id === $providerTemplateId) {
+                        $providerTemplateName = $template->name;
+                        $providerTemplateBody = $template->bodyText;
+                        $variableCount = $template->variableCount;
+                        break;
+                    }
+                }
+            } catch (TemplateCatalogException) {
+                // Continue without cached data — mapping still valid
+            }
+
+            // Validate: all provider variable positions must be mapped
+            $mappedPositions = array_values($variableMap);
+            for ($i = 1; $i <= $variableCount; $i++) {
+                if (!in_array((string) $i, $mappedPositions, true)) {
+                    throw ValidationException::field(
+                        'variable_map',
+                        sprintf('Provider variable {{%d}} is not mapped.', $i),
+                    );
                 }
             }
-        } catch (TemplateCatalogException) {
-            // Continue without cached data — mapping still valid
-        }
 
-        // Validate: all provider variable positions must be mapped
-        $mappedPositions = array_values($variableMap);
-        for ($i = 1; $i <= $variableCount; $i++) {
-            if (!in_array((string) $i, $mappedPositions, true)) {
-                return new WP_REST_Response([
-                    'success' => false,
-                    'error'   => 'incomplete_mapping',
-                    'message' => sprintf('Provider variable {{%d}} is not mapped.', $i),
-                ], 400);
-            }
-        }
+            $mapping = new TemplateMapping(
+                templateType: $templateType,
+                providerTemplateId: $providerTemplateId,
+                gatewayId: $gatewayId,
+                language: $language,
+                variableMap: $variableMap,
+                providerTemplateName: $providerTemplateName,
+                providerTemplateBody: $providerTemplateBody,
+                lastVerifiedAt: time(),
+            );
 
-        $mapping = new TemplateMapping(
-            templateType: $templateType,
-            providerTemplateId: $providerTemplateId,
-            gatewayId: $gatewayId,
-            language: $language,
-            variableMap: $variableMap,
-            providerTemplateName: $providerTemplateName,
-            providerTemplateBody: $providerTemplateBody,
-            lastVerifiedAt: time(),
-        );
+            $this->catalogManager->saveMapping($mapping);
 
-        $this->catalogManager->saveMapping($mapping);
-
-        return new WP_REST_Response($mapping->toArray());
+            return $this->ok($mapping->toArray());
+        });
     }
 
     public function handleRemoveMapping(WP_REST_Request $request): WP_REST_Response
     {
-        $gatewayId = $request->get_param('id');
-        $templateType = $request->get_param('type');
+        return $this->handle(function () use ($request) {
+            $gatewayId = $request->get_param('id');
+            $templateType = $request->get_param('type');
 
-        $this->catalogManager->removeMapping($templateType, $gatewayId);
+            $this->catalogManager->removeMapping($templateType, $gatewayId);
 
-        return new WP_REST_Response(['success' => true]);
+            return $this->ok();
+        });
     }
 
     public function handleVerifyMappings(WP_REST_Request $request): WP_REST_Response
     {
-        $gatewayId = $request->get_param('id');
+        return $this->handle(function () use ($request) {
+            $gatewayId = $request->get_param('id');
 
-        $result = $this->catalogManager->verifyMappings($gatewayId);
+            $result = $this->catalogManager->verifyMappings($gatewayId);
 
-        return new WP_REST_Response([
-            'valid' => array_map(fn($m) => $m->toArray(), $result['valid']),
-            'stale' => array_map(fn($m) => $m->toArray(), $result['stale']),
-        ]);
+            return $this->ok([
+                'valid' => array_map(fn($m) => $m->toArray(), $result['valid']),
+                'stale' => array_map(fn($m) => $m->toArray(), $result['stale']),
+            ]);
+        });
     }
 
     private function fetchTemplatesFromGateway(string $gatewayId, bool $forceRefresh): WP_REST_Response
     {
         if (!$this->catalogManager->gatewaySupportsTemplates($gatewayId)) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_supported',
-                'message' => 'This gateway does not support template catalog.',
-            ], 400);
+            throw ValidationException::field('gateway', 'This gateway does not support template catalog.');
         }
 
         try {
@@ -177,6 +185,6 @@ class TemplateCatalogController extends Controller
             ], 502);
         }
 
-        return new WP_REST_Response(array_map(fn($t) => $t->toArray(), $templates));
+        return $this->ok(array_map(fn($t) => $t->toArray(), $templates));
     }
 }

@@ -2,21 +2,23 @@
 
 namespace WSms\Contact;
 
-use WSms\Dependencies\Symfony\Component\Uid\Ulid;
 use WSms\Contact\Contracts\TagRepositoryInterface;
+use WSms\Database\Connection;
+use WSms\Dependencies\Symfony\Component\Uid\Ulid;
+use WSms\Exception\NotFoundException;
 
 defined('ABSPATH') || exit;
 
 class TagRepository implements TagRepositoryInterface
 {
+    public function __construct(private readonly Connection $db) {}
+
     public function create(array $data): string
     {
-        global $wpdb;
-
         $id = (string) new Ulid();
         $slug = $this->resolveSlug($data['name'], $data['slug'] ?? null, null, $id);
 
-        $wpdb->insert($wpdb->prefix . 'wsms_tags', [
+        $this->db->insert(Connection::TABLE_TAGS, [
             'id'    => $id,
             'name'  => $data['name'],
             'slug'  => $slug,
@@ -28,8 +30,6 @@ class TagRepository implements TagRepositoryInterface
 
     public function update(string $id, array $data): bool
     {
-        global $wpdb;
-
         $update = [];
 
         if (isset($data['name'])) {
@@ -45,44 +45,47 @@ class TagRepository implements TagRepositoryInterface
             return false;
         }
 
-        return (bool) $wpdb->update($wpdb->prefix . 'wsms_tags', $update, ['id' => $id]);
+        return (bool) $this->db->update(Connection::TABLE_TAGS, $update, ['id' => $id]);
     }
 
     public function find(string $id): ?array
     {
-        global $wpdb;
-        $row = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wsms_tags WHERE id = %s", $id),
-            ARRAY_A,
-        );
-        return $row ?: null;
+        $table = $this->db->table(Connection::TABLE_TAGS);
+
+        return $this->db->getRow("SELECT * FROM {$table} WHERE id = %s", $id);
+    }
+
+    public function findOrFail(string $id): array
+    {
+        $row = $this->find($id);
+
+        if ($row === null) {
+            throw NotFoundException::entity('Tag', $id);
+        }
+
+        return $row;
     }
 
     public function findBySlug(string $slug): ?array
     {
-        global $wpdb;
-        $row = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wsms_tags WHERE slug = %s", $slug),
-            ARRAY_A,
-        );
-        return $row ?: null;
+        $table = $this->db->table(Connection::TABLE_TAGS);
+
+        return $this->db->getRow("SELECT * FROM {$table} WHERE slug = %s", $slug);
     }
 
     public function findAll(): array
     {
-        global $wpdb;
-        return $wpdb->get_results(
-            "SELECT * FROM {$wpdb->prefix}wsms_tags ORDER BY name ASC",
-            ARRAY_A,
-        ) ?: [];
+        $table = $this->db->table(Connection::TABLE_TAGS);
+
+        return $this->db->getResults("SELECT * FROM {$table} ORDER BY name ASC");
     }
 
     public function delete(string $id): bool
     {
-        global $wpdb;
         // Cascade: remove from junction table first
-        $wpdb->delete($wpdb->prefix . 'wsms_contact_tag', ['tag_id' => $id]);
-        return (bool) $wpdb->delete($wpdb->prefix . 'wsms_tags', ['id' => $id]);
+        $this->db->delete(Connection::TABLE_CONTACT_TAG, ['tag_id' => $id]);
+
+        return (bool) $this->db->delete(Connection::TABLE_TAGS, ['id' => $id]);
     }
 
     private function resolveSlug(string $name, ?string $explicitSlug, ?string $excludeId, string $suffixSource): string
@@ -102,9 +105,19 @@ class TagRepository implements TagRepositoryInterface
 
     public function getContactCount(string $id): int
     {
-        global $wpdb;
-        return (int) $wpdb->get_var(
-            $wpdb->prepare("SELECT COUNT(*) FROM {$wpdb->prefix}wsms_contact_tag WHERE tag_id = %s", $id),
-        );
+        $table = $this->db->table(Connection::TABLE_CONTACT_TAG);
+
+        return (int) $this->db->getVar("SELECT COUNT(*) FROM {$table} WHERE tag_id = %s", $id);
+    }
+
+    public function getContactCounts(): array
+    {
+        $t = $this->db->table(Connection::TABLE_CONTACT_TAG);
+        $rows = $this->db->getResults("SELECT tag_id, COUNT(*) AS count FROM {$t} GROUP BY tag_id");
+        $counts = [];
+        foreach ($rows as $row) {
+            $counts[$row['tag_id']] = (int) $row['count'];
+        }
+        return $counts;
     }
 }

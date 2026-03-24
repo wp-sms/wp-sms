@@ -3,6 +3,7 @@
 namespace WSms\Rest;
 
 use WSms\Auth\RateLimiter;
+use WSms\Exception\ValidationException;
 use WSms\MessagingButton\MessageHandler;
 use WSms\MessagingButton\MessagingButtonSettings;
 use WSms\Messaging\Gateway\GatewayRegistry;
@@ -62,105 +63,101 @@ class MessagingButtonController extends Controller
 
     public function handleMessage(\WP_REST_Request $request): \WP_REST_Response
     {
-        $rateCheck = $this->rateLimiter->check('messaging_button_message', 5, 60);
-        if (!$rateCheck['allowed']) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error' => __('Too many messages. Please try again later.', 'wp-sms'),
-                'retry_after' => $rateCheck['retry_after'],
-            ], 429);
-        }
+        return $this->handle(function () use ($request) {
+            $rateCheck = $this->rateLimiter->check('messaging_button_message', 5, 60);
+            if (!$rateCheck['allowed']) {
+                return new \WP_REST_Response([
+                    'success' => false,
+                    'error' => __('Too many messages. Please try again later.', 'wp-sms'),
+                    'retry_after' => $rateCheck['retry_after'],
+                ], 429);
+            }
 
-        if (!$this->settings->isEnabled()) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error' => __('Messaging button is not enabled.', 'wp-sms'),
-            ], 403);
-        }
+            if (!$this->settings->isEnabled()) {
+                return new \WP_REST_Response([
+                    'success' => false,
+                    'error' => __('Messaging button is not enabled.', 'wp-sms'),
+                ], 403);
+            }
 
-        // GDPR check
-        $gdprSettings = $this->settings->get('gdpr', []);
-        if (!empty($gdprSettings['enabled']) && empty($request->get_param('gdpr_consent'))) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error' => __('You must accept the privacy policy to send a message.', 'wp-sms'),
-            ], 422);
-        }
+            // GDPR check
+            $gdprSettings = $this->settings->get('gdpr', []);
+            if (!empty($gdprSettings['enabled']) && empty($request->get_param('gdpr_consent'))) {
+                throw ValidationException::field('gdpr_consent', __('You must accept the privacy policy to send a message.', 'wp-sms'));
+            }
 
-        $email = $request->get_param('email') ?? '';
-        if ($email !== '' && !is_email($email)) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error' => __('Please provide a valid email address.', 'wp-sms'),
-            ], 422);
-        }
+            $email = $request->get_param('email') ?? '';
+            if ($email !== '' && !is_email($email)) {
+                throw ValidationException::field('email', __('Please provide a valid email address.', 'wp-sms'));
+            }
 
-        $data = [
-            'name' => $request->get_param('name') ?? '',
-            'email' => $email,
-            'phone' => $request->get_param('phone') ?? '',
-            'message' => $request->get_param('message') ?? '',
-            'page_url' => $request->get_param('page_url') ?? '',
-        ];
+            $data = [
+                'name' => $request->get_param('name') ?? '',
+                'email' => $email,
+                'phone' => $request->get_param('phone') ?? '',
+                'message' => $request->get_param('message') ?? '',
+                'page_url' => $request->get_param('page_url') ?? '',
+            ];
 
-        // Merge WP user data as fallback for logged-in users
-        if (is_user_logged_in()) {
-            $user = wp_get_current_user();
-            $userName = UserMeta::displayName($user);
-            $data['name'] = $data['name'] ?: $userName;
-            $data['email'] = $data['email'] ?: $user->user_email;
-            $data['phone'] = $data['phone'] ?: (get_user_meta($user->ID, UserMeta::PHONE, true) ?: '');
-            $data['user_id'] = $user->ID;
-        }
+            // Merge WP user data as fallback for logged-in users
+            if (is_user_logged_in()) {
+                $user = wp_get_current_user();
+                $userName = UserMeta::displayName($user);
+                $data['name'] = $data['name'] ?: $userName;
+                $data['email'] = $data['email'] ?: $user->user_email;
+                $data['phone'] = $data['phone'] ?: (get_user_meta($user->ID, UserMeta::PHONE, true) ?: '');
+                $data['user_id'] = $user->ID;
+            }
 
-        $result = $this->messageHandler->handle($data);
+            $result = $this->messageHandler->handle($data);
 
-        if (!$result['success']) {
-            return new \WP_REST_Response($result, 422);
-        }
+            if (!$result['success']) {
+                return new \WP_REST_Response($result, 422);
+            }
 
-        return new \WP_REST_Response([
-            'success' => true,
-            'message' => __('Message sent successfully.', 'wp-sms'),
-        ]);
+            return $this->ok(['message' => __('Message sent successfully.', 'wp-sms')]);
+        });
     }
 
     public function handleGetConfig(): \WP_REST_Response
     {
-        return new \WP_REST_Response([
-            'success' => true,
-            'config' => $this->settings->getPublicConfig(),
-            'available_channels' => array_keys($this->gatewayRegistry->getConfiguredChannels()),
-        ]);
+        return $this->handle(function () {
+            return new \WP_REST_Response([
+                'success' => true,
+                'config' => $this->settings->getPublicConfig(),
+                'available_channels' => array_keys($this->gatewayRegistry->getConfiguredChannels()),
+            ]);
+        });
     }
 
     public function handleGetSettings(): \WP_REST_Response
     {
-        return new \WP_REST_Response([
-            'success' => true,
-            'settings' => $this->settings->all(),
-            'wp_timezone' => wp_timezone_string(),
-        ]);
+        return $this->handle(function () {
+            return new \WP_REST_Response([
+                'success' => true,
+                'settings' => $this->settings->all(),
+                'wp_timezone' => wp_timezone_string(),
+            ]);
+        });
     }
 
     public function handleUpdateSettings(\WP_REST_Request $request): \WP_REST_Response
     {
-        $payload = $request->get_json_params();
+        return $this->handle(function () use ($request) {
+            $payload = $request->get_json_params();
 
-        if (empty($payload) || !is_array($payload)) {
+            if (empty($payload) || !is_array($payload)) {
+                throw ValidationException::field('settings', __('Invalid settings payload.', 'wp-sms'));
+            }
+
+            $this->settings->update($this->sanitizeSettings($payload));
+
             return new \WP_REST_Response([
-                'success' => false,
-                'error' => __('Invalid settings payload.', 'wp-sms'),
-            ], 400);
-        }
-
-        $this->settings->update($this->sanitizeSettings($payload));
-
-        return new \WP_REST_Response([
-            'success' => true,
-            'settings' => $this->settings->all(),
-            'message' => __('Settings saved.', 'wp-sms'),
-        ]);
+                'success' => true,
+                'settings' => $this->settings->all(),
+                'message' => __('Settings saved.', 'wp-sms'),
+            ]);
+        });
     }
 
     private function sanitizeSettings(array $settings): array

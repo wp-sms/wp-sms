@@ -39,17 +39,17 @@ class Migrator
         global $wpdb;
 
         $tables = [
-            $wpdb->prefix . 'wsms_campaigns',
-            $wpdb->prefix . 'wsms_contact_tag',
-            $wpdb->prefix . 'wsms_lists',
-            $wpdb->prefix . 'wsms_tags',
-            $wpdb->prefix . 'wsms_contacts',
-            $wpdb->prefix . 'wsms_message_logs',
-            $wpdb->prefix . 'wsms_flow_executions',
-            $wpdb->prefix . 'wsms_flows',
-            $wpdb->prefix . 'wsms_auth_logs',
-            $wpdb->prefix . 'wsms_verifications',
-            $wpdb->prefix . 'wsms_user_factors',
+            $wpdb->prefix . Connection::TABLE_CAMPAIGNS,
+            $wpdb->prefix . Connection::TABLE_CONTACT_TAG,
+            $wpdb->prefix . Connection::TABLE_LISTS,
+            $wpdb->prefix . Connection::TABLE_TAGS,
+            $wpdb->prefix . Connection::TABLE_CONTACTS,
+            $wpdb->prefix . Connection::TABLE_MESSAGE_LOGS,
+            $wpdb->prefix . Connection::TABLE_FLOW_EXECUTIONS,
+            $wpdb->prefix . Connection::TABLE_FLOWS,
+            $wpdb->prefix . Connection::TABLE_AUTH_LOGS,
+            $wpdb->prefix . Connection::TABLE_VERIFICATIONS,
+            $wpdb->prefix . Connection::TABLE_USER_FACTORS,
         ];
 
         foreach ($tables as $table) {

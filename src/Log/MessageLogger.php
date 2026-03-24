@@ -2,6 +2,7 @@
 
 namespace WSms\Log;
 
+use WSms\Database\Connection;
 use WSms\Dependencies\Symfony\Component\Uid\Ulid;
 use WSms\Log\Contracts\MessageLoggerInterface;
 
@@ -9,6 +10,10 @@ defined('ABSPATH') || exit;
 
 class MessageLogger implements MessageLoggerInterface
 {
+    public function __construct(private readonly Connection $db)
+    {
+    }
+
     public function logSend(
         string $gatewayId,
         string $channel,
@@ -23,12 +28,10 @@ class MessageLogger implements MessageLoggerInterface
         string $type = 'transactional',
         ?string $campaignId = null,
     ): string {
-        global $wpdb;
-
         $id = (string) new Ulid();
         $now = current_time('mysql');
 
-        $wpdb->insert($wpdb->prefix . 'wsms_message_logs', [
+        $this->db->insert(Connection::TABLE_MESSAGE_LOGS, [
             'id'            => $id,
             'execution_id'  => $executionId,
             'campaign_id'   => $campaignId,
@@ -51,8 +54,6 @@ class MessageLogger implements MessageLoggerInterface
 
     public function updateStatus(string $logId, string $status, ?string $error = null, ?string $providerId = null): void
     {
-        global $wpdb;
-
         $data = ['status' => $status];
         if ($providerId !== null) {
             $data['provider_id'] = $providerId;
@@ -67,83 +68,135 @@ class MessageLogger implements MessageLoggerInterface
             $data['delivered_at'] = current_time('mysql');
         }
 
-        $wpdb->update($wpdb->prefix . 'wsms_message_logs', $data, ['id' => $logId]);
+        $this->db->update(Connection::TABLE_MESSAGE_LOGS, $data, ['id' => $logId]);
     }
 
     public function findByProviderId(string $gatewayId, string $providerId): ?array
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_message_logs';
+        $table = $this->db->table(Connection::TABLE_MESSAGE_LOGS);
 
-        $row = $wpdb->get_row(
-            $wpdb->prepare(
-                "SELECT id, campaign_id FROM {$table} WHERE gateway_id = %s AND provider_id = %s ORDER BY created_at DESC LIMIT 1",
-                $gatewayId,
-                $providerId,
-            ),
-            ARRAY_A,
+        return $this->db->getRow(
+            "SELECT id, campaign_id FROM {$table} WHERE gateway_id = %s AND provider_id = %s ORDER BY created_at DESC LIMIT 1",
+            $gatewayId,
+            $providerId,
         );
-
-        return $row ?: null;
     }
 
     public function findByExecution(string $executionId): array
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_message_logs';
+        $table = $this->db->table(Connection::TABLE_MESSAGE_LOGS);
 
-        return $wpdb->get_results(
-            $wpdb->prepare("SELECT * FROM {$table} WHERE execution_id = %s ORDER BY created_at ASC", $executionId),
-            ARRAY_A
-        ) ?: [];
+        return $this->db->getResults(
+            "SELECT * FROM {$table} WHERE execution_id = %s ORDER BY created_at ASC",
+            $executionId,
+        );
     }
 
     public function findAll(array $filters = [], int $limit = 50, int $offset = 0): array
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_message_logs';
+        $table = $this->db->table(Connection::TABLE_MESSAGE_LOGS);
 
-        [$where, $params] = $this->buildWhereClause($filters, $wpdb);
+        [$where, $params] = $this->buildWhereClause($filters);
 
         $sql = "SELECT * FROM {$table} WHERE {$where} ORDER BY created_at DESC LIMIT %d OFFSET %d";
         $params[] = $limit;
         $params[] = $offset;
 
-        return $wpdb->get_results($wpdb->prepare($sql, ...$params), ARRAY_A) ?: [];
+        return $this->db->getResults($sql, ...$params);
     }
 
     public function count(array $filters = []): int
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_message_logs';
+        $table = $this->db->table(Connection::TABLE_MESSAGE_LOGS);
 
-        [$where, $params] = $this->buildWhereClause($filters, $wpdb);
+        [$where, $params] = $this->buildWhereClause($filters);
 
         $sql = "SELECT COUNT(*) FROM {$table} WHERE {$where}";
 
-        if (empty($params)) {
-            return (int) $wpdb->get_var($sql);
-        }
-
-        return (int) $wpdb->get_var($wpdb->prepare($sql, ...$params));
+        return (int) $this->db->getVar($sql, ...$params);
     }
 
     public function deleteOlderThan(int $days): int
     {
-        global $wpdb;
+        $table = $this->db->table(Connection::TABLE_MESSAGE_LOGS);
 
-        $table = $wpdb->prefix . 'wsms_message_logs';
-
-        return (int) $wpdb->query(
-            $wpdb->prepare(
-                "DELETE FROM {$table} WHERE created_at < DATE_SUB(NOW(), INTERVAL %d DAY)",
-                $days,
-            ),
+        return $this->db->query(
+            "DELETE FROM {$table} WHERE created_at < DATE_SUB(NOW(), INTERVAL %d DAY)",
+            $days,
         );
     }
 
+    public function getCampaignStats(string $campaignId): array
+    {
+        $table = $this->db->table(Connection::TABLE_MESSAGE_LOGS);
+
+        $row = $this->db->getRow(
+            "SELECT
+                COUNT(*) as total,
+                SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered,
+                SUM(CASE WHEN status = 'failed' THEN 1 ELSE 0 END) as failed,
+                SUM(CASE WHEN status = 'sent' THEN 1 ELSE 0 END) as sent,
+                SUM(CASE WHEN status = 'queued' THEN 1 ELSE 0 END) as queued,
+                SUM(COALESCE(cost, 0)) as total_cost
+            FROM {$table}
+            WHERE campaign_id = %s",
+            $campaignId,
+        );
+
+        return [
+            'total'      => (int) ($row['total'] ?? 0),
+            'delivered'  => (int) ($row['delivered'] ?? 0),
+            'failed'     => (int) ($row['failed'] ?? 0),
+            'sent'       => (int) ($row['sent'] ?? 0),
+            'queued'     => (int) ($row['queued'] ?? 0),
+            'total_cost' => (float) ($row['total_cost'] ?? 0),
+        ];
+    }
+
+    public function findByRecipients(array $recipients, int $limit = 20, int $offset = 0): array
+    {
+        $recipients = array_filter($recipients);
+        if (empty($recipients)) {
+            return [];
+        }
+
+        $table = $this->db->table(Connection::TABLE_MESSAGE_LOGS);
+
+        $placeholders = implode(', ', array_fill(0, count($recipients), '%s'));
+        $params = array_values($recipients);
+        $params[] = $limit;
+        $params[] = $offset;
+
+        return $this->db->getResults(
+            "SELECT id, status, channel, gateway_id, body_preview, sent_at, created_at
+             FROM {$table}
+             WHERE recipient IN ({$placeholders})
+             ORDER BY created_at DESC
+             LIMIT %d OFFSET %d",
+            ...$params,
+        );
+    }
+
+    public function findSentRecipients(string $campaignId, array $addresses): array
+    {
+        if (empty($addresses)) {
+            return [];
+        }
+
+        $t = $this->db->table(Connection::TABLE_MESSAGE_LOGS);
+        $ph = implode(',', array_fill(0, count($addresses), '%s'));
+        $params = array_merge([$campaignId], $addresses);
+
+        $rows = $this->db->getCol(
+            "SELECT DISTINCT recipient FROM {$t} WHERE campaign_id = %s AND recipient IN ({$ph})",
+            ...$params,
+        );
+
+        return array_flip($rows);
+    }
+
     /** @return array{string, array} */
-    private function buildWhereClause(array $filters, object $wpdb): array
+    private function buildWhereClause(array $filters): array
     {
         $where = '1=1';
         $params = [];
@@ -158,7 +211,7 @@ class MessageLogger implements MessageLoggerInterface
         }
         if (!empty($filters['recipient'])) {
             $where .= ' AND recipient LIKE %s';
-            $params[] = '%' . $wpdb->esc_like($filters['recipient']) . '%';
+            $params[] = '%' . $this->db->escLike($filters['recipient']) . '%';
         }
         if (!empty($filters['gateway_id'])) {
             $where .= ' AND gateway_id = %s';

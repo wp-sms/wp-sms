@@ -7,6 +7,7 @@ use WSms\Auth\PolicyEngine;
 use WSms\Auth\SettingsRepository;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\MfaManager;
+use WSms\Mfa\UserFactorRepository;
 
 class PolicyEngineTest extends TestCase
 {
@@ -15,7 +16,7 @@ class PolicyEngineTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->mfaManager = new MfaManager();
+        $this->mfaManager = new MfaManager($this->createMock(UserFactorRepository::class));
 
         // Register phone and email channels (matching production setup).
         $this->mfaManager->registerChannel($this->makeChannel('phone', supportsPrimary: true, supportsMfa: true));

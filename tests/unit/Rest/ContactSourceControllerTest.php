@@ -99,7 +99,7 @@ class ContactSourceControllerTest extends TestCase
 
         $response = $this->controller->connect($request);
 
-        $this->assertSame(400, $response->get_status());
+        $this->assertSame(422, $response->get_status());
     }
 
     // --- PUT /contact-sources/{type} ---
@@ -167,7 +167,7 @@ class ContactSourceControllerTest extends TestCase
 
         $data = $response->get_data();
         $this->assertTrue($data['success']);
-        $this->assertSame(500, $data['total_available']);
+        $this->assertSame(500, $data['data']['total_available']);
     }
 
     public function test_sync_returns_409_if_already_syncing(): void
@@ -225,6 +225,6 @@ class ContactSourceControllerTest extends TestCase
 
         $response = $this->controller->fields($request);
 
-        $this->assertSame(400, $response->get_status());
+        $this->assertSame(422, $response->get_status());
     }
 }

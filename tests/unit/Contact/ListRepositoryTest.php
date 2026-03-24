@@ -4,15 +4,18 @@ namespace WSms\Tests\Unit\Contact;
 
 use PHPUnit\Framework\TestCase;
 use WSms\Contact\ListRepository;
+use WSms\Database\Connection;
 
 class ListRepositoryTest extends TestCase
 {
     private object $wpdb;
+    private Connection $connection;
 
     protected function setUp(): void
     {
         $this->wpdb = $this->createWpdb();
         $GLOBALS['wpdb'] = $this->wpdb;
+        $this->connection = new Connection($this->wpdb);
     }
 
     protected function tearDown(): void
@@ -25,7 +28,7 @@ class ListRepositoryTest extends TestCase
         $this->wpdb->insertResult = true;
         $conditions = ['match' => 'all', 'conditions' => [['type' => 'attribute', 'field' => 'status', 'operator' => 'equals', 'value' => 'subscribed']]];
 
-        $repo = new ListRepository();
+        $repo = new ListRepository($this->connection);
         $id = $repo->create([
             'name'       => 'Active Subscribers',
             'type'       => 'dynamic',
@@ -43,7 +46,7 @@ class ListRepositoryTest extends TestCase
     {
         $this->wpdb->insertResult = true;
 
-        $repo = new ListRepository();
+        $repo = new ListRepository($this->connection);
         $repo->create([
             'name'   => 'VIP List',
             'type'   => 'static',
@@ -66,7 +69,7 @@ class ListRepositoryTest extends TestCase
             'created_at' => '2026-01-01', 'updated_at' => '2026-01-01',
         ];
 
-        $repo = new ListRepository();
+        $repo = new ListRepository($this->connection);
         $list = $repo->find('L1');
 
         $this->assertIsArray($list['conditions']);
@@ -79,7 +82,7 @@ class ListRepositoryTest extends TestCase
             ['id' => 'L1', 'name' => 'A', 'type' => 'dynamic', 'conditions' => null, 'tag_id' => null, 'contact_count' => '0', 'description' => null, 'created_at' => '2026-01-01', 'updated_at' => '2026-01-01'],
         ];
 
-        $repo = new ListRepository();
+        $repo = new ListRepository($this->connection);
         $lists = $repo->findAll('dynamic');
 
         $this->assertCount(1, $lists);
@@ -90,7 +93,7 @@ class ListRepositoryTest extends TestCase
     {
         $this->wpdb->getResultsResult = [];
 
-        $repo = new ListRepository();
+        $repo = new ListRepository($this->connection);
         $repo->findAll();
 
         $this->assertStringNotContainsString('WHERE', $this->wpdb->lastQuery);
@@ -100,7 +103,7 @@ class ListRepositoryTest extends TestCase
     {
         $this->wpdb->deleteResult = true;
 
-        $repo = new ListRepository();
+        $repo = new ListRepository($this->connection);
         $result = $repo->delete('L1');
 
         $this->assertTrue($result);
@@ -111,7 +114,7 @@ class ListRepositoryTest extends TestCase
     {
         $this->wpdb->updateResult = true;
 
-        $repo = new ListRepository();
+        $repo = new ListRepository($this->connection);
         $repo->updateContactCount('L1', 42);
 
         $this->assertSame(42, $this->wpdb->updates[0]['data']['contact_count']);
@@ -122,15 +125,15 @@ class ListRepositoryTest extends TestCase
         $this->wpdb->updateResult = true;
         $conditions = ['match' => 'any', 'conditions' => []];
 
-        $repo = new ListRepository();
+        $repo = new ListRepository($this->connection);
         $repo->update('L1', ['conditions' => $conditions]);
 
         $this->assertSame(json_encode($conditions), $this->wpdb->updates[0]['data']['conditions']);
     }
 
-    private function createWpdb(): object
+    private function createWpdb(): \wpdb
     {
-        return new class {
+        return new class extends \wpdb {
             public string $prefix = 'test_';
             public array $inserts = [];
             public array $deletes = [];
@@ -142,32 +145,32 @@ class ListRepositoryTest extends TestCase
             public $getResultsResult = [];
             public string $lastQuery = '';
 
-            public function insert(string $table, array $data): bool {
+            public function insert($table, $data, $format = null) {
                 $this->inserts[] = ['table' => $table, 'data' => $data];
                 return $this->insertResult;
             }
 
-            public function delete(string $table, array $where): bool {
+            public function delete($table, $where, $format = null) {
                 $this->deletes[] = ['table' => $table, 'where' => $where];
                 return $this->deleteResult;
             }
 
-            public function update(string $table, array $data, array $where): bool {
+            public function update($table, $data, $where, $format = null, $whereFormat = null) {
                 $this->updates[] = ['table' => $table, 'data' => $data, 'where' => $where];
                 return $this->updateResult;
             }
 
-            public function get_row($query, $output = 'OBJECT') {
+            public function get_row($query, $output = null, $y = 0) {
                 $this->lastQuery = $query;
                 return $this->getRowResult;
             }
 
-            public function get_results($query, $output = 'OBJECT') {
+            public function get_results($query, $output = null) {
                 $this->lastQuery = $query;
                 return $this->getResultsResult;
             }
 
-            public function prepare(string $query, ...$args): string {
+            public function prepare($query, ...$args) {
                 $this->lastQuery = $query;
                 return vsprintf(str_replace(['%s', '%d'], ["'%s'", '%d'], $query), $args);
             }

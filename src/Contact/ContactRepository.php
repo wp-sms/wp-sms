@@ -2,6 +2,7 @@
 
 namespace WSms\Contact;
 
+use WSms\Database\Connection;
 use WSms\Dependencies\Symfony\Component\Uid\Ulid;
 use WSms\Contact\Contracts\ContactRepositoryInterface;
 use WSms\Exception\NotFoundException;
@@ -10,14 +11,14 @@ defined('ABSPATH') || exit;
 
 class ContactRepository implements ContactRepositoryInterface
 {
+    public function __construct(private readonly Connection $db) {}
+
     public function create(array $data, bool $suppressEvents = false): string
     {
-        global $wpdb;
-
         $id = (string) new Ulid();
         $now = current_time('mysql');
 
-        $wpdb->insert($wpdb->prefix . 'wsms_contacts', [
+        $this->db->insert(Connection::TABLE_CONTACTS, [
             'id'             => $id,
             'email'          => isset($data['email']) ? strtolower($data['email']) : null,
             'phone'          => isset($data['phone']) ? self::normalizePhone($data['phone']) : null,
@@ -43,7 +44,7 @@ class ContactRepository implements ContactRepositoryInterface
 
     public function update(string $id, array $data): bool
     {
-        global $wpdb;
+        $t = $this->db->table(Connection::TABLE_CONTACTS);
 
         // Pre-fetch current row fields needed for change detection (status, email, phone).
         $needsCurrentRow = array_key_exists('status', $data)
@@ -53,10 +54,10 @@ class ContactRepository implements ContactRepositoryInterface
         $currentRow = null;
         $oldStatus = null;
         if ($needsCurrentRow) {
-            $currentRow = $wpdb->get_row($wpdb->prepare(
-                "SELECT status, email, phone FROM {$wpdb->prefix}wsms_contacts WHERE id = %s",
+            $currentRow = $this->db->getRow(
+                "SELECT status, email, phone FROM {$t} WHERE id = %s",
                 $id,
-            ), ARRAY_A);
+            );
             $oldStatus = $currentRow['status'] ?? null;
         }
 
@@ -96,7 +97,7 @@ class ContactRepository implements ContactRepositoryInterface
             $update['custom_fields'] = wp_json_encode($data['custom_fields']);
         }
 
-        $result = (bool) $wpdb->update($wpdb->prefix . 'wsms_contacts', $update, ['id' => $id]);
+        $result = (bool) $this->db->update(Connection::TABLE_CONTACTS, $update, ['id' => $id]);
 
         if ($result) {
             if ($oldStatus !== null && $oldStatus !== ($data['status'] ?? $oldStatus)) {
@@ -110,11 +111,8 @@ class ContactRepository implements ContactRepositoryInterface
 
     public function find(string $id): ?array
     {
-        global $wpdb;
-        $row = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wsms_contacts WHERE id = %s", $id),
-            ARRAY_A,
-        );
+        $t = $this->db->table(Connection::TABLE_CONTACTS);
+        $row = $this->db->getRow("SELECT * FROM {$t} WHERE id = %s", $id);
         return $row ? self::decodeRow($row) : null;
     }
 
@@ -129,106 +127,86 @@ class ContactRepository implements ContactRepositoryInterface
 
     public function findByEmail(string $email): ?array
     {
-        global $wpdb;
-        $row = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wsms_contacts WHERE email = %s", strtolower($email)),
-            ARRAY_A,
-        );
+        $t = $this->db->table(Connection::TABLE_CONTACTS);
+        $row = $this->db->getRow("SELECT * FROM {$t} WHERE email = %s", strtolower($email));
         return $row ? self::decodeRow($row) : null;
     }
 
     public function findByPhone(string $phone): ?array
     {
-        global $wpdb;
+        $t = $this->db->table(Connection::TABLE_CONTACTS);
         $normalized = self::normalizePhone($phone);
-        $row = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wsms_contacts WHERE phone = %s", $normalized),
-            ARRAY_A,
-        );
+        $row = $this->db->getRow("SELECT * FROM {$t} WHERE phone = %s", $normalized);
         return $row ? self::decodeRow($row) : null;
     }
 
     public function findAllByPhone(string $phone): array
     {
-        global $wpdb;
+        $t = $this->db->table(Connection::TABLE_CONTACTS);
         $normalized = self::normalizePhone($phone);
-        $rows = $wpdb->get_results(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wsms_contacts WHERE phone = %s", $normalized),
-            ARRAY_A,
-        ) ?: [];
+        $rows = $this->db->getResults("SELECT * FROM {$t} WHERE phone = %s", $normalized);
 
         return array_map([self::class, 'decodeRow'], $rows);
     }
 
     public function findByWpUser(int $userId): ?array
     {
-        global $wpdb;
-        $row = $wpdb->get_row(
-            $wpdb->prepare("SELECT * FROM {$wpdb->prefix}wsms_contacts WHERE wp_user_id = %d", $userId),
-            ARRAY_A,
-        );
+        $t = $this->db->table(Connection::TABLE_CONTACTS);
+        $row = $this->db->getRow("SELECT * FROM {$t} WHERE wp_user_id = %d", $userId);
         return $row ? self::decodeRow($row) : null;
     }
 
     public function findAll(array $filters = [], int $limit = 50, int $offset = 0): array
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_contacts';
+        $t = $this->db->table(Connection::TABLE_CONTACTS);
 
-        [$where, $params] = self::buildWhereClause($filters, $wpdb);
+        [$where, $params] = $this->buildWhereClause($filters);
 
         $params[] = $limit;
         $params[] = $offset;
 
-        $rows = $wpdb->get_results(
-            $wpdb->prepare("SELECT * FROM {$table} WHERE {$where} ORDER BY created_at DESC LIMIT %d OFFSET %d", ...$params),
-            ARRAY_A,
-        ) ?: [];
+        $rows = $this->db->getResults("SELECT * FROM {$t} WHERE {$where} ORDER BY created_at DESC LIMIT %d OFFSET %d", ...$params);
 
         return array_map([self::class, 'decodeRow'], $rows);
     }
 
     public function count(array $filters = []): int
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_contacts';
+        $t = $this->db->table(Connection::TABLE_CONTACTS);
 
-        [$where, $params] = self::buildWhereClause($filters, $wpdb);
+        [$where, $params] = $this->buildWhereClause($filters);
 
-        $sql = "SELECT COUNT(*) FROM {$table} WHERE {$where}";
+        $sql = "SELECT COUNT(*) FROM {$t} WHERE {$where}";
 
-        return (int) (empty($params) ? $wpdb->get_var($sql) : $wpdb->get_var($wpdb->prepare($sql, ...$params)));
+        return (int) $this->db->getVar($sql, ...$params);
     }
 
     public function delete(string $id): bool
     {
-        global $wpdb;
-        $wpdb->delete($wpdb->prefix . 'wsms_contact_tag', ['contact_id' => $id]);
-        return (bool) $wpdb->delete($wpdb->prefix . 'wsms_contacts', ['id' => $id]);
+        $this->db->delete(Connection::TABLE_CONTACT_TAG, ['contact_id' => $id]);
+        return (bool) $this->db->delete(Connection::TABLE_CONTACTS, ['id' => $id]);
     }
 
     public function addTag(string $contactId, string $tagId): void
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_contact_tag';
+        $t = $this->db->table(Connection::TABLE_CONTACT_TAG);
 
-        $wpdb->query($wpdb->prepare(
-            "INSERT IGNORE INTO {$table} (contact_id, tag_id, created_at) VALUES (%s, %s, %s)",
+        $this->db->query(
+            "INSERT IGNORE INTO {$t} (contact_id, tag_id, created_at) VALUES (%s, %s, %s)",
             $contactId,
             $tagId,
             current_time('mysql'),
-        ));
+        );
 
         // Only fire event if a new row was actually inserted
-        if ($wpdb->rows_affected > 0) {
+        if ($this->db->rowsAffected() > 0) {
             do_action('wsms_contact_tagged', $contactId, $tagId);
         }
     }
 
     public function removeTag(string $contactId, string $tagId): void
     {
-        global $wpdb;
-        $wpdb->delete($wpdb->prefix . 'wsms_contact_tag', [
+        $this->db->delete(Connection::TABLE_CONTACT_TAG, [
             'contact_id' => $contactId,
             'tag_id'     => $tagId,
         ]);
@@ -236,45 +214,37 @@ class ContactRepository implements ContactRepositoryInterface
 
     public function getTags(string $contactId): array
     {
-        global $wpdb;
-        $tagsTable = $wpdb->prefix . 'wsms_tags';
-        $pivotTable = $wpdb->prefix . 'wsms_contact_tag';
+        $tagsTable = $this->db->table(Connection::TABLE_TAGS);
+        $pivotTable = $this->db->table(Connection::TABLE_CONTACT_TAG);
 
-        return $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT t.* FROM {$tagsTable} t INNER JOIN {$pivotTable} ct ON t.id = ct.tag_id WHERE ct.contact_id = %s",
-                $contactId,
-            ),
-            ARRAY_A,
-        ) ?: [];
+        return $this->db->getResults(
+            "SELECT t.* FROM {$tagsTable} t INNER JOIN {$pivotTable} ct ON t.id = ct.tag_id WHERE ct.contact_id = %s",
+            $contactId,
+        );
     }
 
     public function findByTag(string $tagId, int $limit = 50, int $offset = 0): array
     {
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_contacts';
-        $pivotTable = $wpdb->prefix . 'wsms_contact_tag';
+        $t = $this->db->table(Connection::TABLE_CONTACTS);
+        $pivotTable = $this->db->table(Connection::TABLE_CONTACT_TAG);
 
-        $rows = $wpdb->get_results(
-            $wpdb->prepare(
-                "SELECT c.* FROM {$table} c INNER JOIN {$pivotTable} ct ON c.id = ct.contact_id WHERE ct.tag_id = %s ORDER BY c.created_at DESC LIMIT %d OFFSET %d",
-                $tagId,
-                $limit,
-                $offset,
-            ),
-            ARRAY_A,
-        ) ?: [];
+        $rows = $this->db->getResults(
+            "SELECT c.* FROM {$t} c INNER JOIN {$pivotTable} ct ON c.id = ct.contact_id WHERE ct.tag_id = %s ORDER BY c.created_at DESC LIMIT %d OFFSET %d",
+            $tagId,
+            $limit,
+            $offset,
+        );
 
         return array_map([self::class, 'decodeRow'], $rows);
     }
 
     public function countByTag(string $tagId): int
     {
-        global $wpdb;
-        $pivotTable = $wpdb->prefix . 'wsms_contact_tag';
+        $pivotTable = $this->db->table(Connection::TABLE_CONTACT_TAG);
 
-        return (int) $wpdb->get_var(
-            $wpdb->prepare("SELECT COUNT(*) FROM {$pivotTable} WHERE tag_id = %s", $tagId),
+        return (int) $this->db->getVar(
+            "SELECT COUNT(*) FROM {$pivotTable} WHERE tag_id = %s",
+            $tagId,
         );
     }
 
@@ -284,14 +254,10 @@ class ContactRepository implements ContactRepositoryInterface
             return [];
         }
 
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_contacts';
+        $t = $this->db->table(Connection::TABLE_CONTACTS);
         $ph = self::placeholders($ids);
 
-        $rows = $wpdb->get_results(
-            $wpdb->prepare("SELECT * FROM {$table} WHERE id IN ({$ph})", ...$ids),
-            ARRAY_A,
-        ) ?: [];
+        $rows = $this->db->getResults("SELECT * FROM {$t} WHERE id IN ({$ph})", ...$ids);
 
         return array_map([self::class, 'decodeRow'], $rows);
     }
@@ -302,14 +268,13 @@ class ContactRepository implements ContactRepositoryInterface
             return 0;
         }
 
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_contacts';
-        $pivotTable = $wpdb->prefix . 'wsms_contact_tag';
+        $t = $this->db->table(Connection::TABLE_CONTACTS);
+        $pivotTable = $this->db->table(Connection::TABLE_CONTACT_TAG);
         $ph = self::placeholders($ids);
 
-        $wpdb->query($wpdb->prepare("DELETE FROM {$pivotTable} WHERE contact_id IN ({$ph})", ...$ids));
+        $this->db->query("DELETE FROM {$pivotTable} WHERE contact_id IN ({$ph})", ...$ids);
 
-        return (int) $wpdb->query($wpdb->prepare("DELETE FROM {$table} WHERE id IN ({$ph})", ...$ids));
+        return $this->db->query("DELETE FROM {$t} WHERE id IN ({$ph})", ...$ids);
     }
 
     public function bulkUpdateStatus(array $ids, string $status): int
@@ -318,18 +283,15 @@ class ContactRepository implements ContactRepositoryInterface
             return 0;
         }
 
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_contacts';
+        $t = $this->db->table(Connection::TABLE_CONTACTS);
         $ph = self::placeholders($ids);
         $now = current_time('mysql');
 
-        return (int) $wpdb->query(
-            $wpdb->prepare(
-                "UPDATE {$table} SET status = %s, updated_at = %s WHERE id IN ({$ph})",
-                $status,
-                $now,
-                ...$ids,
-            ),
+        return $this->db->query(
+            "UPDATE {$t} SET status = %s, updated_at = %s WHERE id IN ({$ph})",
+            $status,
+            $now,
+            ...$ids,
         );
     }
 
@@ -339,8 +301,7 @@ class ContactRepository implements ContactRepositoryInterface
             return 0;
         }
 
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_contact_tag';
+        $t = $this->db->table(Connection::TABLE_CONTACT_TAG);
         $now = current_time('mysql');
         $values = [];
         $params = [];
@@ -352,9 +313,9 @@ class ContactRepository implements ContactRepositoryInterface
             $params[] = $now;
         }
 
-        $sql = "INSERT IGNORE INTO {$table} (contact_id, tag_id, created_at) VALUES " . implode(', ', $values);
+        $sql = "INSERT IGNORE INTO {$t} (contact_id, tag_id, created_at) VALUES " . implode(', ', $values);
 
-        return (int) $wpdb->query($wpdb->prepare($sql, ...$params));
+        return $this->db->query($sql, ...$params);
     }
 
     public function bulkRemoveTag(array $contactIds, string $tagId): int
@@ -363,17 +324,36 @@ class ContactRepository implements ContactRepositoryInterface
             return 0;
         }
 
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_contact_tag';
+        $t = $this->db->table(Connection::TABLE_CONTACT_TAG);
         $ph = self::placeholders($contactIds);
 
-        return (int) $wpdb->query(
-            $wpdb->prepare(
-                "DELETE FROM {$table} WHERE tag_id = %s AND contact_id IN ({$ph})",
-                $tagId,
-                ...$contactIds,
-            ),
+        return $this->db->query(
+            "DELETE FROM {$t} WHERE tag_id = %s AND contact_id IN ({$ph})",
+            $tagId,
+            ...$contactIds,
         );
+    }
+
+    public function eachSubscribedWithEmail(callable $callback, int $batchSize = 500): void
+    {
+        $table = $this->db->table(Connection::TABLE_CONTACTS);
+        $lastId = '';
+
+        do {
+            $batch = $this->db->getResults(
+                "SELECT * FROM {$table}
+                 WHERE email IS NOT NULL AND email != '' AND status = 'subscribed' AND id > %s
+                 ORDER BY id ASC LIMIT %d",
+                $lastId,
+                $batchSize,
+            );
+
+            if (!empty($batch)) {
+                $batch = array_map([self::class, 'decodeRow'], $batch);
+                $callback($batch);
+                $lastId = end($batch)['id'];
+            }
+        } while (count($batch) === $batchSize);
     }
 
     public static function normalizePhone(string $phone): string
@@ -386,7 +366,7 @@ class ContactRepository implements ContactRepositoryInterface
         return implode(',', array_fill(0, count($items), '%s'));
     }
 
-    private static function buildWhereClause(array $filters, object $wpdb): array
+    private function buildWhereClause(array $filters): array
     {
         $where = '1=1';
         $params = [];
@@ -413,7 +393,7 @@ class ContactRepository implements ContactRepositoryInterface
         }
         if (!empty($filters['search'])) {
             $where .= ' AND (email LIKE %s OR phone LIKE %s OR first_name LIKE %s OR last_name LIKE %s)';
-            $like = '%' . $wpdb->esc_like($filters['search']) . '%';
+            $like = '%' . $this->db->escLike($filters['search']) . '%';
             $params = array_merge($params, [$like, $like, $like, $like]);
         }
 

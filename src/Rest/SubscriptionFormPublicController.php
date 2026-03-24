@@ -3,6 +3,7 @@
 namespace WSms\Rest;
 
 use WSms\Auth\RateLimiter;
+use WSms\Exception\NotFoundException;
 use WSms\SubscriptionForm\SubscriptionForm;
 use WSms\SubscriptionForm\SubscriptionFormRepository;
 use WSms\SubscriptionForm\SubscriptionHandler;
@@ -50,71 +51,68 @@ class SubscriptionFormPublicController extends Controller
 
     public function handleSubmit(\WP_REST_Request $request): \WP_REST_Response
     {
-        $rateCheck = $this->rateLimiter->check('subscription_form_submit', 5, 60);
-        if (!$rateCheck['allowed']) {
-            return new \WP_REST_Response([
-                'success'     => false,
-                'error'       => 'rate_limited',
-                'message'     => __('Too many submissions. Please try again later.', 'wp-sms'),
-                'retry_after' => $rateCheck['retry_after'],
-            ], 429);
-        }
+        return $this->handle(function () use ($request) {
+            $rateCheck = $this->rateLimiter->check('subscription_form_submit', 5, 60);
+            if (!$rateCheck['allowed']) {
+                return new \WP_REST_Response([
+                    'success'     => false,
+                    'error'       => 'rate_limited',
+                    'message'     => __('Too many submissions. Please try again later.', 'wp-sms'),
+                    'retry_after' => $rateCheck['retry_after'],
+                ], 429);
+            }
 
-        $form = $this->resolveActiveForm($request);
-        if ($form instanceof \WP_REST_Response) {
-            return $form;
-        }
+            $form = $this->resolveActiveForm($request);
 
-        $data = [
-            'email'      => $request->get_param('email') ?? '',
-            'phone'      => $request->get_param('phone') ?? '',
-            'first_name' => $request->get_param('first_name') ?? '',
-            'last_name'  => $request->get_param('last_name') ?? '',
-            '_hp'        => $request->get_param('_hp') ?? '',
-        ];
+            $data = [
+                'email'      => $request->get_param('email') ?? '',
+                'phone'      => $request->get_param('phone') ?? '',
+                'first_name' => $request->get_param('first_name') ?? '',
+                'last_name'  => $request->get_param('last_name') ?? '',
+                '_hp'        => $request->get_param('_hp') ?? '',
+            ];
 
-        $result = $this->handler->submit($form, $data);
+            $result = $this->handler->submit($form, $data);
 
-        $statusCode = $result->success ? 200 : 422;
-        if ($result->error === 'rate_limited') {
-            $statusCode = 429;
-        }
+            $statusCode = $result->success ? 200 : 422;
+            if ($result->error === 'rate_limited') {
+                $statusCode = 429;
+            }
 
-        return new \WP_REST_Response($result->toArray(), $statusCode);
+            return new \WP_REST_Response($result->toArray(), $statusCode);
+        });
     }
 
     public function handleVerify(\WP_REST_Request $request): \WP_REST_Response
     {
-        $rateCheck = $this->rateLimiter->check('subscription_form_verify', 10, 60);
-        if (!$rateCheck['allowed']) {
-            return new \WP_REST_Response([
-                'success'     => false,
-                'error'       => 'rate_limited',
-                'message'     => __('Too many attempts. Please try again later.', 'wp-sms'),
-                'retry_after' => $rateCheck['retry_after'],
-            ], 429);
-        }
+        return $this->handle(function () use ($request) {
+            $rateCheck = $this->rateLimiter->check('subscription_form_verify', 10, 60);
+            if (!$rateCheck['allowed']) {
+                return new \WP_REST_Response([
+                    'success'     => false,
+                    'error'       => 'rate_limited',
+                    'message'     => __('Too many attempts. Please try again later.', 'wp-sms'),
+                    'retry_after' => $rateCheck['retry_after'],
+                ], 429);
+            }
 
-        $form = $this->resolveActiveForm($request);
-        if ($form instanceof \WP_REST_Response) {
-            return $form;
-        }
+            $form = $this->resolveActiveForm($request);
 
-        $result = $this->handler->verify($form, $request->get_param('session_token'), $request->get_param('code'));
+            $result = $this->handler->verify($form, $request->get_param('session_token'), $request->get_param('code'));
 
-        return new \WP_REST_Response($result->toArray(), $result->success ? 200 : 422);
+            return new \WP_REST_Response($result->toArray(), $result->success ? 200 : 422);
+        });
     }
 
-    private function resolveActiveForm(\WP_REST_Request $request): SubscriptionForm|\WP_REST_Response
+    /**
+     * Resolve an active form by slug or throw a NotFoundException.
+     */
+    private function resolveActiveForm(\WP_REST_Request $request): SubscriptionForm
     {
         $form = $this->formRepository->findBySlug($request->get_param('slug'));
 
         if (!$form || !$form->isActive()) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Form not found.', 'wp-sms'),
-            ], 404);
+            throw new NotFoundException(__('Form not found.', 'wp-sms'));
         }
 
         return $form;

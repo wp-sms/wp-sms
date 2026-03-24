@@ -2,6 +2,7 @@
 
 namespace WSms\Audit;
 
+use WSms\Database\Connection;
 use WSms\Enums\EventType;
 use WSms\Enums\LogVerbosity;
 use WSms\Event\Contracts\EventDispatcherInterface;
@@ -14,6 +15,10 @@ class AuditLogger
 {
     private ?LogVerbosity $verbosity = null;
     private ?EventDispatcherInterface $eventDispatcher = null;
+
+    public function __construct(private readonly Connection $db)
+    {
+    }
 
     public function setEventDispatcher(EventDispatcherInterface $eventDispatcher): void
     {
@@ -30,8 +35,6 @@ class AuditLogger
         array $meta = [],
         ?string $channelId = null,
     ): void {
-        global $wpdb;
-
         $verbosity = $this->getVerbosity();
 
         // Auto-extract channel_id from meta when not explicitly provided.
@@ -66,10 +69,7 @@ class AuditLogger
             return;
         }
 
-        $wpdb->insert(
-            $wpdb->prefix . 'wsms_auth_logs',
-            $data,
-        );
+        $this->db->insert(Connection::TABLE_AUTH_LOGS, $data);
 
         if ($this->eventDispatcher !== null) {
             $this->eventDispatcher->dispatch(new AuthEvent($event, $status, $userId, $meta));
@@ -83,24 +83,20 @@ class AuditLogger
      */
     public function getEvents(array $filters = [], int $page = 1, int $perPage = 50): array
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_auth_logs';
+        $table = $this->db->table(Connection::TABLE_AUTH_LOGS);
         [$whereClause, $values] = $this->buildWhereClause($filters);
 
         $countSql = "SELECT COUNT(*) FROM {$table} {$whereClause}";
-        $total = !empty($values)
-            ? (int) $wpdb->get_var($wpdb->prepare($countSql, ...$values))
-            : (int) $wpdb->get_var($countSql);
+        $total = (int) $this->db->getVar($countSql, ...$values);
 
         $offset = ($page - 1) * $perPage;
         $querySql = "SELECT * FROM {$table} {$whereClause} ORDER BY created_at DESC LIMIT %d OFFSET %d";
         $queryValues = array_merge($values, [$perPage, $offset]);
 
-        $items = $wpdb->get_results($wpdb->prepare($querySql, ...$queryValues));
+        $items = $this->db->getResults($querySql, ...$queryValues);
 
         return [
-            'items' => $items ?: [],
+            'items' => $items,
             'total' => $total,
         ];
     }
@@ -110,18 +106,12 @@ class AuditLogger
      */
     public function deleteAll(array $filters = []): int
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_auth_logs';
+        $table = $this->db->table(Connection::TABLE_AUTH_LOGS);
         [$whereClause, $values] = $this->buildWhereClause($filters);
 
         $sql = "DELETE FROM {$table} {$whereClause}";
 
-        if (!empty($values)) {
-            return (int) $wpdb->query($wpdb->prepare($sql, ...$values));
-        }
-
-        return (int) $wpdb->query($sql);
+        return $this->db->query($sql, ...$values);
     }
 
     /**
@@ -129,15 +119,11 @@ class AuditLogger
      */
     public function deleteOlderThan(int $days): int
     {
-        global $wpdb;
+        $table = $this->db->table(Connection::TABLE_AUTH_LOGS);
 
-        $table = $wpdb->prefix . 'wsms_auth_logs';
-
-        return (int) $wpdb->query(
-            $wpdb->prepare(
-                "DELETE FROM {$table} WHERE created_at < DATE_SUB(NOW(), INTERVAL %d DAY)",
-                $days,
-            ),
+        return $this->db->query(
+            "DELETE FROM {$table} WHERE created_at < DATE_SUB(NOW(), INTERVAL %d DAY)",
+            $days,
         );
     }
 

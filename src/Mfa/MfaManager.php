@@ -15,13 +15,10 @@ class MfaManager
     /** @var array<string, ChannelInterface> */
     private array $channels = [];
 
-    /** @var UserFactorRepository|null Initialized in constructor or lazily on first access. */
-    private ?UserFactorRepository $factorRepo = null;
     private ?SettingsRepository $settingsRepo = null;
 
-    public function __construct(?UserFactorRepository $factorRepo = null)
+    public function __construct(private readonly UserFactorRepository $factorRepo)
     {
-        $this->factorRepo = $factorRepo;
     }
 
     public function setSettingsRepository(SettingsRepository $settingsRepo): void
@@ -141,10 +138,6 @@ class MfaManager
 
     private function getFactorRepo(): UserFactorRepository
     {
-        if ($this->factorRepo === null) {
-            $this->factorRepo = new UserFactorRepository();
-        }
-
         return $this->factorRepo;
     }
 }

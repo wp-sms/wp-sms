@@ -55,53 +55,59 @@ class MfaController extends Controller
 
     public function handleGetFactors(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('mfa_factors', 5, 60);
+        return $this->handle(function () use ($request) {
+            $rl = $this->rateLimiter->check('mfa_factors', 5, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $result = $this->orchestrator->getSessionMfaFactors(
-            $request->get_param('session_token'),
-        );
+            $result = $this->orchestrator->getSessionMfaFactors(
+                $request->get_param('session_token'),
+            );
 
-        return $this->toAuthResponse($result);
+            return $this->toAuthResponse($result);
+        });
     }
 
     public function handleSendChallenge(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('mfa_send', 3, 60);
+        return $this->handle(function () use ($request) {
+            $rl = $this->rateLimiter->check('mfa_send', 3, 60);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $result = $this->orchestrator->sendMfaChallenge(
-            $request->get_param('session_token'),
-            $request->get_param('channel_id'),
-        );
+            $result = $this->orchestrator->sendMfaChallenge(
+                $request->get_param('session_token'),
+                $request->get_param('channel_id'),
+            );
 
-        return $this->toAuthResponse($result);
+            return $this->toAuthResponse($result);
+        });
     }
 
     public function handleVerify(WP_REST_Request $request): WP_REST_Response
     {
-        $rl = $this->rateLimiter->check('mfa_verify', 3, 10);
+        return $this->handle(function () use ($request) {
+            $rl = $this->rateLimiter->check('mfa_verify', 3, 10);
 
-        if (!$rl['allowed']) {
-            return $this->rateLimitedResponse($rl['retry_after']);
-        }
+            if (!$rl['allowed']) {
+                return $this->rateLimitedResponse($rl['retry_after']);
+            }
 
-        $result = $this->orchestrator->verifyMfa(
-            $request->get_param('session_token'),
-            $request->get_param('code'),
-            $request->get_param('channel_id'),
-        );
+            $result = $this->orchestrator->verifyMfa(
+                $request->get_param('session_token'),
+                $request->get_param('code'),
+                $request->get_param('channel_id'),
+            );
 
-        if ($result->success && $request->get_param('trust_device') && $this->trustedDevices) {
-            $this->trustedDevices->trust($result->userId);
-        }
+            if ($result->success && $request->get_param('trust_device') && $this->trustedDevices) {
+                $this->trustedDevices->trust($result->userId);
+            }
 
-        return $this->toAuthResponse($result);
+            return $this->toAuthResponse($result);
+        });
     }
 }

@@ -3,6 +3,7 @@
 namespace WSms\Tests\Unit\Social;
 
 use PHPUnit\Framework\TestCase;
+use WSms\Database\Connection;
 use WSms\Social\SocialAccountRepository;
 
 class SocialAccountRepositoryTest extends TestCase
@@ -11,7 +12,15 @@ class SocialAccountRepositoryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->repository = new SocialAccountRepository();
+        $GLOBALS['wpdb'] = new class extends \wpdb {
+            public string $prefix = 'test_';
+        };
+        $this->repository = new SocialAccountRepository(new Connection($GLOBALS['wpdb']));
+    }
+
+    protected function tearDown(): void
+    {
+        unset($GLOBALS['wpdb']);
     }
 
     public function testEncryptDecryptRoundTrip(): void

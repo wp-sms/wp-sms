@@ -4,16 +4,19 @@ namespace WSms\Tests\Unit\Contact;
 
 use PHPUnit\Framework\TestCase;
 use WSms\Contact\TagRepository;
+use WSms\Database\Connection;
 
 class TagRepositoryTest extends TestCase
 {
     private TagRepository $repo;
     private object $wpdb;
+    private Connection $connection;
 
     protected function setUp(): void
     {
         $this->wpdb = $this->createWpdb();
         $GLOBALS['wpdb'] = $this->wpdb;
+        $this->connection = new Connection($this->wpdb);
     }
 
     protected function tearDown(): void
@@ -26,7 +29,7 @@ class TagRepositoryTest extends TestCase
         $this->wpdb->getRowResult = null; // no existing slug
         $this->wpdb->insertResult = true;
 
-        $repo = new TagRepository();
+        $repo = new TagRepository($this->connection);
         $id = $repo->create(['name' => 'VIP Clients', 'color' => '#ef4444']);
 
         $this->assertNotEmpty($id);
@@ -44,7 +47,7 @@ class TagRepositoryTest extends TestCase
         $this->wpdb->getRowResult = null;
         $this->wpdb->insertResult = true;
 
-        $repo = new TagRepository();
+        $repo = new TagRepository($this->connection);
         $repo->create(['name' => 'Test']);
 
         $this->assertSame('#3b82f6', $this->wpdb->inserts[0]['data']['color']);
@@ -54,7 +57,7 @@ class TagRepositoryTest extends TestCase
     {
         $this->wpdb->deleteResult = true;
 
-        $repo = new TagRepository();
+        $repo = new TagRepository($this->connection);
         $repo->delete('TAG123');
 
         $this->assertCount(2, $this->wpdb->deletes);
@@ -67,7 +70,7 @@ class TagRepositoryTest extends TestCase
     {
         $this->wpdb->getRowResult = ['id' => 'T1', 'name' => 'VIP', 'slug' => 'vip', 'color' => '#ef4444'];
 
-        $repo = new TagRepository();
+        $repo = new TagRepository($this->connection);
         $result = $repo->find('T1');
 
         $this->assertSame('VIP', $result['name']);
@@ -77,7 +80,7 @@ class TagRepositoryTest extends TestCase
     {
         $this->wpdb->getRowResult = null;
 
-        $repo = new TagRepository();
+        $repo = new TagRepository($this->connection);
         $this->assertNull($repo->find('NONEXISTENT'));
     }
 
@@ -88,7 +91,7 @@ class TagRepositoryTest extends TestCase
             ['id' => 'T2', 'name' => 'B', 'slug' => 'b', 'color' => '#22c55e'],
         ];
 
-        $repo = new TagRepository();
+        $repo = new TagRepository($this->connection);
         $tags = $repo->findAll();
 
         $this->assertCount(2, $tags);
@@ -99,7 +102,7 @@ class TagRepositoryTest extends TestCase
         $this->wpdb->getRowResult = null; // No existing slug conflict
         $this->wpdb->updateResult = true;
 
-        $repo = new TagRepository();
+        $repo = new TagRepository($this->connection);
         $repo->update('T1', ['name' => 'New Name']);
 
         $this->assertCount(1, $this->wpdb->updates);
@@ -111,13 +114,13 @@ class TagRepositoryTest extends TestCase
     {
         $this->wpdb->getVarResult = '5';
 
-        $repo = new TagRepository();
+        $repo = new TagRepository($this->connection);
         $this->assertSame(5, $repo->getContactCount('T1'));
     }
 
-    private function createWpdb(): object
+    private function createWpdb(): \wpdb
     {
-        return new class {
+        return new class extends \wpdb {
             public string $prefix = 'test_';
             public array $inserts = [];
             public array $deletes = [];
@@ -129,34 +132,34 @@ class TagRepositoryTest extends TestCase
             public $getResultsResult = [];
             public $getVarResult = null;
 
-            public function insert(string $table, array $data): bool {
+            public function insert($table, $data, $format = null) {
                 $this->inserts[] = ['table' => $table, 'data' => $data];
                 return $this->insertResult;
             }
 
-            public function delete(string $table, array $where): bool {
+            public function delete($table, $where, $format = null) {
                 $this->deletes[] = ['table' => $table, 'where' => $where];
                 return $this->deleteResult;
             }
 
-            public function update(string $table, array $data, array $where): bool {
+            public function update($table, $data, $where, $format = null, $whereFormat = null) {
                 $this->updates[] = ['table' => $table, 'data' => $data, 'where' => $where];
                 return $this->updateResult;
             }
 
-            public function get_row($query, $output = 'OBJECT') {
+            public function get_row($query, $output = null, $y = 0) {
                 return $this->getRowResult;
             }
 
-            public function get_results($query, $output = 'OBJECT') {
+            public function get_results($query, $output = null) {
                 return $this->getResultsResult;
             }
 
-            public function get_var($query) {
+            public function get_var($query, $x = 0, $y = 0) {
                 return $this->getVarResult;
             }
 
-            public function prepare(string $query, ...$args): string {
+            public function prepare($query, ...$args) {
                 return vsprintf(str_replace(['%s', '%d'], ["'%s'", '%d'], $query), $args);
             }
         };

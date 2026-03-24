@@ -10,6 +10,8 @@ use WSms\Auth\ProfileFieldRegistry;
 use WSms\Enums\EnrollmentTiming;
 use WSms\Enums\EventType;
 use WSms\Enums\LogVerbosity;
+use WSms\Exception\NotFoundException;
+use WSms\Exception\ValidationException;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Mfa\MfaManager;
 use WSms\Social\SocialAccountRepository;
@@ -141,186 +143,188 @@ class AdminController extends Controller
 
     public function handleGetSettings(WP_REST_Request $request): WP_REST_Response
     {
-        $settings = get_option('wsms_auth_settings', []);
+        return $this->handle(function () {
+            $settings = get_option('wsms_auth_settings', []);
 
-        return new WP_REST_Response([
-            'success'  => true,
-            'settings' => $settings,
-        ]);
+            return new WP_REST_Response([
+                'success'  => true,
+                'settings' => $settings,
+            ]);
+        });
     }
 
     public function handleUpdateSettings(WP_REST_Request $request): WP_REST_Response
     {
-        $current = get_option('wsms_auth_settings', []);
-        $body = $request->get_params();
-        $updated = $current;
+        return $this->handle(function () use ($request) {
+            $current = get_option('wsms_auth_settings', []);
+            $body = $request->get_params();
+            $updated = $current;
 
-        // Deep-merge channel sub-objects.
-        foreach (self::ALLOWED_CHANNEL_KEYS as $channelKey) {
-            if (array_key_exists($channelKey, $body) && is_array($body[$channelKey])) {
-                $existing = $updated[$channelKey] ?? [];
-                $updated[$channelKey] = array_merge($existing, $body[$channelKey]);
+            // Deep-merge channel sub-objects.
+            foreach (self::ALLOWED_CHANNEL_KEYS as $channelKey) {
+                if (array_key_exists($channelKey, $body) && is_array($body[$channelKey])) {
+                    $existing = $updated[$channelKey] ?? [];
+                    $updated[$channelKey] = array_merge($existing, $body[$channelKey]);
+                }
             }
-        }
 
-        // Merge scalar settings.
-        foreach (self::ALLOWED_SCALAR_SETTINGS as $key) {
-            if (array_key_exists($key, $body)) {
-                $updated[$key] = $body[$key];
+            // Merge scalar settings.
+            foreach (self::ALLOWED_SCALAR_SETTINGS as $key) {
+                if (array_key_exists($key, $body)) {
+                    $updated[$key] = $body[$key];
+                }
             }
-        }
 
-        // WhatsApp doesn't support magic links — strip it server-side.
-        $phoneDelivery = $updated['phone']['delivery_channel'] ?? 'sms';
-        if ($phoneDelivery === 'whatsapp') {
-            $methods = $updated['phone']['verification_methods'] ?? ['otp'];
-            $methods = array_values(array_filter($methods, fn($m) => $m !== 'magic_link'));
-            $updated['phone']['verification_methods'] = $methods ?: ['otp'];
-        }
+            // WhatsApp doesn't support magic links — strip it server-side.
+            $phoneDelivery = $updated['phone']['delivery_channel'] ?? 'sms';
+            if ($phoneDelivery === 'whatsapp') {
+                $methods = $updated['phone']['verification_methods'] ?? ['otp'];
+                $methods = array_values(array_filter($methods, fn($m) => $m !== 'magic_link'));
+                $updated['phone']['verification_methods'] = $methods ?: ['otp'];
+            }
 
-        $errors = $this->validateSettings($updated);
+            $errors = $this->validateSettings($updated);
 
-        if (!empty($errors)) {
+            if (!empty($errors)) {
+                throw new ValidationException($errors);
+            }
+
+            update_option('wsms_auth_settings', $updated);
+
+            // Flush rewrite rules when auth_base_url changes.
+            if (($current['auth_base_url'] ?? '/account') !== ($updated['auth_base_url'] ?? '/account')) {
+                set_transient('wsms_flush_rewrite', '1');
+            }
+
             return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'validation_failed',
-                'message' => 'Invalid settings values.',
-                'errors'  => $errors,
-            ], 400);
-        }
-
-        update_option('wsms_auth_settings', $updated);
-
-        // Flush rewrite rules when auth_base_url changes.
-        if (($current['auth_base_url'] ?? '/account') !== ($updated['auth_base_url'] ?? '/account')) {
-            set_transient('wsms_flush_rewrite', '1');
-        }
-
-        return new WP_REST_Response([
-            'success'  => true,
-            'message'  => 'Settings updated.',
-            'settings' => $updated,
-        ]);
+                'success'  => true,
+                'message'  => 'Settings updated.',
+                'settings' => $updated,
+            ]);
+        });
     }
 
     public function handleGetLogs(WP_REST_Request $request): WP_REST_Response
     {
-        $filters = array_filter([
-            'user_id'   => $request->get_param('user_id'),
-            'event'     => $request->get_param('event'),
-            'status'    => $request->get_param('status'),
-            'date_from' => $request->get_param('date_from'),
-            'date_to'   => $request->get_param('date_to'),
-        ]);
+        return $this->handle(function () use ($request) {
+            $filters = array_filter([
+                'user_id'   => $request->get_param('user_id'),
+                'event'     => $request->get_param('event'),
+                'status'    => $request->get_param('status'),
+                'date_from' => $request->get_param('date_from'),
+                'date_to'   => $request->get_param('date_to'),
+            ]);
 
-        $page = max(1, (int) $request->get_param('page'));
-        $perPage = min(100, max(1, (int) $request->get_param('per_page')));
+            $page = max(1, (int) $request->get_param('page'));
+            $perPage = min(100, max(1, (int) $request->get_param('per_page')));
 
-        $result = $this->auditLogger->getEvents($filters, $page, $perPage);
+            $result = $this->auditLogger->getEvents($filters, $page, $perPage);
 
-        // Hydrate user display names (single batch query via cache_users).
-        $userIds = array_unique(array_filter(array_column($result['items'], 'user_id')));
-        $intIds = array_map('intval', $userIds);
-        cache_users($intIds);
+            // Hydrate user display names (single batch query via cache_users).
+            $userIds = array_unique(array_filter(array_column($result['items'], 'user_id')));
+            $intIds = array_map('intval', $userIds);
+            cache_users($intIds);
 
-        $userMap = [];
+            $userMap = [];
 
-        foreach ($intIds as $uid) {
-            $u = get_userdata($uid);
-            if ($u) {
-                $userMap[$uid] = ['display_name' => $u->display_name, 'email' => $u->user_email];
+            foreach ($intIds as $uid) {
+                $u = get_userdata($uid);
+                if ($u) {
+                    $userMap[$uid] = ['display_name' => $u->display_name, 'email' => $u->user_email];
+                }
             }
-        }
 
-        foreach ($result['items'] as &$item) {
-            $item->user_display = $userMap[$item->user_id] ?? null;
-        }
-        unset($item);
+            foreach ($result['items'] as &$item) {
+                $item['user_display'] = $userMap[$item['user_id']] ?? null;
+            }
+            unset($item);
 
-        return new WP_REST_Response([
-            'success'  => true,
-            'items'    => $result['items'],
-            'total'    => $result['total'],
-            'page'     => $page,
-            'per_page' => $perPage,
-        ]);
+            return new WP_REST_Response([
+                'success'  => true,
+                'items'    => $result['items'],
+                'total'    => $result['total'],
+                'page'     => $page,
+                'per_page' => $perPage,
+            ]);
+        });
     }
 
     public function handleDeleteLogs(WP_REST_Request $request): WP_REST_Response
     {
-        $filters = array_filter([
-            'event'     => $request->get_param('event'),
-            'status'    => $request->get_param('status'),
-            'date_from' => $request->get_param('date_from'),
-            'date_to'   => $request->get_param('date_to'),
-        ]);
+        return $this->handle(function () use ($request) {
+            $filters = array_filter([
+                'event'     => $request->get_param('event'),
+                'status'    => $request->get_param('status'),
+                'date_from' => $request->get_param('date_from'),
+                'date_to'   => $request->get_param('date_to'),
+            ]);
 
-        $deleted = $this->auditLogger->deleteAll($filters);
+            $deleted = $this->auditLogger->deleteAll($filters);
 
-        return new WP_REST_Response([
-            'success' => true,
-            'deleted' => $deleted,
-            'message' => "Deleted {$deleted} log entries.",
-        ]);
+            return new WP_REST_Response([
+                'success' => true,
+                'deleted' => $deleted,
+                'message' => "Deleted {$deleted} log entries.",
+            ]);
+        });
     }
 
     public function handleDisableUserMfa(WP_REST_Request $request): WP_REST_Response
     {
-        $userId = (int) $request->get_param('id');
-        $user = get_userdata($userId);
+        return $this->handle(function () use ($request) {
+            $userId = (int) $request->get_param('id');
+            $user = get_userdata($userId);
 
-        if (!$user) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'user_not_found',
-                'message' => 'User not found.',
-            ], 404);
-        }
+            if (!$user) {
+                throw NotFoundException::entity('User', (string) $userId);
+            }
 
-        $this->mfaManager->disableAllFactors($userId);
+            $this->mfaManager->disableAllFactors($userId);
 
-        $this->auditLogger->log(EventType::MfaAdminBypass, 'success', $userId, [
-            'admin_id' => get_current_user_id(),
-        ]);
+            $this->auditLogger->log(EventType::MfaAdminBypass, 'success', $userId, [
+                'admin_id' => get_current_user_id(),
+            ]);
 
-        return new WP_REST_Response([
-            'success' => true,
-            'message' => 'All MFA factors have been disabled for this user.',
-        ]);
+            return $this->ok(['message' => 'All MFA factors have been disabled for this user.']);
+        });
     }
 
     public function handleGetReports(WP_REST_Request $request): WP_REST_Response
     {
-        if (!$this->reportAggregator) {
+        return $this->handle(function () use ($request) {
+            if (!$this->reportAggregator) {
+                return new WP_REST_Response([
+                    'success' => false,
+                    'error'   => 'unavailable',
+                    'message' => 'Report aggregator not available.',
+                ], 500);
+            }
+
+            $range = (int) $request->get_param('range');
+
             return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'unavailable',
-                'message' => 'Report aggregator not available.',
-            ], 500);
-        }
-
-        $range = (int) $request->get_param('range');
-
-        return new WP_REST_Response([
-            'success' => true,
-            ...$this->reportAggregator->getReport($range),
-        ]);
+                'success' => true,
+                ...$this->reportAggregator->getReport($range),
+            ]);
+        });
     }
 
     public function handleGetMetaKeys(WP_REST_Request $request): WP_REST_Response
     {
-        if (!$this->fieldRegistry) {
-            return new WP_REST_Response([
-                'success' => false,
-                'error'   => 'unavailable',
-                'message' => 'Profile field registry not available.',
-            ], 500);
-        }
+        return $this->handle(function () {
+            if (!$this->fieldRegistry) {
+                return new WP_REST_Response([
+                    'success' => false,
+                    'error'   => 'unavailable',
+                    'message' => 'Profile field registry not available.',
+                ], 500);
+            }
 
-        return new WP_REST_Response([
-            'success'   => true,
-            'meta_keys' => $this->fieldRegistry->scanMetaKeys(),
-        ]);
+            return new WP_REST_Response([
+                'success'   => true,
+                'meta_keys' => $this->fieldRegistry->scanMetaKeys(),
+            ]);
+        });
     }
 
     private function validateSettings(array $settings): array

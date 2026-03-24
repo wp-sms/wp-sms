@@ -10,7 +10,9 @@ use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\MessageInterface;
 use WSms\Messaging\Message\Message;
 use WSms\Messaging\MessageDispatcher;
+use WSms\Database\Connection;
 use WSms\Mfa\Channels\TelegramChannel;
+use WSms\Mfa\UserFactorRepository;
 use WSms\Verification\OtpGenerator;
 use WSms\Auth\SettingsRepository;
 use WSms\Telegram\TelegramBotClient;
@@ -212,19 +214,27 @@ class TelegramChannelTest extends TestCase
         $factorRow = $this->makeFactorRow(ChannelStatus::Active, ['chat_id' => 12345]);
 
         // Setup wpdb: first get_row returns factor, subsequent returns null (no cooldown, no existing verification).
-        $wpdb = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var', 'get_results'])
+        $callCount = 0;
+        $wpdb = $this->getMockBuilder(\wpdb::class)
+            ->onlyMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var', 'get_results'])
             ->getMock();
         $wpdb->prefix = 'wp_';
         $wpdb->insert_id = 1;
         $wpdb->rows_affected = 1;
         $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturnOnConsecutiveCalls($factorRow, null);
+        $wpdb->method('get_row')->willReturnCallback(
+            function ($query, $output = null) use ($factorRow, &$callCount) {
+                $callCount++;
+                $row = $callCount === 1 ? $factorRow : null;
+                return $row !== null && $output === ARRAY_A ? (array) $row : $row;
+            },
+        );
         $wpdb->method('insert')->willReturn(1);
         $wpdb->method('update')->willReturn(1);
         $wpdb->method('query')->willReturn(1);
         $wpdb->method('get_var')->willReturn(0);
         $GLOBALS['wpdb'] = $wpdb;
+        $this->channel->setUserFactorRepository(new UserFactorRepository(new Connection($wpdb)));
 
         $this->otpGenerator->method('generate')->willReturn('654321');
         $this->otpGenerator->method('hash')->willReturn('hashed');
@@ -238,14 +248,21 @@ class TelegramChannelTest extends TestCase
     {
         $factorRow = $this->makeFactorRow(ChannelStatus::Active, ['chat_id' => 12345]);
 
-        $wpdb = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var', 'get_results'])
+        $callCount2 = 0;
+        $wpdb = $this->getMockBuilder(\wpdb::class)
+            ->onlyMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var', 'get_results'])
             ->getMock();
         $wpdb->prefix = 'wp_';
         $wpdb->insert_id = 1;
         $wpdb->rows_affected = 1;
         $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturnOnConsecutiveCalls($factorRow, null);
+        $wpdb->method('get_row')->willReturnCallback(
+            function ($query, $output = null) use ($factorRow, &$callCount2) {
+                $callCount2++;
+                $row = $callCount2 === 1 ? $factorRow : null;
+                return $row !== null && $output === ARRAY_A ? (array) $row : $row;
+            },
+        );
         $wpdb->method('insert')->willReturn(1);
         $wpdb->method('update')->willReturn(1);
         $wpdb->method('query')->willReturn(1);
@@ -272,6 +289,7 @@ class TelegramChannelTest extends TestCase
         $templateManager = $this->createMock(TemplateManager::class);
         $templateManager->method('renderToMessage')->willReturn($mockMessage);
         $channel = new TelegramChannel($this->otpGenerator, $this->auditLogger, $dispatcher, $this->verificationRepo, $templateManager, $otpSvc);
+        $channel->setUserFactorRepository(new UserFactorRepository(new Connection($wpdb)));
         $channel->sendChallenge(1);
     }
 
@@ -301,15 +319,17 @@ class TelegramChannelTest extends TestCase
 
     private function setupWpdbMock(?object $getRowReturn): void
     {
-        $wpdb = $this->getMockBuilder(\stdClass::class)
-            ->addMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var', 'get_results'])
+        $wpdb = $this->getMockBuilder(\wpdb::class)
+            ->onlyMethods(['get_row', 'prepare', 'insert', 'update', 'query', 'get_var', 'get_results'])
             ->getMock();
         $wpdb->prefix = 'wp_';
         $wpdb->insert_id = 1;
         $wpdb->rows_affected = 1;
 
         $wpdb->method('prepare')->willReturnCallback(fn(string $q) => $q);
-        $wpdb->method('get_row')->willReturn($getRowReturn);
+        $wpdb->method('get_row')->willReturnCallback(
+            fn($query, $output = null) => $getRowReturn !== null && $output === ARRAY_A ? (array) $getRowReturn : $getRowReturn,
+        );
         $wpdb->method('insert')->willReturn(1);
         $wpdb->method('update')->willReturn(1);
         $wpdb->method('query')->willReturn(1);
@@ -317,5 +337,6 @@ class TelegramChannelTest extends TestCase
 
         $this->wpdb = $wpdb;
         $GLOBALS['wpdb'] = $wpdb;
+        $this->channel->setUserFactorRepository(new UserFactorRepository(new Connection($wpdb)));
     }
 }

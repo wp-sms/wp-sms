@@ -13,6 +13,7 @@ use WSms\Verification\OtpGenerator;
 use WSms\Mfa\SecretEncryptor;
 use WSms\Mfa\UserFactorRepository;
 use WSms\Telegram\TelegramBotClient;
+use WSms\Database\Connection;
 
 defined('ABSPATH') || exit;
 
@@ -26,7 +27,7 @@ class MfaServiceProvider implements ServiceProvider
     /** {@inheritDoc} */
     public function register(ServiceContainer $container): void
     {
-        $container->register('mfa.factor_repository', fn () => new UserFactorRepository());
+        $container->register('mfa.factor_repository', fn ($c) => new UserFactorRepository($c->get(Connection::class)));
 
         $container->register('mfa.manager', function () use ($container) {
             return new MfaManager(

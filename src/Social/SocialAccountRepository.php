@@ -2,6 +2,7 @@
 
 namespace WSms\Social;
 
+use WSms\Database\Connection;
 use WSms\Enums\ChannelStatus;
 
 defined('ABSPATH') || exit;
@@ -10,6 +11,8 @@ class SocialAccountRepository
 {
     public const SOCIAL_PROVIDERS = ['google', 'apple', 'facebook', 'microsoft', 'github', 'linkedin', 'twitter', 'telegram'];
 
+    public function __construct(private readonly Connection $db) {}
+
     /**
      * Find a WordPress user by their social provider account ID.
      *
@@ -17,18 +20,16 @@ class SocialAccountRepository
      */
     public function findByProviderAccount(string $providerId, string $providerAccountId): ?object
     {
-        global $wpdb;
+        $table = $this->db->table(Connection::TABLE_USER_FACTORS);
 
-        $table = $wpdb->prefix . 'wsms_user_factors';
-
-        $row = $wpdb->get_row($wpdb->prepare(
+        $row = $this->db->getRow(
             "SELECT * FROM {$table} WHERE channel_id = %s AND identifier = %s AND status = %s LIMIT 1",
             $providerId,
             $providerAccountId,
             ChannelStatus::Active->value,
-        ));
+        );
 
-        return $row ?: null;
+        return $row ? (object) $row : null;
     }
 
     /**
@@ -38,18 +39,16 @@ class SocialAccountRepository
      */
     public function findByUserId(int $userId): array
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
+        $table = $this->db->table(Connection::TABLE_USER_FACTORS);
         $placeholders = implode(',', array_fill(0, count(self::SOCIAL_PROVIDERS), '%s'));
 
-        $rows = $wpdb->get_results($wpdb->prepare(
+        $rows = $this->db->getResults(
             "SELECT * FROM {$table} WHERE user_id = %d AND channel_id IN ({$placeholders})",
             $userId,
             ...self::SOCIAL_PROVIDERS,
-        ));
+        );
 
-        return $rows ?: [];
+        return $rows ? array_map(fn($r) => (object) $r, $rows) : [];
     }
 
     /**
@@ -57,17 +56,15 @@ class SocialAccountRepository
      */
     public function findByUserAndProvider(int $userId, string $providerId): ?object
     {
-        global $wpdb;
+        $table = $this->db->table(Connection::TABLE_USER_FACTORS);
 
-        $table = $wpdb->prefix . 'wsms_user_factors';
-
-        $row = $wpdb->get_row($wpdb->prepare(
+        $row = $this->db->getRow(
             "SELECT * FROM {$table} WHERE user_id = %d AND channel_id = %s LIMIT 1",
             $userId,
             $providerId,
-        ));
+        );
 
-        return $row ?: null;
+        return $row ? (object) $row : null;
     }
 
     /**
@@ -75,13 +72,9 @@ class SocialAccountRepository
      */
     public function linkAccount(int $userId, string $providerId, string $providerAccountId, array $meta = []): int
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
-
         $metaJson = wp_json_encode($this->encryptTokensInMeta($meta));
 
-        $wpdb->insert($table, [
+        $this->db->insert(Connection::TABLE_USER_FACTORS, [
             'user_id'    => $userId,
             'channel_id' => $providerId,
             'identifier' => $providerAccountId,
@@ -91,7 +84,7 @@ class SocialAccountRepository
             'updated_at' => current_time('mysql', true),
         ]);
 
-        return (int) $wpdb->insert_id;
+        return $this->db->insertId();
     }
 
     /**
@@ -99,11 +92,7 @@ class SocialAccountRepository
      */
     public function unlinkAccount(int $userId, string $providerId): bool
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
-
-        $deleted = $wpdb->delete($table, [
+        $deleted = $this->db->delete(Connection::TABLE_USER_FACTORS, [
             'user_id'    => $userId,
             'channel_id' => $providerId,
         ]);
@@ -116,24 +105,22 @@ class SocialAccountRepository
      */
     public function updateTokens(int $factorId, array $tokens): void
     {
-        global $wpdb;
+        $table = $this->db->table(Connection::TABLE_USER_FACTORS);
 
-        $table = $wpdb->prefix . 'wsms_user_factors';
-
-        $row = $wpdb->get_row($wpdb->prepare(
+        $row = $this->db->getRow(
             "SELECT meta FROM {$table} WHERE id = %d",
             $factorId,
-        ));
+        );
 
         if (!$row) {
             return;
         }
 
-        $meta = json_decode($row->meta, true) ?: [];
+        $meta = json_decode($row['meta'], true) ?: [];
         $meta['tokens'] = $this->encryptValue(wp_json_encode($tokens));
 
-        $wpdb->update(
-            $table,
+        $this->db->update(
+            Connection::TABLE_USER_FACTORS,
             ['meta' => wp_json_encode($meta), 'updated_at' => current_time('mysql', true)],
             ['id' => $factorId],
         );

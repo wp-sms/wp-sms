@@ -2,6 +2,7 @@
 
 namespace WSms\Mfa;
 
+use WSms\Database\Connection;
 use WSms\Enums\ChannelStatus;
 use WSms\Mfa\ValueObjects\UserFactor;
 
@@ -9,29 +10,26 @@ defined('ABSPATH') || exit;
 
 class UserFactorRepository
 {
+    public function __construct(private readonly Connection $db) {}
+
     public function findLatest(int $userId, string $channelId): ?UserFactor
     {
-        global $wpdb;
+        $table = $this->db->table(Connection::TABLE_USER_FACTORS);
 
-        $table = $wpdb->prefix . 'wsms_user_factors';
-
-        $row = $wpdb->get_row($wpdb->prepare(
+        $row = $this->db->getRow(
             "SELECT * FROM {$table} WHERE user_id = %d AND channel_id = %s ORDER BY created_at DESC LIMIT 1",
             $userId,
             $channelId,
-        ));
+        );
 
         return $row ? UserFactor::fromRow($row) : null;
     }
 
     public function create(int $userId, string $channelId, ChannelStatus $status, array $meta = []): int
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
         $now = current_time('mysql', true);
 
-        $wpdb->insert($table, [
+        $this->db->insert(Connection::TABLE_USER_FACTORS, [
             'user_id'    => $userId,
             'channel_id' => $channelId,
             'status'     => $status->value,
@@ -40,17 +38,14 @@ class UserFactorRepository
             'updated_at' => $now,
         ]);
 
-        return (int) $wpdb->insert_id;
+        return $this->db->insertId();
     }
 
     public function update(int $factorId, array $data): void
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
         $data['updated_at'] = current_time('mysql', true);
 
-        $wpdb->update($table, $data, ['id' => $factorId]);
+        $this->db->update(Connection::TABLE_USER_FACTORS, $data, ['id' => $factorId]);
     }
 
     public function updateStatus(int $factorId, ChannelStatus $status): void
@@ -60,12 +55,8 @@ class UserFactorRepository
 
     public function updateMeta(int $userId, string $channelId, array $meta): void
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
-
-        $wpdb->update(
-            $table,
+        $this->db->update(
+            Connection::TABLE_USER_FACTORS,
             ['meta' => wp_json_encode($meta), 'updated_at' => current_time('mysql', true)],
             ['user_id' => $userId, 'channel_id' => $channelId, 'status' => ChannelStatus::Active->value],
         );
@@ -73,15 +64,13 @@ class UserFactorRepository
 
     public function hasActiveFactors(int $userId): bool
     {
-        global $wpdb;
+        $table = $this->db->table(Connection::TABLE_USER_FACTORS);
 
-        $table = $wpdb->prefix . 'wsms_user_factors';
-
-        return (bool) $wpdb->get_var($wpdb->prepare(
+        return (bool) $this->db->getVar(
             "SELECT COUNT(*) FROM {$table} WHERE user_id = %d AND status = %s",
             $userId,
             ChannelStatus::Active->value,
-        ));
+        );
     }
 
     /**
@@ -89,29 +78,23 @@ class UserFactorRepository
      */
     public function getAllForUser(int $userId): array
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
-        $rows = $wpdb->get_results($wpdb->prepare(
+        $table = $this->db->table(Connection::TABLE_USER_FACTORS);
+        $rows = $this->db->getResults(
             "SELECT * FROM {$table} WHERE user_id = %d",
             $userId,
-        ));
+        );
 
         if (!$rows) {
             return [];
         }
 
-        return array_map(fn(object $row) => UserFactor::fromRow($row), $rows);
+        return array_map(fn(array $row) => UserFactor::fromRow($row), $rows);
     }
 
     public function disableAllForUser(int $userId): void
     {
-        global $wpdb;
-
-        $table = $wpdb->prefix . 'wsms_user_factors';
-
-        $wpdb->update(
-            $table,
+        $this->db->update(
+            Connection::TABLE_USER_FACTORS,
             ['status' => ChannelStatus::Disabled->value],
             ['user_id' => $userId],
         );
