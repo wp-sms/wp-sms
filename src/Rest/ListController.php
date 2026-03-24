@@ -90,7 +90,7 @@ class ListController extends Controller
             $type = $request->get_param('type');
             $lists = $this->lists->findAll($type ?: null);
 
-            return $this->ok(['items' => $lists]);
+            return $this->paginated($lists, count($lists));
         });
     }
 

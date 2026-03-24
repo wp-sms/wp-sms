@@ -63,7 +63,7 @@ class TagController extends Controller
                 $tag['contact_count'] = $counts[$tag['id']] ?? 0;
             }
 
-            return $this->ok(['items' => $tags]);
+            return $this->paginated($tags, count($tags));
         });
     }
 
