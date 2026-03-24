@@ -9,6 +9,7 @@ import { ContactCustomFields } from './contact-custom-fields';
 import { ContactWpUserInfo } from './contact-wp-user-info';
 import { ContactActivity } from './contact-activity';
 import { formatLabel } from '@/lib/constants';
+import { SourceLabel } from './source-label';
 import { CheckCircle2, XCircle } from 'lucide-react';
 
 interface ContactDetailSheetProps {
@@ -114,7 +115,7 @@ export function ContactDetailSheet({
               <div className="mt-2 flex items-center gap-2">
                 <Badge variant="outline">{formatLabel(contact.status)}</Badge>
                 {contact.source && (
-                  <span className="text-xs text-muted-foreground">Source: {contact.source}</span>
+                  <SourceLabel source={contact.source} sourceRef={contact.source_ref} />
                 )}
               </div>
             </div>

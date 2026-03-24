@@ -46,6 +46,7 @@ class ContactController extends Controller
                     'last_name'     => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'status'        => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'source'        => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'source_ref'    => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'custom_fields'   => ['type' => 'object'],
                     'email_verified'  => ['type' => 'boolean'],
                     'phone_verified'  => ['type' => 'boolean'],
@@ -109,6 +110,7 @@ class ContactController extends Controller
                     'last_name'       => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'status'          => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'source'          => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'source_ref'      => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'custom_fields'   => ['type' => 'object'],
                     'email_verified'  => ['type' => 'boolean'],
                     'phone_verified'  => ['type' => 'boolean'],
@@ -191,7 +193,7 @@ class ContactController extends Controller
     public function store(\WP_REST_Request $request): \WP_REST_Response
     {
         $data = [];
-        foreach (['email', 'phone', 'first_name', 'last_name', 'status', 'source', 'custom_fields', 'email_verified', 'phone_verified'] as $field) {
+        foreach (['email', 'phone', 'first_name', 'last_name', 'status', 'source', 'source_ref', 'custom_fields', 'email_verified', 'phone_verified'] as $field) {
             $value = $request->get_param($field);
             if ($value !== null) {
                 $data[$field] = $value;
@@ -254,7 +256,7 @@ class ContactController extends Controller
         }
 
         $data = [];
-        foreach (['email', 'phone', 'first_name', 'last_name', 'status', 'source', 'custom_fields', 'email_verified', 'phone_verified'] as $field) {
+        foreach (['email', 'phone', 'first_name', 'last_name', 'status', 'source', 'source_ref', 'custom_fields', 'email_verified', 'phone_verified'] as $field) {
             $value = $request->get_param($field);
             if ($value !== null) {
                 $data[$field] = $value;
@@ -356,7 +358,8 @@ class ContactController extends Controller
 
     public function import(\WP_REST_Request $request): \WP_REST_Response
     {
-        $filePath = $this->getUploadedFilePath($request);
+        $files = $request->get_file_params();
+        $filePath = !empty($files['file']['tmp_name']) ? $files['file']['tmp_name'] : null;
         if (!$filePath) {
             return self::noFileResponse();
         }
@@ -367,8 +370,9 @@ class ContactController extends Controller
         }
 
         $options = [
-            'match_field'       => $request->get_param('match_field') ?? 'email',
+            'match_field'        => $request->get_param('match_field') ?? 'email',
             'duplicate_handling' => $request->get_param('duplicate_handling') ?? 'update',
+            'source_ref'         => !empty($files['file']['name']) ? sanitize_file_name($files['file']['name']) : null,
         ];
 
         $result = $this->importer->importFromCsv($filePath, $mapping ?? [], $options);

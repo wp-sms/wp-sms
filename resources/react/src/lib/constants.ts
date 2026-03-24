@@ -366,6 +366,25 @@ const ACRONYMS: Record<string, string> = {
   json: 'JSON',
 };
 
+export function formatSource(source: string, sourceRef?: string | null): { label: string; detail?: string } {
+  const label = formatLabel(source);
+  if (!sourceRef) return { label };
+
+  switch (source) {
+    case 'messaging_button': {
+      try {
+        return { label, detail: new URL(sourceRef).pathname };
+      } catch {
+        return { label, detail: sourceRef };
+      }
+    }
+    case 'emailoctopus':
+      return { label, detail: `List ${sourceRef}` };
+    default:
+      return { label, detail: sourceRef };
+  }
+}
+
 /** Convert snake_case or kebab-case to Title Case, with correct acronym casing. */
 export function formatLabel(value: string): string {
   return value

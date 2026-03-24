@@ -77,6 +77,7 @@ class FlowRunner
         }
 
         $payload['_flow_id'] = $flow->getId();
+        $payload['_flow_name'] = $flow->getName();
 
         $executionId = $this->executionRepository->create($flow->getId(), $payload);
 

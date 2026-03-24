@@ -104,6 +104,7 @@ class MessageHandler
                 'email' => $email,
                 'phone' => $phone,
                 'source' => 'messaging_button',
+                'source_ref' => !empty($data['page_url']) ? mb_substr($data['page_url'], 0, 100) : null,
                 'status' => 'subscribed',
             ]);
         }

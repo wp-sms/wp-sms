@@ -39,7 +39,7 @@ class ContactExporter
         sort($customFieldKeys);
 
         // Build header
-        $header = ['id', 'email', 'phone', 'first_name', 'last_name', 'status', 'source', 'wp_user_id', 'tags', 'created_at', 'updated_at'];
+        $header = ['id', 'email', 'phone', 'first_name', 'last_name', 'status', 'source', 'source_ref', 'wp_user_id', 'tags', 'created_at', 'updated_at'];
         foreach ($customFieldKeys as $key) {
             $header[] = 'custom_' . $key;
         }
@@ -63,6 +63,7 @@ class ContactExporter
                     $contact['last_name'] ?? '',
                     $contact['status'] ?? '',
                     $contact['source'] ?? '',
+                    $contact['source_ref'] ?? '',
                     $contact['wp_user_id'] ?? '',
                     $tagNames,
                     $contact['created_at'] ?? '',

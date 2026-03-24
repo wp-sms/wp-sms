@@ -40,6 +40,8 @@ abstract class AbstractContactSource implements ContactSourceInterface
         if ($existing) {
             // Merge: only overwrite with non-null values
             $updateData = array_filter($data, fn($v) => $v !== null && $v !== '');
+            // Preserve original provenance — source/source_ref record the creation context
+            unset($updateData['source'], $updateData['source_ref']);
             $this->contacts->update($existing['id'], $updateData);
             return $existing['id'];
         }

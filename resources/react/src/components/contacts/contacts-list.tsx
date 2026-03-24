@@ -16,6 +16,7 @@ import { BulkActionBar } from './bulk-action-bar';
 import { ExportDialog } from './export-dialog';
 import { Plus, Search, Users, Pencil, Trash2, Eye, Upload, Download } from 'lucide-react';
 import { CONTACT_STATUSES, formatLabel } from '@/lib/constants';
+import { SourceLabel } from './source-label';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
 
@@ -208,7 +209,9 @@ export function ContactsList({ hook, tags, onImport }: ContactsListProps) {
                             {formatLabel(contact.status)}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">{contact.source || '\u2014'}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">
+                          {contact.source ? <SourceLabel source={contact.source} sourceRef={contact.source_ref} showPrefix={false} /> : '\u2014'}
+                        </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1">
                             <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleViewDetail(contact.id)} title="View">

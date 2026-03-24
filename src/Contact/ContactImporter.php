@@ -69,6 +69,7 @@ class ContactImporter
                     }
 
                     $data['source'] = 'import';
+                    $data['source_ref'] = $options['source_ref'] ?? null;
                     $this->contacts->create($data);
                     $imported++;
                 } catch (\Throwable $e) {

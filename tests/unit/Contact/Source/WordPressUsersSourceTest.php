@@ -287,7 +287,8 @@ class WordPressUsersSourceTest extends TestCase
 
         $this->contacts->expects($this->once())->method('update')
             ->with('CSV_CONTACT', $this->callback(function (array $data) {
-                return $data['source'] === 'wordpress_users' && $data['wp_user_id'] === 42;
+                // source/source_ref must NOT be overwritten on sync (preserves original provenance)
+                return !isset($data['source']) && !isset($data['source_ref']) && $data['wp_user_id'] === 42;
             }));
         $this->contacts->expects($this->never())->method('create');
 

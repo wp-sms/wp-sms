@@ -98,6 +98,7 @@ class EmailOctopusContactSource extends AbstractContactSource
         $sourceData = $this->extractContactData($contact);
         $contactData = $this->applyFieldMapping($sourceData, $fieldMapping);
         $contactData['source'] = $this->getType();
+        $contactData['source_ref'] = $listId;
 
         return $this->upsertContact($contactData, $suppressEvents);
     }

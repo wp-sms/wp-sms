@@ -124,6 +124,7 @@ class CreateContactAction extends AbstractAction
             'first_name' => $config['first_name'] ?? null,
             'last_name'  => $config['last_name'] ?? null,
             'source'     => $config['source'] ?? 'flow',
+            'source_ref' => $payload['_flow_name'] ?? null,
         ], fn($v) => $v !== null && $v !== '');
 
         if (!empty($config['email_verified'])) {
