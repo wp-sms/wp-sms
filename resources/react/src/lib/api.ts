@@ -691,6 +691,13 @@ export interface ListResponse<T> {
   total: number;
 }
 
+export interface MutationResponse<T> {
+  success: boolean;
+  data: T;
+  error?: string;
+  message?: string;
+}
+
 // --- Campaign Types ---
 
 export type CampaignStatus = 'draft' | 'scheduled' | 'sending' | 'paused' | 'sent' | 'cancelled' | 'failed';
