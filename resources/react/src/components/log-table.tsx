@@ -1,3 +1,4 @@
+import { formatDateTime } from '@/lib/format';
 import { Fragment, useState } from 'react';
 import {
   Table,
@@ -118,7 +119,7 @@ export function LogTable({ logs, total, page, perPage, onPageChange, loading }: 
                       : log.user_id || '\u2014'}
                   </TableCell>
                   <TableCell className="font-mono text-xs">{log.ip_address}</TableCell>
-                  <TableCell className="text-sm">{new Date(log.created_at).toLocaleString()}</TableCell>
+                  <TableCell className="text-sm">{formatDateTime(log.created_at)}</TableCell>
                 </TableRow>
                 {isExpanded && (
                   <TableRow key={`${log.id}-details`} className="bg-muted/20 hover:bg-muted/20">

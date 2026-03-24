@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api, type TriggerDefinition, type ListResponse } from '@/lib/api';
+import { isAbortError } from '@/lib/error-utils';
 
 let cachedTriggers: TriggerDefinition[] | null = null;
 let triggersFetch: Promise<TriggerDefinition[]> | null = null;
@@ -21,7 +22,7 @@ export function useTriggers(): { triggers: TriggerDefinition[]; loading: boolean
 
     triggersFetch
       .then((items) => { if (!controller.signal.aborted) { setTriggers(items); setLoading(false); } })
-      .catch((e) => { if (!(e instanceof DOMException && e.name === 'AbortError')) setLoading(false); });
+      .catch((e) => { if (!isAbortError(e)) setLoading(false); });
 
     return () => { controller.abort(); };
   }, []);

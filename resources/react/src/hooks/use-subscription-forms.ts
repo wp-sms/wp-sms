@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { api, type SubscriptionFormData } from '@/lib/api';
 import { toast } from 'sonner';
+import { getErrorMessage } from '@/lib/error-utils';
 
 export type { SubscriptionFormData };
 
@@ -27,8 +28,8 @@ export function useSubscriptionForms() {
     try {
       const res = await api.get<ListResponse>('/subscription-forms');
       setForms(res.items);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load subscription forms');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'Failed to load subscription forms'));
     } finally {
       setLoading(false);
     }

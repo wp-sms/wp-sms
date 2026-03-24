@@ -1,3 +1,4 @@
+import { formatDateTime } from '@/lib/format';
 import { PageSection } from '@/components/ui/page-section';
 import {
   Table,
@@ -86,7 +87,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                       <TableCell>{entry.display_name}</TableCell>
                       <TableCell className="font-mono text-sm">{entry.ip || '-'}</TableCell>
                       <TableCell className="text-right text-sm">
-                        {new Date(entry.locked_at).toLocaleString()}
+                        {formatDateTime(entry.locked_at)}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -114,7 +115,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                       <TableCell>{entry.display_name}</TableCell>
                       <TableCell className="font-mono text-sm">{entry.ip || '-'}</TableCell>
                       <TableCell className="text-right text-sm">
-                        {new Date(entry.suspended_at).toLocaleString()}
+                        {formatDateTime(entry.suspended_at)}
                       </TableCell>
                     </TableRow>
                   ))}

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { api, type PlatformIntegration, type IntegrationDetail, type ListResponse } from '@/lib/api';
+import { isAbortError } from '@/lib/error-utils';
 
 export function useIntegrations(): {
   integrations: PlatformIntegration[];
@@ -22,7 +23,7 @@ export function useIntegrations(): {
         setIntegrations(res.items);
       }
     } catch (e) {
-      if (e instanceof DOMException && e.name === 'AbortError') return;
+      if (isAbortError(e)) return;
       setIntegrations([]);
     } finally {
       if (!controller.signal.aborted) {
@@ -66,7 +67,7 @@ export function useIntegrationDetail(id: string | null): {
       const res = await api.get<IntegrationDetail>(`integrations/${currentId}`, { signal: controller.signal });
       if (!controller.signal.aborted) setDetail(res);
     } catch (e) {
-      if (e instanceof DOMException && e.name === 'AbortError') return;
+      if (isAbortError(e)) return;
       setDetail(null);
     } finally {
       if (!controller.signal.aborted) setLoading(false);

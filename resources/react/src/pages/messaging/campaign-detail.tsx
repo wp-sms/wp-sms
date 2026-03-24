@@ -1,3 +1,4 @@
+import { formatDateTime } from '@/lib/format';
 import { useCampaignDetail } from '@/hooks/use-campaign-detail';
 import type { Campaign, CampaignRecipient } from '@/lib/api';
 import { MessageLogDetailDrawer } from '@/components/messaging/message-log-detail-drawer';
@@ -252,10 +253,10 @@ export function CampaignDetail({ campaign: initialCampaign, onBack }: CampaignDe
                           {log.cost ? `$${parseFloat(log.cost).toFixed(4)}` : '\u2014'}
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
-                          {log.sent_at ? new Date(log.sent_at).toLocaleString() : '\u2014'}
+                          {log.sent_at ? formatDateTime(log.sent_at) : '\u2014'}
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
-                          {log.delivered_at ? new Date(log.delivered_at).toLocaleString() : '\u2014'}
+                          {log.delivered_at ? formatDateTime(log.delivered_at) : '\u2014'}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -303,7 +304,7 @@ function TimelineItem({ label, time }: { label: string; time: string }) {
     <div className="flex items-center gap-3">
       <div className="h-2 w-2 rounded-full bg-primary" />
       <span className="font-medium">{label}</span>
-      <span className="text-muted-foreground">{new Date(time).toLocaleString()}</span>
+      <span className="text-muted-foreground">{formatDateTime(time)}</span>
     </div>
   );
 }

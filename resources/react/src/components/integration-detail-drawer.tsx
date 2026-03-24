@@ -16,6 +16,7 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Loader2, Zap, Play, type LucideIcon } from 'lucide-react';
 import { toast } from 'sonner';
+import { getErrorMessage } from '@/lib/error-utils';
 import { INTEGRATION_CATEGORY_LABELS } from '@/lib/constants';
 import type { JsonSchema } from '@/lib/api';
 
@@ -77,9 +78,7 @@ function ConnectionForm({ detail, onConfigChange, onOpenChange }: {
       toast.success(`${detail.name} connected`);
       onOpenChange(false);
     } catch (e: unknown) {
-      const err = e as Record<string, unknown> | null;
-      const message = err?.message ? String(err.message) : 'Connection failed';
-      setError(message);
+      setError(getErrorMessage(e, 'Connection failed'));
     } finally {
       setConnecting(false);
     }

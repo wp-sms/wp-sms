@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { api, type ReportsResponse } from '@/lib/api';
+import { isAbortError } from '@/lib/error-utils';
 
 export interface UseReportsReturn {
   data: ReportsResponse | null;
@@ -29,7 +30,7 @@ export function useReports(initialRange = 30): UseReportsReturn {
         setData(res);
       }
     } catch (e) {
-      if (e instanceof DOMException && e.name === 'AbortError') return;
+      if (isAbortError(e)) return;
       setError('Failed to load reports.');
       setData(null);
     } finally {

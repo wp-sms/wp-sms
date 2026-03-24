@@ -4,6 +4,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { Skeleton } from '@/components/ui/skeleton';
 import { TemplateVariablePicker } from '@/components/flow-editor/template-variable-picker';
 import { api } from '@/lib/api';
+import { isAbortError } from '@/lib/error-utils';
 import type { JsonSchema } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { findUnresolvedVariables } from '@/lib/template-preview';
@@ -154,7 +155,7 @@ function DynamicSelectContent({
     const controller = new AbortController();
     api.get<{ options: TokenOption[] }>(optionsUrl, { signal: controller.signal })
       .then((res) => { setOptions(res.options); onOptionsLoaded?.(res.options); setLoading(false); })
-      .catch((e) => { if (!(e instanceof DOMException && e.name === 'AbortError')) setLoading(false); });
+      .catch((e) => { if (!isAbortError(e)) setLoading(false); });
     return () => { controller.abort(); };
   }, [optionsUrl]);
 
@@ -264,7 +265,7 @@ function DynamicSelectToken({
     const controller = new AbortController();
     api.get<{ options: TokenOption[] }>(optionsUrl, { signal: controller.signal })
       .then((res) => setCachedOptions(res.options))
-      .catch((e) => { if (!(e instanceof DOMException && e.name === 'AbortError')) { /* label stays as raw value */ } });
+      .catch((e) => { if (!isAbortError(e)) { /* label stays as raw value */ } });
     return () => { controller.abort(); };
   }, [optionsUrl]);
 

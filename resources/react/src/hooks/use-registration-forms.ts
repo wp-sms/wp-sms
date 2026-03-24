@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
+import { getErrorMessage } from '@/lib/error-utils';
 
 export interface RegistrationFormField {
   id: string;
@@ -47,8 +48,8 @@ export function useRegistrationForms() {
     try {
       const res = await api.get<ListResponse>('/auth/admin/registration-forms');
       setForms(res.items);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load registration forms');
+    } catch (err: unknown) {
+      setError(getErrorMessage(err, 'Failed to load registration forms'));
     } finally {
       setLoading(false);
     }

@@ -1,3 +1,4 @@
+import { formatDateTime } from '@/lib/format';
 import { useContactActivity } from '@/hooks/use-contact-activity';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -47,7 +48,7 @@ export function ContactActivity({ contactId }: ContactActivityProps) {
                 <p className="text-xs text-muted-foreground mt-0.5 truncate">{String(activity.meta.body_preview)}</p>
               )}
               <p className="text-[10px] text-muted-foreground mt-0.5">
-                {new Date(activity.created_at).toLocaleString()}
+                {formatDateTime(activity.created_at)}
               </p>
             </div>
           </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { api, type ContactSource, type ContactSourceConfig, type ContactSourceFields, type ContactSourceStatus } from '@/lib/api';
+import { isAbortError } from '@/lib/error-utils';
 
 export interface UseContactSourcesReturn {
   sources: ContactSource[];
@@ -32,7 +33,7 @@ export function useContactSources(): UseContactSourcesReturn {
         if (!controller.signal.aborted) setSources(res.items);
       })
       .catch((e) => {
-        if (e instanceof DOMException && e.name === 'AbortError') return;
+        if (isAbortError(e)) return;
         if (!controller.signal.aborted) setSources([]);
       })
       .finally(() => {

@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { api, type Contact, type SegmentConditionGroup } from '@/lib/api';
+import { isAbortError } from '@/lib/error-utils';
 
 export interface UseSegmentPreviewReturn {
   count: number;
@@ -34,7 +35,7 @@ export function useSegmentPreview(): UseSegmentPreviewReturn {
           setCount(res.total);
         }
       } catch (e) {
-        if (!(e instanceof DOMException && e.name === 'AbortError')) {
+        if (!isAbortError(e)) {
           setContacts([]);
           setCount(0);
         }

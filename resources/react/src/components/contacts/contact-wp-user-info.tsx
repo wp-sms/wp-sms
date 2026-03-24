@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/format';
 import type { ContactDetail } from '@/lib/api';
 import { Badge } from '@/components/ui/badge';
 import { ExternalLink, User } from 'lucide-react';
@@ -41,7 +42,7 @@ export function ContactWpUserInfo({ wpUser }: ContactWpUserInfoProps) {
         {wpUser.registered && (
           <div className="flex items-center gap-2">
             <span className="text-muted-foreground">Registered:</span>
-            <span>{new Date(wpUser.registered).toLocaleDateString()}</span>
+            <span>{formatDate(wpUser.registered)}</span>
           </div>
         )}
       </div>

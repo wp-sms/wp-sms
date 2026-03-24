@@ -44,6 +44,7 @@ import { useSubscriptionForms, type SubscriptionFormData } from '@/hooks/use-sub
 import { useLists } from '@/hooks/use-lists';
 import { copyToClipboard, generateSlug } from '@/lib/utils';
 import { toast } from 'sonner';
+import { getErrorMessage } from '@/lib/error-utils';
 import type { SubscriptionFormField } from '@/lib/api';
 
 const AVAILABLE_FIELDS = [
@@ -138,8 +139,8 @@ export function SubscriptionForms() {
         await create(payload);
       }
       setSheetOpen(false);
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save form');
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, 'Failed to save form'));
     } finally {
       setSaving(false);
     }

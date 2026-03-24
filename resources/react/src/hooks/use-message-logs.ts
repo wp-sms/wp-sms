@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { api, type MessageLogEntry, type ListResponse } from '@/lib/api';
+import { type MessageLogEntry } from '@/lib/api';
+import { useListResource } from './use-list-resource';
 
 export interface MessageLogFilters {
   channel: string;
@@ -21,67 +21,15 @@ export interface UseMessageLogsReturn {
   loading: boolean;
 }
 
-const EMPTY_FILTERS: MessageLogFilters = { channel: '', status: '', recipient: '', gateway_id: '', date_from: '', date_to: '' };
-
 export function useMessageLogs(perPage = 20): UseMessageLogsReturn {
-  const [logs, setLogs] = useState<MessageLogEntry[]>([]);
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [filters, setFilters] = useState<MessageLogFilters>(EMPTY_FILTERS);
-  const [loading, setLoading] = useState(true);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
-  const abortRef = useRef<AbortController>();
+  const list = useListResource<MessageLogEntry, MessageLogFilters>({
+    endpoint: 'message-logs',
+    defaultFilters: { channel: '', status: '', recipient: '', gateway_id: '', date_from: '', date_to: '' },
+    perPage,
+  });
 
-  const fetchLogs = useCallback(async (p: number, f: MessageLogFilters) => {
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
-
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('per_page', String(perPage));
-      params.set('offset', String((p - 1) * perPage));
-      if (f.channel) params.set('channel', f.channel);
-      if (f.status) params.set('status', f.status);
-      if (f.recipient) params.set('recipient', f.recipient);
-      if (f.gateway_id) params.set('gateway_id', f.gateway_id);
-      if (f.date_from) params.set('date_from', f.date_from);
-      if (f.date_to) params.set('date_to', f.date_to);
-
-      const res = await api.get<ListResponse<MessageLogEntry>>(`message-logs?${params.toString()}`, { signal: controller.signal });
-      if (!controller.signal.aborted) {
-        setLogs(res.items);
-        setTotal(res.total);
-      }
-    } catch (e) {
-      if (e instanceof DOMException && e.name === 'AbortError') return;
-      setLogs([]);
-      setTotal(0);
-    } finally {
-      if (!controller.signal.aborted) {
-        setLoading(false);
-      }
-    }
-  }, [perPage]);
-
-  const setFilter = useCallback((key: keyof MessageLogFilters, value: string) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
-    setPage(1);
-  }, []);
-
-  useEffect(() => {
-    clearTimeout(debounceRef.current);
-    const hasFilterValue = Object.values(filters).some(Boolean);
-    debounceRef.current = setTimeout(() => {
-      void fetchLogs(page, filters);
-    }, page === 1 && hasFilterValue ? 300 : 0);
-
-    return () => {
-      clearTimeout(debounceRef.current);
-      abortRef.current?.abort();
-    };
-  }, [page, filters, fetchLogs]);
-
-  return { logs, total, page, perPage, filters, setFilter, setPage, loading };
+  return {
+    logs: list.items, total: list.total, page: list.page, perPage: list.perPage,
+    filters: list.filters, setFilter: list.setFilter, setPage: list.setPage, loading: list.loading,
+  };
 }

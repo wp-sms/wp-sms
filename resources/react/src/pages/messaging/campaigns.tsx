@@ -1,3 +1,4 @@
+import { formatDateTime } from '@/lib/format';
 import { useState } from 'react';
 import { useCampaigns } from '@/hooks/use-campaigns';
 import { CampaignEditor } from './campaign-editor';
@@ -223,7 +224,7 @@ export function Campaigns() {
                         {campaign.sent_count > 0 ? campaign.sent_count.toLocaleString() : '\u2014'}
                       </TableCell>
                       <TableCell className="text-sm">
-                        {campaign.send_at ? new Date(campaign.send_at).toLocaleString() : '\u2014'}
+                        {campaign.send_at ? formatDateTime(campaign.send_at) : '\u2014'}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">

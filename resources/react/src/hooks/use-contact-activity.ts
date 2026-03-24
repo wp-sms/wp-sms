@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { api, type ContactActivity } from '@/lib/api';
+import { isAbortError } from '@/lib/error-utils';
 
 export interface UseContactActivityReturn {
   activities: ContactActivity[];
@@ -36,7 +37,7 @@ export function useContactActivity(contactId: string | null): UseContactActivity
         }
       })
       .catch((e) => {
-        if (!(e instanceof DOMException && e.name === 'AbortError')) {
+        if (!isAbortError(e)) {
           setActivities([]);
           setHasMore(false);
         }

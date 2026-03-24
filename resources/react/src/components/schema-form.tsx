@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { formatLabel } from '@/lib/constants';
 import type { JsonSchema, JsonSchemaProperty } from '@/lib/api';
 import { api } from '@/lib/api';
+import { isAbortError } from '@/lib/error-utils';
 import { TemplateVariablePicker } from '@/components/flow-editor/template-variable-picker';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Plus, X } from 'lucide-react';
@@ -216,7 +217,7 @@ function DynamicSelectField({
     api.get<{ options: DynamicOption[] }>(optionsUrl, { signal: controller.signal })
       .then((res) => { setOptions(res.options); setLoading(false); })
       .catch((e) => {
-        if (!(e instanceof DOMException && e.name === 'AbortError')) {
+        if (!isAbortError(e)) {
           setError(true);
           setLoading(false);
         }

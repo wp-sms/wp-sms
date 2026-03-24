@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api, type ActionDefinition, type ListResponse } from '@/lib/api';
+import { isAbortError } from '@/lib/error-utils';
 
 let cachedActions: ActionDefinition[] | null = null;
 let actionsFetch: Promise<ActionDefinition[]> | null = null;
@@ -26,7 +27,7 @@ export function useActions(): { actions: ActionDefinition[]; loading: boolean } 
 
     actionsFetch
       .then((items) => { if (!controller.signal.aborted) { setActions(items); setLoading(false); } })
-      .catch((e) => { if (!(e instanceof DOMException && e.name === 'AbortError')) setLoading(false); });
+      .catch((e) => { if (!isAbortError(e)) setLoading(false); });
 
     return () => { controller.abort(); };
   }, []);

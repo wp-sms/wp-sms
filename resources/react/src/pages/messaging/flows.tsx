@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/format';
 import { useState, useEffect, useMemo } from 'react';
 import { useFlows } from '@/hooks/use-flows';
 import { FlowEditor } from './flow-editor';
@@ -41,6 +42,7 @@ import { formatLabel } from '@/lib/constants';
 import { countSteps } from '@/lib/flow-utils';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
+import { isAbortError } from '@/lib/error-utils';
 
 type View =
   | { mode: 'list' }
@@ -77,7 +79,7 @@ export function Flows() {
     api.get<{ items: FlowTemplate[] }>('flows/templates', { signal: controller.signal })
       .then((res) => { setTemplates(res.items); setTemplatesLoading(false); })
       .catch((e) => {
-        if (!(e instanceof DOMException && e.name === 'AbortError')) setTemplatesLoading(false);
+        if (!isAbortError(e)) setTemplatesLoading(false);
       });
     return () => { controller.abort(); };
   }, []);
@@ -286,7 +288,7 @@ export function Flows() {
                       )}
                     </TableCell>
                     <TableCell className="text-sm">
-                      {flow.published_at ? new Date(flow.published_at).toLocaleDateString() : '\u2014'}
+                      {flow.published_at ? formatDate(flow.published_at) : '\u2014'}
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-1">

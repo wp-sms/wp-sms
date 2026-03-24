@@ -1,3 +1,4 @@
+import { formatDateTime } from '@/lib/format';
 import type { MessageLogEntry } from '@/lib/api';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { Separator } from '@/components/ui/separator';
@@ -80,9 +81,9 @@ export function MessageLogDetailDrawer({ log, onClose }: MessageLogDetailDrawerP
                       {log.provider_id ?? '\u2014'}
                     </p>
                   </div>
-                  <Field label="Created" value={new Date(log.created_at).toLocaleString()} />
-                  <Field label="Sent At" value={log.sent_at ? new Date(log.sent_at).toLocaleString() : null} />
-                  <Field label="Delivered At" value={log.delivered_at ? new Date(log.delivered_at).toLocaleString() : null} />
+                  <Field label="Created" value={formatDateTime(log.created_at)} />
+                  <Field label="Sent At" value={log.sent_at ? formatDateTime(log.sent_at) : null} />
+                  <Field label="Delivered At" value={log.delivered_at ? formatDateTime(log.delivered_at) : null} />
                 </div>
               </section>
 

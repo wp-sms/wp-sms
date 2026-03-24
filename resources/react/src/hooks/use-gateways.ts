@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { api, type Gateway, type ListResponse, type GatewayTestResult, type TestConnectionResult } from '@/lib/api';
+import { isAbortError } from '@/lib/error-utils';
 
 export interface UseGatewaysReturn {
   gateways: Gateway[];
@@ -28,7 +29,7 @@ export function useGateways(): UseGatewaysReturn {
         setGateways(res.items);
       }
     } catch (e) {
-      if (e instanceof DOMException && e.name === 'AbortError') return;
+      if (isAbortError(e)) return;
       setGateways([]);
     } finally {
       if (!controller.signal.aborted) {

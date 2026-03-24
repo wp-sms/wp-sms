@@ -45,6 +45,7 @@ import { useRegistrationForms, type RegistrationFormData, type RegistrationFormF
 import { copyToClipboard, generateSlug, getAvailableRoles } from '@/lib/utils';
 import { SYSTEM_FIELD_OPTIONS } from '@/lib/constants';
 import { toast } from 'sonner';
+import { getErrorMessage } from '@/lib/error-utils';
 
 interface FormEditorState {
   name: string;
@@ -123,8 +124,8 @@ export function RegistrationForms() {
         await create(formState);
       }
       setSheetOpen(false);
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to save form');
+    } catch (err: unknown) {
+      toast.error(getErrorMessage(err, 'Failed to save form'));
     } finally {
       setSaving(false);
     }

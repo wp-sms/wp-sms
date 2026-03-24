@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/format';
 import { useState, useCallback } from 'react';
 import { Users, RefreshCw, Settings, Unplug } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -85,7 +86,7 @@ export function SourcesList() {
                     <div>
                       <p className="text-muted-foreground">Last Synced</p>
                       <p className="font-medium">
-                        {new Date(source.stats.last_synced_at).toLocaleDateString()}
+                        {formatDate(source.stats.last_synced_at)}
                       </p>
                     </div>
                   )}

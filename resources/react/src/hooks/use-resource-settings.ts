@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import { deepMerge } from '@/lib/utils';
+import { getErrorMessage } from '@/lib/error-utils';
 
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -64,7 +65,7 @@ export function useResourceSettings<T extends Record<string, unknown>, R>(
       })
       .catch((err: unknown) => {
         if (cancelled) return;
-        setError(err instanceof Error ? err.message : 'Failed to load settings');
+        setError(getErrorMessage(err, 'Failed to load settings'));
       })
       .finally(() => {
         if (!cancelled) setLoading(false);

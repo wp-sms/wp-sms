@@ -6,6 +6,7 @@ import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { ChevronsUpDown, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 import { api, type GatewayConfigField, type GatewayConfig } from '@/lib/api';
+import { isAbortError, getErrorMessage } from '@/lib/error-utils';
 
 interface DynamicOption {
   value: string;
@@ -132,8 +133,8 @@ export function DynamicConfigField({
         }
       })
       .catch((e) => {
-        if (e instanceof DOMException && e.name === 'AbortError') return;
-        setError(e?.message || 'Failed to load options');
+        if (isAbortError(e)) return;
+        setError(getErrorMessage(e, 'Failed to load options'));
         setLoading(false);
       });
   }, [credentialsReady, credentialsKey, contextKey, gatewayId, section, fieldKey, draftConfig, resolvedContext]);

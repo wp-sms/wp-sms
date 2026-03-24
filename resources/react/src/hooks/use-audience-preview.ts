@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { api, type CampaignAudience } from '@/lib/api';
+import { isAbortError } from '@/lib/error-utils';
 
 export function useAudiencePreview(audience: CampaignAudience | null, channel: string) {
   const [count, setCount] = useState<number | null>(null);
@@ -42,7 +43,7 @@ export function useAudiencePreview(audience: CampaignAudience | null, channel: s
           setCount(res.data.count);
         }
       } catch (e) {
-        if (e instanceof DOMException && e.name === 'AbortError') return;
+        if (isAbortError(e)) return;
         setCount(null);
       } finally {
         if (!controller.signal.aborted) {

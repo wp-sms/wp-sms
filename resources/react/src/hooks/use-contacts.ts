@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { api, type Contact, type ContactDetail, type ImportResult, type ImportPreview, type ListResponse } from '@/lib/api';
+import { useState, useEffect, useCallback } from 'react';
+import { api, type Contact, type ContactDetail, type ImportResult, type ImportPreview } from '@/lib/api';
+import { useListResource } from './use-list-resource';
 
 export interface ContactFilters {
   status: string;
@@ -37,83 +38,41 @@ export interface UseContactsReturn {
   isAllSelected: boolean;
 }
 
-const EMPTY_FILTERS: ContactFilters = { status: '', search: '' };
-
 export function useContacts(perPage = 20): UseContactsReturn {
-  const [contacts, setContacts] = useState<Contact[]>([]);
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(1);
-  const [filters, setFilters] = useState<ContactFilters>(EMPTY_FILTERS);
-  const [loading, setLoading] = useState(true);
-  const [fetchTrigger, setFetchTrigger] = useState(0);
+  const list = useListResource<Contact, ContactFilters>({
+    endpoint: 'contacts',
+    defaultFilters: { status: '', search: '' },
+    perPage,
+  });
+
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const debounceRef = useRef<ReturnType<typeof setTimeout>>();
-  const abortRef = useRef<AbortController>();
-
-  const fetchContacts = useCallback(async (p: number, f: ContactFilters) => {
-    abortRef.current?.abort();
-    const controller = new AbortController();
-    abortRef.current = controller;
-
-    setLoading(true);
-    try {
-      const params = new URLSearchParams();
-      params.set('per_page', String(perPage));
-      params.set('offset', String((p - 1) * perPage));
-      if (f.status) params.set('status', f.status);
-      if (f.search) params.set('search', f.search);
-
-      const res = await api.get<ListResponse<Contact>>(`contacts?${params.toString()}`, { signal: controller.signal });
-      if (!controller.signal.aborted) {
-        setContacts(res.items);
-        setTotal(res.total);
-      }
-    } catch (e) {
-      if (e instanceof DOMException && e.name === 'AbortError') return;
-      setContacts([]);
-      setTotal(0);
-    } finally {
-      if (!controller.signal.aborted) {
-        setLoading(false);
-      }
-    }
-  }, [perPage]);
-
-  const setFilter = useCallback((key: keyof ContactFilters, value: string) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
-    setPage(1);
-  }, []);
-
-  const refetch = useCallback(() => {
-    setFetchTrigger((n) => n + 1);
-  }, []);
 
   const createContact = useCallback(async (data: Partial<Contact>): Promise<Contact> => {
     const res = await api.post<{ success: boolean; data: Contact }>('contacts', data);
-    refetch();
+    list.refetch();
     return res.data;
-  }, [refetch]);
+  }, [list.refetch]);
 
   const updateContact = useCallback(async (id: string, data: Partial<Contact>): Promise<Contact> => {
     const res = await api.put<{ success: boolean; data: Contact }>(`contacts/${id}`, data);
-    refetch();
+    list.refetch();
     return res.data;
-  }, [refetch]);
+  }, [list.refetch]);
 
   const deleteContact = useCallback(async (id: string): Promise<void> => {
     await api.del(`contacts/${id}`);
-    refetch();
-  }, [refetch]);
+    list.refetch();
+  }, [list.refetch]);
 
   const addTag = useCallback(async (id: string, tagId: string): Promise<void> => {
     await api.post(`contacts/${id}/tags`, { tag_id: tagId });
-    refetch();
-  }, [refetch]);
+    list.refetch();
+  }, [list.refetch]);
 
   const removeTag = useCallback(async (id: string, tagId: string): Promise<void> => {
     await api.del(`contacts/${id}/tags?tag_id=${tagId}`);
-    refetch();
-  }, [refetch]);
+    list.refetch();
+  }, [list.refetch]);
 
   const fetchContact = useCallback(async (id: string): Promise<ContactDetail> => {
     const res = await api.get<{ success: boolean; data: ContactDetail }>(`contacts/${id}`);
@@ -137,9 +96,9 @@ export function useContacts(perPage = 20): UseContactsReturn {
     formData.append('match_field', matchField);
     formData.append('duplicate_handling', duplicateHandling);
     const res = await api.upload<{ success: boolean; data: ImportResult }>('contacts/import', formData);
-    refetch();
+    list.refetch();
     return res.data;
-  }, [refetch]);
+  }, [list.refetch]);
 
   const exportContacts = useCallback(async (exportFilters?: { status?: string }) => {
     const res = await api.post<{ success: boolean; data: { url: string; filename: string } }>('contacts/export', exportFilters ?? {});
@@ -149,8 +108,8 @@ export function useContacts(perPage = 20): UseContactsReturn {
   const bulkAction = useCallback(async (action: string, ids: string[], params?: Record<string, unknown>): Promise<void> => {
     await api.post('contacts/bulk', { action, ids, ...params });
     setSelectedIds([]);
-    refetch();
-  }, [refetch]);
+    list.refetch();
+  }, [list.refetch]);
 
   // Selection
   const toggleSelect = useCallback((id: string) => {
@@ -158,36 +117,24 @@ export function useContacts(perPage = 20): UseContactsReturn {
   }, []);
 
   const selectAll = useCallback(() => {
-    setSelectedIds(contacts.map((c) => c.id));
-  }, [contacts]);
+    setSelectedIds(list.items.map((c) => c.id));
+  }, [list.items]);
 
   const clearSelection = useCallback(() => {
     setSelectedIds([]);
   }, []);
 
-  const isAllSelected = contacts.length > 0 && selectedIds.length === contacts.length;
-
-  useEffect(() => {
-    clearTimeout(debounceRef.current);
-    const hasFilterValue = filters.status || filters.search;
-    debounceRef.current = setTimeout(() => {
-      void fetchContacts(page, filters);
-    }, page === 1 && hasFilterValue ? 300 : 0);
-
-    return () => {
-      clearTimeout(debounceRef.current);
-      abortRef.current?.abort();
-    };
-  }, [page, filters, fetchContacts, fetchTrigger]);
+  const isAllSelected = list.items.length > 0 && selectedIds.length === list.items.length;
 
   // Clear selection on page/filter change
   useEffect(() => {
     setSelectedIds([]);
-  }, [page, filters]);
+  }, [list.page, list.filters]);
 
   return {
-    contacts, total, page, perPage, filters, setFilter, setPage, loading,
-    createContact, updateContact, deleteContact, addTag, removeTag, refetch,
+    contacts: list.items, total: list.total, page: list.page, perPage: list.perPage,
+    filters: list.filters, setFilter: list.setFilter, setPage: list.setPage, loading: list.loading,
+    createContact, updateContact, deleteContact, addTag, removeTag, refetch: list.refetch,
     fetchContact, importPreview, importContacts, exportContacts,
     bulkAction, selectedIds, toggleSelect, selectAll, clearSelection, isAllSelected,
   };

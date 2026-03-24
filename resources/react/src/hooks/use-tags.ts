@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { api, type Tag } from '@/lib/api';
+import { isAbortError } from '@/lib/error-utils';
 
 export interface UseTagsReturn {
   tags: Tag[];
@@ -26,7 +27,7 @@ export function useTags(): UseTagsReturn {
         if (!controller.signal.aborted) setTags(res.items);
       })
       .catch((e) => {
-        if (!(e instanceof DOMException && e.name === 'AbortError')) setTags([]);
+        if (!isAbortError(e)) setTags([]);
       })
       .finally(() => {
         if (!controller.signal.aborted) setLoading(false);

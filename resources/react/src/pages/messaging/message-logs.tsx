@@ -1,3 +1,4 @@
+import { formatDateTime } from '@/lib/format';
 import { useState } from 'react';
 import { PageSection } from '@/components/ui/page-section';
 import { Input } from '@/components/ui/input';
@@ -114,7 +115,7 @@ export function MessageLogs() {
                     <TableCell><StatusBadge status={log.status} /></TableCell>
                     <TableCell className="text-xs">{log.gateway_id}</TableCell>
                     <TableCell className="text-xs">{log.cost ?? '\u2014'}</TableCell>
-                    <TableCell className="text-sm">{new Date(log.created_at).toLocaleString()}</TableCell>
+                    <TableCell className="text-sm">{formatDateTime(log.created_at)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

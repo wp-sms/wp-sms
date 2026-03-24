@@ -1,3 +1,4 @@
+import { formatDate } from '@/lib/format';
 import { useState, useEffect, useCallback, useMemo, useRef, Fragment } from 'react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
@@ -18,12 +19,7 @@ import {
   Download, RefreshCw, Info, Smartphone,
 } from 'lucide-react';
 import { toggleArrayItem, PHONE_DISPLAY_MODES, type PhoneDisplayMode } from '@/lib/constants';
-
-function getErrorMessage(err: unknown, fallback: string): string {
-  return (err && typeof err === 'object' && 'message' in err)
-    ? (err as { message: string }).message
-    : fallback;
-}
+import { getErrorMessage } from '@/lib/error-utils';
 
 interface SectionSettings {
   enabled: boolean;
@@ -634,7 +630,7 @@ function EnhancedDatabaseCard({ dbStatus, autoUpdate, onToggleAutoUpdate, onDown
               {dbStatus.updated_at && (
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Last updated</span>
-                  <span>{new Date(dbStatus.updated_at).toLocaleDateString()}</span>
+                  <span>{formatDate(dbStatus.updated_at)}</span>
                 </div>
               )}
             </>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { api, type TriggerDefinition, type ListResponse, type JsonSchema } from '@/lib/api';
+import { isAbortError } from '@/lib/error-utils';
 import { Field, FieldLabel } from '@/components/ui/field';
 import {
   Select,
@@ -41,7 +42,7 @@ export function TriggerSelector({ triggerType, triggerConfig, onChangeTrigger, o
 
     triggersFetch
       .then((items) => { if (!controller.signal.aborted) { setTriggers(items); setLoading(false); } })
-      .catch((e) => { if (!(e instanceof DOMException && e.name === 'AbortError')) setLoading(false); });
+      .catch((e) => { if (!isAbortError(e)) setLoading(false); });
 
     return () => { controller.abort(); };
   }, []);

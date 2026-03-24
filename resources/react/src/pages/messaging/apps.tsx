@@ -1,3 +1,4 @@
+import { formatDateTime, formatDate } from '@/lib/format';
 import { useState, useEffect, useMemo } from 'react';
 import { useIntegrations, useIntegrationDetail, useIntegrationConfig } from '@/hooks/use-integrations';
 import { IntegrationIcon } from '@/components/integration-icon';
@@ -18,6 +19,7 @@ import {
 } from '@/components/ui/select';
 import { ArrowLeft, Check, Copy, Loader2, Plus, RefreshCw, Search, Trash2, X, Zap, Play, type LucideIcon } from 'lucide-react';
 import { toast } from 'sonner';
+import { getErrorMessage } from '@/lib/error-utils';
 import { useConfirm } from '@/components/confirm-provider';
 import { AUTH_INTEGRATION_IDS, INTEGRATION_CATEGORY_LABELS } from '@/lib/constants';
 import { api, getConfig } from '@/lib/api';
@@ -123,8 +125,7 @@ function ConnectionSection({ detail, onConfigChange }: {
       await saveConfig(detail.id, credentials);
       toast.success(`${detail.name} connected`);
     } catch (e: unknown) {
-      const err = e as Record<string, unknown> | null;
-      setError(err?.message ? String(err.message) : 'Connection failed');
+      setError(getErrorMessage(e, 'Connection failed'));
     } finally {
       setConnecting(false);
     }
@@ -353,7 +354,7 @@ function WebhookEndpointsSection({ onConfigChange }: { onConfigChange: () => voi
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   <span className="text-xs text-muted-foreground">
-                    {new Date(ep.created_at).toLocaleDateString()}
+                    {formatDate(ep.created_at)}
                   </span>
                   <Button
                     variant="ghost"
@@ -637,9 +638,9 @@ function SyncStatusSection({ detail, onRefresh }: {
     }
   }
 
-  function formatDate(iso: string | null) {
+  function formatSyncDate(iso: string | null) {
     if (!iso) return 'Never';
-    return new Date(iso).toLocaleString();
+    return formatDateTime(iso);
   }
 
   return (
@@ -651,11 +652,11 @@ function SyncStatusSection({ detail, onRefresh }: {
         <div className="grid grid-cols-2 gap-3 text-sm">
           <div>
             <span className="text-muted-foreground">Last push</span>
-            <p className="font-medium">{formatDate(status.last_push_at)}</p>
+            <p className="font-medium">{formatSyncDate(status.last_push_at)}</p>
           </div>
           <div>
             <span className="text-muted-foreground">Last poll</span>
-            <p className="font-medium">{formatDate(status.last_poll_at)}</p>
+            <p className="font-medium">{formatSyncDate(status.last_poll_at)}</p>
           </div>
           <div>
             <span className="text-muted-foreground">Total pushed</span>
