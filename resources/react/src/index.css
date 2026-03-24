@@ -225,6 +225,11 @@
   z-index: 100300 !important;
 }
 
+/* Select with position="item-aligned" bypasses popper wrapper — target content directly */
+[data-slot="select-content"] {
+  z-index: 100300 !important;
+}
+
 /* ─── Visual Polish: Surfaces & Depth ─── */
 
 /* Sidebar wrapper — override min-h-svh so it matches content height.
