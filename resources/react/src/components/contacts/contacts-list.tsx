@@ -10,8 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { EmptyState } from '@/components/ui/empty-state';
 import { DataTable } from '@/components/ui/data-table';
-import { ContactFormSheet } from './contact-form-sheet';
-import { ContactDetailSheet } from './contact-detail-sheet';
+import { ContactFormPanel } from './contact-form-panel';
+import { ContactDetailPanel } from './contact-detail-panel';
 import { BulkActionBar } from './bulk-action-bar';
 import { ExportDialog } from './export-dialog';
 import { Plus, Search, Users, Pencil, Trash2, Eye, Upload, Download } from 'lucide-react';
@@ -246,16 +246,16 @@ export function ContactsList({ hook, tags, onImport }: ContactsListProps) {
         />
       )}
 
-      {/* Form sheet */}
-      <ContactFormSheet
+      {/* Form panel */}
+      <ContactFormPanel
         open={formOpen}
         onOpenChange={setFormOpen}
         contact={editContact}
         onSave={handleSave}
       />
 
-      {/* Detail sheet */}
-      <ContactDetailSheet
+      {/* Detail panel */}
+      <ContactDetailPanel
         open={detailOpen}
         onOpenChange={setDetailOpen}
         contactId={detailId}

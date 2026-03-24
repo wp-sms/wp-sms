@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { FieldMappingTable } from './field-mapping-table';
 import { getConfig, type ContactSource, type ContactSourceConfig, type ContactSourceFields } from '@/lib/api';
 
-interface SourceConfigSheetProps {
+interface SourceConfigPanelProps {
   source: ContactSource | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -15,7 +15,7 @@ interface SourceConfigSheetProps {
   getFields: (type: string) => Promise<ContactSourceFields>;
 }
 
-export function SourceConfigSheet({ source, open, onOpenChange, onSave, getFields }: SourceConfigSheetProps) {
+export function SourceConfigPanel({ source, open, onOpenChange, onSave, getFields }: SourceConfigPanelProps) {
   const [fields, setFields] = useState<ContactSourceFields | null>(null);
   const [roles, setRoles] = useState<string[]>([]);
   const [mapping, setMapping] = useState<Record<string, string>>({});
@@ -75,14 +75,14 @@ export function SourceConfigSheet({ source, open, onOpenChange, onSave, getField
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="sm:max-w-md overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>{source?.name ?? 'Configure Source'}</SheetTitle>
-          <SheetDescription>
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent className="sm:max-w-md overflow-y-auto">
+        <DrawerHeader>
+          <DrawerTitle>{source?.name ?? 'Configure Source'}</DrawerTitle>
+          <DrawerDescription>
             Configure which users to sync and how fields are mapped.
-          </SheetDescription>
-        </SheetHeader>
+          </DrawerDescription>
+        </DrawerHeader>
 
         <div className="space-y-6 px-4">
           {/* Role Selection */}
@@ -133,15 +133,15 @@ export function SourceConfigSheet({ source, open, onOpenChange, onSave, getField
           </div>
         </div>
 
-        <SheetFooter>
+        <DrawerFooter>
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button onClick={handleSave} disabled={saving}>
             {saving ? 'Saving...' : source?.status === 'disconnected' ? 'Connect & Save' : 'Save Changes'}
           </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }

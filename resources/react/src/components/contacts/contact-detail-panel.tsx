@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { ContactDetail, Tag } from '@/lib/api';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -12,7 +12,7 @@ import { formatLabel } from '@/lib/constants';
 import { SourceLabel } from './source-label';
 import { CheckCircle2, XCircle } from 'lucide-react';
 
-interface ContactDetailSheetProps {
+interface ContactDetailPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   contactId: string | null;
@@ -39,9 +39,9 @@ function VerifiedBadge({ verified }: { verified: boolean }) {
   );
 }
 
-export function ContactDetailSheet({
+export function ContactDetailPanel({
   open, onOpenChange, contactId, fetchContact, allTags, onAddTag, onRemoveTag,
-}: ContactDetailSheetProps) {
+}: ContactDetailPanelProps) {
   const [contact, setContact] = useState<ContactDetail | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -78,11 +78,11 @@ export function ContactDetailSheet({
   const handleRemoveTag = withRefresh(onRemoveTag);
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:max-w-md overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>Contact Details</SheetTitle>
-        </SheetHeader>
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent className="sm:max-w-md overflow-y-auto">
+        <DrawerHeader>
+          <DrawerTitle>Contact Details</DrawerTitle>
+        </DrawerHeader>
 
         {loading ? (
           <div className="space-y-4 px-4">
@@ -162,7 +162,7 @@ export function ContactDetailSheet({
         ) : (
           <p className="text-sm text-muted-foreground px-4">Contact not found</p>
         )}
-      </SheetContent>
-    </Sheet>
+      </DrawerContent>
+    </Drawer>
   );
 }

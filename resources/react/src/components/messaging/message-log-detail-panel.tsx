@@ -5,7 +5,7 @@ import { Separator } from '@/components/ui/separator';
 import { StatusBadge, ChannelBadge } from '@/components/messaging/message-badges';
 import { formatLabel } from '@/lib/constants';
 
-interface MessageLogDetailDrawerProps {
+interface MessageLogDetailPanelProps {
   log: MessageLogEntry | null;
   onClose: () => void;
 }
@@ -19,9 +19,9 @@ function Field({ label, value }: { label: string; value: string | null | undefin
   );
 }
 
-export function MessageLogDetailDrawer({ log, onClose }: MessageLogDetailDrawerProps) {
+export function MessageLogDetailPanel({ log, onClose }: MessageLogDetailPanelProps) {
   return (
-    <Drawer direction="right" open={log !== null} onOpenChange={(o) => !o && onClose()}>
+    <Drawer open={log !== null} onOpenChange={(o) => !o && onClose()}>
       <DrawerContent className="sm:max-w-md overflow-y-auto">
         {log && (
           <>

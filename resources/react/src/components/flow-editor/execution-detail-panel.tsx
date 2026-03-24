@@ -6,7 +6,7 @@ import { JsonViewer } from '@/components/ui/json-viewer';
 import { ExecutionStatusBadge } from './execution-status-badge';
 import { Layers, AlertCircle } from 'lucide-react';
 
-interface ExecutionDetailSheetProps {
+interface ExecutionDetailPanelProps {
   execution: FlowExecution | null;
   onClose: () => void;
 }
@@ -66,12 +66,12 @@ function StepDetail({ step }: { step: ProcessedStep }) {
   );
 }
 
-export function ExecutionDetailSheet({ execution, onClose }: ExecutionDetailSheetProps) {
+export function ExecutionDetailPanel({ execution, onClose }: ExecutionDetailPanelProps) {
   const open = execution !== null;
   const steps = execution ? groupStepLogs(execution.step_logs) : [];
 
   return (
-    <Drawer direction="right" open={open} onOpenChange={(o) => !o && onClose()}>
+    <Drawer open={open} onOpenChange={(o) => !o && onClose()}>
       <DrawerContent className="sm:max-w-lg overflow-y-auto">
         {execution && (
           <>

@@ -74,7 +74,7 @@ const DEFAULT_HELP: ProviderHelp = {
   clientSecretHelp: 'Keep this secret. Never expose it in frontend code.',
 };
 
-interface SocialSettingsSheetProps {
+interface SocialSettingsPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   providerId: string;
@@ -84,7 +84,7 @@ interface SocialSettingsSheetProps {
   onUpdate: (partial: Partial<SocialProviderSettings>) => void;
 }
 
-export function SocialSettingsSheet({
+export function SocialSettingsPanel({
   open,
   onOpenChange,
   providerId,
@@ -92,7 +92,7 @@ export function SocialSettingsSheet({
   icon: Icon,
   settings,
   onUpdate,
-}: SocialSettingsSheetProps) {
+}: SocialSettingsPanelProps) {
   const help = PROVIDER_HELP[providerId] ?? DEFAULT_HELP;
   const callbackUrl = `${getConfig().restUrl}auth/social/callback/${providerId}`;
 
@@ -101,7 +101,7 @@ export function SocialSettingsSheet({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="sm:max-w-md overflow-y-auto">
         <DrawerHeader>
           <DrawerTitle className="flex items-center gap-2">

@@ -7,7 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { EmptyState } from '@/components/ui/empty-state';
 import { DataTable } from '@/components/ui/data-table';
 import { PageSection } from '@/components/ui/page-section';
-import { ListFormSheet } from './list-form-sheet';
+import { ListFormPanel } from './list-form-panel';
 import { Plus, List, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
@@ -130,7 +130,7 @@ export function ListsList({ hook, tags }: ListsListProps) {
           </DataTable>
       </PageSection>
 
-      <ListFormSheet
+      <ListFormPanel
         open={formOpen}
         onOpenChange={setFormOpen}
         list={editList}

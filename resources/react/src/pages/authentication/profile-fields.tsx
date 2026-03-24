@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { PageSection } from '@/components/ui/page-section';
 import { MethodCard } from '@/components/method-card';
-import { ProfileFieldSheet } from '@/components/profile-field-sheet';
+import { ProfileFieldPanel } from '@/components/profile-field-panel';
 import { UserPlus, Plus, GripVertical, Pencil, Trash2, ArrowUp, ArrowDown, ListChecks } from 'lucide-react';
 import { FIELD_TYPES, formatLabel } from '@/lib/constants';
 import { useConfirm } from '@/components/confirm-provider';
@@ -58,9 +58,9 @@ function mergeFields(profileFields: ProfileFieldDefinition[]): ProfileFieldDefin
 }
 
 export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(false);
   const [editingField, setEditingField] = useState<ProfileFieldDefinition | null>(null);
-  const [sheetMode, setSheetMode] = useState<'create' | 'meta' | 'edit'>('create');
+  const [panelMode, setPanelMode] = useState<'create' | 'meta' | 'edit'>('create');
   const confirm = useConfirm();
 
   const allFields = useMemo(() => mergeFields(settings.profile_fields ?? []), [settings.profile_fields]);
@@ -71,14 +71,14 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
 
   function handleAdd(mode: 'create' | 'meta') {
     setEditingField(null);
-    setSheetMode(mode);
-    setSheetOpen(true);
+    setPanelMode(mode);
+    setPanelOpen(true);
   }
 
   function handleEdit(field: ProfileFieldDefinition) {
     setEditingField(field);
-    setSheetMode('edit');
-    setSheetOpen(true);
+    setPanelMode('edit');
+    setPanelOpen(true);
   }
 
   async function handleDelete(id: string) {
@@ -114,7 +114,7 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
       // Add new.
       saveFields([...allFields, { ...field, sort_order: allFields.length + 1 }]);
     }
-    setSheetOpen(false);
+    setPanelOpen(false);
   }
 
   return (
@@ -189,10 +189,10 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
           </div>
       </PageSection>
 
-      <ProfileFieldSheet
-        open={sheetOpen}
-        onOpenChange={setSheetOpen}
-        mode={sheetMode}
+      <ProfileFieldPanel
+        open={panelOpen}
+        onOpenChange={setPanelOpen}
+        mode={panelMode}
         field={editingField}
         existingIds={allFields.map((f) => f.id)}
         onSave={handleSaveField}

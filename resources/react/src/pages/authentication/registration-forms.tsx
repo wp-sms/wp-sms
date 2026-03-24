@@ -17,13 +17,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetFooter,
-} from '@/components/ui/sheet';
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+} from '@/components/ui/drawer';
 import {
   Table,
   TableBody,
@@ -77,7 +77,7 @@ const EMPTY_FORM: FormEditorState = {
 export function RegistrationForms() {
   const { forms, loading, create, update, remove, duplicate } = useRegistrationForms();
   const confirm = useConfirm();
-  const [sheetOpen, setSheetOpen] = useState(false);
+  const [panelOpen, setPanelOpen] = useState(false);
   const [editingForm, setEditingForm] = useState<RegistrationFormData | null>(null);
   const [formState, setFormState] = useState<FormEditorState>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
@@ -103,16 +103,16 @@ export function RegistrationForms() {
       setFormState(EMPTY_FORM);
       setSlugManual(false);
     }
-  }, [editingForm, sheetOpen]);
+  }, [editingForm, panelOpen]);
 
   function openCreate() {
     setEditingForm(null);
-    setSheetOpen(true);
+    setPanelOpen(true);
   }
 
   function openEdit(form: RegistrationFormData) {
     setEditingForm(form);
-    setSheetOpen(true);
+    setPanelOpen(true);
   }
 
   async function handleSave() {
@@ -123,7 +123,7 @@ export function RegistrationForms() {
       } else {
         await create(formState);
       }
-      setSheetOpen(false);
+      setPanelOpen(false);
     } catch (err: unknown) {
       toast.error(getErrorMessage(err, 'Failed to save form'));
     } finally {
@@ -307,14 +307,14 @@ export function RegistrationForms() {
           )}
       </PageSection>
 
-      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetContent className="sm:max-w-lg overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle>{isEdit ? 'Edit Form' : 'Create Registration Form'}</SheetTitle>
-            <SheetDescription>
+      <Drawer open={panelOpen} onOpenChange={setPanelOpen}>
+        <DrawerContent className="sm:max-w-lg overflow-y-auto">
+          <DrawerHeader>
+            <DrawerTitle>{isEdit ? 'Edit Form' : 'Create Registration Form'}</DrawerTitle>
+            <DrawerDescription>
               {isEdit ? 'Update the registration form settings.' : 'Configure a new registration form with custom fields and settings.'}
-            </SheetDescription>
-          </SheetHeader>
+            </DrawerDescription>
+          </DrawerHeader>
 
           <div className="space-y-4 px-4">
             <Field>
@@ -564,13 +564,13 @@ export function RegistrationForms() {
             </Field>
           </div>
 
-          <SheetFooter>
+          <DrawerFooter>
             <Button onClick={handleSave} disabled={saving || !formState.name || formState.fields.length === 0}>
               {saving ? 'Saving...' : isEdit ? 'Update' : 'Create'}
             </Button>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </>
   );
 }

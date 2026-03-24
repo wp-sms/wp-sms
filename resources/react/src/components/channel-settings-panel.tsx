@@ -26,7 +26,7 @@ import { cn } from '@/lib/utils';
 import { useGateways } from '@/hooks/use-gateways';
 import type { PhoneChannelSettings, EmailChannelSettings, PasswordSettings } from '@/lib/api';
 
-interface ChannelSettingsSheetProps {
+interface ChannelSettingsPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   channelId: ChannelId;
@@ -294,9 +294,9 @@ function ChannelContent({
           </Field>
         )}
         <Field>
-          <FieldLabel htmlFor={`${channelId}-sheet-expiry`}>Expiry (seconds)</FieldLabel>
+          <FieldLabel htmlFor={`${channelId}-panel-expiry`}>Expiry (seconds)</FieldLabel>
           <Input
-            id={`${channelId}-sheet-expiry`}
+            id={`${channelId}-panel-expiry`}
             type="number"
             min={60}
             max={3600}
@@ -310,18 +310,18 @@ function ChannelContent({
   );
 }
 
-export function ChannelSettingsSheet({
+export function ChannelSettingsPanel({
   open,
   onOpenChange,
   channelId,
   settings,
   onUpdate,
-}: ChannelSettingsSheetProps) {
+}: ChannelSettingsPanelProps) {
   const meta = CHANNEL_META[channelId];
   const Icon = meta.icon;
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="sm:max-w-md overflow-y-auto">
         <DrawerHeader>
           <DrawerTitle className="flex items-center gap-2">

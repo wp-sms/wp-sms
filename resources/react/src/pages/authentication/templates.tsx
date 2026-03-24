@@ -599,7 +599,7 @@ function TemplateEditor({
 
   return (
     <>
-      <Drawer open onOpenChange={(open) => { if (!open) onClose(); }} direction="right">
+      <Drawer open onOpenChange={(open) => { if (!open) onClose(); }}>
         <DrawerContent className="sm:max-w-md overflow-y-auto">
           <DrawerHeader>
             <DrawerTitle>{template.label}</DrawerTitle>

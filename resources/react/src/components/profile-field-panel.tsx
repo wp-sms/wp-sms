@@ -17,7 +17,7 @@ import { FIELD_TYPES, FIELD_VISIBILITY, formatLabel } from '@/lib/constants';
 import { getMetaKeys } from '@/lib/api';
 import type { ProfileFieldDefinition, MetaKeyInfo } from '@/lib/api';
 
-interface ProfileFieldSheetProps {
+interface ProfileFieldPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   mode: 'create' | 'meta' | 'edit';
@@ -45,7 +45,7 @@ function slugify(str: string): string {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
 }
 
-export function ProfileFieldSheet({ open, onOpenChange, mode, field, existingIds, onSave }: ProfileFieldSheetProps) {
+export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds, onSave }: ProfileFieldPanelProps) {
   const [form, setForm] = useState<ProfileFieldDefinition>(EMPTY_FIELD);
   const [metaKeys, setMetaKeys] = useState<MetaKeyInfo[]>([]);
   const [metaSearch, setMetaSearch] = useState('');
@@ -131,11 +131,11 @@ export function ProfileFieldSheet({ open, onOpenChange, mode, field, existingIds
       : 'Create Custom Field';
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
-      <DrawerContent className="h-full w-[420px] rounded-none border-l" aria-describedby="field-sheet-desc">
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent className="h-full w-[420px] rounded-none border-l" aria-describedby="field-panel-desc">
         <DrawerHeader>
           <DrawerTitle>{title}</DrawerTitle>
-          <DrawerDescription id="field-sheet-desc">
+          <DrawerDescription id="field-panel-desc">
             {mode === 'meta'
               ? 'Browse existing user meta keys from other plugins and add them to your auth forms.'
               : isSystem

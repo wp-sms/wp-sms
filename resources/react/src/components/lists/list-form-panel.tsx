@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { ContactList, SegmentConditionGroup, Tag } from '@/lib/api';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -8,7 +8,7 @@ import { Field, FieldLabel } from '@/components/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SegmentBuilder } from './segment-builder';
 
-interface ListFormSheetProps {
+interface ListFormPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   list?: ContactList | null;
@@ -21,7 +21,7 @@ const DEFAULT_CONDITIONS: SegmentConditionGroup = {
   conditions: [{ type: 'attribute', field: 'status', operator: 'equals', value: 'subscribed' }],
 };
 
-export function ListFormSheet({ open, onOpenChange, list, tags, onSave }: ListFormSheetProps) {
+export function ListFormPanel({ open, onOpenChange, list, tags, onSave }: ListFormPanelProps) {
   const isEdit = !!list;
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -63,12 +63,12 @@ export function ListFormSheet({ open, onOpenChange, list, tags, onSave }: ListFo
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:max-w-lg overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>{isEdit ? 'Edit List' : 'New List'}</SheetTitle>
-          <SheetDescription>{isEdit ? 'Update list configuration.' : 'Create a new contact list.'}</SheetDescription>
-        </SheetHeader>
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent className="sm:max-w-lg overflow-y-auto">
+        <DrawerHeader>
+          <DrawerTitle>{isEdit ? 'Edit List' : 'New List'}</DrawerTitle>
+          <DrawerDescription>{isEdit ? 'Update list configuration.' : 'Create a new contact list.'}</DrawerDescription>
+        </DrawerHeader>
 
         <div className="space-y-4 px-4">
           <Field>
@@ -123,12 +123,12 @@ export function ListFormSheet({ open, onOpenChange, list, tags, onSave }: ListFo
           )}
         </div>
 
-        <SheetFooter>
+        <DrawerFooter>
           <Button onClick={handleSubmit} disabled={saving || !name.trim()}>
             {saving ? 'Saving...' : isEdit ? 'Update' : 'Create'}
           </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }

@@ -20,7 +20,7 @@ import { getErrorMessage } from '@/lib/error-utils';
 import { INTEGRATION_CATEGORY_LABELS } from '@/lib/constants';
 import type { JsonSchema } from '@/lib/api';
 
-interface IntegrationDetailDrawerProps {
+interface IntegrationDetailPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   integrationId: string | null;
@@ -107,12 +107,12 @@ function ConnectionForm({ detail, onConfigChange, onOpenChange }: {
   );
 }
 
-export function IntegrationDetailDrawer({
+export function IntegrationDetailPanel({
   open,
   onOpenChange,
   integrationId,
   onConfigChange,
-}: IntegrationDetailDrawerProps) {
+}: IntegrationDetailPanelProps) {
   const { detail, loading } = useIntegrationDetail(open ? integrationId : null);
   const [disconnecting, setDisconnecting] = useState(false);
   const { disconnect } = useIntegrationConfig(onConfigChange);
@@ -136,7 +136,7 @@ export function IntegrationDetailDrawer({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} direction="right">
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="sm:max-w-md">
         {loading || !detail ? (
           <div className="space-y-4 p-6">

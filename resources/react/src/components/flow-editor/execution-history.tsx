@@ -15,7 +15,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { RefreshCw } from 'lucide-react';
-import { ExecutionDetailSheet } from './execution-detail-sheet';
+import { ExecutionDetailPanel } from './execution-detail-panel';
 
 interface ExecutionHistoryProps {
   flowId: string;
@@ -96,7 +96,7 @@ export function ExecutionHistory({ flowId }: ExecutionHistoryProps) {
         </Table>
       </DataTable>
 
-      <ExecutionDetailSheet
+      <ExecutionDetailPanel
         execution={selectedExecution}
         onClose={() => setSelectedExecution(null)}
       />

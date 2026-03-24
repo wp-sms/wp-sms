@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { EmptyState } from '@/components/ui/empty-state';
-import { SourceConfigSheet } from './source-config-sheet';
+import { SourceConfigPanel } from './source-config-panel';
 import { SyncProgress } from './sync-progress';
 import { useContactSources } from '@/hooks/use-contact-sources';
 import type { ContactSource, ContactSourceConfig } from '@/lib/api';
@@ -139,7 +139,7 @@ export function SourcesList() {
         ))}
       </div>
 
-      <SourceConfigSheet
+      <SourceConfigPanel
         source={configSource}
         open={configSource !== null}
         onOpenChange={(open) => { if (!open) setConfigSource(null); }}

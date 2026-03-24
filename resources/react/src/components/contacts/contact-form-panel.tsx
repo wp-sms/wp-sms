@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Contact } from '@/lib/api';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel } from '@/components/ui/field';
@@ -10,7 +10,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ContactCustomFields } from './contact-custom-fields';
 import { CONTACT_STATUSES } from '@/lib/constants';
 
-interface ContactFormSheetProps {
+interface ContactFormPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   contact?: Contact | null;
@@ -28,7 +28,7 @@ const EMPTY_FORM = {
   phone_verified: false,
 };
 
-export function ContactFormSheet({ open, onOpenChange, contact, onSave }: ContactFormSheetProps) {
+export function ContactFormPanel({ open, onOpenChange, contact, onSave }: ContactFormPanelProps) {
   const isEdit = !!contact;
   const [form, setForm] = useState({ ...EMPTY_FORM });
   const [saving, setSaving] = useState(false);
@@ -61,12 +61,12 @@ export function ContactFormSheet({ open, onOpenChange, contact, onSave }: Contac
   };
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="sm:max-w-md overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>{isEdit ? 'Edit Contact' : 'New Contact'}</SheetTitle>
-          <SheetDescription>{isEdit ? 'Update contact details.' : 'Add a new contact.'}</SheetDescription>
-        </SheetHeader>
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent className="sm:max-w-md overflow-y-auto">
+        <DrawerHeader>
+          <DrawerTitle>{isEdit ? 'Edit Contact' : 'New Contact'}</DrawerTitle>
+          <DrawerDescription>{isEdit ? 'Update contact details.' : 'Add a new contact.'}</DrawerDescription>
+        </DrawerHeader>
 
         <div className="space-y-4 px-4">
           <div className="grid grid-cols-2 gap-3">
@@ -126,12 +126,12 @@ export function ContactFormSheet({ open, onOpenChange, contact, onSave }: Contac
           </div>
         </div>
 
-        <SheetFooter>
+        <DrawerFooter>
           <Button onClick={handleSubmit} disabled={saving || (!form.email && !form.phone)}>
             {saving ? 'Saving...' : isEdit ? 'Update' : 'Create'}
           </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }

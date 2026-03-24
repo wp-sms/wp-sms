@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useGateways } from '@/hooks/use-gateways';
-import { GatewayConfigSheet } from '@/components/gateway-config-sheet';
+import { GatewayConfigPanel } from '@/components/gateway-config-panel';
 import { channelLabel, ensureConfig } from '@/components/gateway-config-form';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -289,8 +289,8 @@ export function Gateways() {
         </div>
       )}
 
-      {/* Config Sheet */}
-      <GatewayConfigSheet
+      {/* Config Panel */}
+      <GatewayConfigPanel
         open={!!selectedGatewayId}
         onOpenChange={(open) => { if (!open) setSelectedGatewayId(null); }}
         gateway={selectedGateway}

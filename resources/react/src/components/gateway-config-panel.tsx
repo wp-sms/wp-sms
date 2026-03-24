@@ -27,7 +27,7 @@ import { toast } from 'sonner';
 import { GatewayConfigForm, channelLabel, ensureConfig } from '@/components/gateway-config-form';
 import type { Gateway, GatewayConfig, GatewayTestResult, TestConnectionResult } from '@/lib/api';
 
-interface GatewayConfigSheetProps {
+interface GatewayConfigPanelProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   gateway: Gateway | null;
@@ -36,14 +36,14 @@ interface GatewayConfigSheetProps {
   onTestConnection?: (id: string) => Promise<TestConnectionResult>;
 }
 
-export function GatewayConfigSheet({
+export function GatewayConfigPanel({
   open,
   onOpenChange,
   gateway,
   onSave,
   onTest,
   onTestConnection,
-}: GatewayConfigSheetProps) {
+}: GatewayConfigPanelProps) {
   const confirm = useConfirm();
   const [draftConfig, setDraftConfig] = useState<GatewayConfig>({ shared: {}, channels: {}, is_default: {} });
   const initialConfigRef = useRef<string>('');
@@ -56,7 +56,7 @@ export function GatewayConfigSheet({
   const [connectionTesting, setConnectionTesting] = useState(false);
   const [connectionResult, setConnectionResult] = useState<TestConnectionResult | null>(null);
 
-  // Reset state when sheet opens with a new gateway
+  // Reset state when panel opens with a new gateway
   useEffect(() => {
     if (open && gateway) {
       const cfg = ensureConfig(gateway.config);
@@ -141,7 +141,7 @@ export function GatewayConfigSheet({
         if (!ok) return;
       }
       onOpenChange(o);
-    }} direction="right">
+    }}>
       <DrawerContent className="sm:max-w-md overflow-y-auto">
         <DrawerHeader>
           <DrawerTitle>{gateway.name}</DrawerTitle>

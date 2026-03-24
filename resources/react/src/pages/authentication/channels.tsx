@@ -5,8 +5,8 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { ChannelRow } from '@/components/channel-row';
-import { ChannelSettingsSheet } from '@/components/channel-settings-sheet';
-import { SocialSettingsSheet } from '@/components/social-settings-sheet';
+import { ChannelSettingsPanel } from '@/components/channel-settings-panel';
+import { SocialSettingsPanel } from '@/components/social-settings-panel';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import type { ChannelId } from '@/lib/constants';
@@ -303,9 +303,9 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
         </div>
       </div>
 
-      {/* Social Settings Sheet */}
+      {/* Social Settings Panel */}
       {editingSocial && (
-        <SocialSettingsSheet
+        <SocialSettingsPanel
           open={editingSocial !== null}
           onOpenChange={(open) => { if (!open) setEditingSocial(null); }}
           providerId={editingSocial}
@@ -321,7 +321,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
       )}
 
       {/* Telegram MFA Settings Drawer */}
-      <Drawer open={editingTelegramMfa} onOpenChange={setEditingTelegramMfa} direction="right">
+      <Drawer open={editingTelegramMfa} onOpenChange={setEditingTelegramMfa}>
         <DrawerContent className="sm:max-w-md overflow-y-auto">
           <DrawerHeader>
             <DrawerTitle className="flex items-center gap-2">
@@ -427,8 +427,8 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
         </DrawerContent>
       </Drawer>
 
-      {/* Settings Sheet */}
-      <ChannelSettingsSheet
+      {/* Settings Panel */}
+      <ChannelSettingsPanel
         open={editingChannel !== null}
         onOpenChange={(open) => { if (!open) setEditingChannel(null); }}
         channelId={editingChannel ?? 'phone'}

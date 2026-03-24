@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import type { ImportPreview, ImportResult } from '@/lib/api';
 import { useConfirm } from '@/components/confirm-provider';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '@/components/ui/sheet';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -97,7 +97,7 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
   };
 
   return (
-    <Sheet open={open} onOpenChange={async (o) => {
+    <Drawer open={open} onOpenChange={async (o) => {
       if (!o && step !== 'upload' && step !== 'results') {
         const ok = await confirm({
           title: 'Close import wizard?',
@@ -110,17 +110,17 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
       onOpenChange(o);
       if (!o) reset();
     }}>
-      <SheetContent className="sm:max-w-lg overflow-y-auto">
-        <SheetHeader>
-          <SheetTitle>Import Contacts</SheetTitle>
-          <SheetDescription>
+      <DrawerContent className="sm:max-w-lg overflow-y-auto">
+        <DrawerHeader>
+          <DrawerTitle>Import Contacts</DrawerTitle>
+          <DrawerDescription>
             {step === 'upload' && 'Upload a CSV file to import contacts.'}
             {step === 'map' && 'Map CSV columns to contact fields.'}
             {step === 'options' && 'Configure import options.'}
             {step === 'preview' && 'Review mapped data before importing.'}
             {step === 'results' && 'Import complete.'}
-          </SheetDescription>
-        </SheetHeader>
+          </DrawerDescription>
+        </DrawerHeader>
 
         <div className="px-4 space-y-4">
           {/* Step: Upload */}
@@ -269,7 +269,7 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
           )}
         </div>
 
-        <SheetFooter>
+        <DrawerFooter>
           {step === 'map' && (
             <>
               <Button variant="outline" onClick={() => setStep('upload')}>Back</Button>
@@ -293,8 +293,8 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
           {step === 'results' && (
             <Button onClick={() => { onOpenChange(false); reset(); }}>Done</Button>
           )}
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   );
 }

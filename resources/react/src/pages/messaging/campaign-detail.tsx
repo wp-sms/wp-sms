@@ -1,7 +1,7 @@
 import { formatDateTime } from '@/lib/format';
 import { useCampaignDetail } from '@/hooks/use-campaign-detail';
 import type { Campaign, CampaignRecipient } from '@/lib/api';
-import { MessageLogDetailDrawer } from '@/components/messaging/message-log-detail-drawer';
+import { MessageLogDetailPanel } from '@/components/messaging/message-log-detail-panel';
 import { CampaignStatusBadge } from '@/components/campaigns/campaign-status-badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -270,7 +270,7 @@ export function CampaignDetail({ campaign: initialCampaign, onBack }: CampaignDe
         </CardContent>
       </Card>
 
-      <MessageLogDetailDrawer log={selectedLog} onClose={() => setSelectedLog(null)} />
+      <MessageLogDetailPanel log={selectedLog} onClose={() => setSelectedLog(null)} />
     </div>
   );
 }

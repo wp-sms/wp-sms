@@ -9,7 +9,7 @@ import { DataTable } from '@/components/ui/data-table';
 import { Send, ScrollText } from 'lucide-react';
 import { useMessageLogs } from '@/hooks/use-message-logs';
 import { StatusBadge, ChannelBadge } from '@/components/messaging/message-badges';
-import { MessageLogDetailDrawer } from '@/components/messaging/message-log-detail-drawer';
+import { MessageLogDetailPanel } from '@/components/messaging/message-log-detail-panel';
 import type { MessageLogEntry } from '@/lib/api';
 
 export function MessageLogs() {
@@ -123,7 +123,7 @@ export function MessageLogs() {
           </DataTable>
       </PageSection>
 
-      <MessageLogDetailDrawer log={selectedLog} onClose={() => setSelectedLog(null)} />
+      <MessageLogDetailPanel log={selectedLog} onClose={() => setSelectedLog(null)} />
     </>
   );
 }
