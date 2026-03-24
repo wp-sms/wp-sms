@@ -42,6 +42,9 @@ class SettingsRepository
         'totp' => [
             'enabled' => false,
         ],
+        'passkey' => [
+            'enabled' => false,
+        ],
         'captcha' => [
             'enabled'           => false,
             'provider'          => 'turnstile',

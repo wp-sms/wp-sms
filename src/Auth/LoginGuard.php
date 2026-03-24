@@ -258,17 +258,17 @@ class LoginGuard
             return;
         }
 
-        // Cheap bail-outs first — avoid DB queries for auth pages and AJAX.
-        if (get_query_var('wsms_auth_page')) {
-            return;
-        }
-
         if (wp_doing_ajax()) {
             return;
         }
 
-        // Re-validate: clear stale gate if settings changed.
+        // Re-validate first: clear stale gate if settings changed.
         if (!$this->isEnrollmentGateActive($userId)) {
+            return;
+        }
+
+        // Auth pages render the enrollment UI — don't redirect.
+        if (get_query_var('wsms_auth_page')) {
             return;
         }
 

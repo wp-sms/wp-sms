@@ -168,7 +168,16 @@ class TotpChannel implements ChannelInterface, SupportsEnrollmentConfirmation
             return false;
         }
 
-        $secret = $this->encryptor->decrypt($storedSecret, $userId);
+        try {
+            $secret = $this->encryptor->decrypt($storedSecret, $userId);
+        } catch (\RuntimeException $e) {
+            $this->auditLogger->log(EventType::TotpFailed, 'failure', $userId, [
+                'reason' => 'decrypt_failed',
+            ]);
+
+            return false;
+        }
+
         $totp = TOTP::createFromSecret($secret);
 
         $currentTimestamp = (int) floor(time() / $totp->getPeriod());

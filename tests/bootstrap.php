@@ -296,6 +296,12 @@ if (file_exists($wpTestsDir . '/includes/functions.php')) {
         }
     }
 
+    if (!function_exists('did_action')) {
+        function did_action(string $hookName): int {
+            return $GLOBALS['_test_did_action'][$hookName] ?? 0;
+        }
+    }
+
     if (!function_exists('is_wp_error')) {
         function is_wp_error($thing): bool {
             return $thing instanceof \WP_Error;

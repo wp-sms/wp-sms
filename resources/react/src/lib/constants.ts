@@ -64,6 +64,8 @@ export const EVENT_TYPES = [
   'backup_codes_regenerated',
   'totp_verified',
   'totp_failed',
+  'passkey_verified',
+  'passkey_failed',
   'account_locked',
   'account_unlocked',
   'social_login_success',
@@ -161,6 +163,9 @@ export const DEFAULTS: Required<AuthSettings> = {
     length: 10,
   },
   totp: {
+    enabled: false,
+  },
+  passkey: {
     enabled: false,
   },
   trusted_devices: {

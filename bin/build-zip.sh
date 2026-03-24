@@ -48,6 +48,9 @@ fi
 
 cd "$PLUGIN_DIR"
 
+# ---- Step 0: Clean stale build artifacts ----
+rm -rf public/js/app/
+
 # ---- Step 1: Install PHP dependencies ----
 echo "Step 1: Installing PHP dependencies..."
 composer install

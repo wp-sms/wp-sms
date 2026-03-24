@@ -76,6 +76,10 @@ export interface TotpSettings {
   enabled?: boolean;
 }
 
+export interface PasskeySettings {
+  enabled?: boolean;
+}
+
 export type CaptchaProvider = 'turnstile' | 'recaptcha' | 'hcaptcha';
 export type CaptchaAction = 'login' | 'register' | 'forgot_password' | 'identify';
 
@@ -182,6 +186,7 @@ export interface AuthSettings {
   password?: PasswordSettings;
   backup_codes?: BackupCodesSettings;
   totp?: TotpSettings;
+  passkey?: PasskeySettings;
   captcha?: CaptchaSettings;
   telegram?: TelegramSettings;
   woocommerce?: WooCommerceSettings;

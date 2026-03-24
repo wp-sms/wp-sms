@@ -14,10 +14,23 @@ tailwind.config.js
 /tests
 phpunit.xml.dist
 .phpunit.result.cache
+/.phpunit.cache
+vitest.config.ts
 
 # Frontend Build Configuration
 vite.config.js
+vite.config.ts
 vite.config.entries.mjs
+vite.config.auth-base.mjs
+vite.config.auth.mjs
+vite.config.auth-popup.mjs
+vite.config.verify-widget.mjs
+vite.config.messaging-button.mjs
+vite.config.subscription-form.mjs
+vite.config.cf7-phone.mjs
+webpack.config.cjs
+postcss-important-plugin.js
+eslint.config.js
 
 # PHP Build Configuration
 /vendor
@@ -31,16 +44,35 @@ composer.lock
 README.md
 CHANGELOG.md
 
+# Build Output
+/dist
+
 # Environment & Configuration Files
 .distignore
 .editorconfig
 .gitignore
 .DS_Store
+.env
+.npmrc
+pnpm-lock.yaml
+phpstan-baseline.neon
+phpstan.neon.dist
+phpstan-bootstrap.php
+postcss-important-plugin.ts
+tsconfig.json
+components.json
+skills-lock.json
+
+# Documentation
+SPEC.md
+/docs
 
 # AI & IDE Tools
 /.claude
 /.cursor
 /.vscode
+/.agents
+/.wordpress-org
 .mcp.json
 CLAUDE.md
 AGENTS.md

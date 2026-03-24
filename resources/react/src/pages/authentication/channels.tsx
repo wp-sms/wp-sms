@@ -292,11 +292,13 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
 
               <Separator />
 
-              {/* Biometric */}
+              {/* Passkey */}
               <ChannelRow
                 icon={Fingerprint}
-                title="Biometric"
-                comingSoon
+                title="Passkey"
+                description={settings.passkey?.enabled ? 'Fingerprint, Face ID, or security key' : undefined}
+                enabled={!!settings.passkey?.enabled}
+                onToggle={(v) => onUpdate('passkey', { ...settings.passkey, enabled: v })}
               />
             </CardContent>
           </Card>

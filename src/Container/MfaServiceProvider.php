@@ -7,6 +7,7 @@ use WSms\Mfa\Channels\EmailChannel;
 use WSms\Mfa\Channels\MagicLinkChannel;
 use WSms\Mfa\Channels\PhoneChannel;
 use WSms\Mfa\Channels\TelegramChannel;
+use WSms\Mfa\Channels\PasskeyChannel;
 use WSms\Mfa\Channels\TotpChannel;
 use WSms\Mfa\MfaManager;
 use WSms\Verification\OtpGenerator;
@@ -106,6 +107,13 @@ class MfaServiceProvider implements ServiceProvider
                 $container->get('mfa.secret_encryptor'),
             );
         });
+
+        $container->register('mfa.channel.passkey', function () use ($container) {
+            return new PasskeyChannel(
+                $container->get('audit.logger'),
+                $container->get('mfa.secret_encryptor'),
+            );
+        });
     }
 
     /** {@inheritDoc} */
@@ -118,6 +126,7 @@ class MfaServiceProvider implements ServiceProvider
         $manager->registerChannel($container->get('mfa.channel.backup'));
         $manager->registerChannel($container->get('mfa.channel.telegram'));
         $manager->registerChannel($container->get('mfa.channel.totp'));
+        $manager->registerChannel($container->get('mfa.channel.passkey'));
         // Inject UserFactorRepository into channels.
         $factorRepo = $container->get('mfa.factor_repository');
         foreach ($manager->getAvailableChannels() as $channel) {

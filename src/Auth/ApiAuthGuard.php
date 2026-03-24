@@ -43,6 +43,10 @@ class ApiAuthGuard
             return $user;
         }
 
+        if ($this->isWsmsAuthRequest()) {
+            return $user;
+        }
+
         if ($this->isApplicationPasswordRequest()) {
             return $user;
         }
@@ -101,6 +105,13 @@ class ApiAuthGuard
     {
         return (defined('REST_REQUEST') && REST_REQUEST)
             || (defined('XMLRPC_REQUEST') && XMLRPC_REQUEST);
+    }
+
+    private function isWsmsAuthRequest(): bool
+    {
+        $route = $GLOBALS['wp']->query_vars['rest_route'] ?? ($_SERVER['PATH_INFO'] ?? '');
+
+        return str_starts_with($route, '/wsms/v1/auth/');
     }
 
     private function isApplicationPasswordRequest(): bool

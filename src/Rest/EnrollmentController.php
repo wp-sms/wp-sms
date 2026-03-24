@@ -12,6 +12,7 @@ use WSms\Auth\TrustedDeviceManager;
 use WSms\Enums\ChannelStatus;
 use WSms\Exception\ValidationException;
 use WSms\Mfa\Channels\BackupCodesChannel;
+use WSms\Mfa\Channels\PasskeyChannel;
 use WSms\Mfa\Contracts\SupportsEnrollmentConfirmation;
 use WSms\Mfa\MfaManager;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
@@ -77,6 +78,15 @@ class EnrollmentController extends Controller
             'methods'             => 'POST',
             'callback'            => [$this, 'handleRegenerateBackupCodes'],
             'permission_callback' => 'is_user_logged_in',
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/auth/mfa/passkey/credential', [
+            'methods'             => 'DELETE',
+            'callback'            => [$this, 'handleRemovePasskeyCredential'],
+            'permission_callback' => 'is_user_logged_in',
+            'args'                => [
+                'credential_id' => ['required' => true, 'type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+            ],
         ]);
 
         register_rest_route(self::NAMESPACE, '/auth/me', [
@@ -247,6 +257,36 @@ class EnrollmentController extends Controller
                 'message' => $result->message,
                 'data'    => $result->data,
             ], $result->success ? 200 : 400);
+        });
+    }
+
+    public function handleRemovePasskeyCredential(WP_REST_Request $request): WP_REST_Response
+    {
+        return $this->handle(function () use ($request) {
+            $userId = get_current_user_id();
+            $credentialId = $request->get_param('credential_id');
+
+            $channel = $this->mfaManager->getChannel('passkey');
+
+            if (!$channel || !($channel instanceof PasskeyChannel)) {
+                throw ValidationException::field('channel_id', __('Passkey channel is not available.', 'wp-sms'));
+            }
+
+            $result = $channel->removeCredential($userId, $credentialId);
+
+            if ($result && !$this->mfaManager->hasActiveFactors($userId)) {
+                update_user_meta($userId, UserMeta::MFA_ENABLED, '0');
+            }
+
+            if ($result) {
+                $this->trustedDevices?->revokeAll($userId);
+                $this->destroyOtherSessions();
+            }
+
+            return new WP_REST_Response([
+                'success' => $result,
+                'message' => $result ? __('Passkey removed.', 'wp-sms') : __('Passkey not found.', 'wp-sms'),
+            ], $result ? 200 : 400);
         });
     }
 

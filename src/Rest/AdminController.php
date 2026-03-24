@@ -48,6 +48,7 @@ class AdminController extends Controller
         'password',
         'backup_codes',
         'totp',
+        'passkey',
         'captcha',
         'social',
         'telegram',
