@@ -8,11 +8,11 @@ on:
 
 jobs:
   phpunit:
-    name: Run tests
+    name: PHPUnit (PHP ${{ matrix.php-version }})
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ['8.4', '8.3', '8.2', '8.1', '8.0', '7.4']
+        php-version: ['8.4', '8.3', '8.2', '8.1']
     services:
       database:
         image: mysql:latest
@@ -42,3 +42,45 @@ jobs:
 
       - name: Run tests
         run: phpunit --testdox
+
+  phpstan:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --memory-limit=1G
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build
+        run: npm run build

@@ -6,6 +6,8 @@ use WSms\Contact\ContactImporter;
 use WSms\Contact\ContactExporter;
 use WSms\Contact\Contracts\ContactRepositoryInterface;
 use WSms\Contact\Contracts\SegmentEvaluatorInterface;
+use WSms\Exception\NotFoundException;
+use WSms\Exception\ValidationException;
 
 defined('ABSPATH') || exit;
 
@@ -168,331 +170,244 @@ class ContactController extends Controller
 
     public function index(\WP_REST_Request $request): \WP_REST_Response
     {
-        $filters = [];
-        if ($request->get_param('status')) {
-            $filters['status'] = $request->get_param('status');
-        }
-        if ($request->get_param('search')) {
-            $filters['search'] = $request->get_param('search');
-        }
+        return $this->handle(function () use ($request) {
+            $filters = [];
+            if ($request->get_param('status')) {
+                $filters['status'] = $request->get_param('status');
+            }
+            if ($request->get_param('search')) {
+                $filters['search'] = $request->get_param('search');
+            }
 
-        $contacts = $this->contacts->findAll(
-            $filters,
-            (int) $request->get_param('per_page'),
-            (int) $request->get_param('offset'),
-        );
+            $contacts = $this->contacts->findAll(
+                $filters,
+                (int) $request->get_param('per_page'),
+                (int) $request->get_param('offset'),
+            );
 
-        $total = $this->contacts->count($filters);
+            $total = $this->contacts->count($filters);
 
-        return new \WP_REST_Response([
-            'items' => $contacts,
-            'total' => $total,
-        ]);
+            return $this->paginated($contacts, $total);
+        });
     }
 
     public function store(\WP_REST_Request $request): \WP_REST_Response
     {
-        $data = [];
-        foreach (['email', 'phone', 'first_name', 'last_name', 'status', 'source', 'source_ref', 'custom_fields', 'email_verified', 'phone_verified'] as $field) {
-            $value = $request->get_param($field);
-            if ($value !== null) {
-                $data[$field] = $value;
-            }
-        }
+        return $this->handle(function () use ($request) {
+            $data = $this->extractContactData($request);
 
-        $id = $this->contacts->create($data);
-        $contact = $this->contacts->find($id);
+            $id = $this->contacts->create($data);
+            $contact = $this->contacts->find($id);
 
-        return new \WP_REST_Response([
-            'success' => true,
-            'data'    => $contact,
-        ], 201);
+            return $this->created($contact);
+        });
     }
 
     public function show(\WP_REST_Request $request): \WP_REST_Response
     {
-        $contact = $this->contacts->find($request->get_param('id'));
+        return $this->handle(function () use ($request) {
+            $contact = $this->contacts->findOrFail($request->get_param('id'));
+            $contact['tags'] = $this->contacts->getTags($contact['id']);
 
-        if (!$contact) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Contact not found', 'wp-sms'),
-            ], 404);
-        }
-
-        $contact['tags'] = $this->contacts->getTags($contact['id']);
-
-        // Enrich with WP user data if linked
-        if (!empty($contact['wp_user_id'])) {
-            $user = get_userdata((int) $contact['wp_user_id']);
-            if ($user) {
-                $contact['wp_user'] = [
-                    'username'   => $user->user_login,
-                    'roles'      => $user->roles,
-                    'registered' => $user->user_registered ?? '',
-                    'edit_url'   => admin_url('user-edit.php?user_id=' . $contact['wp_user_id']),
-                ];
+            // Enrich with WP user data if linked
+            if (!empty($contact['wp_user_id'])) {
+                $user = get_userdata((int) $contact['wp_user_id']);
+                if ($user) {
+                    $contact['wp_user'] = [
+                        'username'   => $user->user_login,
+                        'roles'      => $user->roles,
+                        'registered' => $user->user_registered ?? '',
+                        'edit_url'   => admin_url('user-edit.php?user_id=' . $contact['wp_user_id']),
+                    ];
+                }
             }
-        }
 
-        return new \WP_REST_Response([
-            'success' => true,
-            'data'    => $contact,
-        ]);
+            return $this->ok($contact);
+        });
     }
 
     public function update(\WP_REST_Request $request): \WP_REST_Response
     {
-        $id = $request->get_param('id');
-        $contact = $this->contacts->find($id);
+        return $this->handle(function () use ($request) {
+            $id = $request->get_param('id');
+            $this->contacts->findOrFail($id);
+            $this->contacts->update($id, $this->extractContactData($request));
 
-        if (!$contact) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Contact not found', 'wp-sms'),
-            ], 404);
-        }
+            return $this->ok($this->contacts->find($id));
+        });
+    }
 
+    public function destroy(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return $this->handle(function () use ($request) {
+            $id = $request->get_param('id');
+            if (!$this->contacts->delete($id)) {
+                throw NotFoundException::entity('Contact', $id);
+            }
+
+            return $this->ok();
+        });
+    }
+
+    public function addTag(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return $this->handle(function () use ($request) {
+            $this->contacts->findOrFail($request->get_param('id'));
+            $this->contacts->addTag($request->get_param('id'), $request->get_param('tag_id'));
+
+            return $this->ok();
+        });
+    }
+
+    public function removeTag(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return $this->handle(function () use ($request) {
+            $this->contacts->removeTag($request->get_param('id'), $request->get_param('tag_id'));
+
+            return $this->ok();
+        });
+    }
+
+    public function bulk(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return $this->handle(function () use ($request) {
+            $action = $request->get_param('action');
+            $ids = $request->get_param('ids');
+
+            if (empty($ids)) {
+                throw ValidationException::field('ids', __('No contacts selected', 'wp-sms'));
+            }
+
+            $allowedActions = ['delete', 'status', 'tag', 'untag'];
+            if (!in_array($action, $allowedActions, true)) {
+                throw ValidationException::field('action', __('Unknown bulk action', 'wp-sms'));
+            }
+
+            $status = $request->get_param('status') ?? 'subscribed';
+            if ($action === 'status' && !in_array($status, self::ALLOWED_STATUSES, true)) {
+                throw ValidationException::field('status', __('Invalid status value', 'wp-sms'));
+            }
+
+            $count = match ($action) {
+                'delete' => $this->contacts->bulkDelete($ids),
+                'status' => $this->contacts->bulkUpdateStatus($ids, $status),
+                'tag' => $this->contacts->bulkAddTag($ids, $request->get_param('tag_id') ?? ''),
+                'untag' => $this->contacts->bulkRemoveTag($ids, $request->get_param('tag_id') ?? ''),
+            };
+
+            return $this->ok(['affected' => $count]);
+        });
+    }
+
+    public function importPreview(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return $this->handle(function () use ($request) {
+            $filePath = $this->getUploadedFilePath($request);
+            if (!$filePath) {
+                throw ValidationException::field('file', __('No file uploaded', 'wp-sms'));
+            }
+
+            return $this->ok($this->importer->previewCsv($filePath));
+        });
+    }
+
+    public function import(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return $this->handle(function () use ($request) {
+            $filePath = $this->getUploadedFilePath($request);
+            if (!$filePath) {
+                throw ValidationException::field('file', __('No file uploaded', 'wp-sms'));
+            }
+
+            $mapping = $request->get_param('field_mapping');
+            if (is_string($mapping)) {
+                $mapping = json_decode($mapping, true) ?? [];
+            }
+
+            $files = $request->get_file_params();
+            $options = [
+                'match_field'        => $request->get_param('match_field') ?? 'email',
+                'duplicate_handling' => $request->get_param('duplicate_handling') ?? 'update',
+                'source_ref'         => !empty($files['file']['name']) ? sanitize_file_name($files['file']['name']) : null,
+            ];
+
+            $result = $this->importer->importFromCsv($filePath, $mapping ?? [], $options);
+
+            return $this->ok($result);
+        });
+    }
+
+    public function export(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return $this->handle(function () use ($request) {
+            $filters = [];
+            if ($request->get_param('status')) {
+                $filters['status'] = $request->get_param('status');
+            }
+
+            $uploadDir = wp_upload_dir();
+            $exportDir = $uploadDir['basedir'] . '/wsms-exports';
+            wp_mkdir_p($exportDir);
+
+            $filename = 'contacts-' . gmdate('Y-m-d-His') . '-' . wp_generate_password(8, false) . '.csv';
+            $filePath = $exportDir . '/' . $filename;
+
+            $this->exporter->exportToCsv($filters, $filePath);
+
+            return $this->ok([
+                'url'      => $uploadDir['baseurl'] . '/wsms-exports/' . $filename,
+                'filename' => $filename,
+            ]);
+        });
+    }
+
+    public function activity(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return $this->handle(function () use ($request) {
+            $contact = $this->contacts->findOrFail($request->get_param('id'));
+
+            $perPage = (int) $request->get_param('per_page');
+            $offset = (int) $request->get_param('offset');
+
+            $activities = $this->getContactActivities($contact, $perPage, $offset);
+
+            return new \WP_REST_Response(['items' => $activities]);
+        });
+    }
+
+    public function segmentPreview(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return $this->handle(function () use ($request) {
+            $conditions = $request->get_param('conditions') ?? [];
+            $contacts = $this->segmentEvaluator->evaluate($conditions, 10);
+            $total = $this->segmentEvaluator->count($conditions);
+
+            return $this->paginated($contacts, $total);
+        });
+    }
+
+    private const CONTACT_FIELDS = [
+        'email', 'phone', 'first_name', 'last_name', 'status',
+        'source', 'source_ref', 'custom_fields', 'email_verified', 'phone_verified',
+    ];
+
+    /** @return array<string, mixed> */
+    private function extractContactData(\WP_REST_Request $request): array
+    {
         $data = [];
-        foreach (['email', 'phone', 'first_name', 'last_name', 'status', 'source', 'source_ref', 'custom_fields', 'email_verified', 'phone_verified'] as $field) {
+        foreach (self::CONTACT_FIELDS as $field) {
             $value = $request->get_param($field);
             if ($value !== null) {
                 $data[$field] = $value;
             }
         }
-
-        $this->contacts->update($id, $data);
-
-        return new \WP_REST_Response([
-            'success' => true,
-            'data'    => $this->contacts->find($id),
-        ]);
-    }
-
-    public function destroy(\WP_REST_Request $request): \WP_REST_Response
-    {
-        $id = $request->get_param('id');
-        $contact = $this->contacts->find($id);
-
-        if (!$contact) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Contact not found', 'wp-sms'),
-            ], 404);
-        }
-
-        $this->contacts->delete($id);
-
-        return new \WP_REST_Response(['success' => true]);
-    }
-
-    public function addTag(\WP_REST_Request $request): \WP_REST_Response
-    {
-        $this->contacts->addTag($request->get_param('id'), $request->get_param('tag_id'));
-
-        return new \WP_REST_Response(['success' => true]);
-    }
-
-    public function removeTag(\WP_REST_Request $request): \WP_REST_Response
-    {
-        $this->contacts->removeTag($request->get_param('id'), $request->get_param('tag_id'));
-
-        return new \WP_REST_Response(['success' => true]);
-    }
-
-    public function bulk(\WP_REST_Request $request): \WP_REST_Response
-    {
-        $action = $request->get_param('action');
-        $ids = $request->get_param('ids');
-
-        if (empty($ids)) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'invalid_request',
-                'message' => __('No contacts selected', 'wp-sms'),
-            ], 400);
-        }
-
-        $allowedActions = ['delete', 'status', 'tag', 'untag'];
-        if (!in_array($action, $allowedActions, true)) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'invalid_action',
-                'message' => __('Unknown bulk action', 'wp-sms'),
-            ], 400);
-        }
-
-        $status = $request->get_param('status') ?? 'subscribed';
-        if ($action === 'status' && !in_array($status, self::ALLOWED_STATUSES, true)) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'invalid_status',
-                'message' => __('Invalid status value', 'wp-sms'),
-            ], 400);
-        }
-
-        $count = match ($action) {
-            'delete' => $this->contacts->bulkDelete($ids),
-            'status' => $this->contacts->bulkUpdateStatus($ids, $status),
-            'tag' => $this->bulkAddTag($ids, $request->get_param('tag_id') ?? ''),
-            'untag' => $this->bulkRemoveTag($ids, $request->get_param('tag_id') ?? ''),
-        };
-
-        return new \WP_REST_Response(['success' => true, 'affected' => $count]);
-    }
-
-    public function importPreview(\WP_REST_Request $request): \WP_REST_Response
-    {
-        $filePath = $this->getUploadedFilePath($request);
-        if (!$filePath) {
-            return self::noFileResponse();
-        }
-
-        $preview = $this->importer->previewCsv($filePath);
-
-        return new \WP_REST_Response(['success' => true, 'data' => $preview]);
-    }
-
-    public function import(\WP_REST_Request $request): \WP_REST_Response
-    {
-        $files = $request->get_file_params();
-        $filePath = !empty($files['file']['tmp_name']) ? $files['file']['tmp_name'] : null;
-        if (!$filePath) {
-            return self::noFileResponse();
-        }
-
-        $mapping = $request->get_param('field_mapping');
-        if (is_string($mapping)) {
-            $mapping = json_decode($mapping, true) ?? [];
-        }
-
-        $options = [
-            'match_field'        => $request->get_param('match_field') ?? 'email',
-            'duplicate_handling' => $request->get_param('duplicate_handling') ?? 'update',
-            'source_ref'         => !empty($files['file']['name']) ? sanitize_file_name($files['file']['name']) : null,
-        ];
-
-        $result = $this->importer->importFromCsv($filePath, $mapping ?? [], $options);
-
-        return new \WP_REST_Response(['success' => true, 'data' => $result]);
-    }
-
-    public function export(\WP_REST_Request $request): \WP_REST_Response
-    {
-        $filters = [];
-        if ($request->get_param('status')) {
-            $filters['status'] = $request->get_param('status');
-        }
-
-        $uploadDir = wp_upload_dir();
-        $exportDir = $uploadDir['basedir'] . '/wsms-exports';
-        wp_mkdir_p($exportDir);
-
-        $filename = 'contacts-' . gmdate('Y-m-d-His') . '-' . wp_generate_password(8, false) . '.csv';
-        $filePath = $exportDir . '/' . $filename;
-
-        $this->exporter->exportToCsv($filters, $filePath);
-
-        return new \WP_REST_Response([
-            'success'  => true,
-            'data'     => [
-                'url'      => $uploadDir['baseurl'] . '/wsms-exports/' . $filename,
-                'filename' => $filename,
-            ],
-        ]);
-    }
-
-    public function activity(\WP_REST_Request $request): \WP_REST_Response
-    {
-        $contact = $this->contacts->find($request->get_param('id'));
-
-        if (!$contact) {
-            return new \WP_REST_Response([
-                'success' => false,
-                'error'   => 'not_found',
-                'message' => __('Contact not found', 'wp-sms'),
-            ], 404);
-        }
-
-        $perPage = (int) $request->get_param('per_page');
-        $offset = (int) $request->get_param('offset');
-
-        $activities = $this->getContactActivities($contact, $perPage, $offset);
-
-        return new \WP_REST_Response(['items' => $activities]);
-    }
-
-    public function segmentPreview(\WP_REST_Request $request): \WP_REST_Response
-    {
-        $conditions = $request->get_param('conditions') ?? [];
-        $contacts = $this->segmentEvaluator->evaluate($conditions, 10);
-        $total = $this->segmentEvaluator->count($conditions);
-
-        return new \WP_REST_Response([
-            'items' => $contacts,
-            'total' => $total,
-        ]);
+        return $data;
     }
 
     private function getUploadedFilePath(\WP_REST_Request $request): ?string
     {
         $files = $request->get_file_params();
         return !empty($files['file']['tmp_name']) ? $files['file']['tmp_name'] : null;
-    }
-
-    private static function noFileResponse(): \WP_REST_Response
-    {
-        return new \WP_REST_Response([
-            'success' => false,
-            'error'   => 'no_file',
-            'message' => __('No file uploaded', 'wp-sms'),
-        ], 400);
-    }
-
-    private function bulkAddTag(array $contactIds, string $tagId): int
-    {
-        if (empty($tagId) || empty($contactIds)) {
-            return 0;
-        }
-
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_contact_tag';
-        $now = current_time('mysql');
-        $values = [];
-        $params = [];
-
-        foreach ($contactIds as $contactId) {
-            $values[] = '(%s, %s, %s)';
-            $params[] = $contactId;
-            $params[] = $tagId;
-            $params[] = $now;
-        }
-
-        $sql = "INSERT IGNORE INTO {$table} (contact_id, tag_id, created_at) VALUES " . implode(', ', $values);
-
-        return (int) $wpdb->query($wpdb->prepare($sql, ...$params));
-    }
-
-    private function bulkRemoveTag(array $contactIds, string $tagId): int
-    {
-        if (empty($tagId) || empty($contactIds)) {
-            return 0;
-        }
-
-        global $wpdb;
-        $table = $wpdb->prefix . 'wsms_contact_tag';
-        $placeholders = implode(',', array_fill(0, count($contactIds), '%s'));
-
-        return (int) $wpdb->query(
-            $wpdb->prepare(
-                "DELETE FROM {$table} WHERE tag_id = %s AND contact_id IN ({$placeholders})",
-                $tagId,
-                ...$contactIds,
-            ),
-        );
     }
 
     private function getContactActivities(array $contact, int $limit, int $offset): array

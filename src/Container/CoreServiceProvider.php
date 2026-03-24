@@ -3,6 +3,7 @@
 namespace WSms\Container;
 
 use WSms\Database\CleanupScheduler;
+use WSms\Database\Connection;
 
 defined('ABSPATH') || exit;
 
@@ -18,6 +19,8 @@ class CoreServiceProvider implements ServiceProvider
      */
     public function register(ServiceContainer $container): void
     {
+        $container->register(Connection::class, fn () => new Connection());
+
         $container->register('database.cleanup', fn () => new CleanupScheduler(
             $container->get('audit.logger'),
             $container->get('flow.execution_repository'),

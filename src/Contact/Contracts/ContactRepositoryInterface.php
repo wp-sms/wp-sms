@@ -2,6 +2,8 @@
 
 namespace WSms\Contact\Contracts;
 
+use WSms\Exception\NotFoundException;
+
 defined('ABSPATH') || exit;
 
 interface ContactRepositoryInterface
@@ -11,6 +13,11 @@ interface ContactRepositoryInterface
     public function update(string $id, array $data): bool;
 
     public function find(string $id): ?array;
+
+    /**
+     * @throws NotFoundException if the contact does not exist.
+     */
+    public function findOrFail(string $id): array;
 
     public function findByEmail(string $email): ?array;
 
@@ -46,4 +53,10 @@ interface ContactRepositoryInterface
 
     /** @return int Number of contacts updated */
     public function bulkUpdateStatus(array $ids, string $status): int;
+
+    /** @return int Number of tag associations created */
+    public function bulkAddTag(array $contactIds, string $tagId): int;
+
+    /** @return int Number of tag associations removed */
+    public function bulkRemoveTag(array $contactIds, string $tagId): int;
 }

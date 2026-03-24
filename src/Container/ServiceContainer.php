@@ -2,6 +2,8 @@
 
 namespace WSms\Container;
 
+use WSms\Exception\ServiceNotFoundException;
+
 defined('ABSPATH') || exit;
 
 /**
@@ -107,6 +109,27 @@ class ServiceContainer
         }
 
         return null;
+    }
+
+    /**
+     * Typed service resolution — returns the service or throws.
+     *
+     * PHPStan and Psalm understand @template on class-string, so call sites
+     * get full type inference: `$container->resolve(Connection::class)` returns `Connection`.
+     *
+     * @template T of object
+     * @param class-string<T> $id
+     * @return T
+     * @throws ServiceNotFoundException if the service is not registered.
+     */
+    public function resolve(string $id): object
+    {
+        $service = $this->get($id);
+        if ($service === null) {
+            throw new ServiceNotFoundException("Service '{$id}' is not registered.");
+        }
+        /** @var T */
+        return $service;
     }
 
     /**

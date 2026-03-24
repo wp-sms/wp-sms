@@ -4,6 +4,7 @@ namespace WSms\Contact;
 
 use WSms\Dependencies\Symfony\Component\Uid\Ulid;
 use WSms\Contact\Contracts\ContactRepositoryInterface;
+use WSms\Exception\NotFoundException;
 
 defined('ABSPATH') || exit;
 
@@ -115,6 +116,15 @@ class ContactRepository implements ContactRepositoryInterface
             ARRAY_A,
         );
         return $row ? self::decodeRow($row) : null;
+    }
+
+    public function findOrFail(string $id): array
+    {
+        $contact = $this->find($id);
+        if ($contact === null) {
+            throw NotFoundException::entity('Contact', $id);
+        }
+        return $contact;
     }
 
     public function findByEmail(string $email): ?array
@@ -319,6 +329,49 @@ class ContactRepository implements ContactRepositoryInterface
                 $status,
                 $now,
                 ...$ids,
+            ),
+        );
+    }
+
+    public function bulkAddTag(array $contactIds, string $tagId): int
+    {
+        if (empty($tagId) || empty($contactIds)) {
+            return 0;
+        }
+
+        global $wpdb;
+        $table = $wpdb->prefix . 'wsms_contact_tag';
+        $now = current_time('mysql');
+        $values = [];
+        $params = [];
+
+        foreach ($contactIds as $contactId) {
+            $values[] = '(%s, %s, %s)';
+            $params[] = $contactId;
+            $params[] = $tagId;
+            $params[] = $now;
+        }
+
+        $sql = "INSERT IGNORE INTO {$table} (contact_id, tag_id, created_at) VALUES " . implode(', ', $values);
+
+        return (int) $wpdb->query($wpdb->prepare($sql, ...$params));
+    }
+
+    public function bulkRemoveTag(array $contactIds, string $tagId): int
+    {
+        if (empty($tagId) || empty($contactIds)) {
+            return 0;
+        }
+
+        global $wpdb;
+        $table = $wpdb->prefix . 'wsms_contact_tag';
+        $ph = self::placeholders($contactIds);
+
+        return (int) $wpdb->query(
+            $wpdb->prepare(
+                "DELETE FROM {$table} WHERE tag_id = %s AND contact_id IN ({$ph})",
+                $tagId,
+                ...$contactIds,
             ),
         );
     }
