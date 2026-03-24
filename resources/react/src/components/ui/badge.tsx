@@ -31,7 +31,9 @@ const badgeVariants = cva(
   }
 )
 
-const DOT_COLORS: Partial<Record<string, string>> = {
+type BadgeVariant = NonNullable<VariantProps<typeof badgeVariants>["variant"]>;
+
+const DOT_COLORS: Partial<Record<BadgeVariant, string>> = {
   success: "bg-emerald-500",
   warning: "bg-amber-500",
   info: "bg-blue-500",

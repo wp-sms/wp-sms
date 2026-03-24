@@ -17,7 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ArrowLeft, Check, Copy, Loader2, Plus, RefreshCw, Search, Trash2, X, Zap, Play, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, Check, ChevronRight, Copy, Loader2, Plus, RefreshCw, Search, Trash2, X, Zap, Play, type LucideIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/error-utils';
 import { useConfirm } from '@/components/confirm-provider';
@@ -35,14 +35,17 @@ function IntegrationCard({ integration, onClick }: {
   onClick: () => void;
 }) {
   return (
-    <Card active={integration.connected}>
+    <Card active={integration.connected} onClick={onClick} className="cursor-pointer">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <IntegrationIcon icon={integration.icon} size="md" />
             <CardTitle className="text-base">{integration.name}</CardTitle>
           </div>
-          <IntegrationStatusBadge connected={integration.connected} available={integration.available} />
+          <div className="flex items-center gap-2">
+            <IntegrationStatusBadge connected={integration.connected} available={integration.available} />
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </div>
         </div>
         {integration.description && (
           <CardDescription className="line-clamp-2">{integration.description}</CardDescription>
@@ -59,9 +62,6 @@ function IntegrationCard({ integration, onClick }: {
           {integration.actions} Action{integration.actions !== 1 ? 's' : ''}
         </div>
 
-        <Button variant="outline" size="sm" onClick={onClick} className="w-full">
-          {integration.auth_type !== 'none' && !integration.connected ? 'Configure' : 'View Details'}
-        </Button>
       </CardContent>
     </Card>
   );

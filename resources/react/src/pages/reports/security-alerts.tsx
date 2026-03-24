@@ -26,23 +26,14 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
       description="Failed attempts, lockouts, and suspicious activity"
       contentClassName="space-y-6"
     >
-        <div className="grid gap-4 grid-cols-4">
-          <div className="rounded-lg border border-l-2 border-l-red-400 p-3">
-            <p className="text-sm text-muted-foreground">Failed Logins</p>
-            <p className="text-xl font-bold tabular-nums">{fmtNumber(failed_login_attempts)}</p>
-          </div>
-          <div className="rounded-lg border border-l-2 border-l-amber-400 p-3">
-            <p className="text-sm text-muted-foreground">Accounts Locked</p>
-            <p className="text-xl font-bold tabular-nums">{fmtNumber(accounts_locked)}</p>
-          </div>
-          <div className="rounded-lg border border-l-2 border-l-orange-400 p-3">
-            <p className="text-sm text-muted-foreground">Accounts Suspended</p>
-            <p className="text-xl font-bold tabular-nums">{fmtNumber(accounts_suspended)}</p>
-          </div>
-          <div className="rounded-lg border border-l-2 border-l-violet-400 p-3">
-            <p className="text-sm text-muted-foreground">OTP Failures</p>
-            <p className="text-xl font-bold tabular-nums">{fmtNumber(otp_failures)}</p>
-          </div>
+        <div className="flex items-baseline gap-x-4 gap-y-1 flex-wrap text-sm text-muted-foreground">
+          <span><strong className="font-bold tabular-nums text-foreground">{fmtNumber(failed_login_attempts)}</strong> failed logins</span>
+          <span aria-hidden>·</span>
+          <span><strong className="font-bold tabular-nums text-foreground">{fmtNumber(accounts_locked)}</strong> accounts locked</span>
+          <span aria-hidden>·</span>
+          <span><strong className="font-bold tabular-nums text-foreground">{fmtNumber(accounts_suspended)}</strong> accounts suspended</span>
+          <span aria-hidden>·</span>
+          <span><strong className="font-bold tabular-nums text-foreground">{fmtNumber(otp_failures)}</strong> OTP failures</span>
         </div>
 
         {top_failed_ips.length > 0 && (

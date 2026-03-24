@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import { CHART_TOOLTIP_STYLE } from '@/lib/constants';
 import type { ReportsResponse } from '@/lib/api';
 
 interface ActivityChartProps {
@@ -62,9 +63,7 @@ export function ActivityChart({ data }: ActivityChartProps) {
               />
               <YAxis fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
               <Tooltip
-                contentStyle={{ fontSize: 12, borderRadius: 8, border: 'none', backgroundColor: 'oklch(0.147 0.004 49.25)', color: '#fff' }}
-                labelStyle={{ color: '#fff', marginBottom: 4 }}
-                itemStyle={{ color: '#fff' }}
+                {...CHART_TOOLTIP_STYLE}
                 labelFormatter={formatTooltipLabel}
               />
               <Legend verticalAlign="top" height={36} iconType="circle" />

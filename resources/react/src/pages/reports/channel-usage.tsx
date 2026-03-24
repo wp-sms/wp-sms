@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { formatLabel } from '@/lib/constants';
+import { formatLabel, CHART_TOOLTIP_STYLE } from '@/lib/constants';
 import type { ReportsResponse } from '@/lib/api';
 
 interface ChannelUsageProps {
@@ -36,7 +36,7 @@ function MethodChart({ title, description, items }: { title: string; description
               <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" vertical={false} />
               <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
               <YAxis fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: 'none', backgroundColor: 'oklch(0.147 0.004 49.25)', color: '#fff' }} itemStyle={{ color: '#fff' }} />
+              <Tooltip {...CHART_TOOLTIP_STYLE} />
               <Bar dataKey="count" name="Count" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>

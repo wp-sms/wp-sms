@@ -203,9 +203,6 @@ export function ContactsList({ hook, tags, onImport }: ContactsListProps) {
                         className="inline-flex items-center gap-2 font-medium text-left transition-colors hover:text-primary"
                         onClick={() => handleViewDetail(contact.id)}
                       >
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary">
-                          {(contact.first_name?.[0] || contact.email?.[0] || '?').toUpperCase()}
-                        </span>
                         {[contact.first_name, contact.last_name].filter(Boolean).join(' ') || '\u2014'}
                       </button>
                     </TableCell>

@@ -4,7 +4,6 @@ import { GatewayConfigPanel } from '@/components/gateway-config-panel';
 import { channelLabel, ensureConfig } from '@/components/gateway-config-form';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -15,7 +14,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
-import { Search, Settings, Star, ChevronDown } from 'lucide-react';
+import { Search, Star, ChevronDown, ChevronRight } from 'lucide-react';
 import { getGatewayColor, getGatewayInitial } from '@/lib/gateway-visuals';
 import type { Gateway } from '@/lib/api';
 
@@ -58,7 +57,7 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
     .map(([key]) => FEATURE_LABELS[key]);
 
   return (
-    <Card active={gateway.is_configured}>
+    <Card active={gateway.is_configured} onClick={onConfigure} className="cursor-pointer">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -67,10 +66,13 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
             </div>
             <CardTitle className="text-base">{gateway.name}</CardTitle>
           </div>
-          {gateway.is_configured
-            ? <Badge variant="success" dot className="text-xs">Active</Badge>
-            : <Badge variant="outline" className="text-xs text-muted-foreground">Not configured</Badge>
-          }
+          <div className="flex items-center gap-2">
+            {gateway.is_configured
+              ? <Badge variant="success" dot className="text-xs">Active</Badge>
+              : <Badge variant="outline" className="text-xs text-muted-foreground">Not configured</Badge>
+            }
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </div>
         </div>
         {gateway.metadata.description && (
           <CardDescription className="line-clamp-2">{gateway.metadata.description}</CardDescription>
@@ -96,11 +98,6 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
         )}
 
         <CreditDisplay gatewayId={gateway.id} isConfigured={gateway.is_configured} getCredit={getCredit} />
-
-        <Button variant="outline" size="sm" onClick={onConfigure} className="w-full">
-          <Settings className="h-4 w-4" />
-          {gateway.is_configured ? 'Settings' : 'Set Up'}
-        </Button>
       </CardContent>
     </Card>
   );
