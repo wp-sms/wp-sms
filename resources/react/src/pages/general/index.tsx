@@ -1,7 +1,6 @@
 import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
+import { Field, FieldLabel, FieldDescription, SwitchField } from '@/components/ui/field';
 import { PageSection } from '@/components/ui/page-section';
 import { Phone, Globe, Scale } from 'lucide-react';
 import { SITE_PHONE_CHANNELS } from '@/lib/constants';
@@ -39,19 +38,13 @@ export function GeneralPage({ settings, onUpdate }: GeneralPageProps) {
               </Field>
             </div>
 
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <label htmlFor="redirect_login" className="text-sm font-medium leading-snug">Redirect WordPress Login</label>
-                <p className="text-sm text-muted-foreground">Redirect wp-login.php to your custom auth pages</p>
-              </div>
-              <Switch
-                id="redirect_login"
-                className="mt-0.5"
-                checked={settings.redirect_login}
-                onCheckedChange={(checked) => onUpdate('redirect_login', checked)}
-                aria-label="Toggle redirect login"
-              />
-            </div>
+            <SwitchField
+              id="redirect_login"
+              label="Redirect WordPress Login"
+              description="Redirect wp-login.php to your custom auth pages"
+              checked={settings.redirect_login}
+              onCheckedChange={(checked) => onUpdate('redirect_login', checked)}
+            />
 
             {settings.redirect_login && (
               <p className="text-xs text-muted-foreground mt-3 rounded-md bg-muted/50 p-3">

@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
+import { Field, FieldLabel, FieldDescription, SwitchField } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
 import { Eye, Clock, Plus, Trash2, AlertTriangle, Zap } from 'lucide-react';
 import type { MessagingButtonSettings } from './use-mb-settings';
@@ -79,18 +79,13 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
               <FieldDescription>Open when visitor scrolls past this percentage. 0 to disable.</FieldDescription>
             </Field>
 
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <label htmlFor="exit-intent" className="text-sm font-medium leading-snug">Exit intent</label>
-                <p className="text-sm text-muted-foreground">Open when the cursor moves toward closing the tab (desktop only)</p>
-              </div>
-              <Switch
-                id="exit-intent"
-                className="mt-0.5"
-                checked={triggers.exit_intent}
-                onCheckedChange={(checked) => onUpdate('triggers.exit_intent', checked)}
-              />
-            </div>
+            <SwitchField
+              id="exit-intent"
+              label="Exit intent"
+              description="Open when the cursor moves toward closing the tab (desktop only)"
+              checked={triggers.exit_intent}
+              onCheckedChange={(checked) => onUpdate('triggers.exit_intent', checked)}
+            />
           </div>
         </CardContent>
       </Card>
@@ -106,18 +101,13 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <label htmlFor="auto-inject" className="text-sm font-medium leading-snug">Auto-inject on all pages</label>
-                <p className="text-sm text-muted-foreground">When enabled, the widget appears on all frontend pages (unless excluded)</p>
-              </div>
-              <Switch
-                id="auto-inject"
-                className="mt-0.5"
-                checked={display_rules.auto_inject}
-                onCheckedChange={(checked) => onUpdate('display_rules.auto_inject', checked)}
-              />
-            </div>
+            <SwitchField
+              id="auto-inject"
+              label="Auto-inject on all pages"
+              description="When enabled, the widget appears on all frontend pages (unless excluded)"
+              checked={display_rules.auto_inject}
+              onCheckedChange={(checked) => onUpdate('display_rules.auto_inject', checked)}
+            />
 
             <Field>
               <FieldLabel>Visibility</FieldLabel>

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
-import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
+import { Field, FieldLabel, FieldDescription, SwitchField } from '@/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -75,18 +74,13 @@ function ConfigField({ fieldKey, field, value, onChange }: {
 
   if (field.type === 'boolean') {
     return (
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <label htmlFor={id} className="text-sm font-medium leading-snug">{field.label}</label>
-          {field.description && <p className="text-sm text-muted-foreground">{field.description}</p>}
-        </div>
-        <Switch
-          id={id}
-          className="mt-0.5"
-          checked={Boolean(value ?? field.default ?? false)}
-          onCheckedChange={(v) => onChange(fieldKey, v)}
-        />
-      </div>
+      <SwitchField
+        id={id}
+        label={field.label}
+        description={field.description}
+        checked={Boolean(value ?? field.default ?? false)}
+        onCheckedChange={(v) => onChange(fieldKey, v)}
+      />
     );
   }
 

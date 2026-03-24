@@ -2,6 +2,7 @@ import { formatDateTime } from '@/lib/format';
 import { useState } from 'react';
 import { PageSection } from '@/components/ui/page-section';
 import { Input } from '@/components/ui/input';
+import { Field, FieldLabel } from '@/components/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -25,58 +26,78 @@ export function MessageLogs() {
         contentClassName="space-y-4"
       >
           {/* Filters */}
-          <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            <Select value={filters.channel || 'all'} onValueChange={(v) => setFilter('channel', v === 'all' ? '' : v)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Channel" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Channels</SelectItem>
-                <SelectItem value="sms">SMS</SelectItem>
-                <SelectItem value="email">Email</SelectItem>
-                <SelectItem value="webhook">Webhook</SelectItem>
-                <SelectItem value="telegram">Telegram</SelectItem>
-              </SelectContent>
-            </Select>
+          <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            <Field>
+              <FieldLabel htmlFor="filter-channel">Channel</FieldLabel>
+              <Select value={filters.channel || 'all'} onValueChange={(v) => setFilter('channel', v === 'all' ? '' : v)}>
+                <SelectTrigger id="filter-channel">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Channels</SelectItem>
+                  <SelectItem value="sms">SMS</SelectItem>
+                  <SelectItem value="email">Email</SelectItem>
+                  <SelectItem value="webhook">Webhook</SelectItem>
+                  <SelectItem value="telegram">Telegram</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
 
-            <Select value={filters.status || 'all'} onValueChange={(v) => setFilter('status', v === 'all' ? '' : v)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="sent">Sent</SelectItem>
-                <SelectItem value="delivered">Delivered</SelectItem>
-                <SelectItem value="failed">Failed</SelectItem>
-              </SelectContent>
-            </Select>
+            <Field>
+              <FieldLabel htmlFor="filter-status">Status</FieldLabel>
+              <Select value={filters.status || 'all'} onValueChange={(v) => setFilter('status', v === 'all' ? '' : v)}>
+                <SelectTrigger id="filter-status">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Statuses</SelectItem>
+                  <SelectItem value="pending">Pending</SelectItem>
+                  <SelectItem value="sent">Sent</SelectItem>
+                  <SelectItem value="delivered">Delivered</SelectItem>
+                  <SelectItem value="failed">Failed</SelectItem>
+                </SelectContent>
+              </Select>
+            </Field>
 
-            <Input
-              placeholder="Search recipient..."
-              value={filters.recipient}
-              onChange={(e) => setFilter('recipient', e.target.value)}
-            />
+            <Field>
+              <FieldLabel htmlFor="filter-recipient">Recipient</FieldLabel>
+              <Input
+                id="filter-recipient"
+                placeholder="Search recipient..."
+                value={filters.recipient}
+                onChange={(e) => setFilter('recipient', e.target.value)}
+              />
+            </Field>
 
-            <Input
-              placeholder="Filter by gateway"
-              value={filters.gateway_id}
-              onChange={(e) => setFilter('gateway_id', e.target.value)}
-            />
+            <Field>
+              <FieldLabel htmlFor="filter-gateway">Gateway</FieldLabel>
+              <Input
+                id="filter-gateway"
+                placeholder="Filter by gateway"
+                value={filters.gateway_id}
+                onChange={(e) => setFilter('gateway_id', e.target.value)}
+              />
+            </Field>
 
-            <Input
-              type="date"
-              placeholder="From"
-              value={filters.date_from}
-              onChange={(e) => setFilter('date_from', e.target.value)}
-            />
+            <Field>
+              <FieldLabel htmlFor="filter-from">From</FieldLabel>
+              <Input
+                id="filter-from"
+                type="date"
+                value={filters.date_from}
+                onChange={(e) => setFilter('date_from', e.target.value)}
+              />
+            </Field>
 
-            <Input
-              type="date"
-              placeholder="To"
-              value={filters.date_to}
-              onChange={(e) => setFilter('date_to', e.target.value)}
-            />
+            <Field>
+              <FieldLabel htmlFor="filter-to">To</FieldLabel>
+              <Input
+                id="filter-to"
+                type="date"
+                value={filters.date_to}
+                onChange={(e) => setFilter('date_to', e.target.value)}
+              />
+            </Field>
           </div>
 
           {/* Table / Loading / Empty */}

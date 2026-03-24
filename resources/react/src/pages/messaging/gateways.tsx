@@ -56,10 +56,6 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
     .filter(([key, val]) => val && key !== 'unicode' && FEATURE_LABELS[key])
     .map(([key]) => FEATURE_LABELS[key]);
 
-  const defaultChannels = gateway.supported_channels.filter(
-    (ch) => gateway.config?.is_default?.[ch]
-  );
-
   return (
     <Card active={gateway.is_configured}>
       <CardHeader>
@@ -76,38 +72,20 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="flex flex-wrap gap-1.5">
-          {gateway.supported_channels.map((ch) => (
-            <Badge key={ch} variant="outline">{channelLabel(ch)}</Badge>
-          ))}
-          {defaultChannels.map((ch) => (
-            <Badge key={`default-${ch}`} variant="secondary" className="text-xs">
-              <Star className="h-3 w-3" />
-              Default for {channelLabel(ch)}
-            </Badge>
-          ))}
+          {gateway.supported_channels.map((ch) => {
+            const isDefault = gateway.config?.is_default?.[ch];
+            return (
+              <Badge key={ch} variant={isDefault ? "default" : "outline"}>
+                {isDefault && <Star className="h-3 w-3" />}
+                {channelLabel(ch)}
+              </Badge>
+            );
+          })}
         </div>
 
-        {gateway.metadata.regions && gateway.metadata.regions.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {gateway.metadata.regions.map((r) => (
-              <Badge key={r} variant="secondary" className="text-xs">{r}</Badge>
-            ))}
-          </div>
-        )}
-
         {features.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {features.map((f) => (
-              <Badge key={f} variant="ghost" className="text-xs text-muted-foreground">{f}</Badge>
-            ))}
-          </div>
-        )}
-
-        {gateway.is_configured && gateway.supported_channels.includes('sms') && (
           <p className="text-xs text-muted-foreground">
-            {gateway.features.incoming
-              ? 'Supports inbound SMS — STOP/START keyword handling works automatically.'
-              : 'Does not support inbound SMS — recipients cannot reply STOP to unsubscribe automatically.'}
+            Supports: {features.join(', ')}
           </p>
         )}
 

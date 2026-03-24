@@ -1,8 +1,7 @@
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Field, FieldLabel, FieldDescription, FieldHint } from '@/components/ui/field';
+import { Field, FieldLabel, FieldDescription, FieldHint, SwitchField } from '@/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -478,19 +477,15 @@ function PropertyField({
 
   if (prop.type === 'boolean') {
     return (
-      <div key={fieldKey} className="flex items-start justify-between gap-4">
-        <div>
-          <label htmlFor={`schema-${fieldKey}`} className="text-sm font-medium leading-snug">{label}</label>
-          {prop.hint && <p className="text-xs italic text-muted-foreground/80">{prop.hint}</p>}
-          {prop.description && <p className="text-sm text-muted-foreground">{prop.description}</p>}
-        </div>
-        <Switch
-          id={`schema-${fieldKey}`}
-          className="mt-0.5"
-          checked={Boolean(value ?? prop.default ?? false)}
-          onCheckedChange={(v) => onChange(fieldKey, v)}
-        />
-      </div>
+      <SwitchField
+        key={fieldKey}
+        id={`schema-${fieldKey}`}
+        label={label}
+        hint={prop.hint}
+        description={prop.description}
+        checked={Boolean(value ?? prop.default ?? false)}
+        onCheckedChange={(v) => onChange(fieldKey, v)}
+      />
     );
   }
 

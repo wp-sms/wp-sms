@@ -1,6 +1,6 @@
 import { PageSection } from '@/components/ui/page-section';
 import { Input } from '@/components/ui/input';
-import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
+import { Field, FieldLabel, FieldDescription, SwitchField } from '@/components/ui/field';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -148,22 +148,16 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
               </label>
             ))}
 
-            <div className="flex items-start justify-between gap-4 border-t pt-4 mt-4">
-              <div>
-                <label htmlFor="captcha-fail-open" className="text-sm font-medium leading-snug">Fail Open</label>
-                <p className="text-sm text-muted-foreground">
-                  {captcha.fail_open
-                    ? 'If the CAPTCHA service is unreachable, users will be allowed through. Less secure but avoids lockouts.'
-                    : 'If the CAPTCHA service is unreachable, users will be blocked. More secure but may cause lockouts during outages.'}
-                </p>
-              </div>
-              <Switch
-                id="captcha-fail-open"
-                className="mt-0.5"
-                checked={captcha.fail_open}
-                onCheckedChange={(v) => update({ fail_open: v })}
-              />
-            </div>
+            <SwitchField
+              id="captcha-fail-open"
+              label="Fail Open"
+              description={captcha.fail_open
+                ? 'If the CAPTCHA service is unreachable, users will be allowed through. Less secure but avoids lockouts.'
+                : 'If the CAPTCHA service is unreachable, users will be blocked. More secure but may cause lockouts during outages.'}
+              checked={captcha.fail_open}
+              onCheckedChange={(v) => update({ fail_open: v })}
+              className="border-t pt-4 mt-4"
+            />
         </PageSection>
       )}
     </div>

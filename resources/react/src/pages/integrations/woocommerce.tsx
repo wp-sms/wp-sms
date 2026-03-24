@@ -1,6 +1,7 @@
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
+import { SwitchField } from '@/components/ui/field';
 import { LogIn, CreditCard } from 'lucide-react';
 import type { AuthSettings, WooCommerceSettings } from '@/lib/api';
 
@@ -58,18 +59,13 @@ export function WooCommerce({ settings, onUpdate }: WooCommerceProps) {
           {CHECKOUT_TOGGLES.map((toggle, i) => (
             <div key={toggle.id}>
               {i > 0 && <Separator className="mb-4" />}
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <label htmlFor={toggle.id} className="text-sm font-medium leading-snug">{toggle.label}</label>
-                  <p className="text-sm text-muted-foreground">{toggle.description}</p>
-                </div>
-                <Switch
-                  id={toggle.id}
-                  className="mt-0.5"
-                  checked={toggle.defaultChecked ? woo[toggle.key] !== false : !!woo[toggle.key]}
-                  onCheckedChange={(v) => update({ [toggle.key]: v })}
-                />
-              </div>
+              <SwitchField
+                id={toggle.id}
+                label={toggle.label}
+                description={toggle.description}
+                checked={toggle.defaultChecked ? woo[toggle.key] !== false : !!woo[toggle.key]}
+                onCheckedChange={(v) => update({ [toggle.key]: v })}
+              />
             </div>
           ))}
         </CardContent>

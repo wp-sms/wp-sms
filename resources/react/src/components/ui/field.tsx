@@ -242,6 +242,37 @@ function FieldError({
   )
 }
 
+import { Switch } from "@/components/ui/switch"
+
+function SwitchField({
+  id,
+  label,
+  description,
+  hint,
+  checked,
+  onCheckedChange,
+  className,
+}: {
+  id: string
+  label: React.ReactNode
+  description?: React.ReactNode
+  hint?: React.ReactNode
+  checked: boolean
+  onCheckedChange: (checked: boolean) => void
+  className?: string
+}) {
+  return (
+    <Field orientation="horizontal" className={className}>
+      <div>
+        <FieldLabel htmlFor={id}>{label}</FieldLabel>
+        {hint && <FieldHint>{hint}</FieldHint>}
+        {description && <FieldDescription>{description}</FieldDescription>}
+      </div>
+      <Switch id={id} checked={checked} onCheckedChange={onCheckedChange} />
+    </Field>
+  )
+}
+
 export {
   Field,
   FieldLabel,
@@ -254,4 +285,5 @@ export {
   FieldSet,
   FieldContent,
   FieldTitle,
+  SwitchField,
 }
