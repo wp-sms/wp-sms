@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageSection } from '@/components/ui/page-section';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,6 +8,8 @@ import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
+import { DataTable } from '@/components/ui/data-table';
+import { EmptyState } from '@/components/ui/empty-state';
 import {
   Select,
   SelectContent,
@@ -195,19 +196,6 @@ export function RegistrationForms() {
 
   const roles = getAvailableRoles();
 
-  if (loading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Registration Forms</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">Loading...</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <>
       <PageSection
@@ -221,19 +209,23 @@ export function RegistrationForms() {
           </Button>
         }
       >
-          {forms.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <FileText className="h-12 w-12 text-muted-foreground/50 mb-4" />
-              <h3 className="text-lg font-medium mb-1">No registration forms yet</h3>
-              <p className="text-muted-foreground text-sm mb-4">
-                Create your first registration form to collect different information for different user types.
-              </p>
-              <Button onClick={openCreate} size="sm">
-                <Plus className="mr-1 h-3.5 w-3.5" />
-                Create Form
-              </Button>
-            </div>
-          ) : (
+          <DataTable
+            loading={loading}
+            isEmpty={forms.length === 0}
+            empty={
+              <EmptyState
+                icon={FileText}
+                title="No registration forms yet"
+                description="Create your first registration form to collect different information for different user types."
+                action={
+                  <Button onClick={openCreate} size="sm">
+                    <Plus className="mr-1 h-3.5 w-3.5" />
+                    Create Form
+                  </Button>
+                }
+              />
+            }
+          >
             <Table>
               <TableHeader>
                 <TableRow>
@@ -261,7 +253,7 @@ export function RegistrationForms() {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={form.status === 'active' ? 'default' : 'secondary'}>
+                      <Badge variant={form.status === 'active' ? 'success' : 'secondary'}>
                         {form.status}
                       </Badge>
                     </TableCell>
@@ -304,7 +296,7 @@ export function RegistrationForms() {
                 ))}
               </TableBody>
             </Table>
-          )}
+          </DataTable>
       </PageSection>
 
       <Drawer open={panelOpen} onOpenChange={setPanelOpen}>

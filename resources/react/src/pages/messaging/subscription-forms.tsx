@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageSection } from '@/components/ui/page-section';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,6 +7,8 @@ import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
+import { DataTable } from '@/components/ui/data-table';
+import { EmptyState } from '@/components/ui/empty-state';
 import {
   Select,
   SelectContent,
@@ -191,19 +192,6 @@ export function SubscriptionForms() {
   const enabledFieldKeys = formState.fields.map((f) => f.key);
   const optinChannelOptions = enabledFieldKeys.filter((k) => k === 'email' || k === 'phone');
 
-  if (loading) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Subscription Forms</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-muted-foreground">Loading...</p>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <>
       <PageSection
@@ -217,19 +205,23 @@ export function SubscriptionForms() {
           </Button>
         }
       >
-          {forms.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <ClipboardList className="h-12 w-12 text-muted-foreground/50 mb-4" />
-              <h3 className="text-lg font-medium mb-1">No subscription forms yet</h3>
-              <p className="text-muted-foreground text-sm mb-4">
-                Create your first subscription form to collect contacts from visitors without requiring WordPress registration.
-              </p>
-              <Button onClick={openCreate} size="sm">
-                <Plus className="mr-1 h-3.5 w-3.5" />
-                Create Form
-              </Button>
-            </div>
-          ) : (
+          <DataTable
+            loading={loading}
+            isEmpty={forms.length === 0}
+            empty={
+              <EmptyState
+                icon={ClipboardList}
+                title="No subscription forms yet"
+                description="Create your first subscription form to collect contacts from visitors without requiring WordPress registration."
+                action={
+                  <Button onClick={openCreate} size="sm">
+                    <Plus className="mr-1 h-3.5 w-3.5" />
+                    Create Form
+                  </Button>
+                }
+              />
+            }
+          >
             <Table>
               <TableHeader>
                 <TableRow>
@@ -257,7 +249,7 @@ export function SubscriptionForms() {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={form.status === 'active' ? 'default' : 'secondary'}>
+                      <Badge variant={form.status === 'active' ? 'success' : 'secondary'}>
                         {form.status}
                       </Badge>
                     </TableCell>
@@ -296,7 +288,7 @@ export function SubscriptionForms() {
                 ))}
               </TableBody>
             </Table>
-          )}
+          </DataTable>
       </PageSection>
 
       <Drawer open={panelOpen} onOpenChange={setPanelOpen}>
