@@ -1,20 +1,20 @@
 import type { CampaignStatus } from '@/lib/api';
 import { Badge } from '@/components/ui/badge';
 
-export const STATUS_STYLES: Record<CampaignStatus, { label: string; classes: string }> = {
-  draft:     { label: 'Draft',     classes: '' },
-  scheduled: { label: 'Scheduled', classes: 'border-blue-200 bg-blue-50 text-blue-700' },
-  sending:   { label: 'Sending',   classes: 'border-amber-200 bg-amber-50 text-amber-700' },
-  paused:    { label: 'Paused',    classes: 'border-orange-200 bg-orange-50 text-orange-700' },
-  sent:      { label: 'Sent',      classes: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
-  cancelled: { label: 'Cancelled', classes: 'border-gray-200 bg-gray-50 text-gray-600' },
-  failed:    { label: 'Failed',    classes: 'border-red-200 bg-red-50 text-red-700' },
+const STATUS_VARIANTS: Record<CampaignStatus, { label: string; variant: 'secondary' | 'info' | 'warning' | 'success' | 'neutral' | 'destructive' }> = {
+  draft:     { label: 'Draft',     variant: 'secondary' },
+  scheduled: { label: 'Scheduled', variant: 'info' },
+  sending:   { label: 'Sending',   variant: 'warning' },
+  paused:    { label: 'Paused',    variant: 'warning' },
+  sent:      { label: 'Sent',      variant: 'success' },
+  cancelled: { label: 'Cancelled', variant: 'neutral' },
+  failed:    { label: 'Failed',    variant: 'destructive' },
 };
 
 export function CampaignStatusBadge({ status }: { status: CampaignStatus }) {
-  const style = STATUS_STYLES[status] ?? STATUS_STYLES.draft;
+  const style = STATUS_VARIANTS[status] ?? STATUS_VARIANTS.draft;
   return (
-    <Badge variant={status === 'draft' ? 'secondary' : 'outline'} className={style.classes}>
+    <Badge variant={style.variant}>
       {style.label}
     </Badge>
   );

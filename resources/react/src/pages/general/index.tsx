@@ -1,8 +1,8 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
+import { PageSection } from '@/components/ui/page-section';
 import { Phone, Globe, Scale } from 'lucide-react';
 import { SITE_PHONE_CHANNELS } from '@/lib/constants';
 import type { AuthSettings, SitePhoneChannel } from '@/lib/api';
@@ -17,17 +17,11 @@ export function GeneralPage({ settings, onUpdate }: GeneralPageProps) {
 
   return (
     <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Globe className="h-4 w-4 text-muted-foreground" />
-            Auth Pages
-          </CardTitle>
-          <CardDescription>
-            Configure authentication page URLs and login behavior
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <PageSection
+        icon={Globe}
+        title="Auth Pages"
+        description="Configure authentication page URLs and login behavior"
+      >
           <div className="space-y-4">
             <div className="max-w-md">
               <Field>
@@ -65,20 +59,13 @@ export function GeneralPage({ settings, onUpdate }: GeneralPageProps) {
               </p>
             )}
           </div>
-        </CardContent>
-      </Card>
+      </PageSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Phone className="h-4 w-4 text-muted-foreground" />
-            Admin Phone Number
-          </CardTitle>
-          <CardDescription>
-            Site-level phone number used as a fallback for notifications and available as a template variable in flows.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <PageSection
+        icon={Phone}
+        title="Admin Phone Number"
+        description="Site-level phone number used as a fallback for notifications and available as a template variable in flows."
+      >
           <div className="space-y-4 max-w-md">
             <Field>
               <FieldLabel htmlFor="site_phone_channel">Channel</FieldLabel>
@@ -121,20 +108,13 @@ export function GeneralPage({ settings, onUpdate }: GeneralPageProps) {
               </p>
             )}
           </div>
-        </CardContent>
-      </Card>
+      </PageSection>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Scale className="h-4 w-4 text-muted-foreground" />
-            Legal Links
-          </CardTitle>
-          <CardDescription>
-            Terms of Service and Privacy Policy links shown on auth pages
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+      <PageSection
+        icon={Scale}
+        title="Legal Links"
+        description="Terms of Service and Privacy Policy links shown on auth pages"
+      >
           <div className="space-y-4 max-w-md">
             <Field>
               <FieldLabel htmlFor="terms_url">Terms of Service URL</FieldLabel>
@@ -161,8 +141,7 @@ export function GeneralPage({ settings, onUpdate }: GeneralPageProps) {
               </FieldDescription>
             </Field>
           </div>
-        </CardContent>
-      </Card>
+      </PageSection>
     </div>
   );
 }

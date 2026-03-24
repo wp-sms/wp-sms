@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageSection } from '@/components/ui/page-section';
 import {
   Table,
   TableBody,
@@ -19,15 +19,12 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
   const { failed_login_attempts, accounts_locked, accounts_suspended, otp_failures, top_failed_ips, recent_lockouts, recent_suspensions } = data.security_alerts;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
-          <ShieldAlert className="h-4 w-4 text-muted-foreground" />
-          Security Alerts
-        </CardTitle>
-        <CardDescription>Failed attempts, lockouts, and suspicious activity</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-6">
+    <PageSection
+      icon={ShieldAlert}
+      title="Security Alerts"
+      description="Failed attempts, lockouts, and suspicious activity"
+      contentClassName="space-y-6"
+    >
         <div className="grid gap-4 grid-cols-4">
           <div className="rounded-lg border p-3">
             <p className="text-sm text-muted-foreground">Failed Logins</p>
@@ -130,7 +127,6 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
         {top_failed_ips.length === 0 && recent_lockouts.length === 0 && recent_suspensions.length === 0 && (
           <p className="text-sm text-muted-foreground">No security alerts for this period.</p>
         )}
-      </CardContent>
-    </Card>
+    </PageSection>
   );
 }

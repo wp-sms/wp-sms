@@ -3,11 +3,12 @@ import { useFlows } from '@/hooks/use-flows';
 import { FlowEditor } from './flow-editor';
 import type { Flow, FlowTemplate } from '@/lib/api';
 import { api } from '@/lib/api';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Input } from '@/components/ui/input';
+import { EmptyState } from '@/components/ui/empty-state';
+import { DataTable } from '@/components/ui/data-table';
+import { PageSection } from '@/components/ui/page-section';
 import { Field, FieldLabel } from '@/components/ui/field';
 import {
   Select,
@@ -31,7 +32,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { PageNumbers } from '@/components/ui/pagination';
 import {
   Plus, Workflow, Pencil, Trash2, Rocket, LayoutTemplate, Search,
   ShoppingCart, Users, MessageSquare, FileText, History, Pause,
@@ -204,33 +204,25 @@ export function Flows() {
 
   return (
     <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Workflow className="h-4 w-4 text-muted-foreground" />
-                Automation Flows
-              </CardTitle>
-              <CardDescription>
-                {total} {total === 1 ? 'flow' : 'flows'} total
-              </CardDescription>
-            </div>
-            <div className="flex items-center gap-2">
-              {!templatesLoading && templates.length > 0 && (
-                <Button variant="outline" size="sm" onClick={handleOpenTemplates}>
-                  <LayoutTemplate className="mr-1.5 h-3.5 w-3.5" />
-                  From Template
-                </Button>
-              )}
-              <Button size="sm" onClick={() => setView({ mode: 'create' })}>
-                <Plus className="mr-1.5 h-3.5 w-3.5" />
-                New Flow
+      <PageSection
+        icon={Workflow}
+        title="Automation Flows"
+        description={<>{total} {total === 1 ? 'flow' : 'flows'} total</>}
+        actions={
+          <div className="flex items-center gap-2">
+            {!templatesLoading && templates.length > 0 && (
+              <Button variant="outline" size="sm" onClick={handleOpenTemplates}>
+                <LayoutTemplate className="mr-1.5 h-3.5 w-3.5" />
+                From Template
               </Button>
-            </div>
+            )}
+            <Button size="sm" onClick={() => setView({ mode: 'create' })}>
+              <Plus className="mr-1.5 h-3.5 w-3.5" />
+              New Flow
+            </Button>
           </div>
-        </CardHeader>
-        <CardContent>
+        }
+      >
           <div className="mb-4">
             <Field>
               <FieldLabel htmlFor="filter-status">Status</FieldLabel>
@@ -251,124 +243,112 @@ export function Flows() {
             </Field>
           </div>
 
-          {loading ? (
-            <div className="space-y-3">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full" />
-              ))}
-            </div>
-          ) : flows.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted mb-3">
-                <Workflow className="h-5 w-5 text-muted-foreground" />
-              </div>
-              <p className="text-sm font-medium">No flows found</p>
-              <p className="mt-1 text-xs text-muted-foreground">Create your first automation flow to get started.</p>
-              <Button size="sm" className="mt-4" onClick={() => setView({ mode: 'create' })}>
-                <Plus className="mr-1.5 h-3.5 w-3.5" />
-                New Flow
-              </Button>
-            </div>
-          ) : (
-            <>
-              <div className="rounded-lg border border-border/50 overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Trigger</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Published</TableHead>
-                      <TableHead className="w-24">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {flows.map((flow) => (
-                      <TableRow key={flow.id} className="even:bg-muted/30">
-                        <TableCell className="font-medium">{flow.name}</TableCell>
-                        <TableCell className="text-sm">{formatLabel(flow.trigger_type)}</TableCell>
-                        <TableCell>
-                          {flow.status === 'active' ? (
-                            <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700">
-                              Active
-                            </Badge>
-                          ) : flow.status === 'paused' ? (
-                            <Badge variant="outline" className="border-amber-200 bg-amber-50 text-amber-700">
-                              Paused
-                            </Badge>
-                          ) : (
-                            <Badge variant="secondary">Draft</Badge>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-sm">
-                          {flow.published_at ? new Date(flow.published_at).toLocaleDateString() : '\u2014'}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-1">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 w-7 p-0"
-                              onClick={() => setView({ mode: 'edit', flow })}
-                              title="Edit"
-                            >
-                              <Pencil className="h-3.5 w-3.5" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 w-7 p-0"
-                              onClick={() => setView({ mode: 'edit', flow, tab: 'history' })}
-                              title="Execution History"
-                            >
-                              <History className="h-3.5 w-3.5" />
-                            </Button>
-                            {flow.status === 'active' ? (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-7 w-7 p-0"
-                                onClick={() => void handleDeactivate(flow.id)}
-                                disabled={deactivating === flow.id}
-                                title="Pause"
-                              >
-                                <Pause className="h-3.5 w-3.5" />
-                              </Button>
-                            ) : (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-7 w-7 p-0"
-                                onClick={() => void handlePublish(flow.id)}
-                                disabled={publishing === flow.id}
-                                title="Publish"
-                              >
-                                <Rocket className="h-3.5 w-3.5" />
-                              </Button>
-                            )}
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-                              onClick={() => void handleDelete(flow.id)}
-                              disabled={deleting === flow.id}
-                              title="Delete"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-
-              <PageNumbers page={page} totalPages={totalPages} onPageChange={setPage} />
-            </>
-          )}
-        </CardContent>
-      </Card>
+          <DataTable
+            loading={loading}
+            isEmpty={flows.length === 0}
+            empty={
+              <EmptyState
+                icon={Workflow}
+                title="No flows found"
+                description="Create your first automation flow to get started."
+                action={
+                  <Button size="sm" onClick={() => setView({ mode: 'create' })}>
+                    <Plus className="mr-1.5 h-3.5 w-3.5" />
+                    New Flow
+                  </Button>
+                }
+              />
+            }
+            pagination={{ page, totalPages, onPageChange: setPage }}
+          >
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Trigger</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Published</TableHead>
+                  <TableHead className="w-24">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {flows.map((flow) => (
+                  <TableRow key={flow.id} className="even:bg-muted/30">
+                    <TableCell className="font-medium">{flow.name}</TableCell>
+                    <TableCell className="text-sm">{formatLabel(flow.trigger_type)}</TableCell>
+                    <TableCell>
+                      {flow.status === 'active' ? (
+                        <Badge variant="success">Active</Badge>
+                      ) : flow.status === 'paused' ? (
+                        <Badge variant="warning">Paused</Badge>
+                      ) : (
+                        <Badge variant="secondary">Draft</Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      {flow.published_at ? new Date(flow.published_at).toLocaleDateString() : '\u2014'}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 w-7 p-0"
+                          onClick={() => setView({ mode: 'edit', flow })}
+                          title="Edit"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 w-7 p-0"
+                          onClick={() => setView({ mode: 'edit', flow, tab: 'history' })}
+                          title="Execution History"
+                        >
+                          <History className="h-3.5 w-3.5" />
+                        </Button>
+                        {flow.status === 'active' ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 w-7 p-0"
+                            onClick={() => void handleDeactivate(flow.id)}
+                            disabled={deactivating === flow.id}
+                            title="Pause"
+                          >
+                            <Pause className="h-3.5 w-3.5" />
+                          </Button>
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 w-7 p-0"
+                            onClick={() => void handlePublish(flow.id)}
+                            disabled={publishing === flow.id}
+                            title="Publish"
+                          >
+                            <Rocket className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 w-7 p-0 text-destructive hover:text-destructive"
+                          onClick={() => void handleDelete(flow.id)}
+                          disabled={deleting === flow.id}
+                          title="Delete"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </DataTable>
+      </PageSection>
 
       {/* Template picker dialog */}
       <Dialog open={showTemplates} onOpenChange={setShowTemplates}>

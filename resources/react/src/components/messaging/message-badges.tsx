@@ -4,9 +4,9 @@ import { formatLabel } from '@/lib/constants';
 export function StatusBadge({ status }: { status: string }) {
   switch (status) {
     case 'delivered':
-      return <Badge variant="outline" className="border-emerald-200 bg-emerald-50 text-emerald-700">{status}</Badge>;
+      return <Badge variant="success">{status}</Badge>;
     case 'sent':
-      return <Badge variant="outline" className="border-blue-200 bg-blue-50 text-blue-700">{status}</Badge>;
+      return <Badge variant="info">{status}</Badge>;
     case 'failed':
       return <Badge variant="destructive">{status}</Badge>;
     default:

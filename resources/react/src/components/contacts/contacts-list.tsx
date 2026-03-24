@@ -5,11 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { PageNumbers } from '@/components/ui/pagination';
+import { EmptyState } from '@/components/ui/empty-state';
+import { DataTable } from '@/components/ui/data-table';
 import { ContactFormSheet } from './contact-form-sheet';
 import { ContactDetailSheet } from './contact-detail-sheet';
 import { BulkActionBar } from './bulk-action-bar';
@@ -26,12 +26,12 @@ interface ContactsListProps {
   onImport: () => void;
 }
 
-const STATUS_STYLES: Record<string, string> = {
-  subscribed: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-  unsubscribed: 'border-gray-200 bg-gray-50 text-gray-600',
-  pending: 'border-yellow-200 bg-yellow-50 text-yellow-700',
-  bounced: 'border-amber-200 bg-amber-50 text-amber-700',
-  complained: 'border-red-200 bg-red-50 text-red-700',
+const STATUS_VARIANTS: Record<string, 'success' | 'neutral' | 'warning' | 'destructive'> = {
+  subscribed: 'success',
+  unsubscribed: 'neutral',
+  pending: 'warning',
+  bounced: 'warning',
+  complained: 'destructive',
 };
 
 export function ContactsList({ hook, tags, onImport }: ContactsListProps) {
@@ -150,96 +150,89 @@ export function ContactsList({ hook, tags, onImport }: ContactsListProps) {
           </div>
 
           {/* Table */}
-          {loading ? (
-            <div className="space-y-3">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full" />
-              ))}
-            </div>
-          ) : contacts.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted mb-3">
-                <Users className="h-5 w-5 text-muted-foreground" />
-              </div>
-              <p className="text-sm font-medium">No contacts found</p>
-              <p className="mt-1 text-xs text-muted-foreground">Add your first contact to get started.</p>
-              <Button size="sm" className="mt-4" onClick={handleCreate}>
-                <Plus className="mr-1.5 h-3.5 w-3.5" /> New Contact
-              </Button>
-            </div>
-          ) : (
-            <>
-              <div className="rounded-lg border border-border/50 overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-10">
-                        <Checkbox checked={isAllSelected} onCheckedChange={(checked) => checked ? selectAll() : clearSelection()} />
-                      </TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Phone</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Source</TableHead>
-                      <TableHead className="w-24">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {contacts.map((contact) => (
-                      <TableRow key={contact.id} className="even:bg-muted/30">
-                        <TableCell>
-                          <Checkbox
-                            checked={selectedIds.includes(contact.id)}
-                            onCheckedChange={() => toggleSelect(contact.id)}
-                          />
-                        </TableCell>
-                        <TableCell>
-                          <button
-                            type="button"
-                            className="font-medium hover:text-primary hover:underline text-left"
-                            onClick={() => handleViewDetail(contact.id)}
-                          >
-                            {[contact.first_name, contact.last_name].filter(Boolean).join(' ') || '\u2014'}
-                          </button>
-                        </TableCell>
-                        <TableCell className="text-sm">{contact.email || '\u2014'}</TableCell>
-                        <TableCell className="text-sm">{contact.phone || '\u2014'}</TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className={STATUS_STYLES[contact.status] || ''}>
-                            {formatLabel(contact.status)}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
-                          {contact.source ? <SourceLabel source={contact.source} sourceRef={contact.source_ref} showPrefix={false} /> : '\u2014'}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-1">
-                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleViewDetail(contact.id)} title="View">
-                              <Eye className="h-3.5 w-3.5" />
-                            </Button>
-                            <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleEdit(contact)} title="Edit">
-                              <Pencil className="h-3.5 w-3.5" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-                              onClick={() => void handleDelete(contact.id)}
-                              title="Delete"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-
-              <PageNumbers page={page} totalPages={totalPages} onPageChange={setPage} />
-            </>
-          )}
+          <DataTable
+            loading={loading}
+            isEmpty={contacts.length === 0}
+            empty={
+              <EmptyState
+                icon={Users}
+                title="No contacts found"
+                description="Add your first contact to get started."
+                action={
+                  <Button size="sm" onClick={handleCreate}>
+                    <Plus className="mr-1.5 h-3.5 w-3.5" /> New Contact
+                  </Button>
+                }
+              />
+            }
+            pagination={{ page, totalPages, onPageChange: setPage }}
+          >
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-10">
+                    <Checkbox checked={isAllSelected} onCheckedChange={(checked) => checked ? selectAll() : clearSelection()} />
+                  </TableHead>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Source</TableHead>
+                  <TableHead className="w-24">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {contacts.map((contact) => (
+                  <TableRow key={contact.id} className="even:bg-muted/30">
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.includes(contact.id)}
+                        onCheckedChange={() => toggleSelect(contact.id)}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <button
+                        type="button"
+                        className="font-medium hover:text-primary hover:underline text-left"
+                        onClick={() => handleViewDetail(contact.id)}
+                      >
+                        {[contact.first_name, contact.last_name].filter(Boolean).join(' ') || '\u2014'}
+                      </button>
+                    </TableCell>
+                    <TableCell className="text-sm">{contact.email || '\u2014'}</TableCell>
+                    <TableCell className="text-sm">{contact.phone || '\u2014'}</TableCell>
+                    <TableCell>
+                      <Badge variant={STATUS_VARIANTS[contact.status] || 'neutral'}>
+                        {formatLabel(contact.status)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-sm text-muted-foreground">
+                      {contact.source ? <SourceLabel source={contact.source} sourceRef={contact.source_ref} showPrefix={false} /> : '\u2014'}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleViewDetail(contact.id)} title="View">
+                          <Eye className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleEdit(contact)} title="Edit">
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 w-7 p-0 text-destructive hover:text-destructive"
+                          onClick={() => void handleDelete(contact.id)}
+                          title="Delete"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </DataTable>
         </CardContent>
       </Card>
 

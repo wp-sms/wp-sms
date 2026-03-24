@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageSection } from '@/components/ui/page-section';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Skeleton } from '@/components/ui/skeleton';
-import { PageNumbers } from '@/components/ui/pagination';
+import { EmptyState } from '@/components/ui/empty-state';
+import { DataTable } from '@/components/ui/data-table';
 import { Send, ScrollText } from 'lucide-react';
 import { useMessageLogs } from '@/hooks/use-message-logs';
 import { StatusBadge, ChannelBadge } from '@/components/messaging/message-badges';
@@ -17,17 +17,12 @@ export function MessageLogs() {
 
   return (
     <>
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Send className="h-5 w-5" />
-            Message Logs
-          </CardTitle>
-          <CardDescription>
-            {total > 0 ? `Showing ${total} message${total !== 1 ? 's' : ''}` : 'No messages yet'}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
+      <PageSection
+        icon={Send}
+        title="Message Logs"
+        description={total > 0 ? `Showing ${total} message${total !== 1 ? 's' : ''}` : 'No messages yet'}
+        contentClassName="space-y-4"
+      >
           {/* Filters */}
           <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
             <Select value={filters.channel || 'all'} onValueChange={(v) => setFilter('channel', v === 'all' ? '' : v)}>
@@ -84,58 +79,48 @@ export function MessageLogs() {
           </div>
 
           {/* Table / Loading / Empty */}
-          {loading ? (
-            <div className="space-y-3">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Skeleton key={i} className="h-12 w-full" />
-              ))}
-            </div>
-          ) : logs.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-muted mb-3">
-                <ScrollText className="h-5 w-5 text-muted-foreground" />
-              </div>
-              <p className="text-sm font-medium text-foreground">No messages logged yet</p>
-              <p className="mt-1 text-xs text-muted-foreground">Messages will appear here as they are sent.</p>
-            </div>
-          ) : (
-            <div>
-              <div className="rounded-lg border border-border/50 overflow-hidden">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Channel</TableHead>
-                      <TableHead>Recipient</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Gateway</TableHead>
-                      <TableHead>Cost</TableHead>
-                      <TableHead>Date</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {logs.map((log) => (
-                      <TableRow
-                        key={log.id}
-                        className={`cursor-pointer even:bg-muted/30 ${selectedLog?.id === log.id ? 'bg-accent' : ''}`}
-                        onClick={() => setSelectedLog(log)}
-                      >
-                        <TableCell><ChannelBadge channel={log.channel} /></TableCell>
-                        <TableCell className="font-mono text-xs">{log.recipient}</TableCell>
-                        <TableCell><StatusBadge status={log.status} /></TableCell>
-                        <TableCell className="text-xs">{log.gateway_id}</TableCell>
-                        <TableCell className="text-xs">{log.cost ?? '\u2014'}</TableCell>
-                        <TableCell className="text-sm">{new Date(log.created_at).toLocaleString()}</TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-
-              <PageNumbers page={page} totalPages={Math.ceil(total / perPage)} onPageChange={setPage} />
-            </div>
-          )}
-        </CardContent>
-      </Card>
+          <DataTable
+            loading={loading}
+            isEmpty={logs.length === 0}
+            empty={
+              <EmptyState
+                icon={ScrollText}
+                title="No messages logged yet"
+                description="Messages will appear here as they are sent."
+              />
+            }
+            pagination={{ page, totalPages: Math.ceil(total / perPage), onPageChange: setPage }}
+          >
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Channel</TableHead>
+                  <TableHead>Recipient</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Gateway</TableHead>
+                  <TableHead>Cost</TableHead>
+                  <TableHead>Date</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {logs.map((log) => (
+                  <TableRow
+                    key={log.id}
+                    className={`cursor-pointer even:bg-muted/30 ${selectedLog?.id === log.id ? 'bg-accent' : ''}`}
+                    onClick={() => setSelectedLog(log)}
+                  >
+                    <TableCell><ChannelBadge channel={log.channel} /></TableCell>
+                    <TableCell className="font-mono text-xs">{log.recipient}</TableCell>
+                    <TableCell><StatusBadge status={log.status} /></TableCell>
+                    <TableCell className="text-xs">{log.gateway_id}</TableCell>
+                    <TableCell className="text-xs">{log.cost ?? '\u2014'}</TableCell>
+                    <TableCell className="text-sm">{new Date(log.created_at).toLocaleString()}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </DataTable>
+      </PageSection>
 
       <MessageLogDetailDrawer log={selectedLog} onClose={() => setSelectedLog(null)} />
     </>

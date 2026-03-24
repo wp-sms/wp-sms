@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef, Fragment } from 'react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
-import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageSection } from '@/components/ui/page-section';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
@@ -216,17 +216,12 @@ function PhoneInputConfigCard({ draft, countries, updateSection }: {
   const hasRestrictions = draft.auth.enabled || draft.messaging.enabled;
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Smartphone className="h-4 w-4 text-muted-foreground" />
-          Phone Input Defaults
-        </CardTitle>
-        <CardDescription>
-          Configure the default country and preferred countries for phone number inputs across your site
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="border-t pt-4 space-y-4">
+    <PageSection
+      icon={Smartphone}
+      title="Phone Input Defaults"
+      description="Configure the default country and preferred countries for phone number inputs across your site"
+      contentClassName="border-t pt-4 space-y-4"
+    >
         <Field>
           <FieldLabel>Display Mode</FieldLabel>
           <FieldDescription>How the phone number and dial code are displayed in the input</FieldDescription>
@@ -283,8 +278,7 @@ function PhoneInputConfigCard({ draft, countries, updateSection }: {
             </p>
           </div>
         )}
-      </CardContent>
-    </Card>
+    </PageSection>
   );
 }
 
@@ -325,17 +319,13 @@ function CountryRestrictionsCard({ draft, countries, updateSection }: {
   updateSection: <S extends keyof PhoneRestrictionSettings>(s: S, p: Partial<PhoneRestrictionSettings[S]>) => void;
 }) {
   return (
-    <Card active={draft.auth.enabled || draft.messaging.enabled}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Globe className="h-4 w-4 text-muted-foreground" />
-          Country Restrictions
-        </CardTitle>
-        <CardDescription>
-          Restrict phone numbers to specific countries for authentication and messaging
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="border-t pt-4 space-y-6">
+    <PageSection
+      icon={Globe}
+      title="Country Restrictions"
+      description="Restrict phone numbers to specific countries for authentication and messaging"
+      active={draft.auth.enabled || draft.messaging.enabled}
+      contentClassName="border-t pt-4 space-y-6"
+    >
         <CountrySection
           label="Authentication"
           description="Restrict which countries can register or verify via phone"
@@ -361,8 +351,7 @@ function CountryRestrictionsCard({ draft, countries, updateSection }: {
           onModeChange={(v) => updateSection('messaging', { mode: v })}
           onCountriesChange={(v) => updateSection('messaging', { allowed_countries: v })}
         />
-      </CardContent>
-    </Card>
+    </PageSection>
   );
 }
 
@@ -550,25 +539,22 @@ function NumberTypeBlockingCard({ draft, dbStatus, updateSection, onDownload, do
   const dbInstalled = dbStatus?.installed ?? false;
 
   return (
-    <Card active={ntb.enabled}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
-          <ShieldBan className="h-4 w-4 text-muted-foreground" />
-          Number Type Blocking
-        </CardTitle>
-        <CardDescription>
-          Block specific phone number types from registration and messaging
-        </CardDescription>
-        <CardAction>
-          <Switch
-            checked={ntb.enabled}
-            onCheckedChange={(v) => updateSection('number_type_blocking', { enabled: v })}
-            aria-label="Toggle number type blocking"
-          />
-        </CardAction>
-      </CardHeader>
+    <PageSection
+      icon={ShieldBan}
+      title="Number Type Blocking"
+      description="Block specific phone number types from registration and messaging"
+      active={ntb.enabled}
+      actions={
+        <Switch
+          checked={ntb.enabled}
+          onCheckedChange={(v) => updateSection('number_type_blocking', { enabled: v })}
+          aria-label="Toggle number type blocking"
+        />
+      }
+      contentClassName={ntb.enabled ? 'border-t pt-4 space-y-4' : undefined}
+    >
       {ntb.enabled && (
-        <CardContent className="border-t pt-4 space-y-4">
+        <>
           {!dbInstalled && (
             <div className="flex items-start gap-3 rounded-md border bg-muted/50 p-3">
               <AlertTriangle className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
@@ -610,9 +596,9 @@ function NumberTypeBlockingCard({ draft, dbStatus, updateSection, onDownload, do
               </div>
             </label>
           ))}
-        </CardContent>
+        </>
       )}
-    </Card>
+    </PageSection>
   );
 }
 
@@ -624,17 +610,12 @@ function EnhancedDatabaseCard({ dbStatus, autoUpdate, onToggleAutoUpdate, onDown
   downloading: boolean;
 }) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Database className="h-4 w-4 text-muted-foreground" />
-          Enhanced Phone Database
-        </CardTitle>
-        <CardDescription>
-          ~300KB database enables number type detection and improved country resolution
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <PageSection
+      icon={Database}
+      title="Enhanced Phone Database"
+      description="~300KB database enables number type detection and improved country resolution"
+      contentClassName="space-y-4"
+    >
         <div className="rounded-md border p-3 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-sm font-medium">Status</span>
@@ -681,8 +662,7 @@ function EnhancedDatabaseCard({ dbStatus, autoUpdate, onToggleAutoUpdate, onDown
           </div>
           <Switch checked={autoUpdate} onCheckedChange={onToggleAutoUpdate} />
         </Field>
-      </CardContent>
-    </Card>
+    </PageSection>
   );
 }
 
@@ -708,17 +688,12 @@ function PhoneCheckerCard() {
   }, [phone]);
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-base">
-          <Phone className="h-4 w-4 text-muted-foreground" />
-          Phone Number Checker
-        </CardTitle>
-        <CardDescription>
-          Test a phone number against your saved restriction settings
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
+    <PageSection
+      icon={Phone}
+      title="Phone Number Checker"
+      description="Test a phone number against your saved restriction settings"
+      contentClassName="space-y-4"
+    >
         <Field className="max-w-md">
           <FieldLabel>Phone number</FieldLabel>
           <div className="flex gap-2">
@@ -767,7 +742,6 @@ function PhoneCheckerCard() {
             <p className="text-xs text-muted-foreground mt-1">Results reflect saved settings</p>
           </div>
         )}
-      </CardContent>
-    </Card>
+    </PageSection>
   );
 }

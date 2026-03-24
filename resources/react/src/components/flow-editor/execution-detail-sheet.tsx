@@ -1,19 +1,14 @@
 import type { FlowExecution } from '@/lib/api';
-import { groupStepLogs, EXECUTION_STATUS_VARIANTS, computeDuration, type ProcessedStep } from '@/lib/execution-utils';
+import { groupStepLogs, computeDuration, type ProcessedStep } from '@/lib/execution-utils';
 import { STEP_ICONS } from './sentence-builder/step-card';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
-import { Badge } from '@/components/ui/badge';
 import { JsonViewer } from '@/components/ui/json-viewer';
+import { ExecutionStatusBadge } from './execution-status-badge';
 import { Layers, AlertCircle } from 'lucide-react';
 
 interface ExecutionDetailSheetProps {
   execution: FlowExecution | null;
   onClose: () => void;
-}
-
-function StatusBadge({ status }: { status: FlowExecution['status'] }) {
-  const v = EXECUTION_STATUS_VARIANTS[status] ?? { className: '', label: status };
-  return <Badge variant="outline" className={v.className}>{v.label}</Badge>;
 }
 
 function StepStatusDot({ status }: { status: ProcessedStep['status'] }) {
@@ -84,7 +79,7 @@ export function ExecutionDetailSheet({ execution, onClose }: ExecutionDetailShee
               <div className="flex items-center justify-between">
                 <DrawerTitle>Execution Details</DrawerTitle>
                 <div className="flex items-center gap-2">
-                  <StatusBadge status={execution.status} />
+                  <ExecutionStatusBadge status={execution.status} />
                   {execution.completed_at && (
                     <span className="text-xs text-muted-foreground">
                       {computeDuration(execution.started_at, execution.completed_at)}

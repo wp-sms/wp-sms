@@ -1,12 +1,12 @@
 import type { StepLog } from '@/lib/api';
 
-export const EXECUTION_STATUS_VARIANTS: Record<string, { className: string; label: string }> = {
-  completed: { className: 'border-emerald-200 bg-emerald-50 text-emerald-700', label: 'Completed' },
-  failed: { className: 'border-red-200 bg-red-50 text-red-700', label: 'Failed' },
-  running: { className: 'border-blue-200 bg-blue-50 text-blue-700', label: 'Running' },
-  pending: { className: 'border-amber-200 bg-amber-50 text-amber-700', label: 'Pending' },
-  waiting: { className: 'border-amber-200 bg-amber-50 text-amber-700', label: 'Waiting' },
-  cancelled: { className: 'border-gray-200 bg-gray-50 text-gray-700', label: 'Cancelled' },
+export const EXECUTION_STATUS_VARIANTS: Record<string, { variant: 'success' | 'destructive' | 'info' | 'warning' | 'neutral'; label: string }> = {
+  completed: { variant: 'success', label: 'Completed' },
+  failed: { variant: 'destructive', label: 'Failed' },
+  running: { variant: 'info', label: 'Running' },
+  pending: { variant: 'warning', label: 'Pending' },
+  waiting: { variant: 'warning', label: 'Waiting' },
+  cancelled: { variant: 'neutral', label: 'Cancelled' },
 };
 
 export function formatElapsed(start: string, end: string | null): string {

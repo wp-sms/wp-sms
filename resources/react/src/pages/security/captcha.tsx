@@ -1,4 +1,4 @@
-import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageSection } from '@/components/ui/page-section';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { Switch } from '@/components/ui/switch';
@@ -41,23 +41,22 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
   return (
     <div className="space-y-4">
       {/* Enable / Provider */}
-      <Card active={captcha.enabled}>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <ShieldAlert className="h-4 w-4 text-muted-foreground" />
-            CAPTCHA Protection
-          </CardTitle>
-          <CardDescription>Protect authentication endpoints from bots and automated attacks</CardDescription>
-          <CardAction>
-            <Switch
-              checked={captcha.enabled}
-              onCheckedChange={(v) => update({ enabled: v })}
-              aria-label="Toggle CAPTCHA"
-            />
-          </CardAction>
-        </CardHeader>
+      <PageSection
+        icon={ShieldAlert}
+        title="CAPTCHA Protection"
+        description="Protect authentication endpoints from bots and automated attacks"
+        active={captcha.enabled}
+        actions={
+          <Switch
+            checked={captcha.enabled}
+            onCheckedChange={(v) => update({ enabled: v })}
+            aria-label="Toggle CAPTCHA"
+          />
+        }
+        contentClassName={captcha.enabled ? 'border-t pt-4 space-y-6' : undefined}
+      >
         {captcha.enabled && (
-          <CardContent className="border-t pt-4 space-y-6">
+          <>
             {/* Provider Selector */}
             <Field>
               <FieldLabel>Provider</FieldLabel>
@@ -123,21 +122,18 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
                 <FieldDescription>Server-side key (never exposed to clients)</FieldDescription>
               </Field>
             </div>
-          </CardContent>
+          </>
         )}
-      </Card>
+      </PageSection>
 
       {/* Protected Actions */}
       {captcha.enabled && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <CloudCog className="h-4 w-4 text-muted-foreground" />
-              Protected Actions
-            </CardTitle>
-            <CardDescription>Choose which actions require CAPTCHA verification</CardDescription>
-          </CardHeader>
-          <CardContent className="border-t pt-4 space-y-4">
+        <PageSection
+          icon={CloudCog}
+          title="Protected Actions"
+          description="Choose which actions require CAPTCHA verification"
+          contentClassName="border-t pt-4 space-y-4"
+        >
             {ACTIONS.map((action) => (
               <label key={action.id} className="flex items-start gap-3">
                 <Checkbox
@@ -168,8 +164,7 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
                 onCheckedChange={(v) => update({ fail_open: v })}
               />
             </div>
-          </CardContent>
-        </Card>
+        </PageSection>
       )}
     </div>
   );

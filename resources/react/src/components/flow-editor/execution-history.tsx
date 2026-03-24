@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useExecutions } from '@/hooks/use-executions';
 import type { FlowExecution } from '@/lib/api';
-import { EXECUTION_STATUS_VARIANTS, formatElapsed } from '@/lib/execution-utils';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+import { formatElapsed } from '@/lib/execution-utils';
 import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/ui/empty-state';
+import { DataTable } from '@/components/ui/data-table';
+import { ExecutionStatusBadge } from './execution-status-badge';
 import {
   Table,
   TableBody,
@@ -13,17 +14,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { PageNumbers } from '@/components/ui/pagination';
 import { RefreshCw } from 'lucide-react';
 import { ExecutionDetailSheet } from './execution-detail-sheet';
 
 interface ExecutionHistoryProps {
   flowId: string;
-}
-
-function StatusBadge({ status }: { status: FlowExecution['status'] }) {
-  const v = EXECUTION_STATUS_VARIANTS[status] ?? { className: '', label: status };
-  return <Badge variant="outline" className={v.className}>{v.label}</Badge>;
 }
 
 function formatTime(iso: string): string {
@@ -41,38 +36,30 @@ export function ExecutionHistory({ flowId }: ExecutionHistoryProps) {
   const totalPages = Math.ceil(total / perPage);
   const [selectedExecution, setSelectedExecution] = useState<FlowExecution | null>(null);
 
-  if (loading) {
-    return (
-      <div className="space-y-3">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Skeleton key={i} className="h-12 w-full" />
-        ))}
-      </div>
-    );
-  }
-
-  if (executions.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center py-16 text-center">
-        <p className="text-sm font-medium">No executions yet</p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Executions will appear here after the flow is triggered.
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">{total} execution{total !== 1 ? 's' : ''}</p>
-        <Button variant="ghost" size="sm" onClick={refetch}>
-          <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
-          Refresh
-        </Button>
-      </div>
+      {!loading && executions.length > 0 && (
+        <div className="flex items-center justify-between">
+          <p className="text-sm text-muted-foreground">{total} execution{total !== 1 ? 's' : ''}</p>
+          <Button variant="ghost" size="sm" onClick={refetch}>
+            <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
+            Refresh
+          </Button>
+        </div>
+      )}
 
-      <div className="rounded-lg border border-border/50 overflow-hidden">
+      <DataTable
+        loading={loading}
+        isEmpty={executions.length === 0}
+        empty={
+          <EmptyState
+            compact
+            title="No executions yet"
+            description="Executions will appear here after the flow is triggered."
+          />
+        }
+        pagination={{ page, totalPages, onPageChange: setPage }}
+      >
         <Table>
           <TableHeader>
             <TableRow>
@@ -91,7 +78,7 @@ export function ExecutionHistory({ flowId }: ExecutionHistoryProps) {
                 onClick={() => setSelectedExecution(exec)}
               >
                 <TableCell>
-                  <StatusBadge status={exec.status} />
+                  <ExecutionStatusBadge status={exec.status} />
                 </TableCell>
                 <TableCell className="text-xs font-mono max-w-[200px] truncate">
                   {JSON.stringify(exec.trigger_data).slice(0, 80)}
@@ -107,9 +94,7 @@ export function ExecutionHistory({ flowId }: ExecutionHistoryProps) {
             ))}
           </TableBody>
         </Table>
-      </div>
-
-      <PageNumbers page={page} totalPages={totalPages} onPageChange={setPage} />
+      </DataTable>
 
       <ExecutionDetailSheet
         execution={selectedExecution}

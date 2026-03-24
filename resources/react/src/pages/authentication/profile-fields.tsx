@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { PageSection } from '@/components/ui/page-section';
 import { MethodCard } from '@/components/method-card';
 import { ProfileFieldSheet } from '@/components/profile-field-sheet';
 import { UserPlus, Plus, GripVertical, Pencil, Trash2, ArrowUp, ArrowDown, ListChecks } from 'lucide-react';
@@ -127,30 +127,22 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
         onToggle={(checked) => onUpdate('auto_create_users', checked)}
       />
 
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <ListChecks className="h-4 w-4 text-muted-foreground" />
-                Profile Fields
-              </CardTitle>
-              <CardDescription>
-                Configure which fields appear on registration and profile forms
-              </CardDescription>
-            </div>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => handleAdd('meta')}>
-                Pick Meta Key
-              </Button>
-              <Button size="sm" onClick={() => handleAdd('create')}>
-                <Plus className="mr-1 h-3.5 w-3.5" />
-                Add Field
-              </Button>
-            </div>
+      <PageSection
+        icon={ListChecks}
+        title="Profile Fields"
+        description="Configure which fields appear on registration and profile forms"
+        actions={
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" onClick={() => handleAdd('meta')}>
+              Pick Meta Key
+            </Button>
+            <Button size="sm" onClick={() => handleAdd('create')}>
+              <Plus className="mr-1 h-3.5 w-3.5" />
+              Add Field
+            </Button>
           </div>
-        </CardHeader>
-        <CardContent>
+        }
+      >
           <div className="rounded-lg border border-border/50 divide-y divide-border/50">
             {allFields.map((field, index) => (
                 <div key={field.id} className="flex items-center gap-3 px-4 py-3">
@@ -195,8 +187,7 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
                 </div>
             ))}
           </div>
-        </CardContent>
-      </Card>
+      </PageSection>
 
       <ProfileFieldSheet
         open={sheetOpen}

@@ -3,6 +3,7 @@ import { Users, RefreshCw, Settings, Unplug } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { EmptyState } from '@/components/ui/empty-state';
 import { SourceConfigSheet } from './source-config-sheet';
 import { SyncProgress } from './sync-progress';
 import { useContactSources } from '@/hooks/use-contact-sources';
@@ -48,7 +49,7 @@ export function SourcesList() {
   }
 
   if (sources.length === 0) {
-    return <p className="text-sm text-muted-foreground py-8 text-center">No contact sources available.</p>;
+    return <EmptyState compact title="No contact sources available." />;
   }
 
   return (

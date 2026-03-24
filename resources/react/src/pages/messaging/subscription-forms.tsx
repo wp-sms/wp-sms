@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { PageSection } from '@/components/ui/page-section';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -204,23 +205,17 @@ export function SubscriptionForms() {
 
   return (
     <>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0">
-          <div>
-            <CardTitle className="flex items-center gap-2 text-base">
-              <ClipboardList className="h-4 w-4 text-muted-foreground" />
-              Subscription Forms
-            </CardTitle>
-            <CardDescription>
-              {forms.length} {forms.length === 1 ? 'form' : 'forms'} total
-            </CardDescription>
-          </div>
+      <PageSection
+        icon={ClipboardList}
+        title="Subscription Forms"
+        description={<>{forms.length} {forms.length === 1 ? 'form' : 'forms'} total</>}
+        actions={
           <Button onClick={openCreate} size="sm">
             <Plus className="mr-1 h-3.5 w-3.5" />
             Create Form
           </Button>
-        </CardHeader>
-        <CardContent>
+        }
+      >
           {forms.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <ClipboardList className="h-12 w-12 text-muted-foreground/50 mb-4" />
@@ -301,8 +296,7 @@ export function SubscriptionForms() {
               </TableBody>
             </Table>
           )}
-        </CardContent>
-      </Card>
+      </PageSection>
 
       <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
         <SheetContent className="sm:max-w-lg overflow-y-auto">

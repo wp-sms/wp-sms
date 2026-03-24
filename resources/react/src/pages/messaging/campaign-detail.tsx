@@ -309,15 +309,15 @@ function TimelineItem({ label, time }: { label: string; time: string }) {
 }
 
 function RecipientStatusBadge({ status }: { status: string }) {
-  const styles: Record<string, string> = {
-    delivered: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-    sent:      'border-blue-200 bg-blue-50 text-blue-700',
-    queued:    'border-gray-200 bg-gray-50 text-gray-600',
-    failed:    'border-red-200 bg-red-50 text-red-700',
+  const variants: Record<string, 'success' | 'info' | 'neutral' | 'destructive'> = {
+    delivered: 'success',
+    sent:      'info',
+    queued:    'neutral',
+    failed:    'destructive',
   };
 
   return (
-    <Badge variant="outline" className={styles[status] ?? ''}>
+    <Badge variant={variants[status] ?? 'outline'}>
       {status}
     </Badge>
   );

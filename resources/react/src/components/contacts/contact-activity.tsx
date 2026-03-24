@@ -1,6 +1,7 @@
 import { useContactActivity } from '@/hooks/use-contact-activity';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EmptyState } from '@/components/ui/empty-state';
 import { MessageSquare, UserPlus, RefreshCw, Mail } from 'lucide-react';
 
 interface ContactActivityProps {
@@ -28,7 +29,7 @@ export function ContactActivity({ contactId }: ContactActivityProps) {
   }
 
   if (!activities.length) {
-    return <p className="text-sm text-muted-foreground py-4 text-center">No activity yet</p>;
+    return <EmptyState compact title="No activity yet" />;
   }
 
   return (
