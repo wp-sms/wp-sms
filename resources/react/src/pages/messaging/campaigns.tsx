@@ -26,8 +26,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { CHANNEL_LABELS } from '@/components/gateway-config-form';
-import { Plus, Megaphone, Pencil, Trash2, Copy, Eye } from 'lucide-react';
+import { Plus, Megaphone, Pencil, Trash2, Copy, Eye, MoreHorizontal } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
 
@@ -198,7 +205,7 @@ export function Campaigns() {
                   <TableHead className="text-right">Recipients</TableHead>
                   <TableHead className="text-right">Sent</TableHead>
                   <TableHead>Scheduled</TableHead>
-                  <TableHead className="w-28">Actions</TableHead>
+                  <TableHead className="w-[70px]" />
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -227,50 +234,45 @@ export function Campaigns() {
                         {campaign.send_at ? formatDateTime(campaign.send_at) : '\u2014'}
                       </TableCell>
                       <TableCell>
-                        <div className="flex items-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 w-7 p-0"
-                            onClick={() => setView({ mode: 'detail', campaign })}
-                            title="View"
-                          >
-                            <Eye className="h-3.5 w-3.5" />
-                          </Button>
-                          {canEdit && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 w-7 p-0"
-                              onClick={() => setView({ mode: 'edit', campaign })}
-                              title="Edit"
-                            >
-                              <Pencil className="h-3.5 w-3.5" />
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                              <MoreHorizontal className="h-4 w-4" />
                             </Button>
-                          )}
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 w-7 p-0"
-                            onClick={() => void handleDuplicate(campaign.id)}
-                            disabled={duplicating === campaign.id}
-                            title="Duplicate"
-                          >
-                            <Copy className="h-3.5 w-3.5" />
-                          </Button>
-                          {canDelete && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-                              onClick={() => void handleDelete(campaign.id)}
-                              disabled={deleting === campaign.id}
-                              title="Delete"
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => setView({ mode: 'detail', campaign })}>
+                              <Eye className="h-4 w-4 mr-2" />
+                              View
+                            </DropdownMenuItem>
+                            {canEdit && (
+                              <DropdownMenuItem onClick={() => setView({ mode: 'edit', campaign })}>
+                                <Pencil className="h-4 w-4 mr-2" />
+                                Edit
+                              </DropdownMenuItem>
+                            )}
+                            <DropdownMenuItem
+                              onClick={() => void handleDuplicate(campaign.id)}
+                              disabled={duplicating === campaign.id}
                             >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </Button>
-                          )}
-                        </div>
+                              <Copy className="h-4 w-4 mr-2" />
+                              Duplicate
+                            </DropdownMenuItem>
+                            {canDelete && (
+                              <>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                  onClick={() => void handleDelete(campaign.id)}
+                                  disabled={deleting === campaign.id}
+                                  className="text-destructive focus:text-destructive"
+                                >
+                                  <Trash2 className="h-4 w-4 mr-2" />
+                                  Delete
+                                </DropdownMenuItem>
+                              </>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </TableCell>
                     </TableRow>
                   );

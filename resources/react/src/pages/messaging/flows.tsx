@@ -34,8 +34,15 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import {
   Plus, Workflow, Pencil, Trash2, Rocket, LayoutTemplate, Search,
-  ShoppingCart, Users, MessageSquare, FileText, History, Pause,
+  ShoppingCart, Users, MessageSquare, FileText, History, Pause, MoreHorizontal,
   type LucideIcon,
 } from 'lucide-react';
 import { formatLabel } from '@/lib/constants';
@@ -270,7 +277,7 @@ export function Flows() {
                   <TableHead>Trigger</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Published</TableHead>
-                  <TableHead className="w-24">Actions</TableHead>
+                  <TableHead className="w-[70px]" />
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -291,59 +298,49 @@ export function Flows() {
                       {flow.published_at ? formatDate(flow.published_at) : '\u2014'}
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 w-7 p-0"
-                          onClick={() => setView({ mode: 'edit', flow })}
-                          title="Edit"
-                        >
-                          <Pencil className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 w-7 p-0"
-                          onClick={() => setView({ mode: 'edit', flow, tab: 'history' })}
-                          title="Execution History"
-                        >
-                          <History className="h-3.5 w-3.5" />
-                        </Button>
-                        {flow.status === 'active' ? (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 w-7 p-0"
-                            onClick={() => void handleDeactivate(flow.id)}
-                            disabled={deactivating === flow.id}
-                            title="Pause"
-                          >
-                            <Pause className="h-3.5 w-3.5" />
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreHorizontal className="h-4 w-4" />
                           </Button>
-                        ) : (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 w-7 p-0"
-                            onClick={() => void handlePublish(flow.id)}
-                            disabled={publishing === flow.id}
-                            title="Publish"
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => setView({ mode: 'edit', flow })}>
+                            <Pencil className="h-4 w-4 mr-2" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => setView({ mode: 'edit', flow, tab: 'history' })}>
+                            <History className="h-4 w-4 mr-2" />
+                            Execution History
+                          </DropdownMenuItem>
+                          {flow.status === 'active' ? (
+                            <DropdownMenuItem
+                              onClick={() => void handleDeactivate(flow.id)}
+                              disabled={deactivating === flow.id}
+                            >
+                              <Pause className="h-4 w-4 mr-2" />
+                              Pause
+                            </DropdownMenuItem>
+                          ) : (
+                            <DropdownMenuItem
+                              onClick={() => void handlePublish(flow.id)}
+                              disabled={publishing === flow.id}
+                            >
+                              <Rocket className="h-4 w-4 mr-2" />
+                              Publish
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => void handleDelete(flow.id)}
+                            disabled={deleting === flow.id}
+                            className="text-destructive focus:text-destructive"
                           >
-                            <Rocket className="h-3.5 w-3.5" />
-                          </Button>
-                        )}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-                          onClick={() => void handleDelete(flow.id)}
-                          disabled={deleting === flow.id}
-                          title="Delete"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}
