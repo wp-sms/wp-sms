@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Settings2, List, Trash2 } from 'lucide-react';
+import { useConfirm } from '@/components/confirm-provider';
 import { LogTable } from '@/components/log-table';
 import { useLogs } from '@/hooks/use-logs';
 import { EVENT_TYPES, LOG_VERBOSITY, formatLabel } from '@/lib/constants';
@@ -23,16 +24,22 @@ interface LogsPageProps {
 
 export function LogsPage({ settings, onUpdate }: LogsPageProps) {
   const { logs, total, page, perPage, filters, setFilter, setPage, loading, clearLogs } = useLogs();
-  const [confirmClear, setConfirmClear] = useState(false);
+  const confirm = useConfirm();
   const [clearing, setClearing] = useState(false);
 
   const handleClearLogs = async () => {
+    const ok = await confirm({
+      title: 'Clear all logs?',
+      description: 'This will permanently delete all event log entries. This action cannot be undone.',
+      confirmLabel: 'Clear Logs',
+      variant: 'destructive',
+    });
+    if (!ok) return;
     setClearing(true);
     try {
       await clearLogs();
     } finally {
       setClearing(false);
-      setConfirmClear(false);
     }
   };
 
@@ -100,39 +107,16 @@ export function LogsPage({ settings, onUpdate }: LogsPageProps) {
               </CardDescription>
             </div>
             {total > 0 && (
-              <div className="flex items-center gap-2">
-                {confirmClear ? (
-                  <>
-                    <span className="text-sm text-destructive">Delete all logs?</span>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={handleClearLogs}
-                      disabled={clearing}
-                    >
-                      {clearing ? 'Deleting...' : 'Confirm'}
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setConfirmClear(false)}
-                      disabled={clearing}
-                    >
-                      Cancel
-                    </Button>
-                  </>
-                ) : (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setConfirmClear(true)}
-                    className="text-destructive hover:text-destructive"
-                  >
-                    <Trash2 className="mr-1 h-3.5 w-3.5" />
-                    Clear Logs
-                  </Button>
-                )}
-              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleClearLogs}
+                disabled={clearing}
+                className="text-destructive hover:text-destructive"
+              >
+                <Trash2 className="mr-1 h-3.5 w-3.5" />
+                {clearing ? 'Clearing...' : 'Clear Logs'}
+              </Button>
             )}
           </div>
         </CardHeader>

@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { RotateCcw, Eye, EyeOff } from 'lucide-react';
+import { useConfirm } from '@/components/confirm-provider';
 import { DEFAULTS } from '@/lib/constants';
 import { LogoCard } from './logo-card';
 import { ColorsCard } from './colors-card';
@@ -18,6 +19,7 @@ interface BrandingPageProps {
 export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
   const branding = settings.branding;
   const [previewVisible, setPreviewVisible] = useState(true);
+  const confirm = useConfirm();
 
   const handleBrandingChange = useCallback(
     (patch: Partial<BrandingSettings>) => {
@@ -26,11 +28,17 @@ export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
     [branding, onUpdate]
   );
 
-  const handleReset = useCallback(() => {
-    if (confirm('Reset all branding settings to defaults?')) {
+  const handleReset = useCallback(async () => {
+    const ok = await confirm({
+      title: 'Reset branding?',
+      description: 'All branding settings will be restored to their defaults.',
+      confirmLabel: 'Reset',
+      variant: 'destructive',
+    });
+    if (ok) {
       onUpdate('branding', DEFAULTS.branding);
     }
-  }, [onUpdate]);
+  }, [onUpdate, confirm]);
 
   const isCentered = branding.layout === 'centered';
   const baseUrl = settings.auth_base_url || '/account';

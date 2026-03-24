@@ -2,7 +2,12 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LogsPage } from '@/pages/logs';
+import { ConfirmProvider } from '@/components/confirm-provider';
 import { DEFAULTS } from '@/lib/constants';
+
+function renderWithProviders(ui: React.ReactElement) {
+  return render(<ConfirmProvider>{ui}</ConfirmProvider>);
+}
 
 describe('LogsPage', () => {
   const defaultProps = {
@@ -11,7 +16,7 @@ describe('LogsPage', () => {
   };
 
   it('renders log settings section', () => {
-    render(<LogsPage {...defaultProps} />);
+    renderWithProviders(<LogsPage {...defaultProps} />);
 
     expect(screen.getByText('Log Settings')).toBeInTheDocument();
     expect(screen.getByLabelText('Verbosity')).toBeInTheDocument();
@@ -19,7 +24,7 @@ describe('LogsPage', () => {
   });
 
   it('renders event log table after loading', async () => {
-    render(<LogsPage {...defaultProps} />);
+    renderWithProviders(<LogsPage {...defaultProps} />);
 
     await waitFor(() => {
       expect(screen.getByText('Login Success')).toBeInTheDocument();
@@ -29,7 +34,7 @@ describe('LogsPage', () => {
   });
 
   it('renders filter controls including date filters', () => {
-    render(<LogsPage {...defaultProps} />);
+    renderWithProviders(<LogsPage {...defaultProps} />);
 
     expect(screen.getByLabelText('Event Type')).toBeInTheDocument();
     expect(screen.getByLabelText('Status')).toBeInTheDocument();
@@ -39,7 +44,7 @@ describe('LogsPage', () => {
   });
 
   it('shows total events count', async () => {
-    render(<LogsPage {...defaultProps} />);
+    renderWithProviders(<LogsPage {...defaultProps} />);
 
     await waitFor(() => {
       expect(screen.getByText(/3 total events/i)).toBeInTheDocument();
@@ -47,16 +52,16 @@ describe('LogsPage', () => {
   });
 
   it('shows clear logs button when logs exist', async () => {
-    render(<LogsPage {...defaultProps} />);
+    renderWithProviders(<LogsPage {...defaultProps} />);
 
     await waitFor(() => {
       expect(screen.getByText('Clear Logs')).toBeInTheDocument();
     });
   });
 
-  it('shows confirmation before clearing logs', async () => {
+  it('shows confirmation dialog before clearing logs', async () => {
     const user = userEvent.setup();
-    render(<LogsPage {...defaultProps} />);
+    renderWithProviders(<LogsPage {...defaultProps} />);
 
     await waitFor(() => {
       expect(screen.getByText('Clear Logs')).toBeInTheDocument();
@@ -64,14 +69,14 @@ describe('LogsPage', () => {
 
     await user.click(screen.getByText('Clear Logs'));
 
-    expect(screen.getByText('Delete all logs?')).toBeInTheDocument();
-    expect(screen.getByText('Confirm')).toBeInTheDocument();
-    expect(screen.getByText('Cancel')).toBeInTheDocument();
+    expect(screen.getByText('Clear all logs?')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Clear Logs' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
   });
 
-  it('cancels clear confirmation', async () => {
+  it('cancels clear confirmation dialog', async () => {
     const user = userEvent.setup();
-    render(<LogsPage {...defaultProps} />);
+    renderWithProviders(<LogsPage {...defaultProps} />);
 
     await waitFor(() => {
       expect(screen.getByText('Clear Logs')).toBeInTheDocument();
@@ -80,7 +85,8 @@ describe('LogsPage', () => {
     await user.click(screen.getByText('Clear Logs'));
     await user.click(screen.getByText('Cancel'));
 
-    expect(screen.queryByText('Delete all logs?')).not.toBeInTheDocument();
-    expect(screen.getByText('Clear Logs')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByText('Clear all logs?')).not.toBeInTheDocument();
+    });
   });
 });
