@@ -41,14 +41,8 @@ class AssetManager
      */
     private function enqueueDashboard(string $hook): void
     {
-        $manifest = ViteHelper::readManifest();
-
-        if (!$manifest) {
-            return;
-        }
-
         wp_enqueue_media();
-        ViteHelper::enqueueFromManifest($manifest, 'src/main.tsx', 'wsms-dashboard');
+        ViteHelper::enqueueDashboard('wsms-dashboard');
 
         wp_print_inline_script_tag(
             'var wpSmsSettings = ' . wp_json_encode($this->getLocalizedData($hook)) . ';',

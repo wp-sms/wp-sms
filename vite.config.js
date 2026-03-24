@@ -16,9 +16,12 @@ export default defineConfig({
     build: {
         outDir: resolve(__dirname, 'public/app'),
         emptyOutDir: true,
-        manifest: true,
         rolldownOptions: {
             input: resolve(__dirname, 'resources/react/src/main.tsx'),
+            output: {
+                entryFileNames: 'main.js',
+                assetFileNames: 'main[extname]',
+            },
         },
     },
     resolve: {
