@@ -110,7 +110,7 @@ export function Register() {
                 }
             }
         } catch (err) {
-            authError.value = extractError(err);
+            authError.value = extractError(err).message;
             captcha.reset();
         } finally {
             authLoading.value = false;

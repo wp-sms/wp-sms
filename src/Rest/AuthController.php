@@ -107,7 +107,7 @@ class AuthController extends Controller
     public function handleLogin(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $rl = $this->rateLimiter->check('login', 5, 60);
+            $rl = $this->rateLimiter->checkAction('login');
 
             if (!$rl['allowed']) {
                 return $this->rateLimitedResponse($rl['retry_after']);
@@ -130,7 +130,7 @@ class AuthController extends Controller
     public function handlePasswordless(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $rl = $this->rateLimiter->check('login_passwordless', 3, 60);
+            $rl = $this->rateLimiter->checkAction('login_passwordless');
 
             if (!$rl['allowed']) {
                 return $this->rateLimitedResponse($rl['retry_after']);
@@ -153,7 +153,7 @@ class AuthController extends Controller
     public function handleVerify(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $rl = $this->rateLimiter->check('verify', 3, 10);
+            $rl = $this->rateLimiter->checkAction('verify');
 
             if (!$rl['allowed']) {
                 return $this->rateLimitedResponse($rl['retry_after']);
@@ -171,7 +171,7 @@ class AuthController extends Controller
     public function handleVerifyMagicLink(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $rl = $this->rateLimiter->check('verify', 3, 10);
+            $rl = $this->rateLimiter->checkAction('verify');
 
             if (!$rl['allowed']) {
                 return $this->rateLimitedResponse($rl['retry_after']);
@@ -188,7 +188,7 @@ class AuthController extends Controller
     public function handleResend(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $rl = $this->rateLimiter->check('resend', 1, 60);
+            $rl = $this->rateLimiter->checkAction('resend');
 
             if (!$rl['allowed']) {
                 return $this->rateLimitedResponse($rl['retry_after']);
@@ -205,7 +205,7 @@ class AuthController extends Controller
     public function handleIdentify(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $rl = $this->rateLimiter->check('identify', 10, 60);
+            $rl = $this->rateLimiter->checkAction('identify');
 
             if (!$rl['allowed']) {
                 return $this->rateLimitedResponse($rl['retry_after']);

@@ -11,6 +11,7 @@ use WSms\Auth\CaptchaGuard;
 use WSms\Auth\ProfileFieldRegistry;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\RegistrationFormRepository;
+use WSms\Enums\AuthErrorCode;
 use WSms\Enums\SessionStage;
 use WSms\Exception\ValidationException;
 
@@ -168,7 +169,7 @@ class AccountController extends Controller
     public function handleRegister(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $rl = $this->rateLimiter->check('register', 3, 60);
+            $rl = $this->rateLimiter->checkAction('register');
 
             if (!$rl['allowed']) {
                 return $this->rateLimitedResponse($rl['retry_after']);
@@ -223,7 +224,7 @@ class AccountController extends Controller
     public function handleForgotPassword(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $rl = $this->rateLimiter->check('forgot_password', 3, 60);
+            $rl = $this->rateLimiter->checkAction('forgot_password');
 
             if (!$rl['allowed']) {
                 return $this->rateLimitedResponse($rl['retry_after']);
@@ -243,7 +244,7 @@ class AccountController extends Controller
     public function handleResetPassword(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $rl = $this->rateLimiter->check('reset_password', 5, 60);
+            $rl = $this->rateLimiter->checkAction('reset_password');
 
             if (!$rl['allowed']) {
                 return $this->rateLimitedResponse($rl['retry_after']);
@@ -261,7 +262,7 @@ class AccountController extends Controller
     public function handleVerifyEmail(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $rl = $this->rateLimiter->check('verify_email', 5, 60);
+            $rl = $this->rateLimiter->checkAction('verify_email');
 
             if (!$rl['allowed']) {
                 return $this->rateLimitedResponse($rl['retry_after']);
@@ -308,7 +309,7 @@ class AccountController extends Controller
     public function handleChangePassword(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $rl = $this->rateLimiter->check('change_password', 5, 60);
+            $rl = $this->rateLimiter->checkAction('change_password');
 
             if (!$rl['allowed']) {
                 return $this->rateLimitedResponse($rl['retry_after']);
@@ -504,9 +505,9 @@ class AccountController extends Controller
     {
         return new WP_REST_Response([
             'success' => false,
-            'error'   => 'invalid_token',
+            'error'   => AuthErrorCode::InvalidToken->value,
             'message' => __('Invalid or expired verification token.', 'wp-sms'),
-        ], 401);
+        ], AuthErrorCode::InvalidToken->httpStatus());
     }
 
     private function validateVerificationToken(WP_REST_Request $request): ?array

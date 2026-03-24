@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
+import { Fingerprint } from 'lucide-react';
+import { cn } from '../../utils/cn';
 import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { useLocation } from 'preact-iso';
 import { api } from '../../api/client';
@@ -11,7 +13,8 @@ import {
     selectedMethod as selectedAuthMethod,
 } from '../../signals/auth';
 import { trustedDevicesConfig } from '../../signals/config';
-import { handleAuthResponse, extractError } from '../../utils/auth';
+import { handleAuthResponse, extractError, handleRecoveryAction, formatWebAuthnError } from '../../utils/auth';
+import { authUrl } from '../../utils/urls';
 import { Alert } from '../ui/Alert';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
@@ -53,27 +56,27 @@ export function MfaStep() {
     const [showFactorPicker, setShowFactorPicker] = useState(false);
     const [resendCooldown, setResendCooldown] = useState(0);
     const [trustDevice, setTrustDevice] = useState(false);
+    const [passkeyPrompting, setPasskeyPrompting] = useState(false);
     const backupRef = useAutoFocus(useBackup);
 
     const trustedDevices = trustedDevicesConfig.value;
     const showTrustCheckbox = trustedDevices?.enabled;
 
-    // Auto-select the best MFA factor and send challenge on mount.
     useEffect(() => {
         if (!token || factors.length === 0) return;
 
-        // Pick smart default: prefer a factor from a different channel than primary.
+        // Pick smart default: prefer passkey (instant, phishing-resistant), then other non-primary channels.
         const primaryMethod = selectedAuthMethod.value || 'password';
         const primaryChannel = primaryMethod.startsWith('phone') ? 'phone' : primaryMethod.startsWith('email') ? 'email' : 'password';
 
-        let defaultFactor = factors.find((f) => f.channel_id !== primaryChannel && f.channel_id !== 'backup_codes');
-        if (!defaultFactor) defaultFactor = factors[0];
+        let defaultFactor = factors.find((f) => f.channel_id === 'passkey')
+            || factors.find((f) => f.channel_id !== primaryChannel && f.channel_id !== 'backup_codes')
+            || factors[0];
 
         setActiveFactor(defaultFactor.channel_id);
         sendMfaChallenge(defaultFactor.channel_id);
     }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    // Resend cooldown timer.
     useEffect(() => {
         if (resendCooldown <= 0) return;
         const timer = setTimeout(() => setResendCooldown((c) => c - 1), 1000);
@@ -81,6 +84,8 @@ export function MfaStep() {
     }, [resendCooldown]);
 
     if (!token) return null;
+
+    const recoveryOpts = { setCooldown: setResendCooldown };
 
     async function sendMfaChallenge(channelId) {
         authError.value = null;
@@ -98,14 +103,36 @@ export function MfaStep() {
             }
             setChallengeSent(true);
             setResendCooldown(60);
+
+            if (res.meta?.channel_type === 'passkey') {
+                authLoading.value = false;
+                await triggerPasskeyVerification(res.meta.assertion_options, channelId);
+                return;
+            }
         } catch (err) {
-            authError.value = extractError(err);
+            const details = extractError(err);
+            if (!handleRecoveryAction(details, route, recoveryOpts)) {
+                authError.value = details.message;
+            }
         } finally {
             authLoading.value = false;
         }
     }
 
-    async function handleVerify(code) {
+    async function triggerPasskeyVerification(assertionOptions, channelId) {
+        setPasskeyPrompting(true);
+        try {
+            const { startAuthentication } = await import('@simplewebauthn/browser');
+            const assertion = await startAuthentication({ optionsJSON: assertionOptions });
+            await handleVerify(JSON.stringify(assertion), channelId);
+        } catch (err) {
+            authError.value = formatWebAuthnError(err);
+        } finally {
+            setPasskeyPrompting(false);
+        }
+    }
+
+    async function handleVerify(code, channelId) {
         authError.value = null;
         authLoading.value = true;
 
@@ -113,12 +140,15 @@ export function MfaStep() {
             const res = await api.post('/auth/mfa/verify', {
                 session_token: token,
                 code,
-                channel_id: activeFactor,
+                channel_id: useBackup ? 'backup_codes' : (channelId || activeFactor),
                 ...(trustDevice && { trust_device: true }),
             });
             handleAuthResponse(res, route);
         } catch (err) {
-            authError.value = extractError(err);
+            const details = extractError(err);
+            if (!handleRecoveryAction(details, route, recoveryOpts)) {
+                authError.value = details.message;
+            }
         } finally {
             authLoading.value = false;
         }
@@ -132,7 +162,10 @@ export function MfaStep() {
             await api.post('/auth/resend', { session_token: token });
             setResendCooldown(60);
         } catch (err) {
-            authError.value = extractError(err);
+            const details = extractError(err);
+            if (!handleRecoveryAction(details, route, recoveryOpts)) {
+                authError.value = details.message;
+            }
         }
     }
 
@@ -146,16 +179,23 @@ export function MfaStep() {
         setShowFactorPicker(false);
         setChallengeSent(false);
         setUseBackup(false);
+        setPasskeyPrompting(false);
         sendMfaChallenge(channelId);
     }
 
-    const subtitle = challengeMeta.value?.requires_delivery === false
-        ? 'Enter the code from your authenticator app'
-        : challengeMeta.value?.masked_identifier
-            ? `Enter the code sent to ${challengeMeta.value.masked_identifier}`
-            : 'Enter your verification code to continue.';
+    const isPasskey = activeFactor === 'passkey';
 
-    // Factor picker overlay.
+    let subtitle;
+    if (isPasskey) {
+        subtitle = 'Use your passkey to verify';
+    } else if (challengeMeta.value?.requires_delivery === false) {
+        subtitle = 'Enter the code from your authenticator app';
+    } else if (challengeMeta.value?.masked_identifier) {
+        subtitle = `Enter the code sent to ${challengeMeta.value.masked_identifier}`;
+    } else {
+        subtitle = 'Enter your verification code to continue.';
+    }
+
     if (showFactorPicker) {
         return (
             <div className="space-y-4 animate-fade-in">
@@ -212,16 +252,42 @@ export function MfaStep() {
                 </form>
             ) : (
                 <div className="space-y-4">
-                    {challengeSent && <OtpInput autoFocus onComplete={handleVerify} disabled={authLoading.value} />}
+                    {/* Passkey verification UI */}
+                    {isPasskey ? (
+                        <div className="space-y-4 text-center">
+                            <Fingerprint className={cn('mx-auto size-12 text-muted-foreground', passkeyPrompting && 'animate-pulse')} />
+                            <p className="text-sm text-muted-foreground">
+                                {passkeyPrompting ? 'Verify with your passkey...' : 'Ready to verify'}
+                            </p>
+                            {!passkeyPrompting && (
+                                <Button
+                                    variant="outline"
+                                    onClick={() => sendMfaChallenge('passkey')}
+                                    disabled={authLoading.value}
+                                >
+                                    Try Again
+                                </Button>
+                            )}
+                            {showTrustCheckbox && (
+                                <TrustDeviceCheckbox id="wsms-trust-device-passkey" checked={trustDevice}
+                                    onChange={(e) => setTrustDevice(e.target.checked)}
+                                    disabled={authLoading.value} ttl={trustedDevices?.ttl} />
+                            )}
+                        </div>
+                    ) : (
+                        <>
+                            {challengeSent && <OtpInput autoFocus onComplete={handleVerify} disabled={authLoading.value} />}
 
-                    {challengeSent && showTrustCheckbox && (
-                        <TrustDeviceCheckbox id="wsms-trust-device" checked={trustDevice}
-                            onChange={(e) => setTrustDevice(e.target.checked)}
-                            disabled={authLoading.value} ttl={trustedDevices?.ttl} />
+                            {challengeSent && showTrustCheckbox && (
+                                <TrustDeviceCheckbox id="wsms-trust-device" checked={trustDevice}
+                                    onChange={(e) => setTrustDevice(e.target.checked)}
+                                    disabled={authLoading.value} ttl={trustedDevices?.ttl} />
+                            )}
+                        </>
                     )}
 
                     <div className="flex justify-center gap-4 flex-wrap">
-                        {challengeSent && challengeMeta.value?.requires_delivery !== false && (
+                        {challengeSent && !isPasskey && challengeMeta.value?.requires_delivery !== false && (
                             <Button
                                 variant="link"
                                 type="button"
@@ -238,9 +304,11 @@ export function MfaStep() {
                             </Button>
                         )}
 
-                        <Button variant="link" type="button" onClick={() => setUseBackup(true)}>
-                            Use a backup code
-                        </Button>
+                        {factors.some(f => f.channel_id === 'backup_codes') && (
+                            <Button variant="link" type="button" onClick={() => setUseBackup(true)}>
+                                Use a backup code
+                            </Button>
+                        )}
                     </div>
                 </div>
             )}

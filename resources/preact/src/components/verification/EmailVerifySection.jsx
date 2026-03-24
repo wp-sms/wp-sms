@@ -46,7 +46,7 @@ function EmailMagicLinkSection({ headers, className }) {
                 resetCooldown(60);
             }
         } catch (err) {
-            authError.value = extractError(err);
+            authError.value = extractError(err).message;
         }
     }
 

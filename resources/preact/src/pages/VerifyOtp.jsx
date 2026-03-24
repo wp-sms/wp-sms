@@ -43,7 +43,7 @@ export function VerifyOtp() {
             });
             handleAuthResponse(res, route);
         } catch (err) {
-            authError.value = extractError(err);
+            authError.value = extractError(err).message;
         } finally {
             authLoading.value = false;
         }
@@ -57,7 +57,7 @@ export function VerifyOtp() {
             await api.post('/auth/resend', { session_token: token });
             setResendCooldown(60);
         } catch (err) {
-            authError.value = extractError(err);
+            authError.value = extractError(err).message;
         }
     }
 

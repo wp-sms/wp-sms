@@ -41,8 +41,44 @@ export function handleAuthResponse(res, _route) {
     }
 }
 
+/**
+ * Extract structured error details from an API error response.
+ *
+ * @returns {{ message: string, code: string|null, recoveryAction: string|null, retryAfter: number|null }}
+ */
 export function extractError(err) {
-    return err.message || 'Something went wrong. Please try again.';
+    return {
+        message: err.message || err.error || 'Something went wrong. Please try again.',
+        code: err.error || null,
+        recoveryAction: err.recovery_action || null,
+        retryAfter: err.meta?.retry_after || null,
+    };
+}
+
+/**
+ * Handle recovery actions from structured error details.
+ * Returns true if the action was handled (caller should stop), false otherwise.
+ *
+ * @param {{ recoveryAction: string|null, retryAfter: number|null }} details
+ * @param {Function} route - preact-iso route function
+ * @param {{ setCooldown?: Function }} opts - optional handlers for specific actions
+ */
+export function handleRecoveryAction(details, route, opts = {}) {
+    if (details.recoveryAction === 'restart_flow') {
+        clearAuth();
+        route(getBaseUrl() + '/login');
+        return true;
+    }
+    if (details.recoveryAction === 'wait_retry' && details.retryAfter && opts.setCooldown) {
+        opts.setCooldown(details.retryAfter);
+    }
+    return false;
+}
+
+export function formatWebAuthnError(err) {
+    if (err.name === 'NotAllowedError') return 'Verification was cancelled or timed out. Try again.';
+    if (err.name === 'InvalidStateError') return 'This device is already registered.';
+    return extractError(err).message;
 }
 
 const SOCIAL_ERROR_MESSAGES = {

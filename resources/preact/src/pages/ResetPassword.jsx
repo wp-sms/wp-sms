@@ -35,7 +35,7 @@ export function ResetPassword() {
                 setSuccess(res.message || 'Password reset successfully.');
             }
         } catch (err) {
-            authError.value = extractError(err);
+            authError.value = extractError(err).message;
         } finally {
             authLoading.value = false;
         }

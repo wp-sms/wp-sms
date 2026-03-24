@@ -63,7 +63,7 @@ class AuthControllerIdentifyTest extends TestCase
 
     public function testHandleIdentifyRateLimited(): void
     {
-        $this->rateLimiter->method('check')->willReturn([
+        $this->rateLimiter->method('checkAction')->willReturn([
             'allowed' => false, 'remaining' => 0, 'retry_after' => 45,
         ]);
 
@@ -127,7 +127,7 @@ class AuthControllerIdentifyTest extends TestCase
 
     private function allowRateLimit(): void
     {
-        $this->rateLimiter->method('check')->willReturn([
+        $this->rateLimiter->method('checkAction')->willReturn([
             'allowed' => true, 'remaining' => 9, 'retry_after' => 0,
         ]);
     }

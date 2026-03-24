@@ -1,22 +1,23 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
-import { Smartphone, Mail, ClipboardList, Lock, Send, KeyRound } from 'lucide-react';
+import { Smartphone, Mail, ClipboardList, Lock, Send, KeyRound, Fingerprint, X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { Button } from './ui/Button';
 import { Label } from './ui/Label';
 import { PhoneInput } from './PhoneInput';
 import { OtpInput } from './OtpInput';
 import { api } from '../api/client';
-import { extractError } from '../utils/auth';
+import { extractError, formatWebAuthnError } from '../utils/auth';
 
 const CHANNEL_META = {
     phone:        { label: 'Phone',        icon: Smartphone,     description: 'Receive a code via text message' },
     email:        { label: 'Email',        icon: Mail,           description: 'Receive a code via email' },
     telegram:     { label: 'Telegram',     icon: Send,           description: 'Receive a code via Telegram bot' },
     totp:         { label: 'Authenticator App', icon: KeyRound, description: 'Use an app like Google Authenticator or Authy' },
+    passkey:      { label: 'Passkey',      icon: Fingerprint,    description: 'Use fingerprint, face, or security key' },
     backup_codes: { label: 'Backup Codes', icon: ClipboardList,  description: 'One-time use recovery codes' },
 };
 
-export function MfaFactorCard({ method, enrolled, info: _info, onEnroll, onUnenroll, onRefresh, onBackupCodes }) {
+export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, onRefresh, onBackupCodes }) {
     const meta = CHANNEL_META[method.id] || { label: method.name, icon: Lock, description: '' };
     const [expanding, setExpanding] = useState(false);
     const [phone, setPhone] = useState('');
@@ -25,14 +26,13 @@ export function MfaFactorCard({ method, enrolled, info: _info, onEnroll, onUnenr
     const [loading, setLoading] = useState(false);
     const [telegramLink, setTelegramLink] = useState('');
     const [totpEnroll, setTotpEnroll] = useState(null); // { qrCodeUri, secret }
+    const [passkeyPrompting, setPasskeyPrompting] = useState(false);
     const pollRef = useRef(null);
 
-    // Poll for Telegram enrollment completion.
     useEffect(() => {
         return () => { if (pollRef.current) clearInterval(pollRef.current); };
     }, []);
 
-    // Stop polling once enrolled.
     useEffect(() => {
         if (enrolled && pollRef.current) {
             clearInterval(pollRef.current);
@@ -50,6 +50,19 @@ export function MfaFactorCard({ method, enrolled, info: _info, onEnroll, onUnenr
         if (method.id === 'phone' && !expanding) {
             setExpanding(true);
             return;
+        }
+
+            if (method.id === 'passkey') {
+            if (!window.isSecureContext) {
+                setError('Passkeys require a secure connection (HTTPS).');
+                setExpanding(true);
+                return;
+            }
+            if (!window.PublicKeyCredential) {
+                setError('Your browser does not support passkeys.');
+                setExpanding(true);
+                return;
+            }
         }
 
         setLoading(true);
@@ -76,6 +89,20 @@ export function MfaFactorCard({ method, enrolled, info: _info, onEnroll, onUnenr
             }, 3000);
         }
 
+        if (res && method.id === 'passkey' && res.data?.requires_confirmation && res.data?.creation_options) {
+            setExpanding(true);
+            setPasskeyPrompting(true);
+            try {
+                const { startRegistration } = await import('@simplewebauthn/browser');
+                const attestation = await startRegistration({ optionsJSON: res.data.creation_options });
+                await handleVerifyEnrollment('passkey', JSON.stringify(attestation));
+            } catch (err) {
+                setError(formatWebAuthnError(err));
+            } finally {
+                setPasskeyPrompting(false);
+            }
+        }
+
         setLoading(false);
     }
 
@@ -92,6 +119,7 @@ export function MfaFactorCard({ method, enrolled, info: _info, onEnroll, onUnenr
                 setExpanding(false);
                 setVerifying(false);
                 setTotpEnroll(null);
+                setPasskeyPrompting(false);
                 if (res.data?.backup_codes && onBackupCodes) {
                     onBackupCodes(res.data.backup_codes);
                 }
@@ -100,27 +128,43 @@ export function MfaFactorCard({ method, enrolled, info: _info, onEnroll, onUnenr
                 setError(res.message || 'Verification failed.');
             }
         } catch (err) {
-            setError(extractError(err));
+            setError(extractError(err).message);
         } finally {
             setLoading(false);
         }
     }
 
+    async function handleRemoveCredential(credentialId) {
+        const confirmed = window.confirm('Remove this passkey? If it is your only passkey, passkey authentication will be disabled.');
+        if (!confirmed) return;
+
+        try {
+            await api.del(`/auth/mfa/passkey/credential?credential_id=${encodeURIComponent(credentialId)}`);
+            if (onRefresh) await onRefresh();
+        } catch (err) {
+            setError(extractError(err).message);
+        }
+    }
+
     function handleDisable() {
-        if (method.id === 'totp') {
-            const confirmed = window.confirm(
-                'Are you sure you want to disable your authenticator app? ' +
-                'If this is your only MFA method, multi-factor authentication will be turned off for your account.'
-            );
-            if (!confirmed) return;
+        const confirmMessages = {
+            totp: 'Are you sure you want to disable your authenticator app?',
+            passkey: 'Are you sure you want to disable your passkey? All registered passkeys will be removed.',
+        };
+        const msg = confirmMessages[method.id];
+        if (msg && !window.confirm(msg + ' If this is your only MFA method, multi-factor authentication will be turned off for your account.')) {
+            return;
         }
 
         onUnenroll(method.id);
         setExpanding(false);
         setVerifying(false);
         setTelegramLink('');
+        setPasskeyPrompting(false);
         if (pollRef.current) { clearInterval(pollRef.current); pollRef.current = null; }
     }
+
+    const passkeyCredentials = info?.credentials || [];
 
     return (
         <div
@@ -135,7 +179,12 @@ export function MfaFactorCard({ method, enrolled, info: _info, onEnroll, onUnenr
                     <div className="text-sm font-semibold">{meta.label}</div>
                     <div className="text-xs text-muted-foreground">{meta.description}</div>
                 </div>
-                <div className="shrink-0">
+                <div className="shrink-0 flex gap-2">
+                    {enrolled && method.id === 'passkey' && (
+                        <Button variant="outline" size="sm" onClick={handleEnable} disabled={loading}>
+                            Add
+                        </Button>
+                    )}
                     {enrolled ? (
                         <Button variant="outline" size="sm" onClick={handleDisable} className="text-destructive hover:text-destructive">
                             Disable
@@ -198,6 +247,45 @@ export function MfaFactorCard({ method, enrolled, info: _info, onEnroll, onUnenr
                         Enter the 6-digit code from your app to verify setup
                     </p>
                     <OtpInput onComplete={(code) => handleVerifyEnrollment('totp', code)} disabled={loading} />
+                </div>
+            )}
+
+            {expanding && method.id === 'passkey' && (
+                <div className="px-4 pb-4 space-y-3 animate-fade-in text-center">
+                    {error && <p className="text-sm text-destructive">{error}</p>}
+                    <Fingerprint className="mx-auto size-10 text-muted-foreground animate-pulse" />
+                    <p className="text-sm text-muted-foreground">
+                        {passkeyPrompting
+                            ? "Follow your browser's prompts to register your passkey..."
+                            : enrolled
+                                ? 'Registering additional passkey...'
+                                : 'Click Enable to set up your passkey'}
+                    </p>
+                </div>
+            )}
+
+            {enrolled && method.id === 'passkey' && passkeyCredentials.length > 0 && !expanding && (
+                <div className="px-4 pb-4 space-y-2">
+                    {passkeyCredentials.map((cred) => (
+                        <div key={cred.id} className="flex items-center justify-between rounded-md border border-border/50 px-3 py-2">
+                            <div className="min-w-0">
+                                <div className="text-sm font-medium truncate">{cred.name}</div>
+                                <div className="text-xs text-muted-foreground">
+                                    {cred.device_type === 'multiDevice' ? 'Synced' : 'Device-bound'}
+                                    {cred.backed_up && ' \u00b7 Backed up'}
+                                    {cred.created_at && ` \u00b7 ${new Date(cred.created_at).toLocaleDateString()}`}
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => handleRemoveCredential(cred.id)}
+                                className="shrink-0 p-1 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                                aria-label={`Remove ${cred.name}`}
+                            >
+                                <X className="size-4" />
+                            </button>
+                        </div>
+                    ))}
                 </div>
             )}
 

@@ -2,6 +2,8 @@
 
 namespace WSms\Auth\ValueObjects;
 
+use WSms\Enums\AuthErrorCode;
+
 class OperationResult
 {
     public function __construct(
@@ -22,12 +24,12 @@ class OperationResult
         );
     }
 
-    public static function fail(string $error, string $message): self
+    public static function fail(AuthErrorCode|string $error, string $message): self
     {
         return new self(
             success: false,
             message: $message,
-            error: $error,
+            error: $error instanceof AuthErrorCode ? $error->value : $error,
         );
     }
 

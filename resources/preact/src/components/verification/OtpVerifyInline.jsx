@@ -30,7 +30,7 @@ export function OtpVerifyInline({ verifyEndpoint, resendEndpoint, headers, onVer
                 onVerified?.();
             }
         } catch (err) {
-            onError?.(extractError(err));
+            onError?.(extractError(err).message);
         } finally {
             setVerifying(false);
         }
@@ -42,7 +42,7 @@ export function OtpVerifyInline({ verifyEndpoint, resendEndpoint, headers, onVer
             await api.post(resendEndpoint, null, headers);
             resetCooldown(60);
         } catch (err) {
-            onError?.(extractError(err));
+            onError?.(extractError(err).message);
         }
     }
 

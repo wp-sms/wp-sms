@@ -102,7 +102,7 @@ export function Security() {
             setAvailableMethods(methodsRes.methods.filter((m) => m.supports_mfa));
             setLinkedAccounts(accountsRes.accounts || []);
         } catch (err) {
-            setError(extractError(err));
+            setError(extractError(err).message);
         } finally {
             setLoading(false);
         }
@@ -116,7 +116,7 @@ export function Security() {
                 window.location.href = res.authorize_url;
             }
         } catch (err) {
-            setError(extractError(err));
+            setError(extractError(err).message);
         }
     }
 
@@ -132,7 +132,7 @@ export function Security() {
                 setError(res.message || 'Failed to unlink account.');
             }
         } catch (err) {
-            setError(extractError(err));
+            setError(extractError(err).message);
         }
     }
 
@@ -162,7 +162,7 @@ export function Security() {
                 return res;
             }
         } catch (err) {
-            setError(extractError(err));
+            setError(extractError(err).message);
         }
         return null;
     }
@@ -178,7 +178,7 @@ export function Security() {
                 await refreshUser();
             }
         } catch (err) {
-            setError(extractError(err));
+            setError(extractError(err).message);
         }
     }
 
@@ -192,7 +192,7 @@ export function Security() {
                 await refreshUser();
             }
         } catch (err) {
-            setError(extractError(err));
+            setError(extractError(err).message);
         }
     }
 

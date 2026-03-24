@@ -80,7 +80,17 @@ abstract class Controller
 
     protected function toAuthResponse(AuthResult $result): WP_REST_Response
     {
-        return new WP_REST_Response($result->toArray(), $result->toHttpStatus());
+        $data = $result->toArray();
+
+        // Strip debug-only fields in production.
+        if (!empty($data['meta']['debug_reason']) && !(defined('WP_DEBUG') && WP_DEBUG)) {
+            unset($data['meta']['debug_reason']);
+            if (empty($data['meta'])) {
+                unset($data['meta']);
+            }
+        }
+
+        return new WP_REST_Response($data, $result->toHttpStatus());
     }
 
     protected function rateLimitedResponse(int $retryAfter): WP_REST_Response

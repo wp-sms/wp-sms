@@ -33,7 +33,7 @@ export function ForgotPassword() {
             const res = await api.post('/auth/forgot-password', { email }, captcha.getHeaders());
             setSuccess(res.message || 'If that email exists, a reset link has been sent.');
         } catch (err) {
-            authError.value = extractError(err);
+            authError.value = extractError(err).message;
             captcha.reset();
         } finally {
             authLoading.value = false;

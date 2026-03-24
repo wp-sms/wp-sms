@@ -14,6 +14,7 @@ use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Template\TemplateManager;
 use WSms\Mfa\MfaManager;
 use WSms\Auth\ValueObjects\OperationResult;
+use WSms\Enums\AuthErrorCode;
 use WSms\PhoneRestriction\SendingPolicyGuard;
 use WSms\Support\UserMeta;
 use WSms\Verification\OtpService;
@@ -145,7 +146,7 @@ class AccountManager
         $this->cleanupExpiredPendingUsers($data, $email, $emailVerifyEnabled, $phoneVerifyEnabled, $settings);
 
         if (!empty($data['phone']) && self::isPhoneTaken(sanitize_text_field($data['phone']))) {
-            return OperationResult::fail('phone_exists', __('This phone number is already associated with another account.', 'wp-sms'));
+            return OperationResult::fail(AuthErrorCode::PhoneExists, __('This phone number is already associated with another account.', 'wp-sms'));
         }
 
         $phoneRestriction = $this->checkPhoneRestriction($data['phone'] ?? '');
@@ -189,7 +190,7 @@ class AccountManager
         }
 
         if ($emailRequired && empty($data['email'])) {
-            return OperationResult::fail('missing_email', __('Email is required.', 'wp-sms'));
+            return OperationResult::fail(AuthErrorCode::MissingEmail, __('Email is required.', 'wp-sms'));
         }
 
         $passwordRequired = $socialLogin ? false : (!empty($settings['password']['enabled']) && ($settings['password']['required_at_signup'] ?? true));
@@ -197,7 +198,7 @@ class AccountManager
             $passwordRequired = $passwordRequired && $form->hasField('password') && $form->isFieldRequired('password');
         }
         if ($passwordRequired && empty($data['password'])) {
-            return OperationResult::fail('missing_password', __('Password is required.', 'wp-sms'));
+            return OperationResult::fail(AuthErrorCode::MissingPassword, __('Password is required.', 'wp-sms'));
         }
 
         $phoneRequired = $socialLogin ? false : (!empty($settings['phone']['enabled']) && !empty($settings['phone']['required_at_signup']));
@@ -205,28 +206,28 @@ class AccountManager
             $phoneRequired = $phoneRequired && $form->hasField('phone') && $form->isFieldRequired('phone');
         }
         if ($phoneRequired && empty($data['phone'])) {
-            return OperationResult::fail('missing_phone', __('Phone number is required.', 'wp-sms'));
+            return OperationResult::fail(AuthErrorCode::MissingPhone, __('Phone number is required.', 'wp-sms'));
         }
 
         $checkFirstName = $form
             ? $form->hasField('first_name') && $form->isFieldRequired('first_name')
             : in_array('first_name', $requiredFields, true);
         if ($checkFirstName && empty($data['first_name'])) {
-            return OperationResult::fail('missing_first_name', __('First name is required.', 'wp-sms'));
+            return OperationResult::fail(AuthErrorCode::MissingFirstName, __('First name is required.', 'wp-sms'));
         }
 
         $checkLastName = $form
             ? $form->hasField('last_name') && $form->isFieldRequired('last_name')
             : in_array('last_name', $requiredFields, true);
         if ($checkLastName && empty($data['last_name'])) {
-            return OperationResult::fail('missing_last_name', __('Last name is required.', 'wp-sms'));
+            return OperationResult::fail(AuthErrorCode::MissingLastName, __('Last name is required.', 'wp-sms'));
         }
 
         // Validate email format when provided.
         if (!empty($data['email'])) {
             $sanitized = sanitize_email($data['email']);
             if (!empty($sanitized) && !is_email($sanitized)) {
-                return OperationResult::fail('invalid_email', __('Invalid email address.', 'wp-sms'));
+                return OperationResult::fail(AuthErrorCode::InvalidEmail, __('Invalid email address.', 'wp-sms'));
             }
         }
 
@@ -502,7 +503,7 @@ class AccountManager
             $newEmail = sanitize_email($data['email']);
 
             if (!is_email($newEmail)) {
-                return OperationResult::fail('invalid_email', __('Invalid email address.', 'wp-sms'));
+                return OperationResult::fail(AuthErrorCode::InvalidEmail, __('Invalid email address.', 'wp-sms'));
             }
         }
 
@@ -528,11 +529,11 @@ class AccountManager
         if ($phoneChanged) {
             $cooldown = (int) ($settings['phone']['cooldown'] ?? 60);
             if ($this->isVerificationOnCooldown($userId, VerificationType::PhoneVerify->value, $cooldown)) {
-                return OperationResult::fail('cooldown', __('Please wait before changing your phone number.', 'wp-sms'));
+                return OperationResult::fail(AuthErrorCode::Cooldown, __('Please wait before changing your phone number.', 'wp-sms'));
             }
 
             if (self::isPhoneTaken($phone, $userId)) {
-                return OperationResult::fail('phone_exists', __('This phone number is already associated with another account.', 'wp-sms'));
+                return OperationResult::fail(AuthErrorCode::PhoneExists, __('This phone number is already associated with another account.', 'wp-sms'));
             }
 
             $phoneRestriction = $this->checkPhoneRestriction($phone);
@@ -545,7 +546,7 @@ class AccountManager
         if ($emailChanged) {
             $cooldown = (int) ($settings['email']['cooldown'] ?? 60);
             if ($this->isVerificationOnCooldown($userId, VerificationType::EmailVerify->value, $cooldown)) {
-                return OperationResult::fail('cooldown', __('Please wait before changing your email.', 'wp-sms'));
+                return OperationResult::fail(AuthErrorCode::Cooldown, __('Please wait before changing your email.', 'wp-sms'));
             }
         }
 
@@ -598,14 +599,14 @@ class AccountManager
         $user = get_userdata($userId);
 
         if (!$user) {
-            return OperationResult::fail('user_not_found', __('User not found.', 'wp-sms'));
+            return OperationResult::fail(AuthErrorCode::UserNotFound, __('User not found.', 'wp-sms'));
         }
 
         $hasUsablePassword = self::hasUsablePassword($userId);
 
         if ($hasUsablePassword) {
             if (empty($currentPassword) || !wp_check_password($currentPassword, $user->user_pass, $userId)) {
-                return OperationResult::fail('wrong_password', __('Current password is incorrect.', 'wp-sms'));
+                return OperationResult::fail(AuthErrorCode::WrongPassword, __('Current password is incorrect.', 'wp-sms'));
             }
         }
 
@@ -645,11 +646,13 @@ class AccountManager
         $result = $this->otpService->verifyOtpDetailed($code, $where);
 
         if ($result['error'] !== null) {
-            return OperationResult::fail($result['error'], match ($result['error']) {
+            $errorEnum = AuthErrorCode::tryFrom($result['error']);
+            return OperationResult::fail($errorEnum ?? $result['error'], match ($result['error']) {
                 'no_verification' => sprintf(__('No pending %s verification.', 'wp-sms'), $channel),
                 'expired'         => __('Verification code has expired.', 'wp-sms'),
                 'max_attempts'    => __('Too many attempts.', 'wp-sms'),
                 'invalid_code'    => __('Invalid verification code.', 'wp-sms'),
+                default           => __('Verification failed.', 'wp-sms'),
             });
         }
 
@@ -678,7 +681,7 @@ class AccountManager
         $cooldown = (int) ($settings[$channel]['cooldown'] ?? 60);
 
         if ($this->isVerificationOnCooldown($userId, $verifyType, $cooldown)) {
-            return OperationResult::fail('cooldown', __('Please wait before requesting a new code.', 'wp-sms'));
+            return OperationResult::fail(AuthErrorCode::Cooldown, __('Please wait before requesting a new code.', 'wp-sms'));
         }
 
         $this->invalidateVerifications($userId, $verifyType);
@@ -840,7 +843,7 @@ class AccountManager
             return null;
         }
 
-        return OperationResult::fail('phone_restricted', $restriction->message);
+        return OperationResult::fail(AuthErrorCode::PhoneRestricted, $restriction->message);
     }
 
     /**
@@ -1055,7 +1058,8 @@ class AccountManager
         $result = $this->otpService->consumeTokenDetailed($token, $type);
 
         if ($result['error'] !== null) {
-            return OperationResult::fail($result['error'], match ($result['error']) {
+            $errorEnum = AuthErrorCode::tryFrom($result['error']);
+            return OperationResult::fail($errorEnum ?? $result['error'], match ($result['error']) {
                 'expired_token'  => __('This token has expired.', 'wp-sms'),
                 'used_token'     => __('This token has already been used.', 'wp-sms'),
                 default          => __('Invalid or expired token.', 'wp-sms'),

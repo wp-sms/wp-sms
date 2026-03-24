@@ -35,9 +35,9 @@ class AccountControllerTest extends TestCase
         );
 
         // Default: no rate limiting.
-        $this->rateLimiter->method('check')->willReturn([
-            'allowed' => true, 'remaining' => 5, 'retry_after' => 0,
-        ]);
+        $allowed = ['allowed' => true, 'remaining' => 5, 'retry_after' => 0];
+        $this->rateLimiter->method('check')->willReturn($allowed);
+        $this->rateLimiter->method('checkAction')->willReturn($allowed);
 
         unset($GLOBALS['_test_current_user_id']);
     }
@@ -81,9 +81,9 @@ class AccountControllerTest extends TestCase
     public function testRegisterRateLimited(): void
     {
         $this->rateLimiter = $this->createMock(RateLimiter::class);
-        $this->rateLimiter->method('check')->willReturn([
-            'allowed' => false, 'remaining' => 0, 'retry_after' => 45,
-        ]);
+        $denied = ['allowed' => false, 'remaining' => 0, 'retry_after' => 45];
+        $this->rateLimiter->method('check')->willReturn($denied);
+        $this->rateLimiter->method('checkAction')->willReturn($denied);
 
         $captchaGuard = $this->createMock(CaptchaGuard::class);
         $captchaGuard->method('verify')->willReturn(null);

@@ -56,7 +56,7 @@ class MfaController extends Controller
     public function handleGetFactors(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $rl = $this->rateLimiter->check('mfa_factors', 5, 60);
+            $rl = $this->rateLimiter->checkAction('mfa_factors');
 
             if (!$rl['allowed']) {
                 return $this->rateLimitedResponse($rl['retry_after']);
@@ -73,7 +73,7 @@ class MfaController extends Controller
     public function handleSendChallenge(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $rl = $this->rateLimiter->check('mfa_send', 3, 60);
+            $rl = $this->rateLimiter->checkAction('mfa_send');
 
             if (!$rl['allowed']) {
                 return $this->rateLimitedResponse($rl['retry_after']);
@@ -91,7 +91,7 @@ class MfaController extends Controller
     public function handleVerify(WP_REST_Request $request): WP_REST_Response
     {
         return $this->handle(function () use ($request) {
-            $rl = $this->rateLimiter->check('mfa_verify', 3, 10);
+            $rl = $this->rateLimiter->checkAction('mfa_verify');
 
             if (!$rl['allowed']) {
                 return $this->rateLimitedResponse($rl['retry_after']);

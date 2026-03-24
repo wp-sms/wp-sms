@@ -5,6 +5,7 @@ namespace WSms\Auth;
 use WP_REST_Request;
 use WP_REST_Response;
 use WSms\Auth\CaptchaProviders\ProviderInterface;
+use WSms\Enums\AuthErrorCode;
 use WSms\Support\IpResolver;
 
 defined('ABSPATH') || exit;
@@ -97,9 +98,9 @@ class CaptchaGuard
     {
         return new WP_REST_Response([
             'success' => false,
-            'error'   => 'captcha_failed',
+            'error'   => AuthErrorCode::CaptchaFailed->value,
             'message' => __('CAPTCHA verification failed.', 'wp-sms'),
-        ], 403);
+        ], AuthErrorCode::CaptchaFailed->httpStatus());
     }
 
     /**

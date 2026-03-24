@@ -32,7 +32,7 @@ export function LoginVerifyStep() {
             const res = await api.post('/auth/verification/complete', null, verifyHeaders());
             handleAuthResponse(res);
         } catch (err) {
-            authError.value = extractError(err);
+            authError.value = extractError(err).message;
         }
     }
 

@@ -10,7 +10,7 @@ import {
     selectedMethod,
     resetIdentifyFlow,
 } from '../../signals/auth';
-import { handleAuthResponse, extractError } from '../../utils/auth';
+import { handleAuthResponse, extractError, handleRecoveryAction } from '../../utils/auth';
 import { authUrl } from '../../utils/urls';
 import { Alert } from '../ui/Alert';
 import { Button } from '../ui/Button';
@@ -65,8 +65,11 @@ export function AuthenticateStep() {
             const res = await api.post('/auth/login', { username: identifier, password }, captcha.getHeaders());
             handleAuthResponse(res, route);
         } catch (err) {
-            authError.value = extractError(err);
-            captcha.reset();
+            const details = extractError(err);
+            if (!handleRecoveryAction(details, route)) {
+                authError.value = details.message;
+                captcha.reset();
+            }
         } finally {
             authLoading.value = false;
         }
@@ -101,7 +104,10 @@ export function AuthenticateStep() {
                 }
             }
         } catch (err) {
-            authError.value = extractError(err);
+            const details = extractError(err);
+            if (!handleRecoveryAction(details, route)) {
+                authError.value = details.message;
+            }
         } finally {
             authLoading.value = false;
         }

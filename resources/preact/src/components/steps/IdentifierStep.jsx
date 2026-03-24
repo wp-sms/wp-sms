@@ -75,7 +75,7 @@ export function IdentifierStep() {
                 authError.value = 'No account found with this identifier.';
             }
         } catch (err) {
-            authError.value = extractError(err);
+            authError.value = extractError(err).message;
         } finally {
             authLoading.value = false;
         }

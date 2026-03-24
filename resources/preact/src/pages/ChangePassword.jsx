@@ -56,7 +56,7 @@ export function ChangePassword() {
                 setConfirm('');
             }
         } catch (err) {
-            setError(extractError(err));
+            setError(extractError(err).message);
         } finally {
             setLoading(false);
         }

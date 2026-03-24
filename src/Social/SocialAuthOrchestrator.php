@@ -11,6 +11,7 @@ use WSms\Auth\AuthSession;
 use WSms\Auth\AvatarManager;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\ValueObjects\AuthResult;
+use WSms\Enums\AuthErrorCode;
 use WSms\Enums\EventType;
 use WSms\Mfa\Channels\TelegramChannel;
 use WSms\Support\UserMeta;
@@ -70,14 +71,14 @@ class SocialAuthOrchestrator
         $provider = $this->socialManager->getProvider($providerId);
 
         if (!$provider) {
-            return ['result' => AuthResult::failed('invalid_provider', 'Unknown social provider.')];
+            return ['result' => AuthResult::failed(AuthErrorCode::InvalidProvider, 'Unknown social provider.')];
         }
 
         // Validate state (CSRF + PKCE).
         $stateData = $this->stateManager->consume($state);
 
         if ($stateData === null) {
-            return ['result' => AuthResult::failed('invalid_state', 'Invalid or expired OAuth state.')];
+            return ['result' => AuthResult::failed(AuthErrorCode::InvalidState, 'Invalid or expired OAuth state.')];
         }
 
         // Exchange code for tokens.
@@ -94,7 +95,7 @@ class SocialAuthOrchestrator
                 'error'    => $e->getMessage(),
             ]);
 
-            return ['result' => AuthResult::failed('token_exchange_failed', 'Could not authenticate with provider.')];
+            return ['result' => AuthResult::failed(AuthErrorCode::TokenExchangeFailed, 'Could not authenticate with provider.')];
         }
 
         // Get user info from provider.
@@ -107,7 +108,7 @@ class SocialAuthOrchestrator
                 'error'    => $e->getMessage(),
             ]);
 
-            return ['result' => AuthResult::failed('userinfo_failed', 'Could not retrieve user information from provider.')];
+            return ['result' => AuthResult::failed(AuthErrorCode::UserInfoFailed, 'Could not retrieve user information from provider.')];
         }
 
         // If this is an account linking flow (authenticated user linking).
@@ -217,7 +218,7 @@ class SocialAuthOrchestrator
             if ($existingUser) {
                 if (!$provider->isTrustedEmailProvider() || empty($userInfo['email_verified'])) {
                     return ['result' => AuthResult::failed(
-                        'email_exists_untrusted',
+                        AuthErrorCode::EmailExistsUntrusted,
                         'An account with this email already exists. Please sign in with your existing method and link this provider from your profile.',
                     )];
                 }
@@ -266,7 +267,7 @@ class SocialAuthOrchestrator
         // Case 4 & 5: No match — create new user or reject.
         if (!$allowAutoCreate && !$this->policyEngine?->getSetting('auto_create_users', false)) {
             return ['result' => AuthResult::failed(
-                'registration_disabled',
+                AuthErrorCode::RegistrationDisabled,
                 'Automatic account creation is disabled. Please contact an administrator.',
             )];
         }
@@ -291,7 +292,7 @@ class SocialAuthOrchestrator
         $regResult = $this->accountManager->registerUser($regData, socialLogin: true);
 
         if (!$regResult->success) {
-            return ['result' => AuthResult::failed($regResult->error ?? 'registration_failed', $regResult->message)];
+            return ['result' => AuthResult::failed($regResult->error ?? AuthErrorCode::RegistrationFailed->value, $regResult->message)];
         }
 
         $userId = $regResult->userId;
@@ -331,14 +332,14 @@ class SocialAuthOrchestrator
         $existing = $this->repository->findByUserAndProvider($userId, $providerId);
 
         if ($existing) {
-            return ['result' => AuthResult::failed('already_linked', 'This provider is already linked to your account.')];
+            return ['result' => AuthResult::failed(AuthErrorCode::AlreadyLinked, 'This provider is already linked to your account.')];
         }
 
         // Check if this social account is linked to someone else.
         $otherLink = $this->repository->findByProviderAccount($providerId, $userInfo['id']);
 
         if ($otherLink) {
-            return ['result' => AuthResult::failed('provider_taken', 'This social account is already linked to another user.')];
+            return ['result' => AuthResult::failed(AuthErrorCode::ProviderTaken, 'This social account is already linked to another user.')];
         }
 
         $this->linkAccount($userId, $providerId, $userInfo, $tokens);
@@ -362,7 +363,7 @@ class SocialAuthOrchestrator
         $status = $this->suspension->isSuspended($userId);
 
         if ($status['suspended']) {
-            return ['result' => AuthResult::failed('account_suspended', AccountSuspension::errorMessage())];
+            return ['result' => AuthResult::failed(AuthErrorCode::AccountSuspended, AccountSuspension::errorMessage())];
         }
 
         return null;
@@ -376,7 +377,7 @@ class SocialAuthOrchestrator
         $lockStatus = $this->lockout->isLocked($userId);
 
         if ($lockStatus['locked']) {
-            return ['result' => AuthResult::failed('account_locked', 'Account is temporarily locked.', [
+            return ['result' => AuthResult::failed(AuthErrorCode::AccountLocked, 'Account is temporarily locked.', [
                 'retry_after' => $lockStatus['until'],
             ])];
         }

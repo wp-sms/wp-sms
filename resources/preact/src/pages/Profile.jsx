@@ -87,7 +87,7 @@ export function Profile() {
                 await refreshUser();
             }
         } catch (err) {
-            setError(extractError(err));
+            setError(extractError(err).message);
         } finally {
             setLoading(false);
         }
@@ -110,7 +110,7 @@ export function Profile() {
                 await refreshUser();
             }
         } catch (err) {
-            setError(extractError(err));
+            setError(extractError(err).message);
         } finally {
             setAvatarUploading(false);
             if (fileInputRef.current) fileInputRef.current.value = '';
@@ -126,7 +126,7 @@ export function Profile() {
             setSuccess('Avatar removed.');
             await refreshUser();
         } catch (err) {
-            setError(extractError(err));
+            setError(extractError(err).message);
         } finally {
             setAvatarUploading(false);
         }
@@ -143,7 +143,7 @@ export function Profile() {
                 setEmailSent(true);
             }
         } catch (err) {
-            setError(extractError(err));
+            setError(extractError(err).message);
         } finally {
             setEmailSending(false);
         }
@@ -156,7 +156,7 @@ export function Profile() {
             await api.post('/auth/profile/send-verification/phone');
             setShowPhoneOtp(true);
         } catch (err) {
-            setError(extractError(err));
+            setError(extractError(err).message);
         } finally {
             setPhoneSending(false);
         }

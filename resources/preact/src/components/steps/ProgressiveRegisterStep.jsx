@@ -65,7 +65,7 @@ export function ProgressiveRegisterStep() {
                 }
             }
         } catch (err) {
-            authError.value = extractError(err);
+            authError.value = extractError(err).message;
         } finally {
             authLoading.value = false;
         }

@@ -10,6 +10,34 @@ class RateLimiter
 {
     private const TRANSIENT_PREFIX = 'wsms_rl_';
 
+    private const POLICIES = [
+        'login'              => ['limit' => 5,  'window' => 60],
+        'login_passwordless' => ['limit' => 3,  'window' => 60],
+        'verify'             => ['limit' => 3,  'window' => 10],
+        'resend'             => ['limit' => 1,  'window' => 60],
+        'identify'           => ['limit' => 10, 'window' => 60],
+        'mfa_send'           => ['limit' => 3,  'window' => 60],
+        'mfa_verify'         => ['limit' => 3,  'window' => 10],
+        'mfa_factors'        => ['limit' => 5,  'window' => 60],
+        'register'           => ['limit' => 3,  'window' => 60],
+        'forgot_password'    => ['limit' => 3,  'window' => 60],
+        'reset_password'     => ['limit' => 5,  'window' => 60],
+        'change_password'    => ['limit' => 5,  'window' => 60],
+        'verify_email'       => ['limit' => 5,  'window' => 60],
+    ];
+
+    /**
+     * Check rate limit using a named policy from POLICIES.
+     *
+     * @return array{allowed: bool, remaining: int, retry_after: int}
+     */
+    public function checkAction(string $action): array
+    {
+        $policy = self::POLICIES[$action] ?? ['limit' => 10, 'window' => 60];
+
+        return $this->check($action, $policy['limit'], $policy['window']);
+    }
+
     /**
      * Check if a request should be rate limited.
      *
