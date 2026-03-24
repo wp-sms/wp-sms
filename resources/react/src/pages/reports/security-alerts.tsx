@@ -27,21 +27,21 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
       contentClassName="space-y-6"
     >
         <div className="grid gap-4 grid-cols-4">
-          <div className="rounded-lg border p-3">
+          <div className="rounded-lg border border-l-2 border-l-red-400 p-3">
             <p className="text-sm text-muted-foreground">Failed Logins</p>
-            <p className="text-xl font-bold">{fmtNumber(failed_login_attempts)}</p>
+            <p className="text-xl font-bold tabular-nums">{fmtNumber(failed_login_attempts)}</p>
           </div>
-          <div className="rounded-lg border p-3">
+          <div className="rounded-lg border border-l-2 border-l-amber-400 p-3">
             <p className="text-sm text-muted-foreground">Accounts Locked</p>
-            <p className="text-xl font-bold">{fmtNumber(accounts_locked)}</p>
+            <p className="text-xl font-bold tabular-nums">{fmtNumber(accounts_locked)}</p>
           </div>
-          <div className="rounded-lg border p-3">
+          <div className="rounded-lg border border-l-2 border-l-orange-400 p-3">
             <p className="text-sm text-muted-foreground">Accounts Suspended</p>
-            <p className="text-xl font-bold">{fmtNumber(accounts_suspended)}</p>
+            <p className="text-xl font-bold tabular-nums">{fmtNumber(accounts_suspended)}</p>
           </div>
-          <div className="rounded-lg border p-3">
+          <div className="rounded-lg border border-l-2 border-l-violet-400 p-3">
             <p className="text-sm text-muted-foreground">OTP Failures</p>
-            <p className="text-xl font-bold">{fmtNumber(otp_failures)}</p>
+            <p className="text-xl font-bold tabular-nums">{fmtNumber(otp_failures)}</p>
           </div>
         </div>
 
@@ -59,7 +59,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                 <TableBody>
                   {top_failed_ips.map((entry) => (
                     <TableRow key={entry.ip}>
-                      <TableCell className="font-mono text-sm">{entry.ip}</TableCell>
+                      <TableCell className="font-mono text-xs tracking-tight">{entry.ip}</TableCell>
                       <TableCell className="text-right">{entry.count}</TableCell>
                     </TableRow>
                   ))}
@@ -85,7 +85,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                   {recent_lockouts.map((entry) => (
                     <TableRow key={`${entry.user_id}-${entry.locked_at}`}>
                       <TableCell>{entry.display_name}</TableCell>
-                      <TableCell className="font-mono text-sm">{entry.ip || '-'}</TableCell>
+                      <TableCell className="font-mono text-xs tracking-tight">{entry.ip || '-'}</TableCell>
                       <TableCell className="text-right text-sm">
                         {formatDateTime(entry.locked_at)}
                       </TableCell>
@@ -113,7 +113,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                   {recent_suspensions.map((entry) => (
                     <TableRow key={`${entry.user_id}-${entry.suspended_at}`}>
                       <TableCell>{entry.display_name}</TableCell>
-                      <TableCell className="font-mono text-sm">{entry.ip || '-'}</TableCell>
+                      <TableCell className="font-mono text-xs tracking-tight">{entry.ip || '-'}</TableCell>
                       <TableCell className="text-right text-sm">
                         {formatDateTime(entry.suspended_at)}
                       </TableCell>

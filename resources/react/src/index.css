@@ -21,6 +21,9 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-info: var(--info);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -44,15 +47,30 @@
   --radius-xl: calc(var(--radius) + 4px);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
+
+  /* Motion system */
+  --duration-fast: 120ms;
+  --duration-base: 200ms;
+  --duration-slow: 300ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Animation utilities */
+  --animate-fade-in: fade-in var(--duration-base) var(--ease-out);
+  --animate-fade-up: fade-up var(--duration-base) var(--ease-out) both;
+  --animate-scale-in: scale-in var(--duration-base) var(--ease-out);
+  --animate-slide-up: slide-up var(--duration-slow) var(--ease-out) both;
+  --animate-shimmer: shimmer 2s linear infinite;
 }
 
 :root {
-  --radius: 0.375rem;
+  --radius: 0.4375rem;
 
-  /* Shadows — subtle only */
+  /* Shadows */
   --shadow-card: 0 1px 2px 0 oklch(0.147 0.004 49.25 / 0.03);
-  --shadow-card-hover: 0 1px 3px 0 oklch(0.147 0.004 49.25 / 0.05);
-  --shadow-save-bar: 0 -2px 8px 0 oklch(0.147 0.004 49.25 / 0.05);
+  --shadow-card-hover: 0 1px 3px 0 oklch(0.147 0.004 49.25 / 0.04);
+  --shadow-lg: 0 8px 12px -3px oklch(0.147 0.004 49.25 / 0.07), 0 3px 5px -3px oklch(0.147 0.004 49.25 / 0.05);
+  --shadow-save-bar: 0 -2px 8px 0 oklch(0.147 0.004 49.25 / 0.06);
 
   /* Surface */
   --surface: oklch(0.985 0.002 106.424);
@@ -64,7 +82,7 @@
   --card-foreground: oklch(0.147 0.004 49.25);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.147 0.004 49.25);
-  --primary: oklch(0.555 0.163 48.998);
+  --primary: oklch(0.575 0.170 50.0);
   --primary-foreground: oklch(0.987 0.022 95.277);
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
@@ -74,8 +92,11 @@
   --accent-foreground: oklch(0.216 0.006 56.043);
   --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: oklch(0.985 0.001 106.423);
-  --border: oklch(0.923 0.003 48.717);
-  --input: oklch(0.923 0.003 48.717);
+  --success: oklch(0.627 0.194 145.0);
+  --warning: oklch(0.750 0.183 55.0);
+  --info: oklch(0.623 0.214 259.0);
+  --border: oklch(0.915 0.004 48.717);
+  --input: oklch(0.915 0.004 48.717);
   --ring: oklch(0.709 0.01 56.259);
   --chart-1: oklch(0.879 0.169 91.605);
   --chart-2: oklch(0.769 0.188 70.08);
@@ -97,6 +118,12 @@
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
     "Liberation Mono", monospace;
 }
+
+@keyframes fade-in { from { opacity: 0; } }
+@keyframes fade-up { from { opacity: 0; transform: translateY(6px); } }
+@keyframes scale-in { from { opacity: 0; transform: scale(0.97); } }
+@keyframes slide-up { from { transform: translateY(100%); opacity: 0; } }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
 @layer base {
   * {
@@ -193,6 +220,11 @@
   z-index: 100200 !important;
 }
 
+/* Radix popper content (Select, DropdownMenu, Popover) must sit above Drawer/Sheet */
+[data-radix-popper-content-wrapper] {
+  z-index: 100300 !important;
+}
+
 /* ─── Visual Polish: Surfaces & Depth ─── */
 
 /* Sidebar wrapper — override min-h-svh so it matches content height.
@@ -215,13 +247,31 @@
 /* Card shadow & hover transition */
 #wpsms-app [data-slot="card"] {
   box-shadow: var(--shadow-card);
-  border-color: oklch(0.923 0.003 48.717 / 0.6);
-  transition: box-shadow 150ms ease;
+  border-color: oklch(0.915 0.004 48.717 / 0.6);
+  transition: box-shadow var(--duration-base) var(--ease-out);
 }
+
 
 /* Table header tint */
 #wpsms-app [data-slot="table-header"] {
   background-color: oklch(0.97 0.001 106.424 / 0.5);
+}
+
+/* Sidebar active state polish */
+#wpsms-app [data-slot="sidebar-menu-button"][data-active="true"] {
+  background-color: oklch(from var(--primary) l c h / 0.06);
+  color: var(--primary);
+}
+#wpsms-app [data-slot="sidebar-menu-button"][data-active="true"] svg {
+  color: var(--primary);
+}
+#wpsms-app [data-slot="sidebar-menu-button"]:not([data-active="true"]) svg {
+  color: oklch(from var(--muted-foreground) l c h / 0.7);
+}
+
+/* Sidebar header gradient separator */
+#wpsms-app [data-slot="sidebar-header"] {
+  border-image: linear-gradient(to right, var(--sidebar-border), transparent) 1;
 }
 
 /* Sidebar group label — uppercase, tracked */

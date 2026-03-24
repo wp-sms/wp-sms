@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/select';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
 import { Search, Settings, Star, ChevronDown } from 'lucide-react';
+import { getGatewayColor, getGatewayInitial } from '@/lib/gateway-visuals';
 import type { Gateway } from '@/lib/api';
 
 const FEATURE_LABELS: Record<string, string> = {
@@ -60,9 +61,14 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
     <Card active={gateway.is_configured}>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="text-base">{gateway.name}</CardTitle>
+          <div className="flex items-center gap-2.5">
+            <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-white text-sm font-semibold ${getGatewayColor(gateway.id)}`}>
+              {getGatewayInitial(gateway.name)}
+            </div>
+            <CardTitle className="text-base">{gateway.name}</CardTitle>
+          </div>
           {gateway.is_configured
-            ? <Badge variant="default" className="text-xs">Active</Badge>
+            ? <Badge variant="success" dot className="text-xs">Active</Badge>
             : <Badge variant="outline" className="text-xs text-muted-foreground">Not configured</Badge>
           }
         </div>
@@ -93,7 +99,7 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
 
         <Button variant="outline" size="sm" onClick={onConfigure} className="w-full">
           <Settings className="h-4 w-4" />
-          Configure
+          {gateway.is_configured ? 'Settings' : 'Set Up'}
         </Button>
       </CardContent>
     </Card>

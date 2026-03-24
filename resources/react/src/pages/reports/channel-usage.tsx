@@ -33,10 +33,10 @@ function MethodChart({ title, description, items }: { title: string; description
         <div className="h-56">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={items} margin={{ top: 4, right: 12, left: 0, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
+              <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" vertical={false} />
               <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
               <YAxis fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
-              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid hsl(var(--border))' }} />
+              <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, border: 'none', backgroundColor: 'oklch(0.147 0.004 49.25)', color: '#fff' }} itemStyle={{ color: '#fff' }} />
               <Bar dataKey="count" name="Count" fill="hsl(var(--chart-1))" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>

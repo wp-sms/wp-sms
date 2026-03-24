@@ -52,7 +52,7 @@ export function ActivityChart({ data }: ActivityChartProps) {
                   <stop offset="95%" stopColor="hsl(var(--chart-3))" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" />
+              <CartesianGrid strokeDasharray="3 3" className="stroke-border/50" vertical={false} />
               <XAxis
                 dataKey="date"
                 fontSize={12}
@@ -62,7 +62,9 @@ export function ActivityChart({ data }: ActivityChartProps) {
               />
               <YAxis fontSize={12} tickLine={false} axisLine={false} allowDecimals={false} />
               <Tooltip
-                contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid hsl(var(--border))' }}
+                contentStyle={{ fontSize: 12, borderRadius: 8, border: 'none', backgroundColor: 'oklch(0.147 0.004 49.25)', color: '#fff' }}
+                labelStyle={{ color: '#fff', marginBottom: 4 }}
+                itemStyle={{ color: '#fff' }}
                 labelFormatter={formatTooltipLabel}
               />
               <Legend verticalAlign="top" height={36} iconType="circle" />

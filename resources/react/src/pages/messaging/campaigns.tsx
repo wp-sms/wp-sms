@@ -10,7 +10,6 @@ import { Badge } from '@/components/ui/badge';
 import { EmptyState } from '@/components/ui/empty-state';
 import { DataTable } from '@/components/ui/data-table';
 import { PageSection } from '@/components/ui/page-section';
-import { Field, FieldLabel } from '@/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -138,17 +137,15 @@ export function Campaigns() {
         }
       >
           <div className="mb-4 flex items-center gap-3">
-            <Field>
-              <FieldLabel htmlFor="filter-status">Status</FieldLabel>
               <Select
                 value={filters.status || 'all'}
                 onValueChange={(v) => setFilter('status', v === 'all' ? '' : v)}
               >
-                <SelectTrigger id="filter-status" className="w-40">
-                  <SelectValue />
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="All Statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="all">All Statuses</SelectItem>
                   <SelectItem value="draft">Draft</SelectItem>
                   <SelectItem value="scheduled">Scheduled</SelectItem>
                   <SelectItem value="sending">Sending</SelectItem>
@@ -158,24 +155,29 @@ export function Campaigns() {
                   <SelectItem value="failed">Failed</SelectItem>
                 </SelectContent>
               </Select>
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="filter-channel">Channel</FieldLabel>
               <Select
                 value={filters.channel || 'all'}
                 onValueChange={(v) => setFilter('channel', v === 'all' ? '' : v)}
               >
-                <SelectTrigger id="filter-channel" className="w-40">
-                  <SelectValue />
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="All Channels" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
+                  <SelectItem value="all">All Channels</SelectItem>
                   {Object.entries(CHANNEL_LABELS).map(([value, label]) => (
                     <SelectItem key={value} value={value}>{label}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
-            </Field>
+              {(filters.status || filters.channel) && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => { setFilter('status', ''); setFilter('channel', ''); }}
+                >
+                  Clear filters
+                </Button>
+              )}
           </div>
 
           <DataTable
@@ -216,7 +218,7 @@ export function Campaigns() {
                     <TableRow key={campaign.id} className="even:bg-muted/30">
                       <TableCell className="font-medium">
                         <button
-                          className="text-left hover:underline"
+                          className="text-left text-primary/80 transition-colors hover:text-primary"
                           onClick={() => setView({ mode: 'detail', campaign })}
                         >
                           {campaign.name}

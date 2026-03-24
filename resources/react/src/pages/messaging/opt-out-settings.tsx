@@ -25,11 +25,13 @@ interface OptOutSettings {
 
 interface SettingsResponse {
   success: boolean;
-  settings: OptOutSettings;
-  defaults: {
-    stop_keywords: string[];
-    start_keywords: string[];
-    help_keywords: string[];
+  data: {
+    settings: OptOutSettings;
+    defaults: {
+      stop_keywords: string[];
+      start_keywords: string[];
+      help_keywords: string[];
+    };
   };
 }
 
@@ -47,9 +49,9 @@ export function OptOutSettings() {
     api.get<SettingsResponse>('optout/settings')
       .then((res) => {
         if (cancelled) return;
-        setSaved(res.settings);
-        setDraft(res.settings);
-        setDefaults(res.defaults);
+        setSaved(res.data.settings);
+        setDraft(res.data.settings);
+        setDefaults(res.data.defaults);
       })
       .catch(() => {
         if (!cancelled) toast.error('Failed to load opt-out settings');
@@ -73,8 +75,8 @@ export function OptOutSettings() {
     setSaving(true);
     try {
       const res = await api.put<SettingsResponse>('optout/settings', draft);
-      setSaved(res.settings);
-      setDraft(res.settings);
+      setSaved(res.data.settings);
+      setDraft(res.data.settings);
       toast.success('Settings saved');
     } catch {
       toast.error('Failed to save settings');

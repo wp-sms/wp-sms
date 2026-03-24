@@ -31,13 +31,24 @@ const badgeVariants = cva(
   }
 )
 
+const DOT_COLORS: Partial<Record<string, string>> = {
+  success: "bg-emerald-500",
+  warning: "bg-amber-500",
+  info: "bg-blue-500",
+  destructive: "bg-destructive",
+  default: "bg-primary-foreground",
+  purple: "bg-purple-500",
+}
+
 function Badge({
   className,
   variant = "default",
+  dot,
   asChild = false,
+  children,
   ...props
 }: React.ComponentProps<"span"> &
-  VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+  VariantProps<typeof badgeVariants> & { asChild?: boolean; dot?: boolean }) {
   const Comp = asChild ? Slot.Root : "span"
 
   return (
@@ -46,7 +57,18 @@ function Badge({
       data-variant={variant}
       className={cn(badgeVariants({ variant }), className)}
       {...props}
-    />
+    >
+      {dot && (
+        <span
+          className={cn(
+            "h-1.5 w-1.5 shrink-0 rounded-full",
+            DOT_COLORS[variant ?? "default"] ?? "bg-current",
+            variant === "success" && "animate-pulse"
+          )}
+        />
+      )}
+      {children}
+    </Comp>
   )
 }
 

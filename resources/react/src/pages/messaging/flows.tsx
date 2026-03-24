@@ -284,12 +284,17 @@ export function Flows() {
                 {flows.map((flow) => (
                   <TableRow key={flow.id} className="even:bg-muted/30">
                     <TableCell className="font-medium">{flow.name}</TableCell>
-                    <TableCell className="text-sm">{formatLabel(flow.trigger_type)}</TableCell>
+                    <TableCell className="text-sm">
+                      <span className="inline-flex items-center gap-1.5">
+                        {(() => { const TIcon = getTriggerIcon(flow.trigger_type); return <TIcon className="h-3.5 w-3.5 text-muted-foreground" />; })()}
+                        {formatLabel(flow.trigger_type)}
+                      </span>
+                    </TableCell>
                     <TableCell>
                       {flow.status === 'active' ? (
-                        <Badge variant="success">Active</Badge>
+                        <Badge variant="success" dot>Active</Badge>
                       ) : flow.status === 'paused' ? (
-                        <Badge variant="warning">Paused</Badge>
+                        <Badge variant="warning" dot>Paused</Badge>
                       ) : (
                         <Badge variant="secondary">Draft</Badge>
                       )}

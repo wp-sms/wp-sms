@@ -409,7 +409,7 @@ export function AppShell({ activeSection, onNavigate, version, area, children, n
       </Sidebar>
 
       <SidebarInset>
-        <header className="flex h-14 items-center gap-2 border-b px-6">
+        <header className="flex h-14 items-center gap-2 border-b border-border/60 px-6" style={{ boxShadow: '0 1px 2px 0 oklch(0.147 0.004 49.25 / 0.03)' }}>
           <SidebarTrigger className="-ml-1" />
           <Breadcrumb>
             <BreadcrumbList>
@@ -417,7 +417,7 @@ export function AppShell({ activeSection, onNavigate, version, area, children, n
             </BreadcrumbList>
           </Breadcrumb>
         </header>
-        <div className="p-6">
+        <div key={activeSection} className="animate-fade-up p-6">
           {pageTitle && (
             <h1 className="text-lg font-semibold tracking-tight">{pageTitle}</h1>
           )}
@@ -428,7 +428,7 @@ export function AppShell({ activeSection, onNavigate, version, area, children, n
           )}
           {children}
         </div>
-        <footer className="mt-auto border-t border-border/60 px-6 py-4">
+        <footer className="mt-auto border-t border-border/40 px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/[0.08]">
@@ -446,7 +446,7 @@ export function AppShell({ activeSection, onNavigate, version, area, children, n
                 </span>
               </div>
             </div>
-            <nav className="flex items-center gap-4 text-[11px] text-muted-foreground/50">
+            <nav className="flex items-center gap-4 text-[11px] text-muted-foreground/40">
               <a href="https://wsms.io/docs" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">Docs</a>
               <a href="https://wsms.io/support" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">Support</a>
               <a href="https://wsms.io" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">wsms.io</a>

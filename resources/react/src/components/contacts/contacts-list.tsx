@@ -14,7 +14,14 @@ import { ContactFormPanel } from './contact-form-panel';
 import { ContactDetailPanel } from './contact-detail-panel';
 import { BulkActionBar } from './bulk-action-bar';
 import { ExportDialog } from './export-dialog';
-import { Plus, Search, Users, Pencil, Trash2, Eye, Upload, Download } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Plus, Search, Users, Pencil, Trash2, Eye, Upload, Download, MoreHorizontal } from 'lucide-react';
 import { CONTACT_STATUSES, formatLabel } from '@/lib/constants';
 import { SourceLabel } from './source-label';
 import { toast } from 'sonner';
@@ -178,7 +185,7 @@ export function ContactsList({ hook, tags, onImport }: ContactsListProps) {
                   <TableHead>Phone</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Source</TableHead>
-                  <TableHead className="w-24">Actions</TableHead>
+                  <TableHead className="w-[70px]" />
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -193,9 +200,12 @@ export function ContactsList({ hook, tags, onImport }: ContactsListProps) {
                     <TableCell>
                       <button
                         type="button"
-                        className="font-medium hover:text-primary hover:underline text-left"
+                        className="inline-flex items-center gap-2 font-medium text-left transition-colors hover:text-primary"
                         onClick={() => handleViewDetail(contact.id)}
                       >
+                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-medium text-primary">
+                          {(contact.first_name?.[0] || contact.email?.[0] || '?').toUpperCase()}
+                        </span>
                         {[contact.first_name, contact.last_name].filter(Boolean).join(' ') || '\u2014'}
                       </button>
                     </TableCell>
@@ -210,23 +220,31 @@ export function ContactsList({ hook, tags, onImport }: ContactsListProps) {
                       {contact.source ? <SourceLabel source={contact.source} sourceRef={contact.source_ref} showPrefix={false} /> : '\u2014'}
                     </TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleViewDetail(contact.id)} title="View">
-                          <Eye className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleEdit(contact)} title="Edit">
-                          <Pencil className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-                          onClick={() => void handleDelete(contact.id)}
-                          title="Delete"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => handleViewDetail(contact.id)}>
+                            <Eye className="h-4 w-4 mr-2" />
+                            View
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleEdit(contact)}>
+                            <Pencil className="h-4 w-4 mr-2" />
+                            Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem
+                            onClick={() => void handleDelete(contact.id)}
+                            className="text-destructive focus:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 ))}

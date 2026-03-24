@@ -12,7 +12,7 @@ export function SaveBar({ isDirty, saveStatus, onSave }: SaveBarProps) {
   if (!isDirty && saveStatus !== 'saving') return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-primary/20 bg-background px-6 py-3" style={{ boxShadow: 'var(--shadow-save-bar)' }}>
+    <div className="fixed bottom-0 left-0 right-0 z-50 border-t-2 border-t-primary bg-background px-6 py-3 animate-slide-up" style={{ boxShadow: 'var(--shadow-save-bar)' }}>
       <div className="mx-auto flex max-w-5xl items-center justify-between">
         <div className="flex items-center gap-2 text-sm">
           {saveStatus === 'saving' ? (
