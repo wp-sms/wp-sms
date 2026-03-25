@@ -1,4 +1,4 @@
-= v7.2.2 - 2026-03-23 =
+= v7.2.2 - 2026-03-** =
 - **Enhancement:** Added phone number normalization wizard to standardize numbers with country code for reliable delivery.
 - **Fix:** Improved validation error messages in settings to show which field caused the failure.
 
