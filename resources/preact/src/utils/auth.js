@@ -4,7 +4,6 @@ import { getBaseUrl } from './urls';
 
 export function handleAuthResponse(res, _route) {
     if (res.status === 'authenticated') {
-        clearAuth();
         if (res.meta?.grace_period) {
             sessionStorage.setItem('wsms_grace_period', JSON.stringify(res.meta.grace_period));
         }
@@ -13,7 +12,6 @@ export function handleAuthResponse(res, _route) {
     }
 
     if (res.status === 'mfa_enrollment_required') {
-        clearAuth();
         window.location.href = getBaseUrl() + '/security?mfa_enroll=required';
         return 'mfa_enrollment_required';
     }
