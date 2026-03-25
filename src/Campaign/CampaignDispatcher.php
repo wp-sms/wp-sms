@@ -100,7 +100,7 @@ class CampaignDispatcher
             return;
         }
 
-        $gatewayId = $campaign->getGatewayId();
+        $effectiveGatewayId = $campaign->getGatewayId() ?? 'default';
         $batch = $this->audienceResolver->resolve(
             $campaign->getAudience(),
             $campaign->getChannel(),
@@ -125,7 +125,19 @@ class CampaignDispatcher
         $quietHours = $campaign->getQuietHours();
         $isQuiet = $quietHours && $this->quietHoursGuard->isQuietNow($quietHours);
 
+        // Read throttle capacity once (1 DB read) instead of per-recipient
+        $throttleStatus = $this->throttler->remaining($effectiveGatewayId);
+        $remainingCapacity = $throttleStatus['remaining'];
+        $retryAfter = $throttleStatus['retry_after'];
+        $lastProcessedId = $afterId;
+        $throttled = $remainingCapacity === 0;
+        $queuedCount = 0;
+
         foreach ($batch->recipients as $recipient) {
+            if ($throttled) {
+                break;
+            }
+
             $recipientAddress = $recipient['recipient'] ?? '';
             if ($recipientAddress === '' || isset($alreadySent[$recipientAddress])) {
                 continue;
@@ -147,7 +159,7 @@ class CampaignDispatcher
 
             if ($isQuiet) {
                 $this->messageLogger->logSend(
-                    gatewayId: $gatewayId ?? 'default',
+                    gatewayId: $effectiveGatewayId,
                     channel: $campaign->getChannel(),
                     recipient: $recipientAddress,
                     body: $body,
@@ -157,7 +169,13 @@ class CampaignDispatcher
                     campaignId: $campaignId,
                 );
                 $sentInBatch++;
+                $lastProcessedId = $recipient['contact_id'] ?? $lastProcessedId;
                 continue;
+            }
+
+            if ($queuedCount >= $remainingCapacity) {
+                $throttled = true;
+                break;
             }
 
             $message = new Message(
@@ -171,12 +189,19 @@ class CampaignDispatcher
             try {
                 $this->messageDispatcher->sendQueued($message);
                 $sentInBatch++;
+                $queuedCount++;
             } catch (\Throwable) {
                 $failedInBatch++;
             }
+
+            $lastProcessedId = $recipient['contact_id'] ?? $lastProcessedId;
         }
 
-        // Update campaign counters atomically
+        // Record throttle usage in one DB write
+        if ($queuedCount > 0) {
+            $this->throttler->incrementBy($effectiveGatewayId, $queuedCount);
+        }
+
         if ($sentInBatch > 0) {
             $this->campaignRepository->incrementCounters($campaignId, 'sent_count', $sentInBatch);
         }
@@ -184,13 +209,18 @@ class CampaignDispatcher
             $this->campaignRepository->incrementCounters($campaignId, 'failed_count', $failedInBatch);
         }
 
-        // Update cursor
-        if ($batch->lastId) {
-            $this->campaignRepository->updateLastProcessedId($campaignId, $batch->lastId);
+        // Update cursor to where we actually stopped
+        if ($lastProcessedId && $lastProcessedId !== $afterId) {
+            $this->campaignRepository->updateLastProcessedId($campaignId, $lastProcessedId);
         }
 
-        // Queue next batch or complete
-        if ($batch->hasMore) {
+        if ($throttled) {
+            // Re-queue from where we stopped, delayed until the throttle window resets
+            $this->queue->schedule(
+                new ProcessCampaignBatchJob($campaignId, $lastProcessedId, $batchSize),
+                new \DateTimeImmutable('+' . $retryAfter . ' seconds'),
+            );
+        } elseif ($batch->hasMore) {
             $this->queue->dispatch(new ProcessCampaignBatchJob(
                 $campaignId,
                 $batch->lastId,

@@ -45,6 +45,30 @@ class GatewayThrottler
     }
 
     /**
+     * Read remaining capacity without incrementing the counter.
+     *
+     * @return array{remaining: int, retry_after: int}
+     */
+    public function remaining(string $gatewayId, int $rateLimit = self::DEFAULT_RATE, int $window = self::DEFAULT_WINDOW): array
+    {
+        $key = 'wsms_throttle_' . $gatewayId;
+        $data = get_transient($key);
+        $now = time();
+
+        if ($data === false || ($now - ($data['window_start'] ?? $now)) >= $window) {
+            return ['remaining' => $rateLimit, 'retry_after' => 0];
+        }
+
+        $count = $data['count'] ?? 0;
+        if ($count >= $rateLimit) {
+            $retryAfter = $window - ($now - ($data['window_start'] ?? $now));
+            return ['remaining' => 0, 'retry_after' => max(1, $retryAfter)];
+        }
+
+        return ['remaining' => $rateLimit - $count, 'retry_after' => 0];
+    }
+
+    /**
      * Increment the counter by a batch amount.
      */
     public function incrementBy(string $gatewayId, int $amount, int $window = self::DEFAULT_WINDOW): void
