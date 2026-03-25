@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { PageSection } from '@/components/ui/page-section';
+import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -46,6 +46,7 @@ import { useLists } from '@/hooks/use-lists';
 import { copyToClipboard, generateSlug } from '@/lib/utils';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/error-utils';
+import { pluralize } from '@/lib/utils';
 import type { SubscriptionFormField } from '@/lib/api';
 
 const AVAILABLE_FIELDS = [
@@ -194,102 +195,103 @@ export function SubscriptionForms() {
 
   return (
     <>
-      <PageSection
-        icon={ClipboardList}
-        title="Subscription Forms"
-        description={<>{forms.length} {forms.length === 1 ? 'form' : 'forms'} total</>}
-        actions={
-          <Button onClick={openCreate} size="sm">
-            <Plus className="mr-1 h-3.5 w-3.5" />
-            Create Form
-          </Button>
-        }
-      >
-          <DataTable
-            loading={loading}
-            isEmpty={forms.length === 0}
-            empty={
-              <EmptyState
-                icon={ClipboardList}
-                title="No subscription forms yet"
-                description="Create your first subscription form to collect contacts from visitors without requiring WordPress registration."
-                action={
-                  <Button onClick={openCreate} size="sm">
-                    <Plus className="mr-1 h-3.5 w-3.5" />
-                    Create Form
-                  </Button>
-                }
-              />
-            }
-          >
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Slug</TableHead>
-                  <TableHead>Fields</TableHead>
-                  <TableHead>Double Opt-in</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="w-[70px]" />
+      <div className="space-y-4">
+        <PageHeader
+          icon={ClipboardList}
+          title="Subscription Forms"
+          metadata={pluralize(forms.length, 'form')}
+          actions={
+            <Button onClick={openCreate} size="sm">
+              <Plus className="mr-1 h-3.5 w-3.5" />
+              Create Form
+            </Button>
+          }
+        />
+        <DataTable
+          loading={loading}
+          isEmpty={forms.length === 0}
+          empty={
+            <EmptyState
+              icon={ClipboardList}
+              title="No subscription forms yet"
+              description="Create your first subscription form to collect contacts from visitors without requiring WordPress registration."
+              action={
+                <Button onClick={openCreate} size="sm">
+                  <Plus className="mr-1 h-3.5 w-3.5" />
+                  Create Form
+                </Button>
+              }
+            />
+          }
+        >
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Slug</TableHead>
+                <TableHead>Fields</TableHead>
+                <TableHead>Double Opt-in</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="w-[70px]" />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {forms.map((form) => (
+                <TableRow key={form.id}>
+                  <TableCell className="font-medium">{form.name}</TableCell>
+                  <TableCell>
+                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{form.slug}</code>
+                  </TableCell>
+                  <TableCell>{form.fields.length} fields</TableCell>
+                  <TableCell>
+                    {form.double_optin ? (
+                      <Badge variant="outline">{form.optin_channel}</Badge>
+                    ) : (
+                      <span className="text-muted-foreground text-sm">Off</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={form.status === 'active' ? 'success' : 'secondary'}>
+                      {form.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => openEdit(form)}>
+                          <Pencil className="h-4 w-4 mr-2" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => copyShortcode(form.slug)}>
+                          <ClipboardCopy className="h-4 w-4 mr-2" />
+                          Copy Shortcode
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => duplicate(form.id)}>
+                          <Copy className="h-4 w-4 mr-2" />
+                          Duplicate
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => handleDelete(form.id)}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {forms.map((form) => (
-                  <TableRow key={form.id}>
-                    <TableCell className="font-medium">{form.name}</TableCell>
-                    <TableCell>
-                      <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{form.slug}</code>
-                    </TableCell>
-                    <TableCell>{form.fields.length} fields</TableCell>
-                    <TableCell>
-                      {form.double_optin ? (
-                        <Badge variant="outline">{form.optin_channel}</Badge>
-                      ) : (
-                        <span className="text-muted-foreground text-sm">Off</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={form.status === 'active' ? 'success' : 'secondary'}>
-                        {form.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => openEdit(form)}>
-                            <Pencil className="h-4 w-4 mr-2" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => copyShortcode(form.slug)}>
-                            <ClipboardCopy className="h-4 w-4 mr-2" />
-                            Copy Shortcode
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => duplicate(form.id)}>
-                            <Copy className="h-4 w-4 mr-2" />
-                            Duplicate
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(form.id)}
-                            className="text-destructive focus:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </DataTable>
-      </PageSection>
+              ))}
+            </TableBody>
+          </Table>
+        </DataTable>
+      </div>
 
       <Drawer open={panelOpen} onOpenChange={setPanelOpen}>
         <DrawerContent className="sm:max-w-lg overflow-y-auto">

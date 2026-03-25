@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { EmptyState } from '@/components/ui/empty-state';
 import { DataTable } from '@/components/ui/data-table';
-import { PageSection } from '@/components/ui/page-section';
+import { PageHeader } from '@/components/layout/page-header';
 import { Field, FieldLabel } from '@/components/ui/field';
 import {
   Select,
@@ -46,6 +46,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { formatLabel } from '@/lib/constants';
+import { pluralize } from '@/lib/utils';
 import { countSteps } from '@/lib/flow-utils';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
@@ -213,10 +214,10 @@ export function Flows() {
 
   return (
     <div className="space-y-4">
-      <PageSection
+      <PageHeader
         icon={Workflow}
         title="Automation Flows"
-        description={<>{total} {total === 1 ? 'flow' : 'flows'} total</>}
+        metadata={pluralize(total, 'flow')}
         actions={
           <div className="flex items-center gap-2">
             {!templatesLoading && templates.length > 0 && (
@@ -231,128 +232,127 @@ export function Flows() {
             </Button>
           </div>
         }
-      >
-          <div className="mb-4">
-            <Field>
-              <FieldLabel htmlFor="filter-status">Status</FieldLabel>
-              <Select
-                value={filters.status || 'all'}
-                onValueChange={(v) => setFilter('status', v === 'all' ? '' : v)}
-              >
-                <SelectTrigger id="filter-status" className="w-40">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="draft">Draft</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="paused">Paused</SelectItem>
-                </SelectContent>
-              </Select>
-            </Field>
-          </div>
-
-          <DataTable
-            loading={loading}
-            isEmpty={flows.length === 0}
-            empty={
-              <EmptyState
-                icon={Workflow}
-                title="No flows found"
-                description="Create your first automation flow to get started."
-                action={
-                  <Button size="sm" onClick={() => setView({ mode: 'create' })}>
-                    <Plus className="mr-1.5 h-3.5 w-3.5" />
-                    New Flow
-                  </Button>
-                }
-              />
-            }
-            pagination={{ page, totalPages, onPageChange: setPage }}
+      />
+      <div>
+        <Field>
+          <FieldLabel htmlFor="filter-status">Status</FieldLabel>
+          <Select
+            value={filters.status || 'all'}
+            onValueChange={(v) => setFilter('status', v === 'all' ? '' : v)}
           >
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Trigger</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Published</TableHead>
-                  <TableHead className="w-[70px]" />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {flows.map((flow) => (
-                  <TableRow key={flow.id} className="even:bg-muted/30">
-                    <TableCell className="font-medium">{flow.name}</TableCell>
-                    <TableCell className="text-sm">
-                      <span className="inline-flex items-center gap-1.5">
-                        {(() => { const TIcon = getTriggerIcon(flow.trigger_type); return <TIcon className="h-3.5 w-3.5 text-muted-foreground" />; })()}
-                        {formatLabel(flow.trigger_type)}
-                      </span>
-                    </TableCell>
-                    <TableCell>
+            <SelectTrigger id="filter-status" className="w-40">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="draft">Draft</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="paused">Paused</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
+      </div>
+
+      <DataTable
+        loading={loading}
+        isEmpty={flows.length === 0}
+        empty={
+          <EmptyState
+            icon={Workflow}
+            title="No flows found"
+            description="Create your first automation flow to get started."
+            action={
+              <Button size="sm" onClick={() => setView({ mode: 'create' })}>
+                <Plus className="mr-1.5 h-3.5 w-3.5" />
+                New Flow
+              </Button>
+            }
+          />
+        }
+        pagination={{ page, totalPages, onPageChange: setPage }}
+      >
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Trigger</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Published</TableHead>
+              <TableHead className="w-[70px]" />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {flows.map((flow) => (
+              <TableRow key={flow.id} className="even:bg-muted/30">
+                <TableCell className="font-medium">{flow.name}</TableCell>
+                <TableCell className="text-sm">
+                  <span className="inline-flex items-center gap-1.5">
+                    {(() => { const TIcon = getTriggerIcon(flow.trigger_type); return <TIcon className="h-3.5 w-3.5 text-muted-foreground" />; })()}
+                    {formatLabel(flow.trigger_type)}
+                  </span>
+                </TableCell>
+                <TableCell>
+                  {flow.status === 'active' ? (
+                    <Badge variant="success" dot>Active</Badge>
+                  ) : flow.status === 'paused' ? (
+                    <Badge variant="warning" dot>Paused</Badge>
+                  ) : (
+                    <Badge variant="secondary">Draft</Badge>
+                  )}
+                </TableCell>
+                <TableCell className="text-sm">
+                  {flow.published_at ? formatDate(flow.published_at) : '\u2014'}
+                </TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => setView({ mode: 'edit', flow })}>
+                        <Pencil className="h-4 w-4 mr-2" />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setView({ mode: 'edit', flow, tab: 'history' })}>
+                        <History className="h-4 w-4 mr-2" />
+                        Execution History
+                      </DropdownMenuItem>
                       {flow.status === 'active' ? (
-                        <Badge variant="success" dot>Active</Badge>
-                      ) : flow.status === 'paused' ? (
-                        <Badge variant="warning" dot>Paused</Badge>
+                        <DropdownMenuItem
+                          onClick={() => void handleDeactivate(flow.id)}
+                          disabled={deactivating === flow.id}
+                        >
+                          <Pause className="h-4 w-4 mr-2" />
+                          Pause
+                        </DropdownMenuItem>
                       ) : (
-                        <Badge variant="secondary">Draft</Badge>
+                        <DropdownMenuItem
+                          onClick={() => void handlePublish(flow.id)}
+                          disabled={publishing === flow.id}
+                        >
+                          <Rocket className="h-4 w-4 mr-2" />
+                          Publish
+                        </DropdownMenuItem>
                       )}
-                    </TableCell>
-                    <TableCell className="text-sm">
-                      {flow.published_at ? formatDate(flow.published_at) : '\u2014'}
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => setView({ mode: 'edit', flow })}>
-                            <Pencil className="h-4 w-4 mr-2" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => setView({ mode: 'edit', flow, tab: 'history' })}>
-                            <History className="h-4 w-4 mr-2" />
-                            Execution History
-                          </DropdownMenuItem>
-                          {flow.status === 'active' ? (
-                            <DropdownMenuItem
-                              onClick={() => void handleDeactivate(flow.id)}
-                              disabled={deactivating === flow.id}
-                            >
-                              <Pause className="h-4 w-4 mr-2" />
-                              Pause
-                            </DropdownMenuItem>
-                          ) : (
-                            <DropdownMenuItem
-                              onClick={() => void handlePublish(flow.id)}
-                              disabled={publishing === flow.id}
-                            >
-                              <Rocket className="h-4 w-4 mr-2" />
-                              Publish
-                            </DropdownMenuItem>
-                          )}
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => void handleDelete(flow.id)}
-                            disabled={deleting === flow.id}
-                            className="text-destructive focus:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </DataTable>
-      </PageSection>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => void handleDelete(flow.id)}
+                        disabled={deleting === flow.id}
+                        className="text-destructive focus:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </DataTable>
 
       {/* Template picker dialog */}
       <Dialog open={showTemplates} onOpenChange={setShowTemplates}>

@@ -12,7 +12,8 @@ import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import type { ChannelId } from '@/lib/constants';
 import { GoogleIcon, TelegramIcon, AppleIcon, LinkedInIcon, FacebookIcon, MicrosoftIcon, GitHubIcon, TwitterIcon } from '@/components/icons/social';
 import { SOCIAL_METHODS } from '@/lib/constants';
-import { Smartphone, Mail, KeyRound, Fingerprint, Send, ExternalLink } from 'lucide-react';
+import { Smartphone, Mail, KeyRound, Fingerprint, Send, ExternalLink, LogIn } from 'lucide-react';
+import { PageHeader } from '@/components/layout/page-header';
 import type { AuthSettings, PhoneChannelSettings, EmailChannelSettings, TelegramSettings } from '@/lib/api';
 
 interface ChannelsProps {
@@ -97,7 +98,8 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
 
   return (
     <>
-      <div className="grid gap-6 lg:grid-cols-2">
+      <PageHeader icon={LogIn} title="Channels" />
+      <div className="mt-4 grid gap-6 lg:grid-cols-2">
         {/* Left Column — Sign-in Methods */}
         <div className="space-y-4">
           <Card>

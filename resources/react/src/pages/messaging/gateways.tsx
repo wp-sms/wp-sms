@@ -14,8 +14,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
-import { Search, Star, ChevronDown, ChevronRight } from 'lucide-react';
+import { Search, Star, ChevronDown, ChevronRight, Radio } from 'lucide-react';
+import { PageHeader } from '@/components/layout/page-header';
 import { getGatewayColor, getGatewayInitial } from '@/lib/gateway-visuals';
+import { pluralize } from '@/lib/utils';
 import type { Gateway } from '@/lib/api';
 
 const FEATURE_LABELS: Record<string, string> = {
@@ -173,6 +175,7 @@ export function Gateways() {
 
   return (
     <div className="space-y-6">
+      <PageHeader icon={Radio} title="Gateways" metadata={pluralize(gateways.length, 'gateway')} />
       {/* Channel Defaults */}
       {allChannels.length > 0 && (
         <Collapsible>

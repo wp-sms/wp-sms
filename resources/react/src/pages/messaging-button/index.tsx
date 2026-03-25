@@ -8,7 +8,8 @@ import { WidgetPreview } from './widget-preview';
 import { SaveBar } from '@/components/layout/save-bar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, MessageSquare } from 'lucide-react';
+import { PageHeader } from '@/components/layout/page-header';
 
 interface MessagingButtonPageProps {
   section: string;
@@ -52,7 +53,8 @@ export function MessagingButtonPage({ section }: MessagingButtonPageProps) {
 
   return (
     <>
-      <div className="flex gap-6">
+      <PageHeader icon={MessageSquare} title="Messaging Button" />
+      <div className="mt-4 flex gap-6">
         <div className="min-w-0 flex-1">
           {renderSection()}
         </div>

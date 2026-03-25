@@ -16,7 +16,8 @@ import type { FieldOption } from '@/lib/condition-utils';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
-import { Mail, MessageSquare, Send, Smartphone, Eye, RotateCcw, Settings, RefreshCw, AlertTriangle, ExternalLink } from 'lucide-react';
+import { Mail, MessageSquare, Send, Smartphone, Eye, RotateCcw, Settings, RefreshCw, AlertTriangle, ExternalLink, FileText } from 'lucide-react';
+import { PageHeader } from '@/components/layout/page-header';
 
 interface VariableInfo {
   name: string;
@@ -194,7 +195,9 @@ export function Templates() {
 
   return (
     <>
-      <div className="rounded-lg border border-border/50 divide-y divide-border/50">
+      <div className="space-y-4">
+        <PageHeader icon={FileText} title="Message Templates" />
+        <div className="rounded-lg border border-border/50 divide-y divide-border/50">
         {templates.map((template) => {
           const activeChannels = template.visible_channels;
           const customizedChannels = activeChannels.filter((ch) => template.channels[ch]?.override != null);
@@ -238,6 +241,7 @@ export function Templates() {
             </div>
           );
         })}
+        </div>
       </div>
 
       {editingTemplate && (

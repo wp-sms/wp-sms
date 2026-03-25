@@ -5,7 +5,8 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Plug } from 'lucide-react';
+import { PageHeader } from '@/components/layout/page-header';
 import { WooCommerce } from './woocommerce';
 import { CF7Verification } from './cf7-verification';
 import { getConfig } from '@/lib/api';
@@ -103,8 +104,10 @@ export function IntegrationsPage({ section: _section, settings, onUpdate }: Inte
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {AUTH_INTEGRATIONS.map((integration) => (
+    <div className="space-y-4">
+      <PageHeader icon={Plug} title="Integrations" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {AUTH_INTEGRATIONS.map((integration) => (
         <Card key={integration.id} className="flex flex-col">
           <CardHeader>
             <div className="flex items-center justify-between">
@@ -123,6 +126,7 @@ export function IntegrationsPage({ section: _section, settings, onUpdate }: Inte
           </CardContent>
         </Card>
       ))}
+      </div>
     </div>
   );
 }

@@ -163,45 +163,6 @@ export const NAV_ITEMS = [
   },
 ] as const;
 
-const SECTION_DESCRIPTIONS: Record<string, string> = {
-  'campaigns': 'Create and send broadcast messages to your audience segments.',
-  'flows': 'Create and manage automation flows with triggers and action steps.',
-  'contacts': 'Manage your contacts, tags, and segments for targeted messaging.',
-  'gateways': 'Configure messaging gateways for SMS, email, webhooks, and more.',
-  'apps': 'Browse available apps and their triggers and actions for automation flows.',
-  'message-logs': 'View sent messages, delivery status, and error details.',
-  'opt-out': 'Configure STOP/START keyword handling, auto-replies, and unsubscribe settings.',
-  'phone-restriction': 'Restrict phone numbers by country and number type for authentication and messaging.',
-  'mb-appearance': 'Customize the floating button style, colors, position, and widget header.',
-  'mb-pages': 'Configure widget pages: welcome screen, contact form, and resources.',
-  'mb-team': 'Manage team members displayed in the messaging widget.',
-  'mb-display-rules': 'Control where and when the messaging button appears on your site.',
-  'subscription-forms': 'Create embeddable forms to collect subscriber contacts with optional double opt-in verification.',
-  'general': 'Configure site-level settings like admin phone number and notification preferences.',
-  'channels': 'Configure authentication channels — Phone, Email, and Password.',
-  'profile-fields': 'Manage which fields appear on registration and profile forms.',
-  'registration-forms': 'Create multiple registration forms with different fields, roles, and verification settings.',
-  'templates': 'Customize the content of emails, SMS, and other messages sent by the authentication system.',
-  'mfa-policies': 'Manage MFA policies, backup codes, required roles, and enrollment timing.',
-  'rate-limiting': 'Configure rate limits to prevent brute-force attacks on OTP verification.',
-  'captcha': 'Add CAPTCHA verification to protect authentication endpoints from bots.',
-  'account-cleanup': 'Manage automatic cleanup of unverified pending registrations.',
-  'integrations': 'Manage third-party plugin integrations for authentication and verification.',
-  'branding': 'Customize the appearance and behavior of your authentication pages.',
-  'logs': 'View authentication events and configure logging preferences.',
-  'reports': 'View authentication activity statistics, security insights, and usage trends.',
-};
-
-function getPageTitle(sectionId: string, items: NavItemList): string | undefined {
-  for (const item of items) {
-    if (item.id === sectionId) return item.label;
-    if ('children' in item) {
-      const child = item.children.find((c) => c.id === sectionId);
-      if (child) return child.label;
-    }
-  }
-}
-
 /** Derive parent section from a child section ID, using NAV_ITEMS as the source of truth. */
 export function getParentSection(sectionId: string, items: NavItemList): string {
   for (const item of items) {
@@ -381,8 +342,6 @@ function NavMenu({ activeSection, onNavigate, navItems }: { activeSection: strin
 }
 
 export function AppShell({ activeSection, onNavigate, version, area, children, navItems }: AppShellProps) {
-  const pageTitle = getPageTitle(activeSection, navItems);
-  const pageDescription = SECTION_DESCRIPTIONS[activeSection];
 
   return (
     <SidebarProvider defaultOpen={SIDEBAR_DEFAULT_OPEN}>
@@ -418,14 +377,6 @@ export function AppShell({ activeSection, onNavigate, version, area, children, n
           </Breadcrumb>
         </header>
         <div key={activeSection} className="animate-fade-up p-6">
-          {pageTitle && (
-            <h1 className="text-lg font-semibold tracking-tight">{pageTitle}</h1>
-          )}
-          {pageDescription && (
-            <p className="mb-6 mt-1 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-              {pageDescription}
-            </p>
-          )}
           {children}
         </div>
         <footer className="mt-auto border-t border-border/40 px-6 py-3">

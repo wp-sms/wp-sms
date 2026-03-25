@@ -17,11 +17,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { ArrowLeft, Check, ChevronRight, Copy, Loader2, Plus, RefreshCw, Search, Trash2, X, Zap, Play, type LucideIcon } from 'lucide-react';
+import { ArrowLeft, Blocks, Check, ChevronRight, Copy, Loader2, Plus, RefreshCw, Search, Trash2, X, Zap, Play, type LucideIcon } from 'lucide-react';
+import { PageHeader } from '@/components/layout/page-header';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/error-utils';
 import { useConfirm } from '@/components/confirm-provider';
 import { AUTH_INTEGRATION_IDS, INTEGRATION_CATEGORY_LABELS } from '@/lib/constants';
+import { pluralize } from '@/lib/utils';
 import { api, getConfig } from '@/lib/api';
 import type { AuthSettings, ContactForm7Settings, IntegrationCapability, IntegrationDetail, JsonSchema, PlatformIntegration, ProviderList, SyncSettings, WebhookEndpoint } from '@/lib/api';
 
@@ -826,6 +828,7 @@ export function Apps({ settings, onUpdate }: AppsProps) {
 
   return (
     <div className="space-y-6">
+      <PageHeader icon={Blocks} title="Apps" metadata={pluralize(integrations.length, 'app')} />
       <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

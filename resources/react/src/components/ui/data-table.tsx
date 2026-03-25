@@ -35,7 +35,11 @@ export function DataTable({
   }
 
   if (isEmpty) {
-    return empty as React.ReactElement;
+    return (
+      <div className="rounded-lg border border-dashed border-border/50">
+        {empty}
+      </div>
+    );
   }
 
   return (

@@ -10,7 +10,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Settings2, List, Trash2 } from 'lucide-react';
+import { Settings2, List, Trash2, ScrollText } from 'lucide-react';
+import { PageHeader } from '@/components/layout/page-header';
 import { useConfirm } from '@/components/confirm-provider';
 import { LogTable } from '@/components/log-table';
 import { useLogs } from '@/hooks/use-logs';
@@ -45,6 +46,7 @@ export function LogsPage({ settings, onUpdate }: LogsPageProps) {
 
   return (
     <div className="space-y-4">
+      <PageHeader icon={ScrollText} title="Logs" />
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">

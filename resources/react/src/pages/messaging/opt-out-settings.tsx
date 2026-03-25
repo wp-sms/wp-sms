@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
-import { X } from 'lucide-react';
+import { X, BellOff } from 'lucide-react';
+import { PageHeader } from '@/components/layout/page-header';
 
 interface OptOutSettings {
   auto_reply_stop_enabled: boolean;
@@ -119,6 +120,7 @@ export function OptOutSettings() {
 
   return (
     <div className="space-y-6">
+      <PageHeader icon={BellOff} title="Opt-Out Settings" />
       {/* Auto-Reply Settings */}
       <Card>
         <CardHeader>

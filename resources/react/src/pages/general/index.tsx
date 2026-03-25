@@ -2,7 +2,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Field, FieldLabel, FieldDescription, SwitchField } from '@/components/ui/field';
 import { PageSection } from '@/components/ui/page-section';
-import { Phone, Globe, Scale } from 'lucide-react';
+import { PageHeader } from '@/components/layout/page-header';
+import { SlidersHorizontal, Phone, Globe, Scale } from 'lucide-react';
 import { SITE_PHONE_CHANNELS } from '@/lib/constants';
 import type { AuthSettings, SitePhoneChannel } from '@/lib/api';
 
@@ -16,6 +17,7 @@ export function GeneralPage({ settings, onUpdate }: GeneralPageProps) {
 
   return (
     <div className="space-y-4">
+      <PageHeader icon={SlidersHorizontal} title="General" />
       <PageSection
         icon={Globe}
         title="Auth Pages"

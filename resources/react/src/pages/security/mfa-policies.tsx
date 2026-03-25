@@ -10,7 +10,8 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { ShieldCheck, Clock, KeySquare, Monitor, TriangleAlert, Info } from 'lucide-react';
+import { ShieldCheck, Clock, KeySquare, Monitor, TriangleAlert, Info, Shield } from 'lucide-react';
+import { PageHeader } from '@/components/layout/page-header';
 import { RoleMatrix } from '@/components/role-matrix';
 import { ENROLLMENT_TIMING, TRUSTED_DEVICE_TTL_OPTIONS, toggleArrayItem } from '@/lib/constants';
 import { getConfig } from '@/lib/api';
@@ -45,6 +46,7 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
 
   return (
     <div className="space-y-4">
+      <PageHeader icon={Shield} title="MFA Policies" />
       {/* Backup Codes */}
       <Card active={settings.backup_codes.enabled}>
         <CardHeader>

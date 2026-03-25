@@ -3,6 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { Trash2 } from 'lucide-react';
+import { PageHeader } from '@/components/layout/page-header';
 import type { AuthSettings } from '@/lib/api';
 
 interface AccountCleanupProps {
@@ -22,6 +23,8 @@ export function AccountCleanup({ settings, onUpdate }: AccountCleanupProps) {
   const enabled = settings.pending_user_cleanup_enabled;
 
   return (
+    <div className="space-y-4">
+    <PageHeader icon={Trash2} title="Account Cleanup" />
     <Card active={enabled}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
@@ -60,5 +63,6 @@ export function AccountCleanup({ settings, onUpdate }: AccountCleanupProps) {
         </CardContent>
       )}
     </Card>
+    </div>
   );
 }

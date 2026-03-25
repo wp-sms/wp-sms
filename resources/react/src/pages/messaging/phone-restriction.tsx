@@ -16,8 +16,9 @@ import { Label } from '@/components/ui/label';
 import {
   Globe, ShieldBan, Database, Search as SearchIcon,
   Phone, X, Check, ChevronDown, AlertTriangle, Loader2,
-  Download, RefreshCw, Info, Smartphone,
+  Download, RefreshCw, Info, Smartphone, Ban,
 } from 'lucide-react';
+import { PageHeader } from '@/components/layout/page-header';
 import { toggleArrayItem, PHONE_DISPLAY_MODES, type PhoneDisplayMode } from '@/lib/constants';
 import { getErrorMessage } from '@/lib/error-utils';
 
@@ -165,6 +166,7 @@ export function PhoneRestriction() {
 
   return (
     <div className="space-y-6">
+      <PageHeader icon={Ban} title="Phone Restrictions" />
       <PhoneInputConfigCard
         draft={draft}
         countries={countries}

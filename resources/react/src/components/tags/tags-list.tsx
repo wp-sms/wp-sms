@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import type { UseTagsReturn } from '@/hooks/use-tags';
+import { useCreateTrigger } from '@/hooks/use-create-trigger';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -12,12 +13,17 @@ import { useConfirm } from '@/components/confirm-provider';
 
 interface TagsListProps {
   hook: UseTagsReturn;
+  embedded?: boolean;
+  createTrigger?: number;
 }
 
-export function TagsList({ hook }: TagsListProps) {
+export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
   const { tags, loading, createTag, updateTag, deleteTag } = hook;
   const [editing, setEditing] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+
+  const startCreating = useCallback(() => setCreating(true), []);
+  useCreateTrigger(createTrigger, startCreating);
 
   const handleCreate = async (data: { name: string; slug: string; color: string }) => {
     await createTag(data);
@@ -45,6 +51,87 @@ export function TagsList({ hook }: TagsListProps) {
     toast.success('Tag deleted.');
   };
 
+  const content = (
+    <>
+      {creating && (
+        <div className="mb-4 rounded-lg border p-3">
+          <TagForm onSave={handleCreate} onCancel={() => setCreating(false)} />
+        </div>
+      )}
+
+      <DataTable
+        loading={loading}
+        skeletonRows={3}
+        isEmpty={tags.length === 0 && !creating}
+        empty={
+          <EmptyState
+            icon={Tags}
+            title="No tags yet"
+            description="Create tags to organize your contacts."
+            action={
+              <Button size="sm" onClick={() => setCreating(true)}>
+                <Plus className="mr-1.5 h-3.5 w-3.5" /> New Tag
+              </Button>
+            }
+          />
+        }
+      >
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Color</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Slug</TableHead>
+              <TableHead>Contacts</TableHead>
+              <TableHead className="w-20">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {tags.map((tag) => (
+              <TableRow key={tag.id} className="even:bg-muted/30">
+                {editing === tag.id ? (
+                  <TableCell colSpan={5}>
+                    <TagForm
+                      initial={{ name: tag.name, slug: tag.slug, color: tag.color }}
+                      onSave={(data) => void handleUpdate(tag.id, data)}
+                      onCancel={() => setEditing(null)}
+                    />
+                  </TableCell>
+                ) : (
+                  <>
+                    <TableCell>
+                      <span className="inline-block h-4 w-4 rounded-full" style={{ backgroundColor: tag.color }} />
+                    </TableCell>
+                    <TableCell className="font-medium">{tag.name}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{tag.slug}</TableCell>
+                    <TableCell className="text-sm">{tag.contact_count ?? 0}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => setEditing(tag.id)}>
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-7 w-7 p-0 text-destructive hover:text-destructive"
+                          onClick={() => void handleDelete(tag.id)}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </>
+                )}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </DataTable>
+    </>
+  );
+
+  if (embedded) return content;
+
   return (
     <PageSection
       icon={Tags}
@@ -56,80 +143,7 @@ export function TagsList({ hook }: TagsListProps) {
         </Button>
       }
     >
-        {creating && (
-          <div className="mb-4 rounded-lg border p-3">
-            <TagForm onSave={handleCreate} onCancel={() => setCreating(false)} />
-          </div>
-        )}
-
-        <DataTable
-          loading={loading}
-          skeletonRows={3}
-          isEmpty={tags.length === 0 && !creating}
-          empty={
-            <EmptyState
-              icon={Tags}
-              title="No tags yet"
-              description="Create tags to organize your contacts."
-              action={
-                <Button size="sm" onClick={() => setCreating(true)}>
-                  <Plus className="mr-1.5 h-3.5 w-3.5" /> New Tag
-                </Button>
-              }
-            />
-          }
-        >
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Color</TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Slug</TableHead>
-                <TableHead>Contacts</TableHead>
-                <TableHead className="w-20">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {tags.map((tag) => (
-                <TableRow key={tag.id} className="even:bg-muted/30">
-                  {editing === tag.id ? (
-                    <TableCell colSpan={5}>
-                      <TagForm
-                        initial={{ name: tag.name, slug: tag.slug, color: tag.color }}
-                        onSave={(data) => void handleUpdate(tag.id, data)}
-                        onCancel={() => setEditing(null)}
-                      />
-                    </TableCell>
-                  ) : (
-                    <>
-                      <TableCell>
-                        <span className="inline-block h-4 w-4 rounded-full" style={{ backgroundColor: tag.color }} />
-                      </TableCell>
-                      <TableCell className="font-medium">{tag.name}</TableCell>
-                      <TableCell className="text-sm text-muted-foreground">{tag.slug}</TableCell>
-                      <TableCell className="text-sm">{tag.contact_count ?? 0}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => setEditing(tag.id)}>
-                            <Pencil className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-                            onClick={() => void handleDelete(tag.id)}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </>
-                  )}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </DataTable>
+      {content}
     </PageSection>
   );
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { PageSection } from '@/components/ui/page-section';
+import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -47,6 +47,7 @@ import { copyToClipboard, generateSlug, getAvailableRoles } from '@/lib/utils';
 import { SYSTEM_FIELD_OPTIONS } from '@/lib/constants';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/error-utils';
+import { pluralize } from '@/lib/utils';
 
 interface FormEditorState {
   name: string;
@@ -198,106 +199,107 @@ export function RegistrationForms() {
 
   return (
     <>
-      <PageSection
-        icon={FileText}
-        title="Registration Forms"
-        description={<>{forms.length} {forms.length === 1 ? 'form' : 'forms'} total</>}
-        actions={
-          <Button onClick={openCreate} size="sm">
-            <Plus className="mr-1 h-3.5 w-3.5" />
-            Create Form
-          </Button>
-        }
-      >
-          <DataTable
-            loading={loading}
-            isEmpty={forms.length === 0}
-            empty={
-              <EmptyState
-                icon={FileText}
-                title="No registration forms yet"
-                description="Create your first registration form to collect different information for different user types."
-                action={
-                  <Button onClick={openCreate} size="sm">
-                    <Plus className="mr-1 h-3.5 w-3.5" />
-                    Create Form
-                  </Button>
-                }
-              />
-            }
-          >
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Slug</TableHead>
-                  <TableHead>Fields</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="w-[70px]" />
+      <div className="space-y-4">
+        <PageHeader
+          icon={FileText}
+          title="Registration Forms"
+          metadata={pluralize(forms.length, 'form')}
+          actions={
+            <Button onClick={openCreate} size="sm">
+              <Plus className="mr-1 h-3.5 w-3.5" />
+              Create Form
+            </Button>
+          }
+        />
+        <DataTable
+          loading={loading}
+          isEmpty={forms.length === 0}
+          empty={
+            <EmptyState
+              icon={FileText}
+              title="No registration forms yet"
+              description="Create your first registration form to collect different information for different user types."
+              action={
+                <Button onClick={openCreate} size="sm">
+                  <Plus className="mr-1 h-3.5 w-3.5" />
+                  Create Form
+                </Button>
+              }
+            />
+          }
+        >
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Name</TableHead>
+                <TableHead>Slug</TableHead>
+                <TableHead>Fields</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="w-[70px]" />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {forms.map((form) => (
+                <TableRow key={form.id}>
+                  <TableCell className="font-medium">{form.name}</TableCell>
+                  <TableCell>
+                    <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{form.slug}</code>
+                  </TableCell>
+                  <TableCell>{form.fields.length} fields</TableCell>
+                  <TableCell>
+                    {form.user_role ? (
+                      <Badge variant="outline">{roles.find((r) => r.value === form.user_role)?.label || form.user_role}</Badge>
+                    ) : (
+                      <span className="text-muted-foreground text-sm">Default</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={form.status === 'active' ? 'success' : 'secondary'}>
+                      {form.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreHorizontal className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => openEdit(form)}>
+                          <Pencil className="h-4 w-4 mr-2" />
+                          Edit
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => copyPopupShortcode(form.slug)}>
+                          <ClipboardCopy className="h-4 w-4 mr-2" />
+                          Copy Popup Shortcode
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => copyEmbedShortcode(form.slug)}>
+                          <ClipboardCopy className="h-4 w-4 mr-2" />
+                          Copy Embed Shortcode
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => duplicate(form.id)}>
+                          <Copy className="h-4 w-4 mr-2" />
+                          Duplicate
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => handleDelete(form.id)}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
                 </TableRow>
-              </TableHeader>
-              <TableBody>
-                {forms.map((form) => (
-                  <TableRow key={form.id}>
-                    <TableCell className="font-medium">{form.name}</TableCell>
-                    <TableCell>
-                      <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{form.slug}</code>
-                    </TableCell>
-                    <TableCell>{form.fields.length} fields</TableCell>
-                    <TableCell>
-                      {form.user_role ? (
-                        <Badge variant="outline">{roles.find((r) => r.value === form.user_role)?.label || form.user_role}</Badge>
-                      ) : (
-                        <span className="text-muted-foreground text-sm">Default</span>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={form.status === 'active' ? 'success' : 'secondary'}>
-                        {form.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => openEdit(form)}>
-                            <Pencil className="h-4 w-4 mr-2" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => copyPopupShortcode(form.slug)}>
-                            <ClipboardCopy className="h-4 w-4 mr-2" />
-                            Copy Popup Shortcode
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => copyEmbedShortcode(form.slug)}>
-                            <ClipboardCopy className="h-4 w-4 mr-2" />
-                            Copy Embed Shortcode
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => duplicate(form.id)}>
-                            <Copy className="h-4 w-4 mr-2" />
-                            Duplicate
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => handleDelete(form.id)}
-                            className="text-destructive focus:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </DataTable>
-      </PageSection>
+              ))}
+            </TableBody>
+          </Table>
+        </DataTable>
+      </div>
 
       <Drawer open={panelOpen} onOpenChange={setPanelOpen}>
         <DrawerContent className="sm:max-w-lg overflow-y-auto">

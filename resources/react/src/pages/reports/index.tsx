@@ -1,7 +1,8 @@
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, BarChart3 } from 'lucide-react';
+import { PageHeader } from '@/components/layout/page-header';
 import { useReports } from '@/hooks/use-reports';
 import { SummaryCards } from './summary-cards';
 import { ActivityChart } from './activity-chart';
@@ -19,6 +20,7 @@ export function ReportsPage() {
 
   return (
     <div className="space-y-4">
+      <PageHeader icon={BarChart3} title="Reports" />
       <Tabs value={String(range)} onValueChange={(v) => setRange(Number(v))}>
         <TabsList>
           {RANGES.map((r) => (

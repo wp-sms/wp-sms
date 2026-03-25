@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { RotateCcw, Eye, EyeOff } from 'lucide-react';
+import { RotateCcw, Eye, EyeOff, Paintbrush } from 'lucide-react';
+import { PageHeader } from '@/components/layout/page-header';
 import { useConfirm } from '@/components/confirm-provider';
 import { DEFAULTS } from '@/lib/constants';
 import { LogoCard } from './logo-card';
@@ -44,7 +45,9 @@ export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
   const baseUrl = settings.auth_base_url || '/account';
 
   return (
-    <div className="flex gap-6">
+    <>
+      <PageHeader icon={Paintbrush} title="Branding" />
+      <div className="mt-4 flex gap-6">
       {/* Settings panel */}
       <div className="min-w-0 flex-1 space-y-4">
         <LogoCard branding={branding} onChange={handleBrandingChange} />
@@ -88,5 +91,6 @@ export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
         </div>
       )}
     </div>
+    </>
   );
 }

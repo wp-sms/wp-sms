@@ -5,6 +5,7 @@ import { PageSection } from '@/components/ui/page-section';
 import { MethodCard } from '@/components/method-card';
 import { ProfileFieldPanel } from '@/components/profile-field-panel';
 import { UserPlus, Plus, GripVertical, Pencil, Trash2, ArrowUp, ArrowDown, ListChecks } from 'lucide-react';
+import { PageHeader } from '@/components/layout/page-header';
 import { FIELD_TYPES, formatLabel } from '@/lib/constants';
 import { useConfirm } from '@/components/confirm-provider';
 import type { AuthSettings, ProfileFieldDefinition } from '@/lib/api';
@@ -119,6 +120,7 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
 
   return (
     <div className="space-y-4">
+      <PageHeader icon={ListChecks} title="Profile Fields" />
       <MethodCard
         title="Auto-Create Accounts on Login"
         description="When someone logs in with a phone or email that doesn't have an account yet, automatically create one instead of rejecting them"

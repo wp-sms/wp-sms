@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import type { Contact, Tag } from '@/lib/api';
 import type { UseContactsReturn } from '@/hooks/use-contacts';
+import { useCreateTrigger } from '@/hooks/use-create-trigger';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,6 +32,8 @@ interface ContactsListProps {
   hook: UseContactsReturn;
   tags: Tag[];
   onImport: () => void;
+  embedded?: boolean;
+  createTrigger?: number;
 }
 
 const STATUS_VARIANTS: Record<string, 'success' | 'neutral' | 'warning' | 'destructive'> = {
@@ -41,7 +44,7 @@ const STATUS_VARIANTS: Record<string, 'success' | 'neutral' | 'warning' | 'destr
   complained: 'destructive',
 };
 
-export function ContactsList({ hook, tags, onImport }: ContactsListProps) {
+export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: ContactsListProps) {
   const {
     contacts, total, page, perPage, filters, setFilter, setPage, loading,
     createContact, updateContact, deleteContact, fetchContact,
@@ -70,10 +73,12 @@ export function ContactsList({ hook, tags, onImport }: ContactsListProps) {
 
   const totalPages = Math.ceil(total / perPage);
 
-  const handleCreate = () => {
+  const handleCreate = useCallback(() => {
     setEditContact(null);
     setFormOpen(true);
-  };
+  }, []);
+
+  useCreateTrigger(createTrigger, handleCreate);
 
   const handleEdit = (contact: Contact) => {
     setEditContact(contact);
@@ -104,152 +109,162 @@ export function ContactsList({ hook, tags, onImport }: ContactsListProps) {
     }
   };
 
-  return (
+  const tableContent = (
     <>
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div>
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Users className="h-4 w-4 text-muted-foreground" />
-                Contacts
-              </CardTitle>
-              <CardDescription>{total} {total === 1 ? 'contact' : 'contacts'} total</CardDescription>
-            </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" onClick={onImport}>
-                <Upload className="mr-1.5 h-3.5 w-3.5" /> Import
-              </Button>
-              <ExportDialog onExport={hook.exportContacts}>
-                <Button variant="outline" size="sm">
-                  <Download className="mr-1.5 h-3.5 w-3.5" /> Export
-                </Button>
-              </ExportDialog>
+      {/* Filters */}
+      <div className="mb-4 flex items-center gap-3">
+        <div className="relative flex-1 max-w-xs">
+          <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+          <Input
+            className="pl-8 h-9"
+            placeholder="Search contacts..."
+            value={filters.search}
+            onChange={(e) => setFilter('search', e.target.value)}
+          />
+        </div>
+        <Select value={filters.status || 'all'} onValueChange={(v) => setFilter('status', v === 'all' ? '' : v)}>
+          <SelectTrigger className="w-40 h-9">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All statuses</SelectItem>
+            {CONTACT_STATUSES.map((s) => (
+              <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Table */}
+      <DataTable
+        loading={loading}
+        isEmpty={contacts.length === 0}
+        empty={
+          <EmptyState
+            icon={Users}
+            title="No contacts found"
+            description="Add your first contact to get started."
+            action={
               <Button size="sm" onClick={handleCreate}>
                 <Plus className="mr-1.5 h-3.5 w-3.5" /> New Contact
               </Button>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {/* Filters */}
-          <div className="mb-4 flex items-center gap-3">
-            <div className="relative flex-1 max-w-xs">
-              <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                className="pl-8 h-9"
-                placeholder="Search contacts..."
-                value={filters.search}
-                onChange={(e) => setFilter('search', e.target.value)}
-              />
-            </div>
-            <Select value={filters.status || 'all'} onValueChange={(v) => setFilter('status', v === 'all' ? '' : v)}>
-              <SelectTrigger className="w-40 h-9">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All statuses</SelectItem>
-                {CONTACT_STATUSES.map((s) => (
-                  <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Table */}
-          <DataTable
-            loading={loading}
-            isEmpty={contacts.length === 0}
-            empty={
-              <EmptyState
-                icon={Users}
-                title="No contacts found"
-                description="Add your first contact to get started."
-                action={
-                  <Button size="sm" onClick={handleCreate}>
-                    <Plus className="mr-1.5 h-3.5 w-3.5" /> New Contact
-                  </Button>
-                }
-              />
             }
-            pagination={{ page, totalPages, onPageChange: setPage }}
-          >
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-10">
-                    <Checkbox checked={isAllSelected} onCheckedChange={(checked) => checked ? selectAll() : clearSelection()} />
-                  </TableHead>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Phone</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Source</TableHead>
-                  <TableHead className="w-[70px]" />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {contacts.map((contact) => (
-                  <TableRow key={contact.id} className="even:bg-muted/30">
-                    <TableCell>
-                      <Checkbox
-                        checked={selectedIds.includes(contact.id)}
-                        onCheckedChange={() => toggleSelect(contact.id)}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <button
-                        type="button"
-                        className="inline-flex items-center gap-2 font-medium text-left transition-colors hover:text-primary"
-                        onClick={() => handleViewDetail(contact.id)}
+          />
+        }
+        pagination={{ page, totalPages, onPageChange: setPage }}
+      >
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-10">
+                <Checkbox checked={isAllSelected} onCheckedChange={(checked) => checked ? selectAll() : clearSelection()} />
+              </TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Phone</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Source</TableHead>
+              <TableHead className="w-[70px]" />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {contacts.map((contact) => (
+              <TableRow key={contact.id} className="even:bg-muted/30">
+                <TableCell>
+                  <Checkbox
+                    checked={selectedIds.includes(contact.id)}
+                    onCheckedChange={() => toggleSelect(contact.id)}
+                  />
+                </TableCell>
+                <TableCell>
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-2 font-medium text-left transition-colors hover:text-primary"
+                    onClick={() => handleViewDetail(contact.id)}
+                  >
+                    {[contact.first_name, contact.last_name].filter(Boolean).join(' ') || '\u2014'}
+                  </button>
+                </TableCell>
+                <TableCell className="text-sm">{contact.email || '\u2014'}</TableCell>
+                <TableCell className="text-sm">{contact.phone || '\u2014'}</TableCell>
+                <TableCell>
+                  <Badge variant={STATUS_VARIANTS[contact.status] || 'neutral'}>
+                    {formatLabel(contact.status)}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-sm text-muted-foreground">
+                  {contact.source ? <SourceLabel source={contact.source} sourceRef={contact.source_ref} showPrefix={false} /> : '\u2014'}
+                </TableCell>
+                <TableCell>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => handleViewDetail(contact.id)}>
+                        <Eye className="h-4 w-4 mr-2" />
+                        View
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleEdit(contact)}>
+                        <Pencil className="h-4 w-4 mr-2" />
+                        Edit
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => void handleDelete(contact.id)}
+                        className="text-destructive focus:text-destructive"
                       >
-                        {[contact.first_name, contact.last_name].filter(Boolean).join(' ') || '\u2014'}
-                      </button>
-                    </TableCell>
-                    <TableCell className="text-sm">{contact.email || '\u2014'}</TableCell>
-                    <TableCell className="text-sm">{contact.phone || '\u2014'}</TableCell>
-                    <TableCell>
-                      <Badge variant={STATUS_VARIANTS[contact.status] || 'neutral'}>
-                        {formatLabel(contact.status)}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
-                      {contact.source ? <SourceLabel source={contact.source} sourceRef={contact.source_ref} showPrefix={false} /> : '\u2014'}
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => handleViewDetail(contact.id)}>
-                            <Eye className="h-4 w-4 mr-2" />
-                            View
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleEdit(contact)}>
-                            <Pencil className="h-4 w-4 mr-2" />
-                            Edit
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => void handleDelete(contact.id)}
-                            className="text-destructive focus:text-destructive"
-                          >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </DataTable>
-        </CardContent>
-      </Card>
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </DataTable>
+    </>
+  );
+
+  return (
+    <>
+      {embedded ? (
+        tableContent
+      ) : (
+        <Card>
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="flex items-center gap-2 text-base">
+                  <Users className="h-4 w-4 text-muted-foreground" />
+                  Contacts
+                </CardTitle>
+                <CardDescription>{total} {total === 1 ? 'contact' : 'contacts'} total</CardDescription>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={onImport}>
+                  <Upload className="mr-1.5 h-3.5 w-3.5" /> Import
+                </Button>
+                <ExportDialog onExport={hook.exportContacts}>
+                  <Button variant="outline" size="sm">
+                    <Download className="mr-1.5 h-3.5 w-3.5" /> Export
+                  </Button>
+                </ExportDialog>
+                <Button size="sm" onClick={handleCreate}>
+                  <Plus className="mr-1.5 h-3.5 w-3.5" /> New Contact
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            {tableContent}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Bulk action bar */}
       {selectedIds.length > 0 && (
