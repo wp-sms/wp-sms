@@ -30,6 +30,7 @@ use WSms\Rest\SubscriptionFormController;
 use WSms\Rest\SubscriptionFormPublicController;
 use WSms\Rest\TemplateCatalogController;
 use WSms\Rest\TemplateController;
+use WSms\Rest\OutboundWebhookController;
 use WSms\Rest\WebhookReceiverController;
 
 defined('ABSPATH') || exit;
@@ -198,6 +199,9 @@ class RestServiceProvider implements ServiceProvider
         $container->register('rest.template_catalog', fn($c) => new TemplateCatalogController(
             $c->get('template.catalog_manager'),
         ));
+        $container->register('rest.outbound_webhooks', fn($c) => new OutboundWebhookController(
+            $c->get('webhook.repository'),
+        ));
         $container->register('rest.webhook_receiver', fn($c) => new WebhookReceiverController(
             $c->get('auth.rate_limiter'),
         ));
@@ -246,6 +250,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.gateway_callbacks')->registerRoutes();
             $container->get('rest.optout_settings')->registerRoutes();
             $container->get('rest.phone_restriction')->registerRoutes();
+            $container->get('rest.outbound_webhooks')->registerRoutes();
             $container->get('rest.webhook_receiver')->registerRoutes();
             $container->get('rest.messaging_button')->registerRoutes();
             $container->get('rest.registration_forms')->registerRoutes();

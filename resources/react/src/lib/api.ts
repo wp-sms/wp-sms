@@ -704,6 +704,36 @@ export interface WebhookEndpoint {
   secret?: string;
 }
 
+// --- Outbound Webhook Types ---
+
+export interface OutboundWebhook {
+  id: string;
+  name: string;
+  url: string;
+  secret: string;
+  events: string[];
+  status: 'active' | 'paused';
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+  last_test: { success: boolean; message: string; at: string } | null;
+}
+
+export interface WebhookTestResult {
+  success: boolean;
+  message: string;
+  details: { status_code?: number; response_time_ms?: number };
+}
+
+export interface WebhookEvent {
+  name: string;
+  label: string;
+  description: string;
+  sample_payload: Record<string, unknown>;
+}
+
+export type WebhookEventGroups = Record<string, WebhookEvent[]>;
+
 export interface ListResponse<T> {
   items: T[];
   total: number;

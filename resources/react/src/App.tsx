@@ -58,6 +58,7 @@ export default function App() {
       case 'flows':
       case 'contacts':
       case 'gateways':
+      case 'webhooks':
       case 'message-logs':
       case 'subscription-forms':
       case 'settings':

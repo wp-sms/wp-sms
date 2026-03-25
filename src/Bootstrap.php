@@ -20,6 +20,7 @@ use WSms\Container\FlowServiceProvider;
 use WSms\Container\CampaignServiceProvider;
 use WSms\Container\IntegrationServiceProvider;
 use WSms\Container\PhoneRestrictionServiceProvider;
+use WSms\Container\WebhookServiceProvider;
 use WSms\Container\MessagingButtonServiceProvider;
 use WSms\Container\SubscriptionFormServiceProvider;
 use WSms\Container\ContactSourceServiceProvider;
@@ -68,6 +69,7 @@ class Bootstrap
         CampaignServiceProvider::class,
         PhoneRestrictionServiceProvider::class,
         IntegrationServiceProvider::class,
+        WebhookServiceProvider::class,
         MessagingButtonServiceProvider::class,
         SubscriptionFormServiceProvider::class,
         TemplateServiceProvider::class,

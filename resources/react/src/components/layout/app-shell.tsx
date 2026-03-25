@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks, Settings2, MessageSquare, SlidersHorizontal, ClipboardList } from 'lucide-react';
+import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks, Settings2, MessageSquare, SlidersHorizontal, ClipboardList, Webhook } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import {
   Sidebar,
@@ -83,6 +83,11 @@ export const NAV_ITEMS = [
     id: 'apps',
     label: 'Apps',
     icon: Blocks,
+  },
+  {
+    id: 'webhooks',
+    label: 'Webhooks',
+    icon: Webhook,
   },
   {
     id: 'message-logs',
