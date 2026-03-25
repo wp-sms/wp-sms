@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { RotateCcw, Eye, EyeOff, Paintbrush } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 import { useConfirm } from '@/components/confirm-provider';
@@ -7,7 +8,6 @@ import { DEFAULTS } from '@/lib/constants';
 import { LogoCard } from './logo-card';
 import { ColorsCard } from './colors-card';
 import { LayoutCard } from './layout-card';
-import { TypographyCard } from './typography-card';
 import { SplitPanelCard } from './split-panel-card';
 import { BrandingPreview } from './branding-preview';
 import type { AuthSettings, BrandingSettings } from '@/lib/api';
@@ -20,6 +20,7 @@ interface BrandingPageProps {
 export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
   const branding = settings.branding;
   const [previewVisible, setPreviewVisible] = useState(true);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const confirm = useConfirm();
 
   const handleBrandingChange = useCallback(
@@ -46,14 +47,45 @@ export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
 
   return (
     <>
-      <PageHeader icon={Paintbrush} title="Branding" />
+      <PageHeader
+        icon={Paintbrush}
+        title="Branding"
+        actions={
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              className="xl:hidden"
+              onClick={() => setDrawerOpen(true)}
+            >
+              <Eye className="mr-1.5 h-3.5 w-3.5" />
+              Preview
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              className="hidden xl:inline-flex"
+              onClick={() => setPreviewVisible((v) => !v)}
+            >
+              {previewVisible ? (
+                <><EyeOff className="mr-1.5 h-3.5 w-3.5" /> Hide Preview</>
+              ) : (
+                <><Eye className="mr-1.5 h-3.5 w-3.5" /> Show Preview</>
+              )}
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleReset}>
+              <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
+              Reset
+            </Button>
+          </>
+        }
+      />
       <div className="mt-4 flex gap-6">
       {/* Settings panel */}
       <div className="min-w-0 flex-1 space-y-4">
         <LogoCard branding={branding} onChange={handleBrandingChange} />
         <ColorsCard branding={branding} onChange={handleBrandingChange} />
         <LayoutCard branding={branding} onChange={handleBrandingChange} />
-        <TypographyCard branding={branding} onChange={handleBrandingChange} />
 
         {!isCentered && (
           <>
@@ -63,25 +95,6 @@ export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
             </p>
           </>
         )}
-
-        <div className="flex items-center justify-between pt-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="hidden xl:inline-flex"
-            onClick={() => setPreviewVisible((v) => !v)}
-          >
-            {previewVisible ? (
-              <><EyeOff className="mr-1.5 h-3.5 w-3.5" /> Hide Preview</>
-            ) : (
-              <><Eye className="mr-1.5 h-3.5 w-3.5" /> Show Preview</>
-            )}
-          </Button>
-          <Button variant="outline" size="sm" onClick={handleReset}>
-            <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
-            Reset Branding
-          </Button>
-        </div>
       </div>
 
       {/* Live preview (desktop only, fixed width, collapsible) */}
@@ -91,6 +104,18 @@ export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
         </div>
       )}
     </div>
+
+    {/* Mobile preview drawer */}
+    <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+      <DrawerContent className="sm:max-w-lg">
+        <DrawerHeader>
+          <DrawerTitle>Preview</DrawerTitle>
+        </DrawerHeader>
+        <div className="overflow-y-auto p-4">
+          <BrandingPreview branding={branding} baseUrl={baseUrl} />
+        </div>
+      </DrawerContent>
+    </Drawer>
     </>
   );
 }

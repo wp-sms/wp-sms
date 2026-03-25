@@ -1,10 +1,10 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { PanelLeft, X, Image } from 'lucide-react';
-import { openMediaLibrary } from '@/lib/media';
+import { ColorPickerField } from '@/components/ui/color-picker-field';
+import { ImagePickerField } from '@/components/ui/image-picker-field';
+import { PanelLeft } from 'lucide-react';
 import type { BrandingSettings, SplitPanelPosition } from '@/lib/api';
 
 interface SplitPanelCardProps {
@@ -44,58 +44,24 @@ export function SplitPanelCard({ branding, onChange }: SplitPanelCardProps) {
         </Field>
 
         <div className="max-w-md">
-          <Field>
-            <FieldLabel htmlFor="branding-split-bg-color">Panel Background Color</FieldLabel>
-            <div className="flex gap-2">
-              <input
-                type="color"
-                value={branding.split_panel_bg_color}
-                onChange={(e) => onChange({ split_panel_bg_color: e.target.value })}
-                className="h-9 w-12 cursor-pointer rounded border border-input p-1"
-              />
-              <Input
-                id="branding-split-bg-color"
-                value={branding.split_panel_bg_color}
-                onChange={(e) => onChange({ split_panel_bg_color: e.target.value })}
-                placeholder="#1e293b"
-                className="font-mono"
-              />
-            </div>
-          </Field>
+          <ColorPickerField
+            id="branding-split-bg-color"
+            label="Panel Background Color"
+            value={branding.split_panel_bg_color}
+            placeholder="#1e293b"
+            onChange={(v) => onChange({ split_panel_bg_color: v })}
+          />
         </div>
 
         <Field>
           <FieldLabel>Panel Background Image</FieldLabel>
-          <div className="flex items-center gap-3">
-            {branding.split_panel_bg_image_url ? (
-              <div className="relative">
-                <img
-                  src={branding.split_panel_bg_image_url}
-                  alt="Panel background preview"
-                  className="h-16 w-28 rounded border border-input object-cover"
-                />
-                <button
-                  type="button"
-                  onClick={() => onChange({ split_panel_bg_image_url: '' })}
-                  className="absolute -right-1.5 -top-1.5 rounded-full bg-destructive p-0.5 text-destructive-foreground shadow-sm hover:bg-destructive/90"
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              </div>
-            ) : (
-              <div className="flex h-16 w-28 items-center justify-center rounded border-2 border-dashed border-input">
-                <Image className="h-5 w-5 text-muted-foreground/50" />
-              </div>
-            )}
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => openMediaLibrary('Select Panel Background', (url) => onChange({ split_panel_bg_image_url: url }))}
-            >
-              {branding.split_panel_bg_image_url ? 'Change' : 'Upload'}
-            </Button>
-          </div>
+          <ImagePickerField
+            value={branding.split_panel_bg_image_url}
+            title="Select Panel Background"
+            alt="Panel background preview"
+            onSelect={(url) => onChange({ split_panel_bg_image_url: url })}
+            onClear={() => onChange({ split_panel_bg_image_url: '' })}
+          />
           <FieldDescription>
             Optional image for the brand panel. Color shows through if not set.
           </FieldDescription>

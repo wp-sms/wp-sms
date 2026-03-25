@@ -3,7 +3,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
-import { Users, Plus, Trash2, ChevronUp, ChevronDown, Upload, MessageSquareText } from 'lucide-react';
+import { EmptyState } from '@/components/ui/empty-state';
+import { Users, Plus, Trash2, ChevronUp, ChevronDown, Upload, X, MessageSquareText } from 'lucide-react';
 import { openMediaLibrary } from '@/lib/media';
 import type { MessagingButtonSettings } from './use-mb-settings';
 
@@ -88,9 +89,13 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
         <CardContent>
           <div className="space-y-4">
             {members.length === 0 && (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                Add team members to display in the widget with their contact channels.
-              </p>
+              <EmptyState
+                icon={Users}
+                title="No team members yet"
+                description="Add team members to display in the widget with their contact channels."
+                action={<Button onClick={addMember}><Plus className="mr-1 h-4 w-4" /> Add Team Member</Button>}
+                compact
+              />
             )}
             {members.map((member, i) => (
               <div key={i} className="rounded-md border p-4 space-y-3">
@@ -145,30 +150,38 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                 <Field>
                   <FieldLabel>Avatar</FieldLabel>
                   <div className="flex items-center gap-3">
-                    {member.avatar_url && (
-                      <img
-                        src={member.avatar_url}
-                        alt=""
-                        className="h-10 w-10 rounded-full object-cover border"
-                      />
-                    )}
-                    <div className="flex gap-2 flex-1">
-                      <Input
-                        value={member.avatar_url}
-                        onChange={(e) => updateMember(i, 'avatar_url', e.target.value)}
-                        placeholder="Image URL or upload"
-                        className="flex-1"
-                      />
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        type="button"
+                    {member.avatar_url ? (
+                      <div
+                        className="group relative h-12 w-12 shrink-0 cursor-pointer overflow-hidden rounded-full border"
                         onClick={() => openMediaLibrary('Select Avatar', (url) => updateMember(i, 'avatar_url', url))}
-                        title="Upload from Media Library"
                       >
-                        <Upload className="h-4 w-4" />
+                        <img
+                          src={member.avatar_url}
+                          alt=""
+                          className="h-full w-full object-cover"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
+                          <Upload className="h-3.5 w-3.5 text-white" />
+                        </div>
+                      </div>
+                    ) : (
+                      <div
+                        className="flex h-12 w-12 shrink-0 cursor-pointer items-center justify-center rounded-full border-2 border-dashed border-input transition-colors hover:border-primary/30 hover:bg-primary/5"
+                        onClick={() => openMediaLibrary('Select Avatar', (url) => updateMember(i, 'avatar_url', url))}
+                      >
+                        <Upload className="h-4 w-4 text-muted-foreground/50" />
+                      </div>
+                    )}
+                    {member.avatar_url && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-muted-foreground"
+                        onClick={() => updateMember(i, 'avatar_url', '')}
+                      >
+                        <X className="mr-1 h-3 w-3" /> Remove
                       </Button>
-                    </div>
+                    )}
                   </div>
                 </Field>
 

@@ -16,6 +16,10 @@ interface DisplayRulesPageProps {
 
 const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
+const SCHEDULE_MON_FRI = DAYS.slice(0, 5).map((day) => ({ day, open: '09:00', close: '17:00' }));
+const SCHEDULE_MON_SAT = DAYS.slice(0, 6).map((day) => ({ day, open: '09:00', close: '18:00' }));
+const SCHEDULE_EVERY_DAY = DAYS.map((day) => ({ day, open: '09:00', close: '17:00' }));
+
 export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRulesPageProps) {
   const { display_rules, business_hours, triggers } = settings;
   const usedDays = business_hours.schedule.map((s) => s.day);
@@ -190,8 +194,19 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
                 />
               </Field>
 
-              <div className="space-y-2">
-                <span className="text-sm font-medium">Schedule</span>
+              <Field>
+                <FieldLabel>Schedule</FieldLabel>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" className="text-xs" onClick={() => onUpdate('business_hours.schedule', SCHEDULE_MON_FRI)}>
+                    Mon-Fri 9-5
+                  </Button>
+                  <Button variant="outline" size="sm" className="text-xs" onClick={() => onUpdate('business_hours.schedule', SCHEDULE_MON_SAT)}>
+                    Mon-Sat 9-6
+                  </Button>
+                  <Button variant="outline" size="sm" className="text-xs" onClick={() => onUpdate('business_hours.schedule', SCHEDULE_EVERY_DAY)}>
+                    Every Day
+                  </Button>
+                </div>
                 {business_hours.schedule.map((entry, i) => {
                   const invalidTime = entry.open && entry.close && entry.open >= entry.close;
                   return (
@@ -238,7 +253,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
                     <Plus className="mr-1 h-3 w-3" /> Add Day
                   </Button>
                 )}
-              </div>
+              </Field>
             </div>
           </CardContent>
         )}

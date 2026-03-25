@@ -1,20 +1,8 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Field, FieldLabel } from '@/components/ui/field';
 import { SegmentedGroup } from '@/components/ui/segmented-group';
-import { Layout, SquareDashedBottom, PanelLeft } from 'lucide-react';
+import { Layout } from 'lucide-react';
 import type { BrandingSettings, BrandingLayout, ButtonStyle, SocialPosition } from '@/lib/api';
-
-const LAYOUT_OPTIONS = [
-  {
-    value: 'centered' as BrandingLayout,
-    label: 'Centered',
-    icon: <SquareDashedBottom className="h-4 w-4" />,
-  },
-  {
-    value: 'split' as BrandingLayout,
-    label: 'Split',
-    icon: <PanelLeft className="h-4 w-4" />,
-  },
-];
 
 const RADIUS_OPTIONS = [
   { value: 0, label: 'Sharp', icon: <div className="h-4 w-4 border-2 border-current" style={{ borderRadius: 0 }} /> },
@@ -95,45 +83,84 @@ export function LayoutCard({ branding, onChange }: LayoutCardProps) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
-        <div className="space-y-2">
-          <span className="text-sm font-medium">Page Layout</span>
-          <SegmentedGroup
-            value={branding.layout}
-            onChange={(v) => onChange({ layout: v })}
-            options={LAYOUT_OPTIONS}
-            size="labeled"
-          />
-        </div>
+        <Field>
+          <FieldLabel>Page Layout</FieldLabel>
+          <div className="grid grid-cols-2 gap-3">
+            {/* Centered layout thumbnail */}
+            <button
+              type="button"
+              onClick={() => onChange({ layout: 'centered' })}
+              className={`group flex flex-col items-center gap-2 rounded-lg border p-3 transition-all ${
+                branding.layout === 'centered'
+                  ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                  : 'border-input hover:border-foreground/20'
+              }`}
+            >
+              <svg className="h-[60px] w-[100px]" viewBox="0 0 100 60" fill="none">
+                <rect x="0" y="0" width="100" height="60" rx="4" className="fill-muted/50" />
+                <rect x="28" y="10" width="44" height="40" rx="3" className="fill-background stroke-border" strokeWidth="1" />
+                <rect x="34" y="18" width="32" height="3" rx="1" className="fill-muted-foreground/30" />
+                <rect x="34" y="25" width="32" height="3" rx="1" className="fill-muted-foreground/20" />
+                <rect x="34" y="32" width="32" height="3" rx="1" className="fill-muted-foreground/20" />
+                <rect x="34" y="39" width="20" height="5" rx="1.5" className="fill-primary/40" />
+              </svg>
+              <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground">Centered</span>
+            </button>
 
-        <div className="space-y-2">
-          <span className="text-sm font-medium">Corner Style</span>
+            {/* Split layout thumbnail */}
+            <button
+              type="button"
+              onClick={() => onChange({ layout: 'split' })}
+              className={`group flex flex-col items-center gap-2 rounded-lg border p-3 transition-all ${
+                branding.layout === 'split'
+                  ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                  : 'border-input hover:border-foreground/20'
+              }`}
+            >
+              <svg className="h-[60px] w-[100px]" viewBox="0 0 100 60" fill="none">
+                <rect x="0" y="0" width="100" height="60" rx="4" className="fill-background stroke-border" strokeWidth="1" />
+                <rect x="0" y="0" width="45" height="60" rx="4" className="fill-primary/20" />
+                <rect x="10" y="20" width="25" height="3" rx="1" className="fill-primary/40" />
+                <rect x="10" y="27" width="18" height="2" rx="1" className="fill-primary/25" />
+                <rect x="55" y="15" width="35" height="3" rx="1" className="fill-muted-foreground/30" />
+                <rect x="55" y="22" width="35" height="3" rx="1" className="fill-muted-foreground/20" />
+                <rect x="55" y="29" width="35" height="3" rx="1" className="fill-muted-foreground/20" />
+                <rect x="55" y="36" width="22" height="5" rx="1.5" className="fill-primary/40" />
+              </svg>
+              <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground">Split</span>
+            </button>
+          </div>
+        </Field>
+
+        <Field>
+          <FieldLabel>Corner Style</FieldLabel>
           <SegmentedGroup
             value={branding.border_radius}
             onChange={(v) => onChange({ border_radius: v })}
             options={RADIUS_OPTIONS}
             size="labeled"
           />
-        </div>
+        </Field>
 
-        <div className="space-y-2">
-          <span className="text-sm font-medium">Button Style</span>
+        <Field>
+          <FieldLabel>Button Style</FieldLabel>
           <SegmentedGroup
             value={branding.button_style}
             onChange={(v) => onChange({ button_style: v })}
             options={BUTTON_STYLE_OPTIONS}
             size="labeled"
           />
-        </div>
+        </Field>
 
-        <div className="space-y-2">
-          <span className="text-sm font-medium">Social Buttons Layout</span>
+        <Field>
+          <FieldLabel>Social Buttons Layout</FieldLabel>
           <SegmentedGroup
             value={branding.social_position}
             onChange={(v) => onChange({ social_position: v })}
             options={SOCIAL_POSITIONS}
             size="labeled"
           />
-        </div>
+        </Field>
       </CardContent>
     </Card>
   );

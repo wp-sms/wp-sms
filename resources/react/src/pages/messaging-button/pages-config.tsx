@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { Button } from '@/components/ui/button';
+import { EmptyState } from '@/components/ui/empty-state';
 import { Home, MessageSquare, Link, Plus, Trash2, Shield } from 'lucide-react';
 import type { MessagingButtonSettings } from './use-mb-settings';
 
@@ -196,9 +197,13 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
           <CardContent>
             <div className="space-y-3">
               {pages.resources.links.length === 0 && (
-                <p className="text-sm text-muted-foreground text-center py-4">
-                  No links added yet. Add links to display helpful resources in the widget.
-                </p>
+                <EmptyState
+                  icon={Link}
+                  title="No links yet"
+                  description="Add helpful links and resources to display in the widget."
+                  action={<Button onClick={addResourceLink}><Plus className="mr-1 h-4 w-4" /> Add Link</Button>}
+                  compact
+                />
               )}
               {pages.resources.links.map((link, i) => (
                 <div key={i} className="space-y-2 rounded-md border p-3">
@@ -206,7 +211,13 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                     <Input
                       value={link.title}
                       onChange={(e) => updateResourceLink(i, 'title', e.target.value)}
-                      placeholder="Link title"
+                      placeholder="Title"
+                      className="w-1/3"
+                    />
+                    <Input
+                      value={link.url}
+                      onChange={(e) => updateResourceLink(i, 'url', e.target.value)}
+                      placeholder="https://..."
                       className="flex-1"
                     />
                     <Button variant="ghost" size="icon" onClick={() => removeResourceLink(i)}>
@@ -214,20 +225,17 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                     </Button>
                   </div>
                   <Input
-                    value={link.url}
-                    onChange={(e) => updateResourceLink(i, 'url', e.target.value)}
-                    placeholder="https://..."
-                  />
-                  <Input
                     value={link.description}
                     onChange={(e) => updateResourceLink(i, 'description', e.target.value)}
                     placeholder="Brief description (optional)"
                   />
                 </div>
               ))}
-              <Button variant="outline" size="sm" onClick={addResourceLink}>
-                <Plus className="mr-1 h-4 w-4" /> Add Link
-              </Button>
+              {pages.resources.links.length > 0 && (
+                <Button variant="outline" size="sm" onClick={addResourceLink}>
+                  <Plus className="mr-1 h-4 w-4" /> Add Link
+                </Button>
+              )}
             </div>
           </CardContent>
         )}

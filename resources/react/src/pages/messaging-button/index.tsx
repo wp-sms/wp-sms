@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useMessagingButtonSettings } from './use-mb-settings';
 import { AppearancePage } from './appearance';
 import { PagesConfigPage } from './pages-config';
@@ -7,8 +7,12 @@ import { DisplayRulesPage } from './display-rules';
 import { WidgetPreview } from './widget-preview';
 import { SaveBar } from '@/components/layout/save-bar';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Switch } from '@/components/ui/switch';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, MessageSquare } from 'lucide-react';
+import { AlertCircle, Eye, MessageSquare } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 
 interface MessagingButtonPageProps {
@@ -19,6 +23,7 @@ export function MessagingButtonPage({ section }: MessagingButtonPageProps) {
   const { settings, updateSettings, isDirty, saveStatus, save, loading, error, rawResponse } = useMessagingButtonSettings();
   const wpTimezone = rawResponse?.wp_timezone;
   const handleSave = useCallback(() => { void save(); }, [save]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   if (loading) {
     return (
@@ -53,7 +58,36 @@ export function MessagingButtonPage({ section }: MessagingButtonPageProps) {
 
   return (
     <>
-      <PageHeader icon={MessageSquare} title="Messaging Button" />
+      <PageHeader
+        icon={MessageSquare}
+        title="Messaging Button"
+        metadata={
+          <Badge variant={settings.enabled ? 'success' : 'neutral'} dot>
+            {settings.enabled ? 'Active' : 'Inactive'}
+          </Badge>
+        }
+        actions={
+          <>
+            <Button
+              variant="outline"
+              size="sm"
+              className="xl:hidden"
+              onClick={() => setDrawerOpen(true)}
+            >
+              <Eye className="mr-1.5 h-3.5 w-3.5" />
+              Preview
+            </Button>
+            <label className="flex items-center gap-2 text-sm text-muted-foreground">
+              Enable
+              <Switch
+                checked={settings.enabled}
+                onCheckedChange={(checked) => updateSettings('enabled', checked)}
+                aria-label="Toggle widget"
+              />
+            </label>
+          </>
+        }
+      />
       <div className="mt-4 flex gap-6">
         <div className="min-w-0 flex-1">
           {renderSection()}
@@ -65,6 +99,18 @@ export function MessagingButtonPage({ section }: MessagingButtonPageProps) {
         </div>
       </div>
       <SaveBar isDirty={isDirty} saveStatus={saveStatus} onSave={handleSave} />
+
+      {/* Mobile preview drawer */}
+      <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
+        <DrawerContent className="sm:max-w-md">
+          <DrawerHeader>
+            <DrawerTitle>Preview</DrawerTitle>
+          </DrawerHeader>
+          <div className="overflow-y-auto p-4">
+            <WidgetPreview settings={settings} />
+          </div>
+        </DrawerContent>
+      </Drawer>
     </>
   );
 }

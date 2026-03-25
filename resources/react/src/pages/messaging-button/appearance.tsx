@@ -4,7 +4,9 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { SegmentedGroup } from '@/components/ui/segmented-group';
-import { Paintbrush, MousePointerClick, Sun, Moon, Monitor, MessageCircle } from 'lucide-react';
+import { ColorPickerField } from '@/components/ui/color-picker-field';
+import { PresetGrid } from '@/components/ui/preset-grid';
+import { Paintbrush, PanelTop, Sun, Moon, Monitor, MessageCircle } from 'lucide-react';
 import { MB_COLOR_PRESETS, getActivePresetId } from './color-presets';
 import type { MessagingButtonSettings } from './use-mb-settings';
 
@@ -14,27 +16,10 @@ interface AppearancePageProps {
 }
 
 export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
-  const { button, widget, enabled, greeting_bubble } = settings;
+  const { button, widget, greeting_bubble } = settings;
 
   return (
     <div className="space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <MousePointerClick className="h-4 w-4 text-muted-foreground" />
-            Enable Widget
-          </CardTitle>
-          <CardDescription>Show messaging button on your site</CardDescription>
-          <CardAction>
-            <Switch
-              checked={enabled}
-              onCheckedChange={(checked) => onUpdate('enabled', checked)}
-              aria-label="Toggle widget"
-            />
-          </CardAction>
-        </CardHeader>
-      </Card>
-
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
@@ -81,85 +66,42 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
               <FieldDescription>Displayed when style includes text</FieldDescription>
             </Field>
 
-            {/* Color presets */}
-            <div className="space-y-2">
-              <span className="text-sm font-medium">Color Preset</span>
-              <div className="flex flex-wrap gap-2">
-                {(() => {
-                  const activeId = getActivePresetId(settings);
-                  return (
-                    <>
-                      {MB_COLOR_PRESETS.map((preset) => (
-                        <button
-                          key={preset.id}
-                          type="button"
-                          title={preset.name}
-                          onClick={() => {
-                            onUpdate('button.primary_color', preset.primary_color);
-                            onUpdate('button.text_color', preset.text_color);
-                          }}
-                          className={`flex items-center gap-1.5 rounded-md border px-2.5 py-1.5 text-xs font-medium transition-colors ${
-                            activeId === preset.id
-                              ? 'border-primary bg-primary/10 text-primary'
-                              : 'border-input text-muted-foreground hover:border-foreground/20 hover:text-foreground'
-                          }`}
-                        >
-                          <span
-                            className="h-3.5 w-3.5 rounded-full border border-black/10"
-                            style={{ backgroundColor: preset.primary_color }}
-                          />
-                          {preset.name}
-                        </button>
-                      ))}
-                      {activeId === 'custom' && (
-                        <span className="flex items-center gap-1.5 rounded-md border border-dashed border-input px-2.5 py-1.5 text-xs font-medium text-muted-foreground">
-                          Custom
-                        </span>
-                      )}
-                    </>
-                  );
-                })()}
-              </div>
-            </div>
+            <Field>
+              <FieldLabel>Color Preset</FieldLabel>
+              <PresetGrid
+                presets={MB_COLOR_PRESETS}
+                activePresetId={getActivePresetId(settings)}
+                onSelect={(preset) => {
+                  onUpdate('button.primary_color', preset.primary_color);
+                  onUpdate('button.text_color', preset.text_color);
+                }}
+                renderPreview={(preset) => (
+                  <span
+                    className="flex h-7 w-full shrink-0 items-center justify-center rounded-full text-[10px] font-bold"
+                    style={{ backgroundColor: preset.primary_color, color: preset.text_color }}
+                  >
+                    Aa
+                  </span>
+                )}
+                columns="grid-cols-3"
+              />
+            </Field>
 
             <div className="grid grid-cols-2 gap-4">
-              <Field>
-                <FieldLabel htmlFor="mb-primary-color">Primary Color</FieldLabel>
-                <div className="flex gap-2">
-                  <input
-                    type="color"
-                    value={button.primary_color}
-                    onChange={(e) => onUpdate('button.primary_color', e.target.value)}
-                    className="h-9 w-12 cursor-pointer rounded border border-input p-1"
-                  />
-                  <Input
-                    id="mb-primary-color"
-                    value={button.primary_color}
-                    onChange={(e) => onUpdate('button.primary_color', e.target.value)}
-                    placeholder="#2563eb"
-                    className="font-mono"
-                  />
-                </div>
-              </Field>
-
-              <Field>
-                <FieldLabel htmlFor="mb-text-color">Text Color</FieldLabel>
-                <div className="flex gap-2">
-                  <input
-                    type="color"
-                    value={button.text_color}
-                    onChange={(e) => onUpdate('button.text_color', e.target.value)}
-                    className="h-9 w-12 cursor-pointer rounded border border-input p-1"
-                  />
-                  <Input
-                    id="mb-text-color"
-                    value={button.text_color}
-                    onChange={(e) => onUpdate('button.text_color', e.target.value)}
-                    placeholder="#ffffff"
-                    className="font-mono"
-                  />
-                </div>
-              </Field>
+              <ColorPickerField
+                id="mb-primary-color"
+                label="Primary Color"
+                value={button.primary_color}
+                placeholder="#2563eb"
+                onChange={(v) => onUpdate('button.primary_color', v)}
+              />
+              <ColorPickerField
+                id="mb-text-color"
+                label="Text Color"
+                value={button.text_color}
+                placeholder="#ffffff"
+                onChange={(v) => onUpdate('button.text_color', v)}
+              />
             </div>
 
             <Field>
@@ -180,7 +122,10 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Widget Header</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <PanelTop className="h-4 w-4 text-muted-foreground" />
+            Widget Header
+          </CardTitle>
           <CardDescription>Set the greeting shown when the widget opens</CardDescription>
         </CardHeader>
         <CardContent>
@@ -205,8 +150,8 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
               />
             </Field>
 
-            <div className="space-y-2">
-              <span className="text-sm font-medium">Theme</span>
+            <Field>
+              <FieldLabel>Theme</FieldLabel>
               <SegmentedGroup
                 value={widget.theme}
                 onChange={(v) => onUpdate('widget.theme', v)}
@@ -217,7 +162,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
                 ]}
                 size="labeled"
               />
-            </div>
+            </Field>
           </div>
         </CardContent>
       </Card>
