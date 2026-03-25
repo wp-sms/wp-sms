@@ -5,7 +5,7 @@ import { PagesConfigPage } from './pages-config';
 import { TeamPage } from './team';
 import { DisplayRulesPage } from './display-rules';
 import { WidgetPreview } from './widget-preview';
-import { SaveBar } from '@/components/layout/save-bar';
+import { useSaveBar } from '@/contexts/save-bar-context';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
@@ -23,6 +23,7 @@ export function MessagingButtonPage({ section }: MessagingButtonPageProps) {
   const { settings, updateSettings, isDirty, saveStatus, save, loading, error, rawResponse } = useMessagingButtonSettings();
   const wpTimezone = rawResponse?.wp_timezone;
   const handleSave = useCallback(() => { void save(); }, [save]);
+  useSaveBar({ isDirty, saveStatus, onSave: handleSave });
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   if (loading) {
@@ -98,8 +99,6 @@ export function MessagingButtonPage({ section }: MessagingButtonPageProps) {
           </div>
         </div>
       </div>
-      <SaveBar isDirty={isDirty} saveStatus={saveStatus} onSave={handleSave} />
-
       {/* Mobile preview drawer */}
       <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
         <DrawerContent className="sm:max-w-md">

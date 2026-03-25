@@ -1,6 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { AppShell, getParentSection } from '@/components/layout/app-shell';
-import { SaveBar } from '@/components/layout/save-bar';
+import { SaveBarProvider } from '@/contexts/save-bar-context';
 import { useSettings } from '@/hooks/use-settings';
 import { useHashSection } from '@/hooks/use-hash-section';
 import { getConfig } from '@/lib/api';
@@ -30,6 +30,10 @@ export default function App() {
   const [section, setSection, subTab] = useHashSection(defaultSection, validSections);
   const { settings, updateSetting, isDirty, saveStatus, save, loading, error } = useSettings();
   const handleSave = useCallback(() => { void save(); }, [save]);
+  const defaultSaveBarState = useMemo(
+    () => ({ isDirty, saveStatus, onSave: handleSave }),
+    [isDirty, saveStatus, handleSave],
+  );
 
   function renderContent() {
     if (loading) {
@@ -88,16 +92,17 @@ export default function App() {
   return (
     <TooltipProvider>
       <ConfirmProvider>
-        <div className="wsms-app">
-          <div className="border border-border overflow-hidden">
-            <AppShell activeSection={section} onNavigate={setSection} version={version} area={area} navItems={navItems}>
-              {renderContent()}
-            </AppShell>
-          </div>
+        <SaveBarProvider defaultState={defaultSaveBarState}>
+          <div className="wsms-app">
+            <div className="border border-border">
+              <AppShell activeSection={section} onNavigate={setSection} version={version} area={area} navItems={navItems}>
+                {renderContent()}
+              </AppShell>
+            </div>
 
-          <SaveBar isDirty={isDirty} saveStatus={saveStatus} onSave={handleSave} />
-          <Toaster richColors position="bottom-right" />
-        </div>
+            <Toaster richColors position="bottom-right" />
+          </div>
+        </SaveBarProvider>
       </ConfirmProvider>
     </TooltipProvider>
   );

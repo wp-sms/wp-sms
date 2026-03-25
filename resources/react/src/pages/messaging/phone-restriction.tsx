@@ -2,6 +2,7 @@ import { formatDate } from '@/lib/format';
 import { useState, useEffect, useCallback, useMemo, useRef, Fragment } from 'react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
+import { useSaveBar } from '@/contexts/save-bar-context';
 import { PageSection } from '@/components/ui/page-section';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -137,6 +138,8 @@ export function PhoneRestriction() {
     }
   }, [draft]);
 
+  useSaveBar({ isDirty, saveStatus: saving ? 'saving' : 'idle', onSave: save });
+
   const downloadDb = useCallback(async () => {
     setDownloading(true);
     try {
@@ -196,12 +199,6 @@ export function PhoneRestriction() {
       />
 
       <PhoneCheckerCard />
-
-      <div className="flex justify-end">
-        <Button onClick={save} disabled={!isDirty || saving}>
-          {saving ? 'Saving...' : 'Save Settings'}
-        </Button>
-      </div>
     </div>
   );
 }

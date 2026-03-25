@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks, Settings2, MessageSquare, SlidersHorizontal, ClipboardList, Webhook } from 'lucide-react';
 import { Logo } from '@/components/logo';
+import { SaveBar } from '@/components/layout/save-bar';
 import {
   Sidebar,
   SidebarContent,
@@ -384,6 +385,7 @@ export function AppShell({ activeSection, onNavigate, version, area, children, n
         <div key={activeSection} className="animate-fade-up p-6">
           {children}
         </div>
+        <SaveBar />
         <footer className="mt-auto border-t border-border/40 px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">

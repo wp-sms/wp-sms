@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
+import { useSaveBar } from '@/contexts/save-bar-context';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -85,6 +86,8 @@ export function OptOutSettings() {
       setSaving(false);
     }
   }, [draft]);
+
+  useSaveBar({ isDirty, saveStatus: saving ? 'saving' : 'idle', onSave: save });
 
   const addKeyword = useCallback((type: 'stop' | 'start', value: string) => {
     const keyword = value.trim().toLowerCase();
@@ -219,12 +222,6 @@ export function OptOutSettings() {
         </CardContent>
       </Card>
 
-      {/* Save Button */}
-      <div className="flex justify-end">
-        <Button onClick={save} disabled={!isDirty || saving}>
-          {saving ? 'Saving...' : 'Save Settings'}
-        </Button>
-      </div>
     </div>
   );
 }
