@@ -81,14 +81,14 @@ export function LogoCard({ branding, onChange }: LogoCardProps) {
           </Field>
         </div>
 
-        <div className="space-y-2">
-          <span className="text-sm font-medium">Logo Position</span>
+        <Field>
+          <FieldLabel>Logo Position</FieldLabel>
           <SegmentedGroup
             value={branding.logo_position}
             onChange={(v) => onChange({ logo_position: v })}
             options={LOGO_POSITIONS}
           />
-        </div>
+        </Field>
 
         <Field>
           <FieldLabel>Logo Size: {branding.logo_size}px</FieldLabel>
