@@ -23,7 +23,7 @@ export function ColorPickerField({ id, label, value, placeholder, onChange }: Co
           value={value || '#000000'}
           onChange={(e) => onChange(e.target.value)}
           aria-label={`Pick ${label} color`}
-          className="h-6 w-6 shrink-0 cursor-pointer rounded border border-input p-0 shadow-sm transition-colors hover:ring-2 hover:ring-primary/20 [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded [&::-webkit-color-swatch]:border-0 [&::-moz-color-swatch]:rounded [&::-moz-color-swatch]:border-0"
+          className="h-6 w-6 shrink-0 cursor-pointer rounded border border-input p-0 transition-colors hover:ring-2 hover:ring-primary/20 [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:rounded [&::-webkit-color-swatch]:border-0 [&::-moz-color-swatch]:rounded [&::-moz-color-swatch]:border-0"
         />
         <Input
           id={inputId}

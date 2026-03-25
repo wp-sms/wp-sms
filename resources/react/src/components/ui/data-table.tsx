@@ -44,7 +44,7 @@ export function DataTable({
 
   return (
     <div className={className} {...props}>
-      <div className="rounded-lg border border-border/50 overflow-hidden">
+      <div className="rounded-lg overflow-hidden">
         {children}
       </div>
       {pagination && (

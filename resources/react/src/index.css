@@ -67,8 +67,6 @@
   --radius: 0.4375rem;
 
   /* Shadows */
-  --shadow-card: 0 1px 2px 0 oklch(0.147 0.004 49.25 / 0.03);
-  --shadow-card-hover: 0 1px 3px 0 oklch(0.147 0.004 49.25 / 0.04);
   --shadow-lg: 0 8px 12px -3px oklch(0.147 0.004 49.25 / 0.07), 0 3px 5px -3px oklch(0.147 0.004 49.25 / 0.05);
   --shadow-save-bar: 0 -2px 8px 0 oklch(0.147 0.004 49.25 / 0.06);
 
@@ -248,14 +246,6 @@
   background-color: var(--surface);
   min-height: 600px;
 }
-
-/* Card shadow & hover transition */
-#wpsms-app [data-slot="card"] {
-  box-shadow: var(--shadow-card);
-  border-color: oklch(0.915 0.004 48.717 / 0.6);
-  transition: box-shadow var(--duration-base) var(--ease-out);
-}
-
 
 /* Table header tint */
 #wpsms-app [data-slot="table-header"] {

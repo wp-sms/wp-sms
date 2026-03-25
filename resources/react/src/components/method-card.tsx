@@ -21,10 +21,7 @@ export function MethodCard({ title, description, enabled, onToggle, icon: Icon, 
   const hasConfig = !!children;
 
   return (
-    <Card active={enabled} className={cn(
-      'transition-shadow duration-150',
-      enabled && 'hover:shadow-[var(--shadow-card-hover)]',
-    )}>
+    <Card active={enabled}>
       <Collapsible open={open && enabled} onOpenChange={setOpen}>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <div className="space-y-1">
