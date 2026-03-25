@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks, Settings2, MessageSquare, SlidersHorizontal, ClipboardList, Webhook } from 'lucide-react';
+import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks, Settings2, MessageSquare, SlidersHorizontal, ClipboardList, Webhook, Bell, Sparkles } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { SaveBar } from '@/components/layout/save-bar';
 import {
@@ -20,6 +20,7 @@ import {
   SidebarTrigger,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { Button } from '@/components/ui/button';
 import {
   Collapsible,
   CollapsibleContent,
@@ -31,17 +32,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from '@/components/ui/breadcrumb';
 import { AREA_LABELS } from '@/lib/constants';
 import type { Area } from '@/lib/area-nav';
-
 
 const SIDEBAR_DEFAULT_OPEN = (() => {
   const match = document.cookie.match(/(?:^|;\s*)sidebar_state=([^;]*)/);
@@ -177,39 +169,6 @@ export function getParentSection(sectionId: string, items: NavItemList): string 
     }
   }
   return sectionId;
-}
-
-function getBreadcrumb(sectionId: string, onNavigate: (section: string) => void, items: NavItemList) {
-  for (const item of items) {
-    if ('children' in item && item.children) {
-      const child = item.children.find((c) => c.id === sectionId);
-      if (child) {
-        return (
-          <>
-            <BreadcrumbItem>
-              <BreadcrumbLink asChild>
-                <button onClick={() => onNavigate(item.children[0].id)}>
-                  {item.label}
-                </button>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>{child.label}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </>
-        );
-      }
-    }
-  }
-
-  // Leaf section (no parent)
-  const item = items.find((i) => i.id === sectionId);
-  return (
-    <BreadcrumbItem>
-      <BreadcrumbPage>{item?.label ?? sectionId}</BreadcrumbPage>
-    </BreadcrumbItem>
-  );
 }
 
 function CollapsedGroupItem({ item, activeSection, isActive, onNavigate }: {
@@ -348,7 +307,6 @@ function NavMenu({ activeSection, onNavigate, navItems }: { activeSection: strin
 }
 
 export function AppShell({ activeSection, onNavigate, version, area, children, navItems }: AppShellProps) {
-
   return (
     <SidebarProvider defaultOpen={SIDEBAR_DEFAULT_OPEN}>
       <Sidebar collapsible="icon">
@@ -374,13 +332,18 @@ export function AppShell({ activeSection, onNavigate, version, area, children, n
       </Sidebar>
 
       <SidebarInset>
-        <header className="flex h-14 items-center gap-2 border-b border-border/60 px-6" style={{ boxShadow: '0 1px 2px 0 oklch(0.147 0.004 49.25 / 0.03)' }}>
-          <SidebarTrigger className="-ml-1" />
-          <Breadcrumb>
-            <BreadcrumbList>
-              {getBreadcrumb(activeSection, onNavigate, navItems)}
-            </BreadcrumbList>
-          </Breadcrumb>
+        <header className="flex h-14 items-center justify-end gap-2 border-b border-sidebar-border bg-sidebar px-6">
+          <SidebarTrigger className="-ml-1 mr-auto" />
+          <Button variant="ghost" size="sm"
+            className="rounded-full bg-primary/10 text-xs font-medium text-primary hover:bg-primary/15 hover:text-primary">
+            <Sparkles className="size-3" />
+            Go Premium
+          </Button>
+          <Button variant="ghost" size="icon-sm" className="relative text-muted-foreground hover:text-foreground">
+            <Bell className="size-4" />
+            <span className="absolute top-1 right-1.5 size-2 rounded-full bg-destructive ring-2 ring-background" />
+            <span className="sr-only">Notifications</span>
+          </Button>
         </header>
         <div key={activeSection} className="animate-fade-up p-6">
           {children}
