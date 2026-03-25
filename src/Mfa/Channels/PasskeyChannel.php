@@ -500,8 +500,9 @@ class PasskeyChannel implements ChannelInterface, SupportsEnrollmentConfirmation
         // Localhost is always a secure context.
         $host = wp_parse_url(home_url(), PHP_URL_HOST);
 
-        return in_array($host, ['localhost', '127.0.0.1', '::1'], true)
-            || str_ends_with($host, '.local');
+        return is_string($host)
+            && (in_array($host, ['localhost', '127.0.0.1', '::1'], true)
+                || str_ends_with($host, '.local'));
     }
 
     private function deriveCredentialName(): string

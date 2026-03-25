@@ -148,6 +148,7 @@ class Connection
     public function getCol(string $sql, mixed ...$args): array
     {
         $prepared = empty($args) ? $sql : $this->wpdb->prepare($sql, ...$args);
+        /** @var list<string> */
         return $this->wpdb->get_col($prepared) ?: [];
     }
 

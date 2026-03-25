@@ -118,7 +118,7 @@ class CountryResolver
     {
         if (self::$prefixData === null) {
             $path = dirname(__DIR__, 2) . '/data/phone-country-prefixes.json';
-            $json = file_get_contents($path);
+            $json = file_get_contents($path) ?: '{}';
 
             self::$prefixData = json_decode($json, true) ?: ['prefixes' => [], 'country_names' => []];
         }

@@ -192,6 +192,7 @@ class MessageLogger implements MessageLoggerInterface
             ...$params,
         );
 
+        /** @var array<string, int> */
         return array_flip($rows);
     }
 

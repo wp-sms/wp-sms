@@ -2,6 +2,8 @@
 
 namespace WSms\SubscriptionForm;
 
+use WSms\Exception\NotFoundException;
+
 defined('ABSPATH') || exit;
 
 class SubscriptionFormRepository
@@ -74,6 +76,17 @@ class SubscriptionFormRepository
         }
 
         return null;
+    }
+
+    public function findOrFail(string $id): SubscriptionForm
+    {
+        $form = $this->find($id);
+
+        if ($form === null) {
+            throw NotFoundException::entity('SubscriptionForm', $id);
+        }
+
+        return $form;
     }
 
     public function findBySlug(string $slug): ?SubscriptionForm

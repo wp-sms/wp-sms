@@ -91,6 +91,12 @@ parameters:
 			path: src/Auth/AccountManager.php
 
 		-
+			message: '#^Call to method error\(\) on an unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Auth/AccountManager.php
+
+		-
 			message: '#^Cannot access property \$user_email on WP_User\|false\.$#'
 			identifier: property.nonObject
 			count: 3
@@ -99,7 +105,7 @@ parameters:
 		-
 			message: '#^Match expression does not handle remaining value\: string$#'
 			identifier: match.unhandled
-			count: 2
+			count: 1
 			path: src/Auth/AccountManager.php
 
 		-
@@ -199,8 +205,14 @@ parameters:
 			path: src/Auth/AccountManager.php
 
 		-
-			message: '#^Parameter \#1 \$error of static method WSms\\Auth\\ValueObjects\\OperationResult\:\:fail\(\) expects string, int\|string given\.$#'
-			identifier: argument.type
+			message: '#^Parameter \$logger of method WSms\\Auth\\AccountManager\:\:__construct\(\) has invalid type WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Auth/AccountManager.php
+
+		-
+			message: '#^Property WSms\\Auth\\AccountManager\:\:\$logger has unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface as its type\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Auth/AccountManager.php
 
@@ -247,42 +259,6 @@ parameters:
 			path: src/Auth/AuthOrchestrator.php
 
 		-
-			message: '#^Cannot access property \$display_name on WP_User\|false\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Auth/AuthOrchestrator.php
-
-		-
-			message: '#^Cannot access property \$first_name on WP_User\|false\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Auth/AuthOrchestrator.php
-
-		-
-			message: '#^Cannot access property \$last_name on WP_User\|false\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Auth/AuthOrchestrator.php
-
-		-
-			message: '#^Cannot access property \$roles on WP_User\|false\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Auth/AuthOrchestrator.php
-
-		-
-			message: '#^Cannot access property \$user_email on WP_User\|false\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Auth/AuthOrchestrator.php
-
-		-
-			message: '#^Cannot access property \$user_login on WP_User\|false\.$#'
-			identifier: property.nonObject
-			count: 2
-			path: src/Auth/AuthOrchestrator.php
-
-		-
 			message: '#^Method WSms\\Auth\\AuthOrchestrator\:\:authenticatedWithGraceInfo\(\) has parameter \$userData with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -305,12 +281,6 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Auth/AuthOrchestrator.php
-
-		-
-			message: '#^Parameter \#1 \$string of function trim expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Auth/AuthRouter.php
 
 		-
 			message: '#^Method WSms\\Auth\\AuthSession\:\:create\(\) has parameter \$context with no value type specified in iterable type array\.$#'
@@ -769,30 +739,6 @@ parameters:
 			path: src/Campaign/AudienceBatch.php
 
 		-
-			message: '#^Access to an undefined property object\:\:\$prefix\.$#'
-			identifier: property.notFound
-			count: 7
-			path: src/Campaign/AudienceResolver.php
-
-		-
-			message: '#^Access to an undefined property object\:\:\$usermeta\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Campaign/AudienceResolver.php
-
-		-
-			message: '#^Call to an undefined method object\:\:esc_like\(\)\.$#'
-			identifier: method.notFound
-			count: 3
-			path: src/Campaign/AudienceResolver.php
-
-		-
-			message: '#^Call to an undefined method object\:\:prepare\(\)\.$#'
-			identifier: method.notFound
-			count: 7
-			path: src/Campaign/AudienceResolver.php
-
-		-
 			message: '#^Method WSms\\Campaign\\AudienceResolver\:\:buildAttributeClause\(\) has parameter \$condition with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1015,12 +961,6 @@ parameters:
 			path: src/Components/View.php
 
 		-
-			message: '#^Method WSms\\Components\\View\:\:load\(\) should return string\|void but returns string\|false\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Components/View.php
-
-		-
 			message: '#^Call to static method createFromPath\(\) on an unknown class WSms\\Dependencies\\League\\Csv\\Writer\.$#'
 			identifier: class.notFound
 			count: 1
@@ -1115,12 +1055,6 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Contact/ContactImporter.php
-
-		-
-			message: '#^Call to an undefined method object\:\:esc_like\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Contact/ContactRepository.php
 
 		-
 			message: '#^Instantiated class WSms\\Dependencies\\Symfony\\Component\\Uid\\Ulid not found\.$#'
@@ -1405,6 +1339,12 @@ parameters:
 			path: src/Contact/Contracts/ListRepositoryInterface.php
 
 		-
+			message: '#^Method WSms\\Contact\\Contracts\\ListRepositoryInterface\:\:findOrFail\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/Contracts/ListRepositoryInterface.php
+
+		-
 			message: '#^Method WSms\\Contact\\Contracts\\ListRepositoryInterface\:\:update\(\) has parameter \$data with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1453,6 +1393,12 @@ parameters:
 			path: src/Contact/Contracts/TagRepositoryInterface.php
 
 		-
+			message: '#^Method WSms\\Contact\\Contracts\\TagRepositoryInterface\:\:findOrFail\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/Contracts/TagRepositoryInterface.php
+
+		-
 			message: '#^Method WSms\\Contact\\Contracts\\TagRepositoryInterface\:\:update\(\) has parameter \$data with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1495,28 +1441,16 @@ parameters:
 			path: src/Contact/ListRepository.php
 
 		-
-			message: '#^Method WSms\\Contact\\ListRepository\:\:update\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			message: '#^Method WSms\\Contact\\ListRepository\:\:findOrFail\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Contact/ListRepository.php
 
 		-
-			message: '#^Access to an undefined property object\:\:\$prefix\.$#'
-			identifier: property.notFound
-			count: 4
-			path: src/Contact/SegmentEvaluator.php
-
-		-
-			message: '#^Call to an undefined method object\:\:esc_like\(\)\.$#'
-			identifier: method.notFound
-			count: 2
-			path: src/Contact/SegmentEvaluator.php
-
-		-
-			message: '#^Call to an undefined method object\:\:prepare\(\)\.$#'
-			identifier: method.notFound
-			count: 5
-			path: src/Contact/SegmentEvaluator.php
+			message: '#^Method WSms\\Contact\\ListRepository\:\:update\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/ListRepository.php
 
 		-
 			message: '#^Method WSms\\Contact\\SegmentEvaluator\:\:buildAttributeClause\(\) has parameter \$condition with no value type specified in iterable type array\.$#'
@@ -1741,6 +1675,12 @@ parameters:
 			path: src/Contact/TagRepository.php
 
 		-
+			message: '#^Method WSms\\Contact\\TagRepository\:\:findOrFail\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Contact/TagRepository.php
+
+		-
 			message: '#^Method WSms\\Contact\\TagRepository\:\:update\(\) has parameter \$data with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1863,7 +1803,7 @@ parameters:
 		-
 			message: '#^Parameter \#1 \$query of method wpdb\:\:prepare\(\) expects literal\-string, string given\.$#'
 			identifier: argument.type
-			count: 4
+			count: 6
 			path: src/Database/Connection.php
 
 		-
@@ -5005,12 +4945,6 @@ parameters:
 			path: src/Log/FlowLogger.php
 
 		-
-			message: '#^Call to an undefined method object\:\:esc_like\(\)\.$#'
-			identifier: method.notFound
-			count: 1
-			path: src/Log/MessageLogger.php
-
-		-
 			message: '#^Instantiated class WSms\\Dependencies\\Symfony\\Component\\Uid\\Ulid not found\.$#'
 			identifier: class.notFound
 			count: 1
@@ -5055,6 +4989,12 @@ parameters:
 		-
 			message: '#^Method WSms\\Log\\MessageLogger\:\:findByProviderId\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
+			count: 1
+			path: src/Log/MessageLogger.php
+
+		-
+			message: '#^Method WSms\\Log\\MessageLogger\:\:findSentRecipients\(\) should return array\<string, true\> but returns array\<string, int\>\.$#'
+			identifier: return.type
 			count: 1
 			path: src/Log/MessageLogger.php
 
@@ -5557,12 +5497,6 @@ parameters:
 			path: src/Messaging/Template/MustacheEngine.php
 
 		-
-			message: '#^Method WSms\\Messaging\\Template\\MustacheEngine\:\:resolve\(\) should return string\|null but returns string\|false\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Messaging/Template/MustacheEngine.php
-
-		-
 			message: '#^Method WSms\\Messaging\\Template\\Renderer\\EmailRenderer\:\:render\(\) has parameter \$context with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -5597,6 +5531,12 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Messaging/Template/Storage/OptionStorage.php
+
+		-
+			message: '#^Call to method warning\(\) on an unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Messaging/Template/TemplateManager.php
 
 		-
 			message: '#^Method WSms\\Messaging\\Template\\TemplateManager\:\:getTemplateForEditing\(\) return type has no value type specified in iterable type array\.$#'
@@ -5667,6 +5607,18 @@ parameters:
 		-
 			message: '#^Method WSms\\Messaging\\Template\\TemplateManager\:\:warnMissingRequired\(\) has parameter \$variables with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
+			count: 1
+			path: src/Messaging/Template/TemplateManager.php
+
+		-
+			message: '#^Parameter \$logger of method WSms\\Messaging\\Template\\TemplateManager\:\:__construct\(\) has invalid type WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Messaging/Template/TemplateManager.php
+
+		-
+			message: '#^Property WSms\\Messaging\\Template\\TemplateManager\:\:\$logger has unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface as its type\.$#'
+			identifier: class.notFound
 			count: 1
 			path: src/Messaging/Template/TemplateManager.php
 
@@ -5977,6 +5929,138 @@ parameters:
 			path: src/Mfa/Channels/MagicLinkChannel.php
 
 		-
+			message: '#^Access to constant INVALID_CHALLENGE on an unknown class WSms\\Dependencies\\lbuchs\\WebAuthn\\WebAuthnException\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Access to constant INVALID_SIGNATURE on an unknown class WSms\\Dependencies\\lbuchs\\WebAuthn\\WebAuthnException\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Access to constant SIGNATURE_COUNTER on an unknown class WSms\\Dependencies\\lbuchs\\WebAuthn\\WebAuthnException\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Call to method getChallenge\(\) on an unknown class WSms\\Dependencies\\lbuchs\\WebAuthn\\WebAuthn\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Call to method getCode\(\) on an unknown class WSms\\Dependencies\\lbuchs\\WebAuthn\\WebAuthnException\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Call to method getCreateArgs\(\) on an unknown class WSms\\Dependencies\\lbuchs\\WebAuthn\\WebAuthn\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Call to method getGetArgs\(\) on an unknown class WSms\\Dependencies\\lbuchs\\WebAuthn\\WebAuthn\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Call to method getHex\(\) on an unknown class WSms\\Dependencies\\lbuchs\\WebAuthn\\Binary\\ByteBuffer\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Call to method getSignatureCounter\(\) on an unknown class WSms\\Dependencies\\lbuchs\\WebAuthn\\WebAuthn\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Call to method processCreate\(\) on an unknown class WSms\\Dependencies\\lbuchs\\WebAuthn\\WebAuthn\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Call to method processGet\(\) on an unknown class WSms\\Dependencies\\lbuchs\\WebAuthn\\WebAuthn\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Caught class WSms\\Dependencies\\lbuchs\\WebAuthn\\WebAuthnException not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Class WSms\\Dependencies\\lbuchs\\WebAuthn\\Binary\\ByteBuffer not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\lbuchs\\WebAuthn\\Binary\\ByteBuffer not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Instantiated class WSms\\Dependencies\\lbuchs\\WebAuthn\\WebAuthn not found\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Method WSms\\Mfa\\Channels\\PasskeyChannel\:\:createFactor\(\) has parameter \$meta with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Method WSms\\Mfa\\Channels\\PasskeyChannel\:\:createWebAuthn\(\) has invalid return type WSms\\Dependencies\\lbuchs\\WebAuthn\\WebAuthn\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Method WSms\\Mfa\\Channels\\PasskeyChannel\:\:enroll\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Method WSms\\Mfa\\Channels\\PasskeyChannel\:\:getEnrollmentInfo\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Method WSms\\Mfa\\Channels\\PasskeyChannel\:\:sendChallenge\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Method WSms\\Mfa\\Channels\\PasskeyChannel\:\:updateFactor\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
+			message: '#^Method WSms\\Mfa\\Channels\\PasskeyChannel\:\:verify\(\) has parameter \$context with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Mfa/Channels/PasskeyChannel.php
+
+		-
 			message: '#^Method WSms\\Mfa\\Channels\\PhoneChannel\:\:enroll\(\) has parameter \$data with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -6133,49 +6217,13 @@ parameters:
 			path: src/Mfa/ValueObjects/EnrollmentResult.php
 
 		-
-			message: '#^Access to an undefined property object\:\:\$channel_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Mfa/ValueObjects/UserFactor.php
-
-		-
-			message: '#^Access to an undefined property object\:\:\$created_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Mfa/ValueObjects/UserFactor.php
-
-		-
-			message: '#^Access to an undefined property object\:\:\$id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Mfa/ValueObjects/UserFactor.php
-
-		-
-			message: '#^Access to an undefined property object\:\:\$meta\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Mfa/ValueObjects/UserFactor.php
-
-		-
-			message: '#^Access to an undefined property object\:\:\$status\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Mfa/ValueObjects/UserFactor.php
-
-		-
-			message: '#^Access to an undefined property object\:\:\$updated_at\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Mfa/ValueObjects/UserFactor.php
-
-		-
-			message: '#^Access to an undefined property object\:\:\$user_id\.$#'
-			identifier: property.notFound
-			count: 1
-			path: src/Mfa/ValueObjects/UserFactor.php
-
-		-
 			message: '#^Method WSms\\Mfa\\ValueObjects\\UserFactor\:\:__construct\(\) has parameter \$meta with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Mfa/ValueObjects/UserFactor.php
+
+		-
+			message: '#^Method WSms\\Mfa\\ValueObjects\\UserFactor\:\:fromRow\(\) has parameter \$row with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Mfa/ValueObjects/UserFactor.php
@@ -6195,12 +6243,6 @@ parameters:
 		-
 			message: '#^Method WSms\\PhoneRestriction\\CountryResolver\:\:matchPrefix\(\) has parameter \$prefixes with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/PhoneRestriction/CountryResolver.php
-
-		-
-			message: '#^Parameter \#1 \$json of function json_decode expects string, string\|false given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/PhoneRestriction/CountryResolver.php
 
@@ -6225,12 +6267,6 @@ parameters:
 		-
 			message: '#^Method WSms\\PhoneRestriction\\EnhancedPhoneDatabase\:\:getTerritoriesByCallingCode\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/PhoneRestriction/EnhancedPhoneDatabase.php
-
-		-
-			message: '#^Parameter \#2 \$timestamp of function gmdate expects int\|null, int\<0, max\>\|false given\.$#'
-			identifier: argument.type
 			count: 1
 			path: src/PhoneRestriction/EnhancedPhoneDatabase.php
 
@@ -6457,6 +6493,24 @@ parameters:
 			path: src/Rest/AccountController.php
 
 		-
+			message: '#^Method WSms\\Rest\\AdminController\:\:hasNewMfaRoles\(\) has parameter \$current with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Rest/AdminController.php
+
+		-
+			message: '#^Method WSms\\Rest\\AdminController\:\:hasNewMfaRoles\(\) has parameter \$updated with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Rest/AdminController.php
+
+		-
+			message: '#^Method WSms\\Rest\\AdminController\:\:validateSettings\(\) has parameter \$current with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: src/Rest/AdminController.php
+
+		-
 			message: '#^Method WSms\\Rest\\AdminController\:\:validateSettings\(\) has parameter \$settings with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -6499,6 +6553,24 @@ parameters:
 			path: src/Rest/AdminUserController.php
 
 		-
+			message: '#^Call to method error\(\) on an unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Rest/AdminUserController.php
+
+		-
+			message: '#^Parameter \$logger of method WSms\\Rest\\AdminUserController\:\:__construct\(\) has invalid type WSms\\Dependencies\\Psr\\Log\\LoggerInterface\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Rest/AdminUserController.php
+
+		-
+			message: '#^Property WSms\\Rest\\AdminUserController\:\:\$logger has unknown class WSms\\Dependencies\\Psr\\Log\\LoggerInterface as its type\.$#'
+			identifier: class.notFound
+			count: 1
+			path: src/Rest/AdminUserController.php
+
+		-
 			message: '#^Method WSms\\Rest\\AuthController\:\:buildBaseConfig\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -6517,52 +6589,16 @@ parameters:
 			path: src/Rest/ContactController.php
 
 		-
-			message: '#^Method WSms\\Rest\\Controller\:\:paginated\(\) has parameter \$items with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
+			message: '#^Call to an undefined method WSms\\Log\\WpLogger\:\:error\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Rest/Controller.php
 
 		-
-			message: '#^Cannot access property \$display_name on WP_User\|false\.$#'
-			identifier: property.nonObject
+			message: '#^Method WSms\\Rest\\Controller\:\:paginated\(\) has parameter \$items with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
-			path: src/Rest/EnrollmentController.php
-
-		-
-			message: '#^Cannot access property \$first_name on WP_User\|false\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Rest/EnrollmentController.php
-
-		-
-			message: '#^Cannot access property \$last_name on WP_User\|false\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Rest/EnrollmentController.php
-
-		-
-			message: '#^Cannot access property \$roles on WP_User\|false\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Rest/EnrollmentController.php
-
-		-
-			message: '#^Cannot access property \$user_email on WP_User\|false\.$#'
-			identifier: property.nonObject
-			count: 2
-			path: src/Rest/EnrollmentController.php
-
-		-
-			message: '#^Cannot access property \$user_login on WP_User\|false\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: src/Rest/EnrollmentController.php
-
-		-
-			message: '#^Method WSms\\Rest\\EnrollmentController\:\:resolveAvatarUrl\(\) should return string but returns string\|false\.$#'
-			identifier: return.type
-			count: 1
-			path: src/Rest/EnrollmentController.php
+			path: src/Rest/Controller.php
 
 		-
 			message: '#^Method WSms\\Rest\\FlowController\:\:extractExamplesFromSchema\(\) has parameter \$schema with no value type specified in iterable type array\.$#'
@@ -6937,12 +6973,6 @@ parameters:
 			path: src/Social/SocialAccountRepository.php
 
 		-
-			message: '#^Parameter \#1 \$plaintext of method WSms\\Social\\SocialAccountRepository\:\:encryptValue\(\) expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 2
-			path: src/Social/SocialAccountRepository.php
-
-		-
 			message: '#^Access to an undefined property object\:\:\$channel_id\.$#'
 			identifier: property.notFound
 			count: 2
@@ -7269,12 +7299,6 @@ parameters:
 		-
 			message: '#^Method WSms\\Telegram\\TelegramBotClient\:\:encodeReplyMarkup\(\) has parameter \$markup with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
-			count: 1
-			path: src/Telegram/TelegramBotClient.php
-
-		-
-			message: '#^Method WSms\\Telegram\\TelegramBotClient\:\:encodeReplyMarkup\(\) should return string but returns string\|false\.$#'
-			identifier: return.type
 			count: 1
 			path: src/Telegram/TelegramBotClient.php
 

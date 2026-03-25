@@ -327,7 +327,7 @@ class AccountController extends Controller
 
     public function handleLogout(WP_REST_Request $request): WP_REST_Response
     {
-        return $this->handle(function () use ($request) {
+        return $this->handle(function () {
             $this->accountManager->logout();
 
             return $this->ok(['message' => __('Logged out successfully.', 'wp-sms')]);
@@ -484,7 +484,7 @@ class AccountController extends Controller
 
     public function handleDeleteAvatar(WP_REST_Request $request): WP_REST_Response
     {
-        return $this->handle(function () use ($request) {
+        return $this->handle(function () {
             if (!$this->avatarManager) {
                 return new WP_REST_Response([
                     'success' => false,

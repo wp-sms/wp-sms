@@ -216,7 +216,7 @@ class AuthRouter
     {
         $route = get_query_var('wsms_auth_route', '');
         // Strip query string and trailing slash.
-        $route = trim(strtok($route, '?'), '/');
+        $route = trim((string) strtok($route, '?'), '/');
 
         return self::$routeTitles[$route] ?? 'Account';
     }

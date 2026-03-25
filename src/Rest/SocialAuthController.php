@@ -188,7 +188,7 @@ class SocialAuthController extends Controller
 
     public function handleListAccounts(WP_REST_Request $request): WP_REST_Response
     {
-        return $this->handle(function () use ($request) {
+        return $this->handle(function () {
             $userId = get_current_user_id();
 
             $accounts = $this->orchestrator->getLinkedAccounts($userId);

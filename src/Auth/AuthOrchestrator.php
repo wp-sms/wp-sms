@@ -492,6 +492,10 @@ class AuthOrchestrator
 
         $user = get_userdata($userId);
 
+        if (!$user) {
+            throw new \RuntimeException("User {$userId} not found");
+        }
+
         do_action('wp_login', $user->user_login, $user);
         do_action('wsms_login_success', $userId, $method, $mfaChannel);
 

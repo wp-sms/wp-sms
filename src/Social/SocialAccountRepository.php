@@ -117,7 +117,7 @@ class SocialAccountRepository
         }
 
         $meta = json_decode($row['meta'], true) ?: [];
-        $meta['tokens'] = $this->encryptValue(wp_json_encode($tokens));
+        $meta['tokens'] = $this->encryptValue(wp_json_encode($tokens) ?: '{}');
 
         $this->db->update(
             Connection::TABLE_USER_FACTORS,
@@ -132,7 +132,7 @@ class SocialAccountRepository
     private function encryptTokensInMeta(array $meta): array
     {
         if (isset($meta['tokens'])) {
-            $meta['tokens'] = $this->encryptValue(wp_json_encode($meta['tokens']));
+            $meta['tokens'] = $this->encryptValue(wp_json_encode($meta['tokens']) ?: '{}');
         }
 
         return $meta;

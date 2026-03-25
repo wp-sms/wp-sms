@@ -43,7 +43,7 @@ class View
         }
 
         if ($return) {
-            return ob_get_clean();
+            return ob_get_clean() ?: '';
         }
     }
 }

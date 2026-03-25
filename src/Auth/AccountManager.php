@@ -158,7 +158,7 @@ class AccountManager
         $userId = wp_insert_user($userdata);
 
         if (is_wp_error($userId)) {
-            return OperationResult::fail($userId->get_error_code(), $userId->get_error_message());
+            return OperationResult::fail((string) $userId->get_error_code(), $userId->get_error_message());
         }
 
         $this->storeUserMeta($userId, $data, $isPlaceholder, $emailVerifyEnabled, $phoneVerifyEnabled);

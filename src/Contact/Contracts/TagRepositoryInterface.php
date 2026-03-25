@@ -12,6 +12,8 @@ interface TagRepositoryInterface
 
     public function find(string $id): ?array;
 
+    public function findOrFail(string $id): array;
+
     public function findBySlug(string $slug): ?array;
 
     public function findAll(): array;

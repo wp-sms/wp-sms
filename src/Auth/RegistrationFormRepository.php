@@ -2,6 +2,8 @@
 
 namespace WSms\Auth;
 
+use WSms\Exception\NotFoundException;
+
 defined('ABSPATH') || exit;
 
 class RegistrationFormRepository
@@ -60,6 +62,17 @@ class RegistrationFormRepository
         }
 
         return null;
+    }
+
+    public function findOrFail(string $id): RegistrationForm
+    {
+        $form = $this->find($id);
+
+        if ($form === null) {
+            throw NotFoundException::entity('RegistrationForm', $id);
+        }
+
+        return $form;
     }
 
     public function findBySlug(string $slug): ?RegistrationForm

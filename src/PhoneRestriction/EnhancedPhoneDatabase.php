@@ -82,7 +82,7 @@ class EnhancedPhoneDatabase
         return [
             'installed'  => true,
             'version'    => $db->getVersion(),
-            'updated_at' => gmdate('c', filemtime($path)),
+            'updated_at' => gmdate('c', filemtime($path) ?: 0),
         ];
     }
 

@@ -170,7 +170,7 @@ class TelegramBotClient
 
     private function encodeReplyMarkup(string|array $markup): string
     {
-        return is_string($markup) ? $markup : json_encode($markup);
+        return is_string($markup) ? $markup : (json_encode($markup) ?: '[]');
     }
 
     private function post(string $method, array $body = []): ?array

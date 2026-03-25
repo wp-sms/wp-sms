@@ -55,7 +55,7 @@ class TagController extends Controller
 
     public function index(\WP_REST_Request $request): \WP_REST_Response
     {
-        return $this->handle(function () use ($request) {
+        return $this->handle(function () {
             $tags = $this->tags->findAll();
             $counts = $this->tags->getContactCounts();
 

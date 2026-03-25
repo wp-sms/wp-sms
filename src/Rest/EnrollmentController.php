@@ -98,7 +98,7 @@ class EnrollmentController extends Controller
 
     public function handleListMethods(WP_REST_Request $request): WP_REST_Response
     {
-        return $this->handle(function () use ($request) {
+        return $this->handle(function () {
             $mfaFactorIds = $this->policy->getAvailableMfaFactors();
             $methods = [];
 
@@ -123,7 +123,7 @@ class EnrollmentController extends Controller
 
     public function handleListFactors(WP_REST_Request $request): WP_REST_Response
     {
-        return $this->handle(function () use ($request) {
+        return $this->handle(function () {
             $userId = get_current_user_id();
             $factors = $this->mfaManager->getUserFactors($userId);
             $enrolled = [];
@@ -239,7 +239,7 @@ class EnrollmentController extends Controller
 
     public function handleRegenerateBackupCodes(WP_REST_Request $request): WP_REST_Response
     {
-        return $this->handle(function () use ($request) {
+        return $this->handle(function () {
             $userId = get_current_user_id();
             $channel = $this->mfaManager->getChannel('backup_codes');
 
@@ -289,9 +289,13 @@ class EnrollmentController extends Controller
 
     public function handleMe(WP_REST_Request $request): WP_REST_Response
     {
-        return $this->handle(function () use ($request) {
+        return $this->handle(function () {
             $userId = get_current_user_id();
             $user = get_userdata($userId);
+
+            if (!$user) {
+                return new WP_REST_Response(['error' => 'unauthorized', 'message' => 'User not found.'], 401);
+            }
 
             $factors = $this->mfaManager->getUserFactors($userId);
             $availableMfaIds = $this->policy->getAvailableMfaFactors();
@@ -353,7 +357,7 @@ class EnrollmentController extends Controller
             }
         }
 
-        return get_avatar_url($userId, ['size' => 128]);
+        return get_avatar_url($userId, ['size' => 128]) ?: '';
     }
 
     /**

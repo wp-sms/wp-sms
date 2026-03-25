@@ -12,6 +12,8 @@ interface ListRepositoryInterface
 
     public function find(string $id): ?array;
 
+    public function findOrFail(string $id): array;
+
     public function findAll(?string $type = null): array;
 
     public function delete(string $id): bool;

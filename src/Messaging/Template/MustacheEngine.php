@@ -28,6 +28,6 @@ class MustacheEngine implements TemplateEngineInterface
             $value = $value[$part];
         }
 
-        return is_scalar($value) ? (string) $value : wp_json_encode($value);
+        return is_scalar($value) ? (string) $value : (wp_json_encode($value) ?: null);
     }
 }
