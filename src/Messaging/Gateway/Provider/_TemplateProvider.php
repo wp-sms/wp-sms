@@ -282,6 +282,12 @@ class _TemplateProvider extends AbstractProvider implements SupportsStatusCallba
      *
      * Normalize the provider's status to one of: 'queued', 'sent', 'delivered', 'failed'
      *
+     * Set `permanent: true` on StatusUpdate when the error code indicates a permanent
+     * delivery failure (invalid number, deactivated handset, etc.). This triggers
+     * automatic contact status update to 'bounced' or 'complained'.
+     * Set `complaint: true` when the error is a spam/unsubscribe complaint.
+     * See TwilioProvider::isPermanentTwilioError() for a reference implementation.
+     *
      * Return [] to silently ignore the callback (e.g., irrelevant event type).
      *
      * @return StatusUpdate[]

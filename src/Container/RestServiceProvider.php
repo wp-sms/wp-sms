@@ -180,6 +180,7 @@ class RestServiceProvider implements ServiceProvider
             $c->get('auth.rate_limiter'),
             $c->get('campaign.repository'),
             $c->get('messaging.optout_manager'),
+            $c->get('messaging.status_propagator'),
         ));
         $container->register('rest.optout_settings', fn() => new OptOutSettingsController());
         $container->register('rest.phone_restriction', fn($c) => new PhoneRestrictionController(

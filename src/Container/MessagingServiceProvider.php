@@ -2,6 +2,7 @@
 
 namespace WSms\Container;
 
+use WSms\Contact\StatusPropagator;
 use WSms\Messaging\Catalog\TemplateCatalogManager;
 use WSms\Messaging\Gateway\Email\WpMailGateway;
 use WSms\Messaging\Gateway\GatewayRegistry;
@@ -16,6 +17,7 @@ use WSms\Messaging\Gateway\Webhook\HttpWebhookGateway;
 use WSms\Messaging\Inbound\KeywordMatcher;
 use WSms\Messaging\Inbound\OptOutManager;
 use WSms\Messaging\MessageDispatcher;
+use WSms\Messaging\SuppressionGuard;
 use WSms\Messaging\Template\MustacheEngine;
 
 defined('ABSPATH') || exit;
@@ -64,6 +66,15 @@ class MessagingServiceProvider implements ServiceProvider
             $c->get('messaging.keyword_matcher'),
         ));
 
+        $container->register('messaging.suppression_guard', fn($c) => new SuppressionGuard(
+            $c->get('contact.repository'),
+        ));
+
+        $container->register('messaging.status_propagator', fn($c) => new StatusPropagator(
+            $c->get('contact.repository'),
+            $c->get('event.dispatcher'),
+        ));
+
         $container->register('template.catalog_manager', fn($c) => new TemplateCatalogManager(
             $c->get('gateway.registry'),
         ));
@@ -74,6 +85,11 @@ class MessagingServiceProvider implements ServiceProvider
         // Lazy wire: OptOutManager is only resolved if a send failure looks like an opt-out
         $container->get('message.dispatcher')->setOptOutManagerResolver(
             fn() => $container->get('messaging.optout_manager'),
+        );
+
+        // Lazy wire: SuppressionGuard is only resolved when checking a send
+        $container->get('message.dispatcher')->setSuppressionGuardResolver(
+            fn() => $container->get('messaging.suppression_guard'),
         );
 
         $registry = $container->get('gateway.registry');

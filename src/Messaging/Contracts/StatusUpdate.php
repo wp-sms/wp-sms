@@ -11,6 +11,8 @@ class StatusUpdate
         public readonly string $status,
         public readonly ?string $errorCode = null,
         public readonly ?string $errorMessage = null,
+        public readonly bool $permanent = false,
+        public readonly bool $complaint = false,
     ) {
     }
 

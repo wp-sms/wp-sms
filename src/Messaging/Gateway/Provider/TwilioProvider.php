@@ -244,11 +244,15 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
             default             => $messageStatus,
         };
 
+        $errorCode = $request->get_param('ErrorCode');
+
         return [new StatusUpdate(
             providerId: $messageSid,
             status: $status,
-            errorCode: $request->get_param('ErrorCode'),
+            errorCode: $errorCode,
             errorMessage: $request->get_param('ErrorMessage'),
+            permanent: $this->isPermanentTwilioError($errorCode),
+            complaint: $errorCode === '21610',
         )];
     }
 
@@ -512,6 +516,22 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
         $expected = base64_encode(hash_hmac('sha1', $data, $authToken, true));
 
         return hash_equals($expected, $signature);
+    }
+
+    private function isPermanentTwilioError(?string $code): bool
+    {
+        if ($code === null) {
+            return false;
+        }
+
+        return in_array($code, [
+            '30003', // Unreachable destination handset
+            '30005', // Unknown destination handset
+            '30006', // Landline or unreachable carrier
+            '21610', // Unsubscribed recipient
+            '21611', // Sender not authorized
+            '21614', // Invalid mobile number
+        ], true);
     }
 
     private function parseTwilioContent(array $content): ?ProviderTemplate

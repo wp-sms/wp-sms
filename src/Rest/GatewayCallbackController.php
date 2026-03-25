@@ -4,6 +4,7 @@ namespace WSms\Rest;
 
 use WSms\Auth\RateLimiter;
 use WSms\Campaign\CampaignRepository;
+use WSms\Contact\StatusPropagator;
 use WSms\Log\Contracts\MessageLoggerInterface;
 use WSms\Messaging\Contracts\SupportsInboundMessage;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
@@ -23,6 +24,7 @@ class GatewayCallbackController extends Controller
         private readonly RateLimiter $rateLimiter,
         private readonly ?CampaignRepository $campaignRepository = null,
         private readonly ?OptOutManager $optOutManager = null,
+        private readonly ?StatusPropagator $statusPropagator = null,
     ) {
     }
 
@@ -95,6 +97,11 @@ class GatewayCallbackController extends Controller
                     } elseif ($update->status === 'failed') {
                         $this->campaignRepository->incrementCounters($logEntry['campaign_id'], 'failed_count');
                     }
+                }
+
+                // Propagate permanent failures to contact status (bounced/complained)
+                if ($this->statusPropagator !== null && $update->permanent) {
+                    $this->statusPropagator->propagate($update, $logEntry['recipient'], $logEntry['channel']);
                 }
             }
 

@@ -26,6 +26,10 @@ class MessageDispatcher
     /** @var (\Closure(): SendingPolicyGuard)|null */
     private ?\Closure $sendingPolicyGuardResolver = null;
 
+    /** @var (\Closure(): SuppressionGuard)|null */
+    private ?\Closure $suppressionGuardResolver = null;
+    private ?SuppressionGuard $suppressionGuard = null;
+
     public function __construct(
         private readonly GatewayRegistry $gatewayRegistry,
         private readonly MessageLoggerInterface $messageLogger,
@@ -46,6 +50,12 @@ class MessageDispatcher
         $this->sendingPolicyGuardResolver = $resolver;
     }
 
+    /** @param \Closure(): SuppressionGuard $resolver */
+    public function setSuppressionGuardResolver(\Closure $resolver): void
+    {
+        $this->suppressionGuardResolver = $resolver;
+    }
+
     /**
      * Send a message immediately (synchronous).
      *
@@ -57,6 +67,12 @@ class MessageDispatcher
 
         if ($restriction !== null) {
             return $restriction;
+        }
+
+        $suppression = $this->checkSuppression($message);
+        if ($suppression !== null) {
+            $this->logRejection($message, 'suppressed', $suppression->error);
+            return $suppression;
         }
 
         $gateway = $gatewayId
@@ -128,18 +144,12 @@ class MessageDispatcher
         $restriction = $this->checkPhoneRestriction($message);
 
         if ($restriction !== null) {
-            return $this->messageLogger->logSend(
-                gatewayId: 'none',
-                channel: $message->getChannel(),
-                recipient: $message->getRecipient(),
-                body: $message->getBody(),
-                status: 'blocked',
-                executionId: $message->getFlowExecutionId(),
-                subject: $message->getMeta()['subject'] ?? null,
-                error: $restriction->error,
-                type: $message->getCampaignId() ? 'campaign' : 'transactional',
-                campaignId: $message->getCampaignId(),
-            );
+            return $this->logRejection($message, 'blocked', $restriction->error);
+        }
+
+        $suppression = $this->checkSuppression($message);
+        if ($suppression !== null) {
+            return $this->logRejection($message, 'suppressed', $suppression->error);
         }
 
         $gateway = $gatewayId
@@ -191,6 +201,33 @@ class MessageDispatcher
         }
 
         return DeliveryResult::failed($result->message ?? 'Phone number restricted');
+    }
+
+    private function logRejection(MessageInterface $message, string $status, ?string $error): string
+    {
+        return $this->messageLogger->logSend(
+            gatewayId: 'none',
+            channel: $message->getChannel(),
+            recipient: $message->getRecipient(),
+            body: $message->getBody(),
+            status: $status,
+            executionId: $message->getFlowExecutionId(),
+            subject: $message->getMeta()['subject'] ?? null,
+            error: $error,
+            type: $message->getCampaignId() ? 'campaign' : 'transactional',
+            campaignId: $message->getCampaignId(),
+        );
+    }
+
+    private function checkSuppression(MessageInterface $message): ?DeliveryResult
+    {
+        if ($this->suppressionGuardResolver === null) {
+            return null;
+        }
+
+        $this->suppressionGuard ??= ($this->suppressionGuardResolver)();
+
+        return $this->suppressionGuard->check($message);
     }
 
     private function resolveGateway(string $channel): ?GatewayInterface

@@ -76,7 +76,7 @@ class MessageLogger implements MessageLoggerInterface
         $table = $this->db->table(Connection::TABLE_MESSAGE_LOGS);
 
         return $this->db->getRow(
-            "SELECT id, campaign_id FROM {$table} WHERE gateway_id = %s AND provider_id = %s ORDER BY created_at DESC LIMIT 1",
+            "SELECT id, campaign_id, recipient, channel FROM {$table} WHERE gateway_id = %s AND provider_id = %s ORDER BY created_at DESC LIMIT 1",
             $gatewayId,
             $providerId,
         );
