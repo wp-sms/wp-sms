@@ -16,8 +16,11 @@ import type { FieldOption } from '@/lib/condition-utils';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 import { Switch } from '@/components/ui/switch';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { DataTable } from '@/components/ui/data-table';
 import { Mail, MessageSquare, Send, Smartphone, Eye, RotateCcw, Settings, RefreshCw, AlertTriangle, ExternalLink, FileText } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
+import { pluralize } from '@/lib/utils';
 
 interface VariableInfo {
   name: string;
@@ -189,59 +192,70 @@ export function Templates() {
 
   useEffect(() => { void loadTemplates(); }, [loadTemplates]);
 
-  if (loading) {
-    return <Skeleton className="h-64 w-full" />;
-  }
-
   return (
     <>
       <div className="space-y-4">
-        <PageHeader icon={FileText} title="Message Templates" />
-        <div className="rounded-lg border border-border/50 divide-y divide-border/50">
-        {templates.map((template) => {
-          const activeChannels = template.visible_channels;
-          const customizedChannels = activeChannels.filter((ch) => template.channels[ch]?.override != null);
+        <PageHeader icon={FileText} title="Message Templates" metadata={!loading ? pluralize(templates.length, 'template') : undefined} />
+        <DataTable loading={loading} isEmpty={templates.length === 0} empty={<p className="py-8 text-center text-sm text-muted-foreground">No templates found.</p>}>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Template</TableHead>
+                <TableHead>Channels</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="w-[50px]" />
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {templates.map((template) => {
+                const activeChannels = template.visible_channels;
+                const customizedChannels = activeChannels.filter((ch) => template.channels[ch]?.override != null);
 
-          return (
-            <div key={template.id} className="flex items-center gap-3 px-4 py-3">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium">{template.label}</span>
-                  {template.toggleable && !template.enabled && (
-                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-muted-foreground">
-                      off
-                    </Badge>
-                  )}
-                  {customizedChannels.length > 0 && (
-                    <Badge variant="default" className="text-[10px] px-1.5 py-0">
-                      customized
-                    </Badge>
-                  )}
-                </div>
-                <div className="flex items-center gap-1.5 mt-1">
-                  <p className="text-xs text-muted-foreground">{template.description}</p>
-                  {activeChannels.length > 0 && (
-                    <span className="text-xs text-muted-foreground">·</span>
-                  )}
-                  {activeChannels.map((ch) => (
-                    <span key={ch} className="inline-flex items-center gap-0.5 text-xs text-muted-foreground">
-                      {CHANNEL_ICONS[ch]}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setEditingTemplate(template)}
-                className="shrink-0 rounded-md p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                aria-label={`Configure ${template.label}`}
-              >
-                <Settings className="h-4 w-4" />
-              </button>
-            </div>
-          );
-        })}
-        </div>
+                return (
+                  <TableRow key={template.id} className="even:bg-muted/30">
+                    <TableCell>
+                      <span className="text-sm font-medium">{template.label}</span>
+                      <p className="text-xs text-muted-foreground mt-0.5">{template.description}</p>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1.5">
+                        {activeChannels.map((ch) => (
+                          <span key={ch} className="inline-flex text-muted-foreground">
+                            {CHANNEL_ICONS[ch]}
+                          </span>
+                        ))}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1.5">
+                        {template.toggleable && !template.enabled && (
+                          <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-muted-foreground">
+                            off
+                          </Badge>
+                        )}
+                        {customizedChannels.length > 0 && (
+                          <Badge variant="default" className="text-[10px] px-1.5 py-0">
+                            customized
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <button
+                        type="button"
+                        onClick={() => setEditingTemplate(template)}
+                        className="shrink-0 rounded-md p-1.5 text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                        aria-label={`Configure ${template.label}`}
+                      >
+                        <Settings className="h-4 w-4" />
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </DataTable>
       </div>
 
       {editingTemplate && (

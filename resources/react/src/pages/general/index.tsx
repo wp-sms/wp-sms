@@ -3,8 +3,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Field, FieldLabel, FieldDescription, SwitchField } from '@/components/ui/field';
 import { PageSection } from '@/components/ui/page-section';
 import { PageHeader } from '@/components/layout/page-header';
-import { SlidersHorizontal, Phone, Globe, Scale } from 'lucide-react';
-import { SITE_PHONE_CHANNELS } from '@/lib/constants';
+import { SlidersHorizontal, Phone, Globe, Scale, UserPlus, ScrollText } from 'lucide-react';
+import { SITE_PHONE_CHANNELS, LOG_VERBOSITY } from '@/lib/constants';
 import type { AuthSettings, SitePhoneChannel } from '@/lib/api';
 
 interface GeneralPageProps {
@@ -134,6 +134,62 @@ export function GeneralPage({ settings, onUpdate }: GeneralPageProps) {
               <FieldDescription>
                 When set, a consent line appears on the registration page.
               </FieldDescription>
+            </Field>
+          </div>
+      </PageSection>
+
+      <PageSection
+        icon={UserPlus}
+        title="Auto-Create Accounts"
+        description="Account creation behavior when unrecognized users attempt to log in"
+      >
+          <SwitchField
+            id="auto_create_users"
+            label="Auto-Create Accounts on Login"
+            description="When someone logs in with a phone or email that doesn't have an account yet, automatically create one instead of rejecting them"
+            checked={settings.auto_create_users}
+            onCheckedChange={(checked) => onUpdate('auto_create_users', checked)}
+          />
+      </PageSection>
+
+      <PageSection
+        icon={ScrollText}
+        title="Log Settings"
+        description="Configure what gets logged and how long logs are retained"
+      >
+          <div className="space-y-4 max-w-md">
+            <Field>
+              <FieldLabel htmlFor="log_verbosity">Verbosity</FieldLabel>
+              <Select
+                value={settings.log_verbosity}
+                onValueChange={(value) => onUpdate('log_verbosity', value as AuthSettings['log_verbosity'])}
+              >
+                <SelectTrigger id="log_verbosity">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {LOG_VERBOSITY.map((opt) => (
+                    <SelectItem key={opt.value} value={opt.value}>
+                      {opt.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FieldDescription>
+                {LOG_VERBOSITY.find((v) => v.value === settings.log_verbosity)?.description}
+              </FieldDescription>
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="log_retention_days">Retention (days)</FieldLabel>
+              <Input
+                id="log_retention_days"
+                type="number"
+                min={1}
+                max={365}
+                value={settings.log_retention_days}
+                onChange={(e) => onUpdate('log_retention_days', Number(e.target.value))}
+              />
+              <FieldDescription>How long to keep log entries before cleanup</FieldDescription>
             </Field>
           </div>
       </PageSection>

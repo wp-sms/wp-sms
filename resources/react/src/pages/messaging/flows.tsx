@@ -10,7 +10,6 @@ import { Input } from '@/components/ui/input';
 import { EmptyState } from '@/components/ui/empty-state';
 import { DataTable } from '@/components/ui/data-table';
 import { PageHeader } from '@/components/layout/page-header';
-import { Field, FieldLabel } from '@/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -233,25 +232,20 @@ export function Flows() {
           </div>
         }
       />
-      <div>
-        <Field>
-          <FieldLabel htmlFor="filter-status">Status</FieldLabel>
-          <Select
-            value={filters.status || 'all'}
-            onValueChange={(v) => setFilter('status', v === 'all' ? '' : v)}
-          >
-            <SelectTrigger id="filter-status" className="w-40">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All</SelectItem>
-              <SelectItem value="draft">Draft</SelectItem>
-              <SelectItem value="active">Active</SelectItem>
-              <SelectItem value="paused">Paused</SelectItem>
-            </SelectContent>
-          </Select>
-        </Field>
-      </div>
+      <Select
+        value={filters.status || 'all'}
+        onValueChange={(v) => setFilter('status', v === 'all' ? '' : v)}
+      >
+        <SelectTrigger className="w-40">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">All Statuses</SelectItem>
+          <SelectItem value="draft">Draft</SelectItem>
+          <SelectItem value="active">Active</SelectItem>
+          <SelectItem value="paused">Paused</SelectItem>
+        </SelectContent>
+      </Select>
 
       <DataTable
         loading={loading}

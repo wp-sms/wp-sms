@@ -1,12 +1,11 @@
 import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { PageSection } from '@/components/ui/page-section';
-import { MethodCard } from '@/components/method-card';
 import { ProfileFieldPanel } from '@/components/profile-field-panel';
-import { UserPlus, Plus, GripVertical, Pencil, Trash2, ArrowUp, ArrowDown, ListChecks } from 'lucide-react';
+import { Plus, GripVertical, Pencil, Trash2, ArrowUp, ArrowDown, ListChecks } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 import { FIELD_TYPES, formatLabel } from '@/lib/constants';
+import { pluralize } from '@/lib/utils';
 import { useConfirm } from '@/components/confirm-provider';
 import type { AuthSettings, ProfileFieldDefinition } from '@/lib/api';
 
@@ -120,19 +119,10 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
 
   return (
     <div className="space-y-4">
-      <PageHeader icon={ListChecks} title="Profile Fields" />
-      <MethodCard
-        title="Auto-Create Accounts on Login"
-        description="When someone logs in with a phone or email that doesn't have an account yet, automatically create one instead of rejecting them"
-        icon={UserPlus}
-        enabled={settings.auto_create_users}
-        onToggle={(checked) => onUpdate('auto_create_users', checked)}
-      />
-
-      <PageSection
+      <PageHeader
         icon={ListChecks}
         title="Profile Fields"
-        description="Configure which fields appear on registration and profile forms"
+        metadata={pluralize(allFields.length, 'field')}
         actions={
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => handleAdd('meta')}>
@@ -144,52 +134,51 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
             </Button>
           </div>
         }
-      >
-          <div className="rounded-lg border border-border/50 divide-y divide-border/50">
-            {allFields.map((field, index) => (
-                <div key={field.id} className="flex items-center gap-3 px-4 py-3">
-                  <GripVertical className="h-4 w-4 shrink-0 text-muted-foreground/50" />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium">{field.label}</span>
-                      <Badge variant={getSourceBadgeVariant(field.source)} className="text-[10px] px-1.5 py-0">
-                        {field.source}
-                      </Badge>
-                      {field.source !== 'system' && (
-                        <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-                          {FIELD_TYPES.find((t) => t.value === field.type)?.label ?? field.type}
-                        </Badge>
-                      )}
-                      {field.required && (
-                        <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-amber-600 border-amber-300">
-                          required
-                        </Badge>
-                      )}
-                    </div>
-                    <p className="text-xs text-muted-foreground">
-                      {formatLabel(field.visibility)} {field.meta_key !== field.id ? `\u00B7 ${field.meta_key}` : ''}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleMoveUp(index)} disabled={index === 0}>
-                      <ArrowUp className="h-3.5 w-3.5" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleMoveDown(index)} disabled={index === allFields.length - 1}>
-                      <ArrowDown className="h-3.5 w-3.5" />
-                    </Button>
-                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleEdit(field)}>
-                      <Pencil className="h-3.5 w-3.5" />
-                    </Button>
-                    {field.source !== 'system' && (
-                      <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => handleDelete(field.id)}>
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    )}
-                  </div>
+      />
+      <div className="rounded-lg border border-border/50 divide-y divide-border/50">
+        {allFields.map((field, index) => (
+            <div key={field.id} className="flex items-center gap-3 px-4 py-3">
+              <GripVertical className="h-4 w-4 shrink-0 text-muted-foreground/50" />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium">{field.label}</span>
+                  <Badge variant={getSourceBadgeVariant(field.source)} className="text-[10px] px-1.5 py-0">
+                    {field.source}
+                  </Badge>
+                  {field.source !== 'system' && (
+                    <Badge variant="outline" className="text-[10px] px-1.5 py-0">
+                      {FIELD_TYPES.find((t) => t.value === field.type)?.label ?? field.type}
+                    </Badge>
+                  )}
+                  {field.required && (
+                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-amber-600 border-amber-300">
+                      required
+                    </Badge>
+                  )}
                 </div>
-            ))}
-          </div>
-      </PageSection>
+                <p className="text-xs text-muted-foreground">
+                  {formatLabel(field.visibility)} {field.meta_key !== field.id ? `\u00B7 ${field.meta_key}` : ''}
+                </p>
+              </div>
+              <div className="flex items-center gap-1">
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleMoveUp(index)} disabled={index === 0}>
+                  <ArrowUp className="h-3.5 w-3.5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleMoveDown(index)} disabled={index === allFields.length - 1}>
+                  <ArrowDown className="h-3.5 w-3.5" />
+                </Button>
+                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => handleEdit(field)}>
+                  <Pencil className="h-3.5 w-3.5" />
+                </Button>
+                {field.source !== 'system' && (
+                  <Button variant="ghost" size="icon" className="h-7 w-7 text-destructive" onClick={() => handleDelete(field.id)}>
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                )}
+              </div>
+            </div>
+        ))}
+      </div>
 
       <ProfileFieldPanel
         open={panelOpen}

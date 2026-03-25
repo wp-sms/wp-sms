@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useGateways } from '@/hooks/use-gateways';
 import { GatewayConfigPanel } from '@/components/gateway-config-panel';
 import { channelLabel, ensureConfig } from '@/components/gateway-config-form';
+import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -13,8 +14,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from '@/components/ui/collapsible';
-import { Search, Star, ChevronDown, ChevronRight, Radio } from 'lucide-react';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
+import { Search, Star, ChevronRight, Radio, Smartphone, Mail, MessageSquare, Send } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 import { getGatewayColor, getGatewayInitial } from '@/lib/gateway-visuals';
 import { pluralize } from '@/lib/utils';
@@ -105,9 +106,17 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
   );
 }
 
+const CHANNEL_ICONS: Record<string, React.ReactNode> = {
+  sms: <Smartphone className="h-4 w-4" />,
+  email: <Mail className="h-4 w-4" />,
+  whatsapp: <MessageSquare className="h-4 w-4" />,
+  telegram: <Send className="h-4 w-4" />,
+};
+
 export function Gateways() {
   const { gateways, loading, updateConfig, testGateway, testConnection, getCredit } = useGateways();
   const [selectedGatewayId, setSelectedGatewayId] = useState<string | null>(null);
+  const [defaultsOpen, setDefaultsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [channelFilter, setChannelFilter] = useState('all');
 
@@ -175,58 +184,18 @@ export function Gateways() {
 
   return (
     <div className="space-y-6">
-      <PageHeader icon={Radio} title="Gateways" metadata={pluralize(gateways.length, 'gateway')} />
-      {/* Channel Defaults */}
-      {allChannels.length > 0 && (
-        <Collapsible>
-          <Card>
-            <CollapsibleTrigger asChild>
-              <CardHeader className="group cursor-pointer">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Channel Defaults</CardTitle>
-                    <CardDescription>Select the default gateway for each messaging channel</CardDescription>
-                  </div>
-                  <ChevronDown className="h-4 w-4 text-muted-foreground transition-transform group-data-[state=open]:rotate-180" />
-                </div>
-                <div className="text-xs text-muted-foreground group-data-[state=open]:hidden">
-                  {allChannels
-                    .filter((ch) => channelDefaults[ch])
-                    .map((ch) => `${channelLabel(ch)}: ${gateways.find((g) => g.id === channelDefaults[ch])?.name ?? 'Unknown'}`)
-                    .join(', ') || 'No defaults set'}
-                </div>
-              </CardHeader>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <CardContent className="space-y-4">
-                {allChannels.map((ch) => {
-                  const supportingGateways = gateways.filter((g) => g.supported_channels.includes(ch) && g.is_configured);
-                  return (
-                    <div key={ch} className="flex items-center justify-between gap-4">
-                      <span className="text-sm font-medium w-24">{channelLabel(ch)}</span>
-                      <Select
-                        value={channelDefaults[ch] ?? ''}
-                        onValueChange={(v) => handleChangeDefault(ch, v)}
-                      >
-                        <SelectTrigger className="w-64">
-                          <SelectValue placeholder="No default set" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {supportingGateways.map((g) => (
-                            <SelectItem key={g.id} value={g.id}>
-                              {g.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  );
-                })}
-              </CardContent>
-            </CollapsibleContent>
-          </Card>
-        </Collapsible>
-      )}
+      <PageHeader
+        icon={Radio}
+        title="Gateways"
+        metadata={pluralize(gateways.length, 'gateway')}
+        actions={
+          allChannels.length > 0 ? (
+            <Button variant="outline" size="sm" onClick={() => setDefaultsOpen(true)}>
+              Channel Defaults
+            </Button>
+          ) : undefined
+        }
+      />
 
       {/* Filter Bar */}
       <div className="flex items-center gap-3">
@@ -282,6 +251,44 @@ export function Gateways() {
         onTest={testGateway}
         onTestConnection={testConnection}
       />
+
+      {/* Channel Defaults Drawer */}
+      <Drawer open={defaultsOpen} onOpenChange={setDefaultsOpen}>
+        <DrawerContent className="sm:max-w-sm">
+          <DrawerHeader>
+            <DrawerTitle>Channel Defaults</DrawerTitle>
+            <DrawerDescription>Select the default gateway for each messaging channel</DrawerDescription>
+          </DrawerHeader>
+          <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-4">
+            {allChannels.map((ch) => {
+              const supportingGateways = gateways.filter((g) => g.supported_channels.includes(ch) && g.is_configured);
+              return (
+                <div key={ch} className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 w-28 shrink-0">
+                    <span className="text-muted-foreground">{CHANNEL_ICONS[ch]}</span>
+                    <span className="text-sm font-medium">{channelLabel(ch)}</span>
+                  </div>
+                  <Select
+                    value={channelDefaults[ch] ?? ''}
+                    onValueChange={(v) => handleChangeDefault(ch, v)}
+                  >
+                    <SelectTrigger className="flex-1">
+                      <SelectValue placeholder="No default set" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {supportingGateways.map((g) => (
+                        <SelectItem key={g.id} value={g.id}>
+                          {g.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              );
+            })}
+          </div>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }

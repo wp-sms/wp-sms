@@ -78,7 +78,7 @@ export default function App() {
         return <BrandingPage settings={settings} onUpdate={updateSetting} />;
       case 'monitoring':
         if (section === 'reports') return <ReportsPage />;
-        return <LogsPage settings={settings} onUpdate={updateSetting} />;
+        return <LogsPage />;
       default:
         return null;
     }
