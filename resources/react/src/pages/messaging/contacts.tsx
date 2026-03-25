@@ -11,7 +11,7 @@ import { ExportDialog } from '@/components/contacts/export-dialog';
 import { TagsList } from '@/components/tags/tags-list';
 import { ListsList } from '@/components/lists/lists-list';
 import { SourcesList } from '@/components/sources/sources-list';
-import { pluralize } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 import { Users, Plus, Upload, Download } from 'lucide-react';
 
 const VALID_TABS = ['contacts', 'tags', 'lists', 'sources'];
@@ -24,6 +24,7 @@ interface ContactsProps {
 export function Contacts({ subTab, onNavigate }: ContactsProps) {
   const contactsHook = useContacts();
   const tagsHook = useTags();
+  const listsHook = useLists();
   const [importOpen, setImportOpen] = useState(false);
   const [contactCreate, setContactCreate] = useState(0);
   const [tagCreate, setTagCreate] = useState(0);
@@ -35,41 +36,32 @@ export function Contacts({ subTab, onNavigate }: ContactsProps) {
     onNavigate?.(tab === 'contacts' ? 'contacts' : `contacts/${tab}`);
   };
 
-  const headerProps: Record<string, { metadata?: React.ReactNode; actions?: React.ReactNode }> = {
-    contacts: {
-      metadata: pluralize(contactsHook.total, 'contact'),
-      actions: (
-        <>
-          <Button variant="outline" size="sm" onClick={() => setImportOpen(true)}>
-            <Upload className="mr-1.5 h-3.5 w-3.5" /> Import
-          </Button>
-          <ExportDialog onExport={contactsHook.exportContacts}>
-            <Button variant="outline" size="sm">
-              <Download className="mr-1.5 h-3.5 w-3.5" /> Export
-            </Button>
-          </ExportDialog>
-          <Button size="sm" onClick={() => setContactCreate((n) => n + 1)}>
-            <Plus className="mr-1.5 h-3.5 w-3.5" /> New Contact
-          </Button>
-        </>
-      ),
-    },
-    tags: {
-      metadata: pluralize(tagsHook.tags.length, 'tag'),
-      actions: (
-        <Button size="sm" onClick={() => setTagCreate((n) => n + 1)}>
-          <Plus className="mr-1.5 h-3.5 w-3.5" /> New Tag
+  const headerActions: Record<string, React.ReactNode> = {
+    contacts: (
+      <>
+        <Button variant="outline" size="sm" onClick={() => setImportOpen(true)}>
+          <Upload className="mr-1.5 h-3.5 w-3.5" /> Import
         </Button>
-      ),
-    },
-    lists: {
-      actions: (
-        <Button size="sm" onClick={() => setListCreate((n) => n + 1)}>
-          <Plus className="mr-1.5 h-3.5 w-3.5" /> New List
+        <ExportDialog onExport={contactsHook.exportContacts}>
+          <Button variant="outline" size="sm">
+            <Download className="mr-1.5 h-3.5 w-3.5" /> Export
+          </Button>
+        </ExportDialog>
+        <Button size="sm" onClick={() => setContactCreate((n) => n + 1)}>
+          <Plus className="mr-1.5 h-3.5 w-3.5" /> New Contact
         </Button>
-      ),
-    },
-    sources: {},
+      </>
+    ),
+    tags: (
+      <Button size="sm" onClick={() => setTagCreate((n) => n + 1)}>
+        <Plus className="mr-1.5 h-3.5 w-3.5" /> New Tag
+      </Button>
+    ),
+    lists: (
+      <Button size="sm" onClick={() => setListCreate((n) => n + 1)}>
+        <Plus className="mr-1.5 h-3.5 w-3.5" /> New List
+      </Button>
+    ),
   };
 
   return (
@@ -77,13 +69,12 @@ export function Contacts({ subTab, onNavigate }: ContactsProps) {
       <PageHeader
         icon={Users}
         title="Contacts"
-        metadata={headerProps[activeTab]?.metadata}
-        actions={headerProps[activeTab]?.actions}
+        actions={headerActions[activeTab]}
       >
-        <TabsList className="mt-3">
-          <TabsTrigger value="contacts">Contacts</TabsTrigger>
-          <TabsTrigger value="tags">Tags</TabsTrigger>
-          <TabsTrigger value="lists">Lists</TabsTrigger>
+        <TabsList variant="line" className="mt-3">
+          <TabsTrigger value="contacts">Contacts <TabCount count={contactsHook.total} /></TabsTrigger>
+          <TabsTrigger value="tags">Tags <TabCount count={tagsHook.tags.length} /></TabsTrigger>
+          <TabsTrigger value="lists">Lists <TabCount count={listsHook.lists.length} /></TabsTrigger>
           <TabsTrigger value="sources">Sources</TabsTrigger>
         </TabsList>
       </PageHeader>
@@ -103,7 +94,7 @@ export function Contacts({ subTab, onNavigate }: ContactsProps) {
       </TabsContent>
 
       <TabsContent value="lists">
-        {activeTab === 'lists' && <LazyListsList tags={tagsHook.tags} createTrigger={listCreate} />}
+        <ListsList hook={listsHook} tags={tagsHook.tags} embedded createTrigger={listCreate} />
       </TabsContent>
 
       <TabsContent value="sources">
@@ -120,7 +111,11 @@ export function Contacts({ subTab, onNavigate }: ContactsProps) {
   );
 }
 
-function LazyListsList({ tags, createTrigger }: { tags: ReturnType<typeof useTags>['tags']; createTrigger: number }) {
-  const listsHook = useLists();
-  return <ListsList hook={listsHook} tags={tags} embedded createTrigger={createTrigger} />;
+function TabCount({ count }: { count: number }) {
+  if (count <= 0) return null;
+  return (
+    <Badge variant="secondary" className="ml-1.5 h-5 min-w-5 px-1 text-[10px]">
+      {count}
+    </Badge>
+  );
 }
