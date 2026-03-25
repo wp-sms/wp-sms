@@ -55,11 +55,20 @@ class AuthRouter
             'top',
         );
 
-        // Flush once after activation.
-        if (get_transient('wsms_flush_rewrite')) {
+        // Flush once after activation, settings change, or plugin update.
+        $needsFlush = get_option('wsms_flush_rewrite')
+            || $this->rewriteVersionChanged();
+
+        if ($needsFlush) {
+            delete_option('wsms_flush_rewrite');
             flush_rewrite_rules(false);
-            delete_transient('wsms_flush_rewrite');
+            update_option('wsms_rewrite_version', WP_SMS_VERSION, true);
         }
+    }
+
+    private function rewriteVersionChanged(): bool
+    {
+        return get_option('wsms_rewrite_version') !== WP_SMS_VERSION;
     }
 
     /**

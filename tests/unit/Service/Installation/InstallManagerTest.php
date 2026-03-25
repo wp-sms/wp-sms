@@ -222,7 +222,7 @@ class TestableInstallManager extends InstallManager
         self::$activateCalls++;
 
         // Run everything except Migrator::createTables() (needs real DB).
-        set_transient('wsms_flush_rewrite', '1');
+        update_option('wsms_flush_rewrite', '1', true);
 
         if (!as_has_scheduled_action(CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP)) {
             as_schedule_recurring_action(time(), DAY_IN_SECONDS, CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP);

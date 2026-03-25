@@ -201,7 +201,7 @@ class AdminController extends Controller
 
             // Flush rewrite rules when auth_base_url changes.
             if (($current['auth_base_url'] ?? '/account') !== ($updated['auth_base_url'] ?? '/account')) {
-                set_transient('wsms_flush_rewrite', '1');
+                update_option('wsms_flush_rewrite', '1', true);
             }
 
             return new WP_REST_Response([

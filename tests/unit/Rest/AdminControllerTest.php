@@ -166,10 +166,9 @@ class AdminControllerTest extends TestCase
         $this->assertTrue($response->get_data()['success']);
     }
 
-    public function testRewriteFlushTransientSetWhenAuthBaseUrlChanges(): void
+    public function testRewriteFlushOptionSetWhenAuthBaseUrlChanges(): void
     {
         $GLOBALS['_test_options']['wsms_auth_settings'] = ['auth_base_url' => '/account'];
-        $GLOBALS['_test_transients'] = [];
 
         $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
         $request->set_param('auth_base_url', '/my-auth');
@@ -177,13 +176,13 @@ class AdminControllerTest extends TestCase
         $response = $this->controller->handleUpdateSettings($request);
 
         $this->assertSame(200, $response->get_status());
-        $this->assertSame('1', get_transient('wsms_flush_rewrite'));
+        $this->assertSame('1', get_option('wsms_flush_rewrite'));
     }
 
     public function testNoRewriteFlushWhenAuthBaseUrlUnchanged(): void
     {
         $GLOBALS['_test_options']['wsms_auth_settings'] = ['auth_base_url' => '/account'];
-        $GLOBALS['_test_transients'] = [];
+        unset($GLOBALS['_test_options']['wsms_flush_rewrite']);
 
         $request = new \WP_REST_Request('PUT', '/auth/admin/settings');
         $request->set_param('auth_base_url', '/account');
@@ -191,7 +190,7 @@ class AdminControllerTest extends TestCase
         $response = $this->controller->handleUpdateSettings($request);
 
         $this->assertSame(200, $response->get_status());
-        $this->assertFalse(get_transient('wsms_flush_rewrite'));
+        $this->assertFalse(get_option('wsms_flush_rewrite'));
     }
 
     public function testValidationRejectsNoIdentifierConfig(): void
