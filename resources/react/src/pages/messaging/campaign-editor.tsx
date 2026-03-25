@@ -33,6 +33,7 @@ import {
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
 import { useUnsavedChanges } from '@/hooks/use-unsaved-changes';
+import { cn } from '@/lib/utils';
 
 function isSmsChannel(ch: string): boolean {
   return ch === 'sms' || ch === 'whatsapp';
@@ -204,13 +205,43 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
     }
   }, [buildSavePayload, onSave]);
 
-  const handleStepChange = useCallback((step: number) => {
-    const d = draftRef.current;
-    if (step > currentStep && d.name && d.channel) {
-      void saveDraft();
+  const hasAudienceSources = useMemo(() => {
+    return draft.audience.sources.some((s) => {
+      switch (s.type) {
+        case 'segment': return !!(s.conditions?.conditions?.length || s.conditions?.groups?.length);
+        case 'tags': return !!(s.tag_ids?.length);
+        case 'wp_roles': return !!(s.roles?.length);
+        case 'manual': return !!(s.recipients?.length);
+        default: return false;
+      }
+    });
+  }, [draft.audience.sources]);
+
+  const canProceed = (step: number): boolean => {
+    switch (step) {
+      case 0: return !!draft.name && !!draft.channel;
+      case 1: return hasAudienceSources;
+      case 2: return !!draft.body && (draft.channel !== 'email' || !!draft.subject);
+      case 3: return draft.send_mode === 'now' || !!draft.send_at;
+      default: return true;
+    }
+  };
+
+  const canReachStep = (target: number): boolean => {
+    for (let s = currentStep; s < target; s++) {
+      if (!canProceed(s)) return false;
+    }
+    return true;
+  };
+
+  const handleStepChange = (step: number) => {
+    if (step > currentStep) {
+      if (!canReachStep(step)) return;
+      const d = draftRef.current;
+      if (d.name && d.channel) void saveDraft();
     }
     setCurrentStep(step);
-  }, [currentStep, saveDraft]);
+  };
 
   const handleSendNow = async () => {
     const count = audienceCount ?? 0;
@@ -321,28 +352,6 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
     }
   }, [channelGateways, draft.gateway_id, updateDraft]);
 
-  const hasAudienceSources = useMemo(() => {
-    return draft.audience.sources.some((s) => {
-      switch (s.type) {
-        case 'segment': return !!(s.conditions?.conditions?.length || s.conditions?.groups?.length);
-        case 'tags': return !!(s.tag_ids?.length);
-        case 'wp_roles': return !!(s.roles?.length);
-        case 'manual': return !!(s.recipients?.length);
-        default: return false;
-      }
-    });
-  }, [draft.audience.sources]);
-
-  const canProceed = (step: number): boolean => {
-    switch (step) {
-      case 0: return !!draft.name && !!draft.channel;
-      case 1: return hasAudienceSources;
-      case 2: return !!draft.body && (draft.channel !== 'email' || !!draft.subject);
-      case 3: return draft.send_mode === 'now' || !!draft.send_at;
-      default: return true;
-    }
-  };
-
   return (
     <div className="space-y-4">
       {/* Header */}
@@ -363,16 +372,18 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
           const Icon = step.icon;
           const isActive = i === currentStep;
           const isCompleted = i < currentStep;
+          const isReachable = i <= currentStep || canReachStep(i);
           return (
             <button
               key={step.id}
-              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors ${
-                isActive
-                  ? 'bg-primary text-primary-foreground'
-                  : isCompleted
-                    ? 'bg-primary/10 text-primary hover:bg-primary/20'
-                    : 'text-muted-foreground hover:bg-accent'
-              }`}
+              disabled={!isReachable}
+              className={cn(
+                'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-colors',
+                !isReachable && 'opacity-50 cursor-not-allowed text-muted-foreground',
+                isReachable && isActive && 'bg-primary text-primary-foreground',
+                isReachable && isCompleted && 'bg-primary/10 text-primary hover:bg-primary/20',
+                isReachable && !isActive && !isCompleted && 'text-muted-foreground hover:bg-accent',
+              )}
               onClick={() => handleStepChange(i)}
             >
               {isCompleted ? <Check className="h-3.5 w-3.5" /> : <Icon className="h-3.5 w-3.5" />}
