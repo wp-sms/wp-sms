@@ -160,13 +160,10 @@ class EnrollmentController extends Controller
 
             $result = $channel->enroll($userId, $data);
 
-            if ($result->success) {
+            if ($result->success && empty($result->data['requires_confirmation'])) {
                 $this->markEnrollmentComplete($userId);
                 $result = $this->autoEnrollBackupCodes($userId, $channelId, $result);
-
-                if (empty($result->data['requires_confirmation'])) {
-                    $this->destroyOtherSessions();
-                }
+                $this->destroyOtherSessions();
             }
 
             return new WP_REST_Response([
