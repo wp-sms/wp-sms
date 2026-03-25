@@ -505,6 +505,7 @@ class PolicyEngineTest extends TestCase
             'mfa_required_roles' => ['administrator'],
             'enrollment_timing'  => 'grace_period',
             'grace_period_days'  => 7,
+            'mfa_policy_activated_at' => time() - 86400 * 30,
         ];
         $user = $this->makeUser(1);
         $user->roles = ['administrator'];
@@ -523,8 +524,9 @@ class PolicyEngineTest extends TestCase
             'mfa_required_roles' => ['administrator'],
             'enrollment_timing'  => 'grace_period',
             'grace_period_days'  => 7,
+            'mfa_policy_activated_at' => time() - 7 * 86400,
         ];
-        // Registered exactly 7 days ago — grace should be expired (time() >= graceExpiry).
+        // Policy activated exactly 7 days ago — grace should be expired (time() >= graceExpiry).
         $user = $this->makeUser(1);
         $user->roles = ['administrator'];
         $user->user_registered = gmdate('Y-m-d H:i:s', time() - 7 * 86400);
@@ -578,6 +580,7 @@ class PolicyEngineTest extends TestCase
             'mfa_required_roles' => ['administrator'],
             'enrollment_timing'  => 'grace_period',
             'grace_period_days'  => 30,
+            'mfa_policy_activated_at' => time() - 86400, // 1 day ago
         ];
         $user = $this->makeUser(1);
         $user->roles = ['administrator'];
@@ -601,6 +604,7 @@ class PolicyEngineTest extends TestCase
             'mfa_required_roles' => ['administrator'],
             'enrollment_timing'  => 'grace_period',
             'grace_period_days'  => 7,
+            'mfa_policy_activated_at' => time() - 86400 * 30,
         ];
         $user = $this->makeUser(1);
         $user->roles = ['administrator'];
@@ -627,6 +631,78 @@ class PolicyEngineTest extends TestCase
         $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
 
         $this->assertNull($engine->getGracePeriodInfo(1));
+    }
+
+    public function testGracePeriodUsesActivationTimeNotRegistration(): void
+    {
+        // User registered 60 days ago but policy activated 2 days ago with 7-day grace.
+        // Without activation time, grace would be expired. With it, user is within grace.
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => true, 'usage' => 'mfa'],
+            'mfa_required_roles' => ['administrator'],
+            'enrollment_timing'  => 'grace_period',
+            'grace_period_days'  => 7,
+            'mfa_policy_activated_at' => time() - 86400 * 2, // 2 days ago
+        ];
+        $user = $this->makeUser(1);
+        $user->roles = ['administrator'];
+        $user->user_registered = gmdate('Y-m-d H:i:s', time() - 86400 * 60); // 60 days ago
+        $GLOBALS['_test_userdata'] = $user;
+
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
+
+        // Should NOT require MFA yet — still within grace.
+        $this->assertFalse($engine->isMfaRequired(1));
+
+        // Grace info should show remaining days.
+        $info = $engine->getGracePeriodInfo(1);
+        $this->assertNotNull($info);
+        $this->assertGreaterThanOrEqual(4, $info['grace_period_remaining_days']);
+        $this->assertLessThanOrEqual(5, $info['grace_period_remaining_days']);
+    }
+
+    public function testGracePeriodUsesUserRegisteredWhenNewerThanActivation(): void
+    {
+        // Policy activated 30 days ago, user registered 2 days ago with 7-day grace.
+        // max(user_registered, policy_activated) = user_registered → within grace.
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => true, 'usage' => 'mfa'],
+            'mfa_required_roles' => ['subscriber'],
+            'enrollment_timing'  => 'grace_period',
+            'grace_period_days'  => 7,
+            'mfa_policy_activated_at' => time() - 86400 * 30,
+        ];
+        $user = $this->makeUser(1);
+        $user->roles = ['subscriber'];
+        $user->user_registered = gmdate('Y-m-d H:i:s', time() - 86400 * 2); // 2 days ago
+        $GLOBALS['_test_userdata'] = $user;
+
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
+
+        // New user is within grace even though policy was activated long ago.
+        $this->assertFalse($engine->isMfaRequired(1));
+    }
+
+    public function testGracePeriodFallsBackToCurrentTimeWhenNoActivationTimestamp(): void
+    {
+        // No mfa_policy_activated_at set — fallback to time().
+        // User registered 60 days ago. Grace start = max(60d_ago, now) = now.
+        // So grace expires in 7 days from now → not expired.
+        $GLOBALS['_test_options']['wsms_auth_settings'] = [
+            'phone' => ['enabled' => true, 'usage' => 'mfa'],
+            'mfa_required_roles' => ['administrator'],
+            'enrollment_timing'  => 'grace_period',
+            'grace_period_days'  => 7,
+        ];
+        $user = $this->makeUser(1);
+        $user->roles = ['administrator'];
+        $user->user_registered = gmdate('Y-m-d H:i:s', time() - 86400 * 60);
+        $GLOBALS['_test_userdata'] = $user;
+
+        $engine = new PolicyEngine($this->mfaManager, new SettingsRepository());
+
+        // Missing activation time = treat as just activated = within grace.
+        $this->assertFalse($engine->isMfaRequired(1));
     }
 
     public function testGetGracePeriodInfoAlreadyEnrolled(): void

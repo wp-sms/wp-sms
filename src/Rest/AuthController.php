@@ -11,6 +11,7 @@ use WSms\Auth\RateLimiter;
 use WSms\Auth\RegistrationFormRepository;
 use WSms\Exception\NotFoundException;
 use WSms\Exception\ValidationException;
+use WSms\Mfa\MfaManager;
 use WSms\PhoneRestriction\RestrictionSettings;
 use WSms\Social\SocialAuthManager;
 
@@ -24,6 +25,7 @@ class AuthController extends Controller
         private PolicyEngine $policy,
         private CaptchaGuard $captchaGuard,
         private SocialAuthManager $socialManager,
+        private ?MfaManager $mfaManager = null,
         private ?RegistrationFormRepository $formRepository = null,
         private ?RestrictionSettings $restrictionSettings = null,
     ) {
@@ -342,6 +344,12 @@ class AuthController extends Controller
 
         if ($this->restrictionSettings) {
             $config['phone_input'] = $this->restrictionSettings->getPhoneInputDisplayConfig('auth');
+        }
+
+        if (is_user_logged_in() && $this->mfaManager) {
+            $userId = get_current_user_id();
+            $config['enrollment_required'] = $this->policy->isMfaRequired($userId)
+                && empty($this->mfaManager->getActiveMfaFactors($userId));
         }
 
         return $config;

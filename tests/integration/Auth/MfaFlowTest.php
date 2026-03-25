@@ -246,7 +246,9 @@ class MfaFlowTest extends IntegrationTestCase
 
     public function testMfaGracePeriodEnforcesAfterGrace(): void
     {
-        $this->setSettings(AuthScenarios::mfaGracePeriod(7));
+        $settings = AuthScenarios::mfaGracePeriod(7);
+        $settings['mfa_policy_activated_at'] = time() - 86400 * 30;
+        $this->setSettings($settings);
         // User registered 30 days ago (past grace period).
         $user = UserFactory::create([
             'roles'           => ['administrator'],
@@ -267,7 +269,9 @@ class MfaFlowTest extends IntegrationTestCase
 
     public function testGracePeriodExpiredNoFactorsReturnsEnrollmentRequired(): void
     {
-        $this->setSettings(AuthScenarios::mfaGracePeriod(7));
+        $settings = AuthScenarios::mfaGracePeriod(7);
+        $settings['mfa_policy_activated_at'] = time() - 86400 * 30;
+        $this->setSettings($settings);
         // User registered 30 days ago — past grace.
         $user = UserFactory::create([
             'roles'           => ['administrator'],

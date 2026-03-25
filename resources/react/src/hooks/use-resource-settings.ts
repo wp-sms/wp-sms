@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import { deepMerge } from '@/lib/utils';
-import { getErrorMessage } from '@/lib/error-utils';
+import { getApiErrorMessage, getErrorMessage } from '@/lib/error-utils';
 
 export type SaveStatus = 'idle' | 'saving' | 'saved' | 'error';
 
@@ -114,9 +114,9 @@ export function useResourceSettings<T extends Record<string, unknown>, R>(
       setSaveStatus('saved');
       toast.success('Settings saved');
       statusTimer.current = setTimeout(() => setSaveStatus('idle'), 3000);
-    } catch {
+    } catch (err: unknown) {
       setSaveStatus('error');
-      toast.error('Failed to save settings');
+      toast.error(getApiErrorMessage(err, 'Failed to save settings'));
       statusTimer.current = setTimeout(() => setSaveStatus('idle'), 5000);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- config is stable at mount

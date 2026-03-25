@@ -9,9 +9,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { ShieldCheck, Clock, KeySquare, Monitor } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { ShieldCheck, Clock, KeySquare, Monitor, TriangleAlert, Info } from 'lucide-react';
 import { RoleMatrix } from '@/components/role-matrix';
 import { ENROLLMENT_TIMING, TRUSTED_DEVICE_TTL_OPTIONS, toggleArrayItem } from '@/lib/constants';
+import { getConfig } from '@/lib/api';
 import type { AuthSettings } from '@/lib/api';
 
 interface MfaPoliciesProps {
@@ -20,7 +22,23 @@ interface MfaPoliciesProps {
   roles: Record<string, string>;
 }
 
+function hasMfaChannelsEnabled(s: Required<AuthSettings>): boolean {
+  return !!s.totp?.enabled
+    || !!s.passkey?.enabled
+    || !!s.backup_codes?.enabled
+    || (!!s.email?.enabled && s.email?.usage === 'mfa')
+    || (!!s.phone?.enabled && s.phone?.usage === 'mfa')
+    || !!s.telegram?.enabled;
+}
+
 export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
+  const { currentUserHasMfa, currentUserRoles } = getConfig();
+  const hasRolesSelected = settings.mfa_required_roles.length > 0;
+  const ownRoleSelected = hasRolesSelected && currentUserRoles.some((r) => settings.mfa_required_roles.includes(r));
+  const showOwnRoleWarning = ownRoleSelected && !currentUserHasMfa;
+  const showNoChannelsWarning = hasRolesSelected && !hasMfaChannelsEnabled(settings);
+  const showImmediateNote = hasRolesSelected && settings.enrollment_timing === 'on_registration';
+
   function toggleRole(roleKey: string, enabled: boolean) {
     onUpdate('mfa_required_roles', toggleArrayItem(settings.mfa_required_roles, roleKey, enabled));
   }
@@ -129,7 +147,23 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
             Select which WordPress roles must use multi-factor authentication
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-3">
+          {showOwnRoleWarning && (
+            <Alert variant="destructive">
+              <TriangleAlert className="h-4 w-4" />
+              <AlertDescription>
+                You must enroll in MFA before requiring it for your role. Go to your account Security page to set up MFA first.
+              </AlertDescription>
+            </Alert>
+          )}
+          {showNoChannelsWarning && (
+            <Alert>
+              <TriangleAlert className="h-4 w-4" />
+              <AlertDescription>
+                No MFA-capable channels are enabled. Users won't be able to enroll until you enable at least one MFA channel (e.g. TOTP, Passkey, or a channel set to MFA usage).
+              </AlertDescription>
+            </Alert>
+          )}
           <RoleMatrix
             roles={roles}
             selectedRoles={settings.mfa_required_roles}
@@ -174,6 +208,15 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
                 </FieldDescription>
               </Field>
             </div>
+
+            {showImmediateNote && (
+              <Alert>
+                <Info className="h-4 w-4" />
+                <AlertDescription>
+                  Users with the selected roles will be required to set up MFA immediately upon their next login.
+                </AlertDescription>
+              </Alert>
+            )}
 
             {settings.enrollment_timing === 'grace_period' && (
               <div className="max-w-xs">

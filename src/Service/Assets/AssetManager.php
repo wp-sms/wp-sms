@@ -3,6 +3,7 @@
 namespace WSms\Service\Assets;
 
 use WSms\PhoneRestriction\RestrictionSettings;
+use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
 
@@ -57,16 +58,20 @@ class AssetManager
      */
     private function getLocalizedData(string $hook): array
     {
+        $currentUser = wp_get_current_user();
+
         return [
-            'restUrl'   => rest_url('wsms/v1/'),
-            'nonce'     => wp_create_nonce('wp_rest'),
-            'version'   => WP_SMS_VERSION,
-            'adminUrl'  => admin_url(),
-            'isPremium' => defined('WP_SMS_PREMIUM_FILE'),
-            'roles'     => wp_list_pluck(get_editable_roles(), 'name'),
-            'timezone'  => wp_timezone_string(),
-            'area'      => $this->resolveArea($hook),
-            'phoneInput' => $this->restrictionSettings->getPhoneInputDisplayConfig(),
+            'restUrl'           => rest_url('wsms/v1/'),
+            'nonce'             => wp_create_nonce('wp_rest'),
+            'version'           => WP_SMS_VERSION,
+            'adminUrl'          => admin_url(),
+            'isPremium'         => defined('WP_SMS_PREMIUM_FILE'),
+            'roles'             => wp_list_pluck(get_editable_roles(), 'name'),
+            'timezone'          => wp_timezone_string(),
+            'area'              => $this->resolveArea($hook),
+            'phoneInput'        => $this->restrictionSettings->getPhoneInputDisplayConfig(),
+            'currentUserHasMfa' => (bool) get_user_meta($currentUser->ID, UserMeta::MFA_ENABLED, true),
+            'currentUserRoles'  => $currentUser->roles,
         ];
     }
 

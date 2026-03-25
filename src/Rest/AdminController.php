@@ -15,6 +15,7 @@ use WSms\Exception\ValidationException;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Mfa\MfaManager;
 use WSms\Social\SocialAccountRepository;
+use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
 
@@ -39,6 +40,7 @@ class AdminController extends Controller
         'site_phone_channel',
         'terms_url',
         'privacy_url',
+        'mfa_policy_activated_at',
     ];
 
     /** Channel keys that accept nested sub-objects. */
@@ -184,7 +186,12 @@ class AdminController extends Controller
                 $updated['phone']['verification_methods'] = $methods ?: ['otp'];
             }
 
-            $errors = $this->validateSettings($updated);
+            // Reset grace baseline whenever new roles are added to the MFA policy.
+            if ($this->hasNewMfaRoles($current, $updated)) {
+                $updated['mfa_policy_activated_at'] = time();
+            }
+
+            $errors = $this->validateSettings($updated, $current);
 
             if (!empty($errors)) {
                 throw new ValidationException($errors);
@@ -328,9 +335,33 @@ class AdminController extends Controller
         });
     }
 
-    private function validateSettings(array $settings): array
+    private function hasNewMfaRoles(array $current, array $updated): bool
+    {
+        $oldRoles = $current['mfa_required_roles'] ?? [];
+        $newRoles = $updated['mfa_required_roles'] ?? [];
+
+        return !empty(array_diff($newRoles, $oldRoles));
+    }
+
+    private function validateSettings(array $settings, array $current = []): array
     {
         $errors = [];
+
+        // Prevent admin from requiring MFA for their own role without having MFA enrolled.
+        $currentUser = wp_get_current_user();
+
+        if ($currentUser->ID && $this->hasNewMfaRoles($current, $settings)) {
+            $newRoles = $settings['mfa_required_roles'] ?? [];
+            $oldRoles = $current['mfa_required_roles'] ?? [];
+            $newlyAdded = array_diff(
+                array_intersect($currentUser->roles, $newRoles),
+                array_intersect($currentUser->roles, $oldRoles),
+            );
+
+            if (!empty($newlyAdded) && !(bool) get_user_meta($currentUser->ID, UserMeta::MFA_ENABLED, true)) {
+                $errors[] = 'You must enroll in MFA before requiring it for your own role.';
+            }
+        }
 
         foreach (['phone', 'email', 'telegram'] as $channel) {
             $ch = $settings[$channel] ?? [];

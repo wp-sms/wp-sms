@@ -9,6 +9,8 @@ declare global {
       roles: Record<string, string>;
       timezone: string;
       area: 'auth' | 'messaging';
+      currentUserHasMfa: boolean;
+      currentUserRoles: string[];
     };
   }
 }
@@ -269,7 +271,18 @@ export interface LogEntry {
   user_display: { display_name: string; email: string } | null;
 }
 
-const FALLBACK_CONFIG = { restUrl: '', nonce: '', version: '', adminUrl: '', isPremium: false, roles: {} as Record<string, string>, timezone: 'UTC', area: 'auth' as const };
+const FALLBACK_CONFIG: Window['wpSmsSettings'] = {
+  restUrl: '',
+  nonce: '',
+  version: '',
+  adminUrl: '',
+  isPremium: false,
+  roles: {},
+  timezone: 'UTC',
+  area: 'auth',
+  currentUserHasMfa: false,
+  currentUserRoles: [],
+};
 
 export function getConfig() {
   return window.wpSmsSettings ?? FALLBACK_CONFIG;

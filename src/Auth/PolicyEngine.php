@@ -110,7 +110,9 @@ class PolicyEngine
         $graceExpiry = 0;
         if ($timing === EnrollmentTiming::GracePeriod) {
             $graceDays = (int) ($settings['grace_period_days'] ?? 7);
-            $graceExpiry = strtotime($user->user_registered) + ($graceDays * DAY_IN_SECONDS);
+            $policyActivatedAt = (int) ($settings['mfa_policy_activated_at'] ?? 0) ?: time();
+            $graceStart = max(strtotime($user->user_registered), $policyActivatedAt);
+            $graceExpiry = $graceStart + ($graceDays * DAY_IN_SECONDS);
         }
 
         return ['timing' => $timing, 'grace_expiry' => $graceExpiry];

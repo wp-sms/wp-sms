@@ -94,11 +94,18 @@ export function Security() {
     async function init() {
         setLoading(true);
         try {
-            const [, methodsRes, accountsRes] = await Promise.all([
+            const [, methodsRes, accountsRes, configRes] = await Promise.all([
                 currentUser.value ? Promise.resolve() : loadCurrentUser(),
                 api.get('/auth/methods'),
                 api.get('/auth/social/accounts').catch(() => ({ accounts: [] })),
+                isEnrollmentGated ? api.get('/auth/config').catch(() => null) : Promise.resolve(null),
             ]);
+
+            if (isEnrollmentGated && configRes && !configRes.enrollment_required) {
+                window.location.reload();
+                return;
+            }
+
             setAvailableMethods(methodsRes.methods.filter((m) => m.supports_mfa));
             setLinkedAccounts(accountsRes.accounts || []);
         } catch (err) {
