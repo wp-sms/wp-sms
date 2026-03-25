@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { useCallback, type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
 interface SegmentedGroupOption<T extends string | number> {
@@ -22,9 +22,13 @@ export function SegmentedGroup<T extends string | number>({
   size = 'icon',
 }: SegmentedGroupProps<T>) {
   const isLabeled = size === 'labeled';
+  // Inline !important overrides Field's [&>*]:w-full (both are !important via Tailwind v4, parent wins by specificity)
+  const fitRef = useCallback((el: HTMLDivElement | null) => {
+    el?.style.setProperty('width', 'fit-content', 'important');
+  }, []);
 
   return (
-    <div className="flex rounded-lg border border-input" style={{ width: 'fit-content' }}>
+    <div ref={fitRef} className="flex rounded-lg border border-input">
       {options.map((opt, i) => {
         const active = value === opt.value;
 
