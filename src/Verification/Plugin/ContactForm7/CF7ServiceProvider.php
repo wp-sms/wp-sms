@@ -19,6 +19,7 @@ class CF7ServiceProvider implements ServiceProvider
         $container->register('integration.cf7', fn () => new CF7Integration(
             $container->get('verification.service'),
             $container->get('phone_restriction.settings'),
+            $container->get('branding.repository'),
         ));
     }
 

@@ -23,6 +23,7 @@ class WooCommerceServiceProvider implements ServiceProvider
         $container->register('integration.woo.classic_checkout', fn () => new WooClassicCheckoutVerification(
             $container->get('verification.service'),
             $container->get('integration.woo.config'),
+            $container->get('branding.repository'),
         ));
 
         $container->register('integration.woo.block_checkout', fn () => new WooBlockCheckoutIntegration(

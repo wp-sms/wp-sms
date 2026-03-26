@@ -4,7 +4,7 @@ import { OtpInput } from './components/OtpInput';
 import { useResendCooldown } from './hooks/useResendCooldown';
 import './styles/verify-widget.css';
 
-const { restUrl, nonce } = window.wsmsVerifyConfig || {};
+const { restUrl, nonce, primaryColor } = window.wsmsVerifyConfig || {};
 
 async function apiPost(endpoint, body, sessionToken) {
     const headers = {
@@ -202,8 +202,10 @@ function VerifyWidget({ channel, identifier, onVerified, onError, codeLength = 6
         );
     }
 
+    const style = primaryColor ? { '--wsms-vw-link': primaryColor } : undefined;
+
     return (
-        <div className="wsms-vw">
+        <div className="wsms-vw" style={style}>
             {content}
             <PoweredBy />
         </div>

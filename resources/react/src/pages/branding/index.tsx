@@ -5,21 +5,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RotateCcw, Eye, EyeOff, Paintbrush } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 import { useConfirm } from '@/components/confirm-provider';
-import { DEFAULTS } from '@/lib/constants';
+import { BRANDING_DEFAULTS } from '@/hooks/use-branding-settings';
 import { LogoCard } from './logo-card';
 import { ColorsCard } from './colors-card';
 import { LayoutCard } from './layout-card';
 import { SplitPanelCard } from './split-panel-card';
 import { BrandingPreview } from './branding-preview';
-import type { AuthSettings, BrandingSettings } from '@/lib/api';
+import type { BrandingSettings } from '@/lib/api';
 
 interface BrandingPageProps {
-  settings: Required<AuthSettings>;
-  onUpdate: <K extends keyof AuthSettings>(key: K, value: AuthSettings[K]) => void;
+  branding: BrandingSettings;
+  onChange: (patch: Partial<BrandingSettings>) => void;
+  authBaseUrl: string;
 }
 
-export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
-  const branding = settings.branding;
+export function BrandingPage({ branding, onChange, authBaseUrl }: BrandingPageProps) {
   type BrandingTab = 'colors' | 'logo' | 'layout';
   const [activeTab, setActiveTab] = useState<BrandingTab>('colors');
   const [previewVisible, setPreviewVisible] = useState(true);
@@ -28,9 +28,9 @@ export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
 
   const handleBrandingChange = useCallback(
     (patch: Partial<BrandingSettings>) => {
-      onUpdate('branding', { ...branding, ...patch });
+      onChange(patch);
     },
-    [branding, onUpdate]
+    [onChange]
   );
 
   const handleReset = useCallback(async () => {
@@ -41,12 +41,12 @@ export function BrandingPage({ settings, onUpdate }: BrandingPageProps) {
       variant: 'destructive',
     });
     if (ok) {
-      onUpdate('branding', DEFAULTS.branding);
+      onChange(BRANDING_DEFAULTS);
     }
-  }, [onUpdate, confirm]);
+  }, [onChange, confirm]);
 
   const isCentered = branding.layout === 'centered';
-  const baseUrl = settings.auth_base_url || '/account';
+  const baseUrl = authBaseUrl || '/account';
 
   return (
     <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as BrandingTab)}>

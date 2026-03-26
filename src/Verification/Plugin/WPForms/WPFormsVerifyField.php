@@ -2,6 +2,7 @@
 
 namespace WSms\Verification\Plugin\WPForms;
 
+use WSms\Branding\BrandingRepository;
 use WSms\Verification\EnqueuesVerifyWidget;
 use WSms\Verification\VerificationService;
 
@@ -22,8 +23,10 @@ abstract class WPFormsVerifyField extends \WPForms_Field
     /** @var bool Whether frontend assets have already been enqueued (shared across subclasses). */
     public static bool $assetsEnqueued = false;
 
-    public function __construct(protected VerificationService $verificationService)
-    {
+    public function __construct(
+        protected VerificationService $verificationService,
+        protected BrandingRepository $brandingRepo,
+    ) {
         parent::__construct();
     }
 
@@ -144,7 +147,7 @@ abstract class WPFormsVerifyField extends \WPForms_Field
         }
         static::$assetsEnqueued = true;
 
-        $this->enqueueVerifyWidget();
+        $this->enqueueVerifyWidget($this->brandingRepo->get('primary_color'));
 
         wp_add_inline_script('wsms-verify-widget', <<<'JS'
         document.addEventListener('DOMContentLoaded', function() {

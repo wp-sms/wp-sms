@@ -65,8 +65,14 @@ function ensureMounted() {
 
     // Apply palette-derived CSS variables
     const config = window.wsmsMessagingButtonConfig?.config || {};
-    const primaryColor = config.button?.primary_color || '#2563eb';
-    const theme = config.widget?.theme || 'light';
+    const centralPrimary = window.wsmsMessagingButtonConfig?.centralPrimaryColor;
+    const centralColorMode = window.wsmsMessagingButtonConfig?.centralColorMode;
+    const hasCustomAppearance = !!config.button?.primary_color;
+    const primaryColor = config.button?.primary_color || centralPrimary || '#2563eb';
+    // When custom appearance is off, map central branding color_mode to widget theme
+    const theme = hasCustomAppearance
+        ? (config.widget?.theme || 'light')
+        : (centralColorMode === 'auto' ? 'system' : centralColorMode || 'light');
     applyPalette(hostEl, shadow, primaryColor, theme);
 
     const mountEl = document.createElement('div');

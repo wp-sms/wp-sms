@@ -38,6 +38,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
+import { ColorPickerField } from '@/components/ui/color-picker-field';
 import { Plus, Pencil, Copy, Trash2, ClipboardCopy, ClipboardList } from 'lucide-react';
 import { useConfirm } from '@/components/confirm-provider';
 import { useSubscriptionForms, type SubscriptionFormData } from '@/hooks/use-subscription-forms';
@@ -436,6 +437,42 @@ export function SubscriptionForms() {
                 placeholder="Subscribe"
               />
             </Field>
+
+            <Field orientation="horizontal">
+              <FieldLabel>Use custom color</FieldLabel>
+              <Switch
+                checked={!!formState.appearance.primary_color}
+                onCheckedChange={(checked) => {
+                  setFormState((prev) => {
+                    const next = { ...prev.appearance };
+                    if (checked) {
+                      next.primary_color = '#171717';
+                    } else {
+                      delete next.primary_color;
+                    }
+                    return { ...prev, appearance: next };
+                  });
+                }}
+              />
+            </Field>
+            {formState.appearance.primary_color ? (
+              <ColorPickerField
+                id="sf-primary-color"
+                label="Primary Color"
+                value={formState.appearance.primary_color}
+                placeholder="#171717"
+                onChange={(v) =>
+                  setFormState((prev) => ({
+                    ...prev,
+                    appearance: { ...prev.appearance, primary_color: v },
+                  }))
+                }
+              />
+            ) : (
+              <p className="text-xs text-muted-foreground rounded-md bg-muted/50 p-3">
+                Inheriting primary color from central branding settings.
+              </p>
+            )}
 
             <Field>
               <FieldLabel htmlFor="sf-success-msg">Success Message</FieldLabel>

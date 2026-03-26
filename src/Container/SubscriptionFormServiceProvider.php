@@ -23,6 +23,7 @@ class SubscriptionFormServiceProvider implements ServiceProvider
         $container->register('subscription_form.renderer', fn($c) => new SubscriptionFormRenderer(
             $c->get('subscription_form.repository'),
             $c->get('phone_restriction.settings'),
+            $c->get('branding.repository'),
         ));
     }
 

@@ -23,16 +23,16 @@ class TemplateManager
     /** @var array<string, ChannelRendererInterface> */
     private array $renderers = [];
 
-    /** @var \Closure(): string */
-    private \Closure $logoUrlResolver;
+    /** @var \Closure(): array */
+    private \Closure $brandingResolver;
 
     public function __construct(
         private readonly TemplateStorageInterface $storage,
         private readonly TemplateEngineInterface $engine,
-        ?\Closure $logoUrlResolver = null,
+        ?\Closure $brandingResolver = null,
         private readonly ?LoggerInterface $logger = null,
     ) {
-        $this->logoUrlResolver = $logoUrlResolver ?? static fn () => '';
+        $this->brandingResolver = $brandingResolver ?? static fn () => [];
     }
 
     public function registerTemplate(TemplateDefinitionInterface $template): void
@@ -191,8 +191,14 @@ class TemplateManager
 
     private function injectCommonContext(array $context): array
     {
+        $branding = ($this->brandingResolver)();
+
         if (!isset($context['logo_url'])) {
-            $context['logo_url'] = ($this->logoUrlResolver)();
+            $context['logo_url'] = $branding['logo_url'] ?? '';
+        }
+
+        if (!isset($context['primary_color'])) {
+            $context['primary_color'] = $branding['primary_color'] ?? '#1a1a1a';
         }
 
         return $context;

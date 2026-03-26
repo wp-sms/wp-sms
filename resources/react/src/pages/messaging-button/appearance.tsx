@@ -5,9 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { SegmentedGroup } from '@/components/ui/segmented-group';
 import { ColorPickerField } from '@/components/ui/color-picker-field';
-import { PresetGrid } from '@/components/ui/preset-grid';
 import { Paintbrush, PanelTop, Sun, Moon, Monitor, MessageCircle } from 'lucide-react';
-import { MB_COLOR_PRESETS, getActivePresetId } from './color-presets';
 import type { MessagingButtonSettings } from './use-mb-settings';
 
 interface AppearancePageProps {
@@ -17,6 +15,7 @@ interface AppearancePageProps {
 
 export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
   const { button, widget, greeting_bubble } = settings;
+  const hasCustomAppearance = button.primary_color !== null;
 
   return (
     <div className="space-y-4">
@@ -66,43 +65,57 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
               <FieldDescription>Displayed when style includes text</FieldDescription>
             </Field>
 
-            <Field>
-              <FieldLabel>Color Preset</FieldLabel>
-              <PresetGrid
-                presets={MB_COLOR_PRESETS}
-                activePresetId={getActivePresetId(settings)}
-                onSelect={(preset) => {
-                  onUpdate('button.primary_color', preset.primary_color);
-                  onUpdate('button.text_color', preset.text_color);
+            <Field orientation="horizontal">
+              <div className="flex-1">
+                <FieldLabel>Custom appearance</FieldLabel>
+                <FieldDescription>When off, inherits colors and theme from central branding.</FieldDescription>
+              </div>
+              <Switch
+                checked={hasCustomAppearance}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    onUpdate('button.primary_color', '#2563eb');
+                  } else {
+                    onUpdate('button.primary_color', null);
+                  }
                 }}
-                renderPreview={(preset) => (
-                  <span
-                    className="flex h-7 w-full shrink-0 items-center justify-center rounded-full text-[10px] font-bold"
-                    style={{ backgroundColor: preset.primary_color, color: preset.text_color }}
-                  >
-                    Aa
-                  </span>
-                )}
-                columns="grid-cols-3"
               />
             </Field>
 
-            <div className="grid grid-cols-2 gap-4">
-              <ColorPickerField
-                id="mb-primary-color"
-                label="Primary Color"
-                value={button.primary_color}
-                placeholder="#2563eb"
-                onChange={(v) => onUpdate('button.primary_color', v)}
-              />
-              <ColorPickerField
-                id="mb-text-color"
-                label="Text Color"
-                value={button.text_color}
-                placeholder="#ffffff"
-                onChange={(v) => onUpdate('button.text_color', v)}
-              />
-            </div>
+            {hasCustomAppearance && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <ColorPickerField
+                    id="mb-primary-color"
+                    label="Primary Color"
+                    value={button.primary_color!}
+                    placeholder="#2563eb"
+                    onChange={(v) => onUpdate('button.primary_color', v)}
+                  />
+                  <ColorPickerField
+                    id="mb-text-color"
+                    label="Text Color"
+                    value={button.text_color}
+                    placeholder="#ffffff"
+                    onChange={(v) => onUpdate('button.text_color', v)}
+                  />
+                </div>
+
+                <Field>
+                  <FieldLabel>Theme</FieldLabel>
+                  <SegmentedGroup
+                    value={widget.theme}
+                    onChange={(v) => onUpdate('widget.theme', v)}
+                    options={[
+                      { value: 'light', label: 'Light', icon: <Sun className="h-4 w-4" /> },
+                      { value: 'dark', label: 'Dark', icon: <Moon className="h-4 w-4" /> },
+                      { value: 'system', label: 'System', icon: <Monitor className="h-4 w-4" /> },
+                    ]}
+                    size="labeled"
+                  />
+                </Field>
+              </>
+            )}
 
             <Field>
               <FieldLabel>Attention Effect</FieldLabel>
@@ -147,20 +160,6 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
                 value={widget.subtitle}
                 onChange={(e) => onUpdate('widget.subtitle', e.target.value)}
                 placeholder="How can we help?"
-              />
-            </Field>
-
-            <Field>
-              <FieldLabel>Theme</FieldLabel>
-              <SegmentedGroup
-                value={widget.theme}
-                onChange={(v) => onUpdate('widget.theme', v)}
-                options={[
-                  { value: 'light', label: 'Light', icon: <Sun className="h-4 w-4" /> },
-                  { value: 'dark', label: 'Dark', icon: <Moon className="h-4 w-4" /> },
-                  { value: 'system', label: 'System', icon: <Monitor className="h-4 w-4" /> },
-                ]}
-                size="labeled"
               />
             </Field>
           </div>

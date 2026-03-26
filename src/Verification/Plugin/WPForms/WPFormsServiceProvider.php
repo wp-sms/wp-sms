@@ -17,10 +17,12 @@ class WPFormsServiceProvider implements ServiceProvider
 
         $container->register('integration.wpforms.verify_email', fn () => new VerifyEmailField(
             $container->get('verification.service'),
+            $container->get('branding.repository'),
         ));
 
         $container->register('integration.wpforms.verify_phone', fn () => new VerifyPhoneField(
             $container->get('verification.service'),
+            $container->get('branding.repository'),
         ));
     }
 

@@ -16,7 +16,7 @@ class MessagingButtonSettings
             'position' => 'bottom-right',
             'style' => 'icon-text',
             'text' => 'Chat with us',
-            'primary_color' => '#2563eb',
+            'primary_color' => null,
             'text_color' => '#ffffff',
             'attention' => 'none',
         ],

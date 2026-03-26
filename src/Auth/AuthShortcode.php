@@ -2,6 +2,8 @@
 
 namespace WSms\Auth;
 
+use WSms\Branding\BrandingRepository;
+
 defined('ABSPATH') || exit;
 
 /**
@@ -23,6 +25,7 @@ class AuthShortcode
 
     public function __construct(
         private SettingsRepository $settingsRepo,
+        private BrandingRepository $brandingRepo,
     ) {
     }
 
@@ -105,7 +108,7 @@ class AuthShortcode
             'nonce'      => wp_create_nonce('wp_rest'),
             'baseUrl'    => '/' . ltrim($this->getBaseUrl(), '/'),
             'isLoggedIn' => is_user_logged_in(),
-            'branding'   => $this->settingsRepo->channel('branding'),
+            'branding'   => $this->brandingRepo->all(),
         ]);
     }
 

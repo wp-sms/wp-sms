@@ -2,6 +2,7 @@
 
 namespace WSms\Verification\Plugin\WooCommerce;
 
+use WSms\Branding\BrandingRepository;
 use WSms\Verification\EnqueuesVerifyWidget;
 use WSms\Verification\VerificationService;
 
@@ -17,6 +18,7 @@ class WooClassicCheckoutVerification
     public function __construct(
         private VerificationService $verificationService,
         private WooCommerceConfig $config,
+        private BrandingRepository $brandingRepo,
     ) {
     }
 
@@ -38,7 +40,7 @@ class WooClassicCheckoutVerification
             return;
         }
 
-        $this->enqueueVerifyWidget();
+        $this->enqueueVerifyWidget($this->brandingRepo->get('primary_color'));
 
         // Pass verified account values so JS can skip when billing matches.
         $cfg = [

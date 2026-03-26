@@ -25,6 +25,7 @@ use WSms\Container\MessagingButtonServiceProvider;
 use WSms\Container\SubscriptionFormServiceProvider;
 use WSms\Container\ContactSourceServiceProvider;
 use WSms\Container\TemplateServiceProvider;
+use WSms\Branding\BrandingServiceProvider;
 use WSms\Integration\ContactForm7\CF7NotificationServiceProvider;
 use WSms\Verification\Plugin\ContactForm7\CF7ServiceProvider;
 use WSms\Verification\Plugin\WPForms\WPFormsServiceProvider;
@@ -73,6 +74,7 @@ class Bootstrap
         MessagingButtonServiceProvider::class,
         SubscriptionFormServiceProvider::class,
         TemplateServiceProvider::class,
+        BrandingServiceProvider::class,
         // REST must come after all services are registered
         RestServiceProvider::class,
         CF7NotificationServiceProvider::class,

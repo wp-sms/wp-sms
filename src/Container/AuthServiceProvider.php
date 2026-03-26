@@ -125,12 +125,14 @@ class AuthServiceProvider implements ServiceProvider
         $container->register('auth.router', function () use ($container) {
             return new AuthRouter(
                 $container->get('auth.settings'),
+                $container->get('branding.repository'),
             );
         });
 
         $container->register('auth.shortcode', function () use ($container) {
             return new AuthShortcode(
                 $container->get('auth.settings'),
+                $container->get('branding.repository'),
             );
         });
 

@@ -4,6 +4,7 @@ namespace WSms\Tests\Unit\Verification\Plugin;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use WSms\Branding\BrandingRepository;
 use WSms\PhoneRestriction\RestrictionSettings;
 use WSms\Verification\Plugin\ContactForm7\CF7Integration;
 use WSms\Verification\VerificationService;
@@ -18,7 +19,7 @@ class CF7IntegrationTest extends TestCase
     {
         $this->service = $this->createMock(VerificationService::class);
         $this->restrictionSettings = $this->createMock(RestrictionSettings::class);
-        $this->integration = new CF7Integration($this->service, $this->restrictionSettings);
+        $this->integration = new CF7Integration($this->service, $this->restrictionSettings, new BrandingRepository());
     }
 
     // ── Email rendering tests (unchanged) ──────────────────────────

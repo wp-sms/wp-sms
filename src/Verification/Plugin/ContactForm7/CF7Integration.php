@@ -2,6 +2,7 @@
 
 namespace WSms\Verification\Plugin\ContactForm7;
 
+use WSms\Branding\BrandingRepository;
 use WSms\PhoneRestriction\RestrictionSettings;
 use WSms\Verification\EnqueuesVerifyWidget;
 use WSms\Verification\VerificationService;
@@ -15,6 +16,7 @@ class CF7Integration
     public function __construct(
         private VerificationService $verificationService,
         private RestrictionSettings $restrictionSettings,
+        private BrandingRepository $brandingRepo,
     ) {
     }
 
@@ -347,7 +349,7 @@ class CF7Integration
         );
 
         // Verify widget (for both email tags and phone verify)
-        $this->enqueueVerifyWidget();
+        $this->enqueueVerifyWidget($this->brandingRepo->get('primary_color'));
 
         // Inline script for EMAIL verify only (phone handled by cf7-phone-entry.js)
         wp_add_inline_script('wsms-verify-widget', <<<'JS'

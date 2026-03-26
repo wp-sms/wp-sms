@@ -7,10 +7,10 @@ import { getConfig } from '@/lib/api';
 import { getNavItemsForArea, getDefaultSection, getValidSections } from '@/lib/area-nav';
 import { MessagingPage } from '@/pages/messaging';
 import { MessagingButtonPage } from '@/pages/messaging-button';
+import { BrandingAreaPage } from '@/pages/branding/branding-area-page';
 import { AuthenticationPage } from '@/pages/authentication';
 import { SecurityPage } from '@/pages/security';
 import { IntegrationsPage } from '@/pages/integrations';
-import { BrandingPage } from '@/pages/branding';
 import { GeneralPage } from '@/pages/general';
 import { LogsPage } from '@/pages/logs';
 import { ReportsPage } from '@/pages/reports';
@@ -72,6 +72,8 @@ export default function App() {
         return <MessagingPage section={section} subTab={subTab} onNavigate={setSection} settings={settings} onUpdate={updateSetting} />;
       case 'messaging-button':
         return <MessagingButtonPage section={section} />;
+      case 'branding':
+        return <BrandingAreaPage />;
       case 'authentication':
         return <AuthenticationPage section={section} settings={settings} onUpdate={updateSetting} />;
       case 'security':
@@ -80,8 +82,6 @@ export default function App() {
         return <IntegrationsPage section={section} settings={settings} onUpdate={updateSetting} />;
       case 'general':
         return <GeneralPage settings={settings} onUpdate={updateSetting} />;
-      case 'branding':
-        return <BrandingPage settings={settings} onUpdate={updateSetting} />;
       case 'monitoring':
         if (section === 'reports') return <ReportsPage />;
         return <LogsPage />;

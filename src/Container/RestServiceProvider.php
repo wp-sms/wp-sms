@@ -30,6 +30,7 @@ use WSms\Rest\SubscriptionFormController;
 use WSms\Rest\SubscriptionFormPublicController;
 use WSms\Rest\TemplateCatalogController;
 use WSms\Rest\TemplateController;
+use WSms\Rest\BrandingController;
 use WSms\Rest\OutboundWebhookController;
 use WSms\Rest\SystemHealthController;
 use WSms\Rest\WebhookReceiverController;
@@ -52,6 +53,7 @@ class RestServiceProvider implements ServiceProvider
                 $container->get('mfa.manager'),
                 $container->get('auth.form_repository'),
                 $container->get('phone_restriction.settings'),
+                $container->get('branding.repository'),
             );
         });
 
@@ -221,6 +223,10 @@ class RestServiceProvider implements ServiceProvider
         $container->register('rest.subscription_forms', fn($c) => new SubscriptionFormController(
             $c->get('subscription_form.repository'),
         ));
+        $container->register('rest.branding', fn($c) => new BrandingController(
+            $c->get('branding.repository'),
+            $c->get('auth.settings'),
+        ));
         $container->register('rest.subscription_forms_public', fn($c) => new SubscriptionFormPublicController(
             $c->get('subscription_form.repository'),
             $c->get('subscription_form.handler'),
@@ -261,6 +267,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.registration_forms')->registerRoutes();
             $container->get('rest.subscription_forms')->registerRoutes();
             $container->get('rest.subscription_forms_public')->registerRoutes();
+            $container->get('rest.branding')->registerRoutes();
             $container->get('rest.templates')->registerRoutes();
             $container->get('rest.template_catalog')->registerRoutes();
             $container->get('rest.system_health')->registerRoutes();

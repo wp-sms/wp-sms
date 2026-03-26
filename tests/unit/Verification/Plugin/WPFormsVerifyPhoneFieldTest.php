@@ -4,6 +4,7 @@ namespace WSms\Tests\Unit\Verification\Plugin;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use WSms\Branding\BrandingRepository;
 use WSms\Verification\Plugin\WPForms\VerifyPhoneField;
 use WSms\Verification\Plugin\WPForms\WPFormsVerifyField;
 use WSms\Verification\VerificationService;
@@ -16,7 +17,7 @@ class WPFormsVerifyPhoneFieldTest extends TestCase
     protected function setUp(): void
     {
         $this->service = $this->createMock(VerificationService::class);
-        $this->field = new VerifyPhoneField($this->service);
+        $this->field = new VerifyPhoneField($this->service, new BrandingRepository());
 
         // Reset shared state.
         wpforms()->obj('process')->errors = [];

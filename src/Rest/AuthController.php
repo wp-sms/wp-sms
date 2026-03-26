@@ -9,6 +9,7 @@ use WSms\Auth\CaptchaGuard;
 use WSms\Auth\PolicyEngine;
 use WSms\Auth\RateLimiter;
 use WSms\Auth\RegistrationFormRepository;
+use WSms\Branding\BrandingRepository;
 use WSms\Exception\NotFoundException;
 use WSms\Exception\ValidationException;
 use WSms\Mfa\MfaManager;
@@ -28,6 +29,7 @@ class AuthController extends Controller
         private ?MfaManager $mfaManager = null,
         private ?RegistrationFormRepository $formRepository = null,
         private ?RestrictionSettings $restrictionSettings = null,
+        private ?BrandingRepository $brandingRepo = null,
     ) {
     }
 
@@ -320,9 +322,8 @@ class AuthController extends Controller
             $config['captcha'] = $captchaConfig;
         }
 
-        $branding = $this->policy->getSetting('branding', []);
-        if (!empty($branding)) {
-            $config['branding'] = $branding;
+        if ($this->brandingRepo) {
+            $config['branding'] = $this->brandingRepo->all();
         }
 
         $termsUrl = $this->policy->getSetting('terms_url', '');

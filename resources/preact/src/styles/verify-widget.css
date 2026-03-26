@@ -43,7 +43,7 @@
     font-size: 14px;
     font-family: inherit;
     color: var(--wsms-vw-link);
-    background: rgba(34, 113, 177, 0.06);
+    background: color-mix(in srgb, var(--wsms-vw-link) 6%, transparent);
     border: 1px solid var(--wsms-vw-link);
     border-radius: var(--wsms-vw-radius);
     cursor: pointer;
@@ -51,7 +51,7 @@
 }
 
 .wsms-vw.wsms-vw .wsms-vw-send-btn:hover {
-    background: rgba(34, 113, 177, 0.12);
+    background: color-mix(in srgb, var(--wsms-vw-link) 12%, transparent);
 }
 
 /* Sending state */
@@ -138,7 +138,7 @@
 
 .wsms-vw.wsms-vw .wsms-vw-otp-slot--active {
     border-color: var(--wsms-vw-link);
-    box-shadow: 0 0 0 2px rgba(34, 113, 177, 0.25);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--wsms-vw-link) 25%, transparent);
 }
 
 .wsms-vw.wsms-vw .wsms-vw-otp-caret {

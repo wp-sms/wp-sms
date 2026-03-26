@@ -4,6 +4,7 @@ namespace WSms\Tests\Unit\Verification\Plugin\WooCommerce;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use WSms\Branding\BrandingRepository;
 use WSms\Verification\Plugin\WooCommerce\WooClassicCheckoutVerification;
 use WSms\Verification\Plugin\WooCommerce\WooCommerceConfig;
 use WSms\Verification\VerificationService;
@@ -24,7 +25,7 @@ class WooClassicCheckoutVerificationTest extends TestCase
         $this->config = $this->createMock(WooCommerceConfig::class);
         $this->config->method('hasAnyCheckoutEnabled')->willReturn(true);
 
-        $this->checkout = new WooClassicCheckoutVerification($this->service, $this->config);
+        $this->checkout = new WooClassicCheckoutVerification($this->service, $this->config, new BrandingRepository());
     }
 
     public function testValidateCheckoutPassesWhenEmailVerified(): void

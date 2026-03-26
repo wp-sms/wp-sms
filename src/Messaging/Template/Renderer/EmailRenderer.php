@@ -19,15 +19,16 @@ class EmailRenderer implements ChannelRendererInterface
     {
         $siteName = $context['site_name'] ?? '';
         $logoUrl = $context['logo_url'] ?? '';
+        $primaryColor = $context['primary_color'] ?? '#1a1a1a';
 
         $bodyHtml = $this->renderBodyHtml($content->body);
 
         $ctaHtml = '';
         if (!empty($content->cta) && !empty($content->ctaUrl)) {
-            $ctaHtml = $this->renderCtaButton($content->cta, $content->ctaUrl);
+            $ctaHtml = $this->renderCtaButton($content->cta, $content->ctaUrl, $primaryColor);
         }
 
-        $html = $this->wrapInLayout($bodyHtml, $ctaHtml, $siteName, $logoUrl);
+        $html = $this->wrapInLayout($bodyHtml, $ctaHtml, $siteName, $logoUrl, $primaryColor);
 
         return new RenderedMessage(
             body: $html,
@@ -55,12 +56,13 @@ class EmailRenderer implements ChannelRendererInterface
         return $html;
     }
 
-    private function renderCtaButton(string $label, string $url): string
+    private function renderCtaButton(string $label, string $url, string $primaryColor = '#1a1a1a'): string
     {
+        $bg = esc_attr($primaryColor);
         return <<<HTML
 <table role="presentation" cellspacing="0" cellpadding="0" border="0" style="margin:8px 0 0 0;">
 <tr>
-<td style="border-radius:8px;background-color:#1a1a1a;">
+<td style="border-radius:8px;background-color:{$bg};">
 <a href="{$url}" target="_blank" style="display:inline-block;padding:12px 28px;font-size:14px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:8px;">{$label}</a>
 </td>
 </tr>
@@ -68,7 +70,7 @@ class EmailRenderer implements ChannelRendererInterface
 HTML;
     }
 
-    private function wrapInLayout(string $bodyHtml, string $ctaHtml, string $siteName, string $logoUrl): string
+    private function wrapInLayout(string $bodyHtml, string $ctaHtml, string $siteName, string $logoUrl, string $primaryColor = '#1a1a1a'): string
     {
         $headerCells = '';
         if (!empty($logoUrl)) {
@@ -78,7 +80,7 @@ HTML;
         }
         if (!empty($siteName)) {
             $headerCells .= '<td style="vertical-align:middle;">'
-                . '<span style="font-size:15px;font-weight:600;color:#1a1a1a;letter-spacing:-0.01em;">' . esc_html($siteName) . '</span>'
+                . '<span style="font-size:15px;font-weight:600;color:' . esc_attr($primaryColor) . ';letter-spacing:-0.01em;">' . esc_html($siteName) . '</span>'
                 . '</td>';
         }
 

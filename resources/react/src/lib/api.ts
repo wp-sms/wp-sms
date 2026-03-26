@@ -211,13 +211,18 @@ export interface AuthSettings {
   site_phone_channel?: SitePhoneChannel;
   terms_url?: string;
   privacy_url?: string;
-  branding?: BrandingSettings;
   trusted_devices?: TrustedDevicesSettings;
 }
 
 export interface TrustedDevicesSettings {
   enabled: boolean;
   ttl: number;
+}
+
+export interface BrandingResponse {
+  success: boolean;
+  settings: BrandingSettings;
+  auth_base_url: string;
 }
 
 export interface ReportsResponse {
@@ -279,7 +284,7 @@ const FALLBACK_CONFIG: Window['wpSmsSettings'] = {
   isPremium: false,
   roles: {},
   timezone: 'UTC',
-  area: 'auth',
+  area: 'auth' as const,
   currentUserHasMfa: false,
   currentUserRoles: [],
 };

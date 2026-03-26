@@ -5,6 +5,7 @@ namespace WSms\Tests\Unit\Auth;
 use PHPUnit\Framework\TestCase;
 use WSms\Auth\AuthRouter;
 use WSms\Auth\SettingsRepository;
+use WSms\Branding\BrandingRepository;
 
 class AuthRouterTest extends TestCase
 {
@@ -12,7 +13,7 @@ class AuthRouterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->router = new AuthRouter(new SettingsRepository());
+        $this->router = new AuthRouter(new SettingsRepository(), new BrandingRepository());
 
         unset(
             $GLOBALS['_test_query_vars'],

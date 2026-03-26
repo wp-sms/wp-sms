@@ -2,6 +2,7 @@
 
 namespace WSms\Auth;
 
+use WSms\Branding\BrandingRepository;
 use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
@@ -12,6 +13,7 @@ class AuthRouter
 
     public function __construct(
         private SettingsRepository $settingsRepo,
+        private BrandingRepository $brandingRepo,
     ) {
     }
 
@@ -96,7 +98,7 @@ class AuthRouter
         $GLOBALS['wsmsPageTitle'] = $this->getPageTitle();
 
         // Pass custom site name for <title> if set.
-        $branding = $this->settingsRepo->channel('branding');
+        $branding = $this->brandingRepo->all();
         if (!empty($branding['site_name'])) {
             $GLOBALS['wsmsSiteName'] = $branding['site_name'];
         }
@@ -128,7 +130,7 @@ class AuthRouter
             true,
         );
 
-        $branding = $this->settingsRepo->channel('branding');
+        $branding = $this->brandingRepo->all();
 
         $formSlug = isset($_GET['form']) ? sanitize_text_field($_GET['form']) : '';
 

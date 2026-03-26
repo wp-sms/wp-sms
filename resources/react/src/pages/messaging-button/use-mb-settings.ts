@@ -8,7 +8,7 @@ export interface MessagingButtonSettings extends Record<string, unknown> {
     position: 'bottom-right' | 'bottom-left';
     style: 'icon-text' | 'icon' | 'text';
     text: string;
-    primary_color: string;
+    primary_color: string | null;
     text_color: string;
     attention: 'none' | 'pulse' | 'bounce' | 'badge';
   };
@@ -82,7 +82,7 @@ const DEFAULTS: MessagingButtonSettings = {
     position: 'bottom-right',
     style: 'icon-text',
     text: 'Chat with us',
-    primary_color: '#2563eb',
+    primary_color: null,
     text_color: '#ffffff',
     attention: 'none',
   },

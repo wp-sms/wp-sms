@@ -2,6 +2,7 @@
 
 namespace WSms\SubscriptionForm;
 
+use WSms\Branding\BrandingRepository;
 use WSms\PhoneRestriction\RestrictionSettings;
 
 defined('ABSPATH') || exit;
@@ -11,6 +12,7 @@ class SubscriptionFormRenderer
     public function __construct(
         private readonly SubscriptionFormRepository $formRepository,
         private readonly RestrictionSettings $restrictionSettings,
+        private readonly BrandingRepository $brandingRepo,
     ) {
     }
 
@@ -90,9 +92,8 @@ class SubscriptionFormRenderer
 
         $slug = $form->getSlug();
 
-        // Resolve primary color: per-form override > global branding > default.
-        $authSettings = get_option('wsms_auth_settings', []);
-        $globalPrimary = $authSettings['branding']['primary_color'] ?? null;
+        // Resolve primary color: per-form override > central branding > default.
+        $globalPrimary = $this->brandingRepo->get('primary_color');
         $formPrimary = $form->getAppearance()['primary_color'] ?? null;
         $primaryColor = $formPrimary ?: $globalPrimary;
 

@@ -2,6 +2,7 @@
 
 namespace WSms\Service\Installation;
 
+use WSms\Branding\BrandingRepository;
 use WSms\Database\CleanupScheduler;
 use WSms\Database\Migrator;
 use WSms\PhoneRestriction\DatabaseUpdater;
@@ -69,6 +70,7 @@ class InstallManager
         Migrator::dropTables();
         static::deactivateSingleSite();
         delete_option('wsms_auth_settings');
+        delete_option(BrandingRepository::OPTION_KEY);
         restore_current_blog();
     }
 
@@ -84,6 +86,8 @@ class InstallManager
         if (!as_has_scheduled_action(CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP)) {
             as_schedule_recurring_action(time(), DAY_IN_SECONDS, CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP);
         }
+
+        add_option(BrandingRepository::OPTION_KEY, BrandingRepository::DEFAULTS);
 
         add_option('wsms_auth_settings', [
             'phone' => [
@@ -143,6 +147,7 @@ class InstallManager
     {
         as_unschedule_all_actions(CleanupScheduler::HOOK_NAME, [], CleanupScheduler::AS_GROUP);
         as_unschedule_all_actions(DatabaseUpdater::CRON_HOOK, [], DatabaseUpdater::AS_GROUP);
+        delete_option(BrandingRepository::OPTION_KEY);
     }
 
     /**

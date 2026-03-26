@@ -2,6 +2,7 @@
 
 namespace WSms\MessagingButton;
 
+use WSms\Branding\BrandingRepository;
 use WSms\PhoneRestriction\RestrictionSettings;
 use WSms\Support\UserMeta;
 
@@ -13,6 +14,7 @@ class MessagingButtonRenderer
         private readonly MessagingButtonSettings $settings,
         private readonly DisplayRuleEvaluator $displayRules,
         private readonly RestrictionSettings $restrictionSettings,
+        private readonly BrandingRepository $brandingRepo,
     ) {
     }
 
@@ -51,10 +53,14 @@ class MessagingButtonRenderer
             true,
         );
 
+        $branding = $this->brandingRepo->all();
+
         $scriptData = [
             'restUrl' => rest_url('wsms/v1/'),
             'nonce' => wp_create_nonce('wp_rest'),
             'config' => $this->settings->getPublicConfig(),
+            'centralPrimaryColor' => $branding['primary_color'],
+            'centralColorMode' => $branding['color_mode'],
         ];
 
         $scriptData['phoneInput'] = $this->restrictionSettings->getPhoneInputDisplayConfig('messaging');
