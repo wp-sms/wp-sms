@@ -4,6 +4,7 @@ namespace WSms\Container;
 
 use WSms\Contact\StatusPropagator;
 use WSms\Messaging\Catalog\TemplateCatalogManager;
+use WSms\Messaging\Gateway\Email\MailtrapGateway;
 use WSms\Messaging\Gateway\Email\WpMailGateway;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\Gateway\Provider\KavenegarProvider;
@@ -97,6 +98,9 @@ class MessagingServiceProvider implements ServiceProvider
         // Eager: built-in gateways (always available, no external API deps)
         $registry->register($container->get('gateway.email.wp'));
         $registry->register($container->get('gateway.webhook'));
+
+        // Deferred: email gateways with external API deps
+        $registry->registerDeferred('mailtrap', MailtrapGateway::class);
 
         // Deferred: gateways with constructor dependencies
         $registry->registerDeferred('telegram', fn() => $container->get('gateway.telegram'));
