@@ -133,6 +133,12 @@
 #wpfooter { display: none; }
 #wpbody-content { padding-bottom: 0; }
 
+/* Catch any admin notices that bypass PHP removal (e.g. direct echo in admin_head) */
+#wpbody-content > .notice,
+#wpbody-content > .updated,
+#wpbody-content > .error,
+#wpbody-content > .update-nag { display: none !important; }
+
 /* Mount-point app styling — negative margin cancels WP admin's #wpbody-content padding */
 #wpsms-app {
   @apply relative h-auto;

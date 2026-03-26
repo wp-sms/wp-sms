@@ -19,6 +19,7 @@ class AdminManager
     public function __construct()
     {
         add_action('admin_menu', [$this, 'registerMenus']);
+        add_action('in_admin_header', [$this, 'suppressNotices'], PHP_INT_MAX);
     }
 
     /**
@@ -60,10 +61,35 @@ class AdminManager
     }
 
     /**
+     * Remove all admin notice hooks on WSMS pages.
+     *
+     * Hooked at `in_admin_header` (PHP_INT_MAX) — the last action before
+     * `admin_notices` fires. Same pattern WooCommerce uses for fully
+     * React-owned admin pages.
+     */
+    public function suppressNotices(): void
+    {
+        if (!$this->isWsmsScreen()) {
+            return;
+        }
+
+        remove_all_actions('admin_notices');
+        remove_all_actions('all_admin_notices');
+        remove_all_actions('network_admin_notices');
+    }
+
+    /**
      * Render the React dashboard mount point.
      */
     public function renderArea(): void
     {
         View::load('admin/app');
+    }
+
+    private function isWsmsScreen(): bool
+    {
+        $screen = get_current_screen();
+
+        return $screen && str_contains($screen->id, 'wsms-');
     }
 }
