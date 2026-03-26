@@ -106,6 +106,28 @@ function ConnectionSection({ detail, onConfigChange }: {
   const [error, setError] = useState<string | null>(null);
   const { saveConfig, disconnect } = useIntegrationConfig(onConfigChange);
 
+  if (detail.auth_type === 'gateway') {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Connection</CardTitle>
+          <CardDescription>
+            {detail.connected
+              ? <>Connected via <span className="font-medium">{detail.name}</span> gateway</>
+              : (
+                <>
+                  Connect the gateway first.{' '}
+                  <a href="#gateways" className="text-primary hover:underline">
+                    Go to Gateways &rarr;
+                  </a>
+                </>
+              )}
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
   const schema = useMemo<JsonSchema | null>(() => {
     if (detail.auth_type === 'none') return null;
     const properties = detail.auth_schema.properties ?? detail.auth_schema as Record<string, never>;
