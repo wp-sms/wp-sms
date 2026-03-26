@@ -24,7 +24,7 @@ import { CHANNELS } from '@/lib/constants';
 import type { ChannelId } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { useGateways } from '@/hooks/use-gateways';
-import type { PhoneChannelSettings, EmailChannelSettings, PasswordSettings } from '@/lib/api';
+import type { PhoneChannelSettings, EmailChannelSettings, PasswordSettings, DeliveryChannel } from '@/lib/api';
 
 interface ChannelSettingsPanelProps {
   open: boolean;
@@ -154,7 +154,7 @@ function ChannelContent({
             <RadioGroup
               value={(settings as PhoneChannelSettings).delivery_channel}
               onValueChange={(v) => {
-                const update: Partial<PhoneChannelSettings> = { delivery_channel: v as 'sms' | 'whatsapp' | 'viber' };
+                const update: Partial<PhoneChannelSettings> = { delivery_channel: v as DeliveryChannel };
                 // WhatsApp doesn't support magic links — strip it and reset incompatible gateway.
                 if (v === 'whatsapp') {
                   const methods = (settings.verification_methods ?? ['otp']).filter((m) => m !== 'magic_link');

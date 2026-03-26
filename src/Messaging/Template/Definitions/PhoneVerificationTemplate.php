@@ -36,7 +36,7 @@ class PhoneVerificationTemplate implements TemplateDefinitionInterface
 
     public function getSupportedChannels(): array
     {
-        return ['sms', 'whatsapp', 'telegram'];
+        return ['sms', 'whatsapp', 'telegram', 'rcs'];
     }
 
     public function getDefaults(): array
@@ -50,6 +50,9 @@ class PhoneVerificationTemplate implements TemplateDefinitionInterface
             ),
             'telegram' => new ChannelContent(
                 body: __('<b>Your verification code is: {{otp_code}}</b>' . "\n" . 'It expires in {{expiry_minutes}} minutes.', 'wp-sms'),
+            ),
+            'rcs' => new ChannelContent(
+                body: __('Your verification code is: {{otp_code}}. Expires in {{expiry_minutes}} min.', 'wp-sms'),
             ),
         ];
     }

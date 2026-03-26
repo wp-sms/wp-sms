@@ -398,9 +398,16 @@ class AdminController extends Controller
             }
 
             if ($channel === 'phone' && isset($ch['delivery_channel'])) {
-                $allowedDeliveryChannels = ['sms', 'whatsapp', 'viber'];
+                $allowedDeliveryChannels = ['sms', 'whatsapp', 'viber', 'rcs'];
                 if (!in_array($ch['delivery_channel'], $allowedDeliveryChannels, true)) {
                     $errors[] = "phone.delivery_channel must be one of: " . implode(', ', $allowedDeliveryChannels) . '.';
+                }
+
+                // Validate gateway supports the selected delivery channel (reuses $gateway from above).
+                if (!empty($ch['otp_gateway']) && isset($gateway) && $gateway !== null) {
+                    if (!in_array($ch['delivery_channel'], $gateway->getSupportedChannels(), true)) {
+                        $errors[] = "phone.otp_gateway '{$ch['otp_gateway']}' does not support the '{$ch['delivery_channel']}' delivery channel.";
+                    }
                 }
             }
         }

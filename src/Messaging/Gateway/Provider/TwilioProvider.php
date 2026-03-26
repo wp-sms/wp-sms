@@ -45,7 +45,7 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
 
     public function getSupportedChannels(): array
     {
-        return ['sms', 'whatsapp'];
+        return ['sms', 'whatsapp', 'rcs'];
     }
 
     public function getConfigSchema(): array
@@ -95,6 +95,15 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
                         'placeholder' => 'HXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
                     ],
                 ],
+                'rcs' => [
+                    'messaging_service_sid' => [
+                        'type'        => 'string',
+                        'label'       => __('Messaging Service SID', 'wp-sms'),
+                        'required'    => true,
+                        'description' => __('Twilio Messaging Service SID containing the RCS sender. Handles RCS delivery with automatic SMS fallback.', 'wp-sms'),
+                        'placeholder' => 'MGXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+                    ],
+                ],
             ],
         ];
     }
@@ -102,7 +111,7 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
     public function getMetadata(): array
     {
         return [
-            'description' => __('Cloud communications platform for SMS, WhatsApp, and more', 'wp-sms'),
+            'description' => __('Cloud communications platform for SMS, WhatsApp, RCS, and more', 'wp-sms'),
             'website'     => 'https://www.twilio.com',
             'icon'        => '',
             'regions'     => ['global'],
@@ -111,6 +120,7 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
                 __('Find your Account SID and Auth Token on the Twilio Console dashboard.', 'wp-sms'),
                 __('For SMS, purchase a phone number at Phone Numbers > Manage > Buy a Number.', 'wp-sms'),
                 __('For WhatsApp, enable the sandbox at Messaging > Try it out > Send a WhatsApp message.', 'wp-sms'),
+                __('For RCS, create a Messaging Service and register an RCS Business Messaging sender.', 'wp-sms'),
             ],
         ];
     }
@@ -129,15 +139,27 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
     {
         $accountSid = $this->getSharedConfig('account_sid');
         $authToken = $this->getSharedConfig('auth_token');
-        $channel = $message->getChannel();
-        $from = $this->getChannelConfig($channel, 'from_number');
 
-        if (!$accountSid || !$authToken || !$from) {
+        if (!$accountSid || !$authToken) {
             return DeliveryResult::failed(__('Twilio credentials not configured', 'wp-sms'));
         }
 
+        $channel = $message->getChannel();
+
+        if ($channel === 'rcs') {
+            $messagingServiceSid = $this->getChannelConfig('rcs', 'messaging_service_sid');
+            if (!$messagingServiceSid) {
+                return DeliveryResult::failed(__('Twilio RCS Messaging Service SID not configured', 'wp-sms'));
+            }
+        } else {
+            $from = $this->getChannelConfig($channel, 'from_number');
+            if (!$from) {
+                return DeliveryResult::failed(__('Twilio From Number not configured', 'wp-sms'));
+            }
+        }
+
         $to = $message->getRecipient();
-        // WhatsApp requires the whatsapp: prefix
+
         if ($channel === 'whatsapp') {
             $from = 'whatsapp:' . $from;
             $to = 'whatsapp:' . $to;
@@ -148,10 +170,15 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
         $meta = $message->getMeta();
 
         $body = [
-            'From'           => $from,
             'To'             => $to,
             'StatusCallback' => $this->getStatusCallbackUrl(),
         ];
+
+        if ($channel === 'rcs') {
+            $body['MessagingServiceSid'] = $messagingServiceSid;
+        } else {
+            $body['From'] = $from;
+        }
 
         $contentPayload = null;
 
@@ -239,7 +266,7 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
         $status = match ($messageStatus) {
             'queued', 'accepted' => 'queued',
             'sending', 'sent'   => 'sent',
-            'delivered'         => 'delivered',
+            'delivered', 'read' => 'delivered',
             'undelivered', 'failed' => 'failed',
             default             => $messageStatus,
         };
@@ -349,9 +376,13 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
             return [];
         }
 
+        // Strip channel prefixes for clean phone number storage
+        $from = $this->stripChannelPrefix($from);
+        $to = $to ? $this->stripChannelPrefix($to) : '';
+
         return [new InboundMessage(
             from: $from,
-            to: $to ?? '',
+            to: $to,
             body: $body,
             providerId: $messageSid,
             optOutType: $optOutType,
@@ -420,6 +451,7 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
 
     public function requiresTemplateForChannel(string $channel): bool
     {
+        // Only WhatsApp requires pre-approved templates; RCS and SMS do not
         if ($channel !== 'whatsapp') {
             return false;
         }
@@ -446,7 +478,8 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
 
     public function getConfigOptions(string $fieldKey, string $section, array $config, array $context = []): array
     {
-        if ($fieldKey !== 'from_number') {
+        // RCS uses Messaging Service SID (manually entered), not phone numbers
+        if ($fieldKey !== 'from_number' || $section === 'rcs') {
             return [];
         }
 
@@ -481,6 +514,16 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
     }
 
     // --- Internal ---
+
+    private function stripChannelPrefix(string $value): string
+    {
+        foreach (['whatsapp:', 'rcs:'] as $prefix) {
+            if (str_starts_with($value, $prefix)) {
+                return substr($value, strlen($prefix));
+            }
+        }
+        return $value;
+    }
 
     private function authHeaders(): array
     {
@@ -531,6 +574,7 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
             '21610', // Unsubscribed recipient
             '21611', // Sender not authorized
             '21614', // Invalid mobile number
+            '63035', // RCS agent not launched / recipient not a tester / regional restriction
         ], true);
     }
 

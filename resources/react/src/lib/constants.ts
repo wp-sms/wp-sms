@@ -14,6 +14,7 @@ export const CHANNELS = [
     deliveryChannels: [
       { value: 'sms', label: 'SMS', available: true },
       { value: 'whatsapp', label: 'WhatsApp', available: true },
+      { value: 'rcs', label: 'RCS', available: true },
       { value: 'viber', label: 'Viber', available: false },
     ],
   },
@@ -335,6 +336,7 @@ export function toggleArrayItem<T>(arr: T[], item: T, enabled: boolean): T[] {
 
 const ACRONYMS: Record<string, string> = {
   sms: 'SMS',
+  rcs: 'RCS',
   otp: 'OTP',
   mfa: 'MFA',
   totp: 'TOTP',

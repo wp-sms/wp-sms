@@ -99,10 +99,10 @@ class DefinitionsTest extends TestCase
         ];
     }
 
-    public function testOtpSupportsFourChannels(): void
+    public function testOtpSupportsFiveChannels(): void
     {
         $t = new OtpTemplate();
-        $this->assertEquals(['email', 'sms', 'whatsapp', 'telegram'], $t->getSupportedChannels());
+        $this->assertEquals(['email', 'sms', 'whatsapp', 'telegram', 'rcs'], $t->getSupportedChannels());
     }
 
     public function testEmailVerificationIsEmailOnly(): void

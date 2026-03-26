@@ -14,6 +14,7 @@ use WSms\Messaging\Template\Definitions\WelcomeTemplate;
 use WSms\Messaging\Template\Renderer\EmailRenderer;
 use WSms\Messaging\Template\Renderer\SmsRenderer;
 use WSms\Messaging\Template\Renderer\TelegramRenderer;
+use WSms\Messaging\Template\Renderer\RcsRenderer;
 use WSms\Messaging\Template\Renderer\WhatsAppRenderer;
 use WSms\Messaging\Template\Storage\OptionStorage;
 use WSms\Messaging\Template\TemplateManager;
@@ -45,6 +46,7 @@ class TemplateServiceProvider implements ServiceProvider
         $manager->registerRenderer(new SmsRenderer());
         $manager->registerRenderer(new TelegramRenderer());
         $manager->registerRenderer(new WhatsAppRenderer());
+        $manager->registerRenderer(new RcsRenderer());
 
         // Register template definitions.
         $manager->registerTemplate(new OtpTemplate());

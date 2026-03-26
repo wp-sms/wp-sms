@@ -36,7 +36,7 @@ export interface LogsResponse {
 }
 
 export type VerificationMethod = 'otp' | 'magic_link';
-export type DeliveryChannel = 'sms' | 'whatsapp' | 'viber';
+export type DeliveryChannel = 'sms' | 'whatsapp' | 'rcs' | 'viber';
 export type SitePhoneChannel = 'sms' | 'whatsapp' | 'telegram';
 export type EnrollmentTiming = 'on_registration' | 'grace_period' | 'voluntary';
 export type LogVerbosity = 'minimal' | 'standard' | 'verbose';

@@ -45,7 +45,7 @@ class OtpWithMagicLinkTemplate implements TemplateDefinitionInterface
 
     public function getSupportedChannels(): array
     {
-        return ['email', 'sms'];
+        return ['email', 'sms', 'rcs'];
     }
 
     public function getDefaults(): array
@@ -58,6 +58,9 @@ class OtpWithMagicLinkTemplate implements TemplateDefinitionInterface
                 ctaUrl: '{{magic_link_url}}',
             ),
             'sms' => new ChannelContent(
+                body: __('Your code: {{otp_code}}. Or log in: {{magic_link_url}} (expires in {{expiry_minutes}} min)', 'wp-sms'),
+            ),
+            'rcs' => new ChannelContent(
                 body: __('Your code: {{otp_code}}. Or log in: {{magic_link_url}} (expires in {{expiry_minutes}} min)', 'wp-sms'),
             ),
         ];
