@@ -6,6 +6,7 @@ use WSms\Integration\Auth\AuthIntegration;
 use WSms\Integration\Contact\ContactIntegration;
 use WSms\Integration\ContactForm7\ContactForm7Integration;
 use WSms\Integration\EmailOctopus\EmailOctopusIntegration;
+use WSms\Integration\Mailtrap\MailtrapIntegration;
 use WSms\Integration\IntegrationRegistry;
 use WSms\Integration\Schedule\ScheduleIntegration;
 use WSms\Integration\Webhook\WebhookIntegration;
@@ -107,6 +108,14 @@ class IntegrationServiceProvider implements ServiceProvider
             // Register EmailOctopusIntegration (no constructor injection)
             $this->registerIntegration(
                 new EmailOctopusIntegration(),
+                $registry,
+                $triggers,
+                $actions,
+            );
+
+            // Register MailtrapIntegration (no constructor injection)
+            $this->registerIntegration(
+                new MailtrapIntegration(),
                 $registry,
                 $triggers,
                 $actions,

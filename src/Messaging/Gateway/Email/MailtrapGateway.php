@@ -89,6 +89,7 @@ class MailtrapGateway extends AbstractProvider implements SupportsStatusCallback
                 __('Verify your sending domain in the Mailtrap dashboard.', 'wp-sms'),
                 __('Create an API token with sending permissions at Settings > API Tokens.', 'wp-sms'),
                 __('For delivery tracking, configure a webhook pointing to the callback URL shown below.', 'wp-sms'),
+                __('This plugin sends all emails (including campaigns) through Mailtrap\'s Email Sending API. This is separate from Mailtrap\'s built-in campaign feature.', 'wp-sms'),
             ],
         ];
     }

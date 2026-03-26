@@ -6,6 +6,7 @@ use WSms\Contact\Source\ContactSourceManager;
 use WSms\Contact\Source\ContactSourceRegistry;
 use WSms\Contact\Source\WordPressUsersSource;
 use WSms\Integration\EmailOctopus\EmailOctopusContactSource;
+use WSms\Integration\Mailtrap\MailtrapContactSource;
 
 defined('ABSPATH') || exit;
 
@@ -20,6 +21,11 @@ class ContactSourceServiceProvider implements ServiceProvider
             $eoSource = new EmailOctopusContactSource($container->get('contact.repository'));
             if ($eoSource->isAvailable()) {
                 $registry->register($eoSource);
+            }
+
+            $mtSource = new MailtrapContactSource($container->get('contact.repository'));
+            if ($mtSource->isAvailable()) {
+                $registry->register($mtSource);
             }
 
             return $registry;
