@@ -79,6 +79,7 @@ export function TriggerSentence({
           placeholder="choose a trigger"
           title="Select a trigger"
           searchPlaceholder="Search triggers..."
+          storageKey="triggers"
         />
         <TestTriggerButton triggerType={triggerType} flowId={flowId} testing={testing} onTest={handleTest} />
       </div>

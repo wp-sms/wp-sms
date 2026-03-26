@@ -1,6 +1,7 @@
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import { IntegrationIcon } from '@/components/integration-icon';
+import { Badge } from '@/components/ui/badge';
 import { TokenBadge } from '@/components/flow-editor/sentence-builder/sentence-token';
 import { cn, groupBy } from '@/lib/utils';
 import { Check, Search, X } from 'lucide-react';
@@ -21,6 +22,7 @@ interface IntegrationPickerProps {
   onSelect: (value: string) => void;
   title: string;
   searchPlaceholder: string;
+  storageKey?: string;
 }
 
 
@@ -32,6 +34,7 @@ export function IntegrationPickerToken({
   placeholder,
   title,
   searchPlaceholder,
+  storageKey,
 }: {
   items: PickerItem[];
   value: string;
@@ -39,6 +42,7 @@ export function IntegrationPickerToken({
   placeholder: string;
   title: string;
   searchPlaceholder: string;
+  storageKey?: string;
 }) {
   const [open, setOpen] = useState(false);
   const selected = useMemo(() => items.find((i) => i.value === value), [items, value]);
@@ -63,7 +67,47 @@ export function IntegrationPickerToken({
         onSelect={onSelect}
         title={title}
         searchPlaceholder={searchPlaceholder}
+        storageKey={storageKey}
       />
+    </>
+  );
+}
+
+// ── Recently-used helpers ──
+
+const MAX_RECENT = 5;
+const STORAGE_PREFIX = 'wpsms-picker-recent-';
+
+function getRecentValues(storageKey: string | undefined): string[] {
+  if (!storageKey) return [];
+  try {
+    const raw = localStorage.getItem(STORAGE_PREFIX + storageKey);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveRecentValue(storageKey: string | undefined, val: string) {
+  if (!storageKey) return;
+  const prev = getRecentValues(storageKey);
+  const next = [val, ...prev.filter((v) => v !== val)].slice(0, MAX_RECENT);
+  try {
+    localStorage.setItem(STORAGE_PREFIX + storageKey, JSON.stringify(next));
+  } catch { /* quota exceeded */ }
+}
+
+// ── Search highlighting ──
+
+function highlightMatch(text: string, queryLower: string): React.ReactNode {
+  if (!queryLower) return text;
+  const idx = text.toLowerCase().indexOf(queryLower);
+  if (idx === -1) return text;
+  return (
+    <>
+      {text.slice(0, idx)}
+      <mark className="bg-primary/15 text-foreground rounded-sm px-0.5">{text.slice(idx, idx + queryLower.length)}</mark>
+      {text.slice(idx + queryLower.length)}
     </>
   );
 }
@@ -76,6 +120,7 @@ export function IntegrationPicker({
   onSelect,
   title,
   searchPlaceholder,
+  storageKey,
 }: IntegrationPickerProps) {
   const [search, setSearch] = useState('');
   const [activeGroup, setActiveGroup] = useState('');
@@ -132,17 +177,36 @@ export function IntegrationPicker({
     return group?.items ?? [];
   }, [groups, activeGroup]);
 
+  const recentItems = useMemo(() => {
+    if (!storageKey) return [];
+    const vals = getRecentValues(storageKey);
+    return vals.map((v) => items.find((i) => i.value === v)).filter(Boolean) as PickerItem[];
+  }, [storageKey, items]);
+
   const navigableItems = isSearching ? searchResults : activeItems;
 
   const handleSelect = useCallback(
     (val: string) => {
+      saveRecentValue(storageKey, val);
       onSelect(val);
       onOpenChange(false);
     },
-    [onSelect, onOpenChange],
+    [onSelect, onOpenChange, storageKey],
   );
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    // First Escape clears search, second closes dialog
+    if (e.key === 'Escape') {
+      if (isSearching) {
+        e.preventDefault();
+        e.stopPropagation();
+        setSearch('');
+        return;
+      }
+      // Let Radix handle the second Escape to close dialog
+      return;
+    }
+
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       setFocusIndex((prev) => {
@@ -168,26 +232,38 @@ export function IntegrationPicker({
     itemRefs.current.clear();
   }, [isSearching, activeGroup]);
 
-  const renderItem = (item: PickerItem, i: number, showIcon: boolean) => (
+  // navIndex: keyboard nav index (-1 = skip), staggerIndex: animation delay order
+  const renderItem = (item: PickerItem, navIndex: number, staggerIndex: number, opts?: { highlight?: boolean; showGroup?: boolean; stagger?: boolean; keyPrefix?: string }) => (
     <button
-      key={item.value}
-      ref={(el) => { if (el) { itemRefs.current.set(i, el); } else { itemRefs.current.delete(i); } }}
+      key={opts?.keyPrefix ? `${opts.keyPrefix}-${item.value}` : item.value}
+      ref={navIndex >= 0 ? (el) => { if (el) { itemRefs.current.set(navIndex, el); } else { itemRefs.current.delete(navIndex); } } : undefined}
       type="button"
       className={cn(
-        'flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left transition-colors',
-        focusIndex === i ? 'bg-accent' : 'hover:bg-accent',
+        'flex w-full items-center gap-3 rounded-lg px-2 py-2.5 text-left transition-colors',
+        opts?.stagger && 'animate-fade-up',
+        navIndex >= 0 && focusIndex === navIndex
+          ? 'bg-accent ring-1 ring-ring/30'
+          : item.value === value
+            ? 'bg-primary/5'
+            : 'hover:bg-accent',
       )}
+      style={opts?.stagger ? { animationDelay: `${staggerIndex * 30}ms` } : undefined}
       onClick={() => handleSelect(item.value)}
     >
-      {showIcon && <IntegrationIcon icon={item.icon} size="sm" />}
+      <IntegrationIcon icon={item.icon} size="md" />
       <div className="min-w-0 flex-1">
         <div className={cn('text-sm truncate', item.value === value && 'font-medium')}>
-          {item.label}
+          {opts?.highlight ? highlightMatch(item.label, searchLower) : item.label}
         </div>
         {item.description && (
-          <div className="text-xs text-muted-foreground truncate">{item.description}</div>
+          <div className="text-xs text-muted-foreground truncate mt-0.5">
+            {opts?.highlight ? highlightMatch(item.description, searchLower) : item.description}
+          </div>
         )}
       </div>
+      {opts?.showGroup && (
+        <Badge variant="neutral" className="text-[10px] shrink-0">{item.group}</Badge>
+      )}
       {item.value === value && <Check className="h-4 w-4 shrink-0 text-primary" />}
     </button>
   );
@@ -197,61 +273,103 @@ export function IntegrationPicker({
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-[9999] bg-black/50 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0" />
         <DialogPrimitive.Content
-          className="fixed top-[50%] left-[50%] z-[9999] w-full max-w-lg translate-x-[-50%] translate-y-[-50%] rounded-lg border bg-background shadow-lg duration-200 overflow-hidden data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
+          className="fixed top-[50%] left-[50%] z-[9999] w-[calc(100vw-2rem)] sm:w-full max-w-2xl translate-x-[-50%] translate-y-[-50%] rounded-lg border bg-background shadow-lg duration-200 overflow-hidden data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
           onKeyDown={handleKeyDown}
         >
           <DialogPrimitive.Title className="sr-only">{title}</DialogPrimitive.Title>
 
-          {/* Search bar with close button inline */}
-          <div className="flex items-center gap-2 border-b px-3 py-2">
-            <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
-            <input
-              ref={searchRef}
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder={searchPlaceholder}
-              className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-            />
-            <DialogPrimitive.Close className="rounded-sm opacity-50 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden">
-              <X className="h-4 w-4" />
-              <span className="sr-only">Close</span>
-            </DialogPrimitive.Close>
+          {/* Search bar with title label */}
+          <div className="border-b">
+            <div className="px-4 pt-3 pb-1">
+              <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{title}</span>
+            </div>
+            <div className="flex items-center gap-2.5 px-4 py-3">
+              <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
+              <input
+                ref={searchRef}
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder={searchPlaceholder}
+                className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+              />
+              <DialogPrimitive.Close className="rounded-sm opacity-50 ring-offset-background transition-opacity hover:opacity-100 focus:ring-2 focus:ring-ring focus:ring-offset-2 focus:outline-hidden">
+                <X className="h-4 w-4" />
+                <span className="sr-only">Close</span>
+              </DialogPrimitive.Close>
+            </div>
           </div>
 
           {isSearching ? (
-            <div className="max-h-72 overflow-y-auto p-1">
+            <div className="max-h-[380px] overflow-y-auto p-1.5 picker-scroll">
               {searchResults.length === 0 ? (
-                <p className="py-6 text-center text-sm text-muted-foreground">No results found</p>
+                <div className="flex flex-col items-center justify-center py-12 text-center">
+                  <Search className="h-10 w-10 text-muted-foreground/30 mb-3" />
+                  <p className="text-sm font-medium text-foreground">No results for &ldquo;{search}&rdquo;</p>
+                  <p className="text-xs text-muted-foreground mt-1">Try a different search term</p>
+                </div>
               ) : (
-                searchResults.map((item, i) => renderItem(item, i, true))
+                searchResults.map((item, i) => renderItem(item, i, i, { highlight: true, showGroup: true, stagger: true }))
               )}
             </div>
           ) : (
-            <div className="flex" style={{ height: '320px' }}>
-              {/* Left panel */}
-              <div className="w-40 shrink-0 overflow-y-auto border-r p-1">
+            <div className="flex flex-col sm:flex-row" style={{ height: '380px' }}>
+              {/* Mobile: horizontal pill row */}
+              <div className="sm:hidden shrink-0 overflow-x-auto border-b">
+                <div className="flex gap-1 p-1.5">
+                  {groups.map((group) => (
+                    <button
+                      key={group.name}
+                      type="button"
+                      className={cn(
+                        'flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs transition-colors',
+                        activeGroup === group.name
+                          ? 'bg-primary/10 font-medium text-primary'
+                          : 'bg-accent/50 text-muted-foreground hover:bg-accent',
+                      )}
+                      onClick={() => setActiveGroup(group.name)}
+                    >
+                      <IntegrationIcon icon={group.icon} size="sm" />
+                      <span>{group.name}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Desktop: vertical sidebar */}
+              <div className="hidden sm:block w-48 shrink-0 overflow-y-auto border-r p-1.5 picker-scroll">
                 {groups.map((group) => (
                   <button
                     key={group.name}
                     type="button"
                     className={cn(
-                      'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-colors',
+                      'flex w-full items-center gap-2.5 rounded-md px-2 py-2 text-left text-sm transition-colors',
                       activeGroup === group.name
-                        ? 'bg-accent font-medium'
+                        ? 'bg-primary/5 font-medium border-l-2 border-primary'
                         : 'hover:bg-accent/50 text-muted-foreground',
                     )}
                     onClick={() => setActiveGroup(group.name)}
                   >
-                    <IntegrationIcon icon={group.icon} size="sm" />
-                    <span className="truncate">{group.name}</span>
+                    <IntegrationIcon icon={group.icon} size="md" />
+                    <span className="truncate flex-1">{group.name}</span>
+                    <span className="text-[10px] text-muted-foreground tabular-nums">{group.items.length}</span>
                   </button>
                 ))}
               </div>
 
               {/* Right panel */}
-              <div className="flex-1 overflow-y-auto p-1">
-                {activeItems.map((item, i) => renderItem(item, i, false))}
+              <div key={activeGroup} className="flex-1 min-h-0 overflow-y-auto p-1.5 picker-scroll">
+                {/* Recently used section */}
+                {recentItems.length > 0 && (
+                  <>
+                    <div className="px-2 pt-1 pb-1.5">
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Recent</span>
+                    </div>
+                    {recentItems.map((item, i) => renderItem(item, -1, i, { stagger: true, keyPrefix: 'recent' }))}
+                    <div className="mx-2 my-1.5 border-t" />
+                  </>
+                )}
+                {activeItems.map((item, i) => renderItem(item, i, recentItems.length + i, { stagger: true }))}
               </div>
             </div>
           )}

@@ -320,6 +320,15 @@
   outline: none;
 }
 
+/* Thin scrollbar for picker panels */
+.picker-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+.picker-scroll::-webkit-scrollbar { width: 4px; }
+.picker-scroll::-webkit-scrollbar-track { background: transparent; }
+.picker-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
 #wpsms-app .wsms-phone-input .lpi__flag img.emoji {
   width: 1.2em;
   height: 1.2em;

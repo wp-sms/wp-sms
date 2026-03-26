@@ -230,6 +230,7 @@ export function ActionSentence({ step, onChange, payloadSchema, triggerType, sam
           placeholder="choose an action"
           title="Select an action"
           searchPlaceholder="Search actions..."
+          storageKey="actions"
         />
       </div>
 
