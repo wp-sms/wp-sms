@@ -4,13 +4,15 @@ namespace WSms\Messaging\Gateway\Provider;
 
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\MessageInterface;
+use WSms\Messaging\Contracts\StatusUpdate;
 use WSms\Messaging\Contracts\SupportsDynamicOptions;
+use WSms\Messaging\Contracts\SupportsStatusCallback;
 use WSms\Messaging\Gateway\AbstractProvider;
 use WSms\Messaging\Contracts\TestConnectionResult;
 
 defined('ABSPATH') || exit;
 
-class VonageProvider extends AbstractProvider implements SupportsDynamicOptions
+class VonageProvider extends AbstractProvider implements SupportsDynamicOptions, SupportsStatusCallback
 {
     private const API_URL = 'https://rest.nexmo.com/sms/json';
     private const BALANCE_URL = 'https://rest.nexmo.com/account/get-balance';
@@ -108,6 +110,7 @@ class VonageProvider extends AbstractProvider implements SupportsDynamicOptions
                 'to'         => $message->getRecipient(),
                 'text'       => $message->getBody(),
                 'type'       => 'unicode',
+                'callback'   => $this->getStatusCallbackUrl(),
             ]),
             'headers' => ['Content-Type' => 'application/json'],
         ]);
@@ -147,6 +150,59 @@ class VonageProvider extends AbstractProvider implements SupportsDynamicOptions
         $data = json_decode($result['body'], true);
         return isset($data['value']) ? number_format((float) $data['value'], 2) : null;
     }
+
+    // --- SupportsStatusCallback ---
+
+    public function getStatusCallbackUrl(): string
+    {
+        return rest_url('wsms/v1/callbacks/' . $this->getId() . '/status') . '?token=' . $this->callbackToken();
+    }
+
+    public function validateStatusCallback(\WP_REST_Request $request): bool
+    {
+        if (!$this->getSharedConfig('api_secret')) {
+            return false;
+        }
+
+        return hash_equals($this->callbackToken(), $request->get_param('token') ?? '');
+    }
+
+    /** @return StatusUpdate[] */
+    public function parseStatusCallback(\WP_REST_Request $request): array
+    {
+        $messageId = $request->get_param('messageId');
+        $status = $request->get_param('status');
+
+        if (empty($messageId) || empty($status)) {
+            return [];
+        }
+
+        $normalizedStatus = match ($status) {
+            'delivered'                        => 'delivered',
+            'accepted', 'buffered', 'unknown'  => 'sent',
+            'expired', 'failed', 'rejected'    => 'failed',
+            default                            => $status,
+        };
+
+        $errCode = $request->get_param('err-code');
+
+        return [new StatusUpdate(
+            providerId: $messageId,
+            status: $normalizedStatus,
+            errorCode: $errCode && $errCode !== '0' ? $errCode : null,
+            errorMessage: $normalizedStatus === 'failed'
+                ? sprintf('Vonage DLR: %s (err-code: %s)', $status, $errCode ?? '0')
+                : null,
+            permanent: $normalizedStatus === 'failed',
+        )];
+    }
+
+    private function callbackToken(): string
+    {
+        return hash_hmac('sha256', 'vonage-dlr', $this->getSharedConfig('api_secret'));
+    }
+
+    // --- SupportsDynamicOptions ---
 
     public function getConfigOptions(string $fieldKey, string $section, array $config, array $context = []): array
     {
