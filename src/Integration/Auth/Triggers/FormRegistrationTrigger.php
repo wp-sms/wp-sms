@@ -33,7 +33,7 @@ class FormRegistrationTrigger extends AbstractTrigger
 
     public function getGroup(): string
     {
-        return 'Authentication';
+        return 'Auth';
     }
 
     public function getPayloadSchema(): array
