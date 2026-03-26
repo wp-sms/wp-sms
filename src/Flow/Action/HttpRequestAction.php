@@ -53,6 +53,7 @@ class HttpRequestAction extends AbstractAction
                 'type' => 'object',
                 'label' => __('Headers', 'wp-sms'),
                 'description' => __('HTTP headers to include in the request', 'wp-sms'),
+                'template' => true,
                 'example' => ['Authorization' => 'Bearer token123'],
             ],
             'body' => [

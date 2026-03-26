@@ -89,6 +89,7 @@ class UpdateContactAction extends AbstractAction
                 'type'        => 'object',
                 'label'       => __('Custom Fields', 'wp-sms'),
                 'description' => __('Key-value pairs to merge into custom fields', 'wp-sms'),
+                'template'    => true,
             ],
             'email_verified' => [
                 'type'        => 'boolean',

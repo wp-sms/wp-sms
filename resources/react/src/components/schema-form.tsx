@@ -300,6 +300,7 @@ function KeyValueField({
   description,
   hint,
   onChange,
+  payloadSchema,
 }: {
   fieldKey: string;
   label: string;
@@ -308,17 +309,27 @@ function KeyValueField({
   description?: string;
   hint?: string;
   onChange: (key: string, value: unknown) => void;
+  payloadSchema?: JsonSchema;
 }) {
   // Work with an array of pairs so multiple empty-key rows can coexist
   const [pairs, setPairs] = useState<[string, string][]>(() => toKvPairs(value));
+  const valueRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  // Sync pairs back from parent when value changes externally
+  // Track self-initiated commits so useEffect skips resets caused by our own onChange
+  const commitCount = useRef(0);
+  const lastSyncedCount = useRef(0);
+
   useEffect(() => {
-    setPairs(toKvPairs(value));
+    if (commitCount.current !== lastSyncedCount.current) {
+      lastSyncedCount.current = commitCount.current;
+      return; // Our own commit caused this re-render — keep local state
+    }
+    setPairs(toKvPairs(value)); // External change — sync
   }, [value]);
 
   const commit = (next: [string, string][]) => {
     setPairs(next);
+    commitCount.current += 1;
     onChange(fieldKey, fromKvPairs(next));
   };
 
@@ -353,11 +364,23 @@ function KeyValueField({
               className="flex-1"
             />
             <Input
+              ref={(el) => { valueRefs.current[index] = el; }}
               value={v}
               placeholder="Value"
               onChange={(e) => handleChange(index, 1, e.target.value)}
               className="flex-1"
             />
+            {payloadSchema && (
+              <TemplateVariablePicker
+                payloadSchema={payloadSchema}
+                onInsert={(variable) => insertVariableAtCursor(
+                  valueRefs.current[index],
+                  variable,
+                  v,
+                  (val) => handleChange(index, 1, val),
+                )}
+              />
+            )}
             <Button
               type="button"
               variant="ghost"
@@ -537,6 +560,7 @@ function PropertyField({
         description={prop.description}
         hint={prop.hint}
         onChange={onChange}
+        payloadSchema={prop.template ? payloadSchema : undefined}
       />
     );
   }

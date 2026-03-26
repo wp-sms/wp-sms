@@ -61,6 +61,7 @@ class TriggerFlowAction extends AbstractAction
                 'type'        => 'object',
                 'label'       => __('Payload', 'wp-sms'),
                 'description' => __('Custom key-value data to pass to the triggered flow', 'wp-sms'),
+                'template'    => true,
             ],
         ];
     }
