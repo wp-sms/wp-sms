@@ -25,6 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { NameCell } from '@/components/ui/name-cell';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -217,14 +218,9 @@ export function Campaigns() {
               const canDelete = campaign.status !== 'sending';
               return (
                 <TableRow key={campaign.id} className="even:bg-muted/30">
-                  <TableCell className="font-medium">
-                    <button
-                      className="text-left text-primary/80 transition-colors hover:text-primary"
-                      onClick={() => setView({ mode: 'detail', campaign })}
-                    >
-                      {campaign.name}
-                    </button>
-                  </TableCell>
+                  <NameCell onClick={() => setView({ mode: 'detail', campaign })}>
+                    {campaign.name}
+                  </NameCell>
                   <TableCell><ChannelBadge channel={campaign.channel} /></TableCell>
                   <TableCell><CampaignStatusBadge status={campaign.status} /></TableCell>
                   <TableCell className="text-right text-sm tabular-nums">

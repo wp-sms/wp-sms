@@ -32,6 +32,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { NameCell } from '@/components/ui/name-cell';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -237,8 +238,8 @@ export function SubscriptionForms() {
             </TableHeader>
             <TableBody>
               {forms.map((form) => (
-                <TableRow key={form.id}>
-                  <TableCell className="font-medium">{form.name}</TableCell>
+                <TableRow key={form.id} className="even:bg-muted/30">
+                  <NameCell onClick={() => openEdit(form)}>{form.name}</NameCell>
                   <TableCell>
                     <code className="text-xs bg-muted px-1.5 py-0.5 rounded">{form.slug}</code>
                   </TableCell>

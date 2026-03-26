@@ -32,6 +32,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { NameCell } from '@/components/ui/name-cell';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -278,7 +279,7 @@ export function Flows() {
           <TableBody>
             {flows.map((flow) => (
               <TableRow key={flow.id} className="even:bg-muted/30">
-                <TableCell className="font-medium">{flow.name}</TableCell>
+                <NameCell onClick={() => setView({ mode: 'edit', flow })}>{flow.name}</NameCell>
                 <TableCell className="text-sm">
                   <span className="inline-flex items-center gap-1.5">
                     {(() => { const TIcon = getTriggerIcon(flow.trigger_type); return <TIcon className="h-3.5 w-3.5 text-muted-foreground" />; })()}

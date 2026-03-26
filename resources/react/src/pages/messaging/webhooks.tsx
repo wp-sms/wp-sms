@@ -19,6 +19,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { NameCell } from '@/components/ui/name-cell';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -189,14 +190,9 @@ export function Webhooks() {
           <TableBody>
             {webhooks.map((wh) => (
               <TableRow key={wh.id} className="even:bg-muted/30">
-                <TableCell className="font-medium">
-                  <button
-                    className="text-left text-primary/80 transition-colors hover:text-primary"
-                    onClick={() => setView({ mode: 'edit', webhook: wh })}
-                  >
-                    {wh.name}
-                  </button>
-                </TableCell>
+                <NameCell onClick={() => setView({ mode: 'edit', webhook: wh })}>
+                  {wh.name}
+                </NameCell>
                 <TableCell>
                   <code className="text-xs text-muted-foreground">{truncateUrl(wh.url)}</code>
                 </TableCell>

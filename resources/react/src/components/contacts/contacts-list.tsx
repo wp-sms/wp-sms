@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { NameCell } from '@/components/ui/name-cell';
 import { EmptyState } from '@/components/ui/empty-state';
 import { DataTable } from '@/components/ui/data-table';
 import { ContactFormPanel } from './contact-form-panel';
@@ -176,15 +177,9 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
                     onCheckedChange={() => toggleSelect(contact.id)}
                   />
                 </TableCell>
-                <TableCell>
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-2 font-medium text-left transition-colors hover:text-primary"
-                    onClick={() => handleViewDetail(contact.id)}
-                  >
-                    {[contact.first_name, contact.last_name].filter(Boolean).join(' ') || '\u2014'}
-                  </button>
-                </TableCell>
+                <NameCell onClick={() => handleViewDetail(contact.id)}>
+                  {[contact.first_name, contact.last_name].filter(Boolean).join(' ') || '\u2014'}
+                </NameCell>
                 <TableCell className="text-sm">{contact.email || '\u2014'}</TableCell>
                 <TableCell className="text-sm">{contact.phone || '\u2014'}</TableCell>
                 <TableCell>
