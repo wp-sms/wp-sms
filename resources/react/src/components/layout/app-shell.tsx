@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks, Settings2, MessageSquare, SlidersHorizontal, ClipboardList, Webhook, Bell, Sparkles } from 'lucide-react';
+import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks, Settings2, MessageSquare, SlidersHorizontal, ClipboardList, Webhook, Bell, Sparkles, Activity } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { SaveBar } from '@/components/layout/save-bar';
 import {
@@ -86,6 +86,11 @@ export const NAV_ITEMS = [
     id: 'message-logs',
     label: 'Message Logs',
     icon: ScrollText,
+  },
+  {
+    id: 'system',
+    label: 'System',
+    icon: Activity,
   },
   {
     id: 'messaging-button',

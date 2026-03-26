@@ -888,3 +888,59 @@ export interface FlowExecution {
   started_at: string;
   completed_at: string | null;
 }
+
+// --- System Health Types ---
+
+export interface SystemHealthResponse {
+  cron_health: {
+    wp_cron_disabled: boolean;
+    as_runner_active: boolean;
+    last_as_run: string | null;
+    status: 'healthy' | 'warning' | 'error' | 'unknown';
+  };
+  heartbeat: {
+    hook: string;
+    label: string;
+    status: 'healthy' | 'late' | 'stopped' | 'unknown';
+    last_run: string | null;
+    next_run: string | null;
+    interval: number;
+  }[];
+  queue: {
+    totals: Record<string, number>;
+    by_type: { type: string; pending: number; in_progress: number }[];
+    stuck_jobs: { action_id: number; job_type: string; stuck_since: string }[];
+  };
+  failed_jobs: {
+    items: {
+      action_id: number;
+      job_type: string;
+      severity: 'high' | 'low';
+      error_message: string;
+      failed_at: string;
+      attempts: number;
+      args_preview: Record<string, string>;
+    }[];
+    total: number;
+    error_groups: { message: string; count: number }[];
+  };
+  recent_activity: {
+    action_id: number;
+    hook: string;
+    job_type: string;
+    status: string;
+    completed_at: string;
+  }[];
+  active_campaigns: {
+    id: string;
+    name: string;
+    channel: string;
+    status: string;
+    total_recipients: number;
+    sent_count: number;
+    delivered_count: number;
+    failed_count: number;
+    started_at: string;
+  }[];
+  generated_at: string;
+}

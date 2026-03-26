@@ -14,7 +14,7 @@ const AREA_CONFIG: Record<Area, AreaConfig> = {
     defaultSection: 'channels',
   },
   messaging: {
-    sections: ['campaigns', 'flows', 'contacts', 'gateways', 'apps', 'webhooks', 'message-logs', 'messaging-button', 'subscription-forms', 'settings'],
+    sections: ['campaigns', 'flows', 'contacts', 'gateways', 'apps', 'webhooks', 'message-logs', 'system', 'messaging-button', 'subscription-forms', 'settings'],
     defaultSection: 'flows',
   },
 };

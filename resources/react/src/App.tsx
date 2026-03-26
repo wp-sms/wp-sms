@@ -64,6 +64,7 @@ export default function App() {
       case 'gateways':
       case 'webhooks':
       case 'message-logs':
+      case 'system':
       case 'subscription-forms':
       case 'settings':
         return <MessagingPage section={section} subTab={subTab} onNavigate={setSection} />;
