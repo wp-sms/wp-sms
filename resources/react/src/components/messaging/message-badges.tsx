@@ -7,6 +7,8 @@ export function StatusBadge({ status }: { status: string }) {
       return <Badge variant="success">{status}</Badge>;
     case 'sent':
       return <Badge variant="info">{status}</Badge>;
+    case 'queued':
+      return <Badge variant="neutral">{status}</Badge>;
     case 'failed':
       return <Badge variant="destructive">{status}</Badge>;
     default:

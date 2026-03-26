@@ -11,6 +11,7 @@ use WSms\Exception\NotFoundException;
 use WSms\Exception\PersistenceException;
 use WSms\Exception\ValidationException;
 use WSms\Log\Contracts\MessageLoggerInterface;
+use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Message\Message;
 
@@ -24,6 +25,7 @@ class CampaignController extends Controller
         private readonly AudienceResolver $audienceResolver,
         private readonly MessageLoggerInterface $messageLogger,
         private readonly MessageDispatcher $messageDispatcher,
+        private readonly GatewayRegistry $gatewayRegistry,
     ) {
     }
 
@@ -187,9 +189,10 @@ class CampaignController extends Controller
                 'callback'            => [$this, 'recipients'],
                 'permission_callback' => [$this, 'canManage'],
                 'args'                => [
-                    'per_page' => ['type' => 'integer', 'default' => 50],
-                    'page'     => ['type' => 'integer', 'default' => 1],
-                    'status'   => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'per_page'  => ['type' => 'integer', 'default' => 50],
+                    'page'      => ['type' => 'integer', 'default' => 1],
+                    'status'    => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
+                    'recipient' => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                 ],
             ],
         ]);
@@ -485,9 +488,19 @@ class CampaignController extends Controller
 
             $stats = $this->messageLogger->getCampaignStats($id);
 
+            $supportsDelivery = false;
+            $gatewayId = $campaign->getGatewayId();
+            if ($gatewayId) {
+                $gateway = $this->gatewayRegistry->get($gatewayId);
+                if ($gateway) {
+                    $supportsDelivery = $gateway->getFeatures()['delivery_receipt'] ?? false;
+                }
+            }
+
             return $this->ok([
-                'total_recipients' => $campaign->getTotalRecipients(),
-                'skipped_count'    => $campaign->getSkippedCount(),
+                'total_recipients'          => $campaign->getTotalRecipients(),
+                'skipped_count'             => $campaign->getSkippedCount(),
+                'supports_delivery_receipt' => $supportsDelivery,
                 ...$stats,
             ]);
         });
@@ -597,6 +610,9 @@ class CampaignController extends Controller
             $filters = ['campaign_id' => $id];
             if ($request->get_param('status')) {
                 $filters['status'] = $request->get_param('status');
+            }
+            if ($request->get_param('recipient')) {
+                $filters['recipient'] = $request->get_param('recipient');
             }
 
             $logs = $this->messageLogger->findAll($filters, $perPage, $offset);

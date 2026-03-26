@@ -31,7 +31,9 @@ use WSms\Rest\SubscriptionFormPublicController;
 use WSms\Rest\TemplateCatalogController;
 use WSms\Rest\TemplateController;
 use WSms\Rest\OutboundWebhookController;
+use WSms\Rest\SystemHealthController;
 use WSms\Rest\WebhookReceiverController;
+use WSms\System\SystemHealthService;
 
 defined('ABSPATH') || exit;
 
@@ -166,6 +168,7 @@ class RestServiceProvider implements ServiceProvider
             $c->get('campaign.audience_resolver'),
             $c->get('log.message'),
             $c->get('message.dispatcher'),
+            $c->get('gateway.registry'),
         ));
         $container->register('rest.integrations', fn($c) => new IntegrationController(
             $c->get('integration.registry'),
@@ -223,6 +226,8 @@ class RestServiceProvider implements ServiceProvider
             $c->get('subscription_form.handler'),
             $c->get('auth.rate_limiter'),
         ));
+        $container->register('system.health', fn($c) => new SystemHealthService($c->get(Connection::class)));
+        $container->register('rest.system_health', fn($c) => new SystemHealthController($c->get('system.health')));
     }
 
     /** {@inheritDoc} */
@@ -258,6 +263,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.subscription_forms_public')->registerRoutes();
             $container->get('rest.templates')->registerRoutes();
             $container->get('rest.template_catalog')->registerRoutes();
+            $container->get('rest.system_health')->registerRoutes();
         });
     }
 }

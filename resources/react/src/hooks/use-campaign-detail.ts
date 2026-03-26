@@ -8,6 +8,10 @@ export interface UseCampaignDetailReturn {
   recipientsTotal: number;
   recipientsPage: number;
   setRecipientsPage: (page: number) => void;
+  statusFilter: string;
+  setStatusFilter: (status: string) => void;
+  recipientSearch: string;
+  setRecipientSearch: (search: string) => void;
   loading: boolean;
   refetch: () => void;
 }
@@ -18,17 +22,36 @@ export function useCampaignDetail(campaignId: string, autoRefresh = false): UseC
   const [recipients, setRecipients] = useState<MessageLogEntry[]>([]);
   const [recipientsTotal, setRecipientsTotal] = useState(0);
   const [recipientsPage, setRecipientsPage] = useState(1);
+  const [statusFilter, setStatusFilterRaw] = useState('');
+  const [recipientSearch, setRecipientSearchRaw] = useState('');
   const [loading, setLoading] = useState(true);
   const [fetchTrigger, setFetchTrigger] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval>>();
 
+  const setStatusFilter = useCallback((status: string) => {
+    setStatusFilterRaw(status);
+    setRecipientsPage(1);
+  }, []);
+
+  const setRecipientSearch = useCallback((search: string) => {
+    setRecipientSearchRaw(search);
+    setRecipientsPage(1);
+  }, []);
+
   const fetchData = useCallback(async () => {
     try {
+      const recipientParams = new URLSearchParams({
+        per_page: '50',
+        page: String(recipientsPage),
+      });
+      if (statusFilter) recipientParams.set('status', statusFilter);
+      if (recipientSearch) recipientParams.set('recipient', recipientSearch);
+
       const [campaignRes, statsRes, recipientsRes] = await Promise.all([
         api.get<{ success: boolean; data: Campaign }>(`campaigns/${campaignId}`),
         api.get<{ success: boolean; data: CampaignStats }>(`campaigns/${campaignId}/stats`),
         api.get<{ items: MessageLogEntry[]; total: number }>(
-          `campaigns/${campaignId}/recipients?per_page=50&page=${recipientsPage}`,
+          `campaigns/${campaignId}/recipients?${recipientParams.toString()}`,
         ),
       ]);
 
@@ -41,7 +64,7 @@ export function useCampaignDetail(campaignId: string, autoRefresh = false): UseC
     } finally {
       setLoading(false);
     }
-  }, [campaignId, recipientsPage]);
+  }, [campaignId, recipientsPage, statusFilter, recipientSearch]);
 
   const refetch = useCallback(() => {
     setFetchTrigger((n) => n + 1);
@@ -64,5 +87,11 @@ export function useCampaignDetail(campaignId: string, autoRefresh = false): UseC
     };
   }, [autoRefresh, campaign?.status, fetchData]);
 
-  return { campaign, stats, recipients, recipientsTotal, recipientsPage, setRecipientsPage, loading, refetch };
+  return {
+    campaign, stats, recipients, recipientsTotal,
+    recipientsPage, setRecipientsPage,
+    statusFilter, setStatusFilter,
+    recipientSearch, setRecipientSearch,
+    loading, refetch,
+  };
 }

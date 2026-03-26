@@ -817,6 +817,7 @@ export interface CampaignStats {
   sent: number;
   queued: number;
   total_cost: number;
+  supports_delivery_receipt: boolean;
 }
 
 export interface CampaignRecipient extends MessageLogEntry {
