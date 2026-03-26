@@ -282,7 +282,7 @@ export function Gateways() {
             <DrawerDescription>Select the default gateway for each messaging channel</DrawerDescription>
           </DrawerHeader>
           <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-4">
-            {allChannels.map((ch) => {
+            {allChannels.filter(ch => ch !== 'webhook').map((ch) => {
               const supportingGateways = gateways.filter((g) => g.supported_channels.includes(ch) && g.is_configured);
               return (
                 <div key={ch} className="flex items-center gap-3">
