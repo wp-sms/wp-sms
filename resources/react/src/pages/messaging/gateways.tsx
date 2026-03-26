@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
-import { Search, Star, ChevronRight, Radio, Smartphone, Mail, MessageSquare, Send } from 'lucide-react';
+import { Search, Star, ChevronRight, Radio, Smartphone, Mail, MessageSquare, Send, Check } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 import { getGatewayColor, getGatewayInitial } from '@/lib/gateway-visuals';
 import { pluralize } from '@/lib/utils';
@@ -158,6 +158,28 @@ export function Gateways() {
     [gateways, selectedGatewayId],
   );
 
+  // Auto-assign defaults for channels with a single configured gateway
+  useEffect(() => {
+    const configMap: Record<string, Record<string, unknown>> = {};
+
+    for (const ch of allChannels) {
+      if (channelDefaults[ch]) continue;
+      const supporting = gateways.filter(g => g.supported_channels.includes(ch) && g.is_configured);
+      if (supporting.length !== 1) continue;
+
+      const g = supporting[0];
+      if (!configMap[g.id]) {
+        const cfg = ensureConfig(g.config);
+        configMap[g.id] = { ...cfg, is_default: { ...cfg.is_default } } as unknown as Record<string, unknown>;
+      }
+      (configMap[g.id] as unknown as { is_default: Record<string, boolean> }).is_default[ch] = true;
+    }
+
+    if (Object.keys(configMap).length > 0) {
+      updateConfig(configMap);
+    }
+  }, [gateways, allChannels, channelDefaults, updateConfig]);
+
   async function handleChangeDefault(channel: string, gatewayId: string) {
     const configMap: Record<string, Record<string, unknown>> = {};
     const oldDefaultId = channelDefaults[channel];
@@ -268,21 +290,31 @@ export function Gateways() {
                     <span className="text-muted-foreground">{CHANNEL_ICONS[ch]}</span>
                     <span className="text-sm font-medium">{channelLabel(ch)}</span>
                   </div>
-                  <Select
-                    value={channelDefaults[ch] ?? ''}
-                    onValueChange={(v) => handleChangeDefault(ch, v)}
-                  >
-                    <SelectTrigger className="flex-1">
-                      <SelectValue placeholder="No default set" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {supportingGateways.map((g) => (
-                        <SelectItem key={g.id} value={g.id}>
-                          {g.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+
+                  {supportingGateways.length === 0 ? (
+                    <span className="text-sm text-muted-foreground">No configured gateway</span>
+                  ) : supportingGateways.length === 1 ? (
+                    <div className="flex items-center gap-2 text-sm">
+                      <span>{supportingGateways[0].name}</span>
+                      <Check className="h-3.5 w-3.5 text-muted-foreground" />
+                    </div>
+                  ) : (
+                    <Select
+                      value={channelDefaults[ch] ?? ''}
+                      onValueChange={(v) => handleChangeDefault(ch, v)}
+                    >
+                      <SelectTrigger className="flex-1">
+                        <SelectValue placeholder="Select default" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {supportingGateways.map((g) => (
+                          <SelectItem key={g.id} value={g.id}>
+                            {g.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
                 </div>
               );
             })}
