@@ -47,12 +47,12 @@ class AuthIntegrationTest extends TestCase
         $this->assertSame([], $event->meta);
     }
 
-    public function testGetTriggersReturnsSevenTriggers(): void
+    public function testGetTriggersReturnsSixTriggers(): void
     {
         $integration = new AuthIntegration();
         $triggers = $integration->getTriggers();
 
-        $this->assertCount(7, $triggers);
+        $this->assertCount(6, $triggers);
     }
 
     public function testTriggerIdsAreCorrect(): void
@@ -62,7 +62,6 @@ class AuthIntegrationTest extends TestCase
         $ids = array_map(fn($t) => $t->getId(), $triggers);
 
         $this->assertContains('auth.login_success', $ids);
-        $this->assertContains('auth.login_failure', $ids);
         $this->assertContains('auth.account_locked', $ids);
         $this->assertContains('auth.registration', $ids);
         $this->assertContains('auth.password_reset', $ids);

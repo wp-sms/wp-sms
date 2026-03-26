@@ -88,27 +88,6 @@ class AuthIntegration implements IntegrationInterface
                 __('Fires when a user logs in successfully', 'wp-sms'),
             ),
             new AuthEventTrigger(
-                'auth.login_failure',
-                __('Login Failure', 'wp-sms'),
-                [
-                    'identifier' => [
-                        'type' => 'string',
-                        'label' => __('Identifier', 'wp-sms'),
-                        'description' => __('The login identifier that was attempted', 'wp-sms'),
-                        'example' => 'user@example.com',
-                    ],
-                    'reason' => [
-                        'type' => 'string',
-                        'label' => __('Failure Reason', 'wp-sms'),
-                        'description' => __('Why the login attempt failed', 'wp-sms'),
-                        'example' => 'invalid_password',
-                    ],
-                ],
-                [EventType::LoginFailure],
-                [],
-                __('Fires when a login attempt fails', 'wp-sms'),
-            ),
-            new AuthEventTrigger(
                 'auth.account_locked',
                 __('Account Locked', 'wp-sms'),
                 [

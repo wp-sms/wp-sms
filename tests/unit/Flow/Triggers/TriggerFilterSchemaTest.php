@@ -136,10 +136,10 @@ class TriggerFilterSchemaTest extends TestCase
     public function testAuthTriggerWithoutFilterSchemaReturnsEmpty(): void
     {
         $trigger = new AuthEventTrigger(
-            'auth.login_failure',
-            'Login Failure',
+            'auth.account_locked',
+            'Account Locked',
             [],
-            [EventType::LoginFailure],
+            [EventType::AccountLocked],
         );
 
         $this->assertSame([], $trigger->getFilterSchema());
