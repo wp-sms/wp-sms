@@ -1,4 +1,9 @@
-import { challengeToken, challengeMeta, pendingMfa, pendingVerifications, authStep, clearAuth } from '../signals/auth';
+import { challengeToken, challengeMeta, pendingMfa, pendingVerifications, authStep, clearAuth, isRedirecting } from '../signals/auth';
+
+export function redirectTo(url) {
+    isRedirecting.value = true;
+    window.location.href = url;
+}
 import { formRedirectUrl } from '../signals/config';
 import { getBaseUrl } from './urls';
 
@@ -7,12 +12,12 @@ export function handleAuthResponse(res, _route) {
         if (res.meta?.grace_period) {
             sessionStorage.setItem('wsms_grace_period', JSON.stringify(res.meta.grace_period));
         }
-        window.location.href = formRedirectUrl.value || res.redirect || getBaseUrl();
+        redirectTo(formRedirectUrl.value || res.redirect || getBaseUrl());
         return;
     }
 
     if (res.status === 'mfa_enrollment_required') {
-        window.location.href = getBaseUrl() + '/security?mfa_enroll=required';
+        redirectTo(getBaseUrl() + '/security?mfa_enroll=required');
         return 'mfa_enrollment_required';
     }
 
@@ -96,5 +101,5 @@ export async function logout() {
     } catch {
         // proceed with redirect regardless
     }
-    window.location.href = getBaseUrl() + '/login';
+    redirectTo(getBaseUrl() + '/login');
 }

@@ -2,8 +2,8 @@ import { useState, useEffect } from 'preact/hooks';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 import { api } from '../api/client';
 import { registrationFields, registrationFieldDefs, socialProviders, legalLinks, formSlug, formRedirectUrl, formName } from '../signals/config';
-import { authError, authLoading, registrationToken, pendingVerifications } from '../signals/auth';
-import { extractError, friendlySocialError } from '../utils/auth';
+import { authError, authLoading, stopLoading, registrationToken, pendingVerifications } from '../signals/auth';
+import { extractError, friendlySocialError, redirectTo } from '../utils/auth';
 import { authUrl, getQueryParam } from '../utils/urls';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { Alert } from '../components/ui/Alert';
@@ -103,7 +103,7 @@ export function Register() {
                     pendingVerifications.value = res.pending_verifications;
                     setVerifying(true);
                 } else if (formRedirectUrl.value) {
-                    window.location.href = formRedirectUrl.value;
+                    redirectTo(formRedirectUrl.value);
                     return;
                 } else {
                     setSuccess(res.message || 'Account created successfully.');
@@ -113,17 +113,13 @@ export function Register() {
             authError.value = extractError(err).message;
             captcha.reset();
         } finally {
-            authLoading.value = false;
+            stopLoading();
         }
     }
 
     if (verifying) {
         const onVerifyComplete = () => {
-            if (formRedirectUrl.value) {
-                window.location.href = formRedirectUrl.value;
-            } else {
-                window.location.href = authUrl('/login');
-            }
+            redirectTo(formRedirectUrl.value || authUrl('/login'));
         };
 
         return (

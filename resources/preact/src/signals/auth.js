@@ -7,6 +7,11 @@ export const challengeMeta = signal(null);
 export const pendingMfa = signal(null);
 export const authError = signal(null);
 export const authLoading = signal(false);
+export const isRedirecting = signal(false);
+
+export function stopLoading() {
+    if (!isRedirecting.value) authLoading.value = false;
+}
 
 // Identifier-first flow signals.
 export const authStep = signal('identifier'); // 'identifier'|'authenticate'|'mfa'|'register'|'register_verify'|'login_verify'

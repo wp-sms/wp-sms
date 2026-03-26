@@ -2,7 +2,7 @@ import { useState, useEffect } from 'preact/hooks';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 import { useLocation } from 'preact-iso';
 import { api } from '../api/client';
-import { authError, authLoading, challengeToken, challengeMeta, pendingMfa, clearAuth } from '../signals/auth';
+import { authError, authLoading, stopLoading, challengeToken, challengeMeta, pendingMfa, clearAuth } from '../signals/auth';
 import { handleAuthResponse, extractError } from '../utils/auth';
 import { authUrl } from '../utils/urls';
 import { AuthLayout } from '../layouts/AuthLayout';
@@ -45,7 +45,7 @@ export function VerifyOtp() {
         } catch (err) {
             authError.value = extractError(err).message;
         } finally {
-            authLoading.value = false;
+            stopLoading();
         }
     }
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { api } from '../api/client';
+import { redirectTo } from '../utils/auth';
 import { authUrl, getQueryParam } from '../utils/urls';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { Alert } from '../components/ui/Alert';
@@ -35,7 +36,7 @@ export function VerifyToken({
 
                     if (successRedirect) {
                         setTimeout(() => {
-                            window.location.href = res.redirect || authUrl('/');
+                            redirectTo(res.redirect || authUrl('/'));
                         }, 1000);
                     }
                 } else {

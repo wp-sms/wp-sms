@@ -7,6 +7,7 @@ import { api } from '../../api/client';
 import {
     authError,
     authLoading,
+    stopLoading,
     pendingMfa,
     challengeToken,
     challengeMeta,
@@ -115,7 +116,7 @@ export function MfaStep() {
                 authError.value = details.message;
             }
         } finally {
-            authLoading.value = false;
+            stopLoading();
         }
     }
 
@@ -150,7 +151,7 @@ export function MfaStep() {
                 authError.value = details.message;
             }
         } finally {
-            authLoading.value = false;
+            stopLoading();
         }
     }
 

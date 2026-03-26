@@ -1,8 +1,10 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
 import { Separator } from '@/components/ui/Separator';
+import { RedirectingOverlay } from '@/components/ui/RedirectingOverlay';
 import { BrandLogo } from '@/components/BrandLogo';
 import { SecuredByFooter } from '@/components/SecuredByFooter';
 import { brandingConfig } from '@/signals/branding';
+import { isRedirecting } from '@/signals/auth';
 import { renderMode } from '@/signals/config';
 
 const ALIGN_MAP = {
@@ -16,6 +18,8 @@ export function CenteredLayout({ title, subtitle, children, footer }) {
     const alignClass = ALIGN_MAP[logoPosition] ?? 'justify-center';
     const isCompact = renderMode.value === 'popup' || renderMode.value === 'embed';
 
+    const redirecting = isRedirecting.value;
+
     if (isCompact) {
         return (
             <div className="font-sans text-foreground antialiased p-6">
@@ -28,8 +32,8 @@ export function CenteredLayout({ title, subtitle, children, footer }) {
                     <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
                     {subtitle && <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>}
                 </div>
-                {children}
-                {footer && (
+                {redirecting ? <RedirectingOverlay /> : children}
+                {!redirecting && footer && (
                     <>
                         <Separator className="my-4" />
                         <div className="text-center text-sm text-muted-foreground">{footer}</div>
@@ -53,8 +57,15 @@ export function CenteredLayout({ title, subtitle, children, footer }) {
                     <CardTitle className="text-xl">{title}</CardTitle>
                     {subtitle && <CardDescription>{subtitle}</CardDescription>}
                 </CardHeader>
-                <CardContent>{children}</CardContent>
-                {footer && (
+                <CardContent>
+                    {redirecting ? (
+                        <div className="flex flex-col items-center gap-3 py-8 animate-fade-in">
+                            <Spinner className="size-8" />
+                            <p className="text-sm text-muted-foreground">Redirecting…</p>
+                        </div>
+                    ) : children}
+                </CardContent>
+                {!redirecting && footer && (
                     <>
                         <Separator />
                         <CardFooter className="justify-center">

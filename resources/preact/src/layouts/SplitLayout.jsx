@@ -1,9 +1,11 @@
 import { useMemo } from 'preact/hooks';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
 import { Separator } from '@/components/ui/Separator';
+import { RedirectingOverlay } from '@/components/ui/RedirectingOverlay';
 import { BrandLogo } from '@/components/BrandLogo';
 import { SecuredByFooter } from '@/components/SecuredByFooter';
 import { brandingConfig } from '@/signals/branding';
+import { isRedirecting } from '@/signals/auth';
 import { isLightColor } from '@/utils/color';
 
 export function SplitLayout({ title, subtitle, children, footer }) {
@@ -46,6 +48,8 @@ export function SplitLayout({ title, subtitle, children, footer }) {
         </div>
     );
 
+    const redirecting = isRedirecting.value;
+
     const formPanel = (
         <div className="flex w-full lg:w-1/2 flex-col items-center justify-center bg-background p-4 md:p-8">
             <div className="w-full max-w-md space-y-6">
@@ -58,8 +62,10 @@ export function SplitLayout({ title, subtitle, children, footer }) {
                         <CardTitle className="text-xl">{title}</CardTitle>
                         {subtitle && <CardDescription>{subtitle}</CardDescription>}
                     </CardHeader>
-                    <CardContent>{children}</CardContent>
-                    {footer && (
+                    <CardContent>
+                        {redirecting ? <RedirectingOverlay /> : children}
+                    </CardContent>
+                    {!redirecting && footer && (
                         <>
                             <Separator />
                             <CardFooter className="justify-center">

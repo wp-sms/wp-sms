@@ -5,6 +5,7 @@ import { api } from '../../api/client';
 import {
     authError,
     authLoading,
+    stopLoading,
     identifyResult,
     enteredIdentifier,
     selectedMethod,
@@ -71,7 +72,7 @@ export function AuthenticateStep() {
                 captcha.reset();
             }
         } finally {
-            authLoading.value = false;
+            stopLoading();
         }
     }
 
@@ -109,7 +110,7 @@ export function AuthenticateStep() {
                 authError.value = details.message;
             }
         } finally {
-            authLoading.value = false;
+            stopLoading();
         }
     }
 
