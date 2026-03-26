@@ -16,14 +16,12 @@ import { ContactFormPanel } from './contact-form-panel';
 import { ContactDetailPanel } from './contact-detail-panel';
 import { BulkActionBar } from './bulk-action-bar';
 import { ExportDialog } from './export-dialog';
+import { ActionsCell } from '@/components/ui/actions-cell';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Plus, Search, Users, Pencil, Trash2, Eye, Upload, Download, MoreHorizontal } from 'lucide-react';
+import { Plus, Search, Users, Pencil, Trash2, Eye, Upload, Download } from 'lucide-react';
 import { CONTACT_STATUSES, formatLabel } from '@/lib/constants';
 import { SourceLabel } from './source-label';
 import { toast } from 'sonner';
@@ -190,33 +188,24 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
                 <TableCell className="text-sm text-muted-foreground">
                   {contact.source ? <SourceLabel source={contact.source} sourceRef={contact.source_ref} showPrefix={false} /> : '\u2014'}
                 </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => handleViewDetail(contact.id)}>
-                        <Eye className="h-4 w-4 mr-2" />
-                        View
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => handleEdit(contact)}>
-                        <Pencil className="h-4 w-4 mr-2" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={() => void handleDelete(contact.id)}
-                        className="text-destructive focus:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
+                <ActionsCell>
+                  <DropdownMenuItem onClick={() => handleViewDetail(contact.id)}>
+                    <Eye className="h-4 w-4 mr-2" />
+                    View
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleEdit(contact)}>
+                    <Pencil className="h-4 w-4 mr-2" />
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => void handleDelete(contact.id)}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                </ActionsCell>
               </TableRow>
             ))}
           </TableBody>

@@ -7,7 +7,8 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { DataTable } from '@/components/ui/data-table';
 import { PageSection } from '@/components/ui/page-section';
 import { TagForm } from './tag-form';
-import { Plus, Tags, Pencil, Trash2 } from 'lucide-react';
+import { InlineActionsCell } from '@/components/ui/inline-actions-cell';
+import { Plus, Tags } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
 
@@ -105,21 +106,10 @@ export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
                     <TableCell className="font-medium">{tag.name}</TableCell>
                     <TableCell className="text-sm text-muted-foreground">{tag.slug}</TableCell>
                     <TableCell className="text-sm">{tag.contact_count ?? 0}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => setEditing(tag.id)}>
-                          <Pencil className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-                          onClick={() => void handleDelete(tag.id)}
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
-                    </TableCell>
+                    <InlineActionsCell
+                      onEdit={() => setEditing(tag.id)}
+                      onDelete={() => void handleDelete(tag.id)}
+                    />
                   </>
                 )}
               </TableRow>

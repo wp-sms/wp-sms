@@ -26,15 +26,13 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { NameCell } from '@/components/ui/name-cell';
+import { ActionsCell } from '@/components/ui/actions-cell';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { CHANNEL_LABELS } from '@/components/gateway-config-form';
-import { Plus, Megaphone, Pencil, Trash2, Copy, Eye, MoreHorizontal } from 'lucide-react';
+import { Plus, Megaphone, Pencil, Trash2, Copy, Eye } from 'lucide-react';
 import { pluralize } from '@/lib/utils';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
@@ -232,47 +230,38 @@ export function Campaigns() {
                   <TableCell className="text-sm">
                     {campaign.send_at ? formatDateTime(campaign.send_at) : '\u2014'}
                   </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => setView({ mode: 'detail', campaign })}>
-                          <Eye className="h-4 w-4 mr-2" />
-                          View
-                        </DropdownMenuItem>
-                        {canEdit && (
-                          <DropdownMenuItem onClick={() => setView({ mode: 'edit', campaign })}>
-                            <Pencil className="h-4 w-4 mr-2" />
-                            Edit
-                          </DropdownMenuItem>
-                        )}
+                  <ActionsCell>
+                    <DropdownMenuItem onClick={() => setView({ mode: 'detail', campaign })}>
+                      <Eye className="h-4 w-4 mr-2" />
+                      View
+                    </DropdownMenuItem>
+                    {canEdit && (
+                      <DropdownMenuItem onClick={() => setView({ mode: 'edit', campaign })}>
+                        <Pencil className="h-4 w-4 mr-2" />
+                        Edit
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuItem
+                      onClick={() => void handleDuplicate(campaign.id)}
+                      disabled={duplicating === campaign.id}
+                    >
+                      <Copy className="h-4 w-4 mr-2" />
+                      Duplicate
+                    </DropdownMenuItem>
+                    {canDelete && (
+                      <>
+                        <DropdownMenuSeparator />
                         <DropdownMenuItem
-                          onClick={() => void handleDuplicate(campaign.id)}
-                          disabled={duplicating === campaign.id}
+                          onClick={() => void handleDelete(campaign.id)}
+                          disabled={deleting === campaign.id}
+                          className="text-destructive focus:text-destructive"
                         >
-                          <Copy className="h-4 w-4 mr-2" />
-                          Duplicate
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          Delete
                         </DropdownMenuItem>
-                        {canDelete && (
-                          <>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() => void handleDelete(campaign.id)}
-                              disabled={deleting === campaign.id}
-                              className="text-destructive focus:text-destructive"
-                            >
-                              <Trash2 className="h-4 w-4 mr-2" />
-                              Delete
-                            </DropdownMenuItem>
-                          </>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+                      </>
+                    )}
+                  </ActionsCell>
                 </TableRow>
               );
             })}

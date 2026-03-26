@@ -33,16 +33,14 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { NameCell } from '@/components/ui/name-cell';
+import { ActionsCell } from '@/components/ui/actions-cell';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
   Plus, Workflow, Pencil, Trash2, Rocket, LayoutTemplate, Search,
-  ShoppingCart, Users, MessageSquare, FileText, History, Pause, MoreHorizontal,
+  ShoppingCart, Users, MessageSquare, FileText, History, Pause,
   type LucideIcon,
 } from 'lucide-react';
 import { formatLabel } from '@/lib/constants';
@@ -298,51 +296,42 @@ export function Flows() {
                 <TableCell className="text-sm">
                   {flow.published_at ? formatDate(flow.published_at) : '\u2014'}
                 </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => setView({ mode: 'edit', flow })}>
-                        <Pencil className="h-4 w-4 mr-2" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => setView({ mode: 'edit', flow, tab: 'history' })}>
-                        <History className="h-4 w-4 mr-2" />
-                        Execution History
-                      </DropdownMenuItem>
-                      {flow.status === 'active' ? (
-                        <DropdownMenuItem
-                          onClick={() => void handleDeactivate(flow.id)}
-                          disabled={deactivating === flow.id}
-                        >
-                          <Pause className="h-4 w-4 mr-2" />
-                          Pause
-                        </DropdownMenuItem>
-                      ) : (
-                        <DropdownMenuItem
-                          onClick={() => void handlePublish(flow.id)}
-                          disabled={publishing === flow.id}
-                        >
-                          <Rocket className="h-4 w-4 mr-2" />
-                          Publish
-                        </DropdownMenuItem>
-                      )}
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={() => void handleDelete(flow.id)}
-                        disabled={deleting === flow.id}
-                        className="text-destructive focus:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
+                <ActionsCell>
+                  <DropdownMenuItem onClick={() => setView({ mode: 'edit', flow })}>
+                    <Pencil className="h-4 w-4 mr-2" />
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setView({ mode: 'edit', flow, tab: 'history' })}>
+                    <History className="h-4 w-4 mr-2" />
+                    Execution History
+                  </DropdownMenuItem>
+                  {flow.status === 'active' ? (
+                    <DropdownMenuItem
+                      onClick={() => void handleDeactivate(flow.id)}
+                      disabled={deactivating === flow.id}
+                    >
+                      <Pause className="h-4 w-4 mr-2" />
+                      Pause
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem
+                      onClick={() => void handlePublish(flow.id)}
+                      disabled={publishing === flow.id}
+                    >
+                      <Rocket className="h-4 w-4 mr-2" />
+                      Publish
+                    </DropdownMenuItem>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => void handleDelete(flow.id)}
+                    disabled={deleting === flow.id}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                </ActionsCell>
               </TableRow>
             ))}
           </TableBody>

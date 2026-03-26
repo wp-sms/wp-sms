@@ -9,7 +9,8 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { DataTable } from '@/components/ui/data-table';
 import { PageSection } from '@/components/ui/page-section';
 import { ListFormPanel } from './list-form-panel';
-import { Plus, List, Pencil, Trash2 } from 'lucide-react';
+import { InlineActionsCell } from '@/components/ui/inline-actions-cell';
+import { Plus, List } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
 
@@ -102,21 +103,10 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
               <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">
                 {list.description || '\u2014'}
               </TableCell>
-              <TableCell>
-                <div className="flex items-center gap-1">
-                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0" onClick={() => handleEdit(list)}>
-                    <Pencil className="h-3.5 w-3.5" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 w-7 p-0 text-destructive hover:text-destructive"
-                    onClick={() => void handleDelete(list.id)}
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              </TableCell>
+              <InlineActionsCell
+                onEdit={() => handleEdit(list)}
+                onDelete={() => void handleDelete(list.id)}
+              />
             </TableRow>
           ))}
         </TableBody>

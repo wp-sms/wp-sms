@@ -34,14 +34,12 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { NameCell } from '@/components/ui/name-cell';
+import { ActionsCell } from '@/components/ui/actions-cell';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Plus, MoreHorizontal, Pencil, Copy, Trash2, ClipboardCopy, FileText, ArrowUp, ArrowDown } from 'lucide-react';
+import { Plus, Pencil, Copy, Trash2, ClipboardCopy, FileText, ArrowUp, ArrowDown } from 'lucide-react';
 import { useConfirm } from '@/components/confirm-provider';
 import { useRegistrationForms, type RegistrationFormData, type RegistrationFormField } from '@/hooks/use-registration-forms';
 import { copyToClipboard, generateSlug, getAvailableRoles } from '@/lib/utils';
@@ -260,41 +258,32 @@ export function RegistrationForms() {
                       {form.status}
                     </Badge>
                   </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => openEdit(form)}>
-                          <Pencil className="h-4 w-4 mr-2" />
-                          Edit
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => copyPopupShortcode(form.slug)}>
-                          <ClipboardCopy className="h-4 w-4 mr-2" />
-                          Copy Popup Shortcode
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => copyEmbedShortcode(form.slug)}>
-                          <ClipboardCopy className="h-4 w-4 mr-2" />
-                          Copy Embed Shortcode
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => duplicate(form.id)}>
-                          <Copy className="h-4 w-4 mr-2" />
-                          Duplicate
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem
-                          onClick={() => handleDelete(form.id)}
-                          className="text-destructive focus:text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
+                  <ActionsCell>
+                    <DropdownMenuItem onClick={() => openEdit(form)}>
+                      <Pencil className="h-4 w-4 mr-2" />
+                      Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => copyPopupShortcode(form.slug)}>
+                      <ClipboardCopy className="h-4 w-4 mr-2" />
+                      Copy Popup Shortcode
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => copyEmbedShortcode(form.slug)}>
+                      <ClipboardCopy className="h-4 w-4 mr-2" />
+                      Copy Embed Shortcode
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => duplicate(form.id)}>
+                      <Copy className="h-4 w-4 mr-2" />
+                      Duplicate
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => handleDelete(form.id)}
+                      className="text-destructive focus:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Delete
+                    </DropdownMenuItem>
+                  </ActionsCell>
                 </TableRow>
               ))}
             </TableBody>

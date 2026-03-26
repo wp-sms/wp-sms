@@ -20,12 +20,10 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { NameCell } from '@/components/ui/name-cell';
+import { ActionsCell } from '@/components/ui/actions-cell';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
   Collapsible,
@@ -33,7 +31,7 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 import {
-  Plus, Webhook, Pencil, Trash2, MoreHorizontal, ArrowLeft,
+  Plus, Webhook, Pencil, Trash2, ArrowLeft,
   Check, X, Minus, Loader2, Copy, ChevronDown, RefreshCw, Zap,
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -209,37 +207,28 @@ export function Webhooks() {
                 <TableCell>
                   <HealthIndicator lastTest={wh.last_test} />
                 </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8">
-                        <MoreHorizontal className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => setView({ mode: 'edit', webhook: wh })}>
-                        <Pencil className="h-4 w-4 mr-2" />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => void handleTest(wh.id)}
-                        disabled={testing === wh.id}
-                      >
-                        <Zap className="h-4 w-4 mr-2" />
-                        Test Connection
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem
-                        onClick={() => void handleDelete(wh.id)}
-                        disabled={deleting === wh.id}
-                        className="text-destructive focus:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4 mr-2" />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
+                <ActionsCell>
+                  <DropdownMenuItem onClick={() => setView({ mode: 'edit', webhook: wh })}>
+                    <Pencil className="h-4 w-4 mr-2" />
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => void handleTest(wh.id)}
+                    disabled={testing === wh.id}
+                  >
+                    <Zap className="h-4 w-4 mr-2" />
+                    Test Connection
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => void handleDelete(wh.id)}
+                    disabled={deleting === wh.id}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete
+                  </DropdownMenuItem>
+                </ActionsCell>
               </TableRow>
             ))}
           </TableBody>
