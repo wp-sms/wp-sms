@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Plus, Search, Users, Pencil, Trash2, Eye, Upload, Download } from 'lucide-react';
 import { CONTACT_STATUSES, formatLabel } from '@/lib/constants';
-import { SourceLabel } from './source-label';
+import { TagChips } from './tag-chips';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
 
@@ -162,7 +162,7 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead>Source</TableHead>
+              <TableHead>Tags</TableHead>
               <TableHead className="w-[70px]" />
             </TableRow>
           </TableHeader>
@@ -185,8 +185,10 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
                     {formatLabel(contact.status)}
                   </Badge>
                 </TableCell>
-                <TableCell className="text-sm text-muted-foreground">
-                  {contact.source ? <SourceLabel source={contact.source} sourceRef={contact.source_ref} showPrefix={false} /> : '\u2014'}
+                <TableCell className="text-sm">
+                  {contact.tags?.length
+                    ? <TagChips tags={contact.tags} maxItems={2} size="sm" />
+                    : '\u2014'}
                 </TableCell>
                 <ActionsCell>
                   <DropdownMenuItem onClick={() => handleViewDetail(contact.id)}>

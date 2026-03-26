@@ -6,14 +6,18 @@ interface TagChipsProps {
   tags: Tag[];
   onRemove?: (tagId: string) => void;
   size?: 'sm' | 'default';
+  maxItems?: number;
 }
 
-export function TagChips({ tags, onRemove, size = 'default' }: TagChipsProps) {
+export function TagChips({ tags, onRemove, size = 'default', maxItems }: TagChipsProps) {
   if (!tags.length) return null;
 
+  const visible = maxItems != null ? tags.slice(0, maxItems) : tags;
+  const overflow = maxItems != null ? tags.length - maxItems : 0;
+
   return (
-    <div className="flex flex-wrap gap-1">
-      {tags.map((tag) => (
+    <div className="flex flex-wrap items-center gap-1">
+      {visible.map((tag) => (
         <Badge
           key={tag.id}
           variant="outline"
@@ -33,6 +37,9 @@ export function TagChips({ tags, onRemove, size = 'default' }: TagChipsProps) {
           )}
         </Badge>
       ))}
+      {overflow > 0 && (
+        <span className="text-xs text-muted-foreground">+{overflow}</span>
+      )}
     </div>
   );
 }

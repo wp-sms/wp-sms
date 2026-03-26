@@ -41,6 +41,9 @@ interface ContactRepositoryInterface
     /** @return array Tag rows for this contact */
     public function getTags(string $contactId): array;
 
+    /** @return array<string, list<array>> Tag rows keyed by contact ID */
+    public function getTagsForContacts(array $contactIds): array;
+
     public function findByTag(string $tagId, int $limit = 50, int $offset = 0): array;
 
     public function countByTag(string $tagId): int;

@@ -223,6 +223,31 @@ class ContactRepository implements ContactRepositoryInterface
         );
     }
 
+    public function getTagsForContacts(array $contactIds): array
+    {
+        if (empty($contactIds)) {
+            return [];
+        }
+
+        $tagsTable = $this->db->table(Connection::TABLE_TAGS);
+        $pivotTable = $this->db->table(Connection::TABLE_CONTACT_TAG);
+        $ph = self::placeholders($contactIds);
+
+        $rows = $this->db->getResults(
+            "SELECT ct.contact_id, t.id, t.name, t.slug, t.color FROM {$tagsTable} t INNER JOIN {$pivotTable} ct ON t.id = ct.tag_id WHERE ct.contact_id IN ({$ph})",
+            ...$contactIds,
+        );
+
+        $grouped = [];
+        foreach ($rows as $row) {
+            $contactId = $row['contact_id'];
+            unset($row['contact_id']);
+            $grouped[$contactId][] = $row;
+        }
+
+        return $grouped;
+    }
+
     public function findByTag(string $tagId, int $limit = 50, int $offset = 0): array
     {
         $t = $this->db->table(Connection::TABLE_CONTACTS);

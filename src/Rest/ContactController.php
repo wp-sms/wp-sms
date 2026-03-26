@@ -187,6 +187,13 @@ class ContactController extends Controller
                 (int) $request->get_param('offset'),
             );
 
+            $ids = array_column($contacts, 'id');
+            $tagsByContact = $this->contacts->getTagsForContacts($ids);
+            foreach ($contacts as &$contact) {
+                $contact['tags'] = $tagsByContact[$contact['id']] ?? [];
+            }
+            unset($contact);
+
             $total = $this->contacts->count($filters);
 
             return $this->paginated($contacts, $total);
