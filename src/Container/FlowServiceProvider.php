@@ -115,7 +115,9 @@ class FlowServiceProvider implements ServiceProvider
             }
         }, 10, 2);
 
-        // Subscribe active triggers
-        $container->get('flow.runner')->subscribeActiveTriggers();
+        // Subscribe active triggers after all integrations have registered theirs (init:10)
+        add_action('init', function () use ($container) {
+            $container->get('flow.runner')->subscribeActiveTriggers();
+        }, 20);
     }
 }
