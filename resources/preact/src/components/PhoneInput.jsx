@@ -1,6 +1,7 @@
-import { useState, useCallback } from 'preact/hooks';
+import { useState, useCallback, useMemo } from 'preact/hooks';
 import { PhoneInput as LitePhoneInput } from '../adapters/LitePhoneInputAdapter';
 import { authConfig } from '../signals/config';
+import { createGeoIpLookup } from '../../../shared/geo-lookup';
 
 export function PhoneInput({ value = '', onChange, disabled, autoFocus = false, config: configProp }) {
     const [dropdownTarget, setDropdownTarget] = useState(null);
@@ -8,6 +9,16 @@ export function PhoneInput({ value = '', onChange, disabled, autoFocus = false, 
         || authConfig.value?.phone_input
         || window.wsmsMessagingButtonConfig?.phoneInput
         || {};
+
+    const restUrl = config.restUrl
+        || window.wsmsAuth?.restUrl
+        || window.wsmsMessagingButtonConfig?.restUrl;
+
+    // Only use geoIpLookup when the backend couldn't detect country (e.g. cached page)
+    const geoIpLookup = useMemo(
+        () => config.hasGeoCountry ? undefined : createGeoIpLookup(restUrl),
+        [config.hasGeoCountry, restUrl],
+    );
 
     const containerRef = useCallback((node) => {
         if (!node) return;
@@ -38,6 +49,7 @@ export function PhoneInput({ value = '', onChange, disabled, autoFocus = false, 
                     nationalMode={config.nationalMode ?? false}
                     allowDropdown={config.allowDropdown ?? true}
                     dropdownContainer={dropdownTarget}
+                    geoIpLookup={geoIpLookup}
                 />
             )}
         </div>

@@ -105,6 +105,118 @@ class RestrictionSettingsTest extends TestCase
         $this->assertSame('allow', $this->settings->getMode('messaging'));
     }
 
+    // --- Phone Input Display Config: Geo Detection ---
+
+    public function test_phone_input_defaults_to_us_without_geo_header(): void
+    {
+        $config = $this->settings->getPhoneInputDisplayConfig();
+
+        $this->assertSame('US', $config['defaultCountry']);
+        $this->assertFalse($config['hasGeoCountry']);
+    }
+
+    public function test_phone_input_uses_geo_header_when_no_admin_default(): void
+    {
+        $_SERVER['HTTP_CF_IPCOUNTRY'] = 'DE';
+
+        $config = $this->settings->getPhoneInputDisplayConfig();
+
+        $this->assertSame('DE', $config['defaultCountry']);
+        $this->assertTrue($config['hasGeoCountry']);
+
+        unset($_SERVER['HTTP_CF_IPCOUNTRY']);
+    }
+
+    public function test_phone_input_admin_setting_overrides_geo_header(): void
+    {
+        $_SERVER['HTTP_CF_IPCOUNTRY'] = 'DE';
+
+        $this->settings->save([
+            'phone_input' => ['default_country' => 'FR'],
+        ]);
+
+        $config = $this->settings->getPhoneInputDisplayConfig();
+
+        $this->assertSame('FR', $config['defaultCountry']);
+        $this->assertTrue($config['hasGeoCountry']);
+
+        unset($_SERVER['HTTP_CF_IPCOUNTRY']);
+    }
+
+    public function test_phone_input_geo_country_respects_allowed_list(): void
+    {
+        $_SERVER['HTTP_CF_IPCOUNTRY'] = 'DE';
+
+        $this->settings->save([
+            'auth' => ['enabled' => true, 'mode' => 'allow', 'allowed_countries' => ['US', 'CA']],
+        ]);
+
+        $config = $this->settings->getPhoneInputDisplayConfig('auth');
+
+        // DE not in allowed list → falls back to first allowed country
+        $this->assertSame('US', $config['defaultCountry']);
+        $this->assertTrue($config['hasGeoCountry']);
+
+        unset($_SERVER['HTTP_CF_IPCOUNTRY']);
+    }
+
+    public function test_phone_input_geo_country_works_when_in_allowed_list(): void
+    {
+        $_SERVER['HTTP_CF_IPCOUNTRY'] = 'CA';
+
+        $this->settings->save([
+            'auth' => ['enabled' => true, 'mode' => 'allow', 'allowed_countries' => ['US', 'CA']],
+        ]);
+
+        $config = $this->settings->getPhoneInputDisplayConfig('auth');
+
+        $this->assertSame('CA', $config['defaultCountry']);
+
+        unset($_SERVER['HTTP_CF_IPCOUNTRY']);
+    }
+
+    public function test_phone_input_geo_country_excluded_falls_back(): void
+    {
+        $_SERVER['HTTP_CF_IPCOUNTRY'] = 'RU';
+
+        $this->settings->save([
+            'auth' => ['enabled' => true, 'mode' => 'block', 'allowed_countries' => ['RU']],
+        ]);
+
+        $config = $this->settings->getPhoneInputDisplayConfig('auth');
+
+        // RU is in excluded list → falls back to US
+        $this->assertSame('US', $config['defaultCountry']);
+
+        unset($_SERVER['HTTP_CF_IPCOUNTRY']);
+    }
+
+    public function test_phone_input_tor_header_falls_back_to_us(): void
+    {
+        $_SERVER['HTTP_CF_IPCOUNTRY'] = 'T1';
+
+        $config = $this->settings->getPhoneInputDisplayConfig();
+
+        $this->assertSame('US', $config['defaultCountry']);
+        $this->assertFalse($config['hasGeoCountry']);
+
+        unset($_SERVER['HTTP_CF_IPCOUNTRY']);
+    }
+
+    public function test_phone_input_cloudfront_header_detected(): void
+    {
+        $_SERVER['HTTP_CLOUDFRONT_VIEWER_COUNTRY'] = 'JP';
+
+        $config = $this->settings->getPhoneInputDisplayConfig();
+
+        $this->assertSame('JP', $config['defaultCountry']);
+        $this->assertTrue($config['hasGeoCountry']);
+
+        unset($_SERVER['HTTP_CLOUDFRONT_VIEWER_COUNTRY']);
+    }
+
+    // --- Existing tests ---
+
     public function test_mode_defaults_to_allow_for_existing_installations(): void
     {
         // Simulate existing installation that saved settings without mode

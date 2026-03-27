@@ -2,6 +2,8 @@
 
 namespace WSms\PhoneRestriction;
 
+use WSms\Support\GeoCountryResolver;
+
 defined('ABSPATH') || exit;
 
 class RestrictionSettings
@@ -98,7 +100,8 @@ class RestrictionSettings
         $all = $this->all();
         $pi  = $all['phone_input'];
 
-        $defaultCountry     = $pi['default_country'] ?: 'US';
+        $geoCountry         = GeoCountryResolver::resolve();
+        $defaultCountry     = $pi['default_country'] ?: $geoCountry ?: 'US';
         $preferredCountries = $pi['preferred_countries'];
         $allowedCountries   = null;
         $excludedCountries  = null;
@@ -146,6 +149,7 @@ class RestrictionSettings
             'separateDialCode'   => $displayMode === 'separate_dial_code',
             'nationalMode'       => $displayMode === 'national',
             'allowDropdown'      => $displayMode !== 'national',
+            'hasGeoCountry'      => $geoCountry !== null,
         ];
 
         if ($allowedCountries !== null && !empty($allowedCountries)) {

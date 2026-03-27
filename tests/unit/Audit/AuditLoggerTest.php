@@ -153,6 +153,41 @@ class AuditLoggerTest extends TestCase
         $data = $this->wpdb->inserts[0]['data'];
         $this->assertArrayNotHasKey('meta', $data);
         $this->assertArrayNotHasKey('ip_address', $data);
+        $this->assertArrayNotHasKey('geo_country', $data);
+    }
+
+    public function testGeoCountryStoredWhenHeaderPresent(): void
+    {
+        $_SERVER['HTTP_CF_IPCOUNTRY'] = 'DE';
+
+        $this->logger->log(EventType::LoginSuccess, 'success', 1);
+
+        $data = $this->wpdb->inserts[0]['data'];
+        $this->assertSame('DE', $data['geo_country']);
+
+        unset($_SERVER['HTTP_CF_IPCOUNTRY']);
+    }
+
+    public function testGeoCountryNullWhenNoHeader(): void
+    {
+        unset($_SERVER['HTTP_CF_IPCOUNTRY']);
+
+        $this->logger->log(EventType::LoginSuccess, 'success', 1);
+
+        $data = $this->wpdb->inserts[0]['data'];
+        $this->assertNull($data['geo_country']);
+    }
+
+    public function testGeoCountryPreservesTorMarker(): void
+    {
+        $_SERVER['HTTP_CF_IPCOUNTRY'] = 'T1';
+
+        $this->logger->log(EventType::LoginSuccess, 'success', 1);
+
+        $data = $this->wpdb->inserts[0]['data'];
+        $this->assertSame('T1', $data['geo_country']);
+
+        unset($_SERVER['HTTP_CF_IPCOUNTRY']);
     }
 
     public function testDateRangeFiltering(): void

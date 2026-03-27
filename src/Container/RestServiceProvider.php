@@ -32,6 +32,7 @@ use WSms\Rest\TemplateCatalogController;
 use WSms\Rest\TemplateController;
 use WSms\Rest\BrandingController;
 use WSms\Rest\OutboundWebhookController;
+use WSms\Rest\GeoController;
 use WSms\Rest\SystemHealthController;
 use WSms\Rest\WebhookReceiverController;
 use WSms\System\SystemHealthService;
@@ -232,6 +233,7 @@ class RestServiceProvider implements ServiceProvider
             $c->get('subscription_form.handler'),
             $c->get('auth.rate_limiter'),
         ));
+        $container->register('rest.geo', fn() => new GeoController());
         $container->register('system.health', fn($c) => new SystemHealthService($c->get(Connection::class)));
         $container->register('rest.system_health', fn($c) => new SystemHealthController($c->get('system.health')));
     }
@@ -270,6 +272,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.branding')->registerRoutes();
             $container->get('rest.templates')->registerRoutes();
             $container->get('rest.template_catalog')->registerRoutes();
+            $container->get('rest.geo')->registerRoutes();
             $container->get('rest.system_health')->registerRoutes();
         });
     }

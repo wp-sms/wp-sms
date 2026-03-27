@@ -7,6 +7,7 @@ use WSms\Enums\EventType;
 use WSms\Enums\LogVerbosity;
 use WSms\Event\Contracts\EventDispatcherInterface;
 use WSms\Event\Events\AuthEvent;
+use WSms\Support\GeoCountryResolver;
 use WSms\Support\IpResolver;
 
 defined('ABSPATH') || exit;
@@ -53,8 +54,9 @@ class AuditLogger
         }
 
         if ($verbosity !== LogVerbosity::Minimal) {
-            $data['ip_address'] = $this->getIpAddress();
-            $data['user_agent'] = isset($_SERVER['HTTP_USER_AGENT'])
+            $data['ip_address']  = $this->getIpAddress();
+            $data['geo_country'] = GeoCountryResolver::resolveRaw();
+            $data['user_agent']  = isset($_SERVER['HTTP_USER_AGENT'])
                 ? substr(sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])), 0, 500)
                 : null;
         }

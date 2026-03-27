@@ -108,6 +108,7 @@ class Migrator
             channel_id      VARCHAR(50),
             status          VARCHAR(20) NOT NULL,
             ip_address      VARCHAR(45),
+            geo_country     CHAR(2),
             user_agent      VARCHAR(500),
             meta            TEXT,
             created_at      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

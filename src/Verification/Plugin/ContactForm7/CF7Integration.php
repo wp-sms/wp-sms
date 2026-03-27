@@ -344,8 +344,11 @@ class CF7Integration extends FormVerification
         wp_enqueue_style('wsms-cf7-phone', $baseUrl . 'public/js/cf7-phone.css', ['wsms-vendor'], $version);
         wp_enqueue_script('wsms-cf7-phone', $baseUrl . 'public/js/cf7-phone.js', ['wsms-vendor'], $version, true);
 
+        $cf7Config = $this->restrictionSettings->getPhoneInputDisplayConfig();
+        $cf7Config['restUrl'] = rest_url('wsms/v1/');
+
         wp_add_inline_script('wsms-cf7-phone',
-            'window.wsmsCf7PhoneConfig=' . wp_json_encode($this->restrictionSettings->getPhoneInputDisplayConfig()) . ';',
+            'window.wsmsCf7PhoneConfig=' . wp_json_encode($cf7Config) . ';',
             'before',
         );
     }

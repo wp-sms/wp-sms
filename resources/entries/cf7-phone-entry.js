@@ -1,4 +1,5 @@
 const { PhoneInput } = window.WsmsVendor.LitePhoneInput;
+import { createGeoIpLookup } from '../shared/geo-lookup';
 import './cf7-phone.css';
 
 function destroyPhoneInputs(root) {
@@ -11,14 +12,15 @@ function destroyPhoneInputs(root) {
 }
 
 function initPhoneInputs(root = document) {
+  const config = window.wsmsCf7PhoneConfig || {};
+  const geoIpLookup = config.hasGeoCountry ? undefined : createGeoIpLookup(config.restUrl);
+
   root.querySelectorAll('.wsms-phone-container').forEach((container) => {
     if (container._wsmsPhone) return;
 
     const wrap = container.closest('.wsms-phone-wrap');
     const fieldName = container.dataset.wsmsField;
     if (!wrap || !fieldName) return;
-
-    const config = window.wsmsCf7PhoneConfig || {};
 
     const inputAttrs = {};
     if (container.dataset.wsmsRequired === '1') inputAttrs['aria-required'] = 'true';
@@ -37,6 +39,7 @@ function initPhoneInputs(root = document) {
       placeholder: container.dataset.wsmsPlaceholder || 'auto',
       initialValue: container.dataset.wsmsInitial || '',
       inputAttributes: inputAttrs,
+      geoIpLookup,
     });
 
     container._wsmsPhone = instance;

@@ -117,7 +117,9 @@ class SubscriptionFormRenderer
             $config['primaryColor'] = sanitize_hex_color($primaryColor);
         }
 
-        $config['phoneInput'] = $this->restrictionSettings->getPhoneInputDisplayConfig();
+        $phoneInputConfig = $this->restrictionSettings->getPhoneInputDisplayConfig();
+        $phoneInputConfig['restUrl'] = rest_url('wsms/v1/');
+        $config['phoneInput'] = $phoneInputConfig;
 
         wp_add_inline_script(
             'wsms-subscription-form',
