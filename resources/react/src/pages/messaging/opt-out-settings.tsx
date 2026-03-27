@@ -237,7 +237,7 @@ function AutoReplySection({ label, description, enabled, text, onToggle, onTextC
   return (
     <div className="space-y-3">
       <Field orientation="horizontal">
-        <div>
+        <div className="flex-1">
           <FieldLabel>{label}</FieldLabel>
           <FieldDescription>{description}</FieldDescription>
         </div>

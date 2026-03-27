@@ -265,7 +265,7 @@ function SwitchField({
 }) {
   return (
     <Field orientation="horizontal" className={className}>
-      <div>
+      <div className="flex-1">
         <FieldLabel htmlFor={id}>{label}</FieldLabel>
         {hint && <FieldHint>{hint}</FieldHint>}
         {description && <FieldDescription>{description}</FieldDescription>}
