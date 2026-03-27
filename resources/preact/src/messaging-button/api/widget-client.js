@@ -1,10 +1,11 @@
-async function request(method, endpoint, body) {
+async function request(method, endpoint, body, extraHeaders = {}) {
     const { restUrl, nonce } = window.wsmsMessagingButtonConfig || {};
 
     const opts = {
         method,
         headers: {
             'Content-Type': 'application/json',
+            ...extraHeaders,
         },
         credentials: 'same-origin',
     };
@@ -27,6 +28,6 @@ async function request(method, endpoint, body) {
     return data;
 }
 
-export function submitMessage(data) {
-    return request('POST', 'messaging-button/message', data);
+export function submitMessage(data, extraHeaders = {}) {
+    return request('POST', 'messaging-button/message', data, extraHeaders);
 }

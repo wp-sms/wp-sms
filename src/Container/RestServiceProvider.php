@@ -220,6 +220,7 @@ class RestServiceProvider implements ServiceProvider
             $c->get('messaging_button.handler'),
             $c->get('gateway.registry'),
             $c->get('auth.rate_limiter'),
+            $c->get('auth.captcha_guard'),
         ));
         $container->register('rest.subscription_forms', fn($c) => new SubscriptionFormController(
             $c->get('subscription_form.repository'),
@@ -232,6 +233,7 @@ class RestServiceProvider implements ServiceProvider
             $c->get('subscription_form.repository'),
             $c->get('subscription_form.handler'),
             $c->get('auth.rate_limiter'),
+            $c->get('auth.captcha_guard'),
         ));
         $container->register('rest.geo', fn() => new GeoController());
         $container->register('system.health', fn($c) => new SystemHealthService($c->get(Connection::class)));

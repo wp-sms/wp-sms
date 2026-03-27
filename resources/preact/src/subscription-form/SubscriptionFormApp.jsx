@@ -1,6 +1,8 @@
 import { useState, useCallback, useRef } from 'preact/hooks';
+import { CaptchaWidget } from '../components/CaptchaWidget';
 import { OtpInput } from '../components/OtpInput';
 import { PhoneInput } from '../components/PhoneInput';
+import { useFormCaptcha } from '../hooks/useFormCaptcha';
 import { useResendCooldown } from '../hooks/useResendCooldown';
 
 const STATE = { FORM: 'form', SUBMITTING: 'submitting', VERIFY: 'verify', SUCCESS: 'success' };
@@ -28,16 +30,18 @@ export function SubscriptionFormApp({ config }) {
     const [verifying, setVerifying] = useState(false);
     const [cooldown, resetCooldown] = useResendCooldown(0);
 
-    const { fields, buttonText, successMessage, redirectUrl, restUrl, nonce } = config;
+    const { fields, buttonText, successMessage, redirectUrl, restUrl, nonce, captcha } = config;
     const slug = config.slug;
     const submittingRef = useRef(false);
+    const cap = useFormCaptcha(captcha, 'subscribe');
 
-    const apiCall = useCallback(async (endpoint, body) => {
+    const apiCall = useCallback(async (endpoint, body, extraHeaders = {}) => {
         const res = await fetch(`${restUrl}subscribe/${slug}${endpoint}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-WP-Nonce': nonce,
+                ...extraHeaders,
             },
             body: JSON.stringify(body),
         });
@@ -58,9 +62,12 @@ export function SubscriptionFormApp({ config }) {
         }
 
         try {
-            const result = await apiCall('', data);
+            const result = await apiCall('', data, cap.getHeaders());
 
             if (!result.success) {
+                if (result.error === 'captcha_failed') {
+                    cap.reset();
+                }
                 setError(result.message || 'Submission failed.');
                 setState(STATE.FORM);
                 return;
@@ -84,7 +91,7 @@ export function SubscriptionFormApp({ config }) {
         } finally {
             submittingRef.current = false;
         }
-    }, [values, apiCall, redirectUrl, resetCooldown]);
+    }, [values, apiCall, redirectUrl, resetCooldown, cap]);
 
     const handleVerify = useCallback(async (code) => {
         setError(null);
@@ -207,7 +214,16 @@ export function SubscriptionFormApp({ config }) {
                     <input type="text" name="_hp" tabIndex={-1} autoComplete="off" />
                 </div>
 
-                <button type="submit" class="wsms-sub-form__btn" disabled={isSubmitting}>
+                {cap.enabled && (
+                    <CaptchaWidget
+                        provider={cap.provider}
+                        siteKey={cap.siteKey}
+                        onVerify={cap.setToken}
+                        resetRef={cap.resetRef}
+                    />
+                )}
+
+                <button type="submit" class="wsms-sub-form__btn" disabled={isSubmitting || (cap.enabled && !cap.token)}>
                     {isSubmitting && <span class="wsms-sub-form__spinner" />}
                     {buttonText || 'Subscribe'}
                 </button>

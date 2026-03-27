@@ -217,6 +217,54 @@ class CaptchaGuardTest extends TestCase
         $this->assertNull($result);
     }
 
+    // --- New actions: subscribe & messaging_button ---
+
+    public function testVerifiesSubscribeAction(): void
+    {
+        $this->enableCaptcha(['protected_actions' => ['subscribe']]);
+        $this->mockProvider->method('verify')->willReturn(true);
+
+        $result = $this->guard->verify($this->makeRequest('token'), 'subscribe');
+
+        $this->assertTrue($result);
+    }
+
+    public function testBlocksSubscribeWithoutToken(): void
+    {
+        $this->enableCaptcha(['protected_actions' => ['subscribe']]);
+
+        $result = $this->guard->verify($this->makeRequest(), 'subscribe');
+
+        $this->assertFalse($result);
+    }
+
+    public function testVerifiesMessagingButtonAction(): void
+    {
+        $this->enableCaptcha(['protected_actions' => ['messaging_button']]);
+        $this->mockProvider->method('verify')->willReturn(true);
+
+        $result = $this->guard->verify($this->makeRequest('token'), 'messaging_button');
+
+        $this->assertTrue($result);
+    }
+
+    public function testBlocksMessagingButtonWithoutToken(): void
+    {
+        $this->enableCaptcha(['protected_actions' => ['messaging_button']]);
+
+        $result = $this->guard->verify($this->makeRequest(), 'messaging_button');
+
+        $this->assertFalse($result);
+    }
+
+    public function testDefaultProtectedActionsIncludeNewActions(): void
+    {
+        $defaults = \WSms\Auth\SettingsRepository::CHANNEL_DEFAULTS['captcha']['protected_actions'];
+
+        $this->assertContains('subscribe', $defaults);
+        $this->assertContains('messaging_button', $defaults);
+    }
+
     // --- getPublicConfig ---
 
     public function testGetPublicConfigWhenDisabled(): void

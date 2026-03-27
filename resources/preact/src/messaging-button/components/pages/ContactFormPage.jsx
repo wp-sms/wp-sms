@@ -1,5 +1,7 @@
 import { useState } from 'preact/hooks';
 import { submitMessage } from '../../api/widget-client';
+import { CaptchaWidget } from '../../../components/CaptchaWidget';
+import { useFormCaptcha } from '../../../hooks/useFormCaptcha';
 import { CheckCircleIcon, AlertCircleIcon } from '../icons';
 import { PhoneInput } from '../../../components/PhoneInput';
 
@@ -15,6 +17,8 @@ export function ContactFormPage({ config, gdpr, onClose }) {
     const [gdprConsent, setGdprConsent] = useState(false);
     const [status, setStatus] = useState('idle'); // idle | sending | sent | error
     const [errorMsg, setErrorMsg] = useState('');
+
+    const cap = useFormCaptcha(window.wsmsMessagingButtonConfig?.captcha, 'messaging_button');
 
     const currentUser = window.wsmsMessagingButtonConfig?.currentUser;
 
@@ -49,9 +53,12 @@ export function ContactFormPage({ config, gdpr, onClose }) {
                 ...payload,
                 page_url: window.location.href,
                 gdpr_consent: gdpr.enabled ? gdprConsent : true,
-            });
+            }, cap.getHeaders());
             setStatus('sent');
         } catch (err) {
+            if (err?.error === 'captcha_failed') {
+                cap.reset();
+            }
             setStatus('error');
             setErrorMsg(err?.error || err?.message || 'Failed to send message. Please try again.');
         }
@@ -148,6 +155,15 @@ export function ContactFormPage({ config, gdpr, onClose }) {
                     </div>
                 )}
 
+                {cap.enabled && (
+                    <CaptchaWidget
+                        provider={cap.provider}
+                        siteKey={cap.siteKey}
+                        onVerify={cap.setToken}
+                        resetRef={cap.resetRef}
+                    />
+                )}
+
                 {errorMsg && (
                     <div class="wsms-mb-form__error" role="alert">
                         <AlertCircleIcon size={16} class="wsms-mb-form__error-icon" />
@@ -158,7 +174,7 @@ export function ContactFormPage({ config, gdpr, onClose }) {
                 <button
                     type="submit"
                     class="wsms-mb-btn wsms-mb-btn--primary"
-                    disabled={status === 'sending' || (gdpr.enabled && !gdprConsent)}
+                    disabled={status === 'sending' || (gdpr.enabled && !gdprConsent) || (cap.enabled && !cap.token)}
                     aria-busy={status === 'sending'}
                 >
                     {status === 'sending' ? (

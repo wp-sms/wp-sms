@@ -83,7 +83,7 @@ export interface PasskeySettings {
 }
 
 export type CaptchaProvider = 'turnstile' | 'recaptcha' | 'hcaptcha';
-export type CaptchaAction = 'login' | 'register' | 'forgot_password' | 'identify';
+export type CaptchaAction = 'login' | 'register' | 'forgot_password' | 'identify' | 'subscribe' | 'messaging_button';
 
 export interface CaptchaSettings {
   enabled?: boolean;

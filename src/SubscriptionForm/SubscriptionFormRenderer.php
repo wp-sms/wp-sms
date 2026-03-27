@@ -2,19 +2,24 @@
 
 namespace WSms\SubscriptionForm;
 
+use WSms\Auth\CaptchaGuard;
 use WSms\Branding\BrandingRepository;
 use WSms\PhoneRestriction\RegistersVendorAsset;
 use WSms\PhoneRestriction\RestrictionSettings;
+use WSms\Support\EnqueuesCaptchaScript;
 
 defined('ABSPATH') || exit;
 
 class SubscriptionFormRenderer
 {
     use RegistersVendorAsset;
+    use EnqueuesCaptchaScript;
+
     public function __construct(
         private readonly SubscriptionFormRepository $formRepository,
         private readonly RestrictionSettings $restrictionSettings,
         private readonly BrandingRepository $brandingRepo,
+        private readonly CaptchaGuard $captchaGuard,
     ) {
     }
 
@@ -120,6 +125,12 @@ class SubscriptionFormRenderer
         $phoneInputConfig = $this->restrictionSettings->getPhoneInputDisplayConfig();
         $phoneInputConfig['restUrl'] = rest_url('wsms/v1/');
         $config['phoneInput'] = $phoneInputConfig;
+
+        $captchaConfig = $this->captchaGuard->getPublicConfig();
+        if ($captchaConfig) {
+            $config['captcha'] = $captchaConfig;
+            $this->enqueueCaptchaScript($this->captchaGuard);
+        }
 
         wp_add_inline_script(
             'wsms-subscription-form',

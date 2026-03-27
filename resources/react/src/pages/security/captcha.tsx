@@ -26,6 +26,8 @@ const ACTIONS: { id: CaptchaAction; label: string; description: string }[] = [
   { id: 'register', label: 'Registration', description: 'New account creation' },
   { id: 'forgot_password', label: 'Forgot Password', description: 'Password reset requests' },
   { id: 'identify', label: 'Identify', description: 'User lookup (not recommended — may break auto-login for returning users)' },
+  { id: 'subscribe', label: 'Subscription Forms', description: 'Newsletter form submissions' },
+  { id: 'messaging_button', label: 'Messaging Button', description: 'Contact messages from the messaging widget' },
 ];
 
 export function Captcha({ settings, onUpdate }: CaptchaPageProps) {

@@ -2,6 +2,7 @@
 
 namespace WSms\Rest;
 
+use WSms\Auth\CaptchaGuard;
 use WSms\Auth\RateLimiter;
 use WSms\Exception\ValidationException;
 use WSms\MessagingButton\MessageHandler;
@@ -18,6 +19,7 @@ class MessagingButtonController extends Controller
         private readonly MessageHandler $messageHandler,
         private readonly GatewayRegistry $gatewayRegistry,
         private readonly RateLimiter $rateLimiter,
+        private readonly CaptchaGuard $captchaGuard,
     ) {
     }
 
@@ -71,6 +73,11 @@ class MessagingButtonController extends Controller
                     'error' => __('Too many messages. Please try again later.', 'wp-sms'),
                     'retry_after' => $rateCheck['retry_after'],
                 ], 429);
+            }
+
+            $captcha = $this->captchaGuard->verify($request, 'messaging_button');
+            if ($captcha === false) {
+                return CaptchaGuard::failedResponse();
             }
 
             if (!$this->settings->isEnabled()) {

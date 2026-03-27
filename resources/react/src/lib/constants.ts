@@ -200,7 +200,7 @@ export const DEFAULTS: Required<AuthSettings> = {
     provider: 'turnstile',
     site_key: '',
     secret_key: '',
-    protected_actions: ['login', 'register', 'forgot_password'],
+    protected_actions: ['login', 'register', 'forgot_password', 'subscribe', 'messaging_button'],
     fail_open: false,
   },
   woocommerce: {

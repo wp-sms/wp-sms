@@ -2,6 +2,7 @@
 
 namespace WSms\Rest;
 
+use WSms\Auth\CaptchaGuard;
 use WSms\Auth\RateLimiter;
 use WSms\Exception\NotFoundException;
 use WSms\SubscriptionForm\SubscriptionForm;
@@ -16,6 +17,7 @@ class SubscriptionFormPublicController extends Controller
         private readonly SubscriptionFormRepository $formRepository,
         private readonly SubscriptionHandler $handler,
         private readonly RateLimiter $rateLimiter,
+        private readonly CaptchaGuard $captchaGuard,
     ) {
     }
 
@@ -60,6 +62,11 @@ class SubscriptionFormPublicController extends Controller
                     'message'     => __('Too many submissions. Please try again later.', 'wp-sms'),
                     'retry_after' => $rateCheck['retry_after'],
                 ], 429);
+            }
+
+            $captcha = $this->captchaGuard->verify($request, 'subscribe');
+            if ($captcha === false) {
+                return CaptchaGuard::failedResponse();
             }
 
             $form = $this->resolveActiveForm($request);

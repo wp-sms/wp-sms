@@ -4,6 +4,7 @@ namespace WSms\Auth;
 
 use WSms\Branding\BrandingRepository;
 use WSms\PhoneRestriction\RegistersVendorAsset;
+use WSms\Support\EnqueuesCaptchaScript;
 use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
@@ -11,6 +12,8 @@ defined('ABSPATH') || exit;
 class AuthRouter
 {
     use RegistersVendorAsset;
+    use EnqueuesCaptchaScript;
+
     private ?CaptchaGuard $captchaGuard = null;
 
     public function __construct(
@@ -163,25 +166,8 @@ class AuthRouter
         }
 
         // Enqueue CAPTCHA provider script if enabled.
-        $this->enqueueCaptchaScript();
-    }
-
-    private function enqueueCaptchaScript(): void
-    {
-        if (!$this->captchaGuard) {
-            return;
-        }
-
-        $scriptUrl = $this->captchaGuard->getScriptUrl();
-
-        if ($scriptUrl) {
-            wp_enqueue_script(
-                'wsms-captcha-provider',
-                $scriptUrl,
-                [],
-                null,
-                true,
-            );
+        if ($this->captchaGuard) {
+            $this->enqueueCaptchaScript($this->captchaGuard);
         }
     }
 

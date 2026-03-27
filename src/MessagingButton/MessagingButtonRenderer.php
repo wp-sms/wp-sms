@@ -2,9 +2,11 @@
 
 namespace WSms\MessagingButton;
 
+use WSms\Auth\CaptchaGuard;
 use WSms\Branding\BrandingRepository;
 use WSms\PhoneRestriction\RegistersVendorAsset;
 use WSms\PhoneRestriction\RestrictionSettings;
+use WSms\Support\EnqueuesCaptchaScript;
 use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
@@ -12,11 +14,14 @@ defined('ABSPATH') || exit;
 class MessagingButtonRenderer
 {
     use RegistersVendorAsset;
+    use EnqueuesCaptchaScript;
+
     public function __construct(
         private readonly MessagingButtonSettings $settings,
         private readonly DisplayRuleEvaluator $displayRules,
         private readonly RestrictionSettings $restrictionSettings,
         private readonly BrandingRepository $brandingRepo,
+        private readonly CaptchaGuard $captchaGuard,
     ) {
     }
 
@@ -68,6 +73,12 @@ class MessagingButtonRenderer
         ];
 
         $scriptData['phoneInput'] = $this->restrictionSettings->getPhoneInputDisplayConfig('messaging');
+
+        $captchaConfig = $this->captchaGuard->getPublicConfig();
+        if ($captchaConfig) {
+            $scriptData['captcha'] = $captchaConfig;
+            $this->enqueueCaptchaScript($this->captchaGuard);
+        }
 
         if (is_user_logged_in()) {
             $user = wp_get_current_user();
