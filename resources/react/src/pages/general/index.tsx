@@ -10,14 +10,15 @@ import type { AuthSettings, SitePhoneChannel } from '@/lib/api';
 interface GeneralPageProps {
   settings: Required<AuthSettings>;
   onUpdate: <K extends keyof AuthSettings>(key: K, value: AuthSettings[K]) => void;
+  embedded?: boolean;
 }
 
-export function GeneralPage({ settings, onUpdate }: GeneralPageProps) {
+export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) {
   const isTelegram = settings.site_phone_channel === 'telegram';
 
   return (
     <div className="space-y-4">
-      <PageHeader icon={SlidersHorizontal} title="General" />
+      {!embedded && <PageHeader icon={SlidersHorizontal} title="General" />}
       <PageSection
         icon={Globe}
         title="Auth Pages"

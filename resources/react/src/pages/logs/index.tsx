@@ -17,7 +17,7 @@ import { useLogs } from '@/hooks/use-logs';
 import { EVENT_TYPES, formatLabel } from '@/lib/constants';
 import { pluralize } from '@/lib/utils';
 
-export function LogsPage() {
+export function LogsPage({ embedded }: { embedded?: boolean }) {
   const { logs, total, page, perPage, filters, setFilter, setPage, loading, clearLogs } = useLogs();
   const confirm = useConfirm();
   const [clearing, setClearing] = useState(false);
@@ -38,27 +38,35 @@ export function LogsPage() {
     }
   };
 
+  const clearButton = total > 0 ? (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={handleClearLogs}
+      disabled={clearing}
+      className="text-destructive hover:text-destructive"
+    >
+      <Trash2 className="mr-1 h-3.5 w-3.5" />
+      {clearing ? 'Clearing...' : 'Clear Logs'}
+    </Button>
+  ) : undefined;
+
   return (
     <div className="space-y-4">
-      <PageHeader
-        icon={ScrollText}
-        title="Logs"
-        metadata={!loading ? pluralize(total, 'event') : undefined}
-        actions={
-          total > 0 ? (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleClearLogs}
-              disabled={clearing}
-              className="text-destructive hover:text-destructive"
-            >
-              <Trash2 className="mr-1 h-3.5 w-3.5" />
-              {clearing ? 'Clearing...' : 'Clear Logs'}
-            </Button>
-          ) : undefined
-        }
-      />
+      {!embedded && (
+        <PageHeader
+          icon={ScrollText}
+          title="Logs"
+          metadata={!loading ? pluralize(total, 'event') : undefined}
+          actions={clearButton}
+        />
+      )}
+      {embedded && clearButton && (
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-muted-foreground">{pluralize(total, 'event')}</span>
+          {clearButton}
+        </div>
+      )}
       <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <Field>
           <FieldLabel htmlFor="filter-event">Event Type</FieldLabel>

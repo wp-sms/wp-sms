@@ -2,8 +2,7 @@ import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
-import { Smartphone, Mail, Timer } from 'lucide-react';
-import { PageHeader } from '@/components/layout/page-header';
+import { Smartphone, Mail } from 'lucide-react';
 import type { AuthSettings } from '@/lib/api';
 
 interface RateLimitingProps {
@@ -71,7 +70,6 @@ function RateLimitCard({ title, description, icon: Icon, attemptsId, cooldownId,
 export function RateLimiting({ settings, onUpdate }: RateLimitingProps) {
   return (
     <div className="space-y-4">
-      <PageHeader icon={Timer} title="Rate Limiting" />
       <RateLimitCard
         title="Phone Channel Limits"
         description="Limit the number of phone verification attempts"

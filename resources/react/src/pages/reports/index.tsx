@@ -15,12 +15,12 @@ const RANGES = [
   { value: '90', label: '90 days' },
 ];
 
-export function ReportsPage() {
+export function ReportsPage({ embedded }: { embedded?: boolean }) {
   const { data, loading, error, range, setRange } = useReports();
 
   return (
     <div className="space-y-4">
-      <PageHeader icon={BarChart3} title="Reports" />
+      {!embedded && <PageHeader icon={BarChart3} title="Reports" />}
       <Tabs value={String(range)} onValueChange={(v) => setRange(Number(v))}>
         <TabsList>
           {RANGES.map((r) => (

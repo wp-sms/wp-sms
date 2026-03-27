@@ -40,19 +40,10 @@ class AdminManager
 
         add_submenu_page(
             self::MENU_SLUG,
-            __('Auth', 'wp-sms'),
-            __('Auth', 'wp-sms'),
+            __('Dashboard', 'wp-sms'),
+            __('Dashboard', 'wp-sms'),
             'manage_options',
             self::MENU_SLUG,
-            [$this, 'renderArea'],
-        );
-
-        add_submenu_page(
-            self::MENU_SLUG,
-            __('Messaging', 'wp-sms'),
-            __('Messaging', 'wp-sms'),
-            'manage_options',
-            'wsms-messaging',
             [$this, 'renderArea'],
         );
 

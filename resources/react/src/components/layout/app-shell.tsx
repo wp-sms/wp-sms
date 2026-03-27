@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { Shield, LogIn, Paintbrush, ScrollText, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Blocks, Settings2, MessageSquare, SlidersHorizontal, ClipboardList, Webhook, Bell, Sparkles, Activity } from 'lucide-react';
+import { Shield, LogIn, Paintbrush, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Settings2, MessageSquare, ClipboardList, Webhook, Bell, Sparkles, Contact, FileText, type LucideIcon } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { SaveBar } from '@/components/layout/save-bar';
 import {
@@ -32,152 +32,107 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { AREA_LABELS } from '@/lib/constants';
-import type { Area } from '@/lib/area-nav';
 
 const SIDEBAR_DEFAULT_OPEN = (() => {
   const match = document.cookie.match(/(?:^|;\s*)sidebar_state=([^;]*)/);
   return match ? match[1] === 'true' : true;
 })();
 
-type NavItemList = readonly (typeof NAV_ITEMS)[number][];
+// --- Navigation types ---
 
-interface AppShellProps {
-  activeSection: string;
-  onNavigate: (section: string) => void;
-  version: string;
-  area: Area;
-  children: ReactNode;
-  navItems: NavItemList;
+export interface NavChild {
+  id: string;
+  label: string;
 }
 
-export const NAV_ITEMS = [
+export interface NavItem {
+  id: string;
+  label: string;
+  icon: LucideIcon;
+  children?: readonly NavChild[];
+}
+
+export interface NavSection {
+  label: string;
+  items: readonly NavItem[];
+}
+
+// --- Navigation structure ---
+
+export const NAV_SECTIONS: readonly NavSection[] = [
   {
-    id: 'campaigns',
-    label: 'Campaigns',
-    icon: Megaphone,
-  },
-  {
-    id: 'flows',
-    label: 'Flows',
-    icon: Workflow,
-  },
-  {
-    id: 'contacts',
-    label: 'Contacts',
-    icon: Users,
-  },
-  {
-    id: 'gateways',
-    label: 'Gateways',
-    icon: Radio,
-  },
-  {
-    id: 'apps',
-    label: 'Apps',
-    icon: Blocks,
-  },
-  {
-    id: 'webhooks',
-    label: 'Webhooks',
-    icon: Webhook,
-  },
-  {
-    id: 'message-logs',
-    label: 'Message Logs',
-    icon: ScrollText,
-  },
-  {
-    id: 'system',
-    label: 'System',
-    icon: Activity,
-  },
-  {
-    id: 'messaging-button',
-    label: 'Messaging Button',
-    icon: MessageSquare,
-    children: [
-      { id: 'mb-appearance', label: 'Appearance' },
-      { id: 'mb-pages', label: 'Pages' },
-      { id: 'mb-team', label: 'Team' },
-      { id: 'mb-display-rules', label: 'Display Rules' },
+    label: 'Messaging',
+    items: [
+      { id: 'campaigns', label: 'Campaigns', icon: Megaphone },
+      { id: 'flows', label: 'Flows', icon: Workflow },
+      { id: 'contacts', label: 'Contacts', icon: Users },
+      {
+        id: 'messaging-button', label: 'Messaging Button', icon: MessageSquare,
+        children: [
+          { id: 'mb-appearance', label: 'Appearance' },
+          { id: 'mb-pages', label: 'Pages' },
+          { id: 'mb-team', label: 'Team' },
+          { id: 'mb-display-rules', label: 'Display Rules' },
+        ],
+      },
     ],
   },
   {
-    id: 'subscription-forms',
-    label: 'Subscription Forms',
-    icon: ClipboardList,
-  },
-  {
-    id: 'settings',
-    label: 'Settings',
-    icon: Settings2,
-    children: [
-      { id: 'opt-out', label: 'Opt-Out' },
-      { id: 'phone-restriction', label: 'Phone Restrictions' },
-    ],
-  },
-  {
-    id: 'general',
-    label: 'General',
-    icon: SlidersHorizontal,
-  },
-  {
-    id: 'authentication',
     label: 'Authentication',
-    icon: LogIn,
-    children: [
-      { id: 'channels', label: 'Channels' },
-      { id: 'profile-fields', label: 'Profile Fields' },
-      { id: 'registration-forms', label: 'Registration Forms' },
-      { id: 'templates', label: 'Message Templates' },
+    items: [
+      { id: 'channels', label: 'Channels', icon: LogIn },
+      { id: 'security', label: 'Security', icon: Shield },
+      { id: 'registration-forms', label: 'Registration Forms', icon: ClipboardList },
+      { id: 'profile-fields', label: 'Profile Fields', icon: Contact },
+      { id: 'templates', label: 'Templates', icon: FileText },
     ],
   },
   {
-    id: 'security',
-    label: 'Security',
-    icon: Shield,
-    children: [
-      { id: 'mfa-policies', label: 'MFA Policies' },
-      { id: 'rate-limiting', label: 'Rate Limiting' },
-      { id: 'captcha', label: 'CAPTCHA' },
-      { id: 'account-cleanup', label: 'Account Cleanup' },
-      { id: 'phone-restriction', label: 'Phone Restrictions' },
+    label: 'Platform',
+    items: [
+      { id: 'gateways', label: 'Gateways', icon: Radio },
+      { id: 'integrations', label: 'Integrations', icon: Plug },
+      { id: 'webhooks', label: 'Webhooks', icon: Webhook },
+      { id: 'branding', label: 'Branding', icon: Paintbrush },
+      { id: 'monitoring', label: 'Monitoring', icon: BarChart3 },
+      { id: 'settings', label: 'Settings', icon: Settings2 },
     ],
   },
-  {
-    id: 'integrations',
-    label: 'Integrations',
-    icon: Plug,
-  },
-  {
-    id: 'branding',
-    label: 'Branding',
-    icon: Paintbrush,
-  },
-  {
-    id: 'monitoring',
-    label: 'Monitoring',
-    icon: BarChart3,
-    children: [
-      { id: 'logs', label: 'Logs' },
-      { id: 'reports', label: 'Reports' },
-    ],
-  },
-] as const;
+];
+
+/** Flat list of all nav items across all sections. */
+export const NAV_ITEMS: readonly NavItem[] = NAV_SECTIONS.flatMap(s => s.items);
 
 /** Derive parent section from a child section ID, using NAV_ITEMS as the source of truth. */
-export function getParentSection(sectionId: string, items: NavItemList): string {
-  for (const item of items) {
-    if ('children' in item && item.children.some((c) => c.id === sectionId)) {
+export function getParentSection(sectionId: string): string {
+  for (const item of NAV_ITEMS) {
+    if (item.children?.some((c) => c.id === sectionId)) {
       return item.id;
     }
   }
   return sectionId;
 }
 
+/** All valid section IDs (both parent-level and child-level). */
+export const VALID_SECTIONS: Set<string> = new Set(
+  NAV_ITEMS.flatMap((item) =>
+    item.children ? item.children.map((c) => c.id) : [item.id]
+  )
+);
+
+// --- Sidebar components ---
+
+interface AppShellProps {
+  activeSection: string;
+  onNavigate: (section: string) => void;
+  version: string;
+  children: ReactNode;
+}
+
+type NavItemWithChildren = NavItem & { children: readonly NavChild[] };
+
 function CollapsedGroupItem({ item, activeSection, isActive, onNavigate }: {
-  item: Extract<(typeof NAV_ITEMS)[number], { children: unknown }>;
+  item: NavItemWithChildren;
   activeSection: string;
   isActive: boolean;
   onNavigate: (s: string) => void;
@@ -234,15 +189,15 @@ function CollapsedGroupItem({ item, activeSection, isActive, onNavigate }: {
   );
 }
 
-function NavMenu({ activeSection, onNavigate, navItems }: { activeSection: string; onNavigate: (s: string) => void; navItems: NavItemList }) {
+function NavMenu({ activeSection, onNavigate, items }: { activeSection: string; onNavigate: (s: string) => void; items: readonly NavItem[] }) {
   const { state, isMobile } = useSidebar();
   const isCollapsed = !isMobile && state === 'collapsed';
 
   return (
     <SidebarMenu>
-      {navItems.map((item) => {
+      {items.map((item) => {
         const Icon = item.icon;
-        const hasChildren = 'children' in item && item.children;
+        const hasChildren = item.children && item.children.length > 0;
 
         if (!hasChildren) {
           return (
@@ -261,13 +216,13 @@ function NavMenu({ activeSection, onNavigate, navItems }: { activeSection: strin
 
         const isParentActive =
           activeSection === item.id ||
-          item.children.some((c) => c.id === activeSection);
+          item.children!.some((c) => c.id === activeSection);
 
         if (isCollapsed) {
           return (
             <CollapsedGroupItem
               key={item.id}
-              item={item}
+              item={item as NavItemWithChildren}
               activeSection={activeSection}
               isActive={isParentActive}
               onNavigate={onNavigate}
@@ -291,7 +246,7 @@ function NavMenu({ activeSection, onNavigate, navItems }: { activeSection: strin
               </CollapsibleTrigger>
               <CollapsibleContent>
                 <SidebarMenuSub>
-                  {item.children.map((child) => (
+                  {item.children!.map((child) => (
                     <SidebarMenuSubItem key={child.id}>
                       <SidebarMenuSubButton
                         isActive={activeSection === child.id}
@@ -311,7 +266,7 @@ function NavMenu({ activeSection, onNavigate, navItems }: { activeSection: strin
   );
 }
 
-export function AppShell({ activeSection, onNavigate, version, area, children, navItems }: AppShellProps) {
+export function AppShell({ activeSection, onNavigate, version, children }: AppShellProps) {
   return (
     <SidebarProvider defaultOpen={SIDEBAR_DEFAULT_OPEN}>
       <Sidebar collapsible="icon">
@@ -322,17 +277,18 @@ export function AppShell({ activeSection, onNavigate, version, area, children, n
             </div>
             <div className="flex flex-col group-data-[collapsible=icon]:hidden">
               <span className="text-lg font-extrabold tracking-tight leading-none">WSMS</span>
-              <span className="text-xs text-muted-foreground">{AREA_LABELS[area]}</span>
             </div>
           </div>
         </SidebarHeader>
         <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupLabel>Settings</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <NavMenu activeSection={activeSection} onNavigate={onNavigate} navItems={navItems} />
-            </SidebarGroupContent>
-          </SidebarGroup>
+          {NAV_SECTIONS.map((section) => (
+            <SidebarGroup key={section.label}>
+              <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <NavMenu activeSection={activeSection} onNavigate={onNavigate} items={section.items} />
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ))}
         </SidebarContent>
       </Sidebar>
 

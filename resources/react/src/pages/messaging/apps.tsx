@@ -22,10 +22,12 @@ import { PageHeader } from '@/components/layout/page-header';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/error-utils';
 import { useConfirm } from '@/components/confirm-provider';
-import { AUTH_INTEGRATION_IDS, INTEGRATION_CATEGORY_LABELS } from '@/lib/constants';
+import { INTEGRATION_CATEGORY_LABELS } from '@/lib/constants';
 import { pluralize } from '@/lib/utils';
-import { api, getConfig } from '@/lib/api';
-import type { AuthSettings, ContactForm7Settings, IntegrationCapability, IntegrationDetail, JsonSchema, PlatformIntegration, ProviderList, SyncSettings, WebhookEndpoint } from '@/lib/api';
+import { api } from '@/lib/api';
+import { WooCommerce } from '@/pages/integrations/woocommerce';
+import { CF7Verification } from '@/pages/integrations/cf7-verification';
+import type { AuthSettings, IntegrationCapability, IntegrationDetail, JsonSchema, PlatformIntegration, ProviderList, SyncSettings, WebhookEndpoint } from '@/lib/api';
 
 interface AppsProps {
   settings?: Required<AuthSettings>;
@@ -409,38 +411,10 @@ function SettingsSection({ integrationId, settings, onUpdate }: {
   onUpdate: <K extends keyof AuthSettings>(key: K, value: AuthSettings[K]) => void;
 }) {
   switch (integrationId) {
-    case 'contactform7': {
-      const cf7 = settings.contact_form_7 ?? {};
-      const update = (partial: Partial<ContactForm7Settings>) =>
-        onUpdate('contact_form_7', { ...cf7, ...partial });
-
-      return (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">Settings</CardTitle>
-            <CardDescription>
-              Configure notification behavior for this integration.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <label htmlFor="cf7_notifications_enabled" className="text-sm font-medium leading-snug">Enable notifications</label>
-                <p className="text-sm text-muted-foreground">
-                  Show the WSMS notification panel in the Contact Form 7 editor for configuring SMS, email, WhatsApp, or Telegram notifications per form.
-                </p>
-              </div>
-              <Switch
-                id="cf7_notifications_enabled"
-                className="mt-0.5"
-                checked={cf7.notifications_enabled !== false}
-                onCheckedChange={(v) => update({ notifications_enabled: v })}
-              />
-            </div>
-          </CardContent>
-        </Card>
-      );
-    }
+    case 'woocommerce':
+      return <WooCommerce settings={settings} onUpdate={onUpdate} />;
+    case 'contactform7':
+      return <CF7Verification settings={settings} onUpdate={onUpdate} />;
     default:
       return null;
   }
@@ -722,7 +696,7 @@ function AppDetailPage({ integrationId, settings, onUpdate, onBack }: {
       <div className="space-y-6">
         <Button variant="ghost" size="sm" className="-ml-2" onClick={onBack}>
           <ArrowLeft className="mr-1 h-4 w-4" />
-          Back to Apps
+          Back to Integrations
         </Button>
         <div className="space-y-4">
           <Skeleton className="h-10 w-64" />
@@ -737,7 +711,7 @@ function AppDetailPage({ integrationId, settings, onUpdate, onBack }: {
     <div className="space-y-6">
       <Button variant="ghost" size="sm" className="-ml-2" onClick={onBack}>
         <ArrowLeft className="mr-1 h-4 w-4" />
-        Back to Apps
+        Back to Integrations
       </Button>
 
       <div className="flex items-center gap-3">
@@ -786,19 +760,11 @@ function AppDetailPage({ integrationId, settings, onUpdate, onBack }: {
         </p>
       )}
 
-      {AUTH_INTEGRATION_IDS.has(detail.id) && (
-        <p className="text-xs text-muted-foreground rounded-md bg-muted/50 p-3">
-          Looking for authentication settings?{' '}
-          <a href={`${getConfig().adminUrl}admin.php?page=wsms-auth#integrations`} className="text-primary hover:underline">
-            Auth &rarr; Integrations
-          </a>
-        </p>
-      )}
     </div>
   );
 }
 
-export function Apps({ settings, onUpdate }: AppsProps) {
+export function IntegrationsPage({ settings, onUpdate }: AppsProps) {
   const { integrations, loading } = useIntegrations();
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -850,7 +816,7 @@ export function Apps({ settings, onUpdate }: AppsProps) {
 
   return (
     <div className="space-y-6">
-      <PageHeader icon={Blocks} title="Apps" metadata={pluralize(integrations.length, 'app')} />
+      <PageHeader icon={Blocks} title="Integrations" metadata={pluralize(integrations.length, 'integration')} />
       <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

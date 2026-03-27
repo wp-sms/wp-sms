@@ -1,33 +1,52 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { PageHeader } from '@/components/layout/page-header';
+import { Shield } from 'lucide-react';
+import { useSubTabs } from '@/hooks/use-sub-tabs';
 import { MfaPolicies } from './mfa-policies';
 import { RateLimiting } from './rate-limiting';
 import { AccountCleanup } from './account-cleanup';
 import { Captcha } from './captcha';
-import { PhoneRestrictionNotice } from './phone-restriction-notice';
 import type { AuthSettings } from '@/lib/api';
 
+const TABS = ['mfa-policies', 'captcha', 'rate-limiting', 'account-cleanup'] as const;
+
 interface SecurityPageProps {
-  section: string;
+  subTab?: string;
+  onNavigate?: (s: string) => void;
   settings: Required<AuthSettings>;
   onUpdate: <K extends keyof AuthSettings>(key: K, value: AuthSettings[K]) => void;
   roles: Record<string, string>;
 }
 
-export function SecurityPage({ section, settings, onUpdate, roles }: SecurityPageProps) {
-  if (section === 'rate-limiting') {
-    return <RateLimiting settings={settings} onUpdate={onUpdate} />;
-  }
+export function SecurityPage({ subTab, onNavigate, settings, onUpdate, roles }: SecurityPageProps) {
+  const [activeTab, handleTabChange] = useSubTabs('security', TABS, subTab, onNavigate);
 
-  if (section === 'account-cleanup') {
-    return <AccountCleanup settings={settings} onUpdate={onUpdate} />;
-  }
+  return (
+    <Tabs value={activeTab} onValueChange={handleTabChange}>
+      <PageHeader icon={Shield} title="Security">
+        <TabsList variant="line" className="mt-3">
+          <TabsTrigger value="mfa-policies">MFA Policies</TabsTrigger>
+          <TabsTrigger value="captcha">CAPTCHA</TabsTrigger>
+          <TabsTrigger value="rate-limiting">Rate Limiting</TabsTrigger>
+          <TabsTrigger value="account-cleanup">Account Cleanup</TabsTrigger>
+        </TabsList>
+      </PageHeader>
 
-  if (section === 'captcha') {
-    return <Captcha settings={settings} onUpdate={onUpdate} />;
-  }
+      <TabsContent value="mfa-policies">
+        <MfaPolicies settings={settings} onUpdate={onUpdate} roles={roles} />
+      </TabsContent>
 
-  if (section === 'phone-restriction') {
-    return <PhoneRestrictionNotice />;
-  }
+      <TabsContent value="captcha">
+        <Captcha settings={settings} onUpdate={onUpdate} />
+      </TabsContent>
 
-  return <MfaPolicies settings={settings} onUpdate={onUpdate} roles={roles} />;
+      <TabsContent value="rate-limiting">
+        <RateLimiting settings={settings} onUpdate={onUpdate} />
+      </TabsContent>
+
+      <TabsContent value="account-cleanup">
+        <AccountCleanup settings={settings} onUpdate={onUpdate} />
+      </TabsContent>
+    </Tabs>
+  );
 }

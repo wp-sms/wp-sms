@@ -68,7 +68,7 @@ class AssetManager
             'isPremium'         => defined('WP_SMS_PREMIUM_FILE'),
             'roles'             => wp_list_pluck(get_editable_roles(), 'name'),
             'timezone'          => wp_timezone_string(),
-            'area'              => $this->resolveArea($hook),
+            'area'              => 'unified',
             'phoneInput'        => $this->restrictionSettings->getPhoneInputDisplayConfig(),
             'currentUserHasMfa' => (bool) get_user_meta($currentUser->ID, UserMeta::MFA_ENABLED, true),
             'currentUserRoles'  => $currentUser->roles,
@@ -76,23 +76,10 @@ class AssetManager
     }
 
     /**
-     * Determine the active area from the admin hook.
-     */
-    private function resolveArea(string $hook): string
-    {
-        if (strpos($hook, 'wsms-messaging') !== false) {
-            return 'messaging';
-        }
-
-        return 'auth';
-    }
-
-    /**
      * Check whether the current admin page belongs to WSMS.
      */
     private function isWsmsPage(string $hook): bool
     {
-        return strpos($hook, 'wsms-auth') !== false
-            || strpos($hook, 'wsms-messaging') !== false;
+        return strpos($hook, 'wsms-auth') !== false;
     }
 }

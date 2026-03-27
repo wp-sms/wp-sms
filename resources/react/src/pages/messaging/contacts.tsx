@@ -11,10 +11,13 @@ import { ExportDialog } from '@/components/contacts/export-dialog';
 import { TagsList } from '@/components/tags/tags-list';
 import { ListsList } from '@/components/lists/lists-list';
 import { SourcesList } from '@/components/sources/sources-list';
+import { SubscriptionForms } from './subscription-forms';
+import { useSubscriptionForms } from '@/hooks/use-subscription-forms';
+import { useSubTabs } from '@/hooks/use-sub-tabs';
 import { Badge } from '@/components/ui/badge';
 import { Users, Plus, Upload, Download } from 'lucide-react';
 
-const VALID_TABS = ['contacts', 'tags', 'lists', 'sources'];
+const TABS = ['contacts', 'tags', 'lists', 'sources', 'forms'] as const;
 
 interface ContactsProps {
   subTab?: string;
@@ -25,16 +28,14 @@ export function Contacts({ subTab, onNavigate }: ContactsProps) {
   const contactsHook = useContacts();
   const tagsHook = useTags();
   const listsHook = useLists();
+  const formsHook = useSubscriptionForms();
   const [importOpen, setImportOpen] = useState(false);
   const [contactCreate, setContactCreate] = useState(0);
   const [tagCreate, setTagCreate] = useState(0);
   const [listCreate, setListCreate] = useState(0);
+  const [formCreate, setFormCreate] = useState(0);
 
-  const activeTab = subTab && VALID_TABS.includes(subTab) ? subTab : 'contacts';
-
-  const handleTabChange = (tab: string) => {
-    onNavigate?.(tab === 'contacts' ? 'contacts' : `contacts/${tab}`);
-  };
+  const [activeTab, handleTabChange] = useSubTabs('contacts', TABS, subTab, onNavigate);
 
   const headerActions: Record<string, React.ReactNode> = {
     contacts: (
@@ -62,6 +63,11 @@ export function Contacts({ subTab, onNavigate }: ContactsProps) {
         <Plus className="mr-1.5 h-3.5 w-3.5" /> New List
       </Button>
     ),
+    forms: (
+      <Button size="sm" onClick={() => setFormCreate((n) => n + 1)}>
+        <Plus className="mr-1.5 h-3.5 w-3.5" /> Create Form
+      </Button>
+    ),
   };
 
   return (
@@ -76,6 +82,7 @@ export function Contacts({ subTab, onNavigate }: ContactsProps) {
           <TabsTrigger value="tags">Tags <TabCount count={tagsHook.tags.length} /></TabsTrigger>
           <TabsTrigger value="lists">Lists <TabCount count={listsHook.lists.length} /></TabsTrigger>
           <TabsTrigger value="sources">Sources</TabsTrigger>
+          <TabsTrigger value="forms">Forms <TabCount count={formsHook.forms.length} /></TabsTrigger>
         </TabsList>
       </PageHeader>
 
@@ -99,6 +106,10 @@ export function Contacts({ subTab, onNavigate }: ContactsProps) {
 
       <TabsContent value="sources">
         {activeTab === 'sources' && <SourcesList />}
+      </TabsContent>
+
+      <TabsContent value="forms">
+        {activeTab === 'forms' && <SubscriptionForms embedded hook={formsHook} createTrigger={formCreate} />}
       </TabsContent>
 
       <ImportWizard

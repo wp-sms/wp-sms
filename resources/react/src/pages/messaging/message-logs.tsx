@@ -18,32 +18,37 @@ import { StatusBadge, ChannelBadge } from '@/components/messaging/message-badges
 import { MessageLogDetailPanel } from '@/components/messaging/message-log-detail-panel';
 import type { MessageLogEntry } from '@/lib/api';
 
-export function MessageLogs() {
+export function MessageLogs({ embedded }: { embedded?: boolean }) {
   const { logs, total, page, perPage, filters, setFilter, setPage, loading } = useMessageLogs();
   const [selectedLog, setSelectedLog] = useState<MessageLogEntry | null>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const activeFilterCount = [filters.channel, filters.status, filters.recipient, filters.gateway_id, filters.date_from, filters.date_to].filter(Boolean).length;
 
+  const filtersButton = (
+    <CollapsibleTrigger asChild>
+      <Button variant="outline" size="sm">
+        <SlidersHorizontal className="mr-1.5 h-3.5 w-3.5" />
+        Filters
+        {activeFilterCount > 0 && (
+          <Badge variant="default" className="ml-1.5 h-5 px-1.5 text-[10px]">{activeFilterCount}</Badge>
+        )}
+      </Button>
+    </CollapsibleTrigger>
+  );
+
   return (
     <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
       <div className="space-y-4">
-        <PageHeader
-          icon={Send}
-          title="Message Logs"
-          metadata={pluralize(total, 'message')}
-          actions={
-            <CollapsibleTrigger asChild>
-              <Button variant="outline" size="sm">
-                <SlidersHorizontal className="mr-1.5 h-3.5 w-3.5" />
-                Filters
-                {activeFilterCount > 0 && (
-                  <Badge variant="default" className="ml-1.5 h-5 px-1.5 text-[10px]">{activeFilterCount}</Badge>
-                )}
-              </Button>
-            </CollapsibleTrigger>
-          }
-        />
+        {!embedded && (
+          <PageHeader icon={Send} title="Message Logs" metadata={pluralize(total, 'message')} actions={filtersButton} />
+        )}
+        {embedded && (
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">{pluralize(total, 'message')}</span>
+            {filtersButton}
+          </div>
+        )}
         <CollapsibleContent>
           <div className="grid gap-4 sm:grid-cols-3 lg:grid-cols-6">
             <Field>

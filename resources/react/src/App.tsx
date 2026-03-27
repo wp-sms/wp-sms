@@ -1,19 +1,24 @@
 import { useCallback, useMemo } from 'react';
-import { AppShell, getParentSection } from '@/components/layout/app-shell';
+import { AppShell, getParentSection, VALID_SECTIONS } from '@/components/layout/app-shell';
 import { SaveBarProvider } from '@/contexts/save-bar-context';
 import { useSettings } from '@/hooks/use-settings';
 import { useHashSection } from '@/hooks/use-hash-section';
 import { getConfig } from '@/lib/api';
-import { getNavItemsForArea, getDefaultSection, getValidSections } from '@/lib/area-nav';
-import { MessagingPage } from '@/pages/messaging';
+import { Campaigns } from '@/pages/messaging/campaigns';
+import { Flows } from '@/pages/messaging/flows';
+import { Contacts } from '@/pages/messaging/contacts';
+import { Gateways } from '@/pages/messaging/gateways';
+import { Webhooks } from '@/pages/messaging/webhooks';
+import { IntegrationsPage } from '@/pages/messaging/apps';
 import { MessagingButtonPage } from '@/pages/messaging-button';
 import { BrandingAreaPage } from '@/pages/branding/branding-area-page';
-import { AuthenticationPage } from '@/pages/authentication';
+import { Channels } from '@/pages/authentication/channels';
+import { ProfileFields } from '@/pages/authentication/profile-fields';
+import { RegistrationForms } from '@/pages/authentication/registration-forms';
+import { Templates } from '@/pages/authentication/templates';
 import { SecurityPage } from '@/pages/security';
-import { IntegrationsPage } from '@/pages/integrations';
-import { GeneralPage } from '@/pages/general';
-import { LogsPage } from '@/pages/logs';
-import { ReportsPage } from '@/pages/reports';
+import { MonitoringPage } from '@/pages/monitoring';
+import { SettingsPage } from '@/pages/settings';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Toaster } from '@/components/ui/sonner';
@@ -21,13 +26,11 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { ConfirmProvider } from '@/components/confirm-provider';
 import { AlertCircle } from 'lucide-react';
 
-const { roles, version, area } = getConfig();
-const navItems = getNavItemsForArea(area);
-const defaultSection = getDefaultSection(area);
-const validSections = getValidSections(navItems);
+const DEFAULT_SECTION = 'campaigns';
+const { roles, version } = getConfig();
 
 export default function App() {
-  const [section, setSection, subTab] = useHashSection(defaultSection, validSections);
+  const [section, setSection, subTab] = useHashSection(DEFAULT_SECTION, VALID_SECTIONS);
   const { settings, updateSetting, isDirty, saveStatus, save, loading, error } = useSettings();
   const handleSave = useCallback(() => { void save(); }, [save]);
   const defaultSaveBarState = useMemo(
@@ -55,36 +58,45 @@ export default function App() {
       );
     }
 
-    const parent = getParentSection(section, navItems);
+    const parent = getParentSection(section);
 
     switch (parent) {
+      // Messaging
       case 'campaigns':
+        return <Campaigns />;
       case 'flows':
+        return <Flows />;
       case 'contacts':
-      case 'gateways':
-      case 'webhooks':
-      case 'message-logs':
-      case 'system':
-      case 'subscription-forms':
-      case 'settings':
-        return <MessagingPage section={section} subTab={subTab} onNavigate={setSection} />;
-      case 'apps':
-        return <MessagingPage section={section} subTab={subTab} onNavigate={setSection} settings={settings} onUpdate={updateSetting} />;
+        return <Contacts subTab={subTab} onNavigate={setSection} />;
       case 'messaging-button':
         return <MessagingButtonPage section={section} />;
+
+      // Authentication
+      case 'channels':
+        return <Channels settings={settings} onUpdate={updateSetting} />;
+      case 'security':
+        return <SecurityPage subTab={subTab} onNavigate={setSection} settings={settings} onUpdate={updateSetting} roles={roles} />;
+      case 'registration-forms':
+        return <RegistrationForms />;
+      case 'profile-fields':
+        return <ProfileFields settings={settings} onUpdate={updateSetting} />;
+      case 'templates':
+        return <Templates />;
+
+      // Platform
+      case 'gateways':
+        return <Gateways />;
+      case 'integrations':
+        return <IntegrationsPage settings={settings} onUpdate={updateSetting} />;
+      case 'webhooks':
+        return <Webhooks />;
       case 'branding':
         return <BrandingAreaPage />;
-      case 'authentication':
-        return <AuthenticationPage section={section} settings={settings} onUpdate={updateSetting} />;
-      case 'security':
-        return <SecurityPage section={section} settings={settings} onUpdate={updateSetting} roles={roles} />;
-      case 'integrations':
-        return <IntegrationsPage section={section} settings={settings} onUpdate={updateSetting} />;
-      case 'general':
-        return <GeneralPage settings={settings} onUpdate={updateSetting} />;
       case 'monitoring':
-        if (section === 'reports') return <ReportsPage />;
-        return <LogsPage />;
+        return <MonitoringPage subTab={subTab} onNavigate={setSection} />;
+      case 'settings':
+        return <SettingsPage subTab={subTab} onNavigate={setSection} settings={settings} onUpdate={updateSetting} />;
+
       default:
         return null;
     }
@@ -96,7 +108,7 @@ export default function App() {
         <SaveBarProvider defaultState={defaultSaveBarState}>
           <div className="wsms-app">
             <div className="border border-border">
-              <AppShell activeSection={section} onNavigate={setSection} version={version} area={area} navItems={navItems}>
+              <AppShell activeSection={section} onNavigate={setSection} version={version}>
                 {renderContent()}
               </AppShell>
             </div>

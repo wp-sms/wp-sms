@@ -19,13 +19,13 @@ describe('SecurityPage', () => {
 
   describe('MFA Policies', () => {
     it('renders backup codes card', () => {
-      render(<SecurityPage section="mfa-policies" {...defaultProps} />);
+      render(<SecurityPage subTab="mfa-policies" {...defaultProps} />);
 
       expect(screen.getByText('Backup Codes')).toBeInTheDocument();
     });
 
     it('renders role matrix with roles from WordPress', () => {
-      render(<SecurityPage section="mfa-policies" {...defaultProps} />);
+      render(<SecurityPage subTab="mfa-policies" {...defaultProps} />);
 
       expect(screen.getByText('Administrator')).toBeInTheDocument();
       expect(screen.getByText('Editor')).toBeInTheDocument();
@@ -33,7 +33,7 @@ describe('SecurityPage', () => {
     });
 
     it('renders enrollment timing selector', () => {
-      render(<SecurityPage section="mfa-policies" {...defaultProps} />);
+      render(<SecurityPage subTab="mfa-policies" {...defaultProps} />);
 
       expect(screen.getByText('Enrollment Timing')).toBeInTheDocument();
     });
@@ -44,7 +44,7 @@ describe('SecurityPage', () => {
 
       render(
         <SecurityPage
-          section="mfa-policies"
+          subTab="mfa-policies"
           settings={{ ...DEFAULTS }}
           onUpdate={onUpdate}
           roles={testRoles}
@@ -63,7 +63,7 @@ describe('SecurityPage', () => {
 
       render(
         <SecurityPage
-          section="mfa-policies"
+          subTab="mfa-policies"
           settings={{ ...DEFAULTS }}
           onUpdate={onUpdate}
           roles={testRoles}
@@ -79,7 +79,7 @@ describe('SecurityPage', () => {
 
   describe('Rate Limiting', () => {
     it('renders Phone and Email rate limit settings', () => {
-      render(<SecurityPage section="rate-limiting" {...defaultProps} />);
+      render(<SecurityPage subTab="rate-limiting" {...defaultProps} />);
 
       expect(screen.getByText('Phone Channel Limits')).toBeInTheDocument();
       expect(screen.getByText('Email Channel Limits')).toBeInTheDocument();
@@ -91,7 +91,7 @@ describe('SecurityPage', () => {
 
       render(
         <SecurityPage
-          section="rate-limiting"
+          subTab="rate-limiting"
           settings={{ ...DEFAULTS }}
           onUpdate={onUpdate}
           roles={testRoles}

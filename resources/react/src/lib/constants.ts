@@ -1,5 +1,4 @@
 import { Smartphone, Mail } from 'lucide-react';
-import type { Area } from './area-nav';
 import type { AuthSettings } from './api';
 
 export const CHANNELS = [
@@ -306,13 +305,6 @@ export const SEGMENT_TEMPLATES = [
   { name: 'Imported contacts', conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'source', operator: 'equals', value: 'import' }] } },
   { name: 'WordPress users', conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'source', operator: 'equals', value: 'sync' }] } },
 ] as const;
-
-// --- Area Labels ---
-
-export const AREA_LABELS: Record<Area, string> = {
-  auth: 'Authentication',
-  messaging: 'Messaging',
-};
 
 // --- Integration Category Constants ---
 

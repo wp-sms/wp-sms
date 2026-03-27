@@ -8,7 +8,7 @@ declare global {
       isPremium: boolean;
       roles: Record<string, string>;
       timezone: string;
-      area: 'auth' | 'messaging';
+      area: string;
       currentUserHasMfa: boolean;
       currentUserRoles: string[];
     };
@@ -285,7 +285,7 @@ const FALLBACK_CONFIG: Window['wpSmsSettings'] = {
   isPremium: false,
   roles: {},
   timezone: 'UTC',
-  area: 'auth' as const,
+  area: 'unified',
   currentUserHasMfa: false,
   currentUserRoles: [],
 };

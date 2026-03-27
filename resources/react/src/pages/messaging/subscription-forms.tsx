@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -41,8 +41,10 @@ import {
 import { ColorPickerField } from '@/components/ui/color-picker-field';
 import { Plus, Pencil, Copy, Trash2, ClipboardCopy, ClipboardList } from 'lucide-react';
 import { useConfirm } from '@/components/confirm-provider';
-import { useSubscriptionForms, type SubscriptionFormData } from '@/hooks/use-subscription-forms';
+import { useCreateTrigger } from '@/hooks/use-create-trigger';
+import type { SubscriptionFormData } from '@/hooks/use-subscription-forms';
 import { useLists } from '@/hooks/use-lists';
+import type { useSubscriptionForms } from '@/hooks/use-subscription-forms';
 import { copyToClipboard, generateSlug } from '@/lib/utils';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/error-utils';
@@ -84,8 +86,14 @@ const EMPTY_FORM: FormEditorState = {
   redirect_url: '',
 };
 
-export function SubscriptionForms() {
-  const { forms, loading, create, update, remove, duplicate } = useSubscriptionForms();
+interface SubscriptionFormsProps {
+  embedded?: boolean;
+  hook: ReturnType<typeof useSubscriptionForms>;
+  createTrigger?: number;
+}
+
+export function SubscriptionForms({ embedded, hook, createTrigger }: SubscriptionFormsProps) {
+  const { forms, loading, create, update, remove, duplicate } = hook;
   const { lists } = useLists('static');
   const confirm = useConfirm();
   const [panelOpen, setPanelOpen] = useState(false);
@@ -118,10 +126,12 @@ export function SubscriptionForms() {
     }
   }, [editingForm, panelOpen]);
 
-  function openCreate() {
+  const openCreate = useCallback(() => {
     setEditingForm(null);
     setPanelOpen(true);
-  }
+  }, []);
+
+  useCreateTrigger(createTrigger, openCreate);
 
   function openEdit(form: SubscriptionFormData) {
     setEditingForm(form);
@@ -196,17 +206,19 @@ export function SubscriptionForms() {
   return (
     <>
       <div className="space-y-4">
-        <PageHeader
-          icon={ClipboardList}
-          title="Subscription Forms"
-          metadata={pluralize(forms.length, 'form')}
-          actions={
-            <Button onClick={openCreate} size="sm">
-              <Plus className="mr-1 h-3.5 w-3.5" />
-              Create Form
-            </Button>
-          }
-        />
+        {!embedded && (
+          <PageHeader
+            icon={ClipboardList}
+            title="Subscription Forms"
+            metadata={pluralize(forms.length, 'form')}
+            actions={
+              <Button onClick={openCreate} size="sm">
+                <Plus className="mr-1 h-3.5 w-3.5" />
+                Create Form
+              </Button>
+            }
+          />
+        )}
         <DataTable
           loading={loading}
           isEmpty={forms.length === 0}

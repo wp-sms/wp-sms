@@ -87,7 +87,7 @@ const BLOCKABLE_TYPES = [
   { id: 'shared_cost', label: 'Shared Cost', description: 'Cost shared between caller and receiver' },
 ] as const;
 
-export function PhoneRestriction() {
+export function PhoneRestriction({ embedded }: { embedded?: boolean }) {
   const [saved, setSaved] = useState<PhoneRestrictionSettings | null>(null);
   const [draft, setDraft] = useState<PhoneRestrictionSettings | null>(null);
   const [dbStatus, setDbStatus] = useState<DbStatus | null>(null);
@@ -179,7 +179,7 @@ export function PhoneRestriction() {
 
   return (
     <div className="space-y-6">
-      <PageHeader icon={Ban} title="Phone Restrictions" />
+      {!embedded && <PageHeader icon={Ban} title="Phone Restrictions" />}
       {geoDetection && <GeoDetectionBanner geo={geoDetection} />}
       <PhoneInputConfigCard
         draft={draft}

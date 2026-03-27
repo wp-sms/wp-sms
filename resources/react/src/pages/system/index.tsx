@@ -14,28 +14,35 @@ import { ActiveCampaignsCard } from './active-campaigns-card';
 import { Activity, AlertCircle, AlertTriangle, RefreshCw, HeartPulse, ListTodo, XCircle, Clock, Megaphone } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/format';
 
-export function SystemHealth() {
+export function SystemHealth({ embedded }: { embedded?: boolean }) {
   const { data, loading, error, refetch } = useSystemHealth();
 
   usePolling(refetch, 30_000, !loading);
 
+  const refreshButton = (
+    <Button variant="outline" size="sm" onClick={refetch} disabled={loading}>
+      <RefreshCw className={`mr-1.5 h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
+      Refresh
+    </Button>
+  );
+
+  const timestamp = data && (
+    <span className="text-xs tabular-nums text-muted-foreground">
+      Updated {formatRelativeTime(data.generated_at)}
+    </span>
+  );
+
   return (
     <div className="space-y-4">
-      <PageHeader
-        icon={Activity}
-        title="System Health"
-        metadata={data && (
-          <span className="text-xs tabular-nums text-muted-foreground">
-            Updated {formatRelativeTime(data.generated_at)}
-          </span>
-        )}
-        actions={
-          <Button variant="outline" size="sm" onClick={refetch} disabled={loading}>
-            <RefreshCw className={`mr-1.5 h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
-        }
-      />
+      {!embedded && (
+        <PageHeader icon={Activity} title="System Health" metadata={timestamp} actions={refreshButton} />
+      )}
+      {embedded && (
+        <div className="flex items-center justify-between">
+          {timestamp}
+          {refreshButton}
+        </div>
+      )}
 
       {loading && !data && (
         <div className="space-y-4">

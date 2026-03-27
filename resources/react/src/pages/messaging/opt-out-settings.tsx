@@ -37,7 +37,7 @@ interface SettingsResponse {
   };
 }
 
-export function OptOutSettings() {
+export function OptOutSettings({ embedded }: { embedded?: boolean }) {
   const [saved, setSaved] = useState<OptOutSettings | null>(null);
   const [draft, setDraft] = useState<OptOutSettings | null>(null);
   const [defaults, setDefaults] = useState<SettingsResponse['defaults'] | null>(null);
@@ -123,7 +123,7 @@ export function OptOutSettings() {
 
   return (
     <div className="space-y-6">
-      <PageHeader icon={BellOff} title="Opt-Out Settings" />
+      {!embedded && <PageHeader icon={BellOff} title="Opt-Out Settings" />}
       {/* Auto-Reply Settings */}
       <Card>
         <CardHeader>

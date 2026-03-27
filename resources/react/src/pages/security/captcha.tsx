@@ -5,7 +5,6 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ShieldAlert, CloudCog } from 'lucide-react';
-import { PageHeader } from '@/components/layout/page-header';
 import { toggleArrayItem } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import type { AuthSettings, CaptchaProvider, CaptchaAction, CaptchaSettings } from '@/lib/api';
@@ -43,7 +42,6 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
 
   return (
     <div className="space-y-4">
-      <PageHeader icon={ShieldAlert} title="CAPTCHA" />
       {/* Enable / Provider */}
       <PageSection
         icon={ShieldAlert}
