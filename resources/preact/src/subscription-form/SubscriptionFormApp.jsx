@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'preact/hooks';
+import { useState, useCallback, useRef } from 'preact/hooks';
 import { OtpInput } from '../components/OtpInput';
 import { PhoneInput } from '../components/PhoneInput';
 import { useResendCooldown } from '../hooks/useResendCooldown';
@@ -30,6 +30,7 @@ export function SubscriptionFormApp({ config }) {
 
     const { fields, buttonText, successMessage, redirectUrl, restUrl, nonce } = config;
     const slug = config.slug;
+    const submittingRef = useRef(false);
 
     const apiCall = useCallback(async (endpoint, body) => {
         const res = await fetch(`${restUrl}subscribe/${slug}${endpoint}`, {
@@ -45,6 +46,8 @@ export function SubscriptionFormApp({ config }) {
 
     const handleSubmit = useCallback(async (e) => {
         e.preventDefault();
+        if (submittingRef.current) return;
+        submittingRef.current = true;
         setError(null);
         setState(STATE.SUBMITTING);
 
@@ -78,6 +81,8 @@ export function SubscriptionFormApp({ config }) {
         } catch {
             setError('An error occurred. Please try again.');
             setState(STATE.FORM);
+        } finally {
+            submittingRef.current = false;
         }
     }, [values, apiCall, redirectUrl, resetCooldown]);
 

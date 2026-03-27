@@ -2,12 +2,32 @@ import { useEffect, useRef, useCallback } from 'preact/hooks';
 import { X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
+const FOCUSABLE = 'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 export function Dialog({ open, onClose, children, className }) {
     const overlayRef = useRef(null);
     const contentRef = useRef(null);
 
     const handleKeyDown = useCallback((e) => {
-        if (e.key === 'Escape' && onClose) onClose();
+        if (e.key === 'Escape' && onClose) {
+            onClose();
+            return;
+        }
+
+        // Focus trap
+        if (e.key === 'Tab' && contentRef.current) {
+            const focusable = contentRef.current.querySelectorAll(FOCUSABLE);
+            const first = focusable[0];
+            const last = focusable[focusable.length - 1];
+
+            if (e.shiftKey && document.activeElement === first) {
+                e.preventDefault();
+                last?.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+                e.preventDefault();
+                first?.focus();
+            }
+        }
     }, [onClose]);
 
     const handleOverlayClick = useCallback((e) => {
@@ -38,6 +58,8 @@ export function Dialog({ open, onClose, children, className }) {
             <div
                 ref={contentRef}
                 tabIndex={-1}
+                role="dialog"
+                aria-modal="true"
                 className={cn('wsms-auth-dialog', className)}
             >
                 <button

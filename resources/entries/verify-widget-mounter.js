@@ -27,6 +27,9 @@
         if (input[LISTENER_KEY]) {
             input.removeEventListener('blur', input[LISTENER_KEY].blur);
             input.removeEventListener('change', input[LISTENER_KEY].change);
+            if (input[LISTENER_KEY].form) {
+                input[LISTENER_KEY].form.removeEventListener('reset', input[LISTENER_KEY].reset);
+            }
         }
 
         var lastValue = '';
@@ -61,9 +64,18 @@
             }
         }
 
+        // Reset lastValue when form is reset (CF7/WPForms clear fields but the
+        // same value on re-entry shouldn't be skipped if the token was cleared).
+        function onReset() {
+            lastValue = '';
+        }
+
+        var form = input.closest('form');
+
         input.addEventListener('blur', onBlur);
         input.addEventListener('change', onChange);
-        input[LISTENER_KEY] = { blur: onBlur, change: onChange };
+        if (form) form.addEventListener('reset', onReset);
+        input[LISTENER_KEY] = { blur: onBlur, change: onChange, reset: onReset, form: form };
     }
 
     function scanAndInit(root) {

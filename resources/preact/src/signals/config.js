@@ -20,19 +20,28 @@ export const trustedDevicesConfig = computed(() => authConfig.value?.trusted_dev
 export const formRedirectUrl = computed(() => authConfig.value?.form_redirect_url ?? null);
 export const formName = computed(() => authConfig.value?.form_name ?? null);
 
+let configLoadId = 0;
+
 export async function loadConfig(fSlug = null, { force = false } = {}) {
     if (!force && (authConfig.value || configLoading.value)) return;
 
+    const thisLoadId = ++configLoadId;
     configLoading.value = true;
     try {
         const params = fSlug ? `?form=${encodeURIComponent(fSlug)}` : '';
         const data = await api.get(`/auth/config${params}`);
+
+        // Discard stale response if another loadConfig was called while we were waiting.
+        if (thisLoadId !== configLoadId) return;
+
         authConfig.value = data;
 
         if (!isPreviewMode.value && data.branding) {
             brandingConfig.value = data.branding;
         }
     } finally {
-        configLoading.value = false;
+        if (thisLoadId === configLoadId) {
+            configLoading.value = false;
+        }
     }
 }

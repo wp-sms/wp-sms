@@ -2,6 +2,7 @@ import { LocationProvider, Router, Route, ErrorBoundary } from 'preact-iso';
 import { useEffect } from 'preact/hooks';
 import { signal } from '@preact/signals';
 import { loadConfig, formSlug } from './signals/config';
+import { clearAuth } from './signals/auth';
 import { isPreviewMode } from './signals/branding';
 import { authUrl, getBaseUrl } from './utils/urls';
 import { Dialog } from './components/ui/Dialog';
@@ -79,6 +80,7 @@ function FullPageApp() {
 
 function closePopup() {
     popupOpen.value = false;
+    clearAuth();
 }
 
 function PopupApp() {

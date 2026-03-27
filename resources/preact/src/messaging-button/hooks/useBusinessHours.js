@@ -40,7 +40,7 @@ export function useBusinessHours(businessHoursConfig) {
             );
 
             if (!todaySchedule || !todaySchedule.open || !todaySchedule.close) {
-                setIsOnline(false);
+                setIsOnline((prev) => prev === false ? prev : false);
                 return;
             }
 
@@ -49,13 +49,29 @@ export function useBusinessHours(businessHoursConfig) {
             const nowMinutes = currentTime.hour * 60 + currentTime.minute;
             const openMinutes = openH * 60 + openM;
             const closeMinutes = closeH * 60 + closeM;
+            const online = nowMinutes >= openMinutes && nowMinutes < closeMinutes;
 
-            setIsOnline(nowMinutes >= openMinutes && nowMinutes < closeMinutes);
+            setIsOnline((prev) => prev === online ? prev : online);
         };
 
         checkHours();
-        const interval = setInterval(checkHours, 60000);
-        return () => clearInterval(interval);
+        let interval = setInterval(checkHours, 60000);
+
+        const onVisibility = () => {
+            if (document.hidden) {
+                clearInterval(interval);
+                interval = null;
+            } else {
+                checkHours();
+                interval = setInterval(checkHours, 60000);
+            }
+        };
+        document.addEventListener('visibilitychange', onVisibility);
+
+        return () => {
+            clearInterval(interval);
+            document.removeEventListener('visibilitychange', onVisibility);
+        };
     }, [businessHoursConfig]);
 
     const offlineMessage = useMemo(() => {

@@ -126,13 +126,13 @@
     justify-content: center;
     width: 40px;
     height: 40px;
-    border: 1px solid var(--wsms-vw-border);
-    border-radius: var(--wsms-vw-radius);
+    border: 1px solid var(--wsms-vw-border) !important;
+    border-radius: var(--wsms-vw-radius) !important;
     font-size: 18px;
     font-weight: 600;
     font-family: inherit;
     color: var(--wsms-vw-text);
-    background: #fff;
+    background: var(--wsms-vw-bg) !important;
     transition: border-color 0.15s, box-shadow 0.15s;
 }
 
@@ -228,7 +228,7 @@
     align-items: center;
     gap: 8px;
     padding: 8px 12px;
-    background: rgba(70, 180, 80, 0.08);
+    background: color-mix(in srgb, var(--wsms-vw-success) 8%, transparent);
     border-radius: var(--wsms-vw-radius);
     color: var(--wsms-vw-success);
     font-size: 14px;

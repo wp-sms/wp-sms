@@ -15,8 +15,7 @@ function mountForms() {
 
         if (!config) return;
 
-        // Add slug to config for API calls.
-        config.slug = slug;
+        const formConfig = { ...config, slug };
 
         // Apply branding color as CSS variable.
         if (config.primaryColor) {
@@ -24,7 +23,7 @@ function mountForms() {
         }
 
         el.dataset.wsmsMounted = '1';
-        render(<SubscriptionFormApp config={config} />, el);
+        render(<SubscriptionFormApp config={formConfig} />, el);
     });
 }
 

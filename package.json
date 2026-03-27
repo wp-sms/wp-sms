@@ -14,7 +14,7 @@
     "dev:cf7-phone": "vite build -c vite.config.cf7-phone.mjs --watch",
     "build": "npm run build:dashboard && npm run build:scripts && npm run build:sass && npm run build:blocks && rm -rf public/auth && npm run build:vendor && npm run build:auth && npm run build:verify-widget && npm run build:messaging-button && npm run build:subscription-form && npm run build:cf7-phone",
     "build:dashboard": "vite build",
-    "build:scripts": "ENTRY=admin vite build -c vite.config.entries.mjs && ENTRY=frontend vite build -c vite.config.entries.mjs",
+    "build:scripts": "ENTRY=admin vite build -c vite.config.entries.mjs",
     "build:sass": "sass resources/scss/admin.scss:public/css/admin.css resources/scss/frontend.scss:public/css/frontend.css --style=compressed --no-source-map",
     "build:blocks": "wp-scripts build --config webpack.config.cjs --webpack-src-dir=resources/blocks --output-path=public/blocks",
     "build:vendor": "vite build --config vite.config.vendor.mjs",

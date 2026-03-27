@@ -33,16 +33,22 @@
         "Liberation Mono", monospace;
 }
 
-/* === Base Reset === */
+/* === Base Reset (scoped to auth containers to avoid leaking on fullpage) === */
 
-*, *::before, *::after {
+:host *,
+:host *::before,
+:host *::after,
+#wsms-auth *,
+#wsms-auth *::before,
+#wsms-auth *::after {
     box-sizing: border-box;
     border-width: 0;
     border-style: solid;
     border-color: var(--border);
 }
 
-*:focus-visible {
+:host *:focus-visible,
+#wsms-auth *:focus-visible {
     outline-color: color-mix(in srgb, var(--ring) 50%, transparent);
 }
 
@@ -60,6 +66,13 @@
 @keyframes wsms-blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wsms-auth-fade-in,
+    .wsms-auth-otp-caret,
+    .wsms-auth-passkey-icon--prompting { animation: none; }
+    .wsms-auth-spinner { animation-duration: 1.5s; }
 }
 
 /* === Utility Classes === */
@@ -543,15 +556,15 @@
 }
 
 .wsms-auth-badge--verified {
-    background-color: #f0fdf4;
-    color: #15803d;
-    border-color: #bbf7d0;
+    background-color: color-mix(in srgb, var(--success) 10%, transparent);
+    color: var(--success);
+    border-color: color-mix(in srgb, var(--success) 30%, transparent);
 }
 
 .wsms-auth-badge--unverified {
-    background-color: #fffbeb;
-    color: #b45309;
-    border-color: #fde68a;
+    background-color: color-mix(in srgb, var(--destructive) 8%, var(--background));
+    color: var(--destructive);
+    border-color: color-mix(in srgb, var(--destructive) 25%, transparent);
 }
 
 .wsms-auth-badge--not-set {

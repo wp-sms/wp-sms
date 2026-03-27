@@ -51,5 +51,6 @@ export function clearAuth() {
     pendingMfa.value = null;
     authError.value = null;
     authLoading.value = false;
+    isRedirecting.value = false;
     resetIdentifyFlow({ keepRemembered: true });
 }

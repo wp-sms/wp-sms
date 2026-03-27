@@ -20,6 +20,7 @@ async function apiPost(endpoint, body, sessionToken) {
         headers,
         credentials: 'same-origin',
         body: JSON.stringify(body),
+        signal: AbortSignal.timeout(15000),
     });
 
     let data;
