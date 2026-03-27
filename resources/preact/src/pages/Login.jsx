@@ -57,7 +57,7 @@ export function Login() {
             Skip for now
         </AuthLink>
     ) : step === 'login_verify' ? null : step === 'identifier' ? (
-        <div className="flex gap-4">
+        <div className="wsms-auth-flex-gap">
             {hasPassword && <AuthLink href={authUrl('/forgot-password')}>Forgot password?</AuthLink>}
             <AuthLink href={authUrl('/register')}>Create account</AuthLink>
         </div>
@@ -67,7 +67,7 @@ export function Login() {
 
     return (
         <AuthLayout title={TITLES[step] || 'Sign In'} footer={footer}>
-            <div className="animate-fade-in">
+            <div className="wsms-auth-fade-in">
                 {step === 'identifier' && <IdentifierStep />}
                 {step === 'authenticate' && <AuthenticateStep />}
                 {step === 'mfa' && <MfaStep />}

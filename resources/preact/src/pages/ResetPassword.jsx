@@ -65,10 +65,10 @@ export function ResetPassword() {
 
     return (
         <AuthLayout title="Reset Password">
-            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
+            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
+            <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
+                <div className="wsms-auth-stack-2">
                     <Label for="wsms-new-pass">New Password</Label>
                     <Input
                         ref={passwordRef}
@@ -81,7 +81,7 @@ export function ResetPassword() {
                         autoComplete="new-password"
                     />
                 </div>
-                <div className="space-y-2">
+                <div className="wsms-auth-stack-2">
                     <Label for="wsms-confirm-pass">Confirm Password</Label>
                     <Input
                         id="wsms-confirm-pass"
@@ -93,7 +93,7 @@ export function ResetPassword() {
                         autoComplete="new-password"
                     />
                 </div>
-                <Button className="w-full" type="submit" disabled={authLoading.value}>
+                <Button className="wsms-auth-full" type="submit" disabled={authLoading.value}>
                     {authLoading.value ? 'Resetting\u2026' : 'Reset Password'}
                 </Button>
             </form>

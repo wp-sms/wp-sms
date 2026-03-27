@@ -125,19 +125,19 @@ export function AuthenticateStep() {
     // Method picker overlay.
     if (showMethodPicker) {
         return (
-            <div className="space-y-4 animate-fade-in">
-                <p className="text-sm text-muted-foreground text-center">Choose a sign-in method</p>
+            <div className="wsms-auth-stack-4 wsms-auth-fade-in">
+                <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-center">Choose a sign-in method</p>
                 {methods.map((m) => (
                     <Button
                         key={m.method}
                         variant="outline"
-                        className="w-full"
+                        className="wsms-auth-full"
                         onClick={() => switchMethod(m.method)}
                     >
                         {getMethodLabel(m.method)}
                     </Button>
                 ))}
-                <Button variant="link" className="w-full" onClick={() => setShowMethodPicker(false)}>
+                <Button variant="link" className="wsms-auth-full" onClick={() => setShowMethodPicker(false)}>
                     Cancel
                 </Button>
             </div>
@@ -145,18 +145,18 @@ export function AuthenticateStep() {
     }
 
     return (
-        <div className="space-y-4 animate-fade-in">
-            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
-            <Alert variant="success" message={successMsg} className="mb-4" />
+        <div className="wsms-auth-stack-4 wsms-auth-fade-in">
+            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
+            <Alert variant="success" message={successMsg} className="wsms-auth-mb-4" />
 
-            <p className="text-sm text-muted-foreground text-center">
+            <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-center">
                 Signing in as <strong>{maskedId}</strong>
             </p>
 
             {/* Password form */}
             {activeMethod === 'password' && (
-                <form onSubmit={handlePasswordSubmit} className="space-y-4">
-                    <div className="space-y-2">
+                <form onSubmit={handlePasswordSubmit} className="wsms-auth-stack-4">
+                    <div className="wsms-auth-stack-2">
                         <Label for="wsms-password">Password</Label>
                         <Input
                             ref={passwordRef}
@@ -177,12 +177,12 @@ export function AuthenticateStep() {
                             resetRef={captcha.resetRef}
                         />
                     )}
-                    <Button className="w-full" type="submit" disabled={authLoading.value || (needsCaptcha && !captcha.token)}>
+                    <Button className="wsms-auth-full" type="submit" disabled={authLoading.value || (needsCaptcha && !captcha.token)}>
                         {authLoading.value ? 'Signing in...' : 'Continue'}
                     </Button>
 
                     {hasOtpAlt && altOtpMethod && (
-                        <div className="text-center">
+                        <div className="wsms-auth-center">
                             <Button variant="link" type="button" onClick={() => switchMethod(altOtpMethod.method)}>
                                 {altOtpMethod.channel === 'email' ? 'Email me a code instead' : 'Text me a code instead'}
                             </Button>
@@ -193,7 +193,7 @@ export function AuthenticateStep() {
 
             {/* OTP send flow */}
             {activeMethod && activeMethod !== 'password' && !activeMethod.includes('magic_link') && !codeSent && (
-                <div className="space-y-4">
+                <div className="wsms-auth-stack-4">
                     {needsCaptcha && (
                         <CaptchaWidget
                             provider={captcha.provider}
@@ -203,7 +203,7 @@ export function AuthenticateStep() {
                         />
                     )}
                     <Button
-                        className="w-full"
+                        className="wsms-auth-full"
                         onClick={() => sendChallenge(activeMethod)}
                         disabled={authLoading.value || (needsCaptcha && !captcha.token)}
                     >
@@ -211,7 +211,7 @@ export function AuthenticateStep() {
                     </Button>
 
                     {hasPasswordAlt && (
-                        <div className="text-center">
+                        <div className="wsms-auth-center">
                             <Button variant="link" type="button" onClick={() => switchMethod('password')}>
                                 Use password instead
                             </Button>
@@ -222,7 +222,7 @@ export function AuthenticateStep() {
 
             {/* Magic link only */}
             {activeMethod && activeMethod.includes('magic_link') && !successMsg && (
-                <div className="space-y-4">
+                <div className="wsms-auth-stack-4">
                     {needsCaptcha && (
                         <CaptchaWidget
                             provider={captcha.provider}
@@ -232,7 +232,7 @@ export function AuthenticateStep() {
                         />
                     )}
                     <Button
-                        className="w-full"
+                        className="wsms-auth-full"
                         onClick={() => sendChallenge(activeMethod)}
                         disabled={authLoading.value || (needsCaptcha && !captcha.token)}
                     >
@@ -240,7 +240,7 @@ export function AuthenticateStep() {
                     </Button>
 
                     {hasPasswordAlt && (
-                        <div className="text-center">
+                        <div className="wsms-auth-center">
                             <Button variant="link" type="button" onClick={() => switchMethod('password')}>
                                 Use password instead
                             </Button>
@@ -251,7 +251,7 @@ export function AuthenticateStep() {
 
             {/* All methods link */}
             {alternativeMethods.length > 1 && (
-                <div className="text-center">
+                <div className="wsms-auth-center">
                     <Button variant="link" type="button" onClick={() => setShowMethodPicker(true)}>
                         Use a different method
                     </Button>
@@ -259,7 +259,7 @@ export function AuthenticateStep() {
             )}
 
             {/* Back to identifier */}
-            <div className="text-center">
+            <div className="wsms-auth-center">
                 <Button variant="link" type="button" onClick={resetIdentifyFlow}>
                     Not {maskedId}? Use a different account
                 </Button>

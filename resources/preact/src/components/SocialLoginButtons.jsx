@@ -3,16 +3,15 @@ import { Button } from './ui/Button';
 
 export function SocialLoginButtons({ intent = 'login' }) {
     const providers = socialProviders.value;
-
     if (!providers.length) return null;
 
     return (
-        <div className="space-y-2">
+        <div className="wsms-auth-stack-2">
             {providers.map((provider) => (
                 <Button
                     key={provider.id}
                     variant="outline"
-                    className="w-full"
+                    className="wsms-auth-full"
                     type="button"
                     onClick={() => {
                         const url = new URL(provider.authorize_url, window.location.origin);
@@ -21,7 +20,7 @@ export function SocialLoginButtons({ intent = 'login' }) {
                     }}
                 >
                     <span
-                        className="mr-2 inline-flex"
+                        className="wsms-auth-social-icon"
                         dangerouslySetInnerHTML={{ __html: provider.icon }}
                     />
                     Continue with {provider.name}

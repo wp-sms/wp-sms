@@ -169,24 +169,24 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
     return (
         <div
             className={cn(
-                'rounded-lg border transition-colors overflow-hidden',
-                enrolled ? 'border-success/50 bg-success/5' : 'border-border',
+                'wsms-auth-mfa-card',
+                enrolled && 'wsms-auth-mfa-card--enrolled',
             )}
         >
-            <div className="flex items-center gap-3 p-4">
-                <meta.icon className="size-5 shrink-0 text-muted-foreground" />
-                <div className="flex-1 min-w-0">
-                    <div className="text-sm font-semibold">{meta.label}</div>
-                    <div className="text-xs text-muted-foreground">{meta.description}</div>
+            <div className="wsms-auth-mfa-card__header">
+                <meta.icon className="wsms-auth-mfa-card__icon" />
+                <div className="wsms-auth-mfa-card__info">
+                    <div className="wsms-auth-mfa-card__name">{meta.label}</div>
+                    <div className="wsms-auth-mfa-card__desc">{meta.description}</div>
                 </div>
-                <div className="shrink-0 flex gap-2">
+                <div className="wsms-auth-mfa-card__actions">
                     {enrolled && method.id === 'passkey' && (
                         <Button variant="outline" size="sm" onClick={handleEnable} disabled={loading}>
                             Add
                         </Button>
                     )}
                     {enrolled ? (
-                        <Button variant="outline" size="sm" onClick={handleDisable} className="text-destructive hover:text-destructive">
+                        <Button variant="outline" size="sm" onClick={handleDisable}>
                             Disable
                         </Button>
                     ) : (
@@ -198,9 +198,9 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
             </div>
 
             {expanding && !enrolled && method.id === 'phone' && !verifying && (
-                <div className="px-4 pb-4 space-y-3 animate-fade-in">
-                    {error && <p className="text-sm text-destructive">{error}</p>}
-                    <div className="space-y-2">
+                <div className="wsms-auth-mfa-card__body wsms-auth-stack-3 wsms-auth-fade-in">
+                    {error && <p className="wsms-auth-text-sm wsms-auth-text-destructive">{error}</p>}
+                    <div className="wsms-auth-stack-2">
                         <Label>Phone Number</Label>
                         <PhoneInput value={phone} onChange={setPhone} disabled={loading} />
                     </div>
@@ -211,39 +211,39 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
             )}
 
             {expanding && !enrolled && method.id === 'telegram' && telegramLink && (
-                <div className="px-4 pb-4 space-y-3 animate-fade-in">
-                    {error && <p className="text-sm text-destructive">{error}</p>}
-                    <p className="text-sm text-muted-foreground">
+                <div className="wsms-auth-mfa-card__body wsms-auth-stack-3 wsms-auth-fade-in">
+                    {error && <p className="wsms-auth-text-sm wsms-auth-text-destructive">{error}</p>}
+                    <p className="wsms-auth-text-sm wsms-auth-text-muted">
                         Click the button below to open Telegram and link your account.
                     </p>
                     <a
                         href={telegramLink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-md bg-[#26A5E4] px-4 py-2 text-sm font-medium text-white hover:bg-[#1E96D1] transition-colors"
+                        className="wsms-auth-telegram-link"
                     >
-                        <Send className="size-4" />
+                        <Send />
                         Open in Telegram
                     </a>
-                    <p className="text-xs text-muted-foreground">Waiting for confirmation...</p>
+                    <p className="wsms-auth-text-xs wsms-auth-text-muted">Waiting for confirmation...</p>
                 </div>
             )}
 
             {expanding && !enrolled && method.id === 'totp' && totpEnroll && (
-                <div className="px-4 pb-4 space-y-4 animate-fade-in">
-                    {error && <p className="text-sm text-destructive">{error}</p>}
-                    <div className="flex justify-center">
-                        <img src={totpEnroll.qrCodeUri} alt="QR code for authenticator app setup. Use the manual key below if you cannot scan." className="w-48 h-48" />
+                <div className="wsms-auth-mfa-card__body wsms-auth-stack-4 wsms-auth-fade-in">
+                    {error && <p className="wsms-auth-text-sm wsms-auth-text-destructive">{error}</p>}
+                    <div className="wsms-auth-flex-center">
+                        <img src={totpEnroll.qrCodeUri} alt="QR code for authenticator app setup. Use the manual key below if you cannot scan." className="wsms-auth-qr-image" />
                     </div>
-                    <details className="text-sm">
-                        <summary className="cursor-pointer text-muted-foreground">
+                    <details className="wsms-auth-text-sm">
+                        <summary className="wsms-auth-totp-summary">
                             Can't scan? Enter this key manually
                         </summary>
-                        <code className="mt-2 block rounded bg-muted p-2 text-xs font-mono break-all select-all" aria-label="Manual setup key for authenticator app">
+                        <code className="wsms-auth-totp-secret" aria-label="Manual setup key for authenticator app">
                             {totpEnroll.secret}
                         </code>
                     </details>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="wsms-auth-text-sm wsms-auth-text-muted">
                         Enter the 6-digit code from your app to verify setup
                     </p>
                     <OtpInput onComplete={(code) => handleVerifyEnrollment('totp', code)} disabled={loading} />
@@ -251,10 +251,10 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
             )}
 
             {expanding && method.id === 'passkey' && (
-                <div className="px-4 pb-4 space-y-3 animate-fade-in text-center">
-                    {error && <p className="text-sm text-destructive">{error}</p>}
-                    <Fingerprint className="mx-auto size-10 text-muted-foreground animate-pulse" />
-                    <p className="text-sm text-muted-foreground">
+                <div className="wsms-auth-mfa-card__body wsms-auth-stack-3 wsms-auth-fade-in wsms-auth-center">
+                    {error && <p className="wsms-auth-text-sm wsms-auth-text-destructive">{error}</p>}
+                    <Fingerprint className="wsms-auth-passkey-icon wsms-auth-passkey-icon--prompting" style={{ width: '2.5rem', height: '2.5rem' }} />
+                    <p className="wsms-auth-text-sm wsms-auth-text-muted">
                         {passkeyPrompting
                             ? "Follow your browser's prompts to register your passkey..."
                             : enrolled
@@ -265,12 +265,12 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
             )}
 
             {enrolled && method.id === 'passkey' && passkeyCredentials.length > 0 && !expanding && (
-                <div className="px-4 pb-4 space-y-2">
+                <div className="wsms-auth-mfa-card__body wsms-auth-stack-2">
                     {passkeyCredentials.map((cred) => (
-                        <div key={cred.id} className="flex items-center justify-between rounded-md border border-border/50 px-3 py-2">
-                            <div className="min-w-0">
-                                <div className="text-sm font-medium truncate">{cred.name}</div>
-                                <div className="text-xs text-muted-foreground">
+                        <div key={cred.id} className="wsms-auth-passkey-credential">
+                            <div className="wsms-auth-passkey-credential__info">
+                                <div className="wsms-auth-passkey-credential__name">{cred.name}</div>
+                                <div className="wsms-auth-passkey-credential__meta">
                                     {cred.device_type === 'multiDevice' ? 'Synced' : 'Device-bound'}
                                     {cred.backed_up && ' \u00b7 Backed up'}
                                     {cred.created_at && ` \u00b7 ${new Date(cred.created_at).toLocaleDateString()}`}
@@ -279,10 +279,10 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                             <button
                                 type="button"
                                 onClick={() => handleRemoveCredential(cred.id)}
-                                className="shrink-0 p-1 rounded-md text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"
+                                className="wsms-auth-passkey-credential__remove"
                                 aria-label={`Remove ${cred.name}`}
                             >
-                                <X className="size-4" />
+                                <X />
                             </button>
                         </div>
                     ))}
@@ -290,9 +290,9 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
             )}
 
             {verifying && (
-                <div className="px-4 pb-4 space-y-3 animate-fade-in">
-                    {error && <p className="text-sm text-destructive">{error}</p>}
-                    <p className="text-sm text-muted-foreground">Enter the code sent to your phone</p>
+                <div className="wsms-auth-mfa-card__body wsms-auth-stack-3 wsms-auth-fade-in">
+                    {error && <p className="wsms-auth-text-sm wsms-auth-text-destructive">{error}</p>}
+                    <p className="wsms-auth-text-sm wsms-auth-text-muted">Enter the code sent to your phone</p>
                     <OtpInput onComplete={(code) => handleVerifyEnrollment('phone', code)} disabled={loading} />
                 </div>
             )}

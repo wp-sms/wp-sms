@@ -2,9 +2,9 @@ import { Spinner } from './Spinner';
 
 export function RedirectingOverlay() {
     return (
-        <div className="flex flex-col items-center gap-3 py-8 animate-fade-in">
-            <Spinner className="size-8" />
-            <p className="text-sm text-muted-foreground">Redirecting…</p>
+        <div className="wsms-auth-loading-center wsms-auth-fade-in">
+            <Spinner className="wsms-auth-spinner--lg" />
+            <p className="wsms-auth-text-sm wsms-auth-text-muted">Redirecting…</p>
         </div>
     );
 }

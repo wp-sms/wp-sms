@@ -17,16 +17,14 @@ const NAV_ITEMS = [
 
 function NavLinks({ currentPath, className, linkClassName }) {
     return (
-        <nav className={cn('flex gap-1', className)}>
+        <nav className={cn('wsms-auth-nav', className)}>
             {NAV_ITEMS.map((item) => (
                 <a
                     key={item.path}
                     href={authUrl(item.path)}
                     className={cn(
-                        'px-3 py-1.5 rounded-md text-sm font-medium transition-colors no-underline',
-                        currentPath === item.path
-                            ? 'bg-primary text-primary-foreground'
-                            : 'text-muted-foreground hover:text-foreground hover:bg-accent',
+                        'wsms-auth-nav-link',
+                        currentPath === item.path && 'wsms-auth-nav-link--active',
                         linkClassName,
                     )}
                 >
@@ -41,24 +39,24 @@ export function AccountLayout({ title, subtitle, currentPath, hideNav, children 
     const user = currentUser.value;
 
     return (
-        <div className="min-h-screen flex flex-col bg-muted p-4 md:p-8 font-sans text-foreground antialiased">
-            <div className="mx-auto w-full max-w-3xl flex-1 space-y-6">
-                <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                    <div className="flex w-full items-center justify-between">
-                        <div className="flex items-center gap-3">
+        <div className="wsms-auth-layout-account">
+            <div className="wsms-auth-layout-account__inner">
+                <div className="wsms-auth-layout-account__topbar">
+                    <div className="wsms-auth-layout-account__topbar-main">
+                        <div className="wsms-auth-layout-account__brand-group">
                             <BrandLogo size="sm" />
                             {!hideNav && (
-                                <div className="hidden md:flex md:items-center md:gap-3">
-                                    <div className="h-5 w-px bg-border" />
+                                <div className="wsms-auth-layout-account__desktop-nav">
+                                    <div className="wsms-auth-layout-account__nav-divider" />
                                     <NavLinks currentPath={currentPath} />
                                 </div>
                             )}
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="wsms-auth-layout-account__user-section">
                             {user && (
-                                <div className="flex items-center gap-2">
+                                <div className="wsms-auth-layout-account__user-info">
                                     <UserAvatar user={user} size="sm" />
-                                    <span className="hidden text-sm font-medium sm:inline">
+                                    <span className="wsms-auth-layout-account__user-name">
                                         {user.display_name || user.username}
                                     </span>
                                 </div>
@@ -66,7 +64,7 @@ export function AccountLayout({ title, subtitle, currentPath, hideNav, children 
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-muted-foreground hover:bg-red-50 hover:text-red-600"
+                                className="wsms-auth-layout-account__signout"
                                 onClick={logout}
                             >
                                 Sign Out
@@ -76,15 +74,14 @@ export function AccountLayout({ title, subtitle, currentPath, hideNav, children 
                     {!hideNav && (
                         <NavLinks
                             currentPath={currentPath}
-                            className="overflow-x-auto md:hidden"
-                            linkClassName="flex-1 text-center whitespace-nowrap"
+                            className="wsms-auth-layout-account__mobile-nav"
                         />
                     )}
                 </div>
 
-                <Card className="animate-fade-in">
+                <Card className="wsms-auth-fade-in">
                     <CardHeader>
-                        <CardTitle className="text-xl">{title}</CardTitle>
+                        <CardTitle className="wsms-auth-text-xl">{title}</CardTitle>
                         {subtitle && <CardDescription>{subtitle}</CardDescription>}
                     </CardHeader>
                     <CardContent>{children}</CardContent>

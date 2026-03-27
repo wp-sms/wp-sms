@@ -14,9 +14,9 @@ function getInitials(user) {
 }
 
 const SIZE_CLASSES = {
-    sm: 'size-8 text-xs',
-    md: 'size-10 text-sm',
-    lg: 'size-14 text-lg',
+    sm: 'wsms-auth-avatar--sm',
+    md: 'wsms-auth-avatar--md',
+    lg: 'wsms-auth-avatar--lg',
 };
 
 export function UserAvatar({ user, size = 'md', className }) {
@@ -30,24 +30,14 @@ export function UserAvatar({ user, size = 'md', className }) {
             <img
                 src={avatarUrl}
                 alt=""
-                className={cn(
-                    'shrink-0 rounded-full object-cover',
-                    SIZE_CLASSES[size],
-                    className,
-                )}
+                className={cn('wsms-auth-avatar wsms-auth-avatar--img', SIZE_CLASSES[size], className)}
                 onError={() => setImgFailed(true)}
             />
         );
     }
 
     return (
-        <span
-            className={cn(
-                'flex shrink-0 items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground',
-                SIZE_CLASSES[size],
-                className,
-            )}
-        >
+        <span className={cn('wsms-auth-avatar wsms-auth-avatar--initials', SIZE_CLASSES[size], className)}>
             {getInitials(user)}
         </span>
     );

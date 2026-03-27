@@ -96,8 +96,8 @@ export function IdentifierStep() {
     // If we have a remembered identifier, show a returning user view while loading.
     if (remembered && authLoading.value) {
         return (
-            <div className="space-y-4 text-center">
-                <p className="text-sm text-muted-foreground">
+            <div className="wsms-auth-stack-4 wsms-auth-center">
+                <p className="wsms-auth-text-sm wsms-auth-text-muted">
                     Signing in as <strong>{remembered}</strong>...
                 </p>
             </div>
@@ -115,13 +115,13 @@ export function IdentifierStep() {
     );
 
     return (
-        <div className="space-y-4">
-            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
+        <div className="wsms-auth-stack-4">
+            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
 
             {socialPos === 'top' && socialBlock}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
+            <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
+                <div className="wsms-auth-stack-2">
                     <Label for="wsms-identifier">{identifierLabel}</Label>
                     <Input
                         ref={identifierRef}
@@ -135,7 +135,7 @@ export function IdentifierStep() {
                         autoComplete="username"
                     />
                 </div>
-                <Button className="w-full" type="submit" disabled={authLoading.value || !identifier.trim()}>
+                <Button className="wsms-auth-full" type="submit" disabled={authLoading.value || !identifier.trim()}>
                     {authLoading.value ? 'Checking...' : 'Continue'}
                 </Button>
             </form>
@@ -143,7 +143,7 @@ export function IdentifierStep() {
             {socialPos === 'bottom' && socialBlock}
 
             {remembered && !authLoading.value && (
-                <div className="text-center">
+                <div className="wsms-auth-center">
                     <Button variant="link" type="button" onClick={handleNotYou}>
                         Not you? Use a different account
                     </Button>

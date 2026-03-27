@@ -65,6 +65,7 @@ export function Profile() {
     const emailCodeLength = details.email?.code_length;
     const phoneCodeLength = details.phone?.code_length;
     const customFieldDefs = profileFieldDefs.value.filter((def) => !SYSTEM_FIELD_IDS.includes(def.id));
+    const hasPhone = enabledChannels.value.includes('phone');
 
     function updateField(name, value) {
         setForm((prev) => ({ ...prev, [name]: value }));
@@ -173,15 +174,15 @@ export function Profile() {
 
     return (
         <AccountLayout title="Profile" subtitle="Manage your account information" currentPath="/profile">
-            <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="mb-4" />
-            <Alert variant="success" message={success} className="mb-4" />
+            <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="wsms-auth-mb-4" />
+            <Alert variant="success" message={success} className="wsms-auth-mb-4" />
 
             {/* Avatar Section */}
             {user && (
-                <div className="mb-6 flex items-center gap-4">
+                <div className="wsms-auth-avatar-section">
                     <UserAvatar user={user} size="lg" />
-                    <div className="space-y-1">
-                        <div className="flex gap-2">
+                    <div className="wsms-auth-avatar-section__actions">
+                        <div className="wsms-auth-avatar-section__buttons">
                             <Button
                                 variant="outline"
                                 size="sm"
@@ -201,24 +202,24 @@ export function Profile() {
                                 </Button>
                             )}
                         </div>
-                        <p className="text-xs text-muted-foreground">JPG, PNG, GIF, or WebP. Max 2MB.</p>
+                        <p className="wsms-auth-text-xs wsms-auth-text-muted">JPG, PNG, GIF, or WebP. Max 2MB.</p>
                     </div>
                     <input
                         ref={fileInputRef}
                         type="file"
                         accept="image/jpeg,image/png,image/gif,image/webp"
-                        className="hidden"
+                        className="wsms-auth-hidden"
                         onChange={handleAvatarUpload}
                     />
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="wsms-auth-stack-6">
                 {/* Section 1: Personal Information */}
-                <div className="space-y-4">
-                    <h3 className="text-sm font-semibold text-foreground">Personal Information</h3>
+                <div className="wsms-auth-stack-4">
+                    <h3 className="wsms-auth-section-title">Personal Information</h3>
 
-                    <div className="space-y-2">
+                    <div className="wsms-auth-stack-2">
                         <Label for="wsms-prof-name">Display Name</Label>
                         <Input
                             id="wsms-prof-name"
@@ -230,8 +231,8 @@ export function Profile() {
                         />
                     </div>
 
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <div className="space-y-2">
+                    <div className="wsms-auth-profile-grid">
+                        <div className="wsms-auth-stack-2">
                             <Label for="wsms-prof-first-name">First Name</Label>
                             <Input
                                 id="wsms-prof-first-name"
@@ -243,7 +244,7 @@ export function Profile() {
                             />
                         </div>
 
-                        <div className="space-y-2">
+                        <div className="wsms-auth-stack-2">
                             <Label for="wsms-prof-last-name">Last Name</Label>
                             <Input
                                 id="wsms-prof-last-name"
@@ -260,11 +261,11 @@ export function Profile() {
                 <Separator />
 
                 {/* Section 2: Contact & Verification */}
-                <div className="space-y-4">
-                    <h3 className="text-sm font-semibold text-foreground">Contact & Verification</h3>
+                <div className="wsms-auth-stack-4">
+                    <h3 className="wsms-auth-section-title">Contact & Verification</h3>
 
-                    <div className="space-y-2">
-                        <div className="flex items-center justify-between">
+                    <div className="wsms-auth-stack-2">
+                        <div className="wsms-auth-row-between">
                             <Label for="wsms-prof-email">Email</Label>
                             {user && !user.has_placeholder_email && (
                                 <StatusBadge variant={user.email_verified ? 'verified' : 'unverified'} />
@@ -283,12 +284,12 @@ export function Profile() {
                         {enabledChannels.value.includes('email') && user && !user.has_placeholder_email && !user.email_verified && !showEmailOtp && (
                             <div>
                                 {emailSent ? (
-                                    <p className="text-xs text-green-600">Verification email sent! Check your inbox.</p>
+                                    <p className="wsms-auth-text-xs wsms-auth-text-green">Verification email sent! Check your inbox.</p>
                                 ) : (
                                     <Button
                                         variant="link"
                                         type="button"
-                                        className="h-auto p-0 text-xs"
+                                        className="wsms-auth-verify-link"
                                         onClick={handleSendEmailVerification}
                                         disabled={emailSending}
                                     >
@@ -305,14 +306,14 @@ export function Profile() {
                                 onError={setError}
                                 label="Enter the code sent to your email"
                                 codeLength={emailCodeLength}
-                                className="pt-2"
+                                className="wsms-auth-pt-2"
                             />
                         )}
                     </div>
 
-                    {enabledChannels.value.includes('phone') && (
-                        <div className="space-y-2">
-                            <div className="flex items-center justify-between">
+                    {hasPhone && (
+                        <div className="wsms-auth-stack-2">
+                            <div className="wsms-auth-row-between">
                                 <Label>Phone Number</Label>
                                 {user && user.phone && (
                                     <StatusBadge variant={user.phone_verified ? 'verified' : 'unverified'} />
@@ -327,7 +328,7 @@ export function Profile() {
                                 <Button
                                     variant="link"
                                     type="button"
-                                    className="h-auto p-0 text-xs"
+                                    className="wsms-auth-verify-link"
                                     onClick={handleSendPhoneVerification}
                                     disabled={phoneSending}
                                 >
@@ -342,7 +343,7 @@ export function Profile() {
                                     onError={setError}
                                     label="Enter the code sent to your phone"
                                     codeLength={phoneCodeLength}
-                                    className="pt-2"
+                                    className="wsms-auth-pt-2"
                                 />
                             )}
                         </div>
@@ -353,8 +354,8 @@ export function Profile() {
                 {customFieldDefs.length > 0 && (
                     <>
                         <Separator />
-                        <div className="space-y-4">
-                            <h3 className="text-sm font-semibold text-foreground">Additional Information</h3>
+                        <div className="wsms-auth-stack-4">
+                            <h3 className="wsms-auth-section-title">Additional Information</h3>
                             {customFieldDefs.map((def) => (
                                 <DynamicField
                                     key={def.id}
@@ -368,7 +369,7 @@ export function Profile() {
                     </>
                 )}
 
-                <Button className="w-full" type="submit" disabled={loading}>
+                <Button className="wsms-auth-full" type="submit" disabled={loading}>
                     {loading ? 'Saving\u2026' : 'Save Changes'}
                 </Button>
             </form>

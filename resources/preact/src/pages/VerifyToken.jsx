@@ -62,9 +62,9 @@ export function VerifyToken({
             }
         >
             {status === 'loading' && (
-                <div className="flex flex-col items-center gap-3 py-4">
-                    <Spinner className="size-8" />
-                    <p className="text-sm text-muted-foreground">{loadingText}</p>
+                <div className="wsms-auth-loading-center" style={{ paddingTop: '1rem', paddingBottom: '1rem' }}>
+                    <Spinner className="wsms-auth-spinner--lg" />
+                    <p className="wsms-auth-text-sm wsms-auth-text-muted">{loadingText}</p>
                 </div>
             )}
 

@@ -34,27 +34,20 @@ function SecurityPosture({ user }) {
     const allDone = completed === total;
     const noneDone = completed === 0;
 
-    const barColor = allDone ? 'bg-green-500' : noneDone ? 'bg-red-400' : 'bg-amber-400';
-    const textColor = allDone ? 'text-green-700' : noneDone ? 'text-red-600' : 'text-amber-700';
+    const postureClass = allDone ? 'wsms-auth-security-posture--good' : noneDone ? 'wsms-auth-security-posture--danger' : 'wsms-auth-security-posture--warning';
 
     return (
-        <div className="mb-6 rounded-lg border bg-card p-4">
-            <div className="mb-3 flex items-center justify-between">
-                <span className={`text-sm font-semibold ${textColor}`}>
+        <div className={`wsms-auth-security-posture ${postureClass}`}>
+            <div className="wsms-auth-security-posture__header">
+                <span>
                     {completed} of {total} security steps completed
                 </span>
             </div>
-
-            {/* Segment indicators */}
-            <div className="flex gap-1.5">
+            <div className="wsms-auth-security-posture__segments">
                 {steps.map((step) => (
-                    <div key={step.label} className="flex-1 space-y-1">
-                        <div
-                            className={`h-1.5 rounded-full ${step.done ? barColor : 'bg-muted'}`}
-                        />
-                        <div
-                            className={`text-[10px] leading-tight ${step.done ? 'font-medium text-foreground' : 'text-muted-foreground'}`}
-                        >
+                    <div key={step.label} className="wsms-auth-security-posture__segment">
+                        <div className={`wsms-auth-security-posture__bar${step.done ? ' wsms-auth-security-posture__bar--done' : ''}`} />
+                        <div className={`wsms-auth-security-posture__label${step.done ? ' wsms-auth-security-posture__label--done' : ''}`}>
                             {step.label}
                         </div>
                     </div>
@@ -208,9 +201,9 @@ export function Security() {
     if (loading) {
         return (
             <AccountLayout title="Security" currentPath="/security">
-                <div className="flex flex-col items-center gap-3 py-8">
-                    <Spinner className="size-8" />
-                    <p className="text-sm text-muted-foreground">Loading security settings…</p>
+                <div className="wsms-auth-loading-center">
+                    <Spinner className="wsms-auth-spinner--lg" />
+                    <p className="wsms-auth-text-sm wsms-auth-text-muted">Loading security settings…</p>
                 </div>
             </AccountLayout>
         );
@@ -221,18 +214,18 @@ export function Security() {
     return (
         <AccountLayout title="Security" subtitle="Manage your multi-factor authentication methods" currentPath="/security" hideNav={isEnrollmentGated}>
             {isEnrollmentGated && (
-                <Alert variant="info" className="mb-4">
+                <Alert variant="info" className="wsms-auth-mb-4">
                     MFA enrollment is required. Please enable at least one authentication method below to continue.
                 </Alert>
             )}
             {graceNotice && (
-                <Alert variant="info" onDismiss={() => setGraceNotice(null)} className="mb-4">
+                <Alert variant="info" onDismiss={() => setGraceNotice(null)} className="wsms-auth-mb-4">
                     Two-factor authentication will be required in {graceNotice.grace_period_remaining_days} day{graceNotice.grace_period_remaining_days !== 1 ? 's' : ''}.
                     Set it up now on the Security page.
                 </Alert>
             )}
-            <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="mb-4" />
-            <Alert variant="success" message={success} className="mb-4" />
+            <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="wsms-auth-mb-4" />
+            <Alert variant="success" message={success} className="wsms-auth-mb-4" />
 
             {user && <SecurityPosture user={user} />}
 
@@ -243,7 +236,7 @@ export function Security() {
                 />
             )}
 
-            <div className="space-y-3">
+            <div className="wsms-auth-stack-3">
                 {availableMethods.map((method) => (
                     <MfaFactorCard
                         key={method.id}
@@ -259,23 +252,23 @@ export function Security() {
             </div>
 
             {socialProviders.value.length > 0 && (
-                <div className="mt-6 space-y-3">
+                <div className="wsms-auth-stack-3 wsms-auth-mt-6">
                     <Separator />
-                    <h3 className="text-base font-semibold">Linked Accounts</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <h3 className="wsms-auth-section-heading">Linked Accounts</h3>
+                    <p className="wsms-auth-text-sm wsms-auth-text-muted">
                         Connect social accounts for easier sign-in.
                     </p>
-                    <div className="space-y-2">
+                    <div className="wsms-auth-stack-2">
                         {socialProviders.value.map((provider) => {
                             const linked = linkedAccounts.find((a) => a.provider === provider.id);
                             return (
-                                <div key={provider.id} className="flex items-center justify-between rounded-lg border p-3">
-                                    <div className="flex items-center gap-3">
+                                <div key={provider.id} className="wsms-auth-linked-account">
+                                    <div className="wsms-auth-linked-account__info">
                                         <span dangerouslySetInnerHTML={{ __html: provider.icon }} />
                                         <div>
-                                            <div className="text-sm font-medium">{provider.name}</div>
+                                            <div className="wsms-auth-text-sm wsms-auth-font-medium">{provider.name}</div>
                                             {linked && (
-                                                <div className="text-xs text-muted-foreground">{linked.email}</div>
+                                                <div className="wsms-auth-text-xs wsms-auth-text-muted">{linked.email}</div>
                                             )}
                                         </div>
                                     </div>
@@ -296,10 +289,10 @@ export function Security() {
             )}
 
             {isEnrolled('backup_codes') && availableMethods.length > 0 && (
-                <div className="mt-6 space-y-3">
+                <div className="wsms-auth-stack-3 wsms-auth-mt-6">
                     <Separator />
-                    <h3 className="text-base font-semibold">Backup Codes</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <h3 className="wsms-auth-section-heading">Backup Codes</h3>
+                    <p className="wsms-auth-text-sm wsms-auth-text-muted">
                         {getFactorInfo('backup_codes')?.remaining_codes != null
                             ? `${getFactorInfo('backup_codes').remaining_codes} codes remaining`
                             : 'Backup codes are enabled'}

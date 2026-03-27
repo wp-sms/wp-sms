@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { cn } from '@/utils/cn';
 import { api } from '../../api/client';
 import { extractError } from '../../utils/auth';
 import { useResendCooldown } from '../../hooks/useResendCooldown';
@@ -47,13 +48,13 @@ export function OtpVerifyInline({ verifyEndpoint, resendEndpoint, headers, onVer
     }
 
     return (
-        <div className={`space-y-3 ${className || ''}`}>
-            <p className="text-sm text-muted-foreground text-center">{label}</p>
+        <div className={cn('wsms-auth-stack-3', className)}>
+            <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-center">{label}</p>
 
             <OtpInput length={codeLength} onComplete={handleVerify} disabled={verifying} autoFocus={autoFocus} />
 
             {resendEndpoint && (
-                <div className="flex justify-center">
+                <div className="wsms-auth-flex-center">
                     <Button variant="link" type="button" onClick={handleResend} disabled={cooldown > 0}>
                         {cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend code'}
                     </Button>

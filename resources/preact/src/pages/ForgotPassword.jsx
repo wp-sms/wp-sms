@@ -46,12 +46,12 @@ export function ForgotPassword() {
             subtitle="Enter your email and we'll send you a reset link."
             footer={<AuthLink href={authUrl('/login')}>Back to login</AuthLink>}
         >
-            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
-            <Alert variant="success" message={success} className="mb-4" />
+            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
+            <Alert variant="success" message={success} className="wsms-auth-mb-4" />
 
             {!success && (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-2">
+                <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
+                    <div className="wsms-auth-stack-2">
                         <Label for="wsms-forgot-email">Email</Label>
                         <Input
                             ref={emailRef}
@@ -72,7 +72,7 @@ export function ForgotPassword() {
                             resetRef={captcha.resetRef}
                         />
                     )}
-                    <Button className="w-full" type="submit" disabled={authLoading.value || (needsCaptcha && !captcha.token)}>
+                    <Button className="wsms-auth-full" type="submit" disabled={authLoading.value || (needsCaptcha && !captcha.token)}>
                         {authLoading.value ? 'Sending\u2026' : 'Send Reset Link'}
                     </Button>
                 </form>

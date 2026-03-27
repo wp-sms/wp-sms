@@ -1,6 +1,7 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
 import { Separator } from '@/components/ui/Separator';
 import { RedirectingOverlay } from '@/components/ui/RedirectingOverlay';
+import { Spinner } from '@/components/ui/Spinner';
 import { BrandLogo } from '@/components/BrandLogo';
 import { SecuredByFooter } from '@/components/SecuredByFooter';
 import { brandingConfig } from '@/signals/branding';
@@ -8,74 +9,74 @@ import { isRedirecting } from '@/signals/auth';
 import { renderMode } from '@/signals/config';
 
 const ALIGN_MAP = {
-    left: 'justify-start',
-    center: 'justify-center',
-    right: 'justify-end',
+    left: 'wsms-auth-layout-centered__logo-row--start',
+    center: 'wsms-auth-layout-centered__logo-row--center',
+    right: 'wsms-auth-layout-centered__logo-row--end',
 };
 
 export function CenteredLayout({ title, subtitle, children, footer }) {
     const logoPosition = brandingConfig.value?.logo_position ?? 'center';
-    const alignClass = ALIGN_MAP[logoPosition] ?? 'justify-center';
+    const alignClass = ALIGN_MAP[logoPosition] ?? 'wsms-auth-layout-centered__logo-row--center';
     const isCompact = renderMode.value === 'popup' || renderMode.value === 'embed';
 
     const redirecting = isRedirecting.value;
 
     if (isCompact) {
         return (
-            <div className="font-sans text-foreground antialiased p-6">
+            <div className="wsms-auth-layout-centered--compact">
                 {logoPosition !== 'hidden' && (
-                    <div className={`mb-4 flex ${alignClass}`}>
+                    <div className={`wsms-auth-layout-centered__logo-row ${alignClass}`}>
                         <BrandLogo />
                     </div>
                 )}
-                <div className="text-center mb-4">
-                    <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
-                    {subtitle && <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>}
+                <div className="wsms-auth-center wsms-auth-mb-4">
+                    <h2 className="wsms-auth-text-xl wsms-auth-font-semibold" style={{ letterSpacing: '-0.025em' }}>{title}</h2>
+                    {subtitle && <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-mt-1">{subtitle}</p>}
                 </div>
                 {redirecting ? <RedirectingOverlay /> : children}
                 {!redirecting && footer && (
                     <>
-                        <Separator className="my-4" />
-                        <div className="text-center text-sm text-muted-foreground">{footer}</div>
+                        <Separator className="wsms-auth-my-4" />
+                        <div className="wsms-auth-center wsms-auth-text-sm wsms-auth-text-muted">{footer}</div>
                     </>
                 )}
-                <SecuredByFooter className="mt-4" />
+                <SecuredByFooter className="wsms-auth-mt-4" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-muted p-4 font-sans text-foreground antialiased">
+        <div className="wsms-auth-layout-centered">
             {logoPosition !== 'hidden' && (
-                <div className={`mb-6 flex w-full max-w-md ${alignClass}`}>
+                <div className={`wsms-auth-layout-centered__logo-row ${alignClass}`}>
                     <BrandLogo />
                 </div>
             )}
 
-            <Card className="w-full max-w-md animate-fade-in">
-                <CardHeader className="text-center">
-                    <CardTitle className="text-xl">{title}</CardTitle>
+            <Card className="wsms-auth-full wsms-auth-fade-in" style={{ maxWidth: '28rem' }}>
+                <CardHeader className="wsms-auth-center">
+                    <CardTitle className="wsms-auth-text-xl">{title}</CardTitle>
                     {subtitle && <CardDescription>{subtitle}</CardDescription>}
                 </CardHeader>
                 <CardContent>
                     {redirecting ? (
-                        <div className="flex flex-col items-center gap-3 py-8 animate-fade-in">
-                            <Spinner className="size-8" />
-                            <p className="text-sm text-muted-foreground">Redirecting…</p>
+                        <div className="wsms-auth-loading-center wsms-auth-fade-in">
+                            <Spinner className="wsms-auth-spinner--lg" />
+                            <p className="wsms-auth-text-sm wsms-auth-text-muted">Redirecting…</p>
                         </div>
                     ) : children}
                 </CardContent>
                 {!redirecting && footer && (
                     <>
                         <Separator />
-                        <CardFooter className="justify-center">
-                            <div className="text-sm text-muted-foreground">{footer}</div>
+                        <CardFooter className="wsms-auth-card__footer--center">
+                            <div className="wsms-auth-text-sm wsms-auth-text-muted">{footer}</div>
                         </CardFooter>
                     </>
                 )}
             </Card>
 
-            <SecuredByFooter className="mt-6" />
+            <SecuredByFooter className="wsms-auth-mt-6" />
         </div>
     );
 }

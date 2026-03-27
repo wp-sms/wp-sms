@@ -108,7 +108,7 @@ export function CaptchaWidget({ provider, siteKey, onVerify, resetRef }) {
     if (!siteKey || !provider) return null;
 
     return (
-        <div className="flex justify-center">
+        <div className="wsms-auth-flex-center">
             <div ref={containerRef} />
         </div>
     );

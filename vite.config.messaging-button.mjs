@@ -7,5 +7,4 @@ export default defineConfig(createAuthConfig({
     fileName: 'messaging-button.js',
     emptyOutDir: false,
     assetFileNames: 'messaging-button[extname]',
-    tailwind: true,
 }));

@@ -3,11 +3,9 @@ import { useAutoFocus } from '../hooks/useAutoFocus';
 
 function Slot({ char, isActive, hasFakeCaret }) {
     return (
-        <div
-            className={`flex size-12 items-center justify-center rounded-md border bg-transparent text-xl font-semibold transition-[border-color,box-shadow] ${isActive ? 'border-ring ring-[3px] ring-ring/50' : 'border-input'}`}
-        >
+        <div className={`wsms-auth-otp-slot${isActive ? ' wsms-auth-otp-slot--active' : ''}`}>
             {char || (hasFakeCaret && (
-                <span className="inline-block w-0.5 h-6 bg-primary animate-[wsms-blink_1s_step-end_infinite]" />
+                <span className="wsms-auth-otp-caret" />
             ))}
         </div>
     );
@@ -34,7 +32,7 @@ function SubscriptionSlot({ char, isActive, hasFakeCaret }) {
 }
 
 const VARIANT_CONFIG = {
-    default: { Slot, container: 'flex justify-center', slots: 'flex items-center gap-1.5', separator: 'text-lg text-muted-foreground mx-0.5' },
+    default: { Slot, container: 'wsms-auth-otp', slots: 'wsms-auth-otp-slots', separator: 'wsms-auth-otp-separator' },
     widget: { Slot: WidgetSlot, container: 'wsms-vw-otp', slots: 'wsms-vw-otp-slots', separator: 'wsms-vw-otp-separator' },
     subscription: { Slot: SubscriptionSlot, container: 'wsms-sub-form__otp', slots: 'wsms-sub-form__otp-slots', separator: 'wsms-sub-form__otp-separator' },
 };

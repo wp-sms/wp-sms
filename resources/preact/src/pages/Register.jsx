@@ -159,7 +159,7 @@ export function Register() {
         switch (id) {
             case 'username':
                 return (
-                    <div className="space-y-2" key="username">
+                    <div className="wsms-auth-stack-2" key="username">
                         <Label for="wsms-reg-username">Username</Label>
                         <Input
                             ref={isFirst ? firstFieldRef : undefined}
@@ -174,7 +174,7 @@ export function Register() {
                 );
             case 'display_name':
                 return (
-                    <div className="space-y-2" key="display_name">
+                    <div className="wsms-auth-stack-2" key="display_name">
                         <Label for="wsms-reg-name">Display Name</Label>
                         <Input
                             ref={isFirst ? firstFieldRef : undefined}
@@ -189,7 +189,7 @@ export function Register() {
                 );
             case 'first_name':
                 return (
-                    <div className="space-y-2" key="first_name">
+                    <div className="wsms-auth-stack-2" key="first_name">
                         <Label for="wsms-reg-first-name">First Name</Label>
                         <Input
                             ref={isFirst ? firstFieldRef : undefined}
@@ -204,7 +204,7 @@ export function Register() {
                 );
             case 'last_name':
                 return (
-                    <div className="space-y-2" key="last_name">
+                    <div className="wsms-auth-stack-2" key="last_name">
                         <Label for="wsms-reg-last-name">Last Name</Label>
                         <Input
                             ref={isFirst ? firstFieldRef : undefined}
@@ -219,7 +219,7 @@ export function Register() {
                 );
             case 'email':
                 return (
-                    <div className="space-y-2" key="email">
+                    <div className="wsms-auth-stack-2" key="email">
                         <Label for="wsms-reg-email">Email</Label>
                         <Input
                             ref={isFirst ? firstFieldRef : undefined}
@@ -235,7 +235,7 @@ export function Register() {
                 );
             case 'phone':
                 return (
-                    <div className="space-y-2" key="phone">
+                    <div className="wsms-auth-stack-2" key="phone">
                         <Label>Phone Number</Label>
                         <PhoneInput
                             value={form.phone}
@@ -247,7 +247,7 @@ export function Register() {
                 );
             case 'password':
                 return (
-                    <div className="space-y-2" key="password">
+                    <div className="wsms-auth-stack-2" key="password">
                         <Label for="wsms-reg-password">Password</Label>
                         <Input
                             id="wsms-reg-password"
@@ -270,11 +270,11 @@ export function Register() {
             title={title}
             footer={<AuthLink href={authUrl('/login')}>Already have an account? Sign in</AuthLink>}
         >
-            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
+            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
 
             {socialPos === 'top' && socialBlock}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
                 {/* Render fields in definition order (respects sort_order from API) */}
                 {fieldDefs.map((def, idx) => {
                     if (SYSTEM_FIELD_IDS.includes(def.id)) {
@@ -299,20 +299,20 @@ export function Register() {
                         resetRef={captcha.resetRef}
                     />
                 )}
-                <Button className="w-full" type="submit" disabled={authLoading.value || (needsCaptcha && !captcha.token)}>
+                <Button className="wsms-auth-full" type="submit" disabled={authLoading.value || (needsCaptcha && !captcha.token)}>
                     {authLoading.value ? 'Creating account\u2026' : 'Create Account'}
                 </Button>
                 {legalLinks.value && (legalLinks.value.terms_url || legalLinks.value.privacy_url) && (
-                    <p className="text-center text-xs text-muted-foreground">
+                    <p className="wsms-auth-center wsms-auth-text-xs wsms-auth-text-muted">
                         {'By creating an account, you agree to our '}
                         {legalLinks.value.terms_url && (
-                            <a href={legalLinks.value.terms_url} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+                            <a href={legalLinks.value.terms_url} target="_blank" rel="noopener noreferrer" className="wsms-auth-legal-link">
                                 Terms of Service
                             </a>
                         )}
                         {legalLinks.value.terms_url && legalLinks.value.privacy_url && ' and '}
                         {legalLinks.value.privacy_url && (
-                            <a href={legalLinks.value.privacy_url} target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+                            <a href={legalLinks.value.privacy_url} target="_blank" rel="noopener noreferrer" className="wsms-auth-legal-link">
                                 Privacy Policy
                             </a>
                         )}

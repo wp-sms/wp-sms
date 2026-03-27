@@ -1,5 +1,6 @@
 import { useEffect } from 'preact/hooks';
 import { Mail, Phone, Shield, KeyRound } from 'lucide-react';
+import { cn } from '../utils/cn';
 import { currentUser } from '../signals/auth';
 import { loadCurrentUser, userLoading } from '../signals/user';
 import { useAuthGuard } from '../hooks/useAuthGuard';
@@ -13,18 +14,13 @@ import { UserAvatar } from '../components/ui/UserAvatar';
 function StatusCard({ href, icon: Icon, label, value, badge }) {
     const accent = badge?.props?.variant === 'unverified';
     return (
-        <a
-            href={href}
-            className={`flex items-start gap-3 rounded-lg border bg-card p-4 no-underline text-foreground transition-colors hover:border-primary hover:shadow-sm ${
-                accent ? 'border-l-2 border-l-amber-400' : ''
-            }`}
-        >
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-md bg-muted">
-                <Icon className="size-4 text-muted-foreground" />
+        <a href={href} className={cn('wsms-auth-status-card', accent && 'wsms-auth-status-card--accent')}>
+            <span className="wsms-auth-status-card__icon">
+                <Icon />
             </span>
-            <div className="min-w-0 flex-1 space-y-1">
-                <div className="text-xs font-medium text-muted-foreground">{label}</div>
-                <div className="truncate text-sm font-semibold">{value}</div>
+            <div className="wsms-auth-status-card__body">
+                <div className="wsms-auth-status-card__label">{label}</div>
+                <div className="wsms-auth-status-card__value">{value}</div>
                 {badge && <div>{badge}</div>}
             </div>
         </a>
@@ -43,9 +39,9 @@ export function Account() {
     if (userLoading.value && !currentUser.value) {
         return (
             <AccountLayout title="Account" currentPath="/">
-                <div className="flex flex-col items-center gap-3 py-8">
-                    <Spinner className="size-8" />
-                    <p className="text-sm text-muted-foreground">Loading your account…</p>
+                <div className="wsms-auth-loading-center">
+                    <Spinner className="wsms-auth-spinner--lg" />
+                    <p className="wsms-auth-text-sm wsms-auth-text-muted">Loading your account…</p>
                 </div>
             </AccountLayout>
         );
@@ -68,19 +64,19 @@ export function Account() {
     return (
         <AccountLayout title="Account" currentPath="/">
             {/* User Identity Header */}
-            <div className="mb-6 flex items-center gap-4">
+            <div className="wsms-auth-identity-header">
                 <UserAvatar user={user} size="lg" />
-                <div className="min-w-0">
-                    <div className="text-xl font-semibold">{user.display_name || user.username}</div>
-                    <div className="text-sm text-muted-foreground truncate">{user.email}</div>
+                <div className="wsms-auth-identity-header__info">
+                    <div className="wsms-auth-identity-header__name">{user.display_name || user.username}</div>
+                    <div className="wsms-auth-identity-header__email">{user.email}</div>
                     {user.username && user.username !== user.display_name && (
-                        <div className="text-xs text-muted-foreground">@{user.username}</div>
+                        <div className="wsms-auth-identity-header__username">@{user.username}</div>
                     )}
                 </div>
             </div>
 
             {/* Status Cards Grid */}
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="wsms-auth-status-grid">
                 <StatusCard
                     href={authUrl('/profile')}
                     icon={Mail}

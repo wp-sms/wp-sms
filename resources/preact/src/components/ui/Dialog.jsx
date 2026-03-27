@@ -17,11 +17,8 @@ export function Dialog({ open, onClose, children, className }) {
     useEffect(() => {
         if (!open) return;
         document.addEventListener('keydown', handleKeyDown);
-        // Prevent body scroll
         const prevOverflow = document.body.style.overflow;
         document.body.style.overflow = 'hidden';
-
-        // Focus trap: focus the content on open
         contentRef.current?.focus();
 
         return () => {
@@ -35,24 +32,21 @@ export function Dialog({ open, onClose, children, className }) {
     return (
         <div
             ref={overlayRef}
-            className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/80 animate-fade-in"
+            className="wsms-auth-dialog-overlay"
             onClick={handleOverlayClick}
         >
             <div
                 ref={contentRef}
                 tabIndex={-1}
-                className={cn(
-                    'relative w-full max-w-md max-h-[90vh] overflow-y-auto rounded-xl bg-background shadow-lg outline-none animate-fade-in',
-                    className,
-                )}
+                className={cn('wsms-auth-dialog', className)}
             >
                 <button
                     type="button"
                     onClick={onClose}
-                    className="absolute top-3 right-3 flex size-7 items-center justify-center rounded-md bg-transparent border-none text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+                    className="wsms-auth-dialog__close"
                     aria-label="Close"
                 >
-                    <X className="size-4" />
+                    <X />
                 </button>
                 {children}
             </div>

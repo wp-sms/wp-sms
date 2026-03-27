@@ -26,24 +26,15 @@ export function SplitLayout({ title, subtitle, children, footer }) {
         }),
     };
 
-    const textColor = textLight ? 'text-white' : 'text-gray-900';
-    const subtitleColor = textLight ? 'text-white/70' : 'text-gray-600';
+    const headingClass = textLight ? 'wsms-auth-layout-split__heading--light' : 'wsms-auth-layout-split__heading--dark';
+    const subtitleClass = textLight ? 'wsms-auth-layout-split__subtitle--light' : 'wsms-auth-layout-split__subtitle--dark';
 
     const brandPanel = (
-        <div
-            className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-12 relative"
-            style={panelStyle}
-        >
-            {panelImage && (
-                <div className="absolute inset-0 bg-black/30" />
-            )}
-            <div className="relative z-10 max-w-md text-center space-y-4">
-                <h1 className={`text-3xl font-bold tracking-tight ${textColor}`}>
-                    {heading}
-                </h1>
-                <p className={`text-lg ${subtitleColor}`}>
-                    {sub}
-                </p>
+        <div className="wsms-auth-layout-split__panel" style={panelStyle}>
+            {panelImage && <div className="wsms-auth-layout-split__panel-overlay" />}
+            <div className="wsms-auth-layout-split__panel-content">
+                <h1 className={`wsms-auth-layout-split__heading ${headingClass}`}>{heading}</h1>
+                <p className={`wsms-auth-layout-split__subtitle ${subtitleClass}`}>{sub}</p>
             </div>
         </div>
     );
@@ -51,15 +42,15 @@ export function SplitLayout({ title, subtitle, children, footer }) {
     const redirecting = isRedirecting.value;
 
     const formPanel = (
-        <div className="flex w-full lg:w-1/2 flex-col items-center justify-center bg-background p-4 md:p-8">
-            <div className="w-full max-w-md space-y-6">
-                <div className="lg:hidden mb-6">
+        <div className="wsms-auth-layout-split__form">
+            <div className="wsms-auth-layout-split__form-inner">
+                <div className="wsms-auth-layout-split__mobile-logo">
                     <BrandLogo />
                 </div>
 
-                <Card className="w-full animate-fade-in">
-                    <CardHeader className="text-center">
-                        <CardTitle className="text-xl">{title}</CardTitle>
+                <Card className="wsms-auth-full wsms-auth-fade-in">
+                    <CardHeader className="wsms-auth-center">
+                        <CardTitle className="wsms-auth-text-xl">{title}</CardTitle>
                         {subtitle && <CardDescription>{subtitle}</CardDescription>}
                     </CardHeader>
                     <CardContent>
@@ -68,8 +59,8 @@ export function SplitLayout({ title, subtitle, children, footer }) {
                     {!redirecting && footer && (
                         <>
                             <Separator />
-                            <CardFooter className="justify-center">
-                                <div className="text-sm text-muted-foreground">{footer}</div>
+                            <CardFooter className="wsms-auth-card__footer--center">
+                                <div className="wsms-auth-text-sm wsms-auth-text-muted">{footer}</div>
                             </CardFooter>
                         </>
                     )}
@@ -81,7 +72,7 @@ export function SplitLayout({ title, subtitle, children, footer }) {
     );
 
     return (
-        <div className="min-h-screen flex font-sans text-foreground antialiased">
+        <div className="wsms-auth-layout-split">
             {position === 'left' ? (
                 <>
                     {brandPanel}

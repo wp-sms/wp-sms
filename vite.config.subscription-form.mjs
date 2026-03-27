@@ -7,5 +7,4 @@ export default defineConfig(createAuthConfig({
     fileName: 'subscription-form.js',
     emptyOutDir: false,
     assetFileNames: 'subscription-form[extname]',
-    tailwind: false,
 }));

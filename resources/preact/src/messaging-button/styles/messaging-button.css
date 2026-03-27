@@ -1,6 +1,4 @@
-@import 'tailwindcss';
 @import 'lite-phone-input/styles';
-@source "../";
 
 /* === CSS Variables (Light) === */
 :host {

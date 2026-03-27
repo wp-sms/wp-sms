@@ -64,12 +64,12 @@ export function LoginVerifyStep() {
     }
 
     return (
-        <div className="space-y-6 animate-fade-in">
+        <div className="wsms-auth-stack-6 wsms-auth-fade-in">
             <Alert
                 variant="destructive"
                 message={authError.value}
                 onDismiss={() => (authError.value = null)}
-                className="mb-4"
+                className="wsms-auth-mb-4"
             />
 
             {hasPhone && !phoneVerified && (
@@ -86,7 +86,7 @@ export function LoginVerifyStep() {
             {hasEmail && !emailVerified && (
                 <EmailVerifySection
                     headers={verifyHeaders()}
-                    className={hasPhone ? 'border-t pt-4' : ''}
+                    className={hasPhone ? 'wsms-auth-border-t' : ''}
                     onVerified={handleEmailVerified}
                 />
             )}

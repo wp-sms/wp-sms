@@ -3,17 +3,17 @@ import { cn } from '@/utils/cn';
 
 const variants = {
     verified: {
-        className: 'bg-green-50 text-green-700 border-green-200',
+        className: 'wsms-auth-badge--verified',
         icon: ShieldCheck,
         label: 'Verified',
     },
     unverified: {
-        className: 'bg-amber-50 text-amber-700 border-amber-200',
+        className: 'wsms-auth-badge--unverified',
         icon: AlertTriangle,
         label: 'Not Verified',
     },
     'not-set': {
-        className: 'bg-muted text-muted-foreground border-border',
+        className: 'wsms-auth-badge--not-set',
         icon: null,
         label: 'Not set',
     },
@@ -24,14 +24,8 @@ export function StatusBadge({ variant = 'not-set', className }) {
     const Icon = v.icon;
 
     return (
-        <span
-            className={cn(
-                'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium',
-                v.className,
-                className,
-            )}
-        >
-            {Icon && <Icon className="size-3" />}
+        <span className={cn('wsms-auth-badge', v.className, className)}>
+            {Icon && <Icon />}
             {v.label}
         </span>
     );

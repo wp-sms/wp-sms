@@ -9,20 +9,20 @@ export function DynamicField({ field, value, onChange, disabled }) {
     const id = `wsms-field-${field.id}`;
 
     const helpText = field.description ? (
-        <p className="text-xs text-muted-foreground">{field.description}</p>
+        <p className="wsms-auth-text-xs wsms-auth-text-muted">{field.description}</p>
     ) : null;
 
     if (field.type === 'checkbox') {
         return (
-            <div className="space-y-1">
-                <div className="flex items-center gap-2">
+            <div className="wsms-auth-stack-1">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                     <input
                         type="checkbox"
                         id={id}
                         checked={!!value}
                         onChange={(e) => onChange(e.target.checked)}
                         disabled={disabled}
-                        className="h-4 w-4 rounded border-input text-primary focus:ring-primary"
+                        className="wsms-auth-checkbox"
                     />
                     <Label for={id}>{field.label}{field.required && ' *'}</Label>
                 </div>
@@ -33,7 +33,7 @@ export function DynamicField({ field, value, onChange, disabled }) {
 
     if (field.type === 'select') {
         return (
-            <div className="space-y-2">
+            <div className="wsms-auth-stack-2">
                 <Label for={id}>{field.label}{field.required && ' *'}</Label>
                 <select
                     id={id}
@@ -41,7 +41,7 @@ export function DynamicField({ field, value, onChange, disabled }) {
                     onChange={(e) => onChange(e.target.value)}
                     disabled={disabled}
                     required={field.required}
-                    className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    className="wsms-auth-select"
                 >
                     <option value="">{field.placeholder || `Select ${field.label}...`}</option>
                     {(field.options || []).map((opt) => (
@@ -55,7 +55,7 @@ export function DynamicField({ field, value, onChange, disabled }) {
 
     if (field.type === 'textarea') {
         return (
-            <div className="space-y-2">
+            <div className="wsms-auth-stack-2">
                 <Label for={id}>{field.label}{field.required && ' *'}</Label>
                 <textarea
                     id={id}
@@ -65,7 +65,7 @@ export function DynamicField({ field, value, onChange, disabled }) {
                     required={field.required}
                     placeholder={field.placeholder || ''}
                     rows={3}
-                    className="flex min-h-[60px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    className="wsms-auth-textarea"
                 />
                 {helpText}
             </div>
@@ -74,7 +74,7 @@ export function DynamicField({ field, value, onChange, disabled }) {
 
     // Default: text
     return (
-        <div className="space-y-2">
+        <div className="wsms-auth-stack-2">
             <Label for={id}>{field.label}{field.required && ' *'}</Label>
             <Input
                 id={id}

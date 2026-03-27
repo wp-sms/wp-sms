@@ -81,15 +81,15 @@ export function VerifyOtp() {
             subtitle={subtitle}
             footer={<AuthLink href={authUrl('/login')} onClick={() => clearAuth()}>Back to login</AuthLink>}
         >
-            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
+            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
 
             {hasMagicLink && (
-                <Alert variant="default" message="We also sent a login link — check your inbox if you prefer to click instead." className="mb-4" />
+                <Alert variant="default" message="We also sent a login link — check your inbox if you prefer to click instead." className="wsms-auth-mb-4" />
             )}
 
             {useBackup ? (
-                <form onSubmit={handleBackupSubmit} className="space-y-4">
-                    <div className="space-y-2">
+                <form onSubmit={handleBackupSubmit} className="wsms-auth-stack-4">
+                    <div className="wsms-auth-stack-2">
                         <Label for="wsms-backup">Backup Code</Label>
                         <Input
                             ref={backupRef}
@@ -102,18 +102,18 @@ export function VerifyOtp() {
                             autoComplete="one-time-code"
                         />
                     </div>
-                    <Button className="w-full" type="submit" disabled={authLoading.value || !backupCode.trim()}>
+                    <Button className="wsms-auth-full" type="submit" disabled={authLoading.value || !backupCode.trim()}>
                         {authLoading.value ? 'Verifying\u2026' : 'Verify Backup Code'}
                     </Button>
-                    <Button variant="link" type="button" className="w-full" onClick={() => setUseBackup(false)}>
+                    <Button variant="link" type="button" className="wsms-auth-full" onClick={() => setUseBackup(false)}>
                         Use OTP instead
                     </Button>
                 </form>
             ) : (
-                <div className="space-y-4">
+                <div className="wsms-auth-stack-4">
                     <OtpInput autoFocus onComplete={handleVerify} disabled={authLoading.value} />
 
-                    <div className="flex justify-center gap-4">
+                    <div className="wsms-auth-flex-gap">
                         <Button
                             variant="link"
                             type="button"

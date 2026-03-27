@@ -7,5 +7,4 @@ export default defineConfig(createAuthConfig({
     fileName: 'verify-widget.js',
     emptyOutDir: false,
     assetFileNames: 'verify-widget-style[extname]',
-    tailwind: false,
 }));

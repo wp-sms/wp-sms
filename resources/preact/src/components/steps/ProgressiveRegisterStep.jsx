@@ -73,9 +73,9 @@ export function ProgressiveRegisterStep() {
 
     if (success) {
         return (
-            <div className="space-y-4 animate-fade-in">
+            <div className="wsms-auth-stack-4 wsms-auth-fade-in">
                 <Alert variant="success" message={success} />
-                <div className="text-center">
+                <div className="wsms-auth-center">
                     <Button variant="link" type="button" onClick={resetIdentifyFlow}>
                         Back to sign in
                     </Button>
@@ -85,16 +85,16 @@ export function ProgressiveRegisterStep() {
     }
 
     return (
-        <div className="space-y-4 animate-fade-in">
-            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
+        <div className="wsms-auth-stack-4 wsms-auth-fade-in">
+            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
 
-            <p className="text-sm text-muted-foreground text-center">
+            <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-center">
                 Create your account to get started
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
                 {fields.includes('username') && (
-                    <div className="space-y-2">
+                    <div className="wsms-auth-stack-2">
                         <Label for="wsms-reg-username">Username</Label>
                         <Input
                             ref={firstEditableField === 'username' ? firstFieldRef : undefined}
@@ -109,7 +109,7 @@ export function ProgressiveRegisterStep() {
                 )}
 
                 {fields.includes('display_name') && (
-                    <div className="space-y-2">
+                    <div className="wsms-auth-stack-2">
                         <Label for="wsms-reg-name">Display Name</Label>
                         <Input
                             ref={firstEditableField === 'display_name' ? firstFieldRef : undefined}
@@ -124,7 +124,7 @@ export function ProgressiveRegisterStep() {
                 )}
 
                 {fields.includes('first_name') && (
-                    <div className="space-y-2">
+                    <div className="wsms-auth-stack-2">
                         <Label for="wsms-reg-first-name">First Name</Label>
                         <Input
                             ref={firstEditableField === 'first_name' ? firstFieldRef : undefined}
@@ -139,7 +139,7 @@ export function ProgressiveRegisterStep() {
                 )}
 
                 {fields.includes('last_name') && (
-                    <div className="space-y-2">
+                    <div className="wsms-auth-stack-2">
                         <Label for="wsms-reg-last-name">Last Name</Label>
                         <Input
                             id="wsms-reg-last-name"
@@ -153,7 +153,7 @@ export function ProgressiveRegisterStep() {
                 )}
 
                 {fields.includes('email') && (
-                    <div className="space-y-2">
+                    <div className="wsms-auth-stack-2">
                         <Label for="wsms-reg-email">Email</Label>
                         <Input
                             ref={firstEditableField === 'email' ? firstFieldRef : undefined}
@@ -169,7 +169,7 @@ export function ProgressiveRegisterStep() {
                 )}
 
                 {fields.includes('phone') && (
-                    <div className="space-y-2">
+                    <div className="wsms-auth-stack-2">
                         <Label>Phone Number</Label>
                         <PhoneInput
                             value={form.phone}
@@ -181,7 +181,7 @@ export function ProgressiveRegisterStep() {
                 )}
 
                 {fields.includes('password') && (
-                    <div className="space-y-2">
+                    <div className="wsms-auth-stack-2">
                         <Label for="wsms-reg-password">Password</Label>
                         <Input
                             ref={firstEditableField === 'password' ? firstFieldRef : undefined}
@@ -196,12 +196,12 @@ export function ProgressiveRegisterStep() {
                     </div>
                 )}
 
-                <Button className="w-full" type="submit" disabled={authLoading.value}>
+                <Button className="wsms-auth-full" type="submit" disabled={authLoading.value}>
                     {authLoading.value ? 'Creating account...' : 'Create Account'}
                 </Button>
             </form>
 
-            <div className="text-center">
+            <div className="wsms-auth-center">
                 <Button variant="link" type="button" onClick={resetIdentifyFlow}>
                     Use a different {identifierType === 'email' ? 'email' : identifierType === 'phone' ? 'phone' : 'identifier'}
                 </Button>

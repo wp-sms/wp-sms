@@ -1,15 +1,14 @@
 import preact from '@preact/preset-vite';
-import tailwindcss from '@tailwindcss/vite';
 import { resolve } from 'path';
 
 /**
  * Shared Vite config factory for auth builds (full-page and popup).
  */
-export function createAuthConfig({ entry, name, fileName, emptyOutDir = true, assetFileNames = 'style[extname]', tailwind = true }) {
+export function createAuthConfig({ entry, name, fileName, emptyOutDir = true, assetFileNames = 'style[extname]' }) {
     const __dirname = resolve(import.meta.dirname);
 
     return {
-        plugins: tailwind ? [preact(), tailwindcss()] : [preact()],
+        plugins: [preact()],
         publicDir: false,
         build: {
             lib: {

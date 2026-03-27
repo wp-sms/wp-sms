@@ -66,12 +66,12 @@ export function ChangePassword() {
 
     return (
         <AccountLayout title={title} currentPath="/change-password">
-            <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="mb-4" />
-            <Alert variant="success" message={success} className="mb-4" />
+            <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="wsms-auth-mb-4" />
+            <Alert variant="success" message={success} className="wsms-auth-mb-4" />
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
                 {hasPassword && (
-                    <div className="space-y-2">
+                    <div className="wsms-auth-stack-2">
                         <Label for="wsms-cur-pass">Current Password</Label>
                         <Input
                             ref={currentPasswordRef}
@@ -86,7 +86,7 @@ export function ChangePassword() {
                     </div>
                 )}
 
-                <div className="space-y-2">
+                <div className="wsms-auth-stack-2">
                     <Label for="wsms-new-pass2">New Password</Label>
                     <Input
                         ref={newPasswordRef}
@@ -100,7 +100,7 @@ export function ChangePassword() {
                     />
                 </div>
 
-                <div className="space-y-2">
+                <div className="wsms-auth-stack-2">
                     <Label for="wsms-confirm-pass2">Confirm New Password</Label>
                     <Input
                         id="wsms-confirm-pass2"
@@ -113,7 +113,7 @@ export function ChangePassword() {
                     />
                 </div>
 
-                <Button className="w-full" type="submit" disabled={loading}>
+                <Button className="wsms-auth-full" type="submit" disabled={loading}>
                     {loading ? (hasPassword ? 'Changing\u2026' : 'Setting\u2026') : title}
                 </Button>
             </form>

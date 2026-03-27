@@ -28,7 +28,7 @@ export function EmbedApp({ view = 'register', formSlug = null }) {
         return (
             <BrandingProvider>
                 <AuthLayout title="Already Signed In">
-                    <p className="text-center text-sm text-muted-foreground">
+                    <p className="wsms-auth-center wsms-auth-text-sm wsms-auth-text-muted">
                         You are already logged in.
                     </p>
                 </AuthLayout>

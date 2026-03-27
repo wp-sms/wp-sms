@@ -29,14 +29,14 @@ function formatTtl(seconds) {
 
 function TrustDeviceCheckbox({ id, checked, onChange, disabled, ttl }) {
     return (
-        <div className="flex items-center gap-2 justify-center">
+        <div className="wsms-auth-trust-device">
             <input type="checkbox" id={id} checked={checked}
                 onChange={onChange}
                 disabled={disabled}
-                className="h-4 w-4 rounded border-input text-primary focus:ring-primary" />
-            <label for={id} className="text-sm text-muted-foreground cursor-pointer select-none">
+                className="wsms-auth-checkbox" />
+            <label for={id} className="wsms-auth-trust-device__label">
                 Remember this device
-                <span className="block text-xs text-muted-foreground/70">
+                <span className="wsms-auth-trust-device__hint">
                     Skip verification for {formatTtl(ttl)}
                 </span>
             </label>
@@ -199,19 +199,19 @@ export function MfaStep() {
 
     if (showFactorPicker) {
         return (
-            <div className="space-y-4 animate-fade-in">
-                <p className="text-sm text-muted-foreground text-center">Choose a verification method</p>
+            <div className="wsms-auth-stack-4 wsms-auth-fade-in">
+                <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-center">Choose a verification method</p>
                 {factors.map((f) => (
                     <Button
                         key={f.channel_id}
                         variant="outline"
-                        className="w-full"
+                        className="wsms-auth-full"
                         onClick={() => switchFactor(f.channel_id)}
                     >
                         {f.name}
                     </Button>
                 ))}
-                <Button variant="link" className="w-full" onClick={() => setShowFactorPicker(false)}>
+                <Button variant="link" className="wsms-auth-full" onClick={() => setShowFactorPicker(false)}>
                     Cancel
                 </Button>
             </div>
@@ -219,14 +219,14 @@ export function MfaStep() {
     }
 
     return (
-        <div className="space-y-4 animate-fade-in">
-            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="mb-4" />
+        <div className="wsms-auth-stack-4 wsms-auth-fade-in">
+            <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
 
-            <p className="text-sm text-muted-foreground text-center">{subtitle}</p>
+            <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-center">{subtitle}</p>
 
             {useBackup ? (
-                <form onSubmit={handleBackupSubmit} className="space-y-4">
-                    <div className="space-y-2">
+                <form onSubmit={handleBackupSubmit} className="wsms-auth-stack-4">
+                    <div className="wsms-auth-stack-2">
                         <Label for="wsms-backup">Backup Code</Label>
                         <Input
                             ref={backupRef}
@@ -244,20 +244,20 @@ export function MfaStep() {
                             onChange={(e) => setTrustDevice(e.target.checked)}
                             disabled={authLoading.value} ttl={trustedDevices?.ttl} />
                     )}
-                    <Button className="w-full" type="submit" disabled={authLoading.value || !backupCode.trim()}>
+                    <Button className="wsms-auth-full" type="submit" disabled={authLoading.value || !backupCode.trim()}>
                         {authLoading.value ? 'Verifying...' : 'Verify Backup Code'}
                     </Button>
-                    <Button variant="link" type="button" className="w-full" onClick={() => setUseBackup(false)}>
+                    <Button variant="link" type="button" className="wsms-auth-full" onClick={() => setUseBackup(false)}>
                         Use OTP instead
                     </Button>
                 </form>
             ) : (
-                <div className="space-y-4">
+                <div className="wsms-auth-stack-4">
                     {/* Passkey verification UI */}
                     {isPasskey ? (
-                        <div className="space-y-4 text-center">
-                            <Fingerprint className={cn('mx-auto size-12 text-muted-foreground', passkeyPrompting && 'animate-pulse')} />
-                            <p className="text-sm text-muted-foreground">
+                        <div className="wsms-auth-stack-4 wsms-auth-center">
+                            <Fingerprint className={cn('wsms-auth-passkey-icon', passkeyPrompting && 'wsms-auth-passkey-icon--prompting')} style={{ width: '3rem', height: '3rem' }} />
+                            <p className="wsms-auth-text-sm wsms-auth-text-muted">
                                 {passkeyPrompting ? 'Verify with your passkey...' : 'Ready to verify'}
                             </p>
                             {!passkeyPrompting && (
@@ -287,7 +287,7 @@ export function MfaStep() {
                         </>
                     )}
 
-                    <div className="flex justify-center gap-4 flex-wrap">
+                    <div className="wsms-auth-flex-wrap">
                         {challengeSent && !isPasskey && challengeMeta.value?.requires_delivery !== false && (
                             <Button
                                 variant="link"

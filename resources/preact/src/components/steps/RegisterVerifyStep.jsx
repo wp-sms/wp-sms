@@ -32,16 +32,16 @@ export function RegisterVerifyStep({ onComplete }) {
 
     if (allDone) {
         return (
-            <div className="space-y-4 animate-fade-in">
+            <div className="wsms-auth-stack-4 wsms-auth-fade-in">
                 <Alert variant="success" message="Verification complete!" />
 
                 {hasEmail && !emailVerified && (
-                    <p className="text-sm text-muted-foreground text-center">
+                    <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-center">
                         We've sent a verification link to your email. You can verify it anytime.
                     </p>
                 )}
 
-                <Button className="w-full" onClick={handleComplete}>
+                <Button className="wsms-auth-full" onClick={handleComplete}>
                     Continue to sign in
                 </Button>
             </div>
@@ -49,12 +49,12 @@ export function RegisterVerifyStep({ onComplete }) {
     }
 
     return (
-        <div className="space-y-6 animate-fade-in">
+        <div className="wsms-auth-stack-6 wsms-auth-fade-in">
             <Alert
                 variant="destructive"
                 message={authError.value}
                 onDismiss={() => (authError.value = null)}
-                className="mb-4"
+                className="wsms-auth-mb-4"
             />
 
             {hasPhone && !phoneVerified && (
@@ -63,7 +63,7 @@ export function RegisterVerifyStep({ onComplete }) {
 
             {phoneComplete && hasEmail && !emailVerified && (
                 <EmailVerifySection headers={regHeaders()} onVerified={() => setEmailVerified(true)}
-                    className={hasPhone ? 'border-t pt-4' : ''} />
+                    className={hasPhone ? 'wsms-auth-border-t' : ''} />
             )}
         </div>
     );

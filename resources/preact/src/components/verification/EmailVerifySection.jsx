@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import { Mail } from 'lucide-react';
+import { cn } from '@/utils/cn';
 import { authError } from '../../signals/auth';
 import { methodDetails } from '../../signals/config';
 import { api } from '../../api/client';
@@ -51,19 +52,19 @@ function EmailMagicLinkSection({ headers, className }) {
     }
 
     return (
-        <div className={`space-y-3 ${className || ''}`}>
-            <div className="flex items-center gap-2 justify-center">
-                <Mail className="size-4 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">
+        <div className={cn('wsms-auth-stack-3', className)}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
+                <Mail style={{ width: '1rem', height: '1rem', color: 'var(--muted-foreground)' }} />
+                <p className="wsms-auth-text-sm wsms-auth-text-muted">
                     Check your email for a verification link
                 </p>
             </div>
 
             {resent && (
-                <p className="text-xs text-center text-green-600">Verification email resent!</p>
+                <p className="wsms-auth-text-xs wsms-auth-center wsms-auth-text-green">Verification email resent!</p>
             )}
 
-            <div className="flex justify-center">
+            <div className="wsms-auth-flex-center">
                 <Button variant="link" type="button" onClick={handleResend} disabled={cooldown > 0}>
                     {cooldown > 0 ? `Resend email in ${cooldown}s` : 'Resend verification email'}
                 </Button>
