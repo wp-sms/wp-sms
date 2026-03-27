@@ -97,10 +97,10 @@
   --border: #d4d0cc;
   --input: #d4d0cc;
   --ring: #e8630a;
-  --chart-1: #fbbf24;
-  --chart-2: #f59e0b;
-  --chart-3: #e8630a;
-  --chart-4: #b45309;
+  --chart-1: #e8630a;
+  --chart-2: #b44230;
+  --chart-3: #0d9488;
+  --chart-4: #8b6cc1;
   --chart-5: #7a756f;
 
   --sidebar: #ffffff;
@@ -123,6 +123,7 @@
 @keyframes scale-in { from { opacity: 0; transform: scale(0.97); } }
 @keyframes slide-up { from { transform: translateY(100%); opacity: 0; } }
 @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+@keyframes bar-grow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 
 @layer base {
   * {

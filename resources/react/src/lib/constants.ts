@@ -377,10 +377,3 @@ export function formatLabel(value: string): string {
       return ACRONYMS[lower] ?? (word.charAt(0).toUpperCase() + word.slice(1));
     });
 }
-
-/** Shared dark tooltip style for Recharts charts. */
-export const CHART_TOOLTIP_STYLE = {
-  contentStyle: { fontSize: 12, borderRadius: 8, border: 'none', backgroundColor: 'oklch(0.147 0.004 49.25)', color: '#fff' },
-  labelStyle: { color: '#fff', marginBottom: 4 },
-  itemStyle: { color: '#fff' },
-} as const;
