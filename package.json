@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npm run dev:vendor && concurrently \"npm run dev:dashboard\" \"npm run dev:scripts\" \"npm run dev:sass\" \"npm run dev:auth\" \"npm run dev:messaging-button\" \"npm run dev:subscription-form\" \"npm run dev:cf7-phone\"",
+    "dev": "npm run dev:vendor && concurrently \"npm run dev:dashboard\" \"npm run dev:scripts\" \"npm run dev:sass\" \"npm run dev:auth\" \"npm run dev:messaging-button\" \"npm run dev:subscription-form\" \"npm run dev:cf7-phone\" \"npm run dev:blocks\"",
+    "dev:blocks": "wp-scripts start --config webpack.config.cjs --webpack-src-dir=resources/blocks --output-path=public/blocks",
     "dev:dashboard": "vite",
     "dev:scripts": "ENTRY=admin vite build -c vite.config.entries.mjs --watch",
     "dev:sass": "sass --watch resources/scss/admin.scss:public/css/admin.css resources/scss/frontend.scss:public/css/frontend.css",

@@ -41,11 +41,12 @@ class WooBlockCheckoutIntegration implements IntegrationInterface
             true,
         );
 
+        $editorAsset = include WP_SMS_DIR . 'public/blocks/wc-checkout-verify/index.asset.php';
         wp_register_script(
             'wsms-wc-checkout-verify',
             WP_SMS_URL . 'public/blocks/wc-checkout-verify/index.js',
-            ['wp-blocks', 'wp-element', 'wp-components'],
-            $version,
+            $editorAsset['dependencies'] ?? [],
+            $editorAsset['version'] ?? $version,
             true,
         );
 

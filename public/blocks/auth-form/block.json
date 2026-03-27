@@ -1,0 +1,47 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wsms/auth-form",
+  "version": "1.0.0",
+  "title": "WSMS Auth Form",
+  "category": "widgets",
+  "icon": "lock",
+  "description": "Display a login, registration, or password reset form.",
+  "textdomain": "wp-sms",
+  "keywords": [
+    "login",
+    "register",
+    "signup",
+    "authentication",
+    "registration",
+    "password",
+    "sign in"
+  ],
+  "attributes": {
+    "view": {
+      "type": "string",
+      "default": "login"
+    },
+    "formSlug": {
+      "type": "string",
+      "default": ""
+    },
+    "mode": {
+      "type": "string",
+      "default": "popup"
+    },
+    "buttonText": {
+      "type": "string",
+      "default": "Sign In"
+    }
+  },
+  "supports": {
+    "html": false,
+    "align": [
+      "wide",
+      "full"
+    ]
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css"
+}
