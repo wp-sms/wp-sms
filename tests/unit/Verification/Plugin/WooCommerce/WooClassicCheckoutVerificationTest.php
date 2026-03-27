@@ -148,7 +148,9 @@ class WooClassicCheckoutVerificationTest extends TestCase
         $this->checkout->renderWidgetContainers(null);
         $output = ob_get_clean();
 
-        $this->assertStringContainsString('wsms-woo-verify-email', $output);
+        $this->assertStringContainsString('wsms-verify-mount', $output);
+        $this->assertStringContainsString('data-wsms-channel="email"', $output);
+        $this->assertStringContainsString('wsms_checkout_token_email', $output);
     }
 
     protected function tearDown(): void

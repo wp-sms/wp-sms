@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from '@wordpress/element';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { getSetting } from '@woocommerce/settings';
-import { VerifyBridge } from './VerifyBridge.js';
+import { VerifyWidgetAdapter } from './VerifyWidgetAdapter.js';
 
 const NAMESPACE = 'wsms-checkout-verify';
 
@@ -96,13 +96,13 @@ export function WsmsCheckoutVerify() {
         'div',
         { className: 'wsms-block-checkout-verify' },
         showEmail &&
-            wp.element.createElement(VerifyBridge, {
+            wp.element.createElement(VerifyWidgetAdapter, {
                 channel: 'email',
                 identifier: debouncedEmail,
                 onVerified: handleEmailVerified,
             }),
         showPhone &&
-            wp.element.createElement(VerifyBridge, {
+            wp.element.createElement(VerifyWidgetAdapter, {
                 channel: 'phone',
                 identifier: debouncedPhone,
                 onVerified: handlePhoneVerified,

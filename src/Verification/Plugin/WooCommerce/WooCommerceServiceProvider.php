@@ -28,6 +28,7 @@ class WooCommerceServiceProvider implements ServiceProvider
 
         $container->register('integration.woo.block_checkout', fn () => new WooBlockCheckoutIntegration(
             $container->get('integration.woo.config'),
+            $container->get('branding.repository'),
         ));
 
         $container->register('integration.woo.block_validation', fn () => new WooBlockCheckoutValidation(

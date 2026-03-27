@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "wsms/checkout-verify",
+  "version": "1.0.0",
+  "title": "WSMS Checkout Verification",
+  "category": "woocommerce",
+  "description": "Email/phone OTP verification for WooCommerce block checkout.",
+  "textdomain": "wp-sms",
+  "editorScript": "file:./index.js",
+  "viewScript": "file:./frontend.js"
+}

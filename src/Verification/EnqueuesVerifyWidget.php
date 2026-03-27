@@ -37,5 +37,13 @@ trait EnqueuesVerifyWidget
         }
 
         wp_localize_script('wsms-verify-widget', 'wsmsVerifyConfig', $config);
+
+        wp_register_script(
+            'wsms-verify-mounter',
+            plugin_dir_url(WP_SMS_MAIN_FILE) . 'public/js/mounter.min.js',
+            ['wsms-verify-widget'],
+            WP_SMS_VERSION,
+            true,
+        );
     }
 }

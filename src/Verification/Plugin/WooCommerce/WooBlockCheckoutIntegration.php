@@ -3,13 +3,19 @@
 namespace WSms\Verification\Plugin\WooCommerce;
 
 use Automattic\WooCommerce\Blocks\Integrations\IntegrationInterface;
+use WSms\Branding\BrandingRepository;
+use WSms\Verification\EnqueuesVerifyWidget;
 
 defined('ABSPATH') || exit;
 
 class WooBlockCheckoutIntegration implements IntegrationInterface
 {
-    public function __construct(private WooCommerceConfig $config)
-    {
+    use EnqueuesVerifyWidget;
+
+    public function __construct(
+        private WooCommerceConfig $config,
+        private BrandingRepository $brandingRepo,
+    ) {
     }
 
     public function get_name(): string
@@ -21,12 +27,16 @@ class WooBlockCheckoutIntegration implements IntegrationInterface
     {
         $version = WP_SMS_VERSION;
 
+        $this->enqueueVerifyWidget($this->brandingRepo->get('primary_color'));
+
         $frontendAsset = include WP_SMS_DIR . 'public/blocks/wc-checkout-verify/frontend.asset.php';
+        $frontendDeps = $frontendAsset['dependencies'] ?? [];
+        $frontendDeps[] = 'wsms-verify-widget';
 
         wp_register_script(
             'wsms-wc-checkout-verify-frontend',
             WP_SMS_URL . 'public/blocks/wc-checkout-verify/frontend.js',
-            $frontendAsset['dependencies'] ?? [],
+            $frontendDeps,
             $frontendAsset['version'] ?? $version,
             true,
         );
@@ -39,30 +49,11 @@ class WooBlockCheckoutIntegration implements IntegrationInterface
             true,
         );
 
-        // Register and enqueue inline styles for the block checkout verification.
         wp_register_style('wsms-wc-checkout-verify-style', false, [], $version);
         wp_enqueue_style('wsms-wc-checkout-verify-style');
         wp_add_inline_style('wsms-wc-checkout-verify-style', <<<'CSS'
         #wsms-checkout-verify-slot {
             margin-top: 16px;
-        }
-        #wsms-checkout-verify-slot .wc-block-components-notice-banner__content a {
-            text-decoration: underline;
-            font-weight: 500;
-        }
-        #wsms-checkout-verify-slot .wc-block-components-button.wp-element-button {
-            width: auto;
-            display: inline-block;
-            vertical-align: middle;
-        }
-        #wsms-checkout-verify-slot .wc-block-components-address-form {
-            margin-top: 0;
-        }
-        #wsms-checkout-verify-slot .wsms-checkout-verify-actions {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 12px;
         }
         CSS);
     }
@@ -84,8 +75,6 @@ class WooBlockCheckoutIntegration implements IntegrationInterface
             'phoneEnabled' => $this->config->isCheckoutPhoneEnabled(),
             'skipEmail'    => $this->config->getVerifiedAccountValue('email'),
             'skipPhone'    => $this->config->getVerifiedAccountValue('phone'),
-            'restUrl'      => rest_url('wsms/v1/'),
-            'nonce'        => wp_create_nonce('wp_rest'),
         ];
     }
 

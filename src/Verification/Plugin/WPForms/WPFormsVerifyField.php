@@ -4,6 +4,7 @@ namespace WSms\Verification\Plugin\WPForms;
 
 use WSms\Branding\BrandingRepository;
 use WSms\Verification\EnqueuesVerifyWidget;
+use WSms\Verification\FormVerification;
 use WSms\Verification\VerificationService;
 
 defined('ABSPATH') || exit;
@@ -86,18 +87,13 @@ abstract class WPFormsVerifyField extends \WPForms_Field
             esc_attr($primary['required'] ?? ''),
         );
 
-        // Widget container — the shared Preact widget mounts here.
-        printf(
-            '<span class="wsms-verify-widget-container" style="display:block" data-wsms-channel="%s" data-wsms-field="%d" data-wsms-form="%d"></span>',
-            esc_attr($this->channel),
-            $field_id,
-            $form_id,
-        );
-
-        // Hidden session-token field.
-        printf(
-            '<input type="hidden" name="wpforms[wsms_verified][%d]" class="wsms-verified-flag" value="">',
-            $field_id,
+        // Verify-mount container + hidden token field (auto-discovered by mounter).
+        $inputSelector = $this->channel === 'phone' ? 'input[type="tel"]' : 'input[type="email"]';
+        echo FormVerification::renderVerifyHtml(
+            $this->channel,
+            $inputSelector,
+            "wpforms[wsms_verified][{$field_id}]",
+            ['scope' => '.wpforms-field'],
         );
 
         $this->field_display_error('primary', $field);
@@ -148,35 +144,7 @@ abstract class WPFormsVerifyField extends \WPForms_Field
         static::$assetsEnqueued = true;
 
         $this->enqueueVerifyWidget($this->brandingRepo->get('primary_color'));
-
-        wp_add_inline_script('wsms-verify-widget', <<<'JS'
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof wsmsVerify === 'undefined') return;
-            document.querySelectorAll('.wsms-verify-widget-container').forEach(function(el) {
-                var field = el.closest('.wpforms-field');
-                if (!field) return;
-                var input = field.querySelector('input[type="email"], input[type="tel"]');
-                var flag = field.querySelector('.wsms-verified-flag');
-                if (!input || !flag) return;
-                var channel = el.dataset.wsmsChannel;
-                var lastValue = '';
-
-                input.addEventListener('blur', function() {
-                    var value = input.value.trim();
-                    if (!value || value === lastValue) return;
-                    lastValue = value;
-                    flag.value = '';
-                    wsmsVerify.mount(el, {
-                        channel: channel,
-                        identifier: value,
-                        onVerified: function(sessionToken) {
-                            flag.value = sessionToken;
-                        },
-                    });
-                });
-            });
-        });
-        JS);
+        wp_enqueue_script('wsms-verify-mounter');
     }
 
     protected function inputType(): string

@@ -4,20 +4,19 @@ namespace WSms\Verification\Plugin\ContactForm7;
 
 use WSms\Branding\BrandingRepository;
 use WSms\PhoneRestriction\RestrictionSettings;
-use WSms\Verification\EnqueuesVerifyWidget;
+use WSms\Verification\FormVerification;
 use WSms\Verification\VerificationService;
 
 defined('ABSPATH') || exit;
 
-class CF7Integration
+class CF7Integration extends FormVerification
 {
-    use EnqueuesVerifyWidget;
-
     public function __construct(
-        private VerificationService $verificationService,
+        VerificationService $verificationService,
         private RestrictionSettings $restrictionSettings,
-        private BrandingRepository $brandingRepo,
+        BrandingRepository $brandingRepo,
     ) {
+        parent::__construct($verificationService, $brandingRepo);
     }
 
     public function registerHooks(): void
@@ -335,53 +334,20 @@ class CF7Integration
 
     public function enqueueAssets(): void
     {
+        // Verify widget + mounter + vendor (also registers vendor for phone bundle below)
+        parent::enqueueAssets();
+
         $baseUrl = plugin_dir_url(WP_SMS_MAIN_FILE);
         $version = WP_SMS_VERSION;
-
-        $this->registerVendorAsset();
 
         // Phone input bundle (lite-phone-input vanilla + CSS)
         wp_enqueue_style('wsms-cf7-phone', $baseUrl . 'public/js/cf7-phone.css', ['wsms-vendor'], $version);
         wp_enqueue_script('wsms-cf7-phone', $baseUrl . 'public/js/cf7-phone.js', ['wsms-vendor'], $version, true);
 
-        // Phone input config (default country, preferred, restrictions)
         wp_add_inline_script('wsms-cf7-phone',
             'window.wsmsCf7PhoneConfig=' . wp_json_encode($this->restrictionSettings->getPhoneInputDisplayConfig()) . ';',
             'before',
         );
-
-        // Verify widget (for both email tags and phone verify)
-        $this->enqueueVerifyWidget($this->brandingRepo->get('primary_color'));
-
-        // Inline script for EMAIL verify only (phone handled by cf7-phone-entry.js)
-        wp_add_inline_script('wsms-verify-widget', <<<'JS'
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof wsmsVerify === 'undefined') return;
-            document.querySelectorAll('.wsms-verify-widget-container').forEach(function(el) {
-                var wrap = el.closest('.wpcf7-form-control-wrap');
-                if (!wrap) return;
-                var input = wrap.querySelector('.wsms-verify-input');
-                var flag = wrap.querySelector('.wsms-verified-flag');
-                if (!input || !flag) return;
-                var channel = el.dataset.wsmsChannel;
-                var lastValue = '';
-
-                input.addEventListener('blur', function() {
-                    var value = input.value.trim();
-                    if (!value || value === lastValue) return;
-                    lastValue = value;
-                    flag.value = '';
-                    wsmsVerify.mount(el, {
-                        channel: channel,
-                        identifier: value,
-                        onVerified: function(sessionToken) {
-                            flag.value = sessionToken;
-                        },
-                    });
-                });
-            });
-        });
-        JS);
     }
 
     private function renderEmailVerifyTag($tag): string
@@ -425,15 +391,19 @@ class CF7Integration
             $atts .= ' aria-invalid="false"';
         }
 
+        $verifyHtml = self::renderVerifyHtml('email', '.wsms-verify-input', "wsms_verified_{$name}", [
+            'scope' => '.wpcf7-form-control-wrap',
+        ]);
+
         return sprintf(
             '<span class="wpcf7-form-control-wrap wsms-verify-wrap" data-name="%1$s">'
             . '<input%2$s />%3$s'
-            . '<span class="wsms-verify-widget-container" style="display:block" data-wsms-channel="email" data-wsms-field="%1$s"></span>'
-            . '<input type="hidden" name="wsms_verified_%1$s" class="wsms-verified-flag" value="" />'
+            . '%4$s'
             . '</span>',
             esc_attr($name),
             $atts,
             $validationError,
+            $verifyHtml,
         );
     }
 

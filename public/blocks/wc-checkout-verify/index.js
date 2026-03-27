@@ -1,0 +1,1 @@
+(()=>{"use strict";const e=window.wp.blocks,t=JSON.parse('{"UU":"wsms/checkout-verify"}');(0,e.registerBlockType)(t.UU,{edit:()=>wp.element.createElement("div",{className:"wsms-checkout-verify-editor"},"WSMS: Email/Phone verification will appear here on the checkout page."),save:()=>null})})();
