@@ -635,7 +635,7 @@ export default function Gateway() {
             <div className="wsms-space-y-3">
               {gatewayHelp && (
                 <div
-                  className="wsms-text-[13px] wsms-text-foreground [&_a]:wsms-text-primary [&_a]:wsms-underline [&_a]:hover:wsms-text-primary/80"
+                  className="wsms-text-[13px] wsms-text-foreground [&_a]:wsms-text-primary [&_a]:wsms-underline [&_a]:hover:wsms-text-primary/80 [&_ul]:wsms-list-disc [&_ul]:wsms-pl-5 [&_ul]:wsms-mt-1 [&_li]:wsms-py-0.5"
                   dangerouslySetInnerHTML={{ __html: gatewayHelp }}
                 />
               )}
