@@ -3,12 +3,14 @@
 namespace WSms\Auth;
 
 use WSms\Branding\BrandingRepository;
+use WSms\PhoneRestriction\RegistersVendorAsset;
 use WSms\Support\UserMeta;
 
 defined('ABSPATH') || exit;
 
 class AuthRouter
 {
+    use RegistersVendorAsset;
     private ?CaptchaGuard $captchaGuard = null;
 
     public function __construct(
@@ -115,17 +117,20 @@ class AuthRouter
         $pluginUrl = plugin_dir_url(dirname(__DIR__, 1) . '/../wp-sms.php');
         $version = defined('WP_SMS_VERSION') ? WP_SMS_VERSION : '8.0';
 
+        $this->registerVendorAsset();
+
+        wp_enqueue_style('wsms-vendor');
         wp_enqueue_style(
             'wsms-auth-style',
             $pluginUrl . 'public/auth/style.css',
-            [],
+            ['wsms-vendor'],
             $version,
         );
 
         wp_enqueue_script(
             'wsms-auth',
             $pluginUrl . 'public/auth/app.js',
-            [],
+            ['wsms-vendor'],
             $version,
             true,
         );
@@ -191,8 +196,8 @@ class AuthRouter
 
         global $wp_styles, $wp_scripts;
 
-        $allowedStyles = ['wsms-auth-style', 'wsms-google-font'];
-        $allowedScripts = ['wsms-auth', 'wp-hooks', 'wsms-captcha-provider'];
+        $allowedStyles = ['wsms-vendor', 'wsms-auth-style', 'wsms-google-font'];
+        $allowedScripts = ['wsms-vendor', 'wsms-auth', 'wp-hooks', 'wsms-captcha-provider'];
 
         if ($wp_styles instanceof \WP_Styles) {
             foreach ($wp_styles->queue as $handle) {

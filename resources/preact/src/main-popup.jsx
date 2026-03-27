@@ -4,7 +4,7 @@ import { EmbedApp } from './EmbedApp';
 import { BrandingProvider } from './components/BrandingProvider';
 import { authConfig, formSlug, loadConfig, renderMode } from './signals/config';
 import { applyBrandingVars } from './utils/apply-branding';
-import popupStyles from './styles/auth.css?inline';
+import popupStyles from './styles/auth-shadow.css?inline';
 
 // Apply branding CSS vars on document.documentElement BEFORE shadow DOM
 // CSS custom properties inherit through shadow DOM boundaries

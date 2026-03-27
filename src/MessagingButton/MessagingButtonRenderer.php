@@ -3,6 +3,7 @@
 namespace WSms\MessagingButton;
 
 use WSms\Branding\BrandingRepository;
+use WSms\PhoneRestriction\RegistersVendorAsset;
 use WSms\PhoneRestriction\RestrictionSettings;
 use WSms\Support\UserMeta;
 
@@ -10,6 +11,7 @@ defined('ABSPATH') || exit;
 
 class MessagingButtonRenderer
 {
+    use RegistersVendorAsset;
     public function __construct(
         private readonly MessagingButtonSettings $settings,
         private readonly DisplayRuleEvaluator $displayRules,
@@ -45,10 +47,12 @@ class MessagingButtonRenderer
         $baseUrl = plugin_dir_url(WP_SMS_MAIN_FILE) . 'public/auth/';
         $version = defined('WP_SMS_VERSION') ? WP_SMS_VERSION : '8.0.0';
 
+        $this->registerVendorAsset();
+
         wp_enqueue_script(
             'wsms-messaging-button',
             $baseUrl . 'messaging-button.js',
-            [],
+            ['wsms-vendor'],
             $version,
             true,
         );

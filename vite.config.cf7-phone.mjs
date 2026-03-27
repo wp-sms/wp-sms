@@ -16,6 +16,7 @@ export default defineConfig({
         sourcemap: false,
         cssCodeSplit: false,
         rolldownOptions: {
+            external: ['lite-phone-input/vanilla', 'lite-phone-input/styles'],
             output: {
                 assetFileNames: 'cf7-phone[extname]',
             },

@@ -24,16 +24,31 @@ export function createAuthConfig({ entry, name, fileName, emptyOutDir = true, as
             sourcemap: false,
             cssCodeSplit: false,
             rolldownOptions: {
-                external: ['preact-render-to-string'],
-                output: { assetFileNames },
+                external: [
+                    'preact-render-to-string',
+                    'preact',
+                    'preact/hooks',
+                    'preact/compat',
+                    '@preact/signals',
+                    'input-otp',
+                    'lite-phone-input/preact',
+                    'lite-phone-input/vanilla',
+                ],
+                output: {
+                    assetFileNames,
+                    globals: {
+                        'preact': 'WsmsVendor.preact',
+                        'preact/hooks': 'WsmsVendor.preactHooks',
+                        'preact/compat': 'WsmsVendor.preactCompat',
+                        '@preact/signals': 'WsmsVendor.signals',
+                        'input-otp': 'WsmsVendor.inputOtp',
+                    },
+                },
             },
         },
         resolve: {
             alias: {
                 '@': resolve(__dirname, 'resources/preact/src'),
-                'preact': resolve(__dirname, 'node_modules/preact'),
-                'preact/hooks': resolve(__dirname, 'node_modules/preact/hooks'),
-                'preact/compat': resolve(__dirname, 'node_modules/preact/compat'),
             },
         },
     };

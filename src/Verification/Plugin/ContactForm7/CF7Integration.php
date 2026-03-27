@@ -338,9 +338,11 @@ class CF7Integration
         $baseUrl = plugin_dir_url(WP_SMS_MAIN_FILE);
         $version = WP_SMS_VERSION;
 
+        $this->registerVendorAsset();
+
         // Phone input bundle (lite-phone-input vanilla + CSS)
-        wp_enqueue_style('wsms-cf7-phone', $baseUrl . 'public/js/cf7-phone.css', [], $version);
-        wp_enqueue_script('wsms-cf7-phone', $baseUrl . 'public/js/cf7-phone.js', [], $version, true);
+        wp_enqueue_style('wsms-cf7-phone', $baseUrl . 'public/js/cf7-phone.css', ['wsms-vendor'], $version);
+        wp_enqueue_script('wsms-cf7-phone', $baseUrl . 'public/js/cf7-phone.js', ['wsms-vendor'], $version, true);
 
         // Phone input config (default country, preferred, restrictions)
         wp_add_inline_script('wsms-cf7-phone',

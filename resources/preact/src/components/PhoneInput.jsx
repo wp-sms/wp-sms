@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'preact/hooks';
-import { PhoneInput as LitePhoneInput } from 'lite-phone-input/preact';
+import { PhoneInput as LitePhoneInput } from '../adapters/LitePhoneInputAdapter';
 import { authConfig } from '../signals/config';
 
 export function PhoneInput({ value = '', onChange, disabled, autoFocus = false, config: configProp }) {

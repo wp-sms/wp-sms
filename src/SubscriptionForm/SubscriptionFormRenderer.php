@@ -3,12 +3,14 @@
 namespace WSms\SubscriptionForm;
 
 use WSms\Branding\BrandingRepository;
+use WSms\PhoneRestriction\RegistersVendorAsset;
 use WSms\PhoneRestriction\RestrictionSettings;
 
 defined('ABSPATH') || exit;
 
 class SubscriptionFormRenderer
 {
+    use RegistersVendorAsset;
     public function __construct(
         private readonly SubscriptionFormRepository $formRepository,
         private readonly RestrictionSettings $restrictionSettings,
@@ -75,10 +77,13 @@ class SubscriptionFormRenderer
         $baseUrl = plugin_dir_url(WP_SMS_MAIN_FILE) . 'public/auth/';
         $version = defined('WP_SMS_VERSION') ? WP_SMS_VERSION : '8.0.0';
 
+        $this->registerVendorAsset();
+
+        wp_enqueue_style('wsms-vendor');
         wp_enqueue_script(
             'wsms-subscription-form',
             $baseUrl . 'subscription-form.js',
-            [],
+            ['wsms-vendor'],
             $version,
             true,
         );
@@ -86,7 +91,7 @@ class SubscriptionFormRenderer
         wp_enqueue_style(
             'wsms-subscription-form',
             $baseUrl . 'subscription-form.css',
-            [],
+            ['wsms-vendor'],
             $version,
         );
 

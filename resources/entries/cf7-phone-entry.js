@@ -1,5 +1,4 @@
-import { PhoneInput } from 'lite-phone-input/vanilla';
-import 'lite-phone-input/styles';
+const { PhoneInput } = window.WsmsVendor.LitePhoneInput;
 import './cf7-phone.css';
 
 function destroyPhoneInputs(root) {

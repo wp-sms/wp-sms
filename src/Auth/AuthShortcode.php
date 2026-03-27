@@ -3,6 +3,7 @@
 namespace WSms\Auth;
 
 use WSms\Branding\BrandingRepository;
+use WSms\PhoneRestriction\RegistersVendorAsset;
 
 defined('ABSPATH') || exit;
 
@@ -20,6 +21,8 @@ defined('ABSPATH') || exit;
  */
 class AuthShortcode
 {
+    use RegistersVendorAsset;
+
     private bool $enqueued = false;
     private int $embedCount = 0;
 
@@ -95,10 +98,12 @@ class AuthShortcode
         $pluginUrl = plugin_dir_url(dirname(__DIR__, 1) . '/../wp-sms.php');
         $version   = defined('WP_SMS_VERSION') ? WP_SMS_VERSION : '8.0';
 
+        $this->registerVendorAsset();
+
         wp_enqueue_script(
             'wsms-auth-popup',
             $pluginUrl . 'public/auth/popup.js',
-            [],
+            ['wsms-vendor'],
             $version,
             true,
         );
