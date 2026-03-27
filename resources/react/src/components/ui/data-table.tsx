@@ -44,16 +44,16 @@ export function DataTable({
 
   return (
     <div className={className} {...props}>
-      <div className="rounded-lg overflow-hidden">
+      <div className="border-2 border-border rounded-lg overflow-hidden">
         {children}
+        {pagination && (
+          <PageNumbers
+            page={pagination.page}
+            totalPages={pagination.totalPages}
+            onPageChange={pagination.onPageChange}
+          />
+        )}
       </div>
-      {pagination && (
-        <PageNumbers
-          page={pagination.page}
-          totalPages={pagination.totalPages}
-          onPageChange={pagination.onPageChange}
-        />
-      )}
     </div>
   );
 }

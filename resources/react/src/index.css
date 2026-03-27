@@ -43,7 +43,7 @@
   --color-surface: var(--surface);
   --shadow-brutalist: 4px 4px 0 var(--border);
   --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
   --font-sans: var(--font-sans);
@@ -262,7 +262,6 @@
 /* Table header — dark ink */
 #wpsms-app [data-slot="table-header"] {
   background-color: var(--foreground);
-  color: var(--primary-foreground);
 }
 
 /* Sidebar active state — orange tint */
@@ -286,8 +285,8 @@
 /* Sidebar group label — uppercase, tracked */
 #wpsms-app [data-slot="sidebar-group-label"] {
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  font-size: 10px;
 }
 
 /* Active sub-button orange indicator */
