@@ -101,14 +101,14 @@ class AuthShortcode
         $this->registerVendorAsset();
 
         wp_enqueue_script(
-            'wsms-auth-popup',
-            $pluginUrl . 'public/auth/popup.js',
+            'wsms-auth',
+            $pluginUrl . 'public/auth/app.js',
             ['wsms-vendor'],
             $version,
             true,
         );
 
-        wp_localize_script('wsms-auth-popup', 'wsmsAuth', [
+        wp_localize_script('wsms-auth', 'wsmsAuth', [
             'restUrl'    => rest_url('wsms/v1/'),
             'nonce'      => wp_create_nonce('wp_rest'),
             'baseUrl'    => '/' . ltrim($this->getBaseUrl(), '/'),

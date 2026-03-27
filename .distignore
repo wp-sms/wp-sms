@@ -23,7 +23,6 @@ vite.config.ts
 vite.config.entries.mjs
 vite.config.auth-base.mjs
 vite.config.auth.mjs
-vite.config.auth-popup.mjs
 vite.config.verify-widget.mjs
 vite.config.messaging-button.mjs
 vite.config.subscription-form.mjs

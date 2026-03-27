@@ -36,7 +36,7 @@ const VIEW_COMPONENTS = {
 
 export function App({ mode = 'fullpage' }) {
     useEffect(() => {
-        // In popup mode, config loading is managed by the click handler in main-popup.jsx
+        // In popup mode, config loading is managed by the click handler in main.jsx
         // which reads data-wsms-form-id from the trigger button before mounting.
         if (mode === 'popup') return;
 
