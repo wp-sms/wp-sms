@@ -668,7 +668,25 @@ export default function Gateway() {
           <CardContent className="wsms-space-y-4">
             <div className="wsms-grid wsms-grid-cols-1 wsms-gap-4 md:wsms-grid-cols-2">
               {Object.entries(gatewayFields).map(([key, field]) => {
-                const fieldValue = getSetting(field.id, '')
+                // Resolve effective value for a field, falling back to first option for selects
+                const getEffectiveValue = (fieldId) => {
+                  const val = getSetting(fieldId, '')
+                  if (val === '' && gatewayFields[fieldId]?.type === 'select' && gatewayFields[fieldId]?.options) {
+                    return Object.keys(gatewayFields[fieldId].options)[0] || ''
+                  }
+                  return val
+                }
+
+                // Conditional visibility: js-wpsms-show_if_{fieldId}_equal_{value}
+                if (field.className) {
+                  const matches = field.className.match(/js-wpsms-show_if_(\w+?)_equal_(\w+)/g)
+                  if (matches && !matches.some((match) => {
+                    const parts = match.replace('js-wpsms-show_if_', '').split('_equal_')
+                    return getEffectiveValue(parts[0]) === parts[1]
+                  })) return null
+                }
+
+                const fieldValue = getEffectiveValue(field.id)
                 const isPassword = key === 'password' || field.id.includes('password')
                 const isFullWidth = key === 'from' || field.id === 'gateway_sender_id'
 

@@ -531,6 +531,7 @@ class Dashboard extends Singleton
                         'placeholder' => $field['place_holder'] ?? '',
                         'type'        => $field['type'] ?? 'text',
                         'options'     => $field['options'] ?? [],
+                        'className'   => $field['className'] ?? '',
                     ];
                 }
             }

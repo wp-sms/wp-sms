@@ -64,6 +64,24 @@ export default function ConfigurationStep({
     })
   }
 
+  /**
+   * Check if a field should be visible based on its className conditional rules.
+   * Supports the pattern: js-wpsms-show_if_{fieldId}_equal_{value}
+   */
+  const isFieldVisible = (field) => {
+    if (!field.className) return true
+
+    const matches = field.className.match(/js-wpsms-show_if_(\w+?)_equal_(\w+)/g)
+    if (!matches) return true
+
+    return matches.some((match) => {
+      const parts = match.replace('js-wpsms-show_if_', '').split('_equal_')
+      const dependsOnId = parts[0]
+      const requiredValue = parts[1]
+      return (credentials[dependsOnId] || '') === requiredValue
+    })
+  }
+
   const hasFields = Object.keys(gatewayFields).length > 0
 
   return (
@@ -111,6 +129,8 @@ export default function ConfigurationStep({
           {hasFields ? (
             <div className="wsms-grid wsms-grid-cols-1 wsms-gap-4 md:wsms-grid-cols-2">
               {Object.entries(gatewayFields).map(([key, field]) => {
+                if (!isFieldVisible(field)) return null
+
                 const fieldValue = credentials[field.id] || ''
                 const isPassword = key === 'password' || field.id.includes('password') || field.id.includes('key')
                 const isFullWidth = key === 'from' || field.id === 'gateway_sender_id'
