@@ -21,13 +21,17 @@ function buttonVariants({ variant = 'default', size = 'default', className } = {
     return cn('wsms-auth-btn', VARIANT[variant], SIZE[size], className);
 }
 
-function Button({ className, variant, size, ...props }) {
+function Button({ className, variant, size, loading, children, disabled, ...props }) {
     return (
         <button
             data-slot="button"
             className={buttonVariants({ variant, size, className })}
+            disabled={disabled || loading}
             {...props}
-        />
+        >
+            {loading && <span className="wsms-auth-spinner--inline" />}
+            {children}
+        </button>
     );
 }
 

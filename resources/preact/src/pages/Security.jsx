@@ -8,7 +8,7 @@ import { extractError } from '../utils/auth';
 import { AccountLayout } from '../layouts/AccountLayout';
 import { Alert } from '../components/ui/Alert';
 import { Button } from '../components/ui/Button';
-import { Spinner } from '../components/ui/Spinner';
+import { SecuritySkeleton } from '../components/ui/Skeleton';
 import { Separator } from '../components/ui/Separator';
 import { MfaFactorCard } from '../components/MfaFactorCard';
 import { BackupCodesDisplay } from '../components/BackupCodesDisplay';
@@ -201,10 +201,7 @@ export function Security() {
     if (loading) {
         return (
             <AccountLayout title="Security" currentPath="/security">
-                <div className="wsms-auth-loading-center">
-                    <Spinner className="wsms-auth-spinner--lg" />
-                    <p className="wsms-auth-text-sm wsms-auth-text-muted">Loading security settings…</p>
-                </div>
+                <SecuritySkeleton />
             </AccountLayout>
         );
     }

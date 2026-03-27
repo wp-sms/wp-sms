@@ -1,0 +1,182 @@
+/* === UserButton Widget === */
+
+:host {
+    --ub-bg: #ffffff;
+    --ub-text: #1f2937;
+    --ub-text-muted: #6b7280;
+    --ub-border: #e5e7eb;
+    --ub-accent: #f3f4f6;
+    --ub-primary: oklch(0.555 0.163 48.998);
+    --ub-primary-fg: oklch(0.987 0.022 95.277);
+    --ub-danger: #dc2626;
+    --ub-danger-bg: #fef2f2;
+    --ub-radius: 0.5rem;
+    --ub-shadow: 0 4px 24px rgb(0 0 0 / 0.12), 0 1px 3px rgb(0 0 0 / 0.08);
+
+    display: inline-block;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ub-text);
+    -webkit-font-smoothing: antialiased;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.wsms-ub {
+    position: relative;
+    display: inline-flex;
+}
+
+.wsms-ub-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 9999px;
+    background: none;
+    cursor: pointer;
+    transition: border-color 150ms;
+}
+
+.wsms-ub-trigger:hover {
+    border-color: var(--ub-border);
+}
+
+.wsms-ub-trigger:focus-visible {
+    outline: 2px solid var(--ub-primary);
+    outline-offset: 2px;
+}
+
+.wsms-ub-avatar {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 9999px;
+    flex-shrink: 0;
+}
+
+.wsms-ub-avatar--img {
+    object-fit: cover;
+}
+
+.wsms-ub-avatar--initials {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ub-primary);
+    color: var(--ub-primary-fg);
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Dropdown */
+.wsms-ub-dropdown {
+    position: absolute;
+    top: calc(100% + 0.375rem);
+    right: 0;
+    width: 240px;
+    background: var(--ub-bg);
+    border: 1px solid var(--ub-border);
+    border-radius: var(--ub-radius);
+    box-shadow: var(--ub-shadow);
+    z-index: 999999;
+    padding: 0.25rem 0;
+    animation: wsms-ub-enter 120ms ease-out;
+}
+
+@keyframes wsms-ub-enter {
+    from { opacity: 0; transform: translateY(-4px) scale(0.97); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.wsms-ub-dropdown__header {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem;
+}
+
+.wsms-ub-dropdown__info {
+    min-width: 0;
+    flex: 1;
+}
+
+.wsms-ub-dropdown__name {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.wsms-ub-dropdown__email {
+    font-size: 0.6875rem;
+    color: var(--ub-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.wsms-ub-dropdown__sep {
+    height: 1px;
+    background: var(--ub-border);
+    margin: 0.25rem 0;
+}
+
+.wsms-ub-dropdown__item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--ub-text);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 100ms;
+}
+
+.wsms-ub-dropdown__item:hover {
+    background: var(--ub-accent);
+}
+
+.wsms-ub-dropdown__item svg {
+    width: 0.875rem;
+    height: 0.875rem;
+    color: var(--ub-text-muted);
+    flex-shrink: 0;
+}
+
+.wsms-ub-dropdown__item--danger {
+    color: var(--ub-danger);
+}
+
+.wsms-ub-dropdown__item--danger:hover {
+    background: var(--ub-danger-bg);
+}
+
+.wsms-ub-dropdown__item--danger svg {
+    color: var(--ub-danger);
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    :host {
+        --ub-bg: #1f2937;
+        --ub-text: #e5e7eb;
+        --ub-text-muted: #9ca3af;
+        --ub-border: #374151;
+        --ub-accent: #374151;
+        --ub-danger: #f87171;
+        --ub-danger-bg: rgba(248, 113, 113, 0.1);
+        --ub-shadow: 0 4px 24px rgb(0 0 0 / 0.3), 0 1px 3px rgb(0 0 0 / 0.2);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .wsms-ub-dropdown { animation: none; }
+}

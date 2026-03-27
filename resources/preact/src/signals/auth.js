@@ -15,6 +15,7 @@ export function stopLoading() {
 
 // Identifier-first flow signals.
 export const authStep = signal('identifier'); // 'identifier'|'authenticate'|'mfa'|'register'|'register_verify'|'login_verify'
+export const stepDirection = signal('forward'); // 'forward'|'back' — drives step transition animation direction
 export const identifyResult = signal(null);
 export const enteredIdentifier = signal('');
 export const rememberedIdentifier = signal(localStorage.getItem('wsms_remembered_id') || '');
@@ -35,6 +36,7 @@ export function forgetIdentifier() {
 }
 
 export function resetIdentifyFlow({ keepRemembered = false } = {}) {
+    stepDirection.value = 'back';
     authStep.value = 'identifier';
     identifyResult.value = null;
     enteredIdentifier.value = '';

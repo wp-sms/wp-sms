@@ -16,6 +16,7 @@
     --wsms-vw-error: #dc3232;
     --wsms-vw-link: #2271b1;
     --wsms-vw-radius: 6px;
+    color-scheme: light dark;
 
     padding: 12px 16px;
     border: 1px solid var(--wsms-vw-border);
@@ -286,4 +287,17 @@
     font-weight: 600;
     letter-spacing: 0.05em;
     opacity: 0.8;
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .wsms-vw.wsms-vw {
+        --wsms-vw-text: #e5e7eb;
+        --wsms-vw-text-muted: #9ca3af;
+        --wsms-vw-border: #374151;
+        --wsms-vw-bg: #1f2937;
+        --wsms-vw-success: #4ade80;
+        --wsms-vw-error: #f87171;
+        --wsms-vw-link: #60a5fa;
+    }
 }

@@ -6,6 +6,7 @@ import {
     authError,
     authLoading,
     authStep,
+    stepDirection,
     identifyResult,
     enteredIdentifier,
     rememberedIdentifier,
@@ -68,8 +69,10 @@ export function IdentifierStep() {
 
             if (res.user_found) {
                 rememberIdentifier(id);
+                stepDirection.value = 'forward';
                 authStep.value = 'authenticate';
             } else if (res.registration_available) {
+                stepDirection.value = 'forward';
                 authStep.value = 'register';
             } else {
                 authError.value = 'No account found with this identifier.';
@@ -135,7 +138,7 @@ export function IdentifierStep() {
                         autoComplete="username"
                     />
                 </div>
-                <Button className="wsms-auth-full" type="submit" disabled={authLoading.value || !identifier.trim()}>
+                <Button className="wsms-auth-full" type="submit" loading={authLoading.value} disabled={!identifier.trim()}>
                     {authLoading.value ? 'Checking...' : 'Continue'}
                 </Button>
             </form>

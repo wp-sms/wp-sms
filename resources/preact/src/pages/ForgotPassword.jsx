@@ -72,7 +72,7 @@ export function ForgotPassword() {
                             resetRef={captcha.resetRef}
                         />
                     )}
-                    <Button className="wsms-auth-full" type="submit" disabled={authLoading.value || (needsCaptcha && !captcha.token)}>
+                    <Button className="wsms-auth-full" type="submit" loading={authLoading.value} disabled={needsCaptcha && !captcha.token}>
                         {authLoading.value ? 'Sending\u2026' : 'Send Reset Link'}
                     </Button>
                 </form>

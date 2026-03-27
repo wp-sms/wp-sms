@@ -1,30 +1,52 @@
 import { socialProviders } from '../signals/config';
-import { Button } from './ui/Button';
+
+function goToProvider(provider, intent) {
+    const url = new URL(provider.authorize_url, window.location.origin);
+    url.searchParams.set('intent', intent);
+    window.location.href = url.toString();
+}
 
 export function SocialLoginButtons({ intent = 'login' }) {
     const providers = socialProviders.value;
     if (!providers.length) return null;
 
+    const compact = providers.length >= 3;
+
+    if (compact) {
+        return (
+            <div className="wsms-auth-social-row">
+                {providers.map((provider) => (
+                    <button
+                        key={provider.id}
+                        type="button"
+                        className="wsms-auth-social-icon-btn"
+                        title={`Continue with ${provider.name}`}
+                        onClick={() => goToProvider(provider, intent)}
+                    >
+                        <span dangerouslySetInnerHTML={{ __html: provider.icon }} />
+                    </button>
+                ))}
+            </div>
+        );
+    }
+
+    const layoutClass = providers.length === 2 ? 'wsms-auth-social-grid-2' : 'wsms-auth-stack-2';
+
     return (
-        <div className="wsms-auth-stack-2">
+        <div className={layoutClass}>
             {providers.map((provider) => (
-                <Button
+                <button
                     key={provider.id}
-                    variant="outline"
-                    className="wsms-auth-full"
                     type="button"
-                    onClick={() => {
-                        const url = new URL(provider.authorize_url, window.location.origin);
-                        url.searchParams.set('intent', intent);
-                        window.location.href = url.toString();
-                    }}
+                    className="wsms-auth-social-btn"
+                    onClick={() => goToProvider(provider, intent)}
                 >
                     <span
-                        className="wsms-auth-social-icon"
+                        className="wsms-auth-social-btn__icon"
                         dangerouslySetInnerHTML={{ __html: provider.icon }}
                     />
-                    Continue with {provider.name}
-                </Button>
+                    {provider.name}
+                </button>
             ))}
         </div>
     );

@@ -9,6 +9,7 @@ import { AuthLayout } from '../layouts/AuthLayout';
 import { Alert } from '../components/ui/Alert';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
+import { PasswordInput } from '../components/ui/PasswordInput';
 import { Label } from '../components/ui/Label';
 import { AuthLink } from '../components/AuthLink';
 import { PhoneInput } from '../components/PhoneInput';
@@ -249,9 +250,8 @@ export function Register() {
                 return (
                     <div className="wsms-auth-stack-2" key="password">
                         <Label for="wsms-reg-password">Password</Label>
-                        <Input
+                        <PasswordInput
                             id="wsms-reg-password"
-                            type="password"
                             value={form.password}
                             onInput={(e) => updateField('password', e.target.value)}
                             required
@@ -299,7 +299,7 @@ export function Register() {
                         resetRef={captcha.resetRef}
                     />
                 )}
-                <Button className="wsms-auth-full" type="submit" disabled={authLoading.value || (needsCaptcha && !captcha.token)}>
+                <Button className="wsms-auth-full" type="submit" loading={authLoading.value} disabled={needsCaptcha && !captcha.token}>
                     {authLoading.value ? 'Creating account\u2026' : 'Create Account'}
                 </Button>
                 {legalLinks.value && (legalLinks.value.terms_url || legalLinks.value.privacy_url) && (

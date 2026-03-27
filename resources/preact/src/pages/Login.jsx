@@ -1,6 +1,6 @@
 import { useEffect } from 'preact/hooks';
-import { authStep, authError, challengeToken, pendingVerifications, resetIdentifyFlow } from '../signals/auth';
-import { primaryMethods } from '../signals/config';
+import { authStep, authError, challengeToken, pendingVerifications, resetIdentifyFlow, stepDirection } from '../signals/auth';
+import { primaryMethods, legalLinks } from '../signals/config';
 import { authUrl, getQueryParam } from '../utils/urls';
 import { friendlySocialError, handleAuthResponse } from '../utils/auth';
 import { api } from '../api/client';
@@ -13,6 +13,7 @@ import { MfaStep } from '../components/steps/MfaStep';
 import { ProgressiveRegisterStep } from '../components/steps/ProgressiveRegisterStep';
 import { RegisterVerifyStep } from '../components/steps/RegisterVerifyStep';
 import { LoginVerifyStep } from '../components/steps/LoginVerifyStep';
+import { StepTransition } from '../components/ui/StepTransition';
 
 const TITLES = {
     identifier: 'Sign In',
@@ -48,6 +49,21 @@ export function Login() {
     const guard = alreadySignedIn();
     if (guard) return guard;
 
+    const legal = legalLinks.value;
+    const hasLegal = legal && (legal.terms_url || legal.privacy_url);
+
+    const legalFooter = hasLegal && (
+        <p className="wsms-auth-center wsms-auth-text-xs wsms-auth-text-muted wsms-auth-mt-1">
+            {legal.terms_url && (
+                <a href={legal.terms_url} target="_blank" rel="noopener noreferrer" className="wsms-auth-legal-link">Terms of Service</a>
+            )}
+            {legal.terms_url && legal.privacy_url && ' and '}
+            {legal.privacy_url && (
+                <a href={legal.privacy_url} target="_blank" rel="noopener noreferrer" className="wsms-auth-legal-link">Privacy Policy</a>
+            )}
+        </p>
+    );
+
     const footer = step === 'register' ? (
         <AuthLink href={authUrl('/login')} onClick={() => resetIdentifyFlow()}>
             Already have an account? Sign in
@@ -57,24 +73,30 @@ export function Login() {
             Skip for now
         </AuthLink>
     ) : step === 'login_verify' ? null : step === 'identifier' ? (
-        <div className="wsms-auth-flex-gap">
-            {hasPassword && <AuthLink href={authUrl('/forgot-password')}>Forgot password?</AuthLink>}
-            <AuthLink href={authUrl('/register')}>Create account</AuthLink>
-        </div>
+        <>
+            <div className="wsms-auth-flex-gap">
+                {hasPassword && <AuthLink href={authUrl('/forgot-password')}>Forgot password?</AuthLink>}
+                <AuthLink href={authUrl('/register')}>Create account</AuthLink>
+            </div>
+            {legalFooter}
+        </>
     ) : (
-        hasPassword ? <AuthLink href={authUrl('/forgot-password')}>Forgot password?</AuthLink> : null
+        <>
+            {hasPassword ? <AuthLink href={authUrl('/forgot-password')}>Forgot password?</AuthLink> : null}
+            {legalFooter}
+        </>
     );
 
     return (
         <AuthLayout title={TITLES[step] || 'Sign In'} footer={footer}>
-            <div className="wsms-auth-fade-in">
+            <StepTransition step={step} direction={stepDirection.value}>
                 {step === 'identifier' && <IdentifierStep />}
                 {step === 'authenticate' && <AuthenticateStep />}
                 {step === 'mfa' && <MfaStep />}
                 {step === 'register' && <ProgressiveRegisterStep />}
                 {step === 'register_verify' && <RegisterVerifyStep />}
                 {step === 'login_verify' && <LoginVerifyStep />}
-            </div>
+            </StepTransition>
         </AuthLayout>
     );
 }

@@ -244,7 +244,7 @@ export function MfaStep() {
                             onChange={(e) => setTrustDevice(e.target.checked)}
                             disabled={authLoading.value} ttl={trustedDevices?.ttl} />
                     )}
-                    <Button className="wsms-auth-full" type="submit" disabled={authLoading.value || !backupCode.trim()}>
+                    <Button className="wsms-auth-full" type="submit" loading={authLoading.value} disabled={!backupCode.trim()}>
                         {authLoading.value ? 'Verifying...' : 'Verify Backup Code'}
                     </Button>
                     <Button variant="link" type="button" className="wsms-auth-full" onClick={() => setUseBackup(false)}>

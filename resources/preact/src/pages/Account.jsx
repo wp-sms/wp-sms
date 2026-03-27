@@ -7,7 +7,7 @@ import { useAuthGuard } from '../hooks/useAuthGuard';
 import { authUrl } from '../utils/urls';
 import { maskEmail, maskPhone } from '../utils/format';
 import { AccountLayout } from '../layouts/AccountLayout';
-import { Spinner } from '../components/ui/Spinner';
+import { AccountSkeleton } from '../components/ui/Skeleton';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { UserAvatar } from '../components/ui/UserAvatar';
 
@@ -39,10 +39,7 @@ export function Account() {
     if (userLoading.value && !currentUser.value) {
         return (
             <AccountLayout title="Account" currentPath="/">
-                <div className="wsms-auth-loading-center">
-                    <Spinner className="wsms-auth-spinner--lg" />
-                    <p className="wsms-auth-text-sm wsms-auth-text-muted">Loading your account…</p>
-                </div>
+                <AccountSkeleton />
             </AccountLayout>
         );
     }

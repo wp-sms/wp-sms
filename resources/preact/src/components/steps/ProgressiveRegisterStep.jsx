@@ -15,6 +15,7 @@ import { extractError } from '../../utils/auth';
 import { Alert } from '../ui/Alert';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
+import { PasswordInput } from '../ui/PasswordInput';
 import { Label } from '../ui/Label';
 import { PhoneInput } from '../PhoneInput';
 
@@ -183,10 +184,9 @@ export function ProgressiveRegisterStep() {
                 {fields.includes('password') && (
                     <div className="wsms-auth-stack-2">
                         <Label for="wsms-reg-password">Password</Label>
-                        <Input
+                        <PasswordInput
                             ref={firstEditableField === 'password' ? firstFieldRef : undefined}
                             id="wsms-reg-password"
-                            type="password"
                             value={form.password}
                             onInput={(e) => updateField('password', e.target.value)}
                             required
@@ -196,7 +196,7 @@ export function ProgressiveRegisterStep() {
                     </div>
                 )}
 
-                <Button className="wsms-auth-full" type="submit" disabled={authLoading.value}>
+                <Button className="wsms-auth-full" type="submit" loading={authLoading.value}>
                     {authLoading.value ? 'Creating account...' : 'Create Account'}
                 </Button>
             </form>

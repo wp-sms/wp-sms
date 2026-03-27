@@ -16,7 +16,9 @@ import { authUrl } from '../../utils/urls';
 import { Alert } from '../ui/Alert';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
+import { PasswordInput } from '../ui/PasswordInput';
 import { Label } from '../ui/Label';
+import { LockoutCountdown } from '../ui/LockoutCountdown';
 import { CaptchaWidget } from '../CaptchaWidget';
 import { useCaptcha } from '../../hooks/useCaptcha';
 
@@ -30,6 +32,7 @@ export function AuthenticateStep() {
     const [showMethodPicker, setShowMethodPicker] = useState(false);
     const [codeSent, setCodeSent] = useState(false);
     const [successMsg, setSuccessMsg] = useState('');
+    const [lockoutSeconds, setLockoutSeconds] = useState(0);
     const captcha = useCaptcha();
     const needsCaptcha = captcha.isRequiredFor('login');
 
@@ -68,7 +71,12 @@ export function AuthenticateStep() {
         } catch (err) {
             const details = extractError(err);
             if (!handleRecoveryAction(details, route)) {
-                authError.value = details.message;
+                if (details.retryAfter) {
+                    setLockoutSeconds(details.retryAfter);
+                    authError.value = null;
+                } else {
+                    authError.value = details.message;
+                }
                 captcha.reset();
             }
         } finally {
@@ -144,6 +152,22 @@ export function AuthenticateStep() {
         );
     }
 
+    if (lockoutSeconds > 0) {
+        return (
+            <div className="wsms-auth-stack-4 wsms-auth-fade-in">
+                <LockoutCountdown
+                    seconds={lockoutSeconds}
+                    onExpire={() => setLockoutSeconds(0)}
+                />
+                <div className="wsms-auth-center">
+                    <Button variant="link" type="button" onClick={resetIdentifyFlow}>
+                        Not {maskedId}? Use a different account
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="wsms-auth-stack-4 wsms-auth-fade-in">
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
@@ -158,10 +182,9 @@ export function AuthenticateStep() {
                 <form onSubmit={handlePasswordSubmit} className="wsms-auth-stack-4">
                     <div className="wsms-auth-stack-2">
                         <Label for="wsms-password">Password</Label>
-                        <Input
+                        <PasswordInput
                             ref={passwordRef}
                             id="wsms-password"
-                            type="password"
                             value={password}
                             onInput={(e) => setPassword(e.target.value)}
                             required
@@ -177,7 +200,7 @@ export function AuthenticateStep() {
                             resetRef={captcha.resetRef}
                         />
                     )}
-                    <Button className="wsms-auth-full" type="submit" disabled={authLoading.value || (needsCaptcha && !captcha.token)}>
+                    <Button className="wsms-auth-full" type="submit" loading={authLoading.value} disabled={needsCaptcha && !captcha.token}>
                         {authLoading.value ? 'Signing in...' : 'Continue'}
                     </Button>
 
@@ -205,7 +228,8 @@ export function AuthenticateStep() {
                     <Button
                         className="wsms-auth-full"
                         onClick={() => sendChallenge(activeMethod)}
-                        disabled={authLoading.value || (needsCaptcha && !captcha.token)}
+                        loading={authLoading.value}
+                        disabled={needsCaptcha && !captcha.token}
                     >
                         {authLoading.value ? 'Sending...' : 'Send Code'}
                     </Button>
@@ -234,7 +258,8 @@ export function AuthenticateStep() {
                     <Button
                         className="wsms-auth-full"
                         onClick={() => sendChallenge(activeMethod)}
-                        disabled={authLoading.value || (needsCaptcha && !captcha.token)}
+                        loading={authLoading.value}
+                        disabled={needsCaptcha && !captcha.token}
                     >
                         {authLoading.value ? 'Sending...' : 'Send Login Link'}
                     </Button>

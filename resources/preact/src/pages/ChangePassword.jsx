@@ -8,8 +8,7 @@ import { extractError } from '../utils/auth';
 import { AccountLayout } from '../layouts/AccountLayout';
 import { Alert } from '../components/ui/Alert';
 import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { Label } from '../components/ui/Label';
+import { FormField } from '../components/ui/FormField';
 
 export function ChangePassword() {
     const authed = useAuthGuard();
@@ -37,6 +36,10 @@ export function ChangePassword() {
 
         if (newPassword !== confirm) {
             setError('Passwords do not match.');
+            return;
+        }
+        if (newPassword.length < 8) {
+            setError('Password must be at least 8 characters.');
             return;
         }
 
@@ -71,49 +74,46 @@ export function ChangePassword() {
 
             <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
                 {hasPassword && (
-                    <div className="wsms-auth-stack-2">
-                        <Label for="wsms-cur-pass">Current Password</Label>
-                        <Input
-                            ref={currentPasswordRef}
-                            id="wsms-cur-pass"
-                            type="password"
-                            value={currentPassword}
-                            onInput={(e) => setCurrentPassword(e.target.value)}
-                            required
-                            disabled={loading}
-                            autoComplete="current-password"
-                        />
-                    </div>
+                    <FormField
+                        label="Current Password"
+                        id="wsms-cur-pass"
+                        type="password"
+                        ref={currentPasswordRef}
+                        value={currentPassword}
+                        onInput={(e) => setCurrentPassword(e.target.value)}
+                        required
+                        disabled={loading}
+                        autoComplete="current-password"
+                        validate={FormField.validators.required}
+                    />
                 )}
 
-                <div className="wsms-auth-stack-2">
-                    <Label for="wsms-new-pass2">New Password</Label>
-                    <Input
-                        ref={newPasswordRef}
-                        id="wsms-new-pass2"
-                        type="password"
-                        value={newPassword}
-                        onInput={(e) => setNewPassword(e.target.value)}
-                        required
-                        disabled={loading}
-                        autoComplete="new-password"
-                    />
-                </div>
+                <FormField
+                    label="New Password"
+                    id="wsms-new-pass2"
+                    type="password"
+                    ref={newPasswordRef}
+                    value={newPassword}
+                    onInput={(e) => setNewPassword(e.target.value)}
+                    required
+                    disabled={loading}
+                    autoComplete="new-password"
+                    validate={FormField.validators.minLength(8)}
+                />
 
-                <div className="wsms-auth-stack-2">
-                    <Label for="wsms-confirm-pass2">Confirm New Password</Label>
-                    <Input
-                        id="wsms-confirm-pass2"
-                        type="password"
-                        value={confirm}
-                        onInput={(e) => setConfirm(e.target.value)}
-                        required
-                        disabled={loading}
-                        autoComplete="new-password"
-                    />
-                </div>
+                <FormField
+                    label="Confirm New Password"
+                    id="wsms-confirm-pass2"
+                    type="password"
+                    value={confirm}
+                    onInput={(e) => setConfirm(e.target.value)}
+                    required
+                    disabled={loading}
+                    autoComplete="new-password"
+                    validate={FormField.validators.match(() => newPassword, 'Passwords')}
+                />
 
-                <Button className="wsms-auth-full" type="submit" disabled={loading}>
+                <Button className="wsms-auth-full" type="submit" loading={loading}>
                     {loading ? (hasPassword ? 'Changing\u2026' : 'Setting\u2026') : title}
                 </Button>
             </form>

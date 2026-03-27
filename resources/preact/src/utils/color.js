@@ -69,12 +69,8 @@ function resolveColorMode(config) {
 /**
  * Build a single-mode (light or dark) CSS variable map from colors.
  */
-function buildModeVars(mode, { pL, pC, pH, bgL, bgC, bgH, acL, acC, acH, txL, txC, txH, erL, erC, erH }) {
+function buildModeVars(mode, { pL, pC, pH, bgL, bgC, bgH, txL, txC, txH, erL, erC, erH }) {
     const vars = {};
-
-    // Accent is mode-independent
-    vars['--accent'] = oklch(acL, acC, acH);
-    vars['--accent-foreground'] = acL > 0.6 ? oklch(0.15, acC * 0.1, acH) : oklch(0.95, 0.005, acH);
 
     if (mode === 'dark') {
         const darkTxL = txL < 0.5 ? (1 - txL) : txL;
@@ -88,6 +84,8 @@ function buildModeVars(mode, { pL, pC, pH, bgL, bgC, bgH, acL, acC, acH, txL, tx
         vars['--muted-foreground'] = oklch(0.65, 0.01, bgH);
         vars['--secondary'] = oklch(0.25, 0.005, bgH);
         vars['--secondary-foreground'] = oklch(0.90, 0.005, bgH);
+        vars['--accent'] = oklch(0.25, bgC * 0.15, bgH);
+        vars['--accent-foreground'] = oklch(0.95, 0.005, bgH);
         vars['--border'] = oklch(0.30, bgC * 0.1, bgH);
         vars['--input'] = oklch(0.30, bgC * 0.1, bgH);
         vars['--ring'] = oklch(0.50, 0.01, bgH);
@@ -110,8 +108,10 @@ function buildModeVars(mode, { pL, pC, pH, bgL, bgC, bgH, acL, acC, acH, txL, tx
         vars['--muted-foreground'] = oklch(0.55, 0.013, bgH);
         vars['--secondary'] = oklch(0.967, 0.001, bgH);
         vars['--secondary-foreground'] = oklch(0.21, 0.006, bgH);
-        vars['--border'] = oklch(0.923, bgC * 0.3, bgH);
-        vars['--input'] = oklch(0.923, bgC * 0.3, bgH);
+        vars['--accent'] = oklch(0.97, 0.001, bgH);
+        vars['--accent-foreground'] = oklch(0.216, 0.006, bgH);
+        vars['--border'] = oklch(0.82, bgC * 0.4, bgH);
+        vars['--input'] = oklch(0.82, bgC * 0.4, bgH);
         vars['--ring'] = oklch(0.709, 0.01, bgH);
         vars['--destructive'] = oklch(erL, erC, erH);
         vars['--destructive-foreground'] = oklch(0.985, 0.001, erH);
@@ -133,7 +133,6 @@ function buildModeVars(mode, { pL, pC, pH, bgL, bgC, bgH, acL, acC, acH, txL, tx
 export function generatePalette(config) {
     const {
         primary_color = '#171717',
-        accent_color = '#6366f1',
         text_color = '#1c1917',
         error_color = '#dc2626',
         background_color = '#ffffff',
@@ -145,11 +144,10 @@ export function generatePalette(config) {
 
     const [pL, pC, pH] = hexToOklch(primary_color);
     const [bgL, bgC, bgH] = hexToOklch(background_color);
-    const [acL, acC, acH] = hexToOklch(accent_color);
     const [txL, txC, txH] = hexToOklch(text_color);
     const [erL, erC, erH] = hexToOklch(error_color);
 
-    const colorParams = { pL, pC, pH, bgL, bgC, bgH, acL, acC, acH, txL, txC, txH, erL, erC, erH };
+    const colorParams = { pL, pC, pH, bgL, bgC, bgH, txL, txC, txH, erL, erC, erH };
 
     // Shared (non-color) vars
     const shared = {};
