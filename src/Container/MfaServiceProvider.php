@@ -6,6 +6,7 @@ use WSms\Mfa\Channels\BackupCodesChannel;
 use WSms\Mfa\Channels\EmailChannel;
 use WSms\Mfa\Channels\MagicLinkChannel;
 use WSms\Mfa\Channels\PhoneChannel;
+use WSms\Mfa\Channels\LineChannel;
 use WSms\Mfa\Channels\TelegramChannel;
 use WSms\Mfa\Channels\PasskeyChannel;
 use WSms\Mfa\Channels\TotpChannel;
@@ -13,6 +14,7 @@ use WSms\Mfa\MfaManager;
 use WSms\Verification\OtpGenerator;
 use WSms\Mfa\SecretEncryptor;
 use WSms\Mfa\UserFactorRepository;
+use WSms\Line\LineBotClient;
 use WSms\Telegram\TelegramBotClient;
 use WSms\Database\Connection;
 
@@ -97,6 +99,30 @@ class MfaServiceProvider implements ServiceProvider
             );
         });
 
+        $container->register('line.bot_client', function () {
+            $configs = get_option('wsms_gateway_configs', []);
+            $token = $configs['line']['shared']['channel_access_token'] ?? '';
+
+            // Fall back to integration configs.
+            if (empty($token)) {
+                $integrationConfigs = get_option('wsms_integration_configs', []);
+                $token = $integrationConfigs['line']['credentials']['channel_access_token'] ?? '';
+            }
+
+            return new LineBotClient($token);
+        });
+
+        $container->register('mfa.channel.line', function () use ($container) {
+            return new LineChannel(
+                $container->get('verification.otp_generator'),
+                $container->get('audit.logger'),
+                $container->get('message.dispatcher'),
+                $container->get('verification.repository'),
+                $container->get('template.manager'),
+                $container->get('verification.otp_service'),
+            );
+        });
+
         $container->register('mfa.secret_encryptor', function () {
             return new SecretEncryptor();
         });
@@ -125,6 +151,7 @@ class MfaServiceProvider implements ServiceProvider
         $manager->registerChannel($container->get('mfa.channel.email'));
         $manager->registerChannel($container->get('mfa.channel.backup'));
         $manager->registerChannel($container->get('mfa.channel.telegram'));
+        $manager->registerChannel($container->get('mfa.channel.line'));
         $manager->registerChannel($container->get('mfa.channel.totp'));
         $manager->registerChannel($container->get('mfa.channel.passkey'));
         // Inject UserFactorRepository into channels.

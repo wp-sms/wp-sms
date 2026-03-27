@@ -20,6 +20,7 @@ const CHANNEL_LABELS: Record<string, string> = {
   email: 'Email',
   voice: 'Voice',
   telegram: 'Telegram',
+  line: 'LINE',
 };
 
 function channelLabel(channel: string): string {

@@ -64,6 +64,21 @@ const PROVIDER_HELP: Record<string, ProviderHelp> = {
       'Request the "telegram:bot_access" scope to allow sending MFA codes via the bot.',
     ],
   },
+  line: {
+    description: 'Allow users to sign in with their LINE account via OpenID Connect',
+    clientIdLabel: 'Channel ID',
+    clientIdPlaceholder: '1234567890',
+    clientIdHelp: 'From LINE Developers Console > your LINE Login channel > Basic settings > Channel ID.',
+    clientSecretHelp: 'The Channel Secret from the same LINE Login channel settings.',
+    setupUrl: 'https://developers.line.biz/console/',
+    setupLabel: 'LINE Developers Console',
+    notes: [
+      'Create a LINE Login channel (not Messaging API) in LINE Developers Console.',
+      'Set the callback URL to: {callback_url}',
+      'LINE Login provides email (optional) and profile info. No phone number is available via standard LINE Login.',
+      'Users who log in via LINE are auto-enrolled for LINE MFA if a Messaging API bot is configured.',
+    ],
+  },
 };
 
 const DEFAULT_HELP: ProviderHelp = {

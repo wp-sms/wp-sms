@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
-import { Search, Star, ChevronRight, Radio, Smartphone, Mail, MessageSquare, Send, Check } from 'lucide-react';
+import { Search, Star, ChevronRight, Radio, Smartphone, Mail, MessageSquare, MessageCircle, Send, Check } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
 import { getGatewayColor, getGatewayInitial } from '@/lib/gateway-visuals';
 import { pluralize } from '@/lib/utils';
@@ -111,6 +111,7 @@ const CHANNEL_ICONS: Record<string, React.ReactNode> = {
   email: <Mail className="h-4 w-4" />,
   whatsapp: <MessageSquare className="h-4 w-4" />,
   telegram: <Send className="h-4 w-4" />,
+  line: <MessageCircle className="h-4 w-4" />,
 };
 
 export function Gateways() {

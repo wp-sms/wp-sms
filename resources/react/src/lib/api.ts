@@ -115,6 +115,15 @@ export interface TelegramSettings {
   cooldown?: number;
 }
 
+export interface LineSettings {
+  enabled?: boolean;
+  bot_basic_id?: string;
+  code_length?: number;
+  expiry?: number;
+  max_attempts?: number;
+  cooldown?: number;
+}
+
 export type FieldType = 'text' | 'textarea' | 'select' | 'checkbox';
 export type FieldSource = 'system' | 'custom' | 'meta';
 export type FieldVisibility = 'registration' | 'profile' | 'both' | 'hidden';
@@ -191,6 +200,7 @@ export interface AuthSettings {
   passkey?: PasskeySettings;
   captcha?: CaptchaSettings;
   telegram?: TelegramSettings;
+  line?: LineSettings;
   woocommerce?: WooCommerceSettings;
   contact_form_7?: ContactForm7Settings;
   mfa_required_roles?: string[];

@@ -13,6 +13,7 @@ use WSms\Auth\PolicyEngine;
 use WSms\Auth\ValueObjects\AuthResult;
 use WSms\Enums\AuthErrorCode;
 use WSms\Enums\EventType;
+use WSms\Mfa\Channels\LineChannel;
 use WSms\Mfa\Channels\TelegramChannel;
 use WSms\Support\UserMeta;
 
@@ -31,6 +32,7 @@ class SocialAuthOrchestrator
         private AccountLockout $lockout,
         private ?PolicyEngine $policyEngine = null,
         private ?TelegramChannel $telegramChannel = null,
+        private ?LineChannel $lineChannel = null,
         private ?AvatarManager $avatarManager = null,
         private ?AccountSuspension $suspension = null,
     ) {
@@ -125,6 +127,11 @@ class SocialAuthOrchestrator
         // Auto-enroll Telegram MFA if user logged in via Telegram with bot_access scope.
         if ($providerId === 'telegram' && !empty($result['user_id']) && !empty($userInfo['id'])) {
             $this->autoEnrollTelegramMfa($result['user_id'], $userInfo);
+        }
+
+        // Auto-enroll LINE MFA if user logged in via LINE.
+        if ($providerId === 'line' && !empty($result['user_id']) && !empty($userInfo['sub'])) {
+            $this->autoEnrollLineMfa($result['user_id'], $userInfo);
         }
 
         $result['intent'] = $intent;
@@ -530,6 +537,32 @@ class SocialAuthOrchestrator
             // Non-critical — log but don't block login.
             $this->auditLogger->log(EventType::MfaEnrolled, 'failure', $userId, [
                 'channel' => 'telegram',
+                'error'   => $e->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * Auto-enroll LINE MFA factor when user logs in via LINE social login.
+     */
+    private function autoEnrollLineMfa(int $userId, array $userInfo): void
+    {
+        if (!$this->lineChannel) {
+            return;
+        }
+
+        try {
+            if (!$this->lineChannel->isEnrolled($userId)) {
+                $this->lineChannel->autoEnroll(
+                    $userId,
+                    $userInfo['sub'],
+                    $userInfo['name'] ?? null,
+                );
+            }
+        } catch (\Throwable $e) {
+            // Non-critical — log but don't block login.
+            $this->auditLogger->log(EventType::MfaEnrolled, 'failure', $userId, [
+                'channel' => 'line',
                 'error'   => $e->getMessage(),
             ]);
         }

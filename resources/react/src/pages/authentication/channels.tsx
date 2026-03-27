@@ -10,11 +10,11 @@ import { SocialSettingsPanel } from '@/components/social-settings-panel';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import type { ChannelId } from '@/lib/constants';
-import { GoogleIcon, TelegramIcon, AppleIcon, LinkedInIcon, FacebookIcon, MicrosoftIcon, GitHubIcon, TwitterIcon } from '@/components/icons/social';
+import { GoogleIcon, TelegramIcon, LineIcon, AppleIcon, LinkedInIcon, FacebookIcon, MicrosoftIcon, GitHubIcon, TwitterIcon } from '@/components/icons/social';
 import { SOCIAL_METHODS } from '@/lib/constants';
-import { Smartphone, Mail, KeyRound, Fingerprint, Send, ExternalLink, LogIn } from 'lucide-react';
+import { Smartphone, Mail, KeyRound, Fingerprint, Send, MessageCircle, ExternalLink, LogIn } from 'lucide-react';
 import { PageHeader } from '@/components/layout/page-header';
-import type { AuthSettings, PhoneChannelSettings, EmailChannelSettings, TelegramSettings } from '@/lib/api';
+import type { AuthSettings, PhoneChannelSettings, EmailChannelSettings, TelegramSettings, LineSettings } from '@/lib/api';
 
 interface ChannelsProps {
   settings: Required<AuthSettings>;
@@ -24,6 +24,7 @@ interface ChannelsProps {
 const SOCIAL_ICONS: Record<string, React.ComponentType<React.SVGProps<SVGSVGElement>>> = {
   google: GoogleIcon,
   telegram: TelegramIcon,
+  line: LineIcon,
   apple: AppleIcon,
   facebook: FacebookIcon,
   microsoft: MicrosoftIcon,
@@ -68,12 +69,21 @@ function getTelegramMfaSummary(tg: TelegramSettings): string {
   return 'OTP via Telegram bot';
 }
 
+function getLineMfaSummary(line: LineSettings): string {
+  if (!line.enabled) {
+    return 'Send verification codes via LINE Official Account';
+  }
+  return `${line.code_length ?? 6}-digit OTP via LINE`;
+}
+
 export function Channels({ settings, onUpdate }: ChannelsProps) {
   const [editingChannel, setEditingChannel] = useState<ChannelId | null>(null);
   const [editingSocial, setEditingSocial] = useState<string | null>(null);
   const [editingTelegramMfa, setEditingTelegramMfa] = useState(false);
+  const [editingLineMfa, setEditingLineMfa] = useState(false);
   const socialSettings = settings.social ?? {};
   const telegramSettings = settings.telegram ?? {} as TelegramSettings;
+  const lineSettings = settings.line ?? {} as LineSettings;
 
   function updatePhone(partial: Partial<PhoneChannelSettings>) {
     onUpdate('phone', { ...settings.phone, ...partial });
@@ -85,6 +95,10 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
 
   function updateTelegram(partial: Partial<TelegramSettings>) {
     onUpdate('telegram', { ...telegramSettings, ...partial });
+  }
+
+  function updateLine(partial: Partial<LineSettings>) {
+    onUpdate('line', { ...lineSettings, ...partial });
   }
 
   const phoneUsage = settings.phone.usage ?? 'login';
@@ -283,6 +297,18 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
 
               <Separator />
 
+              {/* LINE MFA */}
+              <ChannelRow
+                icon={MessageCircle}
+                title="LINE MFA"
+                description={getLineMfaSummary(lineSettings)}
+                enabled={!!lineSettings.enabled}
+                onToggle={(v) => updateLine({ enabled: v })}
+                onConfigure={() => setEditingLineMfa(true)}
+              />
+
+              <Separator />
+
               {/* TOTP (Authenticator App) */}
               <ChannelRow
                 icon={KeyRound}
@@ -422,6 +448,106 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                 max={300}
                 value={telegramSettings.cooldown ?? 60}
                 onChange={(e) => updateTelegram({ cooldown: parseInt(e.target.value) || 60 })}
+              />
+              <FieldDescription>
+                Minimum wait time between code requests. Prevents abuse.
+              </FieldDescription>
+            </Field>
+          </div>
+        </DrawerContent>
+      </Drawer>
+
+      {/* LINE MFA Settings Drawer */}
+      <Drawer open={editingLineMfa} onOpenChange={setEditingLineMfa}>
+        <DrawerContent className="sm:max-w-md overflow-y-auto">
+          <DrawerHeader>
+            <DrawerTitle className="flex items-center gap-2">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted">
+                <MessageCircle className="h-4 w-4 text-muted-foreground" />
+              </div>
+              LINE MFA Settings
+            </DrawerTitle>
+            <DrawerDescription>
+              Send MFA verification codes to users via a LINE Official Account. Users link their account by messaging your bot.
+            </DrawerDescription>
+          </DrawerHeader>
+
+          <div className="space-y-6 px-4 pb-4">
+            <a
+              href="https://developers.line.biz/console/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-sm text-primary hover:underline"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+              LINE Developers Console
+            </a>
+
+            <Field>
+              <FieldLabel htmlFor="line-bot-id">Bot Basic ID</FieldLabel>
+              <Input
+                id="line-bot-id"
+                type="text"
+                value={lineSettings.bot_basic_id ?? ''}
+                onChange={(e) => updateLine({ bot_basic_id: e.target.value })}
+                placeholder="@123abcde"
+              />
+              <FieldDescription>
+                Found in LINE Developers Console under your Messaging API channel. Used for enrollment deep links.
+              </FieldDescription>
+            </Field>
+
+            <div className="rounded-md border bg-muted/50 p-3 space-y-1.5">
+              <div className="text-xs font-medium text-muted-foreground">How it works</div>
+              <ul className="list-disc list-inside space-y-1">
+                <li className="text-xs text-muted-foreground">Users who sign in with LINE Login are auto-enrolled for LINE MFA</li>
+                <li className="text-xs text-muted-foreground">Other users can link their LINE account by clicking a deep link to your Official Account</li>
+                <li className="text-xs text-muted-foreground">During MFA, a verification code is sent as a message in LINE</li>
+              </ul>
+            </div>
+
+            <Separator />
+
+            <Field>
+              <FieldLabel htmlFor="line-code-length">Code Length</FieldLabel>
+              <div className="flex gap-2">
+                {[4, 6].map((len) => (
+                  <button
+                    key={len}
+                    type="button"
+                    onClick={() => updateLine({ code_length: len })}
+                    className={`rounded-md border px-3 py-1.5 text-sm transition-colors ${(lineSettings.code_length ?? 6) === len ? 'border-primary bg-primary/10 text-primary' : 'border-border hover:bg-accent'}`}
+                  >
+                    {len} digits
+                  </button>
+                ))}
+              </div>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="line-expiry">Code Expiry (seconds)</FieldLabel>
+              <Input
+                id="line-expiry"
+                type="number"
+                min={60}
+                max={900}
+                value={lineSettings.expiry ?? 300}
+                onChange={(e) => updateLine({ expiry: parseInt(e.target.value) || 300 })}
+              />
+              <FieldDescription>
+                How long a verification code is valid. Default: 300 seconds (5 minutes).
+              </FieldDescription>
+            </Field>
+
+            <Field>
+              <FieldLabel htmlFor="line-cooldown">Cooldown (seconds)</FieldLabel>
+              <Input
+                id="line-cooldown"
+                type="number"
+                min={10}
+                max={300}
+                value={lineSettings.cooldown ?? 60}
+                onChange={(e) => updateLine({ cooldown: parseInt(e.target.value) || 60 })}
               />
               <FieldDescription>
                 Minimum wait time between code requests. Prevents abuse.

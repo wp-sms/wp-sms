@@ -18,6 +18,7 @@ use WSms\Rest\MessageLogController;
 use WSms\Rest\MfaController;
 use WSms\Rest\EnrollmentController;
 use WSms\Rest\SocialAuthController;
+use WSms\Rest\LineController;
 use WSms\Rest\TelegramController;
 use WSms\Rest\GatewayCallbackController;
 use WSms\Rest\ListController;
@@ -114,6 +115,14 @@ class RestServiceProvider implements ServiceProvider
             return new TelegramController(
                 $container->get('mfa.channel.telegram'),
                 $container->get('message.dispatcher'),
+            );
+        });
+
+        $container->register('rest.line', function () use ($container) {
+            return new LineController(
+                $container->get('line.bot_client'),
+                $container->get('message.dispatcher'),
+                $container->has('mfa.channel.line') ? $container->get('mfa.channel.line') : null,
             );
         });
 
@@ -251,6 +260,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.admin')->registerRoutes();
             $container->get('rest.social')->registerRoutes();
             $container->get('rest.telegram')->registerRoutes();
+            $container->get('rest.line')->registerRoutes();
             $container->get('rest.admin_user')->registerRoutes();
             // Messaging platform routes
             $container->get('rest.flows')->registerRoutes();

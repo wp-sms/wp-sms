@@ -54,6 +54,7 @@ class AdminController extends Controller
         'captcha',
         'social',
         'telegram',
+        'line',
         'woocommerce',
         'contact_form_7',
         'trusted_devices',
@@ -362,7 +363,7 @@ class AdminController extends Controller
             }
         }
 
-        foreach (['phone', 'email', 'telegram'] as $channel) {
+        foreach (['phone', 'email', 'telegram', 'line'] as $channel) {
             $ch = $settings[$channel] ?? [];
 
             if (isset($ch['code_length']) && !in_array((int) $ch['code_length'], [4, 6], true)) {
@@ -390,7 +391,7 @@ class AdminController extends Controller
                 }
             }
 
-            if ($channel !== 'telegram' && !empty($ch['otp_gateway']) && $this->gatewayRegistry) {
+            if (!in_array($channel, ['telegram', 'line'], true) && !empty($ch['otp_gateway']) && $this->gatewayRegistry) {
                 $gateway = $this->gatewayRegistry->get($ch['otp_gateway']);
                 if ($gateway === null) {
                     $errors[] = "{$channel}.otp_gateway references an unknown gateway.";

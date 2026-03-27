@@ -56,12 +56,21 @@ class SettingsRepository
         'social' => [
             'google'   => ['enabled' => false, 'client_id' => '', 'client_secret' => ''],
             'telegram' => ['enabled' => false, 'client_id' => '', 'client_secret' => ''],
+            'line'     => ['enabled' => false, 'client_id' => '', 'client_secret' => ''],
         ],
         'telegram' => [
             'bot_token'      => '',
             'bot_username'   => '',
             'webhook_secret' => '',
             'enabled'        => false,
+            'code_length'    => 6,
+            'expiry'         => 300,
+            'max_attempts'   => 3,
+            'cooldown'       => 60,
+        ],
+        'line' => [
+            'enabled'        => false,
+            'bot_basic_id'   => '',
             'code_length'    => 6,
             'expiry'         => 300,
             'max_attempts'   => 3,

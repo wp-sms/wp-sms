@@ -345,6 +345,65 @@ class PayloadSchemas
         return '';
     }
 
+    /** @return array<string, array> Line user sub-properties: userId, displayName, pictureUrl, language */
+    public static function lineUser(): array
+    {
+        return [
+            'userId' => [
+                'type' => 'string',
+                'label' => __('User ID', 'wp-sms'),
+                'example' => 'U1234567890abcdef1234567890abcdef',
+            ],
+            'displayName' => [
+                'type' => 'string',
+                'label' => __('Display Name', 'wp-sms'),
+                'example' => 'Taro Yamada',
+            ],
+            'pictureUrl' => [
+                'type' => 'string',
+                'label' => __('Picture URL', 'wp-sms'),
+                'example' => 'https://profile.line-scdn.net/...',
+            ],
+            'language' => [
+                'type' => 'string',
+                'label' => __('Language', 'wp-sms'),
+                'example' => 'ja',
+            ],
+        ];
+    }
+
+    /** @return array<string, array> Line source sub-properties: type, userId, groupId, roomId */
+    public static function lineSource(): array
+    {
+        return [
+            'type' => [
+                'type' => 'string',
+                'label' => __('Source Type', 'wp-sms'),
+                'example' => 'user',
+            ],
+            'userId' => [
+                'type' => 'string',
+                'label' => __('User ID', 'wp-sms'),
+                'example' => 'U1234567890abcdef1234567890abcdef',
+            ],
+            'groupId' => [
+                'type' => 'string',
+                'label' => __('Group ID', 'wp-sms'),
+                'example' => 'C1234567890abcdef1234567890abcdef',
+            ],
+        ];
+    }
+
+    /** Extract Line source data from a raw webhook event source object. */
+    public static function extractLineSource(array $source): array
+    {
+        return [
+            'type'    => $source['type'] ?? '',
+            'userId'  => $source['userId'] ?? '',
+            'groupId' => $source['groupId'] ?? '',
+        ];
+    }
+
     /**
      * Extract post payload data from a WP_Post object.
      *

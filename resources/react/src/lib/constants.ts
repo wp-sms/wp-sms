@@ -194,6 +194,14 @@ export const DEFAULTS: Required<AuthSettings> = {
     max_attempts: 3,
     cooldown: 60,
   },
+  line: {
+    enabled: false,
+    bot_basic_id: '',
+    code_length: 6,
+    expiry: 300,
+    max_attempts: 3,
+    cooldown: 60,
+  },
   captcha: {
     enabled: false,
     provider: 'turnstile',
@@ -216,6 +224,7 @@ export const DEFAULTS: Required<AuthSettings> = {
     google: { enabled: false, client_id: '', client_secret: '' },
     github: { enabled: false, client_id: '', client_secret: '' },
     telegram: { enabled: false, client_id: '', client_secret: '' },
+    line: { enabled: false, client_id: '', client_secret: '' },
   },
   social_profile_sync: 'registration_only',
   site_phone: '',
@@ -238,11 +247,13 @@ export const SITE_PHONE_CHANNELS = [
   { value: 'sms', label: 'SMS' },
   { value: 'whatsapp', label: 'WhatsApp' },
   { value: 'telegram', label: 'Telegram' },
+  { value: 'line', label: 'LINE' },
 ] as const;
 
 export const SOCIAL_METHODS = [
   { id: 'google', label: 'Google', comingSoon: false },
   { id: 'telegram', label: 'Telegram', comingSoon: false },
+  { id: 'line', label: 'LINE', comingSoon: false },
   { id: 'github', label: 'GitHub', comingSoon: false },
   { id: 'apple', label: 'Apple', comingSoon: true },
   { id: 'facebook', label: 'Facebook', comingSoon: true },

@@ -12,6 +12,7 @@ use WSms\Messaging\Gateway\Provider\NetGsmProvider;
 use WSms\Messaging\Gateway\Provider\OvhProvider;
 use WSms\Messaging\Gateway\Provider\TwilioProvider;
 use WSms\Messaging\Gateway\Provider\VonageProvider;
+use WSms\Messaging\Gateway\Line\LineGateway;
 use WSms\Messaging\Gateway\Telegram\TelegramGateway;
 use WSms\Messaging\Gateway\TestGateway;
 use WSms\Messaging\Gateway\Webhook\HttpWebhookGateway;
@@ -41,6 +42,9 @@ class MessagingServiceProvider implements ServiceProvider
         $container->register('gateway.webhook', fn() => new HttpWebhookGateway());
         $container->register('gateway.telegram', fn($c) => new TelegramGateway(
             $c->get('telegram.bot_client'),
+        ));
+        $container->register('gateway.line', fn($c) => new LineGateway(
+            $c->get('line.bot_client'),
         ));
         $container->register('gateway.test', fn() => new TestGateway());
         $container->register('template.engine', fn() => new MustacheEngine());
@@ -104,6 +108,7 @@ class MessagingServiceProvider implements ServiceProvider
 
         // Deferred: gateways with constructor dependencies
         $registry->registerDeferred('telegram', fn() => $container->get('gateway.telegram'));
+        $registry->registerDeferred('line', fn() => $container->get('gateway.line'));
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
         foreach (self::PROVIDERS as $id => $class) {

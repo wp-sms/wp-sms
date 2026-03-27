@@ -12,6 +12,7 @@ use WSms\Integration\Schedule\ScheduleIntegration;
 use WSms\Integration\Webhook\WebhookIntegration;
 use WSms\Integration\WooCommerce\WooCommerceIntegration;
 use WSms\Integration\WordPress\WordPressIntegration;
+use WSms\Integration\Line\LineIntegration;
 use WSms\Integration\Telegram\TelegramIntegration;
 use WSms\Integration\Contracts\IntegrationInterface;
 use WSms\Integration\Contracts\SupportsContactSync;
@@ -65,6 +66,14 @@ class IntegrationServiceProvider implements ServiceProvider
             // Register TelegramIntegration (needs constructor injection)
             $this->registerIntegration(
                 new TelegramIntegration($container->get('telegram.bot_client')),
+                $registry,
+                $triggers,
+                $actions,
+            );
+
+            // Register LineIntegration (needs constructor injection)
+            $this->registerIntegration(
+                new LineIntegration($container->get('line.bot_client')),
                 $registry,
                 $triggers,
                 $actions,
