@@ -8,6 +8,7 @@ use WSms\PhoneRestriction\DatabaseUpdater;
 use WSms\PhoneRestriction\EnhancedPhoneDatabase;
 use WSms\PhoneRestriction\RestrictionSettings;
 use WSms\PhoneRestriction\SendingPolicyGuard;
+use WSms\Support\GeoCountryResolver;
 
 defined('ABSPATH') || exit;
 
@@ -72,10 +73,17 @@ class PhoneRestrictionController extends Controller
     public function getSettings(): \WP_REST_Response
     {
         return $this->handle(function () {
+            $geo = GeoCountryResolver::resolveWithSource();
+
             return new \WP_REST_Response([
-                'success'   => true,
-                'settings'  => $this->settings->all(),
-                'db_status' => EnhancedPhoneDatabase::getStatus(),
+                'success'       => true,
+                'settings'      => $this->settings->all(),
+                'db_status'     => EnhancedPhoneDatabase::getStatus(),
+                'geo_detection' => [
+                    'active'  => $geo['country'] !== null,
+                    'country' => $geo['country'],
+                    'source'  => $geo['source'],
+                ],
             ]);
         });
     }

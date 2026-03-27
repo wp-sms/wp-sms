@@ -22,6 +22,7 @@ import {
 import { PageHeader } from '@/components/layout/page-header';
 import { toggleArrayItem, PHONE_DISPLAY_MODES, type PhoneDisplayMode } from '@/lib/constants';
 import { getErrorMessage } from '@/lib/error-utils';
+import { formatCountry } from '@/lib/country';
 
 interface SectionSettings {
   enabled: boolean;
@@ -58,10 +59,17 @@ interface DbStatus {
   updated_at: string | null;
 }
 
+interface GeoDetection {
+  active: boolean;
+  country: string | null;
+  source: 'cloudflare' | 'cloudfront' | 'custom' | null;
+}
+
 interface SettingsResponse {
   success: boolean;
   settings: PhoneRestrictionSettings;
   db_status: DbStatus;
+  geo_detection: GeoDetection;
 }
 
 interface CheckResult {
@@ -84,6 +92,7 @@ export function PhoneRestriction() {
   const [draft, setDraft] = useState<PhoneRestrictionSettings | null>(null);
   const [dbStatus, setDbStatus] = useState<DbStatus | null>(null);
   const [countries, setCountries] = useState<Record<string, string>>({});
+  const [geoDetection, setGeoDetection] = useState<GeoDetection | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [downloading, setDownloading] = useState(false);
@@ -100,6 +109,7 @@ export function PhoneRestriction() {
         setSaved(settingsRes.settings);
         setDraft(settingsRes.settings);
         setDbStatus(settingsRes.db_status);
+        setGeoDetection(settingsRes.geo_detection);
         setCountries(countriesRes.countries);
       })
       .catch(() => {
@@ -170,6 +180,7 @@ export function PhoneRestriction() {
   return (
     <div className="space-y-6">
       <PageHeader icon={Ban} title="Phone Restrictions" />
+      {geoDetection && <GeoDetectionBanner geo={geoDetection} />}
       <PhoneInputConfigCard
         draft={draft}
         countries={countries}
@@ -199,6 +210,26 @@ export function PhoneRestriction() {
       />
 
       <PhoneCheckerCard />
+    </div>
+  );
+}
+
+const SOURCE_LABELS: Record<string, string> = {
+  cloudflare: 'Cloudflare',
+  cloudfront: 'CloudFront',
+  custom: 'custom header',
+};
+
+function GeoDetectionBanner({ geo }: { geo: GeoDetection }) {
+  const Icon = geo.active ? Check : Info;
+  const message = geo.active
+    ? `Visitor country auto-detected via ${SOURCE_LABELS[geo.source ?? ''] ?? geo.source} (detected: ${formatCountry(geo.country)} for this request)`
+    : 'Geo-detection not available — enable Cloudflare IP Geolocation or a similar CDN header to auto-detect visitor country for phone inputs and audit logs';
+
+  return (
+    <div className="flex items-center gap-2 rounded-md border bg-muted/50 px-3 py-2 text-sm text-muted-foreground">
+      <Icon className={`h-4 w-4 shrink-0 ${geo.active ? 'text-primary' : ''}`} />
+      <span>{message}</span>
     </div>
   );
 }

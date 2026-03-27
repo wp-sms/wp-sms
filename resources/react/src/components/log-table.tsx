@@ -14,6 +14,7 @@ import { DataTable } from '@/components/ui/data-table';
 import { ScrollText, ChevronRight, ChevronDown } from 'lucide-react';
 import type { LogEntry } from '@/lib/api';
 import { formatLabel } from '@/lib/constants';
+import { formatCountry } from '@/lib/country';
 
 interface LogTableProps {
   logs: LogEntry[];
@@ -77,6 +78,7 @@ export function LogTable({ logs, total, page, perPage, onPageChange, loading }: 
             <TableHead>Status</TableHead>
             <TableHead>User</TableHead>
             <TableHead>IP Address</TableHead>
+            <TableHead>Country</TableHead>
             <TableHead>Date</TableHead>
           </TableRow>
         </TableHeader>
@@ -119,12 +121,13 @@ export function LogTable({ logs, total, page, perPage, onPageChange, loading }: 
                       : log.user_id || '\u2014'}
                   </TableCell>
                   <TableCell className="font-mono text-xs">{log.ip_address}</TableCell>
+                  <TableCell className="text-sm">{formatCountry(log.geo_country)}</TableCell>
                   <TableCell className="text-sm">{formatDateTime(log.created_at)}</TableCell>
                 </TableRow>
                 {isExpanded && (
                   <TableRow key={`${log.id}-details`} className="bg-muted/20 hover:bg-muted/20">
                     <TableCell />
-                    <TableCell colSpan={5} className="whitespace-normal">
+                    <TableCell colSpan={6} className="whitespace-normal">
                       <div className="grid gap-2 py-1 text-xs">
                         {log.channel_id && (
                           <div className="flex gap-2">

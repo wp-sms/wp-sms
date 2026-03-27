@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/table';
 import { ShieldAlert } from 'lucide-react';
 import { fmtNumber } from '@/lib/utils';
+import { formatCountry } from '@/lib/country';
 import type { ReportsResponse } from '@/lib/api';
 
 interface SecurityAlertsProps {
@@ -44,6 +45,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                 <TableHeader>
                   <TableRow>
                     <TableHead>IP Address</TableHead>
+                    <TableHead>Country</TableHead>
                     <TableHead className="text-right">Failed Attempts</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -51,6 +53,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                   {top_failed_ips.map((entry) => (
                     <TableRow key={entry.ip}>
                       <TableCell className="font-mono text-xs tracking-tight">{entry.ip}</TableCell>
+                      <TableCell className="text-sm">{formatCountry(entry.country)}</TableCell>
                       <TableCell className="text-right">{entry.count}</TableCell>
                     </TableRow>
                   ))}
@@ -69,6 +72,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                   <TableRow>
                     <TableHead>User</TableHead>
                     <TableHead>IP Address</TableHead>
+                    <TableHead>Country</TableHead>
                     <TableHead className="text-right">Locked At</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -77,6 +81,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                     <TableRow key={`${entry.user_id}-${entry.locked_at}`}>
                       <TableCell>{entry.display_name}</TableCell>
                       <TableCell className="font-mono text-xs tracking-tight">{entry.ip || '-'}</TableCell>
+                      <TableCell className="text-sm">{formatCountry(entry.country)}</TableCell>
                       <TableCell className="text-right text-sm">
                         {formatDateTime(entry.locked_at)}
                       </TableCell>
@@ -97,6 +102,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                   <TableRow>
                     <TableHead>User</TableHead>
                     <TableHead>IP Address</TableHead>
+                    <TableHead>Country</TableHead>
                     <TableHead className="text-right">Suspended At</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -105,6 +111,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
                     <TableRow key={`${entry.user_id}-${entry.suspended_at}`}>
                       <TableCell>{entry.display_name}</TableCell>
                       <TableCell className="font-mono text-xs tracking-tight">{entry.ip || '-'}</TableCell>
+                      <TableCell className="text-sm">{formatCountry(entry.country)}</TableCell>
                       <TableCell className="text-right text-sm">
                         {formatDateTime(entry.suspended_at)}
                       </TableCell>

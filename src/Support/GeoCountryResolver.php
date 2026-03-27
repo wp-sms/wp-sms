@@ -6,10 +6,10 @@ defined('ABSPATH') || exit;
 
 class GeoCountryResolver
 {
-    private const HEADERS = [
-        'HTTP_CF_IPCOUNTRY',
-        'HTTP_CLOUDFRONT_VIEWER_COUNTRY',
-        'HTTP_X_COUNTRY_CODE',
+    private const HEADER_SOURCES = [
+        'HTTP_CF_IPCOUNTRY'              => 'cloudflare',
+        'HTTP_CLOUDFRONT_VIEWER_COUNTRY' => 'cloudfront',
+        'HTTP_X_COUNTRY_CODE'            => 'custom',
     ];
 
     private const SPECIAL_VALUES = ['T1', 'XX'];
@@ -40,17 +40,27 @@ class GeoCountryResolver
      */
     public static function resolveRaw(): ?string
     {
-        foreach (self::HEADERS as $header) {
+        return self::resolveWithSource()['country'];
+    }
+
+    /**
+     * Resolve country and which CDN/proxy header provided it.
+     *
+     * @return array{country: string|null, source: string|null}
+     */
+    public static function resolveWithSource(): array
+    {
+        foreach (self::HEADER_SOURCES as $header => $source) {
             if (!empty($_SERVER[$header])) {
                 $value = sanitize_text_field(wp_unslash($_SERVER[$header]));
                 $value = strtoupper(trim($value));
 
                 if (preg_match('/^[A-Z]{2}$/', $value) || in_array($value, self::SPECIAL_VALUES, true)) {
-                    return $value;
+                    return ['country' => $value, 'source' => $source];
                 }
             }
         }
 
-        return null;
+        return ['country' => null, 'source' => null];
     }
 }

@@ -270,9 +270,12 @@ class ReportAggregator
             $rangeDays,
         );
 
-        // Top failed IPs
         $topIps = $this->db->getResults(
-            "SELECT ip_address AS ip, COUNT(*) AS count
+            "SELECT ip_address AS ip, COUNT(*) AS count,
+                (SELECT t2.geo_country FROM {$table} t2
+                 WHERE t2.ip_address = {$table}.ip_address
+                   AND t2.geo_country IS NOT NULL
+                 ORDER BY t2.created_at DESC LIMIT 1) AS country
             FROM {$table}
             WHERE event IN ({$failureIn})
                 AND ip_address IS NOT NULL
@@ -286,7 +289,7 @@ class ReportAggregator
 
         $topFailedIps = [];
         foreach ($topIps as $row) {
-            $topFailedIps[] = ['ip' => $row['ip'], 'count' => (int) $row['count']];
+            $topFailedIps[] = ['ip' => $row['ip'], 'count' => (int) $row['count'], 'country' => $row['country'] ?? null];
         }
 
         $recentLockouts = $this->getRecentUserEvents($table, EventType::AccountLocked, 'locked_at', $rangeDays);
@@ -306,7 +309,7 @@ class ReportAggregator
     private function getRecentUserEvents(string $table, EventType $event, string $dateKey, int $rangeDays, int $limit = 10): array
     {
         $rows = $this->db->getResults(
-            "SELECT l.user_id, l.ip_address AS ip, l.created_at AS event_at
+            "SELECT l.user_id, l.ip_address AS ip, l.geo_country AS country, l.created_at AS event_at
             FROM {$table} l
             WHERE l.event = %s
                 AND l.created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)
@@ -331,6 +334,7 @@ class ReportAggregator
                 'display_name' => $user ? $user->display_name : 'Unknown',
                 $dateKey        => $row['event_at'],
                 'ip'           => $row['ip'] ?? '',
+                'country'      => $row['country'] ?? null,
             ];
         }
 

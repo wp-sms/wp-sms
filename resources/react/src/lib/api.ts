@@ -257,9 +257,9 @@ export interface ReportsResponse {
     accounts_locked: number;
     accounts_suspended: number;
     otp_failures: number;
-    top_failed_ips: { ip: string; count: number }[];
-    recent_lockouts: { user_id: number; display_name: string; locked_at: string; ip: string }[];
-    recent_suspensions: { user_id: number; display_name: string; suspended_at: string; ip: string }[];
+    top_failed_ips: { ip: string; count: number; country?: string | null }[];
+    recent_lockouts: { user_id: number; display_name: string; locked_at: string; ip: string; country?: string | null }[];
+    recent_suspensions: { user_id: number; display_name: string; suspended_at: string; ip: string; country?: string | null }[];
   };
 }
 
@@ -270,6 +270,7 @@ export interface LogEntry {
   status: string;
   ip_address: string;
   channel_id: string | null;
+  geo_country: string | null;
   user_agent: string | null;
   meta: string | Record<string, unknown> | null;
   created_at: string;
