@@ -315,13 +315,13 @@ export function AppShell({ activeSection, onNavigate, version, area, children, n
   return (
     <SidebarProvider defaultOpen={SIDEBAR_DEFAULT_OPEN}>
       <Sidebar collapsible="icon">
-        <SidebarHeader className="h-14 px-4 justify-center group-data-[collapsible=icon]:px-2">
+        <SidebarHeader className="h-14 px-5 justify-center group-data-[collapsible=icon]:px-2">
           <div className="flex items-center gap-3 group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:gap-0">
             <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary">
               <Logo className="h-6 w-6 text-primary-foreground" />
             </div>
             <div className="flex flex-col group-data-[collapsible=icon]:hidden">
-              <span className="text-sm font-semibold leading-none">WSMS</span>
+              <span className="text-lg font-extrabold tracking-tight leading-none">WSMS</span>
               <span className="text-xs text-muted-foreground">{AREA_LABELS[area]}</span>
             </div>
           </div>
@@ -337,10 +337,10 @@ export function AppShell({ activeSection, onNavigate, version, area, children, n
       </Sidebar>
 
       <SidebarInset>
-        <header className="flex h-14 items-center justify-end gap-2 border-b border-sidebar-border bg-sidebar px-6">
+        <header className="flex h-14 items-center justify-end gap-2 border-b-2 border-foreground bg-sidebar px-6">
           <SidebarTrigger className="-ml-1 mr-auto" />
           <Button variant="ghost" size="sm"
-            className="rounded-full bg-primary/10 text-xs font-medium text-primary hover:bg-primary/15 hover:text-primary">
+            className="bg-primary/10 text-xs font-medium text-primary hover:bg-primary/15 hover:text-primary">
             <Sparkles className="size-3" />
             Go Premium
           </Button>
@@ -350,7 +350,7 @@ export function AppShell({ activeSection, onNavigate, version, area, children, n
             <span className="sr-only">Notifications</span>
           </Button>
         </header>
-        <div key={activeSection} className="animate-fade-up p-6">
+        <div key={activeSection} className="animate-fade-up p-7">
           {children}
         </div>
         <SaveBar />

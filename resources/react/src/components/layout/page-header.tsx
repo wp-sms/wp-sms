@@ -13,7 +13,7 @@ export function PageHeader({ icon: Icon, title, metadata, actions, children }: P
     <div className="mb-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="flex items-center gap-2 text-lg font-semibold tracking-tight">
+          <h1 className="flex items-center gap-2 text-xl font-extrabold tracking-[-0.02em]">
             {Icon && <Icon className="h-5 w-5 text-muted-foreground" />}
             {title}
             {metadata && (
