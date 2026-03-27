@@ -58,6 +58,7 @@ function PaginationLink({
           variant: isActive ? "outline" : "ghost",
           size,
         }),
+        isActive && "bg-foreground text-background border-foreground hover:bg-foreground hover:text-background",
         className
       )}
       {...props}

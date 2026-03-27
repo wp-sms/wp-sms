@@ -28,7 +28,7 @@ export function SegmentedGroup<T extends string | number>({
   }, []);
 
   return (
-    <div ref={fitRef} className="flex rounded-lg border border-input">
+    <div ref={fitRef} className="flex rounded-lg border-2 border-input">
       {options.map((opt, i) => {
         const active = value === opt.value;
 

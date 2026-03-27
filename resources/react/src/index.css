@@ -41,6 +41,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-surface: var(--surface);
+  --shadow-brutalist: 4px 4px 0 var(--border);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -64,55 +65,55 @@
 }
 
 :root {
-  --radius: 0.4375rem;
+  --radius: 0.25rem;
 
-  /* Shadows */
-  --shadow-lg: 0 8px 12px -3px oklch(0.147 0.004 49.25 / 0.07), 0 3px 5px -3px oklch(0.147 0.004 49.25 / 0.05);
-  --shadow-save-bar: 0 -2px 8px 0 oklch(0.147 0.004 49.25 / 0.06);
+  /* Shadows — brutalist offset */
+  --shadow-lg: 3px 3px 0 #d4d0cc;
+  --shadow-save-bar: 0 -3px 0 0 #d4d0cc;
 
   /* Surface */
-  --surface: oklch(0.985 0.002 106.424);
+  --surface: #f3f1ed;
 
-  /* Stone base + Amber primary */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.147 0.004 49.25);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.147 0.004 49.25);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.147 0.004 49.25);
-  --primary: oklch(0.575 0.170 50.0);
-  --primary-foreground: oklch(0.987 0.022 95.277);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.97 0.001 106.424);
-  --muted-foreground: oklch(0.553 0.013 58.071);
-  --accent: oklch(0.97 0.001 106.424);
-  --accent-foreground: oklch(0.216 0.006 56.043);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0.001 106.423);
-  --success: oklch(0.627 0.194 145.0);
-  --warning: oklch(0.750 0.183 55.0);
-  --info: oklch(0.623 0.214 259.0);
-  --border: oklch(0.915 0.004 48.717);
-  --input: oklch(0.915 0.004 48.717);
-  --ring: oklch(0.709 0.01 56.259);
-  --chart-1: oklch(0.879 0.169 91.605);
-  --chart-2: oklch(0.769 0.188 70.08);
-  --chart-3: oklch(0.666 0.179 58.318);
-  --chart-4: oklch(0.555 0.163 48.998);
-  --chart-5: oklch(0.473 0.137 46.201);
+  /* C1 Soft Brutalist palette */
+  --background: #faf9f7;
+  --foreground: #2d2926;
+  --card: #ffffff;
+  --card-foreground: #2d2926;
+  --popover: #ffffff;
+  --popover-foreground: #2d2926;
+  --primary: #e8630a;
+  --primary-foreground: #ffffff;
+  --secondary: #f3f1ed;
+  --secondary-foreground: #2d2926;
+  --muted: #f3f1ed;
+  --muted-foreground: #7a756f;
+  --accent: #f3f1ed;
+  --accent-foreground: #2d2926;
+  --destructive: #c23b22;
+  --destructive-foreground: #ffffff;
+  --success: #2d8f4e;
+  --warning: #c59200;
+  --info: #2563eb;
+  --border: #d4d0cc;
+  --input: #d4d0cc;
+  --ring: #e8630a;
+  --chart-1: #fbbf24;
+  --chart-2: #f59e0b;
+  --chart-3: #e8630a;
+  --chart-4: #b45309;
+  --chart-5: #7a756f;
 
-  --sidebar: oklch(0.985 0.001 106.423);
-  --sidebar-foreground: oklch(0.147 0.004 49.25);
-  --sidebar-primary: oklch(0.666 0.179 58.318);
-  --sidebar-primary-foreground: oklch(0.987 0.022 95.277);
-  --sidebar-accent: oklch(0.97 0.001 106.424);
-  --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
-  --sidebar-border: oklch(0.923 0.003 48.717);
-  --sidebar-ring: oklch(0.709 0.01 56.259);
+  --sidebar: #ffffff;
+  --sidebar-foreground: #2d2926;
+  --sidebar-primary: #e8630a;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #fef3eb;
+  --sidebar-accent-foreground: #e8630a;
+  --sidebar-border: #d4d0cc;
+  --sidebar-ring: #e8630a;
 
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
     "Liberation Mono", monospace;
 }
@@ -247,32 +248,39 @@
   ) !important;
 }
 
+/* Sidebar structural ink border */
+#wpsms-app [data-slot="sidebar-container"] {
+  border-right: 2px solid var(--foreground);
+}
+
 /* Off-white content area behind cards */
 #wpsms-app [data-slot="sidebar-inset"] {
   background-color: var(--surface);
   min-height: 600px;
 }
 
-/* Table header tint */
+/* Table header — dark ink */
 #wpsms-app [data-slot="table-header"] {
-  background-color: oklch(0.97 0.001 106.424 / 0.5);
+  background-color: var(--foreground);
+  color: var(--primary-foreground);
 }
 
-/* Sidebar active state polish */
+/* Sidebar active state — orange tint */
 #wpsms-app [data-slot="sidebar-menu-button"][data-active="true"] {
-  background-color: oklch(from var(--primary) l c h / 0.06);
-  color: var(--primary);
+  background-color: var(--sidebar-accent);
+  color: var(--sidebar-accent-foreground);
+  border-left: 3px solid var(--primary);
 }
 #wpsms-app [data-slot="sidebar-menu-button"][data-active="true"] svg {
-  color: var(--primary);
+  color: var(--sidebar-accent-foreground);
 }
 #wpsms-app [data-slot="sidebar-menu-button"]:not([data-active="true"]) svg {
-  color: oklch(from var(--muted-foreground) l c h / 0.7);
+  color: var(--muted-foreground);
 }
 
-/* Sidebar header gradient separator */
+/* Sidebar header — ink border */
 #wpsms-app [data-slot="sidebar-header"] {
-  border-image: linear-gradient(to right, var(--sidebar-border), transparent) 1;
+  border-bottom: 2px solid var(--foreground);
 }
 
 /* Sidebar group label — uppercase, tracked */
@@ -282,7 +290,7 @@
   font-size: 0.6875rem;
 }
 
-/* Active sub-button amber indicator */
+/* Active sub-button orange indicator */
 #wpsms-app [data-slot="sidebar-menu-sub-button"][data-active="true"] {
   position: relative;
 }

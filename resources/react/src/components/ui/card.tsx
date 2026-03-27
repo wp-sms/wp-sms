@@ -12,8 +12,8 @@ function Card({ className, active, ...props }: CardProps) {
     <div
       data-slot="card"
       className={cn(
-        "flex flex-col gap-6 rounded-lg border border-border/60 bg-card py-6 text-card-foreground",
-        active && "border-l-2 border-l-primary",
+        "flex flex-col gap-6 rounded-lg border-2 border-border bg-card py-6 text-card-foreground",
+        active && "border-l-[3px] border-l-primary",
         className
       )}
       {...props}
