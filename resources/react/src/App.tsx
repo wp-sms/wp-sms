@@ -17,6 +17,7 @@ import { ProfileFields } from '@/pages/authentication/profile-fields';
 import { RegistrationForms } from '@/pages/authentication/registration-forms';
 import { Templates } from '@/pages/authentication/templates';
 import { SecurityPage } from '@/pages/security';
+import { PrivacyPage } from '@/pages/privacy';
 import { MonitoringPage } from '@/pages/monitoring';
 import { SettingsPage } from '@/pages/settings';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -96,6 +97,8 @@ export default function App() {
         switch (section) {
           case 's-security':
             return <SecurityPage subTab={subTab} onNavigate={setSection} settings={settings} onUpdate={updateSetting} roles={roles} />;
+          case 's-privacy':
+            return <PrivacyPage />;
           default:
             return <SettingsPage subTab={subTab} onNavigate={setSection} settings={settings} onUpdate={updateSetting} />;
         }

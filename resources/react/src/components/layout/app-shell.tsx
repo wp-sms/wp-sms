@@ -99,6 +99,7 @@ export const NAV_SECTIONS: readonly NavSection[] = [
         children: [
           { id: 's-general', label: 'General' },
           { id: 's-security', label: 'Security' },
+          { id: 's-privacy', label: 'Privacy' },
         ],
       },
     ],

@@ -34,8 +34,10 @@ use WSms\Rest\TemplateController;
 use WSms\Rest\BrandingController;
 use WSms\Rest\OutboundWebhookController;
 use WSms\Rest\GeoController;
+use WSms\Rest\PrivacyController;
 use WSms\Rest\SystemHealthController;
 use WSms\Rest\WebhookReceiverController;
+use WSms\Privacy\PrivacyRequestService;
 use WSms\System\SystemHealthService;
 
 defined('ABSPATH') || exit;
@@ -247,6 +249,9 @@ class RestServiceProvider implements ServiceProvider
             $c->get('auth.rate_limiter'),
             $c->get('auth.captcha_guard'),
         ));
+        $container->register('rest.privacy', fn($c) => new PrivacyController(
+            new PrivacyRequestService($c->get('contact.repository'), $c->get(Connection::class)),
+        ));
         $container->register('rest.geo', fn() => new GeoController());
         $container->register('system.health', fn($c) => new SystemHealthService($c->get(Connection::class)));
         $container->register('rest.system_health', fn($c) => new SystemHealthController($c->get('system.health')));
@@ -287,6 +292,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.branding')->registerRoutes();
             $container->get('rest.templates')->registerRoutes();
             $container->get('rest.template_catalog')->registerRoutes();
+            $container->get('rest.privacy')->registerRoutes();
             $container->get('rest.geo')->registerRoutes();
             $container->get('rest.system_health')->registerRoutes();
         });
