@@ -192,7 +192,8 @@ class EmailOctopusIntegration implements
             $fields = $this->mapContactFields($contact);
             $tags = $this->buildTagList($contact['tags'] ?? [], $config);
 
-            $result = $client->upsertContact($listId, $email, $fields, $tags);
+            $eoStatus = $this->resolveProviderStatus($contact);
+            $result = $client->upsertContact($listId, $email, $fields, $tags, $eoStatus);
             $providerId = $result['id'] ?? EmailOctopusApiClient::contactId($email);
 
             return SyncResult::success($providerId);
@@ -230,6 +231,7 @@ class EmailOctopusIntegration implements
             $member = [
                 'email_address' => $email,
                 'fields'        => (object) $this->mapContactFields($contact),
+                'status'        => $this->resolveProviderStatus($contact),
             ];
 
             $tags = $this->buildTagList($contact['tags'] ?? [], $config);
@@ -282,10 +284,9 @@ class EmailOctopusIntegration implements
         }
 
         $eoStatus = match ($status) {
-            'subscribed'   => 'subscribed',
-            'unsubscribed' => 'unsubscribed',
+            'subscribed'            => 'subscribed',
             'bounced', 'complained' => 'unsubscribed',
-            default => null,
+            default                 => null,
         };
 
         if ($eoStatus === null) {
@@ -597,6 +598,21 @@ class EmailOctopusIntegration implements
 
             return SyncResult::failure($e->getMessage());
         }
+    }
+
+    private function resolveProviderStatus(array $contact): string
+    {
+        $status = $contact['status'] ?? 'subscribed';
+        if (in_array($status, ['bounced', 'complained'], true)) {
+            return 'unsubscribed';
+        }
+
+        $optOuts = $contact['channel_opt_outs'] ?? [];
+        if (!empty($optOuts['email'])) {
+            return 'unsubscribed';
+        }
+
+        return 'subscribed';
     }
 
     private function buildTagList(array $tags, array $config): array

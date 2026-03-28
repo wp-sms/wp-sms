@@ -27,7 +27,7 @@ class ContactOptedOutTrigger extends AbstractTrigger
 
     public function getDescription(): string
     {
-        return __('Fires when a contact unsubscribes via STOP keyword or admin action', 'wp-sms');
+        return __('Fires when a contact opts out of a channel', 'wp-sms');
     }
 
     public function getGroup(): string
@@ -65,8 +65,14 @@ class ContactOptedOutTrigger extends AbstractTrigger
             'contact_ids' => [
                 'type'        => 'array',
                 'label'       => __('Contact IDs', 'wp-sms'),
-                'description' => __('IDs of contacts that were marked as unsubscribed', 'wp-sms'),
+                'description' => __('IDs of contacts that opted out', 'wp-sms'),
                 'example'     => ['01HY...'],
+            ],
+            'channel' => [
+                'type'        => 'string',
+                'label'       => __('Channel', 'wp-sms'),
+                'description' => __('The channel the contact opted out of (e.g. sms, email)', 'wp-sms'),
+                'example'     => 'sms',
             ],
         ];
     }
@@ -80,6 +86,7 @@ class ContactOptedOutTrigger extends AbstractTrigger
                 'keyword'     => $event->keyword,
                 'gateway_id'  => $event->gatewayId,
                 'contact_ids' => $event->contactIds,
+                'channel'     => $event->channel,
             ]);
         });
     }

@@ -298,6 +298,7 @@ export const ATTRIBUTE_FIELDS = [
   { value: 'first_name', label: 'First name' },
   { value: 'last_name', label: 'Last name' },
   { value: 'status', label: 'Status' },
+  { value: 'channel_opt_outs', label: 'Channel opt-outs' },
   { value: 'source', label: 'Source' },
 ] as const;
 

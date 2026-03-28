@@ -167,6 +167,14 @@ class ContactImporter
 
             $value = trim($record[$csvColumn]);
 
+            if ($field === 'channel_opt_outs') {
+                $decoded = json_decode($value, true);
+                if (is_array($decoded)) {
+                    $data['channel_opt_outs'] = $decoded;
+                }
+                continue;
+            }
+
             if (str_starts_with($field, 'custom.')) {
                 $customFields[substr($field, 7)] = $value;
             } else {

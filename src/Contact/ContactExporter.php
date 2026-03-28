@@ -39,7 +39,7 @@ class ContactExporter
         sort($customFieldKeys);
 
         // Build header
-        $header = ['id', 'email', 'phone', 'first_name', 'last_name', 'status', 'source', 'source_ref', 'wp_user_id', 'tags', 'created_at', 'updated_at'];
+        $header = ['id', 'email', 'phone', 'first_name', 'last_name', 'status', 'channel_opt_outs', 'source', 'source_ref', 'wp_user_id', 'tags', 'created_at', 'updated_at'];
         foreach ($customFieldKeys as $key) {
             $header[] = 'custom_' . $key;
         }
@@ -62,6 +62,7 @@ class ContactExporter
                     $contact['first_name'] ?? '',
                     $contact['last_name'] ?? '',
                     $contact['status'] ?? '',
+                    self::serializeOptOuts($contact['channel_opt_outs'] ?? null),
                     $contact['source'] ?? '',
                     $contact['source_ref'] ?? '',
                     $contact['wp_user_id'] ?? '',
@@ -80,6 +81,15 @@ class ContactExporter
         } while (count($contacts) === $batch);
 
         return $outputPath;
+    }
+
+    private static function serializeOptOuts(mixed $optOuts): string
+    {
+        if (is_string($optOuts)) {
+            $optOuts = json_decode($optOuts, true);
+        }
+
+        return is_array($optOuts) && !empty($optOuts) ? json_encode($optOuts) : '';
     }
 
     private static function customFields(array $contact): array
