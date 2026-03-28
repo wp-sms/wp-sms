@@ -171,10 +171,10 @@ describe('Webhooks page', () => {
     await user.click(screen.getByRole('button', { name: /Create Webhook/i }));
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Name')).toBeInTheDocument();
+      expect(screen.getByLabelText(/^Name/)).toBeInTheDocument();
     });
 
-    expect(screen.getByLabelText('URL')).toBeInTheDocument();
+    expect(screen.getByLabelText(/^URL/)).toBeInTheDocument();
     // Heading says "Create Webhook"
     expect(screen.getByRole('heading', { name: 'Create Webhook' })).toBeInTheDocument();
   });
@@ -210,7 +210,7 @@ describe('Webhooks page', () => {
     await user.click(screen.getByRole('button', { name: /Create Webhook/i }));
 
     await waitFor(() => {
-      expect(screen.getByLabelText('Name')).toBeInTheDocument();
+      expect(screen.getByLabelText(/^Name/)).toBeInTheDocument();
     });
 
     // Click submit without filling anything — find the submit button by its text within form area
