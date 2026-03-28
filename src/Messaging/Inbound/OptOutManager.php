@@ -56,30 +56,30 @@ class OptOutManager
         }
 
         return match ($action) {
-            'stop'  => $this->handleStatusChange($message->from, 'unsubscribed', 'stop', $gatewayId, 'sms_keyword', $action),
-            'start' => $this->handleStatusChange($message->from, 'subscribed', 'start', $gatewayId, 'sms_keyword', $action),
+            'stop'  => $this->handleStatusChange($message->from, 'stop', $gatewayId, 'sms_keyword', $action),
+            'start' => $this->handleStatusChange($message->from, 'start', $gatewayId, 'sms_keyword', $action),
             'help'  => $this->handleHelp($message->from, $gatewayId),
         };
     }
 
     public function processGatewayOptOut(string $phone, string $gatewayId): void
     {
-        $this->handleStatusChange($phone, 'unsubscribed', 'stop', $gatewayId, 'gateway');
+        $this->handleStatusChange($phone, 'stop', $gatewayId, 'gateway');
     }
 
     public function processGatewayOptIn(string $phone, string $gatewayId): void
     {
-        $this->handleStatusChange($phone, 'subscribed', 'start', $gatewayId, 'gateway');
+        $this->handleStatusChange($phone, 'start', $gatewayId, 'gateway');
     }
 
     public function optOut(string $phone): void
     {
-        $this->handleStatusChange($phone, 'unsubscribed', 'stop', null, 'admin');
+        $this->handleStatusChange($phone, 'stop', null, 'admin');
     }
 
     public function optIn(string $phone): void
     {
-        $this->handleStatusChange($phone, 'subscribed', 'start', null, 'admin');
+        $this->handleStatusChange($phone, 'start', null, 'admin');
     }
 
     /**
@@ -87,16 +87,45 @@ class OptOutManager
      */
     private function handleStatusChange(
         string $phone,
-        string $targetStatus,
         string $action,
         ?string $gatewayId,
         string $source,
         ?string $keyword = null,
     ): string {
         $phone = ContactRepository::normalizePhone($phone);
-        $optedOutAt = $targetStatus === 'unsubscribed' ? current_time('mysql') : null;
 
-        $changedIds = $this->updateContactStatus($phone, $targetStatus, $optedOutAt);
+        $contacts = $this->contacts->findAllByPhone($phone);
+
+        if (empty($contacts)) {
+            $createData = [
+                'phone'  => $phone,
+                'status' => 'subscribed',
+                'source' => 'sms_optout',
+            ];
+            if ($action === 'stop') {
+                $createData['channel_opt_outs'] = ['sms' => current_time('mysql')];
+            }
+            $id = $this->contacts->create($createData);
+            $changedIds = [$id];
+        } else {
+            $changedIds = [];
+            foreach ($contacts as $contact) {
+                $isOptedOut = !empty(($contact['channel_opt_outs'] ?? [])['sms']);
+
+                if ($action === 'stop') {
+                    if ($isOptedOut) {
+                        continue;
+                    }
+                    $this->contacts->setChannelOptOut($contact['id'], 'sms');
+                } else {
+                    if (!$isOptedOut) {
+                        continue;
+                    }
+                    $this->contacts->clearChannelOptOut($contact['id'], 'sms');
+                }
+                $changedIds[] = $contact['id'];
+            }
+        }
 
         if (!empty($changedIds)) {
             $event = $action === 'stop'
@@ -136,44 +165,6 @@ class OptOutManager
         $this->sendAutoReply(ContactRepository::normalizePhone($phone), 'help', $gatewayId);
 
         return 'help';
-    }
-
-    /**
-     * Find all contacts by phone and update their status.
-     * If no contact exists, create one with the given status.
-     *
-     * @return string[] Contact IDs that actually changed status
-     */
-    private function updateContactStatus(string $phone, string $status, ?string $optedOutAt): array
-    {
-        $contacts = $this->contacts->findAllByPhone($phone);
-
-        if (empty($contacts)) {
-            $id = $this->contacts->create([
-                'phone'        => $phone,
-                'status'       => $status,
-                'source'       => 'sms_optout',
-                'opted_out_at' => $optedOutAt,
-            ]);
-
-            return [$id];
-        }
-
-        $changedIds = [];
-        foreach ($contacts as $contact) {
-            if ($contact['status'] === $status) {
-                continue;
-            }
-
-            $this->contacts->update($contact['id'], [
-                'status'       => $status,
-                'opted_out_at' => $optedOutAt,
-            ]);
-
-            $changedIds[] = $contact['id'];
-        }
-
-        return $changedIds;
     }
 
     private function sendAutoReply(string $phone, string $action, string $gatewayId): void

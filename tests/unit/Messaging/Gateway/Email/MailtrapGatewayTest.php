@@ -395,8 +395,11 @@ class MailtrapGatewayTest extends AbstractProviderTestCase
         $updates = $provider->parseStatusCallback($request);
 
         $this->assertTrue($updates[0]->complaint, 'spam should be complaint');
-        $this->assertTrue($updates[1]->complaint, 'unsubscribe should be complaint');
+        $this->assertFalse($updates[0]->unsubscribe, 'spam should not be unsubscribe');
+        $this->assertFalse($updates[1]->complaint, 'unsubscribe should not be complaint');
+        $this->assertTrue($updates[1]->unsubscribe, 'unsubscribe should be unsubscribe');
         $this->assertFalse($updates[2]->complaint, 'delivery should not be complaint');
+        $this->assertFalse($updates[2]->unsubscribe, 'delivery should not be unsubscribe');
     }
 
     public function testParseStatusCallbackIgnoresOpenAndClickEvents(): void

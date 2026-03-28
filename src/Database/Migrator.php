@@ -209,7 +209,7 @@ class Migrator
             status          VARCHAR(20) DEFAULT 'subscribed',
             email_verified  TINYINT(1) DEFAULT 0,
             phone_verified  TINYINT(1) DEFAULT 0,
-            opted_out_at    DATETIME,
+            channel_opt_outs JSON,
             custom_fields   JSON,
             source          VARCHAR(50),
             source_ref      VARCHAR(100),

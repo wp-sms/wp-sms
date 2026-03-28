@@ -40,6 +40,11 @@ class CampaignServiceProvider implements ServiceProvider
 
     public function boot(ServiceContainer $container): void
     {
+        // Wire email header composer for unsubscribe headers in email campaigns
+        $container->get('campaign.dispatcher')->setEmailHeaderComposer(
+            $container->get('email.header_composer'),
+        );
+
         // Register job handlers
         $processor = $container->get('queue.processor');
 

@@ -4,6 +4,8 @@ namespace WSms\Container;
 
 use WSms\Contact\StatusPropagator;
 use WSms\Messaging\Catalog\TemplateCatalogManager;
+use WSms\Messaging\Email\EmailHeaderComposer;
+use WSms\Messaging\Email\UnsubscribeTokenService;
 use WSms\Messaging\Gateway\Email\MailtrapGateway;
 use WSms\Messaging\Gateway\Email\WpMailGateway;
 use WSms\Messaging\Gateway\GatewayRegistry;
@@ -78,6 +80,12 @@ class MessagingServiceProvider implements ServiceProvider
         $container->register('messaging.status_propagator', fn($c) => new StatusPropagator(
             $c->get('contact.repository'),
             $c->get('event.dispatcher'),
+        ));
+
+        $container->register('email.unsubscribe_token', fn() => new UnsubscribeTokenService());
+
+        $container->register('email.header_composer', fn($c) => new EmailHeaderComposer(
+            $c->get('email.unsubscribe_token'),
         ));
 
         $container->register('template.catalog_manager', fn($c) => new TemplateCatalogManager(

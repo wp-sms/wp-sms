@@ -52,9 +52,16 @@ class SuppressionPoller
 
         foreach ($emailToStatus as $email => $status) {
             $contact = $this->contactRepository->findByEmail($email);
-            if ($contact && $contact['status'] !== $status) {
-                $this->contactRepository->update($contact['id'], ['status' => $status]);
+            if (!$contact) {
+                continue;
             }
+
+            match ($status) {
+                'unsubscribed' => $this->contactRepository->setChannelOptOut($contact['id'], 'email'),
+                'bounced'      => $this->contactRepository->update($contact['id'], ['status' => 'bounced']),
+                'complained'   => $this->contactRepository->update($contact['id'], ['status' => 'complained']),
+                default        => null,
+            };
         }
 
         $stats = $intState['stats'] ?? [];

@@ -248,7 +248,7 @@ class WordPressIntegration implements IntegrationInterface, SupportsContactImpor
     {
         $contact = $this->contacts->findByWpUser((int) $externalId);
         if ($contact) {
-            $this->contacts->update($contact['id'], ['status' => 'unsubscribed']);
+            $this->contacts->delete($contact['id']);
         }
     }
 

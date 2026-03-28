@@ -14,7 +14,7 @@ defined('ABSPATH') || exit;
 
 class ContactController extends Controller
 {
-    private const ALLOWED_STATUSES = ['subscribed', 'unsubscribed', 'bounced', 'complained'];
+    private const ALLOWED_STATUSES = ['subscribed', 'bounced', 'complained'];
 
     public function __construct(
         private readonly ContactRepositoryInterface $contacts,
@@ -51,9 +51,10 @@ class ContactController extends Controller
                     'status'        => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'source'        => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'source_ref'    => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                    'custom_fields'   => ['type' => 'object'],
-                    'email_verified'  => ['type' => 'boolean'],
-                    'phone_verified'  => ['type' => 'boolean'],
+                    'custom_fields'     => ['type' => 'object'],
+                    'channel_opt_outs'  => ['type' => 'object'],
+                    'email_verified'    => ['type' => 'boolean'],
+                    'phone_verified'    => ['type' => 'boolean'],
                 ],
             ],
         ]);
@@ -115,9 +116,10 @@ class ContactController extends Controller
                     'status'          => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'source'          => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
                     'source_ref'      => ['type' => 'string', 'sanitize_callback' => 'sanitize_text_field'],
-                    'custom_fields'   => ['type' => 'object'],
-                    'email_verified'  => ['type' => 'boolean'],
-                    'phone_verified'  => ['type' => 'boolean'],
+                    'custom_fields'     => ['type' => 'object'],
+                    'channel_opt_outs'  => ['type' => 'object'],
+                    'email_verified'    => ['type' => 'boolean'],
+                    'phone_verified'    => ['type' => 'boolean'],
                 ],
             ],
             [
@@ -206,6 +208,8 @@ class ContactController extends Controller
             $data = $this->extractContactData($request);
 
             $id = $this->contacts->create($data);
+            $this->applyChannelOptOuts($request, $id);
+
             $contact = $this->contacts->find($id);
 
             return $this->created($contact);
@@ -241,6 +245,7 @@ class ContactController extends Controller
             $id = $request->get_param('id');
             $this->contacts->findOrFail($id);
             $this->contacts->update($id, $this->extractContactData($request));
+            $this->applyChannelOptOuts($request, $id);
 
             return $this->ok($this->contacts->find($id));
         });
@@ -413,6 +418,22 @@ class ContactController extends Controller
         return $data;
     }
 
+    private function applyChannelOptOuts(\WP_REST_Request $request, string $contactId): void
+    {
+        $optOuts = $request->get_param('channel_opt_outs');
+        if (!is_array($optOuts)) {
+            return;
+        }
+
+        foreach ($optOuts as $channel => $value) {
+            if ($value !== null) {
+                $this->contacts->setChannelOptOut($contactId, $channel);
+            } else {
+                $this->contacts->clearChannelOptOut($contactId, $channel);
+            }
+        }
+    }
+
     private function getUploadedFilePath(\WP_REST_Request $request): ?string
     {
         $files = $request->get_file_params();
@@ -433,14 +454,17 @@ class ContactController extends Controller
                 'created_at'  => $contact['created_at'],
             ];
 
-            if ($contact['status'] === 'unsubscribed' && !empty($contact['opted_out_at'])) {
-                $activities[] = [
-                    'id'          => 'opted-out-' . $contact['id'],
-                    'type'        => 'contact_opted_out',
-                    'description' => 'Unsubscribed',
-                    'meta'        => [],
-                    'created_at'  => $contact['opted_out_at'],
-                ];
+            $optOuts = is_array($contact['channel_opt_outs'] ?? null) ? $contact['channel_opt_outs'] : [];
+            foreach ($optOuts as $channel => $optOutDate) {
+                if (!empty($optOutDate)) {
+                    $activities[] = [
+                        'id'          => 'opted-out-' . $channel . '-' . $contact['id'],
+                        'type'        => 'contact_opted_out',
+                        'description' => 'Opted out of ' . $channel,
+                        'meta'        => ['channel' => $channel],
+                        'created_at'  => $optOutDate,
+                    ];
+                }
             }
 
             if (($contact['updated_at'] ?? '') !== ($contact['created_at'] ?? '')) {

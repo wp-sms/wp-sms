@@ -19,20 +19,21 @@ class ContactRepository implements ContactRepositoryInterface
         $now = current_time('mysql');
 
         $this->db->insert(Connection::TABLE_CONTACTS, [
-            'id'             => $id,
-            'email'          => isset($data['email']) ? strtolower($data['email']) : null,
-            'phone'          => isset($data['phone']) ? self::normalizePhone($data['phone']) : null,
-            'first_name'     => $data['first_name'] ?? null,
-            'last_name'      => $data['last_name'] ?? null,
-            'wp_user_id'     => $data['wp_user_id'] ?? null,
-            'status'         => $data['status'] ?? 'subscribed',
-            'email_verified' => !empty($data['email_verified']) ? 1 : 0,
-            'phone_verified' => !empty($data['phone_verified']) ? 1 : 0,
-            'custom_fields'  => isset($data['custom_fields']) ? wp_json_encode($data['custom_fields']) : null,
-            'source'         => $data['source'] ?? 'manual',
-            'source_ref'     => $data['source_ref'] ?? null,
-            'created_at'     => $now,
-            'updated_at'     => $now,
+            'id'               => $id,
+            'email'            => isset($data['email']) ? strtolower($data['email']) : null,
+            'phone'            => isset($data['phone']) ? self::normalizePhone($data['phone']) : null,
+            'first_name'       => $data['first_name'] ?? null,
+            'last_name'        => $data['last_name'] ?? null,
+            'wp_user_id'       => $data['wp_user_id'] ?? null,
+            'status'           => $data['status'] ?? 'subscribed',
+            'email_verified'   => !empty($data['email_verified']) ? 1 : 0,
+            'phone_verified'   => !empty($data['phone_verified']) ? 1 : 0,
+            'channel_opt_outs' => isset($data['channel_opt_outs']) ? wp_json_encode($data['channel_opt_outs']) : null,
+            'custom_fields'    => isset($data['custom_fields']) ? wp_json_encode($data['custom_fields']) : null,
+            'source'           => $data['source'] ?? 'manual',
+            'source_ref'       => $data['source_ref'] ?? null,
+            'created_at'       => $now,
+            'updated_at'       => $now,
         ]);
 
         if (!$suppressEvents) {
@@ -63,7 +64,7 @@ class ContactRepository implements ContactRepositoryInterface
 
         $update = ['updated_at' => current_time('mysql')];
 
-        foreach (['email', 'phone', 'first_name', 'last_name', 'wp_user_id', 'status', 'source', 'source_ref', 'opted_out_at', 'email_verified', 'phone_verified'] as $field) {
+        foreach (['email', 'phone', 'first_name', 'last_name', 'wp_user_id', 'status', 'source', 'source_ref', 'email_verified', 'phone_verified'] as $field) {
             if (array_key_exists($field, $data)) {
                 if ($field === 'email' && $data[$field] !== null) {
                     $update[$field] = strtolower($data[$field]);
@@ -381,6 +382,60 @@ class ContactRepository implements ContactRepositoryInterface
         } while (count($batch) === $batchSize);
     }
 
+    public function setChannelOptOut(string $contactId, string $channel): void
+    {
+        $optOuts = $this->loadOptOuts($contactId);
+        if ($optOuts === null) {
+            return;
+        }
+
+        $optOuts[$channel] = current_time('mysql');
+        $this->saveOptOuts($contactId, $optOuts);
+    }
+
+    public function clearChannelOptOut(string $contactId, string $channel): void
+    {
+        $optOuts = $this->loadOptOuts($contactId);
+        if ($optOuts === null) {
+            return;
+        }
+
+        unset($optOuts[$channel]);
+        $this->saveOptOuts($contactId, $optOuts);
+    }
+
+    public function isChannelOptedOut(string $contactId, string $channel): bool
+    {
+        $optOuts = $this->loadOptOuts($contactId);
+        return $optOuts !== null && !empty($optOuts[$channel]);
+    }
+
+    public function getChannelOptOuts(string $contactId): array
+    {
+        return $this->loadOptOuts($contactId) ?? [];
+    }
+
+    private function loadOptOuts(string $contactId): ?array
+    {
+        $t = $this->db->table(Connection::TABLE_CONTACTS);
+        $row = $this->db->getRow("SELECT channel_opt_outs FROM {$t} WHERE id = %s", $contactId);
+        if ($row === null) {
+            return null;
+        }
+        return json_decode($row['channel_opt_outs'] ?? '{}', true) ?: [];
+    }
+
+    private function saveOptOuts(string $contactId, array $optOuts): void
+    {
+        $now = current_time('mysql');
+        $this->db->update(Connection::TABLE_CONTACTS, [
+            'channel_opt_outs' => !empty($optOuts) ? wp_json_encode($optOuts) : null,
+            'updated_at'       => $now,
+        ], ['id' => $contactId]);
+
+        do_action('wsms_contact_updated', $contactId, ['channel_opt_outs' => $optOuts]);
+    }
+
     public static function normalizePhone(string $phone): string
     {
         return preg_replace('/[\s\-\(\)\.]+/', '', $phone);
@@ -429,6 +484,9 @@ class ContactRepository implements ContactRepositoryInterface
     {
         if (isset($row['custom_fields']) && is_string($row['custom_fields'])) {
             $row['custom_fields'] = json_decode($row['custom_fields'], true) ?? [];
+        }
+        if (isset($row['channel_opt_outs']) && is_string($row['channel_opt_outs'])) {
+            $row['channel_opt_outs'] = json_decode($row['channel_opt_outs'], true) ?? [];
         }
         if (array_key_exists('email_verified', $row)) {
             $row['email_verified'] = (bool) $row['email_verified'];

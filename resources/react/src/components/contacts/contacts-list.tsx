@@ -37,11 +37,22 @@ interface ContactsListProps {
 
 const STATUS_VARIANTS: Record<string, 'success' | 'neutral' | 'warning' | 'destructive'> = {
   subscribed: 'success',
-  unsubscribed: 'neutral',
   pending: 'warning',
   bounced: 'warning',
   complained: 'destructive',
 };
+
+function OptOutIndicator({ optOuts }: { optOuts?: Record<string, string | null> }) {
+  if (!optOuts) return null;
+  const active = Object.entries(optOuts).filter(([, v]) => v != null);
+  if (active.length === 0) return null;
+  const labels = active.map(([ch]) => ch.toUpperCase()).join(', ');
+  return (
+    <span className="text-[11px] text-muted-foreground ml-1.5">
+      ({labels} opted out)
+    </span>
+  );
+}
 
 export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: ContactsListProps) {
   const {
@@ -184,6 +195,7 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
                   <Badge variant={STATUS_VARIANTS[contact.status] || 'neutral'}>
                     {formatLabel(contact.status)}
                   </Badge>
+                  <OptOutIndicator optOuts={contact.channel_opt_outs} />
                 </TableCell>
                 <TableCell className="text-sm">
                   {contact.tags?.length

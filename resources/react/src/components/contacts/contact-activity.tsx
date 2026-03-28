@@ -3,7 +3,7 @@ import { useContactActivity } from '@/hooks/use-contact-activity';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyState } from '@/components/ui/empty-state';
-import { MessageSquare, UserPlus, RefreshCw, Mail } from 'lucide-react';
+import { MessageSquare, UserPlus, RefreshCw, Mail, BellOff } from 'lucide-react';
 
 interface ContactActivityProps {
   contactId: string | null;
@@ -13,6 +13,7 @@ function getActivityIcon(type: string) {
   if (type.startsWith('message_')) return MessageSquare;
   if (type === 'contact_created') return UserPlus;
   if (type === 'contact_updated') return RefreshCw;
+  if (type === 'contact_opted_out') return BellOff;
   return Mail;
 }
 

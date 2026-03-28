@@ -266,10 +266,14 @@ export const SOCIAL_METHODS = [
 
 export const CONTACT_STATUSES = [
   { value: 'subscribed', label: 'Subscribed' },
-  { value: 'unsubscribed', label: 'Unsubscribed' },
   { value: 'pending', label: 'Pending' },
   { value: 'bounced', label: 'Bounced' },
   { value: 'complained', label: 'Complained' },
+] as const;
+
+export const OPT_OUT_CHANNELS = [
+  { value: 'sms', label: 'SMS' },
+  { value: 'email', label: 'Email' },
 ] as const;
 
 export const TAG_COLORS = [

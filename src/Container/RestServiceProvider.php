@@ -9,6 +9,7 @@ use WSms\Rest\AdminController;
 use WSms\Rest\AdminUserController;
 use WSms\Rest\AuthController;
 use WSms\Rest\ContactController;
+use WSms\Rest\EmailUnsubscribeController;
 use WSms\Rest\FlowController;
 use WSms\Rest\CampaignController;
 use WSms\Rest\GatewayController;
@@ -194,6 +195,12 @@ class RestServiceProvider implements ServiceProvider
             $c->get('messaging.optout_manager'),
             $c->get('messaging.status_propagator'),
         ));
+        $container->register('rest.email_unsubscribe', fn($c) => new EmailUnsubscribeController(
+            $c->get('email.unsubscribe_token'),
+            $c->get('contact.repository'),
+            $c->get('event.dispatcher'),
+            $c->get('auth.rate_limiter'),
+        ));
         $container->register('rest.optout_settings', fn() => new OptOutSettingsController());
         $container->register('rest.phone_restriction', fn($c) => new PhoneRestrictionController(
             $c->get('phone_restriction.settings'),
@@ -268,6 +275,7 @@ class RestServiceProvider implements ServiceProvider
             $container->get('rest.campaigns')->registerRoutes();
             $container->get('rest.integrations')->registerRoutes();
             $container->get('rest.gateway_callbacks')->registerRoutes();
+            $container->get('rest.email_unsubscribe')->registerRoutes();
             $container->get('rest.optout_settings')->registerRoutes();
             $container->get('rest.phone_restriction')->registerRoutes();
             $container->get('rest.outbound_webhooks')->registerRoutes();

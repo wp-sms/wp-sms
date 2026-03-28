@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { PhoneInput } from '@/components/ui/phone-input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ContactCustomFields } from './contact-custom-fields';
-import { CONTACT_STATUSES } from '@/lib/constants';
+import { CONTACT_STATUSES, OPT_OUT_CHANNELS } from '@/lib/constants';
 
 interface ContactFormPanelProps {
   open: boolean;
@@ -24,6 +24,7 @@ const EMPTY_FORM = {
   phone: '',
   status: 'subscribed',
   custom_fields: {} as Record<string, unknown>,
+  channel_opt_outs: {} as Record<string, string | null>,
   email_verified: false,
   phone_verified: false,
 };
@@ -42,6 +43,7 @@ export function ContactFormPanel({ open, onOpenChange, contact, onSave }: Contac
         phone: contact.phone || '',
         status: contact.status || 'subscribed',
         custom_fields: contact.custom_fields || {},
+        channel_opt_outs: contact.channel_opt_outs || {},
         email_verified: !!contact.email_verified,
         phone_verified: !!contact.phone_verified,
       });
@@ -119,6 +121,26 @@ export function ContactFormPanel({ open, onOpenChange, contact, onSave }: Contac
               </SelectContent>
             </Select>
           </Field>
+
+          <div>
+            <p className="text-sm font-medium mb-2">Channel opt-outs</p>
+            <p className="text-xs text-muted-foreground mb-2">
+              Opted-out channels won&apos;t receive campaign messages.
+            </p>
+            {OPT_OUT_CHANNELS.map(({ value: ch, label }) => (
+              <label key={ch} className="flex items-center gap-2 text-sm text-muted-foreground mb-1.5">
+                <Checkbox
+                  checked={form.channel_opt_outs[ch] != null}
+                  onCheckedChange={(checked) => {
+                    const next = { ...form.channel_opt_outs };
+                    next[ch] = checked ? new Date().toISOString() : null;
+                    setForm({ ...form, channel_opt_outs: next });
+                  }}
+                />
+                Opted out of {label}
+              </label>
+            ))}
+          </div>
 
           <div>
             <p className="text-sm font-medium mb-2">Custom fields</p>

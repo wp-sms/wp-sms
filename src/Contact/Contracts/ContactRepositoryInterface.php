@@ -72,4 +72,13 @@ interface ContactRepositoryInterface
      * @param callable(list<array<string, mixed>>): void $callback
      */
     public function eachSubscribedWithEmail(callable $callback, int $batchSize = 500): void;
+
+    public function setChannelOptOut(string $contactId, string $channel): void;
+
+    public function clearChannelOptOut(string $contactId, string $channel): void;
+
+    public function isChannelOptedOut(string $contactId, string $channel): bool;
+
+    /** @return array<string, string> Channel => opt-out timestamp */
+    public function getChannelOptOuts(string $contactId): array;
 }

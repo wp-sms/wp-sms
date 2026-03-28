@@ -143,10 +143,10 @@ class ContactRepositoryTest extends TestCase
         $this->wpdb->queryResult = 2;
 
         $repo = new ContactRepository($this->connection);
-        $count = $repo->bulkUpdateStatus(['C1', 'C2'], 'unsubscribed');
+        $count = $repo->bulkUpdateStatus(['C1', 'C2'], 'bounced');
 
         $this->assertSame(2, $count);
-        $this->assertStringContainsString('unsubscribed', $this->wpdb->queries[0]);
+        $this->assertStringContainsString('bounced', $this->wpdb->queries[0]);
     }
 
     public function test_findByIds_returns_contacts_with_decoded_fields(): void

@@ -99,8 +99,8 @@ class GatewayCallbackController extends Controller
                     }
                 }
 
-                // Propagate permanent failures to contact status (bounced/complained)
-                if ($this->statusPropagator !== null && $update->permanent) {
+                // Propagate permanent failures, complaints, and unsubscribes to contact status
+                if ($this->statusPropagator !== null && ($update->permanent || $update->complaint || $update->unsubscribe)) {
                     $this->statusPropagator->propagate($update, $logEntry['recipient'], $logEntry['channel']);
                 }
             }

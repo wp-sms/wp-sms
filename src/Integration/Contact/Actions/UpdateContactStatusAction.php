@@ -35,7 +35,7 @@ class UpdateContactStatusAction extends AbstractAction
 
     public function getDescription(): string
     {
-        return __('Change a contact\'s subscription status', 'wp-sms');
+        return __('Change a contact\'s subscription status or channel opt-out', 'wp-sms');
     }
 
     public function getGroup(): string
@@ -69,6 +69,12 @@ class UpdateContactStatusAction extends AbstractAction
                 'required'    => true,
                 'enum'        => array_map(fn(ContactStatus $s) => $s->value, ContactStatus::cases()),
             ],
+            'channel' => [
+                'type'        => 'string',
+                'label'       => __('Channel', 'wp-sms'),
+                'description' => __('Optional: set per-channel opt-out/opt-in instead of global status (e.g. "sms", "email")', 'wp-sms'),
+                'required'    => false,
+            ],
         ];
     }
 
@@ -79,14 +85,32 @@ class UpdateContactStatusAction extends AbstractAction
             return ActionResult::failure('Contact not found');
         }
 
-        $status = $config['status'] ?? '';
-        if (empty($status) || !ContactStatus::tryFrom($status)) {
-            return ActionResult::failure('Valid status is required');
-        }
-
         $contact = $this->contactRepository->find($contactId);
         if (!$contact) {
             return ActionResult::failure('Contact not found');
+        }
+
+        $channel = $config['channel'] ?? '';
+        $status = $config['status'] ?? '';
+
+        // Per-channel opt-out/opt-in via channel config
+        if (!empty($channel)) {
+            if ($status === ContactStatus::Subscribed->value) {
+                $this->contactRepository->clearChannelOptOut($contactId, $channel);
+            } else {
+                $this->contactRepository->setChannelOptOut($contactId, $channel);
+            }
+
+            return ActionResult::success([
+                'contact_id' => $contactId,
+                'channel'    => $channel,
+                'action'     => $status === ContactStatus::Subscribed->value ? 'opted_in' : 'opted_out',
+            ]);
+        }
+
+        // Global status change
+        if (empty($status) || !ContactStatus::tryFrom($status)) {
+            return ActionResult::failure('Valid status is required');
         }
 
         // Idempotent: if already at target status, return success
@@ -98,16 +122,7 @@ class UpdateContactStatusAction extends AbstractAction
             ]);
         }
 
-        $updateData = ['status' => $status];
-
-        // Auto-manage opted_out_at timestamp
-        if ($status === ContactStatus::Unsubscribed->value) {
-            $updateData['opted_out_at'] = current_time('mysql');
-        } elseif ($status === ContactStatus::Subscribed->value) {
-            $updateData['opted_out_at'] = null;
-        }
-
-        $this->contactRepository->update($contactId, $updateData);
+        $this->contactRepository->update($contactId, ['status' => $status]);
 
         return ActionResult::success([
             'contact_id'  => $contactId,

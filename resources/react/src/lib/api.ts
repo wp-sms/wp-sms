@@ -461,6 +461,7 @@ export interface Contact {
   source: string;
   source_ref?: string | null;
   custom_fields: Record<string, unknown>;
+  channel_opt_outs?: Record<string, string | null>;
   wp_user_id?: string | null;
   email_verified?: boolean;
   phone_verified?: boolean;

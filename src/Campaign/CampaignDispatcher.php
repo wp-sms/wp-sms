@@ -8,6 +8,7 @@ use WSms\Event\Events\CampaignCompletedEvent;
 use WSms\Event\Events\CampaignStartedEvent;
 use WSms\Log\Contracts\MessageLoggerInterface;
 use WSms\Messaging\Contracts\TemplateEngineInterface;
+use WSms\Messaging\Email\EmailHeaderComposer;
 use WSms\Messaging\Message\Message;
 use WSms\Messaging\MessageDispatcher;
 use WSms\Messaging\Gateway\GatewayRegistry;
@@ -19,6 +20,8 @@ defined('ABSPATH') || exit;
 
 class CampaignDispatcher
 {
+    private ?EmailHeaderComposer $emailHeaderComposer = null;
+
     public function __construct(
         private readonly CampaignRepository $campaignRepository,
         private readonly AudienceResolver $audienceResolver,
@@ -31,6 +34,11 @@ class CampaignDispatcher
         private readonly QuietHoursGuard $quietHoursGuard,
         private readonly GatewayThrottler $throttler,
     ) {
+    }
+
+    public function setEmailHeaderComposer(EmailHeaderComposer $composer): void
+    {
+        $this->emailHeaderComposer = $composer;
     }
 
     /**
@@ -115,11 +123,14 @@ class CampaignDispatcher
         $addresses = array_unique(array_filter(array_column($batch->recipients, 'recipient')));
         $alreadySent = $this->messageLogger->findSentRecipients($campaignId, $addresses);
 
-        // Compute opt-out text once (same for all recipients)
+        // Compute opt-out config (email campaigns use per-recipient signed links)
         $compliance = $campaign->getCompliance() ?? [];
-        $optOutSuffix = (!empty($compliance['append_opt_out']) && !empty($compliance['opt_out_text']))
-            ? "\n\n" . $compliance['opt_out_text']
-            : '';
+        $isEmailCampaign = $campaign->getChannel() === 'email' && $this->emailHeaderComposer !== null;
+        $unsubBaseUrl = $isEmailCampaign ? rest_url('wsms/v1/email/unsubscribe') : '';
+        $optOutSuffix = '';
+        if (!$isEmailCampaign && !empty($compliance['append_opt_out']) && !empty($compliance['opt_out_text'])) {
+            $optOutSuffix = "\n\n" . $compliance['opt_out_text'];
+        }
 
         // Check quiet hours once (same for all recipients in this batch)
         $quietHours = $campaign->getQuietHours();
@@ -157,6 +168,20 @@ class CampaignDispatcher
 
             $body = $this->templateEngine->render($campaign->getBody(), $templateData) . $optOutSuffix;
 
+            // Email campaigns: per-recipient signed unsubscribe headers + body link
+            $meta = ['subject' => $campaign->getSubject()];
+            if ($isEmailCampaign) {
+                $token = $this->emailHeaderComposer->getTokenService()->generate($recipientAddress, $campaignId);
+                $unsubUrl = $unsubBaseUrl . '?token=' . urlencode($token);
+                $unsubHeaders = $this->emailHeaderComposer->composeHeaders($recipientAddress, $campaignId);
+                $meta['headers'] = array_merge(['Content-Type: text/html; charset=UTF-8'], $unsubHeaders);
+
+                $optOutText = $compliance['opt_out_text'] ?? __('Unsubscribe', 'wp-sms');
+                $body .= '<p style="margin:16px 0 0;font-size:12px;color:#9ca3af;text-align:center;">'
+                    . '<a href="' . esc_url($unsubUrl) . '" style="color:#6b7280;text-decoration:underline;">'
+                    . esc_html($optOutText) . '</a></p>';
+            }
+
             if ($isQuiet) {
                 $this->messageLogger->logSend(
                     gatewayId: $effectiveGatewayId,
@@ -182,7 +207,7 @@ class CampaignDispatcher
                 channel: $campaign->getChannel(),
                 recipient: $recipientAddress,
                 body: $body,
-                meta: ['subject' => $campaign->getSubject()],
+                meta: $meta,
                 campaignId: $campaignId,
             );
 

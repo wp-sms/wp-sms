@@ -20,6 +20,7 @@ class EmailRenderer implements ChannelRendererInterface
         $siteName = $context['site_name'] ?? '';
         $logoUrl = $context['logo_url'] ?? '';
         $primaryColor = $context['primary_color'] ?? '#1a1a1a';
+        $unsubscribeUrl = $context['unsubscribe_url'] ?? '';
 
         $bodyHtml = $this->renderBodyHtml($content->body);
 
@@ -28,7 +29,7 @@ class EmailRenderer implements ChannelRendererInterface
             $ctaHtml = $this->renderCtaButton($content->cta, $content->ctaUrl, $primaryColor);
         }
 
-        $html = $this->wrapInLayout($bodyHtml, $ctaHtml, $siteName, $logoUrl, $primaryColor);
+        $html = $this->wrapInLayout($bodyHtml, $ctaHtml, $siteName, $logoUrl, $primaryColor, $unsubscribeUrl);
 
         return new RenderedMessage(
             body: $html,
@@ -70,7 +71,7 @@ class EmailRenderer implements ChannelRendererInterface
 HTML;
     }
 
-    private function wrapInLayout(string $bodyHtml, string $ctaHtml, string $siteName, string $logoUrl, string $primaryColor = '#1a1a1a'): string
+    private function wrapInLayout(string $bodyHtml, string $ctaHtml, string $siteName, string $logoUrl, string $primaryColor = '#1a1a1a', string $unsubscribeUrl = ''): string
     {
         $headerCells = '';
         if (!empty($logoUrl)) {
@@ -86,6 +87,14 @@ HTML;
 
         $preheader = esc_html($siteName);
         $wsmsLogoUrl = esc_url(WP_SMS_URL . 'public/images/icon-128x128.png');
+
+        $unsubscribeHtml = '';
+        if (!empty($unsubscribeUrl)) {
+            $escapedUrl = esc_url($unsubscribeUrl);
+            $unsubscribeHtml = '<p style="margin:4px 0 0;font-size:12px;line-height:1.5;">'
+                . '<a href="' . $escapedUrl . '" style="color:#6b7280;text-decoration:underline;">Unsubscribe</a>'
+                . '</p>';
+        }
 
         return <<<HTML
 <!DOCTYPE html>
@@ -118,6 +127,7 @@ HTML;
 
 <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="560" style="margin:16px auto 0 auto;max-width:560px;">
 <tr><td style="text-align:center;">
+{$unsubscribeHtml}
 <p style="margin:0;">
 <img src="{$wsmsLogoUrl}" width="12" height="12" alt="WSMS" style="vertical-align:middle;display:inline-block;border-radius:2px;" />
 <span style="font-size:11px;color:#b0b0b0;vertical-align:middle;padding-left:3px;">Powered by WSMS</span>

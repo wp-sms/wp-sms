@@ -650,7 +650,7 @@ function AudienceStep({
             checked={draft.audience.exclude_unsubscribed !== false}
             onCheckedChange={(checked) => updateDraft('audience', { ...draft.audience, exclude_unsubscribed: !!checked })}
           />
-          Exclude unsubscribed
+          Exclude opted-out contacts
         </label>
       </div>
 

@@ -158,12 +158,11 @@ class PayloadSchemas
                 'type' => 'string',
                 'label' => __('Status', 'wp-sms'),
                 'example' => 'subscribed',
-                'enum' => ['subscribed', 'unsubscribed', 'bounced', 'complained'],
+                'enum' => ['subscribed', 'bounced', 'complained'],
                 'enumLabels' => [
-                    'subscribed'   => __('Subscribed', 'wp-sms'),
-                    'unsubscribed' => __('Unsubscribed', 'wp-sms'),
-                    'bounced'      => __('Bounced', 'wp-sms'),
-                    'complained'   => __('Complained', 'wp-sms'),
+                    'subscribed' => __('Subscribed', 'wp-sms'),
+                    'bounced'    => __('Bounced', 'wp-sms'),
+                    'complained' => __('Complained', 'wp-sms'),
                 ],
             ],
             'source' => [

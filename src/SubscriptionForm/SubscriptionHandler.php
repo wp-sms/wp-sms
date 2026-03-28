@@ -103,8 +103,11 @@ class SubscriptionHandler
             return SubmissionResult::failed('blocked', __('This address has been blocked.', 'wp-sms'));
         }
 
-        // Check if already subscribed with all required tags.
-        if ($status === 'subscribed' && $this->hasAllTags($contactId, $tagIds)) {
+        // Check if already subscribed with all required tags and no channel opt-out.
+        $channel = $form->getOptInChannel();
+        $isOptedOut = $this->contactRepository->isChannelOptedOut($contactId, $channel);
+
+        if ($status === 'subscribed' && !$isOptedOut && $this->hasAllTags($contactId, $tagIds)) {
             return SubmissionResult::success($form->getSuccessMessage());
         }
 
@@ -119,8 +122,13 @@ class SubscriptionHandler
         // Apply tags.
         $this->applyTags($contactId, $tagIds);
 
+        // Clear channel opt-out on re-subscribe
+        if ($isOptedOut) {
+            $this->contactRepository->clearChannelOptOut($contactId, $channel);
+        }
+
         if ($status === 'subscribed') {
-            // Already subscribed, just added missing tags.
+            // Already subscribed (or was opted-out but now cleared), just added missing tags.
             if (!empty($updateData)) {
                 $this->contactRepository->update($contactId, $updateData);
             }
@@ -128,7 +136,7 @@ class SubscriptionHandler
         }
 
         // For pending status: re-send verification if double opt-in.
-        // For unsubscribed/bounced: re-subscribe (with verification if needed).
+        // For bounced: re-subscribe (with verification if needed).
         if ($form->requiresDoubleOptIn()) {
             $updateData['status'] = 'pending';
             if (!empty($updateData)) {

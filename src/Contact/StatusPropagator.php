@@ -7,6 +7,7 @@ use WSms\Enums\ContactStatus;
 use WSms\Event\Contracts\EventDispatcherInterface;
 use WSms\Event\Events\ContactBouncedEvent;
 use WSms\Event\Events\ContactComplainedEvent;
+use WSms\Event\Events\ContactOptedOutEvent;
 use WSms\Messaging\Contracts\StatusUpdate;
 
 defined('ABSPATH') || exit;
@@ -21,7 +22,7 @@ class StatusPropagator
 
     public function propagate(StatusUpdate $update, string $recipient, string $channel): void
     {
-        if (!$update->permanent) {
+        if (!$update->permanent && !$update->complaint && !$update->unsubscribe) {
             return;
         }
 
@@ -31,20 +32,29 @@ class StatusPropagator
             default => null,
         };
 
-        if ($contact === null || $contact['status'] !== ContactStatus::Subscribed->value) {
+        if ($contact === null) {
             return;
         }
 
-        $newStatus = $update->complaint
-            ? ContactStatus::Complained
-            : ContactStatus::Bounced;
-
-        $this->contacts->update($contact['id'], ['status' => $newStatus->value]);
-
-        $event = $update->complaint
-            ? new ContactComplainedEvent($contact['id'], $update->errorCode)
-            : new ContactBouncedEvent($contact['id'], $update->errorCode);
-
-        $this->eventDispatcher->dispatch($event);
+        if ($update->unsubscribe) {
+            $this->contacts->setChannelOptOut($contact['id'], $channel);
+            $this->eventDispatcher->dispatch(new ContactOptedOutEvent(
+                contactIds: [$contact['id']],
+                phone: $contact['phone'] ?? '',
+                source: 'gateway_webhook',
+                channel: $channel,
+            ));
+        } elseif ($update->complaint) {
+            if ($contact['status'] !== ContactStatus::Complained->value) {
+                $this->contacts->update($contact['id'], ['status' => ContactStatus::Complained->value]);
+                $this->eventDispatcher->dispatch(new ContactComplainedEvent($contact['id'], $update->errorCode));
+            }
+        } else {
+            // Permanent failure → bounced
+            if ($contact['status'] === ContactStatus::Subscribed->value) {
+                $this->contacts->update($contact['id'], ['status' => ContactStatus::Bounced->value]);
+                $this->eventDispatcher->dispatch(new ContactBouncedEvent($contact['id'], $update->errorCode));
+            }
+        }
     }
 }

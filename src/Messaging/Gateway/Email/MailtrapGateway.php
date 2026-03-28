@@ -18,13 +18,13 @@ class MailtrapGateway extends AbstractProvider implements SupportsStatusCallback
     private const BULK_BASE = 'https://bulk.api.mailtrap.io';
 
     private const EVENT_MAP = [
-        'delivery'    => ['status' => 'delivered', 'permanent' => false, 'complaint' => false],
-        'bounce'      => ['status' => 'failed',    'permanent' => true,  'complaint' => false],
-        'soft bounce' => ['status' => 'failed',    'permanent' => false, 'complaint' => false],
-        'reject'      => ['status' => 'failed',    'permanent' => true,  'complaint' => false],
-        'suspension'  => ['status' => 'failed',    'permanent' => true,  'complaint' => false],
-        'spam'        => ['status' => 'failed',    'permanent' => false, 'complaint' => true],
-        'unsubscribe' => ['status' => 'failed',    'permanent' => false, 'complaint' => true],
+        'delivery'    => ['status' => 'delivered', 'permanent' => false, 'complaint' => false, 'unsubscribe' => false],
+        'bounce'      => ['status' => 'failed',    'permanent' => true,  'complaint' => false, 'unsubscribe' => false],
+        'soft bounce' => ['status' => 'failed',    'permanent' => false, 'complaint' => false, 'unsubscribe' => false],
+        'reject'      => ['status' => 'failed',    'permanent' => true,  'complaint' => false, 'unsubscribe' => false],
+        'suspension'  => ['status' => 'failed',    'permanent' => true,  'complaint' => false, 'unsubscribe' => false],
+        'spam'        => ['status' => 'failed',    'permanent' => false, 'complaint' => true,  'unsubscribe' => false],
+        'unsubscribe' => ['status' => 'failed',    'permanent' => false, 'complaint' => false, 'unsubscribe' => true],
     ];
 
     public function getId(): string
@@ -127,6 +127,21 @@ class MailtrapGateway extends AbstractProvider implements SupportsStatusCallback
             'html'    => $message->getBody(),
             'text'    => strip_tags($message->getBody()),
         ];
+
+        // Pass through custom headers (e.g. List-Unsubscribe)
+        $emailHeaders = [];
+        foreach ($meta['headers'] ?? [] as $header) {
+            if (is_string($header) && str_contains($header, ':')) {
+                [$name, $value] = explode(':', $header, 2);
+                $name = trim($name);
+                if ($name !== 'Content-Type') {
+                    $emailHeaders[$name] = trim($value);
+                }
+            }
+        }
+        if (!empty($emailHeaders)) {
+            $payload['headers'] = $emailHeaders;
+        }
 
         $result = $this->httpPost("{$baseUrl}/api/send", [
             'headers' => $headers,
@@ -245,6 +260,7 @@ class MailtrapGateway extends AbstractProvider implements SupportsStatusCallback
                 status: $mapping['status'],
                 permanent: $mapping['permanent'],
                 complaint: $mapping['complaint'],
+                unsubscribe: $mapping['unsubscribe'],
             );
         }
 

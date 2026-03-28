@@ -268,10 +268,9 @@ export const CONTACT_SCHEMA: JsonSchemaProperty = {
       type: 'string',
       title: 'Status',
       example: 'subscribed',
-      enum: ['subscribed', 'unsubscribed', 'bounced', 'complained'],
+      enum: ['subscribed', 'bounced', 'complained'],
       enumLabels: {
         subscribed: 'Subscribed',
-        unsubscribed: 'Unsubscribed',
         bounced: 'Bounced',
         complained: 'Complained',
       },

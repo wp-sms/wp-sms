@@ -9,6 +9,7 @@ import { ContactCustomFields } from './contact-custom-fields';
 import { ContactWpUserInfo } from './contact-wp-user-info';
 import { ContactActivity } from './contact-activity';
 import { formatLabel } from '@/lib/constants';
+import { formatDate } from '@/lib/format';
 import { SourceLabel } from './source-label';
 import { CheckCircle2, XCircle } from 'lucide-react';
 
@@ -118,6 +119,21 @@ export function ContactDetailPanel({
                   <SourceLabel source={contact.source} sourceRef={contact.source_ref} />
                 )}
               </div>
+              {(() => {
+                const activeOptOuts = Object.entries(contact.channel_opt_outs ?? {}).filter(([, v]) => v != null);
+                return activeOptOuts.length > 0 && (
+                  <div className="mt-2">
+                    <p className="text-xs font-medium text-muted-foreground mb-1">Channel opt-outs</p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {activeOptOuts.map(([channel, date]) => (
+                        <Badge key={channel} variant="neutral" className="text-xs">
+                          {channel.toUpperCase()} &mdash; {formatDate(date as string)}
+                        </Badge>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
             </div>
 
             {/* WP User */}

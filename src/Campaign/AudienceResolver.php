@@ -183,6 +183,22 @@ class AudienceResolver
         };
     }
 
+    private function buildChannelOptOutClause(?string $channelField): string
+    {
+        if ($channelField === null) {
+            return '';
+        }
+
+        // Map DB column → channel key in JSON
+        $channelKey = match ($channelField) {
+            'email' => 'email',
+            'phone' => 'sms',
+            default => 'sms',
+        };
+
+        return " AND (c.channel_opt_outs IS NULL OR JSON_EXTRACT(c.channel_opt_outs, '$.{$channelKey}') IS NULL)";
+    }
+
     private function buildSegmentQuery(array $source, ?string $channelField, bool $excludeUnsubscribed): string
     {
         $table = $this->db->table(Connection::TABLE_CONTACTS);
@@ -194,7 +210,9 @@ class AudienceResolver
         }
 
         $channelClause = $channelField ? " AND c.{$channelField} IS NOT NULL AND c.{$channelField} != ''" : '';
-        $statusClause = $excludeUnsubscribed ? " AND c.status = 'subscribed'" : '';
+        $statusClause = $excludeUnsubscribed
+            ? " AND c.status NOT IN ('bounced', 'complained')" . $this->buildChannelOptOutClause($channelField)
+            : '';
 
         return "SELECT DISTINCT c.id, c.phone, c.email, c.first_name, c.last_name, c.custom_fields FROM {$table} c WHERE {$segmentWhere}{$channelClause}{$statusClause}";
     }
@@ -211,7 +229,9 @@ class AudienceResolver
         $placeholders = implode(',', array_fill(0, count($tagIds), '%s'));
 
         $channelClause = $channelField ? " AND c.{$channelField} IS NOT NULL AND c.{$channelField} != ''" : '';
-        $statusClause = $excludeUnsubscribed ? " AND c.status = 'subscribed'" : '';
+        $statusClause = $excludeUnsubscribed
+            ? " AND c.status NOT IN ('bounced', 'complained')" . $this->buildChannelOptOutClause($channelField)
+            : '';
 
         return $this->db->prepare(
             "SELECT DISTINCT c.id, c.phone, c.email, c.first_name, c.last_name, c.custom_fields FROM {$table} c INNER JOIN {$pivotTable} ct ON c.id = ct.contact_id WHERE ct.tag_id IN ({$placeholders}){$channelClause}{$statusClause}",

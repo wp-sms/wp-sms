@@ -48,7 +48,7 @@ class ContactStatusChangedTrigger extends AbstractTrigger
                 'type'        => 'string',
                 'label'       => __('New Status', 'wp-sms'),
                 'description' => __('The status after the change', 'wp-sms'),
-                'example'     => 'unsubscribed',
+                'example'     => 'bounced',
             ],
         ];
     }

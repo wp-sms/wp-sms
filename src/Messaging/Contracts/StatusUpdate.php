@@ -13,6 +13,7 @@ class StatusUpdate
         public readonly ?string $errorMessage = null,
         public readonly bool $permanent = false,
         public readonly bool $complaint = false,
+        public readonly bool $unsubscribe = false,
     ) {
     }
 
