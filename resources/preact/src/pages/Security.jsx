@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'preact/hooks';
 import { api } from '../api/client';
-import { socialProviders, enabledChannels, authConfig } from '../signals/config';
+import { socialProviders } from '../signals/config';
 import { currentUser } from '../signals/auth';
 import { loadCurrentUser, refreshUser, enrolledFactors } from '../signals/user';
 import { useAuthGuard } from '../hooks/useAuthGuard';
@@ -9,53 +9,8 @@ import { AccountLayout } from '../layouts/AccountLayout';
 import { Alert } from '../components/ui/Alert';
 import { Button } from '../components/ui/Button';
 import { SecuritySkeleton } from '../components/ui/Skeleton';
-import { Separator } from '../components/ui/Separator';
 import { MfaFactorCard } from '../components/MfaFactorCard';
 import { BackupCodesDisplay } from '../components/BackupCodesDisplay';
-
-function SecurityPosture({ user }) {
-    const channels = enabledChannels.value;
-    const mfaEnabled = authConfig.value?.mfa_enabled;
-
-    const steps = [];
-    if (channels.includes('email')) {
-        steps.push({ label: 'Email verified', done: !user.has_placeholder_email && !!user.email_verified });
-    }
-    if (channels.includes('phone')) {
-        steps.push({ label: 'Phone verified', done: !!(user.phone && user.phone_verified) });
-    }
-    if (mfaEnabled) {
-        steps.push({ label: 'MFA enabled', done: !!user.mfa_enabled });
-    }
-    if (steps.length === 0) return null;
-
-    const completed = steps.filter((s) => s.done).length;
-    const total = steps.length;
-    const allDone = completed === total;
-    const noneDone = completed === 0;
-
-    const postureClass = allDone ? 'wsms-auth-security-posture--good' : noneDone ? 'wsms-auth-security-posture--danger' : 'wsms-auth-security-posture--warning';
-
-    return (
-        <div className={`wsms-auth-security-posture ${postureClass}`}>
-            <div className="wsms-auth-security-posture__header">
-                <span>
-                    {completed} of {total} security steps completed
-                </span>
-            </div>
-            <div className="wsms-auth-security-posture__segments">
-                {steps.map((step) => (
-                    <div key={step.label} className="wsms-auth-security-posture__segment">
-                        <div className={`wsms-auth-security-posture__bar${step.done ? ' wsms-auth-security-posture__bar--done' : ''}`} />
-                        <div className={`wsms-auth-security-posture__label${step.done ? ' wsms-auth-security-posture__label--done' : ''}`}>
-                            {step.label}
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-}
 
 export function Security() {
     const authed = useAuthGuard();
@@ -224,8 +179,6 @@ export function Security() {
             <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="wsms-auth-mb-4" />
             <Alert variant="success" message={success} className="wsms-auth-mb-4" />
 
-            {user && <SecurityPosture user={user} />}
-
             {backupCodes && (
                 <BackupCodesDisplay
                     codes={backupCodes}
@@ -233,24 +186,31 @@ export function Security() {
                 />
             )}
 
-            <div className="wsms-auth-stack-3">
-                {availableMethods.map((method) => (
-                    <MfaFactorCard
-                        key={method.id}
-                        method={method}
-                        enrolled={isEnrolled(method.id)}
-                        info={getFactorInfo(method.id)}
-                        onEnroll={handleEnroll}
-                        onUnenroll={handleUnenroll}
-                        onRefresh={refreshUser}
-                        onBackupCodes={setBackupCodes}
-                    />
-                ))}
-            </div>
+            {availableMethods.length > 0 && (
+                <div className="wsms-auth-section-group">
+                    <h3 className="wsms-auth-section-heading">Authentication Methods</h3>
+                    <p className="wsms-auth-text-sm wsms-auth-text-muted">
+                        Enable additional factors for your account
+                    </p>
+                    <div className="wsms-auth-stack-3">
+                        {availableMethods.map((method) => (
+                            <MfaFactorCard
+                                key={method.id}
+                                method={method}
+                                enrolled={isEnrolled(method.id)}
+                                info={getFactorInfo(method.id)}
+                                onEnroll={handleEnroll}
+                                onUnenroll={handleUnenroll}
+                                onRefresh={refreshUser}
+                                onBackupCodes={setBackupCodes}
+                            />
+                        ))}
+                    </div>
+                </div>
+            )}
 
             {socialProviders.value.length > 0 && (
-                <div className="wsms-auth-stack-3 wsms-auth-mt-6">
-                    <Separator />
+                <div className="wsms-auth-section-group wsms-auth-mt-4">
                     <h3 className="wsms-auth-section-heading">Linked Accounts</h3>
                     <p className="wsms-auth-text-sm wsms-auth-text-muted">
                         Connect social accounts for easier sign-in.
@@ -286,13 +246,13 @@ export function Security() {
             )}
 
             {isEnrolled('backup_codes') && availableMethods.length > 0 && (
-                <div className="wsms-auth-stack-3 wsms-auth-mt-6">
-                    <Separator />
+                <div className="wsms-auth-section-group wsms-auth-mt-4">
                     <h3 className="wsms-auth-section-heading">Backup Codes</h3>
                     <p className="wsms-auth-text-sm wsms-auth-text-muted">
-                        {getFactorInfo('backup_codes')?.remaining_codes != null
-                            ? `${getFactorInfo('backup_codes').remaining_codes} codes remaining`
-                            : 'Backup codes are enabled'}
+                        {(() => {
+                            const codes = getFactorInfo('backup_codes')?.remaining_codes;
+                            return codes != null ? `${codes} codes remaining` : 'Backup codes are enabled';
+                        })()}
                     </p>
                     <Button variant="outline" onClick={handleRegenerateBackupCodes}>
                         Regenerate Backup Codes

@@ -39,15 +39,6 @@ export function AccountSkeleton() {
 export function SecuritySkeleton() {
     return (
         <div className="wsms-auth-fade-in wsms-auth-stack-3">
-            <div className="wsms-auth-skeleton-card" style={{ padding: '1rem' }}>
-                <Skeleton style={{ height: '0.875rem', width: '55%', marginBottom: '0.75rem' }} />
-                <div style={{ display: 'flex', gap: '0.375rem' }}>
-                    {[0, 1, 2].map((i) => (
-                        <Skeleton key={i} style={{ flex: 1, height: '0.375rem', borderRadius: '9999px' }} />
-                    ))}
-                </div>
-            </div>
-
             {[0, 1].map((i) => (
                 <div key={i} className="wsms-auth-skeleton-card">
                     <Skeleton circle style={{ width: '1.25rem', height: '1.25rem' }} />

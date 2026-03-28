@@ -276,8 +276,19 @@ export function Register() {
 
             <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
                 {/* Render fields in definition order (respects sort_order from API) */}
-                {fieldDefs.map((def, idx) => {
+                {fieldDefs.map((def, idx, arr) => {
                     if (SYSTEM_FIELD_IDS.includes(def.id)) {
+                        if (def.id === 'first_name' && arr[idx + 1]?.id === 'last_name') {
+                            return (
+                                <div className="wsms-auth-profile-grid" key="name-pair">
+                                    {renderSystemField('first_name', idx === 0)}
+                                    {renderSystemField('last_name', false)}
+                                </div>
+                            );
+                        }
+                        if (def.id === 'last_name' && arr[idx - 1]?.id === 'first_name') {
+                            return null; // already rendered in the pair above
+                        }
                         return renderSystemField(def.id, idx === 0);
                     }
                     return (

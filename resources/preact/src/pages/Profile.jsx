@@ -10,7 +10,6 @@ import { Alert } from '../components/ui/Alert';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
 import { Label } from '../components/ui/Label';
-import { Separator } from '../components/ui/Separator';
 import { PhoneInput } from '../components/PhoneInput';
 import { OtpVerifyInline } from '../components/verification/OtpVerifyInline';
 import { StatusBadge } from '../components/ui/StatusBadge';
@@ -214,9 +213,9 @@ export function Profile() {
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} className="wsms-auth-stack-6">
+            <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
                 {/* Section 1: Personal Information */}
-                <div className="wsms-auth-stack-4">
+                <div className="wsms-auth-section-group">
                     <h3 className="wsms-auth-section-title">Personal Information</h3>
 
                     <div className="wsms-auth-stack-2">
@@ -258,10 +257,8 @@ export function Profile() {
                     </div>
                 </div>
 
-                <Separator />
-
                 {/* Section 2: Contact & Verification */}
-                <div className="wsms-auth-stack-4">
+                <div className="wsms-auth-section-group">
                     <h3 className="wsms-auth-section-title">Contact & Verification</h3>
 
                     <div className="wsms-auth-stack-2">
@@ -352,10 +349,9 @@ export function Profile() {
 
                 {/* Section 3: Additional Information (custom fields) */}
                 {customFieldDefs.length > 0 && (
-                    <>
-                        <Separator />
+                    <div className="wsms-auth-section-group">
+                        <h3 className="wsms-auth-section-title">Additional Information</h3>
                         <div className="wsms-auth-stack-4">
-                            <h3 className="wsms-auth-section-title">Additional Information</h3>
                             {customFieldDefs.map((def) => (
                                 <DynamicField
                                     key={def.id}
@@ -366,7 +362,7 @@ export function Profile() {
                                 />
                             ))}
                         </div>
-                    </>
+                    </div>
                 )}
 
                 <Button className="wsms-auth-full" type="submit" disabled={loading}>

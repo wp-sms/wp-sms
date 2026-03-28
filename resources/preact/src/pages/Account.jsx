@@ -1,5 +1,5 @@
 import { useEffect } from 'preact/hooks';
-import { Mail, Phone, Shield, KeyRound } from 'lucide-react';
+import { Mail, Phone, Shield, KeyRound, ChevronRight } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { currentUser } from '../signals/auth';
 import { loadCurrentUser, userLoading } from '../signals/user';
@@ -11,11 +11,11 @@ import { AccountSkeleton } from '../components/ui/Skeleton';
 import { StatusBadge } from '../components/ui/StatusBadge';
 import { UserAvatar } from '../components/ui/UserAvatar';
 
-function StatusCard({ href, icon: Icon, label, value, badge }) {
+function StatusCard({ href, icon: Icon, iconVariant, label, value, badge }) {
     const accent = badge?.props?.variant === 'unverified';
     return (
         <a href={href} className={cn('wsms-auth-status-card', accent && 'wsms-auth-status-card--accent')}>
-            <span className="wsms-auth-status-card__icon">
+            <span className={cn('wsms-auth-status-card__icon', iconVariant && `wsms-auth-status-card__icon--${iconVariant}`)}>
                 <Icon />
             </span>
             <div className="wsms-auth-status-card__body">
@@ -23,6 +23,7 @@ function StatusCard({ href, icon: Icon, label, value, badge }) {
                 <div className="wsms-auth-status-card__value">{value}</div>
                 {badge && <div>{badge}</div>}
             </div>
+            <ChevronRight className="wsms-auth-status-card__chevron" />
         </a>
     );
 }
@@ -77,6 +78,7 @@ export function Account() {
                 <StatusCard
                     href={authUrl('/profile')}
                     icon={Mail}
+                    iconVariant="info"
                     label="Email"
                     value={user.has_placeholder_email ? 'No email added' : maskEmail(user.email)}
                     badge={<StatusBadge variant={emailBadge} />}
@@ -84,6 +86,7 @@ export function Account() {
                 <StatusCard
                     href={authUrl('/profile')}
                     icon={Phone}
+                    iconVariant="success"
                     label="Phone"
                     value={user.phone ? maskPhone(user.phone) : 'No phone added'}
                     badge={<StatusBadge variant={phoneBadge} />}
@@ -91,6 +94,7 @@ export function Account() {
                 <StatusCard
                     href={authUrl('/security')}
                     icon={Shield}
+                    iconVariant="primary"
                     label="Security"
                     value={mfaLabel}
                     badge={<StatusBadge variant={mfaBadge} />}

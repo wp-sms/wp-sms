@@ -3,16 +3,17 @@ import { Button } from '@/components/ui/Button';
 import { UserAvatar } from '@/components/ui/UserAvatar';
 import { BrandLogo } from '@/components/BrandLogo';
 import { SecuredByFooter } from '@/components/SecuredByFooter';
+import { LayoutDashboard, User, Shield, KeyRound } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { authUrl } from '@/utils/urls';
 import { logout } from '@/utils/auth';
 import { currentUser } from '@/signals/auth';
 
 const NAV_ITEMS = [
-    { path: '/', label: 'Dashboard' },
-    { path: '/profile', label: 'Profile' },
-    { path: '/security', label: 'Security' },
-    { path: '/change-password', label: 'Password' },
+    { path: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { path: '/profile', label: 'Profile', icon: User },
+    { path: '/security', label: 'Security', icon: Shield },
+    { path: '/change-password', label: 'Password', icon: KeyRound },
 ];
 
 function NavLinks({ currentPath, className, linkClassName }) {
@@ -28,6 +29,7 @@ function NavLinks({ currentPath, className, linkClassName }) {
                         linkClassName,
                     )}
                 >
+                    <item.icon className="wsms-auth-nav-link__icon" />
                     {item.label}
                 </a>
             ))}

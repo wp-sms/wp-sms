@@ -7,8 +7,7 @@ import { authUrl, getQueryParam } from '../utils/urls';
 import { AuthLayout } from '../layouts/AuthLayout';
 import { Alert } from '../components/ui/Alert';
 import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { Label } from '../components/ui/Label';
+import { FormField } from '../components/ui/FormField';
 import { AuthLink } from '../components/AuthLink';
 
 export function ResetPassword() {
@@ -68,31 +67,29 @@ export function ResetPassword() {
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
 
             <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
-                <div className="wsms-auth-stack-2">
-                    <Label for="wsms-new-pass">New Password</Label>
-                    <Input
-                        ref={passwordRef}
-                        id="wsms-new-pass"
-                        type="password"
-                        value={password}
-                        onInput={(e) => setPassword(e.target.value)}
-                        required
-                        disabled={authLoading.value}
-                        autoComplete="new-password"
-                    />
-                </div>
-                <div className="wsms-auth-stack-2">
-                    <Label for="wsms-confirm-pass">Confirm Password</Label>
-                    <Input
-                        id="wsms-confirm-pass"
-                        type="password"
-                        value={confirm}
-                        onInput={(e) => setConfirm(e.target.value)}
-                        required
-                        disabled={authLoading.value}
-                        autoComplete="new-password"
-                    />
-                </div>
+                <FormField
+                    label="New Password"
+                    id="wsms-new-pass"
+                    type="password"
+                    ref={passwordRef}
+                    value={password}
+                    onInput={(e) => setPassword(e.target.value)}
+                    required
+                    disabled={authLoading.value}
+                    autoComplete="new-password"
+                    validate={FormField.validators.minLength(8)}
+                />
+                <FormField
+                    label="Confirm Password"
+                    id="wsms-confirm-pass"
+                    type="password"
+                    value={confirm}
+                    onInput={(e) => setConfirm(e.target.value)}
+                    required
+                    disabled={authLoading.value}
+                    autoComplete="new-password"
+                    validate={FormField.validators.match(() => password, 'Passwords')}
+                />
                 <Button className="wsms-auth-full" type="submit" disabled={authLoading.value}>
                     {authLoading.value ? 'Resetting\u2026' : 'Reset Password'}
                 </Button>
