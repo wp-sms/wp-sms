@@ -352,7 +352,7 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
         <CardContent className="pt-6">
         <div className="max-w-2xl space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="wh-name">Name</Label>
+          <Label htmlFor="wh-name">Name <span className="text-destructive">*</span></Label>
           <Input
             id="wh-name"
             value={name}
@@ -363,7 +363,7 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="wh-url">URL</Label>
+          <Label htmlFor="wh-url">URL <span className="text-destructive">*</span></Label>
           <Input
             id="wh-url"
             value={url}
@@ -377,7 +377,7 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
         </div>
 
         <div className="space-y-2">
-          <Label>Events</Label>
+          <Label>Events <span className="text-destructive">*</span></Label>
           {eventsLoading ? (
             <div className="flex items-center gap-2 text-sm text-muted-foreground py-4">
               <Loader2 className="h-4 w-4 animate-spin" /> Loading events...

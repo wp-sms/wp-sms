@@ -307,7 +307,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
 
           <div className="space-y-4 px-4">
             <Field>
-              <FieldLabel htmlFor="sf-name">Name</FieldLabel>
+              <FieldLabel htmlFor="sf-name">Name *</FieldLabel>
               <Input
                 id="sf-name"
                 value={formState.name}
@@ -343,7 +343,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
 
             {/* Fields */}
             <div>
-              <p className="text-sm font-medium mb-1">Fields</p>
+              <p className="text-sm font-medium mb-1">Fields *</p>
               <p className="text-xs text-muted-foreground mb-3">Select which fields to include and mark them as required.</p>
               <div className="rounded-lg border border-border/50 divide-y divide-border/50">
                 {AVAILABLE_FIELDS.map((af) => {

@@ -65,7 +65,7 @@ export function TagFormPanel({ open, onOpenChange, tag, onSave }: TagFormPanelPr
 
         <div className="space-y-4 px-4">
           <Field>
-            <FieldLabel htmlFor="tag-name">Name</FieldLabel>
+            <FieldLabel htmlFor="tag-name">Name *</FieldLabel>
             <Input id="tag-name" value={name} onChange={(e) => handleNameChange(e.target.value)} placeholder="e.g. VIP" />
           </Field>
 

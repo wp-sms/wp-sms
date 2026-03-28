@@ -144,7 +144,7 @@ export function SocialSettingsPanel({
           )}
 
           <Field>
-            <FieldLabel htmlFor={`${providerId}-client-id`}>{help.clientIdLabel}</FieldLabel>
+            <FieldLabel htmlFor={`${providerId}-client-id`}>{help.clientIdLabel} *</FieldLabel>
             <Input
               id={`${providerId}-client-id`}
               type="text"
@@ -158,7 +158,7 @@ export function SocialSettingsPanel({
           </Field>
 
           <Field>
-            <FieldLabel htmlFor={`${providerId}-client-secret`}>Client Secret</FieldLabel>
+            <FieldLabel htmlFor={`${providerId}-client-secret`}>Client Secret *</FieldLabel>
             <Input
               id={`${providerId}-client-secret`}
               type="password"

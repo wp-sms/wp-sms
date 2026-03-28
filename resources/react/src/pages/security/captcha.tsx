@@ -102,7 +102,7 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
             {/* API Keys */}
             <div className="grid gap-4 sm:grid-cols-2">
               <Field>
-                <FieldLabel htmlFor="captcha-site-key">Site Key</FieldLabel>
+                <FieldLabel htmlFor="captcha-site-key">Site Key *</FieldLabel>
                 <Input
                   id="captcha-site-key"
                   type="text"
@@ -113,7 +113,7 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
                 <FieldDescription>Public key shown to visitors</FieldDescription>
               </Field>
               <Field>
-                <FieldLabel htmlFor="captcha-secret-key">Secret Key</FieldLabel>
+                <FieldLabel htmlFor="captcha-secret-key">Secret Key *</FieldLabel>
                 <Input
                   id="captcha-secret-key"
                   type="password"

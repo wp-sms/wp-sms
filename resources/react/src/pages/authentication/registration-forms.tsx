@@ -302,7 +302,7 @@ export function RegistrationForms() {
 
           <div className="space-y-4 px-4">
             <Field>
-              <FieldLabel htmlFor="rf-name">Name</FieldLabel>
+              <FieldLabel htmlFor="rf-name">Name *</FieldLabel>
               <Input
                 id="rf-name"
                 value={formState.name}
@@ -351,7 +351,7 @@ export function RegistrationForms() {
 
             {/* Fields */}
             <div>
-              <p className="text-sm font-medium mb-1">Fields</p>
+              <p className="text-sm font-medium mb-1">Fields *</p>
               <p className="text-xs text-muted-foreground mb-3">Select which fields to include and mark them as required.</p>
               <div className="rounded-lg border border-border/50 divide-y divide-border/50">
                 {SYSTEM_FIELD_OPTIONS.map((sf) => {

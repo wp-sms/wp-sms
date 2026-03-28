@@ -192,7 +192,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
             <>
               {/* Label */}
               <Field>
-                <FieldLabel>Label</FieldLabel>
+                <FieldLabel>Label *</FieldLabel>
                 <Input
                   value={form.label}
                   onInput={(e) => update({ label: (e.target as HTMLInputElement).value })}
@@ -204,7 +204,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
               {/* ID / Meta Key (read-only for system) */}
               {!isSystem && (
                 <Field>
-                  <FieldLabel>Field ID / Meta Key</FieldLabel>
+                  <FieldLabel>Field ID / Meta Key *</FieldLabel>
                   <Input
                     value={form.meta_key}
                     onInput={(e) => update({ meta_key: (e.target as HTMLInputElement).value, id: (e.target as HTMLInputElement).value })}

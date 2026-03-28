@@ -107,6 +107,7 @@ export function ContactFormPanel({ open, onOpenChange, contact, onSave }: Contac
               </label>
             )}
           </Field>
+          <p className="text-xs text-muted-foreground -mt-2">At least one of email or phone is required.</p>
 
           <Field>
             <FieldLabel htmlFor="cf-status">Status</FieldLabel>

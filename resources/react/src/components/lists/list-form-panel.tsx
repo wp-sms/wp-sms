@@ -72,7 +72,7 @@ export function ListFormPanel({ open, onOpenChange, list, tags, onSave }: ListFo
 
         <div className="space-y-4 px-4">
           <Field>
-            <FieldLabel htmlFor="list-name">Name</FieldLabel>
+            <FieldLabel htmlFor="list-name">Name *</FieldLabel>
             <Input id="list-name" value={name} onChange={(e) => setName(e.target.value)} />
           </Field>
 
