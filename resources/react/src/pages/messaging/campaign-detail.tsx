@@ -303,7 +303,7 @@ function SegmentedStatusBar({ stats, hasDeliveryTracking }: { stats: CampaignSta
 
   return (
     <div className="mt-4">
-      <div className="flex h-2.5 overflow-hidden rounded-full bg-muted">
+      <div className="flex h-2.5 overflow-hidden rounded-md bg-muted">
         {segments.map((seg) => (
           <div
             key={seg.key}

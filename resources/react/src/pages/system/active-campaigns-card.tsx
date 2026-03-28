@@ -54,10 +54,10 @@ export function ActiveCampaignsCard({ data }: ActiveCampaignsCardProps) {
                 <span>{progress}% complete</span>
                 <span className="tabular-nums">{sent.toLocaleString()} / {total.toLocaleString()}</span>
               </div>
-              <div className="flex h-2.5 overflow-hidden rounded-full bg-muted">
+              <div className="flex h-2.5 overflow-hidden rounded-md bg-muted">
                 <div
                   className={cn(
-                    'h-full rounded-full transition-all duration-500',
+                    'h-full transition-all duration-500',
                     isSending ? 'bg-emerald-500' : 'bg-amber-500',
                   )}
                   style={{ width: `${Math.min(progress, 100)}%` }}

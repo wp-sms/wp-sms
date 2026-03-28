@@ -42,9 +42,9 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --color-surface: var(--surface);
   --shadow-brutalist: 4px 4px 0 var(--border);
-  --radius-sm: calc(var(--radius) - 4px);
+  --radius-sm: max(calc(var(--radius) - 2px), 0px);
   --radius-md: var(--radius);
-  --radius-lg: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
   --radius-xl: calc(var(--radius) + 4px);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);

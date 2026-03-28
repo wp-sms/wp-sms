@@ -28,7 +28,7 @@ export function EmptyState({
       {...props}
     >
       {Icon && !compact && (
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-sidebar-accent ring-1 ring-ring/15 mb-3">
+        <div className="flex h-14 w-14 items-center justify-center rounded-lg bg-sidebar-accent ring-1 ring-ring/15 mb-3">
           <Icon className="h-6 w-6 text-primary/60" />
         </div>
       )}

@@ -45,7 +45,7 @@ export function LogoCard({ branding, onChange }: LogoCardProps) {
                 <button
                   type="button"
                   onClick={() => onChange({ logo_url: '' })}
-                  className="absolute -right-1.5 -top-1.5 rounded-full bg-destructive p-0.5 text-destructive-foreground shadow-sm hover:bg-destructive/90"
+                  className="absolute -right-1.5 -top-1.5 rounded-md bg-destructive p-0.5 text-destructive-foreground shadow-sm hover:bg-destructive/90"
                 >
                   <X className="h-3 w-3" />
                 </button>

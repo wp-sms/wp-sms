@@ -322,7 +322,7 @@ export function IntegrationPicker({
                       key={group.name}
                       type="button"
                       className={cn(
-                        'flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-xs transition-colors',
+                        'flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-xs transition-colors',
                         activeGroup === group.name
                           ? 'bg-primary/10 font-medium text-primary'
                           : 'bg-accent/50 text-muted-foreground hover:bg-accent',

@@ -329,7 +329,7 @@ function SingleCountryPicker({ countries, value, onChange }: {
         <button
           type="button"
           onClick={() => onChange('')}
-          className="rounded-full p-1 hover:bg-muted text-muted-foreground"
+          className="rounded-md p-1 hover:bg-muted text-muted-foreground"
           title="Clear selection"
         >
           <X className="h-3.5 w-3.5" />
@@ -463,7 +463,7 @@ function CountryPicker({ countries, selected, onChange, buttonLabel = 'Add count
               <button
                 type="button"
                 onClick={() => onChange(selected.filter((c) => c !== code))}
-                className="ml-0.5 rounded-full hover:bg-muted p-0.5"
+                className="ml-0.5 rounded-md hover:bg-muted p-0.5"
               >
                 <X className="h-3 w-3" />
               </button>

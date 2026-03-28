@@ -695,7 +695,7 @@ function AudienceStep({
                 <button
                   key={tag.id}
                   type="button"
-                  className={`rounded-full border px-3 py-1 text-sm transition-colors ${
+                  className={`rounded-md border px-3 py-1 text-sm transition-colors ${
                     selected ? 'border-primary bg-primary/10 text-primary' : 'border-border hover:border-primary/30'
                   }`}
                   onClick={() => {

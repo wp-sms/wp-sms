@@ -279,7 +279,7 @@ function KeywordSection({ label, description, defaultKeywords, customKeywords, n
             <button
               type="button"
               onClick={() => onRemove(kw)}
-              className="ml-0.5 rounded-full hover:bg-muted p-0.5"
+              className="ml-0.5 rounded-md hover:bg-muted p-0.5"
             >
               <X className="h-3 w-3" />
             </button>
