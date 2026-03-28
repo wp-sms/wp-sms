@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'preact/hooks';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 import { api } from '../api/client';
-import { registrationFields, registrationFieldDefs, socialProviders, legalLinks, formSlug, formRedirectUrl, formName } from '../signals/config';
+import { registrationFields, registrationFieldDefs, legalLinks, formSlug, formRedirectUrl, formName } from '../signals/config';
 import { authError, authLoading, stopLoading, registrationToken, pendingVerifications } from '../signals/auth';
 import { extractError, friendlySocialError, redirectTo } from '../utils/auth';
 import { authUrl, getQueryParam } from '../utils/urls';
@@ -17,8 +17,7 @@ import { DynamicField } from '../components/DynamicField';
 import { RegisterVerifyStep } from '../components/steps/RegisterVerifyStep';
 import { CaptchaWidget } from '../components/CaptchaWidget';
 import { useCaptcha } from '../hooks/useCaptcha';
-import { SocialLoginButtons } from '../components/SocialLoginButtons';
-import { SocialDivider } from '../components/SocialDivider';
+import { SocialBlock } from '../components/SocialBlock';
 import { brandingConfig } from '../signals/branding';
 import { alreadySignedIn } from '../components/AlreadySignedIn';
 import { SYSTEM_FIELD_IDS } from '../utils/fields';
@@ -144,14 +143,7 @@ export function Register() {
         );
     }
 
-    const hasSocial = socialProviders.value.length > 0;
     const socialPos = brandingConfig.value?.social_position ?? 'top';
-    const socialBlock = hasSocial && (
-        <>
-            <SocialLoginButtons intent="register" />
-            <SocialDivider />
-        </>
-    );
 
     const title = formName.value || 'Create Account';
 
@@ -272,7 +264,7 @@ export function Register() {
         >
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
 
-            {socialPos === 'top' && socialBlock}
+            {socialPos === 'top' && <SocialBlock intent="register" />}
 
             <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
                 {/* Render fields in definition order (respects sort_order from API) */}
@@ -332,7 +324,7 @@ export function Register() {
                 )}
             </form>
 
-            {socialPos === 'bottom' && socialBlock}
+            {socialPos === 'bottom' && <SocialBlock intent="register" />}
         </AuthLayout>
     );
 }

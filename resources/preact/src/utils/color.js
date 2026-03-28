@@ -69,7 +69,7 @@ function resolveColorMode(config) {
 /**
  * Build a single-mode (light or dark) CSS variable map from colors.
  */
-function buildModeVars(mode, { pL, pC, pH, bgL, bgC, bgH, txL, txC, txH, erL, erC, erH }) {
+function buildModeVars(mode, { pL, pC, pH, bgL, bgC, bgH, txL, txC, txH, erL, erC, erH, acL, acC, acH }) {
     const vars = {};
 
     if (mode === 'dark') {
@@ -84,8 +84,8 @@ function buildModeVars(mode, { pL, pC, pH, bgL, bgC, bgH, txL, txC, txH, erL, er
         vars['--muted-foreground'] = oklch(0.65, 0.01, bgH);
         vars['--secondary'] = oklch(0.25, 0.005, bgH);
         vars['--secondary-foreground'] = oklch(0.90, 0.005, bgH);
-        vars['--accent'] = oklch(0.25, bgC * 0.15, bgH);
-        vars['--accent-foreground'] = oklch(0.95, 0.005, bgH);
+        vars['--accent'] = oklch(Math.max(acL * 0.4, 0.25), acC * 0.2, acH);
+        vars['--accent-foreground'] = oklch(0.95, 0.005, acH);
         vars['--border'] = oklch(0.30, bgC * 0.1, bgH);
         vars['--input'] = oklch(0.30, bgC * 0.1, bgH);
         vars['--ring'] = oklch(0.50, 0.01, bgH);
@@ -108,8 +108,9 @@ function buildModeVars(mode, { pL, pC, pH, bgL, bgC, bgH, txL, txC, txH, erL, er
         vars['--muted-foreground'] = oklch(0.55, 0.013, bgH);
         vars['--secondary'] = oklch(0.967, 0.001, bgH);
         vars['--secondary-foreground'] = oklch(0.21, 0.006, bgH);
-        vars['--accent'] = oklch(0.97, 0.001, bgH);
-        vars['--accent-foreground'] = oklch(0.216, 0.006, bgH);
+        const accentIsLight = acL > 0.5;
+        vars['--accent'] = oklch(accentIsLight ? Math.min(acL * 1.1, 0.97) : acL + 0.4, acC * 0.2, acH);
+        vars['--accent-foreground'] = oklch(accentIsLight ? 0.15 : 0.95, acC * 0.1, acH);
         vars['--border'] = oklch(0.82, bgC * 0.4, bgH);
         vars['--input'] = oklch(0.82, bgC * 0.4, bgH);
         vars['--ring'] = oklch(0.709, 0.01, bgH);
@@ -136,6 +137,7 @@ export function generatePalette(config) {
         text_color = '#1c1917',
         error_color = '#dc2626',
         background_color = '#ffffff',
+        accent_color = '#6366f1',
         font_family = 'system-ui',
         border_radius = 8,
     } = config || {};
@@ -146,8 +148,9 @@ export function generatePalette(config) {
     const [bgL, bgC, bgH] = hexToOklch(background_color);
     const [txL, txC, txH] = hexToOklch(text_color);
     const [erL, erC, erH] = hexToOklch(error_color);
+    const [acL, acC, acH] = hexToOklch(accent_color);
 
-    const colorParams = { pL, pC, pH, bgL, bgC, bgH, txL, txC, txH, erL, erC, erH };
+    const colorParams = { pL, pC, pH, bgL, bgC, bgH, txL, txC, txH, erL, erC, erH, acL, acC, acH };
 
     // Shared (non-color) vars
     const shared = {};

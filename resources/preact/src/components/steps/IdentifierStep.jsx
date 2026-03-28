@@ -14,14 +14,12 @@ import {
     forgetIdentifier,
 } from '../../signals/auth';
 import { extractError } from '../../utils/auth';
-import { socialProviders } from '../../signals/config';
 import { brandingConfig } from '../../signals/branding';
 import { Alert } from '../ui/Alert';
 import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Label } from '../ui/Label';
-import { SocialLoginButtons } from '../SocialLoginButtons';
-import { SocialDivider } from '../SocialDivider';
+import { SocialBlock } from '../SocialBlock';
 
 function getIdentifierHints(methods) {
     const hasPhone = methods.includes('phone');
@@ -107,21 +105,13 @@ export function IdentifierStep() {
         );
     }
 
-    const hasSocial = socialProviders.value.length > 0;
     const socialPos = brandingConfig.value?.social_position ?? 'top';
-
-    const socialBlock = hasSocial && (
-        <>
-            <SocialLoginButtons intent="login" />
-            <SocialDivider />
-        </>
-    );
 
     return (
         <div className="wsms-auth-stack-4">
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
 
-            {socialPos === 'top' && socialBlock}
+            {socialPos === 'top' && <SocialBlock intent="login" />}
 
             <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
                 <div className="wsms-auth-stack-2">
@@ -143,7 +133,7 @@ export function IdentifierStep() {
                 </Button>
             </form>
 
-            {socialPos === 'bottom' && socialBlock}
+            {socialPos === 'bottom' && <SocialBlock intent="login" />}
 
             {remembered && !authLoading.value && (
                 <div className="wsms-auth-center">

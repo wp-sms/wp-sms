@@ -134,7 +134,7 @@
     justify-content: center;
     gap: 0.5rem;
     border: none;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     font-size: 0.875rem;
     line-height: 1.25rem;
     font-weight: 500;
@@ -239,7 +239,7 @@
 .wsms-auth-btn--sz-xs {
     height: 1.5rem;
     gap: 0.25rem;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     padding: 0 0.5rem;
     font-size: 0.75rem;
     line-height: 1rem;
@@ -252,7 +252,7 @@
 .wsms-auth-btn--sz-sm {
     height: 2rem;
     gap: 0.375rem;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     padding: 0 0.75rem;
 }
 .wsms-auth-btn--sz-sm:has(> svg) {
@@ -262,7 +262,7 @@
 
 .wsms-auth-btn--sz-lg {
     height: 2.5rem;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     padding: 0 1.5rem;
 }
 .wsms-auth-btn--sz-lg:has(> svg) {
@@ -332,6 +332,7 @@
 }
 
 .wsms-auth-card__content {
+    --_surface: var(--card);
     padding-left: 1.75rem;
     padding-right: 1.75rem;
 }
@@ -350,7 +351,7 @@
     height: 2.5rem;
     width: 100%;
     min-width: 0;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     border: 1px solid var(--input);
     background-color: transparent;
     padding: 0.375rem 0.75rem;
@@ -428,7 +429,7 @@
     border: none;
     color: var(--muted-foreground);
     cursor: pointer;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     transition: color 150ms;
 }
 
@@ -477,7 +478,7 @@
     height: 1.75rem;
     align-items: center;
     justify-content: center;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     background: transparent;
     border: none;
     color: var(--muted-foreground);
@@ -710,7 +711,7 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    background-color: var(--background);
+    background-color: var(--_surface, var(--background));
     padding: 0 0.5rem;
     font-size: 0.75rem;
     line-height: 1rem;
@@ -733,7 +734,7 @@
     width: 100%;
     height: 2.5rem;
     border: 1px solid var(--border);
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     background: var(--background);
     padding: 0 0.75rem;
     cursor: pointer;
@@ -907,7 +908,7 @@
     height: 3rem;
     align-items: center;
     justify-content: center;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     border: 1px solid var(--input);
     background-color: transparent;
     font-size: 1.25rem;
@@ -944,7 +945,7 @@
 
 .wsms-auth-backup-code {
     display: block;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     border: 1px solid var(--border);
     background-color: var(--card);
     padding: 0.375rem 0.625rem;
@@ -1042,7 +1043,7 @@
     flex-shrink: 0;
     align-items: center;
     justify-content: center;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     background-color: var(--muted);
 }
 
@@ -1139,7 +1140,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     border: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
     padding: 0.5rem 0.75rem;
 }
@@ -1164,7 +1165,7 @@
 .wsms-auth-passkey-credential__remove {
     flex-shrink: 0;
     padding: 0.25rem;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     color: var(--muted-foreground);
     background: transparent;
     border: none;
@@ -1188,7 +1189,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     background-color: #26A5E4;
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
@@ -1212,7 +1213,7 @@
 .wsms-auth-totp-secret {
     margin-top: 0.5rem;
     display: block;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     background-color: var(--muted);
     padding: 0.5rem;
     font-size: 0.75rem;
@@ -1263,7 +1264,7 @@
     display: flex;
     height: 2.5rem;
     width: 100%;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     border: 1px solid var(--input);
     background-color: transparent;
     padding: 0.25rem 0.75rem;
@@ -1281,7 +1282,7 @@
     display: flex;
     min-height: 60px;
     width: 100%;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     border: 1px solid var(--input);
     background-color: transparent;
     padding: 0.5rem 0.75rem;
@@ -1310,7 +1311,7 @@
     align-items: center;
     gap: 0.375rem;
     padding: 0.375rem 0.75rem;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
     font-size: 0.875rem;
     line-height: 1.25rem;
     font-weight: 500;
@@ -1740,7 +1741,7 @@
     background: linear-gradient(90deg, var(--muted) 25%, color-mix(in srgb, var(--muted) 60%, var(--background)) 50%, var(--muted) 75%);
     background-size: 200% 100%;
     animation: wsms-shimmer 1.5s ease-in-out infinite;
-    border-radius: calc(var(--radius) - 2px);
+    border-radius: max(0px, calc(var(--radius) - 2px));
 }
 
 .wsms-auth-skeleton--circle {
@@ -1829,7 +1830,7 @@
     --lpi-bg: transparent;
     --lpi-text-color: var(--foreground);
     --lpi-border-color: var(--input);
-    --lpi-border-radius: calc(var(--radius) - 2px);
+    --lpi-border-radius: max(0px, calc(var(--radius) - 2px));
     --lpi-input-height: 2.5rem;
     --lpi-font-size: 0.875rem;
     --lpi-hover-bg: var(--accent);
