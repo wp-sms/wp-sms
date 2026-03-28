@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import type { Tag } from '@/lib/api';
 import type { UseTagsReturn } from '@/hooks/use-tags';
 import { useCreateTrigger } from '@/hooks/use-create-trigger';
 import { Button } from '@/components/ui/button';
@@ -6,11 +7,17 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { EmptyState } from '@/components/ui/empty-state';
 import { DataTable } from '@/components/ui/data-table';
 import { PageSection } from '@/components/ui/page-section';
-import { TagForm } from './tag-form';
-import { InlineActionsCell } from '@/components/ui/inline-actions-cell';
-import { Plus, Tags } from 'lucide-react';
+import { TagFormPanel } from './tag-form-panel';
+import { NameCell } from '@/components/ui/name-cell';
+import { ActionsCell } from '@/components/ui/actions-cell';
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import { Plus, Tags, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
+import { pluralize } from '@/lib/utils';
 
 interface TagsListProps {
   hook: UseTagsReturn;
@@ -20,22 +27,29 @@ interface TagsListProps {
 
 export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
   const { tags, loading, createTag, updateTag, deleteTag } = hook;
-  const [editing, setEditing] = useState<string | null>(null);
-  const [creating, setCreating] = useState(false);
+  const [formOpen, setFormOpen] = useState(false);
+  const [editTag, setEditTag] = useState<Tag | null>(null);
 
-  const startCreating = useCallback(() => setCreating(true), []);
-  useCreateTrigger(createTrigger, startCreating);
+  const handleCreate = useCallback(() => {
+    setEditTag(null);
+    setFormOpen(true);
+  }, []);
 
-  const handleCreate = async (data: { name: string; slug: string; color: string }) => {
-    await createTag(data);
-    setCreating(false);
-    toast.success('Tag created.');
+  useCreateTrigger(createTrigger, handleCreate);
+
+  const handleEdit = (tag: Tag) => {
+    setEditTag(tag);
+    setFormOpen(true);
   };
 
-  const handleUpdate = async (id: string, data: { name: string; slug: string; color: string }) => {
-    await updateTag(id, data);
-    setEditing(null);
-    toast.success('Tag updated.');
+  const handleSave = async (data: { name: string; slug: string; color: string }) => {
+    if (editTag) {
+      await updateTag(editTag.id, data);
+      toast.success('Tag updated.');
+    } else {
+      await createTag(data);
+      toast.success('Tag created.');
+    }
   };
 
   const confirm = useConfirm();
@@ -52,88 +66,89 @@ export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
     toast.success('Tag deleted.');
   };
 
-  const content = (
-    <>
-      {creating && (
-        <div className="mb-4 rounded-lg border p-3">
-          <TagForm onSave={handleCreate} onCancel={() => setCreating(false)} />
-        </div>
-      )}
-
-      <DataTable
-        loading={loading}
-        skeletonRows={3}
-        isEmpty={tags.length === 0 && !creating}
-        empty={
-          <EmptyState
-            icon={Tags}
-            title="No tags yet"
-            description="Create tags to organize your contacts."
-            action={
-              <Button size="sm" onClick={() => setCreating(true)}>
-                <Plus className="mr-1.5 h-3.5 w-3.5" /> New Tag
-              </Button>
-            }
-          />
-        }
-      >
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Color</TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Slug</TableHead>
-              <TableHead>Contacts</TableHead>
-              <TableHead className="w-20">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {tags.map((tag) => (
-              <TableRow key={tag.id} className="even:bg-muted/30">
-                {editing === tag.id ? (
-                  <TableCell colSpan={5}>
-                    <TagForm
-                      initial={{ name: tag.name, slug: tag.slug, color: tag.color }}
-                      onSave={(data) => void handleUpdate(tag.id, data)}
-                      onCancel={() => setEditing(null)}
-                    />
-                  </TableCell>
-                ) : (
-                  <>
-                    <TableCell>
-                      <span className="inline-block h-4 w-4 rounded-full" style={{ backgroundColor: tag.color }} />
-                    </TableCell>
-                    <TableCell className="font-medium">{tag.name}</TableCell>
-                    <TableCell className="text-sm text-muted-foreground">{tag.slug}</TableCell>
-                    <TableCell className="text-sm">{tag.contact_count ?? 0}</TableCell>
-                    <InlineActionsCell
-                      onEdit={() => setEditing(tag.id)}
-                      onDelete={() => void handleDelete(tag.id)}
-                    />
-                  </>
-                )}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </DataTable>
-    </>
-  );
-
-  if (embedded) return content;
-
-  return (
-    <PageSection
-      icon={Tags}
-      title="Tags"
-      description={<>{tags.length} {tags.length === 1 ? 'tag' : 'tags'}</>}
-      actions={
-        <Button size="sm" onClick={() => setCreating(true)}>
-          <Plus className="mr-1.5 h-3.5 w-3.5" /> New Tag
-        </Button>
+  const tableContent = (
+    <DataTable
+      loading={loading}
+      skeletonRows={3}
+      isEmpty={tags.length === 0}
+      empty={
+        <EmptyState
+          icon={Tags}
+          title="No tags yet"
+          description="Create tags to organize your contacts."
+          action={
+            <Button size="sm" onClick={handleCreate}>
+              <Plus className="mr-1.5 h-3.5 w-3.5" /> New Tag
+            </Button>
+          }
+        />
       }
     >
-      {content}
-    </PageSection>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Color</TableHead>
+            <TableHead>Name</TableHead>
+            <TableHead>Slug</TableHead>
+            <TableHead>Contacts</TableHead>
+            <TableHead className="w-[70px]" />
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {tags.map((tag) => (
+            <TableRow key={tag.id} className="even:bg-muted/30">
+              <TableCell>
+                <span className="inline-block h-4 w-4 rounded-full" style={{ backgroundColor: tag.color }} />
+              </TableCell>
+              <NameCell onClick={() => handleEdit(tag)}>{tag.name}</NameCell>
+              <TableCell className="text-sm text-muted-foreground">{tag.slug}</TableCell>
+              <TableCell className="text-sm">{tag.contact_count ?? 0}</TableCell>
+              <ActionsCell>
+                <DropdownMenuItem onClick={() => handleEdit(tag)}>
+                  <Pencil className="h-4 w-4 mr-2" />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => void handleDelete(tag.id)}
+                  className="text-destructive focus:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
+                </DropdownMenuItem>
+              </ActionsCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </DataTable>
+  );
+
+  return (
+    <>
+      {embedded ? (
+        tableContent
+      ) : (
+        <PageSection
+          icon={Tags}
+          title="Tags"
+          description={pluralize(tags.length, 'tag')}
+          actions={
+            <Button size="sm" onClick={handleCreate}>
+              <Plus className="mr-1.5 h-3.5 w-3.5" /> New Tag
+            </Button>
+          }
+        >
+          {tableContent}
+        </PageSection>
+      )}
+
+      <TagFormPanel
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        tag={editTag}
+        onSave={handleSave}
+      />
+    </>
   );
 }

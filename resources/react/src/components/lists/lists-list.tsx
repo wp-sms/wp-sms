@@ -9,10 +9,16 @@ import { EmptyState } from '@/components/ui/empty-state';
 import { DataTable } from '@/components/ui/data-table';
 import { PageSection } from '@/components/ui/page-section';
 import { ListFormPanel } from './list-form-panel';
-import { InlineActionsCell } from '@/components/ui/inline-actions-cell';
-import { Plus, List } from 'lucide-react';
+import { NameCell } from '@/components/ui/name-cell';
+import { ActionsCell } from '@/components/ui/actions-cell';
+import {
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from '@/components/ui/dropdown-menu';
+import { Plus, List, Pencil, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useConfirm } from '@/components/confirm-provider';
+import { pluralize } from '@/lib/utils';
 
 interface ListsListProps {
   hook: UseListsReturn;
@@ -87,13 +93,13 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
             <TableHead>Type</TableHead>
             <TableHead>Contacts</TableHead>
             <TableHead>Description</TableHead>
-            <TableHead className="w-20">Actions</TableHead>
+            <TableHead className="w-[70px]" />
           </TableRow>
         </TableHeader>
         <TableBody>
           {lists.map((list) => (
             <TableRow key={list.id} className="even:bg-muted/30">
-              <TableCell className="font-medium">{list.name}</TableCell>
+              <NameCell onClick={() => handleEdit(list)}>{list.name}</NameCell>
               <TableCell>
                 <Badge variant={list.type === 'dynamic' ? 'info' : 'purple'}>
                   {list.type === 'dynamic' ? 'Dynamic' : 'Static'}
@@ -103,10 +109,20 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
               <TableCell className="text-sm text-muted-foreground max-w-[200px] truncate">
                 {list.description || '\u2014'}
               </TableCell>
-              <InlineActionsCell
-                onEdit={() => handleEdit(list)}
-                onDelete={() => void handleDelete(list.id)}
-              />
+              <ActionsCell>
+                <DropdownMenuItem onClick={() => handleEdit(list)}>
+                  <Pencil className="h-4 w-4 mr-2" />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => void handleDelete(list.id)}
+                  className="text-destructive focus:text-destructive"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
+                </DropdownMenuItem>
+              </ActionsCell>
             </TableRow>
           ))}
         </TableBody>
@@ -122,7 +138,7 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
         <PageSection
           icon={List}
           title="Lists & Segments"
-          description={<>{lists.length} {lists.length === 1 ? 'list' : 'lists'}</>}
+          description={pluralize(lists.length, 'list')}
           actions={
             <Button size="sm" onClick={handleCreate}>
               <Plus className="mr-1.5 h-3.5 w-3.5" /> New List
