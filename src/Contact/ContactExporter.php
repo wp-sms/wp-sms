@@ -50,8 +50,11 @@ class ContactExporter
 
         do {
             $contacts = $this->contacts->findAll($filters, $batch, $offset);
+            $ids = array_column($contacts, 'id');
+            $tagsByContact = $this->contacts->getTagsForContacts($ids);
+
             foreach ($contacts as $contact) {
-                $tags = $this->contacts->getTags($contact['id']);
+                $tags = $tagsByContact[$contact['id']] ?? [];
                 $tagNames = implode(', ', array_column($tags, 'name'));
                 $cf = self::customFields($contact);
 

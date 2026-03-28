@@ -3,6 +3,7 @@
 namespace WSms\Contact;
 
 use WSms\Dependencies\League\Csv\Reader;
+use WSms\Contact\ContactRepository;
 use WSms\Contact\Contracts\ContactRepositoryInterface;
 use WSms\Database\Connection;
 
@@ -16,6 +17,8 @@ class ContactImporter
     ) {
     }
 
+    private const BATCH_SIZE = 500;
+
     /**
      * @param array{match_field?: string, duplicate_handling?: string} $options
      */
@@ -26,24 +29,56 @@ class ContactImporter
         $matchField = $options['match_field'] ?? 'email';
         $duplicateHandling = $options['duplicate_handling'] ?? 'update';
 
+        $totals = ['imported' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => []];
+        $chunk = [];
+
+        foreach ($reader->getRecords() as $offset => $record) {
+            $chunk[] = ['offset' => $offset, 'record' => $record];
+
+            if (count($chunk) >= self::BATCH_SIZE) {
+                $this->mergeResult($totals, $this->importChunk($chunk, $fieldMapping, $matchField, $duplicateHandling, $options));
+                $chunk = [];
+            }
+        }
+
+        if (!empty($chunk)) {
+            $this->mergeResult($totals, $this->importChunk($chunk, $fieldMapping, $matchField, $duplicateHandling, $options));
+        }
+
+        return $totals;
+    }
+
+    private function importChunk(array $chunk, array $fieldMapping, string $matchField, string $duplicateHandling, array $options): array
+    {
         $imported = 0;
         $updated = 0;
         $skipped = 0;
         $errors = [];
 
+        // Map all rows first
+        $mapped = [];
+        foreach ($chunk as $item) {
+            $data = $this->mapFields($item['record'], $fieldMapping);
+            $mapped[] = ['offset' => $item['offset'], 'data' => $data];
+        }
+
+        // Batch-fetch existing contacts
+        $existingMap = $this->batchFindExisting($mapped, $matchField);
+
         $this->db->query('START TRANSACTION');
 
         try {
-            foreach ($reader->getRecords() as $offset => $record) {
+            foreach ($mapped as $item) {
                 try {
-                    $data = $this->mapFields($record, $fieldMapping);
+                    $data = $item['data'];
+                    $offset = $item['offset'];
 
                     if (empty($data['email']) && empty($data['phone'])) {
                         $skipped++;
                         continue;
                     }
 
-                    $existing = $this->findExisting($data, $matchField);
+                    $existing = $this->lookupExisting($data, $matchField, $existingMap);
 
                     if ($existing) {
                         if ($duplicateHandling === 'skip') {
@@ -62,7 +97,6 @@ class ContactImporter
                                 $this->contacts->update($existing['id'], $updateData);
                             }
                         } else {
-                            // 'update' — overwrite all fields
                             $this->contacts->update($existing['id'], $data);
                         }
                         $updated++;
@@ -84,12 +118,63 @@ class ContactImporter
             throw $e;
         }
 
-        return [
-            'imported' => $imported,
-            'updated'  => $updated,
-            'skipped'  => $skipped,
-            'errors'   => $errors,
-        ];
+        return ['imported' => $imported, 'updated' => $updated, 'skipped' => $skipped, 'errors' => $errors];
+    }
+
+    private function mergeResult(array &$totals, array $result): void
+    {
+        $totals['imported'] += $result['imported'];
+        $totals['updated'] += $result['updated'];
+        $totals['skipped'] += $result['skipped'];
+        array_push($totals['errors'], ...$result['errors']);
+    }
+
+    private function batchFindExisting(array $mapped, string $matchField): array
+    {
+        $emails = [];
+        $phones = [];
+
+        foreach ($mapped as $item) {
+            $data = $item['data'];
+            if (in_array($matchField, ['email', 'email_or_phone'], true) && !empty($data['email'])) {
+                $emails[] = $data['email'];
+            }
+            if (in_array($matchField, ['phone', 'email_or_phone'], true) && !empty($data['phone'])) {
+                $phones[] = $data['phone'];
+            }
+        }
+
+        $byEmail = !empty($emails) ? $this->contacts->findByEmails($emails) : [];
+        $byPhone = !empty($phones) ? $this->contacts->findByPhones($phones) : [];
+
+        return ['email' => $byEmail, 'phone' => $byPhone];
+    }
+
+    private function lookupExisting(array $data, string $matchField, array $existingMap): ?array
+    {
+        if ($matchField === 'email' && !empty($data['email'])) {
+            return $existingMap['email'][strtolower($data['email'])] ?? null;
+        }
+
+        if ($matchField === 'phone' && !empty($data['phone'])) {
+            $normalized = ContactRepository::normalizePhone($data['phone']);
+            return $existingMap['phone'][$normalized] ?? null;
+        }
+
+        if ($matchField === 'email_or_phone') {
+            if (!empty($data['email'])) {
+                $found = $existingMap['email'][strtolower($data['email'])] ?? null;
+                if ($found) {
+                    return $found;
+                }
+            }
+            if (!empty($data['phone'])) {
+                $normalized = ContactRepository::normalizePhone($data['phone']);
+                return $existingMap['phone'][$normalized] ?? null;
+            }
+        }
+
+        return null;
     }
 
     public function previewCsv(string $filePath): array
@@ -111,31 +196,6 @@ class ContactImporter
             'headers' => $headers,
             'rows'    => $rows,
         ];
-    }
-
-    private function findExisting(array $data, string $matchField): ?array
-    {
-        if ($matchField === 'email' && !empty($data['email'])) {
-            return $this->contacts->findByEmail($data['email']);
-        }
-
-        if ($matchField === 'phone' && !empty($data['phone'])) {
-            return $this->contacts->findByPhone($data['phone']);
-        }
-
-        if ($matchField === 'email_or_phone') {
-            if (!empty($data['email'])) {
-                $found = $this->contacts->findByEmail($data['email']);
-                if ($found) {
-                    return $found;
-                }
-            }
-            if (!empty($data['phone'])) {
-                return $this->contacts->findByPhone($data['phone']);
-            }
-        }
-
-        return null;
     }
 
     private static function openCsv(string $filePath): Reader

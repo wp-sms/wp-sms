@@ -21,7 +21,13 @@ interface ContactRepositoryInterface
 
     public function findByEmail(string $email): ?array;
 
+    /** @return array<string, array> Rows keyed by lowercase email */
+    public function findByEmails(array $emails): array;
+
     public function findByPhone(string $phone): ?array;
+
+    /** @return array<string, array> Rows keyed by normalized phone */
+    public function findByPhones(array $phones): array;
 
     /** @return array[] All contacts matching the phone number */
     public function findAllByPhone(string $phone): array;

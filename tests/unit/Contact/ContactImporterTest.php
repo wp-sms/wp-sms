@@ -42,7 +42,7 @@ class ContactImporterTest extends TestCase
             ['jane@example.com', '+0987654321', 'Jane', 'Smith'],
         ]);
 
-        $this->contacts->method('findByEmail')->willReturn(null);
+        $this->contacts->method('findByEmails')->willReturn([]);
         $this->contacts->expects($this->exactly(2))->method('create');
 
         $result = $this->importer->importFromCsv($csv);
@@ -59,6 +59,7 @@ class ContactImporterTest extends TestCase
             ['', '', 'Nameless'],
         ]);
 
+        $this->contacts->method('findByEmails')->willReturn([]);
         $this->contacts->expects($this->never())->method('create');
 
         $result = $this->importer->importFromCsv($csv);
@@ -74,7 +75,9 @@ class ContactImporterTest extends TestCase
         ]);
 
         $existing = ['id' => 'C1', 'email' => 'existing@test.com', 'first_name' => 'Old'];
-        $this->contacts->method('findByEmail')->willReturn($existing);
+        $this->contacts->method('findByEmails')->willReturn([
+            'existing@test.com' => $existing,
+        ]);
         $this->contacts->expects($this->once())->method('update')->with('C1', $this->anything());
         $this->contacts->expects($this->never())->method('create');
 
@@ -90,7 +93,9 @@ class ContactImporterTest extends TestCase
             ['existing@test.com', 'Updated'],
         ]);
 
-        $this->contacts->method('findByEmail')->willReturn(['id' => 'C1', 'email' => 'existing@test.com']);
+        $this->contacts->method('findByEmails')->willReturn([
+            'existing@test.com' => ['id' => 'C1', 'email' => 'existing@test.com'],
+        ]);
         $this->contacts->expects($this->never())->method('update');
         $this->contacts->expects($this->never())->method('create');
 
@@ -107,7 +112,9 @@ class ContactImporterTest extends TestCase
         ]);
 
         $existing = ['id' => 'C1', 'email' => 'existing@test.com', 'first_name' => 'Already Set', 'last_name' => ''];
-        $this->contacts->method('findByEmail')->willReturn($existing);
+        $this->contacts->method('findByEmails')->willReturn([
+            'existing@test.com' => $existing,
+        ]);
 
         // Should only update last_name (which is empty on existing)
         $this->contacts->expects($this->once())->method('update')
@@ -128,7 +135,9 @@ class ContactImporterTest extends TestCase
             ['', '+1234567890', 'PhoneOnly'],
         ]);
 
-        $this->contacts->method('findByPhone')->willReturn(['id' => 'C1', 'phone' => '+1234567890', 'first_name' => 'Old']);
+        $this->contacts->method('findByPhones')->willReturn([
+            '+1234567890' => ['id' => 'C1', 'phone' => '+1234567890', 'first_name' => 'Old'],
+        ]);
         $this->contacts->expects($this->once())->method('update');
 
         $result = $this->importer->importFromCsv($csv, [], ['match_field' => 'phone']);
@@ -143,8 +152,10 @@ class ContactImporterTest extends TestCase
             ['found@test.com', '+1234567890'],
         ]);
 
-        $this->contacts->method('findByEmail')->willReturn(['id' => 'C1', 'email' => 'found@test.com']);
-        $this->contacts->expects($this->never())->method('findByPhone');
+        $this->contacts->method('findByEmails')->willReturn([
+            'found@test.com' => ['id' => 'C1', 'email' => 'found@test.com'],
+        ]);
+        $this->contacts->method('findByPhones')->willReturn([]);
         $this->contacts->expects($this->once())->method('update');
 
         $this->importer->importFromCsv($csv, [], ['match_field' => 'email_or_phone']);
@@ -163,7 +174,7 @@ class ContactImporterTest extends TestCase
             'first_name' => 'Given Name',
         ];
 
-        $this->contacts->method('findByEmail')->willReturn(null);
+        $this->contacts->method('findByEmails')->willReturn([]);
         $this->contacts->expects($this->once())->method('create')
             ->with($this->callback(function ($data) {
                 return $data['email'] === 'mapped@test.com'
@@ -182,7 +193,7 @@ class ContactImporterTest extends TestCase
             ['test@test.com'],
         ]);
 
-        $this->contacts->method('findByEmail')->willReturn(null);
+        $this->contacts->method('findByEmails')->willReturn([]);
         $this->contacts->method('create')->willReturn('C1');
 
         $this->importer->importFromCsv($csv);
@@ -202,7 +213,7 @@ class ContactImporterTest extends TestCase
         ]);
 
         $callCount = 0;
-        $this->contacts->method('findByEmail')->willReturn(null);
+        $this->contacts->method('findByEmails')->willReturn([]);
         $this->contacts->method('create')->willReturnCallback(function () use (&$callCount) {
             $callCount++;
             if ($callCount === 2) {
@@ -215,6 +226,28 @@ class ContactImporterTest extends TestCase
 
         $this->assertSame(2, $result['imported']);
         $this->assertCount(1, $result['errors']);
+    }
+
+    public function test_import_large_csv_uses_multiple_transactions(): void
+    {
+        // Create CSV with 600 rows (> 500 batch size) to trigger 2 chunks
+        $rows = [['email']];
+        for ($i = 1; $i <= 600; $i++) {
+            $rows[] = ["user{$i}@test.com"];
+        }
+        $csv = $this->writeCsv($rows);
+
+        $this->contacts->method('findByEmails')->willReturn([]);
+        $this->contacts->method('create')->willReturn('C1');
+
+        $this->importer->importFromCsv($csv);
+
+        $queries = $GLOBALS['wpdb']->queries;
+        $transactions = array_values(array_filter($queries, fn ($q) => $q === 'START TRANSACTION'));
+        $commits = array_values(array_filter($queries, fn ($q) => $q === 'COMMIT'));
+
+        $this->assertCount(2, $transactions);
+        $this->assertCount(2, $commits);
     }
 
     public function test_previewCsv_returns_headers_and_sample_rows(): void
@@ -249,7 +282,7 @@ class ContactImporterTest extends TestCase
             'custom.department' => 'department',
         ];
 
-        $this->contacts->method('findByEmail')->willReturn(null);
+        $this->contacts->method('findByEmails')->willReturn([]);
         $this->contacts->expects($this->once())->method('create')
             ->with($this->callback(function ($data) {
                 return isset($data['custom_fields'])

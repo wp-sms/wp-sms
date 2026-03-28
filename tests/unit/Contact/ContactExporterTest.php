@@ -31,9 +31,11 @@ class ContactExporterTest extends TestCase
             ],
         ]);
 
-        $this->contacts->method('getTags')->willReturn([
-            ['id' => 'T1', 'name' => 'VIP', 'slug' => 'vip', 'color' => '#ef4444'],
-            ['id' => 'T2', 'name' => 'Active', 'slug' => 'active', 'color' => '#22c55e'],
+        $this->contacts->method('getTagsForContacts')->willReturn([
+            'C1' => [
+                ['id' => 'T1', 'name' => 'VIP', 'slug' => 'vip', 'color' => '#ef4444'],
+                ['id' => 'T2', 'name' => 'Active', 'slug' => 'active', 'color' => '#22c55e'],
+            ],
         ]);
 
         $path = $this->tempDir . '/export-test-' . uniqid() . '.csv';
@@ -93,7 +95,7 @@ class ContactExporterTest extends TestCase
             ],
         ]);
 
-        $this->contacts->method('getTags')->willReturn([]);
+        $this->contacts->method('getTagsForContacts')->willReturn([]);
 
         $path = $this->tempDir . '/export-multi-' . uniqid() . '.csv';
         $this->exporter->exportToCsv([], $path);
@@ -120,7 +122,7 @@ class ContactExporterTest extends TestCase
             ],
         ]);
 
-        $this->contacts->method('getTags')->willReturn([]);
+        $this->contacts->method('getTagsForContacts')->willReturn([]);
 
         $path = $this->tempDir . '/export-json-str-' . uniqid() . '.csv';
         $this->exporter->exportToCsv([], $path);

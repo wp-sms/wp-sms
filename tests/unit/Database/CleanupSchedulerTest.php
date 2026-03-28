@@ -13,15 +13,16 @@ class CleanupSchedulerTest extends TestCase
 {
     private CleanupScheduler $scheduler;
     private AuditLogger $auditLogger;
+    private FlowExecutionRepository $flowExecRepo;
     private VerificationRepository $verificationRepo;
 
     protected function setUp(): void
     {
         $this->auditLogger = $this->createMock(AuditLogger::class);
-        $flowExecRepo = $this->createMock(FlowExecutionRepository::class);
+        $this->flowExecRepo = $this->createMock(FlowExecutionRepository::class);
         $messageLogger = $this->createMock(MessageLogger::class);
         $this->verificationRepo = $this->createMock(VerificationRepository::class);
-        $this->scheduler = new CleanupScheduler($this->auditLogger, $flowExecRepo, $messageLogger, $this->verificationRepo);
+        $this->scheduler = new CleanupScheduler($this->auditLogger, $this->flowExecRepo, $messageLogger, $this->verificationRepo);
 
         $GLOBALS['_test_as_scheduled_actions'] = [];
         $GLOBALS['_test_options'] = [];
@@ -184,6 +185,39 @@ class CleanupSchedulerTest extends TestCase
         $this->scheduler->run();
 
         $this->assertEmpty($GLOBALS['_test_deleted_users']);
+        unset($GLOBALS['wpdb']);
+    }
+
+    public function testRunCleansOldFlowExecutionsWithConfiguredDays(): void
+    {
+        $wpdb = $this->createWpdbMock();
+        $GLOBALS['wpdb'] = $wpdb;
+
+        $GLOBALS['_test_options']['wsms_messaging_settings'] = [
+            'message_log_retention_days' => 60,
+        ];
+
+        $this->flowExecRepo->expects($this->once())
+            ->method('deleteCompletedOlderThan')
+            ->with(60);
+
+        $this->scheduler->run();
+
+        unset($GLOBALS['wpdb']);
+    }
+
+    public function testRunCleansOldFlowExecutionsWithDefault90Days(): void
+    {
+        $wpdb = $this->createWpdbMock();
+        $GLOBALS['wpdb'] = $wpdb;
+
+        // No messaging settings — should use default 90 days
+        $this->flowExecRepo->expects($this->once())
+            ->method('deleteCompletedOlderThan')
+            ->with(90);
+
+        $this->scheduler->run();
+
         unset($GLOBALS['wpdb']);
     }
 

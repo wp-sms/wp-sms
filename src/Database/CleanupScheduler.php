@@ -43,7 +43,11 @@ class CleanupScheduler
         $this->cleanOldAuditLogs($authSettings);
         $this->cleanExpiredPendingUsers($authSettings);
         $this->cleanExpiredFlowWaits();
-        $this->cleanOldMessageLogs();
+
+        $messagingSettings = get_option('wsms_messaging_settings', []);
+        $retentionDays = (int) ($messagingSettings['message_log_retention_days'] ?? 90);
+        $this->cleanOldFlowExecutions($retentionDays);
+        $this->cleanOldMessageLogs($retentionDays);
     }
 
     private function cleanExpiredVerifications(): void
@@ -97,10 +101,13 @@ class CleanupScheduler
         $this->flowExecutionRepo->cleanupExpiredWaits();
     }
 
-    private function cleanOldMessageLogs(): void
+    private function cleanOldFlowExecutions(int $days): void
     {
-        $settings = get_option('wsms_messaging_settings', []);
-        $days = (int) ($settings['message_log_retention_days'] ?? 90);
+        $this->flowExecutionRepo->deleteCompletedOlderThan($days);
+    }
+
+    private function cleanOldMessageLogs(int $days): void
+    {
         $this->messageLogger->deleteOlderThan($days);
     }
 }

@@ -11,6 +11,8 @@ defined('ABSPATH') || exit;
 
 class ContactRepository implements ContactRepositoryInterface
 {
+    private const BULK_CHUNK_SIZE = 500;
+
     public function __construct(private readonly Connection $db) {}
 
     public function create(array $data, bool $suppressEvents = false): string
@@ -133,12 +135,48 @@ class ContactRepository implements ContactRepositoryInterface
         return $row ? self::decodeRow($row) : null;
     }
 
+    public function findByEmails(array $emails): array
+    {
+        $emails = array_filter(array_map('strtolower', $emails));
+        if (empty($emails)) {
+            return [];
+        }
+
+        $t = $this->db->table(Connection::TABLE_CONTACTS);
+        $ph = self::placeholders($emails);
+        $rows = $this->db->getResults("SELECT * FROM {$t} WHERE email IN ({$ph})", ...$emails);
+
+        $keyed = [];
+        foreach ($rows as $row) {
+            $keyed[$row['email']] = self::decodeRow($row);
+        }
+        return $keyed;
+    }
+
     public function findByPhone(string $phone): ?array
     {
         $t = $this->db->table(Connection::TABLE_CONTACTS);
         $normalized = self::normalizePhone($phone);
         $row = $this->db->getRow("SELECT * FROM {$t} WHERE phone = %s", $normalized);
         return $row ? self::decodeRow($row) : null;
+    }
+
+    public function findByPhones(array $phones): array
+    {
+        $phones = array_filter(array_map([self::class, 'normalizePhone'], $phones));
+        if (empty($phones)) {
+            return [];
+        }
+
+        $t = $this->db->table(Connection::TABLE_CONTACTS);
+        $ph = self::placeholders($phones);
+        $rows = $this->db->getResults("SELECT * FROM {$t} WHERE phone IN ({$ph})", ...$phones);
+
+        $keyed = [];
+        foreach ($rows as $row) {
+            $keyed[$row['phone']] = self::decodeRow($row);
+        }
+        return $keyed;
     }
 
     public function findAllByPhone(string $phone): array
@@ -296,11 +334,15 @@ class ContactRepository implements ContactRepositoryInterface
 
         $t = $this->db->table(Connection::TABLE_CONTACTS);
         $pivotTable = $this->db->table(Connection::TABLE_CONTACT_TAG);
-        $ph = self::placeholders($ids);
+        $affected = 0;
 
-        $this->db->query("DELETE FROM {$pivotTable} WHERE contact_id IN ({$ph})", ...$ids);
+        foreach (array_chunk($ids, self::BULK_CHUNK_SIZE) as $chunk) {
+            $ph = self::placeholders($chunk);
+            $this->db->query("DELETE FROM {$pivotTable} WHERE contact_id IN ({$ph})", ...$chunk);
+            $affected += $this->db->query("DELETE FROM {$t} WHERE id IN ({$ph})", ...$chunk);
+        }
 
-        return $this->db->query("DELETE FROM {$t} WHERE id IN ({$ph})", ...$ids);
+        return $affected;
     }
 
     public function bulkUpdateStatus(array $ids, string $status): int
@@ -329,19 +371,24 @@ class ContactRepository implements ContactRepositoryInterface
 
         $t = $this->db->table(Connection::TABLE_CONTACT_TAG);
         $now = current_time('mysql');
-        $values = [];
-        $params = [];
+        $affected = 0;
 
-        foreach ($contactIds as $contactId) {
-            $values[] = '(%s, %s, %s)';
-            $params[] = $contactId;
-            $params[] = $tagId;
-            $params[] = $now;
+        foreach (array_chunk($contactIds, self::BULK_CHUNK_SIZE) as $chunk) {
+            $values = [];
+            $params = [];
+
+            foreach ($chunk as $contactId) {
+                $values[] = '(%s, %s, %s)';
+                $params[] = $contactId;
+                $params[] = $tagId;
+                $params[] = $now;
+            }
+
+            $sql = "INSERT IGNORE INTO {$t} (contact_id, tag_id, created_at) VALUES " . implode(', ', $values);
+            $affected += $this->db->query($sql, ...$params);
         }
 
-        $sql = "INSERT IGNORE INTO {$t} (contact_id, tag_id, created_at) VALUES " . implode(', ', $values);
-
-        return $this->db->query($sql, ...$params);
+        return $affected;
     }
 
     public function bulkRemoveTag(array $contactIds, string $tagId): int
@@ -351,13 +398,18 @@ class ContactRepository implements ContactRepositoryInterface
         }
 
         $t = $this->db->table(Connection::TABLE_CONTACT_TAG);
-        $ph = self::placeholders($contactIds);
+        $affected = 0;
 
-        return $this->db->query(
-            "DELETE FROM {$t} WHERE tag_id = %s AND contact_id IN ({$ph})",
-            $tagId,
-            ...$contactIds,
-        );
+        foreach (array_chunk($contactIds, self::BULK_CHUNK_SIZE) as $chunk) {
+            $ph = self::placeholders($chunk);
+            $affected += $this->db->query(
+                "DELETE FROM {$t} WHERE tag_id = %s AND contact_id IN ({$ph})",
+                $tagId,
+                ...$chunk,
+            );
+        }
+
+        return $affected;
     }
 
     public function eachSubscribedWithEmail(callable $callback, int $batchSize = 500): void
