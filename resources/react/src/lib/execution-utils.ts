@@ -1,12 +1,13 @@
+import { __ } from '@wordpress/i18n';
 import type { StepLog } from '@/lib/api';
 
 export const EXECUTION_STATUS_VARIANTS: Record<string, { variant: 'success' | 'destructive' | 'info' | 'warning' | 'neutral'; label: string }> = {
-  completed: { variant: 'success', label: 'Completed' },
-  failed: { variant: 'destructive', label: 'Failed' },
-  running: { variant: 'info', label: 'Running' },
-  pending: { variant: 'warning', label: 'Pending' },
-  waiting: { variant: 'warning', label: 'Waiting' },
-  cancelled: { variant: 'neutral', label: 'Cancelled' },
+  completed: { variant: 'success', label: __('Completed', 'wp-sms') },
+  failed: { variant: 'destructive', label: __('Failed', 'wp-sms') },
+  running: { variant: 'info', label: __('Running', 'wp-sms') },
+  pending: { variant: 'warning', label: __('Pending', 'wp-sms') },
+  waiting: { variant: 'warning', label: __('Waiting', 'wp-sms') },
+  cancelled: { variant: 'neutral', label: __('Cancelled', 'wp-sms') },
 };
 
 export function formatElapsed(start: string, end: string | null): string {

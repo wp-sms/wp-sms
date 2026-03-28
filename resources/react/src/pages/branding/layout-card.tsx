@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { SegmentedGroup } from '@/components/ui/segmented-group';
@@ -5,15 +6,15 @@ import { Layout } from 'lucide-react';
 import type { BrandingSettings, BrandingLayout, ButtonStyle, SocialPosition } from '@/lib/api';
 
 const RADIUS_OPTIONS = [
-  { value: 0, label: 'Sharp', icon: <div className="h-4 w-4 border-2 border-current" style={{ borderRadius: 0 }} /> },
-  { value: 8, label: 'Rounded', icon: <div className="h-4 w-4 border-2 border-current" style={{ borderRadius: '6px' }} /> },
-  { value: 16, label: 'Pill', icon: <div className="h-4 w-4 border-2 border-current" style={{ borderRadius: '10px' }} /> },
+  { value: 0, label: __('Sharp', 'wp-sms'), icon: <div className="h-4 w-4 border-2 border-current" style={{ borderRadius: 0 }} /> },
+  { value: 8, label: __('Rounded', 'wp-sms'), icon: <div className="h-4 w-4 border-2 border-current" style={{ borderRadius: '6px' }} /> },
+  { value: 16, label: __('Pill', 'wp-sms'), icon: <div className="h-4 w-4 border-2 border-current" style={{ borderRadius: '10px' }} /> },
 ];
 
 const BUTTON_STYLE_OPTIONS = [
   {
     value: 'filled' as ButtonStyle,
-    label: 'Filled',
+    label: __('Filled', 'wp-sms'),
     icon: (
       <svg className="h-4 w-4" viewBox="0 0 16 16" fill="currentColor" stroke="none">
         <rect x="2" y="5" width="12" height="6" rx="2" />
@@ -22,7 +23,7 @@ const BUTTON_STYLE_OPTIONS = [
   },
   {
     value: 'outline' as ButtonStyle,
-    label: 'Outline',
+    label: __('Outline', 'wp-sms'),
     icon: (
       <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
         <rect x="2" y="5" width="12" height="6" rx="2" />
@@ -31,7 +32,7 @@ const BUTTON_STYLE_OPTIONS = [
   },
   {
     value: 'ghost' as ButtonStyle,
-    label: 'Ghost',
+    label: __('Ghost', 'wp-sms'),
     icon: (
       <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" opacity="0.5">
         <rect x="2" y="5" width="12" height="6" rx="2" strokeDasharray="2 1.5" />
@@ -43,7 +44,7 @@ const BUTTON_STYLE_OPTIONS = [
 const SOCIAL_POSITIONS = [
   {
     value: 'top' as SocialPosition,
-    label: 'Top',
+    label: __('Top', 'wp-sms'),
     icon: (
       <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
         <rect x="2" y="2" width="12" height="3" rx="0.5" />
@@ -54,7 +55,7 @@ const SOCIAL_POSITIONS = [
   },
   {
     value: 'bottom' as SocialPosition,
-    label: 'Bottom',
+    label: __('Bottom', 'wp-sms'),
     icon: (
       <svg className="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5">
         <rect x="2" y="2" width="12" height="4" rx="0.5" opacity="0.3" />
@@ -79,7 +80,7 @@ export function LayoutCard({ branding, onChange }: LayoutCardProps) {
           Layout &amp; Shape
         </CardTitle>
         <CardDescription>
-          Choose a page layout, corner style, and social button placement
+          {__('Choose a page layout, corner style, and social button placement', 'wp-sms')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
@@ -104,7 +105,7 @@ export function LayoutCard({ branding, onChange }: LayoutCardProps) {
                 <rect x="34" y="32" width="32" height="3" rx="1" className="fill-muted-foreground/20" />
                 <rect x="34" y="39" width="20" height="5" rx="1.5" className="fill-primary/40" />
               </svg>
-              <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground">Centered</span>
+              <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground">{__('Centered', 'wp-sms')}</span>
             </button>
 
             {/* Split layout thumbnail */}
@@ -127,7 +128,7 @@ export function LayoutCard({ branding, onChange }: LayoutCardProps) {
                 <rect x="55" y="29" width="35" height="3" rx="1" className="fill-muted-foreground/20" />
                 <rect x="55" y="36" width="22" height="5" rx="1.5" className="fill-primary/40" />
               </svg>
-              <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground">Split</span>
+              <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground">{__('Split', 'wp-sms')}</span>
             </button>
           </div>
         </Field>

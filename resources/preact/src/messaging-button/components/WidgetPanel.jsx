@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
+import { __, sprintf } from '@wordpress/i18n';
 import { WelcomePage } from './pages/WelcomePage';
 import { ContactFormPage } from './pages/ContactFormPage';
 import { TeamPage } from './pages/TeamPage';
@@ -6,10 +7,10 @@ import { ResourcesPage } from './pages/ResourcesPage';
 import { CloseIcon, HomeIcon, MessageIcon, UsersIcon, HelpCircleIcon, WsmsLogo } from './icons';
 
 const NAV_TAB_CONFIG = [
-    { page: 'welcome', label: 'Home', Icon: HomeIcon },
-    { page: 'contact_form', label: 'Message', Icon: MessageIcon },
-    { page: 'team', label: 'Team', Icon: UsersIcon },
-    { page: 'resources', label: 'Help', Icon: HelpCircleIcon },
+    { page: 'welcome', label: __('Home', 'wp-sms'), Icon: HomeIcon },
+    { page: 'contact_form', label: __('Message', 'wp-sms'), Icon: MessageIcon },
+    { page: 'team', label: __('Team', 'wp-sms'), Icon: UsersIcon },
+    { page: 'resources', label: __('Help', 'wp-sms'), Icon: HelpCircleIcon },
 ];
 
 export function WidgetPanel({ isOpen, currentPage, config, isOnline, offlineMessage, onNavigate, onClose }) {
@@ -89,7 +90,7 @@ export function WidgetPanel({ isOpen, currentPage, config, isOnline, offlineMess
         if (enabledPages.length === 0) {
             return (
                 <div class="wsms-mb-page" style={{ textAlign: 'center', color: 'var(--mb-text-secondary)', fontSize: '13px', padding: '40px 20px' }}>
-                    No pages are currently enabled.
+                    {__('No pages are currently enabled.', 'wp-sms')}
                 </div>
             );
         }
@@ -123,7 +124,7 @@ export function WidgetPanel({ isOpen, currentPage, config, isOnline, offlineMess
                     <p class="wsms-mb-panel__subtitle">{widgetSubtitle}</p>
                     <div class="wsms-mb-panel__status">
                         <span class={`wsms-mb-panel__status-dot ${isOnline ? 'wsms-mb-panel__status-dot--online' : 'wsms-mb-panel__status-dot--offline'}`} />
-                        <span>{isOnline ? 'Online now' : (offlineMessage || 'Away')}</span>
+                        <span>{isOnline ? __('Online now', 'wp-sms') : (offlineMessage || __('Away', 'wp-sms'))}</span>
                     </div>
                 </div>
                 <button
@@ -131,7 +132,7 @@ export function WidgetPanel({ isOpen, currentPage, config, isOnline, offlineMess
                     type="button"
                     class="wsms-mb-panel__close"
                     onClick={onClose}
-                    aria-label="Close"
+                    aria-label={__('Close', 'wp-sms')}
                 >
                     <CloseIcon size={20} />
                 </button>
@@ -173,7 +174,7 @@ export function WidgetPanel({ isOpen, currentPage, config, isOnline, offlineMess
                 class="wsms-mb-panel__branding"
             >
                 <WsmsLogo size={12} />
-                <span>Powered by <strong>WSMS</strong></span>
+                <span>{sprintf(__('Powered by %s', 'wp-sms'), 'WSMS')}</span>
             </a>
         </div>
     );

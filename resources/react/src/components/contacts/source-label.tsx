@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { formatSource } from '@/lib/constants';
 
 interface SourceLabelProps {
@@ -11,7 +12,7 @@ export function SourceLabel({ source, sourceRef, showPrefix = true }: SourceLabe
 
   return (
     <span className="text-xs text-muted-foreground">
-      {showPrefix && 'Source: '}{label}
+      {showPrefix && __('Source: ', 'wp-sms')}{label}
       {detail && <span className="opacity-70"> ({detail})</span>}
     </span>
   );

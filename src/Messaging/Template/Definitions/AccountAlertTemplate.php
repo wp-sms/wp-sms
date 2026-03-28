@@ -57,7 +57,7 @@ class AccountAlertTemplate implements ToggleableTemplateInterface
                 body: __('[{{site_name}}] {{alert_message}}', 'wp-sms'),
             ),
             'telegram' => new ChannelContent(
-                body: __('<b>[{{site_name}}] Security Alert</b>' . "\n" . '{{alert_message}}', 'wp-sms'),
+                body: __("<b>[{{site_name}}] Security Alert</b>\n{{alert_message}}", 'wp-sms'),
             ),
         ];
     }

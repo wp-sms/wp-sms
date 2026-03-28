@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
 import { useExecutions } from '@/hooks/use-executions';
 import type { FlowExecution } from '@/lib/api';
@@ -43,7 +44,7 @@ export function ExecutionHistory({ flowId }: ExecutionHistoryProps) {
           <p className="text-sm text-muted-foreground">{total} execution{total !== 1 ? 's' : ''}</p>
           <Button variant="ghost" size="sm" onClick={refetch}>
             <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
-            Refresh
+            {__('Refresh', 'wp-sms')}
           </Button>
         </div>
       )}
@@ -54,8 +55,8 @@ export function ExecutionHistory({ flowId }: ExecutionHistoryProps) {
         empty={
           <EmptyState
             compact
-            title="No executions yet"
-            description="Executions will appear here after the flow is triggered."
+            title={__('No executions yet', 'wp-sms')}
+            description={__('Executions will appear here after the flow is triggered.', 'wp-sms')}
           />
         }
         pagination={{ page, totalPages, onPageChange: setPage }}
@@ -63,11 +64,11 @@ export function ExecutionHistory({ flowId }: ExecutionHistoryProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Status</TableHead>
-              <TableHead>Trigger Data</TableHead>
-              <TableHead>Started</TableHead>
-              <TableHead>Duration</TableHead>
-              <TableHead>Error</TableHead>
+              <TableHead>{__('Status', 'wp-sms')}</TableHead>
+              <TableHead>{__('Trigger Data', 'wp-sms')}</TableHead>
+              <TableHead>{__('Started', 'wp-sms')}</TableHead>
+              <TableHead>{__('Duration', 'wp-sms')}</TableHead>
+              <TableHead>{__('Error', 'wp-sms')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

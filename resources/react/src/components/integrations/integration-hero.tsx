@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { useState } from 'react';
 import { IntegrationIcon } from '@/components/integration-icon';
 import { IntegrationStatusBadge } from '@/components/integration-status-badge';
@@ -28,9 +29,9 @@ export function IntegrationHero({ detail, onConfigChange }: IntegrationHeroProps
     setDisconnecting(true);
     try {
       await disconnect(detail.id);
-      toast.success(`${detail.name} disconnected`);
+      toast.success(sprintf(__('%s disconnected', 'wp-sms'), detail.name));
     } catch {
-      toast.error('Failed to disconnect');
+      toast.error(__('Failed to disconnect', 'wp-sms'));
     } finally {
       setDisconnecting(false);
     }
@@ -89,7 +90,7 @@ export function IntegrationHero({ detail, onConfigChange }: IntegrationHeroProps
       {!detail.available && (
         <Alert variant="warning">
           <AlertTriangle className="h-4 w-4" />
-          <AlertTitle>Not Installed</AlertTitle>
+          <AlertTitle>{__('Not Installed', 'wp-sms')}</AlertTitle>
           <AlertDescription>
             {detail.name} is not installed. Settings can be pre-configured but won&apos;t take effect until the plugin is active.
           </AlertDescription>

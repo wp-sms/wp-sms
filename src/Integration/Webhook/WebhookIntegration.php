@@ -22,7 +22,7 @@ class WebhookIntegration implements IntegrationInterface
 
     public function getDescription(): string
     {
-        return 'Receive external events via inbound HTTP webhooks.';
+        return __('Receive external events via inbound HTTP webhooks.', 'wp-sms');
     }
 
     public function getCategory(): string

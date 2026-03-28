@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Smartphone, Mail, KeyRound } from 'lucide-react';
 import {
   Drawer,
@@ -35,9 +36,9 @@ interface ChannelSettingsPanelProps {
 }
 
 const CHANNEL_META: Record<ChannelId, { icon: typeof Smartphone; label: string }> = {
-  phone: { icon: Smartphone, label: 'Phone' },
-  email: { icon: Mail, label: 'Email' },
-  password: { icon: KeyRound, label: 'Password' },
+  phone: { icon: Smartphone, label: __('Phone', 'wp-sms') },
+  email: { icon: Mail, label: __('Email', 'wp-sms') },
+  password: { icon: KeyRound, label: __('Password', 'wp-sms') },
 };
 
 function PasswordContent({
@@ -50,21 +51,21 @@ function PasswordContent({
   return (
     <div className="space-y-6 px-4 pb-4">
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Options</Label>
+        <Label className="text-sm font-medium">{__('Options', 'wp-sms')}</Label>
         <div className="space-y-2">
           <label className="flex items-center gap-2 cursor-pointer">
             <Checkbox
               checked={settings.required_at_signup}
               onCheckedChange={(checked) => onUpdate({ required_at_signup: !!checked })}
             />
-            <span className="text-sm">Required at sign up</span>
+            <span className="text-sm">{__('Required at sign up', 'wp-sms')}</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <Checkbox
               checked={settings.allow_sign_in}
               onCheckedChange={(checked) => onUpdate({ allow_sign_in: !!checked })}
             />
-            <span className="text-sm">Allow to sign in</span>
+            <span className="text-sm">{__('Allow to sign in', 'wp-sms')}</span>
           </label>
         </div>
       </div>
@@ -95,7 +96,7 @@ function ChannelContent({
     <div className="space-y-6 px-4 pb-4">
       {/* Usage */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Usage</Label>
+        <Label className="text-sm font-medium">{__('Usage', 'wp-sms')}</Label>
         <RadioGroup
           value={settings.usage}
           onValueChange={(v) => {
@@ -105,11 +106,11 @@ function ChannelContent({
         >
           <label className="flex items-center gap-2 cursor-pointer">
             <RadioGroupItem value="login" />
-            <span className="text-sm">Login / Register</span>
+            <span className="text-sm">{__('Login / Register', 'wp-sms')}</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <RadioGroupItem value="mfa" />
-            <span className="text-sm">MFA</span>
+            <span className="text-sm">{__('MFA', 'wp-sms')}</span>
           </label>
         </RadioGroup>
       </div>
@@ -118,7 +119,7 @@ function ChannelContent({
 
       {/* Verification Methods */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Verification Methods</Label>
+        <Label className="text-sm font-medium">{__('Verification Methods', 'wp-sms')}</Label>
         <div className="space-y-2">
           {channelConfig.verificationMethods
             .filter((vm) => !(isWhatsApp && vm.value === 'magic_link'))
@@ -140,7 +141,7 @@ function ChannelContent({
             </label>
           ))}
           {isWhatsApp && (
-            <p className="text-xs text-muted-foreground">WhatsApp supports OTP codes only</p>
+            <p className="text-xs text-muted-foreground">{__('WhatsApp supports OTP codes only', 'wp-sms')}</p>
           )}
         </div>
       </div>
@@ -150,7 +151,7 @@ function ChannelContent({
         <>
           <Separator />
           <div className="space-y-2">
-            <Label className="text-sm font-medium">Delivery Channel</Label>
+            <Label className="text-sm font-medium">{__('Delivery Channel', 'wp-sms')}</Label>
             <RadioGroup
               value={(settings as PhoneChannelSettings).delivery_channel}
               onValueChange={(v) => {
@@ -216,7 +217,7 @@ function ChannelContent({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="__default__">Use default gateway</SelectItem>
+                <SelectItem value="__default__">{__('Use default gateway', 'wp-sms')}</SelectItem>
                 {configuredGateways.map((g) => (
                   <SelectItem key={g.id} value={g.id}>{g.name}</SelectItem>
                 ))}
@@ -233,35 +234,35 @@ function ChannelContent({
 
       {/* Options */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium">Options</Label>
+        <Label className="text-sm font-medium">{__('Options', 'wp-sms')}</Label>
         <div className="space-y-2">
           <label className="flex items-center gap-2 cursor-pointer">
             <Checkbox
               checked={settings.required_at_signup}
               onCheckedChange={(checked) => onUpdate({ required_at_signup: !!checked })}
             />
-            <span className="text-sm">Required at sign up</span>
+            <span className="text-sm">{__('Required at sign up', 'wp-sms')}</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <Checkbox
               checked={settings.verify_at_signup}
               onCheckedChange={(checked) => onUpdate({ verify_at_signup: !!checked })}
             />
-            <span className="text-sm">Verify at sign up</span>
+            <span className="text-sm">{__('Verify at sign up', 'wp-sms')}</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <Checkbox
               checked={settings.allow_sign_in}
               onCheckedChange={(checked) => onUpdate({ allow_sign_in: !!checked })}
             />
-            <span className="text-sm">Allow to sign in</span>
+            <span className="text-sm">{__('Allow to sign in', 'wp-sms')}</span>
           </label>
           <label className="flex items-center gap-2 cursor-pointer">
             <Checkbox
               checked={settings.reverify_on_change}
               onCheckedChange={(checked) => onUpdate({ reverify_on_change: !!checked })}
             />
-            <span className="text-sm">Re-verify on change</span>
+            <span className="text-sm">{__('Re-verify on change', 'wp-sms')}</span>
           </label>
         </div>
       </div>
@@ -270,7 +271,7 @@ function ChannelContent({
 
       {/* Code Settings */}
       <div className="space-y-4">
-        <Label className="text-sm font-medium">Code Settings</Label>
+        <Label className="text-sm font-medium">{__('Code Settings', 'wp-sms')}</Label>
         {settings.verification_methods?.includes('otp') && (
           <Field>
             <FieldLabel>Code Length</FieldLabel>

@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -96,7 +97,7 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
           setImporting(false);
           setProgress(null);
           onUpdate();
-          toast.success(`Import complete: ${status.import_stats.total_synced} contacts imported`);
+          toast.success(sprintf(__('Import complete: %s contacts imported', 'wp-sms'), status.import_stats.total_synced));
         }
       } catch {
         // Keep polling on error
@@ -120,11 +121,11 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
       } else {
         await saveImportSettings(integrationId, { enabled: false } as ImportSettings);
         setEnabled(false);
-        toast.success('Contact import disabled');
+        toast.success(__('Contact import disabled', 'wp-sms'));
         onUpdate();
       }
     } catch {
-      toast.error('Failed to update import settings');
+      toast.error(__('Failed to update import settings', 'wp-sms'));
     } finally {
       setToggling(false);
     }
@@ -141,10 +142,10 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
         ...(hasListPicker ? { list_id: listId } : {}),
       };
       await saveImportSettings(integrationId, settings);
-      toast.success('Import settings saved');
+      toast.success(__('Import settings saved', 'wp-sms'));
       onUpdate();
     } catch {
-      toast.error('Failed to save import settings');
+      toast.error(__('Failed to save import settings', 'wp-sms'));
     } finally {
       setSaving(false);
     }
@@ -155,7 +156,7 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
     try {
       const res = await startImport(integrationId);
       if (res.total_available === 0) {
-        toast.info('No contacts to import');
+        toast.info(__('No contacts to import', 'wp-sms'));
         setImporting(false);
         return;
       }
@@ -163,7 +164,7 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
       setProgress({ synced: 0 });
       startPolling();
     } catch {
-      toast.error('Failed to start import');
+      toast.error(__('Failed to start import', 'wp-sms'));
       setImporting(false);
     }
   }
@@ -197,10 +198,10 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
           <div>
             <CardTitle className="text-base flex items-center gap-2">
               <Download className="h-4 w-4 text-blue-500" />
-              Contact Import
+              {__('Contact Import', 'wp-sms')}
             </CardTitle>
             <CardDescription>
-              Import contacts from this source into your contact database.
+              {__('Import contacts from this source into your contact database.', 'wp-sms')}
             </CardDescription>
           </div>
           <Switch checked={enabled} onCheckedChange={handleToggle} disabled={toggling} />
@@ -212,7 +213,7 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
           <div className="space-y-2">
             <label className="text-sm font-medium">User Roles</label>
             <p className="text-xs text-muted-foreground">
-              Only import users with these roles. Leave empty to import all roles.
+              {__('Only import users with these roles. Leave empty to import all roles.', 'wp-sms')}
             </p>
             <div className="grid grid-cols-2 gap-2">
               {Object.entries(allRoles).map(([value, label]) => (
@@ -237,7 +238,7 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
             ) : (
               <Select value={listId} onValueChange={setListId}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a list..." />
+                  <SelectValue placeholder={__('Select a list...', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
                   {lists.map((list) => (
@@ -289,16 +290,16 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
         <div className="space-y-3">
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div>
-              <span className="text-muted-foreground">Contacts imported</span>
+              <span className="text-muted-foreground">{__('Contacts imported', 'wp-sms')}</span>
               <p className="font-medium">{importStats?.total_synced ?? 0}</p>
             </div>
             <div>
-              <span className="text-muted-foreground">Last imported</span>
+              <span className="text-muted-foreground">{__('Last imported', 'wp-sms')}</span>
               <p className="font-medium">{importStats?.last_synced_at ? formatDateTime(importStats.last_synced_at) : 'Never'}</p>
             </div>
             {importStats?.last_error && (
               <div className="col-span-2">
-                <span className="text-muted-foreground">Last error</span>
+                <span className="text-muted-foreground">{__('Last error', 'wp-sms')}</span>
                 <p className="text-sm text-destructive">{importStats.last_error}</p>
               </div>
             )}
@@ -308,7 +309,7 @@ export function ImportSection({ integrationId, importSettings, importStats, onUp
           {isImporting && progress && (
             <div className="space-y-1.5">
               <div className="flex justify-between text-xs text-muted-foreground">
-                <span>Importing...</span>
+                <span>{__('Importing...', 'wp-sms')}</span>
                 <span>{progress.synced} contacts{totalAvailable > 0 ? ` / ${totalAvailable}` : ''}</span>
               </div>
               <Progress value={totalAvailable > 0 ? Math.min(100, (progress.synced / totalAvailable) * 100) : 0} />

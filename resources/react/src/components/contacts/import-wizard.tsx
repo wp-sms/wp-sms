@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useRef } from 'react';
 import type { ImportPreview, ImportResult } from '@/lib/api';
 import { useConfirm } from '@/components/confirm-provider';
@@ -113,13 +114,13 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
     }}>
       <DrawerContent className="sm:max-w-lg overflow-y-auto">
         <DrawerHeader>
-          <DrawerTitle>Import Contacts</DrawerTitle>
+          <DrawerTitle>{__('Import Contacts', 'wp-sms')}</DrawerTitle>
           <DrawerDescription>
-            {step === 'upload' && 'Upload a CSV file to import contacts.'}
-            {step === 'map' && 'Map CSV columns to contact fields.'}
-            {step === 'options' && 'Configure import options.'}
-            {step === 'preview' && 'Review mapped data before importing.'}
-            {step === 'results' && 'Import complete.'}
+            {step === 'upload' && __('Upload a CSV file to import contacts.', 'wp-sms')}
+            {step === 'map' && __('Map CSV columns to contact fields.', 'wp-sms')}
+            {step === 'options' && __('Configure import options.', 'wp-sms')}
+            {step === 'preview' && __('Review mapped data before importing.', 'wp-sms')}
+            {step === 'results' && __('Import complete.', 'wp-sms')}
           </DrawerDescription>
         </DrawerHeader>
 
@@ -137,8 +138,8 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
               }}
             >
               <Upload className="h-8 w-8 text-muted-foreground mb-3" />
-              <p className="text-sm font-medium">Drop CSV file here or click to browse</p>
-              <p className="text-xs text-muted-foreground mt-1">Only .csv files are supported</p>
+              <p className="text-sm font-medium">{__('Drop CSV file here or click to browse', 'wp-sms')}</p>
+              <p className="text-xs text-muted-foreground mt-1">{__('Only .csv files are supported', 'wp-sms')}</p>
               {uploadError && (
                 <div className="flex items-center gap-1.5 mt-2 text-sm text-destructive">
                   <AlertCircle className="h-3.5 w-3.5 shrink-0" />
@@ -171,7 +172,7 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
                   </div>
                   <Select value={mapping[header] || ''} onValueChange={(v) => setMapping({ ...mapping, [header]: v })}>
                     <SelectTrigger className="w-44 h-8 text-sm">
-                      <SelectValue placeholder="Skip" />
+                      <SelectValue placeholder={__('Skip', 'wp-sms')} />
                     </SelectTrigger>
                     <SelectContent>
                       {CONTACT_FIELDS.map((f) => (
@@ -188,7 +189,7 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
           {step === 'options' && (
             <div className="space-y-6">
               <div>
-                <p className="text-sm font-medium mb-2">Match existing contacts by</p>
+                <p className="text-sm font-medium mb-2">{__('Match existing contacts by', 'wp-sms')}</p>
                 <RadioGroup value={matchField} onValueChange={setMatchField}>
                   {MATCH_FIELD_OPTIONS.map((opt) => (
                     <div key={opt.value} className="flex items-center gap-2">
@@ -199,7 +200,7 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
                 </RadioGroup>
               </div>
               <div>
-                <p className="text-sm font-medium mb-2">When a match is found</p>
+                <p className="text-sm font-medium mb-2">{__('When a match is found', 'wp-sms')}</p>
                 <RadioGroup value={duplicateHandling} onValueChange={setDuplicateHandling}>
                   {DUPLICATE_HANDLING_OPTIONS.map((opt) => (
                     <div key={opt.value} className="flex items-center gap-2">
@@ -246,7 +247,7 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
             <div className="space-y-4">
               <Alert variant="success">
                 <CheckCircle className="h-4 w-4" />
-                <AlertTitle>Import complete</AlertTitle>
+                <AlertTitle>{__('Import complete', 'wp-sms')}</AlertTitle>
                 <AlertDescription>
                   {result.imported} created, {result.updated} updated, {result.skipped} skipped
                 </AlertDescription>
@@ -271,26 +272,26 @@ export function ImportWizard({ open, onOpenChange, onPreview, onImport }: Import
         <DrawerFooter>
           {step === 'map' && (
             <>
-              <Button variant="outline" onClick={() => setStep('upload')}>Back</Button>
-              <Button onClick={() => setStep('options')}>Next</Button>
+              <Button variant="outline" onClick={() => setStep('upload')}>{__('Back', 'wp-sms')}</Button>
+              <Button onClick={() => setStep('options')}>{__('Next', 'wp-sms')}</Button>
             </>
           )}
           {step === 'options' && (
             <>
-              <Button variant="outline" onClick={() => setStep('map')}>Back</Button>
-              <Button onClick={() => setStep('preview')}>Next</Button>
+              <Button variant="outline" onClick={() => setStep('map')}>{__('Back', 'wp-sms')}</Button>
+              <Button onClick={() => setStep('preview')}>{__('Next', 'wp-sms')}</Button>
             </>
           )}
           {step === 'preview' && (
             <>
-              <Button variant="outline" onClick={() => setStep('options')}>Back</Button>
+              <Button variant="outline" onClick={() => setStep('options')}>{__('Back', 'wp-sms')}</Button>
               <Button onClick={handleImport} disabled={loading}>
-                {loading ? 'Importing...' : 'Import'}
+                {loading ? __('Importing...', 'wp-sms') : __('Import', 'wp-sms')}
               </Button>
             </>
           )}
           {step === 'results' && (
-            <Button onClick={() => { onOpenChange(false); reset(); }}>Done</Button>
+            <Button onClick={() => { onOpenChange(false); reset(); }}>{__('Done', 'wp-sms')}</Button>
           )}
         </DrawerFooter>
       </DrawerContent>

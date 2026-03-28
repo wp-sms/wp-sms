@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -23,9 +24,9 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Paintbrush className="h-4 w-4 text-muted-foreground" />
-            Button Appearance
+            {__('Button Appearance', 'wp-sms')}
           </CardTitle>
-          <CardDescription>Customize the floating button style and position</CardDescription>
+          <CardDescription>{__('Customize the floating button style and position', 'wp-sms')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -35,8 +36,8 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
                 <Select value={button.position} onValueChange={(v) => onUpdate('button.position', v)}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="bottom-right">Bottom Right</SelectItem>
-                    <SelectItem value="bottom-left">Bottom Left</SelectItem>
+                    <SelectItem value="bottom-right">{__('Bottom Right', 'wp-sms')}</SelectItem>
+                    <SelectItem value="bottom-left">{__('Bottom Left', 'wp-sms')}</SelectItem>
                   </SelectContent>
                 </Select>
               </Field>
@@ -46,9 +47,9 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
                 <Select value={button.style} onValueChange={(v) => onUpdate('button.style', v)}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="icon-text">Icon + Text</SelectItem>
-                    <SelectItem value="icon">Icon Only</SelectItem>
-                    <SelectItem value="text">Text Only</SelectItem>
+                    <SelectItem value="icon-text">{__('Icon + Text', 'wp-sms')}</SelectItem>
+                    <SelectItem value="icon">{__('Icon Only', 'wp-sms')}</SelectItem>
+                    <SelectItem value="text">{__('Text Only', 'wp-sms')}</SelectItem>
                   </SelectContent>
                 </Select>
               </Field>
@@ -60,7 +61,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
                 id="mb-button-text"
                 value={button.text}
                 onChange={(e) => onUpdate('button.text', e.target.value)}
-                placeholder="Chat with us"
+                placeholder={__('Chat with us', 'wp-sms')}
               />
               <FieldDescription>Displayed when style includes text</FieldDescription>
             </Field>
@@ -122,10 +123,10 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
               <Select value={button.attention} onValueChange={(v) => onUpdate('button.attention', v)}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="none">None</SelectItem>
-                  <SelectItem value="pulse">Pulse</SelectItem>
-                  <SelectItem value="bounce">Bounce</SelectItem>
-                  <SelectItem value="badge">Badge</SelectItem>
+                  <SelectItem value="none">{__('None', 'wp-sms')}</SelectItem>
+                  <SelectItem value="pulse">{__('Pulse', 'wp-sms')}</SelectItem>
+                  <SelectItem value="bounce">{__('Bounce', 'wp-sms')}</SelectItem>
+                  <SelectItem value="badge">{__('Badge', 'wp-sms')}</SelectItem>
                 </SelectContent>
               </Select>
             </Field>
@@ -137,9 +138,9 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <PanelTop className="h-4 w-4 text-muted-foreground" />
-            Widget Header
+            {__('Widget Header', 'wp-sms')}
           </CardTitle>
-          <CardDescription>Set the greeting shown when the widget opens</CardDescription>
+          <CardDescription>{__('Set the greeting shown when the widget opens', 'wp-sms')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -149,7 +150,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
                 id="mb-widget-title"
                 value={widget.title}
                 onChange={(e) => onUpdate('widget.title', e.target.value)}
-                placeholder="Hi there!"
+                placeholder={__('Hi there!', 'wp-sms')}
               />
             </Field>
 
@@ -159,7 +160,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
                 id="mb-widget-subtitle"
                 value={widget.subtitle}
                 onChange={(e) => onUpdate('widget.subtitle', e.target.value)}
-                placeholder="How can we help?"
+                placeholder={__('How can we help?', 'wp-sms')}
               />
             </Field>
           </div>
@@ -169,9 +170,9 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <MessageCircle className="h-4 w-4 text-muted-foreground" />
-            Greeting Bubble
+            {__('Greeting Bubble', 'wp-sms')}
           </CardTitle>
-          <CardDescription>Show a speech bubble above the button to greet visitors</CardDescription>
+          <CardDescription>{__('Show a speech bubble above the button to greet visitors', 'wp-sms')}</CardDescription>
           <CardAction>
             <Switch
               checked={greeting_bubble.enabled}
@@ -189,7 +190,7 @@ export function AppearancePage({ settings, onUpdate }: AppearancePageProps) {
                   id="mb-greeting-message"
                   value={greeting_bubble.message}
                   onChange={(e) => onUpdate('greeting_bubble.message', e.target.value)}
-                  placeholder="Need help? We're online!"
+                  placeholder={__('Need help? We\'re online!', 'wp-sms')}
                 />
               </Field>
 

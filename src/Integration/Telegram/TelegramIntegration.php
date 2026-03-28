@@ -35,7 +35,7 @@ class TelegramIntegration implements IntegrationInterface
 
     public function getDescription(): string
     {
-        return 'Receive messages and commands, send messages, photos, and documents via Telegram bot.';
+        return __('Receive messages and commands, send messages, photos, and documents via Telegram bot.', 'wp-sms');
     }
 
     public function getCategory(): string

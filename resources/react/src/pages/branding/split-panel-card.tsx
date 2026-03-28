@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
@@ -18,10 +19,10 @@ export function SplitPanelCard({ branding, onChange }: SplitPanelCardProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <PanelLeft className="h-4 w-4 text-muted-foreground" />
-          Split Panel
+          {__('Split Panel', 'wp-sms')}
         </CardTitle>
         <CardDescription>
-          Customize the brand panel in split layout
+          {__('Customize the brand panel in split layout', 'wp-sms')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -34,11 +35,11 @@ export function SplitPanelCard({ branding, onChange }: SplitPanelCardProps) {
           >
             <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-input px-3 py-2 transition-colors has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/5">
               <RadioGroupItem value="left" />
-              <span className="text-sm">Left</span>
+              <span className="text-sm">{__('Left', 'wp-sms')}</span>
             </label>
             <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-input px-3 py-2 transition-colors has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/5">
               <RadioGroupItem value="right" />
-              <span className="text-sm">Right</span>
+              <span className="text-sm">{__('Right', 'wp-sms')}</span>
             </label>
           </RadioGroup>
         </Field>
@@ -57,7 +58,7 @@ export function SplitPanelCard({ branding, onChange }: SplitPanelCardProps) {
           <FieldLabel>Panel Background Image</FieldLabel>
           <ImagePickerField
             value={branding.split_panel_bg_image_url}
-            title="Select Panel Background"
+            title={__('Select Panel Background', 'wp-sms')}
             alt="Panel background preview"
             onSelect={(url) => onChange({ split_panel_bg_image_url: url })}
             onClear={() => onChange({ split_panel_bg_image_url: '' })}
@@ -74,7 +75,7 @@ export function SplitPanelCard({ branding, onChange }: SplitPanelCardProps) {
               id="branding-split-heading"
               value={branding.split_welcome_heading}
               onChange={(e) => onChange({ split_welcome_heading: e.target.value })}
-              placeholder="Welcome back"
+              placeholder={__('Welcome back', 'wp-sms')}
             />
           </Field>
 
@@ -84,7 +85,7 @@ export function SplitPanelCard({ branding, onChange }: SplitPanelCardProps) {
               id="branding-split-subtitle"
               value={branding.split_subtitle}
               onChange={(e) => onChange({ split_subtitle: e.target.value })}
-              placeholder="Sign in to continue"
+              placeholder={__('Sign in to continue', 'wp-sms')}
             />
           </Field>
         </div>

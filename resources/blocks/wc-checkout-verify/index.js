@@ -1,4 +1,5 @@
 import { registerBlockType } from '@wordpress/blocks';
+import { __ } from '@wordpress/i18n';
 import metadata from './block.json';
 
 registerBlockType(metadata.name, {
@@ -6,7 +7,7 @@ registerBlockType(metadata.name, {
         return wp.element.createElement(
             'div',
             { className: 'wsms-checkout-verify-editor' },
-            'WSMS: Email/Phone verification will appear here on the checkout page.',
+            __('WSMS: Email/Phone verification will appear here on the checkout page.', 'wp-sms'),
         );
     },
     save: () => null,

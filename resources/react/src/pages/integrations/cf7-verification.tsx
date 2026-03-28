@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Card, CardAction, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { FileCheck } from 'lucide-react';
@@ -21,7 +22,7 @@ export function CF7Verification({ settings, onUpdate }: CF7VerificationProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <FileCheck className="h-4 w-4 text-muted-foreground" />
-          Form Verification
+          {__('Form Verification', 'wp-sms')}
         </CardTitle>
         <CardDescription>
           Add international phone fields and email verification to Contact Form 7 forms.

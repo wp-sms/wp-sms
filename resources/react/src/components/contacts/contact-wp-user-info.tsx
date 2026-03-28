@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { formatDate } from '@/lib/format';
 import type { ContactDetail } from '@/lib/api';
 import { Badge } from '@/components/ui/badge';
@@ -26,11 +27,11 @@ export function ContactWpUserInfo({ wpUser }: ContactWpUserInfoProps) {
       </div>
       <div className="space-y-1 text-sm">
         <div className="flex items-center gap-2">
-          <span className="text-muted-foreground">Username:</span>
+          <span className="text-muted-foreground">{__('Username:', 'wp-sms')}</span>
           <span>{wpUser.username}</span>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-muted-foreground">Roles:</span>
+          <span className="text-muted-foreground">{__('Roles:', 'wp-sms')}</span>
           <div className="flex gap-1">
             {wpUser.roles.map((role) => (
               <Badge key={role} variant="secondary" className="text-[10px] px-1.5 py-0">
@@ -41,7 +42,7 @@ export function ContactWpUserInfo({ wpUser }: ContactWpUserInfoProps) {
         </div>
         {wpUser.registered && (
           <div className="flex items-center gap-2">
-            <span className="text-muted-foreground">Registered:</span>
+            <span className="text-muted-foreground">{__('Registered:', 'wp-sms')}</span>
             <span>{formatDate(wpUser.registered)}</span>
           </div>
         )}

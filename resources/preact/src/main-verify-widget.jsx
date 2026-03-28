@@ -1,5 +1,6 @@
 import { render, h } from 'preact';
 import { useState, useCallback, useEffect, useRef } from 'preact/hooks';
+import { __, sprintf } from '@wordpress/i18n';
 import { OtpInput } from './components/OtpInput';
 import { useResendCooldown } from './hooks/useResendCooldown';
 import './styles/verify-widget.css';
@@ -24,7 +25,7 @@ async function apiPost(endpoint, body, sessionToken) {
     });
 
     let data;
-    try { data = await res.json(); } catch { data = { message: 'Server error. Please try again.' }; }
+    try { data = await res.json(); } catch { data = { message: __('Server error. Please try again.', 'wp-sms') }; }
     if (!res.ok) throw data;
     return data;
 }
@@ -44,7 +45,7 @@ function Spinner() {
 function PoweredBy() {
     return (
         <div className="wsms-vw-powered-by">
-            powered by <span className="wsms-vw-powered-by-brand">WSMS</span>
+            {sprintf(__('powered by %s', 'wp-sms'), 'WSMS')}
         </div>
     );
 }
@@ -81,7 +82,7 @@ function VerifyWidget({ channel, identifier, onVerified, onError, codeLength = 6
             resetCooldown(60);
             setState('input');
         } catch (err) {
-            const msg = err?.message || 'Failed to send verification code.';
+            const msg = err?.message || __('Failed to send verification code.', 'wp-sms');
             setErrorMsg(msg);
             setState('error');
             onError?.(msg);
@@ -98,11 +99,11 @@ function VerifyWidget({ channel, identifier, onVerified, onError, codeLength = 6
                 setState('verified');
                 onVerified?.(res.session_token || sessionToken);
             } else {
-                setErrorMsg(res.message || 'Verification failed.');
+                setErrorMsg(res.message || __('Verification failed.', 'wp-sms'));
                 setState('input');
             }
         } catch (err) {
-            setErrorMsg(err?.message || 'Verification failed.');
+            setErrorMsg(err?.message || __('Verification failed.', 'wp-sms'));
             setState('input');
             onError?.(err?.message);
         }
@@ -116,7 +117,7 @@ function VerifyWidget({ channel, identifier, onVerified, onError, codeLength = 6
             resetCooldown(60);
             setErrorMsg('');
         } catch (err) {
-            setErrorMsg(err?.message || 'Failed to resend code.');
+            setErrorMsg(err?.message || __('Failed to resend code.', 'wp-sms'));
         }
     }, [channel, identifier, sessionToken, cooldown, resetCooldown]);
 
@@ -131,14 +132,14 @@ function VerifyWidget({ channel, identifier, onVerified, onError, codeLength = 6
         content = (
             <div className="wsms-vw-verified" role="status">
                 <CheckIcon />
-                <span>Verification complete</span>
+                <span>{__('Verification complete', 'wp-sms')}</span>
             </div>
         );
     } else if (state === 'sending') {
         content = (
             <div className="wsms-vw-sending" role="status" aria-live="polite">
                 <Spinner />
-                <span>Sending verification code&hellip;</span>
+                <span>{__('Sending verification code\u2026', 'wp-sms')}</span>
             </div>
         );
     } else if (state === 'error' && !sessionToken) {
@@ -146,7 +147,7 @@ function VerifyWidget({ channel, identifier, onVerified, onError, codeLength = 6
             <div className="wsms-vw-error-box" role="alert">
                 <p>{errorMsg}</p>
                 <button type="button" className="wsms-vw-retry" onClick={() => sendCode(null)}>
-                    Send a new code
+                    {__('Send a new code', 'wp-sms')}
                 </button>
             </div>
         );
@@ -154,7 +155,7 @@ function VerifyWidget({ channel, identifier, onVerified, onError, codeLength = 6
         content = (
             <div className={state === 'verifying' ? 'wsms-vw-verifying' : ''}>
                 <p className="wsms-vw-label">
-                    We sent a {codeLength}-digit code to <strong>{maskedId}</strong>
+                    {sprintf(__('We sent a %1$d-digit code to %2$s', 'wp-sms'), codeLength, maskedId)}
                 </p>
 
                 {errorMsg && (
@@ -172,7 +173,7 @@ function VerifyWidget({ channel, identifier, onVerified, onError, codeLength = 6
                 {state === 'verifying' && (
                     <div className="wsms-vw-verifying-indicator" role="status" aria-live="polite">
                         <Spinner />
-                        <span>Verifying&hellip;</span>
+                        <span>{__('Verifying\u2026', 'wp-sms')}</span>
                     </div>
                 )}
 
@@ -183,21 +184,21 @@ function VerifyWidget({ channel, identifier, onVerified, onError, codeLength = 6
                         onClick={handleResend}
                         disabled={cooldown > 0 || state === 'verifying'}
                     >
-                        {cooldown > 0 ? `Resend code in ${cooldown}s` : 'Resend code'}
+                        {cooldown > 0 ? sprintf(__('Resend code in %ds', 'wp-sms'), cooldown) : __('Resend code', 'wp-sms')}
                     </button>
                 </div>
             </div>
         );
     } else {
         // idle with identifier — prompt to send code
-        const channelLabel = channel === 'phone' ? 'phone number' : 'email address';
+        const channelLabel = channel === 'phone' ? __('phone number', 'wp-sms') : __('email address', 'wp-sms');
         content = (
             <>
                 <p className="wsms-vw-label">
-                    We need to verify your {channelLabel}
+                    {sprintf(__('We need to verify your %s', 'wp-sms'), channelLabel)}
                 </p>
                 <button type="button" className="wsms-vw-send-btn" onClick={() => sendCode(null)}>
-                    Send verification code
+                    {__('Send verification code', 'wp-sms')}
                 </button>
             </>
         );

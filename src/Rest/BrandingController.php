@@ -60,7 +60,7 @@ class BrandingController extends Controller
 
             return new WP_REST_Response([
                 'success'      => true,
-                'message'      => 'Branding settings updated.',
+                'message'      => __('Branding settings updated.', 'wp-sms'),
                 'settings'     => $this->brandingRepo->all(),
                 'auth_base_url' => $this->settingsRepo->get('auth_base_url', '/account'),
             ]);

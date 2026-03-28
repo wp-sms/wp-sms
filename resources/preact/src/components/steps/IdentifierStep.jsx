@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { __, sprintf } from '@wordpress/i18n';
 import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { api } from '../../api/client';
 import { primaryMethods } from '../../signals/config';
@@ -27,15 +28,15 @@ function getIdentifierHints(methods) {
     const hasPassword = methods.includes('password');
 
     const parts = [];
-    if (hasEmail || hasPassword) parts.push('Email');
-    if (hasPhone) parts.push('phone');
-    if (hasPassword) parts.push('username');
+    if (hasEmail || hasPassword) parts.push(__('Email', 'wp-sms'));
+    if (hasPhone) parts.push(__('phone', 'wp-sms'));
+    if (hasPassword) parts.push(__('username', 'wp-sms'));
 
-    if (parts.length === 0) return { label: 'Email or username', placeholder: 'you@example.com' };
+    if (parts.length === 0) return { label: __('Email or username', 'wp-sms'), placeholder: 'you@example.com' };
 
     const label = parts.length === 1
         ? parts[0]
-        : parts.slice(0, -1).join(', ') + ' or ' + parts[parts.length - 1];
+        : parts.slice(0, -1).join(', ') + ' ' + __('or', 'wp-sms') + ' ' + parts[parts.length - 1];
 
     const placeholder = (hasEmail || hasPassword) ? 'you@example.com' : hasPhone ? '+1234567890' : '';
 
@@ -73,7 +74,7 @@ export function IdentifierStep() {
                 stepDirection.value = 'forward';
                 authStep.value = 'register';
             } else {
-                authError.value = 'No account found with this identifier.';
+                authError.value = __('No account found with this identifier.', 'wp-sms');
             }
         } catch (err) {
             authError.value = extractError(err).message;
@@ -99,7 +100,7 @@ export function IdentifierStep() {
         return (
             <div className="wsms-auth-stack-4 wsms-auth-center">
                 <p className="wsms-auth-text-sm wsms-auth-text-muted">
-                    Signing in as <strong>{remembered}</strong>...
+                    {sprintf(__('Signing in as %s...', 'wp-sms'), remembered)}
                 </p>
             </div>
         );
@@ -129,7 +130,7 @@ export function IdentifierStep() {
                     />
                 </div>
                 <Button className="wsms-auth-full" type="submit" loading={authLoading.value} disabled={!identifier.trim()}>
-                    {authLoading.value ? 'Checking...' : 'Continue'}
+                    {authLoading.value ? __('Checking...', 'wp-sms') : __('Continue', 'wp-sms')}
                 </Button>
             </form>
 
@@ -138,7 +139,7 @@ export function IdentifierStep() {
             {remembered && !authLoading.value && (
                 <div className="wsms-auth-center">
                     <Button variant="link" type="button" onClick={handleNotYou}>
-                        Not you? Use a different account
+                        {__('Not you? Use a different account', 'wp-sms')}
                     </Button>
                 </div>
             )}

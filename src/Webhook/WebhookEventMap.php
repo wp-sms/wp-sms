@@ -40,83 +40,86 @@ class WebhookEventMap
         'subscription.confirmed',
     ];
 
-    private const EVENT_META = [
-        'message.sent' => [
-            'group'       => 'Messages',
-            'label'       => 'Message Sent',
-            'description' => 'Fires when a message is delivered successfully.',
-        ],
-        'message.failed' => [
-            'group'       => 'Messages',
-            'label'       => 'Message Failed',
-            'description' => 'Fires when a message fails to send.',
-        ],
-        'contact.created' => [
-            'group'       => 'Contacts',
-            'label'       => 'Contact Created',
-            'description' => 'Fires when a new contact is added.',
-        ],
-        'contact.updated' => [
-            'group'       => 'Contacts',
-            'label'       => 'Contact Updated',
-            'description' => 'Fires when a contact\'s details change.',
-        ],
-        'contact.opted_in' => [
-            'group'       => 'Contacts',
-            'label'       => 'Contact Opted In',
-            'description' => 'Fires when a contact subscribes or re-subscribes.',
-        ],
-        'contact.opted_out' => [
-            'group'       => 'Contacts',
-            'label'       => 'Contact Opted Out',
-            'description' => 'Fires when a contact unsubscribes.',
-        ],
-        'contact.bounced' => [
-            'group'       => 'Contacts',
-            'label'       => 'Contact Bounced',
-            'description' => 'Fires when a contact\'s message bounces.',
-        ],
-        'contact.complained' => [
-            'group'       => 'Contacts',
-            'label'       => 'Contact Complained',
-            'description' => 'Fires when a contact marks a message as spam.',
-        ],
-        'sms.received' => [
-            'group'       => 'Inbound',
-            'label'       => 'SMS Received',
-            'description' => 'Fires when an inbound SMS is received.',
-        ],
-        'campaign.started' => [
-            'group'       => 'Campaigns',
-            'label'       => 'Campaign Started',
-            'description' => 'Fires when a campaign begins sending.',
-        ],
-        'campaign.completed' => [
-            'group'       => 'Campaigns',
-            'label'       => 'Campaign Completed',
-            'description' => 'Fires when a campaign finishes. Use this instead of message.sent for campaign summaries.',
-        ],
-        'campaign.cancelled' => [
-            'group'       => 'Campaigns',
-            'label'       => 'Campaign Cancelled',
-            'description' => 'Fires when a campaign is cancelled.',
-        ],
-        'flow.started' => [
-            'group'       => 'Flows',
-            'label'       => 'Flow Started',
-            'description' => 'Fires when a flow execution begins.',
-        ],
-        'flow.completed' => [
-            'group'       => 'Flows',
-            'label'       => 'Flow Completed',
-            'description' => 'Fires when a flow execution finishes.',
-        ],
-        'subscription.confirmed' => [
-            'group'       => 'Subscribers',
-            'label'       => 'Subscription Confirmed',
-            'description' => 'Fires when a subscription form submission is confirmed.',
-        ],
-    ];
+    private static function eventMeta(): array
+    {
+        return [
+            'message.sent' => [
+                'group'       => __('Messages', 'wp-sms'),
+                'label'       => __('Message Sent', 'wp-sms'),
+                'description' => __('Fires when a message is delivered successfully.', 'wp-sms'),
+            ],
+            'message.failed' => [
+                'group'       => __('Messages', 'wp-sms'),
+                'label'       => __('Message Failed', 'wp-sms'),
+                'description' => __('Fires when a message fails to send.', 'wp-sms'),
+            ],
+            'contact.created' => [
+                'group'       => __('Contacts', 'wp-sms'),
+                'label'       => __('Contact Created', 'wp-sms'),
+                'description' => __('Fires when a new contact is added.', 'wp-sms'),
+            ],
+            'contact.updated' => [
+                'group'       => __('Contacts', 'wp-sms'),
+                'label'       => __('Contact Updated', 'wp-sms'),
+                'description' => __('Fires when a contact\'s details change.', 'wp-sms'),
+            ],
+            'contact.opted_in' => [
+                'group'       => __('Contacts', 'wp-sms'),
+                'label'       => __('Contact Opted In', 'wp-sms'),
+                'description' => __('Fires when a contact subscribes or re-subscribes.', 'wp-sms'),
+            ],
+            'contact.opted_out' => [
+                'group'       => __('Contacts', 'wp-sms'),
+                'label'       => __('Contact Opted Out', 'wp-sms'),
+                'description' => __('Fires when a contact unsubscribes.', 'wp-sms'),
+            ],
+            'contact.bounced' => [
+                'group'       => __('Contacts', 'wp-sms'),
+                'label'       => __('Contact Bounced', 'wp-sms'),
+                'description' => __('Fires when a contact\'s message bounces.', 'wp-sms'),
+            ],
+            'contact.complained' => [
+                'group'       => __('Contacts', 'wp-sms'),
+                'label'       => __('Contact Complained', 'wp-sms'),
+                'description' => __('Fires when a contact marks a message as spam.', 'wp-sms'),
+            ],
+            'sms.received' => [
+                'group'       => __('Inbound', 'wp-sms'),
+                'label'       => __('SMS Received', 'wp-sms'),
+                'description' => __('Fires when an inbound SMS is received.', 'wp-sms'),
+            ],
+            'campaign.started' => [
+                'group'       => __('Campaigns', 'wp-sms'),
+                'label'       => __('Campaign Started', 'wp-sms'),
+                'description' => __('Fires when a campaign begins sending.', 'wp-sms'),
+            ],
+            'campaign.completed' => [
+                'group'       => __('Campaigns', 'wp-sms'),
+                'label'       => __('Campaign Completed', 'wp-sms'),
+                'description' => __('Fires when a campaign finishes. Use this instead of message.sent for campaign summaries.', 'wp-sms'),
+            ],
+            'campaign.cancelled' => [
+                'group'       => __('Campaigns', 'wp-sms'),
+                'label'       => __('Campaign Cancelled', 'wp-sms'),
+                'description' => __('Fires when a campaign is cancelled.', 'wp-sms'),
+            ],
+            'flow.started' => [
+                'group'       => __('Flows', 'wp-sms'),
+                'label'       => __('Flow Started', 'wp-sms'),
+                'description' => __('Fires when a flow execution begins.', 'wp-sms'),
+            ],
+            'flow.completed' => [
+                'group'       => __('Flows', 'wp-sms'),
+                'label'       => __('Flow Completed', 'wp-sms'),
+                'description' => __('Fires when a flow execution finishes.', 'wp-sms'),
+            ],
+            'subscription.confirmed' => [
+                'group'       => __('Subscribers', 'wp-sms'),
+                'label'       => __('Subscription Confirmed', 'wp-sms'),
+                'description' => __('Fires when a subscription form submission is confirmed.', 'wp-sms'),
+            ],
+        ];
+    }
 
     public static function getEventName(string $eventClass): ?string
     {
@@ -144,7 +147,7 @@ class WebhookEventMap
     {
         $groups = [];
 
-        foreach (self::EVENT_META as $name => $meta) {
+        foreach (self::eventMeta() as $name => $meta) {
             $groups[$meta['group']][] = [
                 'name'           => $name,
                 'label'          => $meta['label'],

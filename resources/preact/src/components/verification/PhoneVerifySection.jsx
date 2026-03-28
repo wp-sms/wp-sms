@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { authError } from '../../signals/auth';
 import { methodDetails } from '../../signals/config';
 import { OtpVerifyInline } from './OtpVerifyInline';
@@ -12,7 +13,7 @@ export function PhoneVerifySection({ headers, onVerified }) {
             headers={headers}
             onVerified={onVerified}
             onError={(msg) => { authError.value = msg; }}
-            label="Enter the code sent to your phone"
+            label={__('Enter the code sent to your phone', 'wp-sms')}
             codeLength={codeLength}
             initialCooldown={60}
         />

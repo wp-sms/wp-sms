@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useCallback, useState } from 'react';
 import { useMessagingButtonSettings } from './use-mb-settings';
 import { AppearancePage } from './appearance';
@@ -61,7 +62,7 @@ export function MessagingButtonPage({ section }: MessagingButtonPageProps) {
     <>
       <PageHeader
         icon={MessageSquare}
-        title="Messaging Button"
+        title={__('Messaging Button', 'wp-sms')}
         metadata={
           <Badge variant={settings.enabled ? 'success' : 'neutral'} dot>
             {settings.enabled ? 'Active' : 'Inactive'}
@@ -76,7 +77,7 @@ export function MessagingButtonPage({ section }: MessagingButtonPageProps) {
               onClick={() => setDrawerOpen(true)}
             >
               <Eye className="mr-1.5 h-3.5 w-3.5" />
-              Preview
+              {__('Preview', 'wp-sms')}
             </Button>
             <label className="flex items-center gap-2 text-sm text-muted-foreground">
               Enable
@@ -103,7 +104,7 @@ export function MessagingButtonPage({ section }: MessagingButtonPageProps) {
       <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
         <DrawerContent className="sm:max-w-md">
           <DrawerHeader>
-            <DrawerTitle>Preview</DrawerTitle>
+            <DrawerTitle>{__('Preview', 'wp-sms')}</DrawerTitle>
           </DrawerHeader>
           <div className="overflow-y-auto p-4">
             <WidgetPreview settings={settings} />

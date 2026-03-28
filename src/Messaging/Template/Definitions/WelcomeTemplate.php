@@ -62,7 +62,7 @@ class WelcomeTemplate implements ToggleableTemplateInterface
                 body: __('Welcome to {{site_name}}, {{user_name}}! Your account is ready.', 'wp-sms'),
             ),
             'telegram' => new ChannelContent(
-                body: __('<b>Welcome to {{site_name}}, {{user_name}}!</b>' . "\n" . 'Your account is ready.', 'wp-sms'),
+                body: __("<b>Welcome to {{site_name}}, {{user_name}}!</b>\nYour account is ready.", 'wp-sms'),
             ),
         ];
     }

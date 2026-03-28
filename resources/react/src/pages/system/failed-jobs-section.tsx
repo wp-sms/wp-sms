@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -24,10 +25,10 @@ export function FailedJobsSection({ data, onMutate }: FailedJobsSectionProps) {
     setBusy((p) => ({ ...p, [actionId]: true }));
     try {
       await api.post(`system/jobs/${actionId}/retry`, {});
-      toast.success('Job re-queued');
+      toast.success(__('Job re-queued', 'wp-sms'));
       onMutate();
     } catch {
-      toast.error('Failed to retry job');
+      toast.error(__('Failed to retry job', 'wp-sms'));
     } finally {
       setBusy((p) => ({ ...p, [actionId]: false }));
     }
@@ -45,10 +46,10 @@ export function FailedJobsSection({ data, onMutate }: FailedJobsSectionProps) {
     setBusy((p) => ({ ...p, [actionId]: true }));
     try {
       await api.post(`system/jobs/${actionId}/dismiss`, {});
-      toast.success('Job dismissed');
+      toast.success(__('Job dismissed', 'wp-sms'));
       onMutate();
     } catch {
-      toast.error('Failed to dismiss job');
+      toast.error(__('Failed to dismiss job', 'wp-sms'));
     } finally {
       setBusy((p) => ({ ...p, [actionId]: false }));
     }
@@ -58,8 +59,8 @@ export function FailedJobsSection({ data, onMutate }: FailedJobsSectionProps) {
     return (
       <EmptyState
         icon={CheckCircle}
-        title="No failed jobs"
-        description="All background jobs are running smoothly."
+        title={__('No failed jobs', 'wp-sms')}
+        description={__('All background jobs are running smoothly.', 'wp-sms')}
         compact
       />
     );
@@ -69,7 +70,7 @@ export function FailedJobsSection({ data, onMutate }: FailedJobsSectionProps) {
     <div className="space-y-4">
       {data.error_groups.length > 1 && (
         <div className="space-y-1">
-          <p className="text-xs font-medium text-muted-foreground">Error summary</p>
+          <p className="text-xs font-medium text-muted-foreground">{__('Error summary', 'wp-sms')}</p>
           <div className="flex flex-wrap gap-2">
             {data.error_groups.map((g) => (
               <Badge key={g.message} variant="neutral" className="max-w-xs truncate">
@@ -84,11 +85,11 @@ export function FailedJobsSection({ data, onMutate }: FailedJobsSectionProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Type</TableHead>
-              <TableHead>Error</TableHead>
-              <TableHead>Severity</TableHead>
-              <TableHead>Failed</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>{__('Type', 'wp-sms')}</TableHead>
+              <TableHead>{__('Error', 'wp-sms')}</TableHead>
+              <TableHead>{__('Severity', 'wp-sms')}</TableHead>
+              <TableHead>{__('Failed', 'wp-sms')}</TableHead>
+              <TableHead className="text-right">{__('Actions', 'wp-sms')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

@@ -209,7 +209,7 @@ class AdminController extends Controller
 
             return new WP_REST_Response([
                 'success'  => true,
-                'message'  => 'Settings updated.',
+                'message'  => __('Settings updated.', 'wp-sms'),
                 'settings' => $updated,
             ]);
         });
@@ -275,7 +275,7 @@ class AdminController extends Controller
             return new WP_REST_Response([
                 'success' => true,
                 'deleted' => $deleted,
-                'message' => "Deleted {$deleted} log entries.",
+                'message' => sprintf(__('Deleted %d log entries.', 'wp-sms'), $deleted),
             ]);
         });
     }
@@ -296,7 +296,7 @@ class AdminController extends Controller
                 'admin_id' => get_current_user_id(),
             ]);
 
-            return $this->ok(['message' => 'All MFA factors have been disabled for this user.']);
+            return $this->ok(['message' => __('All MFA factors have been disabled for this user.', 'wp-sms')]);
         });
     }
 
@@ -307,7 +307,7 @@ class AdminController extends Controller
                 return new WP_REST_Response([
                     'success' => false,
                     'error'   => 'unavailable',
-                    'message' => 'Report aggregator not available.',
+                    'message' => __('Report aggregator not available.', 'wp-sms'),
                 ], 500);
             }
 
@@ -327,7 +327,7 @@ class AdminController extends Controller
                 return new WP_REST_Response([
                     'success' => false,
                     'error'   => 'unavailable',
-                    'message' => 'Profile field registry not available.',
+                    'message' => __('Profile field registry not available.', 'wp-sms'),
                 ], 500);
             }
 

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { formatDate } from '@/lib/format';
 import { useState, useEffect, useCallback, useMemo, useRef, Fragment } from 'react';
 import { toast } from 'sonner';
@@ -113,7 +114,7 @@ export function PhoneRestriction({ embedded }: { embedded?: boolean }) {
         setCountries(countriesRes.countries);
       })
       .catch(() => {
-        if (!cancelled) toast.error('Failed to load phone restriction settings');
+        if (!cancelled) toast.error(__('Failed to load phone restriction settings', 'wp-sms'));
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -140,9 +141,9 @@ export function PhoneRestriction({ embedded }: { embedded?: boolean }) {
       const res = await api.put<SettingsResponse>('phone-restriction/settings', draft);
       setSaved(res.settings);
       setDraft(res.settings);
-      toast.success('Settings saved');
+      toast.success(__('Settings saved', 'wp-sms'));
     } catch {
-      toast.error('Failed to save settings');
+      toast.error(__('Failed to save settings', 'wp-sms'));
     } finally {
       setSaving(false);
     }
@@ -158,9 +159,9 @@ export function PhoneRestriction({ embedded }: { embedded?: boolean }) {
         {},
       );
       setDbStatus(res.db_status);
-      toast.success(res.message || 'Database downloaded successfully');
+      toast.success(res.message || __('Database downloaded successfully', 'wp-sms'));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, 'Failed to download database'));
+      toast.error(getErrorMessage(err, __('Failed to download database', 'wp-sms')));
     } finally {
       setDownloading(false);
     }
@@ -179,7 +180,7 @@ export function PhoneRestriction({ embedded }: { embedded?: boolean }) {
 
   return (
     <div className="space-y-6">
-      {!embedded && <PageHeader icon={Ban} title="Phone Restrictions" />}
+      {!embedded && <PageHeader icon={Ban} title={__('Phone Restrictions', 'wp-sms')} />}
       {geoDetection && <GeoDetectionBanner geo={geoDetection} />}
       <PhoneInputConfigCard
         draft={draft}
@@ -244,8 +245,8 @@ function PhoneInputConfigCard({ draft, countries, updateSection }: {
   return (
     <PageSection
       icon={Smartphone}
-      title="Phone Input Defaults"
-      description="Configure the default country and preferred countries for phone number inputs across your site"
+      title={__('Phone Input Defaults', 'wp-sms')}
+      description={__('Configure the default country and preferred countries for phone number inputs across your site', 'wp-sms')}
       contentClassName="border-t pt-4 space-y-4"
     >
         <Field>
@@ -300,7 +301,7 @@ function PhoneInputConfigCard({ draft, countries, updateSection }: {
           <div className="flex items-start gap-2 rounded-md border bg-muted/50 p-3">
             <Info className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
             <p className="text-sm text-muted-foreground">
-              The phone input dropdown is automatically filtered based on your Country Restriction settings below.
+              {__('The phone input dropdown is automatically filtered based on your Country Restriction settings below.', 'wp-sms')}
             </p>
           </div>
         )}
@@ -330,7 +331,7 @@ function SingleCountryPicker({ countries, value, onChange }: {
           type="button"
           onClick={() => onChange('')}
           className="rounded-md p-1 hover:bg-muted text-muted-foreground"
-          title="Clear selection"
+          title={__('Clear selection', 'wp-sms')}
         >
           <X className="h-3.5 w-3.5" />
         </button>
@@ -347,14 +348,14 @@ function CountryRestrictionsCard({ draft, countries, updateSection }: {
   return (
     <PageSection
       icon={Globe}
-      title="Country Restrictions"
-      description="Restrict phone numbers to specific countries for authentication and messaging"
+      title={__('Country Restrictions', 'wp-sms')}
+      description={__('Restrict phone numbers to specific countries for authentication and messaging', 'wp-sms')}
       active={draft.auth.enabled || draft.messaging.enabled}
       contentClassName="border-t pt-4 space-y-6"
     >
         <CountrySection
           label="Authentication"
-          description="Restrict which countries can register or verify via phone"
+          description={__('Restrict which countries can register or verify via phone', 'wp-sms')}
           enabled={draft.auth.enabled}
           mode={draft.auth.mode}
           selectedCountries={draft.auth.allowed_countries}
@@ -368,7 +369,7 @@ function CountryRestrictionsCard({ draft, countries, updateSection }: {
 
         <CountrySection
           label="Messaging"
-          description="Restrict which countries can receive messages"
+          description={__('Restrict which countries can receive messages', 'wp-sms')}
           enabled={draft.messaging.enabled}
           mode={draft.messaging.mode}
           selectedCountries={draft.messaging.allowed_countries}
@@ -414,11 +415,11 @@ function CountrySection({ label, description, enabled, mode, selectedCountries, 
           >
             <div className="flex items-center gap-1.5">
               <RadioGroupItem value="allow" id={`${label}-mode-allow`} />
-              <Label htmlFor={`${label}-mode-allow`} className="text-sm font-normal">Allow only selected countries</Label>
+              <Label htmlFor={`${label}-mode-allow`} className="text-sm font-normal">{__('Allow only selected countries', 'wp-sms')}</Label>
             </div>
             <div className="flex items-center gap-1.5">
               <RadioGroupItem value="block" id={`${label}-mode-block`} />
-              <Label htmlFor={`${label}-mode-block`} className="text-sm font-normal">Block selected countries</Label>
+              <Label htmlFor={`${label}-mode-block`} className="text-sm font-normal">{__('Block selected countries', 'wp-sms')}</Label>
             </div>
           </RadioGroup>
 
@@ -521,14 +522,14 @@ function CountryDropdown({ countries, buttonLabel, isSelected, onSelect, indicat
           <input
             ref={searchRef}
             className="flex h-9 w-full bg-transparent py-2 px-2 text-sm outline-none placeholder:text-muted-foreground"
-            placeholder="Search countries..."
+            placeholder={__('Search countries...', 'wp-sms')}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <div className="max-h-60 overflow-y-auto p-1">
           {filtered.length === 0 ? (
-            <p className="px-3 py-4 text-center text-sm text-muted-foreground">No countries found</p>
+            <p className="px-3 py-4 text-center text-sm text-muted-foreground">{__('No countries found', 'wp-sms')}</p>
           ) : (
             filtered.map(([code, name]) => {
               const selected = isSelected(code);
@@ -567,8 +568,8 @@ function NumberTypeBlockingCard({ draft, dbStatus, updateSection, onDownload, do
   return (
     <PageSection
       icon={ShieldBan}
-      title="Number Type Blocking"
-      description="Block specific phone number types from registration and messaging"
+      title={__('Number Type Blocking', 'wp-sms')}
+      description={__('Block specific phone number types from registration and messaging', 'wp-sms')}
       active={ntb.enabled}
       actions={
         <Switch
@@ -585,9 +586,9 @@ function NumberTypeBlockingCard({ draft, dbStatus, updateSection, onDownload, do
             <div className="flex items-start gap-3 rounded-md border bg-muted/50 p-3">
               <AlertTriangle className="h-4 w-4 mt-0.5 text-muted-foreground shrink-0" />
               <div className="space-y-1">
-                <p className="text-sm font-medium">Enhanced database required</p>
+                <p className="text-sm font-medium">{__('Enhanced database required', 'wp-sms')}</p>
                 <p className="text-xs text-muted-foreground">
-                  Download the enhanced phone database to enable number type detection.
+                  {__('Download the enhanced phone database to enable number type detection.', 'wp-sms')}
                 </p>
                 <Button
                   size="sm"
@@ -638,13 +639,13 @@ function EnhancedDatabaseCard({ dbStatus, autoUpdate, onToggleAutoUpdate, onDown
   return (
     <PageSection
       icon={Database}
-      title="Enhanced Phone Database"
-      description="~300KB database enables number type detection and improved country resolution"
+      title={__('Enhanced Phone Database', 'wp-sms')}
+      description={__('~300KB database enables number type detection and improved country resolution', 'wp-sms')}
       contentClassName="space-y-4"
     >
         <div className="rounded-md border p-3 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-sm font-medium">Status</span>
+            <span className="text-sm font-medium">{__('Status', 'wp-sms')}</span>
             <Badge variant={dbStatus?.installed ? 'default' : 'outline'}>
               {dbStatus?.installed ? 'Installed' : 'Not Installed'}
             </Badge>
@@ -653,13 +654,13 @@ function EnhancedDatabaseCard({ dbStatus, autoUpdate, onToggleAutoUpdate, onDown
             <>
               {dbStatus.version && (
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Version</span>
+                  <span className="text-muted-foreground">{__('Version', 'wp-sms')}</span>
                   <span>{dbStatus.version}</span>
                 </div>
               )}
               {dbStatus.updated_at && (
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Last updated</span>
+                  <span className="text-muted-foreground">{__('Last updated', 'wp-sms')}</span>
                   <span>{formatDate(dbStatus.updated_at)}</span>
                 </div>
               )}
@@ -716,8 +717,8 @@ function PhoneCheckerCard() {
   return (
     <PageSection
       icon={Phone}
-      title="Phone Number Checker"
-      description="Test a phone number against your saved restriction settings"
+      title={__('Phone Number Checker', 'wp-sms')}
+      description={__('Test a phone number against your saved restriction settings', 'wp-sms')}
       contentClassName="space-y-4"
     >
         <Field className="max-w-md">
@@ -745,9 +746,9 @@ function PhoneCheckerCard() {
         {result && (
           <div className="rounded-md border bg-muted/50 p-3 space-y-2">
             <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-sm max-w-md">
-              <span className="text-muted-foreground">Country</span>
+              <span className="text-muted-foreground">{__('Country', 'wp-sms')}</span>
               <span>{result.country_name ? `${result.country_name} (${result.country})` : result.country ?? 'Unknown'}</span>
-              <span className="text-muted-foreground">Number type</span>
+              <span className="text-muted-foreground">{__('Number type', 'wp-sms')}</span>
               <span>{result.number_type ?? 'Unknown'}</span>
               {(['auth', 'messaging'] as const).map((ctx) => (
                 <Fragment key={ctx}>
@@ -765,7 +766,7 @@ function PhoneCheckerCard() {
                 </Fragment>
               ))}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">Results reflect saved settings</p>
+            <p className="text-xs text-muted-foreground mt-1">{__('Results reflect saved settings', 'wp-sms')}</p>
           </div>
         )}
     </PageSection>

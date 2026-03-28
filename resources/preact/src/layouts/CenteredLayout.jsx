@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/Card';
 import { Separator } from '@/components/ui/Separator';
 import { RedirectingOverlay } from '@/components/ui/RedirectingOverlay';
@@ -62,7 +63,7 @@ export function CenteredLayout({ title, subtitle, children, footer }) {
                     {redirecting ? (
                         <div className="wsms-auth-loading-center wsms-auth-fade-in">
                             <Spinner className="wsms-auth-spinner--lg" />
-                            <p className="wsms-auth-text-sm wsms-auth-text-muted">Redirecting…</p>
+                            <p className="wsms-auth-text-sm wsms-auth-text-muted">{__('Redirecting\u2026', 'wp-sms')}</p>
                         </div>
                     ) : children}
                 </CardContent>

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
 import { useWebhooks } from '@/hooks/use-webhooks';
 import type { OutboundWebhook, WebhookEvent, WebhookEventGroups } from '@/lib/api';
@@ -69,18 +70,18 @@ export function Webhooks() {
 
   const handleDelete = async (id: string) => {
     const ok = await confirm({
-      title: 'Delete webhook?',
-      description: 'This webhook will be permanently removed. Pending deliveries will be skipped.',
-      confirmLabel: 'Delete',
+      title: __('Delete webhook?', 'wp-sms'),
+      description: __('This webhook will be permanently removed. Pending deliveries will be skipped.', 'wp-sms'),
+      confirmLabel: __('Delete', 'wp-sms'),
       variant: 'destructive',
     });
     if (!ok) return;
     setDeleting(id);
     try {
       await deleteWebhook(id);
-      toast.success('Webhook deleted.');
+      toast.success(__('Webhook deleted.', 'wp-sms'));
     } catch {
-      toast.error('Failed to delete webhook.');
+      toast.error(__('Failed to delete webhook.', 'wp-sms'));
     } finally {
       setDeleting(null);
     }
@@ -96,7 +97,7 @@ export function Webhooks() {
         toast.error(result.message);
       }
     } catch {
-      toast.error('Failed to test connection.');
+      toast.error(__('Failed to test connection.', 'wp-sms'));
     } finally {
       setTesting(null);
     }
@@ -106,7 +107,7 @@ export function Webhooks() {
     try {
       await toggleWebhook(id);
     } catch {
-      toast.error('Failed to toggle webhook.');
+      toast.error(__('Failed to toggle webhook.', 'wp-sms'));
     }
   };
 
@@ -117,7 +118,7 @@ export function Webhooks() {
         eventsLoading={eventsLoading}
         onSave={async (data) => {
           await createWebhook(data);
-          toast.success('Webhook created.');
+          toast.success(__('Webhook created.', 'wp-sms'));
           setView({ mode: 'list' });
         }}
         onBack={() => { setView({ mode: 'list' }); refetch(); }}
@@ -133,7 +134,7 @@ export function Webhooks() {
         eventsLoading={eventsLoading}
         onSave={async (data) => {
           const updated = await updateWebhook(view.webhook.id, data);
-          toast.success('Webhook updated.');
+          toast.success(__('Webhook updated.', 'wp-sms'));
           setView({ mode: 'edit', webhook: updated });
         }}
         onTest={() => handleTest(view.webhook.id)}
@@ -147,12 +148,12 @@ export function Webhooks() {
     <div className="space-y-4">
       <PageHeader
         icon={Webhook}
-        title="Webhooks"
+        title={__('Webhooks', 'wp-sms')}
         metadata={pluralize(webhooks.length, 'webhook')}
         actions={
           <Button size="sm" onClick={() => setView({ mode: 'create' })}>
             <Plus className="mr-1.5 h-3.5 w-3.5" />
-            Create Webhook
+            {__('Create Webhook', 'wp-sms')}
           </Button>
         }
       />
@@ -163,12 +164,12 @@ export function Webhooks() {
         empty={
           <EmptyState
             icon={Webhook}
-            title="No webhooks yet"
-            description="Create your first webhook to push events to external services like Zapier, Make.com, or n8n."
+            title={__('No webhooks yet', 'wp-sms')}
+            description={__('Create your first webhook to push events to external services like Zapier, Make.com, or n8n.', 'wp-sms')}
             action={
               <Button size="sm" onClick={() => setView({ mode: 'create' })}>
                 <Plus className="mr-1.5 h-3.5 w-3.5" />
-                Create Webhook
+                {__('Create Webhook', 'wp-sms')}
               </Button>
             }
           />
@@ -177,11 +178,11 @@ export function Webhooks() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>URL</TableHead>
-              <TableHead>Events</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Health</TableHead>
+              <TableHead>{__('Name', 'wp-sms')}</TableHead>
+              <TableHead>{__('URL', 'wp-sms')}</TableHead>
+              <TableHead>{__('Events', 'wp-sms')}</TableHead>
+              <TableHead>{__('Status', 'wp-sms')}</TableHead>
+              <TableHead>{__('Health', 'wp-sms')}</TableHead>
               <TableHead className="w-[70px]" />
             </TableRow>
           </TableHeader>
@@ -210,14 +211,14 @@ export function Webhooks() {
                 <ActionsCell>
                   <DropdownMenuItem onClick={() => setView({ mode: 'edit', webhook: wh })}>
                     <Pencil className="h-4 w-4 mr-2" />
-                    Edit
+                    {__('Edit', 'wp-sms')}
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={() => void handleTest(wh.id)}
                     disabled={testing === wh.id}
                   >
                     <Zap className="h-4 w-4 mr-2" />
-                    Test Connection
+                    {__('Test Connection', 'wp-sms')}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
@@ -226,7 +227,7 @@ export function Webhooks() {
                     className="text-destructive focus:text-destructive"
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
+                    {__('Delete', 'wp-sms')}
                   </DropdownMenuItem>
                 </ActionsCell>
               </TableRow>
@@ -262,16 +263,16 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
 
   const validate = (): boolean => {
     const errs: Record<string, string> = {};
-    if (!name.trim()) errs.name = 'Name is required.';
-    if (!url.trim()) errs.url = 'URL is required.';
+    if (!name.trim()) errs.name = __('Name is required.', 'wp-sms');
+    if (!url.trim()) errs.url = __('URL is required.', 'wp-sms');
     else {
       try {
         new URL(url);
       } catch {
-        errs.url = 'Enter a valid URL.';
+        errs.url = __('Enter a valid URL.', 'wp-sms');
       }
     }
-    if (selectedEvents.size === 0) errs.events = 'Select at least one event.';
+    if (selectedEvents.size === 0) errs.events = __('Select at least one event.', 'wp-sms');
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -292,7 +293,7 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
       if (apiErr?.errors) {
         setErrors(apiErr.errors);
       } else {
-        toast.error('Failed to save webhook.');
+        toast.error(__('Failed to save webhook.', 'wp-sms'));
       }
     } finally {
       setSaving(false);
@@ -302,17 +303,17 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
   const handleRegenerateSecret = async () => {
     if (!webhook) return;
     const ok = await confirm({
-      title: 'Regenerate secret?',
-      description: 'In-flight deliveries signed with the old secret will fail verification on the receiving end.',
-      confirmLabel: 'Regenerate',
+      title: __('Regenerate secret?', 'wp-sms'),
+      description: __('In-flight deliveries signed with the old secret will fail verification on the receiving end.', 'wp-sms'),
+      confirmLabel: __('Regenerate', 'wp-sms'),
       variant: 'destructive',
     });
     if (!ok) return;
     try {
       await onSave({ regenerate_secret: true });
-      toast.success('Secret regenerated.');
+      toast.success(__('Secret regenerated.', 'wp-sms'));
     } catch {
-      toast.error('Failed to regenerate secret.');
+      toast.error(__('Failed to regenerate secret.', 'wp-sms'));
     }
   };
 
@@ -343,16 +344,16 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}>
           <ArrowLeft className="mr-1 h-4 w-4" />
-          Back
+          {__('Back', 'wp-sms')}
         </Button>
-        <h2 className="text-lg font-semibold">{isEdit ? 'Edit Webhook' : 'Create Webhook'}</h2>
+        <h2 className="text-lg font-semibold">{isEdit ? __('Edit Webhook', 'wp-sms') : __('Create Webhook', 'wp-sms')}</h2>
       </div>
 
       <Card>
         <CardContent className="pt-6">
         <div className="max-w-2xl space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="wh-name">Name <span className="text-destructive">*</span></Label>
+          <Label htmlFor="wh-name">{__('Name', 'wp-sms')} <span className="text-destructive">*</span></Label>
           <Input
             id="wh-name"
             value={name}
@@ -363,7 +364,7 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="wh-url">URL <span className="text-destructive">*</span></Label>
+          <Label htmlFor="wh-url">{__('URL', 'wp-sms')} <span className="text-destructive">*</span></Label>
           <Input
             id="wh-url"
             value={url}
@@ -371,16 +372,16 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
             placeholder="https://hooks.zapier.com/..."
           />
           <p className="text-xs text-muted-foreground">
-            Paste the webhook URL from Zapier, Make.com, n8n, or any service that accepts webhooks.
+            {__('Paste the webhook URL from Zapier, Make.com, n8n, or any service that accepts webhooks.', 'wp-sms')}
           </p>
           {errors.url && <p className="text-sm text-destructive">{errors.url}</p>}
         </div>
 
         <div className="space-y-2">
-          <Label>Events <span className="text-destructive">*</span></Label>
+          <Label>{__('Events', 'wp-sms')} <span className="text-destructive">*</span></Label>
           {eventsLoading ? (
             <div className="flex items-center gap-2 text-sm text-muted-foreground py-4">
-              <Loader2 className="h-4 w-4 animate-spin" /> Loading events...
+              <Loader2 className="h-4 w-4 animate-spin" /> {__('Loading events...', 'wp-sms')}
             </div>
           ) : eventGroups ? (
             <div className="border rounded-lg divide-y">
@@ -424,7 +425,7 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
                                     className="text-xs text-muted-foreground hover:text-primary transition-colors"
                                     onClick={() => setPreviewEvent(previewEvent === evt.name ? null : evt.name)}
                                   >
-                                    {previewEvent === evt.name ? 'Hide payload' : 'Preview payload'}
+                                    {previewEvent === evt.name ? __('Hide payload', 'wp-sms') : __('Preview payload', 'wp-sms')}
                                   </button>
                                 </div>
                                 <p className="text-xs text-muted-foreground mt-0.5">{evt.description}</p>
@@ -449,7 +450,7 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
 
         {isEdit && webhook && (
           <div className="space-y-2">
-            <Label>Secret</Label>
+            <Label>{__('Secret', 'wp-sms')}</Label>
             <div className="flex items-center gap-2">
               <Input
                 value={webhook.secret}
@@ -462,7 +463,7 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
                 className="shrink-0"
                 onClick={async () => {
                   await copyToClipboard(webhook.secret);
-                  toast.success('Secret copied to clipboard.');
+                  toast.success(__('Secret copied to clipboard.', 'wp-sms'));
                 }}
               >
                 <Copy className="h-4 w-4" />
@@ -474,22 +475,22 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
                 onClick={() => void handleRegenerateSecret()}
               >
                 <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
-                Regenerate
+                {__('Regenerate', 'wp-sms')}
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
-              Use this secret to verify webhook signatures. Include it in your Zapier/Make configuration.
+              {__('Use this secret to verify webhook signatures. Include it in your Zapier/Make configuration.', 'wp-sms')}
             </p>
           </div>
         )}
 
         <div className="space-y-2">
-          <Label htmlFor="wh-desc">Description (optional)</Label>
+          <Label htmlFor="wh-desc">{__('Description (optional)', 'wp-sms')}</Label>
           <Textarea
             id="wh-desc"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="What this webhook is used for..."
+            placeholder={__('What this webhook is used for...', 'wp-sms')}
             rows={2}
           />
         </div>
@@ -497,15 +498,15 @@ function WebhookForm({ webhook, eventGroups, eventsLoading, onSave, onBack, onTe
         <div className="flex items-center gap-3 pt-2">
           <Button onClick={() => void handleSubmit()} disabled={saving}>
             {saving && <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />}
-            {isEdit ? 'Save Changes' : 'Create Webhook'}
+            {isEdit ? __('Save Changes', 'wp-sms') : __('Create Webhook', 'wp-sms')}
           </Button>
           {isEdit && onTest && (
             <Button variant="outline" onClick={onTest} disabled={testing}>
               {testing ? <Loader2 className="h-4 w-4 mr-1.5 animate-spin" /> : <Zap className="h-4 w-4 mr-1.5" />}
-              Test Connection
+              {__('Test Connection', 'wp-sms')}
             </Button>
           )}
-          <Button variant="ghost" onClick={onBack}>Cancel</Button>
+          <Button variant="ghost" onClick={onBack}>{__('Cancel', 'wp-sms')}</Button>
         </div>
       </div>
         </CardContent>

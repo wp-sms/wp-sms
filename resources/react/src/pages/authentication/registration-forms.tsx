@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from 'react';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
@@ -146,7 +147,7 @@ export function RegistrationForms() {
 
   async function copyShortcode(text: string) {
     await copyToClipboard(text);
-    toast.success('Shortcode copied to clipboard');
+    toast.success(__('Shortcode copied to clipboard', 'wp-sms'));
   }
 
   function copyPopupShortcode(slug: string) {
@@ -201,12 +202,12 @@ export function RegistrationForms() {
       <div className="space-y-4">
         <PageHeader
           icon={FileText}
-          title="Registration Forms"
+          title={__('Registration Forms', 'wp-sms')}
           metadata={pluralize(forms.length, 'form')}
           actions={
             <Button onClick={openCreate} size="sm">
               <Plus className="mr-1 h-3.5 w-3.5" />
-              Create Form
+              {__('Create Form', 'wp-sms')}
             </Button>
           }
         />
@@ -216,12 +217,12 @@ export function RegistrationForms() {
           empty={
             <EmptyState
               icon={FileText}
-              title="No registration forms yet"
-              description="Create your first registration form to collect different information for different user types."
+              title={__('No registration forms yet', 'wp-sms')}
+              description={__('Create your first registration form to collect different information for different user types.', 'wp-sms')}
               action={
                 <Button onClick={openCreate} size="sm">
                   <Plus className="mr-1 h-3.5 w-3.5" />
-                  Create Form
+                  {__('Create Form', 'wp-sms')}
                 </Button>
               }
             />
@@ -230,11 +231,11 @@ export function RegistrationForms() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Slug</TableHead>
-                <TableHead>Fields</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>{__('Name', 'wp-sms')}</TableHead>
+                <TableHead>{__('Slug', 'wp-sms')}</TableHead>
+                <TableHead>{__('Fields', 'wp-sms')}</TableHead>
+                <TableHead>{__('Role', 'wp-sms')}</TableHead>
+                <TableHead>{__('Status', 'wp-sms')}</TableHead>
                 <TableHead className="w-[70px]" />
               </TableRow>
             </TableHeader>
@@ -250,7 +251,7 @@ export function RegistrationForms() {
                     {form.user_role ? (
                       <Badge variant="outline">{roles.find((r) => r.value === form.user_role)?.label || form.user_role}</Badge>
                     ) : (
-                      <span className="text-muted-foreground text-sm">Default</span>
+                      <span className="text-muted-foreground text-sm">{__('Default', 'wp-sms')}</span>
                     )}
                   </TableCell>
                   <TableCell>
@@ -261,19 +262,19 @@ export function RegistrationForms() {
                   <ActionsCell>
                     <DropdownMenuItem onClick={() => openEdit(form)}>
                       <Pencil className="h-4 w-4 mr-2" />
-                      Edit
+                      {__('Edit', 'wp-sms')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => copyPopupShortcode(form.slug)}>
                       <ClipboardCopy className="h-4 w-4 mr-2" />
-                      Copy Popup Shortcode
+                      {__('Copy Popup Shortcode', 'wp-sms')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => copyEmbedShortcode(form.slug)}>
                       <ClipboardCopy className="h-4 w-4 mr-2" />
-                      Copy Embed Shortcode
+                      {__('Copy Embed Shortcode', 'wp-sms')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => duplicate(form.id)}>
                       <Copy className="h-4 w-4 mr-2" />
-                      Duplicate
+                      {__('Duplicate', 'wp-sms')}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
@@ -281,7 +282,7 @@ export function RegistrationForms() {
                       className="text-destructive focus:text-destructive"
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
-                      Delete
+                      {__('Delete', 'wp-sms')}
                     </DropdownMenuItem>
                   </ActionsCell>
                 </TableRow>
@@ -314,7 +315,7 @@ export function RegistrationForms() {
                     slug: slugManual ? prev.slug : generateSlug(name),
                   }));
                 }}
-                placeholder="e.g. Vendor Registration"
+                placeholder={__('e.g. Vendor Registration', 'wp-sms')}
               />
             </Field>
 
@@ -342,7 +343,7 @@ export function RegistrationForms() {
                 id="rf-desc"
                 value={formState.description}
                 onChange={(e) => setFormState((prev) => ({ ...prev, description: e.target.value }))}
-                placeholder="Optional description"
+                placeholder={__('Optional description', 'wp-sms')}
                 className="h-16"
               />
             </Field>
@@ -352,7 +353,7 @@ export function RegistrationForms() {
             {/* Fields */}
             <div>
               <p className="text-sm font-medium mb-1">Fields *</p>
-              <p className="text-xs text-muted-foreground mb-3">Select which fields to include and mark them as required.</p>
+              <p className="text-xs text-muted-foreground mb-3">{__('Select which fields to include and mark them as required.', 'wp-sms')}</p>
               <div className="rounded-lg border border-border/50 divide-y divide-border/50">
                 {SYSTEM_FIELD_OPTIONS.map((sf) => {
                   const included = formState.fields.find((f) => f.id === sf.id);
@@ -406,10 +407,10 @@ export function RegistrationForms() {
                 onValueChange={(v) => setFormState((prev) => ({ ...prev, user_role: v === '__default__' ? '' : v }))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="WordPress default role" />
+                  <SelectValue placeholder={__('WordPress default role', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__default__">WordPress default role</SelectItem>
+                  <SelectItem value="__default__">{__('WordPress default role', 'wp-sms')}</SelectItem>
                   {roles.map((role) => (
                     <SelectItem key={role.value} value={role.value}>
                       {role.label}
@@ -424,9 +425,9 @@ export function RegistrationForms() {
 
             {/* Verification Overrides */}
             <div>
-              <p className="text-sm font-medium mb-1">Verification Overrides</p>
+              <p className="text-sm font-medium mb-1">{__('Verification Overrides', 'wp-sms')}</p>
               <p className="text-xs text-muted-foreground mb-3">
-                Override verification settings per form. Only applies to channels that are enabled in global settings.
+                {__('Override verification settings per form. Only applies to channels that are enabled in global settings.', 'wp-sms')}
               </p>
               <div className="space-y-3">
                 {['email', 'phone'].map((channel) => {
@@ -462,9 +463,9 @@ export function RegistrationForms() {
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="inherit">Inherit</SelectItem>
-                          <SelectItem value="enable">Enable</SelectItem>
-                          <SelectItem value="disable">Disable</SelectItem>
+                          <SelectItem value="inherit">{__('Inherit', 'wp-sms')}</SelectItem>
+                          <SelectItem value="enable">{__('Enable', 'wp-sms')}</SelectItem>
+                          <SelectItem value="disable">{__('Disable', 'wp-sms')}</SelectItem>
                         </SelectContent>
                       </Select>
                     </Field>
@@ -509,7 +510,7 @@ export function RegistrationForms() {
                       branding: { ...prev.branding, primary_color: e.target.value },
                     }))
                   }
-                  placeholder="Inherit from global"
+                  placeholder={__('Inherit from global', 'wp-sms')}
                   className="flex-1"
                 />
                 {formState.branding.primary_color && (
@@ -523,7 +524,7 @@ export function RegistrationForms() {
                       })
                     }
                   >
-                    Clear
+                    {__('Clear', 'wp-sms')}
                   </Button>
                 )}
               </div>

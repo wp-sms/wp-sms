@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { formatDateTime } from '@/lib/format';
 import type { MessageLogEntry } from '@/lib/api';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
@@ -28,7 +29,7 @@ export function MessageLogDetailPanel({ log, onClose }: MessageLogDetailPanelPro
           <>
             <DrawerHeader className="border-b">
               <div className="flex items-center justify-between">
-                <DrawerTitle>Message Details</DrawerTitle>
+                <DrawerTitle>{__('Message Details', 'wp-sms')}</DrawerTitle>
                 <div className="flex items-center gap-2">
                   <ChannelBadge channel={log.channel} />
                   <StatusBadge status={log.status} />
@@ -39,7 +40,7 @@ export function MessageLogDetailPanel({ log, onClose }: MessageLogDetailPanelPro
             <div className="p-4 space-y-5">
               {/* Recipient */}
               <div>
-                <span className="text-xs text-muted-foreground">Recipient</span>
+                <span className="text-xs text-muted-foreground">{__('Recipient', 'wp-sms')}</span>
                 <p className="text-lg font-mono font-medium">{log.recipient}</p>
               </div>
 
@@ -55,7 +56,7 @@ export function MessageLogDetailPanel({ log, onClose }: MessageLogDetailPanelPro
                 <>
                   <Separator />
                   <section>
-                    <h3 className="text-xs font-medium text-muted-foreground mb-2">Content</h3>
+                    <h3 className="text-xs font-medium text-muted-foreground mb-2">{__('Content', 'wp-sms')}</h3>
                     {log.subject && (
                       <p className="text-sm font-semibold mb-1">{log.subject}</p>
                     )}
@@ -71,13 +72,13 @@ export function MessageLogDetailPanel({ log, onClose }: MessageLogDetailPanelPro
               {/* Delivery section */}
               <Separator />
               <section>
-                <h3 className="text-xs font-medium text-muted-foreground mb-2">Delivery</h3>
+                <h3 className="text-xs font-medium text-muted-foreground mb-2">{__('Delivery', 'wp-sms')}</h3>
                 <div className="grid grid-cols-2 gap-3">
                   <Field label="Type" value={log.type ? formatLabel(log.type) : null} />
                   <Field label="Gateway" value={log.gateway_id} />
                   <Field label="Cost" value={log.cost} />
                   <div>
-                    <span className="text-xs text-muted-foreground">Provider ID</span>
+                    <span className="text-xs text-muted-foreground">{__('Provider ID', 'wp-sms')}</span>
                     <p className="text-sm font-mono truncate" title={log.provider_id ?? undefined}>
                       {log.provider_id ?? '\u2014'}
                     </p>
@@ -93,7 +94,7 @@ export function MessageLogDetailPanel({ log, onClose }: MessageLogDetailPanelPro
                 <>
                   <Separator />
                   <section>
-                    <h3 className="text-xs font-medium text-muted-foreground mb-2">Source</h3>
+                    <h3 className="text-xs font-medium text-muted-foreground mb-2">{__('Source', 'wp-sms')}</h3>
                     <p className="text-sm font-mono">{log.execution_id}</p>
                   </section>
                 </>

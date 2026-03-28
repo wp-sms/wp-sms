@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import type { LucideIcon } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -71,8 +72,8 @@ export function RateLimiting({ settings, onUpdate }: RateLimitingProps) {
   return (
     <div className="space-y-4">
       <RateLimitCard
-        title="Phone Channel Limits"
-        description="Limit the number of phone verification attempts"
+        title={__('Phone Channel Limits', 'wp-sms')}
+        description={__('Limit the number of phone verification attempts', 'wp-sms')}
         icon={Smartphone}
         attemptsId="phone_max_attempts"
         cooldownId="phone_cooldown"
@@ -83,8 +84,8 @@ export function RateLimiting({ settings, onUpdate }: RateLimitingProps) {
       />
 
       <RateLimitCard
-        title="Email Channel Limits"
-        description="Limit the number of email verification attempts"
+        title={__('Email Channel Limits', 'wp-sms')}
+        description={__('Limit the number of email verification attempts', 'wp-sms')}
         icon={Mail}
         attemptsId="email_max_attempts"
         cooldownId="email_cooldown"

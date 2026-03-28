@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { cn } from '@/utils/cn';
 
 export function Spinner({ className, ...props }) {
@@ -5,7 +6,7 @@ export function Spinner({ className, ...props }) {
         <div
             className={cn('wsms-auth-spinner', className)}
             role="status"
-            aria-label="Loading"
+            aria-label={__('Loading', 'wp-sms')}
             {...props}
         />
     );

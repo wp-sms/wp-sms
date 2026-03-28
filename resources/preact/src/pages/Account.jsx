@@ -1,4 +1,5 @@
 import { useEffect } from 'preact/hooks';
+import { __, sprintf } from '@wordpress/i18n';
 import { Mail, Phone, Shield, KeyRound, ChevronRight } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { currentUser } from '../signals/auth';
@@ -39,7 +40,7 @@ export function Account() {
 
     if (userLoading.value && !currentUser.value) {
         return (
-            <AccountLayout title="Account" currentPath="/">
+            <AccountLayout title={__('Account', 'wp-sms')} currentPath="/">
                 <AccountSkeleton />
             </AccountLayout>
         );
@@ -56,11 +57,11 @@ export function Account() {
         : 'not-set';
     const mfaBadge = user.mfa_enabled ? 'verified' : 'unverified';
     const mfaLabel = user.mfa_enabled
-        ? `MFA enabled (${user.enrolled_factors.length} factor${user.enrolled_factors.length !== 1 ? 's' : ''})`
-        : 'Not set up';
+        ? sprintf(__('MFA enabled (%d factors)', 'wp-sms'), user.enrolled_factors.length)
+        : __('Not set up', 'wp-sms');
 
     return (
-        <AccountLayout title="Account" currentPath="/">
+        <AccountLayout title={__('Account', 'wp-sms')} currentPath="/">
             {/* User Identity Header */}
             <div className="wsms-auth-identity-header">
                 <UserAvatar user={user} size="lg" />
@@ -79,31 +80,31 @@ export function Account() {
                     href={authUrl('/profile')}
                     icon={Mail}
                     iconVariant="info"
-                    label="Email"
-                    value={user.has_placeholder_email ? 'No email added' : maskEmail(user.email)}
+                    label={__('Email', 'wp-sms')}
+                    value={user.has_placeholder_email ? __('No email added', 'wp-sms') : maskEmail(user.email)}
                     badge={<StatusBadge variant={emailBadge} />}
                 />
                 <StatusCard
                     href={authUrl('/profile')}
                     icon={Phone}
                     iconVariant="success"
-                    label="Phone"
-                    value={user.phone ? maskPhone(user.phone) : 'No phone added'}
+                    label={__('Phone', 'wp-sms')}
+                    value={user.phone ? maskPhone(user.phone) : __('No phone added', 'wp-sms')}
                     badge={<StatusBadge variant={phoneBadge} />}
                 />
                 <StatusCard
                     href={authUrl('/security')}
                     icon={Shield}
                     iconVariant="primary"
-                    label="Security"
+                    label={__('Security', 'wp-sms')}
                     value={mfaLabel}
                     badge={<StatusBadge variant={mfaBadge} />}
                 />
                 <StatusCard
                     href={authUrl('/change-password')}
                     icon={KeyRound}
-                    label="Password"
-                    value={user.has_usable_password ? 'Change password' : 'Set password'}
+                    label={__('Password', 'wp-sms')}
+                    value={user.has_usable_password ? __('Change password', 'wp-sms') : __('Set password', 'wp-sms')}
                 />
             </div>
         </AccountLayout>

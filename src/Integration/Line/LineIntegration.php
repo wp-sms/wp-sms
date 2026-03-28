@@ -41,7 +41,7 @@ class LineIntegration implements IntegrationInterface
 
     public function getDescription(): string
     {
-        return 'Send messages, images, and rich Flex Messages via LINE Messaging API.';
+        return __('Send messages, images, and rich Flex Messages via LINE Messaging API.', 'wp-sms');
     }
 
     public function getCategory(): string

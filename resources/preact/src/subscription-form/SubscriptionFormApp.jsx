@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef } from 'preact/hooks';
+import { __, sprintf } from '@wordpress/i18n';
 import { CaptchaWidget } from '../components/CaptchaWidget';
 import { OtpInput } from '../components/OtpInput';
 import { PhoneInput } from '../components/PhoneInput';
@@ -16,7 +17,7 @@ function PoweredBy() {
                 <path d="M116 285.7V374.707L395.989 226.296V137.289L116 285.7Z" />
                 <path d="M396 254.984V342.991L200.116 447.999L199.898 357.992L396 254.984Z" />
             </svg>
-            <span>Powered by <strong>WSMS</strong></span>
+            <span>{sprintf(__('Powered by %s', 'wp-sms'), 'WSMS')}</span>
         </a>
     );
 }
@@ -72,7 +73,7 @@ export function SubscriptionFormApp({ config }) {
                 if (result.error === 'captcha_failed') {
                     cap.reset();
                 }
-                setError(result.message || 'Submission failed.');
+                setError(result.message || __('Submission failed.', 'wp-sms'));
                 setState(STATE.FORM);
                 return;
             }
@@ -90,7 +91,7 @@ export function SubscriptionFormApp({ config }) {
                 setState(STATE.SUCCESS);
             }
         } catch {
-            setError('An error occurred. Please try again.');
+            setError(__('An error occurred. Please try again.', 'wp-sms'));
             setState(STATE.FORM);
         } finally {
             submittingRef.current = false;
@@ -108,7 +109,7 @@ export function SubscriptionFormApp({ config }) {
             });
 
             if (!result.success) {
-                setError(result.message || 'Verification failed.');
+                setError(result.message || __('Verification failed.', 'wp-sms'));
                 setVerifying(false);
                 return;
             }
@@ -119,7 +120,7 @@ export function SubscriptionFormApp({ config }) {
             }
             setState(STATE.SUCCESS);
         } catch {
-            setError('An error occurred. Please try again.');
+            setError(__('An error occurred. Please try again.', 'wp-sms'));
             setVerifying(false);
         }
     }, [sessionToken, apiCall, redirectUrl]);
@@ -130,7 +131,7 @@ export function SubscriptionFormApp({ config }) {
         try {
             const result = await apiCall('', values);
             if (!result.success) {
-                setError(result.message || 'Failed to resend code.');
+                setError(result.message || __('Failed to resend code.', 'wp-sms'));
                 return;
             }
             if (result.session_token) {
@@ -139,7 +140,7 @@ export function SubscriptionFormApp({ config }) {
                 resetCooldown(60);
             }
         } catch {
-            setError('An error occurred. Please try again.');
+            setError(__('An error occurred. Please try again.', 'wp-sms'));
         }
     }, [values, apiCall, cooldown, resetCooldown]);
 
@@ -162,8 +163,7 @@ export function SubscriptionFormApp({ config }) {
         content = (
             <div class="wsms-sub-form__verify">
                 <div class="wsms-sub-form__verify-msg">
-                    We sent a verification code to{' '}
-                    <span class="wsms-sub-form__verify-masked">{maskedIdentifier}</span>
+                    {sprintf(__('We sent a verification code to %s', 'wp-sms'), maskedIdentifier)}
                 </div>
 
                 <OtpInput
@@ -179,7 +179,7 @@ export function SubscriptionFormApp({ config }) {
                     disabled={cooldown > 0}
                     onClick={handleResend}
                 >
-                    {cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend code'}
+                    {cooldown > 0 ? sprintf(__('Resend in %ds', 'wp-sms'), cooldown) : __('Resend code', 'wp-sms')}
                 </button>
 
                 {error && <div class="wsms-sub-form__error">{error}</div>}
@@ -245,7 +245,7 @@ export function SubscriptionFormApp({ config }) {
                     disabled={isSubmitting || (cap.enabled && !cap.token) || (consent?.required && !consentChecked)}
                 >
                     {isSubmitting && <span class="wsms-sub-form__spinner" />}
-                    {buttonText || 'Subscribe'}
+                    {buttonText || __('Subscribe', 'wp-sms')}
                 </button>
 
                 {error && <div class="wsms-sub-form__error">{error}</div>}

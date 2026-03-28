@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { Input } from './ui/Input';
 import { Label } from './ui/Label';
 
@@ -43,7 +44,7 @@ export function DynamicField({ field, value, onChange, disabled }) {
                     required={field.required}
                     className="wsms-auth-select"
                 >
-                    <option value="">{field.placeholder || `Select ${field.label}...`}</option>
+                    <option value="">{field.placeholder || sprintf(__('Select %s...', 'wp-sms'), field.label)}</option>
                     {(field.options || []).map((opt) => (
                         <option key={opt.value} value={opt.value}>{opt.label}</option>
                     ))}

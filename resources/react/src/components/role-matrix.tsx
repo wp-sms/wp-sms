@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import {
   Table,
   TableBody,
@@ -20,7 +21,7 @@ export function RoleMatrix({ roles, selectedRoles, onToggleRole }: RoleMatrixPro
   if (roleEntries.length === 0) {
     return (
       <p className="text-sm text-muted-foreground">
-        No roles available. Roles are loaded from WordPress.
+        {__('No roles available. Roles are loaded from WordPress.', 'wp-sms')}
       </p>
     );
   }
@@ -30,8 +31,8 @@ export function RoleMatrix({ roles, selectedRoles, onToggleRole }: RoleMatrixPro
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Role</TableHead>
-            <TableHead className="w-24 text-center">MFA Required</TableHead>
+            <TableHead>{__('Role', 'wp-sms')}</TableHead>
+            <TableHead className="w-24 text-center">{__('MFA Required', 'wp-sms')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

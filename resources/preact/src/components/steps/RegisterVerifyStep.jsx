@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 import {
     authError,
     registrationToken,
@@ -33,16 +34,16 @@ export function RegisterVerifyStep({ onComplete }) {
     if (allDone) {
         return (
             <div className="wsms-auth-stack-4 wsms-auth-fade-in">
-                <Alert variant="success" message="Verification complete!" />
+                <Alert variant="success" message={__('Verification complete!', 'wp-sms')} />
 
                 {hasEmail && !emailVerified && (
                     <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-center">
-                        We've sent a verification link to your email. You can verify it anytime.
+                        {__('We\'ve sent a verification link to your email. You can verify it anytime.', 'wp-sms')}
                     </p>
                 )}
 
                 <Button className="wsms-auth-full" onClick={handleComplete}>
-                    Continue to sign in
+                    {__('Continue to sign in', 'wp-sms')}
                 </Button>
             </div>
         );

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -58,9 +59,9 @@ export function ErrorHandlingSettings({ value, onChange }: ErrorHandlingSettings
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="stop">Stop flow</SelectItem>
-                <SelectItem value="continue">Continue</SelectItem>
-                <SelectItem value="retry">Retry</SelectItem>
+                <SelectItem value="stop">{__('Stop flow', 'wp-sms')}</SelectItem>
+                <SelectItem value="continue">{__('Continue', 'wp-sms')}</SelectItem>
+                <SelectItem value="retry">{__('Retry', 'wp-sms')}</SelectItem>
               </SelectContent>
             </Select>
             <FieldDescription>

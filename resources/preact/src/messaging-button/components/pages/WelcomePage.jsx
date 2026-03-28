@@ -1,10 +1,11 @@
+import { __ } from '@wordpress/i18n';
 import { MessageIcon, ChevronRightIcon, HelpCircleIcon } from '../icons';
 import { AvatarImage } from '../AvatarImage';
 
 export function WelcomePage({ config, enabledPages, teamMembers, onNavigate }) {
-    const greeting = config.greeting ?? 'Welcome! Choose an option below to get started.';
-    const ctaLabel = config.cta_label ?? 'Send a message';
-    const ctaDescription = config.cta_description ?? 'We typically reply within a few hours';
+    const greeting = config.greeting ?? __('Welcome! Choose an option below to get started.', 'wp-sms');
+    const ctaLabel = config.cta_label ?? __('Send a message', 'wp-sms');
+    const ctaDescription = config.cta_description ?? __('We typically reply within a few hours', 'wp-sms');
 
     return (
         <div class="wsms-mb-page wsms-mb-page--welcome">
@@ -50,7 +51,7 @@ export function WelcomePage({ config, enabledPages, teamMembers, onNavigate }) {
                             ))}
                         </div>
                         <span class="wsms-mb-welcome__team-text">
-                            Meet our team
+                            {__('Meet our team', 'wp-sms')}
                             <ChevronRightIcon size={14} />
                         </span>
                     </button>
@@ -65,7 +66,7 @@ export function WelcomePage({ config, enabledPages, teamMembers, onNavigate }) {
                     onClick={() => onNavigate('resources')}
                 >
                     <HelpCircleIcon size={16} />
-                    <span>Browse help articles</span>
+                    <span>{__('Browse help articles', 'wp-sms')}</span>
                 </button>
             )}
         </div>

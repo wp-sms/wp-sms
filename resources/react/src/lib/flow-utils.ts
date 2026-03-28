@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import type { FlowNode, ActionNode, ConditionNode, DelayNode, ActionDefinition, JsonSchema, JsonSchemaProperty } from '@/lib/api';
 import { getOperatorLabel } from '@/lib/condition-utils';
 import { generateNodeId } from '@/lib/utils';
@@ -29,15 +30,15 @@ export const STEP_COLORS = {
 } as const;
 
 export const STEP_LABELS = {
-  action: 'Action',
-  condition: 'Condition',
-  delay: 'Delay',
+  action: __('Action', 'wp-sms'),
+  condition: __('Condition', 'wp-sms'),
+  delay: __('Delay', 'wp-sms'),
 } as const;
 
 export const STATUS_DOT = {
-  ready:       { color: 'bg-emerald-400', label: 'Ready' },
-  needs_setup: { color: 'bg-amber-400',   label: 'Needs setup' },
-  error:       { color: 'bg-red-400',     label: 'Error' },
+  ready:       { color: 'bg-emerald-400', label: __('Ready', 'wp-sms') },
+  needs_setup: { color: 'bg-amber-400',   label: __('Needs setup', 'wp-sms') },
+  error:       { color: 'bg-red-400',     label: __('Error', 'wp-sms') },
 } as const;
 
 /** Get a one-line summary for a step card. */
@@ -50,17 +51,17 @@ export function getStepSummary(step: FlowNode, actions?: ActionDefinition[]): st
     case 'delay':
       return getDelaySummary(step);
     default:
-      return 'Unknown step';
+      return __('Unknown step', 'wp-sms');
   }
 }
 
 function getActionSummary(step: ActionNode, actions?: ActionDefinition[]): string {
-  if (!step.action) return 'No action selected';
+  if (!step.action) return __('No action selected', 'wp-sms');
   const action = actions?.find((a) => a.id === step.action);
   const name = action?.name ?? step.action;
 
   const to = step.config.to as string | undefined;
-  if (to) return `${name} to ${truncate(to, 40)}`;
+  if (to) return sprintf(__('%1$s to %2$s', 'wp-sms'), name, truncate(to, 40));
   return name;
 }
 
@@ -69,18 +70,18 @@ function getConditionSummary(step: ConditionNode): string {
     const first = step.rules[0];
     if (first.field) {
       const fieldLabel = first.field.split('.').pop() ?? first.field;
-      return `If ${fieldLabel} ${getOperatorLabel(first.operator)} ${first.value || ''}`.trim();
+      return sprintf(__('If %1$s %2$s %3$s', 'wp-sms'), fieldLabel, getOperatorLabel(first.operator), first.value || '').trim();
     }
   }
   if (step.expression) {
-    return `If ${truncate(step.expression, 50)}`;
+    return sprintf(__('If %s', 'wp-sms'), truncate(step.expression, 50));
   }
-  return 'No condition set';
+  return __('No condition set', 'wp-sms');
 }
 
 function getDelaySummary(step: DelayNode): string {
-  if (!step.duration) return 'No delay set';
-  return `Wait ${formatDuration(step.duration)}`;
+  if (!step.duration) return __('No delay set', 'wp-sms');
+  return sprintf(__('Wait %s', 'wp-sms'), formatDuration(step.duration));
 }
 
 function formatDuration(seconds: number): string {
@@ -117,7 +118,7 @@ export function validateFlowSteps(
             const prop = def?.config_schema?.properties?.[f];
             return prop?.title ?? f;
           });
-          errors.push(`${name}: missing required field${labels.length > 1 ? 's' : ''} ${labels.join(', ')}`);
+          errors.push(sprintf(__('%1$s: missing required field(s) %2$s', 'wp-sms'), name, labels.join(', ')));
         }
       }
     }

@@ -1,9 +1,10 @@
+import { __ } from '@wordpress/i18n';
 import { MessageIcon, CloseIcon } from './icons';
 
 export function FloatingButton({ isOpen, config, onToggle }) {
     const position = config.position ?? 'bottom-right';
     const style = config.style ?? 'icon-text';
-    const text = config.text ?? 'Chat with us';
+    const text = config.text ?? __('Chat with us', 'wp-sms');
     const primaryColor = config.primary_color ?? '#2563eb';
     const textColor = config.text_color ?? '#ffffff';
     const attention = config.attention ?? 'none';
@@ -28,7 +29,7 @@ export function FloatingButton({ isOpen, config, onToggle }) {
                 '--fab-color': textColor,
             }}
             onClick={onToggle}
-            aria-label={isOpen ? 'Close chat' : text}
+            aria-label={isOpen ? __('Close chat', 'wp-sms') : text}
             aria-expanded={isOpen}
         >
             {isOpen ? (

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Monitor } from 'lucide-react';
@@ -47,8 +48,8 @@ body{background:var(--p-bg);color:var(--p-text)}
 <body>
 <div class="site">
   <div class="bar"></div>
-  <h1>Your Website</h1>
-  <p>Preview of the messaging button widget</p>
+  <h1>{__('Your Website', 'wp-sms')}</h1>
+  <p>{__('Preview of the messaging button widget', 'wp-sms')}</p>
   <div class="block" style="margin-top:12px"></div>
   <div class="block"></div>
   <div class="block" style="width:60%"></div>
@@ -136,7 +137,7 @@ function render(cfg){
       else h+=esc((m.name||'?')[0].toUpperCase());
       h+='</div>';
     });
-    h+='<span class="team-label">Meet our team</span>';
+    h+='<span class="team-label">{__('Meet our team', 'wp-sms')}</span>';
     h+='</div>';
   }
   h+='</div>';
@@ -205,7 +206,7 @@ export function WidgetPreview({ settings }: WidgetPreviewProps) {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-sm">
           <Monitor className="h-4 w-4 text-muted-foreground" />
-          Live Preview
+          {__('Live Preview', 'wp-sms')}
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0">
@@ -214,7 +215,7 @@ export function WidgetPreview({ settings }: WidgetPreviewProps) {
             ref={iframeRef}
             srcDoc={PREVIEW_HTML}
             className="h-full w-full border-0"
-            title="Widget Preview"
+            title={__('Widget Preview', 'wp-sms')}
             sandbox="allow-scripts"
           />
         </div>

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, type ReactNode } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PageHeader } from '@/components/layout/page-header';
@@ -22,12 +23,12 @@ export function MonitoringPage({ subTab, onNavigate }: MonitoringPageProps) {
 
   return (
     <Tabs value={activeTab} onValueChange={handleTabChange}>
-      <PageHeader icon={BarChart3} title="Monitoring" metadata={headerMeta} actions={headerActions}>
+      <PageHeader icon={BarChart3} title={__('Monitoring', 'wp-sms')} metadata={headerMeta} actions={headerActions}>
         <TabsList variant="line" className="mt-3">
-          <TabsTrigger value="health">Health</TabsTrigger>
-          <TabsTrigger value="logs">Auth Logs</TabsTrigger>
-          <TabsTrigger value="messages">Message Logs</TabsTrigger>
-          <TabsTrigger value="reports">Reports</TabsTrigger>
+          <TabsTrigger value="health">{__('Health', 'wp-sms')}</TabsTrigger>
+          <TabsTrigger value="logs">{__('Auth Logs', 'wp-sms')}</TabsTrigger>
+          <TabsTrigger value="messages">{__('Message Logs', 'wp-sms')}</TabsTrigger>
+          <TabsTrigger value="reports">{__('Reports', 'wp-sms')}</TabsTrigger>
         </TabsList>
       </PageHeader>
 

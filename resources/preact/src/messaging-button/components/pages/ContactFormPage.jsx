@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { __, sprintf } from '@wordpress/i18n';
 import { submitMessage } from '../../api/widget-client';
 import { CaptchaWidget } from '../../../components/CaptchaWidget';
 import { useFormCaptcha } from '../../../hooks/useFormCaptcha';
@@ -6,10 +7,10 @@ import { CheckCircleIcon, AlertCircleIcon } from '../icons';
 import { PhoneInput } from '../../../components/PhoneInput';
 
 const FIELD_CONFIG = [
-    { id: 'name', label: 'Name', type: 'text', placeholder: 'Your name' },
-    { id: 'email', label: 'Email', type: 'email', placeholder: 'your@email.com' },
-    { id: 'phone', label: 'Phone', type: 'tel' },
-    { id: 'message', label: 'Message', type: 'textarea', placeholder: 'How can we help?' },
+    { id: 'name', label: __('Name', 'wp-sms'), type: 'text', placeholder: __('Your name', 'wp-sms') },
+    { id: 'email', label: __('Email', 'wp-sms'), type: 'email', placeholder: 'your@email.com' },
+    { id: 'phone', label: __('Phone', 'wp-sms'), type: 'tel' },
+    { id: 'message', label: __('Message', 'wp-sms'), type: 'textarea', placeholder: __('How can we help?', 'wp-sms') },
 ];
 
 export function ContactFormPage({ config, gdpr, onClose }) {
@@ -60,7 +61,7 @@ export function ContactFormPage({ config, gdpr, onClose }) {
                 cap.reset();
             }
             setStatus('error');
-            setErrorMsg(err?.error || err?.message || 'Failed to send message. Please try again.');
+            setErrorMsg(err?.error || err?.message || __('Failed to send message. Please try again.', 'wp-sms'));
         }
     };
 
@@ -71,14 +72,14 @@ export function ContactFormPage({ config, gdpr, onClose }) {
                     <div class="wsms-mb-form__success-icon">
                         <CheckCircleIcon size={32} />
                     </div>
-                    <h3>Message sent!</h3>
-                    <p>We'll get back to you as soon as possible.</p>
+                    <h3>{__('Message sent!', 'wp-sms')}</h3>
+                    <p>{__('We\'ll get back to you as soon as possible.', 'wp-sms')}</p>
                     <button
                         type="button"
                         class="wsms-mb-btn wsms-mb-btn--secondary"
                         onClick={onClose}
                     >
-                        Close
+                        {__('Close', 'wp-sms')}
                     </button>
                 </div>
             </div>
@@ -90,7 +91,7 @@ export function ContactFormPage({ config, gdpr, onClose }) {
             <form onSubmit={handleSubmit} class="wsms-mb-form" noValidate>
                 {currentUser && (
                     <div class="wsms-mb-form__identity">
-                        <span>Sending as <strong>{currentUser.name || currentUser.email}</strong></span>
+                        <span>{sprintf(__('Sending as %s', 'wp-sms'), currentUser.name || currentUser.email)}</span>
                         {currentUser.name && currentUser.email && (
                             <span class="wsms-mb-form__identity-email">{currentUser.email}</span>
                         )}
@@ -145,10 +146,10 @@ export function ContactFormPage({ config, gdpr, onClose }) {
                             <span>
                                 {gdpr.link_url ? (
                                     <a href={gdpr.link_url} target="_blank" rel="noopener noreferrer">
-                                        {gdpr.consent_text || 'I agree to the privacy policy.'}
+                                        {gdpr.consent_text || __('I agree to the privacy policy.', 'wp-sms')}
                                     </a>
                                 ) : (
-                                    gdpr.consent_text || 'I agree to the privacy policy.'
+                                    gdpr.consent_text || __('I agree to the privacy policy.', 'wp-sms')
                                 )}
                             </span>
                         </label>
@@ -178,9 +179,9 @@ export function ContactFormPage({ config, gdpr, onClose }) {
                     aria-busy={status === 'sending'}
                 >
                     {status === 'sending' ? (
-                        <span class="wsms-mb-btn__loading">Sending...</span>
+                        <span class="wsms-mb-btn__loading">{__('Sending...', 'wp-sms')}</span>
                     ) : (
-                        'Send message'
+                        __('Send message', 'wp-sms')
                     )}
                 </button>
             </form>

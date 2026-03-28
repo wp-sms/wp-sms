@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useMemo } from 'react';
 import type { DelayNode } from '@/lib/api';
 import { SentenceToken } from './sentence-token';
@@ -45,7 +46,7 @@ export function DelaySentence({ step, onChange }: DelaySentenceProps) {
 
   return (
     <div className="flex items-center gap-1.5 flex-wrap">
-      <span className="text-sm font-medium text-muted-foreground">Wait</span>
+      <span className="text-sm font-medium text-muted-foreground">{__('Wait', 'wp-sms')}</span>
       <SentenceToken
         mode="number"
         value={String(displayValue)}

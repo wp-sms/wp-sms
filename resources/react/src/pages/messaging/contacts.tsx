@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
 import { useContacts } from '@/hooks/use-contacts';
 import { useTags } from '@/hooks/use-tags';
@@ -40,31 +41,31 @@ export function Contacts({ subTab, onNavigate }: ContactsProps) {
     contacts: (
       <>
         <Button variant="outline" size="sm" onClick={() => setImportOpen(true)}>
-          <Upload className="mr-1.5 h-3.5 w-3.5" /> Import
+          <Upload className="mr-1.5 h-3.5 w-3.5" /> {__('Import', 'wp-sms')}
         </Button>
         <ExportDialog onExport={contactsHook.exportContacts}>
           <Button variant="outline" size="sm">
-            <Download className="mr-1.5 h-3.5 w-3.5" /> Export
+            <Download className="mr-1.5 h-3.5 w-3.5" /> {__('Export', 'wp-sms')}
           </Button>
         </ExportDialog>
         <Button size="sm" onClick={() => setContactCreate((n) => n + 1)}>
-          <Plus className="mr-1.5 h-3.5 w-3.5" /> New Contact
+          <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('New Contact', 'wp-sms')}
         </Button>
       </>
     ),
     tags: (
       <Button size="sm" onClick={() => setTagCreate((n) => n + 1)}>
-        <Plus className="mr-1.5 h-3.5 w-3.5" /> New Tag
+        <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('New Tag', 'wp-sms')}
       </Button>
     ),
     lists: (
       <Button size="sm" onClick={() => setListCreate((n) => n + 1)}>
-        <Plus className="mr-1.5 h-3.5 w-3.5" /> New List
+        <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('New List', 'wp-sms')}
       </Button>
     ),
     forms: (
       <Button size="sm" onClick={() => setFormCreate((n) => n + 1)}>
-        <Plus className="mr-1.5 h-3.5 w-3.5" /> Create Form
+        <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('Create Form', 'wp-sms')}
       </Button>
     ),
   };
@@ -73,14 +74,14 @@ export function Contacts({ subTab, onNavigate }: ContactsProps) {
     <Tabs value={activeTab} onValueChange={handleTabChange}>
       <PageHeader
         icon={Users}
-        title="Contacts"
+        title={__('Contacts', 'wp-sms')}
         actions={headerActions[activeTab]}
       >
         <TabsList variant="line" className="mt-3">
-          <TabsTrigger value="contacts">Contacts <TabCount count={contactsHook.total} /></TabsTrigger>
-          <TabsTrigger value="tags">Tags <TabCount count={tagsHook.tags.length} /></TabsTrigger>
-          <TabsTrigger value="lists">Lists <TabCount count={listsHook.lists.length} /></TabsTrigger>
-          <TabsTrigger value="forms">Forms <TabCount count={formsHook.forms.length} /></TabsTrigger>
+          <TabsTrigger value="contacts">{__('Contacts', 'wp-sms')} <TabCount count={contactsHook.total} /></TabsTrigger>
+          <TabsTrigger value="tags">{__('Tags', 'wp-sms')} <TabCount count={tagsHook.tags.length} /></TabsTrigger>
+          <TabsTrigger value="lists">{__('Lists', 'wp-sms')} <TabCount count={listsHook.lists.length} /></TabsTrigger>
+          <TabsTrigger value="forms">{__('Forms', 'wp-sms')} <TabCount count={formsHook.forms.length} /></TabsTrigger>
         </TabsList>
       </PageHeader>
 

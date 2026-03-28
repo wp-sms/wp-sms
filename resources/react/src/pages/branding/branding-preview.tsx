@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Smartphone, Tablet, Monitor, ExternalLink } from 'lucide-react';
 import { SegmentedGroup } from '@/components/ui/segmented-group';
@@ -107,9 +108,9 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
     return (
       <div className="flex h-full items-center justify-center rounded-lg border-2 border-dashed border-muted-foreground/20 p-8">
         <div className="text-center">
-          <p className="text-sm font-medium text-muted-foreground">Preview unavailable</p>
+          <p className="text-sm font-medium text-muted-foreground">{__('Preview unavailable', 'wp-sms')}</p>
           <p className="mt-1 text-xs text-muted-foreground/70">
-            Your security settings may block iframe loading.
+            {__('Your security settings may block iframe loading.', 'wp-sms')}
           </p>
           <button
             type="button"
@@ -153,7 +154,7 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
         {/* Fullscreen button */}
         <button
           type="button"
-          title="Open in new tab"
+          title={__('Open in new tab', 'wp-sms')}
           onClick={() => openBrandingPreview(fullscreenUrl, branding)}
           className="flex h-9 w-9 items-center justify-center rounded-md border border-input text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
         >
@@ -175,7 +176,7 @@ export function BrandingPreview({ branding, baseUrl }: BrandingPreviewProps) {
           <iframe
             ref={iframeRef}
             src={previewUrl}
-            title="Auth page preview"
+            title={__('Auth page preview', 'wp-sms')}
             className="origin-top-left border-0"
             style={{
               width: `${iframeWidth}px`,

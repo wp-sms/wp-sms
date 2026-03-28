@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import type { LucideIcon } from 'lucide-react';
 import { Settings } from 'lucide-react';
 import { Switch } from '@/components/ui/switch';
@@ -63,7 +64,7 @@ export function ChannelRow({
 
       {comingSoon && (
         <Badge variant="secondary" className="shrink-0 text-[10px] px-1.5 py-0">
-          Coming Soon
+          {__('Coming Soon', 'wp-sms')}
         </Badge>
       )}
 

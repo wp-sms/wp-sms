@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -112,20 +113,20 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
 
   return (
     <>
-      <PageHeader icon={LogIn} title="Channels" />
+      <PageHeader icon={LogIn} title={__('Channels', 'wp-sms')} />
       <div className="mt-4 grid gap-6 lg:grid-cols-2">
         {/* Left Column — Sign-in Methods */}
         <div className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Sign-in Methods</CardTitle>
-              <CardDescription>Configure how users sign in to your application</CardDescription>
+              <CardTitle>{__('Sign-in Methods', 'wp-sms')}</CardTitle>
+              <CardDescription>{__('Configure how users sign in to your application', 'wp-sms')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-0">
               {/* Phone */}
               <ChannelRow
                 icon={Smartphone}
-                title="Phone"
+                title={__('Phone', 'wp-sms')}
                 description={phoneInLogin ? getChannelSummary('phone', settings.phone) : undefined}
                 enabled={phoneInLogin}
                 onToggle={(v) => {
@@ -146,7 +147,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
               {/* Email */}
               <ChannelRow
                 icon={Mail}
-                title="Email"
+                title={__('Email', 'wp-sms')}
                 description={emailInLogin ? getChannelSummary('email', settings.email) : undefined}
                 enabled={emailInLogin}
                 onToggle={(v) => {
@@ -167,8 +168,8 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
               {/* Password */}
               <ChannelRow
                 icon={KeyRound}
-                title="Password"
-                description="Traditional username & password"
+                title={__('Password', 'wp-sms')}
+                description={__('Traditional username & password', 'wp-sms')}
                 enabled={settings.password.enabled}
                 onToggle={(v) => onUpdate('password', { ...settings.password, enabled: v })}
                 onConfigure={() => setEditingChannel('password')}
@@ -179,8 +180,8 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
           {/* Social Connections */}
           <Card>
             <CardHeader>
-              <CardTitle>Social Connections</CardTitle>
-              <CardDescription>Allow users to sign in with social accounts</CardDescription>
+              <CardTitle>{__('Social Connections', 'wp-sms')}</CardTitle>
+              <CardDescription>{__('Allow users to sign in with social accounts', 'wp-sms')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-0">
               {SOCIAL_METHODS.map((method, i) => {
@@ -211,7 +212,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
             {/* Profile Data Sync */}
             <div className="border-t px-6 py-4">
               <div className="space-y-2">
-                <Label className="text-sm font-medium">Profile Data Sync</Label>
+                <Label className="text-sm font-medium">{__('Profile Data Sync', 'wp-sms')}</Label>
                 <RadioGroup
                   value={settings.social_profile_sync ?? 'registration_only'}
                   onValueChange={(v) => {
@@ -223,11 +224,11 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                 >
                   <label className="flex items-center gap-2 cursor-pointer">
                     <RadioGroupItem value="registration_only" />
-                    <span className="text-sm">Only at registration</span>
+                    <span className="text-sm">{__('Only at registration', 'wp-sms')}</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <RadioGroupItem value="every_login" />
-                    <span className="text-sm">Every login</span>
+                    <span className="text-sm">{__('Every login', 'wp-sms')}</span>
                   </label>
                 </RadioGroup>
               </div>
@@ -239,14 +240,14 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
         <div className="space-y-4">
           <Card>
             <CardHeader>
-              <CardTitle>Multi-Factor Authentication</CardTitle>
-              <CardDescription>Add an extra layer of security</CardDescription>
+              <CardTitle>{__('Multi-Factor Authentication', 'wp-sms')}</CardTitle>
+              <CardDescription>{__('Add an extra layer of security', 'wp-sms')}</CardDescription>
             </CardHeader>
             <CardContent className="space-y-0">
               {/* Phone MFA */}
               <ChannelRow
                 icon={Smartphone}
-                title="Phone MFA"
+                title={__('Phone MFA', 'wp-sms')}
                 description={phoneInMfa ? getChannelSummary('phone', settings.phone) : undefined}
                 enabled={phoneInMfa}
                 onToggle={(v) => {
@@ -267,7 +268,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
               {/* Email MFA */}
               <ChannelRow
                 icon={Mail}
-                title="Email MFA"
+                title={__('Email MFA', 'wp-sms')}
                 description={emailInMfa ? getChannelSummary('email', settings.email) : undefined}
                 enabled={emailInMfa}
                 onToggle={(v) => {
@@ -288,7 +289,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
               {/* Telegram MFA */}
               <ChannelRow
                 icon={Send}
-                title="Telegram MFA"
+                title={__('Telegram MFA', 'wp-sms')}
                 description={getTelegramMfaSummary(telegramSettings)}
                 enabled={!!telegramSettings.enabled}
                 onToggle={(v) => updateTelegram({ enabled: v })}
@@ -300,7 +301,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
               {/* LINE MFA */}
               <ChannelRow
                 icon={MessageCircle}
-                title="LINE MFA"
+                title={__('LINE MFA', 'wp-sms')}
                 description={getLineMfaSummary(lineSettings)}
                 enabled={!!lineSettings.enabled}
                 onToggle={(v) => updateLine({ enabled: v })}
@@ -312,7 +313,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
               {/* TOTP (Authenticator App) */}
               <ChannelRow
                 icon={KeyRound}
-                title="Authenticator App"
+                title={__('Authenticator App', 'wp-sms')}
                 description={settings.totp.enabled ? 'TOTP — Google Authenticator, Authy, 1Password' : undefined}
                 enabled={settings.totp.enabled}
                 onToggle={(v) => onUpdate('totp', { ...settings.totp, enabled: v })}
@@ -323,7 +324,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
               {/* Passkey */}
               <ChannelRow
                 icon={Fingerprint}
-                title="Passkey"
+                title={__('Passkey', 'wp-sms')}
                 description={settings.passkey?.enabled ? 'Fingerprint, Face ID, or security key' : undefined}
                 enabled={!!settings.passkey?.enabled}
                 onToggle={(v) => onUpdate('passkey', { ...settings.passkey, enabled: v })}
@@ -358,10 +359,10 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
               <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted">
                 <Send className="h-4 w-4 text-muted-foreground" />
               </div>
-              Telegram MFA Settings
+              {__('Telegram MFA Settings', 'wp-sms')}
             </DrawerTitle>
             <DrawerDescription>
-              Send MFA verification codes to users via a Telegram bot. Users link their account by starting a conversation with your bot.
+              {__('Send MFA verification codes to users via a Telegram bot. Users link their account by starting a conversation with your bot.', 'wp-sms')}
             </DrawerDescription>
           </DrawerHeader>
 
@@ -465,10 +466,10 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
               <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted">
                 <MessageCircle className="h-4 w-4 text-muted-foreground" />
               </div>
-              LINE MFA Settings
+              {__('LINE MFA Settings', 'wp-sms')}
             </DrawerTitle>
             <DrawerDescription>
-              Send MFA verification codes to users via a LINE Official Account. Users link their account by messaging your bot.
+              {__('Send MFA verification codes to users via a LINE Official Account. Users link their account by messaging your bot.', 'wp-sms')}
             </DrawerDescription>
           </DrawerHeader>
 
@@ -490,7 +491,7 @@ export function Channels({ settings, onUpdate }: ChannelsProps) {
                 type="text"
                 value={lineSettings.bot_basic_id ?? ''}
                 onChange={(e) => updateLine({ bot_basic_id: e.target.value })}
-                placeholder="@123abcde"
+                placeholder={__('@123abcde', 'wp-sms')}
               />
               <FieldDescription>
                 Found in LINE Developers Console under your Messaging API channel. Used for enrollment deep links.

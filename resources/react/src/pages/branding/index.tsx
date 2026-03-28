@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useCallback, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
@@ -52,7 +53,7 @@ export function BrandingPage({ branding, onChange, authBaseUrl }: BrandingPagePr
     <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as BrandingTab)}>
       <PageHeader
         icon={Paintbrush}
-        title="Branding"
+        title={__('Branding', 'wp-sms')}
         actions={
           <>
             <Button
@@ -62,7 +63,7 @@ export function BrandingPage({ branding, onChange, authBaseUrl }: BrandingPagePr
               onClick={() => setDrawerOpen(true)}
             >
               <Eye className="mr-1.5 h-3.5 w-3.5" />
-              Preview
+              {__('Preview', 'wp-sms')}
             </Button>
             <Button
               variant="outline"
@@ -78,15 +79,15 @@ export function BrandingPage({ branding, onChange, authBaseUrl }: BrandingPagePr
             </Button>
             <Button variant="outline" size="sm" onClick={handleReset}>
               <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
-              Reset
+              {__('Reset', 'wp-sms')}
             </Button>
           </>
         }
       >
         <TabsList variant="line" className="mt-3">
-          <TabsTrigger value="colors">Colors</TabsTrigger>
-          <TabsTrigger value="logo">Logo</TabsTrigger>
-          <TabsTrigger value="layout">Layout</TabsTrigger>
+          <TabsTrigger value="colors">{__('Colors', 'wp-sms')}</TabsTrigger>
+          <TabsTrigger value="logo">{__('Logo', 'wp-sms')}</TabsTrigger>
+          <TabsTrigger value="layout">{__('Layout', 'wp-sms')}</TabsTrigger>
         </TabsList>
       </PageHeader>
 
@@ -123,7 +124,7 @@ export function BrandingPage({ branding, onChange, authBaseUrl }: BrandingPagePr
       <Drawer open={drawerOpen} onOpenChange={setDrawerOpen}>
         <DrawerContent className="sm:max-w-lg">
           <DrawerHeader>
-            <DrawerTitle>Preview</DrawerTitle>
+            <DrawerTitle>{__('Preview', 'wp-sms')}</DrawerTitle>
           </DrawerHeader>
           <div className="overflow-y-auto p-4">
             <BrandingPreview branding={branding} baseUrl={baseUrl} />

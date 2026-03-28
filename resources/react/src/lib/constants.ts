@@ -1,44 +1,45 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { Smartphone, Mail } from 'lucide-react';
 import type { AuthSettings } from './api';
 
 export const CHANNELS = [
   {
     id: 'phone' as const,
-    label: 'Phone',
+    label: __('Phone', 'wp-sms'),
     icon: Smartphone,
     verificationMethods: [
-      { value: 'otp', label: 'OTP Code' },
-      { value: 'magic_link', label: 'Magic Link (SMS link)' },
+      { value: 'otp', label: __('OTP Code', 'wp-sms') },
+      { value: 'magic_link', label: __('Magic Link (SMS link)', 'wp-sms') },
     ],
     deliveryChannels: [
-      { value: 'sms', label: 'SMS', available: true },
-      { value: 'whatsapp', label: 'WhatsApp', available: true },
-      { value: 'rcs', label: 'RCS', available: true },
-      { value: 'viber', label: 'Viber', available: false },
+      { value: 'sms', label: __('SMS', 'wp-sms'), available: true },
+      { value: 'whatsapp', label: __('WhatsApp', 'wp-sms'), available: true },
+      { value: 'rcs', label: __('RCS', 'wp-sms'), available: true },
+      { value: 'viber', label: __('Viber', 'wp-sms'), available: false },
     ],
   },
   {
     id: 'email' as const,
-    label: 'Email',
+    label: __('Email', 'wp-sms'),
     icon: Mail,
     verificationMethods: [
-      { value: 'otp', label: 'OTP Code' },
-      { value: 'magic_link', label: 'Magic Link' },
+      { value: 'otp', label: __('OTP Code', 'wp-sms') },
+      { value: 'magic_link', label: __('Magic Link', 'wp-sms') },
     ],
     deliveryChannels: null,
   },
 ] as const;
 
 export const ENROLLMENT_TIMING = [
-  { value: 'on_registration', label: 'On Registration', description: 'Users must enroll in MFA when they register' },
-  { value: 'grace_period', label: 'Grace Period', description: 'Users have a set number of days to enroll' },
-  { value: 'voluntary', label: 'Voluntary', description: 'Users can opt-in to MFA at any time' },
+  { value: 'on_registration', label: __('On Registration', 'wp-sms'), description: __('Users must enroll in MFA when they register', 'wp-sms') },
+  { value: 'grace_period', label: __('Grace Period', 'wp-sms'), description: __('Users have a set number of days to enroll', 'wp-sms') },
+  { value: 'voluntary', label: __('Voluntary', 'wp-sms'), description: __('Users can opt-in to MFA at any time', 'wp-sms') },
 ] as const;
 
 export const LOG_VERBOSITY = [
-  { value: 'minimal', label: 'Minimal', description: 'Only critical events (logins, failures)' },
-  { value: 'standard', label: 'Standard', description: 'All authentication events' },
-  { value: 'verbose', label: 'Verbose', description: 'Detailed logs including OTP sends and verifications' },
+  { value: 'minimal', label: __('Minimal', 'wp-sms'), description: __('Only critical events (logins, failures)', 'wp-sms') },
+  { value: 'standard', label: __('Standard', 'wp-sms'), description: __('All authentication events', 'wp-sms') },
+  { value: 'verbose', label: __('Verbose', 'wp-sms'), description: __('Detailed logs including OTP sends and verifications', 'wp-sms') },
 ] as const;
 
 export const EVENT_TYPES = [
@@ -78,47 +79,47 @@ export const EVENT_TYPES = [
 ] as const;
 
 export const REGISTRATION_FIELDS = [
-  { id: 'phone', label: 'Phone Number' },
-  { id: 'first_name', label: 'First Name' },
-  { id: 'last_name', label: 'Last Name' },
+  { id: 'phone', label: __('Phone Number', 'wp-sms') },
+  { id: 'first_name', label: __('First Name', 'wp-sms') },
+  { id: 'last_name', label: __('Last Name', 'wp-sms') },
 ] as const;
 
 export const FIELD_TYPES = [
-  { value: 'text', label: 'Text' },
-  { value: 'textarea', label: 'Textarea' },
-  { value: 'select', label: 'Select' },
-  { value: 'checkbox', label: 'Checkbox' },
+  { value: 'text', label: __('Text', 'wp-sms') },
+  { value: 'textarea', label: __('Textarea', 'wp-sms') },
+  { value: 'select', label: __('Select', 'wp-sms') },
+  { value: 'checkbox', label: __('Checkbox', 'wp-sms') },
 ] as const;
 
 export const PHONE_DISPLAY_MODES = [
-  { value: 'international', label: 'International', description: 'Full number with dial code inline (e.g. +44 20 7946 0958)' },
-  { value: 'separate_dial_code', label: 'Separate Dial Code', description: 'Dial code shown separately before the input (e.g. [+44] 20 7946 0958)' },
-  { value: 'national', label: 'National Only', description: 'Local format only, no dial code (e.g. 020 7946 0958)' },
+  { value: 'international', label: __('International', 'wp-sms'), description: __('Full number with dial code inline (e.g. +44 20 7946 0958)', 'wp-sms') },
+  { value: 'separate_dial_code', label: __('Separate Dial Code', 'wp-sms'), description: __('Dial code shown separately before the input (e.g. [+44] 20 7946 0958)', 'wp-sms') },
+  { value: 'national', label: __('National Only', 'wp-sms'), description: __('Local format only, no dial code (e.g. 020 7946 0958)', 'wp-sms') },
 ] as const;
 
 export type PhoneDisplayMode = typeof PHONE_DISPLAY_MODES[number]['value'];
 
 export const FIELD_VISIBILITY = [
-  { value: 'both', label: 'Registration & Profile' },
-  { value: 'registration', label: 'Registration Only' },
-  { value: 'profile', label: 'Profile Only' },
-  { value: 'hidden', label: 'Hidden' },
+  { value: 'both', label: __('Registration & Profile', 'wp-sms') },
+  { value: 'registration', label: __('Registration Only', 'wp-sms') },
+  { value: 'profile', label: __('Profile Only', 'wp-sms') },
+  { value: 'hidden', label: __('Hidden', 'wp-sms') },
 ] as const;
 
 export const FIELD_SOURCES = [
-  { value: 'system', label: 'System' },
-  { value: 'custom', label: 'Custom' },
-  { value: 'meta', label: 'Existing Meta' },
+  { value: 'system', label: __('System', 'wp-sms') },
+  { value: 'custom', label: __('Custom', 'wp-sms') },
+  { value: 'meta', label: __('Existing Meta', 'wp-sms') },
 ] as const;
 
 export const SYSTEM_FIELD_OPTIONS = [
-  { id: 'email', label: 'Email' },
-  { id: 'password', label: 'Password' },
-  { id: 'phone', label: 'Phone Number' },
-  { id: 'first_name', label: 'First Name' },
-  { id: 'last_name', label: 'Last Name' },
-  { id: 'display_name', label: 'Display Name' },
-  { id: 'username', label: 'Username' },
+  { id: 'email', label: __('Email', 'wp-sms') },
+  { id: 'password', label: __('Password', 'wp-sms') },
+  { id: 'phone', label: __('Phone Number', 'wp-sms') },
+  { id: 'first_name', label: __('First Name', 'wp-sms') },
+  { id: 'last_name', label: __('Last Name', 'wp-sms') },
+  { id: 'display_name', label: __('Display Name', 'wp-sms') },
+  { id: 'username', label: __('Username', 'wp-sms') },
 ] as const;
 
 /** Matches PHP InstallManager defaults exactly. */
@@ -239,44 +240,44 @@ export const DEFAULTS: Required<AuthSettings> = {
 export type ChannelId = 'phone' | 'email' | 'password';
 
 export const TRUSTED_DEVICE_TTL_OPTIONS = [
-  { value: 604800, label: '7 days' },
-  { value: 1209600, label: '14 days' },
-  { value: 2592000, label: '30 days' },
-  { value: 5184000, label: '60 days' },
-  { value: 7776000, label: '90 days' },
+  { value: 604800, label: __('7 days', 'wp-sms') },
+  { value: 1209600, label: __('14 days', 'wp-sms') },
+  { value: 2592000, label: __('30 days', 'wp-sms') },
+  { value: 5184000, label: __('60 days', 'wp-sms') },
+  { value: 7776000, label: __('90 days', 'wp-sms') },
 ] as const;
 
 export const SITE_PHONE_CHANNELS = [
-  { value: 'sms', label: 'SMS' },
-  { value: 'whatsapp', label: 'WhatsApp' },
-  { value: 'telegram', label: 'Telegram' },
-  { value: 'line', label: 'LINE' },
+  { value: 'sms', label: __('SMS', 'wp-sms') },
+  { value: 'whatsapp', label: __('WhatsApp', 'wp-sms') },
+  { value: 'telegram', label: __('Telegram', 'wp-sms') },
+  { value: 'line', label: __('LINE', 'wp-sms') },
 ] as const;
 
 export const SOCIAL_METHODS = [
-  { id: 'google', label: 'Google', comingSoon: false },
-  { id: 'telegram', label: 'Telegram', comingSoon: false },
-  { id: 'line', label: 'LINE', comingSoon: false },
-  { id: 'github', label: 'GitHub', comingSoon: false },
-  { id: 'apple', label: 'Apple', comingSoon: true },
-  { id: 'facebook', label: 'Facebook', comingSoon: true },
-  { id: 'microsoft', label: 'Microsoft', comingSoon: true },
-  { id: 'linkedin', label: 'LinkedIn', comingSoon: true },
-  { id: 'twitter', label: 'Twitter / X', comingSoon: true },
+  { id: 'google', label: __('Google', 'wp-sms'), comingSoon: false },
+  { id: 'telegram', label: __('Telegram', 'wp-sms'), comingSoon: false },
+  { id: 'line', label: __('LINE', 'wp-sms'), comingSoon: false },
+  { id: 'github', label: __('GitHub', 'wp-sms'), comingSoon: false },
+  { id: 'apple', label: __('Apple', 'wp-sms'), comingSoon: true },
+  { id: 'facebook', label: __('Facebook', 'wp-sms'), comingSoon: true },
+  { id: 'microsoft', label: __('Microsoft', 'wp-sms'), comingSoon: true },
+  { id: 'linkedin', label: __('LinkedIn', 'wp-sms'), comingSoon: true },
+  { id: 'twitter', label: __('Twitter / X', 'wp-sms'), comingSoon: true },
 ] as const;
 
 // --- Contact Management Constants ---
 
 export const CONTACT_STATUSES = [
-  { value: 'subscribed', label: 'Subscribed' },
-  { value: 'pending', label: 'Pending' },
-  { value: 'bounced', label: 'Bounced' },
-  { value: 'complained', label: 'Complained' },
+  { value: 'subscribed', label: __('Subscribed', 'wp-sms') },
+  { value: 'pending', label: __('Pending', 'wp-sms') },
+  { value: 'bounced', label: __('Bounced', 'wp-sms') },
+  { value: 'complained', label: __('Complained', 'wp-sms') },
 ] as const;
 
 export const OPT_OUT_CHANNELS = [
-  { value: 'sms', label: 'SMS' },
-  { value: 'email', label: 'Email' },
+  { value: 'sms', label: __('SMS', 'wp-sms') },
+  { value: 'email', label: __('Email', 'wp-sms') },
 ] as const;
 
 export const TAG_COLORS = [
@@ -285,56 +286,56 @@ export const TAG_COLORS = [
 ] as const;
 
 export const SEGMENT_OPERATORS = {
-  equals: 'Equals',
-  not_equals: 'Not equals',
-  contains: 'Contains',
-  starts_with: 'Starts with',
-  is_empty: 'Is empty',
-  is_not_empty: 'Is not empty',
-  has: 'Has tag',
-  not_has: 'Does not have tag',
+  equals: __('Equals', 'wp-sms'),
+  not_equals: __('Not equals', 'wp-sms'),
+  contains: __('Contains', 'wp-sms'),
+  starts_with: __('Starts with', 'wp-sms'),
+  is_empty: __('Is empty', 'wp-sms'),
+  is_not_empty: __('Is not empty', 'wp-sms'),
+  has: __('Has tag', 'wp-sms'),
+  not_has: __('Does not have tag', 'wp-sms'),
 } as const;
 
 export const ATTRIBUTE_FIELDS = [
-  { value: 'email', label: 'Email' },
-  { value: 'phone', label: 'Phone' },
-  { value: 'first_name', label: 'First name' },
-  { value: 'last_name', label: 'Last name' },
-  { value: 'status', label: 'Status' },
-  { value: 'channel_opt_outs', label: 'Channel opt-outs' },
-  { value: 'source', label: 'Source' },
+  { value: 'email', label: __('Email', 'wp-sms') },
+  { value: 'phone', label: __('Phone', 'wp-sms') },
+  { value: 'first_name', label: __('First name', 'wp-sms') },
+  { value: 'last_name', label: __('Last name', 'wp-sms') },
+  { value: 'status', label: __('Status', 'wp-sms') },
+  { value: 'channel_opt_outs', label: __('Channel opt-outs', 'wp-sms') },
+  { value: 'source', label: __('Source', 'wp-sms') },
 ] as const;
 
 export const MATCH_FIELD_OPTIONS = [
-  { value: 'email', label: 'Email address' },
-  { value: 'phone', label: 'Phone number' },
-  { value: 'email_or_phone', label: 'Email or phone' },
+  { value: 'email', label: __('Email address', 'wp-sms') },
+  { value: 'phone', label: __('Phone number', 'wp-sms') },
+  { value: 'email_or_phone', label: __('Email or phone', 'wp-sms') },
 ] as const;
 
 export const DUPLICATE_HANDLING_OPTIONS = [
-  { value: 'update', label: 'Update existing contacts' },
-  { value: 'skip', label: 'Skip duplicates' },
-  { value: 'update_if_empty', label: 'Only fill empty fields' },
+  { value: 'update', label: __('Update existing contacts', 'wp-sms') },
+  { value: 'skip', label: __('Skip duplicates', 'wp-sms') },
+  { value: 'update_if_empty', label: __('Only fill empty fields', 'wp-sms') },
 ] as const;
 
 export const SEGMENT_TEMPLATES = [
-  { name: 'Active subscribers', conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'status', operator: 'equals', value: 'subscribed' }] } },
-  { name: 'Missing phone', conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'phone', operator: 'is_empty' }] } },
-  { name: 'Bounced contacts', conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'status', operator: 'equals', value: 'bounced' }] } },
-  { name: 'Imported contacts', conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'source', operator: 'equals', value: 'import' }] } },
-  { name: 'WordPress users', conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'source', operator: 'equals', value: 'sync' }] } },
+  { name: __('Active subscribers', 'wp-sms'), conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'status', operator: 'equals', value: 'subscribed' }] } },
+  { name: __('Missing phone', 'wp-sms'), conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'phone', operator: 'is_empty' }] } },
+  { name: __('Bounced contacts', 'wp-sms'), conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'status', operator: 'equals', value: 'bounced' }] } },
+  { name: __('Imported contacts', 'wp-sms'), conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'source', operator: 'equals', value: 'import' }] } },
+  { name: __('WordPress users', 'wp-sms'), conditions: { match: 'all' as const, conditions: [{ type: 'attribute' as const, field: 'source', operator: 'equals', value: 'sync' }] } },
 ] as const;
 
 // --- Integration Category Constants ---
 
 export const INTEGRATION_CATEGORY_LABELS: Record<string, string> = {
-  ecommerce: 'E-Commerce',
-  cms: 'CMS',
-  communication: 'Communication',
-  messaging: 'Messaging',
-  security: 'Security',
-  forms: 'Forms',
-  email_marketing: 'Email Marketing',
+  ecommerce: __('E-Commerce', 'wp-sms'),
+  cms: __('CMS', 'wp-sms'),
+  communication: __('Communication', 'wp-sms'),
+  messaging: __('Messaging', 'wp-sms'),
+  security: __('Security', 'wp-sms'),
+  forms: __('Forms', 'wp-sms'),
+  email_marketing: __('Email Marketing', 'wp-sms'),
 };
 
 /** Integration IDs that have auth-area settings (used for cross-reference notes). */
@@ -373,7 +374,7 @@ export function formatSource(source: string, sourceRef?: string | null): { label
       }
     }
     case 'emailoctopus':
-      return { label, detail: `List ${sourceRef}` };
+      return { label, detail: sprintf(__('List %s', 'wp-sms'), sourceRef) };
     default:
       return { label, detail: sourceRef };
   }

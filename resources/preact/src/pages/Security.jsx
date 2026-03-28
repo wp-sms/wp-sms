@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { __, sprintf } from '@wordpress/i18n';
 import { api } from '../api/client';
 import { socialProviders } from '../signals/config';
 import { currentUser } from '../signals/auth';
@@ -82,9 +83,9 @@ export function Security() {
             const res = await api.del(`/auth/social/unlink/${providerId}`);
             if (res.success) {
                 setLinkedAccounts((prev) => prev.filter((a) => a.provider !== providerId));
-                setSuccess(res.message || 'Account unlinked.');
+                setSuccess(res.message || __('Account unlinked.', 'wp-sms'));
             } else {
-                setError(res.message || 'Failed to unlink account.');
+                setError(res.message || __('Failed to unlink account.', 'wp-sms'));
             }
         } catch (err) {
             setError(extractError(err).message);
@@ -155,7 +156,7 @@ export function Security() {
 
     if (loading) {
         return (
-            <AccountLayout title="Security" currentPath="/security">
+            <AccountLayout title={__('Security', 'wp-sms')} currentPath="/security">
                 <SecuritySkeleton />
             </AccountLayout>
         );
@@ -164,16 +165,15 @@ export function Security() {
     const user = currentUser.value;
 
     return (
-        <AccountLayout title="Security" subtitle="Manage your multi-factor authentication methods" currentPath="/security" hideNav={isEnrollmentGated}>
+        <AccountLayout title={__('Security', 'wp-sms')} subtitle={__('Manage your multi-factor authentication methods', 'wp-sms')} currentPath="/security" hideNav={isEnrollmentGated}>
             {isEnrollmentGated && (
                 <Alert variant="info" className="wsms-auth-mb-4">
-                    MFA enrollment is required. Please enable at least one authentication method below to continue.
+                    {__('MFA enrollment is required. Please enable at least one authentication method below to continue.', 'wp-sms')}
                 </Alert>
             )}
             {graceNotice && (
                 <Alert variant="info" onDismiss={() => setGraceNotice(null)} className="wsms-auth-mb-4">
-                    Two-factor authentication will be required in {graceNotice.grace_period_remaining_days} day{graceNotice.grace_period_remaining_days !== 1 ? 's' : ''}.
-                    Set it up now on the Security page.
+                    {sprintf(__('Two-factor authentication will be required in %d days. Set it up now on the Security page.', 'wp-sms'), graceNotice.grace_period_remaining_days)}
                 </Alert>
             )}
             <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="wsms-auth-mb-4" />
@@ -188,9 +188,9 @@ export function Security() {
 
             {availableMethods.length > 0 && (
                 <div className="wsms-auth-section-group">
-                    <h3 className="wsms-auth-section-heading">Authentication Methods</h3>
+                    <h3 className="wsms-auth-section-heading">{__('Authentication Methods', 'wp-sms')}</h3>
                     <p className="wsms-auth-text-sm wsms-auth-text-muted">
-                        Enable additional factors for your account
+                        {__('Enable additional factors for your account', 'wp-sms')}
                     </p>
                     <div className="wsms-auth-stack-3">
                         {availableMethods.map((method) => (
@@ -211,9 +211,9 @@ export function Security() {
 
             {socialProviders.value.length > 0 && (
                 <div className="wsms-auth-section-group wsms-auth-mt-4">
-                    <h3 className="wsms-auth-section-heading">Linked Accounts</h3>
+                    <h3 className="wsms-auth-section-heading">{__('Linked Accounts', 'wp-sms')}</h3>
                     <p className="wsms-auth-text-sm wsms-auth-text-muted">
-                        Connect social accounts for easier sign-in.
+                        {__('Connect social accounts for easier sign-in.', 'wp-sms')}
                     </p>
                     <div className="wsms-auth-stack-2">
                         {socialProviders.value.map((provider) => {
@@ -231,11 +231,11 @@ export function Security() {
                                     </div>
                                     {linked ? (
                                         <Button variant="outline" size="sm" onClick={() => handleUnlinkProvider(provider.id)}>
-                                            Unlink
+                                            {__('Unlink', 'wp-sms')}
                                         </Button>
                                     ) : (
                                         <Button variant="outline" size="sm" onClick={() => handleLinkProvider(provider.id)}>
-                                            Link
+                                            {__('Link', 'wp-sms')}
                                         </Button>
                                     )}
                                 </div>
@@ -247,15 +247,15 @@ export function Security() {
 
             {isEnrolled('backup_codes') && availableMethods.length > 0 && (
                 <div className="wsms-auth-section-group wsms-auth-mt-4">
-                    <h3 className="wsms-auth-section-heading">Backup Codes</h3>
+                    <h3 className="wsms-auth-section-heading">{__('Backup Codes', 'wp-sms')}</h3>
                     <p className="wsms-auth-text-sm wsms-auth-text-muted">
                         {(() => {
                             const codes = getFactorInfo('backup_codes')?.remaining_codes;
-                            return codes != null ? `${codes} codes remaining` : 'Backup codes are enabled';
+                            return codes != null ? sprintf(__('%d codes remaining', 'wp-sms'), codes) : __('Backup codes are enabled', 'wp-sms');
                         })()}
                     </p>
                     <Button variant="outline" onClick={handleRegenerateBackupCodes}>
-                        Regenerate Backup Codes
+                        {__('Regenerate Backup Codes', 'wp-sms')}
                     </Button>
                 </div>
             )}

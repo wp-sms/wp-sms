@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { formatDateTime } from '@/lib/format';
 import { Fragment, useState } from 'react';
 import {
@@ -64,8 +65,8 @@ export function LogTable({ logs, total, page, perPage, onPageChange, loading }: 
       empty={
         <EmptyState
           icon={ScrollText}
-          title="No log entries found"
-          description="Events will appear here as users authenticate."
+          title={__('No log entries found', 'wp-sms')}
+          description={__('Events will appear here as users authenticate.', 'wp-sms')}
         />
       }
       pagination={{ page, totalPages, onPageChange: onPageChange }}
@@ -74,12 +75,12 @@ export function LogTable({ logs, total, page, perPage, onPageChange, loading }: 
         <TableHeader>
           <TableRow>
             <TableHead className="w-8"></TableHead>
-            <TableHead>Event</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>User</TableHead>
-            <TableHead>IP Address</TableHead>
-            <TableHead>Country</TableHead>
-            <TableHead>Date</TableHead>
+            <TableHead>{__('Event', 'wp-sms')}</TableHead>
+            <TableHead>{__('Status', 'wp-sms')}</TableHead>
+            <TableHead>{__('User', 'wp-sms')}</TableHead>
+            <TableHead>{__('IP Address', 'wp-sms')}</TableHead>
+            <TableHead>{__('Country', 'wp-sms')}</TableHead>
+            <TableHead>{__('Date', 'wp-sms')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

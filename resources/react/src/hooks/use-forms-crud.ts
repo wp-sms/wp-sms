@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { __, sprintf } from '@wordpress/i18n';
 import { api, type ListResponse, type MutationResponse } from '@/lib/api';
 import { toast } from 'sonner';
 import { getErrorMessage } from '@/lib/error-utils';
@@ -21,7 +22,7 @@ export function useFormsCrud<T extends { id: string }>(config: FormsCrudConfig) 
       const res = await api.get<ListResponse<T>>(endpoint);
       setForms(res.items);
     } catch (err: unknown) {
-      setError(getErrorMessage(err, `Failed to load ${label.toLowerCase()}s`));
+      setError(getErrorMessage(err, __('Failed to load items.', 'wp-sms')));
     } finally {
       setLoading(false);
     }
@@ -35,7 +36,7 @@ export function useFormsCrud<T extends { id: string }>(config: FormsCrudConfig) 
     const res = await api.post<MutationResponse<T>>(endpoint, data);
     if (res.success) {
       setForms((prev) => [...prev, res.data]);
-      toast.success(`${label} created`);
+      toast.success(sprintf(__('%s created', 'wp-sms'), label));
     }
     return res;
   }, [endpoint, label]);
@@ -44,7 +45,7 @@ export function useFormsCrud<T extends { id: string }>(config: FormsCrudConfig) 
     const res = await api.put<MutationResponse<T>>(`${endpoint}/${id}`, data);
     if (res.success) {
       setForms((prev) => prev.map((f) => (f.id === id ? res.data : f)));
-      toast.success(`${label} updated`);
+      toast.success(sprintf(__('%s updated', 'wp-sms'), label));
     }
     return res;
   }, [endpoint, label]);
@@ -53,9 +54,9 @@ export function useFormsCrud<T extends { id: string }>(config: FormsCrudConfig) 
     try {
       await api.del(`${endpoint}/${id}`);
       setForms((prev) => prev.filter((f) => f.id !== id));
-      toast.success(`${label} deleted`);
+      toast.success(sprintf(__('%s deleted', 'wp-sms'), label));
     } catch (err: unknown) {
-      toast.error(getErrorMessage(err, `Failed to delete ${label.toLowerCase()}`));
+      toast.error(getErrorMessage(err, sprintf(__('Failed to delete %s', 'wp-sms'), label.toLowerCase())));
     }
   }, [endpoint, label]);
 
@@ -63,7 +64,7 @@ export function useFormsCrud<T extends { id: string }>(config: FormsCrudConfig) 
     const res = await api.post<MutationResponse<T>>(`${endpoint}/${id}/duplicate`, {});
     if (res.success) {
       setForms((prev) => [...prev, res.data]);
-      toast.success(`${label} duplicated`);
+      toast.success(sprintf(__('%s duplicated', 'wp-sms'), label));
     }
     return res;
   }, [endpoint, label]);

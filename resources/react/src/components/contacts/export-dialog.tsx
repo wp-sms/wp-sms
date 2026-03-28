@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Button } from '@/components/ui/button';
@@ -36,7 +37,7 @@ export function ExportDialog({ children, onExport }: ExportDialogProps) {
 
       setOpen(false);
     } catch {
-      toast.error('Export failed.');
+      toast.error(__('Export failed.', 'wp-sms'));
     } finally {
       setLoading(false);
     }
@@ -47,13 +48,13 @@ export function ExportDialog({ children, onExport }: ExportDialogProps) {
       <PopoverTrigger asChild>{children}</PopoverTrigger>
       <PopoverContent className="w-64 p-4" align="end">
         <div className="space-y-3">
-          <p className="text-sm font-medium">Export Contacts</p>
+          <p className="text-sm font-medium">{__('Export Contacts', 'wp-sms')}</p>
           <Select value={status} onValueChange={setStatus}>
             <SelectTrigger className="h-9">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All statuses</SelectItem>
+              <SelectItem value="all">{__('All statuses', 'wp-sms')}</SelectItem>
               {CONTACT_STATUSES.map((s) => (
                 <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
               ))}

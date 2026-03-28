@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { PageSection } from '@/components/ui/page-section';
 import { EmptyState } from '@/components/ui/empty-state';
 import { Zap, Play } from 'lucide-react';
@@ -9,7 +10,7 @@ interface AutomationTabProps {
 
 export function IntegrationAutomationTab({ triggers, actions }: AutomationTabProps) {
   if (triggers.length === 0 && actions.length === 0) {
-    return <EmptyState icon={Zap} title="No triggers or actions yet" compact />;
+    return <EmptyState icon={Zap} title={__('No triggers or actions yet', 'wp-sms')} compact />;
   }
 
   const hasBoth = triggers.length > 0 && actions.length > 0;
@@ -45,7 +46,7 @@ export function IntegrationAutomationTab({ triggers, actions }: AutomationTabPro
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Use these triggers and actions in your Flows.
+        {__('Use these triggers and actions in your Flows.', 'wp-sms')}
       </p>
     </div>
   );

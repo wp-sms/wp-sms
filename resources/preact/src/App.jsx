@@ -1,5 +1,6 @@
 import { LocationProvider, Router, Route, ErrorBoundary } from 'preact-iso';
 import { useEffect } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 import { signal } from '@preact/signals';
 import { loadConfig, formSlug } from './signals/config';
 import { clearAuth } from './signals/auth';
@@ -106,10 +107,10 @@ function AccountOrLogin() {
 function VerifyMagicLinkPage() {
     return (
         <VerifyToken
-            title="Magic Link"
+            title={__('Magic Link', 'wp-sms')}
             endpoint="/auth/verify-magic-link"
-            loadingText="Verifying your magic link\u2026"
-            errorText="Invalid or expired magic link."
+            loadingText={__('Verifying your magic link\u2026', 'wp-sms')}
+            errorText={__('Invalid or expired magic link.', 'wp-sms')}
             successRedirect
         />
     );
@@ -118,12 +119,12 @@ function VerifyMagicLinkPage() {
 function VerifyEmailPage() {
     return (
         <VerifyToken
-            title="Email Verification"
+            title={__('Email Verification', 'wp-sms')}
             endpoint="/auth/verify-email"
-            loadingText="Verifying your email\u2026"
-            errorText="Invalid or expired verification token."
-            successText="Email verified successfully!"
-            successLinkText="Sign in to your account"
+            loadingText={__('Verifying your email\u2026', 'wp-sms')}
+            errorText={__('Invalid or expired verification token.', 'wp-sms')}
+            successText={__('Email verified successfully!', 'wp-sms')}
+            successLinkText={__('Sign in to your account', 'wp-sms')}
         />
     );
 }

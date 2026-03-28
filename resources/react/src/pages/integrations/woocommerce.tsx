@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
@@ -11,9 +12,9 @@ interface WooCommerceProps {
 }
 
 const CHECKOUT_TOGGLES: { id: string; key: keyof WooCommerceSettings; label: string; description: string; defaultChecked?: boolean }[] = [
-  { id: 'woo_checkout_email', key: 'verify_email_at_checkout', label: 'Verify email at checkout', description: 'Customers must verify their billing email before completing checkout' },
-  { id: 'woo_checkout_phone', key: 'verify_phone_at_checkout', label: 'Verify phone at checkout', description: 'Customers must verify their billing phone number before completing checkout' },
-  { id: 'woo_skip_verified', key: 'skip_verified_users', label: 'Skip for verified users', description: 'Logged-in users who have already verified their email/phone skip the verification step', defaultChecked: true },
+  { id: 'woo_checkout_email', key: 'verify_email_at_checkout', label: __('Verify email at checkout', 'wp-sms'), description: 'Customers must verify their billing email before completing checkout' },
+  { id: 'woo_checkout_phone', key: 'verify_phone_at_checkout', label: __('Verify phone at checkout', 'wp-sms'), description: 'Customers must verify their billing phone number before completing checkout' },
+  { id: 'woo_skip_verified', key: 'skip_verified_users', label: __('Skip for verified users', 'wp-sms'), description: 'Logged-in users who have already verified their email/phone skip the verification step', defaultChecked: true },
 ];
 
 export function WooCommerce({ settings, onUpdate }: WooCommerceProps) {
@@ -29,7 +30,7 @@ export function WooCommerce({ settings, onUpdate }: WooCommerceProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <LogIn className="h-4 w-4 text-muted-foreground" />
-            Authentication
+            {__('Authentication', 'wp-sms')}
           </CardTitle>
           <CardDescription>
             Redirect WooCommerce My Account login and registration to WSMS auth pages.
@@ -49,10 +50,10 @@ export function WooCommerce({ settings, onUpdate }: WooCommerceProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <CreditCard className="h-4 w-4 text-muted-foreground" />
-            Checkout Verification
+            {__('Checkout Verification', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            Require customers to verify their email or phone with an OTP code before placing an order. Works with both classic and block checkout.
+            {__('Require customers to verify their email or phone with an OTP code before placing an order. Works with both classic and block checkout.', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

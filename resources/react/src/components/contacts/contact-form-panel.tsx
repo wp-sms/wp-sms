@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from 'react';
 import type { Contact } from '@/lib/api';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from '@/components/ui/drawer';
@@ -107,7 +108,7 @@ export function ContactFormPanel({ open, onOpenChange, contact, onSave }: Contac
               </label>
             )}
           </Field>
-          <p className="text-xs text-muted-foreground -mt-2">At least one of email or phone is required.</p>
+          <p className="text-xs text-muted-foreground -mt-2">{__('At least one of email or phone is required.', 'wp-sms')}</p>
 
           <Field>
             <FieldLabel htmlFor="cf-status">Status</FieldLabel>
@@ -124,7 +125,7 @@ export function ContactFormPanel({ open, onOpenChange, contact, onSave }: Contac
           </Field>
 
           <div>
-            <p className="text-sm font-medium mb-2">Channel opt-outs</p>
+            <p className="text-sm font-medium mb-2">{__('Channel opt-outs', 'wp-sms')}</p>
             <p className="text-xs text-muted-foreground mb-2">
               Opted-out channels won&apos;t receive campaign messages.
             </p>
@@ -144,7 +145,7 @@ export function ContactFormPanel({ open, onOpenChange, contact, onSave }: Contac
           </div>
 
           <div>
-            <p className="text-sm font-medium mb-2">Custom fields</p>
+            <p className="text-sm font-medium mb-2">{__('Custom fields', 'wp-sms')}</p>
             <ContactCustomFields fields={form.custom_fields} onChange={(cf) => setForm({ ...form, custom_fields: cf })} />
           </div>
         </div>

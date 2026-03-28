@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 import { api } from '../api/client';
 import { redirectTo } from '../utils/auth';
 import { authUrl, getQueryParam } from '../utils/urls';
@@ -24,7 +25,7 @@ export function VerifyToken({
 
         if (!token) {
             setStatus('error');
-            setMessage('Invalid or missing token.');
+            setMessage(__('Invalid or missing token.', 'wp-sms'));
             return;
         }
 
@@ -32,7 +33,7 @@ export function VerifyToken({
             .then((res) => {
                 if (res.success || res.status === 'authenticated') {
                     setStatus('success');
-                    setMessage(res.message || successText || 'Verified!');
+                    setMessage(res.message || successText || __('Verified!', 'wp-sms'));
 
                     if (successRedirect) {
                         setTimeout(() => {
@@ -56,7 +57,7 @@ export function VerifyToken({
             footer={
                 status !== 'loading' && !successRedirect && (
                     <AuthLink href={authUrl('/login')}>
-                        {successLinkText || 'Back to login'}
+                        {successLinkText || __('Back to login', 'wp-sms')}
                     </AuthLink>
                 )
             }

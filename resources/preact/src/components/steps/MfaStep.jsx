@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { __, sprintf } from '@wordpress/i18n';
 import { Fingerprint } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useAutoFocus } from '../../hooks/useAutoFocus';
@@ -24,7 +25,7 @@ import { OtpInput } from '../OtpInput';
 
 function formatTtl(seconds) {
     const days = Math.round((seconds || 2592000) / 86400);
-    return `${days} day${days !== 1 ? 's' : ''}`;
+    return sprintf(days === 1 ? __('%d day', 'wp-sms') : __('%d days', 'wp-sms'), days);
 }
 
 function TrustDeviceCheckbox({ id, checked, onChange, disabled, ttl }) {
@@ -35,9 +36,9 @@ function TrustDeviceCheckbox({ id, checked, onChange, disabled, ttl }) {
                 disabled={disabled}
                 className="wsms-auth-checkbox" />
             <label for={id} className="wsms-auth-trust-device__label">
-                Remember this device
+                {__('Remember this device', 'wp-sms')}
                 <span className="wsms-auth-trust-device__hint">
-                    Skip verification for {formatTtl(ttl)}
+                    {sprintf(__('Skip verification for %s', 'wp-sms'), formatTtl(ttl))}
                 </span>
             </label>
         </div>
@@ -188,19 +189,19 @@ export function MfaStep() {
 
     let subtitle;
     if (isPasskey) {
-        subtitle = 'Use your passkey to verify';
+        subtitle = __('Use your passkey to verify', 'wp-sms');
     } else if (challengeMeta.value?.requires_delivery === false) {
-        subtitle = 'Enter the code from your authenticator app';
+        subtitle = __('Enter the code from your authenticator app', 'wp-sms');
     } else if (challengeMeta.value?.masked_identifier) {
-        subtitle = `Enter the code sent to ${challengeMeta.value.masked_identifier}`;
+        subtitle = sprintf(__('Enter the code sent to %s', 'wp-sms'), challengeMeta.value.masked_identifier);
     } else {
-        subtitle = 'Enter your verification code to continue.';
+        subtitle = __('Enter your verification code to continue.', 'wp-sms');
     }
 
     if (showFactorPicker) {
         return (
             <div className="wsms-auth-stack-4 wsms-auth-fade-in">
-                <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-center">Choose a verification method</p>
+                <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-center">{__('Choose a verification method', 'wp-sms')}</p>
                 {factors.map((f) => (
                     <Button
                         key={f.channel_id}
@@ -212,7 +213,7 @@ export function MfaStep() {
                     </Button>
                 ))}
                 <Button variant="link" className="wsms-auth-full" onClick={() => setShowFactorPicker(false)}>
-                    Cancel
+                    {__('Cancel', 'wp-sms')}
                 </Button>
             </div>
         );
@@ -227,14 +228,14 @@ export function MfaStep() {
             {useBackup ? (
                 <form onSubmit={handleBackupSubmit} className="wsms-auth-stack-4">
                     <div className="wsms-auth-stack-2">
-                        <Label for="wsms-backup">Backup Code</Label>
+                        <Label for="wsms-backup">{__('Backup Code', 'wp-sms')}</Label>
                         <Input
                             ref={backupRef}
                             id="wsms-backup"
                             type="text"
                             value={backupCode}
                             onInput={(e) => setBackupCode(e.target.value)}
-                            placeholder="Enter backup code"
+                            placeholder={__('Enter backup code', 'wp-sms')}
                             disabled={authLoading.value}
                             autoComplete="one-time-code"
                         />
@@ -245,10 +246,10 @@ export function MfaStep() {
                             disabled={authLoading.value} ttl={trustedDevices?.ttl} />
                     )}
                     <Button className="wsms-auth-full" type="submit" loading={authLoading.value} disabled={!backupCode.trim()}>
-                        {authLoading.value ? 'Verifying...' : 'Verify Backup Code'}
+                        {authLoading.value ? __('Verifying...', 'wp-sms') : __('Verify Backup Code', 'wp-sms')}
                     </Button>
                     <Button variant="link" type="button" className="wsms-auth-full" onClick={() => setUseBackup(false)}>
-                        Use OTP instead
+                        {__('Use OTP instead', 'wp-sms')}
                     </Button>
                 </form>
             ) : (
@@ -258,7 +259,7 @@ export function MfaStep() {
                         <div className="wsms-auth-stack-4 wsms-auth-center">
                             <Fingerprint className={cn('wsms-auth-passkey-icon', passkeyPrompting && 'wsms-auth-passkey-icon--prompting')} style={{ width: '3rem', height: '3rem' }} />
                             <p className="wsms-auth-text-sm wsms-auth-text-muted">
-                                {passkeyPrompting ? 'Verify with your passkey...' : 'Ready to verify'}
+                                {passkeyPrompting ? __('Verify with your passkey...', 'wp-sms') : __('Ready to verify', 'wp-sms')}
                             </p>
                             {!passkeyPrompting && (
                                 <Button
@@ -266,7 +267,7 @@ export function MfaStep() {
                                     onClick={() => sendMfaChallenge('passkey')}
                                     disabled={authLoading.value}
                                 >
-                                    Try Again
+                                    {__('Try Again', 'wp-sms')}
                                 </Button>
                             )}
                             {showTrustCheckbox && (
@@ -295,19 +296,19 @@ export function MfaStep() {
                                 onClick={handleResend}
                                 disabled={resendCooldown > 0}
                             >
-                                {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend code'}
+                                {resendCooldown > 0 ? sprintf(__('Resend in %ds', 'wp-sms'), resendCooldown) : __('Resend code', 'wp-sms')}
                             </Button>
                         )}
 
                         {factors.length > 1 && (
                             <Button variant="link" type="button" onClick={() => setShowFactorPicker(true)}>
-                                Use a different method
+                                {__('Use a different method', 'wp-sms')}
                             </Button>
                         )}
 
                         {factors.some(f => f.channel_id === 'backup_codes') && (
                             <Button variant="link" type="button" onClick={() => setUseBackup(true)}>
-                                Use a backup code
+                                {__('Use a backup code', 'wp-sms')}
                             </Button>
                         )}
                     </div>

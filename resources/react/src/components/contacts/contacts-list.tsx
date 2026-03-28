@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { useState, useCallback } from 'react';
 import type { Contact, Tag } from '@/lib/api';
 import type { UseContactsReturn } from '@/hooks/use-contacts';
@@ -78,7 +79,7 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
     });
     if (!ok) return;
     await deleteContact(id);
-    toast.success('Contact deleted.');
+    toast.success(__('Contact deleted.', 'wp-sms'));
   };
 
   const totalPages = Math.ceil(total / perPage);
@@ -103,19 +104,19 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
   const handleSave = async (data: Partial<Contact>) => {
     if (editContact) {
       await updateContact(editContact.id, data);
-      toast.success('Contact updated.');
+      toast.success(__('Contact updated.', 'wp-sms'));
     } else {
       await createContact(data);
-      toast.success('Contact created.');
+      toast.success(__('Contact created.', 'wp-sms'));
     }
   };
 
   const handleBulkAction = async (action: string, params?: Record<string, unknown>) => {
     try {
       await bulkAction(action, selectedIds, params);
-      toast.success(`Bulk ${action} completed.`);
+      toast.success(sprintf(__('Bulk %s completed.', 'wp-sms'), action));
     } catch {
-      toast.error(`Bulk ${action} failed.`);
+      toast.error(sprintf(__('Bulk %s failed.', 'wp-sms'), action));
     }
   };
 
@@ -127,7 +128,7 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
           <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
           <Input
             className="pl-8 h-9"
-            placeholder="Search contacts..."
+            placeholder={__('Search contacts...', 'wp-sms')}
             value={filters.search}
             onChange={(e) => setFilter('search', e.target.value)}
           />
@@ -137,7 +138,7 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
+            <SelectItem value="all">{__('All statuses', 'wp-sms')}</SelectItem>
             {CONTACT_STATUSES.map((s) => (
               <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>
             ))}
@@ -152,11 +153,11 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
         empty={
           <EmptyState
             icon={Users}
-            title="No contacts found"
-            description="Add your first contact to get started."
+            title={__('No contacts found', 'wp-sms')}
+            description={__('Add your first contact to get started.', 'wp-sms')}
             action={
               <Button size="sm" onClick={handleCreate}>
-                <Plus className="mr-1.5 h-3.5 w-3.5" /> New Contact
+                <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('New Contact', 'wp-sms')}
               </Button>
             }
           />
@@ -169,11 +170,11 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
               <TableHead className="w-10">
                 <Checkbox checked={isAllSelected} onCheckedChange={(checked) => checked ? selectAll() : clearSelection()} />
               </TableHead>
-              <TableHead>Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Phone</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Tags</TableHead>
+              <TableHead>{__('Name', 'wp-sms')}</TableHead>
+              <TableHead>{__('Email', 'wp-sms')}</TableHead>
+              <TableHead>{__('Phone', 'wp-sms')}</TableHead>
+              <TableHead>{__('Status', 'wp-sms')}</TableHead>
+              <TableHead>{__('Tags', 'wp-sms')}</TableHead>
               <TableHead className="w-[70px]" />
             </TableRow>
           </TableHeader>
@@ -205,11 +206,11 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
                 <ActionsCell>
                   <DropdownMenuItem onClick={() => handleViewDetail(contact.id)}>
                     <Eye className="h-4 w-4 mr-2" />
-                    View
+                    {__('View', 'wp-sms')}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => handleEdit(contact)}>
                     <Pencil className="h-4 w-4 mr-2" />
-                    Edit
+                    {__('Edit', 'wp-sms')}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
@@ -217,7 +218,7 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
                     className="text-destructive focus:text-destructive"
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
+                    {__('Delete', 'wp-sms')}
                   </DropdownMenuItem>
                 </ActionsCell>
               </TableRow>
@@ -239,21 +240,21 @@ export function ContactsList({ hook, tags, onImport, embedded, createTrigger }: 
               <div>
                 <CardTitle className="flex items-center gap-2 text-base">
                   <Users className="h-4 w-4 text-muted-foreground" />
-                  Contacts
+                  {__('Contacts', 'wp-sms')}
                 </CardTitle>
-                <CardDescription>{total} {total === 1 ? 'contact' : 'contacts'} total</CardDescription>
+                <CardDescription>{sprintf(total === 1 ? __('%d contact total', 'wp-sms') : __('%d contacts total', 'wp-sms'), total)}</CardDescription>
               </div>
               <div className="flex items-center gap-2">
                 <Button variant="outline" size="sm" onClick={onImport}>
-                  <Upload className="mr-1.5 h-3.5 w-3.5" /> Import
+                  <Upload className="mr-1.5 h-3.5 w-3.5" /> {__('Import', 'wp-sms')}
                 </Button>
                 <ExportDialog onExport={hook.exportContacts}>
                   <Button variant="outline" size="sm">
-                    <Download className="mr-1.5 h-3.5 w-3.5" /> Export
+                    <Download className="mr-1.5 h-3.5 w-3.5" /> {__('Export', 'wp-sms')}
                   </Button>
                 </ExportDialog>
                 <Button size="sm" onClick={handleCreate}>
-                  <Plus className="mr-1.5 h-3.5 w-3.5" /> New Contact
+                  <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('New Contact', 'wp-sms')}
                 </Button>
               </div>
             </div>

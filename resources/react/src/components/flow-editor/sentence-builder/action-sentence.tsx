@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import type { ActionNode, JsonSchema, JsonSchemaProperty } from '@/lib/api';
 import { api } from '@/lib/api';
@@ -268,9 +269,9 @@ export function ActionSentence({ step, onChange, payloadSchema, triggerType, sam
           items={actionOptions}
           value={step.action}
           onSelect={(v) => onChange({ ...step, action: v, config: {} })}
-          placeholder="choose an action"
-          title="Select an action"
-          searchPlaceholder="Search actions..."
+          placeholder={__('choose an action', 'wp-sms')}
+          title={__('Select an action', 'wp-sms')}
+          searchPlaceholder={__('Search actions...', 'wp-sms')}
           storageKey="actions"
         />
       </div>

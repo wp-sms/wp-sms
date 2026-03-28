@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { useState } from 'react';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
@@ -74,7 +75,7 @@ export function PrivacyPage() {
       const res = await api.post<LookupResult>('wsms/v1/privacy/lookup', { identifier: identifier.trim() });
       setLookup(res.data);
     } catch {
-      toast.error('Failed to look up identifier.');
+      toast.error(__('Failed to look up identifier.', 'wp-sms'));
     } finally {
       setLoading(false);
     }
@@ -85,9 +86,9 @@ export function PrivacyPage() {
     try {
       const res = await api.post<ExportResult>('wsms/v1/privacy/export', { identifier: identifier.trim() });
       window.open(res.data.url, '_blank');
-      toast.success(`Export ready: ${res.data.filename}`);
+      toast.success(sprintf(__('Export ready: %s', 'wp-sms'), res.data.filename));
     } catch {
-      toast.error('Failed to export data.');
+      toast.error(__('Failed to export data.', 'wp-sms'));
     } finally {
       setExporting(false);
     }
@@ -112,7 +113,7 @@ export function PrivacyPage() {
       setLookup(null);
       setIdentifier('');
     } catch {
-      toast.error('Failed to erase data.');
+      toast.error(__('Failed to erase data.', 'wp-sms'));
     } finally {
       setErasing(false);
     }
@@ -120,7 +121,7 @@ export function PrivacyPage() {
 
   return (
     <>
-      <PageHeader icon={Shield} title="Privacy" />
+      <PageHeader icon={Shield} title={__('Privacy', 'wp-sms')} />
 
       <div className="space-y-6 max-w-2xl">
         <p className="text-sm text-muted-foreground">
@@ -129,7 +130,7 @@ export function PrivacyPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Look Up Personal Data</CardTitle>
+            <CardTitle>{__('Look Up Personal Data', 'wp-sms')}</CardTitle>
             <CardDescription>
               Enter an email address or phone number to find all associated WSMS data including contact profiles, tags, message history, and authentication logs. Phone-only contacts can only be found here — they won't appear in WordPress's built-in privacy tools.
             </CardDescription>
@@ -137,10 +138,10 @@ export function PrivacyPage() {
           <CardContent>
             <form onSubmit={handleLookup} className="flex items-end gap-3">
               <div className="flex-1 space-y-1.5">
-                <Label htmlFor="identifier">Email or Phone</Label>
+                <Label htmlFor="identifier">{__('Email or Phone', 'wp-sms')}</Label>
                 <Input
                   id="identifier"
-                  placeholder="user@example.com or +1234567890"
+                  placeholder={__('user@example.com or +1234567890', 'wp-sms')}
                   value={identifier}
                   onChange={(e) => setIdentifier(e.target.value)}
                 />
@@ -229,7 +230,7 @@ export function PrivacyPage() {
             {lookup.wp_user && (
               <Card>
                 <CardHeader>
-                  <CardTitle className="text-base">WordPress User</CardTitle>
+                  <CardTitle className="text-base">{__('WordPress User', 'wp-sms')}</CardTitle>
                 </CardHeader>
                 <CardContent className="text-sm text-muted-foreground">
                   {lookup.wp_user.display_name} ({lookup.wp_user.email}) — ID #{lookup.wp_user.id}
@@ -239,7 +240,7 @@ export function PrivacyPage() {
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-base">Data Summary</CardTitle>
+                <CardTitle className="text-base">{__('Data Summary', 'wp-sms')}</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-3 gap-4 text-center text-sm">

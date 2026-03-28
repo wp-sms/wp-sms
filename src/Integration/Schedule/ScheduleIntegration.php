@@ -36,7 +36,7 @@ class ScheduleIntegration implements IntegrationInterface
 
     public function getDescription(): string
     {
-        return 'Run flows on a recurring schedule or at a specific date/time.';
+        return __('Run flows on a recurring schedule or at a specific date/time.', 'wp-sms');
     }
 
     public function getCategory(): string

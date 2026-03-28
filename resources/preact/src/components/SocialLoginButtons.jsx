@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { socialProviders } from '../signals/config';
 
 function goToProvider(provider, intent) {
@@ -20,7 +21,7 @@ export function SocialLoginButtons({ intent = 'login' }) {
                         key={provider.id}
                         type="button"
                         className="wsms-auth-social-icon-btn"
-                        title={`Continue with ${provider.name}`}
+                        title={sprintf(__('Continue with %s', 'wp-sms'), provider.name)}
                         onClick={() => goToProvider(provider, intent)}
                     >
                         <span dangerouslySetInnerHTML={{ __html: provider.icon }} />

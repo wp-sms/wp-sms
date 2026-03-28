@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
@@ -26,7 +27,7 @@ export function Alert({ className, variant = 'default', message, onDismiss, chil
                         type="button"
                         onClick={onDismiss}
                         className="wsms-auth-alert__dismiss"
-                        aria-label="Dismiss"
+                        aria-label={__('Dismiss', 'wp-sms')}
                     >
                         <X />
                     </button>

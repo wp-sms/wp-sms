@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { MessageIcon, UsersIcon } from '../icons';
 import { AvatarImage } from '../AvatarImage';
 
@@ -45,7 +46,7 @@ function getChannelUrl(type, value, message) {
     switch (type) {
         case 'whatsapp':
         case 'telegram': return `${base}?text=${encoded}`;
-        case 'email': return `${base}?subject=${encodeURIComponent('Question from website')}&body=${encoded}`;
+        case 'email': return `${base}?subject=${encodeURIComponent(__('Question from website', 'wp-sms'))}&body=${encoded}`;
         case 'sms': return `${base}?body=${encoded}`;
         default: return base;
     }
@@ -57,7 +58,7 @@ export function TeamPage({ members, defaultMessage }) {
             <div class="wsms-mb-page wsms-mb-page--team">
                 <div class="wsms-mb-empty">
                     <div class="wsms-mb-empty__icon"><UsersIcon size={22} /></div>
-                    <p>No team members configured.</p>
+                    <p>{__('No team members configured.', 'wp-sms')}</p>
                 </div>
             </div>
         );
@@ -90,7 +91,7 @@ export function TeamPage({ members, defaultMessage }) {
                                     rel="noopener noreferrer"
                                     class={`wsms-mb-channel-btn wsms-mb-channel-btn--${method.type}`}
                                     title={method.type}
-                                    aria-label={`Contact ${member.name} via ${method.type}`}
+                                    aria-label={sprintf(__('Contact %1$s via %2$s', 'wp-sms'), member.name, method.type)}
                                 >
                                     {CHANNEL_ICONS[method.type] || CHANNEL_ICONS.email}
                                 </a>

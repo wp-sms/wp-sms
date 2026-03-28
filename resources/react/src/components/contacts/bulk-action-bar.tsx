@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
 import type { Tag } from '@/lib/api';
 import { Button } from '@/components/ui/button';
@@ -35,7 +36,7 @@ export function BulkActionBar({ count, tags, onBulkAction, onClear }: BulkAction
       <Select onValueChange={(tagId) => void handleAction('tag', { tag_id: tagId })} disabled={acting}>
         <SelectTrigger className="h-8 w-auto gap-1.5 text-sm border-0 bg-transparent px-2">
           <TagIcon className="h-3.5 w-3.5" />
-          <span>Add Tag</span>
+          <span>{__('Add Tag', 'wp-sms')}</span>
         </SelectTrigger>
         <SelectContent position="popper" side="top">
           {tags.map((tag) => (
@@ -52,7 +53,7 @@ export function BulkActionBar({ count, tags, onBulkAction, onClear }: BulkAction
       <Select onValueChange={(status) => void handleAction('status', { status })} disabled={acting}>
         <SelectTrigger className="h-8 w-auto gap-1.5 text-sm border-0 bg-transparent px-2">
           <CircleDot className="h-3.5 w-3.5" />
-          <span>Status</span>
+          <span>{__('Status', 'wp-sms')}</span>
         </SelectTrigger>
         <SelectContent position="popper" side="top">
           {CONTACT_STATUSES.map((s) => (
@@ -73,7 +74,7 @@ export function BulkActionBar({ count, tags, onBulkAction, onClear }: BulkAction
           onClick={() => { setConfirming(true); setTimeout(() => setConfirming(false), 3000); }}
           disabled={acting}
         >
-          <Trash2 className="mr-1 h-3.5 w-3.5" /> Delete
+          <Trash2 className="mr-1 h-3.5 w-3.5" /> {__('Delete', 'wp-sms')}
         </Button>
       )}
 

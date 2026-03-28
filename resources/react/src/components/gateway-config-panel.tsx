@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useRef } from 'react';
 import { useConfirm } from '@/components/confirm-provider';
 import {
@@ -86,10 +87,10 @@ export function GatewayConfigPanel({
     setSaving(true);
     try {
       await onSave({ [gateway.id]: draftConfig as unknown as Record<string, unknown> });
-      toast.success('Gateway configuration saved');
+      toast.success(__('Gateway configuration saved', 'wp-sms'));
       onOpenChange(false);
     } catch {
-      toast.error('Failed to save configuration');
+      toast.error(__('Failed to save configuration', 'wp-sms'));
     } finally {
       setSaving(false);
     }
@@ -198,7 +199,7 @@ export function GatewayConfigPanel({
                   Test Connection
                 </Button>
                 {!gateway.is_configured && (
-                  <span className="text-xs text-muted-foreground">Save configuration to enable connection testing</span>
+                  <span className="text-xs text-muted-foreground">{__('Save configuration to enable connection testing', 'wp-sms')}</span>
                 )}
               </div>
 
@@ -216,7 +217,7 @@ export function GatewayConfigPanel({
                 ) : (
                   <Alert variant="destructive">
                     <CircleAlert className="h-4 w-4" />
-                    <AlertTitle>Connection failed</AlertTitle>
+                    <AlertTitle>{__('Connection failed', 'wp-sms')}</AlertTitle>
                     <AlertDescription>{connectionResult.message}</AlertDescription>
                   </Alert>
                 )
@@ -240,7 +241,7 @@ export function GatewayConfigPanel({
 
               <CollapsibleContent className="pt-4 space-y-4">
                 <p className="text-xs text-muted-foreground">
-                  Verify your configuration by sending a test message. This will send a real message.
+                  {__('Verify your configuration by sending a test message. This will send a real message.', 'wp-sms')}
                 </p>
 
                 {gateway.supported_channels.length > 1 && (
@@ -276,7 +277,7 @@ export function GatewayConfigPanel({
                     id="test-body"
                     value={testBody}
                     onChange={(e) => setTestBody(e.target.value)}
-                    placeholder="Hello from WSMS!"
+                    placeholder={__('Hello from WSMS!', 'wp-sms')}
                     rows={2}
                   />
                 </Field>
@@ -295,7 +296,7 @@ export function GatewayConfigPanel({
                   testResult.success ? (
                     <Alert variant="success">
                       <CheckCircle2 className="h-4 w-4" />
-                      <AlertTitle>Sent successfully</AlertTitle>
+                      <AlertTitle>{__('Sent successfully', 'wp-sms')}</AlertTitle>
                       {testResult.data.provider_id && (
                         <AlertDescription>Provider ID: {testResult.data.provider_id}</AlertDescription>
                       )}
@@ -303,7 +304,7 @@ export function GatewayConfigPanel({
                   ) : (
                     <Alert variant="destructive">
                       <CircleAlert className="h-4 w-4" />
-                      <AlertTitle>Test failed</AlertTitle>
+                      <AlertTitle>{__('Test failed', 'wp-sms')}</AlertTitle>
                       <AlertDescription>{testResult.data.error ?? 'An unknown error occurred'}</AlertDescription>
                     </Alert>
                   )
@@ -312,7 +313,7 @@ export function GatewayConfigPanel({
             </div>
 
             {!gateway.is_configured && (
-              <p className="text-xs text-muted-foreground mt-2">Save configuration to enable test sending.</p>
+              <p className="text-xs text-muted-foreground mt-2">{__('Save configuration to enable test sending.', 'wp-sms')}</p>
             )}
           </Collapsible>
         </div>

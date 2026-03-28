@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
+import { __, sprintf } from '@wordpress/i18n';
 import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { useLocation } from 'preact-iso';
 import { api } from '../../api/client';
@@ -105,8 +106,10 @@ export function AuthenticateStep() {
                 const hasOtp = methods.some((x) => x.method === `${m.channel}_otp`);
 
                 if (hasMagicLink && !hasOtp) {
-                    const target = m.channel === 'email' ? 'email' : 'SMS';
-                    setSuccessMsg(`Check your ${target} for a login link.`);
+                    const target = m.channel === 'email'
+                        ? __('Check your email for a login link.', 'wp-sms')
+                        : __('Check your SMS for a login link.', 'wp-sms');
+                    setSuccessMsg(target);
                 } else {
                     setCodeSent(true);
                     route(authUrl('/verify'));
@@ -134,7 +137,7 @@ export function AuthenticateStep() {
     if (showMethodPicker) {
         return (
             <div className="wsms-auth-stack-4 wsms-auth-fade-in">
-                <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-center">Choose a sign-in method</p>
+                <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-center">{__('Choose a sign-in method', 'wp-sms')}</p>
                 {methods.map((m) => (
                     <Button
                         key={m.method}
@@ -146,7 +149,7 @@ export function AuthenticateStep() {
                     </Button>
                 ))}
                 <Button variant="link" className="wsms-auth-full" onClick={() => setShowMethodPicker(false)}>
-                    Cancel
+                    {__('Cancel', 'wp-sms')}
                 </Button>
             </div>
         );
@@ -161,7 +164,7 @@ export function AuthenticateStep() {
                 />
                 <div className="wsms-auth-center">
                     <Button variant="link" type="button" onClick={resetIdentifyFlow}>
-                        Not {maskedId}? Use a different account
+                        {sprintf(__('Not %s? Use a different account', 'wp-sms'), maskedId)}
                     </Button>
                 </div>
             </div>
@@ -174,14 +177,14 @@ export function AuthenticateStep() {
             <Alert variant="success" message={successMsg} className="wsms-auth-mb-4" />
 
             <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-center">
-                Signing in as <strong>{maskedId}</strong>
+                {sprintf(__('Signing in as %s', 'wp-sms'), maskedId)}
             </p>
 
             {/* Password form */}
             {activeMethod === 'password' && (
                 <form onSubmit={handlePasswordSubmit} className="wsms-auth-stack-4">
                     <div className="wsms-auth-stack-2">
-                        <Label for="wsms-password">Password</Label>
+                        <Label for="wsms-password">{__('Password', 'wp-sms')}</Label>
                         <PasswordInput
                             ref={passwordRef}
                             id="wsms-password"
@@ -201,13 +204,13 @@ export function AuthenticateStep() {
                         />
                     )}
                     <Button className="wsms-auth-full" type="submit" loading={authLoading.value} disabled={needsCaptcha && !captcha.token}>
-                        {authLoading.value ? 'Signing in...' : 'Continue'}
+                        {authLoading.value ? __('Signing in...', 'wp-sms') : __('Continue', 'wp-sms')}
                     </Button>
 
                     {hasOtpAlt && altOtpMethod && (
                         <div className="wsms-auth-center">
                             <Button variant="link" type="button" onClick={() => switchMethod(altOtpMethod.method)}>
-                                {altOtpMethod.channel === 'email' ? 'Email me a code instead' : 'Text me a code instead'}
+                                {altOtpMethod.channel === 'email' ? __('Email me a code instead', 'wp-sms') : __('Text me a code instead', 'wp-sms')}
                             </Button>
                         </div>
                     )}
@@ -231,13 +234,13 @@ export function AuthenticateStep() {
                         loading={authLoading.value}
                         disabled={needsCaptcha && !captcha.token}
                     >
-                        {authLoading.value ? 'Sending...' : 'Send Code'}
+                        {authLoading.value ? __('Sending...', 'wp-sms') : __('Send Code', 'wp-sms')}
                     </Button>
 
                     {hasPasswordAlt && (
                         <div className="wsms-auth-center">
                             <Button variant="link" type="button" onClick={() => switchMethod('password')}>
-                                Use password instead
+                                {__('Use password instead', 'wp-sms')}
                             </Button>
                         </div>
                     )}
@@ -261,13 +264,13 @@ export function AuthenticateStep() {
                         loading={authLoading.value}
                         disabled={needsCaptcha && !captcha.token}
                     >
-                        {authLoading.value ? 'Sending...' : 'Send Login Link'}
+                        {authLoading.value ? __('Sending...', 'wp-sms') : __('Send Login Link', 'wp-sms')}
                     </Button>
 
                     {hasPasswordAlt && (
                         <div className="wsms-auth-center">
                             <Button variant="link" type="button" onClick={() => switchMethod('password')}>
-                                Use password instead
+                                {__('Use password instead', 'wp-sms')}
                             </Button>
                         </div>
                     )}
@@ -278,7 +281,7 @@ export function AuthenticateStep() {
             {alternativeMethods.length > 1 && (
                 <div className="wsms-auth-center">
                     <Button variant="link" type="button" onClick={() => setShowMethodPicker(true)}>
-                        Use a different method
+                        {__('Use a different method', 'wp-sms')}
                     </Button>
                 </div>
             )}
@@ -286,20 +289,21 @@ export function AuthenticateStep() {
             {/* Back to identifier */}
             <div className="wsms-auth-center">
                 <Button variant="link" type="button" onClick={resetIdentifyFlow}>
-                    Not {maskedId}? Use a different account
+                    {sprintf(__('Not %s? Use a different account', 'wp-sms'), maskedId)}
                 </Button>
             </div>
         </div>
     );
 }
 
+const METHOD_LABELS = {
+    password: __('Password', 'wp-sms'),
+    phone_otp: __('Phone code (SMS)', 'wp-sms'),
+    phone_magic_link: __('Phone login link', 'wp-sms'),
+    email_otp: __('Email code', 'wp-sms'),
+    email_magic_link: __('Email login link', 'wp-sms'),
+};
+
 function getMethodLabel(method) {
-    const labels = {
-        password: 'Password',
-        phone_otp: 'Phone code (SMS)',
-        phone_magic_link: 'Phone login link',
-        email_otp: 'Email code',
-        email_magic_link: 'Email login link',
-    };
-    return labels[method] || method;
+    return METHOD_LABELS[method] || method;
 }

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useCallback } from 'react';
 import type { Tag } from '@/lib/api';
 import type { UseTagsReturn } from '@/hooks/use-tags';
@@ -45,10 +46,10 @@ export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
   const handleSave = async (data: { name: string; slug: string; color: string }) => {
     if (editTag) {
       await updateTag(editTag.id, data);
-      toast.success('Tag updated.');
+      toast.success(__('Tag updated.', 'wp-sms'));
     } else {
       await createTag(data);
-      toast.success('Tag created.');
+      toast.success(__('Tag created.', 'wp-sms'));
     }
   };
 
@@ -63,7 +64,7 @@ export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
     });
     if (!ok) return;
     await deleteTag(id);
-    toast.success('Tag deleted.');
+    toast.success(__('Tag deleted.', 'wp-sms'));
   };
 
   const tableContent = (
@@ -74,11 +75,11 @@ export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
       empty={
         <EmptyState
           icon={Tags}
-          title="No tags yet"
-          description="Create tags to organize your contacts."
+          title={__('No tags yet', 'wp-sms')}
+          description={__('Create tags to organize your contacts.', 'wp-sms')}
           action={
             <Button size="sm" onClick={handleCreate}>
-              <Plus className="mr-1.5 h-3.5 w-3.5" /> New Tag
+              <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('New Tag', 'wp-sms')}
             </Button>
           }
         />
@@ -87,10 +88,10 @@ export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Color</TableHead>
-            <TableHead>Name</TableHead>
-            <TableHead>Slug</TableHead>
-            <TableHead>Contacts</TableHead>
+            <TableHead>{__('Color', 'wp-sms')}</TableHead>
+            <TableHead>{__('Name', 'wp-sms')}</TableHead>
+            <TableHead>{__('Slug', 'wp-sms')}</TableHead>
+            <TableHead>{__('Contacts', 'wp-sms')}</TableHead>
             <TableHead className="w-[70px]" />
           </TableRow>
         </TableHeader>
@@ -106,7 +107,7 @@ export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
               <ActionsCell>
                 <DropdownMenuItem onClick={() => handleEdit(tag)}>
                   <Pencil className="h-4 w-4 mr-2" />
-                  Edit
+                  {__('Edit', 'wp-sms')}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
@@ -114,7 +115,7 @@ export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
                   className="text-destructive focus:text-destructive"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
+                  {__('Delete', 'wp-sms')}
                 </DropdownMenuItem>
               </ActionsCell>
             </TableRow>
@@ -131,11 +132,11 @@ export function TagsList({ hook, embedded, createTrigger }: TagsListProps) {
       ) : (
         <PageSection
           icon={Tags}
-          title="Tags"
+          title={__('Tags', 'wp-sms')}
           description={pluralize(tags.length, 'tag')}
           actions={
             <Button size="sm" onClick={handleCreate}>
-              <Plus className="mr-1.5 h-3.5 w-3.5" /> New Tag
+              <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('New Tag', 'wp-sms')}
             </Button>
           }
         >

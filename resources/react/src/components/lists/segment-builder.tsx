@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useEffect } from 'react';
 import type { SegmentConditionGroup, Tag } from '@/lib/api';
 import { useSegmentPreview } from '@/hooks/use-segment-preview';
@@ -36,7 +37,7 @@ export function SegmentBuilder({ conditions, tags, onChange, hideCount }: Segmen
       <div className="flex items-center justify-between">
         <Select onValueChange={handleTemplate}>
           <SelectTrigger className="h-8 w-56 text-xs">
-            <SelectValue placeholder="Start from template..." />
+            <SelectValue placeholder={__('Start from template...', 'wp-sms')} />
           </SelectTrigger>
           <SelectContent>
             {SEGMENT_TEMPLATES.map((t) => (

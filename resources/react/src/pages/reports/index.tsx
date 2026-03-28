@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -20,7 +21,7 @@ export function ReportsPage({ embedded }: { embedded?: boolean }) {
 
   return (
     <div className="space-y-4">
-      {!embedded && <PageHeader icon={BarChart3} title="Reports" />}
+      {!embedded && <PageHeader icon={BarChart3} title={__('Reports', 'wp-sms')} />}
       <Tabs value={String(range)} onValueChange={(v) => setRange(Number(v))}>
         <TabsList>
           {RANGES.map((r) => (

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { __ } from '@wordpress/i18n';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import { deepMerge } from '@/lib/utils';
@@ -65,7 +66,7 @@ export function useResourceSettings<T extends Record<string, unknown>, R>(
       })
       .catch((err: unknown) => {
         if (cancelled) return;
-        setError(getErrorMessage(err, 'Failed to load settings'));
+        setError(getErrorMessage(err, __('Failed to load settings', 'wp-sms')));
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -112,11 +113,11 @@ export function useResourceSettings<T extends Record<string, unknown>, R>(
       setSavedSettings(merged);
       setDraftSettings(merged);
       setSaveStatus('saved');
-      toast.success('Settings saved');
+      toast.success(__('Settings saved', 'wp-sms'));
       statusTimer.current = setTimeout(() => setSaveStatus('idle'), 3000);
     } catch (err: unknown) {
       setSaveStatus('error');
-      toast.error(getApiErrorMessage(err, 'Failed to save settings'));
+      toast.error(getApiErrorMessage(err, __('Failed to save settings', 'wp-sms')));
       statusTimer.current = setTimeout(() => setSaveStatus('idle'), 5000);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- config is stable at mount

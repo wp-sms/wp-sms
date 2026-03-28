@@ -62,6 +62,8 @@ class MessagingButtonRenderer
             true,
         );
 
+        wp_set_script_translations('wsms-messaging-button', 'wp-sms', WP_SMS_DIR . 'public/languages');
+
         $branding = $this->brandingRepo->all();
 
         $scriptData = [

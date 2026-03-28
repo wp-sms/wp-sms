@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
@@ -50,9 +51,9 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <KeySquare className="h-4 w-4 text-muted-foreground" />
-            Backup Codes
+            {__('Backup Codes', 'wp-sms')}
           </CardTitle>
-          <CardDescription>Single-use recovery codes for MFA fallback</CardDescription>
+          <CardDescription>{__('Single-use recovery codes for MFA fallback', 'wp-sms')}</CardDescription>
           <CardAction>
             <Switch
               checked={settings.backup_codes.enabled}
@@ -98,9 +99,9 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Monitor className="h-4 w-4 text-muted-foreground" />
-            Trusted Devices
+            {__('Trusted Devices', 'wp-sms')}
           </CardTitle>
-          <CardDescription>Allow users to skip MFA on recognized browsers</CardDescription>
+          <CardDescription>{__('Allow users to skip MFA on recognized browsers', 'wp-sms')}</CardDescription>
           <CardAction>
             <Switch
               checked={settings.trusted_devices.enabled}
@@ -141,10 +142,10 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <ShieldCheck className="h-4 w-4 text-muted-foreground" />
-            Required Roles
+            {__('Required Roles', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            Select which WordPress roles must use multi-factor authentication
+            {__('Select which WordPress roles must use multi-factor authentication', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -152,7 +153,7 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
             <Alert variant="destructive">
               <TriangleAlert className="h-4 w-4" />
               <AlertDescription>
-                You must enroll in MFA before requiring it for your role. Go to your account Security page to set up MFA first.
+                {__('You must enroll in MFA before requiring it for your role. Go to your account Security page to set up MFA first.', 'wp-sms')}
               </AlertDescription>
             </Alert>
           )}
@@ -160,7 +161,7 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
             <Alert>
               <TriangleAlert className="h-4 w-4" />
               <AlertDescription>
-                No MFA-capable channels are enabled. Users won't be able to enroll until you enable at least one MFA channel (e.g. TOTP, Passkey, or a channel set to MFA usage).
+                {__('No MFA-capable channels are enabled. Users won\'t be able to enroll until you enable at least one MFA channel (e.g. TOTP, Passkey, or a channel set to MFA usage).', 'wp-sms')}
               </AlertDescription>
             </Alert>
           )}
@@ -177,10 +178,10 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Clock className="h-4 w-4 text-muted-foreground" />
-            Enrollment Timing
+            {__('Enrollment Timing', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            Control when users are required to set up MFA
+            {__('Control when users are required to set up MFA', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -213,7 +214,7 @@ export function MfaPolicies({ settings, onUpdate, roles }: MfaPoliciesProps) {
               <Alert>
                 <Info className="h-4 w-4" />
                 <AlertDescription>
-                  Users with the selected roles will be required to set up MFA immediately upon their next login.
+                  {__('Users with the selected roles will be required to set up MFA immediately upon their next login.', 'wp-sms')}
                 </AlertDescription>
               </Alert>
             )}

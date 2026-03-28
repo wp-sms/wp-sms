@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import type { FlowExecution } from '@/lib/api';
 import { groupStepLogs, computeDuration, type ProcessedStep } from '@/lib/execution-utils';
 import { STEP_ICONS } from './sentence-builder/step-card';
@@ -39,7 +40,7 @@ function StepDetail({ step }: { step: ProcessedStep }) {
           <span className="ml-auto text-[10px] text-muted-foreground">{step.duration}</span>
         )}
         {step.status === 'running' && (
-          <span className="ml-auto text-[10px] text-blue-600">In progress</span>
+          <span className="ml-auto text-[10px] text-blue-600">{__('In progress', 'wp-sms')}</span>
         )}
       </div>
 
@@ -55,7 +56,7 @@ function StepDetail({ step }: { step: ProcessedStep }) {
 
       {step.retries.length > 0 && (
         <div className="space-y-1">
-          <p className="text-[10px] font-medium text-muted-foreground">Retries</p>
+          <p className="text-[10px] font-medium text-muted-foreground">{__('Retries', 'wp-sms')}</p>
           {step.retries.map((r, i) => (
             <div key={i} className="text-[11px] text-amber-700">
               Attempt {r.attempt}/{r.maxAttempts}: {r.error}
@@ -78,7 +79,7 @@ export function ExecutionDetailPanel({ execution, onClose }: ExecutionDetailPane
           <>
             <DrawerHeader className="border-b">
               <div className="flex items-center justify-between">
-                <DrawerTitle>Execution Details</DrawerTitle>
+                <DrawerTitle>{__('Execution Details', 'wp-sms')}</DrawerTitle>
                 <div className="flex items-center gap-2">
                   <ExecutionStatusBadge status={execution.status} />
                   {execution.completed_at && (
@@ -98,7 +99,7 @@ export function ExecutionDetailPanel({ execution, onClose }: ExecutionDetailPane
               )}
 
               <section>
-                <h3 className="text-xs font-medium text-muted-foreground mb-2">Trigger Data</h3>
+                <h3 className="text-xs font-medium text-muted-foreground mb-2">{__('Trigger Data', 'wp-sms')}</h3>
                 <JsonViewer data={execution.trigger_data} defaultExpanded />
               </section>
 
@@ -107,7 +108,7 @@ export function ExecutionDetailPanel({ execution, onClose }: ExecutionDetailPane
                   Steps ({steps.length})
                 </h3>
                 {steps.length === 0 ? (
-                  <p className="text-xs text-muted-foreground">No steps executed yet</p>
+                  <p className="text-xs text-muted-foreground">{__('No steps executed yet', 'wp-sms')}</p>
                 ) : (
                   <div className="space-y-2">
                     {steps.map((step) => (

@@ -294,7 +294,7 @@ class EnrollmentController extends Controller
             $user = get_userdata($userId);
 
             if (!$user) {
-                return new WP_REST_Response(['error' => 'unauthorized', 'message' => 'User not found.'], 401);
+                return new WP_REST_Response(['error' => 'unauthorized', 'message' => __('User not found.', 'wp-sms')], 401);
             }
 
             $factors = $this->mfaManager->getUserFactors($userId);

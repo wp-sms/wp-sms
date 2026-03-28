@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { memo, useMemo, useState, useRef, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatLabel } from '@/lib/constants';
@@ -49,7 +50,7 @@ const MethodChart = memo(function MethodChart({ title, description, items }: { t
           <CardDescription>{description}</CardDescription>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">No data for this period</p>
+          <p className="text-sm text-muted-foreground">{__('No data for this period', 'wp-sms')}</p>
         </CardContent>
       </Card>
     );
@@ -163,10 +164,10 @@ export function ChannelUsage({ data }: ChannelUsageProps) {
 
   return (
     <div className={`grid gap-4 ${hasSocial ? 'md:grid-cols-3' : 'md:grid-cols-2'}`}>
-      <MethodChart title="Login Methods" description="How users authenticate" items={loginItems} />
-      <MethodChart title="MFA Methods" description="Active MFA enrollments by type" items={mfaItems} />
+      <MethodChart title={__('Login Methods', 'wp-sms')} description={__('How users authenticate', 'wp-sms')} items={loginItems} />
+      <MethodChart title={__('MFA Methods', 'wp-sms')} description={__('Active MFA enrollments by type', 'wp-sms')} items={mfaItems} />
       {hasSocial && (
-        <MethodChart title="Social Providers" description="Social login usage by provider" items={socialItems} />
+        <MethodChart title={__('Social Providers', 'wp-sms')} description={__('Social login usage by provider', 'wp-sms')} items={socialItems} />
       )}
     </div>
   );

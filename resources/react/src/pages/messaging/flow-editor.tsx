@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useCallback, useRef } from 'react';
 import type { Flow, FlowNode, JsonSchema } from '@/lib/api';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -60,11 +61,11 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
 
   const handleSave = async () => {
     if (!name.trim()) {
-      toast.error('Flow name is required.');
+      toast.error(__('Flow name is required.', 'wp-sms'));
       return;
     }
     if (!triggerType) {
-      toast.error('Please select a trigger.');
+      toast.error(__('Please select a trigger.', 'wp-sms'));
       return;
     }
 
@@ -83,10 +84,10 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
         trigger_config: triggerConfig,
         steps: nestSteps(steps),
       });
-      toast.success(isEdit ? 'Flow updated.' : 'Flow created.');
+      toast.success(isEdit ? __('Flow updated.', 'wp-sms') : __('Flow created.', 'wp-sms'));
       onBack();
     } catch {
-      toast.error('Failed to save flow.');
+      toast.error(__('Failed to save flow.', 'wp-sms'));
     } finally {
       setSaving(false);
     }
@@ -103,10 +104,10 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
     setPublishing(true);
     try {
       await onPublish(flow.id);
-      toast.success('Flow published.');
+      toast.success(__('Flow published.', 'wp-sms'));
       onBack();
     } catch {
-      toast.error('Failed to publish flow.');
+      toast.error(__('Failed to publish flow.', 'wp-sms'));
     } finally {
       setPublishing(false);
     }
@@ -117,10 +118,10 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
     setDeactivating(true);
     try {
       await onDeactivate(flow.id);
-      toast.success('Flow deactivated.');
+      toast.success(__('Flow deactivated.', 'wp-sms'));
       onBack();
     } catch {
-      toast.error('Failed to deactivate flow.');
+      toast.error(__('Failed to deactivate flow.', 'wp-sms'));
     } finally {
       setDeactivating(false);
     }
@@ -131,8 +132,8 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
       {/* Details card */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Details</CardTitle>
-          <CardDescription>Name and describe this automation flow.</CardDescription>
+          <CardTitle className="text-base">{__('Details', 'wp-sms')}</CardTitle>
+          <CardDescription>{__('Name and describe this automation flow.', 'wp-sms')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Field>
@@ -141,7 +142,7 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
               id="flow-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Welcome new contacts"
+              placeholder={__('e.g. Welcome new contacts', 'wp-sms')}
             />
           </Field>
           <Field>
@@ -150,7 +151,7 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
               id="flow-description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Optional description"
+              placeholder={__('Optional description', 'wp-sms')}
             />
           </Field>
         </CardContent>
@@ -205,7 +206,7 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={() => void guardedBack()}>
           <ArrowLeft className="mr-1 h-4 w-4" />
-          Back
+          {__('Back', 'wp-sms')}
         </Button>
         <h2 className="text-base font-semibold">{isEdit ? 'Edit Flow' : 'Create Flow'}</h2>
       </div>
@@ -213,8 +214,8 @@ export function FlowEditor({ flow, initialData, onSave, onPublish, onDeactivate,
       {isEdit ? (
         <Tabs defaultValue={defaultTab ?? 'editor'}>
           <TabsList>
-            <TabsTrigger value="editor">Editor</TabsTrigger>
-            <TabsTrigger value="history">Execution History</TabsTrigger>
+            <TabsTrigger value="editor">{__('Editor', 'wp-sms')}</TabsTrigger>
+            <TabsTrigger value="history">{__('Execution History', 'wp-sms')}</TabsTrigger>
           </TabsList>
           <TabsContent value="editor" className="space-y-4 mt-4">
             {editorContent}

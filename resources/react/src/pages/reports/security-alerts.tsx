@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { formatDateTime } from '@/lib/format';
 import { PageSection } from '@/components/ui/page-section';
 import {
@@ -23,8 +24,8 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
   return (
     <PageSection
       icon={ShieldAlert}
-      title="Security Alerts"
-      description="Failed attempts, lockouts, and suspicious activity"
+      title={__('Security Alerts', 'wp-sms')}
+      description={__('Failed attempts, lockouts, and suspicious activity', 'wp-sms')}
       contentClassName="space-y-6"
     >
         <div className="flex items-baseline gap-x-4 gap-y-1 flex-wrap text-sm text-muted-foreground">
@@ -39,14 +40,14 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
 
         {top_failed_ips.length > 0 && (
           <div>
-            <h4 className="mb-2 text-sm font-medium">Top Failed IPs</h4>
+            <h4 className="mb-2 text-sm font-medium">{__('Top Failed IPs', 'wp-sms')}</h4>
             <div className="rounded-md border">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>IP Address</TableHead>
-                    <TableHead>Country</TableHead>
-                    <TableHead className="text-right">Failed Attempts</TableHead>
+                    <TableHead>{__('IP Address', 'wp-sms')}</TableHead>
+                    <TableHead>{__('Country', 'wp-sms')}</TableHead>
+                    <TableHead className="text-right">{__('Failed Attempts', 'wp-sms')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -65,15 +66,15 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
 
         {recent_lockouts.length > 0 && (
           <div>
-            <h4 className="mb-2 text-sm font-medium">Recent Lockouts</h4>
+            <h4 className="mb-2 text-sm font-medium">{__('Recent Lockouts', 'wp-sms')}</h4>
             <div className="rounded-md border">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead>IP Address</TableHead>
-                    <TableHead>Country</TableHead>
-                    <TableHead className="text-right">Locked At</TableHead>
+                    <TableHead>{__('User', 'wp-sms')}</TableHead>
+                    <TableHead>{__('IP Address', 'wp-sms')}</TableHead>
+                    <TableHead>{__('Country', 'wp-sms')}</TableHead>
+                    <TableHead className="text-right">{__('Locked At', 'wp-sms')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -95,15 +96,15 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
 
         {recent_suspensions.length > 0 && (
           <div>
-            <h4 className="mb-2 text-sm font-medium">Recent Suspensions</h4>
+            <h4 className="mb-2 text-sm font-medium">{__('Recent Suspensions', 'wp-sms')}</h4>
             <div className="rounded-md border">
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead>IP Address</TableHead>
-                    <TableHead>Country</TableHead>
-                    <TableHead className="text-right">Suspended At</TableHead>
+                    <TableHead>{__('User', 'wp-sms')}</TableHead>
+                    <TableHead>{__('IP Address', 'wp-sms')}</TableHead>
+                    <TableHead>{__('Country', 'wp-sms')}</TableHead>
+                    <TableHead className="text-right">{__('Suspended At', 'wp-sms')}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -124,7 +125,7 @@ export function SecurityAlerts({ data }: SecurityAlertsProps) {
         )}
 
         {top_failed_ips.length === 0 && recent_lockouts.length === 0 && recent_suspensions.length === 0 && (
-          <p className="text-sm text-muted-foreground">No security alerts for this period.</p>
+          <p className="text-sm text-muted-foreground">{__('No security alerts for this period.', 'wp-sms')}</p>
         )}
     </PageSection>
   );

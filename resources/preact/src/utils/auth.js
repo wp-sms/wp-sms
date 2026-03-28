@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { challengeToken, challengeMeta, pendingMfa, pendingVerifications, authStep, clearAuth, isRedirecting } from '../signals/auth';
 
 export function redirectTo(url) {
@@ -51,7 +52,7 @@ export function handleAuthResponse(res, _route) {
  */
 export function extractError(err) {
     return {
-        message: err.message || err.error || 'Something went wrong. Please try again.',
+        message: err.message || err.error || __('Something went wrong. Please try again.', 'wp-sms'),
         code: err.error || null,
         recoveryAction: err.recovery_action || null,
         retryAfter: err.meta?.retry_after || null,
@@ -79,19 +80,22 @@ export function handleRecoveryAction(details, route, opts = {}) {
 }
 
 export function formatWebAuthnError(err) {
-    if (err.name === 'NotAllowedError') return 'Verification was cancelled or timed out. Try again.';
-    if (err.name === 'InvalidStateError') return 'This device is already registered.';
+    if (err.name === 'NotAllowedError') return __('Verification was cancelled or timed out. Try again.', 'wp-sms');
+    if (err.name === 'InvalidStateError') return __('This device is already registered.', 'wp-sms');
     return extractError(err).message;
 }
 
-const SOCIAL_ERROR_MESSAGES = {
-    registration_disabled: 'No account found. Create an account first.',
-    missing_params: 'Social login failed. Please try again.',
-    missing_email: 'Registration failed. Please try again or use a different method.',
-};
+function getSocialErrorMessages() {
+    return {
+        registration_disabled: __('No account found. Create an account first.', 'wp-sms'),
+        missing_params: __('Social login failed. Please try again.', 'wp-sms'),
+        missing_email: __('Registration failed. Please try again or use a different method.', 'wp-sms'),
+    };
+}
 
 export function friendlySocialError(code) {
-    return SOCIAL_ERROR_MESSAGES[code] ?? `Social login failed: ${code}`;
+    const messages = getSocialErrorMessages();
+    return messages[code] ?? sprintf(__('Social login failed: %s', 'wp-sms'), code);
 }
 
 export async function logout() {

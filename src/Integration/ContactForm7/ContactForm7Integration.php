@@ -21,7 +21,7 @@ class ContactForm7Integration implements IntegrationInterface
 
     public function getDescription(): string
     {
-        return 'Trigger flows when Contact Form 7 forms are submitted.';
+        return __('Trigger flows when Contact Form 7 forms are submitted.', 'wp-sms');
     }
 
     public function getCategory(): string

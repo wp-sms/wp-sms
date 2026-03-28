@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useMemo, useCallback } from 'react';
 import type { JsonSchema } from '@/lib/api';
 import {
@@ -95,7 +96,7 @@ export function ConditionBuilder({ rules, onChange, payloadSchema, triggerType }
               onValueChange={(v) => updateRule(index, { field: v, operator: getDefaultOperator(fieldMap.get(v)?.type ?? 'string'), value: '' })}
             >
               <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select field">
+                <SelectValue placeholder={__('Select field', 'wp-sms')}>
                   {rule.field ? (field?.label ?? rule.field) : undefined}
                 </SelectValue>
               </SelectTrigger>
@@ -141,7 +142,7 @@ export function ConditionBuilder({ rules, onChange, payloadSchema, triggerType }
                     onValueChange={(v) => updateRule(index, { value: v })}
                   >
                     <SelectTrigger className="flex-1">
-                      <SelectValue placeholder="Select value">
+                      <SelectValue placeholder={__('Select value', 'wp-sms')}>
                         {selected?.label}
                       </SelectValue>
                     </SelectTrigger>
@@ -160,7 +161,7 @@ export function ConditionBuilder({ rules, onChange, payloadSchema, triggerType }
                   className="flex-1"
                   value={rule.value}
                   onChange={(e) => updateRule(index, { value: e.target.value })}
-                  placeholder="Value"
+                  placeholder={__('Value', 'wp-sms')}
                   type={fieldType === 'integer' || fieldType === 'number' ? 'number' : 'text'}
                 />
               );
@@ -188,7 +189,7 @@ export function ConditionBuilder({ rules, onChange, payloadSchema, triggerType }
         className="w-full"
       >
         <Plus className="mr-1 h-3.5 w-3.5" />
-        Add condition
+        {__('Add condition', 'wp-sms')}
       </Button>
     </div>
   );

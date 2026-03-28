@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { formatDateTime, formatRelativeTime, formatDuration, formatFutureRelativeTime } from '@/lib/format';
 import { useCampaignDetail } from '@/hooks/use-campaign-detail';
 import type { Campaign, CampaignRecipient, CampaignStats } from '@/lib/api';
@@ -79,10 +80,10 @@ export function CampaignDetail({ campaign: initialCampaign, onBack }: CampaignDe
     setActionLoading(action);
     try {
       await api.post(`campaigns/${data.id}/${action}`, {});
-      toast.success(`Campaign ${action}ed.`);
+      toast.success(sprintf(__('Campaign %sed.', 'wp-sms'), action));
       refetch();
     } catch {
-      toast.error(`Failed to ${action} campaign.`);
+      toast.error(sprintf(__('Failed to %s campaign.', 'wp-sms'), action));
     } finally {
       setActionLoading('');
     }
@@ -96,19 +97,19 @@ export function CampaignDetail({ campaign: initialCampaign, onBack }: CampaignDe
       {data.status === 'sending' && (
         <Button variant="outline" size="sm" onClick={() => void handleAction('pause')} disabled={!!actionLoading}>
           <Pause className="mr-1 h-3.5 w-3.5" />
-          Pause
+          {__('Pause', 'wp-sms')}
         </Button>
       )}
       {data.status === 'paused' && (
         <Button variant="outline" size="sm" onClick={() => void handleAction('resume')} disabled={!!actionLoading}>
           <Play className="mr-1 h-3.5 w-3.5" />
-          Resume
+          {__('Resume', 'wp-sms')}
         </Button>
       )}
       {(data.status === 'sending' || data.status === 'scheduled') && (
         <Button variant="outline" size="sm" onClick={() => void handleAction('cancel')} disabled={!!actionLoading}>
           <Ban className="mr-1 h-3.5 w-3.5" />
-          Cancel
+          {__('Cancel', 'wp-sms')}
         </Button>
       )}
     </>
@@ -119,7 +120,7 @@ export function CampaignDetail({ campaign: initialCampaign, onBack }: CampaignDe
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={onBack}>
           <ArrowLeft className="mr-1 h-4 w-4" />
-          Back
+          {__('Back', 'wp-sms')}
         </Button>
       </div>
 
@@ -212,7 +213,7 @@ function StatsSection({ data, stats, deliveryRate }: {
             )}
             {!hasDeliveryTracking && (
               <p className="mt-1 text-xs text-muted-foreground">
-                Delivery tracking not available for this gateway
+                {__('Delivery tracking not available for this gateway', 'wp-sms')}
               </p>
             )}
           </div>
@@ -373,7 +374,7 @@ function CampaignDetailsSection({ data, defaultOpen }: { data: Campaign; default
   return (
     <PageSection
       icon={FileText}
-      title="Campaign Details"
+      title={__('Campaign Details', 'wp-sms')}
       description={sectionDescription}
       collapsible
       defaultOpen={defaultOpen}
@@ -410,7 +411,7 @@ function CampaignDetailsSection({ data, defaultOpen }: { data: Campaign; default
 
         {(data.subject || data.body) && (
           <div>
-            <p className="mb-1.5 text-xs font-medium text-muted-foreground">Message</p>
+            <p className="mb-1.5 text-xs font-medium text-muted-foreground">{__('Message', 'wp-sms')}</p>
             {data.subject && (
               <p className="mb-1 text-sm font-semibold">{data.subject}</p>
             )}
@@ -424,7 +425,7 @@ function CampaignDetailsSection({ data, defaultOpen }: { data: Campaign; default
 
         {data.media_url && (
           <div>
-            <p className="mb-1.5 text-xs font-medium text-muted-foreground">Media</p>
+            <p className="mb-1.5 text-xs font-medium text-muted-foreground">{__('Media', 'wp-sms')}</p>
             <img
               src={data.media_url}
               alt="Campaign media"
@@ -511,7 +512,7 @@ function TimelineSection({ data }: { data: Campaign }) {
   return (
     <PageSection
       icon={Clock}
-      title="Timeline"
+      title={__('Timeline', 'wp-sms')}
       className="animate-fade-up"
       style={{ animationDelay: '180ms' }}
     >
@@ -607,7 +608,7 @@ function RecipientsSection({
   return (
     <PageSection
       icon={Users}
-      title="Recipients"
+      title={__('Recipients', 'wp-sms')}
       description={`${recipientsTotal.toLocaleString()} ${statusFilter ? statusFilter : 'total'}`}
       className="animate-fade-up"
       style={{ animationDelay: '240ms' }}
@@ -631,7 +632,7 @@ function RecipientsSection({
           >
             <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Search recipient..."
+              placeholder={__('Search recipient...', 'wp-sms')}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               className="h-8 w-52 pl-8"
@@ -662,11 +663,11 @@ function RecipientsSection({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Recipient</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Cost</TableHead>
-                  <TableHead>Sent</TableHead>
-                  <TableHead>Delivered</TableHead>
+                  <TableHead>{__('Recipient', 'wp-sms')}</TableHead>
+                  <TableHead>{__('Status', 'wp-sms')}</TableHead>
+                  <TableHead>{__('Cost', 'wp-sms')}</TableHead>
+                  <TableHead>{__('Sent', 'wp-sms')}</TableHead>
+                  <TableHead>{__('Delivered', 'wp-sms')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

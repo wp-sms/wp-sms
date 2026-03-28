@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { __, sprintf } from '@wordpress/i18n';
 import { Mail } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { authError } from '../../signals/auth';
@@ -22,7 +23,7 @@ export function EmailVerifySection({ headers, className, onVerified }) {
                 headers={headers}
                 onVerified={onVerified}
                 onError={(msg) => { authError.value = msg; }}
-                label="Enter the code sent to your email"
+                label={__('Enter the code sent to your email', 'wp-sms')}
                 codeLength={codeLength}
                 className={className}
             />
@@ -56,17 +57,17 @@ function EmailMagicLinkSection({ headers, className }) {
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
                 <Mail style={{ width: '1rem', height: '1rem', color: 'var(--muted-foreground)' }} />
                 <p className="wsms-auth-text-sm wsms-auth-text-muted">
-                    Check your email for a verification link
+                    {__('Check your email for a verification link', 'wp-sms')}
                 </p>
             </div>
 
             {resent && (
-                <p className="wsms-auth-text-xs wsms-auth-center wsms-auth-text-green">Verification email resent!</p>
+                <p className="wsms-auth-text-xs wsms-auth-center wsms-auth-text-green">{__('Verification email resent!', 'wp-sms')}</p>
             )}
 
             <div className="wsms-auth-flex-center">
                 <Button variant="link" type="button" onClick={handleResend} disabled={cooldown > 0}>
-                    {cooldown > 0 ? `Resend email in ${cooldown}s` : 'Resend verification email'}
+                    {cooldown > 0 ? sprintf(__('Resend email in %ds', 'wp-sms'), cooldown) : __('Resend verification email', 'wp-sms')}
                 </Button>
             </div>
         </div>

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect, type ReactNode } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -74,7 +75,7 @@ export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPage
       {!embedded && (
         <PageHeader
           icon={ScrollText}
-          title="Logs"
+          title={__('Logs', 'wp-sms')}
           metadata={!loading ? pluralize(total, 'event') : undefined}
           actions={clearButton}
         />
@@ -93,10 +94,10 @@ export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPage
             onValueChange={(value) => setFilter('event', value === 'all' ? '' : value)}
           >
             <SelectTrigger id="filter-event">
-              <SelectValue placeholder="All events" />
+              <SelectValue placeholder={__('All events', 'wp-sms')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All events</SelectItem>
+              <SelectItem value="all">{__('All events', 'wp-sms')}</SelectItem>
               {EVENT_TYPES.map((evt) => (
                 <SelectItem key={evt} value={evt}>
                   {formatLabel(evt)}
@@ -112,12 +113,12 @@ export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPage
             onValueChange={(value) => setFilter('status', value === 'all' ? '' : value)}
           >
             <SelectTrigger id="filter-status">
-              <SelectValue placeholder="All statuses" />
+              <SelectValue placeholder={__('All statuses', 'wp-sms')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All statuses</SelectItem>
-              <SelectItem value="success">Success</SelectItem>
-              <SelectItem value="failure">Failure</SelectItem>
+              <SelectItem value="all">{__('All statuses', 'wp-sms')}</SelectItem>
+              <SelectItem value="success">{__('Success', 'wp-sms')}</SelectItem>
+              <SelectItem value="failure">{__('Failure', 'wp-sms')}</SelectItem>
             </SelectContent>
           </Select>
         </Field>
@@ -126,7 +127,7 @@ export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPage
           <Input
             id="filter-user"
             type="text"
-            placeholder="Filter by user ID"
+            placeholder={__('Filter by user ID', 'wp-sms')}
             value={filters.user_id}
             onChange={(e) => setFilter('user_id', e.target.value)}
           />

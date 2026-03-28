@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import type { SystemHealthResponse } from '@/lib/api';
@@ -51,7 +52,7 @@ export function ActiveCampaignsCard({ data }: ActiveCampaignsCardProps) {
 
             <div className="mt-3">
               <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
-                <span>{progress}% complete</span>
+                <span>{sprintf(__('%d%% complete', 'wp-sms'), progress)}</span>
                 <span className="tabular-nums">{sent.toLocaleString()} / {total.toLocaleString()}</span>
               </div>
               <div className="flex h-2.5 overflow-hidden rounded-md bg-muted">
@@ -74,16 +75,16 @@ export function ActiveCampaignsCard({ data }: ActiveCampaignsCardProps) {
             <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
               <div className="flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                Delivered ({campaign.delivered_count.toLocaleString()})
+                {sprintf(__('Delivered (%s)', 'wp-sms'), campaign.delivered_count.toLocaleString())}
               </div>
               <div className="flex items-center gap-1.5">
                 <span className="h-2 w-2 rounded-full bg-blue-500" />
-                Sent ({campaign.sent_count.toLocaleString()})
+                {sprintf(__('Sent (%s)', 'wp-sms'), campaign.sent_count.toLocaleString())}
               </div>
               {campaign.failed_count > 0 && (
                 <div className="flex items-center gap-1.5">
                   <span className="h-2 w-2 rounded-full bg-destructive" />
-                  Failed ({campaign.failed_count.toLocaleString()})
+                  {sprintf(__('Failed (%s)', 'wp-sms'), campaign.failed_count.toLocaleString())}
                 </div>
               )}
             </div>

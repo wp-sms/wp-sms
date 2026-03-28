@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 import { User, Shield, KeyRound, LogOut } from 'lucide-react';
 import { getInitials } from '../utils/format';
 
 const NAV_ITEMS = [
-    { path: '/profile', icon: User, label: 'Profile' },
-    { path: '/security', icon: Shield, label: 'Security' },
-    { path: '/change-password', icon: KeyRound, label: 'Password' },
+    { path: '/profile', icon: User, label: __('Profile', 'wp-sms') },
+    { path: '/security', icon: Shield, label: __('Security', 'wp-sms') },
+    { path: '/change-password', icon: KeyRound, label: __('Password', 'wp-sms') },
 ];
 
 function Avatar({ user }) {
@@ -83,7 +84,7 @@ export function UserButtonDropdown({ user, baseUrl, logoutUrl }) {
                         role="menuitem"
                     >
                         <LogOut />
-                        Sign out
+                        {__('Sign out', 'wp-sms')}
                     </a>
                 </div>
             )}

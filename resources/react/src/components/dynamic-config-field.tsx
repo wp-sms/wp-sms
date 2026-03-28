@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -189,7 +190,7 @@ export function DynamicConfigField({
           placeholder={field.placeholder}
           disabled
         />
-        <p className="text-xs text-muted-foreground">Enter credentials above to load options</p>
+        <p className="text-xs text-muted-foreground">{__('Enter credentials above to load options', 'wp-sms')}</p>
       </Field>
     );
   }
@@ -231,7 +232,7 @@ export function DynamicConfigField({
         >
           <div className="p-2 border-b">
             <Input
-              placeholder="Search..."
+              placeholder={__('Search...', 'wp-sms')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="h-8 text-sm"
@@ -259,7 +260,7 @@ export function DynamicConfigField({
                   onClick={fetchOptions}
                 >
                   <RefreshCw className="h-3.5 w-3.5" />
-                  Retry
+                  {__('Retry', 'wp-sms')}
                 </Button>
               </div>
             ) : filtered.length === 0 ? (

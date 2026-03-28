@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
@@ -56,7 +57,7 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
         setDefaults(res.data.defaults);
       })
       .catch(() => {
-        if (!cancelled) toast.error('Failed to load opt-out settings');
+        if (!cancelled) toast.error(__('Failed to load opt-out settings', 'wp-sms'));
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -79,9 +80,9 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
       const res = await api.put<SettingsResponse>('optout/settings', draft);
       setSaved(res.data.settings);
       setDraft(res.data.settings);
-      toast.success('Settings saved');
+      toast.success(__('Settings saved', 'wp-sms'));
     } catch {
-      toast.error('Failed to save settings');
+      toast.error(__('Failed to save settings', 'wp-sms'));
     } finally {
       setSaving(false);
     }
@@ -123,11 +124,11 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
 
   return (
     <div className="space-y-6">
-      {!embedded && <PageHeader icon={BellOff} title="Opt-Out Settings" />}
+      {!embedded && <PageHeader icon={BellOff} title={__('Opt-Out Settings', 'wp-sms')} />}
       {/* Auto-Reply Settings */}
       <Card>
         <CardHeader>
-          <CardTitle>Auto-Reply Messages</CardTitle>
+          <CardTitle>{__('Auto-Reply Messages', 'wp-sms')}</CardTitle>
           <CardDescription>
             Configure automatic replies sent when recipients text STOP, START, or HELP keywords.
           </CardDescription>
@@ -135,7 +136,7 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
         <CardContent className="space-y-6">
           <AutoReplySection
             label="Opt-Out Reply (STOP)"
-            description="Sent when a recipient texts STOP to unsubscribe"
+            description={__('Sent when a recipient texts STOP to unsubscribe', 'wp-sms')}
             enabled={draft.auto_reply_stop_enabled}
             text={draft.auto_reply_stop_text}
             onToggle={(v) => update('auto_reply_stop_enabled', v)}
@@ -143,7 +144,7 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
           />
           <AutoReplySection
             label="Opt-In Reply (START)"
-            description="Sent when a recipient texts START to re-subscribe"
+            description={__('Sent when a recipient texts START to re-subscribe', 'wp-sms')}
             enabled={draft.auto_reply_start_enabled}
             text={draft.auto_reply_start_text}
             onToggle={(v) => update('auto_reply_start_enabled', v)}
@@ -151,7 +152,7 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
           />
           <AutoReplySection
             label="Help Reply (HELP)"
-            description="Sent when a recipient texts HELP for information"
+            description={__('Sent when a recipient texts HELP for information', 'wp-sms')}
             enabled={draft.auto_reply_help_enabled}
             text={draft.auto_reply_help_text}
             onToggle={(v) => update('auto_reply_help_enabled', v)}
@@ -163,15 +164,15 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
       {/* Keywords */}
       <Card>
         <CardHeader>
-          <CardTitle>Keywords</CardTitle>
+          <CardTitle>{__('Keywords', 'wp-sms')}</CardTitle>
           <CardDescription>
-            Default keywords are built-in and cannot be removed. Add custom keywords for your specific needs.
+            {__('Default keywords are built-in and cannot be removed. Add custom keywords for your specific needs.', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <KeywordSection
             label="STOP Keywords"
-            description="Messages matching these keywords will unsubscribe the sender"
+            description={__('Messages matching these keywords will unsubscribe the sender', 'wp-sms')}
             defaultKeywords={defaults.stop_keywords}
             customKeywords={draft.custom_stop_keywords}
             newKeyword={newStopKeyword}
@@ -181,7 +182,7 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
           />
           <KeywordSection
             label="START Keywords"
-            description="Messages matching these keywords will re-subscribe the sender"
+            description={__('Messages matching these keywords will re-subscribe the sender', 'wp-sms')}
             defaultKeywords={defaults.start_keywords}
             customKeywords={draft.custom_start_keywords}
             newKeyword={newStartKeyword}
@@ -204,9 +205,9 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
       {/* Default Campaign Opt-Out Text */}
       <Card>
         <CardHeader>
-          <CardTitle>Campaign Defaults</CardTitle>
+          <CardTitle>{__('Campaign Defaults', 'wp-sms')}</CardTitle>
           <CardDescription>
-            Default opt-out text prepopulated when creating new SMS campaigns.
+            {__('Default opt-out text prepopulated when creating new SMS campaigns.', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -215,7 +216,7 @@ export function OptOutSettings({ embedded }: { embedded?: boolean }) {
             <Input
               value={draft.default_campaign_opt_out_text}
               onChange={(e) => update('default_campaign_opt_out_text', e.target.value)}
-              placeholder="Reply STOP to unsubscribe"
+              placeholder={__('Reply STOP to unsubscribe', 'wp-sms')}
             />
             <FieldDescription>This text is appended to campaign messages when opt-out instructions are enabled.</FieldDescription>
           </Field>
@@ -290,7 +291,7 @@ function KeywordSection({ label, description, defaultKeywords, customKeywords, n
         <Input
           value={newKeyword}
           onChange={(e) => onNewKeywordChange(e.target.value)}
-          placeholder="Add keyword..."
+          placeholder={__('Add keyword...', 'wp-sms')}
           className="flex-1"
           onKeyDown={(e) => {
             if (e.key === 'Enter') {
@@ -306,7 +307,7 @@ function KeywordSection({ label, description, defaultKeywords, customKeywords, n
           onClick={() => onAdd(newKeyword)}
           disabled={!newKeyword.trim()}
         >
-          Add
+          {__('Add', 'wp-sms')}
         </Button>
       </div>
     </Field>

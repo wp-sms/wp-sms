@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -52,9 +53,9 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Zap className="h-4 w-4 text-muted-foreground" />
-            Auto-Open Triggers
+            {__('Auto-Open Triggers', 'wp-sms')}
           </CardTitle>
-          <CardDescription>Automatically open the widget based on visitor behavior. Each trigger has a 24-hour cooldown.</CardDescription>
+          <CardDescription>{__('Automatically open the widget based on visitor behavior. Each trigger has a 24-hour cooldown.', 'wp-sms')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -86,7 +87,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
             <SwitchField
               id="exit-intent"
               label="Exit intent"
-              description="Open when the cursor moves toward closing the tab (desktop only)"
+              description={__('Open when the cursor moves toward closing the tab (desktop only)', 'wp-sms')}
               checked={triggers.exit_intent}
               onCheckedChange={(checked) => onUpdate('triggers.exit_intent', checked)}
             />
@@ -99,16 +100,16 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Eye className="h-4 w-4 text-muted-foreground" />
-            Display Rules
+            {__('Display Rules', 'wp-sms')}
           </CardTitle>
-          <CardDescription>Control where and to whom the widget appears</CardDescription>
+          <CardDescription>{__('Control where and to whom the widget appears', 'wp-sms')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <SwitchField
               id="auto-inject"
               label="Auto-inject on all pages"
-              description="When enabled, the widget appears on all frontend pages (unless excluded)"
+              description={__('When enabled, the widget appears on all frontend pages (unless excluded)', 'wp-sms')}
               checked={display_rules.auto_inject}
               onCheckedChange={(checked) => onUpdate('display_rules.auto_inject', checked)}
             />
@@ -121,9 +122,9 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
               >
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="everyone">Everyone</SelectItem>
-                  <SelectItem value="logged_in">Logged In Users Only</SelectItem>
-                  <SelectItem value="logged_out">Logged Out Visitors Only</SelectItem>
+                  <SelectItem value="everyone">{__('Everyone', 'wp-sms')}</SelectItem>
+                  <SelectItem value="logged_in">{__('Logged In Users Only', 'wp-sms')}</SelectItem>
+                  <SelectItem value="logged_out">{__('Logged Out Visitors Only', 'wp-sms')}</SelectItem>
                 </SelectContent>
               </Select>
             </Field>
@@ -168,7 +169,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Clock className="h-4 w-4 text-muted-foreground" />
-            Business Hours
+            {__('Business Hours', 'wp-sms')}
           </CardTitle>
           <CardDescription>
             Show different messaging when you're offline.
@@ -190,7 +191,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
                 <Input
                   value={business_hours.offline_message}
                   onChange={(e) => onUpdate('business_hours.offline_message', e.target.value)}
-                  placeholder="We are currently offline."
+                  placeholder={__('We are currently offline.', 'wp-sms')}
                 />
               </Field>
 
@@ -204,7 +205,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
                     Mon-Sat 9-6
                   </Button>
                   <Button variant="outline" size="sm" className="text-xs" onClick={() => onUpdate('business_hours.schedule', SCHEDULE_EVERY_DAY)}>
-                    Every Day
+                    {__('Every Day', 'wp-sms')}
                   </Button>
                 </div>
                 {business_hours.schedule.map((entry, i) => {
@@ -250,7 +251,7 @@ export function DisplayRulesPage({ settings, wpTimezone, onUpdate }: DisplayRule
                 })}
                 {business_hours.schedule.length < 7 && (
                   <Button variant="outline" size="sm" onClick={addScheduleDay}>
-                    <Plus className="mr-1 h-3 w-3" /> Add Day
+                    <Plus className="mr-1 h-3 w-3" /> {__('Add Day', 'wp-sms')}
                   </Button>
                 )}
               </Field>

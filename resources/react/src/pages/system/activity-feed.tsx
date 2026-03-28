@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useMemo } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -63,7 +64,7 @@ export function ActivityFeed({ data }: ActivityFeedProps) {
   if (groups.length === 0) {
     return (
       <p className="py-6 text-center text-sm text-muted-foreground">
-        No recent activity
+        {__('No recent activity', 'wp-sms')}
       </p>
     );
   }

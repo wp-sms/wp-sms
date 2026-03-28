@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { __ } from '@wordpress/i18n';
 import { LogIn, Paintbrush, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Settings2, MessageSquare, ClipboardList, Webhook, Bell, Sparkles, Contact, FileText, type LucideIcon } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { SaveBar } from '@/components/layout/save-bar';
@@ -61,45 +62,45 @@ export interface NavSection {
 
 export const NAV_SECTIONS: readonly NavSection[] = [
   {
-    label: 'Messaging',
+    label: __('Messaging', 'wp-sms'),
     items: [
-      { id: 'campaigns', label: 'Campaigns', icon: Megaphone },
-      { id: 'flows', label: 'Flows', icon: Workflow },
-      { id: 'contacts', label: 'Contacts', icon: Users },
+      { id: 'campaigns', label: __('Campaigns', 'wp-sms'), icon: Megaphone },
+      { id: 'flows', label: __('Flows', 'wp-sms'), icon: Workflow },
+      { id: 'contacts', label: __('Contacts', 'wp-sms'), icon: Users },
       {
-        id: 'messaging-button', label: 'Messaging Button', icon: MessageSquare,
+        id: 'messaging-button', label: __('Messaging Button', 'wp-sms'), icon: MessageSquare,
         children: [
-          { id: 'mb-appearance', label: 'Appearance' },
-          { id: 'mb-pages', label: 'Pages' },
-          { id: 'mb-team', label: 'Team' },
-          { id: 'mb-display-rules', label: 'Display Rules' },
+          { id: 'mb-appearance', label: __('Appearance', 'wp-sms') },
+          { id: 'mb-pages', label: __('Pages', 'wp-sms') },
+          { id: 'mb-team', label: __('Team', 'wp-sms') },
+          { id: 'mb-display-rules', label: __('Display Rules', 'wp-sms') },
         ],
       },
     ],
   },
   {
-    label: 'Authentication',
+    label: __('Authentication', 'wp-sms'),
     items: [
-      { id: 'channels', label: 'Channels', icon: LogIn },
-      { id: 'registration-forms', label: 'Registration Forms', icon: ClipboardList },
-      { id: 'profile-fields', label: 'Profile Fields', icon: Contact },
-      { id: 'templates', label: 'Templates', icon: FileText },
+      { id: 'channels', label: __('Channels', 'wp-sms'), icon: LogIn },
+      { id: 'registration-forms', label: __('Registration Forms', 'wp-sms'), icon: ClipboardList },
+      { id: 'profile-fields', label: __('Profile Fields', 'wp-sms'), icon: Contact },
+      { id: 'templates', label: __('Templates', 'wp-sms'), icon: FileText },
     ],
   },
   {
-    label: 'Platform',
+    label: __('Platform', 'wp-sms'),
     items: [
-      { id: 'gateways', label: 'Gateways', icon: Radio },
-      { id: 'integrations', label: 'Integrations', icon: Plug },
-      { id: 'webhooks', label: 'Webhooks', icon: Webhook },
-      { id: 'branding', label: 'Branding', icon: Paintbrush },
-      { id: 'monitoring', label: 'Monitoring', icon: BarChart3 },
+      { id: 'gateways', label: __('Gateways', 'wp-sms'), icon: Radio },
+      { id: 'integrations', label: __('Integrations', 'wp-sms'), icon: Plug },
+      { id: 'webhooks', label: __('Webhooks', 'wp-sms'), icon: Webhook },
+      { id: 'branding', label: __('Branding', 'wp-sms'), icon: Paintbrush },
+      { id: 'monitoring', label: __('Monitoring', 'wp-sms'), icon: BarChart3 },
       {
-        id: 'settings', label: 'Settings', icon: Settings2,
+        id: 'settings', label: __('Settings', 'wp-sms'), icon: Settings2,
         children: [
-          { id: 's-general', label: 'General' },
-          { id: 's-security', label: 'Security' },
-          { id: 's-privacy', label: 'Privacy' },
+          { id: 's-general', label: __('General', 'wp-sms') },
+          { id: 's-security', label: __('Security', 'wp-sms') },
+          { id: 's-privacy', label: __('Privacy', 'wp-sms') },
         ],
       },
     ],
@@ -304,12 +305,12 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
           <Button variant="ghost" size="sm"
             className="bg-primary/10 text-xs font-medium text-primary hover:bg-primary/15 hover:text-primary">
             <Sparkles className="size-3" />
-            Go Premium
+            {__('Go Premium', 'wp-sms')}
           </Button>
           <Button variant="ghost" size="icon-sm" className="relative text-muted-foreground hover:text-foreground">
             <Bell className="size-4" />
             <span className="absolute top-1 right-1.5 size-2 rounded-full bg-destructive ring-2 ring-background" />
-            <span className="sr-only">Notifications</span>
+            <span className="sr-only">{__('Notifications', 'wp-sms')}</span>
           </Button>
         </header>
         <div key={activeSection} className="animate-fade-up p-7">
@@ -335,8 +336,8 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
               </div>
             </div>
             <nav className="flex items-center gap-4 text-[11px] text-muted-foreground/40">
-              <a href="https://wsms.io/docs" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">Docs</a>
-              <a href="https://wsms.io/support" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">Support</a>
+              <a href="https://wsms.io/docs" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">{__('Docs', 'wp-sms')}</a>
+              <a href="https://wsms.io/support" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">{__('Support', 'wp-sms')}</a>
               <a href="https://wsms.io" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-foreground">wsms.io</a>
             </nav>
           </div>

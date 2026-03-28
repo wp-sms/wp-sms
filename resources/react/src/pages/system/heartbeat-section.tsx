@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { formatRelativeTime, formatFutureRelativeTime, formatDateTime } from '@/lib/format';
@@ -59,7 +60,7 @@ export function HeartbeatSection({ data }: HeartbeatSectionProps) {
 
           <div className="mt-3 space-y-1 text-xs text-muted-foreground">
             <div className="flex justify-between">
-              <span>Last run</span>
+              <span>{__('Last run', 'wp-sms')}</span>
               {task.last_run ? (
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -70,11 +71,11 @@ export function HeartbeatSection({ data }: HeartbeatSectionProps) {
                   <TooltipContent>{formatDateTime(task.last_run)}</TooltipContent>
                 </Tooltip>
               ) : (
-                <span>Never</span>
+                <span>{__('Never', 'wp-sms')}</span>
               )}
             </div>
             <div className="flex justify-between">
-              <span>Next run</span>
+              <span>{__('Next run', 'wp-sms')}</span>
               {task.next_run ? (
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -85,7 +86,7 @@ export function HeartbeatSection({ data }: HeartbeatSectionProps) {
                   <TooltipContent>{formatDateTime(task.next_run)}</TooltipContent>
                 </Tooltip>
               ) : (
-                <span className="text-destructive">Not scheduled</span>
+                <span className="text-destructive">{__('Not scheduled', 'wp-sms')}</span>
               )}
             </div>
           </div>

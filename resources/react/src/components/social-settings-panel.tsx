@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import {
   Drawer,
   DrawerContent,
@@ -164,7 +165,7 @@ export function SocialSettingsPanel({
               type="password"
               value={settings.client_secret ?? ''}
               onChange={(e) => onUpdate({ client_secret: e.target.value })}
-              placeholder="Enter client secret"
+              placeholder={__('Enter client secret', 'wp-sms')}
             />
             <FieldDescription>
               {help.clientSecretHelp}

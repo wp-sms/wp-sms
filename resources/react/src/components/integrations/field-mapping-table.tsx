@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ATTRIBUTE_FIELDS } from '@/lib/constants';
 
@@ -21,8 +22,8 @@ export function FieldMappingTable({ mapping, availableFields, onChange }: FieldM
   return (
     <div className="space-y-3">
       <div className="grid grid-cols-2 gap-3 text-xs font-medium text-muted-foreground uppercase tracking-wider">
-        <span>Contact Field</span>
-        <span>Source Field</span>
+        <span>{__('Contact Field', 'wp-sms')}</span>
+        <span>{__('Source Field', 'wp-sms')}</span>
       </div>
       {MAPPABLE_FIELDS.map(({ value, label }) => (
         <div key={value} className="grid grid-cols-2 gap-3 items-center">
@@ -32,10 +33,10 @@ export function FieldMappingTable({ mapping, availableFields, onChange }: FieldM
             onValueChange={(v) => handleChange(value, v)}
           >
             <SelectTrigger className="h-8 text-sm">
-              <SelectValue placeholder="Not mapped" />
+              <SelectValue placeholder={__('Not mapped', 'wp-sms')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="__none__">Not mapped</SelectItem>
+              <SelectItem value="__none__">{__('Not mapped', 'wp-sms')}</SelectItem>
               {sourceOptions.map(([fieldKey, field]) => (
                 <SelectItem key={fieldKey} value={fieldKey}>
                   {field.label}

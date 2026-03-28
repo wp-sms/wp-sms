@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from 'react';
 import {
   Drawer,
@@ -151,14 +152,14 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
               <div className="relative">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Search meta keys..."
+                  placeholder={__('Search meta keys...', 'wp-sms')}
                   value={metaSearch}
                   onInput={(e) => setMetaSearch((e.target as HTMLInputElement).value)}
                   className="pl-9"
                 />
               </div>
               {metaLoading ? (
-                <p className="text-sm text-muted-foreground">Loading...</p>
+                <p className="text-sm text-muted-foreground">{__('Loading...', 'wp-sms')}</p>
               ) : (
                 <div className="max-h-[400px] overflow-y-auto rounded-lg border divide-y">
                   {filteredMeta.map((mk) => (
@@ -180,7 +181,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                     </button>
                   ))}
                   {filteredMeta.length === 0 && (
-                    <p className="px-3 py-4 text-sm text-muted-foreground text-center">No meta keys found.</p>
+                    <p className="px-3 py-4 text-sm text-muted-foreground text-center">{__('No meta keys found.', 'wp-sms')}</p>
                   )}
                 </div>
               )}
@@ -196,7 +197,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                 <Input
                   value={form.label}
                   onInput={(e) => update({ label: (e.target as HTMLInputElement).value })}
-                  placeholder="e.g. Company"
+                  placeholder={__('e.g. Company', 'wp-sms')}
                   disabled={isSystem}
                 />
               </Field>
@@ -212,7 +213,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                     disabled={mode === 'edit'}
                   />
                   {idConflict && (
-                    <p className="text-xs text-destructive">This ID is already in use.</p>
+                    <p className="text-xs text-destructive">{__('This ID is already in use.', 'wp-sms')}</p>
                   )}
                   <FieldDescription>
                     The wp_usermeta key where the value is stored.
@@ -247,13 +248,13 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                     {(form.options ?? []).map((opt, i) => (
                       <div key={i} className="flex items-center gap-2">
                         <Input
-                          placeholder="Label"
+                          placeholder={__('Label', 'wp-sms')}
                           value={opt.label}
                           onInput={(e) => updateOption(i, 'label', (e.target as HTMLInputElement).value)}
                           className="flex-1"
                         />
                         <Input
-                          placeholder="Value"
+                          placeholder={__('Value', 'wp-sms')}
                           value={opt.value}
                           onInput={(e) => updateOption(i, 'value', (e.target as HTMLInputElement).value)}
                           className="w-28"
@@ -265,7 +266,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                     ))}
                     <Button variant="outline" size="sm" onClick={addOption}>
                       <Plus className="mr-1 h-3.5 w-3.5" />
-                      Add Option
+                      {__('Add Option', 'wp-sms')}
                     </Button>
                   </div>
                 </Field>
@@ -278,7 +279,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                   <Input
                     value={form.placeholder ?? ''}
                     onInput={(e) => update({ placeholder: (e.target as HTMLInputElement).value })}
-                    placeholder="Optional placeholder text"
+                    placeholder={__('Optional placeholder text', 'wp-sms')}
                   />
                 </Field>
               )}
@@ -290,7 +291,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                   <Input
                     value={form.description ?? ''}
                     onInput={(e) => update({ description: (e.target as HTMLInputElement).value })}
-                    placeholder="Shown below the field on the form"
+                    placeholder={__('Shown below the field on the form', 'wp-sms')}
                   />
                   <FieldDescription>Persistent guidance displayed below the input.</FieldDescription>
                 </Field>
@@ -317,13 +318,13 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                         checked={!!form.default_value}
                         onCheckedChange={(checked) => update({ default_value: !!checked })}
                       />
-                      <span className="text-sm">Checked by default</span>
+                      <span className="text-sm">{__('Checked by default', 'wp-sms')}</span>
                     </label>
                   ) : (
                     <Input
                       value={String(form.default_value ?? '')}
                       onInput={(e) => update({ default_value: (e.target as HTMLInputElement).value })}
-                      placeholder="Pre-filled value for new registrations"
+                      placeholder={__('Pre-filled value for new registrations', 'wp-sms')}
                     />
                   )}
                   <FieldDescription>Value used when the user doesn't provide one.</FieldDescription>
@@ -359,7 +360,7 @@ export function ProfileFieldPanel({ open, onOpenChange, mode, field, existingIds
                   checked={form.required}
                   onCheckedChange={(checked) => update({ required: !!checked })}
                 />
-                <span className="text-sm">Required</span>
+                <span className="text-sm">{__('Required', 'wp-sms')}</span>
               </label>
 
               <Separator />

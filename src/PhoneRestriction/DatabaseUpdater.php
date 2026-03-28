@@ -34,30 +34,30 @@ class DatabaseUpdater
         $statusCode = wp_remote_retrieve_response_code($response);
 
         if ($statusCode !== 200) {
-            return ['success' => false, 'message' => "Server returned HTTP {$statusCode}."];
+            return ['success' => false, 'message' => sprintf(__('Server returned HTTP %d.', 'wp-sms'), $statusCode)];
         }
 
         $body = wp_remote_retrieve_body($response);
 
         if (strlen($body) > self::MAX_SIZE) {
-            return ['success' => false, 'message' => 'Response exceeds size limit.'];
+            return ['success' => false, 'message' => __('Response exceeds size limit.', 'wp-sms')];
         }
 
         $data = json_decode($body, true);
 
         if (!is_array($data)) {
-            return ['success' => false, 'message' => 'Invalid response from server.'];
+            return ['success' => false, 'message' => __('Invalid response from server.', 'wp-sms')];
         }
 
         if (empty($data['territories']) || !is_array($data['territories'])) {
-            return ['success' => false, 'message' => 'Invalid database format.'];
+            return ['success' => false, 'message' => __('Invalid database format.', 'wp-sms')];
         }
 
         $finalPath = EnhancedPhoneDatabase::getFilePath();
         $dir       = dirname($finalPath);
 
         if (!wp_mkdir_p($dir)) {
-            return ['success' => false, 'message' => 'Could not create storage directory.'];
+            return ['success' => false, 'message' => __('Could not create storage directory.', 'wp-sms')];
         }
 
         $tmpPath = $finalPath . '.tmp.' . uniqid();
@@ -66,11 +66,11 @@ class DatabaseUpdater
             $written = file_put_contents($tmpPath, $body);
 
             if ($written === false) {
-                return ['success' => false, 'message' => 'Could not write database file.'];
+                return ['success' => false, 'message' => __('Could not write database file.', 'wp-sms')];
             }
 
             if (!rename($tmpPath, $finalPath)) {
-                return ['success' => false, 'message' => 'Could not finalize database file.'];
+                return ['success' => false, 'message' => __('Could not finalize database file.', 'wp-sms')];
             }
         } finally {
             @unlink($tmpPath);
@@ -78,7 +78,7 @@ class DatabaseUpdater
 
         EnhancedPhoneDatabase::resetCache();
 
-        return ['success' => true, 'message' => 'Database downloaded successfully.'];
+        return ['success' => true, 'message' => __('Database downloaded successfully.', 'wp-sms')];
     }
 
     /**

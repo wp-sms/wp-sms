@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { UserAvatar } from '@/components/ui/UserAvatar';
@@ -10,10 +11,10 @@ import { logout } from '@/utils/auth';
 import { currentUser } from '@/signals/auth';
 
 const NAV_ITEMS = [
-    { path: '/', label: 'Dashboard', icon: LayoutDashboard },
-    { path: '/profile', label: 'Profile', icon: User },
-    { path: '/security', label: 'Security', icon: Shield },
-    { path: '/change-password', label: 'Password', icon: KeyRound },
+    { path: '/', label: __('Dashboard', 'wp-sms'), icon: LayoutDashboard },
+    { path: '/profile', label: __('Profile', 'wp-sms'), icon: User },
+    { path: '/security', label: __('Security', 'wp-sms'), icon: Shield },
+    { path: '/change-password', label: __('Password', 'wp-sms'), icon: KeyRound },
 ];
 
 function NavLinks({ currentPath, className, linkClassName }) {
@@ -69,7 +70,7 @@ export function AccountLayout({ title, subtitle, currentPath, hideNav, children 
                                 className="wsms-auth-layout-account__signout"
                                 onClick={logout}
                             >
-                                Sign Out
+                                {__('Sign Out', 'wp-sms')}
                             </Button>
                         </div>
                     </div>

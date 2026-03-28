@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -28,7 +29,7 @@ export function LogoCard({ branding, onChange }: LogoCardProps) {
           Logo &amp; Site Name
         </CardTitle>
         <CardDescription>
-          Customize the logo and name displayed on auth pages
+          {__('Customize the logo and name displayed on auth pages', 'wp-sms')}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -76,7 +77,7 @@ export function LogoCard({ branding, onChange }: LogoCardProps) {
               id="branding-site-name"
               value={branding.site_name}
               onChange={(e) => onChange({ site_name: e.target.value })}
-              placeholder="Your site name (defaults to WordPress site name)"
+              placeholder={__('Your site name (defaults to WordPress site name)', 'wp-sms')}
             />
           </Field>
         </div>

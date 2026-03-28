@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { formatDateTime } from '@/lib/format';
 import { useContactActivity } from '@/hooks/use-contact-activity';
 import { Button } from '@/components/ui/button';
@@ -31,7 +32,7 @@ export function ContactActivity({ contactId }: ContactActivityProps) {
   }
 
   if (!activities.length) {
-    return <EmptyState compact title="No activity yet" />;
+    return <EmptyState compact title={__('No activity yet', 'wp-sms')} />;
   }
 
   return (
@@ -57,7 +58,7 @@ export function ContactActivity({ contactId }: ContactActivityProps) {
       })}
       {hasMore && (
         <Button variant="ghost" size="sm" className="w-full mt-2" onClick={loadMore} disabled={loading}>
-          Load more
+          {__('Load more', 'wp-sms')}
         </Button>
       )}
     </div>

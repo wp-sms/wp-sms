@@ -45,7 +45,7 @@ class ContactIntegration implements IntegrationInterface
 
     public function getDescription(): string
     {
-        return 'Contact management triggers and actions for automation flows.';
+        return __('Contact management triggers and actions for automation flows.', 'wp-sms');
     }
 
     public function getCategory(): string

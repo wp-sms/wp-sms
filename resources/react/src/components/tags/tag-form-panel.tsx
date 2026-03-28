@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from 'react';
 import type { Tag } from '@/lib/api';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from '@/components/ui/drawer';
@@ -66,7 +67,7 @@ export function TagFormPanel({ open, onOpenChange, tag, onSave }: TagFormPanelPr
         <div className="space-y-4 px-4">
           <Field>
             <FieldLabel htmlFor="tag-name">Name *</FieldLabel>
-            <Input id="tag-name" value={name} onChange={(e) => handleNameChange(e.target.value)} placeholder="e.g. VIP" />
+            <Input id="tag-name" value={name} onChange={(e) => handleNameChange(e.target.value)} placeholder={__('e.g. VIP', 'wp-sms')} />
           </Field>
 
           <Field>

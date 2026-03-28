@@ -1,5 +1,6 @@
 import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
 import { PanelBody, SelectControl, TextControl, Placeholder, Spinner } from '@wordpress/components';
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
@@ -30,7 +31,7 @@ export default function Edit({ attributes, setAttributes }) {
         return () => controller.abort();
     }, []);
 
-    const formOptions = [{ label: 'Select a form…', value: '' }];
+    const formOptions = [{ label: __('Select a form…', 'wp-sms'), value: '' }];
     if (forms) {
         forms.forEach((form) => {
             formOptions.push({ label: `${form.name} (${form.slug})`, value: form.slug });
@@ -42,44 +43,44 @@ export default function Edit({ attributes, setAttributes }) {
     return (
         <div {...blockProps}>
             <InspectorControls>
-                <PanelBody title="Form Settings">
+                <PanelBody title={__('Form Settings', 'wp-sms')}>
                     <SelectControl
-                        label="Subscription Form"
+                        label={__('Subscription Form', 'wp-sms')}
                         value={formSlug}
                         options={formOptions}
                         onChange={(val) => setAttributes({ formSlug: val })}
                         help={
                             formsError
-                                ? 'Could not load forms. Enter a slug manually below.'
+                                ? __('Could not load forms. Enter a slug manually below.', 'wp-sms')
                                 : forms === null
-                                  ? 'Loading forms…'
-                                  : 'Select which subscription form to display'
+                                  ? __('Loading forms…', 'wp-sms')
+                                  : __('Select which subscription form to display', 'wp-sms')
                         }
                     />
                     {formsError && (
                         <TextControl
-                            label="Form Slug"
+                            label={__('Form Slug', 'wp-sms')}
                             value={formSlug}
                             onChange={(val) => setAttributes({ formSlug: val })}
-                            help="Enter the subscription form slug manually."
+                            help={__('Enter the subscription form slug manually.', 'wp-sms')}
                         />
                     )}
                 </PanelBody>
             </InspectorControls>
 
-            <Placeholder icon="clipboard" label="Subscription Form">
+            <Placeholder icon="clipboard" label={__('Subscription Form', 'wp-sms')}>
                 {forms === null ? (
                     <Spinner />
                 ) : formSlug ? (
                     <p style={{ margin: 0 }}>
                         {selectedForm ? selectedForm.name : formSlug}
                         {' · '}
-                        {selectedForm ? `${selectedForm.fields.length} fields` : ''}
-                        {selectedForm?.double_optin ? ' · Double opt-in' : ''}
+                        {selectedForm ? `${selectedForm.fields.length} ${__('fields', 'wp-sms')}` : ''}
+                        {selectedForm?.double_optin ? ` · ${__('Double opt-in', 'wp-sms')}` : ''}
                     </p>
                 ) : (
                     <p style={{ margin: 0, color: '#757575' }}>
-                        Select a subscription form in the block settings.
+                        {__('Select a subscription form in the block settings.', 'wp-sms')}
                     </p>
                 )}
             </Placeholder>

@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { useState, useEffect, useMemo } from 'react';
 import { SchemaForm } from '@/components/schema-form';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
@@ -69,7 +70,7 @@ function CredentialForm({ detail, onConfigChange }: { detail: IntegrationDetail;
     setError(null);
     try {
       await saveConfig(detail.id, credentials);
-      toast.success(`${detail.name} connected`);
+      toast.success(sprintf(__('%s connected', 'wp-sms'), detail.name));
     } catch (e: unknown) {
       setError(getErrorMessage(e, 'Connection failed'));
     } finally {
@@ -84,8 +85,8 @@ function CredentialForm({ detail, onConfigChange }: { detail: IntegrationDetail;
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Connect</CardTitle>
-        <CardDescription>Enter your credentials to connect this integration.</CardDescription>
+        <CardTitle className="text-base">{__('Connect', 'wp-sms')}</CardTitle>
+        <CardDescription>{__('Enter your credentials to connect this integration.', 'wp-sms')}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-5">
         <SchemaForm schema={schema} values={credentials} onChange={setCredentials} />
@@ -114,7 +115,7 @@ function GatewayPrompt() {
   return (
     <Alert variant="info">
       <Info className="h-4 w-4" />
-      <AlertTitle>Gateway Required</AlertTitle>
+      <AlertTitle>{__('Gateway Required', 'wp-sms')}</AlertTitle>
       <AlertDescription>
         Connect the gateway first.{' '}
         <a href="#gateways" className="font-medium underline hover:no-underline">
@@ -136,9 +137,9 @@ function StatusDashboard({ detail }: { detail: IntegrationDetail }) {
     return (
       <Alert variant="success">
         <Check className="h-4 w-4" />
-        <AlertTitle>Active</AlertTitle>
+        <AlertTitle>{__('Active', 'wp-sms')}</AlertTitle>
         <AlertDescription>
-          This integration is active and works automatically. No configuration needed.
+          {__('This integration is active and works automatically. No configuration needed.', 'wp-sms')}
         </AlertDescription>
       </Alert>
     );
@@ -147,7 +148,7 @@ function StatusDashboard({ detail }: { detail: IntegrationDetail }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Status</CardTitle>
+        <CardTitle className="text-base">{__('Status', 'wp-sms')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         {hasStats && (
@@ -168,7 +169,7 @@ function StatusDashboard({ detail }: { detail: IntegrationDetail }) {
         {syncStatus?.last_error && (
           <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Sync Error</AlertTitle>
+            <AlertTitle>{__('Sync Error', 'wp-sms')}</AlertTitle>
             <AlertDescription>{syncStatus.last_error}</AlertDescription>
           </Alert>
         )}
@@ -176,7 +177,7 @@ function StatusDashboard({ detail }: { detail: IntegrationDetail }) {
         {importStats?.last_error && (
           <Alert variant="destructive">
             <AlertTriangle className="h-4 w-4" />
-            <AlertTitle>Import Error</AlertTitle>
+            <AlertTitle>{__('Import Error', 'wp-sms')}</AlertTitle>
             <AlertDescription>{importStats.last_error}</AlertDescription>
           </Alert>
         )}
@@ -198,8 +199,8 @@ function CapabilitiesOverview({ capabilities }: { capabilities: NonNullable<Inte
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Capabilities</CardTitle>
-        <CardDescription>Features supported by this integration.</CardDescription>
+        <CardTitle className="text-base">{__('Capabilities', 'wp-sms')}</CardTitle>
+        <CardDescription>{__('Features supported by this integration.', 'wp-sms')}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
@@ -234,16 +235,16 @@ function WebhookEndpointsList() {
   useEffect(() => {
     api.get<{ endpoints: WebhookEndpoint[] }>('integrations/webhook/endpoints')
       .then((res) => setEndpoints(res.endpoints))
-      .catch(() => toast.error('Failed to load webhook endpoints'))
+      .catch(() => toast.error(__('Failed to load webhook endpoints', 'wp-sms')))
       .finally(() => setLoading(false));
   }, []);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Webhook Endpoints</CardTitle>
+        <CardTitle className="text-base">{__('Webhook Endpoints', 'wp-sms')}</CardTitle>
         <CardDescription>
-          Endpoints configured to receive webhooks from external services.
+          {__('Endpoints configured to receive webhooks from external services.', 'wp-sms')}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -254,7 +255,7 @@ function WebhookEndpointsList() {
           </div>
         ) : endpoints.length === 0 ? (
           <p className="text-sm text-muted-foreground py-2">
-            No webhook endpoints configured yet.
+            {__('No webhook endpoints configured yet.', 'wp-sms')}
           </p>
         ) : (
           <div className="space-y-2">

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel, FieldDescription, SwitchField } from '@/components/ui/field';
@@ -182,7 +183,7 @@ export function GatewayConfigForm({ gatewayId, schema, values, supportedChannels
     <div className="space-y-6">
       {hasSharedFields && (
         <div className="space-y-4">
-          <h4 className="text-sm font-medium">Credentials</h4>
+          <h4 className="text-sm font-medium">{__('Credentials', 'wp-sms')}</h4>
           {Object.entries(schema.shared).map(([key, field]) => (
             <ConfigField
               key={key}
@@ -225,7 +226,7 @@ export function GatewayConfigForm({ gatewayId, schema, values, supportedChannels
       ))}
 
       {!hasAnyFields && supportedChannels.length === 0 && (
-        <p className="text-sm text-muted-foreground">No configuration needed.</p>
+        <p className="text-sm text-muted-foreground">{__('No configuration needed.', 'wp-sms')}</p>
       )}
     </div>
   );

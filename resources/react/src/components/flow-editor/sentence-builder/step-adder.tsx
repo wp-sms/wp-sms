@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import type { StepType } from '@/lib/flow-utils';
 import { STEP_ICONS } from './step-card';
 
@@ -14,7 +15,7 @@ export function StepAdder({ onAdd }: StepAdderProps) {
         onClick={() => onAdd('action')}
       >
         <STEP_ICONS.action className="h-3 w-3" />
-        + Then also...
+        {__('+ Then also...', 'wp-sms')}
       </button>
       <button
         type="button"
@@ -22,7 +23,7 @@ export function StepAdder({ onAdd }: StepAdderProps) {
         onClick={() => onAdd('condition')}
       >
         <STEP_ICONS.condition className="h-3 w-3" />
-        + Only if...
+        {__('+ Only if...', 'wp-sms')}
       </button>
       <button
         type="button"
@@ -30,7 +31,7 @@ export function StepAdder({ onAdd }: StepAdderProps) {
         onClick={() => onAdd('delay')}
       >
         <STEP_ICONS.delay className="h-3 w-3" />
-        + Wait...
+        {__('+ Wait...', 'wp-sms')}
       </button>
     </div>
   );

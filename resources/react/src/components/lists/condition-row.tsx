@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import type { SegmentCondition, Tag } from '@/lib/api';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -31,15 +32,15 @@ export function ConditionRow({ condition, tags, onChange, onRemove }: ConditionR
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="attribute">Field</SelectItem>
-          <SelectItem value="tag">Tag</SelectItem>
+          <SelectItem value="attribute">{__('Field', 'wp-sms')}</SelectItem>
+          <SelectItem value="tag">{__('Tag', 'wp-sms')}</SelectItem>
         </SelectContent>
       </Select>
 
       {type === 'attribute' && (
         <Select value={condition.field || ''} onValueChange={(v) => onChange({ ...condition, field: v })}>
           <SelectTrigger className="h-8 w-28 text-xs">
-            <SelectValue placeholder="Field" />
+            <SelectValue placeholder={__('Field', 'wp-sms')} />
           </SelectTrigger>
           <SelectContent>
             {ATTRIBUTE_FIELDS.map((f) => (
@@ -63,7 +64,7 @@ export function ConditionRow({ condition, tags, onChange, onRemove }: ConditionR
       {showValue && type === 'attribute' && (
         <Input
           className="h-8 text-xs flex-1"
-          placeholder="Value"
+          placeholder={__('Value', 'wp-sms')}
           value={condition.value || ''}
           onChange={(e) => onChange({ ...condition, value: e.target.value })}
         />
@@ -72,7 +73,7 @@ export function ConditionRow({ condition, tags, onChange, onRemove }: ConditionR
       {type === 'tag' && (
         <Select value={condition.value || ''} onValueChange={(v) => onChange({ ...condition, value: v })}>
           <SelectTrigger className="h-8 flex-1 text-xs">
-            <SelectValue placeholder="Select tag" />
+            <SelectValue placeholder={__('Select tag', 'wp-sms')} />
           </SelectTrigger>
           <SelectContent>
             {tags.map((tag) => (

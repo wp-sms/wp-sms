@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 import { CloseIcon } from './icons';
 import { hasSeenGreeting, markGreetingSeen } from '../utils/storage';
 
@@ -64,7 +65,7 @@ export function GreetingBubble({ config, position, isWidgetOpen, onOpen }) {
                 type="button"
                 class="wsms-mb-greeting__close"
                 onClick={handleClose}
-                aria-label="Dismiss"
+                aria-label={__('Dismiss', 'wp-sms')}
             >
                 <CloseIcon size={12} />
             </button>

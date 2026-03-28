@@ -28,7 +28,7 @@ class AuthIntegration implements IntegrationInterface
 
     public function getDescription(): string
     {
-        return 'Security event triggers for logins, failures, and account lockouts.';
+        return __('Security event triggers for logins, failures, and account lockouts.', 'wp-sms');
     }
 
     public function getCategory(): string

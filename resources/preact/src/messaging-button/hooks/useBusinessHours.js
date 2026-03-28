@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 
 export function useBusinessHours(businessHoursConfig) {
     const [isOnline, setIsOnline] = useState(true);
@@ -76,7 +77,7 @@ export function useBusinessHours(businessHoursConfig) {
 
     const offlineMessage = useMemo(() => {
         if (isOnline) return '';
-        return businessHoursConfig?.offline_message || 'We are currently offline.';
+        return businessHoursConfig?.offline_message || __('We are currently offline.', 'wp-sms');
     }, [isOnline, businessHoursConfig?.offline_message]);
 
     return { isOnline, offlineMessage };

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Plus, Trash2 } from 'lucide-react';
@@ -33,7 +34,7 @@ export function ContactCustomFields({ fields, onChange, readOnly = false }: Cont
   };
 
   if (readOnly) {
-    if (!entries.length) return <p className="text-xs text-muted-foreground">No custom fields</p>;
+    if (!entries.length) return <p className="text-xs text-muted-foreground">{__('No custom fields', 'wp-sms')}</p>;
     return (
       <div className="space-y-1.5">
         {entries.map(([key, value]) => (
@@ -51,13 +52,13 @@ export function ContactCustomFields({ fields, onChange, readOnly = false }: Cont
       {entries.map(([key, value], i) => (
         <div key={i} className="flex items-center gap-2">
           <Input
-            placeholder="Key"
+            placeholder={__('Key', 'wp-sms')}
             value={key}
             onChange={(e) => handleKeyChange(key, e.target.value)}
             className="h-8 text-sm flex-1"
           />
           <Input
-            placeholder="Value"
+            placeholder={__('Value', 'wp-sms')}
             value={String(value ?? '')}
             onChange={(e) => handleValueChange(key, e.target.value)}
             className="h-8 text-sm flex-1"
@@ -68,7 +69,7 @@ export function ContactCustomFields({ fields, onChange, readOnly = false }: Cont
         </div>
       ))}
       <Button variant="outline" size="sm" className="h-7" onClick={handleAdd}>
-        <Plus className="mr-1 h-3 w-3" /> Add field
+        <Plus className="mr-1 h-3 w-3" /> {__('Add field', 'wp-sms')}
       </Button>
     </div>
   );

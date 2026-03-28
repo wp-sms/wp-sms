@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useCallback } from 'react';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
@@ -182,7 +183,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
 
   async function copyShortcode(slug: string) {
     await copyToClipboard(`[wsms_subscribe id="${slug}"]`);
-    toast.success('Shortcode copied to clipboard');
+    toast.success(__('Shortcode copied to clipboard', 'wp-sms'));
   }
 
   function toggleField(key: string) {
@@ -219,12 +220,12 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
         {!embedded && (
           <PageHeader
             icon={ClipboardList}
-            title="Subscription Forms"
+            title={__('Subscription Forms', 'wp-sms')}
             metadata={pluralize(forms.length, 'form')}
             actions={
               <Button onClick={openCreate} size="sm">
                 <Plus className="mr-1 h-3.5 w-3.5" />
-                Create Form
+                {__('Create Form', 'wp-sms')}
               </Button>
             }
           />
@@ -235,12 +236,12 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
           empty={
             <EmptyState
               icon={ClipboardList}
-              title="No subscription forms yet"
-              description="Create your first subscription form to collect contacts from visitors without requiring WordPress registration."
+              title={__('No subscription forms yet', 'wp-sms')}
+              description={__('Create your first subscription form to collect contacts from visitors without requiring WordPress registration.', 'wp-sms')}
               action={
                 <Button onClick={openCreate} size="sm">
                   <Plus className="mr-1 h-3.5 w-3.5" />
-                  Create Form
+                  {__('Create Form', 'wp-sms')}
                 </Button>
               }
             />
@@ -249,11 +250,11 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Slug</TableHead>
-                <TableHead>Fields</TableHead>
-                <TableHead>Double Opt-in</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>{__('Name', 'wp-sms')}</TableHead>
+                <TableHead>{__('Slug', 'wp-sms')}</TableHead>
+                <TableHead>{__('Fields', 'wp-sms')}</TableHead>
+                <TableHead>{__('Double Opt-in', 'wp-sms')}</TableHead>
+                <TableHead>{__('Status', 'wp-sms')}</TableHead>
                 <TableHead className="w-[70px]" />
               </TableRow>
             </TableHeader>
@@ -269,7 +270,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                     {form.double_optin ? (
                       <Badge variant="outline">{form.optin_channel}</Badge>
                     ) : (
-                      <span className="text-muted-foreground text-sm">Off</span>
+                      <span className="text-muted-foreground text-sm">{__('Off', 'wp-sms')}</span>
                     )}
                   </TableCell>
                   <TableCell>
@@ -280,15 +281,15 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                   <ActionsCell>
                     <DropdownMenuItem onClick={() => openEdit(form)}>
                       <Pencil className="h-4 w-4 mr-2" />
-                      Edit
+                      {__('Edit', 'wp-sms')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => copyShortcode(form.slug)}>
                       <ClipboardCopy className="h-4 w-4 mr-2" />
-                      Copy Shortcode
+                      {__('Copy Shortcode', 'wp-sms')}
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => duplicate(form.id)}>
                       <Copy className="h-4 w-4 mr-2" />
-                      Duplicate
+                      {__('Duplicate', 'wp-sms')}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
@@ -296,7 +297,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                       className="text-destructive focus:text-destructive"
                     >
                       <Trash2 className="h-4 w-4 mr-2" />
-                      Delete
+                      {__('Delete', 'wp-sms')}
                     </DropdownMenuItem>
                   </ActionsCell>
                 </TableRow>
@@ -329,7 +330,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                     slug: slugManual ? prev.slug : generateSlug(name),
                   }));
                 }}
-                placeholder="e.g. Newsletter Signup"
+                placeholder={__('e.g. Newsletter Signup', 'wp-sms')}
               />
             </Field>
 
@@ -354,7 +355,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
             {/* Fields */}
             <div>
               <p className="text-sm font-medium mb-1">Fields *</p>
-              <p className="text-xs text-muted-foreground mb-3">Select which fields to include and mark them as required.</p>
+              <p className="text-xs text-muted-foreground mb-3">{__('Select which fields to include and mark them as required.', 'wp-sms')}</p>
               <div className="rounded-lg border border-border/50 divide-y divide-border/50">
                 {AVAILABLE_FIELDS.map((af) => {
                   const included = formState.fields.find((f) => f.key === af.key);
@@ -399,10 +400,10 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                 onValueChange={(v) => setFormState((prev) => ({ ...prev, list_id: v === '__none__' ? null : v }))}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="No list" />
+                  <SelectValue placeholder={__('No list', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="__none__">No list</SelectItem>
+                  <SelectItem value="__none__">{__('No list', 'wp-sms')}</SelectItem>
                   {lists.map((list) => (
                     <SelectItem key={list.id} value={list.id}>{list.name}</SelectItem>
                   ))}
@@ -415,9 +416,9 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
 
             {/* Double Opt-in */}
             <div>
-              <p className="text-sm font-medium mb-1">Double Opt-in</p>
+              <p className="text-sm font-medium mb-1">{__('Double Opt-in', 'wp-sms')}</p>
               <p className="text-xs text-muted-foreground mb-3">
-                Send a verification code before confirming the subscription.
+                {__('Send a verification code before confirming the subscription.', 'wp-sms')}
               </p>
               <div className="space-y-3">
                 <Field orientation="horizontal">
@@ -456,7 +457,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                 id="sf-btn-text"
                 value={formState.appearance.button_text || ''}
                 onChange={(e) => setFormState((prev) => ({ ...prev, appearance: { ...prev.appearance, button_text: e.target.value } }))}
-                placeholder="Subscribe"
+                placeholder={__('Subscribe', 'wp-sms')}
               />
             </Field>
 
@@ -492,7 +493,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
               />
             ) : (
               <p className="text-xs text-muted-foreground rounded-md bg-muted/50 p-3">
-                Inheriting primary color from central branding settings.
+                {__('Inheriting primary color from central branding settings.', 'wp-sms')}
               </p>
             )}
 
@@ -502,7 +503,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                 id="sf-success-msg"
                 value={formState.success_message}
                 onChange={(e) => setFormState((prev) => ({ ...prev, success_message: e.target.value }))}
-                placeholder="Thanks for subscribing!"
+                placeholder={__('Thanks for subscribing!', 'wp-sms')}
               />
             </Field>
 
@@ -560,7 +561,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
                     onChange={(e) =>
                       setFormState((prev) => ({ ...prev, privacy_url: e.target.value || null }))
                     }
-                    placeholder="Leave empty to use WordPress privacy page"
+                    placeholder={__('Leave empty to use WordPress privacy page', 'wp-sms')}
                   />
                 </Field>
 
@@ -576,7 +577,7 @@ export function SubscriptionForms({ embedded, hook, createTrigger }: Subscriptio
               </div>
             ) : (
               <p className="text-xs text-muted-foreground rounded-md bg-muted/50 p-3">
-                Inheriting consent settings from global defaults.
+                {__('Inheriting consent settings from global defaults.', 'wp-sms')}
               </p>
             )}
 

@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { useMemo, useState } from 'react';
 import type { FlowNode, JsonSchema } from '@/lib/api';
 import { Card, CardContent } from '@/components/ui/card';
@@ -37,7 +38,7 @@ export function SentenceBuilder({
   const [triggerExpanded, setTriggerExpanded] = useState(!triggerType);
 
   const selectedTrigger = useMemo(() => triggers.find((t) => t.id === triggerType), [triggers, triggerType]);
-  const triggerSummary = selectedTrigger ? `When ${selectedTrigger.name}` : 'No trigger selected';
+  const triggerSummary = selectedTrigger ? sprintf(__('When %s', 'wp-sms'), selectedTrigger.name) : __('No trigger selected', 'wp-sms');
 
   return (
     <Card>
@@ -47,10 +48,10 @@ export function SentenceBuilder({
           iconBg="bg-emerald-100"
           iconFg="text-emerald-600"
           borderColor="border-l-emerald-400"
-          label="Trigger"
+          label={__('Trigger', 'wp-sms')}
           summary={triggerSummary}
           statusColor={triggerType ? 'bg-emerald-400' : 'bg-amber-400'}
-          statusLabel={triggerType ? 'Ready' : 'Needs setup'}
+          statusLabel={triggerType ? __('Ready', 'wp-sms') : __('Needs setup', 'wp-sms')}
           isExpanded={triggerExpanded}
           onToggle={() => setTriggerExpanded(!triggerExpanded)}
         >

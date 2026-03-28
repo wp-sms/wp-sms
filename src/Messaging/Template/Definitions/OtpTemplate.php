@@ -53,7 +53,7 @@ class OtpTemplate implements TemplateDefinitionInterface
                 body: __('Your verification code is: {{otp_code}}. Expires in {{expiry_minutes}} min.', 'wp-sms'),
             ),
             'telegram' => new ChannelContent(
-                body: __('<b>Your verification code is: {{otp_code}}</b>' . "\n" . 'It expires in {{expiry_minutes}} minutes.', 'wp-sms'),
+                body: __("<b>Your verification code is: {{otp_code}}</b>\nIt expires in {{expiry_minutes}} minutes.", 'wp-sms'),
             ),
             'rcs' => new ChannelContent(
                 body: __('Your verification code is: {{otp_code}}. Expires in {{expiry_minutes}} min.', 'wp-sms'),

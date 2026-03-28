@@ -57,6 +57,8 @@ class UserButtonRenderer
             true,
         );
 
+        wp_set_script_translations('wsms-user-button', 'wp-sms', WP_SMS_DIR . 'public/languages');
+
         $user = wp_get_current_user();
         $branding = $this->brandingRepo->all();
         $baseAuthUrl = $branding['auth_page_url'] ?? '/account';

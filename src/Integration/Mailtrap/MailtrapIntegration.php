@@ -59,7 +59,7 @@ class MailtrapIntegration implements
 
     public function getDescription(): string
     {
-        return 'Sync contacts and suppression lists with Mailtrap\'s promotional platform. Email sending is handled separately by the Mailtrap gateway.';
+        return __('Sync contacts and suppression lists with Mailtrap\'s promotional platform. Email sending is handled separately by the Mailtrap gateway.', 'wp-sms');
     }
 
     public function getCategory(): string
@@ -436,9 +436,9 @@ class MailtrapIntegration implements
     public function getAvailableImportFields(): array
     {
         return [
-            'email'      => ['label' => 'Email',      'type' => 'core'],
-            'first_name' => ['label' => 'First Name', 'type' => 'field'],
-            'last_name'  => ['label' => 'Last Name',  'type' => 'field'],
+            'email'      => ['label' => __('Email', 'wp-sms'),      'type' => 'core'],
+            'first_name' => ['label' => __('First Name', 'wp-sms'), 'type' => 'field'],
+            'last_name'  => ['label' => __('Last Name', 'wp-sms'),  'type' => 'field'],
         ];
     }
 
@@ -452,20 +452,20 @@ class MailtrapIntegration implements
         return [
             'list_id' => [
                 'type'        => 'select',
-                'label'       => 'List',
-                'description' => 'Select the Mailtrap contact list to import from.',
+                'label'       => __('List', 'wp-sms'),
+                'description' => __('Select the Mailtrap contact list to import from.', 'wp-sms'),
                 'required'    => true,
                 'dynamic'     => true,
             ],
             'field_mapping' => [
                 'type'  => 'field_mapping',
-                'label' => 'Field Mapping',
+                'label' => __('Field Mapping', 'wp-sms'),
             ],
             'auto_sync' => [
                 'type'        => 'boolean',
-                'label'       => 'Auto-sync',
+                'label'       => __('Auto-sync', 'wp-sms'),
                 'default'     => false,
-                'description' => 'Automatically sync new contacts from Mailtrap on a recurring schedule.',
+                'description' => __('Automatically sync new contacts from Mailtrap on a recurring schedule.', 'wp-sms'),
             ],
         ];
     }

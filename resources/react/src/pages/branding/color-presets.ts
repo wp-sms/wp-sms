@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import type { BrandingSettings } from '@/lib/api';
 
 export interface ColorPreset {
@@ -14,7 +15,7 @@ export interface ColorPreset {
 export const COLOR_PRESETS: ColorPreset[] = [
   {
     id: 'clean',
-    name: 'Clean',
+    name: __('Clean', 'wp-sms'),
     primary_color: '#171717',
     accent_color: '#6366f1',
     text_color: '#1c1917',
@@ -24,7 +25,7 @@ export const COLOR_PRESETS: ColorPreset[] = [
   },
   {
     id: 'slate',
-    name: 'Slate',
+    name: __('Slate', 'wp-sms'),
     primary_color: '#475569',
     accent_color: '#6366f1',
     text_color: '#1e293b',
@@ -34,7 +35,7 @@ export const COLOR_PRESETS: ColorPreset[] = [
   },
   {
     id: 'ocean',
-    name: 'Ocean',
+    name: __('Ocean', 'wp-sms'),
     primary_color: '#0284c7',
     accent_color: '#06b6d4',
     text_color: '#0c4a6e',
@@ -44,7 +45,7 @@ export const COLOR_PRESETS: ColorPreset[] = [
   },
   {
     id: 'indigo',
-    name: 'Indigo',
+    name: __('Indigo', 'wp-sms'),
     primary_color: '#4f46e5',
     accent_color: '#6366f1',
     text_color: '#312e81',
@@ -54,7 +55,7 @@ export const COLOR_PRESETS: ColorPreset[] = [
   },
   {
     id: 'nordic',
-    name: 'Nordic',
+    name: __('Nordic', 'wp-sms'),
     primary_color: '#2563eb',
     accent_color: '#818cf8',
     text_color: '#1e293b',
@@ -64,7 +65,7 @@ export const COLOR_PRESETS: ColorPreset[] = [
   },
   {
     id: 'amber',
-    name: 'Amber',
+    name: __('Amber', 'wp-sms'),
     primary_color: '#d97706',
     accent_color: '#f59e0b',
     text_color: '#78350f',
@@ -74,7 +75,7 @@ export const COLOR_PRESETS: ColorPreset[] = [
   },
   {
     id: 'mocha',
-    name: 'Mocha',
+    name: __('Mocha', 'wp-sms'),
     primary_color: '#8b5320',
     accent_color: '#a3743e',
     text_color: '#3c1f08',
@@ -84,7 +85,7 @@ export const COLOR_PRESETS: ColorPreset[] = [
   },
   {
     id: 'midnight',
-    name: 'Midnight',
+    name: __('Midnight', 'wp-sms'),
     primary_color: '#818cf8',
     accent_color: '#a78bfa',
     text_color: '#e2e8f0',
@@ -94,7 +95,7 @@ export const COLOR_PRESETS: ColorPreset[] = [
   },
   {
     id: 'volcano',
-    name: 'Volcano',
+    name: __('Volcano', 'wp-sms'),
     primary_color: '#f97316',
     accent_color: '#ef4444',
     text_color: '#fed7aa',

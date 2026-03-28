@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useEffect, type ReactNode } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -29,7 +30,7 @@ export function SystemHealth({ embedded, setHeaderMeta, setHeaderActions }: Syst
   const refreshButton = (
     <Button variant="outline" size="sm" onClick={refetch} disabled={loading}>
       <RefreshCw className={`mr-1.5 h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
-      Refresh
+      {__('Refresh', 'wp-sms')}
     </Button>
   );
 
@@ -52,7 +53,7 @@ export function SystemHealth({ embedded, setHeaderMeta, setHeaderActions }: Syst
   return (
     <div className="space-y-4">
       {!embedded && (
-        <PageHeader icon={Activity} title="System Health" metadata={timestamp} actions={refreshButton} />
+        <PageHeader icon={Activity} title={__('System Health', 'wp-sms')} metadata={timestamp} actions={refreshButton} />
       )}
       {embedded && !setHeaderMeta && (
         <div className="flex items-center justify-between">
@@ -105,8 +106,8 @@ export function SystemHealth({ embedded, setHeaderMeta, setHeaderActions }: Syst
 
           <PageSection
             icon={HeartPulse}
-            title="Scheduled Tasks"
-            description="Health of recurring background tasks"
+            title={__('Scheduled Tasks', 'wp-sms')}
+            description={__('Health of recurring background tasks', 'wp-sms')}
             defaultOpen
             collapsible
             storageKey="system-heartbeat"
@@ -118,8 +119,8 @@ export function SystemHealth({ embedded, setHeaderMeta, setHeaderActions }: Syst
 
           <PageSection
             icon={ListTodo}
-            title="Queue Overview"
-            description="Current job queue status"
+            title={__('Queue Overview', 'wp-sms')}
+            description={__('Current job queue status', 'wp-sms')}
             actions={
               (data.queue.totals['failed'] ?? 0) > 0 && (
                 <Badge variant="destructive" dot>
@@ -138,8 +139,8 @@ export function SystemHealth({ embedded, setHeaderMeta, setHeaderActions }: Syst
 
           <PageSection
             icon={XCircle}
-            title="Failed Jobs"
-            description="Jobs that encountered errors"
+            title={__('Failed Jobs', 'wp-sms')}
+            description={__('Jobs that encountered errors', 'wp-sms')}
             actions={
               data.failed_jobs.total > 0 && (
                 <Badge variant="destructive">{data.failed_jobs.total}</Badge>
@@ -156,8 +157,8 @@ export function SystemHealth({ embedded, setHeaderMeta, setHeaderActions }: Syst
 
           <PageSection
             icon={Clock}
-            title="Recent Activity"
-            description="Last completed and failed jobs"
+            title={__('Recent Activity', 'wp-sms')}
+            description={__('Last completed and failed jobs', 'wp-sms')}
             defaultOpen={false}
             collapsible
             storageKey="system-activity"
@@ -170,8 +171,8 @@ export function SystemHealth({ embedded, setHeaderMeta, setHeaderActions }: Syst
           {data.active_campaigns.length > 0 && (
             <PageSection
               icon={Megaphone}
-              title="Active Campaigns"
-              description="Campaigns currently sending"
+              title={__('Active Campaigns', 'wp-sms')}
+              description={__('Campaigns currently sending', 'wp-sms')}
               defaultOpen
               collapsible
               storageKey="system-campaigns"

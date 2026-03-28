@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -58,9 +59,9 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Home className="h-4 w-4 text-muted-foreground" />
-            Welcome Page
+            {__('Welcome Page', 'wp-sms')}
           </CardTitle>
-          <CardDescription>The first page visitors see when opening the widget</CardDescription>
+          <CardDescription>{__('The first page visitors see when opening the widget', 'wp-sms')}</CardDescription>
           <CardAction>
             <Switch
               checked={pages.welcome.enabled}
@@ -78,7 +79,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                   id="mb-greeting"
                   value={pages.welcome.greeting}
                   onChange={(e) => onUpdate('pages.welcome.greeting', e.target.value)}
-                  placeholder="Welcome! Choose an option below."
+                  placeholder={__('Welcome! Choose an option below.', 'wp-sms')}
                   rows={2}
                 />
               </Field>
@@ -88,7 +89,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                   id="mb-cta-label"
                   value={pages.welcome.cta_label}
                   onChange={(e) => onUpdate('pages.welcome.cta_label', e.target.value)}
-                  placeholder="Send a message"
+                  placeholder={__('Send a message', 'wp-sms')}
                 />
               </Field>
             </div>
@@ -101,9 +102,9 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
-            Contact Form
+            {__('Contact Form', 'wp-sms')}
           </CardTitle>
-          <CardDescription>Capture messages and contact information from visitors</CardDescription>
+          <CardDescription>{__('Capture messages and contact information from visitors', 'wp-sms')}</CardDescription>
           <CardAction>
             <Switch
               checked={pages.contact_form.enabled}
@@ -152,8 +153,8 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                 >
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="email">Email</SelectItem>
-                    <SelectItem value="sms">SMS</SelectItem>
+                    <SelectItem value="email">{__('Email', 'wp-sms')}</SelectItem>
+                    <SelectItem value="sms">{__('SMS', 'wp-sms')}</SelectItem>
                   </SelectContent>
                 </Select>
                 <FieldDescription>How notification of new messages is delivered to you</FieldDescription>
@@ -168,7 +169,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                     const recipients = e.target.value.split(',').map((s) => s.trim()).filter(Boolean);
                     onUpdate('pages.contact_form.notification_recipients', recipients);
                   }}
-                  placeholder="admin@example.com, support@example.com"
+                  placeholder={__('admin@example.com, support@example.com', 'wp-sms')}
                 />
                 <FieldDescription>Comma-separated list. Defaults to site admin email if empty.</FieldDescription>
               </Field>
@@ -182,9 +183,9 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Link className="h-4 w-4 text-muted-foreground" />
-            Resources & Links
+            {__('Resources & Links', 'wp-sms')}
           </CardTitle>
-          <CardDescription>Add helpful links and resources to the widget</CardDescription>
+          <CardDescription>{__('Add helpful links and resources to the widget', 'wp-sms')}</CardDescription>
           <CardAction>
             <Switch
               checked={pages.resources.enabled}
@@ -199,9 +200,9 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
               {pages.resources.links.length === 0 && (
                 <EmptyState
                   icon={Link}
-                  title="No links yet"
-                  description="Add helpful links and resources to display in the widget."
-                  action={<Button onClick={addResourceLink}><Plus className="mr-1 h-4 w-4" /> Add Link</Button>}
+                  title={__('No links yet', 'wp-sms')}
+                  description={__('Add helpful links and resources to display in the widget.', 'wp-sms')}
+                  action={<Button onClick={addResourceLink}><Plus className="mr-1 h-4 w-4" /> {__('Add Link', 'wp-sms')}</Button>}
                   compact
                 />
               )}
@@ -211,7 +212,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                     <Input
                       value={link.title}
                       onChange={(e) => updateResourceLink(i, 'title', e.target.value)}
-                      placeholder="Title"
+                      placeholder={__('Title', 'wp-sms')}
                       className="w-1/3"
                     />
                     <Input
@@ -227,13 +228,13 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                   <Input
                     value={link.description}
                     onChange={(e) => updateResourceLink(i, 'description', e.target.value)}
-                    placeholder="Brief description (optional)"
+                    placeholder={__('Brief description (optional)', 'wp-sms')}
                   />
                 </div>
               ))}
               {pages.resources.links.length > 0 && (
                 <Button variant="outline" size="sm" onClick={addResourceLink}>
-                  <Plus className="mr-1 h-4 w-4" /> Add Link
+                  <Plus className="mr-1 h-4 w-4" /> {__('Add Link', 'wp-sms')}
                 </Button>
               )}
             </div>
@@ -246,9 +247,9 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Shield className="h-4 w-4 text-muted-foreground" />
-            GDPR Consent
+            {__('GDPR Consent', 'wp-sms')}
           </CardTitle>
-          <CardDescription>Require privacy consent before form submission</CardDescription>
+          <CardDescription>{__('Require privacy consent before form submission', 'wp-sms')}</CardDescription>
           <CardAction>
             <Switch
               checked={gdpr.enabled}
@@ -266,7 +267,7 @@ export function PagesConfigPage({ settings, onUpdate }: PagesConfigPageProps) {
                   id="mb-consent-text"
                   value={gdpr.consent_text}
                   onChange={(e) => onUpdate('gdpr.consent_text', e.target.value)}
-                  placeholder="I agree to the privacy policy."
+                  placeholder={__('I agree to the privacy policy.', 'wp-sms')}
                 />
               </Field>
               <Field>

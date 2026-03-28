@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -19,11 +20,11 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
 
   return (
     <div className="space-y-4">
-      {!embedded && <PageHeader icon={SlidersHorizontal} title="General" />}
+      {!embedded && <PageHeader icon={SlidersHorizontal} title={__('General', 'wp-sms')} />}
       <PageSection
         icon={Globe}
-        title="Auth Pages"
-        description="Configure authentication page URLs and login behavior"
+        title={__('Auth Pages', 'wp-sms')}
+        description={__('Configure authentication page URLs and login behavior', 'wp-sms')}
       >
           <div className="space-y-4">
             <div className="max-w-md">
@@ -45,7 +46,7 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
             <SwitchField
               id="redirect_login"
               label="Redirect WordPress Login"
-              description="Redirect wp-login.php to your custom auth pages"
+              description={__('Redirect wp-login.php to your custom auth pages', 'wp-sms')}
               checked={settings.redirect_login}
               onCheckedChange={(checked) => onUpdate('redirect_login', checked)}
             />
@@ -60,8 +61,8 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
 
       <PageSection
         icon={Phone}
-        title="Admin Phone Number"
-        description="Site-level phone number used as a fallback for notifications and available as a template variable in flows."
+        title={__('Admin Phone Number', 'wp-sms')}
+        description={__('Site-level phone number used as a fallback for notifications and available as a template variable in flows.', 'wp-sms')}
       >
           <div className="space-y-4 max-w-md">
             <Field>
@@ -109,8 +110,8 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
 
       <PageSection
         icon={Scale}
-        title="Legal Links"
-        description="Terms of Service and Privacy Policy links shown on auth pages"
+        title={__('Legal Links', 'wp-sms')}
+        description={__('Terms of Service and Privacy Policy links shown on auth pages', 'wp-sms')}
       >
           <div className="space-y-4 max-w-md">
             <Field>
@@ -142,8 +143,8 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
 
       <PageSection
         icon={ShieldCheck}
-        title="Subscription Consent"
-        description="Default consent checkbox shown on subscription forms. Individual forms can override these settings. Leave consent text empty to disable."
+        title={__('Subscription Consent', 'wp-sms')}
+        description={__('Default consent checkbox shown on subscription forms. Individual forms can override these settings. Leave consent text empty to disable.', 'wp-sms')}
       >
           <div className="space-y-4 max-w-md">
             <Field>
@@ -166,14 +167,14 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
                 id="subscription_consent_privacy_url"
                 value={settings.subscription_consent_privacy_url}
                 onChange={(e) => onUpdate('subscription_consent_privacy_url', e.target.value)}
-                placeholder="Leave empty to use WordPress privacy page"
+                placeholder={__('Leave empty to use WordPress privacy page', 'wp-sms')}
               />
             </Field>
 
             <SwitchField
               id="subscription_consent_required"
               label="Consent Required"
-              description="Block submission if the consent checkbox is not checked"
+              description={__('Block submission if the consent checkbox is not checked', 'wp-sms')}
               checked={settings.subscription_consent_required}
               onCheckedChange={(checked) => onUpdate('subscription_consent_required', checked)}
             />
@@ -182,13 +183,13 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
 
       <PageSection
         icon={UserPlus}
-        title="Auto-Create Accounts"
-        description="Account creation behavior when unrecognized users attempt to log in"
+        title={__('Auto-Create Accounts', 'wp-sms')}
+        description={__('Account creation behavior when unrecognized users attempt to log in', 'wp-sms')}
       >
           <SwitchField
             id="auto_create_users"
             label="Auto-Create Accounts on Login"
-            description="When someone logs in with a phone or email that doesn't have an account yet, automatically create one instead of rejecting them"
+            description={__('When someone logs in with a phone or email that doesn\'t have an account yet, automatically create one instead of rejecting them', 'wp-sms')}
             checked={settings.auto_create_users}
             onCheckedChange={(checked) => onUpdate('auto_create_users', checked)}
           />
@@ -196,8 +197,8 @@ export function GeneralPage({ settings, onUpdate, embedded }: GeneralPageProps) 
 
       <PageSection
         icon={ScrollText}
-        title="Log Settings"
-        description="Configure what gets logged and how long logs are retained"
+        title={__('Log Settings', 'wp-sms')}
+        description={__('Configure what gets logged and how long logs are retained', 'wp-sms')}
       >
           <div className="space-y-4 max-w-md">
             <Field>

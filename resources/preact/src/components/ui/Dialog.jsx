@@ -1,4 +1,5 @@
 import { useEffect, useRef, useCallback } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 import { X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
@@ -66,7 +67,7 @@ export function Dialog({ open, onClose, children, className }) {
                     type="button"
                     onClick={onClose}
                     className="wsms-auth-dialog__close"
-                    aria-label="Close"
+                    aria-label={__('Close', 'wp-sms')}
                 >
                     <X />
                 </button>

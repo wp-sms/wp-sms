@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
 import type { Tag } from '@/lib/api';
 import { TagChips } from './tag-chips';
@@ -29,7 +30,7 @@ export function ContactTagsManager({ contactId, tags, allTags, onAdd, onRemove }
       {adding ? (
         <Select onValueChange={(v) => void handleAdd(v)}>
           <SelectTrigger className="h-8 text-sm w-48">
-            <SelectValue placeholder="Select tag..." />
+            <SelectValue placeholder={__('Select tag...', 'wp-sms')} />
           </SelectTrigger>
           <SelectContent>
             {available.map((tag) => (
@@ -47,7 +48,7 @@ export function ContactTagsManager({ contactId, tags, allTags, onAdd, onRemove }
         </Select>
       ) : (
         <Button variant="outline" size="sm" className="h-7" onClick={() => setAdding(true)}>
-          <Plus className="mr-1 h-3 w-3" /> Add tag
+          <Plus className="mr-1 h-3 w-3" /> {__('Add tag', 'wp-sms')}
         </Button>
       )}
     </div>

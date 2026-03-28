@@ -247,7 +247,7 @@ class LoginGuard
         }
 
         return new \WP_Error('mfa_enrollment_required',
-            'You must complete MFA enrollment before accessing this resource.',
+            __('You must complete MFA enrollment before accessing this resource.', 'wp-sms'),
             ['status' => 403]);
     }
 

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from 'react';
 import type { ContactList, SegmentConditionGroup, Tag } from '@/lib/api';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from '@/components/ui/drawer';
@@ -88,8 +89,8 @@ export function ListFormPanel({ open, onOpenChange, list, tags, onSave }: ListFo
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="dynamic">Dynamic (conditions)</SelectItem>
-                <SelectItem value="static">Static (tag-based)</SelectItem>
+                <SelectItem value="dynamic">{__('Dynamic (conditions)', 'wp-sms')}</SelectItem>
+                <SelectItem value="static">{__('Static (tag-based)', 'wp-sms')}</SelectItem>
               </SelectContent>
             </Select>
           </Field>
@@ -99,7 +100,7 @@ export function ListFormPanel({ open, onOpenChange, list, tags, onSave }: ListFo
               <FieldLabel>Tag</FieldLabel>
               <Select value={tagId} onValueChange={setTagId}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a tag..." />
+                  <SelectValue placeholder={__('Select a tag...', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
                   {tags.map((tag) => (
@@ -117,7 +118,7 @@ export function ListFormPanel({ open, onOpenChange, list, tags, onSave }: ListFo
 
           {type === 'dynamic' && (
             <div>
-              <p className="text-sm font-medium mb-2">Conditions</p>
+              <p className="text-sm font-medium mb-2">{__('Conditions', 'wp-sms')}</p>
               <SegmentBuilder conditions={conditions} tags={tags} onChange={setConditions} />
             </div>
           )}

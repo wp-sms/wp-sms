@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -160,7 +161,7 @@ function PreviewDialog({
         {/* Subject bar (email only) */}
         {isEmail && preview.subject && (
           <div className="border-b px-5 py-2.5 bg-muted/30">
-            <p className="text-xs text-muted-foreground">Subject</p>
+            <p className="text-xs text-muted-foreground">{__('Subject', 'wp-sms')}</p>
             <p className="text-sm mt-0.5">{preview.subject}</p>
           </div>
         )}
@@ -170,7 +171,7 @@ function PreviewDialog({
           {isEmail ? (
             <iframe
               srcDoc={preview.body}
-              title="Email preview"
+              title={__('Email preview', 'wp-sms')}
               className="w-full border-0"
               style={{ minHeight: 520, height: '100%' }}
               sandbox="allow-same-origin"
@@ -204,7 +205,7 @@ export function Templates() {
       const data = await api.get<TemplateData[]>('auth/admin/templates');
       setTemplates(data);
     } catch {
-      toast.error('Failed to load templates');
+      toast.error(__('Failed to load templates', 'wp-sms'));
     } finally {
       setLoading(false);
     }
@@ -215,14 +216,14 @@ export function Templates() {
   return (
     <>
       <div className="space-y-4">
-        <PageHeader icon={FileText} title="Message Templates" metadata={!loading ? pluralize(templates.length, 'template') : undefined} />
-        <DataTable loading={loading} isEmpty={templates.length === 0} empty={<p className="py-8 text-center text-sm text-muted-foreground">No templates found.</p>}>
+        <PageHeader icon={FileText} title={__('Message Templates', 'wp-sms')} metadata={!loading ? pluralize(templates.length, 'template') : undefined} />
+        <DataTable loading={loading} isEmpty={templates.length === 0} empty={<p className="py-8 text-center text-sm text-muted-foreground">{__('No templates found.', 'wp-sms')}</p>}>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Template</TableHead>
-                <TableHead>Channels</TableHead>
-                <TableHead>Status</TableHead>
+                <TableHead>{__('Template', 'wp-sms')}</TableHead>
+                <TableHead>{__('Channels', 'wp-sms')}</TableHead>
+                <TableHead>{__('Status', 'wp-sms')}</TableHead>
                 <TableHead className="w-[50px]" />
               </TableRow>
             </TableHeader>
@@ -377,10 +378,10 @@ function ProviderTemplatePicker({
         variable_map: variableMap,
         source,
       });
-      toast.success('Template mapping saved');
+      toast.success(__('Template mapping saved', 'wp-sms'));
       onMappingSaved();
     } catch {
-      toast.error('Failed to save template mapping');
+      toast.error(__('Failed to save template mapping', 'wp-sms'));
     } finally {
       setSaving(false);
     }
@@ -391,10 +392,10 @@ function ProviderTemplatePicker({
       await api.del(`gateways/${gatewayId}/template-mappings/${template.id}`);
       setSelectedTemplateId('');
       setVariableMap({});
-      toast.success('Template mapping removed');
+      toast.success(__('Template mapping removed', 'wp-sms'));
       onMappingSaved();
     } catch {
-      toast.error('Failed to remove mapping');
+      toast.error(__('Failed to remove mapping', 'wp-sms'));
     }
   }
 
@@ -431,7 +432,7 @@ function ProviderTemplatePicker({
                 className="h-7 gap-1.5 text-xs"
               >
                 <RefreshCw className={`h-3 w-3 ${loadingTemplates ? 'animate-spin' : ''}`} />
-                Refresh
+                {__('Refresh', 'wp-sms')}
               </Button>
             )}
             <Button
@@ -449,7 +450,7 @@ function ProviderTemplatePicker({
           <Skeleton className="h-9 w-full" />
         ) : providerTemplates.length === 0 && !loadError ? (
           <div className="rounded-md border border-border/50 px-3 py-4 text-center text-sm text-muted-foreground">
-            <p>No templates found.</p>
+            <p>{__('No templates found.', 'wp-sms')}</p>
             <p className="mt-1 text-xs">
               {isFetchable
                 ? 'Create templates in your provider console, then refresh.'
@@ -459,7 +460,7 @@ function ProviderTemplatePicker({
         ) : (
           <Select value={selectedTemplateId} onValueChange={(id) => { setSelectedTemplateId(id); setVariableMap({}); }}>
             <SelectTrigger>
-              <SelectValue placeholder="None (free-form fallback)" />
+              <SelectValue placeholder={__('None (free-form fallback)', 'wp-sms')} />
             </SelectTrigger>
             <SelectContent>
               {providerTemplates.map((pt) => (
@@ -509,7 +510,7 @@ function ProviderTemplatePicker({
                   }}
                 >
                   <SelectTrigger className="flex-1">
-                    <SelectValue placeholder="Select variable" />
+                    <SelectValue placeholder={__('Select variable', 'wp-sms')} />
                   </SelectTrigger>
                   <SelectContent>
                     {templateVariables.map((v) => (
@@ -542,7 +543,7 @@ function ProviderTemplatePicker({
           </Button>
           {existingMapping && (
             <Button variant="ghost" onClick={handleRemoveMapping}>
-              Remove
+              {__('Remove', 'wp-sms')}
             </Button>
           )}
         </div>
@@ -595,7 +596,7 @@ function ManualTemplateForm({
 
   async function handleSubmit() {
     if (!templateId || !name || !bodyText) {
-      toast.error('Template ID, name, and body are required');
+      toast.error(__('Template ID, name, and body are required', 'wp-sms'));
       return;
     }
     setSaving(true);
@@ -606,10 +607,10 @@ function ManualTemplateForm({
         body_text: bodyText,
         variables,
       });
-      toast.success('Template added');
+      toast.success(__('Template added', 'wp-sms'));
       onCreated();
     } catch {
-      toast.error('Failed to add template');
+      toast.error(__('Failed to add template', 'wp-sms'));
     } finally {
       setSaving(false);
     }
@@ -617,14 +618,14 @@ function ManualTemplateForm({
 
   return (
     <div className="space-y-3 rounded-md border p-3 bg-muted/30">
-      <p className="text-xs font-medium text-muted-foreground">Add Manual Template</p>
+      <p className="text-xs font-medium text-muted-foreground">{__('Add Manual Template', 'wp-sms')}</p>
       <Field>
         <FieldLabel>Template ID</FieldLabel>
-        <Input value={templateId} onChange={(e) => setTemplateId(e.target.value)} placeholder="e.g. otp_verify" />
+        <Input value={templateId} onChange={(e) => setTemplateId(e.target.value)} placeholder={__('e.g. otp_verify', 'wp-sms')} />
       </Field>
       <Field>
         <FieldLabel>Name</FieldLabel>
-        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. OTP Verification" />
+        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder={__('e.g. OTP Verification', 'wp-sms')} />
       </Field>
       <Field>
         <FieldLabel>Body Text</FieldLabel>
@@ -655,7 +656,7 @@ function ManualTemplateForm({
                 <Input
                   value={v.label ?? ''}
                   onChange={(e) => updateVariable(i, 'label', e.target.value)}
-                  placeholder="Label"
+                  placeholder={__('Label', 'wp-sms')}
                   className="flex-1 text-sm"
                 />
               )}
@@ -670,7 +671,7 @@ function ManualTemplateForm({
         <Button onClick={handleSubmit} disabled={saving} size="sm">
           {saving ? 'Adding...' : 'Add Template'}
         </Button>
-        <Button variant="ghost" size="sm" onClick={onCancel}>Cancel</Button>
+        <Button variant="ghost" size="sm" onClick={onCancel}>{__('Cancel', 'wp-sms')}</Button>
       </div>
     </div>
   );
@@ -741,10 +742,10 @@ function TemplateEditor({
         payload.enabled = enabled;
       }
       await api.put(`auth/admin/templates/${template.id}`, payload);
-      toast.success(`${CHANNEL_LABELS[activeChannel]} template saved`);
+      toast.success(sprintf(__('%s template saved', 'wp-sms'), CHANNEL_LABELS[activeChannel]));
       onSaved();
     } catch {
-      toast.error('Failed to save template');
+      toast.error(__('Failed to save template', 'wp-sms'));
     } finally {
       setSaving(false);
     }
@@ -757,10 +758,10 @@ function TemplateEditor({
       if (defaultContent) {
         setDrafts((prev) => ({ ...prev, [activeChannel]: { ...defaultContent } }));
       }
-      toast.success('Reset to default');
+      toast.success(__('Reset to default', 'wp-sms'));
       onSaved();
     } catch {
-      toast.error('Failed to reset template');
+      toast.error(__('Failed to reset template', 'wp-sms'));
     }
   }
 
@@ -773,7 +774,7 @@ function TemplateEditor({
       });
       setPreview(data);
     } catch {
-      toast.error('Failed to generate preview');
+      toast.error(__('Failed to generate preview', 'wp-sms'));
     } finally {
       setPreviewing(false);
     }
@@ -843,7 +844,7 @@ function TemplateEditor({
                                 ref={subjectRef}
                                 value={currentDraft.subject ?? ''}
                                 onChange={(e) => updateDraft('subject', e.target.value)}
-                                placeholder="Email subject line"
+                                placeholder={__('Email subject line', 'wp-sms')}
                               />
                             </Field>
                           )}
@@ -883,7 +884,7 @@ function TemplateEditor({
                                   ref={ctaRef}
                                   value={currentDraft.cta ?? ''}
                                   onChange={(e) => updateDraft('cta', e.target.value)}
-                                  placeholder="e.g. Verify Email"
+                                  placeholder={__('e.g. Verify Email', 'wp-sms')}
                                 />
                                 <FieldDescription>
                                   Optional centered button in the email. Leave empty to omit.
@@ -903,7 +904,7 @@ function TemplateEditor({
                                   ref={ctaUrlRef}
                                   value={currentDraft.cta_url ?? ''}
                                   onChange={(e) => updateDraft('cta_url', e.target.value)}
-                                  placeholder="e.g. {{verify_url}}"
+                                  placeholder={__('e.g. {{verify_url}}', 'wp-sms')}
                                 />
                               </Field>
                             </>
@@ -930,7 +931,7 @@ function TemplateEditor({
                       {hasOverride && (
                         <Button variant="ghost" onClick={handleReset}>
                           <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
-                          Reset
+                          {__('Reset', 'wp-sms')}
                         </Button>
                       )}
                     </div>
@@ -939,7 +940,7 @@ function TemplateEditor({
               </>
             ) : (
               <p className="text-sm text-muted-foreground">
-                No channels are currently enabled for this template. Enable the relevant channels in Channel settings to customize.
+                {__('No channels are currently enabled for this template. Enable the relevant channels in Channel settings to customize.', 'wp-sms')}
               </p>
             )}
           </div>

@@ -28,7 +28,7 @@ class WooCommerceIntegration implements IntegrationInterface
 
     public function getDescription(): string
     {
-        return 'E-commerce triggers and actions for orders, customers, and products.';
+        return __('E-commerce triggers and actions for orders, customers, and products.', 'wp-sms');
     }
 
     public function getCategory(): string

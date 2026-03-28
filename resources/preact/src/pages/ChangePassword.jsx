@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 import { api } from '../api/client';
 import { currentUser } from '../signals/auth';
@@ -27,7 +28,7 @@ export function ChangePassword() {
     const hasPassword = user?.has_usable_password !== false;
     const currentPasswordRef = useAutoFocus(hasPassword);
     const newPasswordRef = useAutoFocus(!hasPassword);
-    const title = hasPassword ? 'Change Password' : 'Set Password';
+    const title = hasPassword ? __('Change Password', 'wp-sms') : __('Set Password', 'wp-sms');
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -35,11 +36,11 @@ export function ChangePassword() {
         setSuccess('');
 
         if (newPassword !== confirm) {
-            setError('Passwords do not match.');
+            setError(__('Passwords do not match.', 'wp-sms'));
             return;
         }
         if (newPassword.length < 8) {
-            setError('Password must be at least 8 characters.');
+            setError(__('Password must be at least 8 characters.', 'wp-sms'));
             return;
         }
 
@@ -53,7 +54,7 @@ export function ChangePassword() {
 
             const res = await api.put('/auth/password', payload);
             if (res.success) {
-                setSuccess(res.message || 'Password changed successfully.');
+                setSuccess(res.message || __('Password changed successfully.', 'wp-sms'));
                 setCurrentPassword('');
                 setNewPassword('');
                 setConfirm('');
@@ -75,7 +76,7 @@ export function ChangePassword() {
             <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
                 {hasPassword && (
                     <FormField
-                        label="Current Password"
+                        label={__('Current Password', 'wp-sms')}
                         id="wsms-cur-pass"
                         type="password"
                         ref={currentPasswordRef}
@@ -89,7 +90,7 @@ export function ChangePassword() {
                 )}
 
                 <FormField
-                    label="New Password"
+                    label={__('New Password', 'wp-sms')}
                     id="wsms-new-pass2"
                     type="password"
                     ref={newPasswordRef}
@@ -102,7 +103,7 @@ export function ChangePassword() {
                 />
 
                 <FormField
-                    label="Confirm New Password"
+                    label={__('Confirm New Password', 'wp-sms')}
                     id="wsms-confirm-pass2"
                     type="password"
                     value={confirm}
@@ -110,11 +111,11 @@ export function ChangePassword() {
                     required
                     disabled={loading}
                     autoComplete="new-password"
-                    validate={FormField.validators.match(() => newPassword, 'Passwords')}
+                    validate={FormField.validators.match(() => newPassword, __('Passwords', 'wp-sms'))}
                 />
 
                 <Button className="wsms-auth-full" type="submit" loading={loading}>
-                    {loading ? (hasPassword ? 'Changing\u2026' : 'Setting\u2026') : title}
+                    {loading ? (hasPassword ? __('Changing\u2026', 'wp-sms') : __('Setting\u2026', 'wp-sms')) : title}
                 </Button>
             </form>
         </AccountLayout>

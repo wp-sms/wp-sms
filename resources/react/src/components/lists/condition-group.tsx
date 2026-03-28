@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import type { SegmentConditionGroup, SegmentCondition, Tag } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -55,14 +56,14 @@ export function ConditionGroupComponent({ group, tags, onChange, depth = 0 }: Co
   return (
     <div className={`space-y-2 ${depth > 0 ? 'ml-4 pl-3 border-l-2 border-border/50' : ''}`}>
       <div className="flex items-center gap-2">
-        <span className="text-xs text-muted-foreground">Match</span>
+        <span className="text-xs text-muted-foreground">{__('Match', 'wp-sms')}</span>
         <Select value={group.match} onValueChange={(v) => onChange({ ...group, match: v as 'all' | 'any' })}>
           <SelectTrigger className="h-7 w-16 text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="any">Any</SelectItem>
+            <SelectItem value="all">{__('All', 'wp-sms')}</SelectItem>
+            <SelectItem value="any">{__('Any', 'wp-sms')}</SelectItem>
           </SelectContent>
         </Select>
         <span className="text-xs text-muted-foreground">of these conditions</span>
@@ -99,11 +100,11 @@ export function ConditionGroupComponent({ group, tags, onChange, depth = 0 }: Co
 
       <div className="flex items-center gap-2">
         <Button variant="outline" size="sm" className="h-7 text-xs" onClick={addCondition}>
-          <Plus className="mr-1 h-3 w-3" /> Condition
+          <Plus className="mr-1 h-3 w-3" /> {__('Condition', 'wp-sms')}
         </Button>
         {depth < MAX_DEPTH && (
           <Button variant="outline" size="sm" className="h-7 text-xs" onClick={addGroup}>
-            <Plus className="mr-1 h-3 w-3" /> Group
+            <Plus className="mr-1 h-3 w-3" /> {__('Group', 'wp-sms')}
           </Button>
         )}
       </div>

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { PageSection } from '@/components/ui/page-section';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel, FieldDescription, SwitchField } from '@/components/ui/field';
@@ -45,8 +46,8 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
       {/* Enable / Provider */}
       <PageSection
         icon={ShieldAlert}
-        title="CAPTCHA Protection"
-        description="Protect authentication endpoints from bots and automated attacks"
+        title={__('CAPTCHA Protection', 'wp-sms')}
+        description={__('Protect authentication endpoints from bots and automated attacks', 'wp-sms')}
         active={captcha.enabled}
         actions={
           <Switch
@@ -108,7 +109,7 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
                   type="text"
                   value={captcha.site_key}
                   onChange={(e) => update({ site_key: e.target.value })}
-                  placeholder="Enter site key"
+                  placeholder={__('Enter site key', 'wp-sms')}
                 />
                 <FieldDescription>Public key shown to visitors</FieldDescription>
               </Field>
@@ -119,7 +120,7 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
                   type="password"
                   value={captcha.secret_key}
                   onChange={(e) => update({ secret_key: e.target.value })}
-                  placeholder="Enter secret key"
+                  placeholder={__('Enter secret key', 'wp-sms')}
                 />
                 <FieldDescription>Server-side key (never exposed to clients)</FieldDescription>
               </Field>
@@ -132,8 +133,8 @@ export function Captcha({ settings, onUpdate }: CaptchaPageProps) {
       {captcha.enabled && (
         <PageSection
           icon={CloudCog}
-          title="Protected Actions"
-          description="Choose which actions require CAPTCHA verification"
+          title={__('Protected Actions', 'wp-sms')}
+          description={__('Choose which actions require CAPTCHA verification', 'wp-sms')}
           contentClassName="border-t pt-4 space-y-4"
         >
             {ACTIONS.map((action) => (

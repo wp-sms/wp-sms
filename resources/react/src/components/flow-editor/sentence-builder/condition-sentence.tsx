@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useMemo, useCallback } from 'react';
 import type { ConditionNode, JsonSchema } from '@/lib/api';
 import type { ConditionRule } from '@/lib/condition-utils';
@@ -154,13 +155,13 @@ export function ConditionSentence({ step, onChange, payloadSchema, triggerType }
 
       {rules.length === 0 && (
         <div className="flex items-center gap-1.5">
-          <span className="text-sm font-medium text-muted-foreground">Only if</span>
+          <span className="text-sm font-medium text-muted-foreground">{__('Only if', 'wp-sms')}</span>
           <SentenceToken
             mode="select"
             value=""
             options={fieldOptions}
             onChange={(v) => updateRules([{ field: v, operator: getDefaultOperator(fieldTypeOf(v)), value: '' }])}
-            placeholder="choose a field"
+            placeholder={__('choose a field', 'wp-sms')}
           />
         </div>
       )}

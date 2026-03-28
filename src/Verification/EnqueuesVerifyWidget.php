@@ -27,6 +27,8 @@ trait EnqueuesVerifyWidget
         wp_enqueue_style('wsms-verify-widget', $baseUrl . 'verify-widget-style.css', [], $version);
         wp_enqueue_script('wsms-verify-widget', $baseUrl . 'verify-widget.js', ['wsms-vendor'], $version, true);
 
+        wp_set_script_translations('wsms-verify-widget', 'wp-sms', WP_SMS_DIR . 'public/languages');
+
         $config = [
             'restUrl' => rest_url('wsms/v1/'),
             'nonce'   => wp_create_nonce('wp_rest'),

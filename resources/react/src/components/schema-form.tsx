@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useRef, useState, useEffect, useMemo } from 'react';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -237,7 +238,7 @@ function DynamicSelectField({
     return (
       <Field>
         <FieldLabel htmlFor={`schema-${fieldKey}`}>{label}{required && ' *'}</FieldLabel>
-        <p className="text-sm text-destructive">Failed to load options.</p>
+        <p className="text-sm text-destructive">{__('Failed to load options.', 'wp-sms')}</p>
       </Field>
     );
   }
@@ -359,14 +360,14 @@ function KeyValueField({
           <div key={index} className="flex items-center gap-2">
             <Input
               value={k}
-              placeholder="Key"
+              placeholder={__('Key', 'wp-sms')}
               onChange={(e) => handleChange(index, 0, e.target.value)}
               className="flex-1"
             />
             <Input
               ref={(el) => { valueRefs.current[index] = el; }}
               value={v}
-              placeholder="Value"
+              placeholder={__('Value', 'wp-sms')}
               onChange={(e) => handleChange(index, 1, e.target.value)}
               className="flex-1"
             />
@@ -400,7 +401,7 @@ function KeyValueField({
           className="w-full"
         >
           <Plus className="mr-1 h-3.5 w-3.5" />
-          Add
+          {__('Add', 'wp-sms')}
         </Button>
       </div>
       {hint && <FieldHint>{hint}</FieldHint>}
@@ -620,7 +621,7 @@ function PropertyField({
 
 export function SchemaForm({ schema, values, onChange, payloadSchema, dynamicOptionsUrl, placeholders, sampleData, filterMode }: SchemaFormProps) {
   if (!schema.properties || Object.keys(schema.properties).length === 0) {
-    return <p className="text-sm text-muted-foreground">No configuration needed.</p>;
+    return <p className="text-sm text-muted-foreground">{__('No configuration needed.', 'wp-sms')}</p>;
   }
 
   const requiredFields = schema.required ?? [];

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 import { api } from '../api/client';
 import { registrationFields, registrationFieldDefs, legalLinks, formSlug, formRedirectUrl, formName } from '../signals/config';
@@ -106,7 +107,7 @@ export function Register() {
                     redirectTo(formRedirectUrl.value);
                     return;
                 } else {
-                    setSuccess(res.message || 'Account created successfully.');
+                    setSuccess(res.message || __('Account created successfully.', 'wp-sms'));
                 }
             }
         } catch (err) {
@@ -124,8 +125,8 @@ export function Register() {
 
         return (
             <AuthLayout
-                title="Verify Your Account"
-                footer={<AuthLink href={authUrl('/login')}>Back to login</AuthLink>}
+                title={__('Verify Your Account', 'wp-sms')}
+                footer={<AuthLink href={authUrl('/login')}>{__('Back to login', 'wp-sms')}</AuthLink>}
             >
                 <RegisterVerifyStep onComplete={onVerifyComplete} />
             </AuthLayout>
@@ -135,8 +136,8 @@ export function Register() {
     if (success) {
         return (
             <AuthLayout
-                title="Account Created"
-                footer={<AuthLink href={authUrl('/login')}>Back to login</AuthLink>}
+                title={__('Account Created', 'wp-sms')}
+                footer={<AuthLink href={authUrl('/login')}>{__('Back to login', 'wp-sms')}</AuthLink>}
             >
                 <Alert variant="success" message={success} />
             </AuthLayout>
@@ -145,7 +146,7 @@ export function Register() {
 
     const socialPos = brandingConfig.value?.social_position ?? 'top';
 
-    const title = formName.value || 'Create Account';
+    const title = formName.value || __('Create Account', 'wp-sms');
 
     // Render a system field by ID
     function renderSystemField(id, isFirst) {
@@ -153,7 +154,7 @@ export function Register() {
             case 'username':
                 return (
                     <div className="wsms-auth-stack-2" key="username">
-                        <Label for="wsms-reg-username">Username</Label>
+                        <Label for="wsms-reg-username">{__('Username', 'wp-sms')}</Label>
                         <Input
                             ref={isFirst ? firstFieldRef : undefined}
                             id="wsms-reg-username"
@@ -168,7 +169,7 @@ export function Register() {
             case 'display_name':
                 return (
                     <div className="wsms-auth-stack-2" key="display_name">
-                        <Label for="wsms-reg-name">Display Name</Label>
+                        <Label for="wsms-reg-name">{__('Display Name', 'wp-sms')}</Label>
                         <Input
                             ref={isFirst ? firstFieldRef : undefined}
                             id="wsms-reg-name"
@@ -183,7 +184,7 @@ export function Register() {
             case 'first_name':
                 return (
                     <div className="wsms-auth-stack-2" key="first_name">
-                        <Label for="wsms-reg-first-name">First Name</Label>
+                        <Label for="wsms-reg-first-name">{__('First Name', 'wp-sms')}</Label>
                         <Input
                             ref={isFirst ? firstFieldRef : undefined}
                             id="wsms-reg-first-name"
@@ -198,7 +199,7 @@ export function Register() {
             case 'last_name':
                 return (
                     <div className="wsms-auth-stack-2" key="last_name">
-                        <Label for="wsms-reg-last-name">Last Name</Label>
+                        <Label for="wsms-reg-last-name">{__('Last Name', 'wp-sms')}</Label>
                         <Input
                             ref={isFirst ? firstFieldRef : undefined}
                             id="wsms-reg-last-name"
@@ -213,7 +214,7 @@ export function Register() {
             case 'email':
                 return (
                     <div className="wsms-auth-stack-2" key="email">
-                        <Label for="wsms-reg-email">Email</Label>
+                        <Label for="wsms-reg-email">{__('Email', 'wp-sms')}</Label>
                         <Input
                             ref={isFirst ? firstFieldRef : undefined}
                             id="wsms-reg-email"
@@ -229,7 +230,7 @@ export function Register() {
             case 'phone':
                 return (
                     <div className="wsms-auth-stack-2" key="phone">
-                        <Label>Phone Number</Label>
+                        <Label>{__('Phone Number', 'wp-sms')}</Label>
                         <PhoneInput
                             value={form.phone}
                             onChange={(val) => updateField('phone', val)}
@@ -241,7 +242,7 @@ export function Register() {
             case 'password':
                 return (
                     <div className="wsms-auth-stack-2" key="password">
-                        <Label for="wsms-reg-password">Password</Label>
+                        <Label for="wsms-reg-password">{__('Password', 'wp-sms')}</Label>
                         <PasswordInput
                             id="wsms-reg-password"
                             value={form.password}
@@ -260,7 +261,7 @@ export function Register() {
     return (
         <AuthLayout
             title={title}
-            footer={<AuthLink href={authUrl('/login')}>Already have an account? Sign in</AuthLink>}
+            footer={<AuthLink href={authUrl('/login')}>{__('Already have an account? Sign in', 'wp-sms')}</AuthLink>}
         >
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
 
@@ -303,20 +304,20 @@ export function Register() {
                     />
                 )}
                 <Button className="wsms-auth-full" type="submit" loading={authLoading.value} disabled={needsCaptcha && !captcha.token}>
-                    {authLoading.value ? 'Creating account\u2026' : 'Create Account'}
+                    {authLoading.value ? __('Creating account\u2026', 'wp-sms') : __('Create Account', 'wp-sms')}
                 </Button>
                 {legalLinks.value && (legalLinks.value.terms_url || legalLinks.value.privacy_url) && (
                     <p className="wsms-auth-center wsms-auth-text-xs wsms-auth-text-muted">
-                        {'By creating an account, you agree to our '}
+                        {__('By creating an account, you agree to our', 'wp-sms')}{' '}
                         {legalLinks.value.terms_url && (
                             <a href={legalLinks.value.terms_url} target="_blank" rel="noopener noreferrer" className="wsms-auth-legal-link">
-                                Terms of Service
+                                {__('Terms of Service', 'wp-sms')}
                             </a>
                         )}
-                        {legalLinks.value.terms_url && legalLinks.value.privacy_url && ' and '}
+                        {legalLinks.value.terms_url && legalLinks.value.privacy_url && ` ${__('and', 'wp-sms')} `}
                         {legalLinks.value.privacy_url && (
                             <a href={legalLinks.value.privacy_url} target="_blank" rel="noopener noreferrer" className="wsms-auth-legal-link">
-                                Privacy Policy
+                                {__('Privacy Policy', 'wp-sms')}
                             </a>
                         )}
                         .

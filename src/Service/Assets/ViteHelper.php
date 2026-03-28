@@ -22,13 +22,15 @@ class ViteHelper
             WP_SMS_VERSION,
         );
 
-        $jsUrl = $distUrl . 'main.js';
+        wp_enqueue_script(
+            $handle,
+            $distUrl . 'main.js',
+            ['wp-i18n'],
+            WP_SMS_VERSION,
+            true,
+        );
 
-        if (function_exists('wp_enqueue_script_module')) {
-            wp_enqueue_script_module($handle, $jsUrl);
-        } else {
-            wp_enqueue_script($handle, $jsUrl, [], WP_SMS_VERSION, true);
-        }
+        wp_set_script_translations($handle, 'wp-sms', WP_SMS_DIR . 'public/languages');
     }
 
     /**

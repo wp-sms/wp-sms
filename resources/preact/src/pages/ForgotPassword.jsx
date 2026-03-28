@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 import { api } from '../api/client';
 import { authError, authLoading } from '../signals/auth';
@@ -31,7 +32,7 @@ export function ForgotPassword() {
 
         try {
             const res = await api.post('/auth/forgot-password', { email }, captcha.getHeaders());
-            setSuccess(res.message || 'If that email exists, a reset link has been sent.');
+            setSuccess(res.message || __('If that email exists, a reset link has been sent.', 'wp-sms'));
         } catch (err) {
             authError.value = extractError(err).message;
             captcha.reset();
@@ -42,9 +43,9 @@ export function ForgotPassword() {
 
     return (
         <AuthLayout
-            title="Forgot Password"
-            subtitle="Enter your email and we'll send you a reset link."
-            footer={<AuthLink href={authUrl('/login')}>Back to login</AuthLink>}
+            title={__('Forgot Password', 'wp-sms')}
+            subtitle={__('Enter your email and we\'ll send you a reset link.', 'wp-sms')}
+            footer={<AuthLink href={authUrl('/login')}>{__('Back to login', 'wp-sms')}</AuthLink>}
         >
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
             <Alert variant="success" message={success} className="wsms-auth-mb-4" />
@@ -52,7 +53,7 @@ export function ForgotPassword() {
             {!success && (
                 <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
                     <div className="wsms-auth-stack-2">
-                        <Label for="wsms-forgot-email">Email</Label>
+                        <Label for="wsms-forgot-email">{__('Email', 'wp-sms')}</Label>
                         <Input
                             ref={emailRef}
                             id="wsms-forgot-email"
@@ -73,7 +74,7 @@ export function ForgotPassword() {
                         />
                     )}
                     <Button className="wsms-auth-full" type="submit" loading={authLoading.value} disabled={needsCaptcha && !captcha.token}>
-                        {authLoading.value ? 'Sending\u2026' : 'Send Reset Link'}
+                        {authLoading.value ? __('Sending\u2026', 'wp-sms') : __('Send Reset Link', 'wp-sms')}
                     </Button>
                 </form>
             )}

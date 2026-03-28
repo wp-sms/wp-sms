@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { useMemo } from 'react';
 
 // GSM-7 basic character set (128 chars)
@@ -91,10 +92,10 @@ export function SmsSegmentCounter({ text, optOutText }: SmsSegmentCounterProps) 
   return (
     <div className="flex items-center gap-3 text-xs text-muted-foreground">
       <span>
-        {info.charCount}/{info.maxCharsPerSegment} chars
+        {sprintf(__('%1$d/%2$d chars', 'wp-sms'), info.charCount, info.maxCharsPerSegment)}
       </span>
       <span>
-        {info.segmentCount} {info.segmentCount === 1 ? 'segment' : 'segments'}
+        {sprintf(info.segmentCount === 1 ? __('%d segment', 'wp-sms') : __('%d segments', 'wp-sms'), info.segmentCount)}
       </span>
       <span className={info.encoding === 'Unicode' ? 'text-amber-600' : ''}>
         {info.encoding}

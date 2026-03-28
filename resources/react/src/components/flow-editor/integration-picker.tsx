@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useMemo, useRef, useEffect, useCallback } from 'react';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import { IntegrationIcon } from '@/components/integration-icon';
@@ -306,7 +307,7 @@ export function IntegrationPicker({
                 <div className="flex flex-col items-center justify-center py-12 text-center">
                   <Search className="h-10 w-10 text-muted-foreground/30 mb-3" />
                   <p className="text-sm font-medium text-foreground">No results for &ldquo;{search}&rdquo;</p>
-                  <p className="text-xs text-muted-foreground mt-1">Try a different search term</p>
+                  <p className="text-xs text-muted-foreground mt-1">{__('Try a different search term', 'wp-sms')}</p>
                 </div>
               ) : (
                 searchResults.map((item, i) => renderItem(item, i, i, { highlight: true, showGroup: true, stagger: true }))
@@ -363,7 +364,7 @@ export function IntegrationPicker({
                 {recentItems.length > 0 && (
                   <>
                     <div className="px-2 pt-1 pb-1.5">
-                      <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Recent</span>
+                      <span className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{__('Recent', 'wp-sms')}</span>
                     </div>
                     {recentItems.map((item, i) => renderItem(item, -1, i, { stagger: true, keyPrefix: 'recent' }))}
                     <div className="mx-2 my-1.5 border-t" />

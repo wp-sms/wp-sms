@@ -1,14 +1,15 @@
 import { useState, useRef } from 'preact/hooks';
 import { forwardRef } from 'preact/compat';
+import { __, sprintf } from '@wordpress/i18n';
 import { Label } from './Label';
 import { Input } from './Input';
 import { PasswordInput } from './PasswordInput';
 
 const VALIDATORS = {
-    email: (v) => v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? 'Please enter a valid email address' : '',
-    minLength: (min) => (v) => v && v.length < min ? `Must be at least ${min} characters` : '',
-    required: (v) => !v || !v.trim() ? 'This field is required' : '',
-    match: (getOther, label) => (v) => v && v !== getOther() ? `${label} do not match` : '',
+    email: (v) => v && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? __('Please enter a valid email address', 'wp-sms') : '',
+    minLength: (min) => (v) => v && v.length < min ? sprintf(__('Must be at least %d characters', 'wp-sms'), min) : '',
+    required: (v) => !v || !v.trim() ? __('This field is required', 'wp-sms') : '',
+    match: (getOther, label) => (v) => v && v !== getOther() ? sprintf(__('%s do not match', 'wp-sms'), label) : '',
 };
 
 export const FormField = forwardRef(function FormField({

@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { __ } from '@wordpress/i18n';
 import { api, type ReportsResponse } from '@/lib/api';
 import { isAbortError } from '@/lib/error-utils';
 
@@ -31,7 +32,7 @@ export function useReports(initialRange = 30): UseReportsReturn {
       }
     } catch (e) {
       if (isAbortError(e)) return;
-      setError('Failed to load reports.');
+      setError(__('Failed to load reports.', 'wp-sms'));
       setData(null);
     } finally {
       if (!controller.signal.aborted) {

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { FileTextIcon, ExternalLinkIcon, HelpCircleIcon } from '../icons';
 
 export function ResourcesPage({ config }) {
@@ -8,7 +9,7 @@ export function ResourcesPage({ config }) {
             <div class="wsms-mb-page wsms-mb-page--resources">
                 <div class="wsms-mb-empty">
                     <div class="wsms-mb-empty__icon"><HelpCircleIcon size={22} /></div>
-                    <p>No resources available.</p>
+                    <p>{__('No resources available.', 'wp-sms')}</p>
                 </div>
             </div>
         );

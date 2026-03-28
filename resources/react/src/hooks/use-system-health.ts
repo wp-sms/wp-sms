@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
+import { __ } from '@wordpress/i18n';
 import { api, type SystemHealthResponse } from '@/lib/api';
 import { isAbortError } from '@/lib/error-utils';
 
@@ -35,7 +36,7 @@ export function useSystemHealth(): UseSystemHealthReturn {
       }
     } catch (e) {
       if (isAbortError(e)) return;
-      setError('Failed to load system health data.');
+      setError(__('Failed to load system health data.', 'wp-sms'));
       setData(null);
     } finally {
       if (!controller.signal.aborted) {

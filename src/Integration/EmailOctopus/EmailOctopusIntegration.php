@@ -56,7 +56,7 @@ class EmailOctopusIntegration implements
 
     public function getDescription(): string
     {
-        return 'Sync contacts, manage lists, and queue automations with EmailOctopus.';
+        return __('Sync contacts, manage lists, and queue automations with EmailOctopus.', 'wp-sms');
     }
 
     public function getCategory(): string
@@ -427,9 +427,9 @@ class EmailOctopusIntegration implements
     public function getAvailableImportFields(): array
     {
         return [
-            'email_address' => ['label' => 'Email',      'type' => 'core'],
-            'FirstName'     => ['label' => 'First Name', 'type' => 'field'],
-            'LastName'      => ['label' => 'Last Name',  'type' => 'field'],
+            'email_address' => ['label' => __('Email', 'wp-sms'),      'type' => 'core'],
+            'FirstName'     => ['label' => __('First Name', 'wp-sms'), 'type' => 'field'],
+            'LastName'      => ['label' => __('Last Name', 'wp-sms'),  'type' => 'field'],
         ];
     }
 
@@ -443,20 +443,20 @@ class EmailOctopusIntegration implements
         return [
             'list_id' => [
                 'type'        => 'select',
-                'label'       => 'List',
-                'description' => 'Select the EmailOctopus list to import from.',
+                'label'       => __('List', 'wp-sms'),
+                'description' => __('Select the EmailOctopus list to import from.', 'wp-sms'),
                 'required'    => true,
                 'dynamic'     => true,
             ],
             'field_mapping' => [
                 'type'  => 'field_mapping',
-                'label' => 'Field Mapping',
+                'label' => __('Field Mapping', 'wp-sms'),
             ],
             'auto_sync' => [
                 'type'        => 'boolean',
-                'label'       => 'Auto-sync',
+                'label'       => __('Auto-sync', 'wp-sms'),
                 'default'     => false,
-                'description' => 'Automatically sync new contacts from EmailOctopus on a recurring schedule.',
+                'description' => __('Automatically sync new contacts from EmailOctopus on a recurring schedule.', 'wp-sms'),
             ],
         ];
     }

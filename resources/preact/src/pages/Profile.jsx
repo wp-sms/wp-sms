@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 import { api } from '../api/client';
 import { currentUser } from '../signals/auth';
 import { methodDetails, enabledChannels, profileFieldDefs } from '../signals/config';
@@ -83,7 +84,7 @@ export function Profile() {
         try {
             const res = await api.put('/auth/profile', form);
             if (res.success) {
-                setSuccess(res.message || 'Profile updated.');
+                setSuccess(res.message || __('Profile updated.', 'wp-sms'));
                 await refreshUser();
             }
         } catch (err) {
@@ -106,7 +107,7 @@ export function Profile() {
         try {
             const res = await api.upload('/auth/profile/avatar', formData);
             if (res.success) {
-                setSuccess('Avatar updated.');
+                setSuccess(__('Avatar updated.', 'wp-sms'));
                 await refreshUser();
             }
         } catch (err) {
@@ -123,7 +124,7 @@ export function Profile() {
 
         try {
             await api.del('/auth/profile/avatar');
-            setSuccess('Avatar removed.');
+            setSuccess(__('Avatar removed.', 'wp-sms'));
             await refreshUser();
         } catch (err) {
             setError(extractError(err).message);
@@ -165,14 +166,14 @@ export function Profile() {
     async function handleVerified(channel) {
         if (channel === 'email') setShowEmailOtp(false);
         if (channel === 'phone') setShowPhoneOtp(false);
-        setSuccess(`${channel === 'email' ? 'Email' : 'Phone'} verified successfully.`);
+        setSuccess(channel === 'email' ? __('Email verified successfully.', 'wp-sms') : __('Phone verified successfully.', 'wp-sms'));
         await refreshUser();
     }
 
     if (!authed) return null;
 
     return (
-        <AccountLayout title="Profile" subtitle="Manage your account information" currentPath="/profile">
+        <AccountLayout title={__('Profile', 'wp-sms')} subtitle={__('Manage your account information', 'wp-sms')} currentPath="/profile">
             <Alert variant="destructive" message={error} onDismiss={() => setError('')} className="wsms-auth-mb-4" />
             <Alert variant="success" message={success} className="wsms-auth-mb-4" />
 
@@ -188,7 +189,7 @@ export function Profile() {
                                 onClick={() => fileInputRef.current?.click()}
                                 disabled={avatarUploading}
                             >
-                                {avatarUploading ? 'Uploading\u2026' : 'Upload'}
+                                {avatarUploading ? __('Uploading\u2026', 'wp-sms') : __('Upload', 'wp-sms')}
                             </Button>
                             {user.avatar_url && (
                                 <Button
@@ -197,11 +198,11 @@ export function Profile() {
                                     onClick={handleAvatarRemove}
                                     disabled={avatarUploading}
                                 >
-                                    Remove
+                                    {__('Remove', 'wp-sms')}
                                 </Button>
                             )}
                         </div>
-                        <p className="wsms-auth-text-xs wsms-auth-text-muted">JPG, PNG, GIF, or WebP. Max 2MB.</p>
+                        <p className="wsms-auth-text-xs wsms-auth-text-muted">{__('JPG, PNG, GIF, or WebP. Max 2MB.', 'wp-sms')}</p>
                     </div>
                     <input
                         ref={fileInputRef}
@@ -216,10 +217,10 @@ export function Profile() {
             <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
                 {/* Section 1: Personal Information */}
                 <div className="wsms-auth-section-group">
-                    <h3 className="wsms-auth-section-title">Personal Information</h3>
+                    <h3 className="wsms-auth-section-title">{__('Personal Information', 'wp-sms')}</h3>
 
                     <div className="wsms-auth-stack-2">
-                        <Label for="wsms-prof-name">Display Name</Label>
+                        <Label for="wsms-prof-name">{__('Display Name', 'wp-sms')}</Label>
                         <Input
                             id="wsms-prof-name"
                             type="text"
@@ -232,7 +233,7 @@ export function Profile() {
 
                     <div className="wsms-auth-profile-grid">
                         <div className="wsms-auth-stack-2">
-                            <Label for="wsms-prof-first-name">First Name</Label>
+                            <Label for="wsms-prof-first-name">{__('First Name', 'wp-sms')}</Label>
                             <Input
                                 id="wsms-prof-first-name"
                                 type="text"
@@ -244,7 +245,7 @@ export function Profile() {
                         </div>
 
                         <div className="wsms-auth-stack-2">
-                            <Label for="wsms-prof-last-name">Last Name</Label>
+                            <Label for="wsms-prof-last-name">{__('Last Name', 'wp-sms')}</Label>
                             <Input
                                 id="wsms-prof-last-name"
                                 type="text"
@@ -259,11 +260,11 @@ export function Profile() {
 
                 {/* Section 2: Contact & Verification */}
                 <div className="wsms-auth-section-group">
-                    <h3 className="wsms-auth-section-title">Contact & Verification</h3>
+                    <h3 className="wsms-auth-section-title">{__('Contact & Verification', 'wp-sms')}</h3>
 
                     <div className="wsms-auth-stack-2">
                         <div className="wsms-auth-row-between">
-                            <Label for="wsms-prof-email">Email</Label>
+                            <Label for="wsms-prof-email">{__('Email', 'wp-sms')}</Label>
                             {user && !user.has_placeholder_email && (
                                 <StatusBadge variant={user.email_verified ? 'verified' : 'unverified'} />
                             )}
@@ -274,14 +275,14 @@ export function Profile() {
                             value={form.email}
                             onInput={(e) => updateField('email', e.target.value)}
                             required={!user?.has_placeholder_email}
-                            placeholder={user?.has_placeholder_email ? 'Add your email address' : undefined}
+                            placeholder={user?.has_placeholder_email ? __('Add your email address', 'wp-sms') : undefined}
                             disabled={loading}
                             autoComplete="email"
                         />
                         {enabledChannels.value.includes('email') && user && !user.has_placeholder_email && !user.email_verified && !showEmailOtp && (
                             <div>
                                 {emailSent ? (
-                                    <p className="wsms-auth-text-xs wsms-auth-text-green">Verification email sent! Check your inbox.</p>
+                                    <p className="wsms-auth-text-xs wsms-auth-text-green">{__('Verification email sent! Check your inbox.', 'wp-sms')}</p>
                                 ) : (
                                     <Button
                                         variant="link"
@@ -290,7 +291,7 @@ export function Profile() {
                                         onClick={handleSendEmailVerification}
                                         disabled={emailSending}
                                     >
-                                        {emailSending ? 'Sending\u2026' : 'Send verification code'}
+                                        {emailSending ? __('Sending\u2026', 'wp-sms') : __('Send verification code', 'wp-sms')}
                                     </Button>
                                 )}
                             </div>
@@ -301,7 +302,7 @@ export function Profile() {
                                 resendEndpoint="/auth/profile/send-verification/email"
                                 onVerified={() => handleVerified('email')}
                                 onError={setError}
-                                label="Enter the code sent to your email"
+                                label={__('Enter the code sent to your email', 'wp-sms')}
                                 codeLength={emailCodeLength}
                                 className="wsms-auth-pt-2"
                             />
@@ -311,7 +312,7 @@ export function Profile() {
                     {hasPhone && (
                         <div className="wsms-auth-stack-2">
                             <div className="wsms-auth-row-between">
-                                <Label>Phone Number</Label>
+                                <Label>{__('Phone Number', 'wp-sms')}</Label>
                                 {user && user.phone && (
                                     <StatusBadge variant={user.phone_verified ? 'verified' : 'unverified'} />
                                 )}
@@ -329,7 +330,7 @@ export function Profile() {
                                     onClick={handleSendPhoneVerification}
                                     disabled={phoneSending}
                                 >
-                                    {phoneSending ? 'Sending\u2026' : 'Verify phone'}
+                                    {phoneSending ? __('Sending\u2026', 'wp-sms') : __('Verify phone', 'wp-sms')}
                                 </Button>
                             )}
                             {showPhoneOtp && (
@@ -338,7 +339,7 @@ export function Profile() {
                                     resendEndpoint="/auth/profile/send-verification/phone"
                                     onVerified={() => handleVerified('phone')}
                                     onError={setError}
-                                    label="Enter the code sent to your phone"
+                                    label={__('Enter the code sent to your phone', 'wp-sms')}
                                     codeLength={phoneCodeLength}
                                     className="wsms-auth-pt-2"
                                 />
@@ -350,7 +351,7 @@ export function Profile() {
                 {/* Section 3: Additional Information (custom fields) */}
                 {customFieldDefs.length > 0 && (
                     <div className="wsms-auth-section-group">
-                        <h3 className="wsms-auth-section-title">Additional Information</h3>
+                        <h3 className="wsms-auth-section-title">{__('Additional Information', 'wp-sms')}</h3>
                         <div className="wsms-auth-stack-4">
                             {customFieldDefs.map((def) => (
                                 <DynamicField
@@ -366,7 +367,7 @@ export function Profile() {
                 )}
 
                 <Button className="wsms-auth-full" type="submit" disabled={loading}>
-                    {loading ? 'Saving\u2026' : 'Save Changes'}
+                    {loading ? __('Saving\u2026', 'wp-sms') : __('Save Changes', 'wp-sms')}
                 </Button>
             </form>
         </AccountLayout>

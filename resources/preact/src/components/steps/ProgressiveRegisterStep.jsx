@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 import { useAutoFocus } from '../../hooks/useAutoFocus';
 import { api } from '../../api/client';
 import {
@@ -62,7 +63,7 @@ export function ProgressiveRegisterStep() {
                     pendingVerifications.value = res.pending_verifications;
                     authStep.value = 'register_verify';
                 } else {
-                    setSuccess(res.message || 'Account created successfully.');
+                    setSuccess(res.message || __('Account created successfully.', 'wp-sms'));
                 }
             }
         } catch (err) {
@@ -78,7 +79,7 @@ export function ProgressiveRegisterStep() {
                 <Alert variant="success" message={success} />
                 <div className="wsms-auth-center">
                     <Button variant="link" type="button" onClick={resetIdentifyFlow}>
-                        Back to sign in
+                        {__('Back to sign in', 'wp-sms')}
                     </Button>
                 </div>
             </div>
@@ -90,13 +91,13 @@ export function ProgressiveRegisterStep() {
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
 
             <p className="wsms-auth-text-sm wsms-auth-text-muted wsms-auth-center">
-                Create your account to get started
+                {__('Create your account to get started', 'wp-sms')}
             </p>
 
             <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
                 {fields.includes('username') && (
                     <div className="wsms-auth-stack-2">
-                        <Label for="wsms-reg-username">Username</Label>
+                        <Label for="wsms-reg-username">{__('Username', 'wp-sms')}</Label>
                         <Input
                             ref={firstEditableField === 'username' ? firstFieldRef : undefined}
                             id="wsms-reg-username"
@@ -111,7 +112,7 @@ export function ProgressiveRegisterStep() {
 
                 {fields.includes('display_name') && (
                     <div className="wsms-auth-stack-2">
-                        <Label for="wsms-reg-name">Display Name</Label>
+                        <Label for="wsms-reg-name">{__('Display Name', 'wp-sms')}</Label>
                         <Input
                             ref={firstEditableField === 'display_name' ? firstFieldRef : undefined}
                             id="wsms-reg-name"
@@ -126,7 +127,7 @@ export function ProgressiveRegisterStep() {
 
                 {fields.includes('first_name') && (
                     <div className="wsms-auth-stack-2">
-                        <Label for="wsms-reg-first-name">First Name</Label>
+                        <Label for="wsms-reg-first-name">{__('First Name', 'wp-sms')}</Label>
                         <Input
                             ref={firstEditableField === 'first_name' ? firstFieldRef : undefined}
                             id="wsms-reg-first-name"
@@ -141,7 +142,7 @@ export function ProgressiveRegisterStep() {
 
                 {fields.includes('last_name') && (
                     <div className="wsms-auth-stack-2">
-                        <Label for="wsms-reg-last-name">Last Name</Label>
+                        <Label for="wsms-reg-last-name">{__('Last Name', 'wp-sms')}</Label>
                         <Input
                             id="wsms-reg-last-name"
                             type="text"
@@ -155,7 +156,7 @@ export function ProgressiveRegisterStep() {
 
                 {fields.includes('email') && (
                     <div className="wsms-auth-stack-2">
-                        <Label for="wsms-reg-email">Email</Label>
+                        <Label for="wsms-reg-email">{__('Email', 'wp-sms')}</Label>
                         <Input
                             ref={firstEditableField === 'email' ? firstFieldRef : undefined}
                             id="wsms-reg-email"
@@ -171,7 +172,7 @@ export function ProgressiveRegisterStep() {
 
                 {fields.includes('phone') && (
                     <div className="wsms-auth-stack-2">
-                        <Label>Phone Number</Label>
+                        <Label>{__('Phone Number', 'wp-sms')}</Label>
                         <PhoneInput
                             value={form.phone}
                             onChange={(val) => updateField('phone', val)}
@@ -183,7 +184,7 @@ export function ProgressiveRegisterStep() {
 
                 {fields.includes('password') && (
                     <div className="wsms-auth-stack-2">
-                        <Label for="wsms-reg-password">Password</Label>
+                        <Label for="wsms-reg-password">{__('Password', 'wp-sms')}</Label>
                         <PasswordInput
                             ref={firstEditableField === 'password' ? firstFieldRef : undefined}
                             id="wsms-reg-password"
@@ -197,13 +198,17 @@ export function ProgressiveRegisterStep() {
                 )}
 
                 <Button className="wsms-auth-full" type="submit" loading={authLoading.value}>
-                    {authLoading.value ? 'Creating account...' : 'Create Account'}
+                    {authLoading.value ? __('Creating account...', 'wp-sms') : __('Create Account', 'wp-sms')}
                 </Button>
             </form>
 
             <div className="wsms-auth-center">
                 <Button variant="link" type="button" onClick={resetIdentifyFlow}>
-                    Use a different {identifierType === 'email' ? 'email' : identifierType === 'phone' ? 'phone' : 'identifier'}
+                    {identifierType === 'email'
+                        ? __('Use a different email', 'wp-sms')
+                        : identifierType === 'phone'
+                            ? __('Use a different phone', 'wp-sms')
+                            : __('Use a different identifier', 'wp-sms')}
                 </Button>
             </div>
         </div>

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PageHeader } from '@/components/layout/page-header';
 import { Settings2 } from 'lucide-react';
@@ -20,10 +21,10 @@ export function SettingsPage({ subTab, onNavigate, settings, onUpdate }: Setting
 
   return (
     <Tabs value={activeTab} onValueChange={handleTabChange}>
-      <PageHeader icon={Settings2} title="Settings">
+      <PageHeader icon={Settings2} title={__('Settings', 'wp-sms')}>
         <TabsList variant="line" className="mt-3">
-          <TabsTrigger value="general">General</TabsTrigger>
-          <TabsTrigger value="opt-out">Opt-Out</TabsTrigger>
+          <TabsTrigger value="general">{__('General', 'wp-sms')}</TabsTrigger>
+          <TabsTrigger value="opt-out">{__('Opt-Out', 'wp-sms')}</TabsTrigger>
         </TabsList>
       </PageHeader>
 

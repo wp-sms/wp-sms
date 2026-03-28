@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -80,10 +81,10 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <Users className="h-4 w-4 text-muted-foreground" />
-            Team Members
+            {__('Team Members', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            Add team members to display in the widget with their contact methods
+            {__('Add team members to display in the widget with their contact methods', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -91,9 +92,9 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
             {members.length === 0 && (
               <EmptyState
                 icon={Users}
-                title="No team members yet"
-                description="Add team members to display in the widget with their contact channels."
-                action={<Button onClick={addMember}><Plus className="mr-1 h-4 w-4" /> Add Team Member</Button>}
+                title={__('No team members yet', 'wp-sms')}
+                description={__('Add team members to display in the widget with their contact channels.', 'wp-sms')}
+                action={<Button onClick={addMember}><Plus className="mr-1 h-4 w-4" /> {__('Add Team Member', 'wp-sms')}</Button>}
                 compact
               />
             )}
@@ -132,7 +133,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                     <Input
                       value={member.name}
                       onChange={(e) => updateMember(i, 'name', e.target.value)}
-                      placeholder="John Doe"
+                      placeholder={__('John Doe', 'wp-sms')}
                     />
                   </Field>
                   <Field>
@@ -140,7 +141,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                     <Input
                       value={member.role}
                       onChange={(e) => updateMember(i, 'role', e.target.value)}
-                      placeholder="Support Agent"
+                      placeholder={__('Support Agent', 'wp-sms')}
                     />
                   </Field>
                 </div>
@@ -177,14 +178,14 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                         className="text-muted-foreground"
                         onClick={() => updateMember(i, 'avatar_url', '')}
                       >
-                        <X className="mr-1 h-3 w-3" /> Remove
+                        <X className="mr-1 h-3 w-3" /> {__('Remove', 'wp-sms')}
                       </Button>
                     )}
                   </div>
                 </Field>
 
                 <div className="space-y-2">
-                  <span className="text-sm font-medium">Contact Methods</span>
+                  <span className="text-sm font-medium">{__('Contact Methods', 'wp-sms')}</span>
                   {member.contact_methods.map((method, j) => (
                     <div key={j} className="flex gap-2">
                       <Select
@@ -217,14 +218,14 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
                     </div>
                   ))}
                   <Button variant="outline" size="sm" onClick={() => addContactMethod(i)}>
-                    <Plus className="mr-1 h-3 w-3" /> Add Method
+                    <Plus className="mr-1 h-3 w-3" /> {__('Add Method', 'wp-sms')}
                   </Button>
                 </div>
               </div>
             ))}
 
             <Button variant="outline" onClick={addMember}>
-              <Plus className="mr-1 h-4 w-4" /> Add Team Member
+              <Plus className="mr-1 h-4 w-4" /> {__('Add Team Member', 'wp-sms')}
             </Button>
           </div>
         </CardContent>
@@ -234,10 +235,10 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base">
             <MessageSquareText className="h-4 w-4 text-muted-foreground" />
-            Pre-filled Message
+            {__('Pre-filled Message', 'wp-sms')}
           </CardTitle>
           <CardDescription>
-            Pre-fill a message when visitors click contact links
+            {__('Pre-fill a message when visitors click contact links', 'wp-sms')}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -247,7 +248,7 @@ export function TeamPage({ settings, onUpdate }: TeamPageProps) {
               id="mb-default-message"
               value={settings.default_message}
               onChange={(e) => onUpdate('default_message', e.target.value)}
-              placeholder="Hi! I'm visiting {page_title} and have a question."
+              placeholder={__('Hi! I\'m visiting {page_title} and have a question.', 'wp-sms')}
             />
             <FieldDescription>
               Placeholders: {'{page_title}'}, {'{page_url}'}, {'{member_name}'}. Leave empty to disable.

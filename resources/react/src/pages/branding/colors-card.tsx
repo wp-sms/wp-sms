@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field, FieldLabel, FieldDescription } from '@/components/ui/field';
@@ -65,7 +66,7 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Palette className="h-4 w-4 text-muted-foreground" />
-          Colors & Typography
+          {__('Colors & Typography', 'wp-sms')}
         </CardTitle>
         <CardDescription>
           Pick a preset theme, customize colors, and choose a font
@@ -152,7 +153,7 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
               <FieldLabel>Background Image</FieldLabel>
               <ImagePickerField
                 value={branding.background_image_url}
-                title="Select Background Image"
+                title={__('Select Background Image', 'wp-sms')}
                 alt="Background preview"
                 onSelect={(url) => onChange({ background_image_url: url })}
                 onClear={() => onChange({ background_image_url: '' })}
@@ -169,7 +170,7 @@ export function ColorsCard({ branding, onChange }: ColorsCardProps) {
             <FieldLabel htmlFor="branding-font-family">Font Family</FieldLabel>
             <Select value={branding.font_family} onValueChange={handleFontChange}>
               <SelectTrigger id="branding-font-family">
-                <SelectValue placeholder="Select a font" />
+                <SelectValue placeholder={__('Select a font', 'wp-sms')} />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>

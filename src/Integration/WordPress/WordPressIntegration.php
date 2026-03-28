@@ -40,7 +40,7 @@ class WordPressIntegration implements IntegrationInterface, SupportsContactImpor
 
     public function getDescription(): string
     {
-        return 'Core WordPress hooks for users, posts, and comments.';
+        return __('Core WordPress hooks for users, posts, and comments.', 'wp-sms');
     }
 
     public function getCategory(): string
@@ -121,13 +121,13 @@ class WordPressIntegration implements IntegrationInterface, SupportsContactImpor
     public function getAvailableImportFields(): array
     {
         return [
-            'user_email'   => ['label' => 'Email',        'type' => 'core'],
-            'first_name'   => ['label' => 'First Name',   'type' => 'meta'],
-            'last_name'    => ['label' => 'Last Name',    'type' => 'meta'],
-            'display_name' => ['label' => 'Display Name', 'type' => 'core'],
-            'wsms_phone'   => ['label' => 'Phone Number', 'type' => 'meta'],
-            'user_url'     => ['label' => 'Website URL',  'type' => 'core'],
-            'description'  => ['label' => 'Bio',          'type' => 'meta'],
+            'user_email'   => ['label' => __('Email', 'wp-sms'),        'type' => 'core'],
+            'first_name'   => ['label' => __('First Name', 'wp-sms'),   'type' => 'meta'],
+            'last_name'    => ['label' => __('Last Name', 'wp-sms'),    'type' => 'meta'],
+            'display_name' => ['label' => __('Display Name', 'wp-sms'), 'type' => 'core'],
+            'wsms_phone'   => ['label' => __('Phone Number', 'wp-sms'), 'type' => 'meta'],
+            'user_url'     => ['label' => __('Website URL', 'wp-sms'),  'type' => 'core'],
+            'description'  => ['label' => __('Bio', 'wp-sms'),          'type' => 'meta'],
         ];
     }
 
@@ -146,18 +146,18 @@ class WordPressIntegration implements IntegrationInterface, SupportsContactImpor
         return [
             'roles' => [
                 'type'        => 'multi_select',
-                'label'       => 'User Roles',
-                'description' => 'Only sync users with these roles. Leave empty to sync all roles.',
+                'label'       => __('User Roles', 'wp-sms'),
+                'description' => __('Only sync users with these roles. Leave empty to sync all roles.', 'wp-sms'),
             ],
             'field_mapping' => [
                 'type'  => 'field_mapping',
-                'label' => 'Field Mapping',
+                'label' => __('Field Mapping', 'wp-sms'),
             ],
             'auto_sync' => [
                 'type'        => 'boolean',
-                'label'       => 'Auto-sync',
+                'label'       => __('Auto-sync', 'wp-sms'),
                 'default'     => true,
-                'description' => 'Automatically sync when users register, update their profile, or are deleted.',
+                'description' => __('Automatically sync when users register, update their profile, or are deleted.', 'wp-sms'),
             ],
         ];
     }

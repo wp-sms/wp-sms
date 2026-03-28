@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Clock, Loader2, XCircle } from 'lucide-react';
@@ -57,9 +58,9 @@ export function QueueOverview({ data }: QueueOverviewProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Type</TableHead>
-              <TableHead className="text-right">Pending</TableHead>
-              <TableHead className="text-right">In Progress</TableHead>
+              <TableHead>{__('Type', 'wp-sms')}</TableHead>
+              <TableHead className="text-right">{__('Pending', 'wp-sms')}</TableHead>
+              <TableHead className="text-right">{__('In Progress', 'wp-sms')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

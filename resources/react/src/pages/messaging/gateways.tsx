@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useMemo, useEffect } from 'react';
 import { useGateways } from '@/hooks/use-gateways';
 import { GatewayConfigPanel } from '@/components/gateway-config-panel';
@@ -22,9 +23,9 @@ import { pluralize } from '@/lib/utils';
 import type { Gateway } from '@/lib/api';
 
 const FEATURE_LABELS: Record<string, string> = {
-  mms: 'MMS',
-  delivery_receipt: 'Receipts',
-  incoming: 'Incoming',
+  mms: __('MMS', 'wp-sms'),
+  delivery_receipt: __('Receipts', 'wp-sms'),
+  incoming: __('Incoming', 'wp-sms'),
 };
 
 function CreditDisplay({ gatewayId, isConfigured, getCredit }: {
@@ -45,7 +46,7 @@ function CreditDisplay({ gatewayId, isConfigured, getCredit }: {
 
   return (
     <div className="text-xs text-muted-foreground">
-      Balance: <span className="font-medium text-foreground">{credit}</span>
+      {__('Balance:', 'wp-sms')} <span className="font-medium text-foreground">{credit}</span>
     </div>
   );
 }
@@ -71,8 +72,8 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
           </div>
           <div className="flex items-center gap-2">
             {gateway.is_configured
-              ? <Badge variant="success" dot className="text-xs">Active</Badge>
-              : <Badge variant="outline" className="text-xs text-muted-foreground">Not configured</Badge>
+              ? <Badge variant="success" dot className="text-xs">{__('Active', 'wp-sms')}</Badge>
+              : <Badge variant="outline" className="text-xs text-muted-foreground">{__('Not configured', 'wp-sms')}</Badge>
             }
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
           </div>
@@ -96,7 +97,7 @@ function GatewayCard({ gateway, getCredit, onConfigure }: {
 
         {features.length > 0 && (
           <p className="text-xs text-muted-foreground">
-            Supports: {features.join(', ')}
+            {__('Supports:', 'wp-sms')} {features.join(', ')}
           </p>
         )}
 
@@ -209,12 +210,12 @@ export function Gateways() {
     <div className="space-y-6">
       <PageHeader
         icon={Radio}
-        title="Gateways"
+        title={__('Gateways', 'wp-sms')}
         metadata={pluralize(gateways.length, 'gateway')}
         actions={
           allChannels.length > 0 ? (
             <Button variant="outline" size="sm" onClick={() => setDefaultsOpen(true)}>
-              Channel Defaults
+              {__('Channel Defaults', 'wp-sms')}
             </Button>
           ) : undefined
         }
@@ -226,7 +227,7 @@ export function Gateways() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Search gateways..."
+            placeholder={__('Search gateways...', 'wp-sms')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -238,7 +239,7 @@ export function Gateways() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Channels</SelectItem>
+              <SelectItem value="all">{__('All Channels', 'wp-sms')}</SelectItem>
               {allChannels.map((ch) => (
                 <SelectItem key={ch} value={ch}>{channelLabel(ch)}</SelectItem>
               ))}
@@ -261,7 +262,7 @@ export function Gateways() {
         </div>
       ) : (
         <div className="flex items-center justify-center py-12">
-          <p className="text-sm text-muted-foreground">No gateways match your filters</p>
+          <p className="text-sm text-muted-foreground">{__('No gateways match your filters', 'wp-sms')}</p>
         </div>
       )}
 
@@ -279,8 +280,8 @@ export function Gateways() {
       <Drawer open={defaultsOpen} onOpenChange={setDefaultsOpen}>
         <DrawerContent className="sm:max-w-sm">
           <DrawerHeader>
-            <DrawerTitle>Channel Defaults</DrawerTitle>
-            <DrawerDescription>Select the default gateway for each messaging channel</DrawerDescription>
+            <DrawerTitle>{__('Channel Defaults', 'wp-sms')}</DrawerTitle>
+            <DrawerDescription>{__('Select the default gateway for each messaging channel', 'wp-sms')}</DrawerDescription>
           </DrawerHeader>
           <div className="flex-1 overflow-y-auto px-4 pb-4 space-y-4">
             {allChannels.filter(ch => ch !== 'webhook').map((ch) => {
@@ -293,7 +294,7 @@ export function Gateways() {
                   </div>
 
                   {supportingGateways.length === 0 ? (
-                    <span className="text-sm text-muted-foreground">No configured gateway</span>
+                    <span className="text-sm text-muted-foreground">{__('No configured gateway', 'wp-sms')}</span>
                   ) : supportingGateways.length === 1 ? (
                     <div className="flex items-center gap-2 text-sm">
                       <span>{supportingGateways[0].name}</span>
@@ -305,7 +306,7 @@ export function Gateways() {
                       onValueChange={(v) => handleChangeDefault(ch, v)}
                     >
                       <SelectTrigger className="flex-1">
-                        <SelectValue placeholder="Select default" />
+                        <SelectValue placeholder={__('Select default', 'wp-sms')} />
                       </SelectTrigger>
                       <SelectContent>
                         {supportingGateways.map((g) => (

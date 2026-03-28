@@ -108,6 +108,8 @@ class AuthShortcode
             true,
         );
 
+        wp_set_script_translations('wsms-auth', 'wp-sms', WP_SMS_DIR . 'public/languages');
+
         wp_localize_script('wsms-auth', 'wsmsAuth', [
             'restUrl'    => rest_url('wsms/v1/'),
             'nonce'      => wp_create_nonce('wp_rest'),

@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 import { api } from '../api/client';
 import { authError, authLoading } from '../signals/auth';
@@ -22,7 +23,7 @@ export function ResetPassword() {
         authError.value = null;
 
         if (password !== confirm) {
-            authError.value = 'Passwords do not match.';
+            authError.value = __('Passwords do not match.', 'wp-sms');
             return;
         }
 
@@ -31,7 +32,7 @@ export function ResetPassword() {
         try {
             const res = await api.post('/auth/reset-password', { token, password });
             if (res.success) {
-                setSuccess(res.message || 'Password reset successfully.');
+                setSuccess(res.message || __('Password reset successfully.', 'wp-sms'));
             }
         } catch (err) {
             authError.value = extractError(err).message;
@@ -43,10 +44,10 @@ export function ResetPassword() {
     if (!token) {
         return (
             <AuthLayout
-                title="Invalid Link"
-                footer={<AuthLink href={authUrl('/forgot-password')}>Request reset link</AuthLink>}
+                title={__('Invalid Link', 'wp-sms')}
+                footer={<AuthLink href={authUrl('/forgot-password')}>{__('Request reset link', 'wp-sms')}</AuthLink>}
             >
-                <Alert variant="destructive" message="No reset token found. Please request a new password reset." />
+                <Alert variant="destructive" message={__('No reset token found. Please request a new password reset.', 'wp-sms')} />
             </AuthLayout>
         );
     }
@@ -54,8 +55,8 @@ export function ResetPassword() {
     if (success) {
         return (
             <AuthLayout
-                title="Password Reset"
-                footer={<AuthLink href={authUrl('/login')}>Sign in with new password</AuthLink>}
+                title={__('Password Reset', 'wp-sms')}
+                footer={<AuthLink href={authUrl('/login')}>{__('Sign in with new password', 'wp-sms')}</AuthLink>}
             >
                 <Alert variant="success" message={success} />
             </AuthLayout>
@@ -63,12 +64,12 @@ export function ResetPassword() {
     }
 
     return (
-        <AuthLayout title="Reset Password">
+        <AuthLayout title={__('Reset Password', 'wp-sms')}>
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
 
             <form onSubmit={handleSubmit} className="wsms-auth-stack-4">
                 <FormField
-                    label="New Password"
+                    label={__('New Password', 'wp-sms')}
                     id="wsms-new-pass"
                     type="password"
                     ref={passwordRef}
@@ -80,7 +81,7 @@ export function ResetPassword() {
                     validate={FormField.validators.minLength(8)}
                 />
                 <FormField
-                    label="Confirm Password"
+                    label={__('Confirm Password', 'wp-sms')}
                     id="wsms-confirm-pass"
                     type="password"
                     value={confirm}
@@ -88,10 +89,10 @@ export function ResetPassword() {
                     required
                     disabled={authLoading.value}
                     autoComplete="new-password"
-                    validate={FormField.validators.match(() => password, 'Passwords')}
+                    validate={FormField.validators.match(() => password, __('Passwords', 'wp-sms'))}
                 />
                 <Button className="wsms-auth-full" type="submit" disabled={authLoading.value}>
-                    {authLoading.value ? 'Resetting\u2026' : 'Reset Password'}
+                    {authLoading.value ? __('Resetting\u2026', 'wp-sms') : __('Reset Password', 'wp-sms')}
                 </Button>
             </form>
         </AuthLayout>

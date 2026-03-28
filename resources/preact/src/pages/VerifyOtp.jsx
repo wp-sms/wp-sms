@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { __, sprintf } from '@wordpress/i18n';
 import { useAutoFocus } from '../hooks/useAutoFocus';
 import { useLocation } from 'preact-iso';
 import { api } from '../api/client';
@@ -70,43 +71,43 @@ export function VerifyOtp() {
 
     const hasMagicLink = challengeMeta.value?.has_magic_link;
     const subtitle = challengeMeta.value?.masked_identifier
-        ? `Enter the code sent to ${challengeMeta.value.masked_identifier}`
+        ? sprintf(__('Enter the code sent to %s', 'wp-sms'), challengeMeta.value.masked_identifier)
         : pendingMfa.value
-            ? 'Enter your verification code to continue.'
+            ? __('Enter your verification code to continue.', 'wp-sms')
             : undefined;
 
     return (
         <AuthLayout
-            title="Verify Your Identity"
+            title={__('Verify Your Identity', 'wp-sms')}
             subtitle={subtitle}
-            footer={<AuthLink href={authUrl('/login')} onClick={() => clearAuth()}>Back to login</AuthLink>}
+            footer={<AuthLink href={authUrl('/login')} onClick={() => clearAuth()}>{__('Back to login', 'wp-sms')}</AuthLink>}
         >
             <Alert variant="destructive" message={authError.value} onDismiss={() => (authError.value = null)} className="wsms-auth-mb-4" />
 
             {hasMagicLink && (
-                <Alert variant="default" message="We also sent a login link — check your inbox if you prefer to click instead." className="wsms-auth-mb-4" />
+                <Alert variant="default" message={__('We also sent a login link — check your inbox if you prefer to click instead.', 'wp-sms')} className="wsms-auth-mb-4" />
             )}
 
             {useBackup ? (
                 <form onSubmit={handleBackupSubmit} className="wsms-auth-stack-4">
                     <div className="wsms-auth-stack-2">
-                        <Label for="wsms-backup">Backup Code</Label>
+                        <Label for="wsms-backup">{__('Backup Code', 'wp-sms')}</Label>
                         <Input
                             ref={backupRef}
                             id="wsms-backup"
                             type="text"
                             value={backupCode}
                             onInput={(e) => setBackupCode(e.target.value)}
-                            placeholder="Enter backup code"
+                            placeholder={__('Enter backup code', 'wp-sms')}
                             disabled={authLoading.value}
                             autoComplete="one-time-code"
                         />
                     </div>
                     <Button className="wsms-auth-full" type="submit" disabled={authLoading.value || !backupCode.trim()}>
-                        {authLoading.value ? 'Verifying\u2026' : 'Verify Backup Code'}
+                        {authLoading.value ? __('Verifying\u2026', 'wp-sms') : __('Verify Backup Code', 'wp-sms')}
                     </Button>
                     <Button variant="link" type="button" className="wsms-auth-full" onClick={() => setUseBackup(false)}>
-                        Use OTP instead
+                        {__('Use OTP instead', 'wp-sms')}
                     </Button>
                 </form>
             ) : (
@@ -120,12 +121,12 @@ export function VerifyOtp() {
                             onClick={handleResend}
                             disabled={resendCooldown > 0}
                         >
-                            {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend code'}
+                            {resendCooldown > 0 ? sprintf(__('Resend in %ds', 'wp-sms'), resendCooldown) : __('Resend code', 'wp-sms')}
                         </Button>
 
                         {pendingMfa.value && (
                             <Button variant="link" type="button" onClick={() => setUseBackup(true)}>
-                                Use backup code
+                                {__('Use backup code', 'wp-sms')}
                             </Button>
                         )}
                     </div>

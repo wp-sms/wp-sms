@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'preact/hooks';
+import { __ } from '@wordpress/i18n';
 import { api } from '../../api/client';
 import {
     authError,
@@ -80,7 +81,7 @@ export function LoginVerifyStep() {
             )}
 
             {hasPhone && phoneVerified && (
-                <Alert variant="success" message="Phone verified!" />
+                <Alert variant="success" message={__('Phone verified!', 'wp-sms')} />
             )}
 
             {hasEmail && !emailVerified && (
@@ -92,7 +93,7 @@ export function LoginVerifyStep() {
             )}
 
             {hasEmail && emailVerified && (
-                <Alert variant="success" message="Email verified!" />
+                <Alert variant="success" message={__('Email verified!', 'wp-sms')} />
             )}
         </div>
     );

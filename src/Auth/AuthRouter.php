@@ -138,6 +138,8 @@ class AuthRouter
             true,
         );
 
+        wp_set_script_translations('wsms-auth', 'wp-sms', WP_SMS_DIR . 'public/languages');
+
         $branding = $this->brandingRepo->all();
 
         $formSlug = isset($_GET['form']) ? sanitize_text_field($_GET['form']) : '';
@@ -183,7 +185,7 @@ class AuthRouter
         global $wp_styles, $wp_scripts;
 
         $allowedStyles = ['wsms-vendor', 'wsms-auth-style', 'wsms-google-font'];
-        $allowedScripts = ['wsms-vendor', 'wsms-auth', 'wp-hooks', 'wsms-captcha-provider'];
+        $allowedScripts = ['wsms-vendor', 'wsms-auth', 'wp-hooks', 'wsms-captcha-provider', 'wp-i18n'];
 
         if ($wp_styles instanceof \WP_Styles) {
             foreach ($wp_styles->queue as $handle) {

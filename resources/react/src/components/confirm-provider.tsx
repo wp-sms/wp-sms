@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { createContext, useContext, useCallback, useRef, useState } from 'react';
 import {
   AlertDialog,
@@ -63,13 +64,13 @@ export function ConfirmProvider({ children }: { children: React.ReactNode }) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>
-              {options.cancelLabel ?? 'Cancel'}
+              {options.cancelLabel ?? __('Cancel', 'wp-sms')}
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={() => resolve(true)}
               className={options.variant === 'destructive' ? buttonVariants({ variant: 'destructive' }) : undefined}
             >
-              {options.confirmLabel ?? 'Confirm'}
+              {options.confirmLabel ?? __('Confirm', 'wp-sms')}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

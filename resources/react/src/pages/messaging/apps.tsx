@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useMemo } from 'react';
 import { useIntegrations, useIntegrationDetail } from '@/hooks/use-integrations';
 import { IntegrationIcon } from '@/components/integration-icon';
@@ -115,7 +116,7 @@ function AppDetailPage({ integrationId, settings, onUpdate, onBack }: {
       <div className="space-y-6">
         <Button variant="ghost" size="sm" className="-ml-2" onClick={onBack}>
           <ArrowLeft className="mr-1 h-4 w-4" />
-          Back to Integrations
+          {__('Back to Integrations', 'wp-sms')}
         </Button>
         <IntegrationHeroSkeleton />
         <Skeleton className="h-9 w-64" />
@@ -128,7 +129,7 @@ function AppDetailPage({ integrationId, settings, onUpdate, onBack }: {
     <div className="space-y-6">
       <Button variant="ghost" size="sm" className="-ml-2" onClick={onBack}>
         <ArrowLeft className="mr-1 h-4 w-4" />
-        Back to Integrations
+        {__('Back to Integrations', 'wp-sms')}
       </Button>
 
       <IntegrationHero detail={detail} onConfigChange={refetch} />
@@ -235,13 +236,13 @@ export function IntegrationsPage({ settings, onUpdate }: AppsProps) {
 
   return (
     <div className="space-y-6">
-      <PageHeader icon={Blocks} title="Integrations" metadata={pluralize(integrations.length, 'integration')} />
+      <PageHeader icon={Blocks} title={__('Integrations', 'wp-sms')} metadata={pluralize(integrations.length, 'integration')} />
       <div className="flex items-center gap-3">
         <div className="relative flex-1 max-w-xs">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Search apps..."
+            placeholder={__('Search apps...', 'wp-sms')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-9"
@@ -253,7 +254,7 @@ export function IntegrationsPage({ settings, onUpdate }: AppsProps) {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem value="all">{__('All Categories', 'wp-sms')}</SelectItem>
               {allCategories.map((cat) => (
                 <SelectItem key={cat} value={cat}>
                   {INTEGRATION_CATEGORY_LABELS[cat] ?? cat}
@@ -276,7 +277,7 @@ export function IntegrationsPage({ settings, onUpdate }: AppsProps) {
         </div>
       ) : (
         <div className="flex items-center justify-center py-12">
-          <p className="text-sm text-muted-foreground">No apps match your filters</p>
+          <p className="text-sm text-muted-foreground">{__('No apps match your filters', 'wp-sms')}</p>
         </div>
       )}
     </div>

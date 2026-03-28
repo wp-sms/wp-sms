@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState } from 'react';
 import type { JsonSchema } from '@/lib/api';
 import { api } from '@/lib/api';
@@ -48,7 +49,7 @@ export function TestTriggerButton({ triggerType, flowId, testing, onTest }: Test
   return (
     <Button variant="outline" size="sm" onClick={onTest} disabled={testing} className="h-7 text-xs">
       <Zap className="mr-1 h-3 w-3" />
-      {testing ? 'Testing...' : 'Test trigger'}
+      {testing ? __('Testing...', 'wp-sms') : __('Test trigger', 'wp-sms')}
     </Button>
   );
 }
@@ -70,7 +71,7 @@ export function SampleDataPreview({ sampleData }: SampleDataPreviewProps) {
         onClick={() => setShow(!show)}
       >
         {show ? <ChevronDown className="h-3 w-3" /> : <ChevronRight className="h-3 w-3" />}
-        Sample data
+        {__('Sample data', 'wp-sms')}
       </button>
       {show && (
         <pre className="mt-1 max-h-40 overflow-auto rounded bg-muted/50 p-2 text-[11px] leading-relaxed text-muted-foreground">

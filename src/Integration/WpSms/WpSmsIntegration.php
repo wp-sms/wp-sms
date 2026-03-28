@@ -45,7 +45,7 @@ class WpSmsIntegration implements IntegrationInterface
 
     public function getDescription(): string
     {
-        return 'Send messages and make HTTP requests from your automation flows.';
+        return __('Send messages and make HTTP requests from your automation flows.', 'wp-sms');
     }
 
     public function getCategory(): string

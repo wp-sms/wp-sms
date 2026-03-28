@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -27,7 +28,7 @@ export function AccountCleanup({ settings, onUpdate }: AccountCleanupProps) {
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-base">
           <Trash2 className="h-4 w-4 text-muted-foreground" />
-          Pending Registration Cleanup
+          {__('Pending Registration Cleanup', 'wp-sms')}
         </CardTitle>
         <CardDescription>
           Automatically delete pending users who never verified their account.

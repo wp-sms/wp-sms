@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { formatDateTime } from '@/lib/format';
 import { useState } from 'react';
 import { useCampaigns } from '@/hooks/use-campaigns';
@@ -65,18 +66,18 @@ export function Campaigns() {
 
   const handleDelete = async (id: string) => {
     const ok = await confirm({
-      title: 'Delete campaign?',
-      description: 'This campaign and its delivery history will be permanently removed.',
-      confirmLabel: 'Delete',
+      title: __('Delete campaign?', 'wp-sms'),
+      description: __('This campaign and its delivery history will be permanently removed.', 'wp-sms'),
+      confirmLabel: __('Delete', 'wp-sms'),
       variant: 'destructive',
     });
     if (!ok) return;
     setDeleting(id);
     try {
       await deleteCampaign(id);
-      toast.success('Campaign deleted.');
+      toast.success(__('Campaign deleted.', 'wp-sms'));
     } catch {
-      toast.error('Failed to delete campaign.');
+      toast.error(__('Failed to delete campaign.', 'wp-sms'));
     } finally {
       setDeleting(null);
     }
@@ -86,10 +87,10 @@ export function Campaigns() {
     setDuplicating(id);
     try {
       const clone = await duplicateCampaign(id);
-      toast.success('Campaign duplicated.');
+      toast.success(__('Campaign duplicated.', 'wp-sms'));
       setView({ mode: 'edit', campaign: clone });
     } catch {
-      toast.error('Failed to duplicate campaign.');
+      toast.error(__('Failed to duplicate campaign.', 'wp-sms'));
     } finally {
       setDuplicating(null);
     }
@@ -127,12 +128,12 @@ export function Campaigns() {
     <div className="space-y-4">
       <PageHeader
         icon={Megaphone}
-        title="Campaigns"
+        title={__('Campaigns', 'wp-sms')}
         metadata={pluralize(total, 'campaign')}
         actions={
           <Button size="sm" onClick={() => setView({ mode: 'create' })}>
             <Plus className="mr-1.5 h-3.5 w-3.5" />
-            New Campaign
+            {__('New Campaign', 'wp-sms')}
           </Button>
         }
       />
@@ -142,17 +143,17 @@ export function Campaigns() {
           onValueChange={(v) => setFilter('status', v === 'all' ? '' : v)}
         >
           <SelectTrigger className="w-40">
-            <SelectValue placeholder="All Statuses" />
+            <SelectValue placeholder={__('All Statuses', 'wp-sms')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="scheduled">Scheduled</SelectItem>
-            <SelectItem value="sending">Sending</SelectItem>
-            <SelectItem value="paused">Paused</SelectItem>
-            <SelectItem value="sent">Sent</SelectItem>
-            <SelectItem value="cancelled">Cancelled</SelectItem>
-            <SelectItem value="failed">Failed</SelectItem>
+            <SelectItem value="all">{__('All Statuses', 'wp-sms')}</SelectItem>
+            <SelectItem value="draft">{__('Draft', 'wp-sms')}</SelectItem>
+            <SelectItem value="scheduled">{__('Scheduled', 'wp-sms')}</SelectItem>
+            <SelectItem value="sending">{__('Sending', 'wp-sms')}</SelectItem>
+            <SelectItem value="paused">{__('Paused', 'wp-sms')}</SelectItem>
+            <SelectItem value="sent">{__('Sent', 'wp-sms')}</SelectItem>
+            <SelectItem value="cancelled">{__('Cancelled', 'wp-sms')}</SelectItem>
+            <SelectItem value="failed">{__('Failed', 'wp-sms')}</SelectItem>
           </SelectContent>
         </Select>
         <Select
@@ -160,10 +161,10 @@ export function Campaigns() {
           onValueChange={(v) => setFilter('channel', v === 'all' ? '' : v)}
         >
           <SelectTrigger className="w-40">
-            <SelectValue placeholder="All Channels" />
+            <SelectValue placeholder={__('All Channels', 'wp-sms')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Channels</SelectItem>
+            <SelectItem value="all">{__('All Channels', 'wp-sms')}</SelectItem>
             {Object.entries(CHANNEL_LABELS).map(([value, label]) => (
               <SelectItem key={value} value={value}>{label}</SelectItem>
             ))}
@@ -175,7 +176,7 @@ export function Campaigns() {
             size="sm"
             onClick={() => { setFilter('status', ''); setFilter('channel', ''); }}
           >
-            Clear filters
+            {__('Clear filters', 'wp-sms')}
           </Button>
         )}
       </div>
@@ -186,12 +187,12 @@ export function Campaigns() {
         empty={
           <EmptyState
             icon={Megaphone}
-            title="No campaigns found"
-            description="Create your first campaign to start broadcasting messages."
+            title={__('No campaigns found', 'wp-sms')}
+            description={__('Create your first campaign to start broadcasting messages.', 'wp-sms')}
             action={
               <Button size="sm" onClick={() => setView({ mode: 'create' })}>
                 <Plus className="mr-1.5 h-3.5 w-3.5" />
-                New Campaign
+                {__('New Campaign', 'wp-sms')}
               </Button>
             }
           />
@@ -201,12 +202,12 @@ export function Campaigns() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Channel</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Recipients</TableHead>
-              <TableHead className="text-right">Sent</TableHead>
-              <TableHead>Scheduled</TableHead>
+              <TableHead>{__('Name', 'wp-sms')}</TableHead>
+              <TableHead>{__('Channel', 'wp-sms')}</TableHead>
+              <TableHead>{__('Status', 'wp-sms')}</TableHead>
+              <TableHead className="text-right">{__('Recipients', 'wp-sms')}</TableHead>
+              <TableHead className="text-right">{__('Sent', 'wp-sms')}</TableHead>
+              <TableHead>{__('Scheduled', 'wp-sms')}</TableHead>
               <TableHead className="w-[70px]" />
             </TableRow>
           </TableHeader>
@@ -233,12 +234,12 @@ export function Campaigns() {
                   <ActionsCell>
                     <DropdownMenuItem onClick={() => setView({ mode: 'detail', campaign })}>
                       <Eye className="h-4 w-4 mr-2" />
-                      View
+                      {__('View', 'wp-sms')}
                     </DropdownMenuItem>
                     {canEdit && (
                       <DropdownMenuItem onClick={() => setView({ mode: 'edit', campaign })}>
                         <Pencil className="h-4 w-4 mr-2" />
-                        Edit
+                        {__('Edit', 'wp-sms')}
                       </DropdownMenuItem>
                     )}
                     <DropdownMenuItem
@@ -246,7 +247,7 @@ export function Campaigns() {
                       disabled={duplicating === campaign.id}
                     >
                       <Copy className="h-4 w-4 mr-2" />
-                      Duplicate
+                      {__('Duplicate', 'wp-sms')}
                     </DropdownMenuItem>
                     {canDelete && (
                       <>
@@ -257,7 +258,7 @@ export function Campaigns() {
                           className="text-destructive focus:text-destructive"
                         >
                           <Trash2 className="h-4 w-4 mr-2" />
-                          Delete
+                          {__('Delete', 'wp-sms')}
                         </DropdownMenuItem>
                       </>
                     )}

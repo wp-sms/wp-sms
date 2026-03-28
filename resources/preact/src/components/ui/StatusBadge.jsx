@@ -1,25 +1,27 @@
+import { __ } from '@wordpress/i18n';
 import { ShieldCheck, AlertTriangle } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
-const variants = {
+const VARIANTS = {
     verified: {
         className: 'wsms-auth-badge--verified',
         icon: ShieldCheck,
-        label: 'Verified',
+        label: __('Verified', 'wp-sms'),
     },
     unverified: {
         className: 'wsms-auth-badge--unverified',
         icon: AlertTriangle,
-        label: 'Not Verified',
+        label: __('Not Verified', 'wp-sms'),
     },
     'not-set': {
         className: 'wsms-auth-badge--not-set',
         icon: null,
-        label: 'Not set',
+        label: __('Not set', 'wp-sms'),
     },
 };
 
 export function StatusBadge({ variant = 'not-set', className }) {
+    const variants = VARIANTS;
     const v = variants[variant] || variants['not-set'];
     const Icon = v.icon;
 

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { api, type TriggerDefinition, type ListResponse, type JsonSchema } from '@/lib/api';
 import { isAbortError } from '@/lib/error-utils';
@@ -89,7 +90,7 @@ export function TriggerSelector({ triggerType, triggerConfig, onChangeTrigger, o
           onValueChange={(v) => onChangeTrigger(v, {})}
         >
           <SelectTrigger id="trigger-type">
-            <SelectValue placeholder="Select a trigger" />
+            <SelectValue placeholder={__('Select a trigger', 'wp-sms')} />
           </SelectTrigger>
           <SelectContent>
             {Object.entries(groups).map(([group, items]) => (
@@ -106,7 +107,7 @@ export function TriggerSelector({ triggerType, triggerConfig, onChangeTrigger, o
 
       {filterSchema && (
         <div className="rounded-md border border-border/50 p-4 space-y-3">
-          <p className="text-sm font-medium text-muted-foreground">Filter Configuration</p>
+          <p className="text-sm font-medium text-muted-foreground">{__('Filter Configuration', 'wp-sms')}</p>
           <SchemaForm
             schema={filterSchema}
             values={triggerConfig}

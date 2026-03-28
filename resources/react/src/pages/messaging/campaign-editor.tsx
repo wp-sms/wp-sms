@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import type {
   Campaign, CampaignAudience, CampaignAudienceSource, CampaignCompliance,
@@ -264,22 +265,22 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
         setSaving(false);
         setSending(true);
         await api.post(`campaigns/${saved.id}/send`, {});
-        toast.success('Campaign is being sent!');
+        toast.success(__('Campaign is being sent!', 'wp-sms'));
         onBack();
         return;
       } catch {
         setSaving(false);
-        toast.error('Failed to save campaign.');
+        toast.error(__('Failed to save campaign.', 'wp-sms'));
         return;
       }
     }
     setSending(true);
     try {
       await api.post(`campaigns/${savedId}/send`, {});
-      toast.success('Campaign is being sent!');
+      toast.success(__('Campaign is being sent!', 'wp-sms'));
       onBack();
     } catch {
-      toast.error('Failed to send campaign.');
+      toast.error(__('Failed to send campaign.', 'wp-sms'));
     } finally {
       setSending(false);
     }
@@ -288,7 +289,7 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
   const handleSchedule = async () => {
     const d = draftRef.current;
     if (!d.send_at) {
-      toast.error('Set a schedule time first.');
+      toast.error(__('Set a schedule time first.', 'wp-sms'));
       return;
     }
     let id = savedId;
@@ -300,7 +301,7 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
         setSavedId(id);
         savedDraftRef.current = draftRef.current;
       } catch {
-        toast.error('Failed to save campaign.');
+        toast.error(__('Failed to save campaign.', 'wp-sms'));
         return;
       } finally {
         setSaving(false);
@@ -309,10 +310,10 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
     setSending(true);
     try {
       await api.post(`campaigns/${id}/schedule`, { send_at: d.send_at, timezone: getWpTimezone() });
-      toast.success('Campaign scheduled!');
+      toast.success(__('Campaign scheduled!', 'wp-sms'));
       onBack();
     } catch {
-      toast.error('Failed to schedule campaign.');
+      toast.error(__('Failed to schedule campaign.', 'wp-sms'));
     } finally {
       setSending(false);
     }
@@ -320,18 +321,18 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
 
   const handleTestSend = async (recipient: string) => {
     if (!savedId) {
-      toast.error('Save the campaign first.');
+      toast.error(__('Save the campaign first.', 'wp-sms'));
       return;
     }
     try {
       const res = await api.post<{ success: boolean; data: { error?: string } }>(`campaigns/${savedId}/test`, { recipient });
       if (res.success) {
-        toast.success('Test message sent!');
+        toast.success(__('Test message sent!', 'wp-sms'));
       } else {
         toast.error(res.data.error ?? 'Test send failed.');
       }
     } catch {
-      toast.error('Failed to send test.');
+      toast.error(__('Failed to send test.', 'wp-sms'));
     }
   };
 
@@ -359,7 +360,7 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" onClick={() => void guardedBack()}>
           <ArrowLeft className="mr-1 h-4 w-4" />
-          Back
+          {__('Back', 'wp-sms')}
         </Button>
         <h2 className="text-lg font-semibold">
           {campaign ? 'Edit Campaign' : 'New Campaign'}
@@ -448,7 +449,7 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
           disabled={currentStep === 0}
         >
           <ArrowLeft className="mr-1 h-4 w-4" />
-          Previous
+          {__('Previous', 'wp-sms')}
         </Button>
         <div className="flex gap-2">
           <Button
@@ -456,7 +457,7 @@ export function CampaignEditor({ campaign, onSave, onBack }: CampaignEditorProps
             onClick={() => { void saveDraft(); }}
             disabled={saving || !draft.name || !draft.channel}
           >
-            Save Draft
+            {__('Save Draft', 'wp-sms')}
           </Button>
           {currentStep < STEPS.length - 1 && (
             <Button
@@ -516,7 +517,7 @@ function BasicsStep({
         <Label htmlFor="campaign-name">Campaign Name <span className="text-destructive">*</span></Label>
         <Input
           id="campaign-name"
-          placeholder="e.g., Summer Sale Announcement"
+          placeholder={__('e.g., Summer Sale Announcement', 'wp-sms')}
           value={draft.name}
           onChange={(e) => updateDraft('name', e.target.value)}
         />
@@ -529,7 +530,7 @@ function BasicsStep({
             {[1, 2, 3].map((i) => <Skeleton key={i} className="h-20 rounded-lg" />)}
           </div>
         ) : channelCards.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No gateways configured. Configure a gateway first.</p>
+          <p className="text-sm text-muted-foreground">{__('No gateways configured. Configure a gateway first.', 'wp-sms')}</p>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
             {channelCards.map(({ channel: ch, gateways: gws, defaultGateway }) => {
@@ -572,7 +573,7 @@ function BasicsStep({
       {/* Inline gateway selector when "Change" is clicked */}
       {draft.channel && gatewayDropdownOpen === draft.channel && channelGateways.length > 1 && (
         <div className="space-y-2">
-          <Label htmlFor="gateway-select">Gateway</Label>
+          <Label htmlFor="gateway-select">{__('Gateway', 'wp-sms')}</Label>
           <Select
             value={draft.gateway_id}
             onValueChange={(v) => {
@@ -581,7 +582,7 @@ function BasicsStep({
             }}
           >
             <SelectTrigger id="gateway-select">
-              <SelectValue placeholder="Select a gateway" />
+              <SelectValue placeholder={__('Select a gateway', 'wp-sms')} />
             </SelectTrigger>
             <SelectContent>
               {channelGateways.map((gw) => (
@@ -673,7 +674,7 @@ function AudienceStep({
 
       {activeTab === 'segment' && (
         <div className="space-y-3">
-          <p className="text-sm text-muted-foreground">Build segment conditions to target specific contacts.</p>
+          <p className="text-sm text-muted-foreground">{__('Build segment conditions to target specific contacts.', 'wp-sms')}</p>
           <SegmentBuilder
             conditions={segmentSource?.conditions ?? { match: 'all', conditions: [], groups: [] }}
             tags={tags}
@@ -687,7 +688,7 @@ function AudienceStep({
 
       {activeTab === 'tags' && (
         <div className="space-y-3">
-          <p className="text-sm text-muted-foreground">Select tags to include all contacts with these tags.</p>
+          <p className="text-sm text-muted-foreground">{__('Select tags to include all contacts with these tags.', 'wp-sms')}</p>
           <div className="flex flex-wrap gap-2">
             {tags.map((tag) => {
               const selected = (tagsSource?.tag_ids ?? []).includes(tag.id);
@@ -715,14 +716,14 @@ function AudienceStep({
                 </button>
               );
             })}
-            {tags.length === 0 && <p className="text-sm text-muted-foreground">No tags found.</p>}
+            {tags.length === 0 && <p className="text-sm text-muted-foreground">{__('No tags found.', 'wp-sms')}</p>}
           </div>
         </div>
       )}
 
       {activeTab === 'roles' && (
         <div className="space-y-3">
-          <p className="text-sm text-muted-foreground">Select WordPress user roles to include.</p>
+          <p className="text-sm text-muted-foreground">{__('Select WordPress user roles to include.', 'wp-sms')}</p>
           <div className="flex flex-wrap gap-2">
             {Object.entries(roles).map(([role, label]) => {
               const selected = (rolesSource?.roles ?? []).includes(role);
@@ -773,7 +774,7 @@ function AudienceStep({
       )}
 
       <p className="text-xs text-muted-foreground">
-        Audience will be evaluated at send time. Count shown is an estimate.
+        {__('Audience will be evaluated at send time. Count shown is an estimate.', 'wp-sms')}
       </p>
     </div>
   );
@@ -810,9 +811,9 @@ function MessageStep({
       formData.append('file', file);
       const res = await api.upload<{ url: string }>('campaigns/media', formData);
       updateDraft('media_url', res.url);
-      toast.success('Media uploaded');
+      toast.success(__('Media uploaded', 'wp-sms'));
     } catch {
-      toast.error('Failed to upload media.');
+      toast.error(__('Failed to upload media.', 'wp-sms'));
     } finally {
       setUploading(false);
     }
@@ -828,7 +829,7 @@ function MessageStep({
               <Label htmlFor="subject">Subject <span className="text-destructive">*</span></Label>
               <Input
                 id="subject"
-                placeholder="Email subject line"
+                placeholder={__('Email subject line', 'wp-sms')}
                 value={draft.subject}
                 onChange={(e) => updateDraft('subject', e.target.value)}
               />
@@ -846,7 +847,7 @@ function MessageStep({
             <Textarea
               id="body"
               rows={8}
-              placeholder="Type your message..."
+              placeholder={__('Type your message...', 'wp-sms')}
               value={draft.body}
               onChange={(e) => updateDraft('body', e.target.value)}
             />
@@ -857,7 +858,7 @@ function MessageStep({
           {isSms && (
             <div className="space-y-2">
               <Label className={!supportsMms ? 'text-muted-foreground' : ''}>
-                Media Attachment (MMS)
+                {__('Media Attachment (MMS)', 'wp-sms')}
               </Label>
               {supportsMms ? (
                 <div className="flex gap-2">
@@ -884,13 +885,13 @@ function MessageStep({
                     size="icon"
                     disabled={uploading}
                     onClick={() => fileInputRef.current?.click()}
-                    title="Upload image"
+                    title={__('Upload image', 'wp-sms')}
                   >
                     {uploading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
                   </Button>
                 </div>
               ) : (
-                <p className="text-xs text-muted-foreground">Selected gateway does not support MMS</p>
+                <p className="text-xs text-muted-foreground">{__('Selected gateway does not support MMS', 'wp-sms')}</p>
               )}
             </div>
           )}
@@ -914,7 +915,7 @@ function MessageStep({
                     onChange={(e) =>
                       updateDraft('compliance', { ...compliance, opt_out_text: e.target.value })
                     }
-                    placeholder="Reply STOP to unsubscribe"
+                    placeholder={__('Reply STOP to unsubscribe', 'wp-sms')}
                   />
                   {selectedGateway && !selectedGateway.features.incoming && (
                     <p className="text-xs text-amber-600">
@@ -929,7 +930,7 @@ function MessageStep({
 
         {/* Preview with variable substitution */}
         <div className="space-y-2">
-          <Label>Preview</Label>
+          <Label>{__('Preview', 'wp-sms')}</Label>
           <div className="rounded-lg border bg-muted/30 p-4">
             {isEmail && draft.subject && (
               <p className="mb-2 font-semibold text-sm">{substituteVariables(draft.subject)}</p>
@@ -937,14 +938,14 @@ function MessageStep({
             <div className="whitespace-pre-wrap text-sm">
               {draft.body
                 ? substituteVariables(draft.body)
-                : <span className="text-muted-foreground italic">Your message will appear here...</span>
+                : <span className="text-muted-foreground italic">{__('Your message will appear here...', 'wp-sms')}</span>
               }
               {isSms && optOutText && (
                 <div className="mt-4 text-xs text-muted-foreground border-t pt-2">{optOutText}</div>
               )}
             </div>
             {draft.body && /\{\{\w+\}\}/.test(draft.body) && (
-              <p className="mt-3 text-[10px] text-muted-foreground">Preview uses sample data</p>
+              <p className="mt-3 text-[10px] text-muted-foreground">{__('Preview uses sample data', 'wp-sms')}</p>
             )}
           </div>
         </div>
@@ -967,7 +968,7 @@ function ScheduleStep({
   return (
     <div className="space-y-6 max-w-lg">
       <div className="space-y-2">
-        <Label>When to send</Label>
+        <Label>{__('When to send', 'wp-sms')}</Label>
         <div className="flex gap-3">
           <button
             type="button"
@@ -977,8 +978,8 @@ function ScheduleStep({
             onClick={() => updateDraft('send_mode', 'now')}
           >
             <Send className="h-5 w-5 mb-1" />
-            <span className="block text-sm font-medium">Send immediately</span>
-            <span className="block text-xs text-muted-foreground">Campaign starts right away</span>
+            <span className="block text-sm font-medium">{__('Send immediately', 'wp-sms')}</span>
+            <span className="block text-xs text-muted-foreground">{__('Campaign starts right away', 'wp-sms')}</span>
           </button>
           <button
             type="button"
@@ -988,8 +989,8 @@ function ScheduleStep({
             onClick={() => updateDraft('send_mode', 'scheduled')}
           >
             <Clock className="h-5 w-5 mb-1" />
-            <span className="block text-sm font-medium">Schedule for later</span>
-            <span className="block text-xs text-muted-foreground">Pick a date and time</span>
+            <span className="block text-sm font-medium">{__('Schedule for later', 'wp-sms')}</span>
+            <span className="block text-xs text-muted-foreground">{__('Pick a date and time', 'wp-sms')}</span>
           </button>
         </div>
       </div>
@@ -1029,7 +1030,7 @@ function ScheduleStep({
         {draft.quiet_hours && (
           <div className="flex gap-3 ml-6">
             <div className="space-y-1">
-              <Label className="text-xs">Start</Label>
+              <Label className="text-xs">{__('Start', 'wp-sms')}</Label>
               <Input
                 type="time"
                 value={draft.quiet_hours.start}
@@ -1037,7 +1038,7 @@ function ScheduleStep({
               />
             </div>
             <div className="space-y-1">
-              <Label className="text-xs">End</Label>
+              <Label className="text-xs">{__('End', 'wp-sms')}</Label>
               <Input
                 type="time"
                 value={draft.quiet_hours.end}
@@ -1166,8 +1167,8 @@ function ReviewStep({
       {/* Test send */}
       <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm">Send Test</CardTitle>
-          <CardDescription>Send a test message to a single recipient before launching.</CardDescription>
+          <CardTitle className="text-sm">{__('Send Test', 'wp-sms')}</CardTitle>
+          <CardDescription>{__('Send a test message to a single recipient before launching.', 'wp-sms')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex gap-2">

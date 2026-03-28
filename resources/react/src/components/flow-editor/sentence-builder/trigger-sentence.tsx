@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useMemo, useCallback, useEffect } from 'react';
 import type { JsonSchema } from '@/lib/api';
 import { useTriggers } from '@/hooks/use-triggers';
@@ -71,14 +72,14 @@ export function TriggerSentence({
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-1.5 flex-wrap">
-        <span className="text-sm font-medium text-muted-foreground">When</span>
+        <span className="text-sm font-medium text-muted-foreground">{__('When', 'wp-sms')}</span>
         <IntegrationPickerToken
           items={triggerOptions}
           value={triggerType}
           onSelect={handleTriggerChange}
-          placeholder="choose a trigger"
-          title="Select a trigger"
-          searchPlaceholder="Search triggers..."
+          placeholder={__('choose a trigger', 'wp-sms')}
+          title={__('Select a trigger', 'wp-sms')}
+          searchPlaceholder={__('Search triggers...', 'wp-sms')}
           storageKey="triggers"
         />
         <TestTriggerButton triggerType={triggerType} flowId={flowId} testing={testing} onTest={handleTest} />

@@ -6,6 +6,9 @@ import { resolve } from 'path';
 
 export default defineConfig({
     plugins: [react(), tailwindcss()],
+    define: {
+        'process.env.NODE_ENV': JSON.stringify('production'),
+    },
     css: {
         postcss: {
             plugins: [postcssImportantPlugin()],
@@ -16,11 +19,24 @@ export default defineConfig({
     build: {
         outDir: resolve(__dirname, 'public/app'),
         emptyOutDir: true,
+        lib: {
+            entry: resolve(__dirname, 'resources/react/src/main.tsx'),
+            formats: ['iife'],
+            name: 'wsmsDashboard',
+            fileName: () => 'main.js',
+        },
+        minify: 'terser',
+        terserOptions: {
+            mangle: { reserved: ['__', '_x', '_n', '_nx', 'sprintf'] },
+        },
+        cssCodeSplit: false,
         rolldownOptions: {
-            input: resolve(__dirname, 'resources/react/src/main.tsx'),
+            external: ['@wordpress/i18n'],
             output: {
-                entryFileNames: 'main.js',
                 assetFileNames: 'main[extname]',
+                globals: {
+                    '@wordpress/i18n': 'wp.i18n',
+                },
             },
         },
     },

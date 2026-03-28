@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -121,16 +122,16 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
     <div className="space-y-4">
       <PageHeader
         icon={ListChecks}
-        title="Profile Fields"
+        title={__('Profile Fields', 'wp-sms')}
         metadata={pluralize(allFields.length, 'field')}
         actions={
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => handleAdd('meta')}>
-              Pick Meta Key
+              {__('Pick Meta Key', 'wp-sms')}
             </Button>
             <Button size="sm" onClick={() => handleAdd('create')}>
               <Plus className="mr-1 h-3.5 w-3.5" />
-              Add Field
+              {__('Add Field', 'wp-sms')}
             </Button>
           </div>
         }

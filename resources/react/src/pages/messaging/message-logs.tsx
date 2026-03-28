@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { formatDateTime, formatRelativeTime } from '@/lib/format';
 import { useState, useEffect, type ReactNode } from 'react';
 import { PageHeader } from '@/components/layout/page-header';
@@ -57,7 +58,7 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
     <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
       <div className="space-y-4">
         {!embedded && (
-          <PageHeader icon={Send} title="Message Logs" metadata={pluralize(total, 'message')} actions={filtersButton} />
+          <PageHeader icon={Send} title={__('Message Logs', 'wp-sms')} metadata={pluralize(total, 'message')} actions={filtersButton} />
         )}
         {embedded && !setHeaderMeta && (
           <div className="flex items-center justify-between">
@@ -74,11 +75,11 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Channels</SelectItem>
-                  <SelectItem value="sms">SMS</SelectItem>
-                  <SelectItem value="email">Email</SelectItem>
-                  <SelectItem value="webhook">Webhook</SelectItem>
-                  <SelectItem value="telegram">Telegram</SelectItem>
+                  <SelectItem value="all">{__('All Channels', 'wp-sms')}</SelectItem>
+                  <SelectItem value="sms">{__('SMS', 'wp-sms')}</SelectItem>
+                  <SelectItem value="email">{__('Email', 'wp-sms')}</SelectItem>
+                  <SelectItem value="webhook">{__('Webhook', 'wp-sms')}</SelectItem>
+                  <SelectItem value="telegram">{__('Telegram', 'wp-sms')}</SelectItem>
                 </SelectContent>
               </Select>
             </Field>
@@ -90,11 +91,11 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="sent">Sent</SelectItem>
-                  <SelectItem value="delivered">Delivered</SelectItem>
-                  <SelectItem value="failed">Failed</SelectItem>
+                  <SelectItem value="all">{__('All Statuses', 'wp-sms')}</SelectItem>
+                  <SelectItem value="pending">{__('Pending', 'wp-sms')}</SelectItem>
+                  <SelectItem value="sent">{__('Sent', 'wp-sms')}</SelectItem>
+                  <SelectItem value="delivered">{__('Delivered', 'wp-sms')}</SelectItem>
+                  <SelectItem value="failed">{__('Failed', 'wp-sms')}</SelectItem>
                 </SelectContent>
               </Select>
             </Field>
@@ -103,7 +104,7 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
               <FieldLabel htmlFor="filter-recipient">Recipient</FieldLabel>
               <Input
                 id="filter-recipient"
-                placeholder="Search recipient..."
+                placeholder={__('Search recipient...', 'wp-sms')}
                 value={filters.recipient}
                 onChange={(e) => setFilter('recipient', e.target.value)}
               />
@@ -113,7 +114,7 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
               <FieldLabel htmlFor="filter-gateway">Gateway</FieldLabel>
               <Input
                 id="filter-gateway"
-                placeholder="Filter by gateway"
+                placeholder={__('Filter by gateway', 'wp-sms')}
                 value={filters.gateway_id}
                 onChange={(e) => setFilter('gateway_id', e.target.value)}
               />
@@ -147,8 +148,8 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
           empty={
             <EmptyState
               icon={ScrollText}
-              title="No messages logged yet"
-              description="Messages will appear here as they are sent."
+              title={__('No messages logged yet', 'wp-sms')}
+              description={__('Messages will appear here as they are sent.', 'wp-sms')}
             />
           }
           pagination={{ page, totalPages: Math.ceil(total / perPage), onPageChange: setPage }}
@@ -156,12 +157,12 @@ export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: Messa
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Channel</TableHead>
-                <TableHead>Recipient</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Gateway</TableHead>
-                <TableHead>Cost</TableHead>
-                <TableHead>Date</TableHead>
+                <TableHead>{__('Channel', 'wp-sms')}</TableHead>
+                <TableHead>{__('Recipient', 'wp-sms')}</TableHead>
+                <TableHead>{__('Status', 'wp-sms')}</TableHead>
+                <TableHead>{__('Gateway', 'wp-sms')}</TableHead>
+                <TableHead>{__('Cost', 'wp-sms')}</TableHead>
+                <TableHead>{__('Date', 'wp-sms')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

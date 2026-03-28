@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { formatDate } from '@/lib/format';
 import { useState, useEffect, useMemo } from 'react';
 import { useFlows } from '@/hooks/use-flows';
@@ -119,18 +120,18 @@ export function Flows() {
 
   const handleDelete = async (id: string) => {
     const ok = await confirm({
-      title: 'Delete flow?',
-      description: 'This automation flow and its execution history will be permanently removed.',
-      confirmLabel: 'Delete',
+      title: __('Delete flow?', 'wp-sms'),
+      description: __('This automation flow and its execution history will be permanently removed.', 'wp-sms'),
+      confirmLabel: __('Delete', 'wp-sms'),
       variant: 'destructive',
     });
     if (!ok) return;
     setDeleting(id);
     try {
       await deleteFlow(id);
-      toast.success('Flow deleted.');
+      toast.success(__('Flow deleted.', 'wp-sms'));
     } catch {
-      toast.error('Failed to delete flow.');
+      toast.error(__('Failed to delete flow.', 'wp-sms'));
     } finally {
       setDeleting(null);
     }
@@ -138,17 +139,17 @@ export function Flows() {
 
   const handlePublish = async (id: string) => {
     const ok = await confirm({
-      title: 'Publish flow?',
-      description: 'This flow will become active and start processing events immediately.',
-      confirmLabel: 'Publish',
+      title: __('Publish flow?', 'wp-sms'),
+      description: __('This flow will become active and start processing events immediately.', 'wp-sms'),
+      confirmLabel: __('Publish', 'wp-sms'),
     });
     if (!ok) return;
     setPublishing(id);
     try {
       await publishFlow(id);
-      toast.success('Flow published.');
+      toast.success(__('Flow published.', 'wp-sms'));
     } catch {
-      toast.error('Failed to publish flow.');
+      toast.error(__('Failed to publish flow.', 'wp-sms'));
     } finally {
       setPublishing(null);
     }
@@ -158,9 +159,9 @@ export function Flows() {
     setDeactivating(id);
     try {
       await updateFlow(id, { status: 'paused' });
-      toast.success('Flow deactivated.');
+      toast.success(__('Flow deactivated.', 'wp-sms'));
     } catch {
-      toast.error('Failed to deactivate flow.');
+      toast.error(__('Failed to deactivate flow.', 'wp-sms'));
     } finally {
       setDeactivating(null);
     }
@@ -220,19 +221,19 @@ export function Flows() {
     <div className="space-y-4">
       <PageHeader
         icon={Workflow}
-        title="Automation Flows"
+        title={__('Automation Flows', 'wp-sms')}
         metadata={pluralize(total, 'flow')}
         actions={
           <div className="flex items-center gap-2">
             {!templatesLoading && templates.length > 0 && (
               <Button variant="outline" size="sm" onClick={handleOpenTemplates}>
                 <LayoutTemplate className="mr-1.5 h-3.5 w-3.5" />
-                From Template
+                {__('From Template', 'wp-sms')}
               </Button>
             )}
             <Button size="sm" onClick={() => setView({ mode: 'create' })}>
               <Plus className="mr-1.5 h-3.5 w-3.5" />
-              New Flow
+              {__('New Flow', 'wp-sms')}
             </Button>
           </div>
         }
@@ -245,10 +246,10 @@ export function Flows() {
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">All Statuses</SelectItem>
-          <SelectItem value="draft">Draft</SelectItem>
-          <SelectItem value="active">Active</SelectItem>
-          <SelectItem value="paused">Paused</SelectItem>
+          <SelectItem value="all">{__('All Statuses', 'wp-sms')}</SelectItem>
+          <SelectItem value="draft">{__('Draft', 'wp-sms')}</SelectItem>
+          <SelectItem value="active">{__('Active', 'wp-sms')}</SelectItem>
+          <SelectItem value="paused">{__('Paused', 'wp-sms')}</SelectItem>
         </SelectContent>
       </Select>
 
@@ -258,12 +259,12 @@ export function Flows() {
         empty={
           <EmptyState
             icon={Workflow}
-            title="No flows found"
-            description="Create your first automation flow to get started."
+            title={__('No flows found', 'wp-sms')}
+            description={__('Create your first automation flow to get started.', 'wp-sms')}
             action={
               <Button size="sm" onClick={() => setView({ mode: 'create' })}>
                 <Plus className="mr-1.5 h-3.5 w-3.5" />
-                New Flow
+                {__('New Flow', 'wp-sms')}
               </Button>
             }
           />
@@ -273,10 +274,10 @@ export function Flows() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Trigger</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Published</TableHead>
+              <TableHead>{__('Name', 'wp-sms')}</TableHead>
+              <TableHead>{__('Trigger', 'wp-sms')}</TableHead>
+              <TableHead>{__('Status', 'wp-sms')}</TableHead>
+              <TableHead>{__('Published', 'wp-sms')}</TableHead>
               <TableHead className="w-[70px]" />
             </TableRow>
           </TableHeader>
@@ -292,11 +293,11 @@ export function Flows() {
                 </TableCell>
                 <TableCell>
                   {flow.status === 'active' ? (
-                    <Badge variant="success" dot>Active</Badge>
+                    <Badge variant="success" dot>{__('Active', 'wp-sms')}</Badge>
                   ) : flow.status === 'paused' ? (
-                    <Badge variant="warning" dot>Paused</Badge>
+                    <Badge variant="warning" dot>{__('Paused', 'wp-sms')}</Badge>
                   ) : (
-                    <Badge variant="secondary">Draft</Badge>
+                    <Badge variant="secondary">{__('Draft', 'wp-sms')}</Badge>
                   )}
                 </TableCell>
                 <TableCell className="text-sm">
@@ -305,11 +306,11 @@ export function Flows() {
                 <ActionsCell>
                   <DropdownMenuItem onClick={() => setView({ mode: 'edit', flow })}>
                     <Pencil className="h-4 w-4 mr-2" />
-                    Edit
+                    {__('Edit', 'wp-sms')}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => setView({ mode: 'edit', flow, tab: 'history' })}>
                     <History className="h-4 w-4 mr-2" />
-                    Execution History
+                    {__('Execution History', 'wp-sms')}
                   </DropdownMenuItem>
                   {flow.status === 'active' ? (
                     <DropdownMenuItem
@@ -317,7 +318,7 @@ export function Flows() {
                       disabled={deactivating === flow.id}
                     >
                       <Pause className="h-4 w-4 mr-2" />
-                      Pause
+                      {__('Pause', 'wp-sms')}
                     </DropdownMenuItem>
                   ) : (
                     <DropdownMenuItem
@@ -325,7 +326,7 @@ export function Flows() {
                       disabled={publishing === flow.id}
                     >
                       <Rocket className="h-4 w-4 mr-2" />
-                      Publish
+                      {__('Publish', 'wp-sms')}
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
@@ -335,7 +336,7 @@ export function Flows() {
                     className="text-destructive focus:text-destructive"
                   >
                     <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
+                    {__('Delete', 'wp-sms')}
                   </DropdownMenuItem>
                 </ActionsCell>
               </TableRow>
@@ -348,8 +349,8 @@ export function Flows() {
       <Dialog open={showTemplates} onOpenChange={setShowTemplates}>
         <DialogContent className="max-w-2xl max-h-[80vh] flex flex-col">
           <DialogHeader>
-            <DialogTitle>Start from a template</DialogTitle>
-            <DialogDescription>Choose a pre-built automation flow.</DialogDescription>
+            <DialogTitle>{__('Start from a template', 'wp-sms')}</DialogTitle>
+            <DialogDescription>{__('Choose a pre-built automation flow.', 'wp-sms')}</DialogDescription>
           </DialogHeader>
 
           {/* Search + category filter */}
@@ -358,7 +359,7 @@ export function Flows() {
               <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
               <Input
                 className="pl-8 h-9"
-                placeholder="Search templates..."
+                placeholder={__('Search templates...', 'wp-sms')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -368,7 +369,7 @@ export function Flows() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
+                <SelectItem value="all">{__('All Categories', 'wp-sms')}</SelectItem>
                 {categories.map((cat) => (
                   <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                 ))}
@@ -379,7 +380,7 @@ export function Flows() {
           {/* Template grid */}
           <div className="overflow-y-auto pr-1 -mr-1 flex-1 min-h-0">
             {filteredTemplates.length === 0 ? (
-              <p className="py-8 text-center text-sm text-muted-foreground">No templates match your filters.</p>
+              <p className="py-8 text-center text-sm text-muted-foreground">{__('No templates match your filters.', 'wp-sms')}</p>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {filteredTemplates.map((template) => {
@@ -409,7 +410,7 @@ export function Flows() {
                       </div>
                       <div className="mt-2.5 flex items-center gap-1.5">
                         <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{triggerLabel}</Badge>
-                        <span className="text-[10px] text-muted-foreground">{steps} {steps === 1 ? 'step' : 'steps'}</span>
+                        <span className="text-[10px] text-muted-foreground">{sprintf(steps === 1 ? __('%d step', 'wp-sms') : __('%d steps', 'wp-sms'), steps)}</span>
                       </div>
                     </button>
                   );

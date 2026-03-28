@@ -73,14 +73,14 @@ class SocialAuthOrchestrator
         $provider = $this->socialManager->getProvider($providerId);
 
         if (!$provider) {
-            return ['result' => AuthResult::failed(AuthErrorCode::InvalidProvider, 'Unknown social provider.')];
+            return ['result' => AuthResult::failed(AuthErrorCode::InvalidProvider, __('Unknown social provider.', 'wp-sms'))];
         }
 
         // Validate state (CSRF + PKCE).
         $stateData = $this->stateManager->consume($state);
 
         if ($stateData === null) {
-            return ['result' => AuthResult::failed(AuthErrorCode::InvalidState, 'Invalid or expired OAuth state.')];
+            return ['result' => AuthResult::failed(AuthErrorCode::InvalidState, __('Invalid or expired OAuth state.', 'wp-sms'))];
         }
 
         // Exchange code for tokens.
@@ -97,7 +97,7 @@ class SocialAuthOrchestrator
                 'error'    => $e->getMessage(),
             ]);
 
-            return ['result' => AuthResult::failed(AuthErrorCode::TokenExchangeFailed, 'Could not authenticate with provider.')];
+            return ['result' => AuthResult::failed(AuthErrorCode::TokenExchangeFailed, __('Could not authenticate with provider.', 'wp-sms'))];
         }
 
         // Get user info from provider.
@@ -110,7 +110,7 @@ class SocialAuthOrchestrator
                 'error'    => $e->getMessage(),
             ]);
 
-            return ['result' => AuthResult::failed(AuthErrorCode::UserInfoFailed, 'Could not retrieve user information from provider.')];
+            return ['result' => AuthResult::failed(AuthErrorCode::UserInfoFailed, __('Could not retrieve user information from provider.', 'wp-sms'))];
         }
 
         // If this is an account linking flow (authenticated user linking).
@@ -147,7 +147,7 @@ class SocialAuthOrchestrator
         $link = $this->repository->findByUserAndProvider($userId, $providerId);
 
         if (!$link) {
-            return ['success' => false, 'error' => 'not_linked', 'message' => 'This provider is not linked to your account.'];
+            return ['success' => false, 'error' => 'not_linked', 'message' => __('This provider is not linked to your account.', 'wp-sms')];
         }
 
         // Ensure user has another auth method before unlinking.
@@ -157,7 +157,7 @@ class SocialAuthOrchestrator
         $otherLinkCount = count(array_filter($otherLinks, fn($l) => $l->channel_id !== $providerId));
 
         if (!$hasPassword && $otherLinkCount === 0) {
-            return ['success' => false, 'error' => 'last_auth_method', 'message' => 'Cannot unlink your only authentication method. Set a password first.'];
+            return ['success' => false, 'error' => 'last_auth_method', 'message' => __('Cannot unlink your only authentication method. Set a password first.', 'wp-sms')];
         }
 
         $this->repository->unlinkAccount($userId, $providerId);
@@ -166,7 +166,7 @@ class SocialAuthOrchestrator
             'provider' => $providerId,
         ]);
 
-        return ['success' => true, 'message' => 'Account unlinked successfully.'];
+        return ['success' => true, 'message' => __('Account unlinked successfully.', 'wp-sms')];
     }
 
     /**
@@ -226,7 +226,7 @@ class SocialAuthOrchestrator
                 if (!$provider->isTrustedEmailProvider() || empty($userInfo['email_verified'])) {
                     return ['result' => AuthResult::failed(
                         AuthErrorCode::EmailExistsUntrusted,
-                        'An account with this email already exists. Please sign in with your existing method and link this provider from your profile.',
+                        __('An account with this email already exists. Please sign in with your existing method and link this provider from your profile.', 'wp-sms'),
                     )];
                 }
 
@@ -275,7 +275,7 @@ class SocialAuthOrchestrator
         if (!$allowAutoCreate && !$this->policyEngine?->getSetting('auto_create_users', false)) {
             return ['result' => AuthResult::failed(
                 AuthErrorCode::RegistrationDisabled,
-                'Automatic account creation is disabled. Please contact an administrator.',
+                __('Automatic account creation is disabled. Please contact an administrator.', 'wp-sms'),
             )];
         }
 
@@ -339,14 +339,14 @@ class SocialAuthOrchestrator
         $existing = $this->repository->findByUserAndProvider($userId, $providerId);
 
         if ($existing) {
-            return ['result' => AuthResult::failed(AuthErrorCode::AlreadyLinked, 'This provider is already linked to your account.')];
+            return ['result' => AuthResult::failed(AuthErrorCode::AlreadyLinked, __('This provider is already linked to your account.', 'wp-sms'))];
         }
 
         // Check if this social account is linked to someone else.
         $otherLink = $this->repository->findByProviderAccount($providerId, $userInfo['id']);
 
         if ($otherLink) {
-            return ['result' => AuthResult::failed(AuthErrorCode::ProviderTaken, 'This social account is already linked to another user.')];
+            return ['result' => AuthResult::failed(AuthErrorCode::ProviderTaken, __('This social account is already linked to another user.', 'wp-sms'))];
         }
 
         $this->linkAccount($userId, $providerId, $userInfo, $tokens);
@@ -384,7 +384,7 @@ class SocialAuthOrchestrator
         $lockStatus = $this->lockout->isLocked($userId);
 
         if ($lockStatus['locked']) {
-            return ['result' => AuthResult::failed(AuthErrorCode::AccountLocked, 'Account is temporarily locked.', [
+            return ['result' => AuthResult::failed(AuthErrorCode::AccountLocked, __('Account is temporarily locked.', 'wp-sms'), [
                 'retry_after' => $lockStatus['until'],
             ])];
         }

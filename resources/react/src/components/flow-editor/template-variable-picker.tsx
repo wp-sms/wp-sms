@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useMemo } from 'react';
 import type { JsonSchema } from '@/lib/api';
 import { type FieldOption, flattenSchemaFields } from '@/lib/condition-utils';
@@ -38,13 +39,13 @@ export function TemplateVariablePicker({ payloadSchema, variables: variablesProp
           variant="ghost"
           size="icon-md"
           className="text-muted-foreground hover:text-foreground"
-          title="Insert template variable"
+          title={__('Insert template variable', 'wp-sms')}
         >
           <Braces className="h-3.5 w-3.5" />
         </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className={popoverClassName ?? 'w-72 p-2'}>
-        <p className="mb-2 px-2 text-xs font-medium text-muted-foreground">Insert variable</p>
+        <p className="mb-2 px-2 text-xs font-medium text-muted-foreground">{__('Insert variable', 'wp-sms')}</p>
         <div className="max-h-48 overflow-y-auto space-y-0.5">
           {hasMultipleGroups
             ? groupNames.map((groupName) => (

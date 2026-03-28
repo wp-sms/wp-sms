@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'preact/hooks';
+import { __, sprintf } from '@wordpress/i18n';
 import { Smartphone, Mail, ClipboardList, Lock, Send, KeyRound, Fingerprint, X } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { Button } from './ui/Button';
@@ -9,12 +10,12 @@ import { api } from '../api/client';
 import { extractError, formatWebAuthnError } from '../utils/auth';
 
 const CHANNEL_META = {
-    phone:        { label: 'Phone',        icon: Smartphone,     description: 'Receive a code via text message' },
-    email:        { label: 'Email',        icon: Mail,           description: 'Receive a code via email' },
-    telegram:     { label: 'Telegram',     icon: Send,           description: 'Receive a code via Telegram bot' },
-    totp:         { label: 'Authenticator App', icon: KeyRound, description: 'Use an app like Google Authenticator or Authy' },
-    passkey:      { label: 'Passkey',      icon: Fingerprint,    description: 'Use fingerprint, face, or security key' },
-    backup_codes: { label: 'Backup Codes', icon: ClipboardList,  description: 'One-time use recovery codes' },
+    phone:        { label: __('Phone', 'wp-sms'),        icon: Smartphone,     description: __('Receive a code via text message', 'wp-sms') },
+    email:        { label: __('Email', 'wp-sms'),        icon: Mail,           description: __('Receive a code via email', 'wp-sms') },
+    telegram:     { label: __('Telegram', 'wp-sms'),     icon: Send,           description: __('Receive a code via Telegram bot', 'wp-sms') },
+    totp:         { label: __('Authenticator App', 'wp-sms'), icon: KeyRound, description: __('Use an app like Google Authenticator or Authy', 'wp-sms') },
+    passkey:      { label: __('Passkey', 'wp-sms'),      icon: Fingerprint,    description: __('Use fingerprint, face, or security key', 'wp-sms') },
+    backup_codes: { label: __('Backup Codes', 'wp-sms'), icon: ClipboardList,  description: __('One-time use recovery codes', 'wp-sms') },
 };
 
 export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, onRefresh, onBackupCodes }) {
@@ -54,12 +55,12 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
 
             if (method.id === 'passkey') {
             if (!window.isSecureContext) {
-                setError('Passkeys require a secure connection (HTTPS).');
+                setError(__('Passkeys require a secure connection (HTTPS).', 'wp-sms'));
                 setExpanding(true);
                 return;
             }
             if (!window.PublicKeyCredential) {
-                setError('Your browser does not support passkeys.');
+                setError(__('Your browser does not support passkeys.', 'wp-sms'));
                 setExpanding(true);
                 return;
             }
@@ -125,7 +126,7 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                 }
                 if (onRefresh) await onRefresh();
             } else {
-                setError(res.message || 'Verification failed.');
+                setError(res.message || __('Verification failed.', 'wp-sms'));
             }
         } catch (err) {
             setError(extractError(err).message);
@@ -135,7 +136,7 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
     }
 
     async function handleRemoveCredential(credentialId) {
-        const confirmed = window.confirm('Remove this passkey? If it is your only passkey, passkey authentication will be disabled.');
+        const confirmed = window.confirm(__('Remove this passkey? If it is your only passkey, passkey authentication will be disabled.', 'wp-sms'));
         if (!confirmed) return;
 
         try {
@@ -148,11 +149,11 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
 
     function handleDisable() {
         const confirmMessages = {
-            totp: 'Are you sure you want to disable your authenticator app?',
-            passkey: 'Are you sure you want to disable your passkey? All registered passkeys will be removed.',
+            totp: __('Are you sure you want to disable your authenticator app?', 'wp-sms'),
+            passkey: __('Are you sure you want to disable your passkey? All registered passkeys will be removed.', 'wp-sms'),
         };
         const msg = confirmMessages[method.id];
-        if (msg && !window.confirm(msg + ' If this is your only MFA method, multi-factor authentication will be turned off for your account.')) {
+        if (msg && !window.confirm(msg + ' ' + __('If this is your only MFA method, multi-factor authentication will be turned off for your account.', 'wp-sms'))) {
             return;
         }
 
@@ -182,16 +183,16 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                 <div className="wsms-auth-mfa-card__actions">
                     {enrolled && method.id === 'passkey' && (
                         <Button variant="outline" size="sm" onClick={handleEnable} disabled={loading}>
-                            Add
+                            {__('Add', 'wp-sms')}
                         </Button>
                     )}
                     {enrolled ? (
                         <Button variant="outline" size="sm" onClick={handleDisable}>
-                            Disable
+                            {__('Disable', 'wp-sms')}
                         </Button>
                     ) : (
                         <Button variant="outline" size="sm" onClick={handleEnable} disabled={loading}>
-                            Enable
+                            {__('Enable', 'wp-sms')}
                         </Button>
                     )}
                 </div>
@@ -201,11 +202,11 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                 <div className="wsms-auth-mfa-card__body wsms-auth-stack-3 wsms-auth-fade-in">
                     {error && <p className="wsms-auth-text-sm wsms-auth-text-destructive">{error}</p>}
                     <div className="wsms-auth-stack-2">
-                        <Label>Phone Number</Label>
+                        <Label>{__('Phone Number', 'wp-sms')}</Label>
                         <PhoneInput value={phone} onChange={setPhone} disabled={loading} />
                     </div>
                     <Button size="sm" onClick={handleEnable} disabled={loading || !phone}>
-                        {loading ? 'Sending\u2026' : 'Send Verification Code'}
+                        {loading ? __('Sending\u2026', 'wp-sms') : __('Send Verification Code', 'wp-sms')}
                     </Button>
                 </div>
             )}
@@ -214,7 +215,7 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                 <div className="wsms-auth-mfa-card__body wsms-auth-stack-3 wsms-auth-fade-in">
                     {error && <p className="wsms-auth-text-sm wsms-auth-text-destructive">{error}</p>}
                     <p className="wsms-auth-text-sm wsms-auth-text-muted">
-                        Click the button below to open Telegram and link your account.
+                        {__('Click the button below to open Telegram and link your account.', 'wp-sms')}
                     </p>
                     <a
                         href={telegramLink}
@@ -223,9 +224,9 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                         className="wsms-auth-telegram-link"
                     >
                         <Send />
-                        Open in Telegram
+                        {__('Open in Telegram', 'wp-sms')}
                     </a>
-                    <p className="wsms-auth-text-xs wsms-auth-text-muted">Waiting for confirmation...</p>
+                    <p className="wsms-auth-text-xs wsms-auth-text-muted">{__('Waiting for confirmation...', 'wp-sms')}</p>
                 </div>
             )}
 
@@ -233,18 +234,18 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                 <div className="wsms-auth-mfa-card__body wsms-auth-stack-4 wsms-auth-fade-in">
                     {error && <p className="wsms-auth-text-sm wsms-auth-text-destructive">{error}</p>}
                     <div className="wsms-auth-flex-center">
-                        <img src={totpEnroll.qrCodeUri} alt="QR code for authenticator app setup. Use the manual key below if you cannot scan." className="wsms-auth-qr-image" />
+                        <img src={totpEnroll.qrCodeUri} alt={__('QR code for authenticator app setup. Use the manual key below if you cannot scan.', 'wp-sms')} className="wsms-auth-qr-image" />
                     </div>
                     <details className="wsms-auth-text-sm">
                         <summary className="wsms-auth-totp-summary">
-                            Can't scan? Enter this key manually
+                            {__('Can\'t scan? Enter this key manually', 'wp-sms')}
                         </summary>
-                        <code className="wsms-auth-totp-secret" aria-label="Manual setup key for authenticator app">
+                        <code className="wsms-auth-totp-secret" aria-label={__('Manual setup key for authenticator app', 'wp-sms')}>
                             {totpEnroll.secret}
                         </code>
                     </details>
                     <p className="wsms-auth-text-sm wsms-auth-text-muted">
-                        Enter the 6-digit code from your app to verify setup
+                        {__('Enter the 6-digit code from your app to verify setup', 'wp-sms')}
                     </p>
                     <OtpInput onComplete={(code) => handleVerifyEnrollment('totp', code)} disabled={loading} />
                 </div>
@@ -256,10 +257,10 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                     <Fingerprint className="wsms-auth-passkey-icon wsms-auth-passkey-icon--prompting" style={{ width: '2.5rem', height: '2.5rem' }} />
                     <p className="wsms-auth-text-sm wsms-auth-text-muted">
                         {passkeyPrompting
-                            ? "Follow your browser's prompts to register your passkey..."
+                            ? __('Follow your browser\'s prompts to register your passkey...', 'wp-sms')
                             : enrolled
-                                ? 'Registering additional passkey...'
-                                : 'Click Enable to set up your passkey'}
+                                ? __('Registering additional passkey...', 'wp-sms')
+                                : __('Click Enable to set up your passkey', 'wp-sms')}
                     </p>
                 </div>
             )}
@@ -271,8 +272,8 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                             <div className="wsms-auth-passkey-credential__info">
                                 <div className="wsms-auth-passkey-credential__name">{cred.name}</div>
                                 <div className="wsms-auth-passkey-credential__meta">
-                                    {cred.device_type === 'multiDevice' ? 'Synced' : 'Device-bound'}
-                                    {cred.backed_up && ' \u00b7 Backed up'}
+                                    {cred.device_type === 'multiDevice' ? __('Synced', 'wp-sms') : __('Device-bound', 'wp-sms')}
+                                    {cred.backed_up && ' \u00b7 ' + __('Backed up', 'wp-sms')}
                                     {cred.created_at && ` \u00b7 ${new Date(cred.created_at).toLocaleDateString()}`}
                                 </div>
                             </div>
@@ -280,7 +281,7 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
                                 type="button"
                                 onClick={() => handleRemoveCredential(cred.id)}
                                 className="wsms-auth-passkey-credential__remove"
-                                aria-label={`Remove ${cred.name}`}
+                                aria-label={sprintf(__('Remove %s', 'wp-sms'), cred.name)}
                             >
                                 <X />
                             </button>
@@ -292,7 +293,7 @@ export function MfaFactorCard({ method, enrolled, info, onEnroll, onUnenroll, on
             {verifying && (
                 <div className="wsms-auth-mfa-card__body wsms-auth-stack-3 wsms-auth-fade-in">
                     {error && <p className="wsms-auth-text-sm wsms-auth-text-destructive">{error}</p>}
-                    <p className="wsms-auth-text-sm wsms-auth-text-muted">Enter the code sent to your phone</p>
+                    <p className="wsms-auth-text-sm wsms-auth-text-muted">{__('Enter the code sent to your phone', 'wp-sms')}</p>
                     <OtpInput onComplete={(code) => handleVerifyEnrollment('phone', code)} disabled={loading} />
                 </div>
             )}

@@ -93,6 +93,8 @@ class SubscriptionFormRenderer
             true,
         );
 
+        wp_set_script_translations('wsms-subscription-form', 'wp-sms', WP_SMS_DIR . 'public/languages');
+
         wp_enqueue_style(
             'wsms-subscription-form',
             $baseUrl . 'subscription-form.css',

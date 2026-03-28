@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useCallback } from 'react';
 import type { ContactList, Tag } from '@/lib/api';
 import type { UseListsReturn } from '@/hooks/use-lists';
@@ -47,10 +48,10 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
   const handleSave = async (data: Partial<ContactList>) => {
     if (editList) {
       await updateList(editList.id, data);
-      toast.success('List updated.');
+      toast.success(__('List updated.', 'wp-sms'));
     } else {
       await createList(data);
-      toast.success('List created.');
+      toast.success(__('List created.', 'wp-sms'));
     }
   };
 
@@ -65,7 +66,7 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
     });
     if (!ok) return;
     await deleteList(id);
-    toast.success('List deleted.');
+    toast.success(__('List deleted.', 'wp-sms'));
   };
 
   const tableContent = (
@@ -76,11 +77,11 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
       empty={
         <EmptyState
           icon={List}
-          title="No lists yet"
-          description="Create lists to segment your contacts."
+          title={__('No lists yet', 'wp-sms')}
+          description={__('Create lists to segment your contacts.', 'wp-sms')}
           action={
             <Button size="sm" onClick={handleCreate}>
-              <Plus className="mr-1.5 h-3.5 w-3.5" /> New List
+              <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('New List', 'wp-sms')}
             </Button>
           }
         />
@@ -89,10 +90,10 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Contacts</TableHead>
-            <TableHead>Description</TableHead>
+            <TableHead>{__('Name', 'wp-sms')}</TableHead>
+            <TableHead>{__('Type', 'wp-sms')}</TableHead>
+            <TableHead>{__('Contacts', 'wp-sms')}</TableHead>
+            <TableHead>{__('Description', 'wp-sms')}</TableHead>
             <TableHead className="w-[70px]" />
           </TableRow>
         </TableHeader>
@@ -112,7 +113,7 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
               <ActionsCell>
                 <DropdownMenuItem onClick={() => handleEdit(list)}>
                   <Pencil className="h-4 w-4 mr-2" />
-                  Edit
+                  {__('Edit', 'wp-sms')}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
@@ -120,7 +121,7 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
                   className="text-destructive focus:text-destructive"
                 >
                   <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
+                  {__('Delete', 'wp-sms')}
                 </DropdownMenuItem>
               </ActionsCell>
             </TableRow>
@@ -137,11 +138,11 @@ export function ListsList({ hook, tags, embedded, createTrigger }: ListsListProp
       ) : (
         <PageSection
           icon={List}
-          title="Lists & Segments"
+          title={__('Lists & Segments', 'wp-sms')}
           description={pluralize(lists.length, 'list')}
           actions={
             <Button size="sm" onClick={handleCreate}>
-              <Plus className="mr-1.5 h-3.5 w-3.5" /> New List
+              <Plus className="mr-1.5 h-3.5 w-3.5" /> {__('New List', 'wp-sms')}
             </Button>
           }
         >

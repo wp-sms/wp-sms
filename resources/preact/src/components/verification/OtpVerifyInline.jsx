@@ -1,4 +1,5 @@
 import { useState } from 'preact/hooks';
+import { __, sprintf } from '@wordpress/i18n';
 import { cn } from '@/utils/cn';
 import { api } from '../../api/client';
 import { extractError } from '../../utils/auth';
@@ -56,7 +57,7 @@ export function OtpVerifyInline({ verifyEndpoint, resendEndpoint, headers, onVer
             {resendEndpoint && (
                 <div className="wsms-auth-flex-center">
                     <Button variant="link" type="button" onClick={handleResend} disabled={cooldown > 0}>
-                        {cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend code'}
+                        {cooldown > 0 ? sprintf(__('Resend in %ds', 'wp-sms'), cooldown) : __('Resend code', 'wp-sms')}
                     </Button>
                 </div>
             )}

@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect, useCallback } from 'react';
 import type { ContactDetail, Tag } from '@/lib/api';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from '@/components/ui/drawer';
@@ -82,7 +83,7 @@ export function ContactDetailPanel({
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="sm:max-w-md overflow-y-auto">
         <DrawerHeader>
-          <DrawerTitle>Contact Details</DrawerTitle>
+          <DrawerTitle>{__('Contact Details', 'wp-sms')}</DrawerTitle>
         </DrawerHeader>
 
         {loading ? (
@@ -123,7 +124,7 @@ export function ContactDetailPanel({
                 const activeOptOuts = Object.entries(contact.channel_opt_outs ?? {}).filter(([, v]) => v != null);
                 return activeOptOuts.length > 0 && (
                   <div className="mt-2">
-                    <p className="text-xs font-medium text-muted-foreground mb-1">Channel opt-outs</p>
+                    <p className="text-xs font-medium text-muted-foreground mb-1">{__('Channel opt-outs', 'wp-sms')}</p>
                     <div className="flex flex-wrap gap-1.5">
                       {activeOptOuts.map(([channel, date]) => (
                         <Badge key={channel} variant="neutral" className="text-xs">
@@ -147,7 +148,7 @@ export function ContactDetailPanel({
             {/* Tags */}
             <Separator />
             <div>
-              <p className="text-sm font-medium mb-2">Tags</p>
+              <p className="text-sm font-medium mb-2">{__('Tags', 'wp-sms')}</p>
               <ContactTagsManager
                 contactId={contact.id}
                 tags={contact.tags}
@@ -162,7 +163,7 @@ export function ContactDetailPanel({
               <>
                 <Separator />
                 <div>
-                  <p className="text-sm font-medium mb-2">Custom fields</p>
+                  <p className="text-sm font-medium mb-2">{__('Custom fields', 'wp-sms')}</p>
                   <ContactCustomFields fields={contact.custom_fields} readOnly />
                 </div>
               </>
@@ -171,12 +172,12 @@ export function ContactDetailPanel({
             {/* Activity */}
             <Separator />
             <div>
-              <p className="text-sm font-medium mb-2">Activity</p>
+              <p className="text-sm font-medium mb-2">{__('Activity', 'wp-sms')}</p>
               <ContactActivity contactId={contact.id} />
             </div>
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground px-4">Contact not found</p>
+          <p className="text-sm text-muted-foreground px-4">{__('Contact not found', 'wp-sms')}</p>
         )}
       </DrawerContent>
     </Drawer>

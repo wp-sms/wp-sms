@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import type { JsonSchema, JsonSchemaProperty, ConditionRule } from '@/lib/api';
 import { getConfig } from '@/lib/api';
 import { formatLabel } from '@/lib/constants';
@@ -12,18 +13,18 @@ export interface OperatorDef {
 }
 
 export const OPERATORS: OperatorDef[] = [
-  { value: 'equals', label: 'is', category: 'any' },
-  { value: 'not_equals', label: 'is not', category: 'any' },
-  { value: 'contains', label: 'contains', category: 'string' },
-  { value: 'not_contains', label: 'does not contain', category: 'string' },
-  { value: 'starts_with', label: 'starts with', category: 'string' },
-  { value: 'ends_with', label: 'ends with', category: 'string' },
-  { value: 'is_empty', label: 'is empty', category: 'any', hideValue: true },
-  { value: 'is_not_empty', label: 'is not empty', category: 'any', hideValue: true },
-  { value: 'greater_than', label: 'is greater than', category: 'number' },
-  { value: 'less_than', label: 'is less than', category: 'number' },
-  { value: 'has', label: 'has', category: 'array' },
-  { value: 'does_not_have', label: 'does not have', category: 'array' },
+  { value: 'equals', label: __('is', 'wp-sms'), category: 'any' },
+  { value: 'not_equals', label: __('is not', 'wp-sms'), category: 'any' },
+  { value: 'contains', label: __('contains', 'wp-sms'), category: 'string' },
+  { value: 'not_contains', label: __('does not contain', 'wp-sms'), category: 'string' },
+  { value: 'starts_with', label: __('starts with', 'wp-sms'), category: 'string' },
+  { value: 'ends_with', label: __('ends with', 'wp-sms'), category: 'string' },
+  { value: 'is_empty', label: __('is empty', 'wp-sms'), category: 'any', hideValue: true },
+  { value: 'is_not_empty', label: __('is not empty', 'wp-sms'), category: 'any', hideValue: true },
+  { value: 'greater_than', label: __('is greater than', 'wp-sms'), category: 'number' },
+  { value: 'less_than', label: __('is less than', 'wp-sms'), category: 'number' },
+  { value: 'has', label: __('has', 'wp-sms'), category: 'array' },
+  { value: 'does_not_have', label: __('does not have', 'wp-sms'), category: 'array' },
 ];
 
 export interface FieldOption {

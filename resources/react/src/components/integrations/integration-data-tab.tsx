@@ -1,3 +1,4 @@
+import { __, sprintf } from '@wordpress/i18n';
 import { useState, useEffect } from 'react';
 import { PageSection } from '@/components/ui/page-section';
 import { SwitchField } from '@/components/ui/field';
@@ -77,10 +78,10 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
     setSaving(true);
     try {
       await api.put(`integrations/${detail.id}/sync-settings`, settings);
-      toast.success('Sync settings saved');
+      toast.success(__('Sync settings saved', 'wp-sms'));
       onRefresh();
     } catch {
-      toast.error('Failed to save sync settings');
+      toast.error(__('Failed to save sync settings', 'wp-sms'));
     } finally {
       setSaving(false);
     }
@@ -90,10 +91,10 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
     setSyncing(true);
     try {
       const res = await api.post<{ success: boolean; dispatched: number }>(`integrations/${detail.id}/sync`, {});
-      toast.success(`Sync started: ${res.dispatched} contacts queued`);
+      toast.success(sprintf(__('Sync started: %s contacts queued', 'wp-sms'), res.dispatched));
       onRefresh();
     } catch {
-      toast.error('Failed to start sync');
+      toast.error(__('Failed to start sync', 'wp-sms'));
     } finally {
       setSyncing(false);
     }
@@ -103,10 +104,10 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
     setPolling(true);
     try {
       const res = await api.post<{ success: boolean; events: number }>(`integrations/${detail.id}/poll`, {});
-      toast.success(`Poll complete: ${res.events} events processed`);
+      toast.success(sprintf(__('Poll complete: %s events processed', 'wp-sms'), res.events));
       onRefresh();
     } catch {
-      toast.error('Failed to poll');
+      toast.error(__('Failed to poll', 'wp-sms'));
     } finally {
       setPolling(false);
     }
@@ -131,8 +132,8 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
   return (
     <PageSection
       icon={RefreshCw}
-      title="Sync Settings"
-      description="Configure how contacts are synced with this provider."
+      title={__('Sync Settings', 'wp-sms')}
+      description={__('Configure how contacts are synced with this provider.', 'wp-sms')}
       actions={status ? actions : undefined}
       collapsible
       defaultOpen
@@ -142,20 +143,20 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
         {status && (
           <div className="grid grid-cols-2 gap-3 text-sm">
             <div>
-              <span className="text-muted-foreground">Last push</span>
+              <span className="text-muted-foreground">{__('Last push', 'wp-sms')}</span>
               <p className="font-medium">{status.last_push_at ? formatDateTime(status.last_push_at) : 'Never'}</p>
             </div>
             <div>
-              <span className="text-muted-foreground">Last poll</span>
+              <span className="text-muted-foreground">{__('Last poll', 'wp-sms')}</span>
               <p className="font-medium">{status.last_poll_at ? formatDateTime(status.last_poll_at) : 'Never'}</p>
             </div>
             <div>
-              <span className="text-muted-foreground">Total pushed</span>
+              <span className="text-muted-foreground">{__('Total pushed', 'wp-sms')}</span>
               <p className="font-medium">{status.total_pushed ?? 0}</p>
             </div>
             {status.last_error && (
               <div className="col-span-2">
-                <span className="text-muted-foreground">Last error</span>
+                <span className="text-muted-foreground">{__('Last error', 'wp-sms')}</span>
                 <p className="text-sm text-destructive">{status.last_error}</p>
               </div>
             )}
@@ -172,7 +173,7 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
             ) : (
               <Select value={settings.default_list_id} onValueChange={(v) => update('default_list_id', v)}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a list..." />
+                  <SelectValue placeholder={__('Select a list...', 'wp-sms')} />
                 </SelectTrigger>
                 <SelectContent>
                   {lists.map((list) => (
@@ -189,7 +190,7 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
         <SwitchField
           id="sync-auto-push"
           label="Auto-push contacts"
-          description="Push new and updated contacts to the provider automatically."
+          description={__('Push new and updated contacts to the provider automatically.', 'wp-sms')}
           checked={settings.auto_push}
           onCheckedChange={(v) => update('auto_push', v)}
         />
@@ -197,7 +198,7 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
         <SwitchField
           id="sync-push-tags"
           label="Push tags"
-          description="Include contact tags when pushing to provider."
+          description={__('Include contact tags when pushing to provider.', 'wp-sms')}
           checked={settings.push_tags}
           onCheckedChange={(v) => update('push_tags', v)}
         />
@@ -205,7 +206,7 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
         <SwitchField
           id="sync-poll-enabled"
           label="Suppression polling"
-          description="Poll for unsubscribes, bounces, and complaints."
+          description={__('Poll for unsubscribes, bounces, and complaints.', 'wp-sms')}
           checked={settings.poll_enabled}
           onCheckedChange={(v) => update('poll_enabled', v)}
         />
@@ -231,7 +232,7 @@ function SyncSection({ detail, onRefresh }: { detail: IntegrationDetail; onRefre
         <SwitchField
           id="sync-remove-on-delete"
           label="Remove on delete"
-          description="Remove contact from provider when deleted locally."
+          description={__('Remove contact from provider when deleted locally.', 'wp-sms')}
           checked={settings.remove_on_delete}
           onCheckedChange={(v) => update('remove_on_delete', v)}
         />

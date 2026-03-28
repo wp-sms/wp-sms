@@ -1,5 +1,6 @@
 import { useState } from 'preact/hooks';
 import { forwardRef } from 'preact/compat';
+import { __ } from '@wordpress/i18n';
 import { Eye, EyeOff } from 'lucide-react';
 import { cn } from '@/utils/cn';
 
@@ -20,7 +21,7 @@ export const PasswordInput = forwardRef(function PasswordInput({ className, ...p
                 className="wsms-auth-password-toggle"
                 onClick={(e) => { e.preventDefault(); setVisible((v) => !v); }}
                 tabIndex={-1}
-                aria-label={visible ? 'Hide password' : 'Show password'}
+                aria-label={visible ? __('Hide password', 'wp-sms') : __('Show password', 'wp-sms')}
             >
                 {visible ? <EyeOff /> : <Eye />}
             </button>

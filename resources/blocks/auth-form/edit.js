@@ -1,18 +1,18 @@
 import { useBlockProps, InspectorControls, RichText } from '@wordpress/block-editor';
 import { PanelBody, SelectControl, TextControl, Placeholder } from '@wordpress/components';
-
+import { __ } from '@wordpress/i18n';
 import { useState, useEffect } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 
 const VIEW_OPTIONS = [
-    { label: 'Login', value: 'login' },
-    { label: 'Register', value: 'register' },
-    { label: 'Forgot Password', value: 'forgot-password' },
+    { label: __('Login', 'wp-sms'), value: 'login' },
+    { label: __('Register', 'wp-sms'), value: 'register' },
+    { label: __('Forgot Password', 'wp-sms'), value: 'forgot-password' },
 ];
 
 const MODE_OPTIONS = [
-    { label: 'Popup', value: 'popup' },
-    { label: 'Embed', value: 'embed' },
+    { label: __('Popup', 'wp-sms'), value: 'popup' },
+    { label: __('Embed', 'wp-sms'), value: 'embed' },
 ];
 
 export default function Edit({ attributes, setAttributes }) {
@@ -43,7 +43,7 @@ export default function Edit({ attributes, setAttributes }) {
         return () => controller.abort();
     }, []);
 
-    const formOptions = [{ label: 'Default form', value: '' }];
+    const formOptions = [{ label: __('Default form', 'wp-sms'), value: '' }];
     if (forms) {
         forms.forEach((form) => {
             formOptions.push({ label: form.name, value: form.slug });
@@ -53,36 +53,36 @@ export default function Edit({ attributes, setAttributes }) {
     return (
         <div {...blockProps}>
             <InspectorControls>
-                <PanelBody title="Form Settings">
+                <PanelBody title={__('Form Settings', 'wp-sms')}>
                     <SelectControl
-                        label="View"
+                        label={__('View', 'wp-sms')}
                         value={view}
                         options={VIEW_OPTIONS}
                         onChange={(val) => setAttributes({ view: val, formSlug: '' })}
                     />
                     <SelectControl
-                        label="Form"
+                        label={__('Form', 'wp-sms')}
                         value={formSlug}
                         options={formOptions}
                         onChange={(val) => setAttributes({ formSlug: val })}
                         help={
                             formsError
-                                ? 'Could not load forms. You can type a form slug manually below.'
+                                ? __('Could not load forms. You can type a form slug manually below.', 'wp-sms')
                                 : forms === null
-                                  ? 'Loading forms…'
-                                  : 'Apply custom branding and redirect from a form'
+                                  ? __('Loading forms…', 'wp-sms')
+                                  : __('Apply custom branding and redirect from a form', 'wp-sms')
                         }
                     />
                     {formsError && (
                         <TextControl
-                            label="Form Slug"
+                            label={__('Form Slug', 'wp-sms')}
                             value={formSlug}
                             onChange={(val) => setAttributes({ formSlug: val })}
-                            help="Enter the form slug manually."
+                            help={__('Enter the form slug manually.', 'wp-sms')}
                         />
                     )}
                     <SelectControl
-                        label="Mode"
+                        label={__('Mode', 'wp-sms')}
                         value={mode}
                         options={MODE_OPTIONS}
                         onChange={(val) => setAttributes({ mode: val })}
@@ -97,15 +97,15 @@ export default function Edit({ attributes, setAttributes }) {
                         className="wsms-auth-trigger wp-block-button__link wp-element-button"
                         value={buttonText}
                         onChange={(val) => setAttributes({ buttonText: val })}
-                        placeholder="Sign In"
+                        placeholder={__('Sign In', 'wp-sms')}
                         allowedFormats={[]}
                     />
                 </div>
             ) : (
-                <Placeholder icon="lock" label={`Auth Form — ${VIEW_OPTIONS.find(o => o.value === view)?.label ?? view}`}>
+                <Placeholder icon="lock" label={`${__('Auth Form', 'wp-sms')} — ${VIEW_OPTIONS.find(o => o.value === view)?.label ?? view}`}>
                     <p style={{ margin: 0 }}>
-                        {formSlug ? `Form: ${formSlug}` : 'Default form'}
-                        {' · '}Embedded
+                        {formSlug ? `${__('Form', 'wp-sms')}: ${formSlug}` : __('Default form', 'wp-sms')}
+                        {' · '}{__('Embedded', 'wp-sms')}
                     </p>
                 </Placeholder>
             )}

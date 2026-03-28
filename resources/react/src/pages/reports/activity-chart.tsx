@@ -1,3 +1,4 @@
+import { __ } from '@wordpress/i18n';
 import { useMemo, useState, useRef, useCallback } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useChartSize } from '@/lib/charts/use-chart-size';
@@ -10,9 +11,9 @@ interface ActivityChartProps {
 }
 
 const SERIES = [
-  { key: 'logins' as const, label: 'Logins', color: 'var(--chart-1)' },
-  { key: 'failures' as const, label: 'Failures', color: 'var(--chart-2)' },
-  { key: 'registrations' as const, label: 'Registrations', color: 'var(--chart-3)' },
+  { key: 'logins' as const, label: __('Logins', 'wp-sms'), color: 'var(--chart-1)' },
+  { key: 'failures' as const, label: __('Failures', 'wp-sms'), color: 'var(--chart-2)' },
+  { key: 'registrations' as const, label: __('Registrations', 'wp-sms'), color: 'var(--chart-3)' },
 ];
 
 type TimelineEntry = ReportsResponse['auth_activity']['timeline'][number];
@@ -52,8 +53,8 @@ export function ActivityChart({ data }: ActivityChartProps) {
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Auth Activity</CardTitle>
-          <CardDescription>No activity data for this period</CardDescription>
+          <CardTitle className="text-base">{__('Auth Activity', 'wp-sms')}</CardTitle>
+          <CardDescription>{__('No activity data for this period', 'wp-sms')}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -88,8 +89,8 @@ export function ActivityChart({ data }: ActivityChartProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-base">Auth Activity</CardTitle>
-        <CardDescription>Logins, failures, and registrations over time</CardDescription>
+        <CardTitle className="text-base">{__('Auth Activity', 'wp-sms')}</CardTitle>
+        <CardDescription>{__('Logins, failures, and registrations over time', 'wp-sms')}</CardDescription>
       </CardHeader>
       <CardContent>
         <div ref={containerRef} className="relative h-72">
