@@ -279,7 +279,7 @@
 [data-btn-style="outline"] [data-slot="button"].wsms-auth-btn--default {
     background: transparent;
     color: var(--primary);
-    border: 1.5px solid var(--primary);
+    border: 2px solid var(--primary);
 }
 [data-btn-style="outline"] [data-slot="button"].wsms-auth-btn--default:hover {
     background: var(--primary);

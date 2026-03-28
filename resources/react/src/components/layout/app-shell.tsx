@@ -315,7 +315,7 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
           {children}
         </div>
         <SaveBar />
-        <footer className="mt-auto border-t-2 border-border/40 px-6 py-3">
+        <footer className="mt-auto border-t-2 border-border/50 px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/[0.08]">
@@ -323,7 +323,7 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-[13px] font-medium tracking-tight text-muted-foreground/80">WSMS</span>
-                <span className="rounded border border-border/80 px-1.5 py-px font-mono text-[9px] tracking-wide text-muted-foreground/50">{version}</span>
+                <span className="rounded border border-border/50 px-1.5 py-px font-mono text-[9px] tracking-wide text-muted-foreground/50">{version}</span>
                 <span className="mx-0.5 text-border">·</span>
                 <span className="text-[11px] text-muted-foreground/50">
                   by{' '}
