@@ -52,9 +52,11 @@ interface TemplateMappingData {
   provider_template_name: string;
   provider_template_body: string;
   last_verified_at: number | null;
+  source: 'catalog' | 'manual';
+  regulatory_meta: Record<string, string>;
 }
 
-interface ProviderTemplate {
+interface ProviderTemplateData {
   id: string;
   name: string;
   language: string;
@@ -62,6 +64,21 @@ interface ProviderTemplate {
   status: 'approved' | 'pending' | 'rejected' | 'paused' | 'disabled';
   body_text: string;
   variable_count: number;
+  variables: Array<{ key: string; type: 'positional' | 'named'; label?: string }>;
+  source: 'fetched' | 'manual';
+}
+
+interface TemplateCapabilities {
+  supports_templates: boolean;
+  fetchable: boolean;
+  variable_style: 'positional' | 'named' | null;
+  required_channels: string[];
+}
+
+interface ChannelTemplateInfo {
+  gateway_id: string;
+  mapping: TemplateMappingData | null;
+  capabilities: TemplateCapabilities | null;
 }
 
 interface TemplateData {
@@ -74,7 +91,10 @@ interface TemplateData {
   channels: Record<string, ChannelEditData>;
   toggleable: boolean;
   enabled: boolean;
+  channel_template_info: Record<string, ChannelTemplateInfo>;
+  /** @deprecated Use channel_template_info.whatsapp instead */
   whatsapp_gateway_id?: string;
+  /** @deprecated Use channel_template_info.whatsapp instead */
   whatsapp_mapping?: TemplateMappingData | null;
 }
 
@@ -269,34 +289,29 @@ export function Templates() {
   );
 }
 
-// --- WhatsApp Provider Template Picker ---
+// --- Provider Template Picker (generalized for any template-capable gateway) ---
 
-function WhatsAppTemplatePicker({
+function ProviderTemplatePicker({
   template,
-  existingMapping,
+  channel,
+  channelInfo,
   onMappingSaved,
 }: {
   template: TemplateData;
-  existingMapping?: TemplateMappingData | null;
+  channel: string;
+  channelInfo: ChannelTemplateInfo;
   onMappingSaved: () => void;
 }) {
-  const [providerTemplates, setProviderTemplates] = useState<ProviderTemplate[]>([]);
+  const { gateway_id: gatewayId, mapping: existingMapping, capabilities } = channelInfo;
+  const isFetchable = capabilities?.fetchable ?? false;
+
+  const [providerTemplates, setProviderTemplates] = useState<ProviderTemplateData[]>([]);
   const [loadingTemplates, setLoadingTemplates] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [selectedTemplateId, setSelectedTemplateId] = useState(existingMapping?.provider_template_id ?? '');
   const [variableMap, setVariableMap] = useState<Record<string, string>>(existingMapping?.variable_map ?? {});
   const [saving, setSaving] = useState(false);
-
-  const gatewayId = template.whatsapp_gateway_id ?? existingMapping?.gateway_id;
-
-  // No gateway configured for WhatsApp
-  if (!gatewayId) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        Configure a WhatsApp gateway first to manage templates.
-      </p>
-    );
-  }
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const selectedTemplate = useMemo(
     () => providerTemplates.find((t) => t.id === selectedTemplateId),
@@ -311,13 +326,19 @@ function WhatsAppTemplatePicker({
     }));
   }, [template.variables]);
 
+  const providerVariables = useMemo(
+    () => selectedTemplate?.variables ?? [],
+    [selectedTemplate],
+  );
+
   const previewBody = useMemo(() => {
     if (!selectedTemplate) return '';
     let body = selectedTemplate.body_text;
-    for (const [varName, position] of Object.entries(variableMap)) {
+    for (const [varName, providerKey] of Object.entries(variableMap)) {
       const varInfo = template.variables[varName];
       if (varInfo) {
-        body = body.replace(`{{${position}}}`, varInfo.example);
+        // Replace both positional {{1}} and named {{key}} placeholders
+        body = body.replace(new RegExp(`\\{\\{${providerKey}\\}\\}`, 'g'), varInfo.example);
       }
     }
     return body;
@@ -331,8 +352,8 @@ function WhatsAppTemplatePicker({
         ? `gateways/${gatewayId}/templates/refresh`
         : `gateways/${gatewayId}/templates`;
       const data = refresh
-        ? await api.post<ProviderTemplate[]>(endpoint, {})
-        : await api.get<ProviderTemplate[]>(endpoint);
+        ? await api.post<ProviderTemplateData[]>(endpoint, {})
+        : await api.get<ProviderTemplateData[]>(endpoint);
       setProviderTemplates(data);
     } catch {
       setLoadError('Failed to load templates from provider');
@@ -349,10 +370,12 @@ function WhatsAppTemplatePicker({
     if (!selectedTemplateId) return;
     setSaving(true);
     try {
+      const source = selectedTemplate?.source === 'manual' ? 'manual' : 'catalog';
       await api.put(`gateways/${gatewayId}/template-mappings/${template.id}`, {
         provider_template_id: selectedTemplateId,
         language: selectedTemplate?.language ?? 'en',
         variable_map: variableMap,
+        source,
       });
       toast.success('Template mapping saved');
       onMappingSaved();
@@ -375,10 +398,17 @@ function WhatsAppTemplatePicker({
     }
   }
 
+  async function handleManualTemplateCreated() {
+    setShowAddForm(false);
+    await loadProviderTemplates();
+  }
+
+  const channelLabel = CHANNEL_LABELS[channel] ?? channel;
+
   return (
     <div className="space-y-4">
       <FieldDescription>
-        Select a pre-approved WhatsApp template from your provider. If no mapping is configured, the plugin falls back to free-form messages (works in sandbox mode).
+        Select a provider template for {channelLabel} messages. If no mapping is configured, the plugin falls back to the body content above.
       </FieldDescription>
 
       {loadError && (
@@ -391,34 +421,39 @@ function WhatsAppTemplatePicker({
       <Field>
         <div className="flex items-center justify-between">
           <FieldLabel>Provider template</FieldLabel>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => loadProviderTemplates(true)}
-            disabled={loadingTemplates}
-            className="h-7 gap-1.5 text-xs"
-          >
-            <RefreshCw className={`h-3 w-3 ${loadingTemplates ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
+          <div className="flex items-center gap-1">
+            {isFetchable && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => loadProviderTemplates(true)}
+                disabled={loadingTemplates}
+                className="h-7 gap-1.5 text-xs"
+              >
+                <RefreshCw className={`h-3 w-3 ${loadingTemplates ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowAddForm(true)}
+              className="h-7 gap-1.5 text-xs"
+            >
+              + Add
+            </Button>
+          </div>
         </div>
 
         {loadingTemplates && providerTemplates.length === 0 ? (
           <Skeleton className="h-9 w-full" />
         ) : providerTemplates.length === 0 && !loadError ? (
           <div className="rounded-md border border-border/50 px-3 py-4 text-center text-sm text-muted-foreground">
-            <p>No approved templates found.</p>
+            <p>No templates found.</p>
             <p className="mt-1 text-xs">
-              Create templates in your{' '}
-              <a
-                href="https://console.twilio.com/us1/develop/sms/content-editor"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-0.5 text-primary underline underline-offset-2"
-              >
-                provider console
-                <ExternalLink className="h-3 w-3" />
-              </a>
+              {isFetchable
+                ? 'Create templates in your provider console, then refresh.'
+                : 'Click "+ Add" to manually enter a provider template.'}
             </p>
           </div>
         ) : (
@@ -437,6 +472,9 @@ function WhatsAppTemplatePicker({
                         {pt.variable_count} var{pt.variable_count !== 1 ? 's' : ''}
                       </Badge>
                     )}
+                    {pt.source === 'manual' && (
+                      <Badge variant="secondary" className="text-[10px] px-1 py-0">manual</Badge>
+                    )}
                   </span>
                 </SelectItem>
               ))}
@@ -445,27 +483,27 @@ function WhatsAppTemplatePicker({
         )}
       </Field>
 
-      {selectedTemplate && selectedTemplate.variable_count > 0 && (
+      {selectedTemplate && providerVariables.length > 0 && (
         <Field>
           <FieldLabel>Variable mapping</FieldLabel>
           <FieldDescription>
-            Map each template variable to a plugin variable.
+            Map each provider template variable to a plugin variable.
           </FieldDescription>
           <div className="space-y-2 mt-2">
-            {Array.from({ length: selectedTemplate.variable_count }, (_, i) => i + 1).map((pos) => (
-              <div key={pos} className="flex items-center gap-2">
-                <span className="text-xs font-mono text-muted-foreground w-12 shrink-0">
-                  {`{{${pos}}}`}
+            {providerVariables.map((pv) => (
+              <div key={pv.key} className="flex items-center gap-2">
+                <span className="text-xs font-mono text-muted-foreground w-20 shrink-0 truncate" title={pv.label ?? pv.key}>
+                  {pv.type === 'positional' ? `{{${pv.key}}}` : pv.label ?? pv.key}
                 </span>
                 <Select
-                  value={Object.entries(variableMap).find(([, p]) => p === String(pos))?.[0] ?? ''}
+                  value={Object.entries(variableMap).find(([, k]) => k === pv.key)?.[0] ?? ''}
                   onValueChange={(varName) => {
                     setVariableMap((prev) => {
                       const next = { ...prev };
                       for (const [k, v] of Object.entries(next)) {
-                        if (v === String(pos)) delete next[k];
+                        if (v === pv.key) delete next[k];
                       }
-                      if (varName) next[varName] = String(pos);
+                      if (varName) next[varName] = pv.key;
                       return next;
                     });
                   }}
@@ -509,6 +547,131 @@ function WhatsAppTemplatePicker({
           )}
         </div>
       )}
+
+      {showAddForm && (
+        <ManualTemplateForm
+          gatewayId={gatewayId}
+          variableStyle={capabilities?.variable_style ?? 'positional'}
+          onCreated={handleManualTemplateCreated}
+          onCancel={() => setShowAddForm(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+// --- Manual Template Form (inline add) ---
+
+function ManualTemplateForm({
+  gatewayId,
+  variableStyle,
+  onCreated,
+  onCancel,
+}: {
+  gatewayId: string;
+  variableStyle: 'positional' | 'named' | null;
+  onCreated: () => void;
+  onCancel: () => void;
+}) {
+  const [templateId, setTemplateId] = useState('');
+  const [name, setName] = useState('');
+  const [bodyText, setBodyText] = useState('');
+  const [variables, setVariables] = useState<Array<{ key: string; type: string; label?: string }>>([]);
+  const [saving, setSaving] = useState(false);
+
+  function addVariable() {
+    const type = variableStyle ?? 'positional';
+    const key = type === 'positional' ? String(variables.length + 1) : '';
+    setVariables((prev) => [...prev, { key, type }]);
+  }
+
+  function removeVariable(index: number) {
+    setVariables((prev) => prev.filter((_, i) => i !== index));
+  }
+
+  function updateVariable(index: number, field: string, value: string) {
+    setVariables((prev) => prev.map((v, i) => (i === index ? { ...v, [field]: value } : v)));
+  }
+
+  async function handleSubmit() {
+    if (!templateId || !name || !bodyText) {
+      toast.error('Template ID, name, and body are required');
+      return;
+    }
+    setSaving(true);
+    try {
+      await api.post(`gateways/${gatewayId}/templates/manual`, {
+        template_id: templateId,
+        name,
+        body_text: bodyText,
+        variables,
+      });
+      toast.success('Template added');
+      onCreated();
+    } catch {
+      toast.error('Failed to add template');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="space-y-3 rounded-md border p-3 bg-muted/30">
+      <p className="text-xs font-medium text-muted-foreground">Add Manual Template</p>
+      <Field>
+        <FieldLabel>Template ID</FieldLabel>
+        <Input value={templateId} onChange={(e) => setTemplateId(e.target.value)} placeholder="e.g. otp_verify" />
+      </Field>
+      <Field>
+        <FieldLabel>Name</FieldLabel>
+        <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. OTP Verification" />
+      </Field>
+      <Field>
+        <FieldLabel>Body Text</FieldLabel>
+        <Textarea
+          value={bodyText}
+          onChange={(e) => setBodyText(e.target.value)}
+          placeholder={variableStyle === 'named' ? 'Your code is {{otp_code}}' : 'Your code is {{1}}'}
+          rows={3}
+          className="font-mono text-sm"
+        />
+      </Field>
+      <Field>
+        <div className="flex items-center justify-between">
+          <FieldLabel>Variables</FieldLabel>
+          <Button variant="ghost" size="sm" onClick={addVariable} className="h-7 text-xs">+ Add Variable</Button>
+        </div>
+        <div className="space-y-2">
+          {variables.map((v, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <Input
+                value={v.key}
+                onChange={(e) => updateVariable(i, 'key', e.target.value)}
+                placeholder={variableStyle === 'named' ? 'Variable name' : String(i + 1)}
+                className="flex-1 text-sm"
+                disabled={variableStyle === 'positional'}
+              />
+              {variableStyle === 'named' && (
+                <Input
+                  value={v.label ?? ''}
+                  onChange={(e) => updateVariable(i, 'label', e.target.value)}
+                  placeholder="Label"
+                  className="flex-1 text-sm"
+                />
+              )}
+              <Button variant="ghost" size="sm" onClick={() => removeVariable(i)} className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive">
+                &times;
+              </Button>
+            </div>
+          ))}
+        </div>
+      </Field>
+      <div className="flex gap-2">
+        <Button onClick={handleSubmit} disabled={saving} size="sm">
+          {saving ? 'Adding...' : 'Add Template'}
+        </Button>
+        <Button variant="ghost" size="sm" onClick={onCancel}>Cancel</Button>
+      </div>
     </div>
   );
 }
@@ -552,7 +715,8 @@ function TemplateEditor({
   const channelData = template.channels[activeChannel];
   const hasOverride = channelData?.override != null;
   const isEmailChannel = activeChannel === 'email';
-  const isWhatsAppChannel = activeChannel === 'whatsapp';
+  const activeChannelInfo = template.channel_template_info?.[activeChannel];
+  const activeChannelHasTemplateSupport = !!activeChannelInfo?.capabilities?.supports_templates;
   const fieldOptions = useMemo(() => toFieldOptions(template.variables), [template.variables]);
 
   function updateDraft(field: keyof ChannelContentData, value: string) {
@@ -650,12 +814,17 @@ function TemplateEditor({
                     ))}
                   </TabsList>
 
-                  {visibleChannels.map((ch) => (
+                  {visibleChannels.map((ch) => {
+                    const channelInfo = template.channel_template_info?.[ch];
+                    const hasTemplateSupport = !!channelInfo?.capabilities?.supports_templates;
+
+                    return (
                     <TabsContent key={ch} value={ch} className="mt-4 space-y-4">
-                      {ch === 'whatsapp' ? (
-                        <WhatsAppTemplatePicker
+                      {hasTemplateSupport && channelInfo ? (
+                        <ProviderTemplatePicker
                           template={template}
-                          existingMapping={template.whatsapp_mapping}
+                          channel={ch}
+                          channelInfo={channelInfo}
                           onMappingSaved={onSaved}
                         />
                       ) : currentDraft ? (
@@ -742,10 +911,11 @@ function TemplateEditor({
                         </>
                       ) : null}
                     </TabsContent>
-                  ))}
+                    );
+                  })}
                 </Tabs>
 
-                {!isWhatsAppChannel && (
+                {!activeChannelHasTemplateSupport && (
                   <>
                     <Separator />
 

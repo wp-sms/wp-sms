@@ -15,13 +15,14 @@ use WSms\Messaging\Contracts\SupportsInboundMessage;
 use WSms\Messaging\Contracts\SupportsDynamicOptions;
 use WSms\Messaging\Contracts\SupportsOptOutDetection;
 use WSms\Messaging\Contracts\SupportsStatusCallback;
-use WSms\Messaging\Contracts\SupportsTemplateCatalog;
+use WSms\Messaging\Contracts\SupportsTemplateFetch;
+use WSms\Messaging\Catalog\VariableStyle;
 use WSms\Messaging\Gateway\AbstractProvider;
 use WSms\Messaging\Contracts\TestConnectionResult;
 
 defined('ABSPATH') || exit;
 
-class TwilioProvider extends AbstractProvider implements SupportsStatusCallback, SupportsInboundMessage, SupportsOptOutDetection, SupportsTemplateCatalog, SupportsDynamicOptions
+class TwilioProvider extends AbstractProvider implements SupportsStatusCallback, SupportsInboundMessage, SupportsOptOutDetection, SupportsTemplateFetch, SupportsDynamicOptions
 {
     private const API_BASE = 'https://api.twilio.com/2010-04-01';
     private const CONTENT_API_BASE = 'https://content.twilio.com/v1';
@@ -182,8 +183,22 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
 
         $contentPayload = null;
 
-        if ($channel === 'whatsapp') {
-            // Catalog-based template resolution (new path)
+        // Flow direct template path — template already resolved by SendMessageAction
+        if ($meta['template_mode'] ?? false) {
+            $contentPayload = $this->buildTemplatePayload(
+                new TemplateMapping(
+                    templateType: '',
+                    providerTemplateId: $meta['provider_template_id'],
+                    gatewayId: $this->getId(),
+                    language: $meta['template_language'] ?? 'en',
+                    variableMap: [],
+                ),
+                $meta['template_variables'] ?? [],
+            );
+        }
+
+        if (!$contentPayload && $channel === 'whatsapp') {
+            // Catalog-based template resolution (system template path)
             $templateType = $meta['template_type'] ?? null;
             if ($templateType && $this->catalogManager) {
                 $mapping = $this->catalogManager->resolveMapping($templateType, $this->getId());
@@ -406,7 +421,12 @@ class TwilioProvider extends AbstractProvider implements SupportsStatusCallback,
         return ($result->meta['twilio_code'] ?? null) == 21610;
     }
 
-    // --- SupportsTemplateCatalog ---
+    // --- SupportsTemplateFetch ---
+
+    public function getVariableStyle(): VariableStyle
+    {
+        return VariableStyle::Positional;
+    }
 
     /** @return ProviderTemplate[] */
     public function fetchTemplates(): array

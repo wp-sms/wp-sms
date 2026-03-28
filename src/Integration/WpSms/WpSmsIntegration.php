@@ -12,6 +12,7 @@ use WSms\Integration\Contracts\IntegrationInterface;
 use WSms\Integration\WpSms\Triggers\ContactOptedOutTrigger;
 use WSms\Integration\WpSms\Triggers\InboundSmsReceivedTrigger;
 use WSms\Integration\WpSms\Triggers\ManualTrigger;
+use WSms\Messaging\Catalog\TemplateCatalogManager;
 use WSms\Messaging\Contracts\TemplateEngineInterface;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\MessageDispatcher;
@@ -28,6 +29,7 @@ class WpSmsIntegration implements IntegrationInterface
         private readonly ListRepositoryInterface $listRepository,
         private readonly AudienceResolver $audienceResolver,
         private readonly TemplateEngineInterface $templateEngine,
+        private readonly TemplateCatalogManager $catalogManager,
     ) {
     }
 
@@ -90,6 +92,7 @@ class WpSmsIntegration implements IntegrationInterface
                 $this->listRepository,
                 $this->audienceResolver,
                 $this->templateEngine,
+                $this->catalogManager,
             ),
             new HttpRequestAction(),
         ];

@@ -1,5 +1,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import type { ActionNode, JsonSchema, JsonSchemaProperty } from '@/lib/api';
+import { api } from '@/lib/api';
+import { isAbortError } from '@/lib/error-utils';
 import { useActions } from '@/hooks/use-actions';
 import { getTemplate, extractTokenFields } from '@/lib/sentence-templates';
 import { SentenceToken } from './sentence-token';
@@ -29,6 +31,7 @@ function resolveTokenMode(prop: JsonSchemaProperty | undefined, fieldKey: string
 export function ActionSentence({ step, onChange, payloadSchema, triggerType, sampleData }: ActionSentenceProps) {
   const { actions, loading } = useActions();
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [templateVarSchema, setTemplateVarSchema] = useState<Record<string, JsonSchemaProperty> | null>(null);
 
   const actionOptions = useMemo(() => {
     return actions.map((a) => ({ value: a.id, label: a.name, description: a.description, group: a.group, icon: a.icon }));
@@ -62,6 +65,41 @@ export function ActionSentence({ step, onChange, payloadSchema, triggerType, sam
       }
     }
   }, [triggerType, placeholders]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const templateId = step.config.provider_template_id as string | undefined;
+  const configGateway = step.config.gateway as string | undefined;
+  const configChannel = step.config.channel as string | undefined;
+  const configMode = step.config.message_mode as string | undefined;
+
+  useEffect(() => {
+    if (!templateId || !step.action) {
+      setTemplateVarSchema(null);
+      return;
+    }
+
+    const depParams = new URLSearchParams();
+    if (configGateway) depParams.set('gateway', configGateway);
+    if (configChannel) depParams.set('channel', configChannel);
+    if (configMode) depParams.set('message_mode', configMode);
+    const qs = depParams.toString();
+    const url = `actions/${step.action}/config-options/provider_template_id${qs ? `?${qs}` : ''}`;
+
+    const controller = new AbortController();
+    api.get<{ options: Array<{ value: string; meta?: Record<string, unknown> }> }>(url, { signal: controller.signal })
+      .then((res) => {
+        const match = res.options.find((o) => o.value === templateId);
+        const vs = match?.meta?.variable_schema as Record<string, JsonSchemaProperty> | undefined;
+        setTemplateVarSchema(vs ?? null);
+        // Pre-populate template_variables keys if currently empty
+        if (vs && !step.config.template_variables) {
+          const pre = Object.fromEntries(Object.keys(vs).map((k) => [k, '']));
+          onChange({ ...step, config: { ...step.config, template_variables: pre } });
+        }
+      })
+      .catch((e) => { if (!isAbortError(e)) setTemplateVarSchema(null); });
+
+    return () => controller.abort();
+  }, [templateId, configGateway, configChannel, configMode, step.action]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const dynamicOptionsUrl = useCallback(
     (fieldKey: string, depValues?: Record<string, unknown>) => {
@@ -111,8 +149,11 @@ export function ActionSentence({ step, onChange, payloadSchema, triggerType, sam
     for (const k of visibleAdvancedKeys) {
       if (schema.properties[k]) props[k] = schema.properties[k];
     }
+    if (templateVarSchema && props['template_variables']) {
+      props['template_variables'] = { ...props['template_variables'], properties: templateVarSchema };
+    }
     return { type: 'object' as const, properties: props, required: requiredFields.filter((r) => visibleAdvancedKeys.includes(r)) };
-  }, [schema, template, requiredFields, step.config]);
+  }, [schema, template, requiredFields, step.config, templateVarSchema]);
 
   if (loading) {
     return <Skeleton className="h-8 w-full" />;

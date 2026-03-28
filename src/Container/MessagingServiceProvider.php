@@ -119,11 +119,13 @@ class MessagingServiceProvider implements ServiceProvider
         $registry->registerDeferred('line', fn() => $container->get('gateway.line'));
 
         // Deferred: all SMS/messaging providers (lazy — only instantiated when accessed)
+        // Providers implementing SupportsTemplates get the catalog manager injected
+        $templateProviders = ['twilio', 'kavenegar'];
+
         foreach (self::PROVIDERS as $id => $class) {
-            if ($id === 'twilio') {
-                // Twilio needs the catalog manager injected
-                $registry->registerDeferred($id, function () use ($container) {
-                    $provider = new TwilioProvider();
+            if (in_array($id, $templateProviders, true)) {
+                $registry->registerDeferred($id, function () use ($container, $class) {
+                    $provider = new $class();
                     $provider->setCatalogManager($container->get('template.catalog_manager'));
                     return $provider;
                 });

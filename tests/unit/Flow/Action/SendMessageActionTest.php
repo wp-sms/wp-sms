@@ -9,6 +9,7 @@ use WSms\Campaign\AudienceResolver;
 use WSms\Contact\Contracts\ListRepositoryInterface;
 use WSms\Contact\Contracts\TagRepositoryInterface;
 use WSms\Flow\Action\SendMessageAction;
+use WSms\Messaging\Catalog\TemplateCatalogManager;
 use WSms\Messaging\Contracts\DeliveryResult;
 use WSms\Messaging\Contracts\TemplateEngineInterface;
 use WSms\Messaging\Gateway\GatewayRegistry;
@@ -23,6 +24,7 @@ class SendMessageActionTest extends TestCase
     private MockObject&ListRepositoryInterface $listRepository;
     private MockObject&AudienceResolver $audienceResolver;
     private MockObject&TemplateEngineInterface $templateEngine;
+    private MockObject&TemplateCatalogManager $catalogManager;
 
     protected function setUp(): void
     {
@@ -32,6 +34,7 @@ class SendMessageActionTest extends TestCase
         $this->listRepository = $this->createMock(ListRepositoryInterface::class);
         $this->audienceResolver = $this->createMock(AudienceResolver::class);
         $this->templateEngine = $this->createMock(TemplateEngineInterface::class);
+        $this->catalogManager = $this->createMock(TemplateCatalogManager::class);
 
         $this->action = new SendMessageAction(
             $this->dispatcher,
@@ -40,6 +43,7 @@ class SendMessageActionTest extends TestCase
             $this->listRepository,
             $this->audienceResolver,
             $this->templateEngine,
+            $this->catalogManager,
         );
     }
 
@@ -629,10 +633,7 @@ class SendMessageActionTest extends TestCase
         $this->assertArrayHasKey('media_url', $schema);
         $this->assertSame('string', $schema['media_url']['type']);
         $this->assertTrue($schema['media_url']['template']);
-        $this->assertSame(
-            ['show' => ['channel' => ['sms', 'whatsapp']]],
-            $schema['media_url']['displayOptions'],
-        );
+        $this->assertSame(['sms', 'whatsapp'], $schema['media_url']['displayOptions']['show']['channel']);
     }
 
     public function testBuildMediaMetaParsesCommaSeparatedUrls(): void
@@ -671,5 +672,111 @@ class SendMessageActionTest extends TestCase
         $this->assertSame([
             'media_urls' => ['https://example.com/image.jpg'],
         ], $result);
+    }
+
+    // --- message_mode dynamic options ---
+
+    public function testMessageModeOnlyShowsComposeWhenGatewayLacksTemplates(): void
+    {
+        $this->catalogManager->method('getDefaultCatalogGatewayId')->willReturn(null);
+
+        $options = $this->action->getConfigOptions('message_mode', ['channel' => 'sms', 'gateway' => '__default__']);
+
+        $this->assertCount(1, $options);
+        $this->assertSame('compose', $options[0]['value']);
+    }
+
+    public function testMessageModeShowsTemplateOptionWhenGatewaySupportsTemplates(): void
+    {
+        $this->catalogManager->method('getDefaultCatalogGatewayId')->willReturn('kavenegar');
+        $this->catalogManager->method('gatewaySupportsTemplates')->with('kavenegar')->willReturn(true);
+
+        $options = $this->action->getConfigOptions('message_mode', ['channel' => 'sms', 'gateway' => '__default__']);
+
+        $this->assertCount(2, $options);
+        $values = array_column($options, 'value');
+        $this->assertContains('compose', $values);
+        $this->assertContains('template', $values);
+    }
+
+    public function testMessageModeWithExplicitGateway(): void
+    {
+        $this->catalogManager->method('gatewaySupportsTemplates')->with('twilio')->willReturn(true);
+
+        $options = $this->action->getConfigOptions('message_mode', ['channel' => 'whatsapp', 'gateway' => 'twilio']);
+
+        $this->assertCount(2, $options);
+        $this->assertSame('template', $options[1]['value']);
+    }
+
+    // --- buildVariableSchema ---
+
+    public function testBuildVariableSchemaPositional(): void
+    {
+        $template = new \WSms\Messaging\Catalog\ProviderTemplate(
+            id: 'T1',
+            name: 'OTP',
+            language: 'en',
+            category: 'authentication',
+            status: \WSms\Messaging\Catalog\TemplateStatus::Approved,
+            bodyText: 'Code: {{1}}, Expires: {{2}}',
+            variableCount: 2,
+        );
+
+        $reflection = new \ReflectionMethod($this->action, 'buildVariableSchema');
+        $reflection->setAccessible(true);
+        $schema = $reflection->invoke($this->action, $template);
+
+        $this->assertArrayHasKey('1', $schema);
+        $this->assertArrayHasKey('2', $schema);
+        $this->assertSame('string', $schema['1']['type']);
+        $this->assertTrue($schema['1']['template']);
+        $this->assertStringContainsString('1', $schema['1']['title']);
+    }
+
+    public function testBuildVariableSchemaNamedVariables(): void
+    {
+        $template = new \WSms\Messaging\Catalog\ProviderTemplate(
+            id: 'T2',
+            name: 'Welcome',
+            language: 'en',
+            category: 'utility',
+            status: \WSms\Messaging\Catalog\TemplateStatus::Approved,
+            bodyText: 'Hello {{name}}, code: {{otp_code}}',
+            variableCount: 2,
+            variables: [
+                ['key' => 'name', 'type' => 'named', 'label' => 'Name'],
+                ['key' => 'otp_code', 'type' => 'named', 'label' => 'OTP Code'],
+            ],
+        );
+
+        $reflection = new \ReflectionMethod($this->action, 'buildVariableSchema');
+        $reflection->setAccessible(true);
+        $schema = $reflection->invoke($this->action, $template);
+
+        $this->assertArrayHasKey('name', $schema);
+        $this->assertArrayHasKey('otp_code', $schema);
+        $this->assertSame('Name', $schema['name']['title']);
+        $this->assertSame('OTP Code', $schema['otp_code']['title']);
+        $this->assertTrue($schema['name']['template']);
+    }
+
+    // --- message_mode is dynamic in schema ---
+
+    public function testConfigSchemaMessageModeIsDynamic(): void
+    {
+        $schema = $this->action->getConfigSchema();
+
+        $this->assertTrue($schema['message_mode']['dynamic']);
+        $this->assertContains('gateway', $schema['message_mode']['dependsOn']);
+        $this->assertContains('channel', $schema['message_mode']['dependsOn']);
+        $this->assertArrayNotHasKey('enum', $schema['message_mode']);
+    }
+
+    public function testProviderTemplateIdDependsOnMessageMode(): void
+    {
+        $schema = $this->action->getConfigSchema();
+
+        $this->assertContains('message_mode', $schema['provider_template_id']['dependsOn']);
     }
 }

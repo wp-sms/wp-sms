@@ -58,6 +58,7 @@ class IntegrationServiceProvider implements ServiceProvider
                     $container->get('contact.list_repository'),
                     $container->get('campaign.audience_resolver'),
                     $container->get('template.engine'),
+                    $container->get('template.catalog_manager'),
                 ),
                 $registry,
                 $triggers,

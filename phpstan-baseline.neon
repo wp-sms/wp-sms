@@ -5173,16 +5173,16 @@ parameters:
 			path: src/Messaging/Contracts/SupportsDynamicOptions.php
 
 		-
-			message: '#^Method WSms\\Messaging\\Contracts\\SupportsTemplateCatalog\:\:buildTemplatePayload\(\) has parameter \$resolvedVariables with no value type specified in iterable type array\.$#'
+			message: '#^Method WSms\\Messaging\\Contracts\\SupportsTemplates\:\:buildTemplatePayload\(\) has parameter \$resolvedVariables with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: src/Messaging/Contracts/SupportsTemplateCatalog.php
+			path: src/Messaging/Contracts/SupportsTemplates.php
 
 		-
-			message: '#^Method WSms\\Messaging\\Contracts\\SupportsTemplateCatalog\:\:buildTemplatePayload\(\) return type has no value type specified in iterable type array\.$#'
+			message: '#^Method WSms\\Messaging\\Contracts\\SupportsTemplates\:\:buildTemplatePayload\(\) return type has no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
-			path: src/Messaging/Contracts/SupportsTemplateCatalog.php
+			path: src/Messaging/Contracts/SupportsTemplates.php
 
 		-
 			message: '#^Method WSms\\Messaging\\Contracts\\TemplateEngineInterface\:\:render\(\) has parameter \$data with no value type specified in iterable type array\.$#'

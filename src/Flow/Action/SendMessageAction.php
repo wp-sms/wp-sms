@@ -7,6 +7,7 @@ use WSms\Contact\Contracts\ListRepositoryInterface;
 use WSms\Contact\Contracts\TagRepositoryInterface;
 use WSms\Flow\Contracts\AbstractAction;
 use WSms\Flow\Contracts\ActionResult;
+use WSms\Messaging\Catalog\TemplateCatalogManager;
 use WSms\Messaging\Contracts\TemplateEngineInterface;
 use WSms\Messaging\Gateway\GatewayRegistry;
 use WSms\Messaging\MessageDispatcher;
@@ -27,6 +28,7 @@ class SendMessageAction extends AbstractAction
         private readonly ListRepositoryInterface $listRepository,
         private readonly AudienceResolver $audienceResolver,
         private readonly TemplateEngineInterface $templateEngine,
+        private readonly TemplateCatalogManager $catalogManager,
     ) {
     }
 
@@ -108,6 +110,27 @@ class SendMessageAction extends AbstractAction
                 'example' => '{{user.phone}}',
                 'displayOptions' => ['show' => ['recipient_mode' => ['custom']]],
             ],
+            'message_mode' => [
+                'type'       => 'string',
+                'label'      => __('Message Mode', 'wp-sms'),
+                'dynamic'    => true,
+                'dependsOn'  => ['gateway', 'channel'],
+                'default'    => 'compose',
+                'required'   => true,
+            ],
+            'provider_template_id' => [
+                'type'           => 'string',
+                'label'          => __('Provider Template', 'wp-sms'),
+                'dynamic'        => true,
+                'dependsOn'      => ['gateway', 'channel', 'message_mode'],
+                'displayOptions' => ['show' => ['message_mode' => ['template']]],
+            ],
+            'template_variables' => [
+                'type'           => 'object',
+                'label'          => __('Template Variables', 'wp-sms'),
+                'template'       => true,
+                'displayOptions' => ['show' => ['message_mode' => ['template']]],
+            ],
             'body' => [
                 'type' => 'text',
                 'label' => __('Message Body', 'wp-sms'),
@@ -116,6 +139,7 @@ class SendMessageAction extends AbstractAction
                 'template' => true,
                 'required' => true,
                 'example' => 'Hello {{user.display_name}}, your order is confirmed.',
+                'displayOptions' => ['hide' => ['message_mode' => ['template']]],
             ],
             'subject' => [
                 'type' => 'string',
@@ -125,6 +149,7 @@ class SendMessageAction extends AbstractAction
                 'example' => 'Order Confirmation',
                 'displayOptions' => [
                     'show' => ['channel' => ['email']],
+                    'hide' => ['message_mode' => ['template']],
                 ],
             ],
             'media_url' => [
@@ -133,7 +158,10 @@ class SendMessageAction extends AbstractAction
                 'description'    => __('Publicly accessible image URL to attach (JPEG, PNG, GIF). Comma-separate for multiple.', 'wp-sms'),
                 'template'       => true,
                 'example'        => 'https://example.com/image.jpg',
-                'displayOptions' => ['show' => ['channel' => ['sms', 'whatsapp']]],
+                'displayOptions' => [
+                    'show' => ['channel' => ['sms', 'whatsapp']],
+                    'hide' => ['message_mode' => ['template']],
+                ],
             ],
         ];
     }
@@ -180,6 +208,47 @@ class SendMessageAction extends AbstractAction
                 'value' => $list['id'],
                 'label' => $list['name'],
             ], $this->listRepository->findAll());
+        }
+
+        if ($fieldKey === 'message_mode') {
+            $options = [
+                ['value' => 'compose', 'label' => __('Compose message', 'wp-sms')],
+            ];
+
+            $gatewayId = $this->resolveTemplateGatewayFromContext($context);
+
+            if ($gatewayId && $this->catalogManager->gatewaySupportsTemplates($gatewayId)) {
+                $options[] = ['value' => 'template', 'label' => __('Provider template', 'wp-sms')];
+            }
+
+            return $options;
+        }
+
+        if ($fieldKey === 'provider_template_id') {
+            $gatewayId = $this->resolveTemplateGatewayFromContext($context);
+
+            if (!$gatewayId || !$this->catalogManager->gatewaySupportsTemplates($gatewayId)) {
+                return [];
+            }
+
+            try {
+                $templates = $this->catalogManager->getTemplates($gatewayId);
+            } catch (\Exception) {
+                return [];
+            }
+
+            return array_map(fn($t) => [
+                'value' => $t->id,
+                'label' => $t->name,
+                'meta'  => [
+                    'variable_count'  => $t->variableCount,
+                    'variables'       => $t->getVariables(),
+                    'body_text'       => $t->bodyText,
+                    'language'        => $t->language,
+                    'source'          => $t->source,
+                    'variable_schema' => $this->buildVariableSchema($t),
+                ],
+            ], $templates);
         }
 
         return [];
@@ -248,10 +317,15 @@ class SendMessageAction extends AbstractAction
 
     private function sendSingle(string $to, string $channel, array $config, array $payload, string $gatewayId): ActionResult
     {
-        $body = $config['body'] ?? '';
+        $messageMode = $config['message_mode'] ?? 'compose';
         $executionId = $payload['_execution_id'] ?? null;
 
-        $message = $this->buildMessage($channel, $to, $body, $config, $executionId);
+        if ($messageMode === 'template') {
+            $message = $this->buildTemplateMessage($channel, $to, $config, $executionId);
+        } else {
+            $body = $config['body'] ?? '';
+            $message = $this->buildMessage($channel, $to, $body, $config, $executionId);
+        }
 
         $result = $this->messageDispatcher->sendImmediate(
             $message,
@@ -321,6 +395,7 @@ class SendMessageAction extends AbstractAction
 
     private function sendToAudience(array $audience, string $channel, array $config, array $payload, string $gatewayId): ActionResult
     {
+        $messageMode = $config['message_mode'] ?? 'compose';
         $body = $config['body'] ?? '';
         $executionId = $payload['_execution_id'] ?? null;
         $resolvedGatewayId = $this->resolveGatewayId($gatewayId);
@@ -333,15 +408,29 @@ class SendMessageAction extends AbstractAction
             $batch = $this->audienceResolver->resolve($audience, $channel, 500, $cursor);
 
             foreach ($batch->recipients as $recipient) {
-                $personalizedBody = $this->templateEngine->render($body, [
+                $recipientContext = [
                     'first_name' => $recipient['first_name'] ?? '',
                     'last_name'  => $recipient['last_name'] ?? '',
                     'email'      => $isPhoneChannel ? '' : $recipient['recipient'],
                     'phone'      => $isPhoneChannel ? $recipient['recipient'] : '',
                     'custom'     => $recipient['custom_fields'] ?? [],
-                ]);
+                ];
 
-                $message = $this->buildMessage($channel, $recipient['recipient'], $personalizedBody, $config, $executionId);
+                if ($messageMode === 'template') {
+                    $resolvedConfig = $config;
+                    $templateVars = $config['template_variables'] ?? [];
+                    foreach ($templateVars as $key => $val) {
+                        if (is_string($val)) {
+                            $templateVars[$key] = $this->templateEngine->render($val, $recipientContext);
+                        }
+                    }
+                    $resolvedConfig['template_variables'] = $templateVars;
+                    $message = $this->buildTemplateMessage($channel, $recipient['recipient'], $resolvedConfig, $executionId);
+                } else {
+                    $personalizedBody = $this->templateEngine->render($body, $recipientContext);
+                    $message = $this->buildMessage($channel, $recipient['recipient'], $personalizedBody, $config, $executionId);
+                }
+
                 $this->messageDispatcher->sendQueued($message, $resolvedGatewayId);
                 $sentCount++;
             }
@@ -350,6 +439,20 @@ class SendMessageAction extends AbstractAction
         } while ($batch->hasMore);
 
         return ActionResult::success(['sent_count' => $sentCount]);
+    }
+
+    /**
+     * Build a Message with template mode meta for the gateway to handle.
+     */
+    private function buildTemplateMessage(string $channel, string $to, array $config, ?string $executionId): \WSms\Messaging\Contracts\MessageInterface
+    {
+        $meta = array_merge($this->buildMediaMeta($config), [
+            'template_mode'        => true,
+            'provider_template_id' => $config['provider_template_id'] ?? '',
+            'template_variables'   => $config['template_variables'] ?? [],
+        ]);
+
+        return new Message($channel, $to, '', $executionId, $meta);
     }
 
     private function buildMessage(string $channel, string $to, string $body, array $config, ?string $executionId): \WSms\Messaging\Contracts\MessageInterface
@@ -376,5 +479,42 @@ class SendMessageAction extends AbstractAction
     private function resolveGatewayId(string $gatewayId): ?string
     {
         return $gatewayId !== self::DEFAULT_GATEWAY ? $gatewayId : null;
+    }
+
+    private function resolveTemplateGatewayFromContext(array $context): ?string
+    {
+        $channel = $context['channel'] ?? '';
+        $gatewayId = $context['gateway'] ?? self::DEFAULT_GATEWAY;
+
+        if ($gatewayId === self::DEFAULT_GATEWAY && $channel !== '') {
+            return $this->catalogManager->getDefaultCatalogGatewayId($channel);
+        }
+
+        return $gatewayId !== self::DEFAULT_GATEWAY ? $gatewayId : null;
+    }
+
+    /**
+     * Convert a ProviderTemplate's variables into JSON Schema properties
+     * for the frontend to render structured variable inputs.
+     *
+     * @return array<string, array{type: string, title: string, template: bool}>
+     */
+    private function buildVariableSchema(\WSms\Messaging\Catalog\ProviderTemplate $template): array
+    {
+        $schema = [];
+
+        foreach ($template->getVariables() as $variable) {
+            $key = $variable['key'];
+            $type = $variable['type'] ?? 'positional';
+            $label = $variable['label'] ?? null;
+
+            $schema[$key] = [
+                'type'     => 'string',
+                'title'    => $label ?? ($type === 'positional' ? sprintf(__('Variable %s', 'wp-sms'), $key) : $key),
+                'template' => true,
+            ];
+        }
+
+        return $schema;
     }
 }

@@ -87,9 +87,6 @@ class TemplateController extends Controller
     {
         return $this->handle(function () {
             $enabledChannels = $this->getEnabledChannels();
-            $whatsappGatewayId = $this->catalogManager
-                ? $this->catalogManager->getDefaultCatalogGatewayId('whatsapp')
-                : null;
             $templates = [];
 
             foreach ($this->templateManager->getTemplates() as $template) {
@@ -108,10 +105,12 @@ class TemplateController extends Controller
                     'enabled'          => $editData['enabled'],
                 ];
 
-                if ($whatsappGatewayId && in_array('whatsapp', $visibleChannels, true)) {
-                    $entry['whatsapp_gateway_id'] = $whatsappGatewayId;
-                    $mapping = $this->catalogManager->resolveMapping($template->getId(), $whatsappGatewayId);
-                    $entry['whatsapp_mapping'] = $mapping?->toArray();
+                $channelTemplateInfo = $this->buildChannelTemplateInfo($template->getId(), $visibleChannels);
+                $entry['channel_template_info'] = $channelTemplateInfo;
+
+                if (isset($channelTemplateInfo['whatsapp'])) {
+                    $entry['whatsapp_gateway_id'] = $channelTemplateInfo['whatsapp']['gateway_id'];
+                    $entry['whatsapp_mapping'] = $channelTemplateInfo['whatsapp']['mapping'];
                 }
 
                 $templates[] = $entry;
@@ -133,15 +132,15 @@ class TemplateController extends Controller
             }
 
             $enabledChannels = $this->getEnabledChannels();
-            $editData['visible_channels'] = $this->templateManager->getVisibleChannels($id, $enabledChannels);
+            $visibleChannels = $this->templateManager->getVisibleChannels($id, $enabledChannels);
+            $editData['visible_channels'] = $visibleChannels;
 
-            if ($this->catalogManager && in_array('whatsapp', $editData['visible_channels'], true)) {
-                $whatsappGatewayId = $this->catalogManager->getDefaultCatalogGatewayId('whatsapp');
-                if ($whatsappGatewayId) {
-                    $editData['whatsapp_gateway_id'] = $whatsappGatewayId;
-                    $mapping = $this->catalogManager->resolveMapping($id, $whatsappGatewayId);
-                    $editData['whatsapp_mapping'] = $mapping?->toArray();
-                }
+            $channelTemplateInfo = $this->buildChannelTemplateInfo($id, $visibleChannels);
+            $editData['channel_template_info'] = $channelTemplateInfo;
+
+            if (isset($channelTemplateInfo['whatsapp'])) {
+                $editData['whatsapp_gateway_id'] = $channelTemplateInfo['whatsapp']['gateway_id'];
+                $editData['whatsapp_mapping'] = $channelTemplateInfo['whatsapp']['mapping'];
             }
 
             return new WP_REST_Response($editData);
@@ -287,5 +286,27 @@ class TemplateController extends Controller
         }
 
         return $enabled;
+    }
+
+    private function buildChannelTemplateInfo(string $templateId, array $visibleChannels): array
+    {
+        if (!$this->catalogManager) {
+            return [];
+        }
+
+        $info = [];
+
+        foreach ($visibleChannels as $ch) {
+            $gatewayId = $this->catalogManager->getDefaultCatalogGatewayId($ch);
+            if ($gatewayId) {
+                $info[$ch] = [
+                    'gateway_id'   => $gatewayId,
+                    'mapping'      => $this->catalogManager->resolveMapping($templateId, $gatewayId)?->toArray(),
+                    'capabilities' => $this->catalogManager->getTemplateCapabilities($gatewayId),
+                ];
+            }
+        }
+
+        return $info;
     }
 }
