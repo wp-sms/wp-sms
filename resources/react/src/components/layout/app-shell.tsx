@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { Shield, LogIn, Paintbrush, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Settings2, MessageSquare, ClipboardList, Webhook, Bell, Sparkles, Contact, FileText, type LucideIcon } from 'lucide-react';
+import { LogIn, Paintbrush, ChevronRight, Plug, BarChart3, Megaphone, Workflow, Users, Radio, Settings2, MessageSquare, ClipboardList, Webhook, Bell, Sparkles, Contact, FileText, type LucideIcon } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { SaveBar } from '@/components/layout/save-bar';
 import {
@@ -81,7 +81,6 @@ export const NAV_SECTIONS: readonly NavSection[] = [
     label: 'Authentication',
     items: [
       { id: 'channels', label: 'Channels', icon: LogIn },
-      { id: 'security', label: 'Security', icon: Shield },
       { id: 'registration-forms', label: 'Registration Forms', icon: ClipboardList },
       { id: 'profile-fields', label: 'Profile Fields', icon: Contact },
       { id: 'templates', label: 'Templates', icon: FileText },
@@ -95,7 +94,13 @@ export const NAV_SECTIONS: readonly NavSection[] = [
       { id: 'webhooks', label: 'Webhooks', icon: Webhook },
       { id: 'branding', label: 'Branding', icon: Paintbrush },
       { id: 'monitoring', label: 'Monitoring', icon: BarChart3 },
-      { id: 'settings', label: 'Settings', icon: Settings2 },
+      {
+        id: 'settings', label: 'Settings', icon: Settings2,
+        children: [
+          { id: 's-general', label: 'General' },
+          { id: 's-security', label: 'Security' },
+        ],
+      },
     ],
   },
 ];
@@ -310,7 +315,7 @@ export function AppShell({ activeSection, onNavigate, version, children }: AppSh
           {children}
         </div>
         <SaveBar />
-        <footer className="mt-auto border-t border-border/40 px-6 py-3">
+        <footer className="mt-auto border-t-2 border-border/40 px-6 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-primary/[0.08]">

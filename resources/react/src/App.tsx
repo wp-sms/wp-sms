@@ -74,8 +74,6 @@ export default function App() {
       // Authentication
       case 'channels':
         return <Channels settings={settings} onUpdate={updateSetting} />;
-      case 'security':
-        return <SecurityPage subTab={subTab} onNavigate={setSection} settings={settings} onUpdate={updateSetting} roles={roles} />;
       case 'registration-forms':
         return <RegistrationForms />;
       case 'profile-fields':
@@ -95,7 +93,12 @@ export default function App() {
       case 'monitoring':
         return <MonitoringPage subTab={subTab} onNavigate={setSection} />;
       case 'settings':
-        return <SettingsPage subTab={subTab} onNavigate={setSection} settings={settings} onUpdate={updateSetting} />;
+        switch (section) {
+          case 's-security':
+            return <SecurityPage subTab={subTab} onNavigate={setSection} settings={settings} onUpdate={updateSetting} roles={roles} />;
+          default:
+            return <SettingsPage subTab={subTab} onNavigate={setSection} settings={settings} onUpdate={updateSetting} />;
+        }
 
       default:
         return null;

@@ -6,9 +6,10 @@ import { MfaPolicies } from './mfa-policies';
 import { RateLimiting } from './rate-limiting';
 import { AccountCleanup } from './account-cleanup';
 import { Captcha } from './captcha';
+import { PhoneRestriction } from '@/pages/messaging/phone-restriction';
 import type { AuthSettings } from '@/lib/api';
 
-const TABS = ['mfa-policies', 'captcha', 'rate-limiting', 'account-cleanup'] as const;
+const TABS = ['mfa-policies', 'captcha', 'rate-limiting', 'phone-restrictions', 'account-cleanup'] as const;
 
 interface SecurityPageProps {
   subTab?: string;
@@ -19,7 +20,7 @@ interface SecurityPageProps {
 }
 
 export function SecurityPage({ subTab, onNavigate, settings, onUpdate, roles }: SecurityPageProps) {
-  const [activeTab, handleTabChange] = useSubTabs('security', TABS, subTab, onNavigate);
+  const [activeTab, handleTabChange] = useSubTabs('s-security', TABS, subTab, onNavigate);
 
   return (
     <Tabs value={activeTab} onValueChange={handleTabChange}>
@@ -28,6 +29,7 @@ export function SecurityPage({ subTab, onNavigate, settings, onUpdate, roles }: 
           <TabsTrigger value="mfa-policies">MFA Policies</TabsTrigger>
           <TabsTrigger value="captcha">CAPTCHA</TabsTrigger>
           <TabsTrigger value="rate-limiting">Rate Limiting</TabsTrigger>
+          <TabsTrigger value="phone-restrictions">Phone Restrictions</TabsTrigger>
           <TabsTrigger value="account-cleanup">Account Cleanup</TabsTrigger>
         </TabsList>
       </PageHeader>
@@ -42,6 +44,10 @@ export function SecurityPage({ subTab, onNavigate, settings, onUpdate, roles }: 
 
       <TabsContent value="rate-limiting">
         <RateLimiting settings={settings} onUpdate={onUpdate} />
+      </TabsContent>
+
+      <TabsContent value="phone-restrictions">
+        {activeTab === 'phone-restrictions' && <PhoneRestriction embedded />}
       </TabsContent>
 
       <TabsContent value="account-cleanup">
