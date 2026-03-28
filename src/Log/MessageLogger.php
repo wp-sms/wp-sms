@@ -40,7 +40,7 @@ class MessageLogger implements MessageLoggerInterface
             'type'          => $type,
             'recipient'     => $recipient,
             'subject'       => $subject,
-            'body_preview'  => mb_substr($body, 0, 500),
+            'body_preview'  => mb_substr(wp_strip_all_tags($body), 0, 500),
             'status'        => $status,
             'provider_id'   => $providerId,
             'error'         => $error,
