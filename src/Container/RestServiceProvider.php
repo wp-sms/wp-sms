@@ -9,7 +9,6 @@ use WSms\Rest\AdminController;
 use WSms\Rest\AdminUserController;
 use WSms\Rest\AuthController;
 use WSms\Rest\ContactController;
-use WSms\Rest\ContactSourceController;
 use WSms\Rest\FlowController;
 use WSms\Rest\CampaignController;
 use WSms\Rest\GatewayController;
@@ -152,10 +151,6 @@ class RestServiceProvider implements ServiceProvider
             $c->get('gateway.registry'),
             $c->get('log.message'),
         ));
-        $container->register('rest.contact_sources', fn($c) => new ContactSourceController(
-            $c->get('contact_source.registry'),
-            $c->get('contact_source.manager'),
-        ));
         $container->register('rest.contacts', fn($c) => new ContactController(
             $c->get('contact.repository'),
             $c->get('contact.segment_evaluator'),
@@ -189,6 +184,7 @@ class RestServiceProvider implements ServiceProvider
             $c->get('contact.repository'),
             $c->get('queue'),
             $c->has('marketing.suppression_poller') ? $c->get('marketing.suppression_poller') : null,
+            $c->has('marketing.import_manager') ? $c->get('marketing.import_manager') : null,
         ));
         $container->register('rest.gateway_callbacks', fn($c) => new GatewayCallbackController(
             $c->get('gateway.registry'),
@@ -265,7 +261,6 @@ class RestServiceProvider implements ServiceProvider
             // Messaging platform routes
             $container->get('rest.flows')->registerRoutes();
             $container->get('rest.gateways')->registerRoutes();
-            $container->get('rest.contact_sources')->registerRoutes();
             $container->get('rest.contacts')->registerRoutes();
             $container->get('rest.tags')->registerRoutes();
             $container->get('rest.lists')->registerRoutes();

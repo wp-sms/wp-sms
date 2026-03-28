@@ -27,6 +27,7 @@ import { pluralize } from '@/lib/utils';
 import { api } from '@/lib/api';
 import { WooCommerce } from '@/pages/integrations/woocommerce';
 import { CF7Verification } from '@/pages/integrations/cf7-verification';
+import { ImportSection } from '@/components/integrations/import-section';
 import type { AuthSettings, IntegrationCapability, IntegrationDetail, JsonSchema, PlatformIntegration, ProviderList, SyncSettings, WebhookEndpoint } from '@/lib/api';
 
 interface AppsProps {
@@ -742,6 +743,15 @@ function AppDetailPage({ integrationId, settings, onUpdate, onBack }: {
 
       {detail.capabilities && detail.capabilities.some((c) => c.supported) && (
         <CapabilitiesSection capabilities={detail.capabilities} />
+      )}
+
+      {detail.capabilities?.some((c) => c.id === 'contact_import' && c.supported) && detail.connected && (
+        <ImportSection
+          integrationId={detail.id}
+          importSettings={detail.import_settings}
+          importStats={detail.import_stats}
+          onUpdate={refetch}
+        />
       )}
 
       {settings && onUpdate && (

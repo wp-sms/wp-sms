@@ -693,6 +693,28 @@ export interface ProviderList {
   contact_count: number;
 }
 
+export interface ImportSettings {
+  enabled?: boolean;
+  field_mapping: Record<string, string>;
+  auto_sync: boolean;
+  roles?: string[];
+  list_id?: string;
+}
+
+export interface ImportStats {
+  total_synced: number;
+  last_synced_at: string | null;
+  sync_in_progress: boolean;
+  sync_progress: { synced: number } | null;
+  last_error: string | null;
+}
+
+export interface ImportFields {
+  fields: Record<string, { label: string; type: string }>;
+  default_mapping: Record<string, string>;
+  config_schema: Record<string, unknown>;
+}
+
 export interface IntegrationDetail extends Omit<PlatformIntegration, 'triggers' | 'actions'> {
   triggers: Array<{ id: string; name: string; description: string }>;
   actions: Array<{ id: string; name: string; description: string }>;
@@ -700,6 +722,8 @@ export interface IntegrationDetail extends Omit<PlatformIntegration, 'triggers' 
   capabilities?: IntegrationCapability[];
   sync_settings?: SyncSettings | null;
   sync_status?: SyncStatus | null;
+  import_settings?: ImportSettings | null;
+  import_stats?: ImportStats | null;
 }
 
 export interface FlowTemplate {
@@ -838,46 +862,6 @@ export interface CampaignStats {
 
 export interface CampaignRecipient extends MessageLogEntry {
   campaign_id: string;
-}
-
-// --- Contact Source Types ---
-
-export interface ContactSource {
-  type: string;
-  name: string;
-  description: string;
-  icon: string;
-  available: boolean;
-  status: 'connected' | 'disconnected' | 'syncing' | 'error';
-  config: ContactSourceConfig | null;
-  stats: ContactSourceStats | null;
-  contact_count: number;
-}
-
-export interface ContactSourceConfig {
-  roles?: string[];
-  field_mapping: Record<string, string>;
-  auto_sync: boolean;
-}
-
-export interface ContactSourceStats {
-  total_synced: number;
-  last_synced_at: string | null;
-  sync_in_progress: boolean;
-  sync_progress: { synced: number } | null;
-  last_error: string | null;
-}
-
-export interface ContactSourceFields {
-  fields: Record<string, { label: string; type: string }>;
-  default_mapping: Record<string, string>;
-  config_schema: Record<string, unknown>;
-}
-
-export interface ContactSourceStatus {
-  status: ContactSource['status'];
-  stats: ContactSourceStats | null;
-  contact_count: number;
 }
 
 // --- Flow Execution Types ---

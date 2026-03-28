@@ -10,9 +10,11 @@ use WSms\Flow\Trigger\TriggerRegistry;
 use WSms\Integration\IntegrationRegistry;
 use WSms\Integration\Contracts\IntegrationCapability;
 use WSms\Integration\Contracts\IntegrationInterface;
+use WSms\Integration\Contracts\SupportsContactImport;
 use WSms\Integration\Contracts\SupportsContactSync;
 use WSms\Integration\Contracts\SupportsListManagement;
 use WSms\Integration\Contracts\SupportsSuppressionSync;
+use WSms\Integration\Marketing\ImportSyncManager;
 use WSms\Integration\Marketing\SuppressionPoller;
 use WSms\Integration\Webhook\WebhookIntegration;
 use WSms\Queue\Contracts\QueueInterface;
@@ -23,7 +25,6 @@ defined('ABSPATH') || exit;
 class IntegrationController extends Controller
 {
     private const CONFIG_OPTION = 'wsms_integration_configs';
-    private const SYNC_STATE_OPTION = 'wsms_marketing_sync_state';
 
     public function __construct(
         private readonly IntegrationRegistry $integrationRegistry,
@@ -32,6 +33,7 @@ class IntegrationController extends Controller
         private readonly ?ContactRepositoryInterface $contacts = null,
         private readonly ?QueueInterface $queue = null,
         private readonly ?SuppressionPoller $suppressionPoller = null,
+        private readonly ?ImportSyncManager $importSyncManager = null,
     ) {
     }
 
@@ -130,6 +132,38 @@ class IntegrationController extends Controller
             ],
         ]);
 
+        register_rest_route(self::NAMESPACE, '/integrations/(?P<id>[\w]+)/import-fields', [
+            [
+                'methods'             => 'GET',
+                'callback'            => [$this, 'importFields'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/integrations/(?P<id>[\w]+)/import-settings', [
+            [
+                'methods'             => 'PUT',
+                'callback'            => [$this, 'saveImportSettings'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/integrations/(?P<id>[\w]+)/import', [
+            [
+                'methods'             => 'POST',
+                'callback'            => [$this, 'startImport'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
+        register_rest_route(self::NAMESPACE, '/integrations/(?P<id>[\w]+)/import-status', [
+            [
+                'methods'             => 'GET',
+                'callback'            => [$this, 'importStatus'],
+                'permission_callback' => [$this, 'canManage'],
+            ],
+        ]);
+
         register_rest_route(self::NAMESPACE, '/integrations/webhook/endpoints', [
             [
                 'methods'             => 'GET',
@@ -156,7 +190,7 @@ class IntegrationController extends Controller
     {
         return $this->handle(function () {
             $configs = get_option(self::CONFIG_OPTION, []);
-            $syncState = get_option(self::SYNC_STATE_OPTION, []);
+            $syncState = get_option(ImportSyncManager::STATE_KEY, []);
             $integrations = [];
 
             foreach ($this->integrationRegistry->getAll() as $integration) {
@@ -173,7 +207,8 @@ class IntegrationController extends Controller
             $integration = $this->resolveIntegrationOrFail($request);
 
             $configs = get_option(self::CONFIG_OPTION, []);
-            $base = $this->formatIntegrationBase($integration, $configs);
+            $syncState = get_option(ImportSyncManager::STATE_KEY, []);
+            $base = $this->formatIntegrationBase($integration, $configs, $syncState);
 
             $base['triggers'] = array_values(array_map(fn($t) => [
                 'id'          => $t->getId(),
@@ -381,7 +416,7 @@ class IntegrationController extends Controller
             $body = $request->get_json_params();
             $id = $integration->getId();
 
-            $state = get_option(self::SYNC_STATE_OPTION, []);
+            $state = get_option(ImportSyncManager::STATE_KEY, []);
             $state[$id]['sync_settings'] = [
                 'auto_push'        => !empty($body['auto_push']),
                 'push_tags'        => !empty($body['push_tags']),
@@ -390,7 +425,7 @@ class IntegrationController extends Controller
                 'default_list_id'  => sanitize_text_field($body['default_list_id'] ?? ''),
                 'remove_on_delete' => !empty($body['remove_on_delete']),
             ];
-            update_option(self::SYNC_STATE_OPTION, $state);
+            update_option(ImportSyncManager::STATE_KEY, $state);
 
             if ($integration instanceof SupportsSuppressionSync) {
                 as_unschedule_all_actions('wsms_suppression_poll', ['integration_id' => $id], 'wsms');
@@ -420,7 +455,7 @@ class IntegrationController extends Controller
             }
 
             $id = $integration->getId();
-            $state = get_option(self::SYNC_STATE_OPTION, []);
+            $state = get_option(ImportSyncManager::STATE_KEY, []);
             $config = $state[$id]['sync_settings'] ?? [];
 
             if (empty($config['default_list_id'])) {
@@ -465,7 +500,7 @@ class IntegrationController extends Controller
                 throw ValidationException::field('integration', __('Integration does not support list management', 'wp-sms'));
             }
 
-            $state = get_option(self::SYNC_STATE_OPTION, []);
+            $state = get_option(ImportSyncManager::STATE_KEY, []);
             $config = $state[$integration->getId()]['sync_settings'] ?? [];
 
             return new \WP_REST_Response([
@@ -542,6 +577,75 @@ class IntegrationController extends Controller
         });
     }
 
+    // ── Contact Import endpoints ──
+
+    public function importFields(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return $this->handle(function () use ($request) {
+            $integration = $this->resolveImportIntegrationOrFail($request);
+
+            return new \WP_REST_Response([
+                'fields'          => $integration->getAvailableImportFields(),
+                'default_mapping' => $integration->getDefaultImportFieldMapping(),
+                'config_schema'   => $integration->getImportConfigSchema(),
+            ]);
+        });
+    }
+
+    public function saveImportSettings(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return $this->handle(function () use ($request) {
+            $integration = $this->resolveImportIntegrationOrFail($request);
+
+            $body = $request->get_json_params();
+            $this->importSyncManager->saveImportSettings($integration->getId(), $body);
+
+            return $this->ok();
+        });
+    }
+
+    public function startImport(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return $this->handle(function () use ($request) {
+            $integration = $this->resolveImportIntegrationOrFail($request);
+
+            $id = $integration->getId();
+            if ($this->importSyncManager->isImporting($id)) {
+                throw ValidationException::field('import', __('Import already in progress', 'wp-sms'));
+            }
+
+            $total = $this->importSyncManager->startImport($id);
+
+            return $this->ok(['total_available' => $total]);
+        });
+    }
+
+    public function importStatus(\WP_REST_Request $request): \WP_REST_Response
+    {
+        return $this->handle(function () use ($request) {
+            $integration = $this->resolveImportIntegrationOrFail($request);
+
+            $intState = $this->importSyncManager->getImportState($integration->getId()) ?? [];
+
+            return new \WP_REST_Response([
+                'import_stats'    => $intState['import_stats'] ?? [],
+                'import_settings' => $intState['import_settings'] ?? [],
+                'contact_count'   => $intState['import_stats']['total_synced'] ?? 0,
+            ]);
+        });
+    }
+
+    private function resolveImportIntegrationOrFail(\WP_REST_Request $request): SupportsContactImport&IntegrationInterface
+    {
+        $integration = $this->resolveIntegrationOrFail($request);
+
+        if (!$integration instanceof SupportsContactImport) {
+            throw ValidationException::field('integration', __('Integration does not support contact import', 'wp-sms'));
+        }
+
+        return $integration;
+    }
+
     private function formatIntegrationBase(IntegrationInterface $integration, array $configs, ?array $syncState = null): array
     {
         $base = [
@@ -567,10 +671,17 @@ class IntegrationController extends Controller
         $base['capabilities'] = $this->getCapabilities($integration);
 
         if ($integration instanceof SupportsContactSync) {
-            $syncState ??= get_option(self::SYNC_STATE_OPTION, []);
+            $syncState ??= get_option(ImportSyncManager::STATE_KEY, []);
             $intState = $syncState[$integration->getId()] ?? [];
             $base['sync_settings'] = $intState['sync_settings'] ?? null;
             $base['sync_status'] = $intState['stats'] ?? null;
+        }
+
+        if ($integration instanceof SupportsContactImport) {
+            $syncState ??= get_option(ImportSyncManager::STATE_KEY, []);
+            $intState = $syncState[$integration->getId()] ?? [];
+            $base['import_settings'] = $intState['import_settings'] ?? null;
+            $base['import_stats'] = $intState['import_stats'] ?? null;
         }
 
         return $base;

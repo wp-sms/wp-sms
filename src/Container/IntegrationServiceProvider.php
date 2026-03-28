@@ -15,8 +15,10 @@ use WSms\Integration\WordPress\WordPressIntegration;
 use WSms\Integration\Line\LineIntegration;
 use WSms\Integration\Telegram\TelegramIntegration;
 use WSms\Integration\Contracts\IntegrationInterface;
+use WSms\Integration\Contracts\SupportsContactImport;
 use WSms\Integration\Contracts\SupportsContactSync;
 use WSms\Integration\Contracts\SupportsSuppressionSync;
+use WSms\Integration\Marketing\ImportSyncManager;
 use WSms\Integration\Marketing\OutboundSyncManager;
 use WSms\Integration\Marketing\SuppressionPoller;
 use WSms\Integration\WpSms\WpSmsIntegration;
@@ -29,7 +31,6 @@ class IntegrationServiceProvider implements ServiceProvider
 {
     /** @var class-string[] */
     private array $integrations = [
-        WordPressIntegration::class,
         WebhookIntegration::class,
         WooCommerceIntegration::class,
         ContactForm7Integration::class,
@@ -114,17 +115,25 @@ class IntegrationServiceProvider implements ServiceProvider
                 $actions,
             );
 
-            // Register EmailOctopusIntegration (no constructor injection)
+            // Register EmailOctopusIntegration
             $this->registerIntegration(
-                new EmailOctopusIntegration(),
+                new EmailOctopusIntegration($container->get('contact.repository')),
                 $registry,
                 $triggers,
                 $actions,
             );
 
-            // Register MailtrapIntegration (no constructor injection)
+            // Register MailtrapIntegration
             $this->registerIntegration(
-                new MailtrapIntegration(),
+                new MailtrapIntegration($container->get('contact.repository')),
+                $registry,
+                $triggers,
+                $actions,
+            );
+
+            // Register WordPressIntegration (needs contact.repository for import)
+            $this->registerIntegration(
+                new WordPressIntegration($container->get('contact.repository')),
                 $registry,
                 $triggers,
                 $actions,
@@ -145,6 +154,9 @@ class IntegrationServiceProvider implements ServiceProvider
 
             // Wire marketing sync for sync-capable integrations
             $this->wireMarketingSync($registry, $container);
+
+            // Wire contact import sync
+            $this->wireImportSync($registry, $container);
         });
     }
 
@@ -177,7 +189,7 @@ class IntegrationServiceProvider implements ServiceProvider
                 $poller->poll($args['integration_id'] ?? '');
             });
 
-            $state = get_option('wsms_marketing_sync_state', []);
+            $state = get_option(ImportSyncManager::STATE_KEY, []);
             foreach ($suppressionIntegrations as $integration) {
                 $settings = $state[$integration->getId()]['sync_settings'] ?? [];
                 $pollEnabled = $settings['poll_enabled'] ?? true;
@@ -206,7 +218,7 @@ class IntegrationServiceProvider implements ServiceProvider
                 }
 
                 $contact = $payload['contact'] ?? [];
-                $state = get_option('wsms_marketing_sync_state', []);
+                $state = get_option(ImportSyncManager::STATE_KEY, []);
                 $config = $state[$integrationId]['sync_settings'] ?? [];
 
                 $result = $integration->pushContact($contact, $config);
@@ -224,9 +236,45 @@ class IntegrationServiceProvider implements ServiceProvider
                     }
                 }
                 $state[$integrationId]['stats'] = $stats;
-                update_option('wsms_marketing_sync_state', $state);
+                update_option(ImportSyncManager::STATE_KEY, $state);
             },
         );
+    }
+
+    private function wireImportSync(IntegrationRegistry $registry, ServiceContainer $container): void
+    {
+        $importManager = new ImportSyncManager($registry, $container->get('queue'));
+        $container->register('marketing.import_manager', fn() => $importManager);
+
+        $container->get('queue.processor')->registerHandler(
+            'sync_contact_import_batch',
+            fn(array $payload) => $importManager->processBatch(
+                $payload['integration_id'] ?? '',
+                $payload['batch_size'] ?? 100,
+                $payload['after_cursor'] ?? null,
+            ),
+        );
+
+        // Wire auto-sync hooks for connected import integrations
+        $state = get_option(ImportSyncManager::STATE_KEY, []);
+        foreach ($registry->getAll() as $integration) {
+            if (!$integration instanceof SupportsContactImport || !$integration->isConnected()) {
+                continue;
+            }
+            $importSettings = $state[$integration->getId()]['import_settings'] ?? [];
+            if (empty($importSettings['auto_sync'])) {
+                continue;
+            }
+
+            if ($integration instanceof WordPressIntegration) {
+                add_action('user_register', fn(int $userId) =>
+                    $integration->importOne($userId, $importSettings), 5);
+                add_action('profile_update', fn(int $userId) =>
+                    $integration->importOne($userId, $importSettings), 10);
+                add_action('delete_user', fn(int $userId) =>
+                    $integration->handleImportDeletion($userId), 10);
+            }
+        }
     }
 
     private function registerIntegration(

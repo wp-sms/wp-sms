@@ -6,26 +6,26 @@ use WSms\Queue\Contracts\JobInterface;
 
 defined('ABSPATH') || exit;
 
-class SyncContactSourceBatchJob implements JobInterface
+class SyncContactImportBatchJob implements JobInterface
 {
     public function __construct(
-        private readonly string $sourceType,
+        private readonly string $integrationId,
         private readonly int $batchSize = 100,
-        private readonly ?int $afterId = null,
+        private readonly mixed $afterCursor = null,
     ) {
     }
 
     public function getType(): string
     {
-        return 'sync_contact_source_batch';
+        return 'sync_contact_import_batch';
     }
 
     public function getPayload(): array
     {
         return [
-            'source_type' => $this->sourceType,
-            'batch_size'  => $this->batchSize,
-            'after_id'    => $this->afterId,
+            'integration_id' => $this->integrationId,
+            'batch_size'     => $this->batchSize,
+            'after_cursor'   => $this->afterCursor,
         ];
     }
 

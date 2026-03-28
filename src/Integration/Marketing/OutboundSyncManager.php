@@ -56,7 +56,7 @@ class OutboundSyncManager
             return;
         }
 
-        $state = get_option('wsms_marketing_sync_state', []);
+        $state = get_option(ImportSyncManager::STATE_KEY, []);
         $contact = null;
         $anyNeedsTags = false;
 

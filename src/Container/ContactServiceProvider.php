@@ -26,6 +26,6 @@ class ContactServiceProvider implements ServiceProvider
 
     public function boot(ServiceContainer $container): void
     {
-        // Auto-sync hooks are now managed by ContactSourceServiceProvider
+        // Auto-sync hooks are managed by IntegrationServiceProvider::wireImportSync()
     }
 }

@@ -16,6 +16,7 @@ final class IntegrationCapability
     public const TAGS                = 'tags';
     public const WEBHOOKS            = 'webhooks';
     public const EMAIL_GATEWAY       = 'email_gateway';
+    public const CONTACT_IMPORT      = 'contact_import';
 
     public const LABELS = [
         self::CONTACT_SYNC        => 'Contact Sync',
@@ -28,5 +29,6 @@ final class IntegrationCapability
         self::TAGS                => 'Tags',
         self::WEBHOOKS            => 'Webhooks',
         self::EMAIL_GATEWAY       => 'Email Gateway',
+        self::CONTACT_IMPORT      => 'Contact Import',
     ];
 }

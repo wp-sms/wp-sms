@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { api, type PlatformIntegration, type IntegrationDetail, type ListResponse } from '@/lib/api';
+import { api, type PlatformIntegration, type IntegrationDetail, type ImportFields, type ImportSettings, type ImportStats, type ListResponse } from '@/lib/api';
 import { isAbortError } from '@/lib/error-utils';
 
 export function useIntegrations(): {
@@ -144,4 +144,62 @@ export function useIntegrationAvailability(ids: readonly string[]): {
   }, [ids]);
 
   return { availabilityMap, loading };
+}
+
+export function useImportFields(id: string | null): {
+  fields: ImportFields | null;
+  loading: boolean;
+  refetch: () => void;
+} {
+  const [fields, setFields] = useState<ImportFields | null>(null);
+  const [loading, setLoading] = useState(false);
+  const abortRef = useRef<AbortController>();
+  const idRef = useRef(id);
+  idRef.current = id;
+
+  const fetchFields = useCallback(async () => {
+    const currentId = idRef.current;
+    if (!currentId) {
+      setFields(null);
+      return;
+    }
+
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+
+    setLoading(true);
+    try {
+      const res = await api.get<ImportFields>(`integrations/${currentId}/import-fields`, { signal: controller.signal });
+      if (!controller.signal.aborted) setFields(res);
+    } catch (e) {
+      if (isAbortError(e)) return;
+      setFields(null);
+    } finally {
+      if (!controller.signal.aborted) setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void fetchFields();
+    return () => { abortRef.current?.abort(); };
+  }, [id, fetchFields]);
+
+  return { fields, loading, refetch: fetchFields };
+}
+
+export async function saveImportSettings(id: string, settings: ImportSettings): Promise<void> {
+  await api.put(`integrations/${id}/import-settings`, settings);
+}
+
+export async function startImport(id: string): Promise<{ total_available: number }> {
+  return api.post<{ total_available: number }>(`integrations/${id}/import`);
+}
+
+export async function getImportStatus(id: string): Promise<{
+  import_stats: ImportStats;
+  import_settings: ImportSettings;
+  contact_count: number;
+}> {
+  return api.get(`integrations/${id}/import-status`);
 }

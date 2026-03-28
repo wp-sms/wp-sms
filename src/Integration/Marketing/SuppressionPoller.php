@@ -31,7 +31,7 @@ class SuppressionPoller
             return 0;
         }
 
-        $state = get_option('wsms_marketing_sync_state', []);
+        $state = get_option(ImportSyncManager::STATE_KEY, []);
         $intState = $state[$integrationId] ?? [];
         $config = $intState['sync_settings'] ?? [];
         $cursor = $intState['stats']['poll_cursor'] ?? null;
@@ -62,7 +62,7 @@ class SuppressionPoller
         $stats['poll_cursor'] = $newCursor;
 
         $state[$integrationId]['stats'] = $stats;
-        update_option('wsms_marketing_sync_state', $state);
+        update_option(ImportSyncManager::STATE_KEY, $state);
 
         return count($events);
     }

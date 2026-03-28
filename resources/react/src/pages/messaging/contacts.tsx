@@ -10,14 +10,13 @@ import { ImportWizard } from '@/components/contacts/import-wizard';
 import { ExportDialog } from '@/components/contacts/export-dialog';
 import { TagsList } from '@/components/tags/tags-list';
 import { ListsList } from '@/components/lists/lists-list';
-import { SourcesList } from '@/components/sources/sources-list';
 import { SubscriptionForms } from './subscription-forms';
 import { useSubscriptionForms } from '@/hooks/use-subscription-forms';
 import { useSubTabs } from '@/hooks/use-sub-tabs';
 import { Badge } from '@/components/ui/badge';
 import { Users, Plus, Upload, Download } from 'lucide-react';
 
-const TABS = ['contacts', 'tags', 'lists', 'sources', 'forms'] as const;
+const TABS = ['contacts', 'tags', 'lists', 'forms'] as const;
 
 interface ContactsProps {
   subTab?: string;
@@ -81,7 +80,6 @@ export function Contacts({ subTab, onNavigate }: ContactsProps) {
           <TabsTrigger value="contacts">Contacts <TabCount count={contactsHook.total} /></TabsTrigger>
           <TabsTrigger value="tags">Tags <TabCount count={tagsHook.tags.length} /></TabsTrigger>
           <TabsTrigger value="lists">Lists <TabCount count={listsHook.lists.length} /></TabsTrigger>
-          <TabsTrigger value="sources">Sources</TabsTrigger>
           <TabsTrigger value="forms">Forms <TabCount count={formsHook.forms.length} /></TabsTrigger>
         </TabsList>
       </PageHeader>
@@ -102,10 +100,6 @@ export function Contacts({ subTab, onNavigate }: ContactsProps) {
 
       <TabsContent value="lists">
         <ListsList hook={listsHook} tags={tagsHook.tags} embedded createTrigger={listCreate} />
-      </TabsContent>
-
-      <TabsContent value="sources">
-        {activeTab === 'sources' && <SourcesList />}
       </TabsContent>
 
       <TabsContent value="forms">

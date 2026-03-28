@@ -2,8 +2,12 @@
 
 namespace WSms\Integration\Mailtrap;
 
+use WSms\Contact\Contracts\ContactRepositoryInterface;
+use WSms\Integration\Contracts\ContactImportHelper;
 use WSms\Integration\Contracts\IntegrationCapability;
 use WSms\Integration\Contracts\IntegrationInterface;
+use WSms\Integration\Marketing\ImportSyncManager;
+use WSms\Integration\Contracts\SupportsContactImport;
 use WSms\Integration\Contracts\SupportsContactSync;
 use WSms\Integration\Contracts\SupportsListManagement;
 use WSms\Integration\Contracts\SupportsSuppressionSync;
@@ -16,6 +20,7 @@ defined('ABSPATH') || exit;
 class MailtrapIntegration implements
     IntegrationInterface,
     SupportsContactSync,
+    SupportsContactImport,
     SupportsListManagement,
     SupportsSuppressionSync
 {
@@ -36,6 +41,11 @@ class MailtrapIntegration implements
     ];
 
     private ?MailtrapApiClient $client = null;
+
+    public function __construct(
+        private readonly ?ContactRepositoryInterface $contacts = null,
+    ) {
+    }
 
     public function getId(): string
     {
@@ -125,9 +135,9 @@ class MailtrapIntegration implements
 
     public function disconnect(): void
     {
-        $state = get_option('wsms_marketing_sync_state', []);
+        $state = get_option(ImportSyncManager::STATE_KEY, []);
         unset($state[$this->getId()]);
-        update_option('wsms_marketing_sync_state', $state);
+        update_option(ImportSyncManager::STATE_KEY, $state);
 
         $configs = get_option(MailtrapApiClient::GATEWAY_CONFIG_OPTION, []);
         unset($configs[MailtrapApiClient::GATEWAY_ID]['shared']['account_id']);
@@ -169,6 +179,7 @@ class MailtrapIntegration implements
             ['id' => IntegrationCapability::SUPPRESSION_SYNC, 'supported' => true],
             ['id' => IntegrationCapability::EMAIL_GATEWAY,    'supported' => true, 'gateway_id' => 'mailtrap'],
             ['id' => IntegrationCapability::ENGAGEMENT_DATA,  'supported' => false],
+            ['id' => IntegrationCapability::CONTACT_IMPORT,  'supported' => true],
         ];
     }
 
@@ -420,6 +431,134 @@ class MailtrapIntegration implements
         }
     }
 
+    // --- SupportsContactImport ---
+
+    public function getAvailableImportFields(): array
+    {
+        return [
+            'email'      => ['label' => 'Email',      'type' => 'core'],
+            'first_name' => ['label' => 'First Name', 'type' => 'field'],
+            'last_name'  => ['label' => 'Last Name',  'type' => 'field'],
+        ];
+    }
+
+    public function getDefaultImportFieldMapping(): array
+    {
+        return self::FIELD_MAPPING;
+    }
+
+    public function getImportConfigSchema(): array
+    {
+        return [
+            'list_id' => [
+                'type'        => 'select',
+                'label'       => 'List',
+                'description' => 'Select the Mailtrap contact list to import from.',
+                'required'    => true,
+                'dynamic'     => true,
+            ],
+            'field_mapping' => [
+                'type'  => 'field_mapping',
+                'label' => 'Field Mapping',
+            ],
+            'auto_sync' => [
+                'type'        => 'boolean',
+                'label'       => 'Auto-sync',
+                'default'     => false,
+                'description' => 'Automatically sync new contacts from Mailtrap on a recurring schedule.',
+            ],
+        ];
+    }
+
+    public function importOne(mixed $externalId, array $config, bool $suppressEvents = false): ?string
+    {
+        $client = $this->makeClient();
+        if (!$client) {
+            return null;
+        }
+
+        $listId = (int) ($config['list_id'] ?? 0);
+        if ($listId <= 0) {
+            return null;
+        }
+
+        $contact = $client->findContactByEmail($listId, (string) $externalId);
+        if (!$contact) {
+            return null;
+        }
+
+        $fieldMapping = $config['field_mapping'] ?? $this->getDefaultImportFieldMapping();
+        $sourceData = $this->extractImportContactData($contact);
+        $contactData = ContactImportHelper::applyFieldMapping($sourceData, $fieldMapping);
+        $contactData['source'] = $this->getId();
+        $contactData['source_ref'] = (string) $listId;
+
+        return ContactImportHelper::upsertContact($this->contacts, $contactData, $suppressEvents);
+    }
+
+    public function getImportBatch(array $config, int $batchSize, mixed $afterCursor = null): array
+    {
+        $client = $this->makeClient();
+        if (!$client) {
+            return [];
+        }
+
+        $listId = (int) ($config['list_id'] ?? 0);
+        if ($listId <= 0) {
+            return [];
+        }
+
+        try {
+            $params = ['limit' => $batchSize];
+
+            if ($afterCursor !== null) {
+                $params['cursor'] = (string) $afterCursor;
+            }
+
+            $response = $client->getContacts($listId, $params);
+            $contacts = $response['data'] ?? $response;
+
+            if (!is_array($contacts)) {
+                return [];
+            }
+
+            return array_map(fn($c) => $c['email'] ?? '', $contacts);
+        } catch (\RuntimeException) {
+            return [];
+        }
+    }
+
+    public function countImportable(array $config): int
+    {
+        $client = $this->makeClient();
+        if (!$client) {
+            return 0;
+        }
+
+        $listId = (int) ($config['list_id'] ?? 0);
+        if ($listId <= 0) {
+            return 0;
+        }
+
+        try {
+            $lists = $client->getLists();
+
+            foreach ($lists as $list) {
+                if ((int) ($list['id'] ?? 0) === $listId) {
+                    return $list['contacts_count'] ?? 0;
+                }
+            }
+
+            return 0;
+        } catch (\RuntimeException) {
+            return 0;
+        }
+    }
+
+    public function handleImportDeletion(mixed $externalId): void
+    {
+    }
+
     // --- Helpers ---
 
     private function getGatewayConfig(): array
@@ -454,5 +593,28 @@ class MailtrapIntegration implements
         }
 
         return $fields;
+    }
+
+    private function extractImportContactData(array $mtContact): array
+    {
+        $data = [
+            'email' => $mtContact['email'] ?? '',
+        ];
+
+        $fields = $mtContact['fields'] ?? [];
+        foreach ($fields as $key => $value) {
+            if ($value !== null && $value !== '') {
+                $data[$key] = $value;
+            }
+        }
+
+        if (!empty($mtContact['first_name'])) {
+            $data['first_name'] = $mtContact['first_name'];
+        }
+        if (!empty($mtContact['last_name'])) {
+            $data['last_name'] = $mtContact['last_name'];
+        }
+
+        return $data;
     }
 }
