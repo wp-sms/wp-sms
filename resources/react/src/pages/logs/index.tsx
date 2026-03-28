@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Field, FieldLabel } from '@/components/ui/field';
@@ -17,7 +17,13 @@ import { useLogs } from '@/hooks/use-logs';
 import { EVENT_TYPES, formatLabel } from '@/lib/constants';
 import { pluralize } from '@/lib/utils';
 
-export function LogsPage({ embedded }: { embedded?: boolean }) {
+interface LogsPageProps {
+  embedded?: boolean;
+  setHeaderMeta?: (node: ReactNode) => void;
+  setHeaderActions?: (node: ReactNode) => void;
+}
+
+export function LogsPage({ embedded, setHeaderMeta, setHeaderActions }: LogsPageProps) {
   const { logs, total, page, perPage, filters, setFilter, setPage, loading, clearLogs } = useLogs();
   const confirm = useConfirm();
   const [clearing, setClearing] = useState(false);
@@ -51,6 +57,18 @@ export function LogsPage({ embedded }: { embedded?: boolean }) {
     </Button>
   ) : undefined;
 
+  useEffect(() => {
+    if (!setHeaderMeta) return;
+    setHeaderMeta(!loading ? pluralize(total, 'event') : null);
+    return () => setHeaderMeta(null);
+  }, [total, loading, setHeaderMeta]);
+
+  useEffect(() => {
+    if (!setHeaderActions) return;
+    setHeaderActions(clearButton ?? null);
+    return () => setHeaderActions(null);
+  }, [total, clearing, setHeaderActions]);
+
   return (
     <div className="space-y-4">
       {!embedded && (
@@ -61,7 +79,7 @@ export function LogsPage({ embedded }: { embedded?: boolean }) {
           actions={clearButton}
         />
       )}
-      {embedded && clearButton && (
+      {embedded && !setHeaderMeta && clearButton && (
         <div className="flex items-center justify-between">
           <span className="text-sm text-muted-foreground">{pluralize(total, 'event')}</span>
           {clearButton}

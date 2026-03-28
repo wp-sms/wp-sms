@@ -1,3 +1,4 @@
+import { useState, type ReactNode } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PageHeader } from '@/components/layout/page-header';
 import { BarChart3 } from 'lucide-react';
@@ -16,10 +17,12 @@ interface MonitoringPageProps {
 
 export function MonitoringPage({ subTab, onNavigate }: MonitoringPageProps) {
   const [activeTab, handleTabChange] = useSubTabs('monitoring', TABS, subTab, onNavigate);
+  const [headerMeta, setHeaderMeta] = useState<ReactNode>(null);
+  const [headerActions, setHeaderActions] = useState<ReactNode>(null);
 
   return (
     <Tabs value={activeTab} onValueChange={handleTabChange}>
-      <PageHeader icon={BarChart3} title="Monitoring">
+      <PageHeader icon={BarChart3} title="Monitoring" metadata={headerMeta} actions={headerActions}>
         <TabsList variant="line" className="mt-3">
           <TabsTrigger value="health">Health</TabsTrigger>
           <TabsTrigger value="logs">Auth Logs</TabsTrigger>
@@ -29,15 +32,15 @@ export function MonitoringPage({ subTab, onNavigate }: MonitoringPageProps) {
       </PageHeader>
 
       <TabsContent value="health">
-        <SystemHealth embedded />
+        <SystemHealth embedded setHeaderMeta={setHeaderMeta} setHeaderActions={setHeaderActions} />
       </TabsContent>
 
       <TabsContent value="logs">
-        <LogsPage embedded />
+        <LogsPage embedded setHeaderMeta={setHeaderMeta} setHeaderActions={setHeaderActions} />
       </TabsContent>
 
       <TabsContent value="messages">
-        {activeTab === 'messages' && <MessageLogs embedded />}
+        {activeTab === 'messages' && <MessageLogs embedded setHeaderMeta={setHeaderMeta} setHeaderActions={setHeaderActions} />}
       </TabsContent>
 
       <TabsContent value="reports">

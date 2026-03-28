@@ -1,12 +1,12 @@
 import { formatDateTime, formatRelativeTime } from '@/lib/format';
-import { useState } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { PageHeader } from '@/components/layout/page-header';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Field, FieldLabel } from '@/components/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Collapsible, CollapsibleContent } from '@/components/ui/collapsible';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -18,7 +18,13 @@ import { StatusBadge, ChannelBadge } from '@/components/messaging/message-badges
 import { MessageLogDetailPanel } from '@/components/messaging/message-log-detail-panel';
 import type { MessageLogEntry } from '@/lib/api';
 
-export function MessageLogs({ embedded }: { embedded?: boolean }) {
+interface MessageLogsProps {
+  embedded?: boolean;
+  setHeaderMeta?: (node: ReactNode) => void;
+  setHeaderActions?: (node: ReactNode) => void;
+}
+
+export function MessageLogs({ embedded, setHeaderMeta, setHeaderActions }: MessageLogsProps) {
   const { logs, total, page, perPage, filters, setFilter, setPage, loading } = useMessageLogs();
   const [selectedLog, setSelectedLog] = useState<MessageLogEntry | null>(null);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -26,16 +32,26 @@ export function MessageLogs({ embedded }: { embedded?: boolean }) {
   const activeFilterCount = [filters.channel, filters.status, filters.recipient, filters.gateway_id, filters.date_from, filters.date_to].filter(Boolean).length;
 
   const filtersButton = (
-    <CollapsibleTrigger asChild>
-      <Button variant="outline" size="sm">
-        <SlidersHorizontal className="mr-1.5 h-3.5 w-3.5" />
-        Filters
-        {activeFilterCount > 0 && (
-          <Badge variant="default" className="ml-1.5 h-5 px-1.5 text-[10px]">{activeFilterCount}</Badge>
-        )}
-      </Button>
-    </CollapsibleTrigger>
+    <Button variant="outline" size="sm" onClick={() => setFiltersOpen(v => !v)}>
+      <SlidersHorizontal className="mr-1.5 h-3.5 w-3.5" />
+      Filters
+      {activeFilterCount > 0 && (
+        <Badge variant="default" className="ml-1.5 h-5 px-1.5 text-[10px]">{activeFilterCount}</Badge>
+      )}
+    </Button>
   );
+
+  useEffect(() => {
+    if (!setHeaderMeta) return;
+    setHeaderMeta(pluralize(total, 'message'));
+    return () => setHeaderMeta(null);
+  }, [total, setHeaderMeta]);
+
+  useEffect(() => {
+    if (!setHeaderActions) return;
+    setHeaderActions(filtersButton);
+    return () => setHeaderActions(null);
+  }, [activeFilterCount, setHeaderActions]);
 
   return (
     <Collapsible open={filtersOpen} onOpenChange={setFiltersOpen}>
@@ -43,7 +59,7 @@ export function MessageLogs({ embedded }: { embedded?: boolean }) {
         {!embedded && (
           <PageHeader icon={Send} title="Message Logs" metadata={pluralize(total, 'message')} actions={filtersButton} />
         )}
-        {embedded && (
+        {embedded && !setHeaderMeta && (
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">{pluralize(total, 'message')}</span>
             {filtersButton}

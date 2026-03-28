@@ -1,3 +1,4 @@
+import { useEffect, type ReactNode } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { PageHeader } from '@/components/layout/page-header';
@@ -14,7 +15,13 @@ import { ActiveCampaignsCard } from './active-campaigns-card';
 import { Activity, AlertCircle, AlertTriangle, RefreshCw, HeartPulse, ListTodo, XCircle, Clock, Megaphone } from 'lucide-react';
 import { formatRelativeTime } from '@/lib/format';
 
-export function SystemHealth({ embedded }: { embedded?: boolean }) {
+interface SystemHealthProps {
+  embedded?: boolean;
+  setHeaderMeta?: (node: ReactNode) => void;
+  setHeaderActions?: (node: ReactNode) => void;
+}
+
+export function SystemHealth({ embedded, setHeaderMeta, setHeaderActions }: SystemHealthProps) {
   const { data, loading, error, refetch } = useSystemHealth();
 
   usePolling(refetch, 30_000, !loading);
@@ -32,12 +39,22 @@ export function SystemHealth({ embedded }: { embedded?: boolean }) {
     </span>
   );
 
+  useEffect(() => {
+    setHeaderMeta?.(timestamp ?? null);
+    return () => setHeaderMeta?.(null);
+  }, [data?.generated_at, setHeaderMeta]);
+
+  useEffect(() => {
+    setHeaderActions?.(refreshButton);
+    return () => setHeaderActions?.(null);
+  }, [loading, setHeaderActions]);
+
   return (
     <div className="space-y-4">
       {!embedded && (
         <PageHeader icon={Activity} title="System Health" metadata={timestamp} actions={refreshButton} />
       )}
-      {embedded && (
+      {embedded && !setHeaderMeta && (
         <div className="flex items-center justify-between">
           {timestamp}
           {refreshButton}
