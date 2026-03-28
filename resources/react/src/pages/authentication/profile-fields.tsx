@@ -151,7 +151,7 @@ export function ProfileFields({ settings, onUpdate }: ProfileFieldsProps) {
                     </Badge>
                   )}
                   {field.required && (
-                    <Badge variant="outline" className="text-[10px] px-1.5 py-0 text-amber-600 border-amber-300">
+                    <Badge variant="warning" className="text-[10px] px-1.5 py-0">
                       required
                     </Badge>
                   )}

@@ -11,6 +11,8 @@ use WSms\Messaging\Template\Contracts\ToggleableTemplateInterface;
 use WSms\Messaging\Template\ValueObjects\ChannelContent;
 use WSms\Messaging\Template\ValueObjects\RenderedMessage;
 use WSms\Dependencies\Psr\Log\LoggerInterface;
+use WSms\Support\DeviceResolver;
+use WSms\Support\GeoCountryResolver;
 use WSms\Support\IpResolver;
 
 defined('ABSPATH') || exit;
@@ -216,14 +218,29 @@ class TemplateManager
             $variables['site_url'] = get_site_url();
         }
 
-        if (isset($declared['ip_warning']) && !isset($variables['ip_warning'])) {
+        if (isset($declared['security_context']) && !isset($variables['security_context'])) {
+            $lines = [];
+
+            $device = DeviceResolver::resolve();
+            if ($device !== null) {
+                $lines[] = sprintf(__('Device: %s', 'wp-sms'), $device);
+            }
+
+            $country = GeoCountryResolver::resolve();
+            if ($country !== null) {
+                $lines[] = sprintf(__('Location: %s', 'wp-sms'), $country);
+            }
+
             $ip = IpResolver::resolve();
-            $variables['ip_warning'] = $ip !== ''
-                ? sprintf(
-                    __('This was requested from IP: %s. If you did not request this, your password may have been compromised.', 'wp-sms'),
-                    $ip,
-                )
-                : '';
+            if ($ip !== '') {
+                $lines[] = sprintf(__('IP: %s', 'wp-sms'), $ip);
+            }
+
+            if ($lines !== []) {
+                $lines[] = __('If you did not request this, please secure your account immediately.', 'wp-sms');
+            }
+
+            $variables['security_context'] = implode("\n", $lines);
         }
 
         return $variables;

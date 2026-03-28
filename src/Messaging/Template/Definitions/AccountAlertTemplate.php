@@ -36,8 +36,8 @@ class AccountAlertTemplate implements ToggleableTemplateInterface
                 true,
                 'Your password was recently changed.',
             ),
-            'site_name'  => CommonVariables::siteName(),
-            'ip_warning' => CommonVariables::ipWarning(),
+            'site_name'        => CommonVariables::siteName(),
+            'security_context' => CommonVariables::securityContext(),
         ];
     }
 
@@ -50,7 +50,7 @@ class AccountAlertTemplate implements ToggleableTemplateInterface
     {
         return [
             'email' => new ChannelContent(
-                body: __("{{alert_message}}\n{{ip_warning}}\nIf this was not you, please secure your account immediately.", 'wp-sms'),
+                body: __("{{alert_message}}\n{{security_context}}", 'wp-sms'),
                 subject: __('[{{site_name}}] Security Alert', 'wp-sms'),
             ),
             'sms' => new ChannelContent(

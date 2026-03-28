@@ -39,7 +39,7 @@ class OtpWithMagicLinkTemplate implements TemplateDefinitionInterface
             ),
             'expiry_minutes' => CommonVariables::expiryMinutes(),
             'site_name'      => CommonVariables::siteName(),
-            'ip_warning'     => CommonVariables::ipWarning(),
+            'security_context' => CommonVariables::securityContext(),
         ];
     }
 
@@ -52,7 +52,7 @@ class OtpWithMagicLinkTemplate implements TemplateDefinitionInterface
     {
         return [
             'email' => new ChannelContent(
-                body: __("Your verification code is:\n<p style=\"font-size:24px;font-weight:bold;letter-spacing:4px;\">{{otp_code}}</p>\nOr click the button below to log in directly.\nThis expires in {{expiry_minutes}} minutes.\n{{ip_warning}}", 'wp-sms'),
+                body: __("Your verification code is:\n<p style=\"font-size:24px;font-weight:bold;letter-spacing:4px;\">{{otp_code}}</p>\nOr click the button below to log in directly.\nThis expires in {{expiry_minutes}} minutes.\n{{security_context}}", 'wp-sms'),
                 subject: __('[{{site_name}}] Your verification code', 'wp-sms'),
                 cta: __('Log in to {{site_name}}', 'wp-sms'),
                 ctaUrl: '{{magic_link_url}}',

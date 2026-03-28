@@ -38,7 +38,7 @@ class PasswordResetTemplate implements TemplateDefinitionInterface
             ),
             'expiry_minutes' => CommonVariables::expiryMinutes('60'),
             'site_name'      => CommonVariables::siteName(),
-            'ip_warning'     => CommonVariables::ipWarning(),
+            'security_context' => CommonVariables::securityContext(),
         ];
     }
 
@@ -51,7 +51,7 @@ class PasswordResetTemplate implements TemplateDefinitionInterface
     {
         return [
             'email' => new ChannelContent(
-                body: __("Click the button below to reset your password.\nThis link expires in {{expiry_minutes}} minutes.\n{{ip_warning}}\nIf you did not request this, please ignore this email.", 'wp-sms'),
+                body: __("Click the button below to reset your password.\nThis link expires in {{expiry_minutes}} minutes.\n{{security_context}}", 'wp-sms'),
                 subject: __('[{{site_name}}] Reset your password', 'wp-sms'),
                 cta: __('Reset Password', 'wp-sms'),
                 ctaUrl: '{{reset_url}}',

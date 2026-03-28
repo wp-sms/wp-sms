@@ -8,6 +8,7 @@ use WSms\Enums\EventType;
 use WSms\Mfa\Contracts\ChannelInterface;
 use WSms\Mfa\Contracts\SupportsEnrollmentConfirmation;
 use WSms\Mfa\SecretEncryptor;
+use WSms\Support\DeviceResolver;
 use WSms\Mfa\ValueObjects\ChallengeResult;
 use WSms\Mfa\ValueObjects\EnrollmentResult;
 use WSms\Dependencies\lbuchs\WebAuthn\WebAuthn;
@@ -507,35 +508,7 @@ class PasskeyChannel implements ChannelInterface, SupportsEnrollmentConfirmation
 
     private function deriveCredentialName(): string
     {
-        $ua = $_SERVER['HTTP_USER_AGENT'] ?? '';
-
-        if (str_contains($ua, 'Chrome') && !str_contains($ua, 'Edg')) {
-            $browser = 'Chrome';
-        } elseif (str_contains($ua, 'Safari') && !str_contains($ua, 'Chrome')) {
-            $browser = 'Safari';
-        } elseif (str_contains($ua, 'Firefox')) {
-            $browser = 'Firefox';
-        } elseif (str_contains($ua, 'Edg')) {
-            $browser = 'Edge';
-        } else {
-            $browser = 'Browser';
-        }
-
-        if (str_contains($ua, 'Macintosh') || str_contains($ua, 'Mac OS')) {
-            $os = 'macOS';
-        } elseif (str_contains($ua, 'Windows')) {
-            $os = 'Windows';
-        } elseif (str_contains($ua, 'Android')) {
-            $os = 'Android';
-        } elseif (str_contains($ua, 'iPhone') || str_contains($ua, 'iPad')) {
-            $os = 'iOS';
-        } elseif (str_contains($ua, 'Linux')) {
-            $os = 'Linux';
-        } else {
-            $os = 'Unknown';
-        }
-
-        return "{$browser} on {$os}";
+        return DeviceResolver::resolve() ?? 'Browser';
     }
 
     private function base64UrlDecode(string $data): string

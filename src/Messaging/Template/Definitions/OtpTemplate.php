@@ -30,7 +30,7 @@ class OtpTemplate implements TemplateDefinitionInterface
             'otp_code'       => CommonVariables::otpCode(),
             'expiry_minutes' => CommonVariables::expiryMinutes(),
             'site_name'      => CommonVariables::siteName(),
-            'ip_warning'     => CommonVariables::ipWarning(),
+            'security_context' => CommonVariables::securityContext(),
         ];
     }
 
@@ -43,7 +43,7 @@ class OtpTemplate implements TemplateDefinitionInterface
     {
         return [
             'email' => new ChannelContent(
-                body: __("Your verification code is:\n<p style=\"font-size:24px;font-weight:bold;letter-spacing:4px;\">{{otp_code}}</p>\nThis code expires in {{expiry_minutes}} minutes.\n{{ip_warning}}", 'wp-sms'),
+                body: __("Your verification code is:\n<p style=\"font-size:24px;font-weight:bold;letter-spacing:4px;\">{{otp_code}}</p>\nThis code expires in {{expiry_minutes}} minutes.\n{{security_context}}", 'wp-sms'),
                 subject: __('[{{site_name}}] Your verification code', 'wp-sms'),
             ),
             'sms' => new ChannelContent(

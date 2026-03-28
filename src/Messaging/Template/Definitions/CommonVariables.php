@@ -30,14 +30,14 @@ class CommonVariables
         );
     }
 
-    public static function ipWarning(): VariableDefinition
+    public static function securityContext(): VariableDefinition
     {
         return new VariableDefinition(
-            'ip_warning',
-            __('IP Warning', 'wp-sms'),
-            __('Security notice with the requester\'s IP address.', 'wp-sms'),
+            'security_context',
+            __('Security Context', 'wp-sms'),
+            __('Security details about the request (device, location, IP).', 'wp-sms'),
             false,
-            'This code was requested from IP: 192.168.1.1. If you did not request this, your password may have been compromised.',
+            "Device: Chrome on Windows\nLocation: US\nIP: 192.168.1.1\nIf you did not request this, please secure your account immediately.",
         );
     }
 
