@@ -13,7 +13,7 @@ import {
 
 interface IntegrationIconProps {
   icon: string;
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
 }
 
@@ -39,6 +39,7 @@ const sizes = {
   sm: { container: 'h-5 w-5 rounded', icon: 'h-3 w-3' },
   md: { container: 'h-7 w-7 rounded-md', icon: 'h-4 w-4' },
   lg: { container: 'h-10 w-10 rounded-lg', icon: 'h-6 w-6' },
+  xl: { container: 'h-14 w-14 rounded-xl', icon: 'h-8 w-8' },
 } as const;
 
 export function IntegrationIcon({ icon, size = 'md', className }: IntegrationIconProps) {
